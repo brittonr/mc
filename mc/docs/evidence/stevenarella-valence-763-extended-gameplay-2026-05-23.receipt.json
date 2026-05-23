@@ -1,0 +1,65 @@
+{
+  "artifacts": {
+    "probe_log": {
+      "Detected server protocol version 763": 1,
+      "Disconnect": 0,
+      "Failed to read all of packet": 0,
+      "FromUtf8Error": 0,
+      "MC-COMPAT-MILESTONE first_chunk_data": 1,
+      "MC-COMPAT-MILESTONE join_game": 2,
+      "MC-COMPAT-MILESTONE join_game_763_shape": 1,
+      "MC-COMPAT-MILESTONE login_compression": 1,
+      "MC-COMPAT-MILESTONE login_success": 1,
+      "MC-COMPAT-MILESTONE render_tick_with_player": 1,
+      "UnexpectedEof": 0,
+      "disconnect": 0,
+      "failed to parse packet": 0,
+      "panicked at": 0,
+      "unknown 1.20.1 metadata type": 0
+    },
+    "probe_log_path": "/tmp/stevenarella-763-extended-gameplay-2026-05-23.log",
+    "probe_status": {
+      "content": "exit=124",
+      "path": "/tmp/stevenarella-763-extended-gameplay-2026-05-23.status"
+    }
+  },
+  "contract": {
+    "claims_current_valence_client_compat": false,
+    "claims_first_chunk_data_reached": true,
+    "claims_full_stevenarella_763_support": false,
+    "claims_join_game_reached": true,
+    "claims_login_success_reached": true,
+    "claims_no_logged_runtime_failure_in_this_probe": true,
+    "claims_protocol_763_detected": true,
+    "claims_render_tick_with_player_reached": true,
+    "claims_semantic_correctness": false,
+    "claims_stable_in_world_gameplay": false
+  },
+  "date": "2026-05-23",
+  "dry_run": false,
+  "mode": "protocol_763_instrumented_stevenarella_valence_ctf_extended_gameplay",
+  "schema": "mc.compat.stevenarella-valence-763-extended-gameplay.receipt.v1",
+  "status": "bounded_300s_timeout_no_logged_runtime_failure",
+  "stevenarella": {
+    "branch": "master",
+    "changed": false,
+    "commit": "b2a6358",
+    "remote": "git@github.com:brittonr/stevenarella.git"
+  },
+  "valence": {
+    "changed": false,
+    "example": "ctf",
+    "protocol": 763,
+    "version": "1.20.1"
+  },
+  "verification": {
+    "baseline_evidence_gate": "stevenarella-valence-763-entity-metadata-evidence",
+    "baseline_evidence_gate_exit": 0,
+    "bounded_timeout_seconds": 300,
+    "disconnects_logged": 0,
+    "first_observed_runtime_failure": null,
+    "live_probe_exit": 124,
+    "panics_logged": 0,
+    "parser_failures_logged": 0
+  }
+}
