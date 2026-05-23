@@ -699,6 +699,82 @@
               cp "$receipt" "$note" "$out/"
               printf '%s\n' "$b3" > "$out/receipt.b3"
             '';
+        stevenarella-valence-763-observed-boundaries-drain-evidence =
+          pkgs.runCommand "stevenarella-valence-763-observed-boundaries-drain-evidence" { nativeBuildInputs = [ pkgs.b3sum pkgs.python3 ]; }
+            ''
+              receipt=${./docs/evidence/stevenarella-valence-763-observed-boundaries-drain-2026-05-23.receipt.json}
+              note=${./docs/evidence/stevenarella-valence-763-observed-boundaries-drain-2026-05-23.md}
+
+              python3 - "$receipt" "$note" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          receipt_path = pathlib.Path(sys.argv[1])
+          note_path = pathlib.Path(sys.argv[2])
+          receipt = json.loads(receipt_path.read_text())
+          note = note_path.read_text()
+
+          def assert_eq(name, actual, expected):
+              if actual != expected:
+                  raise SystemExit(f"{name}: expected {expected!r}, got {actual!r}")
+
+          assert_eq("schema", receipt["schema"], "mc.compat.stevenarella-valence-763-observed-boundaries-drain.receipt.v1")
+          assert_eq("status", receipt["status"], "pass")
+          assert_eq("mode", receipt["mode"], "protocol_763_observed_boundaries_mapping_drain")
+          assert_eq("dry_run", receipt["dry_run"], False)
+          assert_eq("valence.protocol", receipt["valence"]["protocol"], 763)
+          assert_eq("valence.example", receipt["valence"]["example"], "ctf")
+          assert_eq("stevenarella.commit", receipt["stevenarella"]["commit"], "4c5e89d")
+          assert_eq("boundary count", len(receipt["boundaries"]), 14)
+          assert_eq("prior boundary count", len(receipt["prior_mapped_boundaries"]), 3)
+          assert_eq("trace first unmapped", receipt["verification"]["trace_first_unmapped"], None)
+          assert_eq("fmt", receipt["verification"]["cargo_fmt_check"], "pass")
+          assert_eq("tests", receipt["verification"]["steven_protocol_tests"], "pass")
+          assert_eq("trace", receipt["verification"]["valence_ctf_trace"], "pass")
+          assert_eq("headless", receipt["verification"]["headless_probe"], "pass")
+          assert_eq("contract.claims_observed_valence_ctf_boundaries_mapped", receipt["contract"]["claims_observed_valence_ctf_boundaries_mapped"], True)
+          assert_eq("contract.claims_current_valence_client_compat", receipt["contract"]["claims_current_valence_client_compat"], False)
+          assert_eq("contract.claims_full_stevenarella_763_support", receipt["contract"]["claims_full_stevenarella_763_support"], False)
+          assert_eq("contract.claims_semantic_correctness", receipt["contract"]["claims_semantic_correctness"], False)
+          assert_eq("contract.claims_all_minecraft_1_20_1_packets", receipt["contract"]["claims_all_minecraft_1_20_1_packets"], False)
+
+          required = {
+              "0x69": "Advancements",
+              "0x58": "ScoreboardObjective",
+              "0x51": "ScoreboardDisplay",
+              "0x5b": "UpdateScore_VarInt",
+              "0x4d": "SetCurrentHotbarSlot",
+              "0x14": "WindowSetSlot_State",
+              "0x3a": "PlayerInfo",
+              "0x57": "UpdateHealth",
+              "0x52": "EntityMetadata",
+              "0x6a": "EntityProperties_VarIntVarInt",
+              "0x1c": "EntityStatus",
+              "0x34": "PlayerAbilities",
+              "0x6e": "Tags_Nested",
+              "0x24": "ChunkData_AndLight",
+          }
+          actual = {item["wire_id"]: item["stevenarella_763_internal"] for item in receipt["boundaries"]}
+          assert_eq("boundary map", actual, required)
+
+          for fragment in [
+              "play/clientbound/0x69",
+              "AdvancementUpdateS2CPacket",
+              "ChunkData_AndLight",
+              "Receipt BLAKE3",
+              "Does not prove every protocol 763 packet is mapped",
+          ]:
+              if fragment not in note:
+                  raise SystemExit(f"drain evidence note missing fragment: {fragment}")
+          PY
+
+              b3=$(b3sum "$receipt" | cut -d' ' -f1)
+              grep -Fq "Receipt BLAKE3: \`$b3\`" "$note"
+              mkdir -p "$out"
+              cp "$receipt" "$note" "$out/"
+              printf '%s\n' "$b3" > "$out/receipt.b3"
+            '';
         onixresearch-ssh-tools = pkgs.runCommand "onixresearch-ssh-tools" { } ''
           ${cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn}/bin/cairn --help > cairn-help.log
           ${

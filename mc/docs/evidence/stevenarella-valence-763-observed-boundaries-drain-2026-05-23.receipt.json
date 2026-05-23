@@ -1,0 +1,143 @@
+{
+  "boundaries": [
+    {
+      "status": "mapped",
+      "stevenarella_763_internal": "Advancements",
+      "valence_763_semantic": "AdvancementUpdateS2CPacket",
+      "wire_id": "0x69"
+    },
+    {
+      "status": "mapped",
+      "stevenarella_763_internal": "ScoreboardObjective",
+      "valence_763_semantic": "ScoreboardObjectiveUpdateS2CPacket",
+      "wire_id": "0x58"
+    },
+    {
+      "status": "mapped",
+      "stevenarella_763_internal": "ScoreboardDisplay",
+      "valence_763_semantic": "ScoreboardDisplayS2CPacket",
+      "wire_id": "0x51"
+    },
+    {
+      "status": "mapped",
+      "stevenarella_763_internal": "UpdateScore_VarInt",
+      "valence_763_semantic": "ScoreboardPlayerUpdateS2CPacket",
+      "wire_id": "0x5b"
+    },
+    {
+      "status": "mapped",
+      "stevenarella_763_internal": "SetCurrentHotbarSlot",
+      "valence_763_semantic": "UpdateSelectedSlotS2CPacket",
+      "wire_id": "0x4d"
+    },
+    {
+      "status": "mapped",
+      "stevenarella_763_internal": "WindowSetSlot_State",
+      "valence_763_semantic": "ScreenHandlerSlotUpdateS2CPacket",
+      "wire_id": "0x14"
+    },
+    {
+      "status": "mapped",
+      "stevenarella_763_internal": "PlayerInfo",
+      "valence_763_semantic": "PlayerListS2CPacket",
+      "wire_id": "0x3a"
+    },
+    {
+      "status": "mapped",
+      "stevenarella_763_internal": "UpdateHealth",
+      "valence_763_semantic": "HealthUpdateS2CPacket",
+      "wire_id": "0x57"
+    },
+    {
+      "status": "mapped",
+      "stevenarella_763_internal": "EntityMetadata",
+      "valence_763_semantic": "EntityTrackerUpdateS2CPacket",
+      "wire_id": "0x52"
+    },
+    {
+      "status": "mapped",
+      "stevenarella_763_internal": "EntityProperties_VarIntVarInt",
+      "valence_763_semantic": "EntityAttributesS2CPacket",
+      "wire_id": "0x6a"
+    },
+    {
+      "status": "mapped",
+      "stevenarella_763_internal": "EntityStatus",
+      "valence_763_semantic": "EntityStatusS2CPacket",
+      "wire_id": "0x1c"
+    },
+    {
+      "status": "mapped",
+      "stevenarella_763_internal": "PlayerAbilities",
+      "valence_763_semantic": "PlayerAbilitiesS2CPacket",
+      "wire_id": "0x34"
+    },
+    {
+      "status": "mapped",
+      "stevenarella_763_internal": "Tags_Nested",
+      "valence_763_semantic": "SynchronizeTagsS2CPacket",
+      "wire_id": "0x6e"
+    },
+    {
+      "status": "mapped",
+      "stevenarella_763_internal": "ChunkData_AndLight",
+      "valence_763_semantic": "ChunkDataS2CPacket",
+      "wire_id": "0x24"
+    }
+  ],
+  "contract": {
+    "claims_all_minecraft_1_20_1_packets": false,
+    "claims_current_valence_client_compat": false,
+    "claims_full_stevenarella_763_support": false,
+    "claims_observed_valence_ctf_boundaries_mapped": true,
+    "claims_semantic_correctness": false
+  },
+  "created_utc": "2026-05-23T00:00:00Z",
+  "dry_run": false,
+  "mode": "protocol_763_observed_boundaries_mapping_drain",
+  "prior_mapped_boundaries": [
+    {
+      "stevenarella_763_internal": "JoinGame_WorldNames_IsHard_SimDist",
+      "valence_763_semantic": "GameJoinS2CPacket",
+      "wire_id": "0x28"
+    },
+    {
+      "stevenarella_763_internal": "DeclareCommands",
+      "valence_763_semantic": "CommandTreeS2CPacket",
+      "wire_id": "0x10"
+    },
+    {
+      "stevenarella_763_internal": "ServerMessage_Position",
+      "valence_763_semantic": "GameMessageS2CPacket",
+      "wire_id": "0x64"
+    }
+  ],
+  "schema": "mc.compat.stevenarella-valence-763-observed-boundaries-drain.receipt.v1",
+  "status": "pass",
+  "stevenarella": {
+    "commit": "4c5e89d",
+    "fork_branch": "master",
+    "fork_remote": "git@github.com:brittonr/stevenarella.git",
+    "full_commit": "4c5e89dc61ff923dc69f33208b407c814f119540"
+  },
+  "valence": {
+    "captured_play_count": 40,
+    "example": "ctf",
+    "first_unmapped": null,
+    "minecraft_version": "1.20.1",
+    "protocol": 763,
+    "trace_artifact": "/tmp/valence-763-after-all-boundaries-update-trace.json",
+    "trace_b3": "03b1c084983045ed6d27d8a23c050dbb3bd66eace4f66993a4d3770dedd80897"
+  },
+  "verification": {
+    "cargo_fmt_check": "pass",
+    "headless_probe": "pass",
+    "headless_probe_log_b3": "7e9974c7c064e0af36dfa4acc244fdf9f4db24ad1352d1cc990673eb8f248d1c",
+    "headless_probe_status_b3": "f67d19a0fed77375c9ee600f70ff255957e708d6c0898a270d40151761401f0a",
+    "steven_protocol_test_count": 10,
+    "steven_protocol_tests": "pass",
+    "trace_first_unmapped": null,
+    "trace_observed_mapped_count": 40,
+    "valence_ctf_trace": "pass"
+  }
+}
