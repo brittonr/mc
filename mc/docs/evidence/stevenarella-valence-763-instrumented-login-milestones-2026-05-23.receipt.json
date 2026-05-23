@@ -1,0 +1,76 @@
+{
+  "artifacts": {
+    "backtrace_log": {
+      "UnexpectedEof": 1,
+      "path": "/tmp/stevenarella-763-instrumented-backtrace-2026-05-23.log",
+      "sha256": "fb3b48f100cc4634814a55199d47b0ab028a8bdc22fbe94014827597f9a16eb9"
+    },
+    "backtrace_status": {
+      "content": "exit=101",
+      "path": "/tmp/stevenarella-763-instrumented-backtrace-2026-05-23.status",
+      "sha256": "df60fadbec9389fc36cf26ce8b7ff9d610cb8f110e6a0860bd0b2294a2be032d"
+    },
+    "probe_log": {
+      "Detected server protocol version 763": 1,
+      "UnexpectedEof": 1,
+      "connect_start": 1,
+      "first_chunk_data": 0,
+      "handshake_sent": 1,
+      "join_game": 0,
+      "login_compression": 1,
+      "login_start_sent": 1,
+      "login_success": 1,
+      "panicked": 1,
+      "path": "/tmp/stevenarella-763-instrumented-milestones-2026-05-23.log",
+      "render_tick_with_player": 0,
+      "sha256": "4cef0a2da46f0734674daf1632f183e9a9fb4d5bcf8b2b07034cfedb004d1798",
+      "tcp_connected": 1
+    },
+    "probe_status": {
+      "content": "exit=101",
+      "path": "/tmp/stevenarella-763-instrumented-milestones-2026-05-23.status",
+      "sha256": "df60fadbec9389fc36cf26ce8b7ff9d610cb8f110e6a0860bd0b2294a2be032d"
+    }
+  },
+  "contract": {
+    "claims_current_valence_client_compat": false,
+    "claims_full_stevenarella_763_support": false,
+    "claims_in_world_gameplay_success": false,
+    "claims_login_success_reached": true,
+    "claims_semantic_correctness": false
+  },
+  "date": "2026-05-23",
+  "dry_run": false,
+  "mode": "protocol_763_instrumented_stevenarella_valence_ctf_login_milestones",
+  "schema": "mc.compat.stevenarella-valence-763-instrumented-login-milestones.receipt.v1",
+  "status": "fail_at_first_play_read_after_login_success",
+  "stevenarella": {
+    "commit": "10e4562",
+    "fork_remote": "git@github.com:brittonr/stevenarella.git"
+  },
+  "valence": {
+    "address": "127.0.0.1:25565",
+    "example": "ctf",
+    "protocol": 763
+  },
+  "verification": {
+    "cargo_check_stevenarella": "pass",
+    "cargo_fmt_check": "pass",
+    "first_observed_runtime_failure": "UnexpectedEof while reading first play-state packet after login_success",
+    "milestones_not_reached": [
+      "join_game",
+      "first_chunk_data",
+      "render_tick_with_player"
+    ],
+    "milestones_reached": [
+      "protocol_detected",
+      "tcp_connected",
+      "handshake_sent",
+      "login_start_sent",
+      "login_compression",
+      "login_success"
+    ],
+    "steven_protocol_versions_tests": "12 passed",
+    "username_bound_note": "Minecraft usernames are bounded to 16 bytes; final probes used steve763ms/steve763bt within that bound."
+  }
+}

@@ -835,6 +835,65 @@
               cp "$receipt" "$note" "$out/"
               printf '%s\n' "$b3" > "$out/receipt.b3"
             '';
+        stevenarella-valence-763-instrumented-login-milestones-evidence =
+          pkgs.runCommand "stevenarella-valence-763-instrumented-login-milestones-evidence" { nativeBuildInputs = [ pkgs.b3sum pkgs.python3 ]; }
+            ''
+              receipt=${./docs/evidence/stevenarella-valence-763-instrumented-login-milestones-2026-05-23.receipt.json}
+              note=${./docs/evidence/stevenarella-valence-763-instrumented-login-milestones-2026-05-23.md}
+
+              python3 - "$receipt" "$note" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          receipt_path = pathlib.Path(sys.argv[1])
+          note_path = pathlib.Path(sys.argv[2])
+          receipt = json.loads(receipt_path.read_text())
+          note = note_path.read_text()
+
+          def assert_eq(name, actual, expected):
+              if actual != expected:
+                  raise SystemExit(f"{name}: expected {expected!r}, got {actual!r}")
+
+          assert_eq("schema", receipt["schema"], "mc.compat.stevenarella-valence-763-instrumented-login-milestones.receipt.v1")
+          assert_eq("status", receipt["status"], "fail_at_first_play_read_after_login_success")
+          assert_eq("mode", receipt["mode"], "protocol_763_instrumented_stevenarella_valence_ctf_login_milestones")
+          assert_eq("dry_run", receipt["dry_run"], False)
+          assert_eq("valence.protocol", receipt["valence"]["protocol"], 763)
+          assert_eq("valence.example", receipt["valence"]["example"], "ctf")
+          assert_eq("stevenarella.commit", receipt["stevenarella"]["commit"], "10e4562")
+          assert_eq("probe status", receipt["artifacts"]["probe_status"]["content"], "exit=101")
+          assert_eq("backtrace status", receipt["artifacts"]["backtrace_status"]["content"], "exit=101")
+          assert_eq("probe protocol", receipt["artifacts"]["probe_log"]["Detected server protocol version 763"], 1)
+          assert_eq("login compression", receipt["artifacts"]["probe_log"]["login_compression"], 1)
+          assert_eq("login success", receipt["artifacts"]["probe_log"]["login_success"], 1)
+          assert_eq("join game", receipt["artifacts"]["probe_log"]["join_game"], 0)
+          assert_eq("first chunk", receipt["artifacts"]["probe_log"]["first_chunk_data"], 0)
+          assert_eq("render tick", receipt["artifacts"]["probe_log"]["render_tick_with_player"], 0)
+          assert_eq("unexpected eof", receipt["artifacts"]["probe_log"]["UnexpectedEof"], 1)
+          assert_eq("first failure", receipt["verification"]["first_observed_runtime_failure"], "UnexpectedEof while reading first play-state packet after login_success")
+          assert_eq("login success claim", receipt["contract"]["claims_login_success_reached"], True)
+          assert_eq("contract.claims_current_valence_client_compat", receipt["contract"]["claims_current_valence_client_compat"], False)
+          assert_eq("contract.claims_full_stevenarella_763_support", receipt["contract"]["claims_full_stevenarella_763_support"], False)
+          assert_eq("contract.claims_semantic_correctness", receipt["contract"]["claims_semantic_correctness"], False)
+          assert_eq("contract.claims_in_world_gameplay_success", receipt["contract"]["claims_in_world_gameplay_success"], False)
+
+          for fragment in [
+              "MC-COMPAT-MILESTONE login_success",
+              "UnexpectedEof while reading the first play-state packet",
+              "Does not prove in-world gameplay success",
+              "Receipt BLAKE3",
+          ]:
+              if fragment not in note:
+                  raise SystemExit(f"instrumented login evidence note missing fragment: {fragment}")
+          PY
+
+              b3=$(b3sum "$receipt" | cut -d' ' -f1)
+              grep -Fq "Receipt BLAKE3: \`$b3\`" "$note"
+              mkdir -p "$out"
+              cp "$receipt" "$note" "$out/"
+              printf '%s\n' "$b3" > "$out/receipt.b3"
+            '';
         onixresearch-ssh-tools = pkgs.runCommand "onixresearch-ssh-tools" { } ''
           ${cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn}/bin/cairn --help > cairn-help.log
           ${
