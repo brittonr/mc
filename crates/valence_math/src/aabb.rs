@@ -1,6 +1,4 @@
-use std::ops::{Add, Sub};
-
-use glam::DVec3;
+type DVec3 = glam::DVec3;
 
 /// A three-dimensional axis-aligned bounding box, or "AABB".
 ///
@@ -129,7 +127,7 @@ impl Aabb {
     }
 }
 
-impl Add<DVec3> for Aabb {
+impl std::ops::Add<DVec3> for Aabb {
     type Output = Aabb;
 
     fn add(self, rhs: DVec3) -> Self::Output {
@@ -137,7 +135,7 @@ impl Add<DVec3> for Aabb {
     }
 }
 
-impl Add<Aabb> for DVec3 {
+impl std::ops::Add<Aabb> for DVec3 {
     type Output = Aabb;
 
     fn add(self, rhs: Aabb) -> Self::Output {
@@ -145,7 +143,7 @@ impl Add<Aabb> for DVec3 {
     }
 }
 
-impl Sub<DVec3> for Aabb {
+impl std::ops::Sub<DVec3> for Aabb {
     type Output = Aabb;
 
     fn sub(self, rhs: DVec3) -> Self::Output {
@@ -153,7 +151,7 @@ impl Sub<DVec3> for Aabb {
     }
 }
 
-impl Sub<Aabb> for DVec3 {
+impl std::ops::Sub<Aabb> for DVec3 {
     type Output = Aabb;
 
     fn sub(self, rhs: Aabb) -> Self::Output {

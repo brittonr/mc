@@ -1,10 +1,11 @@
 #![doc = include_str!("../README.md")]
 
-use std::borrow::Cow;
 use std::ops::{Deref, DerefMut};
 use std::str::FromStr;
 
 use serde::de::Visitor;
+
+type Cow<'a, T> = std::borrow::Cow<'a, T>;
 
 pub mod color;
 mod into_text;
@@ -172,7 +173,7 @@ pub struct ScoreboardValueContent {
     pub objective: Cow<'static, str>,
     /// If present, this value is displayed regardless of what the score
     /// would have been.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub value: Option<Cow<'static, str>>,
 }
 
@@ -429,13 +430,15 @@ impl Text {
         }
 
         impl Modifiers {
-            // Writes all active modifiers to a String as `§<mod>`
-            fn write(&self, output: &mut String) {
+            // Renders all active modifiers as `§<mod>`.
+            fn render(&self) -> String {
+                let mut output = String::new();
+
                 if let Some(color) = self.color {
                     let code = match color {
                         Color::Rgb(rgb) => rgb.to_named_lossy().hex_digit(),
                         Color::Named(normal) => normal.hex_digit(),
-                        Color::Reset => return,
+                        Color::Reset => return output,
                     };
 
                     output.push('§');
@@ -456,6 +459,8 @@ impl Text {
                 if let Some(true) = self.italic {
                     output.push_str("§o");
                 }
+
+                output
             }
             // Merges 2 Modifiers. The result is what you would get if you applied them both
             // sequentially.
@@ -471,49 +476,49 @@ impl Text {
             }
         }
 
-        fn to_legacy_inner(this: &Text, result: &mut String, mods: &mut Modifiers) {
+        fn to_legacy_inner(this: &TextInner, result: &mut String, mods: &mut Modifiers) {
             let new_mods = Modifiers {
-                obfuscated: this.0.obfuscated,
-                bold: this.0.bold,
-                strikethrough: this.0.strikethrough,
-                underlined: this.0.underlined,
-                italic: this.0.italic,
-                color: this.0.color,
+                obfuscated: this.obfuscated,
+                bold: this.bold,
+                strikethrough: this.strikethrough,
+                underlined: this.underlined,
+                italic: this.italic,
+                color: this.color,
             };
 
             // If any modifiers were removed
             if [
-                this.0.obfuscated,
-                this.0.bold,
-                this.0.strikethrough,
-                this.0.underlined,
-                this.0.italic,
+                this.obfuscated,
+                this.bold,
+                this.strikethrough,
+                this.underlined,
+                this.italic,
             ]
             .contains(&Some(false))
-                || this.0.color == Some(Color::Reset)
+                || this.color == Some(Color::Reset)
             {
                 // Reset and print sum of old and new modifiers
                 result.push_str("§r");
-                mods.add(&new_mods).write(result);
+                result.push_str(&mods.add(&new_mods).render());
             } else {
                 // Print only new modifiers
-                new_mods.write(result);
+                result.push_str(&new_mods.render());
             }
 
             *mods = mods.add(&new_mods);
 
-            if let TextContent::Text { text } = &this.0.content {
+            if let TextContent::Text { text } = &this.content {
                 result.push_str(text);
             }
 
-            for child in &this.0.extra {
-                to_legacy_inner(child, result, mods);
+            for child in &this.extra {
+                to_legacy_inner(&child.0, result, mods);
             }
         }
 
         let mut result = String::new();
         let mut mods = Modifiers::default();
-        to_legacy_inner(self, &mut result, &mut mods);
+        to_legacy_inner(&self.0, &mut result, &mut mods);
 
         result
     }
