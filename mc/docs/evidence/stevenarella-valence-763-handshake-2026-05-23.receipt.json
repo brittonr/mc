@@ -20,7 +20,9 @@
     "change": "Advertise protocol 763 / version 1.20.1 and temporarily route packet-id translation through the existing 1.18.2 translator.",
     "claims_full_1_20_1_protocol_support": false,
     "claims_semantic_correctness": false,
-    "patched_commit": "ff04368"
+    "patched_commit": "ff04368",
+    "fork_remote": "git@github.com:brittonr/stevenarella.git",
+    "fork_branch": "master"
   },
   "client_probe": {
     "command_shape": "timeout 20 xvfb-run ... stevenarella --server 127.0.0.1:25565 --username compatbot --default-protocol-version 763",
