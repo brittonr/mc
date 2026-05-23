@@ -94,6 +94,9 @@ fn main() -> ExitCode {
 
 fn real_main() -> Result<(), String> {
     let cfg = Config::from_env_and_args()?;
+    if matches!(cfg.mode, Mode::DryRun | Mode::Run | Mode::BuildClient) {
+        ensure_client_dir_ready(&cfg)?;
+    }
     if cfg.server_backend == ServerBackend::Valence && matches!(cfg.mode, Mode::DryRun | Mode::Run)
     {
         ensure_valence_repo_ready(&cfg)?;
@@ -226,6 +229,12 @@ impl Config {
                         .ok_or_else(|| "--server-backend requires valence or paper".to_string())?;
                     cfg.server_backend = parse_backend(&value)?;
                 }
+                "--client-dir" => {
+                    cfg.client_dir = PathBuf::from(
+                        args.next()
+                            .ok_or_else(|| "--client-dir requires a path".to_string())?,
+                    );
+                }
                 "--valence-repo" => {
                     cfg.valence_repo = PathBuf::from(
                         args.next()
@@ -243,6 +252,9 @@ impl Config {
                 }
                 _ if arg.starts_with("--server-backend=") => {
                     cfg.server_backend = parse_backend(&arg[17..])?;
+                }
+                _ if arg.starts_with("--client-dir=") => {
+                    cfg.client_dir = PathBuf::from(&arg[13..]);
                 }
                 _ if arg.starts_with("--valence-repo=") => {
                     cfg.valence_repo = PathBuf::from(&arg[15..]);
@@ -266,10 +278,11 @@ impl Config {
 
 fn print_usage(cfg: &Config) {
     println!(
-        "Usage: mc-compat-runner [--dry-run|--run] [--build-client] [--status-only] [--stop] [--keep-server] [--server-backend valence|paper] [--valence-repo PATH] [--valence-rev REV]\n\n\
+        "Usage: mc-compat-runner [--dry-run|--run] [--build-client] [--status-only] [--stop] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--valence-repo PATH] [--valence-rev REV]\n\n\
 Automates a local Stevenarella compatibility smoke against a Minecraft {} / protocol {} server.\n\
+Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Default server backend is Valence, using an editable local Valence checkout plus an isolated protocol-758 worktree so the dirty/current checkout is untouched.\n\
-If the Valence checkout or compatible revision is missing, clone/fetch it or pass --valence-repo/VALENCE_REPO to another editable checkout.\n\
+If the Stevenarella or Valence checkout is missing, clone/fetch it or pass --client-dir/CLIENT_DIR and --valence-repo/VALENCE_REPO to editable checkouts.\n\
 Client runs are forced through Xvfb/X11 with software GL and no inherited Wayland socket.\n\
 Paper fallback runs set EULA=TRUE based on recorded user acceptance.\n\n\
 Env: MC_COMPAT_ROOT={} CLIENT_DIR={} TARGET_DIR={} VALENCE_REPO={} VALENCE_REV={} VALENCE_WORKTREE={} VALENCE_TARGET_DIR={} CLIENT_TIMEOUT={}\n",
@@ -287,6 +300,7 @@ Env: MC_COMPAT_ROOT={} CLIENT_DIR={} TARGET_DIR={} VALENCE_REPO={} VALENCE_REV={
 }
 
 fn build_client(cfg: &Config) -> Result<(), String> {
+    ensure_client_dir_ready(cfg)?;
     log(format_args!("building Stevenarella client"));
     let mut cmd = Command::new("cargo");
     cmd.current_dir(&cfg.client_dir)
@@ -295,6 +309,26 @@ fn build_client(cfg: &Config) -> Result<(), String> {
         .arg("stevenarella");
     apply_build_env(&mut cmd, &cfg.target_dir);
     run_cmd(cfg, &mut cmd)
+}
+
+fn ensure_client_dir_ready(cfg: &Config) -> Result<(), String> {
+    if !cfg.client_dir.exists() {
+        return Err(format!(
+            "Stevenarella checkout not found at {}. Keep an editable sibling checkout with `git clone https://github.com/iceiix/stevenarella {}` or pass --client-dir/CLIENT_DIR to another checkout.",
+            cfg.client_dir.display(),
+            cfg.client_dir.display()
+        ));
+    }
+
+    let manifest = cfg.client_dir.join("Cargo.toml");
+    if !manifest.exists() {
+        return Err(format!(
+            "Stevenarella checkout {} is missing Cargo.toml. Point --client-dir/CLIENT_DIR at the Stevenarella repository root.",
+            cfg.client_dir.display()
+        ));
+    }
+
+    Ok(())
 }
 
 fn start_server(cfg: &Config) -> Result<ManagedServer, String> {
@@ -716,6 +750,21 @@ mod tests {
         )
     }
 
+    fn fake_stevenarella_checkout(label: &str) -> PathBuf {
+        let dir = std::env::temp_dir().join(format!(
+            "mc-compat-stevenarella-{label}-{}",
+            std::process::id()
+        ));
+        let _ = fs::remove_dir_all(&dir);
+        fs::create_dir_all(&dir).expect("create fake Stevenarella checkout");
+        fs::write(
+            dir.join("Cargo.toml"),
+            "[package]\nname = \"stevenarella\"\nversion = \"0.0.0\"\nedition = \"2021\"\n",
+        )
+        .expect("write fake Stevenarella manifest");
+        dir
+    }
+
     #[test]
     fn defaults_to_valence_protocol_and_port() {
         let cfg = test_config(&[], &[]).expect("default config parses");
@@ -731,12 +780,14 @@ mod tests {
     }
 
     #[test]
-    fn cli_overrides_backend_valence_repo_and_revision() {
+    fn cli_overrides_backend_client_dir_valence_repo_and_revision() {
         let cfg = test_config(
             &[
                 "--run",
                 "--server-backend",
                 "paper",
+                "--client-dir",
+                "/tmp/editable-stevenarella",
                 "--valence-repo",
                 "/tmp/editable-valence",
                 "--valence-rev=local-debug-rev",
@@ -748,6 +799,7 @@ mod tests {
         assert_eq!(cfg.mode, Mode::Run);
         assert_eq!(cfg.server_backend, ServerBackend::Paper);
         assert_eq!(cfg.server_port, 25566);
+        assert_eq!(cfg.client_dir, PathBuf::from("/tmp/editable-stevenarella"));
         assert_eq!(cfg.valence_repo, PathBuf::from("/tmp/editable-valence"));
         assert_eq!(cfg.valence_rev, "local-debug-rev");
     }
@@ -764,6 +816,7 @@ mod tests {
                     "Detected server protocol version|Dimension type:",
                 ),
                 ("SERVER_PORT", "24444"),
+                ("CLIENT_DIR", "/repo/stevenarella-edit"),
                 ("VALENCE_REPO", "/repo/valence-edit"),
                 ("VALENCE_REV", "debug-rev"),
             ],
@@ -771,7 +824,7 @@ mod tests {
         .expect("env override config parses");
 
         assert_eq!(cfg.root, PathBuf::from("/repo/mc"));
-        assert_eq!(cfg.client_dir, PathBuf::from("/repo/mc/stevenarella"));
+        assert_eq!(cfg.client_dir, PathBuf::from("/repo/stevenarella-edit"));
         assert_eq!(cfg.server_backend, ServerBackend::Paper);
         assert_eq!(cfg.server_port, 24444);
         assert_eq!(cfg.client_timeout, Duration::from_secs(8));
@@ -807,5 +860,48 @@ mod tests {
             "{err}"
         );
         assert!(err.contains("--valence-repo/VALENCE_REPO"), "{err}");
+    }
+
+    #[test]
+    fn missing_client_checkout_has_actionable_diagnostic() {
+        let missing = std::env::temp_dir().join(format!(
+            "mc-compat-missing-stevenarella-{}",
+            std::process::id()
+        ));
+        let cfg = test_config(&["--client-dir", missing.to_str().unwrap()], &[])
+            .expect("config with missing Stevenarella checkout parses");
+
+        let err = ensure_client_dir_ready(&cfg).unwrap_err();
+
+        assert!(err.contains("Stevenarella checkout not found"), "{err}");
+        assert!(
+            err.contains("git clone https://github.com/iceiix/stevenarella"),
+            "{err}"
+        );
+        assert!(err.contains("--client-dir/CLIENT_DIR"), "{err}");
+    }
+
+    #[test]
+    fn client_checkout_must_point_at_manifest_root() {
+        let dir =
+            std::env::temp_dir().join(format!("mc-compat-bad-stevenarella-{}", std::process::id()));
+        let _ = fs::remove_dir_all(&dir);
+        fs::create_dir_all(&dir).expect("create bad Stevenarella checkout");
+        let cfg = test_config(&["--client-dir", dir.to_str().unwrap()], &[])
+            .expect("config with bad Stevenarella checkout parses");
+
+        let err = ensure_client_dir_ready(&cfg).unwrap_err();
+
+        assert!(err.contains("missing Cargo.toml"), "{err}");
+        assert!(err.contains("Stevenarella repository root"), "{err}");
+    }
+
+    #[test]
+    fn valid_client_checkout_preflight_passes() {
+        let dir = fake_stevenarella_checkout("valid");
+        let cfg = test_config(&["--client-dir", dir.to_str().unwrap()], &[])
+            .expect("config with fake Stevenarella checkout parses");
+
+        ensure_client_dir_ready(&cfg).expect("fake checkout has a manifest");
     }
 }

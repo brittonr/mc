@@ -28,6 +28,20 @@ CLIENT_TIMEOUT=8 scripts/mc-compat-smoke.sh --run
 
 The runner forces the GUI client through Xvfb/X11 with software GL and removes inherited Wayland/niri socket environment before launch. A bounded timeout is considered success only when the client log contains connection/render evidence such as detected protocol or loaded dimension data.
 
+## Editable Stevenarella checkout
+
+Stevenarella is intentionally a local sibling checkout so it can be patched while debugging the client side of the compatibility seam. By default the runner expects `./stevenarella` to be an editable Stevenarella repository root containing `Cargo.toml`.
+
+Use another checkout without moving files:
+
+```sh
+nix run .#mc-compat-smoke -- --dry-run --client-dir /path/to/stevenarella
+# or
+CLIENT_DIR=/path/to/stevenarella nix run .#mc-compat-smoke -- --dry-run
+```
+
+If the checkout is missing or does not look like the repository root, the runner fails before starting the smoke and tells you whether to clone Stevenarella or pass `--client-dir` / `CLIENT_DIR`.
+
 ## Editable Valence checkout
 
 Valence is intentionally a local sibling checkout so it can be patched while debugging the compatibility seam. By default the runner expects:

@@ -99,19 +99,36 @@
       checks = eachSystem (pkgs: {
         mc-compat-runner = self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner;
         mc-compat-dry-run = pkgs.runCommand "mc-compat-dry-run" { } ''
+          mkdir -p fake-stevenarella
+          printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
           ${
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
-          }/bin/mc-compat-runner --dry-run --server-backend paper > dry-run.log
+          }/bin/mc-compat-runner --dry-run --server-backend paper --client-dir "$PWD/fake-stevenarella" > dry-run.log
           grep -Fq "start Paper server" dry-run.log
           grep -Fq "would run Rust protocol status probe" dry-run.log
           grep -Fq "would run Stevenarella under xvfb-run" dry-run.log
           mkdir -p "$out"
           cp dry-run.log "$out/"
         '';
-        mc-compat-missing-valence = pkgs.runCommand "mc-compat-missing-valence" { } ''
+        mc-compat-missing-client = pkgs.runCommand "mc-compat-missing-client" { } ''
           if ${
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
-          }/bin/mc-compat-runner --dry-run --valence-repo "$PWD/no-such-valence" > missing.log 2>&1; then
+          }/bin/mc-compat-runner --dry-run --server-backend paper --client-dir "$PWD/no-such-stevenarella" > missing.log 2>&1; then
+            echo "expected missing Stevenarella checkout to fail" >&2
+            cat missing.log >&2
+            exit 1
+          fi
+          grep -Fq "Stevenarella checkout not found" missing.log
+          grep -Fq -- "--client-dir/CLIENT_DIR" missing.log
+          mkdir -p "$out"
+          cp missing.log "$out/"
+        '';
+        mc-compat-missing-valence = pkgs.runCommand "mc-compat-missing-valence" { } ''
+          mkdir -p fake-stevenarella
+          printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+          if ${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
+          }/bin/mc-compat-runner --dry-run --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/no-such-valence" > missing.log 2>&1; then
             echo "expected missing Valence checkout to fail" >&2
             cat missing.log >&2
             exit 1
@@ -126,6 +143,8 @@
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
           }/bin/mc-compat-runner --help > help.log
           grep -Fq -- "--server-backend valence|paper" help.log
+          grep -Fq -- "--client-dir PATH" help.log
+          grep -Fq "CLIENT_DIR" help.log
           grep -Fq -- "--valence-repo PATH" help.log
           grep -Fq "no inherited Wayland socket" help.log
           mkdir -p "$out"
