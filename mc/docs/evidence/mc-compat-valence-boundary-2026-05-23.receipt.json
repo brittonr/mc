@@ -1,0 +1,52 @@
+{
+  "schema": "mc.compat.valence-boundary.receipt.v1",
+  "date_utc": "2026-05-23",
+  "status": "pass",
+  "mode": "boundary_probe",
+  "dry_run": false,
+  "valence": {
+    "commit": "c5140b7",
+    "minecraft_version": "1.20.1",
+    "protocol": 763,
+    "source": "valence/crates/valence_protocol/src/lib.rs",
+    "live_parkour_smoke": {
+      "schema": "valence.parkour-smoke.receipt.v1",
+      "status": "passed",
+      "example": "parkour",
+      "listened": true,
+      "process_stayed_alive": true,
+      "claims_client_compat": false,
+      "claims_semantic_correctness": false
+    },
+    "status_probe": {
+      "expected_protocol": 763,
+      "observed_version_name": "1.20.1",
+      "observed_protocol": 763
+    }
+  },
+  "stevenarella": {
+    "commit": "815ac88",
+    "source": "stevenarella/protocol/src/protocol/mod.rs",
+    "version_source": "stevenarella/protocol/src/protocol/versions.rs",
+    "default_protocol": 758,
+    "default_version": "1.18.2",
+    "supports_valence_current_protocol": false
+  },
+  "boundary": {
+    "proven_path_protocol": 758,
+    "current_valence_protocol": 763,
+    "protocol_gap": 5,
+    "leafish_role": "reference-only",
+    "update_stevenarella_required_for_current_valence": true,
+    "expected_result": "Stevenarella must be updated or Valence must be pinned/translated before current Valence main protocol 763 can be claimed compatible. Existing live compatibility proof remains Stevenarella -> Valence protocol 758."
+  },
+  "contract": {
+    "claims_current_valence_client_compat": false,
+    "claims_stevenarella_763_support": false,
+    "claims_semantic_correctness": false
+  },
+  "evidence": {
+    "status_763_probe_output": "{\"description\":{\"text\":\"A Valence Server\"},\"players\":{\"max\":20,\"online\":0,\"sample\":[]},\"version\":{\"name\":\"1.20.1\",\"protocol\":763}}",
+    "status_758_probe_expected_failure": "protocol mismatch in status response; expected 758"
+  }
+}

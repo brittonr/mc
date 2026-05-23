@@ -347,6 +347,63 @@
               cp "$receipt" "$note" "$out/"
               printf '%s\n' "$b3" > "$out/receipt.b3"
             '';
+        mc-compat-valence-boundary-evidence =
+          pkgs.runCommand "mc-compat-valence-boundary-evidence" { nativeBuildInputs = [ pkgs.b3sum pkgs.python3 ]; }
+            ''
+              receipt=${./docs/evidence/mc-compat-valence-boundary-2026-05-23.receipt.json}
+              note=${./docs/evidence/mc-compat-valence-boundary-2026-05-23.md}
+
+              python3 - "$receipt" "$note" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          receipt_path = pathlib.Path(sys.argv[1])
+          note_path = pathlib.Path(sys.argv[2])
+          receipt = json.loads(receipt_path.read_text())
+          note = note_path.read_text()
+
+          def assert_eq(name, actual, expected):
+              if actual != expected:
+                  raise SystemExit(f"{name}: expected {expected!r}, got {actual!r}")
+
+          assert_eq("schema", receipt["schema"], "mc.compat.valence-boundary.receipt.v1")
+          assert_eq("status", receipt["status"], "pass")
+          assert_eq("mode", receipt["mode"], "boundary_probe")
+          assert_eq("dry_run", receipt["dry_run"], False)
+          assert_eq("valence.minecraft_version", receipt["valence"]["minecraft_version"], "1.20.1")
+          assert_eq("valence.protocol", receipt["valence"]["protocol"], 763)
+          assert_eq("valence.status_probe.observed_protocol", receipt["valence"]["status_probe"]["observed_protocol"], 763)
+          assert_eq("valence.live_parkour_smoke.status", receipt["valence"]["live_parkour_smoke"]["status"], "passed")
+          assert_eq("valence.live_parkour_smoke.claims_client_compat", receipt["valence"]["live_parkour_smoke"]["claims_client_compat"], False)
+          assert_eq("stevenarella.default_protocol", receipt["stevenarella"]["default_protocol"], 758)
+          assert_eq("stevenarella.supports_valence_current_protocol", receipt["stevenarella"]["supports_valence_current_protocol"], False)
+          assert_eq("boundary.proven_path_protocol", receipt["boundary"]["proven_path_protocol"], 758)
+          assert_eq("boundary.current_valence_protocol", receipt["boundary"]["current_valence_protocol"], 763)
+          assert_eq("boundary.protocol_gap", receipt["boundary"]["protocol_gap"], 5)
+          assert_eq("boundary.update_stevenarella_required_for_current_valence", receipt["boundary"]["update_stevenarella_required_for_current_valence"], True)
+          assert_eq("contract.claims_current_valence_client_compat", receipt["contract"]["claims_current_valence_client_compat"], False)
+          assert_eq("contract.claims_stevenarella_763_support", receipt["contract"]["claims_stevenarella_763_support"], False)
+
+          required_note_fragments = [
+              "Current Valence main is **not** the same compatibility target",
+              "Valence advertised protocol: `763`",
+              "Stevenarella default/highest supported protocol: `758`",
+              "Status probe for expected protocol `758`: failed as expected",
+              "Stevenarella is updated to support protocol `763`",
+              "Valence is pinned/translated back to protocol `758`",
+          ]
+          for fragment in required_note_fragments:
+              if fragment not in note:
+                  raise SystemExit(f"boundary evidence note missing fragment: {fragment}")
+          PY
+
+              b3=$(b3sum "$receipt" | cut -d' ' -f1)
+              grep -Fq "Receipt BLAKE3: \`$b3\`" "$note"
+              mkdir -p "$out"
+              cp "$receipt" "$note" "$out/"
+              printf '%s\n' "$b3" > "$out/receipt.b3"
+            '';
         onixresearch-ssh-tools = pkgs.runCommand "onixresearch-ssh-tools" { } ''
           ${cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn}/bin/cairn --help > cairn-help.log
           ${
