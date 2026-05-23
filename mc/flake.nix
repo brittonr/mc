@@ -1479,6 +1479,82 @@
               cp "$receipt" "$note" "$out/"
               printf '%s\n' "$b3" > "$out/receipt.b3"
             '';
+        stevenarella-valence-763-inventory-evidence =
+          pkgs.runCommand "stevenarella-valence-763-inventory-evidence" { nativeBuildInputs = [ pkgs.b3sum pkgs.python3 ]; }
+            ''
+              receipt=${./docs/evidence/stevenarella-valence-763-inventory-2026-05-23.receipt.json}
+              note=${./docs/evidence/stevenarella-valence-763-inventory-2026-05-23.md}
+
+              python3 - "$receipt" "$note" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          receipt_path = pathlib.Path(sys.argv[1])
+          note_path = pathlib.Path(sys.argv[2])
+          receipt = json.loads(receipt_path.read_text())
+          note = note_path.read_text()
+
+          def assert_eq(name, actual, expected):
+              if actual != expected:
+                  raise SystemExit(f"{name}: expected {expected!r}, got {actual!r}")
+
+          assert_eq("schema", receipt["schema"], "mc.compat.evidence.v1")
+          assert_eq("name", receipt["name"], "stevenarella-valence-763-inventory")
+          assert_eq("result", receipt["result"], "bounded_single_client_ctf_team_inventory_probe_observed_slots_36_37_and_hotbar_no_logged_runtime_failure")
+          assert_eq("stevenarella commit", receipt["stevenarella_commit"], "73d6d4b stevenarella: add 763 ctf inventory probe")
+          assert_eq("valence commit", receipt["valence_commit"], "c5140b7 valence: add parkour smoke receipts")
+          assert_eq("timeout status", receipt["probe"]["timeout_status"], "124")
+          assert_eq("bounded timeout", receipt["probe"]["bounded_timeout_is_expected"], True)
+          markers = receipt["observations"]["markers"]
+          for marker in [
+              "detected_763",
+              "login_success",
+              "join_game",
+              "render",
+              "team_red",
+              "set_slot36",
+              "set_slot37",
+              "current_hotbar",
+          ]:
+              assert_eq(f"marker {marker}", markers[marker], True)
+          assert_eq("slot36", receipt["observations"]["slot36_nonempty_events"], [["1", "777"]])
+          assert_eq("slot37", receipt["observations"]["slot37_stack_events"], [["64", "194"]])
+          failures = receipt["observations"]["failure_marker_counts"]
+          for marker in ["UnexpectedEof", "FromUtf8Error", "failed to read packet", "Bad packet", "panic", "disconnect"]:
+              assert_eq(f"failure marker {marker}", failures[marker], 0)
+          claims = receipt["claims"]
+          assert_eq("bounded claim", claims["bounded_valence_ctf_team_inventory_slots_observed"], True)
+          for claim in [
+              "claims_full_inventory_semantics",
+              "claims_inventory_click_semantics",
+              "claims_item_pickup_or_drop_semantics",
+              "claims_flag_capture_or_score_semantics",
+              "claims_full_minecraft_1_20_1_compatibility",
+              "claims_complete_protocol_763_coverage",
+              "claims_stable_gameplay_or_long_soak",
+          ]:
+              assert_eq(claim, claims[claim], False)
+
+          for fragment in [
+              "MC_COMPAT_INVENTORY_PROBE=1",
+              "Received chat message: You are on team RED!",
+              "inventory_probe_current_hotbar_slot slot=0",
+              "inventory_probe_set_slot window=0 state_id=1 slot=36 item=id=777 count=1",
+              "inventory_probe_set_slot window=0 state_id=1 slot=37 item=id=194 count=64",
+              "This evidence does **not** prove",
+              "Receipt BLAKE3",
+          ]:
+              if fragment not in note:
+                  raise SystemExit(f"inventory evidence note missing fragment: {fragment}")
+          PY
+
+              b3=$(b3sum "$receipt" | cut -d' ' -f1)
+              grep -Fq "Receipt BLAKE3: \`$b3\`" "$note"
+              mkdir -p "$out"
+              cp "$receipt" "$note" "$out/"
+              printf '%s\n' "$b3" > "$out/receipt.b3"
+            '';
         onixresearch-ssh-tools = pkgs.runCommand "onixresearch-ssh-tools" { } ''
           ${cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn}/bin/cairn --help > cairn-help.log
           ${

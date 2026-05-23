@@ -1,0 +1,92 @@
+{
+  "artifacts": {
+    "log": "/tmp/stevenarella-763-inventory-red-2026-05-23.log",
+    "log_b3": "7b5098e6e27a9f6c7da01bbe04f237a81faa1c24f9b3080a57822b0f5b8aa7c1",
+    "status": "/tmp/stevenarella-763-inventory-red-2026-05-23.status",
+    "status_b3": "16d78a954cb775e521c46341a98c2c6a187ea74a6d018de5efbae328941e87e6"
+  },
+  "claims": {
+    "bounded_valence_ctf_team_inventory_slots_observed": true,
+    "claims_complete_protocol_763_coverage": false,
+    "claims_flag_capture_or_score_semantics": false,
+    "claims_full_inventory_semantics": false,
+    "claims_full_minecraft_1_20_1_compatibility": false,
+    "claims_inventory_click_semantics": false,
+    "claims_item_pickup_or_drop_semantics": false,
+    "claims_stable_gameplay_or_long_soak": false
+  },
+  "created_utc": "2026-05-23T22:25:23Z",
+  "date": "2026-05-23",
+  "name": "stevenarella-valence-763-inventory",
+  "observations": {
+    "failure_marker_counts": {
+      "Bad packet": 0,
+      "FromUtf8Error": 0,
+      "UnexpectedEof": 0,
+      "disconnect": 0,
+      "failed to read packet": 0,
+      "panic": 0
+    },
+    "markers": {
+      "current_hotbar": true,
+      "detected_763": true,
+      "join_game": true,
+      "login_success": true,
+      "render": true,
+      "set_slot36": true,
+      "set_slot37": true,
+      "team_red": true
+    },
+    "set_slot_events": [
+      [
+        "255",
+        "0",
+        "-1",
+        "empty"
+      ],
+      [
+        "0",
+        "1",
+        "36",
+        "id=777 count=1"
+      ],
+      [
+        "0",
+        "1",
+        "37",
+        "id=194 count=64"
+      ]
+    ],
+    "slot36_nonempty_events": [
+      [
+        "1",
+        "777"
+      ]
+    ],
+    "slot37_stack_events": [
+      [
+        "64",
+        "194"
+      ]
+    ]
+  },
+  "parent_base_commit": "da8d9cf mc: record 763 ctf respawn probe",
+  "probe": {
+    "bounded_timeout_is_expected": true,
+    "client": "Stevenarella fork, headless xvfb-run",
+    "environment_flags": [
+      "MC_COMPAT_ACTIVE_PROBE=1",
+      "MC_COMPAT_TEAM_PROBE=1",
+      "MC_COMPAT_TEAM_PROBE_TEAM=red",
+      "MC_COMPAT_INVENTORY_PROBE=1"
+    ],
+    "server": "Valence ctf protocol 763 / Minecraft 1.20.1",
+    "timeout_status": "124",
+    "username": "InvProbeRed"
+  },
+  "result": "bounded_single_client_ctf_team_inventory_probe_observed_slots_36_37_and_hotbar_no_logged_runtime_failure",
+  "schema": "mc.compat.evidence.v1",
+  "stevenarella_commit": "73d6d4b stevenarella: add 763 ctf inventory probe",
+  "valence_commit": "c5140b7 valence: add parkour smoke receipts",
+  "workspace": "/home/brittonr/git/mc"
+}
