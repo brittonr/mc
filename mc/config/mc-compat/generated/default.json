@@ -1,0 +1,23 @@
+{
+  "client_dir": "./stevenarella",
+  "client_success_patterns": [
+    "Detected server protocol version",
+    "Dimension type:",
+    "Received chat message"
+  ],
+  "client_timeout_secs": 20,
+  "client_username": "compatbot",
+  "docker_image": "itzg/minecraft-server:java17",
+  "server_backend": "valence",
+  "server_name": "mc-compat-1-18-2",
+  "server_protocol": 758,
+  "server_version": "1.18.2",
+  "target_dir": "/tmp/stevenarella-target2",
+  "valence_example": "terrain",
+  "valence_log": "/tmp/mc-compat-valence.log",
+  "valence_pid_file": "/tmp/mc-compat-valence.pid",
+  "valence_repo": "./valence",
+  "valence_rev": "c86b828^",
+  "valence_target_dir": "/tmp/valence-compat-758-target",
+  "valence_worktree": "/tmp/valence-compat-758"
+}

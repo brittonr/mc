@@ -38,6 +38,22 @@ nix run .#mc-compat-smoke -- --dry-run --server-backend paper --receipt target/m
 
 The receipt schema is `mc.compat.smoke.receipt.v1`. It records the server/client inputs, the headless-isolation contract (`wayland_socket_inherited=false`), the matched client success pattern when present, and explicit non-claims (`claims_correctness=false`, `claims_semantic_equivalence=false`) for downstream Cairn/Octet review. It is evidence that the bounded smoke ran under the selected inputs, not a proof of Minecraft correctness or semantic equivalence.
 
+## Nickel-backed config
+
+The checked-in default config is Nickel-authored at `config/mc-compat/default.ncl` and exported to `config/mc-compat/generated/default.json`. The runner consumes exported JSON, not Nickel at runtime:
+
+```sh
+nix shell nixpkgs#nickel -c nickel export \
+  config/mc-compat/default.ncl \
+  > config/mc-compat/generated/default.json
+
+nix run .#mc-compat-smoke -- \
+  --config config/mc-compat/generated/default.json \
+  --dry-run
+```
+
+Config provides defaults; environment variables and later CLI flags override it. You can also set `MC_COMPAT_CONFIG=config/mc-compat/generated/default.json`.
+
 Compare fallback/control Paper and intended/default Valence receipts:
 
 ```sh
@@ -109,4 +125,4 @@ The packages are also available as `.#cairn`, `.#cargo-octet`, and `.#octet`.
 nix flake check
 ```
 
-The flake includes focused checks for the runner binary, dry-run receipt emission, Paper/Valence receipt comparison fixtures, missing-checkout diagnostics, help text, Cairn CLI availability, and Octet fingerprint smoke over the receipt producer surface (`mc-compat-receipt-contract`).
+The flake includes focused checks for the runner binary, Nickel config freshness/export consumption, dry-run receipt emission, Paper/Valence receipt comparison fixtures, missing-checkout diagnostics, help text, Cairn CLI availability, and Octet fingerprint smoke over the receipt producer surface (`mc-compat-receipt-contract`).

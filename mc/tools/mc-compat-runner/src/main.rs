@@ -60,6 +60,7 @@ struct Config {
     client_success_needles: Vec<String>,
     receipt_path: Option<PathBuf>,
     compare_receipts: Option<(PathBuf, PathBuf)>,
+    config_path: Option<PathBuf>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -171,6 +172,38 @@ fn execute(cfg: &Config) -> Result<Option<ClientRunEvidence>, String> {
 }
 
 impl Config {
+    fn defaults(root: PathBuf) -> Self {
+        Config {
+            client_dir: root.join("stevenarella"),
+            valence_repo: root.join("valence"),
+            valence_rev: DEFAULT_VALENCE_REV.to_string(),
+            valence_worktree: PathBuf::from("/tmp/valence-compat-758"),
+            valence_example: DEFAULT_VALENCE_EXAMPLE.to_string(),
+            valence_log: PathBuf::from("/tmp/mc-compat-valence.log"),
+            valence_target_dir: PathBuf::from("/tmp/valence-compat-758-target"),
+            valence_pid_file: PathBuf::from("/tmp/mc-compat-valence.pid"),
+            server_backend: ServerBackend::Valence,
+            target_dir: PathBuf::from("/tmp/stevenarella-target2"),
+            server_name: "mc-compat-1-18-2".to_string(),
+            server_version: DEFAULT_SERVER_VERSION.to_string(),
+            server_protocol: DEFAULT_SERVER_PROTOCOL,
+            server_port: 25565,
+            client_username: DEFAULT_CLIENT_USERNAME.to_string(),
+            docker_image: "itzg/minecraft-server:java17".to_string(),
+            mode: Mode::DryRun,
+            keep_server: false,
+            client_timeout: Duration::from_secs(DEFAULT_CLIENT_TIMEOUT_SECS),
+            client_success_needles: DEFAULT_SUCCESS_PATTERN
+                .iter()
+                .map(|s| s.to_string())
+                .collect(),
+            receipt_path: None,
+            compare_receipts: None,
+            config_path: None,
+            root,
+        }
+    }
+
     fn from_env_and_args() -> Result<Self, String> {
         Self::from_sources(
             env::current_dir().map_err(|e| format!("current dir: {e}"))?,
@@ -184,78 +217,23 @@ impl Config {
         I: IntoIterator<Item = String>,
         F: FnMut(&str) -> Option<String>,
     {
+        let args_vec: Vec<String> = args.into_iter().collect();
         let root = get_env("MC_COMPAT_ROOT")
             .or_else(|| get_env("ROOT"))
             .map(PathBuf::from)
             .unwrap_or(current_dir);
-        let mut cfg = Config {
-            client_dir: get_env("CLIENT_DIR")
-                .map(PathBuf::from)
-                .unwrap_or_else(|| root.join("stevenarella")),
-            valence_repo: get_env("VALENCE_REPO")
-                .map(PathBuf::from)
-                .unwrap_or_else(|| root.join("valence")),
-            valence_rev: get_env("VALENCE_REV").unwrap_or_else(|| DEFAULT_VALENCE_REV.to_string()),
-            valence_worktree: get_env("VALENCE_WORKTREE")
-                .map(PathBuf::from)
-                .unwrap_or_else(|| PathBuf::from("/tmp/valence-compat-758")),
-            valence_example: get_env("VALENCE_EXAMPLE")
-                .unwrap_or_else(|| DEFAULT_VALENCE_EXAMPLE.to_string()),
-            valence_log: get_env("VALENCE_LOG")
-                .map(PathBuf::from)
-                .unwrap_or_else(|| PathBuf::from("/tmp/mc-compat-valence.log")),
-            valence_target_dir: get_env("VALENCE_TARGET_DIR")
-                .map(PathBuf::from)
-                .unwrap_or_else(|| PathBuf::from("/tmp/valence-compat-758-target")),
-            valence_pid_file: get_env("VALENCE_PID_FILE")
-                .map(PathBuf::from)
-                .unwrap_or_else(|| PathBuf::from("/tmp/mc-compat-valence.pid")),
-            server_backend: parse_backend(
-                &get_env("SERVER_BACKEND").unwrap_or_else(|| "valence".to_string()),
-            )?,
-            target_dir: get_env("TARGET_DIR")
-                .map(PathBuf::from)
-                .unwrap_or_else(|| PathBuf::from("/tmp/stevenarella-target2")),
-            server_name: get_env("SERVER_NAME").unwrap_or_else(|| "mc-compat-1-18-2".to_string()),
-            server_version: get_env("SERVER_VERSION")
-                .unwrap_or_else(|| DEFAULT_SERVER_VERSION.to_string()),
-            server_protocol: get_env("SERVER_PROTOCOL")
-                .and_then(|s| s.parse().ok())
-                .unwrap_or(DEFAULT_SERVER_PROTOCOL),
-            server_port: 0,
-            client_username: get_env("CLIENT_USERNAME")
-                .unwrap_or_else(|| DEFAULT_CLIENT_USERNAME.to_string()),
-            docker_image: get_env("DOCKER_IMAGE")
-                .unwrap_or_else(|| "itzg/minecraft-server:java17".to_string()),
-            mode: Mode::DryRun,
-            keep_server: false,
-            client_timeout: Duration::from_secs(
-                get_env("CLIENT_TIMEOUT")
-                    .and_then(|s| s.parse().ok())
-                    .unwrap_or(DEFAULT_CLIENT_TIMEOUT_SECS),
-            ),
-            client_success_needles: get_env("CLIENT_SUCCESS_PATTERN")
-                .map(|s| s.split('|').map(str::to_string).collect())
-                .unwrap_or_else(|| {
-                    DEFAULT_SUCCESS_PATTERN
-                        .iter()
-                        .map(|s| s.to_string())
-                        .collect()
-                }),
-            receipt_path: get_env("SMOKE_RECEIPT").map(PathBuf::from),
-            compare_receipts: None,
-            root,
-        };
+        let mut cfg = Config::defaults(root);
 
-        let server_port_was_set = get_env("SERVER_PORT").is_some();
-        cfg.server_port = get_env("SERVER_PORT")
-            .and_then(|s| s.parse().ok())
-            .unwrap_or(match cfg.server_backend {
-                ServerBackend::Valence => 25565,
-                ServerBackend::Paper => 25566,
-            });
+        let config_path = find_config_path(get_env("MC_COMPAT_CONFIG"), &args_vec)?;
+        let mut server_port_was_set = false;
+        if let Some(path) = config_path {
+            server_port_was_set |= apply_config_file(&mut cfg, &path)?;
+            cfg.config_path = Some(path);
+        }
 
-        let mut args = args.into_iter();
+        apply_env_overrides(&mut cfg, &mut get_env, &mut server_port_was_set)?;
+
+        let mut args = args_vec.into_iter();
         while let Some(arg) = args.next() {
             match arg.as_str() {
                 "--dry-run" => cfg.mode = Mode::DryRun,
@@ -263,6 +241,13 @@ impl Config {
                 "--build-client" => cfg.mode = Mode::BuildClient,
                 "--status-only" => cfg.mode = Mode::StatusOnly,
                 "--stop" => cfg.mode = Mode::Stop,
+                "--config" => {
+                    let path = PathBuf::from(args.next().ok_or_else(|| {
+                        "--config requires a Nickel-exported JSON path".to_string()
+                    })?);
+                    server_port_was_set |= apply_config_file(&mut cfg, &path)?;
+                    cfg.config_path = Some(path);
+                }
                 "--compare-receipts" => {
                     let left = PathBuf::from(args.next().ok_or_else(|| {
                         "--compare-receipts requires PAPER_RECEIPT and VALENCE_RECEIPT".to_string()
@@ -308,6 +293,11 @@ impl Config {
                     print_usage(&cfg);
                     std::process::exit(0);
                 }
+                _ if arg.starts_with("--config=") => {
+                    let path = PathBuf::from(&arg[9..]);
+                    server_port_was_set |= apply_config_file(&mut cfg, &path)?;
+                    cfg.config_path = Some(path);
+                }
                 _ if arg.starts_with("--server-backend=") => {
                     cfg.server_backend = parse_backend(&arg[17..])?;
                 }
@@ -328,30 +318,203 @@ impl Config {
         }
 
         if !server_port_was_set {
-            cfg.server_port = match cfg.server_backend {
-                ServerBackend::Valence => 25565,
-                ServerBackend::Paper => 25566,
-            };
+            cfg.server_port = default_port(cfg.server_backend);
         }
         Ok(cfg)
     }
 }
 
+fn find_config_path(env_path: Option<String>, args: &[String]) -> Result<Option<PathBuf>, String> {
+    let mut config_path = env_path.map(PathBuf::from);
+    let mut iter = args.iter();
+    while let Some(arg) = iter.next() {
+        if arg == "--config" {
+            let value = iter
+                .next()
+                .ok_or_else(|| "--config requires a Nickel-exported JSON path".to_string())?;
+            config_path = Some(PathBuf::from(value));
+        } else if let Some(value) = arg.strip_prefix("--config=") {
+            config_path = Some(PathBuf::from(value));
+        }
+    }
+    Ok(config_path)
+}
+
+fn apply_env_overrides<F>(
+    cfg: &mut Config,
+    get_env: &mut F,
+    server_port_was_set: &mut bool,
+) -> Result<(), String>
+where
+    F: FnMut(&str) -> Option<String>,
+{
+    if let Some(value) = get_env("CLIENT_DIR") {
+        cfg.client_dir = PathBuf::from(value);
+    }
+    if let Some(value) = get_env("VALENCE_REPO") {
+        cfg.valence_repo = PathBuf::from(value);
+    }
+    if let Some(value) = get_env("VALENCE_REV") {
+        cfg.valence_rev = value;
+    }
+    if let Some(value) = get_env("VALENCE_WORKTREE") {
+        cfg.valence_worktree = PathBuf::from(value);
+    }
+    if let Some(value) = get_env("VALENCE_EXAMPLE") {
+        cfg.valence_example = value;
+    }
+    if let Some(value) = get_env("VALENCE_LOG") {
+        cfg.valence_log = PathBuf::from(value);
+    }
+    if let Some(value) = get_env("VALENCE_TARGET_DIR") {
+        cfg.valence_target_dir = PathBuf::from(value);
+    }
+    if let Some(value) = get_env("VALENCE_PID_FILE") {
+        cfg.valence_pid_file = PathBuf::from(value);
+    }
+    if let Some(value) = get_env("SERVER_BACKEND") {
+        cfg.server_backend = parse_backend(&value)?;
+    }
+    if let Some(value) = get_env("TARGET_DIR") {
+        cfg.target_dir = PathBuf::from(value);
+    }
+    if let Some(value) = get_env("SERVER_NAME") {
+        cfg.server_name = value;
+    }
+    if let Some(value) = get_env("SERVER_VERSION") {
+        cfg.server_version = value;
+    }
+    if let Some(value) = get_env("SERVER_PROTOCOL") {
+        cfg.server_protocol = value
+            .parse()
+            .map_err(|e| format!("parse SERVER_PROTOCOL: {e}"))?;
+    }
+    if let Some(value) = get_env("SERVER_PORT") {
+        cfg.server_port = value
+            .parse()
+            .map_err(|e| format!("parse SERVER_PORT: {e}"))?;
+        *server_port_was_set = true;
+    }
+    if let Some(value) = get_env("CLIENT_USERNAME") {
+        cfg.client_username = value;
+    }
+    if let Some(value) = get_env("DOCKER_IMAGE") {
+        cfg.docker_image = value;
+    }
+    if let Some(value) = get_env("CLIENT_TIMEOUT") {
+        cfg.client_timeout = Duration::from_secs(
+            value
+                .parse()
+                .map_err(|e| format!("parse CLIENT_TIMEOUT: {e}"))?,
+        );
+    }
+    if let Some(value) = get_env("CLIENT_SUCCESS_PATTERN") {
+        cfg.client_success_needles = value.split('|').map(str::to_string).collect();
+    }
+    if let Some(value) = get_env("SMOKE_RECEIPT") {
+        cfg.receipt_path = Some(PathBuf::from(value));
+    }
+    Ok(())
+}
+
+fn apply_config_file(cfg: &mut Config, path: &Path) -> Result<bool, String> {
+    let text =
+        fs::read_to_string(path).map_err(|e| format!("read config {}: {e}", path.display()))?;
+    apply_config_json(cfg, &text).map_err(|e| format!("config {}: {e}", path.display()))
+}
+
+fn apply_config_json(cfg: &mut Config, text: &str) -> Result<bool, String> {
+    let mut server_port_was_set = false;
+    if let Some(value) = json_optional_string_field(text, "client_dir")? {
+        cfg.client_dir = PathBuf::from(value);
+    }
+    if let Some(value) = json_optional_string_field(text, "valence_repo")? {
+        cfg.valence_repo = PathBuf::from(value);
+    }
+    if let Some(value) = json_optional_string_field(text, "valence_rev")? {
+        cfg.valence_rev = value;
+    }
+    if let Some(value) = json_optional_string_field(text, "valence_worktree")? {
+        cfg.valence_worktree = PathBuf::from(value);
+    }
+    if let Some(value) = json_optional_string_field(text, "valence_example")? {
+        cfg.valence_example = value;
+    }
+    if let Some(value) = json_optional_string_field(text, "valence_log")? {
+        cfg.valence_log = PathBuf::from(value);
+    }
+    if let Some(value) = json_optional_string_field(text, "valence_target_dir")? {
+        cfg.valence_target_dir = PathBuf::from(value);
+    }
+    if let Some(value) = json_optional_string_field(text, "valence_pid_file")? {
+        cfg.valence_pid_file = PathBuf::from(value);
+    }
+    if let Some(value) = json_optional_string_field(text, "server_backend")? {
+        cfg.server_backend = parse_backend(&value)?;
+        cfg.server_port = default_port(cfg.server_backend);
+    }
+    if let Some(value) = json_optional_string_field(text, "target_dir")? {
+        cfg.target_dir = PathBuf::from(value);
+    }
+    if let Some(value) = json_optional_string_field(text, "server_name")? {
+        cfg.server_name = value;
+    }
+    if let Some(value) = json_optional_string_field(text, "server_version")? {
+        cfg.server_version = value;
+    }
+    if let Some(value) = json_optional_u32_field(text, "server_protocol")? {
+        cfg.server_protocol = value;
+    }
+    if let Some(value) = json_optional_u32_field(text, "server_port")? {
+        cfg.server_port =
+            u16::try_from(value).map_err(|_| format!("server_port {value} exceeds u16"))?;
+        server_port_was_set = true;
+    }
+    if let Some(value) = json_optional_string_field(text, "client_username")? {
+        cfg.client_username = value;
+    }
+    if let Some(value) = json_optional_string_field(text, "docker_image")? {
+        cfg.docker_image = value;
+    }
+    if let Some(value) = json_optional_u32_field(text, "client_timeout_secs")? {
+        cfg.client_timeout = Duration::from_secs(u64::from(value));
+    }
+    if let Some(value) = json_optional_string_array_field(text, "client_success_patterns")? {
+        cfg.client_success_needles = value;
+    }
+    if let Some(value) = json_optional_string_field(text, "receipt_path")? {
+        cfg.receipt_path = Some(PathBuf::from(value));
+    }
+    Ok(server_port_was_set)
+}
+
+fn default_port(backend: ServerBackend) -> u16 {
+    match backend {
+        ServerBackend::Valence => 25565,
+        ServerBackend::Paper => 25566,
+    }
+}
+
 fn print_usage(cfg: &Config) {
     println!(
-        "Usage: mc-compat-runner [--dry-run|--run] [--build-client] [--status-only] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--valence-repo PATH] [--valence-rev REV]\n\n\
+        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run] [--build-client] [--status-only] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--valence-repo PATH] [--valence-rev REV]\n\n\
 Automates a local Stevenarella compatibility smoke against a Minecraft {} / protocol {} server.\n\
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
+Pass --config/MC_COMPAT_CONFIG a JSON file exported from Nickel config; env vars and later CLI flags override it.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.smoke.receipt.v1 JSON receipt for Cairn/Octet evidence flows.\n\
 Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
 Default server backend is Valence, using an editable local Valence checkout plus an isolated protocol-758 worktree so the dirty/current checkout is untouched.\n\
 If the Stevenarella or Valence checkout is missing, clone/fetch it or pass --client-dir/CLIENT_DIR and --valence-repo/VALENCE_REPO to editable checkouts.\n\
 Client runs are forced through Xvfb/X11 with software GL and no inherited Wayland socket.\n\
 Paper fallback runs set EULA=TRUE based on recorded user acceptance.\n\n\
-Env: MC_COMPAT_ROOT={} CLIENT_DIR={} TARGET_DIR={} SMOKE_RECEIPT={} VALENCE_REPO={} VALENCE_REV={} VALENCE_WORKTREE={} VALENCE_TARGET_DIR={} CLIENT_TIMEOUT={}\n",
+Env: MC_COMPAT_ROOT={} MC_COMPAT_CONFIG={} CLIENT_DIR={} TARGET_DIR={} SMOKE_RECEIPT={} VALENCE_REPO={} VALENCE_REV={} VALENCE_WORKTREE={} VALENCE_TARGET_DIR={} CLIENT_TIMEOUT={}\n",
         cfg.server_version,
         cfg.server_protocol,
         cfg.root.display(),
+        cfg.config_path
+            .as_ref()
+            .map(|path| path.display().to_string())
+            .unwrap_or_else(|| "<unset>".to_string()),
         cfg.client_dir.display(),
         cfg.target_dir.display(),
         cfg.receipt_path
@@ -993,7 +1156,9 @@ fn json_string_field(text: &str, key: &str) -> Result<String, String> {
 }
 
 fn json_optional_string_field(text: &str, key: &str) -> Result<Option<String>, String> {
-    let after_colon = json_field_value(text, key)?;
+    let Some(after_colon) = json_field_value_opt(text, key)? else {
+        return Ok(None);
+    };
     if after_colon.trim_start().starts_with("null") {
         Ok(None)
     } else {
@@ -1001,8 +1166,19 @@ fn json_optional_string_field(text: &str, key: &str) -> Result<Option<String>, S
     }
 }
 
+fn json_optional_u32_field(text: &str, key: &str) -> Result<Option<u32>, String> {
+    let Some(value) = json_field_value_opt(text, key)? else {
+        return Ok(None);
+    };
+    parse_json_u32_value(key, value).map(Some)
+}
+
 fn json_u32_field(text: &str, key: &str) -> Result<u32, String> {
-    let value = json_field_value(text, key)?.trim_start();
+    parse_json_u32_value(key, json_field_value(text, key)?)
+}
+
+fn parse_json_u32_value(key: &str, value: &str) -> Result<u32, String> {
+    let value = value.trim_start();
     let digits: String = value.chars().take_while(|ch| ch.is_ascii_digit()).collect();
     if digits.is_empty() {
         return Err(format!("field {key} is not an unsigned integer"));
@@ -1010,6 +1186,13 @@ fn json_u32_field(text: &str, key: &str) -> Result<u32, String> {
     digits
         .parse()
         .map_err(|e| format!("parse field {key}: {e}"))
+}
+
+fn json_optional_string_array_field(text: &str, key: &str) -> Result<Option<Vec<String>>, String> {
+    let Some(value) = json_field_value_opt(text, key)? else {
+        return Ok(None);
+    };
+    parse_json_string_array(value).map(Some)
 }
 
 fn json_bool_field(text: &str, key: &str) -> Result<bool, String> {
@@ -1024,15 +1207,19 @@ fn json_bool_field(text: &str, key: &str) -> Result<bool, String> {
 }
 
 fn json_field_value<'a>(text: &'a str, key: &str) -> Result<&'a str, String> {
+    json_field_value_opt(text, key)?.ok_or_else(|| format!("missing field {key}"))
+}
+
+fn json_field_value_opt<'a>(text: &'a str, key: &str) -> Result<Option<&'a str>, String> {
     let needle = format!("\"{key}\"");
-    let start = text
-        .find(&needle)
-        .ok_or_else(|| format!("missing field {key}"))?;
+    let Some(start) = text.find(&needle) else {
+        return Ok(None);
+    };
     let after_key = &text[start + needle.len()..];
     let colon = after_key
         .find(':')
         .ok_or_else(|| format!("missing colon for field {key}"))?;
-    Ok(&after_key[colon + 1..])
+    Ok(Some(&after_key[colon + 1..]))
 }
 
 fn parse_json_string(text: &str) -> Result<(String, &str), String> {
@@ -1065,6 +1252,32 @@ fn parse_json_string(text: &str) -> Result<(String, &str), String> {
         }
     }
     Err("unterminated JSON string".to_string())
+}
+
+fn parse_json_string_array(text: &str) -> Result<Vec<String>, String> {
+    let mut rest = text.trim_start();
+    if !rest.starts_with('[') {
+        return Err("expected JSON string array".to_string());
+    }
+    rest = &rest[1..];
+    let mut out = Vec::new();
+    loop {
+        rest = rest.trim_start();
+        if let Some(after) = rest.strip_prefix(']') {
+            let _ = after;
+            return Ok(out);
+        }
+        let (value, after_string) = parse_json_string(rest)?;
+        out.push(value);
+        rest = after_string.trim_start();
+        if let Some(after) = rest.strip_prefix(',') {
+            rest = after;
+        } else if rest.starts_with(']') {
+            continue;
+        } else {
+            return Err("expected comma or closing bracket in JSON string array".to_string());
+        }
+    }
 }
 
 fn mode_name(mode: Mode) -> &'static str {
@@ -1279,6 +1492,58 @@ mod tests {
         assert_eq!(cfg.receipt_path, Some(PathBuf::from("/tmp/mc-smoke.json")));
         assert_eq!(cfg.valence_repo, PathBuf::from("/tmp/editable-valence"));
         assert_eq!(cfg.valence_rev, "local-debug-rev");
+    }
+
+    #[test]
+    fn nickel_exported_json_config_sets_defaults_and_allows_env_cli_precedence() {
+        let config_json = r#"{
+          "client_dir": "/config/stevenarella",
+          "valence_repo": "/config/valence",
+          "valence_rev": "config-rev",
+          "server_backend": "paper",
+          "server_protocol": 758,
+          "server_port": 25566,
+          "client_timeout_secs": 9,
+          "client_success_patterns": ["Detected server protocol version", "Dimension type:"],
+          "receipt_path": "/config/receipt.json"
+        }"#;
+        let mut cfg = Config::defaults(PathBuf::from("/workspace/mc"));
+
+        let server_port_was_set = apply_config_json(&mut cfg, config_json).expect("config applies");
+
+        assert!(server_port_was_set);
+        assert_eq!(cfg.client_dir, PathBuf::from("/config/stevenarella"));
+        assert_eq!(cfg.valence_repo, PathBuf::from("/config/valence"));
+        assert_eq!(cfg.valence_rev, "config-rev");
+        assert_eq!(cfg.server_backend, ServerBackend::Paper);
+        assert_eq!(cfg.server_port, 25566);
+        assert_eq!(cfg.client_timeout, Duration::from_secs(9));
+        assert_eq!(
+            cfg.receipt_path,
+            Some(PathBuf::from("/config/receipt.json"))
+        );
+        assert_eq!(
+            cfg.client_success_needles,
+            vec![
+                "Detected server protocol version".to_string(),
+                "Dimension type:".to_string()
+            ]
+        );
+
+        let cfg = test_config(
+            &[
+                "--config",
+                "/tmp/mc-compat-config.json",
+                "--server-backend",
+                "valence",
+            ],
+            &[("MC_COMPAT_CONFIG", "/tmp/mc-compat-config.json")],
+        );
+        assert!(
+            cfg.unwrap_err()
+                .contains("read config /tmp/mc-compat-config.json"),
+            "missing config path should produce actionable read error"
+        );
     }
 
     #[test]

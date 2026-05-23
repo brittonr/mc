@@ -13,6 +13,15 @@
 !/mc/flake.nix
 !/mc/flake.lock
 
+!/mc/config/
+/mc/config/*
+!/mc/config/mc-compat/
+/mc/config/mc-compat/*
+!/mc/config/mc-compat/default.ncl
+!/mc/config/mc-compat/generated/
+/mc/config/mc-compat/generated/*
+!/mc/config/mc-compat/generated/default.json
+
 !/mc/scripts/
 /mc/scripts/*
 !/mc/scripts/mc-compat-smoke.sh

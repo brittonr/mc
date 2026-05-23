@@ -33,6 +33,7 @@
             cmake
             rustfmt
             shellcheck
+            nickel
             git
             coreutils
             xvfb-run
@@ -211,16 +212,35 @@
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
           }/bin/mc-compat-runner --help > help.log
           grep -Fq -- "--server-backend valence|paper" help.log
+          grep -Fq -- "--config PATH" help.log
           grep -Fq -- "--client-dir PATH" help.log
           grep -Fq -- "--receipt PATH" help.log
           grep -Fq -- "--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT" help.log
           grep -Fq "SMOKE_RECEIPT" help.log
+          grep -Fq "MC_COMPAT_CONFIG" help.log
           grep -Fq "CLIENT_DIR" help.log
           grep -Fq -- "--valence-repo PATH" help.log
           grep -Fq "no inherited Wayland socket" help.log
           mkdir -p "$out"
           cp help.log "$out/"
         '';
+        mc-compat-nickel-config =
+          pkgs.runCommand "mc-compat-nickel-config" { nativeBuildInputs = [ pkgs.nickel ]; }
+            ''
+              nickel typecheck ${./config/mc-compat/default.ncl}
+              nickel export ${./config/mc-compat/default.ncl} > exported.json
+              cmp exported.json ${./config/mc-compat/generated/default.json}
+
+              mkdir -p fake-stevenarella
+              printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+              ${
+                self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
+              }/bin/mc-compat-runner --config ${./config/mc-compat/generated/default.json} --dry-run --server-backend paper --client-dir "$PWD/fake-stevenarella" > config-dry-run.log
+              grep -Fq "start Paper server" config-dry-run.log
+              grep -Fq "protocol 758" config-dry-run.log
+              mkdir -p "$out"
+              cp exported.json config-dry-run.log "$out/"
+            '';
         mc-compat-receipt-contract = pkgs.runCommand "mc-compat-receipt-contract" { } ''
           mkdir -p fake-stevenarella
           printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
@@ -258,6 +278,7 @@
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
             cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn
             octet.packages.${pkgs.stdenv.hostPlatform.system}.cargo-octet
+            pkgs.nickel
           ];
           shellHook = ''
             echo "mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'"
