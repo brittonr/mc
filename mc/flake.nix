@@ -1303,6 +1303,94 @@
               cp "$receipt" "$note" "$out/"
               printf '%s\n' "$b3" > "$out/receipt.b3"
             '';
+        stevenarella-valence-763-combat-death-evidence =
+          pkgs.runCommand "stevenarella-valence-763-combat-death-evidence" { nativeBuildInputs = [ pkgs.b3sum pkgs.python3 ]; }
+            ''
+              receipt=${./docs/evidence/stevenarella-valence-763-combat-death-2026-05-23.receipt.json}
+              note=${./docs/evidence/stevenarella-valence-763-combat-death-2026-05-23.md}
+
+              python3 - "$receipt" "$note" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          receipt_path = pathlib.Path(sys.argv[1])
+          note_path = pathlib.Path(sys.argv[2])
+          receipt = json.loads(receipt_path.read_text())
+          note = note_path.read_text()
+
+          def assert_eq(name, actual, expected):
+              if actual != expected:
+                  raise SystemExit(f"{name}: expected {expected!r}, got {actual!r}")
+
+          assert_eq("schema", receipt["schema"], "mc.compat.stevenarella-valence-763-combat-death.receipt.v1")
+          assert_eq("status", receipt["status"], "bounded_180s_two_client_combat_probe_damage_and_death_health_observed_no_logged_runtime_failure")
+          assert_eq("mode", receipt["mode"], "protocol_763_stevenarella_valence_ctf_combat_death_semantic_probe")
+          assert_eq("dry_run", receipt["dry_run"], False)
+          assert_eq("valence.protocol", receipt["valence"]["protocol"], 763)
+          assert_eq("valence.example", receipt["valence"]["example"], "ctf")
+          assert_eq("valence.committed_changes", receipt["valence"]["committed_changes"], False)
+          assert_eq("stevenarella.commit", receipt["stevenarella"]["commit"], "2804c81")
+          assert_eq("active probe env", receipt["stevenarella"]["active_probe_env"], "MC_COMPAT_ACTIVE_PROBE=1")
+          assert_eq("team probe env", receipt["stevenarella"]["team_probe_env"], "MC_COMPAT_TEAM_PROBE=1")
+          assert_eq("combat probe env", receipt["stevenarella"]["combat_probe_env"], "MC_COMPAT_COMBAT_PROBE=1")
+          assert_eq("probe duration", receipt["probe"]["duration_seconds"], 180)
+          assert_eq("red probe status", receipt["artifacts"]["red_probe_status"]["content"], "exit=124")
+          assert_eq("blue probe status", receipt["artifacts"]["blue_probe_status"]["content"], "exit=124")
+          combined = receipt["artifacts"]["combined_probe_log"]
+          assert_eq("protocol detections", combined["Detected server protocol version 763"], 2)
+          assert_eq("login successes", combined["MC-COMPAT-MILESTONE login_success"], 2)
+          assert_eq("join game shapes", combined["MC-COMPAT-MILESTONE join_game_763_shape"], 2)
+          assert_eq("first chunks", combined["MC-COMPAT-MILESTONE first_chunk_data"], 2)
+          assert_eq("render ticks", combined["MC-COMPAT-MILESTONE render_tick_with_player"], 2)
+          assert_eq("red team chat observed", combined["You are on team RED"], 1)
+          assert_eq("blue team chat observed", combined["You are on team BLUE"], 1)
+          assert_eq("combat move", combined["MC-COMPAT-MILESTONE combat_probe_move_near_blue_spawn"], 1)
+          assert_eq("attacks", combined["MC-COMPAT-MILESTONE combat_probe_attack_sent"], 6)
+          assert_eq("health 16", combined["update_health health=16.0"], 1)
+          assert_eq("health 12", combined["update_health health=12.0"], 1)
+          assert_eq("health 8", combined["update_health health=8.0"], 1)
+          assert_eq("health 4", combined["update_health health=4.0"], 1)
+          assert_eq("health 0", combined["update_health health=0.0"], 1)
+          assert_eq("death observed", combined["combat_probe_death_observed"], 2)
+          assert_eq("death message observed", combined["combat_probe_death_message"], 0)
+          assert_eq("unexpected eof", combined["UnexpectedEof"], 0)
+          assert_eq("from utf8", combined["FromUtf8Error"], 0)
+          assert_eq("panic count", combined["panicked at"], 0)
+          assert_eq("parse failure", combined["failed to parse packet"], 0)
+          assert_eq("short read", combined["Failed to read all of packet"], 0)
+          assert_eq("bad packet id", combined["bad packet id"], 0)
+          assert_eq("disconnect", combined["Disconnect"], 0)
+          assert_eq("claims both teams", receipt["contract"]["claims_both_teams_selected"], True)
+          assert_eq("claims attacks", receipt["contract"]["claims_attack_packets_sent"], True)
+          assert_eq("claims health decreased", receipt["contract"]["claims_victim_health_decreased"], True)
+          assert_eq("claims death health", receipt["contract"]["claims_victim_death_health_observed"], True)
+          assert_eq("no death message claim", receipt["contract"]["claims_death_message_observed"], False)
+          assert_eq("no respawn claim", receipt["contract"]["claims_respawn_observed"], False)
+          assert_eq("contract.claims_current_valence_client_compat", receipt["contract"]["claims_current_valence_client_compat"], False)
+          assert_eq("contract.claims_full_stevenarella_763_support", receipt["contract"]["claims_full_stevenarella_763_support"], False)
+          assert_eq("contract.claims_stable_in_world_gameplay", receipt["contract"]["claims_stable_in_world_gameplay"], False)
+          assert_eq("contract.claims_full_combat_correctness", receipt["contract"]["claims_full_combat_correctness"], False)
+
+          for fragment in [
+              "Bounded two-client headless Stevenarella probe",
+              "MC_COMPAT_COMBAT_PROBE=1",
+              "You are on team BLUE",
+              "You are on team RED",
+              "update_health health=0.0",
+              "does **not** prove full Minecraft 1.20.1 compatibility",
+              "Receipt BLAKE3",
+          ]:
+              if fragment not in note:
+                  raise SystemExit(f"combat/death evidence note missing fragment: {fragment}")
+          PY
+
+              b3=$(b3sum "$receipt" | cut -d' ' -f1)
+              grep -Fq "Receipt BLAKE3: \`$b3\`" "$note"
+              mkdir -p "$out"
+              cp "$receipt" "$note" "$out/"
+              printf '%s\n' "$b3" > "$out/receipt.b3"
+            '';
         onixresearch-ssh-tools = pkgs.runCommand "onixresearch-ssh-tools" { } ''
           ${cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn}/bin/cairn --help > cairn-help.log
           ${
