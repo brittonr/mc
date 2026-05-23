@@ -1,0 +1,28 @@
+# This repository tracks only the mc compatibility harness snapshot.
+# /home/brittonr/git is otherwise a multi-repo workspace; keep sibling repos,
+# scratch artifacts, and nested project checkouts out of this repo by default.
+/*
+
+# Keep this ignore policy tracked.
+!/.gitignore
+
+# Keep the scoped mc harness files tracked.
+!/mc/
+/mc/*
+!/mc/README.md
+!/mc/flake.nix
+!/mc/flake.lock
+
+!/mc/scripts/
+/mc/scripts/*
+!/mc/scripts/mc-compat-smoke.sh
+
+!/mc/tools/
+/mc/tools/*
+!/mc/tools/mc-compat-runner/
+/mc/tools/mc-compat-runner/*
+!/mc/tools/mc-compat-runner/Cargo.lock
+!/mc/tools/mc-compat-runner/Cargo.toml
+!/mc/tools/mc-compat-runner/src/
+/mc/tools/mc-compat-runner/src/*
+!/mc/tools/mc-compat-runner/src/main.rs
