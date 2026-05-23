@@ -1,0 +1,8 @@
+[package]
+name = "mc-compat-runner"
+version = "0.1.0"
+edition = "2021"
+description = "Hardened local Stevenarella/Valence compatibility smoke runner"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
