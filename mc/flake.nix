@@ -775,6 +775,66 @@
               cp "$receipt" "$note" "$out/"
               printf '%s\n' "$b3" > "$out/receipt.b3"
             '';
+        stevenarella-valence-763-gameplay-smoke-evidence =
+          pkgs.runCommand "stevenarella-valence-763-gameplay-smoke-evidence" { nativeBuildInputs = [ pkgs.b3sum pkgs.python3 ]; }
+            ''
+              receipt=${./docs/evidence/stevenarella-valence-763-gameplay-smoke-2026-05-23.receipt.json}
+              note=${./docs/evidence/stevenarella-valence-763-gameplay-smoke-2026-05-23.md}
+
+              python3 - "$receipt" "$note" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          receipt_path = pathlib.Path(sys.argv[1])
+          note_path = pathlib.Path(sys.argv[2])
+          receipt = json.loads(receipt_path.read_text())
+          note = note_path.read_text()
+
+          def assert_eq(name, actual, expected):
+              if actual != expected:
+                  raise SystemExit(f"{name}: expected {expected!r}, got {actual!r}")
+
+          assert_eq("schema", receipt["schema"], "mc.compat.stevenarella-valence-763-gameplay-smoke.receipt.v1")
+          assert_eq("status", receipt["status"], "pass")
+          assert_eq("mode", receipt["mode"], "protocol_763_bounded_stevenarella_valence_ctf_runtime_smoke")
+          assert_eq("dry_run", receipt["dry_run"], False)
+          assert_eq("valence.protocol", receipt["valence"]["protocol"], 763)
+          assert_eq("valence.example", receipt["valence"]["example"], "ctf")
+          assert_eq("stevenarella.commit", receipt["stevenarella"]["commit"], "4c5e89d")
+          assert_eq("probe status", receipt["artifacts"]["probe_status"]["content"], "exit=124")
+          assert_eq("debug status", receipt["artifacts"]["debug_status"]["content"], "exit=124")
+          assert_eq("probe protocol", receipt["artifacts"]["probe_log"]["Detected server protocol version 763"], 1)
+          assert_eq("debug protocol", receipt["artifacts"]["debug_log"]["Detected server protocol version 763"], 1)
+          assert_eq("probe panic count", receipt["artifacts"]["probe_log"]["panicked"], 0)
+          assert_eq("debug panic count", receipt["artifacts"]["debug_log"]["panicked"], 0)
+          assert_eq("probe unmapped count", receipt["artifacts"]["probe_log"]["unmapped"], 0)
+          assert_eq("debug unmapped count", receipt["artifacts"]["debug_log"]["unmapped"], 0)
+          assert_eq("first semantic failure", receipt["verification"]["first_semantic_runtime_failure"], None)
+          assert_eq("bounded smoke claim", receipt["contract"]["claims_bounded_runtime_smoke_survived_after_protocol_detection"], True)
+          assert_eq("contract.claims_current_valence_client_compat", receipt["contract"]["claims_current_valence_client_compat"], False)
+          assert_eq("contract.claims_full_stevenarella_763_support", receipt["contract"]["claims_full_stevenarella_763_support"], False)
+          assert_eq("contract.claims_semantic_correctness", receipt["contract"]["claims_semantic_correctness"], False)
+          assert_eq("contract.claims_in_world_gameplay_success", receipt["contract"]["claims_in_world_gameplay_success"], False)
+
+          for fragment in [
+              "Detected server protocol version 763",
+              "bounded runtime smoke",
+              "exit=124",
+              "Does not prove semantic packet parser correctness",
+              "Does not prove in-world gameplay success",
+              "Receipt BLAKE3",
+          ]:
+              if fragment not in note:
+                  raise SystemExit(f"gameplay smoke evidence note missing fragment: {fragment}")
+          PY
+
+              b3=$(b3sum "$receipt" | cut -d' ' -f1)
+              grep -Fq "Receipt BLAKE3: \`$b3\`" "$note"
+              mkdir -p "$out"
+              cp "$receipt" "$note" "$out/"
+              printf '%s\n' "$b3" > "$out/receipt.b3"
+            '';
         onixresearch-ssh-tools = pkgs.runCommand "onixresearch-ssh-tools" { } ''
           ${cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn}/bin/cairn --help > cairn-help.log
           ${

@@ -1,0 +1,94 @@
+{
+  "artifacts": {
+    "debug_log": {
+      "Detected server protocol version 763": 1,
+      "ERROR": 0,
+      "Unknown packet": 0,
+      "blake3": "b4a267a834b14b7209c42e0a89455edf980474936f9f372148105e95aed2e963",
+      "bytes": 4333,
+      "decode": 0,
+      "error:": 0,
+      "failed": 0,
+      "lines": 80,
+      "panicked": 0,
+      "parse": 0,
+      "path": "/tmp/stevenarella-763-gameplay-smoke-debug-2026-05-23.log",
+      "unmapped": 0
+    },
+    "debug_status": {
+      "blake3": "f67d19a0fed77375c9ee600f70ff255957e708d6c0898a270d40151761401f0a",
+      "content": "exit=124",
+      "path": "/tmp/stevenarella-763-gameplay-smoke-debug-2026-05-23.status"
+    },
+    "probe_log": {
+      "Detected server protocol version 763": 1,
+      "ERROR": 0,
+      "Unknown packet": 0,
+      "blake3": "5e162ff70d8e5b926872992afc3a47d718ddd18a8f246e7f2cdb2d658e1f8528",
+      "bytes": 4312,
+      "decode": 0,
+      "error:": 0,
+      "failed": 0,
+      "lines": 80,
+      "panicked": 0,
+      "parse": 0,
+      "path": "/tmp/stevenarella-763-gameplay-smoke-2026-05-23.log",
+      "unmapped": 0
+    },
+    "probe_status": {
+      "blake3": "f67d19a0fed77375c9ee600f70ff255957e708d6c0898a270d40151761401f0a",
+      "content": "exit=124",
+      "path": "/tmp/stevenarella-763-gameplay-smoke-2026-05-23.status"
+    }
+  },
+  "commands": {
+    "debug_probe": "timeout 45s xvfb-run -a cargo run --release -- --network-debug --server 127.0.0.1:25565 --username steve763debug",
+    "probe": "timeout 90s xvfb-run -a cargo run --release -- --server 127.0.0.1:25565 --username steve763",
+    "server": "nix develop path:/home/brittonr/git/mc -c env RUSTC_WRAPPER= CARGO_TARGET_DIR=/tmp/valence-main-target cargo run --release --example ctf"
+  },
+  "contract": {
+    "claims_all_minecraft_1_20_1_packets": false,
+    "claims_bounded_runtime_smoke_survived_after_protocol_detection": true,
+    "claims_current_valence_client_compat": false,
+    "claims_full_stevenarella_763_support": false,
+    "claims_in_world_gameplay_success": false,
+    "claims_semantic_correctness": false
+  },
+  "date_utc": "2026-05-23",
+  "dry_run": false,
+  "mode": "protocol_763_bounded_stevenarella_valence_ctf_runtime_smoke",
+  "schema": "mc.compat.stevenarella-valence-763-gameplay-smoke.receipt.v1",
+  "status": "pass",
+  "stevenarella": {
+    "branch": "master",
+    "commit": "4c5e89d",
+    "remote": "git@github.com:brittonr/stevenarella.git",
+    "repo": "/home/brittonr/git/mc/stevenarella",
+    "tracking": "fork/master"
+  },
+  "valence": {
+    "branch": "main",
+    "example": "ctf",
+    "protocol": 763,
+    "repo": "/home/brittonr/git/mc/valence",
+    "server": "127.0.0.1:25565",
+    "tracking": "fork/main",
+    "version": "1.20.1"
+  },
+  "verification": {
+    "debug_probe_detected_protocol_763": true,
+    "debug_probe_timeout_exit_124_expected_for_bounded_alive_run": true,
+    "fatal_log_terms": {
+      "ERROR": 0,
+      "Unknown packet": 0,
+      "error:": 0,
+      "failed": 0,
+      "panicked": 0,
+      "unmapped": 0
+    },
+    "first_semantic_runtime_failure": null,
+    "probe_detected_protocol_763": true,
+    "probe_timeout_exit_124_expected_for_bounded_alive_run": true,
+    "valence_ctf_port_ready": "pass"
+  }
+}
