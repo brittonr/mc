@@ -1,0 +1,85 @@
+{
+  "artifacts": {
+    "probe_log": {
+      "Detected server protocol version 763": 1,
+      "Disconnect": 0,
+      "Failed to read all of packet": 0,
+      "FromUtf8Error": 0,
+      "MC-COMPAT-MILESTONE active_probe_position_look_sent": 1,
+      "MC-COMPAT-MILESTONE first_chunk_data": 1,
+      "MC-COMPAT-MILESTONE join_game_763_shape": 1,
+      "MC-COMPAT-MILESTONE login_success": 1,
+      "MC-COMPAT-MILESTONE render_tick_with_player": 1,
+      "MC-COMPAT-MILESTONE team_probe_enter_red_portal": 1,
+      "MC-COMPAT-MILESTONE team_probe_hold_red_portal": 1,
+      "MC-COMPAT-MILESTONE team_probe_select_hotbar_slot": 1,
+      "MC-COMPAT-MILESTONE team_probe_use_item_sent": 1,
+      "UnexpectedEof": 0,
+      "You are on team": 1,
+      "You are on team RED": 1,
+      "bad packet id": 0,
+      "blake3": "b58a72276133d132fb7d8d1d2b090b7a42070c1956ebb9802b77eb4f64cb476e",
+      "failed to parse packet": 0,
+      "panicked at": 0,
+      "path": "/tmp/stevenarella-763-team-semantic-2026-05-23.log"
+    },
+    "probe_status": {
+      "blake3": "f67d19a0fed77375c9ee600f70ff255957e708d6c0898a270d40151761401f0a",
+      "content": "exit=124",
+      "path": "/tmp/stevenarella-763-team-semantic-2026-05-23.status"
+    }
+  },
+  "changes": {
+    "packet_shape_added": "SpawnObject_VarInt_HeadYaw for 1.20.1 EntitySpawnS2C head_yaw/data shape",
+    "protocol_763_clientbound_mappings_added": [
+      "0x01 EntitySpawnS2C -> SpawnObject_VarInt_HeadYaw",
+      "0x02 ExperienceOrbSpawnS2C -> SpawnExperienceOrb",
+      "0x03 PlayerSpawnS2C -> SpawnPlayer_f64_NoMeta",
+      "0x04 EntityAnimationS2C -> Animation",
+      "0x2b MoveRelative -> EntityMove_i16",
+      "0x2c RotateAndMoveRelative -> EntityLookAndMove_i16",
+      "0x2d Rotate -> EntityLook_VarInt",
+      "0x2e VehicleMoveS2C -> VehicleTeleport",
+      "0x42 EntitySetHeadYawS2C -> EntityHeadLook",
+      "0x53 EntityAttachS2C -> EntityAttach",
+      "0x54 EntityVelocityUpdateS2C -> EntityVelocity",
+      "0x55 EntityEquipmentUpdateS2C -> EntityEquipment_Array",
+      "0x56 ExperienceBarUpdateS2C -> SetExperience",
+      "0x67 ItemPickupAnimationS2C -> CollectItem",
+      "0x68 EntityPositionS2C -> EntityTeleport_f64"
+    ]
+  },
+  "contract": {
+    "claims_combat_inventory_death_respawn": false,
+    "claims_current_valence_client_compat": false,
+    "claims_full_stevenarella_763_support": false,
+    "claims_no_logged_runtime_failure_in_this_probe": true,
+    "claims_semantic_correctness_beyond_team_selection_chat": false,
+    "claims_stable_in_world_gameplay": false,
+    "claims_team_probe_packets_sent": true,
+    "claims_team_selection_chat_observed": true
+  },
+  "date": "2026-05-23",
+  "dry_run": false,
+  "mode": "protocol_763_stevenarella_valence_ctf_team_selection_semantic_probe",
+  "probe": {
+    "command_summary": "MC_COMPAT_ACTIVE_PROBE=1 MC_COMPAT_TEAM_PROBE=1 timeout 180s xvfb-run -a cargo run -- --server 127.0.0.1:25565 --username mccompat --default-protocol-version 1.20.1 --network-debug",
+    "duration_seconds": 180
+  },
+  "schema": "mc.compat.stevenarella-valence-763-team-selection.receipt.v1",
+  "status": "bounded_180s_timeout_team_selection_chat_observed_no_logged_runtime_failure",
+  "stevenarella": {
+    "active_probe_env": "MC_COMPAT_ACTIVE_PROBE=1",
+    "commit": "4c891eb",
+    "fork_remote": "git@github.com:brittonr/stevenarella.git",
+    "repo": "/home/brittonr/git/mc/stevenarella",
+    "team_probe_env": "MC_COMPAT_TEAM_PROBE=1"
+  },
+  "valence": {
+    "committed_changes": false,
+    "example": "ctf",
+    "protocol": 763,
+    "repo": "/home/brittonr/git/mc/valence",
+    "version": "1.20.1"
+  }
+}
