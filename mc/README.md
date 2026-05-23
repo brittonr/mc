@@ -66,6 +66,23 @@ Paper remains available as a fallback/control backend:
 nix run .#mc-compat-smoke -- --run --server-backend paper
 ```
 
+## OnixResearch tool inputs
+
+The flake pins Cairn and Octet over SSH so private/internal remotes are fetched through the user's SSH agent:
+
+- `cairn`: `git+ssh://git@github.com/onixresearch/cairn.git`
+- `octet`: `git+ssh://git@github.com/onixresearch/octet.git`
+
+The dev shell exposes `cairn` and `cargo-octet` alongside the smoke runner:
+
+```sh
+nix develop
+cairn --help
+cargo-octet --help
+```
+
+The packages are also available as `.#cairn`, `.#cargo-octet`, and `.#octet`.
+
 ## Verification
 
 ```sh

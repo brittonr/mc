@@ -4,6 +4,8 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     systems.url = "github:nix-systems/default-linux";
+    cairn.url = "git+ssh://git@github.com/onixresearch/cairn.git";
+    octet.url = "git+ssh://git@github.com/onixresearch/octet.git";
   };
 
   outputs =
@@ -11,6 +13,8 @@
       self,
       nixpkgs,
       systems,
+      cairn,
+      octet,
     }:
     let
       eachSystem = f: nixpkgs.lib.genAttrs (import systems) (system: f nixpkgs.legacyPackages.${system});
@@ -81,6 +85,9 @@
         in
         {
           inherit mc-compat-runner;
+          cairn = cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn;
+          cargo-octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.cargo-octet;
+          octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.octet;
           default = mc-compat-runner;
         }
       );
@@ -150,13 +157,28 @@
           mkdir -p "$out"
           cp help.log "$out/"
         '';
+        onixresearch-ssh-tools = pkgs.runCommand "onixresearch-ssh-tools" { } ''
+          ${cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn}/bin/cairn --help > cairn-help.log
+          ${
+            octet.packages.${pkgs.stdenv.hostPlatform.system}.cargo-octet
+          }/bin/cargo-octet --help > cargo-octet-help.log
+          grep -Fq "usage: cairn" cairn-help.log
+          grep -Fq "Octet operator commands" cargo-octet-help.log
+          mkdir -p "$out"
+          cp cairn-help.log cargo-octet-help.log "$out/"
+        '';
       });
 
       devShells = eachSystem (pkgs: {
         default = pkgs.mkShell {
-          packages = [ self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner ];
+          packages = [
+            self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
+            cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn
+            octet.packages.${pkgs.stdenv.hostPlatform.system}.cargo-octet
+          ];
           shellHook = ''
             echo "mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'"
+            echo "OnixResearch tools are pinned over SSH: cairn, cargo-octet"
           '';
         };
       });
