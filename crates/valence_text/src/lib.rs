@@ -3,13 +3,8 @@
 use std::borrow::Cow;
 use std::ops::{Deref, DerefMut};
 use std::str::FromStr;
-use std::{fmt, ops};
 
 use serde::de::Visitor;
-use serde::{de, Deserialize, Deserializer, Serialize};
-use uuid::Uuid;
-use valence_ident::Ident;
-use valence_nbt::Value;
 
 pub mod color;
 mod into_text;
@@ -49,12 +44,12 @@ pub use into_text::IntoText;
 ///     r#"{"text":"The text is ","extra":[{"text":"Red","color":"red"},{"text":", "},{"text":"Green","color":"green"},{"text":", and also "},{"text":"Blue","color":"blue"},{"text":"! And maybe even "},{"text":"Italic","italic":true},{"text":"."}]}"#
 /// );
 /// ```
-#[derive(Clone, PartialEq, Default, Serialize)]
+#[derive(Clone, PartialEq, Default, serde::Serialize)]
 #[serde(transparent)]
 pub struct Text(Box<TextInner>);
 
 /// Text data and formatting.
-#[derive(Clone, PartialEq, Default, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Default, Debug, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TextInner {
     #[serde(flatten)]
@@ -95,7 +90,7 @@ pub struct TextInner {
 }
 
 /// The text content of a Text object.
-#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Debug, serde::Serialize, serde::Deserialize)]
 #[serde(untagged)]
 pub enum TextContent {
     /// Normal text
@@ -156,7 +151,7 @@ pub enum TextContent {
     },
     /// Displays NBT values from command storage.
     StorageNbt {
-        storage: Ident<Cow<'static, str>>,
+        storage: valence_ident::Ident<Cow<'static, str>>,
         nbt: Cow<'static, str>,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         interpret: Option<bool>,
@@ -166,7 +161,7 @@ pub enum TextContent {
 }
 
 /// Scoreboard value.
-#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Debug, serde::Serialize, serde::Deserialize)]
 pub struct ScoreboardValueContent {
     /// The name of the score holder whose score should be displayed. This
     /// can be a [`selector`] or an explicit name.
@@ -182,7 +177,7 @@ pub struct ScoreboardValueContent {
 }
 
 /// Action to take on click of the text.
-#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Debug, serde::Serialize, serde::Deserialize)]
 #[serde(tag = "action", content = "value", rename_all = "snake_case")]
 pub enum ClickEvent {
     /// Opens an URL
@@ -203,7 +198,7 @@ pub enum ClickEvent {
 }
 
 /// Action to take when mouse-hovering on the text.
-#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Debug, serde::Serialize, serde::Deserialize)]
 #[serde(tag = "action", content = "contents", rename_all = "snake_case")]
 #[allow(clippy::enum_variant_names)]
 pub enum HoverEvent {
@@ -212,7 +207,7 @@ pub enum HoverEvent {
     /// Shows an item.
     ShowItem {
         /// Resource identifier of the item
-        id: Ident<Cow<'static, str>>,
+        id: valence_ident::Ident<Cow<'static, str>>,
         /// Number of the items in the stack
         count: Option<i32>,
         /// NBT information about the item (sNBT format)
@@ -221,11 +216,11 @@ pub enum HoverEvent {
     /// Shows an entity.
     ShowEntity {
         /// The entity's UUID
-        id: Uuid,
+        id: uuid::Uuid,
         /// Resource identifier of the entity
         #[serde(rename = "type")]
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        kind: Option<Ident<Cow<'static, str>>>,
+        kind: Option<valence_ident::Ident<Cow<'static, str>>>,
         /// Optional custom name for the entity
         #[serde(default, skip_serializing_if = "Option::is_none")]
         name: Option<Text>,
@@ -233,7 +228,7 @@ pub enum HoverEvent {
 }
 
 /// The font of the text.
-#[derive(Clone, Copy, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Debug, serde::Serialize, serde::Deserialize)]
 pub enum Font {
     /// The default font.
     #[serde(rename = "minecraft:default")]
@@ -376,7 +371,7 @@ impl Text {
         separator: Option<Text>,
     ) -> Self
     where
-        S: Into<Ident<Cow<'static, str>>>,
+        S: Into<valence_ident::Ident<Cow<'static, str>>>,
         N: Into<Cow<'static, str>>,
     {
         Self(Box::new(TextInner {
@@ -538,7 +533,7 @@ impl DerefMut for Text {
     }
 }
 
-impl<T: IntoText<'static>> ops::Add<T> for Text {
+impl<T: IntoText<'static>> std::ops::Add<T> for Text {
     type Output = Self;
 
     fn add(self, rhs: T) -> Self::Output {
@@ -546,7 +541,7 @@ impl<T: IntoText<'static>> ops::Add<T> for Text {
     }
 }
 
-impl<T: IntoText<'static>> ops::AddAssign<T> for Text {
+impl<T: IntoText<'static>> std::ops::AddAssign<T> for Text {
     fn add_assign(&mut self, rhs: T) {
         self.extra.push(rhs.into_text());
     }
@@ -582,26 +577,26 @@ impl From<Text> for String {
     }
 }
 
-impl From<Text> for Value {
+impl From<Text> for valence_nbt::Value {
     fn from(value: Text) -> Self {
-        Value::String(value.into())
+        valence_nbt::Value::String(value.into())
     }
 }
 
-impl fmt::Debug for Text {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(self, f)
+impl std::fmt::Debug for Text {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        std::fmt::Display::fmt(self, f)
     }
 }
 
-impl fmt::Display for Text {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl std::fmt::Display for Text {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         let string = if f.alternate() {
             serde_json::to_string_pretty(self)
         } else {
             serde_json::to_string(self)
         }
-        .map_err(|_| fmt::Error)?;
+        .map_err(|_| std::fmt::Error)?;
 
         f.write_str(&string)
     }
@@ -613,42 +608,45 @@ impl Default for TextContent {
     }
 }
 
-impl<'de> Deserialize<'de> for Text {
-    fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+impl<'de> serde::Deserialize<'de> for Text {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         struct TextVisitor;
 
         impl<'de> Visitor<'de> for TextVisitor {
             type Value = Text;
 
-            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+            fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
                 write!(formatter, "a text component data type")
             }
 
-            fn visit_bool<E: de::Error>(self, v: bool) -> Result<Self::Value, E> {
+            fn visit_bool<E: serde::de::Error>(self, v: bool) -> Result<Self::Value, E> {
                 Ok(Text::text(v.to_string()))
             }
 
-            fn visit_i64<E: de::Error>(self, v: i64) -> Result<Self::Value, E> {
+            fn visit_i64<E: serde::de::Error>(self, v: i64) -> Result<Self::Value, E> {
                 Ok(Text::text(v.to_string()))
             }
 
-            fn visit_u64<E: de::Error>(self, v: u64) -> Result<Self::Value, E> {
+            fn visit_u64<E: serde::de::Error>(self, v: u64) -> Result<Self::Value, E> {
                 Ok(Text::text(v.to_string()))
             }
 
-            fn visit_f64<E: de::Error>(self, v: f64) -> Result<Self::Value, E> {
+            fn visit_f64<E: serde::de::Error>(self, v: f64) -> Result<Self::Value, E> {
                 Ok(Text::text(v.to_string()))
             }
 
-            fn visit_str<E: de::Error>(self, v: &str) -> Result<Self::Value, E> {
+            fn visit_str<E: serde::de::Error>(self, v: &str) -> Result<Self::Value, E> {
                 Ok(Text::text(v.to_owned()))
             }
 
-            fn visit_string<E: de::Error>(self, v: String) -> Result<Self::Value, E> {
+            fn visit_string<E: serde::de::Error>(self, v: String) -> Result<Self::Value, E> {
                 Ok(Text::text(v))
             }
 
-            fn visit_seq<A: de::SeqAccess<'de>>(self, mut seq: A) -> Result<Self::Value, A::Error> {
+            fn visit_seq<A: serde::de::SeqAccess<'de>>(
+                self,
+                mut seq: A,
+            ) -> Result<Self::Value, A::Error> {
                 let Some(mut res) = seq.next_element()? else {
                     return Ok(Text::default());
                 };
@@ -660,12 +658,15 @@ impl<'de> Deserialize<'de> for Text {
                 Ok(res)
             }
 
-            fn visit_map<A: de::MapAccess<'de>>(self, map: A) -> Result<Self::Value, A::Error> {
-                use de::value::MapAccessDeserializer;
-
-                Ok(Text(Box::new(TextInner::deserialize(
-                    MapAccessDeserializer::new(map),
-                )?)))
+            fn visit_map<A: serde::de::MapAccess<'de>>(
+                self,
+                map: A,
+            ) -> Result<Self::Value, A::Error> {
+                Ok(Text(Box::new(
+                    <TextInner as serde::Deserialize>::deserialize(
+                        serde::de::value::MapAccessDeserializer::new(map),
+                    )?,
+                )))
             }
         }
 
