@@ -17,6 +17,14 @@ pub fn translate_internal_packet_id(state: State, dir: Direction, id: i32, to_in
         if !to_internal && id == packet::play::clientbound::internal_ids::JoinGame_WorldNames_IsHard_SimDist {
             return 0x28;
         }
+
+        if to_internal && id == 0x64 {
+            return packet::play::clientbound::internal_ids::ServerMessage_Position;
+        }
+
+        if !to_internal && id == packet::play::clientbound::internal_ids::ServerMessage_Position {
+            return 0x64;
+        }
     }
 
     super::v1_18_2::translate_internal_packet_id(state, dir, id, to_internal)

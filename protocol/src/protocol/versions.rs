@@ -187,4 +187,30 @@ mod tests {
             translate_internal_packet_id_for_version(758, State::Play, Direction::Clientbound, 0x10, true),
         );
     }
+
+    #[test]
+    fn protocol_763_maps_valence_game_message_boundary() {
+        assert_eq!(
+            translate_internal_packet_id_for_version(763, State::Play, Direction::Clientbound, 0x64, true),
+            crate::protocol::packet::play::clientbound::internal_ids::ServerMessage_Position,
+        );
+        assert_eq!(
+            translate_internal_packet_id_for_version(
+                763,
+                State::Play,
+                Direction::Clientbound,
+                crate::protocol::packet::play::clientbound::internal_ids::ServerMessage_Position,
+                false,
+            ),
+            0x64,
+        );
+    }
+
+    #[test]
+    fn protocol_763_no_longer_treats_play_0x64_as_entity_properties() {
+        assert_ne!(
+            translate_internal_packet_id_for_version(763, State::Play, Direction::Clientbound, 0x64, true),
+            translate_internal_packet_id_for_version(758, State::Play, Direction::Clientbound, 0x64, true),
+        );
+    }
 }
