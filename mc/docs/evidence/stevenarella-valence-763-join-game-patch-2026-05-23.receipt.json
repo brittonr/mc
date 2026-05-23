@@ -1,0 +1,81 @@
+{
+  "boundary": {
+    "next_boundary": {
+      "status": "next_unpatched_mapping_mismatch",
+      "stevenarella_758_alias_semantic": "ClearTitles",
+      "valence_763_semantic": "CommandTreeS2CPacket",
+      "wire_id": "0x10"
+    },
+    "patched_boundary": {
+      "previous_stevenarella_758_alias_semantic": "TradeList_WithRestock",
+      "status": "mapped",
+      "stevenarella_763_internal": "JoinGame_WorldNames_IsHard_SimDist",
+      "valence_763_semantic": "GameJoinS2C",
+      "wire_id": "0x28"
+    }
+  },
+  "contract": {
+    "claims_current_valence_client_compat": false,
+    "claims_current_valence_next_packet_boundary": true,
+    "claims_full_stevenarella_763_support": false,
+    "claims_protocol_763_join_game_mapping": true
+  },
+  "date": "2026-05-23",
+  "dry_run": false,
+  "mode": "protocol_763_join_game_mapping_patch",
+  "schema": "mc.compat.stevenarella-valence-763-join-game-patch.receipt.v1",
+  "status": "pass",
+  "stevenarella": {
+    "client_probe": {
+      "classification": "timeout-success-evidence",
+      "exit_code": 124,
+      "log_artifact": "/tmp/stevenarella-763-after-join-patch.log",
+      "log_b3": "db7cdea68abd413bdd96d2c63194403d3657427debccfab8d896b32c5f0a876e",
+      "matched_success_pattern": "Detected server protocol version 763"
+    },
+    "commit": "475c4a0bc1f27b195738d28487eaf8930eda5bd1",
+    "fork_branch": "master",
+    "fork_remote": "git@github.com:brittonr/stevenarella.git",
+    "patch_summary": "Route protocol 763 through v1_20_1 translator and map play/clientbound 0x28 to JoinGame_WorldNames_IsHard_SimDist."
+  },
+  "valence": {
+    "connection_mode": "Offline",
+    "example": "ctf",
+    "first_captured_packets": [
+      {
+        "index": 0,
+        "semantic": "SetCompressionS2C",
+        "state": "login",
+        "wire_id": "0x03"
+      },
+      {
+        "index": 1,
+        "semantic": "LoginSuccessS2C",
+        "state": "login",
+        "wire_id": "0x02"
+      },
+      {
+        "index": 2,
+        "semantic": "GameJoinS2CPacket",
+        "state": "play",
+        "wire_id": "0x28"
+      },
+      {
+        "index": 3,
+        "semantic": "CommandTreeS2CPacket",
+        "state": "play",
+        "wire_id": "0x10"
+      }
+    ],
+    "minecraft_version": "1.20.1",
+    "protocol": 763,
+    "trace_artifact": "/tmp/valence-763-after-join-patch-trace.json",
+    "trace_b3": "491dd0be04aab2d162aa383800864c370a41a498c7d03cde17ca763af53b0dab"
+  },
+  "verification": {
+    "cargo_fmt_check": "pass",
+    "steven_protocol_test_command": "nix develop path:/home/brittonr/git/mc -c bash -lc cd /home/brittonr/git/mc/stevenarella && CARGO_TARGET_DIR=/tmp/stevenarella-target2 cargo test -p steven_protocol protocol::versions::tests -- --nocapture",
+    "steven_protocol_tests": "pass",
+    "stevenarella_diff_check": "pass"
+  }
+}

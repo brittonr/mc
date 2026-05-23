@@ -517,6 +517,64 @@
               cp "$receipt" "$note" "$out/"
               printf '%s\n' "$b3" > "$out/receipt.b3"
             '';
+        stevenarella-valence-763-join-game-patch-evidence =
+          pkgs.runCommand "stevenarella-valence-763-join-game-patch-evidence" { nativeBuildInputs = [ pkgs.b3sum pkgs.python3 ]; }
+            ''
+              receipt=${./docs/evidence/stevenarella-valence-763-join-game-patch-2026-05-23.receipt.json}
+              note=${./docs/evidence/stevenarella-valence-763-join-game-patch-2026-05-23.md}
+
+              python3 - "$receipt" "$note" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          receipt_path = pathlib.Path(sys.argv[1])
+          note_path = pathlib.Path(sys.argv[2])
+          receipt = json.loads(receipt_path.read_text())
+          note = note_path.read_text()
+
+          def assert_eq(name, actual, expected):
+              if actual != expected:
+                  raise SystemExit(f"{name}: expected {expected!r}, got {actual!r}")
+
+          assert_eq("schema", receipt["schema"], "mc.compat.stevenarella-valence-763-join-game-patch.receipt.v1")
+          assert_eq("status", receipt["status"], "pass")
+          assert_eq("mode", receipt["mode"], "protocol_763_join_game_mapping_patch")
+          assert_eq("dry_run", receipt["dry_run"], False)
+          assert_eq("valence.protocol", receipt["valence"]["protocol"], 763)
+          assert_eq("valence.example", receipt["valence"]["example"], "ctf")
+          assert_eq("patched wire id", receipt["boundary"]["patched_boundary"]["wire_id"], "0x28")
+          assert_eq("patched valence semantic", receipt["boundary"]["patched_boundary"]["valence_763_semantic"], "GameJoinS2C")
+          assert_eq("patched internal", receipt["boundary"]["patched_boundary"]["stevenarella_763_internal"], "JoinGame_WorldNames_IsHard_SimDist")
+          assert_eq("patched status", receipt["boundary"]["patched_boundary"]["status"], "mapped")
+          assert_eq("next wire id", receipt["boundary"]["next_boundary"]["wire_id"], "0x10")
+          assert_eq("next valence semantic", receipt["boundary"]["next_boundary"]["valence_763_semantic"], "CommandTreeS2CPacket")
+          assert_eq("next stevenarella semantic", receipt["boundary"]["next_boundary"]["stevenarella_758_alias_semantic"], "ClearTitles")
+          assert_eq("tests", receipt["verification"]["steven_protocol_tests"], "pass")
+          assert_eq("fmt", receipt["verification"]["cargo_fmt_check"], "pass")
+          assert_eq("contract.claims_protocol_763_join_game_mapping", receipt["contract"]["claims_protocol_763_join_game_mapping"], True)
+          assert_eq("contract.claims_current_valence_client_compat", receipt["contract"]["claims_current_valence_client_compat"], False)
+          assert_eq("contract.claims_full_stevenarella_763_support", receipt["contract"]["claims_full_stevenarella_763_support"], False)
+
+          required_note_fragments = [
+              "play/clientbound/0x28",
+              "JoinGame_WorldNames_IsHard_SimDist",
+              "play/clientbound/0x10",
+              "CommandTreeS2CPacket",
+              "ClearTitles",
+              "Receipt BLAKE3",
+          ]
+          for fragment in required_note_fragments:
+              if fragment not in note:
+                  raise SystemExit(f"join-game patch evidence note missing fragment: {fragment}")
+          PY
+
+              b3=$(b3sum "$receipt" | cut -d' ' -f1)
+              grep -Fq "Receipt BLAKE3: \`$b3\`" "$note"
+              mkdir -p "$out"
+              cp "$receipt" "$note" "$out/"
+              printf '%s\n' "$b3" > "$out/receipt.b3"
+            '';
         onixresearch-ssh-tools = pkgs.runCommand "onixresearch-ssh-tools" { } ''
           ${cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn}/bin/cairn --help > cairn-help.log
           ${
