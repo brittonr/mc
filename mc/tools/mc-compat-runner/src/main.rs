@@ -93,6 +93,10 @@ fn main() -> ExitCode {
 
 fn real_main() -> Result<(), String> {
     let cfg = Config::from_env_and_args()?;
+    if cfg.server_backend == ServerBackend::Valence && matches!(cfg.mode, Mode::DryRun | Mode::Run)
+    {
+        ensure_valence_repo_ready(&cfg)?;
+    }
     match cfg.mode {
         Mode::DryRun => {
             log(format_args!(
@@ -201,12 +205,29 @@ impl Config {
                         .ok_or_else(|| "--server-backend requires valence or paper".to_string())?;
                     cfg.server_backend = parse_backend(&value)?;
                 }
+                "--valence-repo" => {
+                    cfg.valence_repo = PathBuf::from(
+                        args.next()
+                            .ok_or_else(|| "--valence-repo requires a path".to_string())?,
+                    );
+                }
+                "--valence-rev" => {
+                    cfg.valence_rev = args
+                        .next()
+                        .ok_or_else(|| "--valence-rev requires a git revision".to_string())?;
+                }
                 "-h" | "--help" => {
                     print_usage(&cfg);
                     std::process::exit(0);
                 }
                 _ if arg.starts_with("--server-backend=") => {
                     cfg.server_backend = parse_backend(&arg[17..])?;
+                }
+                _ if arg.starts_with("--valence-repo=") => {
+                    cfg.valence_repo = PathBuf::from(&arg[15..]);
+                }
+                _ if arg.starts_with("--valence-rev=") => {
+                    cfg.valence_rev = arg[14..].to_string();
                 }
                 _ => return Err(format!("unknown arg: {arg}")),
             }
@@ -224,9 +245,10 @@ impl Config {
 
 fn print_usage(cfg: &Config) {
     println!(
-        "Usage: mc-compat-runner [--dry-run|--run] [--build-client] [--status-only] [--stop] [--keep-server] [--server-backend valence|paper]\n\n\
+        "Usage: mc-compat-runner [--dry-run|--run] [--build-client] [--status-only] [--stop] [--keep-server] [--server-backend valence|paper] [--valence-repo PATH] [--valence-rev REV]\n\n\
 Automates a local Stevenarella compatibility smoke against a Minecraft {} / protocol {} server.\n\
-Default server backend is Valence, using an isolated protocol-758 worktree so the dirty/current Valence checkout is untouched.\n\
+Default server backend is Valence, using an editable local Valence checkout plus an isolated protocol-758 worktree so the dirty/current checkout is untouched.\n\
+If the Valence checkout or compatible revision is missing, clone/fetch it or pass --valence-repo/VALENCE_REPO to another editable checkout.\n\
 Client runs are forced through Xvfb/X11 with software GL and no inherited Wayland socket.\n\
 Paper fallback runs set EULA=TRUE based on recorded user acceptance.\n\n\
 Env: MC_COMPAT_ROOT={} CLIENT_DIR={} TARGET_DIR={} VALENCE_REPO={} VALENCE_REV={} VALENCE_WORKTREE={} VALENCE_TARGET_DIR={} CLIENT_TIMEOUT={}\n",
@@ -280,6 +302,7 @@ fn stop_server(cfg: &Config) -> Result<(), String> {
 }
 
 fn prepare_valence_worktree(cfg: &Config) -> Result<(), String> {
+    ensure_valence_repo_ready(cfg)?;
     if !cfg.valence_worktree.join(".git").exists() {
         log(format_args!(
             "creating isolated Valence worktree {} at {}",
@@ -301,6 +324,38 @@ fn prepare_valence_worktree(cfg: &Config) -> Result<(), String> {
             cfg.valence_worktree.display()
         ));
     }
+    Ok(())
+}
+
+fn ensure_valence_repo_ready(cfg: &Config) -> Result<(), String> {
+    if !cfg.valence_repo.exists() {
+        return Err(format!(
+            "Valence checkout not found at {}. Keep an editable sibling checkout with `git clone https://github.com/valence-rs/valence {}` or pass --valence-repo/VALENCE_REPO to another checkout.",
+            cfg.valence_repo.display(),
+            cfg.valence_repo.display()
+        ));
+    }
+
+    let status = Command::new("git")
+        .arg("-C")
+        .arg(&cfg.valence_repo)
+        .arg("rev-parse")
+        .arg("--verify")
+        .arg(format!("{}^{{commit}}", cfg.valence_rev))
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status()
+        .map_err(|e| format!("check Valence checkout {}: {e}", cfg.valence_repo.display()))?;
+
+    if !status.success() {
+        return Err(format!(
+            "Valence checkout {} does not contain compatible revision {}. Run `git -C {} fetch --all --tags` or pass --valence-repo/VALENCE_REPO to an editable checkout that has it.",
+            cfg.valence_repo.display(),
+            cfg.valence_rev,
+            cfg.valence_repo.display()
+        ));
+    }
+
     Ok(())
 }
 

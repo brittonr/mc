@@ -101,18 +101,32 @@
         mc-compat-dry-run = pkgs.runCommand "mc-compat-dry-run" { } ''
           ${
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
-          }/bin/mc-compat-runner --dry-run > dry-run.log
-          grep -Fq "start Valence server" dry-run.log
+          }/bin/mc-compat-runner --dry-run --server-backend paper > dry-run.log
+          grep -Fq "start Paper server" dry-run.log
           grep -Fq "would run Rust protocol status probe" dry-run.log
           grep -Fq "would run Stevenarella under xvfb-run" dry-run.log
           mkdir -p "$out"
           cp dry-run.log "$out/"
+        '';
+        mc-compat-missing-valence = pkgs.runCommand "mc-compat-missing-valence" { } ''
+          if ${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
+          }/bin/mc-compat-runner --dry-run --valence-repo "$PWD/no-such-valence" > missing.log 2>&1; then
+            echo "expected missing Valence checkout to fail" >&2
+            cat missing.log >&2
+            exit 1
+          fi
+          grep -Fq "Valence checkout not found" missing.log
+          grep -Fq -- "--valence-repo/VALENCE_REPO" missing.log
+          mkdir -p "$out"
+          cp missing.log "$out/"
         '';
         mc-compat-help = pkgs.runCommand "mc-compat-help" { } ''
           ${
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
           }/bin/mc-compat-runner --help > help.log
           grep -Fq -- "--server-backend valence|paper" help.log
+          grep -Fq -- "--valence-repo PATH" help.log
           grep -Fq "no inherited Wayland socket" help.log
           mkdir -p "$out"
           cp help.log "$out/"
