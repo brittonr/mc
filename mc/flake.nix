@@ -123,6 +123,61 @@
           mkdir -p "$out"
           cp dry-run.log smoke-receipt.json "$out/"
         '';
+        mc-compat-compare-receipts = pkgs.runCommand "mc-compat-compare-receipts" { } ''
+                    write_receipt() {
+                      backend="$1"
+                      protocol="$2"
+                      port="$3"
+                      path="$4"
+                      cat > "$path" <<EOF
+          {
+            "schema": "mc.compat.smoke.receipt.v1",
+            "status": "pass",
+            "mode": "run",
+            "dry_run": false,
+            "contract": {
+              "claims_correctness": false,
+              "claims_semantic_equivalence": false
+            },
+            "server": {
+              "backend": "$backend",
+              "version": "1.18.2",
+              "protocol": $protocol,
+              "port": $port
+            },
+            "client": {
+              "headless_isolation": {
+                "xvfb": true,
+                "x11_backend": true,
+                "software_gl": true,
+                "wayland_socket_inherited": false
+              },
+              "classification": "timeout-success-evidence",
+              "matched_success_pattern": "Detected server protocol version"
+            },
+            "error": null
+          }
+          EOF
+                    }
+                    write_receipt paper 758 25566 paper.json
+                    write_receipt valence 758 25565 valence.json
+                    ${
+                      self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
+                    }/bin/mc-compat-runner --compare-receipts paper.json valence.json > compare.log
+                    grep -Fq "receipt comparison passed" compare.log
+
+                    write_receipt valence 759 25565 bad-valence.json
+                    if ${
+                      self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
+                    }/bin/mc-compat-runner --compare-receipts paper.json bad-valence.json > bad.log 2>&1; then
+                      echo "expected mismatched protocol comparison to fail" >&2
+                      cat bad.log >&2
+                      exit 1
+                    fi
+                    grep -Fq "receipt protocol mismatch" bad.log
+                    mkdir -p "$out"
+                    cp paper.json valence.json compare.log bad.log "$out/"
+        '';
         mc-compat-missing-client = pkgs.runCommand "mc-compat-missing-client" { } ''
           if ${
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
@@ -158,6 +213,7 @@
           grep -Fq -- "--server-backend valence|paper" help.log
           grep -Fq -- "--client-dir PATH" help.log
           grep -Fq -- "--receipt PATH" help.log
+          grep -Fq -- "--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT" help.log
           grep -Fq "SMOKE_RECEIPT" help.log
           grep -Fq "CLIENT_DIR" help.log
           grep -Fq -- "--valence-repo PATH" help.log

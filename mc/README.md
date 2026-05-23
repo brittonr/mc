@@ -38,6 +38,16 @@ nix run .#mc-compat-smoke -- --dry-run --server-backend paper --receipt target/m
 
 The receipt schema is `mc.compat.smoke.receipt.v1`. It records the server/client inputs, the headless-isolation contract (`wayland_socket_inherited=false`), the matched client success pattern when present, and explicit non-claims (`claims_correctness=false`, `claims_semantic_equivalence=false`) for downstream Cairn/Octet review. It is evidence that the bounded smoke ran under the selected inputs, not a proof of Minecraft correctness or semantic equivalence.
 
+Compare fallback/control Paper and intended/default Valence receipts:
+
+```sh
+nix run .#mc-compat-smoke -- --compare-receipts \
+  target/mc-compat-smoke.json \
+  target/mc-compat-smoke-valence.json
+```
+
+The comparison requires one `paper` receipt and one `valence` receipt, both passing, both protocol `758`, expected backend ports, successful client evidence, and niri-safe Xvfb/X11/software-GL isolation.
+
 ## Editable Stevenarella checkout
 
 Stevenarella is intentionally a local sibling checkout so it can be patched while debugging the client side of the compatibility seam. By default the runner expects `./stevenarella` to be an editable Stevenarella repository root containing `Cargo.toml`.
@@ -99,4 +109,4 @@ The packages are also available as `.#cairn`, `.#cargo-octet`, and `.#octet`.
 nix flake check
 ```
 
-The flake includes focused checks for the runner binary, dry-run receipt emission, missing-checkout diagnostics, help text, Cairn CLI availability, and Octet fingerprint smoke over the receipt producer surface (`mc-compat-receipt-contract`).
+The flake includes focused checks for the runner binary, dry-run receipt emission, Paper/Valence receipt comparison fixtures, missing-checkout diagnostics, help text, Cairn CLI availability, and Octet fingerprint smoke over the receipt producer surface (`mc-compat-receipt-contract`).

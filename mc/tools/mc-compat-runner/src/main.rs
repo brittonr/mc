@@ -26,6 +26,7 @@ enum Mode {
     BuildClient,
     StatusOnly,
     Stop,
+    CompareReceipts,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -58,6 +59,7 @@ struct Config {
     client_timeout: Duration,
     client_success_needles: Vec<String>,
     receipt_path: Option<PathBuf>,
+    compare_receipts: Option<(PathBuf, PathBuf)>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -154,6 +156,10 @@ fn execute(cfg: &Config) -> Result<Option<ClientRunEvidence>, String> {
             stop_server(cfg)?;
             Ok(None)
         }
+        Mode::CompareReceipts => {
+            compare_receipts(cfg)?;
+            Ok(None)
+        }
         Mode::Run => {
             build_client(cfg)?;
             let _server = start_server(cfg)?;
@@ -237,6 +243,7 @@ impl Config {
                         .collect()
                 }),
             receipt_path: get_env("SMOKE_RECEIPT").map(PathBuf::from),
+            compare_receipts: None,
             root,
         };
 
@@ -256,6 +263,16 @@ impl Config {
                 "--build-client" => cfg.mode = Mode::BuildClient,
                 "--status-only" => cfg.mode = Mode::StatusOnly,
                 "--stop" => cfg.mode = Mode::Stop,
+                "--compare-receipts" => {
+                    let left = PathBuf::from(args.next().ok_or_else(|| {
+                        "--compare-receipts requires PAPER_RECEIPT and VALENCE_RECEIPT".to_string()
+                    })?);
+                    let right = PathBuf::from(args.next().ok_or_else(|| {
+                        "--compare-receipts requires PAPER_RECEIPT and VALENCE_RECEIPT".to_string()
+                    })?);
+                    cfg.mode = Mode::CompareReceipts;
+                    cfg.compare_receipts = Some((left, right));
+                }
                 "--accept-eula" => {}
                 "--keep-server" => cfg.keep_server = true,
                 "--server-backend" => {
@@ -322,10 +339,11 @@ impl Config {
 
 fn print_usage(cfg: &Config) {
     println!(
-        "Usage: mc-compat-runner [--dry-run|--run] [--build-client] [--status-only] [--stop] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--valence-repo PATH] [--valence-rev REV]\n\n\
+        "Usage: mc-compat-runner [--dry-run|--run] [--build-client] [--status-only] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--valence-repo PATH] [--valence-rev REV]\n\n\
 Automates a local Stevenarella compatibility smoke against a Minecraft {} / protocol {} server.\n\
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.smoke.receipt.v1 JSON receipt for Cairn/Octet evidence flows.\n\
+Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
 Default server backend is Valence, using an editable local Valence checkout plus an isolated protocol-758 worktree so the dirty/current checkout is untouched.\n\
 If the Stevenarella or Valence checkout is missing, clone/fetch it or pass --client-dir/CLIENT_DIR and --valence-repo/VALENCE_REPO to editable checkouts.\n\
 Client runs are forced through Xvfb/X11 with software GL and no inherited Wayland socket.\n\
@@ -762,6 +780,293 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
     )
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct ReceiptSummary {
+    path: PathBuf,
+    schema: String,
+    status: String,
+    backend: String,
+    protocol: u32,
+    port: u16,
+    classification: String,
+    matched_success_pattern: Option<String>,
+    xvfb: bool,
+    x11_backend: bool,
+    software_gl: bool,
+    wayland_socket_inherited: bool,
+}
+
+fn compare_receipts(cfg: &Config) -> Result<(), String> {
+    let (left, right) = cfg
+        .compare_receipts
+        .as_ref()
+        .ok_or_else(|| "compare-receipts mode requires two receipt paths".to_string())?;
+    let left = read_receipt_summary(left)?;
+    let right = read_receipt_summary(right)?;
+    validate_receipt_pair(&left, &right)?;
+    let paper = if left.backend == "paper" {
+        &left
+    } else {
+        &right
+    };
+    let valence = if left.backend == "valence" {
+        &left
+    } else {
+        &right
+    };
+    println!(
+        "[mc-compat] receipt comparison passed: paper={} valence={} protocol={} headless=xvfb/x11/software-gl/no-wayland",
+        paper.path.display(),
+        valence.path.display(),
+        paper.protocol
+    );
+    Ok(())
+}
+
+fn read_receipt_summary(path: &Path) -> Result<ReceiptSummary, String> {
+    let text =
+        fs::read_to_string(path).map_err(|e| format!("read receipt {}: {e}", path.display()))?;
+    read_receipt_summary_from_text(path.to_path_buf(), &text)
+}
+
+fn read_receipt_summary_from_text(path: PathBuf, text: &str) -> Result<ReceiptSummary, String> {
+    Ok(ReceiptSummary {
+        path,
+        schema: json_string_field(text, "schema")?,
+        status: json_string_field(text, "status")?,
+        backend: json_object_string_field(text, "server", "backend")?,
+        protocol: json_object_u32_field(text, "server", "protocol")?,
+        port: json_object_u32_field(text, "server", "port")? as u16,
+        classification: json_object_string_field(text, "client", "classification")?,
+        matched_success_pattern: json_object_optional_string_field(
+            text,
+            "client",
+            "matched_success_pattern",
+        )?,
+        xvfb: json_object_bool_field(text, "headless_isolation", "xvfb")?,
+        x11_backend: json_object_bool_field(text, "headless_isolation", "x11_backend")?,
+        software_gl: json_object_bool_field(text, "headless_isolation", "software_gl")?,
+        wayland_socket_inherited: json_object_bool_field(
+            text,
+            "headless_isolation",
+            "wayland_socket_inherited",
+        )?,
+    })
+}
+
+fn validate_receipt_pair(left: &ReceiptSummary, right: &ReceiptSummary) -> Result<(), String> {
+    validate_receipt_summary(left)?;
+    validate_receipt_summary(right)?;
+    let backends = [left.backend.as_str(), right.backend.as_str()];
+    if !(backends.contains(&"paper") && backends.contains(&"valence")) {
+        return Err(format!(
+            "expected one paper receipt and one valence receipt, got {} and {}",
+            left.backend, right.backend
+        ));
+    }
+    if left.protocol != right.protocol {
+        return Err(format!(
+            "receipt protocol mismatch: {} has {}, {} has {}",
+            left.path.display(),
+            left.protocol,
+            right.path.display(),
+            right.protocol
+        ));
+    }
+    if left.protocol != DEFAULT_SERVER_PROTOCOL {
+        return Err(format!(
+            "expected protocol {}, got {}",
+            DEFAULT_SERVER_PROTOCOL, left.protocol
+        ));
+    }
+    for receipt in [left, right] {
+        match receipt.backend.as_str() {
+            "paper" if receipt.port != 25566 => {
+                return Err(format!(
+                    "paper receipt port must be 25566, got {}",
+                    receipt.port
+                ));
+            }
+            "valence" if receipt.port != 25565 => {
+                return Err(format!(
+                    "valence receipt port must be 25565, got {}",
+                    receipt.port
+                ));
+            }
+            _ => {}
+        }
+    }
+    Ok(())
+}
+
+fn validate_receipt_summary(receipt: &ReceiptSummary) -> Result<(), String> {
+    if receipt.schema != "mc.compat.smoke.receipt.v1" {
+        return Err(format!(
+            "{} has unexpected schema {}",
+            receipt.path.display(),
+            receipt.schema
+        ));
+    }
+    if receipt.status != "pass" {
+        return Err(format!(
+            "{} did not pass; status={}",
+            receipt.path.display(),
+            receipt.status
+        ));
+    }
+    if !matches!(
+        receipt.classification.as_str(),
+        "timeout-success-evidence" | "client-exited-success"
+    ) {
+        return Err(format!(
+            "{} has unsupported client classification {}",
+            receipt.path.display(),
+            receipt.classification
+        ));
+    }
+    if receipt.matched_success_pattern.is_none() {
+        return Err(format!(
+            "{} is missing matched client success pattern",
+            receipt.path.display()
+        ));
+    }
+    if !(receipt.xvfb && receipt.x11_backend && receipt.software_gl)
+        || receipt.wayland_socket_inherited
+    {
+        return Err(format!(
+            "{} does not prove niri-safe headless isolation",
+            receipt.path.display()
+        ));
+    }
+    Ok(())
+}
+
+fn json_object_string_field(text: &str, object: &str, key: &str) -> Result<String, String> {
+    json_string_field(json_object_slice(text, object)?, key)
+}
+
+fn json_object_optional_string_field(
+    text: &str,
+    object: &str,
+    key: &str,
+) -> Result<Option<String>, String> {
+    json_optional_string_field(json_object_slice(text, object)?, key)
+}
+
+fn json_object_u32_field(text: &str, object: &str, key: &str) -> Result<u32, String> {
+    json_u32_field(json_object_slice(text, object)?, key)
+}
+
+fn json_object_bool_field(text: &str, object: &str, key: &str) -> Result<bool, String> {
+    json_bool_field(json_object_slice(text, object)?, key)
+}
+
+fn json_object_slice<'a>(text: &'a str, object: &str) -> Result<&'a str, String> {
+    let key = format!("\"{object}\"");
+    let start = text
+        .find(&key)
+        .ok_or_else(|| format!("missing object {object}"))?;
+    let after_key = &text[start + key.len()..];
+    let brace_offset = after_key
+        .find('{')
+        .ok_or_else(|| format!("missing object body for {object}"))?;
+    let body_start = start + key.len() + brace_offset;
+    let mut depth = 0usize;
+    for (offset, ch) in text[body_start..].char_indices() {
+        match ch {
+            '{' => depth += 1,
+            '}' => {
+                depth -= 1;
+                if depth == 0 {
+                    return Ok(&text[body_start..=body_start + offset]);
+                }
+            }
+            _ => {}
+        }
+    }
+    Err(format!("unterminated object {object}"))
+}
+
+fn json_string_field(text: &str, key: &str) -> Result<String, String> {
+    let after_colon = json_field_value(text, key)?;
+    parse_json_string(after_colon).map(|(value, _)| value)
+}
+
+fn json_optional_string_field(text: &str, key: &str) -> Result<Option<String>, String> {
+    let after_colon = json_field_value(text, key)?;
+    if after_colon.trim_start().starts_with("null") {
+        Ok(None)
+    } else {
+        parse_json_string(after_colon).map(|(value, _)| Some(value))
+    }
+}
+
+fn json_u32_field(text: &str, key: &str) -> Result<u32, String> {
+    let value = json_field_value(text, key)?.trim_start();
+    let digits: String = value.chars().take_while(|ch| ch.is_ascii_digit()).collect();
+    if digits.is_empty() {
+        return Err(format!("field {key} is not an unsigned integer"));
+    }
+    digits
+        .parse()
+        .map_err(|e| format!("parse field {key}: {e}"))
+}
+
+fn json_bool_field(text: &str, key: &str) -> Result<bool, String> {
+    let value = json_field_value(text, key)?.trim_start();
+    if value.starts_with("true") {
+        Ok(true)
+    } else if value.starts_with("false") {
+        Ok(false)
+    } else {
+        Err(format!("field {key} is not a bool"))
+    }
+}
+
+fn json_field_value<'a>(text: &'a str, key: &str) -> Result<&'a str, String> {
+    let needle = format!("\"{key}\"");
+    let start = text
+        .find(&needle)
+        .ok_or_else(|| format!("missing field {key}"))?;
+    let after_key = &text[start + needle.len()..];
+    let colon = after_key
+        .find(':')
+        .ok_or_else(|| format!("missing colon for field {key}"))?;
+    Ok(&after_key[colon + 1..])
+}
+
+fn parse_json_string(text: &str) -> Result<(String, &str), String> {
+    let text = text.trim_start();
+    let mut chars = text.char_indices();
+    match chars.next() {
+        Some((_, '"')) => {}
+        _ => return Err("expected JSON string".to_string()),
+    }
+    let mut out = String::new();
+    let mut escape = false;
+    for (idx, ch) in chars {
+        if escape {
+            match ch {
+                '"' => out.push('"'),
+                '\\' => out.push('\\'),
+                '/' => out.push('/'),
+                'n' => out.push('\n'),
+                'r' => out.push('\r'),
+                't' => out.push('\t'),
+                other => out.push(other),
+            }
+            escape = false;
+        } else if ch == '\\' {
+            escape = true;
+        } else if ch == '"' {
+            return Ok((out, &text[idx + 1..]));
+        } else {
+            out.push(ch);
+        }
+    }
+    Err("unterminated JSON string".to_string())
+}
+
 fn mode_name(mode: Mode) -> &'static str {
     match mode {
         Mode::DryRun => "dry-run",
@@ -769,6 +1074,7 @@ fn mode_name(mode: Mode) -> &'static str {
         Mode::BuildClient => "build-client",
         Mode::StatusOnly => "status-only",
         Mode::Stop => "stop",
+        Mode::CompareReceipts => "compare-receipts",
     }
 }
 
@@ -1128,6 +1434,45 @@ mod tests {
             json.contains("\"wayland_socket_inherited\": false"),
             "{json}"
         );
+    }
+
+    fn receipt_fixture(backend: &str, protocol: u32, port: u16) -> String {
+        format!(
+            "{{\n  \"schema\": \"mc.compat.smoke.receipt.v1\",\n  \"status\": \"pass\",\n  \"mode\": \"run\",\n  \"dry_run\": false,\n  \"contract\": {{\n    \"claims_correctness\": false,\n    \"claims_semantic_equivalence\": false\n  }},\n  \"server\": {{\n    \"backend\": \"{backend}\",\n    \"version\": \"1.18.2\",\n    \"protocol\": {protocol},\n    \"port\": {port}\n  }},\n  \"client\": {{\n    \"headless_isolation\": {{\n      \"xvfb\": true,\n      \"x11_backend\": true,\n      \"software_gl\": true,\n      \"wayland_socket_inherited\": false\n    }},\n    \"classification\": \"timeout-success-evidence\",\n    \"matched_success_pattern\": \"Detected server protocol version\"\n  }},\n  \"error\": null\n}}\n"
+        )
+    }
+
+    #[test]
+    fn compares_paper_and_valence_receipts() {
+        let paper = read_receipt_summary_from_text(
+            PathBuf::from("paper.json"),
+            &receipt_fixture("paper", 758, 25566),
+        )
+        .expect("paper fixture parses");
+        let valence = read_receipt_summary_from_text(
+            PathBuf::from("valence.json"),
+            &receipt_fixture("valence", 758, 25565),
+        )
+        .expect("valence fixture parses");
+
+        validate_receipt_pair(&paper, &valence).expect("matching receipts compare");
+    }
+
+    #[test]
+    fn rejects_receipt_protocol_mismatch() {
+        let paper = read_receipt_summary_from_text(
+            PathBuf::from("paper.json"),
+            &receipt_fixture("paper", 758, 25566),
+        )
+        .expect("paper fixture parses");
+        let valence = read_receipt_summary_from_text(
+            PathBuf::from("valence.json"),
+            &receipt_fixture("valence", 759, 25565),
+        )
+        .expect("valence fixture parses");
+
+        let err = validate_receipt_pair(&paper, &valence).unwrap_err();
+        assert!(err.contains("receipt protocol mismatch"), "{err}");
     }
 
     #[test]
