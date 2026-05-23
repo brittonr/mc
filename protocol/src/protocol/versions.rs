@@ -265,6 +265,7 @@ mod tests {
             (0x02, crate::protocol::packet::play::clientbound::internal_ids::SpawnExperienceOrb),
             (0x03, crate::protocol::packet::play::clientbound::internal_ids::SpawnPlayer_f64_NoMeta),
             (0x04, crate::protocol::packet::play::clientbound::internal_ids::Animation),
+            (0x12, crate::protocol::packet::play::clientbound::internal_ids::WindowItems_StateCarry),
             (0x14, crate::protocol::packet::play::clientbound::internal_ids::WindowSetSlot_State),
             (0x1c, crate::protocol::packet::play::clientbound::internal_ids::EntityStatus),
             (0x1e, crate::protocol::packet::play::clientbound::internal_ids::ChunkUnload),

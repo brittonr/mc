@@ -6,6 +6,7 @@ const PLAY_CLIENTBOUND_OVERRIDES: &[(i32, i32)] = &[
     (0x03, packet::play::clientbound::internal_ids::SpawnPlayer_f64_NoMeta),
     (0x04, packet::play::clientbound::internal_ids::Animation),
     (0x10, packet::play::clientbound::internal_ids::DeclareCommands),
+    (0x12, packet::play::clientbound::internal_ids::WindowItems_StateCarry),
     (0x14, packet::play::clientbound::internal_ids::WindowSetSlot_State),
     (0x1c, packet::play::clientbound::internal_ids::EntityStatus),
     (0x1e, packet::play::clientbound::internal_ids::ChunkUnload),

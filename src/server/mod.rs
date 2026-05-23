@@ -34,6 +34,7 @@ use std::str::FromStr;
 use std::sync::mpsc;
 use std::sync::{Arc, RwLock};
 use std::thread;
+use steven_protocol::item;
 
 pub mod plugin_messages;
 mod sun;
@@ -83,12 +84,17 @@ pub struct Server {
     team_probe_enabled: bool,
     combat_probe_enabled: bool,
     respawn_probe_enabled: bool,
+    inventory_probe_enabled: bool,
     active_probe_ticks: u32,
     active_probe_logged_position_look_sent: bool,
     combat_probe_attacks_sent: u32,
     respawn_probe_requested: bool,
     respawn_probe_death_seen: bool,
     respawn_probe_restored_seen: bool,
+    inventory_probe_window_seen: bool,
+    inventory_probe_sword_seen: bool,
+    inventory_probe_wool_seen: bool,
+    inventory_probe_hotbar_seen: bool,
     remote_player_entity_ids: Vec<i32>,
 
     sun_model: Option<sun::SunModel>,
@@ -599,12 +605,19 @@ impl Server {
             respawn_probe_enabled: std::env::var("MC_COMPAT_RESPAWN_PROBE")
                 .map(|value| value != "0")
                 .unwrap_or(false),
+            inventory_probe_enabled: std::env::var("MC_COMPAT_INVENTORY_PROBE")
+                .map(|value| value != "0")
+                .unwrap_or(false),
             active_probe_ticks: 0,
             active_probe_logged_position_look_sent: false,
             combat_probe_attacks_sent: 0,
             respawn_probe_requested: false,
             respawn_probe_death_seen: false,
             respawn_probe_restored_seen: false,
+            inventory_probe_window_seen: false,
+            inventory_probe_sword_seen: false,
+            inventory_probe_wool_seen: false,
+            inventory_probe_hotbar_seen: false,
             remote_player_entity_ids: Vec::new(),
             sun_model: None,
 
@@ -688,6 +701,7 @@ impl Server {
             && !self.team_probe_enabled
             && !self.combat_probe_enabled
             && !self.respawn_probe_enabled
+            && !self.inventory_probe_enabled
         {
             return;
         }
@@ -903,6 +917,9 @@ impl Server {
                             TimeUpdate => on_time_update,
                             ChangeGameState => on_game_state_change,
                             UpdateHealth => on_update_health,
+                            WindowItems_StateCarry => on_window_items_state_carry,
+                            WindowSetSlot_State => on_window_set_slot_state,
+                            SetCurrentHotbarSlot => on_set_current_hotbar_slot,
                             DeathMessage_VarInt => on_death_message_varint,
                             PlayerRemove_UUIDs => on_player_remove_uuids,
                             UpdateBlockEntity_VarInt => on_block_entity_update_varint,
@@ -1965,6 +1982,115 @@ impl Server {
             info!(
                 "MC-COMPAT-MILESTONE respawn_probe_health_restored health={:.1}",
                 update.health
+            );
+        }
+    }
+
+    fn item_summary(item: &Option<item::Stack>) -> String {
+        match item {
+            Some(stack) => format!("id={} count={}", stack.id, stack.count),
+            None => "empty".to_string(),
+        }
+    }
+
+    fn on_window_items_state_carry(
+        &mut self,
+        window: packet::play::clientbound::WindowItems_StateCarry,
+    ) {
+        if !self.inventory_probe_enabled {
+            return;
+        }
+
+        let slot_count = window.items.data.len();
+        let slot36 = window
+            .items
+            .data
+            .get(36)
+            .map(Self::item_summary)
+            .unwrap_or_else(|| "missing".to_string());
+        let slot37 = window
+            .items
+            .data
+            .get(37)
+            .map(Self::item_summary)
+            .unwrap_or_else(|| "missing".to_string());
+
+        info!(
+            "MC-COMPAT-MILESTONE inventory_probe_window_items window={} state_id={} slots={} slot36={} slot37={} carried={}",
+            window.id,
+            window.state_id.0,
+            slot_count,
+            slot36,
+            slot37,
+            Self::item_summary(&window.carried_item),
+        );
+        self.inventory_probe_window_seen = true;
+
+        if let Some(Some(stack)) = window.items.data.get(36) {
+            if !self.inventory_probe_sword_seen && stack.count == 1 {
+                self.inventory_probe_sword_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_probe_slot36_nonempty count={} item_id={}",
+                    stack.count, stack.id
+                );
+            }
+        }
+        if let Some(Some(stack)) = window.items.data.get(37) {
+            if !self.inventory_probe_wool_seen && stack.count == 64 {
+                self.inventory_probe_wool_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_probe_slot37_stack count={} item_id={}",
+                    stack.count, stack.id
+                );
+            }
+        }
+    }
+
+    fn on_window_set_slot_state(&mut self, slot: packet::play::clientbound::WindowSetSlot_State) {
+        if !self.inventory_probe_enabled {
+            return;
+        }
+
+        info!(
+            "MC-COMPAT-MILESTONE inventory_probe_set_slot window={} state_id={} slot={} item={}",
+            slot.id,
+            slot.state_id.0,
+            slot.property,
+            Self::item_summary(&slot.item),
+        );
+        if slot.property == 36 {
+            if let Some(stack) = &slot.item {
+                if !self.inventory_probe_sword_seen && stack.count == 1 {
+                    self.inventory_probe_sword_seen = true;
+                    info!(
+                        "MC-COMPAT-MILESTONE inventory_probe_slot36_nonempty count={} item_id={}",
+                        stack.count, stack.id
+                    );
+                }
+            }
+        }
+        if slot.property == 37 {
+            if let Some(stack) = &slot.item {
+                if !self.inventory_probe_wool_seen && stack.count == 64 {
+                    self.inventory_probe_wool_seen = true;
+                    info!(
+                        "MC-COMPAT-MILESTONE inventory_probe_slot37_stack count={} item_id={}",
+                        stack.count, stack.id
+                    );
+                }
+            }
+        }
+    }
+
+    fn on_set_current_hotbar_slot(
+        &mut self,
+        slot: packet::play::clientbound::SetCurrentHotbarSlot,
+    ) {
+        if self.inventory_probe_enabled && !self.inventory_probe_hotbar_seen {
+            self.inventory_probe_hotbar_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE inventory_probe_current_hotbar_slot slot={}",
+                slot.slot
             );
         }
     }
