@@ -77,6 +77,7 @@ struct ClientRunEvidence {
 struct ManagedServer {
     child: Option<Child>,
     pid_file: PathBuf,
+    paper_container: Option<String>,
     keep: bool,
 }
 
@@ -93,6 +94,14 @@ impl Drop for ManagedServer {
             let _ = child.kill();
             let _ = child.wait();
             let _ = fs::remove_file(&self.pid_file);
+        }
+        if let Some(container) = self.paper_container.take() {
+            eprintln!("[mc-compat] stopping managed Paper container {container}");
+            let _ = Command::new("docker")
+                .arg("rm")
+                .arg("-f")
+                .arg(container)
+                .status();
         }
     }
 }
@@ -611,7 +620,8 @@ fn start_server(cfg: &Config) -> Result<ManagedServer, String> {
             Ok(ManagedServer {
                 child: None,
                 pid_file: cfg.valence_pid_file.clone(),
-                keep: true,
+                paper_container: Some(cfg.server_name.clone()),
+                keep: cfg.keep_server || cfg.mode == Mode::DryRun,
             })
         }
     }
@@ -703,6 +713,7 @@ fn start_valence_server(cfg: &Config) -> Result<ManagedServer, String> {
         return Ok(ManagedServer {
             child: None,
             pid_file: cfg.valence_pid_file.clone(),
+            paper_container: None,
             keep: true,
         });
     }
@@ -733,6 +744,7 @@ fn start_valence_server(cfg: &Config) -> Result<ManagedServer, String> {
     Ok(ManagedServer {
         child: Some(child),
         pid_file: cfg.valence_pid_file.clone(),
+        paper_container: None,
         keep: cfg.keep_server,
     })
 }
@@ -742,6 +754,27 @@ fn start_paper_server(cfg: &Config) -> Result<(), String> {
         "starting Paper {} server on 127.0.0.1:{} via {} with EULA=TRUE",
         cfg.server_version, cfg.server_port, cfg.docker_image
     ));
+    if cfg.mode == Mode::DryRun {
+        let mut cmd = Command::new("docker");
+        cmd.arg("run")
+            .arg("-d")
+            .arg("--name")
+            .arg(&cfg.server_name)
+            .arg("-p")
+            .arg(format!("127.0.0.1:{}:25565", cfg.server_port))
+            .arg("-e")
+            .arg("EULA=TRUE")
+            .arg("-e")
+            .arg("TYPE=PAPER")
+            .arg("-e")
+            .arg(format!("VERSION={}", cfg.server_version))
+            .arg("-e")
+            .arg("ONLINE_MODE=FALSE")
+            .arg("-e")
+            .arg("MEMORY=1G")
+            .arg(&cfg.docker_image);
+        return run_cmd(cfg, &mut cmd);
+    }
     let _ = Command::new("docker")
         .arg("rm")
         .arg("-f")
