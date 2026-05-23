@@ -7,7 +7,7 @@ use std::process::{Child, Command, ExitCode, Stdio};
 use std::thread;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-const DEFAULT_VALENCE_REV: &str = "c86b828^";
+const DEFAULT_VALENCE_REV: &str = "8ad9c85";
 const DEFAULT_VALENCE_EXAMPLE: &str = "terrain";
 const DEFAULT_SERVER_VERSION: &str = "1.18.2";
 const DEFAULT_SERVER_PROTOCOL: u32 = 758;
@@ -26,6 +26,8 @@ enum Mode {
     RunMatrix,
     BuildClient,
     StatusOnly,
+    HarnessStatus,
+    Cleanup,
     Stop,
     CompareReceipts,
 }
@@ -64,6 +66,7 @@ struct Config {
     compare_receipts: Option<(PathBuf, PathBuf)>,
     config_path: Option<PathBuf>,
     matrix_dry_run: bool,
+    cleanup_apply: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -165,6 +168,14 @@ fn execute(cfg: &Config) -> Result<Option<ClientRunEvidence>, String> {
             probe_status(cfg)?;
             Ok(None)
         }
+        Mode::HarnessStatus => {
+            print_harness_status(cfg)?;
+            Ok(None)
+        }
+        Mode::Cleanup => {
+            cleanup_harness_state(cfg)?;
+            Ok(None)
+        }
         Mode::Stop => {
             stop_server(cfg)?;
             Ok(None)
@@ -218,6 +229,7 @@ impl Config {
             compare_receipts: None,
             config_path: None,
             matrix_dry_run: false,
+            cleanup_apply: false,
             root,
         }
     }
@@ -257,6 +269,8 @@ impl Config {
                 "--dry-run" => {
                     if cfg.mode == Mode::RunMatrix {
                         cfg.matrix_dry_run = true;
+                    } else if cfg.mode == Mode::Cleanup {
+                        cfg.cleanup_apply = false;
                     } else {
                         cfg.mode = Mode::DryRun;
                     }
@@ -268,6 +282,9 @@ impl Config {
                 }
                 "--build-client" => cfg.mode = Mode::BuildClient,
                 "--status-only" => cfg.mode = Mode::StatusOnly,
+                "--status" => cfg.mode = Mode::HarnessStatus,
+                "--cleanup" => cfg.mode = Mode::Cleanup,
+                "--apply" => cfg.cleanup_apply = true,
                 "--stop" => cfg.mode = Mode::Stop,
                 "--config" => {
                     let path = PathBuf::from(args.next().ok_or_else(|| {
@@ -543,13 +560,14 @@ fn default_port(backend: ServerBackend) -> u16 {
 
 fn print_usage(cfg: &Config) {
     println!(
-        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
+        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
 Automates a local Stevenarella compatibility smoke against a Minecraft {} / protocol {} server.\n\
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from Nickel config; env vars and later CLI flags override it.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.smoke.receipt.v1 JSON receipt for Cairn/Octet evidence flows.\n\
 Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
 Use --run-matrix --receipt-dir DIR to run Paper and Valence receipts then compare them; add --dry-run after --run-matrix for a non-side-effecting matrix fixture.\n\
+Use --status to inspect harness-owned Paper/Valence/tmp state; use --cleanup --dry-run to preview cleanup and --cleanup --apply to remove it.\n\
 Default server backend is Valence, using an editable local Valence checkout plus an isolated protocol-758 worktree so the dirty/current checkout is untouched.\n\
 If the Stevenarella or Valence checkout is missing, clone/fetch it or pass --client-dir/CLIENT_DIR and --valence-repo/VALENCE_REPO to editable checkouts.\n\
 Client runs are forced through Xvfb/X11 with software GL and no inherited Wayland socket.\n\
@@ -638,9 +656,204 @@ fn stop_server(cfg: &Config) -> Result<(), String> {
     run_cmd(cfg, &mut cmd)
 }
 
+fn print_harness_status(cfg: &Config) -> Result<(), String> {
+    log(format_args!(
+        "harness status for server '{}'",
+        cfg.server_name
+    ));
+    let docker = docker_container_status(&cfg.server_name)?;
+    println!("paper_container={docker}");
+
+    let pid_state = valence_pid_state(&cfg.valence_pid_file)?;
+    println!("valence_pid={pid_state}");
+    println!(
+        "valence_worktree={} exists={}",
+        cfg.valence_worktree.display(),
+        cfg.valence_worktree.exists()
+    );
+    println!(
+        "valence_target_dir={} exists={}",
+        cfg.valence_target_dir.display(),
+        cfg.valence_target_dir.exists()
+    );
+    println!(
+        "valence_log={} exists={}",
+        cfg.valence_log.display(),
+        cfg.valence_log.exists()
+    );
+    let logs = client_log_paths()?;
+    println!("client_logs={}", logs.len());
+    for path in logs.iter().take(20) {
+        println!("client_log={}", path.display());
+    }
+    if logs.len() > 20 {
+        println!("client_logs_omitted={}", logs.len() - 20);
+    }
+    Ok(())
+}
+
+fn cleanup_harness_state(cfg: &Config) -> Result<(), String> {
+    let apply = cfg.cleanup_apply;
+    if apply {
+        log(format_args!("cleaning harness-owned state"));
+    } else {
+        log(format_args!(
+            "cleanup dry-run; pass --cleanup --apply to remove harness-owned state"
+        ));
+    }
+
+    cleanup_paper_container(&cfg.server_name, apply)?;
+    cleanup_valence_pid(&cfg.valence_pid_file, apply)?;
+    cleanup_path("valence target dir", &cfg.valence_target_dir, apply)?;
+    cleanup_path("valence log", &cfg.valence_log, apply)?;
+    for path in client_log_paths()? {
+        cleanup_path("client log", &path, apply)?;
+    }
+    Ok(())
+}
+
+fn docker_container_status(name: &str) -> Result<String, String> {
+    let output = Command::new("docker")
+        .arg("ps")
+        .arg("-a")
+        .arg("--filter")
+        .arg(format!("name={name}"))
+        .arg("--format")
+        .arg("{{.Names}} {{.Status}}")
+        .output();
+    match output {
+        Ok(out) if out.status.success() => {
+            let text = String::from_utf8_lossy(&out.stdout).trim().to_string();
+            if text.is_empty() {
+                Ok("absent".to_string())
+            } else {
+                Ok(text)
+            }
+        }
+        Ok(out) => Ok(format!(
+            "unavailable: docker ps exited {}: {}",
+            out.status,
+            String::from_utf8_lossy(&out.stderr).trim()
+        )),
+        Err(err) => Ok(format!("unavailable: {err}")),
+    }
+}
+
+fn cleanup_paper_container(name: &str, apply: bool) -> Result<(), String> {
+    let state = docker_container_status(name)?;
+    if state == "absent" || state.starts_with("unavailable:") {
+        println!("cleanup paper_container {name}: {state}");
+        return Ok(());
+    }
+    if apply {
+        log(format_args!("removing Paper container {name}"));
+        let status = Command::new("docker")
+            .arg("rm")
+            .arg("-f")
+            .arg(name)
+            .status()
+            .map_err(|e| format!("docker rm -f {name}: {e}"))?;
+        if !status.success() {
+            return Err(format!("docker rm -f {name} failed with {status}"));
+        }
+    } else {
+        println!("would remove Paper container {name}: {state}");
+    }
+    Ok(())
+}
+
+fn valence_pid_state(pid_file: &Path) -> Result<String, String> {
+    let pid = match fs::read_to_string(pid_file) {
+        Ok(pid) => pid.trim().to_string(),
+        Err(err) if err.kind() == io::ErrorKind::NotFound => return Ok("absent".to_string()),
+        Err(err) => return Err(format!("read {}: {err}", pid_file.display())),
+    };
+    if pid.is_empty() {
+        return Ok(format!("empty pid file {}", pid_file.display()));
+    }
+    let alive = Command::new("kill")
+        .arg("-0")
+        .arg(&pid)
+        .status()
+        .map(|status| status.success())
+        .unwrap_or(false);
+    Ok(format!(
+        "pid={} alive={} file={}",
+        pid,
+        alive,
+        pid_file.display()
+    ))
+}
+
+fn cleanup_valence_pid(pid_file: &Path, apply: bool) -> Result<(), String> {
+    let pid = match fs::read_to_string(pid_file) {
+        Ok(pid) => pid.trim().to_string(),
+        Err(err) if err.kind() == io::ErrorKind::NotFound => {
+            println!("cleanup valence_pid_file {}: absent", pid_file.display());
+            return Ok(());
+        }
+        Err(err) => return Err(format!("read {}: {err}", pid_file.display())),
+    };
+    if !pid.is_empty() {
+        if apply {
+            log(format_args!("stopping stale Valence process {pid}"));
+            let _ = Command::new("kill").arg(&pid).status();
+        } else {
+            println!("would stop Valence process {pid}");
+        }
+    }
+    if apply {
+        fs::remove_file(pid_file).map_err(|e| format!("remove {}: {e}", pid_file.display()))?;
+    } else {
+        println!("would remove Valence pid file {}", pid_file.display());
+    }
+    Ok(())
+}
+
+fn cleanup_path(label: &str, path: &Path, apply: bool) -> Result<(), String> {
+    if !path.exists() {
+        println!("cleanup {label} {}: absent", path.display());
+        return Ok(());
+    }
+    if apply {
+        log(format_args!("removing {label} {}", path.display()));
+        if path.is_dir() {
+            fs::remove_dir_all(path).map_err(|e| format!("remove {}: {e}", path.display()))?;
+        } else {
+            fs::remove_file(path).map_err(|e| format!("remove {}: {e}", path.display()))?;
+        }
+    } else {
+        println!("would remove {label} {}", path.display());
+    }
+    Ok(())
+}
+
+fn client_log_paths() -> Result<Vec<PathBuf>, String> {
+    let mut paths = Vec::new();
+    let entries = match fs::read_dir("/tmp") {
+        Ok(entries) => entries,
+        Err(err) if err.kind() == io::ErrorKind::NotFound => return Ok(paths),
+        Err(err) => return Err(format!("read /tmp: {err}")),
+    };
+    for entry in entries {
+        let entry = entry.map_err(|e| format!("read /tmp entry: {e}"))?;
+        let name = entry.file_name();
+        if is_mc_compat_client_log(&name.to_string_lossy()) {
+            paths.push(entry.path());
+        }
+    }
+    paths.sort();
+    Ok(paths)
+}
+
+fn is_mc_compat_client_log(name: &str) -> bool {
+    name.starts_with("mc-compat-client.") && name.ends_with(".log")
+}
+
 fn prepare_valence_worktree(cfg: &Config) -> Result<(), String> {
     ensure_valence_repo_ready(cfg)?;
     if !cfg.valence_worktree.join(".git").exists() {
+        prune_stale_valence_worktrees(cfg)?;
         log(format_args!(
             "creating isolated Valence worktree {} at {}",
             cfg.valence_worktree.display(),
@@ -662,6 +875,15 @@ fn prepare_valence_worktree(cfg: &Config) -> Result<(), String> {
         ));
     }
     Ok(())
+}
+
+fn prune_stale_valence_worktrees(cfg: &Config) -> Result<(), String> {
+    let mut cmd = Command::new("git");
+    cmd.arg("-C")
+        .arg(&cfg.valence_repo)
+        .arg("worktree")
+        .arg("prune");
+    run_cmd(cfg, &mut cmd)
 }
 
 fn ensure_valence_repo_ready(cfg: &Config) -> Result<(), String> {
@@ -1437,6 +1659,8 @@ fn mode_name(mode: Mode) -> &'static str {
         Mode::RunMatrix => "run-matrix",
         Mode::BuildClient => "build-client",
         Mode::StatusOnly => "status-only",
+        Mode::HarnessStatus => "status",
+        Mode::Cleanup => "cleanup",
         Mode::Stop => "stop",
         Mode::CompareReceipts => "compare-receipts",
     }
@@ -1682,6 +1906,47 @@ mod tests {
             err.contains("--run-matrix writes backend receipts"),
             "{err}"
         );
+    }
+
+    #[test]
+    fn status_and_cleanup_modes_parse_without_server_probe_mode() {
+        let status = test_config(&["--status"], &[]).expect("status config parses");
+        assert_eq!(status.mode, Mode::HarnessStatus);
+        assert!(!status.cleanup_apply);
+
+        let cleanup_dry =
+            test_config(&["--cleanup", "--dry-run"], &[]).expect("cleanup dry-run config parses");
+        assert_eq!(cleanup_dry.mode, Mode::Cleanup);
+        assert!(!cleanup_dry.cleanup_apply);
+
+        let cleanup_apply =
+            test_config(&["--cleanup", "--apply"], &[]).expect("cleanup apply config parses");
+        assert_eq!(cleanup_apply.mode, Mode::Cleanup);
+        assert!(cleanup_apply.cleanup_apply);
+    }
+
+    #[test]
+    fn cleanup_client_log_match_is_narrow() {
+        assert!(is_mc_compat_client_log("mc-compat-client.123.log"));
+        assert!(!is_mc_compat_client_log("mc-compat-client.123.txt"));
+        assert!(!is_mc_compat_client_log("other-mc-compat-client.123.log"));
+    }
+
+    #[test]
+    fn cleanup_path_dry_run_preserves_existing_files() {
+        let dir =
+            std::env::temp_dir().join(format!("mc-compat-cleanup-dry-run-{}", std::process::id()));
+        let _ = fs::remove_dir_all(&dir);
+        fs::create_dir_all(&dir).expect("create cleanup dry-run fixture");
+        let file = dir.join("artifact.log");
+        fs::write(&file, "keep me").expect("write cleanup fixture");
+
+        cleanup_path("test artifact", &file, false).expect("dry-run cleanup succeeds");
+        assert!(file.exists(), "dry-run cleanup must not remove files");
+
+        cleanup_path("test artifact", &file, true).expect("apply cleanup removes file");
+        assert!(!file.exists(), "apply cleanup removes files");
+        let _ = fs::remove_dir_all(&dir);
     }
 
     #[test]

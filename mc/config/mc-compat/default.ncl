@@ -39,7 +39,7 @@ let SmokeConfig = {
 {
   client_dir = "./stevenarella",
   valence_repo = "./valence",
-  valence_rev = "c86b828^",
+  valence_rev = "8ad9c85",
   valence_worktree = "/tmp/valence-compat-758",
   valence_example = "terrain",
   valence_log = "/tmp/mc-compat-valence.log",

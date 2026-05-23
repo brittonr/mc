@@ -241,6 +241,11 @@
           grep -Fq -- "--receipt PATH" help.log
           grep -Fq -- "--receipt-dir DIR" help.log
           grep -Fq -- "--run-matrix" help.log
+          grep -Fq -- "--status-only" help.log
+          grep -Fq -- "--status" help.log
+          grep -Fq -- "--cleanup" help.log
+          grep -Fq -- "--apply" help.log
+          grep -Fq -- "--stop" help.log
           grep -Fq -- "--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT" help.log
           grep -Fq "SMOKE_RECEIPT" help.log
           grep -Fq "SMOKE_RECEIPT_DIR" help.log
