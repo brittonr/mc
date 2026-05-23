@@ -29,6 +29,7 @@ mod v1_9_2;
 pub fn protocol_name_to_protocol_version(s: String) -> i32 {
     match s.as_ref() {
         "" => SUPPORTED_PROTOCOLS[0],
+        "1.20.1" => 763,
         "1.18.2" => 758,
         "1.18.1" => 757,
         "1.17.1" => 756,
@@ -75,6 +76,7 @@ pub fn translate_internal_packet_id_for_version(
     to_internal: bool,
 ) -> i32 {
     match version {
+        763 => v1_18_2::translate_internal_packet_id(state, dir, id, to_internal),
         758 => v1_18_2::translate_internal_packet_id(state, dir, id, to_internal),
         757 => v1_18_1::translate_internal_packet_id(state, dir, id, to_internal),
         756 => v1_17_1::translate_internal_packet_id(state, dir, id, to_internal),
@@ -101,5 +103,35 @@ pub fn translate_internal_packet_id_for_version(
         47 => v1_8_9::translate_internal_packet_id(state, dir, id, to_internal),
         5 => v1_7_10::translate_internal_packet_id(state, dir, id, to_internal),
         _ => panic!("unsupported protocol version: {}", version),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn protocol_name_accepts_valence_current_1_20_1() {
+        assert_eq!(protocol_name_to_protocol_version("1.20.1".to_string()), 763);
+    }
+
+    #[test]
+    fn protocol_763_currently_reuses_1_18_2_packet_translation() {
+        assert_eq!(
+            translate_internal_packet_id_for_version(
+                763,
+                State::Handshaking,
+                Direction::Serverbound,
+                0,
+                true,
+            ),
+            translate_internal_packet_id_for_version(
+                758,
+                State::Handshaking,
+                Direction::Serverbound,
+                0,
+                true,
+            )
+        );
     }
 }
