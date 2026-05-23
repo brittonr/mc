@@ -1,0 +1,104 @@
+{
+  "artifacts": {
+    "blue_probe_log": {
+      "blake3": "1f95a6a6da6ee626da0c53858b68cbb4906ef50daacea15f356c54d47f8ce047",
+      "bytes": 9786,
+      "path": "/tmp/stevenarella-763-respawn-blue6-2026-05-23.log"
+    },
+    "blue_probe_status": {
+      "blake3": "f67d19a0fed77375c9ee600f70ff255957e708d6c0898a270d40151761401f0a",
+      "content": "exit=124",
+      "path": "/tmp/stevenarella-763-respawn-blue6-2026-05-23.status"
+    },
+    "combined_probe_log": {
+      "Detected server protocol version 763": 2,
+      "Disconnect": 0,
+      "Failed to read all of packet": 0,
+      "FromUtf8Error": 0,
+      "MC-COMPAT-MILESTONE combat_probe_attack_sent": 10,
+      "MC-COMPAT-MILESTONE first_chunk_data": 2,
+      "MC-COMPAT-MILESTONE join_game_763_shape": 2,
+      "MC-COMPAT-MILESTONE login_success": 2,
+      "MC-COMPAT-MILESTONE render_tick_with_player": 2,
+      "UnexpectedEof": 0,
+      "You are on team BLUE": 1,
+      "You are on team RED": 1,
+      "bad packet id": 0,
+      "combat_probe_death_observed": 1,
+      "failed to parse packet": 0,
+      "panicked at": 0,
+      "respawn_packet_763_shape": 1,
+      "respawn_probe_health_restored health=20.0": 1,
+      "respawn_probe_request_sent": 1,
+      "update_health health=0.0": 1,
+      "update_health health=12.0": 2,
+      "update_health health=16.0": 2,
+      "update_health health=4.0": 1,
+      "update_health health=8.0": 1
+    },
+    "red_probe_log": {
+      "blake3": "a5a500bb9b05fe27a7bc44563cfa8fc39da8e86bbbaee3439ac95f32d98737cb",
+      "bytes": 12618,
+      "path": "/tmp/stevenarella-763-respawn-red6-2026-05-23.log"
+    },
+    "red_probe_status": {
+      "blake3": "f67d19a0fed77375c9ee600f70ff255957e708d6c0898a270d40151761401f0a",
+      "content": "exit=124",
+      "path": "/tmp/stevenarella-763-respawn-red6-2026-05-23.status"
+    }
+  },
+  "contract": {
+    "claims_attack_packets_sent": true,
+    "claims_both_teams_selected": true,
+    "claims_current_valence_client_compat": false,
+    "claims_death_message_observed": false,
+    "claims_full_combat_correctness": false,
+    "claims_full_stevenarella_763_support": false,
+    "claims_inventory_correctness": false,
+    "claims_reconnect_or_soak": false,
+    "claims_respawn_health_restored": true,
+    "claims_respawn_packet_763_shape_observed": true,
+    "claims_respawn_request_sent": true,
+    "claims_stable_in_world_gameplay": false,
+    "claims_victim_death_health_observed": true,
+    "claims_victim_health_decreased": true
+  },
+  "created_at": "2026-05-23",
+  "dry_run": false,
+  "mode": "protocol_763_stevenarella_valence_ctf_respawn_semantic_probe",
+  "non_claims": [
+    "full Minecraft 1.20.1 compatibility",
+    "complete protocol 763 coverage",
+    "stable gameplay",
+    "full combat correctness",
+    "inventory semantics",
+    "reconnect/session behavior",
+    "long-term soak"
+  ],
+  "probe": {
+    "blue_role": "victim",
+    "blue_username": "RespawnBlue6",
+    "duration_seconds": 360,
+    "red_role": "attacker",
+    "red_start_delay_seconds": 25,
+    "red_username": "RespawnRed6",
+    "server": "127.0.0.1:25565"
+  },
+  "schema": "mc.compat.stevenarella-valence-763-respawn.receipt.v1",
+  "status": "bounded_two_client_respawn_probe_request_health_restored_respawn_packet_observed_no_logged_runtime_failure",
+  "stevenarella": {
+    "active_probe_env": "MC_COMPAT_ACTIVE_PROBE=1",
+    "combat_probe_env": "MC_COMPAT_COMBAT_PROBE=1",
+    "commit": "559c7a6",
+    "repo": "/home/brittonr/git/mc/stevenarella",
+    "respawn_probe_env": "MC_COMPAT_RESPAWN_PROBE=1",
+    "team_probe_env": "MC_COMPAT_TEAM_PROBE=1"
+  },
+  "valence": {
+    "commit": "c5140b7",
+    "committed_changes": false,
+    "example": "ctf",
+    "protocol": 763,
+    "repo": "/home/brittonr/git/mc/valence"
+  }
+}
