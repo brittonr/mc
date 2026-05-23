@@ -1,0 +1,84 @@
+{
+  "boundary": {
+    "next_boundary": {
+      "status": "unmapped_by_758_fallback",
+      "stevenarella_758_alias_semantic": null,
+      "stevenarella_763_fallback_internal": null,
+      "valence_763_semantic": "AdvancementUpdateS2CPacket",
+      "wire_id": "0x69"
+    },
+    "still_mapped_from_prior_updates": [
+      {
+        "stevenarella_763_internal": "JoinGame_WorldNames_IsHard_SimDist",
+        "valence_763_semantic": "GameJoinS2CPacket",
+        "wire_id": "0x28"
+      },
+      {
+        "stevenarella_763_internal": "DeclareCommands",
+        "valence_763_semantic": "CommandTreeS2CPacket",
+        "wire_id": "0x10"
+      }
+    ],
+    "updated_boundary": {
+      "previous_stevenarella_758_alias_semantic": "EntityProperties_VarIntVarInt",
+      "status": "mapped",
+      "stevenarella_763_internal": "ServerMessage_Position",
+      "valence_763_semantic": "GameMessageS2CPacket",
+      "wire_id": "0x64"
+    }
+  },
+  "client_probe": {
+    "exit_code": 124,
+    "log": "/tmp/stevenarella-763-after-game-message-update.log",
+    "log_b3": "9950c7806dfc913d02f8415a1621afa87fe29f0a01280a3e56d62b5787ac572f",
+    "matched_success_pattern": "Detected server protocol version 763",
+    "status_b3": "16d78a954cb775e521c46341a98c2c6a187ea74a6d018de5efbae328941e87e6",
+    "status_file": "/tmp/stevenarella-763-after-game-message-update.status",
+    "used_rustc_bootstrap_for_legacy_full_client_build": true
+  },
+  "contract": {
+    "claims_current_valence_client_compat": false,
+    "claims_full_stevenarella_763_support": false,
+    "claims_protocol_763_game_message_mapping": true,
+    "claims_semantic_correctness": false
+  },
+  "date_utc": "2026-05-23",
+  "dry_run": false,
+  "mode": "protocol_763_game_message_mapping_update",
+  "schema": "mc.compat.stevenarella-valence-763-game-message-update.receipt.v1",
+  "status": "pass",
+  "stevenarella": {
+    "commit": "cd9b59d3de0c8fd08a04a72fcd9439b678480ce0",
+    "commit_subject": "Add protocol 763 game message mapping",
+    "fork_branch": "master",
+    "fork_remote": "git@github.com:brittonr/stevenarella.git"
+  },
+  "trace": {
+    "artifact": "/tmp/valence-763-after-game-message-update-trace.json",
+    "artifact_b3": "6fa76c598e7eae48d0d7a0e6146bae8fa5f319bbb97de5833d1548c76e9725d2",
+    "first_play_packet_ids": [
+      "0x28",
+      "0x10",
+      "0x64",
+      "0x69",
+      "0x58",
+      "0x51"
+    ],
+    "login_packet_ids": [
+      "0x03",
+      "0x02"
+    ]
+  },
+  "valence": {
+    "connection_mode": "offline",
+    "example": "ctf",
+    "minecraft_version": "1.20.1",
+    "protocol": 763
+  },
+  "verification": {
+    "cargo_fmt_check": "pass",
+    "headless_probe_status": "pass_timeout_signal",
+    "steven_protocol_tests": "pass",
+    "steven_protocol_tests_passed": 8
+  }
+}
