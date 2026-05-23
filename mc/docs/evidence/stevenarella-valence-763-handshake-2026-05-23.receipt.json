@@ -1,0 +1,47 @@
+{
+  "schema": "mc.compat.stevenarella-valence-handshake.receipt.v1",
+  "date_utc": "2026-05-23",
+  "status": "pass",
+  "mode": "current_valence_763_handshake_probe",
+  "dry_run": false,
+  "valence": {
+    "commit": "c5140b7",
+    "minecraft_version": "1.20.1",
+    "protocol": 763,
+    "example": "parkour",
+    "status_probe_passed": true
+  },
+  "stevenarella": {
+    "base_commit": "815ac88",
+    "patched_files": [
+      "protocol/src/protocol/mod.rs",
+      "protocol/src/protocol/versions.rs"
+    ],
+    "change": "Advertise protocol 763 / version 1.20.1 and temporarily route packet-id translation through the existing 1.18.2 translator.",
+    "claims_full_1_20_1_protocol_support": false,
+    "claims_semantic_correctness": false,
+    "patched_commit": "ff04368"
+  },
+  "client_probe": {
+    "command_shape": "timeout 20 xvfb-run ... stevenarella --server 127.0.0.1:25565 --username compatbot --default-protocol-version 763",
+    "exit_code": 124,
+    "classification": "timeout-success-evidence",
+    "matched_success_pattern": "Detected server protocol version 763",
+    "log_b3": "ea08578b1ff24a0e7e21e26518fa7330586ea13b5b8808412d50a7d0bba4aff7",
+    "log_excerpt": [
+      "[main.rs:254][INFO] Starting steven",
+      "[main.rs:99][INFO] Detected server protocol version 763"
+    ]
+  },
+  "verification": {
+    "unit_tests": "cargo test -p steven_protocol protocol::versions::tests -- --nocapture",
+    "unit_tests_status": "pass",
+    "client_probe_status": "pass"
+  },
+  "contract": {
+    "claims_current_valence_initial_handshake": true,
+    "claims_current_valence_client_compat": false,
+    "claims_full_stevenarella_763_support": false,
+    "claims_semantic_correctness": false
+  }
+}

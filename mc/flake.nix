@@ -404,6 +404,57 @@
               cp "$receipt" "$note" "$out/"
               printf '%s\n' "$b3" > "$out/receipt.b3"
             '';
+        stevenarella-valence-763-handshake-evidence =
+          pkgs.runCommand "stevenarella-valence-763-handshake-evidence" { nativeBuildInputs = [ pkgs.b3sum pkgs.python3 ]; }
+            ''
+              receipt=${./docs/evidence/stevenarella-valence-763-handshake-2026-05-23.receipt.json}
+              note=${./docs/evidence/stevenarella-valence-763-handshake-2026-05-23.md}
+
+              python3 - "$receipt" "$note" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          receipt_path = pathlib.Path(sys.argv[1])
+          note_path = pathlib.Path(sys.argv[2])
+          receipt = json.loads(receipt_path.read_text())
+          note = note_path.read_text()
+
+          def assert_eq(name, actual, expected):
+              if actual != expected:
+                  raise SystemExit(f"{name}: expected {expected!r}, got {actual!r}")
+
+          assert_eq("schema", receipt["schema"], "mc.compat.stevenarella-valence-handshake.receipt.v1")
+          assert_eq("status", receipt["status"], "pass")
+          assert_eq("mode", receipt["mode"], "current_valence_763_handshake_probe")
+          assert_eq("dry_run", receipt["dry_run"], False)
+          assert_eq("valence.protocol", receipt["valence"]["protocol"], 763)
+          assert_eq("valence.status_probe_passed", receipt["valence"]["status_probe_passed"], True)
+          assert_eq("stevenarella.claims_full_1_20_1_protocol_support", receipt["stevenarella"]["claims_full_1_20_1_protocol_support"], False)
+          assert_eq("client.exit_code", receipt["client_probe"]["exit_code"], 124)
+          assert_eq("client.matched_success_pattern", receipt["client_probe"]["matched_success_pattern"], "Detected server protocol version 763")
+          assert_eq("verification.unit_tests_status", receipt["verification"]["unit_tests_status"], "pass")
+          assert_eq("contract.claims_current_valence_initial_handshake", receipt["contract"]["claims_current_valence_initial_handshake"], True)
+          assert_eq("contract.claims_current_valence_client_compat", receipt["contract"]["claims_current_valence_client_compat"], False)
+          assert_eq("contract.claims_full_stevenarella_763_support", receipt["contract"]["claims_full_stevenarella_763_support"], False)
+
+          required_note_fragments = [
+              "Detected server protocol version 763",
+              "not** full 1.20.1 protocol support",
+              "Client log BLAKE3",
+              "Receipt BLAKE3",
+          ]
+          for fragment in required_note_fragments:
+              if fragment not in note:
+                  raise SystemExit(f"handshake evidence note missing fragment: {fragment}")
+          PY
+
+              b3=$(b3sum "$receipt" | cut -d' ' -f1)
+              grep -Fq "Receipt BLAKE3: \`$b3\`" "$note"
+              mkdir -p "$out"
+              cp "$receipt" "$note" "$out/"
+              printf '%s\n' "$b3" > "$out/receipt.b3"
+            '';
         onixresearch-ssh-tools = pkgs.runCommand "onixresearch-ssh-tools" { } ''
           ${cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn}/bin/cairn --help > cairn-help.log
           ${
