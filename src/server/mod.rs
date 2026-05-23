@@ -668,6 +668,7 @@ impl Server {
                         self pck {
                             PluginMessageClientbound_i16 => on_plugin_message_clientbound_i16,
                             PluginMessageClientbound => on_plugin_message_clientbound_1,
+                            JoinGame_WorldNames_IsHard_SimDist_LastDeath_PortalCooldown => on_game_join_worldnames_ishard_simdist_lastdeath_portal,
                             JoinGame_WorldNames_IsHard_SimDist => on_game_join_worldnames_ishard_simdist,
                             JoinGame_WorldNames_IsHard => on_game_join_worldnames_ishard,
                             JoinGame_WorldNames => on_game_join_worldnames,
@@ -714,6 +715,7 @@ impl Server {
                             UpdateSign => on_sign_update,
                             UpdateSign_u16 => on_sign_update_u16,
                             PlayerInfo => on_player_info,
+                            PlayerInfo_BitSet => on_player_info_bit_set,
                             PlayerInfo_String => on_player_info_string,
                             ServerMessage_NoPosition => on_servermessage_noposition,
                             ServerMessage_Position => on_servermessage_position,
@@ -1168,6 +1170,17 @@ impl Server {
         join: packet::play::clientbound::JoinGame_WorldNames_IsHard_SimDist,
     ) {
         self.world.load_dimension_type(join.dimension);
+        self.on_game_join(join.gamemode, join.entity_id)
+    }
+
+    fn on_game_join_worldnames_ishard_simdist_lastdeath_portal(
+        &mut self,
+        join: packet::play::clientbound::JoinGame_WorldNames_IsHard_SimDist_LastDeath_PortalCooldown,
+    ) {
+        info!(
+            "MC-COMPAT-MILESTONE join_game_763_shape dimension_type={} world={} portal_cooldown={}",
+            join.dimension_type_name, join.world_name, join.portal_cooldown.0
+        );
         self.on_game_join(join.gamemode, join.entity_id)
     }
 
@@ -1926,6 +1939,18 @@ impl Server {
             self.players.remove(&uuid);
         }
         */
+    }
+
+    fn on_player_info_bit_set(
+        &mut self,
+        player_info: packet::play::clientbound::PlayerInfo_BitSet,
+    ) {
+        self.on_player_info(packet::play::clientbound::PlayerInfo {
+            inner: packet::PlayerInfoData {
+                action: protocol::VarInt(0),
+                players: player_info.inner.players,
+            },
+        });
     }
 
     fn on_player_info(&mut self, player_info: packet::play::clientbound::PlayerInfo) {

@@ -7,10 +7,10 @@ const PLAY_CLIENTBOUND_OVERRIDES: &[(i32, i32)] = &[
     (0x24, packet::play::clientbound::internal_ids::ChunkData_AndLight),
     (
         0x28,
-        packet::play::clientbound::internal_ids::JoinGame_WorldNames_IsHard_SimDist,
+        packet::play::clientbound::internal_ids::JoinGame_WorldNames_IsHard_SimDist_LastDeath_PortalCooldown,
     ),
     (0x34, packet::play::clientbound::internal_ids::PlayerAbilities),
-    (0x3a, packet::play::clientbound::internal_ids::PlayerInfo),
+    (0x3a, packet::play::clientbound::internal_ids::PlayerInfo_BitSet),
     (0x4d, packet::play::clientbound::internal_ids::SetCurrentHotbarSlot),
     (0x51, packet::play::clientbound::internal_ids::ScoreboardDisplay),
     (0x52, packet::play::clientbound::internal_ids::EntityMetadata),

@@ -184,14 +184,14 @@ mod tests {
     fn protocol_763_maps_valence_game_join_boundary() {
         assert_eq!(
             translate_internal_packet_id_for_version(763, State::Play, Direction::Clientbound, 0x28, true),
-            crate::protocol::packet::play::clientbound::internal_ids::JoinGame_WorldNames_IsHard_SimDist,
+            crate::protocol::packet::play::clientbound::internal_ids::JoinGame_WorldNames_IsHard_SimDist_LastDeath_PortalCooldown,
         );
         assert_eq!(
             translate_internal_packet_id_for_version(
                 763,
                 State::Play,
                 Direction::Clientbound,
-                crate::protocol::packet::play::clientbound::internal_ids::JoinGame_WorldNames_IsHard_SimDist,
+                crate::protocol::packet::play::clientbound::internal_ids::JoinGame_WorldNames_IsHard_SimDist_LastDeath_PortalCooldown,
                 false,
             ),
             0x28,
@@ -265,7 +265,7 @@ mod tests {
             (0x1c, crate::protocol::packet::play::clientbound::internal_ids::EntityStatus),
             (0x24, crate::protocol::packet::play::clientbound::internal_ids::ChunkData_AndLight),
             (0x34, crate::protocol::packet::play::clientbound::internal_ids::PlayerAbilities),
-            (0x3a, crate::protocol::packet::play::clientbound::internal_ids::PlayerInfo),
+            (0x3a, crate::protocol::packet::play::clientbound::internal_ids::PlayerInfo_BitSet),
             (0x4d, crate::protocol::packet::play::clientbound::internal_ids::SetCurrentHotbarSlot),
             (0x51, crate::protocol::packet::play::clientbound::internal_ids::ScoreboardDisplay),
             (0x52, crate::protocol::packet::play::clientbound::internal_ids::EntityMetadata),

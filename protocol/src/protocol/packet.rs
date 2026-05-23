@@ -1379,6 +1379,49 @@ state_packets!(
                 /// Whether the world is a superflat world
                 field is_flat: bool =,
             }
+            packet JoinGame_WorldNames_IsHard_SimDist_LastDeath_PortalCooldown {
+                /// The entity id the client will be referenced by
+                field entity_id: i32 =,
+                /// Whether hardcore mode is enabled
+                field is_hardcore: bool =,
+                /// The starting gamemode of the client
+                field gamemode: u8 =,
+                /// The previous gamemode of the client
+                field previous_gamemode: u8 =,
+                /// Identifiers for all worlds on the server
+                field world_names: LenPrefixed<VarInt, String> =,
+                /// Represents a dimension registry
+                field dimension_codec: Option<nbt::NamedTag> =,
+                /// The dimension type the client is starting in
+                field dimension_type_name: String =,
+                /// The world being spawned into
+                field world_name: String =,
+                /// Truncated SHA-256 hash of world's seed
+                field hashed_seed: i64 =,
+                /// The max number of players on the server
+                field max_players: VarInt =,
+                /// The render distance (2-32)
+                field view_distance: VarInt =,
+                /// The distance the client will process entities
+                field simulation_distance: VarInt =,
+                /// Whether the client should reduce the amount of debug
+                /// information it displays in F3 mode
+                field reduced_debug_info: bool =,
+                /// Whether to prompt or immediately respawn
+                field enable_respawn_screen: bool =,
+                /// Whether the world is in debug mode
+                field is_debug: bool =,
+                /// Whether the world is a superflat world
+                field is_flat: bool =,
+                /// Whether the server sent a last death location
+                field has_last_death_location: bool =,
+                /// The dimension of the last death location
+                field last_death_dimension: String = when(|p: &JoinGame_WorldNames_IsHard_SimDist_LastDeath_PortalCooldown| p.has_last_death_location),
+                /// The position of the last death location
+                field last_death_position: Position = when(|p: &JoinGame_WorldNames_IsHard_SimDist_LastDeath_PortalCooldown| p.has_last_death_location),
+                /// The player's current portal cooldown
+                field portal_cooldown: VarInt =,
+            }
             packet JoinGame_WorldNames_IsHard {
                 /// The entity id the client will be referenced by
                 field entity_id: i32 =,
@@ -1695,6 +1738,9 @@ state_packets!(
             /// to provide skin and username information as well as ping and gamemode info.
             packet PlayerInfo {
                 field inner: packet::PlayerInfoData =,
+            }
+            packet PlayerInfo_BitSet {
+                field inner: packet::PlayerInfoData_BitSet =,
             }
             packet PlayerInfo_String {
                 field name: String =,
@@ -2954,6 +3000,115 @@ impl Serializable for PropertyModifier {
 pub struct PlayerInfoData {
     pub action: VarInt,
     pub players: Vec<PlayerDetail>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct PlayerInfoData_BitSet {
+    pub players: Vec<PlayerDetail>,
+}
+
+impl Serializable for PlayerInfoData_BitSet {
+    fn read_from<R: io::Read>(buf: &mut R) -> Result<Self, Error> {
+        let actions = u8::read_from(buf)?;
+        let len = VarInt::read_from(buf)?;
+        let mut players = Vec::new();
+
+        for _ in 0..len.0 {
+            let uuid = UUID::read_from(buf)?;
+            let mut name = String::new();
+            let mut properties = Vec::new();
+            let mut gamemode = VarInt(0);
+            let mut ping = VarInt(0);
+            let mut display = None;
+
+            if actions & 0x01 != 0 {
+                name = String::read_from(buf)?;
+                let plen = VarInt::read_from(buf)?.0;
+                for _ in 0..plen {
+                    let mut prop = PlayerProperty {
+                        name: String::read_from(buf)?,
+                        value: String::read_from(buf)?,
+                        signature: Default::default(),
+                    };
+                    if bool::read_from(buf)? {
+                        prop.signature = Some(String::read_from(buf)?);
+                    }
+                    properties.push(prop);
+                }
+            }
+
+            if actions & 0x02 != 0 {
+                if bool::read_from(buf)? {
+                    let _session_id = UUID::read_from(buf)?;
+                    let _key_expiry_time = i64::read_from(buf)?;
+                    let _public_key = LenPrefixedBytes::<VarInt>::read_from(buf)?;
+                    let _public_key_signature = LenPrefixedBytes::<VarInt>::read_from(buf)?;
+                }
+            }
+
+            if actions & 0x04 != 0 {
+                gamemode = VarInt::read_from(buf)?;
+            }
+
+            if actions & 0x08 != 0 {
+                let _listed = bool::read_from(buf)?;
+            }
+
+            if actions & 0x10 != 0 {
+                ping = VarInt::read_from(buf)?;
+            }
+
+            if actions & 0x20 != 0 {
+                display = if bool::read_from(buf)? {
+                    Some(Serializable::read_from(buf)?)
+                } else {
+                    None
+                };
+            }
+
+            if actions & 0x01 != 0 {
+                players.push(PlayerDetail::Add {
+                    uuid,
+                    name,
+                    properties,
+                    gamemode,
+                    ping,
+                    display,
+                });
+            } else {
+                if actions & 0x04 != 0 {
+                    players.push(PlayerDetail::UpdateGamemode {
+                        uuid: uuid.clone(),
+                        gamemode,
+                    });
+                }
+                if actions & 0x10 != 0 {
+                    players.push(PlayerDetail::UpdateLatency {
+                        uuid: uuid.clone(),
+                        ping,
+                    });
+                }
+                if actions & 0x20 != 0 {
+                    players.push(PlayerDetail::UpdateDisplayName {
+                        uuid: uuid.clone(),
+                        display,
+                    });
+                }
+            }
+        }
+
+        Ok(PlayerInfoData_BitSet { players })
+    }
+
+    fn write_to<W: io::Write>(&self, _: &mut W) -> Result<(), Error> {
+        unimplemented!()
+    }
+}
+
+impl Default for PlayerInfoData_BitSet {
+    fn default() -> Self {
+        PlayerInfoData_BitSet { players: Vec::new() }
+    }
 }
 
 impl Serializable for PlayerInfoData {
