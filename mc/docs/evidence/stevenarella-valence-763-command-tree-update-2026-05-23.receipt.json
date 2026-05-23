@@ -1,0 +1,93 @@
+{
+  "boundary": {
+    "next_boundary": {
+      "status": "next_unmapped_packet_id_mismatch",
+      "stevenarella_758_alias_semantic": "EntityProperties_VarIntVarInt",
+      "valence_763_semantic": "GameMessageS2CPacket",
+      "wire_id": "0x64"
+    },
+    "still_mapped_from_prior_update": {
+      "status": "mapped",
+      "stevenarella_763_internal": "JoinGame_WorldNames_IsHard_SimDist",
+      "valence_763_semantic": "GameJoinS2C",
+      "wire_id": "0x28"
+    },
+    "updated_boundary": {
+      "previous_stevenarella_758_alias_semantic": "ClearTitles",
+      "status": "mapped",
+      "stevenarella_763_internal": "DeclareCommands",
+      "valence_763_semantic": "CommandTreeS2CPacket",
+      "wire_id": "0x10"
+    }
+  },
+  "contract": {
+    "claims_current_valence_client_compat": false,
+    "claims_current_valence_next_packet_boundary": true,
+    "claims_full_stevenarella_763_support": false,
+    "claims_protocol_763_command_tree_mapping": true
+  },
+  "date": "2026-05-23",
+  "dry_run": false,
+  "mode": "protocol_763_command_tree_mapping_update",
+  "schema": "mc.compat.stevenarella-valence-763-command-tree-update.receipt.v1",
+  "status": "pass",
+  "stevenarella": {
+    "client_probe": {
+      "classification": "timeout-success-evidence",
+      "exit_code": 124,
+      "log_artifact": "/tmp/stevenarella-763-after-command-tree-update.log",
+      "log_b3": "5edcd9614681f17c8a5cf84f18fc5056a55e13a67f5b94a911669c16622b56c6",
+      "matched_success_pattern": "Detected server protocol version 763"
+    },
+    "commit": "119f7d52dbce8a690de8935ec69dd5c870cbdd81",
+    "fork_branch": "master",
+    "fork_remote": "git@github.com:brittonr/stevenarella.git",
+    "update_summary": "Extend protocol 763 translator to map play/clientbound 0x10 to DeclareCommands."
+  },
+  "valence": {
+    "connection_mode": "Offline",
+    "example": "ctf",
+    "first_captured_packets": [
+      {
+        "index": 0,
+        "semantic": "SetCompressionS2C",
+        "state": "login",
+        "wire_id": "0x03"
+      },
+      {
+        "index": 1,
+        "semantic": "LoginSuccessS2C",
+        "state": "login",
+        "wire_id": "0x02"
+      },
+      {
+        "index": 2,
+        "semantic": "GameJoinS2CPacket",
+        "state": "play",
+        "wire_id": "0x28"
+      },
+      {
+        "index": 3,
+        "semantic": "CommandTreeS2CPacket",
+        "state": "play",
+        "wire_id": "0x10"
+      },
+      {
+        "index": 4,
+        "semantic": "GameMessageS2CPacket",
+        "state": "play",
+        "wire_id": "0x64"
+      }
+    ],
+    "minecraft_version": "1.20.1",
+    "protocol": 763,
+    "trace_artifact": "/tmp/valence-763-after-command-tree-update-trace.json",
+    "trace_b3": "f4e4451ddb1aecfe7958044f78e72880292176b04316f93102e992e7671a338c"
+  },
+  "verification": {
+    "cargo_fmt_check": "pass",
+    "steven_protocol_test_command": "nix develop path:/home/brittonr/git/mc -c bash -lc cd /home/brittonr/git/mc/stevenarella && cargo fmt --check && CARGO_TARGET_DIR=/tmp/stevenarella-target2 cargo test -p steven_protocol protocol::versions::tests -- --nocapture",
+    "steven_protocol_tests": "pass",
+    "stevenarella_diff_check": "pass"
+  }
+}
