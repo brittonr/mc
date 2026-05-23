@@ -110,12 +110,18 @@
           printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
           ${
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
-          }/bin/mc-compat-runner --dry-run --server-backend paper --client-dir "$PWD/fake-stevenarella" > dry-run.log
+          }/bin/mc-compat-runner --dry-run --server-backend paper --client-dir "$PWD/fake-stevenarella" --receipt smoke-receipt.json > dry-run.log
           grep -Fq "start Paper server" dry-run.log
           grep -Fq "would run Rust protocol status probe" dry-run.log
           grep -Fq "would run Stevenarella under xvfb-run" dry-run.log
+          grep -Fq '"schema": "mc.compat.smoke.receipt.v1"' smoke-receipt.json
+          grep -Fq '"cairn_contract": "mc.compat.smoke.receipt.v1"' smoke-receipt.json
+          grep -Fq '"octet_producer_surface": "tools/mc-compat-runner/src/main.rs"' smoke-receipt.json
+          grep -Fq '"claims_correctness": false' smoke-receipt.json
+          grep -Fq '"claims_semantic_equivalence": false' smoke-receipt.json
+          grep -Fq '"wayland_socket_inherited": false' smoke-receipt.json
           mkdir -p "$out"
-          cp dry-run.log "$out/"
+          cp dry-run.log smoke-receipt.json "$out/"
         '';
         mc-compat-missing-client = pkgs.runCommand "mc-compat-missing-client" { } ''
           if ${
@@ -151,11 +157,32 @@
           }/bin/mc-compat-runner --help > help.log
           grep -Fq -- "--server-backend valence|paper" help.log
           grep -Fq -- "--client-dir PATH" help.log
+          grep -Fq -- "--receipt PATH" help.log
+          grep -Fq "SMOKE_RECEIPT" help.log
           grep -Fq "CLIENT_DIR" help.log
           grep -Fq -- "--valence-repo PATH" help.log
           grep -Fq "no inherited Wayland socket" help.log
           mkdir -p "$out"
           cp help.log "$out/"
+        '';
+        mc-compat-receipt-contract = pkgs.runCommand "mc-compat-receipt-contract" { } ''
+          mkdir -p fake-stevenarella
+          printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+          ${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
+          }/bin/mc-compat-runner --dry-run --server-backend paper --client-dir "$PWD/fake-stevenarella" --receipt smoke-receipt.json > smoke.log
+          ${cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn}/bin/cairn --help > cairn-help.log
+          ${
+            octet.packages.${pkgs.stdenv.hostPlatform.system}.cargo-octet
+          }/bin/cargo-octet fingerprint --check --output-format json ${./tools/mc-compat-runner/src/main.rs} > octet-fingerprint.json
+          grep -Fq '"schema": "mc.compat.smoke.receipt.v1"' smoke-receipt.json
+          grep -Fq '"cairn_contract": "mc.compat.smoke.receipt.v1"' smoke-receipt.json
+          grep -Fq '"octet_producer_surface": "tools/mc-compat-runner/src/main.rs"' smoke-receipt.json
+          grep -Fq '"headless_isolation"' smoke-receipt.json
+          grep -Fq 'agent-receipt validate' cairn-help.log
+          grep -Fq '"schema_version": 1' octet-fingerprint.json
+          mkdir -p "$out"
+          cp smoke.log smoke-receipt.json cairn-help.log octet-fingerprint.json "$out/"
         '';
         onixresearch-ssh-tools = pkgs.runCommand "onixresearch-ssh-tools" { } ''
           ${cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn}/bin/cairn --help > cairn-help.log

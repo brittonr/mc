@@ -57,6 +57,15 @@ struct Config {
     keep_server: bool,
     client_timeout: Duration,
     client_success_needles: Vec<String>,
+    receipt_path: Option<PathBuf>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct ClientRunEvidence {
+    log_path: Option<PathBuf>,
+    exit_code: Option<i32>,
+    classification: &'static str,
+    matched_success_pattern: Option<String>,
 }
 
 struct ManagedServer {
@@ -94,12 +103,27 @@ fn main() -> ExitCode {
 
 fn real_main() -> Result<(), String> {
     let cfg = Config::from_env_and_args()?;
+    let result = execute(&cfg);
+    if cfg.receipt_path.is_some() {
+        if let Err(receipt_err) = write_smoke_receipt(&cfg, result.as_ref()) {
+            return match result {
+                Ok(_) => Err(receipt_err),
+                Err(err) => Err(format!(
+                    "{err}; additionally failed to write receipt: {receipt_err}"
+                )),
+            };
+        }
+    }
+    result.map(|_| ())
+}
+
+fn execute(cfg: &Config) -> Result<Option<ClientRunEvidence>, String> {
     if matches!(cfg.mode, Mode::DryRun | Mode::Run | Mode::BuildClient) {
-        ensure_client_dir_ready(&cfg)?;
+        ensure_client_dir_ready(cfg)?;
     }
     if cfg.server_backend == ServerBackend::Valence && matches!(cfg.mode, Mode::DryRun | Mode::Run)
     {
-        ensure_valence_repo_ready(&cfg)?;
+        ensure_valence_repo_ready(cfg)?;
     }
     match cfg.mode {
         Mode::DryRun => {
@@ -113,21 +137,31 @@ fn real_main() -> Result<(), String> {
                     "server start will set EULA=TRUE using recorded user acceptance"
                 ));
             }
-            let _server = start_server(&cfg)?;
-            probe_status(&cfg)?;
-            run_client(&cfg)?;
+            let _server = start_server(cfg)?;
+            probe_status(cfg)?;
+            let client = run_client(cfg)?;
+            Ok(Some(client))
         }
-        Mode::BuildClient => build_client(&cfg)?,
-        Mode::StatusOnly => probe_status(&cfg)?,
-        Mode::Stop => stop_server(&cfg)?,
+        Mode::BuildClient => {
+            build_client(cfg)?;
+            Ok(None)
+        }
+        Mode::StatusOnly => {
+            probe_status(cfg)?;
+            Ok(None)
+        }
+        Mode::Stop => {
+            stop_server(cfg)?;
+            Ok(None)
+        }
         Mode::Run => {
-            build_client(&cfg)?;
-            let _server = start_server(&cfg)?;
-            probe_status(&cfg)?;
-            run_client(&cfg)?;
+            build_client(cfg)?;
+            let _server = start_server(cfg)?;
+            probe_status(cfg)?;
+            let client = run_client(cfg)?;
+            Ok(Some(client))
         }
     }
-    Ok(())
 }
 
 impl Config {
@@ -202,6 +236,7 @@ impl Config {
                         .map(|s| s.to_string())
                         .collect()
                 }),
+            receipt_path: get_env("SMOKE_RECEIPT").map(PathBuf::from),
             root,
         };
 
@@ -235,6 +270,12 @@ impl Config {
                             .ok_or_else(|| "--client-dir requires a path".to_string())?,
                     );
                 }
+                "--receipt" => {
+                    cfg.receipt_path = Some(PathBuf::from(
+                        args.next()
+                            .ok_or_else(|| "--receipt requires a path".to_string())?,
+                    ));
+                }
                 "--valence-repo" => {
                     cfg.valence_repo = PathBuf::from(
                         args.next()
@@ -255,6 +296,9 @@ impl Config {
                 }
                 _ if arg.starts_with("--client-dir=") => {
                     cfg.client_dir = PathBuf::from(&arg[13..]);
+                }
+                _ if arg.starts_with("--receipt=") => {
+                    cfg.receipt_path = Some(PathBuf::from(&arg[10..]));
                 }
                 _ if arg.starts_with("--valence-repo=") => {
                     cfg.valence_repo = PathBuf::from(&arg[15..]);
@@ -278,19 +322,24 @@ impl Config {
 
 fn print_usage(cfg: &Config) {
     println!(
-        "Usage: mc-compat-runner [--dry-run|--run] [--build-client] [--status-only] [--stop] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--valence-repo PATH] [--valence-rev REV]\n\n\
+        "Usage: mc-compat-runner [--dry-run|--run] [--build-client] [--status-only] [--stop] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--valence-repo PATH] [--valence-rev REV]\n\n\
 Automates a local Stevenarella compatibility smoke against a Minecraft {} / protocol {} server.\n\
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
+Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.smoke.receipt.v1 JSON receipt for Cairn/Octet evidence flows.\n\
 Default server backend is Valence, using an editable local Valence checkout plus an isolated protocol-758 worktree so the dirty/current checkout is untouched.\n\
 If the Stevenarella or Valence checkout is missing, clone/fetch it or pass --client-dir/CLIENT_DIR and --valence-repo/VALENCE_REPO to editable checkouts.\n\
 Client runs are forced through Xvfb/X11 with software GL and no inherited Wayland socket.\n\
 Paper fallback runs set EULA=TRUE based on recorded user acceptance.\n\n\
-Env: MC_COMPAT_ROOT={} CLIENT_DIR={} TARGET_DIR={} VALENCE_REPO={} VALENCE_REV={} VALENCE_WORKTREE={} VALENCE_TARGET_DIR={} CLIENT_TIMEOUT={}\n",
+Env: MC_COMPAT_ROOT={} CLIENT_DIR={} TARGET_DIR={} SMOKE_RECEIPT={} VALENCE_REPO={} VALENCE_REV={} VALENCE_WORKTREE={} VALENCE_TARGET_DIR={} CLIENT_TIMEOUT={}\n",
         cfg.server_version,
         cfg.server_protocol,
         cfg.root.display(),
         cfg.client_dir.display(),
         cfg.target_dir.display(),
+        cfg.receipt_path
+            .as_ref()
+            .map(|path| path.display().to_string())
+            .unwrap_or_else(|| "<unset>".to_string()),
         cfg.valence_repo.display(),
         cfg.valence_rev,
         cfg.valence_worktree.display(),
@@ -570,13 +619,18 @@ fn read_status(port: u16, protocol: u32) -> Result<String, String> {
     String::from_utf8(buf).map_err(|e| e.to_string())
 }
 
-fn run_client(cfg: &Config) -> Result<(), String> {
+fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
     log(format_args!(
         "running Stevenarella headless smoke isolated from host Wayland compositor"
     ));
     if cfg.mode == Mode::DryRun {
         log(format_args!("would run Stevenarella under xvfb-run"));
-        return Ok(());
+        return Ok(ClientRunEvidence {
+            log_path: None,
+            exit_code: None,
+            classification: "dry-run",
+            matched_success_pattern: None,
+        });
     }
     let client_log = env_path("CLIENT_LOG").unwrap_or_else(temp_client_log);
     let log_file =
@@ -606,23 +660,33 @@ fn run_client(cfg: &Config) -> Result<(), String> {
         .map_err(|e| format!("read {}: {e}", client_log.display()))?;
     print!("{output}");
     io::stdout().flush().map_err(|e| e.to_string())?;
+    let matched_success_pattern = cfg
+        .client_success_needles
+        .iter()
+        .find(|needle| output.contains(needle.as_str()))
+        .cloned();
     if status.success() {
         log(format_args!(
             "client exited successfully; log: {}",
             client_log.display()
         ));
-        Ok(())
-    } else if status.code() == Some(124)
-        && cfg
-            .client_success_needles
-            .iter()
-            .any(|needle| output.contains(needle))
-    {
+        Ok(ClientRunEvidence {
+            log_path: Some(client_log),
+            exit_code: status.code(),
+            classification: "client-exited-success",
+            matched_success_pattern,
+        })
+    } else if status.code() == Some(124) && matched_success_pattern.is_some() {
         log(format_args!(
             "bounded client smoke passed before timeout; log: {}",
             client_log.display()
         ));
-        Ok(())
+        Ok(ClientRunEvidence {
+            log_path: Some(client_log),
+            exit_code: status.code(),
+            classification: "timeout-success-evidence",
+            matched_success_pattern,
+        })
     } else {
         Err(format!(
             "client smoke failed with exit {:?}; log: {}",
@@ -630,6 +694,111 @@ fn run_client(cfg: &Config) -> Result<(), String> {
             client_log.display()
         ))
     }
+}
+
+fn write_smoke_receipt(
+    cfg: &Config,
+    result: Result<&Option<ClientRunEvidence>, &String>,
+) -> Result<(), String> {
+    let Some(path) = &cfg.receipt_path else {
+        return Ok(());
+    };
+    if let Some(parent) = path
+        .parent()
+        .filter(|parent| !parent.as_os_str().is_empty())
+    {
+        fs::create_dir_all(parent)
+            .map_err(|e| format!("create receipt dir {}: {e}", parent.display()))?;
+    }
+    let json = smoke_receipt_json(cfg, result);
+    fs::write(path, json).map_err(|e| format!("write receipt {}: {e}", path.display()))?;
+    log(format_args!("wrote smoke receipt {}", path.display()));
+    Ok(())
+}
+
+fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &String>) -> String {
+    let status = if result.is_ok() { "pass" } else { "fail" };
+    let error = result.err();
+    let client = result.ok().and_then(|client| client.as_ref());
+    let receipt_path = cfg
+        .receipt_path
+        .as_ref()
+        .map(|path| path.display().to_string());
+    let client_log_path = client
+        .and_then(|evidence| evidence.log_path.as_ref())
+        .map(|path| path.display().to_string());
+    let matched_pattern = client.and_then(|evidence| evidence.matched_success_pattern.as_deref());
+    let classification = client.map(|evidence| evidence.classification);
+    let exit_code = client.and_then(|evidence| evidence.exit_code);
+    let error_json = error
+        .map(|err| json_string(err))
+        .unwrap_or_else(|| "null".to_string());
+    let receipt_path_json = json_optional_string(receipt_path.as_deref());
+    let client_log_json = json_optional_string(client_log_path.as_deref());
+    let matched_pattern_json = json_optional_string(matched_pattern);
+    let classification_json = json_optional_string(classification);
+    let exit_code_json = exit_code
+        .map(|code| code.to_string())
+        .unwrap_or_else(|| "null".to_string());
+
+    format!(
+        "{{\n  \"schema\": \"mc.compat.smoke.receipt.v1\",\n  \"status\": {status_json},\n  \"mode\": {mode_json},\n  \"dry_run\": {dry_run},\n  \"contract\": {{\n    \"cairn_contract\": \"mc.compat.smoke.receipt.v1\",\n    \"octet_producer_surface\": \"tools/mc-compat-runner/src/main.rs\",\n    \"claims_correctness\": false,\n    \"claims_semantic_equivalence\": false\n  }},\n  \"server\": {{\n    \"backend\": {backend_json},\n    \"version\": {version_json},\n    \"protocol\": {protocol},\n    \"port\": {port}\n  }},\n  \"client\": {{\n    \"dir\": {client_dir_json},\n    \"target_dir\": {target_dir_json},\n    \"username\": {username_json},\n    \"timeout_secs\": {timeout_secs},\n    \"headless_isolation\": {{\n      \"xvfb\": true,\n      \"x11_backend\": true,\n      \"software_gl\": true,\n      \"wayland_socket_inherited\": false\n    }},\n    \"log_path\": {client_log_json},\n    \"exit_code\": {exit_code_json},\n    \"classification\": {classification_json},\n    \"matched_success_pattern\": {matched_pattern_json}\n  }},\n  \"valence\": {{\n    \"repo\": {valence_repo_json},\n    \"rev\": {valence_rev_json},\n    \"worktree\": {valence_worktree_json},\n    \"example\": {valence_example_json},\n    \"log_path\": {valence_log_json}\n  }},\n  \"receipt_path\": {receipt_path_json},\n  \"error\": {error_json}\n}}\n",
+        status_json = json_string(status),
+        mode_json = json_string(mode_name(cfg.mode)),
+        dry_run = cfg.mode == Mode::DryRun,
+        backend_json = json_string(backend_name(cfg.server_backend)),
+        version_json = json_string(&cfg.server_version),
+        protocol = cfg.server_protocol,
+        port = cfg.server_port,
+        client_dir_json = json_string(&cfg.client_dir.display().to_string()),
+        target_dir_json = json_string(&cfg.target_dir.display().to_string()),
+        username_json = json_string(&cfg.client_username),
+        timeout_secs = cfg.client_timeout.as_secs(),
+        valence_repo_json = json_string(&cfg.valence_repo.display().to_string()),
+        valence_rev_json = json_string(&cfg.valence_rev),
+        valence_worktree_json = json_string(&cfg.valence_worktree.display().to_string()),
+        valence_example_json = json_string(&cfg.valence_example),
+        valence_log_json = json_string(&cfg.valence_log.display().to_string()),
+    )
+}
+
+fn mode_name(mode: Mode) -> &'static str {
+    match mode {
+        Mode::DryRun => "dry-run",
+        Mode::Run => "run",
+        Mode::BuildClient => "build-client",
+        Mode::StatusOnly => "status-only",
+        Mode::Stop => "stop",
+    }
+}
+
+fn backend_name(backend: ServerBackend) -> &'static str {
+    match backend {
+        ServerBackend::Valence => "valence",
+        ServerBackend::Paper => "paper",
+    }
+}
+
+fn json_optional_string(value: Option<&str>) -> String {
+    value.map(json_string).unwrap_or_else(|| "null".to_string())
+}
+
+fn json_string(value: &str) -> String {
+    let mut out = String::with_capacity(value.len() + 2);
+    out.push('"');
+    for ch in value.chars() {
+        match ch {
+            '"' => out.push_str("\\\""),
+            '\\' => out.push_str("\\\\"),
+            '\n' => out.push_str("\\n"),
+            '\r' => out.push_str("\\r"),
+            '\t' => out.push_str("\\t"),
+            ch if ch.is_control() => out.push_str(&format!("\\u{:04x}", ch as u32)),
+            ch => out.push(ch),
+        }
+    }
+    out.push('"');
+    out
 }
 
 fn apply_build_env(cmd: &mut Command, target_dir: &Path) {
@@ -788,6 +957,7 @@ mod tests {
                 "paper",
                 "--client-dir",
                 "/tmp/editable-stevenarella",
+                "--receipt=/tmp/mc-smoke.json",
                 "--valence-repo",
                 "/tmp/editable-valence",
                 "--valence-rev=local-debug-rev",
@@ -800,6 +970,7 @@ mod tests {
         assert_eq!(cfg.server_backend, ServerBackend::Paper);
         assert_eq!(cfg.server_port, 25566);
         assert_eq!(cfg.client_dir, PathBuf::from("/tmp/editable-stevenarella"));
+        assert_eq!(cfg.receipt_path, Some(PathBuf::from("/tmp/mc-smoke.json")));
         assert_eq!(cfg.valence_repo, PathBuf::from("/tmp/editable-valence"));
         assert_eq!(cfg.valence_rev, "local-debug-rev");
     }
@@ -816,6 +987,7 @@ mod tests {
                     "Detected server protocol version|Dimension type:",
                 ),
                 ("SERVER_PORT", "24444"),
+                ("SMOKE_RECEIPT", "/repo/receipts/smoke.json"),
                 ("CLIENT_DIR", "/repo/stevenarella-edit"),
                 ("VALENCE_REPO", "/repo/valence-edit"),
                 ("VALENCE_REV", "debug-rev"),
@@ -827,6 +999,10 @@ mod tests {
         assert_eq!(cfg.client_dir, PathBuf::from("/repo/stevenarella-edit"));
         assert_eq!(cfg.server_backend, ServerBackend::Paper);
         assert_eq!(cfg.server_port, 24444);
+        assert_eq!(
+            cfg.receipt_path,
+            Some(PathBuf::from("/repo/receipts/smoke.json"))
+        );
         assert_eq!(cfg.client_timeout, Duration::from_secs(8));
         assert_eq!(cfg.valence_repo, PathBuf::from("/repo/valence-edit"));
         assert_eq!(cfg.valence_rev, "debug-rev");
@@ -903,5 +1079,75 @@ mod tests {
             .expect("config with fake Stevenarella checkout parses");
 
         ensure_client_dir_ready(&cfg).expect("fake checkout has a manifest");
+    }
+
+    #[test]
+    fn smoke_receipt_records_cairn_contract_and_octet_surface() {
+        let mut cfg = test_config(
+            &[
+                "--server-backend=paper",
+                "--receipt",
+                "/tmp/receipt.json",
+                "--client-dir",
+                "/tmp/stevenarella",
+            ],
+            &[],
+        )
+        .expect("receipt config parses");
+        cfg.server_port = 25566;
+        let client = Some(ClientRunEvidence {
+            log_path: Some(PathBuf::from("/tmp/client.log")),
+            exit_code: Some(124),
+            classification: "timeout-success-evidence",
+            matched_success_pattern: Some("Detected server protocol version".to_string()),
+        });
+
+        let json = smoke_receipt_json(&cfg, Ok(&client));
+
+        assert!(
+            json.contains("\"schema\": \"mc.compat.smoke.receipt.v1\""),
+            "{json}"
+        );
+        assert!(
+            json.contains("\"cairn_contract\": \"mc.compat.smoke.receipt.v1\""),
+            "{json}"
+        );
+        assert!(
+            json.contains("\"octet_producer_surface\": \"tools/mc-compat-runner/src/main.rs\""),
+            "{json}"
+        );
+        assert!(
+            json.contains("\"classification\": \"timeout-success-evidence\""),
+            "{json}"
+        );
+        assert!(
+            json.contains("\"matched_success_pattern\": \"Detected server protocol version\""),
+            "{json}"
+        );
+        assert!(
+            json.contains("\"wayland_socket_inherited\": false"),
+            "{json}"
+        );
+    }
+
+    #[test]
+    fn smoke_receipt_records_failures_without_success_claims() {
+        let cfg =
+            test_config(&["--receipt=/tmp/receipt.json"], &[]).expect("receipt config parses");
+        let err = "server status probe failed".to_string();
+
+        let json = smoke_receipt_json(&cfg, Err(&err));
+
+        assert!(json.contains("\"status\": \"fail\""), "{json}");
+        assert!(json.contains("\"classification\": null"), "{json}");
+        assert!(
+            json.contains("\"error\": \"server status probe failed\""),
+            "{json}"
+        );
+        assert!(json.contains("\"claims_correctness\": false"), "{json}");
+        assert!(
+            json.contains("\"claims_semantic_equivalence\": false"),
+            "{json}"
+        );
     }
 }

@@ -28,6 +28,16 @@ CLIENT_TIMEOUT=8 scripts/mc-compat-smoke.sh --run
 
 The runner forces the GUI client through Xvfb/X11 with software GL and removes inherited Wayland/niri socket environment before launch. A bounded timeout is considered success only when the client log contains connection/render evidence such as detected protocol or loaded dimension data.
 
+Write a machine-readable smoke receipt for Cairn/Octet evidence flows:
+
+```sh
+SMOKE_RECEIPT=target/mc-compat-smoke.json CLIENT_TIMEOUT=8 nix run .#mc-compat-smoke -- --run
+# or
+nix run .#mc-compat-smoke -- --dry-run --server-backend paper --receipt target/mc-compat-smoke.json
+```
+
+The receipt schema is `mc.compat.smoke.receipt.v1`. It records the server/client inputs, the headless-isolation contract (`wayland_socket_inherited=false`), the matched client success pattern when present, and explicit non-claims (`claims_correctness=false`, `claims_semantic_equivalence=false`) for downstream Cairn/Octet review. It is evidence that the bounded smoke ran under the selected inputs, not a proof of Minecraft correctness or semantic equivalence.
+
 ## Editable Stevenarella checkout
 
 Stevenarella is intentionally a local sibling checkout so it can be patched while debugging the client side of the compatibility seam. By default the runner expects `./stevenarella` to be an editable Stevenarella repository root containing `Cargo.toml`.
@@ -88,3 +98,5 @@ The packages are also available as `.#cairn`, `.#cargo-octet`, and `.#octet`.
 ```sh
 nix flake check
 ```
+
+The flake includes focused checks for the runner binary, dry-run receipt emission, missing-checkout diagnostics, help text, Cairn CLI availability, and Octet fingerprint smoke over the receipt producer surface (`mc-compat-receipt-contract`).
