@@ -34,6 +34,7 @@ enum ServerBackend {
     Paper,
 }
 
+#[derive(Debug)]
 struct Config {
     root: PathBuf,
     client_dir: PathBuf,
@@ -128,49 +129,69 @@ fn real_main() -> Result<(), String> {
 
 impl Config {
     fn from_env_and_args() -> Result<Self, String> {
-        let root = env_path("MC_COMPAT_ROOT")
-            .or_else(|| env_path("ROOT"))
-            .unwrap_or(env::current_dir().map_err(|e| format!("current dir: {e}"))?);
+        Self::from_sources(
+            env::current_dir().map_err(|e| format!("current dir: {e}"))?,
+            |name| env::var(name).ok().filter(|s| !s.is_empty()),
+            env::args().skip(1),
+        )
+    }
+
+    fn from_sources<I, F>(current_dir: PathBuf, mut get_env: F, args: I) -> Result<Self, String>
+    where
+        I: IntoIterator<Item = String>,
+        F: FnMut(&str) -> Option<String>,
+    {
+        let root = get_env("MC_COMPAT_ROOT")
+            .or_else(|| get_env("ROOT"))
+            .map(PathBuf::from)
+            .unwrap_or(current_dir);
         let mut cfg = Config {
-            client_dir: env_path("CLIENT_DIR").unwrap_or_else(|| root.join("stevenarella")),
-            valence_repo: env_path("VALENCE_REPO").unwrap_or_else(|| root.join("valence")),
-            valence_rev: env_string("VALENCE_REV")
-                .unwrap_or_else(|| DEFAULT_VALENCE_REV.to_string()),
-            valence_worktree: env_path("VALENCE_WORKTREE")
+            client_dir: get_env("CLIENT_DIR")
+                .map(PathBuf::from)
+                .unwrap_or_else(|| root.join("stevenarella")),
+            valence_repo: get_env("VALENCE_REPO")
+                .map(PathBuf::from)
+                .unwrap_or_else(|| root.join("valence")),
+            valence_rev: get_env("VALENCE_REV").unwrap_or_else(|| DEFAULT_VALENCE_REV.to_string()),
+            valence_worktree: get_env("VALENCE_WORKTREE")
+                .map(PathBuf::from)
                 .unwrap_or_else(|| PathBuf::from("/tmp/valence-compat-758")),
-            valence_example: env_string("VALENCE_EXAMPLE")
+            valence_example: get_env("VALENCE_EXAMPLE")
                 .unwrap_or_else(|| DEFAULT_VALENCE_EXAMPLE.to_string()),
-            valence_log: env_path("VALENCE_LOG")
+            valence_log: get_env("VALENCE_LOG")
+                .map(PathBuf::from)
                 .unwrap_or_else(|| PathBuf::from("/tmp/mc-compat-valence.log")),
-            valence_target_dir: env_path("VALENCE_TARGET_DIR")
+            valence_target_dir: get_env("VALENCE_TARGET_DIR")
+                .map(PathBuf::from)
                 .unwrap_or_else(|| PathBuf::from("/tmp/valence-compat-758-target")),
-            valence_pid_file: env_path("VALENCE_PID_FILE")
+            valence_pid_file: get_env("VALENCE_PID_FILE")
+                .map(PathBuf::from)
                 .unwrap_or_else(|| PathBuf::from("/tmp/mc-compat-valence.pid")),
             server_backend: parse_backend(
-                &env_string("SERVER_BACKEND").unwrap_or_else(|| "valence".to_string()),
+                &get_env("SERVER_BACKEND").unwrap_or_else(|| "valence".to_string()),
             )?,
-            target_dir: env_path("TARGET_DIR")
+            target_dir: get_env("TARGET_DIR")
+                .map(PathBuf::from)
                 .unwrap_or_else(|| PathBuf::from("/tmp/stevenarella-target2")),
-            server_name: env_string("SERVER_NAME")
-                .unwrap_or_else(|| "mc-compat-1-18-2".to_string()),
-            server_version: env_string("SERVER_VERSION")
+            server_name: get_env("SERVER_NAME").unwrap_or_else(|| "mc-compat-1-18-2".to_string()),
+            server_version: get_env("SERVER_VERSION")
                 .unwrap_or_else(|| DEFAULT_SERVER_VERSION.to_string()),
-            server_protocol: env_string("SERVER_PROTOCOL")
+            server_protocol: get_env("SERVER_PROTOCOL")
                 .and_then(|s| s.parse().ok())
                 .unwrap_or(DEFAULT_SERVER_PROTOCOL),
             server_port: 0,
-            client_username: env_string("CLIENT_USERNAME")
+            client_username: get_env("CLIENT_USERNAME")
                 .unwrap_or_else(|| DEFAULT_CLIENT_USERNAME.to_string()),
-            docker_image: env_string("DOCKER_IMAGE")
+            docker_image: get_env("DOCKER_IMAGE")
                 .unwrap_or_else(|| "itzg/minecraft-server:java17".to_string()),
             mode: Mode::DryRun,
             keep_server: false,
             client_timeout: Duration::from_secs(
-                env_string("CLIENT_TIMEOUT")
+                get_env("CLIENT_TIMEOUT")
                     .and_then(|s| s.parse().ok())
                     .unwrap_or(DEFAULT_CLIENT_TIMEOUT_SECS),
             ),
-            client_success_needles: env_string("CLIENT_SUCCESS_PATTERN")
+            client_success_needles: get_env("CLIENT_SUCCESS_PATTERN")
                 .map(|s| s.split('|').map(str::to_string).collect())
                 .unwrap_or_else(|| {
                     DEFAULT_SUCCESS_PATTERN
@@ -181,15 +202,15 @@ impl Config {
             root,
         };
 
-        let server_port_was_set = env_string("SERVER_PORT").is_some();
-        cfg.server_port = env_string("SERVER_PORT")
+        let server_port_was_set = get_env("SERVER_PORT").is_some();
+        cfg.server_port = get_env("SERVER_PORT")
             .and_then(|s| s.parse().ok())
             .unwrap_or(match cfg.server_backend {
                 ServerBackend::Valence => 25565,
                 ServerBackend::Paper => 25566,
             });
 
-        let mut args = env::args().skip(1);
+        let mut args = args.into_iter();
         while let Some(arg) = args.next() {
             match arg.as_str() {
                 "--dry-run" => cfg.mode = Mode::DryRun,
@@ -676,4 +697,115 @@ fn temp_client_log() -> PathBuf {
 
 fn log(args: std::fmt::Arguments<'_>) {
     println!("[mc-compat] {args}");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::collections::BTreeMap;
+
+    fn test_config(args: &[&str], env: &[(&str, &str)]) -> Result<Config, String> {
+        let env: BTreeMap<String, String> = env
+            .iter()
+            .map(|(key, value)| ((*key).to_string(), (*value).to_string()))
+            .collect();
+        Config::from_sources(
+            PathBuf::from("/workspace/mc"),
+            |name| env.get(name).cloned(),
+            args.iter().map(|arg| (*arg).to_string()),
+        )
+    }
+
+    #[test]
+    fn defaults_to_valence_protocol_and_port() {
+        let cfg = test_config(&[], &[]).expect("default config parses");
+
+        assert_eq!(cfg.root, PathBuf::from("/workspace/mc"));
+        assert_eq!(cfg.client_dir, PathBuf::from("/workspace/mc/stevenarella"));
+        assert_eq!(cfg.valence_repo, PathBuf::from("/workspace/mc/valence"));
+        assert_eq!(cfg.server_backend, ServerBackend::Valence);
+        assert_eq!(cfg.server_protocol, DEFAULT_SERVER_PROTOCOL);
+        assert_eq!(cfg.server_port, 25565);
+        assert_eq!(cfg.valence_rev, DEFAULT_VALENCE_REV);
+        assert_eq!(cfg.mode, Mode::DryRun);
+    }
+
+    #[test]
+    fn cli_overrides_backend_valence_repo_and_revision() {
+        let cfg = test_config(
+            &[
+                "--run",
+                "--server-backend",
+                "paper",
+                "--valence-repo",
+                "/tmp/editable-valence",
+                "--valence-rev=local-debug-rev",
+            ],
+            &[],
+        )
+        .expect("cli override config parses");
+
+        assert_eq!(cfg.mode, Mode::Run);
+        assert_eq!(cfg.server_backend, ServerBackend::Paper);
+        assert_eq!(cfg.server_port, 25566);
+        assert_eq!(cfg.valence_repo, PathBuf::from("/tmp/editable-valence"));
+        assert_eq!(cfg.valence_rev, "local-debug-rev");
+    }
+
+    #[test]
+    fn env_overrides_are_parsed_without_global_environment_mutation() {
+        let cfg = test_config(
+            &["--server-backend=paper"],
+            &[
+                ("MC_COMPAT_ROOT", "/repo/mc"),
+                ("CLIENT_TIMEOUT", "8"),
+                (
+                    "CLIENT_SUCCESS_PATTERN",
+                    "Detected server protocol version|Dimension type:",
+                ),
+                ("SERVER_PORT", "24444"),
+                ("VALENCE_REPO", "/repo/valence-edit"),
+                ("VALENCE_REV", "debug-rev"),
+            ],
+        )
+        .expect("env override config parses");
+
+        assert_eq!(cfg.root, PathBuf::from("/repo/mc"));
+        assert_eq!(cfg.client_dir, PathBuf::from("/repo/mc/stevenarella"));
+        assert_eq!(cfg.server_backend, ServerBackend::Paper);
+        assert_eq!(cfg.server_port, 24444);
+        assert_eq!(cfg.client_timeout, Duration::from_secs(8));
+        assert_eq!(cfg.valence_repo, PathBuf::from("/repo/valence-edit"));
+        assert_eq!(cfg.valence_rev, "debug-rev");
+        assert_eq!(
+            cfg.client_success_needles,
+            vec![
+                "Detected server protocol version".to_string(),
+                "Dimension type:".to_string()
+            ]
+        );
+    }
+
+    #[test]
+    fn invalid_backend_is_rejected() {
+        let err = test_config(&["--server-backend", "spigot"], &[]).unwrap_err();
+        assert!(err.contains("unknown server backend: spigot"), "{err}");
+    }
+
+    #[test]
+    fn missing_valence_checkout_has_actionable_diagnostic() {
+        let missing =
+            std::env::temp_dir().join(format!("mc-compat-missing-valence-{}", std::process::id()));
+        let cfg = test_config(&["--valence-repo", missing.to_str().unwrap()], &[])
+            .expect("config with missing Valence repo parses");
+
+        let err = ensure_valence_repo_ready(&cfg).unwrap_err();
+
+        assert!(err.contains("Valence checkout not found"), "{err}");
+        assert!(
+            err.contains("git clone https://github.com/valence-rs/valence"),
+            "{err}"
+        );
+        assert!(err.contains("--valence-repo/VALENCE_REPO"), "{err}");
+    }
 }
