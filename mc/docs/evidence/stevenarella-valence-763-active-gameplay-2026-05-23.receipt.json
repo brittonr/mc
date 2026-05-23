@@ -1,0 +1,75 @@
+{
+  "artifacts": {
+    "probe_log": {
+      "Detected server protocol version 763": 1,
+      "Disconnect": 0,
+      "Failed to read all of packet": 0,
+      "FromUtf8Error": 0,
+      "MC-COMPAT-MILESTONE active_probe_input_start": 1,
+      "MC-COMPAT-MILESTONE active_probe_input_stop": 1,
+      "MC-COMPAT-MILESTONE active_probe_input_turn": 1,
+      "MC-COMPAT-MILESTONE active_probe_jump_release": 1,
+      "MC-COMPAT-MILESTONE active_probe_position_look_sent": 1,
+      "MC-COMPAT-MILESTONE first_chunk_data": 1,
+      "MC-COMPAT-MILESTONE join_game": 2,
+      "MC-COMPAT-MILESTONE join_game_763_shape": 1,
+      "MC-COMPAT-MILESTONE login_compression": 1,
+      "MC-COMPAT-MILESTONE login_success": 1,
+      "MC-COMPAT-MILESTONE render_tick_with_player": 1,
+      "UnexpectedEof": 0,
+      "disconnect": 0,
+      "failed to parse packet": 0,
+      "panicked at": 0,
+      "unknown 1.20.1 metadata type": 0
+    },
+    "probe_status": {
+      "content": "exit=124",
+      "path": "/tmp/stevenarella-763-active-gameplay-2026-05-23.status"
+    }
+  },
+  "contract": {
+    "claims_active_movement_packet_sent": true,
+    "claims_combat_semantics": false,
+    "claims_current_valence_client_compat": false,
+    "claims_death_respawn_semantics": false,
+    "claims_full_stevenarella_763_support": false,
+    "claims_inventory_semantics": false,
+    "claims_no_logged_runtime_failure_in_this_probe": true,
+    "claims_semantic_correctness": false,
+    "claims_stable_in_world_gameplay": false,
+    "claims_team_selection": false
+  },
+  "dry_run": false,
+  "mode": "protocol_763_instrumented_stevenarella_valence_ctf_active_gameplay",
+  "probe": {
+    "bounded_timeout_exit_is_expected": true,
+    "duration_seconds": 180,
+    "input_sequence": [
+      "forward+sprint+jump",
+      "jump_release",
+      "turn_right",
+      "input_stop"
+    ],
+    "server": "127.0.0.1:25565",
+    "username": "mc_active_probe"
+  },
+  "schema": "mc.compat.stevenarella-valence-763-active-gameplay.receipt.v1",
+  "status": "bounded_180s_timeout_active_movement_no_logged_runtime_failure",
+  "stevenarella": {
+    "active_probe_env": "MC_COMPAT_ACTIVE_PROBE=1",
+    "commit": "05a382b",
+    "remote": "fork",
+    "repo": "/home/brittonr/git/mc/stevenarella"
+  },
+  "valence": {
+    "commit": "c5140b7",
+    "example": "ctf",
+    "protocol": 763,
+    "repo": "/home/brittonr/git/mc/valence"
+  },
+  "verification": {
+    "focused_protocol_tests_passed": 14,
+    "probe_exit_code": 124,
+    "stevenarella_focused": "cargo fmt && cargo fmt --check && CARGO_TARGET_DIR=/tmp/stevenarella-target2 cargo test -p steven_protocol protocol::versions::tests -- --nocapture && CARGO_TARGET_DIR=/tmp/stevenarella-target2 cargo check -p stevenarella"
+  }
+}

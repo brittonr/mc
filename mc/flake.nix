@@ -1080,6 +1080,80 @@
               cp "$receipt" "$note" "$out/"
               printf '%s\n' "$b3" > "$out/receipt.b3"
             '';
+        stevenarella-valence-763-active-gameplay-evidence =
+          pkgs.runCommand "stevenarella-valence-763-active-gameplay-evidence" { nativeBuildInputs = [ pkgs.b3sum pkgs.python3 ]; }
+            ''
+              receipt=${./docs/evidence/stevenarella-valence-763-active-gameplay-2026-05-23.receipt.json}
+              note=${./docs/evidence/stevenarella-valence-763-active-gameplay-2026-05-23.md}
+
+              python3 - "$receipt" "$note" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          receipt_path = pathlib.Path(sys.argv[1])
+          note_path = pathlib.Path(sys.argv[2])
+          receipt = json.loads(receipt_path.read_text())
+          note = note_path.read_text()
+
+          def assert_eq(name, actual, expected):
+              if actual != expected:
+                  raise SystemExit(f"{name}: expected {expected!r}, got {actual!r}")
+
+          assert_eq("schema", receipt["schema"], "mc.compat.stevenarella-valence-763-active-gameplay.receipt.v1")
+          assert_eq("status", receipt["status"], "bounded_180s_timeout_active_movement_no_logged_runtime_failure")
+          assert_eq("mode", receipt["mode"], "protocol_763_instrumented_stevenarella_valence_ctf_active_gameplay")
+          assert_eq("dry_run", receipt["dry_run"], False)
+          assert_eq("valence.protocol", receipt["valence"]["protocol"], 763)
+          assert_eq("valence.example", receipt["valence"]["example"], "ctf")
+          assert_eq("stevenarella.commit", receipt["stevenarella"]["commit"], "05a382b")
+          assert_eq("active probe env", receipt["stevenarella"]["active_probe_env"], "MC_COMPAT_ACTIVE_PROBE=1")
+          assert_eq("probe duration", receipt["probe"]["duration_seconds"], 180)
+          assert_eq("probe status", receipt["artifacts"]["probe_status"]["content"], "exit=124")
+          assert_eq("probe protocol", receipt["artifacts"]["probe_log"]["Detected server protocol version 763"], 1)
+          assert_eq("login success", receipt["artifacts"]["probe_log"]["MC-COMPAT-MILESTONE login_success"], 1)
+          assert_eq("join game shape", receipt["artifacts"]["probe_log"]["MC-COMPAT-MILESTONE join_game_763_shape"], 1)
+          assert_eq("first chunk", receipt["artifacts"]["probe_log"]["MC-COMPAT-MILESTONE first_chunk_data"], 1)
+          assert_eq("render tick", receipt["artifacts"]["probe_log"]["MC-COMPAT-MILESTONE render_tick_with_player"], 1)
+          assert_eq("active start", receipt["artifacts"]["probe_log"]["MC-COMPAT-MILESTONE active_probe_input_start"], 1)
+          assert_eq("active jump release", receipt["artifacts"]["probe_log"]["MC-COMPAT-MILESTONE active_probe_jump_release"], 1)
+          assert_eq("active turn", receipt["artifacts"]["probe_log"]["MC-COMPAT-MILESTONE active_probe_input_turn"], 1)
+          assert_eq("active stop", receipt["artifacts"]["probe_log"]["MC-COMPAT-MILESTONE active_probe_input_stop"], 1)
+          assert_eq("position look sent", receipt["artifacts"]["probe_log"]["MC-COMPAT-MILESTONE active_probe_position_look_sent"], 1)
+          assert_eq("unexpected eof", receipt["artifacts"]["probe_log"]["UnexpectedEof"], 0)
+          assert_eq("from utf8", receipt["artifacts"]["probe_log"]["FromUtf8Error"], 0)
+          assert_eq("panic count", receipt["artifacts"]["probe_log"]["panicked at"], 0)
+          assert_eq("parse failure", receipt["artifacts"]["probe_log"]["failed to parse packet"], 0)
+          assert_eq("disconnect", receipt["artifacts"]["probe_log"]["Disconnect"], 0)
+          assert_eq("no runtime failure claim", receipt["contract"]["claims_no_logged_runtime_failure_in_this_probe"], True)
+          assert_eq("movement packet claim", receipt["contract"]["claims_active_movement_packet_sent"], True)
+          assert_eq("contract.claims_team_selection", receipt["contract"]["claims_team_selection"], False)
+          assert_eq("contract.claims_combat_semantics", receipt["contract"]["claims_combat_semantics"], False)
+          assert_eq("contract.claims_inventory_semantics", receipt["contract"]["claims_inventory_semantics"], False)
+          assert_eq("contract.claims_death_respawn_semantics", receipt["contract"]["claims_death_respawn_semantics"], False)
+          assert_eq("contract.claims_current_valence_client_compat", receipt["contract"]["claims_current_valence_client_compat"], False)
+          assert_eq("contract.claims_full_stevenarella_763_support", receipt["contract"]["claims_full_stevenarella_763_support"], False)
+          assert_eq("contract.claims_semantic_correctness", receipt["contract"]["claims_semantic_correctness"], False)
+          assert_eq("contract.claims_stable_in_world_gameplay", receipt["contract"]["claims_stable_in_world_gameplay"], False)
+
+          for fragment in [
+              "bounded 180-second Valence `ctf` probe",
+              "MC_COMPAT_ACTIVE_PROBE=1",
+              "MC-COMPAT-MILESTONE active_probe_position_look_sent",
+              "No `UnexpectedEof`, `FromUtf8Error`, parser panic",
+              "does not prove full Minecraft 1.20.1 compatibility",
+              "Receipt BLAKE3",
+          ]:
+              if fragment not in note:
+                  raise SystemExit(f"active gameplay evidence note missing fragment: {fragment}")
+          PY
+
+              b3=$(b3sum "$receipt" | cut -d' ' -f1)
+              grep -Fq "Receipt BLAKE3: \`$b3\`" "$note"
+              mkdir -p "$out"
+              cp "$receipt" "$note" "$out/"
+              printf '%s\n' "$b3" > "$out/receipt.b3"
+            '';
         onixresearch-ssh-tools = pkgs.runCommand "onixresearch-ssh-tools" { } ''
           ${cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn}/bin/cairn --help > cairn-help.log
           ${
