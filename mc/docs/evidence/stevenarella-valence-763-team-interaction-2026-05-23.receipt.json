@@ -1,0 +1,78 @@
+{
+  "artifacts": {
+    "probe_log": {
+      "Detected server protocol version 763": 1,
+      "Disconnect": 0,
+      "Failed to read all of packet": 0,
+      "FromUtf8Error": 0,
+      "MC-COMPAT-MILESTONE active_probe_position_look_sent": 1,
+      "MC-COMPAT-MILESTONE first_chunk_data": 1,
+      "MC-COMPAT-MILESTONE join_game_763_shape": 1,
+      "MC-COMPAT-MILESTONE login_success": 1,
+      "MC-COMPAT-MILESTONE render_tick_with_player": 1,
+      "MC-COMPAT-MILESTONE team_probe_enter_red_portal": 1,
+      "MC-COMPAT-MILESTONE team_probe_hold_red_portal": 1,
+      "MC-COMPAT-MILESTONE team_probe_select_hotbar_slot": 1,
+      "MC-COMPAT-MILESTONE team_probe_use_item_sent": 1,
+      "Received chat message": 1,
+      "UnexpectedEof": 0,
+      "You are on team": 0,
+      "disconnect": 0,
+      "failed to parse packet": 0,
+      "panicked at": 0
+    },
+    "probe_log_b3": "7878158d32b736b02bf8c1fb277d2c0d15b080f42dcfccf9ef4c550f9a2d9682",
+    "probe_log_bytes": 6584,
+    "probe_status": {
+      "content": "exit=124",
+      "path": "/tmp/stevenarella-763-team-interaction-2026-05-23.status"
+    }
+  },
+  "code_changes": [
+    "protocol 763 serverbound interaction mappings: UseEntity 0x10, PlayerPosition 0x14, PlayerPositionLook 0x15, HeldItemChange 0x28, PlayerInteractBlock 0x31, PlayerInteractItem 0x32",
+    "1.20.1 UseItem and PlayerBlockPlacement sequence packet shapes",
+    "MC_COMPAT_TEAM_PROBE milestones for red portal position hold, hotbar selection, and use-item send"
+  ],
+  "contract": {
+    "claims_active_movement_packet_sent": true,
+    "claims_combat_semantics": false,
+    "claims_current_valence_client_compat": false,
+    "claims_death_respawn_semantics": false,
+    "claims_full_stevenarella_763_support": false,
+    "claims_inventory_semantics": false,
+    "claims_no_logged_runtime_failure_in_this_probe": true,
+    "claims_semantic_correctness": false,
+    "claims_stable_in_world_gameplay": false,
+    "claims_team_probe_packets_sent": true,
+    "claims_team_selection": false,
+    "claims_team_selection_chat_observed": false
+  },
+  "dry_run": false,
+  "mode": "protocol_763_instrumented_stevenarella_valence_ctf_team_interaction",
+  "probe": {
+    "duration_seconds": 180,
+    "exit_code": 124,
+    "interpretation": "expected bounded timeout; server process stayed live until killed after probe"
+  },
+  "schema": "mc.compat.stevenarella-valence-763-team-interaction.receipt.v1",
+  "status": "bounded_180s_timeout_team_interaction_probe_no_logged_runtime_failure",
+  "stevenarella": {
+    "active_probe_env": "MC_COMPAT_ACTIVE_PROBE=1",
+    "commit": "ca62c2c",
+    "default_protocol_version": "1.20.1",
+    "team_probe_env": "MC_COMPAT_TEAM_PROBE=1"
+  },
+  "valence": {
+    "commit": "c5140b7",
+    "connection_mode": "offline",
+    "example": "ctf",
+    "minecraft_version": "1.20.1",
+    "protocol": 763
+  },
+  "verification": [
+    "cargo fmt --check",
+    "CARGO_TARGET_DIR=/tmp/stevenarella-target2 cargo test -p steven_protocol protocol::versions::tests -- --nocapture",
+    "CARGO_TARGET_DIR=/tmp/stevenarella-target2 cargo check -p stevenarella",
+    "bounded Valence ctf live probe with MC_COMPAT_ACTIVE_PROBE=1 MC_COMPAT_TEAM_PROBE=1"
+  ]
+}
