@@ -31,7 +31,7 @@
       appBuildInputs = with pkgs; [
           rust rust-analyzer
           udev alsa-lib vulkan-loader wayland
-          xorg.libX11 xorg.libXcursor xorg.libXi xorg.libXrandr
+          libx11 libxcursor libxi libxrandr
           libxkbcommon wayland
       ];
     in
@@ -67,7 +67,7 @@
           nativeBuildInputs = with pkgs; [ pkg-config stdenv.cc ];
           buildInputs = with pkgs; [
             udev alsa-lib vulkan-loader wayland
-            xorg.libX11 xorg.libXcursor xorg.libXi xorg.libXrandr
+            libx11 libxcursor libxi libxrandr
             libxkbcommon
           ];
         };
