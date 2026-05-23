@@ -1,11 +1,6 @@
 //! [`Color`] and related data structures.
 
-use std::fmt;
-use std::hash::Hash;
-
 use serde::de::Visitor;
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use thiserror::Error;
 
 /// Text color
 #[derive(Default, Debug, PartialOrd, Eq, Ord, Clone, Copy)]
@@ -22,7 +17,7 @@ pub enum Color {
 }
 
 /// RGB Color
-#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, std::hash::Hash, Debug)]
 pub struct RgbColor {
     /// Red channel
     pub r: u8,
@@ -33,7 +28,7 @@ pub struct RgbColor {
 }
 
 /// Named Minecraft color
-#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, std::hash::Hash, Debug)]
 pub enum NamedColor {
     /// Hex digit: `0`, name: `black`
     Black = 0,
@@ -70,7 +65,7 @@ pub enum NamedColor {
 }
 
 /// Color parsing error
-#[derive(Debug, Error, PartialEq, PartialOrd, Clone, Copy, Hash, Eq, Ord)]
+#[derive(Debug, thiserror::Error, PartialEq, PartialOrd, Clone, Copy, std::hash::Hash, Eq, Ord)]
 #[error("invalid color name or hex code")]
 pub struct ColorError;
 
@@ -113,7 +108,7 @@ impl RgbColor {
                 + (i32::from(c1.b) - i32::from(c2.b)).pow(2)
         }
 
-        [
+        let named_colors = [
             NamedColor::Aqua,
             NamedColor::Black,
             NamedColor::Blue,
@@ -130,10 +125,20 @@ impl RgbColor {
             NamedColor::Red,
             NamedColor::White,
             NamedColor::Yellow,
-        ]
-        .into_iter()
-        .min_by_key(|&named| squared_distance(named.into(), self))
-        .unwrap()
+        ];
+
+        let mut closest = named_colors[0];
+        let mut closest_distance = squared_distance(closest.into(), self);
+
+        for named in named_colors.into_iter().skip(1) {
+            let distance = squared_distance(named.into(), self);
+            if distance < closest_distance {
+                closest = named;
+                closest_distance = distance;
+            }
+        }
+
+        closest
     }
 }
 
@@ -179,7 +184,7 @@ impl PartialEq for Color {
     }
 }
 
-impl Hash for Color {
+impl std::hash::Hash for Color {
     fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
         match self {
             Self::Reset => state.write_u8(0),
@@ -295,14 +300,14 @@ impl TryFrom<&str> for RgbColor {
     }
 }
 
-impl Serialize for Color {
-    fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-        format!("{self}").serialize(serializer)
+impl serde::Serialize for Color {
+    fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        serde::Serialize::serialize(&format!("{self}"), serializer)
     }
 }
 
-impl<'de> Deserialize<'de> for Color {
-    fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+impl<'de> serde::Deserialize<'de> for Color {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         deserializer.deserialize_str(ColorVisitor)
     }
 }
@@ -312,7 +317,7 @@ struct ColorVisitor;
 impl Visitor<'_> for ColorVisitor {
     type Value = Color;
 
-    fn expecting(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn expecting(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "a hex color (#rrggbb), a normal color or 'reset'")
     }
 
@@ -321,8 +326,8 @@ impl Visitor<'_> for ColorVisitor {
     }
 }
 
-impl fmt::Display for Color {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl std::fmt::Display for Color {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Color::Reset => write!(f, "reset"),
             Color::Rgb(rgb) => rgb.fmt(f),
@@ -331,14 +336,14 @@ impl fmt::Display for Color {
     }
 }
 
-impl fmt::Display for RgbColor {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl std::fmt::Display for RgbColor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "#{:02x}{:02x}{:02x}", self.r, self.g, self.b)
     }
 }
 
-impl fmt::Display for NamedColor {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl std::fmt::Display for NamedColor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "{}", self.name())
     }
 }
