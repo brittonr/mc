@@ -43,7 +43,7 @@
 
 ## Examples and playground
 - Quick smoke test: `cargo r -r --example parkour`.
-- Repeatable fork-local smoke receipt: `scripts/smoke-parkour.sh` builds the `parkour` example in the Nix devshell, waits for `:25565`, then cleans up the server process.
+- Repeatable fork-local smoke receipt: `scripts/smoke-parkour.sh` builds the `parkour` example in the Nix devshell, waits for `:25565`, then cleans up the server process. Pass `--receipt <path>` to write `valence.parkour-smoke.receipt.v1` JSON; `--dry-run --receipt <path>` is checked by `nix build .#checks.x86_64-linux.parkour-smoke-receipt --no-link`.
 - `game_of_life`, `terrain`, and `cow_sphere` are called out in the README as good examples to try.
 - `tools/playground` is preferred scratch area for reproductions and small experiments.
 

@@ -45,6 +45,33 @@
             '';
         };
 
+        checks.parkour-smoke-receipt = pkgs.runCommand "valence-parkour-smoke-receipt-check" {
+          nativeBuildInputs = with pkgs; [ bash coreutils git gnugrep iproute2 jq shellcheck ];
+        } ''
+          cp -R ${./.} source
+          chmod -R +w source
+          cd source
+
+          shellcheck scripts/smoke-parkour.sh
+
+          receipt="$TMPDIR/parkour-smoke-receipt.json"
+          bash scripts/smoke-parkour.sh --dry-run --receipt "$receipt"
+          jq -e '
+            .schema == "valence.parkour-smoke.receipt.v1"
+            and .example == "parkour"
+            and .port == 25565
+            and .status == "passed"
+            and .reason == "dry_run"
+            and .dry_run == true
+            and .live_smoke == false
+            and .claims_client_compat == false
+            and .claims_semantic_correctness == false
+          ' "$receipt" >/dev/null
+
+          mkdir -p "$out"
+          cp "$receipt" "$out/parkour-smoke-receipt.json"
+        '';
+
         checks.octet = octet.lib.mkConsumerCheck {
           inherit system;
           src = let
