@@ -1,14 +1,9 @@
 #![doc = include_str!("../README.md")]
 
-use std::borrow::{Borrow, Cow};
-use std::cmp::Ordering;
-use std::fmt;
-use std::fmt::Formatter;
 use std::str::FromStr;
 
-use serde::de::Error as _;
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use thiserror::Error;
+type Cow<'a, T> = std::borrow::Cow<'a, T>;
+
 /// Used internally by the `ident` macro. Not public API.
 #[doc(hidden)]
 pub use valence_ident_macros::parse_ident_str;
@@ -52,7 +47,7 @@ pub struct Ident<S> {
 
 /// The error type created when an [`Ident`] cannot be parsed from a
 /// string. Contains the string that failed to parse.
-#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Error)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, thiserror::Error)]
 #[error("invalid resource identifier \"{0}\"")]
 pub struct IdentError(pub String);
 
@@ -120,9 +115,10 @@ impl<S> Ident<S> {
     where
         S: AsRef<str>,
     {
-        self.as_str()
-            .split_once(':')
-            .expect("invalid resource identifier")
+        match self.as_str().split_once(':') {
+            Some(namespace_and_path) => namespace_and_path,
+            None => ("minecraft", self.as_str()),
+        }
     }
 }
 
@@ -149,10 +145,11 @@ fn parse(string: Cow<str>) -> Result<Ident<Cow<str>>, IdentError> {
         Some((namespace, path)) if check_namespace(namespace) && check_path(path) => {
             Ok(Ident { string })
         }
+        Some(_) => Err(IdentError(string.into())),
         None if check_path(&string) => Ok(Ident {
             string: format!("minecraft:{string}").into(),
         }),
-        _ => Err(IdentError(string.into())),
+        None => Err(IdentError(string.into())),
     }
 }
 
@@ -168,7 +165,7 @@ impl<S> AsRef<S> for Ident<S> {
     }
 }
 
-impl<S: Borrow<str>> Borrow<str> for Ident<S> {
+impl<S: std::borrow::Borrow<str>> std::borrow::Borrow<str> for Ident<S> {
     fn borrow(&self) -> &str {
         self.string.borrow()
     }
@@ -288,14 +285,14 @@ impl<'a> TryFrom<Cow<'a, str>> for Ident<Cow<'a, str>> {
     }
 }
 
-impl<S: fmt::Debug> fmt::Debug for Ident<S> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+impl<S: std::fmt::Debug> std::fmt::Debug for Ident<S> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         self.string.fmt(f)
     }
 }
 
-impl<S: fmt::Display> fmt::Display for Ident<S> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+impl<S: std::fmt::Display> std::fmt::Display for Ident<S> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         self.string.fmt(f)
     }
 }
@@ -313,30 +310,31 @@ impl<S, T> PartialOrd<Ident<T>> for Ident<S>
 where
     S: PartialOrd<T>,
 {
-    fn partial_cmp(&self, other: &Ident<T>) -> Option<Ordering> {
+    fn partial_cmp(&self, other: &Ident<T>) -> Option<std::cmp::Ordering> {
         self.string.partial_cmp(&other.string)
     }
 }
 
-impl<T: Serialize> Serialize for Ident<T> {
+impl<T: serde::Serialize> serde::Serialize for Ident<T> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
-        S: Serializer,
+        S: serde::Serializer,
     {
         self.string.serialize(serializer)
     }
 }
 
-impl<'de, S> Deserialize<'de> for Ident<S>
+impl<'de, S> serde::Deserialize<'de> for Ident<S>
 where
-    S: Deserialize<'de>,
+    S: serde::Deserialize<'de>,
     Ident<S>: TryFrom<S, Error = IdentError>,
 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
-        D: Deserializer<'de>,
+        D: serde::Deserializer<'de>,
     {
-        Ident::try_from(S::deserialize(deserializer)?).map_err(D::Error::custom)
+        Ident::try_from(<S as serde::Deserialize>::deserialize(deserializer)?)
+            .map_err(<D::Error as serde::de::Error>::custom)
     }
 }
 
