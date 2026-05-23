@@ -1,0 +1,86 @@
+{
+  "artifacts": {
+    "backtrace_log": {
+      "Detected server protocol version 763": 1,
+      "Failed to read all": 0,
+      "MC-COMPAT-MILESTONE first_chunk_data": 0,
+      "MC-COMPAT-MILESTONE join_game": 2,
+      "MC-COMPAT-MILESTONE join_game_763_shape": 1,
+      "MC-COMPAT-MILESTONE login_compression": 1,
+      "MC-COMPAT-MILESTONE login_success": 1,
+      "MC-COMPAT-MILESTONE render_tick_with_player": 1,
+      "UnexpectedEof": 0,
+      "explicit panic": 0,
+      "missing packet": 0,
+      "panicked": 1,
+      "path": "/tmp/stevenarella-763-post-login-state-backtrace-2026-05-23.log",
+      "sha256": "3a184e56a98af52014d47e424a884e2d13671fa2cac1c7d9348cee84445a2a0d"
+    },
+    "backtrace_status": {
+      "content": "exit=124",
+      "path": "/tmp/stevenarella-763-post-login-state-backtrace-2026-05-23.status"
+    },
+    "probe_log": {
+      "Detected server protocol version 763": 1,
+      "Failed to read all": 0,
+      "MC-COMPAT-MILESTONE first_chunk_data": 0,
+      "MC-COMPAT-MILESTONE join_game": 2,
+      "MC-COMPAT-MILESTONE join_game_763_shape": 1,
+      "MC-COMPAT-MILESTONE login_compression": 1,
+      "MC-COMPAT-MILESTONE login_success": 1,
+      "MC-COMPAT-MILESTONE render_tick_with_player": 1,
+      "UnexpectedEof": 0,
+      "explicit panic": 0,
+      "missing packet": 0,
+      "panicked": 1,
+      "path": "/tmp/stevenarella-763-post-login-state-2026-05-23.log",
+      "sha256": "cd428d3c0ceb37f2abb8aa55b007c78478dae95ad64a575d160209eeb293920c"
+    },
+    "probe_status": {
+      "content": "exit=124",
+      "path": "/tmp/stevenarella-763-post-login-state-2026-05-23.status"
+    }
+  },
+  "changes": {
+    "parser_notes": [
+      "1.20.1 join game reads optional last death location and portal cooldown",
+      "1.20.1 player info reads action bitset entries and skips chat initialization payloads"
+    ],
+    "play_0x28_mapping": "JoinGame_WorldNames_IsHard_SimDist_LastDeath_PortalCooldown",
+    "play_0x3a_mapping": "PlayerInfo_BitSet"
+  },
+  "contract": {
+    "claims_chunk_streaming_success": false,
+    "claims_current_valence_client_compat": false,
+    "claims_full_stevenarella_763_support": false,
+    "claims_in_world_gameplay_success": false,
+    "claims_join_game_reached": true,
+    "claims_login_success_reached": true,
+    "claims_render_tick_with_player_reached": true,
+    "claims_semantic_correctness": false,
+    "claims_unexpected_eof_fixed_for_this_probe": true
+  },
+  "date": "2026-05-23",
+  "dry_run": false,
+  "mode": "protocol_763_instrumented_stevenarella_valence_ctf_post_login_play_state",
+  "schema": "mc.compat.stevenarella-valence-763-post-login-play-state.receipt.v1",
+  "status": "advanced_past_login_success_to_join_game_render_tick_next_failure_entity_metadata_parser_panic",
+  "stevenarella": {
+    "branch": "master",
+    "commit": "51d22f2",
+    "remote": "git@github.com:brittonr/stevenarella.git"
+  },
+  "valence": {
+    "example": "ctf",
+    "protocol": 763,
+    "server": "127.0.0.1:25565"
+  },
+  "verification": {
+    "first_observed_runtime_failure": "panic in EntityMetadata metadata string parser: FromUtf8Error at protocol/src/protocol/mod.rs:281",
+    "focused_tests": "cargo fmt --check && CARGO_TARGET_DIR=/tmp/stevenarella-target2 cargo test -p steven_protocol protocol::versions::tests -- --nocapture && CARGO_TARGET_DIR=/tmp/stevenarella-target2 cargo check -p stevenarella",
+    "focused_tests_exit": 0,
+    "live_probe_exit_interpretation": "exit=124 from timeout after bounded run; log reached join_game and render_tick_with_player",
+    "next_boundary": "protocol 763 EntityMetadata metadata shape/parser compatibility; first_chunk_data was not observed in this bounded run",
+    "previous_failure_removed": "UnexpectedEof after login_success no longer observed"
+  }
+}
