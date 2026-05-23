@@ -1,0 +1,73 @@
+{
+  "artifacts": {
+    "probe_log": {
+      "Detected server protocol version 763": 1,
+      "Failed to read all of packet": 0,
+      "FromUtf8Error": 0,
+      "MC-COMPAT-MILESTONE first_chunk_data": 1,
+      "MC-COMPAT-MILESTONE join_game": 2,
+      "MC-COMPAT-MILESTONE join_game_763_shape": 1,
+      "MC-COMPAT-MILESTONE login_compression": 1,
+      "MC-COMPAT-MILESTONE login_success": 1,
+      "MC-COMPAT-MILESTONE render_tick_with_player": 1,
+      "UnexpectedEof": 0,
+      "failed to parse packet": 0,
+      "panicked at": 0,
+      "unknown 1.20.1 metadata type": 0
+    },
+    "probe_log_path": "/tmp/stevenarella-763-entity-metadata-2026-05-23.log",
+    "probe_status": {
+      "content": "exit=124",
+      "path": "/tmp/stevenarella-763-entity-metadata-2026-05-23.status"
+    }
+  },
+  "changes": {
+    "chunk_data": "added protocol 763 ChunkData shape without trust_edges field",
+    "metadata_parser": "added protocol 763/1.20.1 metadata value-type decoder branch",
+    "play_clientbound_mappings": [
+      "0x23 KeepAliveS2C",
+      "0x24 ChunkDataS2C no trust_edges",
+      "0x3c PlayerPositionLookS2C",
+      "0x50 PlayerSpawnPositionS2C"
+    ],
+    "play_serverbound_mappings": [
+      "0x12 KeepAliveC2S"
+    ]
+  },
+  "contract": {
+    "claims_current_valence_client_compat": false,
+    "claims_entity_metadata_boundary_cleared_for_this_probe": true,
+    "claims_first_chunk_data_reached": true,
+    "claims_full_stevenarella_763_support": false,
+    "claims_no_logged_panic_in_this_probe": true,
+    "claims_render_tick_with_player_reached": true,
+    "claims_semantic_correctness": false,
+    "claims_stable_in_world_gameplay": false
+  },
+  "date": "2026-05-23",
+  "dry_run": false,
+  "mode": "protocol_763_instrumented_stevenarella_valence_ctf_entity_metadata",
+  "schema": "mc.compat.stevenarella-valence-763-entity-metadata.receipt.v1",
+  "status": "bounded_probe_timeout_after_entity_metadata_parser_fix",
+  "stevenarella": {
+    "branch": "master",
+    "commit": "b2a6358",
+    "remote": "git@github.com:brittonr/stevenarella.git"
+  },
+  "valence": {
+    "changed": false,
+    "example": "ctf",
+    "protocol": 763,
+    "version": "1.20.1"
+  },
+  "verification": {
+    "bounded_timeout_seconds": 120,
+    "entity_metadata_from_utf8_error_count": 0,
+    "first_observed_runtime_failure": null,
+    "focused_checks": "cargo fmt && cargo fmt --check && cargo test -p steven_protocol protocol::versions::tests -- --nocapture && cargo check -p stevenarella",
+    "focused_checks_exit": 0,
+    "live_probe_exit": 124,
+    "panic_count": 0,
+    "unexpected_eof_count": 0
+  }
+}
