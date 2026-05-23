@@ -1,29 +1,45 @@
 use crate::protocol::{packet, Direction, State};
 
+const PLAY_CLIENTBOUND_OVERRIDES: &[(i32, i32)] = &[
+    (0x10, packet::play::clientbound::internal_ids::DeclareCommands),
+    (0x14, packet::play::clientbound::internal_ids::WindowSetSlot_State),
+    (0x1c, packet::play::clientbound::internal_ids::EntityStatus),
+    (0x24, packet::play::clientbound::internal_ids::ChunkData_AndLight),
+    (
+        0x28,
+        packet::play::clientbound::internal_ids::JoinGame_WorldNames_IsHard_SimDist,
+    ),
+    (0x34, packet::play::clientbound::internal_ids::PlayerAbilities),
+    (0x3a, packet::play::clientbound::internal_ids::PlayerInfo),
+    (0x4d, packet::play::clientbound::internal_ids::SetCurrentHotbarSlot),
+    (0x51, packet::play::clientbound::internal_ids::ScoreboardDisplay),
+    (0x52, packet::play::clientbound::internal_ids::EntityMetadata),
+    (0x57, packet::play::clientbound::internal_ids::UpdateHealth),
+    (0x58, packet::play::clientbound::internal_ids::ScoreboardObjective),
+    (0x5b, packet::play::clientbound::internal_ids::UpdateScore_VarInt),
+    (0x64, packet::play::clientbound::internal_ids::ServerMessage_Position),
+    (0x69, packet::play::clientbound::internal_ids::Advancements),
+    (
+        0x6a,
+        packet::play::clientbound::internal_ids::EntityProperties_VarIntVarInt,
+    ),
+    (0x6e, packet::play::clientbound::internal_ids::Tags_Nested),
+];
+
 pub fn translate_internal_packet_id(state: State, dir: Direction, id: i32, to_internal: bool) -> i32 {
     if state == State::Play && dir == Direction::Clientbound {
-        if to_internal && id == 0x10 {
-            return packet::play::clientbound::internal_ids::DeclareCommands;
-        }
-
-        if !to_internal && id == packet::play::clientbound::internal_ids::DeclareCommands {
-            return 0x10;
-        }
-
-        if to_internal && id == 0x28 {
-            return packet::play::clientbound::internal_ids::JoinGame_WorldNames_IsHard_SimDist;
-        }
-
-        if !to_internal && id == packet::play::clientbound::internal_ids::JoinGame_WorldNames_IsHard_SimDist {
-            return 0x28;
-        }
-
-        if to_internal && id == 0x64 {
-            return packet::play::clientbound::internal_ids::ServerMessage_Position;
-        }
-
-        if !to_internal && id == packet::play::clientbound::internal_ids::ServerMessage_Position {
-            return 0x64;
+        if to_internal {
+            if let Some((_, internal_id)) = PLAY_CLIENTBOUND_OVERRIDES
+                .iter()
+                .find(|(wire_id, _)| *wire_id == id)
+            {
+                return *internal_id;
+            }
+        } else if let Some((wire_id, _)) = PLAY_CLIENTBOUND_OVERRIDES
+            .iter()
+            .find(|(_, internal_id)| *internal_id == id)
+        {
+            return *wire_id;
         }
     }
 

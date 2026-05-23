@@ -213,4 +213,72 @@ mod tests {
             translate_internal_packet_id_for_version(758, State::Play, Direction::Clientbound, 0x64, true),
         );
     }
+
+    #[test]
+    fn protocol_763_maps_remaining_observed_valence_boundaries() {
+        let boundaries = [
+            (0x14, crate::protocol::packet::play::clientbound::internal_ids::WindowSetSlot_State),
+            (0x1c, crate::protocol::packet::play::clientbound::internal_ids::EntityStatus),
+            (0x24, crate::protocol::packet::play::clientbound::internal_ids::ChunkData_AndLight),
+            (0x34, crate::protocol::packet::play::clientbound::internal_ids::PlayerAbilities),
+            (0x3a, crate::protocol::packet::play::clientbound::internal_ids::PlayerInfo),
+            (0x4d, crate::protocol::packet::play::clientbound::internal_ids::SetCurrentHotbarSlot),
+            (0x51, crate::protocol::packet::play::clientbound::internal_ids::ScoreboardDisplay),
+            (0x52, crate::protocol::packet::play::clientbound::internal_ids::EntityMetadata),
+            (0x57, crate::protocol::packet::play::clientbound::internal_ids::UpdateHealth),
+            (0x58, crate::protocol::packet::play::clientbound::internal_ids::ScoreboardObjective),
+            (0x5b, crate::protocol::packet::play::clientbound::internal_ids::UpdateScore_VarInt),
+            (0x69, crate::protocol::packet::play::clientbound::internal_ids::Advancements),
+            (0x6a, crate::protocol::packet::play::clientbound::internal_ids::EntityProperties_VarIntVarInt),
+            (0x6e, crate::protocol::packet::play::clientbound::internal_ids::Tags_Nested),
+        ];
+
+        for (wire_id, internal_id) in boundaries {
+            assert_eq!(
+                translate_internal_packet_id_for_version(
+                    763,
+                    State::Play,
+                    Direction::Clientbound,
+                    wire_id,
+                    true,
+                ),
+                internal_id,
+                "wire id 0x{wire_id:02x} should map to the expected Stevenarella internal id",
+            );
+            assert_eq!(
+                translate_internal_packet_id_for_version(
+                    763,
+                    State::Play,
+                    Direction::Clientbound,
+                    internal_id,
+                    false,
+                ),
+                wire_id,
+                "internal id {internal_id} should map back to wire id 0x{wire_id:02x}",
+            );
+        }
+    }
+
+    #[test]
+    fn protocol_763_no_longer_uses_758_fallback_for_remaining_observed_boundaries() {
+        for wire_id in [0x14, 0x1c, 0x24, 0x34, 0x3a, 0x4d, 0x51, 0x52, 0x57, 0x58, 0x5b] {
+            assert_ne!(
+                translate_internal_packet_id_for_version(
+                    763,
+                    State::Play,
+                    Direction::Clientbound,
+                    wire_id,
+                    true,
+                ),
+                translate_internal_packet_id_for_version(
+                    758,
+                    State::Play,
+                    Direction::Clientbound,
+                    wire_id,
+                    true,
+                ),
+                "wire id 0x{wire_id:02x} should not inherit the protocol 758 mapping",
+            );
+        }
+    }
 }
