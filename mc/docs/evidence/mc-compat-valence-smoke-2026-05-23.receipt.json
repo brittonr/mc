@@ -1,0 +1,43 @@
+{
+  "schema": "mc.compat.smoke.receipt.v1",
+  "status": "pass",
+  "mode": "run",
+  "dry_run": false,
+  "contract": {
+    "cairn_contract": "mc.compat.smoke.receipt.v1",
+    "octet_producer_surface": "tools/mc-compat-runner/src/main.rs",
+    "claims_correctness": false,
+    "claims_semantic_equivalence": false
+  },
+  "server": {
+    "backend": "valence",
+    "version": "1.18.2",
+    "protocol": 758,
+    "port": 25565
+  },
+  "client": {
+    "dir": "/home/brittonr/git/mc/stevenarella",
+    "target_dir": "/tmp/stevenarella-target2",
+    "username": "compatbot",
+    "timeout_secs": 20,
+    "headless_isolation": {
+      "xvfb": true,
+      "x11_backend": true,
+      "software_gl": true,
+      "wayland_socket_inherited": false
+    },
+    "log_path": "/tmp/mc-compat-client.1779514835613.log",
+    "exit_code": 124,
+    "classification": "timeout-success-evidence",
+    "matched_success_pattern": "Detected server protocol version"
+  },
+  "valence": {
+    "repo": "/home/brittonr/git/mc/valence",
+    "rev": "8ad9c85",
+    "worktree": "/tmp/valence-compat-758",
+    "example": "terrain",
+    "log_path": "/tmp/mc-compat-valence.log"
+  },
+  "receipt_path": "target/mc-compat-smoke-valence.json",
+  "error": null
+}

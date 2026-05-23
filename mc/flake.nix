@@ -292,6 +292,61 @@
           mkdir -p "$out"
           cp smoke.log smoke-receipt.json cairn-help.log octet-fingerprint.json "$out/"
         '';
+        mc-compat-valence-evidence =
+          pkgs.runCommand "mc-compat-valence-evidence" { nativeBuildInputs = [ pkgs.b3sum pkgs.python3 ]; }
+            ''
+              receipt=${./docs/evidence/mc-compat-valence-smoke-2026-05-23.receipt.json}
+              note=${./docs/evidence/mc-compat-valence-smoke-2026-05-23.md}
+
+              python3 - "$receipt" "$note" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          receipt_path = pathlib.Path(sys.argv[1])
+          note_path = pathlib.Path(sys.argv[2])
+          receipt = json.loads(receipt_path.read_text())
+          note = note_path.read_text()
+
+          def assert_eq(name, actual, expected):
+              if actual != expected:
+                  raise SystemExit(f"{name}: expected {expected!r}, got {actual!r}")
+
+          assert_eq("schema", receipt["schema"], "mc.compat.smoke.receipt.v1")
+          assert_eq("status", receipt["status"], "pass")
+          assert_eq("mode", receipt["mode"], "run")
+          assert_eq("dry_run", receipt["dry_run"], False)
+          assert_eq("server.backend", receipt["server"]["backend"], "valence")
+          assert_eq("server.version", receipt["server"]["version"], "1.18.2")
+          assert_eq("server.protocol", receipt["server"]["protocol"], 758)
+          assert_eq("client.classification", receipt["client"]["classification"], "timeout-success-evidence")
+          assert_eq("client.matched_success_pattern", receipt["client"]["matched_success_pattern"], "Detected server protocol version")
+          assert_eq("headless.xvfb", receipt["client"]["headless_isolation"]["xvfb"], True)
+          assert_eq("headless.x11_backend", receipt["client"]["headless_isolation"]["x11_backend"], True)
+          assert_eq("headless.software_gl", receipt["client"]["headless_isolation"]["software_gl"], True)
+          assert_eq("headless.wayland_socket_inherited", receipt["client"]["headless_isolation"]["wayland_socket_inherited"], False)
+          assert_eq("contract.claims_correctness", receipt["contract"]["claims_correctness"], False)
+          assert_eq("contract.claims_semantic_equivalence", receipt["contract"]["claims_semantic_equivalence"], False)
+
+          required_note_fragments = [
+              "Stevenarella → Valence",
+              "Receipt status: `pass`",
+              "Server status probe: protocol `758`",
+              "Client classification: `timeout-success-evidence`",
+              "Matched success pattern: `Detected server protocol version`",
+              "This is a bounded compatibility smoke receipt.",
+          ]
+          for fragment in required_note_fragments:
+              if fragment not in note:
+                  raise SystemExit(f"evidence note missing fragment: {fragment}")
+          PY
+
+              b3=$(b3sum "$receipt" | cut -d' ' -f1)
+              grep -Fq "Receipt BLAKE3: \`$b3\`" "$note"
+              mkdir -p "$out"
+              cp "$receipt" "$note" "$out/"
+              printf '%s\n' "$b3" > "$out/receipt.b3"
+            '';
         onixresearch-ssh-tools = pkgs.runCommand "onixresearch-ssh-tools" { } ''
           ${cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn}/bin/cairn --help > cairn-help.log
           ${
