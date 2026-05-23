@@ -1,0 +1,108 @@
+{
+  "boundary": {
+    "first_mismatch": {
+      "direction": "clientbound",
+      "expected_763_translation": "map 0x28 to JoinGame/GameJoinS2C shape, not TradeList",
+      "source_evidence": [
+        "valence/crates/valence_generated/extracted/packets.json: GameJoinS2CPacket clientbound play id 40",
+        "stevenarella/protocol/src/protocol/versions/v1_18_2.rs: clientbound play 0x28 => TradeList_WithRestock"
+      ],
+      "state": "play",
+      "stevenarella_758_alias_semantic": "TradeList_WithRestock",
+      "valence_763_semantic": "GameJoinS2C",
+      "wire_id": "0x28"
+    },
+    "last_safe_packet_ids": [
+      {
+        "direction": "clientbound",
+        "id": "0x03",
+        "semantic": "SetInitialCompression/SetCompressionS2C",
+        "state": "login"
+      },
+      {
+        "direction": "clientbound",
+        "id": "0x02",
+        "semantic": "LoginSuccess_UUID/LoginSuccessS2C",
+        "state": "login"
+      }
+    ],
+    "next_minimal_patch": "Add a protocol-763 clientbound play mapping table at least through login transition; map 0x28 to JoinGame_WorldNames_IsHard_SimDist/GameJoin-equivalent and account for any 1.20.1 shape delta before advancing to later packets."
+  },
+  "contract": {
+    "claims_current_valence_client_compat": false,
+    "claims_current_valence_login_packet_boundary": true,
+    "claims_full_stevenarella_763_support": false
+  },
+  "date": "2026-05-23",
+  "devshell_fix": {
+    "flake": "/home/brittonr/git/mc/flake.nix",
+    "provides": [
+      "cargo",
+      "rustc",
+      "xvfb-run",
+      "xauth",
+      "OpenSSL include/lib env",
+      "fontconfig/freetype/expat pkg-config paths",
+      "LIBRARY_PATH/LD_LIBRARY_PATH for xcb/x11/xkbcommon/wayland/GL",
+      "RUSTC_WRAPPER empty",
+      "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+      "WINIT_UNIX_BACKEND=x11",
+      "LIBGL_ALWAYS_SOFTWARE=1",
+      "b3sum"
+    ],
+    "validated": true
+  },
+  "dry_run": false,
+  "mode": "current_valence_763_offline_login_packet_trace",
+  "schema": "mc.compat.stevenarella-valence-763-packet-boundary.receipt.v1",
+  "status": "pass",
+  "stevenarella": {
+    "claims_full_1_20_1_protocol_support": false,
+    "fork_branch": "master",
+    "fork_remote": "git@github.com:brittonr/stevenarella.git",
+    "protocol_763_translation_source": "protocol/src/protocol/versions.rs routes 763 to versions/v1_18_2.rs",
+    "repo": "/home/brittonr/git/mc/stevenarella",
+    "shim_commit": "ff043683ad775443355c0671d8edd53ed3dc722e"
+  },
+  "trace": {
+    "blake3": "a32eef028ce239e13fed174820045664908cb73205ed667a0c8d97b8b522becf",
+    "packet_count": 20,
+    "path": "/tmp/valence-763-offline-login-trace.json"
+  },
+  "valence": {
+    "connection_mode": "Offline",
+    "example": "ctf",
+    "first_captured_packets": [
+      {
+        "direction": "clientbound",
+        "id": "0x03",
+        "semantic": "SetCompressionS2C",
+        "sequence": 0,
+        "state": "login"
+      },
+      {
+        "direction": "clientbound",
+        "id": "0x02",
+        "semantic": "LoginSuccessS2C",
+        "sequence": 1,
+        "state": "login"
+      },
+      {
+        "direction": "clientbound",
+        "id": "0x28",
+        "semantic": "GameJoinS2C",
+        "sequence": 2,
+        "state": "play"
+      }
+    ],
+    "protocol": 763,
+    "repo": "/home/brittonr/git/mc/valence",
+    "version": "1.20.1/current"
+  },
+  "verification": {
+    "devshell_probe_status": "pass",
+    "direct_protocol_trace_status": "pass",
+    "mc_compat_runner_build_status": "pass",
+    "stevenarella_network_debug_status": "timeout_after_status_detection_only"
+  }
+}

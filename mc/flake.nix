@@ -39,6 +39,7 @@
             xvfb-run
             xauth
             python3
+            b3sum
             docker-client
           ];
           guiLibs = with pkgs; [
@@ -76,7 +77,12 @@
                 --prefix PKG_CONFIG_PATH : ${lib.escapeShellArg pkgConfigPath} \
                 --prefix LIBRARY_PATH : ${lib.escapeShellArg libraryPath} \
                 --prefix LD_LIBRARY_PATH : ${lib.escapeShellArg libraryPath} \
-                --set CMAKE_POLICY_VERSION_MINIMUM 3.5
+                --set OPENSSL_INCLUDE_DIR ${lib.escapeShellArg "${pkgs.openssl.dev}/include"} \
+                --set OPENSSL_LIB_DIR ${lib.escapeShellArg "${pkgs.openssl.out}/lib"} \
+                --set RUSTC_WRAPPER "" \
+                --set CMAKE_POLICY_VERSION_MINIMUM 3.5 \
+                --set WINIT_UNIX_BACKEND x11 \
+                --set LIBGL_ALWAYS_SOFTWARE 1
             '';
             meta = {
               description = "Hardened Stevenarella/Valence compatibility smoke runner";
@@ -455,6 +461,62 @@
               cp "$receipt" "$note" "$out/"
               printf '%s\n' "$b3" > "$out/receipt.b3"
             '';
+        stevenarella-valence-763-packet-boundary-evidence =
+          pkgs.runCommand "stevenarella-valence-763-packet-boundary-evidence" { nativeBuildInputs = [ pkgs.b3sum pkgs.python3 ]; }
+            ''
+              receipt=${./docs/evidence/stevenarella-valence-763-packet-boundary-2026-05-23.receipt.json}
+              note=${./docs/evidence/stevenarella-valence-763-packet-boundary-2026-05-23.md}
+
+              python3 - "$receipt" "$note" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          receipt_path = pathlib.Path(sys.argv[1])
+          note_path = pathlib.Path(sys.argv[2])
+          receipt = json.loads(receipt_path.read_text())
+          note = note_path.read_text()
+
+          def assert_eq(name, actual, expected):
+              if actual != expected:
+                  raise SystemExit(f"{name}: expected {expected!r}, got {actual!r}")
+
+          assert_eq("schema", receipt["schema"], "mc.compat.stevenarella-valence-763-packet-boundary.receipt.v1")
+          assert_eq("status", receipt["status"], "pass")
+          assert_eq("mode", receipt["mode"], "current_valence_763_offline_login_packet_trace")
+          assert_eq("dry_run", receipt["dry_run"], False)
+          assert_eq("valence.protocol", receipt["valence"]["protocol"], 763)
+          assert_eq("valence.connection_mode", receipt["valence"]["connection_mode"], "Offline")
+          assert_eq("first packet", receipt["valence"]["first_captured_packets"][0]["semantic"], "SetCompressionS2C")
+          assert_eq("second packet", receipt["valence"]["first_captured_packets"][1]["semantic"], "LoginSuccessS2C")
+          assert_eq("boundary wire id", receipt["boundary"]["first_mismatch"]["wire_id"], "0x28")
+          assert_eq("boundary valence semantic", receipt["boundary"]["first_mismatch"]["valence_763_semantic"], "GameJoinS2C")
+          assert_eq("boundary stevenarella semantic", receipt["boundary"]["first_mismatch"]["stevenarella_758_alias_semantic"], "TradeList_WithRestock")
+          assert_eq("trace packet count", receipt["trace"]["packet_count"], 20)
+          assert_eq("devshell validated", receipt["devshell_fix"]["validated"], True)
+          assert_eq("verification.runner build", receipt["verification"]["mc_compat_runner_build_status"], "pass")
+          assert_eq("contract.claims_current_valence_login_packet_boundary", receipt["contract"]["claims_current_valence_login_packet_boundary"], True)
+          assert_eq("contract.claims_current_valence_client_compat", receipt["contract"]["claims_current_valence_client_compat"], False)
+          assert_eq("contract.claims_full_stevenarella_763_support", receipt["contract"]["claims_full_stevenarella_763_support"], False)
+
+          required_note_fragments = [
+              "play/clientbound/0x28",
+              "GameJoinS2C",
+              "TradeList_WithRestock",
+              "Devshell/flake repair",
+              "Receipt BLAKE3",
+          ]
+          for fragment in required_note_fragments:
+              if fragment not in note:
+                  raise SystemExit(f"packet-boundary evidence note missing fragment: {fragment}")
+          PY
+
+              b3=$(b3sum "$receipt" | cut -d' ' -f1)
+              grep -Fq "Receipt BLAKE3: \`$b3\`" "$note"
+              mkdir -p "$out"
+              cp "$receipt" "$note" "$out/"
+              printf '%s\n' "$b3" > "$out/receipt.b3"
+            '';
         onixresearch-ssh-tools = pkgs.runCommand "onixresearch-ssh-tools" { } ''
           ${cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn}/bin/cairn --help > cairn-help.log
           ${
@@ -467,19 +529,75 @@
         '';
       });
 
-      devShells = eachSystem (pkgs: {
-        default = pkgs.mkShell {
-          packages = [
-            self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
-            cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn
-            octet.packages.${pkgs.stdenv.hostPlatform.system}.cargo-octet
-            pkgs.nickel
+      devShells = eachSystem (
+        pkgs:
+        let
+          lib = pkgs.lib;
+          guiLibs = with pkgs; [
+            openssl
+            freetype
+            fontconfig
+            expat
+            libxcb
+            libx11
+            libxkbcommon
+            wayland
+            libxcursor
+            libxi
+            libxrandr
+            mesa
+            libGL
           ];
-          shellHook = ''
-            echo "mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'"
-            echo "OnixResearch tools are pinned over SSH: cairn, cargo-octet"
-          '';
-        };
-      });
+          pkgConfigPath = lib.makeSearchPathOutput "dev" "lib/pkgconfig" [
+            pkgs.openssl
+            pkgs.fontconfig
+            pkgs.freetype
+            pkgs.expat
+          ];
+          libraryPath = lib.makeLibraryPath guiLibs;
+        in
+        {
+          default = pkgs.mkShell {
+            packages = with pkgs; [
+              self.packages.${stdenv.hostPlatform.system}.mc-compat-runner
+              cairn.packages.${stdenv.hostPlatform.system}.cairn
+              octet.packages.${stdenv.hostPlatform.system}.cargo-octet
+              cargo
+              rustc
+              gcc
+              gnumake
+              pkg-config
+              cmake
+              mold
+              rustfmt
+              shellcheck
+              nickel
+              git
+              coreutils
+              xvfb-run
+              xauth
+              python3
+              b3sum
+              docker-client
+            ] ++ guiLibs;
+
+            OPENSSL_INCLUDE_DIR = "${pkgs.openssl.dev}/include";
+            OPENSSL_LIB_DIR = "${pkgs.openssl.out}/lib";
+            PKG_CONFIG_PATH = pkgConfigPath;
+            LD_LIBRARY_PATH = libraryPath;
+            LIBRARY_PATH = libraryPath;
+            RUSTC_WRAPPER = "";
+            CMAKE_POLICY_VERSION_MINIMUM = "3.5";
+            WINIT_UNIX_BACKEND = "x11";
+            LIBGL_ALWAYS_SOFTWARE = "1";
+
+            shellHook = ''
+              echo "mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'"
+              echo "Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available"
+              echo "OnixResearch tools are pinned over SSH: cairn, cargo-octet"
+            '';
+          };
+        }
+      );
     };
 }
