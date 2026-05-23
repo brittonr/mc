@@ -179,6 +179,30 @@
                     mkdir -p "$out"
                     cp paper.json valence.json compare.log bad.log "$out/"
         '';
+        mc-compat-run-matrix =
+          pkgs.runCommand "mc-compat-run-matrix" { nativeBuildInputs = [ pkgs.git ]; }
+            ''
+              mkdir -p fake-stevenarella fake-valence matrix
+              printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+              git -C fake-valence init
+              git -C fake-valence config user.email mc-compat@example.invalid
+              git -C fake-valence config user.name mc-compat
+              printf '%s\n' fake > fake-valence/README.md
+              git -C fake-valence add README.md
+              git -C fake-valence commit -m init
+              ${
+                self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
+              }/bin/mc-compat-runner --run-matrix --dry-run --receipt-dir "$PWD/matrix" --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD > matrix.log
+              grep -Fq "matrix passed" matrix.log
+              grep -Fq '"backend": "paper"' matrix/paper.json
+              grep -Fq '"port": 25566' matrix/paper.json
+              grep -Fq '"backend": "valence"' matrix/valence.json
+              grep -Fq '"port": 25565' matrix/valence.json
+              grep -Fq '"classification": "dry-run"' matrix/paper.json
+              grep -Fq '"classification": "dry-run"' matrix/valence.json
+              mkdir -p "$out"
+              cp -r matrix matrix.log "$out/"
+            '';
         mc-compat-missing-client = pkgs.runCommand "mc-compat-missing-client" { } ''
           if ${
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
@@ -215,8 +239,11 @@
           grep -Fq -- "--config PATH" help.log
           grep -Fq -- "--client-dir PATH" help.log
           grep -Fq -- "--receipt PATH" help.log
+          grep -Fq -- "--receipt-dir DIR" help.log
+          grep -Fq -- "--run-matrix" help.log
           grep -Fq -- "--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT" help.log
           grep -Fq "SMOKE_RECEIPT" help.log
+          grep -Fq "SMOKE_RECEIPT_DIR" help.log
           grep -Fq "MC_COMPAT_CONFIG" help.log
           grep -Fq "CLIENT_DIR" help.log
           grep -Fq -- "--valence-repo PATH" help.log

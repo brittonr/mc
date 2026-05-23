@@ -54,7 +54,23 @@ nix run .#mc-compat-smoke -- \
 
 Config provides defaults; environment variables and later CLI flags override it. You can also set `MC_COMPAT_CONFIG=config/mc-compat/generated/default.json`.
 
-Compare fallback/control Paper and intended/default Valence receipts:
+Run both fallback/control Paper and intended/default Valence receipts, then compare them in one local gate:
+
+```sh
+CLIENT_TIMEOUT=8 nix run .#mc-compat-smoke -- \
+  --run-matrix \
+  --receipt-dir target/matrix-smoke
+```
+
+For a non-side-effecting fixture of the same matrix shape, put `--dry-run` after `--run-matrix`:
+
+```sh
+nix run .#mc-compat-smoke -- \
+  --run-matrix --dry-run \
+  --receipt-dir target/matrix-smoke-dry-run
+```
+
+Compare existing fallback/control Paper and intended/default Valence receipts:
 
 ```sh
 nix run .#mc-compat-smoke -- --compare-receipts \
@@ -62,7 +78,7 @@ nix run .#mc-compat-smoke -- --compare-receipts \
   target/mc-compat-smoke-valence.json
 ```
 
-The comparison requires one `paper` receipt and one `valence` receipt, both passing, both protocol `758`, expected backend ports, successful client evidence, and niri-safe Xvfb/X11/software-GL isolation.
+Matrix and comparison checks require one `paper` receipt and one `valence` receipt, both passing, both protocol `758`, expected backend ports, successful client evidence, and niri-safe Xvfb/X11/software-GL isolation.
 
 ## Editable Stevenarella checkout
 
@@ -125,4 +141,4 @@ The packages are also available as `.#cairn`, `.#cargo-octet`, and `.#octet`.
 nix flake check
 ```
 
-The flake includes focused checks for the runner binary, Nickel config freshness/export consumption, dry-run receipt emission, Paper/Valence receipt comparison fixtures, missing-checkout diagnostics, help text, Cairn CLI availability, and Octet fingerprint smoke over the receipt producer surface (`mc-compat-receipt-contract`).
+The flake includes focused checks for the runner binary, Nickel config freshness/export consumption, dry-run receipt emission, Paper/Valence matrix dry-run receipts, Paper/Valence receipt comparison fixtures, missing-checkout diagnostics, help text, Cairn CLI availability, and Octet fingerprint smoke over the receipt producer surface (`mc-compat-receipt-contract`).

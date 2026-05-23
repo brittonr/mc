@@ -34,6 +34,7 @@ let SmokeConfig = {
   client_timeout_secs | PositiveSeconds,
   client_success_patterns | Array String,
   receipt_path | String | optional,
+  receipt_dir | String | optional,
 } in
 {
   client_dir = "./stevenarella",

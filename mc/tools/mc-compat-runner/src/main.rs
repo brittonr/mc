@@ -23,6 +23,7 @@ const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
 enum Mode {
     DryRun,
     Run,
+    RunMatrix,
     BuildClient,
     StatusOnly,
     Stop,
@@ -35,7 +36,7 @@ enum ServerBackend {
     Paper,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct Config {
     root: PathBuf,
     client_dir: PathBuf,
@@ -59,8 +60,10 @@ struct Config {
     client_timeout: Duration,
     client_success_needles: Vec<String>,
     receipt_path: Option<PathBuf>,
+    receipt_dir: Option<PathBuf>,
     compare_receipts: Option<(PathBuf, PathBuf)>,
     config_path: Option<PathBuf>,
+    matrix_dry_run: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -161,6 +164,10 @@ fn execute(cfg: &Config) -> Result<Option<ClientRunEvidence>, String> {
             compare_receipts(cfg)?;
             Ok(None)
         }
+        Mode::RunMatrix => {
+            run_matrix(cfg)?;
+            Ok(None)
+        }
         Mode::Run => {
             build_client(cfg)?;
             let _server = start_server(cfg)?;
@@ -198,8 +205,10 @@ impl Config {
                 .map(|s| s.to_string())
                 .collect(),
             receipt_path: None,
+            receipt_dir: None,
             compare_receipts: None,
             config_path: None,
+            matrix_dry_run: false,
             root,
         }
     }
@@ -236,8 +245,18 @@ impl Config {
         let mut args = args_vec.into_iter();
         while let Some(arg) = args.next() {
             match arg.as_str() {
-                "--dry-run" => cfg.mode = Mode::DryRun,
+                "--dry-run" => {
+                    if cfg.mode == Mode::RunMatrix {
+                        cfg.matrix_dry_run = true;
+                    } else {
+                        cfg.mode = Mode::DryRun;
+                    }
+                }
                 "--run" => cfg.mode = Mode::Run,
+                "--run-matrix" => {
+                    cfg.mode = Mode::RunMatrix;
+                    cfg.matrix_dry_run = false;
+                }
                 "--build-client" => cfg.mode = Mode::BuildClient,
                 "--status-only" => cfg.mode = Mode::StatusOnly,
                 "--stop" => cfg.mode = Mode::Stop,
@@ -278,6 +297,12 @@ impl Config {
                             .ok_or_else(|| "--receipt requires a path".to_string())?,
                     ));
                 }
+                "--receipt-dir" => {
+                    cfg.receipt_dir =
+                        Some(PathBuf::from(args.next().ok_or_else(|| {
+                            "--receipt-dir requires a path".to_string()
+                        })?));
+                }
                 "--valence-repo" => {
                     cfg.valence_repo = PathBuf::from(
                         args.next()
@@ -307,6 +332,9 @@ impl Config {
                 _ if arg.starts_with("--receipt=") => {
                     cfg.receipt_path = Some(PathBuf::from(&arg[10..]));
                 }
+                _ if arg.starts_with("--receipt-dir=") => {
+                    cfg.receipt_dir = Some(PathBuf::from(&arg[14..]));
+                }
                 _ if arg.starts_with("--valence-repo=") => {
                     cfg.valence_repo = PathBuf::from(&arg[15..]);
                 }
@@ -319,6 +347,9 @@ impl Config {
 
         if !server_port_was_set {
             cfg.server_port = default_port(cfg.server_backend);
+        }
+        if cfg.mode == Mode::RunMatrix && cfg.receipt_path.is_some() {
+            return Err("--run-matrix writes backend receipts under --receipt-dir; do not combine it with --receipt/SMOKE_RECEIPT".to_string());
         }
         Ok(cfg)
     }
@@ -414,6 +445,9 @@ where
     if let Some(value) = get_env("SMOKE_RECEIPT") {
         cfg.receipt_path = Some(PathBuf::from(value));
     }
+    if let Some(value) = get_env("SMOKE_RECEIPT_DIR") {
+        cfg.receipt_dir = Some(PathBuf::from(value));
+    }
     Ok(())
 }
 
@@ -485,6 +519,9 @@ fn apply_config_json(cfg: &mut Config, text: &str) -> Result<bool, String> {
     if let Some(value) = json_optional_string_field(text, "receipt_path")? {
         cfg.receipt_path = Some(PathBuf::from(value));
     }
+    if let Some(value) = json_optional_string_field(text, "receipt_dir")? {
+        cfg.receipt_dir = Some(PathBuf::from(value));
+    }
     Ok(server_port_was_set)
 }
 
@@ -497,17 +534,18 @@ fn default_port(backend: ServerBackend) -> u16 {
 
 fn print_usage(cfg: &Config) {
     println!(
-        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run] [--build-client] [--status-only] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--valence-repo PATH] [--valence-rev REV]\n\n\
+        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
 Automates a local Stevenarella compatibility smoke against a Minecraft {} / protocol {} server.\n\
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from Nickel config; env vars and later CLI flags override it.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.smoke.receipt.v1 JSON receipt for Cairn/Octet evidence flows.\n\
 Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
+Use --run-matrix --receipt-dir DIR to run Paper and Valence receipts then compare them; add --dry-run after --run-matrix for a non-side-effecting matrix fixture.\n\
 Default server backend is Valence, using an editable local Valence checkout plus an isolated protocol-758 worktree so the dirty/current checkout is untouched.\n\
 If the Stevenarella or Valence checkout is missing, clone/fetch it or pass --client-dir/CLIENT_DIR and --valence-repo/VALENCE_REPO to editable checkouts.\n\
 Client runs are forced through Xvfb/X11 with software GL and no inherited Wayland socket.\n\
 Paper fallback runs set EULA=TRUE based on recorded user acceptance.\n\n\
-Env: MC_COMPAT_ROOT={} MC_COMPAT_CONFIG={} CLIENT_DIR={} TARGET_DIR={} SMOKE_RECEIPT={} VALENCE_REPO={} VALENCE_REV={} VALENCE_WORKTREE={} VALENCE_TARGET_DIR={} CLIENT_TIMEOUT={}\n",
+Env: MC_COMPAT_ROOT={} MC_COMPAT_CONFIG={} CLIENT_DIR={} TARGET_DIR={} SMOKE_RECEIPT={} SMOKE_RECEIPT_DIR={} VALENCE_REPO={} VALENCE_REV={} VALENCE_WORKTREE={} VALENCE_TARGET_DIR={} CLIENT_TIMEOUT={}\n",
         cfg.server_version,
         cfg.server_protocol,
         cfg.root.display(),
@@ -518,6 +556,10 @@ Env: MC_COMPAT_ROOT={} MC_COMPAT_CONFIG={} CLIENT_DIR={} TARGET_DIR={} SMOKE_REC
         cfg.client_dir.display(),
         cfg.target_dir.display(),
         cfg.receipt_path
+            .as_ref()
+            .map(|path| path.display().to_string())
+            .unwrap_or_else(|| "<unset>".to_string()),
+        cfg.receipt_dir
             .as_ref()
             .map(|path| path.display().to_string())
             .unwrap_or_else(|| "<unset>".to_string()),
@@ -948,6 +990,7 @@ struct ReceiptSummary {
     path: PathBuf,
     schema: String,
     status: String,
+    dry_run: bool,
     backend: String,
     protocol: u32,
     port: u16,
@@ -957,6 +1000,78 @@ struct ReceiptSummary {
     x11_backend: bool,
     software_gl: bool,
     wayland_socket_inherited: bool,
+}
+
+fn run_matrix(cfg: &Config) -> Result<(), String> {
+    let receipt_dir = cfg
+        .receipt_dir
+        .clone()
+        .unwrap_or_else(|| cfg.root.join("target/mc-compat-matrix"));
+    fs::create_dir_all(&receipt_dir)
+        .map_err(|e| format!("create receipt dir {}: {e}", receipt_dir.display()))?;
+
+    let paper_receipt = receipt_dir.join("paper.json");
+    let valence_receipt = receipt_dir.join("valence.json");
+    let matrix_mode = if cfg.matrix_dry_run { "dry-run" } else { "run" };
+    log(format_args!(
+        "starting {matrix_mode} matrix: paper receipt={} valence receipt={}",
+        paper_receipt.display(),
+        valence_receipt.display()
+    ));
+
+    let paper_cfg = matrix_backend_config(cfg, ServerBackend::Paper, paper_receipt.clone());
+    run_matrix_backend(&paper_cfg)?;
+
+    let valence_cfg = matrix_backend_config(cfg, ServerBackend::Valence, valence_receipt.clone());
+    run_matrix_backend(&valence_cfg)?;
+
+    let paper = read_receipt_summary(&paper_receipt)?;
+    let valence = read_receipt_summary(&valence_receipt)?;
+    validate_receipt_pair(&paper, &valence)?;
+    println!(
+        "[mc-compat] matrix passed: paper={} valence={} protocol={} mode={matrix_mode}",
+        paper_receipt.display(),
+        valence_receipt.display(),
+        paper.protocol
+    );
+    Ok(())
+}
+
+fn matrix_backend_config(cfg: &Config, backend: ServerBackend, receipt_path: PathBuf) -> Config {
+    let mut backend_cfg = cfg.clone();
+    backend_cfg.mode = if cfg.matrix_dry_run {
+        Mode::DryRun
+    } else {
+        Mode::Run
+    };
+    backend_cfg.server_backend = backend;
+    backend_cfg.server_port = default_port(backend);
+    backend_cfg.receipt_path = Some(receipt_path);
+    backend_cfg.receipt_dir = None;
+    backend_cfg.compare_receipts = None;
+    backend_cfg.keep_server = false;
+    backend_cfg
+}
+
+fn run_matrix_backend(cfg: &Config) -> Result<(), String> {
+    log(format_args!(
+        "matrix backend {} -> {}",
+        backend_name(cfg.server_backend),
+        cfg.receipt_path
+            .as_ref()
+            .map(|path| path.display().to_string())
+            .unwrap_or_else(|| "<missing-receipt>".to_string())
+    ));
+    let result = execute(cfg);
+    if let Err(receipt_err) = write_smoke_receipt(cfg, result.as_ref()) {
+        return match result {
+            Ok(_) => Err(receipt_err),
+            Err(err) => Err(format!(
+                "{err}; additionally failed to write receipt: {receipt_err}"
+            )),
+        };
+    }
+    result.map(|_| ())
 }
 
 fn compare_receipts(cfg: &Config) -> Result<(), String> {
@@ -997,6 +1112,7 @@ fn read_receipt_summary_from_text(path: PathBuf, text: &str) -> Result<ReceiptSu
         path,
         schema: json_string_field(text, "schema")?,
         status: json_string_field(text, "status")?,
+        dry_run: json_bool_field(text, "dry_run")?,
         backend: json_object_string_field(text, "server", "backend")?,
         protocol: json_object_u32_field(text, "server", "protocol")?,
         port: json_object_u32_field(text, "server", "port")? as u16,
@@ -1077,17 +1193,18 @@ fn validate_receipt_summary(receipt: &ReceiptSummary) -> Result<(), String> {
             receipt.status
         ));
     }
-    if !matches!(
+    let classification_supported = matches!(
         receipt.classification.as_str(),
         "timeout-success-evidence" | "client-exited-success"
-    ) {
+    ) || (receipt.dry_run && receipt.classification == "dry-run");
+    if !classification_supported {
         return Err(format!(
             "{} has unsupported client classification {}",
             receipt.path.display(),
             receipt.classification
         ));
     }
-    if receipt.matched_success_pattern.is_none() {
+    if receipt.matched_success_pattern.is_none() && !receipt.dry_run {
         return Err(format!(
             "{} is missing matched client success pattern",
             receipt.path.display()
@@ -1284,6 +1401,7 @@ fn mode_name(mode: Mode) -> &'static str {
     match mode {
         Mode::DryRun => "dry-run",
         Mode::Run => "run",
+        Mode::RunMatrix => "run-matrix",
         Mode::BuildClient => "build-client",
         Mode::StatusOnly => "status-only",
         Mode::Stop => "stop",
@@ -1492,6 +1610,45 @@ mod tests {
         assert_eq!(cfg.receipt_path, Some(PathBuf::from("/tmp/mc-smoke.json")));
         assert_eq!(cfg.valence_repo, PathBuf::from("/tmp/editable-valence"));
         assert_eq!(cfg.valence_rev, "local-debug-rev");
+    }
+
+    #[test]
+    fn run_matrix_config_sets_receipt_dir_and_backend_defaults() {
+        let cfg = test_config(
+            &[
+                "--run-matrix",
+                "--receipt-dir",
+                "/tmp/matrix-receipts",
+                "--dry-run",
+                "--client-dir",
+                "/tmp/stevenarella",
+            ],
+            &[],
+        )
+        .expect("matrix config parses");
+
+        assert_eq!(cfg.mode, Mode::RunMatrix);
+        assert!(cfg.matrix_dry_run);
+        assert_eq!(cfg.receipt_dir, Some(PathBuf::from("/tmp/matrix-receipts")));
+
+        let paper = matrix_backend_config(&cfg, ServerBackend::Paper, PathBuf::from("paper.json"));
+        let valence =
+            matrix_backend_config(&cfg, ServerBackend::Valence, PathBuf::from("valence.json"));
+        assert_eq!(paper.mode, Mode::DryRun);
+        assert_eq!(paper.server_port, 25566);
+        assert_eq!(paper.receipt_path, Some(PathBuf::from("paper.json")));
+        assert_eq!(valence.mode, Mode::DryRun);
+        assert_eq!(valence.server_port, 25565);
+        assert_eq!(valence.receipt_path, Some(PathBuf::from("valence.json")));
+    }
+
+    #[test]
+    fn run_matrix_rejects_single_receipt_path() {
+        let err = test_config(&["--run-matrix", "--receipt", "/tmp/one.json"], &[]).unwrap_err();
+        assert!(
+            err.contains("--run-matrix writes backend receipts"),
+            "{err}"
+        );
     }
 
     #[test]
