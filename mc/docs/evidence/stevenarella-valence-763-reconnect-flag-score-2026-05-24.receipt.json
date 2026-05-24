@@ -1,0 +1,138 @@
+{
+  "claims": {
+    "bounded_same_username_reconnect_after_disconnect_can_login_join_select_red_and_score": true,
+    "claims_complete_protocol_763_coverage": false,
+    "claims_full_ctf_semantics": false,
+    "claims_full_minecraft_1_20_1_compatibility": false,
+    "claims_long_soak_stability": false
+  },
+  "date_utc": "2026-05-24",
+  "name": "stevenarella-valence-763-reconnect-flag-score",
+  "observations": {
+    "all_failure_marker_counts_zero": true,
+    "all_sessions_reached_login_join_render_team": true,
+    "all_sessions_reached_score": true,
+    "sessions": [
+      {
+        "failure_marker_counts": {
+          "Bad packet": 0,
+          "FromUtf8Error": 0,
+          "UnexpectedEof": 0,
+          "disconnect": 0,
+          "failed to read packet": 0,
+          "panic": 0
+        },
+        "label": "first",
+        "log_b3": "9bf9f7fb0b8ff3b1427db2fbdf9b7f7d6b2cceab2c82973effd9fe70145443bf",
+        "log_path": "/tmp/stevenarella-763-reconnect-flag-1779592836-first.log",
+        "marker_counts": {
+          "capture": 1,
+          "detected_763": 1,
+          "dig_blue_flag": 1,
+          "have_flag": 1,
+          "join_game": 2,
+          "login_success": 1,
+          "move_to_blue_flag": 1,
+          "move_to_red_capture": 1,
+          "render": 1,
+          "score": 1,
+          "target_reached": 1,
+          "team_red": 1
+        },
+        "markers": {
+          "capture": true,
+          "detected_763": true,
+          "dig_blue_flag": true,
+          "have_flag": true,
+          "join_game": true,
+          "login_success": true,
+          "move_to_blue_flag": true,
+          "move_to_red_capture": true,
+          "render": true,
+          "score": true,
+          "target_reached": true,
+          "team_red": true
+        },
+        "score_blocks": [
+          "Scores:\nRED: 3\nBLUE: 0"
+        ],
+        "status_b3": "f67d19a0fed77375c9ee600f70ff255957e708d6c0898a270d40151761401f0a",
+        "status_path": "/tmp/stevenarella-763-reconnect-flag-1779592836-first.status.txt",
+        "timeout_status": "124"
+      },
+      {
+        "failure_marker_counts": {
+          "Bad packet": 0,
+          "FromUtf8Error": 0,
+          "UnexpectedEof": 0,
+          "disconnect": 0,
+          "failed to read packet": 0,
+          "panic": 0
+        },
+        "label": "second",
+        "log_b3": "768f8351aa636989cbb41e3abebe708ce64ca3f7b74d536cfa5432c61117fb23",
+        "log_path": "/tmp/stevenarella-763-reconnect-flag-1779592836-second.log",
+        "marker_counts": {
+          "capture": 1,
+          "detected_763": 1,
+          "dig_blue_flag": 1,
+          "have_flag": 1,
+          "join_game": 2,
+          "login_success": 1,
+          "move_to_blue_flag": 1,
+          "move_to_red_capture": 1,
+          "render": 1,
+          "score": 1,
+          "target_reached": 1,
+          "team_red": 1
+        },
+        "markers": {
+          "capture": true,
+          "detected_763": true,
+          "dig_blue_flag": true,
+          "have_flag": true,
+          "join_game": true,
+          "login_success": true,
+          "move_to_blue_flag": true,
+          "move_to_red_capture": true,
+          "render": true,
+          "score": true,
+          "target_reached": true,
+          "team_red": true
+        },
+        "score_blocks": [
+          "Scores:\nRED: 4\nBLUE: 0"
+        ],
+        "status_b3": "f67d19a0fed77375c9ee600f70ff255957e708d6c0898a270d40151761401f0a",
+        "status_path": "/tmp/stevenarella-763-reconnect-flag-1779592836-second.status.txt",
+        "timeout_status": "124"
+      }
+    ]
+  },
+  "parent_commit_before_evidence": "d477123 mc: record 763 repeated flag scoring probe",
+  "probe": {
+    "bounded_timeout_is_expected": true,
+    "bounded_timeout_seconds_per_session": 150,
+    "client": "Stevenarella headless xvfb-run cargo run --release",
+    "environment": {
+      "LIBGL_ALWAYS_SOFTWARE": "1",
+      "MC_COMPAT_ACTIVE_PROBE": "1",
+      "MC_COMPAT_FLAG_PROBE": "1",
+      "MC_COMPAT_FLAG_PROBE_REPEAT": "1",
+      "MC_COMPAT_TEAM_PROBE": "1",
+      "MC_COMPAT_TEAM_PROBE_TEAM": "red",
+      "RUST_BACKTRACE": "1"
+    },
+    "inter_session_gap_seconds": 30,
+    "same_username": "steve763rejoin",
+    "server": "Valence ctf example on 127.0.0.1:25565",
+    "sessions": [
+      "first",
+      "second"
+    ]
+  },
+  "result": "bounded_same_username_two_session_reconnect_ctf_flag_score_observed_no_logged_runtime_failure",
+  "schema": "mc.compat.evidence.v1",
+  "stevenarella_commit": "6be4515 stevenarella: count repeated ctf score events",
+  "valence_commit": "c5140b7 valence: add parkour smoke receipts"
+}

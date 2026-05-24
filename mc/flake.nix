@@ -1727,6 +1727,98 @@
               cp "$receipt" "$note" "$out/"
               printf '%s\n' "$b3" > "$out/receipt.b3"
             '';
+        stevenarella-valence-763-reconnect-flag-score-evidence =
+          pkgs.runCommand "stevenarella-valence-763-reconnect-flag-score-evidence" { nativeBuildInputs = [ pkgs.b3sum pkgs.python3 ]; }
+            ''
+              receipt=${./docs/evidence/stevenarella-valence-763-reconnect-flag-score-2026-05-24.receipt.json}
+              note=${./docs/evidence/stevenarella-valence-763-reconnect-flag-score-2026-05-24.md}
+
+              python3 - "$receipt" "$note" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          receipt_path = pathlib.Path(sys.argv[1])
+          note_path = pathlib.Path(sys.argv[2])
+          receipt = json.loads(receipt_path.read_text())
+          note = note_path.read_text()
+
+          def assert_eq(name, actual, expected):
+              if actual != expected:
+                  raise SystemExit(f"{name}: expected {expected!r}, got {actual!r}")
+
+          assert_eq("schema", receipt["schema"], "mc.compat.evidence.v1")
+          assert_eq("name", receipt["name"], "stevenarella-valence-763-reconnect-flag-score")
+          assert_eq("result", receipt["result"], "bounded_same_username_two_session_reconnect_ctf_flag_score_observed_no_logged_runtime_failure")
+          assert_eq("stevenarella commit", receipt["stevenarella_commit"], "6be4515 stevenarella: count repeated ctf score events")
+          assert_eq("valence commit", receipt["valence_commit"], "c5140b7 valence: add parkour smoke receipts")
+          probe = receipt["probe"]
+          assert_eq("same username", probe["same_username"], "steve763rejoin")
+          assert_eq("inter-session gap", probe["inter_session_gap_seconds"], 30)
+          assert_eq("bounded timeout seconds", probe["bounded_timeout_seconds_per_session"], 150)
+          assert_eq("bounded timeout expected", probe["bounded_timeout_is_expected"], True)
+          assert_eq("flag probe env", probe["environment"]["MC_COMPAT_FLAG_PROBE"], "1")
+          assert_eq("repeat env", probe["environment"]["MC_COMPAT_FLAG_PROBE_REPEAT"], "1")
+          observations = receipt["observations"]
+          assert_eq("all login join render team", observations["all_sessions_reached_login_join_render_team"], True)
+          assert_eq("all sessions scored", observations["all_sessions_reached_score"], True)
+          assert_eq("all failures zero", observations["all_failure_marker_counts_zero"], True)
+          sessions = observations["sessions"]
+          assert_eq("session count", len(sessions), 2)
+          assert_eq("first label", sessions[0]["label"], "first")
+          assert_eq("second label", sessions[1]["label"], "second")
+          for session in sessions:
+              assert_eq(f"{session['label']} status", session["timeout_status"], "124")
+              markers = session["markers"]
+              for marker in [
+                  "detected_763",
+                  "login_success",
+                  "join_game",
+                  "render",
+                  "team_red",
+                  "move_to_blue_flag",
+                  "dig_blue_flag",
+                  "have_flag",
+                  "move_to_red_capture",
+                  "capture",
+                  "score",
+                  "target_reached",
+              ]:
+                  assert_eq(f"{session['label']} marker {marker}", markers[marker], True)
+              failures = session["failure_marker_counts"]
+              for marker in ["UnexpectedEof", "FromUtf8Error", "failed to read packet", "Bad packet", "panic", "disconnect"]:
+                  assert_eq(f"{session['label']} failure marker {marker}", failures[marker], 0)
+          claims = receipt["claims"]
+          assert_eq("reconnect claim", claims["bounded_same_username_reconnect_after_disconnect_can_login_join_select_red_and_score"], True)
+          for claim in [
+              "claims_long_soak_stability",
+              "claims_full_ctf_semantics",
+              "claims_full_minecraft_1_20_1_compatibility",
+              "claims_complete_protocol_763_coverage",
+          ]:
+              assert_eq(claim, claims[claim], False)
+
+          for fragment in [
+              "same Stevenarella username (`steve763rejoin`)",
+              "MC_COMPAT_FLAG_PROBE=1",
+              "MC_COMPAT_FLAG_PROBE_REPEAT=1",
+              "Inter-session gap: `30s`",
+              "Received chat message: You are on team RED!",
+              "MC-COMPAT-MILESTONE flag_probe_score_chat",
+              "Bounded same-username reconnect/session restart",
+              "What this does not prove",
+              "Receipt BLAKE3",
+          ]:
+              if fragment not in note:
+                  raise SystemExit(f"reconnect flag-score evidence note missing fragment: {fragment}")
+          PY
+
+              b3=$(b3sum "$receipt" | cut -d' ' -f1)
+              grep -Fq "Receipt BLAKE3: \`$b3\`" "$note"
+              mkdir -p "$out"
+              cp "$receipt" "$note" "$out/"
+              printf '%s\n' "$b3" > "$out/receipt.b3"
+            '';
         onixresearch-ssh-tools = pkgs.runCommand "onixresearch-ssh-tools" { } ''
           ${cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn}/bin/cairn --help > cairn-help.log
           ${
