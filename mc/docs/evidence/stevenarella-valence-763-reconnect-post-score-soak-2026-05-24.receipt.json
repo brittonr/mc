@@ -1,0 +1,157 @@
+{
+  "claims": {
+    "bounded_reconnect_then_second_session_survived_until_600s_timeout_after_score_marker": true,
+    "claims_complete_protocol_763_coverage": false,
+    "claims_full_ctf_semantics": false,
+    "claims_full_minecraft_1_20_1_compatibility": false,
+    "claims_long_soak_stability": false
+  },
+  "date_utc": "2026-05-24",
+  "name": "stevenarella-valence-763-reconnect-post-score-soak",
+  "observations": {
+    "all_failure_marker_counts_zero": true,
+    "all_sessions_reached_login_join_render_team": true,
+    "all_sessions_reached_score_before_timeout": true,
+    "second_session_reached_score_before_600s_timeout": true,
+    "second_session_timeout_seconds": 600,
+    "sessions": [
+      {
+        "bounded_timeout_seconds": 150,
+        "client_reached_score_before_timeout": true,
+        "failure_marker_counts": {
+          "Bad packet": 0,
+          "FromUtf8Error": 0,
+          "UnexpectedEof": 0,
+          "disconnect": 0,
+          "failed to read packet": 0,
+          "panic": 0
+        },
+        "label": "first",
+        "log_b3": "43068498b3363593c50c6cfcb77b8cb583f8948afd2a38ec583d09e77dec2d0a",
+        "log_line_count": 432,
+        "log_path": "/tmp/stevenarella-763-reconnect-soak-1779593669-first.log",
+        "marker_counts": {
+          "active_position": 1,
+          "capture": 1,
+          "detected_763": 1,
+          "dig_blue_flag": 1,
+          "have_flag": 1,
+          "join_game": 2,
+          "login_success": 1,
+          "move_to_blue_flag": 1,
+          "move_to_red_capture": 1,
+          "render": 1,
+          "score": 1,
+          "target_reached": 1,
+          "team_red": 1
+        },
+        "markers": {
+          "active_position": true,
+          "capture": true,
+          "detected_763": true,
+          "dig_blue_flag": true,
+          "have_flag": true,
+          "join_game": true,
+          "login_success": true,
+          "move_to_blue_flag": true,
+          "move_to_red_capture": true,
+          "render": true,
+          "score": true,
+          "target_reached": true,
+          "team_red": true
+        },
+        "score_blocks": [
+          "Scores:\nRED: 1\nBLUE: 0"
+        ],
+        "score_marker_line_index": 427,
+        "status_b3": "f67d19a0fed77375c9ee600f70ff255957e708d6c0898a270d40151761401f0a",
+        "status_path": "/tmp/stevenarella-763-reconnect-soak-1779593669-first.status.txt",
+        "timeout_status": "124"
+      },
+      {
+        "bounded_timeout_seconds": 600,
+        "client_reached_score_before_timeout": true,
+        "failure_marker_counts": {
+          "Bad packet": 0,
+          "FromUtf8Error": 0,
+          "UnexpectedEof": 0,
+          "disconnect": 0,
+          "failed to read packet": 0,
+          "panic": 0
+        },
+        "label": "second-soak",
+        "log_b3": "6eb3023f9a8c2094063d0fb141b046a63705d4d3a3eeae1d6c3038b4cf0b7910",
+        "log_line_count": 129,
+        "log_path": "/tmp/stevenarella-763-reconnect-soak-1779593669-second-soak.log",
+        "marker_counts": {
+          "active_position": 1,
+          "capture": 1,
+          "detected_763": 1,
+          "dig_blue_flag": 1,
+          "have_flag": 1,
+          "join_game": 2,
+          "login_success": 1,
+          "move_to_blue_flag": 1,
+          "move_to_red_capture": 1,
+          "render": 1,
+          "score": 1,
+          "target_reached": 1,
+          "team_red": 1
+        },
+        "markers": {
+          "active_position": true,
+          "capture": true,
+          "detected_763": true,
+          "dig_blue_flag": true,
+          "have_flag": true,
+          "join_game": true,
+          "login_success": true,
+          "move_to_blue_flag": true,
+          "move_to_red_capture": true,
+          "render": true,
+          "score": true,
+          "target_reached": true,
+          "team_red": true
+        },
+        "score_blocks": [
+          "Scores:\nRED: 2\nBLUE: 0"
+        ],
+        "score_marker_line_index": 124,
+        "status_b3": "f67d19a0fed77375c9ee600f70ff255957e708d6c0898a270d40151761401f0a",
+        "status_path": "/tmp/stevenarella-763-reconnect-soak-1779593669-second-soak.status.txt",
+        "timeout_status": "124"
+      }
+    ]
+  },
+  "parent_commit_before_evidence": "5cf5ee2 mc: record 763 reconnect flag scoring probe",
+  "probe": {
+    "bounded_timeout_is_expected": true,
+    "client": "Stevenarella headless xvfb-run cargo run --release",
+    "environment": {
+      "LIBGL_ALWAYS_SOFTWARE": "1",
+      "MC_COMPAT_ACTIVE_PROBE": "1",
+      "MC_COMPAT_FLAG_PROBE": "1",
+      "MC_COMPAT_FLAG_PROBE_REPEAT": "1",
+      "MC_COMPAT_TEAM_PROBE": "1",
+      "MC_COMPAT_TEAM_PROBE_TEAM": "red",
+      "RUST_BACKTRACE": "1"
+    },
+    "inter_session_gap_seconds": 30,
+    "same_username": "steve763soak",
+    "server": "Valence ctf example on 127.0.0.1:25565",
+    "sessions": [
+      {
+        "bounded_timeout_seconds": 150,
+        "label": "first"
+      },
+      {
+        "bounded_timeout_seconds": 600,
+        "label": "second-soak"
+      }
+    ]
+  },
+  "result": "bounded_same_username_reconnect_then_600s_second_session_after_score_probe_no_logged_runtime_failure",
+  "schema": "mc.compat.evidence.v1",
+  "stevenarella_commit": "6be4515 stevenarella: count repeated ctf score events",
+  "valence_commit": "c5140b7 valence: add parkour smoke receipts"
+}
