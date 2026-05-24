@@ -1631,6 +1631,18 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         .iter()
         .map(|(name, _)| *name)
         .collect();
+    let first_missing_client = scenario.missing_milestones.first().copied();
+    let first_missing_server = server_scenario.missing_milestones.first().copied();
+    let (first_forbidden_source, first_forbidden_pattern) =
+        first_forbidden_match(scenario, server_scenario);
+    let suggested_boundary = suggested_triage_boundary(
+        error.is_some(),
+        client.is_some(),
+        first_missing_client,
+        first_missing_server,
+        first_forbidden_pattern,
+        requires_server_correlation(cfg),
+    );
     let error_json = error
         .map(|err| json_string(err))
         .unwrap_or_else(|| "null".to_string());
@@ -1645,7 +1657,82 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         .unwrap_or_else(|| "null".to_string());
 
     format!(
-        "{{\n  \"schema\": \"mc.compat.scenario.receipt.v2\",\n  \"legacy_schema\": \"mc.compat.smoke.receipt.v1\",\n  \"status\": {status_json},\n  \"mode\": {mode_json},\n  \"dry_run\": {dry_run},\n  \"contract\": {{\n    \"cairn_contract\": \"mc.compat.scenario.receipt.v2\",\n    \"legacy_cairn_contract\": \"mc.compat.smoke.receipt.v1\",\n    \"octet_producer_surface\": \"tools/mc-compat-runner/src/main.rs\",\n    \"claims_correctness\": false,\n    \"claims_semantic_equivalence\": false\n  }},\n  \"scenario\": {{\n    \"name\": {scenario_name_json},\n    \"required_milestones\": {scenario_required_json},\n    \"observed_milestones\": {scenario_observed_json},\n    \"missing_milestones\": {scenario_missing_json},\n    \"forbidden_patterns\": {scenario_forbidden_json},\n    \"forbidden_matches\": {scenario_forbidden_matches_json},\n    \"passed\": {scenario_passed}\n  }},\n  \"server\": {{\n    \"backend\": {backend_json},\n    \"version\": {version_json},\n    \"protocol\": {protocol},\n    \"port\": {port},\n    \"required_milestones\": {server_required_json},\n    \"observed_milestones\": {server_observed_json},\n    \"missing_milestones\": {server_missing_json},\n    \"forbidden_matches\": {server_forbidden_matches_json},\n    \"passed\": {server_passed},\n    \"client_server_correlation\": {{\n      \"scenario\": {scenario_name_json},\n      \"usernames\": {client_usernames_json},\n      \"passed\": {correlation_passed}\n    }}\n  }},\n  \"client\": {{\n    \"dir\": {client_dir_json},\n    \"target_dir\": {target_dir_json},\n    \"username\": {username_json},\n    \"usernames\": {client_usernames_json},\n    \"timeout_secs\": {timeout_secs},\n    \"headless_isolation\": {{\n      \"xvfb\": true,\n      \"x11_backend\": true,\n      \"software_gl\": true,\n      \"wayland_socket_inherited\": false\n    }},\n    \"log_path\": {client_log_json},\n    \"log_paths\": {client_logs_json},\n    \"exit_code\": {exit_code_json},\n    \"classification\": {classification_json},\n    \"matched_success_pattern\": {matched_pattern_json}\n  }},\n  \"valence\": {{\n    \"repo\": {valence_repo_json},\n    \"rev\": {valence_rev_json},\n    \"worktree\": {valence_worktree_json},\n    \"example\": {valence_example_json},\n    \"log_path\": {valence_log_json}\n  }},\n  \"receipt_path\": {receipt_path_json},\n  \"error\": {error_json}\n}}\n",
+        r#"{{
+  "schema": "mc.compat.scenario.receipt.v2",
+  "legacy_schema": "mc.compat.smoke.receipt.v1",
+  "status": {status_json},
+  "mode": {mode_json},
+  "dry_run": {dry_run},
+  "contract": {{
+    "cairn_contract": "mc.compat.scenario.receipt.v2",
+    "legacy_cairn_contract": "mc.compat.smoke.receipt.v1",
+    "octet_producer_surface": "tools/mc-compat-runner/src/main.rs",
+    "claims_correctness": false,
+    "claims_semantic_equivalence": false
+  }},
+  "scenario": {{
+    "name": {scenario_name_json},
+    "required_milestones": {scenario_required_json},
+    "observed_milestones": {scenario_observed_json},
+    "missing_milestones": {scenario_missing_json},
+    "forbidden_patterns": {scenario_forbidden_json},
+    "forbidden_matches": {scenario_forbidden_matches_json},
+    "passed": {scenario_passed}
+  }},
+  "server": {{
+    "backend": {backend_json},
+    "version": {version_json},
+    "protocol": {protocol},
+    "port": {port},
+    "required_milestones": {server_required_json},
+    "observed_milestones": {server_observed_json},
+    "missing_milestones": {server_missing_json},
+    "forbidden_matches": {server_forbidden_matches_json},
+    "passed": {server_passed},
+    "client_server_correlation": {{
+      "scenario": {scenario_name_json},
+      "usernames": {client_usernames_json},
+      "passed": {correlation_passed}
+    }}
+  }},
+  "client": {{
+    "dir": {client_dir_json},
+    "target_dir": {target_dir_json},
+    "username": {username_json},
+    "usernames": {client_usernames_json},
+    "timeout_secs": {timeout_secs},
+    "headless_isolation": {{
+      "xvfb": true,
+      "x11_backend": true,
+      "software_gl": true,
+      "wayland_socket_inherited": false
+    }},
+    "log_path": {client_log_json},
+    "log_paths": {client_logs_json},
+    "exit_code": {exit_code_json},
+    "classification": {classification_json},
+    "matched_success_pattern": {matched_pattern_json}
+  }},
+  "valence": {{
+    "repo": {valence_repo_json},
+    "rev": {valence_rev_json},
+    "worktree": {valence_worktree_json},
+    "example": {valence_example_json},
+    "log_path": {valence_log_json}
+  }},
+  "triage": {{
+    "first_missing_client_milestone": {first_missing_client_json},
+    "first_missing_server_milestone": {first_missing_server_json},
+    "first_forbidden_pattern": {first_forbidden_pattern_json},
+    "first_forbidden_source": {first_forbidden_source_json},
+    "client_log_paths": {client_logs_json},
+    "server_log_path": {valence_log_json},
+    "suggested_boundary": {suggested_boundary_json}
+  }},
+  "receipt_path": {receipt_path_json},
+  "error": {error_json}
+}}
+"#,
         status_json = json_string(status),
         mode_json = json_string(mode_name(cfg.mode)),
         dry_run = cfg.mode == Mode::DryRun,
@@ -1671,13 +1758,60 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         username_json = json_string(&cfg.client_username),
         client_usernames_json = client_usernames_json,
         client_logs_json = client_logs_json,
+        client_log_json = client_log_json,
+        matched_pattern_json = matched_pattern_json,
+        classification_json = classification_json,
+        exit_code_json = exit_code_json,
         timeout_secs = cfg.client_timeout.as_secs(),
         valence_repo_json = json_string(&cfg.valence_repo.display().to_string()),
         valence_rev_json = json_string(&cfg.valence_rev),
         valence_worktree_json = json_string(&cfg.valence_worktree.display().to_string()),
         valence_example_json = json_string(&cfg.valence_example),
         valence_log_json = json_string(&cfg.valence_log.display().to_string()),
+        receipt_path_json = receipt_path_json,
+        error_json = error_json,
+        first_missing_client_json = json_optional_string(first_missing_client),
+        first_missing_server_json = json_optional_string(first_missing_server),
+        first_forbidden_pattern_json = json_optional_string(first_forbidden_pattern),
+        first_forbidden_source_json = json_optional_string(first_forbidden_source),
+        suggested_boundary_json = json_string(suggested_boundary),
     )
+}
+
+fn first_forbidden_match<'a>(
+    scenario: &'a ScenarioEvidence,
+    server_scenario: &'a ServerScenarioEvidence,
+) -> (Option<&'static str>, Option<&'a str>) {
+    if let Some(pattern) = scenario.forbidden_matches.first() {
+        (Some("client"), Some(*pattern))
+    } else if let Some(pattern) = server_scenario.forbidden_matches.first() {
+        (Some("server"), Some(*pattern))
+    } else {
+        (None, None)
+    }
+}
+
+fn suggested_triage_boundary(
+    has_error: bool,
+    has_client_evidence: bool,
+    first_missing_client: Option<&str>,
+    first_missing_server: Option<&str>,
+    first_forbidden_pattern: Option<&str>,
+    requires_server_correlation: bool,
+) -> &'static str {
+    if has_error && !has_client_evidence {
+        "preflight-or-server-startup"
+    } else if first_forbidden_pattern.is_some() {
+        "protocol-runtime"
+    } else if first_missing_client.is_some() {
+        "client-probe"
+    } else if requires_server_correlation && first_missing_server.is_some() {
+        "server-correlation"
+    } else if has_error {
+        "runner-error"
+    } else {
+        "none"
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -2703,8 +2837,91 @@ mod tests {
             json.contains("\"log_paths\": [\"/tmp/client.log\"]"),
             "{json}"
         );
+        assert!(json.contains("\"triage\""), "{json}");
+        assert!(json.contains("\"suggested_boundary\": \"none\""), "{json}");
         assert!(
             json.contains("\"wayland_socket_inherited\": false"),
+            "{json}"
+        );
+    }
+
+    #[test]
+    fn scenario_receipt_records_actionable_failure_triage() {
+        let mut cfg = test_config(
+            &[
+                "--server-backend=valence",
+                "--scenario=flag-score-repeat",
+                "--receipt=/tmp/receipt.json",
+                "--client-dir=/tmp/stevenarella",
+            ],
+            &[],
+        )
+        .expect("receipt config parses");
+        cfg.valence_log = PathBuf::from("/tmp/valence.log");
+        let client = Some(ClientRunEvidence {
+            log_path: Some(PathBuf::from("/tmp/client.log")),
+            log_paths: vec![PathBuf::from("/tmp/client.log")],
+            usernames: vec!["compatbot".to_string()],
+            exit_code: Some(124),
+            classification: "failure-missing-scenario-evidence",
+            matched_success_pattern: None,
+            scenario: Some(evaluate_scenario(
+                Scenario::FlagScoreRepeat,
+                "Detected server protocol version 763\njoin_game\nUnexpectedEof\n",
+            )),
+            server_scenario: Some(evaluate_server_scenario(
+                Scenario::FlagScoreRepeat,
+                "compatbot joined\n",
+                "compatbot",
+            )),
+        });
+
+        let json = smoke_receipt_json(&cfg, Ok(&client));
+
+        assert!(
+            json.contains("\"first_missing_client_milestone\": \"render_tick\""),
+            "{json}"
+        );
+        assert!(
+            json.contains("\"first_missing_server_milestone\": \"server_flag_or_score\""),
+            "{json}"
+        );
+        assert!(
+            json.contains("\"first_forbidden_pattern\": \"unexpected_eof\""),
+            "{json}"
+        );
+        assert!(
+            json.contains("\"first_forbidden_source\": \"client\""),
+            "{json}"
+        );
+        assert!(
+            json.contains("\"suggested_boundary\": \"protocol-runtime\""),
+            "{json}"
+        );
+        assert!(
+            json.contains("\"client_log_paths\": [\"/tmp/client.log\"]"),
+            "{json}"
+        );
+        assert!(
+            json.contains("\"server_log_path\": \"/tmp/valence.log\""),
+            "{json}"
+        );
+    }
+
+    #[test]
+    fn failed_preflight_receipt_triages_before_client_evidence() {
+        let cfg =
+            test_config(&["--receipt=/tmp/receipt.json"], &[]).expect("receipt config parses");
+        let err = "server status probe failed".to_string();
+
+        let json = smoke_receipt_json(&cfg, Err(&err));
+
+        assert!(
+            json.contains("\"first_missing_client_milestone\": \"protocol_detected\""),
+            "{json}"
+        );
+        assert!(
+            json.contains("\"suggested_boundary\": \"preflight-or-server-startup\""),
             "{json}"
         );
     }

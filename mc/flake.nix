@@ -156,6 +156,13 @@
             grep -Fq '"server_client_b_seen"' multi-client-receipt.json
             grep -Fq '"server_flag_or_score"' multi-client-receipt.json
             grep -Fq '"client_server_correlation"' multi-client-receipt.json
+            grep -Fq '"triage"' multi-client-receipt.json
+            grep -Fq '"first_missing_client_milestone"' multi-client-receipt.json
+            grep -Fq '"first_missing_server_milestone"' multi-client-receipt.json
+            grep -Fq '"first_forbidden_pattern"' multi-client-receipt.json
+            grep -Fq '"suggested_boundary"' multi-client-receipt.json
+            grep -Fq '"client_log_paths"' multi-client-receipt.json
+            grep -Fq '"server_log_path"' multi-client-receipt.json
             grep -Fq '"compatbot-a"' multi-client-receipt.json
             grep -Fq '"compatbot-b"' multi-client-receipt.json
             grep -Fq '"claims_correctness": false' multi-client-receipt.json
