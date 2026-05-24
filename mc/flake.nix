@@ -1636,6 +1636,97 @@
               cp "$receipt" "$note" "$out/"
               printf '%s\n' "$b3" > "$out/receipt.b3"
             '';
+        stevenarella-valence-763-repeat-flag-score-evidence =
+          pkgs.runCommand "stevenarella-valence-763-repeat-flag-score-evidence" { nativeBuildInputs = [ pkgs.b3sum pkgs.python3 ]; }
+            ''
+              receipt=${./docs/evidence/stevenarella-valence-763-repeat-flag-score-2026-05-23.receipt.json}
+              note=${./docs/evidence/stevenarella-valence-763-repeat-flag-score-2026-05-23.md}
+
+              python3 - "$receipt" "$note" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          receipt_path = pathlib.Path(sys.argv[1])
+          note_path = pathlib.Path(sys.argv[2])
+          receipt = json.loads(receipt_path.read_text())
+          note = note_path.read_text()
+
+          def assert_eq(name, actual, expected):
+              if actual != expected:
+                  raise SystemExit(f"{name}: expected {expected!r}, got {actual!r}")
+
+          assert_eq("schema", receipt["schema"], "mc.compat.evidence.v1")
+          assert_eq("name", receipt["name"], "stevenarella-valence-763-repeat-flag-score")
+          assert_eq("result", receipt["result"], "bounded_single_client_ctf_two_flag_capture_score_events_observed_no_logged_runtime_failure")
+          assert_eq("stevenarella commit", receipt["stevenarella_commit"], "6be4515 stevenarella: count repeated ctf score events")
+          assert_eq("valence commit", receipt["valence_commit"], "c5140b7 valence: add parkour smoke receipts")
+          assert_eq("timeout status", receipt["probe"]["timeout_status"], "124")
+          assert_eq("bounded timeout", receipt["probe"]["bounded_timeout_is_expected"], True)
+          assert_eq("repeat env", receipt["probe"]["environment"]["MC_COMPAT_FLAG_PROBE_REPEAT"], "2")
+          markers = receipt["observations"]["markers"]
+          for marker in [
+              "detected_763",
+              "login_success",
+              "join_game",
+              "render",
+              "team_red",
+              "cycle_1_move_to_blue_flag",
+              "cycle_1_dig_blue_flag",
+              "cycle_1_have_flag",
+              "cycle_1_capture",
+              "cycle_1_score",
+              "cycle_2_move_to_blue_flag",
+              "cycle_2_dig_blue_flag",
+              "cycle_2_have_flag",
+              "cycle_2_capture",
+              "cycle_2_score",
+              "repeat_target_reached",
+          ]:
+              assert_eq(f"marker {marker}", markers[marker], True)
+          assert_eq("have count", receipt["observations"]["flag_have_count"], 2)
+          assert_eq("capture count", receipt["observations"]["flag_capture_count"], 2)
+          assert_eq("score count", receipt["observations"]["flag_score_count"], 2)
+          assert_eq("score block 1", receipt["observations"]["score_blocks"][0], "Scores:\nRED: 1\nBLUE: 0")
+          assert_eq("score block 2", receipt["observations"]["score_blocks"][1], "Scores:\nRED: 2\nBLUE: 0")
+          failures = receipt["observations"]["failure_marker_counts"]
+          for marker in ["UnexpectedEof", "FromUtf8Error", "failed to read packet", "Bad packet", "panic", "disconnect"]:
+              assert_eq(f"failure marker {marker}", failures[marker], 0)
+          claims = receipt["claims"]
+          assert_eq("bounded claim", claims["bounded_valence_ctf_two_flag_capture_score_events_observed"], True)
+          for claim in [
+              "claims_repeatable_scoring_under_load",
+              "claims_full_ctf_semantics",
+              "claims_full_combat_or_inventory_semantics",
+              "claims_reconnect_or_soak_stability",
+              "claims_stable_gameplay_or_long_soak",
+              "claims_full_minecraft_1_20_1_compatibility",
+              "claims_complete_protocol_763_coverage",
+          ]:
+              assert_eq(claim, claims[claim], False)
+
+          for fragment in [
+              "MC_COMPAT_FLAG_PROBE_REPEAT=2",
+              "Received chat message: You are on team RED!",
+              "flag_probe_dig_blue_flag_sent status=stop_destroy location=46,67,0 sequence=1 cycle=1",
+              "flag_probe_dig_blue_flag_sent status=stop_destroy location=46,67,0 sequence=2 cycle=2",
+              "flag_probe_score_chat count=2 target=2",
+              "flag_probe_repeat_target_reached count=2 target=2",
+              "RED: 2",
+              "BLUE: 0",
+              "This evidence does **not** prove",
+              "Receipt BLAKE3",
+          ]:
+              if fragment not in note:
+                  raise SystemExit(f"repeat flag-score evidence note missing fragment: {fragment}")
+          PY
+
+              b3=$(b3sum "$receipt" | cut -d' ' -f1)
+              grep -Fq "Receipt BLAKE3: \`$b3\`" "$note"
+              mkdir -p "$out"
+              cp "$receipt" "$note" "$out/"
+              printf '%s\n' "$b3" > "$out/receipt.b3"
+            '';
         onixresearch-ssh-tools = pkgs.runCommand "onixresearch-ssh-tools" { } ''
           ${cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn}/bin/cairn --help > cairn-help.log
           ${

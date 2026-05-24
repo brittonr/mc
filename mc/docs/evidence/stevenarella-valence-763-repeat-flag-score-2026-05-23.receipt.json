@@ -1,0 +1,75 @@
+{
+  "artifacts": {
+    "source_temp_log": "/tmp/stevenarella-763-repeat-flag-1779591600.log",
+    "source_temp_log_b3": "4bc2564994572b36b4226082761d9258255a8ce5ffd4555739a51a913366bca5",
+    "source_temp_status": "/tmp/stevenarella-763-repeat-flag-status-1779591600.txt",
+    "source_temp_status_b3": "16d78a954cb775e521c46341a98c2c6a187ea74a6d018de5efbae328941e87e6"
+  },
+  "claims": {
+    "bounded_valence_ctf_two_flag_capture_score_events_observed": true,
+    "claims_complete_protocol_763_coverage": false,
+    "claims_full_combat_or_inventory_semantics": false,
+    "claims_full_ctf_semantics": false,
+    "claims_full_minecraft_1_20_1_compatibility": false,
+    "claims_reconnect_or_soak_stability": false,
+    "claims_repeatable_scoring_under_load": false,
+    "claims_stable_gameplay_or_long_soak": false
+  },
+  "date": "2026-05-23",
+  "name": "stevenarella-valence-763-repeat-flag-score",
+  "observations": {
+    "failure_marker_counts": {
+      "Bad packet": 0,
+      "FromUtf8Error": 0,
+      "UnexpectedEof": 0,
+      "disconnect": 0,
+      "failed to read packet": 0,
+      "panic": 0
+    },
+    "flag_capture_count": 2,
+    "flag_have_count": 2,
+    "flag_score_count": 2,
+    "markers": {
+      "cycle_1_capture": true,
+      "cycle_1_dig_blue_flag": true,
+      "cycle_1_have_flag": true,
+      "cycle_1_move_to_blue_flag": true,
+      "cycle_1_score": true,
+      "cycle_2_capture": true,
+      "cycle_2_dig_blue_flag": true,
+      "cycle_2_have_flag": true,
+      "cycle_2_move_to_blue_flag": true,
+      "cycle_2_score": true,
+      "detected_763": true,
+      "join_game": true,
+      "login_success": true,
+      "render": true,
+      "repeat_target_reached": true,
+      "team_red": true
+    },
+    "score_blocks": [
+      "Scores:\nRED: 1\nBLUE: 0",
+      "Scores:\nRED: 2\nBLUE: 0"
+    ]
+  },
+  "parent_mc_base_before_evidence": "45437ec mc: record 763 ctf flag scoring probe",
+  "probe": {
+    "bounded_timeout_is_expected": true,
+    "environment": {
+      "MC_COMPAT_ACTIVE_PROBE": "1",
+      "MC_COMPAT_FLAG_PROBE": "1",
+      "MC_COMPAT_FLAG_PROBE_REPEAT": "2",
+      "MC_COMPAT_TEAM_PROBE": "1",
+      "MC_COMPAT_TEAM_PROBE_TEAM": "red"
+    },
+    "protocol": 763,
+    "server_backend": "valence_ctf",
+    "timeout_seconds": 240,
+    "timeout_status": "124",
+    "username": "FlagRepeatRed"
+  },
+  "result": "bounded_single_client_ctf_two_flag_capture_score_events_observed_no_logged_runtime_failure",
+  "schema": "mc.compat.evidence.v1",
+  "stevenarella_commit": "6be4515 stevenarella: count repeated ctf score events",
+  "valence_commit": "c5140b7 valence: add parkour smoke receipts"
+}
