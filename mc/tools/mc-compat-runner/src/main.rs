@@ -1690,7 +1690,6 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
             }
         }
         Scenario::MultiClientLoadScore => {
-            cmd.env("MC_COMPAT_IGNORE_DECODE_ERRORS", "1");
             cmd.env("MC_COMPAT_ACTIVE_PROBE", "1");
             if client_index == 0 {
                 cmd.env("MC_COMPAT_TEAM_PROBE", "1")
