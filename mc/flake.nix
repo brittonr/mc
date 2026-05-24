@@ -1555,6 +1555,87 @@
               cp "$receipt" "$note" "$out/"
               printf '%s\n' "$b3" > "$out/receipt.b3"
             '';
+        stevenarella-valence-763-flag-score-evidence =
+          pkgs.runCommand "stevenarella-valence-763-flag-score-evidence" { nativeBuildInputs = [ pkgs.b3sum pkgs.python3 ]; }
+            ''
+              receipt=${./docs/evidence/stevenarella-valence-763-flag-score-2026-05-23.receipt.json}
+              note=${./docs/evidence/stevenarella-valence-763-flag-score-2026-05-23.md}
+
+              python3 - "$receipt" "$note" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          receipt_path = pathlib.Path(sys.argv[1])
+          note_path = pathlib.Path(sys.argv[2])
+          receipt = json.loads(receipt_path.read_text())
+          note = note_path.read_text()
+
+          def assert_eq(name, actual, expected):
+              if actual != expected:
+                  raise SystemExit(f"{name}: expected {expected!r}, got {actual!r}")
+
+          assert_eq("schema", receipt["schema"], "mc.compat.evidence.v1")
+          assert_eq("name", receipt["name"], "stevenarella-valence-763-flag-score")
+          assert_eq("result", receipt["result"], "bounded_single_client_ctf_flag_pickup_capture_score_probe_observed_red_1_blue_0_no_logged_runtime_failure")
+          assert_eq("stevenarella commit", receipt["stevenarella_commit"], "656743f stevenarella: add 763 ctf flag probe")
+          assert_eq("valence commit", receipt["valence_commit"], "c5140b7 valence: add parkour smoke receipts")
+          assert_eq("timeout status", receipt["probe"]["timeout_status"], "124")
+          assert_eq("bounded timeout", receipt["probe"]["bounded_timeout_is_expected"], True)
+          markers = receipt["observations"]["markers"]
+          for marker in [
+              "detected_763",
+              "login_success",
+              "join_game",
+              "render",
+              "team_red",
+              "move_to_blue_flag",
+              "dig_blue_flag",
+              "have_flag_chat",
+              "move_to_red_capture",
+              "capture_chat",
+              "score_chat",
+          ]:
+              assert_eq(f"marker {marker}", markers[marker], True)
+          assert_eq("score block observed", receipt["observations"]["score_block_observed"], True)
+          assert_eq("score block", receipt["observations"]["score_block"], "Scores:\nRED: 1\nBLUE: 0")
+          failures = receipt["observations"]["failure_marker_counts"]
+          for marker in ["UnexpectedEof", "FromUtf8Error", "failed to read packet", "Bad packet", "panic", "disconnect"]:
+              assert_eq(f"failure marker {marker}", failures[marker], 0)
+          claims = receipt["claims"]
+          assert_eq("bounded claim", claims["bounded_valence_ctf_flag_pickup_capture_score_observed"], True)
+          for claim in [
+              "claims_full_ctf_semantics",
+              "claims_repeatable_scoring_under_load",
+              "claims_full_combat_or_inventory_semantics",
+              "claims_reconnect_or_soak_stability",
+              "claims_full_minecraft_1_20_1_compatibility",
+              "claims_complete_protocol_763_coverage",
+              "claims_stable_gameplay_or_long_soak",
+          ]:
+              assert_eq(claim, claims[claim], False)
+
+          for fragment in [
+              "MC_COMPAT_FLAG_PROBE=1",
+              "Received chat message: You are on team RED!",
+              "flag_probe_dig_blue_flag_sent status=stop_destroy location=46,67,0 sequence=1",
+              "Received chat message: You have the flag!",
+              "Received chat message: You captured the flag!",
+              "RED: 1",
+              "BLUE: 0",
+              "This evidence does **not** prove",
+              "Receipt BLAKE3",
+          ]:
+              if fragment not in note:
+                  raise SystemExit(f"flag-score evidence note missing fragment: {fragment}")
+          PY
+
+              b3=$(b3sum "$receipt" | cut -d' ' -f1)
+              grep -Fq "Receipt BLAKE3: \`$b3\`" "$note"
+              mkdir -p "$out"
+              cp "$receipt" "$note" "$out/"
+              printf '%s\n' "$b3" > "$out/receipt.b3"
+            '';
         onixresearch-ssh-tools = pkgs.runCommand "onixresearch-ssh-tools" { } ''
           ${cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn}/bin/cairn --help > cairn-help.log
           ${
