@@ -89,9 +89,41 @@
               mainProgram = "mc-compat-runner";
             };
           };
+          mc-compat-valence-ctf-600s-soak = pkgs.writeShellApplication {
+            name = "mc-compat-valence-ctf-600s-soak";
+            runtimeInputs = [ mc-compat-runner ];
+            text = ''
+              mode="--run"
+              if [[ "''${1:-}" == "--dry-run" || "''${1:-}" == "--run" ]]; then
+                mode="$1"
+                shift
+              fi
+
+              receipt="''${MC_COMPAT_SOAK_RECEIPT:-target/mc-compat-soak/multi-client-load-score-600s.json}"
+              mkdir -p "$(dirname "$receipt")"
+
+              export SERVER_PROTOCOL="''${SERVER_PROTOCOL:-763}"
+              export SERVER_VERSION="''${SERVER_VERSION:-1.20.1}"
+              export VALENCE_REV="''${VALENCE_REV:-main}"
+              export VALENCE_EXAMPLE="''${VALENCE_EXAMPLE:-ctf}"
+              export VALENCE_WORKTREE="''${VALENCE_WORKTREE:-/tmp/valence-compat-763}"
+              export VALENCE_TARGET_DIR="''${VALENCE_TARGET_DIR:-/tmp/valence-compat-763-target}"
+              export CLIENT_TIMEOUT="''${CLIENT_TIMEOUT:-600}"
+
+              exec mc-compat-runner "$mode" \
+                --server-backend valence \
+                --scenario multi-client-load-score \
+                --receipt "$receipt" \
+                "$@"
+            '';
+            meta = {
+              description = "Run the maintained protocol-763 Valence CTF 600s multi-client soak receipt.";
+              mainProgram = "mc-compat-valence-ctf-600s-soak";
+            };
+          };
         in
         {
-          inherit mc-compat-runner;
+          inherit mc-compat-runner mc-compat-valence-ctf-600s-soak;
           cairn = cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn;
           cargo-octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.cargo-octet;
           octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.octet;
@@ -106,6 +138,13 @@
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
           }/bin/mc-compat-runner";
           meta.description = "Run the hardened Stevenarella/Valence compatibility smoke.";
+        };
+        mc-compat-valence-ctf-600s-soak = {
+          type = "app";
+          program = "${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-600s-soak
+          }/bin/mc-compat-valence-ctf-600s-soak";
+          meta.description = "Run the maintained protocol-763 Valence CTF 600s multi-client soak receipt.";
         };
         default = self.apps.${pkgs.stdenv.hostPlatform.system}.mc-compat-smoke;
       });
@@ -169,6 +208,33 @@
             grep -Fq '"claims_semantic_equivalence": false' multi-client-receipt.json
             mkdir -p "$out"
             cp multi-client-dry-run.log multi-client-receipt.json "$out/"
+          '';
+        mc-compat-valence-ctf-600s-soak-dry-run =
+          pkgs.runCommand "mc-compat-valence-ctf-600s-soak-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
+            mkdir -p fake-stevenarella fake-valence receipts
+            printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+            git -C fake-valence init
+            git -C fake-valence config user.email mc-compat@example.invalid
+            git -C fake-valence config user.name mc-compat
+            printf '%s\n' fake > fake-valence/README.md
+            git -C fake-valence add README.md
+            git -C fake-valence commit -m init
+            MC_COMPAT_SOAK_RECEIPT="$PWD/receipts/soak-receipt.json" ${
+              self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-600s-soak
+            }/bin/mc-compat-valence-ctf-600s-soak --dry-run --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD > soak-dry-run.log
+            grep -Fq "scenario 'multi-client-load-score'" soak-dry-run.log
+            grep -Fq '"name": "multi-client-load-score"' receipts/soak-receipt.json
+            grep -Fq '"version": "1.20.1"' receipts/soak-receipt.json
+            grep -Fq '"protocol": 763' receipts/soak-receipt.json
+            grep -Fq '"duration_secs": 600' receipts/soak-receipt.json
+            grep -Fq '"timeout_secs": 600' receipts/soak-receipt.json
+            grep -Fq '"expected_summary_packets": ["two_client_login", "play_join_game", "chat_scoreboard"]' receipts/soak-receipt.json
+            grep -Fq '"compatbota"' receipts/soak-receipt.json
+            grep -Fq '"compatbotb"' receipts/soak-receipt.json
+            grep -Fq '"server_client_a_seen"' receipts/soak-receipt.json
+            grep -Fq '"server_client_b_seen"' receipts/soak-receipt.json
+            mkdir -p "$out"
+            cp soak-dry-run.log receipts/soak-receipt.json "$out/"
           '';
         mc-compat-bot-probe-dry-run =
           pkgs.runCommand "mc-compat-bot-probe-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
