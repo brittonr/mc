@@ -57,6 +57,18 @@ CLIENT_TIMEOUT=60 nix run .#mc-compat-smoke -- --run \
   --scenario flag-score-repeat \
   --receipt target/mc-compat-flag-score-repeat.json
 
+# Reconnect-aware gameplay receipt, with optional status/proxy/capture fixture metadata.
+nix run .#mc-compat-smoke -- --dry-run \
+  --server-backend valence \
+  --scenario reconnect-flag-score \
+  --expect-status-description "compat fixture" \
+  --expect-status-version "compat-version" \
+  --expect-status-sample compatbot,observer \
+  --packet-capture-summary \
+  --proxy-route velocity-local \
+  --proxy-forwarding-mode modern \
+  --receipt target/mc-compat-open-cairns.json
+
 # Two-client load-ish score scenario with server-side correlation.
 CLIENT_TIMEOUT=60 nix run .#mc-compat-smoke -- --run \
   --server-backend valence \
@@ -64,7 +76,16 @@ CLIENT_TIMEOUT=60 nix run .#mc-compat-smoke -- --run \
   --receipt target/mc-compat-multi-client-load-score.json
 ```
 
-`valence-compat-bot-probe` receipts add a `compat_bot_probe` block that records the owned local target, bounded one-client limit, non-public-stress-tool guard, and explicit `external_server_load_authorized=false` non-claim. For `flag-score-repeat` and `multi-client-load-score`, Valence receipts include `server.required_milestones`, `server.observed_milestones`, `server.missing_milestones`, `server.forbidden_matches`, and `server.client_server_correlation`. Multi-client receipts also include `client.usernames` and `client.log_paths` for per-client inspection. All scenario receipts include a `triage` block with first missing client/server milestones, first forbidden pattern/source, relevant client/server log paths, and a `suggested_boundary` such as `client-probe`, `server-correlation`, `protocol-runtime`, or `preflight-or-server-startup`.
+`valence-compat-bot-probe` receipts add a `compat_bot_probe` block that records the owned local target, bounded one-client limit, non-public-stress-tool guard, and explicit `external_server_load_authorized=false` non-claim. `reconnect-flag-score` extends gameplay evidence with an explicit reconnect milestone.
+
+Receipts also include bounded blocks for the remaining compatibility seams:
+
+- `status_response_resource`: configured/default status description, version, and player sample expectations used by the status probe.
+- `packet_capture_oracle`: headless/redacted packet-summary metadata; raw payloads are not durable evidence by default.
+- `proxy_compat_seam`: direct/proxied route, forwarding mode, owned-local-proxy guard, and non-claims such as `mtls_ported=false` and `credentials_recorded=false`.
+- `gameplay_oracles`: Hyperion-derived milestone vocabulary, correlated-evidence requirement, and explicit non-claims for full CTF correctness, broad compatibility, and unbounded soak.
+
+For `flag-score-repeat`, `reconnect-flag-score`, and `multi-client-load-score`, Valence receipts include `server.required_milestones`, `server.observed_milestones`, `server.missing_milestones`, `server.forbidden_matches`, and `server.client_server_correlation`. Multi-client receipts also include `client.usernames` and `client.log_paths` for per-client inspection. All scenario receipts include a `triage` block with first missing client/server milestones, first forbidden pattern/source, relevant client/server log paths, and a `suggested_boundary` such as `client-probe`, `server-correlation`, `protocol-runtime`, or `preflight-or-server-startup`.
 
 ## Nickel-backed config
 
@@ -169,4 +190,4 @@ The packages are also available as `.#cairn`, `.#cargo-octet`, and `.#octet`.
 nix flake check
 ```
 
-The flake includes focused checks for the runner binary, Nickel config freshness/export consumption, baseline dry-run receipt emission, `valence-compat-bot-probe` bounded probe receipt shape, `multi-client-load-score` scenario dry-run receipt shape, Paper/Valence matrix dry-run receipts, Paper/Valence receipt comparison fixtures, missing-checkout diagnostics, help text, Cairn CLI availability, and Octet fingerprint smoke over the receipt producer surface (`mc-compat-receipt-contract`).
+The flake includes focused checks for the runner binary, Nickel config freshness/export consumption, baseline dry-run receipt emission, `valence-compat-bot-probe` bounded probe receipt shape, `multi-client-load-score` scenario dry-run receipt shape, `mc-compat-open-cairns-dry-run` receipt coverage for status resources, packet-capture summaries, proxy seams, and gameplay-oracle non-claims, Paper/Valence matrix dry-run receipts, Paper/Valence receipt comparison fixtures, missing-checkout diagnostics, help text, Cairn CLI availability, and Octet fingerprint smoke over the receipt producer surface (`mc-compat-receipt-contract`).

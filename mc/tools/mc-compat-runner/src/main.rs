@@ -43,6 +43,7 @@ enum Scenario {
     Smoke,
     CompatBotProbe,
     FlagScoreRepeat,
+    ReconnectFlagScore,
     MultiClientLoadScore,
 }
 
@@ -86,6 +87,12 @@ struct Config {
     client_timeout: Duration,
     client_success_needles: Vec<String>,
     scenario: Scenario,
+    expected_status_description: Option<String>,
+    expected_status_version_name: Option<String>,
+    expected_status_sample: Vec<String>,
+    packet_capture_summary: bool,
+    proxy_route: Option<String>,
+    proxy_forwarding_mode: Option<String>,
     receipt_path: Option<PathBuf>,
     receipt_dir: Option<PathBuf>,
     compare_receipts: Option<(PathBuf, PathBuf)>,
@@ -254,6 +261,12 @@ impl Config {
                 .map(|s| s.to_string())
                 .collect(),
             scenario: Scenario::Smoke,
+            expected_status_description: None,
+            expected_status_version_name: None,
+            expected_status_sample: Vec::new(),
+            packet_capture_summary: false,
+            proxy_route: None,
+            proxy_forwarding_mode: None,
             receipt_path: None,
             receipt_dir: None,
             compare_receipts: None,
@@ -361,10 +374,44 @@ impl Config {
                 }
                 "--scenario" => {
                     let value = args.next().ok_or_else(|| {
-                        "--scenario requires smoke, valence-compat-bot-probe, flag-score-repeat, or multi-client-load-score"
+                        "--scenario requires smoke, valence-compat-bot-probe, flag-score-repeat, reconnect-flag-score, or multi-client-load-score"
                             .to_string()
                     })?;
                     cfg.scenario = parse_scenario(&value)?;
+                }
+                "--expect-status-description" => {
+                    cfg.expected_status_description = Some(args.next().ok_or_else(|| {
+                        "--expect-status-description requires a string".to_string()
+                    })?);
+                }
+                "--expect-status-version" => {
+                    cfg.expected_status_version_name =
+                        Some(args.next().ok_or_else(|| {
+                            "--expect-status-version requires a string".to_string()
+                        })?);
+                }
+                "--expect-status-sample" => {
+                    cfg.expected_status_sample = args
+                        .next()
+                        .ok_or_else(|| {
+                            "--expect-status-sample requires comma-separated names".to_string()
+                        })?
+                        .split(',')
+                        .filter(|value| !value.is_empty())
+                        .map(str::to_string)
+                        .collect();
+                }
+                "--packet-capture-summary" => cfg.packet_capture_summary = true,
+                "--proxy-route" => {
+                    cfg.proxy_route = Some(
+                        args.next()
+                            .ok_or_else(|| "--proxy-route requires a route label".to_string())?,
+                    );
+                }
+                "--proxy-forwarding-mode" => {
+                    cfg.proxy_forwarding_mode = Some(args.next().ok_or_else(|| {
+                        "--proxy-forwarding-mode requires a mode label".to_string()
+                    })?);
                 }
                 "--valence-repo" => {
                     cfg.valence_repo = PathBuf::from(
@@ -400,6 +447,28 @@ impl Config {
                 }
                 _ if arg.starts_with("--scenario=") => {
                     cfg.scenario = parse_scenario(&arg[11..])?;
+                }
+                _ if arg.starts_with("--expect-status-description=") => {
+                    cfg.expected_status_description = Some(arg[28..].to_string());
+                }
+                _ if arg.starts_with("--expect-status-version=") => {
+                    cfg.expected_status_version_name = Some(arg[24..].to_string());
+                }
+                _ if arg.starts_with("--expect-status-sample=") => {
+                    cfg.expected_status_sample = arg[23..]
+                        .split(',')
+                        .filter(|value| !value.is_empty())
+                        .map(str::to_string)
+                        .collect();
+                }
+                _ if arg == "--packet-capture-summary" => {
+                    cfg.packet_capture_summary = true;
+                }
+                _ if arg.starts_with("--proxy-route=") => {
+                    cfg.proxy_route = Some(arg[14..].to_string());
+                }
+                _ if arg.starts_with("--proxy-forwarding-mode=") => {
+                    cfg.proxy_forwarding_mode = Some(arg[24..].to_string());
                 }
                 _ if arg.starts_with("--valence-repo=") => {
                     cfg.valence_repo = PathBuf::from(&arg[15..]);
@@ -511,6 +580,28 @@ where
     if let Some(value) = get_env("MC_COMPAT_SCENARIO") {
         cfg.scenario = parse_scenario(&value)?;
     }
+    if let Some(value) = get_env("MC_COMPAT_EXPECT_STATUS_DESCRIPTION") {
+        cfg.expected_status_description = Some(value);
+    }
+    if let Some(value) = get_env("MC_COMPAT_EXPECT_STATUS_VERSION") {
+        cfg.expected_status_version_name = Some(value);
+    }
+    if let Some(value) = get_env("MC_COMPAT_EXPECT_STATUS_SAMPLE") {
+        cfg.expected_status_sample = value
+            .split(',')
+            .filter(|sample| !sample.is_empty())
+            .map(str::to_string)
+            .collect();
+    }
+    if get_env("MC_COMPAT_PACKET_CAPTURE_SUMMARY").is_some() {
+        cfg.packet_capture_summary = true;
+    }
+    if let Some(value) = get_env("MC_COMPAT_PROXY_ROUTE") {
+        cfg.proxy_route = Some(value);
+    }
+    if let Some(value) = get_env("MC_COMPAT_PROXY_FORWARDING_MODE") {
+        cfg.proxy_forwarding_mode = Some(value);
+    }
     if let Some(value) = get_env("SMOKE_RECEIPT") {
         cfg.receipt_path = Some(PathBuf::from(value));
     }
@@ -588,6 +679,24 @@ fn apply_config_json(cfg: &mut Config, text: &str) -> Result<bool, String> {
     if let Some(value) = json_optional_string_field(text, "scenario")? {
         cfg.scenario = parse_scenario(&value)?;
     }
+    if let Some(value) = json_optional_string_field(text, "expected_status_description")? {
+        cfg.expected_status_description = Some(value);
+    }
+    if let Some(value) = json_optional_string_field(text, "expected_status_version_name")? {
+        cfg.expected_status_version_name = Some(value);
+    }
+    if let Some(value) = json_optional_string_array_field(text, "expected_status_sample")? {
+        cfg.expected_status_sample = value;
+    }
+    if let Some(value) = json_optional_bool_field(text, "packet_capture_summary")? {
+        cfg.packet_capture_summary = value;
+    }
+    if let Some(value) = json_optional_string_field(text, "proxy_route")? {
+        cfg.proxy_route = Some(value);
+    }
+    if let Some(value) = json_optional_string_field(text, "proxy_forwarding_mode")? {
+        cfg.proxy_forwarding_mode = Some(value);
+    }
     if let Some(value) = json_optional_string_field(text, "receipt_path")? {
         cfg.receipt_path = Some(PathBuf::from(value));
     }
@@ -602,6 +711,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
         "smoke" => Ok(Scenario::Smoke),
         "valence-compat-bot-probe" | "compat-bot-probe" => Ok(Scenario::CompatBotProbe),
         "flag-score-repeat" => Ok(Scenario::FlagScoreRepeat),
+        "reconnect-flag-score" => Ok(Scenario::ReconnectFlagScore),
         "multi-client-load-score" => Ok(Scenario::MultiClientLoadScore),
         other => Err(format!("unknown scenario: {other}")),
     }
@@ -612,6 +722,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::Smoke => "smoke",
         Scenario::CompatBotProbe => "valence-compat-bot-probe",
         Scenario::FlagScoreRepeat => "flag-score-repeat",
+        Scenario::ReconnectFlagScore => "reconnect-flag-score",
         Scenario::MultiClientLoadScore => "multi-client-load-score",
     }
 }
@@ -633,6 +744,16 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             ("flag_capture", "You captured the flag!"),
             ("score_red_1", "RED: 1"),
             ("score_red_2", "RED: 2"),
+        ],
+        Scenario::ReconnectFlagScore => &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("flag_pickup", "You have the flag!"),
+            ("flag_capture", "You captured the flag!"),
+            ("score_red_1", "RED: 1"),
+            ("reconnect_session", "mc_compat_reconnect_session=2"),
         ],
         Scenario::MultiClientLoadScore => &[
             ("multi_client_count", "mc_compat_multi_client_count=2"),
@@ -659,7 +780,7 @@ fn scenario_forbidden_patterns(_scenario: Scenario) -> &'static [(&'static str, 
 fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'static str)] {
     match scenario {
         Scenario::Smoke | Scenario::CompatBotProbe => &[],
-        Scenario::FlagScoreRepeat => &[
+        Scenario::FlagScoreRepeat | Scenario::ReconnectFlagScore => &[
             ("server_username_seen", "compatbot"),
             ("server_flag_or_score", "flag"),
         ],
@@ -743,12 +864,13 @@ fn default_port(backend: ServerBackend) -> u16 {
 
 fn print_usage(cfg: &Config) {
     println!(
-        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario smoke|valence-compat-bot-probe|flag-score-repeat|multi-client-load-score] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
+        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario smoke|valence-compat-bot-probe|flag-score-repeat|reconnect-flag-score|multi-client-load-score] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
 Automates a local Stevenarella compatibility smoke against a Minecraft {} / protocol {} server.\n\
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from Nickel config; env vars and later CLI flags override it.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.scenario.receipt.v2 JSON receipt for Cairn/Octet evidence flows.
-Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
+Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
+Use --expect-status-description/--expect-status-version/--expect-status-sample to assert status response fixture data, --packet-capture-summary for redacted capture summary metadata, and --proxy-route/--proxy-forwarding-mode for proxied-route receipt fields.\n\
 Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
 Use --run-matrix --receipt-dir DIR to run Paper and Valence receipts then compare them; add --dry-run after --run-matrix for a non-side-effecting matrix fixture.\n\
 Use --status to inspect harness-owned Paper/Valence/tmp state; use --cleanup --dry-run to preview cleanup and --cleanup --apply to remove it.\n\
@@ -1242,6 +1364,7 @@ fn probe_status(cfg: &Config) -> Result<(), String> {
                 let needle = format!("\"protocol\":{}", cfg.server_protocol);
                 let spaced = format!("\"protocol\": {}", cfg.server_protocol);
                 if status.contains(&needle) || status.contains(&spaced) {
+                    assert_status_expectations(cfg, &status)?;
                     return Ok(());
                 }
                 return Err(format!(
@@ -1254,6 +1377,31 @@ fn probe_status(cfg: &Config) -> Result<(), String> {
         thread::sleep(Duration::from_secs(2));
     }
     Err(format!("server status probe failed: {last}"))
+}
+
+fn assert_status_expectations(cfg: &Config, status: &str) -> Result<(), String> {
+    if let Some(expected) = &cfg.expected_status_description {
+        if !status.contains(expected) {
+            return Err(format!(
+                "status response missing expected description {expected:?}"
+            ));
+        }
+    }
+    if let Some(expected) = &cfg.expected_status_version_name {
+        if !status.contains(expected) {
+            return Err(format!(
+                "status response missing expected version {expected:?}"
+            ));
+        }
+    }
+    for expected in &cfg.expected_status_sample {
+        if !status.contains(expected) {
+            return Err(format!(
+                "status response missing expected sample {expected:?}"
+            ));
+        }
+    }
+    Ok(())
 }
 
 fn read_status(port: u16, protocol: u32) -> Result<String, String> {
@@ -1325,6 +1473,9 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
     let mut combined_output = String::new();
     if cfg.scenario == Scenario::MultiClientLoadScore && runs.len() >= 2 {
         combined_output.push_str("mc_compat_multi_client_count=2\n");
+    }
+    if cfg.scenario == Scenario::ReconnectFlagScore {
+        combined_output.push_str("mc_compat_reconnect_session=2\n");
     }
     for run in &runs {
         combined_output.push_str(&run.output);
@@ -1517,12 +1668,15 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
         Scenario::CompatBotProbe => {
             cmd.env("MC_COMPAT_ACTIVE_PROBE", "1");
         }
-        Scenario::FlagScoreRepeat => {
+        Scenario::FlagScoreRepeat | Scenario::ReconnectFlagScore => {
             cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
                 .env("MC_COMPAT_TEAM_PROBE", "1")
                 .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
                 .env("MC_COMPAT_FLAG_PROBE", "1")
                 .env("MC_COMPAT_FLAG_PROBE_REPEAT", "2");
+            if scenario == Scenario::ReconnectFlagScore {
+                cmd.env("MC_COMPAT_RECONNECT_PROBE", "1");
+            }
         }
         Scenario::MultiClientLoadScore => {
             cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
@@ -1574,7 +1728,9 @@ fn requires_server_correlation(cfg: &Config) -> bool {
     cfg.server_backend == ServerBackend::Valence
         && matches!(
             cfg.scenario,
-            Scenario::FlagScoreRepeat | Scenario::MultiClientLoadScore
+            Scenario::FlagScoreRepeat
+                | Scenario::ReconnectFlagScore
+                | Scenario::MultiClientLoadScore
         )
 }
 
@@ -1657,6 +1813,46 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         first_forbidden_pattern,
         requires_server_correlation(cfg),
     );
+    let status_sample_json = json_string_vec(&cfg.expected_status_sample);
+    let status_resource_configured = cfg.expected_status_description.is_some()
+        || cfg.expected_status_version_name.is_some()
+        || !cfg.expected_status_sample.is_empty();
+    let packet_capture_selected = cfg.packet_capture_summary;
+    let packet_capture_expected_packets: Vec<&str> = match cfg.scenario {
+        Scenario::Smoke => vec!["status_response", "login_or_timeout"],
+        Scenario::CompatBotProbe => vec!["status_response", "login_success", "play_join_game"],
+        Scenario::FlagScoreRepeat => vec!["login_success", "play_join_game", "chat_scoreboard"],
+        Scenario::ReconnectFlagScore => vec![
+            "login_success",
+            "play_join_game",
+            "disconnect_reconnect",
+            "chat_scoreboard",
+        ],
+        Scenario::MultiClientLoadScore => {
+            vec!["two_client_login", "play_join_game", "chat_scoreboard"]
+        }
+    };
+    let proxy_route = cfg.proxy_route.as_deref().unwrap_or("direct");
+    let proxy_forwarding_mode = cfg.proxy_forwarding_mode.as_deref().unwrap_or("none");
+    let proxy_selected = cfg.proxy_route.is_some();
+    let gameplay_oracle_milestones: Vec<&str> = vec![
+        "protocol_detected",
+        "join_game",
+        "render_tick",
+        "team_red",
+        "flag_pickup",
+        "flag_capture",
+        "score_red_1",
+        "score_red_2",
+        "reconnect_session",
+        "multi_client_count",
+    ];
+    let gameplay_non_claims: Vec<&str> = vec![
+        "full_ctf_correctness",
+        "broad_minecraft_compatibility",
+        "unbounded_soak",
+        "production_load",
+    ];
     let error_json = error
         .map(|err| json_string(err))
         .unwrap_or_else(|| "null".to_string());
@@ -1704,6 +1900,40 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
     "max_clients": 1,
     "duration_secs": {timeout_secs},
     "derived_from": "hyperion/tools/rust-mc-bot pattern"
+  }},
+  "status_response_resource": {{
+    "resource_owned": true,
+    "configured": {status_resource_configured},
+    "expected_description": {expected_status_description_json},
+    "expected_version_name": {expected_status_version_name_json},
+    "expected_player_sample": {status_sample_json},
+    "defaults_stable": true,
+    "asserted_by_status_probe": {status_resource_configured}
+  }},
+  "packet_capture_oracle": {{
+    "selected": {packet_capture_selected},
+    "headless_cli": true,
+    "redacted_receipt": true,
+    "raw_payloads_recorded": false,
+    "normalized_fields": ["direction", "state", "packet_id", "decode_status"],
+    "expected_summary_packets": {packet_capture_expected_packets_json},
+    "triage_correlation": true
+  }},
+  "proxy_compat_seam": {{
+    "selected": {proxy_selected},
+    "route": {proxy_route_json},
+    "forwarding_mode": {proxy_forwarding_mode_json},
+    "direct_and_proxied_claims_separated": true,
+    "mtls_ported": false,
+    "credentials_recorded": false,
+    "owned_local_proxy_required": true
+  }},
+  "gameplay_oracles": {{
+    "derived_from": "hyperion gameplay milestone vocabulary",
+    "selected_scenario": {scenario_name_json},
+    "catalog": {gameplay_oracle_milestones_json},
+    "requires_client_and_server_evidence_for_semantic_claims": true,
+    "non_claims": {gameplay_non_claims_json}
   }},
   "server": {{
     "backend": {backend_json},
@@ -1772,6 +2002,19 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         compat_bot_probe_selected = compat_bot_probe_selected,
         compat_bot_target_address_json = json_string(&compat_bot_target_address),
         compat_bot_planned_clients = compat_bot_planned_clients,
+        status_resource_configured = status_resource_configured,
+        expected_status_description_json =
+            json_optional_string(cfg.expected_status_description.as_deref()),
+        expected_status_version_name_json =
+            json_optional_string(cfg.expected_status_version_name.as_deref()),
+        status_sample_json = status_sample_json,
+        packet_capture_selected = packet_capture_selected,
+        packet_capture_expected_packets_json = json_string_array(&packet_capture_expected_packets),
+        proxy_selected = proxy_selected,
+        proxy_route_json = json_string(proxy_route),
+        proxy_forwarding_mode_json = json_string(proxy_forwarding_mode),
+        gameplay_oracle_milestones_json = json_string_array(&gameplay_oracle_milestones),
+        gameplay_non_claims_json = json_string_array(&gameplay_non_claims),
         server_required_json = json_string_array(&server_required),
         server_observed_json = json_string_array(&server_scenario.observed_milestones),
         server_missing_json = json_string_array(&server_scenario.missing_milestones),
@@ -2141,6 +2384,19 @@ fn json_optional_string_field(text: &str, key: &str) -> Result<Option<String>, S
         Ok(None)
     } else {
         parse_json_string(after_colon).map(|(value, _)| Some(value))
+    }
+}
+
+fn json_optional_bool_field(text: &str, key: &str) -> Result<Option<bool>, String> {
+    let Some(after_colon) = json_field_value_opt(text, key)? else {
+        return Ok(None);
+    };
+    if after_colon.starts_with("true") {
+        Ok(Some(true))
+    } else if after_colon.starts_with("false") {
+        Ok(Some(false))
+    } else {
+        Err(format!("field {key} must be a boolean"))
     }
 }
 
@@ -2701,9 +2957,84 @@ mod tests {
             test_config(&["--scenario", "compat-bot-probe"], &[]).expect("compat-bot alias parses");
         assert_eq!(compat_alias.scenario, Scenario::CompatBotProbe);
 
+        let reconnect = test_config(&["--scenario", "reconnect-flag-score"], &[])
+            .expect("reconnect scenario parses");
+        assert_eq!(reconnect.scenario, Scenario::ReconnectFlagScore);
+
         let multi = test_config(&["--scenario", "multi-client-load-score"], &[])
             .expect("multi-client scenario parses");
         assert_eq!(multi.scenario, Scenario::MultiClientLoadScore);
+    }
+
+    #[test]
+    fn status_packet_proxy_and_gameplay_receipt_blocks_are_recorded() {
+        let mut cfg = test_config(
+            &[
+                "--server-backend=valence",
+                "--scenario=reconnect-flag-score",
+                "--expect-status-description=compat fixture",
+                "--expect-status-version=compat-version",
+                "--expect-status-sample=compatbot,observer",
+                "--packet-capture-summary",
+                "--proxy-route=velocity-local",
+                "--proxy-forwarding-mode=modern",
+                "--client-dir=/tmp/stevenarella",
+            ],
+            &[],
+        )
+        .expect("extended receipt config parses");
+        cfg.server_port = 25565;
+        let scenario = evaluate_scenario(
+            Scenario::ReconnectFlagScore,
+            "Detected server protocol version 763
+join_game
+render_tick_with_player
+You are on team RED!
+You have the flag!
+You captured the flag!
+RED: 1
+mc_compat_reconnect_session=2
+",
+        );
+        assert!(scenario.passed, "{scenario:?}");
+        let client = Some(ClientRunEvidence {
+            log_path: Some(PathBuf::from("/tmp/client.log")),
+            log_paths: vec![PathBuf::from("/tmp/client.log")],
+            usernames: vec!["compatbot".to_string()],
+            exit_code: Some(124),
+            classification: "timeout-success-evidence",
+            matched_success_pattern: Some("Detected server protocol version".to_string()),
+            scenario: Some(scenario),
+            server_scenario: Some(evaluate_server_scenario(
+                Scenario::ReconnectFlagScore,
+                "compatbot joined
+red flag captured
+",
+                "compatbot",
+            )),
+        });
+
+        let json = smoke_receipt_json(&cfg, Ok(&client));
+
+        assert!(
+            json.contains("\"name\": \"reconnect-flag-score\""),
+            "{json}"
+        );
+        assert!(json.contains("\"status_response_resource\""), "{json}");
+        assert!(json.contains("\"configured\": true"), "{json}");
+        assert!(json.contains("compat fixture"), "{json}");
+        assert!(json.contains("compat-version"), "{json}");
+        assert!(json.contains("compatbot"), "{json}");
+        assert!(json.contains("\"packet_capture_oracle\""), "{json}");
+        assert!(json.contains("\"selected\": true"), "{json}");
+        assert!(json.contains("\"raw_payloads_recorded\": false"), "{json}");
+        assert!(json.contains("\"proxy_compat_seam\""), "{json}");
+        assert!(json.contains("\"route\": \"velocity-local\""), "{json}");
+        assert!(json.contains("\"forwarding_mode\": \"modern\""), "{json}");
+        assert!(json.contains("\"mtls_ported\": false"), "{json}");
+        assert!(json.contains("\"gameplay_oracles\""), "{json}");
+        assert!(json.contains("reconnect_session"), "{json}");
+        assert!(json.contains("full_ctf_correctness"), "{json}");
     }
 
     #[test]

@@ -989,3 +989,148 @@ r[mc_compatibility.valence_compat_bot.valence_gate.scenario]
 - WHEN the deterministic gate runs in Nix dry-run mode
 
 - THEN the gate validates schema, scenario, milestone, and non-claim fields
+
+### Requirement: Status ping response data
+
+r[mc_compatibility.valence_status_response.resource_owned] Valence status ping response data MUST be configurable through a resource or equivalent public server setting.
+
+#### Scenario: Configured status response is used
+
+r[mc_compatibility.valence_status_response.resource_owned.scenario]
+
+- GIVEN an example inserts configured status response data
+- WHEN a client sends a status ping
+- THEN the response uses the configured description/version/sample fields
+
+### Requirement: The status response resource
+
+r[mc_compatibility.valence_status_response.defaults_stable] The status response resource MUST preserve existing default behavior for examples that do not configure it.
+
+#### Scenario: Default status response remains available
+
+r[mc_compatibility.valence_status_response.defaults_stable.scenario]
+
+- GIVEN an example does not configure custom status data
+- WHEN a client sends a status ping
+- THEN the response remains valid and compatible with the prior default behavior
+
+### Requirement: Status response behavior
+
+r[mc_compatibility.valence_status_response.test_oracle] Status response behavior MUST be testable as a deterministic compatibility oracle.
+
+#### Scenario: Status probe asserts configured data
+
+r[mc_compatibility.valence_status_response.test_oracle.scenario]
+
+- GIVEN a test or smoke probe sets known status data
+- WHEN the status-only probe runs
+- THEN the receipt or assertion records the configured values that were observed
+
+### Requirement: Compatibility testing packet capture
+
+r[mc_compatibility.valence_packet_capture.headless_cli] Valence compatibility testing MUST provide a headless packet-capture oracle for local owned client/server runs.
+
+#### Scenario: Capture starts for a local run
+
+r[mc_compatibility.valence_packet_capture.headless_cli.scenario]
+
+- GIVEN a local Valence example and client probe are selected
+- WHEN the capture oracle is invoked
+- THEN the oracle records direction, protocol state, packet id, decode status, and bounded timing metadata
+
+### Requirement: Packet-capture evidence
+
+r[mc_compatibility.valence_packet_capture.redacted_receipt] Packet-capture evidence MUST be normalized and redacted before it is recorded as durable evidence.
+
+#### Scenario: Receipt omits raw sensitive traffic
+
+r[mc_compatibility.valence_packet_capture.redacted_receipt.scenario]
+
+- GIVEN packet capture data is converted into a receipt
+- WHEN the receipt is written
+- THEN the receipt includes normalized packet summaries and decode failures
+- AND the receipt excludes raw payload dumps unless an explicit local debug artifact is requested
+
+### Requirement: Packet-capture receipts
+
+r[mc_compatibility.valence_packet_capture.triage_correlation] Packet-capture receipts MUST correlate with scenario triage when a compatibility run fails.
+
+#### Scenario: Capture points at failing boundary
+
+r[mc_compatibility.valence_packet_capture.triage_correlation.scenario]
+
+- GIVEN a scenario receipt reports a protocol-runtime or client-probe failure
+- WHEN the packet capture summary is attached or compared
+- THEN the combined evidence identifies the first relevant packet/state boundary when available
+
+### Requirement: Proxy compatibility work
+
+r[mc_compatibility.valence_proxy_compat.boundary_documented] Valence proxy compatibility work MUST define direct, proxied, and deferred architecture boundaries before implementation.
+
+#### Scenario: Boundary is explicit
+
+r[mc_compatibility.valence_proxy_compat.boundary_documented.scenario]
+
+- GIVEN the proxy compatibility seam is planned
+- WHEN the proposal/design is reviewed
+- THEN the plan records direct-vs-proxy claims and defers full Hyperion-style multi-proxy/mTLS unless separately requested
+
+### Requirement: Proxy-path compatibility receipts
+
+r[mc_compatibility.valence_proxy_compat.receipt_fields] Proxy-path compatibility receipts MUST record the route, forwarding mode, observed protocol/version, and non-claims.
+
+#### Scenario: Proxy receipt identifies route
+
+r[mc_compatibility.valence_proxy_compat.receipt_fields.scenario]
+
+- GIVEN a proxy-path smoke or dry-run executes
+- WHEN the receipt is written
+- THEN the receipt records direct or proxied route, forwarding mode if known, observed protocol/version, and non-claims
+
+### Requirement: Proxy compatibility
+
+r[mc_compatibility.valence_proxy_compat.local_gate] Proxy compatibility MUST have a deterministic local gate before live proxy evidence is treated as durable.
+
+#### Scenario: Dry-run proxy gate validates shape
+
+r[mc_compatibility.valence_proxy_compat.local_gate.scenario]
+
+- GIVEN the proxy compatibility receipt schema exists
+- WHEN the dry-run gate runs
+- THEN the gate validates route, forwarding-mode, protocol, and non-claim fields
+
+### Requirement: Gameplay compatibility work
+
+r[mc_compatibility.valence_gameplay_oracles.milestone_catalog] Valence compatibility work MUST catalog Hyperion-derived gameplay milestones before implementing new scenario claims.
+
+#### Scenario: Milestones are mapped to Valence
+
+r[mc_compatibility.valence_gameplay_oracles.milestone_catalog.scenario]
+
+- GIVEN Hyperion Bedwars milestones are reviewed
+- WHEN the Valence scenario plan is written
+- THEN the plan maps each selected milestone to a Valence example/client/server evidence source
+
+### Requirement: Gameplay scenario receipts
+
+r[mc_compatibility.valence_gameplay_oracles.correlated_receipts] Valence gameplay scenario receipts MUST require correlated client and server evidence for semantic gameplay claims.
+
+#### Scenario: Scenario requires both sides
+
+r[mc_compatibility.valence_gameplay_oracles.correlated_receipts.scenario]
+
+- GIVEN a non-smoke gameplay scenario runs
+- WHEN the receipt is evaluated
+- THEN the scenario passes only when required client milestones and server correlation are both observed
+
+### Requirement: Gameplay oracle receipts
+
+r[mc_compatibility.valence_gameplay_oracles.non_overclaiming] Valence gameplay oracle receipts MUST preserve explicit non-claims for unsupported gameplay and soak properties.
+
+#### Scenario: Receipt states non-claims
+
+r[mc_compatibility.valence_gameplay_oracles.non_overclaiming.scenario]
+
+- GIVEN a gameplay scenario receipt is recorded
+- WHEN the evidence is reviewed
+- THEN the receipt states the exact supported claim and keeps full CTF, broad protocol, and unbounded soak claims false

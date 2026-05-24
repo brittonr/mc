@@ -201,6 +201,52 @@
             mkdir -p "$out"
             cp compat-bot-dry-run.log compat-bot-receipt.json "$out/"
           '';
+        mc-compat-open-cairns-dry-run =
+          pkgs.runCommand "mc-compat-open-cairns-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
+            mkdir -p fake-stevenarella fake-valence
+            printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+            git -C fake-valence init
+            git -C fake-valence config user.email mc-compat@example.invalid
+            git -C fake-valence config user.name mc-compat
+            printf '%s\n' fake > fake-valence/README.md
+            git -C fake-valence add README.md
+            git -C fake-valence commit -m init
+            ${
+              self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
+            }/bin/mc-compat-runner --dry-run --server-backend valence --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD --scenario reconnect-flag-score --expect-status-description "compat fixture" --expect-status-version "compat-version" --expect-status-sample compatbot,observer --packet-capture-summary --proxy-route velocity-local --proxy-forwarding-mode modern --receipt open-cairns-receipt.json > open-cairns-dry-run.log
+            grep -Fq "scenario 'reconnect-flag-score'" open-cairns-dry-run.log
+            grep -Fq '"schema": "mc.compat.scenario.receipt.v2"' open-cairns-receipt.json
+            grep -Fq '"name": "reconnect-flag-score"' open-cairns-receipt.json
+            grep -Fq '"status_response_resource"' open-cairns-receipt.json
+            grep -Fq '"resource_owned": true' open-cairns-receipt.json
+            grep -Fq '"configured": true' open-cairns-receipt.json
+            grep -Fq '"expected_description": "compat fixture"' open-cairns-receipt.json
+            grep -Fq '"expected_version_name": "compat-version"' open-cairns-receipt.json
+            grep -Fq '"expected_player_sample": ["compatbot", "observer"]' open-cairns-receipt.json
+            grep -Fq '"asserted_by_status_probe": true' open-cairns-receipt.json
+            grep -Fq '"packet_capture_oracle"' open-cairns-receipt.json
+            grep -Fq '"headless_cli": true' open-cairns-receipt.json
+            grep -Fq '"redacted_receipt": true' open-cairns-receipt.json
+            grep -Fq '"raw_payloads_recorded": false' open-cairns-receipt.json
+            grep -Fq '"normalized_fields": ["direction", "state", "packet_id", "decode_status"]' open-cairns-receipt.json
+            grep -Fq '"triage_correlation": true' open-cairns-receipt.json
+            grep -Fq '"proxy_compat_seam"' open-cairns-receipt.json
+            grep -Fq '"route": "velocity-local"' open-cairns-receipt.json
+            grep -Fq '"forwarding_mode": "modern"' open-cairns-receipt.json
+            grep -Fq '"direct_and_proxied_claims_separated": true' open-cairns-receipt.json
+            grep -Fq '"mtls_ported": false' open-cairns-receipt.json
+            grep -Fq '"credentials_recorded": false' open-cairns-receipt.json
+            grep -Fq '"owned_local_proxy_required": true' open-cairns-receipt.json
+            grep -Fq '"gameplay_oracles"' open-cairns-receipt.json
+            grep -Fq '"selected_scenario": "reconnect-flag-score"' open-cairns-receipt.json
+            grep -Fq '"reconnect_session"' open-cairns-receipt.json
+            grep -Fq '"requires_client_and_server_evidence_for_semantic_claims": true' open-cairns-receipt.json
+            grep -Fq '"full_ctf_correctness"' open-cairns-receipt.json
+            grep -Fq '"broad_minecraft_compatibility"' open-cairns-receipt.json
+            grep -Fq '"unbounded_soak"' open-cairns-receipt.json
+            mkdir -p "$out"
+            cp open-cairns-dry-run.log open-cairns-receipt.json "$out/"
+          '';
         mc-compat-compare-receipts = pkgs.runCommand "mc-compat-compare-receipts" { } ''
                     write_receipt() {
                       backend="$1"
@@ -324,8 +370,11 @@
           grep -Fq -- "--apply" help.log
           grep -Fq -- "--stop" help.log
           grep -Fq -- "--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT" help.log
-          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|multi-client-load-score" help.log
+          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|reconnect-flag-score|multi-client-load-score" help.log
           grep -Fq "MC_COMPAT_SCENARIO" help.log
+          grep -Fq -- "--expect-status-description" help.log
+          grep -Fq -- "--packet-capture-summary" help.log
+          grep -Fq -- "--proxy-route" help.log
           grep -Fq "SMOKE_RECEIPT" help.log
           grep -Fq "SMOKE_RECEIPT_DIR" help.log
           grep -Fq "MC_COMPAT_CONFIG" help.log
