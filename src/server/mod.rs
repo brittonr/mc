@@ -1066,7 +1066,16 @@ impl Server {
                             EntityLookAndMove_i8_i32_NoGround => on_entity_look_and_move_i8_i32_noground,
                         }
                     },
-                    Err(err) => panic!("Err: {:?}", err),
+                    Err(err) => {
+                        if std::env::var("MC_COMPAT_IGNORE_DECODE_ERRORS")
+                            .map(|value| value != "0")
+                            .unwrap_or(false)
+                        {
+                            warn!("MC-COMPAT-NONFATAL packet_decode_failed err={:?}", err);
+                            continue;
+                        }
+                        panic!("Err: {:?}", err)
+                    }
                 }
                 // Disconnected
                 if self.conn.read().unwrap().is_none() {

@@ -265,6 +265,8 @@ mod tests {
             (0x02, crate::protocol::packet::play::clientbound::internal_ids::SpawnExperienceOrb),
             (0x03, crate::protocol::packet::play::clientbound::internal_ids::SpawnPlayer_f64_NoMeta),
             (0x04, crate::protocol::packet::play::clientbound::internal_ids::Animation),
+            (0x0a, crate::protocol::packet::play::clientbound::internal_ids::BlockChange_VarInt),
+            (0x0b, crate::protocol::packet::play::clientbound::internal_ids::BossBar),
             (0x12, crate::protocol::packet::play::clientbound::internal_ids::WindowItems_StateCarry),
             (0x14, crate::protocol::packet::play::clientbound::internal_ids::WindowSetSlot_State),
             (0x1c, crate::protocol::packet::play::clientbound::internal_ids::EntityStatus),
@@ -443,7 +445,7 @@ mod tests {
 
     #[test]
     fn protocol_763_no_longer_uses_758_fallback_for_remaining_observed_boundaries() {
-        for wire_id in [0x01, 0x02, 0x03, 0x04, 0x06, 0x14, 0x1c, 0x1e, 0x1f, 0x24, 0x2b, 0x2c, 0x2d, 0x2e, 0x34, 0x38, 0x39, 0x3a, 0x42, 0x4d, 0x4e, 0x4f, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x5b, 0x67] {
+        for wire_id in [0x01, 0x02, 0x03, 0x04, 0x06, 0x0a, 0x0b, 0x14, 0x1c, 0x1e, 0x1f, 0x24, 0x2b, 0x2c, 0x2d, 0x2e, 0x34, 0x38, 0x39, 0x3a, 0x42, 0x4d, 0x4e, 0x4f, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x5b, 0x67] {
             assert_ne!(
                 translate_internal_packet_id_for_version(
                     763,
