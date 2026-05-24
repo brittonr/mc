@@ -360,7 +360,8 @@ impl Config {
                 }
                 "--scenario" => {
                     let value = args.next().ok_or_else(|| {
-                        "--scenario requires smoke or flag-score-repeat".to_string()
+                        "--scenario requires smoke, flag-score-repeat, or multi-client-load-score"
+                            .to_string()
                     })?;
                     cfg.scenario = parse_scenario(&value)?;
                 }
@@ -747,7 +748,7 @@ Default server backend is Valence, using an editable local Valence checkout plus
 If the Stevenarella or Valence checkout is missing, clone/fetch it or pass --client-dir/CLIENT_DIR and --valence-repo/VALENCE_REPO to editable checkouts.\n\
 Client runs are forced through Xvfb/X11 with software GL and no inherited Wayland socket.\n\
 Paper fallback runs set EULA=TRUE based on recorded user acceptance.\n\n\
-Env: MC_COMPAT_ROOT={} MC_COMPAT_CONFIG={} CLIENT_DIR={} TARGET_DIR={} SMOKE_RECEIPT={} SMOKE_RECEIPT_DIR={} VALENCE_REPO={} VALENCE_REV={} VALENCE_WORKTREE={} VALENCE_TARGET_DIR={} CLIENT_TIMEOUT={}\n",
+Env: MC_COMPAT_ROOT={} MC_COMPAT_CONFIG={} MC_COMPAT_SCENARIO={} CLIENT_DIR={} TARGET_DIR={} SMOKE_RECEIPT={} SMOKE_RECEIPT_DIR={} VALENCE_REPO={} VALENCE_REV={} VALENCE_WORKTREE={} VALENCE_TARGET_DIR={} CLIENT_TIMEOUT={}\n",
         cfg.server_version,
         cfg.server_protocol,
         cfg.root.display(),
@@ -755,6 +756,7 @@ Env: MC_COMPAT_ROOT={} MC_COMPAT_CONFIG={} CLIENT_DIR={} TARGET_DIR={} SMOKE_REC
             .as_ref()
             .map(|path| path.display().to_string())
             .unwrap_or_else(|| "<unset>".to_string()),
+        scenario_name(cfg.scenario),
         cfg.client_dir.display(),
         cfg.target_dir.display(),
         cfg.receipt_path

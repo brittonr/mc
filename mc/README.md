@@ -36,7 +36,29 @@ SMOKE_RECEIPT=target/mc-compat-smoke.json CLIENT_TIMEOUT=8 nix run .#mc-compat-s
 nix run .#mc-compat-smoke -- --dry-run --server-backend paper --receipt target/mc-compat-smoke.json
 ```
 
-The receipt schema is `mc.compat.smoke.receipt.v1`. It records the server/client inputs, the headless-isolation contract (`wayland_socket_inherited=false`), the matched client success pattern when present, and explicit non-claims (`claims_correctness=false`, `claims_semantic_equivalence=false`) for downstream Cairn/Octet review. It is evidence that the bounded smoke ran under the selected inputs, not a proof of Minecraft correctness or semantic equivalence.
+The current receipt schema is `mc.compat.scenario.receipt.v2`; receipts also retain the legacy marker `mc.compat.smoke.receipt.v1` for older consumers. A receipt records server/client inputs, the headless-isolation contract (`wayland_socket_inherited=false`), typed scenario milestones, server-side correlation when available, and explicit non-claims (`claims_correctness=false`, `claims_semantic_equivalence=false`) for downstream Cairn/Octet review. It is evidence that the bounded scenario ran under the selected inputs, not a proof of Minecraft correctness or semantic equivalence.
+
+Choose a typed scenario with `--scenario` or `MC_COMPAT_SCENARIO`:
+
+```sh
+# Baseline login/status/render smoke.
+nix run .#mc-compat-smoke -- --dry-run --scenario smoke \
+  --receipt target/mc-compat-smoke.json
+
+# Single-client semantic repeat scoring: protocol/login/render/team/flag/two-score milestones.
+CLIENT_TIMEOUT=60 nix run .#mc-compat-smoke -- --run \
+  --server-backend valence \
+  --scenario flag-score-repeat \
+  --receipt target/mc-compat-flag-score-repeat.json
+
+# Two-client load-ish score scenario with server-side correlation.
+CLIENT_TIMEOUT=60 nix run .#mc-compat-smoke -- --run \
+  --server-backend valence \
+  --scenario multi-client-load-score \
+  --receipt target/mc-compat-multi-client-load-score.json
+```
+
+For `flag-score-repeat` and `multi-client-load-score`, Valence receipts include `server.required_milestones`, `server.observed_milestones`, `server.missing_milestones`, `server.forbidden_matches`, and `server.client_server_correlation`. Multi-client receipts also include `client.usernames` and `client.log_paths` for per-client inspection.
 
 ## Nickel-backed config
 
@@ -141,4 +163,4 @@ The packages are also available as `.#cairn`, `.#cargo-octet`, and `.#octet`.
 nix flake check
 ```
 
-The flake includes focused checks for the runner binary, Nickel config freshness/export consumption, dry-run receipt emission, Paper/Valence matrix dry-run receipts, Paper/Valence receipt comparison fixtures, missing-checkout diagnostics, help text, Cairn CLI availability, and Octet fingerprint smoke over the receipt producer surface (`mc-compat-receipt-contract`).
+The flake includes focused checks for the runner binary, Nickel config freshness/export consumption, baseline dry-run receipt emission, `multi-client-load-score` scenario dry-run receipt shape, Paper/Valence matrix dry-run receipts, Paper/Valence receipt comparison fixtures, missing-checkout diagnostics, help text, Cairn CLI availability, and Octet fingerprint smoke over the receipt producer surface (`mc-compat-receipt-contract`).
