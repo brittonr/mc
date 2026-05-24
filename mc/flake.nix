@@ -170,6 +170,37 @@
             mkdir -p "$out"
             cp multi-client-dry-run.log multi-client-receipt.json "$out/"
           '';
+        mc-compat-bot-probe-dry-run =
+          pkgs.runCommand "mc-compat-bot-probe-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
+            mkdir -p fake-stevenarella fake-valence
+            printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+            git -C fake-valence init
+            git -C fake-valence config user.email mc-compat@example.invalid
+            git -C fake-valence config user.name mc-compat
+            printf '%s\n' fake > fake-valence/README.md
+            git -C fake-valence add README.md
+            git -C fake-valence commit -m init
+            ${
+              self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
+            }/bin/mc-compat-runner --dry-run --server-backend valence --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD --scenario valence-compat-bot-probe --receipt compat-bot-receipt.json > compat-bot-dry-run.log
+            grep -Fq "scenario 'valence-compat-bot-probe'" compat-bot-dry-run.log
+            grep -Fq '"schema": "mc.compat.scenario.receipt.v2"' compat-bot-receipt.json
+            grep -Fq '"name": "valence-compat-bot-probe"' compat-bot-receipt.json
+            grep -Fq '"compat_bot_probe"' compat-bot-receipt.json
+            grep -Fq '"selected": true' compat-bot-receipt.json
+            grep -Fq '"safe_bounded_probe": true' compat-bot-receipt.json
+            grep -Fq '"target_address": "127.0.0.1:25565"' compat-bot-receipt.json
+            grep -Fq '"owned_local_target_required": true' compat-bot-receipt.json
+            grep -Fq '"external_server_load_authorized": false' compat-bot-receipt.json
+            grep -Fq '"public_stress_tool": false' compat-bot-receipt.json
+            grep -Fq '"planned_clients": 1' compat-bot-receipt.json
+            grep -Fq '"max_clients": 1' compat-bot-receipt.json
+            grep -Fq '"required_milestones": ["protocol_detected", "join_game", "render_tick"]' compat-bot-receipt.json
+            grep -Fq '"claims_correctness": false' compat-bot-receipt.json
+            grep -Fq '"claims_semantic_equivalence": false' compat-bot-receipt.json
+            mkdir -p "$out"
+            cp compat-bot-dry-run.log compat-bot-receipt.json "$out/"
+          '';
         mc-compat-compare-receipts = pkgs.runCommand "mc-compat-compare-receipts" { } ''
                     write_receipt() {
                       backend="$1"
@@ -293,7 +324,7 @@
           grep -Fq -- "--apply" help.log
           grep -Fq -- "--stop" help.log
           grep -Fq -- "--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT" help.log
-          grep -Fq -- "--scenario smoke|flag-score-repeat|multi-client-load-score" help.log
+          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|multi-client-load-score" help.log
           grep -Fq "MC_COMPAT_SCENARIO" help.log
           grep -Fq "SMOKE_RECEIPT" help.log
           grep -Fq "SMOKE_RECEIPT_DIR" help.log

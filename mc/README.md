@@ -45,6 +45,12 @@ Choose a typed scenario with `--scenario` or `MC_COMPAT_SCENARIO`:
 nix run .#mc-compat-smoke -- --dry-run --scenario smoke \
   --receipt target/mc-compat-smoke.json
 
+# Bounded one-client Valence compat-bot probe: protocol/login/render milestones only.
+CLIENT_TIMEOUT=30 nix run .#mc-compat-smoke -- --run \
+  --server-backend valence \
+  --scenario valence-compat-bot-probe \
+  --receipt target/mc-compat-bot-probe.json
+
 # Single-client semantic repeat scoring: protocol/login/render/team/flag/two-score milestones.
 CLIENT_TIMEOUT=60 nix run .#mc-compat-smoke -- --run \
   --server-backend valence \
@@ -58,7 +64,7 @@ CLIENT_TIMEOUT=60 nix run .#mc-compat-smoke -- --run \
   --receipt target/mc-compat-multi-client-load-score.json
 ```
 
-For `flag-score-repeat` and `multi-client-load-score`, Valence receipts include `server.required_milestones`, `server.observed_milestones`, `server.missing_milestones`, `server.forbidden_matches`, and `server.client_server_correlation`. Multi-client receipts also include `client.usernames` and `client.log_paths` for per-client inspection. All scenario receipts include a `triage` block with first missing client/server milestones, first forbidden pattern/source, relevant client/server log paths, and a `suggested_boundary` such as `client-probe`, `server-correlation`, `protocol-runtime`, or `preflight-or-server-startup`.
+`valence-compat-bot-probe` receipts add a `compat_bot_probe` block that records the owned local target, bounded one-client limit, non-public-stress-tool guard, and explicit `external_server_load_authorized=false` non-claim. For `flag-score-repeat` and `multi-client-load-score`, Valence receipts include `server.required_milestones`, `server.observed_milestones`, `server.missing_milestones`, `server.forbidden_matches`, and `server.client_server_correlation`. Multi-client receipts also include `client.usernames` and `client.log_paths` for per-client inspection. All scenario receipts include a `triage` block with first missing client/server milestones, first forbidden pattern/source, relevant client/server log paths, and a `suggested_boundary` such as `client-probe`, `server-correlation`, `protocol-runtime`, or `preflight-or-server-startup`.
 
 ## Nickel-backed config
 
@@ -163,4 +169,4 @@ The packages are also available as `.#cairn`, `.#cargo-octet`, and `.#octet`.
 nix flake check
 ```
 
-The flake includes focused checks for the runner binary, Nickel config freshness/export consumption, baseline dry-run receipt emission, `multi-client-load-score` scenario dry-run receipt shape, Paper/Valence matrix dry-run receipts, Paper/Valence receipt comparison fixtures, missing-checkout diagnostics, help text, Cairn CLI availability, and Octet fingerprint smoke over the receipt producer surface (`mc-compat-receipt-contract`).
+The flake includes focused checks for the runner binary, Nickel config freshness/export consumption, baseline dry-run receipt emission, `valence-compat-bot-probe` bounded probe receipt shape, `multi-client-load-score` scenario dry-run receipt shape, Paper/Valence matrix dry-run receipts, Paper/Valence receipt comparison fixtures, missing-checkout diagnostics, help text, Cairn CLI availability, and Octet fingerprint smoke over the receipt producer surface (`mc-compat-receipt-contract`).

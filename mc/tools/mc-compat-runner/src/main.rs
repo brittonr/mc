@@ -41,6 +41,7 @@ enum ServerBackend {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Scenario {
     Smoke,
+    CompatBotProbe,
     FlagScoreRepeat,
     MultiClientLoadScore,
 }
@@ -360,7 +361,7 @@ impl Config {
                 }
                 "--scenario" => {
                     let value = args.next().ok_or_else(|| {
-                        "--scenario requires smoke, flag-score-repeat, or multi-client-load-score"
+                        "--scenario requires smoke, valence-compat-bot-probe, flag-score-repeat, or multi-client-load-score"
                             .to_string()
                     })?;
                     cfg.scenario = parse_scenario(&value)?;
@@ -599,6 +600,7 @@ fn apply_config_json(cfg: &mut Config, text: &str) -> Result<bool, String> {
 fn parse_scenario(value: &str) -> Result<Scenario, String> {
     match value {
         "smoke" => Ok(Scenario::Smoke),
+        "valence-compat-bot-probe" | "compat-bot-probe" => Ok(Scenario::CompatBotProbe),
         "flag-score-repeat" => Ok(Scenario::FlagScoreRepeat),
         "multi-client-load-score" => Ok(Scenario::MultiClientLoadScore),
         other => Err(format!("unknown scenario: {other}")),
@@ -608,6 +610,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
 fn scenario_name(scenario: Scenario) -> &'static str {
     match scenario {
         Scenario::Smoke => "smoke",
+        Scenario::CompatBotProbe => "valence-compat-bot-probe",
         Scenario::FlagScoreRepeat => "flag-score-repeat",
         Scenario::MultiClientLoadScore => "multi-client-load-score",
     }
@@ -616,6 +619,11 @@ fn scenario_name(scenario: Scenario) -> &'static str {
 fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'static str)] {
     match scenario {
         Scenario::Smoke => &[("protocol_detected", "Detected server protocol version")],
+        Scenario::CompatBotProbe => &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+        ],
         Scenario::FlagScoreRepeat => &[
             ("protocol_detected", "Detected server protocol version"),
             ("join_game", "join_game"),
@@ -650,7 +658,7 @@ fn scenario_forbidden_patterns(_scenario: Scenario) -> &'static [(&'static str, 
 
 fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'static str)] {
     match scenario {
-        Scenario::Smoke => &[],
+        Scenario::Smoke | Scenario::CompatBotProbe => &[],
         Scenario::FlagScoreRepeat => &[
             ("server_username_seen", "compatbot"),
             ("server_flag_or_score", "flag"),
@@ -735,12 +743,12 @@ fn default_port(backend: ServerBackend) -> u16 {
 
 fn print_usage(cfg: &Config) {
     println!(
-        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario smoke|flag-score-repeat|multi-client-load-score] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
+        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario smoke|valence-compat-bot-probe|flag-score-repeat|multi-client-load-score] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
 Automates a local Stevenarella compatibility smoke against a Minecraft {} / protocol {} server.\n\
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from Nickel config; env vars and later CLI flags override it.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.scenario.receipt.v2 JSON receipt for Cairn/Octet evidence flows.
-Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
+Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
 Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
 Use --run-matrix --receipt-dir DIR to run Paper and Valence receipts then compare them; add --dry-run after --run-matrix for a non-side-effecting matrix fixture.\n\
 Use --status to inspect harness-owned Paper/Valence/tmp state; use --cleanup --dry-run to preview cleanup and --cleanup --apply to remove it.\n\
@@ -1506,6 +1514,9 @@ fn spawn_client_process(
 fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index: usize) {
     match scenario {
         Scenario::Smoke => {}
+        Scenario::CompatBotProbe => {
+            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1");
+        }
         Scenario::FlagScoreRepeat => {
             cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
                 .env("MC_COMPAT_TEAM_PROBE", "1")
@@ -1631,6 +1642,9 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         .iter()
         .map(|(name, _)| *name)
         .collect();
+    let compat_bot_probe_selected = cfg.scenario == Scenario::CompatBotProbe;
+    let compat_bot_target_address = format!("127.0.0.1:{}", cfg.server_port);
+    let compat_bot_planned_clients = planned_client_usernames(cfg).len();
     let first_missing_client = scenario.missing_milestones.first().copied();
     let first_missing_server = server_scenario.missing_milestones.first().copied();
     let (first_forbidden_source, first_forbidden_pattern) =
@@ -1678,6 +1692,18 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
     "forbidden_patterns": {scenario_forbidden_json},
     "forbidden_matches": {scenario_forbidden_matches_json},
     "passed": {scenario_passed}
+  }},
+  "compat_bot_probe": {{
+    "selected": {compat_bot_probe_selected},
+    "safe_bounded_probe": true,
+    "target_address": {compat_bot_target_address_json},
+    "owned_local_target_required": true,
+    "external_server_load_authorized": false,
+    "public_stress_tool": false,
+    "planned_clients": {compat_bot_planned_clients},
+    "max_clients": 1,
+    "duration_secs": {timeout_secs},
+    "derived_from": "hyperion/tools/rust-mc-bot pattern"
   }},
   "server": {{
     "backend": {backend_json},
@@ -1743,6 +1769,9 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         scenario_forbidden_json = json_string_array(&scenario_forbidden),
         scenario_forbidden_matches_json = json_string_array(&scenario.forbidden_matches),
         scenario_passed = scenario.passed,
+        compat_bot_probe_selected = compat_bot_probe_selected,
+        compat_bot_target_address_json = json_string(&compat_bot_target_address),
+        compat_bot_planned_clients = compat_bot_planned_clients,
         server_required_json = json_string_array(&server_required),
         server_observed_json = json_string_array(&server_scenario.observed_milestones),
         server_missing_json = json_string_array(&server_scenario.missing_milestones),
@@ -2664,9 +2693,82 @@ mod tests {
             .expect("scenario env parses");
         assert_eq!(env.scenario, Scenario::FlagScoreRepeat);
 
+        let compat = test_config(&["--scenario", "valence-compat-bot-probe"], &[])
+            .expect("compat-bot scenario parses");
+        assert_eq!(compat.scenario, Scenario::CompatBotProbe);
+
+        let compat_alias =
+            test_config(&["--scenario", "compat-bot-probe"], &[]).expect("compat-bot alias parses");
+        assert_eq!(compat_alias.scenario, Scenario::CompatBotProbe);
+
         let multi = test_config(&["--scenario", "multi-client-load-score"], &[])
             .expect("multi-client scenario parses");
         assert_eq!(multi.scenario, Scenario::MultiClientLoadScore);
+    }
+
+    #[test]
+    fn compat_bot_probe_scenario_is_bounded_and_receipted() {
+        let pass = evaluate_scenario(
+            Scenario::CompatBotProbe,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\n",
+        );
+        assert!(pass.passed, "{pass:?}");
+        assert_eq!(pass.missing_milestones, Vec::<&str>::new());
+
+        let fail = evaluate_scenario(
+            Scenario::CompatBotProbe,
+            "Detected server protocol version 763\n",
+        );
+        assert!(!fail.passed, "{fail:?}");
+        assert!(fail.missing_milestones.contains(&"join_game"));
+        assert!(fail.missing_milestones.contains(&"render_tick"));
+
+        let mut cfg = test_config(
+            &[
+                "--server-backend=valence",
+                "--scenario=valence-compat-bot-probe",
+                "--receipt=/tmp/receipt.json",
+                "--client-dir=/tmp/stevenarella",
+            ],
+            &[],
+        )
+        .expect("receipt config parses");
+        cfg.server_port = 25565;
+        let client = Some(ClientRunEvidence {
+            log_path: Some(PathBuf::from("/tmp/client.log")),
+            log_paths: vec![PathBuf::from("/tmp/client.log")],
+            usernames: vec!["compatbot".to_string()],
+            exit_code: Some(124),
+            classification: "timeout-success-evidence",
+            matched_success_pattern: Some("Detected server protocol version".to_string()),
+            scenario: Some(pass),
+            server_scenario: Some(evaluate_server_scenario(
+                Scenario::CompatBotProbe,
+                "compatbot joined\n",
+                "compatbot",
+            )),
+        });
+
+        let json = smoke_receipt_json(&cfg, Ok(&client));
+
+        assert!(
+            json.contains("\"name\": \"valence-compat-bot-probe\""),
+            "{json}"
+        );
+        assert!(json.contains("\"compat_bot_probe\""), "{json}");
+        assert!(json.contains("\"selected\": true"), "{json}");
+        assert!(json.contains("\"safe_bounded_probe\": true"), "{json}");
+        assert!(
+            json.contains("\"external_server_load_authorized\": false"),
+            "{json}"
+        );
+        assert!(json.contains("\"public_stress_tool\": false"), "{json}");
+        assert!(json.contains("\"planned_clients\": 1"), "{json}");
+        assert!(json.contains("\"max_clients\": 1"), "{json}");
+        assert!(
+            json.contains("\"target_address\": \"127.0.0.1:25565\""),
+            "{json}"
+        );
     }
 
     #[test]
