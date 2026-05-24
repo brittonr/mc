@@ -571,6 +571,70 @@ pub enum ConnectionMode {
     },
 }
 
+/// Stable, resource-owned data for server-list status responses.
+///
+/// This is a small compatibility-test seam: applications can install this as a
+/// [`NetworkCallbacks`] implementation or use [`Self::to_server_list_ping`] from
+/// their own callback to keep MOTD/version/player-sample responses deterministic.
+#[derive(Clone, Debug)]
+pub struct StatusResponseResource {
+    /// Displayed online player count.
+    pub online_players: i32,
+    /// Displayed maximum player count.
+    pub max_players: i32,
+    /// Hover sample entries.
+    pub player_sample: Vec<PlayerSampleEntry>,
+    /// Server description/MOTD.
+    pub description: Text,
+    /// Server version name.
+    pub version_name: String,
+    /// Server protocol.
+    pub protocol: i32,
+    /// Optional static favicon PNG bytes. Empty means no icon.
+    pub favicon_png: &'static [u8],
+}
+
+impl Default for StatusResponseResource {
+    fn default() -> Self {
+        Self {
+            online_players: 0,
+            max_players: 20,
+            player_sample: Vec::new(),
+            description: "A Valence Server".into_text(),
+            version_name: MINECRAFT_VERSION.to_owned(),
+            protocol: PROTOCOL_VERSION,
+            favicon_png: &[],
+        }
+    }
+}
+
+impl StatusResponseResource {
+    /// Convert the resource into the existing status-ping callback response.
+    pub fn to_server_list_ping(&self) -> ServerListPing<'static> {
+        ServerListPing::Respond {
+            online_players: self.online_players,
+            max_players: self.max_players,
+            player_sample: self.player_sample.clone(),
+            description: self.description.clone(),
+            favicon_png: self.favicon_png,
+            version_name: self.version_name.clone(),
+            protocol: self.protocol,
+        }
+    }
+}
+
+#[async_trait]
+impl NetworkCallbacks for StatusResponseResource {
+    async fn server_list_ping(
+        &self,
+        _shared: &SharedNetworkState,
+        _remote_addr: SocketAddr,
+        _handshake_data: &HandshakeData,
+    ) -> ServerListPing {
+        self.to_server_list_ping()
+    }
+}
+
 /// The result of the Server List Ping [callback].
 ///
 /// [callback]: NetworkCallbacks::server_list_ping
@@ -670,5 +734,72 @@ async fn do_broadcast_to_lan_loop(shared: SharedNetworkState) {
 
         // wait 1.5 seconds
         tokio::time::sleep(std::time::Duration::from_millis(1500)).await;
+    }
+}
+
+#[cfg(test)]
+mod status_response_resource_tests {
+    use super::*;
+
+    #[test]
+    fn default_status_response_resource_matches_existing_defaults() {
+        let resource = StatusResponseResource::default();
+        match resource.to_server_list_ping() {
+            ServerListPing::Respond {
+                online_players,
+                max_players,
+                player_sample,
+                description,
+                favicon_png,
+                version_name,
+                protocol,
+            } => {
+                assert_eq!(online_players, 0);
+                assert_eq!(max_players, 20);
+                assert!(player_sample.is_empty());
+                assert_eq!(description.to_legacy_lossy(), "A Valence Server");
+                assert!(favicon_png.is_empty());
+                assert_eq!(version_name, MINECRAFT_VERSION);
+                assert_eq!(protocol, PROTOCOL_VERSION);
+            }
+            ServerListPing::Ignore => panic!("default resource must respond"),
+        }
+    }
+
+    #[test]
+    fn configured_status_response_resource_is_stable() {
+        let sample_id = Uuid::from_u128(0x1234567890abcdef1234567890abcdef);
+        let resource = StatusResponseResource {
+            online_players: 1,
+            max_players: 5,
+            player_sample: vec![PlayerSampleEntry {
+                name: "compatbot".to_string(),
+                id: sample_id,
+            }],
+            description: "compat fixture".into_text(),
+            version_name: "compat-version".to_string(),
+            protocol: 763,
+            favicon_png: &[],
+        };
+        match resource.to_server_list_ping() {
+            ServerListPing::Respond {
+                online_players,
+                max_players,
+                player_sample,
+                description,
+                version_name,
+                protocol,
+                ..
+            } => {
+                assert_eq!(online_players, 1);
+                assert_eq!(max_players, 5);
+                assert_eq!(player_sample[0].name, "compatbot");
+                assert_eq!(player_sample[0].id, sample_id);
+                assert_eq!(description.to_legacy_lossy(), "compat fixture");
+                assert_eq!(version_name, "compat-version");
+                assert_eq!(protocol, 763);
+            }
+            ServerListPing::Ignore => panic!("configured resource must respond"),
+        }
     }
 }
