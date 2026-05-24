@@ -38,6 +38,20 @@ enum ServerBackend {
     Paper,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum Scenario {
+    Smoke,
+    FlagScoreRepeat,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct ScenarioEvidence {
+    observed_milestones: Vec<&'static str>,
+    missing_milestones: Vec<&'static str>,
+    forbidden_matches: Vec<&'static str>,
+    passed: bool,
+}
+
 #[derive(Debug, Clone)]
 struct Config {
     root: PathBuf,
@@ -61,6 +75,7 @@ struct Config {
     keep_server: bool,
     client_timeout: Duration,
     client_success_needles: Vec<String>,
+    scenario: Scenario,
     receipt_path: Option<PathBuf>,
     receipt_dir: Option<PathBuf>,
     compare_receipts: Option<(PathBuf, PathBuf)>,
@@ -75,6 +90,7 @@ struct ClientRunEvidence {
     exit_code: Option<i32>,
     classification: &'static str,
     matched_success_pattern: Option<String>,
+    scenario: Option<ScenarioEvidence>,
 }
 
 struct ManagedServer {
@@ -224,6 +240,7 @@ impl Config {
                 .iter()
                 .map(|s| s.to_string())
                 .collect(),
+            scenario: Scenario::Smoke,
             receipt_path: None,
             receipt_dir: None,
             compare_receipts: None,
@@ -329,6 +346,12 @@ impl Config {
                             "--receipt-dir requires a path".to_string()
                         })?));
                 }
+                "--scenario" => {
+                    let value = args.next().ok_or_else(|| {
+                        "--scenario requires smoke or flag-score-repeat".to_string()
+                    })?;
+                    cfg.scenario = parse_scenario(&value)?;
+                }
                 "--valence-repo" => {
                     cfg.valence_repo = PathBuf::from(
                         args.next()
@@ -360,6 +383,9 @@ impl Config {
                 }
                 _ if arg.starts_with("--receipt-dir=") => {
                     cfg.receipt_dir = Some(PathBuf::from(&arg[14..]));
+                }
+                _ if arg.starts_with("--scenario=") => {
+                    cfg.scenario = parse_scenario(&arg[11..])?;
                 }
                 _ if arg.starts_with("--valence-repo=") => {
                     cfg.valence_repo = PathBuf::from(&arg[15..]);
@@ -468,6 +494,9 @@ where
     if let Some(value) = get_env("CLIENT_SUCCESS_PATTERN") {
         cfg.client_success_needles = value.split('|').map(str::to_string).collect();
     }
+    if let Some(value) = get_env("MC_COMPAT_SCENARIO") {
+        cfg.scenario = parse_scenario(&value)?;
+    }
     if let Some(value) = get_env("SMOKE_RECEIPT") {
         cfg.receipt_path = Some(PathBuf::from(value));
     }
@@ -542,6 +571,9 @@ fn apply_config_json(cfg: &mut Config, text: &str) -> Result<bool, String> {
     if let Some(value) = json_optional_string_array_field(text, "client_success_patterns")? {
         cfg.client_success_needles = value;
     }
+    if let Some(value) = json_optional_string_field(text, "scenario")? {
+        cfg.scenario = parse_scenario(&value)?;
+    }
     if let Some(value) = json_optional_string_field(text, "receipt_path")? {
         cfg.receipt_path = Some(PathBuf::from(value));
     }
@@ -549,6 +581,71 @@ fn apply_config_json(cfg: &mut Config, text: &str) -> Result<bool, String> {
         cfg.receipt_dir = Some(PathBuf::from(value));
     }
     Ok(server_port_was_set)
+}
+
+fn parse_scenario(value: &str) -> Result<Scenario, String> {
+    match value {
+        "smoke" => Ok(Scenario::Smoke),
+        "flag-score-repeat" => Ok(Scenario::FlagScoreRepeat),
+        other => Err(format!("unknown scenario: {other}")),
+    }
+}
+
+fn scenario_name(scenario: Scenario) -> &'static str {
+    match scenario {
+        Scenario::Smoke => "smoke",
+        Scenario::FlagScoreRepeat => "flag-score-repeat",
+    }
+}
+
+fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'static str)] {
+    match scenario {
+        Scenario::Smoke => &[("protocol_detected", "Detected server protocol version")],
+        Scenario::FlagScoreRepeat => &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("flag_pickup", "You have the flag!"),
+            ("flag_capture", "You captured the flag!"),
+            ("score_red_1", "RED: 1"),
+            ("score_red_2", "RED: 2"),
+        ],
+    }
+}
+
+fn scenario_forbidden_patterns(_scenario: Scenario) -> &'static [(&'static str, &'static str)] {
+    &[
+        ("panic", "panicked"),
+        ("unexpected_eof", "UnexpectedEof"),
+        ("protocol_mismatch", "protocol mismatch"),
+        ("decode_error", "decode error"),
+    ]
+}
+
+fn evaluate_scenario(scenario: Scenario, output: &str) -> ScenarioEvidence {
+    let mut observed_milestones = Vec::new();
+    let mut missing_milestones = Vec::new();
+    for (name, needle) in scenario_required_milestones(scenario) {
+        if output.contains(needle) {
+            observed_milestones.push(*name);
+        } else {
+            missing_milestones.push(*name);
+        }
+    }
+    let mut forbidden_matches = Vec::new();
+    for (name, needle) in scenario_forbidden_patterns(scenario) {
+        if output.contains(needle) {
+            forbidden_matches.push(*name);
+        }
+    }
+    let passed = missing_milestones.is_empty() && forbidden_matches.is_empty();
+    ScenarioEvidence {
+        observed_milestones,
+        missing_milestones,
+        forbidden_matches,
+        passed,
+    }
 }
 
 fn default_port(backend: ServerBackend) -> u16 {
@@ -560,11 +657,12 @@ fn default_port(backend: ServerBackend) -> u16 {
 
 fn print_usage(cfg: &Config) {
     println!(
-        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
+        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario smoke|flag-score-repeat] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
 Automates a local Stevenarella compatibility smoke against a Minecraft {} / protocol {} server.\n\
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from Nickel config; env vars and later CLI flags override it.\n\
-Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.smoke.receipt.v1 JSON receipt for Cairn/Octet evidence flows.\n\
+Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.scenario.receipt.v2 JSON receipt for Cairn/Octet evidence flows.
+Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks.\n\
 Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
 Use --run-matrix --receipt-dir DIR to run Paper and Valence receipts then compare them; add --dry-run after --run-matrix for a non-side-effecting matrix fixture.\n\
 Use --status to inspect harness-owned Paper/Valence/tmp state; use --cleanup --dry-run to preview cleanup and --cleanup --apply to remove it.\n\
@@ -1108,6 +1206,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
             exit_code: None,
             classification: "dry-run",
             matched_success_pattern: None,
+            scenario: Some(evaluate_scenario(cfg.scenario, "")),
         });
     }
     let client_log = env_path("CLIENT_LOG").unwrap_or_else(temp_client_log);
@@ -1143,6 +1242,16 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         .iter()
         .find(|needle| output.contains(needle.as_str()))
         .cloned();
+    let scenario = evaluate_scenario(cfg.scenario, &output);
+    if cfg.scenario != Scenario::Smoke && !scenario.passed {
+        return Err(format!(
+            "scenario {} failed: missing={:?} forbidden={:?}; log: {}",
+            scenario_name(cfg.scenario),
+            scenario.missing_milestones,
+            scenario.forbidden_matches,
+            client_log.display()
+        ));
+    }
     if status.success() {
         log(format_args!(
             "client exited successfully; log: {}",
@@ -1153,6 +1262,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
             exit_code: status.code(),
             classification: "client-exited-success",
             matched_success_pattern,
+            scenario: Some(scenario),
         })
     } else if status.code() == Some(124) && matched_success_pattern.is_some() {
         log(format_args!(
@@ -1164,6 +1274,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
             exit_code: status.code(),
             classification: "timeout-success-evidence",
             matched_success_pattern,
+            scenario: Some(scenario),
         })
     } else {
         Err(format!(
@@ -1208,6 +1319,17 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
     let matched_pattern = client.and_then(|evidence| evidence.matched_success_pattern.as_deref());
     let classification = client.map(|evidence| evidence.classification);
     let exit_code = client.and_then(|evidence| evidence.exit_code);
+    let scenario_evidence = client.and_then(|evidence| evidence.scenario.as_ref());
+    let fallback_scenario = evaluate_scenario(cfg.scenario, "");
+    let scenario = scenario_evidence.unwrap_or(&fallback_scenario);
+    let scenario_required: Vec<&str> = scenario_required_milestones(cfg.scenario)
+        .iter()
+        .map(|(name, _)| *name)
+        .collect();
+    let scenario_forbidden: Vec<&str> = scenario_forbidden_patterns(cfg.scenario)
+        .iter()
+        .map(|(name, _)| *name)
+        .collect();
     let error_json = error
         .map(|err| json_string(err))
         .unwrap_or_else(|| "null".to_string());
@@ -1220,10 +1342,17 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         .unwrap_or_else(|| "null".to_string());
 
     format!(
-        "{{\n  \"schema\": \"mc.compat.smoke.receipt.v1\",\n  \"status\": {status_json},\n  \"mode\": {mode_json},\n  \"dry_run\": {dry_run},\n  \"contract\": {{\n    \"cairn_contract\": \"mc.compat.smoke.receipt.v1\",\n    \"octet_producer_surface\": \"tools/mc-compat-runner/src/main.rs\",\n    \"claims_correctness\": false,\n    \"claims_semantic_equivalence\": false\n  }},\n  \"server\": {{\n    \"backend\": {backend_json},\n    \"version\": {version_json},\n    \"protocol\": {protocol},\n    \"port\": {port}\n  }},\n  \"client\": {{\n    \"dir\": {client_dir_json},\n    \"target_dir\": {target_dir_json},\n    \"username\": {username_json},\n    \"timeout_secs\": {timeout_secs},\n    \"headless_isolation\": {{\n      \"xvfb\": true,\n      \"x11_backend\": true,\n      \"software_gl\": true,\n      \"wayland_socket_inherited\": false\n    }},\n    \"log_path\": {client_log_json},\n    \"exit_code\": {exit_code_json},\n    \"classification\": {classification_json},\n    \"matched_success_pattern\": {matched_pattern_json}\n  }},\n  \"valence\": {{\n    \"repo\": {valence_repo_json},\n    \"rev\": {valence_rev_json},\n    \"worktree\": {valence_worktree_json},\n    \"example\": {valence_example_json},\n    \"log_path\": {valence_log_json}\n  }},\n  \"receipt_path\": {receipt_path_json},\n  \"error\": {error_json}\n}}\n",
+        "{{\n  \"schema\": \"mc.compat.scenario.receipt.v2\",\n  \"legacy_schema\": \"mc.compat.smoke.receipt.v1\",\n  \"status\": {status_json},\n  \"mode\": {mode_json},\n  \"dry_run\": {dry_run},\n  \"contract\": {{\n    \"cairn_contract\": \"mc.compat.scenario.receipt.v2\",\n    \"legacy_cairn_contract\": \"mc.compat.smoke.receipt.v1\",\n    \"octet_producer_surface\": \"tools/mc-compat-runner/src/main.rs\",\n    \"claims_correctness\": false,\n    \"claims_semantic_equivalence\": false\n  }},\n  \"scenario\": {{\n    \"name\": {scenario_name_json},\n    \"required_milestones\": {scenario_required_json},\n    \"observed_milestones\": {scenario_observed_json},\n    \"missing_milestones\": {scenario_missing_json},\n    \"forbidden_patterns\": {scenario_forbidden_json},\n    \"forbidden_matches\": {scenario_forbidden_matches_json},\n    \"passed\": {scenario_passed}\n  }},\n  \"server\": {{\n    \"backend\": {backend_json},\n    \"version\": {version_json},\n    \"protocol\": {protocol},\n    \"port\": {port}\n  }},\n  \"client\": {{\n    \"dir\": {client_dir_json},\n    \"target_dir\": {target_dir_json},\n    \"username\": {username_json},\n    \"timeout_secs\": {timeout_secs},\n    \"headless_isolation\": {{\n      \"xvfb\": true,\n      \"x11_backend\": true,\n      \"software_gl\": true,\n      \"wayland_socket_inherited\": false\n    }},\n    \"log_path\": {client_log_json},\n    \"exit_code\": {exit_code_json},\n    \"classification\": {classification_json},\n    \"matched_success_pattern\": {matched_pattern_json}\n  }},\n  \"valence\": {{\n    \"repo\": {valence_repo_json},\n    \"rev\": {valence_rev_json},\n    \"worktree\": {valence_worktree_json},\n    \"example\": {valence_example_json},\n    \"log_path\": {valence_log_json}\n  }},\n  \"receipt_path\": {receipt_path_json},\n  \"error\": {error_json}\n}}\n",
         status_json = json_string(status),
         mode_json = json_string(mode_name(cfg.mode)),
         dry_run = cfg.mode == Mode::DryRun,
+        scenario_name_json = json_string(scenario_name(cfg.scenario)),
+        scenario_required_json = json_string_array(&scenario_required),
+        scenario_observed_json = json_string_array(&scenario.observed_milestones),
+        scenario_missing_json = json_string_array(&scenario.missing_milestones),
+        scenario_forbidden_json = json_string_array(&scenario_forbidden),
+        scenario_forbidden_matches_json = json_string_array(&scenario.forbidden_matches),
+        scenario_passed = scenario.passed,
         backend_json = json_string(backend_name(cfg.server_backend)),
         version_json = json_string(&cfg.server_version),
         protocol = cfg.server_protocol,
@@ -1434,7 +1563,10 @@ fn validate_receipt_pair(left: &ReceiptSummary, right: &ReceiptSummary) -> Resul
 }
 
 fn validate_receipt_summary(receipt: &ReceiptSummary) -> Result<(), String> {
-    if receipt.schema != "mc.compat.smoke.receipt.v1" {
+    if !matches!(
+        receipt.schema.as_str(),
+        "mc.compat.smoke.receipt.v1" | "mc.compat.scenario.receipt.v2"
+    ) {
         return Err(format!(
             "{} has unexpected schema {}",
             receipt.path.display(),
@@ -1675,6 +1807,18 @@ fn backend_name(backend: ServerBackend) -> &'static str {
 
 fn json_optional_string(value: Option<&str>) -> String {
     value.map(json_string).unwrap_or_else(|| "null".to_string())
+}
+
+fn json_string_array(values: &[&str]) -> String {
+    let mut out = String::from("[");
+    for (idx, value) in values.iter().enumerate() {
+        if idx > 0 {
+            out.push_str(", ");
+        }
+        out.push_str(&json_string(value));
+    }
+    out.push(']');
+    out
 }
 
 fn json_string(value: &str) -> String {
@@ -2048,6 +2192,37 @@ mod tests {
     }
 
     #[test]
+    fn scenario_cli_and_env_parse() {
+        let cli =
+            test_config(&["--scenario", "flag-score-repeat"], &[]).expect("scenario CLI parses");
+        assert_eq!(cli.scenario, Scenario::FlagScoreRepeat);
+
+        let env = test_config(&[], &[("MC_COMPAT_SCENARIO", "flag-score-repeat")])
+            .expect("scenario env parses");
+        assert_eq!(env.scenario, Scenario::FlagScoreRepeat);
+    }
+
+    #[test]
+    fn flag_score_repeat_scenario_tracks_missing_and_forbidden_evidence() {
+        let pass = evaluate_scenario(
+            Scenario::FlagScoreRepeat,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\nYou have the flag!\nYou captured the flag!\nRED: 1\nRED: 2\n",
+        );
+        assert!(pass.passed, "{pass:?}");
+        assert_eq!(pass.missing_milestones, Vec::<&str>::new());
+        assert_eq!(pass.forbidden_matches, Vec::<&str>::new());
+
+        let fail = evaluate_scenario(
+            Scenario::FlagScoreRepeat,
+            "Detected server protocol version 763\njoin_game\nUnexpectedEof\n",
+        );
+        assert!(!fail.passed, "{fail:?}");
+        assert!(fail.missing_milestones.contains(&"render_tick"));
+        assert!(fail.missing_milestones.contains(&"score_red_2"));
+        assert_eq!(fail.forbidden_matches, vec!["unexpected_eof"]);
+    }
+
+    #[test]
     fn missing_valence_checkout_has_actionable_diagnostic() {
         let missing =
             std::env::temp_dir().join(format!("mc-compat-missing-valence-{}", std::process::id()));
@@ -2126,16 +2301,20 @@ mod tests {
             exit_code: Some(124),
             classification: "timeout-success-evidence",
             matched_success_pattern: Some("Detected server protocol version".to_string()),
+            scenario: Some(evaluate_scenario(
+                Scenario::Smoke,
+                "Detected server protocol version",
+            )),
         });
 
         let json = smoke_receipt_json(&cfg, Ok(&client));
 
         assert!(
-            json.contains("\"schema\": \"mc.compat.smoke.receipt.v1\""),
+            json.contains("\"schema\": \"mc.compat.scenario.receipt.v2\""),
             "{json}"
         );
         assert!(
-            json.contains("\"cairn_contract\": \"mc.compat.smoke.receipt.v1\""),
+            json.contains("\"cairn_contract\": \"mc.compat.scenario.receipt.v2\""),
             "{json}"
         );
         assert!(
@@ -2150,6 +2329,12 @@ mod tests {
             json.contains("\"matched_success_pattern\": \"Detected server protocol version\""),
             "{json}"
         );
+        assert!(json.contains("\"name\": \"smoke\""), "{json}");
+        assert!(
+            json.contains("\"observed_milestones\": [\"protocol_detected\"]"),
+            "{json}"
+        );
+        assert!(json.contains("\"passed\": true"), "{json}");
         assert!(
             json.contains("\"wayland_socket_inherited\": false"),
             "{json}"

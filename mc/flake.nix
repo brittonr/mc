@@ -121,8 +121,11 @@
           grep -Fq "start Paper server" dry-run.log
           grep -Fq "would run Rust protocol status probe" dry-run.log
           grep -Fq "would run Stevenarella under xvfb-run" dry-run.log
-          grep -Fq '"schema": "mc.compat.smoke.receipt.v1"' smoke-receipt.json
-          grep -Fq '"cairn_contract": "mc.compat.smoke.receipt.v1"' smoke-receipt.json
+          grep -Fq '"schema": "mc.compat.scenario.receipt.v2"' smoke-receipt.json
+          grep -Fq '"legacy_schema": "mc.compat.smoke.receipt.v1"' smoke-receipt.json
+          grep -Fq '"cairn_contract": "mc.compat.scenario.receipt.v2"' smoke-receipt.json
+          grep -Fq '"name": "smoke"' smoke-receipt.json
+          grep -Fq '"required_milestones": ["protocol_detected"]' smoke-receipt.json
           grep -Fq '"octet_producer_surface": "tools/mc-compat-runner/src/main.rs"' smoke-receipt.json
           grep -Fq '"claims_correctness": false' smoke-receipt.json
           grep -Fq '"claims_semantic_equivalence": false' smoke-receipt.json
