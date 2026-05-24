@@ -42,10 +42,19 @@ enum ServerBackend {
 enum Scenario {
     Smoke,
     FlagScoreRepeat,
+    MultiClientLoadScore,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct ScenarioEvidence {
+    observed_milestones: Vec<&'static str>,
+    missing_milestones: Vec<&'static str>,
+    forbidden_matches: Vec<&'static str>,
+    passed: bool,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct ServerScenarioEvidence {
     observed_milestones: Vec<&'static str>,
     missing_milestones: Vec<&'static str>,
     forbidden_matches: Vec<&'static str>,
@@ -87,10 +96,13 @@ struct Config {
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct ClientRunEvidence {
     log_path: Option<PathBuf>,
+    log_paths: Vec<PathBuf>,
+    usernames: Vec<String>,
     exit_code: Option<i32>,
     classification: &'static str,
     matched_success_pattern: Option<String>,
     scenario: Option<ScenarioEvidence>,
+    server_scenario: Option<ServerScenarioEvidence>,
 }
 
 struct ManagedServer {
@@ -587,6 +599,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
     match value {
         "smoke" => Ok(Scenario::Smoke),
         "flag-score-repeat" => Ok(Scenario::FlagScoreRepeat),
+        "multi-client-load-score" => Ok(Scenario::MultiClientLoadScore),
         other => Err(format!("unknown scenario: {other}")),
     }
 }
@@ -595,6 +608,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
     match scenario {
         Scenario::Smoke => "smoke",
         Scenario::FlagScoreRepeat => "flag-score-repeat",
+        Scenario::MultiClientLoadScore => "multi-client-load-score",
     }
 }
 
@@ -611,6 +625,16 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             ("score_red_1", "RED: 1"),
             ("score_red_2", "RED: 2"),
         ],
+        Scenario::MultiClientLoadScore => &[
+            ("multi_client_count", "mc_compat_multi_client_count=2"),
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("flag_pickup", "You have the flag!"),
+            ("flag_capture", "You captured the flag!"),
+            ("score_red_1", "RED: 1"),
+        ],
     }
 }
 
@@ -621,6 +645,21 @@ fn scenario_forbidden_patterns(_scenario: Scenario) -> &'static [(&'static str, 
         ("protocol_mismatch", "protocol mismatch"),
         ("decode_error", "decode error"),
     ]
+}
+
+fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'static str)] {
+    match scenario {
+        Scenario::Smoke => &[],
+        Scenario::FlagScoreRepeat => &[
+            ("server_username_seen", "compatbot"),
+            ("server_flag_or_score", "flag"),
+        ],
+        Scenario::MultiClientLoadScore => &[
+            ("server_client_a_seen", "compatbot-a"),
+            ("server_client_b_seen", "compatbot-b"),
+            ("server_flag_or_score", "flag"),
+        ],
+    }
 }
 
 fn evaluate_scenario(scenario: Scenario, output: &str) -> ScenarioEvidence {
@@ -648,6 +687,44 @@ fn evaluate_scenario(scenario: Scenario, output: &str) -> ScenarioEvidence {
     }
 }
 
+fn evaluate_server_scenario(
+    scenario: Scenario,
+    server_log: &str,
+    username: &str,
+) -> ServerScenarioEvidence {
+    let normalized = server_log.to_lowercase();
+    let dynamic_username = username.to_lowercase();
+    let mut observed_milestones = Vec::new();
+    let mut missing_milestones = Vec::new();
+    for (name, needle) in server_required_milestones(scenario) {
+        let found = match *name {
+            "server_username_seen" => normalized.contains(&dynamic_username),
+            "server_client_a_seen" => normalized.contains(&format!("{dynamic_username}-a")),
+            "server_client_b_seen" => normalized.contains(&format!("{dynamic_username}-b")),
+            "server_flag_or_score" => normalized.contains("flag") || normalized.contains("score"),
+            _ => normalized.contains(&needle.to_lowercase()),
+        };
+        if found {
+            observed_milestones.push(*name);
+        } else {
+            missing_milestones.push(*name);
+        }
+    }
+    let mut forbidden_matches = Vec::new();
+    for (name, needle) in scenario_forbidden_patterns(scenario) {
+        if normalized.contains(&needle.to_lowercase()) {
+            forbidden_matches.push(*name);
+        }
+    }
+    let passed = missing_milestones.is_empty() && forbidden_matches.is_empty();
+    ServerScenarioEvidence {
+        observed_milestones,
+        missing_milestones,
+        forbidden_matches,
+        passed,
+    }
+}
+
 fn default_port(backend: ServerBackend) -> u16 {
     match backend {
         ServerBackend::Valence => 25565,
@@ -657,12 +734,12 @@ fn default_port(backend: ServerBackend) -> u16 {
 
 fn print_usage(cfg: &Config) {
     println!(
-        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario smoke|flag-score-repeat] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
+        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario smoke|flag-score-repeat|multi-client-load-score] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
 Automates a local Stevenarella compatibility smoke against a Minecraft {} / protocol {} server.\n\
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from Nickel config; env vars and later CLI flags override it.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.scenario.receipt.v2 JSON receipt for Cairn/Octet evidence flows.
-Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks.\n\
+Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
 Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
 Use --run-matrix --receipt-dir DIR to run Paper and Valence receipts then compare them; add --dry-run after --run-matrix for a non-side-effecting matrix fixture.\n\
 Use --status to inspect harness-owned Paper/Valence/tmp state; use --cleanup --dry-run to preview cleanup and --cleanup --apply to remove it.\n\
@@ -1195,23 +1272,210 @@ fn read_status(port: u16, protocol: u32) -> Result<String, String> {
     String::from_utf8(buf).map_err(|e| e.to_string())
 }
 
+#[derive(Debug)]
+struct SingleClientRun {
+    username: String,
+    log_path: PathBuf,
+    exit_code: Option<i32>,
+    output: String,
+    matched_success_pattern: Option<String>,
+}
+
 fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
     log(format_args!(
-        "running Stevenarella headless smoke isolated from host Wayland compositor"
+        "running Stevenarella headless scenario '{}' isolated from host Wayland compositor",
+        scenario_name(cfg.scenario)
     ));
     if cfg.mode == Mode::DryRun {
         log(format_args!("would run Stevenarella under xvfb-run"));
+        let scenario = evaluate_scenario(cfg.scenario, "");
+        let server_scenario = Some(evaluate_server_scenario(
+            cfg.scenario,
+            "",
+            &cfg.client_username,
+        ));
         return Ok(ClientRunEvidence {
             log_path: None,
+            log_paths: Vec::new(),
+            usernames: planned_client_usernames(cfg),
             exit_code: None,
             classification: "dry-run",
             matched_success_pattern: None,
-            scenario: Some(evaluate_scenario(cfg.scenario, "")),
+            scenario: Some(scenario),
+            server_scenario,
         });
     }
-    let client_log = env_path("CLIENT_LOG").unwrap_or_else(temp_client_log);
+
+    let runs = if cfg.scenario == Scenario::MultiClientLoadScore {
+        run_multi_client_load_scenario(cfg)?
+    } else {
+        vec![run_single_client(cfg, &cfg.client_username, 0)?]
+    };
+
+    let mut combined_output = String::new();
+    if cfg.scenario == Scenario::MultiClientLoadScore && runs.len() >= 2 {
+        combined_output.push_str("mc_compat_multi_client_count=2\n");
+    }
+    for run in &runs {
+        combined_output.push_str(&run.output);
+        if !combined_output.ends_with('\n') {
+            combined_output.push('\n');
+        }
+    }
+    print!("{combined_output}");
+    io::stdout().flush().map_err(|e| e.to_string())?;
+
+    let matched_success_pattern = cfg
+        .client_success_needles
+        .iter()
+        .find(|needle| combined_output.contains(needle.as_str()))
+        .cloned();
+    let scenario = evaluate_scenario(cfg.scenario, &combined_output);
+    if cfg.scenario != Scenario::Smoke && !scenario.passed {
+        return Err(format!(
+            "scenario {} failed: missing={:?} forbidden={:?}; logs={}",
+            scenario_name(cfg.scenario),
+            scenario.missing_milestones,
+            scenario.forbidden_matches,
+            runs.iter()
+                .map(|run| run.log_path.display().to_string())
+                .collect::<Vec<_>>()
+                .join(",")
+        ));
+    }
+
+    let server_scenario = read_server_scenario_evidence(cfg, &runs)?;
+    if requires_server_correlation(cfg) {
+        if let Some(server) = &server_scenario {
+            if !server.passed {
+                return Err(format!(
+                    "server correlation for scenario {} failed: missing={:?} forbidden={:?}; log={}",
+                    scenario_name(cfg.scenario),
+                    server.missing_milestones,
+                    server.forbidden_matches,
+                    cfg.valence_log.display()
+                ));
+            }
+        }
+    }
+
+    let all_success = runs.iter().all(|run| run.exit_code == Some(0));
+    let timeout_success = runs
+        .iter()
+        .all(|run| run.exit_code == Some(124) && run.matched_success_pattern.is_some());
+    let mixed_success = runs.iter().all(|run| {
+        run.exit_code == Some(0)
+            || (run.exit_code == Some(124) && run.matched_success_pattern.is_some())
+    });
+    let classification = if cfg.scenario == Scenario::MultiClientLoadScore && mixed_success {
+        "multi-client-load-evidence"
+    } else if all_success {
+        "client-exited-success"
+    } else if timeout_success {
+        "timeout-success-evidence"
+    } else {
+        return Err(format!(
+            "client scenario failed; exits={:?}; logs={}",
+            runs.iter().map(|run| run.exit_code).collect::<Vec<_>>(),
+            runs.iter()
+                .map(|run| run.log_path.display().to_string())
+                .collect::<Vec<_>>()
+                .join(",")
+        ));
+    };
+
+    for run in &runs {
+        log(format_args!(
+            "client {} finished {:?}; log: {}",
+            run.username,
+            run.exit_code,
+            run.log_path.display()
+        ));
+    }
+    let log_paths = runs
+        .iter()
+        .map(|run| run.log_path.clone())
+        .collect::<Vec<_>>();
+    let usernames = runs
+        .iter()
+        .map(|run| run.username.clone())
+        .collect::<Vec<_>>();
+    Ok(ClientRunEvidence {
+        log_path: log_paths.first().cloned(),
+        log_paths,
+        usernames,
+        exit_code: runs.first().and_then(|run| run.exit_code),
+        classification,
+        matched_success_pattern,
+        scenario: Some(scenario),
+        server_scenario,
+    })
+}
+
+fn run_multi_client_load_scenario(cfg: &Config) -> Result<Vec<SingleClientRun>, String> {
+    let usernames = planned_client_usernames(cfg);
+    let mut children = Vec::new();
+    for (idx, username) in usernames.iter().enumerate() {
+        let log_path = temp_client_log_for(username);
+        let child = spawn_client_process(cfg, username, idx, &log_path)?;
+        children.push((username.clone(), log_path, child));
+        thread::sleep(Duration::from_secs(2));
+    }
+    let mut runs = Vec::new();
+    for (username, log_path, mut child) in children {
+        let status = child
+            .wait()
+            .map_err(|e| format!("wait client {username}: {e}"))?;
+        let output = fs::read_to_string(&log_path)
+            .map_err(|e| format!("read {}: {e}", log_path.display()))?;
+        let matched_success_pattern = cfg
+            .client_success_needles
+            .iter()
+            .find(|needle| output.contains(needle.as_str()))
+            .cloned();
+        runs.push(SingleClientRun {
+            username,
+            log_path,
+            exit_code: status.code(),
+            output,
+            matched_success_pattern,
+        });
+    }
+    Ok(runs)
+}
+
+fn run_single_client(
+    cfg: &Config,
+    username: &str,
+    client_index: usize,
+) -> Result<SingleClientRun, String> {
+    let log_path = env_path("CLIENT_LOG").unwrap_or_else(|| temp_client_log_for(username));
+    let mut child = spawn_client_process(cfg, username, client_index, &log_path)?;
+    let status = child.wait().map_err(|e| format!("wait client: {e}"))?;
+    let output =
+        fs::read_to_string(&log_path).map_err(|e| format!("read {}: {e}", log_path.display()))?;
+    let matched_success_pattern = cfg
+        .client_success_needles
+        .iter()
+        .find(|needle| output.contains(needle.as_str()))
+        .cloned();
+    Ok(SingleClientRun {
+        username: username.to_string(),
+        log_path,
+        exit_code: status.code(),
+        output,
+        matched_success_pattern,
+    })
+}
+
+fn spawn_client_process(
+    cfg: &Config,
+    username: &str,
+    client_index: usize,
+    log_path: &Path,
+) -> Result<Child, String> {
     let log_file =
-        File::create(&client_log).map_err(|e| format!("create {}: {e}", client_log.display()))?;
+        File::create(log_path).map_err(|e| format!("create {}: {e}", log_path.display()))?;
     let err_file = log_file
         .try_clone()
         .map_err(|e| format!("clone client log handle: {e}"))?;
@@ -1225,64 +1489,80 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         .arg("--server")
         .arg(format!("127.0.0.1:{}", cfg.server_port))
         .arg("--username")
-        .arg(&cfg.client_username)
+        .arg(username)
         .arg("--default-protocol-version")
         .arg(cfg.server_protocol.to_string())
         .stdout(Stdio::from(log_file))
         .stderr(Stdio::from(err_file));
     apply_build_env(&mut cmd, &cfg.target_dir);
     apply_headless_env(&mut cmd);
-    let status = cmd.status().map_err(|e| format!("run client: {e}"))?;
-    let output = fs::read_to_string(&client_log)
-        .map_err(|e| format!("read {}: {e}", client_log.display()))?;
-    print!("{output}");
-    io::stdout().flush().map_err(|e| e.to_string())?;
-    let matched_success_pattern = cfg
-        .client_success_needles
-        .iter()
-        .find(|needle| output.contains(needle.as_str()))
-        .cloned();
-    let scenario = evaluate_scenario(cfg.scenario, &output);
-    if cfg.scenario != Scenario::Smoke && !scenario.passed {
-        return Err(format!(
-            "scenario {} failed: missing={:?} forbidden={:?}; log: {}",
-            scenario_name(cfg.scenario),
-            scenario.missing_milestones,
-            scenario.forbidden_matches,
-            client_log.display()
-        ));
+    apply_scenario_probe_env(&mut cmd, cfg.scenario, client_index);
+    cmd.spawn()
+        .map_err(|e| format!("run client {username}: {e}"))
+}
+
+fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index: usize) {
+    match scenario {
+        Scenario::Smoke => {}
+        Scenario::FlagScoreRepeat => {
+            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
+                .env("MC_COMPAT_FLAG_PROBE", "1")
+                .env("MC_COMPAT_FLAG_PROBE_REPEAT", "2");
+        }
+        Scenario::MultiClientLoadScore => {
+            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE", "1")
+                .env(
+                    "MC_COMPAT_TEAM_PROBE_TEAM",
+                    if client_index == 0 { "red" } else { "blue" },
+                );
+            if client_index == 0 {
+                cmd.env("MC_COMPAT_FLAG_PROBE", "1")
+                    .env("MC_COMPAT_FLAG_PROBE_REPEAT", "1");
+            }
+        }
     }
-    if status.success() {
-        log(format_args!(
-            "client exited successfully; log: {}",
-            client_log.display()
-        ));
-        Ok(ClientRunEvidence {
-            log_path: Some(client_log),
-            exit_code: status.code(),
-            classification: "client-exited-success",
-            matched_success_pattern,
-            scenario: Some(scenario),
-        })
-    } else if status.code() == Some(124) && matched_success_pattern.is_some() {
-        log(format_args!(
-            "bounded client smoke passed before timeout; log: {}",
-            client_log.display()
-        ));
-        Ok(ClientRunEvidence {
-            log_path: Some(client_log),
-            exit_code: status.code(),
-            classification: "timeout-success-evidence",
-            matched_success_pattern,
-            scenario: Some(scenario),
-        })
+}
+
+fn planned_client_usernames(cfg: &Config) -> Vec<String> {
+    if cfg.scenario == Scenario::MultiClientLoadScore {
+        vec![
+            format!("{}-a", cfg.client_username),
+            format!("{}-b", cfg.client_username),
+        ]
     } else {
-        Err(format!(
-            "client smoke failed with exit {:?}; log: {}",
-            status.code(),
-            client_log.display()
-        ))
+        vec![cfg.client_username.clone()]
     }
+}
+
+fn read_server_scenario_evidence(
+    cfg: &Config,
+    _runs: &[SingleClientRun],
+) -> Result<Option<ServerScenarioEvidence>, String> {
+    if cfg.server_backend != ServerBackend::Valence {
+        return Ok(None);
+    }
+    let server_log = match fs::read_to_string(&cfg.valence_log) {
+        Ok(text) => text,
+        Err(err) if err.kind() == io::ErrorKind::NotFound => String::new(),
+        Err(err) => return Err(format!("read {}: {err}", cfg.valence_log.display())),
+    };
+    let username = &cfg.client_username;
+    Ok(Some(evaluate_server_scenario(
+        cfg.scenario,
+        &server_log,
+        username,
+    )))
+}
+
+fn requires_server_correlation(cfg: &Config) -> bool {
+    cfg.server_backend == ServerBackend::Valence
+        && matches!(
+            cfg.scenario,
+            Scenario::FlagScoreRepeat | Scenario::MultiClientLoadScore
+        )
 }
 
 fn write_smoke_receipt(
@@ -1316,12 +1596,27 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
     let client_log_path = client
         .and_then(|evidence| evidence.log_path.as_ref())
         .map(|path| path.display().to_string());
+    let client_log_paths = client
+        .map(|evidence| {
+            evidence
+                .log_paths
+                .iter()
+                .map(|path| path.display().to_string())
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+    let client_usernames = client
+        .map(|evidence| evidence.usernames.clone())
+        .unwrap_or_else(|| planned_client_usernames(cfg));
     let matched_pattern = client.and_then(|evidence| evidence.matched_success_pattern.as_deref());
     let classification = client.map(|evidence| evidence.classification);
     let exit_code = client.and_then(|evidence| evidence.exit_code);
     let scenario_evidence = client.and_then(|evidence| evidence.scenario.as_ref());
     let fallback_scenario = evaluate_scenario(cfg.scenario, "");
     let scenario = scenario_evidence.unwrap_or(&fallback_scenario);
+    let server_evidence = client.and_then(|evidence| evidence.server_scenario.as_ref());
+    let fallback_server = evaluate_server_scenario(cfg.scenario, "", &cfg.client_username);
+    let server_scenario = server_evidence.unwrap_or(&fallback_server);
     let scenario_required: Vec<&str> = scenario_required_milestones(cfg.scenario)
         .iter()
         .map(|(name, _)| *name)
@@ -1330,11 +1625,17 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         .iter()
         .map(|(name, _)| *name)
         .collect();
+    let server_required: Vec<&str> = server_required_milestones(cfg.scenario)
+        .iter()
+        .map(|(name, _)| *name)
+        .collect();
     let error_json = error
         .map(|err| json_string(err))
         .unwrap_or_else(|| "null".to_string());
     let receipt_path_json = json_optional_string(receipt_path.as_deref());
     let client_log_json = json_optional_string(client_log_path.as_deref());
+    let client_logs_json = json_string_vec(&client_log_paths);
+    let client_usernames_json = json_string_vec(&client_usernames);
     let matched_pattern_json = json_optional_string(matched_pattern);
     let classification_json = json_optional_string(classification);
     let exit_code_json = exit_code
@@ -1342,7 +1643,7 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         .unwrap_or_else(|| "null".to_string());
 
     format!(
-        "{{\n  \"schema\": \"mc.compat.scenario.receipt.v2\",\n  \"legacy_schema\": \"mc.compat.smoke.receipt.v1\",\n  \"status\": {status_json},\n  \"mode\": {mode_json},\n  \"dry_run\": {dry_run},\n  \"contract\": {{\n    \"cairn_contract\": \"mc.compat.scenario.receipt.v2\",\n    \"legacy_cairn_contract\": \"mc.compat.smoke.receipt.v1\",\n    \"octet_producer_surface\": \"tools/mc-compat-runner/src/main.rs\",\n    \"claims_correctness\": false,\n    \"claims_semantic_equivalence\": false\n  }},\n  \"scenario\": {{\n    \"name\": {scenario_name_json},\n    \"required_milestones\": {scenario_required_json},\n    \"observed_milestones\": {scenario_observed_json},\n    \"missing_milestones\": {scenario_missing_json},\n    \"forbidden_patterns\": {scenario_forbidden_json},\n    \"forbidden_matches\": {scenario_forbidden_matches_json},\n    \"passed\": {scenario_passed}\n  }},\n  \"server\": {{\n    \"backend\": {backend_json},\n    \"version\": {version_json},\n    \"protocol\": {protocol},\n    \"port\": {port}\n  }},\n  \"client\": {{\n    \"dir\": {client_dir_json},\n    \"target_dir\": {target_dir_json},\n    \"username\": {username_json},\n    \"timeout_secs\": {timeout_secs},\n    \"headless_isolation\": {{\n      \"xvfb\": true,\n      \"x11_backend\": true,\n      \"software_gl\": true,\n      \"wayland_socket_inherited\": false\n    }},\n    \"log_path\": {client_log_json},\n    \"exit_code\": {exit_code_json},\n    \"classification\": {classification_json},\n    \"matched_success_pattern\": {matched_pattern_json}\n  }},\n  \"valence\": {{\n    \"repo\": {valence_repo_json},\n    \"rev\": {valence_rev_json},\n    \"worktree\": {valence_worktree_json},\n    \"example\": {valence_example_json},\n    \"log_path\": {valence_log_json}\n  }},\n  \"receipt_path\": {receipt_path_json},\n  \"error\": {error_json}\n}}\n",
+        "{{\n  \"schema\": \"mc.compat.scenario.receipt.v2\",\n  \"legacy_schema\": \"mc.compat.smoke.receipt.v1\",\n  \"status\": {status_json},\n  \"mode\": {mode_json},\n  \"dry_run\": {dry_run},\n  \"contract\": {{\n    \"cairn_contract\": \"mc.compat.scenario.receipt.v2\",\n    \"legacy_cairn_contract\": \"mc.compat.smoke.receipt.v1\",\n    \"octet_producer_surface\": \"tools/mc-compat-runner/src/main.rs\",\n    \"claims_correctness\": false,\n    \"claims_semantic_equivalence\": false\n  }},\n  \"scenario\": {{\n    \"name\": {scenario_name_json},\n    \"required_milestones\": {scenario_required_json},\n    \"observed_milestones\": {scenario_observed_json},\n    \"missing_milestones\": {scenario_missing_json},\n    \"forbidden_patterns\": {scenario_forbidden_json},\n    \"forbidden_matches\": {scenario_forbidden_matches_json},\n    \"passed\": {scenario_passed}\n  }},\n  \"server\": {{\n    \"backend\": {backend_json},\n    \"version\": {version_json},\n    \"protocol\": {protocol},\n    \"port\": {port},\n    \"required_milestones\": {server_required_json},\n    \"observed_milestones\": {server_observed_json},\n    \"missing_milestones\": {server_missing_json},\n    \"forbidden_matches\": {server_forbidden_matches_json},\n    \"passed\": {server_passed},\n    \"client_server_correlation\": {{\n      \"scenario\": {scenario_name_json},\n      \"usernames\": {client_usernames_json},\n      \"passed\": {correlation_passed}\n    }}\n  }},\n  \"client\": {{\n    \"dir\": {client_dir_json},\n    \"target_dir\": {target_dir_json},\n    \"username\": {username_json},\n    \"usernames\": {client_usernames_json},\n    \"timeout_secs\": {timeout_secs},\n    \"headless_isolation\": {{\n      \"xvfb\": true,\n      \"x11_backend\": true,\n      \"software_gl\": true,\n      \"wayland_socket_inherited\": false\n    }},\n    \"log_path\": {client_log_json},\n    \"log_paths\": {client_logs_json},\n    \"exit_code\": {exit_code_json},\n    \"classification\": {classification_json},\n    \"matched_success_pattern\": {matched_pattern_json}\n  }},\n  \"valence\": {{\n    \"repo\": {valence_repo_json},\n    \"rev\": {valence_rev_json},\n    \"worktree\": {valence_worktree_json},\n    \"example\": {valence_example_json},\n    \"log_path\": {valence_log_json}\n  }},\n  \"receipt_path\": {receipt_path_json},\n  \"error\": {error_json}\n}}\n",
         status_json = json_string(status),
         mode_json = json_string(mode_name(cfg.mode)),
         dry_run = cfg.mode == Mode::DryRun,
@@ -1353,6 +1654,12 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         scenario_forbidden_json = json_string_array(&scenario_forbidden),
         scenario_forbidden_matches_json = json_string_array(&scenario.forbidden_matches),
         scenario_passed = scenario.passed,
+        server_required_json = json_string_array(&server_required),
+        server_observed_json = json_string_array(&server_scenario.observed_milestones),
+        server_missing_json = json_string_array(&server_scenario.missing_milestones),
+        server_forbidden_matches_json = json_string_array(&server_scenario.forbidden_matches),
+        server_passed = server_scenario.passed,
+        correlation_passed = scenario.passed && server_scenario.passed,
         backend_json = json_string(backend_name(cfg.server_backend)),
         version_json = json_string(&cfg.server_version),
         protocol = cfg.server_protocol,
@@ -1360,6 +1667,8 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         client_dir_json = json_string(&cfg.client_dir.display().to_string()),
         target_dir_json = json_string(&cfg.target_dir.display().to_string()),
         username_json = json_string(&cfg.client_username),
+        client_usernames_json = client_usernames_json,
+        client_logs_json = client_logs_json,
         timeout_secs = cfg.client_timeout.as_secs(),
         valence_repo_json = json_string(&cfg.valence_repo.display().to_string()),
         valence_rev_json = json_string(&cfg.valence_rev),
@@ -1810,8 +2119,16 @@ fn json_optional_string(value: Option<&str>) -> String {
 }
 
 fn json_string_array(values: &[&str]) -> String {
+    json_string_iter(values.iter().copied())
+}
+
+fn json_string_vec(values: &[String]) -> String {
+    json_string_iter(values.iter().map(String::as_str))
+}
+
+fn json_string_iter<'a>(values: impl IntoIterator<Item = &'a str>) -> String {
     let mut out = String::from("[");
-    for (idx, value) in values.iter().enumerate() {
+    for (idx, value) in values.into_iter().enumerate() {
         if idx > 0 {
             out.push_str(", ");
         }
@@ -1928,12 +2245,22 @@ fn env_path(name: &str) -> Option<PathBuf> {
     env_string(name).map(PathBuf::from)
 }
 
-fn temp_client_log() -> PathBuf {
+fn temp_client_log_for(label: &str) -> PathBuf {
     let millis = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .map(|d| d.as_millis())
         .unwrap_or(0);
-    PathBuf::from(format!("/tmp/mc-compat-client.{millis}.log"))
+    let safe_label: String = label
+        .chars()
+        .map(|ch| {
+            if ch.is_ascii_alphanumeric() || ch == '-' {
+                ch
+            } else {
+                '-'
+            }
+        })
+        .collect();
+    PathBuf::from(format!("/tmp/mc-compat-client.{safe_label}.{millis}.log"))
 }
 
 fn log(args: std::fmt::Arguments<'_>) {
@@ -2200,6 +2527,36 @@ mod tests {
         let env = test_config(&[], &[("MC_COMPAT_SCENARIO", "flag-score-repeat")])
             .expect("scenario env parses");
         assert_eq!(env.scenario, Scenario::FlagScoreRepeat);
+
+        let multi = test_config(&["--scenario", "multi-client-load-score"], &[])
+            .expect("multi-client scenario parses");
+        assert_eq!(multi.scenario, Scenario::MultiClientLoadScore);
+    }
+
+    #[test]
+    fn multi_client_scenario_tracks_client_and_server_evidence() {
+        let client = evaluate_scenario(
+            Scenario::MultiClientLoadScore,
+            "mc_compat_multi_client_count=2\nDetected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\nYou have the flag!\nYou captured the flag!\nRED: 1\n",
+        );
+        assert!(client.passed, "{client:?}");
+
+        let server = evaluate_server_scenario(
+            Scenario::MultiClientLoadScore,
+            "compatbot-a joined\ncompatbot-b joined\nred flag captured\n",
+            "compatbot",
+        );
+        assert!(server.passed, "{server:?}");
+
+        let missing_peer = evaluate_server_scenario(
+            Scenario::MultiClientLoadScore,
+            "compatbot-a joined\nred flag captured\n",
+            "compatbot",
+        );
+        assert!(!missing_peer.passed, "{missing_peer:?}");
+        assert!(missing_peer
+            .missing_milestones
+            .contains(&"server_client_b_seen"));
     }
 
     #[test]
@@ -2298,6 +2655,8 @@ mod tests {
         cfg.server_port = 25566;
         let client = Some(ClientRunEvidence {
             log_path: Some(PathBuf::from("/tmp/client.log")),
+            log_paths: vec![PathBuf::from("/tmp/client.log")],
+            usernames: vec!["compatbot".to_string()],
             exit_code: Some(124),
             classification: "timeout-success-evidence",
             matched_success_pattern: Some("Detected server protocol version".to_string()),
@@ -2305,6 +2664,7 @@ mod tests {
                 Scenario::Smoke,
                 "Detected server protocol version",
             )),
+            server_scenario: Some(evaluate_server_scenario(Scenario::Smoke, "", "compatbot")),
         });
 
         let json = smoke_receipt_json(&cfg, Ok(&client));
@@ -2335,6 +2695,12 @@ mod tests {
             "{json}"
         );
         assert!(json.contains("\"passed\": true"), "{json}");
+        assert!(json.contains("\"client_server_correlation\""), "{json}");
+        assert!(json.contains("\"usernames\": [\"compatbot\"]"), "{json}");
+        assert!(
+            json.contains("\"log_paths\": [\"/tmp/client.log\"]"),
+            "{json}"
+        );
         assert!(
             json.contains("\"wayland_socket_inherited\": false"),
             "{json}"
