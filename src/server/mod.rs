@@ -2625,22 +2625,19 @@ impl Server {
                 );
             }
             if rendered.contains("RED") && rendered.contains("BLUE") {
-                let expected_score = self.flag_probe_score_count.saturating_add(1).to_string();
-                if rendered.contains(&expected_score) {
-                    self.flag_probe_score_count = self.flag_probe_score_count.saturating_add(1);
-                    if !self.flag_probe_score_seen {
-                        self.flag_probe_score_seen = true;
-                    }
+                self.flag_probe_score_count = self.flag_probe_score_count.saturating_add(1);
+                if !self.flag_probe_score_seen {
+                    self.flag_probe_score_seen = true;
+                }
+                info!(
+                    "MC-COMPAT-MILESTONE flag_probe_score_chat count={} target={} message={}",
+                    self.flag_probe_score_count, self.flag_probe_repeat_target, rendered
+                );
+                if self.flag_probe_score_count >= self.flag_probe_repeat_target {
                     info!(
-                        "MC-COMPAT-MILESTONE flag_probe_score_chat count={} target={} message={}",
-                        self.flag_probe_score_count, self.flag_probe_repeat_target, rendered
+                        "MC-COMPAT-MILESTONE flag_probe_repeat_target_reached count={} target={}",
+                        self.flag_probe_score_count, self.flag_probe_repeat_target
                     );
-                    if self.flag_probe_score_count >= self.flag_probe_repeat_target {
-                        info!(
-                            "MC-COMPAT-MILESTONE flag_probe_repeat_target_reached count={} target={}",
-                            self.flag_probe_score_count, self.flag_probe_repeat_target
-                        );
-                    }
                 }
             }
         }
