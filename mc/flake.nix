@@ -163,8 +163,8 @@
             grep -Fq '"suggested_boundary"' multi-client-receipt.json
             grep -Fq '"client_log_paths"' multi-client-receipt.json
             grep -Fq '"server_log_path"' multi-client-receipt.json
-            grep -Fq '"compatbot-a"' multi-client-receipt.json
-            grep -Fq '"compatbot-b"' multi-client-receipt.json
+            grep -Fq '"compatbota"' multi-client-receipt.json
+            grep -Fq '"compatbotb"' multi-client-receipt.json
             grep -Fq '"claims_correctness": false' multi-client-receipt.json
             grep -Fq '"claims_semantic_equivalence": false' multi-client-receipt.json
             mkdir -p "$out"

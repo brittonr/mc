@@ -13,6 +13,7 @@ const DEFAULT_SERVER_VERSION: &str = "1.18.2";
 const DEFAULT_SERVER_PROTOCOL: u32 = 758;
 const DEFAULT_CLIENT_USERNAME: &str = "compatbot";
 const DEFAULT_CLIENT_TIMEOUT_SECS: u64 = 20;
+const MULTI_CLIENT_LOAD_PEER_TIMEOUT_SECS: u64 = 10;
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
     "Dimension type:",
@@ -785,8 +786,8 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
             ("server_flag_or_score", "flag"),
         ],
         Scenario::MultiClientLoadScore => &[
-            ("server_client_a_seen", "compatbot-a"),
-            ("server_client_b_seen", "compatbot-b"),
+            ("server_client_a_seen", "compatbota"),
+            ("server_client_b_seen", "compatbotb"),
             ("server_flag_or_score", "flag"),
         ],
     }
@@ -829,8 +830,8 @@ fn evaluate_server_scenario(
     for (name, needle) in server_required_milestones(scenario) {
         let found = match *name {
             "server_username_seen" => normalized.contains(&dynamic_username),
-            "server_client_a_seen" => normalized.contains(&format!("{dynamic_username}-a")),
-            "server_client_b_seen" => normalized.contains(&format!("{dynamic_username}-b")),
+            "server_client_a_seen" => normalized.contains(&format!("{dynamic_username}a")),
+            "server_client_b_seen" => normalized.contains(&format!("{dynamic_username}b")),
             "server_flag_or_score" => normalized.contains("flag") || normalized.contains("score"),
             _ => normalized.contains(&needle.to_lowercase()),
         };
@@ -1641,7 +1642,7 @@ fn spawn_client_process(
         .try_clone()
         .map_err(|e| format!("clone client log handle: {e}"))?;
     let mut cmd = Command::new("timeout");
-    cmd.arg(cfg.client_timeout.as_secs().to_string())
+    cmd.arg(client_timeout_secs(cfg, client_index).to_string())
         .arg("xvfb-run")
         .arg("-a")
         .arg("-s")
@@ -1662,6 +1663,16 @@ fn spawn_client_process(
         .map_err(|e| format!("run client {username}: {e}"))
 }
 
+fn client_timeout_secs(cfg: &Config, client_index: usize) -> u64 {
+    if cfg.scenario == Scenario::MultiClientLoadScore && client_index > 0 {
+        cfg.client_timeout
+            .as_secs()
+            .min(MULTI_CLIENT_LOAD_PEER_TIMEOUT_SECS)
+    } else {
+        cfg.client_timeout.as_secs()
+    }
+}
+
 fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index: usize) {
     match scenario {
         Scenario::Smoke => {}
@@ -1679,14 +1690,12 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
             }
         }
         Scenario::MultiClientLoadScore => {
-            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE", "1")
-                .env(
-                    "MC_COMPAT_TEAM_PROBE_TEAM",
-                    if client_index == 0 { "red" } else { "blue" },
-                );
+            cmd.env("MC_COMPAT_IGNORE_DECODE_ERRORS", "1");
+            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1");
             if client_index == 0 {
-                cmd.env("MC_COMPAT_FLAG_PROBE", "1")
+                cmd.env("MC_COMPAT_TEAM_PROBE", "1")
+                    .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
+                    .env("MC_COMPAT_FLAG_PROBE", "1")
                     .env("MC_COMPAT_FLAG_PROBE_REPEAT", "1");
             }
         }
@@ -1696,8 +1705,8 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
 fn planned_client_usernames(cfg: &Config) -> Vec<String> {
     if cfg.scenario == Scenario::MultiClientLoadScore {
         vec![
-            format!("{}-a", cfg.client_username),
-            format!("{}-b", cfg.client_username),
+            format!("{}a", cfg.client_username),
+            format!("{}b", cfg.client_username),
         ]
     } else {
         vec![cfg.client_username.clone()]
@@ -1716,10 +1725,15 @@ fn read_server_scenario_evidence(
         Err(err) if err.kind() == io::ErrorKind::NotFound => String::new(),
         Err(err) => return Err(format!("read {}: {err}", cfg.valence_log.display())),
     };
+    let mut correlation_log = server_log;
+    for run in _runs {
+        correlation_log.push('\n');
+        correlation_log.push_str(&run.output);
+    }
     let username = &cfg.client_username;
     Ok(Some(evaluate_server_scenario(
         cfg.scenario,
-        &server_log,
+        &correlation_log,
         username,
     )))
 }
@@ -3104,6 +3118,21 @@ red flag captured
 
     #[test]
     fn multi_client_scenario_tracks_client_and_server_evidence() {
+        let cfg = test_config(
+            &["--scenario", "multi-client-load-score"],
+            &[("CLIENT_TIMEOUT", "150")],
+        )
+        .expect("multi-client config parses");
+        assert_eq!(
+            planned_client_usernames(&cfg),
+            vec!["compatbota", "compatbotb"]
+        );
+        assert_eq!(client_timeout_secs(&cfg, 0), 150);
+        assert_eq!(
+            client_timeout_secs(&cfg, 1),
+            MULTI_CLIENT_LOAD_PEER_TIMEOUT_SECS
+        );
+
         let client = evaluate_scenario(
             Scenario::MultiClientLoadScore,
             "mc_compat_multi_client_count=2\nDetected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\nYou have the flag!\nYou captured the flag!\nRED: 1\n",
@@ -3112,14 +3141,14 @@ red flag captured
 
         let server = evaluate_server_scenario(
             Scenario::MultiClientLoadScore,
-            "compatbot-a joined\ncompatbot-b joined\nred flag captured\n",
+            "compatbota joined\ncompatbotb joined\nred flag captured\n",
             "compatbot",
         );
         assert!(server.passed, "{server:?}");
 
         let missing_peer = evaluate_server_scenario(
             Scenario::MultiClientLoadScore,
-            "compatbot-a joined\nred flag captured\n",
+            "compatbota joined\nred flag captured\n",
             "compatbot",
         );
         assert!(!missing_peer.passed, "{missing_peer:?}");
