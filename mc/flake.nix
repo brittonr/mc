@@ -209,6 +209,30 @@
             mkdir -p "$out"
             cp multi-client-dry-run.log multi-client-receipt.json "$out/"
           '';
+        mc-compat-blue-flag-score-dry-run =
+          pkgs.runCommand "mc-compat-blue-flag-score-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
+            mkdir -p fake-stevenarella fake-valence
+            printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+            git -C fake-valence init
+            git -C fake-valence config user.email mc-compat@example.invalid
+            git -C fake-valence config user.name mc-compat
+            printf '%s\n' fake > fake-valence/README.md
+            git -C fake-valence add README.md
+            git -C fake-valence commit -m init
+            ${
+              self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
+            }/bin/mc-compat-runner --dry-run --server-backend valence --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD --scenario blue-flag-score --receipt blue-flag-receipt.json > blue-flag-dry-run.log
+            grep -Fq "scenario 'blue-flag-score'" blue-flag-dry-run.log
+            grep -Fq '"schema": "mc.compat.scenario.receipt.v2"' blue-flag-receipt.json
+            grep -Fq '"name": "blue-flag-score"' blue-flag-receipt.json
+            grep -Fq '"team_blue"' blue-flag-receipt.json
+            grep -Fq '"score_blue_1"' blue-flag-receipt.json
+            grep -Fq '"server_flag_or_score"' blue-flag-receipt.json
+            grep -Fq '"expected_summary_packets": ["login_success", "play_join_game", "chat_scoreboard"]' blue-flag-receipt.json
+            grep -Fq '"claims_correctness": false' blue-flag-receipt.json
+            mkdir -p "$out"
+            cp blue-flag-dry-run.log blue-flag-receipt.json "$out/"
+          '';
         mc-compat-valence-ctf-600s-soak-dry-run =
           pkgs.runCommand "mc-compat-valence-ctf-600s-soak-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
             mkdir -p fake-stevenarella fake-valence receipts

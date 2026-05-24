@@ -44,6 +44,7 @@ enum Scenario {
     Smoke,
     CompatBotProbe,
     FlagScoreRepeat,
+    BlueFlagScore,
     ReconnectFlagScore,
     MultiClientLoadScore,
 }
@@ -375,7 +376,7 @@ impl Config {
                 }
                 "--scenario" => {
                     let value = args.next().ok_or_else(|| {
-                        "--scenario requires smoke, valence-compat-bot-probe, flag-score-repeat, reconnect-flag-score, or multi-client-load-score"
+                        "--scenario requires smoke, valence-compat-bot-probe, flag-score-repeat, blue-flag-score, reconnect-flag-score, or multi-client-load-score"
                             .to_string()
                     })?;
                     cfg.scenario = parse_scenario(&value)?;
@@ -712,6 +713,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
         "smoke" => Ok(Scenario::Smoke),
         "valence-compat-bot-probe" | "compat-bot-probe" => Ok(Scenario::CompatBotProbe),
         "flag-score-repeat" => Ok(Scenario::FlagScoreRepeat),
+        "blue-flag-score" => Ok(Scenario::BlueFlagScore),
         "reconnect-flag-score" => Ok(Scenario::ReconnectFlagScore),
         "multi-client-load-score" => Ok(Scenario::MultiClientLoadScore),
         other => Err(format!("unknown scenario: {other}")),
@@ -723,6 +725,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::Smoke => "smoke",
         Scenario::CompatBotProbe => "valence-compat-bot-probe",
         Scenario::FlagScoreRepeat => "flag-score-repeat",
+        Scenario::BlueFlagScore => "blue-flag-score",
         Scenario::ReconnectFlagScore => "reconnect-flag-score",
         Scenario::MultiClientLoadScore => "multi-client-load-score",
     }
@@ -745,6 +748,15 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             ("flag_capture", "You captured the flag!"),
             ("score_red_1", "RED: 1"),
             ("score_red_2", "RED: 2"),
+        ],
+        Scenario::BlueFlagScore => &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_blue", "You are on team BLUE!"),
+            ("flag_pickup", "You have the flag!"),
+            ("flag_capture", "You captured the flag!"),
+            ("score_blue_1", "BLUE: 1"),
         ],
         Scenario::ReconnectFlagScore => &[
             ("protocol_detected", "Detected server protocol version"),
@@ -781,7 +793,7 @@ fn scenario_forbidden_patterns(_scenario: Scenario) -> &'static [(&'static str, 
 fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'static str)] {
     match scenario {
         Scenario::Smoke | Scenario::CompatBotProbe => &[],
-        Scenario::FlagScoreRepeat | Scenario::ReconnectFlagScore => &[
+        Scenario::FlagScoreRepeat | Scenario::BlueFlagScore | Scenario::ReconnectFlagScore => &[
             ("server_username_seen", "compatbot"),
             ("server_flag_or_score", "flag"),
         ],
@@ -865,12 +877,12 @@ fn default_port(backend: ServerBackend) -> u16 {
 
 fn print_usage(cfg: &Config) {
     println!(
-        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario smoke|valence-compat-bot-probe|flag-score-repeat|reconnect-flag-score|multi-client-load-score] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
+        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|reconnect-flag-score|multi-client-load-score] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
 Automates a local Stevenarella compatibility smoke against a Minecraft {} / protocol {} server.\n\
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from Nickel config; env vars and later CLI flags override it.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.scenario.receipt.v2 JSON receipt for Cairn/Octet evidence flows.
-Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
+Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
 Use --expect-status-description/--expect-status-version/--expect-status-sample to assert status response fixture data, --packet-capture-summary for redacted capture summary metadata, and --proxy-route/--proxy-forwarding-mode for proxied-route receipt fields.\n\
 Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
 Use --run-matrix --receipt-dir DIR to run Paper and Valence receipts then compare them; add --dry-run after --run-matrix for a non-side-effecting matrix fixture.\n\
@@ -1679,11 +1691,17 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
         Scenario::CompatBotProbe => {
             cmd.env("MC_COMPAT_ACTIVE_PROBE", "1");
         }
-        Scenario::FlagScoreRepeat | Scenario::ReconnectFlagScore => {
+        Scenario::FlagScoreRepeat | Scenario::BlueFlagScore | Scenario::ReconnectFlagScore => {
+            let team = if scenario == Scenario::BlueFlagScore {
+                "blue"
+            } else {
+                "red"
+            };
             cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
                 .env("MC_COMPAT_TEAM_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
+                .env("MC_COMPAT_TEAM_PROBE_TEAM", team)
                 .env("MC_COMPAT_FLAG_PROBE", "1")
+                .env("MC_COMPAT_FLAG_PROBE_TEAM", team)
                 .env("MC_COMPAT_FLAG_PROBE_REPEAT", "2");
             if scenario == Scenario::ReconnectFlagScore {
                 cmd.env("MC_COMPAT_RECONNECT_PROBE", "1");
@@ -1834,7 +1852,9 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
     let packet_capture_expected_packets: Vec<&str> = match cfg.scenario {
         Scenario::Smoke => vec!["status_response", "login_or_timeout"],
         Scenario::CompatBotProbe => vec!["status_response", "login_success", "play_join_game"],
-        Scenario::FlagScoreRepeat => vec!["login_success", "play_join_game", "chat_scoreboard"],
+        Scenario::FlagScoreRepeat | Scenario::BlueFlagScore => {
+            vec!["login_success", "play_join_game", "chat_scoreboard"]
+        }
         Scenario::ReconnectFlagScore => vec![
             "login_success",
             "play_join_game",
@@ -1853,10 +1873,12 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         "join_game",
         "render_tick",
         "team_red",
+        "team_blue",
         "flag_pickup",
         "flag_capture",
         "score_red_1",
         "score_red_2",
+        "score_blue_1",
         "reconnect_session",
         "multi_client_count",
     ];
@@ -2974,6 +2996,10 @@ mod tests {
             .expect("reconnect scenario parses");
         assert_eq!(reconnect.scenario, Scenario::ReconnectFlagScore);
 
+        let blue =
+            test_config(&["--scenario", "blue-flag-score"], &[]).expect("blue scenario parses");
+        assert_eq!(blue.scenario, Scenario::BlueFlagScore);
+
         let multi = test_config(&["--scenario", "multi-client-load-score"], &[])
             .expect("multi-client scenario parses");
         assert_eq!(multi.scenario, Scenario::MultiClientLoadScore);
@@ -3154,6 +3180,38 @@ red flag captured
         assert!(missing_peer
             .missing_milestones
             .contains(&"server_client_b_seen"));
+    }
+
+    #[test]
+    fn blue_flag_score_scenario_tracks_mirrored_team_evidence() {
+        let pass = evaluate_scenario(
+            Scenario::BlueFlagScore,
+            "Detected server protocol version 763
+join_game
+render_tick_with_player
+You are on team BLUE!
+You have the flag!
+You captured the flag!
+BLUE: 1
+",
+        );
+        assert!(pass.passed, "{pass:?}");
+        assert!(pass.missing_milestones.is_empty());
+
+        let fail = evaluate_scenario(
+            Scenario::BlueFlagScore,
+            "Detected server protocol version 763
+join_game
+render_tick_with_player
+You are on team RED!
+You have the flag!
+You captured the flag!
+RED: 1
+",
+        );
+        assert!(!fail.passed);
+        assert!(fail.missing_milestones.contains(&"team_blue"));
+        assert!(fail.missing_milestones.contains(&"score_blue_1"));
     }
 
     #[test]

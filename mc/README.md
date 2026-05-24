@@ -36,7 +36,7 @@ SMOKE_RECEIPT=target/mc-compat-smoke.json CLIENT_TIMEOUT=8 nix run .#mc-compat-s
 nix run .#mc-compat-smoke -- --dry-run --server-backend paper --receipt target/mc-compat-smoke.json
 ```
 
-The current receipt schema is `mc.compat.scenario.receipt.v2`; receipts also retain the legacy marker `mc.compat.smoke.receipt.v1` for older consumers. A receipt records server/client inputs, the headless-isolation contract (`wayland_socket_inherited=false`), typed scenario milestones, server-side correlation when available, and explicit non-claims (`claims_correctness=false`, `claims_semantic_equivalence=false`) for downstream Cairn/Octet review. It is evidence that the bounded scenario ran under the selected inputs, not a proof of Minecraft correctness or semantic equivalence.
+The current receipt schema is `mc.compat.scenario.receipt.v2`; receipts also retain the legacy marker `mc.compat.smoke.receipt.v1` for older consumers. A receipt records server/client inputs, the headless-isolation contract (`wayland_socket_inherited=false`), typed scenario milestones, server-side correlation when available, and explicit non-claims (`claims_correctness=false`, `claims_semantic_equivalence=false`) for downstream Cairn/Octet review. It is evidence that the bounded scenario ran under the specified local fixture, not a claim of full semantic equivalence.
 
 Choose a typed scenario with `--scenario` or `MC_COMPAT_SCENARIO`:
 
@@ -56,6 +56,12 @@ CLIENT_TIMEOUT=60 nix run .#mc-compat-smoke -- --run \
   --server-backend valence \
   --scenario flag-score-repeat \
   --receipt target/mc-compat-flag-score-repeat.json
+
+# Mirrored BLUE-team scoring path: BLUE portal, RED flag pickup, BLUE score milestone.
+CLIENT_TIMEOUT=180 nix run .#mc-compat-smoke -- --run \
+  --server-backend valence \
+  --scenario blue-flag-score \
+  --receipt target/mc-compat-blue-flag-score.json
 
 # Reconnect-aware gameplay receipt, with optional status/proxy/capture fixture metadata.
 nix run .#mc-compat-smoke -- --dry-run \
