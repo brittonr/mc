@@ -114,6 +114,7 @@ pub struct Server {
     inventory_probe_wool_seen: bool,
     inventory_probe_hotbar_seen: bool,
     inventory_probe_drop_sent: bool,
+    inventory_probe_block_place_sent: bool,
     flag_probe_have_flag_seen: bool,
     flag_probe_capture_seen: bool,
     flag_probe_score_seen: bool,
@@ -648,6 +649,7 @@ impl Server {
             inventory_probe_wool_seen: false,
             inventory_probe_hotbar_seen: false,
             inventory_probe_drop_sent: false,
+            inventory_probe_block_place_sent: false,
             flag_probe_have_flag_seen: false,
             flag_probe_capture_seen: false,
             flag_probe_score_seen: false,
@@ -913,6 +915,29 @@ impl Server {
                 sequence: protocol::VarInt(77),
             });
             self.inventory_probe_drop_sent = true;
+        }
+
+        if self.inventory_probe_enabled
+            && self.active_probe_ticks >= 620
+            && self.inventory_probe_wool_seen
+            && !self.inventory_probe_block_place_sent
+        {
+            info!("MC-COMPAT-MILESTONE inventory_probe_select_wool_hotbar_slot slot=1");
+            self.write_packet(packet::play::serverbound::HeldItemChange { slot: 1 });
+            info!("MC-COMPAT-MILESTONE inventory_probe_place_block_sent hand=main location=-40,64,0 face=up sequence=88");
+            self.write_packet(
+                packet::play::serverbound::PlayerBlockPlacement_insideblock_sequence {
+                    hand: protocol::VarInt(0),
+                    location: Position::new(-40, 64, 0),
+                    face: protocol::VarInt(1),
+                    cursor_x: 0.5,
+                    cursor_y: 1.0,
+                    cursor_z: 0.5,
+                    inside_block: false,
+                    sequence: protocol::VarInt(88),
+                },
+            );
+            self.inventory_probe_block_place_sent = true;
         }
 
         if self.flag_probe_enabled && self.active_probe_ticks >= FLAG_PROBE_FIRST_TICK {
