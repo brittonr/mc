@@ -9,12 +9,15 @@ use valence::entity::living::Health;
 use valence::entity::pig::PigEntityBundle;
 use valence::entity::player::PlayerEntityBundle;
 use valence::entity::{EntityAnimations, EntityStatuses, OnGround, Velocity};
+use valence::event_loop::PacketEvent;
 use valence::interact_block::InteractBlockEvent;
 use valence::inventory::{DropItemStackEvent, HeldItem};
 use valence::log::{debug, info};
 use valence::math::Vec3Swizzles;
 use valence::nbt::{compound, List};
 use valence::prelude::*;
+use valence::protocol::packets::play::player_action_c2s::PlayerAction;
+use valence::protocol::packets::play::PlayerActionC2s;
 use valence::scoreboard::*;
 use valence::status::RequestRespawnEvent;
 
@@ -38,6 +41,7 @@ pub fn main() {
         })
         .add_plugins(DefaultPlugins)
         .add_systems(Startup, setup)
+        .add_systems(EventLoopPreUpdate, log_inventory_player_actions)
         .add_systems(EventLoopUpdate, handle_combat_events)
         .add_systems(
             Update,
@@ -570,6 +574,28 @@ fn log_inventory_drop_events(
         );
         info!("{milestone}");
         println!("{milestone}");
+    }
+}
+
+fn log_inventory_player_actions(
+    mut packets: EventReader<PacketEvent>,
+    usernames: Query<&Username>,
+) {
+    for packet in packets.read() {
+        let Some(pkt) = packet.decode::<PlayerActionC2s>() else {
+            continue;
+        };
+
+        let action = match pkt.action {
+            PlayerAction::DropAllItems => "drop_all_items",
+            PlayerAction::DropItem => "drop_item",
+            _ => continue,
+        };
+        let username = usernames
+            .get(packet.client)
+            .map(|name| name.as_str())
+            .unwrap_or("unknown");
+        println!("MC-COMPAT-MILESTONE inventory_drop_item username={username} action={action}");
     }
 }
 
