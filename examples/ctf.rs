@@ -10,8 +10,8 @@ use valence::entity::pig::PigEntityBundle;
 use valence::entity::player::PlayerEntityBundle;
 use valence::entity::{EntityAnimations, EntityStatuses, OnGround, Velocity};
 use valence::interact_block::InteractBlockEvent;
-use valence::inventory::HeldItem;
-use valence::log::debug;
+use valence::inventory::{DropItemStackEvent, HeldItem};
+use valence::log::{debug, info};
 use valence::math::Vec3Swizzles;
 use valence::nbt::{compound, List};
 use valence::prelude::*;
@@ -47,6 +47,7 @@ pub fn main() {
                 digging,
                 place_blocks,
                 do_team_selector_portals,
+                log_inventory_drop_events,
                 update_flag_visuals,
                 do_flag_capturing,
                 // visualize_triggers,
@@ -548,6 +549,26 @@ fn place_blocks(
 #[derive(Debug, Resource)]
 struct Portals {
     portals: HashMap<Team, TriggerArea>,
+}
+
+fn log_inventory_drop_events(
+    mut events: EventReader<DropItemStackEvent>,
+    usernames: Query<&Username>,
+) {
+    for event in events.read() {
+        let username = usernames
+            .get(event.client)
+            .map(|name| name.as_str())
+            .unwrap_or("unknown");
+        let from_slot = event
+            .from_slot
+            .map(|slot| slot.to_string())
+            .unwrap_or_else(|| "none".to_string());
+        info!(
+            "MC-COMPAT-MILESTONE inventory_drop_item username={} from_slot={} item={:?} count={}",
+            username, from_slot, event.stack.item, event.stack.count
+        );
+    }
 }
 
 fn do_team_selector_portals(
