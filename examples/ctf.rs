@@ -601,6 +601,7 @@ fn do_team_selector_portals(
             &mut Client,
             &mut VisibleEntityLayers,
             &UniqueId,
+            &Username,
         ),
         Without<Team>,
     >,
@@ -619,6 +620,7 @@ fn do_team_selector_portals(
             mut client,
             mut ent_layers,
             unique_id,
+            username,
         ) = player;
         if pos.0.y < f64::from(SPAWN_BOX[1]) - 5.0 {
             pos.0 = SPAWN_POS.into();
@@ -652,6 +654,11 @@ fn do_team_selector_portals(
             commands
                 .entity(player)
                 .insert((team, inventory, combat_state));
+            println!(
+                "MC-COMPAT-MILESTONE inventory_hotbar_select username={} slot=0 \
+                 source=team_inventory_setup",
+                username.as_str()
+            );
             pos.0 = team.spawn_pos();
             let yaw = match team {
                 Team::Red => -90.0,
