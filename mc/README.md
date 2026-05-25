@@ -85,6 +85,11 @@ CLIENT_TIMEOUT=60 nix run .#mc-compat-smoke -- --run \
 nix run .#mc-compat-valence-ctf-600s-soak
 # deterministic, non-side-effecting fixture for the same soak command shape:
 nix run .#mc-compat-valence-ctf-600s-soak -- --dry-run
+
+# Maintained protocol-763 Valence CTF BLUE-team 600s bounded soak receipt.
+nix run .#mc-compat-valence-ctf-blue-600s-soak
+# deterministic, non-side-effecting fixture for the same BLUE soak command shape:
+nix run .#mc-compat-valence-ctf-blue-600s-soak -- --dry-run
 ```
 
 `valence-compat-bot-probe` receipts add a `compat_bot_probe` block that records the owned local target, bounded one-client limit, non-public-stress-tool guard, and explicit `external_server_load_authorized=false` non-claim. `reconnect-flag-score` extends gameplay evidence with an explicit reconnect milestone.
