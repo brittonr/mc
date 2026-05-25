@@ -506,14 +506,14 @@ fn digging(
 }
 
 fn place_blocks(
-    mut clients: Query<(&mut Inventory, &GameMode, &HeldItem)>,
+    mut clients: Query<(&mut Inventory, &GameMode, &HeldItem, &Username)>,
     mut layers: Query<&mut ChunkLayer>,
     mut events: EventReader<InteractBlockEvent>,
 ) {
     let mut layer = layers.single_mut();
 
     for event in events.read() {
-        let Ok((mut inventory, game_mode, held)) = clients.get_mut(event.client) else {
+        let Ok((mut inventory, game_mode, held, username)) = clients.get_mut(event.client) else {
             continue;
         };
         if event.hand != Hand::Main {
@@ -531,6 +531,8 @@ fn place_blocks(
             // can't place this item as a block
             continue;
         };
+        let item_kind = stack.item;
+        let placed_block = block_kind;
 
         if *game_mode == GameMode::Survival {
             // check if the player has the item in their inventory and remove
@@ -544,6 +546,19 @@ fn place_blocks(
         }
         let real_pos = event.position.get_in_direction(event.face);
         layer.set_block(real_pos, block_kind.to_state());
+        let milestone = format!(
+            "MC-COMPAT-MILESTONE block_place_item username={} item={:?} from_slot={} block={:?} \
+             at={},{},{}",
+            username.as_str(),
+            item_kind,
+            slot_id,
+            placed_block,
+            real_pos.x,
+            real_pos.y,
+            real_pos.z
+        );
+        info!("{milestone}");
+        println!("{milestone}");
     }
 }
 
