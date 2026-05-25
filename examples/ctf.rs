@@ -564,10 +564,12 @@ fn log_inventory_drop_events(
             .from_slot
             .map(|slot| slot.to_string())
             .unwrap_or_else(|| "none".to_string());
-        info!(
+        let milestone = format!(
             "MC-COMPAT-MILESTONE inventory_drop_item username={} from_slot={} item={:?} count={}",
             username, from_slot, event.stack.item, event.stack.count
         );
+        info!("{milestone}");
+        println!("{milestone}");
     }
 }
 
