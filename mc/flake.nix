@@ -153,9 +153,41 @@
               mainProgram = "mc-compat-valence-ctf-blue-600s-soak";
             };
           };
+          mc-compat-valence-ctf-inventory-interaction = pkgs.writeShellApplication {
+            name = "mc-compat-valence-ctf-inventory-interaction";
+            runtimeInputs = [ mc-compat-runner ];
+            text = ''
+              mode="--run"
+              if [[ "''${1:-}" == "--dry-run" || "''${1:-}" == "--run" ]]; then
+                mode="$1"
+                shift
+              fi
+
+              receipt="''${MC_COMPAT_INVENTORY_RECEIPT:-target/mc-compat-inventory/inventory-interaction.json}"
+              mkdir -p "$(dirname "$receipt")"
+
+              export SERVER_PROTOCOL="''${SERVER_PROTOCOL:-763}"
+              export SERVER_VERSION="''${SERVER_VERSION:-1.20.1}"
+              export VALENCE_REV="''${VALENCE_REV:-main}"
+              export VALENCE_EXAMPLE="''${VALENCE_EXAMPLE:-ctf}"
+              export VALENCE_WORKTREE="''${VALENCE_WORKTREE:-/tmp/valence-compat-763}"
+              export VALENCE_TARGET_DIR="''${VALENCE_TARGET_DIR:-/tmp/valence-compat-763-target}"
+              export CLIENT_TIMEOUT="''${CLIENT_TIMEOUT:-120}"
+
+              exec mc-compat-runner "$mode" \
+                --server-backend valence \
+                --scenario inventory-interaction \
+                --receipt "$receipt" \
+                "$@"
+            '';
+            meta = {
+              description = "Run the maintained protocol-763 Valence CTF inventory/drop interaction receipt.";
+              mainProgram = "mc-compat-valence-ctf-inventory-interaction";
+            };
+          };
         in
         {
-          inherit mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak;
+          inherit mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction;
           cairn = cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn;
           cargo-octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.cargo-octet;
           octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.octet;
@@ -184,6 +216,13 @@
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-blue-600s-soak
           }/bin/mc-compat-valence-ctf-blue-600s-soak";
           meta.description = "Run the maintained protocol-763 Valence CTF BLUE-team 600s soak receipt.";
+        };
+        mc-compat-valence-ctf-inventory-interaction = {
+          type = "app";
+          program = "${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-inventory-interaction
+          }/bin/mc-compat-valence-ctf-inventory-interaction";
+          meta.description = "Run the maintained protocol-763 Valence CTF inventory/drop interaction receipt.";
         };
         default = self.apps.${pkgs.stdenv.hostPlatform.system}.mc-compat-smoke;
       });
@@ -325,6 +364,33 @@
             grep -Fq '"server_flag_or_score"' receipts/blue-soak-receipt.json
             mkdir -p "$out"
             cp blue-soak-dry-run.log receipts/blue-soak-receipt.json "$out/"
+          '';
+        mc-compat-valence-ctf-inventory-interaction-dry-run =
+          pkgs.runCommand "mc-compat-valence-ctf-inventory-interaction-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
+            mkdir -p fake-stevenarella fake-valence receipts
+            printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+            git -C fake-valence init
+            git -C fake-valence config user.email mc-compat@example.invalid
+            git -C fake-valence config user.name mc-compat
+            printf '%s\n' fake > fake-valence/README.md
+            git -C fake-valence add README.md
+            git -C fake-valence commit -m init
+            MC_COMPAT_INVENTORY_RECEIPT="$PWD/receipts/inventory-receipt.json" ${
+              self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-inventory-interaction
+            }/bin/mc-compat-valence-ctf-inventory-interaction --dry-run --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD > inventory-dry-run.log
+            grep -Fq "scenario 'inventory-interaction'" inventory-dry-run.log
+            grep -Fq '"name": "inventory-interaction"' receipts/inventory-receipt.json
+            grep -Fq '"version": "1.20.1"' receipts/inventory-receipt.json
+            grep -Fq '"protocol": 763' receipts/inventory-receipt.json
+            grep -Fq '"timeout_secs": 120' receipts/inventory-receipt.json
+            grep -Fq '"inventory_slot_update"' receipts/inventory-receipt.json
+            grep -Fq '"inventory_sword_slot"' receipts/inventory-receipt.json
+            grep -Fq '"inventory_wool_slot"' receipts/inventory-receipt.json
+            grep -Fq '"inventory_drop_sent"' receipts/inventory-receipt.json
+            grep -Fq '"server_inventory_hotbar_select"' receipts/inventory-receipt.json
+            grep -Fq '"expected_summary_packets": ["login_success", "play_join_game", "inventory_set_slot", "player_action_drop_item"]' receipts/inventory-receipt.json
+            mkdir -p "$out"
+            cp inventory-dry-run.log receipts/inventory-receipt.json "$out/"
           '';
         mc-compat-bot-probe-dry-run =
           pkgs.runCommand "mc-compat-bot-probe-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''

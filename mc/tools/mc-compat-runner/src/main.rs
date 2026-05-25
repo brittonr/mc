@@ -45,6 +45,7 @@ enum Scenario {
     CompatBotProbe,
     FlagScoreRepeat,
     BlueFlagScore,
+    InventoryInteraction,
     ReconnectFlagScore,
     MultiClientLoadScore,
 }
@@ -714,6 +715,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
         "valence-compat-bot-probe" | "compat-bot-probe" => Ok(Scenario::CompatBotProbe),
         "flag-score-repeat" => Ok(Scenario::FlagScoreRepeat),
         "blue-flag-score" => Ok(Scenario::BlueFlagScore),
+        "inventory-interaction" => Ok(Scenario::InventoryInteraction),
         "reconnect-flag-score" => Ok(Scenario::ReconnectFlagScore),
         "multi-client-load-score" => Ok(Scenario::MultiClientLoadScore),
         other => Err(format!("unknown scenario: {other}")),
@@ -726,6 +728,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::CompatBotProbe => "valence-compat-bot-probe",
         Scenario::FlagScoreRepeat => "flag-score-repeat",
         Scenario::BlueFlagScore => "blue-flag-score",
+        Scenario::InventoryInteraction => "inventory-interaction",
         Scenario::ReconnectFlagScore => "reconnect-flag-score",
         Scenario::MultiClientLoadScore => "multi-client-load-score",
     }
@@ -757,6 +760,16 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             ("flag_pickup", "You have the flag!"),
             ("flag_capture", "You captured the flag!"),
             ("score_blue_1", "BLUE: 1"),
+        ],
+        Scenario::InventoryInteraction => &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("inventory_slot_update", "inventory_probe_set_slot"),
+            ("inventory_sword_slot", "inventory_probe_slot36_nonempty"),
+            ("inventory_wool_slot", "inventory_probe_slot37_stack"),
+            ("inventory_drop_sent", "inventory_probe_drop_item_sent"),
         ],
         Scenario::ReconnectFlagScore => &[
             ("protocol_detected", "Detected server protocol version"),
@@ -801,6 +814,10 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
             ("server_client_a_seen", "compatbota"),
             ("server_client_b_seen", "compatbotb"),
             ("server_flag_or_score", "flag"),
+        ],
+        Scenario::InventoryInteraction => &[
+            ("server_username_seen", "compatbot"),
+            ("server_inventory_hotbar_select", "inventory_hotbar_select"),
         ],
     }
 }
@@ -877,7 +894,7 @@ fn default_port(backend: ServerBackend) -> u16 {
 
 fn print_usage(cfg: &Config) {
     println!(
-        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|reconnect-flag-score|multi-client-load-score] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
+        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|reconnect-flag-score|multi-client-load-score] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
 Automates a local Stevenarella compatibility smoke against a Minecraft {} / protocol {} server.\n\
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from Nickel config; env vars and later CLI flags override it.\n\
@@ -1707,6 +1724,12 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
                 cmd.env("MC_COMPAT_RECONNECT_PROBE", "1");
             }
         }
+        Scenario::InventoryInteraction => {
+            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
+                .env("MC_COMPAT_INVENTORY_PROBE", "1");
+        }
         Scenario::MultiClientLoadScore => {
             cmd.env("MC_COMPAT_ACTIVE_PROBE", "1");
             if client_index == 0 {
@@ -1762,6 +1785,7 @@ fn requires_server_correlation(cfg: &Config) -> bool {
             Scenario::FlagScoreRepeat
                 | Scenario::ReconnectFlagScore
                 | Scenario::MultiClientLoadScore
+                | Scenario::InventoryInteraction
         )
 }
 
@@ -1855,6 +1879,12 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         Scenario::FlagScoreRepeat | Scenario::BlueFlagScore => {
             vec!["login_success", "play_join_game", "chat_scoreboard"]
         }
+        Scenario::InventoryInteraction => vec![
+            "login_success",
+            "play_join_game",
+            "inventory_set_slot",
+            "player_action_drop_item",
+        ],
         Scenario::ReconnectFlagScore => vec![
             "login_success",
             "play_join_game",
@@ -1879,6 +1909,11 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         "score_red_1",
         "score_red_2",
         "score_blue_1",
+        "inventory_slot_update",
+        "inventory_sword_slot",
+        "inventory_wool_slot",
+        "inventory_drop_sent",
+        "server_inventory_hotbar_select",
         "reconnect_session",
         "multi_client_count",
     ];
@@ -3003,6 +3038,10 @@ mod tests {
         let multi = test_config(&["--scenario", "multi-client-load-score"], &[])
             .expect("multi-client scenario parses");
         assert_eq!(multi.scenario, Scenario::MultiClientLoadScore);
+
+        let inventory = test_config(&["--scenario", "inventory-interaction"], &[])
+            .expect("inventory scenario parses");
+        assert_eq!(inventory.scenario, Scenario::InventoryInteraction);
     }
 
     #[test]
@@ -3212,6 +3251,31 @@ RED: 1
         assert!(!fail.passed);
         assert!(fail.missing_milestones.contains(&"team_blue"));
         assert!(fail.missing_milestones.contains(&"score_blue_1"));
+    }
+
+    #[test]
+    fn inventory_interaction_scenario_tracks_client_and_server_evidence() {
+        let client = evaluate_scenario(
+            Scenario::InventoryInteraction,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\ninventory_probe_set_slot\ninventory_probe_slot36_nonempty\ninventory_probe_slot37_stack\ninventory_probe_drop_item_sent\n",
+        );
+        assert!(client.passed, "{client:?}");
+
+        let missing_drop = evaluate_scenario(
+            Scenario::InventoryInteraction,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\ninventory_probe_set_slot\ninventory_probe_slot36_nonempty\ninventory_probe_slot37_stack\n",
+        );
+        assert!(!missing_drop.passed);
+        assert!(missing_drop
+            .missing_milestones
+            .contains(&"inventory_drop_sent"));
+
+        let server = evaluate_server_scenario(
+            Scenario::InventoryInteraction,
+            "compatbot joined\nMC-COMPAT-MILESTONE inventory_hotbar_select username=compatbot slot=0\n",
+            "compatbot",
+        );
+        assert!(server.passed, "{server:?}");
     }
 
     #[test]

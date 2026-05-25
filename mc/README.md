@@ -90,6 +90,11 @@ nix run .#mc-compat-valence-ctf-600s-soak -- --dry-run
 nix run .#mc-compat-valence-ctf-blue-600s-soak
 # deterministic, non-side-effecting fixture for the same BLUE soak command shape:
 nix run .#mc-compat-valence-ctf-blue-600s-soak -- --dry-run
+
+# Maintained protocol-763 Valence CTF inventory/drop interaction receipt.
+nix run .#mc-compat-valence-ctf-inventory-interaction
+# deterministic, non-side-effecting fixture for the same inventory/drop command shape:
+nix run .#mc-compat-valence-ctf-inventory-interaction -- --dry-run
 ```
 
 `valence-compat-bot-probe` receipts add a `compat_bot_probe` block that records the owned local target, bounded one-client limit, non-public-stress-tool guard, and explicit `external_server_load_authorized=false` non-claim. `reconnect-flag-score` extends gameplay evidence with an explicit reconnect milestone.
