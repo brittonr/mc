@@ -9,15 +9,12 @@ use valence::entity::living::Health;
 use valence::entity::pig::PigEntityBundle;
 use valence::entity::player::PlayerEntityBundle;
 use valence::entity::{EntityAnimations, EntityStatuses, OnGround, Velocity};
-use valence::event_loop::PacketEvent;
 use valence::interact_block::InteractBlockEvent;
-use valence::inventory::{DropItemStackEvent, HeldItem};
+use valence::inventory::{DropItemStackEvent, HeldItem, UpdateSelectedSlotEvent};
 use valence::log::{debug, info};
 use valence::math::Vec3Swizzles;
 use valence::nbt::{compound, List};
 use valence::prelude::*;
-use valence::protocol::packets::play::player_action_c2s::PlayerAction;
-use valence::protocol::packets::play::PlayerActionC2s;
 use valence::scoreboard::*;
 use valence::status::RequestRespawnEvent;
 
@@ -41,7 +38,6 @@ pub fn main() {
         })
         .add_plugins(DefaultPlugins)
         .add_systems(Startup, setup)
-        .add_systems(EventLoopPreUpdate, log_inventory_player_actions)
         .add_systems(EventLoopUpdate, handle_combat_events)
         .add_systems(
             Update,
@@ -51,6 +47,7 @@ pub fn main() {
                 digging,
                 place_blocks,
                 do_team_selector_portals,
+                log_inventory_hotbar_select_events,
                 log_inventory_drop_events,
                 update_flag_visuals,
                 do_flag_capturing,
@@ -577,25 +574,19 @@ fn log_inventory_drop_events(
     }
 }
 
-fn log_inventory_player_actions(
-    mut packets: EventReader<PacketEvent>,
+fn log_inventory_hotbar_select_events(
+    mut events: EventReader<UpdateSelectedSlotEvent>,
     usernames: Query<&Username>,
 ) {
-    for packet in packets.read() {
-        let Some(pkt) = packet.decode::<PlayerActionC2s>() else {
-            continue;
-        };
-
-        let action = match pkt.action {
-            PlayerAction::DropAllItems => "drop_all_items",
-            PlayerAction::DropItem => "drop_item",
-            _ => continue,
-        };
+    for event in events.read() {
         let username = usernames
-            .get(packet.client)
+            .get(event.client)
             .map(|name| name.as_str())
             .unwrap_or("unknown");
-        println!("MC-COMPAT-MILESTONE inventory_drop_item username={username} action={action}");
+        println!(
+            "MC-COMPAT-MILESTONE inventory_hotbar_select username={username} slot={}",
+            event.slot
+        );
     }
 }
 
