@@ -4,7 +4,7 @@
 
 Bounded single-client Stevenarella probe against the local Valence `ctf` example, protocol `763` / Minecraft `1.20.1`, after RED team selection.
 
-This slice exercises a new gameplay/protocol seam beyond CTF scoring: inventory slot updates, hotbar selection, and a serverbound drop-item action. It does **not** claim full inventory correctness, pickup semantics, full CTF correctness, broad Minecraft compatibility, unbounded soak, or production load safety.
+This slice exercises a new gameplay/protocol seam beyond CTF scoring: inventory slot updates, hotbar selection, a serverbound drop-item action, and Valence-side drop-item event correlation. It does **not** claim full inventory correctness, pickup semantics, full CTF correctness, broad Minecraft compatibility, unbounded soak, or production load safety.
 
 ## Command
 
@@ -14,8 +14,10 @@ nix run .#mc-compat-smoke -- --stop || true
 if [ -e /tmp/valence-compat-763/.git ]; then
   git -C /home/brittonr/git/mc/valence worktree remove --force /tmp/valence-compat-763 || rm -rf /tmp/valence-compat-763
 fi
-rm -rf target/mc-compat-inventory target-mc-compat-inventory-live.log
-VALENCE_REV=HEAD CLIENT_TIMEOUT=120 nix run .#mc-compat-valence-ctf-inventory-interaction > target-mc-compat-inventory-live.log 2>&1
+rm -rf target/mc-compat-inventory-drop target-mc-compat-inventory-drop-live.log
+MC_COMPAT_INVENTORY_RECEIPT=target/mc-compat-inventory-drop/inventory-drop-server.json \
+  VALENCE_REV=HEAD CLIENT_TIMEOUT=120 \
+  nix run .#mc-compat-valence-ctf-inventory-interaction > target-mc-compat-inventory-drop-live.log 2>&1
 ```
 
 Important pitfall: Valence worktree `.git` is a file, not a directory; stale worktree cleanup must test `-e`, not `-d`, or the runner can reuse an older detached Valence checkout.
@@ -28,9 +30,9 @@ Important pitfall: Valence worktree `.git` is a file, not a directory; stale wor
 
 ## Receipt
 
-- Path: `target/mc-compat-inventory/inventory-interaction.json`
+- Path: `target/mc-compat-inventory-drop/inventory-drop-server.json`
 - Schema: `mc.compat.scenario.receipt.v2`
-- BLAKE3: `006e422a2b621038678931a6e1da9610c5eb7cafa82e2beb0c14afa5887d5f99`
+- BLAKE3: `4aeb08172b35edd03d57169c63a4942ca149c783fbc51539702922ac246a0e46`
 - Status: `pass`
 - Client exit classification: `timeout-success-evidence` (`exit_code=124` after bounded evidence window)
 
@@ -49,6 +51,7 @@ Observed server correlation:
 
 - `server_username_seen`
 - `server_inventory_hotbar_select`
+- `server_inventory_drop`
 
 Valence log excerpt:
 
@@ -88,4 +91,4 @@ Focused dry-run gate:
 nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-valence-ctf-inventory-interaction-dry-run --no-link -L
 ```
 
-The gate verifies the maintained app shape and receipt fields without starting the live Valence/Stevenarella scenario.
+The gate verifies the maintained app shape and receipt fields, including `server_inventory_drop`, without starting the live Valence/Stevenarella scenario.

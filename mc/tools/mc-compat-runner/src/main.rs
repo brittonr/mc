@@ -818,6 +818,7 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
         Scenario::InventoryInteraction => &[
             ("server_username_seen", "compatbot"),
             ("server_inventory_hotbar_select", "inventory_hotbar_select"),
+            ("server_inventory_drop", "inventory_drop_item"),
         ],
     }
 }
@@ -1914,6 +1915,7 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         "inventory_wool_slot",
         "inventory_drop_sent",
         "server_inventory_hotbar_select",
+        "server_inventory_drop",
         "reconnect_session",
         "multi_client_count",
     ];
@@ -3272,10 +3274,20 @@ RED: 1
 
         let server = evaluate_server_scenario(
             Scenario::InventoryInteraction,
-            "compatbot joined\nMC-COMPAT-MILESTONE inventory_hotbar_select username=compatbot slot=0\n",
+            "compatbot joined\nMC-COMPAT-MILESTONE inventory_hotbar_select username=compatbot slot=0\nMC-COMPAT-MILESTONE inventory_drop_item username=compatbot from_slot=36 item=WoodenSword count=1\n",
             "compatbot",
         );
         assert!(server.passed, "{server:?}");
+
+        let missing_drop = evaluate_server_scenario(
+            Scenario::InventoryInteraction,
+            "compatbot joined\nMC-COMPAT-MILESTONE inventory_hotbar_select username=compatbot slot=0\n",
+            "compatbot",
+        );
+        assert!(!missing_drop.passed, "{missing_drop:?}");
+        assert!(missing_drop
+            .missing_milestones
+            .contains(&"server_inventory_drop"));
     }
 
     #[test]
