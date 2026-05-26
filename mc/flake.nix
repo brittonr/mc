@@ -342,6 +342,14 @@
 
       checks = eachSystem (pkgs: {
         mc-compat-runner = self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner;
+        mc-compat-acceptance-matrix = pkgs.runCommand "mc-compat-acceptance-matrix" { nativeBuildInputs = [ pkgs.python3 ]; } ''
+          cp -R ${./docs} docs
+          cp -R ${./tools} tools
+          chmod -R u+w docs tools
+          python3 tools/check_acceptance_matrix.py > acceptance-matrix-check.log
+          mkdir -p "$out"
+          cp acceptance-matrix-check.log "$out/"
+        '';
         mc-compat-dry-run = pkgs.runCommand "mc-compat-dry-run" { } ''
           mkdir -p fake-stevenarella
           printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
