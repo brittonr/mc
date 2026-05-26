@@ -1072,6 +1072,7 @@ struct CombatState {
 #[query_data(mutable)]
 struct CombatQuery {
     client: &'static mut Client,
+    username: &'static Username,
     pos: &'static Position,
     state: &'static mut CombatState,
     statuses: &'static mut EntityStatuses,
@@ -1160,6 +1161,18 @@ fn handle_combat_events(
         };
 
         victim.health.0 -= damage;
+        let milestone = format!(
+            "MC-COMPAT-MILESTONE combat_damage attacker={} victim={} damage={:.1} \
+             victim_health_before={:.1} victim_health_after={:.1} attacker_item={:?}",
+            attacker.username.as_str(),
+            victim.username.as_str(),
+            damage,
+            victim.health.0 + damage,
+            victim.health.0,
+            stack.item
+        );
+        info!("{}", milestone);
+        println!("{}", milestone);
     }
 }
 
