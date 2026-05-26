@@ -249,6 +249,40 @@
               mainProgram = "mc-compat-valence-ctf-flag-carrier-death-return";
             };
           };
+          mc-compat-valence-ctf-latency-jitter-inventory = pkgs.writeShellApplication {
+            name = "mc-compat-valence-ctf-latency-jitter-inventory";
+            runtimeInputs = [ mc-compat-runner ];
+            text = ''
+              mode="--run"
+              if [[ "''${1:-}" == "--dry-run" || "''${1:-}" == "--run" ]]; then
+                mode="$1"
+                shift
+              fi
+
+              receipt="''${MC_COMPAT_LATENCY_JITTER_RECEIPT:-target/mc-compat-latency-jitter/latency-jitter-inventory.json}"
+              mkdir -p "$(dirname "$receipt")"
+
+              export SERVER_PROTOCOL="''${SERVER_PROTOCOL:-763}"
+              export SERVER_VERSION="''${SERVER_VERSION:-1.20.1}"
+              export VALENCE_REV="''${VALENCE_REV:-main}"
+              export VALENCE_EXAMPLE="''${VALENCE_EXAMPLE:-ctf}"
+              export VALENCE_WORKTREE="''${VALENCE_WORKTREE:-/tmp/valence-compat-763}"
+              export VALENCE_TARGET_DIR="''${VALENCE_TARGET_DIR:-/tmp/valence-compat-763-target}"
+              export CLIENT_TIMEOUT="''${CLIENT_TIMEOUT:-180}"
+              export MC_COMPAT_LATENCY_JITTER_ENABLED=1
+              export MC_COMPAT_LATENCY_JITTER_TARGET_RAIL="inventory-interaction"
+              export MC_COMPAT_LATENCY_JITTER_MECHANISM="bounded-client-cadence"
+              export MC_COMPAT_LATENCY_MS="''${MC_COMPAT_LATENCY_MS:-80}"
+              export MC_COMPAT_JITTER_MS="''${MC_COMPAT_JITTER_MS:-30}"
+              export MC_COMPAT_LOSS_PERCENT="''${MC_COMPAT_LOSS_PERCENT:-0}"
+
+              exec mc-compat-runner "$mode"                 --server-backend valence                 --scenario inventory-interaction                 --receipt "$receipt"                 "$@"
+            '';
+            meta = {
+              description = "Run the maintained protocol-763 Valence CTF inventory rail with bounded latency/jitter metadata.";
+              mainProgram = "mc-compat-valence-ctf-latency-jitter-inventory";
+            };
+          };
           mc-compat-valence-ctf-reconnect-flag-state = pkgs.writeShellApplication {
             name = "mc-compat-valence-ctf-reconnect-flag-state";
             runtimeInputs = [ mc-compat-runner ];
@@ -279,7 +313,7 @@
           };
         in
         {
-          inherit mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-ctf-combat-damage mc-compat-valence-ctf-flag-carrier-death-return mc-compat-valence-ctf-reconnect-flag-state;
+          inherit mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-ctf-combat-damage mc-compat-valence-ctf-flag-carrier-death-return mc-compat-valence-ctf-latency-jitter-inventory mc-compat-valence-ctf-reconnect-flag-state;
           cairn = cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn;
           cargo-octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.cargo-octet;
           octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.octet;
@@ -329,6 +363,13 @@
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-flag-carrier-death-return
           }/bin/mc-compat-valence-ctf-flag-carrier-death-return";
           meta.description = "Run the maintained protocol-763 Valence CTF flag-carrier death/return receipt.";
+        };
+        mc-compat-valence-ctf-latency-jitter-inventory = {
+          type = "app";
+          program = "${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-latency-jitter-inventory
+          }/bin/mc-compat-valence-ctf-latency-jitter-inventory";
+          meta.description = "Run the maintained protocol-763 Valence CTF inventory rail with bounded latency/jitter metadata.";
         };
         mc-compat-valence-ctf-reconnect-flag-state = {
           type = "app";
@@ -587,6 +628,36 @@
             grep -Fq '"expected_summary_packets": ["two_client_login", "play_join_game", "flag_pickup", "use_entity_attack", "health_death", "respawn_request"]' receipts/flag-carrier-death-receipt.json
             mkdir -p "$out"
             cp flag-carrier-death-dry-run.log receipts/flag-carrier-death-receipt.json "$out/"
+          '';
+        mc-compat-valence-ctf-latency-jitter-inventory-dry-run =
+          pkgs.runCommand "mc-compat-valence-ctf-latency-jitter-inventory-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
+            mkdir -p fake-stevenarella fake-valence receipts
+            printf '%s
+' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+            git -C fake-valence init
+            git -C fake-valence config user.email mc-compat@example.invalid
+            git -C fake-valence config user.name mc-compat
+            printf '%s
+' fake > fake-valence/README.md
+            git -C fake-valence add README.md
+            git -C fake-valence commit -m init
+            MC_COMPAT_LATENCY_JITTER_RECEIPT="$PWD/receipts/latency-jitter-receipt.json" ${
+              self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-latency-jitter-inventory
+            }/bin/mc-compat-valence-ctf-latency-jitter-inventory --dry-run --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD > latency-jitter-dry-run.log
+            grep -Fq "scenario 'inventory-interaction'" latency-jitter-dry-run.log
+            grep -Fq '"name": "inventory-interaction"' receipts/latency-jitter-receipt.json
+            grep -Fq '"latency_jitter_tolerance"' receipts/latency-jitter-receipt.json
+            grep -Fq '"selected": true' receipts/latency-jitter-receipt.json
+            grep -Fq '"target_rail": "inventory-interaction"' receipts/latency-jitter-receipt.json
+            grep -Fq '"delay_ms": "80"' receipts/latency-jitter-receipt.json
+            grep -Fq '"jitter_ms": "30"' receipts/latency-jitter-receipt.json
+            grep -Fq '"loss_percent": "0"' receipts/latency-jitter-receipt.json
+            grep -Fq '"privileged_network_mutation_required": false' receipts/latency-jitter-receipt.json
+            grep -Fq '"claims_wan_safety": false' receipts/latency-jitter-receipt.json
+            grep -Fq '"inventory_slot_update"' receipts/latency-jitter-receipt.json
+            grep -Fq '"server_inventory_click"' receipts/latency-jitter-receipt.json
+            mkdir -p "$out"
+            cp latency-jitter-dry-run.log receipts/latency-jitter-receipt.json "$out/"
           '';
         mc-compat-valence-ctf-reconnect-flag-state-dry-run =
           pkgs.runCommand "mc-compat-valence-ctf-reconnect-flag-state-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''

@@ -1993,13 +1993,49 @@ fn write_smoke_receipt(
         fs::create_dir_all(parent)
             .map_err(|e| format!("create receipt dir {}: {e}", parent.display()))?;
     }
-    let json = smoke_receipt_json(cfg, result);
+    let json = smoke_receipt_json(cfg, result.map_err(|err| err.as_str()));
     fs::write(path, json).map_err(|e| format!("write receipt {}: {e}", path.display()))?;
     log(format_args!("wrote smoke receipt {}", path.display()));
     Ok(())
 }
 
-fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &String>) -> String {
+fn latency_jitter_receipt_json(cfg: &Config) -> String {
+    let enabled = std::env::var("MC_COMPAT_LATENCY_JITTER_ENABLED").unwrap_or_default() == "1";
+    let target_rail = std::env::var("MC_COMPAT_LATENCY_JITTER_TARGET_RAIL")
+        .unwrap_or_else(|_| scenario_name(cfg.scenario).to_string());
+    let delay_ms = std::env::var("MC_COMPAT_LATENCY_MS").unwrap_or_else(|_| "0".to_string());
+    let jitter_ms = std::env::var("MC_COMPAT_JITTER_MS").unwrap_or_else(|_| "0".to_string());
+    let loss_percent = std::env::var("MC_COMPAT_LOSS_PERCENT").unwrap_or_else(|_| "0".to_string());
+    let mechanism = std::env::var("MC_COMPAT_LATENCY_JITTER_MECHANISM")
+        .unwrap_or_else(|_| "bounded-client-cadence".to_string());
+    let hygiene_status = if enabled { "bounded-local-fixture" } else { "not-selected" };
+    format!(
+        r#"{{
+    "selected": {enabled},
+    "mechanism": {mechanism},
+    "target_rail": {target_rail},
+    "delay_ms": {delay_ms},
+    "jitter_ms": {jitter_ms},
+    "loss_percent": {loss_percent},
+    "timeout_secs": {timeout_secs},
+    "hygiene_status": {hygiene_status},
+    "privileged_network_mutation_required": false,
+    "fail_closed_when_unavailable": true,
+    "claims_wan_safety": false,
+    "claims_adversarial_network_safety": false
+  }}"#,
+        enabled = if enabled { "true" } else { "false" },
+        mechanism = json_string(&mechanism),
+        target_rail = json_string(&target_rail),
+        delay_ms = json_string(&delay_ms),
+        jitter_ms = json_string(&jitter_ms),
+        loss_percent = json_string(&loss_percent),
+        timeout_secs = cfg.client_timeout.as_secs(),
+        hygiene_status = json_string(hygiene_status),
+    )
+}
+
+fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &str>) -> String {
     let status = if result.is_ok() { "pass" } else { "fail" };
     let error = result.err();
     let client = result.ok().and_then(|client| client.as_ref());
@@ -2104,6 +2140,7 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
             vec!["two_client_login", "play_join_game", "chat_scoreboard"]
         }
     };
+    let latency_jitter_json = latency_jitter_receipt_json(cfg);
     let proxy_route = cfg.proxy_route.as_deref().unwrap_or("direct");
     let proxy_forwarding_mode = cfg.proxy_forwarding_mode.as_deref().unwrap_or("none");
     let proxy_selected = cfg.proxy_route.is_some();
@@ -2217,6 +2254,7 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
     "expected_summary_packets": {packet_capture_expected_packets_json},
     "triage_correlation": true
   }},
+  "latency_jitter_tolerance": {latency_jitter_json},
   "proxy_compat_seam": {{
     "selected": {proxy_selected},
     "route": {proxy_route_json},

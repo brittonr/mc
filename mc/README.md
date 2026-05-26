@@ -114,6 +114,12 @@ nix run .#mc-compat-valence-ctf-flag-carrier-death-return -- --dry-run
 nix run .#mc-compat-valence-ctf-reconnect-flag-state
 # deterministic, non-side-effecting fixture for the same reconnect flag-state command shape:
 nix run .#mc-compat-valence-ctf-reconnect-flag-state -- --dry-run
+
+# Maintained protocol-763 Valence CTF bounded latency/jitter receipt over the inventory semantic rail.
+# Records bounded perturbation parameters, reuses the full inventory/open-container/block-place milestone oracle, and avoids privileged network mutation.
+nix run .#mc-compat-valence-ctf-latency-jitter-inventory
+# deterministic, non-side-effecting fixture for the same latency/jitter command shape:
+nix run .#mc-compat-valence-ctf-latency-jitter-inventory -- --dry-run
 ```
 
 `valence-compat-bot-probe` receipts add a `compat_bot_probe` block that records the owned local target, bounded one-client limit, non-public-stress-tool guard, and explicit `external_server_load_authorized=false` non-claim. `reconnect-flag-score` extends gameplay evidence with an explicit reconnect milestone.
