@@ -48,6 +48,7 @@ enum Scenario {
     InventoryInteraction,
     CombatDamage,
     FlagCarrierDeathReturn,
+    ReconnectFlagState,
     ReconnectFlagScore,
     MultiClientLoadScore,
 }
@@ -720,6 +721,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
         "inventory-interaction" => Ok(Scenario::InventoryInteraction),
         "combat-damage" => Ok(Scenario::CombatDamage),
         "flag-carrier-death-return" => Ok(Scenario::FlagCarrierDeathReturn),
+        "reconnect-flag-state" => Ok(Scenario::ReconnectFlagState),
         "reconnect-flag-score" => Ok(Scenario::ReconnectFlagScore),
         "multi-client-load-score" => Ok(Scenario::MultiClientLoadScore),
         other => Err(format!("unknown scenario: {other}")),
@@ -735,6 +737,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::InventoryInteraction => "inventory-interaction",
         Scenario::CombatDamage => "combat-damage",
         Scenario::FlagCarrierDeathReturn => "flag-carrier-death-return",
+        Scenario::ReconnectFlagState => "reconnect-flag-state",
         Scenario::ReconnectFlagScore => "reconnect-flag-score",
         Scenario::MultiClientLoadScore => "multi-client-load-score",
     }
@@ -816,6 +819,14 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             ("respawn_request_sent", "respawn_probe_request_sent"),
             ("respawn_health_restored", "respawn_probe_health_restored"),
         ],
+        Scenario::ReconnectFlagState => &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("flag_pickup", "You have the flag!"),
+            ("reconnect_session", "mc_compat_reconnect_session=2"),
+        ],
         Scenario::ReconnectFlagScore => &[
             ("protocol_detected", "Detected server protocol version"),
             ("join_game", "join_game"),
@@ -841,7 +852,7 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
 
 fn scenario_forbidden_patterns(scenario: Scenario) -> &'static [(&'static str, &'static str)] {
     match scenario {
-        Scenario::FlagCarrierDeathReturn => &[
+        Scenario::FlagCarrierDeathReturn | Scenario::ReconnectFlagState => &[
             ("panic", "panicked"),
             ("unexpected_eof", "UnexpectedEof"),
             ("protocol_mismatch", "protocol mismatch"),
@@ -866,6 +877,12 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
         Scenario::FlagScoreRepeat | Scenario::BlueFlagScore | Scenario::ReconnectFlagScore => &[
             ("server_username_seen", "compatbot"),
             ("server_flag_or_score", "flag"),
+        ],
+        Scenario::ReconnectFlagState => &[
+            ("server_username_seen", "compatbot"),
+            ("server_flag_pickup", "flag_pickup"),
+            ("server_flag_disconnect_return", "flag_disconnect_return"),
+            ("server_reconnect_state_coherent", "reconnect_state_coherent"),
         ],
         Scenario::MultiClientLoadScore => &[
             ("server_client_a_seen", "compatbota"),
@@ -975,12 +992,12 @@ fn default_port(backend: ServerBackend) -> u16 {
 
 fn print_usage(cfg: &Config) {
     println!(
-        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|combat-damage|flag-carrier-death-return|reconnect-flag-score|multi-client-load-score] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
+        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|combat-damage|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
 Automates a local Stevenarella compatibility smoke against a Minecraft {} / protocol {} server.\n\
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from Nickel config; env vars and later CLI flags override it.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.scenario.receipt.v2 JSON receipt for Cairn/Octet evidence flows.
-Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
+Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
 Use --expect-status-description/--expect-status-version/--expect-status-sample to assert status response fixture data, --packet-capture-summary for redacted capture summary metadata, and --proxy-route/--proxy-forwarding-mode for proxied-route receipt fields.\n\
 Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
 Use --run-matrix --receipt-dir DIR to run Paper and Valence receipts then compare them; add --dry-run after --run-matrix for a non-side-effecting matrix fixture.\n\
@@ -1575,7 +1592,9 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         });
     }
 
-    let runs = if matches!(
+    let runs = if cfg.scenario == Scenario::ReconnectFlagState {
+        run_reconnect_flag_state_scenario(cfg)?
+    } else if matches!(
         cfg.scenario,
         Scenario::MultiClientLoadScore | Scenario::CombatDamage | Scenario::FlagCarrierDeathReturn
     ) {
@@ -1594,7 +1613,10 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
     if cfg.scenario == Scenario::FlagCarrierDeathReturn && runs.len() >= 2 {
         combined_output.push_str("mc_compat_flag_carrier_death_client_count=2\n");
     }
-    if cfg.scenario == Scenario::ReconnectFlagScore {
+    if matches!(
+        cfg.scenario,
+        Scenario::ReconnectFlagScore | Scenario::ReconnectFlagState
+    ) {
         combined_output.push_str("mc_compat_reconnect_session=2\n");
     }
     for run in &runs {
@@ -1650,7 +1672,10 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
     });
     let classification = if matches!(
         cfg.scenario,
-        Scenario::MultiClientLoadScore | Scenario::CombatDamage | Scenario::FlagCarrierDeathReturn
+        Scenario::MultiClientLoadScore
+            | Scenario::CombatDamage
+            | Scenario::FlagCarrierDeathReturn
+            | Scenario::ReconnectFlagState
     ) && mixed_success
     {
         "multi-client-load-evidence"
@@ -1695,6 +1720,38 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         scenario: Some(scenario),
         server_scenario,
     })
+}
+
+fn run_reconnect_flag_state_scenario(cfg: &Config) -> Result<Vec<SingleClientRun>, String> {
+    let username = cfg.client_username.clone();
+    let mut runs = Vec::new();
+    for idx in 0..2 {
+        let log_path = std::env::temp_dir().join(format!(
+            "mc-compat-client.{username}.reconnect-state-session-{}.{}.log",
+            idx + 1,
+            std::process::id()
+        ));
+        let mut child = spawn_client_process(cfg, &username, idx, &log_path)?;
+        let status = child
+            .wait()
+            .map_err(|e| format!("wait reconnect state client session {}: {e}", idx + 1))?;
+        let output = fs::read_to_string(&log_path)
+            .map_err(|e| format!("read {}: {e}", log_path.display()))?;
+        let matched_success_pattern = cfg
+            .client_success_needles
+            .iter()
+            .find(|needle| output.contains(needle.as_str()))
+            .cloned();
+        runs.push(SingleClientRun {
+            username: username.clone(),
+            log_path,
+            exit_code: status.code(),
+            output,
+            matched_success_pattern,
+        });
+        thread::sleep(Duration::from_secs(4));
+    }
+    Ok(runs)
 }
 
 fn run_multi_client_load_scenario(cfg: &Config) -> Result<Vec<SingleClientRun>, String> {
@@ -1816,6 +1873,17 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
                 .env("MC_COMPAT_FLAG_PROBE_REPEAT", "2");
             if scenario == Scenario::ReconnectFlagScore {
                 cmd.env("MC_COMPAT_RECONNECT_PROBE", "1");
+            }
+        }
+        Scenario::ReconnectFlagState => {
+            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE_TEAM", "red");
+            if client_index == 0 {
+                cmd.env("MC_COMPAT_FLAG_PROBE", "1")
+                    .env("MC_COMPAT_FLAG_PROBE_TEAM", "red")
+                    .env("MC_COMPAT_FLAG_PROBE_PICKUP_ONLY", "1")
+                    .env("MC_COMPAT_FLAG_PROBE_REPEAT", "1");
             }
         }
         Scenario::InventoryInteraction => {
@@ -2019,6 +2087,13 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
             "health_death",
             "respawn_request",
         ],
+        Scenario::ReconnectFlagState => vec![
+            "login_success",
+            "play_join_game",
+            "flag_pickup",
+            "disconnect_reconnect",
+            "flag_state_reset",
+        ],
         Scenario::ReconnectFlagScore => vec![
             "login_success",
             "play_join_game",
@@ -2067,6 +2142,8 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         "server_combat_damage",
         "flag_carrier_death",
         "flag_return",
+        "flag_disconnect_return",
+        "reconnect_state_coherent",
     ];
     let gameplay_non_claims: Vec<&str> = vec![
         "full_ctf_correctness",
@@ -3181,6 +3258,10 @@ mod tests {
         let reconnect = test_config(&["--scenario", "reconnect-flag-score"], &[])
             .expect("reconnect scenario parses");
         assert_eq!(reconnect.scenario, Scenario::ReconnectFlagScore);
+
+        let reconnect_state = test_config(&["--scenario", "reconnect-flag-state"], &[])
+            .expect("reconnect flag-state scenario parses");
+        assert_eq!(reconnect_state.scenario, Scenario::ReconnectFlagState);
 
         let blue =
             test_config(&["--scenario", "blue-flag-score"], &[]).expect("blue scenario parses");

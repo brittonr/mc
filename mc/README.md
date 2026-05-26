@@ -108,6 +108,12 @@ nix run .#mc-compat-valence-ctf-combat-damage -- --dry-run
 nix run .#mc-compat-valence-ctf-flag-carrier-death-return
 # deterministic, non-side-effecting fixture for the same flag-carrier death/return command shape:
 nix run .#mc-compat-valence-ctf-flag-carrier-death-return -- --dry-run
+
+# Maintained protocol-763 Valence CTF reconnect flag-state receipt.
+# Requires one continuous Valence server, same-username reconnect, first-session flag pickup, disconnect flag return, and post-reconnect coherent flag state.
+nix run .#mc-compat-valence-ctf-reconnect-flag-state
+# deterministic, non-side-effecting fixture for the same reconnect flag-state command shape:
+nix run .#mc-compat-valence-ctf-reconnect-flag-state -- --dry-run
 ```
 
 `valence-compat-bot-probe` receipts add a `compat_bot_probe` block that records the owned local target, bounded one-client limit, non-public-stress-tool guard, and explicit `external_server_load_authorized=false` non-claim. `reconnect-flag-score` extends gameplay evidence with an explicit reconnect milestone.

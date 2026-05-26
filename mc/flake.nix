@@ -249,9 +249,37 @@
               mainProgram = "mc-compat-valence-ctf-flag-carrier-death-return";
             };
           };
+          mc-compat-valence-ctf-reconnect-flag-state = pkgs.writeShellApplication {
+            name = "mc-compat-valence-ctf-reconnect-flag-state";
+            runtimeInputs = [ mc-compat-runner ];
+            text = ''
+              mode="--run"
+              if [[ "''${1:-}" == "--dry-run" || "''${1:-}" == "--run" ]]; then
+                mode="$1"
+                shift
+              fi
+
+              receipt="''${MC_COMPAT_RECONNECT_FLAG_STATE_RECEIPT:-target/mc-compat-reconnect-flag-state/reconnect-flag-state.json}"
+              mkdir -p "$(dirname "$receipt")"
+
+              export SERVER_PROTOCOL="''${SERVER_PROTOCOL:-763}"
+              export SERVER_VERSION="''${SERVER_VERSION:-1.20.1}"
+              export VALENCE_REV="''${VALENCE_REV:-main}"
+              export VALENCE_EXAMPLE="''${VALENCE_EXAMPLE:-ctf}"
+              export VALENCE_WORKTREE="''${VALENCE_WORKTREE:-/tmp/valence-compat-763}"
+              export VALENCE_TARGET_DIR="''${VALENCE_TARGET_DIR:-/tmp/valence-compat-763-target}"
+              export CLIENT_TIMEOUT="''${CLIENT_TIMEOUT:-120}"
+
+              exec mc-compat-runner "$mode"                 --server-backend valence                 --scenario reconnect-flag-state                 --receipt "$receipt"                 "$@"
+            '';
+            meta = {
+              description = "Run the maintained protocol-763 Valence CTF reconnect flag-state receipt.";
+              mainProgram = "mc-compat-valence-ctf-reconnect-flag-state";
+            };
+          };
         in
         {
-          inherit mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-ctf-combat-damage mc-compat-valence-ctf-flag-carrier-death-return;
+          inherit mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-ctf-combat-damage mc-compat-valence-ctf-flag-carrier-death-return mc-compat-valence-ctf-reconnect-flag-state;
           cairn = cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn;
           cargo-octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.cargo-octet;
           octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.octet;
@@ -301,6 +329,13 @@
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-flag-carrier-death-return
           }/bin/mc-compat-valence-ctf-flag-carrier-death-return";
           meta.description = "Run the maintained protocol-763 Valence CTF flag-carrier death/return receipt.";
+        };
+        mc-compat-valence-ctf-reconnect-flag-state = {
+          type = "app";
+          program = "${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-reconnect-flag-state
+          }/bin/mc-compat-valence-ctf-reconnect-flag-state";
+          meta.description = "Run the maintained protocol-763 Valence CTF reconnect flag-state receipt.";
         };
         default = self.apps.${pkgs.stdenv.hostPlatform.system}.mc-compat-smoke;
       });
@@ -544,6 +579,35 @@
             grep -Fq '"expected_summary_packets": ["two_client_login", "play_join_game", "flag_pickup", "use_entity_attack", "health_death", "respawn_request"]' receipts/flag-carrier-death-receipt.json
             mkdir -p "$out"
             cp flag-carrier-death-dry-run.log receipts/flag-carrier-death-receipt.json "$out/"
+          '';
+        mc-compat-valence-ctf-reconnect-flag-state-dry-run =
+          pkgs.runCommand "mc-compat-valence-ctf-reconnect-flag-state-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
+            mkdir -p fake-stevenarella fake-valence receipts
+            printf '%s
+' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+            git -C fake-valence init
+            git -C fake-valence config user.email mc-compat@example.invalid
+            git -C fake-valence config user.name mc-compat
+            printf '%s
+' fake > fake-valence/README.md
+            git -C fake-valence add README.md
+            git -C fake-valence commit -m init
+            MC_COMPAT_RECONNECT_FLAG_STATE_RECEIPT="$PWD/receipts/reconnect-flag-state-receipt.json" ${
+              self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-reconnect-flag-state
+            }/bin/mc-compat-valence-ctf-reconnect-flag-state --dry-run --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD > reconnect-flag-state-dry-run.log
+            grep -Fq "scenario 'reconnect-flag-state'" reconnect-flag-state-dry-run.log
+            grep -Fq '"name": "reconnect-flag-state"' receipts/reconnect-flag-state-receipt.json
+            grep -Fq '"version": "1.20.1"' receipts/reconnect-flag-state-receipt.json
+            grep -Fq '"protocol": 763' receipts/reconnect-flag-state-receipt.json
+            grep -Fq '"timeout_secs": 120' receipts/reconnect-flag-state-receipt.json
+            grep -Fq '"reconnect_session"' receipts/reconnect-flag-state-receipt.json
+            grep -Fq '"flag_disconnect_return"' receipts/reconnect-flag-state-receipt.json
+            grep -Fq '"reconnect_state_coherent"' receipts/reconnect-flag-state-receipt.json
+            grep -Fq '"server_flag_disconnect_return"' receipts/reconnect-flag-state-receipt.json
+            grep -Fq '"server_reconnect_state_coherent"' receipts/reconnect-flag-state-receipt.json
+            grep -Fq '"expected_summary_packets": ["login_success", "play_join_game", "flag_pickup", "disconnect_reconnect", "flag_state_reset"]' receipts/reconnect-flag-state-receipt.json
+            mkdir -p "$out"
+            cp reconnect-flag-state-dry-run.log receipts/reconnect-flag-state-receipt.json "$out/"
           '';
         mc-compat-bot-probe-dry-run =
           pkgs.runCommand "mc-compat-bot-probe-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
