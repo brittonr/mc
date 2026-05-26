@@ -249,6 +249,41 @@
               mainProgram = "mc-compat-valence-ctf-combat-knockback";
             };
           };
+          mc-compat-valence-ctf-armor-equipment-mitigation = pkgs.writeShellApplication {
+            name = "mc-compat-valence-ctf-armor-equipment-mitigation";
+            runtimeInputs = [ mc-compat-runner ];
+            text = ''
+              mode="--run"
+              if [[ "''${1:-}" == "--dry-run" || "''${1:-}" == "--run" ]]; then
+                mode="$1"
+                shift
+              fi
+
+              receipt="''${MC_COMPAT_ARMOR_MITIGATION_RECEIPT:-target/mc-compat-armor-mitigation/armor-equipment-mitigation.json}"
+              mkdir -p "$(dirname "$receipt")"
+
+              export SERVER_PROTOCOL="''${SERVER_PROTOCOL:-763}"
+              export SERVER_VERSION="''${SERVER_VERSION:-1.20.1}"
+              export VALENCE_REV="''${VALENCE_REV:-main}"
+              export VALENCE_EXAMPLE="''${VALENCE_EXAMPLE:-ctf}"
+              export VALENCE_WORKTREE="''${VALENCE_WORKTREE:-/tmp/valence-compat-763}"
+              export VALENCE_TARGET_DIR="''${VALENCE_TARGET_DIR:-/tmp/valence-compat-763-target}"
+              export CLIENT_TIMEOUT="''${CLIENT_TIMEOUT:-120}"
+              export LIBGL_DRIVERS_PATH="''${LIBGL_DRIVERS_PATH:-${pkgs.mesa}/lib/dri}"
+              export GBM_BACKENDS_PATH="''${GBM_BACKENDS_PATH:-${pkgs.mesa}/lib/gbm}"
+              export __EGL_VENDOR_LIBRARY_DIRS="''${__EGL_VENDOR_LIBRARY_DIRS:-${pkgs.mesa}/share/glvnd/egl_vendor.d}"
+
+              exec mc-compat-runner "$mode" \
+                --server-backend valence \
+                --scenario armor-equipment-mitigation \
+                --receipt "$receipt" \
+                "$@"
+            '';
+            meta = {
+              description = "Run the maintained protocol-763 Valence CTF armor/equipment mitigation receipt.";
+              mainProgram = "mc-compat-valence-ctf-armor-equipment-mitigation";
+            };
+          };
           mc-compat-valence-ctf-flag-carrier-death-return = pkgs.writeShellApplication {
             name = "mc-compat-valence-ctf-flag-carrier-death-return";
             runtimeInputs = [ mc-compat-runner ];
@@ -345,7 +380,7 @@
           };
         in
         {
-          inherit mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-ctf-combat-damage mc-compat-valence-ctf-combat-knockback mc-compat-valence-ctf-flag-carrier-death-return mc-compat-valence-ctf-latency-jitter-inventory mc-compat-valence-ctf-reconnect-flag-state;
+          inherit mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-ctf-combat-damage mc-compat-valence-ctf-combat-knockback mc-compat-valence-ctf-armor-equipment-mitigation mc-compat-valence-ctf-flag-carrier-death-return mc-compat-valence-ctf-latency-jitter-inventory mc-compat-valence-ctf-reconnect-flag-state;
           cairn = cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn;
           cargo-octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.cargo-octet;
           octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.octet;
@@ -395,6 +430,13 @@
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-combat-knockback
           }/bin/mc-compat-valence-ctf-combat-knockback";
           meta.description = "Run the maintained protocol-763 Valence CTF combat knockback receipt.";
+        };
+        mc-compat-valence-ctf-armor-equipment-mitigation = {
+          type = "app";
+          program = "${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-armor-equipment-mitigation
+          }/bin/mc-compat-valence-ctf-armor-equipment-mitigation";
+          meta.description = "Run the maintained protocol-763 Valence CTF armor/equipment mitigation receipt.";
         };
         mc-compat-valence-ctf-flag-carrier-death-return = {
           type = "app";
@@ -671,6 +713,35 @@
             mkdir -p "$out"
             cp knockback-dry-run.log receipts/knockback-receipt.json "$out/"
           '';
+        mc-compat-valence-ctf-armor-equipment-mitigation-dry-run =
+          pkgs.runCommand "mc-compat-valence-ctf-armor-equipment-mitigation-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
+            mkdir -p fake-stevenarella fake-valence receipts
+            printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+            git -C fake-valence init
+            git -C fake-valence config user.email mc-compat@example.invalid
+            git -C fake-valence config user.name mc-compat
+            printf '%s\n' fake > fake-valence/README.md
+            git -C fake-valence add README.md
+            git -C fake-valence commit -m init
+            MC_COMPAT_ARMOR_MITIGATION_RECEIPT="$PWD/receipts/armor-mitigation-receipt.json" ${
+              self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-armor-equipment-mitigation
+            }/bin/mc-compat-valence-ctf-armor-equipment-mitigation --dry-run --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD > armor-mitigation-dry-run.log
+            grep -Fq "scenario 'armor-equipment-mitigation'" armor-mitigation-dry-run.log
+            grep -Fq '"name": "armor-equipment-mitigation"' receipts/armor-mitigation-receipt.json
+            grep -Fq '"version": "1.20.1"' receipts/armor-mitigation-receipt.json
+            grep -Fq '"protocol": 763' receipts/armor-mitigation-receipt.json
+            grep -Fq '"timeout_secs": 120' receipts/armor-mitigation-receipt.json
+            grep -Fq '"usernames": ["compatbota", "compatbotb"]' receipts/armor-mitigation-receipt.json
+            grep -Fq '"armor_inventory_slot"' receipts/armor-mitigation-receipt.json
+            grep -Fq '"combat_health_update"' receipts/armor-mitigation-receipt.json
+            grep -Fq '"server_equipment_state"' receipts/armor-mitigation-receipt.json
+            grep -Fq '"server_armor_mitigation"' receipts/armor-mitigation-receipt.json
+            grep -Fq '"expected_summary_packets": ["two_client_login", "play_join_game", "inventory_set_slot", "use_entity_attack", "armor_mitigation"]' receipts/armor-mitigation-receipt.json
+            grep -Fq '"claims_correctness": false' receipts/armor-mitigation-receipt.json
+            grep -Fq '"claims_semantic_equivalence": false' receipts/armor-mitigation-receipt.json
+            mkdir -p "$out"
+            cp armor-mitigation-dry-run.log receipts/armor-mitigation-receipt.json "$out/"
+          '';
         mc-compat-valence-ctf-flag-carrier-death-return-dry-run =
           pkgs.runCommand "mc-compat-valence-ctf-flag-carrier-death-return-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
             mkdir -p fake-stevenarella fake-valence receipts
@@ -772,6 +843,7 @@
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-inventory-interaction-dry-run} "$out/inventory-interaction"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-combat-damage-dry-run} "$out/combat-damage"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-combat-knockback-dry-run} "$out/combat-knockback"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-armor-equipment-mitigation-dry-run} "$out/armor-equipment-mitigation"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-flag-carrier-death-return-dry-run} "$out/flag-carrier-death-return"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-latency-jitter-inventory-dry-run} "$out/latency-jitter-inventory"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-reconnect-flag-state-dry-run} "$out/reconnect-flag-state"
@@ -787,6 +859,7 @@
           inventory-interaction
           combat-damage
           combat-knockback
+          armor-equipment-mitigation
           flag-carrier-death-return
           latency-jitter-inventory
           reconnect-flag-state
