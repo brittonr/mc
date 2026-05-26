@@ -441,7 +441,14 @@ impl Team {
 }
 
 fn digging(
-    mut clients: Query<(&GameMode, &Team, Entity, &mut Client, &mut Inventory)>,
+    mut clients: Query<(
+        &GameMode,
+        &Team,
+        Entity,
+        &mut Client,
+        &mut Inventory,
+        &Username,
+    )>,
     mut layers: Query<&mut ChunkLayer>,
     mut events: EventReader<DiggingEvent>,
     mut commands: Commands,
@@ -451,7 +458,9 @@ fn digging(
     let mut layer = layers.single_mut();
 
     for event in events.read() {
-        let Ok((game_mode, team, ent, mut client, mut inv)) = clients.get_mut(event.client) else {
+        let Ok((game_mode, team, ent, mut client, mut inv, username)) =
+            clients.get_mut(event.client)
+        else {
             continue;
         };
 
@@ -469,6 +478,14 @@ fn digging(
                         commands.entity(event.client).insert(HasFlag(Team::Red));
                         client.send_chat_message("You have the flag!".italic());
                         flag_manager.red = Some(ent);
+                        let milestone = format!(
+                            "MC-COMPAT-MILESTONE flag_pickup username={} carrier_team={:?} \
+                             flag_team=Red",
+                            username.as_str(),
+                            team
+                        );
+                        info!("{}", milestone);
+                        println!("{}", milestone);
                         return;
                     }
                 }
@@ -477,6 +494,14 @@ fn digging(
                         commands.entity(event.client).insert(HasFlag(Team::Blue));
                         client.send_chat_message("You have the flag!".italic());
                         flag_manager.blue = Some(ent);
+                        let milestone = format!(
+                            "MC-COMPAT-MILESTONE flag_pickup username={} carrier_team={:?} \
+                             flag_team=Blue",
+                            username.as_str(),
+                            team
+                        );
+                        info!("{}", milestone);
+                        println!("{}", milestone);
                         return;
                     }
                 }
@@ -1080,10 +1105,13 @@ struct CombatQuery {
     inventory: &'static Inventory,
     held_item: &'static HeldItem,
     team: &'static Team,
+    has_flag: Option<&'static HasFlag>,
 }
 
 fn handle_combat_events(
     server: Res<Server>,
+    mut commands: Commands,
+    mut flag_manager: ResMut<FlagManager>,
     mut clients: Query<CombatQuery>,
     mut sprinting: EventReader<SprintEvent>,
     mut interact_entity: EventReader<InteractEntityEvent>,
@@ -1173,6 +1201,38 @@ fn handle_combat_events(
         );
         info!("{}", milestone);
         println!("{}", milestone);
+
+        if victim.health.0 <= 0.0 {
+            if let Some(has_flag) = victim.has_flag.copied() {
+                let flag_name = match has_flag.0 {
+                    Team::Red => "red",
+                    Team::Blue => "blue",
+                };
+                let death = format!(
+                    "MC-COMPAT-MILESTONE flag_carrier_death carrier={} attacker={} flag_team={} \
+                     health_after={:.1}",
+                    victim.username.as_str(),
+                    attacker.username.as_str(),
+                    flag_name,
+                    victim.health.0
+                );
+                info!("{}", death);
+                println!("{}", death);
+                match has_flag.0 {
+                    Team::Red => flag_manager.red = None,
+                    Team::Blue => flag_manager.blue = None,
+                }
+                commands.entity(true_victim_ent).remove::<HasFlag>();
+                let returned = format!(
+                    "MC-COMPAT-MILESTONE flag_return carrier={} flag_team={} reason=carrier_death \
+                     score_unchanged=true",
+                    victim.username.as_str(),
+                    flag_name
+                );
+                info!("{}", returned);
+                println!("{}", returned);
+            }
+        }
     }
 }
 
