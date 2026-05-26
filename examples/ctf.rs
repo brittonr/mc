@@ -9,6 +9,7 @@ use valence::entity::living::Health;
 use valence::entity::pig::PigEntityBundle;
 use valence::entity::player::PlayerEntityBundle;
 use valence::entity::{EntityAnimations, EntityId, EntityStatuses, OnGround, Velocity};
+use valence::equipment::{Equipment, EquipmentInventorySync};
 use valence::interact_block::InteractBlockEvent;
 use valence::inventory::{
     ClickSlotEvent, DropItemStackEvent, HeldItem, OpenInventory, UpdateSelectedSlotEvent,
@@ -17,7 +18,8 @@ use valence::log::{debug, info};
 use valence::math::Vec3Swizzles;
 use valence::nbt::{compound, List};
 use valence::prelude::*;
-use valence::protocol::packets::play::ItemPickupAnimationS2c;
+use valence::protocol::packets::play::entity_equipment_update_s2c::EquipmentEntry;
+use valence::protocol::packets::play::{EntityEquipmentUpdateS2c, ItemPickupAnimationS2c};
 use valence::protocol::{VarInt, WritePacket};
 use valence::scoreboard::*;
 use valence::status::RequestRespawnEvent;
@@ -736,6 +738,7 @@ fn do_team_selector_portals(
             &mut HeadYaw,
             &mut GameMode,
             &mut Client,
+            &EntityId,
             &mut VisibleEntityLayers,
             &UniqueId,
             &Username,
@@ -757,6 +760,7 @@ fn do_team_selector_portals(
             mut head_yaw,
             mut game_mode,
             mut client,
+            entity_id,
             mut ent_layers,
             unique_id,
             username,
@@ -789,6 +793,25 @@ fn do_team_selector_portals(
                     None,
                 ),
             );
+            let equipment_update_probe = equipment_update_probe_enabled();
+            if equipment_update_probe && team == Team::Blue {
+                inventory.set_slot(
+                    ARMOR_MITIGATION_CHEST_SLOT,
+                    ItemStack::new(ItemKind::DiamondChestplate, 1, None),
+                );
+                println!(
+                    "MC-COMPAT-MILESTONE equipment_update_state username={} slot=chest \
+                     item=DiamondChestplate source=team_inventory_setup",
+                    username.as_str()
+                );
+                client.write_packet(&EntityEquipmentUpdateS2c {
+                    entity_id: entity_id.get().into(),
+                    equipment: vec![EquipmentEntry {
+                        slot: i8::try_from(Equipment::CHEST_IDX).expect("equipment slot fits i8"),
+                        item: ItemStack::new(ItemKind::DiamondChestplate, 1, None),
+                    }],
+                });
+            }
             if armor_mitigation_probe_enabled() && team == Team::Blue {
                 inventory.set_slot(
                     ARMOR_MITIGATION_CHEST_SLOT,
@@ -801,9 +824,16 @@ fn do_team_selector_portals(
                 );
             }
             let combat_state = CombatState::default();
-            commands
-                .entity(player)
-                .insert((team, inventory, combat_state));
+            let mut entity = commands.entity(player);
+            entity.insert((team, inventory, combat_state));
+            if equipment_update_probe && team == Team::Blue {
+                let mut equipment = Equipment::default();
+                equipment.set_chest(ItemStack::new(ItemKind::DiamondChestplate, 1, None));
+                entity.insert(equipment);
+            }
+            if armor_mitigation_probe_enabled() && team == Team::Blue {
+                entity.insert(EquipmentInventorySync);
+            }
             println!(
                 "MC-COMPAT-MILESTONE inventory_hotbar_select username={} slot=0 \
                  source=team_inventory_setup",
@@ -1271,13 +1301,12 @@ fn handle_combat_events(
             _ => 1.0,
         };
         let chest_item = victim.inventory.slot(ARMOR_MITIGATION_CHEST_SLOT).item;
-        let armor_mitigation = if armor_mitigation_probe_enabled()
-            && chest_item == ItemKind::DiamondChestplate
-        {
-            DIAMOND_CHESTPLATE_MITIGATION
-        } else {
-            0.0
-        };
+        let armor_mitigation =
+            if armor_mitigation_probe_enabled() && chest_item == ItemKind::DiamondChestplate {
+                DIAMOND_CHESTPLATE_MITIGATION
+            } else {
+                0.0
+            };
         let damage = (base_damage - armor_mitigation).max(0.0);
 
         victim.health.0 -= damage;
@@ -1347,6 +1376,12 @@ fn handle_combat_events(
 
 fn armor_mitigation_probe_enabled() -> bool {
     std::env::var("MC_COMPAT_ARMOR_MITIGATION_PROBE")
+        .map(|value| value != "0")
+        .unwrap_or(false)
+}
+
+fn equipment_update_probe_enabled() -> bool {
+    std::env::var("MC_COMPAT_EQUIPMENT_UPDATE_PROBE")
         .map(|value| value != "0")
         .unwrap_or(false)
 }
