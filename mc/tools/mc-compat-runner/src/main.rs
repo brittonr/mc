@@ -770,6 +770,7 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             ("inventory_sword_slot", "inventory_probe_slot36_nonempty"),
             ("inventory_wool_slot", "inventory_probe_slot37_stack"),
             ("inventory_drop_sent", "inventory_probe_drop_item_sent"),
+            ("inventory_pickup_seen", "inventory_probe_collect_item"),
             (
                 "inventory_block_place_sent",
                 "inventory_probe_place_block_sent",
@@ -823,6 +824,7 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
             ("server_username_seen", "compatbot"),
             ("server_inventory_hotbar_select", "inventory_hotbar_select"),
             ("server_inventory_drop", "inventory_drop_item"),
+            ("server_inventory_pickup", "inventory_pickup_item"),
             ("server_block_place", "block_place_item"),
         ],
     }
@@ -1920,9 +1922,11 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         "inventory_sword_slot",
         "inventory_wool_slot",
         "inventory_drop_sent",
+        "inventory_pickup_seen",
         "inventory_block_place_sent",
         "server_inventory_hotbar_select",
         "server_inventory_drop",
+        "server_inventory_pickup",
         "server_block_place",
         "reconnect_session",
         "multi_client_count",
@@ -3267,7 +3271,7 @@ RED: 1
     fn inventory_interaction_scenario_tracks_client_and_server_evidence() {
         let client = evaluate_scenario(
             Scenario::InventoryInteraction,
-            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\ninventory_probe_set_slot\ninventory_probe_slot36_nonempty\ninventory_probe_slot37_stack\ninventory_probe_drop_item_sent\ninventory_probe_place_block_sent\n",
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\ninventory_probe_set_slot\ninventory_probe_slot36_nonempty\ninventory_probe_slot37_stack\ninventory_probe_drop_item_sent\ninventory_probe_collect_item\ninventory_probe_place_block_sent\n",
         );
         assert!(client.passed, "{client:?}");
 
@@ -3282,7 +3286,7 @@ RED: 1
 
         let server = evaluate_server_scenario(
             Scenario::InventoryInteraction,
-            "compatbot joined\nMC-COMPAT-MILESTONE inventory_hotbar_select username=compatbot slot=0\nMC-COMPAT-MILESTONE inventory_drop_item username=compatbot from_slot=36 item=WoodenSword count=1\nMC-COMPAT-MILESTONE block_place_item username=compatbot item=RedWool from_slot=37 block=RedWool at=-40,65,0\n",
+            "compatbot joined\nMC-COMPAT-MILESTONE inventory_hotbar_select username=compatbot slot=0\nMC-COMPAT-MILESTONE inventory_drop_item username=compatbot from_slot=36 item=WoodenSword count=1\nMC-COMPAT-MILESTONE inventory_pickup_item username=compatbot from_slot=36 item=WoodenSword count=1 collected_entity_id=7630036 collector_entity_id=1\nMC-COMPAT-MILESTONE block_place_item username=compatbot item=RedWool from_slot=37 block=RedWool at=-40,65,0\n",
             "compatbot",
         );
         assert!(server.passed, "{server:?}");

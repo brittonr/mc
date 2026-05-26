@@ -387,9 +387,11 @@
             grep -Fq '"inventory_sword_slot"' receipts/inventory-receipt.json
             grep -Fq '"inventory_wool_slot"' receipts/inventory-receipt.json
             grep -Fq '"inventory_drop_sent"' receipts/inventory-receipt.json
+            grep -Fq '"inventory_pickup_seen"' receipts/inventory-receipt.json
             grep -Fq '"inventory_block_place_sent"' receipts/inventory-receipt.json
             grep -Fq '"server_inventory_hotbar_select"' receipts/inventory-receipt.json
             grep -Fq '"server_inventory_drop"' receipts/inventory-receipt.json
+            grep -Fq '"server_inventory_pickup"' receipts/inventory-receipt.json
             grep -Fq '"server_block_place"' receipts/inventory-receipt.json
             grep -Fq '"expected_summary_packets": ["login_success", "play_join_game", "inventory_set_slot", "player_action_drop_item", "player_block_placement"]' receipts/inventory-receipt.json
             mkdir -p "$out"
