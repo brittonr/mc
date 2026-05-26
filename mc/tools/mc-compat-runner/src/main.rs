@@ -773,6 +773,14 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             ("inventory_pickup_seen", "inventory_probe_collect_item"),
             ("inventory_click_sent", "inventory_probe_click_slot_sent"),
             (
+                "inventory_open_container_seen",
+                "inventory_probe_open_container",
+            ),
+            (
+                "inventory_container_click_sent",
+                "inventory_probe_container_click_sent",
+            ),
+            (
                 "inventory_block_place_sent",
                 "inventory_probe_place_block_sent",
             ),
@@ -827,6 +835,14 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
             ("server_inventory_drop", "inventory_drop_item"),
             ("server_inventory_pickup", "inventory_pickup_item"),
             ("server_inventory_click", "inventory_click_slot"),
+            (
+                "server_inventory_open_container",
+                "inventory_open_container",
+            ),
+            (
+                "server_inventory_container_click",
+                "inventory_container_click",
+            ),
             ("server_block_place", "block_place_item"),
         ],
     }
@@ -1894,6 +1910,7 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
             "play_join_game",
             "inventory_set_slot",
             "player_action_drop_item",
+            "open_container",
             "player_window_click",
             "player_block_placement",
         ],
@@ -1927,11 +1944,15 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         "inventory_drop_sent",
         "inventory_pickup_seen",
         "inventory_click_sent",
+        "inventory_open_container_seen",
+        "inventory_container_click_sent",
         "inventory_block_place_sent",
         "server_inventory_hotbar_select",
         "server_inventory_drop",
         "server_inventory_pickup",
         "server_inventory_click",
+        "server_inventory_open_container",
+        "server_inventory_container_click",
         "server_block_place",
         "reconnect_session",
         "multi_client_count",
@@ -3276,7 +3297,7 @@ RED: 1
     fn inventory_interaction_scenario_tracks_client_and_server_evidence() {
         let client = evaluate_scenario(
             Scenario::InventoryInteraction,
-            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\ninventory_probe_set_slot\ninventory_probe_slot36_nonempty\ninventory_probe_slot37_stack\ninventory_probe_drop_item_sent\ninventory_probe_collect_item\ninventory_probe_click_slot_sent\ninventory_probe_place_block_sent\n",
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\ninventory_probe_set_slot\ninventory_probe_slot36_nonempty\ninventory_probe_slot37_stack\ninventory_probe_drop_item_sent\ninventory_probe_collect_item\ninventory_probe_click_slot_sent\ninventory_probe_open_container\ninventory_probe_container_click_sent\ninventory_probe_place_block_sent\n",
         );
         assert!(client.passed, "{client:?}");
 
@@ -3291,7 +3312,7 @@ RED: 1
 
         let server = evaluate_server_scenario(
             Scenario::InventoryInteraction,
-            "compatbot joined\nMC-COMPAT-MILESTONE inventory_hotbar_select username=compatbot slot=0\nMC-COMPAT-MILESTONE inventory_drop_item username=compatbot from_slot=36 item=WoodenSword count=1\nMC-COMPAT-MILESTONE inventory_pickup_item username=compatbot from_slot=36 item=WoodenSword count=1 collected_entity_id=7630036 collector_entity_id=1\nMC-COMPAT-MILESTONE inventory_click_slot username=compatbot window=0 slot=37 button=0 mode=click carried_item=RedWool count=63 slot_after=empty\nMC-COMPAT-MILESTONE block_place_item username=compatbot item=RedWool from_slot=37 block=RedWool at=-40,65,0\n",
+            "compatbot joined\nMC-COMPAT-MILESTONE inventory_hotbar_select username=compatbot slot=0\nMC-COMPAT-MILESTONE inventory_drop_item username=compatbot from_slot=36 item=WoodenSword count=1\nMC-COMPAT-MILESTONE inventory_pickup_item username=compatbot from_slot=36 item=WoodenSword count=1 collected_entity_id=7630036 collector_entity_id=1\nMC-COMPAT-MILESTONE inventory_click_slot username=compatbot window=0 slot=37 button=0 mode=click carried_item=RedWool count=63 slot_after=empty\nMC-COMPAT-MILESTONE inventory_open_container username=compatbot kind=Generic3x3 trigger=inventory_click_slot\nMC-COMPAT-MILESTONE inventory_container_click username=compatbot window=1 slot=0 button=0 mode=click carried_item=Air count=0 slot_changes=1\nMC-COMPAT-MILESTONE block_place_item username=compatbot item=RedWool from_slot=37 block=RedWool at=-40,65,0\n",
             "compatbot",
         );
         assert!(server.passed, "{server:?}");
