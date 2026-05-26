@@ -33,6 +33,8 @@ const SPAWN_POS: [f64; 3] = [
 const SPAWN_BOX_WIDTH: i32 = 5;
 const SPAWN_BOX_HEIGHT: i32 = 4;
 const PLAYER_MAX_HEALTH: f32 = 20.0;
+const ARMOR_MITIGATION_CHEST_SLOT: u16 = 6;
+const DIAMOND_CHESTPLATE_MITIGATION: f32 = 2.0;
 
 pub fn main() {
     App::new()
@@ -787,6 +789,17 @@ fn do_team_selector_portals(
                     None,
                 ),
             );
+            if armor_mitigation_probe_enabled() && team == Team::Blue {
+                inventory.set_slot(
+                    ARMOR_MITIGATION_CHEST_SLOT,
+                    ItemStack::new(ItemKind::DiamondChestplate, 1, None),
+                );
+                println!(
+                    "MC-COMPAT-MILESTONE armor_equipment_state username={} slot=chest \
+                     item=DiamondChestplate source=team_inventory_setup",
+                    username.as_str()
+                );
+            }
             let combat_state = CombatState::default();
             commands
                 .entity(player)
@@ -1250,15 +1263,41 @@ fn handle_combat_events(
 
         let stack = attacker.inventory.slot(attacker.held_item.slot());
 
-        let damage = match stack.item {
+        let base_damage = match stack.item {
             ItemKind::WoodenSword => 4.0,
             ItemKind::StoneSword => 5.0,
             ItemKind::IronSword => 6.0,
             ItemKind::DiamondSword => 7.0,
             _ => 1.0,
         };
+        let chest_item = victim.inventory.slot(ARMOR_MITIGATION_CHEST_SLOT).item;
+        let armor_mitigation = if armor_mitigation_probe_enabled()
+            && chest_item == ItemKind::DiamondChestplate
+        {
+            DIAMOND_CHESTPLATE_MITIGATION
+        } else {
+            0.0
+        };
+        let damage = (base_damage - armor_mitigation).max(0.0);
 
         victim.health.0 -= damage;
+        if armor_mitigation > 0.0 {
+            let mitigation = format!(
+                "MC-COMPAT-MILESTONE combat_armor_mitigation attacker={} victim={} \
+                 base_damage={:.1} mitigation={:.1} final_damage={:.1} \
+                 chest_item={:?} victim_health_before={:.1} victim_health_after={:.1}",
+                attacker.username.as_str(),
+                victim.username.as_str(),
+                base_damage,
+                armor_mitigation,
+                damage,
+                chest_item,
+                victim.health.0 + damage,
+                victim.health.0
+            );
+            info!("{}", mitigation);
+            println!("{}", mitigation);
+        }
         let milestone = format!(
             "MC-COMPAT-MILESTONE combat_damage attacker={} victim={} damage={:.1} \
              victim_health_before={:.1} victim_health_after={:.1} attacker_item={:?}",
@@ -1304,6 +1343,12 @@ fn handle_combat_events(
             }
         }
     }
+}
+
+fn armor_mitigation_probe_enabled() -> bool {
+    std::env::var("MC_COMPAT_ARMOR_MITIGATION_PROBE")
+        .map(|value| value != "0")
+        .unwrap_or(false)
 }
 
 fn teleport_oob_clients(mut clients: Query<(&mut Position, &Team), With<Client>>) {
