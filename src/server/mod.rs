@@ -130,6 +130,7 @@ pub struct Server {
     flag_probe_capture_count: u32,
     flag_probe_score_count: u32,
     remote_player_entity_ids: Vec<i32>,
+    remote_player_targets: Vec<(i32, String)>,
 
     sun_model: Option<sun::SunModel>,
     target_info: target::Info,
@@ -672,6 +673,7 @@ impl Server {
             flag_probe_capture_count: 0,
             flag_probe_score_count: 0,
             remote_player_entity_ids: Vec::new(),
+            remote_player_targets: Vec::new(),
             sun_model: None,
 
             target_info: target::Info::new(),
@@ -904,7 +906,18 @@ impl Server {
                     && self.combat_probe_attacks_sent < attack_limit
                     && self.active_probe_ticks % 20 == 0
                 {
-                    if let Some(target_id) = self.remote_player_entity_ids.first().copied() {
+                    let target_name = std::env::var("MC_COMPAT_COMBAT_TARGET_USERNAME").ok();
+                    let target_id = target_name
+                        .as_deref()
+                        .and_then(|name| {
+                            self.remote_player_targets
+                                .iter()
+                                .rev()
+                                .find(|(_, player_name)| player_name == name)
+                                .map(|(entity_id, _)| *entity_id)
+                        })
+                        .or_else(|| self.remote_player_entity_ids.last().copied());
+                    if let Some(target_id) = target_id {
                         self.write_packet(packet::play::serverbound::UseEntity_Sneakflag {
                             target_id: protocol::VarInt(target_id),
                             ty: protocol::VarInt(1),
@@ -2308,6 +2321,9 @@ impl Server {
         );
         if !self.remote_player_entity_ids.contains(&entity_id) {
             self.remote_player_entity_ids.push(entity_id);
+            if let Some(name) = self.players.get(&uuid).map(|v| v.name.clone()) {
+                self.remote_player_targets.push((entity_id, name));
+            }
         }
         self.entity_map.insert(entity_id, entity);
     }
