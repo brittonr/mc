@@ -46,6 +46,7 @@ enum Scenario {
     FlagScoreRepeat,
     BlueFlagScore,
     InventoryInteraction,
+    CombatDamage,
     ReconnectFlagScore,
     MultiClientLoadScore,
 }
@@ -716,6 +717,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
         "flag-score-repeat" => Ok(Scenario::FlagScoreRepeat),
         "blue-flag-score" => Ok(Scenario::BlueFlagScore),
         "inventory-interaction" => Ok(Scenario::InventoryInteraction),
+        "combat-damage" => Ok(Scenario::CombatDamage),
         "reconnect-flag-score" => Ok(Scenario::ReconnectFlagScore),
         "multi-client-load-score" => Ok(Scenario::MultiClientLoadScore),
         other => Err(format!("unknown scenario: {other}")),
@@ -729,6 +731,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::FlagScoreRepeat => "flag-score-repeat",
         Scenario::BlueFlagScore => "blue-flag-score",
         Scenario::InventoryInteraction => "inventory-interaction",
+        Scenario::CombatDamage => "combat-damage",
         Scenario::ReconnectFlagScore => "reconnect-flag-score",
         Scenario::MultiClientLoadScore => "multi-client-load-score",
     }
@@ -784,6 +787,17 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
                 "inventory_block_place_sent",
                 "inventory_probe_place_block_sent",
             ),
+        ],
+        Scenario::CombatDamage => &[
+            ("multi_client_count", "mc_compat_combat_client_count=2"),
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("team_blue", "You are on team BLUE!"),
+            ("remote_player_spawn", "remote_player_spawn"),
+            ("combat_attack_sent", "combat_probe_attack_sent"),
+            ("combat_health_update", "update_health health=16.0"),
         ],
         Scenario::ReconnectFlagScore => &[
             ("protocol_detected", "Detected server protocol version"),
@@ -844,6 +858,11 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
                 "inventory_container_click",
             ),
             ("server_block_place", "block_place_item"),
+        ],
+        Scenario::CombatDamage => &[
+            ("server_client_a_seen", "compatbota"),
+            ("server_client_b_seen", "compatbotb"),
+            ("server_combat_damage", "combat_damage"),
         ],
     }
 }
@@ -920,7 +939,7 @@ fn default_port(backend: ServerBackend) -> u16 {
 
 fn print_usage(cfg: &Config) {
     println!(
-        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|reconnect-flag-score|multi-client-load-score] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
+        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|combat-damage|reconnect-flag-score|multi-client-load-score] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
 Automates a local Stevenarella compatibility smoke against a Minecraft {} / protocol {} server.\n\
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from Nickel config; env vars and later CLI flags override it.\n\
@@ -1520,7 +1539,10 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         });
     }
 
-    let runs = if cfg.scenario == Scenario::MultiClientLoadScore {
+    let runs = if matches!(
+        cfg.scenario,
+        Scenario::MultiClientLoadScore | Scenario::CombatDamage
+    ) {
         run_multi_client_load_scenario(cfg)?
     } else {
         vec![run_single_client(cfg, &cfg.client_username, 0)?]
@@ -1529,6 +1551,9 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
     let mut combined_output = String::new();
     if cfg.scenario == Scenario::MultiClientLoadScore && runs.len() >= 2 {
         combined_output.push_str("mc_compat_multi_client_count=2\n");
+    }
+    if cfg.scenario == Scenario::CombatDamage && runs.len() >= 2 {
+        combined_output.push_str("mc_compat_combat_client_count=2\n");
     }
     if cfg.scenario == Scenario::ReconnectFlagScore {
         combined_output.push_str("mc_compat_reconnect_session=2\n");
@@ -1584,7 +1609,11 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         run.exit_code == Some(0)
             || (run.exit_code == Some(124) && run.matched_success_pattern.is_some())
     });
-    let classification = if cfg.scenario == Scenario::MultiClientLoadScore && mixed_success {
+    let classification = if matches!(
+        cfg.scenario,
+        Scenario::MultiClientLoadScore | Scenario::CombatDamage
+    ) && mixed_success
+    {
         "multi-client-load-evidence"
     } else if all_success {
         "client-exited-success"
@@ -1756,6 +1785,18 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
                 .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
                 .env("MC_COMPAT_INVENTORY_PROBE", "1");
         }
+        Scenario::CombatDamage => {
+            let (team, role) = if client_index == 0 {
+                ("red", "attacker")
+            } else {
+                ("blue", "victim")
+            };
+            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE_TEAM", team)
+                .env("MC_COMPAT_COMBAT_PROBE", "1")
+                .env("MC_COMPAT_COMBAT_PROBE_ROLE", role);
+        }
         Scenario::MultiClientLoadScore => {
             cmd.env("MC_COMPAT_ACTIVE_PROBE", "1");
             if client_index == 0 {
@@ -1769,7 +1810,10 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
 }
 
 fn planned_client_usernames(cfg: &Config) -> Vec<String> {
-    if cfg.scenario == Scenario::MultiClientLoadScore {
+    if matches!(
+        cfg.scenario,
+        Scenario::MultiClientLoadScore | Scenario::CombatDamage
+    ) {
         vec![
             format!("{}a", cfg.client_username),
             format!("{}b", cfg.client_username),
@@ -1812,6 +1856,7 @@ fn requires_server_correlation(cfg: &Config) -> bool {
                 | Scenario::ReconnectFlagScore
                 | Scenario::MultiClientLoadScore
                 | Scenario::InventoryInteraction
+                | Scenario::CombatDamage
         )
 }
 
@@ -1914,6 +1959,7 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
             "player_window_click",
             "player_block_placement",
         ],
+        Scenario::CombatDamage => vec!["two_client_login", "play_join_game", "use_entity_attack"],
         Scenario::ReconnectFlagScore => vec![
             "login_success",
             "play_join_game",
@@ -1956,6 +2002,10 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         "server_block_place",
         "reconnect_session",
         "multi_client_count",
+        "remote_player_spawn",
+        "combat_attack_sent",
+        "combat_health_update",
+        "server_combat_damage",
     ];
     let gameplay_non_claims: Vec<&str> = vec![
         "full_ctf_correctness",
@@ -3259,6 +3309,42 @@ red flag captured
         assert!(missing_peer
             .missing_milestones
             .contains(&"server_client_b_seen"));
+    }
+
+    #[test]
+    fn combat_damage_scenario_tracks_client_and_server_evidence() {
+        let cfg = test_config(
+            &["--scenario", "combat-damage"],
+            &[("CLIENT_TIMEOUT", "150")],
+        )
+        .expect("combat config parses");
+        assert_eq!(
+            planned_client_usernames(&cfg),
+            vec!["compatbota", "compatbotb"]
+        );
+
+        let client = evaluate_scenario(
+            Scenario::CombatDamage,
+            "mc_compat_combat_client_count=2\nDetected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\nYou are on team BLUE!\nremote_player_spawn\ncombat_probe_attack_sent\nupdate_health health=16.0\n",
+        );
+        assert!(client.passed, "{client:?}");
+
+        let server = evaluate_server_scenario(
+            Scenario::CombatDamage,
+            "compatbota joined\ncompatbotb joined\nMC-COMPAT-MILESTONE combat_damage attacker=compatbota victim=compatbotb damage=4.0 victim_health_before=20.0 victim_health_after=16.0 attacker_item=WoodenSword\n",
+            "compatbot",
+        );
+        assert!(server.passed, "{server:?}");
+
+        let missing_damage = evaluate_server_scenario(
+            Scenario::CombatDamage,
+            "compatbota joined\ncompatbotb joined\n",
+            "compatbot",
+        );
+        assert!(!missing_damage.passed, "{missing_damage:?}");
+        assert!(missing_damage
+            .missing_milestones
+            .contains(&"server_combat_damage"));
     }
 
     #[test]

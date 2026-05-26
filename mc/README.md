@@ -96,6 +96,12 @@ nix run .#mc-compat-valence-ctf-blue-600s-soak -- --dry-run
 nix run .#mc-compat-valence-ctf-inventory-interaction
 # deterministic, non-side-effecting fixture for the same inventory/drop/pickup/click/open-container/block-place command shape:
 nix run .#mc-compat-valence-ctf-inventory-interaction -- --dry-run
+
+# Maintained protocol-763 Valence CTF two-client combat/damage receipt.
+# Requires both clients to join/select opposing teams, Stevenarella attack + victim health-update milestones, and Valence combat_damage server correlation.
+nix run .#mc-compat-valence-ctf-combat-damage
+# deterministic, non-side-effecting fixture for the same combat command shape:
+nix run .#mc-compat-valence-ctf-combat-damage -- --dry-run
 ```
 
 `valence-compat-bot-probe` receipts add a `compat_bot_probe` block that records the owned local target, bounded one-client limit, non-public-stress-tool guard, and explicit `external_server_load_authorized=false` non-claim. `reconnect-flag-score` extends gameplay evidence with an explicit reconnect milestone.

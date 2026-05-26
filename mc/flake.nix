@@ -185,9 +185,41 @@
               mainProgram = "mc-compat-valence-ctf-inventory-interaction";
             };
           };
+          mc-compat-valence-ctf-combat-damage = pkgs.writeShellApplication {
+            name = "mc-compat-valence-ctf-combat-damage";
+            runtimeInputs = [ mc-compat-runner ];
+            text = ''
+              mode="--run"
+              if [[ "''${1:-}" == "--dry-run" || "''${1:-}" == "--run" ]]; then
+                mode="$1"
+                shift
+              fi
+
+              receipt="''${MC_COMPAT_COMBAT_RECEIPT:-target/mc-compat-combat/combat-damage.json}"
+              mkdir -p "$(dirname "$receipt")"
+
+              export SERVER_PROTOCOL="''${SERVER_PROTOCOL:-763}"
+              export SERVER_VERSION="''${SERVER_VERSION:-1.20.1}"
+              export VALENCE_REV="''${VALENCE_REV:-main}"
+              export VALENCE_EXAMPLE="''${VALENCE_EXAMPLE:-ctf}"
+              export VALENCE_WORKTREE="''${VALENCE_WORKTREE:-/tmp/valence-compat-763}"
+              export VALENCE_TARGET_DIR="''${VALENCE_TARGET_DIR:-/tmp/valence-compat-763-target}"
+              export CLIENT_TIMEOUT="''${CLIENT_TIMEOUT:-120}"
+
+              exec mc-compat-runner "$mode" \
+                --server-backend valence \
+                --scenario combat-damage \
+                --receipt "$receipt" \
+                "$@"
+            '';
+            meta = {
+              description = "Run the maintained protocol-763 Valence CTF combat damage receipt.";
+              mainProgram = "mc-compat-valence-ctf-combat-damage";
+            };
+          };
         in
         {
-          inherit mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction;
+          inherit mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-ctf-combat-damage;
           cairn = cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn;
           cargo-octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.cargo-octet;
           octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.octet;
@@ -223,6 +255,13 @@
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-inventory-interaction
           }/bin/mc-compat-valence-ctf-inventory-interaction";
           meta.description = "Run the maintained protocol-763 Valence CTF inventory/drop interaction receipt.";
+        };
+        mc-compat-valence-ctf-combat-damage = {
+          type = "app";
+          program = "${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-combat-damage
+          }/bin/mc-compat-valence-ctf-combat-damage";
+          meta.description = "Run the maintained protocol-763 Valence CTF combat damage receipt.";
         };
         default = self.apps.${pkgs.stdenv.hostPlatform.system}.mc-compat-smoke;
       });
@@ -402,6 +441,38 @@
             grep -Fq '"expected_summary_packets": ["login_success", "play_join_game", "inventory_set_slot", "player_action_drop_item", "open_container", "player_window_click", "player_block_placement"]' receipts/inventory-receipt.json
             mkdir -p "$out"
             cp inventory-dry-run.log receipts/inventory-receipt.json "$out/"
+          '';
+        mc-compat-valence-ctf-combat-damage-dry-run =
+          pkgs.runCommand "mc-compat-valence-ctf-combat-damage-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
+            mkdir -p fake-stevenarella fake-valence receipts
+            printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+            git -C fake-valence init
+            git -C fake-valence config user.email mc-compat@example.invalid
+            git -C fake-valence config user.name mc-compat
+            printf '%s\n' fake > fake-valence/README.md
+            git -C fake-valence add README.md
+            git -C fake-valence commit -m init
+            MC_COMPAT_COMBAT_RECEIPT="$PWD/receipts/combat-receipt.json" ${
+              self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-combat-damage
+            }/bin/mc-compat-valence-ctf-combat-damage --dry-run --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD > combat-dry-run.log
+            grep -Fq "scenario 'combat-damage'" combat-dry-run.log
+            grep -Fq '"name": "combat-damage"' receipts/combat-receipt.json
+            grep -Fq '"version": "1.20.1"' receipts/combat-receipt.json
+            grep -Fq '"protocol": 763' receipts/combat-receipt.json
+            grep -Fq '"timeout_secs": 120' receipts/combat-receipt.json
+            grep -Fq '"usernames": ["compatbota", "compatbotb"]' receipts/combat-receipt.json
+            grep -Fq '"multi_client_count"' receipts/combat-receipt.json
+            grep -Fq '"team_red"' receipts/combat-receipt.json
+            grep -Fq '"team_blue"' receipts/combat-receipt.json
+            grep -Fq '"remote_player_spawn"' receipts/combat-receipt.json
+            grep -Fq '"combat_attack_sent"' receipts/combat-receipt.json
+            grep -Fq '"combat_health_update"' receipts/combat-receipt.json
+            grep -Fq '"server_client_a_seen"' receipts/combat-receipt.json
+            grep -Fq '"server_client_b_seen"' receipts/combat-receipt.json
+            grep -Fq '"server_combat_damage"' receipts/combat-receipt.json
+            grep -Fq '"expected_summary_packets": ["two_client_login", "play_join_game", "use_entity_attack"]' receipts/combat-receipt.json
+            mkdir -p "$out"
+            cp combat-dry-run.log receipts/combat-receipt.json "$out/"
           '';
         mc-compat-bot-probe-dry-run =
           pkgs.runCommand "mc-compat-bot-probe-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
