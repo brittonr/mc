@@ -14,7 +14,7 @@ const DEFAULT_SERVER_PROTOCOL: u32 = 758;
 const DEFAULT_CLIENT_USERNAME: &str = "compatbot";
 const DEFAULT_CLIENT_TIMEOUT_SECS: u64 = 20;
 const MULTI_CLIENT_LOAD_PEER_TIMEOUT_SECS: u64 = 10;
-const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|combat-damage|combat-knockback|armor-equipment-mitigation|equipment-update-observation|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score";
+const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|combat-damage|combat-knockback|armor-equipment-mitigation|equipment-update-observation|projectile-hit|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
     "Dimension type:",
@@ -51,6 +51,7 @@ enum Scenario {
     CombatKnockback,
     ArmorEquipmentMitigation,
     EquipmentUpdateObservation,
+    ProjectileHit,
     FlagCarrierDeathReturn,
     ReconnectFlagState,
     ReconnectFlagScore,
@@ -727,6 +728,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
         "combat-knockback" => Ok(Scenario::CombatKnockback),
         "armor-equipment-mitigation" => Ok(Scenario::ArmorEquipmentMitigation),
         "equipment-update-observation" => Ok(Scenario::EquipmentUpdateObservation),
+        "projectile-hit" => Ok(Scenario::ProjectileHit),
         "flag-carrier-death-return" => Ok(Scenario::FlagCarrierDeathReturn),
         "reconnect-flag-state" => Ok(Scenario::ReconnectFlagState),
         "reconnect-flag-score" => Ok(Scenario::ReconnectFlagScore),
@@ -746,6 +748,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::CombatKnockback => "combat-knockback",
         Scenario::ArmorEquipmentMitigation => "armor-equipment-mitigation",
         Scenario::EquipmentUpdateObservation => "equipment-update-observation",
+        Scenario::ProjectileHit => "projectile-hit",
         Scenario::FlagCarrierDeathReturn => "flag-carrier-death-return",
         Scenario::ReconnectFlagState => "reconnect-flag-state",
         Scenario::ReconnectFlagScore => "reconnect-flag-score",
@@ -851,9 +854,22 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             ("team_blue", "You are on team BLUE!"),
             ("remote_player_spawn", "remote_player_spawn"),
             (
-                "equipment_packet_observed",
-                "equipment_probe_entity_equipment",
+                "entity_equipment_update",
+                "equipment_probe_entity_equipment slot=chest",
             ),
+        ],
+        Scenario::ProjectileHit => &[
+            (
+                "multi_client_count",
+                "mc_compat_projectile_hit_client_count=2",
+            ),
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("remote_player_spawn", "remote_player_spawn"),
+            ("projectile_use_sent", "projectile_probe_use_item_sent"),
+            ("projectile_swing_sent", "projectile_probe_swing_sent"),
         ],
         Scenario::FlagCarrierDeathReturn => &[
             (
@@ -983,6 +999,11 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
             ("server_client_a_seen", "compatbota"),
             ("server_client_b_seen", "compatbotb"),
             ("server_equipment_update_state", "equipment_update_state"),
+        ],
+        Scenario::ProjectileHit => &[
+            ("server_client_a_seen", "compatbota"),
+            ("server_client_b_seen", "compatbotb"),
+            ("server_projectile_loadout", "projectile_loadout"),
         ],
         Scenario::FlagCarrierDeathReturn => &[
             ("server_client_a_seen", "compatbota"),
@@ -1682,6 +1703,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
             | Scenario::CombatKnockback
             | Scenario::ArmorEquipmentMitigation
             | Scenario::EquipmentUpdateObservation
+            | Scenario::ProjectileHit
             | Scenario::FlagCarrierDeathReturn
     ) {
         run_multi_client_load_scenario(cfg)?
@@ -1705,6 +1727,9 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
     }
     if cfg.scenario == Scenario::EquipmentUpdateObservation && runs.len() >= 2 {
         combined_output.push_str("mc_compat_equipment_update_client_count=2\n");
+    }
+    if cfg.scenario == Scenario::ProjectileHit && runs.len() >= 2 {
+        combined_output.push_str("mc_compat_projectile_hit_client_count=2\n");
     }
     if matches!(
         cfg.scenario,
@@ -1769,6 +1794,8 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
             | Scenario::CombatDamage
             | Scenario::CombatKnockback
             | Scenario::ArmorEquipmentMitigation
+            | Scenario::EquipmentUpdateObservation
+            | Scenario::ProjectileHit
             | Scenario::FlagCarrierDeathReturn
             | Scenario::ReconnectFlagState
     ) && mixed_success
@@ -1994,6 +2021,22 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
                 .env("MC_COMPAT_TEAM_PROBE_TEAM", team)
                 .env("MC_COMPAT_EQUIPMENT_PROBE", "1");
         }
+        Scenario::ProjectileHit => {
+            let (team, role) = if client_index == 0 {
+                ("red", "attacker")
+            } else {
+                ("blue", "victim")
+            };
+            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE_TEAM", team)
+                .env("MC_COMPAT_COMBAT_PROBE", "1")
+                .env("MC_COMPAT_COMBAT_PROBE_ROLE", role)
+                .env("MC_COMPAT_PROJECTILE_PROBE", "1");
+            if role == "attacker" {
+                cmd.env("MC_COMPAT_COMBAT_TARGET_USERNAME", "compatbotb");
+            }
+        }
         Scenario::CombatDamage
         | Scenario::CombatKnockback
         | Scenario::ArmorEquipmentMitigation
@@ -2049,6 +2092,7 @@ fn planned_client_usernames(cfg: &Config) -> Vec<String> {
             | Scenario::CombatKnockback
             | Scenario::ArmorEquipmentMitigation
             | Scenario::EquipmentUpdateObservation
+            | Scenario::ProjectileHit
             | Scenario::FlagCarrierDeathReturn
     ) {
         vec![
@@ -2097,6 +2141,7 @@ fn requires_server_correlation(cfg: &Config) -> bool {
                 | Scenario::CombatKnockback
                 | Scenario::ArmorEquipmentMitigation
                 | Scenario::EquipmentUpdateObservation
+                | Scenario::ProjectileHit
                 | Scenario::FlagCarrierDeathReturn
         )
 }
@@ -2259,6 +2304,12 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
             "play_join_game",
             "entity_equipment_update",
         ],
+        Scenario::ProjectileHit => vec![
+            "two_client_login",
+            "play_join_game",
+            "projectile_use_item",
+            "projectile_hit_attribution",
+        ],
         Scenario::FlagCarrierDeathReturn => vec![
             "two_client_login",
             "play_join_game",
@@ -2328,6 +2379,10 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         "server_armor_mitigation",
         "server_combat_damage",
         "server_combat_knockback",
+        "projectile_use_sent",
+        "projectile_swing_sent",
+        "server_projectile_use",
+        "server_projectile_hit",
         "flag_carrier_death",
         "flag_return",
         "flag_disconnect_return",
@@ -2338,6 +2393,9 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         "broad_minecraft_compatibility",
         "unbounded_soak",
         "production_load",
+        "full_projectile_physics",
+        "all_projectile_weapons",
+        "enchantments_or_status_effects",
     ];
     let error_json = error
         .map(|err| json_string(err))

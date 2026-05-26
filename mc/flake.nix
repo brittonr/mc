@@ -319,6 +319,42 @@
               mainProgram = "mc-compat-valence-ctf-equipment-update-observation";
             };
           };
+          mc-compat-valence-ctf-projectile-hit = pkgs.writeShellApplication {
+            name = "mc-compat-valence-ctf-projectile-hit";
+            runtimeInputs = [ mc-compat-runner ];
+            text = ''
+              mode="--run"
+              if [[ "''${1:-}" == "--dry-run" || "''${1:-}" == "--run" ]]; then
+                mode="$1"
+                shift
+              fi
+
+              receipt="''${MC_COMPAT_PROJECTILE_HIT_RECEIPT:-target/mc-compat-projectile-hit/projectile-hit.json}"
+              mkdir -p "$(dirname "$receipt")"
+
+              export SERVER_PROTOCOL="''${SERVER_PROTOCOL:-763}"
+              export SERVER_VERSION="''${SERVER_VERSION:-1.20.1}"
+              export VALENCE_REV="''${VALENCE_REV:-main}"
+              export VALENCE_EXAMPLE="''${VALENCE_EXAMPLE:-ctf}"
+              export VALENCE_WORKTREE="''${VALENCE_WORKTREE:-/tmp/valence-compat-763}"
+              export VALENCE_TARGET_DIR="''${VALENCE_TARGET_DIR:-/tmp/valence-compat-763-target}"
+              export CLIENT_TIMEOUT="''${CLIENT_TIMEOUT:-240}"
+              export MC_COMPAT_PROJECTILE_PROBE="''${MC_COMPAT_PROJECTILE_PROBE:-1}"
+              export LIBGL_DRIVERS_PATH="''${LIBGL_DRIVERS_PATH:-${pkgs.mesa}/lib/dri}"
+              export GBM_BACKENDS_PATH="''${GBM_BACKENDS_PATH:-${pkgs.mesa}/lib/gbm}"
+              export __EGL_VENDOR_LIBRARY_DIRS="''${__EGL_VENDOR_LIBRARY_DIRS:-${pkgs.mesa}/share/glvnd/egl_vendor.d}"
+
+              exec mc-compat-runner "$mode" \
+                --server-backend valence \
+                --scenario projectile-hit \
+                --receipt "$receipt" \
+                "$@"
+            '';
+            meta = {
+              description = "Run the maintained protocol-763 Valence CTF projectile hit receipt.";
+              mainProgram = "mc-compat-valence-ctf-projectile-hit";
+            };
+          };
           mc-compat-valence-ctf-flag-carrier-death-return = pkgs.writeShellApplication {
             name = "mc-compat-valence-ctf-flag-carrier-death-return";
             runtimeInputs = [ mc-compat-runner ];
@@ -415,7 +451,7 @@
           };
         in
         {
-          inherit mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-ctf-combat-damage mc-compat-valence-ctf-combat-knockback mc-compat-valence-ctf-armor-equipment-mitigation mc-compat-valence-ctf-equipment-update-observation mc-compat-valence-ctf-flag-carrier-death-return mc-compat-valence-ctf-latency-jitter-inventory mc-compat-valence-ctf-reconnect-flag-state;
+          inherit mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-ctf-combat-damage mc-compat-valence-ctf-combat-knockback mc-compat-valence-ctf-armor-equipment-mitigation mc-compat-valence-ctf-equipment-update-observation mc-compat-valence-ctf-projectile-hit mc-compat-valence-ctf-flag-carrier-death-return mc-compat-valence-ctf-latency-jitter-inventory mc-compat-valence-ctf-reconnect-flag-state;
           cairn = cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn;
           cargo-octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.cargo-octet;
           octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.octet;
@@ -480,7 +516,14 @@
           }/bin/mc-compat-valence-ctf-equipment-update-observation";
           meta.description = "Run the maintained protocol-763 Valence CTF entity equipment update observation receipt.";
         };
-        mc-compat-combo = self.apps.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-equipment-update-observation;
+        mc-compat-valence-ctf-projectile-hit = {
+          type = "app";
+          program = "${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-projectile-hit
+          }/bin/mc-compat-valence-ctf-projectile-hit";
+          meta.description = "Run the maintained protocol-763 Valence CTF projectile hit receipt.";
+        };
+        mc-compat-combo = self.apps.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-projectile-hit;
         mc-compat-valence-ctf-flag-carrier-death-return = {
           type = "app";
           program = "${
@@ -812,6 +855,34 @@
             mkdir -p "$out"
             cp equipment-update-dry-run.log receipts/equipment-update-receipt.json "$out/"
           '';
+        mc-compat-valence-ctf-projectile-hit-dry-run =
+          pkgs.runCommand "mc-compat-valence-ctf-projectile-hit-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
+            mkdir -p fake-stevenarella fake-valence receipts
+            printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+            git -C fake-valence init
+            git -C fake-valence config user.email mc-compat@example.invalid
+            git -C fake-valence config user.name mc-compat
+            printf '%s\n' fake > fake-valence/README.md
+            git -C fake-valence add README.md
+            git -C fake-valence commit -m init
+            MC_COMPAT_PROJECTILE_HIT_RECEIPT="$PWD/receipts/projectile-hit-receipt.json" ${
+              self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-projectile-hit
+            }/bin/mc-compat-valence-ctf-projectile-hit --dry-run --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD > projectile-hit-dry-run.log
+            grep -Fq "scenario 'projectile-hit'" projectile-hit-dry-run.log
+            grep -Fq '"name": "projectile-hit"' receipts/projectile-hit-receipt.json
+            grep -Fq '"version": "1.20.1"' receipts/projectile-hit-receipt.json
+            grep -Fq '"protocol": 763' receipts/projectile-hit-receipt.json
+            grep -Fq '"timeout_secs": 240' receipts/projectile-hit-receipt.json
+            grep -Fq '"usernames": ["compatbota", "compatbotb"]' receipts/projectile-hit-receipt.json
+            grep -Fq '"projectile_use_sent"' receipts/projectile-hit-receipt.json
+            grep -Fq '"projectile_swing_sent"' receipts/projectile-hit-receipt.json
+            grep -Fq '"server_projectile_loadout"' receipts/projectile-hit-receipt.json
+            grep -Fq '"expected_summary_packets": ["two_client_login", "play_join_game", "projectile_use_item", "projectile_hit_attribution"]' receipts/projectile-hit-receipt.json
+            grep -Fq '"claims_correctness": false' receipts/projectile-hit-receipt.json
+            grep -Fq '"claims_semantic_equivalence": false' receipts/projectile-hit-receipt.json
+            mkdir -p "$out"
+            cp projectile-hit-dry-run.log receipts/projectile-hit-receipt.json "$out/"
+          '';
         mc-compat-valence-ctf-flag-carrier-death-return-dry-run =
           pkgs.runCommand "mc-compat-valence-ctf-flag-carrier-death-return-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
             mkdir -p fake-stevenarella fake-valence receipts
@@ -915,6 +986,7 @@
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-combat-knockback-dry-run} "$out/combat-knockback"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-armor-equipment-mitigation-dry-run} "$out/armor-equipment-mitigation"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-equipment-update-observation-dry-run} "$out/equipment-update-observation"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-projectile-hit-dry-run} "$out/projectile-hit"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-flag-carrier-death-return-dry-run} "$out/flag-carrier-death-return"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-latency-jitter-inventory-dry-run} "$out/latency-jitter-inventory"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-reconnect-flag-state-dry-run} "$out/reconnect-flag-state"
@@ -1140,7 +1212,7 @@
           grep -Fq -- "--apply" help.log
           grep -Fq -- "--stop" help.log
           grep -Fq -- "--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT" help.log
-          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|combat-damage|combat-knockback|armor-equipment-mitigation|equipment-update-observation|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score" help.log
+          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|combat-damage|combat-knockback|armor-equipment-mitigation|equipment-update-observation|projectile-hit|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score" help.log
           grep -Fq "MC_COMPAT_SCENARIO" help.log
           grep -Fq -- "--expect-status-description" help.log
           grep -Fq -- "--packet-capture-summary" help.log
