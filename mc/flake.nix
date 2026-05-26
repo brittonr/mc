@@ -480,6 +480,7 @@
           }/bin/mc-compat-valence-ctf-equipment-update-observation";
           meta.description = "Run the maintained protocol-763 Valence CTF entity equipment update observation receipt.";
         };
+        mc-compat-combo = self.apps.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-equipment-update-observation;
         mc-compat-valence-ctf-flag-carrier-death-return = {
           type = "app";
           program = "${
@@ -501,7 +502,7 @@
           }/bin/mc-compat-valence-ctf-reconnect-flag-state";
           meta.description = "Run the maintained protocol-763 Valence CTF reconnect flag-state receipt.";
         };
-        default = self.apps.${pkgs.stdenv.hostPlatform.system}.mc-compat-smoke;
+        default = self.apps.${pkgs.stdenv.hostPlatform.system}.mc-compat-combo;
       });
 
       checks = eachSystem (pkgs: {
