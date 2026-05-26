@@ -17,14 +17,15 @@ This matrix indexes landed, bounded protocol-763 compatibility evidence for the 
 | Two-client combat/damage | `nix run .#mc-compat-valence-ctf-combat-damage` | `target/mc-compat-combat/combat-damage.json` | `docs/evidence/valence-ctf-combat-damage.md` | `b67962dd5d4fe7242b69fd7c879390e80e13528475d55d7feb5305289f762ac8` | parent `5d82476`, Valence `3835dab`, Stevenarella `2447d8e` | Two deterministic clients on opposing teams with attack, health-update, and Valence `combat_damage` correlation. | No projectile/armor/knockback or full combat balancing claim. |
 | Flag-carrier death/return | `nix run .#mc-compat-valence-ctf-flag-carrier-death-return` | `target/mc-compat-flag-carrier-death/flag-carrier-death-return.json` | `docs/evidence/valence-ctf-flag-carrier-death-return.md` | `d4202d7f04245dd385f16f9a174b84fa59a837fd75a8f9ba7db3cc7adaf692a4` | parent `a4903a4`, Valence `0441d88`, Stevenarella `dd1e1d2` | Flag pickup, carrier death/drop, flag return/reset, respawn evidence, and no unexpected score. | No all death/drop/recovery permutations. |
 | Reconnect flag-state | `nix run .#mc-compat-valence-ctf-reconnect-flag-state` | `target/mc-compat-reconnect-flag-state/reconnect-flag-state.json` | `docs/evidence/valence-ctf-reconnect-flag-state.md` | `4d848af56b25ad4b3c466863bac5b2052adbbc1c59e2b2164bfb2a696c225cb3` | parent `35e6000`, Valence `a5c98df` | One continuous Valence server, same-username reconnect, first-session flag pickup, disconnect flag return, and second-session coherent flag state. | No unbounded reconnect safety or persistence semantics beyond this fixture. |
+| Latency/jitter tolerance | `nix run .#mc-compat-valence-ctf-latency-jitter-inventory` | `target/mc-compat-latency-jitter/latency-jitter-inventory.json` | `docs/evidence/valence-ctf-latency-jitter-inventory.md` | `a4a407fb1ac3aceae06faeacb794891ff8411c8ac86470c651c89b37b6c7f33d` | parent `9f95656` | Bounded perturbation metadata over the inventory semantic rail without privileged network mutation. | No WAN, adversarial network, or production load safety claim. |
+| Combat knockback | `nix run .#mc-compat-valence-ctf-combat-knockback` | `target/mc-compat-knockback/combat-knockback.json` | `docs/evidence/valence-ctf-combat-knockback.md` | `a5d0ba5ea6155a99b58f245a03195da05b4925d7bd151b5b3f67503ae7a4cf09` | parent `this-commit`, Valence `e401e76`, Stevenarella `3884f0a` | Two deterministic clients on opposing teams with attack, health-update, victim `EntityVelocity`, and Valence `combat_knockback` correlation. | No projectile, armor/enchantment, exact vanilla knockback balancing, or full combat correctness claim. |
 
 ## Remaining gaps and non-claims
 
 | Gap | Status | Why it remains | Next ROI |
 | --- | --- | --- | --- |
-| Acceptance matrix freshness | This document is now machine-checked for required fields. | Future evidence rows can still stale if receipts are replaced without updating hashes. | Keep checker in CI/local gates. |
-| Latency/jitter tolerance | Open Cairn `roi-04-latency-jitter-tolerance`. | Current receipts run on local low-jitter loopback without bounded network impairment. | Add maintained bounded jitter/latency wrapper and receipt. |
-| Projectile/armor/knockback combat | Open Cairn `roi-05-projectile-armor-knockback-combat`. | Current combat covers melee damage/health and flag death; it does not cover projectiles, armor mitigation, or knockback bounds. | Add richer combat rail. |
+| Acceptance matrix freshness | This document is machine-checked for required fields. | Future evidence rows can still stale if receipts are replaced without updating hashes. | Keep checker in CI/local gates. |
+| Projectile/armor residual combat | Knockback slice is covered; projectile and armor/enchantment mitigation remain open as non-claims. | The current richer combat rail covers melee damage plus knockback only. | Add projectile or armor rail only when ROI justifies. |
 | Broad protocol coverage | Non-claim. | Evidence targets protocol-763 Valence CTF flows, not all packets/states/features. | Add targeted seams only when ROI justifies. |
 | Production load / multiplayer scale | Non-claim. | Existing soaks are bounded local compatibility receipts, not production load tests. | Separate load-test design if needed. |
 | Full CTF correctness | Non-claim. | Scoring, death/return, reconnect, inventory, and combat seams are covered separately but do not prove all game rules. | Continue seam-by-seam evidence. |
@@ -36,7 +37,7 @@ Original ROI order from the compatibility brainstorm was:
 1. `roi-01-flag-carrier-death-return` — drained at parent `a4903a4`.
 2. `roi-02-reconnect-flag-state` — drained at parent `35e6000`.
 3. `roi-03-acceptance-matrix-gap-checklist` — this matrix/checker slice.
-4. `roi-04-latency-jitter-tolerance` — next open implementation slice.
-5. `roi-05-projectile-armor-knockback-combat` — follows latency/jitter unless live state changes.
+4. `roi-04-latency-jitter-tolerance` — drained at parent `9f95656`.
+5. `roi-05-projectile-armor-knockback-combat` — drained by the combat knockback row.
 
-Current first-drain recommendation after this slice: drain `roi-04-latency-jitter-tolerance`, because it adds transport tolerance evidence without duplicating already-covered gameplay semantics.
+Current first-drain recommendation after this slice: no open ROI Cairn remains in this matrix. Next work should be a fresh scoped seam, not a repeat of drained evidence.

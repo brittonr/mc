@@ -217,6 +217,38 @@
               mainProgram = "mc-compat-valence-ctf-combat-damage";
             };
           };
+          mc-compat-valence-ctf-combat-knockback = pkgs.writeShellApplication {
+            name = "mc-compat-valence-ctf-combat-knockback";
+            runtimeInputs = [ mc-compat-runner ];
+            text = ''
+              mode="--run"
+              if [[ "''${1:-}" == "--dry-run" || "''${1:-}" == "--run" ]]; then
+                mode="$1"
+                shift
+              fi
+
+              receipt="''${MC_COMPAT_KNOCKBACK_RECEIPT:-target/mc-compat-knockback/combat-knockback.json}"
+              mkdir -p "$(dirname "$receipt")"
+
+              export SERVER_PROTOCOL="''${SERVER_PROTOCOL:-763}"
+              export SERVER_VERSION="''${SERVER_VERSION:-1.20.1}"
+              export VALENCE_REV="''${VALENCE_REV:-main}"
+              export VALENCE_EXAMPLE="''${VALENCE_EXAMPLE:-ctf}"
+              export VALENCE_WORKTREE="''${VALENCE_WORKTREE:-/tmp/valence-compat-763}"
+              export VALENCE_TARGET_DIR="''${VALENCE_TARGET_DIR:-/tmp/valence-compat-763-target}"
+              export CLIENT_TIMEOUT="''${CLIENT_TIMEOUT:-120}"
+
+              exec mc-compat-runner "$mode" \
+                --server-backend valence \
+                --scenario combat-knockback \
+                --receipt "$receipt" \
+                "$@"
+            '';
+            meta = {
+              description = "Run the maintained protocol-763 Valence CTF combat knockback receipt.";
+              mainProgram = "mc-compat-valence-ctf-combat-knockback";
+            };
+          };
           mc-compat-valence-ctf-flag-carrier-death-return = pkgs.writeShellApplication {
             name = "mc-compat-valence-ctf-flag-carrier-death-return";
             runtimeInputs = [ mc-compat-runner ];
@@ -313,7 +345,7 @@
           };
         in
         {
-          inherit mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-ctf-combat-damage mc-compat-valence-ctf-flag-carrier-death-return mc-compat-valence-ctf-latency-jitter-inventory mc-compat-valence-ctf-reconnect-flag-state;
+          inherit mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-ctf-combat-damage mc-compat-valence-ctf-combat-knockback mc-compat-valence-ctf-flag-carrier-death-return mc-compat-valence-ctf-latency-jitter-inventory mc-compat-valence-ctf-reconnect-flag-state;
           cairn = cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn;
           cargo-octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.cargo-octet;
           octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.octet;
@@ -356,6 +388,13 @@
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-combat-damage
           }/bin/mc-compat-valence-ctf-combat-damage";
           meta.description = "Run the maintained protocol-763 Valence CTF combat damage receipt.";
+        };
+        mc-compat-valence-ctf-combat-knockback = {
+          type = "app";
+          program = "${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-combat-knockback
+          }/bin/mc-compat-valence-ctf-combat-knockback";
+          meta.description = "Run the maintained protocol-763 Valence CTF combat knockback receipt.";
         };
         mc-compat-valence-ctf-flag-carrier-death-return = {
           type = "app";
@@ -596,6 +635,33 @@
             grep -Fq '"expected_summary_packets": ["two_client_login", "play_join_game", "use_entity_attack"]' receipts/combat-receipt.json
             mkdir -p "$out"
             cp combat-dry-run.log receipts/combat-receipt.json "$out/"
+          '';
+        mc-compat-valence-ctf-combat-knockback-dry-run =
+          pkgs.runCommand "mc-compat-valence-ctf-combat-knockback-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
+            mkdir -p fake-stevenarella fake-valence receipts
+            printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+            git -C fake-valence init
+            git -C fake-valence config user.email mc-compat@example.invalid
+            git -C fake-valence config user.name mc-compat
+            printf '%s\n' fake > fake-valence/README.md
+            git -C fake-valence add README.md
+            git -C fake-valence commit -m init
+            MC_COMPAT_KNOCKBACK_RECEIPT="$PWD/receipts/knockback-receipt.json" ${
+              self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-combat-knockback
+            }/bin/mc-compat-valence-ctf-combat-knockback --dry-run --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD > knockback-dry-run.log
+            grep -Fq "scenario 'combat-knockback'" knockback-dry-run.log
+            grep -Fq '"name": "combat-knockback"' receipts/knockback-receipt.json
+            grep -Fq '"version": "1.20.1"' receipts/knockback-receipt.json
+            grep -Fq '"protocol": 763' receipts/knockback-receipt.json
+            grep -Fq '"timeout_secs": 120' receipts/knockback-receipt.json
+            grep -Fq '"usernames": ["compatbota", "compatbotb"]' receipts/knockback-receipt.json
+            grep -Fq '"multi_client_count"' receipts/knockback-receipt.json
+            grep -Fq '"combat_attack_sent"' receipts/knockback-receipt.json
+            grep -Fq '"combat_velocity_update"' receipts/knockback-receipt.json
+            grep -Fq '"server_combat_knockback"' receipts/knockback-receipt.json
+            grep -Fq '"expected_summary_packets": ["two_client_login", "play_join_game", "use_entity_attack", "entity_velocity"]' receipts/knockback-receipt.json
+            mkdir -p "$out"
+            cp knockback-dry-run.log receipts/knockback-receipt.json "$out/"
           '';
         mc-compat-valence-ctf-flag-carrier-death-return-dry-run =
           pkgs.runCommand "mc-compat-valence-ctf-flag-carrier-death-return-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''

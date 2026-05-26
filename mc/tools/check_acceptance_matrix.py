@@ -19,11 +19,12 @@ REQUIRED_SEAMS = [
     "Two-client combat/damage",
     "Flag-carrier death/return",
     "Reconnect flag-state",
+    "Latency/jitter tolerance",
+    "Combat knockback",
 ]
 
 REQUIRED_GAPS = [
-    "Latency/jitter tolerance",
-    "Projectile/armor/knockback combat",
+    "Projectile/armor residual combat",
     "Broad protocol coverage",
     "Production load / multiplayer scale",
     "Full CTF correctness",

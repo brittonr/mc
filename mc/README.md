@@ -103,6 +103,12 @@ nix run .#mc-compat-valence-ctf-combat-damage
 # deterministic, non-side-effecting fixture for the same combat command shape:
 nix run .#mc-compat-valence-ctf-combat-damage -- --dry-run
 
+# Maintained protocol-763 Valence CTF two-client combat/knockback receipt.
+# Extends the combat rail with victim-side non-zero EntityVelocity evidence plus Valence combat_knockback server correlation.
+nix run .#mc-compat-valence-ctf-combat-knockback
+# deterministic, non-side-effecting fixture for the same combat/knockback command shape:
+nix run .#mc-compat-valence-ctf-combat-knockback -- --dry-run
+
 # Maintained protocol-763 Valence CTF flag-carrier death/return receipt.
 # Requires two clients, flag pickup, client-observed death/respawn health restore, Valence flag_carrier_death + flag_return correlation, and no accidental score/capture patterns.
 nix run .#mc-compat-valence-ctf-flag-carrier-death-return
