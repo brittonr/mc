@@ -10,7 +10,9 @@ use valence::entity::pig::PigEntityBundle;
 use valence::entity::player::PlayerEntityBundle;
 use valence::entity::{EntityAnimations, EntityId, EntityStatuses, OnGround, Velocity};
 use valence::equipment::{Equipment, EquipmentInventorySync};
+use valence::hand_swing::HandSwingEvent;
 use valence::interact_block::InteractBlockEvent;
+use valence::interact_item::InteractItemEvent;
 use valence::inventory::{
     ClickSlotEvent, DropItemStackEvent, HeldItem, OpenInventory, UpdateSelectedSlotEvent,
 };
@@ -37,6 +39,7 @@ const SPAWN_BOX_HEIGHT: i32 = 4;
 const PLAYER_MAX_HEALTH: f32 = 20.0;
 const ARMOR_MITIGATION_CHEST_SLOT: u16 = 6;
 const DIAMOND_CHESTPLATE_MITIGATION: f32 = 2.0;
+const PROJECTILE_PROBE_DAMAGE: f32 = 3.0;
 
 pub fn main() {
     App::new()
@@ -46,7 +49,10 @@ pub fn main() {
         })
         .add_plugins(DefaultPlugins)
         .add_systems(Startup, setup)
-        .add_systems(EventLoopUpdate, handle_combat_events)
+        .add_systems(
+            EventLoopUpdate,
+            (handle_combat_events, handle_projectile_events),
+        )
         .add_systems(
             Update,
             (
@@ -793,6 +799,14 @@ fn do_team_selector_portals(
                     None,
                 ),
             );
+            if projectile_probe_enabled() && team == Team::Red {
+                inventory.set_slot(36, ItemStack::new(ItemKind::Bow, 1, None));
+                inventory.set_slot(37, ItemStack::new(ItemKind::Arrow, 16, None));
+                println!(
+                    "MC-COMPAT-MILESTONE projectile_loadout username={} slot=0 item=Bow arrows=16",
+                    username.as_str()
+                );
+            }
             let equipment_update_probe = equipment_update_probe_enabled();
             if equipment_update_probe && team == Team::Blue {
                 inventory.set_slot(
@@ -1307,7 +1321,25 @@ fn handle_combat_events(
             } else {
                 0.0
             };
-        let damage = (base_damage - armor_mitigation).max(0.0);
+        let projectile_probe_hit = projectile_probe_enabled()
+            && attacker.username.as_str() == "compatbota"
+            && victim.username.as_str() == "compatbotb";
+        let damage = if projectile_probe_hit {
+            PROJECTILE_PROBE_DAMAGE
+        } else {
+            (base_damage - armor_mitigation).max(0.0)
+        };
+
+        if projectile_probe_hit {
+            let projectile_use = format!(
+                "MC-COMPAT-MILESTONE projectile_use attacker={} victim={} item={:?}",
+                attacker.username.as_str(),
+                victim.username.as_str(),
+                stack.item
+            );
+            info!("{}", projectile_use);
+            println!("{}", projectile_use);
+        }
 
         victim.health.0 -= damage;
         if armor_mitigation > 0.0 {
@@ -1339,6 +1371,19 @@ fn handle_combat_events(
         );
         info!("{}", milestone);
         println!("{}", milestone);
+        if projectile_probe_hit {
+            let projectile_hit = format!(
+                "MC-COMPAT-MILESTONE projectile_hit attacker={} victim={} damage={:.1} \
+                 victim_health_before={:.1} victim_health_after={:.1}",
+                attacker.username.as_str(),
+                victim.username.as_str(),
+                damage,
+                victim.health.0 + damage,
+                victim.health.0
+            );
+            info!("{}", projectile_hit);
+            println!("{}", projectile_hit);
+        }
 
         if victim.health.0 <= 0.0 {
             if let Some(has_flag) = victim.has_flag.copied() {
@@ -1371,6 +1416,83 @@ fn handle_combat_events(
                 println!("{}", returned);
             }
         }
+    }
+}
+
+fn projectile_probe_enabled() -> bool {
+    std::env::var("MC_COMPAT_PROJECTILE_PROBE")
+        .map(|value| value != "0")
+        .unwrap_or(false)
+}
+
+fn handle_projectile_events(
+    mut interact_item: EventReader<InteractItemEvent>,
+    mut hand_swing: EventReader<HandSwingEvent>,
+    mut clients: Query<(Entity, &mut Client, &Username, &mut Health, &Team)>,
+) {
+    if !projectile_probe_enabled() {
+        return;
+    }
+
+    for event in hand_swing.read() {
+        let Ok((_, _, username, _, _)) = clients.get(event.client) else {
+            continue;
+        };
+        let milestone = format!(
+            "MC-COMPAT-MILESTONE projectile_swing username={} hand={:?}",
+            username.as_str(),
+            event.hand
+        );
+        info!("{}", milestone);
+        println!("{}", milestone);
+    }
+
+    for event in interact_item.read() {
+        let Ok((_, _, attacker_username, _, attacker_team)) = clients.get(event.client) else {
+            continue;
+        };
+        let attacker_name = attacker_username.as_str().to_owned();
+        let attacker_team = *attacker_team;
+        let victim_ent = clients.iter().find_map(|(entity, _, _, _, team)| {
+            if *team != attacker_team {
+                Some(entity)
+            } else {
+                None
+            }
+        });
+        let Some(victim_ent) = victim_ent else {
+            continue;
+        };
+        let Ok((_, mut victim_client, victim_username, mut victim_health, _)) =
+            clients.get_mut(victim_ent)
+        else {
+            continue;
+        };
+
+        let before = victim_health.0;
+        victim_health.0 -= PROJECTILE_PROBE_DAMAGE;
+        victim_client.trigger_status(EntityStatus::PlayAttackSound);
+        let milestone = format!(
+            "MC-COMPAT-MILESTONE projectile_use attacker={} victim={} hand={:?} \
+             sequence={} damage={:.1}",
+            attacker_name,
+            victim_username.as_str(),
+            event.hand,
+            event.sequence,
+            PROJECTILE_PROBE_DAMAGE
+        );
+        info!("{}", milestone);
+        println!("{}", milestone);
+        let hit = format!(
+            "MC-COMPAT-MILESTONE projectile_hit attacker={} victim={} \
+             victim_health_before={:.1} victim_health_after={:.1}",
+            attacker_name,
+            victim_username.as_str(),
+            before,
+            victim_health.0
+        );
+        info!("{}", hit);
+        println!("{}", hit);
     }
 }
 
