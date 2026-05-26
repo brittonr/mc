@@ -8,13 +8,15 @@ use valence::entity::entity::Flags;
 use valence::entity::living::Health;
 use valence::entity::pig::PigEntityBundle;
 use valence::entity::player::PlayerEntityBundle;
-use valence::entity::{EntityAnimations, EntityStatuses, OnGround, Velocity};
+use valence::entity::{EntityAnimations, EntityId, EntityStatuses, OnGround, Velocity};
 use valence::interact_block::InteractBlockEvent;
 use valence::inventory::{DropItemStackEvent, HeldItem, UpdateSelectedSlotEvent};
 use valence::log::{debug, info};
 use valence::math::Vec3Swizzles;
 use valence::nbt::{compound, List};
 use valence::prelude::*;
+use valence::protocol::packets::play::ItemPickupAnimationS2c;
+use valence::protocol::{VarInt, WritePacket};
 use valence::scoreboard::*;
 use valence::status::RequestRespawnEvent;
 
@@ -569,23 +571,50 @@ struct Portals {
 
 fn log_inventory_drop_events(
     mut events: EventReader<DropItemStackEvent>,
-    usernames: Query<&Username>,
+    mut players: Query<(&Username, &mut Client, &mut Inventory, &EntityId)>,
 ) {
     for event in events.read() {
-        let username = usernames
-            .get(event.client)
-            .map(|name| name.as_str())
-            .unwrap_or("unknown");
+        let Ok((username, mut client, mut inventory, entity_id)) = players.get_mut(event.client)
+        else {
+            continue;
+        };
         let from_slot = event
             .from_slot
             .map(|slot| slot.to_string())
             .unwrap_or_else(|| "none".to_string());
         let milestone = format!(
             "MC-COMPAT-MILESTONE inventory_drop_item username={} from_slot={} item={:?} count={}",
-            username, from_slot, event.stack.item, event.stack.count
+            username.as_str(),
+            from_slot,
+            event.stack.item,
+            event.stack.count
         );
         info!("{milestone}");
         println!("{milestone}");
+
+        if username.as_str() == "compatbot" && event.stack.item == ItemKind::WoodenSword {
+            let collected_entity_id = 7_630_036;
+            client.write_packet(&ItemPickupAnimationS2c {
+                collected_entity_id: VarInt(collected_entity_id),
+                collector_entity_id: VarInt(entity_id.get()),
+                pickup_item_count: VarInt(i32::from(event.stack.count)),
+            });
+            if let Some(slot) = event.from_slot {
+                inventory.set_slot(slot, event.stack.clone());
+            }
+            let milestone = format!(
+                "MC-COMPAT-MILESTONE inventory_pickup_item username={} from_slot={} item={:?} \
+                 count={} collected_entity_id={} collector_entity_id={}",
+                username.as_str(),
+                from_slot,
+                event.stack.item,
+                event.stack.count,
+                collected_entity_id,
+                entity_id.get()
+            );
+            info!("{milestone}");
+            println!("{milestone}");
+        }
     }
 }
 
