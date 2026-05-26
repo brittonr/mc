@@ -1228,9 +1228,20 @@ fn handle_combat_events(
             6.432
         };
 
-        victim
-            .client
-            .set_velocity([dir.x * knockback_xz, knockback_y, dir.y * knockback_xz]);
+        let knockback_velocity = [dir.x * knockback_xz, knockback_y, dir.y * knockback_xz];
+        victim.client.set_velocity(knockback_velocity);
+        let knockback = format!(
+            "MC-COMPAT-MILESTONE combat_knockback attacker={} victim={} vx={:.3} vy={:.3} \
+             vz={:.3} bonus={}",
+            attacker.username.as_str(),
+            victim.username.as_str(),
+            knockback_velocity[0],
+            knockback_velocity[1],
+            knockback_velocity[2],
+            attacker.state.has_bonus_knockback
+        );
+        info!("{}", knockback);
+        println!("{}", knockback);
 
         attacker.state.has_bonus_knockback = false;
 
