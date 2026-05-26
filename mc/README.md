@@ -91,10 +91,10 @@ nix run .#mc-compat-valence-ctf-blue-600s-soak
 # deterministic, non-side-effecting fixture for the same BLUE soak command shape:
 nix run .#mc-compat-valence-ctf-blue-600s-soak -- --dry-run
 
-# Maintained protocol-763 Valence CTF inventory/drop/pickup/block-place interaction receipt.
-# Requires client inventory/drop/pickup/block-place milestones plus Valence hotbar, drop-item, pickup, and block-place server correlation.
+# Maintained protocol-763 Valence CTF inventory/drop/pickup/click/block-place interaction receipt.
+# Requires client inventory/drop/pickup/click/block-place milestones plus Valence hotbar, drop-item, pickup, click-slot, and block-place server correlation.
 nix run .#mc-compat-valence-ctf-inventory-interaction
-# deterministic, non-side-effecting fixture for the same inventory/drop/pickup/block-place command shape:
+# deterministic, non-side-effecting fixture for the same inventory/drop/pickup/click/block-place command shape:
 nix run .#mc-compat-valence-ctf-inventory-interaction -- --dry-run
 ```
 
