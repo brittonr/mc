@@ -14,7 +14,7 @@ const DEFAULT_SERVER_PROTOCOL: u32 = 758;
 const DEFAULT_CLIENT_USERNAME: &str = "compatbot";
 const DEFAULT_CLIENT_TIMEOUT_SECS: u64 = 20;
 const MULTI_CLIENT_LOAD_PEER_TIMEOUT_SECS: u64 = 10;
-const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|combat-damage|combat-knockback|armor-equipment-mitigation|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score";
+const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|combat-damage|combat-knockback|armor-equipment-mitigation|equipment-update-observation|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
     "Dimension type:",
@@ -50,6 +50,7 @@ enum Scenario {
     CombatDamage,
     CombatKnockback,
     ArmorEquipmentMitigation,
+    EquipmentUpdateObservation,
     FlagCarrierDeathReturn,
     ReconnectFlagState,
     ReconnectFlagScore,
@@ -725,6 +726,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
         "combat-damage" => Ok(Scenario::CombatDamage),
         "combat-knockback" => Ok(Scenario::CombatKnockback),
         "armor-equipment-mitigation" => Ok(Scenario::ArmorEquipmentMitigation),
+        "equipment-update-observation" => Ok(Scenario::EquipmentUpdateObservation),
         "flag-carrier-death-return" => Ok(Scenario::FlagCarrierDeathReturn),
         "reconnect-flag-state" => Ok(Scenario::ReconnectFlagState),
         "reconnect-flag-score" => Ok(Scenario::ReconnectFlagScore),
@@ -743,6 +745,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::CombatDamage => "combat-damage",
         Scenario::CombatKnockback => "combat-knockback",
         Scenario::ArmorEquipmentMitigation => "armor-equipment-mitigation",
+        Scenario::EquipmentUpdateObservation => "equipment-update-observation",
         Scenario::FlagCarrierDeathReturn => "flag-carrier-death-return",
         Scenario::ReconnectFlagState => "reconnect-flag-state",
         Scenario::ReconnectFlagScore => "reconnect-flag-score",
@@ -835,6 +838,22 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             ("armor_inventory_slot", "inventory_probe_set_slot"),
             ("combat_attack_sent", "combat_probe_attack_sent"),
             ("combat_health_update", "update_health health=18.0"),
+        ],
+        Scenario::EquipmentUpdateObservation => &[
+            (
+                "multi_client_count",
+                "mc_compat_equipment_update_client_count=2",
+            ),
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("team_blue", "You are on team BLUE!"),
+            ("remote_player_spawn", "remote_player_spawn"),
+            (
+                "equipment_packet_observed",
+                "equipment_probe_entity_equipment",
+            ),
         ],
         Scenario::FlagCarrierDeathReturn => &[
             (
@@ -959,6 +978,11 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
             ("server_equipment_state", "armor_equipment_state"),
             ("server_combat_damage", "combat_damage"),
             ("server_armor_mitigation", "combat_armor_mitigation"),
+        ],
+        Scenario::EquipmentUpdateObservation => &[
+            ("server_client_a_seen", "compatbota"),
+            ("server_client_b_seen", "compatbotb"),
+            ("server_equipment_update_state", "equipment_update_state"),
         ],
         Scenario::FlagCarrierDeathReturn => &[
             ("server_client_a_seen", "compatbota"),
@@ -1449,6 +1473,9 @@ fn start_valence_server(cfg: &Config) -> Result<ManagedServer, String> {
     if cfg.scenario == Scenario::ArmorEquipmentMitigation {
         cmd.env("MC_COMPAT_ARMOR_MITIGATION_PROBE", "1");
     }
+    if cfg.scenario == Scenario::EquipmentUpdateObservation {
+        cmd.env("MC_COMPAT_EQUIPMENT_UPDATE_PROBE", "1");
+    }
     let child = cmd.spawn().map_err(|e| format!("spawn Valence: {e}"))?;
     fs::write(&cfg.valence_pid_file, child.id().to_string())
         .map_err(|e| format!("write {}: {e}", cfg.valence_pid_file.display()))?;
@@ -1654,6 +1681,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
             | Scenario::CombatDamage
             | Scenario::CombatKnockback
             | Scenario::ArmorEquipmentMitigation
+            | Scenario::EquipmentUpdateObservation
             | Scenario::FlagCarrierDeathReturn
     ) {
         run_multi_client_load_scenario(cfg)?
@@ -1674,6 +1702,9 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
     }
     if cfg.scenario == Scenario::FlagCarrierDeathReturn && runs.len() >= 2 {
         combined_output.push_str("mc_compat_flag_carrier_death_client_count=2\n");
+    }
+    if cfg.scenario == Scenario::EquipmentUpdateObservation && runs.len() >= 2 {
+        combined_output.push_str("mc_compat_equipment_update_client_count=2\n");
     }
     if matches!(
         cfg.scenario,
@@ -1956,6 +1987,13 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
                 .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
                 .env("MC_COMPAT_INVENTORY_PROBE", "1");
         }
+        Scenario::EquipmentUpdateObservation => {
+            let team = if client_index == 0 { "red" } else { "blue" };
+            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE_TEAM", team)
+                .env("MC_COMPAT_EQUIPMENT_PROBE", "1");
+        }
         Scenario::CombatDamage
         | Scenario::CombatKnockback
         | Scenario::ArmorEquipmentMitigation
@@ -2010,6 +2048,7 @@ fn planned_client_usernames(cfg: &Config) -> Vec<String> {
             | Scenario::CombatDamage
             | Scenario::CombatKnockback
             | Scenario::ArmorEquipmentMitigation
+            | Scenario::EquipmentUpdateObservation
             | Scenario::FlagCarrierDeathReturn
     ) {
         vec![
@@ -2057,6 +2096,7 @@ fn requires_server_correlation(cfg: &Config) -> bool {
                 | Scenario::CombatDamage
                 | Scenario::CombatKnockback
                 | Scenario::ArmorEquipmentMitigation
+                | Scenario::EquipmentUpdateObservation
                 | Scenario::FlagCarrierDeathReturn
         )
 }
@@ -2214,6 +2254,11 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
             "use_entity_attack",
             "armor_mitigation",
         ],
+        Scenario::EquipmentUpdateObservation => vec![
+            "two_client_login",
+            "play_join_game",
+            "entity_equipment_update",
+        ],
         Scenario::FlagCarrierDeathReturn => vec![
             "two_client_login",
             "play_join_game",
@@ -2277,7 +2322,9 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         "combat_health_update",
         "combat_velocity_update",
         "armor_inventory_slot",
+        "entity_equipment_update",
         "server_equipment_state",
+        "server_equipment_update_state",
         "server_armor_mitigation",
         "server_combat_damage",
         "server_combat_knockback",
