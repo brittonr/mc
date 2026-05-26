@@ -47,6 +47,7 @@ enum Scenario {
     BlueFlagScore,
     InventoryInteraction,
     CombatDamage,
+    FlagCarrierDeathReturn,
     ReconnectFlagScore,
     MultiClientLoadScore,
 }
@@ -718,6 +719,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
         "blue-flag-score" => Ok(Scenario::BlueFlagScore),
         "inventory-interaction" => Ok(Scenario::InventoryInteraction),
         "combat-damage" => Ok(Scenario::CombatDamage),
+        "flag-carrier-death-return" => Ok(Scenario::FlagCarrierDeathReturn),
         "reconnect-flag-score" => Ok(Scenario::ReconnectFlagScore),
         "multi-client-load-score" => Ok(Scenario::MultiClientLoadScore),
         other => Err(format!("unknown scenario: {other}")),
@@ -732,6 +734,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::BlueFlagScore => "blue-flag-score",
         Scenario::InventoryInteraction => "inventory-interaction",
         Scenario::CombatDamage => "combat-damage",
+        Scenario::FlagCarrierDeathReturn => "flag-carrier-death-return",
         Scenario::ReconnectFlagScore => "reconnect-flag-score",
         Scenario::MultiClientLoadScore => "multi-client-load-score",
     }
@@ -799,6 +802,20 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             ("combat_attack_sent", "combat_probe_attack_sent"),
             ("combat_health_update", "update_health health=16.0"),
         ],
+        Scenario::FlagCarrierDeathReturn => &[
+            ("multi_client_count", "mc_compat_flag_carrier_death_client_count=2"),
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("team_blue", "You are on team BLUE!"),
+            ("flag_pickup", "You have the flag!"),
+            ("remote_player_spawn", "remote_player_spawn"),
+            ("combat_attack_sent", "combat_probe_attack_sent"),
+            ("combat_death_observed", "combat_probe_death_observed"),
+            ("respawn_request_sent", "respawn_probe_request_sent"),
+            ("respawn_health_restored", "respawn_probe_health_restored"),
+        ],
         Scenario::ReconnectFlagScore => &[
             ("protocol_detected", "Detected server protocol version"),
             ("join_game", "join_game"),
@@ -822,13 +839,25 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
     }
 }
 
-fn scenario_forbidden_patterns(_scenario: Scenario) -> &'static [(&'static str, &'static str)] {
-    &[
-        ("panic", "panicked"),
-        ("unexpected_eof", "UnexpectedEof"),
-        ("protocol_mismatch", "protocol mismatch"),
-        ("decode_error", "decode error"),
-    ]
+fn scenario_forbidden_patterns(scenario: Scenario) -> &'static [(&'static str, &'static str)] {
+    match scenario {
+        Scenario::FlagCarrierDeathReturn => &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+            ("unexpected_flag_capture", "You captured the flag!"),
+            ("unexpected_flag_capture_milestone", "flag_capture"),
+            ("unexpected_red_score", "RED: 1"),
+            ("unexpected_blue_score", "BLUE: 1"),
+        ],
+        _ => &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+    }
 }
 
 fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'static str)] {
@@ -863,6 +892,13 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
             ("server_client_a_seen", "compatbota"),
             ("server_client_b_seen", "compatbotb"),
             ("server_combat_damage", "combat_damage"),
+        ],
+        Scenario::FlagCarrierDeathReturn => &[
+            ("server_client_a_seen", "compatbota"),
+            ("server_client_b_seen", "compatbotb"),
+            ("server_flag_pickup", "flag_pickup"),
+            ("server_flag_carrier_death", "flag_carrier_death"),
+            ("server_flag_return", "flag_return"),
         ],
     }
 }
@@ -939,7 +975,7 @@ fn default_port(backend: ServerBackend) -> u16 {
 
 fn print_usage(cfg: &Config) {
     println!(
-        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|combat-damage|reconnect-flag-score|multi-client-load-score] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
+        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|combat-damage|flag-carrier-death-return|reconnect-flag-score|multi-client-load-score] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
 Automates a local Stevenarella compatibility smoke against a Minecraft {} / protocol {} server.\n\
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from Nickel config; env vars and later CLI flags override it.\n\
@@ -1541,7 +1577,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
 
     let runs = if matches!(
         cfg.scenario,
-        Scenario::MultiClientLoadScore | Scenario::CombatDamage
+        Scenario::MultiClientLoadScore | Scenario::CombatDamage | Scenario::FlagCarrierDeathReturn
     ) {
         run_multi_client_load_scenario(cfg)?
     } else {
@@ -1554,6 +1590,9 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
     }
     if cfg.scenario == Scenario::CombatDamage && runs.len() >= 2 {
         combined_output.push_str("mc_compat_combat_client_count=2\n");
+    }
+    if cfg.scenario == Scenario::FlagCarrierDeathReturn && runs.len() >= 2 {
+        combined_output.push_str("mc_compat_flag_carrier_death_client_count=2\n");
     }
     if cfg.scenario == Scenario::ReconnectFlagScore {
         combined_output.push_str("mc_compat_reconnect_session=2\n");
@@ -1611,7 +1650,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
     });
     let classification = if matches!(
         cfg.scenario,
-        Scenario::MultiClientLoadScore | Scenario::CombatDamage
+        Scenario::MultiClientLoadScore | Scenario::CombatDamage | Scenario::FlagCarrierDeathReturn
     ) && mixed_success
     {
         "multi-client-load-evidence"
@@ -1785,7 +1824,7 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
                 .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
                 .env("MC_COMPAT_INVENTORY_PROBE", "1");
         }
-        Scenario::CombatDamage => {
+        Scenario::CombatDamage | Scenario::FlagCarrierDeathReturn => {
             let (team, role) = if client_index == 0 {
                 ("red", "attacker")
             } else {
@@ -1796,6 +1835,17 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
                 .env("MC_COMPAT_TEAM_PROBE_TEAM", team)
                 .env("MC_COMPAT_COMBAT_PROBE", "1")
                 .env("MC_COMPAT_COMBAT_PROBE_ROLE", role);
+            if scenario == Scenario::FlagCarrierDeathReturn {
+                cmd.env("MC_COMPAT_FLAG_CARRIER_DEATH_PROBE", "1")
+                    .env("MC_COMPAT_RESPAWN_PROBE", "1");
+                if client_index == 1 {
+                    cmd.env("MC_COMPAT_FLAG_PROBE", "1")
+                        .env("MC_COMPAT_FLAG_PROBE_TEAM", "blue")
+                        .env("MC_COMPAT_FLAG_PROBE_PICKUP_ONLY", "1")
+                        .env("MC_COMPAT_FLAG_PROBE_FIRST_TICK", "760")
+                        .env("MC_COMPAT_FLAG_PROBE_REPEAT", "1");
+                }
+            }
         }
         Scenario::MultiClientLoadScore => {
             cmd.env("MC_COMPAT_ACTIVE_PROBE", "1");
@@ -1812,7 +1862,7 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
 fn planned_client_usernames(cfg: &Config) -> Vec<String> {
     if matches!(
         cfg.scenario,
-        Scenario::MultiClientLoadScore | Scenario::CombatDamage
+        Scenario::MultiClientLoadScore | Scenario::CombatDamage | Scenario::FlagCarrierDeathReturn
     ) {
         vec![
             format!("{}a", cfg.client_username),
@@ -1857,6 +1907,7 @@ fn requires_server_correlation(cfg: &Config) -> bool {
                 | Scenario::MultiClientLoadScore
                 | Scenario::InventoryInteraction
                 | Scenario::CombatDamage
+                | Scenario::FlagCarrierDeathReturn
         )
 }
 
@@ -1960,6 +2011,14 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
             "player_block_placement",
         ],
         Scenario::CombatDamage => vec!["two_client_login", "play_join_game", "use_entity_attack"],
+        Scenario::FlagCarrierDeathReturn => vec![
+            "two_client_login",
+            "play_join_game",
+            "flag_pickup",
+            "use_entity_attack",
+            "health_death",
+            "respawn_request",
+        ],
         Scenario::ReconnectFlagScore => vec![
             "login_success",
             "play_join_game",
@@ -2006,6 +2065,8 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         "combat_attack_sent",
         "combat_health_update",
         "server_combat_damage",
+        "flag_carrier_death",
+        "flag_return",
     ];
     let gameplay_non_claims: Vec<&str> = vec![
         "full_ctf_correctness",
