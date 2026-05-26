@@ -102,6 +102,7 @@ pub struct Server {
     combat_probe_enabled: bool,
     respawn_probe_enabled: bool,
     inventory_probe_enabled: bool,
+    equipment_probe_enabled: bool,
     flag_probe_enabled: bool,
     active_probe_ticks: u32,
     active_probe_logged_position_look_sent: bool,
@@ -641,6 +642,9 @@ impl Server {
                 .map(|value| value != "0")
                 .unwrap_or(false),
             inventory_probe_enabled: std::env::var("MC_COMPAT_INVENTORY_PROBE")
+                .map(|value| value != "0")
+                .unwrap_or(false),
+            equipment_probe_enabled: std::env::var("MC_COMPAT_EQUIPMENT_PROBE")
                 .map(|value| value != "0")
                 .unwrap_or(false),
             flag_probe_enabled: std::env::var("MC_COMPAT_FLAG_PROBE")
@@ -1262,6 +1266,7 @@ impl Server {
                             SpawnPlayer_i32 => on_player_spawn_i32,
                             SpawnPlayer_i32_HeldItem => on_player_spawn_i32_helditem,
                             SpawnPlayer_i32_HeldItem_String => on_player_spawn_i32_helditem_string,
+                            EntityEquipment_Array => on_entity_equipment_array,
                             EntityVelocity => on_entity_velocity,
                             EntityVelocity_i32 => on_entity_velocity_i32,
                             EntityTeleport_f64 => on_entity_teleport_f64,
@@ -2366,6 +2371,34 @@ impl Server {
             Some(stack) => format!("id={} count={}", stack.id, stack.count),
             None => "empty".to_string(),
         }
+    }
+
+    fn on_entity_equipment_array(
+        &mut self,
+        equipment: packet::play::clientbound::EntityEquipment_Array,
+    ) {
+        if !self.equipment_probe_enabled {
+            return;
+        }
+
+        let slots: Vec<String> = equipment
+            .equipments
+            .equipments
+            .iter()
+            .map(|entry| {
+                format!(
+                    "slot{}:{}",
+                    entry.slot,
+                    Self::item_summary(&entry.item).replace(' ', ":")
+                )
+            })
+            .collect();
+        info!(
+            "MC-COMPAT-MILESTONE equipment_probe_entity_equipment entity_id={} entries={} slots={}",
+            equipment.entity_id.0,
+            slots.len(),
+            slots.join(",")
+        );
     }
 
     fn on_window_open_varint(&mut self, window: packet::play::clientbound::WindowOpen_VarInt) {
