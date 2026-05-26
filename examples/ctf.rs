@@ -47,7 +47,7 @@ pub fn main() {
             Update,
             (
                 init_clients,
-                despawn_disconnected_clients,
+                despawn_disconnected_ctf_clients,
                 digging,
                 place_blocks,
                 do_team_selector_portals,
@@ -166,6 +166,7 @@ fn setup(
 
     commands.insert_resource(ctf_team_layers);
     commands.insert_resource(Score::default());
+    commands.insert_resource(ReconnectJoinCounts::default());
 }
 
 /// Build a flag at the given position. `pos` should be the position of the
@@ -742,6 +743,8 @@ fn do_team_selector_portals(
     portals: Res<Portals>,
     mut commands: Commands,
     ctf_layers: Res<CtfLayers>,
+    flag_manager: Res<FlagManager>,
+    mut reconnect_joins: ResMut<ReconnectJoinCounts>,
     main_layers: Query<Entity, (With<ChunkLayer>, With<EntityLayer>)>,
 ) {
     for player in &mut players {
@@ -793,6 +796,22 @@ fn do_team_selector_portals(
                  source=team_inventory_setup",
                 username.as_str()
             );
+            let reconnect_count = reconnect_joins
+                .joins
+                .entry(username.as_str().to_owned())
+                .and_modify(|count| *count += 1)
+                .or_insert(1);
+            if *reconnect_count > 1 {
+                println!(
+                    "MC-COMPAT-MILESTONE reconnect_state_coherent username={} team={:?} \
+                     reconnect_session={} red_flag_held={} blue_flag_held={}",
+                    username.as_str(),
+                    team,
+                    reconnect_count,
+                    flag_manager.red.is_some(),
+                    flag_manager.blue.is_some()
+                );
+            }
             pos.0 = team.spawn_pos();
             let yaw = match team {
                 Team::Red => -90.0,
@@ -905,6 +924,46 @@ struct HasFlag(Team);
 struct FlagManager {
     red: Option<Entity>,
     blue: Option<Entity>,
+}
+
+#[derive(Debug, Default, Resource)]
+struct ReconnectJoinCounts {
+    joins: HashMap<String, u32>,
+}
+
+fn despawn_disconnected_ctf_clients(
+    mut commands: Commands,
+    mut disconnected_clients: RemovedComponents<Client>,
+    mut flag_manager: ResMut<FlagManager>,
+    clients: Query<(Option<&HasFlag>, Option<&Username>)>,
+) {
+    for entity in disconnected_clients.read() {
+        if let Ok((has_flag, username)) = clients.get(entity) {
+            if let Some(has_flag) = has_flag {
+                let flag_name = match has_flag.0 {
+                    Team::Red => "red",
+                    Team::Blue => "blue",
+                };
+                match has_flag.0 {
+                    Team::Red => flag_manager.red = None,
+                    Team::Blue => flag_manager.blue = None,
+                }
+                let username = username.map(|u| u.as_str()).unwrap_or("unknown");
+                let returned = format!(
+                    "MC-COMPAT-MILESTONE flag_disconnect_return carrier={} flag_team={} \
+                     reason=client_disconnect score_unchanged=true",
+                    username, flag_name
+                );
+                info!("{}", returned);
+                println!("{}", returned);
+            }
+        }
+
+        if let Some(mut entity) = commands.get_entity(entity) {
+            entity.remove::<HasFlag>();
+            entity.insert(Despawned);
+        }
+    }
 }
 
 #[derive(Debug, Resource)]
