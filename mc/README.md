@@ -126,6 +126,12 @@ nix run .#mc-compat-valence-ctf-reconnect-flag-state -- --dry-run
 nix run .#mc-compat-valence-ctf-latency-jitter-inventory
 # deterministic, non-side-effecting fixture for the same latency/jitter command shape:
 nix run .#mc-compat-valence-ctf-latency-jitter-inventory -- --dry-run
+
+# build every maintained dry-run receipt/check plus the evidence indexes:
+nix build .#checks.x86_64-linux.mc-compat-maintained-dry-runs --no-link -L
+
+# check the current 11-seam protocol-763 evidence bundle:
+nix build .#checks.x86_64-linux.mc-compat-current-evidence-bundle --no-link -L
 ```
 
 `valence-compat-bot-probe` receipts add a `compat_bot_probe` block that records the owned local target, bounded one-client limit, non-public-stress-tool guard, and explicit `external_server_load_authorized=false` non-claim. `reconnect-flag-score` extends gameplay evidence with an explicit reconnect milestone.

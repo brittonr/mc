@@ -430,6 +430,14 @@
           mkdir -p "$out"
           cp acceptance-matrix-check.log "$out/"
         '';
+        mc-compat-current-evidence-bundle = pkgs.runCommand "mc-compat-current-evidence-bundle" { nativeBuildInputs = [ pkgs.python3 ]; } ''
+          cp -R ${./docs} docs
+          cp -R ${./tools} tools
+          chmod -R u+w docs tools
+          python3 tools/check_current_evidence_bundle.py > current-evidence-bundle-check.log
+          mkdir -p "$out"
+          cp current-evidence-bundle-check.log "$out/"
+        '';
         mc-compat-dry-run = pkgs.runCommand "mc-compat-dry-run" { } ''
           mkdir -p fake-stevenarella
           printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
@@ -754,6 +762,39 @@
             mkdir -p "$out"
             cp reconnect-flag-state-dry-run.log receipts/reconnect-flag-state-receipt.json "$out/"
           '';
+        mc-compat-maintained-dry-runs = pkgs.runCommand "mc-compat-maintained-dry-runs" { } ''
+          mkdir -p "$out"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-dry-run} "$out/smoke"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-multi-client-scenario-dry-run} "$out/multi-client-load-score"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-blue-flag-score-dry-run} "$out/blue-flag-score"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-600s-soak-dry-run} "$out/ctf-600s-soak"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-blue-600s-soak-dry-run} "$out/ctf-blue-600s-soak"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-inventory-interaction-dry-run} "$out/inventory-interaction"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-combat-damage-dry-run} "$out/combat-damage"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-combat-knockback-dry-run} "$out/combat-knockback"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-flag-carrier-death-return-dry-run} "$out/flag-carrier-death-return"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-latency-jitter-inventory-dry-run} "$out/latency-jitter-inventory"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-reconnect-flag-state-dry-run} "$out/reconnect-flag-state"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-bot-probe-dry-run} "$out/compat-bot-probe"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-acceptance-matrix} "$out/acceptance-matrix"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-current-evidence-bundle} "$out/current-evidence-bundle"
+          cat > "$out/manifest.txt" <<'EOF'
+          smoke
+          multi-client-load-score
+          blue-flag-score
+          ctf-600s-soak
+          ctf-blue-600s-soak
+          inventory-interaction
+          combat-damage
+          combat-knockback
+          flag-carrier-death-return
+          latency-jitter-inventory
+          reconnect-flag-state
+          compat-bot-probe
+          acceptance-matrix
+          current-evidence-bundle
+          EOF
+        '';
         mc-compat-bot-probe-dry-run =
           pkgs.runCommand "mc-compat-bot-probe-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
             mkdir -p fake-stevenarella fake-valence
@@ -954,7 +995,7 @@
           grep -Fq -- "--apply" help.log
           grep -Fq -- "--stop" help.log
           grep -Fq -- "--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT" help.log
-          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|reconnect-flag-score|multi-client-load-score" help.log
+          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|combat-damage|combat-knockback|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score" help.log
           grep -Fq "MC_COMPAT_SCENARIO" help.log
           grep -Fq -- "--expect-status-description" help.log
           grep -Fq -- "--packet-capture-summary" help.log

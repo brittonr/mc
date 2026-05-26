@@ -14,6 +14,7 @@ const DEFAULT_SERVER_PROTOCOL: u32 = 758;
 const DEFAULT_CLIENT_USERNAME: &str = "compatbot";
 const DEFAULT_CLIENT_TIMEOUT_SECS: u64 = 20;
 const MULTI_CLIENT_LOAD_PEER_TIMEOUT_SECS: u64 = 10;
+const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|combat-damage|combat-knockback|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
     "Dimension type:",
@@ -1019,7 +1020,7 @@ fn default_port(backend: ServerBackend) -> u16 {
 
 fn print_usage(cfg: &Config) {
     println!(
-        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|combat-damage|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
+        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario {}] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
 Automates a local Stevenarella compatibility smoke against a Minecraft {} / protocol {} server.\n\
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from Nickel config; env vars and later CLI flags override it.\n\
@@ -1034,6 +1035,7 @@ If the Stevenarella or Valence checkout is missing, clone/fetch it or pass --cli
 Client runs are forced through Xvfb/X11 with software GL and no inherited Wayland socket.\n\
 Paper fallback runs set EULA=TRUE based on recorded user acceptance.\n\n\
 Env: MC_COMPAT_ROOT={} MC_COMPAT_CONFIG={} MC_COMPAT_SCENARIO={} CLIENT_DIR={} TARGET_DIR={} SMOKE_RECEIPT={} SMOKE_RECEIPT_DIR={} VALENCE_REPO={} VALENCE_REV={} VALENCE_WORKTREE={} VALENCE_TARGET_DIR={} CLIENT_TIMEOUT={}\n",
+        SUPPORTED_SCENARIO_USAGE,
         cfg.server_version,
         cfg.server_protocol,
         cfg.root.display(),
@@ -3363,6 +3365,32 @@ mod tests {
         let inventory = test_config(&["--scenario", "inventory-interaction"], &[])
             .expect("inventory scenario parses");
         assert_eq!(inventory.scenario, Scenario::InventoryInteraction);
+
+        let knockback = test_config(&["--scenario", "combat-knockback"], &[])
+            .expect("combat-knockback scenario parses");
+        assert_eq!(knockback.scenario, Scenario::CombatKnockback);
+    }
+
+    #[test]
+    fn supported_scenario_usage_lists_all_supported_scenarios() {
+        for scenario in [
+            "smoke",
+            "valence-compat-bot-probe",
+            "flag-score-repeat",
+            "blue-flag-score",
+            "inventory-interaction",
+            "combat-damage",
+            "combat-knockback",
+            "flag-carrier-death-return",
+            "reconnect-flag-state",
+            "reconnect-flag-score",
+            "multi-client-load-score",
+        ] {
+            assert!(
+                SUPPORTED_SCENARIO_USAGE.contains(scenario),
+                "usage omits supported scenario {scenario}"
+            );
+        }
     }
 
     #[test]
