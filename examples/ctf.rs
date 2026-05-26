@@ -10,7 +10,7 @@ use valence::entity::pig::PigEntityBundle;
 use valence::entity::player::PlayerEntityBundle;
 use valence::entity::{EntityAnimations, EntityId, EntityStatuses, OnGround, Velocity};
 use valence::interact_block::InteractBlockEvent;
-use valence::inventory::{DropItemStackEvent, HeldItem, UpdateSelectedSlotEvent};
+use valence::inventory::{ClickSlotEvent, DropItemStackEvent, HeldItem, UpdateSelectedSlotEvent};
 use valence::log::{debug, info};
 use valence::math::Vec3Swizzles;
 use valence::nbt::{compound, List};
@@ -51,6 +51,7 @@ pub fn main() {
                 do_team_selector_portals,
                 log_inventory_hotbar_select_events,
                 log_inventory_drop_events,
+                log_inventory_click_state,
                 update_flag_visuals,
                 do_flag_capturing,
                 // visualize_triggers,
@@ -615,6 +616,28 @@ fn log_inventory_drop_events(
             info!("{milestone}");
             println!("{milestone}");
         }
+    }
+}
+
+fn log_inventory_click_state(mut events: EventReader<ClickSlotEvent>, usernames: Query<&Username>) {
+    for event in events.read() {
+        let Ok(username) = usernames.get(event.client) else {
+            continue;
+        };
+        let milestone = format!(
+            "MC-COMPAT-MILESTONE inventory_click_slot username={} window={} slot={} button={} \
+             mode={:?} carried_item={:?} count={} slot_changes={}",
+            username.as_str(),
+            event.window_id,
+            event.slot_id,
+            event.button,
+            event.mode,
+            event.carried_item.item,
+            event.carried_item.count,
+            event.slot_changes.len()
+        );
+        info!("{}", milestone);
+        println!("{}", milestone);
     }
 }
 
