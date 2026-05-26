@@ -60,20 +60,42 @@ const PLAY_CLIENTBOUND_OVERRIDES: &[(i32, i32)] = &[
 
 const PLAY_SERVERBOUND_OVERRIDES: &[(i32, i32)] = &[
     (0x07, packet::play::serverbound::internal_ids::ClientStatus),
-    (0x10, packet::play::serverbound::internal_ids::UseEntity_Sneakflag),
-    (0x12, packet::play::serverbound::internal_ids::KeepAliveServerbound_i64),
-    (0x14, packet::play::serverbound::internal_ids::PlayerPosition),
-    (0x15, packet::play::serverbound::internal_ids::PlayerPositionLook),
+    (
+        0x0b,
+        packet::play::serverbound::internal_ids::ClickWindow_StateBeforeSlot,
+    ),
+    (
+        0x10,
+        packet::play::serverbound::internal_ids::UseEntity_Sneakflag,
+    ),
+    (
+        0x12,
+        packet::play::serverbound::internal_ids::KeepAliveServerbound_i64,
+    ),
+    (
+        0x14,
+        packet::play::serverbound::internal_ids::PlayerPosition,
+    ),
+    (
+        0x15,
+        packet::play::serverbound::internal_ids::PlayerPositionLook,
+    ),
     (
         0x1d,
         packet::play::serverbound::internal_ids::PlayerDigging_WithSequence,
     ),
-    (0x28, packet::play::serverbound::internal_ids::HeldItemChange),
+    (
+        0x28,
+        packet::play::serverbound::internal_ids::HeldItemChange,
+    ),
     (
         0x31,
         packet::play::serverbound::internal_ids::PlayerBlockPlacement_insideblock_sequence,
     ),
-    (0x32, packet::play::serverbound::internal_ids::UseItem_WithSequence),
+    (
+        0x32,
+        packet::play::serverbound::internal_ids::UseItem_WithSequence,
+    ),
 ];
 
 const LOGIN_SERVERBOUND_OVERRIDES: &[(i32, i32)] = &[(
@@ -86,7 +108,12 @@ const LOGIN_CLIENTBOUND_OVERRIDES: &[(i32, i32)] = &[(
     packet::login::clientbound::internal_ids::LoginSuccess_UUID_WithProperties,
 )];
 
-pub fn translate_internal_packet_id(state: State, dir: Direction, id: i32, to_internal: bool) -> i32 {
+pub fn translate_internal_packet_id(
+    state: State,
+    dir: Direction,
+    id: i32,
+    to_internal: bool,
+) -> i32 {
     if state == State::Login && dir == Direction::Clientbound {
         if to_internal {
             if let Some((_, internal_id)) = LOGIN_CLIENTBOUND_OVERRIDES

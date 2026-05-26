@@ -116,6 +116,8 @@ pub struct Server {
     inventory_probe_drop_sent: bool,
     inventory_probe_pickup_seen: bool,
     inventory_probe_block_place_sent: bool,
+    inventory_probe_click_sent: bool,
+    inventory_probe_state_id: i32,
     flag_probe_have_flag_seen: bool,
     flag_probe_capture_seen: bool,
     flag_probe_score_seen: bool,
@@ -652,6 +654,8 @@ impl Server {
             inventory_probe_drop_sent: false,
             inventory_probe_pickup_seen: false,
             inventory_probe_block_place_sent: false,
+            inventory_probe_click_sent: false,
+            inventory_probe_state_id: 0,
             flag_probe_have_flag_seen: false,
             flag_probe_capture_seen: false,
             flag_probe_score_seen: false,
@@ -940,6 +944,37 @@ impl Server {
                 },
             );
             self.inventory_probe_block_place_sent = true;
+        }
+
+        if self.inventory_probe_enabled
+            && self.active_probe_ticks >= 680
+            && self.inventory_probe_block_place_sent
+            && self.inventory_probe_state_id > 0
+            && !self.inventory_probe_click_sent
+        {
+            info!(
+                "MC-COMPAT-MILESTONE inventory_probe_click_slot_sent window=0 slot=37 state_id={} \
+                 button=0 mode=click carried_item=RedWool count=63",
+                self.inventory_probe_state_id
+            );
+            self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                id: 0,
+                slot: 37,
+                state: protocol::VarInt(self.inventory_probe_state_id),
+                button: 0,
+                mode: protocol::VarInt(0),
+                slots: protocol::LenPrefixed::new(vec![packet::NumberedSlot {
+                    slot_number: 37,
+                    slot_data: None,
+                }]),
+                clicked_item: Some(item::Stack {
+                    id: 194,
+                    count: 63,
+                    damage: None,
+                    tag: None,
+                }),
+            });
+            self.inventory_probe_click_sent = true;
         }
 
         if self.flag_probe_enabled && self.active_probe_ticks >= FLAG_PROBE_FIRST_TICK {
@@ -2274,6 +2309,7 @@ impl Server {
             slot.property,
             Self::item_summary(&slot.item),
         );
+        self.inventory_probe_state_id = slot.state_id.0;
         if slot.property == 36 {
             if let Some(stack) = &slot.item {
                 if !self.inventory_probe_sword_seen && stack.count == 1 {

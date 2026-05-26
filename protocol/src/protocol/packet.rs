@@ -155,6 +155,15 @@ state_packets!(
                 field slots: LenPrefixed<VarInt, packet::NumberedSlot> =,
                 field clicked_item: Option<item::Stack> =,
             }
+            packet ClickWindow_StateBeforeSlot {
+                field id: u8 =,
+                field state: VarInt =,
+                field slot: i16 =,
+                field button: u8 =,
+                field mode: VarInt =,
+                field slots: LenPrefixed<VarInt, packet::NumberedSlot> =,
+                field clicked_item: Option<item::Stack> =,
+            }
             packet ClickWindow {
                 field id: u8 =,
                 field slot: i16 =,
@@ -3179,7 +3188,9 @@ impl Serializable for PlayerInfoData_BitSet {
 
 impl Default for PlayerInfoData_BitSet {
     fn default() -> Self {
-        PlayerInfoData_BitSet { players: Vec::new() }
+        PlayerInfoData_BitSet {
+            players: Vec::new(),
+        }
     }
 }
 
