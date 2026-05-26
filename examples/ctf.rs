@@ -10,7 +10,9 @@ use valence::entity::pig::PigEntityBundle;
 use valence::entity::player::PlayerEntityBundle;
 use valence::entity::{EntityAnimations, EntityId, EntityStatuses, OnGround, Velocity};
 use valence::interact_block::InteractBlockEvent;
-use valence::inventory::{ClickSlotEvent, DropItemStackEvent, HeldItem, UpdateSelectedSlotEvent};
+use valence::inventory::{
+    ClickSlotEvent, DropItemStackEvent, HeldItem, OpenInventory, UpdateSelectedSlotEvent,
+};
 use valence::log::{debug, info};
 use valence::math::Vec3Swizzles;
 use valence::nbt::{compound, List};
@@ -619,7 +621,12 @@ fn log_inventory_drop_events(
     }
 }
 
-fn log_inventory_click_state(mut events: EventReader<ClickSlotEvent>, usernames: Query<&Username>) {
+fn log_inventory_click_state(
+    mut commands: Commands,
+    mut compat_container_opened: Local<bool>,
+    mut events: EventReader<ClickSlotEvent>,
+    usernames: Query<&Username>,
+) {
     for event in events.read() {
         let Ok(username) = usernames.get(event.client) else {
             continue;
@@ -638,6 +645,41 @@ fn log_inventory_click_state(mut events: EventReader<ClickSlotEvent>, usernames:
         );
         info!("{}", milestone);
         println!("{}", milestone);
+
+        if username.as_str() == "compatbot"
+            && event.window_id == 0
+            && event.slot_id == 37
+            && !*compat_container_opened
+        {
+            let menu = commands
+                .spawn(Inventory::new(InventoryKind::Generic3x3))
+                .id();
+            commands
+                .entity(event.client)
+                .insert(OpenInventory::new(menu));
+            *compat_container_opened = true;
+            let milestone = "MC-COMPAT-MILESTONE inventory_open_container username=compatbot \
+                             kind=Generic3x3 trigger=inventory_click_slot";
+            info!("{}", milestone);
+            println!("{}", milestone);
+        }
+
+        if username.as_str() == "compatbot" && event.window_id != 0 {
+            let milestone = format!(
+                "MC-COMPAT-MILESTONE inventory_container_click username={} window={} slot={} \
+                 button={} mode={:?} carried_item={:?} count={} slot_changes={}",
+                username.as_str(),
+                event.window_id,
+                event.slot_id,
+                event.button,
+                event.mode,
+                event.carried_item.item,
+                event.carried_item.count,
+                event.slot_changes.len()
+            );
+            info!("{}", milestone);
+            println!("{}", milestone);
+        }
     }
 }
 
