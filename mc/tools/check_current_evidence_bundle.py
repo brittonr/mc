@@ -27,6 +27,7 @@ REQUIRED_SEAMS = [
     "Armor equipment mitigation",
     "Equipment update observation",
     "Projectile use/loadout rail",
+    "Projectile damage attribution",
 ]
 
 
@@ -76,7 +77,7 @@ def main() -> int:
         "nix run .#cairn -- validate --root .",
         "full Minecraft compatibility",
         "armor loadouts",
-        "projectile travel/collision/damage semantics",
+        "projectile travel/collision simulation",
     ]:
         if required not in bundle_text:
             missing.append(f"bundle missing required text: {required}")

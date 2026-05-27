@@ -27,6 +27,7 @@ REQUIRED_SEAMS = [
     "Armor equipment mitigation",
     "Equipment update observation",
     "Projectile use/loadout rail",
+    "Projectile damage attribution",
 ]
 
 REQUIRED_GAPS = [
@@ -45,7 +46,7 @@ REQUIRED_TEXT = [
     "roi-04-latency-jitter-tolerance",
     "roi-05-projectile-armor-knockback-combat",
     "roi-07-post-drain-evidence-index",
-    "projectile travel/collision/damage attribution",
+    "projectile travel/collision simulation",
 ]
 
 REVIEWABLE_RECEIPT_SEAMS = frozenset(
@@ -53,6 +54,7 @@ REVIEWABLE_RECEIPT_SEAMS = frozenset(
         "Armor equipment mitigation",
         "Equipment update observation",
         "Projectile use/loadout rail",
+        "Projectile damage attribution",
     }
 )
 

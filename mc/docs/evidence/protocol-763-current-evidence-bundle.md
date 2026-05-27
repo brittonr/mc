@@ -29,6 +29,7 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 | Armor equipment mitigation | `nix run .#mc-compat-valence-ctf-armor-equipment-mitigation` | `176fdf33d2b8b9047471f577a98f9093904a44ab8da2785baeb80acfc8d97765` |
 | Equipment update observation | `nix run .#mc-compat-valence-ctf-equipment-update-observation` | `8100dde3ebb3476984235009e277d7e973037b7873b2fdb30c413093e1498d3d` |
 | Projectile use/loadout rail | `nix run .#mc-compat-valence-ctf-projectile-hit` | `22310a0373f86bbff5e6bc116934d092b89f775cf5d539b08d04ff5564ad855b` |
+| Projectile damage attribution | `nix run .#mc-compat-valence-ctf-projectile-damage-attribution` | `39b085d43b09c6392e19b0cc74b7d8192d8bf34b4c5351514ad0b94d0d07c603` |
 
 ## Representative current-head live refresh
 
@@ -56,4 +57,4 @@ nix run .#cairn -- validate --root .
 
 ## Non-claims
 
-This bundle still does not claim full Minecraft compatibility, full CTF correctness, projectile travel/collision/damage semantics, all projectile weapon variants, all equipment slots/items, all armor loadouts, enchantment/status-effect semantics, exact vanilla knockback or mitigation balancing, production readiness, public-server load safety, or unbounded soak/reconnect/latency safety.
+This bundle still does not claim full Minecraft compatibility, full CTF correctness, projectile travel/collision simulation, all projectile weapon variants, all equipment slots/items, all armor loadouts, enchantment/status-effect semantics, exact vanilla knockback/damage/mitigation balancing, production readiness, public-server load safety, or unbounded soak/reconnect/latency safety.
