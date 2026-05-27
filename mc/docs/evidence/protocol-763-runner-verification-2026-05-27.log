@@ -1,0 +1,33 @@
+$ nix develop --no-update-lock-file -c bash -lc "cargo fmt --manifest-path tools/mc-compat-runner/Cargo.toml --check"
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+$ nix develop --no-update-lock-file -c bash -lc "cargo test --manifest-path tools/mc-compat-runner/Cargo.toml equipment_update -- --nocapture"
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.03s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-0b4c6e2aba35508d)
+
+running 1 test
+test tests::equipment_update_scenario_tracks_current_client_equipment_marker ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 29 filtered out; finished in 0.00s
+
+$ MC_COMPAT_EQUIPMENT_UPDATE_RECEIPT=docs/evidence/protocol-763-roi-02-equipment-update-observation-2026-05-27.dry-run.receipt.json nix run --no-update-lock-file .#mc-compat-valence-ctf-equipment-update-observation -- --dry-run --client-dir target/review-oracle/roi02-dry-run-fixture/fake-stevenarella --valence-repo target/review-oracle/roi02-dry-run-fixture/fake-valence --valence-rev HEAD
+[mc-compat] plan: build client, start Valence server, wait for protocol 763, run client under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "target/review-oracle/roi02-dry-run-fixture/fake-stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
++ "git" "-C" "target/review-oracle/roi02-dry-run-fixture/fake-valence" "worktree" "prune"
+[mc-compat] creating isolated Valence worktree /tmp/valence-compat-763 at HEAD
++ "git" "-C" "target/review-oracle/roi02-dry-run-fixture/fake-valence" "worktree" "add" "--detach" "/tmp/valence-compat-763" "HEAD"
+[mc-compat] starting Valence HEAD example 'ctf' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-763
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'equipment-update-observation' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt docs/evidence/protocol-763-roi-02-equipment-update-observation-2026-05-27.dry-run.receipt.json
+$ nix build .#checks.x86_64-linux.mc-compat-valence-ctf-equipment-update-observation-dry-run --no-link -L --no-update-lock-file --option builders ""
+$ jq marker checks
+true
