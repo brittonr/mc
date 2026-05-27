@@ -1,0 +1,42 @@
+checkpoint: ROI 01-03 acceptance matrix receipt paths
+timestamp_utc=2026-05-27T21:10:05Z
+checkpoint_question=Do the ROI 01-03 acceptance matrix rows point at actual reviewable receipt JSON files under docs/evidence?
+inspected_evidence=matrix rows, test -f checks below, jq receipt status/scenario output, acceptance checker self-test, matrix/bundle checks, Nix acceptance matrix check, Cairn validation
+decision=PASS
+decision_owner=agent
+next_action=none; if any ROI 01-03 receipt path or BLAKE3 changes, update matrix, bundle, drained-receipts index, and rerun this checkpoint
+receipt_path=docs/evidence/protocol-763-roi-01-armor-equipment-mitigation-2026-05-27.receipt.json
+receipt_status=pass mode=run dry_run=false scenario=armor-equipment-mitigation scenario_passed=true
+receipt_path=docs/evidence/protocol-763-roi-02-equipment-update-observation-2026-05-27.receipt.json
+receipt_status=pass mode=run dry_run=false scenario=equipment-update-observation scenario_passed=true
+receipt_path=docs/evidence/protocol-763-roi-03-projectile-hit-2026-05-27.receipt.json
+receipt_status=pass mode=run dry_run=false scenario=projectile-hit scenario_passed=true
+
+$ python3 tools/check_acceptance_matrix.py --self-test
+acceptance matrix self-test ok
+exit=0
+
+$ python3 tools/check_acceptance_matrix.py
+acceptance matrix ok: 14 seams, 14 hashes
+exit=0
+
+$ python3 tools/check_current_evidence_bundle.py
+current evidence bundle ok: 14 seams
+exit=0
+
+$ nix build .#checks.x86_64-linux.mc-compat-acceptance-matrix --no-link -L --no-update-lock-file --option builders ''
+exit=0
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 1,
+  "valid": true
+}
+exit=0
+validation_decision=PASS

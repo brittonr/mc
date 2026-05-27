@@ -554,9 +554,10 @@
           cp -R ${./docs} docs
           cp -R ${./tools} tools
           chmod -R u+w docs tools
+          python3 tools/check_acceptance_matrix.py --self-test > acceptance-matrix-self-test.log
           python3 tools/check_acceptance_matrix.py > acceptance-matrix-check.log
           mkdir -p "$out"
-          cp acceptance-matrix-check.log "$out/"
+          cp acceptance-matrix-self-test.log acceptance-matrix-check.log "$out/"
         '';
         mc-compat-current-evidence-bundle = pkgs.runCommand "mc-compat-current-evidence-bundle" { nativeBuildInputs = [ pkgs.python3 ]; } ''
           cp -R ${./docs} docs
