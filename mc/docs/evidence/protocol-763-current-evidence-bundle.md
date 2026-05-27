@@ -7,8 +7,8 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 - Matrix: `docs/evidence/protocol-763-acceptance-matrix.md`
 - Matrix checker: `python3 tools/check_acceptance_matrix.py`
 - Bundle checker: `python3 tools/check_current_evidence_bundle.py`
-- Latest parent evidence commit before this bundle: `bb1400d mc: drain combat knockback cairn`
-- Child commits: Valence `e401e76`, Stevenarella `3884f0a`
+- Latest parent checkout before this bundle refresh: `a2dddea ignore pi agent metadata`
+- Child commits used for the current-head representative refresh: Valence `e5d18ad`, Stevenarella `616ee72`
 
 ## Evidence rows
 
@@ -25,6 +25,19 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 | Reconnect flag-state | `nix run .#mc-compat-valence-ctf-reconnect-flag-state` | `4d848af56b25ad4b3c466863bac5b2052adbbc1c59e2b2164bfb2a696c225cb3` |
 | Latency/jitter tolerance | `nix run .#mc-compat-valence-ctf-latency-jitter-inventory` | `a4a407fb1ac3aceae06faeacb794891ff8411c8ac86470c651c89b37b6c7f33d` |
 | Combat knockback | `nix run .#mc-compat-valence-ctf-combat-knockback` | `a5d0ba5ea6155a99b58f245a03195da05b4925d7bd151b5b3f67503ae7a4cf09` |
+
+## Representative current-head live refresh
+
+The maintained matrix rows above stay historical so their BLAKE3-backed receipt hashes do not move silently. A fresh representative current-head live run was added for closeout freshness instead:
+
+- Seam: projectile hit rail.
+- Maintained command: `VALENCE_REV=HEAD VALENCE_WORKTREE=/tmp/valence-compat-current-head-projectile-refresh VALENCE_TARGET_DIR=/tmp/valence-compat-current-head-projectile-refresh-target CLIENT_TIMEOUT=300 MC_COMPAT_PROJECTILE_HIT_RECEIPT=target/mc-compat-current-head-live-refresh/projectile-hit-current-head.json nix run --no-update-lock-file .#mc-compat-valence-ctf-projectile-hit -- --run`.
+- Receipt: `target/mc-compat-current-head-live-refresh/projectile-hit-current-head.json`.
+- Run log: `target/mc-compat-current-head-live-refresh/projectile-hit-current-head.run.log`.
+- BLAKE3: `756b6f732e71ae370808b2a653d1310baa88875f2c3345a1c87444fcffb51c6c`.
+- Payload commits at run time: parent `a2dddea`, Valence `e5d18ad`, Stevenarella `616ee72`.
+- Receipt outcome: `status=pass`, `mode=run`, `dry_run=false`, `scenario.passed=true`, no missing client/server milestones, `triage.suggested_boundary=none`.
+- Scoped non-claims remain: no full projectile physics, all-weapons, enchantment/status-effect, production-load, broad protocol, or full CTF/combat correctness claim.
 
 ## Current maintained checks
 
