@@ -1,5 +1,12 @@
 checkpoint: evidence manifest checker validation
-timestamp_utc=2026-05-27T20:34:55Z
+timestamp_utc=2026-05-27T20:42:27Z
+checkpoint_question=Do the evidence manifest gate, maintained dry-run aggregate, and Cairn validation pass after the validation manifest itself is tracked?
+inspected_evidence=command transcript below; requires evidence manifests ok: 4 manifests, 12 entries; Nix build exit=0 for evidence-manifests and maintained-dry-runs; Cairn valid=true
+decision=PASS
+decision_owner=agent
+next_action=none; rerun this checkpoint if any docs/evidence/*.b3 or referenced evidence file changes
+post_log_hash_step=Regenerate docs/evidence/protocol-763-evidence-manifest-checker-validation-2026-05-27.b3 after finalizing this log, then rerun tools/check_evidence_manifests.py and Nix evidence-manifests check.
+validation_decision=PASS
 
 $ python3 tools/check_acceptance_matrix.py
 acceptance matrix ok: 11 seams, 11 hashes
@@ -20,19 +27,13 @@ $ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
 mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
 Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
 OnixResearch tools are pinned over SSH: cairn, cargo-octet
-evidence manifests ok: 3 manifests, 11 entries, 30 receipts scanned
+evidence manifests ok: 4 manifests, 12 entries, 30 receipts scanned
 exit=0
 
 $ nix build .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L --no-update-lock-file --option builders ''
-this derivation will be built:
-  /nix/store/m2n4lyjii91b6qfcsp2zp6b4bm3f70ix-mc-compat-evidence-manifests.drv
-building '/nix/store/m2n4lyjii91b6qfcsp2zp6b4bm3f70ix-mc-compat-evidence-manifests.drv'...
 exit=0
 
 $ nix build .#checks.x86_64-linux.mc-compat-maintained-dry-runs --no-link -L --no-update-lock-file --option builders ''
-this derivation will be built:
-  /nix/store/ji0qgwagw6h84621km66mlyvz5dnmr43-mc-compat-maintained-dry-runs.drv
-building '/nix/store/ji0qgwagw6h84621km66mlyvz5dnmr43-mc-compat-maintained-dry-runs.drv'...
 exit=0
 
 $ nix run --no-update-lock-file .#cairn -- validate --root .
@@ -47,4 +48,3 @@ $ nix run --no-update-lock-file .#cairn -- validate --root .
   "valid": true
 }
 exit=0
-validation_decision=PASS
