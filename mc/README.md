@@ -227,10 +227,10 @@ nix run .#mc-compat-smoke -- --run --server-backend paper
 
 ## OnixResearch tool inputs
 
-The flake pins Cairn and Octet over SSH so private/internal remotes are fetched through the user's SSH agent:
+The flake pins Cairn and Octet through the canonical GitHub inputs:
 
-- `cairn`: `git+ssh://git@github.com/onixresearch/cairn.git`
-- `octet`: `git+ssh://git@github.com/onixresearch/octet.git`
+- `cairn`: `github:onixresearch/cairn` (`https://github.com/onixresearch/cairn`)
+- `octet`: `github:onixresearch/octet` (`https://github.com/onixresearch/octet`)
 
 The dev shell exposes `cairn` and `cargo-octet` alongside the smoke runner:
 
