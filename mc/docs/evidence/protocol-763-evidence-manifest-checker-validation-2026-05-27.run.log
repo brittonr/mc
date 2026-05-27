@@ -1,0 +1,50 @@
+checkpoint: evidence manifest checker validation
+timestamp_utc=2026-05-27T20:34:55Z
+
+$ python3 tools/check_acceptance_matrix.py
+acceptance matrix ok: 11 seams, 11 hashes
+exit=0
+
+$ python3 tools/check_current_evidence_bundle.py
+current evidence bundle ok: 11 seams
+exit=0
+
+$ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py --self-test
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest self-test ok
+exit=0
+
+$ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 3 manifests, 11 entries, 30 receipts scanned
+exit=0
+
+$ nix build .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L --no-update-lock-file --option builders ''
+this derivation will be built:
+  /nix/store/m2n4lyjii91b6qfcsp2zp6b4bm3f70ix-mc-compat-evidence-manifests.drv
+building '/nix/store/m2n4lyjii91b6qfcsp2zp6b4bm3f70ix-mc-compat-evidence-manifests.drv'...
+exit=0
+
+$ nix build .#checks.x86_64-linux.mc-compat-maintained-dry-runs --no-link -L --no-update-lock-file --option builders ''
+this derivation will be built:
+  /nix/store/ji0qgwagw6h84621km66mlyvz5dnmr43-mc-compat-maintained-dry-runs.drv
+building '/nix/store/ji0qgwagw6h84621km66mlyvz5dnmr43-mc-compat-maintained-dry-runs.drv'...
+exit=0
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 1,
+  "valid": true
+}
+exit=0
+validation_decision=PASS

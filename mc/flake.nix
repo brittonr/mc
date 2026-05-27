@@ -567,13 +567,13 @@
           cp current-evidence-bundle-check.log "$out/"
         '';
         mc-compat-evidence-manifests = pkgs.runCommand "mc-compat-evidence-manifests" { nativeBuildInputs = [ pkgs.b3sum pkgs.python3 ]; } ''
-          cp -R ${./docs} docs
-          cp -R ${./tools} tools
-          chmod -R u+w docs tools
-          python3 tools/check_evidence_manifests.py --self-test > evidence-manifest-self-test.log
-          python3 tools/check_evidence_manifests.py > evidence-manifest-check.log
+          cp -R ${./.} repo
+          chmod -R u+w repo
+          cd repo
+          python3 tools/check_evidence_manifests.py --self-test > ../evidence-manifest-self-test.log
+          python3 tools/check_evidence_manifests.py > ../evidence-manifest-check.log
           mkdir -p "$out"
-          cp evidence-manifest-self-test.log evidence-manifest-check.log "$out/"
+          cp ../evidence-manifest-self-test.log ../evidence-manifest-check.log "$out/"
         '';
         mc-compat-dry-run = pkgs.runCommand "mc-compat-dry-run" { } ''
           mkdir -p fake-stevenarella
