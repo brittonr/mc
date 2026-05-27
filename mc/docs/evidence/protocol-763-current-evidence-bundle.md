@@ -7,6 +7,7 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 - Matrix: `docs/evidence/protocol-763-acceptance-matrix.md`
 - Matrix checker: `python3 tools/check_acceptance_matrix.py`
 - Bundle checker: `python3 tools/check_current_evidence_bundle.py`
+- Evidence manifest checker: `python3 tools/check_evidence_manifests.py`
 - Latest parent checkout before this bundle refresh: `a2dddea ignore pi agent metadata`
 - Child commits used for the current-head representative refresh: Valence `e5d18ad`, Stevenarella `616ee72`
 
@@ -46,6 +47,7 @@ The maintained matrix rows above stay historical so their BLAKE3-backed receipt 
 ```sh
 python3 tools/check_acceptance_matrix.py
 python3 tools/check_current_evidence_bundle.py
+python3 tools/check_evidence_manifests.py
 nix run .#cairn -- validate --root .
 ```
 

@@ -566,6 +566,15 @@
           mkdir -p "$out"
           cp current-evidence-bundle-check.log "$out/"
         '';
+        mc-compat-evidence-manifests = pkgs.runCommand "mc-compat-evidence-manifests" { nativeBuildInputs = [ pkgs.b3sum pkgs.python3 ]; } ''
+          cp -R ${./docs} docs
+          cp -R ${./tools} tools
+          chmod -R u+w docs tools
+          python3 tools/check_evidence_manifests.py --self-test > evidence-manifest-self-test.log
+          python3 tools/check_evidence_manifests.py > evidence-manifest-check.log
+          mkdir -p "$out"
+          cp evidence-manifest-self-test.log evidence-manifest-check.log "$out/"
+        '';
         mc-compat-dry-run = pkgs.runCommand "mc-compat-dry-run" { } ''
           mkdir -p fake-stevenarella
           printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
@@ -993,6 +1002,7 @@
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-bot-probe-dry-run} "$out/compat-bot-probe"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-acceptance-matrix} "$out/acceptance-matrix"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-current-evidence-bundle} "$out/current-evidence-bundle"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-evidence-manifests} "$out/evidence-manifests"
           cat > "$out/manifest.txt" <<'EOF'
           smoke
           multi-client-load-score
@@ -1010,6 +1020,7 @@
           compat-bot-probe
           acceptance-matrix
           current-evidence-bundle
+          evidence-manifests
           EOF
         '';
         mc-compat-bot-probe-dry-run =
