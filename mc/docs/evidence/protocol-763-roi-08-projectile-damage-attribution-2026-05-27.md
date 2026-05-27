@@ -1,10 +1,17 @@
-# Protocol-763 ROI 08 projectile damage attribution evidence — 2026-05-27
+# Protocol-763 ROI 08 projectile damage attribution evidence — demoted
 
-## Scope
+## Status
 
-This evidence covers a bounded Stevenarella ⇄ Valence CTF projectile damage attribution rail. It extends the earlier projectile use/loadout rail by requiring both client-side projectile action and health-update evidence plus Valence server-side projectile use/hit attribution.
+This evidence is **experimental and demoted** by `roi-09-demote-projectile-damage-claim`. It must not be treated as a maintained accepted projectile damage attribution row.
 
-## Maintained command
+## Why demoted
+
+Same-family review found two blockers:
+
+1. The server-side `projectile_use` / `projectile_hit` milestones came from Valence `HEAD` at `e5d18ad` without a repo-local dependency checkpoint proving that instrumentation is pinned, landed, reproducible, and reviewable for this rail.
+2. The runner/receipt accepted milestone presence. The run log can show client `update_health health=17.0` before client `projectile_probe_use_item_sent` / `projectile_probe_swing_sent`, so the evidence does not prove causal ordering from projectile action to client damage update.
+
+## Original command
 
 ```sh
 MC_COMPAT_PROJECTILE_DAMAGE_RECEIPT=target/mc-compat-projectile-damage-attribution/projectile-damage-attribution.json \
@@ -15,7 +22,7 @@ CLIENT_TIMEOUT=300 \
 nix run --no-update-lock-file .#mc-compat-valence-ctf-projectile-damage-attribution -- --run
 ```
 
-## Reviewable artifacts
+## Reviewable artifacts retained for audit
 
 | Artifact | Path | BLAKE3 |
 | --- | --- | --- |
@@ -25,16 +32,15 @@ nix run --no-update-lock-file .#mc-compat-valence-ctf-projectile-damage-attribut
 | Dry-run receipt | `docs/evidence/protocol-763-roi-08-projectile-damage-attribution-2026-05-27.dry-run.receipt.json` | `631c3cd90500690817ea17098adda4dce378692a6c3d4d85f24865eb5000352d` |
 | Dry-run log | `docs/evidence/protocol-763-roi-08-projectile-damage-attribution-2026-05-27.dry-run.log` | `dc7a7354732efcc4d0dc52fd7c198cb1937a23fbdcbc823fb389f75a75ee2181` |
 
-## Receipt outcome
+## Non-claim
 
-```text
-status=pass mode=run dry_run=false scenario=projectile-damage-attribution scenario.passed=true
-client observed: multi_client_count, protocol_detected, join_game, render_tick, team_red, team_blue, remote_player_spawn, projectile_use_sent, projectile_swing_sent, projectile_damage_update
-server observed: server_client_a_seen, server_client_b_seen, server_projectile_loadout, server_projectile_use, server_projectile_hit
-missing client/server milestones: []
-triage.suggested_boundary=none
-```
+These artifacts do not prove projectile damage attribution, projectile travel/collision simulation, all bow/crossbow/trident variants, exact vanilla damage parity, enchantment or status-effect modifiers, production load safety, broad protocol coverage, or full combat correctness.
 
-## Non-claims
+## Re-promotion requirements
 
-This rail does not claim full projectile physics, projectile travel/collision simulation, all bow/crossbow/trident variants, exact vanilla damage parity, enchantment or status-effect modifiers, production load safety, broad protocol coverage, or full combat correctness.
+Before this rail can return to the acceptance matrix:
+
+1. Pin or include reviewable Valence code for `projectile_use` / `projectile_hit` server milestones.
+2. Record a repo-local checkpoint for the Valence dependency decision.
+3. Strengthen the runner/receipt to prove causal ordering between projectile action, server attribution, and client damage update.
+4. Rerun dry-run and live evidence with the pinned dependency and updated causality check.

@@ -13,7 +13,6 @@ This catalog records combat semantics that remain outside the maintained Stevena
 | Armor equipment mitigation | `nix run .#mc-compat-valence-ctf-armor-equipment-mitigation` | `target/mc-compat-armor-mitigation/armor-equipment-mitigation.json` | `docs/evidence/protocol-763-roi-01-03-drained-receipts-index.md` |
 | Equipment update observation | `nix run .#mc-compat-valence-ctf-equipment-update-observation` | `target/mc-compat-equipment-update/equipment-update-observation.json` | `docs/evidence/protocol-763-roi-01-03-drained-receipts-index.md` |
 | Projectile use/loadout rail | `nix run .#mc-compat-valence-ctf-projectile-hit` | `target/mc-compat-projectile-hit/projectile-hit.json` | `docs/evidence/protocol-763-roi-01-03-drained-receipts-index.md` |
-| Projectile damage attribution | `nix run .#mc-compat-valence-ctf-projectile-damage-attribution` | `target/mc-compat-projectile-damage-attribution/projectile-damage-attribution.json` | `docs/evidence/protocol-763-roi-08-projectile-damage-attribution-2026-05-27.md` |
 
 ## Residual non-claims
 
@@ -21,15 +20,16 @@ The current protocol-763 compatibility evidence still does **not** prove:
 
 - all equipment slots, all item types, or all equipment packet permutations,
 - all armor loadouts, exact vanilla mitigation parity, enchantment effects, or potion/status-effect combat modifiers,
-- projectile travel, collision simulation, exact vanilla damage parity, or all bow/crossbow/trident use semantics,
+- projectile damage attribution, projectile travel, collision simulation, exact vanilla damage parity, or all bow/crossbow/trident use semantics,
 - exact vanilla knockback balancing,
 - full death/respawn correctness outside the bounded maintained rails,
 - broad Minecraft combat correctness outside local Valence `ctf`.
 
 ## Next independently drainable combat seams
 
-1. **Projectile travel/collision simulation rail** — extends the indexed projectile use/loadout and damage-attribution rails only if client-visible travel/collision evidence can be correlated with Valence server evidence.
-2. **Armor loadout/enchantment matrix rail** — extends the indexed armor mitigation rail across more loadouts or modifiers without claiming full vanilla parity.
-3. **Equipment slot/item matrix rail** — extends the indexed equipment update observation rail across additional slots and item types.
+1. **Projectile damage attribution rail** — requires pinned/reviewable Valence instrumentation and a causal client/server receipt that orders client projectile use/hit/damage evidence rather than accepting milestone presence alone.
+2. **Projectile travel/collision simulation rail** — extends the indexed projectile use/loadout rail only if client-visible travel/collision evidence can be correlated with Valence server evidence.
+3. **Armor loadout/enchantment matrix rail** — extends the indexed armor mitigation rail across more loadouts or modifiers without claiming full vanilla parity.
+4. **Equipment slot/item matrix rail** — extends the indexed equipment update observation rail across additional slots and item types.
 
 Any future slice should remain a fresh Cairn package with a live receipt, BLAKE3 hash, dry-run gate, and explicit non-claims rather than broadening existing combat receipts silently.

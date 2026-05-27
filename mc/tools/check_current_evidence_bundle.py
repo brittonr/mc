@@ -27,7 +27,6 @@ REQUIRED_SEAMS = [
     "Armor equipment mitigation",
     "Equipment update observation",
     "Projectile use/loadout rail",
-    "Projectile damage attribution",
 ]
 
 
@@ -77,6 +76,7 @@ def main() -> int:
         "nix run .#cairn -- validate --root .",
         "full Minecraft compatibility",
         "armor loadouts",
+        "projectile damage attribution",
         "projectile travel/collision simulation",
     ]:
         if required not in bundle_text:

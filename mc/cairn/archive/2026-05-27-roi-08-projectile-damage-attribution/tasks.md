@@ -16,3 +16,7 @@
 - Evidence summary: `docs/evidence/protocol-763-roi-08-projectile-damage-attribution-2026-05-27.md`; BLAKE3 `71f2a5c8803fd7b329c4e870929e16145a913efcb554f4844be15f782e2c143f`.
 - Post-change runner tests passed: `nix develop --no-update-lock-file -c cargo test --manifest-path tools/mc-compat-runner/Cargo.toml`.
 - Maintained dry-run aggregate passed: `nix build .#checks.x86_64-linux.mc-compat-maintained-dry-runs --no-link -L --no-update-lock-file --option builders ''`.
+
+## Review correction
+
+The live receipt claim was demoted by `cairn/archive/2026-05-27-roi-09-demote-projectile-damage-claim`. Same-family review found that `VALENCE_REV=HEAD` made the server-side projectile hit dependency insufficiently pinned/reviewable and that the receipt only proved milestone presence, not causal ordering between projectile action and client damage update. Treat the ROI 08 artifacts as experimental audit evidence until a fresh pinned/causal proof is produced.
