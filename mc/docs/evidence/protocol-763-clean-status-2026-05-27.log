@@ -1,0 +1,8 @@
+$ git status --short
+
+$ git -C valence status --short
+
+$ jj -R hyperion status --no-pager
+The working copy has no changes.
+Working copy  (@) : lxxksuqn da850fb0 (empty) (no description set)
+Parent commit (@-): qyoqwmtp d4a538b1 ignore pi agent metadata

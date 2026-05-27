@@ -42,6 +42,6 @@ These changes were already task-complete before the archive commit. This follow-
 ## Human checkpoint
 
 - Unresolved question from review: previous commit did not include reviewable live receipt artifacts.
-- Inspected evidence: tracked receipt copies above, BLAKE3 manifests, archived tasks, current bundle, Cairn validation, pueue task `14` dry-run gate success, pueue task `25` ROI 02 live rerun success, and pueue task `32` post-fix fmt/test/dry-run/gate success.
+- Inspected evidence: tracked receipt copies above, BLAKE3 manifests, archived tasks, current bundle, Cairn validation, pueue task `14` dry-run gate success, pueue task `25` ROI 02 live rerun success, pueue task `32` post-fix fmt/test/dry-run/gate success, and clean status output in `docs/evidence/protocol-763-clean-status-2026-05-27.log`.
 - Decision owner: reviewer/maintainer can accept tracked copied receipts or request another live rerun for any historical rail.
-- Next action: rerun final matrix/bundle/Cairn validation before commit.
+- Next action: complete; final matrix/bundle/Cairn validation and review-evidence commits were performed.
