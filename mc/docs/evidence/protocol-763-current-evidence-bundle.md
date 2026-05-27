@@ -8,7 +8,7 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 - Matrix checker: `python3 tools/check_acceptance_matrix.py`
 - Bundle checker: `python3 tools/check_current_evidence_bundle.py`
 - Evidence manifest checker: `python3 tools/check_evidence_manifests.py`
-- Latest parent checkout before this bundle refresh: `b9a4d28 record final evidence manifest checkpoint`
+- Latest parent checkout before this bundle refresh: `4d29f46 scope pinned projectile damage proof`
 - Child commits used for the current-head representative refresh: Valence `e5d18ad`, Stevenarella `616ee72`
 
 ## Evidence rows
@@ -29,6 +29,7 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 | Armor equipment mitigation | `nix run .#mc-compat-valence-ctf-armor-equipment-mitigation` | `176fdf33d2b8b9047471f577a98f9093904a44ab8da2785baeb80acfc8d97765` |
 | Equipment update observation | `nix run .#mc-compat-valence-ctf-equipment-update-observation` | `8100dde3ebb3476984235009e277d7e973037b7873b2fdb30c413093e1498d3d` |
 | Projectile use/loadout rail | `nix run .#mc-compat-valence-ctf-projectile-hit` | `22310a0373f86bbff5e6bc116934d092b89f775cf5d539b08d04ff5564ad855b` |
+| Projectile damage attribution | `nix run .#mc-compat-valence-ctf-projectile-damage-attribution` | `cf84fcb81ae557ecfbd2ff0b1f8b94af7bf07eaa85c20b1cde442929e3e3e529` |
 
 ## Representative current-head live refresh
 
@@ -43,7 +44,21 @@ The maintained matrix rows above stay historical so their BLAKE3-backed receipt 
 - Run log BLAKE3: `05429930472e764a6a2b140ce9c0a7652552659210b4bb1407d93d0d2cd7fada`.
 - Payload commits at run time: parent `a2dddea`, Valence `e5d18ad`, Stevenarella `616ee72`.
 - Receipt outcome: `status=pass`, `mode=run`, `dry_run=false`, `scenario.passed=true`, no missing client/server milestones, `triage.suggested_boundary=none`.
-- Scoped non-claims remain: no full projectile physics, all-weapons, enchantment/status-effect, production-load, broad protocol, or full CTF/combat correctness claim.
+- Scoped non-claims remain: no full projectile physics, projectile travel/collision simulation, all-weapons, enchantment/status-effect, production-load, broad protocol, or full CTF/combat correctness claim.
+
+## Pinned projectile damage attribution refresh
+
+ROI 10 re-promotes projectile damage attribution with pinned dependency and causal receipt proof:
+
+- Maintained command: `nix run .#mc-compat-valence-ctf-projectile-damage-attribution`.
+- Source receipt: `target/roi-10-live/projectile-damage-pinned-live.receipt.json`.
+- Reviewable receipt copy: `docs/evidence/protocol-763-roi-10-projectile-damage-pinned-2026-05-27.receipt.json`.
+- Reviewable run log copy: `docs/evidence/protocol-763-roi-10-projectile-damage-pinned-2026-05-27.run.log`.
+- Reviewable Valence/client logs: `docs/evidence/protocol-763-roi-10-projectile-damage-pinned-2026-05-27.valence.log`, `docs/evidence/protocol-763-roi-10-projectile-damage-pinned-2026-05-27.client-compatbota.log`, `docs/evidence/protocol-763-roi-10-projectile-damage-pinned-2026-05-27.client-compatbotb.log`.
+- BLAKE3: `cf84fcb81ae557ecfbd2ff0b1f8b94af7bf07eaa85c20b1cde442929e3e3e529`.
+- Payload commits at run time: parent `4d29f46` plus current runner diff, Valence `e5d18ad`, Stevenarella `616ee72`.
+- Receipt outcome: `status=pass`, `mode=run`, `dry_run=false`, `scenario.passed=true`, `server.passed=true`, `projectile_damage_causality.passed=true`, missing steps `[]`, order violations `[]`.
+- Scoped non-claims remain: no full projectile physics, projectile travel/collision simulation, all-weapons, exact vanilla damage parity, enchantment/status-effect, production-load, broad protocol, or full CTF/combat correctness claim.
 
 ## Current maintained checks
 
@@ -56,4 +71,4 @@ nix run .#cairn -- validate --root .
 
 ## Non-claims
 
-This bundle still does not claim full Minecraft compatibility, full CTF correctness, projectile damage attribution, projectile travel/collision simulation, all projectile weapon variants, all equipment slots/items, all armor loadouts, enchantment/status-effect semantics, exact vanilla knockback/damage/mitigation balancing, production readiness, public-server load safety, or unbounded soak/reconnect/latency safety.
+This bundle still does not claim full Minecraft compatibility, full CTF correctness, projectile travel/collision simulation, all projectile weapon variants, all equipment slots/items, all armor loadouts, enchantment/status-effect semantics, exact vanilla knockback/damage/mitigation balancing, production readiness, public-server load safety, or unbounded soak/reconnect/latency safety.

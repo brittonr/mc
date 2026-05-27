@@ -10,9 +10,9 @@ Treat projectile damage attribution as a causal sequence, not a set membership c
 
 1. client projectile use is sent;
 2. client projectile swing is sent;
-3. server records projectile use for attacker `compatbota` and victim `compatbotb`;
-4. server records projectile hit for the same attacker/victim and damage/health delta;
-5. client records victim health update to the expected post-hit value after the action evidence.
+3. server records projectile use with probe sequence/damage for a concrete attacker/victim pair;
+4. server records projectile hit for the same attacker/victim and health delta;
+5. the victim client records the post-hit health value named by the server hit milestone.
 
 A receipt can pass only when the ordered proof exists. Missing, mismatched, or out-of-order milestones must fail with explicit missing/forbidden/order diagnostics.
 

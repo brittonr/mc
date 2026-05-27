@@ -1,0 +1,93 @@
+[main.rs:254][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:346][INFO] Shader version: #version 150
+[main.rs:99][INFO] Detected server protocol version 763
+[server/mod.rs:176][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25565
+[server/mod.rs:181][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:198][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:212][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:219][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:280][WARN] Server is running in offline mode
+[server/mod.rs:281][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbotb properties=0
+[server/mod.rs:1792][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[server/mod.rs:1859][INFO] MC-COMPAT-MILESTONE join_game entity_id=0 gamemode=Adventure
+[server/mod.rs:2985][INFO] Received chat message: Welcome to Valence! Select a team by jumping in the team's portal.
+[server/mod.rs:2372][INFO] MC-COMPAT-MILESTONE update_health health=20.0 food=20 saturation=0.0
+[server/mod.rs:3115][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=0
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=3 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=0.000 y=85.000 z=0.000
+[server/mod.rs:1444][INFO] MC-COMPAT-MILESTONE active_probe_position_look_sent x=0.000 y=84.922 z=0.000 on_ground=false
+[server/mod.rs:747][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:791][INFO] MC-COMPAT-MILESTONE active_probe_input_start forward+sprint+jump
+[server/mod.rs:797][INFO] MC-COMPAT-MILESTONE active_probe_jump_release
+[server/mod.rs:801][INFO] MC-COMPAT-MILESTONE active_probe_input_turn right
+[server/mod.rs:805][INFO] MC-COMPAT-MILESTONE active_probe_input_stop
+[server/mod.rs:825][INFO] MC-COMPAT-MILESTONE team_probe_enter_blue_portal x=4.0 y=84.0 z=4.0
+[server/mod.rs:844][INFO] MC-COMPAT-MILESTONE team_probe_hold_blue_portal start
+[server/mod.rs:2985][INFO] Received chat message: You are on team BLUE!
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=14.670 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=7 uuid=UUID(17279542629861541104, 17597886568995341490) name=compatbotb x=40.000 y=65.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=5.636 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2372][INFO] MC-COMPAT-MILESTONE update_health health=17.0 food=20 saturation=0.0
+[server/mod.rs:857][INFO] MC-COMPAT-MILESTONE team_probe_select_hotbar_slot slot=0
+[server/mod.rs:861][INFO] MC-COMPAT-MILESTONE team_probe_use_item_sent hand=main sequence=0
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:958][INFO] MC-COMPAT-MILESTONE projectile_probe_select_hotbar_slot slot=0
+[server/mod.rs:960][INFO] MC-COMPAT-MILESTONE projectile_probe_use_item_sent hand=main sequence=303
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:972][INFO] MC-COMPAT-MILESTONE projectile_probe_swing_sent hand=main
+[server/mod.rs:1997][INFO] MC-COMPAT-MILESTONE combat_probe_velocity_observed entity_id=0 vx=3200 vy=2572 vz=0
+[server/mod.rs:2372][INFO] MC-COMPAT-MILESTONE update_health health=11.0 food=20 saturation=0.0
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:1997][INFO] MC-COMPAT-MILESTONE combat_probe_velocity_observed entity_id=0 vx=3200 vy=2572 vz=0
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2372][INFO] MC-COMPAT-MILESTONE update_health health=8.0 food=20 saturation=0.0
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:1997][INFO] MC-COMPAT-MILESTONE combat_probe_velocity_observed entity_id=0 vx=3200 vy=2572 vz=0
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2372][INFO] MC-COMPAT-MILESTONE update_health health=5.0 food=20 saturation=0.0
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:1997][INFO] MC-COMPAT-MILESTONE combat_probe_velocity_observed entity_id=0 vx=3200 vy=2572 vz=0
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2372][INFO] MC-COMPAT-MILESTONE update_health health=2.0 food=20 saturation=0.0
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:1997][INFO] MC-COMPAT-MILESTONE combat_probe_velocity_observed entity_id=0 vx=3200 vy=2572 vz=0
+[server/mod.rs:2372][INFO] MC-COMPAT-MILESTONE update_health health=-1.0 food=20 saturation=0.0
+[server/mod.rs:2378][INFO] MC-COMPAT-MILESTONE combat_probe_death_observed health=-1.0
+[server/mod.rs:1997][INFO] MC-COMPAT-MILESTONE combat_probe_velocity_observed entity_id=0 vx=3200 vy=2572 vz=0
+[server/mod.rs:2372][INFO] MC-COMPAT-MILESTONE update_health health=-4.0 food=20 saturation=0.0
+[server/mod.rs:2378][INFO] MC-COMPAT-MILESTONE combat_probe_death_observed health=-4.0
+[server/mod.rs:1997][INFO] MC-COMPAT-MILESTONE combat_probe_velocity_observed entity_id=0 vx=3200 vy=2572 vz=0
+[server/mod.rs:2372][INFO] MC-COMPAT-MILESTONE update_health health=-7.0 food=20 saturation=0.0
+[server/mod.rs:2378][INFO] MC-COMPAT-MILESTONE combat_probe_death_observed health=-7.0
+[server/mod.rs:1997][INFO] MC-COMPAT-MILESTONE combat_probe_velocity_observed entity_id=0 vx=3200 vy=2572 vz=0
+[server/mod.rs:2372][INFO] MC-COMPAT-MILESTONE update_health health=-10.0 food=20 saturation=0.0
+[server/mod.rs:2378][INFO] MC-COMPAT-MILESTONE combat_probe_death_observed health=-10.0
+[server/mod.rs:1997][INFO] MC-COMPAT-MILESTONE combat_probe_velocity_observed entity_id=0 vx=3200 vy=2572 vz=0
+[server/mod.rs:2372][INFO] MC-COMPAT-MILESTONE update_health health=-13.0 food=20 saturation=0.0
+[server/mod.rs:2378][INFO] MC-COMPAT-MILESTONE combat_probe_death_observed health=-13.0
+[server/mod.rs:2596][INFO] MC-COMPAT-MILESTONE player_remove uuids=1

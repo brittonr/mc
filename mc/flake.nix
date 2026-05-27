@@ -17,6 +17,7 @@
       octet,
     }:
     let
+      pinnedProjectileDamageValenceRev = "e5d18ad04010d92881267ac1ea43922ae91821f5";
       eachSystem = f: nixpkgs.lib.genAttrs (import systems) (system: f nixpkgs.legacyPackages.${system});
     in
     {
@@ -370,10 +371,10 @@
 
               export SERVER_PROTOCOL="''${SERVER_PROTOCOL:-763}"
               export SERVER_VERSION="''${SERVER_VERSION:-1.20.1}"
-              export VALENCE_REV="''${VALENCE_REV:-main}"
+              export VALENCE_REV="''${VALENCE_REV:-${pinnedProjectileDamageValenceRev}}"
               export VALENCE_EXAMPLE="''${VALENCE_EXAMPLE:-ctf}"
-              export VALENCE_WORKTREE="''${VALENCE_WORKTREE:-/tmp/valence-compat-763}"
-              export VALENCE_TARGET_DIR="''${VALENCE_TARGET_DIR:-/tmp/valence-compat-763-target}"
+              export VALENCE_WORKTREE="''${VALENCE_WORKTREE:-/tmp/valence-compat-projectile-damage-pinned}"
+              export VALENCE_TARGET_DIR="''${VALENCE_TARGET_DIR:-/tmp/valence-compat-projectile-damage-pinned-target}"
               export CLIENT_TIMEOUT="''${CLIENT_TIMEOUT:-240}"
               export MC_COMPAT_PROJECTILE_PROBE="''${MC_COMPAT_PROJECTILE_PROBE:-1}"
               export LIBGL_DRIVERS_PATH="''${LIBGL_DRIVERS_PATH:-${pkgs.mesa}/lib/dri}"
@@ -946,9 +947,16 @@
             printf '%s\n' fake > fake-valence/README.md
             git -C fake-valence add README.md
             git -C fake-valence commit -m init
+            if MC_COMPAT_PROJECTILE_DAMAGE_RECEIPT="$PWD/receipts/head-rejected.json" ${
+              self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-projectile-damage-attribution
+            }/bin/mc-compat-valence-ctf-projectile-damage-attribution --dry-run --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD > head-rejected.log 2>&1; then
+              echo "projectile damage dry-run unexpectedly accepted VALENCE_REV=HEAD" >&2
+              exit 1
+            fi
+            grep -Fq "requires pinned Valence revision ${pinnedProjectileDamageValenceRev}" head-rejected.log
             MC_COMPAT_PROJECTILE_DAMAGE_RECEIPT="$PWD/receipts/projectile-damage-receipt.json" ${
               self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-projectile-damage-attribution
-            }/bin/mc-compat-valence-ctf-projectile-damage-attribution --dry-run --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD > projectile-damage-dry-run.log
+            }/bin/mc-compat-valence-ctf-projectile-damage-attribution --dry-run --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev ${pinnedProjectileDamageValenceRev} > projectile-damage-dry-run.log
             grep -Fq "scenario 'projectile-damage-attribution'" projectile-damage-dry-run.log
             grep -Fq '"name": "projectile-damage-attribution"' receipts/projectile-damage-receipt.json
             grep -Fq '"version": "1.20.1"' receipts/projectile-damage-receipt.json
@@ -960,6 +968,12 @@
             grep -Fq '"projectile_damage_update"' receipts/projectile-damage-receipt.json
             grep -Fq '"server_projectile_use"' receipts/projectile-damage-receipt.json
             grep -Fq '"server_projectile_hit"' receipts/projectile-damage-receipt.json
+            grep -Fq '"projectile_damage_causality"' receipts/projectile-damage-receipt.json
+            grep -Fq '"attacker": "compatbota"' receipts/projectile-damage-receipt.json
+            grep -Fq '"victim": "compatbotb"' receipts/projectile-damage-receipt.json
+            grep -Fq '"missing_steps": []' receipts/projectile-damage-receipt.json
+            grep -Fq '"order_violations": []' receipts/projectile-damage-receipt.json
+            grep -Fq '"rev": "${pinnedProjectileDamageValenceRev}"' receipts/projectile-damage-receipt.json
             grep -Fq '"expected_summary_packets": ["two_client_login", "play_join_game", "projectile_use_item", "projectile_hit_attribution", "health_update"]' receipts/projectile-damage-receipt.json
             grep -Fq '"claims_correctness": false' receipts/projectile-damage-receipt.json
             grep -Fq '"claims_semantic_equivalence": false' receipts/projectile-damage-receipt.json

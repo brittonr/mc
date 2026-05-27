@@ -27,6 +27,7 @@ REQUIRED_SEAMS = [
     "Armor equipment mitigation",
     "Equipment update observation",
     "Projectile use/loadout rail",
+    "Projectile damage attribution",
 ]
 
 REQUIRED_GAPS = [
@@ -54,6 +55,7 @@ REVIEWABLE_RECEIPT_SEAMS = frozenset(
         "Armor equipment mitigation",
         "Equipment update observation",
         "Projectile use/loadout rail",
+        "Projectile damage attribution",
     }
 )
 

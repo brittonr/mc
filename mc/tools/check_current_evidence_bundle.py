@@ -27,6 +27,7 @@ REQUIRED_SEAMS = [
     "Armor equipment mitigation",
     "Equipment update observation",
     "Projectile use/loadout rail",
+    "Projectile damage attribution",
 ]
 
 

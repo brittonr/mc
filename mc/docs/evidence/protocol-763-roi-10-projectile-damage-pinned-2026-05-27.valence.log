@@ -1,0 +1,97 @@
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.16s
+     Running `/tmp/valence-compat-projectile-damage-pinned-2026-05-27-target/debug/examples/ctf`
+MC-COMPAT-MILESTONE projectile_loadout username=compatbota slot=0 item=Bow arrows=16
+MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbota slot=0 source=team_inventory_setup
+MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbotb slot=0 source=team_inventory_setup
+MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbota slot=0
+[2m2026-05-27T22:27:40.834222Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb hand=Main sequence=0 damage=3.0
+MC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb hand=Main sequence=0 damage=3.0
+[2m2026-05-27T22:27:40.834237Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb victim_health_before=20.0 victim_health_after=17.0
+MC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb victim_health_before=20.0 victim_health_after=17.0
+MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbotb slot=0
+[2m2026-05-27T22:27:42.235799Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_use attacker=compatbotb victim=compatbota hand=Main sequence=0 damage=3.0
+MC-COMPAT-MILESTONE projectile_use attacker=compatbotb victim=compatbota hand=Main sequence=0 damage=3.0
+[2m2026-05-27T22:27:42.235818Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_hit attacker=compatbotb victim=compatbota victim_health_before=20.0 victim_health_after=17.0
+MC-COMPAT-MILESTONE projectile_hit attacker=compatbotb victim=compatbota victim_health_before=20.0 victim_health_after=17.0
+[2m2026-05-27T22:27:52.497566Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_use attacker=compatbotb victim=compatbota hand=Main sequence=303 damage=3.0
+MC-COMPAT-MILESTONE projectile_use attacker=compatbotb victim=compatbota hand=Main sequence=303 damage=3.0
+[2m2026-05-27T22:27:52.497580Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_hit attacker=compatbotb victim=compatbota victim_health_before=17.0 victim_health_after=14.0
+MC-COMPAT-MILESTONE projectile_hit attacker=compatbotb victim=compatbota victim_health_before=17.0 victim_health_after=14.0
+MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbotb slot=0
+[2m2026-05-27T22:27:53.349084Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE combat_knockback attacker=compatbota victim=compatbotb vx=8.000 vy=6.432 vz=0.000 bonus=false
+MC-COMPAT-MILESTONE combat_knockback attacker=compatbota victim=compatbotb vx=8.000 vy=6.432 vz=0.000 bonus=false
+[2m2026-05-27T22:27:53.349100Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb item=Bow
+MC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb item=Bow
+[2m2026-05-27T22:27:53.349103Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE combat_damage attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=17.0 victim_health_after=14.0 attacker_item=Bow
+MC-COMPAT-MILESTONE combat_damage attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=17.0 victim_health_after=14.0 attacker_item=Bow
+[2m2026-05-27T22:27:53.349105Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=17.0 victim_health_after=14.0
+MC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=17.0 victim_health_after=14.0
+[2m2026-05-27T22:27:53.349170Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb hand=Main sequence=303 damage=3.0
+MC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb hand=Main sequence=303 damage=3.0
+[2m2026-05-27T22:27:53.349177Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb victim_health_before=14.0 victim_health_after=11.0
+MC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb victim_health_before=14.0 victim_health_after=11.0
+MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbota slot=0
+[2m2026-05-27T22:27:56.702496Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE combat_knockback attacker=compatbota victim=compatbotb vx=8.000 vy=6.432 vz=0.000 bonus=false
+MC-COMPAT-MILESTONE combat_knockback attacker=compatbota victim=compatbotb vx=8.000 vy=6.432 vz=0.000 bonus=false
+[2m2026-05-27T22:27:56.702517Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb item=Bow
+MC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb item=Bow
+[2m2026-05-27T22:27:56.702520Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE combat_damage attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=11.0 victim_health_after=8.0 attacker_item=Bow
+MC-COMPAT-MILESTONE combat_damage attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=11.0 victim_health_after=8.0 attacker_item=Bow
+[2m2026-05-27T22:27:56.702523Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=11.0 victim_health_after=8.0
+MC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=11.0 victim_health_after=8.0
+[2m2026-05-27T22:28:00.006104Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE combat_knockback attacker=compatbota victim=compatbotb vx=8.000 vy=6.432 vz=0.000 bonus=false
+MC-COMPAT-MILESTONE combat_knockback attacker=compatbota victim=compatbotb vx=8.000 vy=6.432 vz=0.000 bonus=false
+[2m2026-05-27T22:28:00.006122Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb item=Bow
+MC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb item=Bow
+[2m2026-05-27T22:28:00.006126Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE combat_damage attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=8.0 victim_health_after=5.0 attacker_item=Bow
+MC-COMPAT-MILESTONE combat_damage attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=8.0 victim_health_after=5.0 attacker_item=Bow
+[2m2026-05-27T22:28:00.006129Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=8.0 victim_health_after=5.0
+MC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=8.0 victim_health_after=5.0
+[2m2026-05-27T22:28:02.509023Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE combat_knockback attacker=compatbota victim=compatbotb vx=8.000 vy=6.432 vz=0.000 bonus=false
+MC-COMPAT-MILESTONE combat_knockback attacker=compatbota victim=compatbotb vx=8.000 vy=6.432 vz=0.000 bonus=false
+[2m2026-05-27T22:28:02.509041Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb item=Bow
+MC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb item=Bow
+[2m2026-05-27T22:28:02.509045Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE combat_damage attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=5.0 victim_health_after=2.0 attacker_item=Bow
+MC-COMPAT-MILESTONE combat_damage attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=5.0 victim_health_after=2.0 attacker_item=Bow
+[2m2026-05-27T22:28:02.509047Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=5.0 victim_health_after=2.0
+MC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=5.0 victim_health_after=2.0
+[2m2026-05-27T22:28:05.763083Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE combat_knockback attacker=compatbota victim=compatbotb vx=8.000 vy=6.432 vz=0.000 bonus=false
+MC-COMPAT-MILESTONE combat_knockback attacker=compatbota victim=compatbotb vx=8.000 vy=6.432 vz=0.000 bonus=false
+[2m2026-05-27T22:28:05.763106Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb item=Bow
+MC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb item=Bow
+[2m2026-05-27T22:28:05.763109Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE combat_damage attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=2.0 victim_health_after=-1.0 attacker_item=Bow
+MC-COMPAT-MILESTONE combat_damage attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=2.0 victim_health_after=-1.0 attacker_item=Bow
+[2m2026-05-27T22:28:05.763112Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=2.0 victim_health_after=-1.0
+MC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=2.0 victim_health_after=-1.0
+[2m2026-05-27T22:28:06.413484Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE combat_knockback attacker=compatbota victim=compatbotb vx=8.000 vy=6.432 vz=0.000 bonus=false
+MC-COMPAT-MILESTONE combat_knockback attacker=compatbota victim=compatbotb vx=8.000 vy=6.432 vz=0.000 bonus=false
+[2m2026-05-27T22:28:06.413509Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb item=Bow
+MC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb item=Bow
+[2m2026-05-27T22:28:06.413514Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE combat_damage attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=-1.0 victim_health_after=-4.0 attacker_item=Bow
+MC-COMPAT-MILESTONE combat_damage attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=-1.0 victim_health_after=-4.0 attacker_item=Bow
+[2m2026-05-27T22:28:06.413517Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=-1.0 victim_health_after=-4.0
+MC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=-1.0 victim_health_after=-4.0
+[2m2026-05-27T22:28:06.914024Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE combat_knockback attacker=compatbota victim=compatbotb vx=8.000 vy=6.432 vz=0.000 bonus=false
+MC-COMPAT-MILESTONE combat_knockback attacker=compatbota victim=compatbotb vx=8.000 vy=6.432 vz=0.000 bonus=false
+[2m2026-05-27T22:28:06.914044Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb item=Bow
+MC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb item=Bow
+[2m2026-05-27T22:28:06.914049Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE combat_damage attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=-4.0 victim_health_after=-7.0 attacker_item=Bow
+MC-COMPAT-MILESTONE combat_damage attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=-4.0 victim_health_after=-7.0 attacker_item=Bow
+[2m2026-05-27T22:28:06.914051Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=-4.0 victim_health_after=-7.0
+MC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=-4.0 victim_health_after=-7.0
+[2m2026-05-27T22:28:07.815101Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE combat_knockback attacker=compatbota victim=compatbotb vx=8.000 vy=6.432 vz=0.000 bonus=false
+MC-COMPAT-MILESTONE combat_knockback attacker=compatbota victim=compatbotb vx=8.000 vy=6.432 vz=0.000 bonus=false
+[2m2026-05-27T22:28:07.815123Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb item=Bow
+MC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb item=Bow
+[2m2026-05-27T22:28:07.815134Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE combat_damage attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=-7.0 victim_health_after=-10.0 attacker_item=Bow
+MC-COMPAT-MILESTONE combat_damage attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=-7.0 victim_health_after=-10.0 attacker_item=Bow
+[2m2026-05-27T22:28:07.815136Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=-7.0 victim_health_after=-10.0
+MC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=-7.0 victim_health_after=-10.0
+[2m2026-05-27T22:28:08.315612Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE combat_knockback attacker=compatbota victim=compatbotb vx=8.000 vy=6.432 vz=0.000 bonus=false
+MC-COMPAT-MILESTONE combat_knockback attacker=compatbota victim=compatbotb vx=8.000 vy=6.432 vz=0.000 bonus=false
+[2m2026-05-27T22:28:08.315632Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb item=Bow
+MC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb item=Bow
+[2m2026-05-27T22:28:08.315636Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE combat_damage attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=-10.0 victim_health_after=-13.0 attacker_item=Bow
+MC-COMPAT-MILESTONE combat_damage attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=-10.0 victim_health_after=-13.0 attacker_item=Bow
+[2m2026-05-27T22:28:08.315639Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=-10.0 victim_health_after=-13.0
+MC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb damage=3.0 victim_health_before=-10.0 victim_health_after=-13.0

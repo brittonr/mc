@@ -14,6 +14,17 @@ const DEFAULT_SERVER_PROTOCOL: u32 = 758;
 const DEFAULT_CLIENT_USERNAME: &str = "compatbot";
 const DEFAULT_CLIENT_TIMEOUT_SECS: u64 = 20;
 const MULTI_CLIENT_LOAD_PEER_TIMEOUT_SECS: u64 = 10;
+const PINNED_PROJECTILE_DAMAGE_VALENCE_REV: &str = "e5d18ad04010d92881267ac1ea43922ae91821f5";
+const PROJECTILE_DAMAGE_ATTACKER_SUFFIX: &str = "a";
+const PROJECTILE_DAMAGE_VICTIM_SUFFIX: &str = "b";
+const PROJECTILE_DAMAGE_CLIENT_USE_NEEDLE: &str = "projectile_probe_use_item_sent";
+const PROJECTILE_DAMAGE_CLIENT_SWING_NEEDLE: &str = "projectile_probe_swing_sent";
+const PROJECTILE_DAMAGE_CLIENT_HEALTH_NEEDLE: &str = "update_health health=17.0";
+const PROJECTILE_DAMAGE_SERVER_USE_NEEDLE: &str = "MC-COMPAT-MILESTONE projectile_use";
+const PROJECTILE_DAMAGE_SERVER_HIT_NEEDLE: &str = "MC-COMPAT-MILESTONE projectile_hit";
+const PROJECTILE_DAMAGE_SEQUENCE_NEEDLE: &str = "sequence=303";
+const PROJECTILE_DAMAGE_AMOUNT_NEEDLE: &str = "damage=3.0";
+const PROJECTILE_DAMAGE_HEALTH_AFTER_NEEDLE: &str = "victim_health_after=17.0";
 const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|combat-damage|combat-knockback|armor-equipment-mitigation|equipment-update-observation|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
@@ -75,6 +86,23 @@ struct ServerScenarioEvidence {
     passed: bool,
 }
 
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct ProjectileDamageCausalityEvidence {
+    required_steps: Vec<&'static str>,
+    observed_steps: Vec<&'static str>,
+    missing_steps: Vec<&'static str>,
+    order_violations: Vec<&'static str>,
+    attacker_username: String,
+    victim_username: String,
+    passed: bool,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct ClientLogSlice<'a> {
+    username: &'a str,
+    output: &'a str,
+}
+
 #[derive(Debug, Clone)]
 struct Config {
     root: PathBuf,
@@ -123,6 +151,7 @@ struct ClientRunEvidence {
     matched_success_pattern: Option<String>,
     scenario: Option<ScenarioEvidence>,
     server_scenario: Option<ServerScenarioEvidence>,
+    projectile_damage_causality: Option<ProjectileDamageCausalityEvidence>,
 }
 
 struct ManagedServer {
@@ -184,6 +213,7 @@ fn real_main() -> Result<(), String> {
 }
 
 fn execute(cfg: &Config) -> Result<Option<ClientRunEvidence>, String> {
+    validate_projectile_damage_dependency(cfg)?;
     if matches!(cfg.mode, Mode::DryRun | Mode::Run | Mode::BuildClient) {
         ensure_client_dir_ready(cfg)?;
     }
@@ -244,6 +274,22 @@ fn execute(cfg: &Config) -> Result<Option<ClientRunEvidence>, String> {
             Ok(Some(client))
         }
     }
+}
+
+fn validate_projectile_damage_dependency(cfg: &Config) -> Result<(), String> {
+    if cfg.server_backend != ServerBackend::Valence
+        || cfg.scenario != Scenario::ProjectileDamageAttribution
+        || !matches!(cfg.mode, Mode::DryRun | Mode::Run)
+    {
+        return Ok(());
+    }
+    if cfg.valence_rev == PINNED_PROJECTILE_DAMAGE_VALENCE_REV {
+        return Ok(());
+    }
+    Err(format!(
+        "projectile-damage-attribution requires pinned Valence revision {PINNED_PROJECTILE_DAMAGE_VALENCE_REV}; got {}. Do not use VALENCE_REV=HEAD for promoted evidence.",
+        cfg.valence_rev
+    ))
 }
 
 impl Config {
@@ -1103,6 +1149,199 @@ fn evaluate_server_scenario(
     }
 }
 
+fn projectile_damage_required_steps() -> Vec<&'static str> {
+    vec![
+        "attacker_client_projectile_use_sent",
+        "attacker_client_projectile_swing_sent",
+        "server_projectile_use_attacker_victim",
+        "server_projectile_hit_attacker_victim_health_delta",
+        "victim_client_damage_update",
+    ]
+}
+
+fn evaluate_projectile_damage_causality(
+    client_logs: &[ClientLogSlice<'_>],
+    server_log: &str,
+    base_username: &str,
+) -> ProjectileDamageCausalityEvidence {
+    let fallback_attacker = format!("{base_username}{PROJECTILE_DAMAGE_ATTACKER_SUFFIX}");
+    let fallback_victim = format!("{base_username}{PROJECTILE_DAMAGE_VICTIM_SUFFIX}");
+    let server_use = first_projectile_server_use(server_log);
+    let (attacker_username, victim_username) = server_use
+        .as_ref()
+        .map(|event| (event.attacker.clone(), event.victim.clone()))
+        .unwrap_or_else(|| (fallback_attacker, fallback_victim));
+    let server_hit = first_projectile_server_hit(
+        server_log,
+        &attacker_username,
+        &victim_username,
+        server_use.as_ref().map(|event| event.line),
+    );
+    let attacker_log = client_log_for(client_logs, &attacker_username);
+    let victim_log = client_log_for(client_logs, &victim_username);
+
+    let attacker_use = first_line_index(attacker_log, PROJECTILE_DAMAGE_CLIENT_USE_NEEDLE);
+    let attacker_swing = first_line_index(attacker_log, PROJECTILE_DAMAGE_CLIENT_SWING_NEEDLE);
+    let victim_health = server_hit
+        .as_ref()
+        .and_then(|hit| first_line_index(victim_log, &client_health_needle(&hit.health_after)));
+
+    let mut observed_steps = Vec::new();
+    let mut missing_steps = Vec::new();
+    push_step_presence(
+        &mut observed_steps,
+        &mut missing_steps,
+        "attacker_client_projectile_use_sent",
+        attacker_use,
+    );
+    push_step_presence(
+        &mut observed_steps,
+        &mut missing_steps,
+        "attacker_client_projectile_swing_sent",
+        attacker_swing,
+    );
+    push_step_presence(
+        &mut observed_steps,
+        &mut missing_steps,
+        "server_projectile_use_attacker_victim",
+        server_use.as_ref().map(|event| event.line),
+    );
+    push_step_presence(
+        &mut observed_steps,
+        &mut missing_steps,
+        "server_projectile_hit_attacker_victim_health_delta",
+        server_hit.as_ref().map(|event| event.line),
+    );
+    push_step_presence(
+        &mut observed_steps,
+        &mut missing_steps,
+        "victim_client_damage_update",
+        victim_health,
+    );
+
+    let mut order_violations = Vec::new();
+    if let (Some(use_line), Some(swing_line)) = (attacker_use, attacker_swing) {
+        if use_line >= swing_line {
+            order_violations.push("attacker_client_use_before_swing");
+        }
+    }
+    if let Some(use_event) = &server_use {
+        if let Some(hit_event) = &server_hit {
+            if use_event.line >= hit_event.line {
+                order_violations.push("server_projectile_use_before_hit");
+            }
+        } else if first_projectile_server_hit(
+            server_log,
+            &attacker_username,
+            &victim_username,
+            None,
+        )
+        .is_some_and(|hit_event| hit_event.line < use_event.line)
+        {
+            order_violations.push("server_projectile_use_before_hit");
+        }
+    }
+
+    let passed = missing_steps.is_empty() && order_violations.is_empty();
+    ProjectileDamageCausalityEvidence {
+        required_steps: projectile_damage_required_steps(),
+        observed_steps,
+        missing_steps,
+        order_violations,
+        attacker_username,
+        victim_username,
+        passed,
+    }
+}
+
+fn push_step_presence(
+    observed_steps: &mut Vec<&'static str>,
+    missing_steps: &mut Vec<&'static str>,
+    step: &'static str,
+    line: Option<usize>,
+) {
+    if line.is_some() {
+        observed_steps.push(step);
+    } else {
+        missing_steps.push(step);
+    }
+}
+
+fn first_line_index(output: &str, needle: &str) -> Option<usize> {
+    output.lines().position(|line| line.contains(needle))
+}
+
+fn client_log_for<'a>(client_logs: &'a [ClientLogSlice<'a>], username: &str) -> &'a str {
+    client_logs
+        .iter()
+        .find(|log| log.username == username)
+        .map(|log| log.output)
+        .unwrap_or("")
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct ProjectileServerUse {
+    line: usize,
+    attacker: String,
+    victim: String,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct ProjectileServerHit {
+    line: usize,
+    health_after: String,
+}
+
+fn first_projectile_server_use(server_log: &str) -> Option<ProjectileServerUse> {
+    server_log.lines().enumerate().find_map(|(line, text)| {
+        if !text.contains(PROJECTILE_DAMAGE_SERVER_USE_NEEDLE)
+            || !text.contains(PROJECTILE_DAMAGE_SEQUENCE_NEEDLE)
+            || !text.contains(PROJECTILE_DAMAGE_AMOUNT_NEEDLE)
+        {
+            return None;
+        }
+        Some(ProjectileServerUse {
+            line,
+            attacker: field_value(text, "attacker=")?.to_string(),
+            victim: field_value(text, "victim=")?.to_string(),
+        })
+    })
+}
+
+fn first_projectile_server_hit(
+    server_log: &str,
+    attacker_username: &str,
+    victim_username: &str,
+    after_line: Option<usize>,
+) -> Option<ProjectileServerHit> {
+    let attacker_needle = format!("attacker={attacker_username}");
+    let victim_needle = format!("victim={victim_username}");
+    server_log.lines().enumerate().find_map(|(line, text)| {
+        if after_line.is_some_and(|minimum_line| line <= minimum_line)
+            || !text.contains(PROJECTILE_DAMAGE_SERVER_HIT_NEEDLE)
+            || !text.contains(&attacker_needle)
+            || !text.contains(&victim_needle)
+        {
+            return None;
+        }
+        Some(ProjectileServerHit {
+            line,
+            health_after: field_value(text, "victim_health_after=")?.to_string(),
+        })
+    })
+}
+
+fn field_value<'a>(line: &'a str, field: &str) -> Option<&'a str> {
+    let value_start = line.find(field)? + field.len();
+    let value = &line[value_start..];
+    let value_end = value.find(char::is_whitespace).unwrap_or(value.len());
+    Some(&value[..value_end])
+}
+
+fn client_health_needle(health_after: &str) -> String {
+    format!("update_health health={health_after}")
+}
+
 fn default_port(backend: ServerBackend) -> u16 {
     match backend {
         ServerBackend::Valence => 25565,
@@ -1425,12 +1664,57 @@ fn prepare_valence_worktree(cfg: &Config) -> Result<(), String> {
             .arg(&cfg.valence_rev);
         run_cmd(cfg, &mut cmd)?;
     } else {
+        ensure_valence_worktree_at_requested_rev(cfg)?;
         log(format_args!(
             "using existing Valence worktree {}",
             cfg.valence_worktree.display()
         ));
     }
     Ok(())
+}
+
+fn ensure_valence_worktree_at_requested_rev(cfg: &Config) -> Result<(), String> {
+    if cfg.mode == Mode::DryRun {
+        return Ok(());
+    }
+    let current = git_rev_parse(&cfg.valence_worktree, "HEAD")?;
+    let requested = git_rev_parse(
+        &cfg.valence_repo,
+        &format!("{}^{{commit}}", cfg.valence_rev),
+    )?;
+    if current == requested {
+        return Ok(());
+    }
+    Err(format!(
+        "Valence worktree {} is at {current}, but requested {} resolves to {requested}. Remove the stale worktree or pass VALENCE_WORKTREE to a fresh path.",
+        cfg.valence_worktree.display(),
+        cfg.valence_rev
+    ))
+}
+
+fn git_rev_parse(repo: &Path, rev: &str) -> Result<String, String> {
+    let output = Command::new("git")
+        .arg("-C")
+        .arg(repo)
+        .arg("rev-parse")
+        .arg(rev)
+        .output()
+        .map_err(|e| format!("git rev-parse {rev} in {}: {e}", repo.display()))?;
+    if !output.status.success() {
+        return Err(format!(
+            "git rev-parse {rev} in {} failed with {}",
+            repo.display(),
+            output.status
+        ));
+    }
+    String::from_utf8(output.stdout)
+        .map(|text| text.trim().to_string())
+        .map_err(|e| {
+            format!(
+                "git rev-parse {rev} output in {} was not UTF-8: {e}",
+                repo.display()
+            )
+        })
 }
 
 fn prune_stale_valence_worktrees(cfg: &Config) -> Result<(), String> {
@@ -1449,6 +1733,9 @@ fn ensure_valence_repo_ready(cfg: &Config) -> Result<(), String> {
             cfg.valence_repo.display(),
             cfg.valence_repo.display()
         ));
+    }
+    if cfg.mode == Mode::DryRun {
+        return Ok(());
     }
 
     let status = Command::new("git")
@@ -1701,6 +1988,9 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
     ));
     if cfg.mode == Mode::DryRun {
         log(format_args!("would run Stevenarella under xvfb-run"));
+        if cfg.scenario == Scenario::ProjectileDamageAttribution {
+            return Ok(projectile_damage_dry_run_evidence(cfg));
+        }
         let scenario = evaluate_scenario(cfg.scenario, "");
         let server_scenario = Some(evaluate_server_scenario(
             cfg.scenario,
@@ -1716,6 +2006,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
             matched_success_pattern: None,
             scenario: Some(scenario),
             server_scenario,
+            projectile_damage_causality: None,
         });
     }
 
@@ -1809,6 +2100,34 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         }
     }
 
+    let projectile_damage_causality = if cfg.scenario == Scenario::ProjectileDamageAttribution {
+        let server_log = read_valence_log(cfg)?;
+        let client_logs = runs
+            .iter()
+            .map(|run| ClientLogSlice {
+                username: &run.username,
+                output: &run.output,
+            })
+            .collect::<Vec<_>>();
+        let causality =
+            evaluate_projectile_damage_causality(&client_logs, &server_log, &cfg.client_username);
+        if !causality.passed {
+            return Err(format!(
+                "projectile damage causality failed: missing={:?} order_violations={:?}; client_logs={}; server_log={}",
+                causality.missing_steps,
+                causality.order_violations,
+                runs.iter()
+                    .map(|run| run.log_path.display().to_string())
+                    .collect::<Vec<_>>()
+                    .join(","),
+                cfg.valence_log.display()
+            ));
+        }
+        Some(causality)
+    } else {
+        None
+    };
+
     let all_success = runs.iter().all(|run| run.exit_code == Some(0));
     let timeout_success = runs
         .iter()
@@ -1871,7 +2190,63 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         matched_success_pattern,
         scenario: Some(scenario),
         server_scenario,
+        projectile_damage_causality,
     })
+}
+
+fn projectile_damage_dry_run_evidence(cfg: &Config) -> ClientRunEvidence {
+    let attacker_username = format!(
+        "{}{}",
+        cfg.client_username, PROJECTILE_DAMAGE_ATTACKER_SUFFIX
+    );
+    let victim_username = format!("{}{}", cfg.client_username, PROJECTILE_DAMAGE_VICTIM_SUFFIX);
+    let attacker_log = format!(
+        "Detected server protocol version {}\njoin_game\nrender_tick_with_player\nYou are on team RED!\nremote_player_spawn\n{} hand=main {}\n{} hand=main\n",
+        cfg.server_protocol,
+        PROJECTILE_DAMAGE_CLIENT_USE_NEEDLE,
+        PROJECTILE_DAMAGE_SEQUENCE_NEEDLE,
+        PROJECTILE_DAMAGE_CLIENT_SWING_NEEDLE
+    );
+    let victim_log = format!(
+        "Detected server protocol version {}\njoin_game\nrender_tick_with_player\nYou are on team BLUE!\nremote_player_spawn\n{}\n",
+        cfg.server_protocol,
+        PROJECTILE_DAMAGE_CLIENT_HEALTH_NEEDLE
+    );
+    let server_log = format!(
+        "{attacker_username} joined\n{victim_username} joined\nMC-COMPAT-MILESTONE projectile_loadout username={attacker_username} slot=0 item=Bow arrows=16\n{} attacker={attacker_username} victim={victim_username} hand=Main {} {}\n{} attacker={attacker_username} victim={victim_username} victim_health_before=20.0 {}\n",
+        PROJECTILE_DAMAGE_SERVER_USE_NEEDLE,
+        PROJECTILE_DAMAGE_SEQUENCE_NEEDLE,
+        PROJECTILE_DAMAGE_AMOUNT_NEEDLE,
+        PROJECTILE_DAMAGE_SERVER_HIT_NEEDLE,
+        PROJECTILE_DAMAGE_HEALTH_AFTER_NEEDLE
+    );
+    let combined_output =
+        format!("mc_compat_projectile_damage_client_count=2\n{attacker_log}{victim_log}");
+    let client_logs = [
+        ClientLogSlice {
+            username: &attacker_username,
+            output: &attacker_log,
+        },
+        ClientLogSlice {
+            username: &victim_username,
+            output: &victim_log,
+        },
+    ];
+    let scenario = evaluate_scenario(cfg.scenario, &combined_output);
+    let server_scenario = evaluate_server_scenario(cfg.scenario, &server_log, &cfg.client_username);
+    let projectile_damage_causality =
+        evaluate_projectile_damage_causality(&client_logs, &server_log, &cfg.client_username);
+    ClientRunEvidence {
+        log_path: None,
+        log_paths: Vec::new(),
+        usernames: vec![attacker_username, victim_username],
+        exit_code: None,
+        classification: "dry-run",
+        matched_success_pattern: Some("Detected server protocol version".to_string()),
+        scenario: Some(scenario),
+        server_scenario: Some(server_scenario),
+        projectile_damage_causality: Some(projectile_damage_causality),
+    }
 }
 
 fn run_reconnect_flag_state_scenario(cfg: &Config) -> Result<Vec<SingleClientRun>, String> {
@@ -2142,11 +2517,7 @@ fn read_server_scenario_evidence(
     if cfg.server_backend != ServerBackend::Valence {
         return Ok(None);
     }
-    let server_log = match fs::read_to_string(&cfg.valence_log) {
-        Ok(text) => text,
-        Err(err) if err.kind() == io::ErrorKind::NotFound => String::new(),
-        Err(err) => return Err(format!("read {}: {err}", cfg.valence_log.display())),
-    };
+    let server_log = read_valence_log(cfg)?;
     let mut correlation_log = server_log;
     for run in _runs {
         correlation_log.push('\n');
@@ -2158,6 +2529,14 @@ fn read_server_scenario_evidence(
         &correlation_log,
         username,
     )))
+}
+
+fn read_valence_log(cfg: &Config) -> Result<String, String> {
+    match fs::read_to_string(&cfg.valence_log) {
+        Ok(text) => Ok(text),
+        Err(err) if err.kind() == io::ErrorKind::NotFound => Ok(String::new()),
+        Err(err) => Err(format!("read {}: {err}", cfg.valence_log.display())),
+    }
 }
 
 fn requires_server_correlation(cfg: &Config) -> bool {
@@ -2270,6 +2649,23 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
     let server_evidence = client.and_then(|evidence| evidence.server_scenario.as_ref());
     let fallback_server = evaluate_server_scenario(cfg.scenario, "", &cfg.client_username);
     let server_scenario = server_evidence.unwrap_or(&fallback_server);
+    let projectile_damage_causality =
+        client.and_then(|evidence| evidence.projectile_damage_causality.as_ref());
+    let fallback_projectile_damage_causality =
+        evaluate_projectile_damage_causality(&[], "", &cfg.client_username);
+    let selected_projectile_damage_causality =
+        if cfg.scenario == Scenario::ProjectileDamageAttribution {
+            Some(projectile_damage_causality.unwrap_or(&fallback_projectile_damage_causality))
+        } else {
+            None
+        };
+    let projectile_damage_causality_passed = selected_projectile_damage_causality
+        .map(|evidence| evidence.passed)
+        .unwrap_or(true);
+    let projectile_damage_causality_json = projectile_damage_causality_json(
+        cfg.scenario == Scenario::ProjectileDamageAttribution,
+        selected_projectile_damage_causality,
+    );
     let scenario_required: Vec<&str> = scenario_required_milestones(cfg.scenario)
         .iter()
         .map(|(name, _)| *name)
@@ -2536,6 +2932,7 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
       "passed": {correlation_passed}
     }}
   }},
+  "projectile_damage_causality": {projectile_damage_causality_json},
   "client": {{
     "dir": {client_dir_json},
     "target_dir": {target_dir_json},
@@ -2605,7 +3002,9 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         server_missing_json = json_string_array(&server_scenario.missing_milestones),
         server_forbidden_matches_json = json_string_array(&server_scenario.forbidden_matches),
         server_passed = server_scenario.passed,
-        correlation_passed = scenario.passed && server_scenario.passed,
+        correlation_passed =
+            scenario.passed && server_scenario.passed && projectile_damage_causality_passed,
+        projectile_damage_causality_json = projectile_damage_causality_json,
         backend_json = json_string(backend_name(cfg.server_backend)),
         version_json = json_string(&cfg.server_version),
         protocol = cfg.server_protocol,
@@ -2632,6 +3031,50 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         first_forbidden_pattern_json = json_optional_string(first_forbidden_pattern),
         first_forbidden_source_json = json_optional_string(first_forbidden_source),
         suggested_boundary_json = json_string(suggested_boundary),
+    )
+}
+
+fn projectile_damage_causality_json(
+    selected: bool,
+    evidence: Option<&ProjectileDamageCausalityEvidence>,
+) -> String {
+    let Some(evidence) = evidence else {
+        return format!(
+            r#"{{
+    "selected": {selected},
+    "attacker": null,
+    "victim": null,
+    "required_steps": [],
+    "observed_steps": [],
+    "missing_steps": [],
+    "order_violations": [],
+    "proof_basis": "not-selected",
+    "passed": {passed}
+  }}"#,
+            selected = selected,
+            passed = !selected,
+        );
+    };
+    format!(
+        r#"{{
+    "selected": {selected},
+    "attacker": {attacker_json},
+    "victim": {victim_json},
+    "required_steps": {required_steps_json},
+    "observed_steps": {observed_steps_json},
+    "missing_steps": {missing_steps_json},
+    "order_violations": {order_violations_json},
+    "proof_basis": "attacker_client_packet_send_plus_valence_attacker_victim_health_delta_plus_victim_client_health_update",
+    "passed": {passed}
+  }}"#,
+        selected = selected,
+        attacker_json = json_string(&evidence.attacker_username),
+        victim_json = json_string(&evidence.victim_username),
+        required_steps_json = json_string_array(&evidence.required_steps),
+        observed_steps_json = json_string_array(&evidence.observed_steps),
+        missing_steps_json = json_string_array(&evidence.missing_steps),
+        order_violations_json = json_string_array(&evidence.order_violations),
+        passed = evidence.passed,
     )
 }
 
@@ -3646,6 +4089,7 @@ red flag captured
 ",
                 "compatbot",
             )),
+            projectile_damage_causality: None,
         });
 
         let json = smoke_receipt_json(&cfg, Ok(&client));
@@ -3712,6 +4156,7 @@ red flag captured
                 "compatbot joined\n",
                 "compatbot",
             )),
+            projectile_damage_causality: None,
         });
 
         let json = smoke_receipt_json(&cfg, Ok(&client));
@@ -3847,6 +4292,75 @@ red flag captured
         assert!(missing_hit
             .missing_milestones
             .contains(&"server_projectile_hit"));
+
+        let attacker_log = "projectile_probe_use_item_sent hand=main sequence=303\nprojectile_probe_swing_sent hand=main\n";
+        let victim_log = "update_health health=17.0 food=20 saturation=0.0\n";
+        let server_log = "MC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb hand=Main sequence=303 damage=3.0\nMC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb victim_health_before=20.0 victim_health_after=17.0\n";
+        let client_logs = [
+            ClientLogSlice {
+                username: "compatbota",
+                output: attacker_log,
+            },
+            ClientLogSlice {
+                username: "compatbotb",
+                output: victim_log,
+            },
+        ];
+        let causal = evaluate_projectile_damage_causality(&client_logs, server_log, "compatbot");
+        assert!(causal.passed, "{causal:?}");
+        assert!(causal.missing_steps.is_empty(), "{causal:?}");
+        assert!(causal.order_violations.is_empty(), "{causal:?}");
+
+        let out_of_order_server = "MC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb victim_health_before=20.0 victim_health_after=17.0\nMC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb hand=Main sequence=303 damage=3.0\n";
+        let causal_order_fail =
+            evaluate_projectile_damage_causality(&client_logs, out_of_order_server, "compatbot");
+        assert!(!causal_order_fail.passed, "{causal_order_fail:?}");
+        assert!(causal_order_fail
+            .order_violations
+            .contains(&"server_projectile_use_before_hit"));
+
+        let missing_victim_health = evaluate_projectile_damage_causality(
+            &[ClientLogSlice {
+                username: "compatbota",
+                output: attacker_log,
+            }],
+            server_log,
+            "compatbot",
+        );
+        assert!(!missing_victim_health.passed, "{missing_victim_health:?}");
+        assert!(missing_victim_health
+            .missing_steps
+            .contains(&"victim_client_damage_update"));
+    }
+
+    #[test]
+    fn projectile_damage_attribution_requires_pinned_valence_revision() {
+        let cfg = test_config(
+            &[
+                "--dry-run",
+                "--scenario",
+                "projectile-damage-attribution",
+                "--valence-rev",
+                "HEAD",
+            ],
+            &[],
+        )
+        .expect("config parses before execution validation");
+        let err = validate_projectile_damage_dependency(&cfg).unwrap_err();
+        assert!(err.contains(PINNED_PROJECTILE_DAMAGE_VALENCE_REV), "{err}");
+
+        let pinned = test_config(
+            &[
+                "--dry-run",
+                "--scenario",
+                "projectile-damage-attribution",
+                "--valence-rev",
+                PINNED_PROJECTILE_DAMAGE_VALENCE_REV,
+            ],
+            &[],
+        )
+        .expect("pinned config parses");
+        validate_projectile_damage_dependency(&pinned).expect("pinned revision accepted");
     }
 
     #[test]
@@ -4041,6 +4555,7 @@ RED: 1
                 "Detected server protocol version",
             )),
             server_scenario: Some(evaluate_server_scenario(Scenario::Smoke, "", "compatbot")),
+            projectile_damage_causality: None,
         });
 
         let json = smoke_receipt_json(&cfg, Ok(&client));
@@ -4114,6 +4629,7 @@ RED: 1
                 "compatbot joined\n",
                 "compatbot",
             )),
+            projectile_damage_causality: None,
         });
 
         let json = smoke_receipt_json(&cfg, Ok(&client));
