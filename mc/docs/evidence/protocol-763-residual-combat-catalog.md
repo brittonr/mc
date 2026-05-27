@@ -2,7 +2,7 @@
 
 ## Scope
 
-This catalog records combat semantics that remain outside the maintained Stevenarella ⇄ Valence CTF protocol-763 evidence rails after the landed `combat-damage` and `combat-knockback` slices.
+This catalog records combat semantics that remain outside the maintained Stevenarella ⇄ Valence CTF protocol-763 evidence rails after the landed combat-damage, combat-knockback, armor/equipment, equipment-update, and projectile-use slices.
 
 ## Covered combat rails
 
@@ -10,23 +10,25 @@ This catalog records combat semantics that remain outside the maintained Stevena
 | --- | --- | --- | --- |
 | Melee damage / health update | `nix run .#mc-compat-valence-ctf-combat-damage` | `target/mc-compat-combat/combat-damage.json` | `docs/evidence/stevenarella-valence-763-combat-damage-2026-05-25.md` |
 | Melee knockback / velocity update | `nix run .#mc-compat-valence-ctf-combat-knockback` | `target/mc-compat-knockback/combat-knockback.json` | `docs/evidence/valence-ctf-combat-knockback.md` |
+| Armor equipment mitigation | `nix run .#mc-compat-valence-ctf-armor-equipment-mitigation` | `target/mc-compat-armor-mitigation/armor-equipment-mitigation.json` | `docs/evidence/protocol-763-roi-01-03-drained-receipts-index.md` |
+| Equipment update observation | `nix run .#mc-compat-valence-ctf-equipment-update-observation` | `target/mc-compat-equipment-update/equipment-update-observation.json` | `docs/evidence/protocol-763-roi-01-03-drained-receipts-index.md` |
+| Projectile use/loadout rail | `nix run .#mc-compat-valence-ctf-projectile-hit` | `target/mc-compat-projectile-hit/projectile-hit.json` | `docs/evidence/protocol-763-roi-01-03-drained-receipts-index.md` |
 
 ## Residual non-claims
 
 The current protocol-763 compatibility evidence still does **not** prove:
 
-- projectile spawning, travel, collision, or hit attribution,
-- bow/crossbow/trident use semantics,
-- armor mitigation or armor slot/equipment update semantics,
-- enchantment effects or potion/status-effect combat modifiers,
+- all equipment slots, all item types, or all equipment packet permutations,
+- all armor loadouts, exact vanilla mitigation parity, enchantment effects, or potion/status-effect combat modifiers,
+- projectile travel, collision, damage attribution, or all bow/crossbow/trident use semantics,
 - exact vanilla knockback balancing,
 - full death/respawn correctness outside the bounded maintained rails,
 - broad Minecraft combat correctness outside local Valence `ctf`.
 
 ## Next independently drainable combat seams
 
-1. **Armor mitigation rail** — likely lower runtime complexity than projectiles if Valence CTF can equip deterministic armor and log before/after damage. Needs client-visible equipment/slot evidence plus Valence mitigation correlation.
-2. **Projectile hit rail** — higher user-visible value but likely broader protocol surface: projectile spawn, velocity, hit/damage attribution, and client observation all need scoped pass/fail milestones.
-3. **Equipment update rail** — useful prerequisite if armor proof first needs explicit client-observed armor/equipment state rather than server-only damage deltas.
+1. **Projectile collision/damage attribution rail** — extends the indexed projectile use/loadout rail only if a client-visible hit or damage milestone can be correlated with Valence server evidence.
+2. **Armor loadout/enchantment matrix rail** — extends the indexed armor mitigation rail across more loadouts or modifiers without claiming full vanilla parity.
+3. **Equipment slot/item matrix rail** — extends the indexed equipment update observation rail across additional slots and item types.
 
 Any future slice should remain a fresh Cairn package with a live receipt, BLAKE3 hash, dry-run gate, and explicit non-claims rather than broadening existing combat receipts silently.

@@ -12,6 +12,23 @@ BUNDLE = ROOT / "docs" / "evidence" / "protocol-763-current-evidence-bundle.md"
 
 BLAKE3_RE = re.compile(r"`([0-9a-f]{64})`")
 
+REQUIRED_SEAMS = [
+    "RED/BLUE scoring soak",
+    "Inventory/drop",
+    "Block placement / use-item-on-block",
+    "Pickup semantics",
+    "Player-inventory click/container click",
+    "Open-container semantics",
+    "Two-client combat/damage",
+    "Flag-carrier death/return",
+    "Reconnect flag-state",
+    "Latency/jitter tolerance",
+    "Combat knockback",
+    "Armor equipment mitigation",
+    "Equipment update observation",
+    "Projectile use/loadout rail",
+]
+
 
 def table_rows(text: str) -> list[tuple[str, str]]:
     rows: list[tuple[str, str]] = []
@@ -34,12 +51,19 @@ def main() -> int:
     bundle_rows = table_rows(bundle_text)
     missing: list[str] = []
 
-    if len(matrix_rows) != 11:
-        missing.append(f"expected 11 matrix evidence rows, found {len(matrix_rows)}")
+    expected_rows = len(REQUIRED_SEAMS)
+    if len(matrix_rows) != expected_rows:
+        missing.append(f"expected {expected_rows} matrix evidence rows, found {len(matrix_rows)}")
     if len(bundle_rows) != len(matrix_rows):
         missing.append(f"bundle row count {len(bundle_rows)} does not match matrix {len(matrix_rows)}")
 
+    matrix_by_seam = dict(matrix_rows)
     bundle_by_seam = dict(bundle_rows)
+    for seam in REQUIRED_SEAMS:
+        if seam not in matrix_by_seam:
+            missing.append(f"matrix missing seam: {seam}")
+        if seam not in bundle_by_seam:
+            missing.append(f"bundle missing seam: {seam}")
     for seam, digest in matrix_rows:
         if seam not in bundle_by_seam:
             missing.append(f"bundle missing seam: {seam}")
@@ -51,8 +75,8 @@ def main() -> int:
         "python3 tools/check_current_evidence_bundle.py",
         "nix run .#cairn -- validate --root .",
         "full Minecraft compatibility",
-        "armor/enchantment semantics",
-        "projectile semantics",
+        "armor loadouts",
+        "projectile travel/collision/damage semantics",
     ]:
         if required not in bundle_text:
             missing.append(f"bundle missing required text: {required}")

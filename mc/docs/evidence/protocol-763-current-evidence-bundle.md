@@ -8,7 +8,7 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 - Matrix checker: `python3 tools/check_acceptance_matrix.py`
 - Bundle checker: `python3 tools/check_current_evidence_bundle.py`
 - Evidence manifest checker: `python3 tools/check_evidence_manifests.py`
-- Latest parent checkout before this bundle refresh: `a2dddea ignore pi agent metadata`
+- Latest parent checkout before this bundle refresh: `b9a4d28 record final evidence manifest checkpoint`
 - Child commits used for the current-head representative refresh: Valence `e5d18ad`, Stevenarella `616ee72`
 
 ## Evidence rows
@@ -26,10 +26,13 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 | Reconnect flag-state | `nix run .#mc-compat-valence-ctf-reconnect-flag-state` | `4d848af56b25ad4b3c466863bac5b2052adbbc1c59e2b2164bfb2a696c225cb3` |
 | Latency/jitter tolerance | `nix run .#mc-compat-valence-ctf-latency-jitter-inventory` | `a4a407fb1ac3aceae06faeacb794891ff8411c8ac86470c651c89b37b6c7f33d` |
 | Combat knockback | `nix run .#mc-compat-valence-ctf-combat-knockback` | `a5d0ba5ea6155a99b58f245a03195da05b4925d7bd151b5b3f67503ae7a4cf09` |
+| Armor equipment mitigation | `nix run .#mc-compat-valence-ctf-armor-equipment-mitigation` | `176fdf33d2b8b9047471f577a98f9093904a44ab8da2785baeb80acfc8d97765` |
+| Equipment update observation | `nix run .#mc-compat-valence-ctf-equipment-update-observation` | `8100dde3ebb3476984235009e277d7e973037b7873b2fdb30c413093e1498d3d` |
+| Projectile use/loadout rail | `nix run .#mc-compat-valence-ctf-projectile-hit` | `22310a0373f86bbff5e6bc116934d092b89f775cf5d539b08d04ff5564ad855b` |
 
 ## Representative current-head live refresh
 
-The maintained matrix rows above stay historical so their BLAKE3-backed receipt hashes do not move silently. A fresh representative current-head live run was added for closeout freshness instead:
+The maintained matrix rows above stay historical so their BLAKE3-backed receipt hashes do not move silently. A fresh representative current-head live run was added for projectile row freshness instead:
 
 - Seam: projectile hit rail.
 - Maintained command: `VALENCE_REV=HEAD VALENCE_WORKTREE=/tmp/valence-compat-current-head-projectile-refresh VALENCE_TARGET_DIR=/tmp/valence-compat-current-head-projectile-refresh-target CLIENT_TIMEOUT=300 MC_COMPAT_PROJECTILE_HIT_RECEIPT=target/mc-compat-current-head-live-refresh/projectile-hit-current-head.json nix run --no-update-lock-file .#mc-compat-valence-ctf-projectile-hit -- --run`.
@@ -53,4 +56,4 @@ nix run .#cairn -- validate --root .
 
 ## Non-claims
 
-This bundle still does not claim full Minecraft compatibility, full CTF correctness, projectile semantics, armor/enchantment semantics, exact vanilla knockback balancing, production readiness, public-server load safety, or unbounded soak/reconnect/latency safety.
+This bundle still does not claim full Minecraft compatibility, full CTF correctness, projectile travel/collision/damage semantics, all projectile weapon variants, all equipment slots/items, all armor loadouts, enchantment/status-effect semantics, exact vanilla knockback or mitigation balancing, production readiness, public-server load safety, or unbounded soak/reconnect/latency safety.

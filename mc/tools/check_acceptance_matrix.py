@@ -21,10 +21,13 @@ REQUIRED_SEAMS = [
     "Reconnect flag-state",
     "Latency/jitter tolerance",
     "Combat knockback",
+    "Armor equipment mitigation",
+    "Equipment update observation",
+    "Projectile use/loadout rail",
 ]
 
 REQUIRED_GAPS = [
-    "Projectile/armor residual combat",
+    "Residual combat breadth",
     "Broad protocol coverage",
     "Production load / multiplayer scale",
     "Full CTF correctness",
@@ -38,6 +41,8 @@ REQUIRED_TEXT = [
     "Receipt",
     "roi-04-latency-jitter-tolerance",
     "roi-05-projectile-armor-knockback-combat",
+    "roi-07-post-drain-evidence-index",
+    "projectile travel/collision/damage attribution",
 ]
 
 BLAKE3_RE = re.compile(r"`[0-9a-f]{64}`")
