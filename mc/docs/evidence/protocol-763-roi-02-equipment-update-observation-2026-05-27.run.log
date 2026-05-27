@@ -1,0 +1,455 @@
+[mc-compat] building Stevenarella client
+warning: `/home/brittonr/git/mc/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: file `/home/brittonr/git/mc/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+   Compiling proc-macro2 v1.0.103
+   Compiling unicode-ident v1.0.22
+   Compiling quote v1.0.42
+   Compiling libc v0.2.177
+   Compiling autocfg v1.5.0
+   Compiling cfg-if v1.0.4
+   Compiling pkg-config v0.3.32
+   Compiling shlex v1.3.0
+   Compiling find-msvc-tools v0.1.5
+   Compiling version_check v0.9.5
+   Compiling once_cell v1.21.3
+   Compiling bitflags v1.3.2
+   Compiling xml-rs v0.8.28
+   Compiling smallvec v1.15.1
+   Compiling log v0.4.28
+   Compiling simd-adler32 v0.3.7
+   Compiling stable_deref_trait v1.2.1
+   Compiling lazy_static v1.5.0
+   Compiling adler2 v2.0.1
+   Compiling crc32fast v1.5.0
+   Compiling memchr v2.7.6
+   Compiling rand_core v0.4.2
+   Compiling thiserror v1.0.69
+   Compiling libloading v0.8.9
+   Compiling pin-project-lite v0.2.16
+   Compiling cc v1.2.46
+   Compiling vcpkg v0.2.15
+   Compiling miniz_oxide v0.8.9
+   Compiling autocfg v0.1.8
+   Compiling crossbeam-utils v0.8.21
+   Compiling dlib v0.5.2
+   Compiling khronos_api v3.1.0
+   Compiling bytes v1.11.0
+   Compiling typenum v1.19.0
+   Compiling zerocopy v0.8.27
+   Compiling generic-array v0.14.9
+   Compiling litemap v0.8.1
+   Compiling itoa v1.0.15
+   Compiling num-traits v0.2.19
+   Compiling memoffset v0.6.5
+   Compiling writeable v0.6.2
+   Compiling rand_core v0.3.1
+   Compiling bytemuck v1.24.0
+   Compiling wayland-sys v0.29.5
+   Compiling icu_properties_data v2.1.1
+   Compiling futures-core v0.3.31
+   Compiling downcast-rs v1.2.1
+   Compiling icu_normalizer_data v2.1.1
+   Compiling scoped-tls v1.0.1
+   Compiling bitflags v2.10.0
+   Compiling flate2 v1.1.5
+   Compiling serde_core v1.0.228
+   Compiling wasm-bindgen-shared v0.2.105
+   Compiling rayon-core v1.13.0
+   Compiling gl_generator v0.14.0
+   Compiling servo-fontconfig-sys v5.1.0
+   Compiling slotmap v1.0.7
+   Compiling fdeflate v0.3.7
+   Compiling percent-encoding v2.3.2
+   Compiling crossbeam-epoch v0.9.18
+   Compiling cmake v0.1.54
+   Compiling foreign-types-shared v0.1.1
+   Compiling syn v2.0.110
+   Compiling wayland-scanner v0.29.5
+   Compiling vec_map v0.8.2
+   Compiling fnv v1.0.7
+   Compiling openssl v0.10.75
+   Compiling http v0.2.12
+   Compiling foreign-types v0.3.2
+   Compiling crossbeam-deque v0.8.6
+   Compiling rand_chacha v0.1.1
+   Compiling rand_pcg v0.1.2
+   Compiling tracing-core v0.1.34
+   Compiling futures-io v0.3.31
+   Compiling num-integer v0.1.46
+   Compiling slab v0.4.11
+   Compiling futures-task v0.3.31
+   Compiling httparse v1.10.1
+   Compiling pin-utils v0.1.0
+   Compiling serde v1.0.228
+   Compiling openssl-sys v0.9.111
+   Compiling freetype-sys v0.13.1
+   Compiling expat-sys v2.1.6
+   Compiling futures-sink v0.3.31
+   Compiling equivalent v1.0.2
+   Compiling num-bigint v0.4.6
+   Compiling native-tls v0.2.14
+   Compiling anyhow v1.0.100
+   Compiling hashbrown v0.16.0
+   Compiling either v1.15.0
+   Compiling tracing v0.1.41
+   Compiling futures-util v0.3.31
+   Compiling nix v0.24.3
+   Compiling socket2 v0.6.1
+   Compiling mio v1.1.0
+   Compiling wayland-client v0.29.5
+   Compiling wayland-protocols v0.29.5
+   Compiling nix v0.25.1
+   Compiling getrandom v0.2.16
+   Compiling smithay-client-toolkit v0.16.1
+   Compiling tokio v1.48.0
+   Compiling indexmap v2.12.0
+   Compiling quick-xml v0.30.0
+   Compiling x11-dl v2.21.0
+   Compiling crossfont v0.5.2
+   Compiling rand v0.6.5
+   Compiling proc-macro-error-attr v1.0.4
+   Compiling arrayvec v0.7.6
+   Compiling paste v1.0.15
+   Compiling try-lock v0.2.5
+   Compiling num-rational v0.4.2
+   Compiling openssl-probe v0.1.6
+   Compiling arrayref v0.3.9
+   Compiling maybe-uninit v2.0.0
+   Compiling built v0.7.7
+   Compiling parking_lot_core v0.9.12
+   Compiling syn v1.0.109
+   Compiling rustversion v1.0.22
+   Compiling xcursor v0.3.10
+   Compiling foreign-types-shared v0.3.1
+   Compiling xcb v1.6.0
+   Compiling rav1e v0.7.1
+   Compiling tiny-skia-path v0.7.0
+   Compiling want v0.3.1
+   Compiling wayland-commons v0.29.5
+   Compiling rand_core v0.6.4
+   Compiling servo-fontconfig v0.5.1
+   Compiling freetype-rs v0.26.0
+   Compiling rayon v1.11.0
+   Compiling memmap2 v0.5.10
+   Compiling socket2 v0.5.10
+   Compiling rand_os v0.1.3
+   Compiling http-body v0.4.6
+   Compiling png v0.17.16
+   Compiling form_urlencoded v1.2.2
+   Compiling safe_arch v0.5.2
+   Compiling futures-channel v0.3.31
+   Compiling nom v8.0.0
+   Compiling rand_isaac v0.1.1
+   Compiling rand_xorshift v0.1.1
+   Compiling rand_hc v0.1.0
+   Compiling proc-macro-error v1.0.4
+   Compiling rand_jitter v0.1.4
+   Compiling arrayvec v0.5.2
+   Compiling scopeguard v1.2.0
+   Compiling quick-error v2.0.1
+   Compiling utf8_iter v1.0.4
+   Compiling cgmath v0.17.0
+   Compiling ryu v1.0.20
+   Compiling httpdate v1.0.3
+   Compiling tower-service v0.3.3
+   Compiling lock_api v0.4.14
+   Compiling wayland-cursor v0.29.5
+   Compiling synstructure v0.13.2
+   Compiling tiny-skia v0.7.0
+   Compiling itertools v0.12.1
+   Compiling cipher v0.3.0
+   Compiling approx v0.3.2
+   Compiling glutin_glx_sys v0.1.8
+   Compiling glutin_egl_sys v0.1.6
+   Compiling simd_helpers v0.1.0
+   Compiling instant v0.1.13
+   Compiling cpufeatures v0.2.17
+   Compiling cty v0.2.2
+   Compiling weezl v0.1.12
+   Compiling serde_json v1.0.145
+   Compiling base64 v0.21.7
+   Compiling maybe-rayon v0.1.1
+   Compiling bitstream-io v2.6.0
+   Compiling opaque-debug v0.3.1
+   Compiling unicode-width v0.1.14
+   Compiling noop_proc_macro v0.3.0
+   Compiling new_debug_unreachable v1.0.6
+   Compiling imgref v1.12.0
+   Compiling zune-core v0.4.12
+   Compiling bumpalo v3.19.0
+   Compiling unicode-segmentation v1.12.0
+   Compiling bit-vec v0.6.3
+   Compiling textwrap v0.11.0
+   Compiling rustls-pemfile v1.0.4
+   Compiling zune-jpeg v0.4.21
+   Compiling tokio-util v0.7.17
+   Compiling wasm-bindgen-macro-support v0.2.105
+   Compiling bit-set v0.5.3
+   Compiling loop9 v0.1.5
+   Compiling heck v0.3.3
+   Compiling raw-window-handle v0.4.3
+   Compiling smallvec v0.6.14
+   Compiling zerofrom-derive v0.1.6
+   Compiling yoke-derive v0.8.1
+   Compiling zerovec-derive v0.11.2
+   Compiling displaydoc v0.2.5
+   Compiling thiserror-impl v1.0.69
+   Compiling zerocopy-derive v0.8.27
+   Compiling equator-macro v0.4.2
+   Compiling openssl-macros v0.1.1
+   Compiling serde_derive v1.0.228
+   Compiling foreign-types-macros v0.2.3
+   Compiling h2 v0.3.27
+   Compiling equator v0.4.2
+   Compiling zerofrom v0.1.6
+   Compiling profiling-procmacros v1.0.17
+   Compiling fax_derive v0.2.0
+   Compiling yoke v0.8.1
+   Compiling arg_enum_proc_macro v0.3.4
+   Compiling aligned-vec v0.6.4
+   Compiling zerovec v0.11.5
+   Compiling zerotrie v0.2.3
+   Compiling foreign-types v0.5.0
+   Compiling profiling v1.0.17
+   Compiling v_frame v0.3.9
+   Compiling num-derive v0.4.2
+   Compiling calloop v0.10.6
+   Compiling fax v0.2.6
+   Compiling av1-grain v0.2.5
+   Compiling tinystr v0.8.2
+   Compiling potential_utf v0.1.4
+   Compiling wasm-bindgen v0.2.105
+   Compiling parking_lot v0.12.5
+   Compiling icu_collections v2.1.1
+   Compiling icu_locale_core v2.1.1
+   Compiling avif-serialize v0.8.6
+   Compiling mio v0.8.11
+   Compiling atty v0.2.14
+   Compiling shared_library v0.1.9
+   Compiling num-iter v0.1.45
+   Compiling icu_provider v2.1.1
+   Compiling digest v0.9.0
+   Compiling block-buffer v0.9.0
+   Compiling icu_properties v2.1.1
+   Compiling icu_normalizer v2.1.1
+   Compiling num-complex v0.4.6
+   Compiling chrono v0.4.42
+   Compiling pxfm v0.1.25
+   Compiling zune-inflate v0.2.54
+   Compiling half v2.7.1
+   Compiling ppv-lite86 v0.2.21
+   Compiling hyper v0.14.32
+   Compiling idna_adapter v1.2.1
+   Compiling idna v1.1.0
+   Compiling tokio-native-tls v0.3.1
+   Compiling url v2.5.7
+   Compiling serde_urlencoded v0.7.1
+   Compiling rand_chacha v0.3.1
+   Compiling sctk-adwaita v0.4.3
+   Compiling encoding_rs v0.8.35
+   Compiling rgb v0.8.52
+   Compiling steven_shared v0.0.1 (/home/brittonr/git/mc/stevenarella/shared)
+   Compiling byteorder-lite v0.1.0
+   Compiling lebe v0.5.3
+   Compiling byteorder v1.5.0
+   Compiling color_quant v1.1.0
+   Compiling ipnet v2.11.0
+   Compiling mime v0.3.17
+   Compiling raw-window-handle v0.5.2
+   Compiling bit_field v0.10.3
+   Compiling steven_resources v0.1.0 (/home/brittonr/git/mc/stevenarella/resources)
+   Compiling strsim v0.8.0
+   Compiling hyper-tls v0.5.0
+   Compiling ansi_term v0.12.1
+   Compiling sync_wrapper v0.1.2
+   Compiling reqwest v0.11.27
+   Compiling exr v1.74.0
+   Compiling winit v0.27.5
+   Compiling clap v2.34.0
+   Compiling gif v0.13.3
+   Compiling image-webp v0.2.4
+   Compiling ravif v0.11.20
+   Compiling moxcms v0.7.9
+   Compiling rand v0.8.5
+   Compiling simple_asn1 v0.5.4
+   Compiling tiff v0.10.3
+   Compiling num v0.4.3
+   Compiling sha-1 v0.9.8
+   Compiling x11-clipboard v0.6.1
+   Compiling osmesa-sys v0.1.2
+   Compiling wasm-bindgen-macro v0.2.105
+   Compiling structopt-derive v0.4.18
+   Compiling collision v0.20.1
+   Compiling aes v0.7.5
+   Compiling cfb8 v0.7.1
+   Compiling wayland-egl v0.29.5
+   Compiling dirs-sys v0.3.7
+   Compiling png v0.18.0
+   Compiling qoi v0.4.1
+   Compiling std_or_web v0.0.1 (/home/brittonr/git/mc/stevenarella/std_or_web)
+   Compiling libloading v0.7.4
+   Compiling hex v0.4.3
+   Compiling dirs v4.0.0
+   Compiling glutin v0.29.1
+   Compiling structopt v0.3.26
+   Compiling steven_blocks v0.0.1 (/home/brittonr/git/mc/stevenarella/blocks)
+   Compiling steven_protocol v0.0.1 (/home/brittonr/git/mc/stevenarella/protocol)
+   Compiling clipboard v0.5.0 (https://github.com/iceiix/rust-clipboard?rev=71089e792fd5e52f05d5b22c54bd2d206d20ec0d#71089e79)
+   Compiling rsa_public_encrypt_pkcs1 v0.4.0
+   Compiling zip v0.6.6
+   Compiling rand_pcg v0.3.1
+   Compiling base64 v0.13.1
+   Compiling glow v0.11.2
+   Compiling image v0.25.8
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1052:36
+     |
+1052 |         offsets |protocol_version| (instrument.offsets(protocol_version)
+     |                                    ^
+1053 |             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 })),
+     |                                                                                                    ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1052 ~         offsets |protocol_version| instrument.offsets(protocol_version)
+1053 ~             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+     |
+
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1407:36
+     |
+1407 |         offsets |protocol_version| (variant.offsets(protocol_version)),
+     |                                    ^                                 ^
+     |
+help: remove these parentheses
+     |
+1407 -         offsets |protocol_version| (variant.offsets(protocol_version)),
+1407 +         offsets |protocol_version| variant.offsets(protocol_version),
+     |
+
+warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
+   Compiling stevenarella v0.0.1 (/home/brittonr/git/mc/stevenarella)
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:102:21
+    |
+102 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+252 | / define_elements! {
+253 | |     Image,
+254 | |     Batch,
+255 | |     Text,
+...   |
+258 | |     TextBox,
+259 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+102 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib) generated 2 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (bin "stevenarella") generated 2 warnings (2 duplicates)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 52.40s
+[mc-compat] creating isolated Valence worktree /tmp/valence-compat-review-equipment-fixed at HEAD
+Preparing worktree (detached HEAD e5d18ad)
+HEAD is now at e5d18ad ctf: add projectile hit compat probe
+[mc-compat] starting Valence HEAD example 'ctf' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+{"description":{"text":"A Valence Server"},"players":{"max":20,"online":0,"sample":[]},"version":{"name":"1.20.1","protocol":763}}
+[mc-compat] running Stevenarella headless scenario 'equipment-update-observation' isolated from host Wayland compositor
+mc_compat_equipment_update_client_count=2
+[main.rs:254][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:346][INFO] Shader version: #version 150
+[main.rs:99][INFO] Detected server protocol version 763
+[server/mod.rs:176][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25565
+[server/mod.rs:181][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:198][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:212][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:219][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:280][WARN] Server is running in offline mode
+[server/mod.rs:281][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbota properties=0
+[server/mod.rs:1792][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[server/mod.rs:1859][INFO] MC-COMPAT-MILESTONE join_game entity_id=0 gamemode=Adventure
+[server/mod.rs:2985][INFO] Received chat message: Welcome to Valence! Select a team by jumping in the team's portal.
+[server/mod.rs:2372][INFO] MC-COMPAT-MILESTONE update_health health=20.0 food=20 saturation=0.0
+[server/mod.rs:3115][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=0
+[server/mod.rs:747][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:791][INFO] MC-COMPAT-MILESTONE active_probe_input_start forward+sprint+jump
+[server/mod.rs:1444][INFO] MC-COMPAT-MILESTONE active_probe_position_look_sent x=0.000 y=82.890 z=1.964 on_ground=false
+[server/mod.rs:797][INFO] MC-COMPAT-MILESTONE active_probe_jump_release
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=4 uuid=UUID(17279542629861541104, 17597886568995341490) name=compatbotb x=0.000 y=85.000 z=0.000
+[server/mod.rs:801][INFO] MC-COMPAT-MILESTONE active_probe_input_turn right
+[server/mod.rs:805][INFO] MC-COMPAT-MILESTONE active_probe_input_stop
+[server/mod.rs:825][INFO] MC-COMPAT-MILESTONE team_probe_enter_red_portal x=-4.0 y=84.0 z=4.0
+[server/mod.rs:844][INFO] MC-COMPAT-MILESTONE team_probe_hold_red_portal start
+[server/mod.rs:2985][INFO] Received chat message: You are on team RED!
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=5 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=65.000 z=0.000
+[server/mod.rs:857][INFO] MC-COMPAT-MILESTONE team_probe_select_hotbar_slot slot=0
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=8 uuid=UUID(17279542629861541104, 17597886568995341490) name=compatbotb x=40.000 y=65.000 z=0.000
+[server/mod.rs:861][INFO] MC-COMPAT-MILESTONE team_probe_use_item_sent hand=main sequence=0
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=8 uuid=UUID(17279542629861541104, 17597886568995341490) name=compatbotb x=40.000 y=60.937 z=0.000
+[main.rs:254][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:346][INFO] Shader version: #version 150
+[main.rs:99][INFO] Detected server protocol version 763
+[server/mod.rs:176][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25565
+[server/mod.rs:181][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:198][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:212][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:219][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:280][WARN] Server is running in offline mode
+[server/mod.rs:281][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbotb properties=0
+[server/mod.rs:1792][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[server/mod.rs:1859][INFO] MC-COMPAT-MILESTONE join_game entity_id=0 gamemode=Adventure
+[server/mod.rs:2985][INFO] Received chat message: Welcome to Valence! Select a team by jumping in the team's portal.
+[server/mod.rs:2372][INFO] MC-COMPAT-MILESTONE update_health health=20.0 food=20 saturation=0.0
+[server/mod.rs:3115][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=0
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=3 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=0.000 y=80.156 z=3.087
+[server/mod.rs:747][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:791][INFO] MC-COMPAT-MILESTONE active_probe_input_start forward+sprint+jump
+[server/mod.rs:1444][INFO] MC-COMPAT-MILESTONE active_probe_position_look_sent x=0.000 y=82.890 z=1.964 on_ground=false
+[server/mod.rs:797][INFO] MC-COMPAT-MILESTONE active_probe_jump_release
+[server/mod.rs:801][INFO] MC-COMPAT-MILESTONE active_probe_input_turn right
+[server/mod.rs:805][INFO] MC-COMPAT-MILESTONE active_probe_input_stop
+[server/mod.rs:825][INFO] MC-COMPAT-MILESTONE team_probe_enter_blue_portal x=4.0 y=84.0 z=4.0
+[server/mod.rs:844][INFO] MC-COMPAT-MILESTONE team_probe_hold_blue_portal start
+[server/mod.rs:2431][INFO] MC-COMPAT-MILESTONE equipment_probe_entity_equipment entity_id=4 entries=1 slots=slot4:id=829:count=1
+[server/mod.rs:2985][INFO] Received chat message: You are on team BLUE!
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=14.670 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=7 uuid=UUID(17279542629861541104, 17597886568995341490) name=compatbotb x=40.000 y=65.000 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=10.220 z=0.000
+[server/mod.rs:2353][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=0.000 z=0.000
+[server/mod.rs:857][INFO] MC-COMPAT-MILESTONE team_probe_select_hotbar_slot slot=0
+[server/mod.rs:861][INFO] MC-COMPAT-MILESTONE team_probe_use_item_sent hand=main sequence=0
+[server/mod.rs:2596][INFO] MC-COMPAT-MILESTONE player_remove uuids=1
+[mc-compat] client compatbota finished Some(124); log: /tmp/mc-compat-client.compatbota.1779902300418.log
+[mc-compat] client compatbotb finished Some(124); log: /tmp/mc-compat-client.compatbotb.1779902302418.log
+[mc-compat] stopping managed Valence server process 53429
+[mc-compat] wrote smoke receipt target/review-oracle/equipment-update-observation-fixed.json

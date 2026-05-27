@@ -11,4 +11,5 @@
   - Verification: Tests are part of `tools/mc-compat-runner/src/main.rs` under the `tests` module.
 - [x] [serial] Satisfy `docs_check`. r[mc_compatibility.roi_04_scenario_triage_receipts.docs_check]
   - Evidence: `README.md` line 145 documents triage fields and `suggested_boundary` values. Evidence file `docs/evidence/valence-ctf-latency-jitter-inventory.md` references triage output. Nix dry-run checks (`mc-compat-multi-client-scenario-dry-run`, `mc-compat-blue-flag-score-dry-run`) grep for all triage receipt fields as deterministic contract validation.
+  - Review checkpoint: pueue task `14` reran `nix build .#checks.x86_64-linux.mc-compat-multi-client-scenario-dry-run --no-link -L --no-update-lock-file --option builders ''` successfully on 2026-05-27.
   - Non-claims: documentation reflects local harness behavior only.

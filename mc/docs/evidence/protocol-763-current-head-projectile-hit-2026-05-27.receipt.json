@@ -1,0 +1,135 @@
+{
+  "schema": "mc.compat.scenario.receipt.v2",
+  "legacy_schema": "mc.compat.smoke.receipt.v1",
+  "status": "pass",
+  "mode": "run",
+  "dry_run": false,
+  "contract": {
+    "cairn_contract": "mc.compat.scenario.receipt.v2",
+    "legacy_cairn_contract": "mc.compat.smoke.receipt.v1",
+    "octet_producer_surface": "tools/mc-compat-runner/src/main.rs",
+    "claims_correctness": false,
+    "claims_semantic_equivalence": false
+  },
+  "scenario": {
+    "name": "projectile-hit",
+    "required_milestones": ["multi_client_count", "protocol_detected", "join_game", "render_tick", "team_red", "remote_player_spawn", "projectile_use_sent", "projectile_swing_sent"],
+    "observed_milestones": ["multi_client_count", "protocol_detected", "join_game", "render_tick", "team_red", "remote_player_spawn", "projectile_use_sent", "projectile_swing_sent"],
+    "missing_milestones": [],
+    "forbidden_patterns": ["panic", "unexpected_eof", "protocol_mismatch", "decode_error"],
+    "forbidden_matches": [],
+    "passed": true
+  },
+  "compat_bot_probe": {
+    "selected": false,
+    "safe_bounded_probe": true,
+    "target_address": "127.0.0.1:25565",
+    "owned_local_target_required": true,
+    "external_server_load_authorized": false,
+    "public_stress_tool": false,
+    "planned_clients": 2,
+    "max_clients": 1,
+    "duration_secs": 300,
+    "derived_from": "hyperion/tools/rust-mc-bot pattern"
+  },
+  "status_response_resource": {
+    "resource_owned": true,
+    "configured": false,
+    "expected_description": null,
+    "expected_version_name": null,
+    "expected_player_sample": [],
+    "defaults_stable": true,
+    "asserted_by_status_probe": false
+  },
+  "packet_capture_oracle": {
+    "selected": false,
+    "headless_cli": true,
+    "redacted_receipt": true,
+    "raw_payloads_recorded": false,
+    "normalized_fields": ["direction", "state", "packet_id", "decode_status"],
+    "expected_summary_packets": ["two_client_login", "play_join_game", "projectile_use_item", "projectile_hit_attribution"],
+    "triage_correlation": true
+  },
+  "latency_jitter_tolerance": {
+    "selected": false,
+    "mechanism": "bounded-client-cadence",
+    "target_rail": "projectile-hit",
+    "delay_ms": "0",
+    "jitter_ms": "0",
+    "loss_percent": "0",
+    "timeout_secs": 300,
+    "hygiene_status": "not-selected",
+    "privileged_network_mutation_required": false,
+    "fail_closed_when_unavailable": true,
+    "claims_wan_safety": false,
+    "claims_adversarial_network_safety": false
+  },
+  "proxy_compat_seam": {
+    "selected": false,
+    "route": "direct",
+    "forwarding_mode": "none",
+    "direct_and_proxied_claims_separated": true,
+    "mtls_ported": false,
+    "credentials_recorded": false,
+    "owned_local_proxy_required": true
+  },
+  "gameplay_oracles": {
+    "derived_from": "hyperion gameplay milestone vocabulary",
+    "selected_scenario": "projectile-hit",
+    "catalog": ["protocol_detected", "join_game", "render_tick", "team_red", "team_blue", "flag_pickup", "flag_capture", "score_red_1", "score_red_2", "score_blue_1", "inventory_slot_update", "inventory_sword_slot", "inventory_wool_slot", "inventory_drop_sent", "inventory_pickup_seen", "inventory_click_sent", "inventory_open_container_seen", "inventory_container_click_sent", "inventory_block_place_sent", "server_inventory_hotbar_select", "server_inventory_drop", "server_inventory_pickup", "server_inventory_click", "server_inventory_open_container", "server_inventory_container_click", "server_block_place", "reconnect_session", "multi_client_count", "remote_player_spawn", "combat_attack_sent", "combat_health_update", "combat_velocity_update", "armor_inventory_slot", "entity_equipment_update", "server_equipment_state", "server_equipment_update_state", "server_armor_mitigation", "server_combat_damage", "server_combat_knockback", "projectile_use_sent", "projectile_swing_sent", "server_projectile_use", "server_projectile_hit", "flag_carrier_death", "flag_return", "flag_disconnect_return", "reconnect_state_coherent"],
+    "requires_client_and_server_evidence_for_semantic_claims": true,
+    "non_claims": ["full_ctf_correctness", "broad_minecraft_compatibility", "unbounded_soak", "production_load", "full_projectile_physics", "all_projectile_weapons", "enchantments_or_status_effects"]
+  },
+  "server": {
+    "backend": "valence",
+    "version": "1.20.1",
+    "protocol": 763,
+    "port": 25565,
+    "required_milestones": ["server_client_a_seen", "server_client_b_seen", "server_projectile_loadout"],
+    "observed_milestones": ["server_client_a_seen", "server_client_b_seen", "server_projectile_loadout"],
+    "missing_milestones": [],
+    "forbidden_matches": [],
+    "passed": true,
+    "client_server_correlation": {
+      "scenario": "projectile-hit",
+      "usernames": ["compatbota", "compatbotb"],
+      "passed": true
+    }
+  },
+  "client": {
+    "dir": "/home/brittonr/git/mc/stevenarella",
+    "target_dir": "/tmp/stevenarella-target2",
+    "username": "compatbot",
+    "usernames": ["compatbota", "compatbotb"],
+    "timeout_secs": 300,
+    "headless_isolation": {
+      "xvfb": true,
+      "x11_backend": true,
+      "software_gl": true,
+      "wayland_socket_inherited": false
+    },
+    "log_path": "/tmp/mc-compat-client.compatbota.1779895400527.log",
+    "log_paths": ["/tmp/mc-compat-client.compatbota.1779895400527.log", "/tmp/mc-compat-client.compatbotb.1779895402528.log"],
+    "exit_code": 124,
+    "classification": "multi-client-load-evidence",
+    "matched_success_pattern": "Detected server protocol version"
+  },
+  "valence": {
+    "repo": "/home/brittonr/git/mc/valence",
+    "rev": "HEAD",
+    "worktree": "/tmp/valence-compat-current-head-projectile-refresh",
+    "example": "ctf",
+    "log_path": "/tmp/mc-compat-valence.log"
+  },
+  "triage": {
+    "first_missing_client_milestone": null,
+    "first_missing_server_milestone": null,
+    "first_forbidden_pattern": null,
+    "first_forbidden_source": null,
+    "client_log_paths": ["/tmp/mc-compat-client.compatbota.1779895400527.log", "/tmp/mc-compat-client.compatbotb.1779895402528.log"],
+    "server_log_path": "/tmp/mc-compat-valence.log",
+    "suggested_boundary": "none"
+  },
+  "receipt_path": "target/mc-compat-current-head-live-refresh/projectile-hit-current-head.json",
+  "error": null
+}

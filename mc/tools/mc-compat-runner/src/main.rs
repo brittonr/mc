@@ -855,7 +855,7 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             ("remote_player_spawn", "remote_player_spawn"),
             (
                 "entity_equipment_update",
-                "equipment_probe_entity_equipment slot=chest",
+                "equipment_probe_entity_equipment",
             ),
         ],
         Scenario::ProjectileHit => &[
@@ -3760,6 +3760,25 @@ red flag captured
         assert!(missing_damage
             .missing_milestones
             .contains(&"server_combat_damage"));
+    }
+
+    #[test]
+    fn equipment_update_scenario_tracks_current_client_equipment_marker() {
+        let client = evaluate_scenario(
+            Scenario::EquipmentUpdateObservation,
+            "mc_compat_equipment_update_client_count=2\nDetected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\nYou are on team BLUE!\nremote_player_spawn\nequipment_probe_entity_equipment entity_id=4 entries=1 slots=slot4:id=829:count=1\n",
+        );
+        assert!(client.passed, "{client:?}");
+        assert!(client.missing_milestones.is_empty());
+
+        let missing_equipment = evaluate_scenario(
+            Scenario::EquipmentUpdateObservation,
+            "mc_compat_equipment_update_client_count=2\nDetected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\nYou are on team BLUE!\nremote_player_spawn\n",
+        );
+        assert!(!missing_equipment.passed, "{missing_equipment:?}");
+        assert!(missing_equipment
+            .missing_milestones
+            .contains(&"entity_equipment_update"));
     }
 
     #[test]

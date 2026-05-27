@@ -32,9 +32,11 @@ The maintained matrix rows above stay historical so their BLAKE3-backed receipt 
 
 - Seam: projectile hit rail.
 - Maintained command: `VALENCE_REV=HEAD VALENCE_WORKTREE=/tmp/valence-compat-current-head-projectile-refresh VALENCE_TARGET_DIR=/tmp/valence-compat-current-head-projectile-refresh-target CLIENT_TIMEOUT=300 MC_COMPAT_PROJECTILE_HIT_RECEIPT=target/mc-compat-current-head-live-refresh/projectile-hit-current-head.json nix run --no-update-lock-file .#mc-compat-valence-ctf-projectile-hit -- --run`.
-- Receipt: `target/mc-compat-current-head-live-refresh/projectile-hit-current-head.json`.
-- Run log: `target/mc-compat-current-head-live-refresh/projectile-hit-current-head.run.log`.
+- Source receipt: `target/mc-compat-current-head-live-refresh/projectile-hit-current-head.json`.
+- Reviewable receipt copy: `docs/evidence/protocol-763-current-head-projectile-hit-2026-05-27.receipt.json`.
+- Reviewable run log copy: `docs/evidence/protocol-763-current-head-projectile-hit-2026-05-27.run.log`.
 - BLAKE3: `756b6f732e71ae370808b2a653d1310baa88875f2c3345a1c87444fcffb51c6c`.
+- Run log BLAKE3: `05429930472e764a6a2b140ce9c0a7652552659210b4bb1407d93d0d2cd7fada`.
 - Payload commits at run time: parent `a2dddea`, Valence `e5d18ad`, Stevenarella `616ee72`.
 - Receipt outcome: `status=pass`, `mode=run`, `dry_run=false`, `scenario.passed=true`, no missing client/server milestones, `triage.suggested_boundary=none`.
 - Scoped non-claims remain: no full projectile physics, all-weapons, enchantment/status-effect, production-load, broad protocol, or full CTF/combat correctness claim.
