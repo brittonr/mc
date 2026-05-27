@@ -71,26 +71,36 @@ def main() -> int:
     for line in text.splitlines():
         if not line.startswith("| ") or line.startswith("| ---"):
             continue
-        if "target/" in line:
-            cells = [cell.strip() for cell in line.strip("|").split("|")]
-            if len(cells) < 8:
-                missing.append(f"evidence row has too few cells: {line}")
-                continue
-            seam, command, receipt, doc, blake3, commits, claim, non_claims = cells[:8]
-            if not command.startswith("`nix run"):
-                missing.append(f"row lacks maintained nix command: {seam}")
-            if "target/" not in receipt:
-                missing.append(f"row lacks target receipt: {seam}")
-            if not doc.startswith("`docs/evidence/"):
-                missing.append(f"row lacks evidence doc path: {seam}")
-            if not BLAKE3_RE.fullmatch(blake3):
-                missing.append(f"row lacks single BLAKE3 hash: {seam}")
-            if "parent `" not in commits:
-                missing.append(f"row lacks parent commit: {seam}")
-            if not claim or claim == "-":
-                missing.append(f"row lacks scoped claim: {seam}")
-            if "No " not in non_claims and "no " not in non_claims:
-                missing.append(f"row lacks explicit non-claim: {seam}")
+        if not BLAKE3_RE.search(line):
+            continue
+        cells = [cell.strip() for cell in line.strip("|").split("|")]
+        if len(cells) < 8:
+            missing.append(f"evidence row has too few cells: {line}")
+            continue
+        seam, command, receipt, doc, blake3, commits, claim, non_claims = cells[:8]
+        if not command.startswith("`nix run"):
+            missing.append(f"row lacks maintained nix command: {seam}")
+        receipt_path = receipt.strip("`")
+        if not receipt_path.endswith(".json"):
+            missing.append(f"row lacks JSON receipt path: {seam}")
+        if not (receipt_path.startswith("target/") or receipt_path.startswith("docs/evidence/")):
+            missing.append(f"row receipt path must be target/ or docs/evidence/: {seam}")
+        if seam in {
+            "Armor equipment mitigation",
+            "Equipment update observation",
+            "Projectile use/loadout rail",
+        } and not receipt_path.startswith("docs/evidence/"):
+            missing.append(f"ROI 01-03 row lacks reviewable docs/evidence receipt: {seam}")
+        if not doc.startswith("`docs/evidence/"):
+            missing.append(f"row lacks evidence doc path: {seam}")
+        if not BLAKE3_RE.fullmatch(blake3):
+            missing.append(f"row lacks single BLAKE3 hash: {seam}")
+        if "parent `" not in commits:
+            missing.append(f"row lacks parent commit: {seam}")
+        if not claim or claim == "-":
+            missing.append(f"row lacks scoped claim: {seam}")
+        if "No " not in non_claims and "no " not in non_claims:
+            missing.append(f"row lacks explicit non-claim: {seam}")
 
     if missing:
         for item in missing:
