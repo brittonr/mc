@@ -171,6 +171,21 @@ def assert_self_tests() -> None:
         stale.write_text('{"missing_milestones":["equipment_packet_observed"]}\n')
         _, errors = check_evidence(root, evidence)
         assert any("equipment_packet_observed" in error for error in errors), errors
+        stale.unlink()
+
+        run_log = evidence / "run.log"
+        run_log.write_text("ok\n")
+        run_log_digest = subprocess.check_output(["b3sum", str(run_log)], text=True).split()[0]
+        log_manifest = evidence / "run-log.b3"
+        log_manifest.write_text(f"{run_log_digest}{MANIFEST_SEPARATOR}docs/evidence/run.log\n")
+        result, errors = check_evidence(root, evidence)
+        assert not errors, errors
+        assert result.entries == 2, result
+
+        run_log.unlink()
+        _, errors = check_evidence(root, evidence)
+        assert any("referenced file missing" in error and "run.log" in error for error in errors), errors
+        log_manifest.unlink()
 
         missing_manifest = evidence / "missing.b3"
         missing_manifest.write_text(

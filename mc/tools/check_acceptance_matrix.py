@@ -66,8 +66,12 @@ EVIDENCE_TABLE_HEADER = (
 EVIDENCE_ROW_CELLS = 8
 BLAKE3_HEX_LENGTH = 64
 JSON_SUFFIX = ".json"
+MARKDOWN_SUFFIX = ".md"
 DOCS_EVIDENCE_PREFIX = "docs/evidence/"
 TARGET_PREFIX = "target/"
+MANIFEST_GLOB = "*.b3"
+MANIFEST_SEPARATOR = "  "
+HISTORICAL_TARGET_RECEIPT_SEAMS = frozenset({"RED/BLUE scoring soak"})
 BLAKE3_RE = re.compile(rf"`[0-9a-f]{{{BLAKE3_HEX_LENGTH}}}`")
 
 
@@ -114,23 +118,54 @@ def parse_evidence_rows(text: str) -> tuple[list[EvidenceRow], list[str]]:
     return rows, errors
 
 
+def strip_code_span(text: str) -> str:
+    return text.strip().strip("`")
+
+
+def manifest_has_digest(root: Path, relative_path: str, digest: str) -> bool:
+    evidence_dir = root / DOCS_EVIDENCE_PREFIX
+    for manifest in evidence_dir.glob(MANIFEST_GLOB):
+        for line in manifest.read_text().splitlines():
+            if MANIFEST_SEPARATOR not in line:
+                continue
+            manifest_digest, manifest_path = line.split(MANIFEST_SEPARATOR, maxsplit=1)
+            if manifest_digest == digest and manifest_path.strip() == relative_path:
+                return True
+    return False
+
+
 def validate_evidence_row(row: EvidenceRow, root: Path = ROOT) -> list[str]:
     missing: list[str] = []
+    digest = strip_code_span(row.blake3)
     if not row.command.startswith("`nix run"):
         missing.append(f"row lacks maintained nix command: {row.seam}")
-    receipt_path = row.receipt.strip("`")
+    receipt_path = strip_code_span(row.receipt)
     if not receipt_path.endswith(JSON_SUFFIX):
         missing.append(f"row lacks JSON receipt path: {row.seam}")
     if not (receipt_path.startswith(TARGET_PREFIX) or receipt_path.startswith(DOCS_EVIDENCE_PREFIX)):
         missing.append(f"row receipt path must be target/ or docs/evidence/: {row.seam}")
     if row.seam in REVIEWABLE_RECEIPT_SEAMS and not receipt_path.startswith(DOCS_EVIDENCE_PREFIX):
         missing.append(f"ROI 01-03 row lacks reviewable docs/evidence receipt: {row.seam}")
-    if receipt_path.startswith(DOCS_EVIDENCE_PREFIX) and not (root / receipt_path).is_file():
-        missing.append(f"row docs/evidence receipt is missing: {row.seam}: {receipt_path}")
-    if not row.doc.startswith("`docs/evidence/"):
-        missing.append(f"row lacks evidence doc path: {row.seam}")
     if not BLAKE3_RE.fullmatch(row.blake3):
         missing.append(f"row lacks single BLAKE3 hash: {row.seam}")
+    elif receipt_path.startswith(DOCS_EVIDENCE_PREFIX):
+        if not (root / receipt_path).is_file():
+            missing.append(f"row docs/evidence receipt is missing: {row.seam}: {receipt_path}")
+        elif not manifest_has_digest(root, receipt_path, digest):
+            missing.append(f"row docs/evidence receipt lacks matching BLAKE3 manifest entry: {row.seam}: {receipt_path}")
+    elif receipt_path.startswith(TARGET_PREFIX) and row.seam not in HISTORICAL_TARGET_RECEIPT_SEAMS:
+        missing.append(f"row uses target-only receipt without historical exception: {row.seam}: {receipt_path}")
+
+    doc_path = strip_code_span(row.doc)
+    if not doc_path.startswith(DOCS_EVIDENCE_PREFIX):
+        missing.append(f"row lacks evidence doc path: {row.seam}")
+    elif not doc_path.endswith(MARKDOWN_SUFFIX):
+        missing.append(f"row evidence doc is not markdown: {row.seam}: {doc_path}")
+    elif not (root / doc_path).is_file():
+        missing.append(f"row evidence doc is missing: {row.seam}: {doc_path}")
+    elif BLAKE3_RE.fullmatch(row.blake3) and digest not in (root / doc_path).read_text():
+        missing.append(f"row evidence doc does not cite BLAKE3 hash: {row.seam}: {doc_path}")
+
     if "parent `" not in row.commits:
         missing.append(f"row lacks parent commit: {row.seam}")
     if not row.claim or row.claim == "-":
@@ -200,6 +235,10 @@ def assert_self_tests() -> None:
         receipt = root / "docs" / "evidence" / "test.receipt.json"
         receipt.parent.mkdir(parents=True)
         receipt.write_text('{"status":"pass"}\n')
+        doc = root / "docs" / "evidence" / "test.md"
+        doc.write_text(f"Receipt BLAKE3: `{good_hash}`\n")
+        manifest = root / "docs" / "evidence" / "test.b3"
+        manifest.write_text(f"{good_hash}  docs/evidence/test.receipt.json\n")
 
         rows, hashes, missing = validate_matrix_text(
             self_test_text(good_hash),
@@ -239,6 +278,48 @@ def assert_self_tests() -> None:
             required_text=[],
         )
         assert any("row docs/evidence receipt is missing" in item for item in missing), missing
+
+        receipt.write_text('{"status":"pass"}\n')
+        manifest.unlink()
+        _, _, missing = validate_matrix_text(
+            self_test_text(good_hash),
+            root=root,
+            required_seams=required_seams,
+            required_gaps=[],
+            required_text=[],
+        )
+        assert any("lacks matching BLAKE3 manifest entry" in item for item in missing), missing
+
+        manifest.write_text(f"{good_hash}  docs/evidence/test.receipt.json\n")
+        doc.unlink()
+        _, _, missing = validate_matrix_text(
+            self_test_text(good_hash),
+            root=root,
+            required_seams=required_seams,
+            required_gaps=[],
+            required_text=[],
+        )
+        assert any("row evidence doc is missing" in item for item in missing), missing
+
+        doc.write_text("missing digest\n")
+        _, _, missing = validate_matrix_text(
+            self_test_text(good_hash),
+            root=root,
+            required_seams=required_seams,
+            required_gaps=[],
+            required_text=[],
+        )
+        assert any("does not cite BLAKE3 hash" in item for item in missing), missing
+
+        doc.write_text(f"Receipt BLAKE3: `{good_hash}`\n")
+        _, _, missing = validate_matrix_text(
+            self_test_text(good_hash, receipt="target/live.receipt.json"),
+            root=root,
+            required_seams=required_seams,
+            required_gaps=[],
+            required_text=[],
+        )
+        assert any("target-only receipt" in item for item in missing), missing
 
 
 def parse_args() -> argparse.Namespace:

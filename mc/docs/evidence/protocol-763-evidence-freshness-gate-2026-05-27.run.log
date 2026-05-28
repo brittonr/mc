@@ -1,0 +1,55 @@
+checkpoint: protocol-763 evidence freshness gate
+date: 2026-05-27
+root: /home/brittonr/git/mc
+
+command: python3 tools/check_acceptance_matrix.py --self-test
+acceptance matrix self-test ok
+
+command: python3 tools/check_acceptance_matrix.py
+acceptance matrix ok: 15 seams, 15 hashes
+
+command: python3 tools/check_current_evidence_bundle.py --self-test
+current evidence bundle self-test ok
+
+command: python3 tools/check_current_evidence_bundle.py
+current evidence bundle ok: 15 seams
+
+command: nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py --self-test
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest self-test ok
+
+command: nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 11 manifests, 45 entries, 44 receipts scanned
+
+command: nix run --no-update-lock-file .#cairn -- gate tasks harden-evidence-freshness-gates --root .
+{
+  "change": "harden-evidence-freshness-gates",
+  "input_hash": "e8433d74c51b8ccd46dc46f601ef9a405d488cbccdb6e94183fdc0d6b9b577ef",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "1d7cad5b88f6896b3c54b1c7551cd30d5a3dfcce3e6f0833b888121a536dca9b",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 10,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 11,
+  "valid": true
+}
+
+result: PASS

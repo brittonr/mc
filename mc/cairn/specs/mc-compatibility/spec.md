@@ -6,7 +6,6 @@ Defines the `mc-compatibility` capability for Minecraft client/server compatibil
 
 ## Requirements
 
-
 ### Requirement: Protocol 763 AdvancementUpdateS2CPacket shape is reviewed
 
 r[mc_compatibility.protocol_763.advancement_update.shape_reviewed] The system MUST review the Valence protocol 763 `AdvancementUpdateS2CPacket` packet shape and the Stevenarella internal packet/parser shape before changing `play/clientbound/0x69`.
@@ -72,7 +71,6 @@ r[mc_compatibility.protocol_763.advancement_update.evidence_recorded.non_overcla
 - WHEN the parent evidence receipt/check is created
 - THEN the receipt claims only the `0x69` / `AdvancementUpdateS2CPacket` boundary update
 - AND the receipt keeps full-current-Valence and full-Stevenarella-763 support claims false
-
 
 ### Requirement: Protocol 763 ScoreboardObjectiveUpdateS2CPacket shape is reviewed
 
@@ -140,7 +138,6 @@ r[mc_compatibility.protocol_763.scoreboard_objective.evidence_recorded.non_overc
 - THEN the receipt claims only the `0x58` / `ScoreboardObjectiveUpdateS2CPacket` boundary update
 - AND the receipt keeps full-current-Valence and full-Stevenarella-763 support claims false
 
-
 ### Requirement: Protocol 763 ScoreboardDisplayS2CPacket shape is reviewed
 
 r[mc_compatibility.protocol_763.scoreboard_display.shape_reviewed] The system MUST review the Valence protocol 763 `ScoreboardDisplayS2CPacket` packet shape and the Stevenarella internal packet/parser shape before changing `play/clientbound/0x51`.
@@ -206,7 +203,6 @@ r[mc_compatibility.protocol_763.scoreboard_display.evidence_recorded.non_overcla
 - WHEN the parent evidence receipt/check is created
 - THEN the receipt claims only the `0x51` / `ScoreboardDisplayS2CPacket` boundary update
 - AND the receipt keeps full-current-Valence and full-Stevenarella-763 support claims false
-
 
 ### Requirement: Protocol 763 ScoreboardPlayerUpdateS2CPacket shape is reviewed
 
@@ -274,7 +270,6 @@ r[mc_compatibility.protocol_763.scoreboard_player.evidence_recorded.non_overclai
 - THEN the receipt claims only the `0x5b` / `ScoreboardPlayerUpdateS2CPacket` boundary update
 - AND the receipt keeps full-current-Valence and full-Stevenarella-763 support claims false
 
-
 ### Requirement: Protocol 763 UpdateSelectedSlotS2CPacket shape is reviewed
 
 r[mc_compatibility.protocol_763.selected_slot.shape_reviewed] The system MUST review the Valence protocol 763 `UpdateSelectedSlotS2CPacket` packet shape and the Stevenarella internal packet/parser shape before changing `play/clientbound/0x4d`.
@@ -340,7 +335,6 @@ r[mc_compatibility.protocol_763.selected_slot.evidence_recorded.non_overclaiming
 - WHEN the parent evidence receipt/check is created
 - THEN the receipt claims only the `0x4d` / `UpdateSelectedSlotS2CPacket` boundary update
 - AND the receipt keeps full-current-Valence and full-Stevenarella-763 support claims false
-
 
 ### Requirement: Protocol 763 ScreenHandlerSlotUpdateS2CPacket shape is reviewed
 
@@ -408,7 +402,6 @@ r[mc_compatibility.protocol_763.screen_handler_slot.evidence_recorded.non_overcl
 - THEN the receipt claims only the `0x14` / `ScreenHandlerSlotUpdateS2CPacket` boundary update
 - AND the receipt keeps full-current-Valence and full-Stevenarella-763 support claims false
 
-
 ### Requirement: Protocol 763 PlayerListS2CPacket shape is reviewed
 
 r[mc_compatibility.protocol_763.player_list.shape_reviewed] The system MUST review the Valence protocol 763 `PlayerListS2CPacket` packet shape and the Stevenarella internal packet/parser shape before changing `play/clientbound/0x3a`.
@@ -474,7 +467,6 @@ r[mc_compatibility.protocol_763.player_list.evidence_recorded.non_overclaiming]
 - WHEN the parent evidence receipt/check is created
 - THEN the receipt claims only the `0x3a` / `PlayerListS2CPacket` boundary update
 - AND the receipt keeps full-current-Valence and full-Stevenarella-763 support claims false
-
 
 ### Requirement: Protocol 763 HealthUpdateS2CPacket shape is reviewed
 
@@ -542,7 +534,6 @@ r[mc_compatibility.protocol_763.health_update.evidence_recorded.non_overclaiming
 - THEN the receipt claims only the `0x57` / `HealthUpdateS2CPacket` boundary update
 - AND the receipt keeps full-current-Valence and full-Stevenarella-763 support claims false
 
-
 ### Requirement: Protocol 763 EntityTrackerUpdateS2CPacket shape is reviewed
 
 r[mc_compatibility.protocol_763.entity_tracker_update.shape_reviewed] The system MUST review the Valence protocol 763 `EntityTrackerUpdateS2CPacket` packet shape and the Stevenarella internal packet/parser shape before changing `play/clientbound/0x52`.
@@ -608,7 +599,6 @@ r[mc_compatibility.protocol_763.entity_tracker_update.evidence_recorded.non_over
 - WHEN the parent evidence receipt/check is created
 - THEN the receipt claims only the `0x52` / `EntityTrackerUpdateS2CPacket` boundary update
 - AND the receipt keeps full-current-Valence and full-Stevenarella-763 support claims false
-
 
 ### Requirement: Protocol 763 EntityAttributesS2CPacket shape is reviewed
 
@@ -676,7 +666,6 @@ r[mc_compatibility.protocol_763.entity_attributes.evidence_recorded.non_overclai
 - THEN the receipt claims only the `0x6a` / `EntityAttributesS2CPacket` boundary update
 - AND the receipt keeps full-current-Valence and full-Stevenarella-763 support claims false
 
-
 ### Requirement: Protocol 763 EntityStatusS2CPacket shape is reviewed
 
 r[mc_compatibility.protocol_763.entity_status.shape_reviewed] The system MUST review the Valence protocol 763 `EntityStatusS2CPacket` packet shape and the Stevenarella internal packet/parser shape before changing `play/clientbound/0x1c`.
@@ -742,7 +731,6 @@ r[mc_compatibility.protocol_763.entity_status.evidence_recorded.non_overclaiming
 - WHEN the parent evidence receipt/check is created
 - THEN the receipt claims only the `0x1c` / `EntityStatusS2CPacket` boundary update
 - AND the receipt keeps full-current-Valence and full-Stevenarella-763 support claims false
-
 
 ### Requirement: Protocol 763 PlayerAbilitiesS2CPacket shape is reviewed
 
@@ -810,7 +798,6 @@ r[mc_compatibility.protocol_763.player_abilities.evidence_recorded.non_overclaim
 - THEN the receipt claims only the `0x34` / `PlayerAbilitiesS2CPacket` boundary update
 - AND the receipt keeps full-current-Valence and full-Stevenarella-763 support claims false
 
-
 ### Requirement: Protocol 763 SynchronizeTagsS2CPacket shape is reviewed
 
 r[mc_compatibility.protocol_763.synchronize_tags.shape_reviewed] The system MUST review the Valence protocol 763 `SynchronizeTagsS2CPacket` packet shape and the Stevenarella internal packet/parser shape before changing `play/clientbound/0x6e`.
@@ -876,7 +863,6 @@ r[mc_compatibility.protocol_763.synchronize_tags.evidence_recorded.non_overclaim
 - WHEN the parent evidence receipt/check is created
 - THEN the receipt claims only the `0x6e` / `SynchronizeTagsS2CPacket` boundary update
 - AND the receipt keeps full-current-Valence and full-Stevenarella-763 support claims false
-
 
 ### Requirement: Protocol 763 ChunkDataS2CPacket shape is reviewed
 
@@ -1134,3 +1120,51 @@ r[mc_compatibility.valence_gameplay_oracles.non_overclaiming.scenario]
 - GIVEN a gameplay scenario receipt is recorded
 - WHEN the evidence is reviewed
 - THEN the receipt states the exact supported claim and keeps full CTF, broad protocol, and unbounded soak claims false
+
+### Requirement: Cross-file freshness
+
+r[mc_compatibility.harden_evidence_freshness_gates.cross_file_freshness] Evidence freshness checks MUST verify consistency among acceptance matrix rows, current bundle rows, receipt copies, run logs, and BLAKE3 manifests.
+
+#### Scenario: Freshness checker rejects drift
+
+r[mc_compatibility.harden_evidence_freshness_gates.cross_file_freshness.scenario]
+- GIVEN evidence rows are indexed for maintained compatibility claims
+- WHEN the freshness checker runs
+- THEN it verifies referenced artifacts exist, recorded BLAKE3 hashes match file contents, and matrix/current-bundle rows agree on scoped claims
+- AND it fails on missing, stale, or contradictory evidence
+
+### Requirement: Freshness fixtures
+
+r[mc_compatibility.harden_evidence_freshness_gates.freshness_fixtures] The evidence freshness checker MUST include positive and negative fixtures for complete rows, stale hashes, missing matrix rows, missing bundle rows, missing run logs, and target-only receipts.
+
+#### Scenario: Stale artifact fixtures fail closed
+
+r[mc_compatibility.harden_evidence_freshness_gates.freshness_fixtures.scenario]
+- GIVEN freshness fixtures are executed
+- WHEN a fixture contains a stale hash, missing row, missing artifact, or target-only live receipt
+- THEN the checker fails with explicit diagnostics
+- AND no evidence promotion can rely on that fixture
+
+### Requirement: Reviewable artifacts
+
+r[mc_compatibility.harden_evidence_freshness_gates.reviewable_artifacts] Review-critical live receipts and logs MUST be copied under `docs/evidence/` with BLAKE3 manifests before they are cited by tasks, matrix rows, or bundle rows.
+
+#### Scenario: Target-only evidence is rejected
+
+r[mc_compatibility.harden_evidence_freshness_gates.reviewable_artifacts.scenario]
+- GIVEN a task, matrix row, or bundle row cites a live receipt
+- WHEN the cited artifact exists only under `target/`
+- THEN the gate rejects the promotion
+- AND the task must either copy the artifact under `docs/evidence/` or record an explicit historical/oracle decision
+
+### Requirement: Promotion gate
+
+r[mc_compatibility.harden_evidence_freshness_gates.promotion_gate] New or replaced compatibility evidence rows MUST run the documented promotion gate before claims are broadened or receipt hashes are updated.
+
+#### Scenario: Promotion gate is required for row updates
+
+r[mc_compatibility.harden_evidence_freshness_gates.promotion_gate.scenario]
+- GIVEN a compatibility evidence row is added or its receipt hash changes
+- WHEN the change is reviewed
+- THEN the matrix checker, current-bundle checker, manifest checker, Cairn validation, and row-specific dry-run gate have tracked output or evidence
+- AND promotion is blocked if any gate fails

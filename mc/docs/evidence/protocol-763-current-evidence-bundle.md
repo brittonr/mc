@@ -65,9 +65,27 @@ ROI 10 re-promotes projectile damage attribution with pinned dependency and caus
 ```sh
 python3 tools/check_acceptance_matrix.py
 python3 tools/check_current_evidence_bundle.py
-python3 tools/check_evidence_manifests.py
-nix run .#cairn -- validate --root .
+nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+nix run --no-update-lock-file .#cairn -- validate --root .
 ```
+
+## Evidence freshness promotion gate
+
+Before adding or replacing a maintained evidence row, run the freshness gate from `/home/brittonr/git/mc` and copy the output under `docs/evidence/`:
+
+```sh
+python3 tools/check_acceptance_matrix.py --self-test
+python3 tools/check_acceptance_matrix.py
+python3 tools/check_current_evidence_bundle.py --self-test
+python3 tools/check_current_evidence_bundle.py
+nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py --self-test
+nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+nix run --no-update-lock-file .#cairn -- validate --root .
+```
+
+Rows that cite live receipts should point at tracked `docs/evidence/*.receipt.json` copies and BLAKE3 manifests. Historical `target/` rows require an explicit evidence/oracle note that records the original digest; the RED/BLUE scoring soak row is the current historical exception.
+
+Reviewable copied receipts for matrix rows are indexed at `docs/evidence/protocol-763-matrix-reviewable-receipts-2026-05-27.md` with manifest `docs/evidence/protocol-763-matrix-reviewable-receipts-2026-05-27.b3`.
 
 ## Non-claims
 
