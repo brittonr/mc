@@ -580,6 +580,10 @@ state_packets!(
             }
         }
         clientbound Clientbound {
+            /// BundleDelimiterRaw consumes the protocol 763 bundle delimiter payload.
+            packet BundleDelimiterRaw {
+                field data: Vec<u8> =,
+            }
             /// SpawnObject is used to spawn an object or vehicle into the world when it
             /// is in range of the client.
             packet SpawnObject {
@@ -955,6 +959,10 @@ state_packets!(
                 field nodes: LenPrefixed<VarInt, packet::CommandNode> =,
                 field root_index: VarInt =,
             }
+            /// DeclareCommandsRaw consumes modern command-tree payloads for clients that do not use commands.
+            packet DeclareCommandsRaw {
+                field data: Vec<u8> =,
+            }
             /// ServerMessage is a message sent by the server. It could be from a player
             /// or just a system message. The Type field controls the location the
             /// message is displayed at and when the message is displayed.
@@ -982,6 +990,10 @@ state_packets!(
                 field chunk_section_pos: u64 =,
                 field no_trust_edges: bool =,
                 field records: LenPrefixed<VarInt, VarLong> =,
+            }
+            /// ChunkDeltaUpdateRaw consumes modern multi-block change payloads when exact decoding is not required.
+            packet ChunkDeltaUpdateRaw {
+                field data: Vec<u8> =,
             }
             packet MultiBlockChange_VarInt {
                 field chunk_x: i32 =,
@@ -2300,6 +2312,10 @@ state_packets!(
                 field volume: f32 =,
                 field pitch: f32 =,
             }
+            /// PlaySoundRaw consumes modern sound payloads when sound playback is not required.
+            packet PlaySoundRaw {
+                field data: Vec<u8> =,
+            }
             packet SoundEffect_u8 {
                 field name: VarInt =,
                 field category: VarInt =,
@@ -2388,6 +2404,10 @@ state_packets!(
                 field entity_id: i32 =,
                 field properties: LenPrefixed<i32, packet::EntityProperty_i16> =,
             }
+            /// FeatureFlags lists enabled server-side feature flags.
+            packet FeatureFlags {
+                field features: LenPrefixed<VarInt, String> =,
+            }
             /// EntityEffect applies a status effect to an entity for a given duration.
             packet EntityEffect_VarInt {
                 field entity_id: VarInt =,
@@ -2395,6 +2415,7 @@ state_packets!(
                 field amplifier: i8 =,
                 field duration: VarInt =,
                 field hide_particles: bool =,
+                field factor_data: Vec<u8> =,
             }
             packet EntityEffect_i8 {
                 field entity_id: VarInt =,
@@ -2411,6 +2432,22 @@ state_packets!(
             }
             packet DeclareRecipes {
                 field recipes: LenPrefixed<VarInt, packet::Recipe> =,
+            }
+            /// UnlockRecipesRaw consumes the modern recipe-book payload for clients that do not use recipes.
+            packet UnlockRecipesRaw {
+                field data: Vec<u8> =,
+            }
+            /// SynchronizeRecipesRaw consumes the modern recipe payload for clients that do not use recipes.
+            packet SynchronizeRecipesRaw {
+                field data: Vec<u8> =,
+            }
+            /// ServerMetadataRaw consumes the modern server metadata payload; Stevenarella does not use it.
+            packet ServerMetadataRaw {
+                field data: Vec<u8> =,
+            }
+            /// SimulationDistanceRaw consumes the simulation distance payload; Stevenarella does not use it.
+            packet SimulationDistanceRaw {
+                field data: Vec<u8> =,
             }
             packet Tags {
                 field block_tags: LenPrefixed<VarInt, packet::Tags> =,
@@ -2445,6 +2482,13 @@ state_packets!(
                 field empty_block_light_mask: LenPrefixed<VarInt, i64> =,
                 field sky_light_arrays: LenPrefixed<VarInt, LenPrefixed<VarInt, u8>> =,
                 field block_light_arrays: LenPrefixed<VarInt, LenPrefixed<VarInt, u8>> =,
+            }
+            /// UpdateLightRaw consumes modern light update payloads; lighting is not used by the probe.
+            packet UpdateLightRaw {
+                field data: Vec<u8> =,
+            }
+            packet WorldEventRaw {
+                field data: Vec<u8> =,
             }
             packet UpdateLight_WithTrust {
                 field chunk_x: VarInt =,

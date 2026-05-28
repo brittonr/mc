@@ -44,19 +44,25 @@ const DEFAULT_FLAG_PROBE_REPEAT_TARGET: u32 = 1;
 const MAX_FLAG_PROBE_REPEAT_TARGET: u32 = 8;
 const FLAG_PROBE_FIRST_TICK: u32 = 560;
 const FLAG_PROBE_CYCLE_TICKS: u32 = 220;
-const SURVIVAL_PROBE_POSITION_TICK: u32 = 520;
-const SURVIVAL_PROBE_BREAK_TICK: u32 = 560;
-const SURVIVAL_PROBE_PLACE_TICK: u32 = 680;
+const ACTIVE_PROBE_INPUT_START_TICK: u32 = 1;
+const ACTIVE_PROBE_JUMP_RELEASE_TICK: u32 = 18;
+const ACTIVE_PROBE_TURN_TICK: u32 = 180;
+const ACTIVE_PROBE_STOP_TICK: u32 = 300;
+const SURVIVAL_PROBE_POSITION_TICK: u32 = 60;
+const SURVIVAL_PROBE_BREAK_TICK: u32 = 80;
+const SURVIVAL_PROBE_PLACE_TICK: u32 = 120;
 const SURVIVAL_PROBE_BREAK_X: i32 = 0;
 const SURVIVAL_PROBE_BREAK_Y: i32 = 64;
 const SURVIVAL_PROBE_BREAK_Z: i32 = 1;
 const SURVIVAL_PROBE_PLACE_Y: i32 = 65;
+const SURVIVAL_PROBE_START_DESTROY_STATUS: i32 = 0;
 const SURVIVAL_PROBE_STOP_DESTROY_STATUS: i32 = 2;
 const SURVIVAL_PROBE_FACE_UP: i32 = 1;
 const SURVIVAL_PROBE_MAIN_HAND: i32 = 0;
 const SURVIVAL_PROBE_HOTBAR_SLOT: i16 = 0;
-const SURVIVAL_PROBE_BREAK_SEQUENCE: i32 = 404;
-const SURVIVAL_PROBE_PLACE_SEQUENCE: i32 = 405;
+const SURVIVAL_PROBE_BREAK_START_SEQUENCE: i32 = 404;
+const SURVIVAL_PROBE_BREAK_STOP_SEQUENCE: i32 = 405;
+const SURVIVAL_PROBE_PLACE_SEQUENCE: i32 = 406;
 const SURVIVAL_PROBE_CURSOR_CENTER: f32 = 0.5;
 const SURVIVAL_PROBE_CURSOR_TOP: f32 = 1.0;
 const SURVIVAL_PROBE_PLAYER_X: f64 = 0.5;
@@ -806,6 +812,7 @@ impl Server {
             && !self.equipment_probe_enabled
             && !self.projectile_probe_enabled
             && !self.flag_probe_enabled
+            && !self.survival_probe_enabled
         {
             return;
         }
@@ -816,32 +823,42 @@ impl Server {
 
         self.active_probe_ticks = self.active_probe_ticks.saturating_add(1);
 
-        if let Some(movement) = self
-            .entities
-            .get_component_mut(player, self.player_movement)
-        {
-            match self.active_probe_ticks {
-                1 => {
-                    info!("MC-COMPAT-MILESTONE active_probe_input_start forward+sprint+jump");
-                    movement.pressed_keys.insert(Stevenkey::Forward, true);
-                    movement.pressed_keys.insert(Stevenkey::Sprint, true);
-                    movement.pressed_keys.insert(Stevenkey::Jump, true);
+        let movement_probe_enabled = self.active_probe_enabled
+            || self.team_probe_enabled
+            || self.combat_probe_enabled
+            || self.respawn_probe_enabled
+            || self.inventory_probe_enabled
+            || self.equipment_probe_enabled
+            || self.projectile_probe_enabled
+            || self.flag_probe_enabled;
+        if movement_probe_enabled {
+            if let Some(movement) = self
+                .entities
+                .get_component_mut(player, self.player_movement)
+            {
+                match self.active_probe_ticks {
+                    ACTIVE_PROBE_INPUT_START_TICK => {
+                        info!("MC-COMPAT-MILESTONE active_probe_input_start forward+sprint+jump");
+                        movement.pressed_keys.insert(Stevenkey::Forward, true);
+                        movement.pressed_keys.insert(Stevenkey::Sprint, true);
+                        movement.pressed_keys.insert(Stevenkey::Jump, true);
+                    }
+                    ACTIVE_PROBE_JUMP_RELEASE_TICK => {
+                        info!("MC-COMPAT-MILESTONE active_probe_jump_release");
+                        movement.pressed_keys.insert(Stevenkey::Jump, false);
+                    }
+                    ACTIVE_PROBE_TURN_TICK => {
+                        info!("MC-COMPAT-MILESTONE active_probe_input_turn right");
+                        movement.pressed_keys.insert(Stevenkey::Right, true);
+                    }
+                    ACTIVE_PROBE_STOP_TICK => {
+                        info!("MC-COMPAT-MILESTONE active_probe_input_stop");
+                        movement.pressed_keys.insert(Stevenkey::Forward, false);
+                        movement.pressed_keys.insert(Stevenkey::Sprint, false);
+                        movement.pressed_keys.insert(Stevenkey::Right, false);
+                    }
+                    _ => {}
                 }
-                18 => {
-                    info!("MC-COMPAT-MILESTONE active_probe_jump_release");
-                    movement.pressed_keys.insert(Stevenkey::Jump, false);
-                }
-                180 => {
-                    info!("MC-COMPAT-MILESTONE active_probe_input_turn right");
-                    movement.pressed_keys.insert(Stevenkey::Right, true);
-                }
-                300 => {
-                    info!("MC-COMPAT-MILESTONE active_probe_input_stop");
-                    movement.pressed_keys.insert(Stevenkey::Forward, false);
-                    movement.pressed_keys.insert(Stevenkey::Sprint, false);
-                    movement.pressed_keys.insert(Stevenkey::Right, false);
-                }
-                _ => {}
             }
         }
 
@@ -1045,17 +1062,23 @@ impl Server {
                 SURVIVAL_PROBE_BREAK_Z,
             );
             info!(
-                "MC-COMPAT-MILESTONE survival_probe_break_block_sent status=stop_destroy location={},{},{} sequence={}",
+                "MC-COMPAT-MILESTONE survival_probe_break_block_sent status=start_destroy location={},{},{} sequence={}",
                 SURVIVAL_PROBE_BREAK_X,
                 SURVIVAL_PROBE_BREAK_Y,
                 SURVIVAL_PROBE_BREAK_Z,
-                SURVIVAL_PROBE_BREAK_SEQUENCE
+                SURVIVAL_PROBE_BREAK_START_SEQUENCE
             );
+            self.write_packet(packet::play::serverbound::PlayerDigging_WithSequence {
+                status: protocol::VarInt(SURVIVAL_PROBE_START_DESTROY_STATUS),
+                location,
+                face: protocol::VarInt(SURVIVAL_PROBE_FACE_UP),
+                sequence: protocol::VarInt(SURVIVAL_PROBE_BREAK_START_SEQUENCE),
+            });
             self.write_packet(packet::play::serverbound::PlayerDigging_WithSequence {
                 status: protocol::VarInt(SURVIVAL_PROBE_STOP_DESTROY_STATUS),
                 location,
                 face: protocol::VarInt(SURVIVAL_PROBE_FACE_UP),
-                sequence: protocol::VarInt(SURVIVAL_PROBE_BREAK_SEQUENCE),
+                sequence: protocol::VarInt(SURVIVAL_PROBE_BREAK_STOP_SEQUENCE),
             });
             self.survival_probe_break_sent = true;
         }
@@ -2666,7 +2689,7 @@ impl Server {
                         stack.count, stack.id
                     );
                 }
-                if self.survival_probe_break_sent
+                if self.survival_probe_enabled
                     && !self.survival_probe_pickup_seen
                     && stack.count >= 1
                 {

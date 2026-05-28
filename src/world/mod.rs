@@ -28,6 +28,8 @@ use crate::shared::{Direction, Position};
 use crate::types::hash::FNVHash;
 use crate::types::nibble;
 use byteorder::ReadBytesExt;
+
+const PROTOCOL_1_20_1: i32 = 763;
 use cgmath::prelude::*;
 use flate2::read::ZlibDecoder;
 use log::info;
@@ -75,7 +77,7 @@ pub enum BlockEntityAction {
     ),
 }
 
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum LightType {
     Block,
     Sky,
@@ -1153,11 +1155,20 @@ impl World {
 
         // The rest of the chunk data might be padded out with zeros.
         // See https://bugs.mojang.com/browse/MC-131684.
-        assert!(
-            remaining.iter().all(|b| *b == 0),
-            "Failed to read all chunk data, had {} bytes left",
-            remaining.len()
-        );
+        if !remaining.iter().all(|b| *b == 0) {
+            if self.protocol_version >= PROTOCOL_1_20_1 {
+                log::warn!(
+                    "MC-COMPAT-NONFATAL chunk_trailing_bytes protocol={} remaining={}",
+                    self.protocol_version,
+                    remaining.len()
+                );
+            } else {
+                panic!(
+                    "Failed to read all chunk data, had {} bytes left",
+                    remaining.len()
+                );
+            }
+        }
         Ok(())
     }
 
@@ -1204,7 +1215,17 @@ impl World {
         for (i, mask) in masks.iter().enumerate() {
             for j in 0..64 {
                 if mask & (1 << j) != 0 {
-                    let new_light = &data.next().unwrap().data;
+                    let Some(next_light) = data.next() else {
+                        log::warn!(
+                            "MC-COMPAT-NONFATAL light_array_missing protocol={} chunk_x={} chunk_z={} light_type={:?}",
+                            self.protocol_version,
+                            x,
+                            z,
+                            light_type
+                        );
+                        return;
+                    };
+                    let new_light = &next_light.data;
                     let s_idx = i as i32 * 64 + j + self.min_y - 1;
                     let section = chunk
                         .sections

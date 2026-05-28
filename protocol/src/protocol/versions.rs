@@ -139,7 +139,13 @@ mod tests {
     #[test]
     fn protocol_763_uses_optional_uuid_login_start() {
         assert_eq!(
-            translate_internal_packet_id_for_version(763, State::Login, Direction::Serverbound, 0x00, true),
+            translate_internal_packet_id_for_version(
+                763,
+                State::Login,
+                Direction::Serverbound,
+                0x00,
+                true
+            ),
             crate::protocol::packet::login::serverbound::internal_ids::LoginStart_WithOptionalUuid,
         );
         assert_eq!(
@@ -153,8 +159,20 @@ mod tests {
             0x00,
         );
         assert_ne!(
-            translate_internal_packet_id_for_version(763, State::Login, Direction::Serverbound, 0x00, true),
-            translate_internal_packet_id_for_version(758, State::Login, Direction::Serverbound, 0x00, true),
+            translate_internal_packet_id_for_version(
+                763,
+                State::Login,
+                Direction::Serverbound,
+                0x00,
+                true
+            ),
+            translate_internal_packet_id_for_version(
+                758,
+                State::Login,
+                Direction::Serverbound,
+                0x00,
+                true
+            ),
         );
     }
 
@@ -175,8 +193,20 @@ mod tests {
             0x02,
         );
         assert_ne!(
-            translate_internal_packet_id_for_version(763, State::Login, Direction::Clientbound, 0x02, true),
-            translate_internal_packet_id_for_version(758, State::Login, Direction::Clientbound, 0x02, true),
+            translate_internal_packet_id_for_version(
+                763,
+                State::Login,
+                Direction::Clientbound,
+                0x02,
+                true
+            ),
+            translate_internal_packet_id_for_version(
+                758,
+                State::Login,
+                Direction::Clientbound,
+                0x02,
+                true
+            ),
         );
     }
 
@@ -201,23 +231,41 @@ mod tests {
     #[test]
     fn protocol_763_no_longer_treats_play_0x28_as_trade_list() {
         assert_ne!(
-            translate_internal_packet_id_for_version(763, State::Play, Direction::Clientbound, 0x28, true),
-            translate_internal_packet_id_for_version(758, State::Play, Direction::Clientbound, 0x28, true),
+            translate_internal_packet_id_for_version(
+                763,
+                State::Play,
+                Direction::Clientbound,
+                0x28,
+                true
+            ),
+            translate_internal_packet_id_for_version(
+                758,
+                State::Play,
+                Direction::Clientbound,
+                0x28,
+                true
+            ),
         );
     }
 
     #[test]
     fn protocol_763_maps_valence_command_tree_boundary() {
         assert_eq!(
-            translate_internal_packet_id_for_version(763, State::Play, Direction::Clientbound, 0x10, true),
-            crate::protocol::packet::play::clientbound::internal_ids::DeclareCommands,
+            translate_internal_packet_id_for_version(
+                763,
+                State::Play,
+                Direction::Clientbound,
+                0x10,
+                true
+            ),
+            crate::protocol::packet::play::clientbound::internal_ids::DeclareCommandsRaw,
         );
         assert_eq!(
             translate_internal_packet_id_for_version(
                 763,
                 State::Play,
                 Direction::Clientbound,
-                crate::protocol::packet::play::clientbound::internal_ids::DeclareCommands,
+                crate::protocol::packet::play::clientbound::internal_ids::DeclareCommandsRaw,
                 false,
             ),
             0x10,
@@ -227,15 +275,33 @@ mod tests {
     #[test]
     fn protocol_763_no_longer_treats_play_0x10_as_clear_titles() {
         assert_ne!(
-            translate_internal_packet_id_for_version(763, State::Play, Direction::Clientbound, 0x10, true),
-            translate_internal_packet_id_for_version(758, State::Play, Direction::Clientbound, 0x10, true),
+            translate_internal_packet_id_for_version(
+                763,
+                State::Play,
+                Direction::Clientbound,
+                0x10,
+                true
+            ),
+            translate_internal_packet_id_for_version(
+                758,
+                State::Play,
+                Direction::Clientbound,
+                0x10,
+                true
+            ),
         );
     }
 
     #[test]
     fn protocol_763_maps_valence_game_message_boundary() {
         assert_eq!(
-            translate_internal_packet_id_for_version(763, State::Play, Direction::Clientbound, 0x64, true),
+            translate_internal_packet_id_for_version(
+                763,
+                State::Play,
+                Direction::Clientbound,
+                0x64,
+                true
+            ),
             crate::protocol::packet::play::clientbound::internal_ids::ServerMessage_Position,
         );
         assert_eq!(
@@ -253,27 +319,198 @@ mod tests {
     #[test]
     fn protocol_763_no_longer_treats_play_0x64_as_entity_properties() {
         assert_ne!(
-            translate_internal_packet_id_for_version(763, State::Play, Direction::Clientbound, 0x64, true),
-            translate_internal_packet_id_for_version(758, State::Play, Direction::Clientbound, 0x64, true),
+            translate_internal_packet_id_for_version(
+                763,
+                State::Play,
+                Direction::Clientbound,
+                0x64,
+                true
+            ),
+            translate_internal_packet_id_for_version(
+                758,
+                State::Play,
+                Direction::Clientbound,
+                0x64,
+                true
+            ),
         );
+    }
+
+    #[test]
+    fn protocol_763_maps_paper_feature_flags_boundary() {
+        const PAPER_FEATURE_FLAGS_WIRE_ID: i32 = 0x6b;
+        assert_eq!(
+            translate_internal_packet_id_for_version(
+                763,
+                State::Play,
+                Direction::Clientbound,
+                PAPER_FEATURE_FLAGS_WIRE_ID,
+                true,
+            ),
+            crate::protocol::packet::play::clientbound::internal_ids::FeatureFlags,
+        );
+        assert_eq!(
+            translate_internal_packet_id_for_version(
+                763,
+                State::Play,
+                Direction::Clientbound,
+                crate::protocol::packet::play::clientbound::internal_ids::FeatureFlags,
+                false,
+            ),
+            PAPER_FEATURE_FLAGS_WIRE_ID,
+        );
+    }
+
+    #[test]
+    fn feature_flags_consumes_1_20_payload() {
+        const PAPER_FEATURE_FLAGS_WIRE_ID: i32 = 0x6b;
+        const FEATURE_COUNT: usize = 2;
+        const FEATURE_COUNT_VARINT: u8 = FEATURE_COUNT as u8;
+        const VANILLA_FEATURE_NAME_BYTES: u8 = 17;
+        const TRIAL_FEATURE_NAME_BYTES: u8 = 15;
+        let payload = vec![
+            FEATURE_COUNT_VARINT,
+            VANILLA_FEATURE_NAME_BYTES,
+            b'm',
+            b'i',
+            b'n',
+            b'e',
+            b'c',
+            b'r',
+            b'a',
+            b'f',
+            b't',
+            b':',
+            b'v',
+            b'a',
+            b'n',
+            b'i',
+            b'l',
+            b'l',
+            b'a',
+            TRIAL_FEATURE_NAME_BYTES,
+            b'm',
+            b'i',
+            b'n',
+            b'e',
+            b'c',
+            b'r',
+            b'a',
+            b'f',
+            b't',
+            b':',
+            b't',
+            b'r',
+            b'i',
+            b'a',
+            b'l',
+        ];
+        const TEST_PACKET_PARSE_STACK_BYTES: usize = 8 * 1024 * 1024;
+        std::thread::Builder::new()
+            .stack_size(TEST_PACKET_PARSE_STACK_BYTES)
+            .spawn(move || {
+                let mut payload = std::io::Cursor::new(payload);
+                let packet = crate::protocol::packet::packet_by_id(
+                    763,
+                    State::Play,
+                    Direction::Clientbound,
+                    PAPER_FEATURE_FLAGS_WIRE_ID,
+                    &mut payload,
+                )
+                .expect("feature flags parse")
+                .expect("feature flags packet exists");
+                let crate::protocol::packet::Packet::FeatureFlags(packet) = packet else {
+                    panic!("expected FeatureFlags packet");
+                };
+                assert_eq!(packet.features.data.len(), FEATURE_COUNT);
+                assert_eq!(packet.features.data[0], "minecraft:vanilla");
+            })
+            .expect("spawn packet parse test")
+            .join()
+            .expect("packet parse test passes");
+    }
+
+    #[test]
+    fn protocol_763_maps_paper_entity_effect_boundary() {
+        const PAPER_ENTITY_EFFECT_WIRE_ID: i32 = 0x6c;
+        assert_eq!(
+            translate_internal_packet_id_for_version(
+                763,
+                State::Play,
+                Direction::Clientbound,
+                PAPER_ENTITY_EFFECT_WIRE_ID,
+                true,
+            ),
+            crate::protocol::packet::play::clientbound::internal_ids::EntityEffect_VarInt,
+        );
+        assert_eq!(
+            translate_internal_packet_id_for_version(
+                763,
+                State::Play,
+                Direction::Clientbound,
+                crate::protocol::packet::play::clientbound::internal_ids::EntityEffect_VarInt,
+                false,
+            ),
+            PAPER_ENTITY_EFFECT_WIRE_ID,
+        );
+    }
+
+    #[test]
+    fn entity_effect_varint_consumes_1_20_factor_tail() {
+        const PAPER_ENTITY_EFFECT_WIRE_ID: i32 = 0x6c;
+        const FACTOR_TAIL_BYTES: usize = 14;
+        const TEST_PACKET_PARSE_STACK_BYTES: usize = 8 * 1024 * 1024;
+        let payload = vec![
+            0x01, 0x02, 0x00, 0x14, 0x01, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff, 0x10, 0x20, 0x30,
+            0x40, 0x50, 0x60, 0x70, 0x71,
+        ];
+        std::thread::Builder::new()
+            .stack_size(TEST_PACKET_PARSE_STACK_BYTES)
+            .spawn(move || {
+                let mut payload = std::io::Cursor::new(payload);
+                let packet = crate::protocol::packet::packet_by_id(
+                    763,
+                    State::Play,
+                    Direction::Clientbound,
+                    PAPER_ENTITY_EFFECT_WIRE_ID,
+                    &mut payload,
+                )
+                .expect("entity effect parses")
+                .expect("entity effect packet exists");
+                let crate::protocol::packet::Packet::EntityEffect_VarInt(packet) = packet else {
+                    panic!("expected EntityEffect_VarInt packet");
+                };
+                assert_eq!(packet.factor_data.len(), FACTOR_TAIL_BYTES);
+                assert_eq!(packet.factor_data[0], 0xaa);
+            })
+            .expect("spawn packet parse test")
+            .join()
+            .expect("packet parse test passes");
     }
 
     #[test]
     fn protocol_763_maps_remaining_observed_valence_boundaries() {
         let boundaries = [
+            (0x00, crate::protocol::packet::play::clientbound::internal_ids::BundleDelimiterRaw),
             (0x01, crate::protocol::packet::play::clientbound::internal_ids::SpawnObject_VarInt_HeadYaw),
             (0x02, crate::protocol::packet::play::clientbound::internal_ids::SpawnExperienceOrb),
             (0x03, crate::protocol::packet::play::clientbound::internal_ids::SpawnPlayer_f64_NoMeta),
             (0x04, crate::protocol::packet::play::clientbound::internal_ids::Animation),
             (0x0a, crate::protocol::packet::play::clientbound::internal_ids::BlockChange_VarInt),
             (0x0b, crate::protocol::packet::play::clientbound::internal_ids::BossBar),
+            (0x0c, crate::protocol::packet::play::clientbound::internal_ids::ServerDifficulty_Locked),
+            (0x10, crate::protocol::packet::play::clientbound::internal_ids::DeclareCommandsRaw),
             (0x12, crate::protocol::packet::play::clientbound::internal_ids::WindowItems_StateCarry),
             (0x14, crate::protocol::packet::play::clientbound::internal_ids::WindowSetSlot_State),
+            (0x17, crate::protocol::packet::play::clientbound::internal_ids::PluginMessageClientbound),
             (0x1c, crate::protocol::packet::play::clientbound::internal_ids::EntityStatus),
             (0x1e, crate::protocol::packet::play::clientbound::internal_ids::ChunkUnload),
             (0x1f, crate::protocol::packet::play::clientbound::internal_ids::ChangeGameState),
+            (0x22, crate::protocol::packet::play::clientbound::internal_ids::WorldBorderInit),
             (0x23, crate::protocol::packet::play::clientbound::internal_ids::KeepAliveClientbound_i64),
             (0x24, crate::protocol::packet::play::clientbound::internal_ids::ChunkData_AndLight_NoTrustEdges),
+            (0x25, crate::protocol::packet::play::clientbound::internal_ids::WorldEventRaw),
+            (0x27, crate::protocol::packet::play::clientbound::internal_ids::UpdateLightRaw),
             (0x2b, crate::protocol::packet::play::clientbound::internal_ids::EntityMove_i16),
             (0x2c, crate::protocol::packet::play::clientbound::internal_ids::EntityLookAndMove_i16),
             (0x2d, crate::protocol::packet::play::clientbound::internal_ids::EntityLook_VarInt),
@@ -283,8 +520,12 @@ mod tests {
             (0x39, crate::protocol::packet::play::clientbound::internal_ids::PlayerRemove_UUIDs),
             (0x3a, crate::protocol::packet::play::clientbound::internal_ids::PlayerInfo_BitSet),
             (0x3c, crate::protocol::packet::play::clientbound::internal_ids::TeleportPlayer_WithConfirm),
+            (0x3d, crate::protocol::packet::play::clientbound::internal_ids::UnlockRecipesRaw),
+            (0x3e, crate::protocol::packet::play::clientbound::internal_ids::EntityDestroy),
             (0x41, crate::protocol::packet::play::clientbound::internal_ids::Respawn_WorldNames_LastDeath_PortalCooldown),
             (0x42, crate::protocol::packet::play::clientbound::internal_ids::EntityHeadLook),
+            (0x43, crate::protocol::packet::play::clientbound::internal_ids::ChunkDeltaUpdateRaw),
+            (0x45, crate::protocol::packet::play::clientbound::internal_ids::ServerMetadataRaw),
             (0x4d, crate::protocol::packet::play::clientbound::internal_ids::SetCurrentHotbarSlot),
             (0x4e, crate::protocol::packet::play::clientbound::internal_ids::UpdateViewPosition),
             (0x4f, crate::protocol::packet::play::clientbound::internal_ids::UpdateViewDistance),
@@ -297,12 +538,20 @@ mod tests {
             (0x56, crate::protocol::packet::play::clientbound::internal_ids::SetExperience),
             (0x57, crate::protocol::packet::play::clientbound::internal_ids::UpdateHealth),
             (0x58, crate::protocol::packet::play::clientbound::internal_ids::ScoreboardObjective),
+            (0x59, crate::protocol::packet::play::clientbound::internal_ids::SetPassengers),
+            (0x5a, crate::protocol::packet::play::clientbound::internal_ids::Teams_VarInt),
             (0x5b, crate::protocol::packet::play::clientbound::internal_ids::UpdateScore_VarInt),
+            (0x5c, crate::protocol::packet::play::clientbound::internal_ids::SimulationDistanceRaw),
+            (0x5e, crate::protocol::packet::play::clientbound::internal_ids::TimeUpdate),
+            (0x62, crate::protocol::packet::play::clientbound::internal_ids::PlaySoundRaw),
             (0x64, crate::protocol::packet::play::clientbound::internal_ids::ServerMessage_Position),
             (0x67, crate::protocol::packet::play::clientbound::internal_ids::CollectItem),
             (0x68, crate::protocol::packet::play::clientbound::internal_ids::EntityTeleport_f64),
             (0x69, crate::protocol::packet::play::clientbound::internal_ids::Advancements),
             (0x6a, crate::protocol::packet::play::clientbound::internal_ids::EntityProperties_VarIntVarInt),
+            (0x6b, crate::protocol::packet::play::clientbound::internal_ids::FeatureFlags),
+            (0x6c, crate::protocol::packet::play::clientbound::internal_ids::EntityEffect_VarInt),
+            (0x6d, crate::protocol::packet::play::clientbound::internal_ids::SynchronizeRecipesRaw),
             (0x6e, crate::protocol::packet::play::clientbound::internal_ids::Tags_Nested),
         ];
 
@@ -398,6 +647,10 @@ mod tests {
                 crate::protocol::packet::play::serverbound::internal_ids::ClientStatus,
             ),
             (
+                0x0d,
+                crate::protocol::packet::play::serverbound::internal_ids::PluginMessageServerbound,
+            ),
+            (
                 0x10,
                 crate::protocol::packet::play::serverbound::internal_ids::UseEntity_Sneakflag,
             ),
@@ -445,7 +698,13 @@ mod tests {
 
     #[test]
     fn protocol_763_no_longer_uses_758_fallback_for_remaining_observed_boundaries() {
-        for wire_id in [0x01, 0x02, 0x03, 0x04, 0x06, 0x0a, 0x0b, 0x14, 0x1c, 0x1e, 0x1f, 0x24, 0x2b, 0x2c, 0x2d, 0x2e, 0x34, 0x38, 0x39, 0x3a, 0x42, 0x4d, 0x4e, 0x4f, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x5b, 0x67] {
+        for wire_id in [
+            0x00, 0x01, 0x02, 0x03, 0x04, 0x06, 0x0a, 0x0b, 0x0c, 0x14, 0x17, 0x1c, 0x1e, 0x1f,
+            0x22, 0x24, 0x25, 0x27, 0x2b, 0x2c, 0x2d, 0x2e, 0x34, 0x38, 0x39, 0x3a, 0x3d,
+            0x3e, 0x42,
+            0x43, 0x45, 0x4d, 0x4e, 0x4f, 0x51, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a,
+            0x5b, 0x5c, 0x5e, 0x62, 0x67,
+        ] {
             assert_ne!(
                 translate_internal_packet_id_for_version(
                     763,

@@ -446,7 +446,11 @@ impl Metadata {
                     let _z = f32::read_from(buf)?;
                     let _w = f32::read_from(buf)?;
                 }
-                _ => return Err(protocol::Error::Err("unknown 1.20.1 metadata type".to_owned())),
+                _ => {
+                    return Err(protocol::Error::Err(
+                        "unknown 1.20.1 metadata type".to_owned(),
+                    ))
+                }
             }
         }
         Ok(m)

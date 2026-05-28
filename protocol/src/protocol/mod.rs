@@ -273,13 +273,17 @@ where
 
 impl Serializable for String {
     fn read_from<R: io::Read>(buf: &mut R) -> Result<String, Error> {
+        const MAX_STRING_BYTES: i32 = 65536;
         let len = VarInt::read_from(buf)?.0;
-        debug_assert!(len >= 0, "Negative string length: {}", len);
-        debug_assert!(len <= 65536, "String length too big: {}", len);
+        if len < 0 {
+            return Err(Error::Err(format!("Negative string length: {len}")));
+        }
+        if len > MAX_STRING_BYTES {
+            return Err(Error::Err(format!("String length too big: {len}")));
+        }
         let mut bytes = Vec::<u8>::new();
         buf.take(len as u64).read_to_end(&mut bytes)?;
-        let ret = String::from_utf8(bytes).unwrap();
-        Result::Ok(ret)
+        String::from_utf8(bytes).map_err(|err| Error::Err(format!("Invalid UTF-8 string: {err}")))
     }
     fn write_to<W: io::Write>(&self, buf: &mut W) -> Result<(), Error> {
         let bytes = self.as_bytes();
@@ -775,16 +779,19 @@ impl Serializable for VarInt {
     /// Decodes a `VarInt` from the Reader
     fn read_from<R: io::Read>(buf: &mut R) -> Result<VarInt, Error> {
         const PART: u32 = 0x7F;
+        const CONTINUATION: u32 = 0x80;
+        const BITS_PER_BYTE: usize = 7;
+        const MAX_BYTES: usize = 5;
         let mut size = 0;
         let mut val = 0u32;
         loop {
-            let b = buf.read_u8()? as u32;
-            val |= (b & PART) << (size * 7);
-            size += 1;
-            if size > 5 {
+            if size == MAX_BYTES {
                 return Result::Err(Error::Err("VarInt too big".to_owned()));
             }
-            if (b & 0x80) == 0 {
+            let b = buf.read_u8()? as u32;
+            val |= (b & PART) << (size * BITS_PER_BYTE);
+            size += 1;
+            if (b & CONTINUATION) == 0 {
                 break;
             }
         }
@@ -1085,8 +1092,16 @@ impl Conn {
     }
 
     pub fn write_packet<T: PacketType>(&mut self, packet: T) -> Result<(), Error> {
+        let packet_id = packet.packet_id(self.protocol_version);
+        if is_network_debug() {
+            debug!(
+                "writing packet id={:x} type={}",
+                packet_id,
+                std::any::type_name::<T>()
+            );
+        }
         let mut buf = Vec::new();
-        VarInt(packet.packet_id(self.protocol_version)).write_to(&mut buf)?;
+        VarInt(packet_id).write_to(&mut buf)?;
         packet.write(&mut buf)?;
 
         let mut extra = if self.compression_threshold >= 0 {
