@@ -1,0 +1,29 @@
+checkpoint: valence-combat-loop-steel-policy archive
+date: 2026-05-28
+root: /home/brittonr/git/mc
+archive: cairn/archive/2026-05-28-valence-combat-loop-steel-policy
+
+command: nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 2,
+  "valid": true
+}
+
+command: nix run --no-update-lock-file .#cairn -- change list --root .
+{
+  "changes": [],
+  "layout": "cairn",
+  "root": "."
+}
+
+command: test -f cairn/archive/2026-05-28-valence-combat-loop-steel-policy/tasks.md
+
+command: test ! -d cairn/changes/valence-combat-loop-steel-policy
+
+result: PASS

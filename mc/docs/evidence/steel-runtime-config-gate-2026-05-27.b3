@@ -1,4 +1,4 @@
-65fb66ad6a4188508cee297ea26d5fa4f4ef733187d3ed1917277dc9453e8d65  cairn/specs/runtime-configuration/spec.md
+b62067cf9703909ff6ab75ceb20d99d5eab32593789cb3ce79fb8de72df1df42  cairn/specs/runtime-configuration/spec.md
 94577f4f2804ab1678680f315314cb57f1afe697161fb2db499e8e5beb459043  cairn/archive/2026-05-27-hotload-runtime-configuration/specs/runtime-configuration/spec.md
 b19c23d92541ce5b8e1da9eb34b1c73a934b6cf5edf751e8178189854059889d  cairn/archive/2026-05-27-hotload-runtime-configuration/tasks.md
 06373a43c99d0463611c9ef55dc7e72a624c1335a71078eea6d5d4b5d6998b16  config/mc-compat/steel/default.scm
