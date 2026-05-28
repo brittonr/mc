@@ -27,6 +27,7 @@
 - For mc Cairn checks, use repo-pinned `nix run --no-update-lock-file .#cairn -- ... --root .` from `/home/brittonr/git/mc`; sibling `/home/brittonr/git/cairn#cairn` can be newer and fail with policy schema drift such as `policy missing field steel_orchestration_policy`.
 - When a gate log has its own `.b3` sidecar, do not run the manifest checker inside the log while the old sidecar exists; remove/regenerate the sidecar after writing the log, then run a separate manifest check.
 - Projectile damage attribution evidence must pin Valence to `e5d18ad04010d92881267ac1ea43922ae91821f5` and use a fresh/matching Valence worktree; stale `/tmp/valence-compat-*` worktrees can silently point at the wrong revision if not checked.
+- Armor/modifier evidence needs the `/tmp/mc-compat-valence.log` plus both `/tmp/mc-compat-client.*.log` files copied into `docs/evidence/` before another live rail overwrites them; the runner receipt alone does not carry raw mitigation math.
 
 ## Domain Notes
 - `mc/` is a workspace directory with two independent Rust repos: `hyperion/` and `valence/`.
