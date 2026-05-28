@@ -1,0 +1,73 @@
+checkpoint: protocol-763 CTF rule ledger gate
+date: 2026-05-27
+root: /home/brittonr/git/mc
+
+command: python3 -m py_compile tools/check_ctf_rule_ledger.py
+
+command: python3 tools/check_ctf_rule_ledger.py --self-test
+ctf rule ledger self-test ok
+
+command: python3 tools/check_ctf_rule_ledger.py
+ctf rule ledger ok: 3 bounded protocol-763 clusters
+
+command: python3 tools/check_acceptance_matrix.py
+acceptance matrix ok: 15 seams, 15 hashes
+
+command: python3 tools/check_current_evidence_bundle.py
+current evidence bundle ok: 15 seams
+
+command: nix run --no-update-lock-file .#cairn -- gate proposal prove-ctf-rule-correctness --root .
+{
+  "change": "prove-ctf-rule-correctness",
+  "input_hash": "e20ccb70a47e9a661f6f9c5e175bf4bab5601ecbd125cabf73c104492e221713",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "b830ed40d32dccc162c5c90af41349a9136f472e6e86f8a8581be6fe2dc30106",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate design prove-ctf-rule-correctness --root .
+{
+  "change": "prove-ctf-rule-correctness",
+  "input_hash": "a91ac65dd230aa99381912684f875fe8e0670f38a733cfcb2fdc898bb6ea2878",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "d9bdfac942998b8a88a468ad38a09760358cd23e157d361afc95aa11a9dd6176",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate tasks prove-ctf-rule-correctness --root .
+{
+  "change": "prove-ctf-rule-correctness",
+  "input_hash": "8a323c21f844791771ad1162b06b9f8c8fe14f1743e01fa93f720f7100d62ce7",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "55af0338235476c3b54a79bcf74b5f775fb3be2fd0717618894e656d7e219959",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 2,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+
+result: PASS
