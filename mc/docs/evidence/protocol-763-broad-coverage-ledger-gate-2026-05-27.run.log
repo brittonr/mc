@@ -1,0 +1,73 @@
+checkpoint: protocol-763 broad coverage ledger gate
+date: 2026-05-27
+root: /home/brittonr/git/mc
+
+command: python3 -m py_compile tools/check_protocol_coverage_ledger.py
+
+command: python3 tools/check_protocol_coverage_ledger.py --self-test
+protocol coverage ledger self-test ok
+
+command: python3 tools/check_protocol_coverage_ledger.py
+protocol coverage ledger ok: 15 bounded seams, broad claims blocked
+
+command: python3 tools/check_acceptance_matrix.py
+acceptance matrix ok: 15 seams, 15 hashes
+
+command: python3 tools/check_current_evidence_bundle.py
+current evidence bundle ok: 15 seams
+
+command: nix run --no-update-lock-file .#cairn -- gate proposal prove-broad-protocol-763-coverage --root .
+{
+  "change": "prove-broad-protocol-763-coverage",
+  "input_hash": "d2e27b8ba391c30ceaad0edc9692f1b1c772d346394784fbc264f447fa1138d3",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "65145b7f7bc286a70f4a3170a7524f23eeca73cf071ec3993e7f60c62c9e1644",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate design prove-broad-protocol-763-coverage --root .
+{
+  "change": "prove-broad-protocol-763-coverage",
+  "input_hash": "02aa3a02ff998ba7c43da709baf604bcfc440a4df56f637c64feb9e57cdf3eb8",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "6556265ec5217e36748cc219915333a23c3c15efe3e0306af88c28ccd620cd7a",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate tasks prove-broad-protocol-763-coverage --root .
+{
+  "change": "prove-broad-protocol-763-coverage",
+  "input_hash": "2b4d073a38db781471d3d36984f3fd52f0c0d7e953f5b15754d50148bb570371",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "711822876a4bb3de6b39a11cc87b926faa42cbc4943ae51aa21d419370690d49",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 2,
+  "valid": true
+}
+
+result: PASS

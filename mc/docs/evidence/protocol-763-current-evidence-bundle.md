@@ -55,6 +55,10 @@ Vanilla combat parity is guarded by `docs/evidence/protocol-763-vanilla-combat-p
 
 CTF rule scope is guarded by `docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md` and `tools/check_ctf_rule_ledger.py`. Promoted clusters are bounded RED/BLUE scoring soak, flag-carrier death/return, and reconnect flag-state. Full CTF correctness remains a non-claim.
 
+## Broad protocol coverage checkpoint
+
+Broad coverage is guarded by `docs/evidence/protocol-763-broad-coverage-ledger-2026-05-27.md` and `tools/check_protocol_coverage_ledger.py`. The ledger indexes 15 bounded seams and blocks full protocol-763 compatibility/full Minecraft compatibility until packet-family mapping/parser fixtures and live receipts exist for every claimed row.
+
 ## Death/respawn lifecycle checkpoint
 
 The maintained `Flag-carrier death/return` row is also validated as a bounded lifecycle row in `docs/evidence/protocol-763-death-respawn-lifecycle-2026-05-27.md`. The row covers one flag-carrier death, respawn request, restored health, server flag return/reset, and no unexpected score/capture. No all death/drop/recovery permutations are claimed; full death/respawn lifecycle remains a non-claim.
@@ -101,6 +105,7 @@ python3 tools/check_armor_modifier_matrix.py
 python3 tools/check_projectile_travel_collision.py
 python3 tools/check_vanilla_combat_parity.py
 python3 tools/check_ctf_rule_ledger.py
+python3 tools/check_protocol_coverage_ledger.py
 nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
 nix run --no-update-lock-file .#cairn -- validate --root .
 ```
