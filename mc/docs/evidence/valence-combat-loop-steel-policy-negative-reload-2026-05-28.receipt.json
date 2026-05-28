@@ -1,0 +1,45 @@
+{
+  "schema": "mc.compat.valence_steel_policy.negative_reload.v1",
+  "protocol": 763,
+  "server": "valence-ctf",
+  "active_before": {
+    "policy_id": "damage-linear",
+    "snapshot_generation": 0,
+    "base_damage": 3.0
+  },
+  "rejected_candidates": [
+    {
+      "kind": "range-invalid",
+      "field": "combat.arrow.base_damage",
+      "candidate_value": 101.0,
+      "diagnostic": "value 101 outside 0..=100",
+      "active_generation_after": 0
+    },
+    {
+      "kind": "malformed-policy",
+      "field": "combat.arrow.policy",
+      "diagnostic": "missing damage-linear arrow-damage policy shape",
+      "active_generation_after": 0
+    },
+    {
+      "kind": "capability-token-invalid",
+      "field": "runtime.steel.sandbox",
+      "diagnostic": "forbidden Steel capability: random",
+      "active_generation_after": 0
+    }
+  ],
+  "post_reject_decision": {
+    "policy_id": "damage-linear",
+    "snapshot_generation": 0,
+    "damage": 3.0,
+    "victim_health_after": 17.0
+  },
+  "verification": {
+    "tests": [
+      "invalid_module_is_rejected_and_previous_snapshot_survives",
+      "malformed_or_capability_invalid_module_is_rejected",
+      "range_invalid_decision_output_is_rejected"
+    ],
+    "gate_log": "docs/evidence/valence-combat-loop-steel-policy-core-gate-2026-05-28.run.log"
+  }
+}

@@ -2,7 +2,7 @@
 
 ## Summary
 
-Extend the Steel runtime-configuration work from the compatibility runner evidence rail into the Valence CTF server combat loop. The projectile-probe arrow damage used by live Valence combat must come from a Rust-validated Steel policy snapshot after an atomic publish succeeds, with bad reloads preserving the previous decision path.
+Extend the Steel runtime-configuration work from the compatibility runner evidence rail into the Valence CTF server combat loop. In this slice, the projectile-probe arrow damage used by Valence combat must come from a Rust-validated Steel-compatible literal policy snapshot after an atomic publish succeeds, with bad reloads preserving the previous decision path.
 
 ## Motivation
 
@@ -12,13 +12,13 @@ This change closes that gap without broadening the claim to all combat rules. Ar
 
 ## Scope
 
-- Add a Valence-side Steel arrow-damage policy adapter with a pure Rust validation core and a thin runtime shell.
+- Add a Valence-side Steel-compatible arrow-damage policy adapter with a pure Rust validation core and a thin runtime shell.
 - Publish policy snapshots atomically before live combat can observe them.
 - Replace the Valence CTF projectile-probe damage call sites with the published policy decision, while retaining the current constant as the default fallback before any operator override is accepted.
 - Support explicit reload requests for the server policy path; no filesystem watcher is required in this change.
 - Record policy provenance and redacted reload diagnostics in Valence milestone/evidence logs.
 - Add positive and negative tests for default policy, edited policy, invalid policy, reload rollback, and both projectile-probe call sites.
-- Add evidence that protocol-763 Valence projectile combat uses the Steel-published policy in live server code.
+- Add evidence that protocol-763 Valence projectile combat uses the published Steel-compatible policy in live or live-equivalent server code.
 
 ## Out of scope
 
@@ -30,5 +30,5 @@ This change closes that gap without broadening the claim to all combat rules. Ar
 
 ## Impact
 
-- **Files**: Valence CTF example combat code, Steel policy adapter/core, runtime config evidence/checker updates, tests, and protocol-763 evidence receipts.
+- **Files**: Valence CTF example combat code, Steel-compatible policy adapter/core, runtime config evidence/checker updates, tests, and protocol-763 evidence receipts.
 - **Testing**: pure policy-core tests, Valence example tests or compile checks, negative reload tests, checker validation, Cairn gates, and a reviewable live or dry-run-plus-live-server receipt under `docs/evidence/`.

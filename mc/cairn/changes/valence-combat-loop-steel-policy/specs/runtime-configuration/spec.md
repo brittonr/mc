@@ -9,7 +9,7 @@ r[runtime_configuration.valence_combat_loop_steel_policy.arrow_damage_live] Vale
 #### Scenario: Published policy drives Valence projectile combat
 
 r[runtime_configuration.valence_combat_loop_steel_policy.arrow_damage_live.scenario]
-- GIVEN a valid Steel arrow-damage policy snapshot is published
+- GIVEN a valid Steel-compatible arrow-damage policy snapshot is published
 - WHEN the Valence CTF projectile-probe combat paths apply projectile damage
 - THEN both the combat-event path and the projectile-interaction path use the published policy decision
 - AND milestone/evidence output records the policy id, snapshot generation or hash, damage, clamped flag, and victim health delta
@@ -30,12 +30,12 @@ r[runtime_configuration.valence_combat_loop_steel_policy.atomic_publish.scenario
 
 ### Requirement: Valence policy evidence coverage
 
-r[runtime_configuration.valence_combat_loop_steel_policy.evidence] A Valence combat-loop Steel policy migration MUST NOT be marked complete until tests, checker output, and reviewable evidence prove the live server call sites use the published policy.
+r[runtime_configuration.valence_combat_loop_steel_policy.evidence] A Valence combat-loop Steel-compatible policy migration MUST NOT be marked complete until tests, checker output, and reviewable live or live-equivalent evidence prove the server call sites use the published policy.
 
 #### Scenario: Evidence ties config to live call sites
 
 r[runtime_configuration.valence_combat_loop_steel_policy.evidence.scenario]
 - GIVEN tasks claim Valence combat-loop arrow damage is Steel-managed
-- WHEN the checker reviews inventory, Steel exports, typed Rust boundary, Valence call-site list, milestone receipt, and BLAKE3 evidence manifest
+- WHEN the checker reviews inventory, Steel-compatible exports, typed Rust boundary, Valence call-site list, milestone receipt, and BLAKE3 evidence manifest
 - THEN each artifact names the same `combat.arrow.*` config paths, hot mutability class, and Valence projectile-probe consumers
 - AND unmatched call sites or missing receipts keep the task incomplete

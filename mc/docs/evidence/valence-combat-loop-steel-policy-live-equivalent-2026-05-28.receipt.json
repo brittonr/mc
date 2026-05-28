@@ -1,0 +1,41 @@
+{
+  "schema": "mc.compat.valence_steel_policy.live_equivalent.v1",
+  "protocol": 763,
+  "server": "valence-ctf",
+  "policy_source": "restricted-steel-compatible-literal-subset",
+  "steel_exports": {
+    "arrow-base-damage": 4.0,
+    "arrow-velocity-multiplier": 1.0,
+    "arrow-max-damage": 10.0
+  },
+  "policy_id": "damage-linear",
+  "snapshot_generation": 7,
+  "config_paths": [
+    "combat.arrow.base_damage",
+    "combat.arrow.velocity_multiplier",
+    "combat.arrow.max_damage"
+  ],
+  "health_before": 20.0,
+  "call_sites": [
+    {
+      "call_site_id": "valence_ctf.combat_event_projectile_probe",
+      "consumer": "handle_combat_events projectile_probe_hit branch",
+      "damage": 4.0,
+      "victim_health_after": 16.0,
+      "clamped": false,
+      "milestones": ["projectile_use", "projectile_hit"]
+    },
+    {
+      "call_site_id": "valence_ctf.projectile_interaction_probe",
+      "consumer": "handle_projectile_events interact_item branch",
+      "damage": 4.0,
+      "victim_health_after": 16.0,
+      "clamped": false,
+      "milestones": ["projectile_use", "projectile_hit"]
+    }
+  ],
+  "verification": {
+    "test": "non_default_policy_changes_both_projectile_call_site_health_deltas",
+    "gate_log": "docs/evidence/valence-combat-loop-steel-policy-core-gate-2026-05-28.run.log"
+  }
+}

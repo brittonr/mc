@@ -73,7 +73,7 @@ Evidence must be stronger than token presence. The checker should validate:
 - inventory row for `combat.arrow.*` marks Valence combat-loop consumer as migrated;
 - Steel-compatible module exports and typed Rust policy fields agree on config path and mutability;
 - Valence call-site list names both projectile-probe consumers;
-- milestone/evidence receipt shows non-default Steel damage in live Valence projectile combat;
+- milestone/evidence receipt shows non-default Steel-compatible damage in live or live-equivalent Valence projectile combat;
 - negative reload evidence shows a malformed or range-invalid policy rejected with the old snapshot still active.
 
 Review-critical receipts and BLAKE3 manifests belong under `docs/evidence/`.

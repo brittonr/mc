@@ -10,6 +10,13 @@ const STEEL_MODULE_PATH: &str = "config/mc-compat/steel/default.scm";
 const SNAPSHOT_PATH: &str = "docs/evidence/steel-runtime-config-default.snapshot.json";
 const RUNNER_MAIN_PATH: &str = "tools/mc-compat-runner/src/main.rs";
 const RUNTIME_CORE_PATH: &str = "tools/mc-compat-runner/src/runtime_config.rs";
+const VALENCE_CTF_PATH: &str = "valence/examples/ctf.rs";
+const VALENCE_CALL_SITE_PATH: &str =
+    "docs/evidence/valence-combat-loop-steel-policy-call-sites-2026-05-28.tsv";
+const VALENCE_LIVE_EQUIVALENT_RECEIPT_PATH: &str =
+    "docs/evidence/valence-combat-loop-steel-policy-live-equivalent-2026-05-28.receipt.json";
+const VALENCE_NEGATIVE_RELOAD_RECEIPT_PATH: &str =
+    "docs/evidence/valence-combat-loop-steel-policy-negative-reload-2026-05-28.receipt.json";
 const SUPPORTED_SCHEMA_VERSION: &str = "1";
 const SANDBOX_PROFILE: &str = "mc-compat/pure-v1";
 const MODULE_BLAKE3_HEX_LENGTH: usize = 64;
@@ -314,6 +321,24 @@ const MIGRATED_STATUS: &str = "steel-startup-migrated";
 const SNAPSHOT_MUTABILITY_BUCKETS: &[&str] =
     &["hot", "next_run", "restart_only", "fixed_protocol_fact"];
 
+const COMBAT_ARROW_PATHS: &[&str] = &[
+    "combat.arrow.base_damage",
+    "combat.arrow.velocity_multiplier",
+    "combat.arrow.max_damage",
+];
+const VALENCE_POLICY_CONSUMERS: &[&str] = &[
+    "handle_combat_events projectile_probe_hit",
+    "handle_projectile_events interact_item",
+];
+const VALENCE_POLICY_CALL_SITE_IDS: &[&str] = &[
+    "valence_ctf.combat_event_projectile_probe",
+    "valence_ctf.projectile_interaction_probe",
+];
+const VALENCE_CALL_SITE_COLUMN_COUNT: usize = 9;
+const VALENCE_LIVE_EQUIVALENT_DAMAGE_TOKEN: &str = "\"damage\": 4.0";
+const VALENCE_LIVE_EQUIVALENT_HEALTH_TOKEN: &str = "\"victim_health_after\": 16.0";
+const VALENCE_NEGATIVE_ACTIVE_GENERATION_TOKEN: &str = "\"active_generation_after\": 0";
+
 const REQUIRED_CONTRACT_TOKENS: &[&str] = &[
     "Steel module contract",
     "Rust-owned typed boundary",
@@ -345,6 +370,19 @@ struct SteelModuleCheck {
     forbidden_tokens: Vec<&'static str>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct CallSiteRow {
+    call_site_id: String,
+    source_path: String,
+    start_line: String,
+    end_line: String,
+    current_default: String,
+    expected_config_paths: String,
+    consumer: String,
+    mutability: String,
+    evidence: String,
+}
+
 fn main() -> ExitCode {
     let args: Vec<String> = env::args().collect();
     let result = if args.iter().any(|arg| arg == "--self-test") {
@@ -374,6 +412,10 @@ fn run_repo_checks(root: &Path) -> Result<String, Vec<String>> {
     let snapshot_text = read(root, SNAPSHOT_PATH)?;
     let runner_main_text = read(root, RUNNER_MAIN_PATH)?;
     let runtime_core_text = read(root, RUNTIME_CORE_PATH)?;
+    let valence_ctf_text = read(root, VALENCE_CTF_PATH)?;
+    let valence_call_site_text = read(root, VALENCE_CALL_SITE_PATH)?;
+    let valence_live_equivalent_receipt_text = read(root, VALENCE_LIVE_EQUIVALENT_RECEIPT_PATH)?;
+    let valence_negative_reload_receipt_text = read(root, VALENCE_NEGATIVE_RELOAD_RECEIPT_PATH)?;
     let mut issues = Vec::new();
 
     let rows = parse_inventory(&inventory_text, &mut issues);
@@ -393,6 +435,15 @@ fn run_repo_checks(root: &Path) -> Result<String, Vec<String>> {
         &snapshot_text,
         &runner_main_text,
         &runtime_core_text,
+    ));
+    issues.extend(validate_valence_policy_evidence(
+        &rows,
+        &module,
+        &snapshot_text,
+        &valence_call_site_text,
+        &valence_ctf_text,
+        &valence_live_equivalent_receipt_text,
+        &valence_negative_reload_receipt_text,
     ));
 
     if issues.is_empty() {
@@ -723,6 +774,256 @@ fn snapshot_mutability_bucket(mutability: &str) -> &'static str {
         "restart-only" => "restart_only",
         "fixed-protocol-fact" => "fixed_protocol_fact",
         _ => "invalid",
+    }
+}
+
+fn parse_call_sites(text: &str, issues: &mut Vec<String>) -> Vec<CallSiteRow> {
+    let mut lines = text.lines();
+    let header = lines.next().unwrap_or_default();
+    let expected_header = "call_site_id\tsource_path\tstart_line\tend_line\tcurrent_default\texpected_config_paths\tconsumer\tmutability\tevidence";
+    if header != expected_header {
+        issues.push(format!("call-site header mismatch: {header}"));
+    }
+    let mut rows = Vec::new();
+    for (line_index, line) in lines.enumerate() {
+        let columns: Vec<&str> = line.split('\t').collect();
+        if columns.len() != VALENCE_CALL_SITE_COLUMN_COUNT {
+            issues.push(format!(
+                "call-site line {} has {} columns, expected {}",
+                line_index + 2,
+                columns.len(),
+                VALENCE_CALL_SITE_COLUMN_COUNT
+            ));
+            continue;
+        }
+        rows.push(CallSiteRow {
+            call_site_id: columns[0].to_string(),
+            source_path: columns[1].to_string(),
+            start_line: columns[2].to_string(),
+            end_line: columns[3].to_string(),
+            current_default: columns[4].to_string(),
+            expected_config_paths: columns[5].to_string(),
+            consumer: columns[6].to_string(),
+            mutability: columns[7].to_string(),
+            evidence: columns[8].to_string(),
+        });
+    }
+    rows
+}
+
+fn validate_valence_policy_evidence(
+    inventory_rows: &[InventoryRow],
+    module: &SteelModuleCheck,
+    snapshot_text: &str,
+    call_site_text: &str,
+    valence_ctf_text: &str,
+    live_receipt_text: &str,
+    negative_receipt_text: &str,
+) -> Vec<String> {
+    let mut issues = Vec::new();
+    let call_sites = parse_call_sites(call_site_text, &mut issues);
+    validate_valence_call_site_rows(&call_sites, &mut issues);
+    validate_valence_inventory_rows(inventory_rows, &mut issues);
+    validate_valence_steel_exports(module, &mut issues);
+    validate_valence_snapshot_mutability(snapshot_text, &mut issues);
+    validate_valence_ctf_policy_code(valence_ctf_text, &mut issues);
+    validate_valence_receipts(live_receipt_text, negative_receipt_text, &mut issues);
+    issues
+}
+
+fn validate_valence_call_site_rows(call_sites: &[CallSiteRow], issues: &mut Vec<String>) {
+    let by_id: BTreeMap<&str, &CallSiteRow> = call_sites
+        .iter()
+        .map(|row| (row.call_site_id.as_str(), row))
+        .collect();
+    for expected_id in VALENCE_POLICY_CALL_SITE_IDS {
+        let Some(row) = by_id.get(expected_id) else {
+            issues.push(format!("missing Valence call-site row: {expected_id}"));
+            continue;
+        };
+        if row.source_path != VALENCE_CTF_PATH {
+            issues.push(format!(
+                "{} source path {}, expected {}",
+                row.call_site_id, row.source_path, VALENCE_CTF_PATH
+            ));
+        }
+        if row.mutability != "hot" {
+            issues.push(format!(
+                "{} mutability {}, expected hot",
+                row.call_site_id, row.mutability
+            ));
+        }
+        if !row.current_default.contains("PROJECTILE_PROBE_DAMAGE=3.0") {
+            issues.push(format!(
+                "{} missing default damage marker",
+                row.call_site_id
+            ));
+        }
+        for config_path in COMBAT_ARROW_PATHS {
+            if !row.expected_config_paths.contains(config_path) {
+                issues.push(format!(
+                    "{} missing expected config path {}",
+                    row.call_site_id, config_path
+                ));
+            }
+        }
+        for token in ["policy", "generation", "clamped", "damage", "health delta"] {
+            if !row.evidence.contains(token) {
+                issues.push(format!(
+                    "{} evidence column missing token {}",
+                    row.call_site_id, token
+                ));
+            }
+        }
+        if row.start_line.parse::<u32>().is_err() || row.end_line.parse::<u32>().is_err() {
+            issues.push(format!("{} has nonnumeric source span", row.call_site_id));
+        }
+    }
+}
+
+fn validate_valence_inventory_rows(inventory_rows: &[InventoryRow], issues: &mut Vec<String>) {
+    let by_path: BTreeMap<&str, &InventoryRow> = inventory_rows
+        .iter()
+        .map(|row| (row.config_path.as_str(), row))
+        .collect();
+    for config_path in COMBAT_ARROW_PATHS {
+        let Some(row) = by_path.get(config_path) else {
+            issues.push(format!(
+                "missing Valence combat inventory row: {config_path}"
+            ));
+            continue;
+        };
+        if row.mutability != "hot" {
+            issues.push(format!(
+                "{config_path} mutability {}, expected hot",
+                row.mutability
+            ));
+        }
+        if row.evidence_path != VALENCE_CALL_SITE_PATH {
+            issues.push(format!(
+                "{config_path} evidence path {}, expected {}",
+                row.evidence_path, VALENCE_CALL_SITE_PATH
+            ));
+        }
+        for consumer in VALENCE_POLICY_CONSUMERS {
+            if !row.runtime_consumer.contains(consumer) {
+                issues.push(format!(
+                    "{config_path} inventory consumer missing {consumer}"
+                ));
+            }
+        }
+    }
+}
+
+fn validate_valence_steel_exports(module: &SteelModuleCheck, issues: &mut Vec<String>) {
+    for export in [
+        "arrow-base-damage",
+        "arrow-velocity-multiplier",
+        "arrow-max-damage",
+    ] {
+        if !module.exports.contains_key(export) {
+            issues.push(format!(
+                "Valence policy missing Steel-compatible export {export}"
+            ));
+        }
+    }
+    if !module.has_arrow_policy {
+        issues.push("Valence policy missing damage-linear policy shape".to_string());
+    }
+}
+
+fn validate_valence_snapshot_mutability(snapshot_text: &str, issues: &mut Vec<String>) {
+    let summary = match parse_snapshot_mutability_summary(snapshot_text) {
+        Ok(summary) => summary,
+        Err(issue) => {
+            issues.push(issue);
+            return;
+        }
+    };
+    for config_path in COMBAT_ARROW_PATHS {
+        let buckets = snapshot_buckets_for_path(&summary, config_path);
+        if buckets != BTreeSet::from(["hot"]) {
+            issues.push(format!(
+                "{config_path} snapshot mutability buckets {:?}, expected hot only",
+                buckets
+            ));
+        }
+    }
+}
+
+fn validate_valence_ctf_policy_code(valence_ctf_text: &str, issues: &mut Vec<String>) {
+    for token in [
+        "normalize_arrow_policy_module",
+        "validate_arrow_policy_snapshot",
+        "diff_arrow_policy_snapshots",
+        "validate_arrow_damage_decision",
+        "projectile_probe_damage_decision()",
+        "steel_arrow_policy_publish",
+        "steel_arrow_policy_reject",
+        "policy={} generation={} clamped={}",
+        "non_default_policy_changes_both_projectile_call_site_health_deltas",
+        "range_invalid_decision_output_is_rejected",
+        "snapshot_diff_reports_changed_policy_fields",
+    ] {
+        if !valence_ctf_text.contains(token) {
+            issues.push(format!("Valence CTF policy code missing token: {token}"));
+        }
+    }
+    if valence_ctf_text
+        .matches("projectile_probe_damage_decision()")
+        .count()
+        < VALENCE_POLICY_CALL_SITE_IDS.len()
+    {
+        issues
+            .push("Valence CTF policy decision helper is not used by both call sites".to_string());
+    }
+}
+
+fn validate_valence_receipts(
+    live_receipt_text: &str,
+    negative_receipt_text: &str,
+    issues: &mut Vec<String>,
+) {
+    for token in [
+        "mc.compat.valence_steel_policy.live_equivalent.v1",
+        "\"protocol\": 763",
+        VALENCE_LIVE_EQUIVALENT_DAMAGE_TOKEN,
+        VALENCE_LIVE_EQUIVALENT_HEALTH_TOKEN,
+        "non_default_policy_changes_both_projectile_call_site_health_deltas",
+    ] {
+        if !live_receipt_text.contains(token) {
+            issues.push(format!(
+                "Valence live-equivalent receipt missing token: {token}"
+            ));
+        }
+    }
+    for call_site_id in VALENCE_POLICY_CALL_SITE_IDS {
+        if !live_receipt_text.contains(call_site_id) {
+            issues.push(format!(
+                "Valence live-equivalent receipt missing call site {call_site_id}"
+            ));
+        }
+    }
+    for config_path in COMBAT_ARROW_PATHS {
+        if !live_receipt_text.contains(config_path) {
+            issues.push(format!(
+                "Valence live-equivalent receipt missing config path {config_path}"
+            ));
+        }
+    }
+    for token in [
+        "mc.compat.valence_steel_policy.negative_reload.v1",
+        "range-invalid",
+        "malformed-policy",
+        "capability-token-invalid",
+        VALENCE_NEGATIVE_ACTIVE_GENERATION_TOKEN,
+        "range_invalid_decision_output_is_rejected",
+    ] {
+        if !negative_receipt_text.contains(token) {
+            issues.push(format!(
+                "Valence negative reload receipt missing token: {token}"
+            ));
+        }
     }
 }
 
