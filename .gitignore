@@ -18,3 +18,5 @@ objects
 resources-*
 servers.json
 skin-cache
+
+.pi/
