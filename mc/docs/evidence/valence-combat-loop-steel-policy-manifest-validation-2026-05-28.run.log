@@ -1,0 +1,2 @@
+command: python3 tools/check_evidence_manifests.py
+evidence manifests ok: 28 manifests, 105 entries, 48 receipts scanned
