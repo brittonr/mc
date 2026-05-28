@@ -11,12 +11,14 @@
 ## Patterns That Work
 - Read `AGENTS.md`, `README.md`, `CONTRIBUTING.md`, and top-level `Cargo.toml` before editing.
 - Run cargo from `valence/` repo root.
+- In this environment, `cargo` is not on PATH outside the devshell; use `nix develop --no-update-lock-file -c cargo ...`.
 - Copy `tools/playground/src/playground.template.rs` to `tools/playground/src/playground.rs` before fmt/clippy/test/doc if `playground.rs` is missing.
 - Octet starter rollout uses checked-in `scripts/octet-check.sh`, which runs `nix build .#checks.x86_64-linux.octet --no-link -L --impure`.
 - Low-noise starter scope for first Octet pass: `valence_math`, `valence_lang`, `valence_ident`, `valence_text`.
 
 ## Patterns That Don't Work
 - Treat `mc/` workspace folder as if it were the `valence/` repo root.
+- Run `nix develop --no-update-lock-file -c cargo +nightly fmt ...`; the devshell cargo is not a rustup proxy and treats `+nightly` as a subcommand. Use `cargo fmt` inside the devshell or `rustfmt --check` for one file.
 
 ## Domain Notes
 - `valence/` is a Rust workspace with root crate in `src/`, member crates in `crates/*`, and tools in `tools/*`.
