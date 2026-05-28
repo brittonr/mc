@@ -1,0 +1,73 @@
+checkpoint: protocol-763 vanilla combat parity gate
+date: 2026-05-27
+root: /home/brittonr/git/mc
+
+command: python3 -m py_compile tools/check_vanilla_combat_parity.py
+
+command: python3 tools/check_vanilla_combat_parity.py --self-test
+vanilla combat parity self-test ok
+
+command: python3 tools/check_vanilla_combat_parity.py
+vanilla combat parity ok: no paired parity rows promoted
+
+command: python3 tools/check_acceptance_matrix.py
+acceptance matrix ok: 15 seams, 15 hashes
+
+command: python3 tools/check_current_evidence_bundle.py
+current evidence bundle ok: 15 seams
+
+command: nix run --no-update-lock-file .#cairn -- gate proposal prove-vanilla-combat-parity --root .
+{
+  "change": "prove-vanilla-combat-parity",
+  "input_hash": "a08f213cb2f0ab038067620b7efd1124af6263589d04fffcf2066086fdf65cdc",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "89ff2d30e55be2fba5314a96f863cc817240f196c4340ee49117c36c966b4570",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate design prove-vanilla-combat-parity --root .
+{
+  "change": "prove-vanilla-combat-parity",
+  "input_hash": "d6cc0d5602133492a8ee5c7e0465fe0e7e3621ff05e8a158714c88c68d949f24",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "981efe92f1235cf167820556eee4e5f1182180a48e4c269e0ebafa2fbce991d5",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate tasks prove-vanilla-combat-parity --root .
+{
+  "change": "prove-vanilla-combat-parity",
+  "input_hash": "b692fdc40fc03ea9952e16a1f8c7ab0ab19f2d23ce5d1000162dffbd1f977481",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "4a48e044a0544b3c1b086dbc4a589029d36a6dae88160b673b02c17158b938d3",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 4,
+  "valid": true
+}
+
+result: PASS
