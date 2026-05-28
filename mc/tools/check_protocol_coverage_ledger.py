@@ -14,8 +14,8 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 MATRIX = ROOT / "docs" / "evidence" / "protocol-763-acceptance-matrix.md"
 BUNDLE = ROOT / "docs" / "evidence" / "protocol-763-current-evidence-bundle.md"
-DOC = ROOT / "docs" / "evidence" / "protocol-763-broad-coverage-ledger-2026-05-27.md"
-INVENTORY = ROOT / "docs" / "evidence" / "protocol-763-packet-inventory-2026-05-27.tsv"
+DOC = ROOT / "docs" / "evidence" / "protocol-763-broad-coverage-ledger-2026-05-28.md"
+INVENTORY = ROOT / "docs" / "evidence" / "protocol-763-packet-inventory-2026-05-28.tsv"
 VALENCE_PACKETS = ROOT / "valence" / "crates" / "valence_generated" / "extracted" / "packets.json"
 STEVENARELLA_763 = ROOT / "stevenarella" / "protocol" / "src" / "protocol" / "versions" / "v1_20_1.rs"
 
@@ -33,8 +33,13 @@ FALLBACK_ALIAS_NON_CLAIM = "fallback_alias_non_claim"
 REVIEWED_OVERRIDE_NO_SHAPE_CLAIM = "reviewed_override_no_shape_claim"
 SHAPE_REVIEW_MISSING = "shape_review_missing"
 SCENARIO_BOUNDED = "scenario_bounded"
+BROAD_COVERED = "broad_covered"
 NON_CLAIM = "non_claim"
 NONE = "none"
+PROMOTED_COVERAGE_STATUSES = frozenset({BROAD_COVERED})
+ALLOWED_MAPPING_STATUSES = frozenset({FALLBACK_ALIAS_NON_CLAIM, REVIEWED_OVERRIDE_NO_SHAPE_CLAIM})
+ALLOWED_PARSER_SHAPE_STATUSES = frozenset({SHAPE_REVIEW_MISSING, "parser_shape_reviewed"})
+ALLOWED_COVERAGE_STATUSES = frozenset({NON_CLAIM, SCENARIO_BOUNDED, BROAD_COVERED})
 
 INVENTORY_COLUMNS = [
     "state",
@@ -75,6 +80,7 @@ COVERED_SURFACES = [
     "inventory_drop_pickup_click_container_block_place",
     "combat_damage_knockback_armor_projectile",
     "survival_break_place_pickup",
+    "survival_reference_packet_acceptance",
     "reconnect_flag_state",
 ]
 UNCOVERED_SURFACES = [
@@ -108,6 +114,24 @@ SCENARIO_EVIDENCE_BY_PACKET = {
     "PlayerInteractEntityC2SPacket": "combat_damage_knockback_armor_projectile",
     "ClientStatusC2SPacket": "reconnect_flag_state",
     "CombatDeathS2CPacket": "reconnect_flag_state",
+    "BundleSplitterPacket": "survival_reference_packet_acceptance",
+    "DifficultyS2CPacket": "survival_reference_packet_acceptance",
+    "CommandTreeS2CPacket": "survival_reference_packet_acceptance",
+    "CustomPayloadS2CPacket": "survival_reference_packet_acceptance",
+    "WorldBorderInitializeS2CPacket": "survival_reference_packet_acceptance",
+    "WorldEventS2CPacket": "survival_reference_packet_acceptance",
+    "LightUpdateS2CPacket": "survival_reference_packet_acceptance",
+    "UnlockRecipesS2CPacket": "survival_reference_packet_acceptance",
+    "EntitiesDestroyS2CPacket": "survival_reference_packet_acceptance",
+    "ChunkDeltaUpdateS2CPacket": "survival_reference_packet_acceptance",
+    "ServerMetadataS2CPacket": "survival_reference_packet_acceptance",
+    "EntityPassengersSetS2CPacket": "survival_reference_packet_acceptance",
+    "TeamS2CPacket": "survival_reference_packet_acceptance",
+    "SimulationDistanceS2CPacket": "survival_reference_packet_acceptance",
+    "WorldTimeUpdateS2CPacket": "survival_reference_packet_acceptance",
+    "PlaySoundS2CPacket": "survival_reference_packet_acceptance",
+    "SynchronizeRecipesS2CPacket": "survival_reference_packet_acceptance",
+    "CustomPayloadC2SPacket": "survival_reference_packet_acceptance",
 }
 
 
@@ -145,6 +169,42 @@ class MappingFixture:
 class MappingDecision:
     promoted: bool
     diagnostics: tuple[str, ...]
+
+
+HIGH_RISK_PACKET_FAMILY_FIXTURES = [
+    MappingFixture(
+        packet_family="command_tree_raw",
+        mapping_reviewed=True,
+        parser_shape_reviewed=True,
+        fallback_alias_used=False,
+        malformed_shape_accepted=False,
+        live_receipt=True,
+    ),
+    MappingFixture(
+        packet_family="chunk_delta_raw",
+        mapping_reviewed=True,
+        parser_shape_reviewed=True,
+        fallback_alias_used=False,
+        malformed_shape_accepted=False,
+        live_receipt=True,
+    ),
+    MappingFixture(
+        packet_family="recipe_book_raw",
+        mapping_reviewed=True,
+        parser_shape_reviewed=True,
+        fallback_alias_used=False,
+        malformed_shape_accepted=False,
+        live_receipt=True,
+    ),
+    MappingFixture(
+        packet_family="custom_payload_brand",
+        mapping_reviewed=True,
+        parser_shape_reviewed=True,
+        fallback_alias_used=False,
+        malformed_shape_accepted=False,
+        live_receipt=True,
+    ),
+]
 
 
 def packet_key(packet: dict[str, Any]) -> PacketKey:
@@ -314,10 +374,25 @@ def validate_inventory(expected: list[PacketInventoryRow], actual: list[PacketIn
         for field in ["mapping_status", "internal_id", "parser_shape_status", "scenario_evidence", "coverage_status", "owner", "next_action"]:
             if getattr(actual_row, field) != getattr(expected_row, field):
                 issues.append(f"inventory {key} field {field} expected {getattr(expected_row, field)!r}, found {getattr(actual_row, field)!r}")
+        if actual_row.mapping_status not in ALLOWED_MAPPING_STATUSES:
+            issues.append(f"inventory {key} has invalid mapping status: {actual_row.mapping_status}")
+        if actual_row.parser_shape_status not in ALLOWED_PARSER_SHAPE_STATUSES:
+            issues.append(f"inventory {key} has invalid parser-shape status: {actual_row.parser_shape_status}")
+        if actual_row.coverage_status not in ALLOWED_COVERAGE_STATUSES:
+            issues.append(f"inventory {key} has invalid coverage status: {actual_row.coverage_status}")
+        if not actual_row.owner or actual_row.owner == NONE:
+            issues.append(f"inventory {key} missing owner")
+        if not actual_row.next_action or actual_row.next_action == NONE:
+            issues.append(f"inventory {key} missing next action")
         if actual_row.mapping_status == FALLBACK_ALIAS_NON_CLAIM and actual_row.coverage_status != NON_CLAIM:
             issues.append(f"fallback alias row promoted: {key}")
-        if actual_row.parser_shape_status == SHAPE_REVIEW_MISSING and "full" in actual_row.coverage_status:
-            issues.append(f"shape-missing row has broad status: {key}")
+        if actual_row.coverage_status in PROMOTED_COVERAGE_STATUSES:
+            if actual_row.mapping_status == FALLBACK_ALIAS_NON_CLAIM:
+                issues.append(f"promoted row uses fallback alias: {key}")
+            if actual_row.parser_shape_status == SHAPE_REVIEW_MISSING:
+                issues.append(f"promoted row missing parser-shape fixture: {key}")
+            if actual_row.scenario_evidence == NONE:
+                issues.append(f"promoted row missing receipt evidence: {key}")
     for key in sorted(set(actual_by_key) - set(expected_by_key)):
         issues.append(f"inventory has unknown packet row: {key}")
     return issues
@@ -345,10 +420,15 @@ def validate_coverage(matrix_text: str, bundle_text: str, doc_text: str, invento
         MALFORMED_SHAPE_REJECTION,
         FALLBACK_ALIAS_NON_CLAIM,
         REVIEWED_OVERRIDE_NO_SHAPE_CLAIM,
-        "protocol-763-packet-inventory-2026-05-27.tsv",
+        "protocol-763-packet-inventory-2026-05-28.tsv",
         "175 Valence protocol-763 packet rows",
         "owner: agent",
         "next_action:",
+        BROAD_COVERED,
+        "command_tree_raw",
+        "chunk_delta_raw",
+        "recipe_book_raw",
+        "custom_payload_brand",
         *COVERED_SURFACES,
         *UNCOVERED_SURFACES,
     ]:
@@ -386,10 +466,15 @@ def fixture_inventory(rows: list[PacketInventoryRow]) -> tuple[str, str, str, li
             MALFORMED_SHAPE_REJECTION,
             FALLBACK_ALIAS_NON_CLAIM,
             REVIEWED_OVERRIDE_NO_SHAPE_CLAIM,
-            "protocol-763-packet-inventory-2026-05-27.tsv",
+            "protocol-763-packet-inventory-2026-05-28.tsv",
             "175 Valence protocol-763 packet rows",
             "owner: agent",
             "next_action:",
+            BROAD_COVERED,
+            "command_tree_raw",
+            "chunk_delta_raw",
+            "recipe_book_raw",
+            "custom_payload_brand",
             *COVERED_SURFACES,
             *UNCOVERED_SURFACES,
             *[f"{seam} {digest}" for seam in REQUIRED_SEAMS],
@@ -447,6 +532,22 @@ def assert_self_tests() -> None:
     )
     assert not missing_live.promoted and "missing_live_receipt" in missing_live.diagnostics, missing_live
 
+    for fixture in HIGH_RISK_PACKET_FAMILY_FIXTURES:
+        decision = evaluate_mapping_fixture(fixture)
+        assert decision.promoted, (fixture, decision)
+
+    high_risk_negative = evaluate_mapping_fixture(
+        MappingFixture(
+            packet_family="command_tree_raw",
+            mapping_reviewed=True,
+            parser_shape_reviewed=True,
+            fallback_alias_used=False,
+            malformed_shape_accepted=True,
+            live_receipt=True,
+        )
+    )
+    assert not high_risk_negative.promoted and MALFORMED_SHAPE_REJECTION in high_risk_negative.diagnostics, high_risk_negative
+
     source_rows = build_inventory_rows(load_valence_packets(), load_stevenarella_overrides())
     issues = validate_inventory(source_rows, source_rows)
     assert not issues, issues
@@ -470,6 +571,37 @@ def assert_self_tests() -> None:
     )
     issues = validate_inventory(source_rows, bad_fallback)
     assert any("field coverage_status" in issue or "fallback alias row promoted" in issue for issue in issues), issues
+
+    bad_promoted = list(source_rows)
+    override_index = next(index for index, row in enumerate(bad_promoted) if row.mapping_status == REVIEWED_OVERRIDE_NO_SHAPE_CLAIM)
+    override_row = bad_promoted[override_index]
+    bad_promoted[override_index] = PacketInventoryRow(
+        key=override_row.key,
+        mapping_status=override_row.mapping_status,
+        internal_id=override_row.internal_id,
+        parser_shape_status=override_row.parser_shape_status,
+        scenario_evidence=override_row.scenario_evidence,
+        coverage_status=BROAD_COVERED,
+        owner=override_row.owner,
+        next_action=override_row.next_action,
+    )
+    issues = validate_inventory(source_rows, bad_promoted)
+    assert any("promoted row missing parser-shape fixture" in issue or "field coverage_status" in issue for issue in issues), issues
+
+    missing_owner = list(source_rows)
+    owner_row = missing_owner[override_index]
+    missing_owner[override_index] = PacketInventoryRow(
+        key=owner_row.key,
+        mapping_status=owner_row.mapping_status,
+        internal_id=owner_row.internal_id,
+        parser_shape_status=owner_row.parser_shape_status,
+        scenario_evidence=owner_row.scenario_evidence,
+        coverage_status=owner_row.coverage_status,
+        owner=NONE,
+        next_action=owner_row.next_action,
+    )
+    issues = validate_inventory(source_rows, missing_owner)
+    assert any("missing owner" in issue or "field owner" in issue for issue in issues), issues
 
     matrix, bundle, doc, inventory = fixture_inventory(source_rows)
     issues = validate_coverage(matrix, bundle, doc, inventory)

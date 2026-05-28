@@ -1,0 +1,5 @@
+checkpoint: protocol-763 broad coverage ledger gate 2026-05-28
+protocol coverage ledger self-test ok
+protocol coverage ledger ok: 16 bounded seams, 175 packet rows, broad claims blocked
+acceptance matrix ok: 16 seams, 16 hashes
+current evidence bundle ok: 16 seams
