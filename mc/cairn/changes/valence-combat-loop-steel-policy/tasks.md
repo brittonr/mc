@@ -36,7 +36,7 @@
 - Call-site inventory: `docs/evidence/valence-combat-loop-steel-policy-call-sites-2026-05-28.tsv` records both Valence CTF projectile-probe consumers.
 - `valence/examples/ctf.rs` now has a pure arrow-policy core, startup/env reload shell with restricted Steel-compatible literal normalization, atomic publish via a typed snapshot, positive and negative unit tests, and both projectile-probe call sites route through `projectile_probe_damage_decision()`.
 - `tools/mc-compat-runner/src/main.rs` now passes `MC_COMPAT_PROJECTILE_PROBE` and `MC_COMPAT_STEEL_CONFIG` through to the Valence example for projectile scenarios.
-- `tools/check_runtime_steel_config.rs` now validates the Valence call-site list, inventory rows, Steel-compatible exports, typed Valence code tokens, snapshot mutability, and positive/negative receipts for `combat.arrow.*`.
+- `tools/check_runtime_steel_config.rs` now validates the Valence call-site list, source-span policy helper wiring, inventory rows, Steel-compatible exports, typed Valence code tokens, snapshot mutability, and positive/negative receipts for `combat.arrow.*`.
 - Live-equivalent positive receipt: `docs/evidence/valence-combat-loop-steel-policy-live-equivalent-2026-05-28.receipt.json`.
 - Negative reload receipt: `docs/evidence/valence-combat-loop-steel-policy-negative-reload-2026-05-28.receipt.json`.
 - Final scope decision: this change keeps the Valence side limited to a restricted Steel-compatible literal subset; it does not claim real Steel evaluator execution.

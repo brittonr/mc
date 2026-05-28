@@ -826,7 +826,7 @@ fn validate_valence_policy_evidence(
     validate_valence_inventory_rows(inventory_rows, &mut issues);
     validate_valence_steel_exports(module, &mut issues);
     validate_valence_snapshot_mutability(snapshot_text, &mut issues);
-    validate_valence_ctf_policy_code(valence_ctf_text, &mut issues);
+    validate_valence_ctf_policy_code(&call_sites, valence_ctf_text, &mut issues);
     validate_valence_receipts(live_receipt_text, negative_receipt_text, &mut issues);
     issues
 }
@@ -951,7 +951,11 @@ fn validate_valence_snapshot_mutability(snapshot_text: &str, issues: &mut Vec<St
     }
 }
 
-fn validate_valence_ctf_policy_code(valence_ctf_text: &str, issues: &mut Vec<String>) {
+fn validate_valence_ctf_policy_code(
+    call_sites: &[CallSiteRow],
+    valence_ctf_text: &str,
+    issues: &mut Vec<String>,
+) {
     for token in [
         "normalize_arrow_policy_module",
         "validate_arrow_policy_snapshot",
@@ -969,13 +973,87 @@ fn validate_valence_ctf_policy_code(valence_ctf_text: &str, issues: &mut Vec<Str
             issues.push(format!("Valence CTF policy code missing token: {token}"));
         }
     }
-    if valence_ctf_text
-        .matches("projectile_probe_damage_decision()")
-        .count()
-        < VALENCE_POLICY_CALL_SITE_IDS.len()
-    {
-        issues
-            .push("Valence CTF policy decision helper is not used by both call sites".to_string());
+    let by_id: BTreeMap<&str, &CallSiteRow> = call_sites
+        .iter()
+        .map(|row| (row.call_site_id.as_str(), row))
+        .collect();
+    for call_site_id in VALENCE_POLICY_CALL_SITE_IDS {
+        let Some(row) = by_id.get(call_site_id) else {
+            issues.push(format!(
+                "cannot validate missing Valence call-site span: {call_site_id}"
+            ));
+            continue;
+        };
+        let Some(span) = source_span_text(valence_ctf_text, row) else {
+            issues.push(format!(
+                "{} source span {}..{} is invalid for {}",
+                row.call_site_id, row.start_line, row.end_line, row.source_path
+            ));
+            continue;
+        };
+        validate_valence_call_site_span(row, &span, issues);
+    }
+}
+
+fn source_span_text(source_text: &str, row: &CallSiteRow) -> Option<String> {
+    let start_line = row.start_line.parse::<usize>().ok()?;
+    let end_line = row.end_line.parse::<usize>().ok()?;
+    if start_line == 0 || end_line < start_line {
+        return None;
+    }
+    let selected_lines: Vec<&str> = source_text
+        .lines()
+        .enumerate()
+        .filter_map(|(index, line)| {
+            let line_number = index + 1;
+            (line_number >= start_line && line_number <= end_line).then_some(line)
+        })
+        .collect();
+    let expected_len = end_line - start_line + 1;
+    (selected_lines.len() == expected_len).then(|| selected_lines.join("\n"))
+}
+
+fn validate_valence_call_site_span(row: &CallSiteRow, span: &str, issues: &mut Vec<String>) {
+    for token in [
+        "projectile_probe_damage_decision()",
+        "MC-COMPAT-MILESTONE projectile_use",
+        "MC-COMPAT-MILESTONE projectile_hit",
+        "policy={}",
+        "generation={}",
+        "clamped={}",
+    ] {
+        if !span.contains(token) {
+            issues.push(format!(
+                "{} source span missing token: {token}",
+                row.call_site_id
+            ));
+        }
+    }
+    match row.call_site_id.as_str() {
+        "valence_ctf.combat_event_projectile_probe" => {
+            for token in ["projectile_probe_hit", "arrow_damage_decision"] {
+                if !span.contains(token) {
+                    issues.push(format!(
+                        "{} combat-event span missing token: {token}",
+                        row.call_site_id
+                    ));
+                }
+            }
+        }
+        "valence_ctf.projectile_interaction_probe" => {
+            for token in ["for event in interact_item.read()", "let decision ="] {
+                if !span.contains(token) {
+                    issues.push(format!(
+                        "{} projectile-interaction span missing token: {token}",
+                        row.call_site_id
+                    ));
+                }
+            }
+        }
+        _ => issues.push(format!(
+            "unknown Valence call-site id: {}",
+            row.call_site_id
+        )),
     }
 }
 
@@ -1200,6 +1278,32 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         "missing runtime consumer token not rejected: {missing_runtime_consumer_issues:?}"
     );
 
+    let call_site_text = valid_valence_call_site_text();
+    let mut call_site_parse_issues = Vec::new();
+    let call_sites = parse_call_sites(&call_site_text, &mut call_site_parse_issues);
+    let mut span_issues = Vec::new();
+    validate_valence_ctf_policy_code(
+        &call_sites,
+        &valence_ctf_text_for_spans(true),
+        &mut span_issues,
+    );
+    assert!(
+        span_issues.is_empty(),
+        "valid Valence call-site spans failed: {span_issues:?}"
+    );
+    let mut missing_span_issues = Vec::new();
+    validate_valence_ctf_policy_code(
+        &call_sites,
+        &valence_ctf_text_for_spans(false),
+        &mut missing_span_issues,
+    );
+    assert!(
+        missing_span_issues
+            .iter()
+            .any(|issue| issue.contains("source span missing token")),
+        "missing call-site policy helper not rejected: {missing_span_issues:?}"
+    );
+
     let snapshot_issues = validate_snapshot(
         "mc.compat.runtime_config.snapshot.v1 config/mc-compat/steel/default.scm mc-compat/pure-v1 \"arrow-damage\" \"arrow_base_damage\" \"hot\" \"next_run\" \"restart_only\" abc",
         "def0000000000000000000000000000000000000000000000000000000000000",
@@ -1212,6 +1316,31 @@ fn run_self_tests() -> Result<String, Vec<String>> {
     );
 
     Ok("runtime steel config self-test ok".to_string())
+}
+
+fn valid_valence_call_site_text() -> String {
+    let header = "call_site_id\tsource_path\tstart_line\tend_line\tcurrent_default\texpected_config_paths\tconsumer\tmutability\tevidence";
+    format!(
+        "{header}\n{}\n{}\n",
+        "valence_ctf.combat_event_projectile_probe\tvalence/examples/ctf.rs\t1\t8\tPROJECTILE_PROBE_DAMAGE=3.0 as default policy input\tcombat.arrow.base_damage|combat.arrow.velocity_multiplier|combat.arrow.max_damage\thandle_combat_events projectile_probe_hit branch\thot\tprojectile_use/projectile_hit milestones include policy,generation,clamped,damage,health delta",
+        "valence_ctf.projectile_interaction_probe\tvalence/examples/ctf.rs\t9\t16\tPROJECTILE_PROBE_DAMAGE=3.0 as default policy input\tcombat.arrow.base_damage|combat.arrow.velocity_multiplier|combat.arrow.max_damage\thandle_projectile_events interact_item branch\thot\tprojectile_use/projectile_hit milestones include policy,generation,clamped,damage,health delta"
+    )
+}
+
+fn valence_ctf_text_for_spans(include_policy_helper: bool) -> String {
+    let combat_helper = if include_policy_helper {
+        "Some(projectile_probe_damage_decision())"
+    } else {
+        "Some(default_arrow_policy_snapshot())"
+    };
+    let interaction_helper = if include_policy_helper {
+        "let decision = projectile_probe_damage_decision();"
+    } else {
+        "let decision = default_arrow_policy_snapshot();"
+    };
+    format!(
+        "let projectile_probe_hit = true;\nlet arrow_damage_decision = if projectile_probe_hit {{\n    {combat_helper}\n}} else {{\n    None\n}};\n\"MC-COMPAT-MILESTONE projectile_use attacker={{}} policy={{}} generation={{}} clamped={{}}\";\n\"MC-COMPAT-MILESTONE projectile_hit attacker={{}}\";\nfor event in interact_item.read() {{\n    {interaction_helper}\n    \"MC-COMPAT-MILESTONE projectile_use attacker={{}} policy={{}} generation={{}} clamped={{}}\";\n    \"MC-COMPAT-MILESTONE projectile_hit attacker={{}}\";\n    let _ = event;\n    let _span_padding = true;\n}}\nnormalize_arrow_policy_module validate_arrow_policy_snapshot diff_arrow_policy_snapshots validate_arrow_damage_decision projectile_probe_damage_decision() steel_arrow_policy_publish steel_arrow_policy_reject policy={{}} generation={{}} clamped={{}} non_default_policy_changes_both_projectile_call_site_health_deltas range_invalid_decision_output_is_rejected snapshot_diff_reports_changed_policy_fields\n"
+    )
 }
 
 fn valid_inventory_text() -> String {
