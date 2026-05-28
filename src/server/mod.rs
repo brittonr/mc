@@ -60,6 +60,7 @@ const SURVIVAL_PROBE_STOP_DESTROY_STATUS: i32 = 2;
 const SURVIVAL_PROBE_FACE_UP: i32 = 1;
 const SURVIVAL_PROBE_MAIN_HAND: i32 = 0;
 const SURVIVAL_PROBE_HOTBAR_SLOT: i16 = 0;
+const SURVIVAL_PROBE_AIR_RAW_ID: i32 = 0;
 const SURVIVAL_PROBE_BREAK_START_SEQUENCE: i32 = 404;
 const SURVIVAL_PROBE_BREAK_STOP_SEQUENCE: i32 = 405;
 const SURVIVAL_PROBE_PLACE_SEQUENCE: i32 = 406;
@@ -3509,11 +3510,18 @@ impl Server {
                 );
             }
             if location.y == SURVIVAL_PROBE_PLACE_Y && !self.survival_probe_place_update_seen {
-                self.survival_probe_place_update_seen = true;
-                info!(
-                    "MC-COMPAT-MILESTONE survival_probe_place_update location={},{},{} raw_id={}",
-                    location.x, location.y, location.z, id
-                );
+                if id == SURVIVAL_PROBE_AIR_RAW_ID {
+                    warn!(
+                        "MC-COMPAT-NONFATAL survival_probe_place_air_update_ignored location={},{},{} raw_id={}",
+                        location.x, location.y, location.z, id
+                    );
+                } else {
+                    self.survival_probe_place_update_seen = true;
+                    info!(
+                        "MC-COMPAT-MILESTONE survival_probe_place_update location={},{},{} raw_id={}",
+                        location.x, location.y, location.z, id
+                    );
+                }
             }
         }
     }
