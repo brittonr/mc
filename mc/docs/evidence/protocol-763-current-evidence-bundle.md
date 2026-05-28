@@ -31,6 +31,10 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 | Projectile use/loadout rail | `nix run .#mc-compat-valence-ctf-projectile-hit` | `22310a0373f86bbff5e6bc116934d092b89f775cf5d539b08d04ff5564ad855b` |
 | Projectile damage attribution | `nix run .#mc-compat-valence-ctf-projectile-damage-attribution` | `cf84fcb81ae557ecfbd2ff0b1f8b94af7bf07eaa85c20b1cde442929e3e3e529` |
 
+## Death/respawn lifecycle checkpoint
+
+The maintained `Flag-carrier death/return` row is also validated as a bounded lifecycle row in `docs/evidence/protocol-763-death-respawn-lifecycle-2026-05-27.md`. The row covers one flag-carrier death, respawn request, restored health, server flag return/reset, and no unexpected score/capture. No all death/drop/recovery permutations are claimed; full death/respawn lifecycle remains a non-claim.
+
 ## Representative current-head live refresh
 
 The maintained matrix rows above stay historical so their BLAKE3-backed receipt hashes do not move silently. A fresh representative current-head live run was added for projectile row freshness instead:
@@ -65,6 +69,8 @@ ROI 10 re-promotes projectile damage attribution with pinned dependency and caus
 ```sh
 python3 tools/check_acceptance_matrix.py
 python3 tools/check_current_evidence_bundle.py
+python3 tools/check_load_network_safety.py
+python3 tools/check_death_respawn_lifecycle.py
 nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
 nix run --no-update-lock-file .#cairn -- validate --root .
 ```

@@ -29,7 +29,7 @@
     "public_stress_tool": false,
     "planned_clients": 1,
     "max_clients": 1,
-    "duration_secs": 8,
+    "duration_secs": 30,
     "derived_from": "hyperion/tools/rust-mc-bot pattern"
   },
   "status_response_resource": {
@@ -57,7 +57,7 @@
     "delay_ms": "0",
     "jitter_ms": "0",
     "loss_percent": "0",
-    "timeout_secs": 8,
+    "timeout_secs": 30,
     "hygiene_status": "not-selected",
     "privileged_network_mutation_required": false,
     "fail_closed_when_unavailable": true,
@@ -72,7 +72,7 @@
     "authorized": true,
     "planned_clients": 1,
     "max_clients": 2,
-    "duration_secs": 8,
+    "duration_secs": 30,
     "max_duration_secs": 600,
     "reconnect_sessions": 1,
     "latency_ms": "0",
@@ -109,8 +109,8 @@
   },
   "server": {
     "backend": "valence",
-    "version": "1.18.2",
-    "protocol": 758,
+    "version": "1.20.1",
+    "protocol": 763,
     "port": 25565,
     "required_milestones": [],
     "observed_milestones": [],
@@ -139,24 +139,24 @@
     "target_dir": "/tmp/stevenarella-target2",
     "username": "compatbot",
     "usernames": ["compatbot"],
-    "timeout_secs": 8,
+    "timeout_secs": 30,
     "headless_isolation": {
       "xvfb": true,
       "x11_backend": true,
       "software_gl": true,
       "wayland_socket_inherited": false
     },
-    "log_path": "/tmp/mc-compat-client.compatbot.1779931888546.log",
-    "log_paths": ["/tmp/mc-compat-client.compatbot.1779931888546.log"],
+    "log_path": "/tmp/mc-compat-client.compatbot.1779932413114.log",
+    "log_paths": ["/tmp/mc-compat-client.compatbot.1779932413114.log"],
     "exit_code": 124,
     "classification": "timeout-success-evidence",
     "matched_success_pattern": "Detected server protocol version"
   },
   "valence": {
     "repo": "/home/brittonr/git/mc/valence",
-    "rev": "8ad9c85",
-    "worktree": "/tmp/valence-compat-758",
-    "example": "terrain",
+    "rev": "main",
+    "worktree": "/tmp/valence-compat-load-safety-763",
+    "example": "ctf",
     "log_path": "/tmp/mc-compat-valence.log"
   },
   "triage": {
@@ -164,10 +164,10 @@
     "first_missing_server_milestone": null,
     "first_forbidden_pattern": null,
     "first_forbidden_source": null,
-    "client_log_paths": ["/tmp/mc-compat-client.compatbot.1779931888546.log"],
+    "client_log_paths": ["/tmp/mc-compat-client.compatbot.1779932413114.log"],
     "server_log_path": "/tmp/mc-compat-valence.log",
     "suggested_boundary": "none"
   },
-  "receipt_path": "target/load-network-safety-live/compat-bot-probe.receipt.json",
+  "receipt_path": "target/load-network-safety-live-763/compat-bot-probe.receipt.json",
   "error": null
 }

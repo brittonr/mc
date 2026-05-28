@@ -1,0 +1,79 @@
+checkpoint: protocol-763 death/respawn lifecycle and review-gap gate
+date: 2026-05-27
+root: /home/brittonr/git/mc
+
+command: python3 -m py_compile tools/check_load_network_safety.py tools/check_death_respawn_lifecycle.py
+
+command: python3 tools/check_load_network_safety.py --self-test
+load/network safety self-test ok
+
+command: python3 tools/check_load_network_safety.py
+load/network safety ok: protocol-763 live receipt
+
+command: python3 tools/check_death_respawn_lifecycle.py --self-test
+death/respawn lifecycle self-test ok
+
+command: python3 tools/check_death_respawn_lifecycle.py
+death/respawn lifecycle ok: 1 bounded protocol-763 row
+
+command: python3 tools/check_acceptance_matrix.py
+acceptance matrix ok: 15 seams, 15 hashes
+
+command: python3 tools/check_current_evidence_bundle.py
+current evidence bundle ok: 15 seams
+
+command: nix run --no-update-lock-file .#cairn -- gate proposal prove-death-respawn-lifecycle --root .
+{
+  "change": "prove-death-respawn-lifecycle",
+  "input_hash": "cc2384cdb50b2b622e338f04b7e14b5fe964759b65f0b2108c860ade83cf1b54",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "3302320e704777343e5511d4a3f80d86c36ad562d671178263d910267122e781",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate design prove-death-respawn-lifecycle --root .
+{
+  "change": "prove-death-respawn-lifecycle",
+  "input_hash": "c35ee062d6ee251ffafc8734ccea8144510a2b83513ae2478e7bbb01595dab56",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "e4657aecd9e04582780680eb782d34733557ac19ca090b842f78ab0072da7ee1",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate tasks prove-death-respawn-lifecycle --root .
+{
+  "change": "prove-death-respawn-lifecycle",
+  "input_hash": "d0bdc6988b748ad85f0b28cb34a0b01dd8a54c34895533747d790a30b52000ba",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "0f2bbb9b58348b5ef2942185c8870f33e2dd43cfc31c67bea9936fbe879243ec",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 8,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 9,
+  "valid": true
+}
+
+result: PASS

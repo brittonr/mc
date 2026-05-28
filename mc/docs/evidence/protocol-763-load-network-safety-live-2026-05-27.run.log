@@ -73,32 +73,36 @@ help: use `'_` for type paths
 warning: `stevenarella` (lib) generated 2 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
 warning: `stevenarella` (bin "stevenarella") generated 2 warnings (2 duplicates)
     Finished `dev` profile [optimized + debuginfo] target(s) in 0.14s
-[mc-compat] creating isolated Valence worktree /tmp/valence-compat-758 at 8ad9c85
-Preparing worktree (detached HEAD 8ad9c85)
-HEAD is now at 8ad9c85 Upgrade the chunk example
-[mc-compat] starting Valence 8ad9c85 example 'terrain' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
-[mc-compat] probing status 127.0.0.1:25565 expecting protocol 758
-{"description":{"color":"#55ffff","text":"Hello Valence!"},"favicon":"data:image/png;base64,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","players":{"max":10,"online":0},"version":{"name":"1.18.2","protocol":758}}
+[mc-compat] creating isolated Valence worktree /tmp/valence-compat-load-safety-763 at main
+Preparing worktree (detached HEAD e5d18ad)
+HEAD is now at e5d18ad ctf: add projectile hit compat probe
+[mc-compat] starting Valence main example 'ctf' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+{"description":{"text":"A Valence Server"},"players":{"max":20,"online":0,"sample":[]},"version":{"name":"1.20.1","protocol":763}}
 [mc-compat] running Stevenarella headless scenario 'valence-compat-bot-probe' isolated from host Wayland compositor
 [main.rs:254][INFO] Starting steven
 [platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
 [platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
 [main.rs:346][INFO] Shader version: #version 150
-[main.rs:99][INFO] Detected server protocol version 758
-[server/mod.rs:176][INFO] MC-COMPAT-MILESTONE connect_start protocol=758 address=127.0.0.1:25565
+[main.rs:99][INFO] Detected server protocol version 763
+[server/mod.rs:176][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25565
 [server/mod.rs:181][INFO] MC-COMPAT-MILESTONE tcp_connected
 [server/mod.rs:198][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
 [server/mod.rs:212][INFO] MC-COMPAT-MILESTONE login_start_sent
 [server/mod.rs:219][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
-[server/mod.rs:259][WARN] Server is running in offline mode
-[server/mod.rs:260][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=758 username=compatbot
-[world/mod.rs:1026][INFO] Dimension type: {"coordinate_scale": Double(1.0), "min_y": Int(-64), "bed_works": Byte(1), "has_raids": Byte(1), "has_skylight": Byte(1), "ambient_light": Float(1.0), "piglin_safe": Byte(1), "infiniburn": String("#minecraft:infiniburn_overworld"), "respawn_anchor_works": Byte(1), "logical_height": Int(384), "height": Int(384), "ultrawarm": Byte(0), "effects": String("overworld"), "natural": Byte(1), "has_ceiling": Byte(0)}
-[server/mod.rs:1859][INFO] MC-COMPAT-MILESTONE join_game entity_id=0 gamemode=Creative
-[server/mod.rs:3059][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=-5
-[server/mod.rs:1444][INFO] MC-COMPAT-MILESTONE active_probe_position_look_sent x=0.000 y=200.000 z=0.000 on_ground=false
+[server/mod.rs:280][WARN] Server is running in offline mode
+[server/mod.rs:281][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbot properties=0
+[server/mod.rs:1792][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[server/mod.rs:1859][INFO] MC-COMPAT-MILESTONE join_game entity_id=0 gamemode=Adventure
+[server/mod.rs:2985][INFO] Received chat message: Welcome to Valence! Select a team by jumping in the team's portal.
+[server/mod.rs:2372][INFO] MC-COMPAT-MILESTONE update_health health=20.0 food=20 saturation=0.0
+[server/mod.rs:3115][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=0
+[server/mod.rs:1444][INFO] MC-COMPAT-MILESTONE active_probe_position_look_sent x=0.000 y=84.922 z=0.000 on_ground=false
 [server/mod.rs:747][INFO] MC-COMPAT-MILESTONE render_tick_with_player
 [server/mod.rs:791][INFO] MC-COMPAT-MILESTONE active_probe_input_start forward+sprint+jump
 [server/mod.rs:797][INFO] MC-COMPAT-MILESTONE active_probe_jump_release
-[mc-compat] client compatbot finished Some(124); log: /tmp/mc-compat-client.compatbot.1779931888546.log
-[mc-compat] stopping managed Valence server process 499905
-[mc-compat] wrote smoke receipt target/load-network-safety-live/compat-bot-probe.receipt.json
+[server/mod.rs:801][INFO] MC-COMPAT-MILESTONE active_probe_input_turn right
+[server/mod.rs:805][INFO] MC-COMPAT-MILESTONE active_probe_input_stop
+[mc-compat] client compatbot finished Some(124); log: /tmp/mc-compat-client.compatbot.1779932413114.log
+[mc-compat] stopping managed Valence server process 514951
+[mc-compat] wrote smoke receipt target/load-network-safety-live-763/compat-bot-probe.receipt.json
