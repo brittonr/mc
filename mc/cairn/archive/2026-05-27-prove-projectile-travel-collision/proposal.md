@@ -2,7 +2,7 @@
 
 ## Summary
 
-Create a proof package for projectile travel, collision simulation, and projectile weapon variant breadth beyond the maintained projectile use/loadout and pinned damage attribution rails.
+Create a bounded proof package for the projectile states currently evidenced by maintained receipts, and keep projectile travel, collision simulation, and weapon variant breadth blocked as non-claims.
 
 ## Motivation
 
@@ -11,9 +11,9 @@ Current projectile evidence proves client use/swing, Valence projectile loadout,
 ## Scope
 
 - Define projectile travel/collision states and evidence requirements.
-- Add positive scenarios for spawn, travel, hit, miss, and obstacle collision where client-visible and server evidence can be correlated.
-- Add weapon representative rows for bow, crossbow, trident, or other supported variants before claiming variant breadth.
-- Add negative fixtures for missing, mismatched, or out-of-order projectile travel/collision evidence.
+- Promote only currently evidenced positive projectile rows: use/loadout and pinned damage attribution.
+- Record spawn visibility, travel, miss, obstacle collision, and weapon variant breadth as non-claims until client-visible and server evidence can be correlated.
+- Add negative fixtures for missing, mismatched, or out-of-order projectile evidence so travel/collision overclaims fail closed.
 
 ## Out of scope
 

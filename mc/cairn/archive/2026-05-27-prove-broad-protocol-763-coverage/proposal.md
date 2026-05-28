@@ -2,7 +2,7 @@
 
 ## Summary
 
-Create a future proof package for broad Stevenarella ⇄ Valence protocol-763 coverage beyond the maintained CTF seams.
+Create a reviewable protocol-763 coverage inventory and non-overclaiming gate for Stevenarella ⇄ Valence, without claiming broad/full compatibility.
 
 ## Motivation
 
@@ -12,7 +12,7 @@ The current evidence matrix proves bounded local Valence CTF flows. It does not 
 
 - Build a protocol-763 coverage inventory across Valence generated packet definitions, Stevenarella mappings/parsers, and maintained compatibility scenarios.
 - Classify each packet/state as covered, intentionally unsupported, fixture-only, or requiring a new proof rail.
-- Add deterministic positive and negative mapping/parser checks for newly promoted packet families.
+- Define deterministic positive and negative mapping/parser checks required before any packet family is newly promoted.
 - Add bounded live receipts only for scenario groups whose protocol coverage is claimed.
 - Keep all broad/full compatibility claims false until every required coverage gate is satisfied.
 

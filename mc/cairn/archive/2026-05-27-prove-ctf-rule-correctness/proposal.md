@@ -2,7 +2,7 @@
 
 ## Summary
 
-Create a proof package for Valence CTF rule correctness as observed by Stevenarella clients, separate from the existing bounded scoring, reconnect, inventory, and combat seams.
+Create a bounded CTF rule-cluster package for the rule paths currently evidenced by maintained receipts, and keep full CTF correctness plus invalid-action breadth blocked as non-claims.
 
 ## Motivation
 
@@ -12,7 +12,8 @@ The maintained evidence proves selected CTF flows: scoring, mirrored team scorin
 
 - Inventory CTF rules and invariants that must be proven before any full CTF correctness claim.
 - Add server/client oracle milestones for legal and illegal flag interactions.
-- Exercise positive and negative scenarios: captures, returns, invalid pickup/capture attempts, same-team constraints, disconnects, deaths, and resets.
+- Exercise currently evidenced positive clusters: bounded scoring, flag-carrier death/return, and reconnect flag-state.
+- Keep invalid pickup/capture attempts, same-team constraints, resets, score limits, and race windows unpromoted until live negative scenarios exist.
 - Record live receipts, logs, BLAKE3 manifests, and matrix rows for each promoted rule cluster.
 
 ## Out of scope

@@ -5,6 +5,7 @@
 |------|--------|----------------|-------------------|
 | 2026-04-14 | self | Wrote AGENTS guidance before re-checking every claimed command/path | Verify repo-specific commands and paths from repo files or listings before recording them in AGENTS or napkin |
 | 2026-05-27 | self | Ran `git add -f mc` while fixing review evidence, which staged ignored target outputs and nested repos | Never force-add broad directories in this workspace; force-add only exact intended Cairn/docs evidence paths |
+| 2026-05-27 | done-review | Archived proof Cairns with tasks marked complete even though evidence docs demoted key scope to non-claims | Before archive, compare checked tasks/proposal scope against promoted evidence rows; either add the missing receipt/inventory or amend/reopen so tasks describe only completed gates |
 
 ## User Preferences
 - Keep replies terse and direct.

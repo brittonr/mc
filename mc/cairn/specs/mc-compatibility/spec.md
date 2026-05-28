@@ -1531,14 +1531,14 @@ r[mc_compatibility.prove_ctf_rule_correctness.positive_rule_scenarios.scenario]
 
 ### Requirement: Negative rule scenarios
 
-r[mc_compatibility.prove_ctf_rule_correctness.negative_rule_scenarios] Invalid CTF actions MUST be covered by negative scenarios that prove forbidden captures, pickups, returns, or scores do not occur.
+r[mc_compatibility.prove_ctf_rule_correctness.negative_rule_scenarios] Invalid CTF action rows MUST remain unpromoted until negative scenarios prove forbidden captures, pickups, returns, or scores do not occur.
 
 #### Scenario: Invalid rule path is rejected
 
 r[mc_compatibility.prove_ctf_rule_correctness.negative_rule_scenarios.scenario]
-- GIVEN an invalid CTF action is attempted
-- WHEN the scenario evaluates server and client evidence
-- THEN forbidden milestones or score transitions are absent
+- GIVEN an invalid CTF action row is proposed for promotion
+- WHEN live negative scenario evidence is missing or shows a forbidden server/client transition
+- THEN the row remains a non-claim
 - AND the receipt fails if the invalid action produces a rule-breaking state
 
 ### Requirement: Rule promotion gate

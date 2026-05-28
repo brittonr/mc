@@ -24,7 +24,7 @@ next_action: add packet-family rows only when mapping/parser fixtures and bounde
 
 | Surface | Status | Gap reason |
 | --- | --- | --- |
-| all_packets_all_states | Non-claim | No exhaustive packet/state ledger or receipts. |
+| all_packets_all_states | Non-claim | `docs/evidence/protocol-763-packet-inventory-2026-05-27.tsv` lists 175 Valence protocol-763 packet rows, but most rows lack parser fixtures and live receipts. |
 | all_entity_metadata_variants | Non-claim | Only scenario-observed metadata/decode paths are covered. |
 | all_inventory_transactions | Non-claim | Inventory matrix keeps many transactions non-claims. |
 | all_equipment_permutations | Non-claim | Equipment matrix covers one row only. |
@@ -50,6 +50,18 @@ next_action: add packet-family rows only when mapping/parser fixtures and bounde
 | Equipment update observation | `8100dde3ebb3476984235009e277d7e973037b7873b2fdb30c413093e1498d3d` |
 | Projectile use/loadout rail | `22310a0373f86bbff5e6bc116934d092b89f775cf5d539b08d04ff5564ad855b` |
 | Projectile damage attribution | `cf84fcb81ae557ecfbd2ff0b1f8b94af7bf07eaa85c20b1cde442929e3e3e529` |
+
+## Packet inventory
+
+`docs/evidence/protocol-763-packet-inventory-2026-05-27.tsv` is generated from `valence/crates/valence_generated/extracted/packets.json` and `stevenarella/protocol/src/protocol/versions/v1_20_1.rs`. It records 175 Valence protocol-763 packet rows with state, side, wire id, Valence packet name, Stevenarella mapping status, parser-shape status, scenario evidence, owner, and next action.
+
+Status vocabulary:
+
+- fallback_alias_non_claim: row falls through inherited mapping and cannot support coverage promotion.
+- reviewed_override_no_shape_claim: row has a Stevenarella 1.20.1 override but still needs parser-shape fixtures before broad promotion.
+- shape_review_missing: parser shape has not been independently proven for broad coverage.
+- scenario_bounded: maintained scenario evidence touches this packet family, but only for the named scenario surface.
+- non_claim: no packet-family coverage claim is made.
 
 ## Mapping/parser fixture policy
 
@@ -77,7 +89,7 @@ Broad protocol coverage, full protocol-763 compatibility, and full Minecraft com
 ## Decision
 
 - Question: Can current evidence support broad protocol-763 compatibility?
-- Inspected evidence: acceptance matrix, current bundle, all maintained seam digests, row-specific checkers, and coverage ledger fixtures.
+- Inspected evidence: acceptance matrix, current bundle, all maintained seam digests, `docs/evidence/protocol-763-packet-inventory-2026-05-27.tsv`, row-specific checkers, and coverage ledger fixtures.
 - Decision: No. Current evidence supports bounded scenario seams only. Full protocol-763 compatibility remains a non-claim and full Minecraft compatibility remains a non-claim.
 - Owner: agent.
 - Next action: generate per-packet-family mapping/parser fixtures before adding broad coverage rows.
