@@ -4,7 +4,7 @@
 
 ### Requirement: Valence combat-loop arrow policy
 
-r[runtime_configuration.valence_combat_loop_steel_policy.arrow_damage_live] Valence CTF projectile-probe combat MUST source arrow damage from the latest Rust-validated Steel policy snapshot after atomic publish succeeds.
+r[runtime_configuration.valence_combat_loop_steel_policy.arrow_damage_live] Valence CTF projectile-probe combat MUST source arrow damage from the latest Rust-validated policy snapshot after atomic publish succeeds. For this change, the Valence side accepts a restricted Steel-compatible literal module subset and does not claim full Steel evaluator execution.
 
 #### Scenario: Published policy drives Valence projectile combat
 
@@ -17,13 +17,13 @@ r[runtime_configuration.valence_combat_loop_steel_policy.arrow_damage_live.scena
 
 ### Requirement: Atomic Valence policy publish
 
-r[runtime_configuration.valence_combat_loop_steel_policy.atomic_publish] Valence policy reload MUST publish a candidate arrow policy only after sandbox evaluation, typed normalization, decision validation, and apply preparation all succeed.
+r[runtime_configuration.valence_combat_loop_steel_policy.atomic_publish] Valence policy reload MUST publish a candidate arrow policy only after restricted Steel-compatible literal normalization, capability-token rejection, typed validation, decision validation, and apply preparation all succeed.
 
 #### Scenario: Invalid reload preserves active combat policy
 
 r[runtime_configuration.valence_combat_loop_steel_policy.atomic_publish.scenario]
 - GIVEN an active Valence arrow policy snapshot is serving combat decisions
-- WHEN a candidate Steel policy is malformed, capability-invalid, nondeterministic, type-invalid, range-invalid, or fails representative decision validation
+- WHEN a candidate policy module is malformed, capability-token-invalid, type-invalid, range-invalid, or fails representative decision validation
 - THEN reload returns diagnostics without publishing the candidate
 - AND subsequent Valence projectile-probe combat uses the previous active snapshot
 - AND evidence records the rejection reason without leaking secret-like values

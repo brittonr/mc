@@ -1,35 +1,78 @@
-checkpoint: Valence combat-loop Steel policy core and hook gate
+checkpoint: Valence combat-loop Steel policy core and hook gate after claim repair
 date: 2026-05-28
 root: /home/brittonr/git/mc
 change: valence-combat-loop-steel-policy
-scope: call-site inventory, pure policy core, startup/reload shell, Valence projectile-probe hook wiring
+scope: call-site inventory, restricted literal normalizer, policy core, startup/reload shell, Valence projectile-probe hook wiring
 
 command: cargo test --manifest-path valence/Cargo.toml --example ctf
-    Finished `test` profile [optimized + debuginfo] target(s) in 0.16s
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.18s
      Running unittests examples/ctf.rs (/home/brittonr/.cargo-target/debug/examples/ctf-03ea97c54f418d48)
 
 running 6 tests
 test tests::arrow_policy_clamps_damage_to_maximum ... ok
-test tests::arrow_policy_redacts_secret_like_diagnostics ... ok
 test tests::default_arrow_policy_matches_legacy_projectile_damage ... ok
+test tests::malformed_or_capability_invalid_module_is_rejected ... ok
+test tests::arrow_policy_redacts_secret_like_diagnostics ... ok
 test tests::invalid_module_is_rejected_and_previous_snapshot_survives ... ok
 test tests::steel_module_edit_changes_arrow_damage_policy ... ok
-test tests::malformed_or_capability_invalid_module_is_rejected ... ok
 
 test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 
-command: cargo fmt --manifest-path tools/mc-compat-runner/Cargo.toml
-
-command: cargo test --manifest-path tools/mc-compat-runner/Cargo.toml restricted_steel_config
+command: cargo test --manifest-path tools/mc-compat-runner/Cargo.toml
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
      Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-0b4c6e2aba35508d)
 
-running 2 tests
+running 47 tests
+test runtime_config::tests::arrow_damage_policy_is_bounded_and_reports_clamping ... ok
+test runtime_config::tests::diff_and_apply_plan_separate_hot_next_run_and_restart_only ... ok
+test runtime_config::tests::fixed_protocol_fact_changes_are_rejected ... ok
+test runtime_config::tests::normalizes_valid_steel_exports ... ok
+test runtime_config::tests::rejects_range_and_sandbox_violations ... ok
+test runtime_config::tests::rejects_missing_or_wrong_type_exports ... ok
+test runtime_config::tests::evaluates_restricted_steel_module ... ok
+test runtime_config::tests::redaction_hides_secret_like_values ... ok
+test runtime_config::tests::reload_request_applies_hot_changes_atomically ... ok
+test tests::cleanup_client_log_match_is_narrow ... ok
+test tests::blue_flag_score_scenario_tracks_mirrored_team_evidence ... ok
+test runtime_config::tests::reload_request_rolls_back_on_apply_failure_or_restart_only_change ... ok
+test tests::cli_overrides_backend_client_dir_valence_repo_and_revision ... ok
+test tests::client_checkout_must_point_at_manifest_root ... ok
+test tests::cleanup_path_dry_run_preserves_existing_files ... ok
+test tests::combat_damage_scenario_tracks_client_and_server_evidence ... ok
+test tests::defaults_to_valence_protocol_and_port ... ok
+test tests::equipment_update_scenario_tracks_current_client_equipment_marker ... ok
+test tests::env_overrides_are_parsed_without_global_environment_mutation ... ok
+test tests::compares_paper_and_valence_receipts ... ok
+test tests::compat_bot_probe_scenario_is_bounded_and_receipted ... ok
+test runtime_config::tests::rejects_steel_module_unknown_export_and_forbidden_token ... ok
+test tests::load_network_safety_envelope_fails_closed_for_unsafe_inputs ... ok
+test tests::invalid_backend_is_rejected ... ok
+test tests::failed_preflight_receipt_triages_before_client_evidence ... ok
+test tests::flag_score_repeat_scenario_tracks_missing_and_forbidden_evidence ... ok
+test tests::inventory_interaction_scenario_tracks_client_and_server_evidence ... ok
+test tests::missing_client_checkout_has_actionable_diagnostic ... ok
+test tests::missing_valence_checkout_has_actionable_diagnostic ... ok
+test tests::multi_client_scenario_tracks_client_and_server_evidence ... ok
+test tests::projectile_damage_attribution_requires_pinned_valence_revision ... ok
+test tests::nickel_exported_json_config_sets_defaults_and_allows_env_cli_precedence ... ok
+test tests::run_matrix_config_sets_receipt_dir_and_backend_defaults ... ok
+test tests::run_matrix_rejects_single_receipt_path ... ok
+test tests::projectile_damage_attribution_scenario_tracks_client_and_server_evidence ... ok
+test tests::projectile_damage_dry_run_uses_steel_arrow_policy ... ok
+test tests::rejects_receipt_protocol_mismatch ... ok
 test tests::restricted_steel_config_rejects_forbidden_capabilities ... ok
+test tests::supported_scenario_usage_lists_all_supported_scenarios ... ok
+test tests::smoke_receipt_records_failures_without_success_claims ... ok
+test tests::scenario_receipt_records_actionable_failure_triage ... ok
+test tests::smoke_receipt_records_cairn_contract_and_octet_surface ... ok
+test tests::scenario_cli_and_env_parse ... ok
 test tests::restricted_steel_config_sets_runtime_defaults_and_allows_env_cli_precedence ... ok
+test tests::status_and_cleanup_modes_parse_without_server_probe_mode ... ok
+test tests::valid_client_checkout_preflight_passes ... ok
+test tests::status_packet_proxy_and_gameplay_receipt_blocks_are_recorded ... ok
 
-test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 45 filtered out; finished in 0.00s
+test result: ok. 47 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 
 command: rustc --edition=2021 tools/check_runtime_steel_config.rs -o /tmp/check_runtime_steel_config
@@ -40,12 +83,12 @@ runtime steel config ok: 29 inventory rows, 20 Steel exports
 command: nix run --no-update-lock-file .#cairn -- gate tasks valence-combat-loop-steel-policy --root .
 {
   "change": "valence-combat-loop-steel-policy",
-  "input_hash": "68225c6c4d13b5d5bc06f5269883fcf4c13775cb4b9763a020d8a340c012a0a2",
+  "input_hash": "d139726056b305d424932b6e2b44fc1df6ca6ba34a17a4ae07900542ab88472f",
   "issues": [],
   "layout": "cairn",
   "policy": "cairn-default",
   "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
-  "receipt_hash": "b7704fd63d6172fae7e39bf6e211598e7e27637c69ebeb474456e985bdad16d5",
+  "receipt_hash": "b185bde1198beac1f866ad87a33ec0b167e369a21900565971b058f556861803",
   "stage": "tasks",
   "valid": true,
   "verdict": "PASS"
