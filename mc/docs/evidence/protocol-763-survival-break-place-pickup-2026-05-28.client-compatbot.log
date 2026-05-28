@@ -1,0 +1,34 @@
+[main.rs:254][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:346][INFO] Shader version: #version 150
+[main.rs:99][INFO] Detected server protocol version 763
+[server/mod.rs:201][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25565
+[server/mod.rs:206][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:223][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:237][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:244][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:305][WARN] Server is running in offline mode
+[server/mod.rs:306][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbot properties=0
+[server/mod.rs:1914][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[server/mod.rs:1981][INFO] MC-COMPAT-MILESTONE join_game entity_id=0 gamemode=Survival
+[server/mod.rs:3128][INFO] Received chat message: Welcome to the Valence survival compatibility fixture.
+[server/mod.rs:2642][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=255 state_id=0 slot=-1 item=empty
+[server/mod.rs:2494][INFO] MC-COMPAT-MILESTONE update_health health=14.0 food=20 saturation=0.0
+[server/mod.rs:3258][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=0
+[server/mod.rs:781][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:825][INFO] MC-COMPAT-MILESTONE active_probe_input_start forward+sprint+jump
+[server/mod.rs:1566][INFO] MC-COMPAT-MILESTONE active_probe_position_look_sent x=0.500 y=62.890 z=2.464 on_ground=false
+[server/mod.rs:831][INFO] MC-COMPAT-MILESTONE active_probe_jump_release
+[server/mod.rs:835][INFO] MC-COMPAT-MILESTONE active_probe_input_turn right
+[server/mod.rs:839][INFO] MC-COMPAT-MILESTONE active_probe_input_stop
+[server/mod.rs:1031][INFO] MC-COMPAT-MILESTONE survival_probe_move_near_block x=0.5 y=65.0 z=0.5
+[server/mod.rs:1047][INFO] MC-COMPAT-MILESTONE survival_probe_break_block_sent status=stop_destroy location=0,64,1 sequence=404
+[server/mod.rs:2709][INFO] MC-COMPAT-MILESTONE survival_probe_pickup_seen collected_entity_id=7630101 collector_entity_id=1 count=1
+[server/mod.rs:2642][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=1 slot=36 item=id=15 count=1
+[server/mod.rs:2654][INFO] MC-COMPAT-MILESTONE inventory_probe_slot36_nonempty count=1 item_id=15
+[server/mod.rs:3483][INFO] MC-COMPAT-MILESTONE survival_probe_block_update location=0,64,1 raw_id=0
+[server/mod.rs:1068][INFO] MC-COMPAT-MILESTONE survival_probe_select_hotbar_slot slot=0
+[server/mod.rs:1075][INFO] MC-COMPAT-MILESTONE survival_probe_place_block_sent hand=main location=0,64,1 face=up sequence=405
+[server/mod.rs:2642][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=2 slot=36 item=empty
+[server/mod.rs:3490][INFO] MC-COMPAT-MILESTONE survival_probe_place_update location=0,65,1 raw_id=10

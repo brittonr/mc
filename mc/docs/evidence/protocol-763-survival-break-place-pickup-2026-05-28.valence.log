@@ -1,0 +1,10 @@
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.17s
+     Running `/tmp/valence-compat-survival-target-1fac05a/debug/examples/survival_compat`
+[2m2026-05-28T16:49:33.635731Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+[2m2026-05-28T16:49:47.000958Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_block_break username=compatbot item=Dirt at=0,64,1
+MC-COMPAT-MILESTONE survival_block_break username=compatbot item=Dirt at=0,64,1
+[2m2026-05-28T16:49:47.000977Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_pickup_item username=compatbot slot=36 item=Dirt count=1
+MC-COMPAT-MILESTONE survival_pickup_item username=compatbot slot=36 item=Dirt count=1
+[2m2026-05-28T16:49:49.804445Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_block_place username=compatbot item=Dirt from_slot=36 at=0,65,1
+MC-COMPAT-MILESTONE survival_block_place username=compatbot item=Dirt from_slot=36 at=0,65,1
