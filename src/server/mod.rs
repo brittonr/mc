@@ -44,6 +44,24 @@ const DEFAULT_FLAG_PROBE_REPEAT_TARGET: u32 = 1;
 const MAX_FLAG_PROBE_REPEAT_TARGET: u32 = 8;
 const FLAG_PROBE_FIRST_TICK: u32 = 560;
 const FLAG_PROBE_CYCLE_TICKS: u32 = 220;
+const SURVIVAL_PROBE_POSITION_TICK: u32 = 520;
+const SURVIVAL_PROBE_BREAK_TICK: u32 = 560;
+const SURVIVAL_PROBE_PLACE_TICK: u32 = 680;
+const SURVIVAL_PROBE_BREAK_X: i32 = 0;
+const SURVIVAL_PROBE_BREAK_Y: i32 = 64;
+const SURVIVAL_PROBE_BREAK_Z: i32 = 1;
+const SURVIVAL_PROBE_PLACE_Y: i32 = 65;
+const SURVIVAL_PROBE_STOP_DESTROY_STATUS: i32 = 2;
+const SURVIVAL_PROBE_FACE_UP: i32 = 1;
+const SURVIVAL_PROBE_MAIN_HAND: i32 = 0;
+const SURVIVAL_PROBE_HOTBAR_SLOT: i16 = 0;
+const SURVIVAL_PROBE_BREAK_SEQUENCE: i32 = 404;
+const SURVIVAL_PROBE_PLACE_SEQUENCE: i32 = 405;
+const SURVIVAL_PROBE_CURSOR_CENTER: f32 = 0.5;
+const SURVIVAL_PROBE_CURSOR_TOP: f32 = 1.0;
+const SURVIVAL_PROBE_PLAYER_X: f64 = 0.5;
+const SURVIVAL_PROBE_PLAYER_Y: f64 = 65.0;
+const SURVIVAL_PROBE_PLAYER_Z: f64 = 0.5;
 
 fn parse_flag_probe_repeat_target(value: Option<&str>) -> u32 {
     value
@@ -102,6 +120,7 @@ pub struct Server {
     combat_probe_enabled: bool,
     respawn_probe_enabled: bool,
     inventory_probe_enabled: bool,
+    survival_probe_enabled: bool,
     equipment_probe_enabled: bool,
     projectile_probe_enabled: bool,
     flag_probe_enabled: bool,
@@ -120,6 +139,12 @@ pub struct Server {
     inventory_probe_drop_sent: bool,
     inventory_probe_pickup_seen: bool,
     inventory_probe_block_place_sent: bool,
+    survival_probe_position_sent: bool,
+    survival_probe_break_sent: bool,
+    survival_probe_break_update_seen: bool,
+    survival_probe_pickup_seen: bool,
+    survival_probe_place_sent: bool,
+    survival_probe_place_update_seen: bool,
     inventory_probe_click_sent: bool,
     inventory_probe_container_click_sent: bool,
     inventory_probe_container_id: u8,
@@ -647,6 +672,9 @@ impl Server {
             inventory_probe_enabled: std::env::var("MC_COMPAT_INVENTORY_PROBE")
                 .map(|value| value != "0")
                 .unwrap_or(false),
+            survival_probe_enabled: std::env::var("MC_COMPAT_SURVIVAL_PROBE")
+                .map(|value| value != "0")
+                .unwrap_or(false),
             equipment_probe_enabled: std::env::var("MC_COMPAT_EQUIPMENT_PROBE")
                 .map(|value| value != "0")
                 .unwrap_or(false),
@@ -671,6 +699,12 @@ impl Server {
             inventory_probe_drop_sent: false,
             inventory_probe_pickup_seen: false,
             inventory_probe_block_place_sent: false,
+            survival_probe_position_sent: false,
+            survival_probe_break_sent: false,
+            survival_probe_break_update_seen: false,
+            survival_probe_pickup_seen: false,
+            survival_probe_place_sent: false,
+            survival_probe_place_update_seen: false,
             inventory_probe_click_sent: false,
             inventory_probe_container_click_sent: false,
             inventory_probe_container_id: 0,
@@ -974,6 +1008,94 @@ impl Server {
                 hand: protocol::VarInt(0),
             });
             self.projectile_probe_swing_sent = true;
+        }
+
+        if self.survival_probe_enabled
+            && self.active_probe_ticks >= SURVIVAL_PROBE_POSITION_TICK
+            && !self.survival_probe_position_sent
+        {
+            if let Some(position) = self.entities.get_component_mut(player, self.position) {
+                position.position = cgmath::Vector3::new(
+                    SURVIVAL_PROBE_PLAYER_X,
+                    SURVIVAL_PROBE_PLAYER_Y,
+                    SURVIVAL_PROBE_PLAYER_Z,
+                );
+                position.moved = true;
+            }
+            self.write_packet(packet::play::serverbound::PlayerPosition {
+                x: SURVIVAL_PROBE_PLAYER_X,
+                y: SURVIVAL_PROBE_PLAYER_Y,
+                z: SURVIVAL_PROBE_PLAYER_Z,
+                on_ground: true,
+            });
+            info!(
+                "MC-COMPAT-MILESTONE survival_probe_move_near_block x={:.1} y={:.1} z={:.1}",
+                SURVIVAL_PROBE_PLAYER_X, SURVIVAL_PROBE_PLAYER_Y, SURVIVAL_PROBE_PLAYER_Z
+            );
+            self.survival_probe_position_sent = true;
+        }
+
+        if self.survival_probe_enabled
+            && self.active_probe_ticks >= SURVIVAL_PROBE_BREAK_TICK
+            && !self.survival_probe_break_sent
+        {
+            let location = Position::new(
+                SURVIVAL_PROBE_BREAK_X,
+                SURVIVAL_PROBE_BREAK_Y,
+                SURVIVAL_PROBE_BREAK_Z,
+            );
+            info!(
+                "MC-COMPAT-MILESTONE survival_probe_break_block_sent status=stop_destroy location={},{},{} sequence={}",
+                SURVIVAL_PROBE_BREAK_X,
+                SURVIVAL_PROBE_BREAK_Y,
+                SURVIVAL_PROBE_BREAK_Z,
+                SURVIVAL_PROBE_BREAK_SEQUENCE
+            );
+            self.write_packet(packet::play::serverbound::PlayerDigging_WithSequence {
+                status: protocol::VarInt(SURVIVAL_PROBE_STOP_DESTROY_STATUS),
+                location,
+                face: protocol::VarInt(SURVIVAL_PROBE_FACE_UP),
+                sequence: protocol::VarInt(SURVIVAL_PROBE_BREAK_SEQUENCE),
+            });
+            self.survival_probe_break_sent = true;
+        }
+
+        if self.survival_probe_enabled
+            && self.active_probe_ticks >= SURVIVAL_PROBE_PLACE_TICK
+            && self.survival_probe_pickup_seen
+            && !self.survival_probe_place_sent
+        {
+            info!(
+                "MC-COMPAT-MILESTONE survival_probe_select_hotbar_slot slot={}",
+                SURVIVAL_PROBE_HOTBAR_SLOT
+            );
+            self.write_packet(packet::play::serverbound::HeldItemChange {
+                slot: SURVIVAL_PROBE_HOTBAR_SLOT,
+            });
+            info!(
+                "MC-COMPAT-MILESTONE survival_probe_place_block_sent hand=main location={},{},{} face=up sequence={}",
+                SURVIVAL_PROBE_BREAK_X,
+                SURVIVAL_PROBE_BREAK_Y,
+                SURVIVAL_PROBE_BREAK_Z,
+                SURVIVAL_PROBE_PLACE_SEQUENCE
+            );
+            self.write_packet(
+                packet::play::serverbound::PlayerBlockPlacement_insideblock_sequence {
+                    hand: protocol::VarInt(SURVIVAL_PROBE_MAIN_HAND),
+                    location: Position::new(
+                        SURVIVAL_PROBE_BREAK_X,
+                        SURVIVAL_PROBE_BREAK_Y,
+                        SURVIVAL_PROBE_BREAK_Z,
+                    ),
+                    face: protocol::VarInt(SURVIVAL_PROBE_FACE_UP),
+                    cursor_x: SURVIVAL_PROBE_CURSOR_CENTER,
+                    cursor_y: SURVIVAL_PROBE_CURSOR_TOP,
+                    cursor_z: SURVIVAL_PROBE_CURSOR_CENTER,
+                    inside_block: false,
+                    sequence: protocol::VarInt(SURVIVAL_PROBE_PLACE_SEQUENCE),
+                },
+            );
+            self.survival_probe_place_sent = true;
         }
 
         if self.inventory_probe_enabled && self.active_probe_ticks == 520 {
@@ -2455,7 +2577,7 @@ impl Server {
         &mut self,
         window: packet::play::clientbound::WindowItems_StateCarry,
     ) {
-        if !self.inventory_probe_enabled {
+        if !self.inventory_probe_enabled && !self.survival_probe_enabled {
             return;
         }
 
@@ -2513,7 +2635,7 @@ impl Server {
     }
 
     fn on_window_set_slot_state(&mut self, slot: packet::play::clientbound::WindowSetSlot_State) {
-        if !self.inventory_probe_enabled {
+        if !self.inventory_probe_enabled && !self.survival_probe_enabled {
             return;
         }
 
@@ -2544,6 +2666,16 @@ impl Server {
                         stack.count, stack.id
                     );
                 }
+                if self.survival_probe_break_sent
+                    && !self.survival_probe_pickup_seen
+                    && stack.count >= 1
+                {
+                    self.survival_probe_pickup_seen = true;
+                    info!(
+                        "MC-COMPAT-MILESTONE survival_probe_pickup_seen slot=36 count={} item_id={}",
+                        stack.count, stack.id
+                    );
+                }
             }
         }
         if slot.property == 37 {
@@ -2560,16 +2692,27 @@ impl Server {
     }
 
     fn on_collect_item(&mut self, item: packet::play::clientbound::CollectItem) {
-        if !self.inventory_probe_enabled {
+        if !self.inventory_probe_enabled && !self.survival_probe_enabled {
             return;
         }
 
-        info!(
-            "MC-COMPAT-MILESTONE inventory_probe_collect_item collected_entity_id={} collector_entity_id={} count={}",
-            item.collected_entity_id.0,
-            item.collector_entity_id.0,
-            item.number_of_items.0,
-        );
+        if self.inventory_probe_enabled {
+            info!(
+                "MC-COMPAT-MILESTONE inventory_probe_collect_item collected_entity_id={} collector_entity_id={} count={}",
+                item.collected_entity_id.0,
+                item.collector_entity_id.0,
+                item.number_of_items.0,
+            );
+        }
+        if self.survival_probe_enabled && !self.survival_probe_pickup_seen {
+            self.survival_probe_pickup_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_probe_pickup_seen collected_entity_id={} collector_entity_id={} count={}",
+                item.collected_entity_id.0,
+                item.collector_entity_id.0,
+                item.number_of_items.0,
+            );
+        }
     }
 
     fn on_set_current_hotbar_slot(
@@ -3329,7 +3472,27 @@ impl Server {
             self.world
                 .id_map
                 .by_vanilla_id(id as usize, &self.world.modded_block_ids),
-        )
+        );
+        if self.survival_probe_enabled
+            && location.x == SURVIVAL_PROBE_BREAK_X
+            && location.z == SURVIVAL_PROBE_BREAK_Z
+            && (location.y == SURVIVAL_PROBE_BREAK_Y || location.y == SURVIVAL_PROBE_PLACE_Y)
+        {
+            if location.y == SURVIVAL_PROBE_BREAK_Y && !self.survival_probe_break_update_seen {
+                self.survival_probe_break_update_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE survival_probe_block_update location={},{},{} raw_id={}",
+                    location.x, location.y, location.z, id
+                );
+            }
+            if location.y == SURVIVAL_PROBE_PLACE_Y && !self.survival_probe_place_update_seen {
+                self.survival_probe_place_update_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE survival_probe_place_update location={},{},{} raw_id={}",
+                    location.x, location.y, location.z, id
+                );
+            }
+        }
     }
 
     fn on_block_change_varint(
