@@ -16,3 +16,11 @@
 - Live pinned receipt passed: `docs/evidence/protocol-763-roi-10-projectile-damage-pinned-2026-05-27.receipt.json`; BLAKE3 `cf84fcb81ae557ecfbd2ff0b1f8b94af7bf07eaa85c20b1cde442929e3e3e529`.
 - Reviewable logs copied under `docs/evidence/`: run log, Valence log, both client logs, dry-run log/receipt, summary, and `.b3` manifest.
 - Matrix, current bundle, residual catalog, and local checkers re-promote projectile damage attribution as a bounded maintained row with explicit non-claims.
+
+## Review correction
+
+- Same-family review WARNed that the dependency checkpoint content was outside the supplied review paths.
+- Added review evidence: `docs/evidence/protocol-763-roi-10-dependency-checkpoint-review-2026-05-27.md`.
+- Added verification log: `docs/evidence/protocol-763-roi-10-dependency-checkpoint-review-2026-05-27.run.log`.
+- Added BLAKE3 manifest: `docs/evidence/protocol-763-roi-10-dependency-checkpoint-review-2026-05-27.b3`.
+- Verification result: checkpoint sidecar validates, required checkpoint fields are present, nested `valence/` is clean at `e5d18ad04010d92881267ac1ea43922ae91821f5`, and instrumentation markers remain present.

@@ -1,0 +1,26 @@
+# ROI 10 dependency checkpoint verification
+timestamp_utc=2026-05-28T00:31:57Z
+checkpoint=docs/evidence/protocol-763-roi-10-projectile-damage-pin-checkpoint-2026-05-27.md
+sidecar=docs/evidence/protocol-763-roi-10-projectile-damage-pin-checkpoint-2026-05-27.b3
+
+## BLAKE3 sidecar check
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+docs/evidence/protocol-763-roi-10-projectile-damage-pin-checkpoint-2026-05-27.md: OK
+
+## Required field check
+field ok: valence_commit
+field ok: valence_subject
+field ok: clean_worktree_status
+field ok: decision_owner
+field ok: decision
+field ok: head_ban
+field ok: next_action
+field ok: instrumentation
+live valence rev ok: e5d18ad04010d92881267ac1ea43922ae91821f5
+live valence status ok: clean
+instrumentation ok: projectile_loadout
+instrumentation ok: projectile_use
+instrumentation ok: projectile_hit
+dependency checkpoint verification ok
