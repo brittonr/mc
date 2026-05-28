@@ -2,7 +2,7 @@
 
 ## Scope
 
-This checkpoint resolves review ambiguity for partially completed tasks in active change `valence-combat-loop-steel-policy`.
+This checkpoint resolves review ambiguity for archived change `cairn/archive/2026-05-28-valence-combat-loop-steel-policy`.
 
 ## Question 1: Does Valence currently execute Steel in a restricted sandbox?
 
@@ -21,18 +21,18 @@ This checkpoint resolves review ambiguity for partially completed tasks in activ
   - nested-source diff copied into `docs/evidence/valence-combat-loop-steel-policy-nested-diff-2026-05-28.md` makes Valence commit `2663ed7` reviewable without opening the nested repo.
 - **Decision**: Code emission paths exist. Live-equivalent receipt `docs/evidence/valence-combat-loop-steel-policy-live-equivalent-2026-05-28.receipt.json` records non-default damage, both call-site ids, generation, clamped flag, and victim health deltas.
 - **Owner**: agent.
-- **Next action**: keep BLAKE3 evidence manifest current before archiving.
+- **Next action**: no remaining archive action; keep BLAKE3 evidence manifests current for later evidence edits.
 
 ## Question 3: Are snapshot diffing and range-invalid decision-output coverage complete?
 
 - **Inspected evidence**: `cargo test --manifest-path valence/Cargo.toml --example ctf` now reports nine tests, including `snapshot_diff_reports_changed_policy_fields`, `range_invalid_decision_output_is_rejected`, and `non_default_policy_changes_both_projectile_call_site_health_deltas`.
 - **Decision**: Snapshot diffing and range-invalid decision-output proof are now covered by focused tests and the core gate log.
 - **Owner**: agent.
-- **Next action**: keep core gate receipt current before archiving.
+- **Next action**: no remaining archive action; core gate receipt is preserved under `docs/evidence/valence-combat-loop-steel-policy-core-gate-2026-05-28.run.log`.
 
-## Question 4: Is active combat integration complete?
+## Question 4: Is archived combat integration complete?
 
 - **Inspected evidence**: both `projectile_probe_hit` in `handle_combat_events` and the `handle_projectile_events` interaction path route damage through `projectile_probe_damage_decision()` in `valence/examples/ctf.rs`; call-site inventory is in `docs/evidence/valence-combat-loop-steel-policy-call-sites-2026-05-28.tsv`; nested commit diff is preserved in `docs/evidence/valence-combat-loop-steel-policy-nested-diff-2026-05-28.md`.
 - **Decision**: Code wiring exists. Live-equivalent protocol-763 evidence is preserved in `docs/evidence/valence-combat-loop-steel-policy-live-equivalent-2026-05-28.receipt.json`; checker validation ties it to the call-site list and inventory.
 - **Owner**: agent.
-- **Next action**: final archive may proceed after the remaining final-gate task passes.
+- **Next action**: none for this archived change; future live-protocol validation remains a separate non-claim.
