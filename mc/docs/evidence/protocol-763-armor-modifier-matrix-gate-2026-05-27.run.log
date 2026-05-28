@@ -1,0 +1,73 @@
+checkpoint: protocol-763 armor/enchantment/status modifier matrix gate
+date: 2026-05-27
+root: /home/brittonr/git/mc
+
+command: python3 -m py_compile tools/check_armor_modifier_matrix.py
+
+command: python3 tools/check_armor_modifier_matrix.py --self-test
+armor modifier matrix self-test ok
+
+command: python3 tools/check_armor_modifier_matrix.py
+armor modifier matrix ok: 1 bounded protocol-763 row
+
+command: python3 tools/check_acceptance_matrix.py
+acceptance matrix ok: 15 seams, 15 hashes
+
+command: python3 tools/check_current_evidence_bundle.py
+current evidence bundle ok: 15 seams
+
+command: nix run --no-update-lock-file .#cairn -- gate proposal prove-armor-enchantment-status-matrix --root .
+{
+  "change": "prove-armor-enchantment-status-matrix",
+  "input_hash": "4fbfb1c8620dfbf8ba3551a9d33931a6d0b887feedc8213027613b63b0cc59e7",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "168c52f2f9a97fd1b593baeb483e3db0de4ffb753161cb0c397955ef4d21deb0",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate design prove-armor-enchantment-status-matrix --root .
+{
+  "change": "prove-armor-enchantment-status-matrix",
+  "input_hash": "36bc9a270b8228734c36d5bad49c7f9d65992261f6159553dc7c1f3d4f6c74a0",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "c6174ebb54b688ccfb796792632a680bf252991fdf697aa9650eb1d3db57170d",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate tasks prove-armor-enchantment-status-matrix --root .
+{
+  "change": "prove-armor-enchantment-status-matrix",
+  "input_hash": "9f147a7f042aa6af554eff75a602d770ea6d522b94130a0708db4b0cbe18fa6e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "3461d948734095f32edcdfb654d5a702a3dea13779f79a8dec2d50ebe8f8211f",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 5,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 6,
+  "valid": true
+}
+
+result: PASS

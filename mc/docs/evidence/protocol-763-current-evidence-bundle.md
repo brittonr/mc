@@ -39,6 +39,10 @@ The maintained inventory rows are validated as a five-row bounded matrix in `doc
 
 The maintained equipment update row is validated as one bounded slot/item matrix row in `docs/evidence/protocol-763-equipment-slot-item-matrix-2026-05-27.md`. Covered row is `main_hand_remote_entity / slot4 / item id 829 / count 1 / non_empty_update` with one remote-spawn-correlated equipment update. All equipment slots/items/permutations remain a non-claim.
 
+## Armor/enchantment/status modifier checkpoint
+
+The maintained armor mitigation row is validated as one bounded modifier row in `docs/evidence/protocol-763-armor-modifier-matrix-2026-05-27.md` with a fresh live receipt/log bundle. Covered row is `armor_loadout_chest_only / DiamondChestplate / enchantment_none / status_effect_none / melee`; all armor loadouts, enchantments, status effects, modifier stacking, and exact vanilla parity remain non-claims.
+
 ## Death/respawn lifecycle checkpoint
 
 The maintained `Flag-carrier death/return` row is also validated as a bounded lifecycle row in `docs/evidence/protocol-763-death-respawn-lifecycle-2026-05-27.md`. The row covers one flag-carrier death, respawn request, restored health, server flag return/reset, and no unexpected score/capture. No all death/drop/recovery permutations are claimed; full death/respawn lifecycle remains a non-claim.
@@ -81,6 +85,7 @@ python3 tools/check_load_network_safety.py
 python3 tools/check_death_respawn_lifecycle.py
 python3 tools/check_inventory_semantics_matrix.py
 python3 tools/check_equipment_slot_item_matrix.py
+python3 tools/check_armor_modifier_matrix.py
 nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
 nix run --no-update-lock-file .#cairn -- validate --root .
 ```
