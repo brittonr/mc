@@ -1,4 +1,4 @@
-checkpoint: Steel runtime config contract/core/startup gate
+checkpoint: Steel runtime config contract/core/startup/reload gate
 date: 2026-05-27
 root: /home/brittonr/git/mc
 
@@ -14,17 +14,19 @@ command: cargo test --manifest-path tools/mc-compat-runner/Cargo.toml runtime_co
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
      Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-0b4c6e2aba35508d)
 
-running 8 tests
+running 10 tests
 test runtime_config::tests::arrow_damage_policy_is_bounded_and_reports_clamping ... ok
-test runtime_config::tests::fixed_protocol_fact_changes_are_rejected ... ok
 test runtime_config::tests::diff_and_apply_plan_separate_hot_next_run_and_restart_only ... ok
-test runtime_config::tests::rejects_range_and_sandbox_violations ... ok
+test runtime_config::tests::fixed_protocol_fact_changes_are_rejected ... ok
 test runtime_config::tests::normalizes_valid_steel_exports ... ok
+test runtime_config::tests::rejects_range_and_sandbox_violations ... ok
 test runtime_config::tests::rejects_missing_or_wrong_type_exports ... ok
+test runtime_config::tests::reload_request_applies_hot_changes_atomically ... ok
+test runtime_config::tests::reload_request_rolls_back_on_apply_failure_or_restart_only_change ... ok
 test runtime_config::tests::evaluates_restricted_steel_module ... ok
 test runtime_config::tests::rejects_steel_module_unknown_export_and_forbidden_token ... ok
 
-test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 35 filtered out; finished in 0.00s
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 35 filtered out; finished in 0.00s
 
 
 command: cargo test --manifest-path tools/mc-compat-runner/Cargo.toml restricted_steel_config
@@ -35,70 +37,72 @@ running 2 tests
 test tests::restricted_steel_config_rejects_forbidden_capabilities ... ok
 test tests::restricted_steel_config_sets_runtime_defaults_and_allows_env_cli_precedence ... ok
 
-test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 41 filtered out; finished in 0.00s
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 43 filtered out; finished in 0.00s
 
 
 command: cargo test --manifest-path tools/mc-compat-runner/Cargo.toml
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.03s
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
      Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-0b4c6e2aba35508d)
 
-running 43 tests
+running 45 tests
 test runtime_config::tests::arrow_damage_policy_is_bounded_and_reports_clamping ... ok
-test runtime_config::tests::diff_and_apply_plan_separate_hot_next_run_and_restart_only ... ok
 test runtime_config::tests::fixed_protocol_fact_changes_are_rejected ... ok
-test runtime_config::tests::rejects_range_and_sandbox_violations ... ok
+test runtime_config::tests::diff_and_apply_plan_separate_hot_next_run_and_restart_only ... ok
 test runtime_config::tests::normalizes_valid_steel_exports ... ok
 test runtime_config::tests::rejects_missing_or_wrong_type_exports ... ok
-test tests::blue_flag_score_scenario_tracks_mirrored_team_evidence ... ok
+test runtime_config::tests::rejects_range_and_sandbox_violations ... ok
 test runtime_config::tests::evaluates_restricted_steel_module ... ok
 test tests::cleanup_client_log_match_is_narrow ... ok
-test tests::cleanup_path_dry_run_preserves_existing_files ... ok
+test runtime_config::tests::reload_request_rolls_back_on_apply_failure_or_restart_only_change ... ok
+test tests::blue_flag_score_scenario_tracks_mirrored_team_evidence ... ok
+test runtime_config::tests::reload_request_applies_hot_changes_atomically ... ok
 test tests::cli_overrides_backend_client_dir_valence_repo_and_revision ... ok
 test tests::client_checkout_must_point_at_manifest_root ... ok
-test runtime_config::tests::rejects_steel_module_unknown_export_and_forbidden_token ... ok
+test tests::cleanup_path_dry_run_preserves_existing_files ... ok
 test tests::combat_damage_scenario_tracks_client_and_server_evidence ... ok
-test tests::defaults_to_valence_protocol_and_port ... ok
+test runtime_config::tests::rejects_steel_module_unknown_export_and_forbidden_token ... ok
 test tests::compares_paper_and_valence_receipts ... ok
 test tests::env_overrides_are_parsed_without_global_environment_mutation ... ok
+test tests::defaults_to_valence_protocol_and_port ... ok
 test tests::equipment_update_scenario_tracks_current_client_equipment_marker ... ok
-test tests::invalid_backend_is_rejected ... ok
 test tests::flag_score_repeat_scenario_tracks_missing_and_forbidden_evidence ... ok
+test tests::invalid_backend_is_rejected ... ok
 test tests::load_network_safety_envelope_fails_closed_for_unsafe_inputs ... ok
 test tests::compat_bot_probe_scenario_is_bounded_and_receipted ... ok
-test tests::missing_client_checkout_has_actionable_diagnostic ... ok
-test tests::missing_valence_checkout_has_actionable_diagnostic ... ok
-test tests::inventory_interaction_scenario_tracks_client_and_server_evidence ... ok
 test tests::failed_preflight_receipt_triages_before_client_evidence ... ok
+test tests::missing_client_checkout_has_actionable_diagnostic ... ok
+test tests::inventory_interaction_scenario_tracks_client_and_server_evidence ... ok
+test tests::missing_valence_checkout_has_actionable_diagnostic ... ok
 test tests::multi_client_scenario_tracks_client_and_server_evidence ... ok
 test tests::projectile_damage_attribution_requires_pinned_valence_revision ... ok
 test tests::nickel_exported_json_config_sets_defaults_and_allows_env_cli_precedence ... ok
-test tests::projectile_damage_attribution_scenario_tracks_client_and_server_evidence ... ok
 test tests::run_matrix_config_sets_receipt_dir_and_backend_defaults ... ok
-test tests::run_matrix_rejects_single_receipt_path ... ok
+test tests::projectile_damage_attribution_scenario_tracks_client_and_server_evidence ... ok
 test tests::rejects_receipt_protocol_mismatch ... ok
-test tests::scenario_cli_and_env_parse ... ok
-test tests::status_and_cleanup_modes_parse_without_server_probe_mode ... ok
 test tests::restricted_steel_config_rejects_forbidden_capabilities ... ok
+test tests::run_matrix_rejects_single_receipt_path ... ok
+test tests::restricted_steel_config_sets_runtime_defaults_and_allows_env_cli_precedence ... ok
+test tests::scenario_receipt_records_actionable_failure_triage ... ok
+test tests::scenario_cli_and_env_parse ... ok
 test tests::valid_client_checkout_preflight_passes ... ok
 test tests::smoke_receipt_records_failures_without_success_claims ... ok
 test tests::supported_scenario_usage_lists_all_supported_scenarios ... ok
-test tests::scenario_receipt_records_actionable_failure_triage ... ok
-test tests::restricted_steel_config_sets_runtime_defaults_and_allows_env_cli_precedence ... ok
+test tests::status_and_cleanup_modes_parse_without_server_probe_mode ... ok
 test tests::smoke_receipt_records_cairn_contract_and_octet_surface ... ok
 test tests::status_packet_proxy_and_gameplay_receipt_blocks_are_recorded ... ok
 
-test result: ok. 43 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 45 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 
 command: nix run --no-update-lock-file .#cairn -- gate proposal hotload-runtime-configuration --root .
 {
   "change": "hotload-runtime-configuration",
-  "input_hash": "e0b3174a22db024bde5a496f0de5d1d9b14212c42a74ed276e40ab56c01efe67",
+  "input_hash": "94e2ea29ace05a34623a84eb5f17017efa127cbb8895f69ec4a9cc985d3562dd",
   "issues": [],
   "layout": "cairn",
   "policy": "cairn-default",
   "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
-  "receipt_hash": "18752e64c902784e4ccc8098cfd7da0fcffcde8150f09225031b3a2dfdd62136",
+  "receipt_hash": "e48e534502c356101cd5333e6b9fe9807ad18655b37dd6f714464464cf051295",
   "stage": "proposal",
   "valid": true,
   "verdict": "PASS"
@@ -107,12 +111,12 @@ command: nix run --no-update-lock-file .#cairn -- gate proposal hotload-runtime-
 command: nix run --no-update-lock-file .#cairn -- gate design hotload-runtime-configuration --root .
 {
   "change": "hotload-runtime-configuration",
-  "input_hash": "4a2c7590af01ae2378a1e0652af888f8ad5fa45e53d8f4fa263671804b78c738",
+  "input_hash": "0d97c754d561360ba9aa361b2659ec14eb771fdc3c42c1eba2a1ed83469541ef",
   "issues": [],
   "layout": "cairn",
   "policy": "cairn-default",
   "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
-  "receipt_hash": "00efa6ad4b1c90ac2c5a9cbf264700547260b6ee91a4ee449ac03927185c2887",
+  "receipt_hash": "d5f8b0bef32f9411e00c9a50859a2096b30ce4c0f7b5efeaf643ad7beac131cb",
   "stage": "design",
   "valid": true,
   "verdict": "PASS"
@@ -121,12 +125,12 @@ command: nix run --no-update-lock-file .#cairn -- gate design hotload-runtime-co
 command: nix run --no-update-lock-file .#cairn -- gate tasks hotload-runtime-configuration --root .
 {
   "change": "hotload-runtime-configuration",
-  "input_hash": "734a749df636923a0e514c265bb8d3daaeb4d25113207b45b31b86c628e962ba",
+  "input_hash": "7e4709fdba1fd54569ac0f40ce6fdcf9bae04eed52ef8f7a861f8b8fc03c8990",
   "issues": [],
   "layout": "cairn",
   "policy": "cairn-default",
   "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
-  "receipt_hash": "3ee30c75b35dcbe5febccaef53fdb099a5689989947cf1d566ef1101250170ea",
+  "receipt_hash": "0b9c7aca821b226259018769609f8a5c7fb29d8b233eba12aaa277ebf386ae71",
   "stage": "tasks",
   "valid": true,
   "verdict": "PASS"

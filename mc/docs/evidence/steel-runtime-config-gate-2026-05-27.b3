@@ -1,8 +1,8 @@
 06373a43c99d0463611c9ef55dc7e72a624c1335a71078eea6d5d4b5d6998b16  config/mc-compat/steel/default.scm
 9b9b262684c229e17c86afe89b7a4ce39a6ed2a1c6d795e435db40ebffad3fce  docs/evidence/runtime-config-inventory-2026-05-27.tsv
-a187b8bb7006cafe6bfb44e9299d809723f81bbf83e80375d38e35572b86cfb0  docs/evidence/steel-runtime-config-contract-2026-05-27.md
+8d5156f8203481e17adb155c10a36352d4ae37d548f4a1464709ee392a086d88  docs/evidence/steel-runtime-config-contract-2026-05-27.md
 a0b4627268984ffe67e3d6dbaf648a01e9437ac436d5cffcb0e2d9f1c233014b  docs/evidence/steel-runtime-config-default.snapshot.json
-11da2efd205c60b2057d97b4eeef1ec41007478ebb3fe50006ec80683cc8fe61  docs/evidence/steel-runtime-config-gate-2026-05-27.run.log
-0f058f479e56be0d2afd39cb7ab6cfbcb4d11f43904ba9d54509179d0cb70b71  tools/check_runtime_steel_config.rs
+3345f74fb0faea35e958998e3219bfb70d9f900a83e4b4df0b7b608baf9c8b05  docs/evidence/steel-runtime-config-gate-2026-05-27.run.log
+b7d355d8149a4b396422b794b52e10221d50166482354a72d53c53e802128634  tools/check_runtime_steel_config.rs
 41f54af6c811c672a6700376db57059802abb2bdf51ffa43470f77f2586af9f0  tools/mc-compat-runner/src/main.rs
-8a885f4b9834acdb7514afc99357934ab9bec2714619cc57973448f14454cca5  tools/mc-compat-runner/src/runtime_config.rs
+0956c47ea1543c9944747b58ee72bf88404504f0fc90eafe533126c8f2c152e7  tools/mc-compat-runner/src/runtime_config.rs

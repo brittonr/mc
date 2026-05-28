@@ -143,4 +143,4 @@ It forbids:
 
 ## Current non-claims
 
-No live runtime file watcher, live reload request path, migrated production call site, live arrow-damage call-site, remote config distribution, or full hot-reload rollout is claimed yet. The current implementation is startup-time restricted Steel module loading plus pure validation/apply-plan core. Remaining work stays open in `cairn/changes/hotload-runtime-configuration/tasks.md`.
+No filesystem watcher, migrated production call site, live arrow-damage call-site, remote config distribution, or full hot-reload rollout is claimed yet. The current implementation is startup-time restricted Steel module loading plus an explicit reload-request controller with rollback-safe hot apply handlers. Remaining work stays open in `cairn/changes/hotload-runtime-configuration/tasks.md`.

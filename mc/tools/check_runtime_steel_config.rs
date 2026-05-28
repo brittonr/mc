@@ -66,7 +66,7 @@ const REQUIRED_CONTRACT_TOKENS: &[&str] = &[
     "Sandbox contract",
     "mc-compat/pure-v1",
     "damage-linear",
-    "No live runtime file watcher",
+    "No filesystem watcher",
 ];
 
 #[derive(Debug, Clone, PartialEq, Eq)]

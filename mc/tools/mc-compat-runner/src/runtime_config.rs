@@ -126,6 +126,63 @@ pub(crate) struct ApplyPlan {
     pub(crate) rejected: Vec<ConfigDiagnostic>,
 }
 
+#[derive(Clone, Debug, PartialEq)]
+pub(crate) struct ReloadOutcome {
+    pub(crate) active_changed: bool,
+    pub(crate) plan: ApplyPlan,
+    pub(crate) diagnostics: Vec<ConfigDiagnostic>,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub(crate) struct RuntimeConfigController {
+    active: RuntimeConfigSnapshot,
+}
+
+impl RuntimeConfigController {
+    pub(crate) fn new(active: RuntimeConfigSnapshot) -> Self {
+        Self { active }
+    }
+
+    pub(crate) fn active(&self) -> &RuntimeConfigSnapshot {
+        &self.active
+    }
+
+    pub(crate) fn reload_with<F>(
+        &mut self,
+        candidate: RuntimeConfigSnapshot,
+        mut apply_hot: F,
+    ) -> ReloadOutcome
+    where
+        F: FnMut(&[FieldDiff]) -> Result<(), String>,
+    {
+        let diffs = diff_snapshots(&self.active, &candidate);
+        let plan = build_apply_plan(diffs, false);
+        if !plan.rejected.is_empty() {
+            return ReloadOutcome {
+                active_changed: false,
+                diagnostics: plan.rejected.clone(),
+                plan,
+            };
+        }
+        if let Err(message) = apply_hot(&plan.hot) {
+            return ReloadOutcome {
+                active_changed: false,
+                diagnostics: vec![ConfigDiagnostic {
+                    path: "runtime.reload.apply_hot",
+                    message,
+                }],
+                plan,
+            };
+        }
+        self.active = candidate;
+        ReloadOutcome {
+            active_changed: true,
+            plan,
+            diagnostics: Vec::new(),
+        }
+    }
+}
+
 pub(crate) fn evaluate_steel_module(
     source: SteelSource,
     module_text: &str,
@@ -995,5 +1052,69 @@ mod tests {
         assert_eq!(plan.hot.len(), 0);
         assert_eq!(plan.rejected.len(), 1);
         assert_eq!(plan.rejected[0].path, "protocol.packet_id.game_join");
+    }
+
+    #[test]
+    fn reload_request_applies_hot_changes_atomically() {
+        let before = normalize_steel_exports(source(), &valid_exports()).expect("valid exports");
+        let mut after_exports = valid_exports();
+        after_exports.insert(
+            "client-timeout-secs".to_string(),
+            SteelValue::U32(TEST_CLIENT_TIMEOUT_SECS + MIN_TIMEOUT_SECS),
+        );
+        let after =
+            normalize_steel_exports(source(), &after_exports).expect("valid changed exports");
+        let mut controller = RuntimeConfigController::new(before);
+
+        let outcome = controller.reload_with(after, |hot| {
+            assert_eq!(hot.len(), 1);
+            Ok(())
+        });
+
+        assert!(outcome.active_changed);
+        assert!(outcome.diagnostics.is_empty());
+        assert_eq!(
+            controller.active().client_timeout_secs,
+            TEST_CLIENT_TIMEOUT_SECS + MIN_TIMEOUT_SECS
+        );
+    }
+
+    #[test]
+    fn reload_request_rolls_back_on_apply_failure_or_restart_only_change() {
+        let before = normalize_steel_exports(source(), &valid_exports()).expect("valid exports");
+        let mut hot_after_exports = valid_exports();
+        hot_after_exports.insert(
+            "client-timeout-secs".to_string(),
+            SteelValue::U32(TEST_CLIENT_TIMEOUT_SECS + MIN_TIMEOUT_SECS),
+        );
+        let hot_after =
+            normalize_steel_exports(source(), &hot_after_exports).expect("valid hot change");
+        let mut controller = RuntimeConfigController::new(before.clone());
+        let outcome =
+            controller.reload_with(hot_after, |_| Err("apply handler failed".to_string()));
+        assert!(!outcome.active_changed);
+        assert_eq!(
+            controller.active().client_timeout_secs,
+            before.client_timeout_secs
+        );
+        assert!(outcome
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.path == "runtime.reload.apply_hot"));
+
+        let mut restart_after_exports = valid_exports();
+        restart_after_exports.insert(
+            "server-port".to_string(),
+            SteelValue::U32(TEST_SERVER_PORT + MIN_TIMEOUT_SECS),
+        );
+        let restart_after = normalize_steel_exports(source(), &restart_after_exports)
+            .expect("valid restart-only change");
+        let outcome = controller.reload_with(restart_after, |_| Ok(()));
+        assert!(!outcome.active_changed);
+        assert_eq!(controller.active().server_port, before.server_port);
+        assert!(outcome
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.path == "server.port"));
     }
 }
