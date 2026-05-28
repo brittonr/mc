@@ -72,6 +72,10 @@ TARGET_PREFIX = "target/"
 MANIFEST_GLOB = "*.b3"
 MANIFEST_SEPARATOR = "  "
 HISTORICAL_TARGET_RECEIPT_SEAMS = frozenset({"RED/BLUE scoring soak"})
+HISTORICAL_TARGET_ORACLES = {
+    "RED/BLUE scoring soak": "docs/evidence/protocol-763-red-blue-soak-historical-oracle-2026-05-27.md",
+}
+ORACLE_REQUIRED_HEADINGS = ["## Question", "## Inspected evidence", "## Decision", "## Owner", "## Next action"]
 BLAKE3_RE = re.compile(rf"`[0-9a-f]{{{BLAKE3_HEX_LENGTH}}}`")
 
 
@@ -122,16 +126,47 @@ def strip_code_span(text: str) -> str:
     return text.strip().strip("`")
 
 
-def manifest_has_digest(root: Path, relative_path: str, digest: str) -> bool:
+def manifest_entries(root: Path) -> list[tuple[str, str]]:
     evidence_dir = root / DOCS_EVIDENCE_PREFIX
+    entries: list[tuple[str, str]] = []
     for manifest in evidence_dir.glob(MANIFEST_GLOB):
         for line in manifest.read_text().splitlines():
             if MANIFEST_SEPARATOR not in line:
                 continue
             manifest_digest, manifest_path = line.split(MANIFEST_SEPARATOR, maxsplit=1)
-            if manifest_digest == digest and manifest_path.strip() == relative_path:
-                return True
-    return False
+            entries.append((manifest_digest, manifest_path.strip()))
+    return entries
+
+
+def manifest_has_digest(root: Path, relative_path: str, digest: str) -> bool:
+    return any(
+        manifest_digest == digest and manifest_path == relative_path
+        for manifest_digest, manifest_path in manifest_entries(root)
+    )
+
+
+def manifest_has_path(root: Path, relative_path: str) -> bool:
+    return any(manifest_path == relative_path for _, manifest_path in manifest_entries(root))
+
+
+def validate_historical_oracle(row: EvidenceRow, digest: str, root: Path = ROOT) -> list[str]:
+    oracle_path = HISTORICAL_TARGET_ORACLES.get(row.seam)
+    if oracle_path is None:
+        return [f"historical target row lacks oracle mapping: {row.seam}"]
+    oracle = root / oracle_path
+    if not oracle.is_file():
+        return [f"historical target oracle missing: {row.seam}: {oracle_path}"]
+    text = oracle.read_text()
+    missing = [
+        f"historical target oracle missing required heading {heading}: {row.seam}: {oracle_path}"
+        for heading in ORACLE_REQUIRED_HEADINGS
+        if heading not in text
+    ]
+    if digest not in text:
+        missing.append(f"historical target oracle does not cite row BLAKE3: {row.seam}: {oracle_path}")
+    if not manifest_has_path(root, oracle_path):
+        missing.append(f"historical target oracle lacks BLAKE3 manifest entry: {row.seam}: {oracle_path}")
+    return missing
 
 
 def validate_evidence_row(row: EvidenceRow, root: Path = ROOT) -> list[str]:
@@ -155,6 +190,8 @@ def validate_evidence_row(row: EvidenceRow, root: Path = ROOT) -> list[str]:
             missing.append(f"row docs/evidence receipt lacks matching BLAKE3 manifest entry: {row.seam}: {receipt_path}")
     elif receipt_path.startswith(TARGET_PREFIX) and row.seam not in HISTORICAL_TARGET_RECEIPT_SEAMS:
         missing.append(f"row uses target-only receipt without historical exception: {row.seam}: {receipt_path}")
+    elif receipt_path.startswith(TARGET_PREFIX):
+        missing.extend(validate_historical_oracle(row, digest, root))
 
     doc_path = strip_code_span(row.doc)
     if not doc_path.startswith(DOCS_EVIDENCE_PREFIX):

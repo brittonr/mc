@@ -60,6 +60,12 @@ Negative fixture:
 
 ## Evidence
 
+- Live bounded receipt: `docs/evidence/protocol-763-load-network-safety-live-2026-05-27.receipt.json`.
+  - BLAKE3: `b799ec666ddef41d06d57460b8829879c3815f864c580b8f350216ff9ac70436`.
+  - Receipt fields: `status=pass`, `mode=run`, `dry_run=false`, `scenario.passed=true`, `load_network_safety.preflight_passed=true`, `load_network_safety.promotion_ready=true`, `load_network_safety.live_receipt=true`, `load_network_safety.telemetry_present=true`, `load_network_safety.bound_violations=[]`, `load_network_safety.missing_fields=[]`.
+- Live run log: `docs/evidence/protocol-763-load-network-safety-live-2026-05-27.run.log`.
+  - BLAKE3: `d294d50c139cdb8485b3deb6a2476160a6a3fa6d7a37b8bf6cd84d0b600f28a7`.
+- Live BLAKE3 manifest: `docs/evidence/protocol-763-load-network-safety-live-2026-05-27.b3`.
 - Runner tests: `nix develop --no-update-lock-file -c cargo test --manifest-path tools/mc-compat-runner/Cargo.toml` (`33 passed`).
 - Formatting: `nix develop --no-update-lock-file -c cargo fmt --manifest-path tools/mc-compat-runner/Cargo.toml -- --check`.
 - Freshness/checkpoint gate: `docs/evidence/protocol-763-load-network-safety-gate-2026-05-27.run.log`.

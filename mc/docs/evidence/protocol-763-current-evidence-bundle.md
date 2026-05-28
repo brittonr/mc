@@ -83,7 +83,7 @@ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
 nix run --no-update-lock-file .#cairn -- validate --root .
 ```
 
-Rows that cite live receipts should point at tracked `docs/evidence/*.receipt.json` copies and BLAKE3 manifests. Historical `target/` rows require an explicit evidence/oracle note that records the original digest; the RED/BLUE scoring soak row is the current historical exception.
+Rows that cite live receipts should point at tracked `docs/evidence/*.receipt.json` copies and BLAKE3 manifests. Historical `target/` rows require an explicit evidence/oracle note that records the original digest, inspected evidence, decision, owner, and next action; the RED/BLUE scoring soak row is the current historical exception, recorded at `docs/evidence/protocol-763-red-blue-soak-historical-oracle-2026-05-27.md`.
 
 Reviewable copied receipts for matrix rows are indexed at `docs/evidence/protocol-763-matrix-reviewable-receipts-2026-05-27.md` with manifest `docs/evidence/protocol-763-matrix-reviewable-receipts-2026-05-27.b3`.
 

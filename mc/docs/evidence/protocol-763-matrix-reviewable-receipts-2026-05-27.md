@@ -21,7 +21,9 @@ This checkpoint hardens the maintained acceptance matrix by copying review-criti
 
 ## Historical exception
 
-The RED/BLUE scoring soak row still points at its historical live receipt path because the mutable `target/mc-compat-blue-soak/blue-flag-score-600s.json` file has since been overwritten by a dry-run fixture. The reviewable evidence for that row is `docs/evidence/stevenarella-valence-763-blue-flag-600s-soak-2026-05-25.md`, which records the live receipt hash `b7c861f27ef7ceaf94705a74a5459d3f9df625dada4b14d8715ba8e9c5d921de`. The hardened checker allows this as an explicit historical/oracle decision rather than treating the current `target/` file as evidence.
+The RED/BLUE scoring soak row still points at its historical live receipt path because the mutable `target/mc-compat-blue-soak/blue-flag-score-600s.json` file has since been overwritten by a dry-run fixture. The reviewable evidence for that row is `docs/evidence/stevenarella-valence-763-blue-flag-600s-soak-2026-05-25.md`, which records the live receipt hash `b7c861f27ef7ceaf94705a74a5459d3f9df625dada4b14d8715ba8e9c5d921de`.
+
+The explicit oracle checkpoint is `docs/evidence/protocol-763-red-blue-soak-historical-oracle-2026-05-27.md` with BLAKE3 manifest `docs/evidence/protocol-763-red-blue-soak-historical-oracle-2026-05-27.b3`. It records the question, inspected evidence, decision, owner, next action, and non-claims. The hardened checker allows the target path only because that checkpoint exists; reviewers must not treat the current `target/` file as live evidence.
 
 ## Verification
 
