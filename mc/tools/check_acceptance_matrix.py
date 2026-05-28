@@ -80,6 +80,7 @@ HISTORICAL_TARGET_ORACLES = {
 }
 ORACLE_REQUIRED_HEADINGS = ["## Question", "## Inspected evidence", "## Decision", "## Owner", "## Next action"]
 BLAKE3_RE = re.compile(rf"`[0-9a-f]{{{BLAKE3_HEX_LENGTH}}}`")
+FORBIDDEN_COMMIT_MARKERS = ("current ", " diff", "untracked", "dirty")
 
 
 @dataclass(frozen=True)
@@ -208,6 +209,10 @@ def validate_evidence_row(row: EvidenceRow, root: Path = ROOT) -> list[str]:
 
     if "parent `" not in row.commits:
         missing.append(f"row lacks parent commit: {row.seam}")
+    lowered_commits = row.commits.lower()
+    for marker in FORBIDDEN_COMMIT_MARKERS:
+        if marker in lowered_commits:
+            missing.append(f"row landed commits cite uncommitted state marker {marker!r}: {row.seam}")
     if not row.claim or row.claim == "-":
         missing.append(f"row lacks scoped claim: {row.seam}")
     if "No " not in row.non_claims and "no " not in row.non_claims:
@@ -254,14 +259,18 @@ def validate_matrix_text(
     return len(rows), len(hashes), missing
 
 
-def self_test_text(blake3: str, receipt: str = "docs/evidence/test.receipt.json") -> str:
+def self_test_text(
+    blake3: str,
+    receipt: str = "docs/evidence/test.receipt.json",
+    commits: str = "parent `abc1234`",
+) -> str:
     return f"""# Matrix
 
 ## Landed evidence rows
 
 {EVIDENCE_TABLE_HEADER}
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Armor equipment mitigation | `nix run .#x` | `{receipt}` | `docs/evidence/test.md` | `{blake3}` | parent `abc1234` | Bounded claim. | No broad claim. |
+| Armor equipment mitigation | `nix run .#x` | `{receipt}` | `docs/evidence/test.md` | `{blake3}` | {commits} | Bounded claim. | No broad claim. |
 
 ## Remaining gaps and non-claims
 """
@@ -360,6 +369,15 @@ def assert_self_tests() -> None:
             required_text=[],
         )
         assert any("target-only receipt" in item for item in missing), missing
+
+        _, _, missing = validate_matrix_text(
+            self_test_text(good_hash, commits="parent `abc1234`, Valence `def5678` plus current fixture diff"),
+            root=root,
+            required_seams=required_seams,
+            required_gaps=[],
+            required_text=[],
+        )
+        assert any("uncommitted state marker" in item for item in missing), missing
 
 
 def parse_args() -> argparse.Namespace:

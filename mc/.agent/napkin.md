@@ -6,6 +6,7 @@
 | 2026-04-14 | self | Wrote AGENTS guidance before re-checking every claimed command/path | Verify repo-specific commands and paths from repo files or listings before recording them in AGENTS or napkin |
 | 2026-05-27 | self | Ran `git add -f mc` while fixing review evidence, which staged ignored target outputs and nested repos | Never force-add broad directories in this workspace; force-add only exact intended Cairn/docs evidence paths |
 | 2026-05-27 | done-review | Archived proof Cairns with tasks marked complete even though evidence docs demoted key scope to non-claims | Before archive, compare checked tasks/proposal scope against promoted evidence rows; either add the missing receipt/inventory or amend/reopen so tasks describe only completed gates |
+| 2026-05-28 | done-review | Pushed survival evidence that cited Valence `2663ed7` plus an untracked fixture diff even though the fixture was later committed at `1fac05a` | Re-run or update evidence against a committed child-repo revision containing the fixture before push; do not leave `plus current diff` as promoted evidence metadata |
 
 ## User Preferences
 - Keep replies terse and direct.
