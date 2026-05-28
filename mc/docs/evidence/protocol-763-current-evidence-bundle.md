@@ -30,6 +30,7 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 | Equipment update observation | `nix run .#mc-compat-valence-ctf-equipment-update-observation` | `8100dde3ebb3476984235009e277d7e973037b7873b2fdb30c413093e1498d3d` |
 | Projectile use/loadout rail | `nix run .#mc-compat-valence-ctf-projectile-hit` | `22310a0373f86bbff5e6bc116934d092b89f775cf5d539b08d04ff5564ad855b` |
 | Projectile damage attribution | `nix run .#mc-compat-valence-ctf-projectile-damage-attribution` | `cf84fcb81ae557ecfbd2ff0b1f8b94af7bf07eaa85c20b1cde442929e3e3e529` |
+| Survival break/place/pickup | `nix run .#mc-compat-valence-survival-break-place-pickup` | `2fb992e6a88e788e36c8cc50c7d36c04e98d712fcde0547051ff04f83c187e65` |
 
 ## Inventory semantics matrix checkpoint
 
@@ -47,6 +48,10 @@ The maintained armor mitigation row is validated as one bounded modifier row in 
 
 The maintained projectile rows are validated as two bounded projectile state rows in `docs/evidence/protocol-763-projectile-travel-collision-2026-05-27.md`: projectile use/loadout and pinned projectile damage attribution. The damage row covers bounded server projectile hit/damage attribution; continuous projectile travel/collision simulation, all projectile weapons, and full projectile physics remain non-claims.
 
+## Survival break/place/pickup checkpoint
+
+The maintained survival row is validated by `docs/evidence/protocol-763-survival-break-place-pickup-2026-05-28.md` with a live receipt/log bundle. Covered row is one deterministic client in the dedicated `survival_compat` fixture with join/render, fixed-coordinate block break, pickup/inventory observation, and block placement. Full survival compatibility and vanilla parity remain non-claims until paired reference-server receipts exist.
+
 ## Vanilla combat parity checkpoint
 
 Vanilla combat parity is guarded by `docs/evidence/protocol-763-vanilla-combat-parity-2026-05-27.md` and `tools/check_vanilla_combat_parity.py`. No paired reference/Valence receipts exist today, so exact vanilla combat parity remains a non-claim and Valence-only evidence is rejected for parity promotion.
@@ -57,7 +62,7 @@ CTF rule scope is guarded by `docs/evidence/protocol-763-ctf-rule-ledger-2026-05
 
 ## Broad protocol coverage checkpoint
 
-Broad coverage is guarded by `docs/evidence/protocol-763-broad-coverage-ledger-2026-05-27.md`, `docs/evidence/protocol-763-packet-inventory-2026-05-27.tsv`, and `tools/check_protocol_coverage_ledger.py`. The ledger indexes 15 bounded seams plus 175 Valence protocol-763 packet rows and blocks full protocol-763 compatibility/full Minecraft compatibility until packet-family mapping/parser fixtures and live receipts exist for every claimed row.
+Broad coverage is guarded by `docs/evidence/protocol-763-broad-coverage-ledger-2026-05-27.md`, `docs/evidence/protocol-763-packet-inventory-2026-05-27.tsv`, and `tools/check_protocol_coverage_ledger.py`. The ledger indexes 16 bounded seams plus 175 Valence protocol-763 packet rows and blocks full protocol-763 compatibility/full Minecraft compatibility until packet-family mapping/parser fixtures and live receipts exist for every claimed row.
 
 ## Death/respawn lifecycle checkpoint
 
@@ -136,4 +141,4 @@ Broader production/public/WAN/unbounded safety remains a non-claim unless a futu
 
 ## Non-claims
 
-This bundle still does not claim full Minecraft compatibility, full CTF correctness, projectile travel/collision simulation, all projectile weapon variants, all equipment slots/items, all armor loadouts, enchantment/status-effect semantics, exact vanilla knockback/damage/mitigation balancing, production readiness, public-server load safety, or unbounded soak/reconnect/latency safety.
+This bundle still does not claim full Minecraft compatibility, full survival compatibility, vanilla parity, full CTF correctness, projectile travel/collision simulation, all projectile weapon variants, all equipment slots/items, all armor loadouts, enchantment/status-effect semantics, exact vanilla knockback/damage/mitigation balancing, crafting/furnace/chest/mob/redstone coverage, production readiness, public-server load safety, or unbounded soak/reconnect/latency safety.

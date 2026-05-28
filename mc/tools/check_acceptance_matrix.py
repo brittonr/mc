@@ -28,6 +28,7 @@ REQUIRED_SEAMS = [
     "Equipment update observation",
     "Projectile use/loadout rail",
     "Projectile damage attribution",
+    "Survival break/place/pickup",
 ]
 
 REQUIRED_GAPS = [
@@ -35,6 +36,7 @@ REQUIRED_GAPS = [
     "Broad protocol coverage",
     "Production load / multiplayer scale",
     "Full CTF correctness",
+    "Full survival compatibility / vanilla parity",
 ]
 
 REQUIRED_TEXT = [
@@ -56,6 +58,7 @@ REVIEWABLE_RECEIPT_SEAMS = frozenset(
         "Equipment update observation",
         "Projectile use/loadout rail",
         "Projectile damage attribution",
+        "Survival break/place/pickup",
     }
 )
 

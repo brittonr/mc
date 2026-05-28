@@ -66,6 +66,7 @@ REQUIRED_SEAMS = [
     "Equipment update observation",
     "Projectile use/loadout rail",
     "Projectile damage attribution",
+    "Survival break/place/pickup",
 ]
 
 COVERED_SURFACES = [
@@ -73,6 +74,7 @@ COVERED_SURFACES = [
     "ctf_score_path",
     "inventory_drop_pickup_click_container_block_place",
     "combat_damage_knockback_armor_projectile",
+    "survival_break_place_pickup",
     "reconnect_flag_state",
 ]
 UNCOVERED_SURFACES = [
@@ -81,6 +83,7 @@ UNCOVERED_SURFACES = [
     "all_inventory_transactions",
     "all_equipment_permutations",
     "all_biomes_chunks_commands_recipes_advancements",
+    "full_survival_compatibility",
     "all_vanilla_combat_parity",
 ]
 

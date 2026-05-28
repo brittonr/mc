@@ -29,6 +29,7 @@ REQUIRED_SEAMS = [
     "Equipment update observation",
     "Projectile use/loadout rail",
     "Projectile damage attribution",
+    "Survival break/place/pickup",
 ]
 
 
@@ -79,6 +80,8 @@ def validate_bundle_text(
         "python3 tools/check_current_evidence_bundle.py",
         "nix run --no-update-lock-file .#cairn -- validate --root .",
         "full Minecraft compatibility",
+        "full survival compatibility",
+        "vanilla parity",
         "armor loadouts",
         "projectile damage attribution",
         "projectile travel/collision simulation",
@@ -106,6 +109,8 @@ python3 tools/check_acceptance_matrix.py
 python3 tools/check_current_evidence_bundle.py
 nix run --no-update-lock-file .#cairn -- validate --root .
 full Minecraft compatibility
+full survival compatibility
+vanilla parity
 armor loadouts
 projectile damage attribution
 projectile travel/collision simulation

@@ -18,6 +18,7 @@ next_action: add packet-family rows only when mapping/parser fixtures and bounde
 | ctf_score_path | Covered only by bounded CTF score receipts/oracle | RED/BLUE scoring soak historical oracle. |
 | inventory_drop_pickup_click_container_block_place | Covered only by bounded inventory rows | Inventory/drop, pickup, click, open-container, block-place receipts. |
 | combat_damage_knockback_armor_projectile | Covered only by bounded combat rows | Combat damage, knockback, armor, equipment, projectile use/loadout, projectile damage attribution. |
+| survival_break_place_pickup | Covered only by one bounded survival fixture row | Dedicated `survival_compat` break/place/pickup receipt. |
 | reconnect_flag_state | Covered only by one bounded reconnect row | Reconnect flag-state receipt. |
 
 ## Uncovered protocol surfaces
@@ -28,7 +29,8 @@ next_action: add packet-family rows only when mapping/parser fixtures and bounde
 | all_entity_metadata_variants | Non-claim | Only scenario-observed metadata/decode paths are covered. |
 | all_inventory_transactions | Non-claim | Inventory matrix keeps many transactions non-claims. |
 | all_equipment_permutations | Non-claim | Equipment matrix covers one row only. |
-| all_biomes_chunks_commands_recipes_advancements | Non-claim | No receipt-backed coverage rows. |
+| all_biomes_chunks_commands_recipes_advancements | Non-claim | No receipt-backed coverage rows beyond the bounded survival break/place/pickup fixture. |
+| full_survival_compatibility | Non-claim | Only one survival break/place/pickup rail is covered; no crafting, furnace, chest, hunger, mob, redstone, biome, dimension, or persistence matrix exists. |
 | all_vanilla_combat_parity | Non-claim | No paired reference oracle receipts. |
 
 ## Maintained evidence seams
@@ -50,6 +52,7 @@ next_action: add packet-family rows only when mapping/parser fixtures and bounde
 | Equipment update observation | `8100dde3ebb3476984235009e277d7e973037b7873b2fdb30c413093e1498d3d` |
 | Projectile use/loadout rail | `22310a0373f86bbff5e6bc116934d092b89f775cf5d539b08d04ff5564ad855b` |
 | Projectile damage attribution | `cf84fcb81ae557ecfbd2ff0b1f8b94af7bf07eaa85c20b1cde442929e3e3e529` |
+| Survival break/place/pickup | `2fb992e6a88e788e36c8cc50c7d36c04e98d712fcde0547051ff04f83c187e65` |
 
 ## Packet inventory
 
@@ -96,4 +99,4 @@ Broad protocol coverage, full protocol-763 compatibility, and full Minecraft com
 
 ## Non-claims
 
-No full protocol-763 compatibility, full Minecraft compatibility, all packets, all play states, all entity metadata, all inventory transactions, all equipment permutations, all chunk/biome/command/recipe/advancement features, exact vanilla combat parity, production readiness, public-server safety, or unbounded soak claim is made.
+No full protocol-763 compatibility, full Minecraft compatibility, full survival compatibility, vanilla parity, all packets, all play states, all entity metadata, all inventory transactions, all equipment permutations, all chunk/biome/command/recipe/advancement features, crafting/furnace/chest/mob/redstone coverage, exact vanilla combat parity, production readiness, public-server safety, or unbounded soak claim is made.

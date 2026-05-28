@@ -97,6 +97,12 @@ nix run .#mc-compat-valence-ctf-inventory-interaction
 # deterministic, non-side-effecting fixture for the same inventory/drop/pickup/click/open-container/block-place command shape:
 nix run .#mc-compat-valence-ctf-inventory-interaction -- --dry-run
 
+# Maintained protocol-763 Valence survival break/place/pickup receipt.
+# Requires dedicated Valence survival_compat fixture, Stevenarella fixed-coordinate break/place probe, and Valence survival join/break/pickup/place server correlation.
+nix run .#mc-compat-valence-survival-break-place-pickup
+# deterministic, non-side-effecting fixture for the same survival command shape:
+nix run .#mc-compat-valence-survival-break-place-pickup -- --dry-run
+
 # Maintained protocol-763 Valence CTF two-client combat/damage receipt.
 # Requires both clients to join/select opposing teams, Stevenarella attack + victim health-update milestones, and Valence combat_damage server correlation.
 nix run .#mc-compat-valence-ctf-combat-damage
@@ -129,6 +135,9 @@ nix run .#mc-compat-valence-ctf-latency-jitter-inventory -- --dry-run
 
 # build every maintained dry-run receipt/check plus the evidence indexes:
 nix build .#checks.x86_64-linux.mc-compat-maintained-dry-runs --no-link -L
+
+# check only the survival break/place/pickup dry-run receipt shape:
+nix build .#checks.x86_64-linux.mc-compat-valence-survival-break-place-pickup-dry-run --no-link -L
 
 # check the current 11-seam protocol-763 evidence bundle:
 nix build .#checks.x86_64-linux.mc-compat-current-evidence-bundle --no-link -L

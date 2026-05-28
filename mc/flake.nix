@@ -486,9 +486,37 @@
               mainProgram = "mc-compat-valence-ctf-reconnect-flag-state";
             };
           };
+          mc-compat-valence-survival-break-place-pickup = pkgs.writeShellApplication {
+            name = "mc-compat-valence-survival-break-place-pickup";
+            runtimeInputs = [ mc-compat-runner ];
+            text = ''
+              mode="--run"
+              if [[ "''${1:-}" == "--dry-run" || "''${1:-}" == "--run" ]]; then
+                mode="$1"
+                shift
+              fi
+
+              receipt="''${MC_COMPAT_SURVIVAL_BREAK_PLACE_PICKUP_RECEIPT:-target/mc-compat-survival-break-place-pickup/survival-break-place-pickup.json}"
+              mkdir -p "$(dirname "$receipt")"
+
+              export SERVER_PROTOCOL="''${SERVER_PROTOCOL:-763}"
+              export SERVER_VERSION="''${SERVER_VERSION:-1.20.1}"
+              export VALENCE_REV="''${VALENCE_REV:-main}"
+              export VALENCE_EXAMPLE="''${VALENCE_EXAMPLE:-survival_compat}"
+              export VALENCE_WORKTREE="''${VALENCE_WORKTREE:-/tmp/valence-compat-survival}"
+              export VALENCE_TARGET_DIR="''${VALENCE_TARGET_DIR:-/tmp/valence-compat-survival-target}"
+              export CLIENT_TIMEOUT="''${CLIENT_TIMEOUT:-120}"
+
+              exec mc-compat-runner "$mode"                 --server-backend valence                 --scenario survival-break-place-pickup                 --receipt "$receipt"                 "$@"
+            '';
+            meta = {
+              description = "Run the maintained protocol-763 Valence survival break/place/pickup receipt.";
+              mainProgram = "mc-compat-valence-survival-break-place-pickup";
+            };
+          };
         in
         {
-          inherit mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-ctf-combat-damage mc-compat-valence-ctf-combat-knockback mc-compat-valence-ctf-armor-equipment-mitigation mc-compat-valence-ctf-equipment-update-observation mc-compat-valence-ctf-projectile-hit mc-compat-valence-ctf-projectile-damage-attribution mc-compat-valence-ctf-flag-carrier-death-return mc-compat-valence-ctf-latency-jitter-inventory mc-compat-valence-ctf-reconnect-flag-state;
+          inherit mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-ctf-combat-damage mc-compat-valence-ctf-combat-knockback mc-compat-valence-ctf-armor-equipment-mitigation mc-compat-valence-ctf-equipment-update-observation mc-compat-valence-ctf-projectile-hit mc-compat-valence-ctf-projectile-damage-attribution mc-compat-valence-ctf-flag-carrier-death-return mc-compat-valence-ctf-latency-jitter-inventory mc-compat-valence-ctf-reconnect-flag-state mc-compat-valence-survival-break-place-pickup;
           cairn = cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn;
           cargo-octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.cargo-octet;
           octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.octet;
@@ -588,6 +616,13 @@
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-reconnect-flag-state
           }/bin/mc-compat-valence-ctf-reconnect-flag-state";
           meta.description = "Run the maintained protocol-763 Valence CTF reconnect flag-state receipt.";
+        };
+        mc-compat-valence-survival-break-place-pickup = {
+          type = "app";
+          program = "${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-break-place-pickup
+          }/bin/mc-compat-valence-survival-break-place-pickup";
+          meta.description = "Run the maintained protocol-763 Valence survival break/place/pickup receipt.";
         };
         default = self.apps.${pkgs.stdenv.hostPlatform.system}.mc-compat-combo;
       });
@@ -1071,6 +1106,40 @@
             mkdir -p "$out"
             cp reconnect-flag-state-dry-run.log receipts/reconnect-flag-state-receipt.json "$out/"
           '';
+        mc-compat-valence-survival-break-place-pickup-dry-run =
+          pkgs.runCommand "mc-compat-valence-survival-break-place-pickup-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
+            mkdir -p fake-stevenarella fake-valence receipts
+            printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+            git -C fake-valence init
+            git -C fake-valence config user.email mc-compat@example.invalid
+            git -C fake-valence config user.name mc-compat
+            printf '%s\n' fake > fake-valence/README.md
+            git -C fake-valence add README.md
+            git -C fake-valence commit -m init
+            MC_COMPAT_SURVIVAL_BREAK_PLACE_PICKUP_RECEIPT="$PWD/receipts/survival-receipt.json" ${
+              self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-break-place-pickup
+            }/bin/mc-compat-valence-survival-break-place-pickup --dry-run --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD > survival-dry-run.log
+            grep -Fq "scenario 'survival-break-place-pickup'" survival-dry-run.log
+            grep -Fq '"name": "survival-break-place-pickup"' receipts/survival-receipt.json
+            grep -Fq '"example": "survival_compat"' receipts/survival-receipt.json
+            grep -Fq '"version": "1.20.1"' receipts/survival-receipt.json
+            grep -Fq '"protocol": 763' receipts/survival-receipt.json
+            grep -Fq '"timeout_secs": 120' receipts/survival-receipt.json
+            grep -Fq '"survival_break_sent"' receipts/survival-receipt.json
+            grep -Fq '"survival_break_update"' receipts/survival-receipt.json
+            grep -Fq '"survival_pickup_seen"' receipts/survival-receipt.json
+            grep -Fq '"survival_place_sent"' receipts/survival-receipt.json
+            grep -Fq '"survival_place_update"' receipts/survival-receipt.json
+            grep -Fq '"server_survival_join"' receipts/survival-receipt.json
+            grep -Fq '"server_survival_break"' receipts/survival-receipt.json
+            grep -Fq '"server_survival_pickup"' receipts/survival-receipt.json
+            grep -Fq '"server_survival_place"' receipts/survival-receipt.json
+            grep -Fq '"expected_summary_packets": ["login_success", "play_join_game", "player_action_break_block", "block_update", "inventory_pickup", "player_block_placement"]' receipts/survival-receipt.json
+            grep -Fq '"claims_correctness": false' receipts/survival-receipt.json
+            grep -Fq '"claims_semantic_equivalence": false' receipts/survival-receipt.json
+            mkdir -p "$out"
+            cp survival-dry-run.log receipts/survival-receipt.json "$out/"
+          '';
         mc-compat-maintained-dry-runs = pkgs.runCommand "mc-compat-maintained-dry-runs" { } ''
           mkdir -p "$out"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-dry-run} "$out/smoke"
@@ -1088,6 +1157,7 @@
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-flag-carrier-death-return-dry-run} "$out/flag-carrier-death-return"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-latency-jitter-inventory-dry-run} "$out/latency-jitter-inventory"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-reconnect-flag-state-dry-run} "$out/reconnect-flag-state"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-break-place-pickup-dry-run} "$out/survival-break-place-pickup"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-bot-probe-dry-run} "$out/compat-bot-probe"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-acceptance-matrix} "$out/acceptance-matrix"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-current-evidence-bundle} "$out/current-evidence-bundle"
@@ -1108,6 +1178,7 @@
           flag-carrier-death-return
           latency-jitter-inventory
           reconnect-flag-state
+          survival-break-place-pickup
           compat-bot-probe
           acceptance-matrix
           current-evidence-bundle
