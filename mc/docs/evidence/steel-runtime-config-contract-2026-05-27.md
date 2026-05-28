@@ -139,7 +139,8 @@ It forbids:
 - valid mutability classes;
 - default Steel module exports;
 - arrow-damage policy shape;
-- normalized snapshot referencing the default module and hash.
+- normalized snapshot referencing the default module and hash;
+- path-specific agreement between inventory mutability, contract rows, and `mutability_summary` buckets.
 
 ## Negative validation
 
@@ -150,6 +151,7 @@ It forbids:
 - missing required Steel exports;
 - forbidden sandbox capability tokens;
 - invalid arrow-damage policy shape;
+- path moved to the wrong snapshot `mutability_summary` bucket;
 - snapshot/module hash mismatch.
 
 ## Current non-claims

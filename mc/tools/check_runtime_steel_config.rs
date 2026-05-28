@@ -311,6 +311,8 @@ const MANAGED_PATH_SPECS: &[ManagedPathSpec] = &[
 ];
 
 const MIGRATED_STATUS: &str = "steel-startup-migrated";
+const SNAPSHOT_MUTABILITY_BUCKETS: &[&str] =
+    &["hot", "next_run", "restart_only", "fixed_protocol_fact"];
 
 const REQUIRED_CONTRACT_TOKENS: &[&str] = &[
     "Steel module contract",
@@ -565,6 +567,13 @@ fn validate_migration_agreement(
         .iter()
         .map(|row| (row.config_path.as_str(), row))
         .collect();
+    let snapshot_mutability_summary = match parse_snapshot_mutability_summary(snapshot_text) {
+        Ok(summary) => summary,
+        Err(issue) => {
+            issues.push(issue);
+            BTreeMap::new()
+        }
+    };
 
     let combined_code = format!("{runner_main_text}\n{runtime_core_text}");
     for token in GLOBAL_CODE_TOKENS {
@@ -617,19 +626,22 @@ fn validate_migration_agreement(
                 spec.config_path, spec.snapshot_token
             ));
         }
-        let snapshot_path_token = format!("\"{}\"", spec.config_path);
-        if !snapshot_text.contains(&snapshot_path_token) {
+        let expected_bucket = snapshot_mutability_bucket(spec.mutability);
+        let actual_buckets =
+            snapshot_buckets_for_path(&snapshot_mutability_summary, spec.config_path);
+        if !actual_buckets.contains(&expected_bucket) {
             issues.push(format!(
-                "{} snapshot missing mutability path token",
-                spec.config_path
+                "{} snapshot mutability missing expected bucket {}; actual {:?}",
+                spec.config_path, expected_bucket, actual_buckets
             ));
         }
-        let bucket = snapshot_mutability_bucket(spec.mutability);
-        if !snapshot_text.contains(&format!("\"{bucket}\"")) {
-            issues.push(format!(
-                "{} snapshot missing mutability bucket {bucket}",
-                spec.config_path
-            ));
+        for actual_bucket in &actual_buckets {
+            if actual_bucket != &expected_bucket {
+                issues.push(format!(
+                    "{} snapshot mutability has unexpected bucket {}; expected {}",
+                    spec.config_path, actual_bucket, expected_bucket
+                ));
+            }
         }
 
         for token in spec.runtime_core_tokens {
@@ -655,6 +667,53 @@ fn validate_migration_agreement(
 fn contract_row<'a>(text: &'a str, config_path: &str) -> Option<&'a str> {
     let needle = format!("| `{config_path}` |");
     text.lines().find(|line| line.contains(&needle))
+}
+
+fn parse_snapshot_mutability_summary(
+    text: &str,
+) -> Result<BTreeMap<&'static str, BTreeSet<String>>, String> {
+    let summary = text
+        .split_once("\"mutability_summary\"")
+        .map(|(_, after_key)| after_key)
+        .ok_or_else(|| "snapshot missing mutability_summary object".to_string())?;
+    let mut buckets = BTreeMap::new();
+    for bucket in SNAPSHOT_MUTABILITY_BUCKETS {
+        let paths = parse_snapshot_bucket_paths(summary, bucket)
+            .ok_or_else(|| format!("snapshot mutability_summary missing bucket {bucket}"))?;
+        buckets.insert(*bucket, paths);
+    }
+    Ok(buckets)
+}
+
+fn parse_snapshot_bucket_paths(text: &str, bucket: &str) -> Option<BTreeSet<String>> {
+    let bucket_key = format!("\"{bucket}\"");
+    let after_key = text.split_once(&bucket_key)?.1;
+    let after_array_start = after_key.split_once('[')?.1;
+    let array_body = after_array_start.split_once(']')?.0;
+    Some(parse_json_string_literals(array_body))
+}
+
+fn parse_json_string_literals(text: &str) -> BTreeSet<String> {
+    let mut values = BTreeSet::new();
+    let mut rest = text;
+    while let Some((_, after_open_quote)) = rest.split_once('"') {
+        let Some((value, after_close_quote)) = after_open_quote.split_once('"') else {
+            break;
+        };
+        values.insert(value.to_string());
+        rest = after_close_quote;
+    }
+    values
+}
+
+fn snapshot_buckets_for_path<'a>(
+    summary: &'a BTreeMap<&'static str, BTreeSet<String>>,
+    config_path: &str,
+) -> BTreeSet<&'a str> {
+    summary
+        .iter()
+        .filter_map(|(bucket, paths)| paths.contains(config_path).then_some(*bucket))
+        .collect()
 }
 
 fn snapshot_mutability_bucket(mutability: &str) -> &'static str {
@@ -780,13 +839,30 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         &rows,
         &module,
         &contract_text_for_specs(),
-        &snapshot_text_for_specs(),
+        &snapshot_text_for_specs(None),
         &runner_text_for_specs(),
         &runtime_text_for_specs(),
     );
     assert!(
         agreement_issues.is_empty(),
         "valid migration agreement failed: {agreement_issues:?}"
+    );
+
+    let wrong_bucket_snapshot =
+        snapshot_text_for_specs(Some(("combat.arrow.max_damage", "next_run")));
+    let wrong_bucket_issues = validate_migration_agreement(
+        &rows,
+        &module,
+        &contract_text_for_specs(),
+        &wrong_bucket_snapshot,
+        &runner_text_for_specs(),
+        &runtime_text_for_specs(),
+    );
+    assert!(
+        wrong_bucket_issues
+            .iter()
+            .any(|issue| issue.contains("snapshot mutability")),
+        "wrong snapshot bucket not rejected: {wrong_bucket_issues:?}"
     );
 
     let wrong_status_inventory = valid_inventory.replacen(MIGRATED_STATUS, "inventoried", 1);
@@ -797,7 +873,7 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         &wrong_status_rows,
         &module,
         &contract_text_for_specs(),
-        &snapshot_text_for_specs(),
+        &snapshot_text_for_specs(None),
         &runner_text_for_specs(),
         &runtime_text_for_specs(),
     );
@@ -812,7 +888,7 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         &rows,
         &module,
         &contract_text_for_specs(),
-        &snapshot_text_for_specs(),
+        &snapshot_text_for_specs(None),
         "",
         &runtime_text_for_specs(),
     );
@@ -859,20 +935,47 @@ fn contract_text_for_specs() -> String {
     text
 }
 
-fn snapshot_text_for_specs() -> String {
+fn snapshot_text_for_specs(bucket_override: Option<(&str, &str)>) -> String {
     let mut text = String::from(
-        "mc.compat.runtime_config.snapshot.v1 config/mc-compat/steel/default.scm mc-compat/pure-v1 \"arrow-damage\"\n",
+        "{\n  \"schema\": \"mc.compat.runtime_config.snapshot.v1\",\n  \"source\": {\n    \"path\": \"config/mc-compat/steel/default.scm\",\n    \"sandbox_profile\": \"mc-compat/pure-v1\"\n  },\n  \"evaluated_exports\": {\n",
     );
     for spec in MANAGED_PATH_SPECS {
-        text.push_str(spec.snapshot_token);
-        text.push(' ');
+        text.push_str(&format!("    {}: \"value\",\n", spec.snapshot_token));
+    }
+    text.push_str("    \"arrow_base_damage\": 1.0\n  },\n  \"policy_exports\": [\"arrow-damage\"],\n  \"mutability_summary\": {\n");
+    for bucket in SNAPSHOT_MUTABILITY_BUCKETS {
         text.push_str(&format!(
-            "\"{}\" \"{}\"\n",
-            spec.config_path,
-            snapshot_mutability_bucket(spec.mutability)
+            "    \"{}\": {}{}\n",
+            bucket,
+            snapshot_bucket_array_for_specs(bucket, bucket_override),
+            snapshot_bucket_separator(bucket)
         ));
     }
+    text.push_str("  }\n}\n");
     text
+}
+
+fn snapshot_bucket_separator(bucket: &str) -> &'static str {
+    if bucket == SNAPSHOT_MUTABILITY_BUCKETS[SNAPSHOT_MUTABILITY_BUCKETS.len() - 1] {
+        ""
+    } else {
+        ","
+    }
+}
+
+fn snapshot_bucket_array_for_specs(bucket: &str, bucket_override: Option<(&str, &str)>) -> String {
+    let mut paths = Vec::new();
+    for spec in MANAGED_PATH_SPECS {
+        let actual_bucket = bucket_override
+            .filter(|(config_path, _)| *config_path == spec.config_path)
+            .map(|(_, override_bucket)| override_bucket)
+            .unwrap_or_else(|| snapshot_mutability_bucket(spec.mutability));
+        if actual_bucket == bucket {
+            paths.push(spec.config_path);
+        }
+    }
+    let quoted_paths: Vec<String> = paths.iter().map(|path| format!("\"{path}\"")).collect();
+    format!("[{}]", quoted_paths.join(", "))
 }
 
 fn runtime_text_for_specs() -> String {
