@@ -1,0 +1,67 @@
+checkpoint: Steel runtime config contract gate
+date: 2026-05-27
+root: /home/brittonr/git/mc
+
+command: rustc --edition=2021 tools/check_runtime_steel_config.rs -o /tmp/check_runtime_steel_config
+
+command: /tmp/check_runtime_steel_config --self-test
+runtime steel config self-test ok
+
+command: /tmp/check_runtime_steel_config
+runtime steel config ok: 29 inventory rows, 20 Steel exports
+
+command: nix run --no-update-lock-file .#cairn -- gate proposal hotload-runtime-configuration --root .
+{
+  "change": "hotload-runtime-configuration",
+  "input_hash": "aa0e977ffefd3c44d0772e112753f65a60818751dcd3cac90fa07e91033f3f60",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "db1e29222daf30fac09b08cd936fa1bb3984c25b325eb8b108f5cd005418703e",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate design hotload-runtime-configuration --root .
+{
+  "change": "hotload-runtime-configuration",
+  "input_hash": "82f827682047230da873909a1752a44cee83e92acc3ae1ab89a9e1493e097cdf",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "ab6f5fb64816c14a59a0a7dc8d567670b39607035e19a9a0d0af2004fa1e07fe",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate tasks hotload-runtime-configuration --root .
+{
+  "change": "hotload-runtime-configuration",
+  "input_hash": "999e1d351f18140256cf045275e1447b8f51e3bdbb5c50780d3117ec3dbda7e6",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "b8b6be986c36ed214f21eee1e234b97c3c969455c315cc62533a74a011ea7da4",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 2,
+  "valid": true
+}
+
+result: PASS

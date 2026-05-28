@@ -1,0 +1,30 @@
+config_path	owner	source	current_default	type	contract	mutability	runtime_consumer	migration_status	evidence_path
+runtime.config_version	agent	config/mc-compat/steel/default.scm	1	u32	must equal supported schema version	restart-only	Steel module loader	contracted	docs/evidence/steel-runtime-config-contract-2026-05-27.md
+runtime.steel.sandbox_profile	agent	config/mc-compat/steel/default.scm	mc-compat/pure-v1	string	must match approved sandbox profile	restart-only	Steel evaluator shell	contracted	docs/evidence/steel-runtime-config-contract-2026-05-27.md
+server.backend	agent	Config::defaults/apply_env_overrides	valence	enum(valence,paper)	known backend	next-run	server launcher	inventoried	docs/evidence/runtime-config-inventory-2026-05-27.tsv
+server.version	agent	Config::defaults/apply_env_overrides	1.18.2	string	semantic Minecraft version label	next-run	server launcher/status oracle	inventoried	docs/evidence/runtime-config-inventory-2026-05-27.tsv
+server.protocol	agent	Config::defaults/apply_env_overrides	758	u32	protocol identifier; protocol facts stay fixed-protocol-fact unless scenario-owned	next-run	server/client handshake	inventoried	docs/evidence/runtime-config-inventory-2026-05-27.tsv
+server.port	agent	Config::defaults/apply_env_overrides	25565	u16	1..65535	restart-only	server launcher/client connector	inventoried	docs/evidence/runtime-config-inventory-2026-05-27.tsv
+valence.rev	agent	Config::defaults/apply_env_overrides	8ad9c85	string	git revision or branch	next-run	Valence worktree checkout	inventoried	docs/evidence/runtime-config-inventory-2026-05-27.tsv
+valence.example	agent	Config::defaults/apply_env_overrides	terrain	string	Valence example binary	next-run	Valence launcher	inventoried	docs/evidence/runtime-config-inventory-2026-05-27.tsv
+valence.worktree	agent	Config::defaults/apply_env_overrides	/tmp/valence-compat-758	path	absolute or repo-relative path	next-run	Valence checkout manager	inventoried	docs/evidence/runtime-config-inventory-2026-05-27.tsv
+valence.target_dir	agent	Config::defaults/apply_env_overrides	/tmp/valence-compat-758-target	path	absolute or repo-relative path	next-run	Valence cargo invocation	inventoried	docs/evidence/runtime-config-inventory-2026-05-27.tsv
+valence.log	agent	Config::defaults/apply_env_overrides	/tmp/mc-compat-valence.log	path	log file path	hot	evidence copier/log reader	inventoried	docs/evidence/runtime-config-inventory-2026-05-27.tsv
+valence.pid_file	agent	Config::defaults/apply_env_overrides	/tmp/mc-compat-valence.pid	path	pid file path	restart-only	server lifecycle manager	inventoried	docs/evidence/runtime-config-inventory-2026-05-27.tsv
+client.username	agent	Config::defaults/apply_env_overrides	compatbot	string	nonempty Minecraft username	next-run	Stevenarella launcher	inventoried	docs/evidence/runtime-config-inventory-2026-05-27.tsv
+client.timeout_secs	agent	Config::defaults/apply_env_overrides	20	u64	positive seconds	hot	client wait loop	inventoried	docs/evidence/runtime-config-inventory-2026-05-27.tsv
+client.success_patterns	agent	Config::defaults/apply_env_overrides	Detected server protocol version|Dimension type|Received chat message	list(string)	nonempty strings	hot	client success classifier	inventoried	docs/evidence/runtime-config-inventory-2026-05-27.tsv
+scenario.name	agent	Config::defaults/parse_scenario	smoke	enum(supported scenarios)	SUPPORTED_SCENARIO_USAGE	next-run	runner scenario selector	inventoried	docs/evidence/runtime-config-inventory-2026-05-27.tsv
+receipt.path	agent	Config::defaults/apply_env_overrides	none	optional(path)	writable parent if set	next-run	receipt writer	inventoried	docs/evidence/runtime-config-inventory-2026-05-27.tsv
+receipt.dir	agent	Config::defaults/apply_env_overrides	none	optional(path)	writable directory if set	next-run	matrix receipt writer	inventoried	docs/evidence/runtime-config-inventory-2026-05-27.tsv
+proxy.route	agent	Config::defaults/apply_env_overrides	none	optional(string)	route label	next-run	proxy evidence block	inventoried	docs/evidence/runtime-config-inventory-2026-05-27.tsv
+proxy.forwarding_mode	agent	Config::defaults/apply_env_overrides	none	optional(string)	forwarding mode label	next-run	proxy evidence block	inventoried	docs/evidence/runtime-config-inventory-2026-05-27.tsv
+load.target_scope	agent	load_network_safety_inputs	owned-local-loopback	string	must be authorized local scope	next-run	load preflight	inventoried	docs/evidence/runtime-config-inventory-2026-05-27.tsv
+load.planned_clients	agent	load_network_safety_inputs	2	usize	<= safety max clients	next-run	load preflight	inventoried	docs/evidence/runtime-config-inventory-2026-05-27.tsv
+load.duration_secs	agent	load_network_safety_inputs	600	u64	<= safety max duration	next-run	load preflight	inventoried	docs/evidence/runtime-config-inventory-2026-05-27.tsv
+load.latency_ms	agent	MC_COMPAT_LATENCY_MS	0	string	nonnegative tc/netem value	next-run	latency jitter rail	inventoried	docs/evidence/runtime-config-inventory-2026-05-27.tsv
+load.jitter_ms	agent	MC_COMPAT_JITTER_MS	0	string	nonnegative tc/netem value	next-run	latency jitter rail	inventoried	docs/evidence/runtime-config-inventory-2026-05-27.tsv
+load.loss_percent	agent	MC_COMPAT_LOSS_PERCENT	0	string	0..100 percent	next-run	latency jitter rail	inventoried	docs/evidence/runtime-config-inventory-2026-05-27.tsv
+combat.arrow.base_damage	agent	config/mc-compat/steel/default.scm	3.0	f64	0.0..100.0	hot	arrow-damage policy	contracted	docs/evidence/steel-runtime-config-contract-2026-05-27.md
+combat.arrow.velocity_multiplier	agent	config/mc-compat/steel/default.scm	1.0	f64	0.0..100.0	hot	arrow-damage policy	contracted	docs/evidence/steel-runtime-config-contract-2026-05-27.md
+combat.arrow.max_damage	agent	config/mc-compat/steel/default.scm	10.0	f64	0.0..100.0	hot	arrow-damage policy	contracted	docs/evidence/steel-runtime-config-contract-2026-05-27.md

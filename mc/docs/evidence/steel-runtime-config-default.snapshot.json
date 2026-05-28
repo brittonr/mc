@@ -1,0 +1,66 @@
+{
+  "schema": "mc.compat.runtime_config.snapshot.v1",
+  "schema_version": 1,
+  "source": {
+    "language": "steel",
+    "path": "config/mc-compat/steel/default.scm",
+    "module_blake3": "06373a43c99d0463611c9ef55dc7e72a624c1335a71078eea6d5d4b5d6998b16",
+    "sandbox_profile": "mc-compat/pure-v1"
+  },
+  "evaluated_exports": {
+    "server_backend": "valence",
+    "server_version": "1.20.1",
+    "server_protocol": 763,
+    "server_port": 25565,
+    "valence_rev": "main",
+    "valence_example": "ctf",
+    "valence_worktree": "/tmp/valence-compat-763",
+    "valence_target_dir": "/tmp/valence-compat-763-target",
+    "valence_log": "/tmp/mc-compat-valence.log",
+    "valence_pid_file": "/tmp/mc-compat-valence.pid",
+    "client_username": "compatbot",
+    "client_timeout_secs": 120,
+    "client_success_patterns": [
+      "Detected server protocol version",
+      "Dimension type:",
+      "Received chat message"
+    ],
+    "receipt_dir": "target/mc-compat-steel",
+    "scenario": "projectile-damage-attribution",
+    "arrow_base_damage": 3.0,
+    "arrow_velocity_multiplier": 1.0,
+    "arrow_max_damage": 10.0
+  },
+  "policy_exports": [
+    "arrow-damage"
+  ],
+  "redacted_fields": [],
+  "mutability_summary": {
+    "hot": [
+      "client.timeout_secs",
+      "client.success_patterns",
+      "combat.arrow.base_damage",
+      "combat.arrow.velocity_multiplier",
+      "combat.arrow.max_damage"
+    ],
+    "next_run": [
+      "server.backend",
+      "server.version",
+      "server.protocol",
+      "valence.rev",
+      "valence.example",
+      "valence.worktree",
+      "valence.target_dir",
+      "client.username",
+      "scenario.name",
+      "receipt.dir"
+    ],
+    "restart_only": [
+      "runtime.config_version",
+      "runtime.steel.sandbox_profile",
+      "server.port",
+      "valence.pid_file"
+    ],
+    "fixed_protocol_fact": []
+  }
+}

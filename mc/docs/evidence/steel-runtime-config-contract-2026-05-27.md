@@ -1,0 +1,144 @@
+# Steel runtime config contract — 2026-05-27
+
+## Scope
+
+This checkpoint implements the first Steel-first configuration slice for `hotload-runtime-configuration`. It does not claim full runtime migration or live file watching yet. It does define the reviewable inventory, Steel module contract, typed boundary, normalized snapshot shape, and arrow-damage policy contract that later runtime code must consume.
+
+## Source files
+
+- Inventory: `docs/evidence/runtime-config-inventory-2026-05-27.tsv`
+- Steel module: `config/mc-compat/steel/default.scm`
+- Normalized snapshot: `docs/evidence/steel-runtime-config-default.snapshot.json`
+- Checker: `tools/check_runtime_steel_config.rs`
+
+## Steel module contract
+
+The editable config source is a Steel module using sandbox profile `mc-compat/pure-v1`.
+
+Required value exports:
+
+- `config-version`
+- `sandbox-profile`
+- `server-backend`
+- `server-version`
+- `server-protocol`
+- `server-port`
+- `valence-rev`
+- `valence-example`
+- `valence-worktree`
+- `valence-target-dir`
+- `valence-log`
+- `valence-pid-file`
+- `client-username`
+- `client-timeout-secs`
+- `client-success-patterns`
+- `receipt-dir`
+- `scenario`
+- `arrow-base-damage`
+- `arrow-velocity-multiplier`
+- `arrow-max-damage`
+
+Required policy export:
+
+- `arrow-damage`
+
+The `arrow-damage` policy must call the host-provided pure helper `damage-linear` with explicit `ctx`, `arrow-base-damage`, `arrow-velocity-multiplier`, and `arrow-max-damage` arguments. This gives Steel the editable policy expression while Rust owns validation and final apply.
+
+## Rust-owned typed boundary
+
+The Rust boundary must validate Steel exports before use:
+
+| Path | Type | Contract | Mutability |
+| --- | --- | --- | --- |
+| `runtime.config_version` | `u32` | supported schema version | restart-only |
+| `runtime.steel.sandbox_profile` | `String` | `mc-compat/pure-v1` | restart-only |
+| `server.backend` | enum | `valence` or `paper` | next-run |
+| `server.protocol` | `u32` | scenario-supported protocol | next-run |
+| `server.port` | `u16` | `1..=65535` | restart-only |
+| `client.timeout_secs` | `u64` | positive seconds | hot |
+| `client.success_patterns` | `Vec<String>` | nonempty strings | hot |
+| `combat.arrow.base_damage` | `f64` | `0.0..=100.0` | hot |
+| `combat.arrow.velocity_multiplier` | `f64` | `0.0..=100.0` | hot |
+| `combat.arrow.max_damage` | `f64` | `0.0..=100.0` | hot |
+
+The checker requires every inventory row to declare one of: `hot`, `next-run`, `restart-only`, or `fixed-protocol-fact`.
+
+## Arrow damage policy contract
+
+Input context, provided by Rust only:
+
+- `projectile_velocity: f64`
+- `pull_strength: f64`
+- `attacker_team: enum`
+- `victim_team: enum`
+- `scenario: enum`
+
+Output decision, validated by Rust:
+
+- `damage: f64`, bounded to `0.0..=100.0`
+- `policy: String`
+- `clamped: bool`
+
+Representative formula:
+
+```scheme
+(define (arrow-damage ctx)
+  (damage-linear ctx arrow-base-damage arrow-velocity-multiplier arrow-max-damage))
+```
+
+## Sandbox contract
+
+`mc-compat/pure-v1` allows only:
+
+- literal data exports;
+- pure arithmetic inside policy hooks;
+- explicit host helpers such as `damage-linear`;
+- explicit context reads supplied by Rust.
+
+It forbids:
+
+- filesystem access;
+- network access;
+- process spawning;
+- ambient wall-clock reads;
+- randomness;
+- mutation of live Rust state;
+- unbounded evaluation.
+
+## Normalized snapshot
+
+`docs/evidence/steel-runtime-config-default.snapshot.json` records:
+
+- schema version;
+- source module path;
+- Steel module BLAKE3;
+- sandbox profile;
+- evaluated exports;
+- policy export names;
+- redacted fields;
+- mutability summary.
+
+## Positive validation
+
+`tools/check_runtime_steel_config.rs --self-test` accepts:
+
+- required inventory rows;
+- valid mutability classes;
+- default Steel module exports;
+- arrow-damage policy shape;
+- normalized snapshot referencing the default module and hash.
+
+## Negative validation
+
+`tools/check_runtime_steel_config.rs --self-test` rejects:
+
+- missing inventory rows;
+- unknown mutability classes;
+- missing required Steel exports;
+- forbidden sandbox capability tokens;
+- invalid arrow-damage policy shape;
+- snapshot/module hash mismatch.
+
+## Current non-claims
+
+No live runtime file watcher, in-process Steel evaluator, migrated call site, production sandbox implementation, remote config distribution, or full hot-reload rollout is claimed yet. Those remain open tasks in `cairn/changes/hotload-runtime-configuration/tasks.md`.

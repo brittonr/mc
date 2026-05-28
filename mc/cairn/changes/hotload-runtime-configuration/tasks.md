@@ -2,14 +2,14 @@
 
 ## Phase: inventory
 
-- [ ] [serial] Build a runtime value inventory for compatibility harness, runner, Valence CTF/game rail, and Stevenarella launch path. r[runtime_configuration.hotload_runtime_configuration.config_inventory]
-- [ ] [serial] Classify each inventory row as hot, next-run, restart-only, or fixed-protocol-fact. r[runtime_configuration.hotload_runtime_configuration.reload_mutability]
+- [x] [serial] Build a runtime value inventory for compatibility harness, runner, Valence CTF/game rail, and Stevenarella launch path. r[runtime_configuration.hotload_runtime_configuration.config_inventory]
+- [x] [serial] Classify each inventory row as hot, next-run, restart-only, or fixed-protocol-fact. r[runtime_configuration.hotload_runtime_configuration.reload_mutability]
 
 ## Phase: Steel config/policy contract
 
-- [ ] [serial] Add Steel module contract docs and sample modules with documented defaults, explicit exports, sandbox profile, and environment overlays. r[runtime_configuration.hotload_runtime_configuration.steel_module_contract]
-- [ ] [serial] Add Rust-owned typed contracts for Steel exports and policy hook inputs/outputs. r[runtime_configuration.hotload_runtime_configuration.typed_steel_boundary]
-- [ ] [serial] Add normalized snapshot export with schema version, Steel module hash, evaluated exports, provenance, sandbox metadata, and redaction metadata. r[runtime_configuration.hotload_runtime_configuration.normalized_snapshot]
+- [x] [serial] Add Steel module contract docs and sample modules with documented defaults, explicit exports, sandbox profile, and environment overlays. r[runtime_configuration.hotload_runtime_configuration.steel_module_contract]
+- [x] [serial] Add Rust-owned typed contracts for Steel exports and policy hook inputs/outputs. r[runtime_configuration.hotload_runtime_configuration.typed_steel_boundary]
+- [x] [serial] Add normalized snapshot export with schema version, Steel module hash, evaluated exports, provenance, sandbox metadata, and redaction metadata. r[runtime_configuration.hotload_runtime_configuration.normalized_snapshot]
 
 ## Phase: implementation
 
@@ -25,3 +25,14 @@
 - [ ] [parallel] Add negative tests for unknown exports, missing exports, wrong types, invalid ranges, malformed Steel modules, sandbox violations, nondeterministic policy attempts, hot-apply failure rollback, and restart-only hot-apply attempts. r[runtime_configuration.hotload_runtime_configuration.reload_tests]
 - [ ] [serial] Add checker/evidence tying inventory, Steel module contract, typed boundary, exported snapshot, tests, and migrated call sites together. r[runtime_configuration.hotload_runtime_configuration.reload_evidence]
 - [ ] [serial] Run Cairn gates, validation, and archive only after completed tasks match implemented/evidenced behavior. r[runtime_configuration.hotload_runtime_configuration.reload_evidence]
+
+## Progress
+
+- Inventory, mutability classes, Steel module contract, typed boundary, and normalized snapshot are evidenced by:
+  - `docs/evidence/runtime-config-inventory-2026-05-27.tsv`
+  - `config/mc-compat/steel/default.scm`
+  - `docs/evidence/steel-runtime-config-contract-2026-05-27.md`
+  - `docs/evidence/steel-runtime-config-default.snapshot.json`
+  - `tools/check_runtime_steel_config.rs`
+- `tools/check_runtime_steel_config.rs --self-test` includes positive and negative fixtures for missing inventory rows, invalid mutability, missing Steel exports, forbidden sandbox tokens, invalid arrow-damage policy shape, and snapshot hash mismatch.
+- No runtime watcher, in-process evaluator, migrated call site, or archive claim is made yet.

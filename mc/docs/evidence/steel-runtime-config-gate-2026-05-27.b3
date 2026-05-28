@@ -1,0 +1,6 @@
+06373a43c99d0463611c9ef55dc7e72a624c1335a71078eea6d5d4b5d6998b16  config/mc-compat/steel/default.scm
+9b9b262684c229e17c86afe89b7a4ce39a6ed2a1c6d795e435db40ebffad3fce  docs/evidence/runtime-config-inventory-2026-05-27.tsv
+9528b813f2d0d8049d3e80d178724c17a6400c612c705b2e1d2c79b8733fe25c  docs/evidence/steel-runtime-config-contract-2026-05-27.md
+a0b4627268984ffe67e3d6dbaf648a01e9437ac436d5cffcb0e2d9f1c233014b  docs/evidence/steel-runtime-config-default.snapshot.json
+9901c4ffd2cfc5b64d9f022579bcaba21f555c7eeed71bf9fad6afff273cb240  docs/evidence/steel-runtime-config-gate-2026-05-27.run.log
+0f058f479e56be0d2afd39cb7ab6cfbcb4d11f43904ba9d54509179d0cb70b71  tools/check_runtime_steel_config.rs
