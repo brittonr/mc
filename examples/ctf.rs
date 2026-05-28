@@ -1,6 +1,11 @@
 #![allow(clippy::type_complexity)]
 
-use std::collections::HashMap;
+use std::{
+    collections::HashMap,
+    fs,
+    path::Path,
+    sync::{OnceLock, RwLock},
+};
 
 use bevy_ecs::query::QueryData;
 use valence::entity::cow::CowEntityBundle;
@@ -40,6 +45,468 @@ const PLAYER_MAX_HEALTH: f32 = 20.0;
 const ARMOR_MITIGATION_CHEST_SLOT: u16 = 6;
 const DIAMOND_CHESTPLATE_MITIGATION: f32 = 2.0;
 const PROJECTILE_PROBE_DAMAGE: f32 = 3.0;
+const ARROW_POLICY_DEFAULT_MAX_DAMAGE: f32 = 10.0;
+const ARROW_POLICY_DEFAULT_VELOCITY_MULTIPLIER: f32 = 1.0;
+const ARROW_POLICY_DEFAULT_PROJECTILE_VELOCITY: f32 = 0.0;
+const ARROW_POLICY_DEFAULT_PULL_STRENGTH: f32 = 1.0;
+const ARROW_POLICY_MIN_DAMAGE: f32 = 0.0;
+const ARROW_POLICY_MAX_DAMAGE: f32 = 100.0;
+const ARROW_POLICY_DEFAULT_GENERATION: u64 = 0;
+const ARROW_POLICY_FIRST_GENERATION: u64 = 1;
+const ARROW_POLICY_ID_DAMAGE_LINEAR: &str = "damage-linear";
+const ARROW_POLICY_DEFAULT_SOURCE: &str = "default";
+const ARROW_POLICY_SANDBOX_PROFILE: &str = "mc-compat/pure-v1";
+const ARROW_POLICY_ENV_CONFIG: &str = "MC_COMPAT_STEEL_CONFIG";
+const ARROW_POLICY_ENV_RELOAD_REQUEST: &str = "MC_COMPAT_STEEL_RELOAD_REQUEST";
+const ARROW_POLICY_PATH_BASE_DAMAGE: &str = "combat.arrow.base_damage";
+const ARROW_POLICY_PATH_VELOCITY_MULTIPLIER: &str = "combat.arrow.velocity_multiplier";
+const ARROW_POLICY_PATH_MAX_DAMAGE: &str = "combat.arrow.max_damage";
+const ARROW_POLICY_PATH_SANDBOX: &str = "runtime.steel.sandbox_profile";
+const ARROW_POLICY_STEEL_EXPORT_BASE_DAMAGE: &str = "arrow-base-damage";
+const ARROW_POLICY_STEEL_EXPORT_VELOCITY_MULTIPLIER: &str = "arrow-velocity-multiplier";
+const ARROW_POLICY_STEEL_EXPORT_MAX_DAMAGE: &str = "arrow-max-damage";
+const ARROW_POLICY_STEEL_EXPORT_SANDBOX: &str = "sandbox-profile";
+const ARROW_POLICY_REQUIRED_POLICY_SHAPE: &str =
+    "(damage-linear ctx arrow-base-damage arrow-velocity-multiplier arrow-max-damage)";
+const ARROW_POLICY_FORBIDDEN_STEEL_TOKENS: &[&str] = &[
+    "open-input-file",
+    "call-with-input-file",
+    "delete-file",
+    "system",
+    "process",
+    "tcp-connect",
+    "current-second",
+    "random",
+];
+
+#[derive(Clone, Debug, PartialEq)]
+struct ArrowPolicySnapshot {
+    generation: u64,
+    source: String,
+    policy_id: String,
+    base_damage: f32,
+    velocity_multiplier: f32,
+    max_damage: f32,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+struct ArrowDamageContext {
+    projectile_velocity: f32,
+    pull_strength: f32,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+struct ArrowDamageDecision {
+    generation: u64,
+    source: String,
+    policy_id: String,
+    damage: f32,
+    clamped: bool,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct ArrowPolicyDiagnostic {
+    path: &'static str,
+    message: String,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+struct ArrowPolicyReloadOutcome {
+    active_changed: bool,
+    active_generation: u64,
+    diagnostics: Vec<ArrowPolicyDiagnostic>,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+struct ArrowPolicyController {
+    active: ArrowPolicySnapshot,
+}
+
+impl ArrowPolicyController {
+    fn new(active: ArrowPolicySnapshot) -> Self {
+        Self { active }
+    }
+
+    fn active(&self) -> &ArrowPolicySnapshot {
+        &self.active
+    }
+
+    fn reload_candidate(
+        &mut self,
+        candidate: Result<ArrowPolicySnapshot, Vec<ArrowPolicyDiagnostic>>,
+    ) -> ArrowPolicyReloadOutcome {
+        let candidate = match candidate {
+            Ok(candidate) => candidate,
+            Err(diagnostics) => {
+                return ArrowPolicyReloadOutcome {
+                    active_changed: false,
+                    active_generation: self.active.generation,
+                    diagnostics,
+                };
+            }
+        };
+        let diagnostics = validate_arrow_policy_snapshot(&candidate);
+        if !diagnostics.is_empty() {
+            return ArrowPolicyReloadOutcome {
+                active_changed: false,
+                active_generation: self.active.generation,
+                diagnostics,
+            };
+        }
+        let sample_decision = evaluate_arrow_policy(
+            &candidate,
+            ArrowDamageContext {
+                projectile_velocity: ARROW_POLICY_DEFAULT_PROJECTILE_VELOCITY,
+                pull_strength: ARROW_POLICY_DEFAULT_PULL_STRENGTH,
+            },
+        );
+        let diagnostics = validate_arrow_damage_decision(&sample_decision);
+        if !diagnostics.is_empty() {
+            return ArrowPolicyReloadOutcome {
+                active_changed: false,
+                active_generation: self.active.generation,
+                diagnostics,
+            };
+        }
+        self.active = candidate;
+        ArrowPolicyReloadOutcome {
+            active_changed: true,
+            active_generation: self.active.generation,
+            diagnostics: Vec::new(),
+        }
+    }
+}
+
+static ARROW_POLICY_SNAPSHOT: OnceLock<RwLock<ArrowPolicySnapshot>> = OnceLock::new();
+static ARROW_POLICY_LAST_RELOAD_REQUEST: OnceLock<RwLock<Option<String>>> = OnceLock::new();
+
+fn arrow_policy_store() -> &'static RwLock<ArrowPolicySnapshot> {
+    ARROW_POLICY_SNAPSHOT.get_or_init(|| RwLock::new(default_arrow_policy_snapshot()))
+}
+
+fn arrow_policy_reload_request_store() -> &'static RwLock<Option<String>> {
+    ARROW_POLICY_LAST_RELOAD_REQUEST.get_or_init(|| RwLock::new(None))
+}
+
+fn default_arrow_policy_snapshot() -> ArrowPolicySnapshot {
+    ArrowPolicySnapshot {
+        generation: ARROW_POLICY_DEFAULT_GENERATION,
+        source: ARROW_POLICY_DEFAULT_SOURCE.to_string(),
+        policy_id: ARROW_POLICY_ID_DAMAGE_LINEAR.to_string(),
+        base_damage: PROJECTILE_PROBE_DAMAGE,
+        velocity_multiplier: ARROW_POLICY_DEFAULT_VELOCITY_MULTIPLIER,
+        max_damage: ARROW_POLICY_DEFAULT_MAX_DAMAGE,
+    }
+}
+
+fn initialize_valence_arrow_policy_from_env() {
+    let Some(path) = std::env::var(ARROW_POLICY_ENV_CONFIG).ok() else {
+        return;
+    };
+    let outcome = reload_arrow_policy_from_path(Path::new(&path));
+    log_arrow_policy_reload_outcome(&path, &outcome);
+}
+
+fn maybe_reload_valence_arrow_policy_on_request() {
+    let Some(request) = std::env::var(ARROW_POLICY_ENV_RELOAD_REQUEST).ok() else {
+        return;
+    };
+    let Ok(mut last_request) = arrow_policy_reload_request_store().write() else {
+        return;
+    };
+    if last_request.as_ref() == Some(&request) {
+        return;
+    }
+    *last_request = Some(request);
+    drop(last_request);
+    initialize_valence_arrow_policy_from_env();
+}
+
+fn reload_arrow_policy_from_path(path: &Path) -> ArrowPolicyReloadOutcome {
+    let active = active_arrow_policy_snapshot();
+    let generation = active
+        .generation
+        .saturating_add(ARROW_POLICY_FIRST_GENERATION);
+    let candidate = load_arrow_policy_snapshot_from_path(path, generation);
+    let mut controller = ArrowPolicyController::new(active);
+    let outcome = controller.reload_candidate(candidate);
+    if outcome.active_changed {
+        publish_arrow_policy_snapshot(controller.active().clone());
+    }
+    outcome
+}
+
+fn load_arrow_policy_snapshot_from_path(
+    path: &Path,
+    generation: u64,
+) -> Result<ArrowPolicySnapshot, Vec<ArrowPolicyDiagnostic>> {
+    let module_text = fs::read_to_string(path).map_err(|err| {
+        vec![ArrowPolicyDiagnostic {
+            path: "runtime.steel.source",
+            message: format!(
+                "read {}: {err}",
+                redact_arrow_policy_text(&path.display().to_string())
+            ),
+        }]
+    })?;
+    normalize_arrow_policy_module(&path.display().to_string(), generation, &module_text)
+}
+
+fn normalize_arrow_policy_module(
+    source: &str,
+    generation: u64,
+    module_text: &str,
+) -> Result<ArrowPolicySnapshot, Vec<ArrowPolicyDiagnostic>> {
+    let mut diagnostics = Vec::new();
+    for token in ARROW_POLICY_FORBIDDEN_STEEL_TOKENS {
+        if module_text.contains(token) {
+            diagnostics.push(ArrowPolicyDiagnostic {
+                path: "runtime.steel.sandbox",
+                message: format!("forbidden Steel capability: {token}"),
+            });
+        }
+    }
+    let sandbox_profile = parse_steel_string_export(module_text, ARROW_POLICY_STEEL_EXPORT_SANDBOX);
+    if sandbox_profile.as_deref() != Some(ARROW_POLICY_SANDBOX_PROFILE) {
+        diagnostics.push(ArrowPolicyDiagnostic {
+            path: ARROW_POLICY_PATH_SANDBOX,
+            message: format!("expected sandbox profile {ARROW_POLICY_SANDBOX_PROFILE}"),
+        });
+    }
+    if !module_text.contains(ARROW_POLICY_REQUIRED_POLICY_SHAPE) {
+        diagnostics.push(ArrowPolicyDiagnostic {
+            path: "combat.arrow.policy",
+            message: "missing damage-linear arrow-damage policy shape".to_string(),
+        });
+    }
+    let base_damage = parse_required_steel_f32_export(
+        module_text,
+        ARROW_POLICY_STEEL_EXPORT_BASE_DAMAGE,
+        ARROW_POLICY_PATH_BASE_DAMAGE,
+        &mut diagnostics,
+    );
+    let velocity_multiplier = parse_required_steel_f32_export(
+        module_text,
+        ARROW_POLICY_STEEL_EXPORT_VELOCITY_MULTIPLIER,
+        ARROW_POLICY_PATH_VELOCITY_MULTIPLIER,
+        &mut diagnostics,
+    );
+    let max_damage = parse_required_steel_f32_export(
+        module_text,
+        ARROW_POLICY_STEEL_EXPORT_MAX_DAMAGE,
+        ARROW_POLICY_PATH_MAX_DAMAGE,
+        &mut diagnostics,
+    );
+    if !diagnostics.is_empty() {
+        return Err(diagnostics);
+    }
+    let snapshot = ArrowPolicySnapshot {
+        generation,
+        source: source.to_string(),
+        policy_id: ARROW_POLICY_ID_DAMAGE_LINEAR.to_string(),
+        base_damage: base_damage.expect("diagnostics checked"),
+        velocity_multiplier: velocity_multiplier.expect("diagnostics checked"),
+        max_damage: max_damage.expect("diagnostics checked"),
+    };
+    let diagnostics = validate_arrow_policy_snapshot(&snapshot);
+    if diagnostics.is_empty() {
+        Ok(snapshot)
+    } else {
+        Err(diagnostics)
+    }
+}
+
+fn parse_required_steel_f32_export(
+    module_text: &str,
+    export: &str,
+    path: &'static str,
+    diagnostics: &mut Vec<ArrowPolicyDiagnostic>,
+) -> Option<f32> {
+    let Some(body) = steel_define_body(module_text, export) else {
+        diagnostics.push(ArrowPolicyDiagnostic {
+            path,
+            message: format!("missing Steel export {export}"),
+        });
+        return None;
+    };
+    body.parse::<f32>()
+        .map_err(|err| {
+            diagnostics.push(ArrowPolicyDiagnostic {
+                path,
+                message: format!("parse {export} as f32: {err}"),
+            });
+        })
+        .ok()
+}
+
+fn parse_steel_string_export(module_text: &str, export: &str) -> Option<String> {
+    let body = steel_define_body(module_text, export)?;
+    let without_prefix = body.strip_prefix('"')?;
+    let end = without_prefix.find('"')?;
+    Some(without_prefix[..end].to_string())
+}
+
+fn steel_define_body(module_text: &str, export: &str) -> Option<String> {
+    let needle = format!("(define {export} ");
+    let start = module_text.find(&needle)?;
+    let body_start = start + needle.len();
+    let rest = &module_text[body_start..];
+    let end = rest.find(')')?;
+    Some(rest[..end].trim().to_string())
+}
+
+fn validate_arrow_policy_snapshot(snapshot: &ArrowPolicySnapshot) -> Vec<ArrowPolicyDiagnostic> {
+    let mut diagnostics = Vec::new();
+    validate_arrow_policy_number(
+        ARROW_POLICY_PATH_BASE_DAMAGE,
+        snapshot.base_damage,
+        ARROW_POLICY_MIN_DAMAGE,
+        ARROW_POLICY_MAX_DAMAGE,
+        &mut diagnostics,
+    );
+    validate_arrow_policy_number(
+        ARROW_POLICY_PATH_VELOCITY_MULTIPLIER,
+        snapshot.velocity_multiplier,
+        ARROW_POLICY_MIN_DAMAGE,
+        ARROW_POLICY_MAX_DAMAGE,
+        &mut diagnostics,
+    );
+    validate_arrow_policy_number(
+        ARROW_POLICY_PATH_MAX_DAMAGE,
+        snapshot.max_damage,
+        ARROW_POLICY_MIN_DAMAGE,
+        ARROW_POLICY_MAX_DAMAGE,
+        &mut diagnostics,
+    );
+    diagnostics
+}
+
+fn validate_arrow_policy_number(
+    path: &'static str,
+    value: f32,
+    min: f32,
+    max: f32,
+    diagnostics: &mut Vec<ArrowPolicyDiagnostic>,
+) {
+    if !value.is_finite() || value < min || value > max {
+        diagnostics.push(ArrowPolicyDiagnostic {
+            path,
+            message: format!("value {value} outside {min}..={max}"),
+        });
+    }
+}
+
+fn evaluate_arrow_policy(
+    snapshot: &ArrowPolicySnapshot,
+    context: ArrowDamageContext,
+) -> ArrowDamageDecision {
+    let scaled_velocity = context.projectile_velocity.max(ARROW_POLICY_MIN_DAMAGE)
+        * context.pull_strength.max(ARROW_POLICY_MIN_DAMAGE);
+    let raw_damage = snapshot.base_damage + scaled_velocity * snapshot.velocity_multiplier;
+    let max_damage = snapshot
+        .max_damage
+        .clamp(ARROW_POLICY_MIN_DAMAGE, ARROW_POLICY_MAX_DAMAGE);
+    let damage = raw_damage.clamp(ARROW_POLICY_MIN_DAMAGE, max_damage);
+    ArrowDamageDecision {
+        generation: snapshot.generation,
+        source: snapshot.source.clone(),
+        policy_id: snapshot.policy_id.clone(),
+        damage,
+        clamped: (damage - raw_damage).abs() > f32::EPSILON,
+    }
+}
+
+fn validate_arrow_damage_decision(decision: &ArrowDamageDecision) -> Vec<ArrowPolicyDiagnostic> {
+    let mut diagnostics = Vec::new();
+    validate_arrow_policy_number(
+        "combat.arrow.damage",
+        decision.damage,
+        ARROW_POLICY_MIN_DAMAGE,
+        ARROW_POLICY_MAX_DAMAGE,
+        &mut diagnostics,
+    );
+    if decision.policy_id != ARROW_POLICY_ID_DAMAGE_LINEAR {
+        diagnostics.push(ArrowPolicyDiagnostic {
+            path: "combat.arrow.policy",
+            message: format!("unsupported policy {}", decision.policy_id),
+        });
+    }
+    diagnostics
+}
+
+fn active_arrow_policy_snapshot() -> ArrowPolicySnapshot {
+    match arrow_policy_store().read() {
+        Ok(snapshot) => snapshot.clone(),
+        Err(_) => default_arrow_policy_snapshot(),
+    }
+}
+
+fn publish_arrow_policy_snapshot(snapshot: ArrowPolicySnapshot) {
+    if let Ok(mut active) = arrow_policy_store().write() {
+        *active = snapshot;
+    }
+}
+
+fn projectile_probe_damage_decision() -> ArrowDamageDecision {
+    maybe_reload_valence_arrow_policy_on_request();
+    evaluate_arrow_policy(
+        &active_arrow_policy_snapshot(),
+        ArrowDamageContext {
+            projectile_velocity: ARROW_POLICY_DEFAULT_PROJECTILE_VELOCITY,
+            pull_strength: ARROW_POLICY_DEFAULT_PULL_STRENGTH,
+        },
+    )
+}
+
+fn log_arrow_policy_reload_outcome(source: &str, outcome: &ArrowPolicyReloadOutcome) {
+    if outcome.active_changed {
+        let snapshot = active_arrow_policy_snapshot();
+        let milestone = format!(
+            "MC-COMPAT-MILESTONE steel_arrow_policy_publish source={} generation={} policy={} \
+             base_damage={:.1} velocity_multiplier={:.1} max_damage={:.1}",
+            redact_arrow_policy_text(source),
+            snapshot.generation,
+            snapshot.policy_id,
+            snapshot.base_damage,
+            snapshot.velocity_multiplier,
+            snapshot.max_damage
+        );
+        info!("{}", milestone);
+        println!("{}", milestone);
+        return;
+    }
+    let diagnostics = format_arrow_policy_diagnostics(&outcome.diagnostics);
+    let milestone = format!(
+        "MC-COMPAT-MILESTONE steel_arrow_policy_reject source={} active_generation={} diagnostics={}",
+        redact_arrow_policy_text(source),
+        outcome.active_generation,
+        diagnostics
+    );
+    info!("{}", milestone);
+    println!("{}", milestone);
+}
+
+fn format_arrow_policy_diagnostics(diagnostics: &[ArrowPolicyDiagnostic]) -> String {
+    diagnostics
+        .iter()
+        .map(|diagnostic| {
+            format!(
+                "{}:{}",
+                diagnostic.path,
+                redact_arrow_policy_text(&diagnostic.message)
+            )
+        })
+        .collect::<Vec<_>>()
+        .join("|")
+}
+
+fn redact_arrow_policy_text(value: &str) -> String {
+    if value.contains("secret") || value.contains("token") || value.contains("password") {
+        "<redacted>".to_string()
+    } else {
+        value.to_string()
+    }
+}
 
 pub fn main() {
     App::new()
@@ -82,6 +549,8 @@ fn setup(
     dimensions: Res<DimensionTypeRegistry>,
     biomes: Res<BiomeRegistry>,
 ) {
+    initialize_valence_arrow_policy_from_env();
+
     let mut layer = LayerBundle::new(ident!("overworld"), &dimensions, &biomes, &server);
 
     for z in -5..5 {
@@ -1324,18 +1793,29 @@ fn handle_combat_events(
         let projectile_probe_hit = projectile_probe_enabled()
             && attacker.username.as_str() == "compatbota"
             && victim.username.as_str() == "compatbotb";
-        let damage = if projectile_probe_hit {
-            PROJECTILE_PROBE_DAMAGE
+        let arrow_damage_decision = if projectile_probe_hit {
+            Some(projectile_probe_damage_decision())
         } else {
-            (base_damage - armor_mitigation).max(0.0)
+            None
         };
+        let damage = arrow_damage_decision
+            .as_ref()
+            .map(|decision| decision.damage)
+            .unwrap_or_else(|| (base_damage - armor_mitigation).max(0.0));
 
         if projectile_probe_hit {
+            let decision = arrow_damage_decision
+                .as_ref()
+                .expect("projectile probe hit has arrow decision");
             let projectile_use = format!(
-                "MC-COMPAT-MILESTONE projectile_use attacker={} victim={} item={:?}",
+                "MC-COMPAT-MILESTONE projectile_use attacker={} victim={} item={:?} \
+                 policy={} generation={} clamped={}",
                 attacker.username.as_str(),
                 victim.username.as_str(),
-                stack.item
+                stack.item,
+                decision.policy_id,
+                decision.generation,
+                decision.clamped
             );
             info!("{}", projectile_use);
             println!("{}", projectile_use);
@@ -1372,14 +1852,21 @@ fn handle_combat_events(
         info!("{}", milestone);
         println!("{}", milestone);
         if projectile_probe_hit {
+            let decision = arrow_damage_decision
+                .as_ref()
+                .expect("projectile probe hit has arrow decision");
             let projectile_hit = format!(
                 "MC-COMPAT-MILESTONE projectile_hit attacker={} victim={} damage={:.1} \
-                 victim_health_before={:.1} victim_health_after={:.1}",
+                 victim_health_before={:.1} victim_health_after={:.1} policy={} \
+                 generation={} clamped={}",
                 attacker.username.as_str(),
                 victim.username.as_str(),
                 damage,
                 victim.health.0 + damage,
-                victim.health.0
+                victim.health.0,
+                decision.policy_id,
+                decision.generation,
+                decision.clamped
             );
             info!("{}", projectile_hit);
             println!("{}", projectile_hit);
@@ -1469,27 +1956,35 @@ fn handle_projectile_events(
             continue;
         };
 
+        let decision = projectile_probe_damage_decision();
         let before = victim_health.0;
-        victim_health.0 -= PROJECTILE_PROBE_DAMAGE;
+        victim_health.0 -= decision.damage;
         victim_client.trigger_status(EntityStatus::PlayAttackSound);
         let milestone = format!(
             "MC-COMPAT-MILESTONE projectile_use attacker={} victim={} hand={:?} \
-             sequence={} damage={:.1}",
+             sequence={} damage={:.1} policy={} generation={} clamped={}",
             attacker_name,
             victim_username.as_str(),
             event.hand,
             event.sequence,
-            PROJECTILE_PROBE_DAMAGE
+            decision.damage,
+            decision.policy_id,
+            decision.generation,
+            decision.clamped
         );
         info!("{}", milestone);
         println!("{}", milestone);
         let hit = format!(
             "MC-COMPAT-MILESTONE projectile_hit attacker={} victim={} \
-             victim_health_before={:.1} victim_health_after={:.1}",
+             victim_health_before={:.1} victim_health_after={:.1} policy={} generation={} \
+             clamped={}",
             attacker_name,
             victim_username.as_str(),
             before,
-            victim_health.0
+            victim_health.0,
+            decision.policy_id,
+            decision.generation,
+            decision.clamped
         );
         info!("{}", hit);
         println!("{}", hit);
@@ -1552,4 +2047,141 @@ fn update_scoreboard(
     let mut s = objectives.single_mut();
     s.insert("Red", *score.scores.get(&Team::Red).unwrap_or(&0) as i32);
     s.insert("Blue", *score.scores.get(&Team::Blue).unwrap_or(&0) as i32);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const TEST_SOURCE: &str = "test-module.scm";
+    const TEST_GENERATION: u64 = 7;
+    const TEST_EDITED_BASE_DAMAGE: f32 = 4.0;
+    const TEST_CLAMP_BASE_DAMAGE: f32 = 90.0;
+    const TEST_CLAMP_VELOCITY: f32 = 20.0;
+    const TEST_INVALID_DAMAGE: f32 = 101.0;
+    const TEST_CUSTOM_MAX_DAMAGE: f32 = 12.0;
+
+    #[test]
+    fn default_arrow_policy_matches_legacy_projectile_damage() {
+        let snapshot = default_arrow_policy_snapshot();
+        let decision = evaluate_arrow_policy(
+            &snapshot,
+            ArrowDamageContext {
+                projectile_velocity: ARROW_POLICY_DEFAULT_PROJECTILE_VELOCITY,
+                pull_strength: ARROW_POLICY_DEFAULT_PULL_STRENGTH,
+            },
+        );
+
+        assert_eq!(decision.damage, PROJECTILE_PROBE_DAMAGE);
+        assert_eq!(decision.policy_id, ARROW_POLICY_ID_DAMAGE_LINEAR);
+        assert!(!decision.clamped);
+    }
+
+    #[test]
+    fn steel_module_edit_changes_arrow_damage_policy() {
+        let snapshot = normalize_arrow_policy_module(
+            TEST_SOURCE,
+            TEST_GENERATION,
+            &valid_arrow_policy_module(TEST_EDITED_BASE_DAMAGE),
+        )
+        .expect("valid Steel policy parses");
+        let decision = evaluate_arrow_policy(
+            &snapshot,
+            ArrowDamageContext {
+                projectile_velocity: ARROW_POLICY_DEFAULT_PROJECTILE_VELOCITY,
+                pull_strength: ARROW_POLICY_DEFAULT_PULL_STRENGTH,
+            },
+        );
+
+        assert_eq!(snapshot.base_damage, TEST_EDITED_BASE_DAMAGE);
+        assert_eq!(decision.damage, TEST_EDITED_BASE_DAMAGE);
+        assert_eq!(decision.generation, TEST_GENERATION);
+    }
+
+    #[test]
+    fn invalid_module_is_rejected_and_previous_snapshot_survives() {
+        let previous = default_arrow_policy_snapshot();
+        let mut controller = ArrowPolicyController::new(previous.clone());
+        let candidate = normalize_arrow_policy_module(
+            TEST_SOURCE,
+            TEST_GENERATION,
+            &valid_arrow_policy_module(TEST_INVALID_DAMAGE),
+        );
+        let outcome = controller.reload_candidate(candidate);
+
+        assert!(!outcome.active_changed);
+        assert_eq!(controller.active(), &previous);
+        assert!(outcome
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.path == ARROW_POLICY_PATH_BASE_DAMAGE));
+    }
+
+    #[test]
+    fn malformed_or_capability_invalid_module_is_rejected() {
+        let malformed = valid_arrow_policy_module(PROJECTILE_PROBE_DAMAGE)
+            .replace(ARROW_POLICY_REQUIRED_POLICY_SHAPE, "42");
+        let diagnostics = normalize_arrow_policy_module(TEST_SOURCE, TEST_GENERATION, &malformed)
+            .expect_err("malformed policy is rejected");
+        assert!(diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.path == "combat.arrow.policy"));
+
+        let forbidden = format!(
+            "{}\n(random)\n",
+            valid_arrow_policy_module(PROJECTILE_PROBE_DAMAGE)
+        );
+        let diagnostics = normalize_arrow_policy_module(TEST_SOURCE, TEST_GENERATION, &forbidden)
+            .expect_err("forbidden policy is rejected");
+        assert!(diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.path == "runtime.steel.sandbox"));
+    }
+
+    #[test]
+    fn arrow_policy_clamps_damage_to_maximum() {
+        let snapshot = ArrowPolicySnapshot {
+            generation: TEST_GENERATION,
+            source: TEST_SOURCE.to_string(),
+            policy_id: ARROW_POLICY_ID_DAMAGE_LINEAR.to_string(),
+            base_damage: TEST_CLAMP_BASE_DAMAGE,
+            velocity_multiplier: ARROW_POLICY_DEFAULT_VELOCITY_MULTIPLIER,
+            max_damage: TEST_CUSTOM_MAX_DAMAGE,
+        };
+        let decision = evaluate_arrow_policy(
+            &snapshot,
+            ArrowDamageContext {
+                projectile_velocity: TEST_CLAMP_VELOCITY,
+                pull_strength: ARROW_POLICY_DEFAULT_PULL_STRENGTH,
+            },
+        );
+
+        assert_eq!(decision.damage, TEST_CUSTOM_MAX_DAMAGE);
+        assert!(decision.clamped);
+    }
+
+    #[test]
+    fn arrow_policy_redacts_secret_like_diagnostics() {
+        assert_eq!(
+            redact_arrow_policy_text("/tmp/password-secret-token.scm"),
+            "<redacted>"
+        );
+        assert_eq!(
+            redact_arrow_policy_text("/tmp/policy.scm"),
+            "/tmp/policy.scm"
+        );
+    }
+
+    fn valid_arrow_policy_module(base_damage: f32) -> String {
+        format!(
+            r#"
+(define sandbox-profile "{ARROW_POLICY_SANDBOX_PROFILE}")
+(define arrow-base-damage {base_damage})
+(define arrow-velocity-multiplier {ARROW_POLICY_DEFAULT_VELOCITY_MULTIPLIER})
+(define arrow-max-damage {ARROW_POLICY_DEFAULT_MAX_DAMAGE})
+(define (arrow-damage ctx)
+  {ARROW_POLICY_REQUIRED_POLICY_SHAPE})
+"#
+        )
+    }
 }
