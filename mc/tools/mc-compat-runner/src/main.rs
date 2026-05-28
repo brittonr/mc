@@ -186,6 +186,7 @@ struct Config {
     receipt_dir: Option<PathBuf>,
     compare_receipts: Option<(PathBuf, PathBuf)>,
     config_path: Option<PathBuf>,
+    steel_config_path: Option<PathBuf>,
     matrix_dry_run: bool,
     cleanup_apply: bool,
 }
@@ -510,6 +511,7 @@ impl Config {
             receipt_dir: None,
             compare_receipts: None,
             config_path: None,
+            steel_config_path: None,
             matrix_dry_run: false,
             cleanup_apply: false,
             root,
@@ -537,10 +539,20 @@ impl Config {
         let mut cfg = Config::defaults(root);
 
         let config_path = find_config_path(get_env("MC_COMPAT_CONFIG"), &args_vec)?;
+        let steel_config_path = find_named_config_path(
+            "--steel-config",
+            "MC_COMPAT_STEEL_CONFIG",
+            get_env("MC_COMPAT_STEEL_CONFIG"),
+            &args_vec,
+        )?;
         let mut server_port_was_set = false;
         if let Some(path) = config_path {
             server_port_was_set |= apply_config_file(&mut cfg, &path)?;
             cfg.config_path = Some(path);
+        }
+        if let Some(path) = steel_config_path {
+            server_port_was_set |= apply_steel_config_file(&mut cfg, &path)?;
+            cfg.steel_config_path = Some(path);
         }
 
         apply_env_overrides(&mut cfg, &mut get_env, &mut server_port_was_set)?;
@@ -574,6 +586,13 @@ impl Config {
                     })?);
                     server_port_was_set |= apply_config_file(&mut cfg, &path)?;
                     cfg.config_path = Some(path);
+                }
+                "--steel-config" => {
+                    let path = PathBuf::from(args.next().ok_or_else(|| {
+                        "--steel-config requires a Steel module path".to_string()
+                    })?);
+                    server_port_was_set |= apply_steel_config_file(&mut cfg, &path)?;
+                    cfg.steel_config_path = Some(path);
                 }
                 "--compare-receipts" => {
                     let left = PathBuf::from(args.next().ok_or_else(|| {
@@ -672,6 +691,11 @@ impl Config {
                     server_port_was_set |= apply_config_file(&mut cfg, &path)?;
                     cfg.config_path = Some(path);
                 }
+                _ if arg.starts_with("--steel-config=") => {
+                    let path = PathBuf::from(&arg[15..]);
+                    server_port_was_set |= apply_steel_config_file(&mut cfg, &path)?;
+                    cfg.steel_config_path = Some(path);
+                }
                 _ if arg.starts_with("--server-backend=") => {
                     cfg.server_backend = parse_backend(&arg[17..])?;
                 }
@@ -730,15 +754,25 @@ impl Config {
 }
 
 fn find_config_path(env_path: Option<String>, args: &[String]) -> Result<Option<PathBuf>, String> {
+    find_named_config_path("--config", "MC_COMPAT_CONFIG", env_path, args)
+}
+
+fn find_named_config_path(
+    flag: &'static str,
+    env_name: &'static str,
+    env_path: Option<String>,
+    args: &[String],
+) -> Result<Option<PathBuf>, String> {
     let mut config_path = env_path.map(PathBuf::from);
+    let equals_prefix = format!("{flag}=");
     let mut iter = args.iter();
     while let Some(arg) = iter.next() {
-        if arg == "--config" {
+        if arg == flag {
             let value = iter
                 .next()
-                .ok_or_else(|| "--config requires a Nickel-exported JSON path".to_string())?;
+                .ok_or_else(|| format!("{flag} requires a path; env alternative is {env_name}"))?;
             config_path = Some(PathBuf::from(value));
-        } else if let Some(value) = arg.strip_prefix("--config=") {
+        } else if let Some(value) = arg.strip_prefix(&equals_prefix) {
             config_path = Some(PathBuf::from(value));
         }
     }
@@ -854,6 +888,31 @@ fn apply_config_file(cfg: &mut Config, path: &Path) -> Result<bool, String> {
     let text =
         fs::read_to_string(path).map_err(|e| format!("read config {}: {e}", path.display()))?;
     apply_config_json(cfg, &text).map_err(|e| format!("config {}: {e}", path.display()))
+}
+
+fn apply_steel_config_file(cfg: &mut Config, path: &Path) -> Result<bool, String> {
+    let text = fs::read_to_string(path)
+        .map_err(|e| format!("read Steel config {}: {e}", path.display()))?;
+    let source = runtime_config::SteelSource {
+        path: path.display().to_string(),
+        module_blake3: "runtime-unverified".to_string(),
+        sandbox_profile: "mc-compat/pure-v1".to_string(),
+    };
+    let snapshot = runtime_config::evaluate_steel_module(source, &text).map_err(|diagnostics| {
+        let details = diagnostics
+            .into_iter()
+            .map(|diagnostic| format!("{}: {}", diagnostic.path, diagnostic.message))
+            .collect::<Vec<_>>()
+            .join("; ");
+        format!("Steel config {}: {details}", path.display())
+    })?;
+    cfg.server_backend = parse_backend(&snapshot.server_backend)?;
+    cfg.server_protocol = snapshot.server_protocol;
+    cfg.server_port = snapshot.server_port;
+    cfg.client_timeout = Duration::from_secs(u64::from(snapshot.client_timeout_secs));
+    cfg.client_success_needles = snapshot.client_success_patterns;
+    cfg.scenario = parse_scenario(&snapshot.scenario)?;
+    Ok(true)
 }
 
 fn apply_config_json(cfg: &mut Config, text: &str) -> Result<bool, String> {
@@ -1532,10 +1591,10 @@ fn default_port(backend: ServerBackend) -> u16 {
 
 fn print_usage(cfg: &Config) {
     println!(
-        "Usage: mc-compat-runner [--config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario {}] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
+        "Usage: mc-compat-runner [--config PATH] [--steel-config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario {}] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
 Automates a local Stevenarella compatibility smoke against a Minecraft {} / protocol {} server.\n\
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
-Pass --config/MC_COMPAT_CONFIG a JSON file exported from Nickel config; env vars and later CLI flags override it.\n\
+Pass --config/MC_COMPAT_CONFIG a JSON file exported from legacy Nickel config, or --steel-config/MC_COMPAT_STEEL_CONFIG a restricted Steel module; env vars and later CLI flags override either config source.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.scenario.receipt.v2 JSON receipt for Cairn/Octet evidence flows.
 Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
 Use --expect-status-description/--expect-status-version/--expect-status-sample to assert status response fixture data, --packet-capture-summary for redacted capture summary metadata, and --proxy-route/--proxy-forwarding-mode for proxied-route receipt fields.\n\
@@ -1546,12 +1605,16 @@ Default server backend is Valence, using an editable local Valence checkout plus
 If the Stevenarella or Valence checkout is missing, clone/fetch it or pass --client-dir/CLIENT_DIR and --valence-repo/VALENCE_REPO to editable checkouts.\n\
 Client runs are forced through Xvfb/X11 with software GL and no inherited Wayland socket.\n\
 Paper fallback runs set EULA=TRUE based on recorded user acceptance.\n\n\
-Env: MC_COMPAT_ROOT={} MC_COMPAT_CONFIG={} MC_COMPAT_SCENARIO={} CLIENT_DIR={} TARGET_DIR={} SMOKE_RECEIPT={} SMOKE_RECEIPT_DIR={} VALENCE_REPO={} VALENCE_REV={} VALENCE_WORKTREE={} VALENCE_TARGET_DIR={} CLIENT_TIMEOUT={}\n",
+Env: MC_COMPAT_ROOT={} MC_COMPAT_CONFIG={} MC_COMPAT_STEEL_CONFIG={} MC_COMPAT_SCENARIO={} CLIENT_DIR={} TARGET_DIR={} SMOKE_RECEIPT={} SMOKE_RECEIPT_DIR={} VALENCE_REPO={} VALENCE_REV={} VALENCE_WORKTREE={} VALENCE_TARGET_DIR={} CLIENT_TIMEOUT={}\n",
         SUPPORTED_SCENARIO_USAGE,
         cfg.server_version,
         cfg.server_protocol,
         cfg.root.display(),
         cfg.config_path
+            .as_ref()
+            .map(|path| path.display().to_string())
+            .unwrap_or_else(|| "<unset>".to_string()),
+        cfg.steel_config_path
             .as_ref()
             .map(|path| path.display().to_string())
             .unwrap_or_else(|| "<unset>".to_string()),
@@ -4159,6 +4222,99 @@ mod tests {
                 .contains("read config /tmp/mc-compat-config.json"),
             "missing config path should produce actionable read error"
         );
+    }
+
+    #[test]
+    fn restricted_steel_config_sets_runtime_defaults_and_allows_env_cli_precedence() {
+        let path =
+            std::env::temp_dir().join(format!("mc-compat-steel-config-{}.scm", std::process::id()));
+        fs::write(
+            &path,
+            r#"
+(define config-version 1)
+(define sandbox-profile "mc-compat/pure-v1")
+(define server-backend "paper")
+(define server-version "1.20.1")
+(define server-protocol 763)
+(define server-port 25566)
+(define valence-rev "main")
+(define valence-example "ctf")
+(define valence-worktree "/tmp/valence-compat-763")
+(define valence-target-dir "/tmp/valence-compat-763-target")
+(define valence-log "/tmp/mc-compat-valence.log")
+(define valence-pid-file "/tmp/mc-compat-valence.pid")
+(define client-username "compatbot")
+(define client-timeout-secs 77)
+(define client-success-patterns (list "Detected server protocol version" "Dimension type:"))
+(define receipt-dir "target/mc-compat-steel")
+(define scenario "projectile-damage-attribution")
+(define arrow-base-damage 3.0)
+(define arrow-velocity-multiplier 1.0)
+(define arrow-max-damage 10.0)
+(define (arrow-damage ctx)
+  (damage-linear ctx arrow-base-damage arrow-velocity-multiplier arrow-max-damage))
+"#,
+        )
+        .expect("write Steel config fixture");
+
+        let cfg = test_config(
+            &[
+                "--steel-config",
+                path.to_str().expect("utf8 path"),
+                "--server-backend",
+                "valence",
+            ],
+            &[],
+        )
+        .expect("Steel config parses");
+
+        assert_eq!(cfg.steel_config_path, Some(path.clone()));
+        assert_eq!(cfg.server_backend, ServerBackend::Valence);
+        assert_eq!(cfg.server_port, 25566);
+        assert_eq!(cfg.server_protocol, 763);
+        assert_eq!(cfg.client_timeout, Duration::from_secs(77));
+        assert_eq!(cfg.scenario, Scenario::ProjectileDamageAttribution);
+        assert_eq!(
+            cfg.client_success_needles,
+            vec![
+                "Detected server protocol version".to_string(),
+                "Dimension type:".to_string()
+            ]
+        );
+        let _ = fs::remove_file(path);
+    }
+
+    #[test]
+    fn restricted_steel_config_rejects_forbidden_capabilities() {
+        let path = std::env::temp_dir().join(format!(
+            "mc-compat-bad-steel-config-{}.scm",
+            std::process::id()
+        ));
+        fs::write(
+            &path,
+            r#"
+(define config-version 1)
+(define sandbox-profile "mc-compat/pure-v1")
+(define server-backend "valence")
+(define server-protocol 763)
+(define server-port 25565)
+(define client-timeout-secs 20)
+(define client-success-patterns (list "Detected server protocol version"))
+(define scenario "smoke")
+(define arrow-base-damage 3.0)
+(define arrow-velocity-multiplier 1.0)
+(define arrow-max-damage 10.0)
+(define (arrow-damage ctx)
+  (damage-linear ctx arrow-base-damage arrow-velocity-multiplier arrow-max-damage))
+(open-input-file "/etc/passwd")
+"#,
+        )
+        .expect("write bad Steel config fixture");
+
+        let err =
+            test_config(&["--steel-config", path.to_str().expect("utf8 path")], &[]).unwrap_err();
+        assert!(err.contains("forbidden Steel capability"), "{err}");
+        let _ = fs::remove_file(path);
     }
 
     #[test]

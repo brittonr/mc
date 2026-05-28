@@ -1,6 +1,9 @@
 use std::collections::BTreeMap;
 
 const SUPPORTED_SCHEMA_VERSION: u32 = 1;
+const REQUIRED_ARROW_POLICY_NEEDLE: &str =
+    "(damage-linear ctx arrow-base-damage arrow-velocity-multiplier arrow-max-damage)";
+const STEEL_DEFINE_PREFIX: &str = "(define ";
 const SUPPORTED_SANDBOX_PROFILE: &str = "mc-compat/pure-v1";
 const MIN_PORT: u32 = 1;
 const MAX_PORT: u32 = u16::MAX as u32;
@@ -10,6 +13,40 @@ const MAX_DAMAGE: f64 = 100.0;
 const MIN_MULTIPLIER: f64 = 0.0;
 const MAX_MULTIPLIER: f64 = 100.0;
 const ZERO_DAMAGE: f64 = 0.0;
+
+const FORBIDDEN_STEEL_TOKENS: &[&str] = &[
+    "open-input-file",
+    "call-with-input-file",
+    "delete-file",
+    "system",
+    "process",
+    "tcp-connect",
+    "current-second",
+    "random",
+];
+
+const ALLOWED_STEEL_EXPORTS: &[&str] = &[
+    "config-version",
+    "sandbox-profile",
+    "server-backend",
+    "server-version",
+    "server-protocol",
+    "server-port",
+    "valence-rev",
+    "valence-example",
+    "valence-worktree",
+    "valence-target-dir",
+    "valence-log",
+    "valence-pid-file",
+    "client-username",
+    "client-timeout-secs",
+    "client-success-patterns",
+    "receipt-dir",
+    "scenario",
+    "arrow-base-damage",
+    "arrow-velocity-multiplier",
+    "arrow-max-damage",
+];
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum MutabilityClass {
@@ -87,6 +124,19 @@ pub(crate) struct ApplyPlan {
     pub(crate) next_run: Vec<FieldDiff>,
     pub(crate) restart_only: Vec<FieldDiff>,
     pub(crate) rejected: Vec<ConfigDiagnostic>,
+}
+
+pub(crate) fn evaluate_steel_module(
+    source: SteelSource,
+    module_text: &str,
+) -> Result<RuntimeConfigSnapshot, Vec<ConfigDiagnostic>> {
+    let mut diagnostics = validate_steel_module_text(module_text);
+    let exports = parse_steel_literal_exports(module_text, &mut diagnostics);
+    if diagnostics.is_empty() {
+        normalize_steel_exports(source, &exports)
+    } else {
+        Err(diagnostics)
+    }
 }
 
 pub(crate) fn normalize_steel_exports(
@@ -301,6 +351,169 @@ pub(crate) fn build_apply_plan(diffs: Vec<FieldDiff>, allow_restart_only: bool) 
         }
     }
     plan
+}
+
+fn validate_steel_module_text(module_text: &str) -> Vec<ConfigDiagnostic> {
+    let mut diagnostics = Vec::new();
+    for token in FORBIDDEN_STEEL_TOKENS {
+        if module_text.contains(token) {
+            diagnostics.push(ConfigDiagnostic {
+                path: "runtime.steel.sandbox_profile",
+                message: format!("forbidden Steel capability token {token}"),
+            });
+        }
+    }
+    if !module_text.contains("(define (arrow-damage ctx)")
+        || !module_text.contains(REQUIRED_ARROW_POLICY_NEEDLE)
+    {
+        diagnostics.push(ConfigDiagnostic {
+            path: "combat.arrow.policy",
+            message: "missing supported arrow-damage policy shape".to_string(),
+        });
+    }
+    diagnostics
+}
+
+fn parse_steel_literal_exports(
+    module_text: &str,
+    diagnostics: &mut Vec<ConfigDiagnostic>,
+) -> BTreeMap<String, SteelValue> {
+    let mut exports = BTreeMap::new();
+    for export in ALLOWED_STEEL_EXPORTS {
+        if let Some(body) = extract_define_body(module_text, export) {
+            if let Some(value) = parse_steel_value(export, &body, diagnostics) {
+                exports.insert((*export).to_string(), value);
+            }
+        }
+    }
+
+    let defined_constants = defined_constant_names(module_text);
+    for defined in defined_constants {
+        if !ALLOWED_STEEL_EXPORTS.contains(&defined.as_str()) {
+            diagnostics.push(ConfigDiagnostic {
+                path: "runtime.steel.exports",
+                message: format!("unknown Steel export {defined}"),
+            });
+        }
+    }
+    exports
+}
+
+fn defined_constant_names(module_text: &str) -> Vec<String> {
+    module_text
+        .lines()
+        .filter_map(|line| {
+            let trimmed = line.trim();
+            let rest = trimmed.strip_prefix(STEEL_DEFINE_PREFIX)?;
+            if rest.starts_with('(') {
+                return None;
+            }
+            let name_end = rest
+                .find(|ch: char| ch.is_whitespace() || ch == ')')
+                .unwrap_or(rest.len());
+            Some(rest[..name_end].to_string())
+        })
+        .collect()
+}
+
+fn extract_define_body(module_text: &str, export: &str) -> Option<String> {
+    let needle = format!("{STEEL_DEFINE_PREFIX}{export}");
+    let start = module_text.find(&needle)?;
+    let mut depth = 0_u32;
+    let mut end = None;
+    for (offset, ch) in module_text[start..].char_indices() {
+        match ch {
+            '(' => depth += 1,
+            ')' => {
+                depth = depth.saturating_sub(1);
+                if depth == 0 {
+                    end = Some(start + offset);
+                    break;
+                }
+            }
+            _ => {}
+        }
+    }
+    let end = end?;
+    Some(module_text[start + needle.len()..end].trim().to_string())
+}
+
+fn parse_steel_value(
+    export: &'static str,
+    body: &str,
+    diagnostics: &mut Vec<ConfigDiagnostic>,
+) -> Option<SteelValue> {
+    match export {
+        "config-version" | "server-protocol" | "server-port" | "client-timeout-secs" => body
+            .parse::<u32>()
+            .map(SteelValue::U32)
+            .map_err(|err| {
+                diagnostics.push(ConfigDiagnostic {
+                    path: steel_export_path(export),
+                    message: format!("parse {export} as u32: {err}"),
+                });
+            })
+            .ok(),
+        "arrow-base-damage" | "arrow-velocity-multiplier" | "arrow-max-damage" => body
+            .parse::<f64>()
+            .map(SteelValue::F64)
+            .map_err(|err| {
+                diagnostics.push(ConfigDiagnostic {
+                    path: steel_export_path(export),
+                    message: format!("parse {export} as f64: {err}"),
+                });
+            })
+            .ok(),
+        "client-success-patterns" => Some(SteelValue::StringList(parse_steel_string_list(body))),
+        _ => parse_steel_string(body)
+            .map(SteelValue::String)
+            .or_else(|| {
+                diagnostics.push(ConfigDiagnostic {
+                    path: steel_export_path(export),
+                    message: format!("parse {export} as string"),
+                });
+                None
+            }),
+    }
+}
+
+fn parse_steel_string(body: &str) -> Option<String> {
+    let body = body.trim();
+    let without_prefix = body.strip_prefix('"')?;
+    let end = without_prefix.find('"')?;
+    Some(without_prefix[..end].to_string())
+}
+
+fn parse_steel_string_list(body: &str) -> Vec<String> {
+    let mut values = Vec::new();
+    let mut rest = body;
+    while let Some(start) = rest.find('"') {
+        let after_start = &rest[start + 1..];
+        if let Some(end) = after_start.find('"') {
+            values.push(after_start[..end].to_string());
+            rest = &after_start[end + 1..];
+        } else {
+            break;
+        }
+    }
+    values
+}
+
+fn steel_export_path(export: &str) -> &'static str {
+    match export {
+        "config-version" => "runtime.config_version",
+        "sandbox-profile" => "runtime.steel.sandbox_profile",
+        "server-backend" => "server.backend",
+        "server-protocol" => "server.protocol",
+        "server-port" => "server.port",
+        "client-timeout-secs" => "client.timeout_secs",
+        "client-success-patterns" => "client.success_patterns",
+        "scenario" => "scenario.name",
+        "arrow-base-damage" => "combat.arrow.base_damage",
+        "arrow-velocity-multiplier" => "combat.arrow.velocity_multiplier",
+        "arrow-max-damage" => "combat.arrow.max_damage",
+        _ => "runtime.steel.exports",
+    }
 }
 
 fn normalize_arrow_damage(
@@ -553,6 +766,36 @@ mod tests {
         }
     }
 
+    fn valid_module_text() -> String {
+        r#"
+(define config-version 1)
+(define sandbox-profile "mc-compat/pure-v1")
+(define server-backend "valence")
+(define server-version "1.20.1")
+(define server-protocol 763)
+(define server-port 25565)
+(define valence-rev "main")
+(define valence-example "ctf")
+(define valence-worktree "/tmp/valence-compat-763")
+(define valence-target-dir "/tmp/valence-compat-763-target")
+(define valence-log "/tmp/mc-compat-valence.log")
+(define valence-pid-file "/tmp/mc-compat-valence.pid")
+(define client-username "compatbot")
+(define client-timeout-secs 120)
+(define client-success-patterns
+  (list "Detected server protocol version"
+        "Dimension type:"))
+(define receipt-dir "target/mc-compat-steel")
+(define scenario "projectile-damage-attribution")
+(define arrow-base-damage 3.0)
+(define arrow-velocity-multiplier 1.0)
+(define arrow-max-damage 10.0)
+(define (arrow-damage ctx)
+  (damage-linear ctx arrow-base-damage arrow-velocity-multiplier arrow-max-damage))
+"#
+        .to_string()
+    }
+
     fn valid_exports() -> BTreeMap<String, SteelValue> {
         BTreeMap::from([
             (
@@ -593,6 +836,34 @@ mod tests {
                 SteelValue::F64(TEST_ARROW_MAX_DAMAGE),
             ),
         ])
+    }
+
+    #[test]
+    fn evaluates_restricted_steel_module() {
+        let snapshot = evaluate_steel_module(source(), &valid_module_text()).expect("valid module");
+
+        assert_eq!(snapshot.schema_version, SUPPORTED_SCHEMA_VERSION);
+        assert_eq!(snapshot.server_backend, "valence");
+        assert_eq!(snapshot.client_success_patterns.len(), 2);
+        assert_eq!(snapshot.arrow_damage.max_damage, TEST_ARROW_MAX_DAMAGE);
+    }
+
+    #[test]
+    fn rejects_steel_module_unknown_export_and_forbidden_token() {
+        let unknown_export = format!("{}\n(define surprise-value 1)\n", valid_module_text());
+        let diagnostics = evaluate_steel_module(source(), &unknown_export).unwrap_err();
+        assert!(diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.message.contains("unknown Steel export")));
+
+        let forbidden = format!(
+            "{}\n(open-input-file \"/etc/passwd\")\n",
+            valid_module_text()
+        );
+        let diagnostics = evaluate_steel_module(source(), &forbidden).unwrap_err();
+        assert!(diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.message.contains("forbidden Steel capability")));
     }
 
     #[test]
