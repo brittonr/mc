@@ -56,10 +56,20 @@ The Rust boundary must validate Steel exports before use. `mc-compat-runner` now
 | `runtime.config_version` | `u32` | supported schema version | restart-only |
 | `runtime.steel.sandbox_profile` | `String` | `mc-compat/pure-v1` | restart-only |
 | `server.backend` | enum | `valence` or `paper` | next-run |
+| `server.version` | `String` | semantic Minecraft version label | next-run |
 | `server.protocol` | `u32` | scenario-supported protocol | next-run |
 | `server.port` | `u16` | `1..=65535` | restart-only |
+| `valence.rev` | `String` | revision or branch label | next-run |
+| `valence.example` | `String` | Valence example name | next-run |
+| `valence.worktree` | path | checkout path | next-run |
+| `valence.target_dir` | path | cargo target dir path | next-run |
+| `valence.log` | path | log path | hot |
+| `valence.pid_file` | path | pid file path | restart-only |
+| `client.username` | `String` | nonempty username | next-run |
 | `client.timeout_secs` | `u64` | positive seconds | hot |
 | `client.success_patterns` | `Vec<String>` | nonempty strings | hot |
+| `receipt.dir` | path | receipt directory path | next-run |
+| `scenario.name` | enum | supported scenario name | next-run |
 | `combat.arrow.base_damage` | `f64` | `0.0..=100.0` | hot |
 | `combat.arrow.velocity_multiplier` | `f64` | `0.0..=100.0` | hot |
 | `combat.arrow.max_damage` | `f64` | `0.0..=100.0` | hot |
@@ -144,4 +154,4 @@ It forbids:
 
 ## Current non-claims
 
-No filesystem watcher, Valence server-side Steel integration, remote config distribution, or full hot-reload rollout is claimed yet. The current implementation is startup-time restricted Steel module loading, a runner-side arrow-damage policy path for the projectile dry-run/evidence rail, and an explicit reload-request controller with rollback-safe hot apply handlers. Remaining work stays open in `cairn/changes/hotload-runtime-configuration/tasks.md` until final archive.
+No filesystem watcher, Valence server-side Steel integration, remote config distribution, or full hot-reload rollout is claimed. The archived slice is startup-time restricted Steel module loading, a runner-side arrow-damage policy path for the projectile dry-run/evidence rail, and an explicit reload-request controller with rollback-safe hot apply handlers. Archive record: `cairn/archive/2026-05-27-hotload-runtime-configuration/tasks.md`.

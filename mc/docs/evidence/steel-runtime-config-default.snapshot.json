@@ -37,6 +37,7 @@
   "redacted_fields": [],
   "mutability_summary": {
     "hot": [
+      "valence.log",
       "client.timeout_secs",
       "client.success_patterns",
       "combat.arrow.base_damage",

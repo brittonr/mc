@@ -101,7 +101,7 @@ r[runtime_configuration.hotload_runtime_configuration.hot_reload.scenario]
 
 ### Requirement: Arrow damage policy
 
-r[runtime_configuration.hotload_runtime_configuration.arrow_damage_policy] Arrow damage MUST be the representative gameplay-rule migration for Steel hotloading, using an explicit host-provided context and typed Rust-validated decision output.
+r[runtime_configuration.hotload_runtime_configuration.arrow_damage_policy] Arrow damage MUST be the representative gameplay-rule policy path for the compatibility runner Steel hotloading slice, using an explicit host-provided context and typed Rust-validated decision output. This requirement does not claim Valence/server combat-loop integration.
 
 #### Scenario: Arrow damage hotloads safely
 
@@ -109,7 +109,7 @@ r[runtime_configuration.hotload_runtime_configuration.arrow_damage_policy.scenar
 - GIVEN the Steel arrow-damage policy is edited
 - WHEN the policy is hotloaded
 - THEN the candidate policy is validated against its context schema, decision schema, sandbox profile, and range bounds
-- AND active combat uses the new policy only after atomic publish succeeds
+- AND the compatibility runner's projectile-damage evidence rail uses the new policy only after atomic publish succeeds
 
 ### Requirement: Reload test and evidence coverage
 
