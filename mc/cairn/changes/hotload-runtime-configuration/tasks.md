@@ -13,7 +13,7 @@
 
 ## Phase: implementation
 
-- [ ] [parallel] Implement pure config normalization, validation, diff, and apply-plan core. r[runtime_configuration.hotload_runtime_configuration.loader_validation]
+- [x] [parallel] Implement pure config normalization, validation, diff, and apply-plan core. r[runtime_configuration.hotload_runtime_configuration.loader_validation]
 - [ ] [parallel] Implement isolated Steel compile/evaluate shell with bounded host capabilities. r[runtime_configuration.hotload_runtime_configuration.steel_sandbox]
 - [ ] [parallel] Implement thin runtime shell for loading snapshots, watching or receiving reload requests, logging diffs, and invoking apply handlers. r[runtime_configuration.hotload_runtime_configuration.hot_reload]
 - [ ] [serial] Migrate direct runtime value setters to read from typed Steel-backed config or documented fixed-protocol constants. r[runtime_configuration.hotload_runtime_configuration.config_inventory]
@@ -35,4 +35,5 @@
   - `docs/evidence/steel-runtime-config-default.snapshot.json`
   - `tools/check_runtime_steel_config.rs`
 - `tools/check_runtime_steel_config.rs --self-test` includes positive and negative fixtures for missing inventory rows, invalid mutability, missing Steel exports, forbidden sandbox tokens, invalid arrow-damage policy shape, and snapshot hash mismatch.
-- No runtime watcher, in-process evaluator, migrated call site, or archive claim is made yet.
+- `tools/mc-compat-runner/src/runtime_config.rs` implements pure Steel-export normalization, validation, diff/apply-plan generation, mutability enforcement, and bounded arrow-damage policy evaluation. Unit tests cover valid exports, missing/wrong-type exports, range/sandbox rejection, arrow damage clamping, hot/next-run/restart-only separation, and fixed-protocol-fact rejection.
+- No runtime watcher, in-process evaluator, migrated call site, live arrow-damage call-site, or archive claim is made yet.

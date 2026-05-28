@@ -10,6 +10,7 @@ This checkpoint implements the first Steel-first configuration slice for `hotloa
 - Steel module: `config/mc-compat/steel/default.scm`
 - Normalized snapshot: `docs/evidence/steel-runtime-config-default.snapshot.json`
 - Checker: `tools/check_runtime_steel_config.rs`
+- Pure runtime core: `tools/mc-compat-runner/src/runtime_config.rs`
 
 ## Steel module contract
 
@@ -141,4 +142,4 @@ It forbids:
 
 ## Current non-claims
 
-No live runtime file watcher, in-process Steel evaluator, migrated call site, production sandbox implementation, remote config distribution, or full hot-reload rollout is claimed yet. Those remain open tasks in `cairn/changes/hotload-runtime-configuration/tasks.md`.
+No live runtime file watcher, in-process Steel evaluator, migrated call site, live arrow-damage call-site, production sandbox implementation, remote config distribution, or full hot-reload rollout is claimed yet. Those remain open tasks in `cairn/changes/hotload-runtime-configuration/tasks.md`.
