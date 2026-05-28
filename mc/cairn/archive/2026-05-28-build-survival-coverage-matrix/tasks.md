@@ -1,5 +1,7 @@
 # Tasks
 
+Review oracle: `docs/evidence/protocol-763-survival-coverage-matrix-oracle-2026-05-28.md` records the inspected matrix/checker evidence, decision, owner, and next action for review paths that omit implementation files.
+
 - [x] [serial] Add survival coverage matrix document with current break/place/pickup row and uncovered survival rows. r[mc_compatibility.survival_coverage_matrix.rows]
   - Evidence: Added `docs/evidence/protocol-763-survival-coverage-matrix-2026-05-28.md` with 9 survival system rows: break/place/pickup plus crafting, chest persistence, furnace persistence, hunger/food, mob drops, redstone, biome/dimension, and world persistence.
 - [x] [serial] Add checker positive and negative tests for missing rows and forbidden full-survival claims. r[mc_compatibility.survival_coverage_matrix.gate]
