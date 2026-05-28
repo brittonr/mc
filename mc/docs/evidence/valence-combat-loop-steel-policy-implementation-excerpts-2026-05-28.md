@@ -8,7 +8,7 @@ Review-readable excerpts for archived change `cairn/archive/2026-05-28-valence-c
 
 Source file: `valence/examples/ctf.rs`.
 
-### `valence_ctf.combat_event_projectile_probe` (`1842..1922`)
+### `valence_ctf.combat_event_projectile_probe` (`1842..1923`)
 
 ```rust
 let projectile_probe_hit = projectile_probe_enabled()
@@ -30,10 +30,11 @@ if projectile_probe_hit {
         .expect("projectile probe hit has arrow decision");
     let projectile_use = format!(
         "MC-COMPAT-MILESTONE projectile_use attacker={} victim={} item={:?} \
-         policy={} generation={} clamped={}",
+         damage={:.1} policy={} generation={} clamped={}",
         attacker.username.as_str(),
         victim.username.as_str(),
         stack.item,
+        damage,
         decision.policy_id,
         decision.generation,
         decision.clamped
@@ -77,7 +78,7 @@ if projectile_probe_hit {
 }
 ```
 
-### `valence_ctf.projectile_interaction_probe` (`1986..2036`)
+### `valence_ctf.projectile_interaction_probe` (`1987..2042`)
 
 ```rust
 for event in interact_item.read() {
@@ -113,11 +114,12 @@ for event in interact_item.read() {
     info!("{}", milestone);
     println!("{}", milestone);
     let hit = format!(
-        "MC-COMPAT-MILESTONE projectile_hit attacker={} victim={} \
+        "MC-COMPAT-MILESTONE projectile_hit attacker={} victim={} damage={:.1} \
          victim_health_before={:.1} victim_health_after={:.1} policy={} generation={} \
          clamped={}",
         attacker_name,
         victim_username.as_str(),
+        decision.damage,
         before,
         victim_health.0,
         decision.policy_id,

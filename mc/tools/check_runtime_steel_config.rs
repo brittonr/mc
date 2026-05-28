@@ -1014,17 +1014,7 @@ fn source_span_text(source_text: &str, row: &CallSiteRow) -> Option<String> {
 }
 
 fn validate_valence_call_site_span(row: &CallSiteRow, span: &str, issues: &mut Vec<String>) {
-    for token in [
-        "projectile_probe_damage_decision()",
-        "MC-COMPAT-MILESTONE projectile_use",
-        "MC-COMPAT-MILESTONE projectile_hit",
-        "damage={:.1}",
-        "victim_health_before={:.1}",
-        "victim_health_after={:.1}",
-        "policy={}",
-        "generation={}",
-        "clamped={}",
-    ] {
+    for token in ["projectile_probe_damage_decision()"] {
         if !span.contains(token) {
             issues.push(format!(
                 "{} source span missing token: {token}",
@@ -1032,6 +1022,27 @@ fn validate_valence_call_site_span(row: &CallSiteRow, span: &str, issues: &mut V
             ));
         }
     }
+    validate_milestone_block(
+        row,
+        span,
+        "MC-COMPAT-MILESTONE projectile_use",
+        &["damage={:.1}", "policy={}", "generation={}", "clamped={}"],
+        issues,
+    );
+    validate_milestone_block(
+        row,
+        span,
+        "MC-COMPAT-MILESTONE projectile_hit",
+        &[
+            "damage={:.1}",
+            "victim_health_before={:.1}",
+            "victim_health_after={:.1}",
+            "policy={}",
+            "generation={}",
+            "clamped={}",
+        ],
+        issues,
+    );
     match row.call_site_id.as_str() {
         "valence_ctf.combat_event_projectile_probe" => {
             for token in ["projectile_probe_hit", "arrow_damage_decision"] {
@@ -1058,6 +1069,37 @@ fn validate_valence_call_site_span(row: &CallSiteRow, span: &str, issues: &mut V
             row.call_site_id
         )),
     }
+}
+
+fn validate_milestone_block(
+    row: &CallSiteRow,
+    span: &str,
+    marker: &str,
+    required_tokens: &[&str],
+    issues: &mut Vec<String>,
+) {
+    let Some(block) = milestone_block(span, marker) else {
+        issues.push(format!(
+            "{} source span missing milestone: {marker}",
+            row.call_site_id
+        ));
+        return;
+    };
+    for token in required_tokens {
+        if !block.contains(token) {
+            issues.push(format!(
+                "{} milestone {marker} missing token: {token}",
+                row.call_site_id
+            ));
+        }
+    }
+}
+
+fn milestone_block<'a>(span: &'a str, marker: &str) -> Option<&'a str> {
+    let start = span.find(marker)?;
+    let after_start = &span[start..];
+    let end = after_start.find(");").unwrap_or(after_start.len());
+    Some(&after_start[..end])
 }
 
 fn validate_valence_receipts(
@@ -1307,6 +1349,23 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         "missing call-site policy helper not rejected: {missing_span_issues:?}"
     );
 
+    let hit_without_damage = valence_ctf_text_for_spans(true).replacen(
+        "MC-COMPAT-MILESTONE projectile_hit attacker={} damage={:.1}",
+        "MC-COMPAT-MILESTONE projectile_hit attacker={}",
+        1,
+    );
+    let mut missing_milestone_field_issues = Vec::new();
+    validate_valence_ctf_policy_code(
+        &call_sites,
+        &hit_without_damage,
+        &mut missing_milestone_field_issues,
+    );
+    assert!(
+        missing_milestone_field_issues.iter().any(|issue| issue
+            .contains("milestone MC-COMPAT-MILESTONE projectile_hit missing token: damage={:.1}")),
+        "missing per-milestone damage field not rejected: {missing_milestone_field_issues:?}"
+    );
+
     let snapshot_issues = validate_snapshot(
         "mc.compat.runtime_config.snapshot.v1 config/mc-compat/steel/default.scm mc-compat/pure-v1 \"arrow-damage\" \"arrow_base_damage\" \"hot\" \"next_run\" \"restart_only\" abc",
         "def0000000000000000000000000000000000000000000000000000000000000",
@@ -1342,7 +1401,7 @@ fn valence_ctf_text_for_spans(include_policy_helper: bool) -> String {
         "let decision = default_arrow_policy_snapshot();"
     };
     format!(
-        "let projectile_probe_hit = true;\nlet arrow_damage_decision = if projectile_probe_hit {{\n    {combat_helper}\n}} else {{\n    None\n}};\n\"MC-COMPAT-MILESTONE projectile_use attacker={{}} damage={{:.1}} policy={{}} generation={{}} clamped={{}}\";\n\"MC-COMPAT-MILESTONE projectile_hit attacker={{}} damage={{:.1}} victim_health_before={{:.1}} victim_health_after={{:.1}}\";\nfor event in interact_item.read() {{\n    {interaction_helper}\n    \"MC-COMPAT-MILESTONE projectile_use attacker={{}} damage={{:.1}} policy={{}} generation={{}} clamped={{}}\";\n    \"MC-COMPAT-MILESTONE projectile_hit attacker={{}} victim_health_before={{:.1}} victim_health_after={{:.1}}\";\n    let _ = event;\n    let _span_padding = true;\n}}\nnormalize_arrow_policy_module validate_arrow_policy_snapshot diff_arrow_policy_snapshots validate_arrow_damage_decision projectile_probe_damage_decision() steel_arrow_policy_publish steel_arrow_policy_reject policy={{}} generation={{}} clamped={{}} non_default_policy_changes_both_projectile_call_site_health_deltas range_invalid_decision_output_is_rejected snapshot_diff_reports_changed_policy_fields\n"
+        "let projectile_probe_hit = true;\nlet arrow_damage_decision = if projectile_probe_hit {{\n    {combat_helper}\n}} else {{\n    None\n}};\n\"MC-COMPAT-MILESTONE projectile_use attacker={{}} damage={{:.1}} policy={{}} generation={{}} clamped={{}}\";\n\"MC-COMPAT-MILESTONE projectile_hit attacker={{}} damage={{:.1}} victim_health_before={{:.1}} victim_health_after={{:.1}} policy={{}} generation={{}} clamped={{}}\";\nfor event in interact_item.read() {{\n    {interaction_helper}\n    \"MC-COMPAT-MILESTONE projectile_use attacker={{}} damage={{:.1}} policy={{}} generation={{}} clamped={{}}\";\n    \"MC-COMPAT-MILESTONE projectile_hit attacker={{}} damage={{:.1}} victim_health_before={{:.1}} victim_health_after={{:.1}} policy={{}} generation={{}} clamped={{}}\";\n    let _ = event;\n    let _span_padding = true;\n}}\nnormalize_arrow_policy_module validate_arrow_policy_snapshot diff_arrow_policy_snapshots validate_arrow_damage_decision projectile_probe_damage_decision() steel_arrow_policy_publish steel_arrow_policy_reject policy={{}} generation={{}} clamped={{}} non_default_policy_changes_both_projectile_call_site_health_deltas range_invalid_decision_output_is_rejected snapshot_diff_reports_changed_policy_fields\n"
     )
 }
 
