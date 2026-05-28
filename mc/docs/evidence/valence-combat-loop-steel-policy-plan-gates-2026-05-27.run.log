@@ -1,18 +1,18 @@
-checkpoint: valence-combat-loop-steel-policy planning gates
-date: 2026-05-27
+checkpoint: valence-combat-loop-steel-policy gates after partial implementation
+date: 2026-05-28
 root: /home/brittonr/git/mc
 change: valence-combat-loop-steel-policy
-purpose: repo-local receipt for proposal/design/tasks/validate gate PASS claims
+purpose: repo-local receipt for proposal/design/tasks/validate gate PASS claims after task progress
 
 command: nix run --no-update-lock-file .#cairn -- gate proposal valence-combat-loop-steel-policy --root .
 {
   "change": "valence-combat-loop-steel-policy",
-  "input_hash": "c228791ec1b214baff03d11151c155b4587594a9c54a793272d2c3e06edd8742",
+  "input_hash": "3a78d2f791cd49b7fc9a22e6f32046d7ba0be81bceeedfd532ef6e19cfb84455",
   "issues": [],
   "layout": "cairn",
   "policy": "cairn-default",
   "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
-  "receipt_hash": "612425d9150273f618a27a68cb4b53805d008f204cb82e6cdce9c22175fe97f2",
+  "receipt_hash": "7f9af6b797bae0acea6c2c65002a8cec6cebdfd2da1ff62cf6df62a9d449830e",
   "stage": "proposal",
   "valid": true,
   "verdict": "PASS"
@@ -21,12 +21,12 @@ command: nix run --no-update-lock-file .#cairn -- gate proposal valence-combat-l
 command: nix run --no-update-lock-file .#cairn -- gate design valence-combat-loop-steel-policy --root .
 {
   "change": "valence-combat-loop-steel-policy",
-  "input_hash": "86f0cfa0d810907d52f2e6e0075930e38daa39abc94bcf6b5c2f97168aaa348a",
+  "input_hash": "9f7386983b51831a7679fcb50bdcb2aa003898eef1824c4fdf5bbaae42428193",
   "issues": [],
   "layout": "cairn",
   "policy": "cairn-default",
   "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
-  "receipt_hash": "c8f24c73f7b74ce6ecabc8a84514a1d750a38ed20463cdd806281026d0b3378e",
+  "receipt_hash": "2fb3a543e59e196ae7c181f5f7d918f4f67633f13690e40d011625573f2b0024",
   "stage": "design",
   "valid": true,
   "verdict": "PASS"
@@ -35,12 +35,12 @@ command: nix run --no-update-lock-file .#cairn -- gate design valence-combat-loo
 command: nix run --no-update-lock-file .#cairn -- gate tasks valence-combat-loop-steel-policy --root .
 {
   "change": "valence-combat-loop-steel-policy",
-  "input_hash": "284d84c9baa162a3ebc08905ac7fec3d556aaf95ea8bfab1b7b92ffac1c4c1e0",
+  "input_hash": "68225c6c4d13b5d5bc06f5269883fcf4c13775cb4b9763a020d8a340c012a0a2",
   "issues": [],
   "layout": "cairn",
   "policy": "cairn-default",
   "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
-  "receipt_hash": "ffe9ef131ef5abc768bb5352c989bee3dea991e92d8ec027c56f2487b6dc7557",
+  "receipt_hash": "b7704fd63d6172fae7e39bf6e211598e7e27637c69ebeb474456e985bdad16d5",
   "stage": "tasks",
   "valid": true,
   "verdict": "PASS"
@@ -76,9 +76,9 @@ command: nix run --no-update-lock-file .#cairn -- change list --root .
       "name": "valence-combat-loop-steel-policy",
       "path": "./cairn/changes/valence-combat-loop-steel-policy",
       "task_counts": {
-        "done": 0,
+        "done": 9,
         "in_progress": 0,
-        "todo": 13,
+        "todo": 4,
         "total": 13,
         "unmarked": 0
       }

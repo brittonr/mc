@@ -2160,6 +2160,15 @@ fn start_valence_server(cfg: &Config) -> Result<ManagedServer, String> {
     if cfg.scenario == Scenario::EquipmentUpdateObservation {
         cmd.env("MC_COMPAT_EQUIPMENT_UPDATE_PROBE", "1");
     }
+    if matches!(
+        cfg.scenario,
+        Scenario::ProjectileHit | Scenario::ProjectileDamageAttribution
+    ) {
+        cmd.env("MC_COMPAT_PROJECTILE_PROBE", "1");
+    }
+    if let Some(path) = &cfg.steel_config_path {
+        cmd.env("MC_COMPAT_STEEL_CONFIG", path);
+    }
     let child = cmd.spawn().map_err(|e| format!("spawn Valence: {e}"))?;
     fs::write(&cfg.valence_pid_file, child.id().to_string())
         .map_err(|e| format!("write {}: {e}", cfg.valence_pid_file.display()))?;

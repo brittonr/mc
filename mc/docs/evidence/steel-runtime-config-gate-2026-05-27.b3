@@ -2,10 +2,10 @@
 94577f4f2804ab1678680f315314cb57f1afe697161fb2db499e8e5beb459043  cairn/archive/2026-05-27-hotload-runtime-configuration/specs/runtime-configuration/spec.md
 b19c23d92541ce5b8e1da9eb34b1c73a934b6cf5edf751e8178189854059889d  cairn/archive/2026-05-27-hotload-runtime-configuration/tasks.md
 06373a43c99d0463611c9ef55dc7e72a624c1335a71078eea6d5d4b5d6998b16  config/mc-compat/steel/default.scm
-dee674cf585c00cc9848a37578922b6e51c3996675b2947dbf0afc7876d443c2  docs/evidence/runtime-config-inventory-2026-05-27.tsv
+82afb136469be1d23b3be0a9c9df8229dc5f009379b347eb7efc123dcc74738b  docs/evidence/runtime-config-inventory-2026-05-27.tsv
 8f4dfd80531e85ebef89a4c69d5d99d8a975296e553f7762b1863bc178627204  docs/evidence/steel-runtime-config-contract-2026-05-27.md
 2e96865b9bcb857ce2929dc78c96533bf7593847ff591b06c6a779a08c6bea36  docs/evidence/steel-runtime-config-default.snapshot.json
-d04bdfe7c2cd529bf10e73774c3b94d3f73b9a64aad2871d2552648b2445b332  docs/evidence/steel-runtime-config-gate-2026-05-27.run.log
+81bba6be5b57c98dbdcebd58e92c2efdddc0667972d71a80d73c3643a4316047  docs/evidence/steel-runtime-config-gate-2026-05-27.run.log
 c5467777f81363c83950eed3184d3617d9ffad62ebd5462119de8e2614e37a6e  tools/check_runtime_steel_config.rs
-98d8cddde6e683b299393908b3fc93edac3afc62eb56e7dd47184f72ed914fdd  tools/mc-compat-runner/src/main.rs
+20074272dc8a6fb3261b4f48a1615b505364b58446d0990ce831aa3e143acc0b  tools/mc-compat-runner/src/main.rs
 cf9a37278e064a2aafd5bf4bb44da7a074879d34955f477c3524c8065f47c017  tools/mc-compat-runner/src/runtime_config.rs
