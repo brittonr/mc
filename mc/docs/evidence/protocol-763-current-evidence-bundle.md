@@ -51,7 +51,7 @@ The maintained projectile rows are validated as two bounded projectile state row
 
 ## Survival break/place/pickup checkpoint
 
-The maintained survival row is validated by `docs/evidence/protocol-763-survival-break-place-pickup-2026-05-28.md` with a live receipt/log bundle from committed Valence and Stevenarella child revisions. The refreshed receipt records `client.git_rev`, `client.git_status`, `valence.git_rev_requested`, and `valence.git_rev_resolved`; `docs/evidence/protocol-763-survival-child-revision-oracle-2026-05-28.md` remains as review history. Covered row is one deterministic client in the dedicated `survival_compat` fixture with join/render, fixed-coordinate block break, pickup/inventory observation, and block placement. `docs/evidence/protocol-763-survival-coverage-matrix-2026-05-28.md` and `tools/check_survival_coverage_matrix.py` keep crafting, chest persistence, furnace persistence, hunger/food, mob drops, redstone, biome/dimension, and world persistence as explicit missing rows. Full survival compatibility and vanilla parity remain non-claims until paired reference-server receipts exist.
+The maintained survival row is validated by `docs/evidence/protocol-763-survival-break-place-pickup-2026-05-28.md` with a live receipt/log bundle from committed Valence and Stevenarella child revisions. The refreshed receipt records `client.git_rev`, `client.git_status`, `valence.git_rev_requested`, and `valence.git_rev_resolved`; `docs/evidence/protocol-763-survival-child-revision-oracle-2026-05-28.md` remains as review history. Covered row is one deterministic client in the dedicated `survival_compat` fixture with join/render, fixed-coordinate block break, pickup/inventory observation, and block placement. `docs/evidence/protocol-763-survival-coverage-matrix-2026-05-28.md` and `tools/check_survival_coverage_matrix.py` keep crafting, chest persistence, furnace persistence, hunger/food, mob drops, redstone, biome/dimension, and world persistence as explicit missing rows. `docs/evidence/protocol-763-survival-reference-parity-2026-05-28.md` and `tools/check_survival_reference_parity.py` define the narrow exact-match parity metrics but still reject Valence-only evidence. Full survival compatibility and vanilla parity remain non-claims until paired reference-server receipts exist.
 
 ## Vanilla combat parity checkpoint
 
@@ -113,6 +113,7 @@ python3 tools/check_vanilla_combat_parity.py
 python3 tools/check_ctf_rule_ledger.py
 python3 tools/check_protocol_coverage_ledger.py
 python3 tools/check_survival_coverage_matrix.py
+python3 tools/check_survival_reference_parity.py
 nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
 nix run --no-update-lock-file .#cairn -- validate --root .
 ```

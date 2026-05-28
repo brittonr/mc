@@ -1,0 +1,36 @@
+# survival reference parity gate 2026-05-28
+$ python3 tools/check_survival_reference_parity.py --self-test
+survival reference parity self-test ok
+$ python3 tools/check_survival_reference_parity.py
+survival reference parity ok: metrics defined; paired reference receipt still missing
+$ python3 tools/check_survival_reference_parity.py with Valence receipt on both sides (expected rejection)
+wrong_backend:reference:valence
+expected rejection observed: Valence-only evidence is not a Paper/reference pair
+$ python3 tools/check_acceptance_matrix.py
+acceptance matrix ok: 16 seams, 16 hashes
+$ python3 tools/check_current_evidence_bundle.py
+current evidence bundle ok: 16 seams
+$ nix run --no-update-lock-file .#cairn -- gate tasks add-survival-reference-parity-receipts --root .
+{
+  "change": "add-survival-reference-parity-receipts",
+  "input_hash": "c6ea68e2150c10b8bb75791decb06f6a4b55330d3ee7e19eebf10d6477374c67",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "07079da8d49a93ecf3a859fa2308e9a0f14fc2569391751cb327289aa8600ac6",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
