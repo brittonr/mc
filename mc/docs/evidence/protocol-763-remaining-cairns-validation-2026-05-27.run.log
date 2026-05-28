@@ -1,0 +1,436 @@
+checkpoint: protocol-763 remaining cairns validation
+date: 2026-05-27
+root: /home/brittonr/git/mc
+command: nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 10,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 11,
+  "valid": true
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate proposal prove-broad-protocol-763-coverage --root .
+{
+  "change": "prove-broad-protocol-763-coverage",
+  "input_hash": "aa412355bde24eb26ebdc9a6ece37757801131d69b4c79423d850aab1d6f436e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "5d57c4a636367533011d658b4215ce7796b1d4a0550af235f440a21ca60cf724",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate design prove-broad-protocol-763-coverage --root .
+{
+  "change": "prove-broad-protocol-763-coverage",
+  "input_hash": "929036bc15178f265831b80320c01b5bb10d46cd0f4b6b7ab05698d4d4c1ae58",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "b7b10e6e88c403cf8942770bc7ea4e12f6983286fe52e3df9ecc42700aac30ff",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate tasks prove-broad-protocol-763-coverage --root .
+{
+  "change": "prove-broad-protocol-763-coverage",
+  "input_hash": "2981e7afdf65ebb6d715c6f647bc2260ebe69a2c413de079c7bb1490cffdc97e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "122f7b9a51704dcdf31667e1b83d50d5df7a6bb21df9d9b7ea6547b6ee055d26",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate proposal prove-ctf-rule-correctness --root .
+{
+  "change": "prove-ctf-rule-correctness",
+  "input_hash": "07c99cf7ee3733efbb70ca4c6bc790f98b8362319b36e967f20e1ce9bdfbb867",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "1bf25b577d6d1015028ba865780296e70fe51da8b19127c827f14063c13bf30e",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate design prove-ctf-rule-correctness --root .
+{
+  "change": "prove-ctf-rule-correctness",
+  "input_hash": "5a872c7c2c54cef48ade8664311ae4c6941404a2569c551d9bd45eef196fb4f4",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "e4609680280d24cd4a77e11e63c477b8d5e5e5407c7b483c10d61c51edf0eb72",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate tasks prove-ctf-rule-correctness --root .
+{
+  "change": "prove-ctf-rule-correctness",
+  "input_hash": "5acf1fdad3a12641724ddc9dd3350cc76eecee161d4ac9805d6c5dae9b75f9aa",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "1871cbc4c1155e76b3862bcb28dda3491625fb6b886d18e04766a813b0612dfe",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate proposal prove-inventory-semantics-matrix --root .
+{
+  "change": "prove-inventory-semantics-matrix",
+  "input_hash": "1eb52cf5c7fed23f1ce6979131d8966722c1740ca81a63525973e027343599e4",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "cd026c644ff556ecc69d34d5f3d6f208d992a81bbded35b5cd37cff9440eb1ec",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate design prove-inventory-semantics-matrix --root .
+{
+  "change": "prove-inventory-semantics-matrix",
+  "input_hash": "7a8952ad47122ec0711fbd5f8d1b3bb2d1b6802d7380bd10fd4a551da0d418c0",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "77b357fa1eaacdc5bb88c41b1c8ac465bdcfecf61248a02e2e50c9242e92cfdf",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate tasks prove-inventory-semantics-matrix --root .
+{
+  "change": "prove-inventory-semantics-matrix",
+  "input_hash": "689bb56146f13b19cca503e1b389735980e7a8dc983c6d2e40168d6c6985996c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "0ba0b72c68e47d0de243957d2300302dba73fef60161c2c4c5d724d72622fbf5",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate proposal prove-equipment-slot-item-matrix --root .
+{
+  "change": "prove-equipment-slot-item-matrix",
+  "input_hash": "6276e75325fa5f231076f16885ebc5c7a1db8f51613d20630c61ded43dbe7236",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "eb25b533891d2d331e86969b2abc8cb0696fd89a7b035030452b582fb63679b8",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate design prove-equipment-slot-item-matrix --root .
+{
+  "change": "prove-equipment-slot-item-matrix",
+  "input_hash": "165a5222650e4e52cbab4cec0eac9cdf7d3a9eab20cc93b500804a41269dffea",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "98e00d0cc6dced6e62cb9c597acbf18ee89175a881f09525d7ad7b4b1dc34f23",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate tasks prove-equipment-slot-item-matrix --root .
+{
+  "change": "prove-equipment-slot-item-matrix",
+  "input_hash": "9845c3dddf781ec85d047fdcaa7fb12af95b116f2b327d4c17a6481a8d20b7ec",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "149c79946b99f4230888f5fe0b4e99061ad9faee5ea9ea9c5182a7f5651fe3b4",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate proposal prove-armor-enchantment-status-matrix --root .
+{
+  "change": "prove-armor-enchantment-status-matrix",
+  "input_hash": "036ce9f610c8737b93cb3d75e61e197dcf706769db270fefd35a01ff1d83a782",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "c5b22696f3bc94348d30c85b80d700f52884764e791b15f00fd1a4946728d951",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate design prove-armor-enchantment-status-matrix --root .
+{
+  "change": "prove-armor-enchantment-status-matrix",
+  "input_hash": "885e61019b4441aec53b679620a64957430f9640b5eb240d846b44974d6db3ed",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "ea3e8a54aacf4866c423ba67c99f1469c2cd05238be34cf2ec19111f47fa2041",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate tasks prove-armor-enchantment-status-matrix --root .
+{
+  "change": "prove-armor-enchantment-status-matrix",
+  "input_hash": "afccc4a55be0dbb479fef42a8f5bdfb80cc8c3e143812e3f222862feb8ff0174",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "cae3d20d0d2e9d032f728c059433c4939fff394f8ef18f7bd1d2d48359b77338",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate proposal prove-vanilla-combat-parity --root .
+{
+  "change": "prove-vanilla-combat-parity",
+  "input_hash": "14bd386b897d50d7ae4dfdc19f20906bf8d8925d4c7e6f091176fd3db4fe5c62",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "202daa786bbe39ec70897d1b64a906889e0bd304f67c7c988ab11fc5106b53ea",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate design prove-vanilla-combat-parity --root .
+{
+  "change": "prove-vanilla-combat-parity",
+  "input_hash": "628fe84597bd9d69d2943515f19a3781f186d2557c9a9d01532ee3b22c32f75e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "23c9505bae4c5b8e5128e3ddb8fba043fba8ad7bb3b3ff62137ccae59b1ebf59",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate tasks prove-vanilla-combat-parity --root .
+{
+  "change": "prove-vanilla-combat-parity",
+  "input_hash": "a5e5e031454bfc3586e789b44e5b8931a50e0803ad2f6a3698a60fd414eee956",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "cc5eb4fbe487c4d563703b77f3852be44e3549c27130ca789f60d99c8a02d483",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate proposal prove-death-respawn-lifecycle --root .
+{
+  "change": "prove-death-respawn-lifecycle",
+  "input_hash": "d66d3014fdbe1fa47b3baae52b81da7655fab425de4db8cff9fb86aa6b9e6c33",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "6c05364b4fbd5dc3c017a0d6b097b8d1b1f6021f5851b8b06d0f4793e28e2d96",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate design prove-death-respawn-lifecycle --root .
+{
+  "change": "prove-death-respawn-lifecycle",
+  "input_hash": "fa425aa365d8c73eae1bef824f4040ba1bea151031eaa3ca5e5274c372d4233e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "d1782c4aa735d197adf6675ecf69fd3d1f90596d69b9eedbc88221bd88b94e9b",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate tasks prove-death-respawn-lifecycle --root .
+{
+  "change": "prove-death-respawn-lifecycle",
+  "input_hash": "dce81be5b7588e477d563672d3166ae4b297432b7ddd0d67e2fde6777f0756fb",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "c3a0e10bbfa5cfcc4c16d6671df65c7007ee569bbdbd1efcafd12b7b212194aa",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate proposal prove-projectile-travel-collision --root .
+{
+  "change": "prove-projectile-travel-collision",
+  "input_hash": "81b9ca9fe8776a9a3d1793e6d5321f6d6383cd1b2b18cf843d6d871414cf7290",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "96238d91263123c81faa42b2b6e6000922856ed69beccf786ecb38e1ba1aec1b",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate design prove-projectile-travel-collision --root .
+{
+  "change": "prove-projectile-travel-collision",
+  "input_hash": "9627d8d76f1e4df1033e952c47cd582e85acd0f6748da1e8f5039344b949ac0f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "97240227d7178b4d9a74e8226ce92f9c47c1ec01df0d6ac2ddd03d31d18d22a2",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate tasks prove-projectile-travel-collision --root .
+{
+  "change": "prove-projectile-travel-collision",
+  "input_hash": "d1d9b485e3fa3b7171dd9027d2cb747ad07eb6dc2ee15199a4c781f5938f0714",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "be57493b35c0ffd13a0393c834271877ac83afe92368b38e6e91028cc4e48c52",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate proposal prove-production-load-network-safety --root .
+{
+  "change": "prove-production-load-network-safety",
+  "input_hash": "75fb0d8b97fd02589d75b635f223cb0d5227d3d3627bc5554ed8855cc304f155",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "c5d96e53f51a5ed6a503571065b5c9fe93131d901151bada20967bba2481871e",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate design prove-production-load-network-safety --root .
+{
+  "change": "prove-production-load-network-safety",
+  "input_hash": "6a1e4c4a4f44c26793a6731e3876e952d99a22bbf7cbc43f49dcb96a6461aea9",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "aac01f4c483296884908d9907099179495c74931acc583e6253726751babe95e",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate tasks prove-production-load-network-safety --root .
+{
+  "change": "prove-production-load-network-safety",
+  "input_hash": "22cbd8b8bf52ed84dfc72b2af20e7234f491398cce3d0b69fc2aff9e848d2116",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "d086caa1530ce093c9fa9597799cb63f97bdd2c6520e346b77c3fcf4e4ab0b59",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate proposal harden-evidence-freshness-gates --root .
+{
+  "change": "harden-evidence-freshness-gates",
+  "input_hash": "cd84d3fcef4b46e4abaf382a2e17cd890e771f5864ec909091a71c477bbfd1c9",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "0d2552c1ad09a2184cb936cb728e60d9b3ec681270ff3685b1929b41f78cb914",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate design harden-evidence-freshness-gates --root .
+{
+  "change": "harden-evidence-freshness-gates",
+  "input_hash": "98cda362a1724bb67bd0b982d7c5a328ec034ce20ea1d2946cd10f73d1fc8175",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "d19b0da4ec915e8e7ea9bd3f5862f73d6f4d9dbd511e0cc97c342cce32a631d9",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate tasks harden-evidence-freshness-gates --root .
+{
+  "change": "harden-evidence-freshness-gates",
+  "input_hash": "c30463c310282d4b8f5dd00b6404bdbeae6f7fd88665ad36f63fd877b3c14116",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "6ea0dc9b100692bed9c5058287f3f5f31f8919461a66dbeeadf5d2e122a86636",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+result: PASS
