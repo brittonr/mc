@@ -1,0 +1,73 @@
+checkpoint: protocol-763 projectile travel/collision gate
+date: 2026-05-27
+root: /home/brittonr/git/mc
+
+command: python3 -m py_compile tools/check_projectile_travel_collision.py
+
+command: python3 tools/check_projectile_travel_collision.py --self-test
+projectile travel/collision self-test ok
+
+command: python3 tools/check_projectile_travel_collision.py
+projectile travel/collision ok: 2 bounded protocol-763 rows
+
+command: python3 tools/check_acceptance_matrix.py
+acceptance matrix ok: 15 seams, 15 hashes
+
+command: python3 tools/check_current_evidence_bundle.py
+current evidence bundle ok: 15 seams
+
+command: nix run --no-update-lock-file .#cairn -- gate proposal prove-projectile-travel-collision --root .
+{
+  "change": "prove-projectile-travel-collision",
+  "input_hash": "d72340a1c9acfe555ff0460aa8969247ea193a36dd8248ff57c94749987ac12e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "cd838ecee87a76b16ef05b1cde86a2bac668847cb632af920b8f023dc4427519",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate design prove-projectile-travel-collision --root .
+{
+  "change": "prove-projectile-travel-collision",
+  "input_hash": "54600dbd89a3c3b6704c386a1280b173b1cde4ed6e8127699f0cc3cec6b55d99",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "e9ea35184b7e7e283fb561248dd90a56b8842efeb503616ff7974f5c76355167",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- gate tasks prove-projectile-travel-collision --root .
+{
+  "change": "prove-projectile-travel-collision",
+  "input_hash": "e1b93951874fe7c0c6a4f91ec8a4d0b169abc88b2a7b132e2ec8acd733d6feed",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "0b39ecfb3c81a21f3ccd6e5c133498561c487749b169b680f715cffdd33d866c",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 4,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
+
+result: PASS

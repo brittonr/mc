@@ -43,6 +43,10 @@ The maintained equipment update row is validated as one bounded slot/item matrix
 
 The maintained armor mitigation row is validated as one bounded modifier row in `docs/evidence/protocol-763-armor-modifier-matrix-2026-05-27.md` with a fresh live receipt/log bundle. Covered row is `armor_loadout_chest_only / DiamondChestplate / enchantment_none / status_effect_none / melee`; all armor loadouts, enchantments, status effects, modifier stacking, and exact vanilla parity remain non-claims.
 
+## Projectile travel/collision checkpoint
+
+The maintained projectile rows are validated as two bounded projectile state rows in `docs/evidence/protocol-763-projectile-travel-collision-2026-05-27.md`: projectile use/loadout and pinned projectile damage attribution. The damage row covers bounded server projectile hit/damage attribution; continuous projectile travel/collision simulation, all projectile weapons, and full projectile physics remain non-claims.
+
 ## Death/respawn lifecycle checkpoint
 
 The maintained `Flag-carrier death/return` row is also validated as a bounded lifecycle row in `docs/evidence/protocol-763-death-respawn-lifecycle-2026-05-27.md`. The row covers one flag-carrier death, respawn request, restored health, server flag return/reset, and no unexpected score/capture. No all death/drop/recovery permutations are claimed; full death/respawn lifecycle remains a non-claim.
@@ -86,6 +90,7 @@ python3 tools/check_death_respawn_lifecycle.py
 python3 tools/check_inventory_semantics_matrix.py
 python3 tools/check_equipment_slot_item_matrix.py
 python3 tools/check_armor_modifier_matrix.py
+python3 tools/check_projectile_travel_collision.py
 nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
 nix run --no-update-lock-file .#cairn -- validate --root .
 ```
