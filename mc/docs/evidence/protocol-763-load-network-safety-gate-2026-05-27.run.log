@@ -1,0 +1,84 @@
+checkpoint: protocol-763 load/network safety gate
+date: 2026-05-27
+root: /home/brittonr/git/mc
+
+command: nix develop --no-update-lock-file -c cargo fmt --manifest-path tools/mc-compat-runner/Cargo.toml -- --check
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+
+command: nix develop --no-update-lock-file -c cargo test --manifest-path tools/mc-compat-runner/Cargo.toml
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-0b4c6e2aba35508d)
+
+running 33 tests
+test tests::blue_flag_score_scenario_tracks_mirrored_team_evidence ... ok
+test tests::cleanup_client_log_match_is_narrow ... ok
+test tests::cli_overrides_backend_client_dir_valence_repo_and_revision ... ok
+test tests::combat_damage_scenario_tracks_client_and_server_evidence ... ok
+test tests::client_checkout_must_point_at_manifest_root ... ok
+test tests::cleanup_path_dry_run_preserves_existing_files ... ok
+test tests::compares_paper_and_valence_receipts ... ok
+test tests::defaults_to_valence_protocol_and_port ... ok
+test tests::env_overrides_are_parsed_without_global_environment_mutation ... ok
+test tests::equipment_update_scenario_tracks_current_client_equipment_marker ... ok
+test tests::compat_bot_probe_scenario_is_bounded_and_receipted ... ok
+test tests::flag_score_repeat_scenario_tracks_missing_and_forbidden_evidence ... ok
+test tests::invalid_backend_is_rejected ... ok
+test tests::load_network_safety_envelope_fails_closed_for_unsafe_inputs ... ok
+test tests::failed_preflight_receipt_triages_before_client_evidence ... ok
+test tests::missing_client_checkout_has_actionable_diagnostic ... ok
+test tests::inventory_interaction_scenario_tracks_client_and_server_evidence ... ok
+test tests::missing_valence_checkout_has_actionable_diagnostic ... ok
+test tests::projectile_damage_attribution_requires_pinned_valence_revision ... ok
+test tests::multi_client_scenario_tracks_client_and_server_evidence ... ok
+test tests::run_matrix_config_sets_receipt_dir_and_backend_defaults ... ok
+test tests::nickel_exported_json_config_sets_defaults_and_allows_env_cli_precedence ... ok
+test tests::run_matrix_rejects_single_receipt_path ... ok
+test tests::projectile_damage_attribution_scenario_tracks_client_and_server_evidence ... ok
+test tests::rejects_receipt_protocol_mismatch ... ok
+test tests::scenario_cli_and_env_parse ... ok
+test tests::status_and_cleanup_modes_parse_without_server_probe_mode ... ok
+test tests::supported_scenario_usage_lists_all_supported_scenarios ... ok
+test tests::scenario_receipt_records_actionable_failure_triage ... ok
+test tests::valid_client_checkout_preflight_passes ... ok
+test tests::smoke_receipt_records_failures_without_success_claims ... ok
+test tests::smoke_receipt_records_cairn_contract_and_octet_surface ... ok
+test tests::status_packet_proxy_and_gameplay_receipt_blocks_are_recorded ... ok
+
+test result: ok. 33 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+command: python3 tools/check_current_evidence_bundle.py
+current evidence bundle ok: 15 seams
+
+command: nix run --no-update-lock-file .#cairn -- gate tasks prove-production-load-network-safety --root .
+{
+  "change": "prove-production-load-network-safety",
+  "input_hash": "7f13b9cd9d2a424eebeec437b9cd7df44fcabadfaafcf2f5867a3445ca66c24c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "f9240ca091da4c924af22e5dcd9dfe7ec65d5916d1b29839cb1b4047dc5d4307",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+command: nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 9,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 10,
+  "valid": true
+}
+
+result: PASS

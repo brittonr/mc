@@ -14,6 +14,12 @@ const DEFAULT_SERVER_PROTOCOL: u32 = 758;
 const DEFAULT_CLIENT_USERNAME: &str = "compatbot";
 const DEFAULT_CLIENT_TIMEOUT_SECS: u64 = 20;
 const MULTI_CLIENT_LOAD_PEER_TIMEOUT_SECS: u64 = 10;
+const SAFETY_MAX_LOCAL_CLIENTS: usize = 2;
+const SAFETY_MAX_DURATION_SECS: u64 = 600;
+const SAFETY_SINGLE_SESSION_COUNT: usize = 1;
+const SAFETY_RECONNECT_SESSION_COUNT: usize = 2;
+const SAFETY_ZERO_VALUE: &str = "0";
+const SAFETY_OWNED_LOCAL_SCOPE: &str = "owned-local-loopback";
 const PINNED_PROJECTILE_DAMAGE_VALENCE_REV: &str = "e5d18ad04010d92881267ac1ea43922ae91821f5";
 const PROJECTILE_DAMAGE_ATTACKER_SUFFIX: &str = "a";
 const PROJECTILE_DAMAGE_VICTIM_SUFFIX: &str = "b";
@@ -95,6 +101,47 @@ struct ProjectileDamageCausalityEvidence {
     attacker_username: String,
     victim_username: String,
     passed: bool,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct LoadNetworkSafetyInputs {
+    target_scope: &'static str,
+    owned_local_target: bool,
+    explicit_authorization: bool,
+    public_target: bool,
+    planned_clients: usize,
+    max_clients: usize,
+    duration_secs: u64,
+    max_duration_secs: u64,
+    reconnect_sessions: usize,
+    latency_ms: String,
+    jitter_ms: String,
+    loss_percent: String,
+    telemetry_present: bool,
+    live_receipt: bool,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct LoadNetworkSafetyEvidence {
+    target_scope: &'static str,
+    owned_local_target: bool,
+    explicit_authorization: bool,
+    public_target: bool,
+    authorized: bool,
+    planned_clients: usize,
+    max_clients: usize,
+    duration_secs: u64,
+    max_duration_secs: u64,
+    reconnect_sessions: usize,
+    latency_ms: String,
+    jitter_ms: String,
+    loss_percent: String,
+    telemetry_present: bool,
+    live_receipt: bool,
+    missing_fields: Vec<&'static str>,
+    bound_violations: Vec<&'static str>,
+    preflight_passed: bool,
+    promotion_ready: bool,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -214,6 +261,7 @@ fn real_main() -> Result<(), String> {
 
 fn execute(cfg: &Config) -> Result<Option<ClientRunEvidence>, String> {
     validate_projectile_damage_dependency(cfg)?;
+    validate_load_network_safety_preflight(cfg)?;
     if matches!(cfg.mode, Mode::DryRun | Mode::Run | Mode::BuildClient) {
         ensure_client_dir_ready(cfg)?;
     }
@@ -290,6 +338,137 @@ fn validate_projectile_damage_dependency(cfg: &Config) -> Result<(), String> {
         "projectile-damage-attribution requires pinned Valence revision {PINNED_PROJECTILE_DAMAGE_VALENCE_REV}; got {}. Do not use VALENCE_REV=HEAD for promoted evidence.",
         cfg.valence_rev
     ))
+}
+
+fn validate_load_network_safety_preflight(cfg: &Config) -> Result<(), String> {
+    if !matches!(cfg.mode, Mode::DryRun | Mode::Run | Mode::RunMatrix) {
+        return Ok(());
+    }
+    let evidence = evaluate_load_network_safety(load_network_safety_inputs(cfg, false, false));
+    if evidence.preflight_passed {
+        return Ok(());
+    }
+    Err(format!(
+        "load/network safety preflight failed: missing={:?} bound_violations={:?}",
+        evidence.missing_fields, evidence.bound_violations
+    ))
+}
+
+fn load_network_safety_inputs(
+    cfg: &Config,
+    telemetry_present: bool,
+    live_receipt: bool,
+) -> LoadNetworkSafetyInputs {
+    let explicit_authorization = env::var("MC_COMPAT_EXTERNAL_LOAD_AUTHORIZED")
+        .map(|value| value == "1")
+        .unwrap_or(false);
+    let public_target = env::var("MC_COMPAT_PUBLIC_TARGET")
+        .map(|value| value == "1")
+        .unwrap_or(false);
+    LoadNetworkSafetyInputs {
+        target_scope: SAFETY_OWNED_LOCAL_SCOPE,
+        owned_local_target: !public_target,
+        explicit_authorization,
+        public_target,
+        planned_clients: planned_client_usernames(cfg).len(),
+        max_clients: SAFETY_MAX_LOCAL_CLIENTS,
+        duration_secs: cfg.client_timeout.as_secs(),
+        max_duration_secs: SAFETY_MAX_DURATION_SECS,
+        reconnect_sessions: safety_reconnect_sessions(cfg.scenario),
+        latency_ms: env::var("MC_COMPAT_LATENCY_MS")
+            .unwrap_or_else(|_| SAFETY_ZERO_VALUE.to_string()),
+        jitter_ms: env::var("MC_COMPAT_JITTER_MS")
+            .unwrap_or_else(|_| SAFETY_ZERO_VALUE.to_string()),
+        loss_percent: env::var("MC_COMPAT_LOSS_PERCENT")
+            .unwrap_or_else(|_| SAFETY_ZERO_VALUE.to_string()),
+        telemetry_present,
+        live_receipt,
+    }
+}
+
+fn safety_reconnect_sessions(scenario: Scenario) -> usize {
+    match scenario {
+        Scenario::ReconnectFlagState | Scenario::ReconnectFlagScore => {
+            SAFETY_RECONNECT_SESSION_COUNT
+        }
+        _ => SAFETY_SINGLE_SESSION_COUNT,
+    }
+}
+
+fn evaluate_load_network_safety(input: LoadNetworkSafetyInputs) -> LoadNetworkSafetyEvidence {
+    let authorized = input.owned_local_target || input.explicit_authorization;
+    let mut missing_fields = Vec::new();
+    push_missing_safety_field(
+        &mut missing_fields,
+        "target_scope",
+        !input.target_scope.is_empty(),
+    );
+    push_missing_safety_field(
+        &mut missing_fields,
+        "latency_ms",
+        !input.latency_ms.is_empty(),
+    );
+    push_missing_safety_field(
+        &mut missing_fields,
+        "jitter_ms",
+        !input.jitter_ms.is_empty(),
+    );
+    push_missing_safety_field(
+        &mut missing_fields,
+        "loss_percent",
+        !input.loss_percent.is_empty(),
+    );
+
+    let mut bound_violations = Vec::new();
+    if input.public_target && !input.explicit_authorization {
+        bound_violations.push("public_target_without_authorization");
+    }
+    if input.planned_clients == 0 {
+        bound_violations.push("planned_clients_empty");
+    }
+    if input.planned_clients > input.max_clients {
+        bound_violations.push("planned_clients_exceed_max");
+    }
+    if input.duration_secs == 0 {
+        bound_violations.push("duration_empty");
+    }
+    if input.duration_secs > input.max_duration_secs {
+        bound_violations.push("duration_exceeds_max");
+    }
+
+    let preflight_passed = authorized && missing_fields.is_empty() && bound_violations.is_empty();
+    let promotion_ready = preflight_passed && input.telemetry_present && input.live_receipt;
+    LoadNetworkSafetyEvidence {
+        target_scope: input.target_scope,
+        owned_local_target: input.owned_local_target,
+        explicit_authorization: input.explicit_authorization,
+        public_target: input.public_target,
+        authorized,
+        planned_clients: input.planned_clients,
+        max_clients: input.max_clients,
+        duration_secs: input.duration_secs,
+        max_duration_secs: input.max_duration_secs,
+        reconnect_sessions: input.reconnect_sessions,
+        latency_ms: input.latency_ms,
+        jitter_ms: input.jitter_ms,
+        loss_percent: input.loss_percent,
+        telemetry_present: input.telemetry_present,
+        live_receipt: input.live_receipt,
+        missing_fields,
+        bound_violations,
+        preflight_passed,
+        promotion_ready,
+    }
+}
+
+fn push_missing_safety_field(
+    missing_fields: &mut Vec<&'static str>,
+    field: &'static str,
+    present: bool,
+) {
+    if !present {
+        missing_fields.push(field);
+    }
 }
 
 impl Config {
@@ -2617,6 +2796,57 @@ fn latency_jitter_receipt_json(cfg: &Config) -> String {
     )
 }
 
+fn render_load_network_safety_json(evidence: &LoadNetworkSafetyEvidence) -> String {
+    format!(
+        r#"{{
+    "target_scope": {target_scope},
+    "owned_local_target": {owned_local_target},
+    "explicit_authorization": {explicit_authorization},
+    "public_target": {public_target},
+    "authorized": {authorized},
+    "planned_clients": {planned_clients},
+    "max_clients": {max_clients},
+    "duration_secs": {duration_secs},
+    "max_duration_secs": {max_duration_secs},
+    "reconnect_sessions": {reconnect_sessions},
+    "latency_ms": {latency_ms},
+    "jitter_ms": {jitter_ms},
+    "loss_percent": {loss_percent},
+    "telemetry_present": {telemetry_present},
+    "live_receipt": {live_receipt},
+    "missing_fields": {missing_fields},
+    "bound_violations": {bound_violations},
+    "preflight_passed": {preflight_passed},
+    "promotion_ready": {promotion_ready},
+    "claims_public_server_safety": false,
+    "claims_production_readiness": false,
+    "claims_unbounded_soak": false,
+    "claims_unbounded_reconnect": false,
+    "claims_wan_safety": false,
+    "claims_adversarial_network_safety": false
+  }}"#,
+        target_scope = json_string(evidence.target_scope),
+        owned_local_target = evidence.owned_local_target,
+        explicit_authorization = evidence.explicit_authorization,
+        public_target = evidence.public_target,
+        authorized = evidence.authorized,
+        planned_clients = evidence.planned_clients,
+        max_clients = evidence.max_clients,
+        duration_secs = evidence.duration_secs,
+        max_duration_secs = evidence.max_duration_secs,
+        reconnect_sessions = evidence.reconnect_sessions,
+        latency_ms = json_string(&evidence.latency_ms),
+        jitter_ms = json_string(&evidence.jitter_ms),
+        loss_percent = json_string(&evidence.loss_percent),
+        telemetry_present = evidence.telemetry_present,
+        live_receipt = evidence.live_receipt,
+        missing_fields = json_string_array(&evidence.missing_fields),
+        bound_violations = json_string_array(&evidence.bound_violations),
+        preflight_passed = evidence.preflight_passed,
+        promotion_ready = evidence.promotion_ready,
+    )
+}
+
 fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &str>) -> String {
     let status = if result.is_ok() { "pass" } else { "fail" };
     let error = result.err();
@@ -2771,6 +3001,12 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         }
     };
     let latency_jitter_json = latency_jitter_receipt_json(cfg);
+    let load_network_safety = evaluate_load_network_safety(load_network_safety_inputs(
+        cfg,
+        client.is_some() && server_scenario.passed,
+        matches!(cfg.mode, Mode::Run),
+    ));
+    let load_network_safety_json = render_load_network_safety_json(&load_network_safety);
     let proxy_route = cfg.proxy_route.as_deref().unwrap_or("direct");
     let proxy_forwarding_mode = cfg.proxy_forwarding_mode.as_deref().unwrap_or("none");
     let proxy_selected = cfg.proxy_route.is_some();
@@ -2900,6 +3136,7 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
     "triage_correlation": true
   }},
   "latency_jitter_tolerance": {latency_jitter_json},
+  "load_network_safety": {load_network_safety_json},
   "proxy_compat_seam": {{
     "selected": {proxy_selected},
     "route": {proxy_route_json},
@@ -2992,6 +3229,7 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         status_sample_json = status_sample_json,
         packet_capture_selected = packet_capture_selected,
         packet_capture_expected_packets_json = json_string_array(&packet_capture_expected_packets),
+        load_network_safety_json = load_network_safety_json,
         proxy_selected = proxy_selected,
         proxy_route_json = json_string(proxy_route),
         proxy_forwarding_mode_json = json_string(proxy_forwarding_mode),
@@ -4179,6 +4417,67 @@ red flag captured
             json.contains("\"target_address\": \"127.0.0.1:25565\""),
             "{json}"
         );
+        assert!(json.contains("\"load_network_safety\""), "{json}");
+        assert!(
+            json.contains("\"target_scope\": \"owned-local-loopback\""),
+            "{json}"
+        );
+        assert!(
+            json.contains("\"claims_public_server_safety\": false"),
+            "{json}"
+        );
+        assert!(json.contains("\"claims_unbounded_soak\": false"), "{json}");
+    }
+
+    #[test]
+    fn load_network_safety_envelope_fails_closed_for_unsafe_inputs() {
+        let safe = evaluate_load_network_safety(LoadNetworkSafetyInputs {
+            target_scope: SAFETY_OWNED_LOCAL_SCOPE,
+            owned_local_target: true,
+            explicit_authorization: false,
+            public_target: false,
+            planned_clients: SAFETY_MAX_LOCAL_CLIENTS,
+            max_clients: SAFETY_MAX_LOCAL_CLIENTS,
+            duration_secs: SAFETY_MAX_DURATION_SECS,
+            max_duration_secs: SAFETY_MAX_DURATION_SECS,
+            reconnect_sessions: SAFETY_SINGLE_SESSION_COUNT,
+            latency_ms: SAFETY_ZERO_VALUE.to_string(),
+            jitter_ms: SAFETY_ZERO_VALUE.to_string(),
+            loss_percent: SAFETY_ZERO_VALUE.to_string(),
+            telemetry_present: true,
+            live_receipt: true,
+        });
+        assert!(safe.preflight_passed, "{safe:?}");
+        assert!(safe.promotion_ready, "{safe:?}");
+
+        let unsafe_public = evaluate_load_network_safety(LoadNetworkSafetyInputs {
+            target_scope: "public",
+            owned_local_target: false,
+            explicit_authorization: false,
+            public_target: true,
+            planned_clients: SAFETY_MAX_LOCAL_CLIENTS + 1,
+            max_clients: SAFETY_MAX_LOCAL_CLIENTS,
+            duration_secs: SAFETY_MAX_DURATION_SECS + 1,
+            max_duration_secs: SAFETY_MAX_DURATION_SECS,
+            reconnect_sessions: SAFETY_SINGLE_SESSION_COUNT,
+            latency_ms: String::new(),
+            jitter_ms: SAFETY_ZERO_VALUE.to_string(),
+            loss_percent: SAFETY_ZERO_VALUE.to_string(),
+            telemetry_present: false,
+            live_receipt: false,
+        });
+        assert!(!unsafe_public.preflight_passed, "{unsafe_public:?}");
+        assert!(!unsafe_public.promotion_ready, "{unsafe_public:?}");
+        assert!(unsafe_public.missing_fields.contains(&"latency_ms"));
+        assert!(unsafe_public
+            .bound_violations
+            .contains(&"public_target_without_authorization"));
+        assert!(unsafe_public
+            .bound_violations
+            .contains(&"planned_clients_exceed_max"));
+        assert!(unsafe_public
+            .bound_violations
+            .contains(&"duration_exceeds_max"));
     }
 
     #[test]

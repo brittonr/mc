@@ -87,6 +87,12 @@ Rows that cite live receipts should point at tracked `docs/evidence/*.receipt.js
 
 Reviewable copied receipts for matrix rows are indexed at `docs/evidence/protocol-763-matrix-reviewable-receipts-2026-05-27.md` with manifest `docs/evidence/protocol-763-matrix-reviewable-receipts-2026-05-27.b3`.
 
+## Production/load/network safety envelope
+
+The runner receipt surface includes a `load_network_safety` block that records owned-local or explicit authorization, client/duration/reconnect/network bounds, telemetry readiness, and fail-closed diagnostics. Evidence: `docs/evidence/protocol-763-load-network-safety-2026-05-27.md`.
+
+Broader production/public/WAN/unbounded safety remains a non-claim unless a future authorized bounded envelope has live telemetry, BLAKE3-backed evidence, and an updated matrix/bundle row.
+
 ## Non-claims
 
 This bundle still does not claim full Minecraft compatibility, full CTF correctness, projectile travel/collision simulation, all projectile weapon variants, all equipment slots/items, all armor loadouts, enchantment/status-effect semantics, exact vanilla knockback/damage/mitigation balancing, production readiness, public-server load safety, or unbounded soak/reconnect/latency safety.
