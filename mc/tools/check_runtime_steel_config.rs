@@ -1018,6 +1018,9 @@ fn validate_valence_call_site_span(row: &CallSiteRow, span: &str, issues: &mut V
         "projectile_probe_damage_decision()",
         "MC-COMPAT-MILESTONE projectile_use",
         "MC-COMPAT-MILESTONE projectile_hit",
+        "damage={:.1}",
+        "victim_health_before={:.1}",
+        "victim_health_after={:.1}",
         "policy={}",
         "generation={}",
         "clamped={}",
@@ -1339,7 +1342,7 @@ fn valence_ctf_text_for_spans(include_policy_helper: bool) -> String {
         "let decision = default_arrow_policy_snapshot();"
     };
     format!(
-        "let projectile_probe_hit = true;\nlet arrow_damage_decision = if projectile_probe_hit {{\n    {combat_helper}\n}} else {{\n    None\n}};\n\"MC-COMPAT-MILESTONE projectile_use attacker={{}} policy={{}} generation={{}} clamped={{}}\";\n\"MC-COMPAT-MILESTONE projectile_hit attacker={{}}\";\nfor event in interact_item.read() {{\n    {interaction_helper}\n    \"MC-COMPAT-MILESTONE projectile_use attacker={{}} policy={{}} generation={{}} clamped={{}}\";\n    \"MC-COMPAT-MILESTONE projectile_hit attacker={{}}\";\n    let _ = event;\n    let _span_padding = true;\n}}\nnormalize_arrow_policy_module validate_arrow_policy_snapshot diff_arrow_policy_snapshots validate_arrow_damage_decision projectile_probe_damage_decision() steel_arrow_policy_publish steel_arrow_policy_reject policy={{}} generation={{}} clamped={{}} non_default_policy_changes_both_projectile_call_site_health_deltas range_invalid_decision_output_is_rejected snapshot_diff_reports_changed_policy_fields\n"
+        "let projectile_probe_hit = true;\nlet arrow_damage_decision = if projectile_probe_hit {{\n    {combat_helper}\n}} else {{\n    None\n}};\n\"MC-COMPAT-MILESTONE projectile_use attacker={{}} damage={{:.1}} policy={{}} generation={{}} clamped={{}}\";\n\"MC-COMPAT-MILESTONE projectile_hit attacker={{}} damage={{:.1}} victim_health_before={{:.1}} victim_health_after={{:.1}}\";\nfor event in interact_item.read() {{\n    {interaction_helper}\n    \"MC-COMPAT-MILESTONE projectile_use attacker={{}} damage={{:.1}} policy={{}} generation={{}} clamped={{}}\";\n    \"MC-COMPAT-MILESTONE projectile_hit attacker={{}} victim_health_before={{:.1}} victim_health_after={{:.1}}\";\n    let _ = event;\n    let _span_padding = true;\n}}\nnormalize_arrow_policy_module validate_arrow_policy_snapshot diff_arrow_policy_snapshots validate_arrow_damage_decision projectile_probe_damage_decision() steel_arrow_policy_publish steel_arrow_policy_reject policy={{}} generation={{}} clamped={{}} non_default_policy_changes_both_projectile_call_site_health_deltas range_invalid_decision_output_is_rejected snapshot_diff_reports_changed_policy_fields\n"
     )
 }
 
