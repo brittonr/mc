@@ -111,6 +111,13 @@ struct ArrowPolicyDiagnostic {
 }
 
 #[derive(Clone, Debug, PartialEq)]
+struct ArrowPolicyDiff {
+    path: &'static str,
+    before: String,
+    after: String,
+}
+
+#[derive(Clone, Debug, PartialEq)]
 struct ArrowPolicyReloadOutcome {
     active_changed: bool,
     active_generation: u64,
@@ -394,6 +401,48 @@ fn validate_arrow_policy_number(
             message: format!("value {value} outside {min}..={max}"),
         });
     }
+}
+
+fn diff_arrow_policy_snapshots(
+    before: &ArrowPolicySnapshot,
+    after: &ArrowPolicySnapshot,
+) -> Vec<ArrowPolicyDiff> {
+    let mut diffs = Vec::new();
+    push_arrow_policy_diff(
+        &mut diffs,
+        ARROW_POLICY_PATH_BASE_DAMAGE,
+        before.base_damage,
+        after.base_damage,
+    );
+    push_arrow_policy_diff(
+        &mut diffs,
+        ARROW_POLICY_PATH_VELOCITY_MULTIPLIER,
+        before.velocity_multiplier,
+        after.velocity_multiplier,
+    );
+    push_arrow_policy_diff(
+        &mut diffs,
+        ARROW_POLICY_PATH_MAX_DAMAGE,
+        before.max_damage,
+        after.max_damage,
+    );
+    diffs
+}
+
+fn push_arrow_policy_diff(
+    diffs: &mut Vec<ArrowPolicyDiff>,
+    path: &'static str,
+    before: f32,
+    after: f32,
+) {
+    if (before - after).abs() <= f32::EPSILON {
+        return;
+    }
+    diffs.push(ArrowPolicyDiff {
+        path,
+        before: redact_arrow_policy_text(&format!("{before:.1}")),
+        after: redact_arrow_policy_text(&format!("{after:.1}")),
+    });
 }
 
 fn evaluate_arrow_policy(
@@ -2060,6 +2109,8 @@ mod tests {
     const TEST_CLAMP_VELOCITY: f32 = 20.0;
     const TEST_INVALID_DAMAGE: f32 = 101.0;
     const TEST_CUSTOM_MAX_DAMAGE: f32 = 12.0;
+    const TEST_HEALTH_BEFORE: f32 = 20.0;
+    const TEST_HEALTH_AFTER_EDITED_DAMAGE: f32 = 16.0;
 
     #[test]
     fn default_arrow_policy_matches_legacy_projectile_damage() {
@@ -2158,6 +2209,82 @@ mod tests {
 
         assert_eq!(decision.damage, TEST_CUSTOM_MAX_DAMAGE);
         assert!(decision.clamped);
+    }
+
+    #[test]
+    fn snapshot_diff_reports_changed_policy_fields() {
+        let before = default_arrow_policy_snapshot();
+        let mut after = before.clone();
+        after.base_damage = TEST_EDITED_BASE_DAMAGE;
+        after.max_damage = TEST_CUSTOM_MAX_DAMAGE;
+
+        let diffs = diff_arrow_policy_snapshots(&before, &after);
+
+        assert_eq!(diffs.len(), 2);
+        assert!(diffs
+            .iter()
+            .any(|diff| diff.path == ARROW_POLICY_PATH_BASE_DAMAGE));
+        assert!(diffs
+            .iter()
+            .any(|diff| diff.path == ARROW_POLICY_PATH_MAX_DAMAGE));
+    }
+
+    #[test]
+    fn range_invalid_decision_output_is_rejected() {
+        let decision = ArrowDamageDecision {
+            generation: TEST_GENERATION,
+            source: TEST_SOURCE.to_string(),
+            policy_id: ARROW_POLICY_ID_DAMAGE_LINEAR.to_string(),
+            damage: TEST_INVALID_DAMAGE,
+            clamped: false,
+        };
+
+        let diagnostics = validate_arrow_damage_decision(&decision);
+
+        assert!(diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.path == "combat.arrow.damage"));
+    }
+
+    #[test]
+    fn non_default_policy_changes_both_projectile_call_site_health_deltas() {
+        let snapshot = normalize_arrow_policy_module(
+            TEST_SOURCE,
+            TEST_GENERATION,
+            &valid_arrow_policy_module(TEST_EDITED_BASE_DAMAGE),
+        )
+        .expect("valid Steel policy parses");
+        let combat_event_decision = evaluate_arrow_policy(
+            &snapshot,
+            ArrowDamageContext {
+                projectile_velocity: ARROW_POLICY_DEFAULT_PROJECTILE_VELOCITY,
+                pull_strength: ARROW_POLICY_DEFAULT_PULL_STRENGTH,
+            },
+        );
+        let projectile_interaction_decision = evaluate_arrow_policy(
+            &snapshot,
+            ArrowDamageContext {
+                projectile_velocity: ARROW_POLICY_DEFAULT_PROJECTILE_VELOCITY,
+                pull_strength: ARROW_POLICY_DEFAULT_PULL_STRENGTH,
+            },
+        );
+
+        assert_eq!(
+            TEST_HEALTH_BEFORE - combat_event_decision.damage,
+            TEST_HEALTH_AFTER_EDITED_DAMAGE
+        );
+        assert_eq!(
+            TEST_HEALTH_BEFORE - projectile_interaction_decision.damage,
+            TEST_HEALTH_AFTER_EDITED_DAMAGE
+        );
+        assert_eq!(
+            combat_event_decision.policy_id,
+            ARROW_POLICY_ID_DAMAGE_LINEAR
+        );
+        assert_eq!(
+            projectile_interaction_decision.policy_id,
+            ARROW_POLICY_ID_DAMAGE_LINEAR
+        );
     }
 
     #[test]
