@@ -16,6 +16,9 @@ const DEFAULT_SERVER_PROTOCOL: u32 = 758;
 const DEFAULT_CLIENT_USERNAME: &str = "compatbot";
 const DEFAULT_CLIENT_TIMEOUT_SECS: u64 = 20;
 const MULTI_CLIENT_LOAD_PEER_TIMEOUT_SECS: u64 = 10;
+const PAPER_PLUGIN_CONTAINER_DIR: &str = "/plugins";
+const PAPER_VIEW_DISTANCE: u32 = 2;
+const PAPER_SIMULATION_DISTANCE: u32 = 2;
 const SAFETY_MAX_LOCAL_CLIENTS: usize = 2;
 const SAFETY_MAX_DURATION_SECS: u64 = 600;
 const SAFETY_SINGLE_SESSION_COUNT: usize = 1;
@@ -210,6 +213,7 @@ struct Config {
     server_port: u16,
     client_username: String,
     docker_image: String,
+    paper_plugin_jar: Option<PathBuf>,
     mode: Mode,
     keep_server: bool,
     client_timeout: Duration,
@@ -533,6 +537,7 @@ impl Config {
             server_port: 25565,
             client_username: DEFAULT_CLIENT_USERNAME.to_string(),
             docker_image: "itzg/minecraft-server:java17".to_string(),
+            paper_plugin_jar: None,
             mode: Mode::DryRun,
             keep_server: false,
             client_timeout: Duration::from_secs(DEFAULT_CLIENT_TIMEOUT_SECS),
@@ -880,6 +885,9 @@ where
     if let Some(value) = get_env("DOCKER_IMAGE") {
         cfg.docker_image = value;
     }
+    if let Some(value) = get_env("PAPER_PLUGIN_JAR") {
+        cfg.paper_plugin_jar = Some(PathBuf::from(value));
+    }
     if let Some(value) = get_env("CLIENT_TIMEOUT") {
         cfg.client_timeout = Duration::from_secs(
             value
@@ -1017,6 +1025,9 @@ fn apply_config_json(cfg: &mut Config, text: &str) -> Result<bool, String> {
     }
     if let Some(value) = json_optional_string_field(text, "docker_image")? {
         cfg.docker_image = value;
+    }
+    if let Some(value) = json_optional_string_field(text, "paper_plugin_jar")? {
+        cfg.paper_plugin_jar = Some(PathBuf::from(value));
     }
     if let Some(value) = json_optional_u32_field(text, "client_timeout_secs")? {
         cfg.client_timeout = Duration::from_secs(u64::from(value));
@@ -1764,7 +1775,7 @@ Default server backend is Valence, using an editable local Valence checkout plus
 If the Stevenarella or Valence checkout is missing, clone/fetch it or pass --client-dir/CLIENT_DIR and --valence-repo/VALENCE_REPO to editable checkouts.\n\
 Client runs are forced through Xvfb/X11 with software GL and no inherited Wayland socket.\n\
 Paper fallback runs set EULA=TRUE based on recorded user acceptance.\n\n\
-Env: MC_COMPAT_ROOT={} MC_COMPAT_CONFIG={} MC_COMPAT_STEEL_CONFIG={} MC_COMPAT_SCENARIO={} CLIENT_DIR={} TARGET_DIR={} SMOKE_RECEIPT={} SMOKE_RECEIPT_DIR={} VALENCE_REPO={} VALENCE_REV={} VALENCE_WORKTREE={} VALENCE_TARGET_DIR={} CLIENT_TIMEOUT={}\n",
+Env: MC_COMPAT_ROOT={} MC_COMPAT_CONFIG={} MC_COMPAT_STEEL_CONFIG={} MC_COMPAT_SCENARIO={} CLIENT_DIR={} TARGET_DIR={} SMOKE_RECEIPT={} SMOKE_RECEIPT_DIR={} VALENCE_REPO={} VALENCE_REV={} VALENCE_WORKTREE={} VALENCE_TARGET_DIR={} CLIENT_TIMEOUT={} PAPER_PLUGIN_JAR={}\n",
         SUPPORTED_SCENARIO_USAGE,
         cfg.server_version,
         cfg.server_protocol,
@@ -1792,7 +1803,11 @@ Env: MC_COMPAT_ROOT={} MC_COMPAT_CONFIG={} MC_COMPAT_STEEL_CONFIG={} MC_COMPAT_S
         cfg.valence_rev,
         cfg.valence_worktree.display(),
         cfg.valence_target_dir.display(),
-        cfg.client_timeout.as_secs()
+        cfg.client_timeout.as_secs(),
+        cfg.paper_plugin_jar
+            .as_ref()
+            .map(|path| path.display().to_string())
+            .unwrap_or_else(|| "<unset>".to_string())
     );
 }
 
@@ -2316,23 +2331,7 @@ fn start_paper_server(cfg: &Config) -> Result<(), String> {
     ));
     if cfg.mode == Mode::DryRun {
         let mut cmd = Command::new("docker");
-        cmd.arg("run")
-            .arg("-d")
-            .arg("--name")
-            .arg(&cfg.server_name)
-            .arg("-p")
-            .arg(format!("127.0.0.1:{}:25565", cfg.server_port))
-            .arg("-e")
-            .arg("EULA=TRUE")
-            .arg("-e")
-            .arg("TYPE=PAPER")
-            .arg("-e")
-            .arg(format!("VERSION={}", cfg.server_version))
-            .arg("-e")
-            .arg("ONLINE_MODE=FALSE")
-            .arg("-e")
-            .arg("MEMORY=1G")
-            .arg(&cfg.docker_image);
+        configure_paper_run_command(cfg, &mut cmd)?;
         return run_cmd(cfg, &mut cmd);
     }
     let _ = Command::new("docker")
@@ -2343,6 +2342,11 @@ fn start_paper_server(cfg: &Config) -> Result<(), String> {
         .stderr(Stdio::null())
         .status();
     let mut cmd = Command::new("docker");
+    configure_paper_run_command(cfg, &mut cmd)?;
+    run_cmd(cfg, &mut cmd)
+}
+
+fn configure_paper_run_command(cfg: &Config, cmd: &mut Command) -> Result<(), String> {
     cmd.arg("run")
         .arg("-d")
         .arg("--name")
@@ -2359,8 +2363,38 @@ fn start_paper_server(cfg: &Config) -> Result<(), String> {
         .arg("ONLINE_MODE=FALSE")
         .arg("-e")
         .arg("MEMORY=1G")
-        .arg(&cfg.docker_image);
-    run_cmd(cfg, &mut cmd)
+        .arg("-e")
+        .arg(format!("VIEW_DISTANCE={PAPER_VIEW_DISTANCE}"))
+        .arg("-e")
+        .arg(format!("SIMULATION_DISTANCE={PAPER_SIMULATION_DISTANCE}"));
+    add_paper_plugin_mount(cfg, cmd)?;
+    cmd.arg(&cfg.docker_image);
+    Ok(())
+}
+
+fn add_paper_plugin_mount(cfg: &Config, cmd: &mut Command) -> Result<(), String> {
+    let Some(plugin_jar) = &cfg.paper_plugin_jar else {
+        return Ok(());
+    };
+    let absolute_jar = fs::canonicalize(plugin_jar).map_err(|e| {
+        format!(
+            "canonicalize PAPER_PLUGIN_JAR {}: {e}",
+            plugin_jar.display()
+        )
+    })?;
+    let file_name = absolute_jar.file_name().ok_or_else(|| {
+        format!(
+            "PAPER_PLUGIN_JAR {} has no file name",
+            absolute_jar.display()
+        )
+    })?;
+    let container_path = Path::new(PAPER_PLUGIN_CONTAINER_DIR).join(file_name);
+    cmd.arg("-v").arg(format!(
+        "{}:{}:ro",
+        absolute_jar.display(),
+        container_path.display()
+    ));
+    Ok(())
 }
 
 fn stop_valence_server(cfg: &Config) -> Result<(), String> {
@@ -2583,7 +2617,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
                     scenario_name(cfg.scenario),
                     server.missing_milestones,
                     server.forbidden_matches,
-                    cfg.valence_log.display()
+                    server_log_label(cfg)
                 ));
             }
         }
@@ -2921,8 +2955,7 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
                 .env("MC_COMPAT_INVENTORY_PROBE", "1");
         }
         Scenario::SurvivalBreakPlacePickup => {
-            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
-                .env("MC_COMPAT_SURVIVAL_PROBE", "1");
+            cmd.env("MC_COMPAT_SURVIVAL_PROBE", "1");
         }
         Scenario::EquipmentUpdateObservation => {
             let team = if client_index == 0 { "red" } else { "blue" };
@@ -3015,16 +3048,23 @@ fn planned_client_usernames(cfg: &Config) -> Vec<String> {
     }
 }
 
+fn server_log_label(cfg: &Config) -> String {
+    match cfg.server_backend {
+        ServerBackend::Valence => cfg.valence_log.display().to_string(),
+        ServerBackend::Paper => format!("docker logs {}", cfg.server_name),
+    }
+}
+
 fn read_server_scenario_evidence(
     cfg: &Config,
-    _runs: &[SingleClientRun],
+    runs: &[SingleClientRun],
 ) -> Result<Option<ServerScenarioEvidence>, String> {
-    if cfg.server_backend != ServerBackend::Valence {
-        return Ok(None);
-    }
-    let server_log = read_valence_log(cfg)?;
+    let server_log = match cfg.server_backend {
+        ServerBackend::Valence => read_valence_log(cfg)?,
+        ServerBackend::Paper => read_paper_log(cfg)?,
+    };
     let mut correlation_log = server_log;
-    for run in _runs {
+    for run in runs {
         correlation_log.push('\n');
         correlation_log.push_str(&run.output);
     }
@@ -3044,23 +3084,37 @@ fn read_valence_log(cfg: &Config) -> Result<String, String> {
     }
 }
 
+fn read_paper_log(cfg: &Config) -> Result<String, String> {
+    if cfg.mode == Mode::DryRun {
+        return Ok(String::new());
+    }
+    let output = Command::new("docker")
+        .arg("logs")
+        .arg(&cfg.server_name)
+        .output()
+        .map_err(|e| format!("docker logs {}: {e}", cfg.server_name))?;
+    let mut text = String::new();
+    text.push_str(&String::from_utf8_lossy(&output.stdout));
+    text.push_str(&String::from_utf8_lossy(&output.stderr));
+    Ok(text)
+}
+
 fn requires_server_correlation(cfg: &Config) -> bool {
-    cfg.server_backend == ServerBackend::Valence
-        && matches!(
-            cfg.scenario,
-            Scenario::FlagScoreRepeat
-                | Scenario::ReconnectFlagScore
-                | Scenario::MultiClientLoadScore
-                | Scenario::InventoryInteraction
-                | Scenario::SurvivalBreakPlacePickup
-                | Scenario::CombatDamage
-                | Scenario::CombatKnockback
-                | Scenario::ArmorEquipmentMitigation
-                | Scenario::EquipmentUpdateObservation
-                | Scenario::ProjectileHit
-                | Scenario::ProjectileDamageAttribution
-                | Scenario::FlagCarrierDeathReturn
-        )
+    matches!(
+        cfg.scenario,
+        Scenario::FlagScoreRepeat
+            | Scenario::ReconnectFlagScore
+            | Scenario::MultiClientLoadScore
+            | Scenario::InventoryInteraction
+            | Scenario::SurvivalBreakPlacePickup
+            | Scenario::CombatDamage
+            | Scenario::CombatKnockback
+            | Scenario::ArmorEquipmentMitigation
+            | Scenario::EquipmentUpdateObservation
+            | Scenario::ProjectileHit
+            | Scenario::ProjectileDamageAttribution
+            | Scenario::FlagCarrierDeathReturn
+    )
 }
 
 fn write_smoke_receipt(
@@ -3432,6 +3486,7 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
     let client_log_json = json_optional_string(client_log_path.as_deref());
     let client_logs_json = json_string_vec(&client_log_paths);
     let client_usernames_json = json_string_vec(&client_usernames);
+    let server_log_json = json_string(&server_log_label(cfg));
     let matched_pattern_json = json_optional_string(matched_pattern);
     let classification_json = json_optional_string(classification);
     let exit_code_json = exit_code
@@ -3566,7 +3621,7 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
     "first_forbidden_pattern": {first_forbidden_pattern_json},
     "first_forbidden_source": {first_forbidden_source_json},
     "client_log_paths": {client_logs_json},
-    "server_log_path": {valence_log_json},
+    "server_log_path": {server_log_json},
     "suggested_boundary": {suggested_boundary_json}
   }},
   "receipt_path": {receipt_path_json},
@@ -3636,6 +3691,7 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         valence_worktree_json = json_string(&cfg.valence_worktree.display().to_string()),
         valence_example_json = json_string(&cfg.valence_example),
         valence_log_json = json_string(&cfg.valence_log.display().to_string()),
+        server_log_json = server_log_json,
         receipt_path_json = receipt_path_json,
         error_json = error_json,
         first_missing_client_json = json_optional_string(first_missing_client),
@@ -4714,6 +4770,7 @@ mod tests {
                 ("CLIENT_DIR", "/repo/stevenarella-edit"),
                 ("VALENCE_REPO", "/repo/valence-edit"),
                 ("VALENCE_REV", "debug-rev"),
+                ("PAPER_PLUGIN_JAR", "/repo/fixtures/paper-survival.jar"),
             ],
         )
         .expect("env override config parses");
@@ -4729,6 +4786,10 @@ mod tests {
         assert_eq!(cfg.client_timeout, Duration::from_secs(8));
         assert_eq!(cfg.valence_repo, PathBuf::from("/repo/valence-edit"));
         assert_eq!(cfg.valence_rev, "debug-rev");
+        assert_eq!(
+            cfg.paper_plugin_jar,
+            Some(PathBuf::from("/repo/fixtures/paper-survival.jar"))
+        );
         assert_eq!(
             cfg.client_success_needles,
             vec![

@@ -175,6 +175,22 @@ def find_fields(log_text: str, marker: str, required: tuple[str, ...] = ()) -> d
     return None
 
 
+def find_inventory_slot_item(log_text: str, slot: str) -> dict[str, str] | None:
+    clean = strip_ansi(log_text)
+    fallback = None
+    for line in clean.splitlines():
+        if "inventory_probe_set_slot" not in line:
+            continue
+        fields = parse_key_values(line.split("inventory_probe_set_slot", 1)[1])
+        if fields.get("slot") != slot:
+            continue
+        if fallback is None:
+            fallback = fields
+        if fields.get("item", "").startswith("id="):
+            return fields
+    return fallback
+
+
 def put_if_present(values: dict[str, str], diagnostics: list[str], metric: str, fields: dict[str, str] | None, key: str) -> None:
     value = None if fields is None else fields.get(key)
     if value is None:
@@ -226,7 +242,7 @@ def add_client_log_metrics(values: dict[str, str], diagnostics: list[str], clien
     pickup = find_fields(client_log, "survival_probe_pickup_seen")
     put_if_present(values, diagnostics, "client.pickup.count", pickup, "count")
 
-    inventory = find_fields(client_log, "inventory_probe_set_slot", (("slot", "36"),))
+    inventory = find_inventory_slot_item(client_log, "36")
     put_if_present(values, diagnostics, "client.inventory.slot", inventory, "slot")
     item = None if inventory is None else inventory.get("item")
     if item is None or not item.startswith("id="):
@@ -369,9 +385,10 @@ def receipt_fixture(backend: str) -> dict[str, Any]:
 def client_log_fixture(raw_id: str = "10") -> str:
     return "\n".join(
         [
-            "MC-COMPAT-MILESTONE survival_probe_break_block_sent status=stop_destroy location=0,64,1 sequence=404",
+            "MC-COMPAT-MILESTONE survival_probe_break_block_sent status=start_destroy location=0,64,1 sequence=404",
             "MC-COMPAT-MILESTONE survival_probe_pickup_seen collected_entity_id=7630101 collector_entity_id=1 count=1",
-            "MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=1 slot=36 item=id=15 count=1",
+            "MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=1 slot=36 item=empty",
+            "MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=2 slot=36 item=id=15 count=1",
             "MC-COMPAT-MILESTONE survival_probe_block_update location=0,64,1 raw_id=0",
             "MC-COMPAT-MILESTONE survival_probe_place_block_sent hand=main location=0,64,1 face=up sequence=405",
             f"MC-COMPAT-MILESTONE survival_probe_place_update location=0,65,1 raw_id={raw_id}",

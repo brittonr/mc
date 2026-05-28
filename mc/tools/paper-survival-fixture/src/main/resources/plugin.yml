@@ -1,0 +1,5 @@
+name: McCompatSurvivalFixture
+version: 0.1.0
+main: mc.compat.paper.SurvivalFixturePlugin
+api-version: '1.20'
+description: MC compatibility survival fixture for protocol-763 reference receipts.
