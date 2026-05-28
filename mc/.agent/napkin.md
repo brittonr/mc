@@ -7,6 +7,7 @@
 | 2026-05-27 | self | Ran `git add -f mc` while fixing review evidence, which staged ignored target outputs and nested repos | Never force-add broad directories in this workspace; force-add only exact intended Cairn/docs evidence paths |
 | 2026-05-27 | done-review | Archived proof Cairns with tasks marked complete even though evidence docs demoted key scope to non-claims | Before archive, compare checked tasks/proposal scope against promoted evidence rows; either add the missing receipt/inventory or amend/reopen so tasks describe only completed gates |
 | 2026-05-28 | done-review | Pushed survival evidence that cited Valence `2663ed7` plus an untracked fixture diff even though the fixture was later committed at `1fac05a` | Re-run or update evidence against a committed child-repo revision containing the fixture before push; do not leave `plus current diff` as promoted evidence metadata |
+| 2026-05-28 | done-review | Refresh fixed Valence revision but still claimed Stevenarella `9921e68` without repo-local receipt or oracle evidence for the client rev | When receipt schema lacks child client rev, add an oracle checkpoint doc with question/evidence/decision/owner/next-action before claiming the child revision |
 
 ## User Preferences
 - Keep replies terse and direct.

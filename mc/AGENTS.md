@@ -20,6 +20,7 @@
 - Prefer repo-local commands and toolchains. Root `mc/` has no shared Cargo workspace, test runner, or formatter.
 - Avoid mixed commits across `hyperion/` and `valence/` unless user asks for cross-repo change.
 - For Cairn evidence, do not leave review-critical receipts only under untracked `target/`; copy receipt/log artifacts into `docs/evidence/` and record BLAKE3 when tasks/docs cite them.
+- If promoted evidence cites child-repo revisions that the receipt does not machine-record (for example Stevenarella client git rev), add a `docs/evidence/*oracle*` checkpoint with `## Question`, `## Inspected evidence`, `## Decision`, `## Owner`, and `## Next action`; otherwise reviewers cannot verify the child-revision claim from repo-local artifacts.
 - Before archiving a Cairn, compare every checked task and proposal scope against promoted evidence rows. If a doc says a behavior remains a non-claim, do not mark the task as completed for that behavior; narrow the archive scope or leave/reopen the proof gap.
 - Run mc Cairn validation/gates with the repo-pinned app from `mc/` (`nix run .#cairn -- ... --root .`). A newer sibling `/home/brittonr/git/cairn` binary can reject this repo's generated policy schema.
 

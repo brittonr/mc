@@ -24,9 +24,12 @@ nix run --no-update-lock-file .#mc-compat-valence-survival-break-place-pickup --
 | Runner log | `docs/evidence/protocol-763-survival-break-place-pickup-2026-05-28.run.log` | `cc5c7ee8e81adcd13d5fa6ff54bf5920e72ff79c2749dd5a9613c7944a7d4f31` |
 | Client log | `docs/evidence/protocol-763-survival-break-place-pickup-2026-05-28.client-compatbot.log` | `ef668103c8879c70515965e342d615965144116efd0cc6205689997c6c6a6efc` |
 | Valence log | `docs/evidence/protocol-763-survival-break-place-pickup-2026-05-28.valence.log` | `c9ebb200a2280336b442f606a611d3fc968deeab9a5cdd3112d0f9159248702a` |
+| Child revision oracle | `docs/evidence/protocol-763-survival-child-revision-oracle-2026-05-28.md` | `9e42efea3971c907bff5da392ca4bdd34570904ce8cdd93ae693fcd165f12fcd` |
 | Manifest | `docs/evidence/protocol-763-survival-break-place-pickup-2026-05-28.b3` | records all artifact hashes above |
 
 Payload commits at run time: parent `fff4386`, Valence `1fac05a`, Stevenarella `9921e68`.
+
+Child-revision oracle checkpoint: `docs/evidence/protocol-763-survival-child-revision-oracle-2026-05-28.md`. This is required because the receipt records the Valence revision but does not yet record a Stevenarella git revision field.
 
 ## Result
 

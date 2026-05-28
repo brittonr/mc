@@ -51,7 +51,7 @@ The maintained projectile rows are validated as two bounded projectile state row
 
 ## Survival break/place/pickup checkpoint
 
-The maintained survival row is validated by `docs/evidence/protocol-763-survival-break-place-pickup-2026-05-28.md` with a live receipt/log bundle from committed Valence and Stevenarella child revisions. Covered row is one deterministic client in the dedicated `survival_compat` fixture with join/render, fixed-coordinate block break, pickup/inventory observation, and block placement. Full survival compatibility and vanilla parity remain non-claims until paired reference-server receipts exist.
+The maintained survival row is validated by `docs/evidence/protocol-763-survival-break-place-pickup-2026-05-28.md` with a live receipt/log bundle from committed Valence and Stevenarella child revisions. Stevenarella revision evidence is recorded in `docs/evidence/protocol-763-survival-child-revision-oracle-2026-05-28.md` because the receipt schema does not yet include `client.git_rev`. Covered row is one deterministic client in the dedicated `survival_compat` fixture with join/render, fixed-coordinate block break, pickup/inventory observation, and block placement. Full survival compatibility and vanilla parity remain non-claims until paired reference-server receipts exist.
 
 ## Vanilla combat parity checkpoint
 
