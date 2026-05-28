@@ -48,7 +48,8 @@ The `arrow-damage` policy must call the host-provided pure helper `damage-linear
 
 ## Rust-owned typed boundary
 
-The Rust boundary must validate Steel exports before use:
+The Rust boundary must validate Steel exports before use. `mc-compat-runner` now applies Steel exports at startup through `--steel-config` / `MC_COMPAT_STEEL_CONFIG` for server backend/version/protocol/port, Valence rail fields, client username/timeout/success patterns, receipt dir, scenario, and arrow-damage policy fields. Later environment variables and CLI flags still have precedence.
+
 
 | Path | Type | Contract | Mutability |
 | --- | --- | --- | --- |
@@ -143,4 +144,4 @@ It forbids:
 
 ## Current non-claims
 
-No filesystem watcher, migrated production call site, live arrow-damage call-site, remote config distribution, or full hot-reload rollout is claimed yet. The current implementation is startup-time restricted Steel module loading plus an explicit reload-request controller with rollback-safe hot apply handlers. Remaining work stays open in `cairn/changes/hotload-runtime-configuration/tasks.md`.
+No filesystem watcher, Valence server-side Steel integration, remote config distribution, or full hot-reload rollout is claimed yet. The current implementation is startup-time restricted Steel module loading, a runner-side arrow-damage policy path for the projectile dry-run/evidence rail, and an explicit reload-request controller with rollback-safe hot apply handlers. Remaining work stays open in `cairn/changes/hotload-runtime-configuration/tasks.md` until final archive.

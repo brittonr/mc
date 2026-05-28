@@ -76,10 +76,19 @@ pub(crate) struct RuntimeConfigSnapshot {
     pub(crate) schema_version: u32,
     pub(crate) source: SteelSource,
     pub(crate) server_backend: String,
+    pub(crate) server_version: String,
     pub(crate) server_protocol: u32,
     pub(crate) server_port: u16,
+    pub(crate) valence_rev: String,
+    pub(crate) valence_example: String,
+    pub(crate) valence_worktree: String,
+    pub(crate) valence_target_dir: String,
+    pub(crate) valence_log: String,
+    pub(crate) valence_pid_file: String,
+    pub(crate) client_username: String,
     pub(crate) client_timeout_secs: u32,
     pub(crate) client_success_patterns: Vec<String>,
+    pub(crate) receipt_dir: String,
     pub(crate) scenario: String,
     pub(crate) arrow_damage: ArrowDamagePolicy,
 }
@@ -243,6 +252,12 @@ pub(crate) fn normalize_steel_exports(
         }
     }
 
+    let server_version = required_string(
+        exports,
+        "server-version",
+        "server.version",
+        &mut diagnostics,
+    );
     let server_protocol = required_u32(
         exports,
         "server-protocol",
@@ -251,6 +266,38 @@ pub(crate) fn normalize_steel_exports(
     );
     let server_port = required_u32(exports, "server-port", "server.port", &mut diagnostics)
         .and_then(|value| validate_u16_port(value, &mut diagnostics));
+    let valence_rev = required_string(exports, "valence-rev", "valence.rev", &mut diagnostics);
+    let valence_example = required_string(
+        exports,
+        "valence-example",
+        "valence.example",
+        &mut diagnostics,
+    );
+    let valence_worktree = required_string(
+        exports,
+        "valence-worktree",
+        "valence.worktree",
+        &mut diagnostics,
+    );
+    let valence_target_dir = required_string(
+        exports,
+        "valence-target-dir",
+        "valence.target_dir",
+        &mut diagnostics,
+    );
+    let valence_log = required_string(exports, "valence-log", "valence.log", &mut diagnostics);
+    let valence_pid_file = required_string(
+        exports,
+        "valence-pid-file",
+        "valence.pid_file",
+        &mut diagnostics,
+    );
+    let client_username = required_string(
+        exports,
+        "client-username",
+        "client.username",
+        &mut diagnostics,
+    );
     let client_timeout_secs = required_u32(
         exports,
         "client-timeout-secs",
@@ -279,6 +326,7 @@ pub(crate) fn normalize_steel_exports(
             });
         }
     }
+    let receipt_dir = required_string(exports, "receipt-dir", "receipt.dir", &mut diagnostics);
     let scenario = required_string(exports, "scenario", "scenario.name", &mut diagnostics);
     let arrow_damage = normalize_arrow_damage(exports, &mut diagnostics);
 
@@ -287,10 +335,19 @@ pub(crate) fn normalize_steel_exports(
             schema_version: schema_version.expect("diagnostics checked"),
             source,
             server_backend: server_backend.expect("diagnostics checked"),
+            server_version: server_version.expect("diagnostics checked"),
             server_protocol: server_protocol.expect("diagnostics checked"),
             server_port: server_port.expect("diagnostics checked"),
+            valence_rev: valence_rev.expect("diagnostics checked"),
+            valence_example: valence_example.expect("diagnostics checked"),
+            valence_worktree: valence_worktree.expect("diagnostics checked"),
+            valence_target_dir: valence_target_dir.expect("diagnostics checked"),
+            valence_log: valence_log.expect("diagnostics checked"),
+            valence_pid_file: valence_pid_file.expect("diagnostics checked"),
+            client_username: client_username.expect("diagnostics checked"),
             client_timeout_secs: client_timeout_secs.expect("diagnostics checked"),
             client_success_patterns: client_success_patterns.expect("diagnostics checked"),
+            receipt_dir: receipt_dir.expect("diagnostics checked"),
             scenario: scenario.expect("diagnostics checked"),
             arrow_damage: arrow_damage.expect("diagnostics checked"),
         })
@@ -328,6 +385,13 @@ pub(crate) fn diff_snapshots(
     );
     push_diff(
         &mut diffs,
+        "server.version",
+        &before.server_version,
+        &after.server_version,
+        MutabilityClass::NextRun,
+    );
+    push_diff(
+        &mut diffs,
         "server.protocol",
         &before.server_protocol.to_string(),
         &after.server_protocol.to_string(),
@@ -342,6 +406,55 @@ pub(crate) fn diff_snapshots(
     );
     push_diff(
         &mut diffs,
+        "valence.rev",
+        &before.valence_rev,
+        &after.valence_rev,
+        MutabilityClass::NextRun,
+    );
+    push_diff(
+        &mut diffs,
+        "valence.example",
+        &before.valence_example,
+        &after.valence_example,
+        MutabilityClass::NextRun,
+    );
+    push_diff(
+        &mut diffs,
+        "valence.worktree",
+        &before.valence_worktree,
+        &after.valence_worktree,
+        MutabilityClass::NextRun,
+    );
+    push_diff(
+        &mut diffs,
+        "valence.target_dir",
+        &before.valence_target_dir,
+        &after.valence_target_dir,
+        MutabilityClass::NextRun,
+    );
+    push_diff(
+        &mut diffs,
+        "valence.log",
+        &before.valence_log,
+        &after.valence_log,
+        MutabilityClass::Hot,
+    );
+    push_diff(
+        &mut diffs,
+        "valence.pid_file",
+        &before.valence_pid_file,
+        &after.valence_pid_file,
+        MutabilityClass::RestartOnly,
+    );
+    push_diff(
+        &mut diffs,
+        "client.username",
+        &before.client_username,
+        &after.client_username,
+        MutabilityClass::NextRun,
+    );
+    push_diff(
+        &mut diffs,
         "client.timeout_secs",
         &before.client_timeout_secs.to_string(),
         &after.client_timeout_secs.to_string(),
@@ -353,6 +466,13 @@ pub(crate) fn diff_snapshots(
         &format!("{:?}", before.client_success_patterns),
         &format!("{:?}", after.client_success_patterns),
         MutabilityClass::Hot,
+    );
+    push_diff(
+        &mut diffs,
+        "receipt.dir",
+        &before.receipt_dir,
+        &after.receipt_dir,
+        MutabilityClass::NextRun,
     );
     push_diff(
         &mut diffs,
@@ -383,6 +503,14 @@ pub(crate) fn diff_snapshots(
         MutabilityClass::Hot,
     );
     diffs
+}
+
+pub(crate) fn redacted_value(path: &str, value: &str) -> String {
+    if path.contains("secret") || path.contains("token") || path.contains("password") {
+        "<redacted>".to_string()
+    } else {
+        value.to_string()
+    }
 }
 
 pub(crate) fn build_apply_plan(diffs: Vec<FieldDiff>, allow_restart_only: bool) -> ApplyPlan {
@@ -561,10 +689,19 @@ fn steel_export_path(export: &str) -> &'static str {
         "config-version" => "runtime.config_version",
         "sandbox-profile" => "runtime.steel.sandbox_profile",
         "server-backend" => "server.backend",
+        "server-version" => "server.version",
         "server-protocol" => "server.protocol",
         "server-port" => "server.port",
+        "valence-rev" => "valence.rev",
+        "valence-example" => "valence.example",
+        "valence-worktree" => "valence.worktree",
+        "valence-target-dir" => "valence.target_dir",
+        "valence-log" => "valence.log",
+        "valence-pid-file" => "valence.pid_file",
+        "client-username" => "client.username",
         "client-timeout-secs" => "client.timeout_secs",
         "client-success-patterns" => "client.success_patterns",
+        "receipt-dir" => "receipt.dir",
         "scenario" => "scenario.name",
         "arrow-base-damage" => "combat.arrow.base_damage",
         "arrow-velocity-multiplier" => "combat.arrow.velocity_multiplier",
@@ -864,10 +1001,42 @@ mod tests {
                 SteelValue::String("valence".to_string()),
             ),
             (
+                "server-version".to_string(),
+                SteelValue::String("1.20.1".to_string()),
+            ),
+            (
                 "server-protocol".to_string(),
                 SteelValue::U32(TEST_SERVER_PROTOCOL),
             ),
             ("server-port".to_string(), SteelValue::U32(TEST_SERVER_PORT)),
+            (
+                "valence-rev".to_string(),
+                SteelValue::String("main".to_string()),
+            ),
+            (
+                "valence-example".to_string(),
+                SteelValue::String("ctf".to_string()),
+            ),
+            (
+                "valence-worktree".to_string(),
+                SteelValue::String("/tmp/valence-compat-763".to_string()),
+            ),
+            (
+                "valence-target-dir".to_string(),
+                SteelValue::String("/tmp/valence-compat-763-target".to_string()),
+            ),
+            (
+                "valence-log".to_string(),
+                SteelValue::String("/tmp/mc-compat-valence.log".to_string()),
+            ),
+            (
+                "valence-pid-file".to_string(),
+                SteelValue::String("/tmp/mc-compat-valence.pid".to_string()),
+            ),
+            (
+                "client-username".to_string(),
+                SteelValue::String("compatbot".to_string()),
+            ),
             (
                 "client-timeout-secs".to_string(),
                 SteelValue::U32(TEST_CLIENT_TIMEOUT_SECS),
@@ -875,6 +1044,10 @@ mod tests {
             (
                 "client-success-patterns".to_string(),
                 SteelValue::StringList(vec!["Detected server protocol version".to_string()]),
+            ),
+            (
+                "receipt-dir".to_string(),
+                SteelValue::String("target/mc-compat-steel".to_string()),
             ),
             (
                 "scenario".to_string(),
@@ -921,6 +1094,18 @@ mod tests {
         assert!(diagnostics
             .iter()
             .any(|diagnostic| diagnostic.message.contains("forbidden Steel capability")));
+
+        let nondeterministic = format!("{}\n(random)\n", valid_module_text());
+        let diagnostics = evaluate_steel_module(source(), &nondeterministic).unwrap_err();
+        assert!(diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.message.contains("random")));
+
+        let malformed_policy = valid_module_text().replace(REQUIRED_ARROW_POLICY_NEEDLE, "42");
+        let diagnostics = evaluate_steel_module(source(), &malformed_policy).unwrap_err();
+        assert!(diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.path == "combat.arrow.policy"));
     }
 
     #[test]
@@ -929,6 +1114,7 @@ mod tests {
 
         assert_eq!(snapshot.schema_version, SUPPORTED_SCHEMA_VERSION);
         assert_eq!(snapshot.server_backend, "valence");
+        assert_eq!(snapshot.server_version, "1.20.1");
         assert_eq!(snapshot.server_protocol, TEST_SERVER_PROTOCOL);
         assert_eq!(snapshot.server_port, TEST_SERVER_PORT as u16);
         assert_eq!(snapshot.client_timeout_secs, TEST_CLIENT_TIMEOUT_SECS);
@@ -1077,6 +1263,15 @@ mod tests {
             controller.active().client_timeout_secs,
             TEST_CLIENT_TIMEOUT_SECS + MIN_TIMEOUT_SECS
         );
+    }
+
+    #[test]
+    fn redaction_hides_secret_like_values() {
+        assert_eq!(
+            redacted_value("auth.token", "super-secret-token"),
+            "<redacted>"
+        );
+        assert_eq!(redacted_value("server.backend", "valence"), "valence");
     }
 
     #[test]

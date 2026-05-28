@@ -32,7 +32,12 @@ const PROJECTILE_DAMAGE_SERVER_USE_NEEDLE: &str = "MC-COMPAT-MILESTONE projectil
 const PROJECTILE_DAMAGE_SERVER_HIT_NEEDLE: &str = "MC-COMPAT-MILESTONE projectile_hit";
 const PROJECTILE_DAMAGE_SEQUENCE_NEEDLE: &str = "sequence=303";
 const PROJECTILE_DAMAGE_AMOUNT_NEEDLE: &str = "damage=3.0";
-const PROJECTILE_DAMAGE_HEALTH_AFTER_NEEDLE: &str = "victim_health_after=17.0";
+const DEFAULT_ARROW_DAMAGE: f64 = 3.0;
+const DEFAULT_ARROW_VELOCITY_MULTIPLIER: f64 = 1.0;
+const DEFAULT_ARROW_MAX_DAMAGE: f64 = 10.0;
+const PROJECTILE_DAMAGE_CONTEXT_VELOCITY: f64 = 0.0;
+const PROJECTILE_DAMAGE_CONTEXT_PULL_STRENGTH: f64 = 1.0;
+const PROJECTILE_DAMAGE_VICTIM_START_HEALTH: f64 = 20.0;
 const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|combat-damage|combat-knockback|armor-equipment-mitigation|equipment-update-observation|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
@@ -189,6 +194,7 @@ struct Config {
     steel_config_path: Option<PathBuf>,
     matrix_dry_run: bool,
     cleanup_apply: bool,
+    arrow_damage_policy: runtime_config::ArrowDamagePolicy,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -514,6 +520,7 @@ impl Config {
             steel_config_path: None,
             matrix_dry_run: false,
             cleanup_apply: false,
+            arrow_damage_policy: default_arrow_damage_policy(),
             root,
         }
     }
@@ -907,11 +914,21 @@ fn apply_steel_config_file(cfg: &mut Config, path: &Path) -> Result<bool, String
         format!("Steel config {}: {details}", path.display())
     })?;
     cfg.server_backend = parse_backend(&snapshot.server_backend)?;
+    cfg.server_version = snapshot.server_version;
     cfg.server_protocol = snapshot.server_protocol;
     cfg.server_port = snapshot.server_port;
+    cfg.valence_rev = snapshot.valence_rev;
+    cfg.valence_example = snapshot.valence_example;
+    cfg.valence_worktree = PathBuf::from(snapshot.valence_worktree);
+    cfg.valence_target_dir = PathBuf::from(snapshot.valence_target_dir);
+    cfg.valence_log = PathBuf::from(snapshot.valence_log);
+    cfg.valence_pid_file = PathBuf::from(snapshot.valence_pid_file);
+    cfg.client_username = snapshot.client_username;
     cfg.client_timeout = Duration::from_secs(u64::from(snapshot.client_timeout_secs));
     cfg.client_success_needles = snapshot.client_success_patterns;
+    cfg.receipt_dir = Some(PathBuf::from(snapshot.receipt_dir));
     cfg.scenario = parse_scenario(&snapshot.scenario)?;
+    cfg.arrow_damage_policy = snapshot.arrow_damage;
     Ok(true)
 }
 
@@ -1327,10 +1344,34 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
 }
 
 fn evaluate_scenario(scenario: Scenario, output: &str) -> ScenarioEvidence {
+    evaluate_scenario_with_projectile_health(
+        scenario,
+        output,
+        PROJECTILE_DAMAGE_CLIENT_HEALTH_NEEDLE,
+    )
+}
+
+fn evaluate_scenario_for_config(cfg: &Config, output: &str) -> ScenarioEvidence {
+    let health_needle = projectile_damage_client_health_needle(cfg);
+    evaluate_scenario_with_projectile_health(cfg.scenario, output, &health_needle)
+}
+
+fn evaluate_scenario_with_projectile_health(
+    scenario: Scenario,
+    output: &str,
+    projectile_health_needle: &str,
+) -> ScenarioEvidence {
     let mut observed_milestones = Vec::new();
     let mut missing_milestones = Vec::new();
     for (name, needle) in scenario_required_milestones(scenario) {
-        if output.contains(needle) {
+        let effective_needle = if scenario == Scenario::ProjectileDamageAttribution
+            && *name == "projectile_damage_update"
+        {
+            projectile_health_needle
+        } else {
+            needle
+        };
+        if output.contains(effective_needle) {
             observed_milestones.push(*name);
         } else {
             missing_milestones.push(*name);
@@ -1404,9 +1445,23 @@ fn evaluate_projectile_damage_causality(
     server_log: &str,
     base_username: &str,
 ) -> ProjectileDamageCausalityEvidence {
+    evaluate_projectile_damage_causality_for_damage(
+        client_logs,
+        server_log,
+        base_username,
+        PROJECTILE_DAMAGE_AMOUNT_NEEDLE,
+    )
+}
+
+fn evaluate_projectile_damage_causality_for_damage(
+    client_logs: &[ClientLogSlice<'_>],
+    server_log: &str,
+    base_username: &str,
+    expected_damage_needle: &str,
+) -> ProjectileDamageCausalityEvidence {
     let fallback_attacker = format!("{base_username}{PROJECTILE_DAMAGE_ATTACKER_SUFFIX}");
     let fallback_victim = format!("{base_username}{PROJECTILE_DAMAGE_VICTIM_SUFFIX}");
-    let server_use = first_projectile_server_use(server_log);
+    let server_use = first_projectile_server_use(server_log, expected_damage_needle);
     let (attacker_username, victim_username) = server_use
         .as_ref()
         .map(|event| (event.attacker.clone(), event.victim.clone()))
@@ -1532,11 +1587,14 @@ struct ProjectileServerHit {
     health_after: String,
 }
 
-fn first_projectile_server_use(server_log: &str) -> Option<ProjectileServerUse> {
+fn first_projectile_server_use(
+    server_log: &str,
+    expected_damage_needle: &str,
+) -> Option<ProjectileServerUse> {
     server_log.lines().enumerate().find_map(|(line, text)| {
         if !text.contains(PROJECTILE_DAMAGE_SERVER_USE_NEEDLE)
             || !text.contains(PROJECTILE_DAMAGE_SEQUENCE_NEEDLE)
-            || !text.contains(PROJECTILE_DAMAGE_AMOUNT_NEEDLE)
+            || !text.contains(expected_damage_needle)
         {
             return None;
         }
@@ -1587,6 +1645,55 @@ fn default_port(backend: ServerBackend) -> u16 {
         ServerBackend::Valence => 25565,
         ServerBackend::Paper => 25566,
     }
+}
+
+fn default_arrow_damage_policy() -> runtime_config::ArrowDamagePolicy {
+    runtime_config::ArrowDamagePolicy {
+        base_damage: DEFAULT_ARROW_DAMAGE,
+        velocity_multiplier: DEFAULT_ARROW_VELOCITY_MULTIPLIER,
+        max_damage: DEFAULT_ARROW_MAX_DAMAGE,
+    }
+}
+
+fn projectile_damage_decision(cfg: &Config) -> runtime_config::ArrowDamageDecision {
+    runtime_config::evaluate_arrow_damage(
+        &cfg.arrow_damage_policy,
+        &runtime_config::ProjectileDamageContext {
+            projectile_velocity: PROJECTILE_DAMAGE_CONTEXT_VELOCITY,
+            pull_strength: PROJECTILE_DAMAGE_CONTEXT_PULL_STRENGTH,
+        },
+    )
+}
+
+fn projectile_damage_amount_text(cfg: &Config) -> String {
+    format_one_decimal(projectile_damage_decision(cfg).damage)
+}
+
+fn projectile_damage_amount_needle(cfg: &Config) -> String {
+    format!("damage={}", projectile_damage_amount_text(cfg))
+}
+
+fn projectile_damage_client_health_needle(cfg: &Config) -> String {
+    format!(
+        "update_health health={}",
+        projectile_damage_victim_health_after_text(cfg)
+    )
+}
+
+fn projectile_damage_server_health_after_needle(cfg: &Config) -> String {
+    format!(
+        "victim_health_after={}",
+        projectile_damage_victim_health_after_text(cfg)
+    )
+}
+
+fn projectile_damage_victim_health_after_text(cfg: &Config) -> String {
+    let after = PROJECTILE_DAMAGE_VICTIM_START_HEALTH - projectile_damage_decision(cfg).damage;
+    format_one_decimal(after.max(0.0))
+}
+
+fn format_one_decimal(value: f64) -> String {
+    format!("{value:.1}")
 }
 
 fn print_usage(cfg: &Config) {
@@ -2235,7 +2342,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         if cfg.scenario == Scenario::ProjectileDamageAttribution {
             return Ok(projectile_damage_dry_run_evidence(cfg));
         }
-        let scenario = evaluate_scenario(cfg.scenario, "");
+        let scenario = evaluate_scenario_for_config(cfg, "");
         let server_scenario = Some(evaluate_server_scenario(
             cfg.scenario,
             "",
@@ -2315,7 +2422,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         .iter()
         .find(|needle| combined_output.contains(needle.as_str()))
         .cloned();
-    let scenario = evaluate_scenario(cfg.scenario, &combined_output);
+    let scenario = evaluate_scenario_for_config(cfg, &combined_output);
     if cfg.scenario != Scenario::Smoke && !scenario.passed {
         return Err(format!(
             "scenario {} failed: missing={:?} forbidden={:?}; logs={}",
@@ -2353,8 +2460,13 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
                 output: &run.output,
             })
             .collect::<Vec<_>>();
-        let causality =
-            evaluate_projectile_damage_causality(&client_logs, &server_log, &cfg.client_username);
+        let expected_damage = projectile_damage_amount_needle(cfg);
+        let causality = evaluate_projectile_damage_causality_for_damage(
+            &client_logs,
+            &server_log,
+            &cfg.client_username,
+            &expected_damage,
+        );
         if !causality.passed {
             return Err(format!(
                 "projectile damage causality failed: missing={:?} order_violations={:?}; client_logs={}; server_log={}",
@@ -2451,18 +2563,21 @@ fn projectile_damage_dry_run_evidence(cfg: &Config) -> ClientRunEvidence {
         PROJECTILE_DAMAGE_SEQUENCE_NEEDLE,
         PROJECTILE_DAMAGE_CLIENT_SWING_NEEDLE
     );
+    let client_health_needle = projectile_damage_client_health_needle(cfg);
+    let server_damage_needle = projectile_damage_amount_needle(cfg);
+    let server_health_after_needle = projectile_damage_server_health_after_needle(cfg);
     let victim_log = format!(
         "Detected server protocol version {}\njoin_game\nrender_tick_with_player\nYou are on team BLUE!\nremote_player_spawn\n{}\n",
         cfg.server_protocol,
-        PROJECTILE_DAMAGE_CLIENT_HEALTH_NEEDLE
+        client_health_needle
     );
     let server_log = format!(
         "{attacker_username} joined\n{victim_username} joined\nMC-COMPAT-MILESTONE projectile_loadout username={attacker_username} slot=0 item=Bow arrows=16\n{} attacker={attacker_username} victim={victim_username} hand=Main {} {}\n{} attacker={attacker_username} victim={victim_username} victim_health_before=20.0 {}\n",
         PROJECTILE_DAMAGE_SERVER_USE_NEEDLE,
         PROJECTILE_DAMAGE_SEQUENCE_NEEDLE,
-        PROJECTILE_DAMAGE_AMOUNT_NEEDLE,
+        server_damage_needle,
         PROJECTILE_DAMAGE_SERVER_HIT_NEEDLE,
-        PROJECTILE_DAMAGE_HEALTH_AFTER_NEEDLE
+        server_health_after_needle
     );
     let combined_output =
         format!("mc_compat_projectile_damage_client_count=2\n{attacker_log}{victim_log}");
@@ -2476,10 +2591,14 @@ fn projectile_damage_dry_run_evidence(cfg: &Config) -> ClientRunEvidence {
             output: &victim_log,
         },
     ];
-    let scenario = evaluate_scenario(cfg.scenario, &combined_output);
+    let scenario = evaluate_scenario_for_config(cfg, &combined_output);
     let server_scenario = evaluate_server_scenario(cfg.scenario, &server_log, &cfg.client_username);
-    let projectile_damage_causality =
-        evaluate_projectile_damage_causality(&client_logs, &server_log, &cfg.client_username);
+    let projectile_damage_causality = evaluate_projectile_damage_causality_for_damage(
+        &client_logs,
+        &server_log,
+        &cfg.client_username,
+        &server_damage_needle,
+    );
     ClientRunEvidence {
         log_path: None,
         log_paths: Vec::new(),
@@ -2939,7 +3058,7 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
     let classification = client.map(|evidence| evidence.classification);
     let exit_code = client.and_then(|evidence| evidence.exit_code);
     let scenario_evidence = client.and_then(|evidence| evidence.scenario.as_ref());
-    let fallback_scenario = evaluate_scenario(cfg.scenario, "");
+    let fallback_scenario = evaluate_scenario_for_config(cfg, "");
     let scenario = scenario_evidence.unwrap_or(&fallback_scenario);
     let server_evidence = client.and_then(|evidence| evidence.server_scenario.as_ref());
     let fallback_server = evaluate_server_scenario(cfg.scenario, "", &cfg.client_username);
@@ -4270,9 +4389,30 @@ mod tests {
 
         assert_eq!(cfg.steel_config_path, Some(path.clone()));
         assert_eq!(cfg.server_backend, ServerBackend::Valence);
+        assert_eq!(cfg.server_version, "1.20.1");
         assert_eq!(cfg.server_port, 25566);
         assert_eq!(cfg.server_protocol, 763);
+        assert_eq!(cfg.valence_rev, "main");
+        assert_eq!(cfg.valence_example, "ctf");
+        assert_eq!(
+            cfg.valence_worktree,
+            PathBuf::from("/tmp/valence-compat-763")
+        );
+        assert_eq!(
+            cfg.valence_target_dir,
+            PathBuf::from("/tmp/valence-compat-763-target")
+        );
+        assert_eq!(cfg.valence_log, PathBuf::from("/tmp/mc-compat-valence.log"));
+        assert_eq!(
+            cfg.valence_pid_file,
+            PathBuf::from("/tmp/mc-compat-valence.pid")
+        );
+        assert_eq!(cfg.client_username, "compatbot");
         assert_eq!(cfg.client_timeout, Duration::from_secs(77));
+        assert_eq!(
+            cfg.receipt_dir,
+            Some(PathBuf::from("target/mc-compat-steel"))
+        );
         assert_eq!(cfg.scenario, Scenario::ProjectileDamageAttribution);
         assert_eq!(
             cfg.client_success_needles,
@@ -4788,6 +4928,43 @@ red flag captured
         assert!(missing_victim_health
             .missing_steps
             .contains(&"victim_client_damage_update"));
+    }
+
+    #[test]
+    fn projectile_damage_dry_run_uses_steel_arrow_policy() {
+        let mut cfg = test_config(
+            &[
+                "--scenario",
+                "projectile-damage-attribution",
+                "--valence-rev",
+                PINNED_PROJECTILE_DAMAGE_VALENCE_REV,
+            ],
+            &[],
+        )
+        .expect("projectile damage config parses");
+        cfg.arrow_damage_policy = runtime_config::ArrowDamagePolicy {
+            base_damage: 4.0,
+            velocity_multiplier: DEFAULT_ARROW_VELOCITY_MULTIPLIER,
+            max_damage: DEFAULT_ARROW_MAX_DAMAGE,
+        };
+
+        let evidence = projectile_damage_dry_run_evidence(&cfg);
+        assert!(
+            evidence
+                .scenario
+                .as_ref()
+                .expect("scenario evidence")
+                .passed,
+            "{evidence:?}"
+        );
+        let causality = evidence
+            .projectile_damage_causality
+            .as_ref()
+            .expect("causality evidence");
+        assert!(causality.passed, "{causality:?}");
+        assert!(causality
+            .observed_steps
+            .contains(&"server_projectile_hit_attacker_victim_health_delta"));
     }
 
     #[test]

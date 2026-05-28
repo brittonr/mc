@@ -8,6 +8,8 @@ const INVENTORY_PATH: &str = "docs/evidence/runtime-config-inventory-2026-05-27.
 const CONTRACT_PATH: &str = "docs/evidence/steel-runtime-config-contract-2026-05-27.md";
 const STEEL_MODULE_PATH: &str = "config/mc-compat/steel/default.scm";
 const SNAPSHOT_PATH: &str = "docs/evidence/steel-runtime-config-default.snapshot.json";
+const RUNNER_MAIN_PATH: &str = "tools/mc-compat-runner/src/main.rs";
+const RUNTIME_CORE_PATH: &str = "tools/mc-compat-runner/src/runtime_config.rs";
 const SUPPORTED_SCHEMA_VERSION: &str = "1";
 const SANDBOX_PROFILE: &str = "mc-compat/pure-v1";
 const MODULE_BLAKE3_HEX_LENGTH: usize = 64;
@@ -59,6 +61,17 @@ const REQUIRED_STEEL_EXPORTS: &[&str] = &[
     "arrow-velocity-multiplier",
     "arrow-max-damage",
 ];
+const REQUIRED_CODE_TOKENS: &[&str] = &[
+    "--steel-config",
+    "MC_COMPAT_STEEL_CONFIG",
+    "apply_steel_config_file",
+    "evaluate_scenario_for_config",
+    "projectile_damage_amount_needle",
+    "RuntimeConfigController",
+    "reload_with",
+    "redacted_value",
+];
+
 const REQUIRED_CONTRACT_TOKENS: &[&str] = &[
     "Steel module contract",
     "Rust-owned typed boundary",
@@ -117,6 +130,8 @@ fn run_repo_checks(root: &Path) -> Result<String, Vec<String>> {
     let contract_text = read(root, CONTRACT_PATH)?;
     let steel_text = read(root, STEEL_MODULE_PATH)?;
     let snapshot_text = read(root, SNAPSHOT_PATH)?;
+    let runner_main_text = read(root, RUNNER_MAIN_PATH)?;
+    let runtime_core_text = read(root, RUNTIME_CORE_PATH)?;
     let mut issues = Vec::new();
 
     let rows = parse_inventory(&inventory_text, &mut issues);
@@ -129,6 +144,7 @@ fn run_repo_checks(root: &Path) -> Result<String, Vec<String>> {
         String::new()
     });
     issues.extend(validate_snapshot(&snapshot_text, &module_hash));
+    issues.extend(validate_migrated_code(&runner_main_text, &runtime_core_text));
 
     if issues.is_empty() {
         Ok(format!(
@@ -283,6 +299,15 @@ fn validate_contract_doc(text: &str) -> Vec<String> {
         .collect()
 }
 
+fn validate_migrated_code(runner_main_text: &str, runtime_core_text: &str) -> Vec<String> {
+    let combined = format!("{runner_main_text}\n{runtime_core_text}");
+    REQUIRED_CODE_TOKENS
+        .iter()
+        .filter(|token| !combined.contains(**token))
+        .map(|token| format!("migrated code missing token: {token}"))
+        .collect()
+}
+
 fn validate_snapshot(text: &str, module_hash: &str) -> Vec<String> {
     let mut issues = Vec::new();
     for token in [
@@ -389,6 +414,16 @@ fn run_self_tests() -> Result<String, Vec<String>> {
             .iter()
             .any(|issue| issue.contains("arrow-damage policy")),
         "bad arrow policy not rejected: {module_issues:?}"
+    );
+
+    let code_issues = validate_migrated_code("--steel-config MC_COMPAT_STEEL_CONFIG apply_steel_config_file evaluate_scenario_for_config projectile_damage_amount_needle", "RuntimeConfigController reload_with redacted_value");
+    assert!(code_issues.is_empty(), "valid migrated code tokens failed: {code_issues:?}");
+    let missing_code_issues = validate_migrated_code("", "");
+    assert!(
+        missing_code_issues
+            .iter()
+            .any(|issue| issue.contains("migrated code missing token")),
+        "missing migrated code token not rejected: {missing_code_issues:?}"
     );
 
     let snapshot_issues = validate_snapshot(
