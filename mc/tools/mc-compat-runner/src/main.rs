@@ -35,6 +35,12 @@ const PROJECTILE_DAMAGE_AMOUNT_NEEDLE: &str = "damage=3.0";
 const DEFAULT_ARROW_DAMAGE: f64 = 3.0;
 const DEFAULT_ARROW_VELOCITY_MULTIPLIER: f64 = 1.0;
 const DEFAULT_ARROW_MAX_DAMAGE: f64 = 10.0;
+const GIT_REV_DRY_RUN_PLACEHOLDER: &str = "dry-run";
+const GIT_STATUS_CLEAN: &str = "clean";
+const GIT_STATUS_DIRTY: &str = "dirty";
+const GIT_STATUS_DRY_RUN: &str = "dry-run";
+const GIT_STATUS_UNAVAILABLE: &str = "unavailable";
+const GIT_STATUS_PORCELAIN_FLAG: &str = "--porcelain";
 const PROJECTILE_DAMAGE_CONTEXT_VELOCITY: f64 = 0.0;
 const PROJECTILE_DAMAGE_CONTEXT_PULL_STRENGTH: f64 = 1.0;
 const PROJECTILE_DAMAGE_VICTIM_START_HEALTH: f64 = 20.0;
@@ -109,6 +115,33 @@ struct ProjectileDamageCausalityEvidence {
     attacker_username: String,
     victim_username: String,
     passed: bool,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct GitRevisionEvidence {
+    requested_rev: Option<String>,
+    resolved_rev: Option<String>,
+    status: &'static str,
+    dirty: bool,
+    diagnostics: Vec<String>,
+}
+
+impl GitRevisionEvidence {
+    fn dry_run(requested_rev: Option<String>) -> Self {
+        Self {
+            requested_rev,
+            resolved_rev: Some(GIT_REV_DRY_RUN_PLACEHOLDER.to_string()),
+            status: GIT_STATUS_DRY_RUN,
+            dirty: false,
+            diagnostics: Vec::new(),
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct ChildRevisionEvidence {
+    client: GitRevisionEvidence,
+    valence: GitRevisionEvidence,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -2087,6 +2120,83 @@ fn git_rev_parse(repo: &Path, rev: &str) -> Result<String, String> {
         })
 }
 
+fn git_worktree_dirty(repo: &Path) -> Result<bool, String> {
+    let output = Command::new("git")
+        .arg("-C")
+        .arg(repo)
+        .arg("status")
+        .arg(GIT_STATUS_PORCELAIN_FLAG)
+        .output()
+        .map_err(|e| format!("git status in {}: {e}", repo.display()))?;
+    if !output.status.success() {
+        return Err(format!(
+            "git status in {} failed with {}",
+            repo.display(),
+            output.status
+        ));
+    }
+    String::from_utf8(output.stdout)
+        .map(|text| !text.trim().is_empty())
+        .map_err(|e| format!("git status output in {} was not UTF-8: {e}", repo.display()))
+}
+
+fn build_git_revision_evidence(
+    requested_rev: Option<&str>,
+    resolved_rev: Result<String, String>,
+    dirty: Result<bool, String>,
+) -> GitRevisionEvidence {
+    match (resolved_rev, dirty) {
+        (Ok(resolved_rev), Ok(dirty)) => GitRevisionEvidence {
+            requested_rev: requested_rev.map(str::to_string),
+            resolved_rev: Some(resolved_rev),
+            status: if dirty {
+                GIT_STATUS_DIRTY
+            } else {
+                GIT_STATUS_CLEAN
+            },
+            dirty,
+            diagnostics: Vec::new(),
+        },
+        (resolved_rev, dirty) => {
+            let mut diagnostics = Vec::new();
+            if let Err(err) = resolved_rev {
+                diagnostics.push(err);
+            }
+            if let Err(err) = dirty {
+                diagnostics.push(err);
+            }
+            GitRevisionEvidence {
+                requested_rev: requested_rev.map(str::to_string),
+                resolved_rev: None,
+                status: GIT_STATUS_UNAVAILABLE,
+                dirty: true,
+                diagnostics,
+            }
+        }
+    }
+}
+
+fn git_revision_evidence(repo: &Path, requested_rev: Option<&str>) -> GitRevisionEvidence {
+    build_git_revision_evidence(
+        requested_rev,
+        git_rev_parse(repo, "HEAD"),
+        git_worktree_dirty(repo),
+    )
+}
+
+fn child_revision_evidence_for_receipt(cfg: &Config) -> ChildRevisionEvidence {
+    if cfg.mode == Mode::DryRun {
+        return ChildRevisionEvidence {
+            client: GitRevisionEvidence::dry_run(None),
+            valence: GitRevisionEvidence::dry_run(Some(cfg.valence_rev.clone())),
+        };
+    }
+    ChildRevisionEvidence {
+        client: git_revision_evidence(&cfg.client_dir, None),
+        valence: git_revision_evidence(&cfg.valence_worktree, Some(&cfg.valence_rev)),
+    }
+}
+
 fn prune_stale_valence_worktrees(cfg: &Config) -> Result<(), String> {
     let mut cmd = Command::new("git");
     cmd.arg("-C")
@@ -3305,6 +3415,16 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         "all_projectile_weapons",
         "enchantments_or_status_effects",
     ];
+    let child_revisions = child_revision_evidence_for_receipt(cfg);
+    let client_git_rev_json = json_optional_string(child_revisions.client.resolved_rev.as_deref());
+    let client_git_status_json = json_string(child_revisions.client.status);
+    let client_git_diagnostics_json = json_string_vec(&child_revisions.client.diagnostics);
+    let valence_git_rev_requested_json =
+        json_optional_string(child_revisions.valence.requested_rev.as_deref());
+    let valence_git_rev_resolved_json =
+        json_optional_string(child_revisions.valence.resolved_rev.as_deref());
+    let valence_git_status_json = json_string(child_revisions.valence.status);
+    let valence_git_diagnostics_json = json_string_vec(&child_revisions.valence.diagnostics);
     let error_json = error
         .map(|err| json_string(err))
         .unwrap_or_else(|| "null".to_string());
@@ -3408,6 +3528,10 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
   "projectile_damage_causality": {projectile_damage_causality_json},
   "client": {{
     "dir": {client_dir_json},
+    "git_rev": {client_git_rev_json},
+    "git_status": {client_git_status_json},
+    "git_dirty": {client_git_dirty},
+    "git_diagnostics": {client_git_diagnostics_json},
     "target_dir": {target_dir_json},
     "username": {username_json},
     "usernames": {client_usernames_json},
@@ -3427,6 +3551,11 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
   "valence": {{
     "repo": {valence_repo_json},
     "rev": {valence_rev_json},
+    "git_rev_requested": {valence_git_rev_requested_json},
+    "git_rev_resolved": {valence_git_rev_resolved_json},
+    "git_status": {valence_git_status_json},
+    "git_dirty": {valence_git_dirty},
+    "git_diagnostics": {valence_git_diagnostics_json},
     "worktree": {valence_worktree_json},
     "example": {valence_example_json},
     "log_path": {valence_log_json}
@@ -3484,6 +3613,10 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         protocol = cfg.server_protocol,
         port = cfg.server_port,
         client_dir_json = json_string(&cfg.client_dir.display().to_string()),
+        client_git_rev_json = client_git_rev_json,
+        client_git_status_json = client_git_status_json,
+        client_git_dirty = child_revisions.client.dirty,
+        client_git_diagnostics_json = client_git_diagnostics_json,
         target_dir_json = json_string(&cfg.target_dir.display().to_string()),
         username_json = json_string(&cfg.client_username),
         client_usernames_json = client_usernames_json,
@@ -3495,6 +3628,11 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         timeout_secs = cfg.client_timeout.as_secs(),
         valence_repo_json = json_string(&cfg.valence_repo.display().to_string()),
         valence_rev_json = json_string(&cfg.valence_rev),
+        valence_git_rev_requested_json = valence_git_rev_requested_json,
+        valence_git_rev_resolved_json = valence_git_rev_resolved_json,
+        valence_git_status_json = valence_git_status_json,
+        valence_git_dirty = child_revisions.valence.dirty,
+        valence_git_diagnostics_json = valence_git_diagnostics_json,
         valence_worktree_json = json_string(&cfg.valence_worktree.display().to_string()),
         valence_example_json = json_string(&cfg.valence_example),
         valence_log_json = json_string(&cfg.valence_log.display().to_string()),
@@ -4220,6 +4358,53 @@ mod tests {
         )
         .expect("write fake Stevenarella manifest");
         dir
+    }
+
+    #[test]
+    fn git_revision_evidence_core_reports_clean_dirty_and_unavailable() {
+        let clean_evidence =
+            build_git_revision_evidence(Some("HEAD"), Ok("abc123".to_string()), Ok(false));
+        assert_eq!(clean_evidence.status, GIT_STATUS_CLEAN);
+        assert!(!clean_evidence.dirty);
+        assert_eq!(clean_evidence.requested_rev.as_deref(), Some("HEAD"));
+        assert_eq!(clean_evidence.resolved_rev.as_deref(), Some("abc123"));
+        assert!(clean_evidence.diagnostics.is_empty(), "{clean_evidence:?}");
+
+        let dirty_evidence =
+            build_git_revision_evidence(Some("HEAD"), Ok("abc123".to_string()), Ok(true));
+        assert_eq!(dirty_evidence.status, GIT_STATUS_DIRTY);
+        assert!(dirty_evidence.dirty);
+        assert_eq!(dirty_evidence.resolved_rev.as_deref(), Some("abc123"));
+
+        let unavailable_evidence = build_git_revision_evidence(
+            None,
+            Err("missing rev".to_string()),
+            Err("missing status".to_string()),
+        );
+        assert_eq!(unavailable_evidence.status, GIT_STATUS_UNAVAILABLE);
+        assert!(unavailable_evidence.dirty);
+        assert!(unavailable_evidence.resolved_rev.is_none());
+        let expected_diagnostic_count = 2;
+        assert_eq!(
+            unavailable_evidence.diagnostics.len(),
+            expected_diagnostic_count
+        );
+    }
+
+    #[test]
+    fn dry_run_receipt_records_deterministic_child_revision_placeholders() {
+        let cfg = test_config(&["--scenario=survival-break-place-pickup"], &[])
+            .expect("dry-run config parses");
+        let json = smoke_receipt_json(&cfg, Ok(&None));
+
+        assert!(json.contains("\"git_rev\": \"dry-run\""), "{json}");
+        assert!(json.contains("\"git_status\": \"dry-run\""), "{json}");
+        assert!(json.contains("\"git_dirty\": false"), "{json}");
+        assert!(
+            json.contains("\"git_rev_requested\": \"8ad9c85\""),
+            "{json}"
+        );
+        assert!(json.contains("\"git_rev_resolved\": \"dry-run\""), "{json}");
     }
 
     #[test]

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
 import tempfile
@@ -81,6 +82,14 @@ HISTORICAL_TARGET_ORACLES = {
 ORACLE_REQUIRED_HEADINGS = ["## Question", "## Inspected evidence", "## Decision", "## Owner", "## Next action"]
 BLAKE3_RE = re.compile(rf"`[0-9a-f]{{{BLAKE3_HEX_LENGTH}}}`")
 FORBIDDEN_COMMIT_MARKERS = ("current ", " diff", "untracked", "dirty")
+CHILD_REVISION_COMMIT_MARKERS = ("Valence `", "Stevenarella `")
+CHILD_REVISION_ORACLE_RE = re.compile(r"`(docs/evidence/[^`]*oracle[^`]*\.md)`")
+LEGACY_CHILD_REVISION_DOCS = frozenset(
+    {
+        "docs/evidence/protocol-763-matrix-reviewable-receipts-2026-05-27.md",
+        "docs/evidence/protocol-763-roi-10-projectile-damage-pinned-2026-05-27.md",
+    }
+)
 
 
 @dataclass(frozen=True)
@@ -173,6 +182,65 @@ def validate_historical_oracle(row: EvidenceRow, digest: str, root: Path = ROOT)
     return missing
 
 
+def has_child_revision_commit(row: EvidenceRow) -> bool:
+    return any(marker in row.commits for marker in CHILD_REVISION_COMMIT_MARKERS)
+
+
+def receipt_has_machine_child_revisions(root: Path, receipt_path: str) -> bool:
+    try:
+        receipt = json.loads((root / receipt_path).read_text())
+    except (OSError, json.JSONDecodeError):
+        return False
+    if not isinstance(receipt, dict):
+        return False
+    client = receipt.get("client")
+    valence = receipt.get("valence")
+    if not isinstance(client, dict) or not isinstance(valence, dict):
+        return False
+    required_client_fields = ["git_rev", "git_status", "git_dirty", "git_diagnostics"]
+    required_valence_fields = [
+        "git_rev_requested",
+        "git_rev_resolved",
+        "git_status",
+        "git_dirty",
+        "git_diagnostics",
+    ]
+    return all(field in client for field in required_client_fields) and all(
+        field in valence for field in required_valence_fields
+    )
+
+
+def oracle_checkpoint_is_reviewable(root: Path, oracle_path: str) -> bool:
+    oracle = root / oracle_path
+    if not oracle.is_file():
+        return False
+    text = oracle.read_text()
+    return all(heading in text for heading in ORACLE_REQUIRED_HEADINGS) and manifest_has_path(
+        root, oracle_path
+    )
+
+
+def validate_child_revision_evidence(
+    row: EvidenceRow,
+    receipt_path: str,
+    doc_path: str,
+    doc_text: str,
+    root: Path,
+) -> list[str]:
+    if not has_child_revision_commit(row):
+        return []
+    if doc_path in LEGACY_CHILD_REVISION_DOCS:
+        return []
+    if receipt_has_machine_child_revisions(root, receipt_path):
+        return []
+    oracle_paths = CHILD_REVISION_ORACLE_RE.findall(doc_text)
+    if any(oracle_checkpoint_is_reviewable(root, oracle_path) for oracle_path in oracle_paths):
+        return []
+    return [
+        f"row cites child revisions without machine receipt fields or reviewable oracle checkpoint: {row.seam}"
+    ]
+
+
 def validate_evidence_row(row: EvidenceRow, root: Path = ROOT) -> list[str]:
     missing: list[str] = []
     digest = strip_code_span(row.blake3)
@@ -204,8 +272,11 @@ def validate_evidence_row(row: EvidenceRow, root: Path = ROOT) -> list[str]:
         missing.append(f"row evidence doc is not markdown: {row.seam}: {doc_path}")
     elif not (root / doc_path).is_file():
         missing.append(f"row evidence doc is missing: {row.seam}: {doc_path}")
-    elif BLAKE3_RE.fullmatch(row.blake3) and digest not in (root / doc_path).read_text():
-        missing.append(f"row evidence doc does not cite BLAKE3 hash: {row.seam}: {doc_path}")
+    else:
+        doc_text = (root / doc_path).read_text()
+        if BLAKE3_RE.fullmatch(row.blake3) and digest not in doc_text:
+            missing.append(f"row evidence doc does not cite BLAKE3 hash: {row.seam}: {doc_path}")
+        missing.extend(validate_child_revision_evidence(row, receipt_path, doc_path, doc_text, root))
 
     if "parent `" not in row.commits:
         missing.append(f"row lacks parent commit: {row.seam}")
@@ -378,6 +449,52 @@ def assert_self_tests() -> None:
             required_text=[],
         )
         assert any("uncommitted state marker" in item for item in missing), missing
+
+        child_commits = "parent `abc1234`, Valence `def5678`, Stevenarella `abc9999`"
+        receipt.write_text('{"client": {}, "valence": {}}\n')
+        doc.write_text(f"Receipt BLAKE3: `{good_hash}`\n")
+        _, _, missing = validate_matrix_text(
+            self_test_text(good_hash, commits=child_commits),
+            root=root,
+            required_seams=required_seams,
+            required_gaps=[],
+            required_text=[],
+        )
+        assert any("child revisions" in item for item in missing), missing
+
+        receipt.write_text(
+            '{"client": {"git_rev": "abc", "git_status": "clean", "git_dirty": false, "git_diagnostics": []}, '
+            '"valence": {"git_rev_requested": "def", "git_rev_resolved": "def", "git_status": "clean", "git_dirty": false, "git_diagnostics": []}}\n'
+        )
+        _, _, missing = validate_matrix_text(
+            self_test_text(good_hash, commits=child_commits),
+            root=root,
+            required_seams=required_seams,
+            required_gaps=[],
+            required_text=[],
+        )
+        assert not missing, missing
+
+        oracle_hash = "1" * BLAKE3_HEX_LENGTH
+        oracle_path = root / "docs" / "evidence" / "child-oracle.md"
+        oracle_path.write_text(
+            "# Oracle\n\n## Question\nq\n\n## Inspected evidence\ne\n\n## Decision\nd\n\n## Owner\no\n\n## Next action\nn\n"
+        )
+        manifest.write_text(
+            f"{good_hash}  docs/evidence/test.receipt.json\n{oracle_hash}  docs/evidence/child-oracle.md\n"
+        )
+        receipt.write_text('{"client": {}, "valence": {}}\n')
+        doc.write_text(
+            f"Receipt BLAKE3: `{good_hash}`\nChild-revision oracle checkpoint: `docs/evidence/child-oracle.md`.\n"
+        )
+        _, _, missing = validate_matrix_text(
+            self_test_text(good_hash, commits=child_commits),
+            root=root,
+            required_seams=required_seams,
+            required_gaps=[],
+            required_text=[],
+        )
+        assert not missing, missing
 
 
 def parse_args() -> argparse.Namespace:
