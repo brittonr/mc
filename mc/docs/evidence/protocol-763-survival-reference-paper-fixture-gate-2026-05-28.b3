@@ -1,5 +1,6 @@
 c483a4d77b749938f7b384bf908fae2c3910cf970297b2081ae9cb01dea2c436  tools/mc-compat-runner/src/main.rs
-c0d3a935536996d2ea90b04e87e99294169360e3e0fab544c1a4426ea445f6a3  cairn/changes/add-survival-reference-parity-receipts/tasks.md
+c0d3a935536996d2ea90b04e87e99294169360e3e0fab544c1a4426ea445f6a3  cairn/archive/2026-05-28-add-survival-reference-parity-receipts/tasks.md
+8d161c262ec4fa4c691815ba9b70d4fa6980eea9a4948b7906831ac5b841cc27  cairn/specs/mc-compatibility/spec.md
 c70f3d0044e285ba9a3e3c411c30bfa866beeace8d74c36d339c381904d94c13  docs/evidence/protocol-763-acceptance-matrix.md
 1557fe63c3c52316474afbd9d06e507a41bb4749278176c04b0c0b6bf8001766  docs/evidence/protocol-763-current-evidence-bundle.md
 6928822345c85ec7736ae84a0f558e4e61c8f20dc7ec015d92e3e90c25cccb04  docs/evidence/protocol-763-survival-reference-parity-2026-05-28.md
