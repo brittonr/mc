@@ -4,11 +4,11 @@
 
 reference_backend: paper-1.20.1-reference-harness
 reference_version: minecraft-1.20.1-protocol-763
-reference_receipt: none
-valence_reference_pair: none
+reference_receipt: docs/evidence/protocol-763-survival-reference-paper-2026-05-28.receipt.json
+valence_reference_pair: docs/evidence/protocol-763-survival-reference-valence-2026-05-28.receipt.json
 decision_owner: agent
 
-exact survival break/place/pickup parity remains a non-claim. The current Valence-only survival rail is useful evidence, but paired reference evidence is still missing. The checker rejects Valence-only survival evidence before any parity row can be promoted.
+exact survival break/place/pickup parity is covered by paired Paper and Valence receipts. The checker rejects Valence-only survival evidence before any parity row can be promoted. full survival compatibility and broad vanilla parity remain non-claims.
 
 ## Normalized exact-match metrics
 
@@ -78,19 +78,28 @@ Negative fixtures:
 
 ## Validation evidence
 
-- Run log: `docs/evidence/protocol-763-survival-reference-parity-gate-2026-05-28.run.log`.
-- BLAKE3 manifest: `docs/evidence/protocol-763-survival-reference-parity-gate-2026-05-28.b3`.
-- The gate self-test passed, the doc/non-claim check passed, and the current Valence receipt used as both sides was rejected with `wrong_backend:reference:valence`.
+- Paper receipt/log bundle:
+  - `docs/evidence/protocol-763-survival-reference-paper-2026-05-28.receipt.json`
+  - `docs/evidence/protocol-763-survival-reference-paper-2026-05-28.client.log`
+  - `docs/evidence/protocol-763-survival-reference-paper-2026-05-28.server.log`
+  - `docs/evidence/protocol-763-survival-reference-paper-2026-05-28.run.log`
+- Valence receipt/log bundle:
+  - `docs/evidence/protocol-763-survival-reference-valence-2026-05-28.receipt.json`
+  - `docs/evidence/protocol-763-survival-reference-valence-2026-05-28.client.log`
+  - `docs/evidence/protocol-763-survival-reference-valence-2026-05-28.server.log`
+  - `docs/evidence/protocol-763-survival-reference-valence-2026-05-28.run.log`
+- Comparator log: `docs/evidence/protocol-763-survival-reference-parity-2026-05-28.compare.log` (`survival reference parity comparison ok: 43 metrics`).
+- Paper receipt BLAKE3: `a88fe547bfe2dd43fff3ac5bd967f0ebf5a3c539403211dd029865293130090b`.
+- Pair manifest BLAKE3: `f2aee64638a7800b6b082988cc1efe876110507689961b51aed5e7b6d9cbd60a`.
+- BLAKE3 manifest: `docs/evidence/protocol-763-survival-reference-pair-2026-05-28.b3`.
+- Committed child revisions: Stevenarella `d758630ad77b444d80e4bd8dca8585b5507f556b`, Valence `7d13a242742347a05c9752501880a2e986819ae7`.
+- Parent runner/fixture/comparator commit used for promoted evidence: `5d4973d`.
+- Historical gate log: `docs/evidence/protocol-763-survival-reference-parity-gate-2026-05-28.run.log`; historical BLAKE3 manifest: `docs/evidence/protocol-763-survival-reference-parity-gate-2026-05-28.b3`.
 
 ## Paper fixture probe
 
-`docs/evidence/protocol-763-survival-reference-paper-fixture-2026-05-28.md` records the first live Paper candidate probe. Dry-run matrix wiring now passes for protocol 763, but the live Paper reference receipt is blocked: Stevenarella panics on vanilla/Paper clientbound play packet `0x6b`, and plain Paper does not emit the server-side `server_survival_*` fixture milestones required by the comparator.
+`docs/evidence/protocol-763-survival-reference-paper-fixture-2026-05-28.md` records the first live Paper candidate blocker. That blocker is now resolved for this narrow rail by the Paper fixture plugin, the runner's `PAPER_PLUGIN_JAR` mount, and Stevenarella protocol-763 parser/probe updates. The final Paper bundle above is the promoted reference artifact.
 
 ## Next evidence needed
 
-1. Add a Paper/reference fixture plugin or equivalent harness for this exact probe, including server-side `server_survival_*` metrics.
-2. Patch or extend Stevenarella's Paper 1.20.1 parser path for packet `0x6b`.
-3. Produce reference receipt/log artifacts under `docs/evidence/`.
-3. Produce a matching Valence receipt/log bundle from committed child revisions.
-4. Run `python3 tools/check_survival_reference_parity.py --reference-receipt ... --reference-client-log ... --reference-server-log ... --valence-receipt ... --valence-client-log ... --valence-server-log ...`.
-5. Only then update the acceptance matrix for the narrow break/place/pickup parity row; full survival compatibility and broad vanilla parity stay non-claims.
+The paired break/place/pickup parity row is promoted. Future survival work must stay row-scoped: crafting, chest/furnace persistence, hunger/food, mob drops, redstone, biome/dimension, and world persistence still need their own Valence and reference receipts before promotion.

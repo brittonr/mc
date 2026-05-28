@@ -1,0 +1,71 @@
+[init] Running as uid=1000 gid=1000 with /data as 'drwxr-xr-x 2 1000 1000 4096 May 27 12:37 /data'
+[init] Image info: buildtime=2026-05-27T12:37:15.979Z,version=java17,revision=544382d5d60276f846113991585e69bb4f7077a3
+[init] Resolving type given PAPER
+[39m[mc-image-helper] 23:22:35.841 INFO  : Downloaded /data/paper-1.20.1-196.jar
+[0;39m[init] Copying any plugins from /plugins to /data/plugins
+[39m[mc-image-helper] 23:22:36.750 INFO  : Copying /plugins/mc-compat-paper-survival-fixture.jar -> /data/plugins/mc-compat-paper-survival-fixture.jar
+[0;39m[init] Copying any configs from /config to /data/config
+[init] Creating server properties in /data/server.properties
+[init] Disabling whitelist functionality
+[39m[mc-image-helper] 23:22:37.356 INFO  : Created/updated 7 properties in /data/server.properties
+[0;39m[39m[mc-image-helper] 23:22:38.071 INFO  : Downloaded /data/config/paper-world-defaults.yml from https://raw.githubusercontent.com/Shonz1/minecraft-default-configs/main/1.20.1/paper-world-defaults.yml
+[0;39m[39m[mc-image-helper] 23:22:38.080 INFO  : Downloaded /data/config/paper-global.yml from https://raw.githubusercontent.com/Shonz1/minecraft-default-configs/main/1.20.1/paper-global.yml
+[0;39m[39m[mc-image-helper] 23:22:39.136 INFO  : Downloaded /data/bukkit.yml from https://raw.githubusercontent.com/Shonz1/minecraft-default-configs/main/1.20.1/bukkit.yml
+[0;39m[39m[mc-image-helper] 23:22:39.142 INFO  : Downloaded /data/spigot.yml from https://raw.githubusercontent.com/Shonz1/minecraft-default-configs/main/1.20.1/spigot.yml
+[0;39m[init] Setting initial memory to 1G and max to 1G
+[init] Starting the Minecraft server...
+Downloading mojang_1.20.1.jar
+Applying patches
+Starting org.bukkit.craftbukkit.Main
+*** Warning, you've not updated in a while! ***
+*** Please download a new build as per instructions from https://papermc.io/downloads/paper ***
+System Info: Java 17 (OpenJDK 64-Bit Server VM 17.0.15+6) Host: Linux 6.18.30 (amd64)
+Loading libraries, please wait...
+2026-05-28 23:22:41,358 ServerMain WARN Advanced terminal features are not available in this environment
+[23:22:43 INFO]: Environment: authHost='https://authserver.mojang.com', accountsHost='https://api.mojang.com', sessionHost='https://sessionserver.mojang.com', servicesHost='https://api.minecraftservices.com', name='PROD'
+[23:22:43 INFO]: Found new data pack file/bukkit, loading it automatically
+[23:22:43 INFO]: Loaded 7 recipes
+[23:22:43 INFO]: Starting minecraft server version 1.20.1
+[23:22:43 INFO]: Loading properties
+[23:22:43 INFO]: This server is running Paper version git-Paper-196 (MC: 1.20.1) (Implementing API version 1.20.1-R0.1-SNAPSHOT) (Git: 773dd72)
+[23:22:43 INFO]: Server Ping Player Sample Count: 12
+[23:22:43 INFO]: Using 4 threads for Netty based IO
+[23:22:43 WARN]: [!] The timings profiler has been enabled but has been scheduled for removal from Paper in the future.
+    We recommend installing the spark profiler as a replacement: https://spark.lucko.me/
+    For more information please visit: https://github.com/PaperMC/Paper/issues/8948
+[23:22:43 INFO]: [ChunkTaskScheduler] Chunk system is using 1 I/O threads, 8 worker threads, and gen parallelism of 8 threads
+[23:22:44 INFO]: Default game type: SURVIVAL
+[23:22:44 INFO]: Generating keypair
+[23:22:44 INFO]: Starting Minecraft server on *:25565
+[23:22:44 INFO]: Using epoll channel type
+[23:22:44 INFO]: Paper: Using libdeflate (Linux x86_64) compression from Velocity.
+[23:22:44 INFO]: Paper: Using OpenSSL 1.1.x (Linux x86_64) cipher from Velocity.
+[23:22:44 INFO]: [McCompatSurvivalFixture] Loading server plugin McCompatSurvivalFixture v0.1.0
+[23:22:44 WARN]: **** SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+[23:22:44 WARN]: The server will make no attempt to authenticate usernames. Beware.
+[23:22:44 WARN]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+[23:22:44 WARN]: To change this, set "online-mode" to "true" in the server.properties file.
+[23:22:44 INFO]: Preparing level "world"
+[23:22:45 INFO]: Preparing start region for dimension minecraft:overworld
+[23:22:45 INFO]: Time elapsed: 50 ms
+[23:22:45 INFO]: Preparing start region for dimension minecraft:the_nether
+[23:22:45 INFO]: Time elapsed: 21 ms
+[23:22:45 INFO]: Preparing start region for dimension minecraft:the_end
+[23:22:46 INFO]: Time elapsed: 37 ms
+[23:22:46 INFO]: [McCompatSurvivalFixture] Enabling McCompatSurvivalFixture v0.1.0
+[23:22:46 INFO]: [McCompatSurvivalFixture] MC-COMPAT-MILESTONE survival_fixture_enabled
+[23:22:46 INFO]: Starting remote control listener
+[23:22:46 INFO]: Thread RCON Listener started
+[23:22:46 INFO]: RCON running on 0.0.0.0:25575
+[23:22:46 INFO]: Running delayed init tasks
+[23:22:46 INFO]: Done (2.342s)! For help, type "help"
+[23:22:46 INFO]: Timings Reset
+[23:22:50 INFO]: UUID of player compatbot is 44fbb854-bbe7-3711-88fe-c85ab1543ed5
+[23:22:50 INFO]: compatbot joined the game
+[23:22:50 INFO]: compatbot[/172.30.0.1:42788] logged in with entity id 271 at ([world]-5.5, 69.0, 8.5)
+[23:22:50 INFO]: [McCompatSurvivalFixture] MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+[23:22:52 INFO]: [McCompatSurvivalFixture] MC-COMPAT-MILESTONE survival_block_break username=compatbot item=Dirt at=0,64,1
+[23:22:53 INFO]: [McCompatSurvivalFixture] MC-COMPAT-MILESTONE survival_pickup_item username=compatbot slot=36 item=Dirt count=1
+[23:22:55 INFO]: [McCompatSurvivalFixture] MC-COMPAT-MILESTONE survival_block_place username=compatbot item=Dirt from_slot=36 at=0,65,1
+[23:24:06 INFO]: compatbot lost connection: Disconnected
+[23:24:06 INFO]: compatbot left the game

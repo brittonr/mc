@@ -1,0 +1,10 @@
+a88fe547bfe2dd43fff3ac5bd967f0ebf5a3c539403211dd029865293130090b  docs/evidence/protocol-763-survival-reference-paper-2026-05-28.receipt.json
+2d0ddca15f321f75a9bd1d221739f6f862c5b88d7cdfe3a4efa8a6562189a6f7  docs/evidence/protocol-763-survival-reference-paper-2026-05-28.client.log
+19ab0c2256bdb6941e89680d4efb8742bfa87faa24c14aba291e792baa0a0a04  docs/evidence/protocol-763-survival-reference-paper-2026-05-28.server.log
+c127602f5f0cc3cab8b4430ba434a303e0771999721c562ef8fa24c8cdf89582  docs/evidence/protocol-763-survival-reference-paper-2026-05-28.run.log
+7af24b54f0e86afd8b3c0564fef3d2257c25030ff4690d2e972994736190c5b9  docs/evidence/protocol-763-survival-reference-valence-2026-05-28.receipt.json
+5960022389b18262531b369d68089b0bc89ae592d9fe34d0bee7c2b06aa1d24d  docs/evidence/protocol-763-survival-reference-valence-2026-05-28.client.log
+7ec4e67c04123e9b090138a2d657eaba2bbe6d2d015c4a361e295e435734a1c0  docs/evidence/protocol-763-survival-reference-valence-2026-05-28.server.log
+5410c0160ac886f79bb084a2e7ef7a8c3160d41a735825f7f91dc34ad0776eb3  docs/evidence/protocol-763-survival-reference-valence-2026-05-28.run.log
+544cc609f9c636ee035bc1b194de9544416779c3418158fe72550b0dfbb4d85c  docs/evidence/protocol-763-survival-reference-parity-2026-05-28.compare.log
+e776897922b358b1332b0a4f553799699bc45a6c1f486699b8c94db6b9d2debe  target/mc-compat-survival-reference-parity/mc-compat-paper-survival-fixture.jar

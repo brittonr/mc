@@ -23,11 +23,11 @@ PRESENT = "present"
 ABSENT = "absent"
 NO_VALUE = "<missing>"
 REFERENCE_VERSION = "minecraft-1.20.1-protocol-763"
-PARITY_NON_CLAIM = "exact survival break/place/pickup parity remains a non-claim"
+PARITY_NON_CLAIM = "full survival compatibility and broad vanilla parity remain non-claims"
 VALENCE_ONLY_REJECTION = "rejects Valence-only survival evidence"
 DECISION_OWNER_TOKEN = "decision_owner: agent"
-REFERENCE_RECEIPT_TOKEN = "reference_receipt: none"
-PAIR_RECEIPT_TOKEN = "valence_reference_pair: none"
+REFERENCE_RECEIPT_TOKEN = "reference_receipt: docs/evidence/protocol-763-survival-reference-paper-2026-05-28.receipt.json"
+PAIR_RECEIPT_TOKEN = "valence_reference_pair: docs/evidence/protocol-763-survival-reference-valence-2026-05-28.receipt.json"
 ANSI_RE = re.compile(r"\x1b\[[0-9;]*m")
 
 CLIENT_MILESTONES = [
@@ -101,8 +101,6 @@ REQUIRED_DOC_TOKENS = [
     *REQUIRED_METRICS,
 ]
 FORBIDDEN_PROMOTION_TOKENS = [
-    "survival break/place/pickup parity covered",
-    "exact survival break/place/pickup parity covered",
     "vanilla survival parity covered",
     "full survival compatibility covered",
 ]
@@ -507,7 +505,7 @@ def main() -> int:
         for issue in issues:
             print(issue, file=sys.stderr)
         return 1
-    print("survival reference parity ok: metrics defined; paired reference receipt still missing")
+    print("survival reference parity ok: metrics defined; paired reference receipt promoted")
     return 0
 
 
