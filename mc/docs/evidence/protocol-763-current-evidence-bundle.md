@@ -10,7 +10,7 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 - Evidence manifest checker: `python3 tools/check_evidence_manifests.py`
 - Latest parent checkout before this bundle refresh: `4d29f46 scope pinned projectile damage proof`
 - Child commits used for the current-head representative refresh: Valence `e5d18ad`, Stevenarella `616ee72`
-- Child commits used for the survival fixture refresh: Valence `1fac05a`, Stevenarella `9921e68`
+- Child commits used for the survival fixture refresh: Valence `1fac05a`, Stevenarella `9921e68`; machine-recorded in the refreshed receipt.
 
 ## Evidence rows
 
@@ -31,7 +31,7 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 | Equipment update observation | `nix run .#mc-compat-valence-ctf-equipment-update-observation` | `8100dde3ebb3476984235009e277d7e973037b7873b2fdb30c413093e1498d3d` |
 | Projectile use/loadout rail | `nix run .#mc-compat-valence-ctf-projectile-hit` | `22310a0373f86bbff5e6bc116934d092b89f775cf5d539b08d04ff5564ad855b` |
 | Projectile damage attribution | `nix run .#mc-compat-valence-ctf-projectile-damage-attribution` | `cf84fcb81ae557ecfbd2ff0b1f8b94af7bf07eaa85c20b1cde442929e3e3e529` |
-| Survival break/place/pickup | `nix run .#mc-compat-valence-survival-break-place-pickup` | `d8afdad721a83aa1c9a4a099f78e01ea96985f7294b0874396f77c73db58217d` |
+| Survival break/place/pickup | `nix run .#mc-compat-valence-survival-break-place-pickup` | `66c0bedb1e06a791cb8519aeb5b6f817392dfad773a5b6f25107b93b4e242bca` |
 
 ## Inventory semantics matrix checkpoint
 
@@ -51,7 +51,7 @@ The maintained projectile rows are validated as two bounded projectile state row
 
 ## Survival break/place/pickup checkpoint
 
-The maintained survival row is validated by `docs/evidence/protocol-763-survival-break-place-pickup-2026-05-28.md` with a live receipt/log bundle from committed Valence and Stevenarella child revisions. Stevenarella revision evidence is recorded in `docs/evidence/protocol-763-survival-child-revision-oracle-2026-05-28.md` because the receipt schema does not yet include `client.git_rev`. Covered row is one deterministic client in the dedicated `survival_compat` fixture with join/render, fixed-coordinate block break, pickup/inventory observation, and block placement. Full survival compatibility and vanilla parity remain non-claims until paired reference-server receipts exist.
+The maintained survival row is validated by `docs/evidence/protocol-763-survival-break-place-pickup-2026-05-28.md` with a live receipt/log bundle from committed Valence and Stevenarella child revisions. The refreshed receipt records `client.git_rev`, `client.git_status`, `valence.git_rev_requested`, and `valence.git_rev_resolved`; `docs/evidence/protocol-763-survival-child-revision-oracle-2026-05-28.md` remains as review history. Covered row is one deterministic client in the dedicated `survival_compat` fixture with join/render, fixed-coordinate block break, pickup/inventory observation, and block placement. Full survival compatibility and vanilla parity remain non-claims until paired reference-server receipts exist.
 
 ## Vanilla combat parity checkpoint
 

@@ -136,6 +136,10 @@
   },
   "client": {
     "dir": "stevenarella",
+    "git_rev": "9921e686f56270cb5810c1f6187d19b051ecc236",
+    "git_status": "clean",
+    "git_dirty": false,
+    "git_diagnostics": [],
     "target_dir": "/tmp/stevenarella-target2",
     "username": "compatbot",
     "usernames": ["compatbot"],
@@ -146,8 +150,8 @@
       "software_gl": true,
       "wayland_socket_inherited": false
     },
-    "log_path": "/tmp/mc-compat-client.compatbot.1779986969825.log",
-    "log_paths": ["/tmp/mc-compat-client.compatbot.1779986969825.log"],
+    "log_path": "/tmp/mc-compat-client.compatbot.1779989386636.log",
+    "log_paths": ["/tmp/mc-compat-client.compatbot.1779989386636.log"],
     "exit_code": 124,
     "classification": "timeout-success-evidence",
     "matched_success_pattern": "Detected server protocol version"
@@ -155,6 +159,11 @@
   "valence": {
     "repo": "valence",
     "rev": "1fac05a",
+    "git_rev_requested": "1fac05a",
+    "git_rev_resolved": "1fac05a6d012f27b83d88d83c59e5ab320a78164",
+    "git_status": "clean",
+    "git_dirty": false,
+    "git_diagnostics": [],
     "worktree": "/tmp/valence-compat-survival-1fac05a",
     "example": "survival_compat",
     "log_path": "/tmp/mc-compat-valence.log"
@@ -164,10 +173,10 @@
     "first_missing_server_milestone": null,
     "first_forbidden_pattern": null,
     "first_forbidden_source": null,
-    "client_log_paths": ["/tmp/mc-compat-client.compatbot.1779986969825.log"],
+    "client_log_paths": ["/tmp/mc-compat-client.compatbot.1779989386636.log"],
     "server_log_path": "/tmp/mc-compat-valence.log",
     "suggested_boundary": "none"
   },
-  "receipt_path": "target/mc-compat-survival-break-place-pickup/survival-break-place-pickup-live-committed.json",
+  "receipt_path": "target/mc-compat-survival-break-place-pickup/survival-break-place-pickup-child-rev.json",
   "error": null
 }

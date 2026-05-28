@@ -20,16 +20,18 @@ nix run --no-update-lock-file .#mc-compat-valence-survival-break-place-pickup --
 
 | Artifact | Path | BLAKE3 |
 | --- | --- | --- |
-| Receipt | `docs/evidence/protocol-763-survival-break-place-pickup-2026-05-28.receipt.json` | `d8afdad721a83aa1c9a4a099f78e01ea96985f7294b0874396f77c73db58217d` |
-| Runner log | `docs/evidence/protocol-763-survival-break-place-pickup-2026-05-28.run.log` | `cc5c7ee8e81adcd13d5fa6ff54bf5920e72ff79c2749dd5a9613c7944a7d4f31` |
-| Client log | `docs/evidence/protocol-763-survival-break-place-pickup-2026-05-28.client-compatbot.log` | `ef668103c8879c70515965e342d615965144116efd0cc6205689997c6c6a6efc` |
-| Valence log | `docs/evidence/protocol-763-survival-break-place-pickup-2026-05-28.valence.log` | `c9ebb200a2280336b442f606a611d3fc968deeab9a5cdd3112d0f9159248702a` |
+| Receipt | `docs/evidence/protocol-763-survival-break-place-pickup-2026-05-28.receipt.json` | `66c0bedb1e06a791cb8519aeb5b6f817392dfad773a5b6f25107b93b4e242bca` |
+| Runner log | `docs/evidence/protocol-763-survival-break-place-pickup-2026-05-28.run.log` | `9a699cbde117d99611cb52cdc0c43c914937ce8516c58eca7593366ce347e272` |
+| Client log | `docs/evidence/protocol-763-survival-break-place-pickup-2026-05-28.client-compatbot.log` | `c3b89880c6cf9dbeca69e1c621b941447d0509f7e411d1a764017e07e25286e0` |
+| Valence log | `docs/evidence/protocol-763-survival-break-place-pickup-2026-05-28.valence.log` | `c4f25d1efe2a57a7f3e01bd9e8d6f706314fdf06b345f460fc28f45a4a63d775` |
 | Child revision oracle | `docs/evidence/protocol-763-survival-child-revision-oracle-2026-05-28.md` | `9e42efea3971c907bff5da392ca4bdd34570904ce8cdd93ae693fcd165f12fcd` |
 | Manifest | `docs/evidence/protocol-763-survival-break-place-pickup-2026-05-28.b3` | records all artifact hashes above |
 
-Payload commits at run time: parent `fff4386`, Valence `1fac05a`, Stevenarella `9921e68`.
+Payload commits at run time: parent `455fa5c`, Valence `1fac05a`, Stevenarella `9921e68`.
 
-Child-revision oracle checkpoint: `docs/evidence/protocol-763-survival-child-revision-oracle-2026-05-28.md`. This is required because the receipt records the Valence revision but does not yet record a Stevenarella git revision field.
+The receipt now machine-records child revisions: `client.git_rev=9921e686f56270cb5810c1f6187d19b051ecc236`, `client.git_status=clean`, `valence.git_rev_requested=1fac05a`, `valence.git_rev_resolved=1fac05a6d012f27b83d88d83c59e5ab320a78164`, and `valence.git_status=clean`.
+
+Legacy child-revision oracle checkpoint retained for review history: `docs/evidence/protocol-763-survival-child-revision-oracle-2026-05-28.md`.
 
 ## Result
 

@@ -72,7 +72,7 @@ help: use `'_` for type paths
 
 warning: `stevenarella` (lib) generated 2 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
 warning: `stevenarella` (bin "stevenarella") generated 2 warnings (2 duplicates)
-    Finished `dev` profile [optimized + debuginfo] target(s) in 0.16s
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.23s
 [mc-compat] using existing Valence worktree /tmp/valence-compat-survival-1fac05a
 [mc-compat] starting Valence 1fac05a example 'survival_compat' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
 [mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
@@ -98,7 +98,7 @@ warning: `stevenarella` (bin "stevenarella") generated 2 warnings (2 duplicates)
 [server/mod.rs:3258][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=0
 [server/mod.rs:781][INFO] MC-COMPAT-MILESTONE render_tick_with_player
 [server/mod.rs:825][INFO] MC-COMPAT-MILESTONE active_probe_input_start forward+sprint+jump
-[server/mod.rs:1566][INFO] MC-COMPAT-MILESTONE active_probe_position_look_sent x=0.500 y=62.890 z=2.464 on_ground=false
+[server/mod.rs:1566][INFO] MC-COMPAT-MILESTONE active_probe_position_look_sent x=0.500 y=62.305 z=2.745 on_ground=false
 [server/mod.rs:831][INFO] MC-COMPAT-MILESTONE active_probe_jump_release
 [server/mod.rs:835][INFO] MC-COMPAT-MILESTONE active_probe_input_turn right
 [server/mod.rs:839][INFO] MC-COMPAT-MILESTONE active_probe_input_stop
@@ -112,6 +112,6 @@ warning: `stevenarella` (bin "stevenarella") generated 2 warnings (2 duplicates)
 [server/mod.rs:1075][INFO] MC-COMPAT-MILESTONE survival_probe_place_block_sent hand=main location=0,64,1 face=up sequence=405
 [server/mod.rs:2642][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=2 slot=36 item=empty
 [server/mod.rs:3490][INFO] MC-COMPAT-MILESTONE survival_probe_place_update location=0,65,1 raw_id=10
-[mc-compat] client compatbot finished Some(124); log: /tmp/mc-compat-client.compatbot.1779986969825.log
-[mc-compat] stopping managed Valence server process 1540177
-[mc-compat] wrote smoke receipt target/mc-compat-survival-break-place-pickup/survival-break-place-pickup-live-committed.json
+[mc-compat] client compatbot finished Some(124); log: /tmp/mc-compat-client.compatbot.1779989386636.log
+[mc-compat] stopping managed Valence server process 1954036
+[mc-compat] wrote smoke receipt target/mc-compat-survival-break-place-pickup/survival-break-place-pickup-child-rev.json

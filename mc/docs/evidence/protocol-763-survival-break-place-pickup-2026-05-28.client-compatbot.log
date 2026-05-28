@@ -18,7 +18,7 @@
 [server/mod.rs:3258][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=0
 [server/mod.rs:781][INFO] MC-COMPAT-MILESTONE render_tick_with_player
 [server/mod.rs:825][INFO] MC-COMPAT-MILESTONE active_probe_input_start forward+sprint+jump
-[server/mod.rs:1566][INFO] MC-COMPAT-MILESTONE active_probe_position_look_sent x=0.500 y=62.890 z=2.464 on_ground=false
+[server/mod.rs:1566][INFO] MC-COMPAT-MILESTONE active_probe_position_look_sent x=0.500 y=62.305 z=2.745 on_ground=false
 [server/mod.rs:831][INFO] MC-COMPAT-MILESTONE active_probe_jump_release
 [server/mod.rs:835][INFO] MC-COMPAT-MILESTONE active_probe_input_turn right
 [server/mod.rs:839][INFO] MC-COMPAT-MILESTONE active_probe_input_stop

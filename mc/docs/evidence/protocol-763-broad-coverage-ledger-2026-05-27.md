@@ -52,7 +52,7 @@ next_action: add packet-family rows only when mapping/parser fixtures and bounde
 | Equipment update observation | `8100dde3ebb3476984235009e277d7e973037b7873b2fdb30c413093e1498d3d` |
 | Projectile use/loadout rail | `22310a0373f86bbff5e6bc116934d092b89f775cf5d539b08d04ff5564ad855b` |
 | Projectile damage attribution | `cf84fcb81ae557ecfbd2ff0b1f8b94af7bf07eaa85c20b1cde442929e3e3e529` |
-| Survival break/place/pickup | `d8afdad721a83aa1c9a4a099f78e01ea96985f7294b0874396f77c73db58217d` |
+| Survival break/place/pickup | `66c0bedb1e06a791cb8519aeb5b6f817392dfad773a5b6f25107b93b4e242bca` |
 
 ## Packet inventory
 
