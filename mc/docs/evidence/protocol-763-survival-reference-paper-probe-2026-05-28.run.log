@@ -1,0 +1,240 @@
+┌─────────────────────────────────────┐
+│ Task 75:    failed with exit code 1 │
+└─────────────────────────────────────┘
+Command: SERVER_PROTOCOL=763 SERVER_VERSION=1.20.1 SERVER_NAME=mc-compat-paper-survival-reference-20260528 CLIENT_TIMEOUT=180 SMOKE_RECEIPT=target/mc-compat-survival-reference-parity/paper-survival-reference.json nix run --no-update-lock-file .#mc-compat-smoke -- --run --server-backend paper --scenario survival-break-place-pickup --receipt target/mc-compat-survival-reference-parity/paper-survival-reference.json
+   Path: /home/brittonr/git/mc
+  Label: paper survival reference probe
+  Start: Thu, 28 May 2026 14:48:36 -0400
+    End: Thu, 28 May 2026 14:52:01 -0400
+
+output:
+[mc-compat] building Stevenarella client
+warning: `/home/brittonr/git/mc/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: file `/home/brittonr/git/mc/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1052:36
+     |
+1052 |         offsets |protocol_version| (instrument.offsets(protocol_version)
+     |                                    ^
+1053 |             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 })),
+     |                                                                                                    ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1052 ~         offsets |protocol_version| instrument.offsets(protocol_version)
+1053 ~             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+     |
+
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1407:36
+     |
+1407 |         offsets |protocol_version| (variant.offsets(protocol_version)),
+     |                                    ^                                 ^
+     |
+help: remove these parentheses
+     |
+1407 -         offsets |protocol_version| (variant.offsets(protocol_version)),
+1407 +         offsets |protocol_version| variant.offsets(protocol_version),
+     |
+
+warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:102:21
+    |
+102 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+252 | / define_elements! {
+253 | |     Image,
+254 | |     Batch,
+255 | |     Text,
+...   |
+258 | |     TextBox,
+259 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+102 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib) generated 2 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (bin "stevenarella") generated 2 warnings (2 duplicates)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.16s
+[mc-compat] starting Paper 1.20.1 server on 127.0.0.1:25566 via itzg/minecraft-server:java17 with EULA=TRUE
+Unable to find image 'itzg/minecraft-server:java17' locally
+java17: Pulling from itzg/minecraft-server
+13b7e930469f: Pulling fs layer
+201091ebf404: Pulling fs layer
+da05df3c7c22: Pulling fs layer
+ef23c0be4778: Pulling fs layer
+0137fea4bef4: Pulling fs layer
+e188a9243fd5: Pulling fs layer
+5269a0b88e7e: Pulling fs layer
+a51dfc15f816: Pulling fs layer
+ef23c0be4778: Waiting
+27828909aa5a: Pulling fs layer
+e10790aef598: Pulling fs layer
+730e05547b21: Pulling fs layer
+9737d8c21e18: Pulling fs layer
+839af584b0b2: Pulling fs layer
+35383669bc85: Pulling fs layer
+108f5809f7d8: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+0310225358bf: Pulling fs layer
+9d59837fd9af: Pulling fs layer
+c77205c6a08b: Pulling fs layer
+c6296b51c9d4: Pulling fs layer
+fdf9f0ca92af: Pulling fs layer
+47916b05da80: Pulling fs layer
+9737d8c21e18: Waiting
+14ac12d6459c: Pulling fs layer
+e06edc71f9f7: Pulling fs layer
+5484f47a004f: Pulling fs layer
+fdf9f0ca92af: Waiting
+47916b05da80: Waiting
+14ac12d6459c: Waiting
+730e05547b21: Waiting
+a51dfc15f816: Waiting
+e10790aef598: Waiting
+e06edc71f9f7: Waiting
+4f4fb700ef54: Waiting
+e188a9243fd5: Waiting
+839af584b0b2: Waiting
+108f5809f7d8: Waiting
+35383669bc85: Waiting
+5269a0b88e7e: Waiting
+0137fea4bef4: Waiting
+27828909aa5a: Waiting
+0310225358bf: Waiting
+c77205c6a08b: Waiting
+c6296b51c9d4: Waiting
+9d59837fd9af: Waiting
+13b7e930469f: Download complete
+ef23c0be4778: Verifying Checksum
+ef23c0be4778: Download complete
+201091ebf404: Verifying Checksum
+201091ebf404: Download complete
+13b7e930469f: Pull complete
+0137fea4bef4: Verifying Checksum
+0137fea4bef4: Download complete
+201091ebf404: Pull complete
+da05df3c7c22: Verifying Checksum
+da05df3c7c22: Download complete
+5269a0b88e7e: Verifying Checksum
+5269a0b88e7e: Download complete
+da05df3c7c22: Pull complete
+ef23c0be4778: Pull complete
+0137fea4bef4: Pull complete
+a51dfc15f816: Verifying Checksum
+a51dfc15f816: Download complete
+27828909aa5a: Verifying Checksum
+27828909aa5a: Download complete
+e10790aef598: Verifying Checksum
+e10790aef598: Download complete
+730e05547b21: Verifying Checksum
+730e05547b21: Download complete
+9737d8c21e18: Verifying Checksum
+839af584b0b2: Verifying Checksum
+839af584b0b2: Download complete
+e188a9243fd5: Verifying Checksum
+e188a9243fd5: Download complete
+35383669bc85: Verifying Checksum
+35383669bc85: Download complete
+4f4fb700ef54: Verifying Checksum
+4f4fb700ef54: Download complete
+0310225358bf: Verifying Checksum
+0310225358bf: Download complete
+9d59837fd9af: Download complete
+c77205c6a08b: Download complete
+108f5809f7d8: Verifying Checksum
+108f5809f7d8: Download complete
+c6296b51c9d4: Verifying Checksum
+c6296b51c9d4: Download complete
+e188a9243fd5: Pull complete
+14ac12d6459c: Verifying Checksum
+14ac12d6459c: Download complete
+5269a0b88e7e: Pull complete
+a51dfc15f816: Pull complete
+27828909aa5a: Pull complete
+fdf9f0ca92af: Verifying Checksum
+fdf9f0ca92af: Download complete
+47916b05da80: Download complete
+e10790aef598: Pull complete
+730e05547b21: Pull complete
+9737d8c21e18: Pull complete
+e06edc71f9f7: Verifying Checksum
+e06edc71f9f7: Download complete
+839af584b0b2: Pull complete
+35383669bc85: Pull complete
+5484f47a004f: Verifying Checksum
+5484f47a004f: Download complete
+108f5809f7d8: Pull complete
+4f4fb700ef54: Pull complete
+0310225358bf: Pull complete
+9d59837fd9af: Pull complete
+c77205c6a08b: Pull complete
+c6296b51c9d4: Pull complete
+fdf9f0ca92af: Pull complete
+47916b05da80: Pull complete
+14ac12d6459c: Pull complete
+e06edc71f9f7: Pull complete
+5484f47a004f: Pull complete
+Digest: sha256:45e61115f788cbf83a8dd27a9165957de3c3a8f06c12cb15ffd92a25a33922fd
+Status: Downloaded newer image for itzg/minecraft-server:java17
+baf181d9b3559fdc58d92faab2bcbbe37dbb26eae42acdfa3a12b868ecb5637d
+[mc-compat] probing status 127.0.0.1:25566 expecting protocol 763
+{"version":{"name":"Paper 1.20.1","protocol":763},"description":{"text":"A Minecraft Server"},"players":{"max":20,"online":0}}
+[mc-compat] running Stevenarella headless scenario 'survival-break-place-pickup' isolated from host Wayland compositor
+[main.rs:254][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:346][INFO] Shader version: #version 150
+[main.rs:99][INFO] Detected server protocol version 763
+[server/mod.rs:201][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25566
+[server/mod.rs:206][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:223][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:237][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:244][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:305][WARN] Server is running in offline mode
+[server/mod.rs:306][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbot properties=0
+
+thread '<unnamed>' (2577986) panicked at protocol/src/protocol/versions/v1_18_2.rs:1:1:
+bad packet id 0x6b in Clientbound Play
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+[server/mod.rs:1914][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[server/mod.rs:1981][INFO] MC-COMPAT-MILESTONE join_game entity_id=174 gamemode=Survival
+[server/mod.rs:781][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:825][INFO] MC-COMPAT-MILESTONE active_probe_input_start forward+sprint+jump
+[server/mod.rs:1566][INFO] MC-COMPAT-MILESTONE active_probe_position_look_sent x=0.000 y=0.000 z=0.000 on_ground=false
+[server/mod.rs:831][INFO] MC-COMPAT-MILESTONE active_probe_jump_release
+[server/mod.rs:835][INFO] MC-COMPAT-MILESTONE active_probe_input_turn right
+[server/mod.rs:839][INFO] MC-COMPAT-MILESTONE active_probe_input_stop
+[server/mod.rs:1031][INFO] MC-COMPAT-MILESTONE survival_probe_move_near_block x=0.5 y=65.0 z=0.5
+[server/mod.rs:1047][INFO] MC-COMPAT-MILESTONE survival_probe_break_block_sent status=stop_destroy location=0,64,1 sequence=404
+[mc-compat] stopping managed Paper container mc-compat-paper-survival-reference-20260528
+mc-compat-paper-survival-reference-20260528
+[mc-compat] wrote smoke receipt target/mc-compat-survival-reference-parity/paper-survival-reference.json
+[mc-compat] error: scenario survival-break-place-pickup failed: missing=["survival_break_update", "survival_pickup_seen", "survival_place_sent", "survival_place_update"] forbidden=["panic"]; logs=/tmp/mc-compat-client.compatbot.1779994140609.log

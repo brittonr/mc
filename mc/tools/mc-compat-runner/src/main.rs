@@ -3768,7 +3768,7 @@ fn run_matrix(cfg: &Config) -> Result<(), String> {
 
     let paper = read_receipt_summary(&paper_receipt)?;
     let valence = read_receipt_summary(&valence_receipt)?;
-    validate_receipt_pair(&paper, &valence)?;
+    validate_receipt_pair(&paper, &valence, cfg.server_protocol)?;
     println!(
         "[mc-compat] matrix passed: paper={} valence={} protocol={} mode={matrix_mode}",
         paper_receipt.display(),
@@ -3822,7 +3822,7 @@ fn compare_receipts(cfg: &Config) -> Result<(), String> {
         .ok_or_else(|| "compare-receipts mode requires two receipt paths".to_string())?;
     let left = read_receipt_summary(left)?;
     let right = read_receipt_summary(right)?;
-    validate_receipt_pair(&left, &right)?;
+    validate_receipt_pair(&left, &right, cfg.server_protocol)?;
     let paper = if left.backend == "paper" {
         &left
     } else {
@@ -3874,7 +3874,11 @@ fn read_receipt_summary_from_text(path: PathBuf, text: &str) -> Result<ReceiptSu
     })
 }
 
-fn validate_receipt_pair(left: &ReceiptSummary, right: &ReceiptSummary) -> Result<(), String> {
+fn validate_receipt_pair(
+    left: &ReceiptSummary,
+    right: &ReceiptSummary,
+    expected_protocol: u32,
+) -> Result<(), String> {
     validate_receipt_summary(left)?;
     validate_receipt_summary(right)?;
     let backends = [left.backend.as_str(), right.backend.as_str()];
@@ -3893,10 +3897,10 @@ fn validate_receipt_pair(left: &ReceiptSummary, right: &ReceiptSummary) -> Resul
             right.protocol
         ));
     }
-    if left.protocol != DEFAULT_SERVER_PROTOCOL {
+    if left.protocol != expected_protocol {
         return Err(format!(
             "expected protocol {}, got {}",
-            DEFAULT_SERVER_PROTOCOL, left.protocol
+            expected_protocol, left.protocol
         ));
     }
     for receipt in [left, right] {
@@ -5613,7 +5617,8 @@ RED: 1
         )
         .expect("valence fixture parses");
 
-        validate_receipt_pair(&paper, &valence).expect("matching receipts compare");
+        validate_receipt_pair(&paper, &valence, DEFAULT_SERVER_PROTOCOL)
+            .expect("matching receipts compare");
     }
 
     #[test]
@@ -5629,8 +5634,49 @@ RED: 1
         )
         .expect("valence fixture parses");
 
-        let err = validate_receipt_pair(&paper, &valence).unwrap_err();
+        let err = validate_receipt_pair(&paper, &valence, DEFAULT_SERVER_PROTOCOL).unwrap_err();
         assert!(err.contains("receipt protocol mismatch"), "{err}");
+    }
+
+    #[test]
+    fn compares_protocol_763_matrix_receipts_when_configured() {
+        const PROTOCOL_763: u32 = 763;
+        let paper = read_receipt_summary_from_text(
+            PathBuf::from("paper.json"),
+            &receipt_fixture("paper", PROTOCOL_763, 25566),
+        )
+        .expect("paper fixture parses");
+        let valence = read_receipt_summary_from_text(
+            PathBuf::from("valence.json"),
+            &receipt_fixture("valence", PROTOCOL_763, 25565),
+        )
+        .expect("valence fixture parses");
+
+        validate_receipt_pair(&paper, &valence, PROTOCOL_763)
+            .expect("configured protocol receipts compare");
+    }
+
+    #[test]
+    fn rejects_receipts_that_do_not_match_configured_protocol() {
+        const PROTOCOL_763: u32 = 763;
+        let paper = read_receipt_summary_from_text(
+            PathBuf::from("paper.json"),
+            &receipt_fixture("paper", PROTOCOL_763, 25566),
+        )
+        .expect("paper fixture parses");
+        let valence = read_receipt_summary_from_text(
+            PathBuf::from("valence.json"),
+            &receipt_fixture("valence", PROTOCOL_763, 25565),
+        )
+        .expect("valence fixture parses");
+
+        let err = validate_receipt_pair(&paper, &valence, DEFAULT_SERVER_PROTOCOL).unwrap_err();
+        assert!(
+            err.contains(&format!(
+                "expected protocol {DEFAULT_SERVER_PROTOCOL}, got {PROTOCOL_763}"
+            )),
+            "{err}"
+        );
     }
 
     #[test]

@@ -3,6 +3,7 @@
 - [x] [serial] Define normalized parity metrics for the break/place/pickup rail. r[mc_compatibility.survival_reference_parity.metrics]
   - Evidence: `docs/evidence/protocol-763-survival-reference-parity-2026-05-28.md` defines exact-match receipt/log metrics for join/render, break target/update, pickup/inventory transition, and placement target/update. `tools/check_survival_reference_parity.py --self-test` passes.
 - [ ] [serial] Add or select a local reference server fixture for the same survival probe. r[mc_compatibility.survival_reference_parity.reference_receipt]
+  - Progress/blocker: `docs/evidence/protocol-763-survival-reference-paper-fixture-2026-05-28.md` records a live Paper 1.20.1/protocol-763 candidate probe. Dry-run matrix now passes at protocol 763, but the live Paper probe fails before reference promotion because Stevenarella panics on vanilla/Paper clientbound play packet `0x6b` and plain Paper lacks server-side `server_survival_*` fixture instrumentation.
 - [ ] [depends:reference_receipt] Produce a reference receipt/log bundle under `docs/evidence/`. r[mc_compatibility.survival_reference_parity.reference_receipt]
 - [ ] [depends:metrics] Produce a matching Valence receipt/log bundle from committed child revisions. r[mc_compatibility.survival_reference_parity.valence_receipt]
 - [ ] [depends:reference_receipt] Add a comparator/checker with positive and negative tests for exact metric matching. r[mc_compatibility.survival_reference_parity.comparator]

@@ -82,10 +82,15 @@ Negative fixtures:
 - BLAKE3 manifest: `docs/evidence/protocol-763-survival-reference-parity-gate-2026-05-28.b3`.
 - The gate self-test passed, the doc/non-claim check passed, and the current Valence receipt used as both sides was rejected with `wrong_backend:reference:valence`.
 
+## Paper fixture probe
+
+`docs/evidence/protocol-763-survival-reference-paper-fixture-2026-05-28.md` records the first live Paper candidate probe. Dry-run matrix wiring now passes for protocol 763, but the live Paper reference receipt is blocked: Stevenarella panics on vanilla/Paper clientbound play packet `0x6b`, and plain Paper does not emit the server-side `server_survival_*` fixture milestones required by the comparator.
+
 ## Next evidence needed
 
-1. Select or add the local Paper/reference server fixture for this exact probe.
-2. Produce reference receipt/log artifacts under `docs/evidence/`.
+1. Add a Paper/reference fixture plugin or equivalent harness for this exact probe, including server-side `server_survival_*` metrics.
+2. Patch or extend Stevenarella's Paper 1.20.1 parser path for packet `0x6b`.
+3. Produce reference receipt/log artifacts under `docs/evidence/`.
 3. Produce a matching Valence receipt/log bundle from committed child revisions.
 4. Run `python3 tools/check_survival_reference_parity.py --reference-receipt ... --reference-client-log ... --reference-server-log ... --valence-receipt ... --valence-client-log ... --valence-server-log ...`.
 5. Only then update the acceptance matrix for the narrow break/place/pickup parity row; full survival compatibility and broad vanilla parity stay non-claims.

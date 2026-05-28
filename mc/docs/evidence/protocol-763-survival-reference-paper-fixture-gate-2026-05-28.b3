@@ -1,0 +1,14 @@
+a141f715d5bcd18be660f9a800057c0b6c8e8e540690d3d8eceaebf70a6f3f2d  tools/mc-compat-runner/src/main.rs
+6cf9fe8812f152f3b3b596e5852240ea31bbe1f2836ff862bdedfe4dcb409364  cairn/changes/add-survival-reference-parity-receipts/tasks.md
+27b4eb10272fbb1a1f69e64959291cf0e11f0e70109b293583851fa5e4918e9c  docs/evidence/protocol-763-acceptance-matrix.md
+547edc2fc45be2936e9fc3216c917eb60206607f293eaec57b262e26c11b0428  docs/evidence/protocol-763-current-evidence-bundle.md
+bec7b07d2d89a09aced67373be7ec44a6036745af7d15cd4cdbc440473a176f8  docs/evidence/protocol-763-survival-reference-parity-2026-05-28.md
+431bd2dda294baef2d5b10ac021fd7efd7fce21c74ca7b0869cf6d780ef17cf1  docs/evidence/protocol-763-survival-reference-paper-fixture-2026-05-28.md
+c72d2694bb8bcdb18dfafe67c45e49777f34c265ebed62df6cb015ea1a8320e2  docs/evidence/protocol-763-survival-reference-paper-fixture-gate-2026-05-28.run.log
+35edc82c1ee39c9d88c89636db74f8f38d12dcbf02eba281d1b8de9677dd4702  docs/evidence/protocol-763-survival-reference-paper-dry-run-matrix-2026-05-28.run.log
+69c7ad60170e6cd75d68425bf14c5bc6afee3fb7b3baa81a95e60471536c621c  docs/evidence/protocol-763-survival-reference-paper-dry-run-matrix-2026-05-28.paper.receipt.json
+cc6400022bd3dfdb7a691cf6156c279916b6d37441fdd158595298e31bc40d12  docs/evidence/protocol-763-survival-reference-paper-dry-run-matrix-2026-05-28.valence.receipt.json
+5d9b7deae40ec33276b2d8bc107d18e7d97eda242714cf3d3aac50a804f529e7  docs/evidence/protocol-763-survival-reference-paper-probe-2026-05-28.run.log
+a5c9204d9cc13df4d50d7105d1f14f00916d31b28c4538a3ea637cd0e37e54de  docs/evidence/protocol-763-survival-reference-paper-probe-2026-05-28.receipt.json
+30c5117dfe53dcc93a0aad40450cb274ea6a1cb4e4711a03f885bcdf86fed16c  docs/evidence/protocol-763-survival-reference-paper-probe-2026-05-28.client-compatbot.log
+5f64153f4acd5ef8d549daf08bcaba2fd75aa2c28f70f5376f0944e0615834c9  docs/evidence/protocol-763-survival-reference-paper-probe-2026-05-28.paper.log

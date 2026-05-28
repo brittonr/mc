@@ -1,0 +1,131 @@
+# survival reference Paper fixture gate 2026-05-28
+$ nix develop --no-update-lock-file -c cargo fmt --manifest-path tools/mc-compat-runner/Cargo.toml -- --check
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/7sg1jbcfb0g2rb6x79x5s6nfyyhpyf81-mc-compat-runner-0.1.0.drv'...
+building '/nix/store/3hv39cjdcjn5l7fkjlryqak3g3fvdzpm-nix-shell-env.drv'...
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+$ nix develop --no-update-lock-file -c cargo test --manifest-path tools/mc-compat-runner/Cargo.toml
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+   Compiling mc-compat-runner v0.1.0 (/home/brittonr/git/mc/tools/mc-compat-runner)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.77s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-0b4c6e2aba35508d)
+
+running 52 tests
+test runtime_config::tests::fixed_protocol_fact_changes_are_rejected ... ok
+test runtime_config::tests::arrow_damage_policy_is_bounded_and_reports_clamping ... ok
+test runtime_config::tests::diff_and_apply_plan_separate_hot_next_run_and_restart_only ... ok
+test runtime_config::tests::redaction_hides_secret_like_values ... ok
+test runtime_config::tests::normalizes_valid_steel_exports ... ok
+test runtime_config::tests::rejects_missing_or_wrong_type_exports ... ok
+test runtime_config::tests::evaluates_restricted_steel_module ... ok
+test runtime_config::tests::rejects_range_and_sandbox_violations ... ok
+test runtime_config::tests::reload_request_applies_hot_changes_atomically ... ok
+test tests::blue_flag_score_scenario_tracks_mirrored_team_evidence ... ok
+test runtime_config::tests::reload_request_rolls_back_on_apply_failure_or_restart_only_change ... ok
+test tests::cleanup_client_log_match_is_narrow ... ok
+test tests::cli_overrides_backend_client_dir_valence_repo_and_revision ... ok
+test tests::cleanup_path_dry_run_preserves_existing_files ... ok
+test tests::client_checkout_must_point_at_manifest_root ... ok
+test tests::combat_damage_scenario_tracks_client_and_server_evidence ... ok
+test tests::defaults_to_valence_protocol_and_port ... ok
+test tests::compares_paper_and_valence_receipts ... ok
+test tests::compares_protocol_763_matrix_receipts_when_configured ... ok
+test tests::env_overrides_are_parsed_without_global_environment_mutation ... ok
+test tests::equipment_update_scenario_tracks_current_client_equipment_marker ... ok
+test runtime_config::tests::rejects_steel_module_unknown_export_and_forbidden_token ... ok
+test tests::flag_score_repeat_scenario_tracks_missing_and_forbidden_evidence ... ok
+test tests::git_revision_evidence_core_reports_clean_dirty_and_unavailable ... ok
+test tests::invalid_backend_is_rejected ... ok
+test tests::compat_bot_probe_scenario_is_bounded_and_receipted ... ok
+test tests::failed_preflight_receipt_triages_before_client_evidence ... ok
+test tests::dry_run_receipt_records_deterministic_child_revision_placeholders ... ok
+test tests::load_network_safety_envelope_fails_closed_for_unsafe_inputs ... ok
+test tests::missing_client_checkout_has_actionable_diagnostic ... ok
+test tests::missing_valence_checkout_has_actionable_diagnostic ... ok
+test tests::inventory_interaction_scenario_tracks_client_and_server_evidence ... ok
+test tests::projectile_damage_attribution_requires_pinned_valence_revision ... ok
+test tests::multi_client_scenario_tracks_client_and_server_evidence ... ok
+test tests::nickel_exported_json_config_sets_defaults_and_allows_env_cli_precedence ... ok
+test tests::projectile_damage_attribution_scenario_tracks_client_and_server_evidence ... ok
+test tests::projectile_damage_dry_run_uses_steel_arrow_policy ... ok
+test tests::rejects_receipt_protocol_mismatch ... ok
+test tests::rejects_receipts_that_do_not_match_configured_protocol ... ok
+test tests::run_matrix_rejects_single_receipt_path ... ok
+test tests::run_matrix_config_sets_receipt_dir_and_backend_defaults ... ok
+test tests::scenario_cli_and_env_parse ... ok
+test tests::restricted_steel_config_rejects_forbidden_capabilities ... ok
+test tests::status_and_cleanup_modes_parse_without_server_probe_mode ... ok
+test tests::supported_scenario_usage_lists_all_supported_scenarios ... ok
+test tests::smoke_receipt_records_failures_without_success_claims ... ok
+test tests::scenario_receipt_records_actionable_failure_triage ... ok
+test tests::restricted_steel_config_sets_runtime_defaults_and_allows_env_cli_precedence ... ok
+test tests::survival_break_place_pickup_scenario_tracks_client_and_server_evidence ... ok
+test tests::valid_client_checkout_preflight_passes ... ok
+test tests::smoke_receipt_records_cairn_contract_and_octet_surface ... ok
+test tests::status_packet_proxy_and_gameplay_receipt_blocks_are_recorded ... ok
+
+test result: ok. 52 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+$ SERVER_PROTOCOL=763 SERVER_VERSION=1.20.1 nix run --no-update-lock-file .#mc-compat-smoke -- --run-matrix --dry-run --scenario survival-break-place-pickup --receipt-dir target/survival-reference-parity-dry-run-matrix-763
+[mc-compat] starting dry-run matrix: paper receipt=target/survival-reference-parity-dry-run-matrix-763/paper.json valence receipt=target/survival-reference-parity-dry-run-matrix-763/valence.json
+[mc-compat] matrix backend paper -> target/survival-reference-parity-dry-run-matrix-763/paper.json
+[mc-compat] plan: build client, start Paper server, wait for protocol 763, run client under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] server start will set EULA=TRUE using recorded user acceptance
+[mc-compat] starting Paper 1.20.1 server on 127.0.0.1:25566 via itzg/minecraft-server:java17 with EULA=TRUE
++ "docker" "run" "-d" "--name" "mc-compat-1-18-2" "-p" "127.0.0.1:25566:25565" "-e" "EULA=TRUE" "-e" "TYPE=PAPER" "-e" "VERSION=1.20.1" "-e" "ONLINE_MODE=FALSE" "-e" "MEMORY=1G" "itzg/minecraft-server:java17"
+[mc-compat] probing status 127.0.0.1:25566 expecting protocol 763
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'survival-break-place-pickup' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/survival-reference-parity-dry-run-matrix-763/paper.json
+[mc-compat] matrix backend valence -> target/survival-reference-parity-dry-run-matrix-763/valence.json
+[mc-compat] plan: build client, start Valence server, wait for protocol 763, run client under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] using existing Valence worktree /tmp/valence-compat-758
+[mc-compat] starting Valence 8ad9c85 example 'terrain' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-758
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'survival-break-place-pickup' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/survival-reference-parity-dry-run-matrix-763/valence.json
+[mc-compat] matrix passed: paper=target/survival-reference-parity-dry-run-matrix-763/paper.json valence=target/survival-reference-parity-dry-run-matrix-763/valence.json protocol=763 mode=dry-run
+$ python3 tools/check_survival_reference_parity.py --self-test
+survival reference parity self-test ok
+$ python3 tools/check_survival_reference_parity.py
+survival reference parity ok: metrics defined; paired reference receipt still missing
+$ python3 tools/check_acceptance_matrix.py
+acceptance matrix ok: 16 seams, 16 hashes
+$ python3 tools/check_current_evidence_bundle.py
+current evidence bundle ok: 16 seams
+$ nix run --no-update-lock-file .#cairn -- gate tasks add-survival-reference-parity-receipts --root .
+{
+  "change": "add-survival-reference-parity-receipts",
+  "input_hash": "da60a3c90c7dcab1ca0a63c975206ff63a02ac1a9bc0cb56146fa665ae45ec56",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "2cd52399060891ede322b5c3d3811e5aad115efc2d42f18ac4d536b762a384e6",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
