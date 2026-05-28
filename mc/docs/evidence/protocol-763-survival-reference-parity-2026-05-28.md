@@ -71,9 +71,10 @@ Positive fixture:
 Negative fixtures:
 
 - `missing_reference`: comparison fails without a reference receipt/log bundle.
-- `missing_metric`: comparison fails when a required milestone or log-derived field is absent.
+- `missing_metric`: comparison fails when a required log-derived field is absent.
 - `mismatched_metric`: comparison fails and names the mismatched metric when a value changes.
 - `wrong_backend`: comparison fails when the reference side is not a `paper` receipt.
+- `missing_reference_client_log_arg` / related `missing_*_arg` diagnostics: partial paired-artifact CLI arguments fail instead of falling back to doc-only mode.
 
 ## Validation evidence
 

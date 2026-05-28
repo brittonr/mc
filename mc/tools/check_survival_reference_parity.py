@@ -106,6 +106,14 @@ FORBIDDEN_PROMOTION_TOKENS = [
     "vanilla survival parity covered",
     "full survival compatibility covered",
 ]
+PAIR_ARG_FIELDS = (
+    "reference_receipt",
+    "reference_client_log",
+    "reference_server_log",
+    "valence_receipt",
+    "valence_client_log",
+    "valence_server_log",
+)
 
 
 @dataclass(frozen=True)
@@ -403,27 +411,46 @@ def assert_self_tests() -> None:
     wrong_backend = compare_normalized(normalized_fixture(VALENCE_BACKEND), normalized_fixture(VALENCE_BACKEND))
     assert not wrong_backend.passed and "wrong_backend:reference:valence" in wrong_backend.diagnostics, wrong_backend
 
-    missing_metric_receipt = receipt_fixture(REFERENCE_BACKEND)
-    missing_metric_receipt["scenario"]["observed_milestones"] = CLIENT_MILESTONES[:-1]
+    missing_metric_log = client_log_fixture().replace(
+        "MC-COMPAT-MILESTONE survival_probe_place_update location=0,65,1 raw_id=10",
+        "",
+    )
     missing_metric = compare_normalized(
-        normalize_metrics(missing_metric_receipt, client_log_fixture(), server_log_fixture()),
+        normalize_metrics(receipt_fixture(REFERENCE_BACKEND), missing_metric_log, server_log_fixture()),
         normalized_fixture(VALENCE_BACKEND),
     )
-    assert not missing_metric.passed and "mismatched_metric:client.milestone.survival_place_update:reference=absent:valence=present" in missing_metric.diagnostics, missing_metric
+    assert not missing_metric.passed and "missing_metric:client.place.update.raw_id" in missing_metric.diagnostics, missing_metric
+
+    partial_args = argparse.Namespace(
+        reference_receipt="paper.json",
+        reference_client_log=None,
+        reference_server_log=None,
+        valence_receipt=None,
+        valence_client_log=None,
+        valence_server_log=None,
+    )
+    partial_arg_diagnostics = missing_pair_arg_diagnostics(partial_args)
+    assert "missing_reference_client_log_arg" in partial_arg_diagnostics, partial_arg_diagnostics
+    assert "missing_valence_receipt_arg" in partial_arg_diagnostics, partial_arg_diagnostics
+
+
+def pair_arg_values(args: argparse.Namespace) -> tuple[str | None, ...]:
+    return tuple(getattr(args, field) for field in PAIR_ARG_FIELDS)
+
+
+def missing_pair_arg_diagnostics(args: argparse.Namespace) -> tuple[str, ...]:
+    values = pair_arg_values(args)
+    if not any(value is not None for value in values):
+        return ()
+    return tuple(
+        f"missing_{field}_arg"
+        for field, value in zip(PAIR_ARG_FIELDS, values, strict=True)
+        if value is None
+    )
 
 
 def all_pair_args_present(args: argparse.Namespace) -> bool:
-    return all(
-        getattr(args, field) is not None
-        for field in [
-            "reference_receipt",
-            "reference_client_log",
-            "reference_server_log",
-            "valence_receipt",
-            "valence_client_log",
-            "valence_server_log",
-        ]
-    )
+    return all(value is not None for value in pair_arg_values(args))
 
 
 def parse_args() -> argparse.Namespace:
@@ -445,6 +472,11 @@ def main() -> int:
         print("survival reference parity self-test ok")
         return 0
     assert_self_tests()
+    partial_arg_diagnostics = missing_pair_arg_diagnostics(args)
+    if partial_arg_diagnostics:
+        for diagnostic in partial_arg_diagnostics:
+            print(diagnostic, file=sys.stderr)
+        return 1
     if all_pair_args_present(args):
         comparison = compare_paths(args)
         if not comparison.passed:

@@ -6,5 +6,5 @@
 - [ ] [depends:reference_receipt] Produce a reference receipt/log bundle under `docs/evidence/`. r[mc_compatibility.survival_reference_parity.reference_receipt]
 - [ ] [depends:metrics] Produce a matching Valence receipt/log bundle from committed child revisions. r[mc_compatibility.survival_reference_parity.valence_receipt]
 - [ ] [depends:reference_receipt] Add a comparator/checker with positive and negative tests for exact metric matching. r[mc_compatibility.survival_reference_parity.comparator]
-  - Progress: `tools/check_survival_reference_parity.py` now has positive exact-match and negative `missing_reference`, `missing_metric`, `mismatched_metric`, and `wrong_backend` fixtures. Kept unchecked until a real reference receipt/log bundle exists and the comparator is exercised against the paired artifacts.
+  - Progress: `tools/check_survival_reference_parity.py` now has positive exact-match and negative `missing_reference`, log-derived `missing_metric`, `mismatched_metric`, `wrong_backend`, and partial-CLI `missing_*_arg` fixtures. Kept unchecked until a real reference receipt/log bundle exists and the comparator is exercised against the paired artifacts.
 - [ ] [depends:comparator] Update the matrix only for the narrow paired break/place/pickup parity row and preserve full-survival non-claims. r[mc_compatibility.survival_reference_parity.nonclaims]
