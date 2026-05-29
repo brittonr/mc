@@ -1,0 +1,18 @@
+command: nix develop --no-update-lock-file -c rustfmt --edition 2021 tools/check_adversarial_network_oracle.rs --check
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+command: nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_adversarial_network_oracle.rs -o /tmp/check-adversarial-network-oracle
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+command: /tmp/check-adversarial-network-oracle --self-test
+adversarial-network oracle self-test passed: positive fixture and fail-closed mutations passed
+command: /tmp/check-adversarial-network-oracle
+adversarial-network oracle check passed: contract=docs/evidence/protocol-763-adversarial-network-oracle-contract-2026-05-29.md record=false
+command: nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-adversarial-network-oracle --no-link -L
+this derivation will be built:
+  /nix/store/8xhn9hsyyp7bvmkk3nvqpxkc3ia8k5vz-mc-compat-adversarial-network-oracle.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/8xhn9hsyyp7bvmkk3nvqpxkc3ia8k5vz-mc-compat-adversarial-network-oracle.drv'...
+result: PASS

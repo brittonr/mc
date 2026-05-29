@@ -689,6 +689,16 @@
           mkdir -p "$out"
           cp ../cairn-task-evidence-self-test.log ../cairn-task-evidence-check.log "$out/"
         '';
+        mc-compat-adversarial-network-oracle = pkgs.runCommand "mc-compat-adversarial-network-oracle" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc ]; } ''
+          cp -R ${./.} repo
+          chmod -R u+w repo
+          cd repo
+          rustc --edition=2021 tools/check_adversarial_network_oracle.rs -o ../check-adversarial-network-oracle
+          ../check-adversarial-network-oracle --self-test > ../adversarial-network-oracle-self-test.log
+          ../check-adversarial-network-oracle > ../adversarial-network-oracle-check.log
+          mkdir -p "$out"
+          cp ../adversarial-network-oracle-self-test.log ../adversarial-network-oracle-check.log "$out/"
+        '';
         mc-compat-dry-run = pkgs.runCommand "mc-compat-dry-run" { } ''
           mkdir -p fake-stevenarella
           printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
@@ -1199,6 +1209,7 @@
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-scenario-manifest} "$out/scenario-manifest"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-evidence-promotion} "$out/evidence-promotion"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-cairn-task-evidence} "$out/cairn-task-evidence"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-adversarial-network-oracle} "$out/adversarial-network-oracle"
           cat > "$out/manifest.txt" <<'EOF'
           smoke
           multi-client-load-score
@@ -1223,6 +1234,7 @@
           scenario-manifest
           evidence-promotion
           cairn-task-evidence
+          adversarial-network-oracle
           EOF
         '';
         mc-compat-bot-probe-dry-run =
