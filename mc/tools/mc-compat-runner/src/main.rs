@@ -23,6 +23,8 @@ const SAFETY_MAX_LOCAL_CLIENTS: usize = 2;
 const SAFETY_MAX_DURATION_SECS: u64 = 600;
 const SAFETY_SINGLE_SESSION_COUNT: usize = 1;
 const SAFETY_RECONNECT_SESSION_COUNT: usize = 2;
+const RECONNECT_SEQUENCE_SESSION_COUNT: usize = 2;
+const RECONNECT_SEQUENCE_PAUSE_SECS: u64 = 4;
 const SAFETY_ZERO_VALUE: &str = "0";
 const SAFETY_OWNED_LOCAL_SCOPE: &str = "owned-local-loopback";
 const PINNED_PROJECTILE_DAMAGE_VALENCE_REV: &str = "e5d18ad04010d92881267ac1ea43922ae91821f5";
@@ -47,7 +49,7 @@ const GIT_STATUS_PORCELAIN_FLAG: &str = "--porcelain";
 const PROJECTILE_DAMAGE_CONTEXT_VELOCITY: f64 = 0.0;
 const PROJECTILE_DAMAGE_CONTEXT_PULL_STRENGTH: f64 = 1.0;
 const PROJECTILE_DAMAGE_VICTIM_START_HEALTH: f64 = 20.0;
-const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|combat-damage|combat-knockback|armor-equipment-mitigation|equipment-update-observation|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score";
+const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|combat-damage|combat-knockback|armor-equipment-mitigation|equipment-update-observation|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
     "Dimension type:",
@@ -81,6 +83,7 @@ enum Scenario {
     BlueFlagScore,
     InventoryInteraction,
     SurvivalBreakPlacePickup,
+    SurvivalChestPersistence,
     CombatDamage,
     CombatKnockback,
     ArmorEquipmentMitigation,
@@ -435,9 +438,9 @@ fn load_network_safety_inputs(
 
 fn safety_reconnect_sessions(scenario: Scenario) -> usize {
     match scenario {
-        Scenario::ReconnectFlagState | Scenario::ReconnectFlagScore => {
-            SAFETY_RECONNECT_SESSION_COUNT
-        }
+        Scenario::ReconnectFlagState
+        | Scenario::ReconnectFlagScore
+        | Scenario::SurvivalChestPersistence => SAFETY_RECONNECT_SESSION_COUNT,
         _ => SAFETY_SINGLE_SESSION_COUNT,
     }
 }
@@ -1073,6 +1076,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
         "blue-flag-score" => Ok(Scenario::BlueFlagScore),
         "inventory-interaction" => Ok(Scenario::InventoryInteraction),
         "survival-break-place-pickup" => Ok(Scenario::SurvivalBreakPlacePickup),
+        "survival-chest-persistence" => Ok(Scenario::SurvivalChestPersistence),
         "combat-damage" => Ok(Scenario::CombatDamage),
         "combat-knockback" => Ok(Scenario::CombatKnockback),
         "armor-equipment-mitigation" => Ok(Scenario::ArmorEquipmentMitigation),
@@ -1095,6 +1099,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::BlueFlagScore => "blue-flag-score",
         Scenario::InventoryInteraction => "inventory-interaction",
         Scenario::SurvivalBreakPlacePickup => "survival-break-place-pickup",
+        Scenario::SurvivalChestPersistence => "survival-chest-persistence",
         Scenario::CombatDamage => "combat-damage",
         Scenario::CombatKnockback => "combat-knockback",
         Scenario::ArmorEquipmentMitigation => "armor-equipment-mitigation",
@@ -1168,6 +1173,23 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             ("survival_pickup_seen", "survival_probe_pickup_seen"),
             ("survival_place_sent", "survival_probe_place_block_sent"),
             ("survival_place_update", "survival_probe_place_update"),
+        ],
+        Scenario::SurvivalChestPersistence => &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("survival_chest_open_seen", "survival_chest_open_seen"),
+            ("survival_chest_store_sent", "survival_chest_store_sent"),
+            ("survival_chest_close_sent", "survival_chest_close_sent"),
+            (
+                "survival_chest_reconnect_sent",
+                "survival_chest_reconnect_sent",
+            ),
+            ("survival_chest_reopen_seen", "survival_chest_reopen_seen"),
+            (
+                "survival_chest_persisted_seen",
+                "survival_chest_persisted_seen",
+            ),
         ],
         Scenario::CombatDamage => &[
             ("multi_client_count", "mc_compat_combat_client_count=2"),
@@ -1360,6 +1382,17 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
             ("server_survival_break", "survival_block_break"),
             ("server_survival_pickup", "survival_pickup_item"),
             ("server_survival_place", "survival_block_place"),
+        ],
+        Scenario::SurvivalChestPersistence => &[
+            ("server_username_seen", "compatbot"),
+            ("server_survival_chest_open", "survival_chest_open"),
+            ("server_survival_chest_store", "survival_chest_store"),
+            ("server_survival_chest_close", "survival_chest_close"),
+            ("server_survival_chest_reopen", "survival_chest_reopen"),
+            (
+                "server_survival_chest_persisted",
+                "survival_chest_persisted",
+            ),
         ],
         Scenario::CombatDamage => &[
             ("server_client_a_seen", "compatbota"),
@@ -1766,7 +1799,7 @@ Automates a local Stevenarella compatibility smoke against a Minecraft {} / prot
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from legacy Nickel config, or --steel-config/MC_COMPAT_STEEL_CONFIG a restricted Steel module; env vars and later CLI flags override either config source.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.scenario.receipt.v2 JSON receipt for Cairn/Octet evidence flows.
-Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
+Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
 Use --expect-status-description/--expect-status-version/--expect-status-sample to assert status response fixture data, --packet-capture-summary for redacted capture summary metadata, and --proxy-route/--proxy-forwarding-mode for proxied-route receipt fields.\n\
 Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
 Use --run-matrix --receipt-dir DIR to run Paper and Valence receipts then compare them; add --dry-run after --run-matrix for a non-side-effecting matrix fixture.\n\
@@ -2533,8 +2566,11 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         });
     }
 
-    let runs = if cfg.scenario == Scenario::ReconnectFlagState {
-        run_reconnect_flag_state_scenario(cfg)?
+    let runs = if matches!(
+        cfg.scenario,
+        Scenario::ReconnectFlagState | Scenario::SurvivalChestPersistence
+    ) {
+        run_reconnect_sequence_scenario(cfg)?
     } else if matches!(
         cfg.scenario,
         Scenario::MultiClientLoadScore
@@ -2576,7 +2612,9 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
     }
     if matches!(
         cfg.scenario,
-        Scenario::ReconnectFlagScore | Scenario::ReconnectFlagState
+        Scenario::ReconnectFlagScore
+            | Scenario::ReconnectFlagState
+            | Scenario::SurvivalChestPersistence
     ) {
         combined_output.push_str("mc_compat_reconnect_session=2\n");
     }
@@ -2675,6 +2713,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
             | Scenario::ProjectileDamageAttribution
             | Scenario::FlagCarrierDeathReturn
             | Scenario::ReconnectFlagState
+            | Scenario::SurvivalChestPersistence
     ) && mixed_success
     {
         "multi-client-load-evidence"
@@ -2784,19 +2823,20 @@ fn projectile_damage_dry_run_evidence(cfg: &Config) -> ClientRunEvidence {
     }
 }
 
-fn run_reconnect_flag_state_scenario(cfg: &Config) -> Result<Vec<SingleClientRun>, String> {
+fn run_reconnect_sequence_scenario(cfg: &Config) -> Result<Vec<SingleClientRun>, String> {
     let username = cfg.client_username.clone();
+    let scenario = scenario_name(cfg.scenario);
     let mut runs = Vec::new();
-    for idx in 0..2 {
+    for idx in 0..RECONNECT_SEQUENCE_SESSION_COUNT {
         let log_path = std::env::temp_dir().join(format!(
-            "mc-compat-client.{username}.reconnect-state-session-{}.{}.log",
+            "mc-compat-client.{username}.{scenario}-session-{}.{}.log",
             idx + 1,
             std::process::id()
         ));
         let mut child = spawn_client_process(cfg, &username, idx, &log_path)?;
         let status = child
             .wait()
-            .map_err(|e| format!("wait reconnect state client session {}: {e}", idx + 1))?;
+            .map_err(|e| format!("wait {scenario} client session {}: {e}", idx + 1))?;
         let output = fs::read_to_string(&log_path)
             .map_err(|e| format!("read {}: {e}", log_path.display()))?;
         let matched_success_pattern = cfg
@@ -2811,7 +2851,7 @@ fn run_reconnect_flag_state_scenario(cfg: &Config) -> Result<Vec<SingleClientRun
             output,
             matched_success_pattern,
         });
-        thread::sleep(Duration::from_secs(4));
+        thread::sleep(Duration::from_secs(RECONNECT_SEQUENCE_PAUSE_SECS));
     }
     Ok(runs)
 }
@@ -2956,6 +2996,12 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
         }
         Scenario::SurvivalBreakPlacePickup => {
             cmd.env("MC_COMPAT_SURVIVAL_PROBE", "1");
+        }
+        Scenario::SurvivalChestPersistence => {
+            cmd.env("MC_COMPAT_SURVIVAL_CHEST_PROBE", "1").env(
+                "MC_COMPAT_SURVIVAL_CHEST_SESSION",
+                (client_index + 1).to_string(),
+            );
         }
         Scenario::EquipmentUpdateObservation => {
             let team = if client_index == 0 { "red" } else { "blue" };
@@ -3107,6 +3153,7 @@ fn requires_server_correlation(cfg: &Config) -> bool {
             | Scenario::MultiClientLoadScore
             | Scenario::InventoryInteraction
             | Scenario::SurvivalBreakPlacePickup
+            | Scenario::SurvivalChestPersistence
             | Scenario::CombatDamage
             | Scenario::CombatKnockback
             | Scenario::ArmorEquipmentMitigation
@@ -3332,6 +3379,14 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
             "inventory_pickup",
             "player_block_placement",
         ],
+        Scenario::SurvivalChestPersistence => vec![
+            "login_success",
+            "play_join_game",
+            "open_container",
+            "player_window_click",
+            "close_window",
+            "disconnect_reconnect",
+        ],
         Scenario::CombatDamage => vec!["two_client_login", "play_join_game", "use_entity_attack"],
         Scenario::CombatKnockback => vec![
             "two_client_login",
@@ -3428,6 +3483,17 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
         "server_survival_break",
         "server_survival_pickup",
         "server_survival_place",
+        "survival_chest_open_seen",
+        "survival_chest_store_sent",
+        "survival_chest_close_sent",
+        "survival_chest_reconnect_sent",
+        "survival_chest_reopen_seen",
+        "survival_chest_persisted_seen",
+        "server_survival_chest_open",
+        "server_survival_chest_store",
+        "server_survival_chest_close",
+        "server_survival_chest_reopen",
+        "server_survival_chest_persisted",
         "server_inventory_hotbar_select",
         "server_inventory_drop",
         "server_inventory_pickup",
@@ -4847,6 +4913,10 @@ mod tests {
             .expect("survival scenario parses");
         assert_eq!(survival.scenario, Scenario::SurvivalBreakPlacePickup);
 
+        let chest = test_config(&["--scenario", "survival-chest-persistence"], &[])
+            .expect("survival chest scenario parses");
+        assert_eq!(chest.scenario, Scenario::SurvivalChestPersistence);
+
         let knockback = test_config(&["--scenario", "combat-knockback"], &[])
             .expect("combat-knockback scenario parses");
         assert_eq!(knockback.scenario, Scenario::CombatKnockback);
@@ -4868,6 +4938,7 @@ mod tests {
             "blue-flag-score",
             "inventory-interaction",
             "survival-break-place-pickup",
+            "survival-chest-persistence",
             "combat-damage",
             "combat-knockback",
             "armor-equipment-mitigation",
@@ -5424,6 +5495,42 @@ RED: 1
         assert!(missing_place
             .missing_milestones
             .contains(&"server_survival_place"));
+    }
+
+    #[test]
+    fn survival_chest_persistence_scenario_tracks_client_and_server_evidence() {
+        let client = evaluate_scenario(
+            Scenario::SurvivalChestPersistence,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nsurvival_chest_open_seen window=1 position=8,64,0\nsurvival_chest_store_sent window=1 slot=0 item=Dirt count=1\nsurvival_chest_close_sent window=1\nsurvival_chest_reconnect_sent session=1\nsurvival_chest_reopen_seen window=2 position=8,64,0\nsurvival_chest_persisted_seen window=2 slot=0 item=Dirt count=1\n",
+        );
+        assert!(client.passed, "{client:?}");
+        assert!(client.missing_milestones.is_empty());
+
+        let missing_reopen = evaluate_scenario(
+            Scenario::SurvivalChestPersistence,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nsurvival_chest_open_seen window=1 position=8,64,0\nsurvival_chest_store_sent window=1 slot=0 item=Dirt count=1\nsurvival_chest_close_sent window=1\nsurvival_chest_reconnect_sent session=1\n",
+        );
+        assert!(!missing_reopen.passed, "{missing_reopen:?}");
+        assert!(missing_reopen
+            .missing_milestones
+            .contains(&"survival_chest_reopen_seen"));
+
+        let server = evaluate_server_scenario(
+            Scenario::SurvivalChestPersistence,
+            "compatbot joined\nMC-COMPAT-MILESTONE survival_chest_open username=compatbot position=8,64,0 window=1\nMC-COMPAT-MILESTONE survival_chest_store username=compatbot window=1 slot=0 item=Dirt count=1\nMC-COMPAT-MILESTONE survival_chest_close username=compatbot window=1\nMC-COMPAT-MILESTONE survival_chest_reopen username=compatbot position=8,64,0 window=2\nMC-COMPAT-MILESTONE survival_chest_persisted username=compatbot slot=0 item=Dirt count=1\n",
+            "compatbot",
+        );
+        assert!(server.passed, "{server:?}");
+
+        let missing_store = evaluate_server_scenario(
+            Scenario::SurvivalChestPersistence,
+            "compatbot joined\nMC-COMPAT-MILESTONE survival_chest_open username=compatbot position=8,64,0 window=1\n",
+            "compatbot",
+        );
+        assert!(!missing_store.passed, "{missing_store:?}");
+        assert!(missing_store
+            .missing_milestones
+            .contains(&"server_survival_chest_store"));
     }
 
     #[test]
