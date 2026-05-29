@@ -93,6 +93,15 @@ UNCOVERED_SURFACES = [
     "all_vanilla_combat_parity",
 ]
 
+PARSER_SHAPE_REVIEWED_PACKET_KEYS = frozenset(
+    {
+        ("play", "clientbound", 0x10),
+        ("play", "clientbound", 0x43),
+        ("play", "clientbound", 0x6D),
+        ("play", "serverbound", 0x0D),
+    }
+)
+
 SCENARIO_EVIDENCE_BY_PACKET = {
     "GameJoinS2CPacket": "status_login_play_join",
     "KeepAliveS2CPacket": "latency_jitter_tolerance",
@@ -265,16 +274,26 @@ def build_inventory_rows(packets: list[PacketKey], overrides: dict[tuple[str, st
         internal_id = overrides.get((key.state, key.side, key.wire_id), NONE)
         scenario_evidence = SCENARIO_EVIDENCE_BY_PACKET.get(key.name, NONE)
         has_override = internal_id != NONE
+        parser_shape_reviewed = (key.state, key.side, key.wire_id) in PARSER_SHAPE_REVIEWED_PACKET_KEYS
+        coverage_status = NON_CLAIM
+        if parser_shape_reviewed and scenario_evidence != NONE:
+            coverage_status = BROAD_COVERED
+        elif scenario_evidence != NONE:
+            coverage_status = SCENARIO_BOUNDED
         rows.append(
             PacketInventoryRow(
                 key=key,
                 mapping_status=REVIEWED_OVERRIDE_NO_SHAPE_CLAIM if has_override else FALLBACK_ALIAS_NON_CLAIM,
                 internal_id=internal_id,
-                parser_shape_status=SHAPE_REVIEW_MISSING,
+                parser_shape_status="parser_shape_reviewed" if parser_shape_reviewed else SHAPE_REVIEW_MISSING,
                 scenario_evidence=scenario_evidence,
-                coverage_status=SCENARIO_BOUNDED if scenario_evidence != NONE else NON_CLAIM,
+                coverage_status=coverage_status,
                 owner="agent",
-                next_action="add_mapping_parser_fixture_and_live_receipt" if not has_override else "add_parser_shape_fixture_before_broad_promotion",
+                next_action="covered_by_parser_fixture_and_reference_receipt"
+                if parser_shape_reviewed
+                else "add_mapping_parser_fixture_and_live_receipt"
+                if not has_override
+                else "add_parser_shape_fixture_before_broad_promotion",
             )
         )
     return rows
@@ -637,7 +656,11 @@ def main() -> int:
         for issue in issues:
             print(issue, file=sys.stderr)
         return 1
-    print(f"protocol coverage ledger ok: {len(REQUIRED_SEAMS)} bounded seams, {len(inventory_rows)} packet rows, broad claims blocked")
+    broad_rows = sum(row.coverage_status == BROAD_COVERED for row in inventory_rows)
+    print(
+        f"protocol coverage ledger ok: {len(REQUIRED_SEAMS)} bounded seams, "
+        f"{len(inventory_rows)} packet rows, {broad_rows} broad packet rows, broad protocol claims blocked"
+    )
     return 0
 
 

@@ -1,5 +1,39 @@
-checkpoint: protocol-763 broad coverage ledger gate 2026-05-28
+$ nix develop --no-update-lock-file -c cargo test --manifest-path stevenarella/protocol/Cargo.toml protocol_763_ -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+warning: file `/home/brittonr/git/mc/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/steven_protocol-9c169cd885baf6cb)
+
+running 19 tests
+test protocol::versions::tests::protocol_763_maps_paper_feature_flags_boundary ... ok
+test protocol::versions::tests::protocol_763_maps_play_position_updates ... ok
+test protocol::versions::tests::protocol_763_maps_play_interaction_packets ... ok
+test protocol::versions::tests::protocol_763_maps_paper_entity_effect_boundary ... ok
+test protocol::versions::tests::protocol_763_maps_play_keep_alive_response ... ok
+test protocol::versions::tests::protocol_763_maps_remaining_observed_valence_boundaries ... ok
+test protocol::versions::tests::protocol_763_maps_valence_command_tree_boundary ... ok
+test protocol::versions::tests::protocol_763_maps_valence_game_join_boundary ... ok
+test protocol::versions::tests::protocol_763_maps_valence_game_message_boundary ... ok
+test protocol::versions::tests::protocol_763_no_longer_treats_play_0x10_as_clear_titles ... ok
+test protocol::versions::tests::protocol_763_no_longer_treats_play_0x28_as_trade_list ... ok
+test protocol::versions::tests::protocol_763_no_longer_treats_play_0x64_as_entity_properties ... ok
+test protocol::versions::tests::protocol_763_no_longer_uses_758_fallback_for_remaining_observed_boundaries ... ok
+test protocol::versions::tests::protocol_763_reuses_1_18_2_handshake_translation ... ok
+test protocol::versions::tests::protocol_763_uses_login_success_properties ... ok
+test protocol::versions::tests::protocol_763_uses_optional_uuid_login_start ... ok
+test protocol::versions::tests::protocol_763_custom_payload_parser_fixture_rejects_malformed_channel ... ok
+test protocol::versions::tests::protocol_763_high_risk_raw_parser_fixtures_accept_payloads ... ok
+test protocol::versions::tests::protocol_763_custom_payload_parser_fixture_accepts_brand_payload ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+
+
+$ python3 tools/check_protocol_coverage_ledger.py --self-test
 protocol coverage ledger self-test ok
-protocol coverage ledger ok: 16 bounded seams, 175 packet rows, broad claims blocked
-acceptance matrix ok: 16 seams, 16 hashes
-current evidence bundle ok: 16 seams
+
+$ python3 tools/check_protocol_coverage_ledger.py
+protocol coverage ledger ok: 16 bounded seams, 175 packet rows, 4 broad packet rows, broad protocol claims blocked

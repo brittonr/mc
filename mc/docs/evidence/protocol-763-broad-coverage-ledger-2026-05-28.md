@@ -19,7 +19,7 @@ next_action: add packet-family rows only when mapping/parser fixtures and bounde
 | inventory_drop_pickup_click_container_block_place | Covered only by bounded inventory rows | Inventory/drop, pickup, click, open-container, block-place receipts. |
 | combat_damage_knockback_armor_projectile | Covered only by bounded combat rows | Combat damage, knockback, armor, equipment, projectile use/loadout, projectile damage attribution. |
 | survival_break_place_pickup | Covered only by one bounded survival fixture row | Dedicated break/place/pickup receipt. |
-| survival_reference_packet_acceptance | Covered only by bounded Paper survival reference receipt | Paper 1.20.1 reference rail exercises newly reviewed 763 mappings such as command_tree_raw, chunk_delta_raw, recipe_book_raw, custom_payload_brand, light/world-event/sound/team/passenger, and serverbound brand custom payload. |
+| survival_reference_packet_acceptance | Four packet families promoted; remaining rows bounded/non-claim | Paper 1.20.1 reference rail plus Stevenarella parser fixtures cover command_tree_raw, chunk_delta_raw, recipe_book_raw, and custom_payload_brand. Other observed mappings stay scenario-bounded until parser fixtures exist. |
 | reconnect_flag_state | Covered only by one bounded reconnect row | Reconnect flag-state receipt. |
 
 ## Uncovered protocol surfaces
@@ -65,7 +65,7 @@ Status vocabulary:
 - reviewed_override_no_shape_claim: row has a Stevenarella 1.20.1 override but still needs parser-shape fixtures before broad promotion.
 - shape_review_missing: parser shape has not been independently proven for broad coverage.
 - scenario_bounded: maintained scenario evidence touches this packet family, but only for the named scenario surface.
-- broad_covered: reserved for future rows with reviewed mapping, parser-shape fixture, and receipt/log evidence; no current row uses it.
+- broad_covered: row has reviewed mapping, parser-shape fixture, and receipt/log evidence. Current rows using it are `CommandTreeS2CPacket`, `ChunkDeltaUpdateS2CPacket`, `SynchronizeRecipesS2CPacket`, and `CustomPayloadC2SPacket`.
 - non_claim: no packet-family coverage claim is made.
 
 ## Mapping/parser fixture policy
@@ -77,7 +77,7 @@ Status vocabulary:
 - malformed_shape_rejected: malformed payload/shape acceptance blocks promotion;
 - missing owner, missing next action, missing parser-shape fixture, or missing live receipt blocks promotion.
 
-Highest-risk deterministic parser-shape fixtures in the checker cover command_tree_raw, chunk_delta_raw, recipe_book_raw, and custom_payload_brand. These fixtures are gate fixtures for future promotion, not a broad semantic claim about command, chunk, recipe, or plugin-message behavior.
+Highest-risk parser-shape fixtures are real Stevenarella protocol tests in commit `ba3ce751f04b4fecefe516e06dff3e40363d2e72`: `protocol_763_high_risk_raw_parser_fixtures_accept_payloads`, `protocol_763_custom_payload_parser_fixture_accepts_brand_payload`, and `protocol_763_custom_payload_parser_fixture_rejects_malformed_channel`. They prove raw command/chunk-delta/recipe payload acceptance and custom-payload positive plus malformed-channel rejection. These fixtures do not claim full command, chunk, recipe, or plugin-message semantics.
 
 ## Live scenario gate policy
 
@@ -85,6 +85,7 @@ A live scenario family can cover only the protocol surface named in its receipt 
 
 Representative live evidence for this refresh:
 
+- Parser fixture test log: `docs/evidence/protocol-763-broad-coverage-ledger-gate-2026-05-28.run.log`.
 - Paper reference receipt: `docs/evidence/protocol-763-survival-reference-paper-2026-05-28.receipt.json`.
 - Paper client log: `docs/evidence/protocol-763-survival-reference-paper-2026-05-28.client.log`.
 - Paper server log: `docs/evidence/protocol-763-survival-reference-paper-2026-05-28.server.log`.
@@ -109,7 +110,7 @@ Broad protocol coverage, full protocol-763 compatibility, and full Minecraft com
 ## Decision
 
 - Question: Can current evidence support broad protocol-763 compatibility?
-- Inspected evidence: acceptance matrix, current bundle, all maintained seam digests, `docs/evidence/protocol-763-packet-inventory-2026-05-28.tsv`, row-specific checkers, Paper/Valence survival reference receipts, and coverage ledger fixtures.
+- Inspected evidence: acceptance matrix, current bundle, all maintained seam digests, `docs/evidence/protocol-763-packet-inventory-2026-05-28.tsv`, row-specific checkers, Paper/Valence survival reference receipts, and Stevenarella parser fixture tests.
 - Decision: No. Current evidence supports bounded scenario seams only. Full protocol-763 compatibility remains a non-claim and full Minecraft compatibility remains a non-claim.
 - Owner: agent.
 - Next action: generate per-packet-family mapping/parser fixtures before adding broad coverage rows.
