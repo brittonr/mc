@@ -2,13 +2,13 @@
 
 ## Scope
 
-This matrix tracks bounded survival evidence rows separately from full survival compatibility. Current evidence covers one Valence-only break/place/pickup rail. Full survival compatibility, vanilla parity, persistence, and broad Minecraft survival behavior remain non-claims until every required row has reviewable evidence.
+This matrix tracks bounded survival evidence rows separately from full survival compatibility. Current evidence covers one paired Paper/Valence break/place/pickup parity row. Full survival compatibility, broader vanilla parity, persistence, and broad Minecraft survival behavior remain non-claims until every required row has reviewable evidence.
 
 ## Coverage rows
 
 | Survival system | Status | Valence evidence | Reference evidence | Promotion requirement | Explicit non-claim | Next action |
 | --- | --- | --- | --- | --- | --- | --- |
-| break/place/pickup | valence_covered_reference_missing | `docs/evidence/protocol-763-survival-break-place-pickup-2026-05-28.receipt.json` | none | Add paired reference receipt before parity promotion. | No vanilla parity or full survival compatibility. | `add-survival-reference-parity-receipts` |
+| break/place/pickup | reference_parity_covered | `docs/evidence/protocol-763-survival-reference-valence-2026-05-28.receipt.json` | `docs/evidence/protocol-763-survival-reference-paper-2026-05-28.receipt.json` | Paired Paper/Valence comparator evidence: `docs/evidence/protocol-763-survival-reference-parity-2026-05-28.md`. | No full survival compatibility or broader vanilla parity. | create next missing survival row |
 | crafting | missing | none | none | Add Valence and reference crafting receipts with inventory input/output metrics. | No crafting coverage. | create crafting rail |
 | chest persistence | missing | none | none | Add open/store/reconnect/reopen receipts with slot persistence metrics. | No chest or persistence coverage. | create chest persistence rail |
 | furnace persistence | missing | none | none | Add smelt/fuel/output/reconnect receipts with state persistence metrics. | No furnace coverage. | create furnace rail |
@@ -20,7 +20,7 @@ This matrix tracks bounded survival evidence rows separately from full survival 
 
 ## Gate decision
 
-`full_survival_compatibility` remains a non-claim because required rows are missing or lack paired reference evidence. In plain terms: full_survival_compatibility remains a non-claim.
+`full_survival_compatibility` remains a non-claim because required rows beyond break/place/pickup are missing paired reference evidence. In plain terms: full_survival_compatibility remains a non-claim.
 
 ## Required evidence for row promotion
 

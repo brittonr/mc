@@ -30,7 +30,7 @@ REQUIRED_SYSTEMS = [
 ]
 REQUIRED_TEXT = [
     "full_survival_compatibility remains a non-claim",
-    "No vanilla parity or full survival compatibility",
+    "No full survival compatibility or broader vanilla parity",
     "No crafting coverage",
     "No chest or persistence coverage",
     "No furnace coverage",
@@ -51,6 +51,10 @@ FORBIDDEN_CLAIMS = [
 STATUS_MISSING = "missing"
 REFERENCE_NONE = "none"
 COVERED_ROW = "break/place/pickup"
+COVERED_STATUS = "reference_parity_covered"
+PAPER_REFERENCE_RECEIPT = "docs/evidence/protocol-763-survival-reference-paper-2026-05-28.receipt.json"
+VALENCE_REFERENCE_RECEIPT = "docs/evidence/protocol-763-survival-reference-valence-2026-05-28.receipt.json"
+PARITY_EVIDENCE_DOC = "docs/evidence/protocol-763-survival-reference-parity-2026-05-28.md"
 
 
 @dataclass(frozen=True)
@@ -110,8 +114,16 @@ def validate_text(doc_text: str, bundle_text: str, matrix_text: str) -> tuple[in
 
     for row in rows:
         if row.system == COVERED_ROW:
-            if row.reference_evidence == REFERENCE_NONE and "parity" not in row.non_claim.lower():
-                issues.append("covered break/place/pickup row lacks parity non-claim")
+            if row.status != COVERED_STATUS:
+                issues.append(f"covered break/place/pickup row has stale status: {row.status}")
+            if PAPER_REFERENCE_RECEIPT not in row.reference_evidence:
+                issues.append("covered break/place/pickup row missing Paper reference receipt")
+            if VALENCE_REFERENCE_RECEIPT not in row.valence_evidence:
+                issues.append("covered break/place/pickup row missing Valence paired receipt")
+            if PARITY_EVIDENCE_DOC not in row.requirement:
+                issues.append("covered break/place/pickup row missing parity evidence doc")
+            if "full survival compatibility" not in row.non_claim.lower() or "broader vanilla parity" not in row.non_claim.lower():
+                issues.append("covered break/place/pickup row lacks scoped survival parity non-claim")
             continue
         if row.status != STATUS_MISSING:
             issues.append(f"unimplemented survival row is not marked missing: {row.system}")
@@ -157,7 +169,7 @@ No world persistence coverage
 def good_rows() -> str:
     return "\n".join(
         [
-            "| break/place/pickup | valence_covered_reference_missing | `docs/evidence/x.json` | none | Add paired reference receipt before parity promotion. | No vanilla parity or full survival compatibility. | next |",
+            f"| break/place/pickup | {COVERED_STATUS} | `{VALENCE_REFERENCE_RECEIPT}` | `{PAPER_REFERENCE_RECEIPT}` | Paired comparator evidence: `{PARITY_EVIDENCE_DOC}`. | No full survival compatibility or broader vanilla parity. | next |",
             "| crafting | missing | none | none | Add receipts. | No crafting coverage. | next |",
             "| chest persistence | missing | none | none | Add receipts. | No chest or persistence coverage. | next |",
             "| furnace persistence | missing | none | none | Add receipts. | No furnace coverage. | next |",
@@ -180,6 +192,14 @@ def assert_self_tests() -> None:
     missing_row = good_rows().replace("| crafting |", "| crafting-missing |", 1)
     _, issues = validate_text(fixture_doc(missing_row), bundle, matrix)
     assert any("missing survival row: crafting" in item for item in issues), issues
+
+    stale_reference_missing = good_rows().replace(f"| break/place/pickup | {COVERED_STATUS} |", "| break/place/pickup | valence_covered_reference_missing |", 1)
+    _, issues = validate_text(fixture_doc(stale_reference_missing), bundle, matrix)
+    assert any("stale status" in item for item in issues), issues
+
+    stale_valence_only = good_rows().replace(f"`{PAPER_REFERENCE_RECEIPT}`", "none", 1)
+    _, issues = validate_text(fixture_doc(stale_valence_only), bundle, matrix)
+    assert any("missing Paper reference receipt" in item for item in issues), issues
 
     promoted_without_evidence = good_rows().replace("| redstone | missing |", "| redstone | covered |", 1)
     _, issues = validate_text(fixture_doc(promoted_without_evidence), bundle, matrix)

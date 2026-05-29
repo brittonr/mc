@@ -8,8 +8,8 @@ Can the archived `build-survival-coverage-matrix` task completion be trusted whe
 
 | Evidence | BLAKE3 | Observation |
 | --- | --- | --- |
-| `docs/evidence/protocol-763-survival-coverage-matrix-2026-05-28.md` | `087fd7e14d50dd12895e546f890f4f898709c28c56b3bd8f30bdd55def21d20a` | Matrix has 9 rows. `break/place/pickup` is `valence_covered_reference_missing`; `crafting`, `chest persistence`, `furnace persistence`, `hunger/food`, `mob drops`, `redstone`, `biome/dimension`, and `world persistence` are `missing` with `none` Valence/reference evidence and explicit `No ... coverage` non-claims. |
-| `tools/check_survival_coverage_matrix.py` | `e0ba7330a87aa77b45dd9383879b35f5261457d7ea68b5723c4370a05dc8d69b` | Checker requires 9 rows, exact required systems, row-level non-claims, paired-reference/BLAKE3 text, current bundle survival non-claim text, and acceptance-matrix full-survival gap text. It scans docs for forbidden claims: `full_survival_compatibility is covered`, `full survival compatibility is covered`, `vanilla parity is covered`, and `full survival compatibility passes`. |
+| `docs/evidence/protocol-763-survival-coverage-matrix-2026-05-28.md` | `0e649d28bcff7c9bcf15ee7f76b7646a418a5f8766ef1eda81c85a1b8b9645d5` | Matrix has 9 rows. `break/place/pickup` is now `reference_parity_covered` and cites paired Paper and Valence reference receipts plus the parity doc; `crafting`, `chest persistence`, `furnace persistence`, `hunger/food`, `mob drops`, `redstone`, `biome/dimension`, and `world persistence` remain `missing` with `none` Valence/reference evidence and explicit `No ... coverage` non-claims. |
+| `tools/check_survival_coverage_matrix.py` | `f2ba8ba0628c3ebd99a2ecc8cc95b66b4b0c844f0e1b9f06cc43bdc7afdf81c0` | Checker requires 9 rows, exact required systems, row-level non-claims, paired Paper/Valence receipt references for break/place/pickup, the parity evidence doc, current bundle survival non-claim text, and acceptance-matrix full-survival gap text. It rejects stale `valence_covered_reference_missing`, missing Paper receipt, promoted missing rows, and forbidden claims: `full_survival_compatibility is covered`, `full survival compatibility is covered`, `vanilla parity is covered`, and `full survival compatibility passes`. |
 | `cairn/archive/2026-05-28-build-survival-coverage-matrix/tasks.md` | `c6e3ec78a314f27b567fffc33039dfc168497859e606a07e5d15c699c8242e63` | Archived tasks mark completion against matrix/checker evidence and current bundle/matrix docs and link this oracle checkpoint. |
 
 ## Command evidence
@@ -41,7 +41,7 @@ survival coverage matrix ok: 9 rows
 
 ## Decision
 
-Accept the archived `build-survival-coverage-matrix` tasks as review-supported. The implementation evidence blocks full-survival/vanilla-parity overclaims and records every currently uncovered survival system as an explicit non-claim with row-level promotion requirements.
+Accept the archived `build-survival-coverage-matrix` tasks as review-supported, with the later `sync-survival-coverage-reference-parity` correction applied. The implementation evidence blocks full-survival/vanilla-parity overclaims, records break/place/pickup as the only paired reference parity row, and records every currently uncovered survival system as an explicit non-claim with row-level promotion requirements.
 
 ## Owner
 

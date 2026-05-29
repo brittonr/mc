@@ -1,0 +1,33 @@
+$ python3 tools/check_survival_coverage_matrix.py --self-test
+survival coverage matrix self-test ok
+
+$ python3 tools/check_survival_coverage_matrix.py
+survival coverage matrix ok: 9 rows
+
+$ python3 tools/check_survival_reference_parity.py
+survival reference parity ok: metrics defined; paired reference receipt promoted
+
+$ python3 tools/check_acceptance_matrix.py
+acceptance matrix ok: 16 seams, 16 hashes
+
+$ python3 tools/check_current_evidence_bundle.py
+current evidence bundle ok: 16 seams
+
+$ nix run --no-update-lock-file .#cairn -- change list --root .
+{
+  "changes": [],
+  "layout": "cairn",
+  "root": "."
+}
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 2,
+  "valid": true
+}
