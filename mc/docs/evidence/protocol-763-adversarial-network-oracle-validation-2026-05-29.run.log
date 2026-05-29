@@ -1,0 +1,88 @@
+command: nix develop --no-update-lock-file -c rustfmt --edition 2021 tools/check_adversarial_network_oracle.rs --check
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+command: nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_adversarial_network_oracle.rs -o /tmp/check-adversarial-network-oracle
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+command: /tmp/check-adversarial-network-oracle --self-test
+adversarial-network oracle self-test passed: positive fixture and fail-closed mutations passed
+command: /tmp/check-adversarial-network-oracle --record docs/evidence/protocol-763-adversarial-network-oracle-fixture-2026-05-29.record
+adversarial-network oracle check passed: contract=docs/evidence/protocol-763-adversarial-network-oracle-contract-2026-05-29.md record=true matrix=docs/evidence/protocol-763-production-network-safety-matrix-2026-05-28.md bundle=docs/evidence/protocol-763-current-evidence-bundle.md
+command: nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-adversarial-network-oracle --no-link -L
+command: python3 tools/check_acceptance_matrix.py
+acceptance matrix ok: 17 seams, 17 hashes
+command: python3 tools/check_current_evidence_bundle.py
+current evidence bundle ok: 17 seams
+command: nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py --self-test
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest self-test ok
+command: nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 61 manifests, 269 entries, 58 receipts scanned
+note: validation manifest sidecar is written after this log to avoid self-referential digest drift.
+placeholder: create validation manifest path before task-evidence gate
+command: nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_cairn_task_evidence.rs -o /tmp/check-cairn-task-evidence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+command: /tmp/check-cairn-task-evidence --self-test
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+command: /tmp/check-cairn-task-evidence
+task evidence gate passed: 6 completed tasks checked across 39 active task files
+command: nix run --no-update-lock-file .#cairn -- gate proposal adversarial-network-oracle-rail --root .
+{
+  "change": "adversarial-network-oracle-rail",
+  "input_hash": "5483758d7050d40d7bd05a82a7924cc609d9a43dbdab96b491f07a303168fba4",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "7610e55620cd76a379717654518a935dea30b5e5dfc9eb1d5f45a24016b6cae8",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+command: nix run --no-update-lock-file .#cairn -- gate design adversarial-network-oracle-rail --root .
+{
+  "change": "adversarial-network-oracle-rail",
+  "input_hash": "91a72cdc0f76eb396658900fca8d2918a38893c31433fcfb3dd697440c1ec668",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "7acf344af6d2efdf34861975c9f069c506f524dc0df87fdfe12d0b847c7dd6e7",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+command: nix run --no-update-lock-file .#cairn -- gate tasks adversarial-network-oracle-rail --root .
+{
+  "change": "adversarial-network-oracle-rail",
+  "input_hash": "148d614c1b47779f52051cb2f0f8d33443bb6557af8f275f706fee191f9151ea",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "705660e2a4d30139555c1b5aefaee52092ccd3248f13df7f64de1d8b99295a41",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+command: nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 39,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 41,
+  "valid": true
+}
+result: PASS
