@@ -181,6 +181,7 @@ class ParserFixtureSpec:
     wire_id: int
     valence_packet: str
     internal_id: str
+    parser_class: str
     source_tokens: tuple[str, ...]
     oracle_tokens: tuple[str, ...]
 
@@ -193,6 +194,7 @@ PARSER_FIXTURE_SPECS = [
         wire_id=0x10,
         valence_packet="CommandTreeS2CPacket",
         internal_id="DeclareCommandsRaw",
+        parser_class="raw",
         source_tokens=(
             "fn protocol_763_high_risk_raw_parser_fixtures_accept_payloads()",
             "Direction::Clientbound",
@@ -209,6 +211,7 @@ PARSER_FIXTURE_SPECS = [
         wire_id=0x43,
         valence_packet="ChunkDeltaUpdateS2CPacket",
         internal_id="ChunkDeltaUpdateRaw",
+        parser_class="raw",
         source_tokens=(
             "fn protocol_763_high_risk_raw_parser_fixtures_accept_payloads()",
             "Direction::Clientbound",
@@ -225,6 +228,7 @@ PARSER_FIXTURE_SPECS = [
         wire_id=0x6D,
         valence_packet="SynchronizeRecipesS2CPacket",
         internal_id="SynchronizeRecipesRaw",
+        parser_class="raw",
         source_tokens=(
             "fn protocol_763_high_risk_raw_parser_fixtures_accept_payloads()",
             "Direction::Clientbound",
@@ -241,6 +245,7 @@ PARSER_FIXTURE_SPECS = [
         wire_id=0x0D,
         valence_packet="CustomPayloadC2SPacket",
         internal_id="PluginMessageServerbound",
+        parser_class="structured",
         source_tokens=(
             "fn protocol_763_custom_payload_parser_fixture_accepts_brand_payload()",
             "fn protocol_763_custom_payload_parser_fixture_rejects_malformed_channel()",
@@ -459,6 +464,34 @@ def evaluate_mapping_fixture(fixture: MappingFixture) -> MappingDecision:
     return MappingDecision(promoted=not diagnostics, diagnostics=tuple(diagnostics))
 
 
+def extract_source_excerpt(snapshot_text: str) -> str:
+    start = snapshot_text.find("```rust")
+    if start < 0:
+        return ""
+    body_start = snapshot_text.find("\n", start)
+    if body_start < 0:
+        return ""
+    end = snapshot_text.find("```", body_start + 1)
+    if end < 0:
+        return ""
+    return snapshot_text[body_start + 1 : end].strip()
+
+
+def normalize_source_excerpt(text: str) -> str:
+    return "\n".join(line.strip() for line in text.strip().splitlines() if line.strip())
+
+
+def validate_fixture_snapshot_matches_source(snapshot_text: str, actual_source_text: str) -> list[str]:
+    excerpt = extract_source_excerpt(snapshot_text)
+    if not excerpt:
+        return ["fixture source snapshot missing extractable Rust code fence"]
+    normalized_excerpt = normalize_source_excerpt(excerpt)
+    normalized_source = normalize_source_excerpt(actual_source_text)
+    if normalized_excerpt not in normalized_source:
+        return ["fixture source snapshot does not match stevenarella/protocol/src/protocol/versions.rs"]
+    return []
+
+
 def validate_parser_fixture_evidence(source_text: str, oracle_text: str) -> list[str]:
     issues: list[str] = []
     for section in ["## Question", "## Inspected evidence", "## Decision", "## Owner", "## Next action"]:
@@ -481,11 +514,20 @@ def validate_parser_fixture_evidence(source_text: str, oracle_text: str) -> list
         for token in [spec.valence_packet, spec.internal_id, *spec.oracle_tokens]:
             if token not in oracle_text:
                 issues.append(f"fixture oracle for {spec.packet_family} missing token: {token}")
+        if spec.parser_class == "raw":
+            for token in ["No malformed semantic rejection fixture is possible", "semantic validation remains a non-claim"]:
+                if token not in source_text:
+                    issues.append(f"raw fixture source for {spec.packet_family} missing non-claim token: {token}")
+        if spec.parser_class == "structured":
+            for token in ["invalid UTF-8", "oversized VarInt", "positive and negative parser-shape fixtures"]:
+                if token not in oracle_text:
+                    issues.append(f"structured fixture oracle for {spec.packet_family} missing negative token: {token}")
     return issues
 
 
 def parser_fixture_keys_from_evidence(source_text: str, oracle_text: str) -> frozenset[tuple[str, str, int]]:
     issues = validate_parser_fixture_evidence(source_text, oracle_text)
+    issues.extend(validate_fixture_snapshot_matches_source(source_text, (ROOT / "stevenarella" / "protocol" / "src" / "protocol" / "versions.rs").read_text()))
     if issues:
         raise ValueError("; ".join(issues))
     return frozenset((spec.state, spec.side, spec.wire_id) for spec in PARSER_FIXTURE_SPECS)
@@ -688,10 +730,13 @@ def assert_self_tests() -> None:
     fixture_source_text = FIXTURE_SOURCE_DOC.read_text()
     fixture_oracle_text = FIXTURE_ORACLE.read_text()
     fixture_issues = validate_parser_fixture_evidence(fixture_source_text, fixture_oracle_text)
+    fixture_issues.extend(validate_fixture_snapshot_matches_source(fixture_source_text, (ROOT / "stevenarella" / "protocol" / "src" / "protocol" / "versions.rs").read_text()))
     assert not fixture_issues, fixture_issues
     broken_fixture_source = fixture_source_text.replace("assert_eq!(command_packet.data, command_payload);", "")
     broken_issues = validate_parser_fixture_evidence(broken_fixture_source, fixture_oracle_text)
     assert any("command_tree_raw" in issue and "command_packet.data" in issue for issue in broken_issues), broken_issues
+    broken_snapshot_issues = validate_fixture_snapshot_matches_source(broken_fixture_source, (ROOT / "stevenarella" / "protocol" / "src" / "protocol" / "versions.rs").read_text())
+    assert any("snapshot does not match" in issue for issue in broken_snapshot_issues), broken_snapshot_issues
     parser_fixture_keys = parser_fixture_keys_from_evidence(fixture_source_text, fixture_oracle_text)
 
     source_rows = build_inventory_rows(load_valence_packets(), load_stevenarella_overrides(), parser_fixture_keys)

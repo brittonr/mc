@@ -27,14 +27,22 @@ r[mc_compatibility.protocol_763_broad_coverage.mapping_review.rejects]
 
 ### Requirement: Parser fixtures
 
-r[mc_compatibility.protocol_763_broad_coverage.parser_fixtures] Promoted packet families MUST have positive and negative parser-shape fixtures.
+r[mc_compatibility.protocol_763_broad_coverage.parser_fixtures] Promoted packet families MUST have parser-shape evidence matching the parser implementation class: structured parsers require positive and negative fixtures; byte-opaque raw consumers require positive byte-preservation fixtures plus explicit semantic non-claim rationale.
 
-#### Scenario: Malformed fixture is rejected
+#### Scenario: Structured malformed fixture is rejected
 
 r[mc_compatibility.protocol_763_broad_coverage.parser_fixtures.negative]
-- GIVEN a malformed packet fixture for a promoted packet family
+- GIVEN a malformed packet fixture for a promoted structured packet parser
 - WHEN parser-shape tests run
 - THEN the malformed packet is rejected without panic or silent acceptance.
+
+#### Scenario: Raw consumer fixture is scoped
+
+r[mc_compatibility.protocol_763_broad_coverage.parser_fixtures.raw_scope]
+- GIVEN a promoted packet family is implemented as a byte-opaque raw consumer
+- WHEN evidence is reviewed
+- THEN a positive byte-preservation fixture is linked
+- AND semantic malformed-payload rejection remains an explicit non-claim.
 
 ### Requirement: Packet family receipts
 

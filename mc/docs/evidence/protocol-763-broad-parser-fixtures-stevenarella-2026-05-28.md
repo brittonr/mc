@@ -6,12 +6,12 @@ Snapshot purpose: make the external parser-fixture implementation reviewable fro
 
 ## Fixture coverage table
 
-| Packet family | Valence row | Stevenarella packet | Positive fixture | Negative fixture scope |
-| --- | --- | --- | --- | --- |
-| `command_tree_raw` | `play/clientbound/0x10 CommandTreeS2CPacket` | `DeclareCommandsRaw` | `protocol_763_high_risk_raw_parser_fixtures_accept_payloads` asserts raw payload bytes are preserved. | Byte-opaque raw payload: malformed semantic command trees are a non-claim until a semantic decoder exists. |
-| `chunk_delta_raw` | `play/clientbound/0x43 ChunkDeltaUpdateS2CPacket` | `ChunkDeltaUpdateRaw` | `protocol_763_high_risk_raw_parser_fixtures_accept_payloads` asserts raw payload bytes are preserved. | Byte-opaque raw payload: malformed semantic chunk deltas are a non-claim until a semantic decoder exists. |
-| `recipe_book_raw` | `play/clientbound/0x6d SynchronizeRecipesS2CPacket` | `SynchronizeRecipesRaw` | `protocol_763_high_risk_raw_parser_fixtures_accept_payloads` asserts raw payload bytes are preserved. | Byte-opaque raw payload: malformed semantic recipes are a non-claim until a semantic decoder exists. |
-| `custom_payload_brand` | `play/serverbound/0x0d CustomPayloadC2SPacket` | `PluginMessageServerbound` | `protocol_763_custom_payload_parser_fixture_accepts_brand_payload` asserts channel `minecraft:brand` and payload bytes. | `protocol_763_custom_payload_parser_fixture_rejects_malformed_channel` rejects invalid UTF-8 and oversized VarInt channel lengths. |
+| Packet family | Parser class | Valence row | Stevenarella packet | Positive fixture | Negative fixture / non-claim scope |
+| --- | --- | --- | --- | --- | --- |
+| `command_tree_raw` | Byte-opaque raw consumer (`Vec<u8>`) | `play/clientbound/0x10 CommandTreeS2CPacket` | `DeclareCommandsRaw` | `protocol_763_high_risk_raw_parser_fixtures_accept_payloads` asserts raw payload bytes are preserved. | No malformed semantic rejection fixture is possible for the current raw consumer because every byte string is accepted by design; command-tree semantic validation remains a non-claim until a semantic decoder replaces the raw consumer. |
+| `chunk_delta_raw` | Byte-opaque raw consumer (`Vec<u8>`) | `play/clientbound/0x43 ChunkDeltaUpdateS2CPacket` | `ChunkDeltaUpdateRaw` | `protocol_763_high_risk_raw_parser_fixtures_accept_payloads` asserts raw payload bytes are preserved. | No malformed semantic rejection fixture is possible for the current raw consumer because every byte string is accepted by design; chunk-delta semantic validation remains a non-claim until a semantic decoder replaces the raw consumer. |
+| `recipe_book_raw` | Byte-opaque raw consumer (`Vec<u8>`) | `play/clientbound/0x6d SynchronizeRecipesS2CPacket` | `SynchronizeRecipesRaw` | `protocol_763_high_risk_raw_parser_fixtures_accept_payloads` asserts raw payload bytes are preserved. | No malformed semantic rejection fixture is possible for the current raw consumer because every byte string is accepted by design; recipe semantic validation remains a non-claim until a semantic decoder replaces the raw consumer. |
+| `custom_payload_brand` | Structured channel parser plus raw payload | `play/serverbound/0x0d CustomPayloadC2SPacket` | `PluginMessageServerbound` | `protocol_763_custom_payload_parser_fixture_accepts_brand_payload` asserts channel `minecraft:brand` and payload bytes. | `protocol_763_custom_payload_parser_fixture_rejects_malformed_channel` rejects invalid UTF-8 and oversized VarInt channel lengths. |
 
 ## Source excerpt
 
