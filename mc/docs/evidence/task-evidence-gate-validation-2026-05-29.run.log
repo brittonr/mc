@@ -1,0 +1,63 @@
+$ nix develop --no-update-lock-file . --command rustc --edition=2021 tools/check_cairn_task_evidence.rs -o /tmp/check-cairn-task-evidence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+$ /tmp/check-cairn-task-evidence --self-test
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+$ /tmp/check-cairn-task-evidence
+task evidence gate passed: 4 completed tasks checked across 1 active task files
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+this derivation will be built:
+  /nix/store/bjsv4yrhqwh1havp4d48mmlz84yg1hhm-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/bjsv4yrhqwh1havp4d48mmlz84yg1hhm-mc-compat-cairn-task-evidence.drv'...
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+$ nix run --no-update-lock-file .#cairn -- gate proposal harden-task-evidence-gate --root .
+{
+  "change": "harden-task-evidence-gate",
+  "input_hash": "8b111760b3ca1acf9fc7df907d8c9707eb4d6e939c5889840b82eefd9ad9a93d",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "c41b5f67db0127a99f6bd47cc1ea3cf0172d6ba22c2e58bb1d3004b8d6d17e19",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+$ nix run --no-update-lock-file .#cairn -- gate design harden-task-evidence-gate --root .
+{
+  "change": "harden-task-evidence-gate",
+  "input_hash": "3d3dee97513b1f2571328913d23e2674778e327b6d226d558f766dc853599cee",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "28be5a9457c4b00fc8d78dd9b265b61dcfcf1ffc78ab9124937e7bd8140ccce6",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+$ nix run --no-update-lock-file .#cairn -- gate tasks harden-task-evidence-gate --root .
+{
+  "change": "harden-task-evidence-gate",
+  "input_hash": "8775b2c6d8ae249a310a491d77a953ab72dae9e6da9d2f727dcfd558c7aa715c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "48c0174f4f60bc4a3a472e81551ab86a10d3b34dd1ae2f26eed462afea858141",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}

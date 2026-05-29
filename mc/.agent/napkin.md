@@ -14,6 +14,8 @@
 | 2026-05-29 | self | Committed runner changes without force-adding ignored `tools/mc-compat-runner/src/scenario_manifest_generated.rs`, so Nix builds failed with missing module | Before any Nix flake/devshell check in `mc/`, force-add exact new generated/source files under ignored paths |
 | 2026-05-29 | self | Live chest rail showed Stevenarella skipped all chest actions because `apply_mc_compat_active_probe` early-return guard omitted `survival_chest_probe_enabled` | When adding a Stevenarella probe flag, include it in both the active-probe early guard and movement gating as appropriate |
 | 2026-05-29 | self | Rebuilt the shared Paper survival fixture jar in-place, which invalidated older `.b3` manifests that cited the same `target/.../mc-compat-paper-survival-fixture.jar` path | For new Paper evidence rows, build/cite a row-specific jar path or regenerate every manifest that intentionally follows the current fixture jar |
+| 2026-05-29 | self | Piped `nix develop --command python3 tools/check_evidence_manifests.py` through `tee`; it exited 120 after the devshell banner | For manifest logs, redirect command output straight to the log file instead of piping through `tee` |
+| 2026-05-29 | self | Manually appended accepted `cairn/specs/mc-compatibility/spec.md`, which made older `.b3` manifests stale because they included that accepted spec path | After accepted spec edits, run the evidence manifest checker and refresh every `.b3` that cites `cairn/specs/mc-compatibility/spec.md` |
 
 ## User Preferences
 - Keep replies terse and direct.

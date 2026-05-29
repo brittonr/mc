@@ -679,6 +679,16 @@
           mkdir -p "$out"
           cp ../evidence-promotion-typecheck.log ../evidence-promotion-self-test.log ../evidence-promotion-dry-run.log ../evidence-promotion-apply.log "$out/"
         '';
+        mc-compat-cairn-task-evidence = pkgs.runCommand "mc-compat-cairn-task-evidence" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc ]; } ''
+          cp -R ${./.} repo
+          chmod -R u+w repo
+          cd repo
+          rustc --edition=2021 tools/check_cairn_task_evidence.rs -o ../check-cairn-task-evidence
+          ../check-cairn-task-evidence --self-test > ../cairn-task-evidence-self-test.log
+          ../check-cairn-task-evidence > ../cairn-task-evidence-check.log
+          mkdir -p "$out"
+          cp ../cairn-task-evidence-self-test.log ../cairn-task-evidence-check.log "$out/"
+        '';
         mc-compat-dry-run = pkgs.runCommand "mc-compat-dry-run" { } ''
           mkdir -p fake-stevenarella
           printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
@@ -1188,6 +1198,7 @@
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-evidence-manifests} "$out/evidence-manifests"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-scenario-manifest} "$out/scenario-manifest"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-evidence-promotion} "$out/evidence-promotion"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-cairn-task-evidence} "$out/cairn-task-evidence"
           cat > "$out/manifest.txt" <<'EOF'
           smoke
           multi-client-load-score
@@ -1211,6 +1222,7 @@
           evidence-manifests
           scenario-manifest
           evidence-promotion
+          cairn-task-evidence
           EOF
         '';
         mc-compat-bot-probe-dry-run =

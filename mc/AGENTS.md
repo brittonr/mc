@@ -24,6 +24,7 @@
 - Paper backend containers are removed after runner exit unless `--keep-server` is used; use `--keep-server`, copy `docker logs <server>` into `docs/evidence/`, then `docker rm -f <server>` for reviewable Paper server logs.
 - If promoted evidence cites child-repo revisions that the receipt does not machine-record (for example Stevenarella client git rev), add a `docs/evidence/*oracle*` checkpoint with `## Question`, `## Inspected evidence`, `## Decision`, `## Owner`, and `## Next action`; otherwise reviewers cannot verify the child-revision claim from repo-local artifacts.
 - Before archiving a Cairn, compare every checked task and proposal scope against promoted evidence rows. If a doc says a behavior remains a non-claim, do not mark the task as completed for that behavior; narrow the archive scope or leave/reopen the proof gap.
+- Accepted spec edits can stale existing `.b3` manifests that include `cairn/specs/mc-compatibility/spec.md`; run the evidence manifest checker and refresh every cited-spec digest before final validation.
 - Run mc Cairn validation/gates with the repo-pinned app from `mc/` (`nix run .#cairn -- ... --root .`). A newer sibling `/home/brittonr/git/cairn` binary can reject this repo's generated policy schema.
 
 ## Hyperion
