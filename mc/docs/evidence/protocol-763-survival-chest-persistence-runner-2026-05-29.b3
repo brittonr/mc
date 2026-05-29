@@ -2,4 +2,4 @@
 1bf96294709eb437327d64c4551f41ccc710dad84fd117ca538fb4ff9a3e2d44  docs/evidence/protocol-763-survival-chest-runner-oracle-2026-05-29.md
 0d3749fa2e7b9496fa9a2569c559fc67c3a7135b8d1faa3cf537d1dbb8023950  tools/mc-compat-runner/src/main.rs
 9849454f10dc98ae60a9af0a496a40b1734212d981380e5549194ab6c0b237ac  stevenarella/src/server/mod.rs
-67fc99c0b6c22e2ae6f504f493676c9071e7e1422703db744b21d580407fe8ed  cairn/changes/prove-survival-chest-persistence/tasks.md
+67fc99c0b6c22e2ae6f504f493676c9071e7e1422703db744b21d580407fe8ed  cairn/archive/2026-05-29-prove-survival-chest-persistence/tasks.md
