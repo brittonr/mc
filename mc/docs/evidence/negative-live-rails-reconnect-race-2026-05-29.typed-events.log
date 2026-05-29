@@ -1,0 +1,7 @@
+MC-COMPAT-EVENT schema=1 source=client scenario=negative-reconnect-race session=negative-live-rails-reconnect-race-2026-05-29 seq=1 event=protocol_detected
+MC-COMPAT-EVENT schema=1 source=client scenario=negative-reconnect-race session=negative-live-rails-reconnect-race-2026-05-29 seq=2 event=join_game
+MC-COMPAT-EVENT schema=1 source=client scenario=negative-reconnect-race session=negative-live-rails-reconnect-race-2026-05-29 seq=3 event=render_tick
+MC-COMPAT-EVENT schema=1 source=client scenario=negative-reconnect-race session=negative-live-rails-reconnect-race-2026-05-29 seq=4 event=flag_pickup
+MC-COMPAT-EVENT schema=1 source=client scenario=negative-reconnect-race session=negative-live-rails-reconnect-race-2026-05-29 seq=5 event=reconnect_session
+MC-COMPAT-EVENT schema=1 source=client scenario=negative-reconnect-race session=negative-live-rails-reconnect-race-2026-05-29 seq=6 event=negative_reconnect_race_attempted
+MC-COMPAT-EVENT schema=1 source=server scenario=negative-reconnect-race session=negative-live-rails-reconnect-race-2026-05-29 seq=7 event=server_username_seen

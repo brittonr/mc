@@ -70,7 +70,7 @@ const SURVIVAL_CHEST_SERVER_REOPEN_NEEDLE: &str =
 const SURVIVAL_CHEST_SERVER_PERSISTED_NEEDLE: &str =
     "survival_chest_persisted username=compatbot slot=0 item=Dirt count=1";
 const SURVIVAL_CHEST_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_CHEST_FIXTURE";
-const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|combat-damage|combat-knockback|armor-equipment-mitigation|equipment-update-observation|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score";
+const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|combat-damage|combat-knockback|armor-equipment-mitigation|equipment-update-observation|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
     "Dimension type:",
@@ -91,6 +91,28 @@ const TYPED_EVENT_DEFAULT_SESSION_ID: &str = "mc_compat_session";
 const TYPED_EVENT_MAX_FIELD_CHARS: usize = 128;
 const TYPED_EVENT_SEQUENCE_INDEX_OFFSET: usize = 1;
 const TYPED_EVENT_SINGLE_USERNAME_COUNT: usize = 1;
+const NEGATIVE_LIVE_RAIL_MAX_CLIENTS: usize = 2;
+const NEGATIVE_LIVE_RAIL_MIN_TIMEOUT_SECS: u64 = 1;
+const NEGATIVE_LIVE_RAIL_EXPECTED_OUTCOME: &str = "containment_or_disconnect_without_promotion";
+const NEGATIVE_LIVE_RAIL_NON_CLAIMS: &[&str] = &[
+    "broad_invalid_input_coverage",
+    "adversarial_security",
+    "public_server_safety",
+    "production_readiness",
+    "full_inventory_transaction_semantics",
+    "broad_plugin_message_semantics",
+    "full_ctf_correctness",
+];
+const NEGATIVE_LIVE_RAIL_EVIDENCE_FIELDS: &[&str] = &[
+    "invalid_action",
+    "expected_outcome",
+    "target_scope",
+    "planned_clients",
+    "timeout_secs",
+    "client_milestone",
+    "server_forbidden_matches",
+    "postcondition",
+];
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Mode {
@@ -130,6 +152,11 @@ enum Scenario {
     ReconnectFlagState,
     ReconnectFlagScore,
     MultiClientLoadScore,
+    NegativeInventoryStaleState,
+    NegativeInventoryInvalidClick,
+    NegativeCustomPayload,
+    NegativeReconnectRace,
+    NegativeCtfWrongScore,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -157,6 +184,24 @@ struct ProjectileDamageCausalityEvidence {
     attacker_username: String,
     victim_username: String,
     passed: bool,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct NegativeLiveRailEvidence {
+    selected: bool,
+    rail: Option<&'static str>,
+    invalid_action: Option<&'static str>,
+    expected_outcome: Option<&'static str>,
+    target_scope: &'static str,
+    owned_local_target: bool,
+    explicit_authorization: bool,
+    public_target: bool,
+    planned_clients: usize,
+    max_clients: usize,
+    timeout_secs: u64,
+    missing_fields: Vec<&'static str>,
+    bound_violations: Vec<&'static str>,
+    preflight_passed: bool,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -308,6 +353,8 @@ struct Config {
     steel_config_path: Option<PathBuf>,
     matrix_dry_run: bool,
     cleanup_apply: bool,
+    negative_public_target: bool,
+    negative_external_authorized: bool,
     arrow_damage_policy: runtime_config::ArrowDamagePolicy,
 }
 
@@ -385,6 +432,7 @@ fn real_main() -> Result<(), String> {
 fn execute(cfg: &Config) -> Result<Option<ClientRunEvidence>, String> {
     validate_projectile_damage_dependency(cfg)?;
     validate_load_network_safety_preflight(cfg)?;
+    validate_negative_live_rail_preflight(cfg)?;
     if matches!(cfg.mode, Mode::DryRun | Mode::Run | Mode::BuildClient) {
         ensure_client_dir_ready(cfg)?;
     }
@@ -513,7 +561,8 @@ fn safety_reconnect_sessions(scenario: Scenario) -> usize {
     match scenario {
         Scenario::ReconnectFlagState
         | Scenario::ReconnectFlagScore
-        | Scenario::SurvivalChestPersistence => SAFETY_RECONNECT_SESSION_COUNT,
+        | Scenario::SurvivalChestPersistence
+        | Scenario::NegativeReconnectRace => SAFETY_RECONNECT_SESSION_COUNT,
         _ => SAFETY_SINGLE_SESSION_COUNT,
     }
 }
@@ -594,6 +643,99 @@ fn push_missing_safety_field(
     }
 }
 
+fn is_negative_live_rail(scenario: Scenario) -> bool {
+    matches!(
+        scenario,
+        Scenario::NegativeInventoryStaleState
+            | Scenario::NegativeInventoryInvalidClick
+            | Scenario::NegativeCustomPayload
+            | Scenario::NegativeReconnectRace
+            | Scenario::NegativeCtfWrongScore
+    )
+}
+
+fn negative_live_rail_invalid_action(scenario: Scenario) -> Option<&'static str> {
+    match scenario {
+        Scenario::NegativeInventoryStaleState => Some("stale_inventory_state_id"),
+        Scenario::NegativeInventoryInvalidClick => Some("invalid_slot_or_window_click"),
+        Scenario::NegativeCustomPayload => Some("malformed_custom_payload"),
+        Scenario::NegativeReconnectRace => Some("duplicate_reconnect_flag_transition"),
+        Scenario::NegativeCtfWrongScore => Some("wrong_team_or_wrong_portal_score_attempt"),
+        _ => None,
+    }
+}
+
+fn evaluate_negative_live_rail_safety(cfg: &Config) -> NegativeLiveRailEvidence {
+    let selected = is_negative_live_rail(cfg.scenario);
+    let invalid_action = negative_live_rail_invalid_action(cfg.scenario);
+    let explicit_authorization = cfg.negative_external_authorized;
+    let public_target = cfg.negative_public_target;
+    let owned_local_target = !public_target;
+    let planned_clients = planned_client_usernames(cfg).len();
+    let mut missing_fields = Vec::new();
+    if selected {
+        push_missing_safety_field(
+            &mut missing_fields,
+            "invalid_action",
+            invalid_action.is_some(),
+        );
+        push_missing_safety_field(
+            &mut missing_fields,
+            "expected_outcome",
+            !NEGATIVE_LIVE_RAIL_EXPECTED_OUTCOME.is_empty(),
+        );
+        push_missing_safety_field(
+            &mut missing_fields,
+            "target_scope",
+            !SAFETY_OWNED_LOCAL_SCOPE.is_empty(),
+        );
+    }
+    let mut bound_violations = Vec::new();
+    if selected && public_target && !explicit_authorization {
+        bound_violations.push("public_target_without_authorization");
+    }
+    if selected && planned_clients == 0 {
+        bound_violations.push("planned_clients_empty");
+    }
+    if selected && planned_clients > NEGATIVE_LIVE_RAIL_MAX_CLIENTS {
+        bound_violations.push("planned_clients_exceed_negative_max");
+    }
+    if selected && cfg.client_timeout.as_secs() < NEGATIVE_LIVE_RAIL_MIN_TIMEOUT_SECS {
+        bound_violations.push("timeout_empty");
+    }
+    let preflight_passed = !selected
+        || ((owned_local_target || explicit_authorization)
+            && missing_fields.is_empty()
+            && bound_violations.is_empty());
+    NegativeLiveRailEvidence {
+        selected,
+        rail: selected.then(|| scenario_name(cfg.scenario)),
+        invalid_action,
+        expected_outcome: selected.then_some(NEGATIVE_LIVE_RAIL_EXPECTED_OUTCOME),
+        target_scope: SAFETY_OWNED_LOCAL_SCOPE,
+        owned_local_target,
+        explicit_authorization,
+        public_target,
+        planned_clients,
+        max_clients: NEGATIVE_LIVE_RAIL_MAX_CLIENTS,
+        timeout_secs: cfg.client_timeout.as_secs(),
+        missing_fields,
+        bound_violations,
+        preflight_passed,
+    }
+}
+
+fn validate_negative_live_rail_preflight(cfg: &Config) -> Result<(), String> {
+    let evidence = evaluate_negative_live_rail_safety(cfg);
+    if evidence.preflight_passed {
+        return Ok(());
+    }
+    Err(format!(
+        "negative live rail preflight failed: missing={:?} bound_violations={:?}",
+        evidence.missing_fields, evidence.bound_violations
+    ))
+}
+
 impl Config {
     fn defaults(root: PathBuf) -> Self {
         Config {
@@ -635,6 +777,8 @@ impl Config {
             steel_config_path: None,
             matrix_dry_run: false,
             cleanup_apply: false,
+            negative_public_target: false,
+            negative_external_authorized: false,
             arrow_damage_policy: default_arrow_damage_policy(),
             root,
         }
@@ -993,6 +1137,12 @@ where
     if get_env("MC_COMPAT_PACKET_CAPTURE_SUMMARY").is_some() {
         cfg.packet_capture_summary = true;
     }
+    if let Some(value) = get_env("MC_COMPAT_PUBLIC_TARGET") {
+        cfg.negative_public_target = value == "1";
+    }
+    if let Some(value) = get_env("MC_COMPAT_EXTERNAL_LOAD_AUTHORIZED") {
+        cfg.negative_external_authorized = value == "1";
+    }
     if let Some(value) = get_env("MC_COMPAT_PROXY_ROUTE") {
         cfg.proxy_route = Some(value);
     }
@@ -1160,6 +1310,11 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
         "reconnect-flag-state" => Ok(Scenario::ReconnectFlagState),
         "reconnect-flag-score" => Ok(Scenario::ReconnectFlagScore),
         "multi-client-load-score" => Ok(Scenario::MultiClientLoadScore),
+        "negative-inventory-stale-state" => Ok(Scenario::NegativeInventoryStaleState),
+        "negative-inventory-invalid-click" => Ok(Scenario::NegativeInventoryInvalidClick),
+        "negative-custom-payload" => Ok(Scenario::NegativeCustomPayload),
+        "negative-reconnect-race" => Ok(Scenario::NegativeReconnectRace),
+        "negative-ctf-wrong-score" => Ok(Scenario::NegativeCtfWrongScore),
         other => Err(format!("unknown scenario: {other}")),
     }
 }
@@ -1183,6 +1338,11 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::ReconnectFlagState => "reconnect-flag-state",
         Scenario::ReconnectFlagScore => "reconnect-flag-score",
         Scenario::MultiClientLoadScore => "multi-client-load-score",
+        Scenario::NegativeInventoryStaleState => "negative-inventory-stale-state",
+        Scenario::NegativeInventoryInvalidClick => "negative-inventory-invalid-click",
+        Scenario::NegativeCustomPayload => "negative-custom-payload",
+        Scenario::NegativeReconnectRace => "negative-reconnect-race",
+        Scenario::NegativeCtfWrongScore => "negative-ctf-wrong-score",
     }
 }
 
@@ -1400,12 +1560,63 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             ("flag_capture", "You captured the flag!"),
             ("score_red_1", "RED: 1"),
         ],
+        Scenario::NegativeInventoryStaleState => &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "negative_inventory_stale_state_sent",
+                "negative_inventory_stale_state_sent",
+            ),
+        ],
+        Scenario::NegativeInventoryInvalidClick => &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "negative_inventory_invalid_click_sent",
+                "negative_inventory_invalid_click_sent",
+            ),
+        ],
+        Scenario::NegativeCustomPayload => &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "negative_custom_payload_sent",
+                "negative_custom_payload_sent",
+            ),
+        ],
+        Scenario::NegativeReconnectRace => &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("flag_pickup", "You have the flag!"),
+            ("reconnect_session", "mc_compat_reconnect_session=2"),
+            (
+                "negative_reconnect_race_attempted",
+                "negative_reconnect_race_attempted",
+            ),
+        ],
+        Scenario::NegativeCtfWrongScore => &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            (
+                "negative_wrong_score_attempted",
+                "negative_wrong_score_attempted",
+            ),
+        ],
     }
 }
 
 fn scenario_forbidden_patterns(scenario: Scenario) -> &'static [(&'static str, &'static str)] {
     match scenario {
-        Scenario::FlagCarrierDeathReturn | Scenario::ReconnectFlagState => &[
+        Scenario::FlagCarrierDeathReturn
+        | Scenario::ReconnectFlagState
+        | Scenario::NegativeReconnectRace
+        | Scenario::NegativeCtfWrongScore => &[
             ("panic", "panicked"),
             ("unexpected_eof", "UnexpectedEof"),
             ("protocol_mismatch", "protocol mismatch"),
@@ -1533,6 +1744,11 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
             ("server_flag_carrier_death", "flag_carrier_death"),
             ("server_flag_return", "flag_return"),
         ],
+        Scenario::NegativeInventoryStaleState
+        | Scenario::NegativeInventoryInvalidClick
+        | Scenario::NegativeCustomPayload
+        | Scenario::NegativeReconnectRace
+        | Scenario::NegativeCtfWrongScore => &[("server_username_seen", "compatbot")],
     }
 }
 
@@ -3057,7 +3273,9 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
 
     let runs = if matches!(
         cfg.scenario,
-        Scenario::ReconnectFlagState | Scenario::SurvivalChestPersistence
+        Scenario::ReconnectFlagState
+            | Scenario::SurvivalChestPersistence
+            | Scenario::NegativeReconnectRace
     ) {
         run_reconnect_sequence_scenario(cfg)?
     } else if matches!(
@@ -3104,6 +3322,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         Scenario::ReconnectFlagScore
             | Scenario::ReconnectFlagState
             | Scenario::SurvivalChestPersistence
+            | Scenario::NegativeReconnectRace
     ) {
         combined_output.push_str("mc_compat_reconnect_session=2\n");
     }
@@ -3203,6 +3422,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
             | Scenario::FlagCarrierDeathReturn
             | Scenario::ReconnectFlagState
             | Scenario::SurvivalChestPersistence
+            | Scenario::NegativeReconnectRace
     ) && mixed_success
     {
         "multi-client-load-evidence"
@@ -3468,7 +3688,7 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
                 cmd.env("MC_COMPAT_RECONNECT_PROBE", "1");
             }
         }
-        Scenario::ReconnectFlagState => {
+        Scenario::ReconnectFlagState | Scenario::NegativeReconnectRace => {
             cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
                 .env("MC_COMPAT_TEAM_PROBE", "1")
                 .env("MC_COMPAT_TEAM_PROBE_TEAM", "red");
@@ -3478,12 +3698,31 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
                     .env("MC_COMPAT_FLAG_PROBE_PICKUP_ONLY", "1")
                     .env("MC_COMPAT_FLAG_PROBE_REPEAT", "1");
             }
+            if scenario == Scenario::NegativeReconnectRace {
+                cmd.env("MC_COMPAT_NEGATIVE_PROBE", "reconnect_race");
+            }
         }
         Scenario::InventoryInteraction => {
             cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
                 .env("MC_COMPAT_TEAM_PROBE", "1")
                 .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
                 .env("MC_COMPAT_INVENTORY_PROBE", "1");
+        }
+        Scenario::NegativeInventoryStaleState | Scenario::NegativeInventoryInvalidClick => {
+            let negative_probe = match scenario {
+                Scenario::NegativeInventoryStaleState => "inventory_stale_state",
+                Scenario::NegativeInventoryInvalidClick => "inventory_invalid_click",
+                _ => "",
+            };
+            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
+                .env("MC_COMPAT_INVENTORY_PROBE", "1")
+                .env("MC_COMPAT_NEGATIVE_PROBE", negative_probe);
+        }
+        Scenario::NegativeCustomPayload => {
+            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
+                .env("MC_COMPAT_NEGATIVE_PROBE", "custom_payload_malformed");
         }
         Scenario::SurvivalBreakPlacePickup => {
             cmd.env("MC_COMPAT_SURVIVAL_PROBE", "1");
@@ -3560,6 +3799,15 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
                     .env("MC_COMPAT_FLAG_PROBE", "1")
                     .env("MC_COMPAT_FLAG_PROBE_REPEAT", "1");
             }
+        }
+        Scenario::NegativeCtfWrongScore => {
+            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
+                .env("MC_COMPAT_FLAG_PROBE", "1")
+                .env("MC_COMPAT_FLAG_PROBE_TEAM", "blue")
+                .env("MC_COMPAT_FLAG_PROBE_PICKUP_ONLY", "1")
+                .env("MC_COMPAT_NEGATIVE_PROBE", "ctf_wrong_score");
         }
     }
 }
@@ -3757,6 +4005,45 @@ fn latency_jitter_receipt_json(cfg: &Config) -> String {
         loss_percent = json_string(&loss_percent),
         timeout_secs = cfg.client_timeout.as_secs(),
         hygiene_status = json_string(hygiene_status),
+    )
+}
+
+fn render_negative_live_rail_json(evidence: &NegativeLiveRailEvidence) -> String {
+    format!(
+        r#"{{
+    "selected": {selected},
+    "rail": {rail},
+    "invalid_action": {invalid_action},
+    "expected_outcome": {expected_outcome},
+    "target_scope": {target_scope},
+    "owned_local_target": {owned_local_target},
+    "explicit_authorization": {explicit_authorization},
+    "public_target": {public_target},
+    "planned_clients": {planned_clients},
+    "max_clients": {max_clients},
+    "timeout_secs": {timeout_secs},
+    "evidence_fields": {evidence_fields},
+    "missing_fields": {missing_fields},
+    "bound_violations": {bound_violations},
+    "preflight_passed": {preflight_passed},
+    "non_claims": {non_claims}
+  }}"#,
+        selected = evidence.selected,
+        rail = json_optional_string(evidence.rail),
+        invalid_action = json_optional_string(evidence.invalid_action),
+        expected_outcome = json_optional_string(evidence.expected_outcome),
+        target_scope = json_string(evidence.target_scope),
+        owned_local_target = evidence.owned_local_target,
+        explicit_authorization = evidence.explicit_authorization,
+        public_target = evidence.public_target,
+        planned_clients = evidence.planned_clients,
+        max_clients = evidence.max_clients,
+        timeout_secs = evidence.timeout_secs,
+        evidence_fields = json_string_array(NEGATIVE_LIVE_RAIL_EVIDENCE_FIELDS),
+        missing_fields = json_string_array(&evidence.missing_fields),
+        bound_violations = json_string_array(&evidence.bound_violations),
+        preflight_passed = evidence.preflight_passed,
+        non_claims = json_string_array(NEGATIVE_LIVE_RAIL_NON_CLAIMS),
     )
 }
 
@@ -4000,6 +4287,30 @@ fn smoke_receipt_json_with_typed_event_oracle(
         Scenario::MultiClientLoadScore => {
             vec!["two_client_login", "play_join_game", "chat_scoreboard"]
         }
+        Scenario::NegativeInventoryStaleState => vec![
+            "login_success",
+            "play_join_game",
+            "inventory_click_stale_state",
+        ],
+        Scenario::NegativeInventoryInvalidClick => vec![
+            "login_success",
+            "play_join_game",
+            "inventory_click_invalid_slot",
+        ],
+        Scenario::NegativeCustomPayload => vec![
+            "login_success",
+            "play_join_game",
+            "custom_payload_malformed",
+        ],
+        Scenario::NegativeReconnectRace => vec![
+            "login_success",
+            "play_join_game",
+            "disconnect_reconnect",
+            "flag_state_race",
+        ],
+        Scenario::NegativeCtfWrongScore => {
+            vec!["login_success", "play_join_game", "wrong_score_path"]
+        }
     };
     let typed_event_oracle_json = typed_event_oracle_receipt_json(typed_event_oracle);
     let latency_jitter_json = latency_jitter_receipt_json(cfg);
@@ -4009,6 +4320,8 @@ fn smoke_receipt_json_with_typed_event_oracle(
         matches!(cfg.mode, Mode::Run),
     ));
     let load_network_safety_json = render_load_network_safety_json(&load_network_safety);
+    let negative_live_rail = evaluate_negative_live_rail_safety(cfg);
+    let negative_live_rail_json = render_negative_live_rail_json(&negative_live_rail);
     let proxy_route = cfg.proxy_route.as_deref().unwrap_or("direct");
     let proxy_forwarding_mode = cfg.proxy_forwarding_mode.as_deref().unwrap_or("none");
     let proxy_selected = cfg.proxy_route.is_some();
@@ -4173,6 +4486,7 @@ fn smoke_receipt_json_with_typed_event_oracle(
   "typed_event_oracle": {typed_event_oracle_json},
   "latency_jitter_tolerance": {latency_jitter_json},
   "load_network_safety": {load_network_safety_json},
+  "negative_live_rail": {negative_live_rail_json},
   "proxy_compat_seam": {{
     "selected": {proxy_selected},
     "route": {proxy_route_json},
@@ -4277,6 +4591,7 @@ fn smoke_receipt_json_with_typed_event_oracle(
         packet_capture_expected_packets_json = json_string_array(&packet_capture_expected_packets),
         typed_event_oracle_json = typed_event_oracle_json,
         load_network_safety_json = load_network_safety_json,
+        negative_live_rail_json = negative_live_rail_json,
         proxy_selected = proxy_selected,
         proxy_route_json = json_string(proxy_route),
         proxy_forwarding_mode_json = json_string(proxy_forwarding_mode),
@@ -5183,6 +5498,11 @@ mod tests {
         Scenario::ReconnectFlagState,
         Scenario::ReconnectFlagScore,
         Scenario::MultiClientLoadScore,
+        Scenario::NegativeInventoryStaleState,
+        Scenario::NegativeInventoryInvalidClick,
+        Scenario::NegativeCustomPayload,
+        Scenario::NegativeReconnectRace,
+        Scenario::NegativeCtfWrongScore,
     ];
 
     fn passing_client_lines(scenario: Scenario) -> Vec<(&'static str, String)> {
@@ -5671,6 +5991,10 @@ mod tests {
             projectile_damage.scenario,
             Scenario::ProjectileDamageAttribution
         );
+
+        let negative = test_config(&["--scenario", "negative-inventory-stale-state"], &[])
+            .expect("negative scenario parses");
+        assert_eq!(negative.scenario, Scenario::NegativeInventoryStaleState);
     }
 
     #[test]
@@ -6582,6 +6906,45 @@ red flag captured
             "{json}"
         );
         assert!(json.contains("\"claims_unbounded_soak\": false"), "{json}");
+    }
+
+    #[test]
+    fn negative_live_rail_envelope_records_expected_outcome_and_non_claims() {
+        let cfg = test_config(
+            &["--dry-run", "--scenario", "negative-inventory-stale-state"],
+            &[],
+        )
+        .expect("negative rail config parses");
+        let evidence = evaluate_negative_live_rail_safety(&cfg);
+        assert!(evidence.selected, "{evidence:?}");
+        assert_eq!(evidence.rail, Some("negative-inventory-stale-state"));
+        assert_eq!(evidence.invalid_action, Some("stale_inventory_state_id"));
+        assert_eq!(
+            evidence.expected_outcome,
+            Some(NEGATIVE_LIVE_RAIL_EXPECTED_OUTCOME)
+        );
+        assert!(evidence.owned_local_target, "{evidence:?}");
+        assert!(evidence.preflight_passed, "{evidence:?}");
+
+        let json = smoke_receipt_json(&cfg, Ok(&None));
+        assert!(json.contains("\"negative_live_rail\""), "{json}");
+        assert!(json.contains("\"selected\": true"), "{json}");
+        assert!(json.contains("stale_inventory_state_id"), "{json}");
+        assert!(json.contains(NEGATIVE_LIVE_RAIL_EXPECTED_OUTCOME), "{json}");
+        assert!(json.contains("broad_invalid_input_coverage"), "{json}");
+        assert!(json.contains("\"raw_payloads_recorded\": false"), "{json}");
+    }
+
+    #[test]
+    fn negative_live_rail_preflight_rejects_public_unowned_targets() {
+        let cfg = test_config(
+            &["--dry-run", "--scenario", "negative-custom-payload"],
+            &[("MC_COMPAT_PUBLIC_TARGET", "1")],
+        )
+        .expect("negative rail config parses");
+        let err = validate_negative_live_rail_preflight(&cfg)
+            .expect_err("public negative rail without authorization fails");
+        assert!(err.contains("public_target_without_authorization"), "{err}");
     }
 
     #[test]

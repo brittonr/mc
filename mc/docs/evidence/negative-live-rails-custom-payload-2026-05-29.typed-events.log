@@ -1,0 +1,5 @@
+MC-COMPAT-EVENT schema=1 source=client scenario=negative-custom-payload session=negative-live-rails-custom-payload-2026-05-29 username=compatbot seq=1 event=protocol_detected
+MC-COMPAT-EVENT schema=1 source=client scenario=negative-custom-payload session=negative-live-rails-custom-payload-2026-05-29 username=compatbot seq=2 event=join_game
+MC-COMPAT-EVENT schema=1 source=client scenario=negative-custom-payload session=negative-live-rails-custom-payload-2026-05-29 username=compatbot seq=3 event=render_tick
+MC-COMPAT-EVENT schema=1 source=client scenario=negative-custom-payload session=negative-live-rails-custom-payload-2026-05-29 username=compatbot seq=4 event=negative_custom_payload_sent
+MC-COMPAT-EVENT schema=1 source=server scenario=negative-custom-payload session=negative-live-rails-custom-payload-2026-05-29 username=compatbot seq=5 event=server_username_seen

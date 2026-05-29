@@ -1,0 +1,32 @@
+[main.rs:254][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:346][INFO] Shader version: #version 150
+[main.rs:99][INFO] Detected server protocol version 763
+[server/mod.rs:264][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25565
+[server/mod.rs:269][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:286][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:300][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:307][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:368][WARN] Server is running in offline mode
+[server/mod.rs:369][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbot properties=0
+[server/mod.rs:2226][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[server/mod.rs:2293][INFO] MC-COMPAT-MILESTONE join_game entity_id=0 gamemode=Adventure
+[server/mod.rs:3519][INFO] Received chat message: Welcome to Valence! Select a team by jumping in the team's portal.
+[server/mod.rs:2806][INFO] MC-COMPAT-MILESTONE update_health health=20.0 food=20 saturation=0.0
+[server/mod.rs:3649][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=0
+[server/mod.rs:1878][INFO] MC-COMPAT-MILESTONE active_probe_position_look_sent x=0.000 y=84.922 z=0.000 on_ground=false
+[server/mod.rs:871][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:926][INFO] MC-COMPAT-MILESTONE active_probe_input_start forward+sprint+jump
+[server/mod.rs:932][INFO] MC-COMPAT-MILESTONE active_probe_jump_release
+[server/mod.rs:936][INFO] MC-COMPAT-MILESTONE active_probe_input_turn right
+[server/mod.rs:940][INFO] MC-COMPAT-MILESTONE active_probe_input_stop
+[server/mod.rs:976][INFO] MC-COMPAT-MILESTONE team_probe_enter_red_portal x=-4.0 y=84.0 z=4.0
+[server/mod.rs:995][INFO] MC-COMPAT-MILESTONE team_probe_hold_red_portal start
+[server/mod.rs:3519][INFO] Received chat message: You are on team RED!
+[server/mod.rs:2787][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=4 uuid=UUID(2296207233979137544, 12198587176558003987) name=compatbot x=-40.000 y=65.000 z=0.000
+[server/mod.rs:1008][INFO] MC-COMPAT-MILESTONE team_probe_select_hotbar_slot slot=0
+[server/mod.rs:1012][INFO] MC-COMPAT-MILESTONE team_probe_use_item_sent hand=main sequence=0
+[server/mod.rs:1565][INFO] MC-COMPAT-MILESTONE negative_wrong_score_attempted team=red attempted_flag_probe_team=blue expected=no_score_milestone
+[server/mod.rs:1578][INFO] MC-COMPAT-MILESTONE flag_probe_move_to_red_flag x=-48.0 y=65.0 z=0.0 cycle=1
+[server/mod.rs:1606][INFO] MC-COMPAT-MILESTONE flag_probe_dig_red_flag_sent status=stop_destroy location=-46,67,0 sequence=1 cycle=1

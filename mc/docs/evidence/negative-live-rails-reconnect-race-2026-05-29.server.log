@@ -1,0 +1,32 @@
+warning: struct `ArrowPolicyDiff` is never constructed
+   --> examples/ctf.rs:114:8
+    |
+114 | struct ArrowPolicyDiff {
+    |        ^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `diff_arrow_policy_snapshots` is never used
+   --> examples/ctf.rs:406:4
+    |
+406 | fn diff_arrow_policy_snapshots(
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `push_arrow_policy_diff` is never used
+   --> examples/ctf.rs:432:4
+    |
+432 | fn push_arrow_policy_diff(
+    |    ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `valence` (example "ctf") generated 3 warnings
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.15s
+     Running `/tmp/valence-compat-763-target/debug/examples/ctf`
+MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbot slot=0 source=team_inventory_setup
+MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbot slot=0
+[2m2026-05-29T18:41:20.177961Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE flag_pickup username=compatbot carrier_team=Red flag_team=Blue
+MC-COMPAT-MILESTONE flag_pickup username=compatbot carrier_team=Red flag_team=Blue
+[2m2026-05-29T18:41:46.307167Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE flag_disconnect_return carrier=compatbot flag_team=blue reason=client_disconnect score_unchanged=true
+MC-COMPAT-MILESTONE flag_disconnect_return carrier=compatbot flag_team=blue reason=client_disconnect score_unchanged=true
+MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbot slot=0 source=team_inventory_setup
+MC-COMPAT-MILESTONE reconnect_state_coherent username=compatbot team=Red reconnect_session=2 red_flag_held=false blue_flag_held=false
+MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbot slot=0

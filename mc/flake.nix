@@ -1413,7 +1413,7 @@
           grep -Fq -- "--apply" help.log
           grep -Fq -- "--stop" help.log
           grep -Fq -- "--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT" help.log
-          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|combat-damage|combat-knockback|armor-equipment-mitigation|equipment-update-observation|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score" help.log
+          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|combat-damage|combat-knockback|armor-equipment-mitigation|equipment-update-observation|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score" help.log
           grep -Fq "MC_COMPAT_SCENARIO" help.log
           grep -Fq -- "--expect-status-description" help.log
           grep -Fq -- "--packet-capture-summary" help.log

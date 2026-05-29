@@ -1,0 +1,2 @@
+[mc-compat] wrote smoke receipt docs/evidence/negative-live-rails-public-target-reject-2026-05-29.json
+[mc-compat] error: load/network safety preflight failed: missing=[] bound_violations=["public_target_without_authorization"]

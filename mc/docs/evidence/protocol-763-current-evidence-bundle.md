@@ -36,7 +36,7 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 
 ## Inventory semantics matrix checkpoint
 
-The maintained inventory rows are validated as a five-row bounded matrix in `docs/evidence/protocol-763-inventory-semantics-matrix-2026-05-27.md`. Covered rows are drop, pickup, player-inventory click, open-container click, and block placement/use-item-on-block. Full inventory semantics remains a non-claim; stale state-id rejection, invalid slots, malformed clicks, stack splitting/merging, drag transactions, and all-window coverage are not promoted.
+The maintained inventory rows are validated as a five-row bounded matrix in `docs/evidence/protocol-763-inventory-semantics-matrix-2026-05-27.md`. Covered rows are drop, pickup, player-inventory click, open-container click, and block placement/use-item-on-block. `docs/evidence/protocol-763-negative-live-rails-2026-05-29.md` adds bounded negative containment receipts for stale state-id and invalid slot/window probes, but these do not promote full inventory semantics, malformed-click breadth, stack splitting/merging, drag transactions, or all-window coverage.
 
 ## Equipment slot/item matrix checkpoint
 
@@ -64,7 +64,7 @@ Vanilla combat parity is guarded by `docs/evidence/protocol-763-vanilla-combat-p
 
 ## CTF rule ledger checkpoint
 
-CTF rule scope is guarded by `docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md` and `tools/check_ctf_rule_ledger.py`. Promoted clusters are bounded RED/BLUE scoring soak, flag-carrier death/return, and reconnect flag-state. Full CTF correctness remains a non-claim.
+CTF rule scope is guarded by `docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md` and `tools/check_ctf_rule_ledger.py`. Promoted clusters are bounded RED/BLUE scoring soak, flag-carrier death/return, and reconnect flag-state. `docs/evidence/protocol-763-negative-live-rails-2026-05-29.md` adds bounded wrong-score and reconnect-race containment receipts with no forbidden score/capture milestones, but full CTF correctness remains a non-claim.
 
 ## Broad protocol coverage checkpoint
 
