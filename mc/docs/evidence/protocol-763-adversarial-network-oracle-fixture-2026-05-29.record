@@ -1,0 +1,22 @@
+# protocol-763 adversarial-network oracle deterministic fixture record
+rail.name=adversarial-network-oracle
+threat_model.id=protocol763-custom-payload-truncated-varint-v1
+threat_model.approved=true
+threat_model.oracle_decision=approved_for_deterministic_fixture_only
+mutation.types=custom_payload_truncated_varint
+mutation.max_packets=1
+mutation.max_payload_bytes=64
+mutation.live_network_enabled=false
+target.ownership=owned-local-fixture
+target.authorization=fixture-only-approved
+telemetry.fields=threat_model_id,mutation_types,packet_bounds,target_ownership,authorization,abort_criteria,observed_containment,oracle_decision
+abort.criteria=fail_closed_before_live_traffic
+observed.containment=failed_closed_before_live_traffic
+claims.adversarial_network_oracle_fixture=true
+claims.adversarial_network_safety=false
+claims.malicious_client_resilience=false
+claims.hostile_internet_safety=false
+claims.production_readiness=false
+claims.public_server_safety=false
+claims.unbounded_adversarial_robustness=false
+claims.full_protocol_security=false

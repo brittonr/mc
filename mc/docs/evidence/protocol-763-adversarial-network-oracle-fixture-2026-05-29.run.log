@@ -1,0 +1,16 @@
+command: nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_adversarial_network_oracle.rs -o /tmp/check-adversarial-network-oracle
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+command: /tmp/check-adversarial-network-oracle --record docs/evidence/protocol-763-adversarial-network-oracle-fixture-2026-05-29.record
+adversarial-network oracle check passed: contract=docs/evidence/protocol-763-adversarial-network-oracle-contract-2026-05-29.md record=true
+oracle checkpoint tokens:
+token ok: ## Question
+token ok: ## Inspected evidence
+token ok: ## Decision
+token ok: ## Owner
+token ok: ## Next action
+token ok: Decision: approved for deterministic fixture-only evidence
+token ok: mutation.live_network_enabled=false
+token ok: full protocol security
+result: PASS
