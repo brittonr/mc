@@ -77,7 +77,7 @@ Status vocabulary:
 - malformed_shape_rejected: malformed payload/shape acceptance blocks promotion;
 - missing owner, missing next action, missing parser-shape fixture, or missing live receipt blocks promotion.
 
-Highest-risk parser-shape fixtures are real Stevenarella protocol tests in commit `ba3ce751f04b4fecefe516e06dff3e40363d2e72`: `protocol_763_high_risk_raw_parser_fixtures_accept_payloads`, `protocol_763_custom_payload_parser_fixture_accepts_brand_payload`, and `protocol_763_custom_payload_parser_fixture_rejects_malformed_channel`. They prove raw command/chunk-delta/recipe payload acceptance and custom-payload positive plus malformed-channel rejection. These fixtures do not claim full command, chunk, recipe, or plugin-message semantics.
+Highest-risk parser-shape fixtures are real Stevenarella protocol tests in commit `ba3ce751f04b4fecefe516e06dff3e40363d2e72`: `protocol_763_high_risk_raw_parser_fixtures_accept_payloads`, `protocol_763_custom_payload_parser_fixture_accepts_brand_payload`, and `protocol_763_custom_payload_parser_fixture_rejects_malformed_channel`. Reviewable source snapshot: `docs/evidence/protocol-763-broad-parser-fixtures-stevenarella-2026-05-28.md`. Human oracle checkpoint: `docs/evidence/protocol-763-broad-parser-fixture-oracle-2026-05-28.md`. The checker validates that snapshot and oracle before deriving any `parser_shape_reviewed` row. These fixtures prove raw command/chunk-delta/recipe payload acceptance and custom-payload positive plus malformed-channel rejection. They do not claim full command, chunk, recipe, or plugin-message semantics.
 
 ## Live scenario gate policy
 
@@ -85,6 +85,8 @@ A live scenario family can cover only the protocol surface named in its receipt 
 
 Representative live evidence for this refresh:
 
+- Parser fixture source snapshot: `docs/evidence/protocol-763-broad-parser-fixtures-stevenarella-2026-05-28.md`.
+- Parser fixture oracle checkpoint: `docs/evidence/protocol-763-broad-parser-fixture-oracle-2026-05-28.md`.
 - Parser fixture test log: `docs/evidence/protocol-763-broad-coverage-ledger-gate-2026-05-28.run.log`.
 - Paper reference receipt: `docs/evidence/protocol-763-survival-reference-paper-2026-05-28.receipt.json`.
 - Paper client log: `docs/evidence/protocol-763-survival-reference-paper-2026-05-28.client.log`.
@@ -105,13 +107,13 @@ Broad protocol coverage, full protocol-763 compatibility, and full Minecraft com
 
 - Run log: `docs/evidence/protocol-763-broad-coverage-ledger-gate-2026-05-28.run.log`.
 - BLAKE3 manifest: `docs/evidence/protocol-763-broad-coverage-ledger-gate-2026-05-28.b3`.
-- Checker output: `protocol coverage ledger ok: 16 bounded seams, 175 packet rows, broad claims blocked`.
+- Checker output: `protocol coverage ledger ok: 16 bounded seams, 175 packet rows, 4 broad packet rows, broad protocol claims blocked`.
 
 ## Decision
 
 - Question: Can current evidence support broad protocol-763 compatibility?
-- Inspected evidence: acceptance matrix, current bundle, all maintained seam digests, `docs/evidence/protocol-763-packet-inventory-2026-05-28.tsv`, row-specific checkers, Paper/Valence survival reference receipts, and Stevenarella parser fixture tests.
-- Decision: No. Current evidence supports bounded scenario seams only. Full protocol-763 compatibility remains a non-claim and full Minecraft compatibility remains a non-claim.
+- Inspected evidence: acceptance matrix, current bundle, all maintained seam digests, `docs/evidence/protocol-763-packet-inventory-2026-05-28.tsv`, row-specific checkers, Paper/Valence survival reference receipts, Stevenarella parser fixture source snapshot, and parser fixture oracle checkpoint.
+- Decision: No. Current evidence supports bounded scenario seams and four narrow parser-fixture-backed packet rows only. Full protocol-763 compatibility remains a non-claim and full Minecraft compatibility remains a non-claim.
 - Owner: agent.
 - Next action: generate per-packet-family mapping/parser fixtures before adding broad coverage rows.
 

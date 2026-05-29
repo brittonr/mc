@@ -18,6 +18,8 @@ DOC = ROOT / "docs" / "evidence" / "protocol-763-broad-coverage-ledger-2026-05-2
 INVENTORY = ROOT / "docs" / "evidence" / "protocol-763-packet-inventory-2026-05-28.tsv"
 VALENCE_PACKETS = ROOT / "valence" / "crates" / "valence_generated" / "extracted" / "packets.json"
 STEVENARELLA_763 = ROOT / "stevenarella" / "protocol" / "src" / "protocol" / "versions" / "v1_20_1.rs"
+FIXTURE_SOURCE_DOC = ROOT / "docs" / "evidence" / "protocol-763-broad-parser-fixtures-stevenarella-2026-05-28.md"
+FIXTURE_ORACLE = ROOT / "docs" / "evidence" / "protocol-763-broad-parser-fixture-oracle-2026-05-28.md"
 
 BLAKE3_HEX_LENGTH = 64
 BLAKE3_RE = re.compile(rf"`([0-9a-f]{{{BLAKE3_HEX_LENGTH}}})`")
@@ -92,15 +94,6 @@ UNCOVERED_SURFACES = [
     "full_survival_compatibility",
     "all_vanilla_combat_parity",
 ]
-
-PARSER_SHAPE_REVIEWED_PACKET_KEYS = frozenset(
-    {
-        ("play", "clientbound", 0x10),
-        ("play", "clientbound", 0x43),
-        ("play", "clientbound", 0x6D),
-        ("play", "serverbound", 0x0D),
-    }
-)
 
 SCENARIO_EVIDENCE_BY_PACKET = {
     "GameJoinS2CPacket": "status_login_play_join",
@@ -178,6 +171,91 @@ class MappingFixture:
 class MappingDecision:
     promoted: bool
     diagnostics: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class ParserFixtureSpec:
+    packet_family: str
+    state: str
+    side: str
+    wire_id: int
+    valence_packet: str
+    internal_id: str
+    source_tokens: tuple[str, ...]
+    oracle_tokens: tuple[str, ...]
+
+
+PARSER_FIXTURE_SPECS = [
+    ParserFixtureSpec(
+        packet_family="command_tree_raw",
+        state="play",
+        side="clientbound",
+        wire_id=0x10,
+        valence_packet="CommandTreeS2CPacket",
+        internal_id="DeclareCommandsRaw",
+        source_tokens=(
+            "fn protocol_763_high_risk_raw_parser_fixtures_accept_payloads()",
+            "Direction::Clientbound",
+            "0x10",
+            "Packet::DeclareCommandsRaw",
+            "assert_eq!(command_packet.data, command_payload);",
+        ),
+        oracle_tokens=("CommandTreeS2CPacket -> DeclareCommandsRaw", "byte-opaque raw consumers"),
+    ),
+    ParserFixtureSpec(
+        packet_family="chunk_delta_raw",
+        state="play",
+        side="clientbound",
+        wire_id=0x43,
+        valence_packet="ChunkDeltaUpdateS2CPacket",
+        internal_id="ChunkDeltaUpdateRaw",
+        source_tokens=(
+            "fn protocol_763_high_risk_raw_parser_fixtures_accept_payloads()",
+            "Direction::Clientbound",
+            "0x43",
+            "Packet::ChunkDeltaUpdateRaw",
+            "assert_eq!(chunk_delta_packet.data, chunk_delta_payload);",
+        ),
+        oracle_tokens=("ChunkDeltaUpdateS2CPacket -> ChunkDeltaUpdateRaw", "byte-opaque raw consumers"),
+    ),
+    ParserFixtureSpec(
+        packet_family="recipe_book_raw",
+        state="play",
+        side="clientbound",
+        wire_id=0x6D,
+        valence_packet="SynchronizeRecipesS2CPacket",
+        internal_id="SynchronizeRecipesRaw",
+        source_tokens=(
+            "fn protocol_763_high_risk_raw_parser_fixtures_accept_payloads()",
+            "Direction::Clientbound",
+            "0x6d",
+            "Packet::SynchronizeRecipesRaw",
+            "assert_eq!(recipe_packet.data, recipe_payload);",
+        ),
+        oracle_tokens=("SynchronizeRecipesS2CPacket -> SynchronizeRecipesRaw", "byte-opaque raw consumers"),
+    ),
+    ParserFixtureSpec(
+        packet_family="custom_payload_brand",
+        state="play",
+        side="serverbound",
+        wire_id=0x0D,
+        valence_packet="CustomPayloadC2SPacket",
+        internal_id="PluginMessageServerbound",
+        source_tokens=(
+            "fn protocol_763_custom_payload_parser_fixture_accepts_brand_payload()",
+            "fn protocol_763_custom_payload_parser_fixture_rejects_malformed_channel()",
+            "Direction::Serverbound",
+            "0x0d",
+            "Packet::PluginMessageServerbound",
+            "assert_eq!(packet.channel, \"minecraft:brand\");",
+            "expect_err(\"invalid UTF-8 channel is rejected\")",
+            "Invalid UTF-8 string",
+            "expect_err(\"oversized channel length is rejected\")",
+            "VarInt too big",
+        ),
+        oracle_tokens=("CustomPayloadC2SPacket -> PluginMessageServerbound", "invalid UTF-8", "oversized VarInt"),
+    ),
+]
 
 
 HIGH_RISK_PACKET_FAMILY_FIXTURES = [
@@ -268,13 +346,17 @@ def load_stevenarella_overrides() -> dict[tuple[str, str, int], str]:
     return overrides
 
 
-def build_inventory_rows(packets: list[PacketKey], overrides: dict[tuple[str, str, int], str]) -> list[PacketInventoryRow]:
+def build_inventory_rows(
+    packets: list[PacketKey],
+    overrides: dict[tuple[str, str, int], str],
+    parser_fixture_keys: frozenset[tuple[str, str, int]],
+) -> list[PacketInventoryRow]:
     rows: list[PacketInventoryRow] = []
     for key in packets:
         internal_id = overrides.get((key.state, key.side, key.wire_id), NONE)
         scenario_evidence = SCENARIO_EVIDENCE_BY_PACKET.get(key.name, NONE)
         has_override = internal_id != NONE
-        parser_shape_reviewed = (key.state, key.side, key.wire_id) in PARSER_SHAPE_REVIEWED_PACKET_KEYS
+        parser_shape_reviewed = (key.state, key.side, key.wire_id) in parser_fixture_keys
         coverage_status = NON_CLAIM
         if parser_shape_reviewed and scenario_evidence != NONE:
             coverage_status = BROAD_COVERED
@@ -375,6 +457,42 @@ def evaluate_mapping_fixture(fixture: MappingFixture) -> MappingDecision:
     if not fixture.live_receipt:
         diagnostics.append("missing_live_receipt")
     return MappingDecision(promoted=not diagnostics, diagnostics=tuple(diagnostics))
+
+
+def validate_parser_fixture_evidence(source_text: str, oracle_text: str) -> list[str]:
+    issues: list[str] = []
+    for section in ["## Question", "## Inspected evidence", "## Decision", "## Owner", "## Next action"]:
+        if section not in oracle_text:
+            issues.append(f"fixture oracle missing section: {section}")
+    for token in [
+        "ba3ce751f04b4fecefe516e06dff3e40363d2e72",
+        "Decision: adequate",
+        "Full protocol-763 compatibility",
+        "remain non-claims",
+    ]:
+        if token not in oracle_text:
+            issues.append(f"fixture oracle missing token: {token}")
+    if "```rust" not in source_text:
+        issues.append("fixture source snapshot missing Rust code fence")
+    for spec in PARSER_FIXTURE_SPECS:
+        for token in [spec.packet_family, spec.valence_packet, spec.internal_id, format_wire_id(spec.wire_id), *spec.source_tokens]:
+            if token not in source_text:
+                issues.append(f"fixture source for {spec.packet_family} missing token: {token}")
+        for token in [spec.valence_packet, spec.internal_id, *spec.oracle_tokens]:
+            if token not in oracle_text:
+                issues.append(f"fixture oracle for {spec.packet_family} missing token: {token}")
+    return issues
+
+
+def parser_fixture_keys_from_evidence(source_text: str, oracle_text: str) -> frozenset[tuple[str, str, int]]:
+    issues = validate_parser_fixture_evidence(source_text, oracle_text)
+    if issues:
+        raise ValueError("; ".join(issues))
+    return frozenset((spec.state, spec.side, spec.wire_id) for spec in PARSER_FIXTURE_SPECS)
+
+
+def load_parser_fixture_keys() -> frozenset[tuple[str, str, int]]:
+    return parser_fixture_keys_from_evidence(FIXTURE_SOURCE_DOC.read_text(), FIXTURE_ORACLE.read_text())
 
 
 def validate_inventory(expected: list[PacketInventoryRow], actual: list[PacketInventoryRow]) -> list[str]:
@@ -567,7 +685,16 @@ def assert_self_tests() -> None:
     )
     assert not high_risk_negative.promoted and MALFORMED_SHAPE_REJECTION in high_risk_negative.diagnostics, high_risk_negative
 
-    source_rows = build_inventory_rows(load_valence_packets(), load_stevenarella_overrides())
+    fixture_source_text = FIXTURE_SOURCE_DOC.read_text()
+    fixture_oracle_text = FIXTURE_ORACLE.read_text()
+    fixture_issues = validate_parser_fixture_evidence(fixture_source_text, fixture_oracle_text)
+    assert not fixture_issues, fixture_issues
+    broken_fixture_source = fixture_source_text.replace("assert_eq!(command_packet.data, command_payload);", "")
+    broken_issues = validate_parser_fixture_evidence(broken_fixture_source, fixture_oracle_text)
+    assert any("command_tree_raw" in issue and "command_packet.data" in issue for issue in broken_issues), broken_issues
+    parser_fixture_keys = parser_fixture_keys_from_evidence(fixture_source_text, fixture_oracle_text)
+
+    source_rows = build_inventory_rows(load_valence_packets(), load_stevenarella_overrides(), parser_fixture_keys)
     issues = validate_inventory(source_rows, source_rows)
     assert not issues, issues
 
@@ -639,7 +766,12 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    source_rows = build_inventory_rows(load_valence_packets(), load_stevenarella_overrides())
+    try:
+        parser_fixture_keys = load_parser_fixture_keys()
+    except ValueError as error:
+        print(error, file=sys.stderr)
+        return 1
+    source_rows = build_inventory_rows(load_valence_packets(), load_stevenarella_overrides(), parser_fixture_keys)
     if args.write_inventory:
         write_inventory(source_rows, INVENTORY)
         print(f"wrote {len(source_rows)} packet rows to {INVENTORY.relative_to(ROOT)}")

@@ -1,9 +1,11 @@
-8d47ca722d65ea599c409d84fd57fcf24dc0e73d27ba57c5bfbe4b1bcbc7ee46  docs/evidence/protocol-763-broad-coverage-ledger-2026-05-28.md
+10ebb36d2a0fdea887955978b7f28fa2f37571dc38327432650ebd7b119082a5  docs/evidence/protocol-763-broad-coverage-ledger-2026-05-28.md
 20de60f18fe7484e5ad393e07ce7ad8814e6f0150cda12a0440d8be9d55ecbf6  docs/evidence/protocol-763-packet-inventory-2026-05-28.tsv
-ce36c5f8454a0152308c4e711afa1b5dca55ab49f5a3278b2168e2f646d7ec4c  docs/evidence/protocol-763-broad-coverage-ledger-gate-2026-05-28.run.log
-2534a6c33fb9f6b2fa2fe4968c096d924ea6cd660a0e16089792acaa81451029  tools/check_protocol_coverage_ledger.py
-d261ec83765ce655f7b58eee6ad0b4d9c314ceaa099151b69f1777703dd1657b  cairn/archive/2026-05-28-prove-broad-protocol-763-coverage/tasks.md
+eff5ce19dd512ce99b1f3726afae37d8d8ea8cd77cbf2e473312031e7a1d126d  docs/evidence/protocol-763-broad-parser-fixtures-stevenarella-2026-05-28.md
+30caa07ab33471c6f69a9750f461a9f312a15a135320412823ff0c64148568dc  docs/evidence/protocol-763-broad-parser-fixture-oracle-2026-05-28.md
+c670d603e0aff59e4dd8e697e64a0402d454c8195550af75c15edf233641c3ab  docs/evidence/protocol-763-broad-coverage-ledger-gate-2026-05-28.run.log
+c43c8b1230ef587950d07edf03617f4aeaa2cebf280ae9d53942770597dbacf4  tools/check_protocol_coverage_ledger.py
+8e99cddefda639c4f66b47ee9e6c3ffbf402df2224b680a2759856529f37398f  cairn/archive/2026-05-28-prove-broad-protocol-763-coverage/tasks.md
 b52d6930f19c857d8c16a557b03f219e01d04a267f40351eb5e618651ea08f8d  cairn/specs/mc-compatibility/spec.md
-e0f070c85c17fea04218e2b4f69c039cf2d1f0de96fa960030835a8d9b801dcf  docs/evidence/protocol-763-current-evidence-bundle.md
-8bc36ce1e650cd7baf23f07c6ac4cc2b849e68d20bafd54453dee633ded50db9  docs/evidence/protocol-763-acceptance-matrix.md
+4c9a58dd132c4d55f46bad119c684c68c39cd5426c90d6eb5fcd1267ebd5a2ec  docs/evidence/protocol-763-current-evidence-bundle.md
+0a5afc8b8278a74c4815415c97d229bb6a46c81bd9b76934ac31daa016cb558f  docs/evidence/protocol-763-acceptance-matrix.md
 799d6f32b73b3452a8e9583e13df241924fcb81f11d45141a555f36f18405c6a  stevenarella/protocol/src/protocol/versions.rs

@@ -63,7 +63,7 @@ CTF rule scope is guarded by `docs/evidence/protocol-763-ctf-rule-ledger-2026-05
 
 ## Broad protocol coverage checkpoint
 
-Broad coverage is guarded by `docs/evidence/protocol-763-broad-coverage-ledger-2026-05-28.md`, `docs/evidence/protocol-763-packet-inventory-2026-05-28.tsv`, and `tools/check_protocol_coverage_ledger.py`. The ledger indexes 16 bounded seams plus 175 Valence protocol-763 packet rows, promotes only four high-risk parser-fixture-backed packet rows, and blocks full protocol-763 compatibility/full Minecraft compatibility until packet-family mapping/parser fixtures and live receipts exist for every claimed row.
+Broad coverage is guarded by `docs/evidence/protocol-763-broad-coverage-ledger-2026-05-28.md`, `docs/evidence/protocol-763-packet-inventory-2026-05-28.tsv`, `docs/evidence/protocol-763-broad-parser-fixtures-stevenarella-2026-05-28.md`, `docs/evidence/protocol-763-broad-parser-fixture-oracle-2026-05-28.md`, and `tools/check_protocol_coverage_ledger.py`. The ledger indexes 16 bounded seams plus 175 Valence protocol-763 packet rows, promotes only four high-risk parser-fixture-backed packet rows, and blocks full protocol-763 compatibility/full Minecraft compatibility until packet-family mapping/parser fixtures and live receipts exist for every claimed row.
 
 ## Death/respawn lifecycle checkpoint
 
