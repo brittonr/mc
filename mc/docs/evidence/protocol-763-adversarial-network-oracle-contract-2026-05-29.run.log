@@ -1,0 +1,25 @@
+command: contract token audit for adversarial-network oracle contract
+file: docs/evidence/protocol-763-adversarial-network-oracle-contract-2026-05-29.md
+token ok: protocol763-custom-payload-truncated-varint-v1
+token ok: custom_payload_truncated_varint
+token ok: owned-local-fixture
+token ok: fixture-only-approved
+token ok: max_mutated_packets=1
+token ok: max_payload_bytes=64
+token ok: approved_for_deterministic_fixture_only
+token ok: claims.adversarial_network_safety
+token ok: security_overclaim
+token ok: full protocol security remain non-claims
+command: nix run --no-update-lock-file .#cairn -- gate tasks adversarial-network-oracle-rail --root .
+{
+  "change": "adversarial-network-oracle-rail",
+  "input_hash": "b7c846ff1d90ecedf8829d42941c436200ffb7e7ddd953b1ff0532579682e311",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "93901cbbe924fb2383fbf8a04ef6dc83ef56d88cd1655657db5974c62bda8df5",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
