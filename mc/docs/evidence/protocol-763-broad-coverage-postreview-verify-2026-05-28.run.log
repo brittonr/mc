@@ -1,0 +1,53 @@
+$ python3 tools/check_protocol_coverage_ledger.py --self-test
+protocol coverage ledger self-test ok
+
+$ python3 tools/check_protocol_coverage_ledger.py
+protocol coverage ledger ok: 16 bounded seams, 175 packet rows, 4 broad packet rows, broad protocol claims blocked
+
+$ python3 tools/check_acceptance_matrix.py
+acceptance matrix ok: 16 seams, 16 hashes
+
+$ python3 tools/check_current_evidence_bundle.py
+current evidence bundle ok: 16 seams
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+
+$ nix run --no-update-lock-file .#cairn -- change list --root .
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "./cairn/changes/prove-production-network-safety/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "prove-production-network-safety",
+      "path": "./cairn/changes/prove-production-network-safety",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "."
+}
