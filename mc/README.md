@@ -169,7 +169,7 @@ Receipts also include bounded blocks for the remaining compatibility seams:
 
 - `status_response_resource`: configured/default status description, version, and player sample expectations used by the status probe.
 - `packet_capture_oracle`: headless/redacted packet-summary metadata; raw payloads are not durable evidence by default.
-- `typed_event_oracle`: typed event schema/migration metadata. Current receipts mark `migration_status="substring-fallback"` until each rail emits reviewable typed event logs.
+- `typed_event_oracle`: typed event schema/migration metadata. Dry-run and failure receipts mark `migration_status="substring-fallback"`; successful live receipts can write a `.typed-events.log` sidecar derived from client/server milestone evidence and record `event_log_path`, normalized `timeline_blake3`, `event_count`, `contributes_to_pass_fail=false`, and `raw_payloads_recorded=false` until each rail fully migrates pass/fail checks to the typed graph.
 - `proxy_compat_seam`: direct/proxied route, forwarding mode, owned-local-proxy guard, and non-claims such as `mtls_ported=false` and `credentials_recorded=false`.
 - `gameplay_oracles`: Hyperion-derived milestone vocabulary, correlated-evidence requirement, and explicit non-claims for full CTF correctness, broad compatibility, and unbounded soak.
 

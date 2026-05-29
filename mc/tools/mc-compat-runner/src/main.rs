@@ -85,6 +85,12 @@ const TRIAGE_REDACTED: &str = "[redacted]";
 const TYPED_EVENT_PREFIX: &str = "MC-COMPAT-EVENT";
 const TYPED_EVENT_SCHEMA_VERSION: u32 = 1;
 const TYPED_EVENT_MIGRATION_FALLBACK: &str = "substring-fallback";
+const TYPED_EVENT_MIGRATION_DERIVED_FROM_MILESTONES: &str = "derived-from-milestones";
+const TYPED_EVENT_LOG_EXTENSION: &str = "typed-events.log";
+const TYPED_EVENT_DEFAULT_SESSION_ID: &str = "mc_compat_session";
+const TYPED_EVENT_MAX_FIELD_CHARS: usize = 128;
+const TYPED_EVENT_SEQUENCE_INDEX_OFFSET: usize = 1;
+const TYPED_EVENT_SINGLE_USERNAME_COUNT: usize = 1;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Mode {
@@ -254,6 +260,14 @@ struct TypedEventGraphEvaluation {
     forbidden_events: Vec<String>,
     order_violations: Vec<String>,
     passed: bool,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct TypedEventOracleArtifact {
+    event_log_path: PathBuf,
+    timeline_blake3: String,
+    event_count: usize,
+    contributes_to_pass_fail: bool,
 }
 
 #[derive(Debug, Clone)]
@@ -1723,18 +1737,200 @@ fn first_typed_event_sequence(events: &[&TypedEvent], kind: &str) -> Option<u64>
         .min()
 }
 
-fn typed_event_oracle_receipt_json() -> String {
+fn typed_events_from_receipt_evidence(
+    cfg: &Config,
+    client: &ClientRunEvidence,
+) -> Result<Vec<TypedEvent>, String> {
+    let scenario_label = scenario_name(cfg.scenario).to_string();
+    let session = typed_event_session_id(cfg);
+    let default_username = single_typed_event_username(client);
+    let mut events = Vec::new();
+    if let Some(scenario) = &client.scenario {
+        for milestone in &scenario.observed_milestones {
+            push_typed_event(
+                &mut events,
+                "client",
+                &scenario_label,
+                &session,
+                default_username,
+                milestone,
+            )?;
+        }
+    }
+    if let Some(server) = &client.server_scenario {
+        for milestone in &server.observed_milestones {
+            push_typed_event(
+                &mut events,
+                "server",
+                &scenario_label,
+                &session,
+                default_username,
+                milestone,
+            )?;
+        }
+    }
+    if let Some(causality) = &client.projectile_damage_causality {
+        for step in &causality.observed_steps {
+            let (source, username) = typed_event_projectile_step_source_username(
+                step,
+                &causality.attacker_username,
+                &causality.victim_username,
+            );
+            push_typed_event(
+                &mut events,
+                source,
+                &scenario_label,
+                &session,
+                username,
+                step,
+            )?;
+        }
+    }
+    Ok(events)
+}
+
+fn push_typed_event(
+    events: &mut Vec<TypedEvent>,
+    source: &str,
+    scenario: &str,
+    session: &str,
+    username: Option<&str>,
+    kind: &str,
+) -> Result<(), String> {
+    let sequence_index = events.len() + TYPED_EVENT_SEQUENCE_INDEX_OFFSET;
+    let sequence = u64::try_from(sequence_index)
+        .map_err(|err| format!("typed event sequence overflow at {sequence_index}: {err}"))?;
+    events.push(TypedEvent {
+        schema_version: TYPED_EVENT_SCHEMA_VERSION,
+        source: source.to_string(),
+        scenario: scenario.to_string(),
+        session: session.to_string(),
+        username: username.map(sanitize_typed_event_field),
+        sequence,
+        kind: kind.to_string(),
+    });
+    Ok(())
+}
+
+fn single_typed_event_username(client: &ClientRunEvidence) -> Option<&str> {
+    if client.usernames.len() == TYPED_EVENT_SINGLE_USERNAME_COUNT {
+        client.usernames.first().map(String::as_str)
+    } else {
+        None
+    }
+}
+
+fn typed_event_projectile_step_source_username<'a>(
+    step: &str,
+    attacker_username: &'a str,
+    victim_username: &'a str,
+) -> (&'static str, Option<&'a str>) {
+    if step.starts_with("attacker_client") {
+        ("client", Some(attacker_username))
+    } else if step.starts_with("victim_client") {
+        ("client", Some(victim_username))
+    } else {
+        ("server", None)
+    }
+}
+
+fn typed_event_session_id(cfg: &Config) -> String {
+    cfg.receipt_path
+        .as_ref()
+        .and_then(|path| path.file_stem())
+        .and_then(|stem| stem.to_str())
+        .map(sanitize_typed_event_field)
+        .filter(|value| !value.is_empty())
+        .unwrap_or_else(|| TYPED_EVENT_DEFAULT_SESSION_ID.to_string())
+}
+
+fn sanitize_typed_event_field(value: &str) -> String {
+    let mut sanitized = String::with_capacity(value.len().min(TYPED_EVENT_MAX_FIELD_CHARS));
+    for ch in value.chars().take(TYPED_EVENT_MAX_FIELD_CHARS) {
+        if ch.is_ascii_alphanumeric() || matches!(ch, '_' | '-' | '.') {
+            sanitized.push(ch);
+        } else {
+            sanitized.push('_');
+        }
+    }
+    sanitized
+}
+
+fn normalize_typed_event_timeline(events: &[TypedEvent]) -> String {
+    let mut timeline = events.to_vec();
+    timeline.sort_by(|left, right| {
+        left.sequence
+            .cmp(&right.sequence)
+            .then_with(|| left.source.cmp(&right.source))
+            .then_with(|| left.kind.cmp(&right.kind))
+    });
+    let mut output = String::new();
+    for event in &timeline {
+        output.push_str(&render_typed_event_line(event));
+        output.push('\n');
+    }
+    output
+}
+
+fn render_typed_event_line(event: &TypedEvent) -> String {
+    let username_field = event
+        .username
+        .as_ref()
+        .map(|username| format!(" username={username}"))
+        .unwrap_or_default();
+    format!(
+        "{TYPED_EVENT_PREFIX} schema={} source={} scenario={} session={}{} seq={} event={}",
+        event.schema_version,
+        event.source,
+        event.scenario,
+        event.session,
+        username_field,
+        event.sequence,
+        event.kind
+    )
+}
+
+fn typed_event_timeline_blake3(timeline: &str) -> String {
+    blake3::hash(timeline.as_bytes()).to_hex().to_string()
+}
+
+fn typed_event_oracle_receipt_json(artifact: Option<&TypedEventOracleArtifact>) -> String {
+    let selected = artifact.is_some();
+    let migration_status = if selected {
+        TYPED_EVENT_MIGRATION_DERIVED_FROM_MILESTONES
+    } else {
+        TYPED_EVENT_MIGRATION_FALLBACK
+    };
+    let event_log_path_json = artifact
+        .map(|evidence| json_string(&evidence.event_log_path.display().to_string()))
+        .unwrap_or_else(|| "null".to_string());
+    let timeline_blake3_json = artifact
+        .map(|evidence| json_string(&evidence.timeline_blake3))
+        .unwrap_or_else(|| "null".to_string());
+    let event_count = artifact
+        .map(|evidence| evidence.event_count)
+        .unwrap_or_default();
+    let contributes_to_pass_fail = artifact
+        .map(|evidence| evidence.contributes_to_pass_fail)
+        .unwrap_or(false);
     format!(
         r#"{{
     "schema_version": {schema_version},
-    "selected": false,
+    "selected": {selected},
     "migration_status": {migration_status_json},
-    "event_log_path": null,
-    "timeline_blake3": null,
+    "event_log_path": {event_log_path_json},
+    "timeline_blake3": {timeline_blake3_json},
+    "event_count": {event_count},
+    "contributes_to_pass_fail": {contributes_to_pass_fail},
     "raw_payloads_recorded": false
   }}"#,
         schema_version = TYPED_EVENT_SCHEMA_VERSION,
-        migration_status_json = json_string(TYPED_EVENT_MIGRATION_FALLBACK),
+        selected = selected,
+        migration_status_json = json_string(migration_status),
+        event_log_path_json = event_log_path_json,
+        timeline_blake3_json = timeline_blake3_json,
+        event_count = event_count,
+        contributes_to_pass_fail = contributes_to_pass_fail,
     )
 }
 
@@ -2616,8 +2812,7 @@ fn configure_paper_run_command(cfg: &Config, cmd: &mut Command) -> Result<(), St
         .arg("-e")
         .arg(format!("SIMULATION_DISTANCE={PAPER_SIMULATION_DISTANCE}"));
     if cfg.scenario == Scenario::SurvivalChestPersistence {
-        cmd.arg("-e")
-            .arg(format!("{SURVIVAL_CHEST_FIXTURE_ENV}=1"));
+        cmd.arg("-e").arg(format!("{SURVIVAL_CHEST_FIXTURE_ENV}=1"));
     }
     add_paper_plugin_mount(cfg, cmd)?;
     cmd.arg(&cfg.docker_image);
@@ -3397,10 +3592,55 @@ fn write_smoke_receipt(
         fs::create_dir_all(parent)
             .map_err(|e| format!("create receipt dir {}: {e}", parent.display()))?;
     }
-    let json = smoke_receipt_json(cfg, result.map_err(|err| err.as_str()));
+    let client = match result {
+        Ok(client) => client.as_ref(),
+        Err(_) => None,
+    };
+    let typed_event_oracle = write_typed_event_oracle_artifact(cfg, client, path)?;
+    let json = smoke_receipt_json_with_typed_event_oracle(
+        cfg,
+        result.map_err(|err| err.as_str()),
+        typed_event_oracle.as_ref(),
+    );
     fs::write(path, json).map_err(|e| format!("write receipt {}: {e}", path.display()))?;
     log(format_args!("wrote smoke receipt {}", path.display()));
     Ok(())
+}
+
+fn write_typed_event_oracle_artifact(
+    cfg: &Config,
+    client: Option<&ClientRunEvidence>,
+    receipt_path: &Path,
+) -> Result<Option<TypedEventOracleArtifact>, String> {
+    if cfg.mode != Mode::Run {
+        return Ok(None);
+    }
+    let Some(client) = client else {
+        return Ok(None);
+    };
+    let events = typed_events_from_receipt_evidence(cfg, client)?;
+    if events.is_empty() {
+        return Ok(None);
+    }
+    let timeline = normalize_typed_event_timeline(&events);
+    let timeline_blake3 = typed_event_timeline_blake3(&timeline);
+    let event_log_path = typed_event_log_path_for_receipt(receipt_path);
+    fs::write(&event_log_path, timeline)
+        .map_err(|err| format!("write typed event log {}: {err}", event_log_path.display()))?;
+    log(format_args!(
+        "wrote typed event log {}",
+        event_log_path.display()
+    ));
+    Ok(Some(TypedEventOracleArtifact {
+        event_log_path,
+        timeline_blake3,
+        event_count: events.len(),
+        contributes_to_pass_fail: false,
+    }))
+}
+
+fn typed_event_log_path_for_receipt(receipt_path: &Path) -> PathBuf {
+    receipt_path.with_extension(TYPED_EVENT_LOG_EXTENSION)
 }
 
 fn latency_jitter_receipt_json(cfg: &Config) -> String {
@@ -3495,6 +3735,14 @@ fn render_load_network_safety_json(evidence: &LoadNetworkSafetyEvidence) -> Stri
 }
 
 fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &str>) -> String {
+    smoke_receipt_json_with_typed_event_oracle(cfg, result, None)
+}
+
+fn smoke_receipt_json_with_typed_event_oracle(
+    cfg: &Config,
+    result: Result<&Option<ClientRunEvidence>, &str>,
+    typed_event_oracle: Option<&TypedEventOracleArtifact>,
+) -> String {
     let status = if result.is_ok() { "pass" } else { "fail" };
     let error = result.err();
     let client = result.ok().and_then(|client| client.as_ref());
@@ -3676,7 +3924,7 @@ fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &
             vec!["two_client_login", "play_join_game", "chat_scoreboard"]
         }
     };
-    let typed_event_oracle_json = typed_event_oracle_receipt_json();
+    let typed_event_oracle_json = typed_event_oracle_receipt_json(typed_event_oracle);
     let latency_jitter_json = latency_jitter_receipt_json(cfg);
     let load_network_safety = evaluate_load_network_safety(load_network_safety_inputs(
         cfg,
@@ -5554,6 +5802,80 @@ mod tests {
             .collect()
     }
 
+    const TEST_SESSION_ID: &str = "s1";
+    const TEST_USERNAME: &str = "compatbot";
+    const TEST_ATTACKER_USERNAME: &str = "compatbota";
+    const TEST_VICTIM_USERNAME: &str = "compatbotb";
+
+    type TypedEventFixtureStep = (&'static str, Option<&'static str>, &'static str);
+
+    fn typed_event_fixture_from_steps(
+        scenario: Scenario,
+        steps: &[TypedEventFixtureStep],
+    ) -> Vec<TypedEvent> {
+        let scenario_label = scenario_name(scenario);
+        steps
+            .iter()
+            .enumerate()
+            .map(|(index, step)| {
+                let (source, username, kind) = *step;
+                let sequence_index = index + TYPED_EVENT_SEQUENCE_INDEX_OFFSET;
+                let sequence =
+                    u32::try_from(sequence_index).expect("fixture sequence fits in u32");
+                let username_field = username
+                    .map(|name| format!(" username={name}"))
+                    .unwrap_or_default();
+                let line = format!(
+                    "{TYPED_EVENT_PREFIX} schema={TYPED_EVENT_SCHEMA_VERSION} source={source} scenario={scenario_label} session={TEST_SESSION_ID}{username_field} seq={sequence} event={kind}"
+                );
+                parse_typed_event_line(&line).expect("typed event fixture parses")
+            })
+            .collect()
+    }
+
+    fn typed_event_fixture_required_events(steps: &[TypedEventFixtureStep]) -> Vec<&'static str> {
+        steps.iter().map(|(_, _, kind)| *kind).collect()
+    }
+
+    fn assert_typed_event_fixture_passes(
+        scenario: Scenario,
+        username: Option<&str>,
+        steps: &[TypedEventFixtureStep],
+        ordered_edges: &[(&str, &str)],
+    ) {
+        let events = typed_event_fixture_from_steps(scenario, steps);
+        let required_events = typed_event_fixture_required_events(steps);
+        let result = evaluate_typed_event_graph(
+            &events,
+            scenario_name(scenario),
+            TEST_SESSION_ID,
+            username,
+            &required_events,
+            &["panic"],
+            ordered_edges,
+        );
+
+        assert_eq!(events.len(), steps.len());
+        assert!(events
+            .iter()
+            .all(|event| event.schema_version == TYPED_EVENT_SCHEMA_VERSION));
+        assert!(events
+            .iter()
+            .all(|event| event.scenario == scenario_name(scenario)));
+        assert!(events.iter().all(|event| event.session == TEST_SESSION_ID));
+        assert!(events
+            .iter()
+            .all(|event| event.source == "client" || event.source == "server"));
+        assert!(events
+            .windows(2)
+            .all(|pair| pair[0].sequence < pair[1].sequence));
+        assert!(result.passed, "{result:?}");
+        assert_eq!(result.observed_events.len(), required_events.len());
+        assert!(result.missing_events.is_empty(), "{result:?}");
+        assert!(result.forbidden_events.is_empty(), "{result:?}");
+        assert!(result.order_violations.is_empty(), "{result:?}");
+    }
+
     #[test]
     fn typed_event_parser_accepts_versioned_event_lines() {
         let event = parse_typed_event_line(typed_event_fixture_lines()[0]).expect("event parses");
@@ -5644,6 +5966,266 @@ mod tests {
         assert!(ordered
             .order_violations
             .contains(&"protocol_detected_before_render_tick".to_string()));
+    }
+
+    #[test]
+    fn typed_event_graph_accepts_representative_scenario_fixtures() {
+        assert_typed_event_fixture_passes(
+            Scenario::Smoke,
+            Some(TEST_USERNAME),
+            &[
+                ("client", Some(TEST_USERNAME), "protocol_detected"),
+                ("client", Some(TEST_USERNAME), "join_game"),
+                ("client", Some(TEST_USERNAME), "render_tick"),
+            ],
+            &[("protocol_detected", "render_tick")],
+        );
+        assert_typed_event_fixture_passes(
+            Scenario::InventoryInteraction,
+            Some(TEST_USERNAME),
+            &[
+                ("client", Some(TEST_USERNAME), "protocol_detected"),
+                ("client", Some(TEST_USERNAME), "join_game"),
+                ("client", Some(TEST_USERNAME), "render_tick"),
+                ("client", Some(TEST_USERNAME), "team_red"),
+                ("client", Some(TEST_USERNAME), "inventory_slot_update"),
+                ("client", Some(TEST_USERNAME), "inventory_drop_sent"),
+                ("client", Some(TEST_USERNAME), "inventory_pickup_seen"),
+                ("client", Some(TEST_USERNAME), "inventory_click_sent"),
+                ("client", Some(TEST_USERNAME), "inventory_block_place_sent"),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_inventory_hotbar_select",
+                ),
+                ("server", Some(TEST_USERNAME), "server_inventory_drop"),
+                ("server", Some(TEST_USERNAME), "server_inventory_pickup"),
+                ("server", Some(TEST_USERNAME), "server_inventory_click"),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_inventory_container_click",
+                ),
+                ("server", Some(TEST_USERNAME), "server_block_place"),
+            ],
+            &[
+                ("protocol_detected", "inventory_drop_sent"),
+                ("inventory_drop_sent", "inventory_pickup_seen"),
+                ("server_inventory_drop", "server_inventory_pickup"),
+                ("server_inventory_container_click", "server_block_place"),
+            ],
+        );
+        assert_typed_event_fixture_passes(
+            Scenario::SurvivalBreakPlacePickup,
+            Some(TEST_USERNAME),
+            &[
+                ("client", Some(TEST_USERNAME), "protocol_detected"),
+                ("client", Some(TEST_USERNAME), "join_game"),
+                ("client", Some(TEST_USERNAME), "render_tick"),
+                ("client", Some(TEST_USERNAME), "survival_break_sent"),
+                ("client", Some(TEST_USERNAME), "survival_break_update"),
+                ("client", Some(TEST_USERNAME), "survival_pickup_seen"),
+                ("client", Some(TEST_USERNAME), "survival_place_sent"),
+                ("client", Some(TEST_USERNAME), "survival_place_update"),
+                ("server", Some(TEST_USERNAME), "server_survival_join"),
+                ("server", Some(TEST_USERNAME), "server_survival_break"),
+                ("server", Some(TEST_USERNAME), "server_survival_pickup"),
+                ("server", Some(TEST_USERNAME), "server_survival_place"),
+            ],
+            &[
+                ("survival_break_sent", "survival_pickup_seen"),
+                ("survival_pickup_seen", "survival_place_sent"),
+                ("server_survival_break", "server_survival_place"),
+            ],
+        );
+        assert_typed_event_fixture_passes(
+            Scenario::ReconnectFlagState,
+            Some(TEST_USERNAME),
+            &[
+                ("client", Some(TEST_USERNAME), "protocol_detected"),
+                ("client", Some(TEST_USERNAME), "join_game"),
+                ("client", Some(TEST_USERNAME), "render_tick"),
+                ("client", Some(TEST_USERNAME), "team_red"),
+                ("client", Some(TEST_USERNAME), "flag_pickup"),
+                ("client", Some(TEST_USERNAME), "reconnect_session"),
+                ("server", Some(TEST_USERNAME), "server_flag_pickup"),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_flag_disconnect_return",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_reconnect_state_coherent",
+                ),
+            ],
+            &[
+                ("flag_pickup", "reconnect_session"),
+                (
+                    "server_flag_disconnect_return",
+                    "server_reconnect_state_coherent",
+                ),
+            ],
+        );
+        assert_typed_event_fixture_passes(
+            Scenario::CombatDamage,
+            None,
+            &[
+                ("client", Some(TEST_ATTACKER_USERNAME), "protocol_detected"),
+                ("client", Some(TEST_ATTACKER_USERNAME), "team_red"),
+                ("client", Some(TEST_VICTIM_USERNAME), "team_blue"),
+                (
+                    "client",
+                    Some(TEST_ATTACKER_USERNAME),
+                    "remote_player_spawn",
+                ),
+                ("client", Some(TEST_ATTACKER_USERNAME), "combat_attack_sent"),
+                ("client", Some(TEST_VICTIM_USERNAME), "combat_health_update"),
+                (
+                    "server",
+                    Some(TEST_ATTACKER_USERNAME),
+                    "server_client_a_seen",
+                ),
+                ("server", Some(TEST_VICTIM_USERNAME), "server_client_b_seen"),
+                ("server", None, "server_combat_damage"),
+            ],
+            &[
+                ("remote_player_spawn", "combat_attack_sent"),
+                ("combat_attack_sent", "combat_health_update"),
+                ("server_client_a_seen", "server_combat_damage"),
+            ],
+        );
+        assert_typed_event_fixture_passes(
+            Scenario::ProjectileDamageAttribution,
+            None,
+            &[
+                (
+                    "client",
+                    Some(TEST_ATTACKER_USERNAME),
+                    "attacker_client_projectile_use_sent",
+                ),
+                (
+                    "client",
+                    Some(TEST_ATTACKER_USERNAME),
+                    "attacker_client_projectile_swing_sent",
+                ),
+                ("server", None, "server_projectile_use_attacker_victim"),
+                (
+                    "server",
+                    None,
+                    "server_projectile_hit_attacker_victim_health_delta",
+                ),
+                (
+                    "client",
+                    Some(TEST_VICTIM_USERNAME),
+                    "victim_client_damage_update",
+                ),
+            ],
+            &[
+                (
+                    "attacker_client_projectile_use_sent",
+                    "server_projectile_use_attacker_victim",
+                ),
+                (
+                    "server_projectile_use_attacker_victim",
+                    "server_projectile_hit_attacker_victim_health_delta",
+                ),
+                (
+                    "server_projectile_hit_attacker_victim_health_delta",
+                    "victim_client_damage_update",
+                ),
+            ],
+        );
+    }
+
+    #[test]
+    fn typed_event_receipt_artifact_records_reviewable_timeline_hash() {
+        let events = typed_event_fixture();
+        let timeline = normalize_typed_event_timeline(&events);
+        let timeline_blake3 = typed_event_timeline_blake3(&timeline);
+        let artifact = TypedEventOracleArtifact {
+            event_log_path: PathBuf::from("/tmp/mc-compat.typed-events.log"),
+            timeline_blake3: timeline_blake3.clone(),
+            event_count: events.len(),
+            contributes_to_pass_fail: false,
+        };
+
+        let json = typed_event_oracle_receipt_json(Some(&artifact));
+
+        assert!(json.contains("\"selected\": true"), "{json}");
+        assert!(json.contains("derived-from-milestones"), "{json}");
+        assert!(json.contains("/tmp/mc-compat.typed-events.log"), "{json}");
+        let event_count_json = format!("\"event_count\": {}", events.len());
+        assert!(json.contains(&timeline_blake3), "{json}");
+        assert!(json.contains(&event_count_json), "{json}");
+        assert!(
+            json.contains("\"contributes_to_pass_fail\": false"),
+            "{json}"
+        );
+        assert!(json.contains("\"raw_payloads_recorded\": false"), "{json}");
+    }
+
+    #[test]
+    fn typed_events_from_receipt_evidence_include_client_and_server_sources() {
+        let cfg = test_config(
+            &[
+                "--scenario",
+                "inventory-interaction",
+                "--receipt",
+                "/tmp/inventory.receipt.json",
+            ],
+            &[],
+        )
+        .expect("inventory config parses");
+        let client = ClientRunEvidence {
+            log_path: None,
+            log_paths: Vec::new(),
+            usernames: vec![TEST_USERNAME.to_string()],
+            exit_code: Some(0),
+            classification: "client-exited-success",
+            matched_success_pattern: Some("Detected server protocol version".to_string()),
+            scenario: Some(ScenarioEvidence {
+                observed_milestones: vec!["protocol_detected", "inventory_drop_sent"],
+                missing_milestones: Vec::new(),
+                forbidden_matches: Vec::new(),
+                passed: true,
+            }),
+            server_scenario: Some(ServerScenarioEvidence {
+                observed_milestones: vec!["server_inventory_drop"],
+                missing_milestones: Vec::new(),
+                forbidden_matches: Vec::new(),
+                passed: true,
+            }),
+            projectile_damage_causality: None,
+        };
+
+        let events =
+            typed_events_from_receipt_evidence(&cfg, &client).expect("typed event evidence builds");
+        let timeline = normalize_typed_event_timeline(&events);
+
+        let expected_event_count = client
+            .scenario
+            .as_ref()
+            .map(|scenario| scenario.observed_milestones.len())
+            .unwrap_or_default()
+            + client
+                .server_scenario
+                .as_ref()
+                .map(|server| server.observed_milestones.len())
+                .unwrap_or_default();
+        assert_eq!(events.len(), expected_event_count);
+        assert!(events.iter().any(|event| event.source == "client"));
+        assert!(events.iter().any(|event| event.source == "server"));
+        assert!(events
+            .iter()
+            .all(|event| event.username.as_deref() == Some(TEST_USERNAME)));
+        assert!(timeline.contains("session=inventory.receipt"), "{timeline}");
+        assert!(timeline.contains("event=inventory_drop_sent"), "{timeline}");
+        assert!(
+            timeline.contains("event=server_inventory_drop"),
+            "{timeline}"
+        );
     }
 
     #[test]

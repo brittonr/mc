@@ -6,3 +6,4 @@ description = "Hardened local Stevenarella/Valence compatibility smoke runner"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
+blake3 = "1.8.5"
