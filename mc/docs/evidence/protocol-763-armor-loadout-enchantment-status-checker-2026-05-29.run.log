@@ -1,0 +1,14 @@
+command: nix develop --no-update-lock-file -c rustfmt --edition 2021 tools/check_armor_loadout_enchantment_status.rs --check
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+command: nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_armor_loadout_enchantment_status.rs -o /tmp/check-armor-loadout-enchantment-status
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+command: /tmp/check-armor-loadout-enchantment-status --self-test
+armor loadout/enchantment/status checker self-test passed: positive fixture and fail-closed mutations passed
+command: /tmp/check-armor-loadout-enchantment-status
+armor loadout/enchantment/status checker passed: contract=docs/evidence/protocol-763-armor-loadout-enchantment-status-contract-2026-05-29.md record=false
+command: nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-armor-loadout-enchantment-status --no-link -L
+result: PASS

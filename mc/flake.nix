@@ -699,6 +699,16 @@
           mkdir -p "$out"
           cp ../adversarial-network-oracle-self-test.log ../adversarial-network-oracle-check.log "$out/"
         '';
+        mc-compat-armor-loadout-enchantment-status = pkgs.runCommand "mc-compat-armor-loadout-enchantment-status" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc ]; } ''
+          cp -R ${./.} repo
+          chmod -R u+w repo
+          cd repo
+          rustc --edition=2021 tools/check_armor_loadout_enchantment_status.rs -o ../check-armor-loadout-enchantment-status
+          ../check-armor-loadout-enchantment-status --self-test > ../armor-loadout-enchantment-status-self-test.log
+          ../check-armor-loadout-enchantment-status > ../armor-loadout-enchantment-status-check.log
+          mkdir -p "$out"
+          cp ../armor-loadout-enchantment-status-self-test.log ../armor-loadout-enchantment-status-check.log "$out/"
+        '';
         mc-compat-dry-run = pkgs.runCommand "mc-compat-dry-run" { } ''
           mkdir -p fake-stevenarella
           printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
@@ -1210,6 +1220,7 @@
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-evidence-promotion} "$out/evidence-promotion"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-cairn-task-evidence} "$out/cairn-task-evidence"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-adversarial-network-oracle} "$out/adversarial-network-oracle"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-armor-loadout-enchantment-status} "$out/armor-loadout-enchantment-status"
           cat > "$out/manifest.txt" <<'EOF'
           smoke
           multi-client-load-score
@@ -1235,6 +1246,7 @@
           evidence-promotion
           cairn-task-evidence
           adversarial-network-oracle
+          armor-loadout-enchantment-status
           EOF
         '';
         mc-compat-bot-probe-dry-run =

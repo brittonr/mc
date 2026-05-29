@@ -2,7 +2,8 @@
 
 - [x] [serial] Define the bounded `armor/enchantment/status matrix` evidence contract and normalized metric names. r[mc_compatibility.armor_loadout_enchantment_status_matrix.contract]
   - Evidence: `docs/evidence/protocol-763-armor-loadout-enchantment-status-contract-2026-05-29.md` defines bounded candidate rows, normalized metrics, promotion requirements, reject cases, and non-claims; verification output is in `docs/evidence/protocol-763-armor-loadout-enchantment-status-contract-2026-05-29.run.log`; BLAKE3 manifest `docs/evidence/protocol-763-armor-loadout-enchantment-status-contract-2026-05-29.b3`.
-- [ ] [depends:contract] Add deterministic checker positive and negative fixtures for `armor/enchantment/status matrix`. r[mc_compatibility.armor_loadout_enchantment_status_matrix.checker]
+- [x] [depends:contract] Add deterministic checker positive and negative fixtures for `armor/enchantment/status matrix`. r[mc_compatibility.armor_loadout_enchantment_status_matrix.checker]
+  - Evidence: `tools/check_armor_loadout_enchantment_status.rs` validates the contract and matrix record fields with positive plus fail-closed negative fixtures for missing fields, equipment evidence, damage deltas, tolerance, parity pairing, and overclaims; verification output is in `docs/evidence/protocol-763-armor-loadout-enchantment-status-checker-2026-05-29.run.log`; BLAKE3 manifest `docs/evidence/protocol-763-armor-loadout-enchantment-status-checker-2026-05-29.b3`.
 - [ ] [depends:checker] Add the `armor-loadout-enchantment-status-matrix` runner, fixture, or parser rail without broadening existing scenarios. r[mc_compatibility.armor_loadout_enchantment_status_matrix.rail]
   - Detail: Define declarative armor/modifier row schema.
   - Detail: Add matrix checker fixtures.
