@@ -241,3 +241,23 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 52 filtered out; fin
 }
 
 ```
+
+## WARN repair: reconnect and reopen-window negative assertions
+
+Command:
+
+```text
+nix develop --no-update-lock-file -c sh -c 'cargo fmt --manifest-path tools/mc-compat-runner/Cargo.toml && cargo test --manifest-path tools/mc-compat-runner/Cargo.toml survival_chest_persistence_scenario_tracks_client_and_server_evidence'
+```
+
+Result: pass. The focused test now asserts wrong reconnect session, wrong client reopened window, wrong server reopen position/window, and wrong persisted/store values fail closed.
+
+## WARN repair validation
+
+Command:
+
+```text
+nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py && nix run --no-update-lock-file .#cairn -- validate --root . && nix run --no-update-lock-file .#cairn -- gate tasks prove-survival-chest-persistence --root .
+```
+
+Result: pass. Evidence manifests reported 36 manifests / 190 entries / 54 receipts; Cairn validate returned `valid: true`; tasks gate returned `verdict: PASS`.

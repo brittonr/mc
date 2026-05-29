@@ -5570,6 +5570,24 @@ RED: 1
             .contains(&"survival_chest_store_sent"));
         assert!(wrong_client_values
             .missing_milestones
+            .contains(&"survival_chest_reconnect_sent"));
+        assert!(wrong_client_values
+            .missing_milestones
+            .contains(&"survival_chest_reopen_seen"));
+        assert!(wrong_client_values
+            .missing_milestones
+            .contains(&"survival_chest_persisted_seen"));
+
+        let wrong_reopen_window = evaluate_scenario(
+            Scenario::SurvivalChestPersistence,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nsurvival_chest_open_seen window=1 position=8,64,0\nsurvival_chest_store_sent window=1 slot=0 item=Dirt count=1\nsurvival_chest_close_sent window=1\nsurvival_chest_reconnect_sent session=1\nsurvival_chest_reopen_seen window=3 position=8,64,0\nsurvival_chest_persisted_seen window=3 slot=0 item=Dirt count=1\n",
+        );
+        assert!(!wrong_reopen_window.passed, "{wrong_reopen_window:?}");
+        assert!(wrong_reopen_window
+            .missing_milestones
+            .contains(&"survival_chest_reopen_seen"));
+        assert!(wrong_reopen_window
+            .missing_milestones
             .contains(&"survival_chest_persisted_seen"));
 
         let server = evaluate_server_scenario(
@@ -5603,7 +5621,23 @@ RED: 1
             .contains(&"server_survival_chest_store"));
         assert!(wrong_server_values
             .missing_milestones
+            .contains(&"server_survival_chest_reopen"));
+        assert!(wrong_server_values
+            .missing_milestones
             .contains(&"server_survival_chest_persisted"));
+
+        let wrong_server_reopen_window = evaluate_server_scenario(
+            Scenario::SurvivalChestPersistence,
+            "compatbot joined\nMC-COMPAT-MILESTONE survival_chest_open username=compatbot position=8,64,0 window=1\nMC-COMPAT-MILESTONE survival_chest_store username=compatbot window=1 slot=0 item=Dirt count=1\nMC-COMPAT-MILESTONE survival_chest_close username=compatbot window=1\nMC-COMPAT-MILESTONE survival_chest_reopen username=compatbot position=8,64,0 window=3\nMC-COMPAT-MILESTONE survival_chest_persisted username=compatbot slot=0 item=Dirt count=1\n",
+            "compatbot",
+        );
+        assert!(
+            !wrong_server_reopen_window.passed,
+            "{wrong_server_reopen_window:?}"
+        );
+        assert!(wrong_server_reopen_window
+            .missing_milestones
+            .contains(&"server_survival_chest_reopen"));
     }
 
     #[test]
