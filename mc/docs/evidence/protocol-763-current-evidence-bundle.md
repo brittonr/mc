@@ -138,9 +138,9 @@ Reviewable copied receipts for matrix rows are indexed at `docs/evidence/protoco
 
 ## Production/load/network safety envelope
 
-The runner receipt surface includes a `load_network_safety` block that records owned-local or explicit authorization, client/duration/reconnect/network bounds, telemetry readiness, and fail-closed diagnostics. Evidence: `docs/evidence/protocol-763-load-network-safety-2026-05-27.md`.
+The runner receipt surface includes a `load_network_safety` block that records owned-local or explicit authorization, client/duration/reconnect/network bounds, telemetry readiness, and fail-closed diagnostics. Evidence: `docs/evidence/protocol-763-load-network-safety-2026-05-27.md` and `docs/evidence/protocol-763-production-network-safety-matrix-2026-05-28.md`.
 
-Broader production/public/WAN/unbounded safety remains a non-claim unless a future authorized bounded envelope has live telemetry, BLAKE3-backed evidence, and an updated matrix/bundle row.
+The production/network matrix promotes only bounded owned-local loopback load safety. Broader production readiness, public-server safety, WAN safety, adversarial-network safety, packet-loss tolerance, and unbounded safety remain non-claims unless a future authorized bounded envelope has live telemetry, BLAKE3-backed evidence, and an updated matrix/bundle row.
 
 ## Non-claims
 

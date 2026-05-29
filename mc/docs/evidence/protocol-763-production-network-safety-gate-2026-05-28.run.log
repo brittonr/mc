@@ -1,0 +1,32 @@
+$ python3 -m py_compile tools/check_load_network_safety.py
+
+$ python3 tools/check_load_network_safety.py --self-test
+load/network safety self-test ok
+
+$ python3 tools/check_load_network_safety.py
+load/network safety ok: owned-local covered, public/WAN/adversarial claims blocked
+
+$ python3 tools/check_acceptance_matrix.py
+acceptance matrix ok: 16 seams, 16 hashes
+
+$ python3 tools/check_current_evidence_bundle.py
+current evidence bundle ok: 16 seams
+
+$ nix run --no-update-lock-file .#cairn -- change list --root .
+{
+  "changes": [],
+  "layout": "cairn",
+  "root": "."
+}
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 2,
+  "valid": true
+}

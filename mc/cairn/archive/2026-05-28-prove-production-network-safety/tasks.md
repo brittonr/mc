@@ -1,0 +1,14 @@
+# Tasks
+
+- [x] [serial] Add production/network safety matrix with separate owned-local, public, WAN, and adversarial rows. r[mc_compatibility.production_network_safety.matrix]
+  - Evidence: `docs/evidence/protocol-763-production-network-safety-matrix-2026-05-28.md` records separate rows for owned-local load safety, public-server safety, WAN tolerance, and adversarial-network safety; it cites `server.protocol=763` live evidence and keeps broader claims non-claims.
+- [x] [serial] Add checker failures for missing authorization, target ownership, bounds, telemetry, or non-claims. r[mc_compatibility.production_network_safety.gate]
+  - Evidence: `python3 tools/check_load_network_safety.py --self-test` covers missing public authorization, missing target ownership, missing bounds, missing telemetry, missing non-claims, WAN fail-closed evidence, and adversarial oracle failures.
+- [x] [depends:matrix] Add bounded owned-local load receipt requirements and negative tests for over-limit configs. r[mc_compatibility.production_network_safety.owned_local]
+  - Evidence: `tools/check_load_network_safety.py` requires the protocol-763 live receipt to include `target_scope=owned-local-loopback`, `authorized=true`, `owned_local_target=true`, `max_clients=2`, `max_duration_secs=600`, telemetry, and promotion-ready fields.
+- [x] [depends:matrix] Add WAN/jitter/loss receipt requirements that fail closed when perturbation tooling is unavailable. r[mc_compatibility.production_network_safety.wan]
+  - Evidence: `docs/evidence/protocol-763-production-network-safety-matrix-2026-05-28.md` keeps WAN as `non_claim_fail_closed`; the checker requires delay/jitter/loss/timeout fields and `tooling unavailable fails closed` evidence before allowing the row.
+- [x] [depends:matrix] Add adversarial-network safety requirements and require explicit oracle/human approval before promotion. r[mc_compatibility.production_network_safety.adversarial]
+  - Evidence: `docs/evidence/protocol-763-production-network-adversarial-oracle-2026-05-28.md` records question, inspected evidence, decision, owner, and next action; the matrix keeps adversarial-network safety as `non_claim_oracle_required`.
+- [x] [depends:gate] Update current evidence docs so existing loopback receipts remain non-production evidence. r[mc_compatibility.production_network_safety.nonclaims]
+  - Evidence: `docs/evidence/protocol-763-load-network-safety-2026-05-27.md`, `docs/evidence/protocol-763-current-evidence-bundle.md`, and `docs/evidence/protocol-763-acceptance-matrix.md` point at the matrix and keep production readiness, public-server safety, WAN safety, adversarial-network safety, packet-loss tolerance, and unbounded behavior as non-claims.

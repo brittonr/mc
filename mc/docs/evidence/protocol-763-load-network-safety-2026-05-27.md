@@ -2,7 +2,10 @@
 
 ## Scope
 
-This checkpoint drains the production/load/network safety Cairn by adding a fail-closed safety envelope to the runner receipt surface and by keeping production/public/unbounded claims as explicit non-claims.
+This checkpoint supports the production/network safety matrix by adding a fail-closed safety envelope to the runner receipt surface and by keeping production/public/unbounded claims as explicit non-claims.
+
+Current matrix: `docs/evidence/protocol-763-production-network-safety-matrix-2026-05-28.md`.
+Adversarial oracle: `docs/evidence/protocol-763-production-network-adversarial-oracle-2026-05-28.md`.
 
 It does **not** prove public-server safety, production readiness, WAN safety, adversarial-network safety, unbounded soak, unbounded reconnect, packet-loss tolerance, or broad gameplay correctness.
 
@@ -73,7 +76,7 @@ Negative fixture:
 ## Decision
 
 - Question: Can production/load/network claims be prevented from being promoted without authorization, bounds, telemetry, and live receipts?
-- Inspected evidence: runner safety envelope implementation, positive/negative unit fixtures, format/test output, and maintained current bundle non-claims.
-- Decision: Yes. Bounded owned-local compatibility receipts can continue, but broader production/public/WAN/unbounded claims remain blocked until a future authorized live envelope produces reviewable telemetry and BLAKE3-backed evidence.
+- Inspected evidence: runner safety envelope implementation, production/network matrix, adversarial oracle, positive/negative unit fixtures, format/test output, and maintained current bundle non-claims.
+- Decision: Yes. Bounded owned-local compatibility receipts can continue, but broader production/public/WAN/adversarial/unbounded claims remain blocked until a future authorized live envelope produces reviewable telemetry and BLAKE3-backed evidence.
 - Decision owner: agent.
-- Next action: keep `prove-production-load-network-safety` archived; any future load/network expansion must add a new bounded envelope row and live evidence before changing non-claims.
+- Next action: keep `prove-production-network-safety` scoped to owned-local load safety plus fail-closed non-claims; any future load/network expansion must add a new bounded envelope row and live evidence before changing non-claims.
