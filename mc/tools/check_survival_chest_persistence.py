@@ -23,9 +23,11 @@ EXPECTED_STORED_COUNT = "1"
 EXPECTED_RECONNECT_SESSION = "1"
 FIRST_CHEST_WINDOW = "1"
 REOPENED_CHEST_WINDOW = "2"
+MISMATCHED_CHEST_POSITION = "9,64,0"
 MISMATCHED_CHEST_SLOT = "1"
 MISMATCHED_STORED_ITEM = "Stone"
 MISMATCHED_STORED_COUNT = "2"
+MISMATCHED_RECONNECT_SESSION = "2"
 PRESENT = "present"
 ABSENT = "absent"
 NO_VALUE = "<missing>"
@@ -117,12 +119,32 @@ COMPARISON_METRICS = [
     "server.chest.persisted.item",
     "server.chest.persisted.count",
 ]
+EXPECTED_VALUE_METRICS = {
+    "client.chest.open.position": EXPECTED_CHEST_POSITION,
+    "client.chest.store.slot": EXPECTED_CHEST_SLOT,
+    "client.chest.store.item": EXPECTED_STORED_ITEM,
+    "client.chest.store.count": EXPECTED_STORED_COUNT,
+    "client.chest.reconnect.session": EXPECTED_RECONNECT_SESSION,
+    "client.chest.reopen.position": EXPECTED_CHEST_POSITION,
+    "client.chest.persisted.slot": EXPECTED_CHEST_SLOT,
+    "client.chest.persisted.item": EXPECTED_STORED_ITEM,
+    "client.chest.persisted.count": EXPECTED_STORED_COUNT,
+    "server.chest.open.position": EXPECTED_CHEST_POSITION,
+    "server.chest.store.slot": EXPECTED_CHEST_SLOT,
+    "server.chest.store.item": EXPECTED_STORED_ITEM,
+    "server.chest.store.count": EXPECTED_STORED_COUNT,
+    "server.chest.reopen.position": EXPECTED_CHEST_POSITION,
+    "server.chest.persisted.slot": EXPECTED_CHEST_SLOT,
+    "server.chest.persisted.item": EXPECTED_STORED_ITEM,
+    "server.chest.persisted.count": EXPECTED_STORED_COUNT,
+}
 CONTRACT_TOKENS = [
     EXPECTED_SCENARIO,
     EXPECTED_CHEST_POSITION,
     EXPECTED_CHEST_SLOT,
     EXPECTED_STORED_ITEM,
     EXPECTED_STORED_COUNT,
+    EXPECTED_RECONNECT_SESSION,
     "one chest block",
     "one item stack",
     "one chest slot",
@@ -280,6 +302,15 @@ def add_client_log_metrics(values: dict[str, str], diagnostics: list[str], clien
     put_metric(values, diagnostics, "client.chest.persisted.count", persisted_fields, "count")
 
 
+def add_expected_value_diagnostics(values: dict[str, str], diagnostics: list[str]) -> None:
+    for metric, expected in EXPECTED_VALUE_METRICS.items():
+        actual = values.get(metric, NO_VALUE)
+        if actual in (NO_VALUE, ABSENT):
+            continue
+        if actual != expected:
+            diagnostics.append(f"wrong_contract:{metric}: expected {expected} found {actual}")
+
+
 def add_server_log_metrics(values: dict[str, str], diagnostics: list[str], server_log: str) -> None:
     open_fields = find_fields(server_log, "survival_chest_open")
     put_metric(values, diagnostics, "server.chest.open.position", open_fields, "position")
@@ -320,6 +351,7 @@ def normalize_evidence(evidence: EvidenceInput, expected_backend: str) -> Normal
     for metric in REQUIRED_METRICS:
         if values.get(metric) in (None, NO_VALUE, ABSENT):
             diagnostics.append(f"missing_metric:{metric}")
+    add_expected_value_diagnostics(values, diagnostics)
 
     return NormalizedEvidence(
         backend=values.get("server.backend", NO_VALUE),
@@ -405,6 +437,19 @@ def good_evidence(backend: str) -> EvidenceInput:
     return EvidenceInput(receipt=good_receipt(backend), client_log=good_client_log(), server_log=good_server_log())
 
 
+def replace_logs(evidence: EvidenceInput, old: str, new: str) -> EvidenceInput:
+    return EvidenceInput(
+        receipt=evidence.receipt,
+        client_log=evidence.client_log.replace(old, new),
+        server_log=evidence.server_log.replace(old, new),
+    )
+
+
+def assert_rejected(result: ComparisonResult, expected_fragment: str) -> None:
+    assert not result.passed, result
+    assert any(expected_fragment in item for item in result.diagnostics), result
+
+
 def assert_self_tests() -> None:
     good = compare_evidence(good_evidence(REFERENCE_BACKEND), good_evidence(VALENCE_BACKEND))
     assert good.passed, good.diagnostics
@@ -414,12 +459,103 @@ def assert_self_tests() -> None:
     assert "missing_reference" in missing_reference.diagnostics, missing_reference
     assert "valence_only" in missing_reference.diagnostics, missing_reference
 
-    missing_metric = compare_evidence(
-        EvidenceInput(good_receipt(REFERENCE_BACKEND), good_client_log().replace("survival_chest_persisted_seen", "survival_chest_missing_seen"), good_server_log()),
+    missing_open = compare_evidence(
+        EvidenceInput(
+            good_receipt(REFERENCE_BACKEND),
+            good_client_log().replace("survival_chest_open_seen", "survival_chest_missing_open"),
+            good_server_log(),
+        ),
         good_evidence(VALENCE_BACKEND),
     )
-    assert not missing_metric.passed, missing_metric
-    assert any("missing_metric:client.chest.persisted.slot" in item for item in missing_metric.diagnostics), missing_metric
+    assert_rejected(missing_open, "missing_metric:client.chest.open.window")
+
+    missing_store = compare_evidence(
+        EvidenceInput(
+            good_receipt(REFERENCE_BACKEND),
+            good_client_log().replace("survival_chest_store_sent", "survival_chest_missing_store"),
+            good_server_log(),
+        ),
+        good_evidence(VALENCE_BACKEND),
+    )
+    assert_rejected(missing_store, "missing_metric:client.chest.store.slot")
+
+    missing_close = compare_evidence(
+        EvidenceInput(
+            good_receipt(REFERENCE_BACKEND),
+            good_client_log().replace("survival_chest_close_sent", "survival_chest_missing_close"),
+            good_server_log(),
+        ),
+        good_evidence(VALENCE_BACKEND),
+    )
+    assert_rejected(missing_close, "missing_metric:client.chest.close.window")
+
+    missing_reconnect = compare_evidence(
+        EvidenceInput(
+            good_receipt(REFERENCE_BACKEND),
+            good_client_log().replace("survival_chest_reconnect_sent", "survival_chest_missing_reconnect"),
+            good_server_log(),
+        ),
+        good_evidence(VALENCE_BACKEND),
+    )
+    assert_rejected(missing_reconnect, "missing_metric:client.chest.reconnect.session")
+
+    missing_client_persisted = compare_evidence(
+        EvidenceInput(
+            good_receipt(REFERENCE_BACKEND),
+            good_client_log().replace("survival_chest_persisted_seen", "survival_chest_missing_persisted"),
+            good_server_log(),
+        ),
+        good_evidence(VALENCE_BACKEND),
+    )
+    assert_rejected(missing_client_persisted, "missing_metric:client.chest.persisted.slot")
+
+    missing_server_persisted = compare_evidence(
+        EvidenceInput(
+            good_receipt(REFERENCE_BACKEND),
+            good_client_log(),
+            good_server_log().replace("survival_chest_persisted", "survival_chest_missing_persisted"),
+        ),
+        good_evidence(VALENCE_BACKEND),
+    )
+    assert_rejected(missing_server_persisted, "missing_metric:server.chest.persisted.slot")
+
+    both_wrong_position = compare_evidence(
+        replace_logs(good_evidence(REFERENCE_BACKEND), EXPECTED_CHEST_POSITION, MISMATCHED_CHEST_POSITION),
+        replace_logs(good_evidence(VALENCE_BACKEND), EXPECTED_CHEST_POSITION, MISMATCHED_CHEST_POSITION),
+    )
+    assert_rejected(both_wrong_position, "wrong_contract:client.chest.open.position")
+
+    both_wrong_slot = compare_evidence(
+        replace_logs(good_evidence(REFERENCE_BACKEND), f"slot={EXPECTED_CHEST_SLOT}", f"slot={MISMATCHED_CHEST_SLOT}"),
+        replace_logs(good_evidence(VALENCE_BACKEND), f"slot={EXPECTED_CHEST_SLOT}", f"slot={MISMATCHED_CHEST_SLOT}"),
+    )
+    assert_rejected(both_wrong_slot, "wrong_contract:client.chest.store.slot")
+
+    both_wrong_item = compare_evidence(
+        replace_logs(good_evidence(REFERENCE_BACKEND), f"item={EXPECTED_STORED_ITEM}", f"item={MISMATCHED_STORED_ITEM}"),
+        replace_logs(good_evidence(VALENCE_BACKEND), f"item={EXPECTED_STORED_ITEM}", f"item={MISMATCHED_STORED_ITEM}"),
+    )
+    assert_rejected(both_wrong_item, "wrong_contract:client.chest.store.item")
+
+    both_wrong_count = compare_evidence(
+        replace_logs(good_evidence(REFERENCE_BACKEND), f"count={EXPECTED_STORED_COUNT}", f"count={MISMATCHED_STORED_COUNT}"),
+        replace_logs(good_evidence(VALENCE_BACKEND), f"count={EXPECTED_STORED_COUNT}", f"count={MISMATCHED_STORED_COUNT}"),
+    )
+    assert_rejected(both_wrong_count, "wrong_contract:client.chest.store.count")
+
+    both_wrong_reconnect = compare_evidence(
+        replace_logs(
+            good_evidence(REFERENCE_BACKEND),
+            f"session={EXPECTED_RECONNECT_SESSION}",
+            f"session={MISMATCHED_RECONNECT_SESSION}",
+        ),
+        replace_logs(
+            good_evidence(VALENCE_BACKEND),
+            f"session={EXPECTED_RECONNECT_SESSION}",
+            f"session={MISMATCHED_RECONNECT_SESSION}",
+        ),
+    )
+    assert_rejected(both_wrong_reconnect, "wrong_contract:client.chest.reconnect.session")
 
     mismatched_slot = compare_evidence(
         good_evidence(REFERENCE_BACKEND),
@@ -429,8 +565,7 @@ def assert_self_tests() -> None:
             good_server_log().replace(f"slot={EXPECTED_CHEST_SLOT}", f"slot={MISMATCHED_CHEST_SLOT}"),
         ),
     )
-    assert not mismatched_slot.passed, mismatched_slot
-    assert any("mismatched_metric:client.chest.store.slot" in item for item in mismatched_slot.diagnostics), mismatched_slot
+    assert_rejected(mismatched_slot, "mismatched_metric:client.chest.store.slot")
 
     mismatched_item = compare_evidence(
         good_evidence(REFERENCE_BACKEND),
@@ -440,8 +575,7 @@ def assert_self_tests() -> None:
             good_server_log().replace(f"item={EXPECTED_STORED_ITEM}", f"item={MISMATCHED_STORED_ITEM}"),
         ),
     )
-    assert not mismatched_item.passed, mismatched_item
-    assert any("mismatched_metric:client.chest.store.item" in item for item in mismatched_item.diagnostics), mismatched_item
+    assert_rejected(mismatched_item, "mismatched_metric:client.chest.store.item")
 
     mismatched_count = compare_evidence(
         good_evidence(REFERENCE_BACKEND),
@@ -451,12 +585,10 @@ def assert_self_tests() -> None:
             good_server_log().replace(f"count={EXPECTED_STORED_COUNT}", f"count={MISMATCHED_STORED_COUNT}"),
         ),
     )
-    assert not mismatched_count.passed, mismatched_count
-    assert any("mismatched_metric:client.chest.store.count" in item for item in mismatched_count.diagnostics), mismatched_count
+    assert_rejected(mismatched_count, "mismatched_metric:client.chest.store.count")
 
     wrong_backend = compare_evidence(good_evidence(VALENCE_BACKEND), good_evidence(VALENCE_BACKEND))
-    assert not wrong_backend.passed, wrong_backend
-    assert any("wrong_backend" in item for item in wrong_backend.diagnostics), wrong_backend
+    assert_rejected(wrong_backend, "wrong_backend")
 
     contract_issues = validate_contract_doc(CONTRACT_DOC.read_text())
     assert not contract_issues, contract_issues
