@@ -59,6 +59,7 @@ Negative fixture:
 - duration above the bound;
 - missing latency field;
 - missing telemetry and no live receipt;
+- WAN receipt request with perturbation tooling unavailable fails closed with `status=failed_closed`, `promotion_ready=false`, `claims_wan_safety=false`, and `missing_fields=[perturbation_tool]`;
 - `preflight_passed=false` and `promotion_ready=false` with explicit diagnostics.
 
 ## Evidence

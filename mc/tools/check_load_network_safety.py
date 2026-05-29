@@ -82,6 +82,26 @@ class LoadSafetyEvidence:
     tasks_text: str
 
 
+@dataclass(frozen=True)
+class WanToleranceRequest:
+    requested: bool
+    perturbation_tool_available: bool
+    delay_ms: str
+    jitter_ms: str
+    loss_percent: str
+    timeout_secs: int
+
+
+@dataclass(frozen=True)
+class WanToleranceReceipt:
+    requested: bool
+    status: str
+    fail_closed: bool
+    missing_fields: tuple[str, ...]
+    promotion_ready: bool
+    claims_wan_safety: bool
+
+
 def as_object(value: Any, field: str, issues: list[str]) -> dict[str, Any]:
     if isinstance(value, dict):
         return value
@@ -102,6 +122,16 @@ def require_true(issues: list[str], label: str, actual: Any) -> None:
 def require_false(issues: list[str], label: str, actual: Any) -> None:
     if actual is not False:
         issues.append(f"{label} expected false, found {actual!r}")
+
+
+def require_int_between(issues: list[str], label: str, actual: Any, lower: int, upper: int) -> None:
+    if not isinstance(actual, int):
+        issues.append(f"{label} expected int, found {actual!r}")
+        return
+    if actual < lower:
+        issues.append(f"{label} below minimum {lower}: {actual}")
+    if actual > upper:
+        issues.append(f"{label}_exceed_max: {actual} > {upper}")
 
 
 def require_tokens(issues: list[str], label: str, text: str, tokens: list[str]) -> None:
@@ -165,6 +195,42 @@ def validate_oracle(oracle_text: str) -> list[str]:
     return issues
 
 
+def evaluate_wan_tolerance_request(request: WanToleranceRequest) -> WanToleranceReceipt:
+    missing_fields: list[str] = []
+    if request.requested and not request.perturbation_tool_available:
+        missing_fields.append("perturbation_tool")
+    if request.requested and request.delay_ms == "":
+        missing_fields.append("delay_ms")
+    if request.requested and request.jitter_ms == "":
+        missing_fields.append("jitter_ms")
+    if request.requested and request.loss_percent == "":
+        missing_fields.append("loss_percent")
+    if request.requested and request.timeout_secs <= 0:
+        missing_fields.append("timeout_secs")
+    fail_closed = request.requested and bool(missing_fields)
+    status = "failed_closed" if fail_closed else "not_selected" if not request.requested else "ready_for_authorized_fixture"
+    return WanToleranceReceipt(
+        requested=request.requested,
+        status=status,
+        fail_closed=fail_closed,
+        missing_fields=tuple(missing_fields),
+        promotion_ready=False,
+        claims_wan_safety=False,
+    )
+
+
+def validate_wan_tolerance_fail_closed_receipt(receipt: WanToleranceReceipt) -> list[str]:
+    issues: list[str] = []
+    require_true(issues, "wan.requested", receipt.requested)
+    require_equal(issues, "wan.status", receipt.status, "failed_closed")
+    require_true(issues, "wan.fail_closed", receipt.fail_closed)
+    if "perturbation_tool" not in receipt.missing_fields:
+        issues.append("wan.missing_fields missing perturbation_tool")
+    require_false(issues, "wan.promotion_ready", receipt.promotion_ready)
+    require_false(issues, "wan.claims_wan_safety", receipt.claims_wan_safety)
+    return issues
+
+
 def validate_receipt(evidence: LoadSafetyEvidence) -> list[str]:
     issues: list[str] = []
     receipt = evidence.receipt
@@ -187,6 +253,9 @@ def validate_receipt(evidence: LoadSafetyEvidence) -> list[str]:
     require_true(issues, "load_network_safety.authorized", safety.get("authorized"))
     require_equal(issues, "load_network_safety.max_clients", safety.get("max_clients"), MAX_LOCAL_CLIENTS)
     require_equal(issues, "load_network_safety.max_duration_secs", safety.get("max_duration_secs"), MAX_DURATION_SECS)
+    require_int_between(issues, "load_network_safety.planned_clients", safety.get("planned_clients"), 1, MAX_LOCAL_CLIENTS)
+    require_int_between(issues, "load_network_safety.duration_secs", safety.get("duration_secs"), 1, MAX_DURATION_SECS)
+    require_int_between(issues, "load_network_safety.reconnect_sessions", safety.get("reconnect_sessions"), 1, MAX_RECONNECT_SESSIONS)
     require_equal(issues, "load_network_safety.bound_violations", safety.get("bound_violations"), [])
     require_equal(issues, "load_network_safety.missing_fields", safety.get("missing_fields"), [])
     require_true(issues, "load_network_safety.telemetry_present", safety.get("telemetry_present"))
@@ -304,8 +373,11 @@ def valid_receipt() -> dict[str, Any]:
             "target_scope": "owned-local-loopback",
             "owned_local_target": True,
             "authorized": True,
+            "planned_clients": 1,
             "max_clients": MAX_LOCAL_CLIENTS,
+            "duration_secs": 30,
             "max_duration_secs": MAX_DURATION_SECS,
+            "reconnect_sessions": 1,
             "bound_violations": [],
             "missing_fields": [],
             "telemetry_present": True,
@@ -328,7 +400,7 @@ def matrix_fixture() -> str:
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | {OWNED_LOCAL_CLAIM} | {COVERED_OWNED_LOCAL} | target_scope=owned-local-loopback; owned_local_target=true | authorized=true by owned local loopback only | max_clients={MAX_LOCAL_CLIENTS}; max_duration_secs={MAX_DURATION_SECS}; reconnect_sessions<={MAX_RECONNECT_SESSIONS}; packet_loss=0 | telemetry_present=true; live_receipt=true; preflight_passed=true; promotion_ready=true | `docs/evidence/protocol-763-load-network-safety-live-2026-05-27.receipt.json`; `{EXPECTED_RECEIPT_DIGEST}`; `{EXPECTED_LOG_DIGEST}` | No public-server safety, no production readiness, no WAN safety, no adversarial-network safety. | Keep bounded. |
 | {PUBLIC_CLAIM} | {NON_CLAIM_FAIL_CLOSED} | target ownership not established for public targets | explicit public authorization missing; MC_COMPAT_PUBLIC_TARGET=1 without MC_COMPAT_EXTERNAL_LOAD_AUTHORIZED=1 fails | no public bounds | no public telemetry | preflight rejects public target; no live public receipt | No public-server safety, no production readiness. | Add authorization. |
-| {WAN_CLAIM} | {NON_CLAIM_FAIL_CLOSED} | owned-local loopback only | WAN authorization absent | delay; jitter; loss; timeout required | no WAN telemetry | tooling unavailable fails closed; no WAN claim | No WAN safety, no packet-loss tolerance. | Add perturbation tooling. |
+| {WAN_CLAIM} | {NON_CLAIM_FAIL_CLOSED} | owned-local loopback only | WAN authorization absent | delay; jitter; loss; timeout required | no WAN telemetry | deterministic WAN receipt request fixture fails closed when perturbation tooling unavailable; tooling unavailable fails closed; no WAN claim | No WAN safety, no packet-loss tolerance. | Add perturbation tooling. |
 | {ADVERSARIAL_CLAIM} | {NON_CLAIM_ORACLE_REQUIRED} | no adversarial target | adversarial authorization absent | adversarial model missing | no adversarial telemetry | Oracle checkpoint: `{ORACLE_PATH_TEXT}`; no adversarial live receipt | No adversarial-network safety, no malicious-client resilience. | Require human/oracle approval. |
 """
 
@@ -399,6 +471,16 @@ def assert_self_tests() -> None:
     issues = validate_load_safety(missing_target_ownership)
     assert any("public ownership" in issue for issue in issues), issues
 
+    over_limit_clients = valid_fixture()
+    over_limit_clients.receipt["load_network_safety"]["planned_clients"] = MAX_LOCAL_CLIENTS + 1
+    issues = validate_load_safety(over_limit_clients)
+    assert any("planned_clients_exceed_max" in issue for issue in issues), issues
+
+    over_limit_duration = valid_fixture()
+    over_limit_duration.receipt["load_network_safety"]["duration_secs"] = MAX_DURATION_SECS + 1
+    issues = validate_load_safety(over_limit_duration)
+    assert any("duration_secs_exceed_max" in issue for issue in issues), issues
+
     missing_bounds = valid_fixture()
     missing_bounds.matrix_text = missing_bounds.matrix_text.replace(f"max_clients={MAX_LOCAL_CLIENTS}", "")
     issues = validate_load_safety(missing_bounds)
@@ -408,6 +490,32 @@ def assert_self_tests() -> None:
     missing_nonclaims.matrix_text = missing_nonclaims.matrix_text.replace("No WAN safety", "WAN safety allowed")
     issues = validate_load_safety(missing_nonclaims)
     assert any("non-claims" in issue for issue in issues), issues
+
+    wan_unavailable = evaluate_wan_tolerance_request(
+        WanToleranceRequest(
+            requested=True,
+            perturbation_tool_available=False,
+            delay_ms="100",
+            jitter_ms="20",
+            loss_percent="1",
+            timeout_secs=30,
+        )
+    )
+    issues = validate_wan_tolerance_fail_closed_receipt(wan_unavailable)
+    assert not issues, issues
+
+    wan_bad_receipt = WanToleranceReceipt(
+        requested=True,
+        status="pass",
+        fail_closed=False,
+        missing_fields=(),
+        promotion_ready=True,
+        claims_wan_safety=True,
+    )
+    issues = validate_wan_tolerance_fail_closed_receipt(wan_bad_receipt)
+    assert any("wan.status" in issue for issue in issues), issues
+    assert any("perturbation_tool" in issue for issue in issues), issues
+    assert any("claims_wan_safety" in issue for issue in issues), issues
 
     missing_wan_fail_closed = valid_fixture()
     missing_wan_fail_closed.matrix_text = missing_wan_fail_closed.matrix_text.replace("tooling unavailable fails closed", "tooling skipped")
