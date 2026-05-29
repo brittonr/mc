@@ -1,0 +1,27 @@
+command: contract token audit for armor/loadout/enchantment/status matrix contract
+file: docs/evidence/protocol-763-armor-loadout-enchantment-status-contract-2026-05-29.md
+token ok: chest_diamond_none_none_melee
+token ok: full_diamond_none_none_melee
+token ok: chest_diamond_protection_i_none_melee
+token ok: chest_diamond_none_resistance_i_melee
+token ok: missing_matrix_row_field
+token ok: missing_equipment_evidence
+token ok: mismatched_damage_delta
+token ok: absent_tolerance
+token ok: unpaired_vanilla_parity
+token ok: all_loadout_overclaim
+token ok: all armor permutations
+command: nix run --no-update-lock-file .#cairn -- gate tasks armor-loadout-enchantment-status-matrix --root .
+{
+  "change": "armor-loadout-enchantment-status-matrix",
+  "input_hash": "c3e641172db8c3b95d3ca8340e3e5dc5340db274c4cb1fd0d6992d59c10f0696",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "67a77f053fc6f3881699d2caf6523bd26da0f706b2db805021e3a9d78d8ca52d",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+result: PASS
