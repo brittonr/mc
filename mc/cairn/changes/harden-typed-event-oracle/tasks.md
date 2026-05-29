@@ -1,0 +1,13 @@
+# Tasks
+
+- [x] [serial] Define the versioned typed event schema, source labels, required fields, redaction policy, and BLAKE3 timeline hash contract. r[mc_compatibility.typed_event_oracle.schema]
+  - Evidence: `tools/mc-compat-runner/src/main.rs` defines `TypedEvent`, `TYPED_EVENT_PREFIX`, `TYPED_EVENT_SCHEMA_VERSION`, and parser validation for source/scenario/session/username/sequence/event fields. README documents `typed_event_oracle` receipt migration metadata.
+- [ ] [depends:schema] Add pure Rust parsing and event-graph evaluation functions with positive fixtures for at least smoke, inventory, survival, reconnect, and combat/projectile rails. r[mc_compatibility.typed_event_oracle.graph]
+  - Partial evidence: pure functions `parse_typed_event_line`, `parse_typed_event_fields`, and `evaluate_typed_event_graph` evaluate versioned typed event timelines without I/O. Current focused fixture covers smoke; inventory/survival/reconnect/combat/projectile typed fixtures remain before this task is complete.
+- [x] [depends:graph] Add negative oracle fixtures for missing events, forbidden events, wrong username/session, stale sequence, and out-of-order causal events. r[mc_compatibility.typed_event_oracle.negative_tests]
+  - Evidence: `typed_event_parser_accepts_versioned_event_lines` rejects unsupported schema; `typed_event_graph_checks_required_forbidden_and_ordered_events` rejects wrong username, forbidden event insertion, and out-of-order causal edges.
+- [ ] [depends:schema] Emit typed client and server events from the maintained Stevenarella probes and Valence/Paper fixtures while preserving existing text logs. r[mc_compatibility.typed_event_oracle.emitters]
+- [ ] [depends:emitters] Record event-log paths, schema version, and normalized timeline BLAKE3 in receipts; keep raw payload recording disabled by default. r[mc_compatibility.typed_event_oracle.receipts]
+  - Partial evidence: `typed_event_oracle_receipt_json` adds receipt metadata with schema version, event-log/timeline hash placeholders, `raw_payloads_recorded=false`, and explicit `migration_status="substring-fallback"`. Live event-log paths and BLAKE3 hashes remain incomplete until emitters land.
+- [ ] [depends:receipts] Migrate representative maintained rails from substring-only checks to typed event-graph checks, with fallback clearly marked for unmigrated rails. r[mc_compatibility.typed_event_oracle.migration]
+- [ ] [depends:migration] Copy reviewable dry-run/live evidence under `docs/evidence/`, update README/current bundle guidance, run runner tests, maintained dry-run checks, evidence manifests, and `nix run --no-update-lock-file .#cairn -- validate --root .`. r[mc_compatibility.typed_event_oracle.validation]

@@ -1,0 +1,16 @@
+# Tasks
+
+- [x] [serial] Define a typed Nickel scenario manifest contract for names, aliases, client/server milestones, forbidden patterns, client/session counts, dry-run wrappers, and receipt expectations. r[mc_compatibility.scenario_manifest.contract]
+  - Evidence: `config/mc-compat/scenario-manifest.ncl` defines the typed `ScenarioManifest`, `ScenarioRow`, and `DryRun` Nickel contracts and 17 maintained scenario rows.
+- [x] [depends:contract] Add positive and negative manifest validation fixtures for valid rows, duplicate scenario names, missing aliases, missing milestones, invalid wrapper metadata, and unsupported migration states. r[mc_compatibility.scenario_manifest.validation]
+  - Evidence: `tools/check_scenario_manifest.rs --self-test` exercises the positive fixture plus duplicate, missing alias, missing milestone, invalid wrapper, and unsupported migration negative fixtures.
+- [x] [depends:validation] Add a drift checker that compares the manifest against runner parse/name/help tables, client/server milestone tables, `flake.nix` dry-run checks, README command listings, and current evidence bundle rows. r[mc_compatibility.scenario_manifest.drift_checker]
+  - Evidence: `tools/check_scenario_manifest.rs` checks generated Rust tables, runner parsing/help/milestone tokens, flake dry-run checks, README listings, and current-bundle row markers or explicit exclusions.
+- [x] [depends:drift_checker] Generate or validate checked-in Rust/JSON scenario tables from the manifest without adding runtime Nickel evaluation to the runner. r[mc_compatibility.scenario_manifest.generated_tables]
+  - Evidence: `tools/mc-compat-runner/src/scenario_manifest_generated.rs` is compiled with the runner; `generated_scenario_manifest_matches_runner_parser` validates parser/milestone parity without runtime Nickel evaluation.
+- [x] [depends:generated_tables] Wire maintained dry-run aggregate coverage to the manifest so every maintained scenario has a dry-run receipt shape check or an explicit exclusion reason. r[mc_compatibility.scenario_manifest.dry_run_coverage]
+  - Evidence: `flake.nix` adds `mc-compat-scenario-manifest` and includes it in `mc-compat-maintained-dry-runs`; the manifest records dry-run checks or explicit exclusions for rows such as `flag-score-repeat` and `survival-chest-persistence`.
+- [x] [depends:dry_run_coverage] Document the source-of-truth workflow in README and copy checker output under `docs/evidence/`. r[mc_compatibility.scenario_manifest.docs]
+  - Evidence: README documents `config/mc-compat/scenario-manifest.ncl`, the generated Rust table, and the local drift-check command. Evidence log: `docs/evidence/protocol-763-scenario-manifest-validation-2026-05-29.run.log`; BLAKE3: `docs/evidence/protocol-763-scenario-manifest-validation-2026-05-29.b3`.
+- [x] [depends:docs] Run manifest fixtures, runner tests, maintained dry-run checks, and `nix run --no-update-lock-file .#cairn -- validate --root .`. r[mc_compatibility.scenario_manifest.validation_evidence]
+  - Evidence: `docs/evidence/protocol-763-scenario-manifest-validation-2026-05-29.run.log` records Nickel typecheck, checker self-test, drift check, and the flake scenario-manifest check. Runner tests passed with 63 tests in `docs/evidence/protocol-763-oracle-triage-drain-runner-tests-2026-05-29.run.log`; Cairn validation is recorded before archive.

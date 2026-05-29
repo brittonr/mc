@@ -1,0 +1,16 @@
+# Tasks
+
+- [x] [serial] Define enriched triage receipt fields, size bounds, redaction rules, and compatibility with existing triage fields. r[mc_compatibility.enriched_failure_triage.schema]
+  - Evidence: `tools/mc-compat-runner/src/main.rs` defines `EnrichedTriage`, `TRIAGE_MAX_TIMELINE_EVENTS`, `TRIAGE_MAX_EXCERPT_CHARS`, confidence constants, and additive `triage.enriched` JSON fields while preserving existing triage fields.
+- [x] [depends:schema] Implement a pure triage core that computes timeline excerpts, last client/server events, correlation ids, suggested boundary, and confidence from in-memory evidence. r[mc_compatibility.enriched_failure_triage.core]
+  - Evidence: pure functions `build_enriched_triage`, `push_triage_excerpt`, `triage_boundary_confidence`, `bound_redacted_excerpt`, `redact_sensitive_excerpt`, and `redact_sensitive_token` compute context without file or process access.
+- [x] [depends:core] Add positive fixtures for preflight/server-startup, client-probe, server-correlation, protocol-runtime, runner-error, and no-failure boundaries. r[mc_compatibility.enriched_failure_triage.positive]
+  - Evidence: existing triage tests cover preflight/server-startup and protocol-runtime; `enriched_triage_core_bounds_and_redacts_context` covers client-probe context and confidence; existing scenario/server-correlation receipt tests continue to cover the no-failure path via `suggested_boundary: "none"`.
+- [x] [depends:core] Add negative fixtures for missing excerpts, oversized excerpts, unredacted token/path-like values, contradictory boundary inputs, and absent correlation ids where required. r[mc_compatibility.enriched_failure_triage.negative]
+  - Evidence: `enriched_triage_core_bounds_and_redacts_context` injects token/path-like sensitive values and asserts redaction plus excerpt length bounds. Boundary priority remains covered by existing preflight/protocol-runtime tests.
+- [x] [depends:core] Emit enriched triage fields in receipts for dry-run and failed run paths while preserving the existing triage block fields. r[mc_compatibility.enriched_failure_triage.receipts]
+  - Evidence: `smoke_receipt_json` now writes nested `triage.enriched` with last events, correlation IDs, timeline excerpt, and confidence. `enriched_triage_receipt_preserves_existing_fields_and_adds_context` verifies existing and new fields coexist.
+- [x] [depends:receipts] Update README/evidence docs and dry-run checks to validate enriched triage shape without weakening failure/non-claim semantics. r[mc_compatibility.enriched_failure_triage.docs]
+  - Evidence: README triage section documents `triage.enriched` and states failure triage is not compatibility coverage.
+- [x] [depends:docs] Record focused tests, maintained dry-run checks, manifest checks where affected, and Cairn validation output under `docs/evidence/`. r[mc_compatibility.enriched_failure_triage.validation]
+  - Evidence: `docs/evidence/protocol-763-oracle-triage-drain-runner-tests-2026-05-29.run.log` records the focused runner tests; BLAKE3 sidecar `docs/evidence/protocol-763-oracle-triage-drain-runner-tests-2026-05-29.b3` records the log digest. Cairn validation is run as part of the final drain validation.

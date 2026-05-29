@@ -655,6 +655,30 @@
           mkdir -p "$out"
           cp ../evidence-manifest-self-test.log ../evidence-manifest-check.log "$out/"
         '';
+        mc-compat-scenario-manifest = pkgs.runCommand "mc-compat-scenario-manifest" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc pkgs.nickel ]; } ''
+          cp -R ${./.} repo
+          chmod -R u+w repo
+          cd repo
+          nickel typecheck config/mc-compat/scenario-manifest.ncl > ../scenario-manifest-typecheck.log
+          rustc --edition=2021 tools/check_scenario_manifest.rs -o ../check-scenario-manifest
+          ../check-scenario-manifest --self-test > ../scenario-manifest-self-test.log
+          ../check-scenario-manifest > ../scenario-manifest-check.log
+          mkdir -p "$out"
+          cp ../scenario-manifest-typecheck.log ../scenario-manifest-self-test.log ../scenario-manifest-check.log "$out/"
+        '';
+        mc-compat-evidence-promotion = pkgs.runCommand "mc-compat-evidence-promotion" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc pkgs.nickel pkgs.b3sum ]; } ''
+          cp -R ${./.} repo
+          chmod -R u+w repo
+          cd repo
+          nickel typecheck config/mc-compat/evidence-promotion-plan.ncl > ../evidence-promotion-typecheck.log
+          rustc --edition=2021 tools/promote_evidence.rs -o ../promote-evidence
+          ../promote-evidence --self-test > ../evidence-promotion-self-test.log
+          ../promote-evidence --out-dir target/evidence-promotion-dry-run > ../evidence-promotion-dry-run.log
+          ../promote-evidence --apply --out-dir target/evidence-promotion-apply > ../evidence-promotion-apply.log
+          test -f target/evidence-promotion-apply/promotion-plan.md
+          mkdir -p "$out"
+          cp ../evidence-promotion-typecheck.log ../evidence-promotion-self-test.log ../evidence-promotion-dry-run.log ../evidence-promotion-apply.log "$out/"
+        '';
         mc-compat-dry-run = pkgs.runCommand "mc-compat-dry-run" { } ''
           mkdir -p fake-stevenarella
           printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
@@ -1162,6 +1186,8 @@
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-acceptance-matrix} "$out/acceptance-matrix"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-current-evidence-bundle} "$out/current-evidence-bundle"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-evidence-manifests} "$out/evidence-manifests"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-scenario-manifest} "$out/scenario-manifest"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-evidence-promotion} "$out/evidence-promotion"
           cat > "$out/manifest.txt" <<'EOF'
           smoke
           multi-client-load-score
@@ -1183,6 +1209,8 @@
           acceptance-matrix
           current-evidence-bundle
           evidence-manifests
+          scenario-manifest
+          evidence-promotion
           EOF
         '';
         mc-compat-bot-probe-dry-run =

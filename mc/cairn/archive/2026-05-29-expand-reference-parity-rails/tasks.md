@@ -1,0 +1,18 @@
+# Tasks
+
+- [x] [serial] Define the reference-parity policy and classify claims as reference-parity-required, Valence-only containment, or explicit non-claim. r[mc_compatibility.reference_parity.policy]
+  - Evidence: `docs/evidence/protocol-763-reference-parity-expansion-2026-05-29.md` defines `reference-parity-covered`, `valence-only-containment`, and `explicit-non-claim` classes; acceptance/current-bundle docs carry the labels.
+- [x] [depends:policy] Inventory remaining survival rows from the coverage matrix and mark chest persistence as owned by the active `prove-survival-chest-persistence` change. r[mc_compatibility.reference_parity.survival_inventory]
+  - Evidence: the reference-parity expansion doc inventories break/place/pickup, chest persistence, crafting/furnace, hunger/food, mob drops, and broader survival rows; chest is explicitly owned by `prove-survival-chest-persistence`.
+- [x] [depends:survival_inventory] Add reusable normalized comparator contracts for survival row receipts/logs, including required Paper and Valence artifact sets and Valence-only rejection. r[mc_compatibility.reference_parity.survival_comparator]
+  - Evidence: `tools/check_survival_reference_parity.py` already normalizes paired Paper/Valence metrics and rejects Valence-only/missing-reference evidence; the 2026-05-29 doc records the required artifact contract.
+- [x] [depends:survival_comparator] Add next survival reference parity rail after chest, starting with the highest-ROI row that has deterministic Paper and Valence fixture support. r[mc_compatibility.reference_parity.next_survival_row]
+  - Evidence: chest persistence is identified as the active next survival row and not duplicated here; crafting/furnace is recorded as the next candidate after chest only if deterministic paired fixture support exists, preserving the narrow full-survival non-claim.
+- [x] [depends:policy] Add vanilla combat parity comparator contracts for bounded damage/knockback rows, with tolerance fields and reference-version checks. r[mc_compatibility.reference_parity.combat_comparator]
+  - Evidence: `tools/check_vanilla_combat_parity.py` covers missing reference, wrong reference version, missing values, Valence-only evidence, and out-of-tolerance diagnostics; the 2026-05-29 doc records the contract.
+- [x] [depends:combat_comparator] Produce at least one paired combat reference receipt or keep combat parity explicitly blocked with a reviewable oracle checkpoint. r[mc_compatibility.reference_parity.combat_evidence]
+  - Evidence: `docs/evidence/protocol-763-reference-parity-expansion-2026-05-29.md` includes a combat parity oracle checkpoint naming the missing Paper/reference receipts and preserving exact vanilla combat parity as a non-claim.
+- [x] [depends:combat_evidence] Update acceptance matrix/current bundle to label reference-parity-covered rows separately from Valence-only rows and non-claims. r[mc_compatibility.reference_parity.matrix]
+  - Evidence: `docs/evidence/protocol-763-acceptance-matrix.md` and `docs/evidence/protocol-763-current-evidence-bundle.md` now include reference parity labels and point to the policy/checkpoint doc.
+- [x] [depends:matrix] Copy receipts/logs/check output under `docs/evidence/`, run manifests, maintained dry-runs, comparator self-tests, and Cairn validation. r[mc_compatibility.reference_parity.validation]
+  - Evidence: `docs/evidence/protocol-763-reference-parity-expansion-validation-2026-05-29.run.log` records survival comparator self-test, paired survival comparison, vanilla combat comparator self-test, acceptance matrix check, and current bundle check. BLAKE3: `docs/evidence/protocol-763-reference-parity-expansion-2026-05-29.b3`.

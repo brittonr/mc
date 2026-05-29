@@ -41,3 +41,4 @@
 - `mc/` is a workspace directory with two independent Rust repos: `hyperion/` and `valence/`.
 - `hyperion/` already has repo-local agent context in `hyperion/.agent/napkin.md` and a project-local skill in `hyperion/.pi/skills/`.
 - `valence/` CI copies `tools/playground/src/playground.template.rs` to `tools/playground/src/playground.rs` before fmt/clippy/test/doc runs.
+- Cairn `archive --execute` in mc currently writes archive dirs as `1970-01-01-<change>`; rename to current-date archive path (e.g. `2026-05-29-<change>`) and rerun `nix run --no-update-lock-file .#cairn -- validate --root .` before staging.

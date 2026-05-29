@@ -25,6 +25,14 @@ This matrix indexes landed, bounded protocol-763 compatibility evidence for the 
 | Projectile damage attribution | `nix run .#mc-compat-valence-ctf-projectile-damage-attribution` | `docs/evidence/protocol-763-roi-10-projectile-damage-pinned-2026-05-27.receipt.json` | `docs/evidence/protocol-763-roi-10-projectile-damage-pinned-2026-05-27.md` | `cf84fcb81ae557ecfbd2ff0b1f8b94af7bf07eaa85c20b1cde442929e3e3e529` | parent `4d29f46`, Valence `e5d18ad`, Stevenarella `616ee72` | Two deterministic clients with pinned Valence projectile use/hit attribution, matching attacker/victim, and victim client health update causality. | No projectile travel/collision simulation, all projectile weapons, exact vanilla damage parity, full projectile physics, or full combat correctness. |
 | Survival break/place/pickup | `nix run .#mc-compat-smoke -- --run --keep-server --server-backend paper --scenario survival-break-place-pickup`; `nix run .#mc-compat-smoke -- --run --server-backend valence --scenario survival-break-place-pickup` | `docs/evidence/protocol-763-survival-reference-paper-2026-05-28.receipt.json` | `docs/evidence/protocol-763-survival-reference-parity-2026-05-28.md` | `a88fe547bfe2dd43fff3ac5bd967f0ebf5a3c539403211dd029865293130090b` | parent `5d4973d`, Valence `7d13a24`, Stevenarella `d758630` | One deterministic client against Paper fixture and Valence `survival_compat` with exact-match join/render, fixed block break, pickup/inventory, and block placement metrics. | No full survival compatibility, broad vanilla parity, all block/item interactions, crafting/furnace/chest/mob/redstone coverage, broad protocol coverage, or production readiness. |
 
+## Reference parity labels
+
+- `reference-parity-covered`: Survival break/place/pickup only; it has paired Paper/reference and Valence artifacts plus normalized comparator output.
+- `valence-only-containment`: CTF scoring, inventory, combat, projectile, reconnect, latency/jitter, and load/network rows; these rows do not claim vanilla/reference parity.
+- `explicit-non-claim`: chest persistence until `prove-survival-chest-persistence` lands paired receipts, exact vanilla combat parity, broad survival, full Minecraft/CTF/protocol correctness.
+
+See `docs/evidence/protocol-763-reference-parity-expansion-2026-05-29.md` for the policy, survival inventory, and combat oracle checkpoint.
+
 ## Remaining gaps and non-claims
 
 | Gap | Status | Why it remains | Next ROI |

@@ -142,6 +142,14 @@ The runner receipt surface includes a `load_network_safety` block that records o
 
 The production/network matrix promotes only bounded owned-local loopback load safety. Broader production readiness, public-server safety, WAN safety, adversarial-network safety, packet-loss tolerance, and unbounded safety remain non-claims unless a future authorized bounded envelope has live telemetry, BLAKE3-backed evidence, and an updated matrix/bundle row.
 
+## Reference parity labels
+
+- `reference-parity-covered`: Survival break/place/pickup only.
+- `valence-only-containment`: CTF scoring, inventory, combat, projectile, reconnect, latency/jitter, and load/network rows.
+- `explicit-non-claim`: chest persistence until `prove-survival-chest-persistence` lands paired receipts, exact vanilla combat parity, broad survival, full Minecraft/CTF/protocol correctness.
+
+Policy/checkpoint: `docs/evidence/protocol-763-reference-parity-expansion-2026-05-29.md`.
+
 ## Non-claims
 
 This bundle still does not claim full Minecraft compatibility, full survival compatibility, vanilla parity, full CTF correctness, projectile travel/collision simulation, all projectile weapon variants, all equipment slots/items, all armor loadouts, enchantment/status-effect semantics, exact vanilla knockback/damage/mitigation balancing, crafting/furnace/chest/mob/redstone coverage, production readiness, public-server load safety, or unbounded soak/reconnect/latency safety.

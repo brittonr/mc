@@ -1,0 +1,16 @@
+# Tasks
+
+- [x] [serial] Define the promotion plan schema, artifact classes, required source/destination paths, BLAKE3 fields, child-revision fields, and non-claim preservation rules. r[mc_compatibility.evidence_promotion.plan]
+  - Evidence: `config/mc-compat/evidence-promotion-plan.ncl` defines the typed plan contract; `tools/promote_evidence.rs` models receipt, run-log, client-log, and server-log artifact classes with source, destination, BLAKE3, child revision, matrix/current-bundle row, validation command, and non-claim fields.
+- [x] [depends:plan] Implement a pure Rust core that computes promotion plans and diagnostics from in-memory rail metadata, receipt summaries, existing matrix/bundle text, and artifact inventories. r[mc_compatibility.evidence_promotion.core]
+  - Evidence: `compute_promotion_plan` and helper validation functions operate only on `PromotionInput` values and return `PromotionPlan` or diagnostics; filesystem reads, BLAKE3 commands, and copying stay in the CLI shell.
+- [x] [depends:core] Add positive and negative core fixtures for complete promotion, missing receipt, missing run log, missing client/server logs, stale BLAKE3, child revision unavailable, duplicate destination, and weakened non-claim text. r[mc_compatibility.evidence_promotion.fixtures]
+  - Evidence: `tools/promote_evidence.rs --self-test` covers the complete fixture plus missing receipt/run/client/server artifact, invalid digest, missing child revision, duplicate destination, and weakened non-claim cases.
+- [x] [depends:core] Add a thin CLI/apply shell with dry-run default, explicit apply mode, exact file writes, and no broad force-add behavior. r[mc_compatibility.evidence_promotion.cli]
+  - Evidence: `tools/promote_evidence.rs` defaults to dry-run, requires `--apply` for writes, writes only exact planned artifact copies plus `promotion-plan.md` to `--out-dir`, and never stages or force-adds paths.
+- [x] [depends:cli] Wire the tool into `flake.nix` and README so operators can run promotion planning locally before evidence gates. r[mc_compatibility.evidence_promotion.workflow]
+  - Evidence: `flake.nix` adds `mc-compat-evidence-promotion` and includes it in maintained dry-run aggregation; README documents the dry-run/apply/validation workflow.
+- [x] [depends:workflow] Support matrix/current-bundle row update plans for at least one representative maintained rail without broadening non-claims. r[mc_compatibility.evidence_promotion.matrix_bundle]
+  - Evidence: the built-in representative rail is `projectile-damage-attribution`; the plan references the acceptance-matrix and current-bundle `Projectile damage attribution` rows, requires full-compat/full-CTF-combat non-claims, and emits plan-only row guidance rather than weakening claims.
+- [x] [depends:matrix_bundle] Record dry-run/apply fixture output and run existing acceptance, current-bundle, manifest, and Cairn validation gates. r[mc_compatibility.evidence_promotion.validation]
+  - Evidence: `docs/evidence/protocol-763-evidence-promotion-validation-2026-05-29.run.log` records Nickel typecheck, Rust compile, self-test, dry-run plan, apply fixture, and flake check. BLAKE3: `docs/evidence/protocol-763-evidence-promotion-validation-2026-05-29.b3`.

@@ -115,6 +115,26 @@ nix run .#mc-compat-valence-ctf-combat-knockback
 # deterministic, non-side-effecting fixture for the same combat/knockback command shape:
 nix run .#mc-compat-valence-ctf-combat-knockback -- --dry-run
 
+# Maintained protocol-763 Valence CTF armor mitigation receipt.
+nix run .#mc-compat-valence-ctf-armor-equipment-mitigation
+# deterministic, non-side-effecting fixture for the same armor command shape:
+nix run .#mc-compat-valence-ctf-armor-equipment-mitigation -- --dry-run
+
+# Maintained protocol-763 Valence CTF equipment update observation receipt.
+nix run .#mc-compat-valence-ctf-equipment-update-observation
+# deterministic, non-side-effecting fixture for the same equipment update command shape:
+nix run .#mc-compat-valence-ctf-equipment-update-observation -- --dry-run
+
+# Maintained protocol-763 Valence CTF projectile use/loadout receipt.
+nix run .#mc-compat-valence-ctf-projectile-hit
+# deterministic, non-side-effecting fixture for the same projectile hit command shape:
+nix run .#mc-compat-valence-ctf-projectile-hit -- --dry-run
+
+# Maintained protocol-763 Valence CTF projectile damage attribution receipt.
+nix run .#mc-compat-valence-ctf-projectile-damage-attribution
+# deterministic, non-side-effecting fixture for the same projectile damage command shape:
+nix run .#mc-compat-valence-ctf-projectile-damage-attribution -- --dry-run
+
 # Maintained protocol-763 Valence CTF flag-carrier death/return receipt.
 # Requires two clients, flag pickup, client-observed death/respawn health restore, Valence flag_carrier_death + flag_return correlation, and no accidental score/capture patterns.
 nix run .#mc-compat-valence-ctf-flag-carrier-death-return
@@ -149,12 +169,17 @@ Receipts also include bounded blocks for the remaining compatibility seams:
 
 - `status_response_resource`: configured/default status description, version, and player sample expectations used by the status probe.
 - `packet_capture_oracle`: headless/redacted packet-summary metadata; raw payloads are not durable evidence by default.
+- `typed_event_oracle`: typed event schema/migration metadata. Current receipts mark `migration_status="substring-fallback"` until each rail emits reviewable typed event logs.
 - `proxy_compat_seam`: direct/proxied route, forwarding mode, owned-local-proxy guard, and non-claims such as `mtls_ported=false` and `credentials_recorded=false`.
 - `gameplay_oracles`: Hyperion-derived milestone vocabulary, correlated-evidence requirement, and explicit non-claims for full CTF correctness, broad compatibility, and unbounded soak.
 
-For `flag-score-repeat`, `reconnect-flag-score`, and `multi-client-load-score`, Valence receipts include `server.required_milestones`, `server.observed_milestones`, `server.missing_milestones`, `server.forbidden_matches`, and `server.client_server_correlation`. Multi-client receipts also include `client.usernames` and `client.log_paths` for per-client inspection. All scenario receipts include a `triage` block with first missing client/server milestones, first forbidden pattern/source, relevant client/server log paths, and a `suggested_boundary` such as `client-probe`, `server-correlation`, `protocol-runtime`, or `preflight-or-server-startup`.
+For `flag-score-repeat`, `reconnect-flag-score`, and `multi-client-load-score`, Valence receipts include `server.required_milestones`, `server.observed_milestones`, `server.missing_milestones`, `server.forbidden_matches`, and `server.client_server_correlation`. Multi-client receipts also include `client.usernames` and `client.log_paths` for per-client inspection. All scenario receipts include a `triage` block with first missing client/server milestones, first forbidden pattern/source, relevant client/server log paths, and a `suggested_boundary` such as `client-probe`, `server-correlation`, `protocol-runtime`, or `preflight-or-server-startup`. The nested `triage.enriched` block adds bounded/redacted context (`last_client_event`, `last_server_event`, `correlation_ids`, `timeline_excerpt`, and `boundary_confidence`) for debugging only; failure triage is not compatibility coverage.
 
 ## Nickel-backed config
+
+The scenario manifest source of truth is `config/mc-compat/scenario-manifest.ncl`. Update it before adding or changing a maintained scenario, then run `nix build .#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L` to typecheck Nickel, run positive/negative manifest fixtures, and check drift against runner tables, flake dry-run checks, README command listings, and current evidence bundle rows. Runtime code consumes checked-in Rust tables in `tools/mc-compat-runner/src/scenario_manifest_generated.rs`; it does not evaluate Nickel at startup.
+
+Evidence promotion plans use the typed shape in `config/mc-compat/evidence-promotion-plan.ncl` and the Rust tool `tools/promote_evidence.rs`. Safe workflow: run `nix build .#checks.x86_64-linux.mc-compat-evidence-promotion --no-link -L`, inspect the dry-run plan, apply only to an explicit output directory, then run acceptance matrix, current bundle, evidence manifest, and Cairn validation before claiming a row. The tool never force-adds broad directories; it copies only planned artifacts and writes `promotion-plan.md`.
 
 The checked-in default config is Nickel-authored at `config/mc-compat/default.ncl` and exported to `config/mc-compat/generated/default.json`. The runner consumes exported JSON, not Nickel at runtime:
 
@@ -257,4 +282,4 @@ The packages are also available as `.#cairn`, `.#cargo-octet`, and `.#octet`.
 nix flake check
 ```
 
-The flake includes focused checks for the runner binary, Nickel config freshness/export consumption, baseline dry-run receipt emission, `valence-compat-bot-probe` bounded probe receipt shape, `multi-client-load-score` scenario dry-run receipt shape, `mc-compat-open-cairns-dry-run` receipt coverage for status resources, packet-capture summaries, proxy seams, and gameplay-oracle non-claims, Paper/Valence matrix dry-run receipts, Paper/Valence receipt comparison fixtures, evidence BLAKE3 manifest/stale-marker validation, missing-checkout diagnostics, help text, Cairn CLI availability, and Octet fingerprint smoke over the receipt producer surface (`mc-compat-receipt-contract`).
+The flake includes focused checks for the runner binary, Nickel config freshness/export consumption, scenario manifest type/drift validation, evidence promotion dry-run/apply fixtures, baseline dry-run receipt emission, `valence-compat-bot-probe` bounded probe receipt shape, `multi-client-load-score` scenario dry-run receipt shape, `mc-compat-open-cairns-dry-run` receipt coverage for status resources, packet-capture summaries, proxy seams, and gameplay-oracle non-claims, Paper/Valence matrix dry-run receipts, Paper/Valence receipt comparison fixtures, evidence BLAKE3 manifest/stale-marker validation, missing-checkout diagnostics, help text, Cairn CLI availability, and Octet fingerprint smoke over the receipt producer surface (`mc-compat-receipt-contract`).
