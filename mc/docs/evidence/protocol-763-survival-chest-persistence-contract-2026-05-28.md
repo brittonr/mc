@@ -75,7 +75,7 @@ Covered claim, once paired evidence exists: one protocol-763 client stores one i
 
 ## Checker contract
 
-`tools/check_survival_chest_persistence.py` is the promotion gate for this row. It must pass positive fixtures and reject:
+`tools/check_survival_chest_persistence.rs` is the Rust promotion gate for this row. It must pass positive fixtures and reject:
 
 - `missing_reference` / Valence-only evidence;
 - `missing_metric` for any required metric above;

@@ -33,6 +33,7 @@
 - Projectile damage attribution evidence must pin Valence to `e5d18ad04010d92881267ac1ea43922ae91821f5` and use a fresh/matching Valence worktree; stale `/tmp/valence-compat-*` worktrees can silently point at the wrong revision if not checked.
 - Armor/modifier evidence needs the `/tmp/mc-compat-valence.log` plus both `/tmp/mc-compat-client.*.log` files copied into `docs/evidence/` before another live rail overwrites them; the runner receipt alone does not carry raw mitigation math.
 - Paper backend evidence needs `--keep-server` for final runs; otherwise runner removes the container and `docker logs` cannot be copied into `docs/evidence/`.
+- User wants checks/scripts authored in Rust or Steel Scheme only. Do not add new Python or Bash gates; migrate touched Python gates before extending them.
 
 ## Domain Notes
 - `mc/` is a workspace directory with two independent Rust repos: `hyperion/` and `valence/`.

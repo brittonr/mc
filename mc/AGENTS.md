@@ -18,6 +18,7 @@
 ## Workflow
 - Before editing inside a child repo, read that repo's `README.md`, `CONTRIBUTING.md`, and any local `AGENTS.md` or `.agent/napkin.md`.
 - Prefer repo-local commands and toolchains. Root `mc/` has no shared Cargo workspace, test runner, or formatter.
+- New checks/scripts for this workspace should be Rust or Steel Scheme, not Python or Bash. Existing Python gates may remain until touched; migrate touched gates before extending them.
 - Avoid mixed commits across `hyperion/` and `valence/` unless user asks for cross-repo change.
 - For Cairn evidence, do not leave review-critical receipts only under untracked `target/`; copy receipt/log artifacts into `docs/evidence/` and record BLAKE3 when tasks/docs cite them.
 - Paper backend containers are removed after runner exit unless `--keep-server` is used; use `--keep-server`, copy `docker logs <server>` into `docs/evidence/`, then `docker rm -f <server>` for reviewable Paper server logs.
