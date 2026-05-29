@@ -11,6 +11,14 @@ const CONTRACT_FLAG: &str = "--contract";
 const RECORD_FLAG: &str = "--record";
 const CONTRACT_DOC: &str =
     "docs/evidence/protocol-763-adversarial-network-oracle-contract-2026-05-29.md";
+const PRODUCTION_MATRIX_DOC: &str =
+    "docs/evidence/protocol-763-production-network-safety-matrix-2026-05-28.md";
+const CURRENT_BUNDLE_DOC: &str = "docs/evidence/protocol-763-current-evidence-bundle.md";
+const ACCEPTANCE_MATRIX_DOC: &str = "docs/evidence/protocol-763-acceptance-matrix.md";
+const ROW_DOC: &str = "docs/evidence/protocol-763-adversarial-network-oracle-2026-05-29.md";
+const ROW_RECEIPT: &str =
+    "docs/evidence/protocol-763-adversarial-network-oracle-2026-05-29.receipt.json";
+const ROW_MANIFEST: &str = "docs/evidence/protocol-763-adversarial-network-oracle-2026-05-29.b3";
 const EXPECTED_RAIL_NAME: &str = "adversarial-network-oracle";
 const EXPECTED_THREAT_MODEL_ID: &str = "protocol763-custom-payload-truncated-varint-v1";
 const EXPECTED_MUTATION_TYPE: &str = "custom_payload_truncated_varint";
@@ -66,6 +74,50 @@ const CONTRACT_TOKENS: &[&str] = &[
     "missing_abort_criteria",
     "security_overclaim",
     "full protocol security remain non-claims",
+];
+
+const ROW_RECEIPT_TOKENS: &[&str] = &[
+    "mc.compat.adversarial_network_oracle.receipt.v1",
+    "\"mode\": \"fixture\"",
+    "\"dry_run\": true",
+    EXPECTED_THREAT_MODEL_ID,
+    EXPECTED_MUTATION_TYPE,
+    "\"live_network_enabled\": false",
+    "\"claims_adversarial_network_safety\": false",
+    "\"claims_full_protocol_security\": false",
+];
+
+const MATRIX_TOKENS: &[&str] = &[
+    "covered_fixture_oracle_only",
+    EXPECTED_THREAT_MODEL_ID,
+    EXPECTED_MUTATION_TYPE,
+    "live_network_enabled=false",
+    ROW_RECEIPT,
+    "d60a401911bab20890cf8fb7e5dd248ae668c9c9baab01070f38522af246455a",
+    "No live adversarial-network safety",
+    "no full protocol security",
+];
+
+const CURRENT_BUNDLE_TOKENS: &[&str] = &[
+    "fixture-only adversarial-network oracle row",
+    ROW_DOC,
+    ROW_RECEIPT,
+    ROW_MANIFEST,
+    "tools/check_adversarial_network_oracle.rs",
+    "live adversarial-network safety",
+    "full protocol security",
+];
+
+const ACCEPTANCE_MATRIX_TOKENS: &[&str] = &[
+    "fixture-only adversarial-network oracle row are covered",
+    ROW_DOC,
+    "before any live or broader promotion",
+];
+
+const ROW_DOC_TOKENS: &[&str] = &[
+    "promote only the bounded fixture oracle row",
+    "claims.full_protocol_security",
+    "No live adversarial-network safety",
 ];
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -141,7 +193,39 @@ where
 
 fn run_repo_check(args: &Args) -> Result<String, Vec<String>> {
     let contract_text = read_text(&args.contract_path)?;
+    let row_receipt_text = read_text(ROW_RECEIPT)?;
+    let matrix_text = read_text(PRODUCTION_MATRIX_DOC)?;
+    let bundle_text = read_text(CURRENT_BUNDLE_DOC)?;
+    let acceptance_text = read_text(ACCEPTANCE_MATRIX_DOC)?;
+    let row_doc_text = read_text(ROW_DOC)?;
+
     let mut errors = validate_contract_text(&contract_text);
+    errors.extend(validate_text_tokens(
+        "row receipt",
+        &row_receipt_text,
+        ROW_RECEIPT_TOKENS,
+    ));
+    errors.extend(validate_text_tokens(
+        "production matrix",
+        &matrix_text,
+        MATRIX_TOKENS,
+    ));
+    errors.extend(validate_text_tokens(
+        "current bundle",
+        &bundle_text,
+        CURRENT_BUNDLE_TOKENS,
+    ));
+    errors.extend(validate_text_tokens(
+        "acceptance matrix",
+        &acceptance_text,
+        ACCEPTANCE_MATRIX_TOKENS,
+    ));
+    errors.extend(validate_text_tokens(
+        "row evidence doc",
+        &row_doc_text,
+        ROW_DOC_TOKENS,
+    ));
+
     if let Some(record_path) = &args.record_path {
         let record_text = read_text(record_path)?;
         let record = parse_record(&record_text)?;
@@ -149,9 +233,11 @@ fn run_repo_check(args: &Args) -> Result<String, Vec<String>> {
     }
     if errors.is_empty() {
         Ok(format!(
-            "contract={} record={}",
+            "contract={} record={} matrix={} bundle={}",
             args.contract_path,
-            args.record_path.is_some()
+            args.record_path.is_some(),
+            PRODUCTION_MATRIX_DOC,
+            CURRENT_BUNDLE_DOC
         ))
     } else {
         Err(errors)
@@ -206,10 +292,14 @@ fn insert_record_value(
 }
 
 fn validate_contract_text(text: &str) -> Vec<String> {
+    validate_text_tokens("contract", text, CONTRACT_TOKENS)
+}
+
+fn validate_text_tokens(label: &str, text: &str, tokens: &[&str]) -> Vec<String> {
     let mut errors = Vec::new();
-    for token in CONTRACT_TOKENS {
+    for token in tokens {
         if !text.contains(token) {
-            errors.push(format!("contract missing token: {token}"));
+            errors.push(format!("{label} missing token: {token}"));
         }
     }
     errors

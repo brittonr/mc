@@ -108,7 +108,8 @@ ROI 10 re-promotes projectile damage attribution with pinned dependency and caus
 ```sh
 python3 tools/check_acceptance_matrix.py
 python3 tools/check_current_evidence_bundle.py
-python3 tools/check_load_network_safety.py
+./tools/check_adversarial_network_oracle.rs --self-test
+./tools/check_adversarial_network_oracle.rs --record docs/evidence/protocol-763-adversarial-network-oracle-fixture-2026-05-29.record
 python3 tools/check_death_respawn_lifecycle.py
 python3 tools/check_inventory_semantics_matrix.py
 python3 tools/check_equipment_slot_item_matrix.py
@@ -121,6 +122,7 @@ python3 tools/check_survival_coverage_matrix.py
 python3 tools/check_survival_reference_parity.py
 ./tools/check_survival_chest_persistence.rs --self-test
 nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-adversarial-network-oracle --no-link -L
 nix run --no-update-lock-file .#cairn -- validate --root .
 ```
 
@@ -146,16 +148,17 @@ Reviewable copied receipts for matrix rows are indexed at `docs/evidence/protoco
 
 The runner receipt surface includes a `load_network_safety` block that records owned-local or explicit authorization, client/duration/reconnect/network bounds, telemetry readiness, and fail-closed diagnostics. Evidence: `docs/evidence/protocol-763-load-network-safety-2026-05-27.md` and `docs/evidence/protocol-763-production-network-safety-matrix-2026-05-28.md`.
 
-The production/network matrix promotes only bounded owned-local loopback load safety. Broader production readiness, public-server safety, WAN safety, adversarial-network safety, packet-loss tolerance, and unbounded safety remain non-claims unless a future authorized bounded envelope has live telemetry, BLAKE3-backed evidence, and an updated matrix/bundle row.
+The production/network matrix promotes bounded owned-local loopback load safety plus one deterministic fixture-only adversarial-network oracle row. The fixture row is backed by `docs/evidence/protocol-763-adversarial-network-oracle-2026-05-29.md`, receipt `docs/evidence/protocol-763-adversarial-network-oracle-2026-05-29.receipt.json`, BLAKE3 manifest `docs/evidence/protocol-763-adversarial-network-oracle-2026-05-29.b3`, and checker `tools/check_adversarial_network_oracle.rs`. Broader production readiness, public-server safety, WAN safety, live adversarial-network safety, packet-loss tolerance, unbounded adversarial robustness, and unbounded safety remain non-claims unless a future authorized live envelope has telemetry, BLAKE3-backed evidence, and an updated matrix/bundle row.
 
 ## Reference parity labels
 
 - `reference-parity-covered`: Survival break/place/pickup and chest persistence only.
 - `valence-only-containment`: CTF scoring, inventory, combat, projectile, reconnect, latency/jitter, and load/network rows.
+- `fixture-only-oracle`: The adversarial-network oracle row only; no live traffic or broad security claim.
 - `explicit-non-claim`: exact vanilla combat parity, broad survival, full Minecraft/CTF/protocol correctness, and survival rows not named as reference-parity covered.
 
 Policy/checkpoint: `docs/evidence/protocol-763-reference-parity-expansion-2026-05-29.md`.
 
 ## Non-claims
 
-This bundle still does not claim full Minecraft compatibility, full survival compatibility, broad vanilla parity, full CTF correctness, projectile travel/collision simulation, all projectile weapon variants, all equipment slots/items, all armor loadouts, enchantment/status-effect semantics, exact vanilla knockback/damage/mitigation balancing, all-container behavior, restart/world persistence, crafting/furnace/hunger/mob/redstone/biome/dimension coverage, production readiness, public-server load safety, or unbounded soak/reconnect/latency safety.
+This bundle still does not claim full Minecraft compatibility, full survival compatibility, broad vanilla parity, full CTF correctness, projectile travel/collision simulation, all projectile weapon variants, all equipment slots/items, all armor loadouts, enchantment/status-effect semantics, exact vanilla knockback/damage/mitigation balancing, all-container behavior, restart/world persistence, crafting/furnace/hunger/mob/redstone/biome/dimension coverage, production readiness, public-server load safety, live adversarial-network safety, malicious-client resilience, hostile internet safety, full protocol security, or unbounded soak/reconnect/latency safety.

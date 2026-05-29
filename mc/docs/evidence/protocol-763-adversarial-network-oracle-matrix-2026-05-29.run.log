@@ -1,0 +1,12 @@
+command: /tmp/check-adversarial-network-oracle --record docs/evidence/protocol-763-adversarial-network-oracle-fixture-2026-05-29.record
+adversarial-network oracle check passed: contract=docs/evidence/protocol-763-adversarial-network-oracle-contract-2026-05-29.md record=true matrix=docs/evidence/protocol-763-production-network-safety-matrix-2026-05-28.md bundle=docs/evidence/protocol-763-current-evidence-bundle.md
+command: python3 tools/check_acceptance_matrix.py
+acceptance matrix ok: 17 seams, 17 hashes
+command: python3 tools/check_current_evidence_bundle.py
+current evidence bundle ok: 17 seams
+matrix token audit:
+token ok: covered_fixture_oracle_only
+token ok: protocol763-custom-payload-truncated-varint-v1
+token ok: No live adversarial-network safety
+token ok: docs/evidence/protocol-763-adversarial-network-oracle-2026-05-29.receipt.json
+result: PASS

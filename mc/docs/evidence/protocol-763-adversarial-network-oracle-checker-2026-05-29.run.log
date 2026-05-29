@@ -8,11 +8,11 @@ Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb pa
 OnixResearch tools are pinned over SSH: cairn, cargo-octet
 command: /tmp/check-adversarial-network-oracle --self-test
 adversarial-network oracle self-test passed: positive fixture and fail-closed mutations passed
-command: /tmp/check-adversarial-network-oracle
-adversarial-network oracle check passed: contract=docs/evidence/protocol-763-adversarial-network-oracle-contract-2026-05-29.md record=false
+command: /tmp/check-adversarial-network-oracle --record docs/evidence/protocol-763-adversarial-network-oracle-fixture-2026-05-29.record
+adversarial-network oracle check passed: contract=docs/evidence/protocol-763-adversarial-network-oracle-contract-2026-05-29.md record=true matrix=docs/evidence/protocol-763-production-network-safety-matrix-2026-05-28.md bundle=docs/evidence/protocol-763-current-evidence-bundle.md
 command: nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-adversarial-network-oracle --no-link -L
 this derivation will be built:
-  /nix/store/8xhn9hsyyp7bvmkk3nvqpxkc3ia8k5vz-mc-compat-adversarial-network-oracle.drv
+  /nix/store/vvm9c1dkc65h44ynal96nsbkvfgvb4a7-mc-compat-adversarial-network-oracle.drv
 cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
-building '/nix/store/8xhn9hsyyp7bvmkk3nvqpxkc3ia8k5vz-mc-compat-adversarial-network-oracle.drv'...
+building '/nix/store/vvm9c1dkc65h44ynal96nsbkvfgvb4a7-mc-compat-adversarial-network-oracle.drv'...
 result: PASS
