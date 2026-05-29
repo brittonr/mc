@@ -49,6 +49,24 @@ const GIT_STATUS_PORCELAIN_FLAG: &str = "--porcelain";
 const PROJECTILE_DAMAGE_CONTEXT_VELOCITY: f64 = 0.0;
 const PROJECTILE_DAMAGE_CONTEXT_PULL_STRENGTH: f64 = 1.0;
 const PROJECTILE_DAMAGE_VICTIM_START_HEALTH: f64 = 20.0;
+const SURVIVAL_CHEST_CLIENT_OPEN_NEEDLE: &str = "survival_chest_open_seen window=1 position=8,64,0";
+const SURVIVAL_CHEST_CLIENT_STORE_NEEDLE: &str =
+    "survival_chest_store_sent window=1 slot=0 item=Dirt count=1";
+const SURVIVAL_CHEST_CLIENT_CLOSE_NEEDLE: &str = "survival_chest_close_sent window=1";
+const SURVIVAL_CHEST_CLIENT_RECONNECT_NEEDLE: &str = "survival_chest_reconnect_sent session=1";
+const SURVIVAL_CHEST_CLIENT_REOPEN_NEEDLE: &str =
+    "survival_chest_reopen_seen window=2 position=8,64,0";
+const SURVIVAL_CHEST_CLIENT_PERSISTED_NEEDLE: &str =
+    "survival_chest_persisted_seen window=2 slot=0 item=Dirt count=1";
+const SURVIVAL_CHEST_SERVER_OPEN_NEEDLE: &str =
+    "survival_chest_open username=compatbot position=8,64,0 window=1";
+const SURVIVAL_CHEST_SERVER_STORE_NEEDLE: &str =
+    "survival_chest_store username=compatbot window=1 slot=0 item=Dirt count=1";
+const SURVIVAL_CHEST_SERVER_CLOSE_NEEDLE: &str = "survival_chest_close username=compatbot window=1";
+const SURVIVAL_CHEST_SERVER_REOPEN_NEEDLE: &str =
+    "survival_chest_reopen username=compatbot position=8,64,0 window=2";
+const SURVIVAL_CHEST_SERVER_PERSISTED_NEEDLE: &str =
+    "survival_chest_persisted username=compatbot slot=0 item=Dirt count=1";
 const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|combat-damage|combat-knockback|armor-equipment-mitigation|equipment-update-observation|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
@@ -1178,17 +1196,29 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             ("protocol_detected", "Detected server protocol version"),
             ("join_game", "join_game"),
             ("render_tick", "render_tick_with_player"),
-            ("survival_chest_open_seen", "survival_chest_open_seen"),
-            ("survival_chest_store_sent", "survival_chest_store_sent"),
-            ("survival_chest_close_sent", "survival_chest_close_sent"),
             (
-                "survival_chest_reconnect_sent",
-                "survival_chest_reconnect_sent",
+                "survival_chest_open_seen",
+                SURVIVAL_CHEST_CLIENT_OPEN_NEEDLE,
             ),
-            ("survival_chest_reopen_seen", "survival_chest_reopen_seen"),
+            (
+                "survival_chest_store_sent",
+                SURVIVAL_CHEST_CLIENT_STORE_NEEDLE,
+            ),
+            (
+                "survival_chest_close_sent",
+                SURVIVAL_CHEST_CLIENT_CLOSE_NEEDLE,
+            ),
+            (
+                "survival_chest_reconnect_sent",
+                SURVIVAL_CHEST_CLIENT_RECONNECT_NEEDLE,
+            ),
+            (
+                "survival_chest_reopen_seen",
+                SURVIVAL_CHEST_CLIENT_REOPEN_NEEDLE,
+            ),
             (
                 "survival_chest_persisted_seen",
-                "survival_chest_persisted_seen",
+                SURVIVAL_CHEST_CLIENT_PERSISTED_NEEDLE,
             ),
         ],
         Scenario::CombatDamage => &[
@@ -1385,13 +1415,25 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
         ],
         Scenario::SurvivalChestPersistence => &[
             ("server_username_seen", "compatbot"),
-            ("server_survival_chest_open", "survival_chest_open"),
-            ("server_survival_chest_store", "survival_chest_store"),
-            ("server_survival_chest_close", "survival_chest_close"),
-            ("server_survival_chest_reopen", "survival_chest_reopen"),
+            (
+                "server_survival_chest_open",
+                SURVIVAL_CHEST_SERVER_OPEN_NEEDLE,
+            ),
+            (
+                "server_survival_chest_store",
+                SURVIVAL_CHEST_SERVER_STORE_NEEDLE,
+            ),
+            (
+                "server_survival_chest_close",
+                SURVIVAL_CHEST_SERVER_CLOSE_NEEDLE,
+            ),
+            (
+                "server_survival_chest_reopen",
+                SURVIVAL_CHEST_SERVER_REOPEN_NEEDLE,
+            ),
             (
                 "server_survival_chest_persisted",
-                "survival_chest_persisted",
+                SURVIVAL_CHEST_SERVER_PERSISTED_NEEDLE,
             ),
         ],
         Scenario::CombatDamage => &[
@@ -5515,6 +5557,21 @@ RED: 1
             .missing_milestones
             .contains(&"survival_chest_reopen_seen"));
 
+        let wrong_client_values = evaluate_scenario(
+            Scenario::SurvivalChestPersistence,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nsurvival_chest_open_seen window=1 position=9,64,0\nsurvival_chest_store_sent window=1 slot=1 item=Stone count=2\nsurvival_chest_close_sent window=1\nsurvival_chest_reconnect_sent session=2\nsurvival_chest_reopen_seen window=2 position=9,64,0\nsurvival_chest_persisted_seen window=2 slot=1 item=Stone count=2\n",
+        );
+        assert!(!wrong_client_values.passed, "{wrong_client_values:?}");
+        assert!(wrong_client_values
+            .missing_milestones
+            .contains(&"survival_chest_open_seen"));
+        assert!(wrong_client_values
+            .missing_milestones
+            .contains(&"survival_chest_store_sent"));
+        assert!(wrong_client_values
+            .missing_milestones
+            .contains(&"survival_chest_persisted_seen"));
+
         let server = evaluate_server_scenario(
             Scenario::SurvivalChestPersistence,
             "compatbot joined\nMC-COMPAT-MILESTONE survival_chest_open username=compatbot position=8,64,0 window=1\nMC-COMPAT-MILESTONE survival_chest_store username=compatbot window=1 slot=0 item=Dirt count=1\nMC-COMPAT-MILESTONE survival_chest_close username=compatbot window=1\nMC-COMPAT-MILESTONE survival_chest_reopen username=compatbot position=8,64,0 window=2\nMC-COMPAT-MILESTONE survival_chest_persisted username=compatbot slot=0 item=Dirt count=1\n",
@@ -5531,6 +5588,22 @@ RED: 1
         assert!(missing_store
             .missing_milestones
             .contains(&"server_survival_chest_store"));
+
+        let wrong_server_values = evaluate_server_scenario(
+            Scenario::SurvivalChestPersistence,
+            "compatbot joined\nMC-COMPAT-MILESTONE survival_chest_open username=compatbot position=9,64,0 window=1\nMC-COMPAT-MILESTONE survival_chest_store username=compatbot window=1 slot=1 item=Stone count=2\nMC-COMPAT-MILESTONE survival_chest_close username=compatbot window=1\nMC-COMPAT-MILESTONE survival_chest_reopen username=compatbot position=9,64,0 window=2\nMC-COMPAT-MILESTONE survival_chest_persisted username=compatbot slot=1 item=Stone count=2\n",
+            "compatbot",
+        );
+        assert!(!wrong_server_values.passed, "{wrong_server_values:?}");
+        assert!(wrong_server_values
+            .missing_milestones
+            .contains(&"server_survival_chest_open"));
+        assert!(wrong_server_values
+            .missing_milestones
+            .contains(&"server_survival_chest_store"));
+        assert!(wrong_server_values
+            .missing_milestones
+            .contains(&"server_survival_chest_persisted"));
     }
 
     #[test]

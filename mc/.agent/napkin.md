@@ -10,6 +10,7 @@
 | 2026-05-28 | done-review | Refresh fixed Valence revision but still claimed Stevenarella `9921e68` without repo-local receipt or oracle evidence for the client rev | When receipt schema lacks child client rev, add an oracle checkpoint doc with question/evidence/decision/owner/next-action before claiming the child revision |
 | 2026-05-28 | done-review | Marked broad parser-fixture tasks complete by treating raw `Vec<u8>` byte-preservation as positive+negative parser-shape evidence | For byte-opaque raw packet consumers, claim only raw byte preservation and add explicit semantic malformed-payload non-claim; require true negative rejection fixtures only for structured parsers unless semantic decoders exist |
 | 2026-05-29 | self | Ran `tools/check_evidence_manifests.py` with a `.b3` path, but the checker accepts only no args or `--self-test` | Run `nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py` for the repo-wide manifest check; use `b3sum` directly for one manifest |
+| 2026-05-29 | self | Wrote an evidence oracle with an unquoted shell heredoc containing backticks, causing command substitution and a corrupted doc | Use `write` for markdown with backticks or quote heredoc delimiters (`<<'EOF'`) when generating evidence docs |
 
 ## User Preferences
 - Keep replies terse and direct.
