@@ -1,0 +1,45 @@
+{
+  "schema": "mc.compat.adversarial_network_oracle.receipt.v1",
+  "status": "pass",
+  "mode": "fixture",
+  "dry_run": true,
+  "source_record": "docs/evidence/protocol-763-adversarial-network-oracle-fixture-2026-05-29.record",
+  "oracle_checkpoint": "docs/evidence/protocol-763-adversarial-network-oracle-checkpoint-2026-05-29.md",
+  "adversarial_network_oracle": {
+    "selected": true,
+    "rail": "adversarial-network-oracle",
+    "threat_model_id": "protocol763-custom-payload-truncated-varint-v1",
+    "threat_model_approved": true,
+    "oracle_decision": "approved_for_deterministic_fixture_only",
+    "mutation_types": [
+      "custom_payload_truncated_varint"
+    ],
+    "max_mutated_packets": 1,
+    "max_payload_bytes": 64,
+    "live_network_enabled": false,
+    "target_ownership": "owned-local-fixture",
+    "authorization": "fixture-only-approved",
+    "telemetry_present": true,
+    "telemetry_fields": [
+      "threat_model_id",
+      "mutation_types",
+      "packet_bounds",
+      "target_ownership",
+      "authorization",
+      "abort_criteria",
+      "observed_containment",
+      "oracle_decision"
+    ],
+    "abort_criteria": "fail_closed_before_live_traffic",
+    "observed_containment": "failed_closed_before_live_traffic",
+    "promotion_ready": true,
+    "claims_adversarial_network_oracle_fixture": true,
+    "claims_adversarial_network_safety": false,
+    "claims_malicious_client_resilience": false,
+    "claims_hostile_internet_safety": false,
+    "claims_production_readiness": false,
+    "claims_public_server_safety": false,
+    "claims_unbounded_adversarial_robustness": false,
+    "claims_full_protocol_security": false
+  }
+}

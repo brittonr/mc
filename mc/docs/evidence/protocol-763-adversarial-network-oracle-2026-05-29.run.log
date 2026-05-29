@@ -1,0 +1,22 @@
+command: nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_adversarial_network_oracle.rs -o /tmp/check-adversarial-network-oracle
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+command: /tmp/check-adversarial-network-oracle --self-test
+adversarial-network oracle self-test passed: positive fixture and fail-closed mutations passed
+command: /tmp/check-adversarial-network-oracle --record docs/evidence/protocol-763-adversarial-network-oracle-fixture-2026-05-29.record
+adversarial-network oracle check passed: contract=docs/evidence/protocol-763-adversarial-network-oracle-contract-2026-05-29.md record=true
+receipt token audit:
+token ok: "schema": "mc.compat.adversarial_network_oracle.receipt.v1"
+token ok: "mode": "fixture"
+token ok: "dry_run": true
+token ok: "threat_model_id": "protocol763-custom-payload-truncated-varint-v1"
+token ok: "live_network_enabled": false
+token ok: "observed_containment": "failed_closed_before_live_traffic"
+token ok: "claims_adversarial_network_safety": false
+token ok: "claims_full_protocol_security": false
+summary doc token audit:
+token ok: promote only the bounded fixture oracle row
+token ok: No live adversarial-network safety
+token ok: full protocol security claim is made
+result: PASS

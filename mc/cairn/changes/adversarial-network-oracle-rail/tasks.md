@@ -10,6 +10,7 @@
   - Detail: Add fail-closed preflight tests.
   - Detail: Add bounded mutation telemetry contract.
   - Detail: Promote only approved model row.
-- [ ] [depends:rail] Produce reviewable row evidence under `docs/evidence/`, including receipts/logs/check output and BLAKE3 manifests. r[mc_compatibility.adversarial_network_oracle_rail.evidence]
+- [x] [depends:rail] Produce reviewable row evidence under `docs/evidence/`, including receipts/logs/check output and BLAKE3 manifests. r[mc_compatibility.adversarial_network_oracle_rail.evidence]
+  - Evidence: `docs/evidence/protocol-763-adversarial-network-oracle-2026-05-29.md` indexes the contract, fixture, checkpoint, receipt, and validation artifacts; `docs/evidence/protocol-763-adversarial-network-oracle-2026-05-29.receipt.json` records the deterministic fixture receipt; verification output is in `docs/evidence/protocol-763-adversarial-network-oracle-2026-05-29.run.log`; BLAKE3 manifest `docs/evidence/protocol-763-adversarial-network-oracle-2026-05-29.b3`.
 - [ ] [depends:evidence] Promote only the `adversarial-network safety` row and keep adjacent non-claims explicit in matrix/current-bundle docs. r[mc_compatibility.adversarial_network_oracle_rail.matrix]
 - [ ] [depends:matrix] Run row checker self-tests, row evidence checker, evidence manifest check, task-evidence gate, Cairn gates, and Cairn validation with output copied under `docs/evidence/`. r[mc_compatibility.adversarial_network_oracle_rail.validation]
