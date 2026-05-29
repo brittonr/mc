@@ -31,3 +31,12 @@ $ nix run --no-update-lock-file .#cairn -- validate --root .
   "specs_validated": 2,
   "valid": true
 }
+
+
+$ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 35 manifests, 185 entries, 54 receipts scanned
+
+# Note: manifest check output above was captured before appending this transcript block; this .b3 manifest was refreshed after appending, then the same command was rerun successfully.
