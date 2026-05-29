@@ -1,7 +1,7 @@
 $ python3 -m py_compile tools/check_load_network_safety.py
 
 $ python3 tools/check_load_network_safety.py --self-test
-load/network safety self-test ok
+load/network safety self-test ok: over-limit clients/duration/reconnect, reconnect-zero, WAN fail-closed
 
 $ python3 tools/check_load_network_safety.py
 load/network safety ok: owned-local covered, public/WAN/adversarial claims blocked

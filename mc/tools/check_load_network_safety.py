@@ -255,7 +255,7 @@ def validate_receipt(evidence: LoadSafetyEvidence) -> list[str]:
     require_equal(issues, "load_network_safety.max_duration_secs", safety.get("max_duration_secs"), MAX_DURATION_SECS)
     require_int_between(issues, "load_network_safety.planned_clients", safety.get("planned_clients"), 1, MAX_LOCAL_CLIENTS)
     require_int_between(issues, "load_network_safety.duration_secs", safety.get("duration_secs"), 1, MAX_DURATION_SECS)
-    require_int_between(issues, "load_network_safety.reconnect_sessions", safety.get("reconnect_sessions"), 1, MAX_RECONNECT_SESSIONS)
+    require_int_between(issues, "load_network_safety.reconnect_sessions", safety.get("reconnect_sessions"), 0, MAX_RECONNECT_SESSIONS)
     require_equal(issues, "load_network_safety.bound_violations", safety.get("bound_violations"), [])
     require_equal(issues, "load_network_safety.missing_fields", safety.get("missing_fields"), [])
     require_true(issues, "load_network_safety.telemetry_present", safety.get("telemetry_present"))
@@ -481,6 +481,16 @@ def assert_self_tests() -> None:
     issues = validate_load_safety(over_limit_duration)
     assert any("duration_secs_exceed_max" in issue for issue in issues), issues
 
+    zero_reconnect_sessions = valid_fixture()
+    zero_reconnect_sessions.receipt["load_network_safety"]["reconnect_sessions"] = 0
+    issues = validate_load_safety(zero_reconnect_sessions)
+    assert not issues, issues
+
+    over_limit_reconnect_sessions = valid_fixture()
+    over_limit_reconnect_sessions.receipt["load_network_safety"]["reconnect_sessions"] = MAX_RECONNECT_SESSIONS + 1
+    issues = validate_load_safety(over_limit_reconnect_sessions)
+    assert any("reconnect_sessions_exceed_max" in issue for issue in issues), issues
+
     missing_bounds = valid_fixture()
     missing_bounds.matrix_text = missing_bounds.matrix_text.replace(f"max_clients={MAX_LOCAL_CLIENTS}", "")
     issues = validate_load_safety(missing_bounds)
@@ -543,7 +553,7 @@ def main() -> int:
     args = parse_args()
     if args.self_test:
         assert_self_tests()
-        print("load/network safety self-test ok")
+        print("load/network safety self-test ok: over-limit clients/duration/reconnect, reconnect-zero, WAN fail-closed")
         return 0
     issues = validate_load_safety(load_repo_evidence())
     if issues:

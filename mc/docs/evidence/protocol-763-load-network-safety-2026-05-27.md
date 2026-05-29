@@ -57,6 +57,7 @@ Negative fixture:
 - public target without authorization;
 - planned clients above the bound;
 - duration above the bound;
+- reconnect sessions above the bound while `reconnect_sessions=0` remains valid;
 - missing latency field;
 - missing telemetry and no live receipt;
 - WAN receipt request with perturbation tooling unavailable fails closed with `status=failed_closed`, `promotion_ready=false`, `claims_wan_safety=false`, and `missing_fields=[perturbation_tool]`;
