@@ -100,6 +100,8 @@ const NEGATIVE_INVENTORY_STALE_STATE_OFFSET: i32 = 1;
 const NEGATIVE_CLICK_BUTTON: u8 = 0;
 const NEGATIVE_CLICK_MODE: i32 = 0;
 const NEGATIVE_CUSTOM_PAYLOAD_TICK: u32 = 420;
+const NEGATIVE_CUSTOM_PAYLOAD_CONTAINMENT_TICK: u32 = 460;
+const NEGATIVE_FLAG_CONTAINMENT_TICK_OFFSET: u32 = 120;
 const NEGATIVE_CUSTOM_PAYLOAD_DATA: &[u8] = &[0xff, 0x00, 0xff];
 
 fn parse_flag_probe_repeat_target(value: Option<&str>) -> u32 {
@@ -166,6 +168,7 @@ pub struct Server {
     logged_render_tick_with_player: bool,
     negative_probe: Option<String>,
     negative_probe_sent: bool,
+    negative_probe_outcome_logged: bool,
     active_probe_enabled: bool,
     team_probe_enabled: bool,
     combat_probe_enabled: bool,
@@ -724,6 +727,7 @@ impl Server {
                 .ok()
                 .filter(|probe| !probe.is_empty() && probe != "0"),
             negative_probe_sent: false,
+            negative_probe_outcome_logged: false,
             active_probe_enabled: std::env::var("MC_COMPAT_ACTIVE_PROBE")
                 .map(|value| value != "0")
                 .unwrap_or(false),
@@ -827,6 +831,14 @@ impl Server {
     fn negative_inventory_probe_selected(&self) -> bool {
         self.negative_probe_is("inventory_stale_state")
             || self.negative_probe_is("inventory_invalid_click")
+    }
+
+    fn log_negative_probe_outcome_once(&mut self, milestone: &str, detail: &str) {
+        if self.negative_probe_outcome_logged {
+            return;
+        }
+        info!("MC-COMPAT-MILESTONE {milestone} {detail}");
+        self.negative_probe_outcome_logged = true;
     }
 
     pub fn tick(&mut self, renderer: &mut render::Renderer, delta: f64) {
@@ -960,6 +972,16 @@ impl Server {
                 data: NEGATIVE_CUSTOM_PAYLOAD_DATA.to_vec(),
             });
             self.negative_probe_sent = true;
+        }
+
+        if self.negative_probe_is("custom_payload_malformed")
+            && self.active_probe_ticks >= NEGATIVE_CUSTOM_PAYLOAD_CONTAINMENT_TICK
+            && self.negative_probe_sent
+        {
+            self.log_negative_probe_outcome_once(
+                "negative_custom_payload_contained",
+                "postcondition=client_alive_after_malformed_payload",
+            );
         }
 
         if self.team_probe_enabled {
@@ -1567,6 +1589,26 @@ impl Server {
                     flag_team
                 );
                 self.negative_probe_sent = true;
+            }
+            if self.negative_probe_is("reconnect_race")
+                && self.negative_probe_sent
+                && self.flag_probe_have_flag_seen
+            {
+                self.log_negative_probe_outcome_once(
+                    "negative_reconnect_race_contained",
+                    "postcondition=flag_pickup_without_score_corruption",
+                );
+            }
+            if self.negative_probe_is("ctf_wrong_score")
+                && self.negative_probe_sent
+                && self.active_probe_ticks
+                    >= first_flag_tick + NEGATIVE_FLAG_CONTAINMENT_TICK_OFFSET
+                && !self.flag_probe_score_seen
+            {
+                self.log_negative_probe_outcome_once(
+                    "negative_wrong_score_contained",
+                    "postcondition=no_score_milestone_after_wrong_team_attempt",
+                );
             }
             let elapsed = self.active_probe_ticks - first_flag_tick;
             let cycle = (elapsed / FLAG_PROBE_CYCLE_TICKS) + 1;
@@ -2970,6 +3012,18 @@ impl Server {
             slot37,
             Self::item_summary(&window.carried_item),
         );
+        if self.negative_probe_sent && self.negative_probe_is("inventory_stale_state") {
+            self.log_negative_probe_outcome_once(
+                "negative_inventory_stale_state_contained",
+                "postcondition=window_state_after_stale_click",
+            );
+        }
+        if self.negative_probe_sent && self.negative_probe_is("inventory_invalid_click") {
+            self.log_negative_probe_outcome_once(
+                "negative_inventory_invalid_click_restored",
+                "postcondition=window_state_after_invalid_click",
+            );
+        }
         self.inventory_probe_window_seen = true;
         if window.id == self.inventory_probe_container_id && window.id > 0 {
             self.inventory_probe_container_state_id = window.state_id.0;
