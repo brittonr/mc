@@ -32,7 +32,7 @@ REQUIRED_TEXT = [
     "full_survival_compatibility remains a non-claim",
     "No full survival compatibility or broader vanilla parity",
     "No crafting coverage",
-    "No chest or persistence coverage",
+    "No full survival compatibility from chest persistence row",
     "No furnace coverage",
     "No hunger or food coverage",
     "No mob AI or mob drop coverage",
@@ -51,10 +51,14 @@ FORBIDDEN_CLAIMS = [
 STATUS_MISSING = "missing"
 REFERENCE_NONE = "none"
 COVERED_ROW = "break/place/pickup"
+CHEST_ROW = "chest persistence"
 COVERED_STATUS = "reference_parity_covered"
 PAPER_REFERENCE_RECEIPT = "docs/evidence/protocol-763-survival-reference-paper-2026-05-28.receipt.json"
 VALENCE_REFERENCE_RECEIPT = "docs/evidence/protocol-763-survival-reference-valence-2026-05-28.receipt.json"
 PARITY_EVIDENCE_DOC = "docs/evidence/protocol-763-survival-reference-parity-2026-05-28.md"
+CHEST_PAPER_RECEIPT = "docs/evidence/protocol-763-survival-chest-persistence-paper-2026-05-29.receipt.json"
+CHEST_VALENCE_RECEIPT = "docs/evidence/protocol-763-survival-chest-persistence-valence-2026-05-29.receipt.json"
+CHEST_EVIDENCE_DOC = "docs/evidence/protocol-763-survival-chest-persistence-2026-05-29.md"
 
 
 @dataclass(frozen=True)
@@ -125,6 +129,19 @@ def validate_text(doc_text: str, bundle_text: str, matrix_text: str) -> tuple[in
             if "full survival compatibility" not in row.non_claim.lower() or "broader vanilla parity" not in row.non_claim.lower():
                 issues.append("covered break/place/pickup row lacks scoped survival parity non-claim")
             continue
+        if row.system == CHEST_ROW:
+            if row.status != COVERED_STATUS:
+                issues.append(f"covered chest persistence row has stale status: {row.status}")
+            if CHEST_PAPER_RECEIPT not in row.reference_evidence:
+                issues.append("covered chest persistence row missing Paper reference receipt")
+            if CHEST_VALENCE_RECEIPT not in row.valence_evidence:
+                issues.append("covered chest persistence row missing Valence paired receipt")
+            if CHEST_EVIDENCE_DOC not in row.requirement:
+                issues.append("covered chest persistence row missing evidence doc")
+            lowered_non_claim = row.non_claim.lower()
+            if "full survival compatibility" not in lowered_non_claim or "all-container" not in lowered_non_claim:
+                issues.append("covered chest persistence row lacks scoped persistence non-claim")
+            continue
         if row.status != STATUS_MISSING:
             issues.append(f"unimplemented survival row is not marked missing: {row.system}")
         if row.valence_evidence != REFERENCE_NONE or row.reference_evidence != REFERENCE_NONE:
@@ -156,7 +173,7 @@ paired reference receipt
 BLAKE3 manifest entries
 No vanilla parity or full survival compatibility
 No crafting coverage
-No chest or persistence coverage
+No full survival compatibility from chest persistence row
 No furnace coverage
 No hunger or food coverage
 No mob AI or mob drop coverage
@@ -171,7 +188,7 @@ def good_rows() -> str:
         [
             f"| break/place/pickup | {COVERED_STATUS} | `{VALENCE_REFERENCE_RECEIPT}` | `{PAPER_REFERENCE_RECEIPT}` | Paired comparator evidence: `{PARITY_EVIDENCE_DOC}`. | No full survival compatibility or broader vanilla parity. | next |",
             "| crafting | missing | none | none | Add receipts. | No crafting coverage. | next |",
-            "| chest persistence | missing | none | none | Add receipts. | No chest or persistence coverage. | next |",
+            f"| chest persistence | {COVERED_STATUS} | `{CHEST_VALENCE_RECEIPT}` | `{CHEST_PAPER_RECEIPT}` | Paired comparator evidence: `{CHEST_EVIDENCE_DOC}`. | No full survival compatibility from chest persistence row; no all-container behavior. | next |",
             "| furnace persistence | missing | none | none | Add receipts. | No furnace coverage. | next |",
             "| hunger/food | missing | none | none | Add receipts. | No hunger or food coverage. | next |",
             "| mob drops | missing | none | none | Add receipts. | No mob AI or mob drop coverage. | next |",
@@ -200,6 +217,10 @@ def assert_self_tests() -> None:
     stale_valence_only = good_rows().replace(f"`{PAPER_REFERENCE_RECEIPT}`", "none", 1)
     _, issues = validate_text(fixture_doc(stale_valence_only), bundle, matrix)
     assert any("missing Paper reference receipt" in item for item in issues), issues
+
+    stale_chest_reference_missing = good_rows().replace(f"`{CHEST_PAPER_RECEIPT}`", "none", 1)
+    _, issues = validate_text(fixture_doc(stale_chest_reference_missing), bundle, matrix)
+    assert any("covered chest persistence row missing Paper reference receipt" in item for item in issues), issues
 
     promoted_without_evidence = good_rows().replace("| redstone | missing |", "| redstone | covered |", 1)
     _, issues = validate_text(fixture_doc(promoted_without_evidence), bundle, matrix)

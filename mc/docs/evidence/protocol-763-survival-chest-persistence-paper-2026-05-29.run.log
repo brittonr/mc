@@ -1,0 +1,15 @@
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=160
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=229
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=239
+[server/mod.rs:1205][INFO] MC-COMPAT-MILESTONE survival_chest_move_near_chest x=8.5 y=65.0 z=0.5 position=8,64,0
+[server/mod.rs:1221][INFO] MC-COMPAT-MILESTONE survival_chest_open_request_sent hand=main position=8,64,0 face=up sequence=507
+[server/mod.rs:2792][INFO] MC-COMPAT-MILESTONE survival_chest_reopen_seen window=1 position=8,64,0
+[server/mod.rs:2851][INFO] MC-COMPAT-MILESTONE inventory_probe_window_items window=1 state_id=1 slots=63 slot36=empty slot37=empty carried=empty
+[server/mod.rs:2749][INFO] MC-COMPAT-MILESTONE survival_chest_persisted_seen window=1 slot=0 item=Dirt count=1
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=46 slot=45 item=empty
+[server/mod.rs:1646][WARN] MC-COMPAT-NONFATAL packet_parse_ignored
+[mc-compat] client compatbot finished Some(124); log: /tmp/mc-compat-client.compatbot.survival-chest-persistence-session-1.2136561.log
+[mc-compat] client compatbot finished Some(124); log: /tmp/mc-compat-client.compatbot.survival-chest-persistence-session-2.2136561.log
+[mc-compat] wrote smoke receipt target/mc-compat-survival-chest-persistence/paper-survival-chest-persistence-keep-2026-05-29.receipt.json

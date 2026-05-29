@@ -32,6 +32,7 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 | Projectile use/loadout rail | `nix run .#mc-compat-valence-ctf-projectile-hit` | `22310a0373f86bbff5e6bc116934d092b89f775cf5d539b08d04ff5564ad855b` |
 | Projectile damage attribution | `nix run .#mc-compat-valence-ctf-projectile-damage-attribution` | `cf84fcb81ae557ecfbd2ff0b1f8b94af7bf07eaa85c20b1cde442929e3e3e529` |
 | Survival break/place/pickup | Paper+Valence paired `survival-break-place-pickup` receipts | `a88fe547bfe2dd43fff3ac5bd967f0ebf5a3c539403211dd029865293130090b` |
+| Survival chest persistence | Paper+Valence paired `survival-chest-persistence` receipts | `3dd16d3d15f47793505e97a088408d039c6cd45a73f288c7301c5e4f3f4851cf` |
 
 ## Inventory semantics matrix checkpoint
 
@@ -51,7 +52,11 @@ The maintained projectile rows are validated as two bounded projectile state row
 
 ## Survival break/place/pickup checkpoint
 
-The maintained survival parity row is validated by `docs/evidence/protocol-763-survival-reference-parity-2026-05-28.md` with paired Paper and Valence receipt/log bundles from committed child revisions. The paired receipts record `client.git_rev`, `client.git_status`, `valence.git_rev_requested`, and `valence.git_rev_resolved`; `docs/evidence/protocol-763-survival-child-revision-oracle-2026-05-28.md` remains as review history. Covered row is one deterministic client in the Paper fixture and Valence `survival_compat` fixture with exact join/render, fixed-coordinate block break, pickup/inventory observation, and block placement metrics. `docs/evidence/protocol-763-survival-coverage-matrix-2026-05-28.md` and `tools/check_survival_coverage_matrix.py` keep crafting, chest persistence, furnace persistence, hunger/food, mob drops, redstone, biome/dimension, and world persistence as explicit missing rows. `tools/check_survival_reference_parity.py` rejects Valence-only evidence and now passes the paired Paper/Valence bundle. Full survival compatibility and vanilla parity remain non-claims.
+The maintained survival parity row is validated by `docs/evidence/protocol-763-survival-reference-parity-2026-05-28.md` with paired Paper and Valence receipt/log bundles from committed child revisions. The paired receipts record `client.git_rev`, `client.git_status`, `valence.git_rev_requested`, and `valence.git_rev_resolved`; `docs/evidence/protocol-763-survival-child-revision-oracle-2026-05-28.md` remains as review history. Covered row is one deterministic client in the Paper fixture and Valence `survival_compat` fixture with exact join/render, fixed-coordinate block break, pickup/inventory observation, and block placement metrics. Full survival compatibility and vanilla parity remain non-claims.
+
+## Survival chest persistence checkpoint
+
+The maintained chest persistence row is validated by `docs/evidence/protocol-763-survival-chest-persistence-2026-05-29.md` with paired Paper and Valence receipt/log bundles. Covered row is one deterministic client in the Paper fixture and Valence `survival_compat` fixture opening chest `8,64,0`, storing one `Dirt` item in slot `0`, closing, reconnecting once, reopening, and observing the same slot/item/count. `docs/evidence/protocol-763-survival-coverage-matrix-2026-05-28.md` and `tools/check_survival_coverage_matrix.py` keep crafting, furnace persistence, hunger/food, mob drops, redstone, biome/dimension, and world persistence as explicit missing rows. `tools/check_survival_chest_persistence.rs` rejects Valence-only evidence and mismatched slot/item/count/position/session metrics, and passes the paired Paper/Valence bundle. Full survival compatibility, all-container behavior, restart/world persistence, and broad vanilla parity remain non-claims.
 
 ## Vanilla combat parity checkpoint
 
@@ -114,6 +119,7 @@ python3 tools/check_ctf_rule_ledger.py
 python3 tools/check_protocol_coverage_ledger.py
 python3 tools/check_survival_coverage_matrix.py
 python3 tools/check_survival_reference_parity.py
+./tools/check_survival_chest_persistence.rs --self-test
 nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
 nix run --no-update-lock-file .#cairn -- validate --root .
 ```
@@ -144,12 +150,12 @@ The production/network matrix promotes only bounded owned-local loopback load sa
 
 ## Reference parity labels
 
-- `reference-parity-covered`: Survival break/place/pickup only.
+- `reference-parity-covered`: Survival break/place/pickup and chest persistence only.
 - `valence-only-containment`: CTF scoring, inventory, combat, projectile, reconnect, latency/jitter, and load/network rows.
-- `explicit-non-claim`: chest persistence until `prove-survival-chest-persistence` lands paired receipts, exact vanilla combat parity, broad survival, full Minecraft/CTF/protocol correctness.
+- `explicit-non-claim`: exact vanilla combat parity, broad survival, full Minecraft/CTF/protocol correctness, and survival rows not named as reference-parity covered.
 
 Policy/checkpoint: `docs/evidence/protocol-763-reference-parity-expansion-2026-05-29.md`.
 
 ## Non-claims
 
-This bundle still does not claim full Minecraft compatibility, full survival compatibility, vanilla parity, full CTF correctness, projectile travel/collision simulation, all projectile weapon variants, all equipment slots/items, all armor loadouts, enchantment/status-effect semantics, exact vanilla knockback/damage/mitigation balancing, crafting/furnace/chest/mob/redstone coverage, production readiness, public-server load safety, or unbounded soak/reconnect/latency safety.
+This bundle still does not claim full Minecraft compatibility, full survival compatibility, broad vanilla parity, full CTF correctness, projectile travel/collision simulation, all projectile weapon variants, all equipment slots/items, all armor loadouts, enchantment/status-effect semantics, exact vanilla knockback/damage/mitigation balancing, all-container behavior, restart/world persistence, crafting/furnace/hunger/mob/redstone/biome/dimension coverage, production readiness, public-server load safety, or unbounded soak/reconnect/latency safety.

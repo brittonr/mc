@@ -1,0 +1,334 @@
+== session 1 ==
+[main.rs:254][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:346][INFO] Shader version: #version 150
+[main.rs:99][INFO] Detected server protocol version 763
+[server/mod.rs:255][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25566
+[server/mod.rs:260][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:277][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:291][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:298][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:359][WARN] Server is running in offline mode
+[server/mod.rs:360][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbot properties=0
+[server/mod.rs:2113][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[server/mod.rs:2180][INFO] MC-COMPAT-MILESTONE join_game entity_id=198 gamemode=Survival
+[server/mod.rs:849][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:3406][INFO] Received chat message: unhandled: multiplayer.player.joined
+[server/mod.rs:2851][INFO] MC-COMPAT-MILESTONE inventory_probe_window_items window=0 state_id=1 slots=46 slot36=empty slot37=empty carried=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=2 slot=45 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=3 slot=36 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=4 slot=37 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=5 slot=38 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=6 slot=39 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=7 slot=40 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=8 slot=41 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=9 slot=42 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=10 slot=43 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=11 slot=44 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=12 slot=9 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=13 slot=10 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=14 slot=11 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=15 slot=12 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=16 slot=13 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=17 slot=14 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=18 slot=15 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=19 slot=16 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=20 slot=17 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=21 slot=18 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=22 slot=19 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=23 slot=20 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=24 slot=21 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=25 slot=22 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=26 slot=23 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=27 slot=24 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=28 slot=25 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=29 slot=26 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=30 slot=27 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=31 slot=28 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=32 slot=29 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=33 slot=30 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=34 slot=31 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=35 slot=32 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=36 slot=33 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=37 slot=34 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=38 slot=35 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=39 slot=8 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=40 slot=7 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=41 slot=6 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=42 slot=5 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=43 slot=45 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=255 state_id=44 slot=-1 item=id=15 count=1
+[server/mod.rs:2693][INFO] MC-COMPAT-MILESTONE update_health health=20.0 food=20 saturation=5.0
+[server/mod.rs:3536][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=0
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:dark_oak_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:dark_oak_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:jungle_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:jungle_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:stripped_spruce_log_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:stripped_spruce_log_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:acacia_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:acacia_wood
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=229
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=237
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:stripped_birch_log_log
+[model/mod.rs:196][ERROR] Error loading model minecraft:stripped_birch_log_log
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=159
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=225
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=157
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=227
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=228
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=159
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=226
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=159
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=159
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=159
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=159
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:mushroom_stem
+[model/mod.rs:196][ERROR] Error loading model minecraft:mushroom_stem
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=155
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=159
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=159
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=374
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=231
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=239
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:stripped_birch_log_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:stripped_birch_log_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:stripped_acacia_log_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:stripped_acacia_log_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:spruce_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:spruce_wood
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=229
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=160
+[server/mod.rs:1205][INFO] MC-COMPAT-MILESTONE survival_chest_move_near_chest x=8.5 y=65.0 z=0.5 position=8,64,0
+[server/mod.rs:1221][INFO] MC-COMPAT-MILESTONE survival_chest_open_request_sent hand=main position=8,64,0 face=up sequence=507
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=45 slot=36 item=id=15 count=1
+[server/mod.rs:2929][INFO] MC-COMPAT-MILESTONE inventory_probe_slot36_nonempty count=1 item_id=15
+[server/mod.rs:2851][INFO] MC-COMPAT-MILESTONE inventory_probe_window_items window=0 state_id=46 slots=46 slot36=id=15 count=1 slot37=empty carried=id=15 count=1
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=47 slot=45 item=empty
+[server/mod.rs:2802][INFO] MC-COMPAT-MILESTONE survival_chest_open_seen window=1 position=8,64,0
+[server/mod.rs:2851][INFO] MC-COMPAT-MILESTONE inventory_probe_window_items window=1 state_id=1 slots=63 slot36=empty slot37=empty carried=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=48 slot=45 item=empty
+[server/mod.rs:1250][INFO] MC-COMPAT-MILESTONE survival_chest_store_sent window=1 slot=0 item=Dirt count=1
+[server/mod.rs:1283][INFO] MC-COMPAT-MILESTONE survival_chest_close_sent window=1
+[server/mod.rs:1292][INFO] MC-COMPAT-MILESTONE survival_chest_reconnect_sent session=1
+[server/mod.rs:1646][WARN] MC-COMPAT-NONFATAL packet_parse_ignored
+== session 2 ==
+[main.rs:254][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:346][INFO] Shader version: #version 150
+[main.rs:99][INFO] Detected server protocol version 763
+[server/mod.rs:255][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25566
+[server/mod.rs:260][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:277][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:291][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:298][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:359][WARN] Server is running in offline mode
+[server/mod.rs:360][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbot properties=0
+[server/mod.rs:2113][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[server/mod.rs:2180][INFO] MC-COMPAT-MILESTONE join_game entity_id=396 gamemode=Survival
+[server/mod.rs:3406][INFO] Received chat message: unhandled: multiplayer.player.joined
+[server/mod.rs:2851][INFO] MC-COMPAT-MILESTONE inventory_probe_window_items window=0 state_id=1 slots=46 slot36=id=15 count=1 slot37=empty carried=empty
+[server/mod.rs:2883][INFO] MC-COMPAT-MILESTONE inventory_probe_slot36_nonempty count=1 item_id=15
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=2 slot=45 item=empty
+[server/mod.rs:849][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=3 slot=36 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=4 slot=37 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=5 slot=38 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=6 slot=39 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=7 slot=40 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=8 slot=41 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=9 slot=42 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=10 slot=43 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=11 slot=44 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=12 slot=9 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=13 slot=10 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=14 slot=11 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=15 slot=12 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=16 slot=13 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=17 slot=14 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=18 slot=15 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=19 slot=16 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=20 slot=17 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=21 slot=18 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=22 slot=19 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=23 slot=20 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=24 slot=21 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=25 slot=22 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=26 slot=23 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=27 slot=24 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=28 slot=25 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=29 slot=26 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=30 slot=27 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=31 slot=28 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=32 slot=29 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=33 slot=30 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=34 slot=31 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=35 slot=32 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=36 slot=33 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=37 slot=34 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=38 slot=35 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=39 slot=8 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=40 slot=7 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=41 slot=6 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=42 slot=5 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=43 slot=45 item=empty
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=255 state_id=44 slot=-1 item=id=15 count=1
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=45 slot=36 item=empty
+[server/mod.rs:2693][INFO] MC-COMPAT-MILESTONE update_health health=20.0 food=20 saturation=5.0
+[server/mod.rs:3536][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=0
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:dark_oak_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:dark_oak_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:dark_oak_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:dark_oak_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:jungle_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:jungle_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:stripped_spruce_log_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:stripped_spruce_log_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:acacia_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:acacia_wood
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=229
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=159
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=237
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:stripped_birch_log_log
+[model/mod.rs:196][ERROR] Error loading model minecraft:stripped_birch_log_log
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=225
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=157
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=227
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=228
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=159
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=226
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=159
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=159
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=159
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=230
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=374
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=159
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:mushroom_stem
+[model/mod.rs:196][ERROR] Error loading model minecraft:mushroom_stem
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=159
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=159
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=155
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=231
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=160
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=158
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=229
+[world/mod.rs:1160][WARN] MC-COMPAT-NONFATAL chunk_trailing_bytes protocol=763 remaining=239
+[server/mod.rs:1205][INFO] MC-COMPAT-MILESTONE survival_chest_move_near_chest x=8.5 y=65.0 z=0.5 position=8,64,0
+[server/mod.rs:1221][INFO] MC-COMPAT-MILESTONE survival_chest_open_request_sent hand=main position=8,64,0 face=up sequence=507
+[server/mod.rs:2792][INFO] MC-COMPAT-MILESTONE survival_chest_reopen_seen window=1 position=8,64,0
+[server/mod.rs:2851][INFO] MC-COMPAT-MILESTONE inventory_probe_window_items window=1 state_id=1 slots=63 slot36=empty slot37=empty carried=empty
+[server/mod.rs:2749][INFO] MC-COMPAT-MILESTONE survival_chest_persisted_seen window=1 slot=0 item=Dirt count=1
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=46 slot=45 item=empty
+[server/mod.rs:1646][WARN] MC-COMPAT-NONFATAL packet_parse_ignored

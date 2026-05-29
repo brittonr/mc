@@ -1,0 +1,15 @@
+[server/mod.rs:2180][INFO] MC-COMPAT-MILESTONE join_game entity_id=0 gamemode=Survival
+[server/mod.rs:3406][INFO] Received chat message: Welcome to the Valence survival compatibility fixture.
+[server/mod.rs:2908][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=255 state_id=0 slot=-1 item=id=15 count=1
+[server/mod.rs:3536][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=0
+[server/mod.rs:2693][INFO] MC-COMPAT-MILESTONE update_health health=14.0 food=20 saturation=0.0
+[server/mod.rs:849][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:1205][INFO] MC-COMPAT-MILESTONE survival_chest_move_near_chest x=8.5 y=65.0 z=0.5 position=8,64,0
+[server/mod.rs:1221][INFO] MC-COMPAT-MILESTONE survival_chest_open_request_sent hand=main position=8,64,0 face=up sequence=507
+[server/mod.rs:2792][INFO] MC-COMPAT-MILESTONE survival_chest_reopen_seen window=1 position=8,64,0
+[server/mod.rs:2851][INFO] MC-COMPAT-MILESTONE inventory_probe_window_items window=1 state_id=0 slots=27 slot36=missing slot37=missing carried=id=15 count=1
+[server/mod.rs:2749][INFO] MC-COMPAT-MILESTONE survival_chest_persisted_seen window=1 slot=0 item=Dirt count=1
+[mc-compat] client compatbot finished Some(124); log: /tmp/mc-compat-client.compatbot.survival-chest-persistence-session-1.2044939.log
+[mc-compat] client compatbot finished Some(124); log: /tmp/mc-compat-client.compatbot.survival-chest-persistence-session-2.2044939.log
+[mc-compat] stopping managed Valence server process 2045617
+[mc-compat] wrote smoke receipt target/mc-compat-survival-chest-persistence/valence-survival-chest-persistence-2026-05-29.receipt.json

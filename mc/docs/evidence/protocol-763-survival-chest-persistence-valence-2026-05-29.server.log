@@ -1,0 +1,17 @@
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.17s
+     Running `/tmp/valence-compat-survival-chest-target/debug/examples/survival_compat`
+[2m2026-05-29T15:24:08.538460Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+[2m2026-05-29T15:24:10.790647Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_chest_open username=compatbot position=8,64,0 window=1
+MC-COMPAT-MILESTONE survival_chest_open username=compatbot position=8,64,0 window=1
+[2m2026-05-29T15:24:11.691696Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_chest_store username=compatbot window=1 slot=0 item=Dirt count=1
+MC-COMPAT-MILESTONE survival_chest_store username=compatbot window=1 slot=0 item=Dirt count=1
+[2m2026-05-29T15:24:12.592586Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_chest_close username=compatbot window=1
+MC-COMPAT-MILESTONE survival_chest_close username=compatbot window=1
+[2m2026-05-29T15:24:24.556439Z[0m [33m WARN[0m [2mvalence_server::keepalive[0m[2m:[0m Client Entity { index: 2, generation: 1 } timed out: no keepalive response after 8000ms
+[2m2026-05-29T15:24:37.521063Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+[2m2026-05-29T15:24:39.723732Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_chest_reopen username=compatbot position=8,64,0 window=1
+MC-COMPAT-MILESTONE survival_chest_reopen username=compatbot position=8,64,0 window=1
+[2m2026-05-29T15:24:39.723747Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_chest_persisted username=compatbot slot=0 item=Dirt count=1
+MC-COMPAT-MILESTONE survival_chest_persisted username=compatbot slot=0 item=Dirt count=1

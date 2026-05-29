@@ -30,6 +30,7 @@ REQUIRED_SEAMS = [
     "Projectile use/loadout rail",
     "Projectile damage attribution",
     "Survival break/place/pickup",
+    "Survival chest persistence",
 ]
 
 REQUIRED_GAPS = [
@@ -60,6 +61,7 @@ REVIEWABLE_RECEIPT_SEAMS = frozenset(
         "Projectile use/loadout rail",
         "Projectile damage attribution",
         "Survival break/place/pickup",
+        "Survival chest persistence",
     }
 )
 

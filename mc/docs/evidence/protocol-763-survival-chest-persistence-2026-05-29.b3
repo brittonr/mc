@@ -1,0 +1,12 @@
+5a53bb2958902c9c57a9df07494888cdba91e92e62828a4567875d91d28560f3  docs/evidence/protocol-763-survival-chest-persistence-2026-05-29.md
+2b5e7725171af07e506b448bb2572ef87172954759e41cbdbbb84526f14d4e01  docs/evidence/protocol-763-survival-chest-persistence-2026-05-29.checker.log
+13de19074496ff5c4942bd3dd83db19d64172e1c879a8c9c87081268e70a012f  docs/evidence/protocol-763-survival-chest-persistence-validation-2026-05-29.run.log
+6c77d94ae2512b7e14f4ebb1a3419c6cba29d56cedc7a3a821ac53336d58b086  docs/evidence/protocol-763-survival-chest-persistence-valence-2026-05-29.receipt.json
+d609f490ecd64859210283d79d4dbbbd710958a4081684354aaf4fc97dcc948a  docs/evidence/protocol-763-survival-chest-persistence-valence-2026-05-29.client.log
+e8a883098c723e6338f33de76263b2e18a89acc2639dc06915ddd594432bb66e  docs/evidence/protocol-763-survival-chest-persistence-valence-2026-05-29.server.log
+b5b0d9e0cbd50964fcbfd555a22671fc85d60fe42b1ea902ee5101502bdb2ff4  docs/evidence/protocol-763-survival-chest-persistence-valence-2026-05-29.run.log
+3dd16d3d15f47793505e97a088408d039c6cd45a73f288c7301c5e4f3f4851cf  docs/evidence/protocol-763-survival-chest-persistence-paper-2026-05-29.receipt.json
+95c4c14d65f2efbf717882a423ce24844c9011345a5cef04037b1b2af5dae0c9  docs/evidence/protocol-763-survival-chest-persistence-paper-2026-05-29.client.log
+888a673a4217b9d06178fcfcc981ecd0dcd4ebbca0f74363d50d2567a51077cb  docs/evidence/protocol-763-survival-chest-persistence-paper-2026-05-29.server.log
+9f232bd99129b45f412230af05648e44cea1de520b4856193f125ba80d7b9f0f  docs/evidence/protocol-763-survival-chest-persistence-paper-2026-05-29.run.log
+fb1b8aeb4009adaa33bd1915c4987046a5289ce97bc0e0d589af9fc5d78c344f  target/mc-compat-survival-reference-parity/mc-compat-paper-survival-fixture.jar
