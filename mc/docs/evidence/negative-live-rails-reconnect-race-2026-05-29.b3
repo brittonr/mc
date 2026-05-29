@@ -1,6 +1,6 @@
-38adc21a92b152959cbe5684c3256d7b86525d75e4ef8e95a4150f295a675011  docs/evidence/negative-live-rails-reconnect-race-2026-05-29.json
-adac9c367b4951b08d0781f8af6e3a376fa06a5be23866f1a6c0d1546b37b9fb  docs/evidence/negative-live-rails-reconnect-race-2026-05-29.log
-90ad1c1f92f772cdf03b4909c2a61d1233dbc4848b16cade07ee9681e645c440  docs/evidence/negative-live-rails-reconnect-race-2026-05-29.client-session-1.log
-9c487097d85cd7303f06f4040e4e5ff9b54d3b8881f8dd9a61902f188d7a8d58  docs/evidence/negative-live-rails-reconnect-race-2026-05-29.client-session-2.log
-a4bd4f8693eb22c79ba398942ae8782874fdfde0cbd93e10bb2219cb4315627f  docs/evidence/negative-live-rails-reconnect-race-2026-05-29.server.log
-f7c6ba8171902b2d347169d9fd4e9bba6d83dd5aac6a1cb4373dd5f1cc2f0329  docs/evidence/negative-live-rails-reconnect-race-2026-05-29.typed-events.log
+c834e30377fb8ceaadca822efa2a166a20f3ade5c9583d85322661f8d93a0331  docs/evidence/negative-live-rails-reconnect-race-2026-05-29.json
+c5c7f4e3ce78bd98cf8563a5b755e47ee48b1d210c5dccc3b0f2ad2486aa7c0c  docs/evidence/negative-live-rails-reconnect-race-2026-05-29.log
+dd861bf8fb31f72ac8fe1f0d7bf4961437a544481144b3b08e9a54ec65938701  docs/evidence/negative-live-rails-reconnect-race-2026-05-29.client-session-1.log
+ac6abdb93a676e3f34379738f5eb1ad292a690ce9a26fce80e8ea29064790f6e  docs/evidence/negative-live-rails-reconnect-race-2026-05-29.client-session-2.log
+07c99722ab91c21e6705faa05b05c6f73f59616c52527adf16cebb31c55a8d85  docs/evidence/negative-live-rails-reconnect-race-2026-05-29.server.log
+b34807f38dcbdf29d3afa9f1a1d8f69ec6c20858fa84e4575ba0592e88331ff7  docs/evidence/negative-live-rails-reconnect-race-2026-05-29.typed-events.log

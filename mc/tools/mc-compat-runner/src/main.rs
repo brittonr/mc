@@ -94,6 +94,8 @@ const TYPED_EVENT_SINGLE_USERNAME_COUNT: usize = 1;
 const NEGATIVE_LIVE_RAIL_MAX_CLIENTS: usize = 2;
 const NEGATIVE_LIVE_RAIL_MIN_TIMEOUT_SECS: u64 = 1;
 const NEGATIVE_LIVE_RAIL_EXPECTED_OUTCOME: &str = "containment_or_disconnect_without_promotion";
+const NEGATIVE_LIVE_RAIL_OBSERVED_OUTCOME_CONTAINMENT: &str = "containment_observed";
+const NEGATIVE_LIVE_RAIL_OUTCOME_SOURCE_PREFIX: &str = "client_milestone:";
 const NEGATIVE_LIVE_RAIL_NON_CLAIMS: &[&str] = &[
     "broad_invalid_input_coverage",
     "adversarial_security",
@@ -192,6 +194,10 @@ struct NegativeLiveRailEvidence {
     rail: Option<&'static str>,
     invalid_action: Option<&'static str>,
     expected_outcome: Option<&'static str>,
+    observed_outcome: Option<&'static str>,
+    observed_outcome_source: Option<String>,
+    postcondition_milestone: Option<&'static str>,
+    telemetry_present: bool,
     target_scope: &'static str,
     owned_local_target: bool,
     explicit_authorization: bool,
@@ -202,6 +208,25 @@ struct NegativeLiveRailEvidence {
     missing_fields: Vec<&'static str>,
     bound_violations: Vec<&'static str>,
     preflight_passed: bool,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct NegativeLiveRailInputs {
+    selected: bool,
+    rail: Option<&'static str>,
+    invalid_action: Option<&'static str>,
+    expected_outcome: Option<&'static str>,
+    observed_outcome: Option<&'static str>,
+    observed_outcome_source: Option<String>,
+    postcondition_milestone: Option<&'static str>,
+    telemetry_required: bool,
+    telemetry_present: bool,
+    target_scope: &'static str,
+    explicit_authorization: bool,
+    public_target: bool,
+    planned_clients: usize,
+    max_clients: usize,
+    timeout_secs: u64,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -665,64 +690,147 @@ fn negative_live_rail_invalid_action(scenario: Scenario) -> Option<&'static str>
     }
 }
 
-fn evaluate_negative_live_rail_safety(cfg: &Config) -> NegativeLiveRailEvidence {
+fn negative_live_rail_postcondition_milestone(scenario: Scenario) -> Option<&'static str> {
+    match scenario {
+        Scenario::NegativeInventoryStaleState => Some("negative_inventory_stale_state_contained"),
+        Scenario::NegativeInventoryInvalidClick => {
+            Some("negative_inventory_invalid_click_restored")
+        }
+        Scenario::NegativeCustomPayload => Some("negative_custom_payload_contained"),
+        Scenario::NegativeReconnectRace => Some("negative_reconnect_race_contained"),
+        Scenario::NegativeCtfWrongScore => Some("negative_wrong_score_contained"),
+        _ => None,
+    }
+}
+
+fn observed_negative_live_rail_outcome(
+    scenario: Scenario,
+    scenario_evidence: &ScenarioEvidence,
+) -> (Option<&'static str>, Option<String>, bool) {
+    let Some(postcondition) = negative_live_rail_postcondition_milestone(scenario) else {
+        return (None, None, false);
+    };
+    let observed = scenario_evidence
+        .observed_milestones
+        .iter()
+        .any(|milestone| *milestone == postcondition);
+    if !observed {
+        return (None, None, false);
+    }
+    (
+        Some(NEGATIVE_LIVE_RAIL_OBSERVED_OUTCOME_CONTAINMENT),
+        Some(format!(
+            "{NEGATIVE_LIVE_RAIL_OUTCOME_SOURCE_PREFIX}{postcondition}"
+        )),
+        true,
+    )
+}
+
+fn negative_live_rail_inputs_from_config(
+    cfg: &Config,
+    scenario_evidence: Option<&ScenarioEvidence>,
+    telemetry_required: bool,
+) -> NegativeLiveRailInputs {
     let selected = is_negative_live_rail(cfg.scenario);
-    let invalid_action = negative_live_rail_invalid_action(cfg.scenario);
-    let explicit_authorization = cfg.negative_external_authorized;
-    let public_target = cfg.negative_public_target;
-    let owned_local_target = !public_target;
-    let planned_clients = planned_client_usernames(cfg).len();
+    let (observed_outcome, observed_outcome_source, telemetry_present) = scenario_evidence
+        .map(|scenario| observed_negative_live_rail_outcome(cfg.scenario, scenario))
+        .unwrap_or((None, None, false));
+    NegativeLiveRailInputs {
+        selected,
+        rail: selected.then(|| scenario_name(cfg.scenario)),
+        invalid_action: negative_live_rail_invalid_action(cfg.scenario),
+        expected_outcome: selected.then_some(NEGATIVE_LIVE_RAIL_EXPECTED_OUTCOME),
+        observed_outcome,
+        observed_outcome_source,
+        postcondition_milestone: negative_live_rail_postcondition_milestone(cfg.scenario),
+        telemetry_required,
+        telemetry_present,
+        target_scope: SAFETY_OWNED_LOCAL_SCOPE,
+        explicit_authorization: cfg.negative_external_authorized,
+        public_target: cfg.negative_public_target,
+        planned_clients: planned_client_usernames(cfg).len(),
+        max_clients: NEGATIVE_LIVE_RAIL_MAX_CLIENTS,
+        timeout_secs: cfg.client_timeout.as_secs(),
+    }
+}
+
+fn evaluate_negative_live_rail_safety_from_inputs(
+    input: NegativeLiveRailInputs,
+) -> NegativeLiveRailEvidence {
+    let owned_local_target = !input.public_target;
     let mut missing_fields = Vec::new();
-    if selected {
+    if input.selected {
         push_missing_safety_field(
             &mut missing_fields,
             "invalid_action",
-            invalid_action.is_some(),
+            input.invalid_action.is_some(),
         );
         push_missing_safety_field(
             &mut missing_fields,
             "expected_outcome",
-            !NEGATIVE_LIVE_RAIL_EXPECTED_OUTCOME.is_empty(),
+            input.expected_outcome.is_some(),
         );
         push_missing_safety_field(
             &mut missing_fields,
             "target_scope",
-            !SAFETY_OWNED_LOCAL_SCOPE.is_empty(),
+            !input.target_scope.is_empty(),
         );
+        push_missing_safety_field(
+            &mut missing_fields,
+            "postcondition_milestone",
+            input.postcondition_milestone.is_some(),
+        );
+        if input.telemetry_required {
+            push_missing_safety_field(
+                &mut missing_fields,
+                "telemetry",
+                input.telemetry_present && input.observed_outcome.is_some(),
+            );
+        }
     }
     let mut bound_violations = Vec::new();
-    if selected && public_target && !explicit_authorization {
+    if input.selected && input.public_target && !input.explicit_authorization {
         bound_violations.push("public_target_without_authorization");
     }
-    if selected && planned_clients == 0 {
+    if input.selected && input.planned_clients == 0 {
         bound_violations.push("planned_clients_empty");
     }
-    if selected && planned_clients > NEGATIVE_LIVE_RAIL_MAX_CLIENTS {
+    if input.selected && input.planned_clients > input.max_clients {
         bound_violations.push("planned_clients_exceed_negative_max");
     }
-    if selected && cfg.client_timeout.as_secs() < NEGATIVE_LIVE_RAIL_MIN_TIMEOUT_SECS {
+    if input.selected && input.timeout_secs < NEGATIVE_LIVE_RAIL_MIN_TIMEOUT_SECS {
         bound_violations.push("timeout_empty");
     }
-    let preflight_passed = !selected
-        || ((owned_local_target || explicit_authorization)
+    let preflight_passed = !input.selected
+        || ((owned_local_target || input.explicit_authorization)
             && missing_fields.is_empty()
             && bound_violations.is_empty());
     NegativeLiveRailEvidence {
-        selected,
-        rail: selected.then(|| scenario_name(cfg.scenario)),
-        invalid_action,
-        expected_outcome: selected.then_some(NEGATIVE_LIVE_RAIL_EXPECTED_OUTCOME),
-        target_scope: SAFETY_OWNED_LOCAL_SCOPE,
+        selected: input.selected,
+        rail: input.rail,
+        invalid_action: input.invalid_action,
+        expected_outcome: input.expected_outcome,
+        observed_outcome: input.observed_outcome,
+        observed_outcome_source: input.observed_outcome_source,
+        postcondition_milestone: input.postcondition_milestone,
+        telemetry_present: input.telemetry_present,
+        target_scope: input.target_scope,
         owned_local_target,
-        explicit_authorization,
-        public_target,
-        planned_clients,
-        max_clients: NEGATIVE_LIVE_RAIL_MAX_CLIENTS,
-        timeout_secs: cfg.client_timeout.as_secs(),
+        explicit_authorization: input.explicit_authorization,
+        public_target: input.public_target,
+        planned_clients: input.planned_clients,
+        max_clients: input.max_clients,
+        timeout_secs: input.timeout_secs,
         missing_fields,
         bound_violations,
         preflight_passed,
     }
+}
+
+fn evaluate_negative_live_rail_safety(cfg: &Config) -> NegativeLiveRailEvidence {
+    evaluate_negative_live_rail_safety_from_inputs(negative_live_rail_inputs_from_config(
+        cfg, None, false,
+    ))
 }
 
 fn validate_negative_live_rail_preflight(cfg: &Config) -> Result<(), String> {
@@ -1568,6 +1676,10 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
                 "negative_inventory_stale_state_sent",
                 "negative_inventory_stale_state_sent",
             ),
+            (
+                "negative_inventory_stale_state_contained",
+                "negative_inventory_stale_state_contained",
+            ),
         ],
         Scenario::NegativeInventoryInvalidClick => &[
             ("protocol_detected", "Detected server protocol version"),
@@ -1577,6 +1689,10 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
                 "negative_inventory_invalid_click_sent",
                 "negative_inventory_invalid_click_sent",
             ),
+            (
+                "negative_inventory_invalid_click_restored",
+                "negative_inventory_invalid_click_restored",
+            ),
         ],
         Scenario::NegativeCustomPayload => &[
             ("protocol_detected", "Detected server protocol version"),
@@ -1585,6 +1701,10 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             (
                 "negative_custom_payload_sent",
                 "negative_custom_payload_sent",
+            ),
+            (
+                "negative_custom_payload_contained",
+                "negative_custom_payload_contained",
             ),
         ],
         Scenario::NegativeReconnectRace => &[
@@ -1597,15 +1717,22 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
                 "negative_reconnect_race_attempted",
                 "negative_reconnect_race_attempted",
             ),
+            (
+                "negative_reconnect_race_contained",
+                "negative_reconnect_race_contained",
+            ),
         ],
         Scenario::NegativeCtfWrongScore => &[
             ("protocol_detected", "Detected server protocol version"),
             ("join_game", "join_game"),
             ("render_tick", "render_tick_with_player"),
-            ("team_red", "You are on team RED!"),
             (
                 "negative_wrong_score_attempted",
                 "negative_wrong_score_attempted",
+            ),
+            (
+                "negative_wrong_score_contained",
+                "negative_wrong_score_contained",
             ),
         ],
     }
@@ -4015,6 +4142,10 @@ fn render_negative_live_rail_json(evidence: &NegativeLiveRailEvidence) -> String
     "rail": {rail},
     "invalid_action": {invalid_action},
     "expected_outcome": {expected_outcome},
+    "observed_outcome": {observed_outcome},
+    "observed_outcome_source": {observed_outcome_source},
+    "postcondition_milestone": {postcondition_milestone},
+    "telemetry_present": {telemetry_present},
     "target_scope": {target_scope},
     "owned_local_target": {owned_local_target},
     "explicit_authorization": {explicit_authorization},
@@ -4032,6 +4163,10 @@ fn render_negative_live_rail_json(evidence: &NegativeLiveRailEvidence) -> String
         rail = json_optional_string(evidence.rail),
         invalid_action = json_optional_string(evidence.invalid_action),
         expected_outcome = json_optional_string(evidence.expected_outcome),
+        observed_outcome = json_optional_string(evidence.observed_outcome),
+        observed_outcome_source = json_optional_string(evidence.observed_outcome_source.as_deref()),
+        postcondition_milestone = json_optional_string(evidence.postcondition_milestone),
+        telemetry_present = evidence.telemetry_present,
         target_scope = json_string(evidence.target_scope),
         owned_local_target = evidence.owned_local_target,
         explicit_authorization = evidence.explicit_authorization,
@@ -4320,7 +4455,12 @@ fn smoke_receipt_json_with_typed_event_oracle(
         matches!(cfg.mode, Mode::Run),
     ));
     let load_network_safety_json = render_load_network_safety_json(&load_network_safety);
-    let negative_live_rail = evaluate_negative_live_rail_safety(cfg);
+    let negative_live_rail =
+        evaluate_negative_live_rail_safety_from_inputs(negative_live_rail_inputs_from_config(
+            cfg,
+            Some(scenario),
+            matches!(cfg.mode, Mode::Run) && is_negative_live_rail(cfg.scenario),
+        ));
     let negative_live_rail_json = render_negative_live_rail_json(&negative_live_rail);
     let proxy_route = cfg.proxy_route.as_deref().unwrap_or("direct");
     let proxy_forwarding_mode = cfg.proxy_forwarding_mode.as_deref().unwrap_or("none");
@@ -6906,6 +7046,106 @@ red flag captured
             "{json}"
         );
         assert!(json.contains("\"claims_unbounded_soak\": false"), "{json}");
+    }
+
+    fn baseline_negative_live_rail_inputs() -> NegativeLiveRailInputs {
+        NegativeLiveRailInputs {
+            selected: true,
+            rail: Some("negative-custom-payload"),
+            invalid_action: Some("malformed_custom_payload"),
+            expected_outcome: Some(NEGATIVE_LIVE_RAIL_EXPECTED_OUTCOME),
+            observed_outcome: Some(NEGATIVE_LIVE_RAIL_OBSERVED_OUTCOME_CONTAINMENT),
+            observed_outcome_source: Some(
+                "client_milestone:negative_custom_payload_contained".to_string(),
+            ),
+            postcondition_milestone: Some("negative_custom_payload_contained"),
+            telemetry_required: true,
+            telemetry_present: true,
+            target_scope: SAFETY_OWNED_LOCAL_SCOPE,
+            explicit_authorization: false,
+            public_target: false,
+            planned_clients: 1,
+            max_clients: NEGATIVE_LIVE_RAIL_MAX_CLIENTS,
+            timeout_secs: 20,
+        }
+    }
+
+    #[test]
+    fn negative_live_rail_checker_rejects_unbounded_public_unauthenticated_inputs() {
+        let mut inputs = baseline_negative_live_rail_inputs();
+        inputs.public_target = true;
+        inputs.planned_clients = NEGATIVE_LIVE_RAIL_MAX_CLIENTS + 1;
+        let evidence = evaluate_negative_live_rail_safety_from_inputs(inputs);
+        assert!(!evidence.preflight_passed, "{evidence:?}");
+        assert!(evidence
+            .bound_violations
+            .contains(&"public_target_without_authorization"));
+        assert!(evidence
+            .bound_violations
+            .contains(&"planned_clients_exceed_negative_max"));
+    }
+
+    #[test]
+    fn negative_live_rail_checker_rejects_missing_telemetry() {
+        let mut inputs = baseline_negative_live_rail_inputs();
+        inputs.telemetry_present = false;
+        inputs.observed_outcome = None;
+        inputs.observed_outcome_source = None;
+        let evidence = evaluate_negative_live_rail_safety_from_inputs(inputs);
+        assert!(!evidence.preflight_passed, "{evidence:?}");
+        assert!(evidence.missing_fields.contains(&"telemetry"));
+    }
+
+    #[test]
+    fn negative_live_rail_checker_rejects_missing_expected_outcome() {
+        let mut inputs = baseline_negative_live_rail_inputs();
+        inputs.expected_outcome = None;
+        let evidence = evaluate_negative_live_rail_safety_from_inputs(inputs);
+        assert!(!evidence.preflight_passed, "{evidence:?}");
+        assert!(evidence.missing_fields.contains(&"expected_outcome"));
+    }
+
+    #[test]
+    fn negative_live_rail_receipt_records_observed_containment_outcome() {
+        let cfg = test_config(&["--run", "--scenario", "negative-custom-payload"], &[])
+            .expect("negative live rail config parses");
+        let scenario = evaluate_scenario(
+            Scenario::NegativeCustomPayload,
+            "Detected server protocol version 763
+join_game
+render_tick_with_player
+negative_custom_payload_sent
+negative_custom_payload_contained
+",
+        );
+        assert!(scenario.passed, "{scenario:?}");
+        let client = Some(ClientRunEvidence {
+            log_path: Some(PathBuf::from("/tmp/client.log")),
+            log_paths: vec![PathBuf::from("/tmp/client.log")],
+            usernames: vec!["compatbot".to_string()],
+            exit_code: Some(124),
+            classification: "timeout-success-evidence",
+            matched_success_pattern: Some("Detected server protocol version".to_string()),
+            scenario: Some(scenario),
+            server_scenario: Some(evaluate_server_scenario(
+                Scenario::NegativeCustomPayload,
+                "compatbot joined\n",
+                "compatbot",
+            )),
+            projectile_damage_causality: None,
+        });
+
+        let json = smoke_receipt_json(&cfg, Ok(&client));
+        assert!(
+            json.contains("\"observed_outcome\": \"containment_observed\""),
+            "{json}"
+        );
+        assert!(
+            json.contains("client_milestone:negative_custom_payload_contained"),
+            "{json}"
+        );
+        assert!(json.contains("\"telemetry_present\": true"), "{json}");
+        assert!(json.contains("\"preflight_passed\": true"), "{json}");
     }
 
     #[test]

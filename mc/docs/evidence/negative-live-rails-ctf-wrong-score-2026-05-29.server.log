@@ -19,5 +19,5 @@ warning: function `push_arrow_policy_diff` is never used
     |    ^^^^^^^^^^^^^^^^^^^^^^
 
 warning: `valence` (example "ctf") generated 3 warnings
-    Finished `dev` profile [optimized + debuginfo] target(s) in 0.15s
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.17s
      Running `/tmp/valence-compat-763-target/debug/examples/ctf`

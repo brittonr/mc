@@ -13,9 +13,9 @@
   },
   "scenario": {
     "name": "negative-custom-payload",
-    "required_milestones": ["protocol_detected", "join_game", "render_tick", "negative_custom_payload_sent"],
+    "required_milestones": ["protocol_detected", "join_game", "render_tick", "negative_custom_payload_sent", "negative_custom_payload_contained"],
     "observed_milestones": [],
-    "missing_milestones": ["protocol_detected", "join_game", "render_tick", "negative_custom_payload_sent"],
+    "missing_milestones": ["protocol_detected", "join_game", "render_tick", "negative_custom_payload_sent", "negative_custom_payload_contained"],
     "forbidden_patterns": ["panic", "unexpected_eof", "protocol_mismatch", "decode_error"],
     "forbidden_matches": [],
     "passed": false
@@ -106,6 +106,10 @@
     "rail": "negative-custom-payload",
     "invalid_action": "malformed_custom_payload",
     "expected_outcome": "containment_or_disconnect_without_promotion",
+    "observed_outcome": null,
+    "observed_outcome_source": null,
+    "postcondition_milestone": "negative_custom_payload_contained",
+    "telemetry_present": false,
     "target_scope": "owned-local-loopback",
     "owned_local_target": false,
     "explicit_authorization": false,

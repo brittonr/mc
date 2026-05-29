@@ -19,13 +19,13 @@ warning: function `push_arrow_policy_diff` is never used
     |    ^^^^^^^^^^^^^^^^^^^^^^
 
 warning: `valence` (example "ctf") generated 3 warnings
-    Finished `dev` profile [optimized + debuginfo] target(s) in 0.15s
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.17s
      Running `/tmp/valence-compat-763-target/debug/examples/ctf`
 MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbot slot=0 source=team_inventory_setup
 MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbot slot=0
-[2m2026-05-29T18:41:20.177961Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE flag_pickup username=compatbot carrier_team=Red flag_team=Blue
+[2m2026-05-29T19:45:57.153720Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE flag_pickup username=compatbot carrier_team=Red flag_team=Blue
 MC-COMPAT-MILESTONE flag_pickup username=compatbot carrier_team=Red flag_team=Blue
-[2m2026-05-29T18:41:46.307167Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE flag_disconnect_return carrier=compatbot flag_team=blue reason=client_disconnect score_unchanged=true
+[2m2026-05-29T19:46:20.680067Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE flag_disconnect_return carrier=compatbot flag_team=blue reason=client_disconnect score_unchanged=true
 MC-COMPAT-MILESTONE flag_disconnect_return carrier=compatbot flag_team=blue reason=client_disconnect score_unchanged=true
 MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbot slot=0 source=team_inventory_setup
 MC-COMPAT-MILESTONE reconnect_state_coherent username=compatbot team=Red reconnect_session=2 red_flag_held=false blue_flag_held=false

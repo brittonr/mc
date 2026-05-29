@@ -1,6 +1,6 @@
 MC-COMPAT-EVENT schema=1 source=client scenario=negative-ctf-wrong-score session=negative-live-rails-ctf-wrong-score-2026-05-29 username=compatbot seq=1 event=protocol_detected
 MC-COMPAT-EVENT schema=1 source=client scenario=negative-ctf-wrong-score session=negative-live-rails-ctf-wrong-score-2026-05-29 username=compatbot seq=2 event=join_game
 MC-COMPAT-EVENT schema=1 source=client scenario=negative-ctf-wrong-score session=negative-live-rails-ctf-wrong-score-2026-05-29 username=compatbot seq=3 event=render_tick
-MC-COMPAT-EVENT schema=1 source=client scenario=negative-ctf-wrong-score session=negative-live-rails-ctf-wrong-score-2026-05-29 username=compatbot seq=4 event=team_red
-MC-COMPAT-EVENT schema=1 source=client scenario=negative-ctf-wrong-score session=negative-live-rails-ctf-wrong-score-2026-05-29 username=compatbot seq=5 event=negative_wrong_score_attempted
+MC-COMPAT-EVENT schema=1 source=client scenario=negative-ctf-wrong-score session=negative-live-rails-ctf-wrong-score-2026-05-29 username=compatbot seq=4 event=negative_wrong_score_attempted
+MC-COMPAT-EVENT schema=1 source=client scenario=negative-ctf-wrong-score session=negative-live-rails-ctf-wrong-score-2026-05-29 username=compatbot seq=5 event=negative_wrong_score_contained
 MC-COMPAT-EVENT schema=1 source=server scenario=negative-ctf-wrong-score session=negative-live-rails-ctf-wrong-score-2026-05-29 username=compatbot seq=6 event=server_username_seen

@@ -2,4 +2,5 @@ MC-COMPAT-EVENT schema=1 source=client scenario=negative-inventory-stale-state s
 MC-COMPAT-EVENT schema=1 source=client scenario=negative-inventory-stale-state session=negative-live-rails-inventory-stale-state-2026-05-29 username=compatbot seq=2 event=join_game
 MC-COMPAT-EVENT schema=1 source=client scenario=negative-inventory-stale-state session=negative-live-rails-inventory-stale-state-2026-05-29 username=compatbot seq=3 event=render_tick
 MC-COMPAT-EVENT schema=1 source=client scenario=negative-inventory-stale-state session=negative-live-rails-inventory-stale-state-2026-05-29 username=compatbot seq=4 event=negative_inventory_stale_state_sent
-MC-COMPAT-EVENT schema=1 source=server scenario=negative-inventory-stale-state session=negative-live-rails-inventory-stale-state-2026-05-29 username=compatbot seq=5 event=server_username_seen
+MC-COMPAT-EVENT schema=1 source=client scenario=negative-inventory-stale-state session=negative-live-rails-inventory-stale-state-2026-05-29 username=compatbot seq=5 event=negative_inventory_stale_state_contained
+MC-COMPAT-EVENT schema=1 source=server scenario=negative-inventory-stale-state session=negative-live-rails-inventory-stale-state-2026-05-29 username=compatbot seq=6 event=server_username_seen

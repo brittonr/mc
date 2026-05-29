@@ -13,9 +13,9 @@
   },
   "scenario": {
     "name": "negative-inventory-stale-state",
-    "required_milestones": ["protocol_detected", "join_game", "render_tick", "negative_inventory_stale_state_sent"],
+    "required_milestones": ["protocol_detected", "join_game", "render_tick", "negative_inventory_stale_state_sent", "negative_inventory_stale_state_contained"],
     "observed_milestones": [],
-    "missing_milestones": ["protocol_detected", "join_game", "render_tick", "negative_inventory_stale_state_sent"],
+    "missing_milestones": ["protocol_detected", "join_game", "render_tick", "negative_inventory_stale_state_sent", "negative_inventory_stale_state_contained"],
     "forbidden_patterns": ["panic", "unexpected_eof", "protocol_mismatch", "decode_error"],
     "forbidden_matches": [],
     "passed": false
@@ -106,6 +106,10 @@
     "rail": "negative-inventory-stale-state",
     "invalid_action": "stale_inventory_state_id",
     "expected_outcome": "containment_or_disconnect_without_promotion",
+    "observed_outcome": null,
+    "observed_outcome_source": null,
+    "postcondition_milestone": "negative_inventory_stale_state_contained",
+    "telemetry_present": false,
     "target_scope": "owned-local-loopback",
     "owned_local_target": true,
     "explicit_authorization": false,

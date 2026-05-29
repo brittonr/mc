@@ -19,15 +19,15 @@ warning: function `push_arrow_policy_diff` is never used
     |    ^^^^^^^^^^^^^^^^^^^^^^
 
 warning: `valence` (example "ctf") generated 3 warnings
-    Finished `dev` profile [optimized + debuginfo] target(s) in 0.17s
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.16s
      Running `/tmp/valence-compat-763-target/debug/examples/ctf`
 MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbot slot=0 source=team_inventory_setup
 MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbot slot=0
 MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbot slot=0
-[2m2026-05-29T18:38:51.660163Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE inventory_drop_item username=compatbot from_slot=36 item=WoodenSword count=1
+[2m2026-05-29T19:41:24.922501Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE inventory_drop_item username=compatbot from_slot=36 item=WoodenSword count=1
 MC-COMPAT-MILESTONE inventory_drop_item username=compatbot from_slot=36 item=WoodenSword count=1
-[2m2026-05-29T18:38:51.660178Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE inventory_pickup_item username=compatbot from_slot=36 item=WoodenSword count=1 collected_entity_id=7630036 collector_entity_id=3
+[2m2026-05-29T19:41:24.922514Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE inventory_pickup_item username=compatbot from_slot=36 item=WoodenSword count=1 collected_entity_id=7630036 collector_entity_id=3
 MC-COMPAT-MILESTONE inventory_pickup_item username=compatbot from_slot=36 item=WoodenSword count=1 collected_entity_id=7630036 collector_entity_id=3
 MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbot slot=1
-[2m2026-05-29T18:38:53.011761Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE block_place_item username=compatbot item=RedWool from_slot=37 block=RedWool at=-40,65,0
+[2m2026-05-29T19:41:26.274006Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE block_place_item username=compatbot item=RedWool from_slot=37 block=RedWool at=-40,65,0
 MC-COMPAT-MILESTONE block_place_item username=compatbot item=RedWool from_slot=37 block=RedWool at=-40,65,0

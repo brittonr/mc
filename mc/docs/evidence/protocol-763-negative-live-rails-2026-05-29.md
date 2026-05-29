@@ -4,8 +4,8 @@ This evidence covers bounded negative compatibility rails against owned-local Va
 
 ## Child revisions
 
-- Parent workspace change: active Cairn `add-negative-live-rails`.
-- Stevenarella probe commit: `a3c362c` (`add bounded negative compatibility probes`).
+- Parent workspace change: archived Cairn `add-negative-live-rails`.
+- Stevenarella probe commits: `a3c362c` (`add bounded negative compatibility probes`) and `199c817` (`record negative probe containment milestones`).
 - Valence worktree: `main` resolved in each live receipt under `child_revisions.valence`.
 
 ## Evidence
@@ -20,9 +20,30 @@ This evidence covers bounded negative compatibility rails against owned-local Va
 | Wrong CTF score path | `docs/evidence/negative-live-rails-ctf-wrong-score-2026-05-29.json` | `.log`, `.client.log`, `.server.log`, `.typed-events.log` sidecars with same stem | `docs/evidence/negative-live-rails-ctf-wrong-score-2026-05-29.b3` |
 | Reconnect race | `docs/evidence/negative-live-rails-reconnect-race-2026-05-29.json` | `.log`, `.client-session-1.log`, `.client-session-2.log`, `.server.log`, `.typed-events.log` sidecars with same stem | `docs/evidence/negative-live-rails-reconnect-race-2026-05-29.b3` |
 
+## Observed outcomes
+
+Each live receipt now carries `negative_live_rail.observed_outcome = "containment_observed"`, `negative_live_rail.observed_outcome_source = "client_milestone:<postcondition>"`, `negative_live_rail.postcondition_milestone`, and `negative_live_rail.telemetry_present = true`. The scenario `required_milestones`/`observed_milestones` also include the postcondition milestone:
+
+- `negative_inventory_stale_state_contained`
+- `negative_inventory_invalid_click_restored`
+- `negative_custom_payload_contained`
+- `negative_wrong_score_contained`
+- `negative_reconnect_race_contained`
+
+## Fail-closed fixture evidence
+
+The focused unit fixture command `nix develop --no-update-lock-file --option substitute false -c cargo test --manifest-path tools/mc-compat-runner/Cargo.toml negative_live -- --nocapture` now runs six tests. They cover: passing envelope/receipt shape, public+unauthenticated rejection, unbounded client-count rejection, missing telemetry rejection, missing expected-outcome rejection, and live observed-containment receipt fields.
+
+## Validation
+
+- `docs/evidence/negative-live-rails-validation-2026-05-29.run.log`
+- `docs/evidence/negative-live-rails-validation-2026-05-29.b3`
+
+The validation log records `cargo fmt --check`, 73 runner tests, runner/scenario-manifest Nix checks, evidence manifest checks, acceptance/current-bundle checks, and Cairn validation after archive.
+
 ## Decisions
 
 - Inventory stale state and invalid slot/window rails are containment evidence only. They do not promote all state-id freshness, stack merge/split, drag, malformed click, or all-window behavior.
-- Custom payload rail proves one malformed `mc_compat:malformed` payload does not crash the owned-local run. It does not promote plugin-message semantics broadly.
-- Wrong score and reconnect race rails require no forbidden score/capture milestones in receipts. They do not broaden the CTF rule ledger beyond the named invalid transitions.
+- Custom payload rail proves one malformed `mc_compat:malformed` payload is followed by an explicit client containment milestone. It does not promote plugin-message semantics broadly.
+- Wrong score and reconnect race rails require explicit containment milestones plus no forbidden score/capture milestones in receipts. They do not broaden the CTF rule ledger beyond the named invalid transitions.
 - Negative rails stay out of the acceptance-matrix promoted seam table until a future promotion change adds dedicated checker coverage and updates the matrix/bundle row count.
