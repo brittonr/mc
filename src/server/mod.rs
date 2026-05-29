@@ -69,6 +69,31 @@ const SURVIVAL_PROBE_CURSOR_TOP: f32 = 1.0;
 const SURVIVAL_PROBE_PLAYER_X: f64 = 0.5;
 const SURVIVAL_PROBE_PLAYER_Y: f64 = 65.0;
 const SURVIVAL_PROBE_PLAYER_Z: f64 = 0.5;
+const SURVIVAL_CHEST_FIRST_SESSION: u32 = 1;
+const SURVIVAL_CHEST_REOPEN_SESSION: u32 = 2;
+const SURVIVAL_CHEST_POSITION_TICK: u32 = 60;
+const SURVIVAL_CHEST_OPEN_TICK: u32 = 80;
+const SURVIVAL_CHEST_STORE_TICK: u32 = 120;
+const SURVIVAL_CHEST_CLOSE_TICK: u32 = 160;
+const SURVIVAL_CHEST_X: i32 = 8;
+const SURVIVAL_CHEST_Y: i32 = 64;
+const SURVIVAL_CHEST_Z: i32 = 0;
+const SURVIVAL_CHEST_PLAYER_X: f64 = 8.5;
+const SURVIVAL_CHEST_PLAYER_Y: f64 = 65.0;
+const SURVIVAL_CHEST_PLAYER_Z: f64 = 0.5;
+const SURVIVAL_CHEST_FACE_UP: i32 = 1;
+const SURVIVAL_CHEST_MAIN_HAND: i32 = 0;
+const SURVIVAL_CHEST_SEQUENCE: i32 = 507;
+const SURVIVAL_CHEST_WINDOW_SLOT: i16 = 0;
+const SURVIVAL_CHEST_WINDOW_SLOT_INDEX: usize = 0;
+const SURVIVAL_CHEST_CLICK_BUTTON: u8 = 0;
+const SURVIVAL_CHEST_CLICK_MODE: i32 = 0;
+const SURVIVAL_CHEST_ITEM_PROTOCOL_ID: isize = 9;
+const SURVIVAL_CHEST_ITEM_COUNT: isize = 1;
+const SURVIVAL_CHEST_ITEM_NAME: &str = "Dirt";
+const SURVIVAL_CHEST_RECONNECT_SESSION_LABEL: u32 = 1;
+const EMPTY_WINDOW_ID: u8 = 0;
+const EMPTY_WINDOW_STATE_ID: i32 = 0;
 
 fn parse_flag_probe_repeat_target(value: Option<&str>) -> u32 {
     value
@@ -80,6 +105,16 @@ fn parse_flag_probe_repeat_target(value: Option<&str>) -> u32 {
 
 fn flag_probe_repeat_target_from_env() -> u32 {
     parse_flag_probe_repeat_target(std::env::var("MC_COMPAT_FLAG_PROBE_REPEAT").ok().as_deref())
+}
+
+fn survival_chest_probe_session_from_env() -> u32 {
+    std::env::var("MC_COMPAT_SURVIVAL_CHEST_SESSION")
+        .ok()
+        .and_then(|raw| raw.trim().parse::<u32>().ok())
+        .filter(|session| {
+            *session == SURVIVAL_CHEST_FIRST_SESSION || *session == SURVIVAL_CHEST_REOPEN_SESSION
+        })
+        .unwrap_or(SURVIVAL_CHEST_FIRST_SESSION)
 }
 
 pub struct Server {
@@ -128,6 +163,8 @@ pub struct Server {
     respawn_probe_enabled: bool,
     inventory_probe_enabled: bool,
     survival_probe_enabled: bool,
+    survival_chest_probe_enabled: bool,
+    survival_chest_probe_session: u32,
     equipment_probe_enabled: bool,
     projectile_probe_enabled: bool,
     flag_probe_enabled: bool,
@@ -152,6 +189,16 @@ pub struct Server {
     survival_probe_pickup_seen: bool,
     survival_probe_place_sent: bool,
     survival_probe_place_update_seen: bool,
+    survival_chest_position_sent: bool,
+    survival_chest_open_sent: bool,
+    survival_chest_open_seen: bool,
+    survival_chest_store_sent: bool,
+    survival_chest_close_sent: bool,
+    survival_chest_reconnect_sent: bool,
+    survival_chest_reopen_seen: bool,
+    survival_chest_persisted_seen: bool,
+    survival_chest_window_id: u8,
+    survival_chest_window_state_id: i32,
     inventory_probe_click_sent: bool,
     inventory_probe_container_click_sent: bool,
     inventory_probe_container_id: u8,
@@ -682,6 +729,10 @@ impl Server {
             survival_probe_enabled: std::env::var("MC_COMPAT_SURVIVAL_PROBE")
                 .map(|value| value != "0")
                 .unwrap_or(false),
+            survival_chest_probe_enabled: std::env::var("MC_COMPAT_SURVIVAL_CHEST_PROBE")
+                .map(|value| value != "0")
+                .unwrap_or(false),
+            survival_chest_probe_session: survival_chest_probe_session_from_env(),
             equipment_probe_enabled: std::env::var("MC_COMPAT_EQUIPMENT_PROBE")
                 .map(|value| value != "0")
                 .unwrap_or(false),
@@ -712,6 +763,16 @@ impl Server {
             survival_probe_pickup_seen: false,
             survival_probe_place_sent: false,
             survival_probe_place_update_seen: false,
+            survival_chest_position_sent: false,
+            survival_chest_open_sent: false,
+            survival_chest_open_seen: false,
+            survival_chest_store_sent: false,
+            survival_chest_close_sent: false,
+            survival_chest_reconnect_sent: false,
+            survival_chest_reopen_seen: false,
+            survival_chest_persisted_seen: false,
+            survival_chest_window_id: EMPTY_WINDOW_ID,
+            survival_chest_window_state_id: EMPTY_WINDOW_STATE_ID,
             inventory_probe_click_sent: false,
             inventory_probe_container_click_sent: false,
             inventory_probe_container_id: 0,
@@ -1120,6 +1181,119 @@ impl Server {
                 },
             );
             self.survival_probe_place_sent = true;
+        }
+
+        if self.survival_chest_probe_enabled
+            && self.active_probe_ticks >= SURVIVAL_CHEST_POSITION_TICK
+            && !self.survival_chest_position_sent
+        {
+            if let Some(position) = self.entities.get_component_mut(player, self.position) {
+                position.position = cgmath::Vector3::new(
+                    SURVIVAL_CHEST_PLAYER_X,
+                    SURVIVAL_CHEST_PLAYER_Y,
+                    SURVIVAL_CHEST_PLAYER_Z,
+                );
+                position.moved = true;
+            }
+            self.write_packet(packet::play::serverbound::PlayerPosition {
+                x: SURVIVAL_CHEST_PLAYER_X,
+                y: SURVIVAL_CHEST_PLAYER_Y,
+                z: SURVIVAL_CHEST_PLAYER_Z,
+                on_ground: true,
+            });
+            info!(
+                "MC-COMPAT-MILESTONE survival_chest_move_near_chest x={:.1} y={:.1} z={:.1} position={},{},{}",
+                SURVIVAL_CHEST_PLAYER_X,
+                SURVIVAL_CHEST_PLAYER_Y,
+                SURVIVAL_CHEST_PLAYER_Z,
+                SURVIVAL_CHEST_X,
+                SURVIVAL_CHEST_Y,
+                SURVIVAL_CHEST_Z
+            );
+            self.survival_chest_position_sent = true;
+        }
+
+        if self.survival_chest_probe_enabled
+            && self.active_probe_ticks >= SURVIVAL_CHEST_OPEN_TICK
+            && !self.survival_chest_open_sent
+        {
+            info!(
+                "MC-COMPAT-MILESTONE survival_chest_open_request_sent hand=main position={},{},{} face=up sequence={}",
+                SURVIVAL_CHEST_X,
+                SURVIVAL_CHEST_Y,
+                SURVIVAL_CHEST_Z,
+                SURVIVAL_CHEST_SEQUENCE
+            );
+            self.write_packet(
+                packet::play::serverbound::PlayerBlockPlacement_insideblock_sequence {
+                    hand: protocol::VarInt(SURVIVAL_CHEST_MAIN_HAND),
+                    location: Position::new(SURVIVAL_CHEST_X, SURVIVAL_CHEST_Y, SURVIVAL_CHEST_Z),
+                    face: protocol::VarInt(SURVIVAL_CHEST_FACE_UP),
+                    cursor_x: SURVIVAL_PROBE_CURSOR_CENTER,
+                    cursor_y: SURVIVAL_PROBE_CURSOR_TOP,
+                    cursor_z: SURVIVAL_PROBE_CURSOR_CENTER,
+                    inside_block: false,
+                    sequence: protocol::VarInt(SURVIVAL_CHEST_SEQUENCE),
+                },
+            );
+            self.survival_chest_open_sent = true;
+        }
+
+        if self.survival_chest_probe_enabled
+            && self.survival_chest_probe_session == SURVIVAL_CHEST_FIRST_SESSION
+            && self.active_probe_ticks >= SURVIVAL_CHEST_STORE_TICK
+            && self.survival_chest_window_id != EMPTY_WINDOW_ID
+            && self.survival_chest_window_state_id != EMPTY_WINDOW_STATE_ID
+            && !self.survival_chest_store_sent
+        {
+            info!(
+                "MC-COMPAT-MILESTONE survival_chest_store_sent window={} slot={} item={} count={}",
+                self.survival_chest_window_id,
+                SURVIVAL_CHEST_WINDOW_SLOT,
+                SURVIVAL_CHEST_ITEM_NAME,
+                SURVIVAL_CHEST_ITEM_COUNT
+            );
+            self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                id: self.survival_chest_window_id,
+                state: protocol::VarInt(self.survival_chest_window_state_id),
+                slot: SURVIVAL_CHEST_WINDOW_SLOT,
+                button: SURVIVAL_CHEST_CLICK_BUTTON,
+                mode: protocol::VarInt(SURVIVAL_CHEST_CLICK_MODE),
+                slots: protocol::LenPrefixed::new(vec![packet::NumberedSlot {
+                    slot_number: SURVIVAL_CHEST_WINDOW_SLOT,
+                    slot_data: Some(item::Stack {
+                        id: SURVIVAL_CHEST_ITEM_PROTOCOL_ID,
+                        count: SURVIVAL_CHEST_ITEM_COUNT,
+                        damage: None,
+                        tag: None,
+                    }),
+                }]),
+                clicked_item: None,
+            });
+            self.survival_chest_store_sent = true;
+        }
+
+        if self.survival_chest_probe_enabled
+            && self.survival_chest_probe_session == SURVIVAL_CHEST_FIRST_SESSION
+            && self.active_probe_ticks >= SURVIVAL_CHEST_CLOSE_TICK
+            && self.survival_chest_store_sent
+            && !self.survival_chest_close_sent
+        {
+            info!(
+                "MC-COMPAT-MILESTONE survival_chest_close_sent window={}",
+                self.survival_chest_window_id
+            );
+            self.write_packet(packet::play::serverbound::CloseWindow {
+                id: self.survival_chest_window_id,
+            });
+            self.survival_chest_close_sent = true;
+            if !self.survival_chest_reconnect_sent {
+                info!(
+                    "MC-COMPAT-MILESTONE survival_chest_reconnect_sent session={}",
+                    SURVIVAL_CHEST_RECONNECT_SESSION_LABEL
+                );
+                self.survival_chest_reconnect_sent = true;
+            }
         }
 
         if self.inventory_probe_enabled && self.active_probe_ticks == 520 {
@@ -2554,6 +2728,32 @@ impl Server {
         }
     }
 
+    fn log_survival_chest_persisted_item(
+        &mut self,
+        window_id: u8,
+        slot_item: Option<&Option<item::Stack>>,
+    ) {
+        if self.survival_chest_probe_session != SURVIVAL_CHEST_REOPEN_SESSION
+            || self.survival_chest_persisted_seen
+        {
+            return;
+        }
+        let Some(Some(stack)) = slot_item else {
+            return;
+        };
+        if stack.id != SURVIVAL_CHEST_ITEM_PROTOCOL_ID || stack.count != SURVIVAL_CHEST_ITEM_COUNT {
+            return;
+        }
+        self.survival_chest_persisted_seen = true;
+        info!(
+            "MC-COMPAT-MILESTONE survival_chest_persisted_seen window={} slot={} item={} count={}",
+            window_id,
+            SURVIVAL_CHEST_WINDOW_SLOT,
+            SURVIVAL_CHEST_ITEM_NAME,
+            SURVIVAL_CHEST_ITEM_COUNT
+        );
+    }
+
     fn on_entity_equipment_array(
         &mut self,
         equipment: packet::play::clientbound::EntityEquipment_Array,
@@ -2583,6 +2783,31 @@ impl Server {
     }
 
     fn on_window_open_varint(&mut self, window: packet::play::clientbound::WindowOpen_VarInt) {
+        if self.survival_chest_probe_enabled && window.id.0 > 0 {
+            self.survival_chest_window_id = window.id.0 as u8;
+            if self.survival_chest_probe_session == SURVIVAL_CHEST_REOPEN_SESSION {
+                if !self.survival_chest_reopen_seen {
+                    self.survival_chest_reopen_seen = true;
+                    info!(
+                        "MC-COMPAT-MILESTONE survival_chest_reopen_seen window={} position={},{},{}",
+                        self.survival_chest_window_id,
+                        SURVIVAL_CHEST_X,
+                        SURVIVAL_CHEST_Y,
+                        SURVIVAL_CHEST_Z
+                    );
+                }
+            } else if !self.survival_chest_open_seen {
+                self.survival_chest_open_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE survival_chest_open_seen window={} position={},{},{}",
+                    self.survival_chest_window_id,
+                    SURVIVAL_CHEST_X,
+                    SURVIVAL_CHEST_Y,
+                    SURVIVAL_CHEST_Z
+                );
+            }
+        }
+
         if !self.inventory_probe_enabled {
             return;
         }
@@ -2601,7 +2826,10 @@ impl Server {
         &mut self,
         window: packet::play::clientbound::WindowItems_StateCarry,
     ) {
-        if !self.inventory_probe_enabled && !self.survival_probe_enabled {
+        if !self.inventory_probe_enabled
+            && !self.survival_probe_enabled
+            && !self.survival_chest_probe_enabled
+        {
             return;
         }
 
@@ -2637,6 +2865,16 @@ impl Server {
                 window.id, window.state_id.0, slot_count
             );
         }
+        if self.survival_chest_probe_enabled
+            && window.id == self.survival_chest_window_id
+            && window.id > EMPTY_WINDOW_ID
+        {
+            self.survival_chest_window_state_id = window.state_id.0;
+            self.log_survival_chest_persisted_item(
+                window.id,
+                window.items.data.get(SURVIVAL_CHEST_WINDOW_SLOT_INDEX),
+            );
+        }
 
         if let Some(Some(stack)) = window.items.data.get(36) {
             if !self.inventory_probe_sword_seen && stack.count == 1 {
@@ -2659,7 +2897,10 @@ impl Server {
     }
 
     fn on_window_set_slot_state(&mut self, slot: packet::play::clientbound::WindowSetSlot_State) {
-        if !self.inventory_probe_enabled && !self.survival_probe_enabled {
+        if !self.inventory_probe_enabled
+            && !self.survival_probe_enabled
+            && !self.survival_chest_probe_enabled
+        {
             return;
         }
 
@@ -2671,6 +2912,15 @@ impl Server {
             Self::item_summary(&slot.item),
         );
         self.inventory_probe_state_id = slot.state_id.0;
+        if self.survival_chest_probe_enabled
+            && slot.id == self.survival_chest_window_id
+            && slot.id > EMPTY_WINDOW_ID
+        {
+            self.survival_chest_window_state_id = slot.state_id.0;
+            if slot.property == SURVIVAL_CHEST_WINDOW_SLOT {
+                self.log_survival_chest_persisted_item(slot.id, Some(&slot.item));
+            }
+        }
         if slot.property == 36 {
             if let Some(stack) = &slot.item {
                 if !self.inventory_probe_sword_seen && stack.count == 1 {
@@ -2716,7 +2966,10 @@ impl Server {
     }
 
     fn on_collect_item(&mut self, item: packet::play::clientbound::CollectItem) {
-        if !self.inventory_probe_enabled && !self.survival_probe_enabled {
+        if !self.inventory_probe_enabled
+            && !self.survival_probe_enabled
+            && !self.survival_chest_probe_enabled
+        {
             return;
         }
 
