@@ -1,0 +1,720 @@
+    Updating crates.io index
+     Locking 272 packages to latest compatible versions
+      Adding aes v0.7.5 (available: v0.9.1)
+      Adding base64 v0.13.1 (available: v0.22.1)
+      Adding base64ct v1.1.1 (available: v1.8.3)
+      Adding bitfield-struct v0.1.8 (available: v0.13.0)
+      Adding cfb8 v0.7.1 (available: v0.9.1)
+      Adding env_logger v0.9.3 (available: v0.11.10)
+      Adding flume v0.10.14 (available: v0.12.0)
+      Adding generic-array v0.14.7 (available: v0.14.9)
+      Adding heck v0.4.1 (available: v0.5.0)
+      Adding noise v0.7.0 (available: v0.9.0)
+      Adding ordered-float v3.9.2 (available: v5.3.0)
+      Adding rand v0.8.6 (available: v0.10.1)
+      Adding reqwest v0.11.27 (available: v0.13.4)
+      Adding rsa v0.5.0 (available: v0.9.10)
+      Adding sha1 v0.10.6 (available: v0.11.0)
+      Adding sha2 v0.10.9 (available: v0.11.0)
+      Adding thiserror v1.0.69 (available: v2.0.18)
+      Adding vek v0.15.10 (available: v0.17.2)
+      Adding zeroize v1.4.3 (available: v1.8.2)
+ Downloading crates ...
+  Downloaded socket2 v0.6.4
+  Downloaded uuid v1.23.2
+  Downloaded mio v1.2.1
+  Downloaded typenum v1.20.1
+  Downloaded zerocopy v0.8.50
+   Compiling proc-macro2 v1.0.106
+   Compiling unicode-ident v1.0.24
+   Compiling quote v1.0.45
+   Compiling libc v0.2.186
+   Compiling cfg-if v1.0.4
+   Compiling autocfg v1.5.1
+   Compiling libm v0.2.16
+   Compiling version_check v0.9.5
+   Compiling typenum v1.20.1
+   Compiling smallvec v1.15.1
+   Compiling stable_deref_trait v1.2.1
+   Compiling itoa v1.0.18
+   Compiling scopeguard v1.2.0
+   Compiling memchr v2.8.1
+   Compiling pin-project-lite v0.2.17
+   Compiling serde_core v1.0.228
+   Compiling shlex v2.0.1
+   Compiling find-msvc-tools v0.1.9
+   Compiling futures-core v0.3.32
+   Compiling crossbeam-utils v0.8.21
+   Compiling parking_lot_core v0.9.12
+   Compiling zerocopy v0.8.50
+   Compiling lock_api v0.4.14
+   Compiling futures-sink v0.3.32
+   Compiling bytes v1.11.1
+   Compiling litemap v0.8.2
+   Compiling serde v1.0.228
+   Compiling writeable v0.6.3
+   Compiling cc v1.2.63
+   Compiling futures-channel v0.3.32
+   Compiling futures-io v0.3.32
+   Compiling utf8_iter v1.0.4
+   Compiling byteorder v1.5.0
+   Compiling generic-array v0.14.7
+   Compiling icu_properties_data v2.2.0
+   Compiling futures-task v0.3.32
+   Compiling zmij v1.0.21
+   Compiling rayon-core v1.13.0
+   Compiling crc32fast v1.5.0
+   Compiling num-traits v0.2.19
+   Compiling slab v0.4.12
+   Compiling icu_normalizer_data v2.2.0
+   Compiling untrusted v0.9.0
+   Compiling fnv v1.0.7
+   Compiling getrandom v0.1.16
+   Compiling subtle v2.6.1
+   Compiling once_cell v1.21.4
+   Compiling serde_json v1.0.150
+   Compiling httparse v1.10.1
+   Compiling either v1.16.0
+   Compiling rustls v0.21.12
+   Compiling const-oid v0.6.2
+   Compiling equivalent v1.0.2
+   Compiling log v0.4.30
+   Compiling hashbrown v0.17.1
+   Compiling tracing-core v0.1.36
+   Compiling miniz_oxide v0.4.4
+   Compiling spin v0.9.8
+   Compiling semver v1.0.28
+   Compiling crossbeam-epoch v0.9.18
+   Compiling http v0.2.12
+   Compiling time-core v0.1.8
+   Compiling powerfmt v0.2.0
+   Compiling try-lock v0.2.5
+   Compiling thiserror v2.0.18
+   Compiling num-conv v0.2.2
+   Compiling percent-encoding v2.3.2
+   Compiling adler32 v1.2.0
+   Compiling base64ct v1.1.1
+   Compiling anyhow v1.0.102
+   Compiling crossbeam-deque v0.8.6
+   Compiling time-macros v0.2.27
+   Compiling form_urlencoded v1.2.2
+   Compiling deranged v0.5.8
+   Compiling pem-rfc7468 v0.2.4
+   Compiling syn v2.0.117
+   Compiling rustc_version v0.4.1
+   Compiling want v0.3.1
+   Compiling tracing v0.1.44
+   Compiling num-rational v0.3.2
+   Compiling cpufeatures v0.2.17
+   Compiling indexmap v2.14.0
+   Compiling weezl v0.1.12
+   Compiling adler v1.0.2
+   Compiling adler2 v2.0.1
+   Compiling tower-service v0.3.3
+   Compiling syn v1.0.109
+   Compiling radium v0.7.0
+   Compiling simd-adler32 v0.3.9
+   Compiling num-bigint-dig v0.7.1
+   Compiling getrandom v0.2.17
+   Compiling errno v0.3.14
+   Compiling mio v1.2.1
+   Compiling socket2 v0.6.4
+   Compiling rand_core v0.6.4
+   Compiling signal-hook-registry v1.4.8
+   Compiling rayon v1.12.0
+   Compiling parking_lot v0.12.5
+   Compiling crypto-bigint v0.2.11
+   Compiling ring v0.17.14
+   Compiling rand_core v0.5.1
+   Compiling http-body v0.4.6
+   Compiling block-buffer v0.10.4
+   Compiling crypto-common v0.1.7
+   Compiling socket2 v0.5.10
+   Compiling httpdate v1.0.3
+   Compiling digest v0.10.7
+   Compiling cipher v0.3.0
+   Compiling miniz_oxide v0.8.9
+   Compiling vek v0.15.10
+   Compiling deflate v0.8.6
+   Compiling num-integer v0.1.46
+   Compiling miniz_oxide v0.3.7
+   Compiling lazy_static v1.5.0
+   Compiling aho-corasick v1.1.4
+   Compiling bitflags v1.3.2
+   Compiling paste v1.0.15
+   Compiling regex-syntax v0.8.10
+   Compiling heck v0.4.1
+   Compiling color_quant v1.1.0
+   Compiling tap v1.0.1
+   Compiling der v0.4.5
+   Compiling time v0.3.47
+   Compiling thiserror v1.0.69
+   Compiling ryu v1.0.23
+   Compiling base64 v0.21.7
+   Compiling num-iter v0.1.45
+   Compiling num-bigint v0.4.6
+   Compiling flate2 v1.1.9
+   Compiling png v0.16.8
+   Compiling gif v0.11.4
+   Compiling wyz v0.5.1
+   Compiling rustls-pemfile v1.0.4
+   Compiling num-complex v0.4.6
+   Compiling approx v0.5.1
+   Compiling spki v0.4.1
+   Compiling digest v0.9.0
+   Compiling nanorand v0.7.0
+   Compiling encoding_rs v0.8.35
+   Compiling cesu8 v1.1.0
+   Compiling funty v2.0.0
+   Compiling mime v0.3.17
+   Compiling scoped_threadpool v0.1.9
+   Compiling opaque-debug v0.3.1
+   Compiling ipnet v2.12.0
+   Compiling webpki-roots v0.25.4
+   Compiling sync_wrapper v0.1.2
+   Compiling bytemuck v1.25.0
+   Compiling aes v0.7.5
+   Compiling sha1 v0.10.6
+   Compiling bitvec v1.0.1
+   Compiling sha2 v0.10.9
+   Compiling ordered-float v3.9.2
+   Compiling regex-automata v0.4.14
+   Compiling cfb8 v0.7.1
+   Compiling rand_xorshift v0.2.0
+   Compiling num-rational v0.4.2
+   Compiling atty v0.2.14
+   Compiling termcolor v1.4.1
+   Compiling arrayvec v0.7.6
+   Compiling ascii v1.1.0
+   Compiling base64 v0.13.1
+   Compiling humantime v2.3.0
+   Compiling jpeg-decoder v0.1.22
+   Compiling uuid v1.23.2
+   Compiling num v0.4.3
+   Compiling tiff v0.6.1
+   Compiling ppv-lite86 v0.2.21
+   Compiling image v0.23.14
+   Compiling rand_chacha v0.3.1
+   Compiling rand_chacha v0.2.2
+   Compiling rand v0.7.3
+   Compiling rand v0.8.6
+   Compiling synstructure v0.13.2
+   Compiling rustls-webpki v0.101.7
+   Compiling sct v0.7.1
+   Compiling bitfield-struct v0.1.8
+   Compiling zerofrom-derive v0.1.7
+   Compiling yoke-derive v0.8.2
+   Compiling zerovec-derive v0.11.3
+   Compiling displaydoc v0.2.6
+   Compiling serde_derive v1.0.228
+   Compiling tokio-macros v2.7.0
+   Compiling futures-macro v0.3.32
+   Compiling zeroize_derive v1.4.3
+   Compiling thiserror-impl v2.0.18
+   Compiling pin-project-internal v1.1.13
+   Compiling thiserror-impl v1.0.69
+   Compiling async-trait v0.1.89
+   Compiling regex v1.12.3
+   Compiling zeroize v1.4.3
+   Compiling tokio v1.52.3
+   Compiling pkcs1 v0.2.4
+   Compiling futures-util v0.3.32
+   Compiling env_logger v0.9.3
+   Compiling zerofrom v0.1.8
+   Compiling pkcs8 v0.7.6
+   Compiling pin-project v1.1.13
+   Compiling yoke v0.8.2
+   Compiling flume v0.10.14
+   Compiling zerovec v0.11.6
+   Compiling zerotrie v0.2.4
+   Compiling simple_asn1 v0.6.4
+   Compiling rsa-der v0.3.0
+   Compiling rsa v0.5.0
+   Compiling tinystr v0.8.3
+   Compiling potential_utf v0.1.5
+   Compiling icu_collections v2.2.0
+   Compiling icu_locale_core v2.2.0
+   Compiling noise v0.7.0
+   Compiling icu_provider v2.2.0
+   Compiling icu_properties v2.2.0
+   Compiling icu_normalizer v2.2.0
+   Compiling serde_urlencoded v0.7.1
+   Compiling hematite-nbt v0.5.2
+   Compiling valence v0.1.0 (/tmp/valence-compat-758)
+   Compiling futures-executor v0.3.32
+   Compiling futures v0.3.32
+   Compiling idna_adapter v1.2.2
+   Compiling idna v1.1.0
+   Compiling url v2.5.8
+   Compiling tokio-util v0.7.18
+   Compiling tokio-rustls v0.24.1
+   Compiling h2 v0.3.27
+   Compiling hyper v0.14.32
+   Compiling hyper-rustls v0.24.2
+   Compiling reqwest v0.11.27
+warning: unused import: `anyhow::Context`
+ --> src/entity/meta.rs:5:5
+  |
+5 | use anyhow::Context;
+  |     ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `uuid::Uuid`
+ --> src/entity/meta.rs:6:5
+  |
+6 | use uuid::Uuid;
+  |     ^^^^^^^^^^
+
+warning: unused import: `crate::block_pos::BlockPos`
+ --> src/entity/meta.rs:8:5
+  |
+8 | use crate::block_pos::BlockPos;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::Text`
+  --> src/entity/meta.rs:11:5
+   |
+11 | use crate::Text;
+   |     ^^^^^^^^^^^
+
+warning: unused variable: `pos`
+   --> src/chunk.rs:182:46
+    |
+182 |     pub(crate) fn block_change_packet(&self, pos: ChunkPos) -> Option<BlockChangePacket> {
+    |                                              ^^^ help: if this is intentional, prefix it with an underscore: `_pos`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `m`
+     --> /tmp/valence-compat-758-target/debug/build/valence-14e0fa114b2869c7/out/entity.rs:32125:33
+      |
+32125 |             Self::ExperienceOrb(m) => {}
+      |                                 ^ help: if this is intentional, prefix it with an underscore: `_m`
+
+warning: unused variable: `m`
+     --> /tmp/valence-compat-758-target/debug/build/valence-14e0fa114b2869c7/out/entity.rs:33447:29
+      |
+33447 |             Self::LeashKnot(m) => {}
+      |                             ^ help: if this is intentional, prefix it with an underscore: `_m`
+
+warning: unused variable: `m`
+     --> /tmp/valence-compat-758-target/debug/build/valence-14e0fa114b2869c7/out/entity.rs:33448:33
+      |
+33448 |             Self::LightningBolt(m) => {}
+      |                                 ^ help: if this is intentional, prefix it with an underscore: `_m`
+
+warning: unused variable: `m`
+     --> /tmp/valence-compat-758-target/debug/build/valence-14e0fa114b2869c7/out/entity.rs:33690:26
+      |
+33690 |             Self::Marker(m) => {}
+      |                          ^ help: if this is intentional, prefix it with an underscore: `_m`
+
+warning: unused variable: `m`
+     --> /tmp/valence-compat-758-target/debug/build/valence-14e0fa114b2869c7/out/entity.rs:34481:28
+      |
+34481 |             Self::Painting(m) => {}
+      |                            ^ help: if this is intentional, prefix it with an underscore: `_m`
+
+warning: unused variable: `m`
+     --> /tmp/valence-compat-758-target/debug/build/valence-14e0fa114b2869c7/out/entity.rs:37038:31
+      |
+37038 |             Self::TraderLlama(m) => {}
+      |                               ^ help: if this is intentional, prefix it with an underscore: `_m`
+
+warning: unused variable: `e`
+   --> src/entity.rs:439:30
+    |
+439 |             EntityMeta::Goat(e) => [1.3, 0.9, 1.3], // TODO: baby size?
+    |                              ^ help: if this is intentional, prefix it with an underscore: `_e`
+
+warning: unused variable: `skin_blob`
+   --> src/server.rs:580:16
+    |
+580 |     let (uuid, skin_blob) = if server.0.online_mode {
+    |                ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_skin_blob`
+
+warning: irrefutable `if let` pattern
+   --> src/text.rs:340:12
+    |
+340 |         if let TextContent::Text { text } = &self.content {
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: this pattern will always match, so the `if let` is useless
+    = help: consider replacing the `if let` with a `let`
+    = note: `#[warn(irrefutable_let_patterns)]` on by default
+
+warning: unused variable: `yaw`
+  --> src/util.rs:73:27
+   |
+73 | pub fn from_yaw_and_pitch(yaw: f32, pitch: f32) -> Vec3<f64> {
+   |                           ^^^ help: if this is intentional, prefix it with an underscore: `_yaw`
+
+warning: unused variable: `pitch`
+  --> src/util.rs:73:37
+   |
+73 | pub fn from_yaw_and_pitch(yaw: f32, pitch: f32) -> Vec3<f64> {
+   |                                     ^^^^^ help: if this is intentional, prefix it with an underscore: `_pitch`
+
+warning: variants `Single` and `Multi` are never constructed
+   --> src/chunk.rs:267:5
+    |
+266 | pub(crate) enum BlockChangePacket {
+    |                 ----------------- variants in this enum
+267 |     Single(BlockChange),
+    |     ^^^^^^
+268 |     Multi(MultiBlockChange),
+    |     ^^^^^
+    |
+    = note: `BlockChangePacket` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: variants `SpawnPainting` and `SpawnPlayer` are never constructed
+   --> src/entity.rs:602:5
+    |
+598 | pub(crate) enum EntitySpawnPacket {
+    |                 ----------------- variants in this enum
+...
+602 |     SpawnPainting(SpawnPainting),
+    |     ^^^^^^^^^^^^^
+603 |     SpawnPlayer(SpawnPlayer),
+    |     ^^^^^^^^^^^
+
+warning: method `index` is never used
+  --> src/slotmap.rs:43:12
+   |
+26 | impl Key {
+   | -------- method in this implementation
+...
+43 |     pub fn index(self) -> u32 {
+   |            ^^^^^
+
+warning: method `clear` is never used
+   --> src/slotmap.rs:164:12
+    |
+ 63 | impl<T> SlotMap<T> {
+    | ------------------ method in this implementation
+...
+164 |     pub fn clear(&mut self) {
+    |            ^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> src/chunk.rs:70:20
+   |
+70 |     pub fn get_mut(&mut self, pos: ChunkPos) -> Option<ChunkMut> {
+   |                    ^^^^^^^^^                           ^^^^^^^^ the same lifetime is hidden here
+   |                    |
+   |                    the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+   = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+   |
+70 |     pub fn get_mut(&mut self, pos: ChunkPos) -> Option<ChunkMut<'_>> {
+   |                                                                ++++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> src/chunk.rs:74:21
+   |
+74 |     pub fn iter_mut(&mut self) -> impl FusedIterator<Item = (ChunkPos, ChunkMut)> + '_ {
+   |                     ^^^^^^^^^                                          ^^^^^^^^     ^^ the same lifetime is elided here
+   |                     |                                                  |
+   |                     the lifetime is elided here                        the same lifetime is hidden here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+help: use `'_` for type paths
+   |
+74 |     pub fn iter_mut(&mut self) -> impl FusedIterator<Item = (ChunkPos, ChunkMut<'_>)> + '_ {
+   |                                                                                ++++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> src/chunk.rs:81:25
+   |
+81 |     pub fn par_iter_mut(&mut self) -> impl ParallelIterator<Item = (ChunkPos, ChunkMut)> + '_ {
+   |                         ^^^^^^^^^                                             ^^^^^^^^     ^^ the same lifetime is elided here
+   |                         |                                                     |
+   |                         the lifetime is elided here                           the same lifetime is hidden here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+help: use `'_` for type paths
+   |
+81 |     pub fn par_iter_mut(&mut self) -> impl ParallelIterator<Item = (ChunkPos, ChunkMut<'_>)> + '_ {
+   |                                                                                       ++++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> src/client.rs:77:21
+   |
+77 |     pub fn reborrow(&mut self) -> ClientsMut {
+   |                     ^^^^^^^^^     ^^^^^^^^^^ the same lifetime is hidden here
+   |                     |
+   |                     the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+help: use `'_` for type paths
+   |
+77 |     pub fn reborrow(&mut self) -> ClientsMut<'_> {
+   |                                             ++++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> src/client.rs:81:26
+   |
+81 |     pub(crate) fn create(&mut self, client: Client) -> (ClientId, ClientMut) {
+   |                          ^^^^^^^^^ the lifetime is elided here    ^^^^^^^^^ the same lifetime is hidden here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+help: use `'_` for type paths
+   |
+81 |     pub(crate) fn create(&mut self, client: Client) -> (ClientId, ClientMut<'_>) {
+   |                                                                            ++++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> src/client.rs:94:20
+   |
+94 |     pub fn get_mut(&mut self, client: ClientId) -> Option<ClientMut> {
+   |                    ^^^^^^^^^ the lifetime is elided here  ^^^^^^^^^ the same lifetime is hidden here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+help: use `'_` for type paths
+   |
+94 |     pub fn get_mut(&mut self, client: ClientId) -> Option<ClientMut<'_>> {
+   |                                                                    ++++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> src/client.rs:98:21
+   |
+98 |     pub fn iter_mut(&mut self) -> impl FusedIterator<Item = (ClientId, ClientMut)> + '_ {
+   |                     ^^^^^^^^^                                          ^^^^^^^^^     ^^ the same lifetime is elided here
+   |                     |                                                  |
+   |                     the lifetime is elided here                        the same lifetime is hidden here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+help: use `'_` for type paths
+   |
+98 |     pub fn iter_mut(&mut self) -> impl FusedIterator<Item = (ClientId, ClientMut<'_>)> + '_ {
+   |                                                                                 ++++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/client.rs:105:25
+    |
+105 |     pub fn par_iter_mut(&mut self) -> impl ParallelIterator<Item = (ClientId, ClientMut)> + '_ {
+    |                         ^^^^^^^^^                                             ^^^^^^^^^     ^^ the same lifetime is elided here
+    |                         |                                                     |
+    |                         the lifetime is elided here                           the same lifetime is hidden here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+help: use `'_` for type paths
+    |
+105 |     pub fn par_iter_mut(&mut self) -> impl ParallelIterator<Item = (ClientId, ClientMut<'_>)> + '_ {
+    |                                                                                        ++++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/client.rs:273:21
+    |
+273 |     pub fn reborrow(&mut self) -> ClientMut {
+    |                     ^^^^^^^^^     ^^^^^^^^^ the same lifetime is hidden here
+    |                     |
+    |                     the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+help: use `'_` for type paths
+    |
+273 |     pub fn reborrow(&mut self) -> ClientMut<'_> {
+    |                                            ++++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> src/entity.rs:82:21
+   |
+82 |     pub fn reborrow(&mut self) -> EntitiesMut {
+   |                     ^^^^^^^^^     ^^^^^^^^^^^ the same lifetime is hidden here
+   |                     |
+   |                     the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+help: use `'_` for type paths
+   |
+82 |     pub fn reborrow(&mut self) -> EntitiesMut<'_> {
+   |                                              ++++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> src/entity.rs:91:19
+   |
+91 |     pub fn create(&mut self) -> (EntityId, EntityMut) {
+   |                   ^^^^^^^^^                ^^^^^^^^^ the same lifetime is hidden here
+   |                   |
+   |                   the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+help: use `'_` for type paths
+   |
+91 |     pub fn create(&mut self) -> (EntityId, EntityMut<'_>) {
+   |                                                     ++++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/entity.rs:101:29
+    |
+101 |     pub fn create_with_uuid(&mut self, uuid: Uuid) -> Option<(EntityId, EntityMut)> {
+    |                             ^^^^^^^^^ the lifetime is elided here       ^^^^^^^^^ the same lifetime is hidden here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+help: use `'_` for type paths
+    |
+101 |     pub fn create_with_uuid(&mut self, uuid: Uuid) -> Option<(EntityId, EntityMut<'_>)> {
+    |                                                                                  ++++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/entity.rs:162:20
+    |
+162 |     pub fn get_mut(&mut self, entity: EntityId) -> Option<EntityMut> {
+    |                    ^^^^^^^^^ the lifetime is elided here  ^^^^^^^^^ the same lifetime is hidden here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+help: use `'_` for type paths
+    |
+162 |     pub fn get_mut(&mut self, entity: EntityId) -> Option<EntityMut<'_>> {
+    |                                                                    ++++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/entity.rs:166:21
+    |
+166 |     pub fn iter_mut(&mut self) -> impl FusedIterator<Item = (EntityId, EntityMut)> + '_ {
+    |                     ^^^^^^^^^                                          ^^^^^^^^^     ^^ the same lifetime is elided here
+    |                     |                                                  |
+    |                     the lifetime is elided here                        the same lifetime is hidden here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+help: use `'_` for type paths
+    |
+166 |     pub fn iter_mut(&mut self) -> impl FusedIterator<Item = (EntityId, EntityMut<'_>)> + '_ {
+    |                                                                                 ++++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/entity.rs:173:25
+    |
+173 |     pub fn par_iter_mut(&mut self) -> impl ParallelIterator<Item = (EntityId, EntityMut)> + '_ {
+    |                         ^^^^^^^^^                                             ^^^^^^^^^     ^^ the same lifetime is elided here
+    |                         |                                                     |
+    |                         the lifetime is elided here                           the same lifetime is hidden here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+help: use `'_` for type paths
+    |
+173 |     pub fn par_iter_mut(&mut self) -> impl ParallelIterator<Item = (EntityId, EntityMut<'_>)> + '_ {
+    |                                                                                        ++++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> src/world.rs:42:16
+   |
+42 |     pub fn get(&self, world: WorldId) -> Option<WorldRef> {
+   |                ^^^^^                            ^^^^^^^^ the same lifetime is hidden here
+   |                |
+   |                the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+help: use `'_` for type paths
+   |
+42 |     pub fn get(&self, world: WorldId) -> Option<WorldRef<'_>> {
+   |                                                         ++++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> src/world.rs:46:17
+   |
+46 |     pub fn iter(&self) -> impl FusedIterator<Item = (WorldId, WorldRef)> + Clone + '_ {
+   |                 ^^^^^                                         ^^^^^^^^             ^^ the same lifetime is elided here
+   |                 |                                             |
+   |                 the lifetime is elided here                   the same lifetime is hidden here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+help: use `'_` for type paths
+   |
+46 |     pub fn iter(&self) -> impl FusedIterator<Item = (WorldId, WorldRef<'_>)> + Clone + '_ {
+   |                                                                       ++++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> src/world.rs:56:21
+   |
+56 |     pub fn reborrow(&mut self) -> WorldsMut {
+   |                     ^^^^^^^^^     ^^^^^^^^^ the same lifetime is hidden here
+   |                     |
+   |                     the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+help: use `'_` for type paths
+   |
+56 |     pub fn reborrow(&mut self) -> WorldsMut<'_> {
+   |                                            ++++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> src/world.rs:60:19
+   |
+60 |     pub fn create(&mut self, dim: DimensionId) -> (WorldId, WorldMut) {
+   |                   ^^^^^^^^^ the lifetime is elided here     ^^^^^^^^ the same lifetime is hidden here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+help: use `'_` for type paths
+   |
+60 |     pub fn create(&mut self, dim: DimensionId) -> (WorldId, WorldMut<'_>) {
+   |                                                                     ++++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> src/world.rs:91:20
+   |
+91 |     pub fn get_mut(&mut self, world: WorldId) -> Option<WorldMut> {
+   |                    ^^^^^^^^^                            ^^^^^^^^ the same lifetime is hidden here
+   |                    |
+   |                    the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+help: use `'_` for type paths
+   |
+91 |     pub fn get_mut(&mut self, world: WorldId) -> Option<WorldMut<'_>> {
+   |                                                                 ++++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> src/world.rs:95:21
+   |
+95 |     pub fn iter_mut(&mut self) -> impl FusedIterator<Item = (WorldId, WorldMut)> + '_ {
+   |                     ^^^^^^^^^                                         ^^^^^^^^     ^^ the same lifetime is elided here
+   |                     |                                                 |
+   |                     the lifetime is elided here                       the same lifetime is hidden here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+help: use `'_` for type paths
+   |
+95 |     pub fn iter_mut(&mut self) -> impl FusedIterator<Item = (WorldId, WorldMut<'_>)> + '_ {
+   |                                                                               ++++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/world.rs:102:21
+    |
+102 |     pub fn par_iter(&self) -> impl ParallelIterator<Item = (WorldId, WorldRef)> + Clone + '_ {
+    |                     ^^^^^                                            ^^^^^^^^             ^^ the same lifetime is elided here
+    |                     |                                                |
+    |                     the lifetime is elided here                      the same lifetime is hidden here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+help: use `'_` for type paths
+    |
+102 |     pub fn par_iter(&self) -> impl ParallelIterator<Item = (WorldId, WorldRef<'_>)> + Clone + '_ {
+    |                                                                              ++++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/world.rs:109:25
+    |
+109 |     pub fn par_iter_mut(&mut self) -> impl ParallelIterator<Item = (WorldId, WorldMut)> + '_ {
+    |                         ^^^^^^^^^                                            ^^^^^^^^     ^^ the same lifetime is elided here
+    |                         |                                                    |
+    |                         the lifetime is elided here                          the same lifetime is hidden here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+help: use `'_` for type paths
+    |
+109 |     pub fn par_iter_mut(&mut self) -> impl ParallelIterator<Item = (WorldId, WorldMut<'_>)> + '_ {
+    |                                                                                      ++++
+
+warning: `valence` (lib) generated 43 warnings (run `cargo fix --lib -p valence` to apply 38 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 21.97s
+warning: the following packages contain code that will be rejected by a future version of Rust: noise v0.7.0
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+     Running `/tmp/valence-compat-758-target/debug/examples/terrain`
+[2026-05-29T18:10:27Z TRACE valence::server] entering accept loop
+[2026-05-29T18:10:29Z DEBUG valence::server] connection to 127.0.0.1:60970 ended: error during status: reading packet length: unexpected end of file

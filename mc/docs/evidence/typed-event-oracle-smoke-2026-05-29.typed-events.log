@@ -1,0 +1,1 @@
+MC-COMPAT-EVENT schema=1 source=client scenario=smoke session=smoke-typed-event-2026-05-29.receipt username=compatbot seq=1 event=protocol_detected

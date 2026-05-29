@@ -1,0 +1,16 @@
+[main.rs:254][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:346][INFO] Shader version: #version 150
+[main.rs:99][INFO] Detected server protocol version 758
+[server/mod.rs:255][INFO] MC-COMPAT-MILESTONE connect_start protocol=758 address=127.0.0.1:25565
+[server/mod.rs:260][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:277][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:291][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:298][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:338][WARN] Server is running in offline mode
+[server/mod.rs:339][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=758 username=compatbot
+[world/mod.rs:1028][INFO] Dimension type: {"ambient_light": Float(1.0), "effects": String("overworld"), "ultrawarm": Byte(0), "logical_height": Int(384), "piglin_safe": Byte(1), "natural": Byte(1), "has_skylight": Byte(1), "min_y": Int(-64), "has_raids": Byte(1), "has_ceiling": Byte(0), "height": Int(384), "infiniburn": String("#minecraft:infiniburn_overworld"), "respawn_anchor_works": Byte(1), "bed_works": Byte(1), "coordinate_scale": Double(1.0)}
+[server/mod.rs:2180][INFO] MC-COMPAT-MILESTONE join_game entity_id=0 gamemode=Creative
+[server/mod.rs:3480][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=-5
+[server/mod.rs:849][INFO] MC-COMPAT-MILESTONE render_tick_with_player

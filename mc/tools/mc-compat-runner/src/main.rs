@@ -1934,6 +1934,81 @@ fn typed_event_oracle_receipt_json(artifact: Option<&TypedEventOracleArtifact>) 
     )
 }
 
+fn typed_event_oracle_contributes_to_pass_fail(scenario: Scenario) -> bool {
+    matches!(scenario, Scenario::Smoke | Scenario::InventoryInteraction)
+}
+
+fn validate_typed_event_oracle_for_migrated_scenario(
+    cfg: &Config,
+    client: &ClientRunEvidence,
+) -> Result<(), String> {
+    if !typed_event_oracle_contributes_to_pass_fail(cfg.scenario) {
+        return Ok(());
+    }
+    let events = typed_events_from_receipt_evidence(cfg, client)?;
+    let required = typed_event_required_events_for_graph(cfg.scenario);
+    let required_refs = required.iter().map(String::as_str).collect::<Vec<_>>();
+    let forbidden = scenario_forbidden_patterns(cfg.scenario)
+        .iter()
+        .map(|(name, _)| *name)
+        .collect::<Vec<_>>();
+    let ordered_edges = typed_event_ordered_edges_for_scenario(cfg.scenario);
+    let username = single_typed_event_username(client);
+    let session = typed_event_session_id(cfg);
+    let result = evaluate_typed_event_graph(
+        &events,
+        scenario_name(cfg.scenario),
+        &session,
+        username,
+        &required_refs,
+        &forbidden,
+        &ordered_edges,
+    );
+    if result.passed {
+        return Ok(());
+    }
+    Err(format!(
+        "typed event oracle for scenario {} failed: missing={:?} forbidden={:?} order_violations={:?}",
+        scenario_name(cfg.scenario),
+        result.missing_events,
+        result.forbidden_events,
+        result.order_violations
+    ))
+}
+
+fn typed_event_required_events_for_graph(scenario: Scenario) -> Vec<String> {
+    let mut required = scenario_required_milestones(scenario)
+        .iter()
+        .map(|(name, _)| (*name).to_string())
+        .collect::<Vec<_>>();
+    required.extend(
+        server_required_milestones(scenario)
+            .iter()
+            .map(|(name, _)| (*name).to_string()),
+    );
+    required
+}
+
+fn typed_event_ordered_edges_for_scenario(scenario: Scenario) -> Vec<(&'static str, &'static str)> {
+    match scenario {
+        Scenario::Smoke => vec![],
+        Scenario::InventoryInteraction => vec![
+            ("protocol_detected", "inventory_drop_sent"),
+            ("inventory_drop_sent", "inventory_pickup_seen"),
+            ("inventory_pickup_seen", "inventory_click_sent"),
+            ("inventory_click_sent", "inventory_container_click_sent"),
+            (
+                "inventory_container_click_sent",
+                "inventory_block_place_sent",
+            ),
+            ("server_inventory_drop", "server_inventory_pickup"),
+            ("server_inventory_pickup", "server_inventory_click"),
+            ("server_inventory_container_click", "server_block_place"),
+        ],
+        _ => vec![],
+    }
+}
+
 fn projectile_damage_required_steps() -> Vec<&'static str> {
     vec![
         "attacker_client_projectile_use_sent",
@@ -3162,7 +3237,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         .iter()
         .map(|run| run.username.clone())
         .collect::<Vec<_>>();
-    Ok(ClientRunEvidence {
+    let evidence = ClientRunEvidence {
         log_path: log_paths.first().cloned(),
         log_paths,
         usernames,
@@ -3172,7 +3247,9 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         scenario: Some(scenario),
         server_scenario,
         projectile_damage_causality,
-    })
+    };
+    validate_typed_event_oracle_for_migrated_scenario(cfg, &evidence)?;
+    Ok(evidence)
 }
 
 fn projectile_damage_dry_run_evidence(cfg: &Config) -> ClientRunEvidence {
@@ -3635,7 +3712,7 @@ fn write_typed_event_oracle_artifact(
         event_log_path,
         timeline_blake3,
         event_count: events.len(),
-        contributes_to_pass_fail: false,
+        contributes_to_pass_fail: typed_event_oracle_contributes_to_pass_fail(cfg.scenario),
     }))
 }
 
@@ -5912,7 +5989,21 @@ mod tests {
         );
         assert!(pass.passed, "{pass:?}");
 
-        let missing = evaluate_typed_event_graph(
+        let missing_required = evaluate_typed_event_graph(
+            &events,
+            "smoke",
+            "s1",
+            Some("compatbot"),
+            &["protocol_detected", "missing_event"],
+            &[],
+            &[],
+        );
+        assert!(!missing_required.passed, "{missing_required:?}");
+        assert!(missing_required
+            .missing_events
+            .contains(&"missing_event".to_string()));
+
+        let wrong_username = evaluate_typed_event_graph(
             &events,
             "smoke",
             "s1",
@@ -5921,8 +6012,22 @@ mod tests {
             &[],
             &[],
         );
-        assert!(!missing.passed, "{missing:?}");
-        assert!(missing
+        assert!(!wrong_username.passed, "{wrong_username:?}");
+        assert!(wrong_username
+            .missing_events
+            .contains(&"protocol_detected".to_string()));
+
+        let wrong_session = evaluate_typed_event_graph(
+            &events,
+            "smoke",
+            "s2",
+            Some("compatbot"),
+            &["protocol_detected"],
+            &[],
+            &[],
+        );
+        assert!(!wrong_session.passed, "{wrong_session:?}");
+        assert!(wrong_session
             .missing_events
             .contains(&"protocol_detected".to_string()));
 
@@ -5964,6 +6069,30 @@ mod tests {
         );
         assert!(!ordered.passed, "{ordered:?}");
         assert!(ordered
+            .order_violations
+            .contains(&"protocol_detected_before_render_tick".to_string()));
+
+        let stale_sequence = vec![
+            parse_typed_event_line(
+                "MC-COMPAT-EVENT schema=1 source=client scenario=smoke session=s1 username=compatbot seq=7 event=protocol_detected",
+            )
+            .expect("first duplicate sequence event parses"),
+            parse_typed_event_line(
+                "MC-COMPAT-EVENT schema=1 source=client scenario=smoke session=s1 username=compatbot seq=7 event=render_tick",
+            )
+            .expect("stale sequence event parses"),
+        ];
+        let stale = evaluate_typed_event_graph(
+            &stale_sequence,
+            "smoke",
+            "s1",
+            Some("compatbot"),
+            &["protocol_detected", "render_tick"],
+            &[],
+            &[("protocol_detected", "render_tick")],
+        );
+        assert!(!stale.passed, "{stale:?}");
+        assert!(stale
             .order_violations
             .contains(&"protocol_detected_before_render_tick".to_string()));
     }
@@ -6226,6 +6355,62 @@ mod tests {
             timeline.contains("event=server_inventory_drop"),
             "{timeline}"
         );
+    }
+
+    #[test]
+    fn typed_event_oracle_validates_migrated_inventory_graph() {
+        let cfg = test_config(
+            &[
+                "--scenario",
+                "inventory-interaction",
+                "--receipt",
+                "/tmp/inventory.receipt.json",
+            ],
+            &[],
+        )
+        .expect("inventory config parses");
+        let client_observed = scenario_required_milestones(Scenario::InventoryInteraction)
+            .iter()
+            .map(|(name, _)| *name)
+            .collect::<Vec<_>>();
+        let server_observed = server_required_milestones(Scenario::InventoryInteraction)
+            .iter()
+            .map(|(name, _)| *name)
+            .collect::<Vec<_>>();
+        let passing = ClientRunEvidence {
+            log_path: None,
+            log_paths: Vec::new(),
+            usernames: vec![TEST_USERNAME.to_string()],
+            exit_code: Some(0),
+            classification: "client-exited-success",
+            matched_success_pattern: Some("Detected server protocol version".to_string()),
+            scenario: Some(ScenarioEvidence {
+                observed_milestones: client_observed,
+                missing_milestones: Vec::new(),
+                forbidden_matches: Vec::new(),
+                passed: true,
+            }),
+            server_scenario: Some(ServerScenarioEvidence {
+                observed_milestones: server_observed.clone(),
+                missing_milestones: Vec::new(),
+                forbidden_matches: Vec::new(),
+                passed: true,
+            }),
+            projectile_damage_causality: None,
+        };
+        validate_typed_event_oracle_for_migrated_scenario(&cfg, &passing)
+            .expect("complete typed inventory graph passes");
+
+        let mut missing_server = passing.clone();
+        missing_server
+            .server_scenario
+            .as_mut()
+            .expect("server evidence")
+            .observed_milestones
+            .retain(|name| *name != "server_block_place");
+        let err = validate_typed_event_oracle_for_migrated_scenario(&cfg, &missing_server)
+            .expect_err("missing typed server event fails");
+        assert!(err.contains("server_block_place"), "{err}");
     }
 
     #[test]

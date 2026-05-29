@@ -1,0 +1,435 @@
+## cargo fmt --check
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+## cargo test runner
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 67 tests
+test runtime_config::tests::fixed_protocol_fact_changes_are_rejected ... ok
+test runtime_config::tests::arrow_damage_policy_is_bounded_and_reports_clamping ... ok
+test runtime_config::tests::normalizes_valid_steel_exports ... ok
+test runtime_config::tests::diff_and_apply_plan_separate_hot_next_run_and_restart_only ... ok
+test runtime_config::tests::redaction_hides_secret_like_values ... ok
+test runtime_config::tests::rejects_range_and_sandbox_violations ... ok
+test runtime_config::tests::reload_request_applies_hot_changes_atomically ... ok
+test runtime_config::tests::evaluates_restricted_steel_module ... ok
+test tests::blue_flag_score_scenario_tracks_mirrored_team_evidence ... ok
+test runtime_config::tests::rejects_missing_or_wrong_type_exports ... ok
+test tests::cleanup_client_log_match_is_narrow ... ok
+test runtime_config::tests::reload_request_rolls_back_on_apply_failure_or_restart_only_change ... ok
+test tests::cli_overrides_backend_client_dir_valence_repo_and_revision ... ok
+test tests::cleanup_path_dry_run_preserves_existing_files ... ok
+test tests::combat_damage_scenario_tracks_client_and_server_evidence ... ok
+test tests::client_checkout_must_point_at_manifest_root ... ok
+test tests::compares_paper_and_valence_receipts ... ok
+test tests::defaults_to_valence_protocol_and_port ... ok
+test tests::compares_protocol_763_matrix_receipts_when_configured ... ok
+test tests::enriched_triage_core_bounds_and_redacts_context ... ok
+test runtime_config::tests::rejects_steel_module_unknown_export_and_forbidden_token ... ok
+test tests::env_overrides_are_parsed_without_global_environment_mutation ... ok
+test tests::equipment_update_scenario_tracks_current_client_equipment_marker ... ok
+test tests::flag_score_repeat_scenario_tracks_missing_and_forbidden_evidence ... ok
+test tests::git_revision_evidence_core_reports_clean_dirty_and_unavailable ... ok
+test tests::compat_bot_probe_scenario_is_bounded_and_receipted ... ok
+test tests::invalid_backend_is_rejected ... ok
+test tests::generated_scenario_manifest_matches_runner_parser ... ok
+test tests::failed_preflight_receipt_triages_before_client_evidence ... ok
+test tests::load_network_safety_envelope_fails_closed_for_unsafe_inputs ... ok
+test tests::dry_run_receipt_records_deterministic_child_revision_placeholders ... ok
+test tests::missing_client_checkout_has_actionable_diagnostic ... ok
+test tests::inventory_interaction_scenario_tracks_client_and_server_evidence ... ok
+test tests::missing_valence_checkout_has_actionable_diagnostic ... ok
+test tests::multi_client_scenario_tracks_client_and_server_evidence ... ok
+test tests::projectile_damage_attribution_requires_pinned_valence_revision ... ok
+test tests::nickel_exported_json_config_sets_defaults_and_allows_env_cli_precedence ... ok
+test tests::enriched_triage_receipt_preserves_existing_fields_and_adds_context ... ok
+test tests::projectile_damage_attribution_scenario_tracks_client_and_server_evidence ... ok
+test tests::projectile_damage_dry_run_uses_steel_arrow_policy ... ok
+test tests::run_matrix_config_sets_receipt_dir_and_backend_defaults ... ok
+test tests::rejects_receipt_protocol_mismatch ... ok
+test tests::receipt_summary_mutations_fail_closed ... ok
+test tests::rejects_receipts_that_do_not_match_configured_protocol ... ok
+test tests::status_and_cleanup_modes_parse_without_server_probe_mode ... ok
+test tests::scenario_cli_and_env_parse ... ok
+test tests::restricted_steel_config_rejects_forbidden_capabilities ... ok
+test tests::typed_event_graph_checks_required_forbidden_and_ordered_events ... ok
+test tests::typed_event_receipt_artifact_records_reviewable_timeline_hash ... ok
+test tests::valid_client_checkout_preflight_passes ... ok
+test tests::scenario_oracle_property_all_required_server_milestones_matter ... ok
+test tests::run_matrix_rejects_single_receipt_path ... ok
+test tests::typed_event_parser_accepts_versioned_event_lines ... ok
+test tests::supported_scenario_usage_lists_all_supported_scenarios ... ok
+test tests::survival_break_place_pickup_scenario_tracks_client_and_server_evidence ... ok
+test tests::typed_event_oracle_validates_migrated_inventory_graph ... ok
+test tests::typed_events_from_receipt_evidence_include_client_and_server_sources ... ok
+test tests::scenario_receipt_records_actionable_failure_triage ... ok
+test tests::typed_event_graph_accepts_representative_scenario_fixtures ... ok
+test tests::survival_chest_persistence_scenario_tracks_client_and_server_evidence ... ok
+test tests::restricted_steel_config_sets_runtime_defaults_and_allows_env_cli_precedence ... ok
+test tests::smoke_receipt_records_failures_without_success_claims ... ok
+test tests::smoke_receipt_records_cairn_contract_and_octet_surface ... ok
+test tests::typed_event_oracle_receipt_records_migration_fallback ... ok
+test tests::scenario_oracle_property_forbidden_markers_fail ... ok
+test tests::status_packet_proxy_and_gameplay_receipt_blocks_are_recorded ... ok
+test tests::scenario_oracle_property_all_required_client_milestones_matter ... ok
+
+test result: ok. 67 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+## local evidence manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 42 manifests, 212 entries, 57 receipts scanned
+## individual maintained dry-run checks (pueue task 428)
+┌─────────────────────────────────────┐
+│ Task 428:    completed successfully │
+└─────────────────────────────────────┘
+Command: cd /home/brittonr/git/mc && nix build --no-update-lock-file \
+           .#checks.x86_64-linux.mc-compat-dry-run \
+           .#checks.x86_64-linux.mc-compat-blue-flag-score-dry-run \
+           .#checks.x86_64-linux.mc-compat-bot-probe-dry-run \
+           .#checks.x86_64-linux.mc-compat-multi-client-scenario-dry-run \
+           .#checks.x86_64-linux.mc-compat-open-cairns-dry-run \
+           .#checks.x86_64-linux.mc-compat-valence-ctf-600s-soak-dry-run \
+           .#checks.x86_64-linux.mc-compat-valence-ctf-blue-600s-soak-dry-run \
+           .#checks.x86_64-linux.mc-compat-valence-ctf-inventory-interaction-dry-run \
+           .#checks.x86_64-linux.mc-compat-valence-ctf-combat-damage-dry-run \
+           .#checks.x86_64-linux.mc-compat-valence-ctf-combat-knockback-dry-run \
+           .#checks.x86_64-linux.mc-compat-valence-ctf-armor-equipment-mitigation-dry-run \
+           .#checks.x86_64-linux.mc-compat-valence-ctf-equipment-update-observation-dry-run \
+           .#checks.x86_64-linux.mc-compat-valence-ctf-projectile-hit-dry-run \
+           .#checks.x86_64-linux.mc-compat-valence-ctf-projectile-damage-attribution-dry-run \
+           .#checks.x86_64-linux.mc-compat-valence-ctf-flag-carrier-death-return-dry-run \
+           .#checks.x86_64-linux.mc-compat-valence-ctf-reconnect-flag-state-dry-run \
+           .#checks.x86_64-linux.mc-compat-valence-ctf-latency-jitter-inventory-dry-run \
+           .#checks.x86_64-linux.mc-compat-valence-survival-break-place-pickup-dry-run \
+           --no-link -L
+   Path: /home/brittonr/git/mc
+  Label: typed event individual maintained dry-run checks
+  Start: Fri, 29 May 2026 14:17:31 -0400
+    End: Fri, 29 May 2026 14:17:37 -0400
+
+output:
+these 27 derivations will be built:
+  /nix/store/lrnykz9zic3pvc8ks2m7cw3xh6qjmp2d-mc-compat-valence-ctf-combat-knockback.drv
+  /nix/store/0i2bsj07nn5a4kzrr18phibnw8mrr4hv-mc-compat-valence-ctf-combat-knockback-dry-run.drv
+  /nix/store/k63p2ih546lb0m36j9x1i6ls78l1fzrb-mc-compat-valence-ctf-blue-600s-soak.drv
+  /nix/store/2jajbnhq7n81q3vl4wv02ixmbmfszphi-mc-compat-valence-ctf-blue-600s-soak-dry-run.drv
+  /nix/store/4mfzzj50rx7mxd68r1xcipmh7jwamxnx-mc-compat-valence-ctf-flag-carrier-death-return.drv
+  /nix/store/5szr630sv8jg0xbfmc0bynfmg42rp1wg-mc-compat-valence-ctf-projectile-damage-attribution.drv
+  /nix/store/6hjxa0g9276rpppzlb9s04znp1q3sijc-mc-compat-open-cairns-dry-run.drv
+  /nix/store/7as7mbasd3i0n44qn2lkbz79ndla95xh-mc-compat-valence-ctf-latency-jitter-inventory.drv
+  /nix/store/h2vz0ba1311wbgnbj4fmxjk28n7fx0wr-mc-compat-valence-ctf-combat-damage.drv
+  /nix/store/aalhvzdlwqjspf189il94hzqpmbvc1g7-mc-compat-valence-ctf-combat-damage-dry-run.drv
+  /nix/store/bl9hqqj1vpw4k2pg9di83c789x405fqs-mc-compat-valence-ctf-600s-soak.drv
+  /nix/store/y2xl3ghlrpg7c436r0h1kwj76pwnm1fa-mc-compat-valence-ctf-equipment-update-observation.drv
+  /nix/store/cpkx87wy4ibn8wsw65ps13crpa9kar69-mc-compat-valence-ctf-equipment-update-observation-dry-run.drv
+  /nix/store/ywrvbhsfgm0zf8vsggv0q69d3ggf68g9-mc-compat-valence-ctf-inventory-interaction.drv
+  /nix/store/dgq657rbqja4mhwslmhps5b8hpmrb5rh-mc-compat-valence-ctf-inventory-interaction-dry-run.drv
+  /nix/store/f4zdk29363kwa4678vfpa89gd0jhipdy-mc-compat-valence-ctf-600s-soak-dry-run.drv
+  /nix/store/gjzl8ydzyxyq95m794mc43wqhk8k3n79-mc-compat-valence-ctf-reconnect-flag-state.drv
+  /nix/store/jqlzsc18gmccfb9x1yi540645ynnwdd7-mc-compat-valence-ctf-projectile-damage-attribution-dry-run.drv
+  /nix/store/qlp050cnz6n8dq2ncb8klapjq677dmvh-mc-compat-valence-ctf-armor-equipment-mitigation.drv
+  /nix/store/kflpjn7mln4licp1mwa2qbd2rd06scdi-mc-compat-valence-ctf-armor-equipment-mitigation-dry-run.drv
+  /nix/store/m2q1y9nd7c9s78pv8f4a54c03fzdswah-mc-compat-valence-ctf-projectile-hit.drv
+  /nix/store/khi1yg6bh7xhxwwky8rjjf3a7dzm4z3n-mc-compat-valence-ctf-projectile-hit-dry-run.drv
+  /nix/store/nagmf9zjrd7r9y0z6xdzqhrhql5vkgwh-mc-compat-valence-ctf-reconnect-flag-state-dry-run.drv
+  /nix/store/vd41vkv4daabl38gq65i7aiy0lyf1hl8-mc-compat-valence-survival-break-place-pickup.drv
+  /nix/store/nvf0p85ndfc666kswb34zha0ycwawv6z-mc-compat-valence-survival-break-place-pickup-dry-run.drv
+  /nix/store/r9cklzls3kd807lvly618b7cg0ldyidb-mc-compat-valence-ctf-latency-jitter-inventory-dry-run.drv
+  /nix/store/ralc2kqbb9qkdl4nnl3chlikcajrd8n3-mc-compat-valence-ctf-flag-carrier-death-return-dry-run.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/6hjxa0g9276rpppzlb9s04znp1q3sijc-mc-compat-open-cairns-dry-run.drv'...
+building '/nix/store/bl9hqqj1vpw4k2pg9di83c789x405fqs-mc-compat-valence-ctf-600s-soak.drv'...
+building '/nix/store/qlp050cnz6n8dq2ncb8klapjq677dmvh-mc-compat-valence-ctf-armor-equipment-mitigation.drv'...
+building '/nix/store/k63p2ih546lb0m36j9x1i6ls78l1fzrb-mc-compat-valence-ctf-blue-600s-soak.drv'...
+mc-compat-open-cairns-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-open-cairns-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-open-cairns-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-open-cairns-dry-run> hint: call:
+mc-compat-open-cairns-dry-run> hint:
+mc-compat-open-cairns-dry-run> hint:    git config --global init.defaultBranch <name>
+mc-compat-open-cairns-dry-run> hint:
+mc-compat-open-cairns-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-open-cairns-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-open-cairns-dry-run> hint:
+mc-compat-open-cairns-dry-run> hint:    git branch -m <name>
+mc-compat-open-cairns-dry-run> hint:
+mc-compat-open-cairns-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-open-cairns-dry-run> Initialized empty Git repository in /build/fake-valence/.git/
+mc-compat-open-cairns-dry-run> [master (root-commit) e0f0541] init
+mc-compat-open-cairns-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-open-cairns-dry-run>  create mode 100644 README.md
+building '/nix/store/h2vz0ba1311wbgnbj4fmxjk28n7fx0wr-mc-compat-valence-ctf-combat-damage.drv'...
+building '/nix/store/f4zdk29363kwa4678vfpa89gd0jhipdy-mc-compat-valence-ctf-600s-soak-dry-run.drv'...
+building '/nix/store/lrnykz9zic3pvc8ks2m7cw3xh6qjmp2d-mc-compat-valence-ctf-combat-knockback.drv'...
+mc-compat-valence-ctf> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-valence-ctf> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-valence-ctf> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-valence-ctf> hint: call:
+mc-compat-valence-ctf> hint:
+mc-compat-valence-ctf> hint:    git config --global init.defaultBranch <name>
+mc-compat-valence-ctf> hint:
+mc-compat-valence-ctf> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-valence-ctf> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-valence-ctf> hint:
+mc-compat-valence-ctf> hint:    git branch -m <name>
+mc-compat-valence-ctf> hint:
+mc-compat-valence-ctf> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-valence-ctf> Initialized empty Git repository in /build/fake-valence/.git/
+mc-compat-valence-ctf> [master (root-commit) e0f0541] init
+mc-compat-valence-ctf>  1 file changed, 1 insertion(+)
+mc-compat-valence-ctf>  create mode 100644 README.md
+building '/nix/store/kflpjn7mln4licp1mwa2qbd2rd06scdi-mc-compat-valence-ctf-armor-equipment-mitigation-dry-run.drv'...
+building '/nix/store/y2xl3ghlrpg7c436r0h1kwj76pwnm1fa-mc-compat-valence-ctf-equipment-update-observation.drv'...
+building '/nix/store/2jajbnhq7n81q3vl4wv02ixmbmfszphi-mc-compat-valence-ctf-blue-600s-soak-dry-run.drv'...
+building '/nix/store/aalhvzdlwqjspf189il94hzqpmbvc1g7-mc-compat-valence-ctf-combat-damage-dry-run.drv'...
+mc-compat-valence-ctf-armor-equipment-mitigation-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-valence-ctf-armor-equipment-mitigation-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-valence-ctf-armor-equipment-mitigation-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-valence-ctf-armor-equipment-mitigation-dry-run> hint: call:
+mc-compat-valence-ctf-armor-equipment-mitigation-dry-run> hint:
+mc-compat-valence-ctf-armor-equipment-mitigation-dry-run> hint:         git config --global init.defaultBranch <name>
+mc-compat-valence-ctf-armor-equipment-mitigation-dry-run> hint:
+mc-compat-valence-ctf-armor-equipment-mitigation-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-valence-ctf-armor-equipment-mitigation-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-valence-ctf-armor-equipment-mitigation-dry-run> hint:
+mc-compat-valence-ctf-armor-equipment-mitigation-dry-run> hint:         git branch -m <name>
+mc-compat-valence-ctf-armor-equipment-mitigation-dry-run> hint:
+mc-compat-valence-ctf-armor-equipment-mitigation-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-valence-ctf-armor-equipment-mitigation-dry-run> Initialized empty Git repository in /build/fake-valence/.git/
+mc-compat-valence-ctf-armor-equipment-mitigation-dry-run> [master (root-commit) e0f0541] init
+mc-compat-valence-ctf-armor-equipment-mitigation-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-valence-ctf-armor-equipment-mitigation-dry-run>  create mode 100644 README.md
+building '/nix/store/0i2bsj07nn5a4kzrr18phibnw8mrr4hv-mc-compat-valence-ctf-combat-knockback-dry-run.drv'...
+mc-compat-valence-ctf-blue> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-valence-ctf-blue> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-valence-ctf-blue> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-valence-ctf-blue> hint: call:
+mc-compat-valence-ctf-blue> hint:
+mc-compat-valence-ctf-blue> hint:       git config --global init.defaultBranch <name>
+mc-compat-valence-ctf-blue> hint:
+mc-compat-valence-ctf-blue> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-valence-ctf-blue> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-valence-ctf-blue> hint:
+mc-compat-valence-ctf-blue> hint:       git branch -m <name>
+mc-compat-valence-ctf-blue> hint:
+mc-compat-valence-ctf-blue> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-valence-ctf-blue> Initialized empty Git repository in /build/fake-valence/.git/
+mc-compat-valence-ctf-blue> [master (root-commit) e0f0541] init
+mc-compat-valence-ctf-blue>  1 file changed, 1 insertion(+)
+mc-compat-valence-ctf-blue>  create mode 100644 README.md
+mc-compat-valence-ctf-combat-damage-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-valence-ctf-combat-damage-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-valence-ctf-combat-damage-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-valence-ctf-combat-damage-dry-run> hint: call:
+mc-compat-valence-ctf-combat-damage-dry-run> hint:
+mc-compat-valence-ctf-combat-damage-dry-run> hint:      git config --global init.defaultBranch <name>
+mc-compat-valence-ctf-combat-damage-dry-run> hint:
+mc-compat-valence-ctf-combat-damage-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-valence-ctf-combat-damage-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-valence-ctf-combat-damage-dry-run> hint:
+mc-compat-valence-ctf-combat-damage-dry-run> hint:      git branch -m <name>
+mc-compat-valence-ctf-combat-damage-dry-run> hint:
+mc-compat-valence-ctf-combat-damage-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-valence-ctf-combat-damage-dry-run> Initialized empty Git repository in /build/fake-valence/.git/
+mc-compat-valence-ctf-combat-damage-dry-run> [master (root-commit) e0f0541] init
+mc-compat-valence-ctf-combat-damage-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-valence-ctf-combat-damage-dry-run>  create mode 100644 README.md
+building '/nix/store/cpkx87wy4ibn8wsw65ps13crpa9kar69-mc-compat-valence-ctf-equipment-update-observation-dry-run.drv'...
+mc-compat-valence-ctf-combat-knockback-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-valence-ctf-combat-knockback-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-valence-ctf-combat-knockback-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-valence-ctf-combat-knockback-dry-run> hint: call:
+mc-compat-valence-ctf-combat-knockback-dry-run> hint:
+mc-compat-valence-ctf-combat-knockback-dry-run> hint:   git config --global init.defaultBranch <name>
+mc-compat-valence-ctf-combat-knockback-dry-run> hint:
+mc-compat-valence-ctf-combat-knockback-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-valence-ctf-combat-knockback-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-valence-ctf-combat-knockback-dry-run> hint:
+mc-compat-valence-ctf-combat-knockback-dry-run> hint:   git branch -m <name>
+mc-compat-valence-ctf-combat-knockback-dry-run> hint:
+mc-compat-valence-ctf-combat-knockback-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-valence-ctf-combat-knockback-dry-run> Initialized empty Git repository in /build/fake-valence/.git/
+mc-compat-valence-ctf-combat-knockback-dry-run> [master (root-commit) e0f0541] init
+mc-compat-valence-ctf-combat-knockback-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-valence-ctf-combat-knockback-dry-run>  create mode 100644 README.md
+building '/nix/store/4mfzzj50rx7mxd68r1xcipmh7jwamxnx-mc-compat-valence-ctf-flag-carrier-death-return.drv'...
+building '/nix/store/ywrvbhsfgm0zf8vsggv0q69d3ggf68g9-mc-compat-valence-ctf-inventory-interaction.drv'...
+mc-compat-valence-ctf-equipment-update-observation-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-valence-ctf-equipment-update-observation-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-valence-ctf-equipment-update-observation-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-valence-ctf-equipment-update-observation-dry-run> hint: call:
+mc-compat-valence-ctf-equipment-update-observation-dry-run> hint:
+mc-compat-valence-ctf-equipment-update-observation-dry-run> hint:       git config --global init.defaultBranch <name>
+mc-compat-valence-ctf-equipment-update-observation-dry-run> hint:
+mc-compat-valence-ctf-equipment-update-observation-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-valence-ctf-equipment-update-observation-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-valence-ctf-equipment-update-observation-dry-run> hint:
+mc-compat-valence-ctf-equipment-update-observation-dry-run> hint:       git branch -m <name>
+mc-compat-valence-ctf-equipment-update-observation-dry-run> hint:
+mc-compat-valence-ctf-equipment-update-observation-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-valence-ctf-equipment-update-observation-dry-run> Initialized empty Git repository in /build/fake-valence/.git/
+mc-compat-valence-ctf-equipment-update-observation-dry-run> [master (root-commit) e0f0541] init
+mc-compat-valence-ctf-equipment-update-observation-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-valence-ctf-equipment-update-observation-dry-run>  create mode 100644 README.md
+building '/nix/store/7as7mbasd3i0n44qn2lkbz79ndla95xh-mc-compat-valence-ctf-latency-jitter-inventory.drv'...
+building '/nix/store/5szr630sv8jg0xbfmc0bynfmg42rp1wg-mc-compat-valence-ctf-projectile-damage-attribution.drv'...
+building '/nix/store/m2q1y9nd7c9s78pv8f4a54c03fzdswah-mc-compat-valence-ctf-projectile-hit.drv'...
+building '/nix/store/gjzl8ydzyxyq95m794mc43wqhk8k3n79-mc-compat-valence-ctf-reconnect-flag-state.drv'...
+building '/nix/store/ralc2kqbb9qkdl4nnl3chlikcajrd8n3-mc-compat-valence-ctf-flag-carrier-death-return-dry-run.drv'...
+building '/nix/store/dgq657rbqja4mhwslmhps5b8hpmrb5rh-mc-compat-valence-ctf-inventory-interaction-dry-run.drv'...
+building '/nix/store/r9cklzls3kd807lvly618b7cg0ldyidb-mc-compat-valence-ctf-latency-jitter-inventory-dry-run.drv'...
+building '/nix/store/vd41vkv4daabl38gq65i7aiy0lyf1hl8-mc-compat-valence-survival-break-place-pickup.drv'...
+mc-compat-valence-ctf-flag-carrier-death-return-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-valence-ctf-flag-carrier-death-return-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-valence-ctf-flag-carrier-death-return-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-valence-ctf-flag-carrier-death-return-dry-run> hint: call:
+mc-compat-valence-ctf-flag-carrier-death-return-dry-run> hint:
+mc-compat-valence-ctf-flag-carrier-death-return-dry-run> hint:  git config --global init.defaultBranch <name>
+mc-compat-valence-ctf-flag-carrier-death-return-dry-run> hint:
+mc-compat-valence-ctf-flag-carrier-death-return-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-valence-ctf-flag-carrier-death-return-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-valence-ctf-flag-carrier-death-return-dry-run> hint:
+mc-compat-valence-ctf-flag-carrier-death-return-dry-run> hint:  git branch -m <name>
+mc-compat-valence-ctf-flag-carrier-death-return-dry-run> hint:
+mc-compat-valence-ctf-flag-carrier-death-return-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-valence-ctf-flag-carrier-death-return-dry-run> Initialized empty Git repository in /build/fake-valence/.git/
+mc-compat-valence-ctf-flag-carrier-death-return-dry-run> [master (root-commit) 96eb055] init
+mc-compat-valence-ctf-flag-carrier-death-return-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-valence-ctf-flag-carrier-death-return-dry-run>  create mode 100644 README.md
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint: call:
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint:
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint:      git config --global init.defaultBranch <name>
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint:
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint:
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint:      git branch -m <name>
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint:
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-valence-ctf-inventory-interaction-dry-run> Initialized empty Git repository in /build/fake-valence/.git/
+mc-compat-valence-ctf-inventory-interaction-dry-run> [master (root-commit) 96eb055] init
+mc-compat-valence-ctf-inventory-interaction-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-valence-ctf-inventory-interaction-dry-run>  create mode 100644 README.md
+mc-compat-valence-ctf-latency-jitter-inventory-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-valence-ctf-latency-jitter-inventory-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-valence-ctf-latency-jitter-inventory-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-valence-ctf-latency-jitter-inventory-dry-run> hint: call:
+mc-compat-valence-ctf-latency-jitter-inventory-dry-run> hint:
+mc-compat-valence-ctf-latency-jitter-inventory-dry-run> hint:   git config --global init.defaultBranch <name>
+mc-compat-valence-ctf-latency-jitter-inventory-dry-run> hint:
+mc-compat-valence-ctf-latency-jitter-inventory-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-valence-ctf-latency-jitter-inventory-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-valence-ctf-latency-jitter-inventory-dry-run> hint:
+mc-compat-valence-ctf-latency-jitter-inventory-dry-run> hint:   git branch -m <name>
+mc-compat-valence-ctf-latency-jitter-inventory-dry-run> hint:
+mc-compat-valence-ctf-latency-jitter-inventory-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-valence-ctf-latency-jitter-inventory-dry-run> Initialized empty Git repository in /build/fake-valence/.git/
+building '/nix/store/jqlzsc18gmccfb9x1yi540645ynnwdd7-mc-compat-valence-ctf-projectile-damage-attribution-dry-run.drv'...
+mc-compat-valence-ctf-latency-jitter-inventory-dry-run> [master (root-commit) 96eb055] init
+mc-compat-valence-ctf-latency-jitter-inventory-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-valence-ctf-latency-jitter-inventory-dry-run>  create mode 100644 README.md
+building '/nix/store/khi1yg6bh7xhxwwky8rjjf3a7dzm4z3n-mc-compat-valence-ctf-projectile-hit-dry-run.drv'...
+mc-compat-valence-ctf-projectile-damage-attribution-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-valence-ctf-projectile-damage-attribution-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-valence-ctf-projectile-damage-attribution-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-valence-ctf-projectile-damage-attribution-dry-run> hint: call:
+mc-compat-valence-ctf-projectile-damage-attribution-dry-run> hint:
+mc-compat-valence-ctf-projectile-damage-attribution-dry-run> hint:      git config --global init.defaultBranch <name>
+mc-compat-valence-ctf-projectile-damage-attribution-dry-run> hint:
+mc-compat-valence-ctf-projectile-damage-attribution-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-valence-ctf-projectile-damage-attribution-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-valence-ctf-projectile-damage-attribution-dry-run> hint:
+mc-compat-valence-ctf-projectile-damage-attribution-dry-run> hint:      git branch -m <name>
+mc-compat-valence-ctf-projectile-damage-attribution-dry-run> hint:
+mc-compat-valence-ctf-projectile-damage-attribution-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-valence-ctf-projectile-damage-attribution-dry-run> Initialized empty Git repository in /build/fake-valence/.git/
+mc-compat-valence-ctf-projectile-damage-attribution-dry-run> [master (root-commit) 96eb055] init
+mc-compat-valence-ctf-projectile-damage-attribution-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-valence-ctf-projectile-damage-attribution-dry-run>  create mode 100644 README.md
+building '/nix/store/nagmf9zjrd7r9y0z6xdzqhrhql5vkgwh-mc-compat-valence-ctf-reconnect-flag-state-dry-run.drv'...
+building '/nix/store/nvf0p85ndfc666kswb34zha0ycwawv6z-mc-compat-valence-survival-break-place-pickup-dry-run.drv'...
+mc-compat-valence-ctf-projectile-hit-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-valence-ctf-projectile-hit-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-valence-ctf-projectile-hit-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-valence-ctf-projectile-hit-dry-run> hint: call:
+mc-compat-valence-ctf-projectile-hit-dry-run> hint:
+mc-compat-valence-ctf-projectile-hit-dry-run> hint:     git config --global init.defaultBranch <name>
+mc-compat-valence-ctf-projectile-hit-dry-run> hint:
+mc-compat-valence-ctf-projectile-hit-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-valence-ctf-projectile-hit-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-valence-ctf-projectile-hit-dry-run> hint:
+mc-compat-valence-ctf-projectile-hit-dry-run> hint:     git branch -m <name>
+mc-compat-valence-ctf-projectile-hit-dry-run> hint:
+mc-compat-valence-ctf-projectile-hit-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-valence-ctf-projectile-hit-dry-run> Initialized empty Git repository in /build/fake-valence/.git/
+mc-compat-valence-ctf-projectile-hit-dry-run> [master (root-commit) 96eb055] init
+mc-compat-valence-ctf-projectile-hit-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-valence-ctf-projectile-hit-dry-run>  create mode 100644 README.md
+mc-compat-valence-ctf-reconnect-flag-state-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-valence-ctf-reconnect-flag-state-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-valence-ctf-reconnect-flag-state-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-valence-ctf-reconnect-flag-state-dry-run> hint: call:
+mc-compat-valence-ctf-reconnect-flag-state-dry-run> hint:
+mc-compat-valence-ctf-reconnect-flag-state-dry-run> hint:       git config --global init.defaultBranch <name>
+mc-compat-valence-ctf-reconnect-flag-state-dry-run> hint:
+mc-compat-valence-ctf-reconnect-flag-state-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-valence-ctf-reconnect-flag-state-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-valence-ctf-reconnect-flag-state-dry-run> hint:
+mc-compat-valence-ctf-reconnect-flag-state-dry-run> hint:       git branch -m <name>
+mc-compat-valence-ctf-reconnect-flag-state-dry-run> hint:
+mc-compat-valence-ctf-reconnect-flag-state-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-valence-ctf-reconnect-flag-state-dry-run> Initialized empty Git repository in /build/fake-valence/.git/
+mc-compat-valence-ctf-reconnect-flag-state-dry-run> [master (root-commit) 96eb055] init
+mc-compat-valence-ctf-reconnect-flag-state-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-valence-ctf-reconnect-flag-state-dry-run>  create mode 100644 README.md
+mc-compat-valence-survival-break-place-pickup-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-valence-survival-break-place-pickup-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-valence-survival-break-place-pickup-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-valence-survival-break-place-pickup-dry-run> hint: call:
+mc-compat-valence-survival-break-place-pickup-dry-run> hint:
+mc-compat-valence-survival-break-place-pickup-dry-run> hint:    git config --global init.defaultBranch <name>
+mc-compat-valence-survival-break-place-pickup-dry-run> hint:
+mc-compat-valence-survival-break-place-pickup-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-valence-survival-break-place-pickup-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-valence-survival-break-place-pickup-dry-run> hint:
+mc-compat-valence-survival-break-place-pickup-dry-run> hint:    git branch -m <name>
+mc-compat-valence-survival-break-place-pickup-dry-run> hint:
+mc-compat-valence-survival-break-place-pickup-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-valence-survival-break-place-pickup-dry-run> Initialized empty Git repository in /build/fake-valence/.git/
+mc-compat-valence-survival-break-place-pickup-dry-run> [master (root-commit) 96eb055] init
+mc-compat-valence-survival-break-place-pickup-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-valence-survival-break-place-pickup-dry-run>  create mode 100644 README.md
+## cairn validate
+{
+  "change_issues": [],
+  "changes": 2,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 4,
+  "valid": true
+}
+## cairn gate tasks harden-typed-event-oracle
+{
+  "change": "harden-typed-event-oracle",
+  "input_hash": "66511bf4018d97a44d222b7484dbe4515f72b8b42932e8b1258e64cb4f50a6f4",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "a3273d1f4df2412168d348be9d746fc3ef8c8346007e620fa36218f73b95ba6c",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
