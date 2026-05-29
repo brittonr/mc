@@ -1,0 +1,29 @@
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+this derivation will be built:
+  /nix/store/jx8yr1q76jlzb0zmlcvsp4f7qhyn598z-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/jx8yr1q76jlzb0zmlcvsp4f7qhyn598z-mc-compat-cairn-task-evidence.drv'...
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+$ nix run --no-update-lock-file .#cairn -- gate tasks harden-evidence-manifest-source-closure --root .
+{
+  "change": "harden-evidence-manifest-source-closure",
+  "input_hash": "43689559b0c63c79df9d2466718a325864798465d3a8113adc612292ede746d2",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "2566a1db596071447d97b3ceacb723cf1e983b5120c67fd4753b2ca67cae1392",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}

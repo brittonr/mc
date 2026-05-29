@@ -7,4 +7,4 @@ c127602f5f0cc3cab8b4430ba434a303e0771999721c562ef8fa24c8cdf89582  docs/evidence/
 7ec4e67c04123e9b090138a2d657eaba2bbe6d2d015c4a361e295e435734a1c0  docs/evidence/protocol-763-survival-reference-valence-2026-05-28.server.log
 5410c0160ac886f79bb084a2e7ef7a8c3160d41a735825f7f91dc34ad0776eb3  docs/evidence/protocol-763-survival-reference-valence-2026-05-28.run.log
 544cc609f9c636ee035bc1b194de9544416779c3418158fe72550b0dfbb4d85c  docs/evidence/protocol-763-survival-reference-parity-2026-05-28.compare.log
-fb1b8aeb4009adaa33bd1915c4987046a5289ce97bc0e0d589af9fc5d78c344f  target/mc-compat-survival-reference-parity/mc-compat-paper-survival-fixture.jar
+fb1b8aeb4009adaa33bd1915c4987046a5289ce97bc0e0d589af9fc5d78c344f  docs/evidence/mc-compat-paper-survival-fixture-2026-05-29.jar

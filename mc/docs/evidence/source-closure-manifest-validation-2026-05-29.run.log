@@ -1,0 +1,61 @@
+$ nix develop --no-update-lock-file . --command python3 tools/check_evidence_manifests.py --self-test
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest self-test ok
+$ nix develop --no-update-lock-file . --command python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 54 manifests, 246 entries, 57 receipts scanned
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+$ nix run --no-update-lock-file .#cairn -- gate proposal harden-evidence-manifest-source-closure --root .
+{
+  "change": "harden-evidence-manifest-source-closure",
+  "input_hash": "7e0e180f5973c95906969c5dcfbbb065168f2ddc822a6372ca9d55332fb8c491",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "2a21e3482ac76bc8877b00c87ef628c9bc3114d4ced0c48456171e44e4449ef3",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+$ nix run --no-update-lock-file .#cairn -- gate design harden-evidence-manifest-source-closure --root .
+{
+  "change": "harden-evidence-manifest-source-closure",
+  "input_hash": "26e90fdcc651deb451020ece4f9ce999b4a65d2493a0153ad98188a2edf32ed6",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "d110d9f1e9d3a80c6f0f4d34d65c9334c6c1ad1976fd2d942cae626553255238",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+$ nix run --no-update-lock-file .#cairn -- gate tasks harden-evidence-manifest-source-closure --root .
+{
+  "change": "harden-evidence-manifest-source-closure",
+  "input_hash": "36dfe63d0fbe0930a5a5479ed8d7888d78b1eb667f8727944594382e2bdb3edb",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "7552451cc6c398b359a18fa0c30c803980cc90a10614218008c58efefa77289c",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
