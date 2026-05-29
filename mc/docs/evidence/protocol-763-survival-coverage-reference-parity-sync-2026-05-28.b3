@@ -1,6 +1,6 @@
 0e649d28bcff7c9bcf15ee7f76b7646a418a5f8766ef1eda81c85a1b8b9645d5  docs/evidence/protocol-763-survival-coverage-matrix-2026-05-28.md
 87d585314a2c86398994df4b5ed0dce2ebc93bb3a6633929fe5b0999cc886ba5  docs/evidence/protocol-763-survival-coverage-matrix-oracle-2026-05-28.md
-97006aef0f69dd618e7211f8b707a938e33466e4271fe303fc3480b5273288d2  docs/evidence/protocol-763-survival-coverage-reference-parity-sync-2026-05-28.run.log
+ab9cb552d7187d2c7c70ce4a95f1496959e49d553a3b700e9e1aab0253aa065a  docs/evidence/protocol-763-survival-coverage-reference-parity-sync-2026-05-28.run.log
 f2ba8ba0628c3ebd99a2ecc8cc95b66b4b0c844f0e1b9f06cc43bdc7afdf81c0  tools/check_survival_coverage_matrix.py
 da9e84ac8712ddca2bd60659be316bb547a1695323ba250df72254d6d4623ac0  tools/check_survival_reference_parity.py
 0765c2f4778408420a549b83cf856e30202d6343318901f972a02a477174ea9e  cairn/archive/2026-05-28-sync-survival-coverage-reference-parity/proposal.md

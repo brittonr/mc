@@ -1,0 +1,12 @@
+checkpoint: survival coverage reference parity sync manifest verification
+question: Do evidence manifests validate after refreshing docs/evidence/protocol-763-survival-coverage-reference-parity-sync-2026-05-28.b3 for the final sync run log content?
+inspected_evidence: command transcript below, run after refreshing the sync .b3 manifest. This verification log is intentionally excluded from .b3 manifests to avoid self-referential hash recursion.
+decision: accept the manifest validation because the checker reports success for all tracked .b3 manifests.
+owner: mc compatibility evidence maintainers.
+next_action: keep future final manifest-check transcripts in separate non-manifested verification logs unless the checker gains first-class support for non-self-referential transcript capture.
+
+$ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 35 manifests, 185 entries, 54 receipts scanned
