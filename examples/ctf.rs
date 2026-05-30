@@ -1,11 +1,9 @@
 #![allow(clippy::type_complexity)]
 
-use std::{
-    collections::HashMap,
-    env, fs,
-    path::Path,
-    sync::{OnceLock, RwLock},
-};
+use std::collections::HashMap;
+use std::path::Path;
+use std::sync::{OnceLock, RwLock};
+use std::{env, fs};
 
 use bevy_ecs::query::QueryData;
 use valence::entity::cow::CowEntityBundle;
@@ -78,6 +76,11 @@ const ARROW_POLICY_FORBIDDEN_STEEL_TOKENS: &[&str] = &[
     "current-second",
     "random",
 ];
+const CTF_SCORE_LIMIT_WIN_PROBE_ENV: &str = "MC_COMPAT_CTF_SCORE_LIMIT_PROBE";
+const CTF_SCORE_LIMIT_CONFIGURED: u32 = 2;
+const CTF_SCORE_LIMIT_RED_PRE_FINAL_CAPTURE: u32 = 1;
+const CTF_SCORE_LIMIT_BLUE_PRE_FINAL_CAPTURE: u32 = 0;
+const CTF_SCORE_LIMIT_FIRST_WIN_EMISSION: u32 = 1;
 
 #[derive(Clone, Debug, PartialEq)]
 struct ArrowPolicySnapshot {
@@ -526,7 +529,8 @@ fn log_arrow_policy_reload_outcome(source: &str, outcome: &ArrowPolicyReloadOutc
     }
     let diagnostics = format_arrow_policy_diagnostics(&outcome.diagnostics);
     let milestone = format!(
-        "MC-COMPAT-MILESTONE steel_arrow_policy_reject source={} active_generation={} diagnostics={}",
+        "MC-COMPAT-MILESTONE steel_arrow_policy_reject source={} active_generation={} \
+         diagnostics={}",
         redact_arrow_policy_text(source),
         outcome.active_generation,
         diagnostics
@@ -693,7 +697,10 @@ fn setup(
     cow.insert(Team::Blue);
 
     commands.insert_resource(ctf_team_layers);
-    commands.insert_resource(Score::default());
+    let score = initial_score_from_env();
+    log_score_limit_pre_state(&score);
+    commands.insert_resource(score);
+    commands.insert_resource(WinConditionState::default());
     commands.insert_resource(ReconnectJoinCounts::default());
 }
 
@@ -1145,6 +1152,34 @@ fn invalid_flag_return_drop_probe_enabled() -> bool {
         .unwrap_or(false)
 }
 
+fn score_limit_win_probe_enabled() -> bool {
+    env::var(CTF_SCORE_LIMIT_WIN_PROBE_ENV)
+        .map(|value| value != "0")
+        .unwrap_or(false)
+}
+
+fn initial_score_from_env() -> Score {
+    let mut score = Score::default();
+    if score_limit_win_probe_enabled() {
+        score
+            .scores
+            .insert(Team::Red, CTF_SCORE_LIMIT_RED_PRE_FINAL_CAPTURE);
+        score
+            .scores
+            .insert(Team::Blue, CTF_SCORE_LIMIT_BLUE_PRE_FINAL_CAPTURE);
+    }
+    score
+}
+
+fn log_score_limit_pre_state(score: &Score) {
+    if !score_limit_win_probe_enabled() {
+        return;
+    }
+    let milestone = score_limit_pre_state_milestone(score);
+    info!("{milestone}");
+    println!("{milestone}");
+}
+
 fn score_for_team(score: &Score, team: Team) -> u32 {
     *score.scores.get(&team).unwrap_or(&0)
 }
@@ -1166,7 +1201,8 @@ fn invalid_flag_pickup_rejection_milestone(
     blue_score: u32,
 ) -> String {
     format!(
-        "MC-COMPAT-MILESTONE invalid_flag_pickup_rejected username={} player_team={} flag_team={} pre_owner={} post_owner={} red_score={} blue_score={} outcome=no_owner_transfer_no_score",
+        "MC-COMPAT-MILESTONE invalid_flag_pickup_rejected username={} player_team={} flag_team={} \
+         pre_owner={} post_owner={} red_score={} blue_score={} outcome=no_owner_transfer_no_score",
         username,
         team_label(player_team),
         team_label(flag_team),
@@ -1187,7 +1223,9 @@ fn invalid_flag_return_drop_rejection_milestone(
     blue_score: u32,
 ) -> String {
     format!(
-        "MC-COMPAT-MILESTONE invalid_flag_return_drop_rejected username={} actor_team={} flag_team={} pre_state={} post_state={} red_score={} blue_score={} outcome=no_flag_state_mutation_no_score",
+        "MC-COMPAT-MILESTONE invalid_flag_return_drop_rejected username={} actor_team={} \
+         flag_team={} pre_state={} post_state={} red_score={} blue_score={} \
+         outcome=no_flag_state_mutation_no_score",
         username,
         team_label(actor_team),
         team_label(flag_team),
@@ -1195,6 +1233,79 @@ fn invalid_flag_return_drop_rejection_milestone(
         post_state,
         red_score,
         blue_score
+    )
+}
+
+fn score_limit_pre_state_milestone(score: &Score) -> String {
+    format!(
+        "MC-COMPAT-MILESTONE score_limit_pre_state score_limit={} red_score={} blue_score={} \
+         next_capture_team=Red outcome=one_capture_before_win",
+        CTF_SCORE_LIMIT_CONFIGURED,
+        score_for_team(score, Team::Red),
+        score_for_team(score, Team::Blue)
+    )
+}
+
+fn score_limit_final_capture_milestone(
+    username: &str,
+    capture_team: Team,
+    carried_flag: Team,
+    red_score_before: u32,
+    blue_score_before: u32,
+    red_score_after: u32,
+    blue_score_after: u32,
+) -> String {
+    format!(
+        "MC-COMPAT-MILESTONE score_limit_final_capture username={} capture_team={} \
+         carried_flag={} score_limit={} red_score_before={} blue_score_before={} \
+         red_score_after={} blue_score_after={}",
+        username,
+        team_label(capture_team),
+        team_label(carried_flag),
+        CTF_SCORE_LIMIT_CONFIGURED,
+        red_score_before,
+        blue_score_before,
+        red_score_after,
+        blue_score_after
+    )
+}
+
+fn score_limit_win_condition_milestone(
+    username: &str,
+    winning_team: Team,
+    score: &Score,
+    emission_count: u32,
+) -> String {
+    format!(
+        "MC-COMPAT-MILESTONE score_limit_win_condition username={} winning_team={} score_limit={} \
+         red_score={} blue_score={} end_state=winner_declared win_emissions={} \
+         duplicate_win=false post_win_score_delta=0",
+        username,
+        team_label(winning_team),
+        CTF_SCORE_LIMIT_CONFIGURED,
+        score_for_team(score, Team::Red),
+        score_for_team(score, Team::Blue),
+        emission_count
+    )
+}
+
+fn score_limit_duplicate_win_milestone(username: &str, winning_team: Team) -> String {
+    format!(
+        "MC-COMPAT-MILESTONE score_limit_duplicate_win username={} winning_team={} score_limit={} \
+         outcome=forbidden_duplicate_win",
+        username,
+        team_label(winning_team),
+        CTF_SCORE_LIMIT_CONFIGURED
+    )
+}
+
+fn score_limit_post_win_score_mutation_milestone(username: &str, winning_team: Team) -> String {
+    format!(
+        "MC-COMPAT-MILESTONE score_limit_post_win_score_mutation username={} winning_team={} \
+         score_limit={} outcome=forbidden_score_after_win",
+        username,
+        team_label(winning_team),
+        CTF_SCORE_LIMIT_CONFIGURED
     )
 }
 
@@ -1713,18 +1824,21 @@ fn update_flag_visuals(
 
 fn do_flag_capturing(
     globals: Res<CtfGlobals>,
-    mut players: Query<(Entity, &mut Client, &Team, &Position, &HasFlag)>,
+    mut players: Query<(Entity, &mut Client, &Team, &Position, &HasFlag, &Username)>,
     mut commands: Commands,
     mut flag_manager: ResMut<FlagManager>,
     mut score: ResMut<Score>,
+    mut win_condition: ResMut<WinConditionState>,
 ) {
-    for (ent, mut client, team, position, has_flag) in &mut players {
+    for (ent, mut client, team, position, has_flag, username) in &mut players {
         let capture_trigger = match team {
             Team::Red => &globals.red_capture_trigger,
             Team::Blue => &globals.blue_capture_trigger,
         };
 
         if capture_trigger.contains_pos(position.0) {
+            let red_score_before = score_for_team(&score, Team::Red);
+            let blue_score_before = score_for_team(&score, Team::Blue);
             client.send_chat_message("You captured the flag!".italic());
             score
                 .scores
@@ -1732,6 +1846,19 @@ fn do_flag_capturing(
                 .and_modify(|score| *score += 1)
                 .or_insert(1);
             client.send_chat_message(score.render_scores());
+            let red_score_after = score_for_team(&score, Team::Red);
+            let blue_score_after = score_for_team(&score, Team::Blue);
+            log_score_limit_capture_and_win(
+                username.as_str(),
+                *team,
+                has_flag.0,
+                red_score_before,
+                blue_score_before,
+                red_score_after,
+                blue_score_after,
+                &score,
+                &mut win_condition,
+            );
             commands.entity(ent).remove::<HasFlag>();
             match has_flag.0 {
                 Team::Red => flag_manager.red = None,
@@ -1741,9 +1868,66 @@ fn do_flag_capturing(
     }
 }
 
+fn log_score_limit_capture_and_win(
+    username: &str,
+    capture_team: Team,
+    carried_flag: Team,
+    red_score_before: u32,
+    blue_score_before: u32,
+    red_score_after: u32,
+    blue_score_after: u32,
+    score: &Score,
+    win_condition: &mut WinConditionState,
+) {
+    if !score_limit_win_probe_enabled() {
+        return;
+    }
+    let final_capture = score_limit_final_capture_milestone(
+        username,
+        capture_team,
+        carried_flag,
+        red_score_before,
+        blue_score_before,
+        red_score_after,
+        blue_score_after,
+    );
+    info!("{final_capture}");
+    println!("{final_capture}");
+
+    let winning_score = score_for_team(score, capture_team);
+    if winning_score < CTF_SCORE_LIMIT_CONFIGURED {
+        return;
+    }
+    if win_condition.winner.is_some() {
+        let mutation = score_limit_post_win_score_mutation_milestone(username, capture_team);
+        info!("{mutation}");
+        println!("{mutation}");
+        let duplicate = score_limit_duplicate_win_milestone(username, capture_team);
+        info!("{duplicate}");
+        println!("{duplicate}");
+        return;
+    }
+    win_condition.winner = Some(capture_team);
+    win_condition.win_emissions = CTF_SCORE_LIMIT_FIRST_WIN_EMISSION;
+    let win = score_limit_win_condition_milestone(
+        username,
+        capture_team,
+        score,
+        win_condition.win_emissions,
+    );
+    info!("{win}");
+    println!("{win}");
+}
+
 #[derive(Debug, Default, Resource)]
 struct Score {
     scores: HashMap<Team, u32>,
+}
+
+#[derive(Debug, Default, Resource)]
+struct WinConditionState {
+    winner: Option<Team>,
+    win_emissions: u32,
 }
 
 impl Score {
@@ -1991,8 +2175,8 @@ fn handle_combat_events(
                 .as_ref()
                 .expect("projectile probe hit has arrow decision");
             let projectile_use = format!(
-                "MC-COMPAT-MILESTONE projectile_use attacker={} victim={} item={:?} \
-                 damage={:.1} policy={} generation={} clamped={}",
+                "MC-COMPAT-MILESTONE projectile_use attacker={} victim={} item={:?} damage={:.1} \
+                 policy={} generation={} clamped={}",
                 attacker.username.as_str(),
                 victim.username.as_str(),
                 stack.item,
@@ -2009,8 +2193,8 @@ fn handle_combat_events(
         if armor_mitigation > 0.0 {
             let mitigation = format!(
                 "MC-COMPAT-MILESTONE combat_armor_mitigation attacker={} victim={} \
-                 base_damage={:.1} mitigation={:.1} final_damage={:.1} \
-                 chest_item={:?} victim_health_before={:.1} victim_health_after={:.1}",
+                 base_damage={:.1} mitigation={:.1} final_damage={:.1} chest_item={:?} \
+                 victim_health_before={:.1} victim_health_after={:.1}",
                 attacker.username.as_str(),
                 victim.username.as_str(),
                 base_damage,
@@ -2041,8 +2225,8 @@ fn handle_combat_events(
                 .expect("projectile probe hit has arrow decision");
             let projectile_hit = format!(
                 "MC-COMPAT-MILESTONE projectile_hit attacker={} victim={} damage={:.1} \
-                 victim_health_before={:.1} victim_health_after={:.1} policy={} \
-                 generation={} clamped={}",
+                 victim_health_before={:.1} victim_health_after={:.1} policy={} generation={} \
+                 clamped={}",
                 attacker.username.as_str(),
                 victim.username.as_str(),
                 damage,
@@ -2145,8 +2329,8 @@ fn handle_projectile_events(
         victim_health.0 -= decision.damage;
         victim_client.trigger_status(EntityStatus::PlayAttackSound);
         let milestone = format!(
-            "MC-COMPAT-MILESTONE projectile_use attacker={} victim={} hand={:?} \
-             sequence={} damage={:.1} policy={} generation={} clamped={}",
+            "MC-COMPAT-MILESTONE projectile_use attacker={} victim={} hand={:?} sequence={} \
+             damage={:.1} policy={} generation={} clamped={}",
             attacker_name,
             victim_username.as_str(),
             event.hand,
@@ -2248,6 +2432,9 @@ mod tests {
     const TEST_HEALTH_BEFORE: f32 = 20.0;
     const TEST_HEALTH_AFTER_EDITED_DAMAGE: f32 = 16.0;
     const TEST_RED_SCORE: u32 = 2;
+    const TEST_PRE_FINAL_RED_SCORE: u32 = 1;
+    const TEST_FINAL_RED_SCORE: u32 = 2;
+    const TEST_BLUE_SCORE: u32 = 0;
 
     #[test]
     fn invalid_flag_pickup_helper_rejects_own_flag_and_allows_enemy_flag() {
@@ -2328,6 +2515,83 @@ mod tests {
         assert!(
             milestone.contains("outcome=no_flag_state_mutation_no_score"),
             "{milestone}"
+        );
+    }
+
+    #[test]
+    fn score_limit_milestones_record_pre_state_final_capture_and_win_once() {
+        let mut score = Score::default();
+        score.scores.insert(Team::Red, TEST_PRE_FINAL_RED_SCORE);
+        score.scores.insert(Team::Blue, TEST_BLUE_SCORE);
+        let pre_state = score_limit_pre_state_milestone(&score);
+        let final_capture = score_limit_final_capture_milestone(
+            "compatbot",
+            Team::Red,
+            Team::Blue,
+            TEST_PRE_FINAL_RED_SCORE,
+            TEST_BLUE_SCORE,
+            TEST_FINAL_RED_SCORE,
+            TEST_BLUE_SCORE,
+        );
+        score.scores.insert(Team::Red, TEST_FINAL_RED_SCORE);
+        let win = score_limit_win_condition_milestone(
+            "compatbot",
+            Team::Red,
+            &score,
+            CTF_SCORE_LIMIT_FIRST_WIN_EMISSION,
+        );
+
+        assert!(pre_state.contains("score_limit_pre_state"), "{pre_state}");
+        assert!(pre_state.contains("score_limit=2"), "{pre_state}");
+        assert!(pre_state.contains("red_score=1"), "{pre_state}");
+        assert!(
+            final_capture.contains("score_limit_final_capture"),
+            "{final_capture}"
+        );
+        assert!(
+            final_capture.contains("capture_team=Red"),
+            "{final_capture}"
+        );
+        assert!(
+            final_capture.contains("carried_flag=Blue"),
+            "{final_capture}"
+        );
+        assert!(
+            final_capture.contains("red_score_before=1"),
+            "{final_capture}"
+        );
+        assert!(
+            final_capture.contains("red_score_after=2"),
+            "{final_capture}"
+        );
+        assert!(win.contains("score_limit_win_condition"), "{win}");
+        assert!(win.contains("winning_team=Red"), "{win}");
+        assert!(win.contains("end_state=winner_declared"), "{win}");
+        assert!(win.contains("win_emissions=1"), "{win}");
+        assert!(win.contains("duplicate_win=false"), "{win}");
+        assert!(win.contains("post_win_score_delta=0"), "{win}");
+    }
+
+    #[test]
+    fn score_limit_forbidden_milestones_are_named_for_duplicate_win_and_late_score_mutation() {
+        let duplicate = score_limit_duplicate_win_milestone("compatbot", Team::Red);
+        let mutation = score_limit_post_win_score_mutation_milestone("compatbot", Team::Red);
+
+        assert!(
+            duplicate.contains("score_limit_duplicate_win"),
+            "{duplicate}"
+        );
+        assert!(
+            duplicate.contains("outcome=forbidden_duplicate_win"),
+            "{duplicate}"
+        );
+        assert!(
+            mutation.contains("score_limit_post_win_score_mutation"),
+            "{mutation}"
+        );
+        assert!(
+            mutation.contains("outcome=forbidden_score_after_win"),
+            "{mutation}"
         );
     }
 
