@@ -1,0 +1,25 @@
+Public server authorized safety archive cleanup proof — 2026-05-30
+$ test ! -e cairn/changes/public-server-authorized-safety
+exit_status=0
+$ git ls-files cairn/changes/public-server-authorized-safety
+exit_status=0
+$ git ls-tree -r --name-only HEAD mc/cairn/changes/public-server-authorized-safety
+exit_status=0
+$ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 74 manifests, 378 entries, 62 receipts scanned
+exit_status=0
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 34,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 36,
+  "valid": true
+}
+exit_status=0

@@ -3,5 +3,5 @@ $ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
 mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
 Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
 OnixResearch tools are pinned over SSH: cairn, cargo-octet
-evidence manifests ok: 74 manifests, 378 entries, 62 receipts scanned
+evidence manifests ok: 74 manifests, 379 entries, 62 receipts scanned
 exit_status=0
