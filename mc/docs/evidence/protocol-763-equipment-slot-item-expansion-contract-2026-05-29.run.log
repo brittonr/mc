@@ -1,0 +1,28 @@
+command: contract token audit for equipment slot/item expansion contract
+token ok: remote_main_hand_slot4_item829_count1_non_empty
+token ok: remote_chest_slot6_diamond_chestplate_count1_non_empty
+token ok: remote_offhand_slot5_shield_count1_non_empty
+token ok: remote_main_hand_slot4_empty_count0_clear
+token ok: missing_equipment_row_field
+token ok: wrong_slot_mapping
+token ok: missing_observer_update
+token ok: item_count_mismatch
+token ok: stale_entity_id
+token ok: duplicate_update_order
+token ok: unpaired_equipment_reference
+token ok: all_equipment_overclaim
+token ok: all equipment slots
+command: nix run --no-update-lock-file .#cairn -- gate tasks equipment-slot-item-matrix-expansion --root .
+{
+  "change": "equipment-slot-item-matrix-expansion",
+  "input_hash": "8dd22256d0a09d3f93c487b77a1a0c3a639e7f05e412a556aab5a838a9373ed6",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "e4dfd6ef325921a2eda665e2baabb3a7026aa188e9a40d49f26edc225537ec93",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+result: PASS
