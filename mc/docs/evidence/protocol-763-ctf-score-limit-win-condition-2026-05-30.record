@@ -1,0 +1,10 @@
+scenario=ctf-score-limit-win-condition
+score_limit=2
+red_score_before=1
+blue_score=0
+red_score_after=2
+winning_team=Red
+end_state=winner_declared
+win_emissions=1
+receipt=docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.receipt.json
+row_digest=b7c861f27ef7ceaf94705a74a5459d3f9df625dada4b14d8715ba8e9c5d921de

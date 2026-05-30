@@ -169,6 +169,12 @@ nix run .#mc-compat-valence-ctf-invalid-return-drop
 # deterministic, non-side-effecting fixture for the same invalid return/drop command shape:
 nix run .#mc-compat-valence-ctf-invalid-return-drop -- --dry-run
 
+# Maintained protocol-763 Valence CTF score-limit win-condition receipt.
+# Requires one near-limit capture, configured score-limit telemetry, exactly one win/end milestone, and no duplicate-win/post-win score mutation patterns.
+nix run .#mc-compat-valence-ctf-score-limit-win-condition
+# deterministic, non-side-effecting fixture for the same score-limit command shape:
+nix run .#mc-compat-valence-ctf-score-limit-win-condition -- --dry-run
+
 # Maintained protocol-763 Valence CTF bounded latency/jitter receipt over the inventory semantic rail.
 # Records bounded perturbation parameters, owned-local WAN telemetry fields, full inventory/open-container/block-place milestone oracle evidence, and no privileged network mutation.
 nix run .#mc-compat-valence-ctf-latency-jitter-inventory

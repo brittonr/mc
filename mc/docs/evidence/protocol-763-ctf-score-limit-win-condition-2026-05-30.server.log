@@ -1,0 +1,33 @@
+warning: struct `ArrowPolicyDiff` is never constructed
+   --> examples/ctf.rs:117:8
+    |
+117 | struct ArrowPolicyDiff {
+    |        ^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `diff_arrow_policy_snapshots` is never used
+   --> examples/ctf.rs:409:4
+    |
+409 | fn diff_arrow_policy_snapshots(
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `push_arrow_policy_diff` is never used
+   --> examples/ctf.rs:435:4
+    |
+435 | fn push_arrow_policy_diff(
+    |    ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `valence` (example "ctf") generated 3 warnings
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.17s
+     Running `/tmp/valence-compat-score-limit-target/debug/examples/ctf`
+[2m2026-05-30T22:07:20.472834Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE score_limit_pre_state score_limit=2 red_score=1 blue_score=0 next_capture_team=Red outcome=one_capture_before_win
+MC-COMPAT-MILESTONE score_limit_pre_state score_limit=2 red_score=1 blue_score=0 next_capture_team=Red outcome=one_capture_before_win
+MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbot slot=0 source=team_inventory_setup
+MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbot slot=0
+[2m2026-05-30T22:07:43.647772Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE flag_pickup username=compatbot carrier_team=Red flag_team=Blue
+MC-COMPAT-MILESTONE flag_pickup username=compatbot carrier_team=Red flag_team=Blue
+[2m2026-05-30T22:07:44.999539Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE score_limit_final_capture username=compatbot capture_team=Red carried_flag=Blue score_limit=2 red_score_before=1 blue_score_before=0 red_score_after=2 blue_score_after=0
+MC-COMPAT-MILESTONE score_limit_final_capture username=compatbot capture_team=Red carried_flag=Blue score_limit=2 red_score_before=1 blue_score_before=0 red_score_after=2 blue_score_after=0
+[2m2026-05-30T22:07:44.999558Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE score_limit_win_condition username=compatbot winning_team=Red score_limit=2 red_score=2 blue_score=0 end_state=winner_declared win_emissions=1 duplicate_win=false post_win_score_delta=0
+MC-COMPAT-MILESTONE score_limit_win_condition username=compatbot winning_team=Red score_limit=2 red_score=2 blue_score=0 end_state=winner_declared win_emissions=1 duplicate_win=false post_win_score_delta=0

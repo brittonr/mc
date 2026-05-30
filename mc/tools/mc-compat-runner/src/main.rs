@@ -70,7 +70,7 @@ const SURVIVAL_CHEST_SERVER_REOPEN_NEEDLE: &str =
 const SURVIVAL_CHEST_SERVER_PERSISTED_NEEDLE: &str =
     "survival_chest_persisted username=compatbot slot=0 item=Dirt count=1";
 const SURVIVAL_CHEST_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_CHEST_FIXTURE";
-const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop";
+const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
     "Dimension type:",
@@ -115,6 +115,10 @@ const NEGATIVE_LIVE_RAIL_EVIDENCE_FIELDS: &[&str] = &[
     "server_forbidden_matches",
     "postcondition",
 ];
+const CTF_SCORE_LIMIT_CLIENT_WIN_NEEDLE: &str = "ctf_score_limit_win_seen score_limit=2 winning_team=red red_score=2 blue_score=0 end_state=winner_declared duplicate_win=false";
+const CTF_SCORE_LIMIT_SERVER_PRE_STATE_NEEDLE: &str = "score_limit_pre_state score_limit=2 red_score=1 blue_score=0 next_capture_team=Red outcome=one_capture_before_win";
+const CTF_SCORE_LIMIT_SERVER_FINAL_CAPTURE_NEEDLE: &str = "score_limit_final_capture username=compatbot capture_team=Red carried_flag=Blue score_limit=2 red_score_before=1 blue_score_before=0 red_score_after=2 blue_score_after=0";
+const CTF_SCORE_LIMIT_SERVER_WIN_NEEDLE: &str = "score_limit_win_condition username=compatbot winning_team=Red score_limit=2 red_score=2 blue_score=0 end_state=winner_declared win_emissions=1 duplicate_win=false post_win_score_delta=0";
 const ARMOR_MATRIX_ROW_ID: &str = "chest_diamond_none_none_melee";
 const ARMOR_MATRIX_LOADOUT_ID: &str = "armor_loadout_chest_only";
 const ARMOR_MATRIX_EQUIPMENT_SLOT: &str = "chest=DiamondChestplate";
@@ -199,6 +203,7 @@ enum Scenario {
     NegativeCtfWrongScore,
     CtfInvalidPickupOwnership,
     CtfInvalidReturnDrop,
+    CtfScoreLimitWinCondition,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -1606,6 +1611,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
         "negative-ctf-wrong-score" => Ok(Scenario::NegativeCtfWrongScore),
         "ctf-invalid-pickup-ownership" => Ok(Scenario::CtfInvalidPickupOwnership),
         "ctf-invalid-return-drop" => Ok(Scenario::CtfInvalidReturnDrop),
+        "ctf-score-limit-win-condition" => Ok(Scenario::CtfScoreLimitWinCondition),
         other => Err(format!("unknown scenario: {other}")),
     }
 }
@@ -1638,6 +1644,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::NegativeCtfWrongScore => "negative-ctf-wrong-score",
         Scenario::CtfInvalidPickupOwnership => "ctf-invalid-pickup-ownership",
         Scenario::CtfInvalidReturnDrop => "ctf-invalid-return-drop",
+        Scenario::CtfScoreLimitWinCondition => "ctf-score-limit-win-condition",
     }
 }
 
@@ -1948,6 +1955,19 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
                 "ctf_invalid_return_drop_contained",
             ),
         ],
+        Scenario::CtfScoreLimitWinCondition => &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("flag_pickup", "You have the flag!"),
+            ("flag_capture", "You captured the flag!"),
+            ("score_red_2", "RED: 2"),
+            (
+                "ctf_score_limit_win_seen",
+                CTF_SCORE_LIMIT_CLIENT_WIN_NEEDLE,
+            ),
+        ],
     }
 }
 
@@ -1991,6 +2011,19 @@ fn scenario_forbidden_patterns(scenario: Scenario) -> &'static [(&'static str, &
             ("unexpected_flag_capture_milestone", "flag_capture"),
             ("unexpected_red_score", "RED: 1"),
             ("unexpected_blue_score", "BLUE: 1"),
+        ],
+        Scenario::CtfScoreLimitWinCondition => &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+            ("score_limit_duplicate_win", "score_limit_duplicate_win"),
+            (
+                "score_limit_post_win_score_mutation",
+                "score_limit_post_win_score_mutation",
+            ),
+            ("unexpected_red_score_3", "RED: 3"),
+            ("unexpected_blue_score_1", "BLUE: 1"),
         ],
         Scenario::FlagCarrierDeathReturn
         | Scenario::ReconnectFlagState
@@ -2135,6 +2168,21 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
             (
                 "server_invalid_return_drop_rejected",
                 "invalid_flag_return_drop_rejected username=compatbot actor_team=Red flag_team=Red pre_state=at_base post_state=at_base red_score=0 blue_score=0 outcome=no_flag_state_mutation_no_score",
+            ),
+        ],
+        Scenario::CtfScoreLimitWinCondition => &[
+            ("server_username_seen", "compatbot"),
+            (
+                "server_score_limit_pre_state",
+                CTF_SCORE_LIMIT_SERVER_PRE_STATE_NEEDLE,
+            ),
+            (
+                "server_score_limit_final_capture",
+                CTF_SCORE_LIMIT_SERVER_FINAL_CAPTURE_NEEDLE,
+            ),
+            (
+                "server_score_limit_win_condition",
+                CTF_SCORE_LIMIT_SERVER_WIN_NEEDLE,
             ),
         ],
         Scenario::NegativeInventoryStaleState
@@ -2891,7 +2939,7 @@ Automates a local Stevenarella compatibility smoke against a Minecraft {} / prot
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from legacy Nickel config, or --steel-config/MC_COMPAT_STEEL_CONFIG a restricted Steel module; env vars and later CLI flags override either config source.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.scenario.receipt.v2 JSON receipt for Cairn/Octet evidence flows.
-Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario ctf-invalid-return-drop for one contained own-base return/drop attempt with server rejection evidence. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
+Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario ctf-invalid-return-drop for one contained own-base return/drop attempt with server rejection evidence. Use --scenario ctf-score-limit-win-condition for one near-limit capture that emits exactly one win/end milestone. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
 Use --expect-status-description/--expect-status-version/--expect-status-sample to assert status response fixture data, --packet-capture-summary for redacted capture summary metadata, and --proxy-route/--proxy-forwarding-mode for proxied-route receipt fields.\n\
 Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
 Use --run-matrix --receipt-dir DIR to run Paper and Valence receipts then compare them; add --dry-run after --run-matrix for a non-side-effecting matrix fixture.\n\
@@ -3443,6 +3491,9 @@ fn start_valence_server(cfg: &Config) -> Result<ManagedServer, String> {
     }
     if cfg.scenario == Scenario::CtfInvalidReturnDrop {
         cmd.env("MC_COMPAT_CTF_INVALID_RETURN_DROP_PROBE", "1");
+    }
+    if cfg.scenario == Scenario::CtfScoreLimitWinCondition {
+        cmd.env("MC_COMPAT_CTF_SCORE_LIMIT_PROBE", "1");
     }
     if let Some(path) = &cfg.steel_config_path {
         cmd.env("MC_COMPAT_STEEL_CONFIG", path);
@@ -4238,6 +4289,15 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
                 .env("MC_COMPAT_FLAG_PROBE_PICKUP_ONLY", "1")
                 .env("MC_COMPAT_NEGATIVE_PROBE", "ctf_invalid_return_drop");
         }
+        Scenario::CtfScoreLimitWinCondition => {
+            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
+                .env("MC_COMPAT_FLAG_PROBE", "1")
+                .env("MC_COMPAT_FLAG_PROBE_TEAM", "red")
+                .env("MC_COMPAT_FLAG_PROBE_REPEAT", "1")
+                .env("MC_COMPAT_SCORE_LIMIT_PROBE", "1");
+        }
     }
 }
 
@@ -4335,6 +4395,7 @@ fn requires_server_correlation(cfg: &Config) -> bool {
             | Scenario::FlagCarrierDeathReturn
             | Scenario::CtfInvalidPickupOwnership
             | Scenario::CtfInvalidReturnDrop
+            | Scenario::CtfScoreLimitWinCondition
     )
 }
 
@@ -5088,6 +5149,13 @@ fn smoke_receipt_json_with_typed_event_oracle(
             "own_flag_return_drop_attempt",
             "invalid_flag_return_drop_rejected",
         ],
+        Scenario::CtfScoreLimitWinCondition => vec![
+            "login_success",
+            "play_join_game",
+            "flag_pickup",
+            "flag_capture",
+            "score_limit_win_condition",
+        ],
     };
     let typed_event_oracle_json = typed_event_oracle_receipt_json(typed_event_oracle);
     let latency_jitter_json = latency_jitter_receipt_json(cfg);
@@ -5193,6 +5261,10 @@ fn smoke_receipt_json_with_typed_event_oracle(
         "ctf_invalid_return_drop_attempted",
         "ctf_invalid_return_drop_contained",
         "server_invalid_return_drop_rejected",
+        "ctf_score_limit_win_seen",
+        "server_score_limit_pre_state",
+        "server_score_limit_final_capture",
+        "server_score_limit_win_condition",
     ];
     let gameplay_non_claims: Vec<&str> = vec![
         "full_ctf_correctness",
@@ -6311,6 +6383,7 @@ mod tests {
         Scenario::NegativeCtfWrongScore,
         Scenario::CtfInvalidPickupOwnership,
         Scenario::CtfInvalidReturnDrop,
+        Scenario::CtfScoreLimitWinCondition,
     ];
 
     fn passing_client_lines(scenario: Scenario) -> Vec<(&'static str, String)> {
@@ -6829,6 +6902,10 @@ mod tests {
         let invalid_return_drop = test_config(&["--scenario", "ctf-invalid-return-drop"], &[])
             .expect("invalid return/drop scenario parses");
         assert_eq!(invalid_return_drop.scenario, Scenario::CtfInvalidReturnDrop);
+
+        let score_limit = test_config(&["--scenario", "ctf-score-limit-win-condition"], &[])
+            .expect("score limit win scenario parses");
+        assert_eq!(score_limit.scenario, Scenario::CtfScoreLimitWinCondition);
     }
 
     #[test]
@@ -8162,6 +8239,49 @@ negative_custom_payload_contained
             Some("ctf_invalid_return_drop_contained")
         );
         assert!(evidence.preflight_passed, "{evidence:?}");
+    }
+
+    #[test]
+    fn ctf_score_limit_win_condition_tracks_client_server_and_forbidden_guards() {
+        let client = evaluate_scenario(
+            Scenario::CtfScoreLimitWinCondition,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\nYou have the flag!\nYou captured the flag!\nRED: 2\nctf_score_limit_win_seen score_limit=2 winning_team=red red_score=2 blue_score=0 end_state=winner_declared duplicate_win=false\n",
+        );
+        assert!(client.passed, "{client:?}");
+        assert!(client.forbidden_matches.is_empty(), "{client:?}");
+
+        let duplicate = evaluate_scenario(
+            Scenario::CtfScoreLimitWinCondition,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\nYou have the flag!\nYou captured the flag!\nRED: 2\nctf_score_limit_win_seen score_limit=2 winning_team=red red_score=2 blue_score=0 end_state=winner_declared duplicate_win=false\nscore_limit_duplicate_win\n",
+        );
+        assert!(!duplicate.passed, "{duplicate:?}");
+        assert!(
+            duplicate
+                .forbidden_matches
+                .contains(&"score_limit_duplicate_win"),
+            "{duplicate:?}"
+        );
+
+        let server = evaluate_server_scenario(
+            Scenario::CtfScoreLimitWinCondition,
+            "compatbot joined\nMC-COMPAT-MILESTONE score_limit_pre_state score_limit=2 red_score=1 blue_score=0 next_capture_team=Red outcome=one_capture_before_win\nMC-COMPAT-MILESTONE score_limit_final_capture username=compatbot capture_team=Red carried_flag=Blue score_limit=2 red_score_before=1 blue_score_before=0 red_score_after=2 blue_score_after=0\nMC-COMPAT-MILESTONE score_limit_win_condition username=compatbot winning_team=Red score_limit=2 red_score=2 blue_score=0 end_state=winner_declared win_emissions=1 duplicate_win=false post_win_score_delta=0\n",
+            "compatbot",
+        );
+        assert!(server.passed, "{server:?}");
+        assert!(server.forbidden_matches.is_empty(), "{server:?}");
+
+        let mutation = evaluate_server_scenario(
+            Scenario::CtfScoreLimitWinCondition,
+            "compatbot joined\nMC-COMPAT-MILESTONE score_limit_pre_state score_limit=2 red_score=1 blue_score=0 next_capture_team=Red outcome=one_capture_before_win\nMC-COMPAT-MILESTONE score_limit_final_capture username=compatbot capture_team=Red carried_flag=Blue score_limit=2 red_score_before=1 blue_score_before=0 red_score_after=2 blue_score_after=0\nMC-COMPAT-MILESTONE score_limit_win_condition username=compatbot winning_team=Red score_limit=2 red_score=2 blue_score=0 end_state=winner_declared win_emissions=1 duplicate_win=false post_win_score_delta=0\nMC-COMPAT-MILESTONE score_limit_post_win_score_mutation username=compatbot winning_team=Red score_limit=2 outcome=forbidden_score_after_win\n",
+            "compatbot",
+        );
+        assert!(!mutation.passed, "{mutation:?}");
+        assert!(
+            mutation
+                .forbidden_matches
+                .contains(&"score_limit_post_win_score_mutation"),
+            "{mutation:?}"
+        );
     }
 
     #[test]

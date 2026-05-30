@@ -1,0 +1,81 @@
+command=nix run --no-update-lock-file .#cairn -- archive ctf-score-limit-win-condition --execute --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: ctf-score-limit-win-condition",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-ctf-score-limit-win-condition"
+    }
+  ],
+  "blocked": false,
+  "change": "ctf-score-limit-win-condition",
+  "dry_run": false,
+  "input_hash": "5361b7268e31c968c222f735dfb73def582c24ceb3aa27a40de0841e68deeb90",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "a5d66f4a5e709dea8729297bbb903b657632b695b9f0668951dd9b8bac1d68fd",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-ctf-score-limit-win-condition/design.md"
+        },
+        {
+          "content_hash": "0b4fdf084606bf0bccdfa07c7355ca416ee15629edf85d9b896696ee3f1ce0c7",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-ctf-score-limit-win-condition/proposal.md"
+        },
+        {
+          "content_hash": "095ece69ccfdc467d23a148d732a3e78a519cf3b7334e3053d757482b2c68c6f",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-ctf-score-limit-win-condition/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "ea8821f0f3da37afcaa468096e0858ee5292f5f0f43c81817fc495307c0f8cc8",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-ctf-score-limit-win-condition/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/ctf-score-limit-win-condition"
+        }
+      ],
+      "manifest_hash": "6b618250f7b19e4ae980a1f024ff55df65cd769dfa051e6a63d86c1e6c12d4a6"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "a5d66f4a5e709dea8729297bbb903b657632b695b9f0668951dd9b8bac1d68fd",
+          "exists": true,
+          "path": "./cairn/changes/ctf-score-limit-win-condition/design.md"
+        },
+        {
+          "content_hash": "0b4fdf084606bf0bccdfa07c7355ca416ee15629edf85d9b896696ee3f1ce0c7",
+          "exists": true,
+          "path": "./cairn/changes/ctf-score-limit-win-condition/proposal.md"
+        },
+        {
+          "content_hash": "095ece69ccfdc467d23a148d732a3e78a519cf3b7334e3053d757482b2c68c6f",
+          "exists": true,
+          "path": "./cairn/changes/ctf-score-limit-win-condition/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "ea8821f0f3da37afcaa468096e0858ee5292f5f0f43c81817fc495307c0f8cc8",
+          "exists": true,
+          "path": "./cairn/changes/ctf-score-limit-win-condition/tasks.md"
+        }
+      ],
+      "manifest_hash": "bc6660793c32b137e65ca1b20520b8925e475d1faceede7d2facd6675011a196"
+    },
+    "kind": "archive",
+    "manifest_hash": "5bc6c44c818920443305c91fb60b32bd39bde54fc149284ba33d7ba7a49f7a47"
+  },
+  "plan_hash": "5610f78440bec5ce456147afed0eb8994856e9bb2526f4fe2005859b127c4959",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "b89dfedf4b1f6879eab95e04623edda6f47a82ddec53f9ca792ead60f0012040"
+}
+exit_status=0

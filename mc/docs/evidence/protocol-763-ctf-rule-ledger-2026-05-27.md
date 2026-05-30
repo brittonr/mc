@@ -15,6 +15,7 @@ full CTF correctness remains a non-claim.
 | disconnect_returns_flag_and_reconnect_state_coherent | Reconnect flag-state | flag_pickup, reconnect_session | server_flag_pickup, server_flag_disconnect_return, server_reconnect_state_coherent | unexpected_flag_capture, unexpected_red_score, unexpected_blue_score | `docs/evidence/protocol-763-reconnect-flag-state.matrix.receipt.json` | `4d848af56b25ad4b3c466863bac5b2052adbbc1c59e2b2164bfb2a696c225cb3` |
 | invalid_pickup_rejected_without_ownership_transfer | Invalid flag pickup/ownership | ctf_invalid_pickup_attempted, ctf_invalid_pickup_contained | server_invalid_pickup_rejected | unexpected_flag_pickup_chat, unexpected_server_flag_pickup, unexpected_flag_capture, unexpected_red_score, unexpected_blue_score | `docs/evidence/protocol-763-ctf-invalid-pickup-ownership-2026-05-30.receipt.json` | `64c353dc5f256526d4ecfb4078516e85491b42fc9da10adf8e91a7c2c166b8ac` |
 | invalid_return_drop_rejected_without_state_mutation | Invalid flag return/drop | ctf_invalid_return_drop_attempted, ctf_invalid_return_drop_contained | server_invalid_return_drop_rejected | unexpected_flag_return, unexpected_server_flag_pickup, unexpected_flag_capture, unexpected_red_score, unexpected_blue_score | `docs/evidence/protocol-763-ctf-invalid-return-drop-2026-05-30.receipt.json` | `f0465c4ad154c051ee21bbe96bac939dad875ac3bdaaa785051cdb58636ba2ba` |
+| score_limit_win_emits_once_without_post_win_mutation | Score limit / win condition | ctf_score_limit_win_seen | server_score_limit_pre_state, server_score_limit_final_capture, server_score_limit_win_condition | score_limit_duplicate_win, score_limit_post_win_score_mutation, unexpected_red_score_3, unexpected_blue_score_1 | `docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.receipt.json` | `7c0d7805e54d95f2768f0164f1b4e62f59f57d524f3a61c3205eb0d611e89e02` |
 
 ## Unpromoted rule clusters
 
@@ -22,7 +23,7 @@ full CTF correctness remains a non-claim.
 | --- | --- | --- |
 | invalid_pickup_accepted broad invalid-pickup breadth | Non-claim | Only one own-flag pickup rejection row is promoted; add more flag/team/owner permutations before claiming broader invalid pickup acceptance/rejection coverage. |
 | invalid_return_accepted broad invalid return/drop breadth | Non-claim | Only one own-base return/drop rejection row is promoted; add more carrier/drop/return permutations before claiming broader invalid return/drop coverage. |
-| score limit / win condition | Non-claim | Add bounded score-limit receipt. |
+| score_limit_variants broad score-limit breadth | Non-claim | Only one near-limit RED capture to configured score limit `2` is promoted; add more score limits/settings/race fixtures before claiming broader win-condition coverage. |
 | simultaneous pickup/capture race | Non-claim | Add deterministic multi-client race fixture. |
 | spawn/team balance/resource reset | Non-claim | Add scenario-specific receipts. |
 | full CTF correctness | Non-claim | Requires all rule rows complete. |
@@ -40,6 +41,7 @@ full CTF correctness remains a non-claim.
 - acceptance matrix and current bundle contain each rule-cluster digest;
 - `tools/check_ctf_invalid_pickup_ownership.rs` validates the promoted invalid pickup row, including client containment, server rejection, no owner transfer, no score/capture, and BLAKE3-backed logs;
 - `tools/check_ctf_invalid_return_drop.rs` validates the promoted invalid return/drop row, including client containment, server rejection, no flag state mutation, no score/capture, and BLAKE3-backed logs;
+- `tools/check_ctf_score_limit_win_condition.rs` validates the promoted score-limit row, including near-limit pre-state, final capture metrics, one win/end-state emission, no duplicate-win, no post-win score mutation, and BLAKE3-backed logs;
 - full CTF correctness is still listed as a non-claim.
 
 ## Negative fixtures
@@ -52,20 +54,21 @@ full CTF correctness remains a non-claim.
 - missing historical scoring oracle;
 - full CTF correctness overclaim in the matrix;
 - missing invalid pickup server rejection, unexpected server flag pickup, missing checker record, and row-doc overclaims in `tools/check_ctf_invalid_pickup_ownership.rs --self-test`;
-- missing invalid return/drop server rejection, unexpected flag return/state mutation, missing checker record, and row-doc overclaims in `tools/check_ctf_invalid_return_drop.rs --self-test`.
+- missing invalid return/drop server rejection, unexpected flag return/state mutation, missing checker record, and row-doc overclaims in `tools/check_ctf_invalid_return_drop.rs --self-test`;
+- duplicate score-limit win, post-win score mutation, wrong final score, missing checker record, and row-doc overclaims in `tools/check_ctf_score_limit_win_condition.rs --self-test`.
 
 ## Promotion gate
 
-Only the five bounded rule clusters above are promoted. Full CTF correctness remains blocked until every rule-family row has live receipts, run logs, BLAKE3 manifests, matrix/current-bundle entries, and positive/negative checker coverage.
+Only the six bounded rule clusters above are promoted. Full CTF correctness remains blocked until every rule-family row has live receipts, run logs, BLAKE3 manifests, matrix/current-bundle entries, and positive/negative checker coverage.
 
 ## Decision
 
 - Question: Can current rule evidence be promoted without implying full CTF correctness?
-- Inspected evidence: RED/BLUE historical oracle, flag-carrier death/return receipt, reconnect flag-state receipt, invalid pickup ownership receipt, invalid return/drop receipt, acceptance matrix, current bundle, and checker fixtures.
-- Decision: Yes. Promote five bounded rule clusters and keep full CTF correctness as a non-claim.
+- Inspected evidence: RED/BLUE historical oracle, flag-carrier death/return receipt, reconnect flag-state receipt, invalid pickup ownership receipt, invalid return/drop receipt, score-limit win-condition receipt, acceptance matrix, current bundle, and checker fixtures.
+- Decision: Yes. Promote six bounded rule clusters and keep full CTF correctness as a non-claim.
 - Owner: agent.
 - Next action: add more invalid-action permutations and race-condition receipts before broadening rule correctness.
 
 ## Non-claims
 
-No full CTF correctness, all invalid actions, all flag pickup/return permutations, score limit/win condition, simultaneous races, spawn/team balance, production gameplay readiness, or broad Minecraft compatibility claim is made.
+No full CTF correctness, all invalid actions, all flag pickup/return permutations, all score limits/settings, overtime/tiebreakers, scoreboard UI parity, simultaneous races, spawn/team balance, production gameplay readiness, or broad Minecraft compatibility claim is made.

@@ -1,0 +1,12 @@
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-score-limit-win-condition session=protocol-763-ctf-score-limit-win-condition-2026-05-30.receipt username=compatbot seq=1 event=protocol_detected
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-score-limit-win-condition session=protocol-763-ctf-score-limit-win-condition-2026-05-30.receipt username=compatbot seq=2 event=join_game
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-score-limit-win-condition session=protocol-763-ctf-score-limit-win-condition-2026-05-30.receipt username=compatbot seq=3 event=render_tick
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-score-limit-win-condition session=protocol-763-ctf-score-limit-win-condition-2026-05-30.receipt username=compatbot seq=4 event=team_red
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-score-limit-win-condition session=protocol-763-ctf-score-limit-win-condition-2026-05-30.receipt username=compatbot seq=5 event=flag_pickup
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-score-limit-win-condition session=protocol-763-ctf-score-limit-win-condition-2026-05-30.receipt username=compatbot seq=6 event=flag_capture
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-score-limit-win-condition session=protocol-763-ctf-score-limit-win-condition-2026-05-30.receipt username=compatbot seq=7 event=score_red_2
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-score-limit-win-condition session=protocol-763-ctf-score-limit-win-condition-2026-05-30.receipt username=compatbot seq=8 event=ctf_score_limit_win_seen
+MC-COMPAT-EVENT schema=1 source=server scenario=ctf-score-limit-win-condition session=protocol-763-ctf-score-limit-win-condition-2026-05-30.receipt username=compatbot seq=9 event=server_username_seen
+MC-COMPAT-EVENT schema=1 source=server scenario=ctf-score-limit-win-condition session=protocol-763-ctf-score-limit-win-condition-2026-05-30.receipt username=compatbot seq=10 event=server_score_limit_pre_state
+MC-COMPAT-EVENT schema=1 source=server scenario=ctf-score-limit-win-condition session=protocol-763-ctf-score-limit-win-condition-2026-05-30.receipt username=compatbot seq=11 event=server_score_limit_final_capture
+MC-COMPAT-EVENT schema=1 source=server scenario=ctf-score-limit-win-condition session=protocol-763-ctf-score-limit-win-condition-2026-05-30.receipt username=compatbot seq=12 event=server_score_limit_win_condition

@@ -1,0 +1,46 @@
+command=nix run --no-update-lock-file .#cairn -- gate proposal ctf-score-limit-win-condition --root .
+{
+  "change": "ctf-score-limit-win-condition",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e5cece364f8e52958c084f100d33bd1e6ffeb54732789c0080258b7949e6ffae",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "d9c12bcbb5372066f7dd6d47ce3787c6652c197e97ea7f671387202941e95452",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+proposal_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate tasks ctf-score-limit-win-condition --root .
+{
+  "change": "ctf-score-limit-win-condition",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "d4eb941e6799f6db0ba600fe49f22d34f40f730a6d3d4e084a981b2168565593",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "cb6aa3ef6cba8c75e1c0f17f64d07ebb9c1edbf2133862decdea7815a45310fc",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+tasks_exit_status=0

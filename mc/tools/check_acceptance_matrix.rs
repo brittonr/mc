@@ -29,6 +29,7 @@ const REQUIRED_SEAMS: &[&str] = &[
     "Reconnect flag-state",
     "Invalid flag pickup/ownership",
     "Invalid flag return/drop",
+    "Score limit / win condition",
     "Latency/jitter tolerance",
     "Combat knockback",
     "Armor equipment mitigation",
@@ -63,6 +64,7 @@ const REQUIRED_TEXT: &[&str] = &[
 const REVIEWABLE_RECEIPT_SEAMS: &[&str] = &[
     "Invalid flag pickup/ownership",
     "Invalid flag return/drop",
+    "Score limit / win condition",
     "Armor equipment mitigation",
     "Equipment update observation",
     "Projectile use/loadout rail",

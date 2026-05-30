@@ -679,6 +679,34 @@
               mainProgram = "mc-compat-valence-ctf-invalid-return-drop";
             };
           };
+          mc-compat-valence-ctf-score-limit-win-condition = pkgs.writeShellApplication {
+            name = "mc-compat-valence-ctf-score-limit-win-condition";
+            runtimeInputs = [ mc-compat-runner ];
+            text = ''
+              mode="--run"
+              if [[ "''${1:-}" == "--dry-run" || "''${1:-}" == "--run" ]]; then
+                mode="$1"
+                shift
+              fi
+
+              receipt="''${MC_COMPAT_CTF_SCORE_LIMIT_WIN_CONDITION_RECEIPT:-target/mc-compat-ctf-score-limit-win-condition/ctf-score-limit-win-condition.json}"
+              mkdir -p "$(dirname "$receipt")"
+
+              export SERVER_PROTOCOL="''${SERVER_PROTOCOL:-763}"
+              export SERVER_VERSION="''${SERVER_VERSION:-1.20.1}"
+              export VALENCE_REV="''${VALENCE_REV:-main}"
+              export VALENCE_EXAMPLE="''${VALENCE_EXAMPLE:-ctf}"
+              export VALENCE_WORKTREE="''${VALENCE_WORKTREE:-/tmp/valence-compat-763}"
+              export VALENCE_TARGET_DIR="''${VALENCE_TARGET_DIR:-/tmp/valence-compat-763-target}"
+              export CLIENT_TIMEOUT="''${CLIENT_TIMEOUT:-120}"
+
+              exec mc-compat-runner "$mode"                 --server-backend valence                 --scenario ctf-score-limit-win-condition                 --receipt "$receipt"                 "$@"
+            '';
+            meta = {
+              description = "Run the maintained protocol-763 Valence CTF score limit win-condition receipt.";
+              mainProgram = "mc-compat-valence-ctf-score-limit-win-condition";
+            };
+          };
           mc-compat-valence-survival-break-place-pickup = pkgs.writeShellApplication {
             name = "mc-compat-valence-survival-break-place-pickup";
             runtimeInputs = [ mc-compat-runner ];
@@ -709,7 +737,7 @@
           };
         in
         {
-          inherit valence stevenarella mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-ctf-combat-damage mc-compat-valence-ctf-combat-knockback mc-compat-valence-ctf-armor-equipment-mitigation mc-compat-valence-ctf-equipment-update-observation mc-compat-valence-ctf-projectile-hit mc-compat-valence-ctf-projectile-damage-attribution mc-compat-valence-ctf-flag-carrier-death-return mc-compat-valence-ctf-latency-jitter-inventory mc-compat-valence-ctf-reconnect-flag-state mc-compat-valence-ctf-invalid-pickup-ownership mc-compat-valence-ctf-invalid-return-drop mc-compat-valence-survival-break-place-pickup;
+          inherit valence stevenarella mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-ctf-combat-damage mc-compat-valence-ctf-combat-knockback mc-compat-valence-ctf-armor-equipment-mitigation mc-compat-valence-ctf-equipment-update-observation mc-compat-valence-ctf-projectile-hit mc-compat-valence-ctf-projectile-damage-attribution mc-compat-valence-ctf-flag-carrier-death-return mc-compat-valence-ctf-latency-jitter-inventory mc-compat-valence-ctf-reconnect-flag-state mc-compat-valence-ctf-invalid-pickup-ownership mc-compat-valence-ctf-invalid-return-drop mc-compat-valence-ctf-score-limit-win-condition mc-compat-valence-survival-break-place-pickup;
           cairn = cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn;
           cargo-octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.cargo-octet;
           octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.octet;
@@ -837,6 +865,13 @@
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-invalid-return-drop
           }/bin/mc-compat-valence-ctf-invalid-return-drop";
           meta.description = "Run the maintained protocol-763 Valence CTF invalid return/drop receipt.";
+        };
+        mc-compat-valence-ctf-score-limit-win-condition = {
+          type = "app";
+          program = "${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-score-limit-win-condition
+          }/bin/mc-compat-valence-ctf-score-limit-win-condition";
+          meta.description = "Run the maintained protocol-763 Valence CTF score limit win-condition receipt.";
         };
         mc-compat-valence-survival-break-place-pickup = {
           type = "app";
@@ -996,6 +1031,16 @@
           ../check-ctf-invalid-return-drop > ../ctf-invalid-return-drop-check.log
           mkdir -p "$out"
           cp ../ctf-invalid-return-drop-self-test.log ../ctf-invalid-return-drop-check.log "$out/"
+        '';
+        mc-compat-ctf-score-limit-win-condition = pkgs.runCommand "mc-compat-ctf-score-limit-win-condition" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc ]; } ''
+          cp -R ${./.} repo
+          chmod -R u+w repo
+          cd repo
+          rustc --edition=2021 tools/check_ctf_score_limit_win_condition.rs -o ../check-ctf-score-limit-win-condition
+          ../check-ctf-score-limit-win-condition --self-test > ../ctf-score-limit-win-condition-self-test.log
+          ../check-ctf-score-limit-win-condition > ../ctf-score-limit-win-condition-check.log
+          mkdir -p "$out"
+          cp ../ctf-score-limit-win-condition-self-test.log ../ctf-score-limit-win-condition-check.log "$out/"
         '';
         mc-compat-armor-loadout-enchantment-status = pkgs.runCommand "mc-compat-armor-loadout-enchantment-status" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc ]; } ''
           cp -R ${./.} repo
@@ -1530,6 +1575,34 @@
             mkdir -p "$out"
             cp ctf-invalid-return-drop-dry-run.log receipts/ctf-invalid-return-drop-receipt.json "$out/"
           '';
+        mc-compat-valence-ctf-score-limit-win-condition-dry-run =
+          pkgs.runCommand "mc-compat-valence-ctf-score-limit-win-condition-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
+            mkdir -p fake-stevenarella fake-valence receipts
+            printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+            git -C fake-valence init
+            git -C fake-valence config user.email mc-compat@example.invalid
+            git -C fake-valence config user.name mc-compat
+            printf '%s\n' fake > fake-valence/README.md
+            git -C fake-valence add README.md
+            git -C fake-valence commit -m init
+            MC_COMPAT_CTF_SCORE_LIMIT_WIN_CONDITION_RECEIPT="$PWD/receipts/ctf-score-limit-win-condition-receipt.json" ${
+              self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-score-limit-win-condition
+            }/bin/mc-compat-valence-ctf-score-limit-win-condition --dry-run --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD > ctf-score-limit-win-condition-dry-run.log
+            grep -Fq "scenario 'ctf-score-limit-win-condition'" ctf-score-limit-win-condition-dry-run.log
+            grep -Fq '"name": "ctf-score-limit-win-condition"' receipts/ctf-score-limit-win-condition-receipt.json
+            grep -Fq '"version": "1.20.1"' receipts/ctf-score-limit-win-condition-receipt.json
+            grep -Fq '"protocol": 763' receipts/ctf-score-limit-win-condition-receipt.json
+            grep -Fq '"timeout_secs": 120' receipts/ctf-score-limit-win-condition-receipt.json
+            grep -Fq '"ctf_score_limit_win_seen"' receipts/ctf-score-limit-win-condition-receipt.json
+            grep -Fq '"server_score_limit_pre_state"' receipts/ctf-score-limit-win-condition-receipt.json
+            grep -Fq '"server_score_limit_final_capture"' receipts/ctf-score-limit-win-condition-receipt.json
+            grep -Fq '"server_score_limit_win_condition"' receipts/ctf-score-limit-win-condition-receipt.json
+            grep -Fq '"expected_summary_packets": ["login_success", "play_join_game", "flag_pickup", "flag_capture", "score_limit_win_condition"]' receipts/ctf-score-limit-win-condition-receipt.json
+            grep -Fq '"claims_correctness": false' receipts/ctf-score-limit-win-condition-receipt.json
+            grep -Fq '"claims_semantic_equivalence": false' receipts/ctf-score-limit-win-condition-receipt.json
+            mkdir -p "$out"
+            cp ctf-score-limit-win-condition-dry-run.log receipts/ctf-score-limit-win-condition-receipt.json "$out/"
+          '';
         mc-compat-valence-survival-break-place-pickup-dry-run =
           pkgs.runCommand "mc-compat-valence-survival-break-place-pickup-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
             mkdir -p fake-stevenarella fake-valence receipts
@@ -1583,6 +1656,7 @@
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-reconnect-flag-state-dry-run} "$out/reconnect-flag-state"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-invalid-pickup-ownership-dry-run} "$out/ctf-invalid-pickup-ownership"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-invalid-return-drop-dry-run} "$out/ctf-invalid-return-drop"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-score-limit-win-condition-dry-run} "$out/ctf-score-limit-win-condition"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-break-place-pickup-dry-run} "$out/survival-break-place-pickup"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-bot-probe-dry-run} "$out/compat-bot-probe"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-acceptance-matrix} "$out/acceptance-matrix"
@@ -1596,6 +1670,7 @@
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-public-server-authorized-safety} "$out/public-server-authorized-safety"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-ctf-invalid-pickup-ownership} "$out/ctf-invalid-pickup-ownership-checker"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-ctf-invalid-return-drop} "$out/ctf-invalid-return-drop-checker"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-ctf-score-limit-win-condition} "$out/ctf-score-limit-win-condition-checker"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-armor-loadout-enchantment-status} "$out/armor-loadout-enchantment-status"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-equipment-slot-item-expansion} "$out/equipment-slot-item-expansion"
           cat > "$out/manifest.txt" <<'EOF'
@@ -1616,6 +1691,7 @@
           reconnect-flag-state
           ctf-invalid-pickup-ownership
           ctf-invalid-return-drop
+          ctf-score-limit-win-condition
           survival-break-place-pickup
           compat-bot-probe
           acceptance-matrix
@@ -1629,6 +1705,7 @@
           public-server-authorized-safety
           ctf-invalid-pickup-ownership-checker
           ctf-invalid-return-drop-checker
+          ctf-score-limit-win-condition-checker
           armor-loadout-enchantment-status
           equipment-slot-item-expansion
           EOF
@@ -1833,7 +1910,7 @@
           grep -Fq -- "--apply" help.log
           grep -Fq -- "--stop" help.log
           grep -Fq -- "--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT" help.log
-          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop" help.log
+          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition" help.log
           grep -Fq "MC_COMPAT_SCENARIO" help.log
           grep -Fq -- "--expect-status-description" help.log
           grep -Fq -- "--packet-capture-summary" help.log
