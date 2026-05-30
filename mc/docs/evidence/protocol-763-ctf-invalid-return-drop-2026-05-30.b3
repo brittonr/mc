@@ -1,4 +1,4 @@
-dcc5ea3346029d63ebe52a2201aee5a4b776368c4492d84cde90462d8c43ebe0  docs/evidence/protocol-763-ctf-invalid-return-drop-contract-2026-05-30.md
+fb88b1b97e6d007cf05627fc3e119022ebb67e1c550592aca1a28f965eb97fd5  docs/evidence/protocol-763-ctf-invalid-return-drop-contract-2026-05-30.md
 6880439656e82d3c0db4f8024ef4b8e41cc557b805f0c4a552e72717d887623c  docs/evidence/protocol-763-ctf-invalid-return-drop-2026-05-30.md
 f0465c4ad154c051ee21bbe96bac939dad875ac3bdaaa785051cdb58636ba2ba  docs/evidence/protocol-763-ctf-invalid-return-drop-2026-05-30.receipt.json
 cc86c80c3fced7cc8f071fe046573a51f7d6b6cb5d97c5dacb5971494484d157  docs/evidence/protocol-763-ctf-invalid-return-drop-2026-05-30.run.log
@@ -16,6 +16,7 @@ c2e00452fa7027f846611feaea9acf798e13dce1c97039ca4701cdd411516a58  tools/check_ct
 d1929cc4639c8428c022d30fa0ae7e20140ecb1868382ab901e218032a7d7c7e  tools/check_current_evidence_bundle.rs
 420bb3a249911a2b94b86e24a10da2ec29963e66ee06f6c3382435c58a6bed6d  flake.nix
 49a9a8f31746aa8ba173b9a19c30c8155b77f39740fd25d00d92d95b47ecdb29  README.md
-f2efd55e0a861d99e06e898471c1c1ab37511f47397f3f33707c61fd5947e641  cairn/changes/ctf-invalid-return-drop/proposal.md
-b0d0007530e3630351bb1b716b88518b4ca4fe4762eb9172fb1d99be938835ba  cairn/changes/ctf-invalid-return-drop/specs/mc-compatibility/spec.md
-ba79fe319af06c5ccdf0eb056ad5a0a284e2c03114bda07a55b3ac56854ddbd7  cairn/changes/ctf-invalid-return-drop/tasks.md
+f2efd55e0a861d99e06e898471c1c1ab37511f47397f3f33707c61fd5947e641  cairn/archive/2026-05-30-ctf-invalid-return-drop/proposal.md
+b0d0007530e3630351bb1b716b88518b4ca4fe4762eb9172fb1d99be938835ba  cairn/archive/2026-05-30-ctf-invalid-return-drop/specs/mc-compatibility/spec.md
+797b3b8c367836e68a00403e682d3319e76a261ff2f4e36185a76b01fa4afb2c  cairn/archive/2026-05-30-ctf-invalid-return-drop/tasks.md
+353700a2fbc3d43688721b6ee681b8050a4d4d6c5ba0b9707a32f4f406b9b450  docs/evidence/protocol-763-ctf-invalid-return-drop-validation-2026-05-30.run.log

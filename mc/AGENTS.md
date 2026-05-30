@@ -27,6 +27,7 @@
 - Accepted spec edits can stale existing `.b3` manifests that include `cairn/specs/mc-compatibility/spec.md`; run the evidence manifest checker and refresh every cited-spec digest before final validation.
 - Nix evidence-manifest checks see only the parent repo source closure; `.b3` rows must cite tracked parent files (prefer `docs/evidence/` copies) rather than nested child-repo paths or `target/` outputs.
 - Run mc Cairn validation/gates with the repo-pinned app from `mc/` (`nix run .#cairn -- ... --root .`). A newer sibling `/home/brittonr/git/cairn` binary can reject this repo's generated policy schema.
+- After Cairn input updates, keep `cairn-policy/generated/cairn-policy.json` schema-compatible with the pinned binary; current policy needs a disabled `steel_orchestration_policy` block.
 
 ## Hyperion
 - Toolchain pinned in `hyperion/rust-toolchain.toml`: `nightly-2025-02-22` with `rustfmt` and `clippy`.

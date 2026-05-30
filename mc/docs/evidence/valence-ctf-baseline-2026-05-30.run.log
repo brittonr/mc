@@ -1,0 +1,25 @@
+# Valence CTF example baseline — 2026-05-30
+
+Oracle support for prior session claim: Valence CTF example baseline was 12/12 pass before starting ctf-score-limit-win-condition.
+
+$ cd valence && nix develop --no-update-lock-file -c cargo test --example ctf -- --nocapture
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.19s
+     Running unittests examples/ctf.rs (/home/brittonr/.cargo-target/debug/examples/ctf-062e1015e2f1de4c)
+
+running 12 tests
+test tests::arrow_policy_clamps_damage_to_maximum ... ok
+test tests::arrow_policy_redacts_secret_like_diagnostics ... ok
+test tests::invalid_flag_pickup_helper_rejects_own_flag_and_allows_enemy_flag ... ok
+test tests::default_arrow_policy_matches_legacy_projectile_damage ... ok
+test tests::invalid_flag_pickup_milestone_records_no_transfer_and_scores ... ok
+test tests::invalid_flag_return_drop_milestone_records_no_state_mutation_or_score ... ok
+test tests::invalid_module_is_rejected_and_previous_snapshot_survives ... ok
+test tests::malformed_or_capability_invalid_module_is_rejected ... ok
+test tests::non_default_policy_changes_both_projectile_call_site_health_deltas ... ok
+test tests::range_invalid_decision_output_is_rejected ... ok
+test tests::snapshot_diff_reports_changed_policy_fields ... ok
+test tests::steel_module_edit_changes_arrow_damage_policy ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+exit_status=0

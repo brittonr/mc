@@ -1,0 +1,327 @@
+# Protocol-763 CTF invalid return/drop validation — 2026-05-30
+
+Pre-archive row validation plus post-archive manifest/source-closure validation.
+
+$ nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_ctf_invalid_return_drop.rs -o target/check-ctf-invalid-return-drop
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+exit_status=0
+
+$ ./target/check-ctf-invalid-return-drop --self-test
+ctf invalid return drop self-test ok: positive and negative fixtures exercised
+exit_status=0
+
+$ ./target/check-ctf-invalid-return-drop
+ctf invalid return drop check passed: receipt, logs, matrix, bundle, and ledger validated
+exit_status=0
+
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-ctf-invalid-return-drop --no-link -L
+this derivation will be built:
+  /nix/store/qdp6v7q3y31xlp3l9d74jx3zncxkp35b-mc-compat-ctf-invalid-return-drop.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/qdp6v7q3y31xlp3l9d74jx3zncxkp35b-mc-compat-ctf-invalid-return-drop.drv'...
+exit_status=0
+
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-acceptance-matrix --no-link -L
+this derivation will be built:
+  /nix/store/zxnslh2691x1xj7yhw8p6baax7ikkrm0-mc-compat-acceptance-matrix.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/zxnslh2691x1xj7yhw8p6baax7ikkrm0-mc-compat-acceptance-matrix.drv'...
+exit_status=0
+
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-current-evidence-bundle --no-link -L
+this derivation will be built:
+  /nix/store/y1fgq7kbkal5k8ldvh9a0r4052z5bpss-mc-compat-current-evidence-bundle.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/y1fgq7kbkal5k8ldvh9a0r4052z5bpss-mc-compat-current-evidence-bundle.drv'...
+exit_status=0
+
+$ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py --self-test
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest self-test ok
+exit_status=0
+
+$ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 77 manifests, 425 entries, 64 receipts scanned
+exit_status=0
+
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L
+this derivation will be built:
+  /nix/store/wgmr0ph5x5s8q6yv0amqr2w8fxr5xivs-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/wgmr0ph5x5s8q6yv0amqr2w8fxr5xivs-mc-compat-evidence-manifests.drv'...
+exit_status=0
+
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+this derivation will be built:
+  /nix/store/6dflzyvvp8bz964mkp5wsmylgybl5inn-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/6dflzyvvp8bz964mkp5wsmylgybl5inn-mc-compat-cairn-task-evidence.drv'...
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate proposal ctf-invalid-return-drop --root .
+{
+  "change": "ctf-invalid-return-drop",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "892953a8ab0208f53a3b729b1661206a94252b4660efc0ff362444c8422adbb1",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "1dbc9b5561f2d7191aac515406960e450bff88aa7a58934c27881534f4bd0456",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate design ctf-invalid-return-drop --root .
+{
+  "change": "ctf-invalid-return-drop",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e817d49128d07307dd1c52cd5908350753b8a0786585d19261b42066c9bb330d",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "7e3abb0c97dbdc842416fc3e0b74cce55a3773373b732b7f7a54685820cf3410",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks ctf-invalid-return-drop --root .
+{
+  "change": "ctf-invalid-return-drop",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "aa27aded544b0d6770259ec4835c14ad5f5c1cad671c6d2833684c280625e7c7",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "40a941c56f986f837c79ea1d4ac3aff4093a8fdb5a0bd5d6c9505bba51d76cb8",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 33,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 35,
+  "valid": true
+}
+exit_status=0
+
+$ env CAIRN_ARCHIVE_DATE=2026-05-30 nix run --no-update-lock-file .#cairn -- archive ctf-invalid-return-drop --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: ctf-invalid-return-drop",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-05-30-ctf-invalid-return-drop"
+    }
+  ],
+  "blocked": false,
+  "change": "ctf-invalid-return-drop",
+  "dry_run": false,
+  "input_hash": "53a544757afb4a53b1ce990fe6cf085bb9d6ba10e54749986cd1474214dd22a6",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "65b50b65fccb5275ed590ff63071b81dadc80c13d375e201a275ac76686ac4a1",
+          "exists": true,
+          "path": "./cairn/archive/2026-05-30-ctf-invalid-return-drop/design.md"
+        },
+        {
+          "content_hash": "f2efd55e0a861d99e06e898471c1c1ab37511f47397f3f33707c61fd5947e641",
+          "exists": true,
+          "path": "./cairn/archive/2026-05-30-ctf-invalid-return-drop/proposal.md"
+        },
+        {
+          "content_hash": "b0d0007530e3630351bb1b716b88518b4ca4fe4762eb9172fb1d99be938835ba",
+          "exists": true,
+          "path": "./cairn/archive/2026-05-30-ctf-invalid-return-drop/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "797b3b8c367836e68a00403e682d3319e76a261ff2f4e36185a76b01fa4afb2c",
+          "exists": true,
+          "path": "./cairn/archive/2026-05-30-ctf-invalid-return-drop/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/ctf-invalid-return-drop"
+        }
+      ],
+      "manifest_hash": "45de3091fcf69f4c967dbbfe1cd48f5399d204bc9bb29b65a443de6980cbc121"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "65b50b65fccb5275ed590ff63071b81dadc80c13d375e201a275ac76686ac4a1",
+          "exists": true,
+          "path": "./cairn/changes/ctf-invalid-return-drop/design.md"
+        },
+        {
+          "content_hash": "f2efd55e0a861d99e06e898471c1c1ab37511f47397f3f33707c61fd5947e641",
+          "exists": true,
+          "path": "./cairn/changes/ctf-invalid-return-drop/proposal.md"
+        },
+        {
+          "content_hash": "b0d0007530e3630351bb1b716b88518b4ca4fe4762eb9172fb1d99be938835ba",
+          "exists": true,
+          "path": "./cairn/changes/ctf-invalid-return-drop/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "797b3b8c367836e68a00403e682d3319e76a261ff2f4e36185a76b01fa4afb2c",
+          "exists": true,
+          "path": "./cairn/changes/ctf-invalid-return-drop/tasks.md"
+        }
+      ],
+      "manifest_hash": "6b7c62e45a45d689fef84eafbbcadfd1e86e0c9189b35e5e752e05faef39cdaa"
+    },
+    "kind": "archive",
+    "manifest_hash": "00faffc56695679be36268bbfc289882537356a98da7a007629eef52eada3dc7"
+  },
+  "plan_hash": "7a9c89498951f93e83ada3b9e1cf0844d75e9f55403fa6ea0b53abba817c83f4",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "2ee9e350721915024ad1097ceacabfa48335767e3f70f8f5376b8829370f4674"
+}
+exit_status=0
+
+$ nix develop --no-update-lock-file -c rustc --edition=2021 /tmp/refresh_b3_manifests.rs -o /tmp/refresh_b3_manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+exit_status=0
+
+$ nix develop --no-update-lock-file -c /tmp/refresh_b3_manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+refreshed BLAKE3 manifests; stable_after_passes=1
+exit_status=0
+
+$ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py --self-test
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest self-test ok
+exit_status=0
+
+$ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 77 manifests, 425 entries, 64 receipts scanned
+exit_status=0
+
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L
+this derivation will be built:
+  /nix/store/k1clqc3f6jv9nd12fnzwnbzh82kchva8-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/k1clqc3f6jv9nd12fnzwnbzh82kchva8-mc-compat-evidence-manifests.drv'...
+exit_status=0
+
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+this derivation will be built:
+  /nix/store/jsnag3l6bbddwkjl7glcmqsblzi3aqzl-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/jsnag3l6bbddwkjl7glcmqsblzi3aqzl-mc-compat-cairn-task-evidence.drv'...
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 32,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 34,
+  "valid": true
+}
+exit_status=0
+
+archive_validation_status=pass
+
+$ ./target/check-ctf-invalid-return-drop
+ctf invalid return drop check passed: receipt, logs, matrix, bundle, and ledger validated
+exit_status=0
+
+$ nix develop --no-update-lock-file -c /tmp/refresh_b3_manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+refreshed BLAKE3 manifests; stable_after_passes=2
+exit_status=0
+
+$ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 77 manifests, 425 entries, 64 receipts scanned
+exit_status=0
+
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L
+this derivation will be built:
+  /nix/store/sikm5xhss9aqqhvljk1q5ww9138h77v5-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/sikm5xhss9aqqhvljk1q5ww9138h77v5-mc-compat-evidence-manifests.drv'...
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 32,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 34,
+  "valid": true
+}
+exit_status=0

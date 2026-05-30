@@ -34,4 +34,4 @@ The row MUST fail on missing attempted-action evidence, flag state mutation, une
 
 ## Non-claims
 
-No all invalid return/drop permutations, all flag permutations, full CTF correctness, adversarial security, production readiness, broad Minecraft compatibility, or vanilla/reference parity claim.
+No all invalid return/drop permutations, all flag permutations, full CTF correctness, adversarial security, production readiness, broad Minecraft compatibility, or vanilla/reference parity claim. Exact bounded-scope token: `all invalid return/drop permutations remain non-claims`.
