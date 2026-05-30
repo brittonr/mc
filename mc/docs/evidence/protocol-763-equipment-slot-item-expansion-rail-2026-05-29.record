@@ -1,0 +1,24 @@
+row.id=remote_main_hand_slot4_item829_count1_non_empty
+row.promotion_label=rail_fixture_not_promoted
+actor.username=compatbotb
+observer.username=compatbota
+entity.remote_id=4
+slot.semantic=main_hand_remote_entity
+slot.wire=slot4
+item.id=829
+item.count=1
+transition.kind=non_empty_update
+update.order=after_remote_spawn
+client.milestone.remote_spawn=remote_player_spawn entity_id=4
+client.milestone.entity_equipment_update=equipment_probe_entity_equipment entity_id=4 entries=1 slots=slot4:id=829:count=1
+server.milestone.equipment_update_state=equipment_update_state username=compatbotb slot=slot4 item_id=829 count=1
+valence.receipt=docs/evidence/protocol-763-equipment-slot-item-expansion-rail-2026-05-29.receipt.json
+reference.required=false
+reference.receipt=none
+claims.all_equipment_slots=false
+claims.all_item_types=false
+claims.packet_permutations=false
+claims.armor_mitigation=false
+claims.enchantment_status_effects=false
+claims.production_readiness=false
+claims.full_equipment_semantics=false

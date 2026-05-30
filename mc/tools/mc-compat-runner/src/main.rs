@@ -70,7 +70,7 @@ const SURVIVAL_CHEST_SERVER_REOPEN_NEEDLE: &str =
 const SURVIVAL_CHEST_SERVER_PERSISTED_NEEDLE: &str =
     "survival_chest_persisted username=compatbot slot=0 item=Dirt count=1";
 const SURVIVAL_CHEST_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_CHEST_FIXTURE";
-const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score";
+const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
     "Dimension type:",
@@ -130,6 +130,27 @@ const ARMOR_MATRIX_NON_CLAIMS: &[&str] = &[
     "production_readiness",
     "full_combat_correctness",
 ];
+const EQUIPMENT_MATRIX_ROW_ID: &str = "remote_main_hand_slot4_item829_count1_non_empty";
+const EQUIPMENT_MATRIX_ACTOR: &str = "compatbotb";
+const EQUIPMENT_MATRIX_OBSERVER: &str = "compatbota";
+const EQUIPMENT_MATRIX_REMOTE_ENTITY_ID: &str = "4";
+const EQUIPMENT_MATRIX_SEMANTIC_SLOT: &str = "main_hand_remote_entity";
+const EQUIPMENT_MATRIX_WIRE_SLOT: &str = "slot4";
+const EQUIPMENT_MATRIX_ITEM_ID: &str = "829";
+const EQUIPMENT_MATRIX_ITEM_COUNT: &str = "1";
+const EQUIPMENT_MATRIX_TRANSITION: &str = "non_empty_update";
+const EQUIPMENT_MATRIX_UPDATE_ORDER: &str = "after_remote_spawn";
+const EQUIPMENT_MATRIX_REFERENCE_RECEIPT_NONE: &str = "none";
+const EQUIPMENT_MATRIX_NON_CLAIMS: &[&str] = &[
+    "all_equipment_slots",
+    "all_item_types",
+    "all_transition_orders",
+    "equipment_packet_permutations",
+    "armor_mitigation",
+    "enchantment_status_effects",
+    "production_readiness",
+    "full_equipment_semantics",
+];
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Mode {
@@ -164,6 +185,7 @@ enum Scenario {
     ArmorEquipmentMitigation,
     ArmorLoadoutEnchantmentStatusMatrix,
     EquipmentUpdateObservation,
+    EquipmentSlotItemMatrixExpansion,
     ProjectileHit,
     ProjectileDamageAttribution,
     FlagCarrierDeathReturn,
@@ -213,6 +235,30 @@ struct ArmorLoadoutEnchantmentStatusMatrixEvidence {
     enchantments: Vec<&'static str>,
     status_effects: Vec<&'static str>,
     attack_type: &'static str,
+    reference_required: bool,
+    reference_receipt: &'static str,
+    live_receipt: bool,
+    promotion_ready: bool,
+    required_client_milestones: Vec<&'static str>,
+    observed_client_milestones: Vec<&'static str>,
+    required_server_milestones: Vec<&'static str>,
+    observed_server_milestones: Vec<&'static str>,
+    non_claims: Vec<&'static str>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct EquipmentSlotItemMatrixExpansionEvidence {
+    selected: bool,
+    row_id: &'static str,
+    actor_username: &'static str,
+    observer_username: &'static str,
+    remote_entity_id: &'static str,
+    semantic_slot: &'static str,
+    wire_slot: &'static str,
+    item_id: &'static str,
+    item_count: &'static str,
+    transition_kind: &'static str,
+    update_order: &'static str,
     reference_required: bool,
     reference_receipt: &'static str,
     live_receipt: bool,
@@ -914,6 +960,48 @@ fn evaluate_armor_loadout_enchantment_status_matrix(
     }
 }
 
+fn evaluate_equipment_slot_item_matrix_expansion(
+    cfg: &Config,
+    scenario: &ScenarioEvidence,
+    server_scenario: &ServerScenarioEvidence,
+) -> EquipmentSlotItemMatrixExpansionEvidence {
+    let selected = cfg.scenario == Scenario::EquipmentSlotItemMatrixExpansion;
+    let observed_live_evidence =
+        selected && cfg.mode == Mode::Run && scenario.passed && server_scenario.passed;
+    EquipmentSlotItemMatrixExpansionEvidence {
+        selected,
+        row_id: EQUIPMENT_MATRIX_ROW_ID,
+        actor_username: EQUIPMENT_MATRIX_ACTOR,
+        observer_username: EQUIPMENT_MATRIX_OBSERVER,
+        remote_entity_id: EQUIPMENT_MATRIX_REMOTE_ENTITY_ID,
+        semantic_slot: EQUIPMENT_MATRIX_SEMANTIC_SLOT,
+        wire_slot: EQUIPMENT_MATRIX_WIRE_SLOT,
+        item_id: EQUIPMENT_MATRIX_ITEM_ID,
+        item_count: EQUIPMENT_MATRIX_ITEM_COUNT,
+        transition_kind: EQUIPMENT_MATRIX_TRANSITION,
+        update_order: EQUIPMENT_MATRIX_UPDATE_ORDER,
+        reference_required: false,
+        reference_receipt: EQUIPMENT_MATRIX_REFERENCE_RECEIPT_NONE,
+        live_receipt: observed_live_evidence,
+        promotion_ready: observed_live_evidence,
+        required_client_milestones: scenario_required_milestones(
+            Scenario::EquipmentSlotItemMatrixExpansion,
+        )
+        .iter()
+        .map(|(name, _)| *name)
+        .collect(),
+        observed_client_milestones: scenario.observed_milestones.clone(),
+        required_server_milestones: server_required_milestones(
+            Scenario::EquipmentSlotItemMatrixExpansion,
+        )
+        .iter()
+        .map(|(name, _)| *name)
+        .collect(),
+        observed_server_milestones: server_scenario.observed_milestones.clone(),
+        non_claims: EQUIPMENT_MATRIX_NON_CLAIMS.to_vec(),
+    }
+}
+
 fn validate_negative_live_rail_preflight(cfg: &Config) -> Result<(), String> {
     let evidence = evaluate_negative_live_rail_safety(cfg);
     if evidence.preflight_passed {
@@ -1496,6 +1584,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
             Ok(Scenario::ArmorLoadoutEnchantmentStatusMatrix)
         }
         "equipment-update-observation" => Ok(Scenario::EquipmentUpdateObservation),
+        "equipment-slot-item-matrix-expansion" => Ok(Scenario::EquipmentSlotItemMatrixExpansion),
         "projectile-hit" => Ok(Scenario::ProjectileHit),
         "projectile-damage-attribution" => Ok(Scenario::ProjectileDamageAttribution),
         "flag-carrier-death-return" => Ok(Scenario::FlagCarrierDeathReturn),
@@ -1525,6 +1614,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::ArmorEquipmentMitigation => "armor-equipment-mitigation",
         Scenario::ArmorLoadoutEnchantmentStatusMatrix => "armor-loadout-enchantment-status-matrix",
         Scenario::EquipmentUpdateObservation => "equipment-update-observation",
+        Scenario::EquipmentSlotItemMatrixExpansion => "equipment-slot-item-matrix-expansion",
         Scenario::ProjectileHit => "projectile-hit",
         Scenario::ProjectileDamageAttribution => "projectile-damage-attribution",
         Scenario::FlagCarrierDeathReturn => "flag-carrier-death-return",
@@ -1664,7 +1754,7 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             ("combat_attack_sent", "combat_probe_attack_sent"),
             ("combat_health_update", "update_health health=18.0"),
         ],
-        Scenario::EquipmentUpdateObservation => &[
+        Scenario::EquipmentUpdateObservation | Scenario::EquipmentSlotItemMatrixExpansion => &[
             (
                 "multi_client_count",
                 "mc_compat_equipment_update_client_count=2",
@@ -1932,7 +2022,7 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
             ("server_combat_damage", "combat_damage"),
             ("server_armor_mitigation", "combat_armor_mitigation"),
         ],
-        Scenario::EquipmentUpdateObservation => &[
+        Scenario::EquipmentUpdateObservation | Scenario::EquipmentSlotItemMatrixExpansion => &[
             ("server_client_a_seen", "compatbota"),
             ("server_client_b_seen", "compatbotb"),
             ("server_equipment_update_state", "equipment_update_state"),
@@ -3245,7 +3335,10 @@ fn start_valence_server(cfg: &Config) -> Result<ManagedServer, String> {
     if uses_armor_mitigation_probe(cfg.scenario) {
         cmd.env("MC_COMPAT_ARMOR_MITIGATION_PROBE", "1");
     }
-    if cfg.scenario == Scenario::EquipmentUpdateObservation {
+    if matches!(
+        cfg.scenario,
+        Scenario::EquipmentUpdateObservation | Scenario::EquipmentSlotItemMatrixExpansion
+    ) {
         cmd.env("MC_COMPAT_EQUIPMENT_UPDATE_PROBE", "1");
     }
     if matches!(
@@ -3498,6 +3591,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
             | Scenario::ArmorEquipmentMitigation
             | Scenario::ArmorLoadoutEnchantmentStatusMatrix
             | Scenario::EquipmentUpdateObservation
+            | Scenario::EquipmentSlotItemMatrixExpansion
             | Scenario::ProjectileHit
             | Scenario::ProjectileDamageAttribution
             | Scenario::FlagCarrierDeathReturn
@@ -3524,7 +3618,11 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
     if cfg.scenario == Scenario::FlagCarrierDeathReturn && runs.len() >= 2 {
         combined_output.push_str("mc_compat_flag_carrier_death_client_count=2\n");
     }
-    if cfg.scenario == Scenario::EquipmentUpdateObservation && runs.len() >= 2 {
+    if matches!(
+        cfg.scenario,
+        Scenario::EquipmentUpdateObservation | Scenario::EquipmentSlotItemMatrixExpansion
+    ) && runs.len() >= 2
+    {
         combined_output.push_str("mc_compat_equipment_update_client_count=2\n");
     }
     if cfg.scenario == Scenario::ProjectileHit && runs.len() >= 2 {
@@ -3634,6 +3732,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
             | Scenario::ArmorEquipmentMitigation
             | Scenario::ArmorLoadoutEnchantmentStatusMatrix
             | Scenario::EquipmentUpdateObservation
+            | Scenario::EquipmentSlotItemMatrixExpansion
             | Scenario::ProjectileHit
             | Scenario::ProjectileDamageAttribution
             | Scenario::FlagCarrierDeathReturn
@@ -3950,7 +4049,7 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
                 (client_index + 1).to_string(),
             );
         }
-        Scenario::EquipmentUpdateObservation => {
+        Scenario::EquipmentUpdateObservation | Scenario::EquipmentSlotItemMatrixExpansion => {
             let team = if client_index == 0 { "red" } else { "blue" };
             cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
                 .env("MC_COMPAT_TEAM_PROBE", "1")
@@ -4039,6 +4138,7 @@ fn planned_client_usernames(cfg: &Config) -> Vec<String> {
             | Scenario::ArmorEquipmentMitigation
             | Scenario::ArmorLoadoutEnchantmentStatusMatrix
             | Scenario::EquipmentUpdateObservation
+            | Scenario::EquipmentSlotItemMatrixExpansion
             | Scenario::ProjectileHit
             | Scenario::ProjectileDamageAttribution
             | Scenario::FlagCarrierDeathReturn
@@ -4117,6 +4217,7 @@ fn requires_server_correlation(cfg: &Config) -> bool {
             | Scenario::ArmorEquipmentMitigation
             | Scenario::ArmorLoadoutEnchantmentStatusMatrix
             | Scenario::EquipmentUpdateObservation
+            | Scenario::EquipmentSlotItemMatrixExpansion
             | Scenario::ProjectileHit
             | Scenario::ProjectileDamageAttribution
             | Scenario::FlagCarrierDeathReturn
@@ -4304,6 +4405,55 @@ fn render_armor_loadout_enchantment_status_matrix_json(
         enchantments = json_string_array(&evidence.enchantments),
         status_effects = json_string_array(&evidence.status_effects),
         attack_type = json_string(evidence.attack_type),
+        reference_required = evidence.reference_required,
+        reference_receipt = json_string(evidence.reference_receipt),
+        live_receipt = evidence.live_receipt,
+        promotion_ready = evidence.promotion_ready,
+        required_client_milestones = json_string_array(&evidence.required_client_milestones),
+        observed_client_milestones = json_string_array(&evidence.observed_client_milestones),
+        required_server_milestones = json_string_array(&evidence.required_server_milestones),
+        observed_server_milestones = json_string_array(&evidence.observed_server_milestones),
+        non_claims = json_string_array(&evidence.non_claims),
+    )
+}
+
+fn render_equipment_slot_item_matrix_expansion_json(
+    evidence: &EquipmentSlotItemMatrixExpansionEvidence,
+) -> String {
+    format!(
+        r#"{{
+    "selected": {selected},
+    "row_id": {row_id},
+    "actor_username": {actor_username},
+    "observer_username": {observer_username},
+    "remote_entity_id": {remote_entity_id},
+    "semantic_slot": {semantic_slot},
+    "wire_slot": {wire_slot},
+    "item_id": {item_id},
+    "item_count": {item_count},
+    "transition_kind": {transition_kind},
+    "update_order": {update_order},
+    "reference_required": {reference_required},
+    "reference_receipt": {reference_receipt},
+    "live_receipt": {live_receipt},
+    "promotion_ready": {promotion_ready},
+    "required_client_milestones": {required_client_milestones},
+    "observed_client_milestones": {observed_client_milestones},
+    "required_server_milestones": {required_server_milestones},
+    "observed_server_milestones": {observed_server_milestones},
+    "non_claims": {non_claims}
+  }}"#,
+        selected = evidence.selected,
+        row_id = json_string(evidence.row_id),
+        actor_username = json_string(evidence.actor_username),
+        observer_username = json_string(evidence.observer_username),
+        remote_entity_id = json_string(evidence.remote_entity_id),
+        semantic_slot = json_string(evidence.semantic_slot),
+        wire_slot = json_string(evidence.wire_slot),
+        item_id = json_string(evidence.item_id),
+        item_count = json_string(evidence.item_count),
+        transition_kind = json_string(evidence.transition_kind),
+        update_order = json_string(evidence.update_order),
         reference_required = evidence.reference_required,
         reference_receipt = json_string(evidence.reference_receipt),
         live_receipt = evidence.live_receipt,
@@ -4514,7 +4664,7 @@ fn smoke_receipt_json_with_typed_event_oracle(
             "use_entity_attack",
             "armor_mitigation",
         ],
-        Scenario::EquipmentUpdateObservation => vec![
+        Scenario::EquipmentUpdateObservation | Scenario::EquipmentSlotItemMatrixExpansion => vec![
             "two_client_login",
             "play_join_game",
             "entity_equipment_update",
@@ -4602,6 +4752,10 @@ fn smoke_receipt_json_with_typed_event_oracle(
         render_armor_loadout_enchantment_status_matrix_json(
             &armor_loadout_enchantment_status_matrix,
         );
+    let equipment_slot_item_matrix_expansion =
+        evaluate_equipment_slot_item_matrix_expansion(cfg, scenario, server_scenario);
+    let equipment_slot_item_matrix_expansion_json =
+        render_equipment_slot_item_matrix_expansion_json(&equipment_slot_item_matrix_expansion);
     let proxy_route = cfg.proxy_route.as_deref().unwrap_or("direct");
     let proxy_forwarding_mode = cfg.proxy_forwarding_mode.as_deref().unwrap_or("none");
     let proxy_selected = cfg.proxy_route.is_some();
@@ -4784,6 +4938,7 @@ fn smoke_receipt_json_with_typed_event_oracle(
     "non_claims": {gameplay_non_claims_json}
   }},
   "armor_loadout_enchantment_status_matrix": {armor_loadout_enchantment_status_matrix_json},
+  "equipment_slot_item_matrix_expansion": {equipment_slot_item_matrix_expansion_json},
   "server": {{
     "backend": {backend_json},
     "version": {version_json},
@@ -4874,6 +5029,7 @@ fn smoke_receipt_json_with_typed_event_oracle(
         load_network_safety_json = load_network_safety_json,
         negative_live_rail_json = negative_live_rail_json,
         armor_loadout_enchantment_status_matrix_json = armor_loadout_enchantment_status_matrix_json,
+        equipment_slot_item_matrix_expansion_json = equipment_slot_item_matrix_expansion_json,
         proxy_selected = proxy_selected,
         proxy_route_json = json_string(proxy_route),
         proxy_forwarding_mode_json = json_string(proxy_forwarding_mode),
@@ -5775,6 +5931,7 @@ mod tests {
         Scenario::ArmorEquipmentMitigation,
         Scenario::ArmorLoadoutEnchantmentStatusMatrix,
         Scenario::EquipmentUpdateObservation,
+        Scenario::EquipmentSlotItemMatrixExpansion,
         Scenario::ProjectileHit,
         Scenario::ProjectileDamageAttribution,
         Scenario::FlagCarrierDeathReturn,
@@ -6276,6 +6433,14 @@ mod tests {
         assert_eq!(
             armor_matrix.scenario,
             Scenario::ArmorLoadoutEnchantmentStatusMatrix
+        );
+
+        let equipment_matrix =
+            test_config(&["--scenario", "equipment-slot-item-matrix-expansion"], &[])
+                .expect("equipment matrix scenario parses");
+        assert_eq!(
+            equipment_matrix.scenario,
+            Scenario::EquipmentSlotItemMatrixExpansion
         );
 
         let projectile_damage = test_config(&["--scenario", "projectile-damage-attribution"], &[])
@@ -7701,6 +7866,73 @@ negative_custom_payload_contained
         assert!(missing_equipment
             .missing_milestones
             .contains(&"entity_equipment_update"));
+    }
+
+    #[test]
+    fn equipment_slot_item_matrix_expansion_tracks_isolated_row_evidence() {
+        let cfg = test_config(
+            &["--scenario", "equipment-slot-item-matrix-expansion"],
+            &[("CLIENT_TIMEOUT", "150")],
+        )
+        .expect("equipment matrix config parses");
+        assert_eq!(
+            planned_client_usernames(&cfg),
+            vec!["compatbota", "compatbotb"]
+        );
+
+        let client = evaluate_scenario(
+            Scenario::EquipmentSlotItemMatrixExpansion,
+            "mc_compat_equipment_update_client_count=2\nDetected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\nYou are on team BLUE!\nremote_player_spawn entity_id=4\nequipment_probe_entity_equipment entity_id=4 entries=1 slots=slot4:id=829:count=1\n",
+        );
+        assert!(client.passed, "{client:?}");
+        assert!(client.missing_milestones.is_empty());
+
+        let server = evaluate_server_scenario(
+            Scenario::EquipmentSlotItemMatrixExpansion,
+            "compatbota joined\ncompatbotb joined\nMC-COMPAT-MILESTONE equipment_update_state username=compatbotb slot=main_hand item_id=829 count=1\n",
+            "compatbot",
+        );
+        assert!(server.passed, "{server:?}");
+        assert!(server.missing_milestones.is_empty());
+
+        let missing_update = evaluate_scenario(
+            Scenario::EquipmentSlotItemMatrixExpansion,
+            "mc_compat_equipment_update_client_count=2\nDetected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\nYou are on team BLUE!\nremote_player_spawn entity_id=4\n",
+        );
+        assert!(!missing_update.passed, "{missing_update:?}");
+        assert!(missing_update
+            .missing_milestones
+            .contains(&"entity_equipment_update"));
+    }
+
+    #[test]
+    fn equipment_slot_item_matrix_expansion_receipt_keeps_nonclaims() {
+        let cfg = test_config(&["--scenario", "equipment-slot-item-matrix-expansion"], &[])
+            .expect("equipment matrix config parses");
+        let scenario = evaluate_scenario(
+            Scenario::EquipmentSlotItemMatrixExpansion,
+            "mc_compat_equipment_update_client_count=2\nDetected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\nYou are on team BLUE!\nremote_player_spawn entity_id=4\nequipment_probe_entity_equipment entity_id=4 entries=1 slots=slot4:id=829:count=1\n",
+        );
+        let server = evaluate_server_scenario(
+            Scenario::EquipmentSlotItemMatrixExpansion,
+            "compatbota joined\ncompatbotb joined\nMC-COMPAT-MILESTONE equipment_update_state username=compatbotb slot=main_hand item_id=829 count=1\n",
+            "compatbot",
+        );
+        let matrix = evaluate_equipment_slot_item_matrix_expansion(&cfg, &scenario, &server);
+        assert!(matrix.selected, "{matrix:?}");
+        assert!(!matrix.live_receipt, "{matrix:?}");
+        assert!(!matrix.promotion_ready, "{matrix:?}");
+        assert_eq!(matrix.row_id, EQUIPMENT_MATRIX_ROW_ID);
+        let json = render_equipment_slot_item_matrix_expansion_json(&matrix);
+        assert!(
+            json.contains("\"row_id\": \"remote_main_hand_slot4_item829_count1_non_empty\""),
+            "{json}"
+        );
+        assert!(json.contains("\"wire_slot\": \"slot4\""), "{json}");
+        assert!(json.contains("\"item_id\": \"829\""), "{json}");
+        assert!(json.contains("\"promotion_ready\": false"), "{json}");
+        assert!(json.contains("\"all_equipment_slots\""), "{json}");
+        assert!(json.contains("\"full_equipment_semantics\""), "{json}");
     }
 
     #[test]

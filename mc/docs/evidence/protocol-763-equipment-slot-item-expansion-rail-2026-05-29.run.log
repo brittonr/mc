@@ -1,0 +1,165 @@
+command: nix develop --no-update-lock-file -c cargo test --manifest-path tools/mc-compat-runner/Cargo.toml equipment_slot_item_matrix_expansion -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 2 tests
+test tests::equipment_slot_item_matrix_expansion_tracks_isolated_row_evidence ... ok
+test tests::equipment_slot_item_matrix_expansion_receipt_keeps_nonclaims ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 75 filtered out; finished in 0.00s
+
+command: SERVER_PROTOCOL=763 SERVER_VERSION=1.20.1 nix develop --no-update-lock-file -c cargo run -q --manifest-path tools/mc-compat-runner/Cargo.toml -- --dry-run --scenario equipment-slot-item-matrix-expansion --receipt docs/evidence/protocol-763-equipment-slot-item-expansion-rail-2026-05-29.receipt.json --server-backend valence --client-dir <fake-stevenarella> --valence-repo <fake-valence> --valence-rev HEAD
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+warning: constant `PROJECTILE_DAMAGE_CLIENT_HEALTH_NEEDLE` is never used
+  --> src/main.rs:37:7
+   |
+37 | const PROJECTILE_DAMAGE_CLIENT_HEALTH_NEEDLE: &str = "update_health health=17.0";
+   |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `evaluate_scenario` is never used
+    --> src/main.rs:2057:4
+     |
+2057 | fn evaluate_scenario(scenario: Scenario, output: &str) -> ScenarioEvidence {
+     |    ^^^^^^^^^^^^^^^^^
+
+warning: function `parse_typed_event_line` is never used
+    --> src/main.rs:2144:4
+     |
+2144 | fn parse_typed_event_line(line: &str) -> Result<TypedEvent, String> {
+     |    ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `parse_typed_event_fields` is never used
+    --> src/main.rs:2167:4
+     |
+2167 | fn parse_typed_event_fields(text: &str) -> Result<Vec<(&str, &str)>, String> {
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `typed_event_required_string` is never used
+    --> src/main.rs:2178:4
+     |
+2178 | fn typed_event_required_string(fields: &[(&str, &str)], key: &str) -> Result<String, String> {
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `typed_event_optional_string` is never used
+    --> src/main.rs:2183:4
+     |
+2183 | fn typed_event_optional_string(fields: &[(&str, &str)], key: &str) -> Option<String> {
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `typed_event_required_u32` is never used
+    --> src/main.rs:2189:4
+     |
+2189 | fn typed_event_required_u32(fields: &[(&str, &str)], key: &str) -> Result<u32, String> {
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `smoke_receipt_json` is never used
+    --> src/main.rs:4520:4
+     |
+4520 | fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &str>) -> String {
+     |    ^^^^^^^^^^^^^^^^^^
+
+warning: enum `MutabilityClass` is never used
+  --> src/runtime_config.rs:52:17
+   |
+52 | pub(crate) enum MutabilityClass {
+   |                 ^^^^^^^^^^^^^^^
+
+warning: struct `FieldDiff` is never constructed
+   --> src/runtime_config.rs:123:19
+    |
+123 | pub(crate) struct FieldDiff {
+    |                   ^^^^^^^^^
+
+warning: struct `ApplyPlan` is never constructed
+   --> src/runtime_config.rs:131:19
+    |
+131 | pub(crate) struct ApplyPlan {
+    |                   ^^^^^^^^^
+
+warning: struct `ReloadOutcome` is never constructed
+   --> src/runtime_config.rs:139:19
+    |
+139 | pub(crate) struct ReloadOutcome {
+    |                   ^^^^^^^^^^^^^
+
+warning: struct `RuntimeConfigController` is never constructed
+   --> src/runtime_config.rs:146:19
+    |
+146 | pub(crate) struct RuntimeConfigController {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated items `new`, `active`, and `reload_with` are never used
+   --> src/runtime_config.rs:151:19
+    |
+150 | impl RuntimeConfigController {
+    | ---------------------------- associated items in this implementation
+151 |     pub(crate) fn new(active: RuntimeConfigSnapshot) -> Self {
+    |                   ^^^
+...
+155 |     pub(crate) fn active(&self) -> &RuntimeConfigSnapshot {
+    |                   ^^^^^^
+...
+159 |     pub(crate) fn reload_with<F>(
+    |                   ^^^^^^^^^^^
+
+warning: function `diff_snapshots` is never used
+   --> src/runtime_config.rs:374:15
+    |
+374 | pub(crate) fn diff_snapshots(
+    |               ^^^^^^^^^^^^^^
+
+warning: function `redacted_value` is never used
+   --> src/runtime_config.rs:508:15
+    |
+508 | pub(crate) fn redacted_value(path: &str, value: &str) -> String {
+    |               ^^^^^^^^^^^^^^
+
+warning: function `build_apply_plan` is never used
+   --> src/runtime_config.rs:516:15
+    |
+516 | pub(crate) fn build_apply_plan(diffs: Vec<FieldDiff>, allow_restart_only: bool) -> ApplyPlan {
+    |               ^^^^^^^^^^^^^^^^
+
+warning: function `push_diff` is never used
+   --> src/runtime_config.rs:921:4
+    |
+921 | fn push_diff(
+    |    ^^^^^^^^^
+
+[mc-compat] plan: build client, start Valence server, wait for protocol 763, run client under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/tmp/tmp.BXez30QPEw/fake-stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] using existing Valence worktree /tmp/valence-compat-758
+[mc-compat] starting Valence HEAD example 'terrain' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-758
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'equipment-slot-item-matrix-expansion' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt docs/evidence/protocol-763-equipment-slot-item-expansion-rail-2026-05-29.receipt.json
+receipt token checks:
+    "name": "equipment-slot-item-matrix-expansion",
+  "equipment_slot_item_matrix_expansion": {
+    "selected": true,
+    "row_id": "remote_main_hand_slot4_item829_count1_non_empty",
+    "wire_slot": "slot4",
+    "item_id": "829",
+    "promotion_ready": false,
+    "promotion_ready": false,
+    "promotion_ready": false,
+    "non_claims": ["all_equipment_slots", "all_item_types", "all_transition_orders", "equipment_packet_permutations", "armor_mitigation", "enchantment_status_effects", "production_readiness", "full_equipment_semantics"]
+result: PASS
+command: nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_equipment_slot_item_expansion.rs -o /tmp/check-equipment-slot-item-expansion
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+command: /tmp/check-equipment-slot-item-expansion --record docs/evidence/protocol-763-equipment-slot-item-expansion-rail-2026-05-29.record
+equipment slot/item expansion checker passed: contract=docs/evidence/protocol-763-equipment-slot-item-expansion-contract-2026-05-29.md record=true
+record checker: PASS
