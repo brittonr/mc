@@ -1,0 +1,2 @@
+WAN tolerance bounded telemetry self-test passed: positive fixture and fail-closed mutations passed
+WAN tolerance bounded telemetry check passed: contract=docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-contract-2026-05-29.md record=docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.record receipt=docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.receipt.json matrix=docs/evidence/protocol-763-production-network-safety-matrix-2026-05-28.md bundle=docs/evidence/protocol-763-current-evidence-bundle.md

@@ -148,7 +148,7 @@ nix run .#mc-compat-valence-ctf-reconnect-flag-state
 nix run .#mc-compat-valence-ctf-reconnect-flag-state -- --dry-run
 
 # Maintained protocol-763 Valence CTF bounded latency/jitter receipt over the inventory semantic rail.
-# Records bounded perturbation parameters, reuses the full inventory/open-container/block-place milestone oracle, and avoids privileged network mutation.
+# Records bounded perturbation parameters, owned-local WAN telemetry fields, full inventory/open-container/block-place milestone oracle evidence, and no privileged network mutation.
 nix run .#mc-compat-valence-ctf-latency-jitter-inventory
 # deterministic, non-side-effecting fixture for the same latency/jitter command shape:
 nix run .#mc-compat-valence-ctf-latency-jitter-inventory -- --dry-run

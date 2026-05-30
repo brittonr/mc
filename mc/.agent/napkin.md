@@ -45,6 +45,7 @@
 - Paper backend evidence needs `--keep-server` for final runs; otherwise runner removes the container and `docker logs` cannot be copied into `docs/evidence/`.
 - Paper 1.20.1 chest fixture did not reliably open from Stevenarella's use-item-on-block packet alone; final rail uses the server fixture to schedule the chest open, then treats the received chest-slot click as the store trigger and sets/logs slot `0 = Dirt`.
 - User wants checks/scripts authored in Rust or Steel Scheme only. Do not add new Python or Bash gates; migrate touched Python gates before extending them.
+- `tools/check_load_network_safety.py` is stale for the current production/network matrix after fixture adversarial and WAN telemetry row promotions; prefer row-specific Rust checkers (`check_adversarial_network_oracle.rs`, `check_wan_tolerance_bounded_telemetry.rs`) plus current bundle/manifest gates unless migrating the old Python gate.
 
 ## Domain Notes
 - `mc/` is a workspace directory with two independent Rust repos: `hyperion/` and `valence/`.

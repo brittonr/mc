@@ -1,0 +1,22 @@
+WAN tolerance bounded telemetry archive validation — 2026-05-29
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 35,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 37,
+  "valid": true
+}
+$ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 73 manifests, 354 entries, 61 receipts scanned
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-wan-tolerance-bounded-telemetry --no-link -L
+this derivation will be built:
+  /nix/store/87990wl6d9wi95j2pasyfwx1jic9rwxw-mc-compat-wan-tolerance-bounded-telemetry.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/87990wl6d9wi95j2pasyfwx1jic9rwxw-mc-compat-wan-tolerance-bounded-telemetry.drv'...

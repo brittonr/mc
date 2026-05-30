@@ -1,0 +1,77 @@
+WAN tolerance bounded telemetry validation — 2026-05-29
+$ target/check-wan-tolerance-bounded-telemetry --self-test
+WAN tolerance bounded telemetry self-test passed: positive fixture and fail-closed mutations passed
+$ target/check-wan-tolerance-bounded-telemetry --record docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.record
+WAN tolerance bounded telemetry check passed: contract=docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-contract-2026-05-29.md record=docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.record receipt=docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.receipt.json matrix=docs/evidence/protocol-763-production-network-safety-matrix-2026-05-28.md bundle=docs/evidence/protocol-763-current-evidence-bundle.md
+$ python3 tools/check_acceptance_matrix.py --self-test && python3 tools/check_acceptance_matrix.py
+acceptance matrix self-test ok
+acceptance matrix ok: 17 seams, 17 hashes
+$ python3 tools/check_current_evidence_bundle.py --self-test && python3 tools/check_current_evidence_bundle.py
+current evidence bundle self-test ok
+current evidence bundle ok: 17 seams
+$ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 73 manifests, 353 entries, 61 receipts scanned
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-wan-tolerance-bounded-telemetry --no-link -L
+this derivation will be built:
+  /nix/store/1y0nrcvpxkwngd3g7acf1f1br49iq617-mc-compat-wan-tolerance-bounded-telemetry.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/1y0nrcvpxkwngd3g7acf1f1br49iq617-mc-compat-wan-tolerance-bounded-telemetry.drv'...
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-valence-ctf-latency-jitter-inventory-dry-run --no-link -L
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+this derivation will be built:
+  /nix/store/3ydwnxl7rpbqhmcvm6kpldg5q2hznys6-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/3ydwnxl7rpbqhmcvm6kpldg5q2hznys6-mc-compat-cairn-task-evidence.drv'...
+$ nix run --no-update-lock-file .#cairn -- gate proposal wan-tolerance-bounded-telemetry --root .
+{
+  "change": "wan-tolerance-bounded-telemetry",
+  "input_hash": "81babd785f9bce4e09c4b3f41e49e2d7c948a4226197693dd53b27eb625817c1",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "7677cafd6237a90b5b9223c9bc9937864527883ada62611fa854953e8914ad51",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+$ nix run --no-update-lock-file .#cairn -- gate design wan-tolerance-bounded-telemetry --root .
+{
+  "change": "wan-tolerance-bounded-telemetry",
+  "input_hash": "ee7f62257ed9b463cf23cdc05fab34314e219d7a1b5ae503b19dd9e01663dc08",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "1db6317ccc8cd0aff389cf14d29bf5e020750eb689fd1f5e7b8f176e36888fc0",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+$ nix run --no-update-lock-file .#cairn -- gate tasks wan-tolerance-bounded-telemetry --root .
+{
+  "change": "wan-tolerance-bounded-telemetry",
+  "input_hash": "1f7e56287f614c1d7126764db313168af69c87c49e76c323baa0069b90abf465",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "84903d7e4a7182d7fc0ffccc825ae87cfda070dab63cc8a7885a36ef7b0ea8b6",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 36,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 38,
+  "valid": true
+}

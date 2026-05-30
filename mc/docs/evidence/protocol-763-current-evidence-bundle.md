@@ -34,6 +34,10 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 | Survival break/place/pickup | Paper+Valence paired `survival-break-place-pickup` receipts | `a88fe547bfe2dd43fff3ac5bd967f0ebf5a3c539403211dd029865293130090b` |
 | Survival chest persistence | Paper+Valence paired `survival-chest-persistence` receipts | `3dd16d3d15f47793505e97a088408d039c6cd45a73f288c7301c5e4f3f4851cf` |
 
+## WAN tolerance bounded telemetry checkpoint
+
+The bounded owned-local WAN telemetry row is validated by `docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.md`, `docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.receipt.json`, and `tools/check_wan_tolerance_bounded_telemetry.rs`. The production/network matrix marks only `covered_owned_local_bounded_telemetry` for the `WAN tolerance` row, with `target_ownership=owned-local-loopback`, `authorization=owned-local-fixture-approved`, `delay_ms=80`, `jitter_ms=30`, `loss_percent=0`, `client_count=1`, and `reconnect_count=0`. Public-server safety, internet-path safety remains a non-claim, packet-loss tolerance beyond the recorded zero-loss envelope, adversarial-network safety, production readiness, unbounded soak/reconnect safety, and third-party target safety remain non-claims.
+
 ## Inventory semantics matrix checkpoint
 
 The maintained inventory rows are validated as a five-row bounded matrix in `docs/evidence/protocol-763-inventory-semantics-matrix-2026-05-27.md`. Covered rows are drop, pickup, player-inventory click, open-container click, and block placement/use-item-on-block. `docs/evidence/protocol-763-negative-live-rails-2026-05-29.md` adds bounded negative containment receipts for stale state-id and invalid slot/window probes, but these do not promote full inventory semantics, malformed-click breadth, stack splitting/merging, drag transactions, or all-window coverage.
@@ -110,6 +114,8 @@ python3 tools/check_acceptance_matrix.py
 python3 tools/check_current_evidence_bundle.py
 ./tools/check_adversarial_network_oracle.rs --self-test
 ./tools/check_adversarial_network_oracle.rs --record docs/evidence/protocol-763-adversarial-network-oracle-fixture-2026-05-29.record
+./tools/check_wan_tolerance_bounded_telemetry.rs --self-test
+./tools/check_wan_tolerance_bounded_telemetry.rs --record docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.record
 python3 tools/check_death_respawn_lifecycle.py
 python3 tools/check_inventory_semantics_matrix.py
 python3 tools/check_equipment_slot_item_matrix.py

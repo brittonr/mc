@@ -4289,43 +4289,152 @@ fn typed_event_log_path_for_receipt(receipt_path: &Path) -> PathBuf {
     receipt_path.with_extension(TYPED_EVENT_LOG_EXTENSION)
 }
 
+const LATENCY_JITTER_ENABLED_ENV: &str = "MC_COMPAT_LATENCY_JITTER_ENABLED";
+const LATENCY_JITTER_TARGET_RAIL_ENV: &str = "MC_COMPAT_LATENCY_JITTER_TARGET_RAIL";
+const LATENCY_JITTER_MECHANISM_ENV: &str = "MC_COMPAT_LATENCY_JITTER_MECHANISM";
+const LATENCY_MS_ENV: &str = "MC_COMPAT_LATENCY_MS";
+const JITTER_MS_ENV: &str = "MC_COMPAT_JITTER_MS";
+const LOSS_PERCENT_ENV: &str = "MC_COMPAT_LOSS_PERCENT";
+const WAN_TARGET_OWNERSHIP_ENV: &str = "MC_COMPAT_WAN_TARGET_OWNERSHIP";
+const WAN_AUTHORIZATION_ENV: &str = "MC_COMPAT_WAN_AUTHORIZATION";
+const LATENCY_JITTER_ENV_ENABLED_VALUE: &str = "1";
+const LATENCY_JITTER_DEFAULT_METRIC: &str = "0";
+const LATENCY_JITTER_DEFAULT_MECHANISM: &str = "bounded-client-cadence";
+const LATENCY_JITTER_ENABLED_HYGIENE_STATUS: &str = "bounded-local-fixture";
+const LATENCY_JITTER_DISABLED_HYGIENE_STATUS: &str = "not-selected";
+const WAN_TARGET_OWNERSHIP_OWNED_LOCAL: &str = "owned-local-loopback";
+const WAN_AUTHORIZATION_OWNED_LOCAL: &str = "owned-local-fixture-approved";
+const WAN_PASS_FAIL_CRITERIA: &str = "inventory_interaction_client_server_milestones";
+const WAN_ABORT_REASON_NONE: &str = "none";
+const NO_RECONNECT_SESSIONS: u32 = 0;
+const SINGLE_RECONNECT_SESSION: u32 = 1;
+const WAN_TELEMETRY_SAMPLES: &[&str] = &[
+    "scenario_required_milestones",
+    "scenario_observed_milestones",
+    "server_required_milestones",
+    "server_observed_milestones",
+    "client_classification",
+    "triage_boundary",
+];
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct LatencyJitterTelemetryReceipt {
+    selected: bool,
+    mechanism: String,
+    target_rail: String,
+    delay_ms: String,
+    jitter_ms: String,
+    loss_percent: String,
+    timeout_secs: u64,
+    duration_secs: u64,
+    client_count: usize,
+    reconnect_count: u32,
+    target_ownership: String,
+    authorization: String,
+    hygiene_status: &'static str,
+}
+
 fn latency_jitter_receipt_json(cfg: &Config) -> String {
-    let enabled = std::env::var("MC_COMPAT_LATENCY_JITTER_ENABLED").unwrap_or_default() == "1";
-    let target_rail = std::env::var("MC_COMPAT_LATENCY_JITTER_TARGET_RAIL")
+    let receipt = latency_jitter_receipt_from_config(cfg);
+    render_latency_jitter_receipt_json(&receipt)
+}
+
+fn latency_jitter_receipt_from_config(cfg: &Config) -> LatencyJitterTelemetryReceipt {
+    let selected = std::env::var(LATENCY_JITTER_ENABLED_ENV).unwrap_or_default()
+        == LATENCY_JITTER_ENV_ENABLED_VALUE;
+    let target_rail = std::env::var(LATENCY_JITTER_TARGET_RAIL_ENV)
         .unwrap_or_else(|_| scenario_name(cfg.scenario).to_string());
-    let delay_ms = std::env::var("MC_COMPAT_LATENCY_MS").unwrap_or_else(|_| "0".to_string());
-    let jitter_ms = std::env::var("MC_COMPAT_JITTER_MS").unwrap_or_else(|_| "0".to_string());
-    let loss_percent = std::env::var("MC_COMPAT_LOSS_PERCENT").unwrap_or_else(|_| "0".to_string());
-    let mechanism = std::env::var("MC_COMPAT_LATENCY_JITTER_MECHANISM")
-        .unwrap_or_else(|_| "bounded-client-cadence".to_string());
-    let hygiene_status = if enabled {
-        "bounded-local-fixture"
+    let delay_ms =
+        std::env::var(LATENCY_MS_ENV).unwrap_or_else(|_| LATENCY_JITTER_DEFAULT_METRIC.to_string());
+    let jitter_ms =
+        std::env::var(JITTER_MS_ENV).unwrap_or_else(|_| LATENCY_JITTER_DEFAULT_METRIC.to_string());
+    let loss_percent = std::env::var(LOSS_PERCENT_ENV)
+        .unwrap_or_else(|_| LATENCY_JITTER_DEFAULT_METRIC.to_string());
+    let mechanism = std::env::var(LATENCY_JITTER_MECHANISM_ENV)
+        .unwrap_or_else(|_| LATENCY_JITTER_DEFAULT_MECHANISM.to_string());
+    let target_ownership = std::env::var(WAN_TARGET_OWNERSHIP_ENV)
+        .unwrap_or_else(|_| WAN_TARGET_OWNERSHIP_OWNED_LOCAL.to_string());
+    let authorization = std::env::var(WAN_AUTHORIZATION_ENV)
+        .unwrap_or_else(|_| WAN_AUTHORIZATION_OWNED_LOCAL.to_string());
+    let hygiene_status = if selected {
+        LATENCY_JITTER_ENABLED_HYGIENE_STATUS
     } else {
-        "not-selected"
+        LATENCY_JITTER_DISABLED_HYGIENE_STATUS
     };
+    LatencyJitterTelemetryReceipt {
+        selected,
+        mechanism,
+        target_rail,
+        delay_ms,
+        jitter_ms,
+        loss_percent,
+        timeout_secs: cfg.client_timeout.as_secs(),
+        duration_secs: cfg.client_timeout.as_secs(),
+        client_count: planned_client_usernames(cfg).len(),
+        reconnect_count: latency_jitter_reconnect_count(cfg.scenario),
+        target_ownership,
+        authorization,
+        hygiene_status,
+    }
+}
+
+fn latency_jitter_reconnect_count(scenario: Scenario) -> u32 {
+    if matches!(
+        scenario,
+        Scenario::ReconnectFlagState
+            | Scenario::ReconnectFlagScore
+            | Scenario::NegativeReconnectRace
+    ) {
+        SINGLE_RECONNECT_SESSION
+    } else {
+        NO_RECONNECT_SESSIONS
+    }
+}
+
+fn render_latency_jitter_receipt_json(receipt: &LatencyJitterTelemetryReceipt) -> String {
     format!(
         r#"{{
-    "selected": {enabled},
+    "selected": {selected},
     "mechanism": {mechanism},
     "target_rail": {target_rail},
     "delay_ms": {delay_ms},
     "jitter_ms": {jitter_ms},
     "loss_percent": {loss_percent},
     "timeout_secs": {timeout_secs},
+    "duration_secs": {duration_secs},
+    "client_count": {client_count},
+    "reconnect_count": {reconnect_count},
+    "target_ownership": {target_ownership},
+    "authorization": {authorization},
+    "telemetry_samples": {telemetry_samples},
+    "pass_fail_criteria": {pass_fail_criteria},
+    "abort_reason": {abort_reason},
     "hygiene_status": {hygiene_status},
     "privileged_network_mutation_required": false,
     "fail_closed_when_unavailable": true,
     "claims_wan_safety": false,
-    "claims_adversarial_network_safety": false
+    "claims_packet_loss_tolerance": false,
+    "claims_internet_path_safety": false,
+    "claims_adversarial_network_safety": false,
+    "claims_public_server_safety": false,
+    "claims_production_readiness": false
   }}"#,
-        enabled = if enabled { "true" } else { "false" },
-        mechanism = json_string(&mechanism),
-        target_rail = json_string(&target_rail),
-        delay_ms = json_string(&delay_ms),
-        jitter_ms = json_string(&jitter_ms),
-        loss_percent = json_string(&loss_percent),
-        timeout_secs = cfg.client_timeout.as_secs(),
-        hygiene_status = json_string(hygiene_status),
+        selected = if receipt.selected { "true" } else { "false" },
+        mechanism = json_string(&receipt.mechanism),
+        target_rail = json_string(&receipt.target_rail),
+        delay_ms = json_string(&receipt.delay_ms),
+        jitter_ms = json_string(&receipt.jitter_ms),
+        loss_percent = json_string(&receipt.loss_percent),
+        timeout_secs = receipt.timeout_secs,
+        duration_secs = receipt.duration_secs,
+        client_count = receipt.client_count,
+        reconnect_count = receipt.reconnect_count,
+        target_ownership = json_string(&receipt.target_ownership),
+        authorization = json_string(&receipt.authorization),
+        telemetry_samples = json_string_array(WAN_TELEMETRY_SAMPLES),
+        pass_fail_criteria = json_string(WAN_PASS_FAIL_CRITERIA),
+        abort_reason = json_string(WAN_ABORT_REASON_NONE),
+        hygiene_status = json_string(receipt.hygiene_status),
     )
 }
 
@@ -7364,6 +7473,117 @@ red flag captured
             "{json}"
         );
         assert!(json.contains("\"claims_unbounded_soak\": false"), "{json}");
+    }
+
+    #[test]
+    fn latency_jitter_receipt_renders_bounded_wan_telemetry_fields() {
+        const TEST_TIMEOUT_SECS: u64 = 180;
+        const TEST_CLIENT_COUNT: usize = 1;
+        let receipt = LatencyJitterTelemetryReceipt {
+            selected: true,
+            mechanism: LATENCY_JITTER_DEFAULT_MECHANISM.to_string(),
+            target_rail: "inventory-interaction".to_string(),
+            delay_ms: "80".to_string(),
+            jitter_ms: "30".to_string(),
+            loss_percent: LATENCY_JITTER_DEFAULT_METRIC.to_string(),
+            timeout_secs: TEST_TIMEOUT_SECS,
+            duration_secs: TEST_TIMEOUT_SECS,
+            client_count: TEST_CLIENT_COUNT,
+            reconnect_count: NO_RECONNECT_SESSIONS,
+            target_ownership: WAN_TARGET_OWNERSHIP_OWNED_LOCAL.to_string(),
+            authorization: WAN_AUTHORIZATION_OWNED_LOCAL.to_string(),
+            hygiene_status: LATENCY_JITTER_ENABLED_HYGIENE_STATUS,
+        };
+
+        let json = render_latency_jitter_receipt_json(&receipt);
+
+        assert!(json.contains("\"selected\": true"), "{json}");
+        assert!(
+            json.contains("\"target_ownership\": \"owned-local-loopback\""),
+            "{json}"
+        );
+        assert!(
+            json.contains("\"authorization\": \"owned-local-fixture-approved\""),
+            "{json}"
+        );
+        assert!(json.contains("\"duration_secs\": 180"), "{json}");
+        assert!(json.contains("\"client_count\": 1"), "{json}");
+        assert!(json.contains("\"reconnect_count\": 0"), "{json}");
+        assert!(json.contains("\"telemetry_samples\""), "{json}");
+        assert!(json.contains("\"scenario_observed_milestones\""), "{json}");
+        assert!(
+            json.contains(
+                "\"pass_fail_criteria\": \"inventory_interaction_client_server_milestones\""
+            ),
+            "{json}"
+        );
+        assert!(json.contains("\"claims_wan_safety\": false"), "{json}");
+        assert!(
+            json.contains("\"claims_packet_loss_tolerance\": false"),
+            "{json}"
+        );
+        assert!(
+            json.contains("\"claims_public_server_safety\": false"),
+            "{json}"
+        );
+        assert!(
+            json.contains("\"claims_production_readiness\": false"),
+            "{json}"
+        );
+    }
+
+    #[test]
+    fn latency_jitter_receipt_disabled_path_stays_non_claim() {
+        const TEST_TIMEOUT_SECS: u64 = 180;
+        const TEST_CLIENT_COUNT: usize = 1;
+        let receipt = LatencyJitterTelemetryReceipt {
+            selected: false,
+            mechanism: LATENCY_JITTER_DEFAULT_MECHANISM.to_string(),
+            target_rail: "smoke".to_string(),
+            delay_ms: LATENCY_JITTER_DEFAULT_METRIC.to_string(),
+            jitter_ms: LATENCY_JITTER_DEFAULT_METRIC.to_string(),
+            loss_percent: LATENCY_JITTER_DEFAULT_METRIC.to_string(),
+            timeout_secs: TEST_TIMEOUT_SECS,
+            duration_secs: TEST_TIMEOUT_SECS,
+            client_count: TEST_CLIENT_COUNT,
+            reconnect_count: NO_RECONNECT_SESSIONS,
+            target_ownership: WAN_TARGET_OWNERSHIP_OWNED_LOCAL.to_string(),
+            authorization: WAN_AUTHORIZATION_OWNED_LOCAL.to_string(),
+            hygiene_status: LATENCY_JITTER_DISABLED_HYGIENE_STATUS,
+        };
+
+        let json = render_latency_jitter_receipt_json(&receipt);
+
+        assert!(json.contains("\"selected\": false"), "{json}");
+        assert!(
+            json.contains("\"hygiene_status\": \"not-selected\""),
+            "{json}"
+        );
+        assert!(
+            json.contains("\"fail_closed_when_unavailable\": true"),
+            "{json}"
+        );
+        assert!(json.contains("\"claims_wan_safety\": false"), "{json}");
+        assert!(
+            json.contains("\"claims_internet_path_safety\": false"),
+            "{json}"
+        );
+    }
+
+    #[test]
+    fn latency_jitter_reconnect_count_is_explicit() {
+        assert_eq!(
+            latency_jitter_reconnect_count(Scenario::InventoryInteraction),
+            NO_RECONNECT_SESSIONS
+        );
+        assert_eq!(
+            latency_jitter_reconnect_count(Scenario::ReconnectFlagState),
+            SINGLE_RECONNECT_SESSION
+        );
+        assert_eq!(
+            latency_jitter_reconnect_count(Scenario::NegativeReconnectRace),
+            SINGLE_RECONNECT_SESSION
+        );
     }
 
     fn baseline_negative_live_rail_inputs() -> NegativeLiveRailInputs {

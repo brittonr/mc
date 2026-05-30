@@ -450,6 +450,8 @@
               export MC_COMPAT_LATENCY_MS="''${MC_COMPAT_LATENCY_MS:-80}"
               export MC_COMPAT_JITTER_MS="''${MC_COMPAT_JITTER_MS:-30}"
               export MC_COMPAT_LOSS_PERCENT="''${MC_COMPAT_LOSS_PERCENT:-0}"
+              export MC_COMPAT_WAN_TARGET_OWNERSHIP="owned-local-loopback"
+              export MC_COMPAT_WAN_AUTHORIZATION="owned-local-fixture-approved"
 
               exec mc-compat-runner "$mode"                 --server-backend valence                 --scenario inventory-interaction                 --receipt "$receipt"                 "$@"
             '';
@@ -698,6 +700,16 @@
           ../check-adversarial-network-oracle > ../adversarial-network-oracle-check.log
           mkdir -p "$out"
           cp ../adversarial-network-oracle-self-test.log ../adversarial-network-oracle-check.log "$out/"
+        '';
+        mc-compat-wan-tolerance-bounded-telemetry = pkgs.runCommand "mc-compat-wan-tolerance-bounded-telemetry" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc ]; } ''
+          cp -R ${./.} repo
+          chmod -R u+w repo
+          cd repo
+          rustc --edition=2021 tools/check_wan_tolerance_bounded_telemetry.rs -o ../check-wan-tolerance-bounded-telemetry
+          ../check-wan-tolerance-bounded-telemetry --self-test > ../wan-tolerance-bounded-telemetry-self-test.log
+          ../check-wan-tolerance-bounded-telemetry > ../wan-tolerance-bounded-telemetry-check.log
+          mkdir -p "$out"
+          cp ../wan-tolerance-bounded-telemetry-self-test.log ../wan-tolerance-bounded-telemetry-check.log "$out/"
         '';
         mc-compat-armor-loadout-enchantment-status = pkgs.runCommand "mc-compat-armor-loadout-enchantment-status" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc ]; } ''
           cp -R ${./.} repo
@@ -1135,7 +1147,13 @@
             grep -Fq '"jitter_ms": "30"' receipts/latency-jitter-receipt.json
             grep -Fq '"loss_percent": "0"' receipts/latency-jitter-receipt.json
             grep -Fq '"privileged_network_mutation_required": false' receipts/latency-jitter-receipt.json
+            grep -Fq '"target_ownership": "owned-local-loopback"' receipts/latency-jitter-receipt.json
+            grep -Fq '"authorization": "owned-local-fixture-approved"' receipts/latency-jitter-receipt.json
+            grep -Fq '"telemetry_samples"' receipts/latency-jitter-receipt.json
+            grep -Fq '"pass_fail_criteria": "inventory_interaction_client_server_milestones"' receipts/latency-jitter-receipt.json
             grep -Fq '"claims_wan_safety": false' receipts/latency-jitter-receipt.json
+            grep -Fq '"claims_packet_loss_tolerance": false' receipts/latency-jitter-receipt.json
+            grep -Fq '"claims_public_server_safety": false' receipts/latency-jitter-receipt.json
             grep -Fq '"inventory_slot_update"' receipts/latency-jitter-receipt.json
             grep -Fq '"server_inventory_click"' receipts/latency-jitter-receipt.json
             mkdir -p "$out"
@@ -1230,6 +1248,7 @@
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-evidence-promotion} "$out/evidence-promotion"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-cairn-task-evidence} "$out/cairn-task-evidence"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-adversarial-network-oracle} "$out/adversarial-network-oracle"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-wan-tolerance-bounded-telemetry} "$out/wan-tolerance-bounded-telemetry"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-armor-loadout-enchantment-status} "$out/armor-loadout-enchantment-status"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-equipment-slot-item-expansion} "$out/equipment-slot-item-expansion"
           cat > "$out/manifest.txt" <<'EOF'
@@ -1257,6 +1276,7 @@
           evidence-promotion
           cairn-task-evidence
           adversarial-network-oracle
+          wan-tolerance-bounded-telemetry
           armor-loadout-enchantment-status
           equipment-slot-item-expansion
           EOF
