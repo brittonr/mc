@@ -70,7 +70,7 @@ const SURVIVAL_CHEST_SERVER_REOPEN_NEEDLE: &str =
 const SURVIVAL_CHEST_SERVER_PERSISTED_NEEDLE: &str =
     "survival_chest_persisted username=compatbot slot=0 item=Dirt count=1";
 const SURVIVAL_CHEST_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_CHEST_FIXTURE";
-const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score";
+const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
     "Dimension type:",
@@ -197,6 +197,7 @@ enum Scenario {
     NegativeCustomPayload,
     NegativeReconnectRace,
     NegativeCtfWrongScore,
+    CtfInvalidPickupOwnership,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -758,6 +759,7 @@ fn is_negative_live_rail(scenario: Scenario) -> bool {
             | Scenario::NegativeCustomPayload
             | Scenario::NegativeReconnectRace
             | Scenario::NegativeCtfWrongScore
+            | Scenario::CtfInvalidPickupOwnership
     )
 }
 
@@ -768,6 +770,7 @@ fn negative_live_rail_invalid_action(scenario: Scenario) -> Option<&'static str>
         Scenario::NegativeCustomPayload => Some("malformed_custom_payload"),
         Scenario::NegativeReconnectRace => Some("duplicate_reconnect_flag_transition"),
         Scenario::NegativeCtfWrongScore => Some("wrong_team_or_wrong_portal_score_attempt"),
+        Scenario::CtfInvalidPickupOwnership => Some("own_flag_pickup_without_ownership_transfer"),
         _ => None,
     }
 }
@@ -781,6 +784,7 @@ fn negative_live_rail_postcondition_milestone(scenario: Scenario) -> Option<&'st
         Scenario::NegativeCustomPayload => Some("negative_custom_payload_contained"),
         Scenario::NegativeReconnectRace => Some("negative_reconnect_race_contained"),
         Scenario::NegativeCtfWrongScore => Some("negative_wrong_score_contained"),
+        Scenario::CtfInvalidPickupOwnership => Some("ctf_invalid_pickup_contained"),
         _ => None,
     }
 }
@@ -1596,6 +1600,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
         "negative-custom-payload" => Ok(Scenario::NegativeCustomPayload),
         "negative-reconnect-race" => Ok(Scenario::NegativeReconnectRace),
         "negative-ctf-wrong-score" => Ok(Scenario::NegativeCtfWrongScore),
+        "ctf-invalid-pickup-ownership" => Ok(Scenario::CtfInvalidPickupOwnership),
         other => Err(format!("unknown scenario: {other}")),
     }
 }
@@ -1626,6 +1631,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::NegativeCustomPayload => "negative-custom-payload",
         Scenario::NegativeReconnectRace => "negative-reconnect-race",
         Scenario::NegativeCtfWrongScore => "negative-ctf-wrong-score",
+        Scenario::CtfInvalidPickupOwnership => "ctf-invalid-pickup-ownership",
     }
 }
 
@@ -1910,11 +1916,43 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
                 "negative_wrong_score_contained",
             ),
         ],
+        Scenario::CtfInvalidPickupOwnership => &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "ctf_invalid_pickup_attempted",
+                "ctf_invalid_pickup_attempted",
+            ),
+            (
+                "ctf_invalid_pickup_contained",
+                "ctf_invalid_pickup_contained",
+            ),
+        ],
     }
 }
 
 fn scenario_forbidden_patterns(scenario: Scenario) -> &'static [(&'static str, &'static str)] {
     match scenario {
+        Scenario::CtfInvalidPickupOwnership => &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+            ("unexpected_flag_pickup_chat", "You have the flag!"),
+            (
+                "unexpected_flag_pickup_milestone",
+                "flag_probe_have_flag_chat",
+            ),
+            (
+                "unexpected_server_flag_pickup",
+                "MC-COMPAT-MILESTONE flag_pickup username=",
+            ),
+            ("unexpected_flag_capture", "You captured the flag!"),
+            ("unexpected_flag_capture_milestone", "flag_capture"),
+            ("unexpected_red_score", "RED: 1"),
+            ("unexpected_blue_score", "BLUE: 1"),
+        ],
         Scenario::FlagCarrierDeathReturn
         | Scenario::ReconnectFlagState
         | Scenario::NegativeReconnectRace
@@ -2045,6 +2083,13 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
             ("server_flag_pickup", "flag_pickup"),
             ("server_flag_carrier_death", "flag_carrier_death"),
             ("server_flag_return", "flag_return"),
+        ],
+        Scenario::CtfInvalidPickupOwnership => &[
+            ("server_username_seen", "compatbot"),
+            (
+                "server_invalid_pickup_rejected",
+                "invalid_flag_pickup_rejected username=compatbot player_team=Red flag_team=Red pre_owner=none post_owner=none red_score=0 blue_score=0 outcome=no_owner_transfer_no_score",
+            ),
         ],
         Scenario::NegativeInventoryStaleState
         | Scenario::NegativeInventoryInvalidClick
@@ -2800,7 +2845,7 @@ Automates a local Stevenarella compatibility smoke against a Minecraft {} / prot
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from legacy Nickel config, or --steel-config/MC_COMPAT_STEEL_CONFIG a restricted Steel module; env vars and later CLI flags override either config source.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.scenario.receipt.v2 JSON receipt for Cairn/Octet evidence flows.
-Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
+Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
 Use --expect-status-description/--expect-status-version/--expect-status-sample to assert status response fixture data, --packet-capture-summary for redacted capture summary metadata, and --proxy-route/--proxy-forwarding-mode for proxied-route receipt fields.\n\
 Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
 Use --run-matrix --receipt-dir DIR to run Paper and Valence receipts then compare them; add --dry-run after --run-matrix for a non-side-effecting matrix fixture.\n\
@@ -4126,6 +4171,15 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
                 .env("MC_COMPAT_FLAG_PROBE_PICKUP_ONLY", "1")
                 .env("MC_COMPAT_NEGATIVE_PROBE", "ctf_wrong_score");
         }
+        Scenario::CtfInvalidPickupOwnership => {
+            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
+                .env("MC_COMPAT_FLAG_PROBE", "1")
+                .env("MC_COMPAT_FLAG_PROBE_TEAM", "blue")
+                .env("MC_COMPAT_FLAG_PROBE_PICKUP_ONLY", "1")
+                .env("MC_COMPAT_NEGATIVE_PROBE", "ctf_invalid_pickup_ownership");
+        }
     }
 }
 
@@ -4221,6 +4275,7 @@ fn requires_server_correlation(cfg: &Config) -> bool {
             | Scenario::ProjectileHit
             | Scenario::ProjectileDamageAttribution
             | Scenario::FlagCarrierDeathReturn
+            | Scenario::CtfInvalidPickupOwnership
     )
 }
 
@@ -4962,6 +5017,12 @@ fn smoke_receipt_json_with_typed_event_oracle(
         Scenario::NegativeCtfWrongScore => {
             vec!["login_success", "play_join_game", "wrong_score_path"]
         }
+        Scenario::CtfInvalidPickupOwnership => vec![
+            "login_success",
+            "play_join_game",
+            "own_flag_pickup_attempt",
+            "invalid_flag_pickup_rejected",
+        ],
     };
     let typed_event_oracle_json = typed_event_oracle_receipt_json(typed_event_oracle);
     let latency_jitter_json = latency_jitter_receipt_json(cfg);
@@ -5061,6 +5122,9 @@ fn smoke_receipt_json_with_typed_event_oracle(
         "flag_return",
         "flag_disconnect_return",
         "reconnect_state_coherent",
+        "ctf_invalid_pickup_attempted",
+        "ctf_invalid_pickup_contained",
+        "server_invalid_pickup_rejected",
     ];
     let gameplay_non_claims: Vec<&str> = vec![
         "full_ctf_correctness",
@@ -6177,6 +6241,7 @@ mod tests {
         Scenario::NegativeCustomPayload,
         Scenario::NegativeReconnectRace,
         Scenario::NegativeCtfWrongScore,
+        Scenario::CtfInvalidPickupOwnership,
     ];
 
     fn passing_client_lines(scenario: Scenario) -> Vec<(&'static str, String)> {
@@ -6687,6 +6752,10 @@ mod tests {
         let negative = test_config(&["--scenario", "negative-inventory-stale-state"], &[])
             .expect("negative scenario parses");
         assert_eq!(negative.scenario, Scenario::NegativeInventoryStaleState);
+
+        let invalid_pickup = test_config(&["--scenario", "ctf-invalid-pickup-ownership"], &[])
+            .expect("invalid pickup scenario parses");
+        assert_eq!(invalid_pickup.scenario, Scenario::CtfInvalidPickupOwnership);
     }
 
     #[test]
@@ -7901,6 +7970,67 @@ negative_custom_payload_contained
         );
         assert!(json.contains("\"telemetry_present\": true"), "{json}");
         assert!(json.contains("\"preflight_passed\": true"), "{json}");
+    }
+
+    #[test]
+    fn ctf_invalid_pickup_ownership_tracks_client_server_and_envelope() {
+        let client = evaluate_scenario(
+            Scenario::CtfInvalidPickupOwnership,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nctf_invalid_pickup_attempted player_team=red flag_team=red pre_owner=none action=own_flag_pickup expected=no_owner_transfer_no_score\nctf_invalid_pickup_contained player_team=red flag_team=red post_owner=none red_score=0 blue_score=0 outcome=no_owner_transfer_no_score\n",
+        );
+        assert!(client.passed, "{client:?}");
+        assert!(client.forbidden_matches.is_empty(), "{client:?}");
+
+        let invalid_transfer = evaluate_scenario(
+            Scenario::CtfInvalidPickupOwnership,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nctf_invalid_pickup_attempted\nctf_invalid_pickup_contained\nYou have the flag!\n",
+        );
+        assert!(!invalid_transfer.passed, "{invalid_transfer:?}");
+        assert!(
+            invalid_transfer
+                .forbidden_matches
+                .contains(&"unexpected_flag_pickup_chat"),
+            "{invalid_transfer:?}"
+        );
+
+        let server = evaluate_server_scenario(
+            Scenario::CtfInvalidPickupOwnership,
+            "compatbot joined\nMC-COMPAT-MILESTONE invalid_flag_pickup_rejected username=compatbot player_team=Red flag_team=Red pre_owner=none post_owner=none red_score=0 blue_score=0 outcome=no_owner_transfer_no_score\n",
+            "compatbot",
+        );
+        assert!(server.passed, "{server:?}");
+        assert!(server.forbidden_matches.is_empty(), "{server:?}");
+
+        let server_transfer = evaluate_server_scenario(
+            Scenario::CtfInvalidPickupOwnership,
+            "compatbot joined\nMC-COMPAT-MILESTONE invalid_flag_pickup_rejected username=compatbot player_team=Red flag_team=Red pre_owner=none post_owner=none red_score=0 blue_score=0 outcome=no_owner_transfer_no_score\nMC-COMPAT-MILESTONE flag_pickup username=compatbot carrier_team=Red flag_team=Red\n",
+            "compatbot",
+        );
+        assert!(!server_transfer.passed, "{server_transfer:?}");
+        assert!(
+            server_transfer
+                .forbidden_matches
+                .contains(&"unexpected_server_flag_pickup"),
+            "{server_transfer:?}"
+        );
+
+        let cfg = test_config(
+            &["--dry-run", "--scenario", "ctf-invalid-pickup-ownership"],
+            &[],
+        )
+        .expect("invalid pickup rail config parses");
+        let evidence = evaluate_negative_live_rail_safety(&cfg);
+        assert!(evidence.selected, "{evidence:?}");
+        assert_eq!(evidence.rail, Some("ctf-invalid-pickup-ownership"));
+        assert_eq!(
+            evidence.invalid_action,
+            Some("own_flag_pickup_without_ownership_transfer")
+        );
+        assert_eq!(
+            evidence.postcondition_milestone,
+            Some("ctf_invalid_pickup_contained")
+        );
+        assert!(evidence.preflight_passed, "{evidence:?}");
     }
 
     #[test]

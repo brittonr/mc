@@ -147,6 +147,12 @@ nix run .#mc-compat-valence-ctf-reconnect-flag-state
 # deterministic, non-side-effecting fixture for the same reconnect flag-state command shape:
 nix run .#mc-compat-valence-ctf-reconnect-flag-state -- --dry-run
 
+# Maintained protocol-763 Valence CTF invalid pickup ownership receipt.
+# Requires one client attempting an own-flag pickup, client containment, Valence invalid_flag_pickup_rejected correlation, and no owner transfer/score/capture patterns.
+nix run .#mc-compat-valence-ctf-invalid-pickup-ownership
+# deterministic, non-side-effecting fixture for the same invalid pickup ownership command shape:
+nix run .#mc-compat-valence-ctf-invalid-pickup-ownership -- --dry-run
+
 # Maintained protocol-763 Valence CTF bounded latency/jitter receipt over the inventory semantic rail.
 # Records bounded perturbation parameters, owned-local WAN telemetry fields, full inventory/open-container/block-place milestone oracle evidence, and no privileged network mutation.
 nix run .#mc-compat-valence-ctf-latency-jitter-inventory
@@ -159,7 +165,7 @@ nix build .#checks.x86_64-linux.mc-compat-maintained-dry-runs --no-link -L
 # check only the survival break/place/pickup dry-run receipt shape:
 nix build .#checks.x86_64-linux.mc-compat-valence-survival-break-place-pickup-dry-run --no-link -L
 
-# check the current 11-seam protocol-763 evidence bundle:
+# check the current protocol-763 evidence bundle:
 nix build .#checks.x86_64-linux.mc-compat-current-evidence-bundle --no-link -L
 ```
 

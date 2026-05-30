@@ -5,8 +5,8 @@
 Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 compatibility evidence set. This bundle summarizes the acceptance matrix and gives operators one stable checklist for what is covered and what remains a non-claim.
 
 - Matrix: `docs/evidence/protocol-763-acceptance-matrix.md`
-- Matrix checker: `python3 tools/check_acceptance_matrix.py`
-- Bundle checker: `python3 tools/check_current_evidence_bundle.py`
+- Matrix checker: `tools/check_acceptance_matrix.rs`
+- Bundle checker: `tools/check_current_evidence_bundle.rs`
 - Evidence manifest checker: `python3 tools/check_evidence_manifests.py`
 - Latest parent checkout before this bundle refresh: `5d4973d add Paper survival reference fixture`
 - Child commits used for the current-head representative refresh: Valence `e5d18ad`, Stevenarella `616ee72`
@@ -25,6 +25,7 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 | Two-client combat/damage | `nix run .#mc-compat-valence-ctf-combat-damage` | `b67962dd5d4fe7242b69fd7c879390e80e13528475d55d7feb5305289f762ac8` |
 | Flag-carrier death/return | `nix run .#mc-compat-valence-ctf-flag-carrier-death-return` | `d4202d7f04245dd385f16f9a174b84fa59a837fd75a8f9ba7db3cc7adaf692a4` |
 | Reconnect flag-state | `nix run .#mc-compat-valence-ctf-reconnect-flag-state` | `4d848af56b25ad4b3c466863bac5b2052adbbc1c59e2b2164bfb2a696c225cb3` |
+| Invalid flag pickup/ownership | `nix run .#mc-compat-valence-ctf-invalid-pickup-ownership` | `64c353dc5f256526d4ecfb4078516e85491b42fc9da10adf8e91a7c2c166b8ac` |
 | Latency/jitter tolerance | `nix run .#mc-compat-valence-ctf-latency-jitter-inventory` | `a4a407fb1ac3aceae06faeacb794891ff8411c8ac86470c651c89b37b6c7f33d` |
 | Combat knockback | `nix run .#mc-compat-valence-ctf-combat-knockback` | `a5d0ba5ea6155a99b58f245a03195da05b4925d7bd151b5b3f67503ae7a4cf09` |
 | Armor equipment mitigation | `nix run .#mc-compat-valence-ctf-armor-equipment-mitigation` | `3152241bbbca379405a3806987f0b4dc8e4706b291cecebc1f509d0f96914f07` |
@@ -72,7 +73,7 @@ Vanilla combat parity is guarded by `docs/evidence/protocol-763-vanilla-combat-p
 
 ## CTF rule ledger checkpoint
 
-CTF rule scope is guarded by `docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md` and `tools/check_ctf_rule_ledger.py`. Promoted clusters are bounded RED/BLUE scoring soak, flag-carrier death/return, and reconnect flag-state. `docs/evidence/protocol-763-negative-live-rails-2026-05-29.md` adds bounded wrong-score and reconnect-race containment receipts with no forbidden score/capture milestones, but full CTF correctness remains a non-claim.
+CTF rule scope is guarded by `docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md`, `tools/check_ctf_rule_ledger.py`, and `tools/check_ctf_invalid_pickup_ownership.rs`. Promoted clusters are bounded RED/BLUE scoring soak, flag-carrier death/return, reconnect flag-state, and Invalid flag pickup/ownership. The invalid flag pickup/ownership checkpoint is validated by `docs/evidence/protocol-763-ctf-invalid-pickup-ownership-2026-05-30.md`, `docs/evidence/protocol-763-ctf-invalid-pickup-ownership-2026-05-30.receipt.json`, and `tools/check_ctf_invalid_pickup_ownership.rs`; it records `invalid_action=own_flag_pickup_without_ownership_transfer`, `ctf_invalid_pickup_contained`, and `server_invalid_pickup_rejected` while full CTF correctness remains a non-claim. `docs/evidence/protocol-763-negative-live-rails-2026-05-29.md` still adds bounded wrong-score and reconnect-race containment receipts with no forbidden score/capture milestones, but unpromoted invalid-action breadth remains a non-claim.
 
 ## Broad protocol coverage checkpoint
 
@@ -114,14 +115,16 @@ ROI 10 re-promotes projectile damage attribution with pinned dependency and caus
 ## Current maintained checks
 
 ```sh
-python3 tools/check_acceptance_matrix.py
-python3 tools/check_current_evidence_bundle.py
+./target/check-acceptance-matrix
+./target/check-current-evidence-bundle
 ./tools/check_adversarial_network_oracle.rs --self-test
 ./tools/check_adversarial_network_oracle.rs --record docs/evidence/protocol-763-adversarial-network-oracle-fixture-2026-05-29.record
 ./tools/check_wan_tolerance_bounded_telemetry.rs --self-test
 ./tools/check_wan_tolerance_bounded_telemetry.rs --record docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.record
 ./tools/check_public_server_authorized_safety.rs --self-test
 ./tools/check_public_server_authorized_safety.rs --record docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.record
+./tools/check_ctf_invalid_pickup_ownership.rs --self-test
+./tools/check_ctf_invalid_pickup_ownership.rs --record docs/evidence/protocol-763-ctf-invalid-pickup-ownership-2026-05-30.record
 python3 tools/check_death_respawn_lifecycle.py
 python3 tools/check_inventory_semantics_matrix.py
 python3 tools/check_equipment_slot_item_matrix.py
@@ -147,10 +150,12 @@ nix run --no-update-lock-file .#cairn -- validate --root .
 Before adding or replacing a maintained evidence row, run the freshness gate from `/home/brittonr/git/mc` and copy the output under `docs/evidence/`:
 
 ```sh
-python3 tools/check_acceptance_matrix.py --self-test
-python3 tools/check_acceptance_matrix.py
-python3 tools/check_current_evidence_bundle.py --self-test
-python3 tools/check_current_evidence_bundle.py
+nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_acceptance_matrix.rs -o target/check-acceptance-matrix
+target/check-acceptance-matrix --self-test
+target/check-acceptance-matrix
+nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_current_evidence_bundle.rs -o target/check-current-evidence-bundle
+target/check-current-evidence-bundle --self-test
+target/check-current-evidence-bundle
 nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py --self-test
 nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
 nix run --no-update-lock-file .#cairn -- validate --root .

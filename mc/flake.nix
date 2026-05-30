@@ -488,6 +488,34 @@
               mainProgram = "mc-compat-valence-ctf-reconnect-flag-state";
             };
           };
+          mc-compat-valence-ctf-invalid-pickup-ownership = pkgs.writeShellApplication {
+            name = "mc-compat-valence-ctf-invalid-pickup-ownership";
+            runtimeInputs = [ mc-compat-runner ];
+            text = ''
+              mode="--run"
+              if [[ "''${1:-}" == "--dry-run" || "''${1:-}" == "--run" ]]; then
+                mode="$1"
+                shift
+              fi
+
+              receipt="''${MC_COMPAT_CTF_INVALID_PICKUP_OWNERSHIP_RECEIPT:-target/mc-compat-ctf-invalid-pickup-ownership/ctf-invalid-pickup-ownership.json}"
+              mkdir -p "$(dirname "$receipt")"
+
+              export SERVER_PROTOCOL="''${SERVER_PROTOCOL:-763}"
+              export SERVER_VERSION="''${SERVER_VERSION:-1.20.1}"
+              export VALENCE_REV="''${VALENCE_REV:-main}"
+              export VALENCE_EXAMPLE="''${VALENCE_EXAMPLE:-ctf}"
+              export VALENCE_WORKTREE="''${VALENCE_WORKTREE:-/tmp/valence-compat-763}"
+              export VALENCE_TARGET_DIR="''${VALENCE_TARGET_DIR:-/tmp/valence-compat-763-target}"
+              export CLIENT_TIMEOUT="''${CLIENT_TIMEOUT:-120}"
+
+              exec mc-compat-runner "$mode"                 --server-backend valence                 --scenario ctf-invalid-pickup-ownership                 --receipt "$receipt"                 "$@"
+            '';
+            meta = {
+              description = "Run the maintained protocol-763 Valence CTF invalid pickup ownership receipt.";
+              mainProgram = "mc-compat-valence-ctf-invalid-pickup-ownership";
+            };
+          };
           mc-compat-valence-survival-break-place-pickup = pkgs.writeShellApplication {
             name = "mc-compat-valence-survival-break-place-pickup";
             runtimeInputs = [ mc-compat-runner ];
@@ -518,7 +546,7 @@
           };
         in
         {
-          inherit mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-ctf-combat-damage mc-compat-valence-ctf-combat-knockback mc-compat-valence-ctf-armor-equipment-mitigation mc-compat-valence-ctf-equipment-update-observation mc-compat-valence-ctf-projectile-hit mc-compat-valence-ctf-projectile-damage-attribution mc-compat-valence-ctf-flag-carrier-death-return mc-compat-valence-ctf-latency-jitter-inventory mc-compat-valence-ctf-reconnect-flag-state mc-compat-valence-survival-break-place-pickup;
+          inherit mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-ctf-combat-damage mc-compat-valence-ctf-combat-knockback mc-compat-valence-ctf-armor-equipment-mitigation mc-compat-valence-ctf-equipment-update-observation mc-compat-valence-ctf-projectile-hit mc-compat-valence-ctf-projectile-damage-attribution mc-compat-valence-ctf-flag-carrier-death-return mc-compat-valence-ctf-latency-jitter-inventory mc-compat-valence-ctf-reconnect-flag-state mc-compat-valence-ctf-invalid-pickup-ownership mc-compat-valence-survival-break-place-pickup;
           cairn = cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn;
           cargo-octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.cargo-octet;
           octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.octet;
@@ -619,6 +647,13 @@
           }/bin/mc-compat-valence-ctf-reconnect-flag-state";
           meta.description = "Run the maintained protocol-763 Valence CTF reconnect flag-state receipt.";
         };
+        mc-compat-valence-ctf-invalid-pickup-ownership = {
+          type = "app";
+          program = "${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-invalid-pickup-ownership
+          }/bin/mc-compat-valence-ctf-invalid-pickup-ownership";
+          meta.description = "Run the maintained protocol-763 Valence CTF invalid pickup ownership receipt.";
+        };
         mc-compat-valence-survival-break-place-pickup = {
           type = "app";
           program = "${
@@ -631,22 +666,25 @@
 
       checks = eachSystem (pkgs: {
         mc-compat-runner = self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner;
-        mc-compat-acceptance-matrix = pkgs.runCommand "mc-compat-acceptance-matrix" { nativeBuildInputs = [ pkgs.python3 ]; } ''
-          cp -R ${./docs} docs
-          cp -R ${./tools} tools
-          chmod -R u+w docs tools
-          python3 tools/check_acceptance_matrix.py --self-test > acceptance-matrix-self-test.log
-          python3 tools/check_acceptance_matrix.py > acceptance-matrix-check.log
+        mc-compat-acceptance-matrix = pkgs.runCommand "mc-compat-acceptance-matrix" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc ]; } ''
+          cp -R ${./.} repo
+          chmod -R u+w repo
+          cd repo
+          rustc --edition=2021 tools/check_acceptance_matrix.rs -o ../check-acceptance-matrix
+          ../check-acceptance-matrix --self-test > ../acceptance-matrix-self-test.log
+          ../check-acceptance-matrix > ../acceptance-matrix-check.log
           mkdir -p "$out"
-          cp acceptance-matrix-self-test.log acceptance-matrix-check.log "$out/"
+          cp ../acceptance-matrix-self-test.log ../acceptance-matrix-check.log "$out/"
         '';
-        mc-compat-current-evidence-bundle = pkgs.runCommand "mc-compat-current-evidence-bundle" { nativeBuildInputs = [ pkgs.python3 ]; } ''
-          cp -R ${./docs} docs
-          cp -R ${./tools} tools
-          chmod -R u+w docs tools
-          python3 tools/check_current_evidence_bundle.py > current-evidence-bundle-check.log
+        mc-compat-current-evidence-bundle = pkgs.runCommand "mc-compat-current-evidence-bundle" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc ]; } ''
+          cp -R ${./.} repo
+          chmod -R u+w repo
+          cd repo
+          rustc --edition=2021 tools/check_current_evidence_bundle.rs -o ../check-current-evidence-bundle
+          ../check-current-evidence-bundle --self-test > ../current-evidence-bundle-self-test.log
+          ../check-current-evidence-bundle > ../current-evidence-bundle-check.log
           mkdir -p "$out"
-          cp current-evidence-bundle-check.log "$out/"
+          cp ../current-evidence-bundle-self-test.log ../current-evidence-bundle-check.log "$out/"
         '';
         mc-compat-evidence-manifests = pkgs.runCommand "mc-compat-evidence-manifests" { nativeBuildInputs = [ pkgs.b3sum pkgs.python3 ]; } ''
           cp -R ${./.} repo
@@ -720,6 +758,16 @@
           ../check-public-server-authorized-safety > ../public-server-authorized-safety-check.log
           mkdir -p "$out"
           cp ../public-server-authorized-safety-self-test.log ../public-server-authorized-safety-check.log "$out/"
+        '';
+        mc-compat-ctf-invalid-pickup-ownership = pkgs.runCommand "mc-compat-ctf-invalid-pickup-ownership" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc ]; } ''
+          cp -R ${./.} repo
+          chmod -R u+w repo
+          cd repo
+          rustc --edition=2021 tools/check_ctf_invalid_pickup_ownership.rs -o ../check-ctf-invalid-pickup-ownership
+          ../check-ctf-invalid-pickup-ownership --self-test > ../ctf-invalid-pickup-ownership-self-test.log
+          ../check-ctf-invalid-pickup-ownership > ../ctf-invalid-pickup-ownership-check.log
+          mkdir -p "$out"
+          cp ../ctf-invalid-pickup-ownership-self-test.log ../ctf-invalid-pickup-ownership-check.log "$out/"
         '';
         mc-compat-armor-loadout-enchantment-status = pkgs.runCommand "mc-compat-armor-loadout-enchantment-status" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc ]; } ''
           cp -R ${./.} repo
@@ -1198,6 +1246,34 @@
             mkdir -p "$out"
             cp reconnect-flag-state-dry-run.log receipts/reconnect-flag-state-receipt.json "$out/"
           '';
+        mc-compat-valence-ctf-invalid-pickup-ownership-dry-run =
+          pkgs.runCommand "mc-compat-valence-ctf-invalid-pickup-ownership-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
+            mkdir -p fake-stevenarella fake-valence receipts
+            printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+            git -C fake-valence init
+            git -C fake-valence config user.email mc-compat@example.invalid
+            git -C fake-valence config user.name mc-compat
+            printf '%s\n' fake > fake-valence/README.md
+            git -C fake-valence add README.md
+            git -C fake-valence commit -m init
+            MC_COMPAT_CTF_INVALID_PICKUP_OWNERSHIP_RECEIPT="$PWD/receipts/ctf-invalid-pickup-ownership-receipt.json" ${
+              self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-invalid-pickup-ownership
+            }/bin/mc-compat-valence-ctf-invalid-pickup-ownership --dry-run --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD > ctf-invalid-pickup-ownership-dry-run.log
+            grep -Fq "scenario 'ctf-invalid-pickup-ownership'" ctf-invalid-pickup-ownership-dry-run.log
+            grep -Fq '"name": "ctf-invalid-pickup-ownership"' receipts/ctf-invalid-pickup-ownership-receipt.json
+            grep -Fq '"version": "1.20.1"' receipts/ctf-invalid-pickup-ownership-receipt.json
+            grep -Fq '"protocol": 763' receipts/ctf-invalid-pickup-ownership-receipt.json
+            grep -Fq '"timeout_secs": 120' receipts/ctf-invalid-pickup-ownership-receipt.json
+            grep -Fq '"ctf_invalid_pickup_attempted"' receipts/ctf-invalid-pickup-ownership-receipt.json
+            grep -Fq '"ctf_invalid_pickup_contained"' receipts/ctf-invalid-pickup-ownership-receipt.json
+            grep -Fq '"server_invalid_pickup_rejected"' receipts/ctf-invalid-pickup-ownership-receipt.json
+            grep -Fq '"invalid_action": "own_flag_pickup_without_ownership_transfer"' receipts/ctf-invalid-pickup-ownership-receipt.json
+            grep -Fq '"expected_summary_packets": ["login_success", "play_join_game", "own_flag_pickup_attempt", "invalid_flag_pickup_rejected"]' receipts/ctf-invalid-pickup-ownership-receipt.json
+            grep -Fq '"claims_correctness": false' receipts/ctf-invalid-pickup-ownership-receipt.json
+            grep -Fq '"claims_semantic_equivalence": false' receipts/ctf-invalid-pickup-ownership-receipt.json
+            mkdir -p "$out"
+            cp ctf-invalid-pickup-ownership-dry-run.log receipts/ctf-invalid-pickup-ownership-receipt.json "$out/"
+          '';
         mc-compat-valence-survival-break-place-pickup-dry-run =
           pkgs.runCommand "mc-compat-valence-survival-break-place-pickup-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
             mkdir -p fake-stevenarella fake-valence receipts
@@ -1249,6 +1325,7 @@
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-flag-carrier-death-return-dry-run} "$out/flag-carrier-death-return"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-latency-jitter-inventory-dry-run} "$out/latency-jitter-inventory"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-reconnect-flag-state-dry-run} "$out/reconnect-flag-state"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-invalid-pickup-ownership-dry-run} "$out/ctf-invalid-pickup-ownership"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-break-place-pickup-dry-run} "$out/survival-break-place-pickup"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-bot-probe-dry-run} "$out/compat-bot-probe"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-acceptance-matrix} "$out/acceptance-matrix"
@@ -1260,6 +1337,7 @@
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-adversarial-network-oracle} "$out/adversarial-network-oracle"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-wan-tolerance-bounded-telemetry} "$out/wan-tolerance-bounded-telemetry"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-public-server-authorized-safety} "$out/public-server-authorized-safety"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-ctf-invalid-pickup-ownership} "$out/ctf-invalid-pickup-ownership-checker"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-armor-loadout-enchantment-status} "$out/armor-loadout-enchantment-status"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-equipment-slot-item-expansion} "$out/equipment-slot-item-expansion"
           cat > "$out/manifest.txt" <<'EOF'
@@ -1278,6 +1356,7 @@
           flag-carrier-death-return
           latency-jitter-inventory
           reconnect-flag-state
+          ctf-invalid-pickup-ownership
           survival-break-place-pickup
           compat-bot-probe
           acceptance-matrix
@@ -1289,6 +1368,7 @@
           adversarial-network-oracle
           wan-tolerance-bounded-telemetry
           public-server-authorized-safety
+          ctf-invalid-pickup-ownership-checker
           armor-loadout-enchantment-status
           equipment-slot-item-expansion
           EOF
@@ -1493,7 +1573,7 @@
           grep -Fq -- "--apply" help.log
           grep -Fq -- "--stop" help.log
           grep -Fq -- "--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT" help.log
-          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|combat-damage|combat-knockback|armor-equipment-mitigation|equipment-update-observation|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score" help.log
+          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership" help.log
           grep -Fq "MC_COMPAT_SCENARIO" help.log
           grep -Fq -- "--expect-status-description" help.log
           grep -Fq -- "--packet-capture-summary" help.log
