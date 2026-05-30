@@ -40,7 +40,7 @@ The maintained inventory rows are validated as a five-row bounded matrix in `doc
 
 ## Equipment slot/item matrix checkpoint
 
-The maintained equipment update row is validated as one bounded slot/item matrix row in `docs/evidence/protocol-763-equipment-slot-item-matrix-2026-05-27.md`. Covered row is `main_hand_remote_entity / slot4 / item id 829 / count 1 / non_empty_update` with one remote-spawn-correlated equipment update. All equipment slots/items/permutations remain a non-claim.
+The maintained equipment update row is validated as one bounded slot/item matrix row in `docs/evidence/protocol-763-equipment-slot-item-matrix-2026-05-27.md` and bound to the normalized `equipment-slot-item-matrix-expansion` contract in `docs/evidence/protocol-763-equipment-slot-item-expansion-row-2026-05-29.md`. Covered row is `remote_main_hand_slot4_item829_count1_non_empty` / `main_hand_remote_entity / slot4 / item id 829 / count 1 / non_empty_update / after_remote_spawn` with one remote-spawn-correlated equipment update. All equipment slots/items/permutations beyond this row remain a non-claim.
 
 ## Armor/enchantment/status modifier checkpoint
 
@@ -113,6 +113,8 @@ python3 tools/check_current_evidence_bundle.py
 python3 tools/check_death_respawn_lifecycle.py
 python3 tools/check_inventory_semantics_matrix.py
 python3 tools/check_equipment_slot_item_matrix.py
+./tools/check_equipment_slot_item_expansion.rs --self-test
+./tools/check_equipment_slot_item_expansion.rs --record docs/evidence/protocol-763-equipment-slot-item-expansion-row-2026-05-29.record
 python3 tools/check_armor_modifier_matrix.py
 ./tools/check_armor_loadout_enchantment_status.rs --self-test
 ./tools/check_armor_loadout_enchantment_status.rs --record docs/evidence/protocol-763-armor-loadout-enchantment-status-row-2026-05-29.record

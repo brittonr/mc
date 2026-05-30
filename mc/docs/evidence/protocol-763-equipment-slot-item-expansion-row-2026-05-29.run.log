@@ -1,0 +1,10 @@
+command: python3 tools/check_equipment_slot_item_matrix.py --self-test && python3 tools/check_equipment_slot_item_matrix.py
+equipment slot/item matrix self-test ok
+equipment slot/item matrix ok: 1 bounded protocol-763 row
+command: nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_equipment_slot_item_expansion.rs -o /tmp/check-equipment-slot-item-expansion
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+command: /tmp/check-equipment-slot-item-expansion --record docs/evidence/protocol-763-equipment-slot-item-expansion-row-2026-05-29.record
+equipment slot/item expansion checker passed: contract=docs/evidence/protocol-763-equipment-slot-item-expansion-contract-2026-05-29.md record=true
+result: PASS

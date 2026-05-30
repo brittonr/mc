@@ -1,0 +1,123 @@
+command: nix develop --no-update-lock-file -c cargo test --manifest-path tools/mc-compat-runner/Cargo.toml equipment_slot_item_matrix_expansion -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 2 tests
+test tests::equipment_slot_item_matrix_expansion_tracks_isolated_row_evidence ... ok
+test tests::equipment_slot_item_matrix_expansion_receipt_keeps_nonclaims ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 75 filtered out; finished in 0.00s
+
+command: nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_equipment_slot_item_expansion.rs -o /tmp/check-equipment-slot-item-expansion
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+command: /tmp/check-equipment-slot-item-expansion --self-test
+equipment slot/item expansion checker self-test passed: positive fixture and fail-closed mutations passed
+command: /tmp/check-equipment-slot-item-expansion --record docs/evidence/protocol-763-equipment-slot-item-expansion-row-2026-05-29.record
+equipment slot/item expansion checker passed: contract=docs/evidence/protocol-763-equipment-slot-item-expansion-contract-2026-05-29.md record=true
+command: python3 tools/check_equipment_slot_item_matrix.py --self-test && python3 tools/check_equipment_slot_item_matrix.py
+equipment slot/item matrix self-test ok
+equipment slot/item matrix ok: 1 bounded protocol-763 row
+command: python3 tools/check_acceptance_matrix.py --self-test && python3 tools/check_acceptance_matrix.py
+acceptance matrix self-test ok
+acceptance matrix ok: 17 seams, 17 hashes
+command: python3 tools/check_current_evidence_bundle.py --self-test && python3 tools/check_current_evidence_bundle.py
+current evidence bundle self-test ok
+current evidence bundle ok: 17 seams
+command: nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py --self-test && nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest self-test ok
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 71 manifests, 327 entries, 60 receipts scanned
+command: nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_cairn_task_evidence.rs -o /tmp/check-cairn-task-evidence && /tmp/check-cairn-task-evidence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence gate passed: 5 completed tasks checked across 37 active task files
+command: nix run --no-update-lock-file .#cairn -- gate proposal equipment-slot-item-matrix-expansion --root .
+{
+  "change": "equipment-slot-item-matrix-expansion",
+  "input_hash": "576d2ffd07e1b7e16aad365c9a8aa3bec22fa22194740361e60090ded5960ba0",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "161d222fa626cda14b5d211f457aa783c817c1cb6fd94697ab32c49bad35dee7",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+command: nix run --no-update-lock-file .#cairn -- gate design equipment-slot-item-matrix-expansion --root .
+{
+  "change": "equipment-slot-item-matrix-expansion",
+  "input_hash": "36dab886a1e64bcc807da2d077c1bad675e1adeb643cf88e4a9025b27e62e2e8",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "ffbdc0d48efded238c6604f69f841fd69f91106a807e181a77bdac19834f6ed2",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+command: nix run --no-update-lock-file .#cairn -- gate tasks equipment-slot-item-matrix-expansion --root .
+{
+  "change": "equipment-slot-item-matrix-expansion",
+  "input_hash": "a2518c01a6dba07be054fa7086bc1ae8c16f96a5e9e0c35dda97d07e2c083aa8",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "ef35d70e905d0b92b67c88575513223a641d3dace57355fad065d56b13804e01",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+command: nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 37,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 39,
+  "valid": true
+}
+result: PASS
+post-mark validation:
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence gate passed: 6 completed tasks checked across 37 active task files
+{
+  "change": "equipment-slot-item-matrix-expansion",
+  "input_hash": "2fcf7a00485384e229118ca44395123bef81ba68fadbad27a24cdcfde0f885bd",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "1e22f3597d3ef3748bd8958671b8b8feeb5a52b0374d4020b9ab4eb0a0008ef5",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change_issues": [],
+  "changes": 37,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 39,
+  "valid": true
+}
+post-mark result: PASS
