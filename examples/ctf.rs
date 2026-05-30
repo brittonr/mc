@@ -983,6 +983,7 @@ fn digging(
     mut commands: Commands,
     globals: Res<CtfGlobals>,
     mut flag_manager: ResMut<FlagManager>,
+    score: Res<Score>,
 ) {
     let mut layer = layers.single_mut();
 
@@ -1037,6 +1038,26 @@ fn digging(
                 _ => {}
             }
 
+            let is_red_flag = event.position == globals.red_flag;
+            let is_blue_flag = event.position == globals.blue_flag;
+            if let Some(flag_team) =
+                invalid_flag_pickup_flag_team(*team, is_red_flag, is_blue_flag, block.state)
+            {
+                let pre_owner = flag_owner_state(&flag_manager, flag_team);
+                let post_owner = pre_owner;
+                let milestone = invalid_flag_pickup_rejection_milestone(
+                    username.as_str(),
+                    *team,
+                    flag_team,
+                    pre_owner,
+                    post_owner,
+                    score_for_team(&score, Team::Red),
+                    score_for_team(&score, Team::Blue),
+                );
+                info!("{}", milestone);
+                println!("{}", milestone);
+            }
+
             if event.position.y <= ARENA_Y
                 || block.state.to_kind() == BlockKind::OakFence
                 || is_flag
@@ -1062,6 +1083,63 @@ fn digging(
             }
         }
     }
+}
+
+fn invalid_flag_pickup_flag_team(
+    player_team: Team,
+    is_red_flag: bool,
+    is_blue_flag: bool,
+    block_state: BlockState,
+) -> Option<Team> {
+    match (player_team, is_red_flag, is_blue_flag, block_state) {
+        (Team::Red, true, _, BlockState::RED_WOOL) => Some(Team::Red),
+        (Team::Blue, _, true, BlockState::BLUE_WOOL) => Some(Team::Blue),
+        _ => None,
+    }
+}
+
+fn flag_owner_state(flag_manager: &FlagManager, flag_team: Team) -> &'static str {
+    let owner = match flag_team {
+        Team::Red => flag_manager.red,
+        Team::Blue => flag_manager.blue,
+    };
+    if owner.is_some() {
+        "held"
+    } else {
+        "none"
+    }
+}
+
+fn score_for_team(score: &Score, team: Team) -> u32 {
+    *score.scores.get(&team).unwrap_or(&0)
+}
+
+fn team_label(team: Team) -> &'static str {
+    match team {
+        Team::Red => "Red",
+        Team::Blue => "Blue",
+    }
+}
+
+fn invalid_flag_pickup_rejection_milestone(
+    username: &str,
+    player_team: Team,
+    flag_team: Team,
+    pre_owner: &str,
+    post_owner: &str,
+    red_score: u32,
+    blue_score: u32,
+) -> String {
+    format!(
+        "MC-COMPAT-MILESTONE invalid_flag_pickup_rejected username={} player_team={} flag_team={} pre_owner={} post_owner={} red_score={} blue_score={} outcome=no_owner_transfer_no_score",
+        username,
+        team_label(player_team),
+        team_label(flag_team),
+        pre_owner,
+        post_owner,
+        red_score,
+        blue_score
+    )
 }
 
 fn place_blocks(
@@ -2113,6 +2191,54 @@ mod tests {
     const TEST_CUSTOM_MAX_DAMAGE: f32 = 12.0;
     const TEST_HEALTH_BEFORE: f32 = 20.0;
     const TEST_HEALTH_AFTER_EDITED_DAMAGE: f32 = 16.0;
+    const TEST_RED_SCORE: u32 = 2;
+
+    #[test]
+    fn invalid_flag_pickup_helper_rejects_own_flag_and_allows_enemy_flag() {
+        assert_eq!(
+            invalid_flag_pickup_flag_team(Team::Red, true, false, BlockState::RED_WOOL),
+            Some(Team::Red)
+        );
+        assert_eq!(
+            invalid_flag_pickup_flag_team(Team::Red, false, true, BlockState::BLUE_WOOL),
+            None
+        );
+    }
+
+    #[test]
+    fn invalid_flag_pickup_milestone_records_no_transfer_and_scores() {
+        let mut score = Score::default();
+        score.scores.insert(Team::Red, TEST_RED_SCORE);
+        let flag_manager = FlagManager {
+            red: None,
+            blue: None,
+        };
+        let milestone = invalid_flag_pickup_rejection_milestone(
+            "compatbot",
+            Team::Red,
+            Team::Red,
+            flag_owner_state(&flag_manager, Team::Red),
+            flag_owner_state(&flag_manager, Team::Red),
+            score_for_team(&score, Team::Red),
+            score_for_team(&score, Team::Blue),
+        );
+
+        assert!(
+            milestone.contains("invalid_flag_pickup_rejected"),
+            "{milestone}"
+        );
+        assert!(milestone.contains("username=compatbot"), "{milestone}");
+        assert!(milestone.contains("player_team=Red"), "{milestone}");
+        assert!(milestone.contains("flag_team=Red"), "{milestone}");
+        assert!(milestone.contains("pre_owner=none"), "{milestone}");
+        assert!(milestone.contains("post_owner=none"), "{milestone}");
+        assert!(milestone.contains("red_score=2"), "{milestone}");
+        assert!(milestone.contains("blue_score=0"), "{milestone}");
+        assert!(
+            milestone.contains("outcome=no_owner_transfer_no_score"),
+            "{milestone}"
+        );
+    }
 
     #[test]
     fn default_arrow_policy_matches_legacy_projectile_damage() {
