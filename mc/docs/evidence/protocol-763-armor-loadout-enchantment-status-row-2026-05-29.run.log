@@ -1,0 +1,17 @@
+command: nix develop --no-update-lock-file -c python3 tools/check_armor_modifier_matrix.py --self-test
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+armor modifier matrix self-test ok
+command: nix develop --no-update-lock-file -c python3 tools/check_armor_modifier_matrix.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+armor modifier matrix ok: 1 bounded protocol-763 row
+command: nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_armor_loadout_enchantment_status.rs -o /tmp/check-armor-loadout-enchantment-status
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+command: /tmp/check-armor-loadout-enchantment-status --record docs/evidence/protocol-763-armor-loadout-enchantment-status-row-2026-05-29.record
+armor loadout/enchantment/status checker passed: contract=docs/evidence/protocol-763-armor-loadout-enchantment-status-contract-2026-05-29.md record=true
+result: PASS

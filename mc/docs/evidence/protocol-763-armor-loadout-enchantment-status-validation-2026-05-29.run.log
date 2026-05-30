@@ -1,0 +1,126 @@
+command: nix develop --no-update-lock-file -c cargo test --manifest-path tools/mc-compat-runner/Cargo.toml armor_loadout_enchantment_status_matrix -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 2 tests
+test tests::armor_loadout_enchantment_status_matrix_tracks_isolated_row_evidence ... ok
+test tests::armor_loadout_enchantment_status_matrix_receipt_keeps_nonclaims ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 73 filtered out; finished in 0.00s
+
+command: nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_armor_loadout_enchantment_status.rs -o /tmp/check-armor-loadout-enchantment-status
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+command: /tmp/check-armor-loadout-enchantment-status --self-test
+armor loadout/enchantment/status checker self-test passed: positive fixture and fail-closed mutations passed
+command: /tmp/check-armor-loadout-enchantment-status --record docs/evidence/protocol-763-armor-loadout-enchantment-status-row-2026-05-29.record
+armor loadout/enchantment/status checker passed: contract=docs/evidence/protocol-763-armor-loadout-enchantment-status-contract-2026-05-29.md record=true
+command: python3 tools/check_armor_modifier_matrix.py --self-test && python3 tools/check_armor_modifier_matrix.py
+armor modifier matrix self-test ok
+armor modifier matrix ok: 1 bounded protocol-763 row
+command: python3 tools/check_acceptance_matrix.py --self-test && python3 tools/check_acceptance_matrix.py
+acceptance matrix self-test ok
+acceptance matrix ok: 17 seams, 17 hashes
+command: python3 tools/check_current_evidence_bundle.py --self-test && python3 tools/check_current_evidence_bundle.py
+current evidence bundle self-test ok
+current evidence bundle ok: 17 seams
+command: nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py --self-test && nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest self-test ok
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 66 manifests, 296 entries, 59 receipts scanned
+command: nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_cairn_task_evidence.rs -o /tmp/check-cairn-task-evidence && /tmp/check-cairn-task-evidence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence gate passed: 5 completed tasks checked across 38 active task files
+command: nix run --no-update-lock-file .#cairn -- gate proposal armor-loadout-enchantment-status-matrix --root .
+{
+  "change": "armor-loadout-enchantment-status-matrix",
+  "input_hash": "54062747bd64d40687e485134eb7946a73b2681dda3efda221aa9faaa9fb7879",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "4d819e0878d3dee2be77bf887467d9e0e0f743d3db024655a211bc962f64a277",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+command: nix run --no-update-lock-file .#cairn -- gate design armor-loadout-enchantment-status-matrix --root .
+{
+  "change": "armor-loadout-enchantment-status-matrix",
+  "input_hash": "2394ab537544f46c98d9287584ea55d4f480a43c6d6d7ebb3fe27cd4101918cb",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "e6984062f62e2c9a0af73426f2154ce440439ef86cfea7c6df2e53835e5757ba",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+command: nix run --no-update-lock-file .#cairn -- gate tasks armor-loadout-enchantment-status-matrix --root .
+{
+  "change": "armor-loadout-enchantment-status-matrix",
+  "input_hash": "f285e3af4f7b0a8197ec479aa9c40483ed3241572892476af0a992070589c43c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "41b32693486917eca6cf055795e9ee8a5899762445c068126402a42e2d03a816",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+command: nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 38,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 40,
+  "valid": true
+}
+result: PASS
+post-mark validation:
+command: nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_cairn_task_evidence.rs -o /tmp/check-cairn-task-evidence && /tmp/check-cairn-task-evidence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence gate passed: 6 completed tasks checked across 38 active task files
+command: nix run --no-update-lock-file .#cairn -- gate tasks armor-loadout-enchantment-status-matrix --root .
+{
+  "change": "armor-loadout-enchantment-status-matrix",
+  "input_hash": "edd334d1d7d4b757225435d30f856e4e2e45866a87730b2129325d872e6ec54a",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "ab0dbb0c617a0795fbc396d06dd2ff3ff88a8515e351b4381fd30977c8f9d984",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+command: nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 38,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 40,
+  "valid": true
+}
+post-mark result: PASS

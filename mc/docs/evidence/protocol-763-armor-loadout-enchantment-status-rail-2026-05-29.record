@@ -1,0 +1,24 @@
+row.id=chest_diamond_none_none_melee
+row.promotion_label=rail_fixture_not_promoted
+victim.loadout_id=armor_loadout_chest_only
+victim.equipment_slots=chest=DiamondChestplate
+victim.enchantments=enchantment_none
+victim.status_effects=status_effect_none
+attack.type=melee
+health.pre_milli=20000
+health.post_milli=18000
+damage.base_milli=4000
+damage.final_milli=2000
+mitigation.delta_milli=2000
+tolerance.absolute_milli=1
+reference.required=false
+reference.receipt=none
+valence.receipt=docs/evidence/protocol-763-armor-loadout-enchantment-status-rail-2026-05-29.receipt.json
+server.milestone.equipment_state=armor_equipment_state
+server.milestone.armor_mitigation=combat_armor_mitigation
+client.milestone.health_update=update_health health=18.0
+claims.all_loadouts=false
+claims.all_enchantments=false
+claims.all_status_effects=false
+claims.exact_vanilla_parity=false
+claims.full_combat_correctness=false

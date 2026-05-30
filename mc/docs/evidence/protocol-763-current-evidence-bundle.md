@@ -27,7 +27,7 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 | Reconnect flag-state | `nix run .#mc-compat-valence-ctf-reconnect-flag-state` | `4d848af56b25ad4b3c466863bac5b2052adbbc1c59e2b2164bfb2a696c225cb3` |
 | Latency/jitter tolerance | `nix run .#mc-compat-valence-ctf-latency-jitter-inventory` | `a4a407fb1ac3aceae06faeacb794891ff8411c8ac86470c651c89b37b6c7f33d` |
 | Combat knockback | `nix run .#mc-compat-valence-ctf-combat-knockback` | `a5d0ba5ea6155a99b58f245a03195da05b4925d7bd151b5b3f67503ae7a4cf09` |
-| Armor equipment mitigation | `nix run .#mc-compat-valence-ctf-armor-equipment-mitigation` | `176fdf33d2b8b9047471f577a98f9093904a44ab8da2785baeb80acfc8d97765` |
+| Armor equipment mitigation | `nix run .#mc-compat-valence-ctf-armor-equipment-mitigation` | `3152241bbbca379405a3806987f0b4dc8e4706b291cecebc1f509d0f96914f07` |
 | Equipment update observation | `nix run .#mc-compat-valence-ctf-equipment-update-observation` | `8100dde3ebb3476984235009e277d7e973037b7873b2fdb30c413093e1498d3d` |
 | Projectile use/loadout rail | `nix run .#mc-compat-valence-ctf-projectile-hit` | `22310a0373f86bbff5e6bc116934d092b89f775cf5d539b08d04ff5564ad855b` |
 | Projectile damage attribution | `nix run .#mc-compat-valence-ctf-projectile-damage-attribution` | `cf84fcb81ae557ecfbd2ff0b1f8b94af7bf07eaa85c20b1cde442929e3e3e529` |
@@ -44,7 +44,7 @@ The maintained equipment update row is validated as one bounded slot/item matrix
 
 ## Armor/enchantment/status modifier checkpoint
 
-The maintained armor mitigation row is validated as one bounded modifier row in `docs/evidence/protocol-763-armor-modifier-matrix-2026-05-27.md` with a fresh live receipt/log bundle. Covered row is `armor_loadout_chest_only / DiamondChestplate / enchantment_none / status_effect_none / melee`; all armor loadouts, enchantments, status effects, modifier stacking, and exact vanilla parity remain non-claims.
+The maintained armor mitigation row is validated as one bounded modifier row in `docs/evidence/protocol-763-armor-modifier-matrix-2026-05-27.md` and bound to the normalized `armor-loadout-enchantment-status-matrix` contract in `docs/evidence/protocol-763-armor-loadout-enchantment-status-row-2026-05-29.md`. Covered row is `chest_diamond_none_none_melee` / `armor_loadout_chest_only / DiamondChestplate / enchantment_none / status_effect_none / melee`; the historical ROI receipt digest `176fdf33d2b8b9047471f577a98f9093904a44ab8da2785baeb80acfc8d97765` remains review history. All armor loadouts beyond this row, enchantments beyond `enchantment_none`, status effects beyond `status_effect_none`, modifier stacking, and exact vanilla parity remain non-claims.
 
 ## Projectile travel/collision checkpoint
 
@@ -114,6 +114,8 @@ python3 tools/check_death_respawn_lifecycle.py
 python3 tools/check_inventory_semantics_matrix.py
 python3 tools/check_equipment_slot_item_matrix.py
 python3 tools/check_armor_modifier_matrix.py
+./tools/check_armor_loadout_enchantment_status.rs --self-test
+./tools/check_armor_loadout_enchantment_status.rs --record docs/evidence/protocol-763-armor-loadout-enchantment-status-row-2026-05-29.record
 python3 tools/check_projectile_travel_collision.py
 python3 tools/check_vanilla_combat_parity.py
 python3 tools/check_ctf_rule_ledger.py

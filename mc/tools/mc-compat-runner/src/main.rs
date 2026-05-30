@@ -70,7 +70,7 @@ const SURVIVAL_CHEST_SERVER_REOPEN_NEEDLE: &str =
 const SURVIVAL_CHEST_SERVER_PERSISTED_NEEDLE: &str =
     "survival_chest_persisted username=compatbot slot=0 item=Dirt count=1";
 const SURVIVAL_CHEST_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_CHEST_FIXTURE";
-const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|combat-damage|combat-knockback|armor-equipment-mitigation|equipment-update-observation|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score";
+const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
     "Dimension type:",
@@ -115,6 +115,21 @@ const NEGATIVE_LIVE_RAIL_EVIDENCE_FIELDS: &[&str] = &[
     "server_forbidden_matches",
     "postcondition",
 ];
+const ARMOR_MATRIX_ROW_ID: &str = "chest_diamond_none_none_melee";
+const ARMOR_MATRIX_LOADOUT_ID: &str = "armor_loadout_chest_only";
+const ARMOR_MATRIX_EQUIPMENT_SLOT: &str = "chest=DiamondChestplate";
+const ARMOR_MATRIX_ENCHANTMENT_NONE: &str = "enchantment_none";
+const ARMOR_MATRIX_STATUS_EFFECT_NONE: &str = "status_effect_none";
+const ARMOR_MATRIX_ATTACK_TYPE_MELEE: &str = "melee";
+const ARMOR_MATRIX_REFERENCE_RECEIPT_NONE: &str = "none";
+const ARMOR_MATRIX_NON_CLAIMS: &[&str] = &[
+    "all_armor_permutations",
+    "all_enchantments",
+    "all_status_effects",
+    "exact_vanilla_balancing",
+    "production_readiness",
+    "full_combat_correctness",
+];
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Mode {
@@ -147,6 +162,7 @@ enum Scenario {
     CombatDamage,
     CombatKnockback,
     ArmorEquipmentMitigation,
+    ArmorLoadoutEnchantmentStatusMatrix,
     EquipmentUpdateObservation,
     ProjectileHit,
     ProjectileDamageAttribution,
@@ -186,6 +202,26 @@ struct ProjectileDamageCausalityEvidence {
     attacker_username: String,
     victim_username: String,
     passed: bool,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct ArmorLoadoutEnchantmentStatusMatrixEvidence {
+    selected: bool,
+    row_id: &'static str,
+    loadout_id: &'static str,
+    equipment_slots: Vec<&'static str>,
+    enchantments: Vec<&'static str>,
+    status_effects: Vec<&'static str>,
+    attack_type: &'static str,
+    reference_required: bool,
+    reference_receipt: &'static str,
+    live_receipt: bool,
+    promotion_ready: bool,
+    required_client_milestones: Vec<&'static str>,
+    observed_client_milestones: Vec<&'static str>,
+    required_server_milestones: Vec<&'static str>,
+    observed_server_milestones: Vec<&'static str>,
+    non_claims: Vec<&'static str>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -833,6 +869,51 @@ fn evaluate_negative_live_rail_safety(cfg: &Config) -> NegativeLiveRailEvidence 
     ))
 }
 
+fn uses_armor_mitigation_probe(scenario: Scenario) -> bool {
+    matches!(
+        scenario,
+        Scenario::ArmorEquipmentMitigation | Scenario::ArmorLoadoutEnchantmentStatusMatrix
+    )
+}
+
+fn evaluate_armor_loadout_enchantment_status_matrix(
+    cfg: &Config,
+    scenario: &ScenarioEvidence,
+    server_scenario: &ServerScenarioEvidence,
+) -> ArmorLoadoutEnchantmentStatusMatrixEvidence {
+    let selected = cfg.scenario == Scenario::ArmorLoadoutEnchantmentStatusMatrix;
+    let observed_live_evidence =
+        selected && cfg.mode == Mode::Run && scenario.passed && server_scenario.passed;
+    ArmorLoadoutEnchantmentStatusMatrixEvidence {
+        selected,
+        row_id: ARMOR_MATRIX_ROW_ID,
+        loadout_id: ARMOR_MATRIX_LOADOUT_ID,
+        equipment_slots: vec![ARMOR_MATRIX_EQUIPMENT_SLOT],
+        enchantments: vec![ARMOR_MATRIX_ENCHANTMENT_NONE],
+        status_effects: vec![ARMOR_MATRIX_STATUS_EFFECT_NONE],
+        attack_type: ARMOR_MATRIX_ATTACK_TYPE_MELEE,
+        reference_required: false,
+        reference_receipt: ARMOR_MATRIX_REFERENCE_RECEIPT_NONE,
+        live_receipt: observed_live_evidence,
+        promotion_ready: observed_live_evidence,
+        required_client_milestones: scenario_required_milestones(
+            Scenario::ArmorLoadoutEnchantmentStatusMatrix,
+        )
+        .iter()
+        .map(|(name, _)| *name)
+        .collect(),
+        observed_client_milestones: scenario.observed_milestones.clone(),
+        required_server_milestones: server_required_milestones(
+            Scenario::ArmorLoadoutEnchantmentStatusMatrix,
+        )
+        .iter()
+        .map(|(name, _)| *name)
+        .collect(),
+        observed_server_milestones: server_scenario.observed_milestones.clone(),
+        non_claims: ARMOR_MATRIX_NON_CLAIMS.to_vec(),
+    }
+}
+
 fn validate_negative_live_rail_preflight(cfg: &Config) -> Result<(), String> {
     let evidence = evaluate_negative_live_rail_safety(cfg);
     if evidence.preflight_passed {
@@ -1411,6 +1492,9 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
         "combat-damage" => Ok(Scenario::CombatDamage),
         "combat-knockback" => Ok(Scenario::CombatKnockback),
         "armor-equipment-mitigation" => Ok(Scenario::ArmorEquipmentMitigation),
+        "armor-loadout-enchantment-status-matrix" => {
+            Ok(Scenario::ArmorLoadoutEnchantmentStatusMatrix)
+        }
         "equipment-update-observation" => Ok(Scenario::EquipmentUpdateObservation),
         "projectile-hit" => Ok(Scenario::ProjectileHit),
         "projectile-damage-attribution" => Ok(Scenario::ProjectileDamageAttribution),
@@ -1439,6 +1523,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::CombatDamage => "combat-damage",
         Scenario::CombatKnockback => "combat-knockback",
         Scenario::ArmorEquipmentMitigation => "armor-equipment-mitigation",
+        Scenario::ArmorLoadoutEnchantmentStatusMatrix => "armor-loadout-enchantment-status-matrix",
         Scenario::EquipmentUpdateObservation => "equipment-update-observation",
         Scenario::ProjectileHit => "projectile-hit",
         Scenario::ProjectileDamageAttribution => "projectile-damage-attribution",
@@ -1567,7 +1652,7 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             ("combat_health_update", "update_health health=16.0"),
             ("combat_velocity_update", "combat_probe_velocity_observed"),
         ],
-        Scenario::ArmorEquipmentMitigation => &[
+        Scenario::ArmorEquipmentMitigation | Scenario::ArmorLoadoutEnchantmentStatusMatrix => &[
             ("multi_client_count", "mc_compat_combat_client_count=2"),
             ("protocol_detected", "Detected server protocol version"),
             ("join_game", "join_game"),
@@ -1840,7 +1925,7 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
             ("server_combat_damage", "combat_damage"),
             ("server_combat_knockback", "combat_knockback"),
         ],
-        Scenario::ArmorEquipmentMitigation => &[
+        Scenario::ArmorEquipmentMitigation | Scenario::ArmorLoadoutEnchantmentStatusMatrix => &[
             ("server_client_a_seen", "compatbota"),
             ("server_client_b_seen", "compatbotb"),
             ("server_equipment_state", "armor_equipment_state"),
@@ -3157,7 +3242,7 @@ fn start_valence_server(cfg: &Config) -> Result<ManagedServer, String> {
         .stderr(Stdio::from(err_file));
     cmd.env("RUSTC_WRAPPER", "")
         .env("CARGO_TARGET_DIR", &cfg.valence_target_dir);
-    if cfg.scenario == Scenario::ArmorEquipmentMitigation {
+    if uses_armor_mitigation_probe(cfg.scenario) {
         cmd.env("MC_COMPAT_ARMOR_MITIGATION_PROBE", "1");
     }
     if cfg.scenario == Scenario::EquipmentUpdateObservation {
@@ -3411,6 +3496,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
             | Scenario::CombatDamage
             | Scenario::CombatKnockback
             | Scenario::ArmorEquipmentMitigation
+            | Scenario::ArmorLoadoutEnchantmentStatusMatrix
             | Scenario::EquipmentUpdateObservation
             | Scenario::ProjectileHit
             | Scenario::ProjectileDamageAttribution
@@ -3427,7 +3513,10 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
     }
     if matches!(
         cfg.scenario,
-        Scenario::CombatDamage | Scenario::CombatKnockback | Scenario::ArmorEquipmentMitigation
+        Scenario::CombatDamage
+            | Scenario::CombatKnockback
+            | Scenario::ArmorEquipmentMitigation
+            | Scenario::ArmorLoadoutEnchantmentStatusMatrix
     ) && runs.len() >= 2
     {
         combined_output.push_str("mc_compat_combat_client_count=2\n");
@@ -3543,6 +3632,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
             | Scenario::CombatDamage
             | Scenario::CombatKnockback
             | Scenario::ArmorEquipmentMitigation
+            | Scenario::ArmorLoadoutEnchantmentStatusMatrix
             | Scenario::EquipmentUpdateObservation
             | Scenario::ProjectileHit
             | Scenario::ProjectileDamageAttribution
@@ -3886,6 +3976,7 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
         Scenario::CombatDamage
         | Scenario::CombatKnockback
         | Scenario::ArmorEquipmentMitigation
+        | Scenario::ArmorLoadoutEnchantmentStatusMatrix
         | Scenario::FlagCarrierDeathReturn => {
             let (team, role) = if client_index == 0 {
                 ("red", "attacker")
@@ -3900,7 +3991,7 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
             if role == "attacker" {
                 cmd.env("MC_COMPAT_COMBAT_TARGET_USERNAME", "compatbotb");
             }
-            if scenario == Scenario::ArmorEquipmentMitigation {
+            if uses_armor_mitigation_probe(scenario) {
                 cmd.env("MC_COMPAT_ARMOR_MITIGATION_PROBE", "1");
                 if role == "victim" {
                     cmd.env("MC_COMPAT_INVENTORY_PROBE", "1");
@@ -3946,6 +4037,7 @@ fn planned_client_usernames(cfg: &Config) -> Vec<String> {
             | Scenario::CombatDamage
             | Scenario::CombatKnockback
             | Scenario::ArmorEquipmentMitigation
+            | Scenario::ArmorLoadoutEnchantmentStatusMatrix
             | Scenario::EquipmentUpdateObservation
             | Scenario::ProjectileHit
             | Scenario::ProjectileDamageAttribution
@@ -4023,6 +4115,7 @@ fn requires_server_correlation(cfg: &Config) -> bool {
             | Scenario::CombatDamage
             | Scenario::CombatKnockback
             | Scenario::ArmorEquipmentMitigation
+            | Scenario::ArmorLoadoutEnchantmentStatusMatrix
             | Scenario::EquipmentUpdateObservation
             | Scenario::ProjectileHit
             | Scenario::ProjectileDamageAttribution
@@ -4179,6 +4272,47 @@ fn render_negative_live_rail_json(evidence: &NegativeLiveRailEvidence) -> String
         bound_violations = json_string_array(&evidence.bound_violations),
         preflight_passed = evidence.preflight_passed,
         non_claims = json_string_array(NEGATIVE_LIVE_RAIL_NON_CLAIMS),
+    )
+}
+
+fn render_armor_loadout_enchantment_status_matrix_json(
+    evidence: &ArmorLoadoutEnchantmentStatusMatrixEvidence,
+) -> String {
+    format!(
+        r#"{{
+    "selected": {selected},
+    "row_id": {row_id},
+    "loadout_id": {loadout_id},
+    "equipment_slots": {equipment_slots},
+    "enchantments": {enchantments},
+    "status_effects": {status_effects},
+    "attack_type": {attack_type},
+    "reference_required": {reference_required},
+    "reference_receipt": {reference_receipt},
+    "live_receipt": {live_receipt},
+    "promotion_ready": {promotion_ready},
+    "required_client_milestones": {required_client_milestones},
+    "observed_client_milestones": {observed_client_milestones},
+    "required_server_milestones": {required_server_milestones},
+    "observed_server_milestones": {observed_server_milestones},
+    "non_claims": {non_claims}
+  }}"#,
+        selected = evidence.selected,
+        row_id = json_string(evidence.row_id),
+        loadout_id = json_string(evidence.loadout_id),
+        equipment_slots = json_string_array(&evidence.equipment_slots),
+        enchantments = json_string_array(&evidence.enchantments),
+        status_effects = json_string_array(&evidence.status_effects),
+        attack_type = json_string(evidence.attack_type),
+        reference_required = evidence.reference_required,
+        reference_receipt = json_string(evidence.reference_receipt),
+        live_receipt = evidence.live_receipt,
+        promotion_ready = evidence.promotion_ready,
+        required_client_milestones = json_string_array(&evidence.required_client_milestones),
+        observed_client_milestones = json_string_array(&evidence.observed_client_milestones),
+        required_server_milestones = json_string_array(&evidence.required_server_milestones),
+        observed_server_milestones = json_string_array(&evidence.observed_server_milestones),
+        non_claims = json_string_array(&evidence.non_claims),
     )
 }
 
@@ -4373,7 +4507,7 @@ fn smoke_receipt_json_with_typed_event_oracle(
             "use_entity_attack",
             "entity_velocity",
         ],
-        Scenario::ArmorEquipmentMitigation => vec![
+        Scenario::ArmorEquipmentMitigation | Scenario::ArmorLoadoutEnchantmentStatusMatrix => vec![
             "two_client_login",
             "play_join_game",
             "inventory_set_slot",
@@ -4462,6 +4596,12 @@ fn smoke_receipt_json_with_typed_event_oracle(
             matches!(cfg.mode, Mode::Run) && is_negative_live_rail(cfg.scenario),
         ));
     let negative_live_rail_json = render_negative_live_rail_json(&negative_live_rail);
+    let armor_loadout_enchantment_status_matrix =
+        evaluate_armor_loadout_enchantment_status_matrix(cfg, scenario, server_scenario);
+    let armor_loadout_enchantment_status_matrix_json =
+        render_armor_loadout_enchantment_status_matrix_json(
+            &armor_loadout_enchantment_status_matrix,
+        );
     let proxy_route = cfg.proxy_route.as_deref().unwrap_or("direct");
     let proxy_forwarding_mode = cfg.proxy_forwarding_mode.as_deref().unwrap_or("none");
     let proxy_selected = cfg.proxy_route.is_some();
@@ -4643,6 +4783,7 @@ fn smoke_receipt_json_with_typed_event_oracle(
     "requires_client_and_server_evidence_for_semantic_claims": true,
     "non_claims": {gameplay_non_claims_json}
   }},
+  "armor_loadout_enchantment_status_matrix": {armor_loadout_enchantment_status_matrix_json},
   "server": {{
     "backend": {backend_json},
     "version": {version_json},
@@ -4732,6 +4873,7 @@ fn smoke_receipt_json_with_typed_event_oracle(
         typed_event_oracle_json = typed_event_oracle_json,
         load_network_safety_json = load_network_safety_json,
         negative_live_rail_json = negative_live_rail_json,
+        armor_loadout_enchantment_status_matrix_json = armor_loadout_enchantment_status_matrix_json,
         proxy_selected = proxy_selected,
         proxy_route_json = json_string(proxy_route),
         proxy_forwarding_mode_json = json_string(proxy_forwarding_mode),
@@ -5631,6 +5773,7 @@ mod tests {
         Scenario::CombatDamage,
         Scenario::CombatKnockback,
         Scenario::ArmorEquipmentMitigation,
+        Scenario::ArmorLoadoutEnchantmentStatusMatrix,
         Scenario::EquipmentUpdateObservation,
         Scenario::ProjectileHit,
         Scenario::ProjectileDamageAttribution,
@@ -6124,6 +6267,16 @@ mod tests {
         let knockback = test_config(&["--scenario", "combat-knockback"], &[])
             .expect("combat-knockback scenario parses");
         assert_eq!(knockback.scenario, Scenario::CombatKnockback);
+
+        let armor_matrix = test_config(
+            &["--scenario", "armor-loadout-enchantment-status-matrix"],
+            &[],
+        )
+        .expect("armor matrix scenario parses");
+        assert_eq!(
+            armor_matrix.scenario,
+            Scenario::ArmorLoadoutEnchantmentStatusMatrix
+        );
 
         let projectile_damage = test_config(&["--scenario", "projectile-damage-attribution"], &[])
             .expect("projectile damage scenario parses");
@@ -7313,6 +7466,80 @@ negative_custom_payload_contained
         assert!(missing_damage
             .missing_milestones
             .contains(&"server_combat_damage"));
+    }
+
+    #[test]
+    fn armor_loadout_enchantment_status_matrix_tracks_isolated_row_evidence() {
+        let cfg = test_config(
+            &["--scenario", "armor-loadout-enchantment-status-matrix"],
+            &[("CLIENT_TIMEOUT", "150")],
+        )
+        .expect("armor matrix config parses");
+        assert_eq!(
+            planned_client_usernames(&cfg),
+            vec!["compatbota", "compatbotb"]
+        );
+
+        let client = evaluate_scenario(
+            Scenario::ArmorLoadoutEnchantmentStatusMatrix,
+            "mc_compat_combat_client_count=2\nDetected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\nYou are on team BLUE!\nremote_player_spawn\ninventory_probe_set_slot\ncombat_probe_attack_sent\nupdate_health health=18.0\n",
+        );
+        assert!(client.passed, "{client:?}");
+        assert!(client.missing_milestones.is_empty());
+
+        let server = evaluate_server_scenario(
+            Scenario::ArmorLoadoutEnchantmentStatusMatrix,
+            "compatbota joined\ncompatbotb joined\nMC-COMPAT-MILESTONE armor_equipment_state username=compatbotb slot=chest item=DiamondChestplate source=team_inventory_setup\nMC-COMPAT-MILESTONE combat_damage attacker=compatbota victim=compatbotb damage=2.0 victim_health_before=20.0 victim_health_after=18.0 attacker_item=WoodenSword\nMC-COMPAT-MILESTONE combat_armor_mitigation attacker=compatbota victim=compatbotb base_damage=4.0 mitigation=2.0 final_damage=2.0 chest_item=DiamondChestplate victim_health_before=20.0 victim_health_after=18.0\n",
+            "compatbot",
+        );
+        assert!(server.passed, "{server:?}");
+        assert!(server.missing_milestones.is_empty());
+
+        let missing_equipment = evaluate_server_scenario(
+            Scenario::ArmorLoadoutEnchantmentStatusMatrix,
+            "compatbota joined\ncompatbotb joined\nMC-COMPAT-MILESTONE combat_damage attacker=compatbota victim=compatbotb damage=2.0 victim_health_before=20.0 victim_health_after=18.0 attacker_item=WoodenSword\nMC-COMPAT-MILESTONE combat_armor_mitigation attacker=compatbota victim=compatbotb base_damage=4.0 mitigation=2.0 final_damage=2.0 chest_item=DiamondChestplate victim_health_before=20.0 victim_health_after=18.0\n",
+            "compatbot",
+        );
+        assert!(!missing_equipment.passed, "{missing_equipment:?}");
+        assert!(missing_equipment
+            .missing_milestones
+            .contains(&"server_equipment_state"));
+    }
+
+    #[test]
+    fn armor_loadout_enchantment_status_matrix_receipt_keeps_nonclaims() {
+        let cfg = test_config(
+            &["--scenario", "armor-loadout-enchantment-status-matrix"],
+            &[],
+        )
+        .expect("armor matrix config parses");
+        let scenario = evaluate_scenario(
+            Scenario::ArmorLoadoutEnchantmentStatusMatrix,
+            "mc_compat_combat_client_count=2\nDetected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\nYou are on team BLUE!\nremote_player_spawn\ninventory_probe_set_slot\ncombat_probe_attack_sent\nupdate_health health=18.0\n",
+        );
+        let server = evaluate_server_scenario(
+            Scenario::ArmorLoadoutEnchantmentStatusMatrix,
+            "compatbota joined\ncompatbotb joined\nMC-COMPAT-MILESTONE armor_equipment_state username=compatbotb slot=chest item=DiamondChestplate source=team_inventory_setup\nMC-COMPAT-MILESTONE combat_damage attacker=compatbota victim=compatbotb damage=2.0 victim_health_before=20.0 victim_health_after=18.0 attacker_item=WoodenSword\nMC-COMPAT-MILESTONE combat_armor_mitigation attacker=compatbota victim=compatbotb base_damage=4.0 mitigation=2.0 final_damage=2.0 chest_item=DiamondChestplate victim_health_before=20.0 victim_health_after=18.0\n",
+            "compatbot",
+        );
+        let matrix = evaluate_armor_loadout_enchantment_status_matrix(&cfg, &scenario, &server);
+        assert!(matrix.selected, "{matrix:?}");
+        assert!(!matrix.live_receipt, "{matrix:?}");
+        assert!(!matrix.promotion_ready, "{matrix:?}");
+        assert_eq!(matrix.row_id, ARMOR_MATRIX_ROW_ID);
+        let json = render_armor_loadout_enchantment_status_matrix_json(&matrix);
+        assert!(
+            json.contains("\"row_id\": \"chest_diamond_none_none_melee\""),
+            "{json}"
+        );
+        assert!(
+            json.contains("\"loadout_id\": \"armor_loadout_chest_only\""),
+            "{json}"
+        );
+        assert!(json.contains("\"reference_required\": false"), "{json}");
+        assert!(json.contains("\"promotion_ready\": false"), "{json}");
+        assert!(json.contains("\"all_enchantments\""), "{json}");
+        assert!(json.contains("\"full_combat_correctness\""), "{json}");
     }
 
     #[test]
