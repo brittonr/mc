@@ -53,3 +53,6 @@
 - `hyperion/` already has repo-local agent context in `hyperion/.agent/napkin.md` and a project-local skill in `hyperion/.pi/skills/`.
 - `valence/` CI copies `tools/playground/src/playground.template.rs` to `tools/playground/src/playground.rs` before fmt/clippy/test/doc runs.
 - Cairn `archive --execute` in mc currently writes archive dirs as `1970-01-01-<change>`; rename to current-date archive path (e.g. `2026-05-29-<change>`) and rerun `nix run --no-update-lock-file .#cairn -- validate --root .` before staging.
+
+- 2026-05-30: Parent repo ignores `/mc/*`; new Cairn/evidence/checker files under `mc/` need exact `git add -f ...` before Nix flake checks can see them in the source closure. Use `git add -u docs/evidence` for tracked `.b3` refreshes, then force-add only the new ignored evidence paths.
+- 2026-05-30: Changing shared `protocol-763-acceptance-matrix.md`, `protocol-763-current-evidence-bundle.md`, `tools/mc-compat-runner/src/main.rs`, `flake.nix`, or `README.md` stales many historical `docs/evidence/*.b3` manifests. Refresh all manifest entries, then rerun `nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py`.
