@@ -1,0 +1,48 @@
+Public server authorized safety archive validation — 2026-05-30
+$ nix develop --no-update-lock-file -c bash -lc cd tools/mc-compat-runner && cargo test public_server_authorized_safety -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+/home/brittonr/git/mc/tools/mc-compat-runner
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.03s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 3 tests
+test tests::public_server_authorized_safety_live_mode_fails_closed ... ok
+test tests::public_server_authorized_safety_disabled_path_stays_non_claim ... ok
+test tests::public_server_authorized_safety_receipt_renders_fixture_envelope ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 80 filtered out; finished in 0.00s
+
+exit_status=0
+$ ./tools/check_public_server_authorized_safety.rs --self-test
+public-server authorized safety self-test passed: positive fixture and fail-closed mutations passed
+exit_status=0
+$ ./tools/check_public_server_authorized_safety.rs --record docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.record
+public-server authorized safety check passed: contract=docs/evidence/protocol-763-public-server-authorized-safety-contract-2026-05-30.md record=docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.record receipt=docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.receipt.json matrix=docs/evidence/protocol-763-production-network-safety-matrix-2026-05-28.md bundle=docs/evidence/protocol-763-current-evidence-bundle.md
+exit_status=0
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-public-server-authorized-safety --no-link --print-out-paths -L
+this derivation will be built:
+  /nix/store/ss2ilm2xiygqzfxhvpbyds6plvv7l3j7-mc-compat-public-server-authorized-safety.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/ss2ilm2xiygqzfxhvpbyds6plvv7l3j7-mc-compat-public-server-authorized-safety.drv'...
+/nix/store/36g4ybjhy3b1bam8hxr6h7cc65cmay52-mc-compat-public-server-authorized-safety
+exit_status=0
+$ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 74 manifests, 377 entries, 62 receipts scanned
+exit_status=0
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 34,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 36,
+  "valid": true
+}
+exit_status=0

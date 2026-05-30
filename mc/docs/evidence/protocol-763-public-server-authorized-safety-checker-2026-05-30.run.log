@@ -1,0 +1,2 @@
+public-server authorized safety self-test passed: positive fixture and fail-closed mutations passed
+public-server authorized safety check passed: contract=docs/evidence/protocol-763-public-server-authorized-safety-contract-2026-05-30.md record=docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.record receipt=docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.receipt.json matrix=docs/evidence/protocol-763-production-network-safety-matrix-2026-05-28.md bundle=docs/evidence/protocol-763-current-evidence-bundle.md

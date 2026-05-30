@@ -4438,6 +4438,129 @@ fn render_latency_jitter_receipt_json(receipt: &LatencyJitterTelemetryReceipt) -
     )
 }
 
+const PUBLIC_SERVER_AUTHORIZED_SAFETY_ENV: &str = "MC_COMPAT_PUBLIC_SERVER_AUTHORIZED_SAFETY";
+const PUBLIC_SERVER_TARGET_OWNER_ENV: &str = "MC_COMPAT_PUBLIC_SERVER_TARGET_OWNER";
+const PUBLIC_SERVER_AUTHORIZATION_ARTIFACT_ENV: &str =
+    "MC_COMPAT_PUBLIC_SERVER_AUTHORIZATION_ARTIFACT";
+const PUBLIC_SERVER_TARGET_SCOPE_ENV: &str = "MC_COMPAT_PUBLIC_SERVER_TARGET_SCOPE";
+const PUBLIC_SERVER_CHECKPOINT_DECISION_ENV: &str = "MC_COMPAT_PUBLIC_SERVER_CHECKPOINT_DECISION";
+const PUBLIC_SERVER_AUTHORIZED_ENV_VALUE: &str = "1";
+const PUBLIC_SERVER_DEFAULT_TARGET_OWNER: &str = "review-fixture-owner";
+const PUBLIC_SERVER_DEFAULT_TARGET_SCOPE: &str = "authorized-non-loopback-fixture";
+const PUBLIC_SERVER_DEFAULT_AUTHORIZATION_ARTIFACT: &str =
+    "docs/evidence/protocol-763-public-server-authorized-safety-checkpoint-2026-05-30.md";
+const PUBLIC_SERVER_DEFAULT_CHECKPOINT_DECISION: &str = "approved_for_deterministic_fixture_only";
+const PUBLIC_SERVER_ABORT_CRITERIA: &str = "missing_authorization_or_bound_violation";
+const PUBLIC_SERVER_REDACTION_POLICY: &str = "no_secrets_no_raw_public_address";
+const PUBLIC_SERVER_FIXTURE_LIVE_TRAFFIC_ENABLED: bool = false;
+const PUBLIC_SERVER_TRAFFIC_LIMITS: &[&str] = &[
+    "client_count<=1",
+    "duration_secs<=30",
+    "status_probe_only",
+    "live_traffic_enabled=false",
+];
+const PUBLIC_SERVER_TELEMETRY_FIELDS: &[&str] = &[
+    "target_owner",
+    "authorization_artifact",
+    "target_scope",
+    "client_count",
+    "duration_secs",
+    "traffic_limits",
+    "abort_criteria",
+    "redaction_policy",
+    "checkpoint_decision",
+];
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct PublicServerAuthorizedSafetyReceipt {
+    selected: bool,
+    target_owner: String,
+    authorization_artifact: String,
+    target_scope: String,
+    client_count: usize,
+    duration_secs: u64,
+    checkpoint_decision: String,
+    live_traffic_enabled: bool,
+}
+
+fn public_server_authorized_safety_receipt_json(cfg: &Config) -> String {
+    let receipt = public_server_authorized_safety_from_config(cfg);
+    render_public_server_authorized_safety_receipt_json(&receipt)
+}
+
+fn public_server_authorized_safety_from_config(
+    cfg: &Config,
+) -> PublicServerAuthorizedSafetyReceipt {
+    let requested = std::env::var(PUBLIC_SERVER_AUTHORIZED_SAFETY_ENV).unwrap_or_default()
+        == PUBLIC_SERVER_AUTHORIZED_ENV_VALUE;
+    let selected = public_server_authorized_safety_selected(requested, cfg.mode);
+    let target_owner = std::env::var(PUBLIC_SERVER_TARGET_OWNER_ENV)
+        .unwrap_or_else(|_| PUBLIC_SERVER_DEFAULT_TARGET_OWNER.to_string());
+    let authorization_artifact = std::env::var(PUBLIC_SERVER_AUTHORIZATION_ARTIFACT_ENV)
+        .unwrap_or_else(|_| PUBLIC_SERVER_DEFAULT_AUTHORIZATION_ARTIFACT.to_string());
+    let target_scope = std::env::var(PUBLIC_SERVER_TARGET_SCOPE_ENV)
+        .unwrap_or_else(|_| PUBLIC_SERVER_DEFAULT_TARGET_SCOPE.to_string());
+    let checkpoint_decision = std::env::var(PUBLIC_SERVER_CHECKPOINT_DECISION_ENV)
+        .unwrap_or_else(|_| PUBLIC_SERVER_DEFAULT_CHECKPOINT_DECISION.to_string());
+    PublicServerAuthorizedSafetyReceipt {
+        selected,
+        target_owner,
+        authorization_artifact,
+        target_scope,
+        client_count: planned_client_usernames(cfg).len(),
+        duration_secs: cfg.client_timeout.as_secs(),
+        checkpoint_decision,
+        live_traffic_enabled: PUBLIC_SERVER_FIXTURE_LIVE_TRAFFIC_ENABLED,
+    }
+}
+
+fn public_server_authorized_safety_selected(requested: bool, mode: Mode) -> bool {
+    requested && matches!(mode, Mode::DryRun)
+}
+
+fn render_public_server_authorized_safety_receipt_json(
+    receipt: &PublicServerAuthorizedSafetyReceipt,
+) -> String {
+    format!(
+        r#"{{
+    "selected": {selected},
+    "target_owner": {target_owner},
+    "authorization_artifact": {authorization_artifact},
+    "target_scope": {target_scope},
+    "client_count": {client_count},
+    "duration_secs": {duration_secs},
+    "traffic_limits": {traffic_limits},
+    "telemetry_fields": {telemetry_fields},
+    "abort_criteria": {abort_criteria},
+    "redaction_policy": {redaction_policy},
+    "checkpoint_decision": {checkpoint_decision},
+    "live_traffic_enabled": {live_traffic_enabled},
+    "fixture_only": true,
+    "claims_authorized_public_envelope": {claims_authorized_public_envelope},
+    "claims_live_public_server_safety": false,
+    "claims_third_party_target_safety_without_authorization": false,
+    "claims_production_readiness": false,
+    "claims_adversarial_safety": false,
+    "claims_wan_tolerance": false,
+    "claims_load_safety_beyond_configured_bounds": false,
+    "claims_unbounded_public_testing": false
+  }}"#,
+        selected = receipt.selected,
+        target_owner = json_string(&receipt.target_owner),
+        authorization_artifact = json_string(&receipt.authorization_artifact),
+        target_scope = json_string(&receipt.target_scope),
+        client_count = receipt.client_count,
+        duration_secs = receipt.duration_secs,
+        traffic_limits = json_string_array(PUBLIC_SERVER_TRAFFIC_LIMITS),
+        telemetry_fields = json_string_array(PUBLIC_SERVER_TELEMETRY_FIELDS),
+        abort_criteria = json_string(PUBLIC_SERVER_ABORT_CRITERIA),
+        redaction_policy = json_string(PUBLIC_SERVER_REDACTION_POLICY),
+        checkpoint_decision = json_string(&receipt.checkpoint_decision),
+        live_traffic_enabled = receipt.live_traffic_enabled,
+        claims_authorized_public_envelope = receipt.selected,
+    )
+}
+
 fn render_negative_live_rail_json(evidence: &NegativeLiveRailEvidence) -> String {
     format!(
         r#"{{
@@ -4842,6 +4965,7 @@ fn smoke_receipt_json_with_typed_event_oracle(
     };
     let typed_event_oracle_json = typed_event_oracle_receipt_json(typed_event_oracle);
     let latency_jitter_json = latency_jitter_receipt_json(cfg);
+    let public_server_authorized_safety_json = public_server_authorized_safety_receipt_json(cfg);
     let load_network_safety = evaluate_load_network_safety(load_network_safety_inputs(
         cfg,
         client.is_some() && server_scenario.passed,
@@ -5029,6 +5153,7 @@ fn smoke_receipt_json_with_typed_event_oracle(
   "typed_event_oracle": {typed_event_oracle_json},
   "latency_jitter_tolerance": {latency_jitter_json},
   "load_network_safety": {load_network_safety_json},
+  "public_server_authorized_safety": {public_server_authorized_safety_json},
   "negative_live_rail": {negative_live_rail_json},
   "proxy_compat_seam": {{
     "selected": {proxy_selected},
@@ -7583,6 +7708,98 @@ red flag captured
         assert_eq!(
             latency_jitter_reconnect_count(Scenario::NegativeReconnectRace),
             SINGLE_RECONNECT_SESSION
+        );
+    }
+
+    #[test]
+    fn public_server_authorized_safety_receipt_renders_fixture_envelope() {
+        const TEST_DURATION_SECS: u64 = 30;
+        const TEST_CLIENT_COUNT: usize = 1;
+        let receipt = PublicServerAuthorizedSafetyReceipt {
+            selected: true,
+            target_owner: PUBLIC_SERVER_DEFAULT_TARGET_OWNER.to_string(),
+            authorization_artifact: PUBLIC_SERVER_DEFAULT_AUTHORIZATION_ARTIFACT.to_string(),
+            target_scope: PUBLIC_SERVER_DEFAULT_TARGET_SCOPE.to_string(),
+            client_count: TEST_CLIENT_COUNT,
+            duration_secs: TEST_DURATION_SECS,
+            checkpoint_decision: PUBLIC_SERVER_DEFAULT_CHECKPOINT_DECISION.to_string(),
+            live_traffic_enabled: false,
+        };
+
+        let json = render_public_server_authorized_safety_receipt_json(&receipt);
+
+        assert!(json.contains("\"selected\": true"), "{json}");
+        assert!(
+            json.contains("\"target_owner\": \"review-fixture-owner\""),
+            "{json}"
+        );
+        assert!(
+            json.contains("\"target_scope\": \"authorized-non-loopback-fixture\""),
+            "{json}"
+        );
+        assert!(json.contains("\"client_count\": 1"), "{json}");
+        assert!(json.contains("\"duration_secs\": 30"), "{json}");
+        assert!(json.contains("\"status_probe_only\""), "{json}");
+        assert!(json.contains("\"redaction_policy\""), "{json}");
+        assert!(
+            json.contains("\"checkpoint_decision\": \"approved_for_deterministic_fixture_only\""),
+            "{json}"
+        );
+        assert!(json.contains("\"live_traffic_enabled\": false"), "{json}");
+        assert!(
+            json.contains("\"claims_authorized_public_envelope\": true"),
+            "{json}"
+        );
+        assert!(
+            json.contains("\"claims_live_public_server_safety\": false"),
+            "{json}"
+        );
+        assert!(
+            json.contains("\"claims_production_readiness\": false"),
+            "{json}"
+        );
+        assert!(json.contains("\"claims_wan_tolerance\": false"), "{json}");
+    }
+
+    #[test]
+    fn public_server_authorized_safety_live_mode_fails_closed() {
+        assert!(public_server_authorized_safety_selected(true, Mode::DryRun));
+        assert!(!public_server_authorized_safety_selected(true, Mode::Run));
+        assert!(!public_server_authorized_safety_selected(
+            false,
+            Mode::DryRun
+        ));
+    }
+
+    #[test]
+    fn public_server_authorized_safety_disabled_path_stays_non_claim() {
+        const TEST_DURATION_SECS: u64 = 30;
+        const TEST_CLIENT_COUNT: usize = 1;
+        let receipt = PublicServerAuthorizedSafetyReceipt {
+            selected: false,
+            target_owner: PUBLIC_SERVER_DEFAULT_TARGET_OWNER.to_string(),
+            authorization_artifact: PUBLIC_SERVER_DEFAULT_AUTHORIZATION_ARTIFACT.to_string(),
+            target_scope: PUBLIC_SERVER_DEFAULT_TARGET_SCOPE.to_string(),
+            client_count: TEST_CLIENT_COUNT,
+            duration_secs: TEST_DURATION_SECS,
+            checkpoint_decision: PUBLIC_SERVER_DEFAULT_CHECKPOINT_DECISION.to_string(),
+            live_traffic_enabled: false,
+        };
+
+        let json = render_public_server_authorized_safety_receipt_json(&receipt);
+
+        assert!(json.contains("\"selected\": false"), "{json}");
+        assert!(
+            json.contains("\"claims_authorized_public_envelope\": false"),
+            "{json}"
+        );
+        assert!(
+            json.contains("\"claims_live_public_server_safety\": false"),
+            "{json}"
+        );
+        assert!(
+            json.contains("\"claims_third_party_target_safety_without_authorization\": false"),
+            "{json}"
         );
     }
 

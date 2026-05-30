@@ -34,9 +34,13 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 | Survival break/place/pickup | Paper+Valence paired `survival-break-place-pickup` receipts | `a88fe547bfe2dd43fff3ac5bd967f0ebf5a3c539403211dd029865293130090b` |
 | Survival chest persistence | Paper+Valence paired `survival-chest-persistence` receipts | `3dd16d3d15f47793505e97a088408d039c6cd45a73f288c7301c5e4f3f4851cf` |
 
+## Public server authorized safety checkpoint
+
+The public-server authorization fixture row is validated by `docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.md`, `docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.receipt.json`, `docs/evidence/protocol-763-public-server-authorized-safety-checkpoint-2026-05-30.md`, and `tools/check_public_server_authorized_safety.rs`. The production/network matrix marks only `covered_authorized_fixture_only` for the `public-server safety` row, with `target_owner=review-fixture-owner`, `target_scope=authorized-non-loopback-fixture`, `client_count=1`, `duration_secs=30`, `traffic_limits=client_count<=1,duration_secs<=30,status_probe_only,live_traffic_enabled=false`, and `redaction_policy=no_secrets_no_raw_public_address`. live public-server safety remains a non-claim; third-party target safety without authorization, production readiness, adversarial safety, WAN tolerance, load safety beyond configured bounds, and unbounded public testing remain non-claims.
+
 ## WAN tolerance bounded telemetry checkpoint
 
-The bounded owned-local WAN telemetry row is validated by `docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.md`, `docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.receipt.json`, and `tools/check_wan_tolerance_bounded_telemetry.rs`. The production/network matrix marks only `covered_owned_local_bounded_telemetry` for the `WAN tolerance` row, with `target_ownership=owned-local-loopback`, `authorization=owned-local-fixture-approved`, `delay_ms=80`, `jitter_ms=30`, `loss_percent=0`, `client_count=1`, and `reconnect_count=0`. Public-server safety, internet-path safety remains a non-claim, packet-loss tolerance beyond the recorded zero-loss envelope, adversarial-network safety, production readiness, unbounded soak/reconnect safety, and third-party target safety remain non-claims.
+The bounded owned-local WAN telemetry row is validated by `docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.md`, `docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.receipt.json`, and `tools/check_wan_tolerance_bounded_telemetry.rs`. The production/network matrix marks only `covered_owned_local_bounded_telemetry` for the `WAN tolerance` row, with `target_ownership=owned-local-loopback`, `authorization=owned-local-fixture-approved`, `delay_ms=80`, `jitter_ms=30`, `loss_percent=0`, `client_count=1`, and `reconnect_count=0`. Public/internet WAN safety remains a non-claim, packet-loss tolerance beyond the recorded zero-loss envelope, adversarial-network safety, production readiness, unbounded soak/reconnect safety, and third-party target safety remain non-claims.
 
 ## Inventory semantics matrix checkpoint
 
@@ -116,6 +120,8 @@ python3 tools/check_current_evidence_bundle.py
 ./tools/check_adversarial_network_oracle.rs --record docs/evidence/protocol-763-adversarial-network-oracle-fixture-2026-05-29.record
 ./tools/check_wan_tolerance_bounded_telemetry.rs --self-test
 ./tools/check_wan_tolerance_bounded_telemetry.rs --record docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.record
+./tools/check_public_server_authorized_safety.rs --self-test
+./tools/check_public_server_authorized_safety.rs --record docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.record
 python3 tools/check_death_respawn_lifecycle.py
 python3 tools/check_inventory_semantics_matrix.py
 python3 tools/check_equipment_slot_item_matrix.py
@@ -158,7 +164,7 @@ Reviewable copied receipts for matrix rows are indexed at `docs/evidence/protoco
 
 The runner receipt surface includes a `load_network_safety` block that records owned-local or explicit authorization, client/duration/reconnect/network bounds, telemetry readiness, and fail-closed diagnostics. Evidence: `docs/evidence/protocol-763-load-network-safety-2026-05-27.md` and `docs/evidence/protocol-763-production-network-safety-matrix-2026-05-28.md`.
 
-The production/network matrix promotes bounded owned-local loopback load safety plus one deterministic fixture-only adversarial-network oracle row. The fixture row is backed by `docs/evidence/protocol-763-adversarial-network-oracle-2026-05-29.md`, receipt `docs/evidence/protocol-763-adversarial-network-oracle-2026-05-29.receipt.json`, BLAKE3 manifest `docs/evidence/protocol-763-adversarial-network-oracle-2026-05-29.b3`, and checker `tools/check_adversarial_network_oracle.rs`. Broader production readiness, public-server safety, WAN safety, live adversarial-network safety, packet-loss tolerance, unbounded adversarial robustness, and unbounded safety remain non-claims unless a future authorized live envelope has telemetry, BLAKE3-backed evidence, and an updated matrix/bundle row.
+The production/network matrix promotes bounded owned-local loopback load safety, one deterministic public-server authorized fixture, one bounded owned-local WAN telemetry row, and one deterministic fixture-only adversarial-network oracle row. The public-server fixture row is backed by `docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.md`, receipt `docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.receipt.json`, BLAKE3 manifest `docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.b3`, checkpoint `docs/evidence/protocol-763-public-server-authorized-safety-checkpoint-2026-05-30.md`, and checker `tools/check_public_server_authorized_safety.rs`. Broader production readiness, live public-server safety, third-party target safety without authorization, live adversarial-network safety, packet-loss tolerance, unbounded adversarial robustness, and unbounded safety remain non-claims unless a future authorized live envelope has telemetry, BLAKE3-backed evidence, and an updated matrix/bundle row.
 
 ## Reference parity labels
 

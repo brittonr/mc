@@ -711,6 +711,16 @@
           mkdir -p "$out"
           cp ../wan-tolerance-bounded-telemetry-self-test.log ../wan-tolerance-bounded-telemetry-check.log "$out/"
         '';
+        mc-compat-public-server-authorized-safety = pkgs.runCommand "mc-compat-public-server-authorized-safety" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc ]; } ''
+          cp -R ${./.} repo
+          chmod -R u+w repo
+          cd repo
+          rustc --edition=2021 tools/check_public_server_authorized_safety.rs -o ../check-public-server-authorized-safety
+          ../check-public-server-authorized-safety --self-test > ../public-server-authorized-safety-self-test.log
+          ../check-public-server-authorized-safety > ../public-server-authorized-safety-check.log
+          mkdir -p "$out"
+          cp ../public-server-authorized-safety-self-test.log ../public-server-authorized-safety-check.log "$out/"
+        '';
         mc-compat-armor-loadout-enchantment-status = pkgs.runCommand "mc-compat-armor-loadout-enchantment-status" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc ]; } ''
           cp -R ${./.} repo
           chmod -R u+w repo
@@ -1249,6 +1259,7 @@
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-cairn-task-evidence} "$out/cairn-task-evidence"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-adversarial-network-oracle} "$out/adversarial-network-oracle"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-wan-tolerance-bounded-telemetry} "$out/wan-tolerance-bounded-telemetry"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-public-server-authorized-safety} "$out/public-server-authorized-safety"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-armor-loadout-enchantment-status} "$out/armor-loadout-enchantment-status"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-equipment-slot-item-expansion} "$out/equipment-slot-item-expansion"
           cat > "$out/manifest.txt" <<'EOF'
@@ -1277,6 +1288,7 @@
           cairn-task-evidence
           adversarial-network-oracle
           wan-tolerance-bounded-telemetry
+          public-server-authorized-safety
           armor-loadout-enchantment-status
           equipment-slot-item-expansion
           EOF

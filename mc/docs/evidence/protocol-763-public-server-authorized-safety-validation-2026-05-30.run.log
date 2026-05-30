@@ -1,0 +1,93 @@
+Public server authorized safety validation — 2026-05-30
+$ ./tools/check_public_server_authorized_safety.rs --self-test
+public-server authorized safety self-test passed: positive fixture and fail-closed mutations passed
+exit_status=0
+$ ./tools/check_public_server_authorized_safety.rs --record docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.record
+public-server authorized safety check passed: contract=docs/evidence/protocol-763-public-server-authorized-safety-contract-2026-05-30.md record=docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.record receipt=docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.receipt.json matrix=docs/evidence/protocol-763-production-network-safety-matrix-2026-05-28.md bundle=docs/evidence/protocol-763-current-evidence-bundle.md
+exit_status=0
+$ python3 tools/check_acceptance_matrix.py --self-test
+acceptance matrix self-test ok
+exit_status=0
+$ python3 tools/check_acceptance_matrix.py
+acceptance matrix ok: 17 seams, 17 hashes
+exit_status=0
+$ python3 tools/check_current_evidence_bundle.py --self-test
+current evidence bundle self-test ok
+exit_status=0
+$ python3 tools/check_current_evidence_bundle.py
+current evidence bundle ok: 17 seams
+exit_status=0
+$ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 74 manifests, 375 entries, 62 receipts scanned
+exit_status=0
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-public-server-authorized-safety --no-link --print-out-paths -L
+this derivation will be built:
+  /nix/store/57hdjls0v1b0ymbw0ndps6k7yzxxa460-mc-compat-public-server-authorized-safety.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/57hdjls0v1b0ymbw0ndps6k7yzxxa460-mc-compat-public-server-authorized-safety.drv'...
+/nix/store/f6vdwdr7nwik3kdz6dpwqaa3293wsn4n-mc-compat-public-server-authorized-safety
+exit_status=0
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link --print-out-paths -L
+this derivation will be built:
+  /nix/store/7c69ghimcimr9v08ikzlffbgyfb0yhc0-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/7c69ghimcimr9v08ikzlffbgyfb0yhc0-mc-compat-cairn-task-evidence.drv'...
+/nix/store/yvc30r9mfz58jn54d3hp0690f7k66fjn-mc-compat-cairn-task-evidence
+exit_status=0
+$ nix run --no-update-lock-file .#cairn -- gate proposal public-server-authorized-safety --root .
+{
+  "change": "public-server-authorized-safety",
+  "input_hash": "8ba5396485439f4318d4a71647ab5834b70d581806f1cfb33e73c420bd9d9cc2",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "f035f14da56022d12c027e8d881a8eba9958946b4c3b813b5216edb24f49e7f3",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+$ nix run --no-update-lock-file .#cairn -- gate design public-server-authorized-safety --root .
+{
+  "change": "public-server-authorized-safety",
+  "input_hash": "e0e46a66de36e06da2de618acc171e12eaaa5d6af88e1a5273f804eff9218326",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "704ec36bf0e7b9d81ba599d8e5ff6c7f0497487bf46fd411d820eafc79e8d4d5",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+$ nix run --no-update-lock-file .#cairn -- gate tasks public-server-authorized-safety --root .
+{
+  "change": "public-server-authorized-safety",
+  "input_hash": "df1628b9f0b8dac734b6e55c885a49b8da05cd382dd1decf536d85729111b877",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "248ef2d2239b7168825d4f7f625ae3eac4bcaacccc35b84bbac8f8d261fb5f4d",
+  "receipt_hash": "75dd221ca31dcc9be8a6f4d42738e5f6eb8adc0458243b0ffaffe8608d77b875",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 35,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 37,
+  "valid": true
+}
+exit_status=0
