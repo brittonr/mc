@@ -1,4 +1,8 @@
-WAN tolerance bounded telemetry archive validation — 2026-05-29
+WAN tolerance bounded telemetry archive validation — 2026-05-29 (post-review refresh)
+$ ./tools/check_wan_tolerance_bounded_telemetry.rs --self-test
+WAN tolerance bounded telemetry self-test passed: positive fixture and fail-closed mutations passed
+$ ./tools/check_wan_tolerance_bounded_telemetry.rs --record docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.record
+WAN tolerance bounded telemetry check passed: contract=docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-contract-2026-05-29.md record=docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.record receipt=docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.receipt.json matrix=docs/evidence/protocol-763-production-network-safety-matrix-2026-05-28.md bundle=docs/evidence/protocol-763-current-evidence-bundle.md
 $ nix run --no-update-lock-file .#cairn -- validate --root .
 {
   "change_issues": [],
@@ -10,13 +14,10 @@ $ nix run --no-update-lock-file .#cairn -- validate --root .
   "specs_validated": 37,
   "valid": true
 }
-$ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
-mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
-Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
-OnixResearch tools are pinned over SSH: cairn, cargo-octet
-evidence manifests ok: 73 manifests, 354 entries, 61 receipts scanned
 $ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-wan-tolerance-bounded-telemetry --no-link -L
 this derivation will be built:
-  /nix/store/87990wl6d9wi95j2pasyfwx1jic9rwxw-mc-compat-wan-tolerance-bounded-telemetry.drv
+  /nix/store/0llrw501ifzaa6bfiv0mms47lrspl30h-mc-compat-wan-tolerance-bounded-telemetry.drv
 cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
-building '/nix/store/87990wl6d9wi95j2pasyfwx1jic9rwxw-mc-compat-wan-tolerance-bounded-telemetry.drv'...
+building '/nix/store/0llrw501ifzaa6bfiv0mms47lrspl30h-mc-compat-wan-tolerance-bounded-telemetry.drv'...
+archive validation PASS: checker, Cairn validate, and Nix WAN telemetry checker completed successfully.
+Repo-wide evidence manifest PASS was rerun after refreshing this log digest to avoid a self-referential manifest check.
