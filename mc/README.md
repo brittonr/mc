@@ -10,6 +10,16 @@ The legacy shell entrypoint is intentionally only a thin compatibility shim arou
 
 ## Commands
 
+Launch the editable local server/client checkouts through the root flake environment:
+
+```sh
+nix run .#valence -- --dry-run
+nix run .#stevenarella -- --dry-run
+
+# Omit --dry-run to start the Valence CTF example or Stevenarella client.
+# Stevenarella auto-wraps with Xvfb when DISPLAY is unset.
+```
+
 Dry-run the plan without starting the server or client:
 
 ```sh

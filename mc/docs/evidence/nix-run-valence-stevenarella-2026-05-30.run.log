@@ -1,0 +1,701 @@
+# nix-run valence/stevenarella real launch probe — 2026-05-30
+
+## Valence real app path
+$ timeout ${launch_timeout}s nix run --no-update-lock-file .#valence --
+this derivation will be built:
+  /nix/store/9bgnh1ignjdbx7wsaf9q1y6qzyrv4rcx-valence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/9bgnh1ignjdbx7wsaf9q1y6qzyrv4rcx-valence.drv'...
+   Compiling proc-macro2 v1.0.106
+   Compiling unicode-ident v1.0.24
+   Compiling quote v1.0.45
+   Compiling cfg-if v1.0.4
+   Compiling libc v0.2.185
+   Compiling version_check v0.9.5
+   Compiling pin-project-lite v0.2.17
+   Compiling serde v1.0.228
+   Compiling smallvec v1.15.1
+   Compiling itoa v1.0.18
+   Compiling futures-core v0.3.32
+   Compiling serde_core v1.0.228
+   Compiling once_cell v1.21.4
+   Compiling zerocopy v0.8.48
+   Compiling equivalent v1.0.2
+   Compiling scopeguard v1.2.0
+   Compiling typenum v1.19.0
+   Compiling stable_deref_trait v1.2.1
+   Compiling zmij v1.0.21
+   Compiling futures-io v0.3.32
+   Compiling hashbrown v0.17.0
+   Compiling slab v0.4.12
+   Compiling crossbeam-utils v0.8.21
+   Compiling serde_json v1.0.149
+   Compiling lock_api v0.4.14
+   Compiling heck v0.5.0
+   Compiling tracing-core v0.1.36
+   Compiling thiserror v1.0.69
+   Compiling bitflags v2.11.0
+   Compiling bytes v1.11.1
+   Compiling getrandom v0.3.4
+   Compiling anyhow v1.0.102
+   Compiling winnow v0.7.15
+   Compiling toml_datetime v0.6.11
+   Compiling parking v2.2.1
+   Compiling getrandom v0.4.2
+   Compiling indexmap v2.14.0
+   Compiling allocator-api2 v0.2.21
+   Compiling concurrent-queue v2.5.0
+   Compiling memchr v2.8.0
+   Compiling typeid v1.0.3
+   Compiling thread_local v1.1.9
+   Compiling erased-serde v0.4.10
+   Compiling event-listener v5.4.1
+   Compiling generic-array v0.14.7
+   Compiling ahash v0.8.12
+   Compiling writeable v0.6.3
+   Compiling parking_lot_core v0.9.12
+   Compiling fastrand v2.4.1
+   Compiling litemap v0.8.2
+   Compiling syn v2.0.117
+   Compiling futures-lite v2.6.1
+   Compiling event-listener-strategy v0.5.4
+   Compiling async-task v4.7.1
+   Compiling icu_normalizer_data v2.2.0
+   Compiling utf8_iter v1.0.4
+   Compiling icu_properties_data v2.2.0
+   Compiling web-time v1.1.0
+   Compiling async-channel v2.5.0
+   Compiling downcast-rs v1.2.1
+   Compiling fixedbitset v0.4.2
+   Compiling bevy_ptr v0.14.2
+   Compiling getrandom v0.2.17
+   Compiling smol_str v0.2.2
+   Compiling percent-encoding v2.3.2
+   Compiling crypto-common v0.1.7
+   Compiling rand_core v0.6.4
+   Compiling petgraph v0.6.5
+   Compiling parking_lot v0.12.5
+   Compiling fixedbitset v0.5.7
+   Compiling arrayvec v0.7.6
+   Compiling nonmax v0.5.5
+   Compiling inout v0.1.4
+   Compiling form_urlencoded v1.2.2
+   Compiling cpufeatures v0.2.17
+   Compiling base64 v0.22.1
+   Compiling crc32fast v1.5.0
+   Compiling cipher v0.4.4
+   Compiling byteorder v1.5.0
+   Compiling glam v0.29.3
+   Compiling uuid v1.23.0
+   Compiling cesu8 v1.1.0
+   Compiling async-executor v1.14.0
+   Compiling adler2 v2.0.1
+   Compiling toml_edit v0.22.27
+   Compiling simd-adler32 v0.3.9
+   Compiling cfb8 v0.8.1
+   Compiling aes v0.8.4
+   Compiling miniz_oxide v0.8.9
+   Compiling bevy_tasks v0.14.2
+   Compiling paste v1.0.15
+   Compiling zeroize v1.8.2
+   Compiling libm v0.2.16
+   Compiling autocfg v1.5.0
+   Compiling rustc-hash v2.1.2
+   Compiling futures-sink v0.3.32
+   Compiling errno v0.3.14
+   Compiling shlex v1.3.0
+   Compiling find-msvc-tools v0.1.9
+   Compiling const-oid v0.9.6
+   Compiling subtle v2.6.1
+   Compiling signal-hook-registry v1.4.8
+   Compiling cc v1.2.60
+   Compiling socket2 v0.6.3
+   Compiling mio v1.2.0
+   Compiling spin v0.9.8
+   Compiling flate2 v1.1.9
+   Compiling http v1.4.0
+   Compiling rustls-pki-types v1.14.0
+   Compiling block-buffer v0.10.4
+   Compiling futures-task v0.3.32
+   Compiling untrusted v0.9.0
+   Compiling base64ct v1.8.3
+   Compiling httparse v1.10.1
+   Compiling futures-util v0.3.32
+   Compiling pem-rfc7468 v0.7.0
+   Compiling digest v0.10.7
+   Compiling num-traits v0.2.19
+   Compiling lazy_static v1.5.0
+   Compiling http-body v1.0.1
+   Compiling rustls v0.23.38
+   Compiling tower-service v0.3.3
+   Compiling try-lock v0.2.5
+   Compiling der v0.7.10
+   Compiling want v0.3.1
+   Compiling futures-channel v0.3.32
+   Compiling ppv-lite86 v0.2.21
+   Compiling num-conv v0.2.1
+   Compiling rustix v1.1.4
+   Compiling powerfmt v0.2.0
+   Compiling atomic-waker v1.1.2
+   Compiling log v0.4.29
+   Compiling time-core v0.1.8
+   Compiling thiserror v2.0.18
+   Compiling deranged v0.5.8
+   Compiling sync_wrapper v1.0.2
+   Compiling time-macros v0.2.27
+   Compiling tower-layer v0.3.3
+   Compiling regex-syntax v0.8.10
+   Compiling rand_chacha v0.3.1
+   Compiling linux-raw-sys v0.12.1
+   Compiling synstructure v0.13.2
+   Compiling bevy_macro_utils v0.14.2
+   Compiling valence_build_utils v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_build_utils)
+   Compiling rand v0.8.5
+   Compiling num-integer v0.1.46
+   Compiling spki v0.7.3
+   Compiling radium v0.7.0
+   Compiling ipnet v2.12.0
+   Compiling num-bigint-dig v0.8.6
+   Compiling utf8parse v0.2.2
+   Compiling anstyle-parse v1.0.0
+   Compiling num-iter v0.1.45
+   Compiling num-bigint v0.4.6
+   Compiling pkcs8 v0.10.2
+   Compiling webpki-roots v1.0.6
+   Compiling valence_math v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_math)
+   Compiling regex-automata v0.4.14
+   Compiling nanorand v0.7.0
+   Compiling anstyle-query v1.1.5
+   Compiling tap v1.0.1
+   Compiling colorchoice v1.0.5
+   Compiling foldhash v0.2.0
+   Compiling ryu v1.0.23
+   Compiling iri-string v0.7.12
+   Compiling is_terminal_polyfill v1.70.2
+   Compiling anstyle v1.0.14
+   Compiling hashbrown v0.16.1
+   Compiling wyz v0.5.1
+   Compiling anstream v1.0.0
+   Compiling terminal_size v0.4.4
+   Compiling flume v0.11.1
+   Compiling pkcs1 v0.7.5
+   Compiling tracing-log v0.2.0
+   Compiling http-body-util v0.1.3
+   Compiling sharded-slab v0.1.7
+   Compiling signature v2.2.0
+   Compiling funty v2.0.0
+   Compiling strsim v0.11.1
+   Compiling nu-ansi-term v0.50.3
+   Compiling clap_lex v1.1.0
+   Compiling lru v0.16.4
+   Compiling bitvec v1.0.1
+   Compiling clap_builder v4.6.0
+   Compiling ordered-float v4.6.0
+   Compiling sha2 v0.10.9
+   Compiling rsa v0.9.10
+   Compiling sha1 v0.10.6
+   Compiling matchers v0.2.0
+   Compiling hmac v0.12.1
+   Compiling rand_xorshift v0.3.0
+   Compiling condtype v1.3.0
+   Compiling regex-lite v0.1.9
+   Compiling noise v0.9.0
+   Compiling time v0.3.47
+   Compiling ring v0.17.14
+   Compiling serde_derive v1.0.228
+   Compiling zerofrom-derive v0.1.7
+   Compiling yoke-derive v0.8.2
+   Compiling tracing-attributes v0.1.31
+   Compiling zerovec-derive v0.11.3
+   Compiling thiserror-impl v1.0.69
+   Compiling displaydoc v0.2.5
+   Compiling bevy_utils_proc_macros v0.14.2
+   Compiling bevy_reflect_derive v0.14.2
+   Compiling bevy_ecs_macros v0.14.2
+   Compiling valence_ident_macros v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_ident_macros)
+   Compiling bevy_derive v0.14.2
+   Compiling derive_more-impl v1.0.0
+   Compiling valence_protocol_macros v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_protocol_macros)
+   Compiling bitfield-struct v0.8.0
+   Compiling tokio-macros v2.7.0
+   Compiling thiserror-impl v2.0.18
+   Compiling clap_derive v4.6.0
+   Compiling async-trait v0.1.89
+   Compiling valence_command_macros v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_command_macros)
+   Compiling divan-macros v0.1.21
+   Compiling rustls-webpki v0.103.11
+   Compiling tokio v1.51.1
+   Compiling tracing v0.1.44
+   Compiling simple_asn1 v0.6.4
+   Compiling tracing-subscriber v0.3.23
+   Compiling rsa-der v0.3.0
+   Compiling clap v4.6.0
+   Compiling divan v0.1.21
+   Compiling zerofrom v0.1.7
+   Compiling yoke v0.8.2
+   Compiling hyper v1.9.0
+   Compiling tokio-rustls v0.26.4
+   Compiling tower v0.5.3
+   Compiling tokio-util v0.7.18
+   Compiling zerovec v0.11.6
+   Compiling zerotrie v0.2.4
+   Compiling tower-http v0.6.8
+   Compiling tinystr v0.8.3
+   Compiling potential_utf v0.1.5
+   Compiling hashbrown v0.14.5
+   Compiling icu_locale_core v2.2.0
+   Compiling icu_collections v2.2.0
+   Compiling valence_ident v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_ident)
+   Compiling valence_generated v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_generated)
+   Compiling valence_nbt v0.8.0 (/home/brittonr/git/mc/valence/crates/valence_nbt)
+   Compiling valence_entity v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_entity)
+   Compiling derive_more v1.0.0
+   Compiling valence_lang v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_lang)
+   Compiling bevy_utils v0.14.2
+   Compiling bevy_reflect v0.14.2
+   Compiling hyper-util v0.1.20
+   Compiling icu_provider v2.2.0
+   Compiling serde_urlencoded v0.7.1
+   Compiling valence_text v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_text)
+   Compiling icu_properties v2.2.0
+   Compiling icu_normalizer v2.2.0
+   Compiling idna_adapter v1.2.1
+   Compiling idna v1.1.0
+   Compiling hyper-rustls v0.27.8
+   Compiling url v2.5.8
+   Compiling reqwest v0.12.28
+   Compiling bevy_ecs v0.14.2
+   Compiling bevy_app v0.14.2
+   Compiling bevy_core v0.14.2
+   Compiling bevy_log v0.14.2
+   Compiling bevy_hierarchy v0.14.2
+   Compiling valence_protocol v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_protocol)
+   Compiling valence_server_common v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_server_common)
+   Compiling valence_registry v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_registry)
+   Compiling valence_server v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_server)
+   Compiling valence_inventory v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_inventory)
+   Compiling valence_boss_bar v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_boss_bar)
+   Compiling valence_player_list v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_player_list)
+   Compiling valence_weather v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_weather)
+   Compiling valence_scoreboard v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_scoreboard)
+   Compiling valence_anvil v0.1.0 (/home/brittonr/git/mc/valence/crates/valence_anvil)
+   Compiling valence_advancement v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_advancement)
+   Compiling valence_network v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_network)
+   Compiling valence_world_border v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_world_border)
+   Compiling valence_command v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_command)
+   Compiling valence_equipment v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_equipment)
+   Compiling valence v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence)
+warning: struct `ArrowPolicyDiff` is never constructed
+   --> examples/ctf.rs:114:8
+    |
+114 | struct ArrowPolicyDiff {
+    |        ^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `diff_arrow_policy_snapshots` is never used
+   --> examples/ctf.rs:406:4
+    |
+406 | fn diff_arrow_policy_snapshots(
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `push_arrow_policy_diff` is never used
+   --> examples/ctf.rs:432:4
+    |
+432 | fn push_arrow_policy_diff(
+    |    ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `valence` (example "ctf") generated 3 warnings
+    Finished `dev` profile [optimized + debuginfo] target(s) in 2m 03s
+     Running `/home/brittonr/git/mc/target/nix-run-valence/debug/examples/ctf`
+valence_exit_status=124
+valence_real_launch=observed_cargo_run
+
+## Stevenarella real app path
+$ timeout ${launch_timeout}s nix run --no-update-lock-file .#stevenarella --
+this derivation will be built:
+  /nix/store/9lssgjaidq0rrpv16h4jk9qhkk9yq5f2-stevenarella.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/9lssgjaidq0rrpv16h4jk9qhkk9yq5f2-stevenarella.drv'...
+warning: `/home/brittonr/git/mc/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: file `/home/brittonr/git/mc/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+   Compiling unicode-ident v1.0.22
+   Compiling proc-macro2 v1.0.103
+   Compiling quote v1.0.42
+   Compiling libc v0.2.177
+   Compiling cfg-if v1.0.4
+   Compiling autocfg v1.5.0
+   Compiling pkg-config v0.3.32
+   Compiling shlex v1.3.0
+   Compiling find-msvc-tools v0.1.5
+   Compiling version_check v0.9.5
+   Compiling once_cell v1.21.3
+   Compiling bitflags v1.3.2
+   Compiling xml-rs v0.8.28
+   Compiling smallvec v1.15.1
+   Compiling log v0.4.28
+   Compiling stable_deref_trait v1.2.1
+   Compiling simd-adler32 v0.3.7
+   Compiling lazy_static v1.5.0
+   Compiling adler2 v2.0.1
+   Compiling crc32fast v1.5.0
+   Compiling memchr v2.7.6
+   Compiling rand_core v0.4.2
+   Compiling thiserror v1.0.69
+   Compiling libloading v0.8.9
+   Compiling crossbeam-utils v0.8.21
+   Compiling cc v1.2.46
+   Compiling miniz_oxide v0.8.9
+   Compiling autocfg v0.1.8
+   Compiling vcpkg v0.2.15
+   Compiling pin-project-lite v0.2.16
+   Compiling dlib v0.5.2
+   Compiling khronos_api v3.1.0
+   Compiling typenum v1.19.0
+   Compiling zerocopy v0.8.27
+   Compiling bytes v1.11.0
+   Compiling generic-array v0.14.9
+   Compiling itoa v1.0.15
+   Compiling num-traits v0.2.19
+   Compiling memoffset v0.6.5
+   Compiling litemap v0.8.1
+   Compiling writeable v0.6.2
+   Compiling rand_core v0.3.1
+   Compiling bytemuck v1.24.0
+   Compiling wayland-sys v0.29.5
+   Compiling rayon-core v1.13.0
+   Compiling flate2 v1.1.5
+   Compiling serde_core v1.0.228
+   Compiling crossbeam-epoch v0.9.18
+   Compiling icu_properties_data v2.1.1
+   Compiling scoped-tls v1.0.1
+   Compiling cmake v0.1.54
+   Compiling wasm-bindgen-shared v0.2.105
+   Compiling icu_normalizer_data v2.1.1
+   Compiling downcast-rs v1.2.1
+   Compiling bitflags v2.10.0
+   Compiling futures-core v0.3.31
+   Compiling crossbeam-deque v0.8.6
+   Compiling syn v2.0.110
+   Compiling wayland-scanner v0.29.5
+   Compiling gl_generator v0.14.0
+   Compiling servo-fontconfig-sys v5.1.0
+   Compiling slotmap v1.0.7
+   Compiling fdeflate v0.3.7
+   Compiling fnv v1.0.7
+   Compiling foreign-types-shared v0.1.1
+   Compiling percent-encoding v2.3.2
+   Compiling vec_map v0.8.2
+   Compiling openssl v0.10.75
+   Compiling foreign-types v0.3.2
+   Compiling http v0.2.12
+   Compiling rand_chacha v0.1.1
+   Compiling freetype-sys v0.13.1
+   Compiling openssl-sys v0.9.111
+   Compiling num-integer v0.1.46
+   Compiling expat-sys v2.1.6
+   Compiling rand_pcg v0.1.2
+   Compiling tracing-core v0.1.34
+   Compiling anyhow v1.0.100
+   Compiling slab v0.4.11
+   Compiling native-tls v0.2.14
+   Compiling num-bigint v0.4.6
+   Compiling serde v1.0.228
+   Compiling nix v0.24.3
+   Compiling mio v1.1.0
+   Compiling socket2 v0.6.1
+   Compiling pin-utils v0.1.0
+   Compiling hashbrown v0.16.0
+   Compiling equivalent v1.0.2
+   Compiling futures-io v0.3.31
+   Compiling either v1.15.0
+   Compiling wayland-client v0.29.5
+   Compiling wayland-protocols v0.29.5
+   Compiling futures-task v0.3.31
+   Compiling httparse v1.10.1
+   Compiling futures-sink v0.3.31
+   Compiling tracing v0.1.41
+   Compiling tokio v1.48.0
+   Compiling futures-util v0.3.31
+   Compiling getrandom v0.2.16
+   Compiling nix v0.25.1
+   Compiling indexmap v2.12.0
+   Compiling quick-xml v0.30.0
+   Compiling x11-dl v2.21.0
+   Compiling crossfont v0.5.2
+   Compiling smithay-client-toolkit v0.16.1
+   Compiling rand v0.6.5
+   Compiling proc-macro-error-attr v1.0.4
+   Compiling built v0.7.7
+   Compiling num-rational v0.4.2
+   Compiling syn v1.0.109
+   Compiling arrayref v0.3.9
+   Compiling paste v1.0.15
+   Compiling parking_lot_core v0.9.12
+   Compiling maybe-uninit v2.0.0
+   Compiling xcursor v0.3.10
+   Compiling wayland-commons v0.29.5
+   Compiling arrayvec v0.7.6
+   Compiling foreign-types-shared v0.3.1
+   Compiling try-lock v0.2.5
+   Compiling openssl-probe v0.1.6
+   Compiling rustversion v1.0.22
+   Compiling want v0.3.1
+   Compiling xcb v1.6.0
+   Compiling rav1e v0.7.1
+   Compiling tiny-skia-path v0.7.0
+   Compiling rand_core v0.6.4
+   Compiling servo-fontconfig v0.5.1
+   Compiling rayon v1.11.0
+   Compiling freetype-rs v0.26.0
+   Compiling http-body v0.4.6
+   Compiling rand_os v0.1.3
+   Compiling socket2 v0.5.10
+   Compiling memmap2 v0.5.10
+   Compiling png v0.17.16
+   Compiling form_urlencoded v1.2.2
+   Compiling futures-channel v0.3.31
+   Compiling safe_arch v0.5.2
+   Compiling nom v8.0.0
+   Compiling rand_xorshift v0.1.1
+   Compiling rand_isaac v0.1.1
+   Compiling rand_hc v0.1.0
+   Compiling proc-macro-error v1.0.4
+   Compiling rand_jitter v0.1.4
+   Compiling ryu v1.0.20
+   Compiling quick-error v2.0.1
+   Compiling httpdate v1.0.3
+   Compiling scopeguard v1.2.0
+   Compiling synstructure v0.13.2
+   Compiling wayland-cursor v0.29.5
+   Compiling arrayvec v0.5.2
+   Compiling tower-service v0.3.3
+   Compiling cgmath v0.17.0
+   Compiling utf8_iter v1.0.4
+   Compiling lock_api v0.4.14
+   Compiling tiny-skia v0.7.0
+   Compiling itertools v0.12.1
+   Compiling cipher v0.3.0
+   Compiling glutin_glx_sys v0.1.8
+   Compiling glutin_egl_sys v0.1.6
+   Compiling approx v0.3.2
+   Compiling simd_helpers v0.1.0
+   Compiling instant v0.1.13
+   Compiling weezl v0.1.12
+   Compiling bit-vec v0.6.3
+   Compiling new_debug_unreachable v1.0.6
+   Compiling cpufeatures v0.2.17
+   Compiling unicode-width v0.1.14
+   Compiling unicode-segmentation v1.12.0
+   Compiling maybe-rayon v0.1.1
+   Compiling cty v0.2.2
+   Compiling opaque-debug v0.3.1
+   Compiling zune-core v0.4.12
+   Compiling bitstream-io v2.6.0
+   Compiling serde_json v1.0.145
+   Compiling tokio-util v0.7.17
+   Compiling base64 v0.21.7
+   Compiling bumpalo v3.19.0
+   Compiling imgref v1.12.0
+   Compiling noop_proc_macro v0.3.0
+   Compiling zerofrom-derive v0.1.6
+   Compiling yoke-derive v0.8.1
+   Compiling zerovec-derive v0.11.2
+   Compiling displaydoc v0.2.5
+   Compiling thiserror-impl v1.0.69
+   Compiling zerocopy-derive v0.8.27
+   Compiling equator-macro v0.4.2
+   Compiling openssl-macros v0.1.1
+   Compiling foreign-types-macros v0.2.3
+   Compiling serde_derive v1.0.228
+   Compiling h2 v0.3.27
+   Compiling profiling-procmacros v1.0.17
+   Compiling fax_derive v0.2.0
+   Compiling num-derive v0.4.2
+   Compiling arg_enum_proc_macro v0.3.4
+   Compiling zerofrom v0.1.6
+   Compiling equator v0.4.2
+   Compiling foreign-types v0.5.0
+   Compiling aligned-vec v0.6.4
+   Compiling yoke v0.8.1
+   Compiling profiling v1.0.17
+   Compiling loop9 v0.1.5
+   Compiling zerovec v0.11.5
+   Compiling zerotrie v0.2.3
+   Compiling wasm-bindgen-macro-support v0.2.105
+   Compiling v_frame v0.3.9
+   Compiling calloop v0.10.6
+   Compiling fax v0.2.6
+   Compiling rustls-pemfile v1.0.4
+   Compiling zune-jpeg v0.4.21
+   Compiling av1-grain v0.2.5
+   Compiling heck v0.3.3
+   Compiling textwrap v0.11.0
+   Compiling tinystr v0.8.2
+   Compiling potential_utf v0.1.4
+   Compiling raw-window-handle v0.4.3
+   Compiling icu_collections v2.1.1
+   Compiling icu_locale_core v2.1.1
+   Compiling bit-set v0.5.3
+   Compiling wasm-bindgen v0.2.105
+   Compiling parking_lot v0.12.5
+   Compiling icu_provider v2.1.1
+   Compiling smallvec v0.6.14
+   Compiling ppv-lite86 v0.2.21
+   Compiling half v2.7.1
+   Compiling icu_normalizer v2.1.1
+   Compiling icu_properties v2.1.1
+   Compiling tokio-native-tls v0.3.1
+   Compiling hyper v0.14.32
+   Compiling serde_urlencoded v0.7.1
+   Compiling rand_chacha v0.3.1
+   Compiling sctk-adwaita v0.4.3
+   Compiling avif-serialize v0.8.6
+   Compiling mio v0.8.11
+   Compiling atty v0.2.14
+   Compiling shared_library v0.1.9
+   Compiling idna_adapter v1.2.1
+   Compiling idna v1.1.0
+   Compiling num-iter v0.1.45
+   Compiling digest v0.9.0
+   Compiling block-buffer v0.9.0
+   Compiling url v2.5.7
+   Compiling chrono v0.4.42
+   Compiling num-complex v0.4.6
+   Compiling pxfm v0.1.25
+   Compiling zune-inflate v0.2.54
+   Compiling encoding_rs v0.8.35
+   Compiling lebe v0.5.3
+   Compiling color_quant v1.1.0
+   Compiling strsim v0.8.0
+   Compiling byteorder-lite v0.1.0
+   Compiling ansi_term v0.12.1
+   Compiling steven_resources v0.1.0 (/home/brittonr/git/mc/stevenarella/resources)
+   Compiling steven_shared v0.0.1 (/home/brittonr/git/mc/stevenarella/shared)
+   Compiling ipnet v2.11.0
+   Compiling hyper-tls v0.5.0
+   Compiling raw-window-handle v0.5.2
+   Compiling sync_wrapper v0.1.2
+   Compiling byteorder v1.5.0
+   Compiling mime v0.3.17
+   Compiling rgb v0.8.52
+   Compiling bit_field v0.10.3
+   Compiling reqwest v0.11.27
+   Compiling exr v1.74.0
+   Compiling winit v0.27.5
+   Compiling ravif v0.11.20
+   Compiling clap v2.34.0
+   Compiling moxcms v0.7.9
+   Compiling image-webp v0.2.4
+   Compiling simple_asn1 v0.5.4
+   Compiling gif v0.13.3
+   Compiling num v0.4.3
+   Compiling sha-1 v0.9.8
+   Compiling x11-clipboard v0.6.1
+   Compiling osmesa-sys v0.1.2
+   Compiling rand v0.8.5
+   Compiling wasm-bindgen-macro v0.2.105
+   Compiling collision v0.20.1
+   Compiling tiff v0.10.3
+   Compiling structopt-derive v0.4.18
+   Compiling aes v0.7.5
+   Compiling cfb8 v0.7.1
+   Compiling wayland-egl v0.29.5
+   Compiling dirs-sys v0.3.7
+   Compiling png v0.18.0
+   Compiling qoi v0.4.1
+   Compiling std_or_web v0.0.1 (/home/brittonr/git/mc/stevenarella/std_or_web)
+   Compiling libloading v0.7.4
+   Compiling hex v0.4.3
+   Compiling structopt v0.3.26
+   Compiling glutin v0.29.1
+   Compiling dirs v4.0.0
+   Compiling steven_protocol v0.0.1 (/home/brittonr/git/mc/stevenarella/protocol)
+   Compiling steven_blocks v0.0.1 (/home/brittonr/git/mc/stevenarella/blocks)
+   Compiling rsa_public_encrypt_pkcs1 v0.4.0
+   Compiling clipboard v0.5.0 (https://github.com/iceiix/rust-clipboard?rev=71089e792fd5e52f05d5b22c54bd2d206d20ec0d#71089e79)
+   Compiling zip v0.6.6
+   Compiling rand_pcg v0.3.1
+   Compiling base64 v0.13.1
+   Compiling image v0.25.8
+   Compiling glow v0.11.2
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1052:36
+     |
+1052 |         offsets |protocol_version| (instrument.offsets(protocol_version)
+     |                                    ^
+1053 |             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 })),
+     |                                                                                                    ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1052 ~         offsets |protocol_version| instrument.offsets(protocol_version)
+1053 ~             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+     |
+
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1407:36
+     |
+1407 |         offsets |protocol_version| (variant.offsets(protocol_version)),
+     |                                    ^                                 ^
+     |
+help: remove these parentheses
+     |
+1407 -         offsets |protocol_version| (variant.offsets(protocol_version)),
+1407 +         offsets |protocol_version| variant.offsets(protocol_version),
+     |
+
+warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
+   Compiling stevenarella v0.0.1 (/home/brittonr/git/mc/stevenarella)
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:102:21
+    |
+102 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+252 | / define_elements! {
+253 | |     Image,
+254 | |     Batch,
+255 | |     Text,
+...   |
+258 | |     TextBox,
+259 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+102 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib) generated 2 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (bin "stevenarella") generated 2 warnings (2 duplicates)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 55.30s
+     Running `/home/brittonr/git/mc/target/nix-run-stevenarella/debug/stevenarella`
+[main.rs:254][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:346][INFO] Shader version: #version 150
+stevenarella_exit_status=124
+stevenarella_real_launch=observed_cargo_run_under_xvfb_when_display_absent

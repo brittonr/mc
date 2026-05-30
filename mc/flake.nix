@@ -66,6 +66,141 @@
           ];
           runtimePath = lib.makeBinPath nativeTools;
           libraryPath = lib.makeLibraryPath guiLibs;
+          editableCargoTools = with pkgs; [
+            cargo
+            rustc
+            gcc
+            gnumake
+            pkg-config
+            cmake
+            git
+            coreutils
+            xvfb-run
+            xauth
+          ];
+          cmakePolicyVersionMinimum = "3.5";
+          softwareGlEnabled = "1";
+          xvfbAutoEnabled = "1";
+          valence = pkgs.writeShellApplication {
+            name = "valence";
+            runtimeInputs = editableCargoTools;
+            text = ''
+              missing_checkout_exit=64
+              repo="''${VALENCE_REPO:-$PWD/valence}"
+              example="''${VALENCE_EXAMPLE:-ctf}"
+              target_dir="''${VALENCE_TARGET_DIR:-$PWD/target/nix-run-valence}"
+
+              if [[ "''${1:-}" == "--help" ]]; then
+                cat <<'USAGE'
+              Run an editable local Valence example with Nix-provided Rust/native dependencies.
+
+              Usage:
+                nix run .#valence -- [example args...]
+                nix run .#valence -- --dry-run
+
+              Environment:
+                VALENCE_REPO       checkout path; default: $PWD/valence
+                VALENCE_EXAMPLE    cargo example name; default: ctf
+                VALENCE_TARGET_DIR cargo target dir; default: $PWD/target/nix-run-valence
+              USAGE
+                exit 0
+              fi
+
+              if [[ ! -f "$repo/Cargo.toml" ]]; then
+                printf 'missing Valence checkout at %s; set VALENCE_REPO or run from mc root\n' "$repo" >&2
+                exit "$missing_checkout_exit"
+              fi
+
+              export CARGO_TARGET_DIR="$target_dir"
+              export PKG_CONFIG_PATH=${lib.escapeShellArg pkgConfigPath}:"''${PKG_CONFIG_PATH:-}"
+              export LIBRARY_PATH=${lib.escapeShellArg libraryPath}:"''${LIBRARY_PATH:-}"
+              export LD_LIBRARY_PATH=${lib.escapeShellArg libraryPath}:"''${LD_LIBRARY_PATH:-}"
+              export OPENSSL_INCLUDE_DIR=${lib.escapeShellArg "${pkgs.openssl.dev}/include"}
+              export OPENSSL_LIB_DIR=${lib.escapeShellArg "${pkgs.openssl.out}/lib"}
+              export RUSTC_WRAPPER=""
+
+              if [[ "''${1:-}" == "--dry-run" ]]; then
+                printf 'repo=%s\nexample=%s\ntarget_dir=%s\n' "$repo" "$example" "$target_dir"
+                printf 'cd %q && cargo run --example %q --' "$repo" "$example"
+                shift
+                for arg in "$@"; do
+                  printf ' %q' "$arg"
+                done
+                printf '\n'
+                exit 0
+              fi
+
+              mkdir -p "$target_dir"
+              cd "$repo"
+              exec cargo run --example "$example" -- "$@"
+            '';
+            meta = {
+              description = "Run the editable local Valence checkout through the mc flake dev environment.";
+              mainProgram = "valence";
+            };
+          };
+          stevenarella = pkgs.writeShellApplication {
+            name = "stevenarella";
+            runtimeInputs = editableCargoTools;
+            text = ''
+              missing_checkout_exit=64
+              repo="''${CLIENT_DIR:-$PWD/stevenarella}"
+              target_dir="''${CLIENT_TARGET_DIR:-$PWD/target/nix-run-stevenarella}"
+
+              if [[ "''${1:-}" == "--help" ]]; then
+                cat <<'USAGE'
+              Run an editable local Stevenarella checkout with Nix-provided Rust/native dependencies.
+
+              Usage:
+                nix run .#stevenarella -- [client args...]
+                nix run .#stevenarella -- --dry-run
+
+              Environment:
+                CLIENT_DIR        checkout path; default: $PWD/stevenarella
+                CLIENT_TARGET_DIR cargo target dir; default: $PWD/target/nix-run-stevenarella
+              USAGE
+                exit 0
+              fi
+
+              if [[ ! -f "$repo/Cargo.toml" ]]; then
+                printf 'missing Stevenarella checkout at %s; set CLIENT_DIR or run from mc root\n' "$repo" >&2
+                exit "$missing_checkout_exit"
+              fi
+
+              export CARGO_TARGET_DIR="$target_dir"
+              export PKG_CONFIG_PATH=${lib.escapeShellArg pkgConfigPath}:"''${PKG_CONFIG_PATH:-}"
+              export LIBRARY_PATH=${lib.escapeShellArg libraryPath}:"''${LIBRARY_PATH:-}"
+              export LD_LIBRARY_PATH=${lib.escapeShellArg libraryPath}:"''${LD_LIBRARY_PATH:-}"
+              export OPENSSL_INCLUDE_DIR=${lib.escapeShellArg "${pkgs.openssl.dev}/include"}
+              export OPENSSL_LIB_DIR=${lib.escapeShellArg "${pkgs.openssl.out}/lib"}
+              export RUSTC_WRAPPER=""
+              export CMAKE_POLICY_VERSION_MINIMUM=${lib.escapeShellArg cmakePolicyVersionMinimum}
+              export WINIT_UNIX_BACKEND=x11
+              export LIBGL_ALWAYS_SOFTWARE=${lib.escapeShellArg softwareGlEnabled}
+
+              if [[ "''${1:-}" == "--dry-run" ]]; then
+                printf 'repo=%s\ntarget_dir=%s\n' "$repo" "$target_dir"
+                printf 'cd %q && cargo run --' "$repo"
+                shift
+                for arg in "$@"; do
+                  printf ' %q' "$arg"
+                done
+                printf '\n'
+                exit 0
+              fi
+
+              mkdir -p "$target_dir"
+              cd "$repo"
+              if [[ -z "''${DISPLAY:-}" && "''${STEVENARELLA_XVFB:-${xvfbAutoEnabled}}" == ${lib.escapeShellArg xvfbAutoEnabled} ]]; then
+                exec xvfb-run -a cargo run -- "$@"
+              fi
+              exec cargo run -- "$@"
+            '';
+            meta = {
+              description = "Run the editable local Stevenarella checkout through the mc flake dev environment.";
+              mainProgram = "stevenarella";
+            };
+          };
           mc-compat-runner = pkgs.rustPlatform.buildRustPackage {
             pname = "mc-compat-runner";
             version = "0.1.0";
@@ -81,9 +216,9 @@
                 --set OPENSSL_INCLUDE_DIR ${lib.escapeShellArg "${pkgs.openssl.dev}/include"} \
                 --set OPENSSL_LIB_DIR ${lib.escapeShellArg "${pkgs.openssl.out}/lib"} \
                 --set RUSTC_WRAPPER "" \
-                --set CMAKE_POLICY_VERSION_MINIMUM 3.5 \
+                --set CMAKE_POLICY_VERSION_MINIMUM ${lib.escapeShellArg cmakePolicyVersionMinimum} \
                 --set WINIT_UNIX_BACKEND x11 \
-                --set LIBGL_ALWAYS_SOFTWARE 1
+                --set LIBGL_ALWAYS_SOFTWARE ${lib.escapeShellArg softwareGlEnabled}
             '';
             meta = {
               description = "Hardened Stevenarella/Valence compatibility smoke runner";
@@ -574,7 +709,7 @@
           };
         in
         {
-          inherit mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-ctf-combat-damage mc-compat-valence-ctf-combat-knockback mc-compat-valence-ctf-armor-equipment-mitigation mc-compat-valence-ctf-equipment-update-observation mc-compat-valence-ctf-projectile-hit mc-compat-valence-ctf-projectile-damage-attribution mc-compat-valence-ctf-flag-carrier-death-return mc-compat-valence-ctf-latency-jitter-inventory mc-compat-valence-ctf-reconnect-flag-state mc-compat-valence-ctf-invalid-pickup-ownership mc-compat-valence-ctf-invalid-return-drop mc-compat-valence-survival-break-place-pickup;
+          inherit valence stevenarella mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-ctf-combat-damage mc-compat-valence-ctf-combat-knockback mc-compat-valence-ctf-armor-equipment-mitigation mc-compat-valence-ctf-equipment-update-observation mc-compat-valence-ctf-projectile-hit mc-compat-valence-ctf-projectile-damage-attribution mc-compat-valence-ctf-flag-carrier-death-return mc-compat-valence-ctf-latency-jitter-inventory mc-compat-valence-ctf-reconnect-flag-state mc-compat-valence-ctf-invalid-pickup-ownership mc-compat-valence-ctf-invalid-return-drop mc-compat-valence-survival-break-place-pickup;
           cairn = cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn;
           cargo-octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.cargo-octet;
           octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.octet;
@@ -583,6 +718,20 @@
       );
 
       apps = eachSystem (pkgs: {
+        valence = {
+          type = "app";
+          program = "${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.valence
+          }/bin/valence";
+          meta.description = "Run the editable local Valence checkout through the mc flake dev environment.";
+        };
+        stevenarella = {
+          type = "app";
+          program = "${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.stevenarella
+          }/bin/stevenarella";
+          meta.description = "Run the editable local Stevenarella checkout through the mc flake dev environment.";
+        };
         mc-compat-smoke = {
           type = "app";
           program = "${
@@ -701,6 +850,40 @@
 
       checks = eachSystem (pkgs: {
         mc-compat-runner = self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner;
+        mc-compat-editable-app-dry-runs = pkgs.runCommand "mc-compat-editable-app-dry-runs" { nativeBuildInputs = [ pkgs.gnugrep ]; } ''
+          mkdir -p fake-root/valence fake-root/stevenarella
+          printf '%s\n' '[package]' 'name = "fake-valence"' 'version = "0.0.0"' 'edition = "2021"' > fake-root/valence/Cargo.toml
+          printf '%s\n' '[package]' 'name = "fake-stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-root/stevenarella/Cargo.toml
+
+          (
+            cd fake-root
+            ${self.packages.${pkgs.stdenv.hostPlatform.system}.valence}/bin/valence --dry-run --example-arg > ../valence.log
+            ${self.packages.${pkgs.stdenv.hostPlatform.system}.stevenarella}/bin/stevenarella --dry-run --client-arg > ../stevenarella.log
+          )
+
+          grep -Fq 'repo=' valence.log
+          grep -Fq '/valence' valence.log
+          grep -Fq -- '--example ctf' valence.log
+          grep -Fq -- '--example-arg' valence.log
+          grep -Fq 'repo=' stevenarella.log
+          grep -Fq '/stevenarella' stevenarella.log
+          grep -Fq -- '--client-arg' stevenarella.log
+
+          if VALENCE_REPO="$PWD/missing-valence" ${self.packages.${pkgs.stdenv.hostPlatform.system}.valence}/bin/valence --dry-run > missing-valence.log 2>&1; then
+            echo 'expected missing Valence checkout to fail' >&2
+            exit 1
+          fi
+          grep -Fq 'missing Valence checkout' missing-valence.log
+
+          if CLIENT_DIR="$PWD/missing-stevenarella" ${self.packages.${pkgs.stdenv.hostPlatform.system}.stevenarella}/bin/stevenarella --dry-run > missing-stevenarella.log 2>&1; then
+            echo 'expected missing Stevenarella checkout to fail' >&2
+            exit 1
+          fi
+          grep -Fq 'missing Stevenarella checkout' missing-stevenarella.log
+
+          mkdir -p "$out"
+          cp valence.log stevenarella.log missing-valence.log missing-stevenarella.log "$out/"
+        '';
         mc-compat-acceptance-matrix = pkgs.runCommand "mc-compat-acceptance-matrix" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc ]; } ''
           cp -R ${./.} repo
           chmod -R u+w repo
