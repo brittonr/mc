@@ -24,6 +24,7 @@ const REQUIRED_SEAMS: &[&str] = &[
     "Flag-carrier death/return",
     "Reconnect flag-state",
     "Invalid flag pickup/ownership",
+    "Invalid flag return/drop",
     "Latency/jitter tolerance",
     "Combat knockback",
     "Armor equipment mitigation",
@@ -45,6 +46,7 @@ const REQUIRED_TEXT: &[&str] = &[
     "projectile damage attribution",
     "projectile travel/collision simulation",
     "Invalid flag pickup/ownership",
+    "Invalid flag return/drop",
 ];
 
 #[derive(Debug, Clone, PartialEq, Eq)]

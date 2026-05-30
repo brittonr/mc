@@ -70,7 +70,7 @@ const SURVIVAL_CHEST_SERVER_REOPEN_NEEDLE: &str =
 const SURVIVAL_CHEST_SERVER_PERSISTED_NEEDLE: &str =
     "survival_chest_persisted username=compatbot slot=0 item=Dirt count=1";
 const SURVIVAL_CHEST_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_CHEST_FIXTURE";
-const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership";
+const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
     "Dimension type:",
@@ -198,6 +198,7 @@ enum Scenario {
     NegativeReconnectRace,
     NegativeCtfWrongScore,
     CtfInvalidPickupOwnership,
+    CtfInvalidReturnDrop,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -760,6 +761,7 @@ fn is_negative_live_rail(scenario: Scenario) -> bool {
             | Scenario::NegativeReconnectRace
             | Scenario::NegativeCtfWrongScore
             | Scenario::CtfInvalidPickupOwnership
+            | Scenario::CtfInvalidReturnDrop
     )
 }
 
@@ -771,6 +773,7 @@ fn negative_live_rail_invalid_action(scenario: Scenario) -> Option<&'static str>
         Scenario::NegativeReconnectRace => Some("duplicate_reconnect_flag_transition"),
         Scenario::NegativeCtfWrongScore => Some("wrong_team_or_wrong_portal_score_attempt"),
         Scenario::CtfInvalidPickupOwnership => Some("own_flag_pickup_without_ownership_transfer"),
+        Scenario::CtfInvalidReturnDrop => Some("own_base_return_without_carrier"),
         _ => None,
     }
 }
@@ -785,6 +788,7 @@ fn negative_live_rail_postcondition_milestone(scenario: Scenario) -> Option<&'st
         Scenario::NegativeReconnectRace => Some("negative_reconnect_race_contained"),
         Scenario::NegativeCtfWrongScore => Some("negative_wrong_score_contained"),
         Scenario::CtfInvalidPickupOwnership => Some("ctf_invalid_pickup_contained"),
+        Scenario::CtfInvalidReturnDrop => Some("ctf_invalid_return_drop_contained"),
         _ => None,
     }
 }
@@ -1601,6 +1605,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
         "negative-reconnect-race" => Ok(Scenario::NegativeReconnectRace),
         "negative-ctf-wrong-score" => Ok(Scenario::NegativeCtfWrongScore),
         "ctf-invalid-pickup-ownership" => Ok(Scenario::CtfInvalidPickupOwnership),
+        "ctf-invalid-return-drop" => Ok(Scenario::CtfInvalidReturnDrop),
         other => Err(format!("unknown scenario: {other}")),
     }
 }
@@ -1632,6 +1637,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::NegativeReconnectRace => "negative-reconnect-race",
         Scenario::NegativeCtfWrongScore => "negative-ctf-wrong-score",
         Scenario::CtfInvalidPickupOwnership => "ctf-invalid-pickup-ownership",
+        Scenario::CtfInvalidReturnDrop => "ctf-invalid-return-drop",
     }
 }
 
@@ -1929,6 +1935,19 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
                 "ctf_invalid_pickup_contained",
             ),
         ],
+        Scenario::CtfInvalidReturnDrop => &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "ctf_invalid_return_drop_attempted",
+                "ctf_invalid_return_drop_attempted",
+            ),
+            (
+                "ctf_invalid_return_drop_contained",
+                "ctf_invalid_return_drop_contained",
+            ),
+        ],
     }
 }
 
@@ -1947,6 +1966,26 @@ fn scenario_forbidden_patterns(scenario: Scenario) -> &'static [(&'static str, &
             (
                 "unexpected_server_flag_pickup",
                 "MC-COMPAT-MILESTONE flag_pickup username=",
+            ),
+            ("unexpected_flag_capture", "You captured the flag!"),
+            ("unexpected_flag_capture_milestone", "flag_capture"),
+            ("unexpected_red_score", "RED: 1"),
+            ("unexpected_blue_score", "BLUE: 1"),
+        ],
+        Scenario::CtfInvalidReturnDrop => &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+            ("unexpected_flag_pickup_chat", "You have the flag!"),
+            (
+                "unexpected_server_flag_pickup",
+                "MC-COMPAT-MILESTONE flag_pickup username=",
+            ),
+            ("unexpected_flag_return", "MC-COMPAT-MILESTONE flag_return"),
+            (
+                "unexpected_flag_disconnect_return",
+                "MC-COMPAT-MILESTONE flag_disconnect_return",
             ),
             ("unexpected_flag_capture", "You captured the flag!"),
             ("unexpected_flag_capture_milestone", "flag_capture"),
@@ -2089,6 +2128,13 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
             (
                 "server_invalid_pickup_rejected",
                 "invalid_flag_pickup_rejected username=compatbot player_team=Red flag_team=Red pre_owner=none post_owner=none red_score=0 blue_score=0 outcome=no_owner_transfer_no_score",
+            ),
+        ],
+        Scenario::CtfInvalidReturnDrop => &[
+            ("server_username_seen", "compatbot"),
+            (
+                "server_invalid_return_drop_rejected",
+                "invalid_flag_return_drop_rejected username=compatbot actor_team=Red flag_team=Red pre_state=at_base post_state=at_base red_score=0 blue_score=0 outcome=no_flag_state_mutation_no_score",
             ),
         ],
         Scenario::NegativeInventoryStaleState
@@ -2845,7 +2891,7 @@ Automates a local Stevenarella compatibility smoke against a Minecraft {} / prot
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from legacy Nickel config, or --steel-config/MC_COMPAT_STEEL_CONFIG a restricted Steel module; env vars and later CLI flags override either config source.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.scenario.receipt.v2 JSON receipt for Cairn/Octet evidence flows.
-Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
+Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario ctf-invalid-return-drop for one contained own-base return/drop attempt with server rejection evidence. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
 Use --expect-status-description/--expect-status-version/--expect-status-sample to assert status response fixture data, --packet-capture-summary for redacted capture summary metadata, and --proxy-route/--proxy-forwarding-mode for proxied-route receipt fields.\n\
 Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
 Use --run-matrix --receipt-dir DIR to run Paper and Valence receipts then compare them; add --dry-run after --run-matrix for a non-side-effecting matrix fixture.\n\
@@ -3394,6 +3440,9 @@ fn start_valence_server(cfg: &Config) -> Result<ManagedServer, String> {
     }
     if cfg.scenario == Scenario::SurvivalChestPersistence {
         cmd.env(SURVIVAL_CHEST_FIXTURE_ENV, "1");
+    }
+    if cfg.scenario == Scenario::CtfInvalidReturnDrop {
+        cmd.env("MC_COMPAT_CTF_INVALID_RETURN_DROP_PROBE", "1");
     }
     if let Some(path) = &cfg.steel_config_path {
         cmd.env("MC_COMPAT_STEEL_CONFIG", path);
@@ -4180,6 +4229,15 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
                 .env("MC_COMPAT_FLAG_PROBE_PICKUP_ONLY", "1")
                 .env("MC_COMPAT_NEGATIVE_PROBE", "ctf_invalid_pickup_ownership");
         }
+        Scenario::CtfInvalidReturnDrop => {
+            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
+                .env("MC_COMPAT_FLAG_PROBE", "1")
+                .env("MC_COMPAT_FLAG_PROBE_TEAM", "blue")
+                .env("MC_COMPAT_FLAG_PROBE_PICKUP_ONLY", "1")
+                .env("MC_COMPAT_NEGATIVE_PROBE", "ctf_invalid_return_drop");
+        }
     }
 }
 
@@ -4276,6 +4334,7 @@ fn requires_server_correlation(cfg: &Config) -> bool {
             | Scenario::ProjectileDamageAttribution
             | Scenario::FlagCarrierDeathReturn
             | Scenario::CtfInvalidPickupOwnership
+            | Scenario::CtfInvalidReturnDrop
     )
 }
 
@@ -5023,6 +5082,12 @@ fn smoke_receipt_json_with_typed_event_oracle(
             "own_flag_pickup_attempt",
             "invalid_flag_pickup_rejected",
         ],
+        Scenario::CtfInvalidReturnDrop => vec![
+            "login_success",
+            "play_join_game",
+            "own_flag_return_drop_attempt",
+            "invalid_flag_return_drop_rejected",
+        ],
     };
     let typed_event_oracle_json = typed_event_oracle_receipt_json(typed_event_oracle);
     let latency_jitter_json = latency_jitter_receipt_json(cfg);
@@ -5125,6 +5190,9 @@ fn smoke_receipt_json_with_typed_event_oracle(
         "ctf_invalid_pickup_attempted",
         "ctf_invalid_pickup_contained",
         "server_invalid_pickup_rejected",
+        "ctf_invalid_return_drop_attempted",
+        "ctf_invalid_return_drop_contained",
+        "server_invalid_return_drop_rejected",
     ];
     let gameplay_non_claims: Vec<&str> = vec![
         "full_ctf_correctness",
@@ -6242,6 +6310,7 @@ mod tests {
         Scenario::NegativeReconnectRace,
         Scenario::NegativeCtfWrongScore,
         Scenario::CtfInvalidPickupOwnership,
+        Scenario::CtfInvalidReturnDrop,
     ];
 
     fn passing_client_lines(scenario: Scenario) -> Vec<(&'static str, String)> {
@@ -6756,6 +6825,10 @@ mod tests {
         let invalid_pickup = test_config(&["--scenario", "ctf-invalid-pickup-ownership"], &[])
             .expect("invalid pickup scenario parses");
         assert_eq!(invalid_pickup.scenario, Scenario::CtfInvalidPickupOwnership);
+
+        let invalid_return_drop = test_config(&["--scenario", "ctf-invalid-return-drop"], &[])
+            .expect("invalid return/drop scenario parses");
+        assert_eq!(invalid_return_drop.scenario, Scenario::CtfInvalidReturnDrop);
     }
 
     #[test]
@@ -8029,6 +8102,64 @@ negative_custom_payload_contained
         assert_eq!(
             evidence.postcondition_milestone,
             Some("ctf_invalid_pickup_contained")
+        );
+        assert!(evidence.preflight_passed, "{evidence:?}");
+    }
+
+    #[test]
+    fn ctf_invalid_return_drop_tracks_client_server_and_envelope() {
+        let client = evaluate_scenario(
+            Scenario::CtfInvalidReturnDrop,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nctf_invalid_return_drop_attempted player_team=red flag_team=red pre_state=at_base action=own_base_return expected=no_flag_state_mutation_no_score\nctf_invalid_return_drop_contained player_team=red flag_team=red post_state=at_base red_score=0 blue_score=0 outcome=no_flag_state_mutation_no_score\n",
+        );
+        assert!(client.passed, "{client:?}");
+        assert!(client.forbidden_matches.is_empty(), "{client:?}");
+
+        let invalid_return = evaluate_scenario(
+            Scenario::CtfInvalidReturnDrop,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nctf_invalid_return_drop_attempted\nctf_invalid_return_drop_contained\nMC-COMPAT-MILESTONE flag_return carrier=compatbot flag_team=red\n",
+        );
+        assert!(!invalid_return.passed, "{invalid_return:?}");
+        assert!(
+            invalid_return
+                .forbidden_matches
+                .contains(&"unexpected_flag_return"),
+            "{invalid_return:?}"
+        );
+
+        let server = evaluate_server_scenario(
+            Scenario::CtfInvalidReturnDrop,
+            "compatbot joined\nMC-COMPAT-MILESTONE invalid_flag_return_drop_rejected username=compatbot actor_team=Red flag_team=Red pre_state=at_base post_state=at_base red_score=0 blue_score=0 outcome=no_flag_state_mutation_no_score\n",
+            "compatbot",
+        );
+        assert!(server.passed, "{server:?}");
+        assert!(server.forbidden_matches.is_empty(), "{server:?}");
+
+        let server_return = evaluate_server_scenario(
+            Scenario::CtfInvalidReturnDrop,
+            "compatbot joined\nMC-COMPAT-MILESTONE invalid_flag_return_drop_rejected username=compatbot actor_team=Red flag_team=Red pre_state=at_base post_state=at_base red_score=0 blue_score=0 outcome=no_flag_state_mutation_no_score\nMC-COMPAT-MILESTONE flag_return carrier=compatbot flag_team=red\n",
+            "compatbot",
+        );
+        assert!(!server_return.passed, "{server_return:?}");
+        assert!(
+            server_return
+                .forbidden_matches
+                .contains(&"unexpected_flag_return"),
+            "{server_return:?}"
+        );
+
+        let cfg = test_config(&["--dry-run", "--scenario", "ctf-invalid-return-drop"], &[])
+            .expect("invalid return/drop rail config parses");
+        let evidence = evaluate_negative_live_rail_safety(&cfg);
+        assert!(evidence.selected, "{evidence:?}");
+        assert_eq!(evidence.rail, Some("ctf-invalid-return-drop"));
+        assert_eq!(
+            evidence.invalid_action,
+            Some("own_base_return_without_carrier")
+        );
+        assert_eq!(
+            evidence.postcondition_milestone,
+            Some("ctf_invalid_return_drop_contained")
         );
         assert!(evidence.preflight_passed, "{evidence:?}");
     }

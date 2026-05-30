@@ -12,7 +12,7 @@ c353d2d951e49c97174bbd2cd45e24b39d8e05fff97f5adf90ef705cf40c7167  tools/check_pu
 b157944ade69ac625d32efb445e569ff5160c6b3a7b0cfbaadf9a46e27fa49e3  tools/mc-compat-runner/src/main.rs
 4a5f1e54a01ebda04c78fc687bf4e1e47fe5505563a709c9195720bc992f2acd  flake.nix
 a6b49b3229ca11f041c97e3d13aee8fe7f6098b3c7830b67fed56f1213609e87  README.md
-ae4de734d0c22b5312ab34b3c725ed267fe04502a40d9cbb3ea624067b044d83  cairn/specs/mc-compatibility/spec.md
+1a18e316ec5576f70e9467f6ada0c15b16c66bdea4b3c5a076fc18f3db7119ce  cairn/specs/mc-compatibility/spec.md
 1d0ea78facee1fa19176da5a675d9e436d01dd21fdd6a4b5806686eab0455e9d  cairn/archive/2026-05-30-public-server-authorized-safety/tasks.md
 f05e70fb9ea3b81cf5d9143d2d75a69c62909cb7f567119206af799ed65dfab3  docs/evidence/protocol-763-public-server-authorized-safety-validation-2026-05-30.run.log
 993bfa3c283020f4ea12f7729d02aa6c5a03d37cd87f3111c6d4ebd68504b6ef  docs/evidence/protocol-763-public-server-authorized-safety-final-manifest-checkpoint-2026-05-30.md
