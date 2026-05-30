@@ -30,7 +30,7 @@ This row covers one configured RED-player own-base return/drop attempt while the
 
 ## Fail-closed cases
 
-The row MUST fail on missing attempted-action evidence, flag state mutation, unexpected score/capture, missing server containment, missing forbidden-pattern scan, or any claim that all invalid return/drop permutations are covered.
+The row MUST fail on missing attempted-action evidence, flag state mutation, unexpected flag return/drop, unexpected score/capture, missing server containment, missing forbidden-pattern scan, or any claim that all invalid return/drop permutations are covered.
 
 ## Non-claims
 

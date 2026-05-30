@@ -153,6 +153,12 @@ nix run .#mc-compat-valence-ctf-invalid-pickup-ownership
 # deterministic, non-side-effecting fixture for the same invalid pickup ownership command shape:
 nix run .#mc-compat-valence-ctf-invalid-pickup-ownership -- --dry-run
 
+# Maintained protocol-763 Valence CTF invalid return/drop receipt.
+# Requires one client attempting an own-base return/drop without carrier ownership, client containment, Valence invalid_flag_return_drop_rejected correlation, and no state mutation/score/capture patterns.
+nix run .#mc-compat-valence-ctf-invalid-return-drop
+# deterministic, non-side-effecting fixture for the same invalid return/drop command shape:
+nix run .#mc-compat-valence-ctf-invalid-return-drop -- --dry-run
+
 # Maintained protocol-763 Valence CTF bounded latency/jitter receipt over the inventory semantic rail.
 # Records bounded perturbation parameters, owned-local WAN telemetry fields, full inventory/open-container/block-place milestone oracle evidence, and no privileged network mutation.
 nix run .#mc-compat-valence-ctf-latency-jitter-inventory

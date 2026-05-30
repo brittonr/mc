@@ -275,7 +275,7 @@ fn fixture_text(seam: &str, digest: &str) -> (String, String) {
         "# Matrix\n\n| Seam | Maintained command | Receipt | Evidence doc | BLAKE3 | Landed commits | Scoped claim | Explicit non-claims |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| {seam} | `nix run .#x` | `docs/evidence/x.receipt.json` | `docs/evidence/x.md` | `{digest}` | parent `abc1234` | Bounded claim. | No broad claim. |\n"
     );
     let bundle = format!(
-        "# Bundle\n\n| Seam | Maintained command | BLAKE3 |\n| --- | --- | --- |\n| {seam} | `nix run .#x` | `{digest}` |\n\ntools/check_acceptance_matrix.rs\ntools/check_current_evidence_bundle.rs\nnix run --no-update-lock-file .#cairn -- validate --root .\nfull Minecraft compatibility\nfull survival compatibility\nvanilla parity\narmor loadouts\nprojectile damage attribution\nprojectile travel/collision simulation\nInvalid flag pickup/ownership\n"
+        "# Bundle\n\n| Seam | Maintained command | BLAKE3 |\n| --- | --- | --- |\n| {seam} | `nix run .#x` | `{digest}` |\n\ntools/check_acceptance_matrix.rs\ntools/check_current_evidence_bundle.rs\nnix run --no-update-lock-file .#cairn -- validate --root .\nfull Minecraft compatibility\nfull survival compatibility\nvanilla parity\narmor loadouts\nprojectile damage attribution\nprojectile travel/collision simulation\nInvalid flag pickup/ownership\nInvalid flag return/drop\n"
     );
     (matrix, bundle)
 }

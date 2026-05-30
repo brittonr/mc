@@ -1,0 +1,7 @@
+scenario=ctf-invalid-return-drop
+invalid_action=own_base_return_without_carrier
+target_scope=owned-local-loopback
+observed_outcome=containment_observed
+postcondition=ctf_invalid_return_drop_contained
+receipt=docs/evidence/protocol-763-ctf-invalid-return-drop-2026-05-30.receipt.json
+row_digest=b7c861f27ef7ceaf94705a74a5459d3f9df625dada4b14d8715ba8e9c5d921de
