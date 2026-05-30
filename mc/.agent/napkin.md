@@ -19,6 +19,7 @@
 | 2026-05-29 | self | Local evidence manifest check passed while Nix failed because `.b3` rows cited nested child repos and `target/` artifacts outside the parent source closure | Copy those exact bytes under `docs/evidence/`, update `.b3` rows to the copied paths, force-add new evidence artifacts, then rerun the Nix manifest check |
 | 2026-05-29 | self | Tried direct host `rustc` while validating mc Cairn task evidence, but this environment exposes Rust through the mc dev shell | Use `nix develop --no-update-lock-file -c rustc ...` for standalone Rust checkers in `mc/` |
 | 2026-05-29 | done-review | Claimed `mc/` was clean after writing ignored `cairn/changes/.drain-state.md` post-commit | After any post-commit drain-state write, either force-add/commit it or remove it, then run `git status --short --ignored` for that exact path before claiming cleanliness |
+| 2026-05-29 | done-review | Replaced a manifest PASS with prose and logged Nix build start without exit status, so review could not verify success | Capture runnable command output with explicit `exit_status=0`; for self-referential manifest checks, add a checkpoint plus a separate final manifest log after `.b3` refresh |
 
 ## User Preferences
 - Keep replies terse and direct.

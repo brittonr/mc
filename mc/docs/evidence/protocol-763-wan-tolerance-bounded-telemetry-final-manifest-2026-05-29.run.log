@@ -1,0 +1,8 @@
+WAN tolerance final manifest validation — 2026-05-29
+$ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 73 manifests, 359 entries, 61 receipts scanned
+manifest_exit_status=0
+final manifest PASS: command completed after archive-validation digest and final-manifest checkpoint were written into the WAN telemetry .b3 manifest.

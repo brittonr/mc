@@ -1,4 +1,4 @@
-WAN tolerance bounded telemetry archive validation — 2026-05-29 (post-review refresh)
+WAN tolerance bounded telemetry archive validation — 2026-05-29 (review-evidence refresh)
 $ ./tools/check_wan_tolerance_bounded_telemetry.rs --self-test
 WAN tolerance bounded telemetry self-test passed: positive fixture and fail-closed mutations passed
 $ ./tools/check_wan_tolerance_bounded_telemetry.rs --record docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.record
@@ -14,10 +14,11 @@ $ nix run --no-update-lock-file .#cairn -- validate --root .
   "specs_validated": 37,
   "valid": true
 }
-$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-wan-tolerance-bounded-telemetry --no-link -L
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-wan-tolerance-bounded-telemetry --no-link -L --print-out-paths
 this derivation will be built:
-  /nix/store/0llrw501ifzaa6bfiv0mms47lrspl30h-mc-compat-wan-tolerance-bounded-telemetry.drv
+  /nix/store/sqsb9vbvihi0xy183y74gv5x4cz4ygq1-mc-compat-wan-tolerance-bounded-telemetry.drv
 cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
-building '/nix/store/0llrw501ifzaa6bfiv0mms47lrspl30h-mc-compat-wan-tolerance-bounded-telemetry.drv'...
-archive validation PASS: checker, Cairn validate, and Nix WAN telemetry checker completed successfully.
-Repo-wide evidence manifest PASS was rerun after refreshing this log digest to avoid a self-referential manifest check.
+building '/nix/store/sqsb9vbvihi0xy183y74gv5x4cz4ygq1-mc-compat-wan-tolerance-bounded-telemetry.drv'...
+/nix/store/qcm8cndazqayny6zhcn9djrkib7vbgdx-mc-compat-wan-tolerance-bounded-telemetry
+nix_build_exit_status=0
+archive validation PASS: checker, Cairn validate, and Nix WAN telemetry checker completed with exit_status=0.
