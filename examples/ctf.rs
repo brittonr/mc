@@ -2,7 +2,7 @@
 
 use std::{
     collections::HashMap,
-    fs,
+    env, fs,
     path::Path,
     sync::{OnceLock, RwLock},
 };
@@ -1043,17 +1043,33 @@ fn digging(
             if let Some(flag_team) =
                 invalid_flag_pickup_flag_team(*team, is_red_flag, is_blue_flag, block.state)
             {
-                let pre_owner = flag_owner_state(&flag_manager, flag_team);
-                let post_owner = pre_owner;
-                let milestone = invalid_flag_pickup_rejection_milestone(
-                    username.as_str(),
-                    *team,
-                    flag_team,
-                    pre_owner,
-                    post_owner,
-                    score_for_team(&score, Team::Red),
-                    score_for_team(&score, Team::Blue),
-                );
+                let red_score = score_for_team(&score, Team::Red);
+                let blue_score = score_for_team(&score, Team::Blue);
+                let milestone = if invalid_flag_return_drop_probe_enabled() {
+                    let pre_state = flag_presence_state(&flag_manager, flag_team);
+                    let post_state = pre_state;
+                    invalid_flag_return_drop_rejection_milestone(
+                        username.as_str(),
+                        *team,
+                        flag_team,
+                        pre_state,
+                        post_state,
+                        red_score,
+                        blue_score,
+                    )
+                } else {
+                    let pre_owner = flag_owner_state(&flag_manager, flag_team);
+                    let post_owner = pre_owner;
+                    invalid_flag_pickup_rejection_milestone(
+                        username.as_str(),
+                        *team,
+                        flag_team,
+                        pre_owner,
+                        post_owner,
+                        red_score,
+                        blue_score,
+                    )
+                };
                 info!("{}", milestone);
                 println!("{}", milestone);
             }
@@ -1099,15 +1115,34 @@ fn invalid_flag_pickup_flag_team(
 }
 
 fn flag_owner_state(flag_manager: &FlagManager, flag_team: Team) -> &'static str {
-    let owner = match flag_team {
-        Team::Red => flag_manager.red,
-        Team::Blue => flag_manager.blue,
-    };
+    let owner = flag_owner(flag_manager, flag_team);
     if owner.is_some() {
         "held"
     } else {
         "none"
     }
+}
+
+fn flag_presence_state(flag_manager: &FlagManager, flag_team: Team) -> &'static str {
+    let owner = flag_owner(flag_manager, flag_team);
+    if owner.is_some() {
+        "held"
+    } else {
+        "at_base"
+    }
+}
+
+fn flag_owner(flag_manager: &FlagManager, flag_team: Team) -> Option<Entity> {
+    match flag_team {
+        Team::Red => flag_manager.red,
+        Team::Blue => flag_manager.blue,
+    }
+}
+
+fn invalid_flag_return_drop_probe_enabled() -> bool {
+    env::var("MC_COMPAT_CTF_INVALID_RETURN_DROP_PROBE")
+        .map(|value| value != "0")
+        .unwrap_or(false)
 }
 
 fn score_for_team(score: &Score, team: Team) -> u32 {
@@ -1137,6 +1172,27 @@ fn invalid_flag_pickup_rejection_milestone(
         team_label(flag_team),
         pre_owner,
         post_owner,
+        red_score,
+        blue_score
+    )
+}
+
+fn invalid_flag_return_drop_rejection_milestone(
+    username: &str,
+    actor_team: Team,
+    flag_team: Team,
+    pre_state: &str,
+    post_state: &str,
+    red_score: u32,
+    blue_score: u32,
+) -> String {
+    format!(
+        "MC-COMPAT-MILESTONE invalid_flag_return_drop_rejected username={} actor_team={} flag_team={} pre_state={} post_state={} red_score={} blue_score={} outcome=no_flag_state_mutation_no_score",
+        username,
+        team_label(actor_team),
+        team_label(flag_team),
+        pre_state,
+        post_state,
         red_score,
         blue_score
     )
@@ -2236,6 +2292,41 @@ mod tests {
         assert!(milestone.contains("blue_score=0"), "{milestone}");
         assert!(
             milestone.contains("outcome=no_owner_transfer_no_score"),
+            "{milestone}"
+        );
+    }
+
+    #[test]
+    fn invalid_flag_return_drop_milestone_records_no_state_mutation_or_score() {
+        let mut score = Score::default();
+        score.scores.insert(Team::Red, TEST_RED_SCORE);
+        let flag_manager = FlagManager {
+            red: None,
+            blue: None,
+        };
+        let milestone = invalid_flag_return_drop_rejection_milestone(
+            "compatbot",
+            Team::Red,
+            Team::Red,
+            flag_presence_state(&flag_manager, Team::Red),
+            flag_presence_state(&flag_manager, Team::Red),
+            score_for_team(&score, Team::Red),
+            score_for_team(&score, Team::Blue),
+        );
+
+        assert!(
+            milestone.contains("invalid_flag_return_drop_rejected"),
+            "{milestone}"
+        );
+        assert!(milestone.contains("username=compatbot"), "{milestone}");
+        assert!(milestone.contains("actor_team=Red"), "{milestone}");
+        assert!(milestone.contains("flag_team=Red"), "{milestone}");
+        assert!(milestone.contains("pre_state=at_base"), "{milestone}");
+        assert!(milestone.contains("post_state=at_base"), "{milestone}");
+        assert!(milestone.contains("red_score=2"), "{milestone}");
+        assert!(milestone.contains("blue_score=0"), "{milestone}");
+        assert!(
+            milestone.contains("outcome=no_flag_state_mutation_no_score"),
             "{milestone}"
         );
     }
