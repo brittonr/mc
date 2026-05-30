@@ -709,6 +709,16 @@
           mkdir -p "$out"
           cp ../armor-loadout-enchantment-status-self-test.log ../armor-loadout-enchantment-status-check.log "$out/"
         '';
+        mc-compat-equipment-slot-item-expansion = pkgs.runCommand "mc-compat-equipment-slot-item-expansion" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc ]; } ''
+          cp -R ${./.} repo
+          chmod -R u+w repo
+          cd repo
+          rustc --edition=2021 tools/check_equipment_slot_item_expansion.rs -o ../check-equipment-slot-item-expansion
+          ../check-equipment-slot-item-expansion --self-test > ../equipment-slot-item-expansion-self-test.log
+          ../check-equipment-slot-item-expansion > ../equipment-slot-item-expansion-check.log
+          mkdir -p "$out"
+          cp ../equipment-slot-item-expansion-self-test.log ../equipment-slot-item-expansion-check.log "$out/"
+        '';
         mc-compat-dry-run = pkgs.runCommand "mc-compat-dry-run" { } ''
           mkdir -p fake-stevenarella
           printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
@@ -1221,6 +1231,7 @@
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-cairn-task-evidence} "$out/cairn-task-evidence"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-adversarial-network-oracle} "$out/adversarial-network-oracle"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-armor-loadout-enchantment-status} "$out/armor-loadout-enchantment-status"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-equipment-slot-item-expansion} "$out/equipment-slot-item-expansion"
           cat > "$out/manifest.txt" <<'EOF'
           smoke
           multi-client-load-score
@@ -1247,6 +1258,7 @@
           cairn-task-evidence
           adversarial-network-oracle
           armor-loadout-enchantment-status
+          equipment-slot-item-expansion
           EOF
         '';
         mc-compat-bot-probe-dry-run =

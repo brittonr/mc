@@ -1,0 +1,18 @@
+command: nix develop --no-update-lock-file -c rustfmt --edition 2021 tools/check_equipment_slot_item_expansion.rs --check
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+command: nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_equipment_slot_item_expansion.rs -o /tmp/check-equipment-slot-item-expansion
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+command: /tmp/check-equipment-slot-item-expansion --self-test
+equipment slot/item expansion checker self-test passed: positive fixture and fail-closed mutations passed
+command: /tmp/check-equipment-slot-item-expansion
+equipment slot/item expansion checker passed: contract=docs/evidence/protocol-763-equipment-slot-item-expansion-contract-2026-05-29.md record=false
+command: nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-equipment-slot-item-expansion --no-link -L
+this derivation will be built:
+  /nix/store/7x8hc92z6z9aypklg1dm35iaj4kf38f9-mc-compat-equipment-slot-item-expansion.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/7x8hc92z6z9aypklg1dm35iaj4kf38f9-mc-compat-equipment-slot-item-expansion.drv'...
+result: PASS
