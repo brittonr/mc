@@ -94,6 +94,14 @@ const MCP_ATTACK_APPLIED_MESSAGE: &str = "attack applied";
 #[cfg(not(target_arch = "wasm32"))]
 const MCP_CHAT_APPLIED_MESSAGE: &str = "chat sent";
 #[cfg(not(target_arch = "wasm32"))]
+const MCP_CAPTURE_DEFERRED_MESSAGE: &str = "capture queued for next rendered frame";
+#[cfg(not(target_arch = "wasm32"))]
+const MCP_CAPTURE_QUEUE_CLOSED_MESSAGE: &str = "capture queue closed";
+#[cfg(not(target_arch = "wasm32"))]
+const MCP_CAPTURE_QUEUE_UNAVAILABLE_MESSAGE: &str = "capture queue unavailable";
+#[cfg(not(target_arch = "wasm32"))]
+const MCP_CAPTURE_REQUEST_INVALID_MESSAGE: &str = "invalid capture request";
+#[cfg(not(target_arch = "wasm32"))]
 const MCP_REQUIRES_CONNECTED_MESSAGE: &str = "command requires an active connection";
 #[cfg(not(target_arch = "wasm32"))]
 const MCP_REQUIRES_PLAYER_MESSAGE: &str = "command requires a player entity";
@@ -131,6 +139,10 @@ pub struct Game {
     #[cfg(not(target_arch = "wasm32"))]
     mcp_command_receiver: Option<mcp::McpCommandReceiver>,
     #[cfg(not(target_arch = "wasm32"))]
+    mcp_capture_request_sender: Option<capture::CaptureRequestSender>,
+    #[cfg(not(target_arch = "wasm32"))]
+    mcp_capture_request_receiver: Option<capture::CaptureRequestReceiver>,
+    #[cfg(not(target_arch = "wasm32"))]
     mcp_release_left_after_server_tick: bool,
 }
 
@@ -155,6 +167,8 @@ fn control_command_requires_connected(command: &control::ControlCommand) -> bool
         control::ControlCommand::Status
             | control::ControlCommand::Connect { .. }
             | control::ControlCommand::Disconnect
+            | control::ControlCommand::CaptureScreenshot
+            | control::ControlCommand::CaptureLatestFrame
     )
 }
 
@@ -186,6 +200,44 @@ fn control_rejected_response(message: impl Into<String>) -> control::ControlResp
     control::ControlResponse {
         outcome: control::ControlOutcome::Rejected,
         message: Some(message.into()),
+    }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn control_deferred_response(message: impl Into<String>) -> control::ControlResponse {
+    control::ControlResponse {
+        outcome: control::ControlOutcome::Deferred,
+        message: Some(message.into()),
+    }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn one_shot_mcp_capture_request(mode: capture::CaptureMode) -> capture::CaptureRequest {
+    capture::CaptureRequest {
+        mode,
+        format: capture::CaptureFormat::Png,
+        output: capture::CaptureOutput::Inline,
+        includes_ui: true,
+        recording: None,
+    }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn enqueue_mcp_capture_request(
+    sender: Option<&capture::CaptureRequestSender>,
+    mode: capture::CaptureMode,
+) -> control::ControlResponse {
+    let Some(sender) = sender else {
+        return control_rejected_response(MCP_CAPTURE_QUEUE_UNAVAILABLE_MESSAGE);
+    };
+    match sender.enqueue_deferred(one_shot_mcp_capture_request(mode)) {
+        Ok(_) => control_deferred_response(MCP_CAPTURE_DEFERRED_MESSAGE),
+        Err(capture::CaptureQueueError::QueueClosed) => {
+            control_rejected_response(MCP_CAPTURE_QUEUE_CLOSED_MESSAGE)
+        }
+        Err(capture::CaptureQueueError::Validation(_)) => {
+            control_rejected_response(MCP_CAPTURE_REQUEST_INVALID_MESSAGE)
+        }
     }
 }
 
@@ -296,6 +348,26 @@ impl Game {
     }
 
     #[cfg(not(target_arch = "wasm32"))]
+    pub fn service_pending_mcp_capture_requests(&mut self) -> usize {
+        let Some(receiver) = self.mcp_capture_request_receiver.take() else {
+            return 0;
+        };
+        let policy = capture::CapturePolicy::memory();
+        let frame = capture::CaptureFrameContext {
+            width_px: self.renderer.width,
+            height_px: self.renderer.height,
+            frame_id: self.renderer.frame_id as u64,
+        };
+        let serviced = receiver.service_pending_one_shot_with_readback(
+            &policy,
+            frame,
+            capture::read_current_framebuffer_for_context,
+        );
+        self.mcp_capture_request_receiver = Some(receiver);
+        serviced
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
     pub fn release_mcp_control_buttons_after_server_tick(&mut self) {
         if self.mcp_release_left_after_server_tick {
             self.server.on_left_mouse_button(false);
@@ -347,6 +419,14 @@ impl Game {
                     .write_packet(protocol::packet::play::serverbound::ChatMessage { message });
                 control_applied_response(MCP_CHAT_APPLIED_MESSAGE)
             }
+            control::ControlCommand::CaptureScreenshot => enqueue_mcp_capture_request(
+                self.mcp_capture_request_sender.as_ref(),
+                capture::CaptureMode::Screenshot,
+            ),
+            control::ControlCommand::CaptureLatestFrame => enqueue_mcp_capture_request(
+                self.mcp_capture_request_sender.as_ref(),
+                capture::CaptureMode::LatestFrame,
+            ),
         }
     }
 
@@ -424,6 +504,29 @@ mod mcp_control_tests {
     const TEST_YAW_DELTA: f64 = 0.25;
     const TEST_PITCH_DELTA: f64 = -0.125;
     const TEST_PITCH_OFFSET: f64 = 1.0;
+    const TEST_CAPTURE_WIDTH_PX: u32 = 2;
+    const TEST_CAPTURE_HEIGHT_PX: u32 = 2;
+    const TEST_CAPTURE_FRAME_ID: u64 = 42;
+
+    fn synthetic_capture_frame(
+        frame: capture::CaptureFrameContext,
+    ) -> Result<capture::CapturedRgbaFrame, capture::CaptureReadbackError> {
+        let byte_len = capture::rgba_buffer_len(frame.width_px, frame.height_px)?;
+        Ok(capture::CapturedRgbaFrame {
+            width_px: frame.width_px,
+            height_px: frame.height_px,
+            frame_id: frame.frame_id,
+            rgba_top_left: vec![0; byte_len],
+        })
+    }
+
+    fn test_capture_frame_context() -> capture::CaptureFrameContext {
+        capture::CaptureFrameContext {
+            width_px: TEST_CAPTURE_WIDTH_PX,
+            height_px: TEST_CAPTURE_HEIGHT_PX,
+            frame_id: TEST_CAPTURE_FRAME_ID,
+        }
+    }
 
     #[test]
     fn maps_control_keys_to_internal_steven_keys() {
@@ -474,6 +577,12 @@ mod mcp_control_tests {
         assert!(!control_command_requires_connected(
             &control::ControlCommand::Disconnect
         ));
+        assert!(!control_command_requires_connected(
+            &control::ControlCommand::CaptureScreenshot
+        ));
+        assert!(!control_command_requires_connected(
+            &control::ControlCommand::CaptureLatestFrame
+        ));
         assert!(control_command_requires_connected(
             &control::ControlCommand::Key {
                 key: control::ControlKey::Forward,
@@ -522,6 +631,14 @@ mod mcp_control_tests {
             None
         );
         assert_eq!(
+            disconnected_control_rejection(&control::ControlCommand::CaptureScreenshot),
+            None
+        );
+        assert_eq!(
+            disconnected_control_rejection(&control::ControlCommand::CaptureLatestFrame),
+            None
+        );
+        assert_eq!(
             disconnected_control_rejection(&control::ControlCommand::Key {
                 key: control::ControlKey::Forward,
                 down: true,
@@ -563,6 +680,37 @@ mod mcp_control_tests {
         assert_eq!(
             control_status_message(true, false, true),
             "status reported: connected=true connecting=false focused=true"
+        );
+    }
+
+    #[test]
+    fn control_capture_enqueue_reaches_post_render_capture_queue() {
+        let (sender, receiver) = capture::capture_request_channel();
+        let response = enqueue_mcp_capture_request(Some(&sender), capture::CaptureMode::Screenshot);
+        let policy = capture::CapturePolicy::memory();
+
+        let serviced = receiver.service_pending_one_shot_with_readback(
+            &policy,
+            test_capture_frame_context(),
+            synthetic_capture_frame,
+        );
+
+        assert_eq!(response.outcome, control::ControlOutcome::Deferred);
+        assert_eq!(
+            response.message,
+            Some(MCP_CAPTURE_DEFERRED_MESSAGE.to_owned())
+        );
+        assert_eq!(serviced, 1);
+    }
+
+    #[test]
+    fn control_capture_enqueue_rejects_missing_capture_queue() {
+        let response = enqueue_mcp_capture_request(None, capture::CaptureMode::Screenshot);
+
+        assert_eq!(response.outcome, control::ControlOutcome::Rejected);
+        assert_eq!(
+            response.message,
+            Some(MCP_CAPTURE_QUEUE_UNAVAILABLE_MESSAGE.to_owned())
         );
     }
 
@@ -669,6 +817,9 @@ fn main2() {
 
     #[cfg(not(target_arch = "wasm32"))]
     let (mcp_command_sender, mcp_command_receiver) = mcp::control_command_channel();
+    #[cfg(not(target_arch = "wasm32"))]
+    let (mcp_capture_request_sender, mcp_capture_request_receiver) =
+        capture::capture_request_channel();
 
     #[cfg(not(target_arch = "wasm32"))]
     let _mcp_runtime = {
@@ -837,6 +988,10 @@ fn main2() {
         default_protocol_version,
         #[cfg(not(target_arch = "wasm32"))]
         mcp_command_receiver: Some(mcp_command_receiver),
+        #[cfg(not(target_arch = "wasm32"))]
+        mcp_capture_request_sender: Some(mcp_capture_request_sender),
+        #[cfg(not(target_arch = "wasm32"))]
+        mcp_capture_request_receiver: Some(mcp_capture_request_receiver),
         #[cfg(not(target_arch = "wasm32"))]
         mcp_release_left_after_server_tick: false,
     };
@@ -1064,6 +1219,8 @@ fn tick_all(
         physical_width,
         physical_height,
     );
+    #[cfg(not(target_arch = "wasm32"))]
+    game.service_pending_mcp_capture_requests();
 
     if fps_cap > 0 && !*vsync {
         let frame_time = now.elapsed();

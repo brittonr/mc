@@ -1083,6 +1083,44 @@ mod tests {
     }
 
     #[test]
+    fn jsonrpc_tools_call_enqueues_capture_command_for_main_thread_drain() {
+        let (sender, receiver) = control_command_channel();
+        let sender =
+            sender.with_response_timeout(Duration::from_millis(QUEUE_TOOL_TEST_TIMEOUT_MILLIS));
+        let request = json!({
+            "jsonrpc": "2.0",
+            "id": 12,
+            "method": MCP_TOOLS_CALL_METHOD,
+            "params": {
+                "name": MCP_ENQUEUE_CONTROL_TOOL,
+                "arguments": {
+                    "command": { "action": "capture_screenshot" },
+                },
+            },
+        })
+        .to_string();
+
+        let worker = thread::spawn(move || {
+            handle_jsonrpc_line_with_auth_and_command_sender(&request, None, Some(&sender))
+                .expect("tools/call should return a response")
+        });
+        let drained = drain_until_command(&receiver, |command| {
+            assert_eq!(command, ControlCommand::CaptureScreenshot);
+            ControlResponse {
+                outcome: ControlOutcome::Deferred,
+                message: Some(QUEUE_TEST_RESPONSE.to_owned()),
+            }
+        });
+
+        assert_eq!(drained, 1);
+        let response: Value = serde_json::from_str(&worker.join().unwrap()).unwrap();
+        let text = response["result"]["content"][0]["text"].as_str().unwrap();
+        let payload: Value = serde_json::from_str(text).unwrap();
+        assert_eq!(payload["outcome"], CONTROL_OUTCOME_DEFERRED);
+        assert_eq!(payload["message"], QUEUE_TEST_RESPONSE);
+    }
+
+    #[test]
     fn command_queue_drains_pending_command_with_main_thread_handler() {
         let (sender, receiver) = control_command_channel();
         let response_receiver = sender

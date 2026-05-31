@@ -29,6 +29,10 @@ const ACTION_USE_ITEM: &str = "use_item";
 const ACTION_USE_ITEM_ALIAS: &str = "use-item";
 const ACTION_ATTACK: &str = "attack";
 const ACTION_CHAT: &str = "chat";
+const ACTION_CAPTURE_SCREENSHOT: &str = "capture_screenshot";
+const ACTION_CAPTURE_SCREENSHOT_ALIAS: &str = "capture-screenshot";
+const ACTION_CAPTURE_LATEST_FRAME: &str = "capture_latest_frame";
+const ACTION_CAPTURE_LATEST_FRAME_ALIAS: &str = "capture-latest-frame";
 
 const KEY_FORWARD: &str = "forward";
 const KEY_BACKWARD: &str = "backward";
@@ -63,6 +67,8 @@ pub enum ControlCommand {
     UseItem,
     Attack,
     Chat { message: String },
+    CaptureScreenshot,
+    CaptureLatestFrame,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -140,6 +146,12 @@ pub fn parse_control_command_value(value: &Value) -> Result<ControlCommand, Cont
         ACTION_USE_ITEM | ACTION_USE_ITEM_ALIAS => Ok(ControlCommand::UseItem),
         ACTION_ATTACK => Ok(ControlCommand::Attack),
         ACTION_CHAT => parse_chat(object),
+        ACTION_CAPTURE_SCREENSHOT | ACTION_CAPTURE_SCREENSHOT_ALIAS => {
+            Ok(ControlCommand::CaptureScreenshot)
+        }
+        ACTION_CAPTURE_LATEST_FRAME | ACTION_CAPTURE_LATEST_FRAME_ALIAS => {
+            Ok(ControlCommand::CaptureLatestFrame)
+        }
         _ => Err(ControlError::UnknownAction(action.to_owned())),
     }
 }
@@ -376,6 +388,14 @@ mod tests {
             Ok(ControlCommand::Chat {
                 message: "/help".to_owned(),
             })
+        );
+        assert_eq!(
+            parse_control_command_value(&json!({ "action": "capture_screenshot" })),
+            Ok(ControlCommand::CaptureScreenshot)
+        );
+        assert_eq!(
+            parse_control_command_value(&json!({ "action": "capture_latest_frame" })),
+            Ok(ControlCommand::CaptureLatestFrame)
         );
     }
 
