@@ -1,0 +1,1114 @@
+commit 06d247ec134dfd0f695b71ad5c482b04c8145bc5
+Author: brittonr <b@robitzs.ch>
+Date:   Sun May 31 01:04:00 2026 -0400
+
+    queue MCP control on main thread
+---
+ src/main.rs | 404 ++++++++++++++++++++++++++++++++++++++++++++++++++-
+ src/mcp.rs  | 475 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 864 insertions(+), 15 deletions(-)
+
+diff --git a/src/main.rs b/src/main.rs
+index 369af2d..fb81f68 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -67,6 +67,43 @@ const CL_BRAND: console::CVar<String> = console::CVar {
+     default: &|| "Steven".to_owned(),
+ };
+ 
++#[cfg(not(target_arch = "wasm32"))]
++const MCP_STATUS_APPLIED_MESSAGE: &str = "status reported";
++#[cfg(not(target_arch = "wasm32"))]
++const MCP_CONNECT_STARTED_MESSAGE: &str = "connect started";
++#[cfg(not(target_arch = "wasm32"))]
++const MCP_CONNECT_ALREADY_ACTIVE_MESSAGE: &str = "connect already active";
++#[cfg(not(target_arch = "wasm32"))]
++const MCP_CONNECT_ALREADY_CONNECTED_MESSAGE: &str =
++    "disconnect before connecting to another server";
++#[cfg(not(target_arch = "wasm32"))]
++const MCP_DISCONNECT_APPLIED_MESSAGE: &str = "disconnect applied";
++#[cfg(not(target_arch = "wasm32"))]
++const MCP_DISCONNECT_NOT_CONNECTED_MESSAGE: &str = "no active connection to disconnect";
++#[cfg(not(target_arch = "wasm32"))]
++const MCP_KEY_APPLIED_MESSAGE: &str = "key applied";
++#[cfg(not(target_arch = "wasm32"))]
++const MCP_LOOK_APPLIED_MESSAGE: &str = "look applied";
++#[cfg(not(target_arch = "wasm32"))]
++const MCP_MOUSE_APPLIED_MESSAGE: &str = "mouse applied";
++#[cfg(not(target_arch = "wasm32"))]
++const MCP_USE_ITEM_APPLIED_MESSAGE: &str = "use item applied";
++#[cfg(not(target_arch = "wasm32"))]
++const MCP_ATTACK_APPLIED_MESSAGE: &str = "attack applied";
++#[cfg(not(target_arch = "wasm32"))]
++const MCP_CHAT_APPLIED_MESSAGE: &str = "chat sent";
++#[cfg(not(target_arch = "wasm32"))]
++const MCP_REQUIRES_CONNECTED_MESSAGE: &str = "command requires an active connection";
++#[cfg(not(target_arch = "wasm32"))]
++const MCP_REQUIRES_PLAYER_MESSAGE: &str = "command requires a player entity";
++#[cfg(not(target_arch = "wasm32"))]
++const MCP_MIN_PITCH_EPSILON_RADIANS: f64 = 0.01;
++#[cfg(not(target_arch = "wasm32"))]
++const MCP_MIN_PITCH_RADIANS: f64 = std::f64::consts::FRAC_PI_2 + MCP_MIN_PITCH_EPSILON_RADIANS;
++#[cfg(not(target_arch = "wasm32"))]
++const MCP_MAX_PITCH_RADIANS: f64 =
++    std::f64::consts::PI + std::f64::consts::FRAC_PI_2 - MCP_MIN_PITCH_EPSILON_RADIANS;
++
+ pub struct Game {
+     renderer: render::Renderer,
+     screen_sys: screen::ScreenSystem,
+@@ -90,6 +127,65 @@ pub struct Game {
+     is_logo_pressed: bool,
+     is_fullscreen: bool,
+     default_protocol_version: i32,
++    #[cfg(not(target_arch = "wasm32"))]
++    mcp_command_receiver: Option<mcp::McpCommandReceiver>,
++    #[cfg(not(target_arch = "wasm32"))]
++    mcp_release_left_after_server_tick: bool,
++}
++
++#[cfg(not(target_arch = "wasm32"))]
++fn control_key_to_stevenkey(key: control::ControlKey) -> settings::Stevenkey {
++    match key {
++        control::ControlKey::Forward => settings::Stevenkey::Forward,
++        control::ControlKey::Backward => settings::Stevenkey::Backward,
++        control::ControlKey::Left => settings::Stevenkey::Left,
++        control::ControlKey::Right => settings::Stevenkey::Right,
++        control::ControlKey::OpenInventory => settings::Stevenkey::OpenInv,
++        control::ControlKey::Sneak => settings::Stevenkey::Sneak,
++        control::ControlKey::Sprint => settings::Stevenkey::Sprint,
++        control::ControlKey::Jump => settings::Stevenkey::Jump,
++    }
++}
++
++#[cfg(not(target_arch = "wasm32"))]
++fn control_command_requires_connected(command: &control::ControlCommand) -> bool {
++    !matches!(
++        command,
++        control::ControlCommand::Status
++            | control::ControlCommand::Connect { .. }
++            | control::ControlCommand::Disconnect
++    )
++}
++
++#[cfg(not(target_arch = "wasm32"))]
++fn disconnected_control_rejection(
++    command: &control::ControlCommand,
++) -> Option<control::ControlResponse> {
++    control_command_requires_connected(command)
++        .then(|| control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
++}
++
++#[cfg(not(target_arch = "wasm32"))]
++fn control_status_message(connected: bool, connecting: bool, focused: bool) -> String {
++    format!(
++        "{MCP_STATUS_APPLIED_MESSAGE}: connected={connected} connecting={connecting} focused={focused}"
++    )
++}
++
++#[cfg(not(target_arch = "wasm32"))]
++fn control_applied_response(message: impl Into<String>) -> control::ControlResponse {
++    control::ControlResponse {
++        outcome: control::ControlOutcome::Applied,
++        message: Some(message.into()),
++    }
++}
++
++#[cfg(not(target_arch = "wasm32"))]
++fn control_rejected_response(message: impl Into<String>) -> control::ControlResponse {
++    control::ControlResponse {
++        outcome: control::ControlOutcome::Rejected,
++        message: Some(message.into()),
++    }
+ }
+ 
+ impl Game {
+@@ -186,6 +282,301 @@ impl Game {
+             self.connect_reply = None;
+         }
+     }
++
++    #[cfg(not(target_arch = "wasm32"))]
++    pub fn drain_mcp_control_commands(&mut self) -> usize {
++        let Some(receiver) = self.mcp_command_receiver.take() else {
++            return 0;
++        };
++        let drained =
++            receiver.drain_pending_with_handler(|command| self.apply_mcp_control_command(command));
++        self.mcp_command_receiver = Some(receiver);
++        drained
++    }
++
++    #[cfg(not(target_arch = "wasm32"))]
++    pub fn release_mcp_control_buttons_after_server_tick(&mut self) {
++        if self.mcp_release_left_after_server_tick {
++            self.server.on_left_mouse_button(false);
++            self.mcp_release_left_after_server_tick = false;
++        }
++    }
++
++    #[cfg(not(target_arch = "wasm32"))]
++    fn apply_mcp_control_command(
++        &mut self,
++        command: control::ControlCommand,
++    ) -> control::ControlResponse {
++        if !self.server.is_connected() {
++            if let Some(response) = disconnected_control_rejection(&command) {
++                return response;
++            }
++        }
++
++        match command {
++            control::ControlCommand::Status => control_applied_response(control_status_message(
++                self.server.is_connected(),
++                self.connect_reply.is_some(),
++                self.focused,
++            )),
++            control::ControlCommand::Connect { address } => self.apply_mcp_connect(&address),
++            control::ControlCommand::Disconnect => self.apply_mcp_disconnect(),
++            control::ControlCommand::Key { key, down } => {
++                self.server.key_press(down, control_key_to_stevenkey(key));
++                control_applied_response(MCP_KEY_APPLIED_MESSAGE)
++            }
++            control::ControlCommand::Look {
++                yaw_delta,
++                pitch_delta,
++            } => self.apply_mcp_look(yaw_delta, pitch_delta),
++            control::ControlCommand::Mouse { button, down } => self.apply_mcp_mouse(button, down),
++            control::ControlCommand::UseItem => {
++                self.server.on_right_mouse_button(true);
++                self.server.on_right_click(&mut self.renderer);
++                self.server.on_right_mouse_button(false);
++                control_applied_response(MCP_USE_ITEM_APPLIED_MESSAGE)
++            }
++            control::ControlCommand::Attack => {
++                self.server.on_left_mouse_button(true);
++                self.mcp_release_left_after_server_tick = true;
++                control_applied_response(MCP_ATTACK_APPLIED_MESSAGE)
++            }
++            control::ControlCommand::Chat { message } => {
++                self.server
++                    .write_packet(protocol::packet::play::serverbound::ChatMessage { message });
++                control_applied_response(MCP_CHAT_APPLIED_MESSAGE)
++            }
++        }
++    }
++
++    #[cfg(not(target_arch = "wasm32"))]
++    fn apply_mcp_connect(&mut self, address: &str) -> control::ControlResponse {
++        if self.connect_reply.is_some() {
++            return control_rejected_response(MCP_CONNECT_ALREADY_ACTIVE_MESSAGE);
++        }
++        if self.server.is_connected() {
++            return control_rejected_response(MCP_CONNECT_ALREADY_CONNECTED_MESSAGE);
++        }
++        self.connect_to(address);
++        control_applied_response(MCP_CONNECT_STARTED_MESSAGE)
++    }
++
++    #[cfg(not(target_arch = "wasm32"))]
++    fn apply_mcp_disconnect(&mut self) -> control::ControlResponse {
++        if self.connect_reply.is_some() {
++            self.connect_reply = None;
++            return control_applied_response(MCP_DISCONNECT_APPLIED_MESSAGE);
++        }
++        if !self.server.is_connected() {
++            return control_rejected_response(MCP_DISCONNECT_NOT_CONNECTED_MESSAGE);
++        }
++        self.server.disconnect(None);
++        self.focused = false;
++        control_applied_response(MCP_DISCONNECT_APPLIED_MESSAGE)
++    }
++
++    #[cfg(not(target_arch = "wasm32"))]
++    fn apply_mcp_look(&mut self, yaw_delta: f64, pitch_delta: f64) -> control::ControlResponse {
++        let Some(player) = self.server.player else {
++            return control_rejected_response(MCP_REQUIRES_PLAYER_MESSAGE);
++        };
++        let Some(rotation) = self
++            .server
++            .entities
++            .get_component_mut(player, self.server.rotation)
++        else {
++            return control_rejected_response(MCP_REQUIRES_PLAYER_MESSAGE);
++        };
++        rotation.yaw += yaw_delta;
++        rotation.pitch = bounded_pitch(rotation.pitch + pitch_delta);
++        control_applied_response(MCP_LOOK_APPLIED_MESSAGE)
++    }
++
++    #[cfg(not(target_arch = "wasm32"))]
++    fn apply_mcp_mouse(
++        &mut self,
++        button: control::MouseButton,
++        down: bool,
++    ) -> control::ControlResponse {
++        match button {
++            control::MouseButton::Left => self.server.on_left_mouse_button(down),
++            control::MouseButton::Right => {
++                self.server.on_right_mouse_button(down);
++                if down {
++                    self.server.on_right_click(&mut self.renderer);
++                }
++            }
++        }
++        control_applied_response(MCP_MOUSE_APPLIED_MESSAGE)
++    }
++}
++
++#[cfg(not(target_arch = "wasm32"))]
++fn bounded_pitch(pitch: f64) -> f64 {
++    pitch.max(MCP_MIN_PITCH_RADIANS).min(MCP_MAX_PITCH_RADIANS)
++}
++
++#[cfg(all(test, not(target_arch = "wasm32")))]
++mod mcp_control_tests {
++    use super::*;
++
++    const TEST_YAW_DELTA: f64 = 0.25;
++    const TEST_PITCH_DELTA: f64 = -0.125;
++    const TEST_PITCH_OFFSET: f64 = 1.0;
++
++    #[test]
++    fn maps_control_keys_to_internal_steven_keys() {
++        assert_eq!(
++            control_key_to_stevenkey(control::ControlKey::Forward),
++            settings::Stevenkey::Forward
++        );
++        assert_eq!(
++            control_key_to_stevenkey(control::ControlKey::Backward),
++            settings::Stevenkey::Backward
++        );
++        assert_eq!(
++            control_key_to_stevenkey(control::ControlKey::Left),
++            settings::Stevenkey::Left
++        );
++        assert_eq!(
++            control_key_to_stevenkey(control::ControlKey::Right),
++            settings::Stevenkey::Right
++        );
++        assert_eq!(
++            control_key_to_stevenkey(control::ControlKey::OpenInventory),
++            settings::Stevenkey::OpenInv
++        );
++        assert_eq!(
++            control_key_to_stevenkey(control::ControlKey::Sneak),
++            settings::Stevenkey::Sneak
++        );
++        assert_eq!(
++            control_key_to_stevenkey(control::ControlKey::Sprint),
++            settings::Stevenkey::Sprint
++        );
++        assert_eq!(
++            control_key_to_stevenkey(control::ControlKey::Jump),
++            settings::Stevenkey::Jump
++        );
++    }
++
++    #[test]
++    fn status_connect_and_disconnect_do_not_require_an_existing_connection() {
++        assert!(!control_command_requires_connected(
++            &control::ControlCommand::Status
++        ));
++        assert!(!control_command_requires_connected(
++            &control::ControlCommand::Connect {
++                address: "127.0.0.1:25565".to_owned(),
++            }
++        ));
++        assert!(!control_command_requires_connected(
++            &control::ControlCommand::Disconnect
++        ));
++        assert!(control_command_requires_connected(
++            &control::ControlCommand::Key {
++                key: control::ControlKey::Forward,
++                down: true,
++            }
++        ));
++        assert!(control_command_requires_connected(
++            &control::ControlCommand::Look {
++                yaw_delta: TEST_YAW_DELTA,
++                pitch_delta: TEST_PITCH_DELTA,
++            }
++        ));
++        assert!(control_command_requires_connected(
++            &control::ControlCommand::Mouse {
++                button: control::MouseButton::Left,
++                down: true,
++            }
++        ));
++        assert!(control_command_requires_connected(
++            &control::ControlCommand::UseItem
++        ));
++        assert!(control_command_requires_connected(
++            &control::ControlCommand::Attack
++        ));
++        assert!(control_command_requires_connected(
++            &control::ControlCommand::Chat {
++                message: "hello".to_owned(),
++            }
++        ));
++    }
++
++    #[test]
++    fn disconnected_operations_return_rejected_response() {
++        assert_eq!(
++            disconnected_control_rejection(&control::ControlCommand::Status),
++            None
++        );
++        assert_eq!(
++            disconnected_control_rejection(&control::ControlCommand::Connect {
++                address: "127.0.0.1:25565".to_owned(),
++            }),
++            None
++        );
++        assert_eq!(
++            disconnected_control_rejection(&control::ControlCommand::Disconnect),
++            None
++        );
++        assert_eq!(
++            disconnected_control_rejection(&control::ControlCommand::Key {
++                key: control::ControlKey::Forward,
++                down: true,
++            }),
++            Some(control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
++        );
++        assert_eq!(
++            disconnected_control_rejection(&control::ControlCommand::Look {
++                yaw_delta: TEST_YAW_DELTA,
++                pitch_delta: TEST_PITCH_DELTA,
++            }),
++            Some(control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
++        );
++        assert_eq!(
++            disconnected_control_rejection(&control::ControlCommand::Mouse {
++                button: control::MouseButton::Left,
++                down: true,
++            }),
++            Some(control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
++        );
++        assert_eq!(
++            disconnected_control_rejection(&control::ControlCommand::UseItem),
++            Some(control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
++        );
++        assert_eq!(
++            disconnected_control_rejection(&control::ControlCommand::Attack),
++            Some(control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
++        );
++        assert_eq!(
++            disconnected_control_rejection(&control::ControlCommand::Chat {
++                message: "hello".to_owned(),
++            }),
++            Some(control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
++        );
++    }
++
++    #[test]
++    fn status_message_reports_connection_state() {
++        assert_eq!(
++            control_status_message(true, false, true),
++            "status reported: connected=true connecting=false focused=true"
++        );
++    }
++
++    #[test]
++    fn pitch_bounds_match_window_input_clamp() {
++        assert_eq!(
++            bounded_pitch(MCP_MIN_PITCH_RADIANS - TEST_PITCH_OFFSET),
++            MCP_MIN_PITCH_RADIANS
++        );
++        assert_eq!(
++            bounded_pitch(MCP_MAX_PITCH_RADIANS + TEST_PITCH_OFFSET),
++            MCP_MAX_PITCH_RADIANS
++        );
++        assert_eq!(bounded_pitch(MCP_MIN_PITCH_RADIANS), MCP_MIN_PITCH_RADIANS);
++    }
+ }
+ 
+ #[derive(StructOpt, Debug)]
+@@ -275,6 +666,9 @@ fn main2() {
+ 
+     info!("Starting steven");
+ 
++    #[cfg(not(target_arch = "wasm32"))]
++    let (mcp_command_sender, mcp_command_receiver) = mcp::control_command_channel();
++
+     #[cfg(not(target_arch = "wasm32"))]
+     let _mcp_runtime = {
+         let mcp_options = mcp::McpTransportOptions::from_cli(
+@@ -290,7 +684,7 @@ fn main2() {
+                     std::process::exit(2);
+                 }
+             };
+-            match mcp::start_process_transport(validated) {
++            match mcp::start_process_transport(validated, Some(mcp_command_sender.clone())) {
+                 Ok(runtime) => Some(runtime),
+                 Err(err) => {
+                     error!("Failed to start MCP transport: {:?}", err);
+@@ -440,6 +834,10 @@ fn main2() {
+         is_logo_pressed: false,
+         is_fullscreen: false,
+         default_protocol_version,
++        #[cfg(not(target_arch = "wasm32"))]
++        mcp_command_receiver: Some(mcp_command_receiver),
++        #[cfg(not(target_arch = "wasm32"))]
++        mcp_release_left_after_server_tick: false,
+     };
+     game.renderer.camera.pos = cgmath::Point3::new(0.5, 13.2, 0.5);
+ 
+@@ -626,7 +1024,11 @@ fn tick_all(
+     let fps_cap = *game.vars.get(settings::R_MAX_FPS);
+ 
+     game.tick(delta);
++    #[cfg(not(target_arch = "wasm32"))]
++    game.drain_mcp_control_commands();
+     game.server.tick(&mut game.renderer, delta);
++    #[cfg(not(target_arch = "wasm32"))]
++    game.release_mcp_control_buttons_after_server_tick();
+ 
+     // Check if window is valid, it might be minimized
+     if physical_width == 0 || physical_height == 0 {
+diff --git a/src/mcp.rs b/src/mcp.rs
+index d1228c2..d751f46 100644
+--- a/src/mcp.rs
++++ b/src/mcp.rs
+@@ -4,23 +4,37 @@
+ // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
+ // <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your option.
+ 
++use crate::control::{ControlCommand, ControlOutcome, ControlResponse};
+ use serde_json::{json, Value};
+ use std::io::{self, BufRead, BufReader, BufWriter, Write};
+ use std::net::{SocketAddr, TcpListener, TcpStream};
+ use std::sync::atomic::{AtomicBool, Ordering};
+-use std::sync::Arc;
++use std::sync::{mpsc, Arc};
+ use std::thread::{self, JoinHandle};
+ use std::time::Duration;
+ 
+ pub const DEFAULT_MCP_TOKEN_ENV: &str = "STEVENARELLA_MCP_TOKEN";
++pub const MAX_MCP_COMMANDS_PER_FRAME: usize = 64;
+ 
++const COMMAND_RESPONSE_TIMEOUT_MILLIS: u64 = 30_000;
+ const REASON_EMPTY_TOKEN_ENV_NAME: &str = "empty_token_env_name";
+ const REASON_EMPTY_TOKEN_VALUE: &str = "empty_token_value";
+ const TCP_ACCEPT_IDLE_SLEEP_MILLIS: u64 = 10;
+ const JSONRPC_PARSE_ERROR: i64 = -32700;
+ const JSONRPC_INVALID_REQUEST: i64 = -32600;
+ const JSONRPC_METHOD_NOT_FOUND: i64 = -32601;
++const JSONRPC_INTERNAL_ERROR: i64 = -32603;
+ const JSONRPC_UNAUTHORIZED: i64 = -32001;
++const MCP_TOOLS_CALL_METHOD: &str = "tools/call";
++const MCP_TOOLS_LIST_METHOD: &str = "tools/list";
++const MCP_ENQUEUE_CONTROL_TOOL: &str = "stevenarella.enqueue_control";
++const MCP_CONTENT_TYPE_TEXT: &str = "text";
++const MCP_FIELD_ARGUMENTS: &str = "arguments";
++const MCP_FIELD_COMMAND: &str = "command";
++const MCP_FIELD_NAME: &str = "name";
++const CONTROL_OUTCOME_APPLIED: &str = "applied";
++const CONTROL_OUTCOME_REJECTED: &str = "rejected";
++const CONTROL_OUTCOME_DEFERRED: &str = "deferred";
+ 
+ #[derive(Debug, Clone, PartialEq, Eq)]
+ pub struct McpTransportOptions {
+@@ -82,10 +96,33 @@ pub enum McpTransportStartError {
+ pub struct McpTransportRuntime {
+     pub endpoints: Vec<StartedMcpEndpoint>,
+     pub stdout_must_remain_clean: bool,
++    command_sender: Option<McpCommandSender>,
+     shutdown_flags: Vec<Arc<AtomicBool>>,
+     join_handles: Vec<JoinHandle<()>>,
+ }
+ 
++#[derive(Debug, Clone, PartialEq, Eq)]
++pub enum McpCommandQueueError {
++    QueueClosed,
++    ResponseDropped,
++    ResponseTimedOut,
++}
++
++#[derive(Clone)]
++pub struct McpCommandSender {
++    sender: mpsc::Sender<QueuedMcpCommand>,
++    response_timeout: Duration,
++}
++
++pub struct McpCommandReceiver {
++    receiver: mpsc::Receiver<QueuedMcpCommand>,
++}
++
++pub struct QueuedMcpCommand {
++    command: ControlCommand,
++    response_sender: mpsc::Sender<ControlResponse>,
++}
++
+ impl Drop for McpTransportRuntime {
+     fn drop(&mut self) {
+         for shutdown_flag in &self.shutdown_flags {
+@@ -118,6 +155,80 @@ impl McpTransportRuntime {
+     pub fn join_handle_count(&self) -> usize {
+         self.join_handles.len()
+     }
++
++    pub fn command_sender_configured(&self) -> bool {
++        self.command_sender.is_some()
++    }
++}
++
++pub fn control_command_channel() -> (McpCommandSender, McpCommandReceiver) {
++    let (sender, receiver) = mpsc::channel();
++    (
++        McpCommandSender {
++            sender,
++            response_timeout: Duration::from_millis(COMMAND_RESPONSE_TIMEOUT_MILLIS),
++        },
++        McpCommandReceiver { receiver },
++    )
++}
++
++impl McpCommandSender {
++    pub fn enqueue_deferred(
++        &self,
++        command: ControlCommand,
++    ) -> Result<mpsc::Receiver<ControlResponse>, McpCommandQueueError> {
++        let (response_sender, response_receiver) = mpsc::channel();
++        self.sender
++            .send(QueuedMcpCommand {
++                command,
++                response_sender,
++            })
++            .map_err(|_| McpCommandQueueError::QueueClosed)?;
++        Ok(response_receiver)
++    }
++
++    pub fn enqueue(
++        &self,
++        command: ControlCommand,
++    ) -> Result<ControlResponse, McpCommandQueueError> {
++        let response_receiver = self.enqueue_deferred(command)?;
++        match response_receiver.recv_timeout(self.response_timeout) {
++            Ok(response) => Ok(response),
++            Err(mpsc::RecvTimeoutError::Timeout) => Err(McpCommandQueueError::ResponseTimedOut),
++            Err(mpsc::RecvTimeoutError::Disconnected) => Err(McpCommandQueueError::ResponseDropped),
++        }
++    }
++
++    pub fn with_response_timeout(mut self, response_timeout: Duration) -> Self {
++        self.response_timeout = response_timeout;
++        self
++    }
++}
++
++impl McpCommandReceiver {
++    pub fn drain_pending_with_handler<F>(&self, handler: F) -> usize
++    where
++        F: FnMut(ControlCommand) -> ControlResponse,
++    {
++        self.drain_pending_with_limit(MAX_MCP_COMMANDS_PER_FRAME, handler)
++    }
++
++    pub fn drain_pending_with_limit<F>(&self, limit: usize, mut handler: F) -> usize
++    where
++        F: FnMut(ControlCommand) -> ControlResponse,
++    {
++        let mut drained = 0;
++        while drained < limit {
++            let queued = match self.receiver.try_recv() {
++                Ok(queued) => queued,
++                Err(mpsc::TryRecvError::Empty) | Err(mpsc::TryRecvError::Disconnected) => break,
++            };
++            let response = handler(queued.command);
++            let _ = queued.response_sender.send(response);
++            drained += 1;
++        }
++        drained
++    }
+ }
+ 
+ pub fn validate_process_transport_options(
+@@ -157,14 +268,15 @@ where
+ 
+ pub fn start_process_transport(
+     validated: ValidatedMcpTransport,
++    command_sender: Option<McpCommandSender>,
+ ) -> Result<McpTransportRuntime, McpTransportStartError> {
+-    start_transport_with_stdio(validated, io::stdin(), io::stdout())
++    start_transport_with_stdio_and_commands(validated, io::stdin(), io::stdout(), command_sender)
+ }
+ 
+ pub fn start_transport_runtime(
+     validated: ValidatedMcpTransport,
+ ) -> Result<McpTransportRuntime, McpTransportStartError> {
+-    start_transport_runtime_inner(validated, None::<(io::Empty, io::Sink)>)
++    start_transport_runtime_inner(validated, None::<(io::Empty, io::Sink)>, None)
+ }
+ 
+ pub fn start_transport_with_stdio<R, W>(
+@@ -176,7 +288,20 @@ where
+     R: io::Read + Send + 'static,
+     W: io::Write + Send + 'static,
+ {
+-    start_transport_runtime_inner(validated, Some((reader, writer)))
++    start_transport_with_stdio_and_commands(validated, reader, writer, None)
++}
++
++pub fn start_transport_with_stdio_and_commands<R, W>(
++    validated: ValidatedMcpTransport,
++    reader: R,
++    writer: W,
++    command_sender: Option<McpCommandSender>,
++) -> Result<McpTransportRuntime, McpTransportStartError>
++where
++    R: io::Read + Send + 'static,
++    W: io::Write + Send + 'static,
++{
++    start_transport_runtime_inner(validated, Some((reader, writer)), command_sender)
+ }
+ 
+ pub fn run_jsonrpc_lines<R, W>(reader: R, writer: W) -> io::Result<()>
+@@ -188,9 +313,34 @@ where
+ }
+ 
+ pub fn run_jsonrpc_lines_with_auth<R, W>(
++    reader: R,
++    writer: W,
++    required_token: Option<&str>,
++) -> io::Result<()>
++where
++    R: BufRead,
++    W: Write,
++{
++    run_jsonrpc_lines_with_auth_and_command_sender(reader, writer, required_token, None)
++}
++
++pub fn run_jsonrpc_lines_with_command_sender<R, W>(
++    reader: R,
++    writer: W,
++    command_sender: Option<McpCommandSender>,
++) -> io::Result<()>
++where
++    R: BufRead,
++    W: Write,
++{
++    run_jsonrpc_lines_with_auth_and_command_sender(reader, writer, None, command_sender)
++}
++
++pub fn run_jsonrpc_lines_with_auth_and_command_sender<R, W>(
+     mut reader: R,
+     mut writer: W,
+     required_token: Option<&str>,
++    command_sender: Option<McpCommandSender>,
+ ) -> io::Result<()>
+ where
+     R: BufRead,
+@@ -203,9 +353,11 @@ where
+         if read == 0 {
+             return Ok(());
+         }
+-        if let Some(response) =
+-            handle_jsonrpc_line_with_auth(line.trim_end_matches(['\r', '\n']), required_token)
+-        {
++        if let Some(response) = handle_jsonrpc_line_with_auth_and_command_sender(
++            line.trim_end_matches(['\r', '\n']),
++            required_token,
++            command_sender.as_ref(),
++        ) {
+             writeln!(writer, "{}", response)?;
+             writer.flush()?;
+         }
+@@ -217,6 +369,14 @@ pub fn handle_jsonrpc_line(line: &str) -> Option<String> {
+ }
+ 
+ pub fn handle_jsonrpc_line_with_auth(line: &str, required_token: Option<&str>) -> Option<String> {
++    handle_jsonrpc_line_with_auth_and_command_sender(line, required_token, None)
++}
++
++pub fn handle_jsonrpc_line_with_auth_and_command_sender(
++    line: &str,
++    required_token: Option<&str>,
++    command_sender: Option<&McpCommandSender>,
++) -> Option<String> {
+     let value = match serde_json::from_str::<Value>(line) {
+         Ok(value) => value,
+         Err(_) => {
+@@ -269,7 +429,10 @@ pub fn handle_jsonrpc_line_with_auth(line: &str, required_token: Option<&str>) -
+                 }),
+             )
+         }),
+-        "tools/list" => id.map(|id| jsonrpc_result(id, json!({ "tools": [] }))),
++        MCP_TOOLS_LIST_METHOD => id.map(|id| jsonrpc_result(id, tools_list_result(command_sender))),
++        MCP_TOOLS_CALL_METHOD => {
++            id.map(|id| handle_tools_call(id, object.get("params"), command_sender))
++        }
+         "resources/list" => id.map(|id| jsonrpc_result(id, json!({ "resources": [] }))),
+         "ping" => id.map(|id| jsonrpc_result(id, json!({}))),
+         method if method.starts_with("notifications/") => None,
+@@ -277,9 +440,99 @@ pub fn handle_jsonrpc_line_with_auth(line: &str, required_token: Option<&str>) -
+     }
+ }
+ 
++fn tools_list_result(command_sender: Option<&McpCommandSender>) -> Value {
++    let tools = if command_sender.is_some() {
++        vec![json!({
++            "name": MCP_ENQUEUE_CONTROL_TOOL,
++            "description": "Queue one Stevenarella control command for main-thread handling.",
++            "inputSchema": {
++                "type": "object",
++                "properties": {
++                    "command": { "type": "object" },
++                },
++                "required": [MCP_FIELD_COMMAND],
++                "additionalProperties": false,
++            },
++        })]
++    } else {
++        Vec::new()
++    };
++    json!({ "tools": tools })
++}
++
++fn handle_tools_call(
++    id: Value,
++    params: Option<&Value>,
++    command_sender: Option<&McpCommandSender>,
++) -> String {
++    let Some(command_sender) = command_sender else {
++        return jsonrpc_error(id, JSONRPC_INTERNAL_ERROR, "control queue unavailable");
++    };
++    let Some(params) = params.and_then(Value::as_object) else {
++        return jsonrpc_error(id, JSONRPC_INVALID_REQUEST, "missing tool params");
++    };
++    let Some(name) = params.get(MCP_FIELD_NAME).and_then(Value::as_str) else {
++        return jsonrpc_error(id, JSONRPC_INVALID_REQUEST, "missing tool name");
++    };
++    if name != MCP_ENQUEUE_CONTROL_TOOL {
++        return jsonrpc_error(id, JSONRPC_METHOD_NOT_FOUND, "tool not found");
++    }
++    let Some(arguments) = params.get(MCP_FIELD_ARGUMENTS).and_then(Value::as_object) else {
++        return jsonrpc_error(id, JSONRPC_INVALID_REQUEST, "missing tool arguments");
++    };
++    let Some(command_value) = arguments.get(MCP_FIELD_COMMAND) else {
++        return jsonrpc_error(id, JSONRPC_INVALID_REQUEST, "missing control command");
++    };
++    let command = match crate::control::parse_control_command_value(command_value) {
++        Ok(command) => command,
++        Err(err) => {
++            return jsonrpc_error(
++                id,
++                JSONRPC_INVALID_REQUEST,
++                &format!("invalid control command: {err:?}"),
++            )
++        }
++    };
++    let response = match command_sender.enqueue(command) {
++        Ok(response) => response,
++        Err(err) => {
++            return jsonrpc_error(
++                id,
++                JSONRPC_INTERNAL_ERROR,
++                &format!("control queue failed: {err:?}"),
++            )
++        }
++    };
++
++    jsonrpc_result(id, control_tool_result(&response))
++}
++
++fn control_tool_result(response: &ControlResponse) -> Value {
++    json!({
++        "content": [{
++            "type": MCP_CONTENT_TYPE_TEXT,
++            "text": json!({
++                "outcome": control_outcome_name(response.outcome),
++                "message": response.message.as_deref(),
++            })
++            .to_string(),
++        }],
++        "isError": matches!(response.outcome, ControlOutcome::Rejected),
++    })
++}
++
++fn control_outcome_name(outcome: ControlOutcome) -> &'static str {
++    match outcome {
++        ControlOutcome::Applied => CONTROL_OUTCOME_APPLIED,
++        ControlOutcome::Rejected => CONTROL_OUTCOME_REJECTED,
++        ControlOutcome::Deferred => CONTROL_OUTCOME_DEFERRED,
++    }
++}
++
+ fn start_transport_runtime_inner<R, W>(
+     validated: ValidatedMcpTransport,
+     stdio: Option<(R, W)>,
++    command_sender: Option<McpCommandSender>,
+ ) -> Result<McpTransportRuntime, McpTransportStartError>
+ where
+     R: io::Read + Send + 'static,
+@@ -295,10 +548,12 @@ where
+             McpEndpoint::Stdio => {
+                 endpoints.push(StartedMcpEndpoint::Stdio);
+                 if let Some((reader, writer)) = stdio.take() {
++                    let command_sender = command_sender.clone();
+                     join_handles.push(thread::spawn(move || {
+                         let reader = BufReader::new(reader);
+                         let writer = BufWriter::new(writer);
+-                        let _ = run_jsonrpc_lines(reader, writer);
++                        let _ =
++                            run_jsonrpc_lines_with_command_sender(reader, writer, command_sender);
+                     }));
+                 }
+             }
+@@ -308,8 +563,9 @@ where
+                 let local_addr = listener.local_addr()?;
+                 let shutdown_flag = Arc::new(AtomicBool::new(false));
+                 let thread_shutdown_flag = Arc::clone(&shutdown_flag);
++                let command_sender = command_sender.clone();
+                 join_handles.push(thread::spawn(move || {
+-                    accept_tcp_jsonrpc(listener, auth, thread_shutdown_flag);
++                    accept_tcp_jsonrpc(listener, auth, thread_shutdown_flag, command_sender);
+                 }));
+                 shutdown_flags.push(shutdown_flag);
+                 endpoints.push(StartedMcpEndpoint::Tcp { local_addr });
+@@ -320,18 +576,25 @@ where
+     Ok(McpTransportRuntime {
+         endpoints,
+         stdout_must_remain_clean: validated.stdout_must_remain_clean,
++        command_sender,
+         shutdown_flags,
+         join_handles,
+     })
+ }
+ 
+-fn accept_tcp_jsonrpc(listener: TcpListener, auth: TcpAuth, shutdown_flag: Arc<AtomicBool>) {
++fn accept_tcp_jsonrpc(
++    listener: TcpListener,
++    auth: TcpAuth,
++    shutdown_flag: Arc<AtomicBool>,
++    command_sender: Option<McpCommandSender>,
++) {
+     while !shutdown_flag.load(Ordering::Acquire) {
+         match listener.accept() {
+             Ok((stream, _)) => {
+                 let required_token = auth.required_token().map(ToOwned::to_owned);
++                let command_sender = command_sender.clone();
+                 thread::spawn(move || {
+-                    let _ = serve_tcp_jsonrpc_stream(stream, required_token);
++                    let _ = serve_tcp_jsonrpc_stream(stream, required_token, command_sender);
+                 });
+             }
+             Err(err) if err.kind() == io::ErrorKind::WouldBlock => {
+@@ -342,10 +605,19 @@ fn accept_tcp_jsonrpc(listener: TcpListener, auth: TcpAuth, shutdown_flag: Arc<A
+     }
+ }
+ 
+-fn serve_tcp_jsonrpc_stream(stream: TcpStream, required_token: Option<String>) -> io::Result<()> {
++fn serve_tcp_jsonrpc_stream(
++    stream: TcpStream,
++    required_token: Option<String>,
++    command_sender: Option<McpCommandSender>,
++) -> io::Result<()> {
+     let reader = BufReader::new(stream.try_clone()?);
+     let writer = BufWriter::new(stream);
+-    run_jsonrpc_lines_with_auth(reader, writer, required_token.as_deref())
++    run_jsonrpc_lines_with_auth_and_command_sender(
++        reader,
++        writer,
++        required_token.as_deref(),
++        command_sender,
++    )
+ }
+ 
+ fn validate_tcp_endpoint<F>(
+@@ -462,6 +734,10 @@ mod tests {
+     const MALFORMED_LISTEN: &str = "not-a-socket";
+     const TOKEN_ENV_NAME: &str = "STEVENARELLA_TEST_MCP_TOKEN";
+     const TOKEN_VALUE: &str = "secret-token";
++    const QUEUE_TEST_TIMEOUT_MILLIS: u64 = 1;
++    const QUEUE_TOOL_TEST_TIMEOUT_MILLIS: u64 = 250;
++    const QUEUE_DRAIN_ATTEMPTS: usize = 1_000;
++    const QUEUE_TEST_RESPONSE: &str = "main-thread-handler";
+ 
+     #[test]
+     fn stdio_transport_is_accepted_and_requires_clean_stdout() {
+@@ -636,6 +912,25 @@ mod tests {
+         assert_eq!(runtime.endpoints, vec![StartedMcpEndpoint::Stdio]);
+         assert!(runtime.stdout_must_remain_clean);
+         assert_eq!(runtime.join_handle_count(), 1);
++        assert!(!runtime.command_sender_configured());
++    }
++
++    #[test]
++    fn stdio_transport_runtime_keeps_command_sender_for_worker_threads() {
++        let validated = ValidatedMcpTransport {
++            endpoints: vec![McpEndpoint::Stdio],
++            stdout_must_remain_clean: true,
++        };
++        let input = std::io::Cursor::new(Vec::new());
++        let output = Vec::new();
++        let (sender, _receiver) = control_command_channel();
++
++        let runtime =
++            start_transport_with_stdio_and_commands(validated, input, output, Some(sender))
++                .unwrap();
++
++        assert_eq!(runtime.endpoints, vec![StartedMcpEndpoint::Stdio]);
++        assert!(runtime.command_sender_configured());
+     }
+ 
+     #[test]
+@@ -735,6 +1030,158 @@ mod tests {
+         assert!(response.contains(&JSONRPC_PARSE_ERROR.to_string()));
+     }
+ 
++    #[test]
++    fn jsonrpc_tools_list_includes_queue_tool_when_sender_is_configured() {
++        let (sender, _receiver) = control_command_channel();
++
++        let response = handle_jsonrpc_line_with_auth_and_command_sender(
++            r#"{"jsonrpc":"2.0","id":10,"method":"tools/list"}"#,
++            None,
++            Some(&sender),
++        )
++        .unwrap();
++
++        assert!(response.contains(MCP_ENQUEUE_CONTROL_TOOL));
++    }
++
++    #[test]
++    fn jsonrpc_tools_call_enqueues_control_command_for_main_thread_drain() {
++        let (sender, receiver) = control_command_channel();
++        let sender =
++            sender.with_response_timeout(Duration::from_millis(QUEUE_TOOL_TEST_TIMEOUT_MILLIS));
++        let request = json!({
++            "jsonrpc": "2.0",
++            "id": 11,
++            "method": MCP_TOOLS_CALL_METHOD,
++            "params": {
++                "name": MCP_ENQUEUE_CONTROL_TOOL,
++                "arguments": {
++                    "command": { "action": "status" },
++                },
++            },
++        })
++        .to_string();
++
++        let worker = thread::spawn(move || {
++            handle_jsonrpc_line_with_auth_and_command_sender(&request, None, Some(&sender))
++                .expect("tools/call should return a response")
++        });
++        let drained = drain_until_command(&receiver, |command| {
++            assert_eq!(command, ControlCommand::Status);
++            ControlResponse {
++                outcome: ControlOutcome::Applied,
++                message: Some(QUEUE_TEST_RESPONSE.to_owned()),
++            }
++        });
++
++        assert_eq!(drained, 1);
++        let response: Value = serde_json::from_str(&worker.join().unwrap()).unwrap();
++        let text = response["result"]["content"][0]["text"].as_str().unwrap();
++        let payload: Value = serde_json::from_str(text).unwrap();
++        assert_eq!(payload["outcome"], CONTROL_OUTCOME_APPLIED);
++        assert_eq!(payload["message"], QUEUE_TEST_RESPONSE);
++    }
++
++    #[test]
++    fn command_queue_drains_pending_command_with_main_thread_handler() {
++        let (sender, receiver) = control_command_channel();
++        let response_receiver = sender
++            .enqueue_deferred(ControlCommand::Status)
++            .expect("queue should accept command while receiver is alive");
++
++        let drained = receiver.drain_pending_with_handler(|command| {
++            assert_eq!(command, ControlCommand::Status);
++            ControlResponse {
++                outcome: crate::control::ControlOutcome::Applied,
++                message: Some(QUEUE_TEST_RESPONSE.to_owned()),
++            }
++        });
++
++        assert_eq!(drained, 1);
++        assert_eq!(
++            response_receiver.recv().unwrap(),
++            ControlResponse {
++                outcome: crate::control::ControlOutcome::Applied,
++                message: Some(QUEUE_TEST_RESPONSE.to_owned()),
++            }
++        );
++    }
++
++    #[test]
++    fn command_queue_respects_per_frame_drain_limit() {
++        let (sender, receiver) = control_command_channel();
++        let first_response = sender.enqueue_deferred(ControlCommand::Status).unwrap();
++        let second_response = sender.enqueue_deferred(ControlCommand::Disconnect).unwrap();
++
++        let first_drained = receiver.drain_pending_with_limit(1, |command| {
++            assert_eq!(command, ControlCommand::Status);
++            ControlResponse {
++                outcome: crate::control::ControlOutcome::Applied,
++                message: None,
++            }
++        });
++
++        assert_eq!(first_drained, 1);
++        assert_eq!(
++            first_response.recv().unwrap().outcome,
++            crate::control::ControlOutcome::Applied
++        );
++        assert!(matches!(
++            second_response.try_recv(),
++            Err(mpsc::TryRecvError::Empty)
++        ));
++
++        let second_drained = receiver.drain_pending_with_handler(|command| {
++            assert_eq!(command, ControlCommand::Disconnect);
++            ControlResponse {
++                outcome: crate::control::ControlOutcome::Rejected,
++                message: None,
++            }
++        });
++
++        assert_eq!(second_drained, 1);
++        assert_eq!(
++            second_response.recv().unwrap().outcome,
++            crate::control::ControlOutcome::Rejected
++        );
++    }
++
++    #[test]
++    fn command_queue_rejects_enqueue_after_receiver_drop() {
++        let (sender, receiver) = control_command_channel();
++        drop(receiver);
++
++        assert!(matches!(
++            sender.enqueue_deferred(ControlCommand::Status),
++            Err(McpCommandQueueError::QueueClosed)
++        ));
++    }
++
++    #[test]
++    fn command_queue_reports_timeout_when_main_thread_does_not_drain() {
++        let (sender, _receiver) = control_command_channel();
++        let sender = sender.with_response_timeout(Duration::from_millis(QUEUE_TEST_TIMEOUT_MILLIS));
++
++        assert_eq!(
++            sender.enqueue(ControlCommand::Status),
++            Err(McpCommandQueueError::ResponseTimedOut)
++        );
++    }
++
++    fn drain_until_command<F>(receiver: &McpCommandReceiver, mut handler: F) -> usize
++    where
++        F: FnMut(ControlCommand) -> ControlResponse,
++    {
++        for _attempt in 0..QUEUE_DRAIN_ATTEMPTS {
++            let drained = receiver.drain_pending_with_handler(&mut handler);
++            if drained > 0 {
++                return drained;
++            }
++            thread::yield_now();
++        }
++        0
++    }
++
+     fn request_tcp_jsonrpc(connect_addr: SocketAddr, request: &[u8]) -> String {
+         let mut stream = TcpStream::connect(connect_addr).unwrap();
+         stream.write_all(request).unwrap();

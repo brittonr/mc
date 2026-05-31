@@ -1,0 +1,41 @@
+command=nix run --no-update-lock-file .#cairn -- gate tasks stevenarella-mcp-control-plane --root .
+{
+  "change": "stevenarella-mcp-control-plane",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f7ab37798cbabf195e483e721986db71de44439a7cf5612b9c0055b5011d0d6a",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "4391950112f4d678eb7ead877da8ca1e6b2c8168e53c9826d228d88472356fb4",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_tasks_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 33,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 35,
+  "valid": true
+}
+cairn_validate_exit_status=0
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+this derivation will be built:
+  /nix/store/1zq3m8cpqfksbzspb7z9kjxv7b8lqp0y-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/1zq3m8cpqfksbzspb7z9kjxv7b8lqp0y-mc-compat-cairn-task-evidence.drv'...
+task_evidence_exit_status=0

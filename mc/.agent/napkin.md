@@ -25,6 +25,7 @@
 | 2026-05-30 | done-review | Marked survival crafting checker task complete while stale-revision/oracle rejection from the proposal was not in the checker or contract | Before checking tasks, compare every proposal rejection mode against checker constants, contract tokens, and negative self-tests; add stale revision/oracle fixtures or narrow task language |
 | 2026-05-30 | self | Tried host `b3sum` while writing mc evidence sidecars, but it is not on PATH outside the devshell | Use `nix develop --no-update-lock-file -c b3sum ... | tail -n 1` for `.b3` sidecars in `mc/` |
 | 2026-05-31 | done-review | Marked MCP transport task complete after only validating token env presence; runtime TCP accepted unauthenticated requests | For security wording like token-gated, add runtime/request-level positive and negative tests before checking the task |
+| 2026-05-31 | self | Ran `mc-compat-cairn-task-evidence` for Stevenarella MCP work and hit unrelated `survival-crafting-table-parity` lines 3/5 missing explicit `.b3` paths | Fixed by adding explicit `protocol-763-survival-crafting-table-progress-2026-05-30.b3` refs; when a global gate fails on another active change, either fix that blocker or keep the current artifact task open |
 
 ## User Preferences
 - Keep replies terse and direct.
