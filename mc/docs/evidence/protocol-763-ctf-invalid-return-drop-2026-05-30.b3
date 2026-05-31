@@ -5,7 +5,7 @@ cc86c80c3fced7cc8f071fe046573a51f7d6b6cb5d97c5dacb5971494484d157  docs/evidence/
 1e2ebd36e3c929430c5e913cf59dcc9cf8f137a04900798da5954c0f01e8a743  docs/evidence/protocol-763-ctf-invalid-return-drop-2026-05-30.client.log
 910285b631a87276b34b2d05941fd250fded234294abadcb6274e5f513200f63  docs/evidence/protocol-763-ctf-invalid-return-drop-2026-05-30.server.log
 7f254d90909cb15d4a422bf44960919d1f440d6ec53ced536630c9458607c324  docs/evidence/protocol-763-ctf-invalid-return-drop-2026-05-30.record
-aae92b803892b291829125469cd593f1ea703f8169e4181fbe4239790f2b0712  docs/evidence/protocol-763-acceptance-matrix.md
+2354dd17488d08b4acdc26440bab4610623f5fb70fb6471fb77ea23a5ed5a7db  docs/evidence/protocol-763-acceptance-matrix.md
 115b51d433bda0f21895c9f2b5b6686c06edb7bab17b0f66d6b3c23aa964d9c3  docs/evidence/protocol-763-current-evidence-bundle.md
 a44aadec2249425902503d74037ee4a803b09664b516db38fff04f9ca92d153c  docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md
 f78f973960e966e07e411e3c4ff69f6d577b5921b1b973a15a56168396e610e9  config/mc-compat/scenario-manifest.ncl
