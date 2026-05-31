@@ -6,7 +6,7 @@ e65b37dbaae0675198a332d0ff85fae88691f3b9d89e24ee75055a5e055f960c  docs/evidence/
 13165dba1029b3464ac00aacc858b146328020edcc3cd438ada255cdd0adf780  docs/evidence/protocol-763-ctf-invalid-pickup-ownership-2026-05-30.server.log
 5af989d8045c7eaaf7038b5d7542b407136a8df838e57ed4f20ab798d561d675  docs/evidence/protocol-763-ctf-invalid-pickup-ownership-2026-05-30.record
 2354dd17488d08b4acdc26440bab4610623f5fb70fb6471fb77ea23a5ed5a7db  docs/evidence/protocol-763-acceptance-matrix.md
-115b51d433bda0f21895c9f2b5b6686c06edb7bab17b0f66d6b3c23aa964d9c3  docs/evidence/protocol-763-current-evidence-bundle.md
+d0cf08e976f4b98b196ff01502e8168023c169ac79ba3ad157a55fcac28dee28  docs/evidence/protocol-763-current-evidence-bundle.md
 a44aadec2249425902503d74037ee4a803b09664b516db38fff04f9ca92d153c  docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md
 f78f973960e966e07e411e3c4ff69f6d577b5921b1b973a15a56168396e610e9  config/mc-compat/scenario-manifest.ncl
 74a90202d1c01234427c8ca8d8820499905dfda4e62b9c53869bf95fa84544af  tools/mc-compat-runner/src/main.rs

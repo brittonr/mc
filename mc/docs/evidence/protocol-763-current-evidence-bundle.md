@@ -73,7 +73,7 @@ The maintained chest persistence row is validated by `docs/evidence/protocol-763
 
 ## Survival crafting table checkpoint
 
-The maintained crafting row is validated by `docs/evidence/protocol-763-survival-crafting-table-2026-05-31.md` with paired Paper and Valence receipt/log bundles. Covered row is one deterministic client in the Paper fixture and Valence `survival_compat` fixture opening crafting table `4,64,0`, placing `OakPlanks` in input slots `1` and `4`, observing `Stick x4` result slot `0` with recipe `minecraft:stick`, collecting the result, and observing inventory slot `36` on both backends. `docs/evidence/protocol-763-survival-coverage-matrix-2026-05-28.md` and `tools/check_survival_coverage_matrix.py` keep furnace persistence, hunger/food, mob drops, redstone, biome/dimension, and world persistence as explicit missing rows. `tools/check_survival_crafting_table.rs` rejects Valence-only evidence and mismatched slot/item/count/recipe/position metrics, and passes the paired Paper/Valence bundle. Full survival compatibility, full crafting coverage, recipe-book behavior, shift-click/drag/split semantics, all recipe variants, all-container behavior, and broad vanilla parity remain non-claims.
+The maintained crafting row is validated by `docs/evidence/protocol-763-survival-crafting-table-2026-05-31.md` with paired Paper and Valence receipt/log bundles. Covered row is one deterministic client in the Paper fixture and Valence `survival_compat` fixture opening crafting table `4,64,0`, placing `OakPlanks` in input slots `1` and `4`, observing `Stick x4` result slot `0` with recipe `minecraft:stick`, collecting the result, and observing inventory slot `36` on both backends. `docs/evidence/protocol-763-survival-coverage-matrix-2026-05-28.md` and `tools/check_survival_coverage_matrix.rs` keep furnace persistence, hunger/food, mob drops, redstone, biome/dimension, and world persistence as explicit missing rows. `tools/check_survival_crafting_table.rs` rejects Valence-only evidence and mismatched slot/item/count/recipe/position metrics, and passes the paired Paper/Valence bundle. Full survival compatibility, full crafting coverage, recipe-book behavior, shift-click/drag/split semantics, all recipe variants, all-container behavior, and broad vanilla parity remain non-claims.
 
 ## Vanilla combat parity checkpoint
 
@@ -150,7 +150,9 @@ python3 tools/check_armor_modifier_matrix.py
 python3 tools/check_projectile_travel_collision.py
 python3 tools/check_vanilla_combat_parity.py
 python3 tools/check_protocol_coverage_ledger.py
-python3 tools/check_survival_coverage_matrix.py
+nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_survival_coverage_matrix.rs -o target/check-survival-coverage-matrix
+target/check-survival-coverage-matrix --self-test
+target/check-survival-coverage-matrix
 python3 tools/check_survival_reference_parity.py
 ./tools/check_survival_chest_persistence.rs --self-test
 nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py

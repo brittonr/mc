@@ -1,0 +1,53 @@
+
+$ nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_acceptance_matrix.rs -o target/check-acceptance-matrix
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+
+$ target/check-acceptance-matrix --self-test
+acceptance matrix self-test ok: positive and negative fixtures exercised
+
+$ target/check-acceptance-matrix
+acceptance matrix check passed: 21 rows validated
+
+$ nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_current_evidence_bundle.rs -o target/check-current-evidence-bundle
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+
+$ target/check-current-evidence-bundle --self-test
+current evidence bundle self-test ok: positive and negative fixtures exercised
+
+$ target/check-current-evidence-bundle
+current evidence bundle check passed: 21 rows validated
+
+$ nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_survival_coverage_matrix.rs -o target/check-survival-coverage-matrix
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+
+$ target/check-survival-coverage-matrix --self-test
+survival coverage matrix self-test ok: positive and negative fixtures exercised
+
+$ target/check-survival-coverage-matrix
+survival coverage matrix check passed: 9 rows validated
+
+$ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 138 manifests, 650 entries, 71 receipts scanned
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 30,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 32,
+  "valid": true
+}
+
+postreview rust-only validation complete

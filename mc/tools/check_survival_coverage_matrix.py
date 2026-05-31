@@ -31,7 +31,7 @@ REQUIRED_SYSTEMS = [
 REQUIRED_TEXT = [
     "full_survival_compatibility remains a non-claim",
     "No full survival compatibility or broader vanilla parity",
-    "No full survival compatibility from crafting row",
+    "No crafting coverage",
     "No full survival compatibility from chest persistence row",
     "No furnace coverage",
     "No hunger or food coverage",
@@ -51,15 +51,11 @@ FORBIDDEN_CLAIMS = [
 STATUS_MISSING = "missing"
 REFERENCE_NONE = "none"
 COVERED_ROW = "break/place/pickup"
-CRAFTING_ROW = "crafting"
 CHEST_ROW = "chest persistence"
 COVERED_STATUS = "reference_parity_covered"
 PAPER_REFERENCE_RECEIPT = "docs/evidence/protocol-763-survival-reference-paper-2026-05-28.receipt.json"
 VALENCE_REFERENCE_RECEIPT = "docs/evidence/protocol-763-survival-reference-valence-2026-05-28.receipt.json"
 PARITY_EVIDENCE_DOC = "docs/evidence/protocol-763-survival-reference-parity-2026-05-28.md"
-CRAFTING_PAPER_RECEIPT = "docs/evidence/protocol-763-survival-crafting-table-paper-2026-05-31.receipt.json"
-CRAFTING_VALENCE_RECEIPT = "docs/evidence/protocol-763-survival-crafting-table-valence-2026-05-31.receipt.json"
-CRAFTING_EVIDENCE_DOC = "docs/evidence/protocol-763-survival-crafting-table-2026-05-31.md"
 CHEST_PAPER_RECEIPT = "docs/evidence/protocol-763-survival-chest-persistence-paper-2026-05-29.receipt.json"
 CHEST_VALENCE_RECEIPT = "docs/evidence/protocol-763-survival-chest-persistence-valence-2026-05-29.receipt.json"
 CHEST_EVIDENCE_DOC = "docs/evidence/protocol-763-survival-chest-persistence-2026-05-29.md"
@@ -133,19 +129,6 @@ def validate_text(doc_text: str, bundle_text: str, matrix_text: str) -> tuple[in
             if "full survival compatibility" not in row.non_claim.lower() or "broader vanilla parity" not in row.non_claim.lower():
                 issues.append("covered break/place/pickup row lacks scoped survival parity non-claim")
             continue
-        if row.system == CRAFTING_ROW:
-            if row.status != COVERED_STATUS:
-                issues.append(f"covered crafting row has stale status: {row.status}")
-            if CRAFTING_PAPER_RECEIPT not in row.reference_evidence:
-                issues.append("covered crafting row missing Paper reference receipt")
-            if CRAFTING_VALENCE_RECEIPT not in row.valence_evidence:
-                issues.append("covered crafting row missing Valence paired receipt")
-            if CRAFTING_EVIDENCE_DOC not in row.requirement:
-                issues.append("covered crafting row missing evidence doc")
-            lowered_non_claim = row.non_claim.lower()
-            if "full survival compatibility" not in lowered_non_claim or "furnace" not in lowered_non_claim:
-                issues.append("covered crafting row lacks scoped crafting non-claim")
-            continue
         if row.system == CHEST_ROW:
             if row.status != COVERED_STATUS:
                 issues.append(f"covered chest persistence row has stale status: {row.status}")
@@ -189,7 +172,7 @@ full_survival_compatibility remains a non-claim.
 paired reference receipt
 BLAKE3 manifest entries
 No vanilla parity or full survival compatibility
-No full survival compatibility from crafting row
+No crafting coverage
 No full survival compatibility from chest persistence row
 No furnace coverage
 No hunger or food coverage
@@ -204,7 +187,7 @@ def good_rows() -> str:
     return "\n".join(
         [
             f"| break/place/pickup | {COVERED_STATUS} | `{VALENCE_REFERENCE_RECEIPT}` | `{PAPER_REFERENCE_RECEIPT}` | Paired comparator evidence: `{PARITY_EVIDENCE_DOC}`. | No full survival compatibility or broader vanilla parity. | next |",
-            f"| crafting | {COVERED_STATUS} | `{CRAFTING_VALENCE_RECEIPT}` | `{CRAFTING_PAPER_RECEIPT}` | Paired comparator evidence: `{CRAFTING_EVIDENCE_DOC}`. | No full survival compatibility from crafting row; no furnace/hunger/mob/redstone/biome/dimension/world persistence coverage. | next |",
+            "| crafting | missing | none | none | Add receipts. | No crafting coverage. | next |",
             f"| chest persistence | {COVERED_STATUS} | `{CHEST_VALENCE_RECEIPT}` | `{CHEST_PAPER_RECEIPT}` | Paired comparator evidence: `{CHEST_EVIDENCE_DOC}`. | No full survival compatibility from chest persistence row; no all-container behavior. | next |",
             "| furnace persistence | missing | none | none | Add receipts. | No furnace coverage. | next |",
             "| hunger/food | missing | none | none | Add receipts. | No hunger or food coverage. | next |",

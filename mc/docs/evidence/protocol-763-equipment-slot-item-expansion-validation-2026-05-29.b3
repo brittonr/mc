@@ -7,6 +7,6 @@ b83bcb6a109092c92a1ac49d80065c15a1abf79706da57a82e1426b2236ff642  docs/evidence/
 cad63f29ed3996ebc7509f6cad539f01510bd2de70c28ed475cbaa88eef80658  docs/evidence/protocol-763-equipment-slot-item-expansion-rail-2026-05-29.b3
 9028152f2795b08fd0ca47874ec4a3b6410bfadd4c1844f75722333b50fa7e9e  docs/evidence/protocol-763-equipment-slot-item-expansion-row-2026-05-29.b3
 2354dd17488d08b4acdc26440bab4610623f5fb70fb6471fb77ea23a5ed5a7db  docs/evidence/protocol-763-acceptance-matrix.md
-115b51d433bda0f21895c9f2b5b6686c06edb7bab17b0f66d6b3c23aa964d9c3  docs/evidence/protocol-763-current-evidence-bundle.md
+d0cf08e976f4b98b196ff01502e8168023c169ac79ba3ad157a55fcac28dee28  docs/evidence/protocol-763-current-evidence-bundle.md
 74a90202d1c01234427c8ca8d8820499905dfda4e62b9c53869bf95fa84544af  tools/mc-compat-runner/src/main.rs
 d753144d7ecba1ee8b0ac68b1e59d6dee349cadffe56a03c3529d99763c76324  tools/check_equipment_slot_item_expansion.rs

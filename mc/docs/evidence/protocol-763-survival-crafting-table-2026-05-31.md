@@ -20,6 +20,7 @@ It does not claim full crafting coverage, recipe-book behavior, shift-click/drag
 | Valence run log | `docs/evidence/protocol-763-survival-crafting-table-valence-2026-05-31.run.log` | `d7b88550ab38b5a236a847e7017422985920a9d04b8047b90e5319bfb3538ee2` |
 | Checker log | `docs/evidence/protocol-763-survival-crafting-table-2026-05-31.checker.log` | `9c1ab8ce22b40dc25bb9136e9364fbdec018235394d4ce1b3fbaa1f636075bc5` |
 | Validation log | `docs/evidence/protocol-763-survival-crafting-table-validation-2026-05-31.run.log` | `22caafb551667aa870a97eff74485ce57698c10368ff823267cb2b9aa2017546` |
+| Post-review Rust validation log | `docs/evidence/protocol-763-survival-crafting-table-postreview-2026-05-31.run.log` | `31ae7529b247df6b1681becb2d3f9ff31b4951bc6120176a6e031d289860e0ba` |
 | Paper fixture JAR | `docs/evidence/mc-compat-paper-survival-crafting-fixture-2026-05-31.jar` | `2caca95d561df91e1c21a29580f023437e048d218531b7ebe54d9fb389f7375b` |
 | Valence live source patch | `docs/evidence/protocol-763-survival-crafting-table-valence-live-source-2026-05-31.patch` | `f4679fcaff8883a458ae3f7b27b764cb88288ecaa49570c451ad1e9ae4f0267b` |
 | Stevenarella live source patch | `docs/evidence/protocol-763-survival-crafting-table-client-live-source-2026-05-31.patch` | `fe6a051c653d8173369302c9e01b151e110d329772f2e030ccf355954d371c47` |
@@ -76,7 +77,7 @@ CARGO_TARGET_DIR=/tmp/mc-cargo-script-target ./tools/check_survival_crafting_tab
 
 Checker output: `survival crafting table contract ok: 72 metrics`.
 
-Validation output records checker self-tests, paired comparator, Valence dry-run wrapper, acceptance/current-bundle/survival-coverage checks, evidence manifest check (`evidence manifests ok: 137 manifests, 644 entries, 71 receipts scanned`), task gate `valid=true`, and Cairn validation `valid=true`.
+Validation output records checker self-tests, paired comparator, Valence dry-run wrapper, acceptance/current-bundle/survival-coverage checks, evidence manifest check (`evidence manifests ok: 137 manifests, 644 entries, 71 receipts scanned`), task gate `valid=true`, and Cairn validation `valid=true`. Post-review validation reran the matrix, bundle, and survival-coverage gates through Rust checkers only; it records `evidence manifests ok: 138 manifests, 650 entries, 71 receipts scanned` and Cairn validation `valid=true`.
 
 ## Result
 

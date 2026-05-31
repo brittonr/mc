@@ -7,6 +7,6 @@ ee15396b263f77d15ec21900b3a34a94ec4c546e75993e7bd69a8ae72da3ed1b  docs/evidence/
 efb6bc116f416c988cf9b1d08b672940629452857b77346bc24575bac25e2091  docs/evidence/protocol-763-armor-loadout-enchantment-status-rail-2026-05-29.b3
 5128e44a4c5c31b086730698701a91bfca7a2a447bd84c6df44080ffe19b50ee  docs/evidence/protocol-763-armor-loadout-enchantment-status-row-2026-05-29.b3
 2354dd17488d08b4acdc26440bab4610623f5fb70fb6471fb77ea23a5ed5a7db  docs/evidence/protocol-763-acceptance-matrix.md
-115b51d433bda0f21895c9f2b5b6686c06edb7bab17b0f66d6b3c23aa964d9c3  docs/evidence/protocol-763-current-evidence-bundle.md
+d0cf08e976f4b98b196ff01502e8168023c169ac79ba3ad157a55fcac28dee28  docs/evidence/protocol-763-current-evidence-bundle.md
 74a90202d1c01234427c8ca8d8820499905dfda4e62b9c53869bf95fa84544af  tools/mc-compat-runner/src/main.rs
 e883c3ca16050a62449dd85726b0f117876f46bee841814a2a83544bb7be23dd  tools/check_armor_loadout_enchantment_status.rs
