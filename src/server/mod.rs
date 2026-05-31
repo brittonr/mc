@@ -97,6 +97,36 @@ const SURVIVAL_CHEST_ITEM_PROTOCOL_ID: isize = 15;
 const SURVIVAL_CHEST_ITEM_COUNT: isize = 1;
 const SURVIVAL_CHEST_ITEM_NAME: &str = "Dirt";
 const SURVIVAL_CHEST_RECONNECT_SESSION_LABEL: u32 = 1;
+const SURVIVAL_CRAFTING_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_CRAFTING_PROBE";
+const SURVIVAL_CRAFTING_POSITION_TICK: u32 = 60;
+const SURVIVAL_CRAFTING_OPEN_TICK: u32 = 80;
+const SURVIVAL_CRAFTING_INPUT_A_TICK: u32 = 120;
+const SURVIVAL_CRAFTING_INPUT_B_TICK: u32 = 140;
+const SURVIVAL_CRAFTING_COLLECT_TICK: u32 = 160;
+const SURVIVAL_CRAFTING_TABLE_X: i32 = 4;
+const SURVIVAL_CRAFTING_TABLE_Y: i32 = 64;
+const SURVIVAL_CRAFTING_TABLE_Z: i32 = 0;
+const SURVIVAL_CRAFTING_PLAYER_X: f64 = 4.5;
+const SURVIVAL_CRAFTING_PLAYER_Y: f64 = 65.0;
+const SURVIVAL_CRAFTING_PLAYER_Z: f64 = 0.5;
+const SURVIVAL_CRAFTING_FACE_UP: i32 = 1;
+const SURVIVAL_CRAFTING_MAIN_HAND: i32 = 0;
+const SURVIVAL_CRAFTING_SEQUENCE: i32 = 608;
+const SURVIVAL_CRAFTING_INPUT_A_SLOT: i16 = 1;
+const SURVIVAL_CRAFTING_INPUT_B_SLOT: i16 = 4;
+const SURVIVAL_CRAFTING_RESULT_SLOT: i16 = 0;
+const SURVIVAL_CRAFTING_RESULT_INDEX: usize = 0;
+const SURVIVAL_CRAFTING_INVENTORY_SLOT: i16 = 36;
+const SURVIVAL_CRAFTING_INVENTORY_INDEX: usize = 36;
+const SURVIVAL_CRAFTING_INPUT_ITEM_ID: isize = 23;
+const SURVIVAL_CRAFTING_RESULT_ITEM_ID: isize = 807;
+const SURVIVAL_CRAFTING_INPUT_ITEM_NAME: &str = "OakPlanks";
+const SURVIVAL_CRAFTING_RESULT_ITEM_NAME: &str = "Stick";
+const SURVIVAL_CRAFTING_RECIPE: &str = "minecraft:stick";
+const SURVIVAL_CRAFTING_INPUT_COUNT: isize = 1;
+const SURVIVAL_CRAFTING_RESULT_COUNT: isize = 4;
+const SURVIVAL_CRAFTING_CLICK_BUTTON: u8 = 0;
+const SURVIVAL_CRAFTING_CLICK_MODE: i32 = 0;
 const EMPTY_WINDOW_ID: u8 = 0;
 const EMPTY_WINDOW_STATE_ID: i32 = -1;
 const NEGATIVE_INVENTORY_INVALID_SLOT: i16 = 127;
@@ -129,6 +159,36 @@ fn survival_chest_probe_session_from_env() -> u32 {
             *session == SURVIVAL_CHEST_FIRST_SESSION || *session == SURVIVAL_CHEST_REOPEN_SESSION
         })
         .unwrap_or(SURVIVAL_CHEST_FIRST_SESSION)
+}
+
+fn survival_crafting_table_position() -> Position {
+    Position::new(
+        SURVIVAL_CRAFTING_TABLE_X,
+        SURVIVAL_CRAFTING_TABLE_Y,
+        SURVIVAL_CRAFTING_TABLE_Z,
+    )
+}
+
+fn survival_crafting_input_stack() -> item::Stack {
+    item::Stack {
+        id: SURVIVAL_CRAFTING_INPUT_ITEM_ID,
+        count: SURVIVAL_CRAFTING_INPUT_COUNT,
+        damage: None,
+        tag: None,
+    }
+}
+
+fn survival_crafting_result_stack() -> item::Stack {
+    item::Stack {
+        id: SURVIVAL_CRAFTING_RESULT_ITEM_ID,
+        count: SURVIVAL_CRAFTING_RESULT_COUNT,
+        damage: None,
+        tag: None,
+    }
+}
+
+fn survival_crafting_result_matches(stack: &item::Stack) -> bool {
+    stack.id == SURVIVAL_CRAFTING_RESULT_ITEM_ID && stack.count == SURVIVAL_CRAFTING_RESULT_COUNT
 }
 
 pub struct Server {
@@ -182,6 +242,7 @@ pub struct Server {
     survival_probe_enabled: bool,
     survival_chest_probe_enabled: bool,
     survival_chest_probe_session: u32,
+    survival_crafting_probe_enabled: bool,
     equipment_probe_enabled: bool,
     projectile_probe_enabled: bool,
     flag_probe_enabled: bool,
@@ -218,6 +279,16 @@ pub struct Server {
     survival_chest_persisted_seen: bool,
     survival_chest_window_id: u8,
     survival_chest_window_state_id: i32,
+    survival_crafting_position_sent: bool,
+    survival_crafting_open_sent: bool,
+    survival_crafting_open_seen: bool,
+    survival_crafting_input_a_sent: bool,
+    survival_crafting_input_b_sent: bool,
+    survival_crafting_result_seen: bool,
+    survival_crafting_collect_sent: bool,
+    survival_crafting_inventory_seen: bool,
+    survival_crafting_window_id: u8,
+    survival_crafting_window_state_id: i32,
     inventory_probe_click_sent: bool,
     inventory_probe_container_click_sent: bool,
     inventory_probe_container_id: u8,
@@ -757,6 +828,9 @@ impl Server {
                 .map(|value| value != "0")
                 .unwrap_or(false),
             survival_chest_probe_session: survival_chest_probe_session_from_env(),
+            survival_crafting_probe_enabled: std::env::var(SURVIVAL_CRAFTING_PROBE_ENV)
+                .map(|value| value != "0")
+                .unwrap_or(false),
             equipment_probe_enabled: std::env::var("MC_COMPAT_EQUIPMENT_PROBE")
                 .map(|value| value != "0")
                 .unwrap_or(false),
@@ -801,6 +875,16 @@ impl Server {
             survival_chest_persisted_seen: false,
             survival_chest_window_id: EMPTY_WINDOW_ID,
             survival_chest_window_state_id: EMPTY_WINDOW_STATE_ID,
+            survival_crafting_position_sent: false,
+            survival_crafting_open_sent: false,
+            survival_crafting_open_seen: false,
+            survival_crafting_input_a_sent: false,
+            survival_crafting_input_b_sent: false,
+            survival_crafting_result_seen: false,
+            survival_crafting_collect_sent: false,
+            survival_crafting_inventory_seen: false,
+            survival_crafting_window_id: EMPTY_WINDOW_ID,
+            survival_crafting_window_state_id: EMPTY_WINDOW_STATE_ID,
             inventory_probe_click_sent: false,
             inventory_probe_container_click_sent: false,
             inventory_probe_container_id: 0,
@@ -922,6 +1006,7 @@ impl Server {
             && !self.score_limit_probe_enabled
             && !self.survival_probe_enabled
             && !self.survival_chest_probe_enabled
+            && !self.survival_crafting_probe_enabled
         {
             return;
         }
@@ -1368,6 +1453,8 @@ impl Server {
                 self.survival_chest_reconnect_sent = true;
             }
         }
+
+        self.apply_mc_compat_survival_crafting_probe(player);
 
         if self.inventory_probe_enabled && self.active_probe_ticks == 520 {
             info!("MC-COMPAT-MILESTONE inventory_probe_select_hotbar_slot slot=0");
@@ -2961,6 +3048,203 @@ impl Server {
         );
     }
 
+    fn apply_mc_compat_survival_crafting_probe(&mut self, player: ecs::Entity) {
+        if !self.survival_crafting_probe_enabled {
+            return;
+        }
+
+        if self.active_probe_ticks >= SURVIVAL_CRAFTING_POSITION_TICK
+            && !self.survival_crafting_position_sent
+        {
+            if let Some(position) = self.entities.get_component_mut(player, self.position) {
+                position.position = cgmath::Vector3::new(
+                    SURVIVAL_CRAFTING_PLAYER_X,
+                    SURVIVAL_CRAFTING_PLAYER_Y,
+                    SURVIVAL_CRAFTING_PLAYER_Z,
+                );
+                position.moved = true;
+            }
+            self.write_packet(packet::play::serverbound::PlayerPosition {
+                x: SURVIVAL_CRAFTING_PLAYER_X,
+                y: SURVIVAL_CRAFTING_PLAYER_Y,
+                z: SURVIVAL_CRAFTING_PLAYER_Z,
+                on_ground: true,
+            });
+            info!(
+                "MC-COMPAT-MILESTONE survival_crafting_move_near_table x={:.1} y={:.1} z={:.1} position={},{},{}",
+                SURVIVAL_CRAFTING_PLAYER_X,
+                SURVIVAL_CRAFTING_PLAYER_Y,
+                SURVIVAL_CRAFTING_PLAYER_Z,
+                SURVIVAL_CRAFTING_TABLE_X,
+                SURVIVAL_CRAFTING_TABLE_Y,
+                SURVIVAL_CRAFTING_TABLE_Z
+            );
+            self.survival_crafting_position_sent = true;
+        }
+
+        if self.active_probe_ticks >= SURVIVAL_CRAFTING_OPEN_TICK
+            && self.survival_crafting_position_sent
+            && !self.survival_crafting_open_sent
+        {
+            info!(
+                "MC-COMPAT-MILESTONE survival_crafting_open_request_sent hand=main position={},{},{} face=up sequence={}",
+                SURVIVAL_CRAFTING_TABLE_X,
+                SURVIVAL_CRAFTING_TABLE_Y,
+                SURVIVAL_CRAFTING_TABLE_Z,
+                SURVIVAL_CRAFTING_SEQUENCE
+            );
+            self.write_packet(
+                packet::play::serverbound::PlayerBlockPlacement_insideblock_sequence {
+                    hand: protocol::VarInt(SURVIVAL_CRAFTING_MAIN_HAND),
+                    location: survival_crafting_table_position(),
+                    face: protocol::VarInt(SURVIVAL_CRAFTING_FACE_UP),
+                    cursor_x: SURVIVAL_PROBE_CURSOR_CENTER,
+                    cursor_y: SURVIVAL_PROBE_CURSOR_TOP,
+                    cursor_z: SURVIVAL_PROBE_CURSOR_CENTER,
+                    inside_block: false,
+                    sequence: protocol::VarInt(SURVIVAL_CRAFTING_SEQUENCE),
+                },
+            );
+            self.survival_crafting_open_sent = true;
+        }
+
+        if self.active_probe_ticks >= SURVIVAL_CRAFTING_INPUT_A_TICK
+            && self.survival_crafting_open_seen
+            && self.survival_crafting_window_state_id != EMPTY_WINDOW_STATE_ID
+            && !self.survival_crafting_input_a_sent
+        {
+            self.write_survival_crafting_click(
+                SURVIVAL_CRAFTING_INPUT_A_SLOT,
+                Some(survival_crafting_input_stack()),
+                None,
+            );
+            info!(
+                "MC-COMPAT-MILESTONE survival_crafting_input_a_sent window={} slot={} item={} count={}",
+                self.survival_crafting_window_id,
+                SURVIVAL_CRAFTING_INPUT_A_SLOT,
+                SURVIVAL_CRAFTING_INPUT_ITEM_NAME,
+                SURVIVAL_CRAFTING_INPUT_COUNT
+            );
+            self.survival_crafting_input_a_sent = true;
+        }
+
+        if self.active_probe_ticks >= SURVIVAL_CRAFTING_INPUT_B_TICK
+            && self.survival_crafting_input_a_sent
+            && !self.survival_crafting_input_b_sent
+        {
+            self.write_survival_crafting_click(
+                SURVIVAL_CRAFTING_INPUT_B_SLOT,
+                Some(survival_crafting_input_stack()),
+                None,
+            );
+            info!(
+                "MC-COMPAT-MILESTONE survival_crafting_input_b_sent window={} slot={} item={} count={}",
+                self.survival_crafting_window_id,
+                SURVIVAL_CRAFTING_INPUT_B_SLOT,
+                SURVIVAL_CRAFTING_INPUT_ITEM_NAME,
+                SURVIVAL_CRAFTING_INPUT_COUNT
+            );
+            self.survival_crafting_input_b_sent = true;
+        }
+
+        if self.active_probe_ticks >= SURVIVAL_CRAFTING_COLLECT_TICK
+            && self.survival_crafting_result_seen
+            && !self.survival_crafting_collect_sent
+        {
+            self.write_survival_crafting_click(
+                SURVIVAL_CRAFTING_RESULT_SLOT,
+                None,
+                Some(survival_crafting_result_stack()),
+            );
+            info!(
+                "MC-COMPAT-MILESTONE survival_crafting_result_collected window={} slot={} item={} count={}",
+                self.survival_crafting_window_id,
+                SURVIVAL_CRAFTING_RESULT_SLOT,
+                SURVIVAL_CRAFTING_RESULT_ITEM_NAME,
+                SURVIVAL_CRAFTING_RESULT_COUNT
+            );
+            self.survival_crafting_collect_sent = true;
+        }
+    }
+
+    fn write_survival_crafting_click(
+        &mut self,
+        slot: i16,
+        slot_data: Option<item::Stack>,
+        clicked_item: Option<item::Stack>,
+    ) {
+        self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+            id: self.survival_crafting_window_id,
+            state: protocol::VarInt(self.survival_crafting_window_state_id),
+            slot,
+            button: SURVIVAL_CRAFTING_CLICK_BUTTON,
+            mode: protocol::VarInt(SURVIVAL_CRAFTING_CLICK_MODE),
+            slots: protocol::LenPrefixed::new(vec![packet::NumberedSlot {
+                slot_number: slot,
+                slot_data,
+            }]),
+            clicked_item,
+        });
+    }
+
+    fn log_survival_crafting_result_from_slot(
+        &mut self,
+        window_id: u8,
+        state_id: i32,
+        slot_index: usize,
+        slot_item: Option<&Option<item::Stack>>,
+    ) {
+        if !self.survival_crafting_probe_enabled
+            || self.survival_crafting_result_seen
+            || window_id != self.survival_crafting_window_id
+            || slot_index != SURVIVAL_CRAFTING_RESULT_INDEX
+        {
+            return;
+        }
+        let Some(Some(stack)) = slot_item else {
+            return;
+        };
+        if !survival_crafting_result_matches(stack) {
+            return;
+        }
+        self.survival_crafting_window_state_id = state_id;
+        self.survival_crafting_result_seen = true;
+        info!(
+            "MC-COMPAT-MILESTONE survival_crafting_result_seen window={} slot={} item={} count={} recipe={}",
+            window_id,
+            SURVIVAL_CRAFTING_RESULT_SLOT,
+            SURVIVAL_CRAFTING_RESULT_ITEM_NAME,
+            SURVIVAL_CRAFTING_RESULT_COUNT,
+            SURVIVAL_CRAFTING_RECIPE
+        );
+    }
+
+    fn log_survival_crafting_inventory_from_slot(
+        &mut self,
+        slot_index: usize,
+        slot_item: Option<&Option<item::Stack>>,
+    ) {
+        if !self.survival_crafting_probe_enabled
+            || self.survival_crafting_inventory_seen
+            || slot_index != SURVIVAL_CRAFTING_INVENTORY_INDEX
+        {
+            return;
+        }
+        let Some(Some(stack)) = slot_item else {
+            return;
+        };
+        if !survival_crafting_result_matches(stack) {
+            return;
+        }
+        self.survival_crafting_inventory_seen = true;
+        info!(
+            "MC-COMPAT-MILESTONE survival_crafting_inventory_updated slot={} item={} count={}",
+            SURVIVAL_CRAFTING_INVENTORY_SLOT,
+            SURVIVAL_CRAFTING_RESULT_ITEM_NAME,
+            SURVIVAL_CRAFTING_RESULT_COUNT
+        );
+    }
+
     fn on_entity_equipment_array(
         &mut self,
         equipment: packet::play::clientbound::EntityEquipment_Array,
@@ -2990,6 +3274,21 @@ impl Server {
     }
 
     fn on_window_open_varint(&mut self, window: packet::play::clientbound::WindowOpen_VarInt) {
+        if self.survival_crafting_probe_enabled
+            && window.id.0 > 0
+            && !self.survival_crafting_open_seen
+        {
+            self.survival_crafting_window_id = window.id.0 as u8;
+            self.survival_crafting_open_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_crafting_table_open_seen window={} position={},{},{}",
+                self.survival_crafting_window_id,
+                SURVIVAL_CRAFTING_TABLE_X,
+                SURVIVAL_CRAFTING_TABLE_Y,
+                SURVIVAL_CRAFTING_TABLE_Z
+            );
+        }
+
         if self.survival_chest_probe_enabled && window.id.0 > 0 {
             self.survival_chest_window_id = window.id.0 as u8;
             if self.survival_chest_probe_session == SURVIVAL_CHEST_REOPEN_SESSION {
@@ -3036,6 +3335,7 @@ impl Server {
         if !self.inventory_probe_enabled
             && !self.survival_probe_enabled
             && !self.survival_chest_probe_enabled
+            && !self.survival_crafting_probe_enabled
         {
             return;
         }
@@ -3094,6 +3394,22 @@ impl Server {
                 window.items.data.get(SURVIVAL_CHEST_WINDOW_SLOT_INDEX),
             );
         }
+        if self.survival_crafting_probe_enabled
+            && window.id == self.survival_crafting_window_id
+            && window.id > EMPTY_WINDOW_ID
+        {
+            self.survival_crafting_window_state_id = window.state_id.0;
+            self.log_survival_crafting_result_from_slot(
+                window.id,
+                window.state_id.0,
+                SURVIVAL_CRAFTING_RESULT_INDEX,
+                window.items.data.get(SURVIVAL_CRAFTING_RESULT_INDEX),
+            );
+            self.log_survival_crafting_inventory_from_slot(
+                SURVIVAL_CRAFTING_INVENTORY_INDEX,
+                window.items.data.get(SURVIVAL_CRAFTING_INVENTORY_INDEX),
+            );
+        }
 
         if let Some(Some(stack)) = window.items.data.get(36) {
             if !self.inventory_probe_sword_seen && stack.count == 1 {
@@ -3119,6 +3435,7 @@ impl Server {
         if !self.inventory_probe_enabled
             && !self.survival_probe_enabled
             && !self.survival_chest_probe_enabled
+            && !self.survival_crafting_probe_enabled
         {
             return;
         }
@@ -3138,6 +3455,26 @@ impl Server {
             self.survival_chest_window_state_id = slot.state_id.0;
             if slot.property == SURVIVAL_CHEST_WINDOW_SLOT {
                 self.log_survival_chest_persisted_item(slot.id, Some(&slot.item));
+            }
+        }
+        if self.survival_crafting_probe_enabled
+            && slot.id == self.survival_crafting_window_id
+            && slot.id > EMPTY_WINDOW_ID
+        {
+            self.survival_crafting_window_state_id = slot.state_id.0;
+            if slot.property == SURVIVAL_CRAFTING_RESULT_SLOT {
+                self.log_survival_crafting_result_from_slot(
+                    slot.id,
+                    slot.state_id.0,
+                    SURVIVAL_CRAFTING_RESULT_INDEX,
+                    Some(&slot.item),
+                );
+            }
+            if slot.property == SURVIVAL_CRAFTING_INVENTORY_SLOT {
+                self.log_survival_crafting_inventory_from_slot(
+                    SURVIVAL_CRAFTING_INVENTORY_INDEX,
+                    Some(&slot.item),
+                );
             }
         }
         if slot.property == 36 {
@@ -3188,6 +3525,7 @@ impl Server {
         if !self.inventory_probe_enabled
             && !self.survival_probe_enabled
             && !self.survival_chest_probe_enabled
+            && !self.survival_crafting_probe_enabled
         {
             return;
         }
@@ -4162,9 +4500,15 @@ fn calculate_relative_teleport(flag: TeleportFlag, flags: u8, base: f64, val: f6
 #[cfg(test)]
 mod tests {
     use super::{
-        parse_flag_probe_repeat_target, DEFAULT_FLAG_PROBE_REPEAT_TARGET,
-        MAX_FLAG_PROBE_REPEAT_TARGET,
+        parse_flag_probe_repeat_target, survival_crafting_input_stack,
+        survival_crafting_result_matches, survival_crafting_result_stack,
+        survival_crafting_table_position, DEFAULT_FLAG_PROBE_REPEAT_TARGET,
+        MAX_FLAG_PROBE_REPEAT_TARGET, SURVIVAL_CRAFTING_INPUT_COUNT,
+        SURVIVAL_CRAFTING_INPUT_ITEM_ID, SURVIVAL_CRAFTING_RESULT_COUNT,
+        SURVIVAL_CRAFTING_RESULT_ITEM_ID, SURVIVAL_CRAFTING_TABLE_X, SURVIVAL_CRAFTING_TABLE_Y,
+        SURVIVAL_CRAFTING_TABLE_Z,
     };
+    use steven_protocol::item;
 
     #[test]
     fn flag_probe_repeat_target_defaults_when_unset_or_invalid() {
@@ -4198,5 +4542,45 @@ mod tests {
             parse_flag_probe_repeat_target(Some("999")),
             MAX_FLAG_PROBE_REPEAT_TARGET
         );
+    }
+
+    #[test]
+    fn survival_crafting_fixture_positions_are_named() {
+        let position = survival_crafting_table_position();
+
+        assert_eq!(position.x, SURVIVAL_CRAFTING_TABLE_X);
+        assert_eq!(position.y, SURVIVAL_CRAFTING_TABLE_Y);
+        assert_eq!(position.z, SURVIVAL_CRAFTING_TABLE_Z);
+    }
+
+    #[test]
+    fn survival_crafting_stacks_use_contract_items() {
+        let input = survival_crafting_input_stack();
+        let result = survival_crafting_result_stack();
+
+        assert_eq!(input.id, SURVIVAL_CRAFTING_INPUT_ITEM_ID);
+        assert_eq!(input.count, SURVIVAL_CRAFTING_INPUT_COUNT);
+        assert_eq!(result.id, SURVIVAL_CRAFTING_RESULT_ITEM_ID);
+        assert_eq!(result.count, SURVIVAL_CRAFTING_RESULT_COUNT);
+        assert!(survival_crafting_result_matches(&result));
+    }
+
+    #[test]
+    fn survival_crafting_result_match_rejects_wrong_item_or_count() {
+        let wrong_item = item::Stack {
+            id: SURVIVAL_CRAFTING_INPUT_ITEM_ID,
+            count: SURVIVAL_CRAFTING_RESULT_COUNT,
+            damage: None,
+            tag: None,
+        };
+        let wrong_count = item::Stack {
+            id: SURVIVAL_CRAFTING_RESULT_ITEM_ID,
+            count: SURVIVAL_CRAFTING_INPUT_COUNT,
+            damage: None,
+            tag: None,
+        };
+
+        assert!(!survival_crafting_result_matches(&wrong_item));
+        assert!(!survival_crafting_result_matches(&wrong_count));
     }
 }
