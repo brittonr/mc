@@ -1,0 +1,316 @@
+commit debf50a56fb417c3779c4af0f931973401ce078a
+Author: brittonr <b@robitzs.ch>
+Date:   Sun May 31 00:33:15 2026 -0400
+
+    enforce MCP token on TCP requests
+---
+ src/mcp.rs | 162 ++++++++++++++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 145 insertions(+), 17 deletions(-)
+
+diff --git a/src/mcp.rs b/src/mcp.rs
+index eb3dfe5..d1228c2 100644
+--- a/src/mcp.rs
++++ b/src/mcp.rs
+@@ -20,6 +20,7 @@ const TCP_ACCEPT_IDLE_SLEEP_MILLIS: u64 = 10;
+ const JSONRPC_PARSE_ERROR: i64 = -32700;
+ const JSONRPC_INVALID_REQUEST: i64 = -32600;
+ const JSONRPC_METHOD_NOT_FOUND: i64 = -32601;
++const JSONRPC_UNAUTHORIZED: i64 = -32001;
+ 
+ #[derive(Debug, Clone, PartialEq, Eq)]
+ pub struct McpTransportOptions {
+@@ -46,7 +47,7 @@ pub enum McpEndpoint {
+ #[derive(Debug, Clone, PartialEq, Eq)]
+ pub enum TcpAuth {
+     NotRequiredForLoopback,
+-    TokenEnv { name: String },
++    TokenEnv { name: String, token: String },
+ }
+ 
+ #[derive(Debug, Clone, PartialEq, Eq)]
+@@ -178,7 +179,19 @@ where
+     start_transport_runtime_inner(validated, Some((reader, writer)))
+ }
+ 
+-pub fn run_jsonrpc_lines<R, W>(mut reader: R, mut writer: W) -> io::Result<()>
++pub fn run_jsonrpc_lines<R, W>(reader: R, writer: W) -> io::Result<()>
++where
++    R: BufRead,
++    W: Write,
++{
++    run_jsonrpc_lines_with_auth(reader, writer, None)
++}
++
++pub fn run_jsonrpc_lines_with_auth<R, W>(
++    mut reader: R,
++    mut writer: W,
++    required_token: Option<&str>,
++) -> io::Result<()>
+ where
+     R: BufRead,
+     W: Write,
+@@ -190,7 +203,9 @@ where
+         if read == 0 {
+             return Ok(());
+         }
+-        if let Some(response) = handle_jsonrpc_line(line.trim_end_matches(['\r', '\n'])) {
++        if let Some(response) =
++            handle_jsonrpc_line_with_auth(line.trim_end_matches(['\r', '\n']), required_token)
++        {
+             writeln!(writer, "{}", response)?;
+             writer.flush()?;
+         }
+@@ -198,6 +213,10 @@ where
+ }
+ 
+ pub fn handle_jsonrpc_line(line: &str) -> Option<String> {
++    handle_jsonrpc_line_with_auth(line, None)
++}
++
++pub fn handle_jsonrpc_line_with_auth(line: &str, required_token: Option<&str>) -> Option<String> {
+     let value = match serde_json::from_str::<Value>(line) {
+         Ok(value) => value,
+         Err(_) => {
+@@ -223,6 +242,16 @@ pub fn handle_jsonrpc_line(line: &str) -> Option<String> {
+         return id.map(|id| jsonrpc_error(id, JSONRPC_INVALID_REQUEST, "missing method"));
+     };
+ 
++    if let Some(required_token) = required_token {
++        if !request_has_token(object.get("params"), required_token) {
++            return Some(jsonrpc_error(
++                id.unwrap_or(Value::Null),
++                JSONRPC_UNAUTHORIZED,
++                "unauthorized",
++            ));
++        }
++    }
++
+     match method {
+         "initialize" => id.map(|id| {
+             jsonrpc_result(
+@@ -273,14 +302,14 @@ where
+                     }));
+                 }
+             }
+-            McpEndpoint::Tcp { bind_addr, .. } => {
++            McpEndpoint::Tcp { bind_addr, auth } => {
+                 let listener = TcpListener::bind(bind_addr)?;
+                 listener.set_nonblocking(true)?;
+                 let local_addr = listener.local_addr()?;
+                 let shutdown_flag = Arc::new(AtomicBool::new(false));
+                 let thread_shutdown_flag = Arc::clone(&shutdown_flag);
+                 join_handles.push(thread::spawn(move || {
+-                    accept_tcp_jsonrpc(listener, thread_shutdown_flag);
++                    accept_tcp_jsonrpc(listener, auth, thread_shutdown_flag);
+                 }));
+                 shutdown_flags.push(shutdown_flag);
+                 endpoints.push(StartedMcpEndpoint::Tcp { local_addr });
+@@ -296,12 +325,13 @@ where
+     })
+ }
+ 
+-fn accept_tcp_jsonrpc(listener: TcpListener, shutdown_flag: Arc<AtomicBool>) {
++fn accept_tcp_jsonrpc(listener: TcpListener, auth: TcpAuth, shutdown_flag: Arc<AtomicBool>) {
+     while !shutdown_flag.load(Ordering::Acquire) {
+         match listener.accept() {
+             Ok((stream, _)) => {
++                let required_token = auth.required_token().map(ToOwned::to_owned);
+                 thread::spawn(move || {
+-                    let _ = serve_tcp_jsonrpc_stream(stream);
++                    let _ = serve_tcp_jsonrpc_stream(stream, required_token);
+                 });
+             }
+             Err(err) if err.kind() == io::ErrorKind::WouldBlock => {
+@@ -312,10 +342,10 @@ fn accept_tcp_jsonrpc(listener: TcpListener, shutdown_flag: Arc<AtomicBool>) {
+     }
+ }
+ 
+-fn serve_tcp_jsonrpc_stream(stream: TcpStream) -> io::Result<()> {
++fn serve_tcp_jsonrpc_stream(stream: TcpStream, required_token: Option<String>) -> io::Result<()> {
+     let reader = BufReader::new(stream.try_clone()?);
+     let writer = BufWriter::new(stream);
+-    run_jsonrpc_lines(reader, writer)
++    run_jsonrpc_lines_with_auth(reader, writer, required_token.as_deref())
+ }
+ 
+ fn validate_tcp_endpoint<F>(
+@@ -334,8 +364,11 @@ where
+         TcpAuth::NotRequiredForLoopback
+     } else {
+         let token_env = normalized_token_env(token_env, bind_addr)?;
+-        validate_token_value(&token_env, token_lookup)?;
+-        TcpAuth::TokenEnv { name: token_env }
++        let token = validate_token_value(&token_env, token_lookup)?;
++        TcpAuth::TokenEnv {
++            name: token_env,
++            token,
++        }
+     };
+ 
+     Ok(McpEndpoint::Tcp { bind_addr, auth })
+@@ -358,7 +391,7 @@ fn normalized_token_env(
+     Ok(token_env.to_owned())
+ }
+ 
+-fn validate_token_value<F>(token_env: &str, token_lookup: &F) -> Result<(), McpTransportError>
++fn validate_token_value<F>(token_env: &str, token_lookup: &F) -> Result<String, McpTransportError>
+ where
+     F: Fn(&str) -> Option<String>,
+ {
+@@ -367,14 +400,32 @@ where
+             token_env: token_env.to_owned(),
+         });
+     };
+-    if value.trim().is_empty() {
++    let value = value.trim();
++    if value.is_empty() {
+         return Err(McpTransportError::InvalidTokenValue {
+             token_env: token_env.to_owned(),
+             reason: REASON_EMPTY_TOKEN_VALUE,
+         });
+     }
+ 
+-    Ok(())
++    Ok(value.to_owned())
++}
++
++impl TcpAuth {
++    fn required_token(&self) -> Option<&str> {
++        match self {
++            TcpAuth::NotRequiredForLoopback => None,
++            TcpAuth::TokenEnv { token, .. } => Some(token.as_str()),
++        }
++    }
++}
++
++fn request_has_token(params: Option<&Value>, required_token: &str) -> bool {
++    params
++        .and_then(Value::as_object)
++        .and_then(|params| params.get("token"))
++        .and_then(Value::as_str)
++        .map_or(false, |token| token == required_token)
+ }
+ 
+ fn jsonrpc_result(id: Value, result: Value) -> String {
+@@ -407,6 +458,7 @@ mod tests {
+     const LOOPBACK_EPHEMERAL_LISTEN: &str = "127.0.0.1:0";
+     const IPV6_LOOPBACK_LISTEN: &str = "[::1]:4700";
+     const NON_LOOPBACK_LISTEN: &str = "0.0.0.0:4700";
++    const NON_LOOPBACK_EPHEMERAL_LISTEN: &str = "0.0.0.0:0";
+     const MALFORMED_LISTEN: &str = "not-a-socket";
+     const TOKEN_ENV_NAME: &str = "STEVENARELLA_TEST_MCP_TOKEN";
+     const TOKEN_VALUE: &str = "secret-token";
+@@ -535,6 +587,7 @@ mod tests {
+                 bind_addr: NON_LOOPBACK_LISTEN.parse().unwrap(),
+                 auth: TcpAuth::TokenEnv {
+                     name: TOKEN_ENV_NAME.to_owned(),
++                    token: TOKEN_VALUE.to_owned(),
+                 },
+             }]
+         );
+@@ -554,15 +607,31 @@ mod tests {
+ 
+     #[test]
+     fn stdio_transport_runs_jsonrpc_line_loop() {
++        let input = br#"{"jsonrpc":"2.0","id":1,"method":"tools/list"}
++"#;
++        let mut output = Vec::new();
++
++        run_jsonrpc_lines(BufReader::new(&input[..]), &mut output).unwrap();
++        let response = String::from_utf8(output).unwrap();
++
++        assert!(response.contains(r#""id":1"#));
++        assert!(response.contains(r#""tools":[]"#));
++    }
++
++    #[test]
++    fn stdio_transport_runtime_starts_line_loop_thread() {
+         let validated = ValidatedMcpTransport {
+             endpoints: vec![McpEndpoint::Stdio],
+             stdout_must_remain_clean: true,
+         };
+-        let input = br#"{"jsonrpc":"2.0","id":1,"method":"tools/list"}
+-"#;
++        let input = std::io::Cursor::new(
++            br#"{"jsonrpc":"2.0","id":1,"method":"tools/list"}
++"#
++            .to_vec(),
++        );
+         let output = Vec::new();
+ 
+-        let runtime = start_transport_with_stdio(validated, &input[..], output).unwrap();
++        let runtime = start_transport_with_stdio(validated, input, output).unwrap();
+ 
+         assert_eq!(runtime.endpoints, vec![StartedMcpEndpoint::Stdio]);
+         assert!(runtime.stdout_must_remain_clean);
+@@ -594,6 +663,57 @@ mod tests {
+         assert!(response.contains(r#""result":{}"#));
+     }
+ 
++    #[test]
++    fn non_loopback_tcp_transport_requires_token_per_request() {
++        let options = McpTransportOptions::from_cli(
++            false,
++            Some(NON_LOOPBACK_EPHEMERAL_LISTEN.to_owned()),
++            Some(TOKEN_ENV_NAME.to_owned()),
++        );
++        let validated =
++            validate_transport_options(&options, |_| Some(TOKEN_VALUE.to_owned())).unwrap();
++
++        let runtime = start_transport_runtime(validated).unwrap();
++        let StartedMcpEndpoint::Tcp { local_addr } = runtime.endpoints[0] else {
++            panic!("expected tcp endpoint");
++        };
++        let connect_addr = SocketAddr::from(([127, 0, 0, 1], local_addr.port()));
++
++        let unauthenticated = request_tcp_jsonrpc(
++            connect_addr,
++            br#"{"jsonrpc":"2.0","id":8,"method":"ping"}
++"#,
++        );
++        assert!(unauthenticated.contains(&JSONRPC_UNAUTHORIZED.to_string()));
++        assert!(unauthenticated.contains(r#""unauthorized"#));
++
++        let authenticated = request_tcp_jsonrpc(
++            connect_addr,
++            br#"{"jsonrpc":"2.0","id":9,"method":"ping","params":{"token":"secret-token"}}
++"#,
++        );
++        assert!(authenticated.contains(r#""id":9"#));
++        assert!(authenticated.contains(r#""result":{}"#));
++    }
++
++    #[test]
++    fn jsonrpc_handler_requires_matching_auth_token_when_configured() {
++        let unauthorized = handle_jsonrpc_line_with_auth(
++            r#"{"jsonrpc":"2.0","id":3,"method":"ping","params":{"token":"wrong"}}"#,
++            Some(TOKEN_VALUE),
++        )
++        .unwrap();
++        assert!(unauthorized.contains(&JSONRPC_UNAUTHORIZED.to_string()));
++
++        let authorized = handle_jsonrpc_line_with_auth(
++            r#"{"jsonrpc":"2.0","id":4,"method":"ping","params":{"token":"secret-token"}}"#,
++            Some(TOKEN_VALUE),
++        )
++        .unwrap();
++        assert!(authorized.contains(r#""id":4"#));
++        assert!(authorized.contains(r#""result":{}"#));
++    }
++
+     #[test]
+     fn jsonrpc_handler_supports_initialize_and_lists_empty_tools() {
+         let initialize = handle_jsonrpc_line(
+@@ -614,4 +734,12 @@ mod tests {
+ 
+         assert!(response.contains(&JSONRPC_PARSE_ERROR.to_string()));
+     }
++
++    fn request_tcp_jsonrpc(connect_addr: SocketAddr, request: &[u8]) -> String {
++        let mut stream = TcpStream::connect(connect_addr).unwrap();
++        stream.write_all(request).unwrap();
++        let mut response = String::new();
++        BufReader::new(stream).read_line(&mut response).unwrap();
++        response
++    }
+ }

@@ -1,0 +1,41 @@
+command=nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 95 manifests, 507 entries, 68 receipts scanned
+manifest_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate tasks stevenarella-mcp-control-plane --root .
+{
+  "change": "stevenarella-mcp-control-plane",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "8bd522fe13f5f8bfdb90a36e07b8babe6b7216fc05d210c60b5ecaff44cb347f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "aa0234bde9f9e5a74d491ee7fdf18cf6308f23f0f5da27133207a8d0f8bf3f14",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_tasks_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 33,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 35,
+  "valid": true
+}
+validate_exit_status=0
