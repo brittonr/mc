@@ -67,6 +67,43 @@ const CL_BRAND: console::CVar<String> = console::CVar {
     default: &|| "Steven".to_owned(),
 };
 
+#[cfg(not(target_arch = "wasm32"))]
+const MCP_STATUS_APPLIED_MESSAGE: &str = "status reported";
+#[cfg(not(target_arch = "wasm32"))]
+const MCP_CONNECT_STARTED_MESSAGE: &str = "connect started";
+#[cfg(not(target_arch = "wasm32"))]
+const MCP_CONNECT_ALREADY_ACTIVE_MESSAGE: &str = "connect already active";
+#[cfg(not(target_arch = "wasm32"))]
+const MCP_CONNECT_ALREADY_CONNECTED_MESSAGE: &str =
+    "disconnect before connecting to another server";
+#[cfg(not(target_arch = "wasm32"))]
+const MCP_DISCONNECT_APPLIED_MESSAGE: &str = "disconnect applied";
+#[cfg(not(target_arch = "wasm32"))]
+const MCP_DISCONNECT_NOT_CONNECTED_MESSAGE: &str = "no active connection to disconnect";
+#[cfg(not(target_arch = "wasm32"))]
+const MCP_KEY_APPLIED_MESSAGE: &str = "key applied";
+#[cfg(not(target_arch = "wasm32"))]
+const MCP_LOOK_APPLIED_MESSAGE: &str = "look applied";
+#[cfg(not(target_arch = "wasm32"))]
+const MCP_MOUSE_APPLIED_MESSAGE: &str = "mouse applied";
+#[cfg(not(target_arch = "wasm32"))]
+const MCP_USE_ITEM_APPLIED_MESSAGE: &str = "use item applied";
+#[cfg(not(target_arch = "wasm32"))]
+const MCP_ATTACK_APPLIED_MESSAGE: &str = "attack applied";
+#[cfg(not(target_arch = "wasm32"))]
+const MCP_CHAT_APPLIED_MESSAGE: &str = "chat sent";
+#[cfg(not(target_arch = "wasm32"))]
+const MCP_REQUIRES_CONNECTED_MESSAGE: &str = "command requires an active connection";
+#[cfg(not(target_arch = "wasm32"))]
+const MCP_REQUIRES_PLAYER_MESSAGE: &str = "command requires a player entity";
+#[cfg(not(target_arch = "wasm32"))]
+const MCP_MIN_PITCH_EPSILON_RADIANS: f64 = 0.01;
+#[cfg(not(target_arch = "wasm32"))]
+const MCP_MIN_PITCH_RADIANS: f64 = std::f64::consts::FRAC_PI_2 + MCP_MIN_PITCH_EPSILON_RADIANS;
+#[cfg(not(target_arch = "wasm32"))]
+const MCP_MAX_PITCH_RADIANS: f64 =
+    std::f64::consts::PI + std::f64::consts::FRAC_PI_2 - MCP_MIN_PITCH_EPSILON_RADIANS;
+
 pub struct Game {
     renderer: render::Renderer,
     screen_sys: screen::ScreenSystem,
@@ -90,6 +127,65 @@ pub struct Game {
     is_logo_pressed: bool,
     is_fullscreen: bool,
     default_protocol_version: i32,
+    #[cfg(not(target_arch = "wasm32"))]
+    mcp_command_receiver: Option<mcp::McpCommandReceiver>,
+    #[cfg(not(target_arch = "wasm32"))]
+    mcp_release_left_after_server_tick: bool,
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn control_key_to_stevenkey(key: control::ControlKey) -> settings::Stevenkey {
+    match key {
+        control::ControlKey::Forward => settings::Stevenkey::Forward,
+        control::ControlKey::Backward => settings::Stevenkey::Backward,
+        control::ControlKey::Left => settings::Stevenkey::Left,
+        control::ControlKey::Right => settings::Stevenkey::Right,
+        control::ControlKey::OpenInventory => settings::Stevenkey::OpenInv,
+        control::ControlKey::Sneak => settings::Stevenkey::Sneak,
+        control::ControlKey::Sprint => settings::Stevenkey::Sprint,
+        control::ControlKey::Jump => settings::Stevenkey::Jump,
+    }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn control_command_requires_connected(command: &control::ControlCommand) -> bool {
+    !matches!(
+        command,
+        control::ControlCommand::Status
+            | control::ControlCommand::Connect { .. }
+            | control::ControlCommand::Disconnect
+    )
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn disconnected_control_rejection(
+    command: &control::ControlCommand,
+) -> Option<control::ControlResponse> {
+    control_command_requires_connected(command)
+        .then(|| control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn control_status_message(connected: bool, connecting: bool, focused: bool) -> String {
+    format!(
+        "{MCP_STATUS_APPLIED_MESSAGE}: connected={connected} connecting={connecting} focused={focused}"
+    )
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn control_applied_response(message: impl Into<String>) -> control::ControlResponse {
+    control::ControlResponse {
+        outcome: control::ControlOutcome::Applied,
+        message: Some(message.into()),
+    }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn control_rejected_response(message: impl Into<String>) -> control::ControlResponse {
+    control::ControlResponse {
+        outcome: control::ControlOutcome::Rejected,
+        message: Some(message.into()),
+    }
 }
 
 impl Game {
@@ -186,6 +282,301 @@ impl Game {
             self.connect_reply = None;
         }
     }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    pub fn drain_mcp_control_commands(&mut self) -> usize {
+        let Some(receiver) = self.mcp_command_receiver.take() else {
+            return 0;
+        };
+        let drained =
+            receiver.drain_pending_with_handler(|command| self.apply_mcp_control_command(command));
+        self.mcp_command_receiver = Some(receiver);
+        drained
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    pub fn release_mcp_control_buttons_after_server_tick(&mut self) {
+        if self.mcp_release_left_after_server_tick {
+            self.server.on_left_mouse_button(false);
+            self.mcp_release_left_after_server_tick = false;
+        }
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    fn apply_mcp_control_command(
+        &mut self,
+        command: control::ControlCommand,
+    ) -> control::ControlResponse {
+        if !self.server.is_connected() {
+            if let Some(response) = disconnected_control_rejection(&command) {
+                return response;
+            }
+        }
+
+        match command {
+            control::ControlCommand::Status => control_applied_response(control_status_message(
+                self.server.is_connected(),
+                self.connect_reply.is_some(),
+                self.focused,
+            )),
+            control::ControlCommand::Connect { address } => self.apply_mcp_connect(&address),
+            control::ControlCommand::Disconnect => self.apply_mcp_disconnect(),
+            control::ControlCommand::Key { key, down } => {
+                self.server.key_press(down, control_key_to_stevenkey(key));
+                control_applied_response(MCP_KEY_APPLIED_MESSAGE)
+            }
+            control::ControlCommand::Look {
+                yaw_delta,
+                pitch_delta,
+            } => self.apply_mcp_look(yaw_delta, pitch_delta),
+            control::ControlCommand::Mouse { button, down } => self.apply_mcp_mouse(button, down),
+            control::ControlCommand::UseItem => {
+                self.server.on_right_mouse_button(true);
+                self.server.on_right_click(&mut self.renderer);
+                self.server.on_right_mouse_button(false);
+                control_applied_response(MCP_USE_ITEM_APPLIED_MESSAGE)
+            }
+            control::ControlCommand::Attack => {
+                self.server.on_left_mouse_button(true);
+                self.mcp_release_left_after_server_tick = true;
+                control_applied_response(MCP_ATTACK_APPLIED_MESSAGE)
+            }
+            control::ControlCommand::Chat { message } => {
+                self.server
+                    .write_packet(protocol::packet::play::serverbound::ChatMessage { message });
+                control_applied_response(MCP_CHAT_APPLIED_MESSAGE)
+            }
+        }
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    fn apply_mcp_connect(&mut self, address: &str) -> control::ControlResponse {
+        if self.connect_reply.is_some() {
+            return control_rejected_response(MCP_CONNECT_ALREADY_ACTIVE_MESSAGE);
+        }
+        if self.server.is_connected() {
+            return control_rejected_response(MCP_CONNECT_ALREADY_CONNECTED_MESSAGE);
+        }
+        self.connect_to(address);
+        control_applied_response(MCP_CONNECT_STARTED_MESSAGE)
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    fn apply_mcp_disconnect(&mut self) -> control::ControlResponse {
+        if self.connect_reply.is_some() {
+            self.connect_reply = None;
+            return control_applied_response(MCP_DISCONNECT_APPLIED_MESSAGE);
+        }
+        if !self.server.is_connected() {
+            return control_rejected_response(MCP_DISCONNECT_NOT_CONNECTED_MESSAGE);
+        }
+        self.server.disconnect(None);
+        self.focused = false;
+        control_applied_response(MCP_DISCONNECT_APPLIED_MESSAGE)
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    fn apply_mcp_look(&mut self, yaw_delta: f64, pitch_delta: f64) -> control::ControlResponse {
+        let Some(player) = self.server.player else {
+            return control_rejected_response(MCP_REQUIRES_PLAYER_MESSAGE);
+        };
+        let Some(rotation) = self
+            .server
+            .entities
+            .get_component_mut(player, self.server.rotation)
+        else {
+            return control_rejected_response(MCP_REQUIRES_PLAYER_MESSAGE);
+        };
+        rotation.yaw += yaw_delta;
+        rotation.pitch = bounded_pitch(rotation.pitch + pitch_delta);
+        control_applied_response(MCP_LOOK_APPLIED_MESSAGE)
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    fn apply_mcp_mouse(
+        &mut self,
+        button: control::MouseButton,
+        down: bool,
+    ) -> control::ControlResponse {
+        match button {
+            control::MouseButton::Left => self.server.on_left_mouse_button(down),
+            control::MouseButton::Right => {
+                self.server.on_right_mouse_button(down);
+                if down {
+                    self.server.on_right_click(&mut self.renderer);
+                }
+            }
+        }
+        control_applied_response(MCP_MOUSE_APPLIED_MESSAGE)
+    }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn bounded_pitch(pitch: f64) -> f64 {
+    pitch.max(MCP_MIN_PITCH_RADIANS).min(MCP_MAX_PITCH_RADIANS)
+}
+
+#[cfg(all(test, not(target_arch = "wasm32")))]
+mod mcp_control_tests {
+    use super::*;
+
+    const TEST_YAW_DELTA: f64 = 0.25;
+    const TEST_PITCH_DELTA: f64 = -0.125;
+    const TEST_PITCH_OFFSET: f64 = 1.0;
+
+    #[test]
+    fn maps_control_keys_to_internal_steven_keys() {
+        assert_eq!(
+            control_key_to_stevenkey(control::ControlKey::Forward),
+            settings::Stevenkey::Forward
+        );
+        assert_eq!(
+            control_key_to_stevenkey(control::ControlKey::Backward),
+            settings::Stevenkey::Backward
+        );
+        assert_eq!(
+            control_key_to_stevenkey(control::ControlKey::Left),
+            settings::Stevenkey::Left
+        );
+        assert_eq!(
+            control_key_to_stevenkey(control::ControlKey::Right),
+            settings::Stevenkey::Right
+        );
+        assert_eq!(
+            control_key_to_stevenkey(control::ControlKey::OpenInventory),
+            settings::Stevenkey::OpenInv
+        );
+        assert_eq!(
+            control_key_to_stevenkey(control::ControlKey::Sneak),
+            settings::Stevenkey::Sneak
+        );
+        assert_eq!(
+            control_key_to_stevenkey(control::ControlKey::Sprint),
+            settings::Stevenkey::Sprint
+        );
+        assert_eq!(
+            control_key_to_stevenkey(control::ControlKey::Jump),
+            settings::Stevenkey::Jump
+        );
+    }
+
+    #[test]
+    fn status_connect_and_disconnect_do_not_require_an_existing_connection() {
+        assert!(!control_command_requires_connected(
+            &control::ControlCommand::Status
+        ));
+        assert!(!control_command_requires_connected(
+            &control::ControlCommand::Connect {
+                address: "127.0.0.1:25565".to_owned(),
+            }
+        ));
+        assert!(!control_command_requires_connected(
+            &control::ControlCommand::Disconnect
+        ));
+        assert!(control_command_requires_connected(
+            &control::ControlCommand::Key {
+                key: control::ControlKey::Forward,
+                down: true,
+            }
+        ));
+        assert!(control_command_requires_connected(
+            &control::ControlCommand::Look {
+                yaw_delta: TEST_YAW_DELTA,
+                pitch_delta: TEST_PITCH_DELTA,
+            }
+        ));
+        assert!(control_command_requires_connected(
+            &control::ControlCommand::Mouse {
+                button: control::MouseButton::Left,
+                down: true,
+            }
+        ));
+        assert!(control_command_requires_connected(
+            &control::ControlCommand::UseItem
+        ));
+        assert!(control_command_requires_connected(
+            &control::ControlCommand::Attack
+        ));
+        assert!(control_command_requires_connected(
+            &control::ControlCommand::Chat {
+                message: "hello".to_owned(),
+            }
+        ));
+    }
+
+    #[test]
+    fn disconnected_operations_return_rejected_response() {
+        assert_eq!(
+            disconnected_control_rejection(&control::ControlCommand::Status),
+            None
+        );
+        assert_eq!(
+            disconnected_control_rejection(&control::ControlCommand::Connect {
+                address: "127.0.0.1:25565".to_owned(),
+            }),
+            None
+        );
+        assert_eq!(
+            disconnected_control_rejection(&control::ControlCommand::Disconnect),
+            None
+        );
+        assert_eq!(
+            disconnected_control_rejection(&control::ControlCommand::Key {
+                key: control::ControlKey::Forward,
+                down: true,
+            }),
+            Some(control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
+        );
+        assert_eq!(
+            disconnected_control_rejection(&control::ControlCommand::Look {
+                yaw_delta: TEST_YAW_DELTA,
+                pitch_delta: TEST_PITCH_DELTA,
+            }),
+            Some(control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
+        );
+        assert_eq!(
+            disconnected_control_rejection(&control::ControlCommand::Mouse {
+                button: control::MouseButton::Left,
+                down: true,
+            }),
+            Some(control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
+        );
+        assert_eq!(
+            disconnected_control_rejection(&control::ControlCommand::UseItem),
+            Some(control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
+        );
+        assert_eq!(
+            disconnected_control_rejection(&control::ControlCommand::Attack),
+            Some(control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
+        );
+        assert_eq!(
+            disconnected_control_rejection(&control::ControlCommand::Chat {
+                message: "hello".to_owned(),
+            }),
+            Some(control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
+        );
+    }
+
+    #[test]
+    fn status_message_reports_connection_state() {
+        assert_eq!(
+            control_status_message(true, false, true),
+            "status reported: connected=true connecting=false focused=true"
+        );
+    }
+
+    #[test]
+    fn pitch_bounds_match_window_input_clamp() {
+        assert_eq!(
+            bounded_pitch(MCP_MIN_PITCH_RADIANS - TEST_PITCH_OFFSET),
+            MCP_MIN_PITCH_RADIANS
+        );
+        assert_eq!(
+            bounded_pitch(MCP_MAX_PITCH_RADIANS + TEST_PITCH_OFFSET),
+            MCP_MAX_PITCH_RADIANS
+        );
+        assert_eq!(bounded_pitch(MCP_MIN_PITCH_RADIANS), MCP_MIN_PITCH_RADIANS);
+    }
 }
 
 #[derive(StructOpt, Debug)]
@@ -276,6 +667,9 @@ fn main2() {
     info!("Starting steven");
 
     #[cfg(not(target_arch = "wasm32"))]
+    let (mcp_command_sender, mcp_command_receiver) = mcp::control_command_channel();
+
+    #[cfg(not(target_arch = "wasm32"))]
     let _mcp_runtime = {
         let mcp_options = mcp::McpTransportOptions::from_cli(
             opt.mcp_stdio,
@@ -290,7 +684,7 @@ fn main2() {
                     std::process::exit(2);
                 }
             };
-            match mcp::start_process_transport(validated) {
+            match mcp::start_process_transport(validated, Some(mcp_command_sender.clone())) {
                 Ok(runtime) => Some(runtime),
                 Err(err) => {
                     error!("Failed to start MCP transport: {:?}", err);
@@ -440,6 +834,10 @@ fn main2() {
         is_logo_pressed: false,
         is_fullscreen: false,
         default_protocol_version,
+        #[cfg(not(target_arch = "wasm32"))]
+        mcp_command_receiver: Some(mcp_command_receiver),
+        #[cfg(not(target_arch = "wasm32"))]
+        mcp_release_left_after_server_tick: false,
     };
     game.renderer.camera.pos = cgmath::Point3::new(0.5, 13.2, 0.5);
 
@@ -626,7 +1024,11 @@ fn tick_all(
     let fps_cap = *game.vars.get(settings::R_MAX_FPS);
 
     game.tick(delta);
+    #[cfg(not(target_arch = "wasm32"))]
+    game.drain_mcp_control_commands();
     game.server.tick(&mut game.renderer, delta);
+    #[cfg(not(target_arch = "wasm32"))]
+    game.release_mcp_control_buttons_after_server_tick();
 
     // Check if window is valid, it might be minimized
     if physical_width == 0 || physical_height == 0 {
