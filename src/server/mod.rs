@@ -118,6 +118,8 @@ const SURVIVAL_CRAFTING_RESULT_SLOT: i16 = 0;
 const SURVIVAL_CRAFTING_RESULT_INDEX: usize = 0;
 const SURVIVAL_CRAFTING_INVENTORY_SLOT: i16 = 36;
 const SURVIVAL_CRAFTING_INVENTORY_INDEX: usize = 36;
+const SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_SLOT: i16 = 37;
+const SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_INDEX: usize = 37;
 const SURVIVAL_CRAFTING_INPUT_ITEM_ID: isize = 23;
 const SURVIVAL_CRAFTING_RESULT_ITEM_ID: isize = 807;
 const SURVIVAL_CRAFTING_INPUT_ITEM_NAME: &str = "OakPlanks";
@@ -192,8 +194,18 @@ fn survival_crafting_result_matches(stack: &item::Stack) -> bool {
     stack.id == SURVIVAL_CRAFTING_RESULT_ITEM_ID && stack.count == SURVIVAL_CRAFTING_RESULT_COUNT
 }
 
-fn should_log_survival_crafting_inventory_slot(window_id: u8, slot: i16) -> bool {
-    window_id == PLAYER_INVENTORY_WINDOW_ID && slot == SURVIVAL_CRAFTING_INVENTORY_SLOT
+fn should_log_survival_crafting_inventory_slot(
+    window_id: u8,
+    crafting_window_id: u8,
+    slot: i16,
+) -> bool {
+    (window_id == PLAYER_INVENTORY_WINDOW_ID && slot == SURVIVAL_CRAFTING_INVENTORY_SLOT)
+        || (window_id == crafting_window_id && slot == SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_SLOT)
+}
+
+fn should_log_survival_crafting_inventory_index(slot_index: usize) -> bool {
+    slot_index == SURVIVAL_CRAFTING_INVENTORY_INDEX
+        || slot_index == SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_INDEX
 }
 
 pub struct Server {
@@ -3231,7 +3243,7 @@ impl Server {
     ) {
         if !self.survival_crafting_probe_enabled
             || self.survival_crafting_inventory_seen
-            || slot_index != SURVIVAL_CRAFTING_INVENTORY_INDEX
+            || !should_log_survival_crafting_inventory_index(slot_index)
         {
             return;
         }
@@ -3414,6 +3426,13 @@ impl Server {
                 SURVIVAL_CRAFTING_INVENTORY_INDEX,
                 window.items.data.get(SURVIVAL_CRAFTING_INVENTORY_INDEX),
             );
+            self.log_survival_crafting_inventory_from_slot(
+                SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_INDEX,
+                window
+                    .items
+                    .data
+                    .get(SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_INDEX),
+            );
         }
 
         if let Some(Some(stack)) = window.items.data.get(36) {
@@ -3474,7 +3493,11 @@ impl Server {
                     );
                 }
             }
-            if should_log_survival_crafting_inventory_slot(slot.id, slot.property) {
+            if should_log_survival_crafting_inventory_slot(
+                slot.id,
+                self.survival_crafting_window_id,
+                slot.property,
+            ) {
                 self.log_survival_crafting_inventory_from_slot(
                     SURVIVAL_CRAFTING_INVENTORY_INDEX,
                     Some(&slot.item),
@@ -4504,14 +4527,17 @@ fn calculate_relative_teleport(flag: TeleportFlag, flags: u8, base: f64, val: f6
 #[cfg(test)]
 mod tests {
     use super::{
-        parse_flag_probe_repeat_target, should_log_survival_crafting_inventory_slot,
-        survival_crafting_input_stack, survival_crafting_result_matches,
-        survival_crafting_result_stack, survival_crafting_table_position,
-        DEFAULT_FLAG_PROBE_REPEAT_TARGET, MAX_FLAG_PROBE_REPEAT_TARGET, PLAYER_INVENTORY_WINDOW_ID,
-        SURVIVAL_CRAFTING_INPUT_A_SLOT, SURVIVAL_CRAFTING_INPUT_COUNT,
-        SURVIVAL_CRAFTING_INPUT_ITEM_ID, SURVIVAL_CRAFTING_INVENTORY_SLOT,
-        SURVIVAL_CRAFTING_RESULT_COUNT, SURVIVAL_CRAFTING_RESULT_ITEM_ID,
-        SURVIVAL_CRAFTING_TABLE_X, SURVIVAL_CRAFTING_TABLE_Y, SURVIVAL_CRAFTING_TABLE_Z,
+        parse_flag_probe_repeat_target, should_log_survival_crafting_inventory_index,
+        should_log_survival_crafting_inventory_slot, survival_crafting_input_stack,
+        survival_crafting_result_matches, survival_crafting_result_stack,
+        survival_crafting_table_position, DEFAULT_FLAG_PROBE_REPEAT_TARGET,
+        MAX_FLAG_PROBE_REPEAT_TARGET, PLAYER_INVENTORY_WINDOW_ID, SURVIVAL_CRAFTING_INPUT_A_SLOT,
+        SURVIVAL_CRAFTING_INPUT_COUNT, SURVIVAL_CRAFTING_INPUT_ITEM_ID,
+        SURVIVAL_CRAFTING_INVENTORY_INDEX, SURVIVAL_CRAFTING_INVENTORY_SLOT,
+        SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_INDEX,
+        SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_SLOT, SURVIVAL_CRAFTING_RESULT_COUNT,
+        SURVIVAL_CRAFTING_RESULT_ITEM_ID, SURVIVAL_CRAFTING_TABLE_X, SURVIVAL_CRAFTING_TABLE_Y,
+        SURVIVAL_CRAFTING_TABLE_Z,
     };
     use steven_protocol::item;
 
@@ -4595,15 +4621,36 @@ mod tests {
 
         assert!(should_log_survival_crafting_inventory_slot(
             PLAYER_INVENTORY_WINDOW_ID,
+            CRAFTING_WINDOW_ID_FOR_TEST,
             SURVIVAL_CRAFTING_INVENTORY_SLOT
+        ));
+        assert!(should_log_survival_crafting_inventory_slot(
+            CRAFTING_WINDOW_ID_FOR_TEST,
+            CRAFTING_WINDOW_ID_FOR_TEST,
+            SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_SLOT
         ));
         assert!(!should_log_survival_crafting_inventory_slot(
             PLAYER_INVENTORY_WINDOW_ID,
+            CRAFTING_WINDOW_ID_FOR_TEST,
             SURVIVAL_CRAFTING_INPUT_A_SLOT
         ));
         assert!(!should_log_survival_crafting_inventory_slot(
             CRAFTING_WINDOW_ID_FOR_TEST,
+            CRAFTING_WINDOW_ID_FOR_TEST,
             SURVIVAL_CRAFTING_INVENTORY_SLOT
+        ));
+    }
+
+    #[test]
+    fn survival_crafting_inventory_indices_accept_player_and_open_mirror() {
+        assert!(should_log_survival_crafting_inventory_index(
+            SURVIVAL_CRAFTING_INVENTORY_INDEX
+        ));
+        assert!(should_log_survival_crafting_inventory_index(
+            SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_INDEX
+        ));
+        assert!(!should_log_survival_crafting_inventory_index(
+            SURVIVAL_CRAFTING_INPUT_A_SLOT as usize
         ));
     }
 }
