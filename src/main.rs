@@ -55,6 +55,7 @@ use cfg_if::cfg_if;
 use std::cell::RefCell;
 use std::marker::PhantomData;
 use std::rc::Rc;
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::mpsc;
 use std::sync::{Arc, Mutex, RwLock};
 use std::thread;
@@ -150,7 +151,7 @@ pub struct Game {
     #[cfg(not(target_arch = "wasm32"))]
     capture_policy: capture::CapturePolicy,
     #[cfg(not(target_arch = "wasm32"))]
-    capture_sequence_id: u64,
+    capture_sequence_id: Arc<AtomicU64>,
     #[cfg(not(target_arch = "wasm32"))]
     active_capture_recording: Option<capture::RecordingSession>,
     #[cfg(not(target_arch = "wasm32"))]
@@ -442,9 +443,7 @@ impl Game {
 
     #[cfg(not(target_arch = "wasm32"))]
     fn next_capture_sequence_id(&mut self) -> u64 {
-        let sequence_id = self.capture_sequence_id;
-        self.capture_sequence_id = self.capture_sequence_id.saturating_add(1);
-        sequence_id
+        self.capture_sequence_id.fetch_add(1, Ordering::AcqRel)
     }
 
     #[cfg(not(target_arch = "wasm32"))]
@@ -1041,6 +1040,8 @@ fn main2() {
     #[cfg(not(target_arch = "wasm32"))]
     let (mcp_capture_request_sender, mcp_capture_request_receiver) =
         capture::capture_request_channel();
+    #[cfg(not(target_arch = "wasm32"))]
+    let capture_sequence_id = Arc::new(AtomicU64::new(capture::CAPTURE_SEQUENCE_INITIAL));
 
     #[cfg(not(target_arch = "wasm32"))]
     let _mcp_runtime = {
@@ -1057,7 +1058,16 @@ fn main2() {
                     std::process::exit(2);
                 }
             };
-            match mcp::start_process_transport(validated, Some(mcp_command_sender.clone())) {
+            let capture_tools = mcp::McpCaptureTools::new(
+                mcp_capture_request_sender.clone(),
+                capture_policy.clone(),
+                Arc::clone(&capture_sequence_id),
+            );
+            match mcp::start_process_transport_with_capture(
+                validated,
+                Some(mcp_command_sender.clone()),
+                Some(capture_tools),
+            ) {
                 Ok(runtime) => Some(runtime),
                 Err(err) => {
                     error!("Failed to start MCP transport: {:?}", err);
@@ -1218,7 +1228,7 @@ fn main2() {
         #[cfg(not(target_arch = "wasm32"))]
         capture_policy,
         #[cfg(not(target_arch = "wasm32"))]
-        capture_sequence_id: capture::CAPTURE_SEQUENCE_INITIAL,
+        capture_sequence_id,
         #[cfg(not(target_arch = "wasm32"))]
         active_capture_recording,
         #[cfg(not(target_arch = "wasm32"))]
