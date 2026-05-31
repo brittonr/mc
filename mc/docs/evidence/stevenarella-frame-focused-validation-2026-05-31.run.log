@@ -1,0 +1,496 @@
+# Stevenarella frame focused validation — 2026-05-31
+
+## Child revision
+$ git -C stevenarella rev-parse --short HEAD
+02aca92
+exit_status=0
+
+## cargo fmt --check
+$ nix develop --no-update-lock-file -c bash -lc 'cd stevenarella && cargo fmt --check'
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+/home/brittonr/git/mc/stevenarella
+warning: `/home/brittonr/git/mc/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+exit_status=0
+
+## focused validation tests
+$ nix develop --no-update-lock-file -c bash -lc 'cd stevenarella && cargo test focused_validation --lib'
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+/home/brittonr/git/mc/stevenarella
+warning: `/home/brittonr/git/mc/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: file `/home/brittonr/git/mc/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1052:36
+     |
+1052 |         offsets |protocol_version| (instrument.offsets(protocol_version)
+     |                                    ^
+1053 |             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 })),
+     |                                                                                                    ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1052 ~         offsets |protocol_version| instrument.offsets(protocol_version)
+1053 ~             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+     |
+
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1407:36
+     |
+1407 |         offsets |protocol_version| (variant.offsets(protocol_version)),
+     |                                    ^                                 ^
+     |
+help: remove these parentheses
+     |
+1407 -         offsets |protocol_version| (variant.offsets(protocol_version)),
+1407 +         offsets |protocol_version| variant.offsets(protocol_version),
+     |
+
+warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:102:21
+    |
+102 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+252 | / define_elements! {
+253 | |     Image,
+254 | |     Batch,
+255 | |     Text,
+...   |
+258 | |     TextBox,
+259 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+102 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib test) generated 2 warnings (run `cargo fix --lib -p stevenarella --tests` to apply 2 suggestions)
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.13s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-74a8925fb38c5fbd)
+
+running 6 tests
+test capture::tests::focused_validation_covers_vertical_flip_normalization ... ok
+test capture::tests::focused_validation_rejects_invalid_format ... ok
+test capture::tests::focused_validation_rejects_capture_rate_limit ... ok
+test capture::tests::focused_validation_rejects_unbounded_recording ... ok
+test capture::tests::focused_validation_rejects_path_traversal ... ok
+test capture::tests::focused_validation_covers_valid_screenshot_metadata ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 90 filtered out; finished in 0.00s
+
+exit_status=0
+
+## capture-focused tests
+$ nix develop --no-update-lock-file -c bash -lc 'cd stevenarella && cargo test capture --lib'
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+/home/brittonr/git/mc/stevenarella
+warning: `/home/brittonr/git/mc/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: file `/home/brittonr/git/mc/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1052:36
+     |
+1052 |         offsets |protocol_version| (instrument.offsets(protocol_version)
+     |                                    ^
+1053 |             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 })),
+     |                                                                                                    ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1052 ~         offsets |protocol_version| instrument.offsets(protocol_version)
+1053 ~             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+     |
+
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1407:36
+     |
+1407 |         offsets |protocol_version| (variant.offsets(protocol_version)),
+     |                                    ^                                 ^
+     |
+help: remove these parentheses
+     |
+1407 -         offsets |protocol_version| (variant.offsets(protocol_version)),
+1407 +         offsets |protocol_version| variant.offsets(protocol_version),
+     |
+
+warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:102:21
+    |
+102 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+252 | / define_elements! {
+253 | |     Image,
+254 | |     Batch,
+255 | |     Text,
+...   |
+258 | |     TextBox,
+259 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+102 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib test) generated 2 warnings (run `cargo fix --lib -p stevenarella --tests` to apply 2 suggestions)
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.11s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-74a8925fb38c5fbd)
+
+running 34 tests
+test capture::tests::artifact_path_escape_is_rejected ... ok
+test capture::tests::capture_queue_rejects_recording_request_before_enqueue ... ok
+test capture::tests::capture_queue_services_one_latest_frame_after_frame_readback ... ok
+test capture::tests::focused_validation_covers_vertical_flip_normalization ... ok
+test capture::tests::capture_queue_services_one_screenshot_after_frame_readback ... ok
+test capture::tests::focused_validation_rejects_capture_rate_limit ... ok
+test capture::tests::focused_validation_rejects_invalid_format ... ok
+test capture::tests::focused_validation_rejects_path_traversal ... ok
+test capture::tests::focused_validation_covers_valid_screenshot_metadata ... ok
+test capture::tests::bounded_recording_writes_contained_frames_and_respects_fps ... ok
+test capture::tests::focused_validation_rejects_unbounded_recording ... ok
+test capture::tests::invalid_digest_is_rejected ... ok
+test capture::tests::one_shot_artifact_size_guard_rejects_before_write ... ok
+test capture::tests::one_shot_capture_rejects_ui_exclusion_before_readback ... ok
+test capture::tests::recording_inline_output_is_rejected ... ok
+test capture::tests::recording_without_explicit_bounds_is_rejected ... ok
+test capture::tests::one_shot_artifact_capture_writes_png_and_metadata ... ok
+test capture::tests::rgba_readback_normalizes_gl_bottom_left_origin ... ok
+test capture::tests::rgba_readback_rejects_empty_dimensions ... ok
+test capture::tests::rgba_readback_rejects_wrong_buffer_length ... ok
+test capture::tests::unsupported_format_fails_closed ... ok
+test capture::tests::valid_artifact_metadata_is_accepted ... ok
+test capture::tests::valid_recording_bounds_are_accepted ... ok
+test capture::tests::valid_screenshot_artifact_request_is_planned ... ok
+test capture::tests::zero_dimensions_are_rejected ... ok
+test mcp::tests::jsonrpc_capture_tool_rejects_invalid_format_before_enqueue ... ok
+test mcp_control_tests::control_capture_enqueue_reaches_post_render_capture_queue ... ok
+test mcp::tests::tools_and_resources_list_include_capture_when_configured ... ok
+test mcp_control_tests::control_capture_enqueue_rejects_missing_capture_queue ... ok
+test mcp_control_tests::control_capture_enqueue_uses_capture_dir_artifact_output ... ok
+test mcp::tests::jsonrpc_capture_resource_read_returns_inline_blob ... ok
+test mcp::tests::jsonrpc_tools_call_enqueues_capture_command_for_main_thread_drain ... ok
+test mcp::tests::jsonrpc_capture_tool_returns_inline_image_and_metadata ... ok
+test mcp::tests::jsonrpc_capture_tool_returns_artifact_path_and_digest ... ok
+
+test result: ok. 34 passed; 0 failed; 0 ignored; 0 measured; 62 filtered out; finished in 0.00s
+
+exit_status=0
+
+## full library tests
+$ nix develop --no-update-lock-file -c bash -lc 'cd stevenarella && cargo test --lib'
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+/home/brittonr/git/mc/stevenarella
+warning: `/home/brittonr/git/mc/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: file `/home/brittonr/git/mc/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1052:36
+     |
+1052 |         offsets |protocol_version| (instrument.offsets(protocol_version)
+     |                                    ^
+1053 |             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 })),
+     |                                                                                                    ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1052 ~         offsets |protocol_version| instrument.offsets(protocol_version)
+1053 ~             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+     |
+
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1407:36
+     |
+1407 |         offsets |protocol_version| (variant.offsets(protocol_version)),
+     |                                    ^                                 ^
+     |
+help: remove these parentheses
+     |
+1407 -         offsets |protocol_version| (variant.offsets(protocol_version)),
+1407 +         offsets |protocol_version| variant.offsets(protocol_version),
+     |
+
+warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:102:21
+    |
+102 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+252 | / define_elements! {
+253 | |     Image,
+254 | |     Batch,
+255 | |     Text,
+...   |
+258 | |     TextBox,
+259 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+102 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib test) generated 2 warnings (run `cargo fix --lib -p stevenarella --tests` to apply 2 suggestions)
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.12s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-74a8925fb38c5fbd)
+
+running 96 tests
+test capture::tests::artifact_path_escape_is_rejected ... ok
+test capture::tests::capture_queue_services_one_latest_frame_after_frame_readback ... ok
+test capture::tests::capture_queue_rejects_recording_request_before_enqueue ... ok
+test capture::tests::capture_queue_services_one_screenshot_after_frame_readback ... ok
+test capture::tests::focused_validation_covers_vertical_flip_normalization ... ok
+test capture::tests::focused_validation_rejects_capture_rate_limit ... ok
+test capture::tests::focused_validation_rejects_invalid_format ... ok
+test capture::tests::bounded_recording_writes_contained_frames_and_respects_fps ... ok
+test capture::tests::focused_validation_rejects_unbounded_recording ... ok
+test capture::tests::invalid_digest_is_rejected ... ok
+test capture::tests::focused_validation_covers_valid_screenshot_metadata ... ok
+test capture::tests::one_shot_capture_rejects_ui_exclusion_before_readback ... ok
+test capture::tests::one_shot_artifact_capture_writes_png_and_metadata ... ok
+test capture::tests::one_shot_artifact_size_guard_rejects_before_write ... ok
+test capture::tests::focused_validation_rejects_path_traversal ... ok
+test capture::tests::recording_without_explicit_bounds_is_rejected ... ok
+test capture::tests::recording_inline_output_is_rejected ... ok
+test capture::tests::rgba_readback_normalizes_gl_bottom_left_origin ... ok
+test capture::tests::rgba_readback_rejects_empty_dimensions ... ok
+test capture::tests::rgba_readback_rejects_wrong_buffer_length ... ok
+test capture::tests::unsupported_format_fails_closed ... ok
+test capture::tests::valid_artifact_metadata_is_accepted ... ok
+test capture::tests::valid_recording_bounds_are_accepted ... ok
+test capture::tests::valid_screenshot_artifact_request_is_planned ... ok
+test capture::tests::zero_dimensions_are_rejected ... ok
+test control::tests::parses_all_key_aliases ... ok
+test control::tests::parses_json_string_entrypoint ... ok
+test control::tests::parses_valid_initial_command_set ... ok
+test control::tests::rejects_blank_chat_message ... ok
+test control::tests::rejects_invalid_key_name ... ok
+test control::tests::rejects_invalid_mouse_button ... ok
+test control::tests::rejects_malformed_json_entrypoint ... ok
+test control::tests::rejects_missing_action_field ... ok
+test control::tests::rejects_missing_required_command_field ... ok
+test control::tests::rejects_out_of_range_look_delta ... ok
+test control::tests::rejects_oversized_chat_message ... ok
+test control::tests::rejects_unknown_action ... ok
+test mcp::tests::command_queue_rejects_enqueue_after_receiver_drop ... ok
+test mcp::tests::command_queue_drains_pending_command_with_main_thread_handler ... ok
+test mcp::tests::command_queue_respects_per_frame_drain_limit ... ok
+test mcp::tests::ipv6_loopback_tcp_transport_is_accepted_without_token ... ok
+test mcp::tests::jsonrpc_capture_tool_rejects_invalid_format_before_enqueue ... ok
+test mcp::tests::jsonrpc_handler_rejects_malformed_json ... ok
+test mcp::tests::jsonrpc_handler_requires_matching_auth_token_when_configured ... ok
+test mcp::tests::jsonrpc_handler_supports_initialize_and_lists_empty_tools ... ok
+test mcp::tests::jsonrpc_tools_list_includes_queue_tool_when_sender_is_configured ... ok
+test mcp::tests::loopback_tcp_transport_is_accepted_without_token ... ok
+test mcp::tests::malformed_listen_address_is_rejected ... ok
+test mcp::tests::non_loopback_tcp_transport_is_rejected_with_empty_token_env_name ... ok
+test mcp::tests::non_loopback_tcp_transport_is_rejected_with_empty_token_value ... ok
+test mcp_control_tests::control_capture_enqueue_reaches_post_render_capture_queue ... ok
+test mcp::tests::non_loopback_tcp_transport_is_rejected_with_missing_token_value ... ok
+test mcp_control_tests::status_connect_and_disconnect_do_not_require_an_existing_connection ... ok
+test mcp::tests::non_loopback_tcp_transport_is_rejected_without_token_env ... ok
+test mcp::tests::non_loopback_tcp_transport_is_accepted_with_token_env_and_value ... ok
+test mcp::tests::stdio_transport_runtime_starts_line_loop_thread ... ok
+test mcp_control_tests::status_message_reports_connection_state ... ok
+test mcp::tests::stdio_transport_runs_jsonrpc_line_loop ... ok
+test mcp_control_tests::disconnected_operations_return_rejected_response ... ok
+test mcp_control_tests::maps_control_keys_to_internal_steven_keys ... ok
+test mcp_control_tests::pitch_bounds_match_window_input_clamp ... ok
+test server::tests::flag_probe_repeat_target_defaults_when_unset_or_invalid ... ok
+test server::tests::flag_probe_repeat_target_accepts_positive_counts ... ok
+test server::tests::flag_probe_repeat_target_is_capped ... ok
+test mcp_control_tests::control_capture_enqueue_uses_capture_dir_artifact_output ... ok
+test mcp_control_tests::control_capture_enqueue_rejects_missing_capture_queue ... ok
+test mcp::tests::stdio_transport_is_accepted_and_requires_clean_stdout ... ok
+test mcp::tests::tools_and_resources_list_include_capture_when_configured ... ok
+test mcp::tests::command_queue_reports_timeout_when_main_thread_does_not_drain ... ok
+test mcp::tests::stdio_transport_runtime_keeps_command_sender_for_worker_threads ... ok
+test mcp::tests::jsonrpc_capture_resource_read_returns_inline_blob ... ok
+test mcp::tests::jsonrpc_capture_tool_returns_artifact_path_and_digest ... ok
+test mcp::tests::jsonrpc_tools_call_enqueues_control_command_for_main_thread_drain ... ok
+test mcp::tests::tcp_transport_binds_loopback_and_serves_jsonrpc ... ok
+test mcp::tests::jsonrpc_tools_call_enqueues_capture_command_for_main_thread_drain ... ok
+test mcp::tests::jsonrpc_capture_tool_returns_inline_image_and_metadata ... ok
+test world::tests::parse_chunk_1_14_3 ... ok
+test world::tests::parse_chunk_1_16_4 ... ok
+test world::tests::parse_chunk_1_14_4 ... ok
+test world::tests::parse_chunk_1_15_2 ... ok
+test world::tests::parse_chunk_1_14_2 ... ok
+test world::tests::parse_chunk_19w02a ... ok
+test world::tests::parse_chunk_1_15_1 ... ok
+test world::tests::parse_chunk_1_16_2 ... ok
+test world::tests::parse_chunk_1_12_2 ... ok
+test world::tests::parse_chunk_1_13_2 ... ok
+test world::tests::parse_chunk_1_17_1 ... ok
+test world::tests::parse_chunk_18w50a ... ok
+test world::tests::parse_chunk_1_14_1 ... ok
+test world::tests::parse_chunk_1_16_1 ... ok
+test world::tests::parse_chunk_1_14 ... ok
+test world::tests::parse_chunk_1_16 ... ok
+test world::tests::parse_chunk_1_16_3 ... ok
+test mcp::tests::non_loopback_tcp_transport_requires_token_per_request ... ok
+test world::tests::parse_chunk_1_18_2 ... ok
+test world::tests::parse_chunk_1_18_1 ... ok
+
+test result: ok. 96 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+exit_status=0
+
+## binary compile check
+$ nix develop --no-update-lock-file -c bash -lc 'cd stevenarella && cargo check --bin stevenarella'
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+/home/brittonr/git/mc/stevenarella
+warning: `/home/brittonr/git/mc/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: file `/home/brittonr/git/mc/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1052:36
+     |
+1052 |         offsets |protocol_version| (instrument.offsets(protocol_version)
+     |                                    ^
+1053 |             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 })),
+     |                                                                                                    ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1052 ~         offsets |protocol_version| instrument.offsets(protocol_version)
+1053 ~             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+     |
+
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1407:36
+     |
+1407 |         offsets |protocol_version| (variant.offsets(protocol_version)),
+     |                                    ^                                 ^
+     |
+help: remove these parentheses
+     |
+1407 -         offsets |protocol_version| (variant.offsets(protocol_version)),
+1407 +         offsets |protocol_version| variant.offsets(protocol_version),
+     |
+
+warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:102:21
+    |
+102 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+252 | / define_elements! {
+253 | |     Image,
+254 | |     Batch,
+255 | |     Text,
+...   |
+258 | |     TextBox,
+259 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+102 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib) generated 2 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (bin "stevenarella") generated 2 warnings (2 duplicates)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.12s
+exit_status=0
