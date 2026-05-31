@@ -8,7 +8,7 @@ use crate::gl;
 use std::fs;
 use std::io::Cursor;
 use std::path::{Component, Path, PathBuf};
-use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::{mpsc, Arc};
 
 pub const BLAKE3_HEX_LENGTH: usize = 64;
@@ -210,11 +210,13 @@ pub enum RecordingServiceOutcome {
 pub struct CaptureRequestSender {
     sender: mpsc::Sender<QueuedCaptureRequest>,
     pending_requests: Arc<AtomicUsize>,
+    receiver_open: Arc<AtomicBool>,
 }
 
 pub struct CaptureRequestReceiver {
     receiver: mpsc::Receiver<QueuedCaptureRequest>,
     pending_requests: Arc<AtomicUsize>,
+    receiver_open: Arc<AtomicBool>,
 }
 
 struct QueuedCaptureRequest {
@@ -352,14 +354,17 @@ pub fn validate_capture_request(
 pub fn capture_request_channel() -> (CaptureRequestSender, CaptureRequestReceiver) {
     let (sender, receiver) = mpsc::channel();
     let pending_requests = Arc::new(AtomicUsize::new(0));
+    let receiver_open = Arc::new(AtomicBool::new(true));
     (
         CaptureRequestSender {
             sender,
             pending_requests: Arc::clone(&pending_requests),
+            receiver_open: Arc::clone(&receiver_open),
         },
         CaptureRequestReceiver {
             receiver,
             pending_requests,
+            receiver_open,
         },
     )
 }
@@ -371,6 +376,7 @@ impl CaptureRequestSender {
     ) -> Result<mpsc::Receiver<Result<ServicedCapture, CaptureServiceError>>, CaptureQueueError>
     {
         validate_one_shot_capture_request_shape(&request).map_err(CaptureQueueError::Validation)?;
+        ensure_capture_receiver_open(&self.receiver_open)?;
         reserve_pending_capture_slot(&self.pending_requests)?;
         let (response_sender, response_receiver) = mpsc::channel();
         let send_result = self.sender.send(QueuedCaptureRequest {
@@ -383,6 +389,13 @@ impl CaptureRequestSender {
         }
         Ok(response_receiver)
     }
+}
+
+fn ensure_capture_receiver_open(receiver_open: &AtomicBool) -> Result<(), CaptureQueueError> {
+    if receiver_open.load(Ordering::Acquire) {
+        return Ok(());
+    }
+    Err(CaptureQueueError::QueueClosed)
 }
 
 fn reserve_pending_capture_slot(pending_requests: &AtomicUsize) -> Result<(), CaptureQueueError> {
@@ -401,6 +414,12 @@ fn release_pending_capture_slot(pending_requests: &AtomicUsize) {
     let _ = pending_requests.fetch_update(Ordering::AcqRel, Ordering::Acquire, |pending| {
         pending.checked_sub(1)
     });
+}
+
+impl Drop for CaptureRequestReceiver {
+    fn drop(&mut self) {
+        self.receiver_open.store(false, Ordering::Release);
+    }
 }
 
 impl CaptureRequestReceiver {
@@ -1548,6 +1567,22 @@ mod tests {
                 pending: MAX_PENDING_CAPTURE_REQUESTS,
                 max: MAX_PENDING_CAPTURE_REQUESTS,
             }
+        );
+    }
+
+    #[test]
+    fn capture_queue_reports_closed_after_pending_receiver_drop() {
+        let (sender, receiver) = capture_request_channel();
+        let first = sender.enqueue_deferred(inline_capture_request(CaptureMode::Screenshot, true));
+        drop(receiver);
+
+        let second =
+            sender.enqueue_deferred(inline_capture_request(CaptureMode::LatestFrame, true));
+
+        assert!(first.is_ok());
+        assert_eq!(
+            second.expect_err("closed receiver should beat pending rate limit"),
+            CaptureQueueError::QueueClosed
         );
     }
 
