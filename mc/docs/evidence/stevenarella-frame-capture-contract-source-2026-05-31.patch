@@ -1,4 +1,4 @@
-commit 7264712ec5a44bad133e1f3859668fd420631478
+commit 3374e23f0b53297d16271d3971455bca837737c8
 Author: brittonr <b@robitzs.ch>
 Date:   Sun May 31 12:18:24 2026 -0400
 
@@ -10,7 +10,7 @@ Date:   Sun May 31 12:18:24 2026 -0400
 
 diff --git a/src/capture.rs b/src/capture.rs
 new file mode 100644
-index 0000000..32d3eb7
+index 0000000..988f375
 --- /dev/null
 +++ b/src/capture.rs
 @@ -0,0 +1,472 @@
@@ -50,6 +50,25 @@ index 0000000..32d3eb7
 +pub enum RedactionState {
 +    NotReviewed,
 +    Reviewed,
++}
++
++#[derive(Debug, Clone, PartialEq, Eq)]
++pub struct Blake3DigestHex(String);
++
++impl Blake3DigestHex {
++    pub fn new(value: impl Into<String>) -> Result<Self, CaptureValidationError> {
++        let value = value.into();
++        if !is_blake3_hex(&value) {
++            return Err(CaptureValidationError::InvalidBlake3Digest {
++                actual_len: value.len(),
++            });
++        }
++        Ok(Self(value))
++    }
++
++    pub fn as_str(&self) -> &str {
++        &self.0
++    }
 +}
 +
 +#[derive(Debug, Clone, PartialEq, Eq)]
@@ -104,7 +123,7 @@ index 0000000..32d3eb7
 +    pub height_px: u32,
 +    pub frame_id: u64,
 +    pub byte_len: u64,
-+    pub blake3_hex: String,
++    pub blake3_digest: Blake3DigestHex,
 +    pub includes_ui: bool,
 +    pub redaction: RedactionState,
 +}
@@ -193,7 +212,6 @@ index 0000000..32d3eb7
 +) -> Result<PathBuf, CaptureValidationError> {
 +    validate_dimensions(metadata.width_px, metadata.height_px, policy)?;
 +    validate_artifact_size(metadata.byte_len, policy)?;
-+    validate_blake3_hex(&metadata.blake3_hex)?;
 +    contained_artifact_path(policy, &metadata.relative_path)
 +}
 +
@@ -300,13 +318,8 @@ index 0000000..32d3eb7
 +    Ok(())
 +}
 +
-+fn validate_blake3_hex(digest: &str) -> Result<(), CaptureValidationError> {
-+    if digest.len() != BLAKE3_HEX_LENGTH || !digest.chars().all(|c| c.is_ascii_hexdigit()) {
-+        return Err(CaptureValidationError::InvalidBlake3Digest {
-+            actual_len: digest.len(),
-+        });
-+    }
-+    Ok(())
++fn is_blake3_hex(digest: &str) -> bool {
++    digest.len() == BLAKE3_HEX_LENGTH && digest.chars().all(|c| c.is_ascii_hexdigit())
 +}
 +
 +#[cfg(test)]
@@ -378,7 +391,7 @@ index 0000000..32d3eb7
 +            height_px: TEST_HEIGHT_PX,
 +            frame_id: TEST_FRAME_ID,
 +            byte_len: TEST_BYTE_LEN,
-+            blake3_hex: TEST_BLAKE3.to_owned(),
++            blake3_digest: Blake3DigestHex::new(TEST_BLAKE3).expect("digest should pass"),
 +            includes_ui: true,
 +            redaction: RedactionState::NotReviewed,
 +        };
@@ -448,20 +461,7 @@ index 0000000..32d3eb7
 +
 +    #[test]
 +    fn invalid_digest_is_rejected() {
-+        let policy = CapturePolicy::local(TEST_CAPTURE_DIR);
-+        let metadata = CaptureArtifactMetadata {
-+            relative_path: PathBuf::from(TEST_ARTIFACT_PATH),
-+            format: CaptureFormat::Png,
-+            width_px: TEST_WIDTH_PX,
-+            height_px: TEST_HEIGHT_PX,
-+            frame_id: TEST_FRAME_ID,
-+            byte_len: TEST_BYTE_LEN,
-+            blake3_hex: "not-a-blake3-digest".to_owned(),
-+            includes_ui: true,
-+            redaction: RedactionState::NotReviewed,
-+        };
-+
-+        let err = validate_artifact_metadata(&metadata, &policy).expect_err("digest rejected");
++        let err = Blake3DigestHex::new("not-a-blake3-digest").expect_err("digest rejected");
 +
 +        assert_eq!(
 +            err,

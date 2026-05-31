@@ -88,16 +88,16 @@ help: use `'_` for type paths
     |                                                                                                                                          +++
 
 warning: `stevenarella` (lib test) generated 2 warnings (run `cargo fix --lib -p stevenarella --tests` to apply 2 suggestions)
-    Finished `test` profile [optimized + debuginfo] target(s) in 0.11s
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.13s
      Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-60897b83bd8b4ea0)
 
 running 8 tests
 test capture::tests::artifact_path_escape_is_rejected ... ok
 test capture::tests::invalid_digest_is_rejected ... ok
-test capture::tests::valid_artifact_metadata_is_accepted ... ok
-test capture::tests::unsupported_format_fails_closed ... ok
 test capture::tests::recording_without_explicit_bounds_is_rejected ... ok
 test capture::tests::valid_recording_bounds_are_accepted ... ok
+test capture::tests::valid_artifact_metadata_is_accepted ... ok
+test capture::tests::unsupported_format_fails_closed ... ok
 test capture::tests::valid_screenshot_artifact_request_is_planned ... ok
 test capture::tests::zero_dimensions_are_rejected ... ok
 
