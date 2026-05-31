@@ -127,6 +127,7 @@ const SURVIVAL_CRAFTING_INPUT_COUNT: isize = 1;
 const SURVIVAL_CRAFTING_RESULT_COUNT: isize = 4;
 const SURVIVAL_CRAFTING_CLICK_BUTTON: u8 = 0;
 const SURVIVAL_CRAFTING_CLICK_MODE: i32 = 0;
+const PLAYER_INVENTORY_WINDOW_ID: u8 = 0;
 const EMPTY_WINDOW_ID: u8 = 0;
 const EMPTY_WINDOW_STATE_ID: i32 = -1;
 const NEGATIVE_INVENTORY_INVALID_SLOT: i16 = 127;
@@ -189,6 +190,10 @@ fn survival_crafting_result_stack() -> item::Stack {
 
 fn survival_crafting_result_matches(stack: &item::Stack) -> bool {
     stack.id == SURVIVAL_CRAFTING_RESULT_ITEM_ID && stack.count == SURVIVAL_CRAFTING_RESULT_COUNT
+}
+
+fn should_log_survival_crafting_inventory_slot(window_id: u8, slot: i16) -> bool {
+    window_id == PLAYER_INVENTORY_WINDOW_ID && slot == SURVIVAL_CRAFTING_INVENTORY_SLOT
 }
 
 pub struct Server {
@@ -3457,20 +3462,19 @@ impl Server {
                 self.log_survival_chest_persisted_item(slot.id, Some(&slot.item));
             }
         }
-        if self.survival_crafting_probe_enabled
-            && slot.id == self.survival_crafting_window_id
-            && slot.id > EMPTY_WINDOW_ID
-        {
-            self.survival_crafting_window_state_id = slot.state_id.0;
-            if slot.property == SURVIVAL_CRAFTING_RESULT_SLOT {
-                self.log_survival_crafting_result_from_slot(
-                    slot.id,
-                    slot.state_id.0,
-                    SURVIVAL_CRAFTING_RESULT_INDEX,
-                    Some(&slot.item),
-                );
+        if self.survival_crafting_probe_enabled {
+            if slot.id == self.survival_crafting_window_id && slot.id > EMPTY_WINDOW_ID {
+                self.survival_crafting_window_state_id = slot.state_id.0;
+                if slot.property == SURVIVAL_CRAFTING_RESULT_SLOT {
+                    self.log_survival_crafting_result_from_slot(
+                        slot.id,
+                        slot.state_id.0,
+                        SURVIVAL_CRAFTING_RESULT_INDEX,
+                        Some(&slot.item),
+                    );
+                }
             }
-            if slot.property == SURVIVAL_CRAFTING_INVENTORY_SLOT {
+            if should_log_survival_crafting_inventory_slot(slot.id, slot.property) {
                 self.log_survival_crafting_inventory_from_slot(
                     SURVIVAL_CRAFTING_INVENTORY_INDEX,
                     Some(&slot.item),
@@ -4500,13 +4504,14 @@ fn calculate_relative_teleport(flag: TeleportFlag, flags: u8, base: f64, val: f6
 #[cfg(test)]
 mod tests {
     use super::{
-        parse_flag_probe_repeat_target, survival_crafting_input_stack,
-        survival_crafting_result_matches, survival_crafting_result_stack,
-        survival_crafting_table_position, DEFAULT_FLAG_PROBE_REPEAT_TARGET,
-        MAX_FLAG_PROBE_REPEAT_TARGET, SURVIVAL_CRAFTING_INPUT_COUNT,
-        SURVIVAL_CRAFTING_INPUT_ITEM_ID, SURVIVAL_CRAFTING_RESULT_COUNT,
-        SURVIVAL_CRAFTING_RESULT_ITEM_ID, SURVIVAL_CRAFTING_TABLE_X, SURVIVAL_CRAFTING_TABLE_Y,
-        SURVIVAL_CRAFTING_TABLE_Z,
+        parse_flag_probe_repeat_target, should_log_survival_crafting_inventory_slot,
+        survival_crafting_input_stack, survival_crafting_result_matches,
+        survival_crafting_result_stack, survival_crafting_table_position,
+        DEFAULT_FLAG_PROBE_REPEAT_TARGET, MAX_FLAG_PROBE_REPEAT_TARGET, PLAYER_INVENTORY_WINDOW_ID,
+        SURVIVAL_CRAFTING_INPUT_A_SLOT, SURVIVAL_CRAFTING_INPUT_COUNT,
+        SURVIVAL_CRAFTING_INPUT_ITEM_ID, SURVIVAL_CRAFTING_INVENTORY_SLOT,
+        SURVIVAL_CRAFTING_RESULT_COUNT, SURVIVAL_CRAFTING_RESULT_ITEM_ID,
+        SURVIVAL_CRAFTING_TABLE_X, SURVIVAL_CRAFTING_TABLE_Y, SURVIVAL_CRAFTING_TABLE_Z,
     };
     use steven_protocol::item;
 
@@ -4582,5 +4587,23 @@ mod tests {
 
         assert!(!survival_crafting_result_matches(&wrong_item));
         assert!(!survival_crafting_result_matches(&wrong_count));
+    }
+
+    #[test]
+    fn survival_crafting_inventory_updates_use_player_inventory_window() {
+        const CRAFTING_WINDOW_ID_FOR_TEST: u8 = 1;
+
+        assert!(should_log_survival_crafting_inventory_slot(
+            PLAYER_INVENTORY_WINDOW_ID,
+            SURVIVAL_CRAFTING_INVENTORY_SLOT
+        ));
+        assert!(!should_log_survival_crafting_inventory_slot(
+            PLAYER_INVENTORY_WINDOW_ID,
+            SURVIVAL_CRAFTING_INPUT_A_SLOT
+        ));
+        assert!(!should_log_survival_crafting_inventory_slot(
+            CRAFTING_WINDOW_ID_FOR_TEST,
+            SURVIVAL_CRAFTING_INVENTORY_SLOT
+        ));
     }
 }
