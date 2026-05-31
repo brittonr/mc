@@ -16,5 +16,8 @@ The completed task text requires pure capture request, policy, artifact metadata
 ## Decision
 Keep task 1 marked complete. Do not mark later capture/readback/MCP tasks complete from this evidence.
 
+## Owner
+Britton Robitzsch, mc compatibility owner.
+
 ## Follow-up
 Next task remains `r[mc_compatibility.stevenarella_frame_capture.readback]`: add GL RGBA readback and top-left-origin buffer normalization without changing ordinary rendering.
