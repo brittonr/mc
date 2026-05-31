@@ -1,0 +1,23 @@
+{
+  "artifact_path": "artifacts/screenshots/frame-000007.png",
+  "generated_by": "stevenarella::capture::service_one_shot_capture_request_with_readback",
+  "mc_parent_revision": "d7fc07f",
+  "metadata": {
+    "blake3_digest": "cd6a6c77d137ba712e5e9cf06bdf8145aeff2aa3db692d51e2eebbc281a0c054",
+    "byte_len": 86,
+    "format": "png",
+    "frame_id": 42,
+    "height_px": 2,
+    "includes_ui": true,
+    "redaction": "not_reviewed",
+    "relative_path": "screenshots/frame-000007.png",
+    "sequence_id": 7,
+    "width_px": 2
+  },
+  "non_claims": [
+    "synthetic sample for metadata review only",
+    "not a visual regression approval",
+    "not semantic gameplay compatibility evidence"
+  ],
+  "stevenarella_child_revision": "0583455"
+}

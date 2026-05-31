@@ -1,0 +1,54 @@
+# Stevenarella frame final artifacts Cairn validation — 2026-05-31
+
+## Revisions
+$ git -C /home/brittonr/git rev-parse --short HEAD
+d7fc07f
+$ git -C stevenarella rev-parse --short HEAD
+0583455
+
+## Evidence manifests
+$ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 128 manifests, 595 entries, 68 receipts scanned
+exit_status=0
+
+## Cairn tasks gate
+$ nix run --no-update-lock-file .#cairn -- gate tasks stevenarella-frame-capture-artifacts --root .
+{
+  "change": "stevenarella-frame-capture-artifacts",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "b637a06c3a2d99ad336990097c455595a102a3e25c3db8168d0cf365a5dc4112",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "8d0165bdf4a3a666c8de61afcdd1575cac59589b065eb78e72af73f1bd6669e6",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## Cairn validate
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 32,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 34,
+  "valid": true
+}
+exit_status=0
