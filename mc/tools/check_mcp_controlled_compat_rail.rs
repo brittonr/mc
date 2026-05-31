@@ -42,6 +42,14 @@ const REQUIRED_OUTCOMES: &[&str] = &[
     "key.applied",
     "chat.applied",
 ];
+const OVERCLAIM_BOOL_FIELDS: &[&str] = &[
+    "claims_semantic_equivalence",
+    "claims_correctness",
+    "visual_regression_approval",
+    "public_server_safety",
+    "production_readiness",
+    "load_testing",
+];
 
 fn main() -> ExitCode {
     let args = env::args().collect::<Vec<_>>();
@@ -210,16 +218,9 @@ fn require_string_field(block: &str, field: &str, expected: &str, errors: &mut V
 }
 
 fn reject_overclaims(block: &str, errors: &mut Vec<String>) {
-    for overclaim in [
-        "\"claims_semantic_equivalence\": true",
-        "\"claims_correctness\": true",
-        "\"visual_regression_approval\": true",
-        "\"production_readiness\": true",
-        "\"public_server_safety\": true",
-        "\"load_testing\": true",
-    ] {
-        if block.contains(overclaim) {
-            errors.push(format!("overclaim rejected: {overclaim}"));
+    for field in OVERCLAIM_BOOL_FIELDS {
+        if bool_field(block, field) == Some(true) {
+            errors.push(format!("overclaim rejected: {field}=true"));
         }
     }
 }
@@ -255,14 +256,22 @@ fn object_block(text: &str, field: &str) -> Option<String> {
 
 fn field_value<'a>(block: &'a str, field: &str) -> Option<&'a str> {
     let field_needle = format!("\"{field}\"");
-    let field_start = block.find(&field_needle)?;
-    let after_field = &block[field_start + field_needle.len()..];
-    let colon = after_field.find(JSON_FIELD_SEPARATOR)?;
-    let after_colon = after_field[colon + JSON_FIELD_SEPARATOR.len()..].trim_start();
-    let end = after_colon
-        .find([',', JSON_OBJECT_END])
-        .unwrap_or(after_colon.len());
-    Some(after_colon[..end].trim())
+    let mut search_start = 0usize;
+    while let Some(relative_start) = block[search_start..].find(&field_needle) {
+        let field_start = search_start + relative_start;
+        let after_field = &block[field_start + field_needle.len()..];
+        let after_whitespace = after_field.trim_start();
+        if !after_whitespace.starts_with(JSON_FIELD_SEPARATOR) {
+            search_start = field_start + field_needle.len();
+            continue;
+        }
+        let after_colon = after_whitespace[JSON_FIELD_SEPARATOR.len()..].trim_start();
+        let end = after_colon
+            .find([',', JSON_OBJECT_END])
+            .unwrap_or(after_colon.len());
+        return Some(after_colon[..end].trim());
+    }
+    None
 }
 
 fn bool_field(block: &str, field: &str) -> Option<bool> {
@@ -382,7 +391,15 @@ fn run_self_tests() -> Result<String, Vec<String>> {
             "\"passed\": true",
             "\"claims_semantic_equivalence\": true, \"passed\": true",
         ),
-        "overclaim rejected",
+        "claims_semantic_equivalence=true",
+    ));
+    errors.extend(expect_error(
+        "compact overclaim wording",
+        valid_receipt_fixture().replace(
+            "\"passed\": true",
+            "\"claims_semantic_equivalence\":true, \"passed\": true",
+        ),
+        "claims_semantic_equivalence=true",
     ));
 
     if errors.is_empty() {
