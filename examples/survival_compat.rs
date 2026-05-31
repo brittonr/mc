@@ -493,7 +493,6 @@ fn handle_survival_crafting_click(
         if is_survival_crafting_input_event(
             event.window_id,
             event.slot_id,
-            &event.slot_changes,
             SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
         ) && !fixture.input_a_logged
         {
@@ -517,7 +516,6 @@ fn handle_survival_crafting_click(
         if is_survival_crafting_input_event(
             event.window_id,
             event.slot_id,
-            &event.slot_changes,
             SURVIVAL_CRAFTING_INPUT_B_SLOT_ID,
         ) && !fixture.input_b_logged
         {
@@ -669,17 +667,9 @@ fn should_open_survival_crafting(game_mode: GameMode, hand: Hand, position: Bloc
     game_mode == GameMode::Survival && hand == Hand::Main && position == survival_crafting_pos()
 }
 
-fn is_survival_crafting_input_event(
-    window_id: u8,
-    slot_id: i16,
-    slot_changes: &[SlotChange],
-    expected_slot: i16,
-) -> bool {
-    window_id == SURVIVAL_CRAFTING_WINDOW
-        && slot_id == expected_slot
-        && slot_changes
-            .iter()
-            .any(|change| change.idx == expected_slot && is_survival_crafting_input(&change.stack))
+fn is_survival_crafting_input_event(window_id: u8, slot_id: i16, expected_slot: i16) -> bool {
+    // This fixture owns the result state; raw slot/window are the stable server-side trigger.
+    window_id == SURVIVAL_CRAFTING_WINDOW && slot_id == expected_slot
 }
 
 fn is_survival_crafting_collect_event(
@@ -690,10 +680,6 @@ fn is_survival_crafting_collect_event(
     window_id == SURVIVAL_CRAFTING_WINDOW
         && slot_id == SURVIVAL_CRAFTING_RESULT_SLOT_ID
         && is_survival_crafting_result(carried_item)
-}
-
-fn is_survival_crafting_input(stack: &ItemStack) -> bool {
-    stack.item == survival_crafting_input_kind() && stack.count == SURVIVAL_CRAFTING_INPUT_COUNT
 }
 
 fn is_survival_crafting_result(stack: &ItemStack) -> bool {
@@ -914,36 +900,20 @@ mod tests {
     }
 
     #[test]
-    fn survival_crafting_input_event_requires_exact_slot_window_item() {
-        let expected_change = SlotChange {
-            idx: SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
-            stack: survival_crafting_input_stack(SURVIVAL_CRAFTING_INPUT_COUNT),
-        };
+    fn survival_crafting_input_event_requires_exact_slot_window() {
         assert!(is_survival_crafting_input_event(
             SURVIVAL_CRAFTING_WINDOW,
             SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
-            std::slice::from_ref(&expected_change),
             SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
         ));
         assert!(!is_survival_crafting_input_event(
             SURVIVAL_CRAFTING_WINDOW + 1,
             SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
-            std::slice::from_ref(&expected_change),
             SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
         ));
         assert!(!is_survival_crafting_input_event(
             SURVIVAL_CRAFTING_WINDOW,
             SURVIVAL_CRAFTING_INPUT_B_SLOT_ID,
-            std::slice::from_ref(&expected_change),
-            SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
-        ));
-        assert!(!is_survival_crafting_input_event(
-            SURVIVAL_CRAFTING_WINDOW,
-            SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
-            &[SlotChange {
-                idx: SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
-                stack: survival_crafting_result_stack(),
-            }],
             SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
         ));
     }
