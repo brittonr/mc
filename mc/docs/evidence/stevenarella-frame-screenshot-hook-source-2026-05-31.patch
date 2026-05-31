@@ -1,0 +1,432 @@
+commit 1c09722f820efe3cbe639c38d625780041e71a3d
+Author:     brittonr <b@robitzs.ch>
+AuthorDate: Sun May 31 13:16:30 2026 -0400
+Commit:     brittonr <b@robitzs.ch>
+CommitDate: Sun May 31 13:16:30 2026 -0400
+
+    service queued frame captures
+---
+ src/capture.rs | 285 +++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+ src/main.rs    |  29 ++++++
+ 2 files changed, 308 insertions(+), 6 deletions(-)
+
+diff --git a/src/capture.rs b/src/capture.rs
+index 98252d4..dd208b0 100644
+--- a/src/capture.rs
++++ b/src/capture.rs
+@@ -6,8 +6,10 @@
+ 
+ use crate::gl;
+ use std::path::{Component, Path, PathBuf};
++use std::sync::mpsc;
+ 
+ pub const BLAKE3_HEX_LENGTH: usize = 64;
++pub const MAX_CAPTURE_REQUESTS_PER_FRAME: usize = 1;
+ pub const RGBA_BYTES_PER_PIXEL: usize = 4;
+ pub const DEFAULT_MAX_WIDTH_PX: u32 = 7_680;
+ pub const DEFAULT_MAX_HEIGHT_PX: u32 = 4_320;
+@@ -131,6 +133,46 @@ pub enum CaptureReadbackError {
+     BufferLengthMismatch { expected: usize, actual: usize },
+ }
+ 
++#[derive(Debug, Clone, Copy, PartialEq, Eq)]
++pub struct CaptureFrameContext {
++    pub width_px: u32,
++    pub height_px: u32,
++    pub frame_id: u64,
++}
++
++#[derive(Debug, Clone, PartialEq, Eq)]
++pub struct ServicedCapture {
++    pub plan: CapturePlan,
++    pub frame: CapturedRgbaFrame,
++}
++
++#[derive(Debug, Clone, PartialEq, Eq)]
++pub enum CaptureServiceError {
++    Validation(CaptureValidationError),
++    Readback(CaptureReadbackError),
++    UiExclusionUnsupported,
++}
++
++#[derive(Debug, Clone, PartialEq, Eq)]
++pub enum CaptureQueueError {
++    Validation(CaptureValidationError),
++    QueueClosed,
++}
++
++#[derive(Clone)]
++pub struct CaptureRequestSender {
++    sender: mpsc::Sender<QueuedCaptureRequest>,
++}
++
++pub struct CaptureRequestReceiver {
++    receiver: mpsc::Receiver<QueuedCaptureRequest>,
++}
++
++struct QueuedCaptureRequest {
++    request: CaptureRequest,
++    response_sender: mpsc::Sender<Result<ServicedCapture, CaptureServiceError>>,
++}
++
+ #[derive(Debug, Clone, PartialEq, Eq)]
+ pub enum CaptureValidationError {
+     UnsupportedFormat(String),
+@@ -165,9 +207,13 @@ impl CaptureFormat {
+ }
+ 
+ impl CapturePolicy {
+-    pub fn local(capture_dir: impl Into<PathBuf>) -> Self {
++    pub fn memory() -> Self {
++        Self::memory_only()
++    }
++
++    pub fn memory_only() -> Self {
+         Self {
+-            capture_dir: Some(capture_dir.into()),
++            capture_dir: None,
+             max_width_px: DEFAULT_MAX_WIDTH_PX,
+             max_height_px: DEFAULT_MAX_HEIGHT_PX,
+             min_recording_fps: DEFAULT_MIN_RECORDING_FPS,
+@@ -178,6 +224,13 @@ impl CapturePolicy {
+             inline_response_bytes: DEFAULT_INLINE_RESPONSE_BYTES,
+         }
+     }
++
++    pub fn local(capture_dir: impl Into<PathBuf>) -> Self {
++        Self {
++            capture_dir: Some(capture_dir.into()),
++            ..Self::memory_only()
++        }
++    }
+ }
+ 
+ pub fn validate_capture_request(
+@@ -209,6 +262,92 @@ pub fn validate_capture_request(
+     })
+ }
+ 
++pub fn capture_request_channel() -> (CaptureRequestSender, CaptureRequestReceiver) {
++    let (sender, receiver) = mpsc::channel();
++    (
++        CaptureRequestSender { sender },
++        CaptureRequestReceiver { receiver },
++    )
++}
++
++impl CaptureRequestSender {
++    pub fn enqueue_deferred(
++        &self,
++        request: CaptureRequest,
++    ) -> Result<mpsc::Receiver<Result<ServicedCapture, CaptureServiceError>>, CaptureQueueError>
++    {
++        validate_one_shot_capture_request_shape(&request).map_err(CaptureQueueError::Validation)?;
++        let (response_sender, response_receiver) = mpsc::channel();
++        self.sender
++            .send(QueuedCaptureRequest {
++                request,
++                response_sender,
++            })
++            .map_err(|_| CaptureQueueError::QueueClosed)?;
++        Ok(response_receiver)
++    }
++}
++
++impl CaptureRequestReceiver {
++    pub fn service_pending_one_shot_with_readback<F>(
++        &self,
++        policy: &CapturePolicy,
++        frame: CaptureFrameContext,
++        mut readback: F,
++    ) -> usize
++    where
++        F: FnMut(CaptureFrameContext) -> Result<CapturedRgbaFrame, CaptureReadbackError>,
++    {
++        let mut serviced = 0;
++        while serviced < MAX_CAPTURE_REQUESTS_PER_FRAME {
++            let queued = match self.receiver.try_recv() {
++                Ok(queued) => queued,
++                Err(mpsc::TryRecvError::Empty) | Err(mpsc::TryRecvError::Disconnected) => break,
++            };
++            let response = service_one_shot_capture_request_with_readback(
++                queued.request,
++                policy,
++                frame,
++                &mut readback,
++            );
++            let _ = queued.response_sender.send(response);
++            serviced += 1;
++        }
++        serviced
++    }
++}
++
++pub fn service_one_shot_capture_request_with_readback<F>(
++    request: CaptureRequest,
++    policy: &CapturePolicy,
++    frame: CaptureFrameContext,
++    readback: &mut F,
++) -> Result<ServicedCapture, CaptureServiceError>
++where
++    F: FnMut(CaptureFrameContext) -> Result<CapturedRgbaFrame, CaptureReadbackError>,
++{
++    validate_one_shot_capture_request_shape(&request).map_err(CaptureServiceError::Validation)?;
++    let plan =
++        validate_capture_request(&request, policy).map_err(CaptureServiceError::Validation)?;
++    if !plan.includes_ui {
++        return Err(CaptureServiceError::UiExclusionUnsupported);
++    }
++    let captured_frame = readback(frame).map_err(CaptureServiceError::Readback)?;
++    Ok(ServicedCapture {
++        plan,
++        frame: captured_frame,
++    })
++}
++
++fn validate_one_shot_capture_request_shape(
++    request: &CaptureRequest,
++) -> Result<(), CaptureValidationError> {
++    match request.mode {
++        CaptureMode::Screenshot | CaptureMode::LatestFrame => Ok(()),
++        CaptureMode::Recording => Err(CaptureValidationError::RecordingBoundsUnexpected),
++    }
++}
++
+ pub fn validate_artifact_metadata(
+     metadata: &CaptureArtifactMetadata,
+     policy: &CapturePolicy,
+@@ -243,16 +382,31 @@ pub fn read_current_framebuffer_rgba_top_left(
+     height_px: u32,
+     frame_id: u64,
+ ) -> Result<CapturedRgbaFrame, CaptureReadbackError> {
+-    let expected_len = rgba_buffer_len(width_px, height_px)?;
++    read_current_framebuffer_for_context(CaptureFrameContext {
++        width_px,
++        height_px,
++        frame_id,
++    })
++}
++
++pub fn read_current_framebuffer_for_context(
++    frame: CaptureFrameContext,
++) -> Result<CapturedRgbaFrame, CaptureReadbackError> {
++    let expected_len = rgba_buffer_len(frame.width_px, frame.height_px)?;
+     let mut rgba_bottom_left = vec![0; expected_len];
+     gl::read_pixels_rgba(
+         FRAMEBUFFER_READ_ORIGIN_X,
+         FRAMEBUFFER_READ_ORIGIN_Y,
+-        width_px,
+-        height_px,
++        frame.width_px,
++        frame.height_px,
+         &mut rgba_bottom_left,
+     );
+-    captured_rgba_from_bottom_left(width_px, height_px, frame_id, &rgba_bottom_left)
++    captured_rgba_from_bottom_left(
++        frame.width_px,
++        frame.height_px,
++        frame.frame_id,
++        &rgba_bottom_left,
++    )
+ }
+ 
+ pub fn captured_rgba_from_bottom_left(
+@@ -439,6 +593,36 @@ mod tests {
+     const TEST_TOP_LEFT_PIXEL: [u8; RGBA_BYTES_PER_PIXEL] = [70, 80, 90, TEST_OPAQUE_ALPHA];
+     const TEST_TOP_RIGHT_PIXEL: [u8; RGBA_BYTES_PER_PIXEL] = [100, 110, 120, TEST_OPAQUE_ALPHA];
+ 
++    fn inline_capture_request(mode: CaptureMode, includes_ui: bool) -> CaptureRequest {
++        CaptureRequest {
++            mode,
++            format: CaptureFormat::Png,
++            output: CaptureOutput::Inline,
++            includes_ui,
++            recording: None,
++        }
++    }
++
++    fn synthetic_frame(
++        frame: CaptureFrameContext,
++    ) -> Result<CapturedRgbaFrame, CaptureReadbackError> {
++        let len = rgba_buffer_len(frame.width_px, frame.height_px)?;
++        Ok(CapturedRgbaFrame {
++            width_px: frame.width_px,
++            height_px: frame.height_px,
++            frame_id: frame.frame_id,
++            rgba_top_left: vec![0; len],
++        })
++    }
++
++    fn test_frame() -> CaptureFrameContext {
++        CaptureFrameContext {
++            width_px: TEST_READBACK_WIDTH_PX,
++            height_px: TEST_READBACK_HEIGHT_PX,
++            frame_id: TEST_FRAME_ID,
++        }
++    }
++
+     #[test]
+     fn valid_screenshot_artifact_request_is_planned() {
+         let policy = CapturePolicy::local(TEST_CAPTURE_DIR);
+@@ -652,4 +836,93 @@ mod tests {
+             }
+         );
+     }
++
++    #[test]
++    fn capture_queue_services_one_screenshot_after_frame_readback() {
++        let (sender, receiver) = capture_request_channel();
++        let response = sender
++            .enqueue_deferred(inline_capture_request(CaptureMode::Screenshot, true))
++            .expect("capture request queued");
++        let policy = CapturePolicy::memory();
++
++        let serviced =
++            receiver.service_pending_one_shot_with_readback(&policy, test_frame(), synthetic_frame);
++        let capture = response
++            .recv()
++            .expect("capture response sent")
++            .expect("capture serviced");
++
++        assert_eq!(serviced, 1);
++        assert_eq!(capture.plan.mode, CaptureMode::Screenshot);
++        assert_eq!(capture.frame.frame_id, TEST_FRAME_ID);
++        assert_eq!(capture.frame.width_px, TEST_READBACK_WIDTH_PX);
++        assert_eq!(capture.frame.height_px, TEST_READBACK_HEIGHT_PX);
++    }
++
++    #[test]
++    fn capture_queue_services_one_latest_frame_after_frame_readback() {
++        let (sender, receiver) = capture_request_channel();
++        let response = sender
++            .enqueue_deferred(inline_capture_request(CaptureMode::LatestFrame, true))
++            .expect("latest-frame request queued");
++        let policy = CapturePolicy::memory();
++
++        let serviced =
++            receiver.service_pending_one_shot_with_readback(&policy, test_frame(), synthetic_frame);
++        let capture = response
++            .recv()
++            .expect("capture response sent")
++            .expect("capture serviced");
++
++        assert_eq!(serviced, 1);
++        assert_eq!(capture.plan.mode, CaptureMode::LatestFrame);
++        assert_eq!(capture.frame.frame_id, TEST_FRAME_ID);
++    }
++
++    #[test]
++    fn one_shot_capture_rejects_ui_exclusion_before_readback() {
++        let mut readback_called = false;
++        let mut readback = |frame| {
++            readback_called = true;
++            synthetic_frame(frame)
++        };
++        let policy = CapturePolicy::memory();
++
++        let err = service_one_shot_capture_request_with_readback(
++            inline_capture_request(CaptureMode::Screenshot, false),
++            &policy,
++            test_frame(),
++            &mut readback,
++        )
++        .expect_err("ui exclusion is rejected before readback");
++
++        assert_eq!(err, CaptureServiceError::UiExclusionUnsupported);
++        assert!(!readback_called);
++    }
++
++    #[test]
++    fn capture_queue_rejects_recording_request_before_enqueue() {
++        let (sender, _receiver) = capture_request_channel();
++        let request = CaptureRequest {
++            mode: CaptureMode::Recording,
++            format: CaptureFormat::Png,
++            output: CaptureOutput::Inline,
++            includes_ui: true,
++            recording: Some(RecordingBounds {
++                frame_rate_hz: TEST_RECORDING_FPS,
++                max_frames: Some(TEST_RECORDING_FRAMES),
++                max_duration_millis: None,
++            }),
++        };
++
++        let err = match sender.enqueue_deferred(request) {
++            Ok(_) => panic!("recording must not enter one-shot queue"),
++            Err(err) => err,
++        };
++
++        assert_eq!(
++            err,
++            CaptureQueueError::Validation(CaptureValidationError::RecordingBoundsUnexpected)
++        );
++    }
+ }
+diff --git a/src/main.rs b/src/main.rs
+index a56f812..31f595f 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -131,6 +131,8 @@ pub struct Game {
+     #[cfg(not(target_arch = "wasm32"))]
+     mcp_command_receiver: Option<mcp::McpCommandReceiver>,
+     #[cfg(not(target_arch = "wasm32"))]
++    mcp_capture_request_receiver: Option<capture::CaptureRequestReceiver>,
++    #[cfg(not(target_arch = "wasm32"))]
+     mcp_release_left_after_server_tick: bool,
+ }
+ 
+@@ -295,6 +297,26 @@ impl Game {
+         drained
+     }
+ 
++    #[cfg(not(target_arch = "wasm32"))]
++    pub fn service_pending_mcp_capture_requests(&mut self) -> usize {
++        let Some(receiver) = self.mcp_capture_request_receiver.take() else {
++            return 0;
++        };
++        let policy = capture::CapturePolicy::memory();
++        let frame = capture::CaptureFrameContext {
++            width_px: self.renderer.width,
++            height_px: self.renderer.height,
++            frame_id: self.renderer.frame_id as u64,
++        };
++        let serviced = receiver.service_pending_one_shot_with_readback(
++            &policy,
++            frame,
++            capture::read_current_framebuffer_for_context,
++        );
++        self.mcp_capture_request_receiver = Some(receiver);
++        serviced
++    }
++
+     #[cfg(not(target_arch = "wasm32"))]
+     pub fn release_mcp_control_buttons_after_server_tick(&mut self) {
+         if self.mcp_release_left_after_server_tick {
+@@ -669,6 +691,9 @@ fn main2() {
+ 
+     #[cfg(not(target_arch = "wasm32"))]
+     let (mcp_command_sender, mcp_command_receiver) = mcp::control_command_channel();
++    #[cfg(not(target_arch = "wasm32"))]
++    let (_mcp_capture_request_sender, mcp_capture_request_receiver) =
++        capture::capture_request_channel();
+ 
+     #[cfg(not(target_arch = "wasm32"))]
+     let _mcp_runtime = {
+@@ -838,6 +863,8 @@ fn main2() {
+         #[cfg(not(target_arch = "wasm32"))]
+         mcp_command_receiver: Some(mcp_command_receiver),
+         #[cfg(not(target_arch = "wasm32"))]
++        mcp_capture_request_receiver: Some(mcp_capture_request_receiver),
++        #[cfg(not(target_arch = "wasm32"))]
+         mcp_release_left_after_server_tick: false,
+     };
+     game.renderer.camera.pos = cgmath::Point3::new(0.5, 13.2, 0.5);
+@@ -1064,6 +1091,8 @@ fn tick_all(
+         physical_width,
+         physical_height,
+     );
++    #[cfg(not(target_arch = "wasm32"))]
++    game.service_pending_mcp_capture_requests();
+ 
+     if fps_cap > 0 && !*vsync {
+         let frame_time = now.elapsed();
