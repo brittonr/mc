@@ -233,6 +233,19 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         migration_state: "substring-fallback",
     },
     GeneratedScenarioRow {
+        name: "mcp-controlled-smoke",
+        aliases: &["mcp-controlled-smoke"],
+        client_milestones: &["mcp_control_dry_run"],
+        server_milestones: &[],
+        forbidden_patterns: DEFAULT_FORBIDDEN_PATTERNS,
+        client_count: ONE_CLIENT,
+        session_count: ONE_SESSION,
+        dry_run_check: "mc-compat-mcp-controlled-smoke-dry-run",
+        dry_run_wrapper: "mc-compat-mcp-controlled-smoke",
+        dry_run_exclusion_reason: "",
+        migration_state: "substring-fallback",
+    },
+    GeneratedScenarioRow {
         name: "combat-damage",
         aliases: &["combat-damage"],
         client_milestones: &[

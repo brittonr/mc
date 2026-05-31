@@ -1,0 +1,27 @@
+# mcp-controlled-compat-rail follow-up gates 2026-05-31
+
+$ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 104 manifests, 517 entries, 68 receipts scanned
+
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-cairn-task-evidence .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L && nix run --no-update-lock-file .#cairn -- validate --root .
+these 2 derivations will be built:
+  /nix/store/gg20pscn61jwrpr8wnm6daiha9dzdayv-mc-compat-evidence-manifests.drv
+  /nix/store/ii0jwc1m4j46wbk1zi570mm1f79gvbzi-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/ii0jwc1m4j46wbk1zi570mm1f79gvbzi-mc-compat-cairn-task-evidence.drv'...
+building '/nix/store/gg20pscn61jwrpr8wnm6daiha9dzdayv-mc-compat-evidence-manifests.drv'...
+{
+  "change_issues": [],
+  "changes": 32,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 34,
+  "valid": true
+}
+
+exit_status=0

@@ -113,6 +113,10 @@ nix run .#mc-compat-valence-survival-break-place-pickup
 # deterministic, non-side-effecting fixture for the same survival command shape:
 nix run .#mc-compat-valence-survival-break-place-pickup -- --dry-run
 
+# Deterministic MCP-controlled Stevenarella dry-run contract.
+# Records stdio handshake/tool/outcome contract, child revision status, explicit non-claims, and fail-closed frame artifact placeholders; live --run remains blocked until owned-local capture evidence lands.
+nix run .#mc-compat-mcp-controlled-smoke -- --dry-run
+
 # Maintained protocol-763 Valence CTF two-client combat/damage receipt.
 # Requires both clients to join/select opposing teams, Stevenarella attack + victim health-update milestones, and Valence combat_damage server correlation.
 nix run .#mc-compat-valence-ctf-combat-damage
@@ -186,6 +190,9 @@ nix build .#checks.x86_64-linux.mc-compat-maintained-dry-runs --no-link -L
 
 # check only the survival break/place/pickup dry-run receipt shape:
 nix build .#checks.x86_64-linux.mc-compat-valence-survival-break-place-pickup-dry-run --no-link -L
+
+# check only the MCP-controlled dry-run receipt/checker shape:
+nix build .#checks.x86_64-linux.mc-compat-mcp-controlled-smoke-dry-run --no-link -L
 
 # check the current protocol-763 evidence bundle:
 nix build .#checks.x86_64-linux.mc-compat-current-evidence-bundle --no-link -L

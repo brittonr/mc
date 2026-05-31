@@ -1,0 +1,62 @@
+# mcp-controlled-compat-rail validation 2026-05-31
+
+## format and cargo focused tests
+$ nix develop --no-update-lock-file -c sh -c 'rustfmt --check tools/check_mcp_controlled_compat_rail.rs && cd tools/mc-compat-runner && cargo fmt --check && cargo test scenario_cli_and_env_parse -- --nocapture && cargo test mcp_controlled -- --nocapture'
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+/home/brittonr/git/mc/tools/mc-compat-runner
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.03s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 1 test
+test tests::scenario_cli_and_env_parse ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 88 filtered out; finished in 0.00s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.03s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 2 tests
+test tests::mcp_controlled_live_mode_is_blocked_until_live_rail_lands ... ok
+test tests::mcp_controlled_dry_run_receipt_records_control_contract ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 87 filtered out; finished in 0.00s
+
+
+## checker self-test and manifest checker
+$ nix develop --no-update-lock-file -c sh -c 'rustc --edition=2021 tools/check_mcp_controlled_compat_rail.rs -o /tmp/check_mcp_controlled_compat_rail && /tmp/check_mcp_controlled_compat_rail --self-test && rustc --edition=2021 tools/check_scenario_manifest.rs -o /tmp/check_scenario_manifest && /tmp/check_scenario_manifest --self-test && /tmp/check_scenario_manifest'
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+mcp controlled rail self-test passed: positive and fail-closed fixtures exercised
+scenario manifest self-test passed: positive and negative fixtures exercised
+scenario manifest check passed: 21 rows validated
+
+## focused nix checks
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-mcp-controlled-smoke-dry-run .#checks.x86_64-linux.mc-compat-scenario-manifest .#checks.x86_64-linux.mc-compat-help --no-link -L
+these 2 derivations will be built:
+  /nix/store/8iyh4wk6dr12nk6y4581yfgiagn5wnza-mc-compat-scenario-manifest.drv
+  /nix/store/dnnjq4rzpbj400qxwqr9g2y713jh793s-mc-compat-mcp-controlled-smoke-dry-run.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/dnnjq4rzpbj400qxwqr9g2y713jh793s-mc-compat-mcp-controlled-smoke-dry-run.drv'...
+building '/nix/store/8iyh4wk6dr12nk6y4581yfgiagn5wnza-mc-compat-scenario-manifest.drv'...
+mc-compat-mcp-controlled-smoke-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-mcp-controlled-smoke-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-mcp-controlled-smoke-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-mcp-controlled-smoke-dry-run> hint: call:
+mc-compat-mcp-controlled-smoke-dry-run> hint:
+mc-compat-mcp-controlled-smoke-dry-run> hint:   git config --global init.defaultBranch <name>
+mc-compat-mcp-controlled-smoke-dry-run> hint:
+mc-compat-mcp-controlled-smoke-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-mcp-controlled-smoke-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-mcp-controlled-smoke-dry-run> hint:
+mc-compat-mcp-controlled-smoke-dry-run> hint:   git branch -m <name>
+mc-compat-mcp-controlled-smoke-dry-run> hint:
+mc-compat-mcp-controlled-smoke-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-mcp-controlled-smoke-dry-run> Initialized empty Git repository in /build/repo/fake-valence/.git/
+mc-compat-mcp-controlled-smoke-dry-run> [master (root-commit) 45cbb57] init
+mc-compat-mcp-controlled-smoke-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-mcp-controlled-smoke-dry-run>  create mode 100644 README.md
+
+exit_status=0

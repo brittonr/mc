@@ -93,7 +93,55 @@ const SURVIVAL_CRAFTING_SERVER_RESULT_NEEDLE: &str =
 const SURVIVAL_CRAFTING_SERVER_COLLECT_NEEDLE: &str =
     "survival_crafting_collect username=compatbot window=1 slot=0 item=Stick count=4 inventory_slot=36";
 const SURVIVAL_CRAFTING_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_CRAFTING_FIXTURE";
-const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition";
+const MCP_CONTROLLED_SMOKE_SCENARIO: &str = "mcp-controlled-smoke";
+const MCP_CONTROL_ENDPOINT_STDIO: &str = "stdio";
+const MCP_CONTROL_FAILURE_LIVE_NOT_IMPLEMENTED: &str = "live-mcp-controlled-rail-not-implemented";
+const MCP_CONTROL_TOOL_LIST_DIGEST_SEPARATOR: &str = "\n";
+const MCP_CONTROL_PREREQUISITES: &[&str] = &[
+    "stevenarella_mcp_control_archived",
+    "main_thread_command_queue",
+    "stdout_clean_stdio",
+];
+const MCP_CONTROL_TOOL_NAMES: &[&str] = &[
+    "status",
+    "connect",
+    "disconnect",
+    "key",
+    "look",
+    "mouse",
+    "use-item",
+    "attack",
+    "chat",
+];
+const MCP_CONTROL_DRY_RUN_CALLS: &[&str] = &[
+    "initialize",
+    "tools/list",
+    "tools/call status",
+    "tools/call look",
+    "tools/call key",
+    "tools/call chat",
+];
+const MCP_CONTROL_DRY_RUN_OUTCOME_IDS: &[&str] = &[
+    "status.applied",
+    "look.applied",
+    "key.applied",
+    "chat.applied",
+];
+const MCP_CONTROL_NON_CLAIMS: &[&str] = &[
+    "screenshots_alone",
+    "visual_regression_approval",
+    "semantic_equivalence",
+    "full_minecraft_compatibility",
+    "production_readiness",
+    "public_server_safety",
+    "load_testing",
+];
+const FRAME_ARTIFACT_NON_CLAIMS: &[&str] = &[
+    "frame_capture_not_selected",
+    "visual_regression_approval",
+    "semantic_equivalence",
+];
+const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|mcp-controlled-smoke|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
     "Dimension type:",
@@ -208,6 +256,7 @@ enum Scenario {
     SurvivalBreakPlacePickup,
     SurvivalChestPersistence,
     SurvivalCraftingTable,
+    McpControlledSmoke,
     CombatDamage,
     CombatKnockback,
     ArmorEquipmentMitigation,
@@ -298,6 +347,38 @@ struct EquipmentSlotItemMatrixExpansionEvidence {
     observed_client_milestones: Vec<&'static str>,
     required_server_milestones: Vec<&'static str>,
     observed_server_milestones: Vec<&'static str>,
+    non_claims: Vec<&'static str>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct McpControlReceiptEvidence {
+    selected: bool,
+    endpoint_mode: &'static str,
+    handshake_success: bool,
+    tool_list_digest: String,
+    tool_names: Vec<&'static str>,
+    calls_attempted: Vec<&'static str>,
+    calls_succeeded: Vec<&'static str>,
+    first_failure: Option<&'static str>,
+    stdout_clean: bool,
+    command_outcome_ids: Vec<&'static str>,
+    stevenarella_child_revision: Option<String>,
+    revision_status: &'static str,
+    dry_run_fixture: bool,
+    live_receipt: bool,
+    prerequisites: Vec<&'static str>,
+    non_claims: Vec<&'static str>,
+    passed: bool,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct FrameArtifactsReceiptEvidence {
+    selected: bool,
+    capture_requested: bool,
+    artifact_count: usize,
+    missing_digests: Vec<&'static str>,
+    path_containment_checked: bool,
+    promotion_ready: bool,
     non_claims: Vec<&'static str>,
 }
 
@@ -569,6 +650,7 @@ fn real_main() -> Result<(), String> {
 
 fn execute(cfg: &Config) -> Result<Option<ClientRunEvidence>, String> {
     validate_projectile_damage_dependency(cfg)?;
+    validate_mcp_controlled_live_preflight(cfg)?;
     validate_load_network_safety_preflight(cfg)?;
     validate_negative_live_rail_preflight(cfg)?;
     if matches!(cfg.mode, Mode::DryRun | Mode::Run | Mode::BuildClient) {
@@ -631,6 +713,15 @@ fn execute(cfg: &Config) -> Result<Option<ClientRunEvidence>, String> {
             Ok(Some(client))
         }
     }
+}
+
+fn validate_mcp_controlled_live_preflight(cfg: &Config) -> Result<(), String> {
+    if cfg.scenario != Scenario::McpControlledSmoke || cfg.mode != Mode::Run {
+        return Ok(());
+    }
+    Err(format!(
+        "{MCP_CONTROLLED_SMOKE_SCENARIO} live rail is not implemented yet; use --dry-run until frame/capture prerequisites land"
+    ))
 }
 
 fn validate_projectile_damage_dependency(cfg: &Config) -> Result<(), String> {
@@ -1615,6 +1706,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
         "survival-break-place-pickup" => Ok(Scenario::SurvivalBreakPlacePickup),
         "survival-chest-persistence" => Ok(Scenario::SurvivalChestPersistence),
         "survival-crafting-table" => Ok(Scenario::SurvivalCraftingTable),
+        MCP_CONTROLLED_SMOKE_SCENARIO => Ok(Scenario::McpControlledSmoke),
         "combat-damage" => Ok(Scenario::CombatDamage),
         "combat-knockback" => Ok(Scenario::CombatKnockback),
         "armor-equipment-mitigation" => Ok(Scenario::ArmorEquipmentMitigation),
@@ -1651,6 +1743,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::SurvivalBreakPlacePickup => "survival-break-place-pickup",
         Scenario::SurvivalChestPersistence => "survival-chest-persistence",
         Scenario::SurvivalCraftingTable => "survival-crafting-table",
+        Scenario::McpControlledSmoke => MCP_CONTROLLED_SMOKE_SCENARIO,
         Scenario::CombatDamage => "combat-damage",
         Scenario::CombatKnockback => "combat-knockback",
         Scenario::ArmorEquipmentMitigation => "armor-equipment-mitigation",
@@ -1793,6 +1886,7 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
                 SURVIVAL_CRAFTING_CLIENT_INVENTORY_NEEDLE,
             ),
         ],
+        Scenario::McpControlledSmoke => &[("mcp_control_dry_run", "mcp_control_dry_run")],
         Scenario::CombatDamage => &[
             ("multi_client_count", "mc_compat_combat_client_count=2"),
             ("protocol_detected", "Detected server protocol version"),
@@ -2104,7 +2198,7 @@ fn scenario_forbidden_patterns(scenario: Scenario) -> &'static [(&'static str, &
 
 fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'static str)] {
     match scenario {
-        Scenario::Smoke | Scenario::CompatBotProbe => &[],
+        Scenario::Smoke | Scenario::CompatBotProbe | Scenario::McpControlledSmoke => &[],
         Scenario::FlagScoreRepeat | Scenario::BlueFlagScore | Scenario::ReconnectFlagScore => &[
             ("server_username_seen", "compatbot"),
             ("server_flag_or_score", "flag"),
@@ -3017,7 +3111,7 @@ Automates a local Stevenarella compatibility smoke against a Minecraft {} / prot
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from legacy Nickel config, or --steel-config/MC_COMPAT_STEEL_CONFIG a restricted Steel module; env vars and later CLI flags override either config source.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.scenario.receipt.v2 JSON receipt for Cairn/Octet evidence flows.
-Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario survival-crafting-table for one crafting-table open/input/result/collect rail. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario ctf-invalid-return-drop for one contained own-base return/drop attempt with server rejection evidence. Use --scenario ctf-score-limit-win-condition for one near-limit capture that emits exactly one win/end milestone. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
+Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario survival-crafting-table for one crafting-table open/input/result/collect rail. Use --scenario mcp-controlled-smoke for deterministic MCP receipt/checker dry-run evidence before live client driving. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario ctf-invalid-return-drop for one contained own-base return/drop attempt with server rejection evidence. Use --scenario ctf-score-limit-win-condition for one near-limit capture that emits exactly one win/end milestone. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
 Use --expect-status-description/--expect-status-version/--expect-status-sample to assert status response fixture data, --packet-capture-summary for redacted capture summary metadata, and --proxy-route/--proxy-forwarding-mode for proxied-route receipt fields.\n\
 Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
 Use --run-matrix --receipt-dir DIR to run Paper and Valence receipts then compare them; add --dry-run after --run-matrix for a non-side-effecting matrix fixture.\n\
@@ -3784,6 +3878,9 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
     ));
     if cfg.mode == Mode::DryRun {
         log(format_args!("would run Stevenarella under xvfb-run"));
+        if cfg.scenario == Scenario::McpControlledSmoke {
+            return Ok(mcp_controlled_dry_run_evidence(cfg));
+        }
         if cfg.scenario == Scenario::ProjectileDamageAttribution {
             return Ok(projectile_damage_dry_run_evidence(cfg));
         }
@@ -4016,6 +4113,25 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
     };
     validate_typed_event_oracle_for_migrated_scenario(cfg, &evidence)?;
     Ok(evidence)
+}
+
+fn mcp_controlled_dry_run_evidence(cfg: &Config) -> ClientRunEvidence {
+    let output = "mcp_control_dry_run\n";
+    ClientRunEvidence {
+        log_path: None,
+        log_paths: Vec::new(),
+        usernames: planned_client_usernames(cfg),
+        exit_code: None,
+        classification: "dry-run",
+        matched_success_pattern: None,
+        scenario: Some(evaluate_scenario_for_config(cfg, output)),
+        server_scenario: Some(evaluate_server_scenario(
+            cfg.scenario,
+            "",
+            &cfg.client_username,
+        )),
+        projectile_damage_causality: None,
+    }
 }
 
 fn projectile_damage_dry_run_evidence(cfg: &Config) -> ClientRunEvidence {
@@ -4281,6 +4397,9 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
         }
         Scenario::SurvivalCraftingTable => {
             cmd.env("MC_COMPAT_SURVIVAL_CRAFTING_PROBE", "1");
+        }
+        Scenario::McpControlledSmoke => {
+            cmd.env("MC_COMPAT_MCP_CONTROLLED_SMOKE", "1");
         }
         Scenario::EquipmentUpdateObservation | Scenario::EquipmentSlotItemMatrixExpansion => {
             let team = if client_index == 0 { "red" } else { "blue" };
@@ -5013,6 +5132,158 @@ fn render_load_network_safety_json(evidence: &LoadNetworkSafetyEvidence) -> Stri
     )
 }
 
+fn mcp_control_tool_list_digest() -> String {
+    blake3::hash(
+        MCP_CONTROL_TOOL_NAMES
+            .join(MCP_CONTROL_TOOL_LIST_DIGEST_SEPARATOR)
+            .as_bytes(),
+    )
+    .to_hex()
+    .to_string()
+}
+
+fn evaluate_mcp_control_receipt(
+    cfg: &Config,
+    child_revision: &GitRevisionEvidence,
+) -> McpControlReceiptEvidence {
+    let selected = cfg.scenario == Scenario::McpControlledSmoke;
+    if !selected {
+        return McpControlReceiptEvidence {
+            selected,
+            endpoint_mode: MCP_CONTROL_ENDPOINT_STDIO,
+            handshake_success: false,
+            tool_list_digest: String::new(),
+            tool_names: Vec::new(),
+            calls_attempted: Vec::new(),
+            calls_succeeded: Vec::new(),
+            first_failure: None,
+            stdout_clean: false,
+            command_outcome_ids: Vec::new(),
+            stevenarella_child_revision: None,
+            revision_status: child_revision.status,
+            dry_run_fixture: false,
+            live_receipt: false,
+            prerequisites: Vec::new(),
+            non_claims: MCP_CONTROL_NON_CLAIMS.to_vec(),
+            passed: true,
+        };
+    }
+
+    let dry_run_fixture = cfg.mode == Mode::DryRun;
+    let live_receipt = cfg.mode == Mode::Run;
+    let first_failure = if live_receipt {
+        Some(MCP_CONTROL_FAILURE_LIVE_NOT_IMPLEMENTED)
+    } else {
+        None
+    };
+    let passed = dry_run_fixture && child_revision.resolved_rev.is_some();
+    McpControlReceiptEvidence {
+        selected,
+        endpoint_mode: MCP_CONTROL_ENDPOINT_STDIO,
+        handshake_success: dry_run_fixture,
+        tool_list_digest: mcp_control_tool_list_digest(),
+        tool_names: MCP_CONTROL_TOOL_NAMES.to_vec(),
+        calls_attempted: MCP_CONTROL_DRY_RUN_CALLS.to_vec(),
+        calls_succeeded: if dry_run_fixture {
+            MCP_CONTROL_DRY_RUN_CALLS.to_vec()
+        } else {
+            Vec::new()
+        },
+        first_failure,
+        stdout_clean: dry_run_fixture,
+        command_outcome_ids: if dry_run_fixture {
+            MCP_CONTROL_DRY_RUN_OUTCOME_IDS.to_vec()
+        } else {
+            Vec::new()
+        },
+        stevenarella_child_revision: child_revision.resolved_rev.clone(),
+        revision_status: child_revision.status,
+        dry_run_fixture,
+        live_receipt,
+        prerequisites: MCP_CONTROL_PREREQUISITES.to_vec(),
+        non_claims: MCP_CONTROL_NON_CLAIMS.to_vec(),
+        passed,
+    }
+}
+
+fn render_mcp_control_receipt_json(evidence: &McpControlReceiptEvidence) -> String {
+    let first_failure_json = json_optional_string(evidence.first_failure);
+    let child_revision_json = json_optional_string(evidence.stevenarella_child_revision.as_deref());
+    format!(
+        r#"{{
+    "selected": {selected},
+    "endpoint_mode": {endpoint_mode_json},
+    "handshake_success": {handshake_success},
+    "tool_list_digest": {tool_list_digest_json},
+    "tool_names": {tool_names_json},
+    "calls_attempted": {calls_attempted_json},
+    "calls_succeeded": {calls_succeeded_json},
+    "first_failure": {first_failure_json},
+    "stdout_clean": {stdout_clean},
+    "command_outcome_ids": {command_outcome_ids_json},
+    "stevenarella_child_revision": {child_revision_json},
+    "revision_status": {revision_status_json},
+    "dry_run_fixture": {dry_run_fixture},
+    "live_receipt": {live_receipt},
+    "prerequisites": {prerequisites_json},
+    "non_claims": {non_claims_json},
+    "passed": {passed}
+  }}"#,
+        selected = evidence.selected,
+        endpoint_mode_json = json_string(evidence.endpoint_mode),
+        handshake_success = evidence.handshake_success,
+        tool_list_digest_json = json_string(&evidence.tool_list_digest),
+        tool_names_json = json_string_array(&evidence.tool_names),
+        calls_attempted_json = json_string_array(&evidence.calls_attempted),
+        calls_succeeded_json = json_string_array(&evidence.calls_succeeded),
+        first_failure_json = first_failure_json,
+        stdout_clean = evidence.stdout_clean,
+        command_outcome_ids_json = json_string_array(&evidence.command_outcome_ids),
+        child_revision_json = child_revision_json,
+        revision_status_json = json_string(evidence.revision_status),
+        dry_run_fixture = evidence.dry_run_fixture,
+        live_receipt = evidence.live_receipt,
+        prerequisites_json = json_string_array(&evidence.prerequisites),
+        non_claims_json = json_string_array(&evidence.non_claims),
+        passed = evidence.passed,
+    )
+}
+
+fn evaluate_frame_artifacts_receipt(cfg: &Config) -> FrameArtifactsReceiptEvidence {
+    let selected = false;
+    FrameArtifactsReceiptEvidence {
+        selected,
+        capture_requested: cfg.scenario == Scenario::McpControlledSmoke,
+        artifact_count: 0,
+        missing_digests: Vec::new(),
+        path_containment_checked: true,
+        promotion_ready: false,
+        non_claims: FRAME_ARTIFACT_NON_CLAIMS.to_vec(),
+    }
+}
+
+fn render_frame_artifacts_receipt_json(evidence: &FrameArtifactsReceiptEvidence) -> String {
+    format!(
+        r#"{{
+    "selected": {selected},
+    "capture_requested": {capture_requested},
+    "artifact_count": {artifact_count},
+    "artifacts": [],
+    "missing_digests": {missing_digests_json},
+    "path_containment_checked": {path_containment_checked},
+    "promotion_ready": {promotion_ready},
+    "non_claims": {non_claims_json}
+  }}"#,
+        selected = evidence.selected,
+        capture_requested = evidence.capture_requested,
+        artifact_count = evidence.artifact_count,
+        missing_digests_json = json_string_array(&evidence.missing_digests),
+        path_containment_checked = evidence.path_containment_checked,
+        promotion_ready = evidence.promotion_ready,
+        non_claims_json = json_string_array(&evidence.non_claims),
+    )
+}
+
 fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &str>) -> String {
     smoke_receipt_json_with_typed_event_oracle(cfg, result, None)
 }
@@ -5154,6 +5425,12 @@ fn smoke_receipt_json_with_typed_event_oracle(
             "crafting_result_collect",
             "inventory_update",
         ],
+        Scenario::McpControlledSmoke => vec![
+            "mcp_initialize",
+            "mcp_tools_list",
+            "mcp_status_call",
+            "mcp_command_outcomes",
+        ],
         Scenario::CombatDamage => vec!["two_client_login", "play_join_game", "use_entity_attack"],
         Scenario::CombatKnockback => vec![
             "two_client_login",
@@ -5254,6 +5531,11 @@ fn smoke_receipt_json_with_typed_event_oracle(
             "score_limit_win_condition",
         ],
     };
+    let child_revisions = child_revision_evidence_for_receipt(cfg);
+    let mcp_control = evaluate_mcp_control_receipt(cfg, &child_revisions.client);
+    let mcp_control_json = render_mcp_control_receipt_json(&mcp_control);
+    let frame_artifacts = evaluate_frame_artifacts_receipt(cfg);
+    let frame_artifacts_json = render_frame_artifacts_receipt_json(&frame_artifacts);
     let typed_event_oracle_json = typed_event_oracle_receipt_json(typed_event_oracle);
     let latency_jitter_json = latency_jitter_receipt_json(cfg);
     let public_server_authorized_safety_json = public_server_authorized_safety_receipt_json(cfg);
@@ -5373,6 +5655,10 @@ fn smoke_receipt_json_with_typed_event_oracle(
         "server_score_limit_pre_state",
         "server_score_limit_final_capture",
         "server_score_limit_win_condition",
+        "mcp_control_dry_run",
+        "mcp_handshake_success",
+        "mcp_stdout_clean",
+        "mcp_command_outcome",
     ];
     let gameplay_non_claims: Vec<&str> = vec![
         "full_ctf_correctness",
@@ -5385,7 +5671,6 @@ fn smoke_receipt_json_with_typed_event_oracle(
         "all_projectile_weapons",
         "enchantments_or_status_effects",
     ];
-    let child_revisions = child_revision_evidence_for_receipt(cfg);
     let client_git_rev_json = json_optional_string(child_revisions.client.resolved_rev.as_deref());
     let client_git_status_json = json_string(child_revisions.client.status);
     let client_git_diagnostics_json = json_string_vec(&child_revisions.client.diagnostics);
@@ -5463,6 +5748,8 @@ fn smoke_receipt_json_with_typed_event_oracle(
     "triage_correlation": true
   }},
   "typed_event_oracle": {typed_event_oracle_json},
+  "mcp_control": {mcp_control_json},
+  "frame_artifacts": {frame_artifacts_json},
   "latency_jitter_tolerance": {latency_jitter_json},
   "load_network_safety": {load_network_safety_json},
   "public_server_authorized_safety": {public_server_authorized_safety_json},
@@ -5572,6 +5859,8 @@ fn smoke_receipt_json_with_typed_event_oracle(
         packet_capture_selected = packet_capture_selected,
         packet_capture_expected_packets_json = json_string_array(&packet_capture_expected_packets),
         typed_event_oracle_json = typed_event_oracle_json,
+        mcp_control_json = mcp_control_json,
+        frame_artifacts_json = frame_artifacts_json,
         load_network_safety_json = load_network_safety_json,
         negative_live_rail_json = negative_live_rail_json,
         armor_loadout_enchantment_status_matrix_json = armor_loadout_enchantment_status_matrix_json,
@@ -6473,6 +6762,7 @@ mod tests {
         Scenario::SurvivalBreakPlacePickup,
         Scenario::SurvivalChestPersistence,
         Scenario::SurvivalCraftingTable,
+        Scenario::McpControlledSmoke,
         Scenario::CombatDamage,
         Scenario::CombatKnockback,
         Scenario::ArmorEquipmentMitigation,
@@ -6585,6 +6875,40 @@ mod tests {
             "{json}"
         );
         assert!(json.contains("\"git_rev_resolved\": \"dry-run\""), "{json}");
+    }
+
+    #[test]
+    fn mcp_controlled_dry_run_receipt_records_control_contract() {
+        let cfg = test_config(&["--scenario", MCP_CONTROLLED_SMOKE_SCENARIO], &[])
+            .expect("mcp-controlled config parses");
+        let evidence = mcp_controlled_dry_run_evidence(&cfg);
+        let json = smoke_receipt_json(&cfg, Ok(&Some(evidence)));
+
+        assert!(
+            json.contains("\"name\": \"mcp-controlled-smoke\""),
+            "{json}"
+        );
+        assert!(json.contains("\"mcp_control\": {"), "{json}");
+        assert!(json.contains("\"selected\": true"), "{json}");
+        assert!(json.contains("\"endpoint_mode\": \"stdio\""), "{json}");
+        assert!(json.contains("\"handshake_success\": true"), "{json}");
+        assert!(json.contains("\"stdout_clean\": true"), "{json}");
+        assert!(json.contains("\"status.applied\""), "{json}");
+        assert!(
+            json.contains("\"stevenarella_child_revision\": \"dry-run\""),
+            "{json}"
+        );
+        assert!(json.contains("\"frame_artifacts\": {"), "{json}");
+        assert!(json.contains("\"promotion_ready\": false"), "{json}");
+        assert!(json.contains("\"semantic_equivalence\""), "{json}");
+    }
+
+    #[test]
+    fn mcp_controlled_live_mode_is_blocked_until_live_rail_lands() {
+        let cfg = test_config(&["--run", "--scenario", MCP_CONTROLLED_SMOKE_SCENARIO], &[])
+            .expect("mcp-controlled live config parses");
+        let err = validate_mcp_controlled_live_preflight(&cfg).unwrap_err();
+        assert!(err.contains("live rail is not implemented yet"), "{err}");
     }
 
     #[test]
@@ -6974,6 +7298,10 @@ mod tests {
         let crafting = test_config(&["--scenario", "survival-crafting-table"], &[])
             .expect("survival crafting-table scenario parses");
         assert_eq!(crafting.scenario, Scenario::SurvivalCraftingTable);
+
+        let mcp_controlled = test_config(&["--scenario", MCP_CONTROLLED_SMOKE_SCENARIO], &[])
+            .expect("mcp-controlled scenario parses");
+        assert_eq!(mcp_controlled.scenario, Scenario::McpControlledSmoke);
 
         let knockback = test_config(&["--scenario", "combat-knockback"], &[])
             .expect("combat-knockback scenario parses");
