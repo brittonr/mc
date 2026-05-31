@@ -1,0 +1,463 @@
+commit 0c289183804de93019a1c5b128c737f861742886
+Author: brittonr <b@robitzs.ch>
+Date:   Sun May 31 00:08:19 2026 -0400
+
+    add native MCP transport guardrails
+---
+ src/console/mod.rs |   8 +-
+ src/main.rs        |  31 +++++
+ src/mcp.rs         | 343 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 381 insertions(+), 1 deletion(-)
+
+diff --git a/src/console/mod.rs b/src/console/mod.rs
+index 72acfaa..c8563ef 100644
+--- a/src/console/mod.rs
++++ b/src/console/mod.rs
+@@ -245,6 +245,7 @@ pub struct Console {
+     logfile: fs::File,
+     log_level_term: log::Level,
+     log_level_file: log::Level,
++    terminal_output_enabled: bool,
+ 
+     elements: Option<ConsoleElements>,
+     active: bool,
+@@ -270,6 +271,7 @@ impl Console {
+             logfile: fs::File::create("client.log").expect("failed to open log file"),
+             log_level_term: log::Level::Info,
+             log_level_file: log::Level::Trace,
++            terminal_output_enabled: true,
+ 
+             elements: None,
+             active: false,
+@@ -286,6 +288,10 @@ impl Console {
+         self.active
+     }
+ 
++    pub fn set_terminal_output_enabled(&mut self, enabled: bool) {
++        self.terminal_output_enabled = enabled;
++    }
++
+     pub fn toggle(&mut self) {
+         self.active = !self.active;
+     }
+@@ -388,7 +394,7 @@ impl Console {
+             self.logfile.write_all(b"\n").unwrap();
+         }
+ 
+-        if record.level() <= self.log_level_term {
++        if self.terminal_output_enabled && record.level() <= self.log_level_term {
+             println_level(record.level(), line);
+         }
+ 
+diff --git a/src/main.rs b/src/main.rs
+index 58696ab..e16d7b9 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -37,6 +37,8 @@ pub mod chunk_builder;
+ pub mod console;
+ pub mod control;
+ pub mod entity;
++#[cfg(not(target_arch = "wasm32"))]
++pub mod mcp;
+ pub mod model;
+ pub mod render;
+ pub mod resources;
+@@ -208,6 +210,21 @@ struct Opt {
+     /// Protocol version to use in the autodetection ping
+     #[structopt(short = "p", long = "default-protocol-version")]
+     default_protocol_version: Option<String>,
++
++    /// Enable MCP over stdio. Stdout is reserved for JSON-RPC while active.
++    #[cfg(not(target_arch = "wasm32"))]
++    #[structopt(long = "mcp-stdio")]
++    mcp_stdio: bool,
++
++    /// Enable MCP over a TCP socket, e.g. 127.0.0.1:4700.
++    #[cfg(not(target_arch = "wasm32"))]
++    #[structopt(long = "mcp-listen")]
++    mcp_listen: Option<String>,
++
++    /// Environment variable containing the MCP token for non-loopback TCP binds.
++    #[cfg(not(target_arch = "wasm32"))]
++    #[structopt(long = "mcp-token-env")]
++    mcp_token_env: Option<String>,
+ }
+ 
+ cfg_if! {
+@@ -247,6 +264,10 @@ fn main2() {
+     init_config_dir();
+     let opt = Opt::from_args();
+     let con = Arc::new(Mutex::new(console::Console::new()));
++    #[cfg(not(target_arch = "wasm32"))]
++    if opt.mcp_stdio {
++        con.lock().unwrap().set_terminal_output_enabled(false);
++    }
+     let proxy = console::ConsoleProxy::new(con.clone());
+ 
+     log::set_boxed_logger(Box::new(proxy)).unwrap();
+@@ -254,6 +275,16 @@ fn main2() {
+ 
+     info!("Starting steven");
+ 
++    #[cfg(not(target_arch = "wasm32"))]
++    if let Err(err) = mcp::validate_process_transport_options(&mcp::McpTransportOptions::from_cli(
++        opt.mcp_stdio,
++        opt.mcp_listen.clone(),
++        opt.mcp_token_env.clone(),
++    )) {
++        error!("Invalid MCP transport options: {:?}", err);
++        return;
++    }
++
+     let (vars, mut vsync) = {
+         let mut vars = console::Vars::new();
+         vars.register(CL_BRAND);
+diff --git a/src/mcp.rs b/src/mcp.rs
+new file mode 100644
+index 0000000..2a594a6
+--- /dev/null
++++ b/src/mcp.rs
+@@ -0,0 +1,343 @@
++// Copyright 2026
++//
++// Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
++// http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
++// <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your option.
++
++use std::net::SocketAddr;
++
++pub const DEFAULT_MCP_TOKEN_ENV: &str = "STEVENARELLA_MCP_TOKEN";
++
++const REASON_EMPTY_TOKEN_ENV_NAME: &str = "empty_token_env_name";
++const REASON_EMPTY_TOKEN_VALUE: &str = "empty_token_value";
++
++#[derive(Debug, Clone, PartialEq, Eq)]
++pub struct McpTransportOptions {
++    pub stdio: bool,
++    pub listen: Option<String>,
++    pub token_env: Option<String>,
++}
++
++#[derive(Debug, Clone, PartialEq, Eq)]
++pub struct ValidatedMcpTransport {
++    pub endpoints: Vec<McpEndpoint>,
++    pub stdout_must_remain_clean: bool,
++}
++
++#[derive(Debug, Clone, PartialEq, Eq)]
++pub enum McpEndpoint {
++    Stdio,
++    Tcp {
++        bind_addr: SocketAddr,
++        auth: TcpAuth,
++    },
++}
++
++#[derive(Debug, Clone, PartialEq, Eq)]
++pub enum TcpAuth {
++    NotRequiredForLoopback,
++    TokenEnv { name: String },
++}
++
++#[derive(Debug, Clone, PartialEq, Eq)]
++pub enum McpTransportError {
++    MalformedListenAddress(String),
++    MissingTokenEnvForNonLoopback {
++        bind_addr: SocketAddr,
++    },
++    InvalidTokenEnvName {
++        reason: &'static str,
++    },
++    MissingTokenValue {
++        token_env: String,
++    },
++    InvalidTokenValue {
++        token_env: String,
++        reason: &'static str,
++    },
++}
++
++impl McpTransportOptions {
++    pub fn from_cli(stdio: bool, listen: Option<String>, token_env: Option<String>) -> Self {
++        McpTransportOptions {
++            stdio,
++            listen,
++            token_env,
++        }
++    }
++
++    pub fn has_transport(&self) -> bool {
++        self.stdio || self.listen.is_some()
++    }
++}
++
++pub fn validate_process_transport_options(
++    options: &McpTransportOptions,
++) -> Result<ValidatedMcpTransport, McpTransportError> {
++    validate_transport_options(options, |name| std::env::var(name).ok())
++}
++
++pub fn validate_transport_options<F>(
++    options: &McpTransportOptions,
++    token_lookup: F,
++) -> Result<ValidatedMcpTransport, McpTransportError>
++where
++    F: Fn(&str) -> Option<String>,
++{
++    let mut endpoints = Vec::new();
++    let mut stdout_must_remain_clean = false;
++
++    if options.stdio {
++        endpoints.push(McpEndpoint::Stdio);
++        stdout_must_remain_clean = true;
++    }
++
++    if let Some(listen) = options.listen.as_deref() {
++        endpoints.push(validate_tcp_endpoint(
++            listen,
++            options.token_env.as_deref(),
++            &token_lookup,
++        )?);
++    }
++
++    Ok(ValidatedMcpTransport {
++        endpoints,
++        stdout_must_remain_clean,
++    })
++}
++
++pub fn start_transport_stub(validated: ValidatedMcpTransport) -> McpTransportRuntime {
++    McpTransportRuntime {
++        endpoints: validated.endpoints,
++        stdout_must_remain_clean: validated.stdout_must_remain_clean,
++    }
++}
++
++#[derive(Debug, Clone, PartialEq, Eq)]
++pub struct McpTransportRuntime {
++    pub endpoints: Vec<McpEndpoint>,
++    pub stdout_must_remain_clean: bool,
++}
++
++fn validate_tcp_endpoint<F>(
++    listen: &str,
++    token_env: Option<&str>,
++    token_lookup: &F,
++) -> Result<McpEndpoint, McpTransportError>
++where
++    F: Fn(&str) -> Option<String>,
++{
++    let bind_addr = listen
++        .parse::<SocketAddr>()
++        .map_err(|_| McpTransportError::MalformedListenAddress(listen.to_owned()))?;
++
++    let auth = if bind_addr.ip().is_loopback() {
++        TcpAuth::NotRequiredForLoopback
++    } else {
++        let token_env = normalized_token_env(token_env, bind_addr)?;
++        validate_token_value(&token_env, token_lookup)?;
++        TcpAuth::TokenEnv { name: token_env }
++    };
++
++    Ok(McpEndpoint::Tcp { bind_addr, auth })
++}
++
++fn normalized_token_env(
++    token_env: Option<&str>,
++    bind_addr: SocketAddr,
++) -> Result<String, McpTransportError> {
++    let Some(token_env) = token_env else {
++        return Err(McpTransportError::MissingTokenEnvForNonLoopback { bind_addr });
++    };
++    let token_env = token_env.trim();
++    if token_env.is_empty() {
++        return Err(McpTransportError::InvalidTokenEnvName {
++            reason: REASON_EMPTY_TOKEN_ENV_NAME,
++        });
++    }
++
++    Ok(token_env.to_owned())
++}
++
++fn validate_token_value<F>(token_env: &str, token_lookup: &F) -> Result<(), McpTransportError>
++where
++    F: Fn(&str) -> Option<String>,
++{
++    let Some(value) = token_lookup(token_env) else {
++        return Err(McpTransportError::MissingTokenValue {
++            token_env: token_env.to_owned(),
++        });
++    };
++    if value.trim().is_empty() {
++        return Err(McpTransportError::InvalidTokenValue {
++            token_env: token_env.to_owned(),
++            reason: REASON_EMPTY_TOKEN_VALUE,
++        });
++    }
++
++    Ok(())
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    const LOOPBACK_LISTEN: &str = "127.0.0.1:4700";
++    const IPV6_LOOPBACK_LISTEN: &str = "[::1]:4700";
++    const NON_LOOPBACK_LISTEN: &str = "0.0.0.0:4700";
++    const MALFORMED_LISTEN: &str = "not-a-socket";
++    const TOKEN_ENV_NAME: &str = "STEVENARELLA_TEST_MCP_TOKEN";
++    const TOKEN_VALUE: &str = "secret-token";
++
++    #[test]
++    fn stdio_transport_is_accepted_and_requires_clean_stdout() {
++        let options = McpTransportOptions::from_cli(true, None, None);
++
++        let validated = validate_transport_options(&options, |_| None).unwrap();
++
++        assert_eq!(validated.endpoints, vec![McpEndpoint::Stdio]);
++        assert!(validated.stdout_must_remain_clean);
++    }
++
++    #[test]
++    fn loopback_tcp_transport_is_accepted_without_token() {
++        let options = McpTransportOptions::from_cli(false, Some(LOOPBACK_LISTEN.to_owned()), None);
++
++        let validated = validate_transport_options(&options, |_| None).unwrap();
++
++        assert_eq!(
++            validated.endpoints,
++            vec![McpEndpoint::Tcp {
++                bind_addr: LOOPBACK_LISTEN.parse().unwrap(),
++                auth: TcpAuth::NotRequiredForLoopback,
++            }]
++        );
++        assert!(!validated.stdout_must_remain_clean);
++    }
++
++    #[test]
++    fn ipv6_loopback_tcp_transport_is_accepted_without_token() {
++        let options =
++            McpTransportOptions::from_cli(false, Some(IPV6_LOOPBACK_LISTEN.to_owned()), None);
++
++        let validated = validate_transport_options(&options, |_| None).unwrap();
++
++        assert_eq!(
++            validated.endpoints,
++            vec![McpEndpoint::Tcp {
++                bind_addr: IPV6_LOOPBACK_LISTEN.parse().unwrap(),
++                auth: TcpAuth::NotRequiredForLoopback,
++            }]
++        );
++    }
++
++    #[test]
++    fn non_loopback_tcp_transport_is_rejected_without_token_env() {
++        let options =
++            McpTransportOptions::from_cli(false, Some(NON_LOOPBACK_LISTEN.to_owned()), None);
++
++        assert_eq!(
++            validate_transport_options(&options, |_| None),
++            Err(McpTransportError::MissingTokenEnvForNonLoopback {
++                bind_addr: NON_LOOPBACK_LISTEN.parse().unwrap(),
++            })
++        );
++    }
++
++    #[test]
++    fn non_loopback_tcp_transport_is_rejected_with_empty_token_env_name() {
++        let options = McpTransportOptions::from_cli(
++            false,
++            Some(NON_LOOPBACK_LISTEN.to_owned()),
++            Some("  ".to_owned()),
++        );
++
++        assert_eq!(
++            validate_transport_options(&options, |_| Some(TOKEN_VALUE.to_owned())),
++            Err(McpTransportError::InvalidTokenEnvName {
++                reason: REASON_EMPTY_TOKEN_ENV_NAME,
++            })
++        );
++    }
++
++    #[test]
++    fn non_loopback_tcp_transport_is_rejected_with_missing_token_value() {
++        let options = McpTransportOptions::from_cli(
++            false,
++            Some(NON_LOOPBACK_LISTEN.to_owned()),
++            Some(TOKEN_ENV_NAME.to_owned()),
++        );
++
++        assert_eq!(
++            validate_transport_options(&options, |_| None),
++            Err(McpTransportError::MissingTokenValue {
++                token_env: TOKEN_ENV_NAME.to_owned(),
++            })
++        );
++    }
++
++    #[test]
++    fn non_loopback_tcp_transport_is_rejected_with_empty_token_value() {
++        let options = McpTransportOptions::from_cli(
++            false,
++            Some(NON_LOOPBACK_LISTEN.to_owned()),
++            Some(TOKEN_ENV_NAME.to_owned()),
++        );
++
++        assert_eq!(
++            validate_transport_options(&options, |_| Some("  ".to_owned())),
++            Err(McpTransportError::InvalidTokenValue {
++                token_env: TOKEN_ENV_NAME.to_owned(),
++                reason: REASON_EMPTY_TOKEN_VALUE,
++            })
++        );
++    }
++
++    #[test]
++    fn non_loopback_tcp_transport_is_accepted_with_token_env_and_value() {
++        let options = McpTransportOptions::from_cli(
++            false,
++            Some(NON_LOOPBACK_LISTEN.to_owned()),
++            Some(format!(" {TOKEN_ENV_NAME} ")),
++        );
++
++        let validated = validate_transport_options(&options, |name| {
++            assert_eq!(name, TOKEN_ENV_NAME);
++            Some(TOKEN_VALUE.to_owned())
++        })
++        .unwrap();
++
++        assert_eq!(
++            validated.endpoints,
++            vec![McpEndpoint::Tcp {
++                bind_addr: NON_LOOPBACK_LISTEN.parse().unwrap(),
++                auth: TcpAuth::TokenEnv {
++                    name: TOKEN_ENV_NAME.to_owned(),
++                },
++            }]
++        );
++    }
++
++    #[test]
++    fn malformed_listen_address_is_rejected() {
++        let options = McpTransportOptions::from_cli(false, Some(MALFORMED_LISTEN.to_owned()), None);
++
++        assert_eq!(
++            validate_transport_options(&options, |_| None),
++            Err(McpTransportError::MalformedListenAddress(
++                MALFORMED_LISTEN.to_owned()
++            ))
++        );
++    }
++
++    #[test]
++    fn transport_stub_preserves_validated_endpoint_shape() {
++        let options = McpTransportOptions::from_cli(true, Some(LOOPBACK_LISTEN.to_owned()), None);
++        let validated = validate_transport_options(&options, |_| None).unwrap();
++
++        let runtime = start_transport_stub(validated);
++
++        assert_eq!(runtime.endpoints.len(), 2);
++        assert!(runtime.stdout_must_remain_clean);
++    }
++}
