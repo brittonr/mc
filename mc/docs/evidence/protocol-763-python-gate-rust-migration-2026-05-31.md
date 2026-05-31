@@ -15,7 +15,7 @@ Historical archive text and historical run logs may still mention the old Python
 
 ## Verification
 
-Validation output: `docs/evidence/protocol-763-python-gate-rust-migration-2026-05-31.run.log`. The run log records the final post-refresh manifest check with `140 manifests, 669 entries, 71 receipts scanned`.
+Validation output: `docs/evidence/protocol-763-python-gate-rust-migration-2026-05-31.run.log`. The run log records the final post-refresh manifest check with `140 manifests, 670 entries, 71 receipts scanned`. Nix source-closure validation output: `docs/evidence/protocol-763-python-gate-rust-migration-nix-build-2026-05-31.run.log`.
 
 The run log records:
 
@@ -24,6 +24,7 @@ The run log records:
 - Rust survival coverage matrix self-test and repo check.
 - Rust evidence manifest self-test and repo check.
 - Recursive tracked-Python gate/checker inventory.
+- Nix `mc-compat-evidence-manifests` build with `exit_status=0`.
 - Cairn validation.
 - A deterministic check that the four removed Python gate files are absent.
 

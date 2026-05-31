@@ -1,0 +1,3 @@
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L
+
+exit_status=0

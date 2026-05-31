@@ -75,6 +75,11 @@ tools/check_protocol_coverage_ledger.py
 tools/check_survival_reference_parity.py
 tools/check_vanilla_combat_parity.py
 
+$ test -f docs/evidence/protocol-763-python-gate-rust-migration-nix-build-2026-05-31.run.log
+
+$ grep -F exit_status=0 docs/evidence/protocol-763-python-gate-rust-migration-nix-build-2026-05-31.run.log
+exit_status=0
+
 $ nix run --no-update-lock-file .#cairn -- validate --root .
 {
   "change_issues": [],
@@ -91,6 +96,6 @@ $ nix develop --no-update-lock-file -c target/check-evidence-manifests
 mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
 Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
 OnixResearch tools are pinned over SSH: cairn, cargo-octet
-evidence manifests ok: 140 manifests, 669 entries, 71 receipts scanned
+evidence manifests ok: 140 manifests, 670 entries, 71 receipts scanned
 
 python gate rust migration validation complete
