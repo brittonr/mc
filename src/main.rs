@@ -33,6 +33,7 @@ use steven_protocol::protocol;
 pub mod gl;
 use steven_protocol::types;
 pub mod auth;
+pub mod capture;
 pub mod chunk_builder;
 pub mod console;
 pub mod control;
