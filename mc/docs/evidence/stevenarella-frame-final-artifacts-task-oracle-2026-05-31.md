@@ -1,7 +1,7 @@
 # Stevenarella frame final artifacts task oracle — 2026-05-31
 
 ## Question
-Can task 7 in `cairn/changes/stevenarella-frame-capture-artifacts/tasks.md` be marked complete, making the frame capture Cairn ready for sync/archive?
+Can task 7 in archived `cairn/archive/2026-05-31-stevenarella-frame-capture-artifacts/tasks.md` be considered complete, making the frame capture Cairn suitable for sync/archive?
 
 ## Inspected evidence
 - `docs/evidence/stevenarella-frame-final-artifacts-tests-2026-05-31.run.log` records the final test sweep at parent revision `d7fc07f` and Stevenarella child revision `0583455`.
@@ -19,7 +19,7 @@ Review-critical task 7 artifacts are present under `docs/evidence/`: focused tes
 Britton Robitzsch, mc compatibility owner.
 
 ## Decision
-Mark task 7 complete and proceed to Cairn sync/archive after final validation passes.
+Task 7 is complete. Use this oracle as the pre-archive evidence decision for the archived change.
 
 ## Follow-up
-After archive, refresh manifests that cite the moved `tasks.md` path and any accepted `cairn/specs/mc-compatibility/spec.md` digest rows, then rerun evidence manifest checking and Cairn validation.
+Post-archive validation must refresh manifests that cite the moved `tasks.md` path and any accepted `cairn/specs/mc-compatibility/spec.md` digest rows, then rerun evidence manifest checking and Cairn validation.
