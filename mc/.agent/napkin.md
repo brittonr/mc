@@ -28,6 +28,7 @@
 | 2026-05-31 | self | Ran `mc-compat-cairn-task-evidence` for Stevenarella MCP work and hit unrelated `survival-crafting-table-parity` lines 3/5 missing explicit `.b3` paths | Fixed by adding explicit `protocol-763-survival-crafting-table-progress-2026-05-30.b3` refs; when a global gate fails on another active change, either fix that blocker or keep the current artifact task open |
 | 2026-05-31 | self | Generated a `.b3` manifest via `nix develop -c b3sum`, which prepended devshell banner text to the manifest | Use `nix shell --no-update-lock-file nixpkgs#b3sum -c b3sum ... > docs/evidence/name.b3` for clean BLAKE3 sidecars |
 | 2026-05-31 | done-review | Marked the screenshot hook task complete while the capture sender was underscore-bound and not reachable from MCP/control commands | For queue/hook tasks, prove both producer and consumer: add a test that an MCP/control command enqueues and the post-render hook drains the same queue before checking the task |
+| 2026-05-31 | self | Marking a later `stevenarella-frame-capture-artifacts` task stale-hashed earlier task-oracle `.b3` manifests because they include the shared `tasks.md` | After any frame-capture task update, refresh all `stevenarella-frame-*-task-oracle-2026-05-31.b3` files that include `cairn/changes/stevenarella-frame-capture-artifacts/tasks.md` |
 
 ## User Preferences
 - Keep replies terse and direct.
