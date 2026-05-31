@@ -1,0 +1,1150 @@
+commit ae529bbf3a401d01dc29e5f92ffb019d85ff9875
+Author:     brittonr <b@robitzs.ch>
+AuthorDate: Sun May 31 14:39:50 2026 -0400
+Commit:     brittonr <b@robitzs.ch>
+CommitDate: Sun May 31 14:39:50 2026 -0400
+
+    expose frame capture through MCP
+---
+ src/main.rs |  22 +-
+ src/mcp.rs  | 845 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 835 insertions(+), 32 deletions(-)
+
+diff --git a/src/main.rs b/src/main.rs
+index 5b5011d..fda2513 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -55,6 +55,7 @@ use cfg_if::cfg_if;
+ use std::cell::RefCell;
+ use std::marker::PhantomData;
+ use std::rc::Rc;
++use std::sync::atomic::{AtomicU64, Ordering};
+ use std::sync::mpsc;
+ use std::sync::{Arc, Mutex, RwLock};
+ use std::thread;
+@@ -150,7 +151,7 @@ pub struct Game {
+     #[cfg(not(target_arch = "wasm32"))]
+     capture_policy: capture::CapturePolicy,
+     #[cfg(not(target_arch = "wasm32"))]
+-    capture_sequence_id: u64,
++    capture_sequence_id: Arc<AtomicU64>,
+     #[cfg(not(target_arch = "wasm32"))]
+     active_capture_recording: Option<capture::RecordingSession>,
+     #[cfg(not(target_arch = "wasm32"))]
+@@ -442,9 +443,7 @@ impl Game {
+ 
+     #[cfg(not(target_arch = "wasm32"))]
+     fn next_capture_sequence_id(&mut self) -> u64 {
+-        let sequence_id = self.capture_sequence_id;
+-        self.capture_sequence_id = self.capture_sequence_id.saturating_add(1);
+-        sequence_id
++        self.capture_sequence_id.fetch_add(1, Ordering::AcqRel)
+     }
+ 
+     #[cfg(not(target_arch = "wasm32"))]
+@@ -1041,6 +1040,8 @@ fn main2() {
+     #[cfg(not(target_arch = "wasm32"))]
+     let (mcp_capture_request_sender, mcp_capture_request_receiver) =
+         capture::capture_request_channel();
++    #[cfg(not(target_arch = "wasm32"))]
++    let capture_sequence_id = Arc::new(AtomicU64::new(capture::CAPTURE_SEQUENCE_INITIAL));
+ 
+     #[cfg(not(target_arch = "wasm32"))]
+     let _mcp_runtime = {
+@@ -1057,7 +1058,16 @@ fn main2() {
+                     std::process::exit(2);
+                 }
+             };
+-            match mcp::start_process_transport(validated, Some(mcp_command_sender.clone())) {
++            let capture_tools = mcp::McpCaptureTools::new(
++                mcp_capture_request_sender.clone(),
++                capture_policy.clone(),
++                Arc::clone(&capture_sequence_id),
++            );
++            match mcp::start_process_transport_with_capture(
++                validated,
++                Some(mcp_command_sender.clone()),
++                Some(capture_tools),
++            ) {
+                 Ok(runtime) => Some(runtime),
+                 Err(err) => {
+                     error!("Failed to start MCP transport: {:?}", err);
+@@ -1218,7 +1228,7 @@ fn main2() {
+         #[cfg(not(target_arch = "wasm32"))]
+         capture_policy,
+         #[cfg(not(target_arch = "wasm32"))]
+-        capture_sequence_id: capture::CAPTURE_SEQUENCE_INITIAL,
++        capture_sequence_id,
+         #[cfg(not(target_arch = "wasm32"))]
+         active_capture_recording,
+         #[cfg(not(target_arch = "wasm32"))]
+diff --git a/src/mcp.rs b/src/mcp.rs
+index 8071d76..e01c42b 100644
+--- a/src/mcp.rs
++++ b/src/mcp.rs
+@@ -4,11 +4,16 @@
+ // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
+ // <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your option.
+ 
++use crate::capture::{
++    self, CaptureFormat, CaptureMode, CaptureOutput, CapturePolicy, CaptureQueueError,
++    CaptureRequest, CaptureRequestSender, ServicedCapture,
++};
+ use crate::control::{ControlCommand, ControlOutcome, ControlResponse};
+ use serde_json::{json, Value};
+ use std::io::{self, BufRead, BufReader, BufWriter, Write};
+ use std::net::{SocketAddr, TcpListener, TcpStream};
+-use std::sync::atomic::{AtomicBool, Ordering};
++use std::path::PathBuf;
++use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
+ use std::sync::{mpsc, Arc};
+ use std::thread::{self, JoinHandle};
+ use std::time::Duration;
+@@ -17,6 +22,7 @@ pub const DEFAULT_MCP_TOKEN_ENV: &str = "STEVENARELLA_MCP_TOKEN";
+ pub const MAX_MCP_COMMANDS_PER_FRAME: usize = 64;
+ 
+ const COMMAND_RESPONSE_TIMEOUT_MILLIS: u64 = 30_000;
++const CAPTURE_RESPONSE_TIMEOUT_MILLIS: u64 = 30_000;
+ const REASON_EMPTY_TOKEN_ENV_NAME: &str = "empty_token_env_name";
+ const REASON_EMPTY_TOKEN_VALUE: &str = "empty_token_value";
+ const TCP_ACCEPT_IDLE_SLEEP_MILLIS: u64 = 10;
+@@ -27,11 +33,27 @@ const JSONRPC_INTERNAL_ERROR: i64 = -32603;
+ const JSONRPC_UNAUTHORIZED: i64 = -32001;
+ const MCP_TOOLS_CALL_METHOD: &str = "tools/call";
+ const MCP_TOOLS_LIST_METHOD: &str = "tools/list";
++const MCP_RESOURCES_LIST_METHOD: &str = "resources/list";
++const MCP_RESOURCES_READ_METHOD: &str = "resources/read";
+ const MCP_ENQUEUE_CONTROL_TOOL: &str = "stevenarella.enqueue_control";
++const MCP_CAPTURE_SCREENSHOT_TOOL: &str = "stevenarella.capture_screenshot";
++const MCP_CAPTURE_LATEST_FRAME_TOOL: &str = "stevenarella.capture_latest_frame";
++const MCP_CAPTURE_SCREENSHOT_RESOURCE: &str = "stevenarella://capture/screenshot";
++const MCP_CAPTURE_LATEST_FRAME_RESOURCE: &str = "stevenarella://capture/latest-frame";
+ const MCP_CONTENT_TYPE_TEXT: &str = "text";
++const MCP_CONTENT_TYPE_IMAGE: &str = "image";
++const MCP_MIME_APPLICATION_JSON: &str = "application/json";
++const MCP_MIME_IMAGE_PNG: &str = "image/png";
+ const MCP_FIELD_ARGUMENTS: &str = "arguments";
+ const MCP_FIELD_COMMAND: &str = "command";
++const MCP_FIELD_FORMAT: &str = "format";
++const MCP_FIELD_INCLUDE_UI: &str = "include_ui";
+ const MCP_FIELD_NAME: &str = "name";
++const MCP_FIELD_OUTPUT: &str = "output";
++const MCP_FIELD_RELATIVE_PATH: &str = "relative_path";
++const MCP_FIELD_URI: &str = "uri";
++const MCP_OUTPUT_ARTIFACT: &str = "artifact";
++const MCP_OUTPUT_INLINE: &str = "inline";
+ const CONTROL_OUTCOME_APPLIED: &str = "applied";
+ const CONTROL_OUTCOME_REJECTED: &str = "rejected";
+ const CONTROL_OUTCOME_DEFERRED: &str = "deferred";
+@@ -123,6 +145,31 @@ pub struct QueuedMcpCommand {
+     response_sender: mpsc::Sender<ControlResponse>,
+ }
+ 
++#[derive(Clone)]
++pub struct McpCaptureTools {
++    sender: CaptureRequestSender,
++    policy: CapturePolicy,
++    next_sequence_id: Arc<AtomicU64>,
++    response_timeout: Duration,
++}
++
++#[derive(Debug, Clone, PartialEq, Eq)]
++pub enum McpCaptureToolError {
++    InvalidArguments(String),
++    QueueClosed,
++    ResponseDropped,
++    ResponseTimedOut,
++    CaptureFailed(String),
++    InlineTooLarge { requested: u64, max: u64 },
++    MissingArtifactMetadata,
++}
++
++#[derive(Debug, Clone, PartialEq, Eq)]
++struct McpCaptureToolPayload {
++    metadata: Value,
++    inline_png_base64: Option<String>,
++}
++
+ impl Drop for McpTransportRuntime {
+     fn drop(&mut self) {
+         for shutdown_flag in &self.shutdown_flags {
+@@ -172,6 +219,73 @@ pub fn control_command_channel() -> (McpCommandSender, McpCommandReceiver) {
+     )
+ }
+ 
++impl McpCaptureTools {
++    pub fn new(
++        sender: CaptureRequestSender,
++        policy: CapturePolicy,
++        next_sequence_id: Arc<AtomicU64>,
++    ) -> Self {
++        Self {
++            sender,
++            policy,
++            next_sequence_id,
++            response_timeout: Duration::from_millis(CAPTURE_RESPONSE_TIMEOUT_MILLIS),
++        }
++    }
++
++    pub fn with_response_timeout(mut self, response_timeout: Duration) -> Self {
++        self.response_timeout = response_timeout;
++        self
++    }
++
++    fn capture_one_shot_from_arguments(
++        &self,
++        mode: CaptureMode,
++        arguments: Option<&Value>,
++    ) -> Result<McpCaptureToolPayload, McpCaptureToolError> {
++        let sequence_id = self.next_sequence_id.fetch_add(1, Ordering::AcqRel);
++        let request = capture_request_from_arguments(arguments, mode, &self.policy, sequence_id)?;
++        self.capture_one_shot(request)
++    }
++
++    fn capture_one_shot_inline(
++        &self,
++        mode: CaptureMode,
++    ) -> Result<McpCaptureToolPayload, McpCaptureToolError> {
++        let sequence_id = self.next_sequence_id.fetch_add(1, Ordering::AcqRel);
++        let request = CaptureRequest {
++            mode,
++            format: CaptureFormat::Png,
++            output: CaptureOutput::Inline,
++            includes_ui: true,
++            recording: None,
++            sequence_id: Some(sequence_id),
++        };
++        self.capture_one_shot(request)
++    }
++
++    fn capture_one_shot(
++        &self,
++        request: CaptureRequest,
++    ) -> Result<McpCaptureToolPayload, McpCaptureToolError> {
++        let response_receiver = self
++            .sender
++            .enqueue_deferred(request)
++            .map_err(mcp_capture_queue_error)?;
++        let serviced = match response_receiver.recv_timeout(self.response_timeout) {
++            Ok(Ok(serviced)) => serviced,
++            Ok(Err(err)) => return Err(McpCaptureToolError::CaptureFailed(format!("{err:?}"))),
++            Err(mpsc::RecvTimeoutError::Timeout) => {
++                return Err(McpCaptureToolError::ResponseTimedOut)
++            }
++            Err(mpsc::RecvTimeoutError::Disconnected) => {
++                return Err(McpCaptureToolError::ResponseDropped)
++            }
++        };
++        mcp_capture_payload_from_serviced_capture(serviced, &self.policy)
++    }
++}
++
+ impl McpCommandSender {
+     pub fn enqueue_deferred(
+         &self,
+@@ -270,13 +384,33 @@ pub fn start_process_transport(
+     validated: ValidatedMcpTransport,
+     command_sender: Option<McpCommandSender>,
+ ) -> Result<McpTransportRuntime, McpTransportStartError> {
+-    start_transport_with_stdio_and_commands(validated, io::stdin(), io::stdout(), command_sender)
++    start_transport_with_stdio_commands_and_capture(
++        validated,
++        io::stdin(),
++        io::stdout(),
++        command_sender,
++        None,
++    )
++}
++
++pub fn start_process_transport_with_capture(
++    validated: ValidatedMcpTransport,
++    command_sender: Option<McpCommandSender>,
++    capture_tools: Option<McpCaptureTools>,
++) -> Result<McpTransportRuntime, McpTransportStartError> {
++    start_transport_with_stdio_commands_and_capture(
++        validated,
++        io::stdin(),
++        io::stdout(),
++        command_sender,
++        capture_tools,
++    )
+ }
+ 
+ pub fn start_transport_runtime(
+     validated: ValidatedMcpTransport,
+ ) -> Result<McpTransportRuntime, McpTransportStartError> {
+-    start_transport_runtime_inner(validated, None::<(io::Empty, io::Sink)>, None)
++    start_transport_runtime_inner(validated, None::<(io::Empty, io::Sink)>, None, None)
+ }
+ 
+ pub fn start_transport_with_stdio<R, W>(
+@@ -301,7 +435,26 @@ where
+     R: io::Read + Send + 'static,
+     W: io::Write + Send + 'static,
+ {
+-    start_transport_runtime_inner(validated, Some((reader, writer)), command_sender)
++    start_transport_with_stdio_commands_and_capture(validated, reader, writer, command_sender, None)
++}
++
++pub fn start_transport_with_stdio_commands_and_capture<R, W>(
++    validated: ValidatedMcpTransport,
++    reader: R,
++    writer: W,
++    command_sender: Option<McpCommandSender>,
++    capture_tools: Option<McpCaptureTools>,
++) -> Result<McpTransportRuntime, McpTransportStartError>
++where
++    R: io::Read + Send + 'static,
++    W: io::Write + Send + 'static,
++{
++    start_transport_runtime_inner(
++        validated,
++        Some((reader, writer)),
++        command_sender,
++        capture_tools,
++    )
+ }
+ 
+ pub fn run_jsonrpc_lines<R, W>(reader: R, writer: W) -> io::Result<()>
+@@ -337,10 +490,24 @@ where
+ }
+ 
+ pub fn run_jsonrpc_lines_with_auth_and_command_sender<R, W>(
++    reader: R,
++    writer: W,
++    required_token: Option<&str>,
++    command_sender: Option<McpCommandSender>,
++) -> io::Result<()>
++where
++    R: BufRead,
++    W: Write,
++{
++    run_jsonrpc_lines_with_auth_and_tools(reader, writer, required_token, command_sender, None)
++}
++
++pub fn run_jsonrpc_lines_with_auth_and_tools<R, W>(
+     mut reader: R,
+     mut writer: W,
+     required_token: Option<&str>,
+     command_sender: Option<McpCommandSender>,
++    capture_tools: Option<McpCaptureTools>,
+ ) -> io::Result<()>
+ where
+     R: BufRead,
+@@ -353,10 +520,11 @@ where
+         if read == 0 {
+             return Ok(());
+         }
+-        if let Some(response) = handle_jsonrpc_line_with_auth_and_command_sender(
++        if let Some(response) = handle_jsonrpc_line_with_auth_and_tools(
+             line.trim_end_matches(['\r', '\n']),
+             required_token,
+             command_sender.as_ref(),
++            capture_tools.as_ref(),
+         ) {
+             writeln!(writer, "{}", response)?;
+             writer.flush()?;
+@@ -376,6 +544,15 @@ pub fn handle_jsonrpc_line_with_auth_and_command_sender(
+     line: &str,
+     required_token: Option<&str>,
+     command_sender: Option<&McpCommandSender>,
++) -> Option<String> {
++    handle_jsonrpc_line_with_auth_and_tools(line, required_token, command_sender, None)
++}
++
++pub fn handle_jsonrpc_line_with_auth_and_tools(
++    line: &str,
++    required_token: Option<&str>,
++    command_sender: Option<&McpCommandSender>,
++    capture_tools: Option<&McpCaptureTools>,
+ ) -> Option<String> {
+     let value = match serde_json::from_str::<Value>(line) {
+         Ok(value) => value,
+@@ -429,20 +606,31 @@ pub fn handle_jsonrpc_line_with_auth_and_command_sender(
+                 }),
+             )
+         }),
+-        MCP_TOOLS_LIST_METHOD => id.map(|id| jsonrpc_result(id, tools_list_result(command_sender))),
++        MCP_TOOLS_LIST_METHOD => {
++            id.map(|id| jsonrpc_result(id, tools_list_result(command_sender, capture_tools)))
++        }
+         MCP_TOOLS_CALL_METHOD => {
+-            id.map(|id| handle_tools_call(id, object.get("params"), command_sender))
++            id.map(|id| handle_tools_call(id, object.get("params"), command_sender, capture_tools))
++        }
++        MCP_RESOURCES_LIST_METHOD => {
++            id.map(|id| jsonrpc_result(id, resources_list_result(capture_tools)))
++        }
++        MCP_RESOURCES_READ_METHOD => {
++            id.map(|id| handle_resources_read(id, object.get("params"), capture_tools))
+         }
+-        "resources/list" => id.map(|id| jsonrpc_result(id, json!({ "resources": [] }))),
+         "ping" => id.map(|id| jsonrpc_result(id, json!({}))),
+         method if method.starts_with("notifications/") => None,
+         _ => id.map(|id| jsonrpc_error(id, JSONRPC_METHOD_NOT_FOUND, "method not found")),
+     }
+ }
+ 
+-fn tools_list_result(command_sender: Option<&McpCommandSender>) -> Value {
+-    let tools = if command_sender.is_some() {
+-        vec![json!({
++fn tools_list_result(
++    command_sender: Option<&McpCommandSender>,
++    capture_tools: Option<&McpCaptureTools>,
++) -> Value {
++    let mut tools = Vec::new();
++    if command_sender.is_some() {
++        tools.push(json!({
+             "name": MCP_ENQUEUE_CONTROL_TOOL,
+             "description": "Queue one Stevenarella control command for main-thread handling.",
+             "inputSchema": {
+@@ -453,30 +641,76 @@ fn tools_list_result(command_sender: Option<&McpCommandSender>) -> Value {
+                 "required": [MCP_FIELD_COMMAND],
+                 "additionalProperties": false,
+             },
+-        })]
+-    } else {
+-        Vec::new()
+-    };
++        }));
++    }
++    if capture_tools.is_some() {
++        tools.push(capture_tool_schema(
++            MCP_CAPTURE_SCREENSHOT_TOOL,
++            "Capture one rendered Stevenarella screenshot.",
++        ));
++        tools.push(capture_tool_schema(
++            MCP_CAPTURE_LATEST_FRAME_TOOL,
++            "Capture the latest rendered Stevenarella frame.",
++        ));
++    }
+     json!({ "tools": tools })
+ }
+ 
++fn capture_tool_schema(name: &str, description: &str) -> Value {
++    json!({
++        "name": name,
++        "description": description,
++        "inputSchema": {
++            "type": "object",
++            "properties": {
++                MCP_FIELD_OUTPUT: { "type": "string", "enum": [MCP_OUTPUT_INLINE, MCP_OUTPUT_ARTIFACT] },
++                MCP_FIELD_FORMAT: { "type": "string", "enum": ["png"] },
++                MCP_FIELD_RELATIVE_PATH: { "type": "string" },
++                MCP_FIELD_INCLUDE_UI: { "type": "boolean" },
++            },
++            "additionalProperties": false,
++        },
++    })
++}
++
+ fn handle_tools_call(
+     id: Value,
+     params: Option<&Value>,
+     command_sender: Option<&McpCommandSender>,
++    capture_tools: Option<&McpCaptureTools>,
+ ) -> String {
+-    let Some(command_sender) = command_sender else {
+-        return jsonrpc_error(id, JSONRPC_INTERNAL_ERROR, "control queue unavailable");
+-    };
+     let Some(params) = params.and_then(Value::as_object) else {
+         return jsonrpc_error(id, JSONRPC_INVALID_REQUEST, "missing tool params");
+     };
+     let Some(name) = params.get(MCP_FIELD_NAME).and_then(Value::as_str) else {
+         return jsonrpc_error(id, JSONRPC_INVALID_REQUEST, "missing tool name");
+     };
+-    if name != MCP_ENQUEUE_CONTROL_TOOL {
+-        return jsonrpc_error(id, JSONRPC_METHOD_NOT_FOUND, "tool not found");
++    match name {
++        MCP_ENQUEUE_CONTROL_TOOL => handle_control_tools_call(id, params, command_sender),
++        MCP_CAPTURE_SCREENSHOT_TOOL => handle_capture_tools_call(
++            id,
++            params.get(MCP_FIELD_ARGUMENTS),
++            capture_tools,
++            CaptureMode::Screenshot,
++        ),
++        MCP_CAPTURE_LATEST_FRAME_TOOL => handle_capture_tools_call(
++            id,
++            params.get(MCP_FIELD_ARGUMENTS),
++            capture_tools,
++            CaptureMode::LatestFrame,
++        ),
++        _ => jsonrpc_error(id, JSONRPC_METHOD_NOT_FOUND, "tool not found"),
+     }
++}
++
++fn handle_control_tools_call(
++    id: Value,
++    params: &serde_json::Map<String, Value>,
++    command_sender: Option<&McpCommandSender>,
++) -> String {
++    let Some(command_sender) = command_sender else {
++        return jsonrpc_error(id, JSONRPC_INTERNAL_ERROR, "control queue unavailable");
++    };
+     let Some(arguments) = params.get(MCP_FIELD_ARGUMENTS).and_then(Value::as_object) else {
+         return jsonrpc_error(id, JSONRPC_INVALID_REQUEST, "missing tool arguments");
+     };
+@@ -507,6 +741,70 @@ fn handle_tools_call(
+     jsonrpc_result(id, control_tool_result(&response))
+ }
+ 
++fn handle_capture_tools_call(
++    id: Value,
++    arguments: Option<&Value>,
++    capture_tools: Option<&McpCaptureTools>,
++    mode: CaptureMode,
++) -> String {
++    let Some(capture_tools) = capture_tools else {
++        return jsonrpc_error(id, JSONRPC_INTERNAL_ERROR, "capture queue unavailable");
++    };
++    let payload = match capture_tools.capture_one_shot_from_arguments(mode, arguments) {
++        Ok(payload) => payload,
++        Err(err) => return mcp_capture_error_response(id, err),
++    };
++    jsonrpc_result(id, capture_tool_result(&payload))
++}
++
++fn resources_list_result(capture_tools: Option<&McpCaptureTools>) -> Value {
++    let resources = if capture_tools.is_some() {
++        vec![
++            json!({
++                "uri": MCP_CAPTURE_SCREENSHOT_RESOURCE,
++                "name": "Stevenarella screenshot",
++                "description": "Capture one screenshot from the next rendered frame.",
++                "mimeType": MCP_MIME_IMAGE_PNG,
++            }),
++            json!({
++                "uri": MCP_CAPTURE_LATEST_FRAME_RESOURCE,
++                "name": "Stevenarella latest frame",
++                "description": "Capture the latest rendered frame.",
++                "mimeType": MCP_MIME_IMAGE_PNG,
++            }),
++        ]
++    } else {
++        Vec::new()
++    };
++    json!({ "resources": resources })
++}
++
++fn handle_resources_read(
++    id: Value,
++    params: Option<&Value>,
++    capture_tools: Option<&McpCaptureTools>,
++) -> String {
++    let Some(capture_tools) = capture_tools else {
++        return jsonrpc_error(id, JSONRPC_INTERNAL_ERROR, "capture queue unavailable");
++    };
++    let Some(params) = params.and_then(Value::as_object) else {
++        return jsonrpc_error(id, JSONRPC_INVALID_REQUEST, "missing resource params");
++    };
++    let Some(uri) = params.get(MCP_FIELD_URI).and_then(Value::as_str) else {
++        return jsonrpc_error(id, JSONRPC_INVALID_REQUEST, "missing resource uri");
++    };
++    let mode = match uri {
++        MCP_CAPTURE_SCREENSHOT_RESOURCE => CaptureMode::Screenshot,
++        MCP_CAPTURE_LATEST_FRAME_RESOURCE => CaptureMode::LatestFrame,
++        _ => return jsonrpc_error(id, JSONRPC_METHOD_NOT_FOUND, "resource not found"),
++    };
++    let payload = match capture_tools.capture_one_shot_inline(mode) {
++        Ok(payload) => payload,
++        Err(err) => return mcp_capture_error_response(id, err),
++    };
++    jsonrpc_result(id, capture_resource_read_result(uri, &payload))
++}
++
+ fn control_tool_result(response: &ControlResponse) -> Value {
+     json!({
+         "content": [{
+@@ -521,6 +819,55 @@ fn control_tool_result(response: &ControlResponse) -> Value {
+     })
+ }
+ 
++fn capture_tool_result(payload: &McpCaptureToolPayload) -> Value {
++    let mut content = Vec::new();
++    if let Some(inline_png_base64) = &payload.inline_png_base64 {
++        content.push(json!({
++            "type": MCP_CONTENT_TYPE_IMAGE,
++            "mimeType": MCP_MIME_IMAGE_PNG,
++            "data": inline_png_base64,
++        }));
++    }
++    content.push(json!({
++        "type": MCP_CONTENT_TYPE_TEXT,
++        "text": payload.metadata.to_string(),
++    }));
++    json!({
++        "content": content,
++        "isError": false,
++    })
++}
++
++fn capture_resource_read_result(uri: &str, payload: &McpCaptureToolPayload) -> Value {
++    let mut contents = Vec::new();
++    if let Some(inline_png_base64) = &payload.inline_png_base64 {
++        contents.push(json!({
++            "uri": uri,
++            "mimeType": MCP_MIME_IMAGE_PNG,
++            "blob": inline_png_base64,
++        }));
++    }
++    contents.push(json!({
++        "uri": format!("{uri}#metadata"),
++        "mimeType": MCP_MIME_APPLICATION_JSON,
++        "text": payload.metadata.to_string(),
++    }));
++    json!({ "contents": contents })
++}
++
++fn mcp_capture_error_response(id: Value, err: McpCaptureToolError) -> String {
++    let code = match &err {
++        McpCaptureToolError::InvalidArguments(_) => JSONRPC_INVALID_REQUEST,
++        McpCaptureToolError::QueueClosed
++        | McpCaptureToolError::ResponseDropped
++        | McpCaptureToolError::ResponseTimedOut
++        | McpCaptureToolError::CaptureFailed(_)
++        | McpCaptureToolError::InlineTooLarge { .. }
++        | McpCaptureToolError::MissingArtifactMetadata => JSONRPC_INTERNAL_ERROR,
++    };
++    jsonrpc_error(id, code, &format!("capture failed: {err:?}"))
++}
++
+ fn control_outcome_name(outcome: ControlOutcome) -> &'static str {
+     match outcome {
+         ControlOutcome::Applied => CONTROL_OUTCOME_APPLIED,
+@@ -529,10 +876,210 @@ fn control_outcome_name(outcome: ControlOutcome) -> &'static str {
+     }
+ }
+ 
++fn capture_request_from_arguments(
++    arguments: Option<&Value>,
++    mode: CaptureMode,
++    policy: &CapturePolicy,
++    sequence_id: u64,
++) -> Result<CaptureRequest, McpCaptureToolError> {
++    let empty_arguments = serde_json::Map::new();
++    let arguments = match arguments {
++        Some(value) => value.as_object().ok_or_else(|| {
++            McpCaptureToolError::InvalidArguments("arguments must be object".to_owned())
++        })?,
++        None => &empty_arguments,
++    };
++    let format = match arguments.get(MCP_FIELD_FORMAT).and_then(Value::as_str) {
++        Some(format) => CaptureFormat::from_name(format).map_err(|err| {
++            McpCaptureToolError::InvalidArguments(format!("invalid format: {err:?}"))
++        })?,
++        None => CaptureFormat::Png,
++    };
++    let includes_ui = match arguments.get(MCP_FIELD_INCLUDE_UI) {
++        Some(value) => value.as_bool().ok_or_else(|| {
++            McpCaptureToolError::InvalidArguments("include_ui must be boolean".to_owned())
++        })?,
++        None => true,
++    };
++    let output = capture_output_from_arguments(arguments, mode, format, sequence_id)?;
++    let request = CaptureRequest {
++        mode,
++        format,
++        output,
++        includes_ui,
++        recording: None,
++        sequence_id: Some(sequence_id),
++    };
++    capture::validate_capture_request(&request, policy).map_err(|err| {
++        McpCaptureToolError::InvalidArguments(format!("invalid capture request: {err:?}"))
++    })?;
++    Ok(request)
++}
++
++fn capture_output_from_arguments(
++    arguments: &serde_json::Map<String, Value>,
++    mode: CaptureMode,
++    format: CaptureFormat,
++    sequence_id: u64,
++) -> Result<CaptureOutput, McpCaptureToolError> {
++    match arguments.get(MCP_FIELD_OUTPUT).and_then(Value::as_str) {
++        Some(MCP_OUTPUT_INLINE) | None => Ok(CaptureOutput::Inline),
++        Some(MCP_OUTPUT_ARTIFACT) => Ok(CaptureOutput::Artifact {
++            relative_path: capture_relative_path_from_arguments(
++                arguments,
++                mode,
++                format,
++                sequence_id,
++            )?,
++        }),
++        Some(output) => Err(McpCaptureToolError::InvalidArguments(format!(
++            "unsupported output: {output}"
++        ))),
++    }
++}
++
++fn capture_relative_path_from_arguments(
++    arguments: &serde_json::Map<String, Value>,
++    mode: CaptureMode,
++    format: CaptureFormat,
++    sequence_id: u64,
++) -> Result<PathBuf, McpCaptureToolError> {
++    match arguments.get(MCP_FIELD_RELATIVE_PATH) {
++        Some(value) => value.as_str().map(PathBuf::from).ok_or_else(|| {
++            McpCaptureToolError::InvalidArguments("relative_path must be string".to_owned())
++        }),
++        None => Ok(capture::default_artifact_relative_path(
++            mode,
++            sequence_id,
++            format,
++        )),
++    }
++}
++
++fn mcp_capture_payload_from_serviced_capture(
++    serviced: ServicedCapture,
++    policy: &CapturePolicy,
++) -> Result<McpCaptureToolPayload, McpCaptureToolError> {
++    match &serviced.plan.output {
++        CaptureOutput::Inline => inline_capture_payload(serviced, policy),
++        CaptureOutput::Artifact { .. } => artifact_capture_payload(serviced),
++    }
++}
++
++fn inline_capture_payload(
++    serviced: ServicedCapture,
++    policy: &CapturePolicy,
++) -> Result<McpCaptureToolPayload, McpCaptureToolError> {
++    let png_bytes = capture::encode_png_frame(&serviced.frame)
++        .map_err(|err| McpCaptureToolError::CaptureFailed(format!("{err:?}")))?;
++    let byte_len = u64::try_from(png_bytes.len()).map_err(|_| {
++        McpCaptureToolError::CaptureFailed("inline image length overflow".to_owned())
++    })?;
++    if byte_len > policy.inline_response_bytes {
++        return Err(McpCaptureToolError::InlineTooLarge {
++            requested: byte_len,
++            max: policy.inline_response_bytes,
++        });
++    }
++    let digest = blake3::hash(&png_bytes).to_hex().to_string();
++    let metadata = capture_metadata_json(
++        serviced.plan.mode,
++        serviced.plan.format,
++        MCP_OUTPUT_INLINE,
++        serviced.frame.width_px,
++        serviced.frame.height_px,
++        serviced.frame.frame_id,
++        serviced.plan.sequence_id,
++        byte_len,
++        &digest,
++        serviced.plan.includes_ui,
++        None,
++    );
++    Ok(McpCaptureToolPayload {
++        metadata,
++        inline_png_base64: Some(base64::encode(png_bytes)),
++    })
++}
++
++fn artifact_capture_payload(
++    serviced: ServicedCapture,
++) -> Result<McpCaptureToolPayload, McpCaptureToolError> {
++    let artifact = serviced
++        .artifact
++        .ok_or(McpCaptureToolError::MissingArtifactMetadata)?;
++    let metadata = capture_metadata_json(
++        serviced.plan.mode,
++        artifact.format,
++        MCP_OUTPUT_ARTIFACT,
++        artifact.width_px,
++        artifact.height_px,
++        artifact.frame_id,
++        artifact.sequence_id,
++        artifact.byte_len,
++        artifact.blake3_digest.as_str(),
++        artifact.includes_ui,
++        Some(artifact.relative_path.to_string_lossy().as_ref()),
++    );
++    Ok(McpCaptureToolPayload {
++        metadata,
++        inline_png_base64: None,
++    })
++}
++
++fn capture_metadata_json(
++    mode: CaptureMode,
++    format: CaptureFormat,
++    output: &str,
++    width_px: u32,
++    height_px: u32,
++    frame_id: u64,
++    sequence_id: u64,
++    byte_len: u64,
++    blake3_digest: &str,
++    includes_ui: bool,
++    relative_path: Option<&str>,
++) -> Value {
++    let mut metadata = json!({
++        "mode": capture_mode_name(mode),
++        "format": format.as_extension(),
++        "output": output,
++        "width_px": width_px,
++        "height_px": height_px,
++        "frame_id": frame_id,
++        "sequence_id": sequence_id,
++        "byte_len": byte_len,
++        "blake3_digest": blake3_digest,
++        "includes_ui": includes_ui,
++        "redaction": "not_reviewed",
++    });
++    if let Some(relative_path) = relative_path {
++        metadata["relative_path"] = Value::String(relative_path.to_owned());
++    }
++    metadata
++}
++
++fn capture_mode_name(mode: CaptureMode) -> &'static str {
++    match mode {
++        CaptureMode::Screenshot => "screenshot",
++        CaptureMode::LatestFrame => "latest_frame",
++        CaptureMode::Recording => "recording",
++    }
++}
++
++fn mcp_capture_queue_error(err: CaptureQueueError) -> McpCaptureToolError {
++    match err {
++        CaptureQueueError::Validation(err) => {
++            McpCaptureToolError::InvalidArguments(format!("invalid capture request: {err:?}"))
++        }
++        CaptureQueueError::QueueClosed => McpCaptureToolError::QueueClosed,
++    }
++}
++
+ fn start_transport_runtime_inner<R, W>(
+     validated: ValidatedMcpTransport,
+     stdio: Option<(R, W)>,
+     command_sender: Option<McpCommandSender>,
++    capture_tools: Option<McpCaptureTools>,
+ ) -> Result<McpTransportRuntime, McpTransportStartError>
+ where
+     R: io::Read + Send + 'static,
+@@ -549,11 +1096,17 @@ where
+                 endpoints.push(StartedMcpEndpoint::Stdio);
+                 if let Some((reader, writer)) = stdio.take() {
+                     let command_sender = command_sender.clone();
++                    let capture_tools = capture_tools.clone();
+                     join_handles.push(thread::spawn(move || {
+                         let reader = BufReader::new(reader);
+                         let writer = BufWriter::new(writer);
+-                        let _ =
+-                            run_jsonrpc_lines_with_command_sender(reader, writer, command_sender);
++                        let _ = run_jsonrpc_lines_with_auth_and_tools(
++                            reader,
++                            writer,
++                            None,
++                            command_sender,
++                            capture_tools,
++                        );
+                     }));
+                 }
+             }
+@@ -564,8 +1117,15 @@ where
+                 let shutdown_flag = Arc::new(AtomicBool::new(false));
+                 let thread_shutdown_flag = Arc::clone(&shutdown_flag);
+                 let command_sender = command_sender.clone();
++                let capture_tools = capture_tools.clone();
+                 join_handles.push(thread::spawn(move || {
+-                    accept_tcp_jsonrpc(listener, auth, thread_shutdown_flag, command_sender);
++                    accept_tcp_jsonrpc(
++                        listener,
++                        auth,
++                        thread_shutdown_flag,
++                        command_sender,
++                        capture_tools,
++                    );
+                 }));
+                 shutdown_flags.push(shutdown_flag);
+                 endpoints.push(StartedMcpEndpoint::Tcp { local_addr });
+@@ -587,14 +1147,21 @@ fn accept_tcp_jsonrpc(
+     auth: TcpAuth,
+     shutdown_flag: Arc<AtomicBool>,
+     command_sender: Option<McpCommandSender>,
++    capture_tools: Option<McpCaptureTools>,
+ ) {
+     while !shutdown_flag.load(Ordering::Acquire) {
+         match listener.accept() {
+             Ok((stream, _)) => {
+                 let required_token = auth.required_token().map(ToOwned::to_owned);
+                 let command_sender = command_sender.clone();
++                let capture_tools = capture_tools.clone();
+                 thread::spawn(move || {
+-                    let _ = serve_tcp_jsonrpc_stream(stream, required_token, command_sender);
++                    let _ = serve_tcp_jsonrpc_stream(
++                        stream,
++                        required_token,
++                        command_sender,
++                        capture_tools,
++                    );
+                 });
+             }
+             Err(err) if err.kind() == io::ErrorKind::WouldBlock => {
+@@ -609,14 +1176,16 @@ fn serve_tcp_jsonrpc_stream(
+     stream: TcpStream,
+     required_token: Option<String>,
+     command_sender: Option<McpCommandSender>,
++    capture_tools: Option<McpCaptureTools>,
+ ) -> io::Result<()> {
+     let reader = BufReader::new(stream.try_clone()?);
+     let writer = BufWriter::new(stream);
+-    run_jsonrpc_lines_with_auth_and_command_sender(
++    run_jsonrpc_lines_with_auth_and_tools(
+         reader,
+         writer,
+         required_token.as_deref(),
+         command_sender,
++        capture_tools,
+     )
+ }
+ 
+@@ -737,7 +1306,80 @@ mod tests {
+     const QUEUE_TEST_TIMEOUT_MILLIS: u64 = 1;
+     const QUEUE_TOOL_TEST_TIMEOUT_MILLIS: u64 = 250;
+     const QUEUE_DRAIN_ATTEMPTS: usize = 1_000;
++    const QUEUE_DRAIN_SLEEP_MILLIS: u64 = 1;
+     const QUEUE_TEST_RESPONSE: &str = "main-thread-handler";
++    const TEST_CAPTURE_WIDTH_PX: u32 = 2;
++    const TEST_CAPTURE_HEIGHT_PX: u32 = 2;
++    const TEST_CAPTURE_FRAME_ID: u64 = 42;
++    const TEST_CAPTURE_SEQUENCE_ID: u64 = 0;
++    const TEST_ARTIFACT_OUTPUT: &str = "artifact";
++
++    fn synthetic_capture_frame(
++        frame: capture::CaptureFrameContext,
++    ) -> Result<capture::CapturedRgbaFrame, capture::CaptureReadbackError> {
++        let byte_len = capture::rgba_buffer_len(frame.width_px, frame.height_px)?;
++        Ok(capture::CapturedRgbaFrame {
++            width_px: frame.width_px,
++            height_px: frame.height_px,
++            frame_id: frame.frame_id,
++            rgba_top_left: vec![0; byte_len],
++        })
++    }
++
++    fn test_capture_frame_context() -> capture::CaptureFrameContext {
++        capture::CaptureFrameContext {
++            width_px: TEST_CAPTURE_WIDTH_PX,
++            height_px: TEST_CAPTURE_HEIGHT_PX,
++            frame_id: TEST_CAPTURE_FRAME_ID,
++        }
++    }
++
++    fn test_capture_tools(
++        policy: capture::CapturePolicy,
++    ) -> (McpCaptureTools, capture::CaptureRequestReceiver) {
++        let (sender, receiver) = capture::capture_request_channel();
++        let tools = McpCaptureTools::new(
++            sender,
++            policy,
++            Arc::new(AtomicU64::new(capture::CAPTURE_SEQUENCE_INITIAL)),
++        )
++        .with_response_timeout(Duration::from_millis(QUEUE_TOOL_TEST_TIMEOUT_MILLIS));
++        (tools, receiver)
++    }
++
++    fn drain_until_capture(
++        receiver: &capture::CaptureRequestReceiver,
++        policy: &capture::CapturePolicy,
++    ) -> usize {
++        for _attempt in 0..QUEUE_DRAIN_ATTEMPTS {
++            let drained = try_drain_capture_once(receiver, policy);
++            if drained > 0 {
++                return drained;
++            }
++            thread::sleep(Duration::from_millis(QUEUE_DRAIN_SLEEP_MILLIS));
++        }
++        0
++    }
++
++    fn try_drain_capture_once(
++        receiver: &capture::CaptureRequestReceiver,
++        policy: &capture::CapturePolicy,
++    ) -> usize {
++        receiver.service_pending_one_shot_with_readback(
++            policy,
++            test_capture_frame_context(),
++            synthetic_capture_frame,
++        )
++    }
++
++    fn unique_test_capture_dir(name: &str) -> PathBuf {
++        let path = std::env::temp_dir().join(format!(
++            "stevenarella-mcp-capture-{name}-{}",
++            std::process::id()
++        ));
++        let _ = std::fs::remove_dir_all(&path);
++        path
++    }
+ 
+     #[test]
+     fn stdio_transport_is_accepted_and_requires_clean_stdout() {
+@@ -1120,6 +1762,157 @@ mod tests {
+         assert_eq!(payload["message"], QUEUE_TEST_RESPONSE);
+     }
+ 
++    #[test]
++    fn tools_and_resources_list_include_capture_when_configured() {
++        let policy = capture::CapturePolicy::memory();
++        let (tools, _receiver) = test_capture_tools(policy);
++
++        let tools_response = handle_jsonrpc_line_with_auth_and_tools(
++            r#"{"jsonrpc":"2.0","id":13,"method":"tools/list"}"#,
++            None,
++            None,
++            Some(&tools),
++        )
++        .unwrap();
++        let resources_response = handle_jsonrpc_line_with_auth_and_tools(
++            r#"{"jsonrpc":"2.0","id":14,"method":"resources/list"}"#,
++            None,
++            None,
++            Some(&tools),
++        )
++        .unwrap();
++
++        assert!(tools_response.contains(MCP_CAPTURE_SCREENSHOT_TOOL));
++        assert!(tools_response.contains(MCP_CAPTURE_LATEST_FRAME_TOOL));
++        assert!(resources_response.contains(MCP_CAPTURE_SCREENSHOT_RESOURCE));
++        assert!(resources_response.contains(MCP_CAPTURE_LATEST_FRAME_RESOURCE));
++    }
++
++    #[test]
++    fn jsonrpc_capture_tool_returns_inline_image_and_metadata() {
++        let policy = capture::CapturePolicy::memory();
++        let (tools, receiver) = test_capture_tools(policy.clone());
++        let request = json!({
++            "jsonrpc": "2.0",
++            "id": 15,
++            "method": MCP_TOOLS_CALL_METHOD,
++            "params": {
++                "name": MCP_CAPTURE_SCREENSHOT_TOOL,
++                "arguments": {},
++            },
++        })
++        .to_string();
++
++        let worker = thread::spawn(move || {
++            handle_jsonrpc_line_with_auth_and_tools(&request, None, None, Some(&tools))
++                .expect("capture tool should return a response")
++        });
++        let drained = drain_until_capture(&receiver, &policy);
++
++        assert_eq!(drained, 1);
++        let response: Value = serde_json::from_str(&worker.join().unwrap()).unwrap();
++        let content = response["result"]["content"].as_array().unwrap();
++        assert_eq!(content[0]["type"], MCP_CONTENT_TYPE_IMAGE);
++        assert_eq!(content[0]["mimeType"], MCP_MIME_IMAGE_PNG);
++        assert!(content[0]["data"].as_str().unwrap().len() > 0);
++        let metadata: Value = serde_json::from_str(content[1]["text"].as_str().unwrap()).unwrap();
++        assert_eq!(metadata["mode"], "screenshot");
++        assert_eq!(metadata["output"], MCP_OUTPUT_INLINE);
++        assert_eq!(metadata["sequence_id"], TEST_CAPTURE_SEQUENCE_ID);
++        assert_eq!(metadata["width_px"], TEST_CAPTURE_WIDTH_PX);
++        assert_eq!(metadata["height_px"], TEST_CAPTURE_HEIGHT_PX);
++        assert!(metadata["blake3_digest"].as_str().unwrap().len() == capture::BLAKE3_HEX_LENGTH);
++    }
++
++    #[test]
++    fn jsonrpc_capture_tool_returns_artifact_path_and_digest() {
++        let capture_dir = unique_test_capture_dir("artifact-tool");
++        let policy = capture::CapturePolicy::local(&capture_dir);
++        let (tools, receiver) = test_capture_tools(policy.clone());
++        let request = json!({
++            "jsonrpc": "2.0",
++            "id": 16,
++            "method": MCP_TOOLS_CALL_METHOD,
++            "params": {
++                "name": MCP_CAPTURE_SCREENSHOT_TOOL,
++                "arguments": { "output": TEST_ARTIFACT_OUTPUT },
++            },
++        })
++        .to_string();
++
++        let worker = thread::spawn(move || {
++            handle_jsonrpc_line_with_auth_and_tools(&request, None, None, Some(&tools))
++                .expect("capture tool should return a response")
++        });
++        let drained = drain_until_capture(&receiver, &policy);
++
++        assert_eq!(drained, 1);
++        let response: Value = serde_json::from_str(&worker.join().unwrap()).unwrap();
++        let content = response["result"]["content"].as_array().unwrap();
++        assert_eq!(content.len(), 1);
++        let metadata: Value = serde_json::from_str(content[0]["text"].as_str().unwrap()).unwrap();
++        let relative_path = metadata["relative_path"].as_str().unwrap();
++        assert_eq!(metadata["output"], MCP_OUTPUT_ARTIFACT);
++        assert_eq!(metadata["sequence_id"], TEST_CAPTURE_SEQUENCE_ID);
++        assert!(capture_dir.join(relative_path).exists());
++        assert!(metadata["blake3_digest"].as_str().unwrap().len() == capture::BLAKE3_HEX_LENGTH);
++        let _ = std::fs::remove_dir_all(capture_dir);
++    }
++
++    #[test]
++    fn jsonrpc_capture_resource_read_returns_inline_blob() {
++        let policy = capture::CapturePolicy::memory();
++        let (tools, receiver) = test_capture_tools(policy.clone());
++        let request = json!({
++            "jsonrpc": "2.0",
++            "id": 17,
++            "method": MCP_RESOURCES_READ_METHOD,
++            "params": { "uri": MCP_CAPTURE_LATEST_FRAME_RESOURCE },
++        })
++        .to_string();
++
++        let worker = thread::spawn(move || {
++            handle_jsonrpc_line_with_auth_and_tools(&request, None, None, Some(&tools))
++                .expect("resource read should return a response")
++        });
++        let drained = drain_until_capture(&receiver, &policy);
++
++        assert_eq!(drained, 1);
++        let response: Value = serde_json::from_str(&worker.join().unwrap()).unwrap();
++        let contents = response["result"]["contents"].as_array().unwrap();
++        assert_eq!(contents[0]["uri"], MCP_CAPTURE_LATEST_FRAME_RESOURCE);
++        assert_eq!(contents[0]["mimeType"], MCP_MIME_IMAGE_PNG);
++        assert!(contents[0]["blob"].as_str().unwrap().len() > 0);
++        let metadata: Value = serde_json::from_str(contents[1]["text"].as_str().unwrap()).unwrap();
++        assert_eq!(metadata["mode"], "latest_frame");
++        assert_eq!(metadata["output"], MCP_OUTPUT_INLINE);
++    }
++
++    #[test]
++    fn jsonrpc_capture_tool_rejects_invalid_format_before_enqueue() {
++        let policy = capture::CapturePolicy::memory();
++        let (tools, receiver) = test_capture_tools(policy);
++        let request = json!({
++            "jsonrpc": "2.0",
++            "id": 18,
++            "method": MCP_TOOLS_CALL_METHOD,
++            "params": {
++                "name": MCP_CAPTURE_SCREENSHOT_TOOL,
++                "arguments": { "format": "webp" },
++            },
++        })
++        .to_string();
++
++        let response = handle_jsonrpc_line_with_auth_and_tools(&request, None, None, Some(&tools))
++            .expect("invalid format should return response");
++
++        assert!(response.contains(&JSONRPC_INVALID_REQUEST.to_string()));
++        assert_eq!(
++            try_drain_capture_once(&receiver, &capture::CapturePolicy::memory()),
++            0
++        );
++    }
++
+     #[test]
+     fn command_queue_drains_pending_command_with_main_thread_handler() {
+         let (sender, receiver) = control_command_channel();
+@@ -1215,7 +2008,7 @@ mod tests {
+             if drained > 0 {
+                 return drained;
+             }
+-            thread::yield_now();
++            thread::sleep(Duration::from_millis(QUEUE_DRAIN_SLEEP_MILLIS));
+         }
+         0
+     }
