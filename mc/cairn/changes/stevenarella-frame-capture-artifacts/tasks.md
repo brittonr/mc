@@ -1,6 +1,6 @@
 # Tasks
 
-- [ ] [serial] Define pure capture request, policy, artifact metadata, digest, and validation types with positive and negative fixtures. r[mc_compatibility.stevenarella_frame_capture.contract]
+- [x] [serial] Define pure capture request, policy, artifact metadata, digest, and validation types with positive and negative fixtures. r[mc_compatibility.stevenarella_frame_capture.contract] Evidence: `docs/evidence/stevenarella-frame-capture-contract-validation-2026-05-31.run.log`, `docs/evidence/stevenarella-frame-capture-contract-validation-2026-05-31.b3`, `docs/evidence/stevenarella-frame-capture-contract-source-2026-05-31.patch`, `docs/evidence/stevenarella-frame-capture-contract-source-2026-05-31.b3`.
 - [ ] [depends:contract] Add a GL RGBA readback helper and top-left-origin buffer normalization without changing ordinary rendering. r[mc_compatibility.stevenarella_frame_capture.readback]
 - [ ] [depends:readback] Add a post-render/pre-swap capture hook that services one-shot screenshot and latest-frame requests from the MCP/control queue. r[mc_compatibility.stevenarella_frame_capture.screenshot]
 - [ ] [depends:screenshot] Implement bounded recording to `--capture-dir` with fps, duration/frame-count, byte, and path-containment guards. r[mc_compatibility.stevenarella_frame_capture.recording]
