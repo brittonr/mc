@@ -70,7 +70,30 @@ const SURVIVAL_CHEST_SERVER_REOPEN_NEEDLE: &str =
 const SURVIVAL_CHEST_SERVER_PERSISTED_NEEDLE: &str =
     "survival_chest_persisted username=compatbot slot=0 item=Dirt count=1";
 const SURVIVAL_CHEST_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_CHEST_FIXTURE";
-const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition";
+const SURVIVAL_CRAFTING_CLIENT_OPEN_NEEDLE: &str =
+    "survival_crafting_table_open_seen window=1 position=4,64,0";
+const SURVIVAL_CRAFTING_CLIENT_INPUT_A_NEEDLE: &str =
+    "survival_crafting_input_a_sent window=1 slot=1 item=OakPlanks count=1";
+const SURVIVAL_CRAFTING_CLIENT_INPUT_B_NEEDLE: &str =
+    "survival_crafting_input_b_sent window=1 slot=4 item=OakPlanks count=1";
+const SURVIVAL_CRAFTING_CLIENT_RESULT_NEEDLE: &str =
+    "survival_crafting_result_seen window=1 slot=0 item=Stick count=4 recipe=minecraft:stick";
+const SURVIVAL_CRAFTING_CLIENT_COLLECT_NEEDLE: &str =
+    "survival_crafting_result_collected window=1 slot=0 item=Stick count=4";
+const SURVIVAL_CRAFTING_CLIENT_INVENTORY_NEEDLE: &str =
+    "survival_crafting_inventory_updated slot=36 item=Stick count=4";
+const SURVIVAL_CRAFTING_SERVER_OPEN_NEEDLE: &str =
+    "survival_crafting_table_open username=compatbot position=4,64,0 window=1";
+const SURVIVAL_CRAFTING_SERVER_INPUT_A_NEEDLE: &str =
+    "survival_crafting_input_a username=compatbot window=1 slot=1 item=OakPlanks count=1";
+const SURVIVAL_CRAFTING_SERVER_INPUT_B_NEEDLE: &str =
+    "survival_crafting_input_b username=compatbot window=1 slot=4 item=OakPlanks count=1";
+const SURVIVAL_CRAFTING_SERVER_RESULT_NEEDLE: &str =
+    "survival_crafting_result username=compatbot window=1 slot=0 item=Stick count=4 recipe=minecraft:stick";
+const SURVIVAL_CRAFTING_SERVER_COLLECT_NEEDLE: &str =
+    "survival_crafting_collect username=compatbot window=1 slot=0 item=Stick count=4 inventory_slot=36";
+const SURVIVAL_CRAFTING_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_CRAFTING_FIXTURE";
+const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
     "Dimension type:",
@@ -184,6 +207,7 @@ enum Scenario {
     InventoryInteraction,
     SurvivalBreakPlacePickup,
     SurvivalChestPersistence,
+    SurvivalCraftingTable,
     CombatDamage,
     CombatKnockback,
     ArmorEquipmentMitigation,
@@ -1590,6 +1614,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
         "inventory-interaction" => Ok(Scenario::InventoryInteraction),
         "survival-break-place-pickup" => Ok(Scenario::SurvivalBreakPlacePickup),
         "survival-chest-persistence" => Ok(Scenario::SurvivalChestPersistence),
+        "survival-crafting-table" => Ok(Scenario::SurvivalCraftingTable),
         "combat-damage" => Ok(Scenario::CombatDamage),
         "combat-knockback" => Ok(Scenario::CombatKnockback),
         "armor-equipment-mitigation" => Ok(Scenario::ArmorEquipmentMitigation),
@@ -1625,6 +1650,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::InventoryInteraction => "inventory-interaction",
         Scenario::SurvivalBreakPlacePickup => "survival-break-place-pickup",
         Scenario::SurvivalChestPersistence => "survival-chest-persistence",
+        Scenario::SurvivalCraftingTable => "survival-crafting-table",
         Scenario::CombatDamage => "combat-damage",
         Scenario::CombatKnockback => "combat-knockback",
         Scenario::ArmorEquipmentMitigation => "armor-equipment-mitigation",
@@ -1736,6 +1762,35 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             (
                 "survival_chest_persisted_seen",
                 SURVIVAL_CHEST_CLIENT_PERSISTED_NEEDLE,
+            ),
+        ],
+        Scenario::SurvivalCraftingTable => &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "survival_crafting_table_open_seen",
+                SURVIVAL_CRAFTING_CLIENT_OPEN_NEEDLE,
+            ),
+            (
+                "survival_crafting_input_a_sent",
+                SURVIVAL_CRAFTING_CLIENT_INPUT_A_NEEDLE,
+            ),
+            (
+                "survival_crafting_input_b_sent",
+                SURVIVAL_CRAFTING_CLIENT_INPUT_B_NEEDLE,
+            ),
+            (
+                "survival_crafting_result_seen",
+                SURVIVAL_CRAFTING_CLIENT_RESULT_NEEDLE,
+            ),
+            (
+                "survival_crafting_result_collected",
+                SURVIVAL_CRAFTING_CLIENT_COLLECT_NEEDLE,
+            ),
+            (
+                "survival_crafting_inventory_updated",
+                SURVIVAL_CRAFTING_CLIENT_INVENTORY_NEEDLE,
             ),
         ],
         Scenario::CombatDamage => &[
@@ -2112,6 +2167,29 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
             (
                 "server_survival_chest_persisted",
                 SURVIVAL_CHEST_SERVER_PERSISTED_NEEDLE,
+            ),
+        ],
+        Scenario::SurvivalCraftingTable => &[
+            ("server_username_seen", "compatbot"),
+            (
+                "server_survival_crafting_table_open",
+                SURVIVAL_CRAFTING_SERVER_OPEN_NEEDLE,
+            ),
+            (
+                "server_survival_crafting_input_a",
+                SURVIVAL_CRAFTING_SERVER_INPUT_A_NEEDLE,
+            ),
+            (
+                "server_survival_crafting_input_b",
+                SURVIVAL_CRAFTING_SERVER_INPUT_B_NEEDLE,
+            ),
+            (
+                "server_survival_crafting_result",
+                SURVIVAL_CRAFTING_SERVER_RESULT_NEEDLE,
+            ),
+            (
+                "server_survival_crafting_collect",
+                SURVIVAL_CRAFTING_SERVER_COLLECT_NEEDLE,
             ),
         ],
         Scenario::CombatDamage => &[
@@ -2939,7 +3017,7 @@ Automates a local Stevenarella compatibility smoke against a Minecraft {} / prot
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from legacy Nickel config, or --steel-config/MC_COMPAT_STEEL_CONFIG a restricted Steel module; env vars and later CLI flags override either config source.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.scenario.receipt.v2 JSON receipt for Cairn/Octet evidence flows.
-Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario ctf-invalid-return-drop for one contained own-base return/drop attempt with server rejection evidence. Use --scenario ctf-score-limit-win-condition for one near-limit capture that emits exactly one win/end milestone. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
+Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario survival-crafting-table for one crafting-table open/input/result/collect rail. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario ctf-invalid-return-drop for one contained own-base return/drop attempt with server rejection evidence. Use --scenario ctf-score-limit-win-condition for one near-limit capture that emits exactly one win/end milestone. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
 Use --expect-status-description/--expect-status-version/--expect-status-sample to assert status response fixture data, --packet-capture-summary for redacted capture summary metadata, and --proxy-route/--proxy-forwarding-mode for proxied-route receipt fields.\n\
 Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
 Use --run-matrix --receipt-dir DIR to run Paper and Valence receipts then compare them; add --dry-run after --run-matrix for a non-side-effecting matrix fixture.\n\
@@ -3489,6 +3567,9 @@ fn start_valence_server(cfg: &Config) -> Result<ManagedServer, String> {
     if cfg.scenario == Scenario::SurvivalChestPersistence {
         cmd.env(SURVIVAL_CHEST_FIXTURE_ENV, "1");
     }
+    if cfg.scenario == Scenario::SurvivalCraftingTable {
+        cmd.env(SURVIVAL_CRAFTING_FIXTURE_ENV, "1");
+    }
     if cfg.scenario == Scenario::CtfInvalidReturnDrop {
         cmd.env("MC_COMPAT_CTF_INVALID_RETURN_DROP_PROBE", "1");
     }
@@ -3554,6 +3635,10 @@ fn configure_paper_run_command(cfg: &Config, cmd: &mut Command) -> Result<(), St
         .arg(format!("SIMULATION_DISTANCE={PAPER_SIMULATION_DISTANCE}"));
     if cfg.scenario == Scenario::SurvivalChestPersistence {
         cmd.arg("-e").arg(format!("{SURVIVAL_CHEST_FIXTURE_ENV}=1"));
+    }
+    if cfg.scenario == Scenario::SurvivalCraftingTable {
+        cmd.arg("-e")
+            .arg(format!("{SURVIVAL_CRAFTING_FIXTURE_ENV}=1"));
     }
     add_paper_plugin_mount(cfg, cmd)?;
     cmd.arg(&cfg.docker_image);
@@ -4194,6 +4279,9 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
                 (client_index + 1).to_string(),
             );
         }
+        Scenario::SurvivalCraftingTable => {
+            cmd.env("MC_COMPAT_SURVIVAL_CRAFTING_PROBE", "1");
+        }
         Scenario::EquipmentUpdateObservation | Scenario::EquipmentSlotItemMatrixExpansion => {
             let team = if client_index == 0 { "red" } else { "blue" };
             cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
@@ -4384,6 +4472,7 @@ fn requires_server_correlation(cfg: &Config) -> bool {
             | Scenario::InventoryInteraction
             | Scenario::SurvivalBreakPlacePickup
             | Scenario::SurvivalChestPersistence
+            | Scenario::SurvivalCraftingTable
             | Scenario::CombatDamage
             | Scenario::CombatKnockback
             | Scenario::ArmorEquipmentMitigation
@@ -5057,6 +5146,14 @@ fn smoke_receipt_json_with_typed_event_oracle(
             "close_window",
             "disconnect_reconnect",
         ],
+        Scenario::SurvivalCraftingTable => vec![
+            "login_success",
+            "play_join_game",
+            "open_container",
+            "crafting_grid_click",
+            "crafting_result_collect",
+            "inventory_update",
+        ],
         Scenario::CombatDamage => vec!["two_client_login", "play_join_game", "use_entity_attack"],
         Scenario::CombatKnockback => vec![
             "two_client_login",
@@ -5226,6 +5323,17 @@ fn smoke_receipt_json_with_typed_event_oracle(
         "server_survival_chest_close",
         "server_survival_chest_reopen",
         "server_survival_chest_persisted",
+        "survival_crafting_table_open_seen",
+        "survival_crafting_input_a_sent",
+        "survival_crafting_input_b_sent",
+        "survival_crafting_result_seen",
+        "survival_crafting_result_collected",
+        "survival_crafting_inventory_updated",
+        "server_survival_crafting_table_open",
+        "server_survival_crafting_input_a",
+        "server_survival_crafting_input_b",
+        "server_survival_crafting_result",
+        "server_survival_crafting_collect",
         "server_inventory_hotbar_select",
         "server_inventory_drop",
         "server_inventory_pickup",
@@ -6364,6 +6472,7 @@ mod tests {
         Scenario::InventoryInteraction,
         Scenario::SurvivalBreakPlacePickup,
         Scenario::SurvivalChestPersistence,
+        Scenario::SurvivalCraftingTable,
         Scenario::CombatDamage,
         Scenario::CombatKnockback,
         Scenario::ArmorEquipmentMitigation,
@@ -6861,6 +6970,10 @@ mod tests {
         let chest = test_config(&["--scenario", "survival-chest-persistence"], &[])
             .expect("survival chest scenario parses");
         assert_eq!(chest.scenario, Scenario::SurvivalChestPersistence);
+
+        let crafting = test_config(&["--scenario", "survival-crafting-table"], &[])
+            .expect("survival crafting-table scenario parses");
+        assert_eq!(crafting.scenario, Scenario::SurvivalCraftingTable);
 
         let knockback = test_config(&["--scenario", "combat-knockback"], &[])
             .expect("combat-knockback scenario parses");
@@ -8955,6 +9068,57 @@ RED: 1
         assert!(wrong_server_reopen_window
             .missing_milestones
             .contains(&"server_survival_chest_reopen"));
+    }
+
+    #[test]
+    fn survival_crafting_table_scenario_tracks_client_and_server_evidence() {
+        let client = evaluate_scenario(
+            Scenario::SurvivalCraftingTable,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nsurvival_crafting_table_open_seen window=1 position=4,64,0\nsurvival_crafting_input_a_sent window=1 slot=1 item=OakPlanks count=1\nsurvival_crafting_input_b_sent window=1 slot=4 item=OakPlanks count=1\nsurvival_crafting_result_seen window=1 slot=0 item=Stick count=4 recipe=minecraft:stick\nsurvival_crafting_result_collected window=1 slot=0 item=Stick count=4\nsurvival_crafting_inventory_updated slot=36 item=Stick count=4\n",
+        );
+        assert!(client.passed, "{client:?}");
+        assert!(client.missing_milestones.is_empty());
+
+        let missing_result = evaluate_scenario(
+            Scenario::SurvivalCraftingTable,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nsurvival_crafting_table_open_seen window=1 position=4,64,0\nsurvival_crafting_input_a_sent window=1 slot=1 item=OakPlanks count=1\nsurvival_crafting_input_b_sent window=1 slot=4 item=OakPlanks count=1\n",
+        );
+        assert!(!missing_result.passed, "{missing_result:?}");
+        assert!(missing_result
+            .missing_milestones
+            .contains(&"survival_crafting_result_seen"));
+
+        let wrong_client_values = evaluate_scenario(
+            Scenario::SurvivalCraftingTable,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nsurvival_crafting_table_open_seen window=1 position=5,64,0\nsurvival_crafting_input_a_sent window=1 slot=2 item=Stone count=2\nsurvival_crafting_input_b_sent window=1 slot=5 item=Stone count=2\nsurvival_crafting_result_seen window=1 slot=0 item=Stone count=2 recipe=minecraft:stone\nsurvival_crafting_result_collected window=1 slot=0 item=Stone count=2\nsurvival_crafting_inventory_updated slot=37 item=Stone count=2\n",
+        );
+        assert!(!wrong_client_values.passed, "{wrong_client_values:?}");
+        assert!(wrong_client_values
+            .missing_milestones
+            .contains(&"survival_crafting_table_open_seen"));
+        assert!(wrong_client_values
+            .missing_milestones
+            .contains(&"survival_crafting_input_a_sent"));
+        assert!(wrong_client_values
+            .missing_milestones
+            .contains(&"survival_crafting_result_seen"));
+
+        let server = evaluate_server_scenario(
+            Scenario::SurvivalCraftingTable,
+            "compatbot joined\nMC-COMPAT-MILESTONE survival_crafting_table_open username=compatbot position=4,64,0 window=1\nMC-COMPAT-MILESTONE survival_crafting_input_a username=compatbot window=1 slot=1 item=OakPlanks count=1\nMC-COMPAT-MILESTONE survival_crafting_input_b username=compatbot window=1 slot=4 item=OakPlanks count=1\nMC-COMPAT-MILESTONE survival_crafting_result username=compatbot window=1 slot=0 item=Stick count=4 recipe=minecraft:stick\nMC-COMPAT-MILESTONE survival_crafting_collect username=compatbot window=1 slot=0 item=Stick count=4 inventory_slot=36\n",
+            "compatbot",
+        );
+        assert!(server.passed, "{server:?}");
+
+        let missing_collect = evaluate_server_scenario(
+            Scenario::SurvivalCraftingTable,
+            "compatbot joined\nMC-COMPAT-MILESTONE survival_crafting_table_open username=compatbot position=4,64,0 window=1\nMC-COMPAT-MILESTONE survival_crafting_input_a username=compatbot window=1 slot=1 item=OakPlanks count=1\n",
+            "compatbot",
+        );
+        assert!(!missing_collect.passed, "{missing_collect:?}");
+        assert!(missing_collect
+            .missing_milestones
+            .contains(&"server_survival_crafting_collect"));
     }
 
     #[test]

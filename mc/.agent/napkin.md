@@ -22,6 +22,7 @@
 | 2026-05-29 | done-review | Replaced a manifest PASS with prose and logged Nix build start without exit status, so review could not verify success | Capture runnable command output with explicit `exit_status=0`; for self-referential manifest checks, add a checkpoint plus a separate final manifest log after `.b3` refresh |
 | 2026-05-30 | self | Added a Nix check grep for pattern `--example ctf` without `--`, so grep parsed it as an option | When grepping dash-prefixed patterns in shell/Nix checks, write `grep -Fq -- '<pattern>' file` |
 | 2026-05-30 | self | Cairn gate failed after flake input pin because `cairn-policy/generated/cairn-policy.json` lacked `steel_orchestration_policy` | After Cairn input updates, sync generated policy schema fields before running `nix run .#cairn -- gate ...` |
+| 2026-05-30 | done-review | Marked survival crafting checker task complete while stale-revision/oracle rejection from the proposal was not in the checker or contract | Before checking tasks, compare every proposal rejection mode against checker constants, contract tokens, and negative self-tests; add stale revision/oracle fixtures or narrow task language |
 
 ## User Preferences
 - Keep replies terse and direct.
@@ -58,3 +59,4 @@
 
 - 2026-05-30: Parent repo ignores `/mc/*`; new Cairn/evidence/checker files under `mc/` need exact `git add -f ...` before Nix flake checks can see them in the source closure. Use `git add -u docs/evidence` for tracked `.b3` refreshes, then force-add only the new ignored evidence paths.
 - 2026-05-30: Changing shared `protocol-763-acceptance-matrix.md`, `protocol-763-current-evidence-bundle.md`, `tools/mc-compat-runner/src/main.rs`, `flake.nix`, or `README.md` stales many historical `docs/evidence/*.b3` manifests. Refresh all manifest entries, then rerun `nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py`.
+- 2026-05-30: Single-file Rust checker scripts can fail through the default shared cargo-script target with `Cargo.lock version 4 requires -Znext-lockfile-bump`; set `CARGO_TARGET_DIR=/tmp/mc-cargo-script-target` when running `./tools/check_*.rs --self-test` locally.

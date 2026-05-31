@@ -1,0 +1,72 @@
+command=nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 81 manifests, 492 entries, 68 receipts scanned
+manifest_exit_status=0
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-valence-survival-crafting-table-dry-run .#checks.x86_64-linux.mc-compat-help .#checks.x86_64-linux.mc-compat-scenario-manifest .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L
+these 2 derivations will be built:
+  /nix/store/b2ap6qps14vx2d4nxpj246avl4p4r6xn-mc-compat-scenario-manifest.drv
+  /nix/store/cn9ivmnyl4sphgl85d0zsy6v3y926939-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/cn9ivmnyl4sphgl85d0zsy6v3y926939-mc-compat-evidence-manifests.drv'...
+building '/nix/store/b2ap6qps14vx2d4nxpj246avl4p4r6xn-mc-compat-scenario-manifest.drv'...
+nix_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate proposal survival-crafting-table-parity --root .
+{
+  "change": "survival-crafting-table-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "3aa9c9a333e911c76cc84b1f99eac5e9401301045bddd39d625ff0f15d25200a",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "455f2158dd3ddd8ee25464c23697d960d4aae422a1a6812ee7951a1d2acffd8a",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+proposal_gate_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate tasks survival-crafting-table-parity --root .
+{
+  "change": "survival-crafting-table-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "8919f3dfe4ab018731d1daf35c13867b00299549d8db15ffbc3c272e937f525a",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "04d0db95c8b7ac7c52b64a1a72a0b248c1519dca56f2aa5a9daf31af280d702c",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+tasks_gate_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 30,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 32,
+  "valid": true
+}
+cairn_validate_exit_status=0

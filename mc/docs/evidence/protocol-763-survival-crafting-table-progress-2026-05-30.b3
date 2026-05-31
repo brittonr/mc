@@ -1,0 +1,11 @@
+e46e0dad939ac77277e42e752488a3375a988f48aa07cb22a4b3a5b821cee756  docs/evidence/protocol-763-survival-crafting-table-contract-2026-05-30.md
+246cf10159950582ddc3dcc6b579cc01202619e077e56f1cfb653a0a31cffbec  docs/evidence/protocol-763-survival-crafting-table-progress-2026-05-30.run.log
+afa1d31ca6f0775a62da23bef52138d208e67a70e5bb88845d9e609be5d1371f  docs/evidence/protocol-763-survival-crafting-table-revision-oracle-2026-05-30.md
+90bd68801b16fa10f4a3cf7386746ab6011b0b1c998e06a834d7e928bd4d4164  tools/check_survival_crafting_table.rs
+c56634dc7b61f99945a8b4f78139b5fa1937e172b8850cc01002847b94d019ad  tools/mc-compat-runner/src/main.rs
+c459be628070418892f499c6aa97ee9ac1b826f0aa72be6c4b3adfc268d2998f  tools/mc-compat-runner/src/scenario_manifest_generated.rs
+0b10d6d3647c1a1a50ed3156cfb4252ece1ba6dd84f270f78f45be9205924994  flake.nix
+aab8ef2e73db49c366cf851583e971269a31ddcc8598fb977820560969cd845d  cairn/changes/survival-crafting-table-parity/tasks.md
+a5a9c7b45ae98734a7389e7c63bd2f734347d8aa47c4e714fb0f16203cf492f9  cairn/changes/survival-crafting-table-parity/specs/mc-compatibility/spec.md
+49d2054f399c3b256d1d2b796bdcaa7ce14c7ec94d5c22009aed323e4c169275  cairn/changes/survival-crafting-table-parity/proposal.md
+421c16557bb9a07551ba1674e41d474cace69b331fcd9b67475f837fd9a88a8e  docs/evidence/protocol-763-survival-crafting-table-validation-2026-05-30.run.log
