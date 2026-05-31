@@ -1,0 +1,59 @@
+# Stevenarella frame post-archive provenance validation — 2026-05-31
+
+## Purpose
+This log records repo-local validation of archive commit 01ac4ac. The follow-up commit that adds this log is evidence-only and does not change the archived Cairn content, accepted spec requirements, or Stevenarella child repo.
+
+## Revisions under validation
+$ git -C /home/brittonr/git rev-parse --short HEAD
+01ac4ac
+$ git -C stevenarella rev-parse --short HEAD
+0583455
+
+## Archive location
+$ test -d cairn/archive/2026-05-31-stevenarella-frame-capture-artifacts
+exit_status=0
+$ test ! -e cairn/changes/stevenarella-frame-capture-artifacts
+exit_status=0
+
+## Accepted spec contains frame capture requirements
+$ rg 'mc_compatibility\.stevenarella_frame_capture\.(contract|readback|screenshot|recording|mcp_resources|validation|artifacts)' cairn/specs/mc-compatibility/spec.md
+r[mc_compatibility.stevenarella_frame_capture.contract] Stevenarella frame capture MUST define bounded capture request, policy, and artifact metadata contracts before MCP capture tools are promoted.
+r[mc_compatibility.stevenarella_frame_capture.contract.scope]
+r[mc_compatibility.stevenarella_frame_capture.contract.invalid]
+r[mc_compatibility.stevenarella_frame_capture.readback] Stevenarella frame capture MUST read pixels from Stevenarella's GL framebuffer rather than external host screenshot tools.
+r[mc_compatibility.stevenarella_frame_capture.readback.after_render]
+r[mc_compatibility.stevenarella_frame_capture.readback.origin]
+r[mc_compatibility.stevenarella_frame_capture.screenshot] Stevenarella MUST support bounded one-shot screenshot capture through the control plane.
+r[mc_compatibility.stevenarella_frame_capture.screenshot.metadata]
+r[mc_compatibility.stevenarella_frame_capture.recording] Stevenarella frame recording MUST be bounded by policy.
+r[mc_compatibility.stevenarella_frame_capture.recording.bounded]
+r[mc_compatibility.stevenarella_frame_capture.recording.contained]
+r[mc_compatibility.stevenarella_frame_capture.mcp_resources] MCP capture tools/resources MUST expose screenshots and frames without forcing large unbounded JSON payloads.
+r[mc_compatibility.stevenarella_frame_capture.mcp_resources.file_backed]
+r[mc_compatibility.stevenarella_frame_capture.validation] Frame capture MUST have positive and negative tests before promotion.
+r[mc_compatibility.stevenarella_frame_capture.validation.tests]
+r[mc_compatibility.stevenarella_frame_capture.artifacts] Review-critical frame capture evidence MUST be copied under `docs/evidence/` before archive.
+r[mc_compatibility.stevenarella_frame_capture.artifacts.reviewable]
+exit_status=0
+
+## Evidence manifests
+$ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 131 manifests, 607 entries, 68 receipts scanned
+exit_status=0
+
+## Cairn validate
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 31,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 33,
+  "valid": true
+}
+exit_status=0
