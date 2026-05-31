@@ -1,0 +1,81 @@
+command=nix run --no-update-lock-file .#cairn -- archive refresh-red-blue-scoring-soak-live-evidence --execute --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: refresh-red-blue-scoring-soak-live-evidence",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-refresh-red-blue-scoring-soak-live-evidence"
+    }
+  ],
+  "blocked": false,
+  "change": "refresh-red-blue-scoring-soak-live-evidence",
+  "dry_run": false,
+  "input_hash": "638f95d6a68baca60b462e91d997db97dc74543043f70aaefe54cab3b5340bdd",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "96060d7b43959e1420ef160c2f7ada16b57a39208e6ef382bd99f55dd8a0f509",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-refresh-red-blue-scoring-soak-live-evidence/design.md"
+        },
+        {
+          "content_hash": "d313fe27f19f79af639b54576f0c391c56ec2580a4404c2aa59a4a24f82b8560",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-refresh-red-blue-scoring-soak-live-evidence/proposal.md"
+        },
+        {
+          "content_hash": "95b02ace0310a9182453757db625f75f3b2e13fdebc8dd4ac7df7cedd9d4555d",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-refresh-red-blue-scoring-soak-live-evidence/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "423cde46d5a565eaea8fce0ef80cc27440b8e7e720aeda62378f0038ddfc8419",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-refresh-red-blue-scoring-soak-live-evidence/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/refresh-red-blue-scoring-soak-live-evidence"
+        }
+      ],
+      "manifest_hash": "4d1bbfcf1b93551f871163bc0ac7a1d5fff809cc5e95f0c198104ee2d70d5b3f"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "96060d7b43959e1420ef160c2f7ada16b57a39208e6ef382bd99f55dd8a0f509",
+          "exists": true,
+          "path": "./cairn/changes/refresh-red-blue-scoring-soak-live-evidence/design.md"
+        },
+        {
+          "content_hash": "d313fe27f19f79af639b54576f0c391c56ec2580a4404c2aa59a4a24f82b8560",
+          "exists": true,
+          "path": "./cairn/changes/refresh-red-blue-scoring-soak-live-evidence/proposal.md"
+        },
+        {
+          "content_hash": "95b02ace0310a9182453757db625f75f3b2e13fdebc8dd4ac7df7cedd9d4555d",
+          "exists": true,
+          "path": "./cairn/changes/refresh-red-blue-scoring-soak-live-evidence/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "423cde46d5a565eaea8fce0ef80cc27440b8e7e720aeda62378f0038ddfc8419",
+          "exists": true,
+          "path": "./cairn/changes/refresh-red-blue-scoring-soak-live-evidence/tasks.md"
+        }
+      ],
+      "manifest_hash": "15fcceb50b2ce79687f671b338148280f06d6499ddaefd5c9a6d4985a9e95fe1"
+    },
+    "kind": "archive",
+    "manifest_hash": "ac33a991080448f428839dadc019bdc4f0fce2bd30b0320bf4993b49ef6fa313"
+  },
+  "plan_hash": "da25171f96889451ccd53ed2c355ced8f66845c12bdf9efe45f2cf2052ee1261",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "5f34b3565c918e981ea6ce727ef555f69b69cf28689ecfc730968be8d0e1cbb5"
+}
+exit_status=0

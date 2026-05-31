@@ -1042,6 +1042,16 @@
           mkdir -p "$out"
           cp ../ctf-score-limit-win-condition-self-test.log ../ctf-score-limit-win-condition-check.log "$out/"
         '';
+        mc-compat-red-blue-scoring-soak-live-refresh = pkgs.runCommand "mc-compat-red-blue-scoring-soak-live-refresh" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc ]; } ''
+          cp -R ${./.} repo
+          chmod -R u+w repo
+          cd repo
+          rustc --edition=2021 tools/check_red_blue_scoring_soak_live_refresh.rs -o ../check-red-blue-scoring-soak-live-refresh
+          ../check-red-blue-scoring-soak-live-refresh --self-test > ../red-blue-scoring-soak-live-refresh-self-test.log
+          ../check-red-blue-scoring-soak-live-refresh > ../red-blue-scoring-soak-live-refresh-check.log
+          mkdir -p "$out"
+          cp ../red-blue-scoring-soak-live-refresh-self-test.log ../red-blue-scoring-soak-live-refresh-check.log "$out/"
+        '';
         mc-compat-armor-loadout-enchantment-status = pkgs.runCommand "mc-compat-armor-loadout-enchantment-status" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc ]; } ''
           cp -R ${./.} repo
           chmod -R u+w repo
@@ -1671,6 +1681,7 @@
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-ctf-invalid-pickup-ownership} "$out/ctf-invalid-pickup-ownership-checker"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-ctf-invalid-return-drop} "$out/ctf-invalid-return-drop-checker"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-ctf-score-limit-win-condition} "$out/ctf-score-limit-win-condition-checker"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-red-blue-scoring-soak-live-refresh} "$out/red-blue-scoring-soak-live-refresh"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-armor-loadout-enchantment-status} "$out/armor-loadout-enchantment-status"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-equipment-slot-item-expansion} "$out/equipment-slot-item-expansion"
           cat > "$out/manifest.txt" <<'EOF'
@@ -1692,6 +1703,7 @@
           ctf-invalid-pickup-ownership
           ctf-invalid-return-drop
           ctf-score-limit-win-condition
+          red-blue-scoring-soak-live-refresh
           survival-break-place-pickup
           compat-bot-probe
           acceptance-matrix

@@ -1,0 +1,7 @@
+scenario=red-blue-scoring-soak-live-refresh
+red_scenario=multi-client-load-score
+blue_scenario=blue-flag-score
+summary_receipt=docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-2026-05-30.receipt.json
+red_receipt=docs/evidence/protocol-763-red-blue-scoring-soak-red-2026-05-30.receipt.json
+blue_receipt=docs/evidence/protocol-763-red-blue-scoring-soak-blue-2026-05-30.receipt.json
+row_digest=349b1b7dc84877dd56dce3344611d04ce86a74413738ebc3fdd2a2f720504bed

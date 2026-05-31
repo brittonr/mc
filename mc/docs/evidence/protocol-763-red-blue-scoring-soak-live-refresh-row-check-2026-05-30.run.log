@@ -1,0 +1,6 @@
+command=target/check-red-blue-scoring-soak-live-refresh --self-test
+red blue scoring soak live refresh self-test ok: positive and negative fixtures exercised
+self_test_exit_status=0
+command=target/check-red-blue-scoring-soak-live-refresh --record docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-2026-05-30.record
+red blue scoring soak live refresh check passed: fresh RED and BLUE receipts, logs, matrix, bundle, and ledger validated
+record_exit_status=0

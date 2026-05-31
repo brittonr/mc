@@ -10,7 +10,7 @@ full CTF correctness remains a non-claim.
 
 | Rule | Seam | Required client milestones | Required server milestones | Forbidden transitions | Evidence | BLAKE3 |
 | --- | --- | --- | --- | --- | --- | --- |
-| score_capture_red_blue_bounded | RED/BLUE scoring soak | flag_pickup, flag_capture, score_red_1, score_blue_1 | server_score_path | none in historical row | `docs/evidence/protocol-763-red-blue-soak-historical-oracle-2026-05-27.md` | `b7c861f27ef7ceaf94705a74a5459d3f9df625dada4b14d8715ba8e9c5d921de` |
+| score_capture_red_blue_bounded | RED/BLUE scoring soak | multi-client-load-score, blue-flag-score, flag_pickup, flag_capture, score_red_1, score_blue_1 | server_client_a_seen, server_client_b_seen, server_username_seen, server_flag_or_score | panic, unexpected_eof, protocol_mismatch, decode_error | `docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-2026-05-30.receipt.json` | `349b1b7dc84877dd56dce3344611d04ce86a74413738ebc3fdd2a2f720504bed` |
 | flag_carrier_death_returns_flag_without_score | Flag-carrier death/return | flag_pickup, combat_attack_sent, combat_death_observed, respawn_request_sent, respawn_health_restored | server_flag_pickup, server_flag_carrier_death, server_flag_return | unexpected_flag_capture, unexpected_red_score, unexpected_blue_score | `docs/evidence/protocol-763-flag-carrier-death-return.matrix.receipt.json` | `d4202d7f04245dd385f16f9a174b84fa59a837fd75a8f9ba7db3cc7adaf692a4` |
 | disconnect_returns_flag_and_reconnect_state_coherent | Reconnect flag-state | flag_pickup, reconnect_session | server_flag_pickup, server_flag_disconnect_return, server_reconnect_state_coherent | unexpected_flag_capture, unexpected_red_score, unexpected_blue_score | `docs/evidence/protocol-763-reconnect-flag-state.matrix.receipt.json` | `4d848af56b25ad4b3c466863bac5b2052adbbc1c59e2b2164bfb2a696c225cb3` |
 | invalid_pickup_rejected_without_ownership_transfer | Invalid flag pickup/ownership | ctf_invalid_pickup_attempted, ctf_invalid_pickup_contained | server_invalid_pickup_rejected | unexpected_flag_pickup_chat, unexpected_server_flag_pickup, unexpected_flag_capture, unexpected_red_score, unexpected_blue_score | `docs/evidence/protocol-763-ctf-invalid-pickup-ownership-2026-05-30.receipt.json` | `64c353dc5f256526d4ecfb4078516e85491b42fc9da10adf8e91a7c2c166b8ac` |
@@ -37,7 +37,7 @@ full CTF correctness remains a non-claim.
 - required client and server milestones are present;
 - missing milestone lists are empty;
 - forbidden matches are empty;
-- RED/BLUE scoring soak is backed by the historical oracle checkpoint with question, inspected evidence, decision, and digest;
+- RED/BLUE scoring soak is backed by fresh copied `multi-client-load-score` and `blue-flag-score` receipts/logs plus the live-refresh summary receipt: `docs/evidence/protocol-763-red-blue-scoring-soak-red-2026-05-30.receipt.json`, `docs/evidence/protocol-763-red-blue-scoring-soak-blue-2026-05-30.receipt.json`, and `docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-2026-05-30.receipt.json`;
 - acceptance matrix and current bundle contain each rule-cluster digest;
 - `tools/check_ctf_invalid_pickup_ownership.rs` validates the promoted invalid pickup row, including client containment, server rejection, no owner transfer, no score/capture, and BLAKE3-backed logs;
 - `tools/check_ctf_invalid_return_drop.rs` validates the promoted invalid return/drop row, including client containment, server rejection, no flag state mutation, no score/capture, and BLAKE3-backed logs;
@@ -55,7 +55,8 @@ full CTF correctness remains a non-claim.
 - full CTF correctness overclaim in the matrix;
 - missing invalid pickup server rejection, unexpected server flag pickup, missing checker record, and row-doc overclaims in `tools/check_ctf_invalid_pickup_ownership.rs --self-test`;
 - missing invalid return/drop server rejection, unexpected flag return/state mutation, missing checker record, and row-doc overclaims in `tools/check_ctf_invalid_return_drop.rs --self-test`;
-- duplicate score-limit win, post-win score mutation, wrong final score, missing checker record, and row-doc overclaims in `tools/check_ctf_score_limit_win_condition.rs --self-test`.
+- duplicate score-limit win, post-win score mutation, wrong final score, missing checker record, and row-doc overclaims in `tools/check_ctf_score_limit_win_condition.rs --self-test`;
+- dry-run RED/BLUE receipt, target-only historical receipt, missing BLUE score milestone, missing server evidence, missing checker record, and row-doc overclaims in `tools/check_red_blue_scoring_soak_live_refresh.rs --self-test`.
 
 ## Promotion gate
 
@@ -64,10 +65,10 @@ Only the six bounded rule clusters above are promoted. Full CTF correctness rema
 ## Decision
 
 - Question: Can current rule evidence be promoted without implying full CTF correctness?
-- Inspected evidence: RED/BLUE historical oracle, flag-carrier death/return receipt, reconnect flag-state receipt, invalid pickup ownership receipt, invalid return/drop receipt, score-limit win-condition receipt, acceptance matrix, current bundle, and checker fixtures.
+- Inspected evidence: RED/BLUE live-refresh receipts/logs, flag-carrier death/return receipt, reconnect flag-state receipt, invalid pickup ownership receipt, invalid return/drop receipt, score-limit win-condition receipt, acceptance matrix, current bundle, and checker fixtures.
 - Decision: Yes. Promote six bounded rule clusters and keep full CTF correctness as a non-claim.
 - Owner: agent.
-- Next action: add more invalid-action permutations and race-condition receipts before broadening rule correctness.
+- Next action: add more invalid-action permutations, race-condition receipts, and spawn/team balance receipts before broadening rule correctness.
 
 ## Non-claims
 

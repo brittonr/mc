@@ -1,0 +1,87 @@
+command=target/check-red-blue-scoring-soak-live-refresh
+red blue scoring soak live refresh check passed: fresh RED and BLUE receipts, logs, matrix, bundle, and ledger validated
+row_check_exit_status=0
+command=target/check-acceptance-matrix
+acceptance matrix check passed: 20 rows validated
+matrix_exit_status=0
+command=target/check-current-evidence-bundle
+current evidence bundle check passed: 20 rows validated
+bundle_exit_status=0
+command=nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 80 manifests, 478 entries, 68 receipts scanned
+manifest_exit_status=0
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-red-blue-scoring-soak-live-refresh .#checks.x86_64-linux.mc-compat-acceptance-matrix .#checks.x86_64-linux.mc-compat-current-evidence-bundle .#checks.x86_64-linux.mc-compat-evidence-manifests .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+these 5 derivations will be built:
+  /nix/store/69sdml9lg3zla4ml9zikrid9cjj1jji5-mc-compat-cairn-task-evidence.drv
+  /nix/store/gfdwvrwyxx0v8bi94qj76f595igj4dlc-mc-compat-evidence-manifests.drv
+  /nix/store/hhc28m2w2gqnxygifjqlj0nx23jaracy-mc-compat-acceptance-matrix.drv
+  /nix/store/l2iagqbxqljs2n761hfd7piyrp32dj9k-mc-compat-red-blue-scoring-soak-live-refresh.drv
+  /nix/store/py6iyg71ca6jka6rmsh9brrrnd4qymk6-mc-compat-current-evidence-bundle.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/hhc28m2w2gqnxygifjqlj0nx23jaracy-mc-compat-acceptance-matrix.drv'...
+building '/nix/store/69sdml9lg3zla4ml9zikrid9cjj1jji5-mc-compat-cairn-task-evidence.drv'...
+building '/nix/store/py6iyg71ca6jka6rmsh9brrrnd4qymk6-mc-compat-current-evidence-bundle.drv'...
+building '/nix/store/gfdwvrwyxx0v8bi94qj76f595igj4dlc-mc-compat-evidence-manifests.drv'...
+building '/nix/store/l2iagqbxqljs2n761hfd7piyrp32dj9k-mc-compat-red-blue-scoring-soak-live-refresh.drv'...
+nix_validation_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate proposal refresh-red-blue-scoring-soak-live-evidence --root .
+{
+  "change": "refresh-red-blue-scoring-soak-live-evidence",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f2766672d94f0ff4e4da538330ae55914bd611be83770d8f63c8f6c16f4ba13f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "aea3a6fe72c2240cf83f0d566c4e82dba76b542a37a638479946b420a2e5df46",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+proposal_gate_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate tasks refresh-red-blue-scoring-soak-live-evidence --root .
+{
+  "change": "refresh-red-blue-scoring-soak-live-evidence",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e6a695eb46368e5e71c9776aa09686715213569d923b330c21589488133469e8",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "da04371f2b5cf1d98795b24376476a51359fe80dca332bdaeeef6996e6e873e0",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+tasks_gate_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 31,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 33,
+  "valid": true
+}
+cairn_validate_exit_status=0

@@ -62,6 +62,7 @@ const REQUIRED_TEXT: &[&str] = &[
 ];
 
 const REVIEWABLE_RECEIPT_SEAMS: &[&str] = &[
+    "RED/BLUE scoring soak",
     "Invalid flag pickup/ownership",
     "Invalid flag return/drop",
     "Score limit / win condition",
@@ -73,7 +74,7 @@ const REVIEWABLE_RECEIPT_SEAMS: &[&str] = &[
     "Survival chest persistence",
 ];
 
-const HISTORICAL_TARGET_RECEIPT_SEAMS: &[&str] = &["RED/BLUE scoring soak"];
+const HISTORICAL_TARGET_RECEIPT_SEAMS: &[&str] = &[];
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct EvidenceRow {

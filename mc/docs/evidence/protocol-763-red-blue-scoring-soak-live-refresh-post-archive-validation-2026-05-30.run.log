@@ -1,0 +1,20 @@
+command=nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 80 manifests, 478 entries, 68 receipts scanned
+manifest_exit_status=0
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-red-blue-scoring-soak-live-refresh .#checks.x86_64-linux.mc-compat-acceptance-matrix .#checks.x86_64-linux.mc-compat-current-evidence-bundle .#checks.x86_64-linux.mc-compat-evidence-manifests .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+nix_validation_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 30,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 32,
+  "valid": true
+}
+cairn_validate_exit_status=0

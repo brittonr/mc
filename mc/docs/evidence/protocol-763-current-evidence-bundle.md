@@ -10,13 +10,14 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 - Evidence manifest checker: `python3 tools/check_evidence_manifests.py`
 - Latest parent checkout before this bundle refresh: `5d4973d add Paper survival reference fixture`
 - Child commits used for the current-head representative refresh: Valence `e5d18ad`, Stevenarella `616ee72`
+- Child commits used for the RED/BLUE scoring soak live refresh: Valence `f57a325`, Stevenarella `1ab97d2`; machine-recorded in the copied receipts.
 - Child commits used for the survival reference parity refresh: Valence `7d13a24`, Stevenarella `d758630`; machine-recorded in the paired receipts.
 
 ## Evidence rows
 
 | Seam | Maintained command | BLAKE3 |
 | --- | --- | --- |
-| RED/BLUE scoring soak | `nix run .#mc-compat-valence-ctf-600s-soak`; `nix run .#mc-compat-valence-ctf-blue-600s-soak` | `b7c861f27ef7ceaf94705a74a5459d3f9df625dada4b14d8715ba8e9c5d921de` |
+| RED/BLUE scoring soak | `nix run .#mc-compat-valence-ctf-600s-soak`; `nix run .#mc-compat-valence-ctf-blue-600s-soak` | `349b1b7dc84877dd56dce3344611d04ce86a74413738ebc3fdd2a2f720504bed` |
 | Inventory/drop | `nix run .#mc-compat-valence-ctf-inventory-interaction` | `4aeb08172b35edd03d57169c63a4942ca149c783fbc51539702922ac246a0e46` |
 | Block placement / use-item-on-block | `nix run .#mc-compat-valence-ctf-inventory-interaction` | `9feec3b967b3fd5cb011139eda524c32c73123323823b3ebef7bd93062e1c122` |
 | Pickup semantics | `nix run .#mc-compat-valence-ctf-inventory-interaction` | `bcac4aab63857cf0d3b6dd148455324e7f0368dd3e57cfd26841ae7fc1b5ffe8` |
@@ -75,7 +76,7 @@ Vanilla combat parity is guarded by `docs/evidence/protocol-763-vanilla-combat-p
 
 ## CTF rule ledger checkpoint
 
-CTF rule scope is guarded by `docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md`, `tools/check_ctf_rule_ledger.py`, `tools/check_ctf_invalid_pickup_ownership.rs`, `tools/check_ctf_invalid_return_drop.rs`, and `tools/check_ctf_score_limit_win_condition.rs`. Promoted clusters are bounded RED/BLUE scoring soak, flag-carrier death/return, reconnect flag-state, Invalid flag pickup/ownership, Invalid flag return/drop, and Score limit / win condition. The invalid flag pickup/ownership checkpoint is validated by `docs/evidence/protocol-763-ctf-invalid-pickup-ownership-2026-05-30.md`, `docs/evidence/protocol-763-ctf-invalid-pickup-ownership-2026-05-30.receipt.json`, and `tools/check_ctf_invalid_pickup_ownership.rs`; it records `invalid_action=own_flag_pickup_without_ownership_transfer`, `ctf_invalid_pickup_contained`, and `server_invalid_pickup_rejected`. The invalid flag return/drop checkpoint is validated by `docs/evidence/protocol-763-ctf-invalid-return-drop-2026-05-30.md`, `docs/evidence/protocol-763-ctf-invalid-return-drop-2026-05-30.receipt.json`, and `tools/check_ctf_invalid_return_drop.rs`; it records `invalid_action=own_base_return_without_carrier`, `ctf_invalid_return_drop_contained`, and `server_invalid_return_drop_rejected`. The score-limit checkpoint is validated by `docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.md`, `docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.receipt.json`, and `tools/check_ctf_score_limit_win_condition.rs`; it records `ctf-score-limit-win-condition`, `ctf_score_limit_win_seen`, `server_score_limit_pre_state`, `server_score_limit_final_capture`, and `server_score_limit_win_condition`; it is only a near-limit capture checkpoint and full CTF correctness remains a non-claim. `docs/evidence/protocol-763-negative-live-rails-2026-05-29.md` still adds bounded wrong-score and reconnect-race containment receipts with no forbidden score/capture milestones, but unpromoted invalid-action breadth remains a non-claim.
+CTF rule scope is guarded by `docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md`, `tools/check_red_blue_scoring_soak_live_refresh.rs`, `tools/check_ctf_invalid_pickup_ownership.rs`, `tools/check_ctf_invalid_return_drop.rs`, and `tools/check_ctf_score_limit_win_condition.rs`. Promoted clusters are bounded RED/BLUE scoring soak, flag-carrier death/return, reconnect flag-state, Invalid flag pickup/ownership, Invalid flag return/drop, and Score limit / win condition. The RED/BLUE scoring soak checkpoint is validated by `docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-2026-05-30.md`, `docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-2026-05-30.receipt.json`, `docs/evidence/protocol-763-red-blue-scoring-soak-red-2026-05-30.receipt.json`, `docs/evidence/protocol-763-red-blue-scoring-soak-blue-2026-05-30.receipt.json`, and `tools/check_red_blue_scoring_soak_live_refresh.rs`; it records `multi-client-load-score`, `blue-flag-score`, `score_red_1`, `score_blue_1`, `server_flag_or_score`, fresh live RED/BLUE scoring soak refresh, and historical exception removed while full CTF correctness remains a non-claim. The invalid flag pickup/ownership checkpoint is validated by `docs/evidence/protocol-763-ctf-invalid-pickup-ownership-2026-05-30.md`, `docs/evidence/protocol-763-ctf-invalid-pickup-ownership-2026-05-30.receipt.json`, and `tools/check_ctf_invalid_pickup_ownership.rs`; it records `invalid_action=own_flag_pickup_without_ownership_transfer`, `ctf_invalid_pickup_contained`, and `server_invalid_pickup_rejected`. The invalid flag return/drop checkpoint is validated by `docs/evidence/protocol-763-ctf-invalid-return-drop-2026-05-30.md`, `docs/evidence/protocol-763-ctf-invalid-return-drop-2026-05-30.receipt.json`, and `tools/check_ctf_invalid_return_drop.rs`; it records `invalid_action=own_base_return_without_carrier`, `ctf_invalid_return_drop_contained`, and `server_invalid_return_drop_rejected`. The score-limit checkpoint is validated by `docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.md`, `docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.receipt.json`, and `tools/check_ctf_score_limit_win_condition.rs`; it records `ctf-score-limit-win-condition`, `ctf_score_limit_win_seen`, `server_score_limit_pre_state`, `server_score_limit_final_capture`, and `server_score_limit_win_condition`; it is only a near-limit capture checkpoint and full CTF correctness remains a non-claim. `docs/evidence/protocol-763-negative-live-rails-2026-05-29.md` still adds bounded wrong-score and reconnect-race containment receipts with no forbidden score/capture milestones, but unpromoted invalid-action breadth remains a non-claim.
 
 ## Broad protocol coverage checkpoint
 
@@ -87,7 +88,7 @@ The maintained `Flag-carrier death/return` row is also validated as a bounded li
 
 ## Representative current-head live refresh
 
-The maintained matrix rows above stay historical so their BLAKE3-backed receipt hashes do not move silently. A fresh representative current-head live run was added for projectile row freshness instead:
+Most maintained matrix rows above stay historical so their BLAKE3-backed receipt hashes do not move silently. The RED/BLUE scoring soak row now uses fresh copied live receipts instead of the historical target-only exception. A fresh representative current-head live run was also added for projectile row freshness:
 
 - Seam: projectile hit rail.
 - Maintained command: `VALENCE_REV=HEAD VALENCE_WORKTREE=/tmp/valence-compat-current-head-projectile-refresh VALENCE_TARGET_DIR=/tmp/valence-compat-current-head-projectile-refresh-target CLIENT_TIMEOUT=300 MC_COMPAT_PROJECTILE_HIT_RECEIPT=target/mc-compat-current-head-live-refresh/projectile-hit-current-head.json nix run --no-update-lock-file .#mc-compat-valence-ctf-projectile-hit -- --run`.
@@ -131,6 +132,8 @@ ROI 10 re-promotes projectile damage attribution with pinned dependency and caus
 ./tools/check_ctf_invalid_return_drop.rs --record docs/evidence/protocol-763-ctf-invalid-return-drop-2026-05-30.record
 ./tools/check_ctf_score_limit_win_condition.rs --self-test
 ./tools/check_ctf_score_limit_win_condition.rs --record docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.record
+./tools/check_red_blue_scoring_soak_live_refresh.rs --self-test
+./tools/check_red_blue_scoring_soak_live_refresh.rs --record docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-2026-05-30.record
 python3 tools/check_death_respawn_lifecycle.py
 python3 tools/check_inventory_semantics_matrix.py
 python3 tools/check_equipment_slot_item_matrix.py
@@ -141,7 +144,6 @@ python3 tools/check_armor_modifier_matrix.py
 ./tools/check_armor_loadout_enchantment_status.rs --record docs/evidence/protocol-763-armor-loadout-enchantment-status-row-2026-05-29.record
 python3 tools/check_projectile_travel_collision.py
 python3 tools/check_vanilla_combat_parity.py
-python3 tools/check_ctf_rule_ledger.py
 python3 tools/check_protocol_coverage_ledger.py
 python3 tools/check_survival_coverage_matrix.py
 python3 tools/check_survival_reference_parity.py
@@ -167,7 +169,7 @@ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
 nix run --no-update-lock-file .#cairn -- validate --root .
 ```
 
-Rows that cite live receipts should point at tracked `docs/evidence/*.receipt.json` copies and BLAKE3 manifests. Historical `target/` rows require an explicit evidence/oracle note that records the original digest, inspected evidence, decision, owner, and next action; the RED/BLUE scoring soak row is the current historical exception, recorded at `docs/evidence/protocol-763-red-blue-soak-historical-oracle-2026-05-27.md`.
+Rows that cite live receipts should point at tracked `docs/evidence/*.receipt.json` copies and BLAKE3 manifests. Historical `target/` rows require an explicit evidence/oracle note that records the original digest, inspected evidence, decision, owner, and next action. The RED/BLUE scoring soak historical oracle remains review history only; its row now points at `docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-2026-05-30.receipt.json`.
 
 Reviewable copied receipts for matrix rows are indexed at `docs/evidence/protocol-763-matrix-reviewable-receipts-2026-05-27.md` with manifest `docs/evidence/protocol-763-matrix-reviewable-receipts-2026-05-27.b3`.
 
