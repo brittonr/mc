@@ -1072,6 +1072,11 @@ fn mcp_capture_queue_error(err: CaptureQueueError) -> McpCaptureToolError {
             McpCaptureToolError::InvalidArguments(format!("invalid capture request: {err:?}"))
         }
         CaptureQueueError::QueueClosed => McpCaptureToolError::QueueClosed,
+        CaptureQueueError::RateLimitExceeded { pending, max } => {
+            McpCaptureToolError::InvalidArguments(format!(
+                "capture rate limit exceeded: pending={pending} max={max}"
+            ))
+        }
     }
 }
 

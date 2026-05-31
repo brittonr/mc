@@ -273,7 +273,8 @@ fn enqueue_mcp_capture_request(
         Err(capture::CaptureQueueError::QueueClosed) => {
             control_rejected_response(MCP_CAPTURE_QUEUE_CLOSED_MESSAGE)
         }
-        Err(capture::CaptureQueueError::Validation(_)) => {
+        Err(capture::CaptureQueueError::RateLimitExceeded { .. })
+        | Err(capture::CaptureQueueError::Validation(_)) => {
             control_rejected_response(MCP_CAPTURE_REQUEST_INVALID_MESSAGE)
         }
     }

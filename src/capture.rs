@@ -8,12 +8,14 @@ use crate::gl;
 use std::fs;
 use std::io::Cursor;
 use std::path::{Component, Path, PathBuf};
-use std::sync::mpsc;
+use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::{mpsc, Arc};
 
 pub const BLAKE3_HEX_LENGTH: usize = 64;
 pub const CAPTURE_SEQUENCE_INITIAL: u64 = 0;
 pub const CAPTURE_ARTIFACT_SEQUENCE_WIDTH: usize = 6;
 pub const MAX_CAPTURE_REQUESTS_PER_FRAME: usize = 1;
+pub const MAX_PENDING_CAPTURE_REQUESTS: usize = 1;
 pub const MIN_FRAME_INTERVAL_MILLIS: u64 = 1;
 pub const MILLIS_PER_SECOND: u64 = 1_000;
 pub const RGBA_BYTES_PER_PIXEL: usize = 4;
@@ -173,6 +175,7 @@ pub enum CaptureServiceError {
 pub enum CaptureQueueError {
     Validation(CaptureValidationError),
     QueueClosed,
+    RateLimitExceeded { pending: usize, max: usize },
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -206,10 +209,12 @@ pub enum RecordingServiceOutcome {
 #[derive(Clone)]
 pub struct CaptureRequestSender {
     sender: mpsc::Sender<QueuedCaptureRequest>,
+    pending_requests: Arc<AtomicUsize>,
 }
 
 pub struct CaptureRequestReceiver {
     receiver: mpsc::Receiver<QueuedCaptureRequest>,
+    pending_requests: Arc<AtomicUsize>,
 }
 
 struct QueuedCaptureRequest {
@@ -346,9 +351,16 @@ pub fn validate_capture_request(
 
 pub fn capture_request_channel() -> (CaptureRequestSender, CaptureRequestReceiver) {
     let (sender, receiver) = mpsc::channel();
+    let pending_requests = Arc::new(AtomicUsize::new(0));
     (
-        CaptureRequestSender { sender },
-        CaptureRequestReceiver { receiver },
+        CaptureRequestSender {
+            sender,
+            pending_requests: Arc::clone(&pending_requests),
+        },
+        CaptureRequestReceiver {
+            receiver,
+            pending_requests,
+        },
     )
 }
 
@@ -359,15 +371,36 @@ impl CaptureRequestSender {
     ) -> Result<mpsc::Receiver<Result<ServicedCapture, CaptureServiceError>>, CaptureQueueError>
     {
         validate_one_shot_capture_request_shape(&request).map_err(CaptureQueueError::Validation)?;
+        reserve_pending_capture_slot(&self.pending_requests)?;
         let (response_sender, response_receiver) = mpsc::channel();
-        self.sender
-            .send(QueuedCaptureRequest {
-                request,
-                response_sender,
-            })
-            .map_err(|_| CaptureQueueError::QueueClosed)?;
+        let send_result = self.sender.send(QueuedCaptureRequest {
+            request,
+            response_sender,
+        });
+        if send_result.is_err() {
+            release_pending_capture_slot(&self.pending_requests);
+            return Err(CaptureQueueError::QueueClosed);
+        }
         Ok(response_receiver)
     }
+}
+
+fn reserve_pending_capture_slot(pending_requests: &AtomicUsize) -> Result<(), CaptureQueueError> {
+    pending_requests
+        .fetch_update(Ordering::AcqRel, Ordering::Acquire, |pending| {
+            (pending < MAX_PENDING_CAPTURE_REQUESTS).then_some(pending + 1)
+        })
+        .map(|_| ())
+        .map_err(|pending| CaptureQueueError::RateLimitExceeded {
+            pending,
+            max: MAX_PENDING_CAPTURE_REQUESTS,
+        })
+}
+
+fn release_pending_capture_slot(pending_requests: &AtomicUsize) {
+    let _ = pending_requests.fetch_update(Ordering::AcqRel, Ordering::Acquire, |pending| {
+        pending.checked_sub(1)
+    });
 }
 
 impl CaptureRequestReceiver {
@@ -383,7 +416,10 @@ impl CaptureRequestReceiver {
         let mut serviced = 0;
         while serviced < MAX_CAPTURE_REQUESTS_PER_FRAME {
             let queued = match self.receiver.try_recv() {
-                Ok(queued) => queued,
+                Ok(queued) => {
+                    release_pending_capture_slot(&self.pending_requests);
+                    queued
+                }
                 Err(mpsc::TryRecvError::Empty) | Err(mpsc::TryRecvError::Disconnected) => break,
             };
             let response = service_one_shot_capture_request_with_readback(
@@ -1410,5 +1446,131 @@ mod tests {
             err,
             CaptureQueueError::Validation(CaptureValidationError::RecordingBoundsUnexpected)
         );
+    }
+
+    #[test]
+    fn focused_validation_covers_valid_screenshot_metadata() {
+        let capture_dir = unique_test_capture_dir("focused-metadata");
+        let policy = CapturePolicy::local(&capture_dir);
+        let relative_path = default_artifact_relative_path(
+            CaptureMode::Screenshot,
+            TEST_SEQUENCE_ID,
+            CaptureFormat::Png,
+        );
+        let mut readback = synthetic_frame;
+
+        let capture = service_one_shot_capture_request_with_readback(
+            artifact_request(relative_path.clone()),
+            &policy,
+            test_frame(),
+            &mut readback,
+        )
+        .expect("screenshot metadata should pass");
+        let metadata = capture.artifact.expect("metadata should exist");
+
+        assert_eq!(metadata.relative_path, relative_path);
+        assert_eq!(metadata.format, CaptureFormat::Png);
+        assert_eq!(metadata.width_px, TEST_READBACK_WIDTH_PX);
+        assert_eq!(metadata.height_px, TEST_READBACK_HEIGHT_PX);
+        assert_eq!(metadata.frame_id, TEST_FRAME_ID);
+        assert_eq!(metadata.sequence_id, TEST_SEQUENCE_ID);
+        assert!(metadata.byte_len > 0);
+        assert_eq!(metadata.blake3_digest.as_str().len(), BLAKE3_HEX_LENGTH);
+        assert!(metadata.includes_ui);
+        assert_eq!(metadata.redaction, RedactionState::NotReviewed);
+        let _ = std::fs::remove_dir_all(capture_dir);
+    }
+
+    #[test]
+    fn focused_validation_covers_vertical_flip_normalization() {
+        let rgba_bottom_left = [
+            TEST_BOTTOM_LEFT_PIXEL,
+            TEST_BOTTOM_RIGHT_PIXEL,
+            TEST_TOP_LEFT_PIXEL,
+            TEST_TOP_RIGHT_PIXEL,
+        ]
+        .concat();
+        let expected_top_left = [
+            TEST_TOP_LEFT_PIXEL,
+            TEST_TOP_RIGHT_PIXEL,
+            TEST_BOTTOM_LEFT_PIXEL,
+            TEST_BOTTOM_RIGHT_PIXEL,
+        ]
+        .concat();
+
+        let frame = captured_rgba_from_bottom_left(
+            TEST_READBACK_WIDTH_PX,
+            TEST_READBACK_HEIGHT_PX,
+            TEST_FRAME_ID,
+            &rgba_bottom_left,
+        )
+        .expect("focused vertical flip should pass");
+
+        assert_eq!(frame.rgba_top_left, expected_top_left);
+    }
+
+    #[test]
+    fn focused_validation_rejects_invalid_format() {
+        let err = CaptureFormat::from_name("webp").expect_err("invalid format rejected");
+
+        assert_eq!(
+            err,
+            CaptureValidationError::UnsupportedFormat("webp".to_owned())
+        );
+    }
+
+    #[test]
+    fn focused_validation_rejects_path_traversal() {
+        let policy = CapturePolicy::local(TEST_CAPTURE_DIR);
+        let request = artifact_request(PathBuf::from("../escape.png"));
+
+        let err = validate_capture_request(&request, &policy).expect_err("escape rejected");
+
+        assert_eq!(
+            err,
+            CaptureValidationError::ArtifactPathEscapes {
+                relative_path: PathBuf::from("../escape.png"),
+            }
+        );
+    }
+
+    #[test]
+    fn focused_validation_rejects_capture_rate_limit() {
+        let (sender, _receiver) = capture_request_channel();
+        let first = sender.enqueue_deferred(inline_capture_request(CaptureMode::Screenshot, true));
+        let second =
+            sender.enqueue_deferred(inline_capture_request(CaptureMode::LatestFrame, true));
+
+        assert!(first.is_ok());
+        assert_eq!(
+            second.expect_err("second pending capture should be rate-limited"),
+            CaptureQueueError::RateLimitExceeded {
+                pending: MAX_PENDING_CAPTURE_REQUESTS,
+                max: MAX_PENDING_CAPTURE_REQUESTS,
+            }
+        );
+    }
+
+    #[test]
+    fn focused_validation_rejects_unbounded_recording() {
+        let policy = CapturePolicy::local(TEST_CAPTURE_DIR);
+        let request = CaptureRequest {
+            mode: CaptureMode::Recording,
+            format: CaptureFormat::Png,
+            output: CaptureOutput::Artifact {
+                relative_path: PathBuf::from(TEST_ARTIFACT_PATH),
+            },
+            includes_ui: true,
+            recording: Some(RecordingBounds {
+                frame_rate_hz: TEST_RECORDING_FPS,
+                max_frames: None,
+                max_duration_millis: None,
+            }),
+            sequence_id: Some(TEST_SEQUENCE_ID),
+        };
+
+        let err = validate_capture_request(&request, &policy).expect_err("unbounded rejected");
+
+        assert_eq!(err, CaptureValidationError::RecordingDurationRequired);
     }
 }
