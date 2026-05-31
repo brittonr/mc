@@ -1,0 +1,53 @@
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+this derivation will be built:
+  /nix/store/f58kxfd1x4lfcl02lgvw7vn56wj8p3iw-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/f58kxfd1x4lfcl02lgvw7vn56wj8p3iw-mc-compat-cairn-task-evidence.drv'...
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/survival-crafting-table-parity/tasks.md:3 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/survival-crafting-table-parity/tasks.md:5 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+error: Cannot build '/nix/store/f58kxfd1x4lfcl02lgvw7vn56wj8p3iw-mc-compat-cairn-task-evidence.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/iadhz6r19sdbhcm1n723hc032an4gnsy-mc-compat-cairn-task-evidence
+       Last 2 log lines:
+       > task evidence gate failed: cairn/changes/survival-crafting-table-parity/tasks.md:3 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+       > task evidence gate failed: cairn/changes/survival-crafting-table-parity/tasks.md:5 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+       For full logs, run:
+         nix log /nix/store/f58kxfd1x4lfcl02lgvw7vn56wj8p3iw-mc-compat-cairn-task-evidence.drv
+task_evidence_exit_status=1
+blocker=mc-compat-cairn-task-evidence has pre-existing unrelated active-task failures outside stevenarella-mcp-control-plane; continue with targeted Cairn gate/validate
+command=nix run --no-update-lock-file .#cairn -- gate tasks stevenarella-mcp-control-plane --root .
+{
+  "change": "stevenarella-mcp-control-plane",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "3e7e046b7c801d03d8d2ec41dfb8b44c620c489073e3c038c6052ef61769c698",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "217f47329ad63b0d8dcf7f9928b0cbc7cbce0ca6069d514b4876942c0111ef6e",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_tasks_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 33,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 35,
+  "valid": true
+}
+validate_exit_status=0
