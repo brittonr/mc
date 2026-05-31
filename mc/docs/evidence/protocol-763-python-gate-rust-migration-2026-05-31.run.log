@@ -77,7 +77,21 @@ tools/check_vanilla_combat_parity.py
 
 $ test -f docs/evidence/protocol-763-python-gate-rust-migration-nix-build-2026-05-31.run.log
 
+$ grep -F $ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L docs/evidence/protocol-763-python-gate-rust-migration-nix-build-2026-05-31.run.log
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L --rebuild
+
+$ grep -F this derivation will be built: docs/evidence/protocol-763-python-gate-rust-migration-nix-build-2026-05-31.run.log
+this derivation will be built:
+
+$ grep -F building '/nix/store/ docs/evidence/protocol-763-python-gate-rust-migration-nix-build-2026-05-31.run.log
+building '/nix/store/rkgf1cgiwswp0slp3lrsrmjc9s1i2pr5-mc-compat-evidence-manifests.drv'...
+
+$ grep -F checking outputs of docs/evidence/protocol-763-python-gate-rust-migration-nix-build-2026-05-31.run.log
+checking outputs of '/nix/store/79wgmyzis98knzm5vcf3yd9p52i57b0c-mc-compat-evidence-manifests.drv'...
+
 $ grep -F exit_status=0 docs/evidence/protocol-763-python-gate-rust-migration-nix-build-2026-05-31.run.log
+exit_status=0
 exit_status=0
 
 $ nix run --no-update-lock-file .#cairn -- validate --root .

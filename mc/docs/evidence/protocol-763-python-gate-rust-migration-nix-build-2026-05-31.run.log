@@ -1,3 +1,12 @@
 $ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L
+this derivation will be built:
+  /nix/store/rkgf1cgiwswp0slp3lrsrmjc9s1i2pr5-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/rkgf1cgiwswp0slp3lrsrmjc9s1i2pr5-mc-compat-evidence-manifests.drv'...
+
+exit_status=0
+
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L --rebuild
+checking outputs of '/nix/store/79wgmyzis98knzm5vcf3yd9p52i57b0c-mc-compat-evidence-manifests.drv'...
 
 exit_status=0
