@@ -1,0 +1,35 @@
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks survival-crafting-table-parity --root .
+{
+  "change": "survival-crafting-table-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "61cf5f7c644794563c72c0448a59d29cb4e54a4092c8ea4767cde524c8b04c10",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "84f880f5732d38697041c64b9f85829e3bd69d64d47f65c6b6fb151c172925a8",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 31,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 33,
+  "valid": true
+}

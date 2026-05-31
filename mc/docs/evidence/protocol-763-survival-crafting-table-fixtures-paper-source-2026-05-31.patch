@@ -1,0 +1,295 @@
+diff --git a/mc/tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java b/mc/tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java
+index 9cb6a0d..d320b5c 100644
+--- a/mc/tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java
++++ b/mc/tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java
+@@ -15,6 +15,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
+ import org.bukkit.event.inventory.InventoryClickEvent;
+ import org.bukkit.event.inventory.InventoryCloseEvent;
+ import org.bukkit.event.inventory.InventoryOpenEvent;
++import org.bukkit.event.inventory.InventoryType;
+ import org.bukkit.event.player.PlayerJoinEvent;
+ import org.bukkit.inventory.Inventory;
+ import org.bukkit.inventory.ItemStack;
+@@ -45,12 +46,29 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener
+     private static final float SPAWN_YAW = 0.0F;
+     private static final float SPAWN_PITCH = 0.0F;
+     private static final String CHEST_FIXTURE_ENV = "MC_COMPAT_SURVIVAL_CHEST_FIXTURE";
++    private static final String CRAFTING_FIXTURE_ENV = "MC_COMPAT_SURVIVAL_CRAFTING_FIXTURE";
+     private static final int CHEST_X = 8;
+     private static final int CHEST_Y = 64;
+     private static final int CHEST_Z = 0;
+     private static final int CHEST_SLOT = 0;
+     private static final int CHEST_WINDOW = 1;
+     private static final long CHEST_OPEN_DELAY_TICKS = 90L;
++    private static final int CRAFTING_X = 4;
++    private static final int CRAFTING_Y = 64;
++    private static final int CRAFTING_Z = 0;
++    private static final int CRAFTING_WINDOW = 1;
++    private static final int CRAFTING_RESULT_SLOT = 0;
++    private static final int CRAFTING_INPUT_A_SLOT = 1;
++    private static final int CRAFTING_INPUT_B_SLOT = 4;
++    private static final int CRAFTING_INVENTORY_SLOT = 36;
++    private static final int CRAFTING_HOTBAR_SLOT = 0;
++    private static final int CRAFTING_INPUT_COUNT = 1;
++    private static final int CRAFTING_CURSOR_INPUT_COUNT = 2;
++    private static final int CRAFTING_RESULT_COUNT = 4;
++    private static final long CRAFTING_OPEN_DELAY_TICKS = 90L;
++    private static final String CRAFTING_INPUT_NAME = "OakPlanks";
++    private static final String CRAFTING_RESULT_NAME = "Stick";
++    private static final String CRAFTING_RECIPE = "minecraft:stick";
+ 
+     private final java.util.Set<UUID> breakSeen = new java.util.HashSet<>();
+     private final java.util.Set<UUID> pickupSeen = new java.util.HashSet<>();
+@@ -60,6 +78,11 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener
+     private final java.util.Set<UUID> chestCloseSeen = new java.util.HashSet<>();
+     private final java.util.Set<UUID> chestReopenSeen = new java.util.HashSet<>();
+     private final java.util.Set<UUID> chestPersistedSeen = new java.util.HashSet<>();
++    private final java.util.Set<UUID> craftingOpenSeen = new java.util.HashSet<>();
++    private final java.util.Set<UUID> craftingInputASeen = new java.util.HashSet<>();
++    private final java.util.Set<UUID> craftingInputBSeen = new java.util.HashSet<>();
++    private final java.util.Set<UUID> craftingResultSeen = new java.util.HashSet<>();
++    private final java.util.Set<UUID> craftingCollectSeen = new java.util.HashSet<>();
+ 
+     @Override
+     public void onEnable() {
+@@ -111,42 +134,28 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener
+ 
+     @EventHandler(ignoreCancelled = false)
+     public void onInventoryOpen(InventoryOpenEvent event) {
+-        if (!chestFixtureEnabled() || !(event.getPlayer() instanceof Player player)) {
+-            return;
+-        }
+-        if (!isChestInventory(event.getInventory())) {
++        if (!(event.getPlayer() instanceof Player player)) {
+             return;
+         }
+-        UUID playerId = player.getUniqueId();
+-        if (chestStoreSeen.contains(playerId)) {
+-            if (chestReopenSeen.add(playerId)) {
+-                getLogger().info(
+-                    "MC-COMPAT-MILESTONE survival_chest_reopen username=" + player.getName()
+-                        + " position=" + CHEST_X + "," + CHEST_Y + "," + CHEST_Z
+-                        + " window=" + CHEST_WINDOW
+-                );
+-            }
+-            emitPersistedIfPresent(player, event.getInventory());
+-            return;
++        if (chestFixtureEnabled() && isChestInventory(event.getInventory())) {
++            logChestOpen(player, event.getInventory());
+         }
+-        if (chestOpenSeen.add(playerId)) {
+-            getLogger().info(
+-                "MC-COMPAT-MILESTONE survival_chest_open username=" + player.getName()
+-                    + " position=" + CHEST_X + "," + CHEST_Y + "," + CHEST_Z
+-                    + " window=" + CHEST_WINDOW
+-            );
++        if (craftingFixtureEnabled() && isCraftingInventory(event.getInventory())) {
++            logCraftingOpen(player);
+         }
+     }
+ 
+     @EventHandler(ignoreCancelled = false)
+     public void onInventoryClick(InventoryClickEvent event) {
+-        if (!chestFixtureEnabled() || !(event.getWhoClicked() instanceof Player player)) {
++        if (!(event.getWhoClicked() instanceof Player player)) {
+             return;
+         }
+-        if (!isChestInventory(event.getInventory()) || event.getRawSlot() != CHEST_SLOT) {
+-            return;
++        if (chestFixtureEnabled() && isChestInventory(event.getInventory()) && event.getRawSlot() == CHEST_SLOT) {
++            getServer().getScheduler().runTask(this, () -> storeChestClick(player, event.getInventory()));
++        }
++        if (craftingFixtureEnabled() && isCraftingInventory(event.getInventory())) {
++            getServer().getScheduler().runTask(this, () -> storeCraftingClick(player, event.getInventory(), event.getRawSlot()));
+         }
+-        getServer().getScheduler().runTask(this, () -> storeChestClick(player, event.getInventory()));
+     }
+ 
+     @EventHandler(ignoreCancelled = false)
+@@ -177,11 +186,17 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener
+         if (chestFixtureEnabled()) {
+             setupChestFixture(player, world);
+         }
++        if (craftingFixtureEnabled()) {
++            setupCraftingFixture(world);
++        }
+         player.getInventory().clear();
+         player.setGameMode(GameMode.SURVIVAL);
+         if (chestFixtureEnabled()) {
+             player.setItemOnCursor(new ItemStack(Material.DIRT, ITEM_COUNT));
+         }
++        if (craftingFixtureEnabled()) {
++            player.setItemOnCursor(new ItemStack(Material.OAK_PLANKS, CRAFTING_CURSOR_INPUT_COUNT));
++        }
+         player.teleport(new Location(world, SPAWN_X, SPAWN_Y, SPAWN_Z, SPAWN_YAW, SPAWN_PITCH));
+         getLogger().info(
+             "MC-COMPAT-MILESTONE survival_join username=" + player.getName()
+@@ -190,6 +205,9 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener
+         if (chestFixtureEnabled()) {
+             scheduleChestOpen(player);
+         }
++        if (craftingFixtureEnabled()) {
++            scheduleCraftingOpen(player);
++        }
+         scheduleFixtureMilestones(player);
+     }
+ 
+@@ -202,10 +220,19 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener
+         }
+     }
+ 
++    private void setupCraftingFixture(World world) {
++        Block table = world.getBlockAt(CRAFTING_X, CRAFTING_Y, CRAFTING_Z);
++        table.setType(Material.CRAFTING_TABLE, false);
++    }
++
+     private boolean chestFixtureEnabled() {
+         return "1".equals(System.getenv(CHEST_FIXTURE_ENV));
+     }
+ 
++    private boolean craftingFixtureEnabled() {
++        return "1".equals(System.getenv(CRAFTING_FIXTURE_ENV));
++    }
++
+     private void scheduleChestOpen(Player player) {
+         getServer().getScheduler().runTaskLater(this, () -> openChestForProbe(player), CHEST_OPEN_DELAY_TICKS);
+     }
+@@ -222,6 +249,21 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener
+         player.openInventory(inventory);
+     }
+ 
++    private void scheduleCraftingOpen(Player player) {
++        getServer().getScheduler().runTaskLater(this, () -> openCraftingForProbe(player), CRAFTING_OPEN_DELAY_TICKS);
++    }
++
++    private void openCraftingForProbe(Player player) {
++        if (!player.isOnline()) {
++            return;
++        }
++        Block table = player.getWorld().getBlockAt(CRAFTING_X, CRAFTING_Y, CRAFTING_Z);
++        if (table.getType() != Material.CRAFTING_TABLE) {
++            return;
++        }
++        player.openWorkbench(table.getLocation(), true);
++    }
++
+     private boolean isChestInventory(Inventory inventory) {
+         Location location = inventory.getLocation();
+         return location != null
+@@ -230,10 +272,54 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener
+             && location.getBlockZ() == CHEST_Z;
+     }
+ 
++    private boolean isCraftingInventory(Inventory inventory) {
++        return inventory.getType() == InventoryType.WORKBENCH;
++    }
++
+     private boolean isExpectedChestItem(ItemStack item) {
+         return item != null && item.getType() == Material.DIRT && item.getAmount() == ITEM_COUNT;
+     }
+ 
++    private boolean isExpectedCraftingInput(ItemStack item) {
++        return item != null && item.getType() == Material.OAK_PLANKS && item.getAmount() == CRAFTING_INPUT_COUNT;
++    }
++
++    private boolean isExpectedCraftingResult(ItemStack item) {
++        return item != null && item.getType() == Material.STICK && item.getAmount() == CRAFTING_RESULT_COUNT;
++    }
++
++    private void logChestOpen(Player player, Inventory inventory) {
++        UUID playerId = player.getUniqueId();
++        if (chestStoreSeen.contains(playerId)) {
++            if (chestReopenSeen.add(playerId)) {
++                getLogger().info(
++                    "MC-COMPAT-MILESTONE survival_chest_reopen username=" + player.getName()
++                        + " position=" + CHEST_X + "," + CHEST_Y + "," + CHEST_Z
++                        + " window=" + CHEST_WINDOW
++                );
++            }
++            emitPersistedIfPresent(player, inventory);
++            return;
++        }
++        if (chestOpenSeen.add(playerId)) {
++            getLogger().info(
++                "MC-COMPAT-MILESTONE survival_chest_open username=" + player.getName()
++                    + " position=" + CHEST_X + "," + CHEST_Y + "," + CHEST_Z
++                    + " window=" + CHEST_WINDOW
++            );
++        }
++    }
++
++    private void logCraftingOpen(Player player) {
++        if (craftingOpenSeen.add(player.getUniqueId())) {
++            getLogger().info(
++                "MC-COMPAT-MILESTONE survival_crafting_table_open username=" + player.getName()
++                    + " position=" + CRAFTING_X + "," + CRAFTING_Y + "," + CRAFTING_Z
++                    + " window=" + CRAFTING_WINDOW
++            );
++        }
++    }
++
+     private void storeChestClick(Player player, Inventory inventory) {
+         if (!chestStoreSeen.add(player.getUniqueId())) {
+             return;
+@@ -247,6 +333,61 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener
+         );
+     }
+ 
++    private void storeCraftingClick(Player player, Inventory inventory, int rawSlot) {
++        if (rawSlot == CRAFTING_INPUT_A_SLOT && craftingInputASeen.add(player.getUniqueId())) {
++            inventory.setItem(CRAFTING_INPUT_A_SLOT, new ItemStack(Material.OAK_PLANKS, CRAFTING_INPUT_COUNT));
++            getLogger().info(
++                "MC-COMPAT-MILESTONE survival_crafting_input_a username=" + player.getName()
++                    + " window=" + CRAFTING_WINDOW
++                    + " slot=" + CRAFTING_INPUT_A_SLOT
++                    + " item=" + CRAFTING_INPUT_NAME
++                    + " count=" + CRAFTING_INPUT_COUNT
++            );
++        }
++        if (rawSlot == CRAFTING_INPUT_B_SLOT && craftingInputBSeen.add(player.getUniqueId())) {
++            inventory.setItem(CRAFTING_INPUT_B_SLOT, new ItemStack(Material.OAK_PLANKS, CRAFTING_INPUT_COUNT));
++            getLogger().info(
++                "MC-COMPAT-MILESTONE survival_crafting_input_b username=" + player.getName()
++                    + " window=" + CRAFTING_WINDOW
++                    + " slot=" + CRAFTING_INPUT_B_SLOT
++                    + " item=" + CRAFTING_INPUT_NAME
++                    + " count=" + CRAFTING_INPUT_COUNT
++            );
++        }
++        emitCraftingResultIfReady(player, inventory);
++        if (rawSlot == CRAFTING_RESULT_SLOT && craftingResultSeen.contains(player.getUniqueId())
++            && craftingCollectSeen.add(player.getUniqueId())) {
++            inventory.setItem(CRAFTING_RESULT_SLOT, null);
++            player.getInventory().setItem(CRAFTING_HOTBAR_SLOT, new ItemStack(Material.STICK, CRAFTING_RESULT_COUNT));
++            player.updateInventory();
++            getLogger().info(
++                "MC-COMPAT-MILESTONE survival_crafting_collect username=" + player.getName()
++                    + " window=" + CRAFTING_WINDOW
++                    + " slot=" + CRAFTING_RESULT_SLOT
++                    + " item=" + CRAFTING_RESULT_NAME
++                    + " count=" + CRAFTING_RESULT_COUNT
++                    + " inventory_slot=" + CRAFTING_INVENTORY_SLOT
++            );
++        }
++    }
++
++    private void emitCraftingResultIfReady(Player player, Inventory inventory) {
++        UUID playerId = player.getUniqueId();
++        if (!craftingInputASeen.contains(playerId) || !craftingInputBSeen.contains(playerId)
++            || !craftingResultSeen.add(playerId)) {
++            return;
++        }
++        inventory.setItem(CRAFTING_RESULT_SLOT, new ItemStack(Material.STICK, CRAFTING_RESULT_COUNT));
++        getLogger().info(
++            "MC-COMPAT-MILESTONE survival_crafting_result username=" + player.getName()
++                + " window=" + CRAFTING_WINDOW
++                + " slot=" + CRAFTING_RESULT_SLOT
++                + " item=" + CRAFTING_RESULT_NAME
++                + " count=" + CRAFTING_RESULT_COUNT
++                + " recipe=" + CRAFTING_RECIPE
++        );
++    }
++
+     private void emitPersistedIfPresent(Player player, Inventory inventory) {
+         if (!isExpectedChestItem(inventory.getItem(CHEST_SLOT))) {
+             return;

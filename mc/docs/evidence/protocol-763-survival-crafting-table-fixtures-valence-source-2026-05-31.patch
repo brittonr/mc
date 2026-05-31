@@ -1,0 +1,465 @@
+commit 5c97914f6b00d60fa7f9c0b00476d2213db468c1
+Author:     brittonr <b@robitzs.ch>
+AuthorDate: Sun May 31 16:07:58 2026 -0400
+Commit:     brittonr <b@robitzs.ch>
+CommitDate: Sun May 31 16:07:58 2026 -0400
+
+    add survival crafting fixture milestones
+---
+ examples/survival_compat.rs | 382 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 382 insertions(+)
+
+diff --git a/examples/survival_compat.rs b/examples/survival_compat.rs
+index 6acd0e7..1d0e8c8 100644
+--- a/examples/survival_compat.rs
++++ b/examples/survival_compat.rs
+@@ -33,6 +33,23 @@ const SURVIVAL_CHEST_SLOT_ID: i16 = 0;
+ const SURVIVAL_CHEST_WINDOW: u8 = 1;
+ const SURVIVAL_CHEST_ITEM_COUNT: i8 = 1;
+ const SURVIVAL_CHEST_TITLE: &str = "MC Compat Chest";
++const SURVIVAL_CRAFTING_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_CRAFTING_FIXTURE";
++const SURVIVAL_CRAFTING_X: i32 = 4;
++const SURVIVAL_CRAFTING_Y: i32 = FLOOR_Y;
++const SURVIVAL_CRAFTING_Z: i32 = 0;
++const SURVIVAL_CRAFTING_WINDOW: u8 = 1;
++const SURVIVAL_CRAFTING_RESULT_SLOT: u16 = 0;
++const SURVIVAL_CRAFTING_RESULT_SLOT_ID: i16 = 0;
++const SURVIVAL_CRAFTING_INPUT_A_SLOT: u16 = 1;
++const SURVIVAL_CRAFTING_INPUT_A_SLOT_ID: i16 = 1;
++const SURVIVAL_CRAFTING_INPUT_B_SLOT: u16 = 4;
++const SURVIVAL_CRAFTING_INPUT_B_SLOT_ID: i16 = 4;
++const SURVIVAL_CRAFTING_INVENTORY_SLOT: u16 = 36;
++const SURVIVAL_CRAFTING_INPUT_COUNT: i8 = 1;
++const SURVIVAL_CRAFTING_TOTAL_INPUT_COUNT: i8 = 2;
++const SURVIVAL_CRAFTING_RESULT_COUNT: i8 = 4;
++const SURVIVAL_CRAFTING_RECIPE: &str = "minecraft:stick";
++const SURVIVAL_CRAFTING_TITLE: &str = "MC Compat Crafting";
+ 
+ #[derive(Resource)]
+ struct SurvivalChestFixture {
+@@ -59,6 +76,31 @@ impl SurvivalChestFixture {
+     }
+ }
+ 
++#[derive(Resource)]
++struct SurvivalCraftingFixture {
++    inventory: Entity,
++    open_clients: HashSet<Entity>,
++    open_logged: bool,
++    input_a_logged: bool,
++    input_b_logged: bool,
++    result_logged: bool,
++    collect_logged: bool,
++}
++
++impl SurvivalCraftingFixture {
++    fn new(inventory: Entity) -> Self {
++        Self {
++            inventory,
++            open_clients: HashSet::new(),
++            open_logged: false,
++            input_a_logged: false,
++            input_b_logged: false,
++            result_logged: false,
++            collect_logged: false,
++        }
++    }
++}
++
+ pub fn main() {
+     App::new()
+         .insert_resource(NetworkSettings {
+@@ -77,6 +119,8 @@ pub fn main() {
+                 handle_survival_block_place,
+                 handle_survival_chest_open,
+                 handle_survival_chest_store,
++                handle_survival_crafting_open,
++                handle_survival_crafting_click,
+             ),
+         )
+         .run();
+@@ -111,6 +155,11 @@ fn setup(
+             .chunk
+             .set_block(survival_chest_pos(), BlockState::CHEST);
+     }
++    if survival_crafting_fixture_enabled() {
++        layer
++            .chunk
++            .set_block(survival_crafting_pos(), survival_crafting_table_state());
++    }
+ 
+     commands.spawn(layer);
+ 
+@@ -123,6 +172,15 @@ fn setup(
+             .id();
+         commands.insert_resource(SurvivalChestFixture::new(inventory));
+     }
++    if survival_crafting_fixture_enabled() {
++        let inventory = commands
++            .spawn(Inventory::with_title(
++                InventoryKind::Crafting,
++                SURVIVAL_CRAFTING_TITLE,
++            ))
++            .id();
++        commands.insert_resource(SurvivalCraftingFixture::new(inventory));
++    }
+ }
+ 
+ fn init_clients(
+@@ -165,6 +223,9 @@ fn init_clients(
+         if survival_chest_fixture_enabled() {
+             cursor_item.0 = survival_chest_item_stack();
+         }
++        if survival_crafting_fixture_enabled() {
++            cursor_item.0 = survival_crafting_input_stack(SURVIVAL_CRAFTING_TOTAL_INPUT_COUNT);
++        }
+ 
+         client.send_chat_message(SURVIVAL_WELCOME.italic());
+         log_milestone(format!(
+@@ -372,6 +433,160 @@ fn handle_survival_chest_close(
+     }
+ }
+ 
++fn handle_survival_crafting_open(
++    mut commands: Commands,
++    fixture: Option<ResMut<SurvivalCraftingFixture>>,
++    clients: Query<(&Username, &GameMode)>,
++    mut events: EventReader<InteractBlockEvent>,
++) {
++    let Some(mut fixture) = fixture else {
++        return;
++    };
++
++    for event in events.read() {
++        let Ok((username, game_mode)) = clients.get(event.client) else {
++            continue;
++        };
++        if !should_open_survival_crafting(*game_mode, event.hand, event.position) {
++            continue;
++        }
++
++        commands
++            .entity(event.client)
++            .insert(OpenInventory::new(fixture.inventory));
++        fixture.open_clients.insert(event.client);
++
++        if !fixture.open_logged {
++            fixture.open_logged = true;
++            log_milestone(format!(
++                "MC-COMPAT-MILESTONE survival_crafting_table_open username={} position={},{},{} window={}",
++                username.as_str(),
++                SURVIVAL_CRAFTING_X,
++                SURVIVAL_CRAFTING_Y,
++                SURVIVAL_CRAFTING_Z,
++                SURVIVAL_CRAFTING_WINDOW
++            ));
++        }
++    }
++}
++
++fn handle_survival_crafting_click(
++    fixture: Option<ResMut<SurvivalCraftingFixture>>,
++    clients: Query<&Username>,
++    mut inventories: Query<&mut Inventory>,
++    mut events: EventReader<ClickSlotEvent>,
++) {
++    let Some(mut fixture) = fixture else {
++        return;
++    };
++
++    for event in events.read() {
++        let Ok(username) = clients.get(event.client) else {
++            continue;
++        };
++        if !fixture.open_clients.contains(&event.client)
++            || event.window_id != SURVIVAL_CRAFTING_WINDOW
++        {
++            continue;
++        }
++
++        if is_survival_crafting_input_event(
++            event.window_id,
++            event.slot_id,
++            &event.slot_changes,
++            SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
++        ) && !fixture.input_a_logged
++        {
++            fixture.input_a_logged = true;
++            set_survival_crafting_slot(
++                &mut inventories,
++                fixture.inventory,
++                SURVIVAL_CRAFTING_INPUT_A_SLOT,
++                survival_crafting_input_stack(SURVIVAL_CRAFTING_INPUT_COUNT),
++            );
++            log_milestone(format!(
++                "MC-COMPAT-MILESTONE survival_crafting_input_a username={} window={} slot={} item={:?} count={}",
++                username.as_str(),
++                SURVIVAL_CRAFTING_WINDOW,
++                SURVIVAL_CRAFTING_INPUT_A_SLOT,
++                survival_crafting_input_kind(),
++                SURVIVAL_CRAFTING_INPUT_COUNT
++            ));
++        }
++
++        if is_survival_crafting_input_event(
++            event.window_id,
++            event.slot_id,
++            &event.slot_changes,
++            SURVIVAL_CRAFTING_INPUT_B_SLOT_ID,
++        ) && !fixture.input_b_logged
++        {
++            fixture.input_b_logged = true;
++            set_survival_crafting_slot(
++                &mut inventories,
++                fixture.inventory,
++                SURVIVAL_CRAFTING_INPUT_B_SLOT,
++                survival_crafting_input_stack(SURVIVAL_CRAFTING_INPUT_COUNT),
++            );
++            log_milestone(format!(
++                "MC-COMPAT-MILESTONE survival_crafting_input_b username={} window={} slot={} item={:?} count={}",
++                username.as_str(),
++                SURVIVAL_CRAFTING_WINDOW,
++                SURVIVAL_CRAFTING_INPUT_B_SLOT,
++                survival_crafting_input_kind(),
++                SURVIVAL_CRAFTING_INPUT_COUNT
++            ));
++        }
++
++        if fixture.input_a_logged && fixture.input_b_logged && !fixture.result_logged {
++            fixture.result_logged = true;
++            set_survival_crafting_slot(
++                &mut inventories,
++                fixture.inventory,
++                SURVIVAL_CRAFTING_RESULT_SLOT,
++                survival_crafting_result_stack(),
++            );
++            log_milestone(format!(
++                "MC-COMPAT-MILESTONE survival_crafting_result username={} window={} slot={} item={:?} count={} recipe={}",
++                username.as_str(),
++                SURVIVAL_CRAFTING_WINDOW,
++                SURVIVAL_CRAFTING_RESULT_SLOT,
++                survival_crafting_result_kind(),
++                SURVIVAL_CRAFTING_RESULT_COUNT,
++                SURVIVAL_CRAFTING_RECIPE
++            ));
++        }
++
++        if is_survival_crafting_collect_event(event.window_id, event.slot_id, &event.carried_item)
++            && fixture.result_logged
++            && !fixture.collect_logged
++        {
++            fixture.collect_logged = true;
++            set_survival_crafting_slot(
++                &mut inventories,
++                fixture.inventory,
++                SURVIVAL_CRAFTING_RESULT_SLOT,
++                ItemStack::EMPTY,
++            );
++            set_survival_crafting_slot(
++                &mut inventories,
++                event.client,
++                SURVIVAL_CRAFTING_INVENTORY_SLOT,
++                survival_crafting_result_stack(),
++            );
++            log_milestone(format!(
++                "MC-COMPAT-MILESTONE survival_crafting_collect username={} window={} slot={} item={:?} count={} inventory_slot={}",
++                username.as_str(),
++                SURVIVAL_CRAFTING_WINDOW,
++                SURVIVAL_CRAFTING_RESULT_SLOT,
++                survival_crafting_result_kind(),
++                SURVIVAL_CRAFTING_RESULT_COUNT,
++                SURVIVAL_CRAFTING_INVENTORY_SLOT
++            ));
++        }
++    }
++}
++
+ fn log_survival_chest_reopen(
+     username: &str,
+     fixture: &mut SurvivalChestFixture,
+@@ -450,6 +665,52 @@ fn is_survival_chest_item(stack: &ItemStack) -> bool {
+     stack.item == survival_chest_item_kind() && stack.count == SURVIVAL_CHEST_ITEM_COUNT
+ }
+ 
++fn should_open_survival_crafting(game_mode: GameMode, hand: Hand, position: BlockPos) -> bool {
++    game_mode == GameMode::Survival && hand == Hand::Main && position == survival_crafting_pos()
++}
++
++fn is_survival_crafting_input_event(
++    window_id: u8,
++    slot_id: i16,
++    slot_changes: &[SlotChange],
++    expected_slot: i16,
++) -> bool {
++    window_id == SURVIVAL_CRAFTING_WINDOW
++        && slot_id == expected_slot
++        && slot_changes
++            .iter()
++            .any(|change| change.idx == expected_slot && is_survival_crafting_input(&change.stack))
++}
++
++fn is_survival_crafting_collect_event(
++    window_id: u8,
++    slot_id: i16,
++    carried_item: &ItemStack,
++) -> bool {
++    window_id == SURVIVAL_CRAFTING_WINDOW
++        && slot_id == SURVIVAL_CRAFTING_RESULT_SLOT_ID
++        && is_survival_crafting_result(carried_item)
++}
++
++fn is_survival_crafting_input(stack: &ItemStack) -> bool {
++    stack.item == survival_crafting_input_kind() && stack.count == SURVIVAL_CRAFTING_INPUT_COUNT
++}
++
++fn is_survival_crafting_result(stack: &ItemStack) -> bool {
++    stack.item == survival_crafting_result_kind() && stack.count == SURVIVAL_CRAFTING_RESULT_COUNT
++}
++
++fn set_survival_crafting_slot(
++    inventories: &mut Query<&mut Inventory>,
++    inventory_entity: Entity,
++    slot: u16,
++    stack: ItemStack,
++) {
++    if let Ok(mut inventory) = inventories.get_mut(inventory_entity) {
++        inventory.set_slot(slot, stack);
++    }
++}
++
+ fn survival_chest_fixture_enabled() -> bool {
+     std::env::var(SURVIVAL_CHEST_FIXTURE_ENV).as_deref() == Ok("1")
+ }
+@@ -466,6 +727,44 @@ fn survival_chest_item_kind() -> ItemKind {
+     BlockState::DIRT.to_kind().to_item_kind()
+ }
+ 
++fn survival_crafting_fixture_enabled() -> bool {
++    std::env::var(SURVIVAL_CRAFTING_FIXTURE_ENV).as_deref() == Ok("1")
++}
++
++fn survival_crafting_pos() -> BlockPos {
++    BlockPos::new(
++        SURVIVAL_CRAFTING_X,
++        SURVIVAL_CRAFTING_Y,
++        SURVIVAL_CRAFTING_Z,
++    )
++}
++
++fn survival_crafting_table_state() -> BlockState {
++    BlockKind::from_str("crafting_table")
++        .expect("crafting_table block kind exists")
++        .to_state()
++}
++
++fn survival_crafting_input_stack(count: i8) -> ItemStack {
++    ItemStack::new(survival_crafting_input_kind(), count, None)
++}
++
++fn survival_crafting_result_stack() -> ItemStack {
++    ItemStack::new(
++        survival_crafting_result_kind(),
++        SURVIVAL_CRAFTING_RESULT_COUNT,
++        None,
++    )
++}
++
++fn survival_crafting_input_kind() -> ItemKind {
++    ItemKind::OakPlanks
++}
++
++fn survival_crafting_result_kind() -> ItemKind {
++    ItemKind::Stick
++}
++
+ fn survival_item_kind() -> ItemKind {
+     survival_block_state().to_kind().to_item_kind()
+ }
+@@ -589,4 +888,87 @@ mod tests {
+             }]
+         ));
+     }
++
++    #[test]
++    fn survival_crafting_opens_only_main_hand_survival_target() {
++        assert!(should_open_survival_crafting(
++            GameMode::Survival,
++            Hand::Main,
++            survival_crafting_pos()
++        ));
++        assert!(!should_open_survival_crafting(
++            GameMode::Creative,
++            Hand::Main,
++            survival_crafting_pos()
++        ));
++        assert!(!should_open_survival_crafting(
++            GameMode::Survival,
++            Hand::Off,
++            survival_crafting_pos()
++        ));
++        assert!(!should_open_survival_crafting(
++            GameMode::Survival,
++            Hand::Main,
++            survival_chest_pos()
++        ));
++    }
++
++    #[test]
++    fn survival_crafting_input_event_requires_exact_slot_window_item() {
++        let expected_change = SlotChange {
++            idx: SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
++            stack: survival_crafting_input_stack(SURVIVAL_CRAFTING_INPUT_COUNT),
++        };
++        assert!(is_survival_crafting_input_event(
++            SURVIVAL_CRAFTING_WINDOW,
++            SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
++            std::slice::from_ref(&expected_change),
++            SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
++        ));
++        assert!(!is_survival_crafting_input_event(
++            SURVIVAL_CRAFTING_WINDOW + 1,
++            SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
++            std::slice::from_ref(&expected_change),
++            SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
++        ));
++        assert!(!is_survival_crafting_input_event(
++            SURVIVAL_CRAFTING_WINDOW,
++            SURVIVAL_CRAFTING_INPUT_B_SLOT_ID,
++            std::slice::from_ref(&expected_change),
++            SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
++        ));
++        assert!(!is_survival_crafting_input_event(
++            SURVIVAL_CRAFTING_WINDOW,
++            SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
++            &[SlotChange {
++                idx: SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
++                stack: survival_crafting_result_stack(),
++            }],
++            SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
++        ));
++    }
++
++    #[test]
++    fn survival_crafting_collect_event_requires_result_slot_and_stack() {
++        assert!(is_survival_crafting_collect_event(
++            SURVIVAL_CRAFTING_WINDOW,
++            SURVIVAL_CRAFTING_RESULT_SLOT_ID,
++            &survival_crafting_result_stack()
++        ));
++        assert!(!is_survival_crafting_collect_event(
++            SURVIVAL_CRAFTING_WINDOW + 1,
++            SURVIVAL_CRAFTING_RESULT_SLOT_ID,
++            &survival_crafting_result_stack()
++        ));
++        assert!(!is_survival_crafting_collect_event(
++            SURVIVAL_CRAFTING_WINDOW,
++            SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
++            &survival_crafting_result_stack()
++        ));
++        assert!(!is_survival_crafting_collect_event(
++            SURVIVAL_CRAFTING_WINDOW,
++            SURVIVAL_CRAFTING_RESULT_SLOT_ID,
++            &survival_crafting_input_stack(SURVIVAL_CRAFTING_INPUT_COUNT)
++        ));
++    }
+ }
