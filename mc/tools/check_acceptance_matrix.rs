@@ -38,6 +38,7 @@ const REQUIRED_SEAMS: &[&str] = &[
     "Projectile damage attribution",
     "Survival break/place/pickup",
     "Survival chest persistence",
+    "Survival crafting table",
 ];
 
 const REQUIRED_GAPS: &[&str] = &[
@@ -72,6 +73,7 @@ const REVIEWABLE_RECEIPT_SEAMS: &[&str] = &[
     "Projectile damage attribution",
     "Survival break/place/pickup",
     "Survival chest persistence",
+    "Survival crafting table",
 ];
 
 const HISTORICAL_TARGET_RECEIPT_SEAMS: &[&str] = &[];

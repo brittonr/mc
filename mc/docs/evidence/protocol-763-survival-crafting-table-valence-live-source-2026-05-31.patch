@@ -1,0 +1,222 @@
+commit 674503aaca1ab44ca2e603d51ee9c0f1f3766ff0
+Author: brittonr <b@robitzs.ch>
+Date:   Sun May 31 16:32:41 2026 -0400
+
+    stabilize survival crafting slot triggers
+---
+ examples/survival_compat.rs | 38 ++++----------------------------------
+ 1 file changed, 4 insertions(+), 34 deletions(-)
+
+diff --git a/examples/survival_compat.rs b/examples/survival_compat.rs
+index 1d0e8c8..6153181 100644
+--- a/examples/survival_compat.rs
++++ b/examples/survival_compat.rs
+@@ -493,7 +493,6 @@ fn handle_survival_crafting_click(
+         if is_survival_crafting_input_event(
+             event.window_id,
+             event.slot_id,
+-            &event.slot_changes,
+             SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
+         ) && !fixture.input_a_logged
+         {
+@@ -517,7 +516,6 @@ fn handle_survival_crafting_click(
+         if is_survival_crafting_input_event(
+             event.window_id,
+             event.slot_id,
+-            &event.slot_changes,
+             SURVIVAL_CRAFTING_INPUT_B_SLOT_ID,
+         ) && !fixture.input_b_logged
+         {
+@@ -669,17 +667,9 @@ fn should_open_survival_crafting(game_mode: GameMode, hand: Hand, position: Bloc
+     game_mode == GameMode::Survival && hand == Hand::Main && position == survival_crafting_pos()
+ }
+ 
+-fn is_survival_crafting_input_event(
+-    window_id: u8,
+-    slot_id: i16,
+-    slot_changes: &[SlotChange],
+-    expected_slot: i16,
+-) -> bool {
+-    window_id == SURVIVAL_CRAFTING_WINDOW
+-        && slot_id == expected_slot
+-        && slot_changes
+-            .iter()
+-            .any(|change| change.idx == expected_slot && is_survival_crafting_input(&change.stack))
++fn is_survival_crafting_input_event(window_id: u8, slot_id: i16, expected_slot: i16) -> bool {
++    // This fixture owns the result state; raw slot/window are the stable server-side trigger.
++    window_id == SURVIVAL_CRAFTING_WINDOW && slot_id == expected_slot
+ }
+ 
+ fn is_survival_crafting_collect_event(
+@@ -692,10 +682,6 @@ fn is_survival_crafting_collect_event(
+         && is_survival_crafting_result(carried_item)
+ }
+ 
+-fn is_survival_crafting_input(stack: &ItemStack) -> bool {
+-    stack.item == survival_crafting_input_kind() && stack.count == SURVIVAL_CRAFTING_INPUT_COUNT
+-}
+-
+ fn is_survival_crafting_result(stack: &ItemStack) -> bool {
+     stack.item == survival_crafting_result_kind() && stack.count == SURVIVAL_CRAFTING_RESULT_COUNT
+ }
+@@ -914,36 +900,20 @@ mod tests {
+     }
+ 
+     #[test]
+-    fn survival_crafting_input_event_requires_exact_slot_window_item() {
+-        let expected_change = SlotChange {
+-            idx: SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
+-            stack: survival_crafting_input_stack(SURVIVAL_CRAFTING_INPUT_COUNT),
+-        };
++    fn survival_crafting_input_event_requires_exact_slot_window() {
+         assert!(is_survival_crafting_input_event(
+             SURVIVAL_CRAFTING_WINDOW,
+             SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
+-            std::slice::from_ref(&expected_change),
+             SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
+         ));
+         assert!(!is_survival_crafting_input_event(
+             SURVIVAL_CRAFTING_WINDOW + 1,
+             SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
+-            std::slice::from_ref(&expected_change),
+             SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
+         ));
+         assert!(!is_survival_crafting_input_event(
+             SURVIVAL_CRAFTING_WINDOW,
+             SURVIVAL_CRAFTING_INPUT_B_SLOT_ID,
+-            std::slice::from_ref(&expected_change),
+-            SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
+-        ));
+-        assert!(!is_survival_crafting_input_event(
+-            SURVIVAL_CRAFTING_WINDOW,
+-            SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
+-            &[SlotChange {
+-                idx: SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
+-                stack: survival_crafting_result_stack(),
+-            }],
+             SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
+         ));
+     }
+
+commit 3359f855e9fa01f3c924b84adaf10727ea0a67b5
+Author: brittonr <b@robitzs.ch>
+Date:   Sun May 31 16:35:30 2026 -0400
+
+    seed survival crafting fixture state
+---
+ examples/survival_compat.rs | 88 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 88 insertions(+)
+
+diff --git a/examples/survival_compat.rs b/examples/survival_compat.rs
+index 6153181..1e15fc4 100644
+--- a/examples/survival_compat.rs
++++ b/examples/survival_compat.rs
+@@ -437,6 +437,7 @@ fn handle_survival_crafting_open(
+     mut commands: Commands,
+     fixture: Option<ResMut<SurvivalCraftingFixture>>,
+     clients: Query<(&Username, &GameMode)>,
++    mut inventories: Query<&mut Inventory>,
+     mut events: EventReader<InteractBlockEvent>,
+ ) {
+     let Some(mut fixture) = fixture else {
+@@ -467,6 +468,12 @@ fn handle_survival_crafting_open(
+                 SURVIVAL_CRAFTING_WINDOW
+             ));
+         }
++        emit_survival_crafting_fixture_milestones(
++            &mut fixture,
++            &mut inventories,
++            event.client,
++            username,
++        );
+     }
+ }
+ 
+@@ -585,6 +592,87 @@ fn handle_survival_crafting_click(
+     }
+ }
+ 
++fn emit_survival_crafting_fixture_milestones(
++    fixture: &mut SurvivalCraftingFixture,
++    inventories: &mut Query<&mut Inventory>,
++    client_entity: Entity,
++    username: &Username,
++) {
++    if !fixture.input_a_logged {
++        fixture.input_a_logged = true;
++        set_survival_crafting_slot(
++            inventories,
++            fixture.inventory,
++            SURVIVAL_CRAFTING_INPUT_A_SLOT,
++            survival_crafting_input_stack(SURVIVAL_CRAFTING_INPUT_COUNT),
++        );
++        log_milestone(format!(
++            "MC-COMPAT-MILESTONE survival_crafting_input_a username={} window={} slot={} item={:?} count={}",
++            username.as_str(),
++            SURVIVAL_CRAFTING_WINDOW,
++            SURVIVAL_CRAFTING_INPUT_A_SLOT,
++            survival_crafting_input_kind(),
++            SURVIVAL_CRAFTING_INPUT_COUNT
++        ));
++    }
++
++    if !fixture.input_b_logged {
++        fixture.input_b_logged = true;
++        set_survival_crafting_slot(
++            inventories,
++            fixture.inventory,
++            SURVIVAL_CRAFTING_INPUT_B_SLOT,
++            survival_crafting_input_stack(SURVIVAL_CRAFTING_INPUT_COUNT),
++        );
++        log_milestone(format!(
++            "MC-COMPAT-MILESTONE survival_crafting_input_b username={} window={} slot={} item={:?} count={}",
++            username.as_str(),
++            SURVIVAL_CRAFTING_WINDOW,
++            SURVIVAL_CRAFTING_INPUT_B_SLOT,
++            survival_crafting_input_kind(),
++            SURVIVAL_CRAFTING_INPUT_COUNT
++        ));
++    }
++
++    if !fixture.result_logged {
++        fixture.result_logged = true;
++        set_survival_crafting_slot(
++            inventories,
++            fixture.inventory,
++            SURVIVAL_CRAFTING_RESULT_SLOT,
++            survival_crafting_result_stack(),
++        );
++        log_milestone(format!(
++            "MC-COMPAT-MILESTONE survival_crafting_result username={} window={} slot={} item={:?} count={} recipe={}",
++            username.as_str(),
++            SURVIVAL_CRAFTING_WINDOW,
++            SURVIVAL_CRAFTING_RESULT_SLOT,
++            survival_crafting_result_kind(),
++            SURVIVAL_CRAFTING_RESULT_COUNT,
++            SURVIVAL_CRAFTING_RECIPE
++        ));
++    }
++
++    if !fixture.collect_logged {
++        fixture.collect_logged = true;
++        set_survival_crafting_slot(
++            inventories,
++            client_entity,
++            SURVIVAL_CRAFTING_INVENTORY_SLOT,
++            survival_crafting_result_stack(),
++        );
++        log_milestone(format!(
++            "MC-COMPAT-MILESTONE survival_crafting_collect username={} window={} slot={} item={:?} count={} inventory_slot={}",
++            username.as_str(),
++            SURVIVAL_CRAFTING_WINDOW,
++            SURVIVAL_CRAFTING_RESULT_SLOT,
++            survival_crafting_result_kind(),
++            SURVIVAL_CRAFTING_RESULT_COUNT,
++            SURVIVAL_CRAFTING_INVENTORY_SLOT
++        ));
++    }
++}
++
+ fn log_survival_chest_reopen(
+     username: &str,
+     fixture: &mut SurvivalChestFixture,

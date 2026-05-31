@@ -1,5 +1,5 @@
 037772f21fba7a512dfffa1d53a6777244b2d285609ce1bb293215f298a5d9fb  docs/evidence/protocol-763-ctf-score-limit-win-condition-contract-2026-05-30.md
-64695db2492b10433582c1b73f34109483582455b0c989c75e723ab28dde1eef  docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.md
+53757dde14b8d5cef2644a604da94a3021b959288b7b7c9bc46673819158e348  docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.md
 7c0d7805e54d95f2768f0164f1b4e62f59f57d524f3a61c3205eb0d611e89e02  docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.receipt.json
 959321eab9c7b041d6b025f37701a99f3992ed519a57d6ac414f628e16d9a417  docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.run.log
 b191aa519d13f870eb8d4c5b1242f22330b2ad9566070905bacf5f578843b19a  docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.client.log
@@ -10,15 +10,15 @@ ad37a692b15f623c707b8312bd22fbcfce96435a6b4f817a28a092ecf3b29395  docs/evidence/
 531381c289e79bae7b1bac58818ccd43600f12499f5e95a8d7db28cf9a4feaff  docs/evidence/protocol-763-ctf-score-limit-win-condition-cairn-validate-2026-05-30.run.log
 40967a69f6a3b9efba4d735f7d9133a0c47b0774e6551096a90933264418b651  docs/evidence/protocol-763-ctf-score-limit-win-condition-archive-2026-05-30.run.log
 5918b7cec821e39834e6e7ef763696b258d6c3c3df907500e5f53db5fcf4367d  docs/evidence/protocol-763-ctf-score-limit-win-condition-archive-validation-2026-05-30.run.log
-60b1f9a532c36db76b9062cd76a5727adab99b2accb9b40c999419e542c879fe  docs/evidence/protocol-763-acceptance-matrix.md
-0701b793329212078cda6e39dc6a4edbc102dcf364b18425b957e1925dd06085  docs/evidence/protocol-763-current-evidence-bundle.md
+aae92b803892b291829125469cd593f1ea703f8169e4181fbe4239790f2b0712  docs/evidence/protocol-763-acceptance-matrix.md
+115b51d433bda0f21895c9f2b5b6686c06edb7bab17b0f66d6b3c23aa964d9c3  docs/evidence/protocol-763-current-evidence-bundle.md
 a44aadec2249425902503d74037ee4a803b09664b516db38fff04f9ca92d153c  docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md
 f78f973960e966e07e411e3c4ff69f6d577b5921b1b973a15a56168396e610e9  config/mc-compat/scenario-manifest.ncl
 74a90202d1c01234427c8ca8d8820499905dfda4e62b9c53869bf95fa84544af  tools/mc-compat-runner/src/main.rs
 125eb03244151fcbbedfbac0ede0ec3542a416561d0b1638263108511ab677bd  tools/mc-compat-runner/src/scenario_manifest_generated.rs
 2bd990704ad83abe9e917aa71e70f61dedac083087ea62e0d72978436481faae  tools/check_ctf_score_limit_win_condition.rs
-491a9abbab7a5549c261167a9f0223547ed90010e7dec7c2af552ab47e8cd0b5  tools/check_acceptance_matrix.rs
-8e2454571239889a714c94d49dfed802abad354ac2b804b8bfcce0cd6b504c23  tools/check_current_evidence_bundle.rs
+a2a8f822363a53d506a0052ceb7f6822e3d7e61990a533cfffbb33f43da53b4e  tools/check_acceptance_matrix.rs
+42238dd86f3da74a5c1d1e45364abf42441f6a418dc3424a52ede4000abdd351  tools/check_current_evidence_bundle.rs
 2b355737978547b6d312df622af6d0c5b34c400c939f4c92ac2dbca048c8a92a  flake.nix
 31f42fef221c2686d281f96a4b32aa562295305fc3caf3bd3589086f9ea20f90  README.md
 0b4fdf084606bf0bccdfa07c7355ca416ee15629edf85d9b896696ee3f1ce0c7  cairn/archive/2026-05-30-ctf-score-limit-win-condition/proposal.md

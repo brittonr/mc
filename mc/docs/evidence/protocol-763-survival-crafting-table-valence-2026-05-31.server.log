@@ -1,0 +1,41 @@
+   Compiling valence_build_utils v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_build_utils)
+   Compiling valence_ident_macros v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_ident_macros)
+   Compiling valence_math v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_math)
+   Compiling valence_protocol_macros v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_protocol_macros)
+   Compiling valence_nbt v0.8.0 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_nbt)
+   Compiling valence_command_macros v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_command_macros)
+   Compiling valence_generated v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_generated)
+   Compiling valence_entity v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_entity)
+   Compiling valence_lang v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_lang)
+   Compiling valence_ident v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_ident)
+   Compiling valence_text v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_text)
+   Compiling valence_protocol v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_protocol)
+   Compiling valence_server_common v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_server_common)
+   Compiling valence_registry v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_registry)
+   Compiling valence_server v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_server)
+   Compiling valence_inventory v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_inventory)
+   Compiling valence_advancement v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_advancement)
+   Compiling valence_weather v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_weather)
+   Compiling valence_command v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_command)
+   Compiling valence_network v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_network)
+   Compiling valence_anvil v0.1.0 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_anvil)
+   Compiling valence_scoreboard v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_scoreboard)
+   Compiling valence_boss_bar v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_boss_bar)
+   Compiling valence_player_list v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_player_list)
+   Compiling valence_world_border v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_world_border)
+   Compiling valence_equipment v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live/crates/valence_equipment)
+   Compiling valence v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-crafting-3359f855e9fa01f3c924b84adaf10727ea0a67b5-live)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 1m 00s
+     Running `/tmp/valence-compat-survival-crafting-target/debug/examples/survival_compat`
+[2m2026-05-31T20:45:18.409422Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+[2m2026-05-31T20:45:20.814360Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_crafting_table_open username=compatbot position=4,64,0 window=1
+MC-COMPAT-MILESTONE survival_crafting_table_open username=compatbot position=4,64,0 window=1
+[2m2026-05-31T20:45:20.814379Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_crafting_input_a username=compatbot window=1 slot=1 item=OakPlanks count=1
+MC-COMPAT-MILESTONE survival_crafting_input_a username=compatbot window=1 slot=1 item=OakPlanks count=1
+[2m2026-05-31T20:45:20.814381Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_crafting_input_b username=compatbot window=1 slot=4 item=OakPlanks count=1
+MC-COMPAT-MILESTONE survival_crafting_input_b username=compatbot window=1 slot=4 item=OakPlanks count=1
+[2m2026-05-31T20:45:20.814383Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_crafting_result username=compatbot window=1 slot=0 item=Stick count=4 recipe=minecraft:stick
+MC-COMPAT-MILESTONE survival_crafting_result username=compatbot window=1 slot=0 item=Stick count=4 recipe=minecraft:stick
+[2m2026-05-31T20:45:20.814385Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_crafting_collect username=compatbot window=1 slot=0 item=Stick count=4 inventory_slot=36
+MC-COMPAT-MILESTONE survival_crafting_collect username=compatbot window=1 slot=0 item=Stick count=4 inventory_slot=36

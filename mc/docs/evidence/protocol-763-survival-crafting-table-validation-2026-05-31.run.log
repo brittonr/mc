@@ -1,0 +1,104 @@
+
+$ env CARGO_TARGET_DIR=/tmp/mc-cargo-script-target ./tools/check_survival_crafting_table.rs --self-test
+survival crafting table self-test ok
+
+$ env CARGO_TARGET_DIR=/tmp/mc-cargo-script-target ./tools/check_survival_crafting_table.rs --reference-receipt docs/evidence/protocol-763-survival-crafting-table-paper-2026-05-31.receipt.json --reference-client-log docs/evidence/protocol-763-survival-crafting-table-paper-2026-05-31.client.log --reference-server-log docs/evidence/protocol-763-survival-crafting-table-paper-2026-05-31.server.log --valence-receipt docs/evidence/protocol-763-survival-crafting-table-valence-2026-05-31.receipt.json --valence-client-log docs/evidence/protocol-763-survival-crafting-table-valence-2026-05-31.client.log --valence-server-log docs/evidence/protocol-763-survival-crafting-table-valence-2026-05-31.server.log
+survival crafting table contract ok: 72 metrics
+
+$ env VALENCE_REPO=/home/brittonr/git/mc/valence VALENCE_REV=3359f855e9fa01f3c924b84adaf10727ea0a67b5 VALENCE_WORKTREE=/tmp/valence-compat-survival-crafting-final-validation-clean-2535438 MC_COMPAT_SURVIVAL_CRAFTING_TABLE_RECEIPT=target/mc-compat-survival-crafting-table-validation/valence-survival-crafting-table-dry-run.json nix run --no-update-lock-file .#mc-compat-valence-survival-crafting-table -- --dry-run
+[mc-compat] plan: build client, start Valence server, wait for protocol 763, run client under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
++ "git" "-C" "/home/brittonr/git/mc/valence" "worktree" "prune"
+[mc-compat] creating isolated Valence worktree /tmp/valence-compat-survival-crafting-final-validation-clean-2535438 at 3359f855e9fa01f3c924b84adaf10727ea0a67b5
++ "git" "-C" "/home/brittonr/git/mc/valence" "worktree" "add" "--detach" "/tmp/valence-compat-survival-crafting-final-validation-clean-2535438" "3359f855e9fa01f3c924b84adaf10727ea0a67b5"
+[mc-compat] starting Valence 3359f855e9fa01f3c924b84adaf10727ea0a67b5 example 'survival_compat' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-survival-crafting-final-validation-clean-2535438
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'survival-crafting-table' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/mc-compat-survival-crafting-table-validation/valence-survival-crafting-table-dry-run.json
+
+$ python3 tools/check_acceptance_matrix.py --self-test
+acceptance matrix self-test ok
+
+$ python3 tools/check_acceptance_matrix.py
+acceptance matrix ok: 21 seams, 21 hashes
+
+$ python3 tools/check_current_evidence_bundle.py --self-test
+current evidence bundle self-test ok
+
+$ python3 tools/check_current_evidence_bundle.py
+current evidence bundle ok: 21 seams
+
+$ python3 tools/check_survival_coverage_matrix.py --self-test
+survival coverage matrix self-test ok
+
+$ python3 tools/check_survival_coverage_matrix.py
+survival coverage matrix ok: 9 rows
+
+$ nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_acceptance_matrix.rs -o target/check-acceptance-matrix
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+
+$ target/check-acceptance-matrix --self-test
+acceptance matrix self-test ok: positive and negative fixtures exercised
+
+$ target/check-acceptance-matrix
+acceptance matrix check passed: 21 rows validated
+
+$ nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_current_evidence_bundle.rs -o target/check-current-evidence-bundle
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+
+$ target/check-current-evidence-bundle --self-test
+current evidence bundle self-test ok: positive and negative fixtures exercised
+
+$ target/check-current-evidence-bundle
+current evidence bundle check passed: 21 rows validated
+
+$ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 137 manifests, 644 entries, 71 receipts scanned
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks survival-crafting-table-parity --root .
+{
+  "change": "survival-crafting-table-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "8a8e49987cdc64436829a50b68fac1f8862bbce7107c6386c62763540f8a5e95",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "38bac042d5ac3b43a7f2eab733f6b7b4ede2d28429f78c8876514209dc938547",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 31,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 33,
+  "valid": true
+}
+
+survival crafting table final validation complete

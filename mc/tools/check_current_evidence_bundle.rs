@@ -34,6 +34,7 @@ const REQUIRED_SEAMS: &[&str] = &[
     "Projectile damage attribution",
     "Survival break/place/pickup",
     "Survival chest persistence",
+    "Survival crafting table",
 ];
 
 const REQUIRED_TEXT: &[&str] = &[

@@ -37,6 +37,7 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 | Projectile damage attribution | `nix run .#mc-compat-valence-ctf-projectile-damage-attribution` | `cf84fcb81ae557ecfbd2ff0b1f8b94af7bf07eaa85c20b1cde442929e3e3e529` |
 | Survival break/place/pickup | Paper+Valence paired `survival-break-place-pickup` receipts | `a88fe547bfe2dd43fff3ac5bd967f0ebf5a3c539403211dd029865293130090b` |
 | Survival chest persistence | Paper+Valence paired `survival-chest-persistence` receipts | `3dd16d3d15f47793505e97a088408d039c6cd45a73f288c7301c5e4f3f4851cf` |
+| Survival crafting table | Paper+Valence paired `survival-crafting-table` receipts | `710f64a04451a62604d17a78cc84f3e2db84ec3d7034b7feaa149b1e8af57a15` |
 
 ## Public server authorized safety checkpoint
 
@@ -68,7 +69,11 @@ The maintained survival parity row is validated by `docs/evidence/protocol-763-s
 
 ## Survival chest persistence checkpoint
 
-The maintained chest persistence row is validated by `docs/evidence/protocol-763-survival-chest-persistence-2026-05-29.md` with paired Paper and Valence receipt/log bundles. Covered row is one deterministic client in the Paper fixture and Valence `survival_compat` fixture opening chest `8,64,0`, storing one `Dirt` item in slot `0`, closing, reconnecting once, reopening, and observing the same slot/item/count. `docs/evidence/protocol-763-survival-coverage-matrix-2026-05-28.md` and `tools/check_survival_coverage_matrix.py` keep crafting, furnace persistence, hunger/food, mob drops, redstone, biome/dimension, and world persistence as explicit missing rows. `tools/check_survival_chest_persistence.rs` rejects Valence-only evidence and mismatched slot/item/count/position/session metrics, and passes the paired Paper/Valence bundle. Full survival compatibility, all-container behavior, restart/world persistence, and broad vanilla parity remain non-claims.
+The maintained chest persistence row is validated by `docs/evidence/protocol-763-survival-chest-persistence-2026-05-29.md` with paired Paper and Valence receipt/log bundles. Covered row is one deterministic client in the Paper fixture and Valence `survival_compat` fixture opening chest `8,64,0`, storing one `Dirt` item in slot `0`, closing, reconnecting once, reopening, and observing the same slot/item/count. `tools/check_survival_chest_persistence.rs` rejects Valence-only evidence and mismatched slot/item/count/position/session metrics, and passes the paired Paper/Valence bundle. Full survival compatibility, all-container behavior, restart/world persistence, and broad vanilla parity remain non-claims.
+
+## Survival crafting table checkpoint
+
+The maintained crafting row is validated by `docs/evidence/protocol-763-survival-crafting-table-2026-05-31.md` with paired Paper and Valence receipt/log bundles. Covered row is one deterministic client in the Paper fixture and Valence `survival_compat` fixture opening crafting table `4,64,0`, placing `OakPlanks` in input slots `1` and `4`, observing `Stick x4` result slot `0` with recipe `minecraft:stick`, collecting the result, and observing inventory slot `36` on both backends. `docs/evidence/protocol-763-survival-coverage-matrix-2026-05-28.md` and `tools/check_survival_coverage_matrix.py` keep furnace persistence, hunger/food, mob drops, redstone, biome/dimension, and world persistence as explicit missing rows. `tools/check_survival_crafting_table.rs` rejects Valence-only evidence and mismatched slot/item/count/recipe/position metrics, and passes the paired Paper/Valence bundle. Full survival compatibility, full crafting coverage, recipe-book behavior, shift-click/drag/split semantics, all recipe variants, all-container behavior, and broad vanilla parity remain non-claims.
 
 ## Vanilla combat parity checkpoint
 
@@ -181,7 +186,7 @@ The production/network matrix promotes bounded owned-local loopback load safety,
 
 ## Reference parity labels
 
-- `reference-parity-covered`: Survival break/place/pickup and chest persistence only.
+- `reference-parity-covered`: Survival break/place/pickup, chest persistence, and crafting table only.
 - `valence-only-containment`: CTF scoring, inventory, combat, projectile, reconnect, latency/jitter, and load/network rows.
 - `fixture-only-oracle`: The adversarial-network oracle row only; no live traffic or broad security claim.
 - `explicit-non-claim`: exact vanilla combat parity, broad survival, full Minecraft/CTF/protocol correctness, and survival rows not named as reference-parity covered.
@@ -190,4 +195,4 @@ Policy/checkpoint: `docs/evidence/protocol-763-reference-parity-expansion-2026-0
 
 ## Non-claims
 
-This bundle still does not claim full Minecraft compatibility, full survival compatibility, broad vanilla parity, full CTF correctness, projectile travel/collision simulation, all projectile weapon variants, all equipment slots/items, all armor loadouts, enchantment/status-effect semantics, exact vanilla knockback/damage/mitigation balancing, all-container behavior, restart/world persistence, crafting/furnace/hunger/mob/redstone/biome/dimension coverage, production readiness, public-server load safety, live adversarial-network safety, malicious-client resilience, hostile internet safety, full protocol security, or unbounded soak/reconnect/latency safety.
+This bundle still does not claim full Minecraft compatibility, full survival compatibility, broad vanilla parity, full CTF correctness, projectile travel/collision simulation, all projectile weapon variants, all equipment slots/items, all armor loadouts, enchantment/status-effect semantics, exact vanilla knockback/damage/mitigation balancing, all-container behavior, restart/world persistence, full crafting coverage, furnace/hunger/mob/redstone/biome/dimension coverage, production readiness, public-server load safety, live adversarial-network safety, malicious-client resilience, hostile internet safety, full protocol security, or unbounded soak/reconnect/latency safety.

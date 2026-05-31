@@ -17,6 +17,7 @@ This row promotes only the bounded `score limit / win condition` seam for protoc
 - Server log: `docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.server.log`
 - Checker record: `docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.record`
 - BLAKE3 manifest: `docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.b3`
+- Matrix receipt BLAKE3: `7c0d7805e54d95f2768f0164f1b4e62f59f57d524f3a61c3205eb0d611e89e02`
 - Child revisions: Valence `f57a325`, Stevenarella `1ab97d2`
 
 ## Required milestones

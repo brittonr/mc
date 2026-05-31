@@ -1,0 +1,32 @@
+[main.rs:1037][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:1173][INFO] Shader version: #version 150
+[main.rs:290][INFO] Detected server protocol version 763
+[server/mod.rs:362][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25565
+[server/mod.rs:367][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:384][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:398][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:405][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:466][WARN] Server is running in offline mode
+[server/mod.rs:467][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbot properties=0
+[server/mod.rs:2423][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[server/mod.rs:2490][INFO] MC-COMPAT-MILESTONE join_game entity_id=0 gamemode=Survival
+[server/mod.rs:3989][INFO] Received chat message: Welcome to the Valence survival compatibility fixture.
+[server/mod.rs:3467][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=255 state_id=0 slot=-1 item=id=23 count=2
+[server/mod.rs:3003][INFO] MC-COMPAT-MILESTONE update_health health=14.0 food=20 saturation=0.0
+[server/mod.rs:4137][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=0
+[server/mod.rs:995][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:3090][INFO] MC-COMPAT-MILESTONE survival_crafting_move_near_table x=4.5 y=65.0 z=0.5 position=4,64,0
+[server/mod.rs:3106][INFO] MC-COMPAT-MILESTONE survival_crafting_open_request_sent hand=main position=4,64,0 face=up sequence=608
+[server/mod.rs:3300][INFO] MC-COMPAT-MILESTONE survival_crafting_table_open_seen window=1 position=4,64,0
+[server/mod.rs:3374][INFO] MC-COMPAT-MILESTONE inventory_probe_window_items window=1 state_id=0 slots=10 slot36=missing slot37=missing carried=id=23 count=2
+[server/mod.rs:3229][INFO] MC-COMPAT-MILESTONE survival_crafting_result_seen window=1 slot=0 item=Stick count=4 recipe=minecraft:stick
+[server/mod.rs:3467][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=1 state_id=0 slot=37 item=id=807 count=4
+[server/mod.rs:3257][INFO] MC-COMPAT-MILESTONE survival_crafting_inventory_updated slot=36 item=Stick count=4
+[server/mod.rs:3138][INFO] MC-COMPAT-MILESTONE survival_crafting_input_a_sent window=1 slot=1 item=OakPlanks count=1
+[server/mod.rs:3374][INFO] MC-COMPAT-MILESTONE inventory_probe_window_items window=1 state_id=0 slots=10 slot36=missing slot37=missing carried=id=23 count=2
+[server/mod.rs:3157][INFO] MC-COMPAT-MILESTONE survival_crafting_input_b_sent window=1 slot=4 item=OakPlanks count=1
+[server/mod.rs:3374][INFO] MC-COMPAT-MILESTONE inventory_probe_window_items window=1 state_id=0 slots=10 slot36=missing slot37=missing carried=id=23 count=2
+[server/mod.rs:3176][INFO] MC-COMPAT-MILESTONE survival_crafting_result_collected window=1 slot=0 item=Stick count=4
+[server/mod.rs:3374][INFO] MC-COMPAT-MILESTONE inventory_probe_window_items window=1 state_id=0 slots=10 slot36=missing slot37=missing carried=id=23 count=2

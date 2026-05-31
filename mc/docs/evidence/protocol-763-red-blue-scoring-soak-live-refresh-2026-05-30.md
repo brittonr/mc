@@ -19,6 +19,7 @@ RED/BLUE scoring soak freshness replaces the historical target-only RED/BLUE sco
 - BLUE server log: `docs/evidence/protocol-763-red-blue-scoring-soak-blue-2026-05-30.server.log`
 - Checker record: `docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-2026-05-30.record`
 - BLAKE3 manifest: `docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-2026-05-30.b3`
+- Matrix receipt BLAKE3: `349b1b7dc84877dd56dce3344611d04ce86a74413738ebc3fdd2a2f720504bed`
 - Child revisions: Valence `f57a325`, Stevenarella `1ab97d2`
 
 ## Required milestones

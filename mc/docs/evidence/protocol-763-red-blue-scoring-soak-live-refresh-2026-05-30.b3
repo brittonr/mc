@@ -1,5 +1,5 @@
 c5f3be1475e36ef85f38aae63a88f236f208413a943a9990623236b5bd61a5cb  docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-contract-2026-05-30.md
-c7a9a7b0eb257b58bafb90cdcbaff195c696a1c0eae6da33174043e735be5621  docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-2026-05-30.md
+35a4cbec5bbc2ec99ca08fe93bde6acebf71554962f328e90e16fc9ede0c9f27  docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-2026-05-30.md
 349b1b7dc84877dd56dce3344611d04ce86a74413738ebc3fdd2a2f720504bed  docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-2026-05-30.receipt.json
 b9f93d0313691d863741c48eaf92e2a89089b9d913e590728fb23ee39402725d  docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-2026-05-30.record
 b5698fa48778db15bc1d0318fe2a57df3dcd8b55a1df7162ea5834f13abbaea6  docs/evidence/protocol-763-red-blue-scoring-soak-red-2026-05-30.receipt.json
@@ -12,11 +12,11 @@ d605799f8ea829ec749f97f52acd20c75f403324439f3d72392ceeb3397abe8d  docs/evidence/
 891af646108bbcd2f5e5fc8206b1dda0c7e098d566f17fc1cc75ea64ac06531d  docs/evidence/protocol-763-red-blue-scoring-soak-blue-2026-05-30.client.log
 9a8dd4253b720e827724352539d3c398a7f03c3c958561c9dedea7c5641ef32d  docs/evidence/protocol-763-red-blue-scoring-soak-blue-2026-05-30.server.log
 e660802c4fc789cbb9b7b4cecb73294aa29aafffb3d2a2ddfe693c5135caf816  docs/evidence/protocol-763-red-blue-scoring-soak-blue-2026-05-30.receipt.typed-events.log
-60b1f9a532c36db76b9062cd76a5727adab99b2accb9b40c999419e542c879fe  docs/evidence/protocol-763-acceptance-matrix.md
-0701b793329212078cda6e39dc6a4edbc102dcf364b18425b957e1925dd06085  docs/evidence/protocol-763-current-evidence-bundle.md
+aae92b803892b291829125469cd593f1ea703f8169e4181fbe4239790f2b0712  docs/evidence/protocol-763-acceptance-matrix.md
+115b51d433bda0f21895c9f2b5b6686c06edb7bab17b0f66d6b3c23aa964d9c3  docs/evidence/protocol-763-current-evidence-bundle.md
 a44aadec2249425902503d74037ee4a803b09664b516db38fff04f9ca92d153c  docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md
 69cb30f9883659aec0727ca58d7bc4149bc62942eb87f0e503cbf11d283e0496  tools/check_red_blue_scoring_soak_live_refresh.rs
-491a9abbab7a5549c261167a9f0223547ed90010e7dec7c2af552ab47e8cd0b5  tools/check_acceptance_matrix.rs
+a2a8f822363a53d506a0052ceb7f6822e3d7e61990a533cfffbb33f43da53b4e  tools/check_acceptance_matrix.rs
 2b355737978547b6d312df622af6d0c5b34c400c939f4c92ac2dbca048c8a92a  flake.nix
 d313fe27f19f79af639b54576f0c391c56ec2580a4404c2aa59a4a24f82b8560  cairn/archive/2026-05-30-refresh-red-blue-scoring-soak-live-evidence/proposal.md
 96060d7b43959e1420ef160c2f7ada16b57a39208e6ef382bd99f55dd8a0f509  cairn/archive/2026-05-30-refresh-red-blue-scoring-soak-live-evidence/design.md
