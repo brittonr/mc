@@ -255,23 +255,101 @@ fn object_block(text: &str, field: &str) -> Option<String> {
 }
 
 fn field_value<'a>(block: &'a str, field: &str) -> Option<&'a str> {
-    let field_needle = format!("\"{field}\"");
-    let mut search_start = 0usize;
-    while let Some(relative_start) = block[search_start..].find(&field_needle) {
-        let field_start = search_start + relative_start;
-        let after_field = &block[field_start + field_needle.len()..];
-        let after_whitespace = after_field.trim_start();
-        if !after_whitespace.starts_with(JSON_FIELD_SEPARATOR) {
-            search_start = field_start + field_needle.len();
+    let mut index = 0usize;
+    while index < block.len() {
+        let character = block[index..].chars().next()?;
+        if character != JSON_STRING_QUOTE {
+            index += character.len_utf8();
             continue;
         }
-        let after_colon = after_whitespace[JSON_FIELD_SEPARATOR.len()..].trim_start();
-        let end = after_colon
-            .find([',', JSON_OBJECT_END])
-            .unwrap_or(after_colon.len());
-        return Some(after_colon[..end].trim());
+
+        let key_start = index + JSON_STRING_QUOTE.len_utf8();
+        let key_end = json_string_end(block, index)?;
+        let after_key = skip_json_whitespace(block, key_end + JSON_STRING_QUOTE.len_utf8());
+        if block[after_key..].starts_with(JSON_FIELD_SEPARATOR) {
+            let value_start = skip_json_whitespace(block, after_key + JSON_FIELD_SEPARATOR.len());
+            let value_end = json_value_end(block, value_start);
+            if &block[key_start..key_end] == field {
+                return Some(block[value_start..value_end].trim());
+            }
+            index = value_end;
+            continue;
+        }
+        index = key_end + JSON_STRING_QUOTE.len_utf8();
     }
     None
+}
+
+fn skip_json_whitespace(text: &str, start: usize) -> usize {
+    let mut index = start;
+    while index < text.len() {
+        let character = text[index..]
+            .chars()
+            .next()
+            .expect("index is on char boundary");
+        if !character.is_whitespace() {
+            return index;
+        }
+        index += character.len_utf8();
+    }
+    index
+}
+
+fn json_string_end(text: &str, quote_start: usize) -> Option<usize> {
+    let mut escaped = false;
+    let mut index = quote_start + JSON_STRING_QUOTE.len_utf8();
+    while index < text.len() {
+        let character = text[index..].chars().next()?;
+        if escaped {
+            escaped = false;
+            index += character.len_utf8();
+            continue;
+        }
+        if character == '\\' {
+            escaped = true;
+            index += character.len_utf8();
+            continue;
+        }
+        if character == JSON_STRING_QUOTE {
+            return Some(index);
+        }
+        index += character.len_utf8();
+    }
+    None
+}
+
+fn json_value_end(text: &str, start: usize) -> usize {
+    let mut object_depth = 0usize;
+    let mut array_depth = 0usize;
+    let mut index = start;
+    while index < text.len() {
+        let character = text[index..]
+            .chars()
+            .next()
+            .expect("index is on char boundary");
+        if character == JSON_STRING_QUOTE {
+            let Some(end) = json_string_end(text, index) else {
+                return text.len();
+            };
+            index = end + JSON_STRING_QUOTE.len_utf8();
+            continue;
+        }
+        if object_depth == 0
+            && array_depth == 0
+            && (character == ',' || character == JSON_OBJECT_END)
+        {
+            return index;
+        }
+        match character {
+            JSON_OBJECT_START => object_depth += 1,
+            JSON_OBJECT_END => object_depth = object_depth.saturating_sub(1),
+            JSON_ARRAY_START => array_depth += 1,
+            JSON_ARRAY_END => array_depth = array_depth.saturating_sub(1),
+            _ => {}
+        }
+        index += character.len_utf8();
+    }
+    index
 }
 
 fn bool_field(block: &str, field: &str) -> Option<bool> {

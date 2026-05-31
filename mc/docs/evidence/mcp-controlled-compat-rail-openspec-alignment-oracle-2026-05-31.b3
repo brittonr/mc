@@ -1,8 +1,10 @@
 a6baebdbf2c1fb31ecb9cacabc31302afd705cb804b8497eb2c71c66b8dff356  docs/evidence/mcp-controlled-compat-rail-openspec-alignment-oracle-2026-05-31.md
 dc1616190be7130ff65b3af6243026dca79d688013fab6507abff01466fa04ee  cairn/changes/mcp-controlled-compat-rail/proposal.md
 f49a5354eb7b73867fa73f486b596cf43fe533cddd57a3fd7f5f2ec1846f1fa7  cairn/changes/mcp-controlled-compat-rail/specs/mc-compatibility/spec.md
+1d96f29f5e7721b2f37efc3e3a3ea1968e2753821cb3798ebd7b9eb08bbb0781  cairn/changes/mcp-controlled-compat-rail/design.md
 c0c80ee4b0105fbd57a72532948abc81dba8a39fbf5a965edacfe4074c2d1385  cairn/changes/mcp-controlled-compat-rail/tasks.md
 74a90202d1c01234427c8ca8d8820499905dfda4e62b9c53869bf95fa84544af  tools/mc-compat-runner/src/main.rs
-700c9d47fed6e908cf14f380c0544966f6a6878ea723485aee880cd165fce712  tools/check_mcp_controlled_compat_rail.rs
+24d603aefca68b2adf7354ba5816e3f350a3f526082367ea263049decfcfc203  tools/check_mcp_controlled_compat_rail.rs
 d69721cf24faa1cae5812a843decf84be9a95271669f7c970333a1fde219bf6e  docs/evidence/mcp-controlled-compat-rail-validation-2026-05-31.run.log
-b716a2ce4e59db17ef9d6e1e737745f73b12ad6fb61a8750f43d4d7c2c427739  docs/evidence/mcp-controlled-compat-rail-overclaim-hardening-2026-05-31.run.log
+3f737dcb40d88abd2343a858044e2715f9424d6ae684ebe0dae633c81d41eef6  docs/evidence/mcp-controlled-compat-rail-followup-gates-2026-05-31.run.log
+1e1332cd917b4da7997ec318936fabe7890bcaa594be41ab7b387fb0fceb03bb  docs/evidence/mcp-controlled-compat-rail-overclaim-hardening-2026-05-31.run.log

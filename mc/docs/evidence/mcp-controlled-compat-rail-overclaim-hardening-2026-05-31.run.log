@@ -10,9 +10,9 @@ mcp controlled rail self-test passed: positive and fail-closed fixtures exercise
 ## focused MCP dry-run check
 $ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-mcp-controlled-smoke-dry-run --no-link -L
 this derivation will be built:
-  /nix/store/g2r7abph050sc0vgn9q4bd69k2q3nib7-mc-compat-mcp-controlled-smoke-dry-run.drv
+  /nix/store/5fx5jhjfd5ky3g9s02hyykxlwwlsiq79-mc-compat-mcp-controlled-smoke-dry-run.drv
 cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
-building '/nix/store/g2r7abph050sc0vgn9q4bd69k2q3nib7-mc-compat-mcp-controlled-smoke-dry-run.drv'...
+building '/nix/store/5fx5jhjfd5ky3g9s02hyykxlwwlsiq79-mc-compat-mcp-controlled-smoke-dry-run.drv'...
 mc-compat-mcp-controlled-smoke-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
 mc-compat-mcp-controlled-smoke-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
 mc-compat-mcp-controlled-smoke-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
@@ -27,7 +27,7 @@ mc-compat-mcp-controlled-smoke-dry-run> hint:   git branch -m <name>
 mc-compat-mcp-controlled-smoke-dry-run> hint:
 mc-compat-mcp-controlled-smoke-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
 mc-compat-mcp-controlled-smoke-dry-run> Initialized empty Git repository in /build/repo/fake-valence/.git/
-mc-compat-mcp-controlled-smoke-dry-run> [master (root-commit) a43f4ba] init
+mc-compat-mcp-controlled-smoke-dry-run> [master (root-commit) 7483d54] init
 mc-compat-mcp-controlled-smoke-dry-run>  1 file changed, 1 insertion(+)
 mc-compat-mcp-controlled-smoke-dry-run>  create mode 100644 README.md
 
