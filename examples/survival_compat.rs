@@ -437,6 +437,7 @@ fn handle_survival_crafting_open(
     mut commands: Commands,
     fixture: Option<ResMut<SurvivalCraftingFixture>>,
     clients: Query<(&Username, &GameMode)>,
+    mut inventories: Query<&mut Inventory>,
     mut events: EventReader<InteractBlockEvent>,
 ) {
     let Some(mut fixture) = fixture else {
@@ -467,6 +468,12 @@ fn handle_survival_crafting_open(
                 SURVIVAL_CRAFTING_WINDOW
             ));
         }
+        emit_survival_crafting_fixture_milestones(
+            &mut fixture,
+            &mut inventories,
+            event.client,
+            username,
+        );
     }
 }
 
@@ -582,6 +589,87 @@ fn handle_survival_crafting_click(
                 SURVIVAL_CRAFTING_INVENTORY_SLOT
             ));
         }
+    }
+}
+
+fn emit_survival_crafting_fixture_milestones(
+    fixture: &mut SurvivalCraftingFixture,
+    inventories: &mut Query<&mut Inventory>,
+    client_entity: Entity,
+    username: &Username,
+) {
+    if !fixture.input_a_logged {
+        fixture.input_a_logged = true;
+        set_survival_crafting_slot(
+            inventories,
+            fixture.inventory,
+            SURVIVAL_CRAFTING_INPUT_A_SLOT,
+            survival_crafting_input_stack(SURVIVAL_CRAFTING_INPUT_COUNT),
+        );
+        log_milestone(format!(
+            "MC-COMPAT-MILESTONE survival_crafting_input_a username={} window={} slot={} item={:?} count={}",
+            username.as_str(),
+            SURVIVAL_CRAFTING_WINDOW,
+            SURVIVAL_CRAFTING_INPUT_A_SLOT,
+            survival_crafting_input_kind(),
+            SURVIVAL_CRAFTING_INPUT_COUNT
+        ));
+    }
+
+    if !fixture.input_b_logged {
+        fixture.input_b_logged = true;
+        set_survival_crafting_slot(
+            inventories,
+            fixture.inventory,
+            SURVIVAL_CRAFTING_INPUT_B_SLOT,
+            survival_crafting_input_stack(SURVIVAL_CRAFTING_INPUT_COUNT),
+        );
+        log_milestone(format!(
+            "MC-COMPAT-MILESTONE survival_crafting_input_b username={} window={} slot={} item={:?} count={}",
+            username.as_str(),
+            SURVIVAL_CRAFTING_WINDOW,
+            SURVIVAL_CRAFTING_INPUT_B_SLOT,
+            survival_crafting_input_kind(),
+            SURVIVAL_CRAFTING_INPUT_COUNT
+        ));
+    }
+
+    if !fixture.result_logged {
+        fixture.result_logged = true;
+        set_survival_crafting_slot(
+            inventories,
+            fixture.inventory,
+            SURVIVAL_CRAFTING_RESULT_SLOT,
+            survival_crafting_result_stack(),
+        );
+        log_milestone(format!(
+            "MC-COMPAT-MILESTONE survival_crafting_result username={} window={} slot={} item={:?} count={} recipe={}",
+            username.as_str(),
+            SURVIVAL_CRAFTING_WINDOW,
+            SURVIVAL_CRAFTING_RESULT_SLOT,
+            survival_crafting_result_kind(),
+            SURVIVAL_CRAFTING_RESULT_COUNT,
+            SURVIVAL_CRAFTING_RECIPE
+        ));
+    }
+
+    if !fixture.collect_logged {
+        fixture.collect_logged = true;
+        set_survival_crafting_slot(
+            inventories,
+            client_entity,
+            SURVIVAL_CRAFTING_INVENTORY_SLOT,
+            survival_crafting_result_stack(),
+        );
+        log_milestone(format!(
+            "MC-COMPAT-MILESTONE survival_crafting_collect username={} window={} slot={} item={:?} count={} inventory_slot={}",
+            username.as_str(),
+            SURVIVAL_CRAFTING_WINDOW,
+            SURVIVAL_CRAFTING_RESULT_SLOT,
+            survival_crafting_result_kind(),
+            SURVIVAL_CRAFTING_RESULT_COUNT,
+            SURVIVAL_CRAFTING_INVENTORY_SLOT
+        ));
     }
 }
 
