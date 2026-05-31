@@ -1,0 +1,9 @@
+# Tasks
+
+- [ ] [serial] Define pure capture request, policy, artifact metadata, digest, and validation types with positive and negative fixtures. r[mc_compatibility.stevenarella_frame_capture.contract]
+- [ ] [depends:contract] Add a GL RGBA readback helper and top-left-origin buffer normalization without changing ordinary rendering. r[mc_compatibility.stevenarella_frame_capture.readback]
+- [ ] [depends:readback] Add a post-render/pre-swap capture hook that services one-shot screenshot and latest-frame requests from the MCP/control queue. r[mc_compatibility.stevenarella_frame_capture.screenshot]
+- [ ] [depends:screenshot] Implement bounded recording to `--capture-dir` with fps, duration/frame-count, byte, and path-containment guards. r[mc_compatibility.stevenarella_frame_capture.recording]
+- [ ] [depends:recording] Expose MCP capture tools/resources returning image content for bounded single frames and artifact path plus BLAKE3 digest for durable files. r[mc_compatibility.stevenarella_frame_capture.mcp_resources]
+- [ ] [depends:mcp_resources] Add focused tests for valid screenshot metadata, vertical flip normalization, invalid format, path traversal, rate-limit rejection, and unbounded-recording rejection. r[mc_compatibility.stevenarella_frame_capture.validation]
+- [ ] [depends:validation] Record reviewable capture/test/Cairn validation output under `docs/evidence/` with BLAKE3 manifests before archiving. r[mc_compatibility.stevenarella_frame_capture.artifacts]
