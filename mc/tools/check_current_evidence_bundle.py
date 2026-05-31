@@ -23,6 +23,9 @@ REQUIRED_SEAMS = [
     "Two-client combat/damage",
     "Flag-carrier death/return",
     "Reconnect flag-state",
+    "Invalid flag pickup/ownership",
+    "Invalid flag return/drop",
+    "Score limit / win condition",
     "Latency/jitter tolerance",
     "Combat knockback",
     "Armor equipment mitigation",
@@ -31,6 +34,7 @@ REQUIRED_SEAMS = [
     "Projectile damage attribution",
     "Survival break/place/pickup",
     "Survival chest persistence",
+    "Survival crafting table",
 ]
 
 
@@ -77,8 +81,8 @@ def validate_bundle_text(
             missing.append(f"bundle hash mismatch for {seam}: {bundle_by_seam[seam]} != {digest}")
 
     for required in [
-        "python3 tools/check_acceptance_matrix.py",
-        "python3 tools/check_current_evidence_bundle.py",
+        "tools/check_acceptance_matrix.rs",
+        "tools/check_current_evidence_bundle.rs",
         "nix run --no-update-lock-file .#cairn -- validate --root .",
         "full Minecraft compatibility",
         "full survival compatibility",
@@ -106,8 +110,8 @@ def fixture_text(seam: str, digest: str) -> tuple[str, str]:
 | --- | --- | --- |
 | {seam} | `nix run .#x` | `{digest}` |
 
-python3 tools/check_acceptance_matrix.py
-python3 tools/check_current_evidence_bundle.py
+tools/check_acceptance_matrix.rs
+tools/check_current_evidence_bundle.rs
 nix run --no-update-lock-file .#cairn -- validate --root .
 full Minecraft compatibility
 full survival compatibility
@@ -136,7 +140,7 @@ def assert_self_tests() -> None:
     _, missing = validate_bundle_text(matrix, bundle.replace(digest, "1" * 64, 1), required_seams=[seam])
     assert any("bundle hash mismatch" in item for item in missing), missing
 
-    _, missing = validate_bundle_text(matrix, bundle.replace("python3 tools/check_acceptance_matrix.py", ""), required_seams=[seam])
+    _, missing = validate_bundle_text(matrix, bundle.replace("tools/check_acceptance_matrix.rs", ""), required_seams=[seam])
     assert any("bundle missing required text" in item for item in missing), missing
 
 

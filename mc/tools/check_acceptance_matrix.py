@@ -23,6 +23,9 @@ REQUIRED_SEAMS = [
     "Two-client combat/damage",
     "Flag-carrier death/return",
     "Reconnect flag-state",
+    "Invalid flag pickup/ownership",
+    "Invalid flag return/drop",
+    "Score limit / win condition",
     "Latency/jitter tolerance",
     "Combat knockback",
     "Armor equipment mitigation",
@@ -31,6 +34,7 @@ REQUIRED_SEAMS = [
     "Projectile damage attribution",
     "Survival break/place/pickup",
     "Survival chest persistence",
+    "Survival crafting table",
 ]
 
 REQUIRED_GAPS = [
@@ -58,10 +62,14 @@ REVIEWABLE_RECEIPT_SEAMS = frozenset(
     {
         "Armor equipment mitigation",
         "Equipment update observation",
+        "Invalid flag pickup/ownership",
+        "Invalid flag return/drop",
+        "Score limit / win condition",
         "Projectile use/loadout rail",
         "Projectile damage attribution",
         "Survival break/place/pickup",
         "Survival chest persistence",
+        "Survival crafting table",
     }
 )
 
@@ -195,6 +203,10 @@ def receipt_has_machine_child_revisions(root: Path, receipt_path: str) -> bool:
         return False
     if not isinstance(receipt, dict):
         return False
+    if isinstance(receipt.get("valence_rev"), str) and isinstance(
+        receipt.get("stevenarella_rev"), str
+    ):
+        return True
     client = receipt.get("client")
     valence = receipt.get("valence")
     if not isinstance(client, dict) or not isinstance(valence, dict):
