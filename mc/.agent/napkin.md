@@ -29,6 +29,8 @@
 | 2026-05-31 | self | Generated a `.b3` manifest via `nix develop -c b3sum`, which prepended devshell banner text to the manifest | Use `nix shell --no-update-lock-file nixpkgs#b3sum -c b3sum ... > docs/evidence/name.b3` for clean BLAKE3 sidecars |
 | 2026-05-31 | done-review | Marked the screenshot hook task complete while the capture sender was underscore-bound and not reachable from MCP/control commands | For queue/hook tasks, prove both producer and consumer: add a test that an MCP/control command enqueues and the post-render hook drains the same queue before checking the task |
 | 2026-05-31 | self | Marking a later `stevenarella-frame-capture-artifacts` task stale-hashed earlier task-oracle `.b3` manifests because they include the shared `tasks.md` | After any frame-capture task update, refresh all `stevenarella-frame-*-task-oracle-2026-05-31.b3` files that include `cairn/changes/stevenarella-frame-capture-artifacts/tasks.md` |
+| 2026-05-31 | self | Ran the Rust evidence manifest checker outside the mc devshell, so `b3sum` was missing even though the checker compiled | Run `nix develop --no-update-lock-file -c target/check-evidence-manifests` (or include `b3sum` in the shell) for the Rust manifest checker |
+| 2026-05-31 | self | Tried to record a manifest-check PASS in a log whose own `.b3` line was already active; the log hash changes as it records the check | For self-referential evidence logs, run the manifest check before adding the log line, then refresh the `.b3` and run a separate final manifest check |
 
 ## User Preferences
 - Keep replies terse and direct.

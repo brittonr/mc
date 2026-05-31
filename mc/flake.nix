@@ -1001,12 +1001,13 @@
           mkdir -p "$out"
           cp ../current-evidence-bundle-self-test.log ../current-evidence-bundle-check.log "$out/"
         '';
-        mc-compat-evidence-manifests = pkgs.runCommand "mc-compat-evidence-manifests" { nativeBuildInputs = [ pkgs.b3sum pkgs.python3 ]; } ''
+        mc-compat-evidence-manifests = pkgs.runCommand "mc-compat-evidence-manifests" { nativeBuildInputs = [ pkgs.b3sum pkgs.rustc pkgs.gcc ]; } ''
           cp -R ${./.} repo
           chmod -R u+w repo
           cd repo
-          python3 tools/check_evidence_manifests.py --self-test > ../evidence-manifest-self-test.log
-          python3 tools/check_evidence_manifests.py > ../evidence-manifest-check.log
+          rustc --edition=2021 tools/check_evidence_manifests.rs -o ../check-evidence-manifests
+          ../check-evidence-manifests --self-test > ../evidence-manifest-self-test.log
+          ../check-evidence-manifests > ../evidence-manifest-check.log
           mkdir -p "$out"
           cp ../evidence-manifest-self-test.log ../evidence-manifest-check.log "$out/"
         '';

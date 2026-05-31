@@ -32,17 +32,42 @@ survival coverage matrix self-test ok: positive and negative fixtures exercised
 $ target/check-survival-coverage-matrix
 survival coverage matrix check passed: 9 rows validated
 
+$ nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_evidence_manifests.rs -o target/check-evidence-manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+
+$ nix develop --no-update-lock-file -c target/check-evidence-manifests --self-test
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest self-test ok: positive and negative fixtures exercised
+
+$ nix develop --no-update-lock-file -c target/check-evidence-manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 140 manifests, 668 entries, 71 receipts scanned
+
 $ test ! -e tools/check_acceptance_matrix.py
 
 $ test ! -e tools/check_current_evidence_bundle.py
 
 $ test ! -e tools/check_survival_coverage_matrix.py
 
-$ nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
-mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
-Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
-OnixResearch tools are pinned over SSH: cairn, cargo-octet
-evidence manifests ok: 139 manifests, 659 entries, 71 receipts scanned
+$ test ! -e tools/check_evidence_manifests.py
+
+$ find tools -maxdepth 1 -type f -name check_*.py -printf %f\n
+check_projectile_travel_collision.py
+check_protocol_coverage_ledger.py
+check_equipment_slot_item_matrix.py
+check_inventory_semantics_matrix.py
+check_death_respawn_lifecycle.py
+check_survival_reference_parity.py
+check_load_network_safety.py
+check_armor_modifier_matrix.py
+check_vanilla_combat_parity.py
+check_ctf_rule_ledger.py
 
 $ nix run --no-update-lock-file .#cairn -- validate --root .
 {

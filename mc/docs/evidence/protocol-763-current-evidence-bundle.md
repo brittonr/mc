@@ -7,7 +7,8 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 - Matrix: `docs/evidence/protocol-763-acceptance-matrix.md`
 - Matrix checker: `tools/check_acceptance_matrix.rs`
 - Bundle checker: `tools/check_current_evidence_bundle.rs`
-- Evidence manifest checker: `python3 tools/check_evidence_manifests.py`
+- Evidence manifest checker: `tools/check_evidence_manifests.rs`
+- Python checker migration checkpoint: `docs/evidence/protocol-763-python-gate-rust-migration-oracle-2026-05-31.md`
 - Latest parent checkout before this bundle refresh: `5d4973d add Paper survival reference fixture`
 - Child commits used for the current-head representative refresh: Valence `e5d18ad`, Stevenarella `616ee72`
 - Child commits used for the RED/BLUE scoring soak live refresh: Valence `f57a325`, Stevenarella `1ab97d2`; machine-recorded in the copied receipts.
@@ -139,23 +140,17 @@ ROI 10 re-promotes projectile damage attribution with pinned dependency and caus
 ./tools/check_ctf_score_limit_win_condition.rs --record docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.record
 ./tools/check_red_blue_scoring_soak_live_refresh.rs --self-test
 ./tools/check_red_blue_scoring_soak_live_refresh.rs --record docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-2026-05-30.record
-python3 tools/check_death_respawn_lifecycle.py
-python3 tools/check_inventory_semantics_matrix.py
-python3 tools/check_equipment_slot_item_matrix.py
 ./tools/check_equipment_slot_item_expansion.rs --self-test
 ./tools/check_equipment_slot_item_expansion.rs --record docs/evidence/protocol-763-equipment-slot-item-expansion-row-2026-05-29.record
-python3 tools/check_armor_modifier_matrix.py
 ./tools/check_armor_loadout_enchantment_status.rs --self-test
 ./tools/check_armor_loadout_enchantment_status.rs --record docs/evidence/protocol-763-armor-loadout-enchantment-status-row-2026-05-29.record
-python3 tools/check_projectile_travel_collision.py
-python3 tools/check_vanilla_combat_parity.py
-python3 tools/check_protocol_coverage_ledger.py
 nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_survival_coverage_matrix.rs -o target/check-survival-coverage-matrix
 target/check-survival-coverage-matrix --self-test
 target/check-survival-coverage-matrix
-python3 tools/check_survival_reference_parity.py
 ./tools/check_survival_chest_persistence.rs --self-test
-nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_evidence_manifests.rs -o target/check-evidence-manifests
+nix develop --no-update-lock-file -c target/check-evidence-manifests --self-test
+nix develop --no-update-lock-file -c target/check-evidence-manifests
 nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-adversarial-network-oracle --no-link -L
 nix run --no-update-lock-file .#cairn -- validate --root .
 ```
@@ -171,8 +166,9 @@ target/check-acceptance-matrix
 nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_current_evidence_bundle.rs -o target/check-current-evidence-bundle
 target/check-current-evidence-bundle --self-test
 target/check-current-evidence-bundle
-nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py --self-test
-nix develop --no-update-lock-file -c python3 tools/check_evidence_manifests.py
+nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_evidence_manifests.rs -o target/check-evidence-manifests
+nix develop --no-update-lock-file -c target/check-evidence-manifests --self-test
+nix develop --no-update-lock-file -c target/check-evidence-manifests
 nix run --no-update-lock-file .#cairn -- validate --root .
 ```
 
