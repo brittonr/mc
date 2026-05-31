@@ -1,0 +1,7 @@
+2e6927b0f0e066263517440a6fa4de4a56d6ad6754987646ebba66a5fcbf6b06  docs/evidence/protocol-763-python-gate-rust-migration-2026-05-31.md
+8642122cd1a781ea9e2f8045bb00b448dbfabf21f4f55ec0ba1d88442106f1f0  docs/evidence/protocol-763-python-gate-rust-migration-2026-05-31.run.log
+a2a8f822363a53d506a0052ceb7f6822e3d7e61990a533cfffbb33f43da53b4e  tools/check_acceptance_matrix.rs
+42238dd86f3da74a5c1d1e45364abf42441f6a418dc3424a52ede4000abdd351  tools/check_current_evidence_bundle.rs
+d8cbb5d2cde8c630b944c3273644a72e73933581a311e5bbcef079388c6a4ec5  tools/check_survival_coverage_matrix.rs
+d0cf08e976f4b98b196ff01502e8168023c169ac79ba3ad157a55fcac28dee28  docs/evidence/protocol-763-current-evidence-bundle.md
+74ce2f88bc92585d6bc92c708920c2aa18309b2d769a16a6523142f6e508dbbc  docs/evidence/protocol-763-survival-coverage-reference-parity-sync-2026-05-28.b3

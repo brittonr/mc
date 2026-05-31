@@ -1,7 +1,7 @@
 76624c2149d21778988d2da4fdced8d0304aaa226b4798c3bce700e5d6c9d354  docs/evidence/protocol-763-survival-coverage-matrix-2026-05-28.md
 87d585314a2c86398994df4b5ed0dce2ebc93bb3a6633929fe5b0999cc886ba5  docs/evidence/protocol-763-survival-coverage-matrix-oracle-2026-05-28.md
 ab9cb552d7187d2c7c70ce4a95f1496959e49d553a3b700e9e1aab0253aa065a  docs/evidence/protocol-763-survival-coverage-reference-parity-sync-2026-05-28.run.log
-a3aa7a7414a8a6dfbda77eed9cd9aaa6162fe08de59fb5ab9b50214266c64bc9  tools/check_survival_coverage_matrix.py
+d8cbb5d2cde8c630b944c3273644a72e73933581a311e5bbcef079388c6a4ec5  tools/check_survival_coverage_matrix.rs
 da9e84ac8712ddca2bd60659be316bb547a1695323ba250df72254d6d4623ac0  tools/check_survival_reference_parity.py
 0765c2f4778408420a549b83cf856e30202d6343318901f972a02a477174ea9e  cairn/archive/2026-05-28-sync-survival-coverage-reference-parity/proposal.md
 57d6528e628f39514b26cb59066dd0e70049175b0ae3a6c0523b0d3e1340c256  cairn/archive/2026-05-28-sync-survival-coverage-reference-parity/design.md
