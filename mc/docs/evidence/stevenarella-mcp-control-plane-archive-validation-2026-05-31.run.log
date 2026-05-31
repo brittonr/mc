@@ -1,0 +1,43 @@
+archive_change=stevenarella-mcp-control-plane
+archive_path=cairn/archive/2026-05-31-stevenarella-mcp-control-plane
+command=test ! -d cairn/changes/stevenarella-mcp-control-plane
+active_removed_exit_status=0
+command=test -d cairn/archive/2026-05-31-stevenarella-mcp-control-plane
+archive_present_exit_status=0
+command=rg stevenarella_mcp_control cairn/specs/mc-compatibility/spec.md
+r[mc_compatibility.stevenarella_mcp_control.contract] Stevenarella MCP control MUST define a bounded, typed command contract before exposing automation tools.
+r[mc_compatibility.stevenarella_mcp_control.contract.scope]
+r[mc_compatibility.stevenarella_mcp_control.contract.invalid_commands]
+r[mc_compatibility.stevenarella_mcp_control.transport] Stevenarella MCP transport MUST be native-only and safe by default.
+r[mc_compatibility.stevenarella_mcp_control.transport.stdio_clean]
+r[mc_compatibility.stevenarella_mcp_control.transport.tcp_auth]
+r[mc_compatibility.stevenarella_mcp_control.main_thread_queue] MCP control MUST preserve winit, GL, `Game`, and `Server` main-thread ownership.
+r[mc_compatibility.stevenarella_mcp_control.main_thread_queue.worker_enqueues]
+r[mc_compatibility.stevenarella_mcp_control.main_thread_queue.drain_boundary]
+r[mc_compatibility.stevenarella_mcp_control.tools] MCP tools MUST reuse Stevenarella internal control methods rather than host OS input synthesis.
+r[mc_compatibility.stevenarella_mcp_control.tools.key_state]
+r[mc_compatibility.stevenarella_mcp_control.tools.look]
+r[mc_compatibility.stevenarella_mcp_control.tools.chat]
+r[mc_compatibility.stevenarella_mcp_control.validation] The MCP control plane MUST have positive and negative tests before any runner depends on it.
+r[mc_compatibility.stevenarella_mcp_control.validation.tests]
+r[mc_compatibility.stevenarella_mcp_control.artifacts] Review-critical MCP control evidence MUST be copied under `docs/evidence/` before archive.
+r[mc_compatibility.stevenarella_mcp_control.artifacts.reviewable]
+accepted_spec_rg_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 32,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 34,
+  "valid": true
+}
+cairn_validate_exit_status=0
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+this derivation will be built:
+  /nix/store/30xfhzbz1d2rwj8f98bqrsy1fl1ak73n-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/30xfhzbz1d2rwj8f98bqrsy1fl1ak73n-mc-compat-cairn-task-evidence.drv'...
+task_evidence_exit_status=0

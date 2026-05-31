@@ -15,6 +15,6 @@ d9fa188a21e675c0ffe6705eebcbbd4a7773474ce4651cd699287deffe758078  README.md
 55ca3f96b33f6c3b9148eccb6dc5e6f0ced8e17a415e8f6c802e648f2a75a309  docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-validation-2026-05-29.run.log
 bf6c0cfac85796041ff39d1be68f22c2972b268ea0635c21cdc6c8aeb0bcfc6b  docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-archive-validation-2026-05-29.run.log
 ad1ad5a63b53a1c591732d8313b28a01280fdb859ddb885834770b934f310a3a  docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-final-manifest-checkpoint-2026-05-29.md
-1a18e316ec5576f70e9467f6ada0c15b16c66bdea4b3c5a076fc18f3db7119ce  cairn/specs/mc-compatibility/spec.md
+27fa79c66b8493f9aa30489801d642ad9cf027a98dee458bd5f30becb80f9f02  cairn/specs/mc-compatibility/spec.md
 41f6ab31abbaf89d5a302fb9bfe3212a55a01ffe28ccc99964c8359a18dadce4  cairn/archive/2026-05-29-wan-tolerance-bounded-telemetry/tasks.md
 ccc6738059e07839ffeef0665b174ab65753b0b2a9acbff2982b86aa025d6f65  cairn/archive/2026-05-29-wan-tolerance-bounded-telemetry/specs/mc-compatibility/spec.md
