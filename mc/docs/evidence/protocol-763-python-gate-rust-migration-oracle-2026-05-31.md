@@ -17,7 +17,9 @@ How should the post-review instruction to move Python gates to Rust be interpret
   - `tools/check_survival_coverage_matrix.py`
   - `tools/check_evidence_manifests.py`
 - Current migration validation is recorded in `docs/evidence/protocol-763-python-gate-rust-migration-2026-05-31.run.log` and runs only the Rust maintained gates plus Cairn validation.
-- Remaining Python checker inventory under `tools/` after this migration:
+- Recursive tracked-Python inventory command from `/home/brittonr/git/mc`: `git ls-files '*.py' | sort`.
+- All tracked Python files in `mc/` are checker/gate files; no additional tracked Python files exist outside this list.
+- Remaining Python checker inventory after this migration:
   - `tools/check_armor_modifier_matrix.py`
   - `tools/check_ctf_rule_ledger.py`
   - `tools/check_death_respawn_lifecycle.py`
@@ -29,6 +31,7 @@ How should the post-review instruction to move Python gates to Rust be interpret
   - `tools/check_survival_reference_parity.py`
   - `tools/check_vanilla_combat_parity.py`
 - Historical evidence manifests still cite historical Python checkers for archived rows, including `tools/check_survival_reference_parity.py`, `tools/check_protocol_coverage_ledger.py`, and `tools/check_load_network_safety.py`.
+- Final manifest validation uses `target/check-evidence-manifests` after refreshing the migration `.b3`; the stable final count is `140 manifests, 669 entries, 71 receipts scanned`.
 
 ## Decision
 

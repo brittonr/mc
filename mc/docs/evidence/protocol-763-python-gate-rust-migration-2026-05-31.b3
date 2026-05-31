@@ -1,6 +1,6 @@
-80b1e30d72f2273e7f5209ad9c0c94ca8617d58e049abb44668190fedaf37687  docs/evidence/protocol-763-python-gate-rust-migration-2026-05-31.md
-61c8dc12178402d1040ef7130e83de7bcfc699e0ef317e7221004613972d4143  docs/evidence/protocol-763-python-gate-rust-migration-2026-05-31.run.log
-fc2f89bdb43994d6eb7f51adc366395b28403bf4ab6952be8cd69c725ebe6754  docs/evidence/protocol-763-python-gate-rust-migration-oracle-2026-05-31.md
+9cf850023b9a8afad261c402ae61c1df6f4a29ddc40ac1fbd14a37f4a2ffe1b0  docs/evidence/protocol-763-python-gate-rust-migration-2026-05-31.md
+e249571bd39dd989e17ded435c50100f9d7b7691372212b5e01fa61ef7eb64cd  docs/evidence/protocol-763-python-gate-rust-migration-2026-05-31.run.log
+4cb38b31348ccfedaa5788407e329910d3efc092b854fe474fa283b6257cab47  docs/evidence/protocol-763-python-gate-rust-migration-oracle-2026-05-31.md
 a2a8f822363a53d506a0052ceb7f6822e3d7e61990a533cfffbb33f43da53b4e  tools/check_acceptance_matrix.rs
 42238dd86f3da74a5c1d1e45364abf42441f6a418dc3424a52ede4000abdd351  tools/check_current_evidence_bundle.rs
 d8cbb5d2cde8c630b944c3273644a72e73933581a311e5bbcef079388c6a4ec5  tools/check_survival_coverage_matrix.rs

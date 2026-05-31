@@ -43,12 +43,6 @@ Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb pa
 OnixResearch tools are pinned over SSH: cairn, cargo-octet
 evidence manifest self-test ok: positive and negative fixtures exercised
 
-$ nix develop --no-update-lock-file -c target/check-evidence-manifests
-mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
-Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
-OnixResearch tools are pinned over SSH: cairn, cargo-octet
-evidence manifests ok: 140 manifests, 668 entries, 71 receipts scanned
-
 $ test ! -e tools/check_acceptance_matrix.py
 
 $ test ! -e tools/check_current_evidence_bundle.py
@@ -57,17 +51,29 @@ $ test ! -e tools/check_survival_coverage_matrix.py
 
 $ test ! -e tools/check_evidence_manifests.py
 
-$ find tools -maxdepth 1 -type f -name check_*.py -printf %f\n
-check_projectile_travel_collision.py
-check_protocol_coverage_ledger.py
-check_equipment_slot_item_matrix.py
-check_inventory_semantics_matrix.py
-check_death_respawn_lifecycle.py
-check_survival_reference_parity.py
-check_load_network_safety.py
-check_armor_modifier_matrix.py
-check_vanilla_combat_parity.py
-check_ctf_rule_ledger.py
+$ git ls-files *.py
+tools/check_armor_modifier_matrix.py
+tools/check_ctf_rule_ledger.py
+tools/check_death_respawn_lifecycle.py
+tools/check_equipment_slot_item_matrix.py
+tools/check_inventory_semantics_matrix.py
+tools/check_load_network_safety.py
+tools/check_projectile_travel_collision.py
+tools/check_protocol_coverage_ledger.py
+tools/check_survival_reference_parity.py
+tools/check_vanilla_combat_parity.py
+
+$ git ls-files *.py :!:target/** :!:valence/** :!:stevenarella/**
+tools/check_armor_modifier_matrix.py
+tools/check_ctf_rule_ledger.py
+tools/check_death_respawn_lifecycle.py
+tools/check_equipment_slot_item_matrix.py
+tools/check_inventory_semantics_matrix.py
+tools/check_load_network_safety.py
+tools/check_projectile_travel_collision.py
+tools/check_protocol_coverage_ledger.py
+tools/check_survival_reference_parity.py
+tools/check_vanilla_combat_parity.py
 
 $ nix run --no-update-lock-file .#cairn -- validate --root .
 {
@@ -80,5 +86,11 @@ $ nix run --no-update-lock-file .#cairn -- validate --root .
   "specs_validated": 32,
   "valid": true
 }
+
+$ nix develop --no-update-lock-file -c target/check-evidence-manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 140 manifests, 669 entries, 71 receipts scanned
 
 python gate rust migration validation complete
