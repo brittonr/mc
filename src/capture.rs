@@ -5,11 +5,17 @@
 // <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your option.
 
 use crate::gl;
+use std::fs;
+use std::io::Cursor;
 use std::path::{Component, Path, PathBuf};
 use std::sync::mpsc;
 
 pub const BLAKE3_HEX_LENGTH: usize = 64;
+pub const CAPTURE_SEQUENCE_INITIAL: u64 = 0;
+pub const CAPTURE_ARTIFACT_SEQUENCE_WIDTH: usize = 6;
 pub const MAX_CAPTURE_REQUESTS_PER_FRAME: usize = 1;
+pub const MIN_FRAME_INTERVAL_MILLIS: u64 = 1;
+pub const MILLIS_PER_SECOND: u64 = 1_000;
 pub const RGBA_BYTES_PER_PIXEL: usize = 4;
 pub const DEFAULT_MAX_WIDTH_PX: u32 = 7_680;
 pub const DEFAULT_MAX_HEIGHT_PX: u32 = 4_320;
@@ -21,6 +27,11 @@ pub const DEFAULT_MAX_ARTIFACT_BYTES: u64 = 32 * 1024 * 1024;
 pub const DEFAULT_INLINE_RESPONSE_BYTES: u64 = 512 * 1024;
 
 const FORMAT_PNG: &str = "png";
+const DEFAULT_SCREENSHOT_ARTIFACT_DIR: &str = "screenshots";
+const DEFAULT_LATEST_FRAME_ARTIFACT_DIR: &str = "latest-frames";
+const DEFAULT_RECORDING_ARTIFACT_DIR: &str = "recordings";
+const DEFAULT_FRAME_ARTIFACT_PREFIX: &str = "frame";
+const DEFAULT_RECORDING_ARTIFACT_PREFIX: &str = "recording";
 const FRAMEBUFFER_READ_ORIGIN_X: i32 = 0;
 const FRAMEBUFFER_READ_ORIGIN_Y: i32 = 0;
 
@@ -81,6 +92,7 @@ pub struct CaptureRequest {
     pub output: CaptureOutput,
     pub includes_ui: bool,
     pub recording: Option<RecordingBounds>,
+    pub sequence_id: Option<u64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -103,6 +115,7 @@ pub struct CapturePlan {
     pub output: CaptureOutput,
     pub includes_ui: bool,
     pub artifact_path: Option<PathBuf>,
+    pub sequence_id: u64,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -112,6 +125,7 @@ pub struct CaptureArtifactMetadata {
     pub width_px: u32,
     pub height_px: u32,
     pub frame_id: u64,
+    pub sequence_id: u64,
     pub byte_len: u64,
     pub blake3_digest: Blake3DigestHex,
     pub includes_ui: bool,
@@ -144,12 +158,14 @@ pub struct CaptureFrameContext {
 pub struct ServicedCapture {
     pub plan: CapturePlan,
     pub frame: CapturedRgbaFrame,
+    pub artifact: Option<CaptureArtifactMetadata>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum CaptureServiceError {
     Validation(CaptureValidationError),
     Readback(CaptureReadbackError),
+    Persistence(CapturePersistenceError),
     UiExclusionUnsupported,
 }
 
@@ -157,6 +173,34 @@ pub enum CaptureServiceError {
 pub enum CaptureQueueError {
     Validation(CaptureValidationError),
     QueueClosed,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum CapturePersistenceError {
+    Validation(CaptureValidationError),
+    Readback(CaptureReadbackError),
+    Encode(String),
+    Io(String),
+    MissingArtifactPath,
+    ByteLengthOverflow { byte_len: usize },
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RecordingSession {
+    plan: CapturePlan,
+    bounds: RecordingBounds,
+    started_at_millis: u64,
+    last_capture_at_millis: Option<u64>,
+    frames_captured: u32,
+    next_sequence_id: u64,
+    completed: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum RecordingServiceOutcome {
+    Captured(CaptureArtifactMetadata),
+    Waiting,
+    Complete,
 }
 
 #[derive(Clone)]
@@ -177,8 +221,10 @@ struct QueuedCaptureRequest {
 pub enum CaptureValidationError {
     UnsupportedFormat(String),
     MissingCaptureDir,
+    MissingSequenceId,
     EmptyArtifactPath,
     ArtifactPathEscapes { relative_path: PathBuf },
+    RecordingArtifactOutputRequired,
     RecordingBoundsUnexpected,
     RecordingBoundsRequired,
     RecordingFrameRateOutOfRange { requested: u16, min: u16, max: u16 },
@@ -211,6 +257,10 @@ impl CapturePolicy {
         Self::memory_only()
     }
 
+    pub fn has_capture_dir(&self) -> bool {
+        self.capture_dir.is_some()
+    }
+
     pub fn memory_only() -> Self {
         Self {
             capture_dir: None,
@@ -233,10 +283,41 @@ impl CapturePolicy {
     }
 }
 
+pub fn default_artifact_relative_path(
+    mode: CaptureMode,
+    sequence_id: u64,
+    format: CaptureFormat,
+) -> PathBuf {
+    let artifact_dir = match mode {
+        CaptureMode::Screenshot => DEFAULT_SCREENSHOT_ARTIFACT_DIR,
+        CaptureMode::LatestFrame => DEFAULT_LATEST_FRAME_ARTIFACT_DIR,
+        CaptureMode::Recording => DEFAULT_RECORDING_ARTIFACT_DIR,
+    };
+    PathBuf::from(artifact_dir).join(format!(
+        "{DEFAULT_FRAME_ARTIFACT_PREFIX}-{sequence_id:0width$}.{extension}",
+        width = CAPTURE_ARTIFACT_SEQUENCE_WIDTH,
+        extension = format.as_extension()
+    ))
+}
+
+pub fn default_recording_relative_dir(sequence_id: u64) -> PathBuf {
+    PathBuf::from(DEFAULT_RECORDING_ARTIFACT_DIR).join(format!(
+        "{DEFAULT_RECORDING_ARTIFACT_PREFIX}-{sequence_id:0width$}",
+        width = CAPTURE_ARTIFACT_SEQUENCE_WIDTH
+    ))
+}
+
 pub fn validate_capture_request(
     request: &CaptureRequest,
     policy: &CapturePolicy,
 ) -> Result<CapturePlan, CaptureValidationError> {
+    let sequence_id = request
+        .sequence_id
+        .ok_or(CaptureValidationError::MissingSequenceId)?;
+    if request.mode == CaptureMode::Recording && matches!(&request.output, CaptureOutput::Inline) {
+        return Err(CaptureValidationError::RecordingArtifactOutputRequired);
+    }
+
     let artifact_path = match &request.output {
         CaptureOutput::Inline => None,
         CaptureOutput::Artifact { relative_path } => {
@@ -259,6 +340,7 @@ pub fn validate_capture_request(
         output: request.output.clone(),
         includes_ui: request.includes_ui,
         artifact_path,
+        sequence_id,
     })
 }
 
@@ -329,13 +411,18 @@ where
     validate_one_shot_capture_request_shape(&request).map_err(CaptureServiceError::Validation)?;
     let plan =
         validate_capture_request(&request, policy).map_err(CaptureServiceError::Validation)?;
+    validate_dimensions(frame.width_px, frame.height_px, policy)
+        .map_err(CaptureServiceError::Validation)?;
     if !plan.includes_ui {
         return Err(CaptureServiceError::UiExclusionUnsupported);
     }
     let captured_frame = readback(frame).map_err(CaptureServiceError::Readback)?;
+    let artifact = persist_captured_frame_artifact(&plan, &captured_frame, policy)
+        .map_err(CaptureServiceError::Persistence)?;
     Ok(ServicedCapture {
         plan,
         frame: captured_frame,
+        artifact,
     })
 }
 
@@ -346,6 +433,203 @@ fn validate_one_shot_capture_request_shape(
         CaptureMode::Screenshot | CaptureMode::LatestFrame => Ok(()),
         CaptureMode::Recording => Err(CaptureValidationError::RecordingBoundsUnexpected),
     }
+}
+
+pub fn persist_captured_frame_artifact(
+    plan: &CapturePlan,
+    frame: &CapturedRgbaFrame,
+    policy: &CapturePolicy,
+) -> Result<Option<CaptureArtifactMetadata>, CapturePersistenceError> {
+    let CaptureOutput::Artifact { relative_path } = &plan.output else {
+        return Ok(None);
+    };
+    let artifact_path = plan
+        .artifact_path
+        .as_ref()
+        .ok_or(CapturePersistenceError::MissingArtifactPath)?;
+    validate_dimensions(frame.width_px, frame.height_px, policy)
+        .map_err(CapturePersistenceError::Validation)?;
+
+    let png_bytes = encode_png_frame(frame)?;
+    let byte_len = u64::try_from(png_bytes.len()).map_err(|_| {
+        CapturePersistenceError::ByteLengthOverflow {
+            byte_len: png_bytes.len(),
+        }
+    })?;
+    validate_artifact_size(byte_len, policy).map_err(CapturePersistenceError::Validation)?;
+
+    if let Some(parent) = artifact_path.parent() {
+        fs::create_dir_all(parent).map_err(|err| CapturePersistenceError::Io(err.to_string()))?;
+    }
+    fs::write(artifact_path, &png_bytes)
+        .map_err(|err| CapturePersistenceError::Io(err.to_string()))?;
+
+    let digest = Blake3DigestHex::new(blake3::hash(&png_bytes).to_hex().to_string())
+        .map_err(CapturePersistenceError::Validation)?;
+    let metadata = CaptureArtifactMetadata {
+        relative_path: relative_path.clone(),
+        format: plan.format,
+        width_px: frame.width_px,
+        height_px: frame.height_px,
+        frame_id: frame.frame_id,
+        sequence_id: plan.sequence_id,
+        byte_len,
+        blake3_digest: digest,
+        includes_ui: plan.includes_ui,
+        redaction: RedactionState::NotReviewed,
+    };
+    validate_artifact_metadata(&metadata, policy).map_err(CapturePersistenceError::Validation)?;
+    Ok(Some(metadata))
+}
+
+pub fn start_recording(
+    request: CaptureRequest,
+    policy: &CapturePolicy,
+    started_at_millis: u64,
+) -> Result<RecordingSession, CaptureValidationError> {
+    let bounds = request
+        .recording
+        .ok_or(CaptureValidationError::RecordingBoundsRequired)?;
+    let plan = validate_capture_request(&request, policy)?;
+    if plan.mode != CaptureMode::Recording {
+        return Err(CaptureValidationError::RecordingBoundsUnexpected);
+    }
+    Ok(RecordingSession {
+        next_sequence_id: plan.sequence_id,
+        plan,
+        bounds,
+        started_at_millis,
+        last_capture_at_millis: None,
+        frames_captured: 0,
+        completed: false,
+    })
+}
+
+pub fn service_recording_frame_with_readback<F>(
+    session: &mut RecordingSession,
+    policy: &CapturePolicy,
+    now_millis: u64,
+    frame: CaptureFrameContext,
+    readback: &mut F,
+) -> Result<RecordingServiceOutcome, CaptureServiceError>
+where
+    F: FnMut(CaptureFrameContext) -> Result<CapturedRgbaFrame, CaptureReadbackError>,
+{
+    if session.completed || recording_limit_reached(session, now_millis) {
+        session.completed = true;
+        return Ok(RecordingServiceOutcome::Complete);
+    }
+    if !recording_frame_due(session, now_millis) {
+        return Ok(RecordingServiceOutcome::Waiting);
+    }
+    if !session.plan.includes_ui {
+        return Err(CaptureServiceError::UiExclusionUnsupported);
+    }
+    validate_dimensions(frame.width_px, frame.height_px, policy)
+        .map_err(CaptureServiceError::Validation)?;
+
+    let relative_path = recording_frame_relative_path(session)?;
+    let artifact_path =
+        contained_artifact_path(policy, &relative_path).map_err(CaptureServiceError::Validation)?;
+    let frame_plan = CapturePlan {
+        mode: CaptureMode::Recording,
+        format: session.plan.format,
+        output: CaptureOutput::Artifact { relative_path },
+        includes_ui: session.plan.includes_ui,
+        artifact_path: Some(artifact_path),
+        sequence_id: session.next_sequence_id,
+    };
+    let captured_frame = readback(frame).map_err(CaptureServiceError::Readback)?;
+    let metadata = persist_captured_frame_artifact(&frame_plan, &captured_frame, policy)
+        .map_err(CaptureServiceError::Persistence)?
+        .ok_or(CaptureServiceError::Persistence(
+            CapturePersistenceError::MissingArtifactPath,
+        ))?;
+    session.last_capture_at_millis = Some(now_millis);
+    session.frames_captured = session.frames_captured.saturating_add(1);
+    session.next_sequence_id = session.next_sequence_id.saturating_add(1);
+    Ok(RecordingServiceOutcome::Captured(metadata))
+}
+
+fn recording_frame_due(session: &RecordingSession, now_millis: u64) -> bool {
+    match session.last_capture_at_millis {
+        None => true,
+        Some(last_capture_at_millis) => {
+            now_millis.saturating_sub(last_capture_at_millis)
+                >= recording_frame_interval_millis(session.bounds)
+        }
+    }
+}
+
+fn recording_limit_reached(session: &RecordingSession, now_millis: u64) -> bool {
+    if let Some(max_frames) = session.bounds.max_frames {
+        if session.frames_captured >= max_frames {
+            return true;
+        }
+    }
+    if let Some(max_duration_millis) = session.bounds.max_duration_millis {
+        return now_millis.saturating_sub(session.started_at_millis) > max_duration_millis;
+    }
+    false
+}
+
+fn recording_frame_interval_millis(bounds: RecordingBounds) -> u64 {
+    let requested_fps = u64::from(bounds.frame_rate_hz);
+    (MILLIS_PER_SECOND / requested_fps).max(MIN_FRAME_INTERVAL_MILLIS)
+}
+
+fn recording_frame_relative_path(
+    session: &RecordingSession,
+) -> Result<PathBuf, CaptureServiceError> {
+    let CaptureOutput::Artifact { relative_path } = &session.plan.output else {
+        return Err(CaptureServiceError::Validation(
+            CaptureValidationError::RecordingArtifactOutputRequired,
+        ));
+    };
+    Ok(relative_path.join(format!(
+        "{DEFAULT_FRAME_ARTIFACT_PREFIX}-{sequence_id:0width$}.{extension}",
+        sequence_id = session.next_sequence_id,
+        width = CAPTURE_ARTIFACT_SEQUENCE_WIDTH,
+        extension = session.plan.format.as_extension()
+    )))
+}
+
+impl RecordingSession {
+    pub fn frames_captured(&self) -> u32 {
+        self.frames_captured
+    }
+
+    pub fn is_completed(&self) -> bool {
+        self.completed
+    }
+}
+
+pub fn encode_png_frame(frame: &CapturedRgbaFrame) -> Result<Vec<u8>, CapturePersistenceError> {
+    let expected_len = rgba_buffer_len(frame.width_px, frame.height_px)
+        .map_err(CapturePersistenceError::Readback)?;
+    if frame.rgba_top_left.len() != expected_len {
+        return Err(CapturePersistenceError::Readback(
+            CaptureReadbackError::BufferLengthMismatch {
+                expected: expected_len,
+                actual: frame.rgba_top_left.len(),
+            },
+        ));
+    }
+    let Some(image) =
+        image::RgbaImage::from_raw(frame.width_px, frame.height_px, frame.rgba_top_left.clone())
+    else {
+        return Err(CapturePersistenceError::Readback(
+            CaptureReadbackError::BufferLengthMismatch {
+                expected: expected_len,
+                actual: frame.rgba_top_left.len(),
+            },
+        ));
+    };
+    let mut png_bytes = Vec::new();
+    image::DynamicImage::ImageRgba8(image)
+        .write_to(&mut Cursor::new(&mut png_bytes), image::ImageFormat::Png)
+        .map_err(|err| CapturePersistenceError::Encode(err.to_string()))?;
+    Ok(png_bytes)
 }
 
 pub fn validate_artifact_metadata(
@@ -581,9 +865,17 @@ mod tests {
     const TEST_WIDTH_PX: u32 = 1_920;
     const TEST_HEIGHT_PX: u32 = 1_080;
     const TEST_FRAME_ID: u64 = 42;
+    const TEST_SEQUENCE_ID: u64 = 7;
+    const TEST_NEXT_SEQUENCE_ID: u64 = 8;
     const TEST_BYTE_LEN: u64 = 4_096;
     const TEST_RECORDING_FPS: u16 = 30;
     const TEST_RECORDING_FRAMES: u32 = 10;
+    const TEST_RECORDING_TWO_FRAMES: u32 = 2;
+    const TEST_NOW_MILLIS: u64 = 1_000;
+    const TEST_TOO_EARLY_MILLIS: u64 = 1_010;
+    const TEST_NEXT_FRAME_MILLIS: u64 = 1_034;
+    const TEST_AFTER_RECORDING_LIMIT_MILLIS: u64 = 1_068;
+    const TEST_ARTIFACT_TOO_SMALL_BYTES: u64 = 1;
     const TEST_BLAKE3: &str = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
     const TEST_READBACK_WIDTH_PX: u32 = 2;
     const TEST_READBACK_HEIGHT_PX: u32 = 2;
@@ -592,6 +884,7 @@ mod tests {
     const TEST_BOTTOM_RIGHT_PIXEL: [u8; RGBA_BYTES_PER_PIXEL] = [40, 50, 60, TEST_OPAQUE_ALPHA];
     const TEST_TOP_LEFT_PIXEL: [u8; RGBA_BYTES_PER_PIXEL] = [70, 80, 90, TEST_OPAQUE_ALPHA];
     const TEST_TOP_RIGHT_PIXEL: [u8; RGBA_BYTES_PER_PIXEL] = [100, 110, 120, TEST_OPAQUE_ALPHA];
+    const TEST_PNG_SIGNATURE: &[u8] = b"\x89PNG\r\n\x1a\n";
 
     fn inline_capture_request(mode: CaptureMode, includes_ui: bool) -> CaptureRequest {
         CaptureRequest {
@@ -600,6 +893,7 @@ mod tests {
             output: CaptureOutput::Inline,
             includes_ui,
             recording: None,
+            sequence_id: Some(TEST_SEQUENCE_ID),
         }
     }
 
@@ -623,6 +917,41 @@ mod tests {
         }
     }
 
+    fn unique_test_capture_dir(name: &str) -> PathBuf {
+        let path = std::env::temp_dir().join(format!(
+            "stevenarella-capture-{name}-{}",
+            std::process::id()
+        ));
+        let _ = std::fs::remove_dir_all(&path);
+        path
+    }
+
+    fn artifact_request(relative_path: PathBuf) -> CaptureRequest {
+        CaptureRequest {
+            mode: CaptureMode::Screenshot,
+            format: CaptureFormat::Png,
+            output: CaptureOutput::Artifact { relative_path },
+            includes_ui: true,
+            recording: None,
+            sequence_id: Some(TEST_SEQUENCE_ID),
+        }
+    }
+
+    fn bounded_recording_request(relative_path: PathBuf) -> CaptureRequest {
+        CaptureRequest {
+            mode: CaptureMode::Recording,
+            format: CaptureFormat::Png,
+            output: CaptureOutput::Artifact { relative_path },
+            includes_ui: true,
+            recording: Some(RecordingBounds {
+                frame_rate_hz: TEST_RECORDING_FPS,
+                max_frames: Some(TEST_RECORDING_TWO_FRAMES),
+                max_duration_millis: None,
+            }),
+            sequence_id: Some(TEST_SEQUENCE_ID),
+        }
+    }
+
     #[test]
     fn valid_screenshot_artifact_request_is_planned() {
         let policy = CapturePolicy::local(TEST_CAPTURE_DIR);
@@ -634,6 +963,7 @@ mod tests {
             },
             includes_ui: true,
             recording: None,
+            sequence_id: Some(TEST_SEQUENCE_ID),
         };
 
         let plan = validate_capture_request(&request, &policy).expect("request should pass");
@@ -661,6 +991,7 @@ mod tests {
                 max_frames: Some(TEST_RECORDING_FRAMES),
                 max_duration_millis: None,
             }),
+            sequence_id: Some(TEST_SEQUENCE_ID),
         };
 
         let plan = validate_capture_request(&request, &policy).expect("recording should pass");
@@ -677,6 +1008,7 @@ mod tests {
             width_px: TEST_WIDTH_PX,
             height_px: TEST_HEIGHT_PX,
             frame_id: TEST_FRAME_ID,
+            sequence_id: TEST_SEQUENCE_ID,
             byte_len: TEST_BYTE_LEN,
             blake3_digest: Blake3DigestHex::new(TEST_BLAKE3).expect("digest should pass"),
             includes_ui: true,
@@ -689,6 +1021,157 @@ mod tests {
             path,
             PathBuf::from(TEST_CAPTURE_DIR).join(TEST_ARTIFACT_PATH)
         );
+    }
+
+    #[test]
+    fn one_shot_artifact_capture_writes_png_and_metadata() {
+        let capture_dir = unique_test_capture_dir("one-shot-artifact");
+        let policy = CapturePolicy::local(&capture_dir);
+        let relative_path = default_artifact_relative_path(
+            CaptureMode::Screenshot,
+            TEST_SEQUENCE_ID,
+            CaptureFormat::Png,
+        );
+        let mut readback = synthetic_frame;
+
+        let capture = service_one_shot_capture_request_with_readback(
+            artifact_request(relative_path.clone()),
+            &policy,
+            test_frame(),
+            &mut readback,
+        )
+        .expect("artifact capture should pass");
+        let metadata = capture.artifact.expect("artifact metadata should exist");
+        let artifact_path = capture_dir.join(&metadata.relative_path);
+        let artifact_bytes = std::fs::read(&artifact_path).expect("artifact should be readable");
+
+        assert_eq!(metadata.relative_path, relative_path);
+        assert_eq!(metadata.sequence_id, TEST_SEQUENCE_ID);
+        assert_eq!(metadata.width_px, TEST_READBACK_WIDTH_PX);
+        assert_eq!(metadata.height_px, TEST_READBACK_HEIGHT_PX);
+        assert_eq!(metadata.byte_len, artifact_bytes.len() as u64);
+        assert_eq!(
+            metadata.blake3_digest.as_str(),
+            blake3::hash(&artifact_bytes).to_hex().as_str()
+        );
+        assert!(artifact_bytes.starts_with(TEST_PNG_SIGNATURE));
+        let _ = std::fs::remove_dir_all(capture_dir);
+    }
+
+    #[test]
+    fn one_shot_artifact_size_guard_rejects_before_write() {
+        let capture_dir = unique_test_capture_dir("artifact-size-guard");
+        let mut policy = CapturePolicy::local(&capture_dir);
+        policy.max_artifact_bytes = TEST_ARTIFACT_TOO_SMALL_BYTES;
+        let relative_path = default_artifact_relative_path(
+            CaptureMode::Screenshot,
+            TEST_SEQUENCE_ID,
+            CaptureFormat::Png,
+        );
+        let mut readback = synthetic_frame;
+
+        let err = service_one_shot_capture_request_with_readback(
+            artifact_request(relative_path.clone()),
+            &policy,
+            test_frame(),
+            &mut readback,
+        )
+        .expect_err("oversized artifact should fail");
+
+        match err {
+            CaptureServiceError::Persistence(CapturePersistenceError::Validation(
+                CaptureValidationError::ArtifactTooLarge { requested, max },
+            )) => {
+                assert!(requested > max);
+                assert_eq!(max, TEST_ARTIFACT_TOO_SMALL_BYTES);
+            }
+            other => panic!("unexpected error: {other:?}"),
+        }
+        assert!(!capture_dir.join(relative_path).exists());
+        let _ = std::fs::remove_dir_all(capture_dir);
+    }
+
+    #[test]
+    fn bounded_recording_writes_contained_frames_and_respects_fps() {
+        let capture_dir = unique_test_capture_dir("bounded-recording");
+        let policy = CapturePolicy::local(&capture_dir);
+        let recording_dir = default_recording_relative_dir(TEST_SEQUENCE_ID);
+        let mut session = start_recording(
+            bounded_recording_request(recording_dir.clone()),
+            &policy,
+            TEST_NOW_MILLIS,
+        )
+        .expect("recording should start");
+        let mut readback = synthetic_frame;
+
+        let first = service_recording_frame_with_readback(
+            &mut session,
+            &policy,
+            TEST_NOW_MILLIS,
+            test_frame(),
+            &mut readback,
+        )
+        .expect("first frame should capture");
+        assert!(matches!(first, RecordingServiceOutcome::Captured(_)));
+
+        let wait = service_recording_frame_with_readback(
+            &mut session,
+            &policy,
+            TEST_TOO_EARLY_MILLIS,
+            test_frame(),
+            &mut readback,
+        )
+        .expect("early frame should wait");
+        assert_eq!(wait, RecordingServiceOutcome::Waiting);
+
+        let second = service_recording_frame_with_readback(
+            &mut session,
+            &policy,
+            TEST_NEXT_FRAME_MILLIS,
+            test_frame(),
+            &mut readback,
+        )
+        .expect("second frame should capture");
+        let RecordingServiceOutcome::Captured(metadata) = second else {
+            panic!("second frame should capture");
+        };
+        assert_eq!(metadata.sequence_id, TEST_NEXT_SEQUENCE_ID);
+        assert!(metadata.relative_path.starts_with(&recording_dir));
+        assert!(capture_dir.join(&metadata.relative_path).exists());
+
+        let complete = service_recording_frame_with_readback(
+            &mut session,
+            &policy,
+            TEST_AFTER_RECORDING_LIMIT_MILLIS,
+            test_frame(),
+            &mut readback,
+        )
+        .expect("recording should complete");
+        assert_eq!(complete, RecordingServiceOutcome::Complete);
+        assert_eq!(session.frames_captured(), TEST_RECORDING_TWO_FRAMES);
+        assert!(session.is_completed());
+        let _ = std::fs::remove_dir_all(capture_dir);
+    }
+
+    #[test]
+    fn recording_inline_output_is_rejected() {
+        let policy = CapturePolicy::local(TEST_CAPTURE_DIR);
+        let request = CaptureRequest {
+            mode: CaptureMode::Recording,
+            format: CaptureFormat::Png,
+            output: CaptureOutput::Inline,
+            includes_ui: true,
+            recording: Some(RecordingBounds {
+                frame_rate_hz: TEST_RECORDING_FPS,
+                max_frames: Some(TEST_RECORDING_FRAMES),
+                max_duration_millis: None,
+            }),
+            sequence_id: Some(TEST_SEQUENCE_ID),
+        };
+
+        let err = validate_capture_request(&request, &policy).expect_err("inline rejected");
+
+        assert_eq!(err, CaptureValidationError::RecordingArtifactOutputRequired);
     }
 
     #[test]
@@ -776,6 +1259,7 @@ mod tests {
             },
             includes_ui: true,
             recording: None,
+            sequence_id: Some(TEST_SEQUENCE_ID),
         };
 
         let err = validate_capture_request(&request, &policy).expect_err("escape rejected");
@@ -803,6 +1287,7 @@ mod tests {
                 max_frames: None,
                 max_duration_millis: None,
             }),
+            sequence_id: Some(TEST_SEQUENCE_ID),
         };
 
         let err = validate_capture_request(&request, &policy).expect_err("unbounded rejected");
@@ -913,6 +1398,7 @@ mod tests {
                 max_frames: Some(TEST_RECORDING_FRAMES),
                 max_duration_millis: None,
             }),
+            sequence_id: Some(TEST_SEQUENCE_ID),
         };
 
         let err = match sender.enqueue_deferred(request) {

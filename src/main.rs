@@ -20,6 +20,7 @@
 use instant::{Duration, Instant};
 use log::{error, info, warn};
 use std::fs;
+use std::path::PathBuf;
 extern crate steven_shared as shared;
 
 use structopt::StructOpt;
@@ -112,6 +113,8 @@ const MCP_MIN_PITCH_RADIANS: f64 = std::f64::consts::FRAC_PI_2 + MCP_MIN_PITCH_E
 #[cfg(not(target_arch = "wasm32"))]
 const MCP_MAX_PITCH_RADIANS: f64 =
     std::f64::consts::PI + std::f64::consts::FRAC_PI_2 - MCP_MIN_PITCH_EPSILON_RADIANS;
+#[cfg(not(target_arch = "wasm32"))]
+const CAPTURE_START_MILLIS: u64 = 0;
 
 pub struct Game {
     renderer: render::Renderer,
@@ -144,6 +147,14 @@ pub struct Game {
     mcp_capture_request_receiver: Option<capture::CaptureRequestReceiver>,
     #[cfg(not(target_arch = "wasm32"))]
     mcp_release_left_after_server_tick: bool,
+    #[cfg(not(target_arch = "wasm32"))]
+    capture_policy: capture::CapturePolicy,
+    #[cfg(not(target_arch = "wasm32"))]
+    capture_sequence_id: u64,
+    #[cfg(not(target_arch = "wasm32"))]
+    active_capture_recording: Option<capture::RecordingSession>,
+    #[cfg(not(target_arch = "wasm32"))]
+    capture_started_at: Instant,
 }
 
 #[cfg(not(target_arch = "wasm32"))]
@@ -212,25 +223,51 @@ fn control_deferred_response(message: impl Into<String>) -> control::ControlResp
 }
 
 #[cfg(not(target_arch = "wasm32"))]
-fn one_shot_mcp_capture_request(mode: capture::CaptureMode) -> capture::CaptureRequest {
+fn one_shot_mcp_capture_request(
+    mode: capture::CaptureMode,
+    output: capture::CaptureOutput,
+    sequence_id: u64,
+) -> capture::CaptureRequest {
     capture::CaptureRequest {
         mode,
         format: capture::CaptureFormat::Png,
-        output: capture::CaptureOutput::Inline,
+        output,
         includes_ui: true,
         recording: None,
+        sequence_id: Some(sequence_id),
     }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn one_shot_mcp_capture_output(
+    policy: &capture::CapturePolicy,
+    mode: capture::CaptureMode,
+    sequence_id: u64,
+) -> capture::CaptureOutput {
+    if policy.has_capture_dir() {
+        return capture::CaptureOutput::Artifact {
+            relative_path: capture::default_artifact_relative_path(
+                mode,
+                sequence_id,
+                capture::CaptureFormat::Png,
+            ),
+        };
+    }
+    capture::CaptureOutput::Inline
 }
 
 #[cfg(not(target_arch = "wasm32"))]
 fn enqueue_mcp_capture_request(
     sender: Option<&capture::CaptureRequestSender>,
+    policy: &capture::CapturePolicy,
     mode: capture::CaptureMode,
+    sequence_id: u64,
 ) -> control::ControlResponse {
     let Some(sender) = sender else {
         return control_rejected_response(MCP_CAPTURE_QUEUE_UNAVAILABLE_MESSAGE);
     };
-    match sender.enqueue_deferred(one_shot_mcp_capture_request(mode)) {
+    let output = one_shot_mcp_capture_output(policy, mode, sequence_id);
+    match sender.enqueue_deferred(one_shot_mcp_capture_request(mode, output, sequence_id)) {
         Ok(_) => control_deferred_response(MCP_CAPTURE_DEFERRED_MESSAGE),
         Err(capture::CaptureQueueError::QueueClosed) => {
             control_rejected_response(MCP_CAPTURE_QUEUE_CLOSED_MESSAGE)
@@ -352,19 +389,62 @@ impl Game {
         let Some(receiver) = self.mcp_capture_request_receiver.take() else {
             return 0;
         };
-        let policy = capture::CapturePolicy::memory();
-        let frame = capture::CaptureFrameContext {
-            width_px: self.renderer.width,
-            height_px: self.renderer.height,
-            frame_id: self.renderer.frame_id as u64,
-        };
+        let frame = self.current_capture_frame_context();
         let serviced = receiver.service_pending_one_shot_with_readback(
-            &policy,
+            &self.capture_policy,
             frame,
             capture::read_current_framebuffer_for_context,
         );
         self.mcp_capture_request_receiver = Some(receiver);
         serviced
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    pub fn service_active_capture_recording(&mut self) {
+        let frame = self.current_capture_frame_context();
+        let now_millis = duration_to_millis_saturated(self.capture_started_at.elapsed());
+        let Some(recording) = self.active_capture_recording.as_mut() else {
+            return;
+        };
+        let outcome = capture::service_recording_frame_with_readback(
+            recording,
+            &self.capture_policy,
+            now_millis,
+            frame,
+            &mut capture::read_current_framebuffer_for_context,
+        );
+        match outcome {
+            Ok(capture::RecordingServiceOutcome::Captured(metadata)) => info!(
+                "Capture recording wrote {:?} digest={}",
+                metadata.relative_path,
+                metadata.blake3_digest.as_str()
+            ),
+            Ok(capture::RecordingServiceOutcome::Waiting) => {}
+            Ok(capture::RecordingServiceOutcome::Complete) => {
+                self.active_capture_recording = None;
+                info!("Capture recording complete");
+            }
+            Err(err) => {
+                self.active_capture_recording = None;
+                error!("Capture recording stopped: {:?}", err);
+            }
+        }
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    fn current_capture_frame_context(&self) -> capture::CaptureFrameContext {
+        capture::CaptureFrameContext {
+            width_px: self.renderer.width,
+            height_px: self.renderer.height,
+            frame_id: self.renderer.frame_id as u64,
+        }
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    fn next_capture_sequence_id(&mut self) -> u64 {
+        let sequence_id = self.capture_sequence_id;
+        self.capture_sequence_id = self.capture_sequence_id.saturating_add(1);
+        sequence_id
     }
 
     #[cfg(not(target_arch = "wasm32"))]
@@ -419,14 +499,24 @@ impl Game {
                     .write_packet(protocol::packet::play::serverbound::ChatMessage { message });
                 control_applied_response(MCP_CHAT_APPLIED_MESSAGE)
             }
-            control::ControlCommand::CaptureScreenshot => enqueue_mcp_capture_request(
-                self.mcp_capture_request_sender.as_ref(),
-                capture::CaptureMode::Screenshot,
-            ),
-            control::ControlCommand::CaptureLatestFrame => enqueue_mcp_capture_request(
-                self.mcp_capture_request_sender.as_ref(),
-                capture::CaptureMode::LatestFrame,
-            ),
+            control::ControlCommand::CaptureScreenshot => {
+                let sequence_id = self.next_capture_sequence_id();
+                enqueue_mcp_capture_request(
+                    self.mcp_capture_request_sender.as_ref(),
+                    &self.capture_policy,
+                    capture::CaptureMode::Screenshot,
+                    sequence_id,
+                )
+            }
+            control::ControlCommand::CaptureLatestFrame => {
+                let sequence_id = self.next_capture_sequence_id();
+                enqueue_mcp_capture_request(
+                    self.mcp_capture_request_sender.as_ref(),
+                    &self.capture_policy,
+                    capture::CaptureMode::LatestFrame,
+                    sequence_id,
+                )
+            }
         }
     }
 
@@ -507,6 +597,7 @@ mod mcp_control_tests {
     const TEST_CAPTURE_WIDTH_PX: u32 = 2;
     const TEST_CAPTURE_HEIGHT_PX: u32 = 2;
     const TEST_CAPTURE_FRAME_ID: u64 = 42;
+    const TEST_CAPTURE_SEQUENCE_ID: u64 = 7;
 
     fn synthetic_capture_frame(
         frame: capture::CaptureFrameContext,
@@ -526,6 +617,15 @@ mod mcp_control_tests {
             height_px: TEST_CAPTURE_HEIGHT_PX,
             frame_id: TEST_CAPTURE_FRAME_ID,
         }
+    }
+
+    fn unique_test_capture_dir(name: &str) -> PathBuf {
+        let path = std::env::temp_dir().join(format!(
+            "stevenarella-main-capture-{name}-{}",
+            std::process::id()
+        ));
+        let _ = std::fs::remove_dir_all(&path);
+        path
     }
 
     #[test]
@@ -686,8 +786,13 @@ mod mcp_control_tests {
     #[test]
     fn control_capture_enqueue_reaches_post_render_capture_queue() {
         let (sender, receiver) = capture::capture_request_channel();
-        let response = enqueue_mcp_capture_request(Some(&sender), capture::CaptureMode::Screenshot);
         let policy = capture::CapturePolicy::memory();
+        let response = enqueue_mcp_capture_request(
+            Some(&sender),
+            &policy,
+            capture::CaptureMode::Screenshot,
+            TEST_CAPTURE_SEQUENCE_ID,
+        );
 
         let serviced = receiver.service_pending_one_shot_with_readback(
             &policy,
@@ -705,13 +810,48 @@ mod mcp_control_tests {
 
     #[test]
     fn control_capture_enqueue_rejects_missing_capture_queue() {
-        let response = enqueue_mcp_capture_request(None, capture::CaptureMode::Screenshot);
+        let policy = capture::CapturePolicy::memory();
+        let response = enqueue_mcp_capture_request(
+            None,
+            &policy,
+            capture::CaptureMode::Screenshot,
+            TEST_CAPTURE_SEQUENCE_ID,
+        );
 
         assert_eq!(response.outcome, control::ControlOutcome::Rejected);
         assert_eq!(
             response.message,
             Some(MCP_CAPTURE_QUEUE_UNAVAILABLE_MESSAGE.to_owned())
         );
+    }
+
+    #[test]
+    fn control_capture_enqueue_uses_capture_dir_artifact_output() {
+        let capture_dir = unique_test_capture_dir("enqueue-artifact");
+        let policy = capture::CapturePolicy::local(&capture_dir);
+        let (sender, receiver) = capture::capture_request_channel();
+        let response = enqueue_mcp_capture_request(
+            Some(&sender),
+            &policy,
+            capture::CaptureMode::Screenshot,
+            TEST_CAPTURE_SEQUENCE_ID,
+        );
+
+        let serviced = receiver.service_pending_one_shot_with_readback(
+            &policy,
+            test_capture_frame_context(),
+            synthetic_capture_frame,
+        );
+        let expected_relative_path = capture::default_artifact_relative_path(
+            capture::CaptureMode::Screenshot,
+            TEST_CAPTURE_SEQUENCE_ID,
+            capture::CaptureFormat::Png,
+        );
+
+        assert_eq!(response.outcome, control::ControlOutcome::Deferred);
+        assert_eq!(serviced, 1);
+        assert!(capture_dir.join(expected_relative_path).exists());
+        let _ = std::fs::remove_dir_all(capture_dir);
     }
 
     #[test]
@@ -765,6 +905,72 @@ struct Opt {
     #[cfg(not(target_arch = "wasm32"))]
     #[structopt(long = "mcp-token-env")]
     mcp_token_env: Option<String>,
+
+    /// Directory for durable frame capture artifacts.
+    #[cfg(not(target_arch = "wasm32"))]
+    #[structopt(long = "capture-dir", parse(from_os_str))]
+    capture_dir: Option<PathBuf>,
+
+    /// Startup recording frame rate. Requires --capture-dir and duration or frame count.
+    #[cfg(not(target_arch = "wasm32"))]
+    #[structopt(long = "capture-record-fps")]
+    capture_record_fps: Option<u16>,
+
+    /// Startup recording frame count bound.
+    #[cfg(not(target_arch = "wasm32"))]
+    #[structopt(long = "capture-record-frames")]
+    capture_record_frames: Option<u32>,
+
+    /// Startup recording duration bound in milliseconds.
+    #[cfg(not(target_arch = "wasm32"))]
+    #[structopt(long = "capture-record-duration-ms")]
+    capture_record_duration_millis: Option<u64>,
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn capture_policy_from_opt(opt: &Opt) -> capture::CapturePolicy {
+    match &opt.capture_dir {
+        Some(capture_dir) => capture::CapturePolicy::local(capture_dir),
+        None => capture::CapturePolicy::memory(),
+    }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn startup_recording_request_from_opt(opt: &Opt) -> Option<capture::CaptureRequest> {
+    let recording_requested = opt.capture_record_fps.is_some()
+        || opt.capture_record_frames.is_some()
+        || opt.capture_record_duration_millis.is_some();
+    if !recording_requested {
+        return None;
+    }
+    let recording = opt
+        .capture_record_fps
+        .map(|frame_rate_hz| capture::RecordingBounds {
+            frame_rate_hz,
+            max_frames: opt.capture_record_frames,
+            max_duration_millis: opt.capture_record_duration_millis,
+        });
+    Some(capture::CaptureRequest {
+        mode: capture::CaptureMode::Recording,
+        format: capture::CaptureFormat::Png,
+        output: capture::CaptureOutput::Artifact {
+            relative_path: capture::default_recording_relative_dir(
+                capture::CAPTURE_SEQUENCE_INITIAL,
+            ),
+        },
+        includes_ui: true,
+        recording,
+        sequence_id: Some(capture::CAPTURE_SEQUENCE_INITIAL),
+    })
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn duration_to_millis_saturated(duration: Duration) -> u64 {
+    let millis = duration.as_millis();
+    if millis > u128::from(u64::MAX) {
+        return u64::MAX;
+    }
+    millis as u64
 }
 
 cfg_if! {
@@ -803,6 +1009,21 @@ fn main2() {
 
     init_config_dir();
     let opt = Opt::from_args();
+    #[cfg(not(target_arch = "wasm32"))]
+    let capture_policy = capture_policy_from_opt(&opt);
+    #[cfg(not(target_arch = "wasm32"))]
+    let active_capture_recording = match startup_recording_request_from_opt(&opt) {
+        Some(request) => {
+            match capture::start_recording(request, &capture_policy, CAPTURE_START_MILLIS) {
+                Ok(recording) => Some(recording),
+                Err(err) => {
+                    eprintln!("Invalid capture recording options: {:?}", err);
+                    std::process::exit(2);
+                }
+            }
+        }
+        None => None,
+    };
     let con = Arc::new(Mutex::new(console::Console::new()));
     #[cfg(not(target_arch = "wasm32"))]
     if opt.mcp_stdio {
@@ -994,6 +1215,14 @@ fn main2() {
         mcp_capture_request_receiver: Some(mcp_capture_request_receiver),
         #[cfg(not(target_arch = "wasm32"))]
         mcp_release_left_after_server_tick: false,
+        #[cfg(not(target_arch = "wasm32"))]
+        capture_policy,
+        #[cfg(not(target_arch = "wasm32"))]
+        capture_sequence_id: capture::CAPTURE_SEQUENCE_INITIAL,
+        #[cfg(not(target_arch = "wasm32"))]
+        active_capture_recording,
+        #[cfg(not(target_arch = "wasm32"))]
+        capture_started_at: Instant::now(),
     };
     game.renderer.camera.pos = cgmath::Point3::new(0.5, 13.2, 0.5);
 
@@ -1221,6 +1450,8 @@ fn tick_all(
     );
     #[cfg(not(target_arch = "wasm32"))]
     game.service_pending_mcp_capture_requests();
+    #[cfg(not(target_arch = "wasm32"))]
+    game.service_active_capture_recording();
 
     if fps_cap > 0 && !*vsync {
         let frame_time = now.elapsed();
