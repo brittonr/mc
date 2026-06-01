@@ -93,6 +93,9 @@ const SURVIVAL_CRAFTING_SERVER_RESULT_NEEDLE: &str =
 const SURVIVAL_CRAFTING_SERVER_COLLECT_NEEDLE: &str =
     "survival_crafting_collect username=compatbot window=1 slot=0 item=Stick count=4 inventory_slot=36";
 const SURVIVAL_CRAFTING_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_CRAFTING_FIXTURE";
+const SURVIVAL_BIOME_DIMENSION_CLIENT_STATE_NEEDLE: &str =
+    "survival_biome_dimension_state spawn_environment=minecraft:overworld environment_identifier=minecraft:overworld client_environment_update=minecraft:overworld normalized_identifier=minecraft:overworld";
+const SURVIVAL_BIOME_DIMENSION_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_PROBE";
 const MCP_CONTROLLED_SMOKE_SCENARIO: &str = "mcp-controlled-smoke";
 const MCP_CONTROL_ENDPOINT_STDIO: &str = "stdio";
 const MCP_CONTROL_FAILURE_LIVE_EVIDENCE_MISSING: &str = "live-mcp-controlled-evidence-missing";
@@ -181,7 +184,7 @@ const FRAME_ARTIFACT_NON_CLAIMS: &[&str] = &[
     "visual_regression_approval",
     "semantic_equivalence",
 ];
-const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|mcp-controlled-smoke|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition";
+const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
     "Dimension type:",
@@ -296,6 +299,7 @@ enum Scenario {
     SurvivalBreakPlacePickup,
     SurvivalChestPersistence,
     SurvivalCraftingTable,
+    SurvivalBiomeDimensionState,
     McpControlledSmoke,
     CombatDamage,
     CombatKnockback,
@@ -1779,6 +1783,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
         "survival-break-place-pickup" => Ok(Scenario::SurvivalBreakPlacePickup),
         "survival-chest-persistence" => Ok(Scenario::SurvivalChestPersistence),
         "survival-crafting-table" => Ok(Scenario::SurvivalCraftingTable),
+        "survival-biome-dimension-state" => Ok(Scenario::SurvivalBiomeDimensionState),
         MCP_CONTROLLED_SMOKE_SCENARIO => Ok(Scenario::McpControlledSmoke),
         "combat-damage" => Ok(Scenario::CombatDamage),
         "combat-knockback" => Ok(Scenario::CombatKnockback),
@@ -1816,6 +1821,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::SurvivalBreakPlacePickup => "survival-break-place-pickup",
         Scenario::SurvivalChestPersistence => "survival-chest-persistence",
         Scenario::SurvivalCraftingTable => "survival-crafting-table",
+        Scenario::SurvivalBiomeDimensionState => "survival-biome-dimension-state",
         Scenario::McpControlledSmoke => MCP_CONTROLLED_SMOKE_SCENARIO,
         Scenario::CombatDamage => "combat-damage",
         Scenario::CombatKnockback => "combat-knockback",
@@ -1957,6 +1963,15 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             (
                 "survival_crafting_inventory_updated",
                 SURVIVAL_CRAFTING_CLIENT_INVENTORY_NEEDLE,
+            ),
+        ],
+        Scenario::SurvivalBiomeDimensionState => &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "survival_biome_dimension_state",
+                SURVIVAL_BIOME_DIMENSION_CLIENT_STATE_NEEDLE,
             ),
         ],
         Scenario::McpControlledSmoke => &[
@@ -2364,6 +2379,7 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
                 SURVIVAL_CRAFTING_SERVER_COLLECT_NEEDLE,
             ),
         ],
+        Scenario::SurvivalBiomeDimensionState => &[],
         Scenario::CombatDamage => &[
             ("server_client_a_seen", "compatbota"),
             ("server_client_b_seen", "compatbotb"),
@@ -3189,7 +3205,7 @@ Automates a local Stevenarella compatibility smoke against a Minecraft {} / prot
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from legacy Nickel config, or --steel-config/MC_COMPAT_STEEL_CONFIG a restricted Steel module; env vars and later CLI flags override either config source.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.scenario.receipt.v2 JSON receipt for Cairn/Octet evidence flows.
-Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario survival-crafting-table for one crafting-table open/input/result/collect rail. Use --scenario mcp-controlled-smoke for deterministic MCP receipt/checker dry-run evidence before live client driving. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario ctf-invalid-return-drop for one contained own-base return/drop attempt with server rejection evidence. Use --scenario ctf-score-limit-win-condition for one near-limit capture that emits exactly one win/end milestone. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
+Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario survival-crafting-table for one crafting-table open/input/result/collect rail. Use --scenario survival-biome-dimension-state for one client-observed dimension/world identifier rail. Use --scenario mcp-controlled-smoke for deterministic MCP receipt/checker dry-run evidence before live client driving. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario ctf-invalid-return-drop for one contained own-base return/drop attempt with server rejection evidence. Use --scenario ctf-score-limit-win-condition for one near-limit capture that emits exactly one win/end milestone. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
 Use --expect-status-description/--expect-status-version/--expect-status-sample to assert status response fixture data, --packet-capture-summary for redacted capture summary metadata, and --proxy-route/--proxy-forwarding-mode for proxied-route receipt fields.\n\
 Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
 Use --run-matrix --receipt-dir DIR to run Paper and Valence receipts then compare them; add --dry-run after --run-matrix for a non-side-effecting matrix fixture.\n\
@@ -4983,6 +4999,9 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
         Scenario::SurvivalCraftingTable => {
             cmd.env("MC_COMPAT_SURVIVAL_CRAFTING_PROBE", "1");
         }
+        Scenario::SurvivalBiomeDimensionState => {
+            cmd.env(SURVIVAL_BIOME_DIMENSION_PROBE_ENV, "1");
+        }
         Scenario::McpControlledSmoke => {
             cmd.env("MC_COMPAT_MCP_CONTROLLED_SMOKE", "1");
         }
@@ -6104,6 +6123,11 @@ fn smoke_receipt_json_with_typed_event_oracle(
             "crafting_grid_click",
             "crafting_result_collect",
             "inventory_update",
+        ],
+        Scenario::SurvivalBiomeDimensionState => vec![
+            "login_success",
+            "play_join_game",
+            "dimension_world_identifier",
         ],
         Scenario::McpControlledSmoke => vec![
             "mcp_initialize",
@@ -7457,6 +7481,7 @@ mod tests {
         Scenario::SurvivalBreakPlacePickup,
         Scenario::SurvivalChestPersistence,
         Scenario::SurvivalCraftingTable,
+        Scenario::SurvivalBiomeDimensionState,
         Scenario::McpControlledSmoke,
         Scenario::CombatDamage,
         Scenario::CombatKnockback,
@@ -8099,6 +8124,13 @@ mod tests {
         let crafting = test_config(&["--scenario", "survival-crafting-table"], &[])
             .expect("survival crafting-table scenario parses");
         assert_eq!(crafting.scenario, Scenario::SurvivalCraftingTable);
+
+        let biome_dimension = test_config(&["--scenario", "survival-biome-dimension-state"], &[])
+            .expect("survival biome/dimension scenario parses");
+        assert_eq!(
+            biome_dimension.scenario,
+            Scenario::SurvivalBiomeDimensionState
+        );
 
         let mcp_controlled = test_config(&["--scenario", MCP_CONTROLLED_SMOKE_SCENARIO], &[])
             .expect("mcp-controlled scenario parses");

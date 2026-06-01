@@ -1,0 +1,79 @@
+# survival biome/dimension runner closeout 2026-06-01
+
+$ nix develop --no-update-lock-file -c b3sum --check docs/evidence/survival-biome-dimension-runner-2026-06-01.b3
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+docs/evidence/survival-biome-dimension-runner-2026-06-01.md: OK
+docs/evidence/survival-biome-dimension-runner-2026-06-01.run.log: OK
+docs/evidence/survival-biome-dimension-stevenarella-rail-2026-06-01.patch: OK
+tools/mc-compat-runner/src/main.rs: OK
+tools/mc-compat-runner/src/scenario_manifest_generated.rs: OK
+config/mc-compat/scenario-manifest.ncl: OK
+exit_status=0
+
+$ nix develop --no-update-lock-file -c b3sum --check docs/evidence/survival-biome-dimension-runner-manifest-refresh-2026-06-01.b3
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+docs/evidence/survival-biome-dimension-runner-manifest-refresh-2026-06-01.run.log: OK
+docs/evidence/survival-biome-dimension-runner-2026-06-01.b3: OK
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_scenario_manifest.rs\ -o\ target/check-scenario-manifest\ \&\&\ target/check-scenario-manifest
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+scenario manifest check passed: 22 rows validated
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks survival-biome-dimension-parity --root .
+{
+  "change": "survival-biome-dimension-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "53e7d257f3c836d28ff5a43aaf00c730ac394ca716f337b8f029cc0e2ee972de",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "6726cd3526f01df23c436fb3fae46427ce9ae9c9ce0a418c059ba1165a77a964",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_cairn_task_evidence.rs\ -o\ target/check-cairn-task-evidence\ \&\&\ target/check-cairn-task-evidence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence gate passed: 97 completed tasks checked across 29 active task files
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_evidence_manifests.rs\ -o\ target/check-evidence-manifests\ \&\&\ target/check-evidence-manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 171 manifests, 820 entries, 73 receipts scanned
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 29,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 31,
+  "valid": true
+}
+exit_status=0

@@ -1,0 +1,149 @@
+commit 5a192fc088c3c2c8a2ade254b9c552d287f366c4
+Author:     brittonr <b@robitzs.ch>
+AuthorDate: Mon Jun 1 15:11:11 2026 -0400
+Commit:     brittonr <b@robitzs.ch>
+CommitDate: Mon Jun 1 15:11:11 2026 -0400
+
+    add biome dimension probe rail
+---
+ src/server/mod.rs | 71 ++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 70 insertions(+), 1 deletion(-)
+
+diff --git a/src/server/mod.rs b/src/server/mod.rs
+index ce1bfdc..8040a79 100644
+--- a/src/server/mod.rs
++++ b/src/server/mod.rs
+@@ -125,6 +125,11 @@ const SURVIVAL_CRAFTING_RESULT_ITEM_ID: isize = 807;
+ const SURVIVAL_CRAFTING_INPUT_ITEM_NAME: &str = "OakPlanks";
+ const SURVIVAL_CRAFTING_RESULT_ITEM_NAME: &str = "Stick";
+ const SURVIVAL_CRAFTING_RECIPE: &str = "minecraft:stick";
++const SURVIVAL_BIOME_DIMENSION_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_PROBE";
++const SURVIVAL_OVERWORLD_ID: &str = "minecraft:overworld";
++const SURVIVAL_NETHER_ID: &str = "minecraft:the_nether";
++const SURVIVAL_END_ID: &str = "minecraft:the_end";
++const SURVIVAL_UNKNOWN_ENVIRONMENT_ID: &str = "unknown";
+ const SURVIVAL_CRAFTING_INPUT_COUNT: isize = 1;
+ const SURVIVAL_CRAFTING_RESULT_COUNT: isize = 4;
+ const SURVIVAL_CRAFTING_CLICK_BUTTON: u8 = 0;
+@@ -208,6 +213,24 @@ fn should_log_survival_crafting_inventory_index(slot_index: usize) -> bool {
+         || slot_index == SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_INDEX
+ }
+ 
++fn normalize_survival_environment_id(raw: &str) -> &'static str {
++    match raw {
++        SURVIVAL_OVERWORLD_ID => SURVIVAL_OVERWORLD_ID,
++        SURVIVAL_NETHER_ID => SURVIVAL_NETHER_ID,
++        SURVIVAL_END_ID => SURVIVAL_END_ID,
++        _ => SURVIVAL_UNKNOWN_ENVIRONMENT_ID,
++    }
++}
++
++fn derive_survival_environment_id(dimension_type_name: &str, world_name: &str) -> &'static str {
++    let world_environment = normalize_survival_environment_id(world_name);
++    if world_environment != SURVIVAL_UNKNOWN_ENVIRONMENT_ID {
++        world_environment
++    } else {
++        normalize_survival_environment_id(dimension_type_name)
++    }
++}
++
+ pub struct Server {
+     uuid: protocol::UUID,
+     conn: Arc<RwLock<Option<protocol::Conn>>>,
+@@ -260,6 +283,7 @@ pub struct Server {
+     survival_chest_probe_enabled: bool,
+     survival_chest_probe_session: u32,
+     survival_crafting_probe_enabled: bool,
++    survival_biome_dimension_probe_enabled: bool,
+     equipment_probe_enabled: bool,
+     projectile_probe_enabled: bool,
+     flag_probe_enabled: bool,
+@@ -848,6 +872,11 @@ impl Server {
+             survival_crafting_probe_enabled: std::env::var(SURVIVAL_CRAFTING_PROBE_ENV)
+                 .map(|value| value != "0")
+                 .unwrap_or(false),
++            survival_biome_dimension_probe_enabled: std::env::var(
++                SURVIVAL_BIOME_DIMENSION_PROBE_ENV,
++            )
++            .map(|value| value != "0")
++            .unwrap_or(false),
+             equipment_probe_enabled: std::env::var("MC_COMPAT_EQUIPMENT_PROBE")
+                 .map(|value| value != "0")
+                 .unwrap_or(false),
+@@ -2424,6 +2453,12 @@ impl Server {
+             "MC-COMPAT-MILESTONE join_game_763_shape dimension_type={} world={} portal_cooldown={}",
+             join.dimension_type_name, join.world_name, join.portal_cooldown.0
+         );
++        if self.survival_biome_dimension_probe_enabled {
++            self.log_survival_biome_dimension_state(
++                join.dimension_type_name.as_str(),
++                join.world_name.as_str(),
++            );
++        }
+         self.on_game_join(join.gamemode, join.entity_id)
+     }
+ 
+@@ -2465,6 +2500,14 @@ impl Server {
+         self.on_game_join(join.gamemode, join.entity_id)
+     }
+ 
++    fn log_survival_biome_dimension_state(&self, dimension_type_name: &str, world_name: &str) {
++        let normalized_identifier = derive_survival_environment_id(dimension_type_name, world_name);
++        info!(
++            "MC-COMPAT-MILESTONE survival_biome_dimension_state spawn_environment={} environment_identifier={} client_environment_update={} normalized_identifier={}",
++            normalized_identifier, world_name, dimension_type_name, normalized_identifier
++        );
++    }
++
+     fn on_game_join(&mut self, gamemode: u8, entity_id: i32) {
+         let gamemode = Gamemode::from_int((gamemode & 0x7) as i32);
+         let player = entity::player::create_local(&mut self.entities);
+@@ -4527,6 +4570,7 @@ fn calculate_relative_teleport(flag: TeleportFlag, flags: u8, base: f64, val: f6
+ #[cfg(test)]
+ mod tests {
+     use super::{
++        derive_survival_environment_id, normalize_survival_environment_id,
+         parse_flag_probe_repeat_target, should_log_survival_crafting_inventory_index,
+         should_log_survival_crafting_inventory_slot, survival_crafting_input_stack,
+         survival_crafting_result_matches, survival_crafting_result_stack,
+@@ -4537,7 +4581,8 @@ mod tests {
+         SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_INDEX,
+         SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_SLOT, SURVIVAL_CRAFTING_RESULT_COUNT,
+         SURVIVAL_CRAFTING_RESULT_ITEM_ID, SURVIVAL_CRAFTING_TABLE_X, SURVIVAL_CRAFTING_TABLE_Y,
+-        SURVIVAL_CRAFTING_TABLE_Z,
++        SURVIVAL_CRAFTING_TABLE_Z, SURVIVAL_END_ID, SURVIVAL_NETHER_ID, SURVIVAL_OVERWORLD_ID,
++        SURVIVAL_UNKNOWN_ENVIRONMENT_ID,
+     };
+     use steven_protocol::item;
+ 
+@@ -4575,6 +4620,30 @@ mod tests {
+         );
+     }
+ 
++    #[test]
++    fn survival_biome_dimension_environment_prefers_world_identifier() {
++        assert_eq!(
++            derive_survival_environment_id(SURVIVAL_NETHER_ID, SURVIVAL_OVERWORLD_ID),
++            SURVIVAL_OVERWORLD_ID
++        );
++        assert_eq!(
++            derive_survival_environment_id(SURVIVAL_END_ID, "custom:unknown"),
++            SURVIVAL_END_ID
++        );
++    }
++
++    #[test]
++    fn survival_biome_dimension_environment_rejects_unknown_identifiers() {
++        assert_eq!(
++            normalize_survival_environment_id("custom:unknown"),
++            SURVIVAL_UNKNOWN_ENVIRONMENT_ID
++        );
++        assert_eq!(
++            derive_survival_environment_id("custom:dimension", "custom:world"),
++            SURVIVAL_UNKNOWN_ENVIRONMENT_ID
++        );
++    }
++
+     #[test]
+     fn survival_crafting_fixture_positions_are_named() {
+         let position = survival_crafting_table_position();

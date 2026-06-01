@@ -233,6 +233,25 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         migration_state: "substring-fallback",
     },
     GeneratedScenarioRow {
+        name: "survival-biome-dimension-state",
+        aliases: &["survival-biome-dimension-state"],
+        client_milestones: &[
+            "protocol_detected",
+            "join_game",
+            "render_tick",
+            "survival_biome_dimension_state",
+        ],
+        server_milestones: &[],
+        forbidden_patterns: DEFAULT_FORBIDDEN_PATTERNS,
+        client_count: ONE_CLIENT,
+        session_count: ONE_SESSION,
+        dry_run_check: "",
+        dry_run_wrapper: "mc-compat-smoke",
+        dry_run_exclusion_reason:
+            "active survival-biome-dimension-parity Cairn owns dry-run wrapper and paired fixture promotion",
+        migration_state: "substring-fallback",
+    },
+    GeneratedScenarioRow {
         name: "mcp-controlled-smoke",
         aliases: &["mcp-controlled-smoke"],
         client_milestones: &[
