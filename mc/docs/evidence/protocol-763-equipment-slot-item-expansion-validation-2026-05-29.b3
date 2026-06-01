@@ -3,10 +3,10 @@ fa7097d8d5324413de1c0b8288ac0468a4e6890d9d223486a1a8e832bc8804df  cairn/archive/
 e87da8ce47c67959cd6f3e3d1af34834ff4da1b8415d821dde079de95f338b64  cairn/archive/2026-05-29-equipment-slot-item-matrix-expansion/specs/mc-compatibility/spec.md
 aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a  cairn/specs/mc-compatibility/spec.md
 b83bcb6a109092c92a1ac49d80065c15a1abf79706da57a82e1426b2236ff642  docs/evidence/protocol-763-equipment-slot-item-expansion-contract-2026-05-29.b3
-5c8a85ff56f7f7d641dd20fe714514382cbd93d07e202eab4f55dbc5806e024a  docs/evidence/protocol-763-equipment-slot-item-expansion-checker-2026-05-29.b3
-cad63f29ed3996ebc7509f6cad539f01510bd2de70c28ed475cbaa88eef80658  docs/evidence/protocol-763-equipment-slot-item-expansion-rail-2026-05-29.b3
-9028152f2795b08fd0ca47874ec4a3b6410bfadd4c1844f75722333b50fa7e9e  docs/evidence/protocol-763-equipment-slot-item-expansion-row-2026-05-29.b3
-2354dd17488d08b4acdc26440bab4610623f5fb70fb6471fb77ea23a5ed5a7db  docs/evidence/protocol-763-acceptance-matrix.md
-dbdd66fdbedced57430e3cfabcac86f332d835ac867544647a27d611c49ce8da  docs/evidence/protocol-763-current-evidence-bundle.md
-74a90202d1c01234427c8ca8d8820499905dfda4e62b9c53869bf95fa84544af  tools/mc-compat-runner/src/main.rs
+173eb5c06e81f094131144b36bc6e36d3220a8005bc741f5b807f91d2a1e184e  docs/evidence/protocol-763-equipment-slot-item-expansion-checker-2026-05-29.b3
+8c279fe5d1d5c1646f8c4a38a6d81c1e1b66cddc60a2bae4188fb306ad69b9d8  docs/evidence/protocol-763-equipment-slot-item-expansion-rail-2026-05-29.b3
+697e7834e30b6b27d1c70d815b9382134cbf973ec2d14e96d6a670adcbeea293  docs/evidence/protocol-763-equipment-slot-item-expansion-row-2026-05-29.b3
+74266f2755b18ae878e97da534f3873842c95ae4d73734ffe679aea95a4b0bbc  docs/evidence/protocol-763-acceptance-matrix.md
+8594f0e99a9431ea070ef25c602bf62c079117a167cdaac3ef024092da047ff8  docs/evidence/protocol-763-current-evidence-bundle.md
+668356e58864da38e9b2525ec474579762de27b259ee3e760046d889c0fd4e82  tools/mc-compat-runner/src/main.rs
 d753144d7ecba1ee8b0ac68b1e59d6dee349cadffe56a03c3529d99763c76324  tools/check_equipment_slot_item_expansion.rs
