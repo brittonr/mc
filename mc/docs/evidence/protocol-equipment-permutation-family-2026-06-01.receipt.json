@@ -1,0 +1,58 @@
+{
+  "schema": "mc.compat.protocol_family_row.receipt.v1",
+  "created_at": "2026-06-01",
+  "row": "protocol-equipment-permutation-family-coverage",
+  "label": "equipment permutation packet family",
+  "status": "pass",
+  "mode": "repo-local-evidence-index",
+  "source_revision": {
+    "parent": "5d659ef5",
+    "revision_status": "clean-before-equipment-row-edits"
+  },
+  "covered_packet_rows": [
+    {
+      "equipment_packet_name": "EntityEquipmentUpdateS2CPacket",
+      "wire_id": "play/clientbound/0x55",
+      "valence_packet": "EntityEquipmentUpdateS2CPacket",
+      "stevenarella_packet": "EntityEquipment_Array",
+      "packet_inventory_status": "scenario_bounded_shape_review_missing",
+      "parser_fixture_id": "mc-compat-row-fixture-rail-2026-06-01/protocol-equipment-permutation-family-coverage.kv",
+      "parser_fixture_result": "row_contract_fixture_only_no_broad_parser_shape_claim"
+    }
+  ],
+  "live_observer_evidence": {
+    "scenario": "equipment-update-observation",
+    "receipt": "docs/evidence/protocol-763-roi-02-equipment-update-observation-2026-05-27.receipt.json",
+    "receipt_blake3": "8100dde3ebb3476984235009e277d7e973037b7873b2fdb30c413093e1498d3d",
+    "run_log": "docs/evidence/protocol-763-roi-02-equipment-update-observation-2026-05-27.run.log",
+    "run_log_blake3": "184223509605c1dc9b89db3d8c77ff0b8b7a1c103bec8031de75515d4777dc16",
+    "evidence_doc": "docs/evidence/protocol-763-equipment-slot-item-expansion-row-2026-05-29.md",
+    "matrix_doc": "docs/evidence/protocol-763-equipment-slot-item-matrix-2026-05-27.md",
+    "row_record": "docs/evidence/protocol-763-equipment-slot-item-expansion-row-2026-05-29.record"
+  },
+  "normalized_metrics": {
+    "equipment_packet_name": "EntityEquipmentUpdateS2CPacket",
+    "wire_id": "play/clientbound/0x55",
+    "entity_id": "4",
+    "slot": "slot4/main_hand_remote_entity",
+    "item_id": "829",
+    "count": "1",
+    "parser_fixture_id": "protocol-equipment-permutation-family-coverage.kv",
+    "live_observer_receipt": "docs/evidence/protocol-763-roi-02-equipment-update-observation-2026-05-27.receipt.json",
+    "digest_source": "this_row_receipt_blake3"
+  },
+  "non_claims": [
+    "all_equipment_permutations",
+    "all_equipment_slots",
+    "all_item_types",
+    "empty_to_non_empty_breadth",
+    "non_empty_to_empty_breadth",
+    "repeated_update_ordering",
+    "broad_parser_shape_coverage",
+    "armor_mitigation",
+    "combat_balancing",
+    "full_protocol_763_compatibility",
+    "full_minecraft_compatibility",
+    "production_readiness"
+  ]
+}

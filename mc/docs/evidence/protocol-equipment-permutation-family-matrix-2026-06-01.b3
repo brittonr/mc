@@ -1,6 +1,6 @@
-201e80b6bde74b5a9b3d5d35ffad498316903e83859adba61076a3df965ee0a3  docs/evidence/protocol-chunk-biome-family-matrix-2026-06-01.run.log
+5dc00b2323ba8514342fc68ca6bce0475ac7d33a80dba33a583b4c86c3e657ec  docs/evidence/protocol-equipment-permutation-family-matrix-2026-06-01.run.log
 257d4aef10852018259cebe2e1dbdee219a1757932ecf10cc6f41d3e94a7e440  tools/check_acceptance_matrix.rs
 bf9fd246c0ddb8bfea32106fc03037a473c5f17d66237fab87a2c55577af5f28  tools/check_current_evidence_bundle.rs
 4cbf4399204f3b86338b0668af2849751ac1eab664a1e1aeea2e15b19a0889a7  docs/evidence/protocol-763-acceptance-matrix.md
 2ff1b15dc83b671690c5ae3680c876cf45581dce1a9cf075cd90d4f38f22372a  docs/evidence/protocol-763-current-evidence-bundle.md
-0ff0c6997f7c56ae7cd33dd634af7b966a55d21a4d5361bddf4786e6e7b9e452  docs/evidence/protocol-chunk-biome-family-row-evidence-2026-06-01.b3
+fec1ba0bac2c38d424cbb546be1cfb3e0547300159486a2ad2a47323fc8a5a53  docs/evidence/protocol-equipment-permutation-family-row-evidence-2026-06-01.b3

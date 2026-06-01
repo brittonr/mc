@@ -1,0 +1,38 @@
+# protocol equipment permutation pre-archive validation 2026-06-01
+$ target/check-cairn-task-evidence --self-test && target/check-cairn-task-evidence
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task evidence gate passed: 91 completed tasks checked across 26 active task files
+$ nix run --no-update-lock-file .#cairn -- gate tasks protocol-equipment-permutation-family-coverage --root .
+{
+  "change": "protocol-equipment-permutation-family-coverage",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "d872561c341ba69d09499eaad71ef658670c4f285c64a7f248f8086f64c7e0ec",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "252ccad1a73bd28ff3da1e55d20abfd61a7624881ec9c109c89370a5360cee45",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 26,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 28,
+  "valid": true
+}
+exit_status=0

@@ -30,6 +30,7 @@ const REQUIRED_SEAMS: &[&str] = &[
     "Combat knockback",
     "Armor equipment mitigation",
     "Equipment update observation",
+    "Equipment permutation packet family",
     "Projectile use/loadout rail",
     "Projectile damage attribution",
     "Command/recipe/advancement packet family",

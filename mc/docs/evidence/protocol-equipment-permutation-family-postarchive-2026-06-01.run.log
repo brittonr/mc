@@ -1,0 +1,27 @@
+# protocol equipment permutation post-archive validation 2026-06-01
+$ target/check-acceptance-matrix --self-test && target/check-acceptance-matrix
+acceptance matrix self-test ok: positive and negative fixtures exercised
+acceptance matrix check passed: 26 rows validated
+$ target/check-current-evidence-bundle --self-test && target/check-current-evidence-bundle
+current evidence bundle self-test ok: positive and negative fixtures exercised
+current evidence bundle check passed: 26 rows validated
+$ target/check-cairn-task-evidence --self-test && target/check-cairn-task-evidence
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task evidence gate passed: 85 completed tasks checked across 25 active task files
+$ nix develop --no-update-lock-file -c target/check-evidence-manifests --self-test && nix develop --no-update-lock-file -c target/check-evidence-manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest self-test ok: positive and negative fixtures exercised
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest check failed: docs/evidence/protocol-equipment-permutation-family-validation-2026-06-01.b3: referenced file missing: cairn/changes/protocol-equipment-permutation-family-coverage/tasks.md
+evidence manifest check failed: docs/evidence/protocol-equipment-permutation-family-validation-2026-06-01.b3: b3sum --check failed:
+docs/evidence/protocol-equipment-permutation-family-validation-2026-06-01.run.log: OK
+docs/evidence/protocol-equipment-permutation-family-row-evidence-2026-06-01.b3: OK
+docs/evidence/protocol-equipment-permutation-family-matrix-2026-06-01.b3: OK
+docs/evidence/protocol-equipment-permutation-family-manifest-refresh-2026-06-01.b3: OK
+cairn/changes/protocol-equipment-permutation-family-coverage/tasks.md: FAILED (No such file or directory (os error 2))
+b3sum: WARNING: 1 computed checksum did NOT match
+exit_status=1

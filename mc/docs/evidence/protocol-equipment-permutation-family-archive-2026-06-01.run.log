@@ -1,0 +1,141 @@
+# protocol equipment permutation archive 2026-06-01
+$ nix run --no-update-lock-file .#cairn -- sync protocol-equipment-permutation-family-coverage --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/protocol-equipment-permutation-family-coverage/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/protocol-equipment-permutation-family-coverage/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "protocol-equipment-permutation-family-coverage",
+  "delta_specs": [
+    "./cairn/changes/protocol-equipment-permutation-family-coverage/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "71e785cb1b5c1e8d96c2dc6a07293d0bac7dea97c96714e1ff2e898cb9cf68e4",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "bf40c21468349cb1d928b560c9a47fd8112f811557545971c01bd202632f95d6",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "540dc3344ed57607de4d02591e9eefacc9cb6bd6f03d6d0d148237af5d5b764f"
+}
+$ CAIRN_ARCHIVE_DATE=2026-06-01 nix run --no-update-lock-file .#cairn -- archive protocol-equipment-permutation-family-coverage --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: protocol-equipment-permutation-family-coverage",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-01-protocol-equipment-permutation-family-coverage"
+    }
+  ],
+  "blocked": false,
+  "change": "protocol-equipment-permutation-family-coverage",
+  "dry_run": false,
+  "input_hash": "71e785cb1b5c1e8d96c2dc6a07293d0bac7dea97c96714e1ff2e898cb9cf68e4",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "7dcac7f19734642bb488596cccb6f830161555bed348c4b462ae7b7ee8974653",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-01-protocol-equipment-permutation-family-coverage/design.md"
+        },
+        {
+          "content_hash": "45cd1c8defa1004486b8d2dee95674f4575bbf97cd2847d0b63124df135ecc06",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-01-protocol-equipment-permutation-family-coverage/proposal.md"
+        },
+        {
+          "content_hash": "2fa10f25b1f08b9c769ddb5e2ddb21565fa4bbcc02122011d9d297a48264cefc",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-01-protocol-equipment-permutation-family-coverage/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "fe4c47ff0f6998b7f2b08c705216e8e8b652c2541f10e9bf5dd7cbe6190be789",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-01-protocol-equipment-permutation-family-coverage/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/protocol-equipment-permutation-family-coverage"
+        }
+      ],
+      "manifest_hash": "ca784022882a76e2515b698ff8e1d381464be6e7d0ec43a20ed86b353ab10994"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "7dcac7f19734642bb488596cccb6f830161555bed348c4b462ae7b7ee8974653",
+          "exists": true,
+          "path": "./cairn/changes/protocol-equipment-permutation-family-coverage/design.md"
+        },
+        {
+          "content_hash": "45cd1c8defa1004486b8d2dee95674f4575bbf97cd2847d0b63124df135ecc06",
+          "exists": true,
+          "path": "./cairn/changes/protocol-equipment-permutation-family-coverage/proposal.md"
+        },
+        {
+          "content_hash": "2fa10f25b1f08b9c769ddb5e2ddb21565fa4bbcc02122011d9d297a48264cefc",
+          "exists": true,
+          "path": "./cairn/changes/protocol-equipment-permutation-family-coverage/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "fe4c47ff0f6998b7f2b08c705216e8e8b652c2541f10e9bf5dd7cbe6190be789",
+          "exists": true,
+          "path": "./cairn/changes/protocol-equipment-permutation-family-coverage/tasks.md"
+        }
+      ],
+      "manifest_hash": "d1ed1ff2f87e9067353929dccaa5296754a654083b74d30c774fd5877412be20"
+    },
+    "kind": "archive",
+    "manifest_hash": "0845b6d99b8c3b68e49b95760dde418d1e26f6a772d9970783f1f04afd147699"
+  },
+  "plan_hash": "35eec03061a6d5c384c2b2f21c5fab1cdb5e8bf7b79616da0be53b9cb621fe88",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "ee2be2ce43ceb3b4955f29447814c24414353f9c747dd365760c9bbd1cb6c607"
+}
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 25,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 27,
+  "valid": true
+}
+exit_status=0
