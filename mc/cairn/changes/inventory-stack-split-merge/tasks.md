@@ -1,0 +1,13 @@
+# Tasks
+
+- [x] [serial] Define the bounded `inventory stack split/merge` evidence contract and normalized metric names. r[mc_compatibility.inventory_stack_split_merge.contract] Evidence: `docs/evidence/open-cairn-contracts-2026-06-01.run.log`, `docs/evidence/open-cairn-contracts-2026-06-01.b3`.
+- [ ] [depends:contract] Add deterministic checker positive and negative fixtures for `inventory stack split/merge`. r[mc_compatibility.inventory_stack_split_merge.checker]
+- [ ] [depends:checker] Enforce row-specific evidence standard before promotion. r[mc_compatibility.inventory_stack_split_merge.evidence_standard]
+- [ ] [depends:evidence_standard] Add `inventory-stack-split-merge` rail/checker wiring without broadening existing scenarios. r[mc_compatibility.inventory_stack_split_merge.rail]
+  - Detail: Define split/merge contract.
+  - Detail: Add checker fixtures for count/state-id mismatches.
+  - Detail: Add runner/client split/merge probe.
+  - Detail: Update inventory matrix row only.
+- [ ] [depends:rail] Copy reviewable row artifacts under `docs/evidence/`, including receipts/logs/check output, BLAKE3 manifests, and oracle checkpoints where required. r[mc_compatibility.inventory_stack_split_merge.artifacts]
+- [ ] [depends:artifacts] Promote only the `inventory stack split/merge` row in matrix/current-bundle docs and keep adjacent non-claims explicit. r[mc_compatibility.inventory_stack_split_merge.matrix]
+- [ ] [depends:matrix] Run row checker self-tests, row evidence checks, evidence manifest check, task-evidence gate, Cairn gates, and Cairn validation with output copied under `docs/evidence/`. r[mc_compatibility.inventory_stack_split_merge.validation]

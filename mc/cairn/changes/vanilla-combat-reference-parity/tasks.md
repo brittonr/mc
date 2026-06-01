@@ -1,0 +1,12 @@
+# Tasks
+
+- [x] [serial] Define the bounded `vanilla combat parity` evidence contract and normalized metric names. r[mc_compatibility.vanilla_combat_reference_parity.contract] Evidence: `docs/evidence/open-cairn-contracts-2026-06-01.run.log`, `docs/evidence/open-cairn-contracts-2026-06-01.b3`.
+- [ ] [depends:contract] Add deterministic checker positive and negative fixtures for `vanilla combat parity`. r[mc_compatibility.vanilla_combat_reference_parity.checker]
+- [ ] [depends:checker] Add the `vanilla-combat-reference-parity` runner, fixture, or parser rail without broadening existing scenarios. r[mc_compatibility.vanilla_combat_reference_parity.rail]
+  - Detail: Define damage/knockback metric tolerance contract.
+  - Detail: Add paired combat comparator fixtures.
+  - Detail: Add Paper and Valence bounded combat rail.
+  - Detail: Promote only exact configured combat parity row.
+- [ ] [depends:rail] Produce reviewable row evidence under `docs/evidence/`, including receipts/logs/check output and BLAKE3 manifests. r[mc_compatibility.vanilla_combat_reference_parity.evidence]
+- [ ] [depends:evidence] Promote only the `vanilla combat parity` row and keep adjacent non-claims explicit in matrix/current-bundle docs. r[mc_compatibility.vanilla_combat_reference_parity.matrix]
+- [ ] [depends:matrix] Run row checker self-tests, row evidence checker, evidence manifest check, task-evidence gate, Cairn gates, and Cairn validation with output copied under `docs/evidence/`. r[mc_compatibility.vanilla_combat_reference_parity.validation]

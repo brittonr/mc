@@ -1,0 +1,565 @@
+# Open Cairn contract task closeout 2026-06-01
+
+changes=ctf-simultaneous-pickup-capture-race ctf-spawn-team-balance-reset death-respawn-invalid-respawn-timing death-respawn-inventory-reset death-respawn-ordinary-death death-respawn-reconnect-during-death death-respawn-repeated-death-safety full-ctf-correctness-gate full-protocol-763-compatibility-gate inventory-creative-mode inventory-drag-transactions inventory-extra-window-types inventory-stack-split-merge production-readiness-envelope projectile-travel-collision-parity projectile-weapon-variants protocol-chunk-biome-family-coverage protocol-command-recipe-advancement-family-coverage protocol-entity-metadata-family-coverage protocol-equipment-permutation-family-coverage protocol-inventory-transaction-family-coverage vanilla-combat-reference-parity
+
+$ nix develop --no-update-lock-file -c b3sum --check docs/evidence/open-cairn-contracts-2026-06-01.b3
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+docs/evidence/open-cairn-contracts-2026-06-01.run.log: OK
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks ctf-simultaneous-pickup-capture-race --root .
+{
+  "change": "ctf-simultaneous-pickup-capture-race",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "615cd0de50bb0598f4bf0ac6f5b4f7eb2186ddced5c45e794da45f1dc19ee9f8",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "e10ef715a538aa8fb620211226c38b0898568f33f4417ccf658458f21365678a",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks ctf-spawn-team-balance-reset --root .
+{
+  "change": "ctf-spawn-team-balance-reset",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f3e976a2f639e5676e4bde83086c1f5732f1e73ff64c0522aecd8bae6d013932",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "cc8bc8365357c9d21025d38033e1929647e4f3f54637279eba6e2b0ca135cf0a",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks death-respawn-invalid-respawn-timing --root .
+{
+  "change": "death-respawn-invalid-respawn-timing",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "ecc5b757debf6cb819f848cd31c40d784cbd0971a8ca2fc6dd2c38a70c53e493",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "c75c2a80bae86a3a20ee1931c28ac759ed2f6f62c2dd1a18c0119ad96e1ec434",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks death-respawn-inventory-reset --root .
+{
+  "change": "death-respawn-inventory-reset",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "d8fd9cf8e26497fc2512b56bf91bb948bf393d442eba1aad2230cef034cb8a35",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "fa3bf3e2d5a93d86c6a388c002505a9e7c0a24f06ca98bfb347918fa2d5fc284",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks death-respawn-ordinary-death --root .
+{
+  "change": "death-respawn-ordinary-death",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "48368894ca4d137616dcb41f73e8dbaeb0bfc8a143ca2f36fa1ab1354d73644f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "59f85bc2bc7ea6319a5bead901600cc16cb29bfa423a80dcd5ef1fdbed28ec7e",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks death-respawn-reconnect-during-death --root .
+{
+  "change": "death-respawn-reconnect-during-death",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "3b0eabd4617fef181734b8bb7eb77cc91eb2e3047b83fb3221a1fa75aff369f5",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "e3493bd4fd3a53c26f702eeb789fe2a68ba4a4f55a5f0aa1eec689b7ace24b9a",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks death-respawn-repeated-death-safety --root .
+{
+  "change": "death-respawn-repeated-death-safety",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a5f27eb8a7c489388f1ab22b129ab4a0bbeeeba3737412d1b44a18818aeb0951",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "02ac76fd973a4d906334f31d5fa7a097174f7a034f73fe8ed414f3a6bff57fcd",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks full-ctf-correctness-gate --root .
+{
+  "change": "full-ctf-correctness-gate",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "edc39f74c5f1806c01160400c6aee1a377eb697e807fe961e560d24429822e30",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "88dcf764597ad39f0f4a8cb7e06214abeead17a30640d84bf4fcac17764f618f",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks full-protocol-763-compatibility-gate --root .
+{
+  "change": "full-protocol-763-compatibility-gate",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "97d96637e52ac04acefbbca2beef866491f173492c57c2fc018891714f12dd60",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "e2a03bf63735078daa70b86246fc724bbf28d7b016f5367cde12f8399e38d256",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks inventory-creative-mode --root .
+{
+  "change": "inventory-creative-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "43372e189e1fa9bb7067c0a0006d41bb7b9d2083e5611fd6991dbe4a9cabb50d",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "7f389eb244c8a8ced03580974c47187453d0ca10974441400b39953094dc244b",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks inventory-drag-transactions --root .
+{
+  "change": "inventory-drag-transactions",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "9901be53910a452d6e2793d691c1725082f6744b5dd7f6b2ebd348d0e7b9bc33",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "86935d63ee639e0d576611b6816a8a3e789a4dd650ad05bc41104edbef677f60",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks inventory-extra-window-types --root .
+{
+  "change": "inventory-extra-window-types",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a7fb5d684b380455b984947b0420c16d38a11ef4a16876f7806dbf83f92dbc31",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "b441710eb75ee29c4d9dda3b3e60606bf936f20e93e8be6e568d9feaf20418a1",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks inventory-stack-split-merge --root .
+{
+  "change": "inventory-stack-split-merge",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "b77092372b5cf2bd9b68482f521cbc4a25e5b5d3001a321b1a3fd3324eaef8e1",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "9e65d8107b27a1e5520f741169298913fc0df3e33c8f1f3d2350fb8de049b521",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks production-readiness-envelope --root .
+{
+  "change": "production-readiness-envelope",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "8c3b6bc833c679cf8341902d944d6aff2a7d55c0a4b6c0f9a66d15f869a8554e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "38cb7c7ef2a8fb5ce3910bf9593083c6400258d2960456019e028980b58b8368",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks projectile-travel-collision-parity --root .
+{
+  "change": "projectile-travel-collision-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "11bc5f28bf0a0a92a45884be99e40dd3d89d9dd9323f19bf02c0d5506d93087b",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "ab13e324761801b323322172692896c193ae437e1a83a9096ca5b07ad1573614",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks projectile-weapon-variants --root .
+{
+  "change": "projectile-weapon-variants",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "2f1955d4eaf4fe69e532253257a42bde1ddb56bda19097ee94925a7cd7e2a06a",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "9bbe97b30c417875ed58402d856082b2e1363596abf5fa5c67ae10b7fe350762",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks protocol-chunk-biome-family-coverage --root .
+{
+  "change": "protocol-chunk-biome-family-coverage",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "d873fe41ad7e371ed4047f6ffafa0b646485e7e3d15c5f936b604cf08cb70918",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "d07365720218eb1bd34412a9b2d338fefe3083b3548291b92b80550eff83e33a",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks protocol-command-recipe-advancement-family-coverage --root .
+{
+  "change": "protocol-command-recipe-advancement-family-coverage",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "d419f8d5d5b362fd8e83eda4fa5687db48a0222595a12eb6cbd68e7d450bae7e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "1d631e34aaaef11f039de6f851cc3ebb74a6234bf1d40ad5f7cd5663b2026d04",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks protocol-entity-metadata-family-coverage --root .
+{
+  "change": "protocol-entity-metadata-family-coverage",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "7fbb33507f1875d46169183ed6666390d33d31ab74e9652ccf036d7132544529",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "0581e12fdf2f86b35bb6dd89f0c1f9c64ae1e6c8715db01f0f271edefb97e616",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks protocol-equipment-permutation-family-coverage --root .
+{
+  "change": "protocol-equipment-permutation-family-coverage",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "2d04ed2d8e00a4405cc501384f14db774d4999766d77a7b4a113b16ae2994c1d",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "3fa145a0b7614b855ab54e12c7d423f11b1eff83733f7b9143d185f39907ed50",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks protocol-inventory-transaction-family-coverage --root .
+{
+  "change": "protocol-inventory-transaction-family-coverage",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a9ee4e76148aa6619718e520a4fc53cab3223133351966ef1826badf76f0b1a6",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "d5b06b09925c16d8060006aafdd6e2b35d7ea4d4a96be710d03819f46089bc0c",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks vanilla-combat-reference-parity --root .
+{
+  "change": "vanilla-combat-reference-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "770030763b57ba9873ad533fd6bee13a0f1cc6a88b17e5cde1b55769266e1c80",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "96acf7e4132048c3b25f5e0bda7fed764971ff15825a70304ba21d4678855d05",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_evidence_manifests.rs\ -o\ target/check-evidence-manifests\ \&\&\ target/check-evidence-manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 158 manifests, 765 entries, 73 receipts scanned
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_cairn_task_evidence.rs\ -o\ target/check-cairn-task-evidence\ \&\&\ target/check-cairn-task-evidence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence gate passed: 39 completed tasks checked across 29 active task files
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 29,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 31,
+  "valid": true
+}
+exit_status=0
