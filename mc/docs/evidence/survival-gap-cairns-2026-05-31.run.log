@@ -1,0 +1,520 @@
+# Survival gap Cairn artifact validation 2026-05-31
+
+changes=survival-biome-dimension-parity survival-furnace-persistence-parity survival-hunger-food-parity survival-mob-drop-parity survival-redstone-toggle-parity survival-world-persistence-parity full-survival-compatibility-gate
+
+$ nix run --no-update-lock-file .#cairn -- gate proposal survival-biome-dimension-parity --root .
+{
+  "change": "survival-biome-dimension-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "68058b33f8b67f56e46d543f7170b65a893215671f90a80ee76822536b0ef3a9",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "e8d6dea91e41ba35dabbd389c5da6ea7952cdeac39b973d700b6d725ad5e9a67",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate design survival-biome-dimension-parity --root .
+{
+  "change": "survival-biome-dimension-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "d3809734fd0f738fe419b47ca11c97c3d86f8cdd06aac3ec525a3fc73824253c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "88b6ed5ac2cb5c3587fc2dadc22d17340fea1a35616070146e196563c634d1b6",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks survival-biome-dimension-parity --root .
+{
+  "change": "survival-biome-dimension-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c5b074cc181999970d4b10e2114f25f94d465062023d6c48107d8b25431a86b0",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "1f3948129d813a43f06b1d68770ac582742b5440137ab342a463a84f0ae68bf5",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate proposal survival-furnace-persistence-parity --root .
+{
+  "change": "survival-furnace-persistence-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "7db7f25547cfe9aabd379dfed3945941a6d9e85500873b1d472ff25855e756a3",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "ba0d6a3b91bd38f52ac8f3e86478fa11854e0128839d5a3f307702bd93fd71f7",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate design survival-furnace-persistence-parity --root .
+{
+  "change": "survival-furnace-persistence-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "57aaa3f377fc42339e08aea59330f142ca7e4d9b5f5ac0000999bddaec2e8cd8",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "e34dcb1b682c98b7d90f093c56d1fd11808f7af52f03f351ed4e554bd27cf36a",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks survival-furnace-persistence-parity --root .
+{
+  "change": "survival-furnace-persistence-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "8ebab436043094e0ff29a48c14e0b5084b9e27d14a0834e1ca35093628bdb7b7",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "8917a7303852caeaaada19b562f4b60793add61a81f9955be9b9664e2cf008fb",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate proposal survival-hunger-food-parity --root .
+{
+  "change": "survival-hunger-food-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "451b0023efb7c0e49f0b466384c94d971abc6f68a83cae217ac4b4fac67c4e08",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "38eeb6a74c94bda2c971a56566754b501399af8d78809202486431cdcbe0e282",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate design survival-hunger-food-parity --root .
+{
+  "change": "survival-hunger-food-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "5a21650b839532c72a756e7da0799418ef5596d7db457e7ab358ffc9f14b6086",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "7ca1faf574ace1f0508e04fe296c6ad70f6ec03c424f76f9738eb215edc3ffc2",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks survival-hunger-food-parity --root .
+{
+  "change": "survival-hunger-food-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "78b78ba4c5baff4d4623a7ceba398daf947895e655b6d34891de9adf325e1f4e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "907b343b808d9b071f31eda1dfdbed3a33adf90cfb620de59e4d6d64a85d2fcc",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate proposal survival-mob-drop-parity --root .
+{
+  "change": "survival-mob-drop-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a197c11c366f9bc0914eb342d263278d7356d7d9a5aa9ec0c4ffe5fa4f843196",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "0a39248a416a71994277b37caacb1e8f2c918e86cf729cd79b371f95665ac5ed",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate design survival-mob-drop-parity --root .
+{
+  "change": "survival-mob-drop-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "060c915dd65fc3a1890449b075de5e1002d1b2349ffce584c7cd643411394503",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "93795f20ca6e7864e1fa9376924294fb2076d4b6d4c438d45fece641a1cd1a64",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks survival-mob-drop-parity --root .
+{
+  "change": "survival-mob-drop-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "8c1d608d8683569d1f0baab3c6b7bd7bf4e12fa12444a47585fa27e0b25aae56",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "8a571a65b0d50341f46a1e5a7bdd6ce89914ea8771b386b97500d1857a59291d",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate proposal survival-redstone-toggle-parity --root .
+{
+  "change": "survival-redstone-toggle-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "d0e1aa86d8eedc0645791e9d9547d9596c28c8f407bbf42ad5b52430d6799525",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "fd8fc111bb646835b35ba88f04ff44c297f3cd6e559448a952c63e3d716cb342",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate design survival-redstone-toggle-parity --root .
+{
+  "change": "survival-redstone-toggle-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a4226fdb55b5140318ed90384c38945ff8a8610b141c3776d918967b278903d9",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "374825dd7870dcf9e55c98332166170e89c6454ca772a720bdf5b8a5ddab24a7",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks survival-redstone-toggle-parity --root .
+{
+  "change": "survival-redstone-toggle-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "fe40b3544df83369ac2cf6678e058c4b14c1e90c4e3272ff62d9bbd8ee35510e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "ac1bfab7669d51030f89e99015317d1d073362fa68a78dddb25fe280d3a6b83b",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate proposal survival-world-persistence-parity --root .
+{
+  "change": "survival-world-persistence-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "db0e1bddb91af23a5cc99e93bfb3dcdc3fd91acac06c4d180fcdbc9f141d666e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "764cb64a857fc16cdc938bb6c125c6c4dfbb79a1018d4a4f62d608e245feb85c",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate design survival-world-persistence-parity --root .
+{
+  "change": "survival-world-persistence-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "aa940813703337da2e712a1f80aef6adea709227c29a6762f00b0f71ab586f0e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "e8425c24a453667f3c342ffaf56e299d670a09f61eae46f6ce4f25c4c0643668",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks survival-world-persistence-parity --root .
+{
+  "change": "survival-world-persistence-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "321002eaee0f84080958593022f99f13ec36544291176d1299894ff840b3e327",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "bb708303b22018639073018c8fab4fba6a8d6dea23b122bc332118eedf35395d",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate proposal full-survival-compatibility-gate --root .
+{
+  "change": "full-survival-compatibility-gate",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "4e953fe524e843292fe3ab4f826d6b5e2f44b9abf73238daa51b698ced97eab5",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "108f52eb3a9112ce2340a0a4bffa5ed6604e2e82c5eb65661fe7c95689a23624",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate design full-survival-compatibility-gate --root .
+{
+  "change": "full-survival-compatibility-gate",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "14f07bd508be75ec8afbb7ca8d10929c2d5880fe3282a844b664bdc3f79ec1b5",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "c7c539d58a3523781c14230eb7555bf655e092c90a4db4d79b7abd9e6a105412",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks full-survival-compatibility-gate --root .
+{
+  "change": "full-survival-compatibility-gate",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a4b8190fb2d86b6d55a8e29261b6c98cd7b6a9cf846ff9966ee0670dad487d26",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "eed47c0b177a0e3e8c4ed5ebd2b0fd79cd669f78662217f0f9ddf07565bb8115",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 29,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 31,
+  "valid": true
+}
+exit_status=0
