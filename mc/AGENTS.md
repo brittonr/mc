@@ -13,11 +13,13 @@
 ## Layout
 - `hyperion/`: Minecraft engine/proxy workspace. Core crates live under `crates/`; event/game logic lives under `events/bedwars`; helper tools live under `tools/`. Repo-specific workflow now lives in `hyperion/AGENTS.md`.
 - `valence/`: Minecraft server framework. Main crate in `src/`; workspace crates in `crates/*`; runnable examples in `examples/`; protocol/data extractor in `extractor/`; docs site in `website/`. Repo-specific workflow now lives in `valence/AGENTS.md`.
+- `stevenarella/`: Rust Minecraft client used by mc-compat rails and manual client checks. It has no repo-local AGENTS notes yet; use the mc devshell for Cargo and native UI dependencies.
 - `hyperion/` already has repo-local agent notes in `hyperion/.agent/napkin.md`. Keep workspace-wide notes here; prefer child-repo `AGENTS.md` files for repo-specific commands and conventions.
 
 ## Workflow
 - Before editing inside a child repo, read that repo's `README.md`, `CONTRIBUTING.md`, and any local `AGENTS.md` or `.agent/napkin.md`.
 - Prefer repo-local commands and toolchains. Root `mc/` has no shared Cargo workspace, test runner, or formatter.
+- For `stevenarella/`, run Cargo through the mc devshell, for example `nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test world::tests -- --nocapture` from the Stevenarella repo.
 - New checks/scripts for this workspace should be Rust or Steel Scheme, not Python or Bash. Existing Python gates may remain until touched; migrate touched gates before extending them.
 - Avoid mixed commits across `hyperion/` and `valence/` unless user asks for cross-repo change.
 - For Cairn evidence, do not leave review-critical receipts only under untracked `target/`; copy receipt/log artifacts into `docs/evidence/` and record BLAKE3 when tasks/docs cite them.
@@ -35,6 +37,9 @@
 - Fast checks: `just fmt`, `just lint`, `just test`, `just ci`.
 - `just test` runs `cargo nextest run`.
 - Common local loop: `cargo check -p bedwars`, `cargo run --bin bedwars`, and `cargo run --bin hyperion-proxy -- --server "127.0.0.1:35565" "0.0.0.0:25565"`.
+
+## Stevenarella
+- On 1.20.1, under-map CTF symptoms can come from missing dimension-codec bounds: JoinGame gives `dimension_codec` plus `dimension_type_name`; the client must apply the selected type's `min_y`/`height` before parsing `ChunkData_AndLight` sections.
 
 ## Valence
 - CI copies playground template first: `cp tools/playground/src/playground.template.rs tools/playground/src/playground.rs`. Do same before fmt/clippy/test/doc if `playground.rs` is missing.

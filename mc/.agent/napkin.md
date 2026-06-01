@@ -76,3 +76,4 @@
 - 2026-05-31: `nix develop --no-update-lock-file -c ... | tee ...` can exit 120 or drop command output in this environment; for evidence logs redirect command output to the log (`>> "$log" 2>&1`) instead of piping nix-develop commands through `tee`.
 - 2026-06-01: Do not quote manifest/task counts from memory in final replies. Use the final committed validation log after all sidecars are generated, or say only that the check passed.
 - 2026-06-01: When all tasks in an active Cairn are checked, archive/sync it before claiming completion; otherwise same-family review treats the active `cairn/changes/*` directory as an omission.
+- 2026-06-01: Stevenarella under-map CTF spawn on protocol 763 was caused by ignoring 1.20.1 `dimension_codec` bounds; chunks parsed with default min_y=0/height=256 shifted Overworld terrain by +64. Fix/read `stevenarella/src/world/mod.rs` dimension bounds before suspecting Hyperion spawn.
