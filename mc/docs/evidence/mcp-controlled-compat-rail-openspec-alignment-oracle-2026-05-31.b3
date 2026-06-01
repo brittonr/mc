@@ -2,7 +2,7 @@ a6baebdbf2c1fb31ecb9cacabc31302afd705cb804b8497eb2c71c66b8dff356  docs/evidence/
 dc1616190be7130ff65b3af6243026dca79d688013fab6507abff01466fa04ee  cairn/changes/mcp-controlled-compat-rail/proposal.md
 f49a5354eb7b73867fa73f486b596cf43fe533cddd57a3fd7f5f2ec1846f1fa7  cairn/changes/mcp-controlled-compat-rail/specs/mc-compatibility/spec.md
 1d96f29f5e7721b2f37efc3e3a3ea1968e2753821cb3798ebd7b9eb08bbb0781  cairn/changes/mcp-controlled-compat-rail/design.md
-7d22d0ba4f1a5324a08a9eeffe7956d8db60718f95468a74c7c00e4037d0620b  cairn/changes/mcp-controlled-compat-rail/tasks.md
+8ae725f26589bdac6938bbb278c75f17e5ac93e84ea8b783df78b2f37e92d356  cairn/changes/mcp-controlled-compat-rail/tasks.md
 74a90202d1c01234427c8ca8d8820499905dfda4e62b9c53869bf95fa84544af  tools/mc-compat-runner/src/main.rs
 24d603aefca68b2adf7354ba5816e3f350a3f526082367ea263049decfcfc203  tools/check_mcp_controlled_compat_rail.rs
 d69721cf24faa1cae5812a843decf84be9a95271669f7c970333a1fde219bf6e  docs/evidence/mcp-controlled-compat-rail-validation-2026-05-31.run.log

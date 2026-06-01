@@ -1,0 +1,63 @@
+
+$ nix develop --no-update-lock-file -c b3sum --check docs/evidence/mcp-controlled-compat-rail-live-preflight-blocker-2026-05-31.b3
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+docs/evidence/mcp-controlled-compat-rail-live-preflight-blocker-2026-05-31.md: OK
+docs/evidence/mcp-controlled-compat-rail-live-preflight-blocker-2026-05-31.run.log: OK
+docs/evidence/mcp-controlled-compat-rail-live-preflight-blocker-2026-05-31.receipt.json: OK
+cairn/changes/mcp-controlled-compat-rail/tasks.md: OK
+exit_status=0
+
+$ nix develop --no-update-lock-file -c target/check-evidence-manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 141 manifests, 674 entries, 72 receipts scanned
+exit_status=0
+
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L
+this derivation will be built:
+  /nix/store/ddv9qp34dpw24msln1iqbkq1sn7svxwc-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/ddv9qp34dpw24msln1iqbkq1sn7svxwc-mc-compat-evidence-manifests.drv'...
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks mcp-controlled-compat-rail --root .
+{
+  "change": "mcp-controlled-compat-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "874aa429d6dcfe0f1170f72cbac525a03db5fb5299a1579e853b16ab14b95f38",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "220e358d1120ad3d15f0c71b91874f9e8f5c71820b502d7a8ecf4b280477fe65",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 30,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 32,
+  "valid": true
+}
+exit_status=0
+
+validation_result=pass_blocker_evidence_reviewable
