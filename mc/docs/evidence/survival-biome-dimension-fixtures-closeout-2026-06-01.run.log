@@ -1,0 +1,63 @@
+# survival biome/dimension fixtures closeout 2026-06-01
+
+$ nix develop --no-update-lock-file -c b3sum --check docs/evidence/survival-biome-dimension-fixtures-2026-06-01.b3
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+docs/evidence/survival-biome-dimension-fixtures-2026-06-01.md: OK
+docs/evidence/survival-biome-dimension-fixtures-2026-06-01.run.log: OK
+docs/evidence/survival-biome-dimension-fixtures-valence-source-2026-06-01.patch: OK
+docs/evidence/survival-biome-dimension-fixtures-paper-source-2026-06-01.patch: OK
+tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java: OK
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks survival-biome-dimension-parity --root .
+{
+  "change": "survival-biome-dimension-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "cb5cf8f7607c551d2f6b7e58d1a0112c795ad7dc242602fc9da969b6ae7fe4d8",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "cfa60335d9e5b50da854503b72815adc4d13055343ed717809e932ffc93f3163",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_cairn_task_evidence.rs\ -o\ target/check-cairn-task-evidence\ \&\&\ target/check-cairn-task-evidence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence gate passed: 98 completed tasks checked across 29 active task files
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_evidence_manifests.rs\ -o\ target/check-evidence-manifests\ \&\&\ target/check-evidence-manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 173 manifests, 827 entries, 73 receipts scanned
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 29,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 31,
+  "valid": true
+}
+exit_status=0

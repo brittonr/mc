@@ -1,0 +1,69 @@
+diff --git a/mc/tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java b/mc/tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java
+index d320b5c9..80b7dcb0 100644
+--- a/mc/tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java
++++ b/mc/tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java
+@@ -69,6 +69,11 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener
+     private static final String CRAFTING_INPUT_NAME = "OakPlanks";
+     private static final String CRAFTING_RESULT_NAME = "Stick";
+     private static final String CRAFTING_RECIPE = "minecraft:stick";
++    private static final String BIOME_DIMENSION_FIXTURE_ENV = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_FIXTURE";
++    private static final String OVERWORLD_ID = "minecraft:overworld";
++    private static final String NETHER_ID = "minecraft:the_nether";
++    private static final String END_ID = "minecraft:the_end";
++    private static final String UNKNOWN_ENVIRONMENT_ID = "unknown";
+ 
+     private final java.util.Set<UUID> breakSeen = new java.util.HashSet<>();
+     private final java.util.Set<UUID> pickupSeen = new java.util.HashSet<>();
+@@ -202,6 +207,9 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener
+             "MC-COMPAT-MILESTONE survival_join username=" + player.getName()
+                 + " gamemode=Survival target=" + TARGET_X + "," + TARGET_Y + "," + TARGET_Z
+         );
++        if (biomeDimensionFixtureEnabled()) {
++            logSurvivalBiomeDimensionState(player.getName(), OVERWORLD_ID, OVERWORLD_ID);
++        }
+         if (chestFixtureEnabled()) {
+             scheduleChestOpen(player);
+         }
+@@ -233,6 +241,42 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener
+         return "1".equals(System.getenv(CRAFTING_FIXTURE_ENV));
+     }
+ 
++    private boolean biomeDimensionFixtureEnabled() {
++        return "1".equals(System.getenv(BIOME_DIMENSION_FIXTURE_ENV));
++    }
++
++    private String normalizeSurvivalEnvironmentId(String raw) {
++        if (OVERWORLD_ID.equals(raw)) {
++            return OVERWORLD_ID;
++        }
++        if (NETHER_ID.equals(raw)) {
++            return NETHER_ID;
++        }
++        if (END_ID.equals(raw)) {
++            return END_ID;
++        }
++        return UNKNOWN_ENVIRONMENT_ID;
++    }
++
++    private String deriveSurvivalEnvironmentId(String spawnEnvironment, String environmentIdentifier) {
++        String environment = normalizeSurvivalEnvironmentId(environmentIdentifier);
++        if (!UNKNOWN_ENVIRONMENT_ID.equals(environment)) {
++            return environment;
++        }
++        return normalizeSurvivalEnvironmentId(spawnEnvironment);
++    }
++
++    private void logSurvivalBiomeDimensionState(String username, String spawnEnvironment, String environmentIdentifier) {
++        String normalizedIdentifier = deriveSurvivalEnvironmentId(spawnEnvironment, environmentIdentifier);
++        getLogger().info(
++            "MC-COMPAT-MILESTONE survival_biome_dimension_state username=" + username
++                + " spawn_environment=" + spawnEnvironment
++                + " environment_identifier=" + environmentIdentifier
++                + " server_environment_state=" + spawnEnvironment
++                + " normalized_identifier=" + normalizedIdentifier
++        );
++    }
++
+     private void scheduleChestOpen(Player player) {
+         getServer().getScheduler().runTaskLater(this, () -> openChestForProbe(player), CHEST_OPEN_DELAY_TICKS);
+     }
