@@ -1,0 +1,24 @@
+# mc-compat row fixture rail manifest refresh 2026-06-01
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_evidence_manifests.rs\ -o\ target/check-evidence-manifests\ \&\&\ target/check-evidence-manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest check failed: docs/evidence/mc-compat-row-contract-checker-2026-06-01.b3: b3sum --check failed:
+tools/check_mc_compat_row_contracts.rs: FAILED
+docs/evidence/mc-compat-row-contract-checker-2026-06-01.run.log: OK
+b3sum: WARNING: 1 computed checksum did NOT match
+exit_status=1
+
+$ nix develop --no-update-lock-file -c sh -c $'\nset -euo pipefail\nfor pass in 1 2 3; do\n  while IFS= read -r manifest; do\n    tmp=$(mktemp)\n    while IFS= read -r line; do\n      line=${line%$\'\\r\'}\n      [ -z "$line" ] && continue\n      path=${line#*  }\n      digest=$(b3sum "$path" | cut -d " " -f 1)\n      printf "%s  %s\\n" "$digest" "$path" >> "$tmp"\n    done < "$manifest"\n    mv "$tmp" "$manifest"\n  done < /tmp/mc-all-manifests.txt\ndone\n'
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_evidence_manifests.rs\ -o\ target/check-evidence-manifests\ \&\&\ target/check-evidence-manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 167 manifests, 808 entries, 73 receipts scanned
+exit_status=0

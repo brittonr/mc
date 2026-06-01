@@ -3,7 +3,7 @@
 - [x] [serial] Define the bounded `inventory stack split/merge` evidence contract and normalized metric names. r[mc_compatibility.inventory_stack_split_merge.contract] Evidence: `docs/evidence/open-cairn-contracts-2026-06-01.run.log`, `docs/evidence/open-cairn-contracts-2026-06-01.b3`.
 - [x] [depends:contract] Add deterministic checker positive and negative fixtures for `inventory stack split/merge`. r[mc_compatibility.inventory_stack_split_merge.checker] Evidence: `docs/evidence/mc-compat-row-contract-checker-2026-06-01.run.log`, `docs/evidence/mc-compat-row-contract-checker-2026-06-01.b3`.
 - [x] [depends:checker] Enforce row-specific evidence standard before promotion. r[mc_compatibility.inventory_stack_split_merge.evidence_standard] Evidence: `docs/evidence/mc-compat-row-evidence-standards-2026-06-01.run.log`, `docs/evidence/mc-compat-row-evidence-standards-2026-06-01.b3`.
-- [ ] [depends:evidence_standard] Add `inventory-stack-split-merge` rail/checker wiring without broadening existing scenarios. r[mc_compatibility.inventory_stack_split_merge.rail]
+- [x] [depends:evidence_standard] Add `inventory-stack-split-merge` rail/checker wiring without broadening existing scenarios. r[mc_compatibility.inventory_stack_split_merge.rail] Evidence: `docs/evidence/mc-compat-row-fixture-rail-2026-06-01.run.log`, `docs/evidence/mc-compat-row-fixture-rail-2026-06-01.b3`.
   - Detail: Define split/merge contract.
   - Detail: Add checker fixtures for count/state-id mismatches.
   - Detail: Add runner/client split/merge probe.

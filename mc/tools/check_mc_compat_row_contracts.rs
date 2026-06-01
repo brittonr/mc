@@ -1,17 +1,24 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::env;
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 
 const SELF_TEST_FLAG: &str = "--self-test";
 const ROW_FLAG: &str = "--row";
 const EVIDENCE_FLAG: &str = "--evidence";
+const EMIT_FIXTURES_FLAG: &str = "--emit-fixtures";
+const CHECK_FIXTURES_FLAG: &str = "--check-fixtures";
 const SUCCESS: ExitCode = ExitCode::SUCCESS;
 const FAILURE: ExitCode = ExitCode::FAILURE;
 const KEY_VALUE_SEPARATOR: char = '=';
 const REQUIRED_ARGUMENT_COUNT: usize = 5;
+const DIRECTORY_COMMAND_ARGUMENT_COUNT: usize = 3;
 const PROGRAM_ARGUMENT_COUNT: usize = 1;
+const DIRECTORY_ARGUMENT_INDEX: usize = 2;
+const FIRST_ROW_INDEX: usize = 0;
+const FIXTURE_EXTENSION: &str = "kv";
+const SELF_TEST_FIXTURE_DIR_PREFIX: &str = "mc-compat-row-fixtures-self-test";
 const CLEAN_REVISION_STATUS: &str = "clean";
 const UNKNOWN_REVISION: &str = "unknown";
 const DIRTY_REVISION: &str = "dirty";
@@ -405,6 +412,32 @@ fn main() -> ExitCode {
         };
     }
 
+    if args.len() == DIRECTORY_COMMAND_ARGUMENT_COUNT && args[PROGRAM_ARGUMENT_COUNT] == EMIT_FIXTURES_FLAG {
+        return match emit_fixture_dir(&args[DIRECTORY_ARGUMENT_INDEX]) {
+            Ok(count) => {
+                println!("emitted {count} row contract fixtures");
+                SUCCESS
+            }
+            Err(errors) => {
+                print_errors(&errors);
+                FAILURE
+            }
+        };
+    }
+
+    if args.len() == DIRECTORY_COMMAND_ARGUMENT_COUNT && args[PROGRAM_ARGUMENT_COUNT] == CHECK_FIXTURES_FLAG {
+        return match check_fixture_dir(&args[DIRECTORY_ARGUMENT_INDEX]) {
+            Ok(count) => {
+                println!("checked {count} row contract fixtures");
+                SUCCESS
+            }
+            Err(errors) => {
+                print_errors(&errors);
+                FAILURE
+            }
+        };
+    }
+
     match parse_cli(&args).and_then(|config| run_config(&config)) {
         Ok(contract) => {
             println!("{} contract check passed", contract.label);
@@ -451,7 +484,9 @@ fn parse_cli(args: &[String]) -> Result<CliConfig, Vec<String>> {
 }
 
 fn usage() -> String {
-    format!("usage: check_mc_compat_row_contracts {ROW_FLAG} <row-id> {EVIDENCE_FLAG} <evidence>")
+    format!(
+        "usage: check_mc_compat_row_contracts {ROW_FLAG} <row-id> {EVIDENCE_FLAG} <evidence> | {EMIT_FIXTURES_FLAG} <dir> | {CHECK_FIXTURES_FLAG} <dir>"
+    )
 }
 
 fn run_config(config: &CliConfig) -> Result<RowContract, Vec<String>> {
@@ -459,6 +494,42 @@ fn run_config(config: &CliConfig) -> Result<RowContract, Vec<String>> {
     let text = read_file(&config.evidence_path)?;
     validate_document(contract, &text)?;
     Ok(contract)
+}
+
+fn emit_fixture_dir(directory: &str) -> Result<usize, Vec<String>> {
+    let root = Path::new(directory);
+    fs::create_dir_all(root).map_err(|error| vec![format!("{}: {error}", root.display())])?;
+    for contract in ROWS {
+        let path = fixture_path(root, *contract);
+        fs::write(&path, fixture_evidence(*contract))
+            .map_err(|error| vec![format!("{}: {error}", path.display())])?;
+    }
+    Ok(ROWS.len())
+}
+
+fn check_fixture_dir(directory: &str) -> Result<usize, Vec<String>> {
+    let root = Path::new(directory);
+    let mut errors = Vec::new();
+    for contract in ROWS {
+        let path = fixture_path(root, *contract);
+        match fs::read_to_string(&path) {
+            Ok(text) => {
+                if let Err(mut contract_errors) = validate_document(*contract, &text) {
+                    errors.append(&mut contract_errors);
+                }
+            }
+            Err(error) => errors.push(format!("{}: {error}", path.display())),
+        }
+    }
+    if errors.is_empty() {
+        Ok(ROWS.len())
+    } else {
+        Err(errors)
+    }
+}
+
+fn fixture_path(root: &Path, contract: RowContract) -> PathBuf {
+    root.join(format!("{}.{}", contract.id, FIXTURE_EXTENSION))
 }
 
 fn read_file(path: &str) -> Result<String, Vec<String>> {
@@ -678,11 +749,53 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         )?;
     }
 
+    let fixture_directory = self_test_fixture_directory();
+    let _ = fs::remove_dir_all(&fixture_directory);
+    emit_fixture_dir(path_to_string(&fixture_directory)?.as_str())?;
+    let checked_count = check_fixture_dir(path_to_string(&fixture_directory)?.as_str())?;
+    if checked_count != ROWS.len() {
+        return Err(vec![format!(
+            "fixture rail checked {checked_count} rows instead of {}",
+            ROWS.len()
+        )]);
+    }
+    let first_contract = ROWS[FIRST_ROW_INDEX];
+    let first_fixture_path = fixture_path(&fixture_directory, first_contract);
+    let first_fixture = fs::read_to_string(&first_fixture_path)
+        .map_err(|error| vec![format!("{}: {error}", first_fixture_path.display())])?;
+    fs::write(
+        &first_fixture_path,
+        remove_first_metric(first_contract, &first_fixture),
+    )
+    .map_err(|error| vec![format!("{}: {error}", first_fixture_path.display())])?;
+    assert_contains(
+        &check_fixture_dir(path_to_string(&fixture_directory)?.as_str())
+            .expect_err("fixture rail with missing metric should fail"),
+        "missing metric",
+    )?;
+    let _ = fs::remove_dir_all(&fixture_directory);
+
     if exercised_rows.len() != ROWS.len() {
         return Err(vec!["not every row contract was exercised".to_string()]);
     }
 
-    Ok(format!("{} row contracts exercised", exercised_rows.len()))
+    Ok(format!(
+        "{} row contracts exercised and fixture rail checked",
+        exercised_rows.len()
+    ))
+}
+
+fn self_test_fixture_directory() -> PathBuf {
+    env::temp_dir().join(format!(
+        "{SELF_TEST_FIXTURE_DIR_PREFIX}-{}",
+        std::process::id()
+    ))
+}
+
+fn path_to_string(path: &Path) -> Result<String, Vec<String>> {
+    path.to_str()
+        .map(ToOwned::to_owned)
+        .ok_or_else(|| vec![format!("{} is not valid UTF-8", path.display())])
 }
 
 fn fixture_evidence(contract: RowContract) -> String {

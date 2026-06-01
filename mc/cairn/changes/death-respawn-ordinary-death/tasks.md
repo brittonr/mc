@@ -3,7 +3,7 @@
 - [x] [serial] Define the bounded `ordinary death/respawn` evidence contract and normalized metric names. r[mc_compatibility.death_respawn_ordinary_death.contract] Evidence: `docs/evidence/open-cairn-contracts-2026-06-01.run.log`, `docs/evidence/open-cairn-contracts-2026-06-01.b3`.
 - [x] [depends:contract] Add deterministic checker positive and negative fixtures for `ordinary death/respawn`. r[mc_compatibility.death_respawn_ordinary_death.checker] Evidence: `docs/evidence/mc-compat-row-contract-checker-2026-06-01.run.log`, `docs/evidence/mc-compat-row-contract-checker-2026-06-01.b3`.
 - [x] [depends:checker] Enforce row-specific evidence standard before promotion. r[mc_compatibility.death_respawn_ordinary_death.evidence_standard] Evidence: `docs/evidence/mc-compat-row-evidence-standards-2026-06-01.run.log`, `docs/evidence/mc-compat-row-evidence-standards-2026-06-01.b3`.
-- [ ] [depends:evidence_standard] Add `death-respawn-ordinary-death` rail/checker wiring without broadening existing scenarios. r[mc_compatibility.death_respawn_ordinary_death.rail]
+- [x] [depends:evidence_standard] Add `death-respawn-ordinary-death` rail/checker wiring without broadening existing scenarios. r[mc_compatibility.death_respawn_ordinary_death.rail] Evidence: `docs/evidence/mc-compat-row-fixture-rail-2026-06-01.run.log`, `docs/evidence/mc-compat-row-fixture-rail-2026-06-01.b3`.
   - Detail: Define ordinary-death lifecycle contract.
   - Detail: Add checker positive/negative fixtures.
   - Detail: Add runner/client ordinary-death rail.

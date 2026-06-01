@@ -2,7 +2,7 @@
 
 - [x] [serial] Define the bounded `vanilla combat parity` evidence contract and normalized metric names. r[mc_compatibility.vanilla_combat_reference_parity.contract] Evidence: `docs/evidence/open-cairn-contracts-2026-06-01.run.log`, `docs/evidence/open-cairn-contracts-2026-06-01.b3`.
 - [x] [depends:contract] Add deterministic checker positive and negative fixtures for `vanilla combat parity`. r[mc_compatibility.vanilla_combat_reference_parity.checker] Evidence: `docs/evidence/mc-compat-row-contract-checker-2026-06-01.run.log`, `docs/evidence/mc-compat-row-contract-checker-2026-06-01.b3`.
-- [ ] [depends:checker] Add the `vanilla-combat-reference-parity` runner, fixture, or parser rail without broadening existing scenarios. r[mc_compatibility.vanilla_combat_reference_parity.rail]
+- [x] [depends:checker] Add the `vanilla-combat-reference-parity` runner, fixture, or parser rail without broadening existing scenarios. r[mc_compatibility.vanilla_combat_reference_parity.rail] Evidence: `docs/evidence/mc-compat-row-fixture-rail-2026-06-01.run.log`, `docs/evidence/mc-compat-row-fixture-rail-2026-06-01.b3`.
   - Detail: Define damage/knockback metric tolerance contract.
   - Detail: Add paired combat comparator fixtures.
   - Detail: Add Paper and Valence bounded combat rail.
