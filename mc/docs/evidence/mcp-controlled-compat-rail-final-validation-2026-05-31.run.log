@@ -1,0 +1,188 @@
+# MCP-controlled compatibility rail final validation 2026-05-31
+
+parent_commit=f42e31f
+worktree_scope=preclose validation after moving superseded blocker outside checked task body
+
+$ nix develop --no-update-lock-file -c sh -c rustfmt\ --check\ tools/check_mcp_controlled_compat_rail.rs\ tools/check_acceptance_matrix.rs\ tools/check_current_evidence_bundle.rs\ tools/check_evidence_manifests.rs\ tools/check_cairn_task_evidence.rs\ tools/check_scenario_manifest.rs\ \&\&\ cd\ tools/mc-compat-runner\ \&\&\ cargo\ fmt\ --check\ \&\&\ cargo\ test\ generated_scenario_manifest_matches_runner_parser\ --\ --nocapture\ \&\&\ cargo\ test\ mcp_controlled\ --\ --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+/home/brittonr/git/mc/tools/mc-compat-runner
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.03s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 1 test
+test tests::generated_scenario_manifest_matches_runner_parser ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 91 filtered out; finished in 0.00s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.03s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 5 tests
+test tests::mcp_controlled_live_preflight_allows_bounded_local_rail ... ok
+test tests::mcp_controlled_live_preflight_rejects_unbounded_timeout ... ok
+test tests::mcp_controlled_live_receipt_fails_dirty_child_revision ... ok
+test tests::mcp_controlled_live_receipt_uses_observed_control_and_frame_evidence ... ok
+test tests::mcp_controlled_dry_run_receipt_records_control_contract ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 87 filtered out; finished in 0.00s
+
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_scenario_manifest.rs\ -o\ target/check-scenario-manifest\ \&\&\ target/check-scenario-manifest\ --self-test\ \&\&\ target/check-scenario-manifest
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+scenario manifest self-test passed: positive and negative fixtures exercised
+scenario manifest check passed: 21 rows validated
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_acceptance_matrix.rs\ -o\ target/check-acceptance-matrix\ \&\&\ target/check-acceptance-matrix\ --self-test\ \&\&\ target/check-acceptance-matrix\ \&\&\ rustc\ --edition=2021\ tools/check_current_evidence_bundle.rs\ -o\ target/check-current-evidence-bundle\ \&\&\ target/check-current-evidence-bundle\ --self-test\ \&\&\ target/check-current-evidence-bundle
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+acceptance matrix self-test ok: positive and negative fixtures exercised
+acceptance matrix check passed: 22 rows validated
+current evidence bundle self-test ok: positive and negative fixtures exercised
+current evidence bundle check passed: 22 rows validated
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_mcp_controlled_compat_rail.rs\ -o\ target/check-mcp-controlled-compat-rail\ \&\&\ target/check-mcp-controlled-compat-rail\ --self-test\ \&\&\ target/check-mcp-controlled-compat-rail\ --receipt\ docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.json
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+mcp controlled rail self-test passed: positive and fail-closed fixtures exercised
+mcp controlled rail receipt check passed: docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.json
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_evidence_manifests.rs\ -o\ target/check-evidence-manifests\ \&\&\ target/check-evidence-manifests\ --self-test\ \&\&\ target/check-evidence-manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest self-test ok: positive and negative fixtures exercised
+evidence manifests ok: 147 manifests, 739 entries, 73 receipts scanned
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_cairn_task_evidence.rs\ -o\ target/check-cairn-task-evidence\ \&\&\ target/check-cairn-task-evidence\ --self-test\ \&\&\ target/check-cairn-task-evidence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task evidence gate passed: 7 completed tasks checked across 30 active task files
+exit_status=0
+
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-mcp-controlled-smoke-dry-run .#checks.x86_64-linux.mc-compat-scenario-manifest .#checks.x86_64-linux.mc-compat-cairn-task-evidence .#checks.x86_64-linux.mc-compat-help --no-link -L
+these 4 derivations will be built:
+  /nix/store/cb39hpjalljcvqwbnw5hdnahq8zkyf6r-mc-compat-mcp-controlled-smoke-dry-run.drv
+  /nix/store/ncmijd66dm5gjp6d1694jcp9s0dnxvgd-mc-compat-cairn-task-evidence.drv
+  /nix/store/wfgyslxvynvc2mfks2km0k28swvljxyc-mc-compat-scenario-manifest.drv
+  /nix/store/xlliaxz1c71gsl66qfwlf0z4j2hymshz-mc-compat-help.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/ncmijd66dm5gjp6d1694jcp9s0dnxvgd-mc-compat-cairn-task-evidence.drv'...
+building '/nix/store/xlliaxz1c71gsl66qfwlf0z4j2hymshz-mc-compat-help.drv'...
+building '/nix/store/cb39hpjalljcvqwbnw5hdnahq8zkyf6r-mc-compat-mcp-controlled-smoke-dry-run.drv'...
+building '/nix/store/wfgyslxvynvc2mfks2km0k28swvljxyc-mc-compat-scenario-manifest.drv'...
+mc-compat-mcp-controlled-smoke-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-mcp-controlled-smoke-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-mcp-controlled-smoke-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-mcp-controlled-smoke-dry-run> hint: call:
+mc-compat-mcp-controlled-smoke-dry-run> hint:
+mc-compat-mcp-controlled-smoke-dry-run> hint:   git config --global init.defaultBranch <name>
+mc-compat-mcp-controlled-smoke-dry-run> hint:
+mc-compat-mcp-controlled-smoke-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-mcp-controlled-smoke-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-mcp-controlled-smoke-dry-run> hint:
+mc-compat-mcp-controlled-smoke-dry-run> hint:   git branch -m <name>
+mc-compat-mcp-controlled-smoke-dry-run> hint:
+mc-compat-mcp-controlled-smoke-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-mcp-controlled-smoke-dry-run> Initialized empty Git repository in /build/repo/fake-valence/.git/
+mc-compat-mcp-controlled-smoke-dry-run> [master (root-commit) 2867b24] init
+mc-compat-mcp-controlled-smoke-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-mcp-controlled-smoke-dry-run>  create mode 100644 README.md
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate proposal mcp-controlled-compat-rail --root .
+{
+  "change": "mcp-controlled-compat-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "ac2b474830c5d3f5984ce7e9b46aa178318ee50f35e8e2783876fb4fd492e5bd",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "778ecbb7c5db7b31a1cd03adbab13851736086af113e4bdf5f67cc35ac16a4db",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate design mcp-controlled-compat-rail --root .
+{
+  "change": "mcp-controlled-compat-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "bf9da65eaaf67826258962c79bc73cbb8e350523c985da746f6e1eaa373e91ed",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "45a733cf45aa8a77a706d2226fad5fa19dc8bfa4fb55cbe9bdf212cf0ec4223b",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks mcp-controlled-compat-rail --root .
+{
+  "change": "mcp-controlled-compat-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "181b92b10cae3841f154abbfdf07fa1d075e85af1564e2a23e0f5571eb0a288c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "7726ae70ebfd030e3420cc05a4d6766bc2468a89d212ca7bbd9a3de83e8540d8",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 30,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 32,
+  "valid": true
+}
+exit_status=0
