@@ -1,0 +1,205 @@
+# mc-compat row evidence standard closeout 2026-06-01
+changes=death-respawn-invalid-respawn-timing death-respawn-ordinary-death inventory-creative-mode inventory-drag-transactions inventory-extra-window-types inventory-stack-split-merge projectile-weapon-variants
+
+$ nix develop --no-update-lock-file -c b3sum --check docs/evidence/mc-compat-row-contract-checker-2026-06-01.b3
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+tools/check_mc_compat_row_contracts.rs: OK
+docs/evidence/mc-compat-row-contract-checker-2026-06-01.run.log: OK
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_mc_compat_row_contracts.rs\ -o\ target/check-mc-compat-row-contracts\ \&\&\ target/check-mc-compat-row-contracts\ --self-test
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+mc compat row contract self-test ok: 22 row contracts exercised
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks death-respawn-invalid-respawn-timing --root .
+{
+  "change": "death-respawn-invalid-respawn-timing",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "db45919c314fb9cf8e981ba72d4cb8da511162f936aec61739a6cd410228e773",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "600067c666e3c7073e75f0c0d3c86e2e5ca938386aba427687e2df238bbe4fc5",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks death-respawn-ordinary-death --root .
+{
+  "change": "death-respawn-ordinary-death",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "3d27b1f6f66297bb59493c47030805cfaed573d498c75e0793a4da20487c9a35",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "fdd8d4a9295ad68f4626590b690bf2f2b557ab42e63da9e870551762152c8620",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks inventory-creative-mode --root .
+{
+  "change": "inventory-creative-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "295f0e6e0e517a3e829f353050b0df5570a7a08e3bf49f33b09ad69f0cd29f68",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "4000fbad1b129a8541090e4069772e42241709799038db3bba7ef3c3d13b9e9f",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks inventory-drag-transactions --root .
+{
+  "change": "inventory-drag-transactions",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "96e0e52e5603a12fc6b2775ce117a59d825adc61d05f07d2f4f7123b2273017b",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "ed171f1aae73288147ad4c3511c613225b0dcc79d91893e74c2d14e98d3c7816",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks inventory-extra-window-types --root .
+{
+  "change": "inventory-extra-window-types",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "d51ef8eed4b334e9e51e2a935d1418112af26ac52eaaaeac3c4601c253dd305c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "9ef669567fbbd6f4fdc6319c535528cfac8ed9365ab9d470656e34761913c78f",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks inventory-stack-split-merge --root .
+{
+  "change": "inventory-stack-split-merge",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "cb9c71de64522eea03474326604033a9094f99c9641f8c31ff7b73a0f3fc2aff",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "40f8288abb00edaf5f5d7940d3620b1066898eea25d7b3b14eb248f073cc0834",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks projectile-weapon-variants --root .
+{
+  "change": "projectile-weapon-variants",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "6024f2a4bb24af3b2ecdc1dab749bba743b2204321eaa50b0e585ec1d4c68bf4",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "b24f155344160aee2500a72dc8eeb68df321b1eb59b4f1474f43a462ffbe7890",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_evidence_manifests.rs\ -o\ target/check-evidence-manifests\ \&\&\ target/check-evidence-manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 164 manifests, 779 entries, 73 receipts scanned
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 29,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 31,
+  "valid": true
+}
+exit_status=0

@@ -2,7 +2,7 @@
 
 - [x] [serial] Define the bounded `creative-mode inventory` evidence contract and normalized metric names. r[mc_compatibility.inventory_creative_mode.contract] Evidence: `docs/evidence/open-cairn-contracts-2026-06-01.run.log`, `docs/evidence/open-cairn-contracts-2026-06-01.b3`.
 - [x] [depends:contract] Add deterministic checker positive and negative fixtures for `creative-mode inventory`. r[mc_compatibility.inventory_creative_mode.checker] Evidence: `docs/evidence/mc-compat-row-contract-checker-2026-06-01.run.log`, `docs/evidence/mc-compat-row-contract-checker-2026-06-01.b3`.
-- [ ] [depends:checker] Enforce row-specific evidence standard before promotion. r[mc_compatibility.inventory_creative_mode.evidence_standard]
+- [x] [depends:checker] Enforce row-specific evidence standard before promotion. r[mc_compatibility.inventory_creative_mode.evidence_standard] Evidence: `docs/evidence/mc-compat-row-evidence-standards-2026-06-01.run.log`, `docs/evidence/mc-compat-row-evidence-standards-2026-06-01.b3`.
 - [ ] [depends:evidence_standard] Add `inventory-creative-mode` rail/checker wiring without broadening existing scenarios. r[mc_compatibility.inventory_creative_mode.rail]
   - Detail: Define creative permission contract.
   - Detail: Add checker negative fixtures.

@@ -2,7 +2,7 @@
 
 - [x] [serial] Define the bounded `projectile weapon variants` evidence contract and normalized metric names. r[mc_compatibility.projectile_weapon_variants.contract] Evidence: `docs/evidence/open-cairn-contracts-2026-06-01.run.log`, `docs/evidence/open-cairn-contracts-2026-06-01.b3`.
 - [x] [depends:contract] Add deterministic checker positive and negative fixtures for `projectile weapon variants`. r[mc_compatibility.projectile_weapon_variants.checker] Evidence: `docs/evidence/mc-compat-row-contract-checker-2026-06-01.run.log`, `docs/evidence/mc-compat-row-contract-checker-2026-06-01.b3`.
-- [ ] [depends:checker] Enforce row-specific evidence standard before promotion. r[mc_compatibility.projectile_weapon_variants.evidence_standard]
+- [x] [depends:checker] Enforce row-specific evidence standard before promotion. r[mc_compatibility.projectile_weapon_variants.evidence_standard] Evidence: `docs/evidence/mc-compat-row-evidence-standards-2026-06-01.run.log`, `docs/evidence/mc-compat-row-evidence-standards-2026-06-01.b3`.
 - [ ] [depends:evidence_standard] Add `projectile-weapon-variants` rail/checker wiring without broadening existing scenarios. r[mc_compatibility.projectile_weapon_variants.rail]
   - Detail: Define projectile weapon matrix schema.
   - Detail: Add first weapon-variant fixtures.
