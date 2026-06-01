@@ -1029,6 +1029,16 @@
           mkdir -p "$out"
           cp ../full-survival-gate-self-test.log ../full-survival-gate-check.log "$out/"
         '';
+        mc-compat-aggregate-claim-gates = pkgs.runCommand "mc-compat-aggregate-claim-gates" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc ]; } ''
+          cp -R ${./.} repo
+          chmod -R u+w repo
+          cd repo
+          rustc --edition=2021 tools/check_mc_compat_aggregate_claim_gates.rs -o ../check-mc-compat-aggregate-claim-gates
+          ../check-mc-compat-aggregate-claim-gates --self-test > ../aggregate-claim-gates-self-test.log
+          ../check-mc-compat-aggregate-claim-gates > ../aggregate-claim-gates-check.log
+          mkdir -p "$out"
+          cp ../aggregate-claim-gates-self-test.log ../aggregate-claim-gates-check.log "$out/"
+        '';
         mc-compat-scenario-manifest = pkgs.runCommand "mc-compat-scenario-manifest" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc pkgs.nickel ]; } ''
           cp -R ${./.} repo
           chmod -R u+w repo
@@ -1824,6 +1834,7 @@
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-current-evidence-bundle} "$out/current-evidence-bundle"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-evidence-manifests} "$out/evidence-manifests"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-full-survival-gate} "$out/full-survival-gate"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-aggregate-claim-gates} "$out/aggregate-claim-gates"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-scenario-manifest} "$out/scenario-manifest"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-evidence-promotion} "$out/evidence-promotion"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-cairn-task-evidence} "$out/cairn-task-evidence"
@@ -1863,6 +1874,7 @@
           current-evidence-bundle
           evidence-manifests
           full-survival-gate
+          aggregate-claim-gates
           scenario-manifest
           evidence-promotion
           cairn-task-evidence

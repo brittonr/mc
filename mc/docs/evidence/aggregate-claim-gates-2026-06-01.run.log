@@ -1,0 +1,12 @@
+# aggregate claim gates 2026-06-01
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_mc_compat_aggregate_claim_gates.rs\ -o\ target/check-mc-compat-aggregate-claim-gates\ \&\&\ target/check-mc-compat-aggregate-claim-gates\ --self-test\ \&\&\ target/check-mc-compat-aggregate-claim-gates
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+aggregate claim gate self-test ok: 3 aggregate gates exercised
+aggregate claim gates passed: 3 gates checked
+exit_status=0
+
+$ nix build .#checks.x86_64-linux.mc-compat-aggregate-claim-gates --no-link -L
+exit_status=0

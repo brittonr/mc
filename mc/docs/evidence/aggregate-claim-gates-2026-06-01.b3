@@ -1,0 +1,4 @@
+6d661e978e38c3ca7db97eb71cdc83d6c83e79374f4ad68171d5f27905ab96a8  tools/check_mc_compat_aggregate_claim_gates.rs
+ee1b1ce3849d007b1b6ffcfd1a8b00facf45f5437fd515ddf1fdbc2a103bbbed  flake.nix
+fccfbe7573d4c8fa43a28a3754d734ff36e39bcd5979f4b7fb1c3ca53b4be0a8  README.md
+eb739f8d83555254e252e4fe1a3b4202887ea1bfc8df1907ea7dbb5ce38e1853  docs/evidence/aggregate-claim-gates-2026-06-01.run.log

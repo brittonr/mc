@@ -1,0 +1,125 @@
+# aggregate claim gates closeout 2026-06-01
+
+$ nix develop --no-update-lock-file -c b3sum --check docs/evidence/aggregate-claim-gates-2026-06-01.b3
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+tools/check_mc_compat_aggregate_claim_gates.rs: OK
+flake.nix: OK
+README.md: OK
+docs/evidence/aggregate-claim-gates-2026-06-01.run.log: OK
+exit_status=0
+
+$ nix develop --no-update-lock-file -c b3sum --check docs/evidence/aggregate-claim-gates-manifest-refresh-2026-06-01.b3
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+docs/evidence/aggregate-claim-gates-manifest-refresh-2026-06-01.run.log: OK
+docs/evidence/aggregate-claim-gates-2026-06-01.b3: OK
+exit_status=0
+
+$ nix build .#checks.x86_64-linux.mc-compat-aggregate-claim-gates --no-link -L
+this derivation will be built:
+  /nix/store/vxabpcx8s2aqfnbi85prs88jnpb2k8xl-mc-compat-aggregate-claim-gates.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/vxabpcx8s2aqfnbi85prs88jnpb2k8xl-mc-compat-aggregate-claim-gates.drv'...
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks full-ctf-correctness-gate --root .
+{
+  "change": "full-ctf-correctness-gate",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f044e997a4ac26291d744a8d0bd44809ec22115be4afa60e6ad91e27ffbac53e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "cc797cec9dba7c14b1748ab0f453fa86d59a114541376a517318779fa8182bac",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks full-protocol-763-compatibility-gate --root .
+{
+  "change": "full-protocol-763-compatibility-gate",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f2c8268721430a524637bd07a2edf1ed79239f5762dadf77a94be472c2e6cd55",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "a4f7b9f01e704b4ec847c23b72fdc43e29cccbf11bc8ccc7d853fa0d46f114dc",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks production-readiness-envelope --root .
+{
+  "change": "production-readiness-envelope",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "4a4012cdc03c7efc17e1543826929768045c71da3681e916e204e1b4f261abe4",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "92c32c437f97300ca50432f8bdaada81abec589cf475b315f4f1acb73759ddd5",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_cairn_task_evidence.rs\ -o\ target/check-cairn-task-evidence\ \&\&\ target/check-cairn-task-evidence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence gate passed: 70 completed tasks checked across 29 active task files
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_evidence_manifests.rs\ -o\ target/check-evidence-manifests\ \&\&\ target/check-evidence-manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 163 manifests, 777 entries, 73 receipts scanned
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 29,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 31,
+  "valid": true
+}
+exit_status=0

@@ -1,0 +1,240 @@
+# aggregate claim gates evidence manifest refresh 2026-06-01
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_evidence_manifests.rs\ -o\ target/check-evidence-manifests\ \&\&\ target/check-evidence-manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest check failed: docs/evidence/full-survival-compatibility-gate-checker-2026-06-01.b3: b3sum --check failed:
+docs/evidence/full-survival-compatibility-gate-checker-2026-06-01.run.log: OK
+tools/check_full_survival_compatibility_gate.rs: OK
+flake.nix: FAILED
+README.md: FAILED
+docs/evidence/protocol-763-survival-coverage-matrix-2026-05-28.md: OK
+docs/evidence/protocol-763-current-evidence-bundle.md: OK
+docs/evidence/protocol-763-acceptance-matrix.md: OK
+b3sum: WARNING: 2 computed checksums did NOT match
+evidence manifest check failed: docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.b3: b3sum --check failed:
+docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.md: OK
+docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.run.log: OK
+docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.checker.log: OK
+docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.json: OK
+docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.mcp-transcript.log: OK
+docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.stderr.log: OK
+docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.typed-events.log: OK
+docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt-frames/mcp-controlled-smoke/latest-frame.png: OK
+tools/mc-compat-runner/src/main.rs: OK
+tools/mc-compat-runner/src/scenario_manifest_generated.rs: OK
+tools/check_mcp_controlled_compat_rail.rs: OK
+config/mc-compat/scenario-manifest.ncl: OK
+flake.nix: FAILED
+b3sum: WARNING: 1 computed checksum did NOT match
+evidence manifest check failed: docs/evidence/nix-run-valence-stevenarella-2026-05-30.b3: b3sum --check failed:
+docs/evidence/nix-run-valence-stevenarella-2026-05-30.md: OK
+docs/evidence/nix-run-valence-stevenarella-2026-05-30.run.log: OK
+flake.nix: FAILED
+README.md: FAILED
+b3sum: WARNING: 2 computed checksums did NOT match
+evidence manifest check failed: docs/evidence/protocol-763-adversarial-network-oracle-checker-2026-05-29.b3: b3sum --check failed:
+tools/check_adversarial_network_oracle.rs: OK
+flake.nix: FAILED
+docs/evidence/protocol-763-adversarial-network-oracle-checker-2026-05-29.run.log: OK
+b3sum: WARNING: 1 computed checksum did NOT match
+evidence manifest check failed: docs/evidence/protocol-763-armor-loadout-enchantment-status-checker-2026-05-29.b3: b3sum --check failed:
+tools/check_armor_loadout_enchantment_status.rs: OK
+flake.nix: FAILED
+docs/evidence/protocol-763-armor-loadout-enchantment-status-checker-2026-05-29.run.log: OK
+b3sum: WARNING: 1 computed checksum did NOT match
+evidence manifest check failed: docs/evidence/protocol-763-ctf-invalid-pickup-ownership-2026-05-30.b3: b3sum --check failed:
+docs/evidence/protocol-763-ctf-invalid-pickup-ownership-contract-2026-05-30.md: OK
+docs/evidence/protocol-763-ctf-invalid-pickup-ownership-2026-05-30.md: OK
+docs/evidence/protocol-763-ctf-invalid-pickup-ownership-2026-05-30.receipt.json: OK
+docs/evidence/protocol-763-ctf-invalid-pickup-ownership-2026-05-30.run.log: OK
+docs/evidence/protocol-763-ctf-invalid-pickup-ownership-2026-05-30.client.log: OK
+docs/evidence/protocol-763-ctf-invalid-pickup-ownership-2026-05-30.server.log: OK
+docs/evidence/protocol-763-ctf-invalid-pickup-ownership-2026-05-30.record: OK
+docs/evidence/protocol-763-acceptance-matrix.md: OK
+docs/evidence/protocol-763-current-evidence-bundle.md: OK
+docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md: OK
+config/mc-compat/scenario-manifest.ncl: OK
+tools/mc-compat-runner/src/main.rs: OK
+tools/mc-compat-runner/src/scenario_manifest_generated.rs: OK
+tools/check_ctf_invalid_pickup_ownership.rs: OK
+tools/check_acceptance_matrix.rs: OK
+tools/check_current_evidence_bundle.rs: OK
+flake.nix: FAILED
+README.md: FAILED
+cairn/archive/2026-05-30-ctf-invalid-pickup-ownership/proposal.md: OK
+cairn/archive/2026-05-30-ctf-invalid-pickup-ownership/specs/mc-compatibility/spec.md: OK
+cairn/archive/2026-05-30-ctf-invalid-pickup-ownership/tasks.md: OK
+b3sum: WARNING: 2 computed checksums did NOT match
+evidence manifest check failed: docs/evidence/protocol-763-ctf-invalid-return-drop-2026-05-30.b3: b3sum --check failed:
+docs/evidence/protocol-763-ctf-invalid-return-drop-contract-2026-05-30.md: OK
+docs/evidence/protocol-763-ctf-invalid-return-drop-2026-05-30.md: OK
+docs/evidence/protocol-763-ctf-invalid-return-drop-2026-05-30.receipt.json: OK
+docs/evidence/protocol-763-ctf-invalid-return-drop-2026-05-30.run.log: OK
+docs/evidence/protocol-763-ctf-invalid-return-drop-2026-05-30.client.log: OK
+docs/evidence/protocol-763-ctf-invalid-return-drop-2026-05-30.server.log: OK
+docs/evidence/protocol-763-ctf-invalid-return-drop-2026-05-30.record: OK
+docs/evidence/protocol-763-acceptance-matrix.md: OK
+docs/evidence/protocol-763-current-evidence-bundle.md: OK
+docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md: OK
+config/mc-compat/scenario-manifest.ncl: OK
+tools/mc-compat-runner/src/main.rs: OK
+tools/mc-compat-runner/src/scenario_manifest_generated.rs: OK
+tools/check_ctf_invalid_return_drop.rs: OK
+tools/check_acceptance_matrix.rs: OK
+tools/check_current_evidence_bundle.rs: OK
+flake.nix: FAILED
+README.md: FAILED
+cairn/archive/2026-05-30-ctf-invalid-return-drop/proposal.md: OK
+cairn/archive/2026-05-30-ctf-invalid-return-drop/specs/mc-compatibility/spec.md: OK
+cairn/archive/2026-05-30-ctf-invalid-return-drop/tasks.md: OK
+docs/evidence/protocol-763-ctf-invalid-return-drop-validation-2026-05-30.run.log: OK
+b3sum: WARNING: 2 computed checksums did NOT match
+evidence manifest check failed: docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.b3: b3sum --check failed:
+docs/evidence/protocol-763-ctf-score-limit-win-condition-contract-2026-05-30.md: OK
+docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.md: OK
+docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.receipt.json: OK
+docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.run.log: OK
+docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.client.log: OK
+docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.server.log: OK
+docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.receipt.typed-events.log: OK
+docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.record: OK
+docs/evidence/protocol-763-ctf-score-limit-win-condition-cairn-gates-2026-05-30.run.log: OK
+docs/evidence/protocol-763-ctf-score-limit-win-condition-cairn-validate-2026-05-30.run.log: OK
+docs/evidence/protocol-763-ctf-score-limit-win-condition-archive-2026-05-30.run.log: OK
+docs/evidence/protocol-763-ctf-score-limit-win-condition-archive-validation-2026-05-30.run.log: OK
+docs/evidence/protocol-763-acceptance-matrix.md: OK
+docs/evidence/protocol-763-current-evidence-bundle.md: OK
+docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md: OK
+config/mc-compat/scenario-manifest.ncl: OK
+tools/mc-compat-runner/src/main.rs: OK
+tools/mc-compat-runner/src/scenario_manifest_generated.rs: OK
+tools/check_ctf_score_limit_win_condition.rs: OK
+tools/check_acceptance_matrix.rs: OK
+tools/check_current_evidence_bundle.rs: OK
+flake.nix: FAILED
+README.md: FAILED
+cairn/archive/2026-05-30-ctf-score-limit-win-condition/proposal.md: OK
+cairn/archive/2026-05-30-ctf-score-limit-win-condition/specs/mc-compatibility/spec.md: OK
+cairn/archive/2026-05-30-ctf-score-limit-win-condition/tasks.md: OK
+b3sum: WARNING: 2 computed checksums did NOT match
+evidence manifest check failed: docs/evidence/protocol-763-equipment-slot-item-expansion-checker-2026-05-29.b3: b3sum --check failed:
+tools/check_equipment_slot_item_expansion.rs: OK
+flake.nix: FAILED
+docs/evidence/protocol-763-equipment-slot-item-expansion-checker-2026-05-29.run.log: OK
+b3sum: WARNING: 1 computed checksum did NOT match
+evidence manifest check failed: docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.b3: b3sum --check failed:
+docs/evidence/protocol-763-public-server-authorized-safety-contract-2026-05-30.md: OK
+docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.record: OK
+docs/evidence/protocol-763-public-server-authorized-safety-checkpoint-2026-05-30.md: OK
+docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.md: OK
+docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.receipt.json: OK
+docs/evidence/protocol-763-public-server-authorized-safety-dry-run-2026-05-30.run.log: OK
+docs/evidence/protocol-763-public-server-authorized-safety-checker-2026-05-30.run.log: OK
+docs/evidence/protocol-763-production-network-safety-matrix-2026-05-28.md: OK
+docs/evidence/protocol-763-acceptance-matrix.md: OK
+docs/evidence/protocol-763-current-evidence-bundle.md: OK
+tools/check_public_server_authorized_safety.rs: OK
+tools/mc-compat-runner/src/main.rs: OK
+flake.nix: FAILED
+README.md: FAILED
+cairn/specs/mc-compatibility/spec.md: OK
+cairn/archive/2026-05-30-public-server-authorized-safety/tasks.md: OK
+docs/evidence/protocol-763-public-server-authorized-safety-validation-2026-05-30.run.log: OK
+docs/evidence/protocol-763-public-server-authorized-safety-final-manifest-checkpoint-2026-05-30.md: OK
+docs/evidence/protocol-763-public-server-authorized-safety-archive-validation-2026-05-30.run.log: OK
+docs/evidence/protocol-763-public-server-authorized-safety-archive-cleanup-2026-05-30.run.log: OK
+b3sum: WARNING: 2 computed checksums did NOT match
+evidence manifest check failed: docs/evidence/protocol-763-python-gate-rust-migration-2026-05-31.b3: b3sum --check failed:
+docs/evidence/protocol-763-python-gate-rust-migration-2026-05-31.md: OK
+docs/evidence/protocol-763-python-gate-rust-migration-2026-05-31.run.log: OK
+docs/evidence/protocol-763-python-gate-rust-migration-nix-build-2026-05-31.run.log: OK
+docs/evidence/protocol-763-python-gate-rust-migration-oracle-2026-05-31.md: OK
+tools/check_acceptance_matrix.rs: OK
+tools/check_current_evidence_bundle.rs: OK
+tools/check_survival_coverage_matrix.rs: OK
+tools/check_evidence_manifests.rs: OK
+docs/evidence/protocol-763-current-evidence-bundle.md: OK
+docs/evidence/protocol-763-survival-coverage-reference-parity-sync-2026-05-28.b3: OK
+flake.nix: FAILED
+b3sum: WARNING: 1 computed checksum did NOT match
+evidence manifest check failed: docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-2026-05-30.b3: b3sum --check failed:
+docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-contract-2026-05-30.md: OK
+docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-2026-05-30.md: OK
+docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-2026-05-30.receipt.json: OK
+docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-2026-05-30.record: OK
+docs/evidence/protocol-763-red-blue-scoring-soak-red-2026-05-30.receipt.json: OK
+docs/evidence/protocol-763-red-blue-scoring-soak-red-2026-05-30.run.log: OK
+docs/evidence/protocol-763-red-blue-scoring-soak-red-2026-05-30.client.log: OK
+docs/evidence/protocol-763-red-blue-scoring-soak-red-2026-05-30.server.log: OK
+docs/evidence/protocol-763-red-blue-scoring-soak-red-2026-05-30.receipt.typed-events.log: OK
+docs/evidence/protocol-763-red-blue-scoring-soak-blue-2026-05-30.receipt.json: OK
+docs/evidence/protocol-763-red-blue-scoring-soak-blue-2026-05-30.run.log: OK
+docs/evidence/protocol-763-red-blue-scoring-soak-blue-2026-05-30.client.log: OK
+docs/evidence/protocol-763-red-blue-scoring-soak-blue-2026-05-30.server.log: OK
+docs/evidence/protocol-763-red-blue-scoring-soak-blue-2026-05-30.receipt.typed-events.log: OK
+docs/evidence/protocol-763-acceptance-matrix.md: OK
+docs/evidence/protocol-763-current-evidence-bundle.md: OK
+docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md: OK
+tools/check_red_blue_scoring_soak_live_refresh.rs: OK
+tools/check_acceptance_matrix.rs: OK
+flake.nix: FAILED
+cairn/archive/2026-05-30-refresh-red-blue-scoring-soak-live-evidence/proposal.md: OK
+cairn/archive/2026-05-30-refresh-red-blue-scoring-soak-live-evidence/design.md: OK
+cairn/archive/2026-05-30-refresh-red-blue-scoring-soak-live-evidence/specs/mc-compatibility/spec.md: OK
+cairn/archive/2026-05-30-refresh-red-blue-scoring-soak-live-evidence/tasks.md: OK
+docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-row-check-2026-05-30.run.log: OK
+docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-validation-2026-05-30.run.log: OK
+docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-archive-2026-05-30.run.log: OK
+docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-post-archive-validation-2026-05-30.run.log: OK
+b3sum: WARNING: 1 computed checksum did NOT match
+evidence manifest check failed: docs/evidence/protocol-763-survival-crafting-table-progress-2026-05-30.b3: b3sum --check failed:
+docs/evidence/protocol-763-survival-crafting-table-contract-2026-05-30.md: OK
+docs/evidence/protocol-763-survival-crafting-table-progress-2026-05-30.run.log: OK
+docs/evidence/protocol-763-survival-crafting-table-revision-oracle-2026-05-30.md: OK
+tools/check_survival_crafting_table.rs: OK
+tools/mc-compat-runner/src/main.rs: OK
+tools/mc-compat-runner/src/scenario_manifest_generated.rs: OK
+flake.nix: FAILED
+cairn/archive/2026-05-31-survival-crafting-table-parity/tasks.md: OK
+cairn/archive/2026-05-31-survival-crafting-table-parity/specs/mc-compatibility/spec.md: OK
+cairn/archive/2026-05-31-survival-crafting-table-parity/proposal.md: OK
+docs/evidence/protocol-763-survival-crafting-table-validation-2026-05-30.run.log: OK
+b3sum: WARNING: 1 computed checksum did NOT match
+evidence manifest check failed: docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.b3: b3sum --check failed:
+docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.receipt.json: OK
+docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-live-2026-05-29.run.log: OK
+docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-contract-2026-05-29.md: OK
+docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.record: OK
+docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.md: OK
+docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-checkpoint-2026-05-29.md: OK
+docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-checker-2026-05-29.run.log: OK
+docs/evidence/protocol-763-production-network-safety-matrix-2026-05-28.md: OK
+docs/evidence/protocol-763-acceptance-matrix.md: OK
+docs/evidence/protocol-763-current-evidence-bundle.md: OK
+tools/check_wan_tolerance_bounded_telemetry.rs: OK
+tools/mc-compat-runner/src/main.rs: OK
+flake.nix: FAILED
+README.md: FAILED
+docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-validation-2026-05-29.run.log: OK
+docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-archive-validation-2026-05-29.run.log: OK
+docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-final-manifest-checkpoint-2026-05-29.md: OK
+cairn/specs/mc-compatibility/spec.md: OK
+cairn/archive/2026-05-29-wan-tolerance-bounded-telemetry/tasks.md: OK
+cairn/archive/2026-05-29-wan-tolerance-bounded-telemetry/specs/mc-compatibility/spec.md: OK
+b3sum: WARNING: 2 computed checksums did NOT match
+exit_status=1
+
+$ nix develop --no-update-lock-file -c sh -c $'\nset -euo pipefail\nfor pass in 1 2 3; do\n  while IFS= read -r manifest; do\n    tmp=$(mktemp)\n    while IFS= read -r line; do\n      line=${line%$\'\\r\'}\n      [ -z "$line" ] && continue\n      path=${line#*  }\n      digest=$(b3sum "$path" | cut -d " " -f 1)\n      printf "%s  %s\\n" "$digest" "$path" >> "$tmp"\n    done < "$manifest"\n    mv "$tmp" "$manifest"\n  done < /tmp/mc-all-manifests.txt\ndone\n'
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_evidence_manifests.rs\ -o\ target/check-evidence-manifests\ \&\&\ target/check-evidence-manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 162 manifests, 775 entries, 73 receipts scanned
+exit_status=0
