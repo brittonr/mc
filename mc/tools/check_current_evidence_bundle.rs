@@ -20,6 +20,7 @@ const REQUIRED_SEAMS: &[&str] = &[
     "Pickup semantics",
     "Player-inventory click/container click",
     "Open-container semantics",
+    "Inventory transaction packet family",
     "Two-client combat/damage",
     "Flag-carrier death/return",
     "Reconnect flag-state",

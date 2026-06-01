@@ -1,0 +1,26 @@
+# protocol inventory transaction post-archive validation 2026-06-01
+acceptance matrix self-test ok: positive and negative fixtures exercised
+acceptance matrix check passed: 27 rows validated
+current evidence bundle self-test ok: positive and negative fixtures exercised
+current evidence bundle check passed: 27 rows validated
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task evidence gate passed: 82 completed tasks checked across 24 active task files
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest self-test ok: positive and negative fixtures exercised
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 215 manifests, 997 entries, 79 receipts scanned
+{
+  "change_issues": [],
+  "changes": 24,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 26,
+  "valid": true
+}
+exit_status=0

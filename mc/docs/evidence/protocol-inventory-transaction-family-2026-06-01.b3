@@ -1,0 +1,10 @@
+df02262c86a9b1966e613a8485464ea234aa31c06acd06230f3de3123e349d61  docs/evidence/protocol-inventory-transaction-family-2026-06-01.receipt.json
+e1d6e6b71bd0d2da290fd14d1fff4bbec778ea76a4d1711542691d5005f0e40c  docs/evidence/protocol-inventory-transaction-family-2026-06-01.md
+7c66155c782ab8e125bd56e11c0c4863df9d58965de70ec5b1578e34c15c30a6  docs/evidence/protocol-inventory-transaction-family-2026-06-01.kv
+25fde948a009275aa36e7bdf7c33828d2c71cd26148c49fcabbdcb81836997b5  docs/evidence/protocol-763-inventory-semantics-matrix-2026-05-27.md
+c75381feed1d98cd33d584ab9b8efdfe849d85eb3d1bb6cc23a23578cc8d7f7d  docs/evidence/protocol-763-click.matrix.receipt.json
+b7913ddd1f000981f411f7f14331b67820761c1d317c528fbf8a5070c139d3f3  docs/evidence/protocol-763-open-container.matrix.receipt.json
+b677dd67b023c3f2eb0c0bf20b9f8d85208d446b6cc76ee290a95e2a6bd00ffb  docs/evidence/protocol-763-negative-live-rails-2026-05-29.md
+8d11184e0350be47b7cf742b23d120e13e60b3c38bfae8791dfbd1e87176f1d8  docs/evidence/negative-live-rails-inventory-stale-state-2026-05-29.json
+4f0d1bf8de944db0604b9fff42a322b67783eee9619619c1e88cace77124c9c3  docs/evidence/negative-live-rails-inventory-invalid-click-2026-05-29.json
+20de60f18fe7484e5ad393e07ce7ad8814e6f0150cda12a0440d8be9d55ecbf6  docs/evidence/protocol-763-packet-inventory-2026-05-28.tsv

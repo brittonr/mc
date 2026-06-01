@@ -1,0 +1,138 @@
+# protocol inventory transaction archive 2026-06-01
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/protocol-inventory-transaction-family-coverage/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/protocol-inventory-transaction-family-coverage/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "protocol-inventory-transaction-family-coverage",
+  "delta_specs": [
+    "./cairn/changes/protocol-inventory-transaction-family-coverage/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "6342a757ec8e6ef4a0b0ac59710678fa82d0b66a7242a68a33d805d4266d38d8",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "289b6d498be4d398982144e0e7a55b0100add7b3b7f783003cebde3954e31083",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "ab0cc07619284bae25cdf6d176b65002e9ca84c3c3621e0ca489d5816bda1219"
+}
+{
+  "actions": [
+    {
+      "description": "move active change to archive: protocol-inventory-transaction-family-coverage",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-01-protocol-inventory-transaction-family-coverage"
+    }
+  ],
+  "blocked": false,
+  "change": "protocol-inventory-transaction-family-coverage",
+  "dry_run": false,
+  "input_hash": "6342a757ec8e6ef4a0b0ac59710678fa82d0b66a7242a68a33d805d4266d38d8",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "046e4b33f0c2230801a91f14c08e4bfb1b5073897fe20d205bdec76b9b171146",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-01-protocol-inventory-transaction-family-coverage/design.md"
+        },
+        {
+          "content_hash": "9210ffcfdfc4fad91395f3d8d6ba2668239036f2339938ea940b9a0a1db74ec1",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-01-protocol-inventory-transaction-family-coverage/proposal.md"
+        },
+        {
+          "content_hash": "a1e3f3ff6b90e84bad83145ae396af9ec4ec297e306a1bea9a7169f4b461a964",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-01-protocol-inventory-transaction-family-coverage/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "41b8ae487e86491a7644872117cbd0a27bbad01da392e49bce4b2eca2e68dded",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-01-protocol-inventory-transaction-family-coverage/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/protocol-inventory-transaction-family-coverage"
+        }
+      ],
+      "manifest_hash": "0e20983d0e15082def8fe24027daa1b29b72473b5a2403fb9c7728f445aa0817"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "046e4b33f0c2230801a91f14c08e4bfb1b5073897fe20d205bdec76b9b171146",
+          "exists": true,
+          "path": "./cairn/changes/protocol-inventory-transaction-family-coverage/design.md"
+        },
+        {
+          "content_hash": "9210ffcfdfc4fad91395f3d8d6ba2668239036f2339938ea940b9a0a1db74ec1",
+          "exists": true,
+          "path": "./cairn/changes/protocol-inventory-transaction-family-coverage/proposal.md"
+        },
+        {
+          "content_hash": "a1e3f3ff6b90e84bad83145ae396af9ec4ec297e306a1bea9a7169f4b461a964",
+          "exists": true,
+          "path": "./cairn/changes/protocol-inventory-transaction-family-coverage/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "41b8ae487e86491a7644872117cbd0a27bbad01da392e49bce4b2eca2e68dded",
+          "exists": true,
+          "path": "./cairn/changes/protocol-inventory-transaction-family-coverage/tasks.md"
+        }
+      ],
+      "manifest_hash": "a062a847cd904e0eb287dc565ebac13b97d7e826a741b0a541c93943817f0aef"
+    },
+    "kind": "archive",
+    "manifest_hash": "a92a16a61cab4db0e0efdb34895a5e8633bf7115ffcb52aa4de89919590efb74"
+  },
+  "plan_hash": "9d7ff7468da6677f96ec92426cd51ecb3d1f8120b790619095f4135cadd8f39f",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "caa4e3aa58ae08313123884dff9f41ee0a98d2a63ec76badd5783c1cfa597577"
+}
+{
+  "change_issues": [],
+  "changes": 24,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 26,
+  "valid": true
+}
+exit_status=0

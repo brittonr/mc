@@ -1,0 +1,59 @@
+{
+  "schema": "mc.compat.protocol_family_row.receipt.v1",
+  "created_at": "2026-06-01",
+  "row": "protocol-inventory-transaction-family-coverage",
+  "label": "inventory transaction packet family",
+  "status": "pass",
+  "mode": "repo-local-evidence-index",
+  "source_revision": {
+    "parent": "6db3b0ce",
+    "revision_status": "clean-before-inventory-row-edits"
+  },
+  "covered_packet_rows": [
+    {
+      "transaction_packet_name": "ClickSlotC2SPacket",
+      "state_side": "play/serverbound",
+      "wire_id": "0x0b",
+      "stevenarella_packet": "ClickWindow_StateBeforeSlot",
+      "packet_inventory_status": "scenario_bounded_shape_review_missing",
+      "parser_fixture_id": "mc-compat-row-fixture-rail-2026-06-01/protocol-inventory-transaction-family-coverage.kv",
+      "parser_fixture_result": "row_contract_fixture_only_no_broad_parser_shape_claim"
+    }
+  ],
+  "live_scenario_evidence": {
+    "scenario": "inventory-interaction",
+    "matrix_doc": "docs/evidence/protocol-763-inventory-semantics-matrix-2026-05-27.md",
+    "matrix_doc_blake3": "25fde948a009275aa36e7bdf7c33828d2c71cd26148c49fcabbdcb81836997b5",
+    "player_inventory_click_receipt": "docs/evidence/protocol-763-click.matrix.receipt.json",
+    "player_inventory_click_receipt_blake3": "c75381feed1d98cd33d584ab9b8efdfe849d85eb3d1bb6cc23a23578cc8d7f7d",
+    "open_container_receipt": "docs/evidence/protocol-763-open-container.matrix.receipt.json",
+    "open_container_receipt_blake3": "b7913ddd1f000981f411f7f14331b67820761c1d317c528fbf8a5070c139d3f3",
+    "negative_stale_state_receipt": "docs/evidence/negative-live-rails-inventory-stale-state-2026-05-29.json",
+    "negative_stale_state_receipt_blake3": "8d11184e0350be47b7cf742b23d120e13e60b3c38bfae8791dfbd1e87176f1d8",
+    "negative_invalid_click_receipt": "docs/evidence/negative-live-rails-inventory-invalid-click-2026-05-29.json",
+    "negative_invalid_click_receipt_blake3": "4f0d1bf8de944db0604b9fff42a322b67783eee9619619c1e88cace77124c9c3"
+  },
+  "normalized_metrics": {
+    "transaction_packet_name": "ClickSlotC2SPacket",
+    "state_side": "play/serverbound",
+    "wire_id": "0x0b",
+    "slot_window_state_id_fields": "window_id,slot,button,mode,state_id,carried_stack",
+    "parser_fixture_id": "protocol-inventory-transaction-family-coverage.kv",
+    "malformed_fixture_status": "bounded_negative_live_stale_state_and_invalid_click_containment; broad malformed click semantics non_claim",
+    "live_scenario": "inventory-interaction",
+    "receipt_digest": "c75381feed1d98cd33d584ab9b8efdfe849d85eb3d1bb6cc23a23578cc8d7f7d"
+  },
+  "non_claims": [
+    "all_inventory_semantics",
+    "all_window_types",
+    "all_click_modes",
+    "all_slot_mappings",
+    "stack_splitting_merging",
+    "drag_transactions",
+    "creative_inventory",
+    "broad_parser_shape_coverage",
+    "full_protocol_763_compatibility",
+    "full_minecraft_compatibility",
+    "production_readiness"
+  ]
+}

@@ -1,0 +1,35 @@
+# protocol inventory transaction pre-archive validation 2026-06-01
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task evidence gate passed: 88 completed tasks checked across 25 active task files
+{
+  "change": "protocol-inventory-transaction-family-coverage",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f2df8196fbf6761833a57efa83f00dc4b7dcbdc7869a45a1253e960df747bdfc",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "8febf6e5c1b4818fef545d4ff94fefdf93f989046900264664d532617059e7be",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change_issues": [],
+  "changes": 25,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 27,
+  "valid": true
+}
+exit_status=0

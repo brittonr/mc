@@ -1,0 +1,16 @@
+# protocol inventory transaction row evidence 2026-06-01
+$ target/check-mc-compat-row-contracts --self-test && target/check-mc-compat-row-contracts --row protocol-inventory-transaction-family-coverage --evidence docs/evidence/protocol-inventory-transaction-family-2026-06-01.kv
+mc compat row contract self-test ok: 22 row contracts exercised and fixture rail checked
+inventory transaction packet family contract check passed
+$ nix shell --no-update-lock-file nixpkgs#b3sum -c b3sum --check docs/evidence/protocol-inventory-transaction-family-2026-06-01.b3
+docs/evidence/protocol-inventory-transaction-family-2026-06-01.receipt.json: OK
+docs/evidence/protocol-inventory-transaction-family-2026-06-01.md: OK
+docs/evidence/protocol-inventory-transaction-family-2026-06-01.kv: OK
+docs/evidence/protocol-763-inventory-semantics-matrix-2026-05-27.md: OK
+docs/evidence/protocol-763-click.matrix.receipt.json: OK
+docs/evidence/protocol-763-open-container.matrix.receipt.json: OK
+docs/evidence/protocol-763-negative-live-rails-2026-05-29.md: OK
+docs/evidence/negative-live-rails-inventory-stale-state-2026-05-29.json: OK
+docs/evidence/negative-live-rails-inventory-invalid-click-2026-05-29.json: OK
+docs/evidence/protocol-763-packet-inventory-2026-05-28.tsv: OK
+exit_status=0

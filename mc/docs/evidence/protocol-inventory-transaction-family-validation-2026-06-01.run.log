@@ -1,0 +1,101 @@
+# protocol inventory transaction validation 2026-06-01 rerun
+mc compat row contract self-test ok: 22 row contracts exercised and fixture rail checked
+inventory transaction packet family contract check passed
+docs/evidence/protocol-inventory-transaction-family-row-evidence-2026-06-01.run.log: OK
+docs/evidence/protocol-inventory-transaction-family-2026-06-01.b3: OK
+docs/evidence/protocol-inventory-transaction-family-matrix-2026-06-01.run.log: OK
+tools/check_acceptance_matrix.rs: OK
+tools/check_current_evidence_bundle.rs: OK
+docs/evidence/protocol-763-acceptance-matrix.md: OK
+docs/evidence/protocol-763-current-evidence-bundle.md: OK
+docs/evidence/protocol-inventory-transaction-family-row-evidence-2026-06-01.b3: OK
+docs/evidence/protocol-inventory-transaction-family-manifest-refresh-2026-06-01.run.log: OK
+docs/evidence/protocol-inventory-transaction-family-matrix-2026-06-01.b3: OK
+acceptance matrix self-test ok: positive and negative fixtures exercised
+acceptance matrix check passed: 27 rows validated
+current evidence bundle self-test ok: positive and negative fixtures exercised
+current evidence bundle check passed: 27 rows validated
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task evidence gate passed: 88 completed tasks checked across 25 active task files
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest self-test ok: positive and negative fixtures exercised
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 213 manifests, 989 entries, 79 receipts scanned
+{
+  "change": "protocol-inventory-transaction-family-coverage",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e9802ed8a4611f1dbe619beb4823a6bc942c7e13aa07e7909560080dbe0da03a",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "f2d02a86847b3b6ea403d1596e64d5b152a6511729cfbb6725edcd2d519d5f6f",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "protocol-inventory-transaction-family-coverage",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "4499af932fe8e506dc9d99cfb23253e5cd4ebacffa52aaf751acfcc4b05c21ae",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "6b18163ec595bb1025165fafd37c38921310b445a36ba98927c9c66ace525b29",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "protocol-inventory-transaction-family-coverage",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f2df8196fbf6761833a57efa83f00dc4b7dcbdc7869a45a1253e960df747bdfc",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "8febf6e5c1b4818fef545d4ff94fefdf93f989046900264664d532617059e7be",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change_issues": [],
+  "changes": 25,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 27,
+  "valid": true
+}
+exit_status=0
