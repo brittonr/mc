@@ -39,6 +39,7 @@ const REQUIRED_SEAMS: &[&str] = &[
     "Survival break/place/pickup",
     "Survival chest persistence",
     "Survival crafting table",
+    "MCP-controlled observability",
 ];
 
 const REQUIRED_GAPS: &[&str] = &[
@@ -74,6 +75,7 @@ const REVIEWABLE_RECEIPT_SEAMS: &[&str] = &[
     "Survival break/place/pickup",
     "Survival chest persistence",
     "Survival crafting table",
+    "MCP-controlled observability",
 ];
 
 const HISTORICAL_TARGET_RECEIPT_SEAMS: &[&str] = &[];

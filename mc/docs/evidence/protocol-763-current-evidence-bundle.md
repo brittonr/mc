@@ -13,6 +13,7 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 - Child commits used for the current-head representative refresh: Valence `e5d18ad`, Stevenarella `616ee72`
 - Child commits used for the RED/BLUE scoring soak live refresh: Valence `f57a325`, Stevenarella `1ab97d2`; machine-recorded in the copied receipts.
 - Child commits used for the survival reference parity refresh: Valence `7d13a24`, Stevenarella `d758630`; machine-recorded in the paired receipts.
+- Child commits used for the MCP-controlled observability row: Valence `3359f85`, Stevenarella `4d1b155`; machine-recorded in `docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.json`.
 
 ## Evidence rows
 
@@ -39,6 +40,11 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 | Survival break/place/pickup | Paper+Valence paired `survival-break-place-pickup` receipts | `a88fe547bfe2dd43fff3ac5bd967f0ebf5a3c539403211dd029865293130090b` |
 | Survival chest persistence | Paper+Valence paired `survival-chest-persistence` receipts | `3dd16d3d15f47793505e97a088408d039c6cd45a73f288c7301c5e4f3f4851cf` |
 | Survival crafting table | Paper+Valence paired `survival-crafting-table` receipts | `710f64a04451a62604d17a78cc84f3e2db84ec3d7034b7feaa149b1e8af57a15` |
+| MCP-controlled observability | `nix run .#mc-compat-mcp-controlled-smoke -- --run` | `5eaa78082bfca069219fed40939e7003c9fce4e5f1d527a68ecdbbae9d610acf` |
+
+## MCP-controlled observability checkpoint
+
+The MCP-controlled observability row is validated by `docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.md`, `docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.json`, the MCP transcript `docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.mcp-transcript.log`, the captured frame `docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt-frames/mcp-controlled-smoke/latest-frame.png`, and `tools/check_mcp_controlled_compat_rail.rs`. Covered row is one owned-local Valence `survival_compat` run driven through Stevenarella MCP stdio with initialize, tools/list, status, look, key, chat, and `capture_latest_frame`; the receipt records `stdout_clean=true`, `revision_status=clean`, child revisions, `capture_latest_frame.captured`, and one BLAKE3-addressed PNG frame artifact under `docs/evidence/`. Visual regression approval, semantic gameplay equivalence, full Minecraft compatibility, production readiness, public-server safety, load testing, broad MCP API coverage, and screenshot-only correctness remain non-claims.
 
 ## Public server authorized safety checkpoint
 
@@ -185,7 +191,7 @@ The production/network matrix promotes bounded owned-local loopback load safety,
 ## Reference parity labels
 
 - `reference-parity-covered`: Survival break/place/pickup, chest persistence, and crafting table only.
-- `valence-only-containment`: CTF scoring, inventory, combat, projectile, reconnect, latency/jitter, and load/network rows.
+- `valence-only-containment`: CTF scoring, inventory, combat, projectile, reconnect, latency/jitter, MCP-controlled observability, and load/network rows.
 - `fixture-only-oracle`: The adversarial-network oracle row only; no live traffic or broad security claim.
 - `explicit-non-claim`: exact vanilla combat parity, broad survival, full Minecraft/CTF/protocol correctness, and survival rows not named as reference-parity covered.
 
@@ -193,4 +199,4 @@ Policy/checkpoint: `docs/evidence/protocol-763-reference-parity-expansion-2026-0
 
 ## Non-claims
 
-This bundle still does not claim full Minecraft compatibility, full survival compatibility, broad vanilla parity, full CTF correctness, projectile travel/collision simulation, all projectile weapon variants, all equipment slots/items, all armor loadouts, enchantment/status-effect semantics, exact vanilla knockback/damage/mitigation balancing, all-container behavior, restart/world persistence, full crafting coverage, furnace/hunger/mob/redstone/biome/dimension coverage, production readiness, public-server load safety, live adversarial-network safety, malicious-client resilience, hostile internet safety, full protocol security, or unbounded soak/reconnect/latency safety.
+This bundle still does not claim full Minecraft compatibility, full survival compatibility, broad vanilla parity, full CTF correctness, visual regression approval, semantic gameplay equivalence from screenshots, broad MCP API coverage, projectile travel/collision simulation, all projectile weapon variants, all equipment slots/items, all armor loadouts, enchantment/status-effect semantics, exact vanilla knockback/damage/mitigation balancing, all-container behavior, restart/world persistence, full crafting coverage, furnace/hunger/mob/redstone/biome/dimension coverage, production readiness, public-server load safety, live adversarial-network safety, malicious-client resilience, hostile internet safety, full protocol security, or unbounded soak/reconnect/latency safety.

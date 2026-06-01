@@ -1,0 +1,44 @@
+
+$ nix develop --no-update-lock-file -c rustfmt --edition 2021 tools/check_acceptance_matrix.rs tools/check_current_evidence_bundle.rs
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+exit_status=0
+
+$ nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_acceptance_matrix.rs -o target/check-acceptance-matrix
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+exit_status=0
+
+$ target/check-acceptance-matrix --self-test
+acceptance matrix self-test ok: positive and negative fixtures exercised
+exit_status=0
+
+$ target/check-acceptance-matrix
+acceptance matrix check passed: 22 rows validated
+exit_status=0
+
+$ nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_current_evidence_bundle.rs -o target/check-current-evidence-bundle
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+exit_status=0
+
+$ target/check-current-evidence-bundle --self-test
+current evidence bundle self-test ok: positive and negative fixtures exercised
+exit_status=0
+
+$ target/check-current-evidence-bundle
+current evidence bundle check passed: 22 rows validated
+exit_status=0
+
+$ nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_mcp_controlled_compat_rail.rs -o /tmp/check-mcp-controlled-compat-rail
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+exit_status=0
+
+$ /tmp/check-mcp-controlled-compat-rail --receipt docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.json
+mcp controlled rail receipt check passed: docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.json
+exit_status=0

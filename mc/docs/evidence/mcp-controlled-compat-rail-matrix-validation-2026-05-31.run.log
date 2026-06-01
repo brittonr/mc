@@ -1,0 +1,39 @@
+
+$ nix develop --no-update-lock-file -c b3sum --check docs/evidence/mcp-controlled-compat-rail-matrix-promotion-2026-05-31.b3
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+docs/evidence/mcp-controlled-compat-rail-matrix-promotion-2026-05-31.md: OK
+docs/evidence/mcp-controlled-compat-rail-matrix-promotion-2026-05-31.run.log: OK
+docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.b3: OK
+docs/evidence/protocol-763-acceptance-matrix.md: OK
+docs/evidence/protocol-763-current-evidence-bundle.md: OK
+tools/check_acceptance_matrix.rs: OK
+tools/check_current_evidence_bundle.rs: OK
+tools/check_mcp_controlled_compat_rail.rs: OK
+cairn/changes/mcp-controlled-compat-rail/tasks.md: OK
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks mcp-controlled-compat-rail --root .
+{
+  "change": "mcp-controlled-compat-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f9c5b455809547e4291d8e4ebdaa7d0f01100536ff7b32e998c81106a532b2cd",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "a10cd5eaa3bbc5623395f31bd39010e37c7377b37f0067a872568555b34e98f9",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
