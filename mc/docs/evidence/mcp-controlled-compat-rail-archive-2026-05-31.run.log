@@ -1,0 +1,98 @@
+# MCP-controlled compatibility rail archive 2026-05-31
+
+parent_commit=4c1f840
+
+$ env CAIRN_ARCHIVE_DATE=2026-05-31 nix run --no-update-lock-file .#cairn -- archive mcp-controlled-compat-rail --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: mcp-controlled-compat-rail",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-05-31-mcp-controlled-compat-rail"
+    }
+  ],
+  "blocked": false,
+  "change": "mcp-controlled-compat-rail",
+  "dry_run": false,
+  "input_hash": "041c45eabac028c639cf835090301ddcac8619959e2cebd027de237854926887",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "1d96f29f5e7721b2f37efc3e3a3ea1968e2753821cb3798ebd7b9eb08bbb0781",
+          "exists": true,
+          "path": "./cairn/archive/2026-05-31-mcp-controlled-compat-rail/design.md"
+        },
+        {
+          "content_hash": "dc1616190be7130ff65b3af6243026dca79d688013fab6507abff01466fa04ee",
+          "exists": true,
+          "path": "./cairn/archive/2026-05-31-mcp-controlled-compat-rail/proposal.md"
+        },
+        {
+          "content_hash": "f49a5354eb7b73867fa73f486b596cf43fe533cddd57a3fd7f5f2ec1846f1fa7",
+          "exists": true,
+          "path": "./cairn/archive/2026-05-31-mcp-controlled-compat-rail/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "44746319014dafa2052e2aaa35360f12cab1e322872edcf10dfda5dfb5416cee",
+          "exists": true,
+          "path": "./cairn/archive/2026-05-31-mcp-controlled-compat-rail/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/mcp-controlled-compat-rail"
+        }
+      ],
+      "manifest_hash": "4720dc9fb3600c8d10f0458fad419d3989577f261904a380b493118c4f8b9ab4"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "1d96f29f5e7721b2f37efc3e3a3ea1968e2753821cb3798ebd7b9eb08bbb0781",
+          "exists": true,
+          "path": "./cairn/changes/mcp-controlled-compat-rail/design.md"
+        },
+        {
+          "content_hash": "dc1616190be7130ff65b3af6243026dca79d688013fab6507abff01466fa04ee",
+          "exists": true,
+          "path": "./cairn/changes/mcp-controlled-compat-rail/proposal.md"
+        },
+        {
+          "content_hash": "f49a5354eb7b73867fa73f486b596cf43fe533cddd57a3fd7f5f2ec1846f1fa7",
+          "exists": true,
+          "path": "./cairn/changes/mcp-controlled-compat-rail/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "44746319014dafa2052e2aaa35360f12cab1e322872edcf10dfda5dfb5416cee",
+          "exists": true,
+          "path": "./cairn/changes/mcp-controlled-compat-rail/tasks.md"
+        }
+      ],
+      "manifest_hash": "89db5cb546aeba34f46da6076bf6230706f97d48dedf023824090686abb5a3aa"
+    },
+    "kind": "archive",
+    "manifest_hash": "2fe60e0676244077ff850b5e9d292e3f254f9da6ab480e922831b71da78e189a"
+  },
+  "plan_hash": "5ffc2ae0a52c33754304bf2bc088fc10dae32b16776d478b7e0fc2f6a22245ca",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "4a365e808e262cbffc167a23a4431613a594b204d35ec9cb979a6929fb8cf066"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 29,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 31,
+  "valid": true
+}
+exit_status=0

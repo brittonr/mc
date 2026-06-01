@@ -1,0 +1,42 @@
+# MCP-controlled compatibility rail post-archive validation 2026-05-31
+
+archive_path=cairn/archive/2026-05-31-mcp-controlled-compat-rail
+
+$ nix develop --no-update-lock-file -c b3sum --check docs/evidence/mcp-controlled-compat-rail-archive-2026-05-31.b3
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+docs/evidence/mcp-controlled-compat-rail-archive-2026-05-31.run.log: OK
+docs/evidence/mcp-controlled-compat-rail-closeout-validation-2026-05-31.b3: OK
+cairn/archive/2026-05-31-mcp-controlled-compat-rail/proposal.md: OK
+cairn/archive/2026-05-31-mcp-controlled-compat-rail/design.md: OK
+cairn/archive/2026-05-31-mcp-controlled-compat-rail/specs/mc-compatibility/spec.md: OK
+cairn/archive/2026-05-31-mcp-controlled-compat-rail/tasks.md: OK
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_evidence_manifests.rs\ -o\ target/check-evidence-manifests\ \&\&\ target/check-evidence-manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 150 manifests, 747 entries, 73 receipts scanned
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_cairn_task_evidence.rs\ -o\ target/check-cairn-task-evidence\ \&\&\ target/check-cairn-task-evidence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence gate passed: 0 completed tasks checked across 29 active task files
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 29,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 31,
+  "valid": true
+}
+exit_status=0

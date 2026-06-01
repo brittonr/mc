@@ -1,10 +1,10 @@
 d7dd7eebeeb316be3ee746ceda8268e58036151568eb06e56b171f7fb0b52612  docs/evidence/mcp-controlled-compat-rail-manifest-refresh-2026-05-31.md
 b656eb338d74728350e9b1696132f3a2635238058ef297ad3d210577f0554f22  docs/evidence/mcp-controlled-compat-rail-manifest-refresh-before-2026-05-31.run.log
 9166c68cb612709d2706435a96b74888dea8275cebe5d68f0d4dc4ff283cf3aa  docs/evidence/mcp-controlled-compat-rail-manifest-refresh-2026-05-31.run.log
-14f2e7ec8a22f860971633fb84a7041ba72589eda90f34f0abe571861d78a47e  docs/evidence/mcp-controlled-compat-rail-live-preflight-blocker-2026-05-31.b3
-9bf6e6c5a186bd2babc5fb3c628e76438316e7e2197bc36b122c424e438039ba  docs/evidence/mcp-controlled-compat-rail-live-preflight-blocker-validation-2026-05-31.b3
-48a22b7bfc06b2626fdfb59f110da94f4060580eb6963cf0277039bf17fb5c85  docs/evidence/mcp-controlled-compat-rail-live-validation-2026-05-31.b3
-795a50553a9799bd8d93fc872f54983a9c5a44b0dda28940a1cd44fe608c2765  docs/evidence/mcp-controlled-compat-rail-openspec-alignment-oracle-2026-05-31.b3
+45baa4774777cdd1c5a94b6521f10c2378fddade66006782745322d567f804ef  docs/evidence/mcp-controlled-compat-rail-live-preflight-blocker-2026-05-31.b3
+578e6d3b74c41c181bb0c32f268eafab7057930263102d6a6616e9d2c454bac8  docs/evidence/mcp-controlled-compat-rail-live-preflight-blocker-validation-2026-05-31.b3
+6cb5dcab90fab7abcc3b2f7f08dfb9b70033cd4cbb0c076c57ee92a513af37b8  docs/evidence/mcp-controlled-compat-rail-live-validation-2026-05-31.b3
+f9d4a413da2b80c677a55553056a2ad6827681324c53296b58d0b20cb8eb640b  docs/evidence/mcp-controlled-compat-rail-openspec-alignment-oracle-2026-05-31.b3
 157116ef21cb6e49d2ba441ca63d5aacf086bf2ccf7d9158830936ffbec2e82f  docs/evidence/mcp-controlled-compat-rail-overclaim-hardening-2026-05-31.b3
 e0a33d202c5a738b7b8bd3e0606d2d99e955c12ed7fa347cf1063ca0eabb2765  docs/evidence/nix-run-valence-stevenarella-2026-05-30.b3
 bb6adae7e938dbf3cefcce9984847a17c2113c5daccdcf8fe6386225bc87b883  docs/evidence/protocol-763-adversarial-network-oracle-checker-2026-05-29.b3
