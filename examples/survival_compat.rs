@@ -50,6 +50,11 @@ const SURVIVAL_CRAFTING_TOTAL_INPUT_COUNT: i8 = 2;
 const SURVIVAL_CRAFTING_RESULT_COUNT: i8 = 4;
 const SURVIVAL_CRAFTING_RECIPE: &str = "minecraft:stick";
 const SURVIVAL_CRAFTING_TITLE: &str = "MC Compat Crafting";
+const SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_FIXTURE";
+const SURVIVAL_OVERWORLD_ID: &str = "minecraft:overworld";
+const SURVIVAL_NETHER_ID: &str = "minecraft:the_nether";
+const SURVIVAL_END_ID: &str = "minecraft:the_end";
+const SURVIVAL_UNKNOWN_ENVIRONMENT_ID: &str = "unknown";
 
 #[derive(Resource)]
 struct SurvivalChestFixture {
@@ -235,6 +240,13 @@ fn init_clients(
             FLOOR_Y,
             SURVIVAL_TARGET_Z
         ));
+        if survival_biome_dimension_fixture_enabled() {
+            log_survival_biome_dimension_state(
+                username.as_str(),
+                SURVIVAL_OVERWORLD_ID,
+                SURVIVAL_OVERWORLD_ID,
+            );
+        }
     }
 }
 
@@ -839,6 +851,44 @@ fn survival_crafting_result_kind() -> ItemKind {
     ItemKind::Stick
 }
 
+fn survival_biome_dimension_fixture_enabled() -> bool {
+    std::env::var(SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV).as_deref() == Ok("1")
+}
+
+fn normalize_survival_environment_id(raw: &str) -> &'static str {
+    match raw {
+        SURVIVAL_OVERWORLD_ID => SURVIVAL_OVERWORLD_ID,
+        SURVIVAL_NETHER_ID => SURVIVAL_NETHER_ID,
+        SURVIVAL_END_ID => SURVIVAL_END_ID,
+        _ => SURVIVAL_UNKNOWN_ENVIRONMENT_ID,
+    }
+}
+
+fn derive_survival_environment_id(
+    spawn_environment: &str,
+    environment_identifier: &str,
+) -> &'static str {
+    let environment = normalize_survival_environment_id(environment_identifier);
+    if environment != SURVIVAL_UNKNOWN_ENVIRONMENT_ID {
+        environment
+    } else {
+        normalize_survival_environment_id(spawn_environment)
+    }
+}
+
+fn log_survival_biome_dimension_state(
+    username: &str,
+    spawn_environment: &str,
+    environment_identifier: &str,
+) {
+    let normalized_identifier =
+        derive_survival_environment_id(spawn_environment, environment_identifier);
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_biome_dimension_state username={} spawn_environment={} environment_identifier={} server_environment_state={} normalized_identifier={}",
+        username, spawn_environment, environment_identifier, spawn_environment, normalized_identifier
+    ));
+}
+
 fn survival_item_kind() -> ItemKind {
     survival_block_state().to_kind().to_item_kind()
 }
@@ -1004,6 +1054,30 @@ mod tests {
             SURVIVAL_CRAFTING_INPUT_B_SLOT_ID,
             SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
         ));
+    }
+
+    #[test]
+    fn survival_biome_dimension_normalizes_known_environment_ids() {
+        assert_eq!(
+            derive_survival_environment_id(SURVIVAL_NETHER_ID, SURVIVAL_OVERWORLD_ID),
+            SURVIVAL_OVERWORLD_ID
+        );
+        assert_eq!(
+            derive_survival_environment_id(SURVIVAL_END_ID, "custom:unknown"),
+            SURVIVAL_END_ID
+        );
+    }
+
+    #[test]
+    fn survival_biome_dimension_rejects_unknown_environment_ids() {
+        assert_eq!(
+            normalize_survival_environment_id("custom:unknown"),
+            SURVIVAL_UNKNOWN_ENVIRONMENT_ID
+        );
+        assert_eq!(
+            derive_survival_environment_id("custom:dimension", "custom:world"),
+            SURVIVAL_UNKNOWN_ENVIRONMENT_ID
+        );
     }
 
     #[test]
