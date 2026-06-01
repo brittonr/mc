@@ -1,0 +1,48 @@
+
+$ nix develop --no-update-lock-file -c b3sum --check docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.b3
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.md: OK
+docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.run.log: OK
+docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.checker.log: OK
+docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.json: OK
+docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.mcp-transcript.log: OK
+docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.stderr.log: OK
+docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.typed-events.log: OK
+docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt-frames/mcp-controlled-smoke/latest-frame.png: OK
+tools/mc-compat-runner/src/main.rs: OK
+tools/mc-compat-runner/src/scenario_manifest_generated.rs: OK
+tools/check_mcp_controlled_compat_rail.rs: OK
+config/mc-compat/scenario-manifest.ncl: OK
+flake.nix: OK
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc --edition=2021 tools/check_mcp_controlled_compat_rail.rs -o /tmp/check-mcp-controlled-compat-rail && /tmp/check-mcp-controlled-compat-rail --receipt docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.json
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+mcp controlled rail receipt check passed: docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.json
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c cd tools/mc-compat-runner && cargo test mcp_controlled -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+/home/brittonr/git/mc/tools/mc-compat-runner
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 5 tests
+test tests::mcp_controlled_live_preflight_allows_bounded_local_rail ... ok
+test tests::mcp_controlled_live_preflight_rejects_unbounded_timeout ... ok
+test tests::mcp_controlled_live_receipt_fails_dirty_child_revision ... ok
+test tests::mcp_controlled_live_receipt_uses_observed_control_and_frame_evidence ... ok
+test tests::mcp_controlled_dry_run_receipt_records_control_contract ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 87 filtered out; finished in 0.00s
+
+exit_status=0
+
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-mcp-controlled-smoke-dry-run --no-link -L
+exit_status=0

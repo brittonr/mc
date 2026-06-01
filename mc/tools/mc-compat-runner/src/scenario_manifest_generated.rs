@@ -235,7 +235,12 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
     GeneratedScenarioRow {
         name: "mcp-controlled-smoke",
         aliases: &["mcp-controlled-smoke"],
-        client_milestones: &["mcp_control_dry_run"],
+        client_milestones: &[
+            "mcp_initialize",
+            "mcp_tools_list",
+            "mcp_status_call",
+            "mcp_command_outcomes",
+        ],
         server_milestones: &[],
         forbidden_patterns: DEFAULT_FORBIDDEN_PATTERNS,
         client_count: ONE_CLIENT,

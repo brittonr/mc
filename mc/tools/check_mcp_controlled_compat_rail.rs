@@ -128,8 +128,17 @@ fn validate_mcp_block(block: &str, errors: &mut Vec<String>) {
     require_bool_field(block, "handshake_success", true, errors);
     require_bool_field(block, "stdout_clean", true, errors);
     require_bool_field(block, "passed", true, errors);
-    require_bool_field(block, "dry_run_fixture", true, errors);
-    require_string_field(block, "revision_status", "dry-run", errors);
+    let dry_run_fixture = bool_field(block, "dry_run_fixture").unwrap_or(false);
+    let live_receipt = bool_field(block, "live_receipt").unwrap_or(false);
+    if !dry_run_fixture && !live_receipt {
+        errors.push("receipt must be dry-run fixture or live receipt".to_string());
+    }
+    if dry_run_fixture {
+        require_string_field(block, "revision_status", "dry-run", errors);
+    }
+    if live_receipt {
+        require_string_field(block, "revision_status", "clean", errors);
+    }
 
     match string_field(block, "tool_list_digest") {
         Some(value) if is_hex_digest(&value) => {}
@@ -169,7 +178,7 @@ fn validate_mcp_block(block: &str, errors: &mut Vec<String>) {
         errors.push("command_outcome_ids must not be empty".to_string());
     }
     if field_value(block, "first_failure").is_some_and(|value| value != NULL_VALUE) {
-        errors.push("first_failure must be null for valid dry-run receipt".to_string());
+        errors.push("first_failure must be null for valid MCP-controlled receipt".to_string());
     }
     for non_claim in REQUIRED_NON_CLAIMS {
         if !array_field_contains(block, "non_claims", non_claim) {
@@ -424,6 +433,10 @@ fn contains_hex_digest(text: &str) -> bool {
 fn run_self_tests() -> Result<String, Vec<String>> {
     let mut errors = Vec::new();
     errors.extend(expect_ok("valid dry-run receipt", valid_receipt_fixture()));
+    errors.extend(expect_ok(
+        "valid live receipt",
+        valid_live_receipt_fixture(),
+    ));
     errors.extend(expect_error(
         "missing handshake",
         valid_receipt_fixture().replace(
@@ -462,6 +475,14 @@ fn run_self_tests() -> Result<String, Vec<String>> {
             "\"stevenarella_child_revision\": \"stale\"",
         ),
         "stale Stevenarella revision",
+    ));
+    errors.extend(expect_error(
+        "dirty live revision",
+        valid_live_receipt_fixture().replace(
+            "\"revision_status\": \"clean\"",
+            "\"revision_status\": \"dirty\"",
+        ),
+        "revision_status expected",
     ));
     errors.extend(expect_error(
         "overclaim wording",
@@ -539,6 +560,43 @@ fn valid_receipt_fixture() -> String {
     "path_containment_checked": true,
     "promotion_ready": false,
     "non_claims": ["frame_capture_not_selected", "visual_regression_approval", "semantic_equivalence"]
+  }}
+}}"#
+    )
+}
+
+fn valid_live_receipt_fixture() -> String {
+    let digest = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
+    format!(
+        r#"{{
+  "mcp_control": {{
+    "selected": true,
+    "endpoint_mode": "stdio",
+    "handshake_success": true,
+    "tool_list_digest": "{digest}",
+    "tool_names": ["stevenarella.enqueue_control", "stevenarella.capture_screenshot", "stevenarella.capture_latest_frame"],
+    "calls_attempted": ["initialize", "tools/list", "tools/call status", "tools/call look", "tools/call key", "tools/call chat", "tools/call capture_latest_frame"],
+    "calls_succeeded": ["initialize", "tools/list", "tools/call status", "tools/call look", "tools/call key", "tools/call chat", "tools/call capture_latest_frame"],
+    "first_failure": null,
+    "stdout_clean": true,
+    "command_outcome_ids": ["status.applied", "look.applied", "key.applied", "chat.applied", "capture_latest_frame.captured"],
+    "stevenarella_child_revision": "4d1b1554650bd91924f7ce99c9dab69a91142edc",
+    "revision_status": "clean",
+    "dry_run_fixture": false,
+    "live_receipt": true,
+    "prerequisites": ["stevenarella_mcp_control_archived", "main_thread_command_queue", "stdout_clean_stdio"],
+    "non_claims": ["screenshots_alone", "visual_regression_approval", "semantic_equivalence", "full_minecraft_compatibility", "production_readiness", "public_server_safety", "load_testing"],
+    "passed": true
+  }},
+  "frame_artifacts": {{
+    "selected": true,
+    "capture_requested": true,
+    "artifact_count": 1,
+    "artifacts": [{{"path": "docs/evidence/mcp-controlled-smoke-frames/latest-frame.png", "relative_path": "mcp-controlled-smoke/latest-frame.png", "format": "png", "width_px": 1280, "height_px": 720, "frame_id": 1, "sequence_id": 1, "byte_len": 16, "blake3": "{digest}", "redaction": "not_reviewed", "includes_ui": true}}],
+    "missing_digests": [],
+    "path_containment_checked": true,
+    "promotion_ready": true,
+    "non_claims": ["visual_regression_approval", "semantic_equivalence"]
   }}
 }}"#
     )

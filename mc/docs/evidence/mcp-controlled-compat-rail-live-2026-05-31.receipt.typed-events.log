@@ -1,0 +1,4 @@
+MC-COMPAT-EVENT schema=1 source=client scenario=mcp-controlled-smoke session=mcp-controlled-compat-rail-live-2026-05-31.receipt username=compatbot seq=1 event=mcp_initialize
+MC-COMPAT-EVENT schema=1 source=client scenario=mcp-controlled-smoke session=mcp-controlled-compat-rail-live-2026-05-31.receipt username=compatbot seq=2 event=mcp_tools_list
+MC-COMPAT-EVENT schema=1 source=client scenario=mcp-controlled-smoke session=mcp-controlled-compat-rail-live-2026-05-31.receipt username=compatbot seq=3 event=mcp_status_call
+MC-COMPAT-EVENT schema=1 source=client scenario=mcp-controlled-smoke session=mcp-controlled-compat-rail-live-2026-05-31.receipt username=compatbot seq=4 event=mcp_command_outcomes

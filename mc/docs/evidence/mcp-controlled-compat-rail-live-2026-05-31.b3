@@ -1,0 +1,13 @@
+fd62de52bce686b874b657921bbb38c5a4abb96a23a65bbaa8672bc15d678f96  docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.md
+b622625de62c2c737cf98f09a2dac4d7a028c9d20a07c537c103740bc3ed9e54  docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.run.log
+4ee2fa074e63098bcab1891646bd1abc2dd0216fe2a0154383e2bdb64af73068  docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.checker.log
+5eaa78082bfca069219fed40939e7003c9fce4e5f1d527a68ecdbbae9d610acf  docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.json
+18118ae6f6ce2ee6a5f8c63906b10a8e63baa4cea1c4389d14c40d039b0f45c3  docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.mcp-transcript.log
+af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262  docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.stderr.log
+1d4cf454cf539a1c29b65f309a7f0868b38566c13053491af6ab689018bc7ce6  docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.typed-events.log
+b0a89dbab5cb4ecc761821b2476532fcb4c44d81d3488df1ed984e8c5c129a99  docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt-frames/mcp-controlled-smoke/latest-frame.png
+668356e58864da38e9b2525ec474579762de27b259ee3e760046d889c0fd4e82  tools/mc-compat-runner/src/main.rs
+0593d6c2d66a36223082eaa0d58a72f5d59d8c7692b32242e2cd9d97a3c6fceb  tools/mc-compat-runner/src/scenario_manifest_generated.rs
+2f63d3bf19a6f18144937ed9aee69ea6a0f1e44e60c732e559007665698f269b  tools/check_mcp_controlled_compat_rail.rs
+f8c6f912d10c22d9b103106c767ad81f922f322f4737110d020f6027f77e659e  config/mc-compat/scenario-manifest.ncl
+5bcc15f081cde63abd0e36445087ce6891d3cdf137045f647a746194e8465160  flake.nix

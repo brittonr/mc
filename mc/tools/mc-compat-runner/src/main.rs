@@ -4,7 +4,7 @@ mod scenario_manifest_generated;
 
 use std::env;
 use std::fs::{self, File};
-use std::io::{self, Read, Write};
+use std::io::{self, BufRead, BufReader, Read, Write};
 use std::net::TcpStream;
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command, ExitCode, Stdio};
@@ -95,7 +95,14 @@ const SURVIVAL_CRAFTING_SERVER_COLLECT_NEEDLE: &str =
 const SURVIVAL_CRAFTING_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_CRAFTING_FIXTURE";
 const MCP_CONTROLLED_SMOKE_SCENARIO: &str = "mcp-controlled-smoke";
 const MCP_CONTROL_ENDPOINT_STDIO: &str = "stdio";
-const MCP_CONTROL_FAILURE_LIVE_NOT_IMPLEMENTED: &str = "live-mcp-controlled-rail-not-implemented";
+const MCP_CONTROL_FAILURE_LIVE_EVIDENCE_MISSING: &str = "live-mcp-controlled-evidence-missing";
+const MCP_CONTROL_FAILURE_REVISION_DIRTY: &str = "stevenarella-revision-dirty";
+const MCP_CONTROL_FAILURE_REVISION_UNAVAILABLE: &str = "stevenarella-revision-unavailable";
+const MCP_CONTROL_FAILURE_HANDSHAKE: &str = "mcp-handshake-failed";
+const MCP_CONTROL_FAILURE_TOOLS_LIST: &str = "mcp-tools-list-failed";
+const MCP_CONTROL_FAILURE_STATUS_TIMEOUT: &str = "mcp-status-connected-timeout";
+const MCP_CONTROL_FAILURE_COMMAND: &str = "mcp-command-failed";
+const MCP_CONTROL_FAILURE_FRAME_CAPTURE: &str = "mcp-frame-capture-failed";
 const MCP_CONTROL_TOOL_LIST_DIGEST_SEPARATOR: &str = "\n";
 const MCP_CONTROL_PREREQUISITES: &[&str] = &[
     "stevenarella_mcp_control_archived",
@@ -103,17 +110,11 @@ const MCP_CONTROL_PREREQUISITES: &[&str] = &[
     "stdout_clean_stdio",
 ];
 const MCP_CONTROL_TOOL_NAMES: &[&str] = &[
-    "status",
-    "connect",
-    "disconnect",
-    "key",
-    "look",
-    "mouse",
-    "use-item",
-    "attack",
-    "chat",
+    "stevenarella.enqueue_control",
+    "stevenarella.capture_screenshot",
+    "stevenarella.capture_latest_frame",
 ];
-const MCP_CONTROL_DRY_RUN_CALLS: &[&str] = &[
+const MCP_CONTROL_REQUIRED_CALLS: &[&str] = &[
     "initialize",
     "tools/list",
     "tools/call status",
@@ -121,12 +122,51 @@ const MCP_CONTROL_DRY_RUN_CALLS: &[&str] = &[
     "tools/call key",
     "tools/call chat",
 ];
-const MCP_CONTROL_DRY_RUN_OUTCOME_IDS: &[&str] = &[
+const MCP_CONTROL_LIVE_CALLS: &[&str] = &[
+    "initialize",
+    "tools/list",
+    "tools/call status",
+    "tools/call look",
+    "tools/call key",
+    "tools/call chat",
+    "tools/call capture_latest_frame",
+];
+const MCP_CONTROL_REQUIRED_OUTCOME_IDS: &[&str] = &[
     "status.applied",
     "look.applied",
     "key.applied",
     "chat.applied",
 ];
+const MCP_CONTROL_LIVE_OUTCOME_IDS: &[&str] = &[
+    "status.applied",
+    "look.applied",
+    "key.applied",
+    "chat.applied",
+    "capture_latest_frame.captured",
+];
+const MCP_CONTROL_JSONRPC_VERSION_NEEDLE: &str = "\"jsonrpc\":\"2.0\"";
+const MCP_CONTROL_RESULT_NEEDLE: &str = "\"result\"";
+const MCP_CONTROL_TOOLS_ARRAY_NEEDLE: &str = "\"tools\"";
+const MCP_CONTROL_CONNECTED_TOKEN: &str = "connected=true";
+const MCP_CONTROL_OUTCOME_APPLIED_ESCAPED: &str = "\\\"outcome\\\":\\\"applied\\\"";
+const MCP_CONTROL_LIVE_CAPTURE_RELATIVE_PATH: &str = "mcp-controlled-smoke/latest-frame.png";
+const MCP_CONTROL_LIVE_CAPTURE_DIR_SUFFIX: &str = "frames";
+const MCP_CONTROL_LIVE_STDERR_LOG_EXTENSION: &str = "stderr.log";
+const MCP_CONTROL_LIVE_TRANSCRIPT_EXTENSION: &str = "mcp-transcript.log";
+const MCP_CONTROL_MAX_STATUS_POLLS: usize = 40;
+const MCP_CONTROL_STATUS_POLL_MILLIS: u64 = 250;
+const MCP_CONTROL_TERMINATE_GRACE_MILLIS: u64 = 250;
+const MCP_CONTROL_PROCESS_GROUP_COMMAND: &str = "setsid";
+const MCP_CONTROL_TERMINATE_COMMAND: &str = "kill";
+const MCP_CONTROL_TERMINATE_SIGNAL: &str = "-TERM";
+const MCP_CONTROL_KILL_SIGNAL: &str = "-KILL";
+const MCP_CONTROL_INITIALIZE_ID: &str = "mcp-initialize";
+const MCP_CONTROL_TOOLS_LIST_ID: &str = "mcp-tools-list";
+const MCP_CONTROL_STATUS_ID_PREFIX: &str = "mcp-status";
+const MCP_CONTROL_LOOK_ID: &str = "mcp-look";
+const MCP_CONTROL_KEY_ID: &str = "mcp-key";
+const MCP_CONTROL_CHAT_ID: &str = "mcp-chat";
+const MCP_CONTROL_CAPTURE_ID: &str = "mcp-capture-latest-frame";
 const MCP_CONTROL_NON_CLAIMS: &[&str] = &[
     "screenshots_alone",
     "visual_regression_approval",
@@ -372,10 +412,38 @@ struct McpControlReceiptEvidence {
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
+struct McpControlRunEvidence {
+    handshake_success: bool,
+    tool_list_digest: String,
+    tool_names: Vec<&'static str>,
+    calls_attempted: Vec<&'static str>,
+    calls_succeeded: Vec<&'static str>,
+    first_failure: Option<&'static str>,
+    stdout_clean: bool,
+    command_outcome_ids: Vec<&'static str>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct FrameArtifactReceiptItem {
+    path: String,
+    relative_path: String,
+    format: String,
+    width_px: u32,
+    height_px: u32,
+    frame_id: u64,
+    sequence_id: u64,
+    byte_len: u64,
+    blake3: String,
+    redaction: String,
+    includes_ui: bool,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
 struct FrameArtifactsReceiptEvidence {
     selected: bool,
     capture_requested: bool,
     artifact_count: usize,
+    artifacts: Vec<FrameArtifactReceiptItem>,
     missing_digests: Vec<&'static str>,
     path_containment_checked: bool,
     promotion_ready: bool,
@@ -588,6 +656,8 @@ struct ClientRunEvidence {
     scenario: Option<ScenarioEvidence>,
     server_scenario: Option<ServerScenarioEvidence>,
     projectile_damage_causality: Option<ProjectileDamageCausalityEvidence>,
+    mcp_control: Option<McpControlRunEvidence>,
+    frame_artifacts: Option<FrameArtifactsReceiptEvidence>,
 }
 
 struct ManagedServer {
@@ -719,9 +789,12 @@ fn validate_mcp_controlled_live_preflight(cfg: &Config) -> Result<(), String> {
     if cfg.scenario != Scenario::McpControlledSmoke || cfg.mode != Mode::Run {
         return Ok(());
     }
-    Err(format!(
-        "{MCP_CONTROLLED_SMOKE_SCENARIO} live rail is not implemented yet; use --dry-run until frame/capture prerequisites land"
-    ))
+    if cfg.client_timeout.as_secs() > SAFETY_MAX_DURATION_SECS {
+        return Err(format!(
+            "{MCP_CONTROLLED_SMOKE_SCENARIO} client timeout exceeds bounded live rail max {SAFETY_MAX_DURATION_SECS}s"
+        ));
+    }
+    Ok(())
 }
 
 fn validate_projectile_damage_dependency(cfg: &Config) -> Result<(), String> {
@@ -1886,7 +1959,12 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
                 SURVIVAL_CRAFTING_CLIENT_INVENTORY_NEEDLE,
             ),
         ],
-        Scenario::McpControlledSmoke => &[("mcp_control_dry_run", "mcp_control_dry_run")],
+        Scenario::McpControlledSmoke => &[
+            ("mcp_initialize", "mcp_initialize"),
+            ("mcp_tools_list", "mcp_tools_list"),
+            ("mcp_status_call", "mcp_status_call"),
+            ("mcp_command_outcomes", "mcp_command_outcomes"),
+        ],
         Scenario::CombatDamage => &[
             ("multi_client_count", "mc_compat_combat_client_count=2"),
             ("protocol_detected", "Detected server protocol version"),
@@ -3900,7 +3978,13 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
             scenario: Some(scenario),
             server_scenario,
             projectile_damage_causality: None,
+            mcp_control: None,
+            frame_artifacts: None,
         });
+    }
+
+    if cfg.scenario == Scenario::McpControlledSmoke {
+        return run_mcp_controlled_live_client(cfg);
     }
 
     let runs = if matches!(
@@ -4110,13 +4194,15 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         scenario: Some(scenario),
         server_scenario,
         projectile_damage_causality,
+        mcp_control: None,
+        frame_artifacts: None,
     };
     validate_typed_event_oracle_for_migrated_scenario(cfg, &evidence)?;
     Ok(evidence)
 }
 
 fn mcp_controlled_dry_run_evidence(cfg: &Config) -> ClientRunEvidence {
-    let output = "mcp_control_dry_run\n";
+    let output = mcp_controlled_success_output();
     ClientRunEvidence {
         log_path: None,
         log_paths: Vec::new(),
@@ -4124,14 +4210,511 @@ fn mcp_controlled_dry_run_evidence(cfg: &Config) -> ClientRunEvidence {
         exit_code: None,
         classification: "dry-run",
         matched_success_pattern: None,
-        scenario: Some(evaluate_scenario_for_config(cfg, output)),
+        scenario: Some(evaluate_scenario_for_config(cfg, &output)),
         server_scenario: Some(evaluate_server_scenario(
             cfg.scenario,
             "",
             &cfg.client_username,
         )),
         projectile_damage_causality: None,
+        mcp_control: Some(mcp_control_dry_run_control_evidence()),
+        frame_artifacts: Some(evaluate_frame_artifacts_receipt(cfg, None)),
     }
+}
+
+fn mcp_controlled_success_output() -> String {
+    [
+        "mcp_control_dry_run",
+        "mcp_initialize",
+        "mcp_tools_list",
+        "mcp_status_call",
+        "mcp_command_outcomes",
+    ]
+    .join("\n")
+        + "\n"
+}
+
+fn mcp_control_dry_run_control_evidence() -> McpControlRunEvidence {
+    McpControlRunEvidence {
+        handshake_success: true,
+        tool_list_digest: mcp_control_tool_list_digest(),
+        tool_names: MCP_CONTROL_TOOL_NAMES.to_vec(),
+        calls_attempted: MCP_CONTROL_REQUIRED_CALLS.to_vec(),
+        calls_succeeded: MCP_CONTROL_REQUIRED_CALLS.to_vec(),
+        first_failure: None,
+        stdout_clean: true,
+        command_outcome_ids: MCP_CONTROL_REQUIRED_OUTCOME_IDS.to_vec(),
+    }
+}
+
+#[derive(Debug)]
+struct McpControlledLivePaths {
+    stderr_log_path: PathBuf,
+    transcript_log_path: PathBuf,
+    capture_dir: PathBuf,
+}
+
+struct McpJsonRpcSession {
+    stdin: std::process::ChildStdin,
+    stdout: BufReader<std::process::ChildStdout>,
+    transcript: File,
+    stdout_clean: bool,
+}
+
+struct KillOnDropChild {
+    child: Child,
+}
+
+impl Drop for KillOnDropChild {
+    fn drop(&mut self) {
+        let process_group = format!("-{}", self.child.id());
+        let _ = Command::new(MCP_CONTROL_TERMINATE_COMMAND)
+            .arg(MCP_CONTROL_TERMINATE_SIGNAL)
+            .arg(&process_group)
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .status();
+        thread::sleep(Duration::from_millis(MCP_CONTROL_TERMINATE_GRACE_MILLIS));
+        let _ = self.child.kill();
+        let _ = self.child.wait();
+        let _ = Command::new(MCP_CONTROL_TERMINATE_COMMAND)
+            .arg(MCP_CONTROL_KILL_SIGNAL)
+            .arg(&process_group)
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .status();
+    }
+}
+
+impl McpJsonRpcSession {
+    fn request(&mut self, id: &str, request: &str) -> Result<String, String> {
+        writeln!(self.transcript, "> {request}")
+            .map_err(|err| format!("write transcript: {err}"))?;
+        self.stdin
+            .write_all(request.as_bytes())
+            .map_err(|err| format!("write MCP request {id}: {err}"))?;
+        self.stdin
+            .write_all(b"\n")
+            .map_err(|err| format!("write MCP request newline {id}: {err}"))?;
+        self.stdin
+            .flush()
+            .map_err(|err| format!("flush MCP request {id}: {err}"))?;
+
+        loop {
+            let mut line = String::new();
+            let bytes = self
+                .stdout
+                .read_line(&mut line)
+                .map_err(|err| format!("read MCP response {id}: {err}"))?;
+            if bytes == 0 {
+                return Err(format!("MCP response stream closed before id {id}"));
+            }
+            let trimmed = line.trim_end_matches(['\r', '\n']);
+            writeln!(self.transcript, "< {trimmed}")
+                .map_err(|err| format!("write transcript: {err}"))?;
+            if !mcp_stdout_line_is_clean_jsonrpc(trimmed) {
+                self.stdout_clean = false;
+                continue;
+            }
+            if mcp_response_matches_id(trimmed, id) {
+                return Ok(trimmed.to_string());
+            }
+        }
+    }
+}
+
+fn mcp_controlled_live_paths(cfg: &Config) -> Result<McpControlledLivePaths, String> {
+    let (base_dir, stem) = match &cfg.receipt_path {
+        Some(receipt_path) => {
+            let parent = receipt_path
+                .parent()
+                .filter(|parent| !parent.as_os_str().is_empty())
+                .unwrap_or_else(|| Path::new("."));
+            let stem = receipt_path
+                .file_stem()
+                .and_then(|stem| stem.to_str())
+                .unwrap_or(MCP_CONTROLLED_SMOKE_SCENARIO)
+                .to_string();
+            (parent.to_path_buf(), stem)
+        }
+        None => (
+            cfg.target_dir.join(MCP_CONTROLLED_SMOKE_SCENARIO),
+            MCP_CONTROLLED_SMOKE_SCENARIO.to_string(),
+        ),
+    };
+    let base_dir = absolute_child_path(&cfg.root, &base_dir);
+    fs::create_dir_all(&base_dir)
+        .map_err(|err| format!("create MCP evidence dir {}: {err}", base_dir.display()))?;
+    let capture_dir = base_dir.join(format!("{stem}-{MCP_CONTROL_LIVE_CAPTURE_DIR_SUFFIX}"));
+    fs::create_dir_all(&capture_dir)
+        .map_err(|err| format!("create MCP capture dir {}: {err}", capture_dir.display()))?;
+    Ok(McpControlledLivePaths {
+        stderr_log_path: base_dir.join(format!("{stem}.{MCP_CONTROL_LIVE_STDERR_LOG_EXTENSION}")),
+        transcript_log_path: base_dir
+            .join(format!("{stem}.{MCP_CONTROL_LIVE_TRANSCRIPT_EXTENSION}")),
+        capture_dir,
+    })
+}
+
+fn absolute_child_path(root: &Path, path: &Path) -> PathBuf {
+    if path.is_absolute() {
+        return path.to_path_buf();
+    }
+    root.join(path)
+}
+
+fn run_mcp_controlled_live_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
+    let paths = mcp_controlled_live_paths(cfg)?;
+    let mut child = KillOnDropChild {
+        child: spawn_mcp_controlled_client_process(cfg, &paths)?,
+    };
+    let stdin = child
+        .child
+        .stdin
+        .take()
+        .ok_or_else(|| "MCP client stdin pipe missing".to_string())?;
+    let stdout = child
+        .child
+        .stdout
+        .take()
+        .ok_or_else(|| "MCP client stdout pipe missing".to_string())?;
+    let transcript = File::create(&paths.transcript_log_path).map_err(|err| {
+        format!(
+            "create MCP transcript {}: {err}",
+            paths.transcript_log_path.display()
+        )
+    })?;
+    let mut session = McpJsonRpcSession {
+        stdin,
+        stdout: BufReader::new(stdout),
+        transcript,
+        stdout_clean: true,
+    };
+    let mut control = McpControlRunEvidence {
+        handshake_success: false,
+        tool_list_digest: mcp_control_tool_list_digest(),
+        tool_names: MCP_CONTROL_TOOL_NAMES.to_vec(),
+        calls_attempted: Vec::new(),
+        calls_succeeded: Vec::new(),
+        first_failure: None,
+        stdout_clean: true,
+        command_outcome_ids: Vec::new(),
+    };
+
+    control.calls_attempted.push("initialize");
+    let initialize = session
+        .request(
+            MCP_CONTROL_INITIALIZE_ID,
+            &mcp_jsonrpc_request(MCP_CONTROL_INITIALIZE_ID, "initialize", "{}"),
+        )
+        .map_err(|err| mcp_live_failure(&mut control, MCP_CONTROL_FAILURE_HANDSHAKE, err))?;
+    if !mcp_response_has_result(&initialize) {
+        return Err(mcp_live_failure(
+            &mut control,
+            MCP_CONTROL_FAILURE_HANDSHAKE,
+            initialize,
+        ));
+    }
+    control.handshake_success = true;
+    control.calls_succeeded.push("initialize");
+
+    control.calls_attempted.push("tools/list");
+    let tools = session
+        .request(
+            MCP_CONTROL_TOOLS_LIST_ID,
+            &mcp_jsonrpc_request(MCP_CONTROL_TOOLS_LIST_ID, "tools/list", "{}"),
+        )
+        .map_err(|err| mcp_live_failure(&mut control, MCP_CONTROL_FAILURE_TOOLS_LIST, err))?;
+    if !mcp_tools_list_contains_required_tools(&tools) {
+        return Err(mcp_live_failure(
+            &mut control,
+            MCP_CONTROL_FAILURE_TOOLS_LIST,
+            tools,
+        ));
+    }
+    control.calls_succeeded.push("tools/list");
+
+    wait_for_mcp_connected_status(&mut session, &mut control)?;
+    run_mcp_control_command(
+        &mut session,
+        &mut control,
+        MCP_CONTROL_LOOK_ID,
+        "tools/call look",
+        "look.applied",
+        r#"{"action":"look","yaw_delta":0.0,"pitch_delta":0.0}"#,
+    )?;
+    run_mcp_control_command(
+        &mut session,
+        &mut control,
+        MCP_CONTROL_KEY_ID,
+        "tools/call key",
+        "key.applied",
+        r#"{"action":"key","key":"jump","down":false}"#,
+    )?;
+    run_mcp_control_command(
+        &mut session,
+        &mut control,
+        MCP_CONTROL_CHAT_ID,
+        "tools/call chat",
+        "chat.applied",
+        r#"{"action":"chat","message":"mcp controlled smoke"}"#,
+    )?;
+
+    control
+        .calls_attempted
+        .push("tools/call capture_latest_frame");
+    let capture_response = session
+        .request(
+            MCP_CONTROL_CAPTURE_ID,
+            &mcp_capture_latest_frame_request(MCP_CONTROL_CAPTURE_ID),
+        )
+        .map_err(|err| mcp_live_failure(&mut control, MCP_CONTROL_FAILURE_FRAME_CAPTURE, err))?;
+    let artifact = mcp_frame_artifact_from_response(&capture_response, &paths.capture_dir)
+        .map_err(|err| mcp_live_failure(&mut control, MCP_CONTROL_FAILURE_FRAME_CAPTURE, err))?;
+    control
+        .calls_succeeded
+        .push("tools/call capture_latest_frame");
+    control
+        .command_outcome_ids
+        .push("capture_latest_frame.captured");
+    control.stdout_clean = session.stdout_clean;
+    if !control.stdout_clean {
+        control.first_failure = Some(MCP_CONTROL_FAILURE_HANDSHAKE);
+        return Err("MCP stdio stdout was contaminated by non-JSON-RPC output".to_string());
+    }
+
+    let output = mcp_controlled_success_output();
+    let frame_artifacts = FrameArtifactsReceiptEvidence {
+        selected: true,
+        capture_requested: true,
+        artifact_count: 1,
+        artifacts: vec![artifact],
+        missing_digests: Vec::new(),
+        path_containment_checked: true,
+        promotion_ready: paths
+            .capture_dir
+            .display()
+            .to_string()
+            .contains("docs/evidence/"),
+        non_claims: FRAME_ARTIFACT_NON_CLAIMS.to_vec(),
+    };
+    Ok(ClientRunEvidence {
+        log_path: Some(paths.transcript_log_path.clone()),
+        log_paths: vec![paths.transcript_log_path, paths.stderr_log_path],
+        usernames: planned_client_usernames(cfg),
+        exit_code: None,
+        classification: "mcp-controlled-live-evidence",
+        matched_success_pattern: Some("mcp_command_outcomes".to_string()),
+        scenario: Some(evaluate_scenario_for_config(cfg, &output)),
+        server_scenario: Some(evaluate_server_scenario(
+            cfg.scenario,
+            "",
+            &cfg.client_username,
+        )),
+        projectile_damage_causality: None,
+        mcp_control: Some(control),
+        frame_artifacts: Some(frame_artifacts),
+    })
+}
+
+fn spawn_mcp_controlled_client_process(
+    cfg: &Config,
+    paths: &McpControlledLivePaths,
+) -> Result<Child, String> {
+    let err_file = File::create(&paths.stderr_log_path)
+        .map_err(|err| format!("create {}: {err}", paths.stderr_log_path.display()))?;
+    let mut cmd = Command::new(MCP_CONTROL_PROCESS_GROUP_COMMAND);
+    cmd.arg("timeout")
+        .arg(cfg.client_timeout.as_secs().to_string())
+        .arg("xvfb-run")
+        .arg("-a")
+        .arg("-s")
+        .arg("-screen 0 1280x720x24 +extension GLX +render -noreset")
+        .arg(cfg.target_dir.join("debug/stevenarella"))
+        .arg("--server")
+        .arg(format!("127.0.0.1:{}", cfg.server_port))
+        .arg("--username")
+        .arg(&cfg.client_username)
+        .arg("--default-protocol-version")
+        .arg(cfg.server_protocol.to_string())
+        .arg("--mcp-stdio")
+        .arg("--capture-dir")
+        .arg(&paths.capture_dir)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::from(err_file));
+    apply_build_env(&mut cmd, &cfg.target_dir);
+    apply_headless_env(&mut cmd);
+    apply_scenario_probe_env(&mut cmd, cfg.scenario, 0);
+    cmd.spawn()
+        .map_err(|err| format!("run MCP-controlled client {}: {err}", cfg.client_username))
+}
+
+fn mcp_live_failure(
+    control: &mut McpControlRunEvidence,
+    first_failure: &'static str,
+    detail: String,
+) -> String {
+    control.first_failure = Some(first_failure);
+    format!("{first_failure}: {detail}")
+}
+
+fn mcp_jsonrpc_request(id: &str, method: &str, params_json: &str) -> String {
+    format!(
+        r#"{{"jsonrpc":"2.0","id":{id},"method":{method},"params":{params}}}"#,
+        id = json_string(id),
+        method = json_string(method),
+        params = params_json,
+    )
+}
+
+fn mcp_control_tool_call_request(id: &str, command_json: &str) -> String {
+    format!(
+        r#"{{"jsonrpc":"2.0","id":{id},"method":"tools/call","params":{{"name":"stevenarella.enqueue_control","arguments":{{"command":{command}}}}}}}"#,
+        id = json_string(id),
+        command = command_json,
+    )
+}
+
+fn mcp_capture_latest_frame_request(id: &str) -> String {
+    format!(
+        r#"{{"jsonrpc":"2.0","id":{id},"method":"tools/call","params":{{"name":"stevenarella.capture_latest_frame","arguments":{{"output":"artifact","format":"png","relative_path":{relative_path},"include_ui":true}}}}}}"#,
+        id = json_string(id),
+        relative_path = json_string(MCP_CONTROL_LIVE_CAPTURE_RELATIVE_PATH),
+    )
+}
+
+fn wait_for_mcp_connected_status(
+    session: &mut McpJsonRpcSession,
+    control: &mut McpControlRunEvidence,
+) -> Result<(), String> {
+    control.calls_attempted.push("tools/call status");
+    for poll in 0..MCP_CONTROL_MAX_STATUS_POLLS {
+        let id = format!("{MCP_CONTROL_STATUS_ID_PREFIX}-{poll}");
+        let response = session
+            .request(
+                &id,
+                &mcp_control_tool_call_request(&id, r#"{"action":"status"}"#),
+            )
+            .map_err(|err| mcp_live_failure(control, MCP_CONTROL_FAILURE_COMMAND, err))?;
+        if mcp_control_response_applied(&response) {
+            if !control.calls_succeeded.contains(&"tools/call status") {
+                control.calls_succeeded.push("tools/call status");
+                control.command_outcome_ids.push("status.applied");
+            }
+            if response.contains(MCP_CONTROL_CONNECTED_TOKEN) {
+                return Ok(());
+            }
+        }
+        thread::sleep(Duration::from_millis(MCP_CONTROL_STATUS_POLL_MILLIS));
+    }
+    Err(mcp_live_failure(
+        control,
+        MCP_CONTROL_FAILURE_STATUS_TIMEOUT,
+        "status never reported connected=true".to_string(),
+    ))
+}
+
+fn run_mcp_control_command(
+    session: &mut McpJsonRpcSession,
+    control: &mut McpControlRunEvidence,
+    id: &'static str,
+    call_label: &'static str,
+    outcome_id: &'static str,
+    command_json: &str,
+) -> Result<(), String> {
+    control.calls_attempted.push(call_label);
+    let response = session
+        .request(id, &mcp_control_tool_call_request(id, command_json))
+        .map_err(|err| mcp_live_failure(control, MCP_CONTROL_FAILURE_COMMAND, err))?;
+    if !mcp_control_response_applied(&response) {
+        return Err(mcp_live_failure(
+            control,
+            MCP_CONTROL_FAILURE_COMMAND,
+            response,
+        ));
+    }
+    control.calls_succeeded.push(call_label);
+    control.command_outcome_ids.push(outcome_id);
+    Ok(())
+}
+
+fn mcp_stdout_line_is_clean_jsonrpc(line: &str) -> bool {
+    line.starts_with('{') && line.contains(MCP_CONTROL_JSONRPC_VERSION_NEEDLE)
+}
+
+fn mcp_response_matches_id(line: &str, id: &str) -> bool {
+    line.contains(&format!("\"id\":{}", json_string(id)))
+}
+
+fn mcp_response_has_result(line: &str) -> bool {
+    line.contains(MCP_CONTROL_RESULT_NEEDLE) && !line.contains("\"error\"")
+}
+
+fn mcp_tools_list_contains_required_tools(line: &str) -> bool {
+    mcp_response_has_result(line)
+        && line.contains(MCP_CONTROL_TOOLS_ARRAY_NEEDLE)
+        && MCP_CONTROL_TOOL_NAMES
+            .iter()
+            .all(|tool| line.contains(tool))
+}
+
+fn mcp_control_response_applied(line: &str) -> bool {
+    mcp_response_has_result(line) && line.contains(MCP_CONTROL_OUTCOME_APPLIED_ESCAPED)
+}
+
+fn mcp_frame_artifact_from_response(
+    response: &str,
+    capture_dir: &Path,
+) -> Result<FrameArtifactReceiptItem, String> {
+    if !mcp_response_has_result(response) {
+        return Err(format!("capture response was not successful: {response}"));
+    }
+    let metadata = json_string_field(response, "text")?;
+    let relative_path = json_string_field(&metadata, "relative_path")?;
+    let relative = PathBuf::from(&relative_path);
+    if !relative_artifact_path_is_contained(&relative) {
+        return Err(format!(
+            "capture artifact path escapes capture dir: {relative_path}"
+        ));
+    }
+    let artifact_path = capture_dir.join(&relative);
+    let artifact_bytes = fs::read(&artifact_path)
+        .map_err(|err| format!("read capture artifact {}: {err}", artifact_path.display()))?;
+    let actual_digest = blake3::hash(&artifact_bytes).to_hex().to_string();
+    let recorded_digest = json_string_field(&metadata, "blake3_digest")?;
+    if recorded_digest != actual_digest {
+        return Err(format!(
+            "capture artifact digest mismatch for {}: metadata={} actual={}",
+            artifact_path.display(),
+            recorded_digest,
+            actual_digest
+        ));
+    }
+    Ok(FrameArtifactReceiptItem {
+        path: artifact_path.display().to_string(),
+        relative_path,
+        format: json_string_field(&metadata, "format")?,
+        width_px: json_u32_field(&metadata, "width_px")?,
+        height_px: json_u32_field(&metadata, "height_px")?,
+        frame_id: json_u64_field(&metadata, "frame_id")?,
+        sequence_id: json_u64_field(&metadata, "sequence_id")?,
+        byte_len: json_u64_field(&metadata, "byte_len")?,
+        blake3: recorded_digest,
+        redaction: json_string_field(&metadata, "redaction")?,
+        includes_ui: json_bool_field(&metadata, "includes_ui")?,
+    })
+}
+
+fn relative_artifact_path_is_contained(path: &Path) -> bool {
+    let mut saw_component = false;
+    for component in path.components() {
+        match component {
+            std::path::Component::Normal(name) if !name.is_empty() => saw_component = true,
+            _ => return false,
+        }
+    }
+    saw_component
 }
 
 fn projectile_damage_dry_run_evidence(cfg: &Config) -> ClientRunEvidence {
@@ -4193,6 +4776,8 @@ fn projectile_damage_dry_run_evidence(cfg: &Config) -> ClientRunEvidence {
         scenario: Some(scenario),
         server_scenario: Some(server_scenario),
         projectile_damage_causality: Some(projectile_damage_causality),
+        mcp_control: None,
+        frame_artifacts: None,
     }
 }
 
@@ -5145,6 +5730,7 @@ fn mcp_control_tool_list_digest() -> String {
 fn evaluate_mcp_control_receipt(
     cfg: &Config,
     child_revision: &GitRevisionEvidence,
+    client: Option<&ClientRunEvidence>,
 ) -> McpControlReceiptEvidence {
     let selected = cfg.scenario == Scenario::McpControlledSmoke;
     if !selected {
@@ -5171,31 +5757,69 @@ fn evaluate_mcp_control_receipt(
 
     let dry_run_fixture = cfg.mode == Mode::DryRun;
     let live_receipt = cfg.mode == Mode::Run;
-    let first_failure = if live_receipt {
-        Some(MCP_CONTROL_FAILURE_LIVE_NOT_IMPLEMENTED)
+    let fallback;
+    let run_evidence = if dry_run_fixture {
+        fallback = mcp_control_dry_run_control_evidence();
+        Some(&fallback)
     } else {
-        None
+        client.and_then(|evidence| evidence.mcp_control.as_ref())
     };
-    let passed = dry_run_fixture && child_revision.resolved_rev.is_some();
+    let revision_failure = mcp_control_revision_failure(child_revision, dry_run_fixture);
+    let first_failure = match run_evidence {
+        Some(evidence) => evidence.first_failure.or(revision_failure),
+        None if live_receipt => Some(MCP_CONTROL_FAILURE_LIVE_EVIDENCE_MISSING),
+        None => revision_failure,
+    };
+    let required_calls_present = run_evidence
+        .map(|evidence| {
+            MCP_CONTROL_REQUIRED_CALLS
+                .iter()
+                .all(|call| evidence.calls_succeeded.contains(call))
+        })
+        .unwrap_or(false);
+    let required_outcomes_present = run_evidence
+        .map(|evidence| {
+            MCP_CONTROL_REQUIRED_OUTCOME_IDS
+                .iter()
+                .all(|outcome| evidence.command_outcome_ids.contains(outcome))
+        })
+        .unwrap_or(false);
+    let revision_promotable = mcp_control_revision_promotable(child_revision, dry_run_fixture);
+    let passed = run_evidence
+        .map(|evidence| {
+            evidence.handshake_success
+                && evidence.stdout_clean
+                && evidence.first_failure.is_none()
+                && required_calls_present
+                && required_outcomes_present
+                && revision_promotable
+        })
+        .unwrap_or(false);
     McpControlReceiptEvidence {
         selected,
         endpoint_mode: MCP_CONTROL_ENDPOINT_STDIO,
-        handshake_success: dry_run_fixture,
-        tool_list_digest: mcp_control_tool_list_digest(),
-        tool_names: MCP_CONTROL_TOOL_NAMES.to_vec(),
-        calls_attempted: MCP_CONTROL_DRY_RUN_CALLS.to_vec(),
-        calls_succeeded: if dry_run_fixture {
-            MCP_CONTROL_DRY_RUN_CALLS.to_vec()
-        } else {
-            Vec::new()
-        },
+        handshake_success: run_evidence
+            .map(|evidence| evidence.handshake_success)
+            .unwrap_or(false),
+        tool_list_digest: run_evidence
+            .map(|evidence| evidence.tool_list_digest.clone())
+            .unwrap_or_else(mcp_control_tool_list_digest),
+        tool_names: run_evidence
+            .map(|evidence| evidence.tool_names.clone())
+            .unwrap_or_else(|| MCP_CONTROL_TOOL_NAMES.to_vec()),
+        calls_attempted: run_evidence
+            .map(|evidence| evidence.calls_attempted.clone())
+            .unwrap_or_else(|| MCP_CONTROL_LIVE_CALLS.to_vec()),
+        calls_succeeded: run_evidence
+            .map(|evidence| evidence.calls_succeeded.clone())
+            .unwrap_or_default(),
         first_failure,
-        stdout_clean: dry_run_fixture,
-        command_outcome_ids: if dry_run_fixture {
-            MCP_CONTROL_DRY_RUN_OUTCOME_IDS.to_vec()
-        } else {
-            Vec::new()
-        },
+        stdout_clean: run_evidence
+            .map(|evidence| evidence.stdout_clean)
+            .unwrap_or(false),
+        command_outcome_ids: run_evidence
+            .map(|evidence| evidence.command_outcome_ids.clone())
+            .unwrap_or_default(),
         stevenarella_child_revision: child_revision.resolved_rev.clone(),
         revision_status: child_revision.status,
         dry_run_fixture,
@@ -5204,6 +5828,30 @@ fn evaluate_mcp_control_receipt(
         non_claims: MCP_CONTROL_NON_CLAIMS.to_vec(),
         passed,
     }
+}
+
+fn mcp_control_revision_failure(
+    child_revision: &GitRevisionEvidence,
+    dry_run_fixture: bool,
+) -> Option<&'static str> {
+    if dry_run_fixture {
+        return None;
+    }
+    match child_revision.status {
+        GIT_STATUS_CLEAN => None,
+        GIT_STATUS_DIRTY => Some(MCP_CONTROL_FAILURE_REVISION_DIRTY),
+        _ => Some(MCP_CONTROL_FAILURE_REVISION_UNAVAILABLE),
+    }
+}
+
+fn mcp_control_revision_promotable(
+    child_revision: &GitRevisionEvidence,
+    dry_run_fixture: bool,
+) -> bool {
+    if dry_run_fixture {
+        return child_revision.resolved_rev.is_some();
+    }
+    child_revision.resolved_rev.is_some() && child_revision.status == GIT_STATUS_CLEAN
 }
 
 fn render_mcp_control_receipt_json(evidence: &McpControlReceiptEvidence) -> String {
@@ -5249,12 +5897,18 @@ fn render_mcp_control_receipt_json(evidence: &McpControlReceiptEvidence) -> Stri
     )
 }
 
-fn evaluate_frame_artifacts_receipt(cfg: &Config) -> FrameArtifactsReceiptEvidence {
-    let selected = false;
+fn evaluate_frame_artifacts_receipt(
+    cfg: &Config,
+    client: Option<&ClientRunEvidence>,
+) -> FrameArtifactsReceiptEvidence {
+    if let Some(frame_artifacts) = client.and_then(|evidence| evidence.frame_artifacts.as_ref()) {
+        return frame_artifacts.clone();
+    }
     FrameArtifactsReceiptEvidence {
-        selected,
+        selected: false,
         capture_requested: cfg.scenario == Scenario::McpControlledSmoke,
         artifact_count: 0,
+        artifacts: Vec::new(),
         missing_digests: Vec::new(),
         path_containment_checked: true,
         promotion_ready: false,
@@ -5268,7 +5922,7 @@ fn render_frame_artifacts_receipt_json(evidence: &FrameArtifactsReceiptEvidence)
     "selected": {selected},
     "capture_requested": {capture_requested},
     "artifact_count": {artifact_count},
-    "artifacts": [],
+    "artifacts": {artifacts_json},
     "missing_digests": {missing_digests_json},
     "path_containment_checked": {path_containment_checked},
     "promotion_ready": {promotion_ready},
@@ -5277,11 +5931,37 @@ fn render_frame_artifacts_receipt_json(evidence: &FrameArtifactsReceiptEvidence)
         selected = evidence.selected,
         capture_requested = evidence.capture_requested,
         artifact_count = evidence.artifact_count,
+        artifacts_json = frame_artifact_items_json(&evidence.artifacts),
         missing_digests_json = json_string_array(&evidence.missing_digests),
         path_containment_checked = evidence.path_containment_checked,
         promotion_ready = evidence.promotion_ready,
         non_claims_json = json_string_array(&evidence.non_claims),
     )
+}
+
+fn frame_artifact_items_json(items: &[FrameArtifactReceiptItem]) -> String {
+    let mut out = String::from("[");
+    for (index, item) in items.iter().enumerate() {
+        if index > 0 {
+            out.push_str(", ");
+        }
+        out.push_str(&format!(
+            r#"{{"path": {path}, "relative_path": {relative_path}, "format": {format}, "width_px": {width_px}, "height_px": {height_px}, "frame_id": {frame_id}, "sequence_id": {sequence_id}, "byte_len": {byte_len}, "blake3": {blake3}, "redaction": {redaction}, "includes_ui": {includes_ui}}}"#,
+            path = json_string(&item.path),
+            relative_path = json_string(&item.relative_path),
+            format = json_string(&item.format),
+            width_px = item.width_px,
+            height_px = item.height_px,
+            frame_id = item.frame_id,
+            sequence_id = item.sequence_id,
+            byte_len = item.byte_len,
+            blake3 = json_string(&item.blake3),
+            redaction = json_string(&item.redaction),
+            includes_ui = item.includes_ui,
+        ));
+    }
+    out.push(']');
+    out
 }
 
 fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &str>) -> String {
@@ -5532,9 +6212,9 @@ fn smoke_receipt_json_with_typed_event_oracle(
         ],
     };
     let child_revisions = child_revision_evidence_for_receipt(cfg);
-    let mcp_control = evaluate_mcp_control_receipt(cfg, &child_revisions.client);
+    let mcp_control = evaluate_mcp_control_receipt(cfg, &child_revisions.client, client);
     let mcp_control_json = render_mcp_control_receipt_json(&mcp_control);
-    let frame_artifacts = evaluate_frame_artifacts_receipt(cfg);
+    let frame_artifacts = evaluate_frame_artifacts_receipt(cfg, client);
     let frame_artifacts_json = render_frame_artifacts_receipt_json(&frame_artifacts);
     let typed_event_oracle_json = typed_event_oracle_receipt_json(typed_event_oracle);
     let latency_jitter_json = latency_jitter_receipt_json(cfg);
@@ -6444,7 +7124,22 @@ fn json_u32_field(text: &str, key: &str) -> Result<u32, String> {
     parse_json_u32_value(key, json_field_value(text, key)?)
 }
 
+fn json_u64_field(text: &str, key: &str) -> Result<u64, String> {
+    parse_json_u64_value(key, json_field_value(text, key)?)
+}
+
 fn parse_json_u32_value(key: &str, value: &str) -> Result<u32, String> {
+    let value = value.trim_start();
+    let digits: String = value.chars().take_while(|ch| ch.is_ascii_digit()).collect();
+    if digits.is_empty() {
+        return Err(format!("field {key} is not an unsigned integer"));
+    }
+    digits
+        .parse()
+        .map_err(|e| format!("parse field {key}: {e}"))
+}
+
+fn parse_json_u64_value(key: &str, value: &str) -> Result<u64, String> {
     let value = value.trim_start();
     let digits: String = value.chars().take_while(|ch| ch.is_ascii_digit()).collect();
     if digits.is_empty() {
@@ -6904,11 +7599,117 @@ mod tests {
     }
 
     #[test]
-    fn mcp_controlled_live_mode_is_blocked_until_live_rail_lands() {
+    fn mcp_controlled_live_preflight_allows_bounded_local_rail() {
         let cfg = test_config(&["--run", "--scenario", MCP_CONTROLLED_SMOKE_SCENARIO], &[])
             .expect("mcp-controlled live config parses");
-        let err = validate_mcp_controlled_live_preflight(&cfg).unwrap_err();
-        assert!(err.contains("live rail is not implemented yet"), "{err}");
+        validate_mcp_controlled_live_preflight(&cfg)
+            .expect("bounded local MCP-controlled live rail preflight passes");
+    }
+
+    #[test]
+    fn mcp_controlled_live_preflight_rejects_unbounded_timeout() {
+        let mut cfg = test_config(&["--run", "--scenario", MCP_CONTROLLED_SMOKE_SCENARIO], &[])
+            .expect("mcp-controlled live config parses");
+        cfg.client_timeout = Duration::from_secs(SAFETY_MAX_DURATION_SECS + 1);
+
+        let err = validate_mcp_controlled_live_preflight(&cfg)
+            .expect_err("unbounded MCP-controlled live rail fails preflight");
+
+        assert!(err.contains("client timeout exceeds"), "{err}");
+    }
+
+    #[test]
+    fn mcp_controlled_live_receipt_uses_observed_control_and_frame_evidence() {
+        let cfg = test_config(&["--run", "--scenario", MCP_CONTROLLED_SMOKE_SCENARIO], &[])
+            .expect("mcp-controlled live config parses");
+        let child_revision = GitRevisionEvidence {
+            requested_rev: None,
+            resolved_rev: Some("4d1b1554650bd91924f7ce99c9dab69a91142edc".to_string()),
+            status: GIT_STATUS_CLEAN,
+            dirty: false,
+            diagnostics: Vec::new(),
+        };
+        let client = ClientRunEvidence {
+            log_path: Some(PathBuf::from("docs/evidence/mcp.transcript.log")),
+            log_paths: vec![PathBuf::from("docs/evidence/mcp.transcript.log")],
+            usernames: vec![TEST_USERNAME.to_string()],
+            exit_code: None,
+            classification: "mcp-controlled-live-evidence",
+            matched_success_pattern: Some("mcp_command_outcomes".to_string()),
+            scenario: Some(evaluate_scenario_for_config(
+                &cfg,
+                &mcp_controlled_success_output(),
+            )),
+            server_scenario: Some(evaluate_server_scenario(
+                Scenario::McpControlledSmoke,
+                "",
+                TEST_USERNAME,
+            )),
+            projectile_damage_causality: None,
+            mcp_control: Some(McpControlRunEvidence {
+                handshake_success: true,
+                tool_list_digest: mcp_control_tool_list_digest(),
+                tool_names: MCP_CONTROL_TOOL_NAMES.to_vec(),
+                calls_attempted: MCP_CONTROL_LIVE_CALLS.to_vec(),
+                calls_succeeded: MCP_CONTROL_LIVE_CALLS.to_vec(),
+                first_failure: None,
+                stdout_clean: true,
+                command_outcome_ids: MCP_CONTROL_LIVE_OUTCOME_IDS.to_vec(),
+            }),
+            frame_artifacts: Some(FrameArtifactsReceiptEvidence {
+                selected: true,
+                capture_requested: true,
+                artifact_count: 1,
+                artifacts: vec![FrameArtifactReceiptItem {
+                    path: "docs/evidence/mcp-controlled-smoke-frames/latest-frame.png".to_string(),
+                    relative_path: MCP_CONTROL_LIVE_CAPTURE_RELATIVE_PATH.to_string(),
+                    format: "png".to_string(),
+                    width_px: 1280,
+                    height_px: 720,
+                    frame_id: 1,
+                    sequence_id: 1,
+                    byte_len: 16,
+                    blake3: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+                        .to_string(),
+                    redaction: "not_reviewed".to_string(),
+                    includes_ui: true,
+                }],
+                missing_digests: Vec::new(),
+                path_containment_checked: true,
+                promotion_ready: true,
+                non_claims: FRAME_ARTIFACT_NON_CLAIMS.to_vec(),
+            }),
+        };
+
+        let mcp = evaluate_mcp_control_receipt(&cfg, &child_revision, Some(&client));
+        let frame = evaluate_frame_artifacts_receipt(&cfg, Some(&client));
+
+        assert!(mcp.passed, "{mcp:?}");
+        assert!(mcp.live_receipt);
+        assert!(!mcp.dry_run_fixture);
+        assert_eq!(mcp.first_failure, None);
+        assert!(frame.selected);
+        assert_eq!(frame.artifact_count, 1);
+        assert!(frame.promotion_ready);
+    }
+
+    #[test]
+    fn mcp_controlled_live_receipt_fails_dirty_child_revision() {
+        let cfg = test_config(&["--run", "--scenario", MCP_CONTROLLED_SMOKE_SCENARIO], &[])
+            .expect("mcp-controlled live config parses");
+        let child_revision = GitRevisionEvidence {
+            requested_rev: None,
+            resolved_rev: Some("4d1b1554650bd91924f7ce99c9dab69a91142edc".to_string()),
+            status: GIT_STATUS_DIRTY,
+            dirty: true,
+            diagnostics: Vec::new(),
+        };
+        let client = mcp_controlled_dry_run_evidence(&cfg);
+
+        let mcp = evaluate_mcp_control_receipt(&cfg, &child_revision, Some(&client));
+
+        assert!(!mcp.passed, "{mcp:?}");
+        assert_eq!(mcp.first_failure, Some(MCP_CONTROL_FAILURE_REVISION_DIRTY));
     }
 
     #[test]
@@ -8003,6 +8804,8 @@ mod tests {
                 passed: true,
             }),
             projectile_damage_causality: None,
+            mcp_control: None,
+            frame_artifacts: None,
         };
 
         let events =
@@ -8073,6 +8876,8 @@ mod tests {
                 passed: true,
             }),
             projectile_damage_causality: None,
+            mcp_control: None,
+            frame_artifacts: None,
         };
         validate_typed_event_oracle_for_migrated_scenario(&cfg, &passing)
             .expect("complete typed inventory graph passes");
@@ -8159,6 +8964,8 @@ red flag captured
                 "compatbot",
             )),
             projectile_damage_causality: None,
+            mcp_control: None,
+            frame_artifacts: None,
         });
 
         let json = smoke_receipt_json(&cfg, Ok(&client));
@@ -8226,6 +9033,8 @@ red flag captured
                 "compatbot",
             )),
             projectile_damage_causality: None,
+            mcp_control: None,
+            frame_artifacts: None,
         });
 
         let json = smoke_receipt_json(&cfg, Ok(&client));
@@ -8548,6 +9357,8 @@ negative_custom_payload_contained
                 "compatbot",
             )),
             projectile_damage_causality: None,
+            mcp_control: None,
+            frame_artifacts: None,
         });
 
         let json = smoke_receipt_json(&cfg, Ok(&client));
@@ -9556,6 +10367,8 @@ RED: 1
             )),
             server_scenario: Some(evaluate_server_scenario(Scenario::Smoke, "", "compatbot")),
             projectile_damage_causality: None,
+            mcp_control: None,
+            frame_artifacts: None,
         });
 
         let json = smoke_receipt_json(&cfg, Ok(&client));
@@ -9630,6 +10443,8 @@ RED: 1
                 "compatbot",
             )),
             projectile_damage_causality: None,
+            mcp_control: None,
+            frame_artifacts: None,
         });
 
         let json = smoke_receipt_json(&cfg, Ok(&client));

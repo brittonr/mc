@@ -139,7 +139,7 @@ let ScenarioManifest = {
     {
       name = "mcp-controlled-smoke",
       aliases = ["mcp-controlled-smoke"],
-      client_milestones = ["mcp_control_dry_run"],
+      client_milestones = ["mcp_initialize", "mcp_tools_list", "mcp_status_call", "mcp_command_outcomes"],
       server_milestones = [],
       forbidden_patterns = ["panic", "unexpected_eof", "protocol_mismatch", "decode_error"],
       client_count = 1,

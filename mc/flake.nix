@@ -776,6 +776,14 @@
               receipt="''${MC_COMPAT_MCP_CONTROLLED_SMOKE_RECEIPT:-target/mc-compat-mcp-controlled-smoke/mcp-controlled-smoke.json}"
               mkdir -p "$(dirname "$receipt")"
 
+              export SERVER_PROTOCOL="''${SERVER_PROTOCOL:-763}"
+              export SERVER_VERSION="''${SERVER_VERSION:-1.20.1}"
+              export VALENCE_REV="''${VALENCE_REV:-main}"
+              export VALENCE_EXAMPLE="''${VALENCE_EXAMPLE:-survival_compat}"
+              export VALENCE_WORKTREE="''${VALENCE_WORKTREE:-/tmp/valence-compat-mcp-controlled-smoke}"
+              export VALENCE_TARGET_DIR="''${VALENCE_TARGET_DIR:-/tmp/valence-compat-mcp-controlled-smoke-target}"
+              export CLIENT_TIMEOUT="''${CLIENT_TIMEOUT:-120}"
+
               exec mc-compat-runner "$mode"                 --server-backend valence                 --scenario mcp-controlled-smoke                 --receipt "$receipt"                 "$@"
             '';
             meta = {
