@@ -2453,6 +2453,10 @@ impl Server {
             "MC-COMPAT-MILESTONE join_game_763_shape dimension_type={} world={} portal_cooldown={}",
             join.dimension_type_name, join.world_name, join.portal_cooldown.0
         );
+        self.world.load_dimension_type_from_registry(
+            join.dimension_codec.as_ref(),
+            join.dimension_type_name.as_str(),
+        );
         if self.survival_biome_dimension_probe_enabled {
             self.log_survival_biome_dimension_state(
                 join.dimension_type_name.as_str(),

@@ -29,7 +29,16 @@ use crate::types::hash::FNVHash;
 use crate::types::nibble;
 use byteorder::ReadBytesExt;
 
+const DEFAULT_WORLD_MIN_Y: i32 = 0;
+const DEFAULT_WORLD_HEIGHT: i32 = 256;
+const CHUNK_SECTION_HEIGHT_BLOCKS: i32 = 16;
 const PROTOCOL_1_20_1: i32 = 763;
+const DIMENSION_TYPE_REGISTRY_KEY: &str = "minecraft:dimension_type";
+const DIMENSION_REGISTRY_VALUES_KEY: &str = "value";
+const DIMENSION_REGISTRY_NAME_KEY: &str = "name";
+const DIMENSION_REGISTRY_ELEMENT_KEY: &str = "element";
+const DIMENSION_MIN_Y_KEY: &str = "min_y";
+const DIMENSION_HEIGHT_KEY: &str = "height";
 use cgmath::prelude::*;
 use flate2::read::ZlibDecoder;
 use log::info;
@@ -103,13 +112,57 @@ struct LightUpdate {
     pos: Position,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct DimensionBounds {
+    min_y: i32,
+    height: i32,
+}
+
+fn find_dimension_type_tag<'a>(
+    dimension_codec: &'a crate::nbt::NamedTag,
+    dimension_type_name: &str,
+) -> Option<&'a crate::nbt::Tag> {
+    let root = dimension_codec.1.as_compound()?;
+    let registry = root.get(DIMENSION_TYPE_REGISTRY_KEY)?.as_compound()?;
+    let entries = registry.get(DIMENSION_REGISTRY_VALUES_KEY)?.as_list()?;
+
+    entries.iter().find_map(|entry| {
+        let entry = entry.as_compound()?;
+        let name = entry.get(DIMENSION_REGISTRY_NAME_KEY)?.as_str()?;
+        if name != dimension_type_name {
+            return None;
+        }
+
+        entry.get(DIMENSION_REGISTRY_ELEMENT_KEY)
+    })
+}
+
+fn dimension_bounds_from_tag(tag: &crate::nbt::Tag) -> Option<DimensionBounds> {
+    let tags = tag.as_compound()?;
+    let min_y = tags.get(DIMENSION_MIN_Y_KEY)?.as_int()?;
+    let height = tags.get(DIMENSION_HEIGHT_KEY)?.as_int()?;
+
+    if !is_valid_dimension_bounds(min_y, height) {
+        return None;
+    }
+
+    Some(DimensionBounds { min_y, height })
+}
+
+fn is_valid_dimension_bounds(min_y: i32, height: i32) -> bool {
+    min_y % CHUNK_SECTION_HEIGHT_BLOCKS == 0
+        && height > 0
+        && height % CHUNK_SECTION_HEIGHT_BLOCKS == 0
+}
+
 impl World {
     pub fn new(protocol_version: i32) -> World {
         let id_map = block::VanillaIDMap::new(protocol_version);
         World {
             protocol_version,
             id_map,
-            height: 256,
+            min_y: DEFAULT_WORLD_MIN_Y,
+            height: DEFAULT_WORLD_HEIGHT,
             ..Default::default()
         }
     }
@@ -1024,18 +1077,55 @@ impl World {
     }
 
     pub fn load_dimension_type(&mut self, dimension_tags: Option<crate::nbt::NamedTag>) {
-        if let Some(crate::nbt::NamedTag(_, crate::nbt::Tag::Compound(tags))) = dimension_tags {
-            info!("Dimension type: {:?}", tags);
+        let Some(crate::nbt::NamedTag(_, tag)) = dimension_tags else {
+            return;
+        };
 
-            if let Some(crate::nbt::Tag::Int(min_y)) = tags.get("min_y") {
-                self.min_y = *min_y;
-            }
+        let Some(bounds) = dimension_bounds_from_tag(&tag) else {
+            return;
+        };
 
-            if let Some(crate::nbt::Tag::Int(height)) = tags.get("height") {
-                self.height = *height;
-            }
-            // TODO: More tags https://wiki.vg/Protocol#Login_.28play.29
-        }
+        self.apply_dimension_bounds(bounds);
+        // TODO: More tags https://wiki.vg/Protocol#Login_.28play.29
+    }
+
+    pub fn load_dimension_type_from_registry(
+        &mut self,
+        dimension_codec: Option<&crate::nbt::NamedTag>,
+        dimension_type_name: &str,
+    ) {
+        let Some(dimension_codec) = dimension_codec else {
+            return;
+        };
+
+        let Some(tag) = find_dimension_type_tag(dimension_codec, dimension_type_name) else {
+            log::warn!(
+                "dimension type {dimension_type_name:?} missing from registry codec; keeping min_y={} height={}",
+                self.min_y,
+                self.height
+            );
+            return;
+        };
+
+        let Some(bounds) = dimension_bounds_from_tag(tag) else {
+            log::warn!(
+                "dimension type {dimension_type_name:?} has invalid bounds; keeping min_y={} height={}",
+                self.min_y,
+                self.height
+            );
+            return;
+        };
+
+        self.apply_dimension_bounds(bounds);
+    }
+
+    fn apply_dimension_bounds(&mut self, bounds: DimensionBounds) {
+        info!(
+            "Dimension bounds: min_y={} height={}",
+            bounds.min_y, bounds.height
+        );
+        self.min_y = bounds.min_y;
+        self.height = bounds.height;
     }
 
     #[allow(clippy::or_fun_call)]
@@ -1724,6 +1814,93 @@ impl SectionParser<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    const TEST_OVERWORLD_NAME: &str = "minecraft:overworld";
+    const TEST_NETHER_NAME: &str = "minecraft:the_nether";
+    const TEST_OVERWORLD_MIN_Y: i32 = -64;
+    const TEST_OVERWORLD_HEIGHT: i32 = 384;
+    const TEST_NETHER_MIN_Y: i32 = DEFAULT_WORLD_MIN_Y;
+    const TEST_NETHER_HEIGHT: i32 = DEFAULT_WORLD_HEIGHT;
+    const TEST_UNALIGNED_HEIGHT: i32 = 10;
+
+    fn compound(entries: Vec<(&str, crate::nbt::Tag)>) -> crate::nbt::Tag {
+        let mut tags = HashMap::new();
+        for (key, tag) in entries {
+            tags.insert(key.to_owned(), tag);
+        }
+
+        crate::nbt::Tag::Compound(tags)
+    }
+
+    fn dimension_element(min_y: i32, height: i32) -> crate::nbt::Tag {
+        compound(vec![
+            (DIMENSION_MIN_Y_KEY, crate::nbt::Tag::Int(min_y)),
+            (DIMENSION_HEIGHT_KEY, crate::nbt::Tag::Int(height)),
+        ])
+    }
+
+    fn dimension_entry(name: &str, element: crate::nbt::Tag) -> crate::nbt::Tag {
+        compound(vec![
+            (
+                DIMENSION_REGISTRY_NAME_KEY,
+                crate::nbt::Tag::String(name.to_owned()),
+            ),
+            (DIMENSION_REGISTRY_ELEMENT_KEY, element),
+        ])
+    }
+
+    fn dimension_codec(entries: Vec<crate::nbt::Tag>) -> crate::nbt::NamedTag {
+        let registry = compound(vec![(
+            DIMENSION_REGISTRY_VALUES_KEY,
+            crate::nbt::Tag::List(entries),
+        )]);
+        crate::nbt::NamedTag(
+            String::new(),
+            compound(vec![(DIMENSION_TYPE_REGISTRY_KEY, registry)]),
+        )
+    }
+
+    #[test]
+    fn dimension_codec_applies_named_dimension_bounds() {
+        let codec = dimension_codec(vec![dimension_entry(
+            TEST_OVERWORLD_NAME,
+            dimension_element(TEST_OVERWORLD_MIN_Y, TEST_OVERWORLD_HEIGHT),
+        )]);
+        let mut world = World::new(PROTOCOL_1_20_1);
+
+        world.load_dimension_type_from_registry(Some(&codec), TEST_OVERWORLD_NAME);
+
+        assert_eq!(world.min_y, TEST_OVERWORLD_MIN_Y);
+        assert_eq!(world.height, TEST_OVERWORLD_HEIGHT);
+    }
+
+    #[test]
+    fn dimension_codec_ignores_missing_dimension_name() {
+        let codec = dimension_codec(vec![dimension_entry(
+            TEST_NETHER_NAME,
+            dimension_element(TEST_NETHER_MIN_Y, TEST_NETHER_HEIGHT),
+        )]);
+        let mut world = World::new(PROTOCOL_1_20_1);
+
+        world.load_dimension_type_from_registry(Some(&codec), TEST_OVERWORLD_NAME);
+
+        assert_eq!(world.min_y, DEFAULT_WORLD_MIN_Y);
+        assert_eq!(world.height, DEFAULT_WORLD_HEIGHT);
+    }
+
+    #[test]
+    fn dimension_codec_rejects_unaligned_height() {
+        let codec = dimension_codec(vec![dimension_entry(
+            TEST_OVERWORLD_NAME,
+            dimension_element(TEST_OVERWORLD_MIN_Y, TEST_UNALIGNED_HEIGHT),
+        )]);
+        let mut world = World::new(PROTOCOL_1_20_1);
+
+        world.load_dimension_type_from_registry(Some(&codec), TEST_OVERWORLD_NAME);
+
+        assert_eq!(world.min_y, DEFAULT_WORLD_MIN_Y);
+        assert_eq!(world.height, DEFAULT_WORLD_HEIGHT);
+    }
 
     #[test]
     fn parse_chunk_1_12_2() {
