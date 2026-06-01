@@ -1,0 +1,8 @@
+pass=1 manifests_updated=28 entries_seen=1016
+pass=2 manifests_updated=14 entries_seen=1016
+pass=3 manifests_updated=13 entries_seen=1016
+pass=4 manifests_updated=8 entries_seen=1016
+pass=5 manifests_updated=2 entries_seen=1016
+pass=6 manifests_updated=0 entries_seen=1016
+manifest_refresh_fixed_point_passes=6 total_manifest_updates=65 final_entries_seen=1016
+exit_status=0

@@ -1,0 +1,101 @@
+# protocol entity metadata validation 2026-06-01 rerun3
+mc compat row contract self-test ok: 22 row contracts exercised and fixture rail checked
+entity metadata packet family contract check passed
+docs/evidence/protocol-entity-metadata-family-row-evidence-2026-06-01.run.log: OK
+docs/evidence/protocol-entity-metadata-family-2026-06-01.b3: OK
+docs/evidence/protocol-entity-metadata-family-matrix-2026-06-01.run.log: OK
+tools/check_acceptance_matrix.rs: OK
+tools/check_current_evidence_bundle.rs: OK
+docs/evidence/protocol-763-acceptance-matrix.md: OK
+docs/evidence/protocol-763-current-evidence-bundle.md: OK
+docs/evidence/protocol-entity-metadata-family-row-evidence-2026-06-01.b3: OK
+docs/evidence/protocol-entity-metadata-family-manifest-refresh-2026-06-01.run.log: OK
+docs/evidence/protocol-entity-metadata-family-matrix-2026-06-01.b3: OK
+acceptance matrix self-test ok: positive and negative fixtures exercised
+acceptance matrix check passed: 28 rows validated
+current evidence bundle self-test ok: positive and negative fixtures exercised
+current evidence bundle check passed: 28 rows validated
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task evidence gate passed: 85 completed tasks checked across 24 active task files
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest self-test ok: positive and negative fixtures exercised
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 221 manifests, 1018 entries, 80 receipts scanned
+{
+  "change": "protocol-entity-metadata-family-coverage",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "3b01fadcfb7e2e6c2bd15128b7e3ea275986104afc74b27f9e6dd0a7f5940c7f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "7b9f125fc0a8650d0930b69f96fce06ee27af4b02c62ccc28dc34a76a2de0063",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "protocol-entity-metadata-family-coverage",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "dc987b50782ac5499b9c7c77d9955acb01b15cec6cdcef439c99f77cecc871a4",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "884115278b3584002d2dc46322430e2fd22c35e970352933afa90197ecebaff0",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "protocol-entity-metadata-family-coverage",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "b8dd03a36168e8f93fe63e8705961b767a7062b61b24e975072d86cf0e068c70",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "038731b8338667437d73248ea499b72b1f5ddcb91e9b7e73f95990ed7af0c996",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change_issues": [],
+  "changes": 24,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 26,
+  "valid": true
+}
+exit_status=0

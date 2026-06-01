@@ -1,0 +1,9 @@
+# protocol entity metadata matrix checker update 2026-06-01 rerun2
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+acceptance matrix self-test ok: positive and negative fixtures exercised
+acceptance matrix check passed: 28 rows validated
+current evidence bundle self-test ok: positive and negative fixtures exercised
+current evidence bundle check passed: 28 rows validated
+exit_status=0

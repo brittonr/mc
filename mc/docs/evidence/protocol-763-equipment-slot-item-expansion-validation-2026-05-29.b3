@@ -6,7 +6,7 @@ b83bcb6a109092c92a1ac49d80065c15a1abf79706da57a82e1426b2236ff642  docs/evidence/
 c124e98f4d1377b0103f40b84203aeb88af48a955e419ea715d07d51738b6d2a  docs/evidence/protocol-763-equipment-slot-item-expansion-checker-2026-05-29.b3
 009eb986a1cf2f4b8096104d7329cd8ad4feb1708c0b5fd46995ebf932c8ab7d  docs/evidence/protocol-763-equipment-slot-item-expansion-rail-2026-05-29.b3
 c8eeb7ebf5b6d5ab7e7e8d54558606ae96ceac85cfcba3c30381bbdaaac5ad69  docs/evidence/protocol-763-equipment-slot-item-expansion-row-2026-05-29.b3
-fd2fd63daf0449cf9627d04cb3897f0edd794ba84ba474b852fa26a2d0df33bd  docs/evidence/protocol-763-acceptance-matrix.md
-1909adb82afe0f45019caeea64f0cc37e2765787179621897c4f90085788681a  docs/evidence/protocol-763-current-evidence-bundle.md
+7824e3f22802dff4aea9706696b218475ab85b74ae7c9ba67496f159ff58d2a3  docs/evidence/protocol-763-acceptance-matrix.md
+1bc190de192d9c276043df19c65f5b551199a98eb8e8c1da933f1faae060fc9b  docs/evidence/protocol-763-current-evidence-bundle.md
 8a345708aea3719a68015f36971222bf80b03f6a51ff640899c5e292c3d7f216  tools/mc-compat-runner/src/main.rs
 d753144d7ecba1ee8b0ac68b1e59d6dee349cadffe56a03c3529d99763c76324  tools/check_equipment_slot_item_expansion.rs

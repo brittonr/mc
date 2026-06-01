@@ -1,0 +1,138 @@
+# protocol entity metadata archive 2026-06-01
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/protocol-entity-metadata-family-coverage/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/protocol-entity-metadata-family-coverage/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "protocol-entity-metadata-family-coverage",
+  "delta_specs": [
+    "./cairn/changes/protocol-entity-metadata-family-coverage/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "e9e4ee678c6abcf8c6786c0096eab1bd717b6cd1366b73882eb196441f2bf1e5",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "7b4b315653b6795d617ffcb695d873f3dc95020d01ecf091dbd75946e7febeff",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "9a35a176ebe1f0caa45c400f3680f755320503e04d1cf75b581367b782e8b8fd"
+}
+{
+  "actions": [
+    {
+      "description": "move active change to archive: protocol-entity-metadata-family-coverage",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-01-protocol-entity-metadata-family-coverage"
+    }
+  ],
+  "blocked": false,
+  "change": "protocol-entity-metadata-family-coverage",
+  "dry_run": false,
+  "input_hash": "e9e4ee678c6abcf8c6786c0096eab1bd717b6cd1366b73882eb196441f2bf1e5",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "04101b94a871543166559aeaf6ed7676d9799af34e5636c9c1e4214a839d1bcc",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-01-protocol-entity-metadata-family-coverage/design.md"
+        },
+        {
+          "content_hash": "263bae1da3a3d7a81a6cdf25a29ad1324a2bcb53bb48e9e0e90e2dd079c5af94",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-01-protocol-entity-metadata-family-coverage/proposal.md"
+        },
+        {
+          "content_hash": "16d6349a964ad665b6c9d24f6e0cd9ab3e5af9e088ba28197e66514eca2d2e07",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-01-protocol-entity-metadata-family-coverage/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "ef7d12d292d0a86c8f0c36c7e70e5d8588b0bbfd5bb933d6a2fdb6dd3502e06d",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-01-protocol-entity-metadata-family-coverage/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/protocol-entity-metadata-family-coverage"
+        }
+      ],
+      "manifest_hash": "d359ea18bfa4f26fc2d54f9b652bbec24d960dd81d9013252b4aa9e71e5b4388"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "04101b94a871543166559aeaf6ed7676d9799af34e5636c9c1e4214a839d1bcc",
+          "exists": true,
+          "path": "./cairn/changes/protocol-entity-metadata-family-coverage/design.md"
+        },
+        {
+          "content_hash": "263bae1da3a3d7a81a6cdf25a29ad1324a2bcb53bb48e9e0e90e2dd079c5af94",
+          "exists": true,
+          "path": "./cairn/changes/protocol-entity-metadata-family-coverage/proposal.md"
+        },
+        {
+          "content_hash": "16d6349a964ad665b6c9d24f6e0cd9ab3e5af9e088ba28197e66514eca2d2e07",
+          "exists": true,
+          "path": "./cairn/changes/protocol-entity-metadata-family-coverage/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "ef7d12d292d0a86c8f0c36c7e70e5d8588b0bbfd5bb933d6a2fdb6dd3502e06d",
+          "exists": true,
+          "path": "./cairn/changes/protocol-entity-metadata-family-coverage/tasks.md"
+        }
+      ],
+      "manifest_hash": "a7dc62eb07300886d3cd86e07322335863d2e44f1da371669d4192e2a201903b"
+    },
+    "kind": "archive",
+    "manifest_hash": "a014eed2c31a5b9f597ed7df4fafb28d7aef7dae8e9c98902483b94bd36a9710"
+  },
+  "plan_hash": "441d684e5f8fbf6f95330f44f7247c966eb57ce076bc5d4f9705190a0cedd02a",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "35d533d49577111458961d4fa22b7495acfea5a1e7a3ef4e430e8c194b4fbc23"
+}
+{
+  "change_issues": [],
+  "changes": 23,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 25,
+  "valid": true
+}
+exit_status=0

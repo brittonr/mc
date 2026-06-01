@@ -1,0 +1,52 @@
+{
+  "schema": "mc.compat.protocol_family_row.receipt.v1",
+  "created_at": "2026-06-01",
+  "row": "protocol-entity-metadata-family-coverage",
+  "label": "entity metadata packet family",
+  "status": "pass",
+  "mode": "repo-local-evidence-index",
+  "source_revision": {
+    "parent": "27297683",
+    "revision_status": "clean-before-entity-metadata-row-edits"
+  },
+  "covered_packet_rows": [
+    {
+      "wire_id": "play/clientbound/0x52",
+      "valence_packet_name": "EntityTrackerUpdateS2CPacket",
+      "stevenarella_semantic": "EntityMetadata",
+      "packet_inventory_status": "scenario_bounded_shape_review_missing",
+      "parser_fixture_id": "mc-compat-row-fixture-rail-2026-06-01/protocol-entity-metadata-family-coverage.kv",
+      "positive_payload_fixture": "bounded Valence ctf probe observed EntityMetadata boundary without FromUtf8Error recurrence",
+      "malformed_rejection_fixture_where_semantic_decoding_exists": "not promoted; broad malformed metadata semantics remain non-claim"
+    }
+  ],
+  "live_receipt_evidence": {
+    "metadata_evidence_doc": "docs/evidence/stevenarella-valence-763-entity-metadata-2026-05-23.md",
+    "metadata_evidence_doc_blake3": "50918b81d53bb0fa587dc7cbc01e4f48ebabf876a225821806ffa7c973b45e74",
+    "metadata_receipt": "docs/evidence/stevenarella-valence-763-entity-metadata-2026-05-23.receipt.json",
+    "metadata_receipt_blake3": "72545f60abeb0a0d46fdb9859486c7924631498689fef60b56271a638ff2db59",
+    "observed_boundaries_doc": "docs/evidence/stevenarella-valence-763-observed-boundaries-drain-2026-05-23.md",
+    "observed_boundaries_doc_blake3": "72600dafe9db6ea904dbc947fbb5c7dc63562bebfe63875bc64fb35866559143",
+    "observed_boundaries_receipt": "docs/evidence/stevenarella-valence-763-observed-boundaries-drain-2026-05-23.receipt.json",
+    "observed_boundaries_receipt_blake3": "cc62a78238134a339205abaea4c003f82e89597cc89ce9e11c620274974886a2"
+  },
+  "normalized_metrics": {
+    "wire_id": "play/clientbound/0x52",
+    "valence_packet_name": "EntityTrackerUpdateS2CPacket",
+    "stevenarella_semantic": "EntityMetadata",
+    "parser_fixture_id": "protocol-entity-metadata-family-coverage.kv",
+    "positive_payload_fixture": "bounded_metadata_boundary_probe_no_FromUtf8Error_no_UnexpectedEof_no_failed_parse",
+    "malformed_rejection_fixture_where_semantic_decoding_exists": "not_promoted_broad_malformed_metadata_non_claim",
+    "live_receipt_evidence_path": "docs/evidence/protocol-entity-metadata-family-2026-06-01.receipt.json"
+  },
+  "non_claims": [
+    "all_entity_metadata",
+    "all_metadata_value_types",
+    "all_mob_ai_semantics",
+    "broad_parser_shape_coverage",
+    "malformed_metadata_rejection_breadth",
+    "full_protocol_763_compatibility",
+    "full_minecraft_compatibility",
+    "production_readiness"
+  ]
+}

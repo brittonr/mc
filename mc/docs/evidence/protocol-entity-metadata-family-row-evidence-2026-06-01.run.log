@@ -1,0 +1,12 @@
+# protocol entity metadata row evidence 2026-06-01
+mc compat row contract self-test ok: 22 row contracts exercised and fixture rail checked
+entity metadata packet family contract check passed
+docs/evidence/protocol-entity-metadata-family-2026-06-01.receipt.json: OK
+docs/evidence/protocol-entity-metadata-family-2026-06-01.md: OK
+docs/evidence/protocol-entity-metadata-family-2026-06-01.kv: OK
+docs/evidence/stevenarella-valence-763-entity-metadata-2026-05-23.md: OK
+docs/evidence/stevenarella-valence-763-entity-metadata-2026-05-23.receipt.json: OK
+docs/evidence/stevenarella-valence-763-observed-boundaries-drain-2026-05-23.md: OK
+docs/evidence/stevenarella-valence-763-observed-boundaries-drain-2026-05-23.receipt.json: OK
+docs/evidence/protocol-763-packet-inventory-2026-05-28.tsv: OK
+exit_status=0
