@@ -241,7 +241,10 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
             "render_tick",
             "survival_biome_dimension_state",
         ],
-        server_milestones: &[],
+        server_milestones: &[
+            "server_username_seen",
+            "server_survival_biome_dimension_state",
+        ],
         forbidden_patterns: DEFAULT_FORBIDDEN_PATTERNS,
         client_count: ONE_CLIENT,
         session_count: ONE_SESSION,

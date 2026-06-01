@@ -1,0 +1,41 @@
+# survival biome/dimension matrix promotion 2026-06-01
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_survival_row_parity.rs\ -o\ target/check-survival-row-parity\ \&\&\ target/check-survival-row-parity\ --self-test\ \&\&\ target/check-survival-row-parity\ --row\ survival-biome-dimension-state\ --paper\ docs/evidence/survival-biome-dimension-paper-2026-06-01.evidence\ --valence\ docs/evidence/survival-biome-dimension-valence-2026-06-01.evidence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+survival row parity self-test ok: 6 row contracts exercised
+biome/dimension row check passed
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_survival_coverage_matrix.rs\ -o\ target/check-survival-coverage-matrix\ \&\&\ target/check-survival-coverage-matrix\ --self-test\ \&\&\ target/check-survival-coverage-matrix
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+survival coverage matrix self-test ok: positive and negative fixtures exercised
+survival coverage matrix check passed: 9 rows validated
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_acceptance_matrix.rs\ -o\ target/check-acceptance-matrix\ \&\&\ target/check-acceptance-matrix\ --self-test\ \&\&\ target/check-acceptance-matrix
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+acceptance matrix self-test ok: positive and negative fixtures exercised
+acceptance matrix check passed: 23 rows validated
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_current_evidence_bundle.rs\ -o\ target/check-current-evidence-bundle\ \&\&\ target/check-current-evidence-bundle\ --self-test\ \&\&\ target/check-current-evidence-bundle
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+current evidence bundle self-test ok: positive and negative fixtures exercised
+current evidence bundle check passed: 23 rows validated
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_full_survival_compatibility_gate.rs\ -o\ target/check-full-survival-compatibility-gate\ \&\&\ target/check-full-survival-compatibility-gate\ --self-test\ \&\&\ target/check-full-survival-compatibility-gate
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+full survival compatibility gate self-test ok: all-covered success and fail-closed fixtures exercised
+full survival compatibility gate passed: 4 covered rows, 5 missing rows
+exit_status=0

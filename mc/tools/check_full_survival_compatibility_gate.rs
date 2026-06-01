@@ -54,6 +54,10 @@ const CURRENT_COVERED_ROWS: &[CoveredRowExpectation] = &[
         system: "chest persistence",
         acceptance_token: "Survival chest persistence",
     },
+    CoveredRowExpectation {
+        system: "biome/dimension",
+        acceptance_token: "Survival biome/dimension join state",
+    },
 ];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -518,7 +522,7 @@ fn current_missing_rows() -> String {
         "| hunger/food | missing | none | none | Add hunger receipts. | No hunger or food coverage. | next |".to_string(),
         "| mob drops | missing | none | none | Add mob receipts. | No mob AI or mob drop coverage. | next |".to_string(),
         "| redstone | missing | none | none | Add redstone receipts. | No redstone coverage. | next |".to_string(),
-        "| biome/dimension | missing | none | none | Add biome receipts. | No biome or dimension coverage. | next |".to_string(),
+        covered_row("biome/dimension", "biome", "Biome"),
         "| world persistence | missing | none | none | Add persistence receipts. | No world persistence coverage. | next |".to_string(),
     ]
     .join("\n")
@@ -543,6 +547,7 @@ fn fixture_acceptance_matrix() -> String {
         "| Survival break/place/pickup | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
         "| Survival crafting table | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
         "| Survival chest persistence | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
+        "| Survival biome/dimension join state | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
     ]
     .join("\n")
 }
@@ -568,5 +573,8 @@ fn all_rows_manifest_text() -> String {
     text.push_str("digest  docs/evidence/chest-valence.receipt.json\n");
     text.push_str("digest  docs/evidence/chest-paper.receipt.json\n");
     text.push_str("digest  docs/evidence/chest.md\n");
+    text.push_str("digest  docs/evidence/biome-valence.receipt.json\n");
+    text.push_str("digest  docs/evidence/biome-paper.receipt.json\n");
+    text.push_str("digest  docs/evidence/biome.md\n");
     text
 }

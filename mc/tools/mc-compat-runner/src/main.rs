@@ -95,7 +95,10 @@ const SURVIVAL_CRAFTING_SERVER_COLLECT_NEEDLE: &str =
 const SURVIVAL_CRAFTING_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_CRAFTING_FIXTURE";
 const SURVIVAL_BIOME_DIMENSION_CLIENT_STATE_NEEDLE: &str =
     "survival_biome_dimension_state spawn_environment=minecraft:overworld environment_identifier=minecraft:overworld client_environment_update=minecraft:overworld normalized_identifier=minecraft:overworld";
+const SURVIVAL_BIOME_DIMENSION_SERVER_STATE_NEEDLE: &str =
+    "survival_biome_dimension_state username=compatbot spawn_environment=minecraft:overworld environment_identifier=minecraft:overworld server_environment_state=minecraft:overworld normalized_identifier=minecraft:overworld";
 const SURVIVAL_BIOME_DIMENSION_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_PROBE";
+const SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_FIXTURE";
 const MCP_CONTROLLED_SMOKE_SCENARIO: &str = "mcp-controlled-smoke";
 const MCP_CONTROL_ENDPOINT_STDIO: &str = "stdio";
 const MCP_CONTROL_FAILURE_LIVE_EVIDENCE_MISSING: &str = "live-mcp-controlled-evidence-missing";
@@ -2379,7 +2382,13 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
                 SURVIVAL_CRAFTING_SERVER_COLLECT_NEEDLE,
             ),
         ],
-        Scenario::SurvivalBiomeDimensionState => &[],
+        Scenario::SurvivalBiomeDimensionState => &[
+            ("server_username_seen", "compatbot"),
+            (
+                "server_survival_biome_dimension_state",
+                SURVIVAL_BIOME_DIMENSION_SERVER_STATE_NEEDLE,
+            ),
+        ],
         Scenario::CombatDamage => &[
             ("server_client_a_seen", "compatbota"),
             ("server_client_b_seen", "compatbotb"),
@@ -3758,6 +3767,9 @@ fn start_valence_server(cfg: &Config) -> Result<ManagedServer, String> {
     if cfg.scenario == Scenario::SurvivalCraftingTable {
         cmd.env(SURVIVAL_CRAFTING_FIXTURE_ENV, "1");
     }
+    if cfg.scenario == Scenario::SurvivalBiomeDimensionState {
+        cmd.env(SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV, "1");
+    }
     if cfg.scenario == Scenario::CtfInvalidReturnDrop {
         cmd.env("MC_COMPAT_CTF_INVALID_RETURN_DROP_PROBE", "1");
     }
@@ -3827,6 +3839,10 @@ fn configure_paper_run_command(cfg: &Config, cmd: &mut Command) -> Result<(), St
     if cfg.scenario == Scenario::SurvivalCraftingTable {
         cmd.arg("-e")
             .arg(format!("{SURVIVAL_CRAFTING_FIXTURE_ENV}=1"));
+    }
+    if cfg.scenario == Scenario::SurvivalBiomeDimensionState {
+        cmd.arg("-e")
+            .arg(format!("{SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV}=1"));
     }
     add_paper_plugin_mount(cfg, cmd)?;
     cmd.arg(&cfg.docker_image);

@@ -1,0 +1,16 @@
+# survival biome/dimension manifest refresh 2026-06-01
+
+$ nix develop --no-update-lock-file -c sh -c $'\nset -euo pipefail\ntotal_updated=0\ntotal_entries=0\npasses=0\ncurrent_manifest="docs/evidence/survival-biome-dimension-manifest-refresh-2026-06-01.b3"\nwhile :; do\n  updated=0; entries=0\n  for manifest in docs/evidence/*.b3; do\n    if test "$manifest" = "$current_manifest"; then continue; fi\n    tmp=$(mktemp)\n    while IFS= read -r line; do\n      test -n "$line" || continue\n      path=${line#*  }\n      if test -e "$path"; then b3sum "$path" >> "$tmp"; else printf "%s\\n" "$line" >> "$tmp"; fi\n      entries=$((entries + 1))\n    done < "$manifest"\n    if ! cmp -s "$manifest" "$tmp"; then mv "$tmp" "$manifest"; updated=$((updated + 1)); else rm "$tmp"; fi\n  done\n  passes=$((passes + 1)); total_updated=$((total_updated + updated)); total_entries=$entries\n  printf "pass=%s manifests_updated=%s entries_seen=%s\\n" "$passes" "$updated" "$entries"\n  if test "$updated" -eq 0; then break; fi\n  if test "$passes" -ge 8; then printf "fixed point did not converge\\n" >&2; exit 1; fi\ndone\nprintf "manifest_refresh_fixed_point_passes=%s total_manifest_updates=%s final_entries_seen=%s\\n" "$passes" "$total_updated" "$total_entries"\n'
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+pass=1 manifests_updated=0 entries_seen=852
+manifest_refresh_fixed_point_passes=1 total_manifest_updates=0 final_entries_seen=852
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_evidence_manifests.rs\ -o\ target/check-evidence-manifests\ \&\&\ target/check-evidence-manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 176 manifests, 852 entries, 75 receipts scanned
+exit_status=0

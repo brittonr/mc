@@ -1,0 +1,9 @@
+row=survival-biome-dimension-state
+backend=valence
+revision_status=clean
+child_revision=88c572287468733af714e8d060805fb1384e1bf8
+metric.spawn_environment=minecraft:overworld
+metric.environment_identifier=minecraft:overworld
+metric.client_environment_update=minecraft:overworld
+metric.server_environment_state=minecraft:overworld
+metric.normalized_identifier=minecraft:overworld

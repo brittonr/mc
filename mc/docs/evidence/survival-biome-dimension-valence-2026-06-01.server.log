@@ -1,0 +1,24 @@
+   Compiling valence_generated v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-biome-dimension-88c5722-live/crates/valence_generated)
+   Compiling valence_protocol v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-biome-dimension-88c5722-live/crates/valence_protocol)
+   Compiling valence_server_common v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-biome-dimension-88c5722-live/crates/valence_server_common)
+   Compiling valence_registry v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-biome-dimension-88c5722-live/crates/valence_registry)
+   Compiling valence_entity v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-biome-dimension-88c5722-live/crates/valence_entity)
+   Compiling valence_server v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-biome-dimension-88c5722-live/crates/valence_server)
+   Compiling valence_inventory v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-biome-dimension-88c5722-live/crates/valence_inventory)
+   Compiling valence_advancement v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-biome-dimension-88c5722-live/crates/valence_advancement)
+   Compiling valence_player_list v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-biome-dimension-88c5722-live/crates/valence_player_list)
+   Compiling valence_boss_bar v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-biome-dimension-88c5722-live/crates/valence_boss_bar)
+   Compiling valence_weather v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-biome-dimension-88c5722-live/crates/valence_weather)
+   Compiling valence_anvil v0.1.0 (/tmp/valence-compat-survival-biome-dimension-88c5722-live/crates/valence_anvil)
+   Compiling valence_network v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-biome-dimension-88c5722-live/crates/valence_network)
+   Compiling valence_command v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-biome-dimension-88c5722-live/crates/valence_command)
+   Compiling valence_scoreboard v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-biome-dimension-88c5722-live/crates/valence_scoreboard)
+   Compiling valence_world_border v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-biome-dimension-88c5722-live/crates/valence_world_border)
+   Compiling valence_equipment v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-biome-dimension-88c5722-live/crates/valence_equipment)
+   Compiling valence v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-biome-dimension-88c5722-live)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 28.60s
+     Running `/tmp/valence-compat-survival-biome-dimension-target/debug/examples/survival_compat`
+[2m2026-06-01T19:27:31.715591Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+[2m2026-06-01T19:27:31.715621Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_biome_dimension_state username=compatbot spawn_environment=minecraft:overworld environment_identifier=minecraft:overworld server_environment_state=minecraft:overworld normalized_identifier=minecraft:overworld
+MC-COMPAT-MILESTONE survival_biome_dimension_state username=compatbot spawn_environment=minecraft:overworld environment_identifier=minecraft:overworld server_environment_state=minecraft:overworld normalized_identifier=minecraft:overworld
