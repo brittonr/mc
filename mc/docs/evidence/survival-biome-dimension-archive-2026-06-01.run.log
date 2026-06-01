@@ -1,0 +1,184 @@
+# survival biome/dimension archive 2026-06-01
+
+$ nix run --no-update-lock-file .#cairn -- sync survival-biome-dimension-parity --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/survival-biome-dimension-parity/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/survival-biome-dimension-parity/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-biome-dimension-parity",
+  "delta_specs": [
+    "./cairn/changes/survival-biome-dimension-parity/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "6fbba0fd6d73ee25a45bda2010b0a0ce66e00cc7c3e467fcda65a91446c788d5",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "1e4adf43f18838a71e74752a5c6d5d538426092d130f55524b7aff320b1ce114",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "c9182bdaec6105f4e48f0e3c7f8c9fc84fd7ed81001d260309a775a73aa8c215"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- archive survival-biome-dimension-parity --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-biome-dimension-parity",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-survival-biome-dimension-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-biome-dimension-parity",
+  "dry_run": false,
+  "input_hash": "6fbba0fd6d73ee25a45bda2010b0a0ce66e00cc7c3e467fcda65a91446c788d5",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "62d4dddd0edf6618d0b4300165174356257fd7de75a102a4630f47b582442cce",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-biome-dimension-parity/design.md"
+        },
+        {
+          "content_hash": "9e8840fb9e71804b651b158f9118bf730375ad3e26fb8aa188edee9c38e2b6a4",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-biome-dimension-parity/proposal.md"
+        },
+        {
+          "content_hash": "056805dfa487d72770b156216e8fc74d24a82972f3274b09d00537fd56f709a9",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-biome-dimension-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "e7cbf431ccae9f0ef62208b093fe7cfa628fcba30f93d46f45f68c25aad227b1",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-biome-dimension-parity/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-biome-dimension-parity"
+        }
+      ],
+      "manifest_hash": "7dfdf362d7c45b4d71f4165dc6304f6170b6e217eeaabfee601c09096c99147d"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "62d4dddd0edf6618d0b4300165174356257fd7de75a102a4630f47b582442cce",
+          "exists": true,
+          "path": "./cairn/changes/survival-biome-dimension-parity/design.md"
+        },
+        {
+          "content_hash": "9e8840fb9e71804b651b158f9118bf730375ad3e26fb8aa188edee9c38e2b6a4",
+          "exists": true,
+          "path": "./cairn/changes/survival-biome-dimension-parity/proposal.md"
+        },
+        {
+          "content_hash": "056805dfa487d72770b156216e8fc74d24a82972f3274b09d00537fd56f709a9",
+          "exists": true,
+          "path": "./cairn/changes/survival-biome-dimension-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "e7cbf431ccae9f0ef62208b093fe7cfa628fcba30f93d46f45f68c25aad227b1",
+          "exists": true,
+          "path": "./cairn/changes/survival-biome-dimension-parity/tasks.md"
+        }
+      ],
+      "manifest_hash": "f5d90370889d26ef393615b983810cf1a0453dfbc8ab71f06d5cc5f483cf9318"
+    },
+    "kind": "archive",
+    "manifest_hash": "0d06ff3c24f00da5bcf646ea1f29482a2b973648a450710b57edad0579086f02"
+  },
+  "plan_hash": "debf4a7fbe620137bdfd7e7d468d8e3bf8969a923b8e3a45bcf79ea390a20101",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "a6cb7149ce181a5156312917f8dec6a12f814daf5f6aba9c4506a34b6ceac62f"
+}
+exit_status=0
+
+$ mv cairn/archive/1970-01-01-survival-biome-dimension-parity cairn/archive/2026-06-01-survival-biome-dimension-parity
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 28,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 30,
+  "valid": true
+}
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c $'\nset -euo pipefail\ntotal_updated=0\ntotal_entries=0\npasses=0\narchive_manifest="docs/evidence/survival-biome-dimension-archive-2026-06-01.b3"\nwhile :; do\n  updated=0; entries=0\n  for manifest in docs/evidence/*.b3; do\n    if test "$manifest" = "$archive_manifest"; then continue; fi\n    tmp=$(mktemp)\n    while IFS= read -r line; do\n      test -n "$line" || continue\n      path=${line#*  }\n      if test -e "$path"; then b3sum "$path" >> "$tmp"; else printf "%s\\n" "$line" >> "$tmp"; fi\n      entries=$((entries + 1))\n    done < "$manifest"\n    if ! cmp -s "$manifest" "$tmp"; then mv "$tmp" "$manifest"; updated=$((updated + 1)); else rm "$tmp"; fi\n  done\n  passes=$((passes + 1)); total_updated=$((total_updated + updated)); total_entries=$entries\n  printf "pass=%s manifests_updated=%s entries_seen=%s\\n" "$passes" "$updated" "$entries"\n  if test "$updated" -eq 0; then break; fi\n  if test "$passes" -ge 8; then printf "fixed point did not converge\\n" >&2; exit 1; fi\ndone\nprintf "archive_manifest_refresh_fixed_point_passes=%s total_manifest_updates=%s final_entries_seen=%s\\n" "$passes" "$total_updated" "$total_entries"\n'
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+pass=1 manifests_updated=0 entries_seen=859
+archive_manifest_refresh_fixed_point_passes=1 total_manifest_updates=0 final_entries_seen=859
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_evidence_manifests.rs\ -o\ target/check-evidence-manifests\ \&\&\ target/check-evidence-manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 178 manifests, 859 entries, 75 receipts scanned
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_cairn_task_evidence.rs\ -o\ target/check-cairn-task-evidence\ \&\&\ target/check-cairn-task-evidence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence gate passed: 94 completed tasks checked across 28 active task files
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 28,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 30,
+  "valid": true
+}
+exit_status=0

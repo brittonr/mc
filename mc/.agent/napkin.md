@@ -74,3 +74,5 @@
 - 2026-05-30: Single-file Rust checker scripts can fail through the default shared cargo-script target with `Cargo.lock version 4 requires -Znext-lockfile-bump`; set `CARGO_TARGET_DIR=/tmp/mc-cargo-script-target` when running `./tools/check_*.rs --self-test` locally.
 - 2026-05-31: Paper 1.20.1 containers run Java 17; compile review fixture plugin jars with `javac --release 17` or live Paper runs fail with `UnsupportedClassVersionError` (class file 65 vs supported 61).
 - 2026-05-31: `nix develop --no-update-lock-file -c ... | tee ...` can exit 120 or drop command output in this environment; for evidence logs redirect command output to the log (`>> "$log" 2>&1`) instead of piping nix-develop commands through `tee`.
+- 2026-06-01: Do not quote manifest/task counts from memory in final replies. Use the final committed validation log after all sidecars are generated, or say only that the check passed.
+- 2026-06-01: When all tasks in an active Cairn are checked, archive/sync it before claiming completion; otherwise same-family review treats the active `cairn/changes/*` directory as an omission.
