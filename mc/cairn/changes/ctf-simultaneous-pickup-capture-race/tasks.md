@@ -1,7 +1,7 @@
 # Tasks
 
 - [x] [serial] Define the bounded `simultaneous pickup/capture race` evidence contract and normalized metric names. r[mc_compatibility.ctf_simultaneous_pickup_capture_race.contract] Evidence: `docs/evidence/open-cairn-contracts-2026-06-01.run.log`, `docs/evidence/open-cairn-contracts-2026-06-01.b3`.
-- [ ] [depends:contract] Add deterministic checker positive and negative fixtures for `simultaneous pickup/capture race`. r[mc_compatibility.ctf_simultaneous_pickup_capture_race.checker]
+- [x] [depends:contract] Add deterministic checker positive and negative fixtures for `simultaneous pickup/capture race`. r[mc_compatibility.ctf_simultaneous_pickup_capture_race.checker] Evidence: `docs/evidence/mc-compat-row-contract-checker-2026-06-01.run.log`, `docs/evidence/mc-compat-row-contract-checker-2026-06-01.b3`.
 - [ ] [depends:checker] Add the `ctf-simultaneous-pickup-capture-race` runner, fixture, or parser rail without broadening existing scenarios. r[mc_compatibility.ctf_simultaneous_pickup_capture_race.rail]
   - Detail: Define race oracle contract.
   - Detail: Add multi-client checker fixtures.

@@ -1,7 +1,7 @@
 # Tasks
 
 - [x] [serial] Define the bounded `full protocol-763 compatibility aggregate` evidence contract and normalized metric names. r[mc_compatibility.full_protocol_763_compatibility_gate.contract] Evidence: `docs/evidence/open-cairn-contracts-2026-06-01.run.log`, `docs/evidence/open-cairn-contracts-2026-06-01.b3`.
-- [ ] [depends:contract] Add deterministic checker positive and negative fixtures for `full protocol-763 compatibility aggregate`. r[mc_compatibility.full_protocol_763_compatibility_gate.checker]
+- [x] [depends:contract] Add deterministic checker positive and negative fixtures for `full protocol-763 compatibility aggregate`. r[mc_compatibility.full_protocol_763_compatibility_gate.checker] Evidence: `docs/evidence/mc-compat-row-contract-checker-2026-06-01.run.log`, `docs/evidence/mc-compat-row-contract-checker-2026-06-01.b3`.
 - [ ] [depends:checker] Enforce row-specific evidence standard before promotion. r[mc_compatibility.full_protocol_763_compatibility_gate.evidence_standard]
 - [ ] [depends:evidence_standard] Add `full-protocol-763-compatibility-gate` rail/checker wiring without broadening existing scenarios. r[mc_compatibility.full_protocol_763_compatibility_gate.rail]
   - Detail: Define packet-family completion criteria.

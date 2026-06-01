@@ -1,7 +1,7 @@
 # Tasks
 
 - [x] [serial] Define the bounded `invalid respawn timing` evidence contract and normalized metric names. r[mc_compatibility.death_respawn_invalid_timing.contract] Evidence: `docs/evidence/open-cairn-contracts-2026-06-01.run.log`, `docs/evidence/open-cairn-contracts-2026-06-01.b3`.
-- [ ] [depends:contract] Add deterministic checker positive and negative fixtures for `invalid respawn timing`. r[mc_compatibility.death_respawn_invalid_timing.checker]
+- [x] [depends:contract] Add deterministic checker positive and negative fixtures for `invalid respawn timing`. r[mc_compatibility.death_respawn_invalid_timing.checker] Evidence: `docs/evidence/mc-compat-row-contract-checker-2026-06-01.run.log`, `docs/evidence/mc-compat-row-contract-checker-2026-06-01.b3`.
 - [ ] [depends:checker] Enforce row-specific evidence standard before promotion. r[mc_compatibility.death_respawn_invalid_timing.evidence_standard]
 - [ ] [depends:evidence_standard] Add `death-respawn-invalid-respawn-timing` rail/checker wiring without broadening existing scenarios. r[mc_compatibility.death_respawn_invalid_timing.rail]
   - Detail: Define invalid timing state machine.

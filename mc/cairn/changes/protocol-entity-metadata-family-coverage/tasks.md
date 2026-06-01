@@ -1,7 +1,7 @@
 # Tasks
 
 - [x] [serial] Define the bounded `entity metadata packet family` evidence contract and normalized metric names. r[mc_compatibility.protocol_entity_metadata_family_coverage.contract] Evidence: `docs/evidence/open-cairn-contracts-2026-06-01.run.log`, `docs/evidence/open-cairn-contracts-2026-06-01.b3`.
-- [ ] [depends:contract] Add deterministic checker positive and negative fixtures for `entity metadata packet family`. r[mc_compatibility.protocol_entity_metadata_family_coverage.checker]
+- [x] [depends:contract] Add deterministic checker positive and negative fixtures for `entity metadata packet family`. r[mc_compatibility.protocol_entity_metadata_family_coverage.checker] Evidence: `docs/evidence/mc-compat-row-contract-checker-2026-06-01.run.log`, `docs/evidence/mc-compat-row-contract-checker-2026-06-01.b3`.
 - [ ] [depends:checker] Add the `protocol-entity-metadata-family` runner, fixture, or parser rail without broadening existing scenarios. r[mc_compatibility.protocol_entity_metadata_family_coverage.rail]
   - Detail: Select metadata subset from packet inventory.
   - Detail: Add parser fixture positives/negatives.

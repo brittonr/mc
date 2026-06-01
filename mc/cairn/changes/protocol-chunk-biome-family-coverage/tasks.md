@@ -1,7 +1,7 @@
 # Tasks
 
 - [x] [serial] Define the bounded `chunk/biome packet family` evidence contract and normalized metric names. r[mc_compatibility.protocol_chunk_biome_family_coverage.contract] Evidence: `docs/evidence/open-cairn-contracts-2026-06-01.run.log`, `docs/evidence/open-cairn-contracts-2026-06-01.b3`.
-- [ ] [depends:contract] Add deterministic checker positive and negative fixtures for `chunk/biome packet family`. r[mc_compatibility.protocol_chunk_biome_family_coverage.checker]
+- [x] [depends:contract] Add deterministic checker positive and negative fixtures for `chunk/biome packet family`. r[mc_compatibility.protocol_chunk_biome_family_coverage.checker] Evidence: `docs/evidence/mc-compat-row-contract-checker-2026-06-01.run.log`, `docs/evidence/mc-compat-row-contract-checker-2026-06-01.b3`.
 - [ ] [depends:checker] Add the `protocol-chunk-biome-family` runner, fixture, or parser rail without broadening existing scenarios. r[mc_compatibility.protocol_chunk_biome_family_coverage.rail]
   - Detail: Select chunk/biome subset.
   - Detail: Add parser fixtures.

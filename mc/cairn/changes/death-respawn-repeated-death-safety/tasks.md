@@ -1,7 +1,7 @@
 # Tasks
 
 - [x] [serial] Define the bounded `repeated death safety` evidence contract and normalized metric names. r[mc_compatibility.death_respawn_repeated_death_safety.contract] Evidence: `docs/evidence/open-cairn-contracts-2026-06-01.run.log`, `docs/evidence/open-cairn-contracts-2026-06-01.b3`.
-- [ ] [depends:contract] Add deterministic checker positive and negative fixtures for `repeated death safety`. r[mc_compatibility.death_respawn_repeated_death_safety.checker]
+- [x] [depends:contract] Add deterministic checker positive and negative fixtures for `repeated death safety`. r[mc_compatibility.death_respawn_repeated_death_safety.checker] Evidence: `docs/evidence/mc-compat-row-contract-checker-2026-06-01.run.log`, `docs/evidence/mc-compat-row-contract-checker-2026-06-01.b3`.
 - [ ] [depends:checker] Add the `death-respawn-repeated-death-safety` runner, fixture, or parser rail without broadening existing scenarios. r[mc_compatibility.death_respawn_repeated_death_safety.rail]
   - Detail: Define finite death-cycle contract.
   - Detail: Add checker fixtures.

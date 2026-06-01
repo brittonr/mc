@@ -1,7 +1,7 @@
 # Tasks
 
 - [x] [serial] Define the bounded `reconnect during death` evidence contract and normalized metric names. r[mc_compatibility.death_respawn_reconnect_during_death.contract] Evidence: `docs/evidence/open-cairn-contracts-2026-06-01.run.log`, `docs/evidence/open-cairn-contracts-2026-06-01.b3`.
-- [ ] [depends:contract] Add deterministic checker positive and negative fixtures for `reconnect during death`. r[mc_compatibility.death_respawn_reconnect_during_death.checker]
+- [x] [depends:contract] Add deterministic checker positive and negative fixtures for `reconnect during death`. r[mc_compatibility.death_respawn_reconnect_during_death.checker] Evidence: `docs/evidence/mc-compat-row-contract-checker-2026-06-01.run.log`, `docs/evidence/mc-compat-row-contract-checker-2026-06-01.b3`.
 - [ ] [depends:checker] Add the `death-respawn-reconnect-during-death` runner, fixture, or parser rail without broadening existing scenarios. r[mc_compatibility.death_respawn_reconnect_during_death.rail]
   - Detail: Define death-reconnect state machine.
   - Detail: Add checker negative fixtures.

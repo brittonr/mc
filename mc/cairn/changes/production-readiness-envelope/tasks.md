@@ -1,7 +1,7 @@
 # Tasks
 
 - [x] [serial] Define the bounded `production readiness aggregate` evidence contract and normalized metric names. r[mc_compatibility.production_readiness_envelope.contract] Evidence: `docs/evidence/open-cairn-contracts-2026-06-01.run.log`, `docs/evidence/open-cairn-contracts-2026-06-01.b3`.
-- [ ] [depends:contract] Add deterministic checker positive and negative fixtures for `production readiness aggregate`. r[mc_compatibility.production_readiness_envelope.checker]
+- [x] [depends:contract] Add deterministic checker positive and negative fixtures for `production readiness aggregate`. r[mc_compatibility.production_readiness_envelope.checker] Evidence: `docs/evidence/mc-compat-row-contract-checker-2026-06-01.run.log`, `docs/evidence/mc-compat-row-contract-checker-2026-06-01.b3`.
 - [ ] [depends:checker] Enforce row-specific evidence standard before promotion. r[mc_compatibility.production_readiness_envelope.evidence_standard]
 - [ ] [depends:evidence_standard] Add `production-readiness-envelope` rail/checker wiring without broadening existing scenarios. r[mc_compatibility.production_readiness_envelope.rail]
   - Detail: Define production readiness row set.

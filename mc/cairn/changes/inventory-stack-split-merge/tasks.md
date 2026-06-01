@@ -1,7 +1,7 @@
 # Tasks
 
 - [x] [serial] Define the bounded `inventory stack split/merge` evidence contract and normalized metric names. r[mc_compatibility.inventory_stack_split_merge.contract] Evidence: `docs/evidence/open-cairn-contracts-2026-06-01.run.log`, `docs/evidence/open-cairn-contracts-2026-06-01.b3`.
-- [ ] [depends:contract] Add deterministic checker positive and negative fixtures for `inventory stack split/merge`. r[mc_compatibility.inventory_stack_split_merge.checker]
+- [x] [depends:contract] Add deterministic checker positive and negative fixtures for `inventory stack split/merge`. r[mc_compatibility.inventory_stack_split_merge.checker] Evidence: `docs/evidence/mc-compat-row-contract-checker-2026-06-01.run.log`, `docs/evidence/mc-compat-row-contract-checker-2026-06-01.b3`.
 - [ ] [depends:checker] Enforce row-specific evidence standard before promotion. r[mc_compatibility.inventory_stack_split_merge.evidence_standard]
 - [ ] [depends:evidence_standard] Add `inventory-stack-split-merge` rail/checker wiring without broadening existing scenarios. r[mc_compatibility.inventory_stack_split_merge.rail]
   - Detail: Define split/merge contract.
