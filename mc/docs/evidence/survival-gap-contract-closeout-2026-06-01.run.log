@@ -1,0 +1,199 @@
+# Survival gap contract task closeout 2026-06-01
+
+changes=survival-biome-dimension-parity survival-furnace-persistence-parity survival-hunger-food-parity survival-mob-drop-parity survival-redstone-toggle-parity survival-world-persistence-parity full-survival-compatibility-gate
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks survival-biome-dimension-parity --root .
+{
+  "change": "survival-biome-dimension-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e67fde02cc148643be7ebe5fead3f003271271a49325651c83bd41c1a9e25c94",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "ed06046482aecd16859c2fcc0c3cddbf6be9745af923a7fb15808beaaddafd22",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks survival-furnace-persistence-parity --root .
+{
+  "change": "survival-furnace-persistence-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "6aefb2e1c6836cb4911016c8f7f26d806230db7f61c9aef389d166a45c13f89c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "ffe3fd316f6b8473afe790503ba227fafd28f92b75c135dd4a3c3681b6f50d27",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks survival-hunger-food-parity --root .
+{
+  "change": "survival-hunger-food-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e73d9b24a3616ad5b91b57b4098f13ebd4a7e3c6c1fe953b34d1a0d2a7e04f3d",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "64120e76ea2bb8ac7969c46e9d3eb2ff59e3e4f3b416a69613c64ff7267b07c7",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks survival-mob-drop-parity --root .
+{
+  "change": "survival-mob-drop-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "81e4cd471606977ffba86f484e5e400f3541d858971d9c0d42f63135125b3d74",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "0a4765f62bbb228b19c7f29257406b8d69380bcc2b6f643e4aca3259697f7ce9",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks survival-redstone-toggle-parity --root .
+{
+  "change": "survival-redstone-toggle-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "d69f1f94c0779173b69efc8a3c48b599f467ec8cec03a0ce1783db5d8136f910",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "18b4a3484eaea1d2e6eddc1243acf06dc68e857c0aa2bff488705675313c7263",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks survival-world-persistence-parity --root .
+{
+  "change": "survival-world-persistence-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f9168729382d83eef34ab570d1903deddbf185e6750d09594182b0d4a1e35d00",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "01d7b75e0db0103044e5a816d83bb80e34e1369779af585f52c97723e2de4d60",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks full-survival-compatibility-gate --root .
+{
+  "change": "full-survival-compatibility-gate",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "2f6033af817e1f1165ceecd64871e8374f1cb554a0c02fcb7cc09bf3c855dbba",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "731e54c067f30d59a6686c4546fb5f059ce23033a49e9f1828a0b5658a69678c",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_cairn_task_evidence.rs\ -o\ target/check-cairn-task-evidence\ \&\&\ target/check-cairn-task-evidence\ --self-test\ \&\&\ target/check-cairn-task-evidence
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/3j88x65rnfjm3yhp570jq7mwgvn86wx9-octet-deps-0.1.0.drv'...
+building '/nix/store/fb7nirs0gjlzmzrls8va16341vr99jm9-cargo-octet-0.1.0.drv'...
+building '/nix/store/50m4sy10xm155h72grbys41qgrisz9fy-octet-0.1.0.drv'...
+building '/nix/store/909syd5v4jk7pawf2f50pp632bvnp3cm-octet-ui-library.drv'...
+building '/nix/store/53r71dj6254daqln27a7apvxs63gz5ab-cargo-octet-0.1.0.drv'...
+building '/nix/store/s48w422d3s50cyxxgn3w14ib3ad4wwmy-nix-shell-env.drv'...
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task evidence gate passed: 7 completed tasks checked across 29 active task files
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 29,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 31,
+  "valid": true
+}
+exit_status=0

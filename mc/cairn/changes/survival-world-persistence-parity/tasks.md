@@ -1,6 +1,6 @@
 # Tasks
 
-- [ ] [serial] Define the bounded `world persistence` evidence contract and normalized metric names. r[mc_compatibility.survival_world_persistence.contract]
+- [x] [serial] Define the bounded `world persistence` evidence contract and normalized metric names. Evidence: `docs/evidence/survival-gap-cairns-2026-05-31.run.log`, `docs/evidence/survival-gap-cairns-2026-05-31.b3`. r[mc_compatibility.survival_world_persistence.contract]
 - [ ] [depends:contract] Add deterministic checker positive and negative fixtures for paired evidence, missing metrics, mismatches, stale revisions, and Valence-only evidence. r[mc_compatibility.survival_world_persistence.checker]
 - [ ] [depends:checker] Add the `survival-world-persistence-restart` runner/client rail without broadening existing scenarios. r[mc_compatibility.survival_world_persistence.runner]
 - [ ] [depends:runner] Add Paper and Valence fixture instrumentation for `world persistence` server-side milestones. r[mc_compatibility.survival_world_persistence.fixtures]

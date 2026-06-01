@@ -1,6 +1,6 @@
 # Tasks
 
-- [ ] [serial] Define the bounded `furnace persistence` evidence contract and normalized metric names. r[mc_compatibility.survival_furnace_persistence.contract]
+- [x] [serial] Define the bounded `furnace persistence` evidence contract and normalized metric names. Evidence: `docs/evidence/survival-gap-cairns-2026-05-31.run.log`, `docs/evidence/survival-gap-cairns-2026-05-31.b3`. r[mc_compatibility.survival_furnace_persistence.contract]
 - [ ] [depends:contract] Add deterministic checker positive and negative fixtures for paired evidence, missing metrics, mismatches, stale revisions, and Valence-only evidence. r[mc_compatibility.survival_furnace_persistence.checker]
 - [ ] [depends:checker] Add the `survival-furnace-persistence` runner/client rail without broadening existing scenarios. r[mc_compatibility.survival_furnace_persistence.runner]
 - [ ] [depends:runner] Add Paper and Valence fixture instrumentation for `furnace persistence` server-side milestones. r[mc_compatibility.survival_furnace_persistence.fixtures]
