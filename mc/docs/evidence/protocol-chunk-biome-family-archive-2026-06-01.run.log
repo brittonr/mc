@@ -1,0 +1,141 @@
+# protocol chunk/biome archive 2026-06-01
+$ nix run --no-update-lock-file .#cairn -- sync protocol-chunk-biome-family-coverage --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/protocol-chunk-biome-family-coverage/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/protocol-chunk-biome-family-coverage/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "protocol-chunk-biome-family-coverage",
+  "delta_specs": [
+    "./cairn/changes/protocol-chunk-biome-family-coverage/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "f1f54df05fa8b4315a4b41abf4b1ddf8d875d0e886f0313f4fb3850f64214ce0",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "dee3e0dca06e23b95be162128c8eba2c2df2a8006babdfb7c14c36645d11a82b",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "c90162752282ed93a6bbed67ab5a63cdb42dee3140fa9362b82160258cdb81f7"
+}
+$ CAIRN_ARCHIVE_DATE=2026-06-01 nix run --no-update-lock-file .#cairn -- archive protocol-chunk-biome-family-coverage --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: protocol-chunk-biome-family-coverage",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-01-protocol-chunk-biome-family-coverage"
+    }
+  ],
+  "blocked": false,
+  "change": "protocol-chunk-biome-family-coverage",
+  "dry_run": false,
+  "input_hash": "f1f54df05fa8b4315a4b41abf4b1ddf8d875d0e886f0313f4fb3850f64214ce0",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "05e77b476d0d5f4302452f86101a780da63f0e5f54e417451b0630d5ab8aae8f",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-01-protocol-chunk-biome-family-coverage/design.md"
+        },
+        {
+          "content_hash": "689bd15f0d8bf523c35f231fa0fcc1684ee5c34bfb869fc1922abf709b61903a",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-01-protocol-chunk-biome-family-coverage/proposal.md"
+        },
+        {
+          "content_hash": "413f3faf204421de70379577791826dfcf72a7aedf6b6bbf7797285632e78bf0",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-01-protocol-chunk-biome-family-coverage/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "2e09d513cda0b0b99fefcbfba33a27a7a20324dd21f60607e29f2e2afe125fa7",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-01-protocol-chunk-biome-family-coverage/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/protocol-chunk-biome-family-coverage"
+        }
+      ],
+      "manifest_hash": "1d7552cf16703d73e72266f1fa578665b17213f6a2c523809b2fea22e257c5f5"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "05e77b476d0d5f4302452f86101a780da63f0e5f54e417451b0630d5ab8aae8f",
+          "exists": true,
+          "path": "./cairn/changes/protocol-chunk-biome-family-coverage/design.md"
+        },
+        {
+          "content_hash": "689bd15f0d8bf523c35f231fa0fcc1684ee5c34bfb869fc1922abf709b61903a",
+          "exists": true,
+          "path": "./cairn/changes/protocol-chunk-biome-family-coverage/proposal.md"
+        },
+        {
+          "content_hash": "413f3faf204421de70379577791826dfcf72a7aedf6b6bbf7797285632e78bf0",
+          "exists": true,
+          "path": "./cairn/changes/protocol-chunk-biome-family-coverage/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "2e09d513cda0b0b99fefcbfba33a27a7a20324dd21f60607e29f2e2afe125fa7",
+          "exists": true,
+          "path": "./cairn/changes/protocol-chunk-biome-family-coverage/tasks.md"
+        }
+      ],
+      "manifest_hash": "2cb7848b42c11902e45200de9810313e2675d75c8ee85b6f6e72601da28a12bb"
+    },
+    "kind": "archive",
+    "manifest_hash": "d1a2db14aa644fafabf243f2b30a423cd56af5a040bcb1897938b8e77fb7d441"
+  },
+  "plan_hash": "28b67e907eae603d16f50a4ec6cd2b81b19560b15a4a1d3ff28e730100c43678",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "dfad196ac0c6792482a453d0daf05d0c5bb8d526c57300fc3eddacd5fb190232"
+}
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 26,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 28,
+  "valid": true
+}
+exit_status=0

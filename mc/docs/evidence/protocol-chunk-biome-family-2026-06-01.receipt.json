@@ -1,0 +1,64 @@
+{
+  "schema": "mc.compat.protocol_family_row.receipt.v1",
+  "created_at": "2026-06-01",
+  "row": "protocol-chunk-biome-family-coverage",
+  "label": "chunk/biome packet family",
+  "status": "pass",
+  "mode": "repo-local-evidence-index",
+  "source_revision": {
+    "parent": "9985388a",
+    "revision_status": "clean-before-row-edits"
+  },
+  "covered_packet_rows": [
+    {
+      "packet_family": "chunk_delta_raw",
+      "wire_id": "play/clientbound/0x43",
+      "valence_packet": "ChunkDeltaUpdateS2CPacket",
+      "stevenarella_packet": "ChunkDeltaUpdateRaw",
+      "parser_fixture_id": "protocol_763_high_risk_raw_parser_fixtures_accept_payloads",
+      "parser_fixture_result": "raw_payload_bytes_preserved",
+      "malformed_fixture_status_where_supported": "semantic_malformed_rejection_non_claim_for_byte_opaque_raw_consumer"
+    }
+  ],
+  "live_environment_evidence": {
+    "scenario": "survival-biome-dimension-state",
+    "paper_receipt": "docs/evidence/survival-biome-dimension-paper-2026-06-01.receipt.json",
+    "paper_receipt_blake3": "4c8f59af896af4c3c6f0733a5069350441fc95f02fb8282eaac4097a906c7207",
+    "valence_receipt": "docs/evidence/survival-biome-dimension-valence-2026-06-01.receipt.json",
+    "valence_receipt_blake3": "a7b534142458f0178d02215e0d6c53542ceca807970524800a96178f3dbb3928",
+    "evidence_doc": "docs/evidence/survival-biome-dimension-receipts-2026-06-01.md",
+    "evidence_manifest": "docs/evidence/survival-biome-dimension-receipts-2026-06-01.b3",
+    "normalized_environment": "minecraft:overworld"
+  },
+  "parser_evidence": {
+    "ledger": "docs/evidence/protocol-763-broad-coverage-ledger-2026-05-28.md",
+    "packet_inventory": "docs/evidence/protocol-763-packet-inventory-2026-05-28.tsv",
+    "parser_fixture_snapshot": "docs/evidence/protocol-763-broad-parser-fixtures-stevenarella-2026-05-28.md",
+    "parser_oracle": "docs/evidence/protocol-763-broad-parser-fixture-oracle-2026-05-28.md",
+    "gate_log": "docs/evidence/protocol-763-broad-coverage-ledger-gate-2026-05-28.run.log",
+    "gate_manifest": "docs/evidence/protocol-763-broad-coverage-ledger-gate-2026-05-28.b3"
+  },
+  "normalized_metrics": {
+    "packet_name": "ChunkDeltaUpdateS2CPacket",
+    "wire_id": "play/clientbound/0x43",
+    "chunk_position": "fixture_chunk_delta_raw_payload_and_live_join_environment_only",
+    "biome_id_or_environment_id": "minecraft:overworld",
+    "parser_fixture_id": "protocol_763_high_risk_raw_parser_fixtures_accept_payloads",
+    "live_receipt_path": "docs/evidence/protocol-chunk-biome-family-2026-06-01.receipt.json",
+    "malformed_fixture_status_where_supported": "semantic_malformed_rejection_non_claim_for_byte_opaque_raw_consumer"
+  },
+  "non_claims": [
+    "all_worldgen_packets",
+    "all_chunks",
+    "all_biomes",
+    "biome_lookup_semantics",
+    "chunk_delta_semantics",
+    "chunk_biome_data_packet_coverage",
+    "dimension_travel",
+    "nether_end_behavior",
+    "world_persistence",
+    "full_protocol_763_compatibility",
+    "full_minecraft_compatibility",
+    "production_readiness"
+  ]
+}

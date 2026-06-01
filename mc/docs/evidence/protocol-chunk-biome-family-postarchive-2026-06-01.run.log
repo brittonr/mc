@@ -1,0 +1,31 @@
+# protocol chunk/biome post-archive validation 2026-06-01 rerun
+$ target/check-acceptance-matrix --self-test && target/check-acceptance-matrix
+acceptance matrix self-test ok: positive and negative fixtures exercised
+acceptance matrix check passed: 25 rows validated
+$ target/check-current-evidence-bundle --self-test && target/check-current-evidence-bundle
+current evidence bundle self-test ok: positive and negative fixtures exercised
+current evidence bundle check passed: 25 rows validated
+$ target/check-cairn-task-evidence --self-test && target/check-cairn-task-evidence
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task evidence gate passed: 88 completed tasks checked across 26 active task files
+$ nix develop --no-update-lock-file -c target/check-evidence-manifests --self-test && nix develop --no-update-lock-file -c target/check-evidence-manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest self-test ok: positive and negative fixtures exercised
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 196 manifests, 917 entries, 77 receipts scanned
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 26,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 28,
+  "valid": true
+}
+exit_status=0

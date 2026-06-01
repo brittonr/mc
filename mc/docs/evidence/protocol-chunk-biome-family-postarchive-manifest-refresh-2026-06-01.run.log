@@ -1,0 +1,7 @@
+# protocol chunk/biome postarchive manifest refresh 2026-06-01
+$ nix shell --no-update-lock-file nixpkgs#b3sum -c bash -lc <fixed-point-refresh>
+pass=1 manifests_updated=1 entries_seen=915
+pass=2 manifests_updated=1 entries_seen=915
+pass=3 manifests_updated=0 entries_seen=915
+manifest_refresh_fixed_point_passes=3 total_manifest_updates=2 final_entries_seen=915
+exit_status=0

@@ -33,6 +33,7 @@ const REQUIRED_SEAMS: &[&str] = &[
     "Projectile use/loadout rail",
     "Projectile damage attribution",
     "Command/recipe/advancement packet family",
+    "Chunk/biome packet family",
     "Survival break/place/pickup",
     "Survival chest persistence",
     "Survival crafting table",

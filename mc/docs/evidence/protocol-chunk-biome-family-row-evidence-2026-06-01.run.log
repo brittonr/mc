@@ -1,0 +1,16 @@
+# protocol chunk/biome row evidence 2026-06-01
+$ target/check-mc-compat-row-contracts --self-test && target/check-mc-compat-row-contracts --row protocol-chunk-biome-family-coverage --evidence docs/evidence/protocol-chunk-biome-family-2026-06-01.kv
+mc compat row contract self-test ok: 22 row contracts exercised and fixture rail checked
+chunk/biome packet family contract check passed
+$ nix shell --no-update-lock-file nixpkgs#b3sum -c b3sum --check docs/evidence/protocol-chunk-biome-family-2026-06-01.b3
+docs/evidence/protocol-chunk-biome-family-2026-06-01.receipt.json: OK
+docs/evidence/protocol-chunk-biome-family-2026-06-01.md: OK
+docs/evidence/protocol-chunk-biome-family-2026-06-01.kv: OK
+docs/evidence/protocol-763-broad-coverage-ledger-2026-05-28.md: OK
+docs/evidence/protocol-763-packet-inventory-2026-05-28.tsv: OK
+docs/evidence/protocol-763-broad-parser-fixtures-stevenarella-2026-05-28.md: OK
+docs/evidence/protocol-763-broad-parser-fixture-oracle-2026-05-28.md: OK
+docs/evidence/survival-biome-dimension-receipts-2026-06-01.md: OK
+docs/evidence/survival-biome-dimension-paper-2026-06-01.receipt.json: OK
+docs/evidence/survival-biome-dimension-valence-2026-06-01.receipt.json: OK
+exit_status=0
