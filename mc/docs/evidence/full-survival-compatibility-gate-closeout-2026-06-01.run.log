@@ -1,0 +1,68 @@
+# Full survival compatibility gate closeout 2026-06-01
+
+scope=tasks through artifacts; matrix/validation remain open until all survival rows pass
+
+$ nix develop --no-update-lock-file -c b3sum --check docs/evidence/full-survival-compatibility-gate-checker-2026-06-01.b3
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+docs/evidence/full-survival-compatibility-gate-checker-2026-06-01.run.log: OK
+tools/check_full_survival_compatibility_gate.rs: OK
+flake.nix: OK
+README.md: OK
+docs/evidence/protocol-763-survival-coverage-matrix-2026-05-28.md: OK
+docs/evidence/protocol-763-current-evidence-bundle.md: OK
+docs/evidence/protocol-763-acceptance-matrix.md: OK
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_evidence_manifests.rs\ -o\ target/check-evidence-manifests\ \&\&\ target/check-evidence-manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 154 manifests, 758 entries, 73 receipts scanned
+exit_status=0
+
+$ nix develop --no-update-lock-file -c sh -c rustc\ --edition=2021\ tools/check_cairn_task_evidence.rs\ -o\ target/check-cairn-task-evidence\ \&\&\ target/check-cairn-task-evidence\ --self-test\ \&\&\ target/check-cairn-task-evidence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task evidence gate passed: 11 completed tasks checked across 29 active task files
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- gate tasks full-survival-compatibility-gate --root .
+{
+  "change": "full-survival-compatibility-gate",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e93f3937dab81ef0ffb80843932d3a58215f272ff7f726b7b0f467c1c6edee5f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "cb1e615efb6b1af44e6221661a16a76369a63f278e7c0830707c8c5ab4a4ed09",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 29,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 31,
+  "valid": true
+}
+exit_status=0

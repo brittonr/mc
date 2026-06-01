@@ -1,3 +1,3 @@
 e883c3ca16050a62449dd85726b0f117876f46bee841814a2a83544bb7be23dd  tools/check_armor_loadout_enchantment_status.rs
-5bcc15f081cde63abd0e36445087ce6891d3cdf137045f647a746194e8465160  flake.nix
+d06dbbcc70e7c2ec35be40b8c3a07aa8df4f8c6798b2def93fedf151d10ae2cd  flake.nix
 ff3a2e131a7839312db0e8ab630741bcf471ae81ce97352b9c220ecc45cc486c  docs/evidence/protocol-763-armor-loadout-enchantment-status-checker-2026-05-29.run.log

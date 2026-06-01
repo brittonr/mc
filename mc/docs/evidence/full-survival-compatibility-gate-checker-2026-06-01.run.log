@@ -1,0 +1,14 @@
+# Full survival compatibility aggregate gate checker 2026-06-01
+
+scope=checker fixtures, repo gate, flake wiring
+
+$ nix develop --no-update-lock-file -c sh -c rustfmt\ --check\ tools/check_full_survival_compatibility_gate.rs\ \&\&\ rustc\ --edition=2021\ tools/check_full_survival_compatibility_gate.rs\ -o\ target/check-full-survival-compatibility-gate\ \&\&\ target/check-full-survival-compatibility-gate\ --self-test\ \&\&\ target/check-full-survival-compatibility-gate
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+full survival compatibility gate self-test ok: all-covered success and fail-closed fixtures exercised
+full survival compatibility gate passed: 3 covered rows, 6 missing rows
+exit_status=0
+
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-full-survival-gate --no-link -L
+exit_status=0

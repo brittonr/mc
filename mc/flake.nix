@@ -1019,6 +1019,16 @@
           mkdir -p "$out"
           cp ../evidence-manifest-self-test.log ../evidence-manifest-check.log "$out/"
         '';
+        mc-compat-full-survival-gate = pkgs.runCommand "mc-compat-full-survival-gate" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc ]; } ''
+          cp -R ${./.} repo
+          chmod -R u+w repo
+          cd repo
+          rustc --edition=2021 tools/check_full_survival_compatibility_gate.rs -o ../check-full-survival-compatibility-gate
+          ../check-full-survival-compatibility-gate --self-test > ../full-survival-gate-self-test.log
+          ../check-full-survival-compatibility-gate > ../full-survival-gate-check.log
+          mkdir -p "$out"
+          cp ../full-survival-gate-self-test.log ../full-survival-gate-check.log "$out/"
+        '';
         mc-compat-scenario-manifest = pkgs.runCommand "mc-compat-scenario-manifest" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc pkgs.nickel ]; } ''
           cp -R ${./.} repo
           chmod -R u+w repo
@@ -1813,6 +1823,7 @@
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-acceptance-matrix} "$out/acceptance-matrix"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-current-evidence-bundle} "$out/current-evidence-bundle"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-evidence-manifests} "$out/evidence-manifests"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-full-survival-gate} "$out/full-survival-gate"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-scenario-manifest} "$out/scenario-manifest"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-evidence-promotion} "$out/evidence-promotion"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-cairn-task-evidence} "$out/cairn-task-evidence"
@@ -1851,6 +1862,7 @@
           acceptance-matrix
           current-evidence-bundle
           evidence-manifests
+          full-survival-gate
           scenario-manifest
           evidence-promotion
           cairn-task-evidence
