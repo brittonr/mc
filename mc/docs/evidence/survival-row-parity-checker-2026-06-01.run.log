@@ -1,0 +1,10 @@
+# Survival row parity checker 2026-06-01
+
+scope=deterministic checker fixtures for six missing survival rows
+
+$ nix develop --no-update-lock-file -c sh -c rustfmt\ --check\ tools/check_survival_row_parity.rs\ \&\&\ rustc\ --edition=2021\ tools/check_survival_row_parity.rs\ -o\ target/check-survival-row-parity\ \&\&\ target/check-survival-row-parity\ --self-test
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+survival row parity self-test ok: 6 row contracts exercised
+exit_status=0
