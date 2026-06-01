@@ -1,0 +1,10 @@
+# protocol command/recipe row evidence 2026-06-01
+$ target/check-mc-compat-row-contracts --self-test && target/check-mc-compat-row-contracts --row protocol-command-recipe-advancement-family-coverage --evidence docs/evidence/protocol-command-recipe-advancement-family-2026-06-01.kv
+mc compat row contract self-test ok: 22 row contracts exercised and fixture rail checked
+command/recipe/advancement packet family contract check passed
+$ nix shell --no-update-lock-file nixpkgs#b3sum -c b3sum --check docs/evidence/protocol-command-recipe-advancement-family-2026-06-01.b3
+docs/evidence/protocol-command-recipe-advancement-family-2026-06-01.receipt.json: OK
+docs/evidence/protocol-command-recipe-advancement-family-2026-06-01.md: OK
+docs/evidence/protocol-command-recipe-advancement-family-2026-06-01.kv: OK
+
+exit_status=0

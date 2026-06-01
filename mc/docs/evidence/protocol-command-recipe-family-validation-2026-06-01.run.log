@@ -1,0 +1,112 @@
+# protocol command/recipe validation 2026-06-01 rerun
+$ target/check-mc-compat-row-contracts --self-test
+mc compat row contract self-test ok: 22 row contracts exercised and fixture rail checked
+$ target/check-mc-compat-row-contracts --row protocol-command-recipe-advancement-family-coverage --evidence docs/evidence/protocol-command-recipe-advancement-family-2026-06-01.kv
+command/recipe/advancement packet family contract check passed
+$ nix shell --no-update-lock-file nixpkgs#b3sum -c b3sum --check docs/evidence/protocol-command-recipe-family-row-evidence-2026-06-01.b3
+docs/evidence/protocol-command-recipe-family-row-evidence-2026-06-01.run.log: OK
+docs/evidence/protocol-command-recipe-advancement-family-2026-06-01.b3: OK
+$ nix shell --no-update-lock-file nixpkgs#b3sum -c b3sum --check docs/evidence/protocol-command-recipe-family-matrix-2026-06-01.b3
+docs/evidence/protocol-command-recipe-family-matrix-2026-06-01.run.log: OK
+docs/evidence/protocol-command-recipe-advancement-family-2026-06-01.receipt.json: OK
+docs/evidence/protocol-command-recipe-advancement-family-2026-06-01.md: OK
+docs/evidence/protocol-command-recipe-advancement-family-2026-06-01.kv: OK
+docs/evidence/protocol-command-recipe-advancement-family-2026-06-01.b3: OK
+$ nix shell --no-update-lock-file nixpkgs#b3sum -c b3sum --check docs/evidence/protocol-command-recipe-family-manifest-refresh-2026-06-01.b3
+docs/evidence/protocol-command-recipe-family-manifest-refresh-2026-06-01.run.log: OK
+$ target/check-acceptance-matrix --self-test && target/check-acceptance-matrix
+acceptance matrix self-test ok: positive and negative fixtures exercised
+acceptance matrix check passed: 24 rows validated
+$ target/check-current-evidence-bundle --self-test && target/check-current-evidence-bundle
+current evidence bundle self-test ok: positive and negative fixtures exercised
+current evidence bundle check passed: 24 rows validated
+$ target/check-cairn-task-evidence --self-test && target/check-cairn-task-evidence
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task evidence gate passed: 96 completed tasks checked across 28 active task files
+$ nix develop --no-update-lock-file -c target/check-evidence-manifests --self-test && nix develop --no-update-lock-file -c target/check-evidence-manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest self-test ok: positive and negative fixtures exercised
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 184 manifests, 876 entries, 76 receipts scanned
+$ nix run --no-update-lock-file .#cairn -- gate proposal protocol-command-recipe-advancement-family-coverage --root .
+{
+  "change": "protocol-command-recipe-advancement-family-coverage",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f258d4bbdc225606787594fe5d82607412dfd4395074c29411c7391c8a14e035",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "252a9e210b09fd2227226f869203b166f0ba7433ee30313a0b5934fe7e0b59ff",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+$ nix run --no-update-lock-file .#cairn -- gate design protocol-command-recipe-advancement-family-coverage --root .
+{
+  "change": "protocol-command-recipe-advancement-family-coverage",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e90565a35d5c45fc8972a01caa1b04f8bcd015c6d0cf8fdffada79144ae54e04",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "b3d6e78d27c995ccf612057fa403974ba9bc0bef64f71ac33585aaa8fbaf0d10",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+$ nix run --no-update-lock-file .#cairn -- gate tasks protocol-command-recipe-advancement-family-coverage --root .
+{
+  "change": "protocol-command-recipe-advancement-family-coverage",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a039dfc9c42bdeea00bb2c12033c4878af9c9f5ffae89af7c98826851a329ed8",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "e83d44e97e88fa6782b94bb884ddcb0e0aa734cc9eb9005fe519d9ac0ce93c60",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 28,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 30,
+  "valid": true
+}
+exit_status=0

@@ -1,0 +1,72 @@
+{
+  "schema": "mc.compat.protocol_family_row.receipt.v1",
+  "created_at": "2026-06-01",
+  "row": "protocol-command-recipe-advancement-family-coverage",
+  "label": "command/recipe/advancement packet family",
+  "status": "pass",
+  "mode": "repo-local-evidence-index",
+  "source_revision": {
+    "parent": "d5f2ffc",
+    "revision_status": "clean-before-row-edits"
+  },
+  "covered_packet_rows": [
+    {
+      "packet_family": "command_tree_raw",
+      "wire_id": "play/clientbound/0x10",
+      "valence_packet": "CommandTreeS2CPacket",
+      "stevenarella_packet": "DeclareCommandsRaw",
+      "parser_fixture_id": "protocol_763_high_risk_raw_parser_fixtures_accept_payloads",
+      "parser_fixture_result": "raw_payload_bytes_preserved",
+      "malformed_fixture_status": "semantic_malformed_rejection_non_claim_for_byte_opaque_raw_consumer"
+    },
+    {
+      "packet_family": "recipe_book_raw",
+      "wire_id": "play/clientbound/0x6d",
+      "valence_packet": "SynchronizeRecipesS2CPacket",
+      "stevenarella_packet": "SynchronizeRecipesRaw",
+      "parser_fixture_id": "protocol_763_high_risk_raw_parser_fixtures_accept_payloads",
+      "parser_fixture_result": "raw_payload_bytes_preserved",
+      "malformed_fixture_status": "semantic_malformed_rejection_non_claim_for_byte_opaque_raw_consumer"
+    }
+  ],
+  "live_feature_evidence": {
+    "feature": "survival-crafting-table",
+    "paper_receipt": "docs/evidence/protocol-763-survival-crafting-table-paper-2026-05-31.receipt.json",
+    "paper_receipt_blake3": "710f64a04451a62604d17a78cc84f3e2db84ec3d7034b7feaa149b1e8af57a15",
+    "valence_receipt": "docs/evidence/protocol-763-survival-crafting-table-valence-2026-05-31.receipt.json",
+    "valence_receipt_blake3": "59a44542ccae0bb2af696227b79c4bbc3e7dc696bc026a44cd14c04e6d0e0c61",
+    "evidence_doc": "docs/evidence/protocol-763-survival-crafting-table-2026-05-31.md",
+    "evidence_manifest": "docs/evidence/protocol-763-survival-crafting-table-2026-05-31.b3"
+  },
+  "parser_evidence": {
+    "ledger": "docs/evidence/protocol-763-broad-coverage-ledger-2026-05-28.md",
+    "packet_inventory": "docs/evidence/protocol-763-packet-inventory-2026-05-28.tsv",
+    "parser_fixture_snapshot": "docs/evidence/protocol-763-broad-parser-fixtures-stevenarella-2026-05-28.md",
+    "parser_oracle": "docs/evidence/protocol-763-broad-parser-fixture-oracle-2026-05-28.md",
+    "gate_log": "docs/evidence/protocol-763-broad-coverage-ledger-gate-2026-05-28.run.log",
+    "gate_manifest": "docs/evidence/protocol-763-broad-coverage-ledger-gate-2026-05-28.b3"
+  },
+  "normalized_metrics": {
+    "packet_family": "command_tree_raw,recipe_book_raw",
+    "wire_id": "play/clientbound/0x10,play/clientbound/0x6d",
+    "semantic_fixture_id": "protocol_763_high_risk_raw_parser_fixtures_accept_payloads",
+    "parser_fixture_result": "raw_payload_bytes_preserved",
+    "malformed_fixture_status": "semantic_malformed_rejection_non_claim_for_byte_opaque_raw_consumers",
+    "live_scenario_feature": "survival-crafting-table",
+    "receipt_path": "docs/evidence/protocol-command-recipe-advancement-family-2026-06-01.receipt.json",
+    "digest_source": "this_row_receipt_blake3"
+  },
+  "non_claims": [
+    "all_commands",
+    "all_recipes",
+    "all_advancements",
+    "recipe_book_semantics",
+    "command_execution_semantics",
+    "semantic_command_tree_decoding",
+    "semantic_recipe_decoding",
+    "malformed_semantic_rejection_for_byte_opaque_raw_consumers",
+    "full_protocol_763_compatibility",
+    "full_minecraft_compatibility",
+    "production_readiness"
+  ]
+}

@@ -1,0 +1,11 @@
+# protocol command/recipe matrix checker update 2026-06-01
+$ nix develop --no-update-lock-file -c sh -c rustc --edition=2021 tools/check_acceptance_matrix.rs -o target/check-acceptance-matrix && rustc --edition=2021 tools/check_current_evidence_bundle.rs -o target/check-current-evidence-bundle && target/check-acceptance-matrix --self-test && target/check-acceptance-matrix && target/check-current-evidence-bundle --self-test && target/check-current-evidence-bundle
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+acceptance matrix self-test ok: positive and negative fixtures exercised
+acceptance matrix check passed: 24 rows validated
+current evidence bundle self-test ok: positive and negative fixtures exercised
+current evidence bundle check passed: 24 rows validated
+
+exit_status=0

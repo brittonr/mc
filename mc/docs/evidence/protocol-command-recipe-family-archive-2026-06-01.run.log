@@ -1,0 +1,141 @@
+# protocol command/recipe archive 2026-06-01
+$ nix run --no-update-lock-file .#cairn -- sync protocol-command-recipe-advancement-family-coverage --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/protocol-command-recipe-advancement-family-coverage/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/protocol-command-recipe-advancement-family-coverage/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "protocol-command-recipe-advancement-family-coverage",
+  "delta_specs": [
+    "./cairn/changes/protocol-command-recipe-advancement-family-coverage/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "e862332d0d9a730aeca817b081aa207545d4b6c4fc246b6b2f21230ed5204503",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "1336a748f9e50e8dfc53598c49167017e445f570a3be6acd23eae52f7d06abde",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "b5118ce42a8b04b494ddfe3ebb26f323272f898c09add0e2971d8d30a9e9beb2"
+}
+$ CAIRN_ARCHIVE_DATE=2026-06-01 nix run --no-update-lock-file .#cairn -- archive protocol-command-recipe-advancement-family-coverage --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: protocol-command-recipe-advancement-family-coverage",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-01-protocol-command-recipe-advancement-family-coverage"
+    }
+  ],
+  "blocked": false,
+  "change": "protocol-command-recipe-advancement-family-coverage",
+  "dry_run": false,
+  "input_hash": "e862332d0d9a730aeca817b081aa207545d4b6c4fc246b6b2f21230ed5204503",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "78d764707bbc5bb4768b08afab16afff92ff7321e2b575825dc1d11358b8b4c7",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-01-protocol-command-recipe-advancement-family-coverage/design.md"
+        },
+        {
+          "content_hash": "5904f623065b96c56cdbdd5da96f82f304321e7c0e73908ffd590784d7d764af",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-01-protocol-command-recipe-advancement-family-coverage/proposal.md"
+        },
+        {
+          "content_hash": "4b8e9561e824bc0a46ef4d7f7cf9f92e1c46ff024bffd87d2fcf6bd6dfbb4273",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-01-protocol-command-recipe-advancement-family-coverage/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "127d94de0b84e25705ff2b941c4d80e44a3b1a55125c733155808eacf54bdd21",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-01-protocol-command-recipe-advancement-family-coverage/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/protocol-command-recipe-advancement-family-coverage"
+        }
+      ],
+      "manifest_hash": "af54c273388a0c422968796ead52367aed182c081f880b009462d15fef5d1062"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "78d764707bbc5bb4768b08afab16afff92ff7321e2b575825dc1d11358b8b4c7",
+          "exists": true,
+          "path": "./cairn/changes/protocol-command-recipe-advancement-family-coverage/design.md"
+        },
+        {
+          "content_hash": "5904f623065b96c56cdbdd5da96f82f304321e7c0e73908ffd590784d7d764af",
+          "exists": true,
+          "path": "./cairn/changes/protocol-command-recipe-advancement-family-coverage/proposal.md"
+        },
+        {
+          "content_hash": "4b8e9561e824bc0a46ef4d7f7cf9f92e1c46ff024bffd87d2fcf6bd6dfbb4273",
+          "exists": true,
+          "path": "./cairn/changes/protocol-command-recipe-advancement-family-coverage/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "127d94de0b84e25705ff2b941c4d80e44a3b1a55125c733155808eacf54bdd21",
+          "exists": true,
+          "path": "./cairn/changes/protocol-command-recipe-advancement-family-coverage/tasks.md"
+        }
+      ],
+      "manifest_hash": "60d2331163ad5b6e293b629f0a6ab21ee36806678d42aa06f34dde1197d638d7"
+    },
+    "kind": "archive",
+    "manifest_hash": "76ff9d9cd27c8c2f52885542e3832246481b0edf3949a1423e5375684d11a4d6"
+  },
+  "plan_hash": "2b449e438f25a29241ef4ab26b8af5f88a43acfb03752113cb202c3247566ec9",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "9eaab5227cca5d62758b01a15b707b4af227fd8767879c07cb5196cd9553cb1e"
+}
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 27,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 29,
+  "valid": true
+}
+exit_status=0
