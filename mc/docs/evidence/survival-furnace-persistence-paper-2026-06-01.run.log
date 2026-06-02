@@ -1,0 +1,305 @@
+$ timeout 240 env MC_COMPAT_IGNORE_DECODE_ERRORS=1 SERVER_PROTOCOL=763 SERVER_VERSION=1.20.1 SERVER_NAME=mc-compat-survival-furnace-paper-clean4-20260601 PAPER_PLUGIN_JAR=docs/evidence/mc-compat-paper-survival-furnace-fixture-2026-06-01.jar CLIENT_DIR=/home/brittonr/git/mc/stevenarella CLIENT_TIMEOUT=30 SMOKE_RECEIPT=target/mc-compat-survival-furnace-persistence-receipts/paper-survival-furnace-persistence-2026-06-01.receipt.json nix run --no-update-lock-file .#mc-compat-smoke -- --run --keep-server --server-backend paper --scenario survival-furnace-persistence --receipt target/mc-compat-survival-furnace-persistence-receipts/paper-survival-furnace-persistence-2026-06-01.receipt.json
+[mc-compat] building Stevenarella client
+warning: `/home/brittonr/git/mc/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: file `/home/brittonr/git/mc/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+   Compiling openssl-sys v0.9.111
+   Compiling freetype-sys v0.13.1
+   Compiling expat-sys v2.1.6
+   Compiling crossfont v0.5.2
+   Compiling x11-dl v2.21.0
+   Compiling blake3 v1.8.5
+   Compiling servo-fontconfig-sys v5.1.0
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1052:36
+     |
+1052 |         offsets |protocol_version| (instrument.offsets(protocol_version)
+     |                                    ^
+1053 |             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 })),
+     |                                                                                                    ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1052 ~         offsets |protocol_version| instrument.offsets(protocol_version)
+1053 ~             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+     |
+
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1407:36
+     |
+1407 |         offsets |protocol_version| (variant.offsets(protocol_version)),
+     |                                    ^                                 ^
+     |
+help: remove these parentheses
+     |
+1407 -         offsets |protocol_version| (variant.offsets(protocol_version)),
+1407 +         offsets |protocol_version| variant.offsets(protocol_version),
+     |
+
+warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
+   Compiling openssl v0.10.75
+   Compiling native-tls v0.2.14
+   Compiling freetype-rs v0.26.0
+   Compiling servo-fontconfig v0.5.1
+   Compiling sctk-adwaita v0.4.3
+   Compiling glutin_glx_sys v0.1.8
+   Compiling winit v0.27.5
+   Compiling tokio-native-tls v0.3.1
+   Compiling hyper-tls v0.5.0
+   Compiling reqwest v0.11.27
+   Compiling glutin v0.29.1
+   Compiling steven_protocol v0.0.1 (/home/brittonr/git/mc/stevenarella/protocol)
+   Compiling stevenarella v0.0.1 (/home/brittonr/git/mc/stevenarella)
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:102:21
+    |
+102 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+252 | / define_elements! {
+253 | |     Image,
+254 | |     Batch,
+255 | |     Text,
+...   |
+258 | |     TextBox,
+259 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+102 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib) generated 2 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (bin "stevenarella") generated 2 warnings (2 duplicates)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 7.68s
+[mc-compat] starting Paper 1.20.1 server on 127.0.0.1:25566 via itzg/minecraft-server:java17 with EULA=TRUE
+c07051695e56054d4bf7e3345866e37f84d3fc69e82adbdfb63ee0be2289bddf
+[mc-compat] probing status 127.0.0.1:25566 expecting protocol 763
+{"version":{"name":"Paper 1.20.1","protocol":763},"description":{"text":"A Minecraft Server"},"players":{"max":20,"online":0}}
+[mc-compat] running Stevenarella headless scenario 'survival-furnace-persistence' isolated from host Wayland compositor
+mc_compat_reconnect_session=2
+[main.rs:1037][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:1173][INFO] Shader version: #version 150
+[main.rs:290][INFO] Detected server protocol version 763
+[server/mod.rs:495][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25566
+[server/mod.rs:500][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:517][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:531][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:538][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:599][WARN] Server is running in offline mode
+[server/mod.rs:600][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbot properties=0
+[server/mod.rs:2581][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[world/mod.rs:1123][INFO] Dimension bounds: min_y=-64 height=384
+[server/mod.rs:2666][INFO] MC-COMPAT-MILESTONE join_game entity_id=379 gamemode=Survival
+[server/mod.rs:4467][INFO] Received chat message: unhandled: multiplayer.player.joined
+[server/mod.rs:1151][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:3804][INFO] MC-COMPAT-MILESTONE inventory_probe_window_items window=0 state_id=1 slots=46 slot36=empty slot37=empty carried=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=2 slot=45 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=3 slot=36 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=4 slot=37 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=5 slot=38 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=6 slot=39 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=7 slot=40 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=8 slot=41 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=9 slot=42 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=10 slot=43 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=11 slot=44 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=12 slot=9 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=13 slot=10 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=14 slot=11 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=15 slot=12 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=16 slot=13 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=17 slot=14 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=18 slot=15 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=19 slot=16 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=20 slot=17 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=21 slot=18 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=22 slot=19 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=23 slot=20 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=24 slot=21 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=25 slot=22 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=26 slot=23 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=27 slot=24 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=28 slot=25 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=29 slot=26 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=30 slot=27 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=31 slot=28 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=32 slot=29 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=33 slot=30 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=34 slot=31 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=35 slot=32 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=36 slot=33 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=37 slot=34 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=38 slot=35 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=39 slot=8 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=40 slot=7 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=41 slot=6 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=42 slot=5 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=43 slot=45 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=255 state_id=44 slot=-1 item=id=769 count=1
+[server/mod.rs:3179][INFO] MC-COMPAT-MILESTONE update_health health=20.0 food=20 saturation=5.0
+[server/mod.rs:4615][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=0
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:stripped_spruce_log_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:stripped_spruce_log_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:jungle_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:jungle_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:dark_oak_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:dark_oak_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:stripped_birch_log_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:stripped_birch_log_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:stripped_acacia_log_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:stripped_acacia_log_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:spruce_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:spruce_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:acacia_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:acacia_wood
+[server/mod.rs:3405][INFO] MC-COMPAT-MILESTONE survival_furnace_move_near_furnace x=12.5 y=65.0 z=0.5 position=12,64,0
+[server/mod.rs:3421][INFO] MC-COMPAT-MILESTONE survival_furnace_open_request_sent hand=main position=12,64,0 face=up sequence=709
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=45 slot=36 item=id=15 count=1
+[server/mod.rs:3988][INFO] MC-COMPAT-MILESTONE inventory_probe_slot36_nonempty count=1 item_id=15
+[server/mod.rs:3804][INFO] MC-COMPAT-MILESTONE inventory_probe_window_items window=0 state_id=46 slots=46 slot36=id=15 count=1 slot37=empty carried=id=769 count=1
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=47 slot=45 item=empty
+[server/mod.rs:3728][INFO] MC-COMPAT-MILESTONE survival_furnace_open_seen window=1 position=12,64,0
+[server/mod.rs:3804][INFO] MC-COMPAT-MILESTONE inventory_probe_window_items window=1 state_id=1 slots=39 slot36=empty slot37=empty carried=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=48 slot=45 item=empty
+[server/mod.rs:3454][INFO] MC-COMPAT-MILESTONE survival_furnace_input_sent window=1 slot=0 item=RawIron count=1
+[server/mod.rs:3474][INFO] MC-COMPAT-MILESTONE survival_furnace_fuel_sent window=1 slot=1 item=Coal count=1
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=1 state_id=2 slot=0 item=empty
+[server/mod.rs:3804][INFO] MC-COMPAT-MILESTONE inventory_probe_window_items window=1 state_id=3 slots=39 slot36=empty slot37=empty carried=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=49 slot=45 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=1 state_id=4 slot=0 item=id=769 count=1
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=1 state_id=5 slot=1 item=id=762 count=1
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=1 state_id=6 slot=2 item=id=770 count=1
+[server/mod.rs:3570][INFO] MC-COMPAT-MILESTONE survival_furnace_burn_progress_seen window=1 progress=started
+[server/mod.rs:3576][INFO] MC-COMPAT-MILESTONE survival_furnace_output_seen window=1 slot=2 item=IronIngot count=1
+[server/mod.rs:3494][INFO] MC-COMPAT-MILESTONE survival_furnace_output_collected window=1 slot=2 item=IronIngot count=1
+[server/mod.rs:3509][INFO] MC-COMPAT-MILESTONE survival_furnace_close_sent window=1
+[server/mod.rs:3518][INFO] MC-COMPAT-MILESTONE survival_furnace_reconnect_sent session=1
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=1 state_id=7 slot=1 item=empty
+[server/mod.rs:3804][INFO] MC-COMPAT-MILESTONE inventory_probe_window_items window=1 state_id=8 slots=39 slot36=empty slot37=empty carried=id=770 count=1
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=50 slot=45 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=254 state_id=0 slot=1 item=id=770 count=1
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=51 slot=36 item=id=770 count=1
+[server/mod.rs:3603][INFO] MC-COMPAT-MILESTONE survival_furnace_inventory_updated slot=36 item=IronIngot count=1
+[server/mod.rs:3804][INFO] MC-COMPAT-MILESTONE inventory_probe_window_items window=0 state_id=52 slots=46 slot36=id=770 count=1 slot37=id=770 count=1 carried=id=769 count=1
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=53 slot=45 item=empty
+[server/mod.rs:4467][INFO] Received chat message: unhandled: chat.type.advancement.task
+[main.rs:1037][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:1173][INFO] Shader version: #version 150
+[main.rs:290][INFO] Detected server protocol version 763
+[server/mod.rs:495][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25566
+[server/mod.rs:500][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:517][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:531][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:538][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:599][WARN] Server is running in offline mode
+[server/mod.rs:600][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbot properties=0
+[server/mod.rs:2581][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[world/mod.rs:1123][INFO] Dimension bounds: min_y=-64 height=384
+[server/mod.rs:2666][INFO] MC-COMPAT-MILESTONE join_game entity_id=721 gamemode=Survival
+[server/mod.rs:4467][INFO] Received chat message: unhandled: multiplayer.player.joined
+[server/mod.rs:1151][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:3804][INFO] MC-COMPAT-MILESTONE inventory_probe_window_items window=0 state_id=1 slots=46 slot36=id=770 count=1 slot37=id=770 count=1 carried=empty
+[server/mod.rs:3894][INFO] MC-COMPAT-MILESTONE inventory_probe_slot36_nonempty count=1 item_id=770
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=2 slot=45 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=3 slot=36 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=4 slot=37 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=5 slot=38 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=6 slot=39 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=7 slot=40 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=8 slot=41 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=9 slot=42 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=10 slot=43 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=11 slot=44 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=12 slot=9 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=13 slot=10 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=14 slot=11 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=15 slot=12 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=16 slot=13 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=17 slot=14 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=18 slot=15 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=19 slot=16 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=20 slot=17 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=21 slot=18 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=22 slot=19 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=23 slot=20 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=24 slot=21 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=25 slot=22 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=26 slot=23 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=27 slot=24 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=28 slot=25 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=29 slot=26 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=30 slot=27 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=31 slot=28 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=32 slot=29 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=33 slot=30 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=34 slot=31 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=35 slot=32 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=36 slot=33 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=37 slot=34 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=38 slot=35 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=39 slot=8 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=40 slot=7 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=41 slot=6 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=42 slot=5 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=43 slot=45 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=255 state_id=44 slot=-1 item=id=769 count=1
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=45 slot=36 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=46 slot=37 item=empty
+[server/mod.rs:3179][INFO] MC-COMPAT-MILESTONE update_health health=20.0 food=20 saturation=5.0
+[server/mod.rs:4615][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=0
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:stripped_spruce_log_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:stripped_spruce_log_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:dark_oak_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:dark_oak_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:jungle_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:jungle_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:stripped_birch_log_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:stripped_birch_log_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:stripped_acacia_log_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:stripped_acacia_log_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:spruce_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:spruce_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:acacia_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:acacia_wood
+[server/mod.rs:3405][INFO] MC-COMPAT-MILESTONE survival_furnace_move_near_furnace x=12.5 y=65.0 z=0.5 position=12,64,0
+[server/mod.rs:3421][INFO] MC-COMPAT-MILESTONE survival_furnace_open_request_sent hand=main position=12,64,0 face=up sequence=709
+[server/mod.rs:3718][INFO] MC-COMPAT-MILESTONE survival_furnace_reopen_seen window=1 position=12,64,0
+[server/mod.rs:3804][INFO] MC-COMPAT-MILESTONE inventory_probe_window_items window=1 state_id=1 slots=39 slot36=empty slot37=empty carried=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=47 slot=45 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=1 state_id=2 slot=0 item=empty
+[server/mod.rs:3921][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=1 state_id=3 slot=2 item=id=770 count=1
+[server/mod.rs:3570][INFO] MC-COMPAT-MILESTONE survival_furnace_burn_progress_seen window=1 progress=started
+[server/mod.rs:3576][INFO] MC-COMPAT-MILESTONE survival_furnace_output_seen window=1 slot=2 item=IronIngot count=1
+[mc-compat] client compatbot finished Some(124); log: /tmp/mc-compat-client.compatbot.survival-furnace-persistence-session-1.1615579.log
+[mc-compat] client compatbot finished Some(124); log: /tmp/mc-compat-client.compatbot.survival-furnace-persistence-session-2.1615579.log
+[mc-compat] wrote typed event log target/mc-compat-survival-furnace-persistence-receipts/paper-survival-furnace-persistence-2026-06-01.receipt.typed-events.log
+[mc-compat] wrote smoke receipt target/mc-compat-survival-furnace-persistence-receipts/paper-survival-furnace-persistence-2026-06-01.receipt.json
+exit_status=0
+mc-compat-survival-furnace-paper-clean4-20260601

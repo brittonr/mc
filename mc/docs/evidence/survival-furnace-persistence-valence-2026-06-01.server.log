@@ -1,0 +1,23 @@
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.24s
+     Running `/tmp/valence-compat-survival-furnace-61a1f773d8967b0d7d22719771277bba3eb73f37-target/debug/examples/survival_compat`
+[2m2026-06-02T03:30:02.019809Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+[2m2026-06-02T03:30:03.922233Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_furnace_open username=compatbot position=12,64,0 window=1
+MC-COMPAT-MILESTONE survival_furnace_open username=compatbot position=12,64,0 window=1
+[2m2026-06-02T03:30:04.523403Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_furnace_input_insert username=compatbot window=1 slot=0 item=RawIron count=1
+MC-COMPAT-MILESTONE survival_furnace_input_insert username=compatbot window=1 slot=0 item=RawIron count=1
+[2m2026-06-02T03:30:04.523468Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_furnace_fuel_insert username=compatbot window=1 slot=1 item=Coal count=1
+MC-COMPAT-MILESTONE survival_furnace_fuel_insert username=compatbot window=1 slot=1 item=Coal count=1
+[2m2026-06-02T03:30:04.523473Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_furnace_burn_progress username=compatbot window=1 progress=started
+MC-COMPAT-MILESTONE survival_furnace_burn_progress username=compatbot window=1 progress=started
+[2m2026-06-02T03:30:04.523477Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_furnace_output_available username=compatbot window=1 slot=2 item=IronIngot count=1
+MC-COMPAT-MILESTONE survival_furnace_output_available username=compatbot window=1 slot=2 item=IronIngot count=1
+[2m2026-06-02T03:30:05.223832Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_furnace_output_collect username=compatbot window=1 slot=2 item=IronIngot count=1 inventory_slot=36
+MC-COMPAT-MILESTONE survival_furnace_output_collect username=compatbot window=1 slot=2 item=IronIngot count=1 inventory_slot=36
+[2m2026-06-02T03:30:18.039108Z[0m [33m WARN[0m [2mvalence_server::keepalive[0m[2m:[0m Client Entity { index: 2, generation: 1 } timed out: no keepalive response after 8000ms
+[2m2026-06-02T03:30:35.859561Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+[2m2026-06-02T03:30:36.960733Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_furnace_reconnect_reopen username=compatbot position=12,64,0 window=1
+MC-COMPAT-MILESTONE survival_furnace_reconnect_reopen username=compatbot position=12,64,0 window=1
+[2m2026-06-02T03:30:36.960749Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_furnace_server_state username=compatbot position=12,64,0 input=RawIron fuel=Coal output=empty collected=true session_persistent=true
+MC-COMPAT-MILESTONE survival_furnace_server_state username=compatbot position=12,64,0 input=RawIron fuel=Coal output=empty collected=true session_persistent=true

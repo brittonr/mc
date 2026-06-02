@@ -1,0 +1,12 @@
+row=survival-furnace-persistence
+backend=paper
+revision_status=clean
+child_revision=paper-fixture-source-b5ee6370
+metric.furnace_open=position=12,64,0 window=1
+metric.input_insert=slot=0 item=RawIron count=1
+metric.fuel_insert=slot=1 item=Coal count=1
+metric.burn_progress_start=progress=started
+metric.output_available=slot=2 item=IronIngot count=1
+metric.output_collect=slot=2 item=IronIngot count=1 inventory_slot=36
+metric.reconnect_reopen=position=12,64,0 window=1
+metric.server_state=input=RawIron fuel=Coal output=empty collected=true session_persistent=true

@@ -1,0 +1,16 @@
+81508ed098438d0f51d47a747e4a3858bed472e1d3027588ae8428ee86b6290e  docs/evidence/survival-furnace-persistence-receipts-2026-06-01.md
+f68cdd3bfb71fe81752328f2ff98e10e8df13a08e1e29c01fe49924948b3373c  docs/evidence/survival-furnace-persistence-paper-2026-06-01.receipt.json
+b072934125bdce79e02aaadef7d3942c2097fe1efab851d374f7855c5d7c0801  docs/evidence/survival-furnace-persistence-paper-2026-06-01.run.log
+4b4c448439cd29ded58bbb1895aa4fccfdfde32cd85c9b5849c54d2af9dba9f7  docs/evidence/survival-furnace-persistence-paper-2026-06-01.client.log
+ecbe15ed6a5f2e5d0ef156313f4fac44edc39eab82de4b93f90cf659c4d8bd61  docs/evidence/survival-furnace-persistence-paper-2026-06-01.server.log
+06ff625ecf375ad5e20e046ad5279fd36fb6a4f013b44b99ed4429d60d1cf56b  docs/evidence/survival-furnace-persistence-paper-2026-06-01.typed-events.log
+9090a8afcc4bfeed418799f6c3312b6daa9578def2270f93cf473a42096d4500  docs/evidence/survival-furnace-persistence-paper-2026-06-01.evidence
+5561a1076b9277d4dcb7e446399aaad1b7a3e201bc1231663adb662f86b85888  docs/evidence/survival-furnace-persistence-valence-2026-06-01.receipt.json
+64ce1082af0429368c89ef229b919fc0c5e49c19a7107b77277a4d7966a6f9f5  docs/evidence/survival-furnace-persistence-valence-2026-06-01.run.log
+9730aa72b6efd8957f7b3a9b0fbd19291bf271466af820dc66e31ac33d658f69  docs/evidence/survival-furnace-persistence-valence-2026-06-01.client.log
+fb697ce6c1d07674f868572af66d115c7bce5b371f48d63b2319d8b1f852ba7d  docs/evidence/survival-furnace-persistence-valence-2026-06-01.server.log
+cca8351fa948dd502acbdd337ca0cdc2dac11f1c5c7d856bef2bb01c27efc4ef  docs/evidence/survival-furnace-persistence-valence-2026-06-01.typed-events.log
+67bb9bd815839879f8512e58336d0cb2ec0745a7e9e91e722de1f9c72afa6761  docs/evidence/survival-furnace-persistence-valence-2026-06-01.evidence
+a7e26e8df833a51c38442f1cbaaf3f32307020deae991cbda6c75f3553870b1a  docs/evidence/survival-furnace-persistence-row-parity-2026-06-01.run.log
+1be49d4db20e67968619f0e9b4207578f0f1be183aeccff8cd2000224f10ccbb  docs/evidence/mc-compat-paper-survival-furnace-fixture-2026-06-01.jar
+ac722a396619728a0405bf3949aa30313d0655602959136bb8fca49948659dbe  tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java

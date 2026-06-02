@@ -19,13 +19,14 @@ const COVERED_STATUS: &str = "reference_parity_covered";
 const BREAK_PLACE_PICKUP_ROW: &str = "break/place/pickup";
 const CRAFTING_ROW: &str = "crafting";
 const CHEST_ROW: &str = "chest persistence";
+const FURNACE_ROW: &str = "furnace persistence";
 const BIOME_DIMENSION_ROW: &str = "biome/dimension";
 
 const REQUIRED_SYSTEMS: &[&str] = &[
     BREAK_PLACE_PICKUP_ROW,
     CRAFTING_ROW,
     CHEST_ROW,
-    "furnace persistence",
+    FURNACE_ROW,
     "hunger/food",
     "mob drops",
     "redstone",
@@ -38,7 +39,7 @@ const REQUIRED_TEXT: &[&str] = &[
     "No full survival compatibility or broader vanilla parity",
     "No full survival compatibility from crafting row",
     "No full survival compatibility from chest persistence row",
-    "No furnace coverage",
+    "No full survival compatibility from furnace persistence row",
     "No hunger or food coverage",
     "No mob AI or mob drop coverage",
     "No redstone coverage",
@@ -73,6 +74,12 @@ const CHEST_VALENCE_RECEIPT: &str =
     "docs/evidence/protocol-763-survival-chest-persistence-valence-2026-05-29.receipt.json";
 const CHEST_EVIDENCE_DOC: &str =
     "docs/evidence/protocol-763-survival-chest-persistence-2026-05-29.md";
+const FURNACE_PAPER_RECEIPT: &str =
+    "docs/evidence/survival-furnace-persistence-paper-2026-06-01.receipt.json";
+const FURNACE_VALENCE_RECEIPT: &str =
+    "docs/evidence/survival-furnace-persistence-valence-2026-06-01.receipt.json";
+const FURNACE_EVIDENCE_DOC: &str =
+    "docs/evidence/survival-furnace-persistence-receipts-2026-06-01.md";
 const BIOME_DIMENSION_PAPER_RECEIPT: &str =
     "docs/evidence/survival-biome-dimension-paper-2026-06-01.receipt.json";
 const BIOME_DIMENSION_VALENCE_RECEIPT: &str =
@@ -222,6 +229,15 @@ fn validate_row(row: &SurvivalRow, errors: &mut Vec<String>) {
             CHEST_EVIDENCE_DOC,
             "all-container",
             "covered chest persistence row",
+            errors,
+        ),
+        FURNACE_ROW => validate_covered_row(
+            row,
+            FURNACE_PAPER_RECEIPT,
+            FURNACE_VALENCE_RECEIPT,
+            FURNACE_EVIDENCE_DOC,
+            "all smelting recipes",
+            "covered furnace persistence row",
             errors,
         ),
         BIOME_DIMENSION_ROW => validate_covered_row(
@@ -381,8 +397,8 @@ fn run_self_tests() -> Result<String, Vec<String>> {
     )?;
 
     let promoted_missing = good_rows().replacen(
-        "| furnace persistence | missing | none | none |",
-        "| furnace persistence | reference_parity_covered | `some-valence` | none |",
+        "| hunger/food | missing | none | none |",
+        "| hunger/food | reference_parity_covered | `some-valence` | none |",
         1,
     );
     assert_contains(
@@ -414,7 +430,7 @@ fn assert_contains(errors: &[String], needle: &str) -> Result<(), Vec<String>> {
 
 fn fixture_doc(rows: &str) -> String {
     format!(
-        "# Fixture\n\n## Coverage rows\n\n{TABLE_HEADER}\n| --- | --- | --- | --- | --- | --- | --- |\n{rows}\n\n## Gate decision\n\nfull_survival_compatibility remains a non-claim.\n\npaired reference receipt\nBLAKE3 manifest entries\nNo vanilla parity or full survival compatibility\nNo full survival compatibility from crafting row\nNo full survival compatibility from chest persistence row\nNo furnace coverage\nNo hunger or food coverage\nNo mob AI or mob drop coverage\nNo redstone coverage\nNo full survival compatibility from biome/dimension row\nNo world persistence coverage\n"
+        "# Fixture\n\n## Coverage rows\n\n{TABLE_HEADER}\n| --- | --- | --- | --- | --- | --- | --- |\n{rows}\n\n## Gate decision\n\nfull_survival_compatibility remains a non-claim.\n\npaired reference receipt\nBLAKE3 manifest entries\nNo vanilla parity or full survival compatibility\nNo full survival compatibility from crafting row\nNo full survival compatibility from chest persistence row\nNo full survival compatibility from furnace persistence row\nNo hunger or food coverage\nNo mob AI or mob drop coverage\nNo redstone coverage\nNo full survival compatibility from biome/dimension row\nNo world persistence coverage\n"
     )
 }
 
@@ -423,7 +439,7 @@ fn good_rows() -> String {
         format!("| break/place/pickup | {COVERED_STATUS} | `{BREAK_PLACE_PICKUP_VALENCE_RECEIPT}` | `{BREAK_PLACE_PICKUP_PAPER_RECEIPT}` | Paired comparator evidence: `{BREAK_PLACE_PICKUP_EVIDENCE_DOC}`. | No full survival compatibility or broader vanilla parity. | next |"),
         format!("| crafting | {COVERED_STATUS} | `{CRAFTING_VALENCE_RECEIPT}` | `{CRAFTING_PAPER_RECEIPT}` | Paired comparator evidence: `{CRAFTING_EVIDENCE_DOC}`. | No full survival compatibility from crafting row; no furnace/hunger/mob/redstone/biome/dimension/world persistence coverage. | next |"),
         format!("| chest persistence | {COVERED_STATUS} | `{CHEST_VALENCE_RECEIPT}` | `{CHEST_PAPER_RECEIPT}` | Paired comparator evidence: `{CHEST_EVIDENCE_DOC}`. | No full survival compatibility from chest persistence row; no all-container behavior. | next |"),
-        "| furnace persistence | missing | none | none | Add receipts. | No furnace coverage. | next |".to_string(),
+        format!("| furnace persistence | {COVERED_STATUS} | `{FURNACE_VALENCE_RECEIPT}` | `{FURNACE_PAPER_RECEIPT}` | Paired comparator evidence: `{FURNACE_EVIDENCE_DOC}`. | No full survival compatibility from furnace persistence row; no all smelting recipes, long-running timing parity, hopper automation, or furnace minecarts coverage. | next |"),
         "| hunger/food | missing | none | none | Add receipts. | No hunger or food coverage. | next |".to_string(),
         "| mob drops | missing | none | none | Add receipts. | No mob AI or mob drop coverage. | next |".to_string(),
         "| redstone | missing | none | none | Add receipts. | No redstone coverage. | next |".to_string(),

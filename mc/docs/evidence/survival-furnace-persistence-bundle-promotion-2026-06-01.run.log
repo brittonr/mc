@@ -1,0 +1,17 @@
+$ nix develop --no-update-lock-file -c rustc tools/check_acceptance_matrix.rs -o /tmp/check_acceptance_matrix_furnace
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+$ /tmp/check_acceptance_matrix_furnace --self-test
+acceptance matrix self-test ok: positive and negative fixtures exercised
+$ /tmp/check_acceptance_matrix_furnace
+acceptance matrix check passed: 29 rows validated
+$ nix develop --no-update-lock-file -c rustc tools/check_current_evidence_bundle.rs -o /tmp/check_current_evidence_bundle_furnace
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+$ /tmp/check_current_evidence_bundle_furnace --self-test
+current evidence bundle self-test ok: positive and negative fixtures exercised
+$ /tmp/check_current_evidence_bundle_furnace
+current evidence bundle check passed: 29 rows validated
+exit_status=0

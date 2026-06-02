@@ -40,6 +40,7 @@ const REQUIRED_SEAMS: &[&str] = &[
     "Survival break/place/pickup",
     "Survival chest persistence",
     "Survival crafting table",
+    "Survival furnace persistence",
     "Survival biome/dimension join state",
     "MCP-controlled observability",
 ];

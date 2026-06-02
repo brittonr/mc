@@ -1,0 +1,21 @@
+$ nix develop --no-update-lock-file -c b3sum --check docs/evidence/survival-furnace-persistence-receipts-2026-06-01.b3
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+docs/evidence/survival-furnace-persistence-receipts-2026-06-01.md: OK
+docs/evidence/survival-furnace-persistence-paper-2026-06-01.receipt.json: OK
+docs/evidence/survival-furnace-persistence-paper-2026-06-01.run.log: OK
+docs/evidence/survival-furnace-persistence-paper-2026-06-01.client.log: OK
+docs/evidence/survival-furnace-persistence-paper-2026-06-01.server.log: OK
+docs/evidence/survival-furnace-persistence-paper-2026-06-01.typed-events.log: OK
+docs/evidence/survival-furnace-persistence-paper-2026-06-01.evidence: OK
+docs/evidence/survival-furnace-persistence-valence-2026-06-01.receipt.json: OK
+docs/evidence/survival-furnace-persistence-valence-2026-06-01.run.log: OK
+docs/evidence/survival-furnace-persistence-valence-2026-06-01.client.log: OK
+docs/evidence/survival-furnace-persistence-valence-2026-06-01.server.log: OK
+docs/evidence/survival-furnace-persistence-valence-2026-06-01.typed-events.log: OK
+docs/evidence/survival-furnace-persistence-valence-2026-06-01.evidence: OK
+docs/evidence/survival-furnace-persistence-row-parity-2026-06-01.run.log: OK
+docs/evidence/mc-compat-paper-survival-furnace-fixture-2026-06-01.jar: OK
+tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java: OK
+exit_status=0

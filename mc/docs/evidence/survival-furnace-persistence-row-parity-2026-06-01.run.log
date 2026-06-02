@@ -1,0 +1,6 @@
+$ nix develop --no-update-lock-file -c rustc tools/check_survival_row_parity.rs -o /tmp/check_survival_row_parity_furnace && /tmp/check_survival_row_parity_furnace --row survival-furnace-persistence --paper docs/evidence/survival-furnace-persistence-paper-2026-06-01.evidence --valence docs/evidence/survival-furnace-persistence-valence-2026-06-01.evidence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+furnace persistence row check passed
+exit_status=0

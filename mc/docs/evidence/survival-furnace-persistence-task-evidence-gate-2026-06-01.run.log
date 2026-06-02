@@ -1,35 +1,4 @@
-
-## cairn tasks gate
-command=nix run --no-update-lock-file .#cairn -- gate tasks survival-furnace-persistence-parity --root .
-{
-  "change": "survival-furnace-persistence-parity",
-  "evidence_summary": {
-    "docs_only": 0,
-    "fixture": 0,
-    "formal": 0,
-    "mode": "advisory",
-    "model": 0,
-    "probe": 0,
-    "property": 0
-  },
-  "input_hash": "a74a4504c95b9e9b194f9dd1d3a7f168194f8fc71287bfc8c0c4983d8a6d1afd",
-  "issues": [],
-  "layout": "cairn",
-  "policy": "cairn-default",
-  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
-  "receipt_hash": "efe5c420a7f68d8b22da2abc77dfb13f7c3a30e12c7a16fb5b10beedcecdc71e",
-  "stage": "tasks",
-  "valid": true,
-  "verdict": "PASS"
-}
+$ rustc --edition=2024 tools/check_cairn_task_evidence.rs -o /tmp/check_cairn_task_evidence_furnace
+$ /tmp/check_cairn_task_evidence_furnace
+task evidence gate passed: 77 completed tasks checked across 22 active task files
 exit_status=0
-
-## cairn task evidence nix check
-command=nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
-this derivation will be built:
-  /nix/store/0k9kz2zw7p918xglbjj2wm74351spcrd-mc-compat-cairn-task-evidence.drv
-cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
-building '/nix/store/0k9kz2zw7p918xglbjj2wm74351spcrd-mc-compat-cairn-task-evidence.drv'...
-exit_status=0
-
-validation_status=PASS

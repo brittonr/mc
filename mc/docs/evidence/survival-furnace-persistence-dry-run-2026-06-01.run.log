@@ -1,0 +1,23 @@
+$ nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-valence-survival-furnace-persistence-dry-run --no-link -L
+this derivation will be built:
+  /nix/store/n4hbs0dxpzy5g1kqc6jxhjn7yfs6q5h8-mc-compat-valence-survival-furnace-persistence-dry-run.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/n4hbs0dxpzy5g1kqc6jxhjn7yfs6q5h8-mc-compat-valence-survival-furnace-persistence-dry-run.drv'...
+mc-compat-valence-survival-furnace-persistence-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-valence-survival-furnace-persistence-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-valence-survival-furnace-persistence-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-valence-survival-furnace-persistence-dry-run> hint: call:
+mc-compat-valence-survival-furnace-persistence-dry-run> hint:
+mc-compat-valence-survival-furnace-persistence-dry-run> hint:   git config --global init.defaultBranch <name>
+mc-compat-valence-survival-furnace-persistence-dry-run> hint:
+mc-compat-valence-survival-furnace-persistence-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-valence-survival-furnace-persistence-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-valence-survival-furnace-persistence-dry-run> hint:
+mc-compat-valence-survival-furnace-persistence-dry-run> hint:   git branch -m <name>
+mc-compat-valence-survival-furnace-persistence-dry-run> hint:
+mc-compat-valence-survival-furnace-persistence-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-valence-survival-furnace-persistence-dry-run> Initialized empty Git repository in /build/fake-valence/.git/
+mc-compat-valence-survival-furnace-persistence-dry-run> [master (root-commit) 8ab9f3a] init
+mc-compat-valence-survival-furnace-persistence-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-valence-survival-furnace-persistence-dry-run>  create mode 100644 README.md
+exit_status=0

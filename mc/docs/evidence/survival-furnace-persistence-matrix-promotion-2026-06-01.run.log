@@ -1,0 +1,9 @@
+$ nix develop --no-update-lock-file -c rustc tools/check_survival_coverage_matrix.rs -o /tmp/check_survival_coverage_matrix_furnace
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+$ /tmp/check_survival_coverage_matrix_furnace --self-test
+survival coverage matrix self-test ok: positive and negative fixtures exercised
+$ /tmp/check_survival_coverage_matrix_furnace
+survival coverage matrix check passed: 9 rows validated
+exit_status=0
