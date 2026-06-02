@@ -81,6 +81,13 @@ const CTF_SCORE_LIMIT_CONFIGURED: u32 = 2;
 const CTF_SCORE_LIMIT_RED_PRE_FINAL_CAPTURE: u32 = 1;
 const CTF_SCORE_LIMIT_BLUE_PRE_FINAL_CAPTURE: u32 = 0;
 const CTF_SCORE_LIMIT_FIRST_WIN_EMISSION: u32 = 1;
+const CTF_RACE_PROBE_ENV: &str = "MC_COMPAT_CTF_RACE_PROBE";
+const CTF_RACE_WINDOW_TICKS: u32 = 40;
+const CTF_RACE_FINAL_RED_SCORE: u32 = 1;
+const CTF_RACE_FINAL_BLUE_SCORE: u32 = 0;
+const CTF_RACE_ACCEPTED_TRANSITION: &str = "pickup";
+const CTF_RACE_REJECTED_TRANSITION: &str = "duplicate_pickup";
+const CTF_RACE_FINAL_BLUE_FLAG_STATE: &str = "at_base";
 
 #[derive(Clone, Debug, PartialEq)]
 struct ArrowPolicySnapshot {
@@ -702,6 +709,7 @@ fn setup(
     commands.insert_resource(score);
     commands.insert_resource(WinConditionState::default());
     commands.insert_resource(ReconnectJoinCounts::default());
+    commands.insert_resource(CtfRaceProbeState::default());
 }
 
 /// Build a flag at the given position. `pos` should be the position of the
@@ -990,6 +998,7 @@ fn digging(
     mut commands: Commands,
     globals: Res<CtfGlobals>,
     mut flag_manager: ResMut<FlagManager>,
+    mut race_probe: ResMut<CtfRaceProbeState>,
     score: Res<Score>,
 ) {
     let mut layer = layers.single_mut();
@@ -1008,10 +1017,43 @@ fn digging(
                 continue;
             };
             let is_flag = event.position == globals.red_flag || event.position == globals.blue_flag;
+            if event.position == globals.red_flag
+                && *team == Team::Blue
+                && (flag_manager.red.is_some() || ctf_race_duplicate_pickup_blocked(&race_probe))
+            {
+                log_ctf_race_rejected_transition(
+                    &mut race_probe,
+                    username.as_str(),
+                    *team,
+                    Team::Red,
+                );
+                return;
+            }
+            if event.position == globals.blue_flag
+                && *team == Team::Red
+                && (flag_manager.blue.is_some() || ctf_race_duplicate_pickup_blocked(&race_probe))
+            {
+                log_ctf_race_rejected_transition(
+                    &mut race_probe,
+                    username.as_str(),
+                    *team,
+                    Team::Blue,
+                );
+                return;
+            }
 
             match (team, block.state) {
                 (Team::Blue, BlockState::RED_WOOL) => {
                     if event.position == globals.red_flag {
+                        if flag_manager.red.is_some() || ctf_race_duplicate_pickup_blocked(&race_probe) {
+                            log_ctf_race_rejected_transition(
+                                &mut race_probe,
+                                username.as_str(),
+                                *team,
+                                Team::Red,
+                            );
+                            return;
+                        }
                         commands.entity(event.client).insert(HasFlag(Team::Red));
                         client.send_chat_message("You have the flag!".italic());
                         flag_manager.red = Some(ent);
@@ -1023,11 +1065,26 @@ fn digging(
                         );
                         info!("{}", milestone);
                         println!("{}", milestone);
+                        log_ctf_race_accepted_transition(
+                            &mut race_probe,
+                            username.as_str(),
+                            *team,
+                            Team::Red,
+                        );
                         return;
                     }
                 }
                 (Team::Red, BlockState::BLUE_WOOL) => {
                     if event.position == globals.blue_flag {
+                        if flag_manager.blue.is_some() || ctf_race_duplicate_pickup_blocked(&race_probe) {
+                            log_ctf_race_rejected_transition(
+                                &mut race_probe,
+                                username.as_str(),
+                                *team,
+                                Team::Blue,
+                            );
+                            return;
+                        }
                         commands.entity(event.client).insert(HasFlag(Team::Blue));
                         client.send_chat_message("You have the flag!".italic());
                         flag_manager.blue = Some(ent);
@@ -1039,6 +1096,12 @@ fn digging(
                         );
                         info!("{}", milestone);
                         println!("{}", milestone);
+                        log_ctf_race_accepted_transition(
+                            &mut race_probe,
+                            username.as_str(),
+                            *team,
+                            Team::Blue,
+                        );
                         return;
                     }
                 }
@@ -1156,6 +1219,165 @@ fn score_limit_win_probe_enabled() -> bool {
     env::var(CTF_SCORE_LIMIT_WIN_PROBE_ENV)
         .map(|value| value != "0")
         .unwrap_or(false)
+}
+
+fn ctf_race_probe_enabled() -> bool {
+    env::var(CTF_RACE_PROBE_ENV)
+        .map(|value| value != "0")
+        .unwrap_or(false)
+}
+
+fn ctf_race_accepted_transition_milestone(
+    username: &str,
+    player_team: Team,
+    flag_team: Team,
+) -> String {
+    format!(
+        "MC-COMPAT-MILESTONE ctf_race_accepted_transition username={} player_team={} \
+         flag_team={} transition={} race_window_ticks={}",
+        username,
+        team_label(player_team),
+        team_label(flag_team),
+        CTF_RACE_ACCEPTED_TRANSITION,
+        CTF_RACE_WINDOW_TICKS
+    )
+}
+
+fn ctf_race_rejected_transition_milestone(
+    username: &str,
+    player_team: Team,
+    flag_team: Team,
+) -> String {
+    format!(
+        "MC-COMPAT-MILESTONE ctf_race_rejected_transition username={} player_team={} \
+         flag_team={} transition={} reason=flag_already_held race_window_ticks={}",
+        username,
+        team_label(player_team),
+        team_label(flag_team),
+        CTF_RACE_REJECTED_TRANSITION,
+        CTF_RACE_WINDOW_TICKS
+    )
+}
+
+fn ctf_race_duplicate_pickup_blocked(state: &CtfRaceProbeState) -> bool {
+    ctf_race_probe_enabled() && state.accepted_username.is_some()
+}
+
+fn log_ctf_race_accepted_transition(
+    state: &mut CtfRaceProbeState,
+    username: &str,
+    player_team: Team,
+    flag_team: Team,
+) {
+    if !ctf_race_probe_enabled() {
+        return;
+    }
+    if state.accepted_username.is_some() {
+        let milestone = format!(
+            "MC-COMPAT-MILESTONE ctf_race_double_accept username={} player_team={} \
+             flag_team={} outcome=forbidden_double_accept",
+            username,
+            team_label(player_team),
+            team_label(flag_team)
+        );
+        info!("{milestone}");
+        println!("{milestone}");
+        return;
+    }
+    state.accepted_username = Some(username.to_owned());
+    let milestone = ctf_race_accepted_transition_milestone(username, player_team, flag_team);
+    info!("{milestone}");
+    println!("{milestone}");
+}
+
+fn log_ctf_race_rejected_transition(
+    state: &mut CtfRaceProbeState,
+    username: &str,
+    player_team: Team,
+    flag_team: Team,
+) {
+    if !ctf_race_probe_enabled() {
+        return;
+    }
+    state.rejected_username = Some(username.to_owned());
+    let milestone = ctf_race_rejected_transition_milestone(username, player_team, flag_team);
+    info!("{milestone}");
+    println!("{milestone}");
+}
+
+fn ctf_race_final_state_milestone(
+    accepted_username: &str,
+    rejected_username: &str,
+    capture_username: &str,
+    capture_team: Team,
+    carried_flag: Team,
+    red_score_after: u32,
+    blue_score_after: u32,
+    flag_manager: &FlagManager,
+) -> Option<String> {
+    let blue_flag_at_base = flag_manager.blue.is_none();
+    let red_flag_at_base = flag_manager.red.is_none();
+    if capture_team != Team::Red
+        || carried_flag != Team::Blue
+        || red_score_after != CTF_RACE_FINAL_RED_SCORE
+        || blue_score_after != CTF_RACE_FINAL_BLUE_SCORE
+        || !blue_flag_at_base
+        || !red_flag_at_base
+    {
+        return None;
+    }
+    Some(format!(
+        "MC-COMPAT-MILESTONE ctf_race_final_state capture_username={} \
+         accepted_username={} rejected_username={} capture_team={} carried_flag={} \
+         final_blue_flag_state={} red_score={} blue_score={} race_window_ticks={} \
+         accepted_transition={} rejected_transition={}",
+        capture_username,
+        accepted_username,
+        rejected_username,
+        team_label(capture_team),
+        team_label(carried_flag),
+        CTF_RACE_FINAL_BLUE_FLAG_STATE,
+        red_score_after,
+        blue_score_after,
+        CTF_RACE_WINDOW_TICKS,
+        CTF_RACE_ACCEPTED_TRANSITION,
+        CTF_RACE_REJECTED_TRANSITION
+    ))
+}
+
+fn log_ctf_race_final_state(
+    state: &mut CtfRaceProbeState,
+    capture_username: &str,
+    capture_team: Team,
+    carried_flag: Team,
+    red_score_after: u32,
+    blue_score_after: u32,
+    flag_manager: &FlagManager,
+) {
+    if !ctf_race_probe_enabled() || state.final_logged {
+        return;
+    }
+    let Some(accepted_username) = state.accepted_username.as_deref() else {
+        return;
+    };
+    let Some(rejected_username) = state.rejected_username.as_deref() else {
+        return;
+    };
+    let Some(milestone) = ctf_race_final_state_milestone(
+        accepted_username,
+        rejected_username,
+        capture_username,
+        capture_team,
+        carried_flag,
+        red_score_after,
+        blue_score_after,
+        flag_manager,
+    ) else {
+        return;
+    };
+    state.final_logged = true;
+    info!("{milestone}");
+    println!("{milestone}");
 }
 
 fn initial_score_from_env() -> Score {
@@ -1747,6 +1969,13 @@ struct FlagManager {
 }
 
 #[derive(Debug, Default, Resource)]
+struct CtfRaceProbeState {
+    accepted_username: Option<String>,
+    rejected_username: Option<String>,
+    final_logged: bool,
+}
+
+#[derive(Debug, Default, Resource)]
 struct ReconnectJoinCounts {
     joins: HashMap<String, u32>,
 }
@@ -1829,6 +2058,7 @@ fn do_flag_capturing(
     mut flag_manager: ResMut<FlagManager>,
     mut score: ResMut<Score>,
     mut win_condition: ResMut<WinConditionState>,
+    mut race_probe: ResMut<CtfRaceProbeState>,
 ) {
     for (ent, mut client, team, position, has_flag, username) in &mut players {
         let capture_trigger = match team {
@@ -1864,6 +2094,15 @@ fn do_flag_capturing(
                 Team::Red => flag_manager.red = None,
                 Team::Blue => flag_manager.blue = None,
             }
+            log_ctf_race_final_state(
+                &mut race_probe,
+                username.as_str(),
+                *team,
+                has_flag.0,
+                red_score_after,
+                blue_score_after,
+                &flag_manager,
+            );
         }
     }
 }
@@ -2435,6 +2674,8 @@ mod tests {
     const TEST_PRE_FINAL_RED_SCORE: u32 = 1;
     const TEST_FINAL_RED_SCORE: u32 = 2;
     const TEST_BLUE_SCORE: u32 = 0;
+    const TEST_ACCEPTED_RACE_PLAYER: &str = "compatbota";
+    const TEST_REJECTED_RACE_PLAYER: &str = "compatbotb";
 
     #[test]
     fn invalid_flag_pickup_helper_rejects_own_flag_and_allows_enemy_flag() {
@@ -2516,6 +2757,107 @@ mod tests {
             milestone.contains("outcome=no_flag_state_mutation_no_score"),
             "{milestone}"
         );
+    }
+
+    #[test]
+    fn ctf_race_milestones_record_one_accept_one_reject_and_final_score() {
+        let flag_manager = FlagManager {
+            red: None,
+            blue: None,
+        };
+        let accepted = ctf_race_accepted_transition_milestone(
+            TEST_ACCEPTED_RACE_PLAYER,
+            Team::Red,
+            Team::Blue,
+        );
+        let rejected = ctf_race_rejected_transition_milestone(
+            TEST_REJECTED_RACE_PLAYER,
+            Team::Red,
+            Team::Blue,
+        );
+        let final_state = ctf_race_final_state_milestone(
+            TEST_ACCEPTED_RACE_PLAYER,
+            TEST_REJECTED_RACE_PLAYER,
+            TEST_ACCEPTED_RACE_PLAYER,
+            Team::Red,
+            Team::Blue,
+            CTF_RACE_FINAL_RED_SCORE,
+            CTF_RACE_FINAL_BLUE_SCORE,
+            &flag_manager,
+        )
+        .expect("expected race final state milestone");
+
+        assert!(
+            accepted.contains("ctf_race_accepted_transition"),
+            "{accepted}"
+        );
+        assert!(accepted.contains("username=compatbota"), "{accepted}");
+        assert!(accepted.contains("player_team=Red"), "{accepted}");
+        assert!(accepted.contains("flag_team=Blue"), "{accepted}");
+        assert!(accepted.contains("transition=pickup"), "{accepted}");
+        assert!(
+            rejected.contains("ctf_race_rejected_transition"),
+            "{rejected}"
+        );
+        assert!(rejected.contains("username=compatbotb"), "{rejected}");
+        assert!(
+            rejected.contains("transition=duplicate_pickup"),
+            "{rejected}"
+        );
+        assert!(
+            rejected.contains("reason=flag_already_held"),
+            "{rejected}"
+        );
+        assert!(
+            final_state.contains("ctf_race_final_state"),
+            "{final_state}"
+        );
+        assert!(
+            final_state.contains("accepted_username=compatbota"),
+            "{final_state}"
+        );
+        assert!(
+            final_state.contains("rejected_username=compatbotb"),
+            "{final_state}"
+        );
+        assert!(final_state.contains("red_score=1"), "{final_state}");
+        assert!(final_state.contains("blue_score=0"), "{final_state}");
+    }
+
+    #[test]
+    fn ctf_race_final_state_rejects_double_score_or_held_flag() {
+        let at_base = FlagManager {
+            red: None,
+            blue: None,
+        };
+        let held_blue = FlagManager {
+            red: None,
+            blue: Some(Entity::from_raw(CTF_RACE_FINAL_RED_SCORE)),
+        };
+
+        let double_score = ctf_race_final_state_milestone(
+            TEST_ACCEPTED_RACE_PLAYER,
+            TEST_REJECTED_RACE_PLAYER,
+            TEST_ACCEPTED_RACE_PLAYER,
+            Team::Red,
+            Team::Blue,
+            TEST_FINAL_RED_SCORE,
+            CTF_RACE_FINAL_BLUE_SCORE,
+            &at_base,
+        );
+        let flag_still_held = ctf_race_final_state_milestone(
+            TEST_ACCEPTED_RACE_PLAYER,
+            TEST_REJECTED_RACE_PLAYER,
+            TEST_ACCEPTED_RACE_PLAYER,
+            Team::Red,
+            Team::Blue,
+            CTF_RACE_FINAL_RED_SCORE,
+            CTF_RACE_FINAL_BLUE_SCORE,
+            &held_blue,
+        );
+
+        assert!(double_score.is_none());
+        assert!(flag_still_held.is_none());
     }
 
     #[test]
