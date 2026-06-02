@@ -1,0 +1,132 @@
+$ nix run --no-update-lock-file .#cairn -- sync vanilla-combat-reference-parity --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/vanilla-combat-reference-parity/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/vanilla-combat-reference-parity/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "vanilla-combat-reference-parity",
+  "delta_specs": [
+    "./cairn/changes/vanilla-combat-reference-parity/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "dd0823ae0123acfdc72c77f709a8de256f6785a07a036451f0f4e89501ad5cb6",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "f5403e007fab1e230e4a267a27465910a52b72e2d586108f8e3c367adc8ebaf0",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "3b725800049b701deea528144bf75cd60de74105247482aa787a5ea7d15ec383"
+}
+sync_exit_status=0
+$ nix run --no-update-lock-file .#cairn -- archive vanilla-combat-reference-parity --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: vanilla-combat-reference-parity",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-vanilla-combat-reference-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "vanilla-combat-reference-parity",
+  "dry_run": false,
+  "input_hash": "dd0823ae0123acfdc72c77f709a8de256f6785a07a036451f0f4e89501ad5cb6",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "723e5e565737e0929543cd6241da3784dd3c15e7d22a85d189169ea5ab751ae8",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-vanilla-combat-reference-parity/design.md"
+        },
+        {
+          "content_hash": "fcb85f431db94ef814ae0832e9f17408a8b1a09ab7d3b693eaa024f77e3c621c",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-vanilla-combat-reference-parity/proposal.md"
+        },
+        {
+          "content_hash": "1d6de5310d7709004277e0cdaad5b6b6caee693e33d4b2fbefec65f7287626a0",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-vanilla-combat-reference-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "b46485fed8cfa45226a60029a0864990bcd9b58f411ba51b4397468f6f28df63",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-vanilla-combat-reference-parity/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/vanilla-combat-reference-parity"
+        }
+      ],
+      "manifest_hash": "59a7612054061d2aa7feb687a3ce622b6f8178b442c286598d55a9d359b387ee"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "723e5e565737e0929543cd6241da3784dd3c15e7d22a85d189169ea5ab751ae8",
+          "exists": true,
+          "path": "./cairn/changes/vanilla-combat-reference-parity/design.md"
+        },
+        {
+          "content_hash": "fcb85f431db94ef814ae0832e9f17408a8b1a09ab7d3b693eaa024f77e3c621c",
+          "exists": true,
+          "path": "./cairn/changes/vanilla-combat-reference-parity/proposal.md"
+        },
+        {
+          "content_hash": "1d6de5310d7709004277e0cdaad5b6b6caee693e33d4b2fbefec65f7287626a0",
+          "exists": true,
+          "path": "./cairn/changes/vanilla-combat-reference-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "b46485fed8cfa45226a60029a0864990bcd9b58f411ba51b4397468f6f28df63",
+          "exists": true,
+          "path": "./cairn/changes/vanilla-combat-reference-parity/tasks.md"
+        }
+      ],
+      "manifest_hash": "996a1630de616ac62a6c7368545976a086d7c3898ac5099001d94b815f90e8c7"
+    },
+    "kind": "archive",
+    "manifest_hash": "d44ffbbb6002c5c2174c2773b9cd02203707ab661ad3fca5d81b14de8d5f03e7"
+  },
+  "plan_hash": "5eda69eeefd786e809ec8adb82421b16ac6c28074cca2f07d0ff5114e9ee9f82",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "485e7aadb6eb69ea456aa86df76e553c9afd5b8a55985c2779cf61e6ed606659"
+}
+archive_exit_status=0
+archive_rename=2026-06-01-vanilla-combat-reference-parity
+exit_status=0

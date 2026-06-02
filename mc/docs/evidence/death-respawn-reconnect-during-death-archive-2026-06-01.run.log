@@ -1,0 +1,132 @@
+$ nix run --no-update-lock-file .#cairn -- sync death-respawn-reconnect-during-death --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/death-respawn-reconnect-during-death/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/death-respawn-reconnect-during-death/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "death-respawn-reconnect-during-death",
+  "delta_specs": [
+    "./cairn/changes/death-respawn-reconnect-during-death/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "c0bd990fcd3dd4ca24c304f5a4a3d49b9769f70712c6f8b590534437fe65b001",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "70d13e657e39665095e1fe99c026bdd7e4d7f031cac26bc9ddddcb20c48fe7f3",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "2872acdb412cee5c2b73129d72b4ef6cbdae5a3cfae4e7cc2f1686dbed9779e5"
+}
+sync_exit_status=0
+$ nix run --no-update-lock-file .#cairn -- archive death-respawn-reconnect-during-death --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: death-respawn-reconnect-during-death",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-death-respawn-reconnect-during-death"
+    }
+  ],
+  "blocked": false,
+  "change": "death-respawn-reconnect-during-death",
+  "dry_run": false,
+  "input_hash": "c0bd990fcd3dd4ca24c304f5a4a3d49b9769f70712c6f8b590534437fe65b001",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "8a9e1e457bf043c5c9c254e9b8bc80c451ddc4c15b4f19474f0389fb08c4eaec",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-death-respawn-reconnect-during-death/design.md"
+        },
+        {
+          "content_hash": "c0df2e125d46b44c71ed57e8ae12dfa1faec417d50ddda94ec63f596acb6eb64",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-death-respawn-reconnect-during-death/proposal.md"
+        },
+        {
+          "content_hash": "c21d808626fea35a91a16ccb8d1cff96c0add19a7a4696bb885961816bf06e35",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-death-respawn-reconnect-during-death/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "3290249a241e56c7939e9a93d6ba152b85dd05c5bcc10bd4c08b7f232ddde6d7",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-death-respawn-reconnect-during-death/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/death-respawn-reconnect-during-death"
+        }
+      ],
+      "manifest_hash": "2591228ba3df1dbe1e249df71e7024daff301a8ff751b0e9e3f1b034a34f87ad"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "8a9e1e457bf043c5c9c254e9b8bc80c451ddc4c15b4f19474f0389fb08c4eaec",
+          "exists": true,
+          "path": "./cairn/changes/death-respawn-reconnect-during-death/design.md"
+        },
+        {
+          "content_hash": "c0df2e125d46b44c71ed57e8ae12dfa1faec417d50ddda94ec63f596acb6eb64",
+          "exists": true,
+          "path": "./cairn/changes/death-respawn-reconnect-during-death/proposal.md"
+        },
+        {
+          "content_hash": "c21d808626fea35a91a16ccb8d1cff96c0add19a7a4696bb885961816bf06e35",
+          "exists": true,
+          "path": "./cairn/changes/death-respawn-reconnect-during-death/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "3290249a241e56c7939e9a93d6ba152b85dd05c5bcc10bd4c08b7f232ddde6d7",
+          "exists": true,
+          "path": "./cairn/changes/death-respawn-reconnect-during-death/tasks.md"
+        }
+      ],
+      "manifest_hash": "72ff33bf0c911551917f91abd0e8c259f3f6132d6a15879bf5a6bf4404c606d2"
+    },
+    "kind": "archive",
+    "manifest_hash": "3cd5583f883bc83de91fd9a1b86da30a0f4c5b027780937a638f2d5bf4ac22ff"
+  },
+  "plan_hash": "b7663964e2f69f77b771743476b4569d19d68ec4e6c8b0633f74d214a6ed67d0",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "98e55a36fbbd791b6af4478d54d38c3609dedb6dc1ce0d6710e31b7da57b123b"
+}
+archive_exit_status=0
+archive_rename=2026-06-01-death-respawn-reconnect-during-death
+exit_status=0

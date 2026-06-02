@@ -1,0 +1,132 @@
+$ nix run --no-update-lock-file .#cairn -- sync death-respawn-repeated-death-safety --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/death-respawn-repeated-death-safety/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/death-respawn-repeated-death-safety/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "death-respawn-repeated-death-safety",
+  "delta_specs": [
+    "./cairn/changes/death-respawn-repeated-death-safety/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "17597c4dee7839b908340302dd08f4faf7a387749aec516477346e3b83fae2f7",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "1f4bc5a21ee118606e528b54c2329dfcaba7bf9e23645f1c18694294a94ca6c1",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "25ffd3abbb3ff8a1986bb167a637f62454a2aaab62369eae1898ac9f77d6ade5"
+}
+sync_exit_status=0
+$ nix run --no-update-lock-file .#cairn -- archive death-respawn-repeated-death-safety --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: death-respawn-repeated-death-safety",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-death-respawn-repeated-death-safety"
+    }
+  ],
+  "blocked": false,
+  "change": "death-respawn-repeated-death-safety",
+  "dry_run": false,
+  "input_hash": "17597c4dee7839b908340302dd08f4faf7a387749aec516477346e3b83fae2f7",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "a2284ff855d1e38c3e49b806408caf75e535a890c2c8263cf3496089f8ac271c",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-death-respawn-repeated-death-safety/design.md"
+        },
+        {
+          "content_hash": "5484967a8cd2446ec9f369636cb99c6b6666e0fa3c3752bc1887c2f92ad85a0d",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-death-respawn-repeated-death-safety/proposal.md"
+        },
+        {
+          "content_hash": "5f9a9dc0df5c032bce88eafb62738ac27947ee5de5167c03475bbce7a0133c3c",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-death-respawn-repeated-death-safety/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "fd91439ff7693fd0f9a84098ac8be0f9c7c55195ce52849cc66259b063977172",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-death-respawn-repeated-death-safety/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/death-respawn-repeated-death-safety"
+        }
+      ],
+      "manifest_hash": "758fc2940e644617f9e1912629d749a36511395cd69728f09dacdc7013a5ac25"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "a2284ff855d1e38c3e49b806408caf75e535a890c2c8263cf3496089f8ac271c",
+          "exists": true,
+          "path": "./cairn/changes/death-respawn-repeated-death-safety/design.md"
+        },
+        {
+          "content_hash": "5484967a8cd2446ec9f369636cb99c6b6666e0fa3c3752bc1887c2f92ad85a0d",
+          "exists": true,
+          "path": "./cairn/changes/death-respawn-repeated-death-safety/proposal.md"
+        },
+        {
+          "content_hash": "5f9a9dc0df5c032bce88eafb62738ac27947ee5de5167c03475bbce7a0133c3c",
+          "exists": true,
+          "path": "./cairn/changes/death-respawn-repeated-death-safety/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "fd91439ff7693fd0f9a84098ac8be0f9c7c55195ce52849cc66259b063977172",
+          "exists": true,
+          "path": "./cairn/changes/death-respawn-repeated-death-safety/tasks.md"
+        }
+      ],
+      "manifest_hash": "9167241521729329cc1b812d4b4e8672d56e9174cdfb15c5872cb18e786f9469"
+    },
+    "kind": "archive",
+    "manifest_hash": "57ee78aa5a6142e61a9230deb0418584878da5b39c7f79fa44f873db5b5d332e"
+  },
+  "plan_hash": "d78e0215c952a1feb0162a3b83406b56266f26f502bd4b0dc934697a634954b8",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "4bd21ccda7c0abaf3209037e0aa3c65ef94abf2f854835d4d0766023f2c1adf8"
+}
+archive_exit_status=0
+archive_rename=2026-06-01-death-respawn-repeated-death-safety
+exit_status=0

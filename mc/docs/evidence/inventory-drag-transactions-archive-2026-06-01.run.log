@@ -1,0 +1,132 @@
+$ nix run --no-update-lock-file .#cairn -- sync inventory-drag-transactions --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/inventory-drag-transactions/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/inventory-drag-transactions/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "inventory-drag-transactions",
+  "delta_specs": [
+    "./cairn/changes/inventory-drag-transactions/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "5312972fb61ea2b27a956dc37eac35c0e88a3c03cedb533aabaff219ff66fd4a",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "b57c8971ff0d6090276b554655ae44cc38d0cd1e74d763ef180bd0e8d3d7f6f7",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "fc662b947988671c02fc70c1ec6a439e0267b5f0b0caa1f68bb69df94f56a871"
+}
+sync_exit_status=0
+$ nix run --no-update-lock-file .#cairn -- archive inventory-drag-transactions --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: inventory-drag-transactions",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-inventory-drag-transactions"
+    }
+  ],
+  "blocked": false,
+  "change": "inventory-drag-transactions",
+  "dry_run": false,
+  "input_hash": "5312972fb61ea2b27a956dc37eac35c0e88a3c03cedb533aabaff219ff66fd4a",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "fbbe6860712002f7fca76f7df786c2a37261a5d0893f0ca4543be3c5169dbf41",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-inventory-drag-transactions/design.md"
+        },
+        {
+          "content_hash": "23280ae98181647cfcfd062b0da730f99e77d20298d0881ad27a5598752d51e4",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-inventory-drag-transactions/proposal.md"
+        },
+        {
+          "content_hash": "b2d13ded4920eb346660001c408a8145b9fbe4647b34c22976cc0842ef6ed98a",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-inventory-drag-transactions/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "eb55b3aa202930b488f0f6f7c7bd6cce730023d8f9c25f9cc5ff4cfb7b02354b",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-inventory-drag-transactions/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/inventory-drag-transactions"
+        }
+      ],
+      "manifest_hash": "f10e28cac4176fbdf2b32bab10dbe56e6aff908fc12ea127ec75ee4f28d616dd"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "fbbe6860712002f7fca76f7df786c2a37261a5d0893f0ca4543be3c5169dbf41",
+          "exists": true,
+          "path": "./cairn/changes/inventory-drag-transactions/design.md"
+        },
+        {
+          "content_hash": "23280ae98181647cfcfd062b0da730f99e77d20298d0881ad27a5598752d51e4",
+          "exists": true,
+          "path": "./cairn/changes/inventory-drag-transactions/proposal.md"
+        },
+        {
+          "content_hash": "b2d13ded4920eb346660001c408a8145b9fbe4647b34c22976cc0842ef6ed98a",
+          "exists": true,
+          "path": "./cairn/changes/inventory-drag-transactions/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "eb55b3aa202930b488f0f6f7c7bd6cce730023d8f9c25f9cc5ff4cfb7b02354b",
+          "exists": true,
+          "path": "./cairn/changes/inventory-drag-transactions/tasks.md"
+        }
+      ],
+      "manifest_hash": "7a7907ef9ed7c604eb5e6448c58e9fc50beaa98436bdcede1e83a0c17e293aa6"
+    },
+    "kind": "archive",
+    "manifest_hash": "fcff2e014e38e28363b824a2f7fef51b827e9216f4d47deef76f67813f39e4ce"
+  },
+  "plan_hash": "b49dc5e43d71c829cc1d8ee760d01d0ca76e2091cd4fa390460ea199c96560aa",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "f30d18584f79d8793e32fe89aa959cf2ad60efb41a83996ac87573fe80587fdc"
+}
+archive_exit_status=0
+archive_rename=2026-06-01-inventory-drag-transactions
+exit_status=0

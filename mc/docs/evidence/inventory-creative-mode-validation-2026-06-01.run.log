@@ -1,0 +1,11 @@
+# inventory-creative-mode fixture-backed row validation
+date=2026-06-01
+command=check_mc_compat_row_contracts --row inventory-creative-mode --evidence docs/evidence/mc-compat-row-fixture-rail-2026-06-01/inventory-creative-mode.kv
+
+mc compat row contract self-test ok: 22 row contracts exercised and fixture rail checked
+creative-mode inventory contract check passed
+acceptance matrix self-test ok: positive and negative fixtures exercised
+acceptance matrix check passed: 31 rows validated
+current evidence bundle self-test ok: positive and negative fixtures exercised
+current evidence bundle check passed: 31 rows validated
+exit_status=0

@@ -1,0 +1,132 @@
+$ nix run --no-update-lock-file .#cairn -- sync death-respawn-ordinary-death --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/death-respawn-ordinary-death/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/death-respawn-ordinary-death/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "death-respawn-ordinary-death",
+  "delta_specs": [
+    "./cairn/changes/death-respawn-ordinary-death/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "bee87875ecae67d2cfa4da571441192c3358953dbe856aec36e465aa649f5e1b",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "22e203825c2b041b71bdc8abb83b9b76627b3804bfff2ed3571e997d075274ae",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "2c25bbaf74f91d76cfcd4cfa4b2246c59dfcb3032e98fd4e44dd48f10168487d"
+}
+sync_exit_status=0
+$ nix run --no-update-lock-file .#cairn -- archive death-respawn-ordinary-death --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: death-respawn-ordinary-death",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-death-respawn-ordinary-death"
+    }
+  ],
+  "blocked": false,
+  "change": "death-respawn-ordinary-death",
+  "dry_run": false,
+  "input_hash": "bee87875ecae67d2cfa4da571441192c3358953dbe856aec36e465aa649f5e1b",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "beb7db7fa109d388096b2b960fdf3c0a3c6df810ecce0bb2ec2a3a8dd52eb654",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-death-respawn-ordinary-death/design.md"
+        },
+        {
+          "content_hash": "42281fe35c8e7781c06d9ee445bac368f702e5f7b23aa5a9eb330df0ea9930e1",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-death-respawn-ordinary-death/proposal.md"
+        },
+        {
+          "content_hash": "595bfe103edbc9fcfb90207f3eff2624e008620b9ec7b74bb96a1da4c663364a",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-death-respawn-ordinary-death/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "648586dbd42fc77390caf2f4ba9d62d5a4aa36287f396644161a8595b75d5911",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-death-respawn-ordinary-death/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/death-respawn-ordinary-death"
+        }
+      ],
+      "manifest_hash": "e8ec752f894f1b9a36b5dc754e0ae1bcef55aca8e2fa67a9ca51690babbd095e"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "beb7db7fa109d388096b2b960fdf3c0a3c6df810ecce0bb2ec2a3a8dd52eb654",
+          "exists": true,
+          "path": "./cairn/changes/death-respawn-ordinary-death/design.md"
+        },
+        {
+          "content_hash": "42281fe35c8e7781c06d9ee445bac368f702e5f7b23aa5a9eb330df0ea9930e1",
+          "exists": true,
+          "path": "./cairn/changes/death-respawn-ordinary-death/proposal.md"
+        },
+        {
+          "content_hash": "595bfe103edbc9fcfb90207f3eff2624e008620b9ec7b74bb96a1da4c663364a",
+          "exists": true,
+          "path": "./cairn/changes/death-respawn-ordinary-death/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "648586dbd42fc77390caf2f4ba9d62d5a4aa36287f396644161a8595b75d5911",
+          "exists": true,
+          "path": "./cairn/changes/death-respawn-ordinary-death/tasks.md"
+        }
+      ],
+      "manifest_hash": "333a0f08bb6f3082d556c0c9f1de426631b29e45d088bea191d13d0d5f943168"
+    },
+    "kind": "archive",
+    "manifest_hash": "ebf1e7553630062e3fcebc4243e393dd69f4a3b13cf00c7fbd7983bd4d406d64"
+  },
+  "plan_hash": "fcdb0ad7ddb0996bae5a618602b579d4f5ee651dc0a253c69aa8e29b842bc031",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "91a89534e127b675756f5a4638a6ee07e9bc72e4301f93e0700e2702b60c5731"
+}
+archive_exit_status=0
+archive_rename=2026-06-01-death-respawn-ordinary-death
+exit_status=0

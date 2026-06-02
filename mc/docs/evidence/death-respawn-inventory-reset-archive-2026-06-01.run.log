@@ -1,0 +1,132 @@
+$ nix run --no-update-lock-file .#cairn -- sync death-respawn-inventory-reset --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/death-respawn-inventory-reset/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/death-respawn-inventory-reset/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "death-respawn-inventory-reset",
+  "delta_specs": [
+    "./cairn/changes/death-respawn-inventory-reset/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "377750dc40b6a6f2b6210b953a780b7496d48b7f45e0b0dbf7946fafe3994e05",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "d5ef8201731f03cb905b102cd8d43975083e2841a7b89bded13e7b1c96c3bec1",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "bd1274ee611a5733692187a854f45284df67804193dc3a713ec9b8056659148b"
+}
+sync_exit_status=0
+$ nix run --no-update-lock-file .#cairn -- archive death-respawn-inventory-reset --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: death-respawn-inventory-reset",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-death-respawn-inventory-reset"
+    }
+  ],
+  "blocked": false,
+  "change": "death-respawn-inventory-reset",
+  "dry_run": false,
+  "input_hash": "377750dc40b6a6f2b6210b953a780b7496d48b7f45e0b0dbf7946fafe3994e05",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "c2f2da3c0125fc11315e5037fd004ea65258a44181382478fdbaebc6afbc2afd",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-death-respawn-inventory-reset/design.md"
+        },
+        {
+          "content_hash": "00002ae9753e09e5e7e3e197c08cc0b650d9a4b9fd44dd6b8a7a13d6db84b216",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-death-respawn-inventory-reset/proposal.md"
+        },
+        {
+          "content_hash": "c02f8865f5277eda0264261ed9e9f040a8f4b5899897f2d627e2007a75ff2e73",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-death-respawn-inventory-reset/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "7ee40fe4df3ca21af2129f182b99d0afba93b522de5df231184dd258a1b99c5a",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-death-respawn-inventory-reset/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/death-respawn-inventory-reset"
+        }
+      ],
+      "manifest_hash": "a19cbe07502bccd383e0e916f5c1a6506cb598ef14824914ef74091eafbd15be"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "c2f2da3c0125fc11315e5037fd004ea65258a44181382478fdbaebc6afbc2afd",
+          "exists": true,
+          "path": "./cairn/changes/death-respawn-inventory-reset/design.md"
+        },
+        {
+          "content_hash": "00002ae9753e09e5e7e3e197c08cc0b650d9a4b9fd44dd6b8a7a13d6db84b216",
+          "exists": true,
+          "path": "./cairn/changes/death-respawn-inventory-reset/proposal.md"
+        },
+        {
+          "content_hash": "c02f8865f5277eda0264261ed9e9f040a8f4b5899897f2d627e2007a75ff2e73",
+          "exists": true,
+          "path": "./cairn/changes/death-respawn-inventory-reset/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "7ee40fe4df3ca21af2129f182b99d0afba93b522de5df231184dd258a1b99c5a",
+          "exists": true,
+          "path": "./cairn/changes/death-respawn-inventory-reset/tasks.md"
+        }
+      ],
+      "manifest_hash": "9a05fa8fc0a3ef629742e7eea95ad076c76022b46e2d290960877e4196e4c8a6"
+    },
+    "kind": "archive",
+    "manifest_hash": "2cf3491f02baaf6aa9591d9ae06de1745f8caf2fbc0aadd30d799f090196cd74"
+  },
+  "plan_hash": "16e1df8c86ad7c19f436be65d55056140e4ede4eaca8694e8f6a35c93881d24a",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "d43823faa3e3e88d65d248e03d4b4517f36c42b709f675f7a37a2577b10321fb"
+}
+archive_exit_status=0
+archive_rename=2026-06-01-death-respawn-inventory-reset
+exit_status=0

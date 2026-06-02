@@ -1,0 +1,132 @@
+$ nix run --no-update-lock-file .#cairn -- sync projectile-weapon-variants --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/projectile-weapon-variants/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/projectile-weapon-variants/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "projectile-weapon-variants",
+  "delta_specs": [
+    "./cairn/changes/projectile-weapon-variants/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "c70ec7ae6fda9000b3a9dd3b654f17a1e2bc2ab9ed494684d3521ea43042c323",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "1ebf71184557e46ae215a453fc7ff5d4ea20ac04117bf83c7564e3916b3f435a",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "47e620b0da06a5a2c6b145f2c06879f8e54c34934fef4596b0fc00888da935b0"
+}
+sync_exit_status=0
+$ nix run --no-update-lock-file .#cairn -- archive projectile-weapon-variants --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: projectile-weapon-variants",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-projectile-weapon-variants"
+    }
+  ],
+  "blocked": false,
+  "change": "projectile-weapon-variants",
+  "dry_run": false,
+  "input_hash": "c70ec7ae6fda9000b3a9dd3b654f17a1e2bc2ab9ed494684d3521ea43042c323",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aca53c1ce7058aebcd65c3cbd21bad41123940db8c2313cf6ecf350f7513c802",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-projectile-weapon-variants/design.md"
+        },
+        {
+          "content_hash": "cc10755acfe8190f31f6f04d494a6d60c0c5ad548ecd4f4d19d131cec92755ff",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-projectile-weapon-variants/proposal.md"
+        },
+        {
+          "content_hash": "e7736c2965048c18cc2f411bd1184404090783bbf56b593a0993c2131ecf13a5",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-projectile-weapon-variants/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "1be1f1938d315ade7756e058c7a75fa3904e4d7fdccca6fba361bf888ccb0339",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-projectile-weapon-variants/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/projectile-weapon-variants"
+        }
+      ],
+      "manifest_hash": "9d5d9fce488f50eaf5e48395e4139b3004cc33c9b76cfb9260043b41b1cfda07"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aca53c1ce7058aebcd65c3cbd21bad41123940db8c2313cf6ecf350f7513c802",
+          "exists": true,
+          "path": "./cairn/changes/projectile-weapon-variants/design.md"
+        },
+        {
+          "content_hash": "cc10755acfe8190f31f6f04d494a6d60c0c5ad548ecd4f4d19d131cec92755ff",
+          "exists": true,
+          "path": "./cairn/changes/projectile-weapon-variants/proposal.md"
+        },
+        {
+          "content_hash": "e7736c2965048c18cc2f411bd1184404090783bbf56b593a0993c2131ecf13a5",
+          "exists": true,
+          "path": "./cairn/changes/projectile-weapon-variants/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "1be1f1938d315ade7756e058c7a75fa3904e4d7fdccca6fba361bf888ccb0339",
+          "exists": true,
+          "path": "./cairn/changes/projectile-weapon-variants/tasks.md"
+        }
+      ],
+      "manifest_hash": "d8531169cfd0ddbc28d921e10884eac1e7d35018f7598472accd2778fdd1e50c"
+    },
+    "kind": "archive",
+    "manifest_hash": "b029511dfc94f022804f2d6fcae308e97af7ccf7bc77c8e2c2c73ebb620f562d"
+  },
+  "plan_hash": "70c2f013fe1a359e8bf1ce9cace03e59808d1e3938b08efff66579974f156bd0",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "57a5a13eb0207d009896c1b0c78bc84025577695378913c33f594fe5141eba65"
+}
+archive_exit_status=0
+archive_rename=2026-06-01-projectile-weapon-variants
+exit_status=0

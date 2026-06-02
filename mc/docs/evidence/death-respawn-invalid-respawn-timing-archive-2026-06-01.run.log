@@ -1,0 +1,132 @@
+$ nix run --no-update-lock-file .#cairn -- sync death-respawn-invalid-respawn-timing --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/death-respawn-invalid-respawn-timing/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/death-respawn-invalid-respawn-timing/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "death-respawn-invalid-respawn-timing",
+  "delta_specs": [
+    "./cairn/changes/death-respawn-invalid-respawn-timing/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "c4b7b3ac3260193b3c153154152ccc24cd88daac74305358b8eda25e6fb0e773",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "440b40ecca28914cc4cb59d1b25f61725245edecac3d911c1fc4c24fea1ddc0b",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "3c7a20a9c2b59f83a29dcca4edc42b386e54505330eb31930e29427d2ef644ef"
+}
+sync_exit_status=0
+$ nix run --no-update-lock-file .#cairn -- archive death-respawn-invalid-respawn-timing --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: death-respawn-invalid-respawn-timing",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-death-respawn-invalid-respawn-timing"
+    }
+  ],
+  "blocked": false,
+  "change": "death-respawn-invalid-respawn-timing",
+  "dry_run": false,
+  "input_hash": "c4b7b3ac3260193b3c153154152ccc24cd88daac74305358b8eda25e6fb0e773",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "ef6cc192371ccb7c9589b58f9919287db46d45138c65e1bbc8c84cf2496290c4",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-death-respawn-invalid-respawn-timing/design.md"
+        },
+        {
+          "content_hash": "dc3799d401c48f1ca61ecc4001bff57f37c854b5e380a83a8f734a03e9a8890b",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-death-respawn-invalid-respawn-timing/proposal.md"
+        },
+        {
+          "content_hash": "d6db45cfe6dccc34eef28f653097a3753de44db26c23e3bd4560ca7a33f6671a",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-death-respawn-invalid-respawn-timing/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "bb79322c8a87766fbb1c090d34f2b628566f6c78e5d7f99fc242fadda1605c39",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-death-respawn-invalid-respawn-timing/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/death-respawn-invalid-respawn-timing"
+        }
+      ],
+      "manifest_hash": "406e4b601bf28694c03da983142ea31afa1e62d28b0b7a18023b152b2d66fef9"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "ef6cc192371ccb7c9589b58f9919287db46d45138c65e1bbc8c84cf2496290c4",
+          "exists": true,
+          "path": "./cairn/changes/death-respawn-invalid-respawn-timing/design.md"
+        },
+        {
+          "content_hash": "dc3799d401c48f1ca61ecc4001bff57f37c854b5e380a83a8f734a03e9a8890b",
+          "exists": true,
+          "path": "./cairn/changes/death-respawn-invalid-respawn-timing/proposal.md"
+        },
+        {
+          "content_hash": "d6db45cfe6dccc34eef28f653097a3753de44db26c23e3bd4560ca7a33f6671a",
+          "exists": true,
+          "path": "./cairn/changes/death-respawn-invalid-respawn-timing/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "bb79322c8a87766fbb1c090d34f2b628566f6c78e5d7f99fc242fadda1605c39",
+          "exists": true,
+          "path": "./cairn/changes/death-respawn-invalid-respawn-timing/tasks.md"
+        }
+      ],
+      "manifest_hash": "d637ade91c2a698271de306ec791d04a71cc04192b95c00a7f1b25b3bfcafacc"
+    },
+    "kind": "archive",
+    "manifest_hash": "9c02c2b2841d5603b2dc3369bd28b947a8b19bd0f9fbba4d475e6bc2ff7ea665"
+  },
+  "plan_hash": "327985b79686ff13ad017f36eae009ba5112c277d2e2d3150dea791a6df644f8",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "3df02fbf69f1a8e6ea22b569000f89924285ef6fb5eda2c2242922079eb8d687"
+}
+archive_exit_status=0
+archive_rename=2026-06-01-death-respawn-invalid-respawn-timing
+exit_status=0

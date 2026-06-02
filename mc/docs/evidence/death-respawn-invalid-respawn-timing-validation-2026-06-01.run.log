@@ -1,0 +1,11 @@
+# death-respawn-invalid-respawn-timing fixture-backed row validation
+date=2026-06-01
+command=check_mc_compat_row_contracts --row death-respawn-invalid-respawn-timing --evidence docs/evidence/mc-compat-row-fixture-rail-2026-06-01/death-respawn-invalid-respawn-timing.kv
+
+mc compat row contract self-test ok: 22 row contracts exercised and fixture rail checked
+invalid respawn timing contract check passed
+acceptance matrix self-test ok: positive and negative fixtures exercised
+acceptance matrix check passed: 31 rows validated
+current evidence bundle self-test ok: positive and negative fixtures exercised
+current evidence bundle check passed: 31 rows validated
+exit_status=0

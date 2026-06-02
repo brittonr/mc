@@ -1,0 +1,132 @@
+$ nix run --no-update-lock-file .#cairn -- sync inventory-extra-window-types --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/inventory-extra-window-types/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/inventory-extra-window-types/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "inventory-extra-window-types",
+  "delta_specs": [
+    "./cairn/changes/inventory-extra-window-types/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "19bb6f077751eb79191e074868e12bd67afff46b348b691f5625d11d79439f9d",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "209cca8018e18f365fa345e45087a782bfc356418bea5900a14f0e8942ea7679",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "792ffb3be8b6cc03466ad9233f53a379946a4d34baf7e8730f81f3433a7e3a47"
+}
+sync_exit_status=0
+$ nix run --no-update-lock-file .#cairn -- archive inventory-extra-window-types --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: inventory-extra-window-types",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-inventory-extra-window-types"
+    }
+  ],
+  "blocked": false,
+  "change": "inventory-extra-window-types",
+  "dry_run": false,
+  "input_hash": "19bb6f077751eb79191e074868e12bd67afff46b348b691f5625d11d79439f9d",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "c2fd6a1a9bcd06f8fc02249feadd05c1ac21fb28f62c85cd3782750a99487cc8",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-inventory-extra-window-types/design.md"
+        },
+        {
+          "content_hash": "9f60832eb2e666912d262e990d6cb583466a88ba5413fd953ae63c8e0cd8f1b2",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-inventory-extra-window-types/proposal.md"
+        },
+        {
+          "content_hash": "9cc6b250ee95fc7653b7e1a406970ec871e1273fdd3c4dae83de4632a9ae5aba",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-inventory-extra-window-types/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "9617236a5553aff6a414a68c013a54a6917f3196a20e6ec94f7d0651fd4e889c",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-inventory-extra-window-types/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/inventory-extra-window-types"
+        }
+      ],
+      "manifest_hash": "2a68336db6929f1b5510b3687b2944b6f4180e2e65a95b576d69f863c0178b84"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "c2fd6a1a9bcd06f8fc02249feadd05c1ac21fb28f62c85cd3782750a99487cc8",
+          "exists": true,
+          "path": "./cairn/changes/inventory-extra-window-types/design.md"
+        },
+        {
+          "content_hash": "9f60832eb2e666912d262e990d6cb583466a88ba5413fd953ae63c8e0cd8f1b2",
+          "exists": true,
+          "path": "./cairn/changes/inventory-extra-window-types/proposal.md"
+        },
+        {
+          "content_hash": "9cc6b250ee95fc7653b7e1a406970ec871e1273fdd3c4dae83de4632a9ae5aba",
+          "exists": true,
+          "path": "./cairn/changes/inventory-extra-window-types/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "9617236a5553aff6a414a68c013a54a6917f3196a20e6ec94f7d0651fd4e889c",
+          "exists": true,
+          "path": "./cairn/changes/inventory-extra-window-types/tasks.md"
+        }
+      ],
+      "manifest_hash": "c66c2e21743f6dc37e14a8b167d60365f2c39d97f80d2a5ae46da7a18f0489f4"
+    },
+    "kind": "archive",
+    "manifest_hash": "0e3a7595059d18aa869b6bb45946274a4935f2fb8bf7b8cf426b151b7c708bb0"
+  },
+  "plan_hash": "39ab724073cef5cfb85c3b7692d2982cd867330e5d0937678d2013dcd4d34785",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "e38b50cb94c52bff02b77d4219de0d683a80d8095b738ccc9aae9f96f64b7a73"
+}
+archive_exit_status=0
+archive_rename=2026-06-01-inventory-extra-window-types
+exit_status=0

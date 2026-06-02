@@ -1,0 +1,132 @@
+$ nix run --no-update-lock-file .#cairn -- sync projectile-travel-collision-parity --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/projectile-travel-collision-parity/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/projectile-travel-collision-parity/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "projectile-travel-collision-parity",
+  "delta_specs": [
+    "./cairn/changes/projectile-travel-collision-parity/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "8e2639156e43f29ae3839e77da803ebf657bdc542a145cfca81f99e40c5810ec",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "d12d58a8cdce56545aaa84c5e9d4d747b16e3438bbbce45f116254662d49f53f",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "0b4ad2ffa9710d2f65370552d81e654774f2d76deb987abc28980eeeaf1481cc"
+}
+sync_exit_status=0
+$ nix run --no-update-lock-file .#cairn -- archive projectile-travel-collision-parity --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: projectile-travel-collision-parity",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-projectile-travel-collision-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "projectile-travel-collision-parity",
+  "dry_run": false,
+  "input_hash": "8e2639156e43f29ae3839e77da803ebf657bdc542a145cfca81f99e40c5810ec",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "457a604c53c09e60dde0af4bfc5e4f36896ce876feb599ec586f9192d095dfe9",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-projectile-travel-collision-parity/design.md"
+        },
+        {
+          "content_hash": "a6ba1cfb6bca11b0694bbbb03b40d32c5ea7e7acf77cf26beb15109a6909f61f",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-projectile-travel-collision-parity/proposal.md"
+        },
+        {
+          "content_hash": "d137f84c59a9dfef09e39462392edc80f4781efa27029578e6fc8db017c82107",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-projectile-travel-collision-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "247b76739f73af147475dea20cba039d93a5dde54ed44b7a660d0107a59b9334",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-projectile-travel-collision-parity/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/projectile-travel-collision-parity"
+        }
+      ],
+      "manifest_hash": "2b3f62a9269450b8578f2c0099c2e598fc9caf3c692c6c8a838af0d24eb9f671"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "457a604c53c09e60dde0af4bfc5e4f36896ce876feb599ec586f9192d095dfe9",
+          "exists": true,
+          "path": "./cairn/changes/projectile-travel-collision-parity/design.md"
+        },
+        {
+          "content_hash": "a6ba1cfb6bca11b0694bbbb03b40d32c5ea7e7acf77cf26beb15109a6909f61f",
+          "exists": true,
+          "path": "./cairn/changes/projectile-travel-collision-parity/proposal.md"
+        },
+        {
+          "content_hash": "d137f84c59a9dfef09e39462392edc80f4781efa27029578e6fc8db017c82107",
+          "exists": true,
+          "path": "./cairn/changes/projectile-travel-collision-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "247b76739f73af147475dea20cba039d93a5dde54ed44b7a660d0107a59b9334",
+          "exists": true,
+          "path": "./cairn/changes/projectile-travel-collision-parity/tasks.md"
+        }
+      ],
+      "manifest_hash": "d638e1f9a1aad0454104c811bc32cc2e70bdd1e99c5ea723c10f0ed55e4ba39f"
+    },
+    "kind": "archive",
+    "manifest_hash": "1be8d071d5462b381212d87ab4d8881a159da42b0173135b3e1b00bad91d11a9"
+  },
+  "plan_hash": "87b1ebdaef88b404a438ff8a015614ce4ad44b42edb64722459a57708f9c56d8",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "5cb0679c23ff77e91c75dc7a76d344ba88f4bd451b9abe6d3371a4f93372f441"
+}
+archive_exit_status=0
+archive_rename=2026-06-01-projectile-travel-collision-parity
+exit_status=0
