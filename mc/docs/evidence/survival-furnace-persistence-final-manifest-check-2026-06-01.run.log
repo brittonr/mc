@@ -38,13 +38,17 @@ docs/evidence/survival-furnace-persistence-rail-validation-2026-06-01.run.log: O
 docs/evidence/survival-furnace-persistence-validation-oracle-2026-06-01.md: OK
 docs/evidence/survival-furnace-persistence-dry-run-2026-06-01.run.log: OK
 docs/evidence/survival-furnace-persistence-evidence-manifest-2026-06-01.run.log: OK
+docs/evidence/survival-furnace-persistence-task-evidence-gate-2026-06-01.run.log: OK
+docs/evidence/survival-furnace-persistence-task-evidence-gate-2026-06-01.b3: OK
 docs/evidence/survival-furnace-persistence-cairn-validation-2026-06-01.run.log: OK
+docs/evidence/survival-furnace-persistence-archive-2026-06-01.run.log: OK
+docs/evidence/survival-furnace-persistence-post-archive-validation-2026-06-01.run.log: OK
+docs/evidence/survival-furnace-persistence-archive-2026-06-01.b3: OK
 docs/evidence/survival-furnace-persistence-matrix-promotion-2026-06-01.run.log: OK
 docs/evidence/survival-furnace-persistence-bundle-promotion-2026-06-01.run.log: OK
 docs/evidence/survival-furnace-persistence-row-parity-2026-06-01.run.log: OK
 docs/evidence/survival-furnace-persistence-receipts-2026-06-01.b3: OK
 docs/evidence/survival-furnace-persistence-matrix-promotion-2026-06-01.b3: OK
-docs/evidence/survival-furnace-persistence-archive-2026-06-01.b3: OK
 $ nix develop --no-update-lock-file -c b3sum --check docs/evidence/survival-furnace-persistence-task-evidence-gate-2026-06-01.b3
 mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
 Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
