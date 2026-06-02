@@ -10,7 +10,8 @@ const CURRENT_BUNDLE_PATH: &str = "docs/evidence/protocol-763-current-evidence-b
 const ACCEPTANCE_MATRIX_PATH: &str = "docs/evidence/protocol-763-acceptance-matrix.md";
 const CTF_LEDGER_PATH: &str = "docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md";
 const PROTOCOL_LEDGER_PATH: &str = "docs/evidence/protocol-763-broad-coverage-ledger-2026-05-28.md";
-const PRODUCTION_MATRIX_PATH: &str = "docs/evidence/protocol-763-production-network-safety-matrix-2026-05-28.md";
+const PRODUCTION_MATRIX_PATH: &str =
+    "docs/evidence/protocol-763-production-network-safety-matrix-2026-05-28.md";
 
 const CTF_GATE_NAME: &str = "full CTF correctness";
 const PROTOCOL_GATE_NAME: &str = "full protocol-763 compatibility";
@@ -27,10 +28,7 @@ const PASSES_TOKEN: &str = "passes";
 const PROVEN_TOKEN: &str = "proven";
 const CLAIMED_TOKEN: &str = "claimed";
 
-const CTF_REQUIRED_NON_CLAIMS: &[&str] = &[
-    "spawn/team balance/resource reset | Non-claim",
-    "full CTF correctness | Non-claim",
-];
+const CTF_REQUIRED_NON_CLAIMS: &[&str] = &["full CTF correctness | Non-claim"];
 const CTF_REQUIRED_EVIDENCE_ROWS: &[&str] = &[
     "score_capture_red_blue_bounded",
     "flag_carrier_death_returns_flag_without_score",
@@ -39,6 +37,7 @@ const CTF_REQUIRED_EVIDENCE_ROWS: &[&str] = &[
     "invalid_return_drop_rejected_without_state_mutation",
     "score_limit_win_emits_once_without_post_win_mutation",
     "simultaneous_pickup_capture_race_one_accept_one_reject",
+    "spawn_team_balance_resource_reset",
 ];
 const CTF_CURRENT_BUNDLE_TOKENS: &[&str] = &[
     "CTF rule scope is guarded",
@@ -165,8 +164,18 @@ fn validate_gates(inputs: &GateInputs) -> Result<GateSummary, Vec<String>> {
 
 fn validate_ctf_gate(inputs: &GateInputs, errors: &mut Vec<String>) {
     require_lowercase_token(CTF_GATE_NAME, &inputs.ctf_ledger, CTF_NON_CLAIM, errors);
-    require_tokens(CTF_GATE_NAME, &inputs.ctf_ledger, CTF_REQUIRED_NON_CLAIMS, errors);
-    require_tokens(CTF_GATE_NAME, &inputs.ctf_ledger, CTF_REQUIRED_EVIDENCE_ROWS, errors);
+    require_tokens(
+        CTF_GATE_NAME,
+        &inputs.ctf_ledger,
+        CTF_REQUIRED_NON_CLAIMS,
+        errors,
+    );
+    require_tokens(
+        CTF_GATE_NAME,
+        &inputs.ctf_ledger,
+        CTF_REQUIRED_EVIDENCE_ROWS,
+        errors,
+    );
     require_tokens(
         CTF_GATE_NAME,
         &inputs.current_bundle,
@@ -175,7 +184,11 @@ fn validate_ctf_gate(inputs: &GateInputs, errors: &mut Vec<String>) {
     );
     reject_premature_claim(
         CTF_GATE_NAME,
-        &[&inputs.ctf_ledger, &inputs.current_bundle, &inputs.acceptance_matrix],
+        &[
+            &inputs.ctf_ledger,
+            &inputs.current_bundle,
+            &inputs.acceptance_matrix,
+        ],
         errors,
     );
 }
@@ -291,9 +304,10 @@ fn run_self_tests() -> Result<String, Vec<String>> {
 
     assert_contains(
         &validate_gates(&GateInputs {
-            ctf_ledger: positive
-                .ctf_ledger
-                .replace("spawn/team balance/resource reset | Non-claim", "spawn/team balance/resource reset | Covered"),
+            ctf_ledger: positive.ctf_ledger.replace(
+                "spawn_team_balance_resource_reset",
+                "spawn_team_resource_gap",
+            ),
             ..positive.clone()
         })
         .expect_err("missing CTF gap fixture should fail"),
@@ -302,7 +316,10 @@ fn run_self_tests() -> Result<String, Vec<String>> {
 
     assert_contains(
         &validate_gates(&GateInputs {
-            protocol_ledger: positive.protocol_ledger.replace("all_packets_all_states | Non-claim", "all_packets_all_states | Covered"),
+            protocol_ledger: positive.protocol_ledger.replace(
+                "all_packets_all_states | Non-claim",
+                "all_packets_all_states | Covered",
+            ),
             ..positive.clone()
         })
         .expect_err("missing protocol gap fixture should fail"),
@@ -311,7 +328,9 @@ fn run_self_tests() -> Result<String, Vec<String>> {
 
     assert_contains(
         &validate_gates(&GateInputs {
-            production_matrix: positive.production_matrix.replace("No production readiness", "Production readiness is covered"),
+            production_matrix: positive
+                .production_matrix
+                .replace("No production readiness", "Production readiness is covered"),
             ..positive.clone()
         })
         .expect_err("production overclaim fixture should fail"),
@@ -332,14 +351,19 @@ fn run_self_tests() -> Result<String, Vec<String>> {
 
     assert_contains(
         &validate_gates(&GateInputs {
-            protocol_ledger: positive.protocol_ledger.replace(PROTOCOL_NON_CLAIM, "full protocol-763 compatibility is covered"),
+            protocol_ledger: positive.protocol_ledger.replace(
+                PROTOCOL_NON_CLAIM,
+                "full protocol-763 compatibility is covered",
+            ),
             ..positive.clone()
         })
         .expect_err("full protocol overclaim fixture should fail"),
         PROTOCOL_GATE_NAME,
     )?;
 
-    Ok(format!("{AGGREGATE_GATE_COUNT_TEXT} aggregate gates exercised"))
+    Ok(format!(
+        "{AGGREGATE_GATE_COUNT_TEXT} aggregate gates exercised"
+    ))
 }
 
 fn fixture_inputs() -> GateInputs {
@@ -349,7 +373,7 @@ fn fixture_inputs() -> GateInputs {
         ),
         acceptance_matrix: "matrix says full CTF correctness remains a non-claim; full protocol-763 compatibility remains a non-claim; production readiness is a non-claim".to_string(),
         ctf_ledger: format!(
-            "full CTF correctness remains a non-claim\n| spawn/team balance/resource reset | Non-claim |\n| full CTF correctness | Non-claim |\n{}\n",
+            "full CTF correctness remains a non-claim\n| all team balancing algorithms | Non-claim |\n| full CTF correctness | Non-claim |\n{}\n",
             CTF_REQUIRED_EVIDENCE_ROWS.join("\n")
         ),
         protocol_ledger: format!(

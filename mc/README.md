@@ -191,6 +191,12 @@ nix run .#mc-compat-valence-ctf-simultaneous-pickup-capture-race
 # deterministic, non-side-effecting fixture for the same race command shape:
 nix run .#mc-compat-valence-ctf-simultaneous-pickup-capture-race -- --dry-run
 
+# Maintained protocol-763 Valence CTF spawn/team balance/resource reset receipt.
+# Requires two clients assigned to opposite teams, spawn/resource assignment telemetry, post-score reset-state correlation, and no imbalance/stale-resource patterns.
+nix run .#mc-compat-valence-ctf-spawn-team-balance-reset
+# deterministic, non-side-effecting fixture for the same spawn reset command shape:
+nix run .#mc-compat-valence-ctf-spawn-team-balance-reset -- --dry-run
+
 # Maintained protocol-763 Valence CTF bounded latency/jitter receipt over the inventory semantic rail.
 # Records bounded perturbation parameters, owned-local WAN telemetry fields, full inventory/open-container/block-place milestone oracle evidence, and no privileged network mutation.
 nix run .#mc-compat-valence-ctf-latency-jitter-inventory

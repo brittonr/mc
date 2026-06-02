@@ -1,0 +1,15 @@
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-spawn-team-balance-reset session=ctf-spawn-team-balance-reset-2026-06-01.receipt seq=1 event=ctf_spawn_team_reset_client_count
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-spawn-team-balance-reset session=ctf-spawn-team-balance-reset-2026-06-01.receipt seq=2 event=protocol_detected
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-spawn-team-balance-reset session=ctf-spawn-team-balance-reset-2026-06-01.receipt seq=3 event=join_game
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-spawn-team-balance-reset session=ctf-spawn-team-balance-reset-2026-06-01.receipt seq=4 event=render_tick
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-spawn-team-balance-reset session=ctf-spawn-team-balance-reset-2026-06-01.receipt seq=5 event=team_red
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-spawn-team-balance-reset session=ctf-spawn-team-balance-reset-2026-06-01.receipt seq=6 event=team_blue
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-spawn-team-balance-reset session=ctf-spawn-team-balance-reset-2026-06-01.receipt seq=7 event=flag_pickup
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-spawn-team-balance-reset session=ctf-spawn-team-balance-reset-2026-06-01.receipt seq=8 event=flag_capture
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-spawn-team-balance-reset session=ctf-spawn-team-balance-reset-2026-06-01.receipt seq=9 event=score_red_1
+MC-COMPAT-EVENT schema=1 source=server scenario=ctf-spawn-team-balance-reset session=ctf-spawn-team-balance-reset-2026-06-01.receipt seq=10 event=server_client_a_seen
+MC-COMPAT-EVENT schema=1 source=server scenario=ctf-spawn-team-balance-reset session=ctf-spawn-team-balance-reset-2026-06-01.receipt seq=11 event=server_client_b_seen
+MC-COMPAT-EVENT schema=1 source=server scenario=ctf-spawn-team-balance-reset session=ctf-spawn-team-balance-reset-2026-06-01.receipt seq=12 event=server_ctf_spawn_red_assignment
+MC-COMPAT-EVENT schema=1 source=server scenario=ctf-spawn-team-balance-reset session=ctf-spawn-team-balance-reset-2026-06-01.receipt seq=13 event=server_ctf_spawn_blue_assignment
+MC-COMPAT-EVENT schema=1 source=server scenario=ctf-spawn-team-balance-reset session=ctf-spawn-team-balance-reset-2026-06-01.receipt seq=14 event=server_ctf_spawn_team_balance
+MC-COMPAT-EVENT schema=1 source=server scenario=ctf-spawn-team-balance-reset session=ctf-spawn-team-balance-reset-2026-06-01.receipt seq=15 event=server_ctf_spawn_resource_reset

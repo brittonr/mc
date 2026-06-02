@@ -1,0 +1,70 @@
+## cairn gates
+$ nix run --no-update-lock-file .#cairn -- gate proposal ctf-spawn-team-balance-reset --root .
+{
+  "change": "ctf-spawn-team-balance-reset",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "ccd07874118ff2260d93813becc0a199e9c76ff54018a7e8cb30625da00ad2ce",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "f3a6ab5815a4e4f07399608ff2602bc12bfb92ba7674363bc27afdf44126af1c",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_proposal_exit_status=0
+$ nix run --no-update-lock-file .#cairn -- gate design ctf-spawn-team-balance-reset --root .
+{
+  "change": "ctf-spawn-team-balance-reset",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "797ffa81344f4ba736d30ce0c4ba6b575dd703a61a945992a9ffc9acd0932286",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "3400ca0629c3e9a7b265b595a8db4255b06dee9366e3ba6bb7c3c7f8966f945f",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_design_exit_status=0
+$ nix run --no-update-lock-file .#cairn -- gate tasks ctf-spawn-team-balance-reset --root .
+{
+  "change": "ctf-spawn-team-balance-reset",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "0f796db924a5159ddff4127e260610f5bedf1aa5204598a80ea51868da5bd1f9",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "e6e831a4e59434e505c46232d872b9998ebc03662541f45f2522ebddc0df4fbe",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_tasks_exit_status=0

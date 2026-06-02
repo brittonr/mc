@@ -1,0 +1,23 @@
+# ctf spawn team balance reset post-archive evidence manifest check
+date=2026-06-01
+command=nix --option substitute false build --no-update-lock-file --no-link -L path:.#checks.x86_64-linux.mc-compat-evidence-manifests
+
+[2m02:06:13[0m [32m INFO[0m [2mpueue_lib::settings[0m[2m:[0m Parsing config files
+[2m02:06:13[0m [32m INFO[0m [2mpueue_lib::settings[0m[2m:[0m Checking path: "/home/brittonr/.config/pueue/pueue.yml"
+[2m02:06:13[0m [32m INFO[0m [2mpueue_lib::settings[0m[2m:[0m Found config file at: "/home/brittonr/.config/pueue/pueue.yml"
+┌─────────────────────────────────────┐
+│ Task 415:    completed successfully │
+└─────────────────────────────────────┘
+Command: cd /home/brittonr/git/mc && nix --option substitute false build --no-update-lock-file --no-link -L path:.#checks.x86_64-linux.mc-compat-evidence-manifests
+   Path: /home/brittonr/git/mc
+  Label: spawn postarchive final evidence manifest
+  Start: Tue, 2 Jun 2026 02:05:15 -0400
+    End: Tue, 2 Jun 2026 02:05:56 -0400
+
+output:
+this derivation will be built:
+  /nix/store/2w95v1rpxw8a1y242ag4ka7wd3ym5w3y-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/2w95v1rpxw8a1y242ag4ka7wd3ym5w3y-mc-compat-evidence-manifests.drv'...
+
+exit_status=0

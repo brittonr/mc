@@ -1,0 +1,13 @@
+scenario=ctf-spawn-team-balance-reset
+client_identities=compatbota,compatbotb
+team_counts=red:1,blue:1
+selected_teams=compatbota:Red,compatbotb:Blue
+spawn_coordinates=red:-40.0,65.0,0.0;blue:40.0,65.0,0.0
+initial_resources=slot36:WoodenSword:1,red_slot37:RedWool:64,blue_slot37:BlueWool:64
+post_score_or_post_death_reset_state=scoreboard_flags_and_resources_coherent
+inventory_resource_ids=WoodenSword,RedWool,BlueWool,TeamWool
+server_correlation_ids=team-select-compatbota,team-select-compatbotb,score-reset-compatbota
+ordered_milestones=red_assignment,blue_assignment,team_balance,flag_pickup,resource_reset_state
+action_timestamps=red_assignment:2026-06-02T05:37:15.689889Z,blue_assignment:2026-06-02T05:37:18.193027Z,balance:2026-06-02T05:37:18.193037Z,reset:2026-06-02T05:37:19.394289Z
+receipt=docs/evidence/protocol-763-ctf-spawn-team-balance-reset-2026-06-01.receipt.json
+row_digest=ce4ec8f61c956d5083d6701915a44b9e31c8e0adbfd018b25878774e516f2e6f

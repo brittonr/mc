@@ -1,0 +1,15 @@
+ce4ec8f61c956d5083d6701915a44b9e31c8e0adbfd018b25878774e516f2e6f  docs/evidence/protocol-763-ctf-spawn-team-balance-reset-2026-06-01.receipt.json
+a8a1b5301de14468523665bb06501a4939cddf0c146f9dbbabf758dfebbc5bb0  docs/evidence/protocol-763-ctf-spawn-team-balance-reset-2026-06-01.run.log
+d1f22ab14b63a7759f7d7828ed2d1610abe135ad997d1d45313a1d67c3cb299e  docs/evidence/protocol-763-ctf-spawn-team-balance-reset-2026-06-01.client-a.log
+0e1cf1a34fe2a64203e8e9778d7d7c51ad7ae472902c67851cfb67a46b240480  docs/evidence/protocol-763-ctf-spawn-team-balance-reset-2026-06-01.client-b.log
+a74a326686eac27033bb00179b2cd3116b230235e75f7fe3131b3c34785c8f76  docs/evidence/protocol-763-ctf-spawn-team-balance-reset-2026-06-01.server.log
+c57e601331de4aafa8e6de1b24769b6b91b9c6d83ddfd90a570727b1f84e57e3  docs/evidence/protocol-763-ctf-spawn-team-balance-reset-2026-06-01.typed-events.log
+28bd08715942c1770fcd68983a9353064281da37de1f6f57c05eb31ee1933bb9  docs/evidence/protocol-763-ctf-spawn-team-balance-reset-2026-06-01.record
+1a1ecacda926dc0cd7d539e021d14027c8ed3ccfb81f6162ba888e30ae107356  docs/evidence/protocol-763-ctf-spawn-team-balance-reset-2026-06-01.kv
+759263375efa19ba39693b3b206e28282c9c28a6384261af99006b33bcb1e149  docs/evidence/protocol-763-ctf-spawn-team-balance-reset-2026-06-01.md
+8881abea7bfb93e41e018268146ebd9081815384dc389aec5e36c39917095f03  docs/evidence/protocol-763-ctf-spawn-team-balance-reset-row-evidence-2026-06-01.run.log
+a802360827479d6d66e8726a1b6393c9aaa2eddda96668a7dbad765e8523dcce  tools/mc-compat-runner/src/main.rs
+db3cff8244a146fd853fdba7a75b818d16bcee85da7eb79b37e99116d987def9  tools/mc-compat-runner/src/scenario_manifest_generated.rs
+76559461467ac88a205f516c5e75375c00fba001cfa1b2d808f58f33ae85df82  config/mc-compat/scenario-manifest.ncl
+7d3ce9bc8fa51c9540620ed4ffaa364639e6d4b0266c7caa996c29105118e312  flake.nix
+012b9629344e62423b64c1bf16ebe9443ed49939d73768c9094f84368de11a21  valence/examples/ctf.rs

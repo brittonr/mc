@@ -1,0 +1,33 @@
+[main.rs:1037][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:1173][INFO] Shader version: #version 150
+[main.rs:290][INFO] Detected server protocol version 763
+[server/mod.rs:495][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25565
+[server/mod.rs:500][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:517][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:531][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:538][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:599][WARN] Server is running in offline mode
+[server/mod.rs:600][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbotb properties=0
+[server/mod.rs:2581][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[world/mod.rs:1123][INFO] Dimension bounds: min_y=-64 height=384
+[server/mod.rs:2666][INFO] MC-COMPAT-MILESTONE join_game entity_id=0 gamemode=Adventure
+[server/mod.rs:4467][INFO] Received chat message: Welcome to Valence! Select a team by jumping in the team's portal.
+[server/mod.rs:3179][INFO] MC-COMPAT-MILESTONE update_health health=20.0 food=20 saturation=0.0
+[server/mod.rs:4615][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=0
+[server/mod.rs:3160][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=3 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-0.794 y=85.000 z=4.137
+[server/mod.rs:1151][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:1210][INFO] MC-COMPAT-MILESTONE active_probe_input_start forward+sprint+jump
+[server/mod.rs:2233][INFO] MC-COMPAT-MILESTONE active_probe_position_look_sent x=0.000 y=85.736 z=2.525 on_ground=true
+[server/mod.rs:1216][INFO] MC-COMPAT-MILESTONE active_probe_jump_release
+[server/mod.rs:1220][INFO] MC-COMPAT-MILESTONE active_probe_input_turn right
+[server/mod.rs:1224][INFO] MC-COMPAT-MILESTONE active_probe_input_stop
+[server/mod.rs:1270][INFO] MC-COMPAT-MILESTONE team_probe_enter_blue_portal x=4.0 y=84.0 z=4.0
+[server/mod.rs:1289][INFO] MC-COMPAT-MILESTONE team_probe_hold_blue_portal start
+[server/mod.rs:4467][INFO] Received chat message: You are on team BLUE!
+[server/mod.rs:3160][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=6 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=48.000 y=65.000 z=0.000
+[server/mod.rs:3160][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=7 uuid=UUID(17279542629861541104, 17597886568995341490) name=compatbotb x=40.000 y=65.000 z=0.000
+[server/mod.rs:1302][INFO] MC-COMPAT-MILESTONE team_probe_select_hotbar_slot slot=0
+[server/mod.rs:1306][INFO] MC-COMPAT-MILESTONE team_probe_use_item_sent hand=main sequence=0
+[server/mod.rs:4078][INFO] MC-COMPAT-MILESTONE player_remove uuids=1

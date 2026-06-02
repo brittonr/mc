@@ -17,6 +17,7 @@ full CTF correctness remains a non-claim.
 | invalid_return_drop_rejected_without_state_mutation | Invalid flag return/drop | ctf_invalid_return_drop_attempted, ctf_invalid_return_drop_contained | server_invalid_return_drop_rejected | unexpected_flag_return, unexpected_server_flag_pickup, unexpected_flag_capture, unexpected_red_score, unexpected_blue_score | `docs/evidence/protocol-763-ctf-invalid-return-drop-2026-05-30.receipt.json` | `f0465c4ad154c051ee21bbe96bac939dad875ac3bdaaa785051cdb58636ba2ba` |
 | score_limit_win_emits_once_without_post_win_mutation | Score limit / win condition | ctf_score_limit_win_seen | server_score_limit_pre_state, server_score_limit_final_capture, server_score_limit_win_condition | score_limit_duplicate_win, score_limit_post_win_score_mutation, unexpected_red_score_3, unexpected_blue_score_1 | `docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.receipt.json` | `7c0d7805e54d95f2768f0164f1b4e62f59f57d524f3a61c3205eb0d611e89e02` |
 | simultaneous_pickup_capture_race_one_accept_one_reject | Simultaneous pickup/capture race | ctf_race_client_count, flag_pickup, flag_capture, score_red_1 | server_ctf_race_accepted_transition, server_ctf_race_rejected_transition, server_ctf_race_final_state | ctf_race_double_accept, unexpected_red_score_2, unexpected_blue_score_1 | `docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-2026-06-01.receipt.json` | `cc0b21579b8c5d99aa0d2bab04cc1ec3a34ecbdfceee2edc1ba0e497c11f977f` |
+| spawn_team_balance_resource_reset | Spawn/team balance/resource reset | ctf_spawn_team_reset_client_count, team_red, team_blue, flag_capture, score_red_1 | server_ctf_spawn_red_assignment, server_ctf_spawn_blue_assignment, server_ctf_spawn_team_balance, server_ctf_spawn_resource_reset | spawn_team_imbalance, spawn_resource_stale, unexpected_red_score_2, unexpected_blue_score_1 | `docs/evidence/protocol-763-ctf-spawn-team-balance-reset-2026-06-01.receipt.json` | `ce4ec8f61c956d5083d6701915a44b9e31c8e0adbfd018b25878774e516f2e6f` |
 
 ## Unpromoted rule clusters
 
@@ -26,7 +27,7 @@ full CTF correctness remains a non-claim.
 | invalid_return_accepted broad invalid return/drop breadth | Non-claim | Only one own-base return/drop rejection row is promoted; add more carrier/drop/return permutations before claiming broader invalid return/drop coverage. |
 | score_limit_variants broad score-limit breadth | Non-claim | Only one near-limit RED capture to configured score limit `2` is promoted; add more score limits/settings/race fixtures before claiming broader win-condition coverage. |
 | simultaneous race breadth | Non-claim | Only one deterministic two-client same-flag race window is promoted; add latency, jitter, alternate team/flag, and larger-concurrency fixtures before claiming broader race coverage. |
-| spawn/team balance/resource reset | Non-claim | Add scenario-specific receipts. |
+| all team balancing algorithms | Non-claim | Only one two-client RED/BLUE assignment/reset sequence is promoted; add alternate maps, larger teams, and more reset triggers before claiming broader team-balance coverage. |
 | full CTF correctness | Non-claim | Requires all rule rows complete. |
 
 ## Positive validation
@@ -44,6 +45,7 @@ full CTF correctness remains a non-claim.
 - `tools/check_ctf_invalid_return_drop.rs` validates the promoted invalid return/drop row, including client containment, server rejection, no flag state mutation, no score/capture, and BLAKE3-backed logs;
 - `tools/check_ctf_score_limit_win_condition.rs` validates the promoted score-limit row, including near-limit pre-state, final capture metrics, one win/end-state emission, no duplicate-win, no post-win score mutation, and BLAKE3-backed logs;
 - `tools/check_mc_compat_row_contracts.rs --row ctf-simultaneous-pickup-capture-race` validates the promoted simultaneous pickup/capture race row, including client identities, team roles, ordered accepted/rejected/final milestones, final score, race-window bounds, and BLAKE3-backed logs;
+- `tools/check_mc_compat_row_contracts.rs --row ctf-spawn-team-balance-reset` validates the promoted spawn/team balance/resource reset row, including team counts, selected teams, spawn coordinates, initial resources, reset state, resource IDs, server correlation IDs, and BLAKE3-backed logs;
 - full CTF correctness is still listed as a non-claim.
 
 ## Negative fixtures
@@ -58,20 +60,21 @@ full CTF correctness remains a non-claim.
 - missing invalid pickup server rejection, unexpected server flag pickup, missing checker record, and row-doc overclaims in `tools/check_ctf_invalid_pickup_ownership.rs --self-test`;
 - missing invalid return/drop server rejection, unexpected flag return/state mutation, missing checker record, and row-doc overclaims in `tools/check_ctf_invalid_return_drop.rs --self-test`;
 - duplicate score-limit win, post-win score mutation, wrong final score, missing checker record, and row-doc overclaims in `tools/check_ctf_score_limit_win_condition.rs --self-test`;
+- missing spawn/team balance metrics, missing server correlation IDs, missing non-claims, and row-doc overclaims in `tools/check_mc_compat_row_contracts.rs --row ctf-spawn-team-balance-reset` fixture rails;
 - dry-run RED/BLUE receipt, target-only historical receipt, missing BLUE score milestone, missing server evidence, missing checker record, and row-doc overclaims in `tools/check_red_blue_scoring_soak_live_refresh.rs --self-test`.
 
 ## Promotion gate
 
-Only the seven bounded rule clusters above are promoted. Full CTF correctness remains blocked until every rule-family row has live receipts, run logs, BLAKE3 manifests, matrix/current-bundle entries, and positive/negative checker coverage.
+Only the eight bounded rule clusters above are promoted. Full CTF correctness remains blocked until every rule-family row has live receipts, run logs, BLAKE3 manifests, matrix/current-bundle entries, and positive/negative checker coverage.
 
 ## Decision
 
 - Question: Can current rule evidence be promoted without implying full CTF correctness?
-- Inspected evidence: RED/BLUE live-refresh receipts/logs, flag-carrier death/return receipt, reconnect flag-state receipt, invalid pickup ownership receipt, invalid return/drop receipt, score-limit win-condition receipt, simultaneous pickup/capture race receipt, acceptance matrix, current bundle, and checker fixtures.
-- Decision: Yes. Promote seven bounded rule clusters and keep full CTF correctness as a non-claim.
+- Inspected evidence: RED/BLUE live-refresh receipts/logs, flag-carrier death/return receipt, reconnect flag-state receipt, invalid pickup ownership receipt, invalid return/drop receipt, score-limit win-condition receipt, simultaneous pickup/capture race receipt, spawn/team balance/resource reset receipt, acceptance matrix, current bundle, and checker fixtures.
+- Decision: Yes. Promote eight bounded rule clusters and keep full CTF correctness as a non-claim.
 - Owner: agent.
-- Next action: add more invalid-action permutations, broader race-condition receipts, and spawn/team balance receipts before broadening rule correctness.
+- Next action: add more invalid-action permutations, broader race-condition receipts, alternate spawn/team reset receipts, and larger team-balance fixtures before broadening rule correctness.
 
 ## Non-claims
 
-No full CTF correctness, all invalid actions, all flag pickup/return permutations, all score limits/settings, overtime/tiebreakers, scoreboard UI parity, all simultaneous races, latency/jitter race tolerance, spawn/team balance, production gameplay readiness, or broad Minecraft compatibility claim is made.
+No full CTF correctness, all invalid actions, all flag pickup/return permutations, all score limits/settings, overtime/tiebreakers, scoreboard UI parity, all simultaneous races, latency/jitter race tolerance, all team balancing algorithms, all maps, all resource loadouts, all reset triggers, production gameplay readiness, or broad Minecraft compatibility claim is made.

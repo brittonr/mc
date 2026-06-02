@@ -3,10 +3,10 @@ ae1d63d4955974797becd8079391b96c9afed56bffabeb36211f55eedf87827b  docs/evidence/
 b4e56e5edbbbe406581718f534dc859a3f926c48f217ad370da69e7fff131911  cairn/archive/2026-05-29-armor-loadout-enchantment-status-matrix/specs/mc-compatibility/spec.md
 aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a  cairn/specs/mc-compatibility/spec.md
 80a3afb8c38101448432f89bafb062abf731295a6d300de842e3a9c2e94132f5  docs/evidence/protocol-763-armor-loadout-enchantment-status-contract-2026-05-29.b3
-d6547ba1bd51c8027dbe63273e2f06ae93158099c77d34e3c09d966eff66f59c  docs/evidence/protocol-763-armor-loadout-enchantment-status-checker-2026-05-29.b3
-cf822105557d95134e4eb4a17cccdaac5bc3fa14434dadcbc2dc97fc495125f7  docs/evidence/protocol-763-armor-loadout-enchantment-status-rail-2026-05-29.b3
-74cfd15573fd59fe880ff65f851d0993a1bc8125319515a5ae87f931efee1563  docs/evidence/protocol-763-armor-loadout-enchantment-status-row-2026-05-29.b3
-936ec38d6a354cc9a2ccb97ec36ad801c1db569e2dee836548951934f66f8df9  docs/evidence/protocol-763-acceptance-matrix.md
-081808f38da7ff8775ee0cc2487124a110fa02e9c5e3afbbbf6607492326daba  docs/evidence/protocol-763-current-evidence-bundle.md
-16711cd40b01543fe8307b2d74fff2063389bdcd45b18ac1ec3a071b0627c1b7  tools/mc-compat-runner/src/main.rs
+e72a7a41334ee902592fa8763da02ae052f296cd4d38cec9c8ca908acd4e296e  docs/evidence/protocol-763-armor-loadout-enchantment-status-checker-2026-05-29.b3
+2e055fb31012126c548b3ddb6f3f09dc58ed791c7de457cb32a6442f2218bfc6  docs/evidence/protocol-763-armor-loadout-enchantment-status-rail-2026-05-29.b3
+a0b1f60ce58890be4285ee316b89d01062cf38b4708aeb125b204b9a9350352d  docs/evidence/protocol-763-armor-loadout-enchantment-status-row-2026-05-29.b3
+a09d769891f0812c6fba4a4d27e1d87caf7c3b6cd1d81cdff6a07b961d8eb1d0  docs/evidence/protocol-763-acceptance-matrix.md
+e3e5f01d8683a244b152ff3893c3b521bd10145c234b18c388942628aaa7e6a4  docs/evidence/protocol-763-current-evidence-bundle.md
+a802360827479d6d66e8726a1b6393c9aaa2eddda96668a7dbad765e8523dcce  tools/mc-compat-runner/src/main.rs
 e883c3ca16050a62449dd85726b0f117876f46bee841814a2a83544bb7be23dd  tools/check_armor_loadout_enchantment_status.rs

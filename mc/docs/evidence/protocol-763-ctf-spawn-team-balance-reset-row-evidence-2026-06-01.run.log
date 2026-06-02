@@ -1,0 +1,8 @@
+# ctf spawn team balance reset row evidence
+date=2026-06-01
+
+$ target/check-mc-compat-row-contracts --self-test
+mc compat row contract self-test ok: 22 row contracts exercised and fixture rail checked
+
+$ target/check-mc-compat-row-contracts --row ctf-spawn-team-balance-reset --evidence docs/evidence/protocol-763-ctf-spawn-team-balance-reset-2026-06-01.kv
+spawn/team balance/resource reset contract check passed

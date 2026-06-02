@@ -1,0 +1,6 @@
+# ctf spawn team balance reset task-evidence gate
+date=2026-06-01
+command=rustc tools/check_cairn_task_evidence.rs && target/check-cairn-task-evidence cairn/changes/ctf-spawn-team-balance-reset/tasks.md
+
+task evidence gate passed: 77 completed tasks checked across 21 active task files
+exit_status=0

@@ -1,0 +1,37 @@
+warning: struct `ArrowPolicyDiff` is never constructed
+   --> examples/ctf.rs:135:8
+    |
+135 | struct ArrowPolicyDiff {
+    |        ^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `diff_arrow_policy_snapshots` is never used
+   --> examples/ctf.rs:427:4
+    |
+427 | fn diff_arrow_policy_snapshots(
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `push_arrow_policy_diff` is never used
+   --> examples/ctf.rs:453:4
+    |
+453 | fn push_arrow_policy_diff(
+    |    ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `valence` (example "ctf") generated 3 warnings
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.17s
+     Running `/tmp/valence-compat-ctf-spawn-reset-f40d6d6d5aeee300bdaeb406c475e2607ac3b6a7-target/debug/examples/ctf`
+MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbota slot=0 source=team_inventory_setup
+[2m2026-06-02T05:37:15.689889Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE ctf_spawn_team_assignment username=compatbota team=Red red_count=1 blue_count=0 spawn_x=-40.0 spawn_y=65.0 spawn_z=0.0 slot36=WoodenSword:1 slot37=RedWool:64 correlation_id=team-select-compatbota
+MC-COMPAT-MILESTONE ctf_spawn_team_assignment username=compatbota team=Red red_count=1 blue_count=0 spawn_x=-40.0 spawn_y=65.0 spawn_z=0.0 slot36=WoodenSword:1 slot37=RedWool:64 correlation_id=team-select-compatbota
+MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbota slot=0
+MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbotb slot=0 source=team_inventory_setup
+[2m2026-06-02T05:37:18.193027Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE ctf_spawn_team_assignment username=compatbotb team=Blue red_count=1 blue_count=1 spawn_x=40.0 spawn_y=65.0 spawn_z=0.0 slot36=WoodenSword:1 slot37=BlueWool:64 correlation_id=team-select-compatbotb
+MC-COMPAT-MILESTONE ctf_spawn_team_assignment username=compatbotb team=Blue red_count=1 blue_count=1 spawn_x=40.0 spawn_y=65.0 spawn_z=0.0 slot36=WoodenSword:1 slot37=BlueWool:64 correlation_id=team-select-compatbotb
+[2m2026-06-02T05:37:18.193037Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE ctf_spawn_team_balance red_count=1 blue_count=1 selected_teams=compatbota:Red,compatbotb:Blue outcome=balanced
+MC-COMPAT-MILESTONE ctf_spawn_team_balance red_count=1 blue_count=1 selected_teams=compatbota:Red,compatbotb:Blue outcome=balanced
+[2m2026-06-02T05:37:18.593466Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE flag_pickup username=compatbota carrier_team=Red flag_team=Blue
+MC-COMPAT-MILESTONE flag_pickup username=compatbota carrier_team=Red flag_team=Blue
+MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbotb slot=0
+[2m2026-06-02T05:37:19.394289Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE ctf_spawn_resource_reset_state trigger=score capture_username=compatbota capture_team=Red carried_flag=Blue red_count=1 blue_count=1 red_score=1 blue_score=0 red_spawn=-40.0,65.0,0.0 blue_spawn=40.0,65.0,0.0 slot36=WoodenSword:1 slot37=TeamWool:64 reset_state=scoreboard_flags_and_resources_coherent correlation_id=score-reset-compatbota
+MC-COMPAT-MILESTONE ctf_spawn_resource_reset_state trigger=score capture_username=compatbota capture_team=Red carried_flag=Blue red_count=1 blue_count=1 red_score=1 blue_score=0 red_spawn=-40.0,65.0,0.0 blue_spawn=40.0,65.0,0.0 slot36=WoodenSword:1 slot37=TeamWool:64 reset_state=scoreboard_flags_and_resources_coherent correlation_id=score-reset-compatbota

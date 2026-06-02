@@ -1,0 +1,132 @@
+$ nix run --no-update-lock-file .#cairn -- sync ctf-spawn-team-balance-reset --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/ctf-spawn-team-balance-reset/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/ctf-spawn-team-balance-reset/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "ctf-spawn-team-balance-reset",
+  "delta_specs": [
+    "./cairn/changes/ctf-spawn-team-balance-reset/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "eb01265966118322529b9010725f24685d11a3fb340607bd855eb163250b837c",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "52786701203d7f740efe49901d3ad39208198549d17ae92042636671423b7faa",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "8b72e128f56340cadb97b6ea8a9e59074dc2942533d278d8391dfd70a61a8db9"
+}
+sync_exit_status=0
+$ nix run --no-update-lock-file .#cairn -- archive ctf-spawn-team-balance-reset --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: ctf-spawn-team-balance-reset",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-ctf-spawn-team-balance-reset"
+    }
+  ],
+  "blocked": false,
+  "change": "ctf-spawn-team-balance-reset",
+  "dry_run": false,
+  "input_hash": "eb01265966118322529b9010725f24685d11a3fb340607bd855eb163250b837c",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "8938410a96bfba7e671ca67ce2e928eb58a8e52bb8472e49e9a6418668ed5647",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-ctf-spawn-team-balance-reset/design.md"
+        },
+        {
+          "content_hash": "26daace4c9629fe6e38d6b9c9573436afd81ea8eabfbcb368140b02fa4ebbd3a",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-ctf-spawn-team-balance-reset/proposal.md"
+        },
+        {
+          "content_hash": "617dba2498ea080bf6c575bf486effb243264265ca9ac6091c1db19945c324a4",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-ctf-spawn-team-balance-reset/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "e24e9c2fb6ff43cbeb32b0ea5486200571562d6314a64bc0dc1b8538523e4a5e",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-ctf-spawn-team-balance-reset/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/ctf-spawn-team-balance-reset"
+        }
+      ],
+      "manifest_hash": "9fca9b5430e1d94870a3f35c02520788a36b092ad6649b1fd00a601f464a768a"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "8938410a96bfba7e671ca67ce2e928eb58a8e52bb8472e49e9a6418668ed5647",
+          "exists": true,
+          "path": "./cairn/changes/ctf-spawn-team-balance-reset/design.md"
+        },
+        {
+          "content_hash": "26daace4c9629fe6e38d6b9c9573436afd81ea8eabfbcb368140b02fa4ebbd3a",
+          "exists": true,
+          "path": "./cairn/changes/ctf-spawn-team-balance-reset/proposal.md"
+        },
+        {
+          "content_hash": "617dba2498ea080bf6c575bf486effb243264265ca9ac6091c1db19945c324a4",
+          "exists": true,
+          "path": "./cairn/changes/ctf-spawn-team-balance-reset/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "e24e9c2fb6ff43cbeb32b0ea5486200571562d6314a64bc0dc1b8538523e4a5e",
+          "exists": true,
+          "path": "./cairn/changes/ctf-spawn-team-balance-reset/tasks.md"
+        }
+      ],
+      "manifest_hash": "13163a46ace68ccb8fc5020a4a7b83ac8ae2e64aab7277edd9d8f218d5e7bf5a"
+    },
+    "kind": "archive",
+    "manifest_hash": "6113ffa392a4164fc186b89021401c8d1b4b55fcc2c35aa61c9259ca9e441010"
+  },
+  "plan_hash": "b397e6bfd9219500efacf80725762103bcc584d3704373531f8f26ead4b7f023",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "6a28119f1707220a56cd3e5290031ce8fcfa743188abe35242b291c95b060608"
+}
+archive_exit_status=0
+archive_rename=2026-06-01-ctf-spawn-team-balance-reset
+exit_status=0
