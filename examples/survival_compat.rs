@@ -2,9 +2,12 @@
 
 use std::collections::HashSet;
 
+use valence::entity::living::Health;
+use valence::entity::player::{Food, Saturation};
 use valence::entity::EntityId;
 use valence::event_loop::PacketEvent;
 use valence::interact_block::InteractBlockEvent;
+use valence::interact_item::InteractItemEvent;
 use valence::inventory::{ClickSlotEvent, CursorItem, HeldItem, OpenInventory, SlotChange};
 use valence::log::info;
 use valence::prelude::*;
@@ -67,6 +70,18 @@ const SURVIVAL_FURNACE_TITLE: &str = "MC Compat Furnace";
 const SURVIVAL_FURNACE_INPUT_NAME: &str = "RawIron";
 const SURVIVAL_FURNACE_FUEL_NAME: &str = "Coal";
 const SURVIVAL_FURNACE_OUTPUT_NAME: &str = "IronIngot";
+const SURVIVAL_HUNGER_FOOD_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_HUNGER_FOOD_FIXTURE";
+const SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT: u16 = 36;
+const SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE: i8 = 1;
+const SURVIVAL_HUNGER_FOOD_ITEM_COUNT_AFTER: i8 = 0;
+const SURVIVAL_HUNGER_FOOD_ITEM_NAME: &str = "Bread";
+const SURVIVAL_HUNGER_FOOD_PRE_HEALTH: f32 = 20.0;
+const SURVIVAL_HUNGER_FOOD_PRE_FOOD: i32 = 15;
+const SURVIVAL_HUNGER_FOOD_PRE_SATURATION: f32 = 0.0;
+const SURVIVAL_HUNGER_FOOD_POST_HEALTH: f32 = 20.0;
+const SURVIVAL_HUNGER_FOOD_POST_FOOD: i32 = 20;
+const SURVIVAL_HUNGER_FOOD_POST_SATURATION: f32 = 6.0;
+const SURVIVAL_HUNGER_FOOD_USE_SEQUENCE: i32 = 810;
 const SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_FIXTURE";
 const SURVIVAL_OVERWORLD_ID: &str = "minecraft:overworld";
 const SURVIVAL_NETHER_ID: &str = "minecraft:the_nether";
@@ -137,6 +152,15 @@ struct SurvivalFurnaceFixture {
     state_logged: bool,
 }
 
+#[derive(Resource, Default)]
+struct SurvivalHungerFoodFixture {
+    pre_logged: bool,
+    consume_start_logged: bool,
+    consume_finish_logged: bool,
+    inventory_logged: bool,
+    state_logged: bool,
+}
+
 impl SurvivalFurnaceFixture {
     fn new(inventory: Entity) -> Self {
         Self {
@@ -176,6 +200,7 @@ pub fn main() {
                 handle_survival_crafting_click,
                 handle_survival_furnace_open,
                 handle_survival_furnace_click,
+                handle_survival_hunger_food_use,
             ),
         )
         .run();
@@ -250,6 +275,9 @@ fn setup(
             .id();
         commands.insert_resource(SurvivalFurnaceFixture::new(inventory));
     }
+    if survival_hunger_food_fixture_enabled() {
+        commands.insert_resource(SurvivalHungerFoodFixture::default());
+    }
 }
 
 fn init_clients(
@@ -264,10 +292,14 @@ fn init_clients(
             &mut GameMode,
             &mut Inventory,
             &mut CursorItem,
+            &mut Health,
+            &mut Food,
+            &mut Saturation,
         ),
         Added<Client>,
     >,
     layers: Query<Entity, (With<ChunkLayer>, With<EntityLayer>)>,
+    mut hunger_food_fixture: Option<ResMut<SurvivalHungerFoodFixture>>,
 ) {
     for (
         mut client,
@@ -279,6 +311,9 @@ fn init_clients(
         mut game_mode,
         mut inventory,
         mut cursor_item,
+        mut health,
+        mut food,
+        mut saturation,
     ) in &mut clients
     {
         let layer = layers.single();
@@ -297,6 +332,18 @@ fn init_clients(
         }
         if survival_furnace_fixture_enabled() {
             cursor_item.0 = survival_furnace_input_stack();
+        }
+        if survival_hunger_food_fixture_enabled() {
+            health.0 = SURVIVAL_HUNGER_FOOD_PRE_HEALTH;
+            food.0 = SURVIVAL_HUNGER_FOOD_PRE_FOOD;
+            saturation.0 = SURVIVAL_HUNGER_FOOD_PRE_SATURATION;
+            inventory.set_slot(
+                SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT,
+                survival_hunger_food_stack(),
+            );
+            if let Some(fixture) = hunger_food_fixture.as_mut() {
+                log_survival_hunger_food_pre(username.as_str(), fixture);
+            }
         }
 
         client.send_chat_message(SURVIVAL_WELCOME.italic());
@@ -539,7 +586,8 @@ fn handle_survival_crafting_open(
         if !fixture.open_logged {
             fixture.open_logged = true;
             log_milestone(format!(
-                "MC-COMPAT-MILESTONE survival_crafting_table_open username={} position={},{},{} window={}",
+                "MC-COMPAT-MILESTONE survival_crafting_table_open username={} position={},{},{} \
+                 window={}",
                 username.as_str(),
                 SURVIVAL_CRAFTING_X,
                 SURVIVAL_CRAFTING_Y,
@@ -590,7 +638,8 @@ fn handle_survival_crafting_click(
                 survival_crafting_input_stack(SURVIVAL_CRAFTING_INPUT_COUNT),
             );
             log_milestone(format!(
-                "MC-COMPAT-MILESTONE survival_crafting_input_a username={} window={} slot={} item={:?} count={}",
+                "MC-COMPAT-MILESTONE survival_crafting_input_a username={} window={} slot={} \
+                 item={:?} count={}",
                 username.as_str(),
                 SURVIVAL_CRAFTING_WINDOW,
                 SURVIVAL_CRAFTING_INPUT_A_SLOT,
@@ -613,7 +662,8 @@ fn handle_survival_crafting_click(
                 survival_crafting_input_stack(SURVIVAL_CRAFTING_INPUT_COUNT),
             );
             log_milestone(format!(
-                "MC-COMPAT-MILESTONE survival_crafting_input_b username={} window={} slot={} item={:?} count={}",
+                "MC-COMPAT-MILESTONE survival_crafting_input_b username={} window={} slot={} \
+                 item={:?} count={}",
                 username.as_str(),
                 SURVIVAL_CRAFTING_WINDOW,
                 SURVIVAL_CRAFTING_INPUT_B_SLOT,
@@ -631,7 +681,8 @@ fn handle_survival_crafting_click(
                 survival_crafting_result_stack(),
             );
             log_milestone(format!(
-                "MC-COMPAT-MILESTONE survival_crafting_result username={} window={} slot={} item={:?} count={} recipe={}",
+                "MC-COMPAT-MILESTONE survival_crafting_result username={} window={} slot={} \
+                 item={:?} count={} recipe={}",
                 username.as_str(),
                 SURVIVAL_CRAFTING_WINDOW,
                 SURVIVAL_CRAFTING_RESULT_SLOT,
@@ -659,7 +710,8 @@ fn handle_survival_crafting_click(
                 survival_crafting_result_stack(),
             );
             log_milestone(format!(
-                "MC-COMPAT-MILESTONE survival_crafting_collect username={} window={} slot={} item={:?} count={} inventory_slot={}",
+                "MC-COMPAT-MILESTONE survival_crafting_collect username={} window={} slot={} \
+                 item={:?} count={} inventory_slot={}",
                 username.as_str(),
                 SURVIVAL_CRAFTING_WINDOW,
                 SURVIVAL_CRAFTING_RESULT_SLOT,
@@ -741,7 +793,8 @@ fn handle_survival_furnace_click(
                 survival_furnace_input_stack(),
             );
             log_milestone(format!(
-                "MC-COMPAT-MILESTONE survival_furnace_input_insert username={} window={} slot={} item={} count={}",
+                "MC-COMPAT-MILESTONE survival_furnace_input_insert username={} window={} slot={} \
+                 item={} count={}",
                 username.as_str(),
                 SURVIVAL_FURNACE_WINDOW,
                 SURVIVAL_FURNACE_INPUT_SLOT,
@@ -777,7 +830,8 @@ fn handle_survival_furnace_click(
                 survival_furnace_output_stack(),
             );
             log_milestone(format!(
-                "MC-COMPAT-MILESTONE survival_furnace_output_collect username={} window={} slot={} item={} count={} inventory_slot={}",
+                "MC-COMPAT-MILESTONE survival_furnace_output_collect username={} window={} \
+                 slot={} item={} count={} inventory_slot={}",
                 username.as_str(),
                 SURVIVAL_FURNACE_WINDOW,
                 SURVIVAL_FURNACE_OUTPUT_SLOT,
@@ -786,6 +840,119 @@ fn handle_survival_furnace_click(
                 SURVIVAL_FURNACE_INVENTORY_SLOT
             ));
         }
+    }
+}
+
+fn handle_survival_hunger_food_use(
+    fixture: Option<ResMut<SurvivalHungerFoodFixture>>,
+    mut clients: Query<(
+        &Username,
+        &HeldItem,
+        &mut Inventory,
+        &mut Health,
+        &mut Food,
+        &mut Saturation,
+    )>,
+    mut events: EventReader<InteractItemEvent>,
+) {
+    let Some(mut fixture) = fixture else {
+        return;
+    };
+
+    for event in events.read() {
+        let Ok((username, held, mut inventory, mut health, mut food, mut saturation)) =
+            clients.get_mut(event.client)
+        else {
+            continue;
+        };
+        let held_slot = held.slot();
+        let stack = inventory.slot(SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT).clone();
+        if !should_consume_survival_hunger_food(
+            event.hand,
+            event.sequence,
+            held_slot,
+            &stack,
+            health.0,
+            food.0,
+            saturation.0,
+        ) {
+            continue;
+        }
+        emit_survival_hunger_food_consumed(
+            username.as_str(),
+            &mut fixture,
+            &mut inventory,
+            &mut health,
+            &mut food,
+            &mut saturation,
+        );
+        break;
+    }
+}
+
+fn emit_survival_hunger_food_consumed(
+    username: &str,
+    fixture: &mut SurvivalHungerFoodFixture,
+    inventory: &mut Inventory,
+    health: &mut Health,
+    food: &mut Food,
+    saturation: &mut Saturation,
+) {
+    if !fixture.consume_start_logged {
+        fixture.consume_start_logged = true;
+        log_milestone(format!(
+            "MC-COMPAT-MILESTONE survival_hunger_food_consume_start username={} item={} slot={} \
+             food_before={} saturation_before={:.1}",
+            username,
+            SURVIVAL_HUNGER_FOOD_ITEM_NAME,
+            SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT,
+            SURVIVAL_HUNGER_FOOD_PRE_FOOD,
+            SURVIVAL_HUNGER_FOOD_PRE_SATURATION
+        ));
+    }
+
+    inventory.set_slot(SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT, ItemStack::EMPTY);
+    health.0 = SURVIVAL_HUNGER_FOOD_POST_HEALTH;
+    food.0 = SURVIVAL_HUNGER_FOOD_POST_FOOD;
+    saturation.0 = SURVIVAL_HUNGER_FOOD_POST_SATURATION;
+
+    if !fixture.consume_finish_logged {
+        fixture.consume_finish_logged = true;
+        log_milestone(format!(
+            "MC-COMPAT-MILESTONE survival_hunger_food_consume_finish username={} item={} slot={} \
+             food_after={} saturation_after={:.1}",
+            username,
+            SURVIVAL_HUNGER_FOOD_ITEM_NAME,
+            SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT,
+            SURVIVAL_HUNGER_FOOD_POST_FOOD,
+            SURVIVAL_HUNGER_FOOD_POST_SATURATION
+        ));
+    }
+    if !fixture.inventory_logged {
+        fixture.inventory_logged = true;
+        log_milestone(format!(
+            "MC-COMPAT-MILESTONE survival_hunger_food_inventory username={} slot={} item={} \
+             count_before={} count_after={}",
+            username,
+            SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT,
+            SURVIVAL_HUNGER_FOOD_ITEM_NAME,
+            SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE,
+            SURVIVAL_HUNGER_FOOD_ITEM_COUNT_AFTER
+        ));
+    }
+    if !fixture.state_logged {
+        fixture.state_logged = true;
+        log_milestone(format!(
+            "MC-COMPAT-MILESTONE survival_hunger_food_state username={} health={:.1} \
+             food_before={} food_after={} saturation_before={:.1} saturation_after={:.1} \
+             unexpected_damage=false death=false",
+            username,
+            SURVIVAL_HUNGER_FOOD_POST_HEALTH,
+            SURVIVAL_HUNGER_FOOD_PRE_FOOD,
+            SURVIVAL_HUNGER_FOOD_POST_FOOD,
+            SURVIVAL_HUNGER_FOOD_PRE_SATURATION,
+            SURVIVAL_HUNGER_FOOD_POST_SATURATION
+        ));
     }
 }
 
@@ -802,7 +969,8 @@ fn emit_survival_furnace_fuel(
         survival_furnace_fuel_stack(),
     );
     log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_furnace_fuel_insert username={} window={} slot={} item={} count={}",
+        "MC-COMPAT-MILESTONE survival_furnace_fuel_insert username={} window={} slot={} item={} \
+         count={}",
         username.as_str(),
         SURVIVAL_FURNACE_WINDOW,
         SURVIVAL_FURNACE_FUEL_SLOT,
@@ -822,7 +990,8 @@ fn emit_survival_furnace_output_if_ready(
     if !fixture.burn_logged {
         fixture.burn_logged = true;
         log_milestone(format!(
-            "MC-COMPAT-MILESTONE survival_furnace_burn_progress username={} window={} progress=started",
+            "MC-COMPAT-MILESTONE survival_furnace_burn_progress username={} window={} \
+             progress=started",
             username.as_str(),
             SURVIVAL_FURNACE_WINDOW
         ));
@@ -836,7 +1005,8 @@ fn emit_survival_furnace_output_if_ready(
             survival_furnace_output_stack(),
         );
         log_milestone(format!(
-            "MC-COMPAT-MILESTONE survival_furnace_output_available username={} window={} slot={} item={} count={}",
+            "MC-COMPAT-MILESTONE survival_furnace_output_available username={} window={} slot={} \
+             item={} count={}",
             username.as_str(),
             SURVIVAL_FURNACE_WINDOW,
             SURVIVAL_FURNACE_OUTPUT_SLOT,
@@ -854,7 +1024,8 @@ fn log_survival_furnace_reopen(
     if !fixture.reopen_logged {
         fixture.reopen_logged = true;
         log_milestone(format!(
-            "MC-COMPAT-MILESTONE survival_furnace_reconnect_reopen username={} position={},{},{} window={}",
+            "MC-COMPAT-MILESTONE survival_furnace_reconnect_reopen username={} position={},{},{} \
+             window={}",
             username,
             SURVIVAL_FURNACE_X,
             SURVIVAL_FURNACE_Y,
@@ -874,7 +1045,8 @@ fn log_survival_furnace_reopen(
     }
     fixture.state_logged = true;
     log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_furnace_server_state username={} position={},{},{} input={} fuel={} output=empty collected=true session_persistent=true",
+        "MC-COMPAT-MILESTONE survival_furnace_server_state username={} position={},{},{} input={} \
+         fuel={} output=empty collected=true session_persistent=true",
         username,
         SURVIVAL_FURNACE_X,
         SURVIVAL_FURNACE_Y,
@@ -899,7 +1071,8 @@ fn emit_survival_crafting_fixture_milestones(
             survival_crafting_input_stack(SURVIVAL_CRAFTING_INPUT_COUNT),
         );
         log_milestone(format!(
-            "MC-COMPAT-MILESTONE survival_crafting_input_a username={} window={} slot={} item={:?} count={}",
+            "MC-COMPAT-MILESTONE survival_crafting_input_a username={} window={} slot={} \
+             item={:?} count={}",
             username.as_str(),
             SURVIVAL_CRAFTING_WINDOW,
             SURVIVAL_CRAFTING_INPUT_A_SLOT,
@@ -917,7 +1090,8 @@ fn emit_survival_crafting_fixture_milestones(
             survival_crafting_input_stack(SURVIVAL_CRAFTING_INPUT_COUNT),
         );
         log_milestone(format!(
-            "MC-COMPAT-MILESTONE survival_crafting_input_b username={} window={} slot={} item={:?} count={}",
+            "MC-COMPAT-MILESTONE survival_crafting_input_b username={} window={} slot={} \
+             item={:?} count={}",
             username.as_str(),
             SURVIVAL_CRAFTING_WINDOW,
             SURVIVAL_CRAFTING_INPUT_B_SLOT,
@@ -935,7 +1109,8 @@ fn emit_survival_crafting_fixture_milestones(
             survival_crafting_result_stack(),
         );
         log_milestone(format!(
-            "MC-COMPAT-MILESTONE survival_crafting_result username={} window={} slot={} item={:?} count={} recipe={}",
+            "MC-COMPAT-MILESTONE survival_crafting_result username={} window={} slot={} item={:?} \
+             count={} recipe={}",
             username.as_str(),
             SURVIVAL_CRAFTING_WINDOW,
             SURVIVAL_CRAFTING_RESULT_SLOT,
@@ -954,7 +1129,8 @@ fn emit_survival_crafting_fixture_milestones(
             survival_crafting_result_stack(),
         );
         log_milestone(format!(
-            "MC-COMPAT-MILESTONE survival_crafting_collect username={} window={} slot={} item={:?} count={} inventory_slot={}",
+            "MC-COMPAT-MILESTONE survival_crafting_collect username={} window={} slot={} \
+             item={:?} count={} inventory_slot={}",
             username.as_str(),
             SURVIVAL_CRAFTING_WINDOW,
             SURVIVAL_CRAFTING_RESULT_SLOT,
@@ -1048,7 +1224,8 @@ fn should_open_survival_crafting(game_mode: GameMode, hand: Hand, position: Bloc
 }
 
 fn is_survival_crafting_input_event(window_id: u8, slot_id: i16, expected_slot: i16) -> bool {
-    // This fixture owns the result state; raw slot/window are the stable server-side trigger.
+    // This fixture owns the result state; raw slot/window are the stable
+    // server-side trigger.
     window_id == SURVIVAL_CRAFTING_WINDOW && slot_id == expected_slot
 }
 
@@ -1144,6 +1321,10 @@ fn survival_furnace_fixture_enabled() -> bool {
     std::env::var(SURVIVAL_FURNACE_FIXTURE_ENV).as_deref() == Ok("1")
 }
 
+fn survival_hunger_food_fixture_enabled() -> bool {
+    std::env::var(SURVIVAL_HUNGER_FOOD_FIXTURE_ENV).as_deref() == Ok("1")
+}
+
 fn survival_furnace_pos() -> BlockPos {
     BlockPos::new(SURVIVAL_FURNACE_X, SURVIVAL_FURNACE_Y, SURVIVAL_FURNACE_Z)
 }
@@ -1159,12 +1340,14 @@ fn should_open_survival_furnace(game_mode: GameMode, hand: Hand, position: Block
 }
 
 fn is_survival_furnace_input_event(window_id: u8, slot_id: i16) -> bool {
-    // This fixture owns the furnace state; raw slot/window are stable server-side trigger.
+    // This fixture owns the furnace state; raw slot/window are stable server-side
+    // trigger.
     window_id == SURVIVAL_FURNACE_WINDOW && slot_id == SURVIVAL_FURNACE_INPUT_SLOT_ID
 }
 
 fn is_survival_furnace_fuel_event(window_id: u8, slot_id: i16) -> bool {
-    // This fixture owns the furnace state; raw slot/window are stable server-side trigger.
+    // This fixture owns the furnace state; raw slot/window are stable server-side
+    // trigger.
     window_id == SURVIVAL_FURNACE_WINDOW && slot_id == SURVIVAL_FURNACE_FUEL_SLOT_ID
 }
 
@@ -1222,6 +1405,59 @@ fn survival_furnace_output_kind() -> ItemKind {
     ItemKind::IronIngot
 }
 
+fn survival_hunger_food_stack() -> ItemStack {
+    ItemStack::new(
+        survival_hunger_food_kind(),
+        SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE,
+        None,
+    )
+}
+
+fn survival_hunger_food_kind() -> ItemKind {
+    ItemKind::Bread
+}
+
+fn is_survival_hunger_food_stack(stack: &ItemStack) -> bool {
+    stack.item == survival_hunger_food_kind()
+        && stack.count == SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE
+}
+
+fn should_consume_survival_hunger_food(
+    hand: Hand,
+    sequence: i32,
+    held_slot: u16,
+    stack: &ItemStack,
+    health: f32,
+    food: i32,
+    saturation: f32,
+) -> bool {
+    hand == Hand::Main
+        && sequence == SURVIVAL_HUNGER_FOOD_USE_SEQUENCE
+        && held_slot == SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT
+        && is_survival_hunger_food_stack(stack)
+        && health == SURVIVAL_HUNGER_FOOD_PRE_HEALTH
+        && food == SURVIVAL_HUNGER_FOOD_PRE_FOOD
+        && saturation == SURVIVAL_HUNGER_FOOD_PRE_SATURATION
+}
+
+fn log_survival_hunger_food_pre(username: &str, fixture: &mut SurvivalHungerFoodFixture) {
+    if fixture.pre_logged {
+        return;
+    }
+    fixture.pre_logged = true;
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_hunger_food_pre username={} health={:.1} food={} \
+         saturation={:.1} item={} count={} slot={}",
+        username,
+        SURVIVAL_HUNGER_FOOD_PRE_HEALTH,
+        SURVIVAL_HUNGER_FOOD_PRE_FOOD,
+        SURVIVAL_HUNGER_FOOD_PRE_SATURATION,
+        SURVIVAL_HUNGER_FOOD_ITEM_NAME,
+        SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE,
+        SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT
+    ));
+}
+
 fn survival_biome_dimension_fixture_enabled() -> bool {
     std::env::var(SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV).as_deref() == Ok("1")
 }
@@ -1255,8 +1491,13 @@ fn log_survival_biome_dimension_state(
     let normalized_identifier =
         derive_survival_environment_id(spawn_environment, environment_identifier);
     log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_biome_dimension_state username={} spawn_environment={} environment_identifier={} server_environment_state={} normalized_identifier={}",
-        username, spawn_environment, environment_identifier, spawn_environment, normalized_identifier
+        "MC-COMPAT-MILESTONE survival_biome_dimension_state username={} spawn_environment={} \
+         environment_identifier={} server_environment_state={} normalized_identifier={}",
+        username,
+        spawn_environment,
+        environment_identifier,
+        spawn_environment,
+        normalized_identifier
     ));
 }
 
@@ -1492,6 +1733,83 @@ mod tests {
             SURVIVAL_FURNACE_WINDOW,
             SURVIVAL_FURNACE_OUTPUT_SLOT_ID,
             &survival_furnace_input_stack()
+        ));
+    }
+
+    #[test]
+    fn survival_hunger_food_stack_requires_bread_count() {
+        let bread = survival_hunger_food_stack();
+        let wrong_item = ItemStack::new(
+            survival_furnace_output_kind(),
+            SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE,
+            None,
+        );
+        let wrong_count = ItemStack::new(
+            survival_hunger_food_kind(),
+            SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE + 1,
+            None,
+        );
+
+        assert!(is_survival_hunger_food_stack(&bread));
+        assert!(!is_survival_hunger_food_stack(&wrong_item));
+        assert!(!is_survival_hunger_food_stack(&wrong_count));
+    }
+
+    #[test]
+    fn survival_hunger_food_use_requires_main_hand_sequence_slot_and_pre_state() {
+        assert!(should_consume_survival_hunger_food(
+            Hand::Main,
+            SURVIVAL_HUNGER_FOOD_USE_SEQUENCE,
+            SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT,
+            &survival_hunger_food_stack(),
+            SURVIVAL_HUNGER_FOOD_PRE_HEALTH,
+            SURVIVAL_HUNGER_FOOD_PRE_FOOD,
+            SURVIVAL_HUNGER_FOOD_PRE_SATURATION,
+        ));
+        assert!(!should_consume_survival_hunger_food(
+            Hand::Off,
+            SURVIVAL_HUNGER_FOOD_USE_SEQUENCE,
+            SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT,
+            &survival_hunger_food_stack(),
+            SURVIVAL_HUNGER_FOOD_PRE_HEALTH,
+            SURVIVAL_HUNGER_FOOD_PRE_FOOD,
+            SURVIVAL_HUNGER_FOOD_PRE_SATURATION,
+        ));
+        assert!(!should_consume_survival_hunger_food(
+            Hand::Main,
+            SURVIVAL_HUNGER_FOOD_USE_SEQUENCE + 1,
+            SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT,
+            &survival_hunger_food_stack(),
+            SURVIVAL_HUNGER_FOOD_PRE_HEALTH,
+            SURVIVAL_HUNGER_FOOD_PRE_FOOD,
+            SURVIVAL_HUNGER_FOOD_PRE_SATURATION,
+        ));
+        assert!(!should_consume_survival_hunger_food(
+            Hand::Main,
+            SURVIVAL_HUNGER_FOOD_USE_SEQUENCE,
+            SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT + 1,
+            &survival_hunger_food_stack(),
+            SURVIVAL_HUNGER_FOOD_PRE_HEALTH,
+            SURVIVAL_HUNGER_FOOD_PRE_FOOD,
+            SURVIVAL_HUNGER_FOOD_PRE_SATURATION,
+        ));
+        assert!(!should_consume_survival_hunger_food(
+            Hand::Main,
+            SURVIVAL_HUNGER_FOOD_USE_SEQUENCE,
+            SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT,
+            &survival_furnace_output_stack(),
+            SURVIVAL_HUNGER_FOOD_PRE_HEALTH,
+            SURVIVAL_HUNGER_FOOD_PRE_FOOD,
+            SURVIVAL_HUNGER_FOOD_PRE_SATURATION,
+        ));
+        assert!(!should_consume_survival_hunger_food(
+            Hand::Main,
+            SURVIVAL_HUNGER_FOOD_USE_SEQUENCE,
+            SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT,
+            &survival_hunger_food_stack(),
+            SURVIVAL_HUNGER_FOOD_POST_HEALTH,
+            SURVIVAL_HUNGER_FOOD_POST_FOOD,
+            SURVIVAL_HUNGER_FOOD_POST_SATURATION,
         ));
     }
 
