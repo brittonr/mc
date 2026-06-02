@@ -1,0 +1,12 @@
+scenario=ctf-simultaneous-pickup-capture-race
+client_identities=compatbota,compatbotb
+team_roles=compatbota:red-contender,compatbotb:red-contender
+action_timestamps=accepted:2026-06-02T04:36:31.196634Z,rejected:2026-06-02T04:36:31.797059Z,final:2026-06-02T04:36:32.097520Z
+ordered_milestones=accepted_transition,rejected_transition,final_state
+accepted_transition=username:compatbotb,team:Red,flag:Blue,transition:pickup
+rejected_transition=username:compatbota,team:Red,flag:Blue,transition:duplicate_pickup,reason:flag_already_held
+final_flag_state=blue_flag:at_base,red_flag:at_base
+final_score=red:1,blue:0
+race_window_bounds=40_client_ticks
+receipt=docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-2026-06-01.receipt.json
+row_digest=cc0b21579b8c5d99aa0d2bab04cc1ec3a34ecbdfceee2edc1ba0e497c11f977f

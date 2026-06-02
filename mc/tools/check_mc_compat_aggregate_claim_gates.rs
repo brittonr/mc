@@ -28,7 +28,6 @@ const PROVEN_TOKEN: &str = "proven";
 const CLAIMED_TOKEN: &str = "claimed";
 
 const CTF_REQUIRED_NON_CLAIMS: &[&str] = &[
-    "simultaneous pickup/capture race | Non-claim",
     "spawn/team balance/resource reset | Non-claim",
     "full CTF correctness | Non-claim",
 ];
@@ -39,6 +38,7 @@ const CTF_REQUIRED_EVIDENCE_ROWS: &[&str] = &[
     "invalid_pickup_rejected_without_ownership_transfer",
     "invalid_return_drop_rejected_without_state_mutation",
     "score_limit_win_emits_once_without_post_win_mutation",
+    "simultaneous_pickup_capture_race_one_accept_one_reject",
 ];
 const CTF_CURRENT_BUNDLE_TOKENS: &[&str] = &[
     "CTF rule scope is guarded",
@@ -291,7 +291,9 @@ fn run_self_tests() -> Result<String, Vec<String>> {
 
     assert_contains(
         &validate_gates(&GateInputs {
-            ctf_ledger: positive.ctf_ledger.replace("simultaneous pickup/capture race | Non-claim", "simultaneous pickup/capture race | Covered"),
+            ctf_ledger: positive
+                .ctf_ledger
+                .replace("spawn/team balance/resource reset | Non-claim", "spawn/team balance/resource reset | Covered"),
             ..positive.clone()
         })
         .expect_err("missing CTF gap fixture should fail"),
@@ -347,7 +349,7 @@ fn fixture_inputs() -> GateInputs {
         ),
         acceptance_matrix: "matrix says full CTF correctness remains a non-claim; full protocol-763 compatibility remains a non-claim; production readiness is a non-claim".to_string(),
         ctf_ledger: format!(
-            "full CTF correctness remains a non-claim\n| simultaneous pickup/capture race | Non-claim |\n| spawn/team balance/resource reset | Non-claim |\n| full CTF correctness | Non-claim |\n{}\n",
+            "full CTF correctness remains a non-claim\n| spawn/team balance/resource reset | Non-claim |\n| full CTF correctness | Non-claim |\n{}\n",
             CTF_REQUIRED_EVIDENCE_ROWS.join("\n")
         ),
         protocol_ledger: format!(

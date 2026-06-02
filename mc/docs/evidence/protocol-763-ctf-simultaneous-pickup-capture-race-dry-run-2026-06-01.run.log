@@ -1,0 +1,3 @@
+$ nix build --no-update-lock-file path:.#checks.x86_64-linux.mc-compat-scenario-manifest
+$ nix build --no-update-lock-file path:.#checks.x86_64-linux.mc-compat-valence-ctf-simultaneous-pickup-capture-race-dry-run
+exit_status=0

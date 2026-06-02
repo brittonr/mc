@@ -1,0 +1,13 @@
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-simultaneous-pickup-capture-race session=ctf-simultaneous-pickup-capture-race-2026-06-01.receipt seq=1 event=ctf_race_client_count
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-simultaneous-pickup-capture-race session=ctf-simultaneous-pickup-capture-race-2026-06-01.receipt seq=2 event=protocol_detected
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-simultaneous-pickup-capture-race session=ctf-simultaneous-pickup-capture-race-2026-06-01.receipt seq=3 event=join_game
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-simultaneous-pickup-capture-race session=ctf-simultaneous-pickup-capture-race-2026-06-01.receipt seq=4 event=render_tick
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-simultaneous-pickup-capture-race session=ctf-simultaneous-pickup-capture-race-2026-06-01.receipt seq=5 event=team_red
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-simultaneous-pickup-capture-race session=ctf-simultaneous-pickup-capture-race-2026-06-01.receipt seq=6 event=flag_pickup
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-simultaneous-pickup-capture-race session=ctf-simultaneous-pickup-capture-race-2026-06-01.receipt seq=7 event=flag_capture
+MC-COMPAT-EVENT schema=1 source=client scenario=ctf-simultaneous-pickup-capture-race session=ctf-simultaneous-pickup-capture-race-2026-06-01.receipt seq=8 event=score_red_1
+MC-COMPAT-EVENT schema=1 source=server scenario=ctf-simultaneous-pickup-capture-race session=ctf-simultaneous-pickup-capture-race-2026-06-01.receipt seq=9 event=server_client_a_seen
+MC-COMPAT-EVENT schema=1 source=server scenario=ctf-simultaneous-pickup-capture-race session=ctf-simultaneous-pickup-capture-race-2026-06-01.receipt seq=10 event=server_client_b_seen
+MC-COMPAT-EVENT schema=1 source=server scenario=ctf-simultaneous-pickup-capture-race session=ctf-simultaneous-pickup-capture-race-2026-06-01.receipt seq=11 event=server_ctf_race_accepted_transition
+MC-COMPAT-EVENT schema=1 source=server scenario=ctf-simultaneous-pickup-capture-race session=ctf-simultaneous-pickup-capture-race-2026-06-01.receipt seq=12 event=server_ctf_race_rejected_transition
+MC-COMPAT-EVENT schema=1 source=server scenario=ctf-simultaneous-pickup-capture-race session=ctf-simultaneous-pickup-capture-race-2026-06-01.receipt seq=13 event=server_ctf_race_final_state

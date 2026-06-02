@@ -1,0 +1,5 @@
+$ target/check-cairn-task-evidence --self-test
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+$ target/check-cairn-task-evidence
+task evidence gate passed: 80 completed tasks checked across 22 active task files
+exit_status=0

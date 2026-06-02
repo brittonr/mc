@@ -1,0 +1,5 @@
+$ target/check-mc-compat-row-contracts --self-test
+mc compat row contract self-test ok: 22 row contracts exercised and fixture rail checked
+$ target/check-mc-compat-row-contracts --row ctf-simultaneous-pickup-capture-race --evidence docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-2026-06-01.kv
+simultaneous pickup/capture race contract check passed
+exit_status=0

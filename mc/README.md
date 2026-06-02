@@ -185,6 +185,12 @@ nix run .#mc-compat-valence-ctf-score-limit-win-condition
 # deterministic, non-side-effecting fixture for the same score-limit command shape:
 nix run .#mc-compat-valence-ctf-score-limit-win-condition -- --dry-run
 
+# Maintained protocol-763 Valence CTF simultaneous pickup/capture race receipt.
+# Requires two same-team contenders, one accepted pickup/capture, one rejected duplicate pickup, bounded race-window telemetry, and no double-accept/duplicate-score patterns.
+nix run .#mc-compat-valence-ctf-simultaneous-pickup-capture-race
+# deterministic, non-side-effecting fixture for the same race command shape:
+nix run .#mc-compat-valence-ctf-simultaneous-pickup-capture-race -- --dry-run
+
 # Maintained protocol-763 Valence CTF bounded latency/jitter receipt over the inventory semantic rail.
 # Records bounded perturbation parameters, owned-local WAN telemetry fields, full inventory/open-container/block-place milestone oracle evidence, and no privileged network mutation.
 nix run .#mc-compat-valence-ctf-latency-jitter-inventory

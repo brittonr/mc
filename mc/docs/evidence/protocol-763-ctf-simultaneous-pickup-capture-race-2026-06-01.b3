@@ -1,0 +1,15 @@
+cc0b21579b8c5d99aa0d2bab04cc1ec3a34ecbdfceee2edc1ba0e497c11f977f  docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-2026-06-01.receipt.json
+e2f7c31bf8ee85587ecadec416aa1bd52f0d79ccc569c2e99f6dea138e10c432  docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-2026-06-01.run.log
+fe5a6feeaba8fec484b05fbd3408fc8e126c97fc00f1e610a725f3e3afcfb3fb  docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-2026-06-01.client-a.log
+9b29ea66c56b45e308e54f9340c4b47c711eaaaef990944b63b4bbdaa130a270  docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-2026-06-01.client-b.log
+d72a34b95c26e7acf94b04a8b8a4a3d2d448eb60fba2c02114c5d7be37975097  docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-2026-06-01.server.log
+d0bf49fb5daf2ca1b671af191fc21ec96d31ddd363103aea609471f6bb33af4a  docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-2026-06-01.typed-events.log
+37a798edef431ee854de149c763902166c1d0a022771db0ad26a9a489cf4b4dd  docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-2026-06-01.record
+a1df7220274d1520c10597681bdfb6fa6c7a0b41f9a465a85bc8947a4757f8ab  docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-2026-06-01.kv
+ccc2fa0eb31979b93346901d5c9e93754088d3c9a0174184a8230c021918de5c  docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-2026-06-01.md
+af028c0bbd64ac9e57b0627216ef1e8879ce4f906b33ad9712f7fa4d39f816e6  docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-row-evidence-2026-06-01.run.log
+16711cd40b01543fe8307b2d74fff2063389bdcd45b18ac1ec3a071b0627c1b7  tools/mc-compat-runner/src/main.rs
+78184764db64f4a34c51cb5937dae1feec99729512f2e8e3899f3772fe500717  tools/mc-compat-runner/src/scenario_manifest_generated.rs
+0d7eeb1a2a1a74126c79930b274dbece2fbfcd743179805c47db41daccaaec18  config/mc-compat/scenario-manifest.ncl
+1366b5656a66755b7d94b3b1745c2b62d47d6db24586846c8b14d353ad6c42b2  flake.nix
+124aa8e354f48e772566305d22cca532dde0ef0092981da99e2a22ad2cedb439  valence/examples/ctf.rs

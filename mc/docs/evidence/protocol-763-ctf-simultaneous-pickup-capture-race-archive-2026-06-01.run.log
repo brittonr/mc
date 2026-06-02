@@ -1,0 +1,132 @@
+$ nix run --no-update-lock-file .#cairn -- sync ctf-simultaneous-pickup-capture-race --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/ctf-simultaneous-pickup-capture-race/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/ctf-simultaneous-pickup-capture-race/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "ctf-simultaneous-pickup-capture-race",
+  "delta_specs": [
+    "./cairn/changes/ctf-simultaneous-pickup-capture-race/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "4a10dc452358c2bf2fa83c5136710e7c040fd74d84f632969a26f953a72472c9",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "3329cbbb01b107320fd75b9513e8e736b7f2d7ea3cf32e264efa7f30074110ac",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "524d4f912f520e7d75b8bc8be2df4d616fafab4e0a96e3a3faadde46d5c33cf5"
+}
+sync_exit_status=0
+$ nix run --no-update-lock-file .#cairn -- archive ctf-simultaneous-pickup-capture-race --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: ctf-simultaneous-pickup-capture-race",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-ctf-simultaneous-pickup-capture-race"
+    }
+  ],
+  "blocked": false,
+  "change": "ctf-simultaneous-pickup-capture-race",
+  "dry_run": false,
+  "input_hash": "4a10dc452358c2bf2fa83c5136710e7c040fd74d84f632969a26f953a72472c9",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "66a6864ef8aa5c11f28c1c8cb85f01a4b08dc01c90f0b246a540bd5eeaf0ae93",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-ctf-simultaneous-pickup-capture-race/design.md"
+        },
+        {
+          "content_hash": "c6ba8b241eb052b29d4cb0c766fce05844f4aedb200d4207b1e236b49590ee44",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-ctf-simultaneous-pickup-capture-race/proposal.md"
+        },
+        {
+          "content_hash": "0143fd27cbdcc77cc21e66598e86c860494532ab392f6cde176a472c9f16ba67",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-ctf-simultaneous-pickup-capture-race/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "0eae94319ed2c9148dd6487cfd65d231153d289bf617947b92e1a1715964358d",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-ctf-simultaneous-pickup-capture-race/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/ctf-simultaneous-pickup-capture-race"
+        }
+      ],
+      "manifest_hash": "973c5a61a0aa554353a7fdac614212c80ea05b956c890aa524908835de7237a3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "66a6864ef8aa5c11f28c1c8cb85f01a4b08dc01c90f0b246a540bd5eeaf0ae93",
+          "exists": true,
+          "path": "./cairn/changes/ctf-simultaneous-pickup-capture-race/design.md"
+        },
+        {
+          "content_hash": "c6ba8b241eb052b29d4cb0c766fce05844f4aedb200d4207b1e236b49590ee44",
+          "exists": true,
+          "path": "./cairn/changes/ctf-simultaneous-pickup-capture-race/proposal.md"
+        },
+        {
+          "content_hash": "0143fd27cbdcc77cc21e66598e86c860494532ab392f6cde176a472c9f16ba67",
+          "exists": true,
+          "path": "./cairn/changes/ctf-simultaneous-pickup-capture-race/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "0eae94319ed2c9148dd6487cfd65d231153d289bf617947b92e1a1715964358d",
+          "exists": true,
+          "path": "./cairn/changes/ctf-simultaneous-pickup-capture-race/tasks.md"
+        }
+      ],
+      "manifest_hash": "fe8e9bed7910d8d9b4060673b5a80002c27bc39ea38987010c76d91238707b98"
+    },
+    "kind": "archive",
+    "manifest_hash": "ca954ce6cc3b33be6d77f019dcadd1c048334721d5e0692cf4452af7b441f2f5"
+  },
+  "plan_hash": "00888d0a31e51e34bf106252f6b0e7eb92f3e54fe7f2ca56b8ec25cc10a95960",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "14662a8d09321b47eb65ac8fb2c4547e69eb019b2a4f5e3b439e784eda38aed8"
+}
+archive_exit_status=0
+archive_rename=2026-06-01-ctf-simultaneous-pickup-capture-race
+exit_status=0

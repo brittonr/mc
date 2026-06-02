@@ -1,0 +1,70 @@
+## cairn gates
+$ nix run --no-update-lock-file .#cairn -- gate proposal ctf-simultaneous-pickup-capture-race --root .
+{
+  "change": "ctf-simultaneous-pickup-capture-race",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "79a027a7563d8bec3dd7304d5b89eefd37ca45fd7c1054fc58f9b825fcbb1d93",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "630a06b1df621562be3e468e1e1798eea7c8e5cd830de4ac4086b7c02d54d581",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_proposal_exit_status=0
+$ nix run --no-update-lock-file .#cairn -- gate design ctf-simultaneous-pickup-capture-race --root .
+{
+  "change": "ctf-simultaneous-pickup-capture-race",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "4e4c66fdd510dc2cb8e51f73616750a08f73c84203fc933da4d9e26b91be98fa",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "f7e8dfc33f565e44fade49ffbf8382af35f52d7582462aae2a38c498650f8e29",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_design_exit_status=0
+$ nix run --no-update-lock-file .#cairn -- gate tasks ctf-simultaneous-pickup-capture-race --root .
+{
+  "change": "ctf-simultaneous-pickup-capture-race",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "4dfc0f26642c16ea1f483b5b739d1a982b7c79a681c8c19330bd5d352dec66ac",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "eee1d1104848b137c6cea2304c5197cc4d52d12d284eea71b716cdea2dd78c6d",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_tasks_exit_status=0

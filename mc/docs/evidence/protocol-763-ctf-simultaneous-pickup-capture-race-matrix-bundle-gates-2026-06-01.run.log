@@ -1,0 +1,13 @@
+$ target/check-acceptance-matrix --self-test
+acceptance matrix self-test ok: positive and negative fixtures exercised
+$ target/check-acceptance-matrix
+acceptance matrix check passed: 30 rows validated
+$ target/check-current-evidence-bundle --self-test
+current evidence bundle self-test ok: positive and negative fixtures exercised
+$ target/check-current-evidence-bundle
+current evidence bundle check passed: 30 rows validated
+$ target/check-mc-compat-aggregate-claim-gates --self-test
+aggregate claim gate self-test ok: 3 aggregate gates exercised
+$ target/check-mc-compat-aggregate-claim-gates
+aggregate claim gates passed: 3 gates checked
+exit_status=0

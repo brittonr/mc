@@ -1,0 +1,13 @@
+## cairn validate post-archive
+$ nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 21,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 23,
+  "valid": true
+}
+exit_status=0
