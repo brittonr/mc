@@ -48,6 +48,7 @@ const REQUIRED_SEAMS: &[&str] = &[
     "Survival crafting table",
     "Survival furnace persistence",
     "Survival hunger/food",
+    "Survival mob drops",
     "Survival biome/dimension join state",
     "MCP-controlled observability",
 ];
@@ -94,6 +95,7 @@ const REVIEWABLE_RECEIPT_SEAMS: &[&str] = &[
     "Survival crafting table",
     "Survival furnace persistence",
     "Survival hunger/food",
+    "Survival mob drops",
     "Survival biome/dimension join state",
     "MCP-controlled observability",
 ];

@@ -2,7 +2,7 @@
 
 ## Scope
 
-This matrix tracks bounded survival evidence rows separately from full survival compatibility. Current evidence covers paired Paper/Valence break/place/pickup, crafting table, chest persistence, furnace persistence, hunger/food, and biome/dimension join-state parity rows. Full survival compatibility, broader vanilla parity, restart/world persistence, and broad Minecraft survival behavior remain non-claims until every required row has reviewable evidence.
+This matrix tracks bounded survival evidence rows separately from full survival compatibility. Current evidence covers paired Paper/Valence break/place/pickup, crafting table, chest persistence, furnace persistence, hunger/food, mob drops, and biome/dimension join-state parity rows. Full survival compatibility, broader vanilla parity, redstone, restart/world persistence, and broad Minecraft survival behavior remain non-claims until every required row has reviewable evidence.
 
 ## Coverage rows
 
@@ -13,14 +13,14 @@ This matrix tracks bounded survival evidence rows separately from full survival 
 | chest persistence | reference_parity_covered | `docs/evidence/protocol-763-survival-chest-persistence-valence-2026-05-29.receipt.json` | `docs/evidence/protocol-763-survival-chest-persistence-paper-2026-05-29.receipt.json` | Paired Paper/Valence comparator evidence: `docs/evidence/protocol-763-survival-chest-persistence-2026-05-29.md`. | No full survival compatibility from chest persistence row; no all-container behavior, restart/world persistence, or broader vanilla parity. | create next missing survival row |
 | furnace persistence | reference_parity_covered | `docs/evidence/survival-furnace-persistence-valence-2026-06-01.receipt.json` | `docs/evidence/survival-furnace-persistence-paper-2026-06-01.receipt.json` | Paired Paper/Valence comparator evidence: `docs/evidence/survival-furnace-persistence-receipts-2026-06-01.md`; BLAKE3 manifest: `docs/evidence/survival-furnace-persistence-receipts-2026-06-01.b3`. | No full survival compatibility from furnace persistence row; no all smelting recipes, long-running furnace timing parity, hopper automation, furnace minecarts, restart/world persistence, or broader vanilla parity coverage. | create next missing survival row |
 | hunger/food | reference_parity_covered | `docs/evidence/survival-hunger-food-valence-2026-06-02.receipt.json` | `docs/evidence/survival-hunger-food-paper-2026-06-02.receipt.json` | Paired Paper/Valence comparator evidence: `docs/evidence/survival-hunger-food-receipts-2026-06-02.md`; BLAKE3 manifest: `docs/evidence/survival-hunger-food-receipts-2026-06-02.b3`. | No full survival compatibility from hunger/food row; no all foods, exhaustion, regeneration/starvation, potion effects, offhand consumption, or broader vanilla parity coverage. | create next missing survival row |
-| mob drops | missing | none | none | Add mob spawn/kill/drop pickup receipts with deterministic entity/drop metrics. | No mob AI or mob drop coverage. | create mob drop rail |
+| mob drops | reference_parity_covered | `docs/evidence/survival-mob-drop-valence-2026-06-02.receipt.json` | `docs/evidence/survival-mob-drop-paper-2026-06-02.receipt.json` | Paired Paper/Valence comparator evidence: `docs/evidence/survival-mob-drop-receipts-2026-06-02.md`; BLAKE3 manifest: `docs/evidence/survival-mob-drop-receipts-2026-06-02.b3`. | No full survival compatibility from mob-drop row; no broad mob AI, loot-table distribution, all mob classes, pickup races, or broader vanilla parity coverage. | create next missing survival row |
 | redstone | missing | none | none | Add power/update receipts with deterministic block update metrics. | No redstone coverage. | create redstone rail |
 | biome/dimension | reference_parity_covered | `docs/evidence/survival-biome-dimension-valence-2026-06-01.receipt.json` | `docs/evidence/survival-biome-dimension-paper-2026-06-01.receipt.json` | Paired Paper/Valence comparator evidence: `docs/evidence/survival-biome-dimension-receipts-2026-06-01.md`. | No full survival compatibility from biome/dimension row; no biome lookup semantics, dimension travel, or world persistence coverage. | create next missing survival row |
 | world persistence | missing | none | none | Add server restart or reload receipts with persisted block/inventory state metrics. | No world persistence coverage. | create persistence rail |
 
 ## Gate decision
 
-`full_survival_compatibility` remains a non-claim because required rows beyond break/place/pickup, crafting table, chest persistence, furnace persistence, hunger/food, and biome/dimension join state are missing paired reference evidence. In plain terms: full_survival_compatibility remains a non-claim.
+`full_survival_compatibility` remains a non-claim because required rows beyond break/place/pickup, crafting table, chest persistence, furnace persistence, hunger/food, mob drops, and biome/dimension join state are missing paired reference evidence. In plain terms: full_survival_compatibility remains a non-claim.
 
 ## Required evidence for row promotion
 

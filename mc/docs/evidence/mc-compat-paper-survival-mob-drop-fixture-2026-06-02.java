@@ -41,6 +41,8 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
     private static final int ARENA_MAX_X = 19;
     private static final int ARENA_MIN_Z = -1;
     private static final int ARENA_MAX_Z = 5;
+    private static final int ARENA_MIN_Y = 65;
+    private static final int ARENA_MAX_Y = 69;
     private static final int FLOOR_Y = 64;
     private static final long PICKUP_TELEPORT_DELAY_TICKS = 2L;
     private static final long PICKUP_FALLBACK_DELAY_TICKS = 20L;
@@ -126,8 +128,12 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
     private void prepareArena(World world) {
         for (int x = ARENA_MIN_X; x < ARENA_MAX_X; x++) {
             for (int z = ARENA_MIN_Z; z < ARENA_MAX_Z; z++) {
-                Block block = world.getBlockAt(x, FLOOR_Y, z);
-                block.setType(Material.GRASS_BLOCK);
+                for (int y = ARENA_MIN_Y; y < ARENA_MAX_Y; y++) {
+                    Block air = world.getBlockAt(x, y, z);
+                    air.setType(Material.AIR);
+                }
+                Block floor = world.getBlockAt(x, FLOOR_Y, z);
+                floor.setType(Material.GRASS_BLOCK);
             }
         }
     }

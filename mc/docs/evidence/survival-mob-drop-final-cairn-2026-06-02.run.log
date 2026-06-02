@@ -1,0 +1,36 @@
+command=nix run --no-update-lock-file .#cairn -- gate tasks survival-mob-drop-parity --root .
+{
+  "change": "survival-mob-drop-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "1b16ad019c719d28b4dd578b00f8307156b6bde6b29d5dd7124f0c9f19996f92",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "58e2f2cbb923d5a0b421103e328f9b60b7d2681ffc103d74db5b08914607503f",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+tasks_gate_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
+cairn_validate_exit_status=0
+exit_status=0

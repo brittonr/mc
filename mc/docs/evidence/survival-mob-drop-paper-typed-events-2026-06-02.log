@@ -1,0 +1,17 @@
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-mob-drop session=paper username=compatbot seq=1 event=protocol_detected
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-mob-drop session=paper username=compatbot seq=2 event=join_game
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-mob-drop session=paper username=compatbot seq=3 event=render_tick
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-mob-drop session=paper username=compatbot seq=4 event=survival_mob_drop_mob_seen
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-mob-drop session=paper username=compatbot seq=5 event=survival_mob_drop_attack_sent
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-mob-drop session=paper username=compatbot seq=6 event=survival_mob_drop_death_seen
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-mob-drop session=paper username=compatbot seq=7 event=survival_mob_drop_drop_seen
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-mob-drop session=paper username=compatbot seq=8 event=survival_mob_drop_pickup_seen
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-mob-drop session=paper username=compatbot seq=9 event=survival_mob_drop_inventory_updated
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-mob-drop session=paper username=compatbot seq=10 event=server_username_seen
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-mob-drop session=paper username=compatbot seq=11 event=server_survival_mob_drop_spawn
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-mob-drop session=paper username=compatbot seq=12 event=server_survival_mob_drop_attack
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-mob-drop session=paper username=compatbot seq=13 event=server_survival_mob_drop_death
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-mob-drop session=paper username=compatbot seq=14 event=server_survival_mob_drop_drop_spawn
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-mob-drop session=paper username=compatbot seq=15 event=server_survival_mob_drop_pickup
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-mob-drop session=paper username=compatbot seq=16 event=server_survival_mob_drop_inventory
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-mob-drop session=paper username=compatbot seq=17 event=server_survival_mob_drop_state

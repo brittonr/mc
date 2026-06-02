@@ -1,0 +1,11 @@
+row=survival-mob-drop
+backend=valence
+revision_status=clean
+child_revision=eba9c8a01095f0e243beee899375182c25033fc8
+metric.mob_spawn=mob=IronGolem position=16.5,65.0,2.5
+metric.client_attack=mob=IronGolem action=InteractEntity_Attack target=fixture_mob
+metric.server_death=mob=IronGolem killed_by=compatbot
+metric.drop_spawn=item=IronIngot count=1 position=16.5,65.0,2.5
+metric.pickup=item=IronIngot count=1 collector=compatbot
+metric.inventory_increment=slot=36 item=IronIngot count_before=0 count_after=1
+metric.server_drop_state=mob=IronGolem drop=IronIngot drop_count=1 pickup=true inventory_slot=36 inventory_count=1 death=true

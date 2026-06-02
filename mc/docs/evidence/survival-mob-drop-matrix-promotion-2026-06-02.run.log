@@ -1,0 +1,36 @@
+survival-mob-drop matrix promotion validation 2026-06-02T17:44:13Z
+rustc 1.95.0 (59807616e 2026-04-14) (built from a source tarball)
+b3sum 1.8.5
+rustfmt 1.9.0
+
+## compile tools/check_survival_coverage_matrix.rs
+## self-test tools/check_survival_coverage_matrix.rs
+survival coverage matrix self-test ok: positive and negative fixtures exercised
+## validate tools/check_survival_coverage_matrix.rs
+survival coverage matrix check passed: 9 rows validated
+
+## compile tools/check_acceptance_matrix.rs
+## self-test tools/check_acceptance_matrix.rs
+acceptance matrix self-test ok: positive and negative fixtures exercised
+## validate tools/check_acceptance_matrix.rs
+acceptance matrix check passed: 33 rows validated
+
+## compile tools/check_current_evidence_bundle.rs
+## self-test tools/check_current_evidence_bundle.rs
+current evidence bundle self-test ok: positive and negative fixtures exercised
+## validate tools/check_current_evidence_bundle.rs
+current evidence bundle check passed: 33 rows validated
+
+## compile tools/check_evidence_manifests.rs
+## self-test tools/check_evidence_manifests.rs
+evidence manifest self-test ok: positive and negative fixtures exercised
+## validate tools/check_evidence_manifests.rs
+evidence manifests ok: 275 manifests, 1628 entries, 88 receipts scanned
+
+## compile tools/check_full_survival_compatibility_gate.rs
+## self-test tools/check_full_survival_compatibility_gate.rs
+full survival compatibility gate self-test ok: all-covered success and fail-closed fixtures exercised
+## validate tools/check_full_survival_compatibility_gate.rs
+full survival compatibility gate passed: 7 covered rows, 2 missing rows
+
+exit_status=0

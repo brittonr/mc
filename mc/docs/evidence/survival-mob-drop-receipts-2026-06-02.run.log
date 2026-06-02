@@ -1,0 +1,294 @@
+[mc-compat] starting run matrix: paper receipt=target/survival-mob-drop-receipts-2026-06-02/paper.json valence receipt=target/survival-mob-drop-receipts-2026-06-02/valence.json
+[mc-compat] matrix backend paper -> target/survival-mob-drop-receipts-2026-06-02/paper.json
+[mc-compat] building Stevenarella client
+warning: `/tmp/stevenarella-mobdrop-7122e47/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: file `/tmp/stevenarella-mobdrop-7122e47/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+   Compiling steven_resources v0.1.0 (/tmp/stevenarella-mobdrop-7122e47/resources)
+   Compiling steven_shared v0.0.1 (/tmp/stevenarella-mobdrop-7122e47/shared)
+   Compiling std_or_web v0.0.1 (/tmp/stevenarella-mobdrop-7122e47/std_or_web)
+   Compiling steven_blocks v0.0.1 (/tmp/stevenarella-mobdrop-7122e47/blocks)
+   Compiling steven_protocol v0.0.1 (/tmp/stevenarella-mobdrop-7122e47/protocol)
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1052:36
+     |
+1052 |         offsets |protocol_version| (instrument.offsets(protocol_version)
+     |                                    ^
+1053 |             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 })),
+     |                                                                                                    ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1052 ~         offsets |protocol_version| instrument.offsets(protocol_version)
+1053 ~             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+     |
+
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1407:36
+     |
+1407 |         offsets |protocol_version| (variant.offsets(protocol_version)),
+     |                                    ^                                 ^
+     |
+help: remove these parentheses
+     |
+1407 -         offsets |protocol_version| (variant.offsets(protocol_version)),
+1407 +         offsets |protocol_version| variant.offsets(protocol_version),
+     |
+
+warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
+   Compiling stevenarella v0.0.1 (/tmp/stevenarella-mobdrop-7122e47)
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:102:21
+    |
+102 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+252 | / define_elements! {
+253 | |     Image,
+254 | |     Batch,
+255 | |     Text,
+...   |
+258 | |     TextBox,
+259 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+102 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib) generated 2 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (bin "stevenarella") generated 2 warnings (2 duplicates)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 36.35s
+[mc-compat] starting Paper 1.20.1 server on 127.0.0.1:25566 via itzg/minecraft-server:java17 with EULA=TRUE
+3851c20fe4a59e3969d8c7821c3d561ef835423161cb3f0b20b53adbaa46f1e9
+[mc-compat] probing status 127.0.0.1:25566 expecting protocol 763
+{"version":{"name":"Paper 1.20.1","protocol":763},"description":{"text":"A Minecraft Server"},"players":{"max":20,"online":0}}
+[mc-compat] running Stevenarella headless scenario 'survival-mob-drop' isolated from host Wayland compositor
+[main.rs:1037][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:1173][INFO] Shader version: #version 150
+[main.rs:290][INFO] Detected server protocol version 763
+[server/mod.rs:603][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25566
+[server/mod.rs:608][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:625][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:639][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:646][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:707][WARN] Server is running in offline mode
+[server/mod.rs:708][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbot properties=0
+[server/mod.rs:2716][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[world/mod.rs:1123][INFO] Dimension bounds: min_y=-64 height=384
+[server/mod.rs:2801][INFO] MC-COMPAT-MILESTONE join_game entity_id=357 gamemode=Survival
+[server/mod.rs:1279][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=1 slot=36 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=2 slot=37 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=3 slot=38 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=4 slot=39 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=5 slot=40 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=6 slot=41 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=7 slot=42 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=8 slot=43 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=9 slot=44 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=10 slot=9 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=11 slot=10 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=12 slot=11 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=13 slot=12 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=14 slot=13 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=15 slot=14 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=16 slot=15 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=17 slot=16 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=18 slot=17 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=19 slot=18 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=20 slot=19 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=21 slot=20 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=22 slot=21 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=23 slot=22 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=24 slot=23 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=25 slot=24 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=26 slot=25 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=27 slot=26 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=28 slot=27 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=29 slot=28 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=30 slot=29 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=31 slot=30 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=32 slot=31 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=33 slot=32 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=34 slot=33 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=35 slot=34 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=36 slot=35 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=37 slot=8 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=38 slot=7 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=39 slot=6 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=40 slot=5 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=41 slot=45 item=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=42 slot=36 item=empty
+[server/mod.rs:4907][INFO] Received chat message: unhandled: multiplayer.player.joined
+[server/mod.rs:3544][INFO] MC-COMPAT-MILESTONE survival_mob_drop_mob_seen mob=IronGolem position=16.5,65.0,2.5 target_id=358 entity_type=53
+[server/mod.rs:4206][INFO] MC-COMPAT-MILESTONE inventory_probe_window_items window=0 state_id=43 slots=46 slot36=empty slot37=empty carried=empty
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=44 slot=45 item=empty
+[server/mod.rs:3349][INFO] MC-COMPAT-MILESTONE update_health health=20.0 food=20 saturation=5.0
+[server/mod.rs:5055][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=1 chunk_z=0
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:stripped_birch_log_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:stripped_birch_log_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:stripped_acacia_log_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:stripped_acacia_log_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:stripped_spruce_log_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:stripped_spruce_log_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:dark_oak_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:dark_oak_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:jungle_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:jungle_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:spruce_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:spruce_wood
+[server/mod.rs:3495][INFO] MC-COMPAT-MILESTONE survival_mob_drop_move_near_mob x=16.5 y=65.0 z=0.5 target=16.5,65.0,2.5
+[server/mod.rs:3523][INFO] MC-COMPAT-MILESTONE survival_mob_drop_attack_sent mob=IronGolem target_id=358
+[server/mod.rs:3574][INFO] MC-COMPAT-MILESTONE survival_mob_drop_death_seen mob=IronGolem target_id=358
+[server/mod.rs:3553][INFO] MC-COMPAT-MILESTONE survival_mob_drop_drop_seen item=IronIngot count=1 entity_id=441 entity_type=54 position=16.5,65.0,2.5
+[server/mod.rs:4487][INFO] MC-COMPAT-MILESTONE survival_mob_drop_pickup_seen item=IronIngot count=1 collected_entity_id=441 collector_entity_id=357
+[server/mod.rs:4907][INFO] Received chat message: unhandled: chat.type.advancement.task
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=45 slot=36 item=id=770 count=1
+[server/mod.rs:3598][INFO] MC-COMPAT-MILESTONE survival_mob_drop_inventory_updated slot=36 item=IronIngot count=1
+[server/mod.rs:4402][INFO] MC-COMPAT-MILESTONE inventory_probe_slot36_nonempty count=1 item_id=770
+[mc-compat] client compatbot finished Some(124); log: /tmp/mc-compat-client.compatbot.1780421392125.log
+[mc-compat] stopping managed Paper container mc-compat-1-18-2
+mc-compat-1-18-2
+[mc-compat] wrote typed event log target/survival-mob-drop-receipts-2026-06-02/paper.typed-events.log
+[mc-compat] wrote smoke receipt target/survival-mob-drop-receipts-2026-06-02/paper.json
+[mc-compat] matrix backend valence -> target/survival-mob-drop-receipts-2026-06-02/valence.json
+[mc-compat] building Stevenarella client
+warning: `/tmp/stevenarella-mobdrop-7122e47/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: file `/tmp/stevenarella-mobdrop-7122e47/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1052:36
+     |
+1052 |         offsets |protocol_version| (instrument.offsets(protocol_version)
+     |                                    ^
+1053 |             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 })),
+     |                                                                                                    ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1052 ~         offsets |protocol_version| instrument.offsets(protocol_version)
+1053 ~             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+     |
+
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1407:36
+     |
+1407 |         offsets |protocol_version| (variant.offsets(protocol_version)),
+     |                                    ^                                 ^
+     |
+help: remove these parentheses
+     |
+1407 -         offsets |protocol_version| (variant.offsets(protocol_version)),
+1407 +         offsets |protocol_version| variant.offsets(protocol_version),
+     |
+
+warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:102:21
+    |
+102 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+252 | / define_elements! {
+253 | |     Image,
+254 | |     Batch,
+255 | |     Text,
+...   |
+258 | |     TextBox,
+259 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+102 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib) generated 2 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (bin "stevenarella") generated 2 warnings (2 duplicates)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.15s
+[mc-compat] using existing Valence worktree /tmp/valence-mobdrop-eba9c8a
+[mc-compat] starting Valence eba9c8a example 'survival_compat' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+{"description":{"text":"A Valence Server"},"players":{"max":20,"online":0,"sample":[]},"version":{"name":"1.20.1","protocol":763}}
+[mc-compat] running Stevenarella headless scenario 'survival-mob-drop' isolated from host Wayland compositor
+[main.rs:1037][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:1173][INFO] Shader version: #version 150
+[main.rs:290][INFO] Detected server protocol version 763
+[server/mod.rs:603][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25565
+[server/mod.rs:608][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:625][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:639][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:646][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:707][WARN] Server is running in offline mode
+[server/mod.rs:708][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbot properties=0
+[server/mod.rs:2716][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[world/mod.rs:1123][INFO] Dimension bounds: min_y=-64 height=384
+[server/mod.rs:2801][INFO] MC-COMPAT-MILESTONE join_game entity_id=0 gamemode=Survival
+[server/mod.rs:4907][INFO] Received chat message: Welcome to the Valence survival compatibility fixture.
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=255 state_id=0 slot=-1 item=empty
+[server/mod.rs:3349][INFO] MC-COMPAT-MILESTONE update_health health=14.0 food=20 saturation=0.0
+[server/mod.rs:5055][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=0
+[server/mod.rs:3544][INFO] MC-COMPAT-MILESTONE survival_mob_drop_mob_seen mob=IronGolem position=16.5,65.0,2.5 target_id=1 entity_type=53
+[server/mod.rs:1279][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:3495][INFO] MC-COMPAT-MILESTONE survival_mob_drop_move_near_mob x=16.5 y=65.0 z=0.5 target=16.5,65.0,2.5
+[server/mod.rs:3523][INFO] MC-COMPAT-MILESTONE survival_mob_drop_attack_sent mob=IronGolem target_id=1
+[server/mod.rs:3574][INFO] MC-COMPAT-MILESTONE survival_mob_drop_death_seen mob=IronGolem target_id=1
+[server/mod.rs:3553][INFO] MC-COMPAT-MILESTONE survival_mob_drop_drop_seen item=IronIngot count=1 entity_id=3 entity_type=54 position=16.5,65.0,2.5
+[server/mod.rs:4487][INFO] MC-COMPAT-MILESTONE survival_mob_drop_pickup_seen item=IronIngot count=1 collected_entity_id=3 collector_entity_id=2
+[server/mod.rs:4333][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=1 slot=36 item=id=770 count=1
+[server/mod.rs:3598][INFO] MC-COMPAT-MILESTONE survival_mob_drop_inventory_updated slot=36 item=IronIngot count=1
+[server/mod.rs:4402][INFO] MC-COMPAT-MILESTONE inventory_probe_slot36_nonempty count=1 item_id=770
+[mc-compat] client compatbot finished Some(124); log: /tmp/mc-compat-client.compatbot.1780421414678.log
+[mc-compat] stopping managed Valence server process 2012416
+[mc-compat] wrote typed event log target/survival-mob-drop-receipts-2026-06-02/valence.typed-events.log
+[mc-compat] wrote smoke receipt target/survival-mob-drop-receipts-2026-06-02/valence.json
+[mc-compat] matrix passed: paper=target/survival-mob-drop-receipts-2026-06-02/paper.json valence=target/survival-mob-drop-receipts-2026-06-02/valence.json protocol=763 mode=run
+exit_status=0

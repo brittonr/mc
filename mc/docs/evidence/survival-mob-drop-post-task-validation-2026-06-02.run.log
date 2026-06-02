@@ -1,0 +1,55 @@
+survival-mob-drop post-task validation 2026-06-02T17:47:11Z
+
+command=nix develop --no-update-lock-file -c bash -lc 'rustc --edition=2021 tools/check_cairn_task_evidence.rs -o /tmp/check_cairn_task_evidence && /tmp/check_cairn_task_evidence --self-test && /tmp/check_cairn_task_evidence'
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task evidence gate passed: 11 completed tasks checked across 3 active task files
+task_evidence_exit_status=0
+
+command=nix develop --no-update-lock-file -c bash -lc 'rustc tools/check_evidence_manifests.rs -o /tmp/check_evidence_manifests && /tmp/check_evidence_manifests --self-test && /tmp/check_evidence_manifests'
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest self-test ok: positive and negative fixtures exercised
+evidence manifests ok: 277 manifests, 1647 entries, 88 receipts scanned
+evidence_manifest_exit_status=0
+
+command=nix run --no-update-lock-file .#cairn -- gate tasks survival-mob-drop-parity --root .
+{
+  "change": "survival-mob-drop-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "ceaf5dfb9cc5b5e1787b4d5545165660be590be0e5e8b827bf35fd8ad3870ea0",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "a59f616e72f193c9f7206e0ee000c10fd96e85a71585439f912b5cfe49aa061a",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+cairn_tasks_gate_exit_status=0
+
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
+cairn_validate_exit_status=0
+exit_status=0

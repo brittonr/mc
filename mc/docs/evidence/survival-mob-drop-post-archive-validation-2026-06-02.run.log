@@ -1,0 +1,26 @@
+survival-mob-drop post-archive validation 2026-06-02T17:50:04Z
+command=nix develop --no-update-lock-file -c bash -lc 'rustc tools/check_evidence_manifests.rs -o /tmp/check_evidence_manifests && /tmp/check_evidence_manifests'
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 280 manifests, 1664 entries, 88 receipts scanned
+evidence_manifest_exit_status=0
+command=nix develop --no-update-lock-file -c bash -lc 'rustc --edition=2021 tools/check_cairn_task_evidence.rs -o /tmp/check_cairn_task_evidence && /tmp/check_cairn_task_evidence'
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence gate passed: 4 completed tasks checked across 2 active task files
+task_evidence_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 2,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 4,
+  "valid": true
+}
+cairn_validate_exit_status=0
+exit_status=0

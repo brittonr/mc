@@ -1,0 +1,133 @@
+survival-mob-drop archive 2026-06-02T17:48:52Z
+command=nix run --no-update-lock-file .#cairn -- sync survival-mob-drop-parity --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/survival-mob-drop-parity/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/survival-mob-drop-parity/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-mob-drop-parity",
+  "delta_specs": [
+    "./cairn/changes/survival-mob-drop-parity/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "23614514b2c3910a957d8dd7ad9314fa83eb72caa815e5a9a6b8161f0e3bc02b",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "318483663b91178e059f60363da744a97970950f0f61c1b922a0fbb5123ba88a",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "fc7d629fdf67e855cbc3b339084ae54b4dd7e951ba92a7341ea3eafae3f23443"
+}
+sync_exit_status=0
+
+command=nix run --no-update-lock-file .#cairn -- archive survival-mob-drop-parity --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-mob-drop-parity",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-survival-mob-drop-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-mob-drop-parity",
+  "dry_run": false,
+  "input_hash": "23614514b2c3910a957d8dd7ad9314fa83eb72caa815e5a9a6b8161f0e3bc02b",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "4701369f705d8fa9a3ed0dc63f19db3953f15fe48a37c3f8f69cf8683d1c04cd",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-mob-drop-parity/design.md"
+        },
+        {
+          "content_hash": "e40b23d4304b0f5974a7b6f8f60e3b808b3f924e291acf174e02c159c79a67fc",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-mob-drop-parity/proposal.md"
+        },
+        {
+          "content_hash": "307032598bd783658c5653cba7fa0c95a2f9bf8ba324f2c92dbcf7752f1e18fa",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-mob-drop-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "ebe04fe78b4181ea172ff586a4649d0de779193208910c2af17619dbd4407bf9",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-mob-drop-parity/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-mob-drop-parity"
+        }
+      ],
+      "manifest_hash": "dd19ef6ace804c49d68e075a6b312f5f9677767f95f0a8c9e35c19478649f624"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "4701369f705d8fa9a3ed0dc63f19db3953f15fe48a37c3f8f69cf8683d1c04cd",
+          "exists": true,
+          "path": "./cairn/changes/survival-mob-drop-parity/design.md"
+        },
+        {
+          "content_hash": "e40b23d4304b0f5974a7b6f8f60e3b808b3f924e291acf174e02c159c79a67fc",
+          "exists": true,
+          "path": "./cairn/changes/survival-mob-drop-parity/proposal.md"
+        },
+        {
+          "content_hash": "307032598bd783658c5653cba7fa0c95a2f9bf8ba324f2c92dbcf7752f1e18fa",
+          "exists": true,
+          "path": "./cairn/changes/survival-mob-drop-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "ebe04fe78b4181ea172ff586a4649d0de779193208910c2af17619dbd4407bf9",
+          "exists": true,
+          "path": "./cairn/changes/survival-mob-drop-parity/tasks.md"
+        }
+      ],
+      "manifest_hash": "c4a1cc647f06074312cde7d8090f612f5b650c0fc0dc8703752dbdbc220285eb"
+    },
+    "kind": "archive",
+    "manifest_hash": "e9d823dd046fa522e772122ac5db6f92f898404acd451d20a2030953306c6109"
+  },
+  "plan_hash": "02c7cadaa609f256728fcc770cb7087da52dac934ee6d68d1d7838678dd5fd34",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "a3f74b2c2026537bcb663bdf2ace89a1b0982d9dd129e16e8186c93ea4d5de6b"
+}
+archive_exit_status=0
+exit_status=0

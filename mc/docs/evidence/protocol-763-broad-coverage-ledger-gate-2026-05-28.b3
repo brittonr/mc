@@ -10,6 +10,6 @@ c9d8fccee0dfd1965a98b99b1fbefb5f8e0f6d82bdff59d4c42d83ff32273785  cairn/archive/
 af3e218cde18f8db188fd09ae28530d3612f0748d5c3d030b8b4c9c57a54f795  cairn/archive/2026-05-28-prove-broad-protocol-763-coverage/tasks.md
 cf0e5fc50484500a4cfe934b19f262a8e45fec8c2bbff297e1120a2fa2b357be  cairn/archive/2026-05-28-prove-broad-protocol-763-coverage/specs/mc-compatibility/spec.md
 aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a  cairn/specs/mc-compatibility/spec.md
-c8096226695be20d4869669a17f5ca7f6c203627f8dd26ba09de31138b5c179e  docs/evidence/protocol-763-current-evidence-bundle.md
-e21be5e8b6e0ad1e0d3f0f2316ed6445ebd3882e87a42ecc89007742de837a73  docs/evidence/protocol-763-acceptance-matrix.md
+569e95e7be2fb43f8a4ea2a2df7409cc7429b45fa26cf8f2b169652ed90531e0  docs/evidence/protocol-763-current-evidence-bundle.md
+d51545ac9be4ab28192fc34f258db95c9cd313f2601e3a197def7c6ed98a8f44  docs/evidence/protocol-763-acceptance-matrix.md
 4930ed8a06667ba4b1df848053b47145ffe3d826900a1cf71647cafb50ec3cdb  docs/evidence/stevenarella-protocol-versions-protocol-763-broad-parser-2026-05-28.rs

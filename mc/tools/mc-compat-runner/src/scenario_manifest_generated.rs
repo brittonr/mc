@@ -328,7 +328,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "",
         dry_run_wrapper: "mc-compat-smoke",
         dry_run_exclusion_reason:
-            "active survival-mob-drop-parity Cairn owns fixture and paired reference promotion",
+            "survival-mob-drop-parity uses live paired fixture receipts instead of a dedicated dry-run wrapper",
         migration_state: "substring-fallback",
     },
     GeneratedScenarioRow {

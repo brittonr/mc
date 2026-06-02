@@ -1,0 +1,7 @@
+command=nix develop --no-update-lock-file -c rustc tools/check_survival_row_parity.rs -o /tmp/check_survival_row_parity && /tmp/check_survival_row_parity --row survival-mob-drop --paper docs/evidence/survival-mob-drop-paper-2026-06-02.evidence --valence docs/evidence/survival-mob-drop-valence-2026-06-02.evidence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+mob drops row check passed
+row_parity_exit_status=0
+exit_status=0

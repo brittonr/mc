@@ -63,6 +63,10 @@ const CURRENT_COVERED_ROWS: &[CoveredRowExpectation] = &[
         acceptance_token: "Survival hunger/food",
     },
     CoveredRowExpectation {
+        system: "mob drops",
+        acceptance_token: "Survival mob drops",
+    },
+    CoveredRowExpectation {
         system: "biome/dimension",
         acceptance_token: "Survival biome/dimension join state",
     },
@@ -528,7 +532,7 @@ fn current_missing_rows() -> String {
         covered_row("chest persistence", "chest", "Chest"),
         covered_row("furnace persistence", "furnace", "Furnace"),
         covered_row("hunger/food", "hunger", "Hunger"),
-        "| mob drops | missing | none | none | Add mob receipts. | No mob AI or mob drop coverage. | next |".to_string(),
+        covered_row("mob drops", "mob-drop", "Mob drops"),
         "| redstone | missing | none | none | Add redstone receipts. | No redstone coverage. | next |".to_string(),
         covered_row("biome/dimension", "biome", "Biome"),
         "| world persistence | missing | none | none | Add persistence receipts. | No world persistence coverage. | next |".to_string(),
@@ -557,6 +561,7 @@ fn fixture_acceptance_matrix() -> String {
         "| Survival chest persistence | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
         "| Survival furnace persistence | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
         "| Survival hunger/food | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
+        "| Survival mob drops | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
         "| Survival biome/dimension join state | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
     ]
     .join("\n")
@@ -589,6 +594,9 @@ fn all_rows_manifest_text() -> String {
     text.push_str("digest  docs/evidence/hunger-valence.receipt.json\n");
     text.push_str("digest  docs/evidence/hunger-paper.receipt.json\n");
     text.push_str("digest  docs/evidence/hunger.md\n");
+    text.push_str("digest  docs/evidence/mob-drop-valence.receipt.json\n");
+    text.push_str("digest  docs/evidence/mob-drop-paper.receipt.json\n");
+    text.push_str("digest  docs/evidence/mob-drop.md\n");
     text.push_str("digest  docs/evidence/biome-valence.receipt.json\n");
     text.push_str("digest  docs/evidence/biome-paper.receipt.json\n");
     text.push_str("digest  docs/evidence/biome.md\n");
