@@ -198,6 +198,28 @@ const SURVIVAL_REDSTONE_TOGGLE_SERVER_STATE_NEEDLE: &str =
     "survival_redstone_toggle_state username=compatbot control=Lever output=RedstoneLamp on_seen=true off_seen=true unintended_outputs=false";
 const SURVIVAL_REDSTONE_TOGGLE_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_REDSTONE_TOGGLE_PROBE";
 const SURVIVAL_REDSTONE_TOGGLE_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_REDSTONE_TOGGLE_FIXTURE";
+const SURVIVAL_WORLD_PERSISTENCE_CLIENT_MUTATION_NEEDLE: &str =
+    "survival_world_persistence_mutation_sent block=Dirt position=24,64,0 slot=36";
+const SURVIVAL_WORLD_PERSISTENCE_CLIENT_PRE_RESTART_NEEDLE: &str =
+    "survival_world_persistence_pre_restart_update block=Dirt position=24,64,0";
+const SURVIVAL_WORLD_PERSISTENCE_CLIENT_RECONNECT_NEEDLE: &str =
+    "survival_world_persistence_reconnect_sent session=restart";
+const SURVIVAL_WORLD_PERSISTENCE_CLIENT_POST_RESTART_NEEDLE: &str =
+    "survival_world_persistence_post_restart_update block=Dirt position=24,64,0";
+const SURVIVAL_WORLD_PERSISTENCE_SERVER_MUTATION_NEEDLE: &str =
+    "survival_world_persistence_mutation username=compatbot block=Dirt position=24,64,0 persisted_before=false persisted_after=true";
+const SURVIVAL_WORLD_PERSISTENCE_SERVER_CLEAN_NEEDLE: &str =
+    "survival_world_persistence_clean_shutdown username=compatbot storage=isolated marker=written";
+const SURVIVAL_WORLD_PERSISTENCE_SERVER_RESTART_NEEDLE: &str =
+    "survival_world_persistence_backend_restart username=compatbot method=controlled_reload storage=isolated";
+const SURVIVAL_WORLD_PERSISTENCE_SERVER_POST_NEEDLE: &str =
+    "survival_world_persistence_post_restart_observe username=compatbot block=Dirt position=24,64,0 persisted=true";
+const SURVIVAL_WORLD_PERSISTENCE_SERVER_STATE_NEEDLE: &str =
+    "survival_world_persistence_state username=compatbot block=Dirt position=24,64,0 pre_mutation=true clean_shutdown=true backend_restart=true post_observed=true dirty_reuse=false";
+const SURVIVAL_WORLD_PERSISTENCE_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_PROBE";
+const SURVIVAL_WORLD_PERSISTENCE_SESSION_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_SESSION";
+const SURVIVAL_WORLD_PERSISTENCE_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_FIXTURE";
+const SURVIVAL_WORLD_PERSISTENCE_DIR_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_DIR";
 const SURVIVAL_BIOME_DIMENSION_CLIENT_STATE_NEEDLE: &str =
     "survival_biome_dimension_state spawn_environment=minecraft:overworld environment_identifier=minecraft:overworld client_environment_update=minecraft:overworld normalized_identifier=minecraft:overworld";
 const SURVIVAL_BIOME_DIMENSION_SERVER_STATE_NEEDLE: &str =
@@ -292,7 +314,7 @@ const FRAME_ARTIFACT_NON_CLAIMS: &[&str] = &[
     "visual_regression_approval",
     "semantic_equivalence",
 ];
-const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-furnace-persistence|survival-hunger-food|survival-mob-drop|survival-redstone-toggle|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset";
+const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-furnace-persistence|survival-hunger-food|survival-mob-drop|survival-redstone-toggle|survival-world-persistence-restart|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
     "Dimension type:",
@@ -421,6 +443,7 @@ enum Scenario {
     SurvivalHungerFood,
     SurvivalMobDrop,
     SurvivalRedstoneToggle,
+    SurvivalWorldPersistenceRestart,
     SurvivalBiomeDimensionState,
     McpControlledSmoke,
     CombatDamage,
@@ -905,12 +928,25 @@ fn execute(cfg: &Config) -> Result<Option<ClientRunEvidence>, String> {
         }
         Mode::Run => {
             build_client(cfg)?;
+            prepare_world_persistence_state_dir(cfg)?;
             let _server = start_server(cfg)?;
             probe_status(cfg)?;
             let client = run_client(cfg)?;
             Ok(Some(client))
         }
     }
+}
+
+fn prepare_world_persistence_state_dir(cfg: &Config) -> Result<(), String> {
+    if cfg.scenario != Scenario::SurvivalWorldPersistenceRestart || cfg.mode != Mode::Run {
+        return Ok(());
+    }
+    let dir = world_persistence_state_dir(cfg, cfg.server_backend);
+    if dir.exists() {
+        fs::remove_dir_all(&dir).map_err(|err| format!("remove {}: {err}", dir.display()))?;
+    }
+    fs::create_dir_all(&dir).map_err(|err| format!("create {}: {err}", dir.display()))?;
+    Ok(())
 }
 
 fn validate_mcp_controlled_live_preflight(cfg: &Config) -> Result<(), String> {
@@ -1912,6 +1948,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
         "survival-hunger-food" => Ok(Scenario::SurvivalHungerFood),
         "survival-mob-drop" => Ok(Scenario::SurvivalMobDrop),
         "survival-redstone-toggle" => Ok(Scenario::SurvivalRedstoneToggle),
+        "survival-world-persistence-restart" => Ok(Scenario::SurvivalWorldPersistenceRestart),
         "survival-biome-dimension-state" => Ok(Scenario::SurvivalBiomeDimensionState),
         MCP_CONTROLLED_SMOKE_SCENARIO => Ok(Scenario::McpControlledSmoke),
         "combat-damage" => Ok(Scenario::CombatDamage),
@@ -1956,6 +1993,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::SurvivalHungerFood => "survival-hunger-food",
         Scenario::SurvivalMobDrop => "survival-mob-drop",
         Scenario::SurvivalRedstoneToggle => "survival-redstone-toggle",
+        Scenario::SurvivalWorldPersistenceRestart => "survival-world-persistence-restart",
         Scenario::SurvivalBiomeDimensionState => "survival-biome-dimension-state",
         Scenario::McpControlledSmoke => MCP_CONTROLLED_SMOKE_SCENARIO,
         Scenario::CombatDamage => "combat-damage",
@@ -2216,6 +2254,27 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             (
                 "survival_redstone_toggle_return_update",
                 SURVIVAL_REDSTONE_TOGGLE_CLIENT_OUTPUT_OFF_NEEDLE,
+            ),
+        ],
+        Scenario::SurvivalWorldPersistenceRestart => &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "survival_world_persistence_mutation_sent",
+                SURVIVAL_WORLD_PERSISTENCE_CLIENT_MUTATION_NEEDLE,
+            ),
+            (
+                "survival_world_persistence_pre_restart_update",
+                SURVIVAL_WORLD_PERSISTENCE_CLIENT_PRE_RESTART_NEEDLE,
+            ),
+            (
+                "survival_world_persistence_reconnect_sent",
+                SURVIVAL_WORLD_PERSISTENCE_CLIENT_RECONNECT_NEEDLE,
+            ),
+            (
+                "survival_world_persistence_post_restart_update",
+                SURVIVAL_WORLD_PERSISTENCE_CLIENT_POST_RESTART_NEEDLE,
             ),
         ],
         Scenario::SurvivalBiomeDimensionState => &[
@@ -2784,6 +2843,29 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
             (
                 "server_survival_redstone_toggle_state",
                 SURVIVAL_REDSTONE_TOGGLE_SERVER_STATE_NEEDLE,
+            ),
+        ],
+        Scenario::SurvivalWorldPersistenceRestart => &[
+            ("server_username_seen", "compatbot"),
+            (
+                "server_survival_world_persistence_mutation",
+                SURVIVAL_WORLD_PERSISTENCE_SERVER_MUTATION_NEEDLE,
+            ),
+            (
+                "server_survival_world_persistence_clean_shutdown",
+                SURVIVAL_WORLD_PERSISTENCE_SERVER_CLEAN_NEEDLE,
+            ),
+            (
+                "server_survival_world_persistence_backend_restart",
+                SURVIVAL_WORLD_PERSISTENCE_SERVER_RESTART_NEEDLE,
+            ),
+            (
+                "server_survival_world_persistence_post_restart",
+                SURVIVAL_WORLD_PERSISTENCE_SERVER_POST_NEEDLE,
+            ),
+            (
+                "server_survival_world_persistence_state",
+                SURVIVAL_WORLD_PERSISTENCE_SERVER_STATE_NEEDLE,
             ),
         ],
         Scenario::SurvivalBiomeDimensionState => &[
@@ -3648,7 +3730,7 @@ Automates a local Stevenarella compatibility smoke against a Minecraft {} / prot
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from legacy Nickel config, or --steel-config/MC_COMPAT_STEEL_CONFIG a restricted Steel module; env vars and later CLI flags override either config source.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.scenario.receipt.v2 JSON receipt for Cairn/Octet evidence flows.
-Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario survival-crafting-table for one crafting-table open/input/result/collect rail. Use --scenario survival-furnace-persistence for one furnace input/fuel/output/reconnect rail. Use --scenario survival-hunger-food for one hunger deficit, food consume, and inventory decrement rail. Use --scenario survival-mob-drop for one configured mob kill, drop, pickup, and inventory increment rail. Use --scenario survival-redstone-toggle for one configured control on/off output update rail. Use --scenario survival-biome-dimension-state for one client-observed dimension/world identifier rail. Use --scenario mcp-controlled-smoke for deterministic MCP receipt/checker dry-run evidence before live client driving. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario ctf-invalid-return-drop for one contained own-base return/drop attempt with server rejection evidence. Use --scenario ctf-score-limit-win-condition for one near-limit capture that emits exactly one win/end milestone. Use --scenario ctf-simultaneous-pickup-capture-race for one bounded two-client same-flag race with one accepted transition and one rejected duplicate pickup. Use --scenario ctf-spawn-team-balance-reset for one bounded two-client team assignment, spawn/resource, and post-score reset row. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
+Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario survival-crafting-table for one crafting-table open/input/result/collect rail. Use --scenario survival-furnace-persistence for one furnace input/fuel/output/reconnect rail. Use --scenario survival-hunger-food for one hunger deficit, food consume, and inventory decrement rail. Use --scenario survival-mob-drop for one configured mob kill, drop, pickup, and inventory increment rail. Use --scenario survival-redstone-toggle for one configured control on/off output update rail. Use --scenario survival-world-persistence-restart for one configured block mutation, controlled reload, reconnect, and post-reload observation rail. Use --scenario survival-biome-dimension-state for one client-observed dimension/world identifier rail. Use --scenario mcp-controlled-smoke for deterministic MCP receipt/checker dry-run evidence before live client driving. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario ctf-invalid-return-drop for one contained own-base return/drop attempt with server rejection evidence. Use --scenario ctf-score-limit-win-condition for one near-limit capture that emits exactly one win/end milestone. Use --scenario ctf-simultaneous-pickup-capture-race for one bounded two-client same-flag race with one accepted transition and one rejected duplicate pickup. Use --scenario ctf-spawn-team-balance-reset for one bounded two-client team assignment, spawn/resource, and post-score reset row. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
 Use --expect-status-description/--expect-status-version/--expect-status-sample to assert status response fixture data, --packet-capture-summary for redacted capture summary metadata, and --proxy-route/--proxy-forwarding-mode for proxied-route receipt fields.\n\
 Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
 Use --run-matrix --receipt-dir DIR to run Paper and Valence receipts then compare them; add --dry-run after --run-matrix for a non-side-effecting matrix fixture.\n\
@@ -4213,6 +4295,12 @@ fn start_valence_server(cfg: &Config) -> Result<ManagedServer, String> {
     if cfg.scenario == Scenario::SurvivalRedstoneToggle {
         cmd.env(SURVIVAL_REDSTONE_TOGGLE_FIXTURE_ENV, "1");
     }
+    if cfg.scenario == Scenario::SurvivalWorldPersistenceRestart {
+        cmd.env(SURVIVAL_WORLD_PERSISTENCE_FIXTURE_ENV, "1").env(
+            SURVIVAL_WORLD_PERSISTENCE_DIR_ENV,
+            world_persistence_state_dir(cfg, ServerBackend::Valence),
+        );
+    }
     if cfg.scenario == Scenario::SurvivalBiomeDimensionState {
         cmd.env(SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV, "1");
     }
@@ -4307,6 +4395,21 @@ fn configure_paper_run_command(cfg: &Config, cmd: &mut Command) -> Result<(), St
     if cfg.scenario == Scenario::SurvivalRedstoneToggle {
         cmd.arg("-e")
             .arg(format!("{SURVIVAL_REDSTONE_TOGGLE_FIXTURE_ENV}=1"));
+    }
+    if cfg.scenario == Scenario::SurvivalWorldPersistenceRestart {
+        let state_dir = world_persistence_state_dir(cfg, ServerBackend::Paper);
+        fs::create_dir_all(&state_dir)
+            .map_err(|e| format!("create {}: {e}", state_dir.display()))?;
+        let absolute_state_dir = fs::canonicalize(&state_dir)
+            .map_err(|e| format!("canonicalize {}: {e}", state_dir.display()))?;
+        cmd.arg("-e")
+            .arg(format!("{SURVIVAL_WORLD_PERSISTENCE_FIXTURE_ENV}=1"))
+            .arg("-e")
+            .arg(format!(
+                "{SURVIVAL_WORLD_PERSISTENCE_DIR_ENV}=/data/mc-compat-world-persistence"
+            ))
+            .arg("-v")
+            .arg(format!("{}:/data", absolute_state_dir.display()));
     }
     if cfg.scenario == Scenario::SurvivalBiomeDimensionState {
         cmd.arg("-e")
@@ -4492,6 +4595,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         Scenario::ReconnectFlagState
             | Scenario::SurvivalChestPersistence
             | Scenario::SurvivalFurnacePersistence
+            | Scenario::SurvivalWorldPersistenceRestart
             | Scenario::NegativeReconnectRace
     ) {
         run_reconnect_sequence_scenario(cfg)?
@@ -4557,6 +4661,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
             | Scenario::ReconnectFlagState
             | Scenario::SurvivalChestPersistence
             | Scenario::SurvivalFurnacePersistence
+            | Scenario::SurvivalWorldPersistenceRestart
             | Scenario::NegativeReconnectRace
     ) {
         combined_output.push_str("mc_compat_reconnect_session=2\n");
@@ -4662,6 +4767,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
             | Scenario::ReconnectFlagState
             | Scenario::SurvivalChestPersistence
             | Scenario::SurvivalFurnacePersistence
+            | Scenario::SurvivalWorldPersistenceRestart
             | Scenario::NegativeReconnectRace
     ) && mixed_success
     {
@@ -4874,6 +4980,17 @@ fn absolute_child_path(root: &Path, path: &Path) -> PathBuf {
         return path.to_path_buf();
     }
     root.join(path)
+}
+
+fn world_persistence_state_dir(cfg: &Config, backend: ServerBackend) -> PathBuf {
+    let backend_name = match backend {
+        ServerBackend::Valence => "valence",
+        ServerBackend::Paper => "paper",
+    };
+    cfg.root
+        .join("target")
+        .join("mc-compat-world-persistence")
+        .join(backend_name)
 }
 
 fn run_mcp_controlled_live_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
@@ -5298,6 +5415,7 @@ fn run_reconnect_sequence_scenario(cfg: &Config) -> Result<Vec<SingleClientRun>,
     let username = cfg.client_username.clone();
     let scenario = scenario_name(cfg.scenario);
     let mut runs = Vec::new();
+    let mut restarted_server: Option<ManagedServer> = None;
     for idx in 0..RECONNECT_SEQUENCE_SESSION_COUNT {
         let log_path = std::env::temp_dir().join(format!(
             "mc-compat-client.{username}.{scenario}-session-{}.{}.log",
@@ -5322,8 +5440,15 @@ fn run_reconnect_sequence_scenario(cfg: &Config) -> Result<Vec<SingleClientRun>,
             output,
             matched_success_pattern,
         });
+        if cfg.scenario == Scenario::SurvivalWorldPersistenceRestart && idx == 0 {
+            write_world_persistence_pre_restart_server_log(cfg)?;
+            stop_server(cfg)?;
+            restarted_server = Some(start_server(cfg)?);
+            probe_status(cfg)?;
+        }
         thread::sleep(Duration::from_secs(RECONNECT_SEQUENCE_PAUSE_SECS));
     }
+    drop(restarted_server);
     Ok(runs)
 }
 
@@ -5513,6 +5638,12 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
         Scenario::SurvivalRedstoneToggle => {
             cmd.env(SURVIVAL_REDSTONE_TOGGLE_PROBE_ENV, "1");
         }
+        Scenario::SurvivalWorldPersistenceRestart => {
+            cmd.env(SURVIVAL_WORLD_PERSISTENCE_PROBE_ENV, "1").env(
+                SURVIVAL_WORLD_PERSISTENCE_SESSION_ENV,
+                (client_index + 1).to_string(),
+            );
+        }
         Scenario::SurvivalBiomeDimensionState => {
             cmd.env(SURVIVAL_BIOME_DIMENSION_PROBE_ENV, "1");
         }
@@ -5692,6 +5823,10 @@ fn read_server_scenario_evidence(
         ServerBackend::Paper => read_paper_log(cfg)?,
     };
     let mut correlation_log = server_log;
+    if cfg.scenario == Scenario::SurvivalWorldPersistenceRestart {
+        correlation_log.push('\n');
+        correlation_log.push_str(&read_world_persistence_pre_restart_server_log(cfg)?);
+    }
     for run in runs {
         correlation_log.push('\n');
         correlation_log.push_str(&run.output);
@@ -5702,6 +5837,38 @@ fn read_server_scenario_evidence(
         &correlation_log,
         username,
     )))
+}
+
+fn world_persistence_pre_restart_server_log_path(cfg: &Config) -> PathBuf {
+    let backend_name = match cfg.server_backend {
+        ServerBackend::Valence => "valence",
+        ServerBackend::Paper => "paper",
+    };
+    cfg.root
+        .join("target")
+        .join("mc-compat-world-persistence-pre-restart")
+        .join(format!("{backend_name}.log"))
+}
+
+fn write_world_persistence_pre_restart_server_log(cfg: &Config) -> Result<(), String> {
+    let text = match cfg.server_backend {
+        ServerBackend::Valence => read_valence_log(cfg)?,
+        ServerBackend::Paper => read_paper_log(cfg)?,
+    };
+    let path = world_persistence_pre_restart_server_log_path(cfg);
+    if let Some(parent) = path.parent() {
+        fs::create_dir_all(parent).map_err(|e| format!("create {}: {e}", parent.display()))?;
+    }
+    fs::write(&path, text).map_err(|e| format!("write {}: {e}", path.display()))
+}
+
+fn read_world_persistence_pre_restart_server_log(cfg: &Config) -> Result<String, String> {
+    let path = world_persistence_pre_restart_server_log_path(cfg);
+    match fs::read_to_string(&path) {
+        Ok(text) => Ok(text),
+        Err(err) if err.kind() == io::ErrorKind::NotFound => Ok(String::new()),
+        Err(err) => Err(format!("read {}: {err}", path.display())),
+    }
 }
 
 fn read_valence_log(cfg: &Config) -> Result<String, String> {
@@ -5741,6 +5908,7 @@ fn requires_server_correlation(cfg: &Config) -> bool {
             | Scenario::SurvivalHungerFood
             | Scenario::SurvivalMobDrop
             | Scenario::SurvivalRedstoneToggle
+            | Scenario::SurvivalWorldPersistenceRestart
             | Scenario::CombatDamage
             | Scenario::CombatKnockback
             | Scenario::ArmorEquipmentMitigation
@@ -6705,6 +6873,15 @@ fn smoke_receipt_json_with_typed_event_oracle(
             "redstone_powered_update",
             "redstone_return_update",
         ],
+        Scenario::SurvivalWorldPersistenceRestart => vec![
+            "login_success",
+            "play_join_game",
+            "player_block_placement",
+            "block_update",
+            "controlled_reload",
+            "disconnect_reconnect",
+            "post_reload_block_update",
+        ],
         Scenario::SurvivalBiomeDimensionState => vec![
             "login_success",
             "play_join_game",
@@ -6965,6 +7142,15 @@ fn smoke_receipt_json_with_typed_event_oracle(
         "server_survival_redstone_toggle_powered_on",
         "server_survival_redstone_toggle_powered_off",
         "server_survival_redstone_toggle_state",
+        "survival_world_persistence_mutation_sent",
+        "survival_world_persistence_pre_restart_update",
+        "survival_world_persistence_reconnect_sent",
+        "survival_world_persistence_post_restart_update",
+        "server_survival_world_persistence_mutation",
+        "server_survival_world_persistence_clean_shutdown",
+        "server_survival_world_persistence_backend_restart",
+        "server_survival_world_persistence_post_restart",
+        "server_survival_world_persistence_state",
         "server_inventory_hotbar_select",
         "server_inventory_drop",
         "server_inventory_pickup",
@@ -11207,6 +11393,51 @@ RED: 1
         assert!(missing_state
             .missing_milestones
             .contains(&"server_survival_redstone_toggle_state"));
+    }
+
+    #[test]
+    fn survival_world_persistence_scenario_tracks_client_and_server_evidence() {
+        let client = evaluate_scenario(
+            Scenario::SurvivalWorldPersistenceRestart,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nsurvival_world_persistence_mutation_sent block=Dirt position=24,64,0 slot=36 hand=main sequence=933\nsurvival_world_persistence_pre_restart_update block=Dirt position=24,64,0 raw_id=10\nsurvival_world_persistence_reconnect_sent session=restart\nsurvival_world_persistence_post_restart_update block=Dirt position=24,64,0 raw_id=10\n",
+        );
+        assert!(client.passed, "{client:?}");
+        assert!(client.missing_milestones.is_empty());
+
+        let missing_post = evaluate_scenario(
+            Scenario::SurvivalWorldPersistenceRestart,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nsurvival_world_persistence_mutation_sent block=Dirt position=24,64,0 slot=36 hand=main sequence=933\nsurvival_world_persistence_pre_restart_update block=Dirt position=24,64,0 raw_id=10\nsurvival_world_persistence_reconnect_sent session=restart\n",
+        );
+        assert!(!missing_post.passed, "{missing_post:?}");
+        assert!(missing_post
+            .missing_milestones
+            .contains(&"survival_world_persistence_post_restart_update"));
+
+        let wrong_client_values = evaluate_scenario(
+            Scenario::SurvivalWorldPersistenceRestart,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nsurvival_world_persistence_mutation_sent block=Stone position=25,64,0 slot=37 hand=main sequence=934\nsurvival_world_persistence_pre_restart_update block=Stone position=25,64,0 raw_id=10\nsurvival_world_persistence_reconnect_sent session=restart\nsurvival_world_persistence_post_restart_update block=Stone position=25,64,0 raw_id=10\n",
+        );
+        assert!(!wrong_client_values.passed, "{wrong_client_values:?}");
+        assert!(wrong_client_values
+            .missing_milestones
+            .contains(&"survival_world_persistence_mutation_sent"));
+
+        let server = evaluate_server_scenario(
+            Scenario::SurvivalWorldPersistenceRestart,
+            "compatbot joined\nMC-COMPAT-MILESTONE survival_world_persistence_mutation username=compatbot block=Dirt position=24,64,0 persisted_before=false persisted_after=true\nMC-COMPAT-MILESTONE survival_world_persistence_clean_shutdown username=compatbot storage=isolated marker=written\nMC-COMPAT-MILESTONE survival_world_persistence_backend_restart username=compatbot method=controlled_reload storage=isolated\nMC-COMPAT-MILESTONE survival_world_persistence_post_restart_observe username=compatbot block=Dirt position=24,64,0 persisted=true\nMC-COMPAT-MILESTONE survival_world_persistence_state username=compatbot block=Dirt position=24,64,0 pre_mutation=true clean_shutdown=true backend_restart=true post_observed=true dirty_reuse=false\n",
+            "compatbot",
+        );
+        assert!(server.passed, "{server:?}");
+
+        let missing_state = evaluate_server_scenario(
+            Scenario::SurvivalWorldPersistenceRestart,
+            "compatbot joined\nMC-COMPAT-MILESTONE survival_world_persistence_mutation username=compatbot block=Dirt position=24,64,0 persisted_before=false persisted_after=true\n",
+            "compatbot",
+        );
+        assert!(!missing_state.passed, "{missing_state:?}");
+        assert!(missing_state
+            .missing_milestones
+            .contains(&"server_survival_world_persistence_state"));
     }
 
     #[test]

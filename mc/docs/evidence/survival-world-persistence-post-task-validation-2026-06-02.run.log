@@ -1,0 +1,11 @@
+survival row parity self-test ok: 6 row contracts exercised
+world persistence row check passed
+survival coverage matrix self-test ok: positive and negative fixtures exercised
+survival coverage matrix check passed: 9 rows validated
+acceptance matrix self-test ok: positive and negative fixtures exercised
+acceptance matrix check passed: 35 rows validated
+current evidence bundle self-test ok: positive and negative fixtures exercised
+current evidence bundle check passed: 35 rows validated
+full survival compatibility gate self-test ok: all-covered success and fail-closed fixtures exercised
+full survival compatibility gate passed: 9 covered rows, 0 missing rows
+exit_status=0

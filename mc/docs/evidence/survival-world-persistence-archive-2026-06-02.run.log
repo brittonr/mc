@@ -1,0 +1,156 @@
+## survival-world-persistence archive 2026-06-02T22:38:29Z
+command=nix run --no-update-lock-file .#cairn -- sync survival-world-persistence-parity --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/survival-world-persistence-parity/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/survival-world-persistence-parity/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-world-persistence-parity",
+  "delta_specs": [
+    "./cairn/changes/survival-world-persistence-parity/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "07843e82ffdb1f966729e4c3cd173caae75b86213471696a0a476e3d199ba0bc",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "d3bb8b02e87d5c469e3cd7e38de72d0ce67d4d888ac6564adb66fb8a46a7faa2",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "91ef132edcbd14f247b347ccdf9e73f4c5e819ac55e8d90db290177c73865734"
+}
+sync_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+pre_archive_validate_exit_status=0
+command=CAIRN_ARCHIVE_DATE=1970-01-01 nix run --no-update-lock-file .#cairn -- archive survival-world-persistence-parity --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-world-persistence-parity",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-survival-world-persistence-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-world-persistence-parity",
+  "dry_run": false,
+  "input_hash": "07843e82ffdb1f966729e4c3cd173caae75b86213471696a0a476e3d199ba0bc",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "2da81c712bb758ed11edbe33cf97ca4d8e31f908201758c5a7825c9a99dad0e6",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-world-persistence-parity/design.md"
+        },
+        {
+          "content_hash": "1f416d94790b78681ebcfbe9bd5d44f7f212557f1b16e9108d8de8fabfcc4b78",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-world-persistence-parity/proposal.md"
+        },
+        {
+          "content_hash": "191a98ba384600f651decb8432c46f619af0a8e37bccc488452f7bf6c62ee1f2",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-world-persistence-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "7ebc7fa1ece84e9ebb50af722a7396853f89d1c1c7acd638f5345f1a3a4b6ba3",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-world-persistence-parity/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-world-persistence-parity"
+        }
+      ],
+      "manifest_hash": "3b53d235c231150ba2168cfbe5b7ce4664679d213aed3db9ce99297161be9a53"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "2da81c712bb758ed11edbe33cf97ca4d8e31f908201758c5a7825c9a99dad0e6",
+          "exists": true,
+          "path": "./cairn/changes/survival-world-persistence-parity/design.md"
+        },
+        {
+          "content_hash": "1f416d94790b78681ebcfbe9bd5d44f7f212557f1b16e9108d8de8fabfcc4b78",
+          "exists": true,
+          "path": "./cairn/changes/survival-world-persistence-parity/proposal.md"
+        },
+        {
+          "content_hash": "191a98ba384600f651decb8432c46f619af0a8e37bccc488452f7bf6c62ee1f2",
+          "exists": true,
+          "path": "./cairn/changes/survival-world-persistence-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "7ebc7fa1ece84e9ebb50af722a7396853f89d1c1c7acd638f5345f1a3a4b6ba3",
+          "exists": true,
+          "path": "./cairn/changes/survival-world-persistence-parity/tasks.md"
+        }
+      ],
+      "manifest_hash": "401babf865db37664898423644cd06b7c81a8adca2d9ac9190862172fd59c05d"
+    },
+    "kind": "archive",
+    "manifest_hash": "be0b26cbf2bbc1d904956ef2a2aca31e75ae433fd96065f04b2178931f6d1fd1"
+  },
+  "plan_hash": "af1bbb4bc6d3ccbd2c71c814e08ce5be054e4ea5edbb2bc78d042aed7d08d0cf",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "3833a9aae378e83064267508d5e4615d6803ffae817433561f2cd594eadb6640"
+}
+archive_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 2,
+  "valid": true
+}
+post_archive_validate_exit_status=0
+exit_status=0

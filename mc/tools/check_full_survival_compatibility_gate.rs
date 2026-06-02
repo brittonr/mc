@@ -67,8 +67,16 @@ const CURRENT_COVERED_ROWS: &[CoveredRowExpectation] = &[
         acceptance_token: "Survival mob drops",
     },
     CoveredRowExpectation {
+        system: "redstone",
+        acceptance_token: "Survival redstone toggle",
+    },
+    CoveredRowExpectation {
         system: "biome/dimension",
         acceptance_token: "Survival biome/dimension join state",
+    },
+    CoveredRowExpectation {
+        system: "world persistence",
+        acceptance_token: "Survival world persistence restart",
     },
 ];
 
@@ -562,7 +570,9 @@ fn fixture_acceptance_matrix() -> String {
         "| Survival furnace persistence | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
         "| Survival hunger/food | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
         "| Survival mob drops | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
+        "| Survival redstone toggle | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
         "| Survival biome/dimension join state | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
+        "| Survival world persistence restart | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
     ]
     .join("\n")
 }

@@ -1,0 +1,17 @@
+warning: function `is_survival_mob_drop_stack` is never used
+    --> examples/survival_compat.rs:2052:4
+     |
+2052 | fn is_survival_mob_drop_stack(stack: &ItemStack) -> bool {
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `valence` (example "survival_compat") generated 1 warning
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.26s
+     Running `/tmp/valence-compat-758-target/debug/examples/survival_compat`
+[2m2026-06-02T22:20:31.615591Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+[2m2026-06-02T22:20:33.467146Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_world_persistence_mutation username=compatbot block=Dirt position=24,64,0 persisted_before=false persisted_after=true
+MC-COMPAT-MILESTONE survival_world_persistence_mutation username=compatbot block=Dirt position=24,64,0 persisted_before=false persisted_after=true
+[2m2026-06-02T22:20:33.467163Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_world_persistence_clean_shutdown username=compatbot storage=isolated marker=written
+MC-COMPAT-MILESTONE survival_world_persistence_clean_shutdown username=compatbot storage=isolated marker=written

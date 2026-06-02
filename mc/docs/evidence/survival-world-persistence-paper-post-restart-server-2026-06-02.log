@@ -1,0 +1,65 @@
+[init] Running as uid=1000 gid=1000 with /data as 'drwxr-xr-x 13 1000 1000 4096 Jun  2 22:21 /data'
+[init] Image info: buildtime=2026-05-31T14:45:05.064Z,version=java17,revision=a4719f2ba6f5cbcde07fc90ec4b6c42533aba5ad
+[init] Resolving type given PAPER
+[init] Copying any plugins from /plugins to /data/plugins
+[init] Copying any configs from /config to /data/config
+[39m[mc-image-helper] 22:21:43.208 INFO  : Created/updated 1 property in /data/server.properties
+[0;39m[init] Setting initial memory to 1G and max to 1G
+[init] Starting the Minecraft server...
+Starting org.bukkit.craftbukkit.Main
+*** Warning, you've not updated in a while! ***
+*** Please download a new build as per instructions from https://papermc.io/downloads/paper ***
+System Info: Java 17 (OpenJDK 64-Bit Server VM 17.0.15+6) Host: Linux 6.18.30 (amd64)
+Loading libraries, please wait...
+2026-06-02 22:21:46,264 ServerMain WARN Advanced terminal features are not available in this environment
+[22:21:48 INFO]: Environment: authHost='https://authserver.mojang.com', accountsHost='https://api.mojang.com', sessionHost='https://sessionserver.mojang.com', servicesHost='https://api.minecraftservices.com', name='PROD'
+[22:21:48 INFO]: Found new data pack file/bukkit, loading it automatically
+[22:21:49 INFO]: Loaded 7 recipes
+[22:21:49 INFO]: Starting minecraft server version 1.20.1
+[22:21:49 INFO]: Loading properties
+[22:21:49 INFO]: This server is running Paper version git-Paper-196 (MC: 1.20.1) (Implementing API version 1.20.1-R0.1-SNAPSHOT) (Git: 773dd72)
+[22:21:49 INFO]: Server Ping Player Sample Count: 12
+[22:21:49 INFO]: Using 4 threads for Netty based IO
+[22:21:49 WARN]: [!] The timings profiler has been enabled but has been scheduled for removal from Paper in the future.
+    We recommend installing the spark profiler as a replacement: https://spark.lucko.me/
+    For more information please visit: https://github.com/PaperMC/Paper/issues/8948
+[22:21:49 INFO]: [ChunkTaskScheduler] Chunk system is using 1 I/O threads, 8 worker threads, and gen parallelism of 8 threads
+[22:21:49 INFO]: Default game type: SURVIVAL
+[22:21:49 INFO]: Generating keypair
+[22:21:49 INFO]: Starting Minecraft server on *:25565
+[22:21:49 INFO]: Using epoll channel type
+[22:21:49 INFO]: Paper: Using libdeflate (Linux x86_64) compression from Velocity.
+[22:21:49 INFO]: Paper: Using OpenSSL 1.1.x (Linux x86_64) cipher from Velocity.
+[22:21:49 INFO]: [McCompatSurvivalFixture] Loading server plugin McCompatSurvivalFixture v0.1.0
+[22:21:49 INFO]: Server permissions file permissions.yml is empty, ignoring it
+[22:21:49 WARN]: **** SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+[22:21:49 WARN]: The server will make no attempt to authenticate usernames. Beware.
+[22:21:49 WARN]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+[22:21:49 WARN]: To change this, set "online-mode" to "true" in the server.properties file.
+[22:21:49 INFO]: Preparing level "world"
+[22:21:52 INFO]: Preparing start region for dimension minecraft:overworld
+[22:21:52 INFO]: Time elapsed: 59 ms
+[22:21:52 INFO]: Preparing start region for dimension minecraft:the_nether
+[22:21:52 INFO]: Time elapsed: 72 ms
+[22:21:52 INFO]: Preparing start region for dimension minecraft:the_end
+[22:21:52 INFO]: Time elapsed: 31 ms
+[22:21:52 INFO]: [McCompatSurvivalFixture] Enabling McCompatSurvivalFixture v0.1.0
+[22:21:52 INFO]: [McCompatSurvivalFixture] MC-COMPAT-MILESTONE survival_fixture_enabled
+[22:21:52 INFO]: Starting remote control listener
+[22:21:52 INFO]: Thread RCON Listener started
+[22:21:52 INFO]: RCON running on 0.0.0.0:25575
+[22:21:52 INFO]: Running delayed init tasks
+[22:21:52 INFO]: Done (3.140s)! For help, type "help"
+[22:21:52 INFO]: Timings Reset
+[22:22:01 INFO]: UUID of player compatbot is 44fbb854-bbe7-3711-88fe-c85ab1543ed5
+[22:22:02 INFO]: compatbot joined the game
+[22:22:02 INFO]: compatbot[/172.30.0.1:52678] logged in with entity id 439 at ([world]24.5, 65.0, -1.5)
+[22:22:02 INFO]: [McCompatSurvivalFixture] MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+[22:22:02 INFO]: [McCompatSurvivalFixture] MC-COMPAT-MILESTONE survival_world_persistence_backend_restart username=compatbot method=controlled_reload storage=isolated
+[22:22:02 INFO]: [McCompatSurvivalFixture] MC-COMPAT-MILESTONE survival_world_persistence_post_restart_observe username=compatbot block=Dirt position=24,64,0 persisted=true
+[22:22:02 INFO]: [McCompatSurvivalFixture] MC-COMPAT-MILESTONE survival_world_persistence_state username=compatbot block=Dirt position=24,64,0 pre_mutation=true clean_shutdown=true backend_restart=true post_observed=true dirty_reuse=false
+[22:22:03 INFO]: [McCompatSurvivalFixture] MC-COMPAT-MILESTONE survival_block_break username=compatbot item=Dirt at=0,64,1
+[22:22:04 INFO]: [McCompatSurvivalFixture] MC-COMPAT-MILESTONE survival_pickup_item username=compatbot slot=36 item=Dirt count=1
+[22:22:06 INFO]: [McCompatSurvivalFixture] MC-COMPAT-MILESTONE survival_block_place username=compatbot item=Dirt from_slot=36 at=0,65,1
+[22:22:38 INFO]: compatbot lost connection: Disconnected
+[22:22:38 INFO]: compatbot left the game

@@ -1,0 +1,13 @@
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-world-persistence-restart session=paper seq=1 event=protocol_detected
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-world-persistence-restart session=paper seq=2 event=join_game
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-world-persistence-restart session=paper seq=3 event=render_tick
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-world-persistence-restart session=paper seq=4 event=survival_world_persistence_mutation_sent
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-world-persistence-restart session=paper seq=5 event=survival_world_persistence_pre_restart_update
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-world-persistence-restart session=paper seq=6 event=survival_world_persistence_reconnect_sent
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-world-persistence-restart session=paper seq=7 event=survival_world_persistence_post_restart_update
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-world-persistence-restart session=paper seq=8 event=server_username_seen
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-world-persistence-restart session=paper seq=9 event=server_survival_world_persistence_mutation
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-world-persistence-restart session=paper seq=10 event=server_survival_world_persistence_clean_shutdown
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-world-persistence-restart session=paper seq=11 event=server_survival_world_persistence_backend_restart
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-world-persistence-restart session=paper seq=12 event=server_survival_world_persistence_post_restart
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-world-persistence-restart session=paper seq=13 event=server_survival_world_persistence_state

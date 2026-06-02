@@ -47,7 +47,7 @@ const REQUIRED_TEXT: &[&str] = &[
     "No full survival compatibility from mob-drop row",
     "No full survival compatibility from redstone row",
     "No full survival compatibility from biome/dimension row",
-    "No world persistence coverage",
+    "No full survival compatibility from world persistence row",
     "paired reference receipt",
     "BLAKE3 manifest entries",
 ];
@@ -104,6 +104,12 @@ const BIOME_DIMENSION_VALENCE_RECEIPT: &str =
     "docs/evidence/survival-biome-dimension-valence-2026-06-01.receipt.json";
 const BIOME_DIMENSION_EVIDENCE_DOC: &str =
     "docs/evidence/survival-biome-dimension-receipts-2026-06-01.md";
+const WORLD_PERSISTENCE_PAPER_RECEIPT: &str =
+    "docs/evidence/survival-world-persistence-paper-2026-06-02.receipt.json";
+const WORLD_PERSISTENCE_VALENCE_RECEIPT: &str =
+    "docs/evidence/survival-world-persistence-valence-2026-06-02.receipt.json";
+const WORLD_PERSISTENCE_EVIDENCE_DOC: &str =
+    "docs/evidence/survival-world-persistence-receipts-2026-06-02.md";
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct SurvivalRow {
@@ -294,6 +300,15 @@ fn validate_row(row: &SurvivalRow, errors: &mut Vec<String>) {
             "covered biome/dimension row",
             errors,
         ),
+        "world persistence" => validate_covered_row(
+            row,
+            WORLD_PERSISTENCE_PAPER_RECEIPT,
+            WORLD_PERSISTENCE_VALENCE_RECEIPT,
+            WORLD_PERSISTENCE_EVIDENCE_DOC,
+            "long-term durability",
+            "covered world persistence row",
+            errors,
+        ),
         _ => validate_missing_row(row, errors),
     }
 }
@@ -441,14 +456,10 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         "missing Paper reference receipt",
     )?;
 
-    let promoted_missing = good_rows().replacen(
-        "| world persistence | missing | none | none |",
-        "| world persistence | reference_parity_covered | `some-valence` | none |",
-        1,
-    );
+    let missing_world_evidence = good_rows().replacen(WORLD_PERSISTENCE_PAPER_RECEIPT, "none", 1);
     assert_contains(
-        &validate_text(&fixture_doc(&promoted_missing), bundle, matrix),
-        "unimplemented survival row is not marked missing",
+        &validate_text(&fixture_doc(&missing_world_evidence), bundle, matrix),
+        "covered world persistence row missing Paper reference receipt",
     )?;
 
     let overclaim = format!(
@@ -475,7 +486,7 @@ fn assert_contains(errors: &[String], needle: &str) -> Result<(), Vec<String>> {
 
 fn fixture_doc(rows: &str) -> String {
     format!(
-        "# Fixture\n\n## Coverage rows\n\n{TABLE_HEADER}\n| --- | --- | --- | --- | --- | --- | --- |\n{rows}\n\n## Gate decision\n\nfull_survival_compatibility remains a non-claim.\n\npaired reference receipt\nBLAKE3 manifest entries\nNo vanilla parity or full survival compatibility\nNo full survival compatibility from crafting row\nNo full survival compatibility from chest persistence row\nNo full survival compatibility from furnace persistence row\nNo full survival compatibility from hunger/food row\nNo full survival compatibility from mob-drop row\nNo full survival compatibility from redstone row\nNo full survival compatibility from biome/dimension row\nNo world persistence coverage\n"
+        "# Fixture\n\n## Coverage rows\n\n{TABLE_HEADER}\n| --- | --- | --- | --- | --- | --- | --- |\n{rows}\n\n## Gate decision\n\nfull_survival_compatibility remains a non-claim.\n\npaired reference receipt\nBLAKE3 manifest entries\nNo vanilla parity or full survival compatibility\nNo full survival compatibility from crafting row\nNo full survival compatibility from chest persistence row\nNo full survival compatibility from furnace persistence row\nNo full survival compatibility from hunger/food row\nNo full survival compatibility from mob-drop row\nNo full survival compatibility from redstone row\nNo full survival compatibility from biome/dimension row\nNo full survival compatibility from world persistence row\n"
     )
 }
 
@@ -488,8 +499,8 @@ fn good_rows() -> String {
         format!("| hunger/food | {COVERED_STATUS} | `{HUNGER_FOOD_VALENCE_RECEIPT}` | `{HUNGER_FOOD_PAPER_RECEIPT}` | Paired comparator evidence: `{HUNGER_FOOD_EVIDENCE_DOC}`. | No full survival compatibility from hunger/food row; no all foods, exhaustion, regeneration/starvation, potion effects, offhand consumption, or broader vanilla parity coverage. | next |"),
         format!("| mob drops | {COVERED_STATUS} | `{MOB_DROP_VALENCE_RECEIPT}` | `{MOB_DROP_PAPER_RECEIPT}` | Paired comparator evidence: `{MOB_DROP_EVIDENCE_DOC}`. | No full survival compatibility from mob-drop row; no broad mob AI, loot-table distribution, all mob classes, pickup races, or broader vanilla parity coverage. | next |"),
         format!("| redstone | {COVERED_STATUS} | `{REDSTONE_VALENCE_RECEIPT}` | `{REDSTONE_PAPER_RECEIPT}` | Paired comparator evidence: `{REDSTONE_EVIDENCE_DOC}`. | No full survival compatibility from redstone row; no general redstone circuit parity, tick-order parity, pistons, observers, comparators, clocks, farms, or broad vanilla parity coverage. | next |"),
-        format!("| biome/dimension | {COVERED_STATUS} | `{BIOME_DIMENSION_VALENCE_RECEIPT}` | `{BIOME_DIMENSION_PAPER_RECEIPT}` | Paired comparator evidence: `{BIOME_DIMENSION_EVIDENCE_DOC}`. | No full survival compatibility from biome/dimension row; no biome lookup semantics, dimension travel, or world persistence coverage. | next |"),
-        "| world persistence | missing | none | none | Add receipts. | No world persistence coverage. | next |".to_string(),
+        format!("| biome/dimension | {COVERED_STATUS} | `{BIOME_DIMENSION_VALENCE_RECEIPT}` | `{BIOME_DIMENSION_PAPER_RECEIPT}` | Paired comparator evidence: `{BIOME_DIMENSION_EVIDENCE_DOC}`. | No full survival compatibility from biome/dimension row; no biome lookup semantics, dimension travel, or long-term world persistence durability coverage. | next |"),
+        format!("| world persistence | {COVERED_STATUS} | `{WORLD_PERSISTENCE_VALENCE_RECEIPT}` | `{WORLD_PERSISTENCE_PAPER_RECEIPT}` | Paired comparator evidence: `{WORLD_PERSISTENCE_EVIDENCE_DOC}`. | No full survival compatibility from world persistence row; no long-term durability, crash recovery, multi-chunk persistence, all block entities, concurrent saves, backups, broad vanilla parity, or production readiness. | next |"),
     ]
     .join("\n")
 }

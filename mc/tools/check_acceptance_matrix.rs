@@ -51,6 +51,7 @@ const REQUIRED_SEAMS: &[&str] = &[
     "Survival mob drops",
     "Survival redstone toggle",
     "Survival biome/dimension join state",
+    "Survival world persistence restart",
     "MCP-controlled observability",
 ];
 
@@ -99,6 +100,7 @@ const REVIEWABLE_RECEIPT_SEAMS: &[&str] = &[
     "Survival mob drops",
     "Survival redstone toggle",
     "Survival biome/dimension join state",
+    "Survival world persistence restart",
     "MCP-controlled observability",
 ];
 

@@ -360,6 +360,35 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         migration_state: "substring-fallback",
     },
     GeneratedScenarioRow {
+        name: "survival-world-persistence-restart",
+        aliases: &["survival-world-persistence-restart"],
+        client_milestones: &[
+            "protocol_detected",
+            "join_game",
+            "render_tick",
+            "survival_world_persistence_mutation_sent",
+            "survival_world_persistence_pre_restart_update",
+            "survival_world_persistence_reconnect_sent",
+            "survival_world_persistence_post_restart_update",
+        ],
+        server_milestones: &[
+            "server_username_seen",
+            "server_survival_world_persistence_mutation",
+            "server_survival_world_persistence_clean_shutdown",
+            "server_survival_world_persistence_backend_restart",
+            "server_survival_world_persistence_post_restart",
+            "server_survival_world_persistence_state",
+        ],
+        forbidden_patterns: DEFAULT_FORBIDDEN_PATTERNS,
+        client_count: ONE_CLIENT,
+        session_count: TWO_SESSIONS,
+        dry_run_check: "",
+        dry_run_wrapper: "mc-compat-smoke",
+        dry_run_exclusion_reason:
+            "active survival-world-persistence-parity Cairn owns fixture and paired reference promotion",
+        migration_state: "substring-fallback",
+    },
+    GeneratedScenarioRow {
         name: "survival-biome-dimension-state",
         aliases: &["survival-biome-dimension-state"],
         client_milestones: &[

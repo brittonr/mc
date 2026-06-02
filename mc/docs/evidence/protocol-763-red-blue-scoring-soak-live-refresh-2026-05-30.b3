@@ -12,11 +12,11 @@ d605799f8ea829ec749f97f52acd20c75f403324439f3d72392ceeb3397abe8d  docs/evidence/
 891af646108bbcd2f5e5fc8206b1dda0c7e098d566f17fc1cc75ea64ac06531d  docs/evidence/protocol-763-red-blue-scoring-soak-blue-2026-05-30.client.log
 9a8dd4253b720e827724352539d3c398a7f03c3c958561c9dedea7c5641ef32d  docs/evidence/protocol-763-red-blue-scoring-soak-blue-2026-05-30.server.log
 e660802c4fc789cbb9b7b4cecb73294aa29aafffb3d2a2ddfe693c5135caf816  docs/evidence/protocol-763-red-blue-scoring-soak-blue-2026-05-30.receipt.typed-events.log
-8d595bca615018260d82b3ad03400559243ad2e77c2b5de91228711996a3c90b  docs/evidence/protocol-763-acceptance-matrix.md
-5e53c09507d30554fca124aa7bf8280a65512a2d8e36248423c35f267ecc5231  docs/evidence/protocol-763-current-evidence-bundle.md
+7046bed40d011be43e041bee2ca21801603772b90a3f036afae8954e99072068  docs/evidence/protocol-763-acceptance-matrix.md
+32c3b218a06fdc31b3ee8526aecfa94d88952b9d9f4502bff339c349f43c3d53  docs/evidence/protocol-763-current-evidence-bundle.md
 92f6d25fddda6d6c038d547bab5048526becf941645eea8d1d23e9568dc98e89  docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md
 69cb30f9883659aec0727ca58d7bc4149bc62942eb87f0e503cbf11d283e0496  tools/check_red_blue_scoring_soak_live_refresh.rs
-c0df4af95550e6896a98f6de8694877b1451a72541d67561504f71a643b7c6bf  tools/check_acceptance_matrix.rs
+2a3caf362e06a69d59325e0833595ae52a436377f242f639f376c6f704e9ba6a  tools/check_acceptance_matrix.rs
 a5a6c3735d97d4b7a897e4bf02b1e6be85ad2f7d872091c517ed4e10b32fcc79  flake.nix
 d313fe27f19f79af639b54576f0c391c56ec2580a4404c2aa59a4a24f82b8560  cairn/archive/2026-05-30-refresh-red-blue-scoring-soak-live-evidence/proposal.md
 96060d7b43959e1420ef160c2f7ada16b57a39208e6ef382bd99f55dd8a0f509  cairn/archive/2026-05-30-refresh-red-blue-scoring-soak-live-evidence/design.md

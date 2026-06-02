@@ -1,5 +1,5 @@
 e50e4a4d75b3d1b92d81d0a1e0a2f00bd499bea69eb2ee89597ad0a94886135a  docs/evidence/survival-redstone-toggle-fixtures-2026-06-02.run.log
 f22cb60bb435aa1ff0231fe828de7825fcf6160da18a01429e820e21f865fd1a  docs/evidence/mc-compat-paper-survival-redstone-toggle-fixture-2026-06-02.java
 bb54bb20e86e9aa171e825960dcf9ebb148db3623637d8e731ef905a6fd21162  docs/evidence/mc-compat-paper-survival-redstone-toggle-fixture-2026-06-02.jar
-f22cb60bb435aa1ff0231fe828de7825fcf6160da18a01429e820e21f865fd1a  tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java
-49a34db3340f8f77098c80601747ef419c9193c7baa501a3e47ecd1fff776783  valence/examples/survival_compat.rs
+669c66077aec4476ae36e8ffc27dc63cda8713b5bbb6edd8162fb603dbe66727  tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java
+ba6b73fc7c206eff57ea25ae5e08ee96932a053162f7314f75fd98eabff10e2f  valence/examples/survival_compat.rs

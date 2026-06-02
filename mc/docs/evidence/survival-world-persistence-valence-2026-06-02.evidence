@@ -1,0 +1,10 @@
+row=survival-world-persistence-restart
+backend=valence
+revision_status=clean
+child_revision=d6fddd786eaf3da44826285a4c1f7155ffd3988e
+metric.pre_restart_mutation=block=Dirt position=24,64,0 persisted_before=false persisted_after=true
+metric.clean_shutdown=storage=isolated marker=written
+metric.backend_restart=method=controlled_reload storage=isolated
+metric.reconnect=session=restart
+metric.post_restart_observation=block=Dirt position=24,64,0 persisted=true
+metric.server_persistence_state=block=Dirt position=24,64,0 pre_mutation=true clean_shutdown=true backend_restart=true post_observed=true dirty_reuse=false

@@ -1,0 +1,3 @@
+evidence manifest self-test ok: positive and negative fixtures exercised
+evidence manifests ok: 291 manifests, 1755 entries, 92 receipts scanned
+exit_status=0

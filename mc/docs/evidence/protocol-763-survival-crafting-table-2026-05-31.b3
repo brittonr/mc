@@ -2,7 +2,7 @@
 9c1ab8ce22b40dc25bb9136e9364fbdec018235394d4ce1b3fbaa1f636075bc5  docs/evidence/protocol-763-survival-crafting-table-2026-05-31.checker.log
 22caafb551667aa870a97eff74485ce57698c10368ff823267cb2b9aa2017546  docs/evidence/protocol-763-survival-crafting-table-validation-2026-05-31.run.log
 31ae7529b247df6b1681becb2d3f9ff31b4951bc6120176a6e031d289860e0ba  docs/evidence/protocol-763-survival-crafting-table-postreview-2026-05-31.run.log
-9c7297a17202e440c72f0f00530aa0b2b73462b4e3d977f93af4cba5a7a5f993  tools/check_survival_coverage_matrix.rs
+d0a511ca262e1ca3fd8a315ba1b1b060edeff08e138cfb1b59bcacf6de32d8fa  tools/check_survival_coverage_matrix.rs
 710f64a04451a62604d17a78cc84f3e2db84ec3d7034b7feaa149b1e8af57a15  docs/evidence/protocol-763-survival-crafting-table-paper-2026-05-31.receipt.json
 3b73de5a559f9665510e7d540f3923c234aa502b90e3e3c903e21e75f47fa0f2  docs/evidence/protocol-763-survival-crafting-table-paper-2026-05-31.client.log
 92b355166cf9028cc3c477f6b5c854a696a27085bbd8e804f45ac10f3da73adf  docs/evidence/protocol-763-survival-crafting-table-paper-2026-05-31.server.log

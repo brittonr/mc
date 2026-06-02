@@ -2,7 +2,7 @@
 46c0d6c274decb42f1925d1099e55f50b7bc8624a0081d495ed5f509de70bfda  docs/evidence/survival-mob-drop-cairn-gates-2026-06-02.run.log
 f95317062841bacaa9f0d3f325154eabe892790da342ddbce84d94eece224f1b  docs/evidence/survival-mob-drop-cairn-gates-2026-06-02.b3
 043475e08d2b271ffb2a4deb19647d2015e245e45656fd81cee60947ea02bdff  docs/evidence/survival-mob-drop-matrix-promotion-2026-06-02.run.log
-61eca9b4f6041db1067a28e238f87375e0645e60c5509b478ae9c243f40e85da  docs/evidence/survival-mob-drop-matrix-promotion-2026-06-02.b3
+c95aeec82bdd63fca4647456f7026fa01624e87b5e8d9eec44f2d96235d4ee02  docs/evidence/survival-mob-drop-matrix-promotion-2026-06-02.b3
 ebe04fe78b4181ea172ff586a4649d0de779193208910c2af17619dbd4407bf9  cairn/archive/1970-01-01-survival-mob-drop-parity/tasks.md
 29dda72e83087ed6371653cb5107e55c41ab900ab095beb2ba563ffd0c3d7647  tools/check_cairn_task_evidence.rs
 0bdeccbb4b0d9e9474cdcb01fa1be219208865a9727e6b2c1b7f9e5d48d624c9  tools/check_evidence_manifests.rs
