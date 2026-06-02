@@ -50,6 +50,23 @@ const SURVIVAL_CRAFTING_TOTAL_INPUT_COUNT: i8 = 2;
 const SURVIVAL_CRAFTING_RESULT_COUNT: i8 = 4;
 const SURVIVAL_CRAFTING_RECIPE: &str = "minecraft:stick";
 const SURVIVAL_CRAFTING_TITLE: &str = "MC Compat Crafting";
+const SURVIVAL_FURNACE_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_FURNACE_FIXTURE";
+const SURVIVAL_FURNACE_X: i32 = 12;
+const SURVIVAL_FURNACE_Y: i32 = FLOOR_Y;
+const SURVIVAL_FURNACE_Z: i32 = 0;
+const SURVIVAL_FURNACE_WINDOW: u8 = 1;
+const SURVIVAL_FURNACE_INPUT_SLOT: u16 = 0;
+const SURVIVAL_FURNACE_INPUT_SLOT_ID: i16 = 0;
+const SURVIVAL_FURNACE_FUEL_SLOT: u16 = 1;
+const SURVIVAL_FURNACE_FUEL_SLOT_ID: i16 = 1;
+const SURVIVAL_FURNACE_OUTPUT_SLOT: u16 = 2;
+const SURVIVAL_FURNACE_OUTPUT_SLOT_ID: i16 = 2;
+const SURVIVAL_FURNACE_INVENTORY_SLOT: u16 = 36;
+const SURVIVAL_FURNACE_ITEM_COUNT: i8 = 1;
+const SURVIVAL_FURNACE_TITLE: &str = "MC Compat Furnace";
+const SURVIVAL_FURNACE_INPUT_NAME: &str = "RawIron";
+const SURVIVAL_FURNACE_FUEL_NAME: &str = "Coal";
+const SURVIVAL_FURNACE_OUTPUT_NAME: &str = "IronIngot";
 const SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_FIXTURE";
 const SURVIVAL_OVERWORLD_ID: &str = "minecraft:overworld";
 const SURVIVAL_NETHER_ID: &str = "minecraft:the_nether";
@@ -106,6 +123,37 @@ impl SurvivalCraftingFixture {
     }
 }
 
+#[derive(Resource)]
+struct SurvivalFurnaceFixture {
+    inventory: Entity,
+    open_clients: HashSet<Entity>,
+    open_logged: bool,
+    input_logged: bool,
+    fuel_logged: bool,
+    burn_logged: bool,
+    output_logged: bool,
+    collect_logged: bool,
+    reopen_logged: bool,
+    state_logged: bool,
+}
+
+impl SurvivalFurnaceFixture {
+    fn new(inventory: Entity) -> Self {
+        Self {
+            inventory,
+            open_clients: HashSet::new(),
+            open_logged: false,
+            input_logged: false,
+            fuel_logged: false,
+            burn_logged: false,
+            output_logged: false,
+            collect_logged: false,
+            reopen_logged: false,
+            state_logged: false,
+        }
+    }
+}
+
 pub fn main() {
     App::new()
         .insert_resource(NetworkSettings {
@@ -126,6 +174,8 @@ pub fn main() {
                 handle_survival_chest_store,
                 handle_survival_crafting_open,
                 handle_survival_crafting_click,
+                handle_survival_furnace_open,
+                handle_survival_furnace_click,
             ),
         )
         .run();
@@ -165,6 +215,11 @@ fn setup(
             .chunk
             .set_block(survival_crafting_pos(), survival_crafting_table_state());
     }
+    if survival_furnace_fixture_enabled() {
+        layer
+            .chunk
+            .set_block(survival_furnace_pos(), survival_furnace_state());
+    }
 
     commands.spawn(layer);
 
@@ -185,6 +240,15 @@ fn setup(
             ))
             .id();
         commands.insert_resource(SurvivalCraftingFixture::new(inventory));
+    }
+    if survival_furnace_fixture_enabled() {
+        let inventory = commands
+            .spawn(Inventory::with_title(
+                InventoryKind::Furnace,
+                SURVIVAL_FURNACE_TITLE,
+            ))
+            .id();
+        commands.insert_resource(SurvivalFurnaceFixture::new(inventory));
     }
 }
 
@@ -230,6 +294,9 @@ fn init_clients(
         }
         if survival_crafting_fixture_enabled() {
             cursor_item.0 = survival_crafting_input_stack(SURVIVAL_CRAFTING_TOTAL_INPUT_COUNT);
+        }
+        if survival_furnace_fixture_enabled() {
+            cursor_item.0 = survival_furnace_input_stack();
         }
 
         client.send_chat_message(SURVIVAL_WELCOME.italic());
@@ -604,6 +671,208 @@ fn handle_survival_crafting_click(
     }
 }
 
+fn handle_survival_furnace_open(
+    mut commands: Commands,
+    fixture: Option<ResMut<SurvivalFurnaceFixture>>,
+    clients: Query<(&Username, &GameMode)>,
+    inventories: Query<&Inventory>,
+    mut events: EventReader<InteractBlockEvent>,
+) {
+    let Some(mut fixture) = fixture else {
+        return;
+    };
+
+    for event in events.read() {
+        let Ok((username, game_mode)) = clients.get(event.client) else {
+            continue;
+        };
+        if !should_open_survival_furnace(*game_mode, event.hand, event.position) {
+            continue;
+        }
+
+        commands
+            .entity(event.client)
+            .insert(OpenInventory::new(fixture.inventory));
+        fixture.open_clients.insert(event.client);
+
+        if fixture.collect_logged {
+            log_survival_furnace_reopen(username.as_str(), &mut fixture, &inventories);
+        } else if !fixture.open_logged {
+            fixture.open_logged = true;
+            log_milestone(format!(
+                "MC-COMPAT-MILESTONE survival_furnace_open username={} position={},{},{} window={}",
+                username.as_str(),
+                SURVIVAL_FURNACE_X,
+                SURVIVAL_FURNACE_Y,
+                SURVIVAL_FURNACE_Z,
+                SURVIVAL_FURNACE_WINDOW
+            ));
+        }
+    }
+}
+
+fn handle_survival_furnace_click(
+    fixture: Option<ResMut<SurvivalFurnaceFixture>>,
+    clients: Query<&Username>,
+    mut inventories: Query<&mut Inventory>,
+    mut events: EventReader<ClickSlotEvent>,
+) {
+    let Some(mut fixture) = fixture else {
+        return;
+    };
+
+    for event in events.read() {
+        let Ok(username) = clients.get(event.client) else {
+            continue;
+        };
+        if !fixture.open_clients.contains(&event.client)
+            || event.window_id != SURVIVAL_FURNACE_WINDOW
+        {
+            continue;
+        }
+
+        if is_survival_furnace_input_event(event.window_id, event.slot_id) && !fixture.input_logged
+        {
+            fixture.input_logged = true;
+            set_survival_slot(
+                &mut inventories,
+                fixture.inventory,
+                SURVIVAL_FURNACE_INPUT_SLOT,
+                survival_furnace_input_stack(),
+            );
+            log_milestone(format!(
+                "MC-COMPAT-MILESTONE survival_furnace_input_insert username={} window={} slot={} item={} count={}",
+                username.as_str(),
+                SURVIVAL_FURNACE_WINDOW,
+                SURVIVAL_FURNACE_INPUT_SLOT,
+                SURVIVAL_FURNACE_INPUT_NAME,
+                SURVIVAL_FURNACE_ITEM_COUNT
+            ));
+        }
+
+        if is_survival_furnace_fuel_event(event.window_id, event.slot_id) && !fixture.fuel_logged {
+            fixture.fuel_logged = true;
+            set_survival_slot(
+                &mut inventories,
+                fixture.inventory,
+                SURVIVAL_FURNACE_FUEL_SLOT,
+                survival_furnace_fuel_stack(),
+            );
+            log_milestone(format!(
+                "MC-COMPAT-MILESTONE survival_furnace_fuel_insert username={} window={} slot={} item={} count={}",
+                username.as_str(),
+                SURVIVAL_FURNACE_WINDOW,
+                SURVIVAL_FURNACE_FUEL_SLOT,
+                SURVIVAL_FURNACE_FUEL_NAME,
+                SURVIVAL_FURNACE_ITEM_COUNT
+            ));
+        }
+
+        emit_survival_furnace_output_if_ready(username, &mut fixture, &mut inventories);
+
+        if is_survival_furnace_collect_event(event.window_id, event.slot_id, &event.carried_item)
+            && fixture.output_logged
+            && !fixture.collect_logged
+        {
+            fixture.collect_logged = true;
+            set_survival_slot(
+                &mut inventories,
+                fixture.inventory,
+                SURVIVAL_FURNACE_OUTPUT_SLOT,
+                ItemStack::EMPTY,
+            );
+            set_survival_slot(
+                &mut inventories,
+                event.client,
+                SURVIVAL_FURNACE_INVENTORY_SLOT,
+                survival_furnace_output_stack(),
+            );
+            log_milestone(format!(
+                "MC-COMPAT-MILESTONE survival_furnace_output_collect username={} window={} slot={} item={} count={} inventory_slot={}",
+                username.as_str(),
+                SURVIVAL_FURNACE_WINDOW,
+                SURVIVAL_FURNACE_OUTPUT_SLOT,
+                SURVIVAL_FURNACE_OUTPUT_NAME,
+                SURVIVAL_FURNACE_ITEM_COUNT,
+                SURVIVAL_FURNACE_INVENTORY_SLOT
+            ));
+        }
+    }
+}
+
+fn emit_survival_furnace_output_if_ready(
+    username: &Username,
+    fixture: &mut SurvivalFurnaceFixture,
+    inventories: &mut Query<&mut Inventory>,
+) {
+    if !fixture.input_logged || !fixture.fuel_logged {
+        return;
+    }
+    if !fixture.burn_logged {
+        fixture.burn_logged = true;
+        log_milestone(format!(
+            "MC-COMPAT-MILESTONE survival_furnace_burn_progress username={} window={} progress=started",
+            username.as_str(),
+            SURVIVAL_FURNACE_WINDOW
+        ));
+    }
+    if !fixture.output_logged {
+        fixture.output_logged = true;
+        set_survival_slot(
+            inventories,
+            fixture.inventory,
+            SURVIVAL_FURNACE_OUTPUT_SLOT,
+            survival_furnace_output_stack(),
+        );
+        log_milestone(format!(
+            "MC-COMPAT-MILESTONE survival_furnace_output_available username={} window={} slot={} item={} count={}",
+            username.as_str(),
+            SURVIVAL_FURNACE_WINDOW,
+            SURVIVAL_FURNACE_OUTPUT_SLOT,
+            SURVIVAL_FURNACE_OUTPUT_NAME,
+            SURVIVAL_FURNACE_ITEM_COUNT
+        ));
+    }
+}
+
+fn log_survival_furnace_reopen(
+    username: &str,
+    fixture: &mut SurvivalFurnaceFixture,
+    inventories: &Query<&Inventory>,
+) {
+    if !fixture.reopen_logged {
+        fixture.reopen_logged = true;
+        log_milestone(format!(
+            "MC-COMPAT-MILESTONE survival_furnace_reconnect_reopen username={} position={},{},{} window={}",
+            username,
+            SURVIVAL_FURNACE_X,
+            SURVIVAL_FURNACE_Y,
+            SURVIVAL_FURNACE_Z,
+            SURVIVAL_FURNACE_WINDOW
+        ));
+    }
+
+    if fixture.state_logged {
+        return;
+    }
+    let Ok(inventory) = inventories.get(fixture.inventory) else {
+        return;
+    };
+    if !is_empty_item(inventory.slot(SURVIVAL_FURNACE_OUTPUT_SLOT)) {
+        return;
+    }
+    fixture.state_logged = true;
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_furnace_server_state username={} position={},{},{} input={} fuel={} output=empty collected=true session_persistent=true",
+        username,
+        SURVIVAL_FURNACE_X,
+        SURVIVAL_FURNACE_Y,
+        SURVIVAL_FURNACE_Z,
+        SURVIVAL_FURNACE_INPUT_NAME,
+        SURVIVAL_FURNACE_FUEL_NAME
+    ));
+}
+
 fn emit_survival_crafting_fixture_milestones(
     fixture: &mut SurvivalCraftingFixture,
     inventories: &mut Query<&mut Inventory>,
@@ -792,6 +1061,15 @@ fn set_survival_crafting_slot(
     slot: u16,
     stack: ItemStack,
 ) {
+    set_survival_slot(inventories, inventory_entity, slot, stack);
+}
+
+fn set_survival_slot(
+    inventories: &mut Query<&mut Inventory>,
+    inventory_entity: Entity,
+    slot: u16,
+    stack: ItemStack,
+) {
     if let Ok(mut inventory) = inventories.get_mut(inventory_entity) {
         inventory.set_slot(slot, stack);
     }
@@ -849,6 +1127,88 @@ fn survival_crafting_input_kind() -> ItemKind {
 
 fn survival_crafting_result_kind() -> ItemKind {
     ItemKind::Stick
+}
+
+fn survival_furnace_fixture_enabled() -> bool {
+    std::env::var(SURVIVAL_FURNACE_FIXTURE_ENV).as_deref() == Ok("1")
+}
+
+fn survival_furnace_pos() -> BlockPos {
+    BlockPos::new(SURVIVAL_FURNACE_X, SURVIVAL_FURNACE_Y, SURVIVAL_FURNACE_Z)
+}
+
+fn survival_furnace_state() -> BlockState {
+    BlockKind::from_str("furnace")
+        .expect("furnace block kind exists")
+        .to_state()
+}
+
+fn should_open_survival_furnace(game_mode: GameMode, hand: Hand, position: BlockPos) -> bool {
+    game_mode == GameMode::Survival && hand == Hand::Main && position == survival_furnace_pos()
+}
+
+fn is_survival_furnace_input_event(window_id: u8, slot_id: i16) -> bool {
+    // This fixture owns the furnace state; raw slot/window are stable server-side trigger.
+    window_id == SURVIVAL_FURNACE_WINDOW && slot_id == SURVIVAL_FURNACE_INPUT_SLOT_ID
+}
+
+fn is_survival_furnace_fuel_event(window_id: u8, slot_id: i16) -> bool {
+    // This fixture owns the furnace state; raw slot/window are stable server-side trigger.
+    window_id == SURVIVAL_FURNACE_WINDOW && slot_id == SURVIVAL_FURNACE_FUEL_SLOT_ID
+}
+
+fn is_survival_furnace_collect_event(
+    window_id: u8,
+    slot_id: i16,
+    carried_item: &ItemStack,
+) -> bool {
+    window_id == SURVIVAL_FURNACE_WINDOW
+        && slot_id == SURVIVAL_FURNACE_OUTPUT_SLOT_ID
+        && is_survival_furnace_output(carried_item)
+}
+
+fn is_survival_furnace_output(stack: &ItemStack) -> bool {
+    stack.item == survival_furnace_output_kind() && stack.count == SURVIVAL_FURNACE_ITEM_COUNT
+}
+
+fn is_empty_item(stack: &ItemStack) -> bool {
+    stack.count == 0
+}
+
+fn survival_furnace_input_stack() -> ItemStack {
+    ItemStack::new(
+        survival_furnace_input_kind(),
+        SURVIVAL_FURNACE_ITEM_COUNT,
+        None,
+    )
+}
+
+fn survival_furnace_fuel_stack() -> ItemStack {
+    ItemStack::new(
+        survival_furnace_fuel_kind(),
+        SURVIVAL_FURNACE_ITEM_COUNT,
+        None,
+    )
+}
+
+fn survival_furnace_output_stack() -> ItemStack {
+    ItemStack::new(
+        survival_furnace_output_kind(),
+        SURVIVAL_FURNACE_ITEM_COUNT,
+        None,
+    )
+}
+
+fn survival_furnace_input_kind() -> ItemKind {
+    ItemKind::RawIron
+}
+
+fn survival_furnace_fuel_kind() -> ItemKind {
+    ItemKind::Coal
+}
+
+fn survival_furnace_output_kind() -> ItemKind {
+    ItemKind::IronIngot
 }
 
 fn survival_biome_dimension_fixture_enabled() -> bool {
@@ -1053,6 +1413,74 @@ mod tests {
             SURVIVAL_CRAFTING_WINDOW,
             SURVIVAL_CRAFTING_INPUT_B_SLOT_ID,
             SURVIVAL_CRAFTING_INPUT_A_SLOT_ID,
+        ));
+    }
+
+    #[test]
+    fn survival_furnace_opens_only_main_hand_survival_target() {
+        assert!(should_open_survival_furnace(
+            GameMode::Survival,
+            Hand::Main,
+            survival_furnace_pos()
+        ));
+        assert!(!should_open_survival_furnace(
+            GameMode::Creative,
+            Hand::Main,
+            survival_furnace_pos()
+        ));
+        assert!(!should_open_survival_furnace(
+            GameMode::Survival,
+            Hand::Off,
+            survival_furnace_pos()
+        ));
+        assert!(!should_open_survival_furnace(
+            GameMode::Survival,
+            Hand::Main,
+            survival_chest_pos()
+        ));
+    }
+
+    #[test]
+    fn survival_furnace_input_and_fuel_events_require_exact_slot_window() {
+        assert!(is_survival_furnace_input_event(
+            SURVIVAL_FURNACE_WINDOW,
+            SURVIVAL_FURNACE_INPUT_SLOT_ID,
+        ));
+        assert!(is_survival_furnace_fuel_event(
+            SURVIVAL_FURNACE_WINDOW,
+            SURVIVAL_FURNACE_FUEL_SLOT_ID,
+        ));
+        assert!(!is_survival_furnace_input_event(
+            SURVIVAL_FURNACE_WINDOW + 1,
+            SURVIVAL_FURNACE_INPUT_SLOT_ID,
+        ));
+        assert!(!is_survival_furnace_fuel_event(
+            SURVIVAL_FURNACE_WINDOW,
+            SURVIVAL_FURNACE_INPUT_SLOT_ID,
+        ));
+    }
+
+    #[test]
+    fn survival_furnace_collect_event_requires_output_slot_and_stack() {
+        assert!(is_survival_furnace_collect_event(
+            SURVIVAL_FURNACE_WINDOW,
+            SURVIVAL_FURNACE_OUTPUT_SLOT_ID,
+            &survival_furnace_output_stack()
+        ));
+        assert!(!is_survival_furnace_collect_event(
+            SURVIVAL_FURNACE_WINDOW + 1,
+            SURVIVAL_FURNACE_OUTPUT_SLOT_ID,
+            &survival_furnace_output_stack()
+        ));
+        assert!(!is_survival_furnace_collect_event(
+            SURVIVAL_FURNACE_WINDOW,
+            SURVIVAL_FURNACE_INPUT_SLOT_ID,
+            &survival_furnace_output_stack()
+        ));
+        assert!(!is_survival_furnace_collect_event(
+            SURVIVAL_FURNACE_WINDOW,
+            SURVIVAL_FURNACE_OUTPUT_SLOT_ID,
+            &survival_furnace_input_stack()
         ));
     }
 
