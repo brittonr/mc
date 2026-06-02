@@ -224,6 +224,29 @@ const SURVIVAL_REDSTONE_TOGGLE_CURSOR_CENTER: f32 = 0.5;
 const SURVIVAL_REDSTONE_TOGGLE_CURSOR_TOP: f32 = 1.0;
 const SURVIVAL_REDSTONE_TOGGLE_ON_SEQUENCE: i32 = 911;
 const SURVIVAL_REDSTONE_TOGGLE_OFF_SEQUENCE: i32 = 912;
+const SURVIVAL_WORLD_PERSISTENCE_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_PROBE";
+const SURVIVAL_WORLD_PERSISTENCE_SESSION_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_SESSION";
+const SURVIVAL_WORLD_PERSISTENCE_FIRST_SESSION: u32 = 1;
+const SURVIVAL_WORLD_PERSISTENCE_RESTART_SESSION: u32 = 2;
+const SURVIVAL_WORLD_PERSISTENCE_POSITION_TICK: u32 = 60;
+const SURVIVAL_WORLD_PERSISTENCE_MUTATION_TICK: u32 = 100;
+const SURVIVAL_WORLD_PERSISTENCE_PLAYER_X: f64 = 24.5;
+const SURVIVAL_WORLD_PERSISTENCE_PLAYER_Y: f64 = 65.0;
+const SURVIVAL_WORLD_PERSISTENCE_PLAYER_Z: f64 = -1.5;
+const SURVIVAL_WORLD_PERSISTENCE_TARGET_YAW: f32 = 0.0;
+const SURVIVAL_WORLD_PERSISTENCE_TARGET_PITCH: f32 = 30.0;
+const SURVIVAL_WORLD_PERSISTENCE_BLOCK_NAME: &str = "Dirt";
+const SURVIVAL_WORLD_PERSISTENCE_X: i32 = 24;
+const SURVIVAL_WORLD_PERSISTENCE_Y: i32 = 64;
+const SURVIVAL_WORLD_PERSISTENCE_Z: i32 = 0;
+const SURVIVAL_WORLD_PERSISTENCE_PLACE_BASE_Y: i32 = 63;
+const SURVIVAL_WORLD_PERSISTENCE_FACE_UP: i32 = 1;
+const SURVIVAL_WORLD_PERSISTENCE_MAIN_HAND: i32 = 0;
+const SURVIVAL_WORLD_PERSISTENCE_HOTBAR_SLOT: i16 = 0;
+const SURVIVAL_WORLD_PERSISTENCE_INVENTORY_SLOT: i16 = 36;
+const SURVIVAL_WORLD_PERSISTENCE_CURSOR_CENTER: f32 = 0.5;
+const SURVIVAL_WORLD_PERSISTENCE_CURSOR_TOP: f32 = 1.0;
+const SURVIVAL_WORLD_PERSISTENCE_SEQUENCE: i32 = 933;
 const CHUNK_SECTION_WIDTH_LOG2: i32 = 4;
 const SURVIVAL_BIOME_DIMENSION_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_PROBE";
 const SURVIVAL_OVERWORLD_ID: &str = "minecraft:overworld";
@@ -278,6 +301,17 @@ fn survival_furnace_probe_session_from_env() -> u32 {
                 || *session == SURVIVAL_FURNACE_REOPEN_SESSION
         })
         .unwrap_or(SURVIVAL_FURNACE_FIRST_SESSION)
+}
+
+fn survival_world_persistence_probe_session_from_env() -> u32 {
+    std::env::var(SURVIVAL_WORLD_PERSISTENCE_SESSION_ENV)
+        .ok()
+        .and_then(|raw| raw.trim().parse::<u32>().ok())
+        .filter(|session| {
+            *session == SURVIVAL_WORLD_PERSISTENCE_FIRST_SESSION
+                || *session == SURVIVAL_WORLD_PERSISTENCE_RESTART_SESSION
+        })
+        .unwrap_or(SURVIVAL_WORLD_PERSISTENCE_FIRST_SESSION)
 }
 
 fn survival_crafting_table_position() -> Position {
@@ -398,6 +432,12 @@ fn survival_redstone_toggle_output_position_matches(location: Position) -> bool 
         && location.z == SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Z
 }
 
+fn survival_world_persistence_position_matches(location: Position) -> bool {
+    location.x == SURVIVAL_WORLD_PERSISTENCE_X
+        && location.y == SURVIVAL_WORLD_PERSISTENCE_Y
+        && location.z == SURVIVAL_WORLD_PERSISTENCE_Z
+}
+
 fn should_log_survival_crafting_inventory_slot(
     window_id: u8,
     crafting_window_id: u8,
@@ -502,6 +542,8 @@ pub struct Server {
     survival_furnace_probe_session: u32,
     survival_hunger_food_probe_enabled: bool,
     survival_redstone_toggle_probe_enabled: bool,
+    survival_world_persistence_probe_enabled: bool,
+    survival_world_persistence_probe_session: u32,
     survival_biome_dimension_probe_enabled: bool,
     equipment_probe_enabled: bool,
     projectile_probe_enabled: bool,
@@ -583,6 +625,11 @@ pub struct Server {
     survival_redstone_toggle_output_on_seen: bool,
     survival_redstone_toggle_return_input_sent: bool,
     survival_redstone_toggle_output_off_seen: bool,
+    survival_world_persistence_position_sent: bool,
+    survival_world_persistence_mutation_sent: bool,
+    survival_world_persistence_pre_restart_seen: bool,
+    survival_world_persistence_reconnect_sent: bool,
+    survival_world_persistence_post_restart_seen: bool,
     inventory_probe_click_sent: bool,
     inventory_probe_container_click_sent: bool,
     inventory_probe_container_id: u8,
@@ -1140,6 +1187,13 @@ impl Server {
             )
             .map(|value| value != "0")
             .unwrap_or(false),
+            survival_world_persistence_probe_enabled: std::env::var(
+                SURVIVAL_WORLD_PERSISTENCE_PROBE_ENV,
+            )
+            .map(|value| value != "0")
+            .unwrap_or(false),
+            survival_world_persistence_probe_session:
+                survival_world_persistence_probe_session_from_env(),
             survival_biome_dimension_probe_enabled: std::env::var(
                 SURVIVAL_BIOME_DIMENSION_PROBE_ENV,
             )
@@ -1232,6 +1286,11 @@ impl Server {
             survival_redstone_toggle_output_on_seen: false,
             survival_redstone_toggle_return_input_sent: false,
             survival_redstone_toggle_output_off_seen: false,
+            survival_world_persistence_position_sent: false,
+            survival_world_persistence_mutation_sent: false,
+            survival_world_persistence_pre_restart_seen: false,
+            survival_world_persistence_reconnect_sent: false,
+            survival_world_persistence_post_restart_seen: false,
             inventory_probe_click_sent: false,
             inventory_probe_container_click_sent: false,
             inventory_probe_container_id: 0,
@@ -1358,6 +1417,7 @@ impl Server {
             && !self.survival_hunger_food_probe_enabled
             && !self.survival_mob_drop_probe_enabled
             && !self.survival_redstone_toggle_probe_enabled
+            && !self.survival_world_persistence_probe_enabled
         {
             return;
         }
@@ -1810,6 +1870,7 @@ impl Server {
         self.apply_mc_compat_survival_hunger_food_probe();
         self.apply_mc_compat_survival_mob_drop_probe(player);
         self.apply_mc_compat_survival_redstone_toggle_probe(player);
+        self.apply_mc_compat_survival_world_persistence_probe(player);
 
         if self.inventory_probe_enabled && self.active_probe_ticks == 520 {
             info!("MC-COMPAT-MILESTONE inventory_probe_select_hotbar_slot slot=0");
@@ -3756,6 +3817,121 @@ impl Server {
         }
     }
 
+    fn apply_mc_compat_survival_world_persistence_probe(&mut self, player: ecs::Entity) {
+        if !self.survival_world_persistence_probe_enabled {
+            return;
+        }
+        if self.active_probe_ticks >= SURVIVAL_WORLD_PERSISTENCE_POSITION_TICK
+            && !self.survival_world_persistence_position_sent
+        {
+            if let Some(position) = self.entities.get_component_mut(player, self.position) {
+                position.position = cgmath::Vector3::new(
+                    SURVIVAL_WORLD_PERSISTENCE_PLAYER_X,
+                    SURVIVAL_WORLD_PERSISTENCE_PLAYER_Y,
+                    SURVIVAL_WORLD_PERSISTENCE_PLAYER_Z,
+                );
+                position.moved = true;
+            }
+            self.write_packet(packet::play::serverbound::PlayerPositionLook {
+                x: SURVIVAL_WORLD_PERSISTENCE_PLAYER_X,
+                y: SURVIVAL_WORLD_PERSISTENCE_PLAYER_Y,
+                z: SURVIVAL_WORLD_PERSISTENCE_PLAYER_Z,
+                yaw: SURVIVAL_WORLD_PERSISTENCE_TARGET_YAW,
+                pitch: SURVIVAL_WORLD_PERSISTENCE_TARGET_PITCH,
+                on_ground: true,
+            });
+            info!(
+                "MC-COMPAT-MILESTONE survival_world_persistence_move_near_target x={:.1} y={:.1} z={:.1} position={},{},{} session={}",
+                SURVIVAL_WORLD_PERSISTENCE_PLAYER_X,
+                SURVIVAL_WORLD_PERSISTENCE_PLAYER_Y,
+                SURVIVAL_WORLD_PERSISTENCE_PLAYER_Z,
+                SURVIVAL_WORLD_PERSISTENCE_X,
+                SURVIVAL_WORLD_PERSISTENCE_Y,
+                SURVIVAL_WORLD_PERSISTENCE_Z,
+                self.survival_world_persistence_probe_session
+            );
+            self.survival_world_persistence_position_sent = true;
+        }
+        if self.survival_world_persistence_probe_session == SURVIVAL_WORLD_PERSISTENCE_FIRST_SESSION
+            && self.active_probe_ticks >= SURVIVAL_WORLD_PERSISTENCE_MUTATION_TICK
+            && self.survival_world_persistence_position_sent
+            && !self.survival_world_persistence_mutation_sent
+        {
+            self.write_packet(packet::play::serverbound::HeldItemChange {
+                slot: SURVIVAL_WORLD_PERSISTENCE_HOTBAR_SLOT,
+            });
+            self.write_packet(
+                packet::play::serverbound::PlayerBlockPlacement_insideblock_sequence {
+                    hand: protocol::VarInt(SURVIVAL_WORLD_PERSISTENCE_MAIN_HAND),
+                    location: Position::new(
+                        SURVIVAL_WORLD_PERSISTENCE_X,
+                        SURVIVAL_WORLD_PERSISTENCE_PLACE_BASE_Y,
+                        SURVIVAL_WORLD_PERSISTENCE_Z,
+                    ),
+                    face: protocol::VarInt(SURVIVAL_WORLD_PERSISTENCE_FACE_UP),
+                    cursor_x: SURVIVAL_WORLD_PERSISTENCE_CURSOR_CENTER,
+                    cursor_y: SURVIVAL_WORLD_PERSISTENCE_CURSOR_TOP,
+                    cursor_z: SURVIVAL_WORLD_PERSISTENCE_CURSOR_CENTER,
+                    inside_block: false,
+                    sequence: protocol::VarInt(SURVIVAL_WORLD_PERSISTENCE_SEQUENCE),
+                },
+            );
+            self.survival_world_persistence_mutation_sent = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_world_persistence_mutation_sent block={} position={},{},{} slot={} hand=main sequence={}",
+                SURVIVAL_WORLD_PERSISTENCE_BLOCK_NAME,
+                SURVIVAL_WORLD_PERSISTENCE_X,
+                SURVIVAL_WORLD_PERSISTENCE_Y,
+                SURVIVAL_WORLD_PERSISTENCE_Z,
+                SURVIVAL_WORLD_PERSISTENCE_INVENTORY_SLOT,
+                SURVIVAL_WORLD_PERSISTENCE_SEQUENCE
+            );
+        }
+    }
+
+    fn log_survival_world_persistence_block_update(&mut self, location: Position, raw_id: i32) {
+        if !self.survival_world_persistence_probe_enabled
+            || !survival_world_persistence_position_matches(location)
+        {
+            return;
+        }
+        if self.survival_world_persistence_probe_session == SURVIVAL_WORLD_PERSISTENCE_FIRST_SESSION
+            && self.survival_world_persistence_mutation_sent
+            && !self.survival_world_persistence_pre_restart_seen
+        {
+            self.survival_world_persistence_pre_restart_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_world_persistence_pre_restart_update block={} position={},{},{} raw_id={}",
+                SURVIVAL_WORLD_PERSISTENCE_BLOCK_NAME,
+                SURVIVAL_WORLD_PERSISTENCE_X,
+                SURVIVAL_WORLD_PERSISTENCE_Y,
+                SURVIVAL_WORLD_PERSISTENCE_Z,
+                raw_id
+            );
+            if !self.survival_world_persistence_reconnect_sent {
+                self.survival_world_persistence_reconnect_sent = true;
+                info!(
+                    "MC-COMPAT-MILESTONE survival_world_persistence_reconnect_sent session=restart"
+                );
+            }
+            return;
+        }
+        if self.survival_world_persistence_probe_session
+            == SURVIVAL_WORLD_PERSISTENCE_RESTART_SESSION
+            && !self.survival_world_persistence_post_restart_seen
+        {
+            self.survival_world_persistence_post_restart_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_world_persistence_post_restart_update block={} position={},{},{} raw_id={}",
+                SURVIVAL_WORLD_PERSISTENCE_BLOCK_NAME,
+                SURVIVAL_WORLD_PERSISTENCE_X,
+                SURVIVAL_WORLD_PERSISTENCE_Y,
+                SURVIVAL_WORLD_PERSISTENCE_Z,
+                raw_id
+            );
+        }
+    }
+
     fn log_survival_mob_drop_inventory_from_slot(
         &mut self,
         slot: i16,
@@ -5450,6 +5626,7 @@ impl Server {
                 .by_vanilla_id(id as usize, &self.world.modded_block_ids),
         );
         self.log_survival_redstone_toggle_block_update(location, id);
+        self.log_survival_world_persistence_block_update(location, id);
         if self.survival_probe_enabled
             && location.x == SURVIVAL_PROBE_BREAK_X
             && location.z == SURVIVAL_PROBE_BREAK_Z
@@ -5519,6 +5696,7 @@ impl Server {
                     .by_vanilla_id(block_raw_id as usize, &self.world.modded_block_ids),
             );
             self.log_survival_redstone_toggle_block_update(location, block_raw_id as i32);
+            self.log_survival_world_persistence_block_update(location, block_raw_id as i32);
         }
     }
 
@@ -5541,6 +5719,7 @@ impl Server {
                     .by_vanilla_id(record.block_id.0 as usize, &self.world.modded_block_ids),
             );
             self.log_survival_redstone_toggle_block_update(location, record.block_id.0);
+            self.log_survival_world_persistence_block_update(location, record.block_id.0);
         }
     }
 
@@ -5571,6 +5750,7 @@ impl Server {
                     .by_vanilla_id(id as usize, &self.world.modded_block_ids),
             );
             self.log_survival_redstone_toggle_block_update(location, id as i32);
+            self.log_survival_world_persistence_block_update(location, id as i32);
         }
     }
 
@@ -5647,10 +5827,11 @@ mod tests {
         survival_hunger_food_post_update_matches, survival_hunger_food_pre_update_matches,
         survival_hunger_food_slot_is_empty, survival_mob_drop_item_matches,
         survival_mob_drop_position_matches, survival_redstone_toggle_output_position_matches,
-        DEFAULT_FLAG_PROBE_REPEAT_TARGET, MAX_FLAG_PROBE_REPEAT_TARGET, PLAYER_INVENTORY_WINDOW_ID,
-        SURVIVAL_CRAFTING_INPUT_A_SLOT, SURVIVAL_CRAFTING_INPUT_COUNT,
-        SURVIVAL_CRAFTING_INPUT_ITEM_ID, SURVIVAL_CRAFTING_INVENTORY_INDEX,
-        SURVIVAL_CRAFTING_INVENTORY_SLOT, SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_INDEX,
+        survival_world_persistence_position_matches, DEFAULT_FLAG_PROBE_REPEAT_TARGET,
+        MAX_FLAG_PROBE_REPEAT_TARGET, PLAYER_INVENTORY_WINDOW_ID, SURVIVAL_CRAFTING_INPUT_A_SLOT,
+        SURVIVAL_CRAFTING_INPUT_COUNT, SURVIVAL_CRAFTING_INPUT_ITEM_ID,
+        SURVIVAL_CRAFTING_INVENTORY_INDEX, SURVIVAL_CRAFTING_INVENTORY_SLOT,
+        SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_INDEX,
         SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_SLOT, SURVIVAL_CRAFTING_RESULT_COUNT,
         SURVIVAL_CRAFTING_RESULT_ITEM_ID, SURVIVAL_CRAFTING_TABLE_X, SURVIVAL_CRAFTING_TABLE_Y,
         SURVIVAL_CRAFTING_TABLE_Z, SURVIVAL_END_ID, SURVIVAL_FURNACE_FUEL_ITEM_ID,
@@ -5667,7 +5848,8 @@ mod tests {
         SURVIVAL_MOB_DROP_TARGET_X, SURVIVAL_MOB_DROP_TARGET_Y, SURVIVAL_MOB_DROP_TARGET_Z,
         SURVIVAL_NETHER_ID, SURVIVAL_OVERWORLD_ID, SURVIVAL_REDSTONE_TOGGLE_OUTPUT_X,
         SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Y, SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Z,
-        SURVIVAL_UNKNOWN_ENVIRONMENT_ID,
+        SURVIVAL_UNKNOWN_ENVIRONMENT_ID, SURVIVAL_WORLD_PERSISTENCE_X,
+        SURVIVAL_WORLD_PERSISTENCE_Y, SURVIVAL_WORLD_PERSISTENCE_Z,
     };
     use crate::protocol::{self, packet};
     use crate::shared::Position;
@@ -6023,5 +6205,22 @@ mod tests {
         assert!(!should_log_survival_furnace_inventory_index(
             SURVIVAL_FURNACE_OUTPUT_ITEM_ID as usize
         ));
+    }
+
+    #[test]
+    fn survival_world_persistence_position_match_rejects_wrong_target() {
+        let expected = Position::new(
+            SURVIVAL_WORLD_PERSISTENCE_X,
+            SURVIVAL_WORLD_PERSISTENCE_Y,
+            SURVIVAL_WORLD_PERSISTENCE_Z,
+        );
+        let wrong = Position::new(
+            SURVIVAL_WORLD_PERSISTENCE_X,
+            SURVIVAL_WORLD_PERSISTENCE_Y,
+            SURVIVAL_WORLD_PERSISTENCE_Z + 1,
+        );
+
+        assert!(survival_world_persistence_position_matches(expected));
+        assert!(!survival_world_persistence_position_matches(wrong));
     }
 }
