@@ -1,0 +1,161 @@
+$ nix develop --no-update-lock-file -c cargo test --manifest-path tools/mc-compat-runner/Cargo.toml survival -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 5 tests
+test tests::survival_break_place_pickup_scenario_tracks_client_and_server_evidence ... ok
+test tests::survival_crafting_table_scenario_tracks_client_and_server_evidence ... ok
+test tests::survival_chest_persistence_scenario_tracks_client_and_server_evidence ... ok
+test tests::survival_furnace_persistence_scenario_tracks_client_and_server_evidence ... ok
+test tests::survival_hunger_food_scenario_tracks_client_and_server_evidence ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 91 filtered out; finished in 0.00s
+
+exit_status=0
+$ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test server::tests::survival -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+warning: `/home/brittonr/git/mc/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: file `/home/brittonr/git/mc/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1052:36
+     |
+1052 |         offsets |protocol_version| (instrument.offsets(protocol_version)
+     |                                    ^
+1053 |             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 })),
+     |                                                                                                    ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1052 ~         offsets |protocol_version| instrument.offsets(protocol_version)
+1053 ~             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+     |
+
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1407:36
+     |
+1407 |         offsets |protocol_version| (variant.offsets(protocol_version)),
+     |                                    ^                                 ^
+     |
+help: remove these parentheses
+     |
+1407 -         offsets |protocol_version| (variant.offsets(protocol_version)),
+1407 +         offsets |protocol_version| variant.offsets(protocol_version),
+     |
+
+warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:102:21
+    |
+102 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+252 | / define_elements! {
+253 | |     Image,
+254 | |     Batch,
+255 | |     Text,
+...   |
+258 | |     TextBox,
+259 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+102 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib) generated 2 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (lib test) generated 2 warnings (2 duplicates)
+warning: `stevenarella` (bin "stevenarella" test) generated 2 warnings (2 duplicates)
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.24s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-74a8925fb38c5fbd)
+
+running 15 tests
+test server::tests::survival_biome_dimension_environment_prefers_world_identifier ... ok
+test server::tests::survival_biome_dimension_environment_rejects_unknown_identifiers ... ok
+test server::tests::survival_crafting_fixture_positions_are_named ... ok
+test server::tests::survival_crafting_inventory_indices_accept_player_and_open_mirror ... ok
+test server::tests::survival_crafting_inventory_updates_use_player_inventory_window ... ok
+test server::tests::survival_crafting_result_match_rejects_wrong_item_or_count ... ok
+test server::tests::survival_crafting_stacks_use_contract_items ... ok
+test server::tests::survival_furnace_fixture_positions_are_named ... ok
+test server::tests::survival_furnace_inventory_indices_accept_player_and_open_mirror ... ok
+test server::tests::survival_furnace_inventory_updates_accept_player_and_open_mirror_slots ... ok
+test server::tests::survival_furnace_output_match_rejects_wrong_item_or_count ... ok
+test server::tests::survival_furnace_stacks_use_contract_items ... ok
+test server::tests::survival_hunger_food_health_updates_match_exact_contract ... ok
+test server::tests::survival_hunger_food_slot_empty_requires_explicit_empty_slot ... ok
+test server::tests::survival_hunger_food_stack_match_accepts_only_contract_bread ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 100 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-4dc39b26672098bf)
+
+running 15 tests
+test server::tests::survival_biome_dimension_environment_prefers_world_identifier ... ok
+test server::tests::survival_biome_dimension_environment_rejects_unknown_identifiers ... ok
+test server::tests::survival_crafting_inventory_indices_accept_player_and_open_mirror ... ok
+test server::tests::survival_crafting_fixture_positions_are_named ... ok
+test server::tests::survival_crafting_inventory_updates_use_player_inventory_window ... ok
+test server::tests::survival_crafting_result_match_rejects_wrong_item_or_count ... ok
+test server::tests::survival_crafting_stacks_use_contract_items ... ok
+test server::tests::survival_furnace_fixture_positions_are_named ... ok
+test server::tests::survival_furnace_inventory_indices_accept_player_and_open_mirror ... ok
+test server::tests::survival_furnace_inventory_updates_accept_player_and_open_mirror_slots ... ok
+test server::tests::survival_furnace_output_match_rejects_wrong_item_or_count ... ok
+test server::tests::survival_furnace_stacks_use_contract_items ... ok
+test server::tests::survival_hunger_food_health_updates_match_exact_contract ... ok
+test server::tests::survival_hunger_food_slot_empty_requires_explicit_empty_slot ... ok
+test server::tests::survival_hunger_food_stack_match_accepts_only_contract_bread ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 100 filtered out; finished in 0.00s
+
+exit_status=0
+$ nix run --no-update-lock-file .#mc-compat-smoke -- --dry-run --scenario survival-hunger-food --receipt /home/brittonr/git/mc/target/survival-hunger-food-dry-run.json
+[mc-compat] plan: build client, start Valence server, wait for protocol 758, run client under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] using existing Valence worktree /tmp/valence-compat-758
+[mc-compat] starting Valence 8ad9c85 example 'terrain' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-758
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 758
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'survival-hunger-food' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt /home/brittonr/git/mc/target/survival-hunger-food-dry-run.json
+exit_status=0
+$ grep -F "name": "survival-hunger-food" /home/brittonr/git/mc/target/survival-hunger-food-dry-run.json
+    "name": "survival-hunger-food",
+exit_status=0
+$ nix build --no-update-lock-file --no-link -L path:.#checks.x86_64-linux.mc-compat-scenario-manifest
+this derivation will be built:
+  /nix/store/p83c2yhq934mr31gypshv2kwg4phl0g8-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/p83c2yhq934mr31gypshv2kwg4phl0g8-mc-compat-scenario-manifest.drv'...
+exit_status=0

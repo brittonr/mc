@@ -269,6 +269,36 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         migration_state: "substring-fallback",
     },
     GeneratedScenarioRow {
+        name: "survival-hunger-food",
+        aliases: &["survival-hunger-food"],
+        client_milestones: &[
+            "protocol_detected",
+            "join_game",
+            "render_tick",
+            "survival_hunger_food_item_seen",
+            "survival_hunger_food_pre_seen",
+            "survival_hunger_food_use_sent",
+            "survival_hunger_food_post_seen",
+            "survival_hunger_food_inventory_updated",
+        ],
+        server_milestones: &[
+            "server_username_seen",
+            "server_survival_hunger_food_pre",
+            "server_survival_hunger_food_consume_start",
+            "server_survival_hunger_food_consume_finish",
+            "server_survival_hunger_food_inventory",
+            "server_survival_hunger_food_state",
+        ],
+        forbidden_patterns: DEFAULT_FORBIDDEN_PATTERNS,
+        client_count: ONE_CLIENT,
+        session_count: ONE_SESSION,
+        dry_run_check: "",
+        dry_run_wrapper: "mc-compat-smoke",
+        dry_run_exclusion_reason:
+            "active survival-hunger-food-parity Cairn owns dry-run wrapper and paired fixture promotion",
+        migration_state: "substring-fallback",
+    },
+    GeneratedScenarioRow {
         name: "survival-biome-dimension-state",
         aliases: &["survival-biome-dimension-state"],
         client_milestones: &[

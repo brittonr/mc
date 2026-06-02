@@ -1,0 +1,4 @@
+## task evidence gate post-archive
+command=rustc --edition=2021 tools/check_cairn_task_evidence.rs -o /tmp/check_cairn_task_evidence_hunger && /tmp/check_cairn_task_evidence_hunger
+task evidence gate passed: 6 completed tasks checked across 3 active task files
+exit_status=0

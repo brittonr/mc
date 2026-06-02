@@ -2,4 +2,4 @@
 671017c24898b9f18a35babcc66acdbc82005fcb3dc0e0d1991fe5391abc227d  docs/evidence/survival-biome-dimension-fixtures-2026-06-01.run.log
 5756716700b60dd7202f3054a617539bd0830a24f10269f51d56c7e12aaef57c  docs/evidence/survival-biome-dimension-fixtures-valence-source-2026-06-01.patch
 823b6013aee31c884cafee7e65e57005ab259705f21a3e722ee48eca34491b80  docs/evidence/survival-biome-dimension-fixtures-paper-source-2026-06-01.patch
-ac722a396619728a0405bf3949aa30313d0655602959136bb8fca49948659dbe  tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java
+a9592778e1d8b138782b862f3e8f489db904a563eaee04b575076271778decf6  tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java

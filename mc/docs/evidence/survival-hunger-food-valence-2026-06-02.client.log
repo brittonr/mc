@@ -1,0 +1,30 @@
+[main.rs:1037][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:1173][INFO] Shader version: #version 150
+[main.rs:290][INFO] Detected server protocol version 763
+[server/mod.rs:558][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25565
+[server/mod.rs:563][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:580][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:594][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:601][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:662][WARN] Server is running in offline mode
+[server/mod.rs:663][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbot properties=0
+[server/mod.rs:2654][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[world/mod.rs:1123][INFO] Dimension bounds: min_y=-64 height=384
+[server/mod.rs:2739][INFO] MC-COMPAT-MILESTONE join_game entity_id=0 gamemode=Survival
+[server/mod.rs:4643][INFO] Received chat message: Welcome to the Valence survival compatibility fixture.
+[server/mod.rs:4096][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=1 slot=36 item=id=815 count=1
+[server/mod.rs:3391][INFO] MC-COMPAT-MILESTONE survival_hunger_food_item_seen slot=36 item=Bread count=1
+[server/mod.rs:4164][INFO] MC-COMPAT-MILESTONE inventory_probe_slot36_nonempty count=1 item_id=815
+[server/mod.rs:4096][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=255 state_id=1 slot=-1 item=empty
+[server/mod.rs:3252][INFO] MC-COMPAT-MILESTONE update_health health=20.0 food=15 saturation=0.0
+[server/mod.rs:3327][INFO] MC-COMPAT-MILESTONE survival_hunger_food_pre_seen health=20.0 food=15 saturation=0.0
+[server/mod.rs:4791][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=0
+[server/mod.rs:1222][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:3354][INFO] MC-COMPAT-MILESTONE survival_hunger_food_select_hotbar_slot slot=0
+[server/mod.rs:3361][INFO] MC-COMPAT-MILESTONE survival_hunger_food_use_sent slot=36 item=Bread count=1 hand=main sequence=810
+[server/mod.rs:4096][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=2 slot=36 item=empty
+[server/mod.rs:3404][INFO] MC-COMPAT-MILESTONE survival_hunger_food_inventory_updated slot=36 item=Bread count=0
+[server/mod.rs:3252][INFO] MC-COMPAT-MILESTONE update_health health=20.0 food=20 saturation=6.0
+[server/mod.rs:3338][INFO] MC-COMPAT-MILESTONE survival_hunger_food_post_seen health=20.0 food=20 saturation=6.0

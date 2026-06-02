@@ -130,6 +130,28 @@ const SURVIVAL_FURNACE_SERVER_REOPEN_NEEDLE: &str =
 const SURVIVAL_FURNACE_SERVER_STATE_NEEDLE: &str =
     "survival_furnace_server_state username=compatbot position=12,64,0 input=RawIron fuel=Coal output=empty collected=true session_persistent=true";
 const SURVIVAL_FURNACE_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_FURNACE_FIXTURE";
+const SURVIVAL_HUNGER_FOOD_CLIENT_ITEM_NEEDLE: &str =
+    "survival_hunger_food_item_seen slot=36 item=Bread count=1";
+const SURVIVAL_HUNGER_FOOD_CLIENT_PRE_NEEDLE: &str =
+    "survival_hunger_food_pre_seen health=20.0 food=15 saturation=0.0";
+const SURVIVAL_HUNGER_FOOD_CLIENT_USE_NEEDLE: &str =
+    "survival_hunger_food_use_sent slot=36 item=Bread count=1 hand=main sequence=810";
+const SURVIVAL_HUNGER_FOOD_CLIENT_POST_NEEDLE: &str =
+    "survival_hunger_food_post_seen health=20.0 food=20 saturation=6.0";
+const SURVIVAL_HUNGER_FOOD_CLIENT_INVENTORY_NEEDLE: &str =
+    "survival_hunger_food_inventory_updated slot=36 item=Bread count=0";
+const SURVIVAL_HUNGER_FOOD_SERVER_PRE_NEEDLE: &str =
+    "survival_hunger_food_pre username=compatbot health=20.0 food=15 saturation=0.0 item=Bread count=1 slot=36";
+const SURVIVAL_HUNGER_FOOD_SERVER_CONSUME_START_NEEDLE: &str =
+    "survival_hunger_food_consume_start username=compatbot item=Bread slot=36 food_before=15 saturation_before=0.0";
+const SURVIVAL_HUNGER_FOOD_SERVER_CONSUME_FINISH_NEEDLE: &str =
+    "survival_hunger_food_consume_finish username=compatbot item=Bread slot=36 food_after=20 saturation_after=6.0";
+const SURVIVAL_HUNGER_FOOD_SERVER_INVENTORY_NEEDLE: &str =
+    "survival_hunger_food_inventory username=compatbot slot=36 item=Bread count_before=1 count_after=0";
+const SURVIVAL_HUNGER_FOOD_SERVER_STATE_NEEDLE: &str =
+    "survival_hunger_food_state username=compatbot health=20.0 food_before=15 food_after=20 saturation_before=0.0 saturation_after=6.0 unexpected_damage=false death=false";
+const SURVIVAL_HUNGER_FOOD_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_HUNGER_FOOD_PROBE";
+const SURVIVAL_HUNGER_FOOD_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_HUNGER_FOOD_FIXTURE";
 const SURVIVAL_BIOME_DIMENSION_CLIENT_STATE_NEEDLE: &str =
     "survival_biome_dimension_state spawn_environment=minecraft:overworld environment_identifier=minecraft:overworld client_environment_update=minecraft:overworld normalized_identifier=minecraft:overworld";
 const SURVIVAL_BIOME_DIMENSION_SERVER_STATE_NEEDLE: &str =
@@ -224,7 +246,7 @@ const FRAME_ARTIFACT_NON_CLAIMS: &[&str] = &[
     "visual_regression_approval",
     "semantic_equivalence",
 ];
-const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-furnace-persistence|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset";
+const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-furnace-persistence|survival-hunger-food|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
     "Dimension type:",
@@ -350,6 +372,7 @@ enum Scenario {
     SurvivalChestPersistence,
     SurvivalCraftingTable,
     SurvivalFurnacePersistence,
+    SurvivalHungerFood,
     SurvivalBiomeDimensionState,
     McpControlledSmoke,
     CombatDamage,
@@ -1838,6 +1861,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
         "survival-chest-persistence" => Ok(Scenario::SurvivalChestPersistence),
         "survival-crafting-table" => Ok(Scenario::SurvivalCraftingTable),
         "survival-furnace-persistence" => Ok(Scenario::SurvivalFurnacePersistence),
+        "survival-hunger-food" => Ok(Scenario::SurvivalHungerFood),
         "survival-biome-dimension-state" => Ok(Scenario::SurvivalBiomeDimensionState),
         MCP_CONTROLLED_SMOKE_SCENARIO => Ok(Scenario::McpControlledSmoke),
         "combat-damage" => Ok(Scenario::CombatDamage),
@@ -1879,6 +1903,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::SurvivalChestPersistence => "survival-chest-persistence",
         Scenario::SurvivalCraftingTable => "survival-crafting-table",
         Scenario::SurvivalFurnacePersistence => "survival-furnace-persistence",
+        Scenario::SurvivalHungerFood => "survival-hunger-food",
         Scenario::SurvivalBiomeDimensionState => "survival-biome-dimension-state",
         Scenario::McpControlledSmoke => MCP_CONTROLLED_SMOKE_SCENARIO,
         Scenario::CombatDamage => "combat-damage",
@@ -2064,6 +2089,31 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             (
                 "survival_furnace_reopen_seen",
                 SURVIVAL_FURNACE_CLIENT_REOPEN_NEEDLE,
+            ),
+        ],
+        Scenario::SurvivalHungerFood => &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "survival_hunger_food_item_seen",
+                SURVIVAL_HUNGER_FOOD_CLIENT_ITEM_NEEDLE,
+            ),
+            (
+                "survival_hunger_food_pre_seen",
+                SURVIVAL_HUNGER_FOOD_CLIENT_PRE_NEEDLE,
+            ),
+            (
+                "survival_hunger_food_use_sent",
+                SURVIVAL_HUNGER_FOOD_CLIENT_USE_NEEDLE,
+            ),
+            (
+                "survival_hunger_food_post_seen",
+                SURVIVAL_HUNGER_FOOD_CLIENT_POST_NEEDLE,
+            ),
+            (
+                "survival_hunger_food_inventory_updated",
+                SURVIVAL_HUNGER_FOOD_CLIENT_INVENTORY_NEEDLE,
             ),
         ],
         Scenario::SurvivalBiomeDimensionState => &[
@@ -2559,6 +2609,29 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
             (
                 "server_survival_furnace_state",
                 SURVIVAL_FURNACE_SERVER_STATE_NEEDLE,
+            ),
+        ],
+        Scenario::SurvivalHungerFood => &[
+            ("server_username_seen", "compatbot"),
+            (
+                "server_survival_hunger_food_pre",
+                SURVIVAL_HUNGER_FOOD_SERVER_PRE_NEEDLE,
+            ),
+            (
+                "server_survival_hunger_food_consume_start",
+                SURVIVAL_HUNGER_FOOD_SERVER_CONSUME_START_NEEDLE,
+            ),
+            (
+                "server_survival_hunger_food_consume_finish",
+                SURVIVAL_HUNGER_FOOD_SERVER_CONSUME_FINISH_NEEDLE,
+            ),
+            (
+                "server_survival_hunger_food_inventory",
+                SURVIVAL_HUNGER_FOOD_SERVER_INVENTORY_NEEDLE,
+            ),
+            (
+                "server_survival_hunger_food_state",
+                SURVIVAL_HUNGER_FOOD_SERVER_STATE_NEEDLE,
             ),
         ],
         Scenario::SurvivalBiomeDimensionState => &[
@@ -3423,7 +3496,7 @@ Automates a local Stevenarella compatibility smoke against a Minecraft {} / prot
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from legacy Nickel config, or --steel-config/MC_COMPAT_STEEL_CONFIG a restricted Steel module; env vars and later CLI flags override either config source.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.scenario.receipt.v2 JSON receipt for Cairn/Octet evidence flows.
-Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario survival-crafting-table for one crafting-table open/input/result/collect rail. Use --scenario survival-biome-dimension-state for one client-observed dimension/world identifier rail. Use --scenario mcp-controlled-smoke for deterministic MCP receipt/checker dry-run evidence before live client driving. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario ctf-invalid-return-drop for one contained own-base return/drop attempt with server rejection evidence. Use --scenario ctf-score-limit-win-condition for one near-limit capture that emits exactly one win/end milestone. Use --scenario ctf-simultaneous-pickup-capture-race for one bounded two-client same-flag race with one accepted transition and one rejected duplicate pickup. Use --scenario ctf-spawn-team-balance-reset for one bounded two-client team assignment, spawn/resource, and post-score reset row. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
+Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario survival-crafting-table for one crafting-table open/input/result/collect rail. Use --scenario survival-furnace-persistence for one furnace input/fuel/output/reconnect rail. Use --scenario survival-hunger-food for one hunger deficit, food consume, and inventory decrement rail. Use --scenario survival-biome-dimension-state for one client-observed dimension/world identifier rail. Use --scenario mcp-controlled-smoke for deterministic MCP receipt/checker dry-run evidence before live client driving. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario ctf-invalid-return-drop for one contained own-base return/drop attempt with server rejection evidence. Use --scenario ctf-score-limit-win-condition for one near-limit capture that emits exactly one win/end milestone. Use --scenario ctf-simultaneous-pickup-capture-race for one bounded two-client same-flag race with one accepted transition and one rejected duplicate pickup. Use --scenario ctf-spawn-team-balance-reset for one bounded two-client team assignment, spawn/resource, and post-score reset row. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
 Use --expect-status-description/--expect-status-version/--expect-status-sample to assert status response fixture data, --packet-capture-summary for redacted capture summary metadata, and --proxy-route/--proxy-forwarding-mode for proxied-route receipt fields.\n\
 Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
 Use --run-matrix --receipt-dir DIR to run Paper and Valence receipts then compare them; add --dry-run after --run-matrix for a non-side-effecting matrix fixture.\n\
@@ -3979,6 +4052,9 @@ fn start_valence_server(cfg: &Config) -> Result<ManagedServer, String> {
     if cfg.scenario == Scenario::SurvivalFurnacePersistence {
         cmd.env(SURVIVAL_FURNACE_FIXTURE_ENV, "1");
     }
+    if cfg.scenario == Scenario::SurvivalHungerFood {
+        cmd.env(SURVIVAL_HUNGER_FOOD_FIXTURE_ENV, "1");
+    }
     if cfg.scenario == Scenario::SurvivalBiomeDimensionState {
         cmd.env(SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV, "1");
     }
@@ -4061,6 +4137,10 @@ fn configure_paper_run_command(cfg: &Config, cmd: &mut Command) -> Result<(), St
     if cfg.scenario == Scenario::SurvivalFurnacePersistence {
         cmd.arg("-e")
             .arg(format!("{SURVIVAL_FURNACE_FIXTURE_ENV}=1"));
+    }
+    if cfg.scenario == Scenario::SurvivalHungerFood {
+        cmd.arg("-e")
+            .arg(format!("{SURVIVAL_HUNGER_FOOD_FIXTURE_ENV}=1"));
     }
     if cfg.scenario == Scenario::SurvivalBiomeDimensionState {
         cmd.arg("-e")
@@ -5258,6 +5338,9 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
                 (client_index + 1).to_string(),
             );
         }
+        Scenario::SurvivalHungerFood => {
+            cmd.env(SURVIVAL_HUNGER_FOOD_PROBE_ENV, "1");
+        }
         Scenario::SurvivalBiomeDimensionState => {
             cmd.env(SURVIVAL_BIOME_DIMENSION_PROBE_ENV, "1");
         }
@@ -5483,6 +5566,7 @@ fn requires_server_correlation(cfg: &Config) -> bool {
             | Scenario::SurvivalChestPersistence
             | Scenario::SurvivalCraftingTable
             | Scenario::SurvivalFurnacePersistence
+            | Scenario::SurvivalHungerFood
             | Scenario::CombatDamage
             | Scenario::CombatKnockback
             | Scenario::ArmorEquipmentMitigation
@@ -6422,6 +6506,14 @@ fn smoke_receipt_json_with_typed_event_oracle(
             "furnace_output_collect",
             "disconnect_reconnect",
         ],
+        Scenario::SurvivalHungerFood => vec![
+            "login_success",
+            "play_join_game",
+            "inventory_set_slot",
+            "use_item",
+            "food_update",
+            "inventory_update",
+        ],
         Scenario::SurvivalBiomeDimensionState => vec![
             "login_success",
             "play_join_game",
@@ -6651,6 +6743,16 @@ fn smoke_receipt_json_with_typed_event_oracle(
         "server_survival_furnace_output_collect",
         "server_survival_furnace_reconnect_reopen",
         "server_survival_furnace_state",
+        "survival_hunger_food_item_seen",
+        "survival_hunger_food_pre_seen",
+        "survival_hunger_food_use_sent",
+        "survival_hunger_food_post_seen",
+        "survival_hunger_food_inventory_updated",
+        "server_survival_hunger_food_pre",
+        "server_survival_hunger_food_consume_start",
+        "server_survival_hunger_food_consume_finish",
+        "server_survival_hunger_food_inventory",
+        "server_survival_hunger_food_state",
         "server_inventory_hotbar_select",
         "server_inventory_drop",
         "server_inventory_pickup",
@@ -7822,6 +7924,7 @@ mod tests {
         Scenario::SurvivalChestPersistence,
         Scenario::SurvivalCraftingTable,
         Scenario::SurvivalFurnacePersistence,
+        Scenario::SurvivalHungerFood,
         Scenario::SurvivalBiomeDimensionState,
         Scenario::McpControlledSmoke,
         Scenario::CombatDamage,
@@ -8469,6 +8572,10 @@ mod tests {
         let furnace = test_config(&["--scenario", "survival-furnace-persistence"], &[])
             .expect("survival furnace scenario parses");
         assert_eq!(furnace.scenario, Scenario::SurvivalFurnacePersistence);
+
+        let hunger_food = test_config(&["--scenario", "survival-hunger-food"], &[])
+            .expect("survival hunger-food scenario parses");
+        assert_eq!(hunger_food.scenario, Scenario::SurvivalHungerFood);
 
         let biome_dimension = test_config(&["--scenario", "survival-biome-dimension-state"], &[])
             .expect("survival biome/dimension scenario parses");
@@ -10783,6 +10890,57 @@ RED: 1
         assert!(missing_state
             .missing_milestones
             .contains(&"server_survival_furnace_state"));
+    }
+
+    #[test]
+    fn survival_hunger_food_scenario_tracks_client_and_server_evidence() {
+        let client = evaluate_scenario(
+            Scenario::SurvivalHungerFood,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nsurvival_hunger_food_item_seen slot=36 item=Bread count=1\nsurvival_hunger_food_pre_seen health=20.0 food=15 saturation=0.0\nsurvival_hunger_food_use_sent slot=36 item=Bread count=1 hand=main sequence=810\nsurvival_hunger_food_post_seen health=20.0 food=20 saturation=6.0\nsurvival_hunger_food_inventory_updated slot=36 item=Bread count=0\n",
+        );
+        assert!(client.passed, "{client:?}");
+        assert!(client.missing_milestones.is_empty());
+
+        let missing_post = evaluate_scenario(
+            Scenario::SurvivalHungerFood,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nsurvival_hunger_food_item_seen slot=36 item=Bread count=1\nsurvival_hunger_food_pre_seen health=20.0 food=15 saturation=0.0\nsurvival_hunger_food_use_sent slot=36 item=Bread count=1 hand=main sequence=810\n",
+        );
+        assert!(!missing_post.passed, "{missing_post:?}");
+        assert!(missing_post
+            .missing_milestones
+            .contains(&"survival_hunger_food_post_seen"));
+
+        let wrong_client_values = evaluate_scenario(
+            Scenario::SurvivalHungerFood,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nsurvival_hunger_food_item_seen slot=37 item=Apple count=2\nsurvival_hunger_food_pre_seen health=20.0 food=16 saturation=1.0\nsurvival_hunger_food_use_sent slot=37 item=Apple count=2 hand=main sequence=811\nsurvival_hunger_food_post_seen health=19.0 food=20 saturation=4.0\nsurvival_hunger_food_inventory_updated slot=37 item=Apple count=1\n",
+        );
+        assert!(!wrong_client_values.passed, "{wrong_client_values:?}");
+        assert!(wrong_client_values
+            .missing_milestones
+            .contains(&"survival_hunger_food_item_seen"));
+        assert!(wrong_client_values
+            .missing_milestones
+            .contains(&"survival_hunger_food_pre_seen"));
+        assert!(wrong_client_values
+            .missing_milestones
+            .contains(&"survival_hunger_food_inventory_updated"));
+
+        let server = evaluate_server_scenario(
+            Scenario::SurvivalHungerFood,
+            "compatbot joined\nMC-COMPAT-MILESTONE survival_hunger_food_pre username=compatbot health=20.0 food=15 saturation=0.0 item=Bread count=1 slot=36\nMC-COMPAT-MILESTONE survival_hunger_food_consume_start username=compatbot item=Bread slot=36 food_before=15 saturation_before=0.0\nMC-COMPAT-MILESTONE survival_hunger_food_consume_finish username=compatbot item=Bread slot=36 food_after=20 saturation_after=6.0\nMC-COMPAT-MILESTONE survival_hunger_food_inventory username=compatbot slot=36 item=Bread count_before=1 count_after=0\nMC-COMPAT-MILESTONE survival_hunger_food_state username=compatbot health=20.0 food_before=15 food_after=20 saturation_before=0.0 saturation_after=6.0 unexpected_damage=false death=false\n",
+            "compatbot",
+        );
+        assert!(server.passed, "{server:?}");
+
+        let missing_state = evaluate_server_scenario(
+            Scenario::SurvivalHungerFood,
+            "compatbot joined\nMC-COMPAT-MILESTONE survival_hunger_food_pre username=compatbot health=20.0 food=15 saturation=0.0 item=Bread count=1 slot=36\n",
+            "compatbot",
+        );
+        assert!(!missing_state.passed, "{missing_state:?}");
+        assert!(missing_state
+            .missing_milestones
+            .contains(&"server_survival_hunger_food_state"));
     }
 
     #[test]

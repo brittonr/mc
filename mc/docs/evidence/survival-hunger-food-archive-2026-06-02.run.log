@@ -1,0 +1,86 @@
+## cairn archive
+command=nix run --no-update-lock-file .#cairn -- archive survival-hunger-food-parity --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-hunger-food-parity",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-survival-hunger-food-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-hunger-food-parity",
+  "dry_run": false,
+  "input_hash": "133e0c2407f2c56b4ef19cc47b6a5f2f11225b587e46231077a94c6964179778",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aba112e32c5f9dd0ae7951c7ebdbce14d9e09a1cfb31925bf0c591c2519f4bd9",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-hunger-food-parity/design.md"
+        },
+        {
+          "content_hash": "0a0c313771bc433f8a26bc7e71adf156871c832ba4453a8df1683306e067cb3b",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-hunger-food-parity/proposal.md"
+        },
+        {
+          "content_hash": "56893d701626d569d67692509148474e3b85442732f87dd2138450785bc2cc99",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-hunger-food-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "bdf944326322312bd28593d9feedf29413873d0acc233d4ab934004eb429281d",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-hunger-food-parity/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-hunger-food-parity"
+        }
+      ],
+      "manifest_hash": "d5ee4dcd2e96b9b3ab8cda07e51595d5bf18c6677a955a44f4a33cd66ff497f5"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aba112e32c5f9dd0ae7951c7ebdbce14d9e09a1cfb31925bf0c591c2519f4bd9",
+          "exists": true,
+          "path": "./cairn/changes/survival-hunger-food-parity/design.md"
+        },
+        {
+          "content_hash": "0a0c313771bc433f8a26bc7e71adf156871c832ba4453a8df1683306e067cb3b",
+          "exists": true,
+          "path": "./cairn/changes/survival-hunger-food-parity/proposal.md"
+        },
+        {
+          "content_hash": "56893d701626d569d67692509148474e3b85442732f87dd2138450785bc2cc99",
+          "exists": true,
+          "path": "./cairn/changes/survival-hunger-food-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "bdf944326322312bd28593d9feedf29413873d0acc233d4ab934004eb429281d",
+          "exists": true,
+          "path": "./cairn/changes/survival-hunger-food-parity/tasks.md"
+        }
+      ],
+      "manifest_hash": "15fba02ff97c68794772b617d795decbb6776464c76022fd3ee5747bff3236bb"
+    },
+    "kind": "archive",
+    "manifest_hash": "787c37dc2ab7993194ef356bb626598554a512d624befbc8eb98a47a89ca4553"
+  },
+  "plan_hash": "793e594c337c3d70a342c1d27486bb47acb60c36db94e0c0d70e17852d9b5aec",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "8ae15c5a8d93b5acd5f8ff3d9c5ef40a393e487331eb67860045efca407051cb"
+}
+exit_status=0
+
+## archive path normalization
+command=mv cairn/archive/1970-01-01-survival-hunger-food-parity cairn/archive/2026-06-02-survival-hunger-food-parity
+exit_status=0

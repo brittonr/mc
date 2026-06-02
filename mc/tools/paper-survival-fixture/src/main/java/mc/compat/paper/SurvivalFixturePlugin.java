@@ -16,8 +16,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -85,6 +87,18 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
     private static final String FURNACE_INPUT_NAME = "RawIron";
     private static final String FURNACE_FUEL_NAME = "Coal";
     private static final String FURNACE_OUTPUT_NAME = "IronIngot";
+    private static final String HUNGER_FOOD_FIXTURE_ENV = "MC_COMPAT_SURVIVAL_HUNGER_FOOD_FIXTURE";
+    private static final int HUNGER_FOOD_HOTBAR_SLOT = 0;
+    private static final int HUNGER_FOOD_PROTOCOL_SLOT = 36;
+    private static final int HUNGER_FOOD_COUNT_BEFORE = 1;
+    private static final int HUNGER_FOOD_COUNT_AFTER = 0;
+    private static final double HUNGER_FOOD_PRE_HEALTH = 20.0D;
+    private static final double HUNGER_FOOD_POST_HEALTH = 20.0D;
+    private static final int HUNGER_FOOD_PRE_FOOD = 15;
+    private static final int HUNGER_FOOD_POST_FOOD = 20;
+    private static final float HUNGER_FOOD_PRE_SATURATION = 0.0F;
+    private static final float HUNGER_FOOD_POST_SATURATION = 6.0F;
+    private static final String HUNGER_FOOD_ITEM_NAME = "Bread";
     private static final String BIOME_DIMENSION_FIXTURE_ENV = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_FIXTURE";
     private static final String OVERWORLD_ID = "minecraft:overworld";
     private static final String NETHER_ID = "minecraft:the_nether";
@@ -114,6 +128,11 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
     private final java.util.Set<UUID> furnaceReconnectJoinSeen = new java.util.HashSet<>();
     private final java.util.Set<UUID> furnaceReopenSeen = new java.util.HashSet<>();
     private final java.util.Set<UUID> furnaceStateSeen = new java.util.HashSet<>();
+    private final java.util.Set<UUID> hungerFoodPreSeen = new java.util.HashSet<>();
+    private final java.util.Set<UUID> hungerFoodConsumeStartSeen = new java.util.HashSet<>();
+    private final java.util.Set<UUID> hungerFoodConsumeFinishSeen = new java.util.HashSet<>();
+    private final java.util.Set<UUID> hungerFoodInventorySeen = new java.util.HashSet<>();
+    private final java.util.Set<UUID> hungerFoodStateSeen = new java.util.HashSet<>();
 
     @Override
     public void onEnable() {
@@ -207,6 +226,23 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
     }
 
     @EventHandler(ignoreCancelled = false)
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        if (!hungerFoodFixtureEnabled()) {
+            return;
+        }
+        if (event.getHand() != EquipmentSlot.HAND) {
+            return;
+        }
+        Player player = event.getPlayer();
+        ItemStack stack = player.getInventory().getItem(HUNGER_FOOD_HOTBAR_SLOT);
+        if (!shouldConsumeHungerFood(player, stack)) {
+            return;
+        }
+        event.setCancelled(true);
+        getServer().getScheduler().runTask(this, () -> consumeHungerFood(player));
+    }
+
+    @EventHandler(ignoreCancelled = false)
     public void onInventoryClose(InventoryCloseEvent event) {
         if (!chestFixtureEnabled() || !(event.getPlayer() instanceof Player player)) {
             return;
@@ -251,6 +287,9 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
         if (furnaceFixtureEnabled()) {
             player.setItemOnCursor(new ItemStack(Material.RAW_IRON, FURNACE_ITEM_COUNT));
         }
+        if (hungerFoodFixtureEnabled()) {
+            setupHungerFoodFixture(player);
+        }
         player.teleport(new Location(world, SPAWN_X, SPAWN_Y, SPAWN_Z, SPAWN_YAW, SPAWN_PITCH));
         getLogger().info(
             "MC-COMPAT-MILESTONE survival_join username=" + player.getName()
@@ -269,6 +308,26 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
             scheduleFurnaceOpen(player);
         }
         scheduleFixtureMilestones(player);
+    }
+
+    private void setupHungerFoodFixture(Player player) {
+        UUID playerId = player.getUniqueId();
+        player.setHealth(HUNGER_FOOD_PRE_HEALTH);
+        player.setFoodLevel(HUNGER_FOOD_PRE_FOOD);
+        player.setSaturation(HUNGER_FOOD_PRE_SATURATION);
+        player.getInventory().setItem(HUNGER_FOOD_HOTBAR_SLOT, new ItemStack(Material.BREAD, HUNGER_FOOD_COUNT_BEFORE));
+        player.updateInventory();
+        if (hungerFoodPreSeen.add(playerId)) {
+            getLogger().info(
+                "MC-COMPAT-MILESTONE survival_hunger_food_pre username=" + player.getName()
+                    + " health=" + formatOneDecimal(HUNGER_FOOD_PRE_HEALTH)
+                    + " food=" + HUNGER_FOOD_PRE_FOOD
+                    + " saturation=" + formatOneDecimal(HUNGER_FOOD_PRE_SATURATION)
+                    + " item=" + HUNGER_FOOD_ITEM_NAME
+                    + " count=" + HUNGER_FOOD_COUNT_BEFORE
+                    + " slot=" + HUNGER_FOOD_PROTOCOL_SLOT
+            );
+        }
     }
 
     private void setupChestFixture(Player player, World world) {
@@ -302,6 +361,10 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
 
     private boolean furnaceFixtureEnabled() {
         return "1".equals(System.getenv(FURNACE_FIXTURE_ENV));
+    }
+
+    private boolean hungerFoodFixtureEnabled() {
+        return "1".equals(System.getenv(HUNGER_FOOD_FIXTURE_ENV));
     }
 
     private boolean biomeDimensionFixtureEnabled() {
@@ -425,6 +488,17 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
 
     private boolean isExpectedFurnaceFuel(ItemStack item) {
         return item != null && item.getType() == Material.COAL && item.getAmount() == FURNACE_ITEM_COUNT;
+    }
+
+    private boolean isExpectedHungerFood(ItemStack item) {
+        return item != null && item.getType() == Material.BREAD && item.getAmount() == HUNGER_FOOD_COUNT_BEFORE;
+    }
+
+    private boolean shouldConsumeHungerFood(Player player, ItemStack item) {
+        return isExpectedHungerFood(item)
+            && player.getHealth() == HUNGER_FOOD_PRE_HEALTH
+            && player.getFoodLevel() == HUNGER_FOOD_PRE_FOOD
+            && player.getSaturation() == HUNGER_FOOD_PRE_SATURATION;
     }
 
     private boolean isEmptyFurnaceOutput(ItemStack item) {
@@ -675,6 +749,64 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
                 + " slot=" + CHEST_SLOT
                 + " item=Dirt count=" + ITEM_COUNT
         );
+    }
+
+    private void consumeHungerFood(Player player) {
+        if (!player.isOnline()) {
+            return;
+        }
+        ItemStack stack = player.getInventory().getItem(HUNGER_FOOD_HOTBAR_SLOT);
+        if (!shouldConsumeHungerFood(player, stack)) {
+            return;
+        }
+        UUID playerId = player.getUniqueId();
+        if (hungerFoodConsumeStartSeen.add(playerId)) {
+            getLogger().info(
+                "MC-COMPAT-MILESTONE survival_hunger_food_consume_start username=" + player.getName()
+                    + " item=" + HUNGER_FOOD_ITEM_NAME
+                    + " slot=" + HUNGER_FOOD_PROTOCOL_SLOT
+                    + " food_before=" + HUNGER_FOOD_PRE_FOOD
+                    + " saturation_before=" + formatOneDecimal(HUNGER_FOOD_PRE_SATURATION)
+            );
+        }
+        player.getInventory().setItem(HUNGER_FOOD_HOTBAR_SLOT, null);
+        player.setHealth(HUNGER_FOOD_POST_HEALTH);
+        player.setFoodLevel(HUNGER_FOOD_POST_FOOD);
+        player.setSaturation(HUNGER_FOOD_POST_SATURATION);
+        player.updateInventory();
+        if (hungerFoodConsumeFinishSeen.add(playerId)) {
+            getLogger().info(
+                "MC-COMPAT-MILESTONE survival_hunger_food_consume_finish username=" + player.getName()
+                    + " item=" + HUNGER_FOOD_ITEM_NAME
+                    + " slot=" + HUNGER_FOOD_PROTOCOL_SLOT
+                    + " food_after=" + HUNGER_FOOD_POST_FOOD
+                    + " saturation_after=" + formatOneDecimal(HUNGER_FOOD_POST_SATURATION)
+            );
+        }
+        if (hungerFoodInventorySeen.add(playerId)) {
+            getLogger().info(
+                "MC-COMPAT-MILESTONE survival_hunger_food_inventory username=" + player.getName()
+                    + " slot=" + HUNGER_FOOD_PROTOCOL_SLOT
+                    + " item=" + HUNGER_FOOD_ITEM_NAME
+                    + " count_before=" + HUNGER_FOOD_COUNT_BEFORE
+                    + " count_after=" + HUNGER_FOOD_COUNT_AFTER
+            );
+        }
+        if (hungerFoodStateSeen.add(playerId)) {
+            getLogger().info(
+                "MC-COMPAT-MILESTONE survival_hunger_food_state username=" + player.getName()
+                    + " health=" + formatOneDecimal(HUNGER_FOOD_POST_HEALTH)
+                    + " food_before=" + HUNGER_FOOD_PRE_FOOD
+                    + " food_after=" + HUNGER_FOOD_POST_FOOD
+                    + " saturation_before=" + formatOneDecimal(HUNGER_FOOD_PRE_SATURATION)
+                    + " saturation_after=" + formatOneDecimal(HUNGER_FOOD_POST_SATURATION)
+                    + " unexpected_damage=false death=false"
+            );
+        }
+    }
+
+    private String formatOneDecimal(double value) {
+        return String.format(java.util.Locale.ROOT, "%.1f", value);
     }
 
     private void scheduleFixtureMilestones(Player player) {

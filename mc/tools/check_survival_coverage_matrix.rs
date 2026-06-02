@@ -20,6 +20,7 @@ const BREAK_PLACE_PICKUP_ROW: &str = "break/place/pickup";
 const CRAFTING_ROW: &str = "crafting";
 const CHEST_ROW: &str = "chest persistence";
 const FURNACE_ROW: &str = "furnace persistence";
+const HUNGER_FOOD_ROW: &str = "hunger/food";
 const BIOME_DIMENSION_ROW: &str = "biome/dimension";
 
 const REQUIRED_SYSTEMS: &[&str] = &[
@@ -27,7 +28,7 @@ const REQUIRED_SYSTEMS: &[&str] = &[
     CRAFTING_ROW,
     CHEST_ROW,
     FURNACE_ROW,
-    "hunger/food",
+    HUNGER_FOOD_ROW,
     "mob drops",
     "redstone",
     BIOME_DIMENSION_ROW,
@@ -40,7 +41,7 @@ const REQUIRED_TEXT: &[&str] = &[
     "No full survival compatibility from crafting row",
     "No full survival compatibility from chest persistence row",
     "No full survival compatibility from furnace persistence row",
-    "No hunger or food coverage",
+    "No full survival compatibility from hunger/food row",
     "No mob AI or mob drop coverage",
     "No redstone coverage",
     "No full survival compatibility from biome/dimension row",
@@ -80,6 +81,11 @@ const FURNACE_VALENCE_RECEIPT: &str =
     "docs/evidence/survival-furnace-persistence-valence-2026-06-01.receipt.json";
 const FURNACE_EVIDENCE_DOC: &str =
     "docs/evidence/survival-furnace-persistence-receipts-2026-06-01.md";
+const HUNGER_FOOD_PAPER_RECEIPT: &str =
+    "docs/evidence/survival-hunger-food-paper-2026-06-02.receipt.json";
+const HUNGER_FOOD_VALENCE_RECEIPT: &str =
+    "docs/evidence/survival-hunger-food-valence-2026-06-02.receipt.json";
+const HUNGER_FOOD_EVIDENCE_DOC: &str = "docs/evidence/survival-hunger-food-receipts-2026-06-02.md";
 const BIOME_DIMENSION_PAPER_RECEIPT: &str =
     "docs/evidence/survival-biome-dimension-paper-2026-06-01.receipt.json";
 const BIOME_DIMENSION_VALENCE_RECEIPT: &str =
@@ -240,6 +246,15 @@ fn validate_row(row: &SurvivalRow, errors: &mut Vec<String>) {
             "covered furnace persistence row",
             errors,
         ),
+        HUNGER_FOOD_ROW => validate_covered_row(
+            row,
+            HUNGER_FOOD_PAPER_RECEIPT,
+            HUNGER_FOOD_VALENCE_RECEIPT,
+            HUNGER_FOOD_EVIDENCE_DOC,
+            "all foods",
+            "covered hunger/food row",
+            errors,
+        ),
         BIOME_DIMENSION_ROW => validate_covered_row(
             row,
             BIOME_DIMENSION_PAPER_RECEIPT,
@@ -397,8 +412,8 @@ fn run_self_tests() -> Result<String, Vec<String>> {
     )?;
 
     let promoted_missing = good_rows().replacen(
-        "| hunger/food | missing | none | none |",
-        "| hunger/food | reference_parity_covered | `some-valence` | none |",
+        "| mob drops | missing | none | none |",
+        "| mob drops | reference_parity_covered | `some-valence` | none |",
         1,
     );
     assert_contains(
@@ -430,7 +445,7 @@ fn assert_contains(errors: &[String], needle: &str) -> Result<(), Vec<String>> {
 
 fn fixture_doc(rows: &str) -> String {
     format!(
-        "# Fixture\n\n## Coverage rows\n\n{TABLE_HEADER}\n| --- | --- | --- | --- | --- | --- | --- |\n{rows}\n\n## Gate decision\n\nfull_survival_compatibility remains a non-claim.\n\npaired reference receipt\nBLAKE3 manifest entries\nNo vanilla parity or full survival compatibility\nNo full survival compatibility from crafting row\nNo full survival compatibility from chest persistence row\nNo full survival compatibility from furnace persistence row\nNo hunger or food coverage\nNo mob AI or mob drop coverage\nNo redstone coverage\nNo full survival compatibility from biome/dimension row\nNo world persistence coverage\n"
+        "# Fixture\n\n## Coverage rows\n\n{TABLE_HEADER}\n| --- | --- | --- | --- | --- | --- | --- |\n{rows}\n\n## Gate decision\n\nfull_survival_compatibility remains a non-claim.\n\npaired reference receipt\nBLAKE3 manifest entries\nNo vanilla parity or full survival compatibility\nNo full survival compatibility from crafting row\nNo full survival compatibility from chest persistence row\nNo full survival compatibility from furnace persistence row\nNo full survival compatibility from hunger/food row\nNo mob AI or mob drop coverage\nNo redstone coverage\nNo full survival compatibility from biome/dimension row\nNo world persistence coverage\n"
     )
 }
 
@@ -440,7 +455,7 @@ fn good_rows() -> String {
         format!("| crafting | {COVERED_STATUS} | `{CRAFTING_VALENCE_RECEIPT}` | `{CRAFTING_PAPER_RECEIPT}` | Paired comparator evidence: `{CRAFTING_EVIDENCE_DOC}`. | No full survival compatibility from crafting row; no furnace/hunger/mob/redstone/biome/dimension/world persistence coverage. | next |"),
         format!("| chest persistence | {COVERED_STATUS} | `{CHEST_VALENCE_RECEIPT}` | `{CHEST_PAPER_RECEIPT}` | Paired comparator evidence: `{CHEST_EVIDENCE_DOC}`. | No full survival compatibility from chest persistence row; no all-container behavior. | next |"),
         format!("| furnace persistence | {COVERED_STATUS} | `{FURNACE_VALENCE_RECEIPT}` | `{FURNACE_PAPER_RECEIPT}` | Paired comparator evidence: `{FURNACE_EVIDENCE_DOC}`. | No full survival compatibility from furnace persistence row; no all smelting recipes, long-running timing parity, hopper automation, or furnace minecarts coverage. | next |"),
-        "| hunger/food | missing | none | none | Add receipts. | No hunger or food coverage. | next |".to_string(),
+        format!("| hunger/food | {COVERED_STATUS} | `{HUNGER_FOOD_VALENCE_RECEIPT}` | `{HUNGER_FOOD_PAPER_RECEIPT}` | Paired comparator evidence: `{HUNGER_FOOD_EVIDENCE_DOC}`. | No full survival compatibility from hunger/food row; no all foods, exhaustion, regeneration/starvation, potion effects, offhand consumption, or broader vanilla parity coverage. | next |"),
         "| mob drops | missing | none | none | Add receipts. | No mob AI or mob drop coverage. | next |".to_string(),
         "| redstone | missing | none | none | Add receipts. | No redstone coverage. | next |".to_string(),
         format!("| biome/dimension | {COVERED_STATUS} | `{BIOME_DIMENSION_VALENCE_RECEIPT}` | `{BIOME_DIMENSION_PAPER_RECEIPT}` | Paired comparator evidence: `{BIOME_DIMENSION_EVIDENCE_DOC}`. | No full survival compatibility from biome/dimension row; no biome lookup semantics, dimension travel, or world persistence coverage. | next |"),

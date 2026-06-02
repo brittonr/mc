@@ -29,6 +29,8 @@
 - Accepted spec edits can stale existing `.b3` manifests that include `cairn/specs/mc-compatibility/spec.md`; run the evidence manifest checker and refresh every cited-spec digest before final validation.
 - Nix evidence-manifest checks see only the parent repo source closure; `.b3` rows must cite tracked parent files (prefer `docs/evidence/` copies) rather than nested child-repo paths or `target/` outputs.
 - Run mc Cairn validation/gates with the repo-pinned app from `mc/` (`nix run .#cairn -- ... --root .`). A newer sibling `/home/brittonr/git/cairn` binary can reject this repo's generated policy schema.
+- When writing `.b3` manifests through `nix develop`, redirect inside the devshell command (`nix develop ... -c bash -lc 'b3sum ... > file'`); redirecting the outer `nix develop` command captures the shell-hook banner and corrupts the manifest.
+- Task-cited `.run.log` files must contain an explicit `exit_status=0` for `tools/check_cairn_task_evidence.rs`; avoid citing the task-evidence gate log in the task whose gate writes that same file, or the checker reads the incomplete log during the run.
 - After Cairn input updates, keep `cairn-policy/generated/cairn-policy.json` schema-compatible with the pinned binary; current policy needs a disabled `steel_orchestration_policy` block.
 
 ## Hyperion

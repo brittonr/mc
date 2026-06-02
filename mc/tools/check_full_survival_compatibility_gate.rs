@@ -55,6 +55,14 @@ const CURRENT_COVERED_ROWS: &[CoveredRowExpectation] = &[
         acceptance_token: "Survival chest persistence",
     },
     CoveredRowExpectation {
+        system: "furnace persistence",
+        acceptance_token: "Survival furnace persistence",
+    },
+    CoveredRowExpectation {
+        system: "hunger/food",
+        acceptance_token: "Survival hunger/food",
+    },
+    CoveredRowExpectation {
         system: "biome/dimension",
         acceptance_token: "Survival biome/dimension join state",
     },
@@ -518,8 +526,8 @@ fn current_missing_rows() -> String {
         covered_row("break/place/pickup", "break", "Break"),
         covered_row("crafting", "crafting", "Crafting"),
         covered_row("chest persistence", "chest", "Chest"),
-        "| furnace persistence | missing | none | none | Add furnace receipts. | No furnace coverage. | next |".to_string(),
-        "| hunger/food | missing | none | none | Add hunger receipts. | No hunger or food coverage. | next |".to_string(),
+        covered_row("furnace persistence", "furnace", "Furnace"),
+        covered_row("hunger/food", "hunger", "Hunger"),
         "| mob drops | missing | none | none | Add mob receipts. | No mob AI or mob drop coverage. | next |".to_string(),
         "| redstone | missing | none | none | Add redstone receipts. | No redstone coverage. | next |".to_string(),
         covered_row("biome/dimension", "biome", "Biome"),
@@ -547,6 +555,8 @@ fn fixture_acceptance_matrix() -> String {
         "| Survival break/place/pickup | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
         "| Survival crafting table | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
         "| Survival chest persistence | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
+        "| Survival furnace persistence | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
+        "| Survival hunger/food | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
         "| Survival biome/dimension join state | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
     ]
     .join("\n")
@@ -573,6 +583,12 @@ fn all_rows_manifest_text() -> String {
     text.push_str("digest  docs/evidence/chest-valence.receipt.json\n");
     text.push_str("digest  docs/evidence/chest-paper.receipt.json\n");
     text.push_str("digest  docs/evidence/chest.md\n");
+    text.push_str("digest  docs/evidence/furnace-valence.receipt.json\n");
+    text.push_str("digest  docs/evidence/furnace-paper.receipt.json\n");
+    text.push_str("digest  docs/evidence/furnace.md\n");
+    text.push_str("digest  docs/evidence/hunger-valence.receipt.json\n");
+    text.push_str("digest  docs/evidence/hunger-paper.receipt.json\n");
+    text.push_str("digest  docs/evidence/hunger.md\n");
     text.push_str("digest  docs/evidence/biome-valence.receipt.json\n");
     text.push_str("digest  docs/evidence/biome-paper.receipt.json\n");
     text.push_str("digest  docs/evidence/biome.md\n");

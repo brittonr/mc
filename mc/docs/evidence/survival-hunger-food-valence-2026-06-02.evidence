@@ -1,0 +1,11 @@
+row=survival-hunger-food
+backend=valence
+revision_status=clean
+child_revision=573b8f0f33db3ab2ff7d01c3762dc3f3c72cad02
+metric.pre_consume_food=health=20.0 food=15 saturation=0.0 item=Bread count=1 slot=36
+metric.consume_start=item=Bread slot=36 food_before=15 saturation_before=0.0
+metric.consume_finish=item=Bread slot=36 food_after=20 saturation_after=6.0
+metric.item_decrement=slot=36 item=Bread count_before=1 count_after=0
+metric.post_consume_food=health=20.0 food=20
+metric.saturation_update=before=0.0 after=6.0
+metric.server_food_state=health=20.0 food_before=15 food_after=20 saturation_before=0.0 saturation_after=6.0 unexpected_damage=false death=false
