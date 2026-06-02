@@ -195,6 +195,7 @@ const SURVIVAL_MOB_DROP_POSITION_TOLERANCE: f64 = 0.75;
 const SURVIVAL_MOB_DROP_MOB_NAME: &str = "IronGolem";
 const SURVIVAL_MOB_DROP_ITEM_NAME: &str = "IronIngot";
 const SURVIVAL_MOB_DROP_ITEM_ID: isize = SURVIVAL_FURNACE_OUTPUT_ITEM_ID;
+const SURVIVAL_MOB_DROP_PROTOCOL_758_ITEM_ID: isize = 692;
 const SURVIVAL_MOB_DROP_ITEM_COUNT: isize = SURVIVAL_FURNACE_ITEM_COUNT;
 const SURVIVAL_MOB_DROP_INVENTORY_SLOT: i16 = 36;
 const SURVIVAL_MOB_DROP_INVENTORY_INDEX: usize = 36;
@@ -354,7 +355,11 @@ fn survival_hunger_food_post_update_matches(
 }
 
 fn survival_mob_drop_item_matches(stack: &item::Stack) -> bool {
-    stack.id == SURVIVAL_MOB_DROP_ITEM_ID && stack.count == SURVIVAL_MOB_DROP_ITEM_COUNT
+    survival_mob_drop_item_id_matches(stack.id) && stack.count == SURVIVAL_MOB_DROP_ITEM_COUNT
+}
+
+fn survival_mob_drop_item_id_matches(item_id: isize) -> bool {
+    item_id == SURVIVAL_MOB_DROP_ITEM_ID || item_id == SURVIVAL_MOB_DROP_PROTOCOL_758_ITEM_ID
 }
 
 fn survival_mob_drop_position_matches(x: f64, y: f64, z: f64) -> bool {
@@ -5468,7 +5473,8 @@ mod tests {
         SURVIVAL_HUNGER_FOOD_POST_SATURATION, SURVIVAL_HUNGER_FOOD_PRE_FOOD,
         SURVIVAL_HUNGER_FOOD_PRE_HEALTH, SURVIVAL_HUNGER_FOOD_PRE_SATURATION,
         SURVIVAL_MOB_DROP_ITEM_COUNT, SURVIVAL_MOB_DROP_ITEM_ID,
-        SURVIVAL_MOB_DROP_POSITION_TOLERANCE, SURVIVAL_MOB_DROP_TARGET_X,
+        SURVIVAL_MOB_DROP_POSITION_TOLERANCE, SURVIVAL_MOB_DROP_PROTOCOL_758_ITEM_ID,
+        SURVIVAL_MOB_DROP_TARGET_X,
         SURVIVAL_MOB_DROP_TARGET_Y, SURVIVAL_MOB_DROP_TARGET_Z, SURVIVAL_NETHER_ID,
         SURVIVAL_OVERWORLD_ID, SURVIVAL_UNKNOWN_ENVIRONMENT_ID,
     };
@@ -5665,6 +5671,12 @@ mod tests {
             damage: None,
             tag: None,
         };
+        let legacy_ingot = item::Stack {
+            id: SURVIVAL_MOB_DROP_PROTOCOL_758_ITEM_ID,
+            count: SURVIVAL_MOB_DROP_ITEM_COUNT,
+            damage: None,
+            tag: None,
+        };
         let wrong_item = item::Stack {
             id: SURVIVAL_MOB_DROP_ITEM_ID + 1,
             count: SURVIVAL_MOB_DROP_ITEM_COUNT,
@@ -5679,6 +5691,7 @@ mod tests {
         };
 
         assert!(survival_mob_drop_item_matches(&ingot));
+        assert!(survival_mob_drop_item_matches(&legacy_ingot));
         assert!(!survival_mob_drop_item_matches(&wrong_item));
         assert!(!survival_mob_drop_item_matches(&wrong_count));
     }
