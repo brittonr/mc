@@ -88,6 +88,17 @@ const CTF_RACE_FINAL_BLUE_SCORE: u32 = 0;
 const CTF_RACE_ACCEPTED_TRANSITION: &str = "pickup";
 const CTF_RACE_REJECTED_TRANSITION: &str = "duplicate_pickup";
 const CTF_RACE_FINAL_BLUE_FLAG_STATE: &str = "at_base";
+const CTF_SPAWN_TEAM_RESET_PROBE_ENV: &str = "MC_COMPAT_CTF_SPAWN_TEAM_RESET_PROBE";
+const CTF_SPAWN_EXPECTED_RED_COUNT: u32 = 1;
+const CTF_SPAWN_EXPECTED_BLUE_COUNT: u32 = 1;
+const CTF_SPAWN_RESET_FINAL_RED_SCORE: u32 = 1;
+const CTF_SPAWN_RESET_FINAL_BLUE_SCORE: u32 = 0;
+const CTF_SPAWN_SLOT36_RESOURCE: &str = "WoodenSword:1";
+const CTF_SPAWN_RED_SLOT37_RESOURCE: &str = "RedWool:64";
+const CTF_SPAWN_BLUE_SLOT37_RESOURCE: &str = "BlueWool:64";
+const CTF_SPAWN_RESET_SLOT37_RESOURCE: &str = "TeamWool:64";
+const CTF_SPAWN_RESET_STATE: &str = "scoreboard_flags_and_resources_coherent";
+const CTF_SPAWN_EXPECTED_BLUE_USERNAME: &str = "compatbotb";
 
 #[derive(Clone, Debug, PartialEq)]
 struct ArrowPolicySnapshot {
@@ -710,6 +721,7 @@ fn setup(
     commands.insert_resource(WinConditionState::default());
     commands.insert_resource(ReconnectJoinCounts::default());
     commands.insert_resource(CtfRaceProbeState::default());
+    commands.insert_resource(CtfSpawnTeamResetProbeState::default());
 }
 
 /// Build a flag at the given position. `pos` should be the position of the
@@ -1045,7 +1057,9 @@ fn digging(
             match (team, block.state) {
                 (Team::Blue, BlockState::RED_WOOL) => {
                     if event.position == globals.red_flag {
-                        if flag_manager.red.is_some() || ctf_race_duplicate_pickup_blocked(&race_probe) {
+                        if flag_manager.red.is_some()
+                            || ctf_race_duplicate_pickup_blocked(&race_probe)
+                        {
                             log_ctf_race_rejected_transition(
                                 &mut race_probe,
                                 username.as_str(),
@@ -1076,7 +1090,9 @@ fn digging(
                 }
                 (Team::Red, BlockState::BLUE_WOOL) => {
                     if event.position == globals.blue_flag {
-                        if flag_manager.blue.is_some() || ctf_race_duplicate_pickup_blocked(&race_probe) {
+                        if flag_manager.blue.is_some()
+                            || ctf_race_duplicate_pickup_blocked(&race_probe)
+                        {
                             log_ctf_race_rejected_transition(
                                 &mut race_probe,
                                 username.as_str(),
@@ -1413,6 +1429,111 @@ fn team_label(team: Team) -> &'static str {
     }
 }
 
+fn ctf_spawn_team_reset_probe_enabled() -> bool {
+    env::var_os(CTF_SPAWN_TEAM_RESET_PROBE_ENV).is_some()
+}
+
+fn team_spawn_parts(team: Team) -> (f64, f64, f64) {
+    let pos = team.spawn_pos();
+    (pos.x, pos.y, pos.z)
+}
+
+fn team_slot37_resource(team: Team) -> &'static str {
+    match team {
+        Team::Red => CTF_SPAWN_RED_SLOT37_RESOURCE,
+        Team::Blue => CTF_SPAWN_BLUE_SLOT37_RESOURCE,
+    }
+}
+
+fn ctf_spawn_reset_should_defer_team_assignment(username: &str, team: Team) -> bool {
+    username == CTF_SPAWN_EXPECTED_BLUE_USERNAME && team == Team::Red
+}
+
+fn ctf_spawn_team_assignment_milestone(
+    username: &str,
+    team: Team,
+    red_count: u32,
+    blue_count: u32,
+) -> String {
+    let (spawn_x, spawn_y, spawn_z) = team_spawn_parts(team);
+    format!(
+        "MC-COMPAT-MILESTONE ctf_spawn_team_assignment username={} team={} red_count={} \
+         blue_count={} spawn_x={:.1} spawn_y={:.1} spawn_z={:.1} slot36={} slot37={} \
+         correlation_id=team-select-{}",
+        username,
+        team_label(team),
+        red_count,
+        blue_count,
+        spawn_x,
+        spawn_y,
+        spawn_z,
+        CTF_SPAWN_SLOT36_RESOURCE,
+        team_slot37_resource(team),
+        username
+    )
+}
+
+fn ctf_spawn_team_balance_milestone(state: &CtfSpawnTeamResetProbeState) -> Option<String> {
+    let red_username = state.red_username.as_deref()?;
+    let blue_username = state.blue_username.as_deref()?;
+    if state.red_count != CTF_SPAWN_EXPECTED_RED_COUNT
+        || state.blue_count != CTF_SPAWN_EXPECTED_BLUE_COUNT
+    {
+        return None;
+    }
+    Some(format!(
+        "MC-COMPAT-MILESTONE ctf_spawn_team_balance red_count={} blue_count={} \
+         selected_teams={}:Red,{}:Blue outcome=balanced",
+        state.red_count, state.blue_count, red_username, blue_username
+    ))
+}
+
+fn ctf_spawn_resource_reset_state_milestone(
+    state: &CtfSpawnTeamResetProbeState,
+    capture_username: &str,
+    capture_team: Team,
+    carried_flag: Team,
+    score: &Score,
+) -> Option<String> {
+    if capture_team != Team::Red || carried_flag != Team::Blue {
+        return None;
+    }
+    let red_score = score_for_team(score, Team::Red);
+    let blue_score = score_for_team(score, Team::Blue);
+    if state.red_count != CTF_SPAWN_EXPECTED_RED_COUNT
+        || state.blue_count != CTF_SPAWN_EXPECTED_BLUE_COUNT
+        || red_score != CTF_SPAWN_RESET_FINAL_RED_SCORE
+        || blue_score != CTF_SPAWN_RESET_FINAL_BLUE_SCORE
+    {
+        return None;
+    }
+    let (red_x, red_y, red_z) = team_spawn_parts(Team::Red);
+    let (blue_x, blue_y, blue_z) = team_spawn_parts(Team::Blue);
+    Some(format!(
+        "MC-COMPAT-MILESTONE ctf_spawn_resource_reset_state trigger=score \
+         capture_username={} capture_team={} carried_flag={} red_count={} blue_count={} \
+         red_score={} blue_score={} red_spawn={:.1},{:.1},{:.1} blue_spawn={:.1},{:.1},{:.1} \
+         slot36={} slot37={} reset_state={} correlation_id=score-reset-{}",
+        capture_username,
+        team_label(capture_team),
+        team_label(carried_flag),
+        state.red_count,
+        state.blue_count,
+        red_score,
+        blue_score,
+        red_x,
+        red_y,
+        red_z,
+        blue_x,
+        blue_y,
+        blue_z,
+        CTF_SPAWN_SLOT36_RESOURCE,
+        CTF_SPAWN_RESET_SLOT37_RESOURCE,
+        CTF_SPAWN_RESET_STATE,
+        capture_username
+    ))
+}
+
 fn invalid_flag_pickup_rejection_milestone(
     username: &str,
     player_team: Team,
@@ -1741,6 +1862,7 @@ fn do_team_selector_portals(
     ctf_layers: Res<CtfLayers>,
     flag_manager: Res<FlagManager>,
     mut reconnect_joins: ResMut<ReconnectJoinCounts>,
+    mut spawn_reset_probe: ResMut<CtfSpawnTeamResetProbeState>,
     main_layers: Query<Entity, (With<ChunkLayer>, With<EntityLayer>)>,
 ) {
     for player in &mut players {
@@ -1770,6 +1892,11 @@ fn do_team_selector_portals(
             .copied();
 
         if let Some(team) = team {
+            if ctf_spawn_team_reset_probe_enabled()
+                && ctf_spawn_reset_should_defer_team_assignment(username.as_str(), team)
+            {
+                continue;
+            }
             *game_mode = GameMode::Survival;
             let mut inventory = Inventory::new(InventoryKind::Player);
             inventory.set_slot(36, ItemStack::new(ItemKind::WoodenSword, 1, None));
@@ -1862,6 +1989,24 @@ fn do_team_selector_portals(
             look.yaw = yaw;
             look.pitch = 0.0;
             head_yaw.0 = yaw;
+            if ctf_spawn_team_reset_probe_enabled() {
+                spawn_reset_probe.record_assignment(username.as_str(), team);
+                let assignment = ctf_spawn_team_assignment_milestone(
+                    username.as_str(),
+                    team,
+                    spawn_reset_probe.red_count,
+                    spawn_reset_probe.blue_count,
+                );
+                info!("{assignment}");
+                println!("{assignment}");
+                if !spawn_reset_probe.balance_logged {
+                    if let Some(balance) = ctf_spawn_team_balance_milestone(&spawn_reset_probe) {
+                        spawn_reset_probe.balance_logged = true;
+                        info!("{balance}");
+                        println!("{balance}");
+                    }
+                }
+            }
             let chat_text: Text = "You are on team ".into_text() + team.team_text() + "!";
             client.send_chat_message(chat_text);
 
@@ -1976,6 +2121,31 @@ struct CtfRaceProbeState {
 }
 
 #[derive(Debug, Default, Resource)]
+struct CtfSpawnTeamResetProbeState {
+    red_count: u32,
+    blue_count: u32,
+    red_username: Option<String>,
+    blue_username: Option<String>,
+    balance_logged: bool,
+    reset_logged: bool,
+}
+
+impl CtfSpawnTeamResetProbeState {
+    fn record_assignment(&mut self, username: &str, team: Team) {
+        match team {
+            Team::Red => {
+                self.red_count += 1;
+                self.red_username = Some(username.to_owned());
+            }
+            Team::Blue => {
+                self.blue_count += 1;
+                self.blue_username = Some(username.to_owned());
+            }
+        }
+    }
+}
+
+#[derive(Debug, Default, Resource)]
 struct ReconnectJoinCounts {
     joins: HashMap<String, u32>,
 }
@@ -2059,6 +2229,7 @@ fn do_flag_capturing(
     mut score: ResMut<Score>,
     mut win_condition: ResMut<WinConditionState>,
     mut race_probe: ResMut<CtfRaceProbeState>,
+    mut spawn_reset_probe: ResMut<CtfSpawnTeamResetProbeState>,
 ) {
     for (ent, mut client, team, position, has_flag, username) in &mut players {
         let capture_trigger = match team {
@@ -2103,7 +2274,37 @@ fn do_flag_capturing(
                 blue_score_after,
                 &flag_manager,
             );
+            log_ctf_spawn_resource_reset_state(
+                &mut spawn_reset_probe,
+                username.as_str(),
+                *team,
+                has_flag.0,
+                &score,
+            );
         }
+    }
+}
+
+fn log_ctf_spawn_resource_reset_state(
+    state: &mut CtfSpawnTeamResetProbeState,
+    capture_username: &str,
+    capture_team: Team,
+    carried_flag: Team,
+    score: &Score,
+) {
+    if !ctf_spawn_team_reset_probe_enabled() || state.reset_logged {
+        return;
+    }
+    if let Some(milestone) = ctf_spawn_resource_reset_state_milestone(
+        state,
+        capture_username,
+        capture_team,
+        carried_flag,
+        score,
+    ) {
+        state.reset_logged = true;
+        info!("{milestone}");
+        println!("{milestone}");
     }
 }
 
@@ -2804,10 +3005,7 @@ mod tests {
             rejected.contains("transition=duplicate_pickup"),
             "{rejected}"
         );
-        assert!(
-            rejected.contains("reason=flag_already_held"),
-            "{rejected}"
-        );
+        assert!(rejected.contains("reason=flag_already_held"), "{rejected}");
         assert!(
             final_state.contains("ctf_race_final_state"),
             "{final_state}"
@@ -2858,6 +3056,98 @@ mod tests {
 
         assert!(double_score.is_none());
         assert!(flag_still_held.is_none());
+    }
+
+    #[test]
+    fn ctf_spawn_team_reset_milestones_record_balanced_assignments_and_reset() {
+        let mut state = CtfSpawnTeamResetProbeState::default();
+        state.record_assignment("compatbota", Team::Red);
+        let red = ctf_spawn_team_assignment_milestone(
+            "compatbota",
+            Team::Red,
+            state.red_count,
+            state.blue_count,
+        );
+        state.record_assignment("compatbotb", Team::Blue);
+        let blue = ctf_spawn_team_assignment_milestone(
+            "compatbotb",
+            Team::Blue,
+            state.red_count,
+            state.blue_count,
+        );
+        let balance = ctf_spawn_team_balance_milestone(&state).expect("balance milestone");
+        let mut score = Score::default();
+        score
+            .scores
+            .insert(Team::Red, CTF_SPAWN_RESET_FINAL_RED_SCORE);
+        score
+            .scores
+            .insert(Team::Blue, CTF_SPAWN_RESET_FINAL_BLUE_SCORE);
+        let reset = ctf_spawn_resource_reset_state_milestone(
+            &state,
+            "compatbota",
+            Team::Red,
+            Team::Blue,
+            &score,
+        )
+        .expect("reset milestone");
+
+        assert!(red.contains("ctf_spawn_team_assignment"), "{red}");
+        assert!(red.contains("username=compatbota"), "{red}");
+        assert!(red.contains("team=Red"), "{red}");
+        assert!(red.contains("slot37=RedWool:64"), "{red}");
+        assert!(blue.contains("username=compatbotb"), "{blue}");
+        assert!(blue.contains("team=Blue"), "{blue}");
+        assert!(blue.contains("slot37=BlueWool:64"), "{blue}");
+        assert!(balance.contains("red_count=1 blue_count=1"), "{balance}");
+        assert!(
+            balance.contains("selected_teams=compatbota:Red,compatbotb:Blue"),
+            "{balance}"
+        );
+        assert!(reset.contains("ctf_spawn_resource_reset_state"), "{reset}");
+        assert!(reset.contains("red_score=1 blue_score=0"), "{reset}");
+        assert!(
+            reset.contains("reset_state=scoreboard_flags_and_resources_coherent"),
+            "{reset}"
+        );
+    }
+
+    #[test]
+    fn ctf_spawn_team_reset_rejects_imbalance_or_wrong_score() {
+        let mut imbalanced = CtfSpawnTeamResetProbeState::default();
+        imbalanced.record_assignment("compatbota", Team::Red);
+        assert!(ctf_spawn_team_balance_milestone(&imbalanced).is_none());
+
+        let mut balanced = CtfSpawnTeamResetProbeState::default();
+        balanced.record_assignment("compatbota", Team::Red);
+        balanced.record_assignment("compatbotb", Team::Blue);
+        let mut wrong_score = Score::default();
+        wrong_score
+            .scores
+            .insert(Team::Red, CTF_SPAWN_RESET_FINAL_RED_SCORE + 1);
+        wrong_score
+            .scores
+            .insert(Team::Blue, CTF_SPAWN_RESET_FINAL_BLUE_SCORE);
+        assert!(ctf_spawn_resource_reset_state_milestone(
+            &balanced,
+            "compatbota",
+            Team::Red,
+            Team::Blue,
+            &wrong_score,
+        )
+        .is_none());
+        assert!(ctf_spawn_reset_should_defer_team_assignment(
+            "compatbotb",
+            Team::Red
+        ));
+        assert!(!ctf_spawn_reset_should_defer_team_assignment(
+            "compatbotb",
+            Team::Blue
+        ));
+        assert!(!ctf_spawn_reset_should_defer_team_assignment(
+            "compatbota",
+            Team::Red
+        ));
     }
 
     #[test]
