@@ -1,0 +1,23 @@
+# full CTF evidence manifest check
+date=2026-06-01
+command=nix --option substitute false build --no-update-lock-file --no-link -L path:.#checks.x86_64-linux.mc-compat-evidence-manifests
+
+[2m02:16:01[0m [32m INFO[0m [2mpueue_lib::settings[0m[2m:[0m Parsing config files
+[2m02:16:01[0m [32m INFO[0m [2mpueue_lib::settings[0m[2m:[0m Checking path: "/home/brittonr/.config/pueue/pueue.yml"
+[2m02:16:01[0m [32m INFO[0m [2mpueue_lib::settings[0m[2m:[0m Found config file at: "/home/brittonr/.config/pueue/pueue.yml"
+┌─────────────────────────────────────┐
+│ Task 417:    completed successfully │
+└─────────────────────────────────────┘
+Command: cd /home/brittonr/git/mc && nix --option substitute false build --no-update-lock-file --no-link -L path:.#checks.x86_64-linux.mc-compat-evidence-manifests
+   Path: /home/brittonr/git/mc
+  Label: full ctf evidence manifest check
+  Start: Tue, 2 Jun 2026 02:15:02 -0400
+    End: Tue, 2 Jun 2026 02:15:44 -0400
+
+output:
+this derivation will be built:
+  /nix/store/jbxm42504567n6f2sj7sjx7dl12c317k-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/jbxm42504567n6f2sj7sjx7dl12c317k-mc-compat-evidence-manifests.drv'...
+
+exit_status=0

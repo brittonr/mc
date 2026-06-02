@@ -1,0 +1,132 @@
+$ nix run --no-update-lock-file .#cairn -- sync full-ctf-correctness-gate --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/full-ctf-correctness-gate/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/full-ctf-correctness-gate/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "full-ctf-correctness-gate",
+  "delta_specs": [
+    "./cairn/changes/full-ctf-correctness-gate/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "11bbdb3db18c80760be5bea008233f469bb084a012175265b9ebd58781a1b21e",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "752745a1ce23369fd541a0cc6ba695e7fa9047d7221704bc0698a442f252f233",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "2d60c51ff460d15735275626734d4c5a9b4b12226190db709e533b199ad9ffe1"
+}
+sync_exit_status=0
+$ nix run --no-update-lock-file .#cairn -- archive full-ctf-correctness-gate --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: full-ctf-correctness-gate",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-full-ctf-correctness-gate"
+    }
+  ],
+  "blocked": false,
+  "change": "full-ctf-correctness-gate",
+  "dry_run": false,
+  "input_hash": "11bbdb3db18c80760be5bea008233f469bb084a012175265b9ebd58781a1b21e",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "235e7efeee0b93a518221edab8ab8e88b6a3920c860b7ca67d49c9266012217c",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-full-ctf-correctness-gate/design.md"
+        },
+        {
+          "content_hash": "1008b46c7c4279f557d6684541dd54b6dda36c336710dc56a6f68cd8c0af5a70",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-full-ctf-correctness-gate/proposal.md"
+        },
+        {
+          "content_hash": "cc47a92edb17f85cfd2b655816d30f1a310aff0feeba3e0de2a9b0c98c72b43c",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-full-ctf-correctness-gate/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "154dbdfd3531d8bd53b6f65ab54386c4c83fceb311fc0925cae498a4b259aecc",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-full-ctf-correctness-gate/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/full-ctf-correctness-gate"
+        }
+      ],
+      "manifest_hash": "bfcbf07a31ca290f5a4245140e1bdac1499ba23bc7f5c87d5b8f73b569a44a62"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "235e7efeee0b93a518221edab8ab8e88b6a3920c860b7ca67d49c9266012217c",
+          "exists": true,
+          "path": "./cairn/changes/full-ctf-correctness-gate/design.md"
+        },
+        {
+          "content_hash": "1008b46c7c4279f557d6684541dd54b6dda36c336710dc56a6f68cd8c0af5a70",
+          "exists": true,
+          "path": "./cairn/changes/full-ctf-correctness-gate/proposal.md"
+        },
+        {
+          "content_hash": "cc47a92edb17f85cfd2b655816d30f1a310aff0feeba3e0de2a9b0c98c72b43c",
+          "exists": true,
+          "path": "./cairn/changes/full-ctf-correctness-gate/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "154dbdfd3531d8bd53b6f65ab54386c4c83fceb311fc0925cae498a4b259aecc",
+          "exists": true,
+          "path": "./cairn/changes/full-ctf-correctness-gate/tasks.md"
+        }
+      ],
+      "manifest_hash": "abf55d18133e91dfaca26fc6e4e4865ae2cb873a0cffa26500f2a8c93a6bcce6"
+    },
+    "kind": "archive",
+    "manifest_hash": "b013f1461733c39dc1491d06182cd270e30c3b2c5d98dba6b1f9007621d047e0"
+  },
+  "plan_hash": "71d8fa3970236713a5fd91f56c8ff7f657a0390dd49d25fd6b58a66ffbaa6f1b",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "43d2fbc96fd089d205c3ab3d556c9a6d5c89faa3785e1f586e624e379fe98847"
+}
+archive_exit_status=0
+archive_rename=2026-06-01-full-ctf-correctness-gate
+exit_status=0
