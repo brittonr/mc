@@ -15,6 +15,7 @@ const PLAY_CLIENTBOUND_OVERRIDES: &[(i32, i32)] = &[
     (0x0c, packet::play::clientbound::internal_ids::ServerDifficulty_Locked),
     (0x10, packet::play::clientbound::internal_ids::DeclareCommandsRaw),
     (0x12, packet::play::clientbound::internal_ids::WindowItems_StateCarry),
+    (0x13, packet::play::clientbound::internal_ids::WindowProperty),
     (0x14, packet::play::clientbound::internal_ids::WindowSetSlot_State),
     (0x17, packet::play::clientbound::internal_ids::PluginMessageClientbound),
     (0x1c, packet::play::clientbound::internal_ids::EntityStatus),

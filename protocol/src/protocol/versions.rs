@@ -489,6 +489,56 @@ mod tests {
     }
 
     #[test]
+    fn protocol_763_window_property_consumes_exact_payload() {
+        const PROTOCOL_1_20_1: i32 = 763;
+        const WINDOW_PROPERTY_WIRE_ID: i32 = 0x13;
+        const WINDOW_ID: u8 = 1;
+        const PROPERTY_ID: i16 = 0;
+        const PROPERTY_VALUE: i16 = 1;
+        const ZERO_HIGH_BYTE: u8 = 0;
+        const TRUNCATED_VALUE_BYTE: u8 = 0;
+        let valid_payload = vec![
+            WINDOW_ID,
+            ZERO_HIGH_BYTE,
+            PROPERTY_ID as u8,
+            ZERO_HIGH_BYTE,
+            PROPERTY_VALUE as u8,
+        ];
+        let mut valid_cursor = std::io::Cursor::new(valid_payload);
+        let packet = crate::protocol::packet::packet_by_id(
+            PROTOCOL_1_20_1,
+            State::Play,
+            Direction::Clientbound,
+            WINDOW_PROPERTY_WIRE_ID,
+            &mut valid_cursor,
+        )
+        .expect("window property parse")
+        .expect("window property packet exists");
+        let crate::protocol::packet::Packet::WindowProperty(packet) = packet else {
+            panic!("expected WindowProperty packet");
+        };
+        assert_eq!(packet.id, WINDOW_ID);
+        assert_eq!(packet.property, PROPERTY_ID);
+        assert_eq!(packet.value, PROPERTY_VALUE);
+
+        let truncated_payload = vec![
+            WINDOW_ID,
+            ZERO_HIGH_BYTE,
+            PROPERTY_ID as u8,
+            TRUNCATED_VALUE_BYTE,
+        ];
+        let mut truncated_cursor = std::io::Cursor::new(truncated_payload);
+        assert!(crate::protocol::packet::packet_by_id(
+            PROTOCOL_1_20_1,
+            State::Play,
+            Direction::Clientbound,
+            WINDOW_PROPERTY_WIRE_ID,
+            &mut truncated_cursor,
+        )
+        .is_err());
+    }
+
+    #[test]
     fn protocol_763_maps_remaining_observed_valence_boundaries() {
         let boundaries = [
             (0x00, crate::protocol::packet::play::clientbound::internal_ids::BundleDelimiterRaw),
@@ -501,6 +551,7 @@ mod tests {
             (0x0c, crate::protocol::packet::play::clientbound::internal_ids::ServerDifficulty_Locked),
             (0x10, crate::protocol::packet::play::clientbound::internal_ids::DeclareCommandsRaw),
             (0x12, crate::protocol::packet::play::clientbound::internal_ids::WindowItems_StateCarry),
+            (0x13, crate::protocol::packet::play::clientbound::internal_ids::WindowProperty),
             (0x14, crate::protocol::packet::play::clientbound::internal_ids::WindowSetSlot_State),
             (0x17, crate::protocol::packet::play::clientbound::internal_ids::PluginMessageClientbound),
             (0x1c, crate::protocol::packet::play::clientbound::internal_ids::EntityStatus),
@@ -598,7 +649,8 @@ mod tests {
                 )
                 .expect("command raw packet parses")
                 .expect("command raw packet is known");
-                let crate::protocol::packet::Packet::DeclareCommandsRaw(command_packet) = command_packet
+                let crate::protocol::packet::Packet::DeclareCommandsRaw(command_packet) =
+                    command_packet
                 else {
                     panic!("expected DeclareCommandsRaw packet");
                 };
@@ -652,8 +704,8 @@ mod tests {
             .stack_size(TEST_PACKET_PARSE_STACK_BYTES)
             .spawn(move || {
                 let payload = [
-                    0x0f, b'm', b'i', b'n', b'e', b'c', b'r', b'a', b'f', b't', b':', b'b',
-                    b'r', b'a', b'n', b'd', 0x05, b'P', b'a', b'p', b'e', b'r',
+                    0x0f, b'm', b'i', b'n', b'e', b'c', b'r', b'a', b'f', b't', b':', b'b', b'r',
+                    b'a', b'n', b'd', 0x05, b'P', b'a', b'p', b'e', b'r',
                 ];
                 let mut cursor = &payload[..];
                 let packet = crate::protocol::packet::packet_by_id(
@@ -841,9 +893,8 @@ mod tests {
     fn protocol_763_no_longer_uses_758_fallback_for_remaining_observed_boundaries() {
         for wire_id in [
             0x00, 0x01, 0x02, 0x03, 0x04, 0x06, 0x0a, 0x0b, 0x0c, 0x14, 0x17, 0x1c, 0x1e, 0x1f,
-            0x22, 0x24, 0x25, 0x27, 0x2b, 0x2c, 0x2d, 0x2e, 0x34, 0x38, 0x39, 0x3a, 0x3d,
-            0x3e, 0x42,
-            0x43, 0x45, 0x4d, 0x4e, 0x4f, 0x51, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a,
+            0x22, 0x24, 0x25, 0x27, 0x2b, 0x2c, 0x2d, 0x2e, 0x34, 0x38, 0x39, 0x3a, 0x3d, 0x3e,
+            0x42, 0x43, 0x45, 0x4d, 0x4e, 0x4f, 0x51, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a,
             0x5b, 0x5c, 0x5e, 0x62, 0x67,
         ] {
             assert_ne!(
