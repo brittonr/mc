@@ -2,11 +2,14 @@
 
 use std::collections::HashSet;
 
+use valence::entity::iron_golem::IronGolemEntityBundle;
+use valence::entity::item::{ItemEntityBundle, Stack as ItemEntityStack};
 use valence::entity::living::Health;
 use valence::entity::player::{Food, Saturation};
-use valence::entity::EntityId;
+use valence::entity::{EntityId, EntityManager};
 use valence::event_loop::PacketEvent;
 use valence::interact_block::InteractBlockEvent;
+use valence::interact_entity::{EntityInteraction, InteractEntityEvent};
 use valence::interact_item::InteractItemEvent;
 use valence::inventory::{ClickSlotEvent, CursorItem, HeldItem, OpenInventory, SlotChange};
 use valence::log::info;
@@ -82,6 +85,16 @@ const SURVIVAL_HUNGER_FOOD_POST_HEALTH: f32 = 20.0;
 const SURVIVAL_HUNGER_FOOD_POST_FOOD: i32 = 20;
 const SURVIVAL_HUNGER_FOOD_POST_SATURATION: f32 = 6.0;
 const SURVIVAL_HUNGER_FOOD_USE_SEQUENCE: i32 = 810;
+const SURVIVAL_MOB_DROP_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_MOB_DROP_FIXTURE";
+const SURVIVAL_MOB_DROP_MOB_NAME: &str = "IronGolem";
+const SURVIVAL_MOB_DROP_ITEM_NAME: &str = "IronIngot";
+const SURVIVAL_MOB_DROP_MOB_X: f64 = 16.5;
+const SURVIVAL_MOB_DROP_MOB_Y: f64 = 65.0;
+const SURVIVAL_MOB_DROP_MOB_Z: f64 = 2.5;
+const SURVIVAL_MOB_DROP_DAMAGE: f32 = 20.0;
+const SURVIVAL_MOB_DROP_ITEM_COUNT: i8 = 1;
+const SURVIVAL_MOB_DROP_INVENTORY_SLOT: u16 = 36;
+const SURVIVAL_MOB_DROP_PICKUP_DELAY_TICKS: u8 = 2;
 const SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_FIXTURE";
 const SURVIVAL_OVERWORLD_ID: &str = "minecraft:overworld";
 const SURVIVAL_NETHER_ID: &str = "minecraft:the_nether";
@@ -161,6 +174,43 @@ struct SurvivalHungerFoodFixture {
     state_logged: bool,
 }
 
+#[derive(Resource)]
+struct SurvivalMobDropFixture {
+    mob: Entity,
+    mob_id: i32,
+    drop: Option<Entity>,
+    drop_id: Option<i32>,
+    collector: Option<Entity>,
+    ticks_since_drop: u8,
+    spawn_logged: bool,
+    attack_logged: bool,
+    death_logged: bool,
+    drop_logged: bool,
+    pickup_logged: bool,
+    inventory_logged: bool,
+    state_logged: bool,
+}
+
+impl SurvivalMobDropFixture {
+    fn new(mob: Entity, mob_id: i32) -> Self {
+        Self {
+            mob,
+            mob_id,
+            drop: None,
+            drop_id: None,
+            collector: None,
+            ticks_since_drop: 0,
+            spawn_logged: false,
+            attack_logged: false,
+            death_logged: false,
+            drop_logged: false,
+            pickup_logged: false,
+            inventory_logged: false,
+            state_logged: false,
+        }
+    }
+}
+
 impl SurvivalFurnaceFixture {
     fn new(inventory: Entity) -> Self {
         Self {
@@ -201,6 +251,8 @@ pub fn main() {
                 handle_survival_furnace_open,
                 handle_survival_furnace_click,
                 handle_survival_hunger_food_use,
+                handle_survival_mob_drop_attack,
+                advance_survival_mob_drop_pickup,
             ),
         )
         .run();
@@ -211,6 +263,7 @@ fn setup(
     server: Res<Server>,
     dimensions: Res<DimensionTypeRegistry>,
     biomes: Res<BiomeRegistry>,
+    mut entity_manager: ResMut<EntityManager>,
 ) {
     let mut layer = LayerBundle::new(ident!("overworld"), &dimensions, &biomes, &server);
 
@@ -246,7 +299,7 @@ fn setup(
             .set_block(survival_furnace_pos(), survival_furnace_state());
     }
 
-    commands.spawn(layer);
+    let layer = commands.spawn(layer).id();
 
     if survival_chest_fixture_enabled() {
         let inventory = commands
@@ -278,6 +331,18 @@ fn setup(
     if survival_hunger_food_fixture_enabled() {
         commands.insert_resource(SurvivalHungerFoodFixture::default());
     }
+    if survival_mob_drop_fixture_enabled() {
+        let mob_id = entity_manager.next_id();
+        let mob = commands
+            .spawn(IronGolemEntityBundle {
+                id: mob_id,
+                layer: EntityLayerId(layer),
+                position: survival_mob_drop_position(),
+                ..Default::default()
+            })
+            .id();
+        commands.insert_resource(SurvivalMobDropFixture::new(mob, mob_id.get()));
+    }
 }
 
 fn init_clients(
@@ -300,6 +365,7 @@ fn init_clients(
     >,
     layers: Query<Entity, (With<ChunkLayer>, With<EntityLayer>)>,
     mut hunger_food_fixture: Option<ResMut<SurvivalHungerFoodFixture>>,
+    mut mob_drop_fixture: Option<ResMut<SurvivalMobDropFixture>>,
 ) {
     for (
         mut client,
@@ -360,6 +426,9 @@ fn init_clients(
                 SURVIVAL_OVERWORLD_ID,
                 SURVIVAL_OVERWORLD_ID,
             );
+        }
+        if let Some(fixture) = mob_drop_fixture.as_mut() {
+            log_survival_mob_drop_spawn(username.as_str(), fixture);
         }
     }
 }
@@ -449,6 +518,103 @@ fn handle_survival_block_place(
             real_pos.z
         ));
     }
+}
+
+fn handle_survival_mob_drop_attack(
+    mut commands: Commands,
+    fixture: Option<ResMut<SurvivalMobDropFixture>>,
+    mut clients: Query<(&Username, &GameMode, &mut Inventory)>,
+    layers: Query<Entity, (With<ChunkLayer>, With<EntityLayer>)>,
+    mut events: EventReader<InteractEntityEvent>,
+    mut entity_manager: ResMut<EntityManager>,
+) {
+    let Some(mut fixture) = fixture else {
+        return;
+    };
+    if fixture.attack_logged {
+        return;
+    }
+
+    let layer = layers.single();
+    for event in events.read() {
+        let Ok((username, game_mode, _inventory)) = clients.get_mut(event.client) else {
+            continue;
+        };
+        if !should_handle_survival_mob_drop_attack(
+            *game_mode,
+            event.interact,
+            event.entity,
+            fixture.mob,
+        ) {
+            continue;
+        }
+
+        fixture.attack_logged = true;
+        fixture.death_logged = true;
+        log_milestone(format!(
+            "MC-COMPAT-MILESTONE survival_mob_drop_attack username={} mob={} damage={:.1} \
+             target_id={}",
+            username.as_str(),
+            SURVIVAL_MOB_DROP_MOB_NAME,
+            SURVIVAL_MOB_DROP_DAMAGE,
+            fixture.mob_id
+        ));
+        log_milestone(format!(
+            "MC-COMPAT-MILESTONE survival_mob_drop_death username={} mob={} target_id={}",
+            username.as_str(),
+            SURVIVAL_MOB_DROP_MOB_NAME,
+            fixture.mob_id
+        ));
+        commands.entity(fixture.mob).insert(Despawned);
+        spawn_survival_mob_drop_item(
+            &mut commands,
+            &mut entity_manager,
+            &mut fixture,
+            layer,
+            event.client,
+            username.as_str(),
+        );
+        break;
+    }
+}
+
+fn advance_survival_mob_drop_pickup(
+    mut commands: Commands,
+    fixture: Option<ResMut<SurvivalMobDropFixture>>,
+    mut clients: Query<(&Username, &mut Client, &mut Inventory, &EntityId)>,
+) {
+    let Some(mut fixture) = fixture else {
+        return;
+    };
+    if fixture.pickup_logged || fixture.drop_id.is_none() {
+        return;
+    }
+    fixture.ticks_since_drop = fixture.ticks_since_drop.saturating_add(1);
+    if fixture.ticks_since_drop < SURVIVAL_MOB_DROP_PICKUP_DELAY_TICKS {
+        return;
+    }
+
+    let Some(collector) = fixture.collector else {
+        return;
+    };
+    let Some(drop) = fixture.drop else {
+        return;
+    };
+    let Some(drop_id) = fixture.drop_id else {
+        return;
+    };
+    let Ok((username, mut client, mut inventory, collector_id)) = clients.get_mut(collector) else {
+        return;
+    };
+
+    inventory.set_slot(SURVIVAL_MOB_DROP_INVENTORY_SLOT, survival_mob_drop_stack());
+    client.write_packet(&ItemPickupAnimationS2c {
+        collected_entity_id: VarInt(drop_id),
+        collector_entity_id: VarInt(collector_id.get()),
+        pickup_item_count: VarInt(i32::from(SURVIVAL_MOB_DROP_ITEM_COUNT)),
+    });
+    commands.entity(drop).insert(Despawned);
+    log_survival_mob_drop_pickup_and_state(username.as_str(), &mut fixture, collector_id.get());
 }
 
 fn handle_survival_chest_open(
@@ -1417,6 +1583,137 @@ fn survival_hunger_food_kind() -> ItemKind {
     ItemKind::Bread
 }
 
+fn survival_mob_drop_fixture_enabled() -> bool {
+    std::env::var(SURVIVAL_MOB_DROP_FIXTURE_ENV).as_deref() == Ok("1")
+}
+
+fn survival_mob_drop_position() -> Position {
+    Position::new(DVec3::new(
+        SURVIVAL_MOB_DROP_MOB_X,
+        SURVIVAL_MOB_DROP_MOB_Y,
+        SURVIVAL_MOB_DROP_MOB_Z,
+    ))
+}
+
+fn survival_mob_drop_stack() -> ItemStack {
+    ItemStack::new(
+        survival_mob_drop_item_kind(),
+        SURVIVAL_MOB_DROP_ITEM_COUNT,
+        None,
+    )
+}
+
+fn survival_mob_drop_item_kind() -> ItemKind {
+    ItemKind::IronIngot
+}
+
+fn is_survival_mob_drop_stack(stack: &ItemStack) -> bool {
+    stack.item == survival_mob_drop_item_kind() && stack.count == SURVIVAL_MOB_DROP_ITEM_COUNT
+}
+
+fn should_handle_survival_mob_drop_attack(
+    game_mode: GameMode,
+    interaction: EntityInteraction,
+    target: Entity,
+    expected_target: Entity,
+) -> bool {
+    game_mode == GameMode::Survival
+        && interaction == EntityInteraction::Attack
+        && target == expected_target
+}
+
+fn spawn_survival_mob_drop_item(
+    commands: &mut Commands,
+    entity_manager: &mut EntityManager,
+    fixture: &mut SurvivalMobDropFixture,
+    layer: Entity,
+    collector: Entity,
+    username: &str,
+) {
+    let drop_id = entity_manager.next_id();
+    let drop = commands
+        .spawn(ItemEntityBundle {
+            id: drop_id,
+            layer: EntityLayerId(layer),
+            position: survival_mob_drop_position(),
+            item_stack: ItemEntityStack(survival_mob_drop_stack()),
+            ..Default::default()
+        })
+        .id();
+    fixture.drop = Some(drop);
+    fixture.drop_id = Some(drop_id.get());
+    fixture.collector = Some(collector);
+    fixture.drop_logged = true;
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_mob_drop_drop_spawn username={} item={} count={} \
+         entity_id={} position={:.1},{:.1},{:.1}",
+        username,
+        SURVIVAL_MOB_DROP_ITEM_NAME,
+        SURVIVAL_MOB_DROP_ITEM_COUNT,
+        drop_id.get(),
+        SURVIVAL_MOB_DROP_MOB_X,
+        SURVIVAL_MOB_DROP_MOB_Y,
+        SURVIVAL_MOB_DROP_MOB_Z
+    ));
+}
+
+fn log_survival_mob_drop_spawn(username: &str, fixture: &mut SurvivalMobDropFixture) {
+    if fixture.spawn_logged {
+        return;
+    }
+    fixture.spawn_logged = true;
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_mob_drop_spawn username={} mob={} \
+         position={:.1},{:.1},{:.1} entity_id={}",
+        username,
+        SURVIVAL_MOB_DROP_MOB_NAME,
+        SURVIVAL_MOB_DROP_MOB_X,
+        SURVIVAL_MOB_DROP_MOB_Y,
+        SURVIVAL_MOB_DROP_MOB_Z,
+        fixture.mob_id
+    ));
+}
+
+fn log_survival_mob_drop_pickup_and_state(
+    username: &str,
+    fixture: &mut SurvivalMobDropFixture,
+    collector_id: i32,
+) {
+    if !fixture.pickup_logged {
+        fixture.pickup_logged = true;
+        log_milestone(format!(
+            "MC-COMPAT-MILESTONE survival_mob_drop_pickup username={} item={} count={} \
+             collected_entity_id={} collector_entity_id={}",
+            username,
+            SURVIVAL_MOB_DROP_ITEM_NAME,
+            SURVIVAL_MOB_DROP_ITEM_COUNT,
+            fixture.drop_id.expect("drop id set before pickup"),
+            collector_id
+        ));
+    }
+    if !fixture.inventory_logged {
+        fixture.inventory_logged = true;
+        log_milestone(format!(
+            "MC-COMPAT-MILESTONE survival_mob_drop_inventory username={} slot={} item={} count={}",
+            username,
+            SURVIVAL_MOB_DROP_INVENTORY_SLOT,
+            SURVIVAL_MOB_DROP_ITEM_NAME,
+            SURVIVAL_MOB_DROP_ITEM_COUNT
+        ));
+    }
+    if !fixture.state_logged {
+        fixture.state_logged = true;
+        log_milestone(format!(
+            "MC-COMPAT-MILESTONE survival_mob_drop_state username={} mob={} drop={} count={} \
+             extra_drops=false",
+            username,
+            SURVIVAL_MOB_DROP_MOB_NAME,
+            SURVIVAL_MOB_DROP_ITEM_NAME,
+            SURVIVAL_MOB_DROP_ITEM_COUNT
+        ));
+    }
+}
+
 fn is_survival_hunger_food_stack(stack: &ItemStack) -> bool {
     stack.item == survival_hunger_food_kind()
         && stack.count == SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE
@@ -1753,6 +2050,58 @@ mod tests {
         assert!(is_survival_hunger_food_stack(&bread));
         assert!(!is_survival_hunger_food_stack(&wrong_item));
         assert!(!is_survival_hunger_food_stack(&wrong_count));
+    }
+
+    #[test]
+    fn survival_mob_drop_stack_requires_iron_ingot_count() {
+        let ingot = survival_mob_drop_stack();
+        let wrong_item = ItemStack::new(
+            survival_hunger_food_kind(),
+            SURVIVAL_MOB_DROP_ITEM_COUNT,
+            None,
+        );
+        let wrong_count = ItemStack::new(
+            survival_mob_drop_item_kind(),
+            SURVIVAL_MOB_DROP_ITEM_COUNT + 1,
+            None,
+        );
+
+        assert!(is_survival_mob_drop_stack(&ingot));
+        assert!(!is_survival_mob_drop_stack(&wrong_item));
+        assert!(!is_survival_mob_drop_stack(&wrong_count));
+    }
+
+    #[test]
+    fn survival_mob_drop_attack_requires_survival_attack_on_fixture_mob() {
+        const TARGET_ENTITY: u32 = 11;
+        const OTHER_ENTITY: u32 = 12;
+
+        let target = Entity::from_raw(TARGET_ENTITY);
+        let other = Entity::from_raw(OTHER_ENTITY);
+        assert!(should_handle_survival_mob_drop_attack(
+            GameMode::Survival,
+            EntityInteraction::Attack,
+            target,
+            target,
+        ));
+        assert!(!should_handle_survival_mob_drop_attack(
+            GameMode::Creative,
+            EntityInteraction::Attack,
+            target,
+            target,
+        ));
+        assert!(!should_handle_survival_mob_drop_attack(
+            GameMode::Survival,
+            EntityInteraction::Interact(Hand::Main),
+            target,
+            target,
+        ));
+        assert!(!should_handle_survival_mob_drop_attack(
+            GameMode::Survival,
+            EntityInteraction::Attack,
+            other,
+            target,
+        ));
     }
 
     #[test]
