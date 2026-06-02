@@ -14,7 +14,9 @@ use valence::interact_item::InteractItemEvent;
 use valence::inventory::{ClickSlotEvent, CursorItem, HeldItem, OpenInventory, SlotChange};
 use valence::log::info;
 use valence::prelude::*;
-use valence::protocol::packets::play::{CloseHandledScreenC2s, ItemPickupAnimationS2c};
+use valence::protocol::packets::play::{
+    BlockUpdateS2c, CloseHandledScreenC2s, ItemPickupAnimationS2c,
+};
 use valence::protocol::{VarInt, WritePacket};
 
 const CHUNK_RADIUS: i32 = 5;
@@ -95,6 +97,23 @@ const SURVIVAL_MOB_DROP_DAMAGE: f32 = 20.0;
 const SURVIVAL_MOB_DROP_ITEM_COUNT: i8 = 1;
 const SURVIVAL_MOB_DROP_INVENTORY_SLOT: u16 = 36;
 const SURVIVAL_MOB_DROP_PICKUP_DELAY_TICKS: u8 = 2;
+const SURVIVAL_REDSTONE_TOGGLE_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_REDSTONE_TOGGLE_FIXTURE";
+const SURVIVAL_REDSTONE_TOGGLE_CONTROL_NAME: &str = "Lever";
+const SURVIVAL_REDSTONE_TOGGLE_OUTPUT_NAME: &str = "RedstoneLamp";
+const SURVIVAL_REDSTONE_TOGGLE_CONTROL_X: i32 = 20;
+const SURVIVAL_REDSTONE_TOGGLE_CONTROL_Y: i32 = FLOOR_Y;
+const SURVIVAL_REDSTONE_TOGGLE_CONTROL_Z: i32 = 0;
+const SURVIVAL_REDSTONE_TOGGLE_OUTPUT_X: i32 = 21;
+const SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Y: i32 = FLOOR_Y;
+const SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Z: i32 = 0;
+const SURVIVAL_REDSTONE_TOGGLE_FLOOR_Y: i32 = 63;
+const SURVIVAL_REDSTONE_TOGGLE_ARENA_MIN_X: i32 = 19;
+const SURVIVAL_REDSTONE_TOGGLE_ARENA_MAX_X: i32 = 23;
+const SURVIVAL_REDSTONE_TOGGLE_ARENA_MIN_Z: i32 = -2;
+const SURVIVAL_REDSTONE_TOGGLE_ARENA_MAX_Z: i32 = 2;
+const SURVIVAL_REDSTONE_TOGGLE_PLAYER_X: f64 = 20.5;
+const SURVIVAL_REDSTONE_TOGGLE_PLAYER_Y: f64 = 65.0;
+const SURVIVAL_REDSTONE_TOGGLE_PLAYER_Z: f64 = -1.5;
 const SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_FIXTURE";
 const SURVIVAL_OVERWORLD_ID: &str = "minecraft:overworld";
 const SURVIVAL_NETHER_ID: &str = "minecraft:the_nether";
@@ -211,6 +230,14 @@ impl SurvivalMobDropFixture {
     }
 }
 
+#[derive(Resource, Default)]
+struct SurvivalRedstoneToggleFixture {
+    input_logged: bool,
+    powered_on_logged: bool,
+    powered_off_logged: bool,
+    state_logged: bool,
+}
+
 impl SurvivalFurnaceFixture {
     fn new(inventory: Entity) -> Self {
         Self {
@@ -244,6 +271,7 @@ pub fn main() {
                 despawn_disconnected_clients,
                 handle_survival_digging,
                 handle_survival_block_place,
+                handle_survival_redstone_toggle,
                 handle_survival_chest_open,
                 handle_survival_chest_store,
                 handle_survival_crafting_open,
@@ -298,6 +326,17 @@ fn setup(
             .chunk
             .set_block(survival_furnace_pos(), survival_furnace_state());
     }
+    if survival_redstone_toggle_fixture_enabled() {
+        setup_survival_redstone_toggle_arena(&mut layer);
+        layer.chunk.set_block(
+            survival_redstone_toggle_control_pos(),
+            survival_redstone_toggle_control_state(false),
+        );
+        layer.chunk.set_block(
+            survival_redstone_toggle_output_pos(),
+            survival_redstone_toggle_output_state(false),
+        );
+    }
 
     let layer = commands.spawn(layer).id();
 
@@ -343,6 +382,9 @@ fn setup(
             .id();
         commands.insert_resource(SurvivalMobDropFixture::new(mob, mob_id.get()));
     }
+    if survival_redstone_toggle_fixture_enabled() {
+        commands.insert_resource(SurvivalRedstoneToggleFixture::default());
+    }
 }
 
 fn init_clients(
@@ -387,7 +429,15 @@ fn init_clients(
         layer_id.0 = layer;
         visible_chunk_layer.0 = layer;
         visible_entity_layers.0.insert(layer);
-        pos.set([SURVIVAL_SPAWN_X, f64::from(SPAWN_Y), SURVIVAL_SPAWN_Z]);
+        if survival_redstone_toggle_fixture_enabled() {
+            pos.set([
+                SURVIVAL_REDSTONE_TOGGLE_PLAYER_X,
+                SURVIVAL_REDSTONE_TOGGLE_PLAYER_Y,
+                SURVIVAL_REDSTONE_TOGGLE_PLAYER_Z,
+            ]);
+        } else {
+            pos.set([SURVIVAL_SPAWN_X, f64::from(SPAWN_Y), SURVIVAL_SPAWN_Z]);
+        }
         *game_mode = GameMode::Survival;
         inventory.set_slot(SURVIVAL_ITEM_SLOT, ItemStack::EMPTY);
         if survival_chest_fixture_enabled() {
@@ -517,6 +567,94 @@ fn handle_survival_block_place(
             real_pos.y,
             real_pos.z
         ));
+    }
+}
+
+fn handle_survival_redstone_toggle(
+    fixture: Option<ResMut<SurvivalRedstoneToggleFixture>>,
+    mut clients: Query<(&Username, &GameMode, &mut Client)>,
+    mut layers: Query<&mut ChunkLayer>,
+    mut events: EventReader<InteractBlockEvent>,
+) {
+    let Some(mut fixture) = fixture else {
+        return;
+    };
+    let mut layer = layers.single_mut();
+
+    for event in events.read() {
+        let Ok((username, game_mode, mut client)) = clients.get_mut(event.client) else {
+            continue;
+        };
+        if !should_toggle_survival_redstone(*game_mode, event.hand, event.position) {
+            continue;
+        }
+        if !fixture.input_logged {
+            fixture.input_logged = true;
+            layer.set_block(
+                survival_redstone_toggle_control_pos(),
+                survival_redstone_toggle_control_state(true),
+            );
+            let output_on = survival_redstone_toggle_output_state(true);
+            layer.set_block(survival_redstone_toggle_output_pos(), output_on);
+            client.write_packet(&BlockUpdateS2c {
+                position: survival_redstone_toggle_output_pos(),
+                block_id: output_on,
+            });
+            log_milestone(format!(
+                "MC-COMPAT-MILESTONE survival_redstone_toggle_input username={} control={} \
+                 position={},{},{} powered_before=false powered_after=true",
+                username.as_str(),
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_NAME,
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_X,
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_Y,
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_Z
+            ));
+            if !fixture.powered_on_logged {
+                fixture.powered_on_logged = true;
+                log_milestone(format!(
+                    "MC-COMPAT-MILESTONE survival_redstone_toggle_powered_on username={} \
+                     output={} position={},{},{} powered=true",
+                    username.as_str(),
+                    SURVIVAL_REDSTONE_TOGGLE_OUTPUT_NAME,
+                    SURVIVAL_REDSTONE_TOGGLE_OUTPUT_X,
+                    SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Y,
+                    SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Z
+                ));
+            }
+            continue;
+        }
+        if !fixture.powered_off_logged {
+            fixture.powered_off_logged = true;
+            layer.set_block(
+                survival_redstone_toggle_control_pos(),
+                survival_redstone_toggle_control_state(false),
+            );
+            let output_off = survival_redstone_toggle_output_state(false);
+            layer.set_block(survival_redstone_toggle_output_pos(), output_off);
+            client.write_packet(&BlockUpdateS2c {
+                position: survival_redstone_toggle_output_pos(),
+                block_id: output_off,
+            });
+            log_milestone(format!(
+                "MC-COMPAT-MILESTONE survival_redstone_toggle_powered_off username={} output={} \
+                 position={},{},{} powered=false",
+                username.as_str(),
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_NAME,
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_X,
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Y,
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Z
+            ));
+        }
+        if fixture.powered_on_logged && fixture.powered_off_logged && !fixture.state_logged {
+            fixture.state_logged = true;
+            log_milestone(format!(
+                "MC-COMPAT-MILESTONE survival_redstone_toggle_state username={} control={} \
+                 output={} on_seen=true off_seen=true unintended_outputs=false",
+                username.as_str(),
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_NAME,
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_NAME
+            ));
+        }
     }
 }
 
@@ -1587,6 +1725,67 @@ fn survival_mob_drop_fixture_enabled() -> bool {
     std::env::var(SURVIVAL_MOB_DROP_FIXTURE_ENV).as_deref() == Ok("1")
 }
 
+fn survival_redstone_toggle_fixture_enabled() -> bool {
+    std::env::var(SURVIVAL_REDSTONE_TOGGLE_FIXTURE_ENV).as_deref() == Ok("1")
+}
+
+fn setup_survival_redstone_toggle_arena(layer: &mut LayerBundle) {
+    for x in SURVIVAL_REDSTONE_TOGGLE_ARENA_MIN_X..SURVIVAL_REDSTONE_TOGGLE_ARENA_MAX_X {
+        for z in SURVIVAL_REDSTONE_TOGGLE_ARENA_MIN_Z..SURVIVAL_REDSTONE_TOGGLE_ARENA_MAX_Z {
+            layer
+                .chunk
+                .set_block([x, SURVIVAL_REDSTONE_TOGGLE_FLOOR_Y, z], BlockState::STONE);
+            layer
+                .chunk
+                .set_block([x, SURVIVAL_REDSTONE_TOGGLE_CONTROL_Y, z], BlockState::AIR);
+        }
+    }
+}
+
+fn survival_redstone_toggle_control_pos() -> BlockPos {
+    BlockPos::new(
+        SURVIVAL_REDSTONE_TOGGLE_CONTROL_X,
+        SURVIVAL_REDSTONE_TOGGLE_CONTROL_Y,
+        SURVIVAL_REDSTONE_TOGGLE_CONTROL_Z,
+    )
+}
+
+fn survival_redstone_toggle_output_pos() -> BlockPos {
+    BlockPos::new(
+        SURVIVAL_REDSTONE_TOGGLE_OUTPUT_X,
+        SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Y,
+        SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Z,
+    )
+}
+
+fn survival_redstone_toggle_control_state(powered: bool) -> BlockState {
+    BlockKind::from_str("lever")
+        .expect("lever block kind exists")
+        .to_state()
+        .set(PropName::Powered, prop_bool(powered))
+}
+
+fn survival_redstone_toggle_output_state(powered: bool) -> BlockState {
+    BlockKind::from_str("redstone_lamp")
+        .expect("redstone_lamp block kind exists")
+        .to_state()
+        .set(PropName::Lit, prop_bool(powered))
+}
+
+fn prop_bool(value: bool) -> PropValue {
+    if value {
+        PropValue::True
+    } else {
+        PropValue::False
+    }
+}
+
+fn should_toggle_survival_redstone(game_mode: GameMode, hand: Hand, position: BlockPos) -> bool {
+    game_mode == GameMode::Survival
+        && hand == Hand::Main
+        && position == survival_redstone_toggle_control_pos()
+}
+
 fn survival_mob_drop_position() -> Position {
     Position::new(DVec3::new(
         SURVIVAL_MOB_DROP_MOB_X,
@@ -1987,6 +2186,50 @@ mod tests {
             Hand::Main,
             survival_chest_pos()
         ));
+    }
+
+    #[test]
+    fn survival_redstone_toggle_accepts_only_main_hand_survival_control() {
+        assert!(should_toggle_survival_redstone(
+            GameMode::Survival,
+            Hand::Main,
+            survival_redstone_toggle_control_pos()
+        ));
+        assert!(!should_toggle_survival_redstone(
+            GameMode::Creative,
+            Hand::Main,
+            survival_redstone_toggle_control_pos()
+        ));
+        assert!(!should_toggle_survival_redstone(
+            GameMode::Survival,
+            Hand::Off,
+            survival_redstone_toggle_control_pos()
+        ));
+        assert!(!should_toggle_survival_redstone(
+            GameMode::Survival,
+            Hand::Main,
+            survival_redstone_toggle_output_pos()
+        ));
+    }
+
+    #[test]
+    fn survival_redstone_toggle_states_use_powered_properties() {
+        assert_eq!(
+            survival_redstone_toggle_control_state(true).get(PropName::Powered),
+            Some(PropValue::True)
+        );
+        assert_eq!(
+            survival_redstone_toggle_control_state(false).get(PropName::Powered),
+            Some(PropValue::False)
+        );
+        assert_eq!(
+            survival_redstone_toggle_output_state(true).get(PropName::Lit),
+            Some(PropValue::True)
+        );
+        assert_eq!(
+            survival_redstone_toggle_output_state(false).get(PropName::Lit),
+            Some(PropValue::False)
+        );
     }
 
     #[test]
