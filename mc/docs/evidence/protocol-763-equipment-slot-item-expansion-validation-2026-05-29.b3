@@ -4,9 +4,9 @@ e87da8ce47c67959cd6f3e3d1af34834ff4da1b8415d821dde079de95f338b64  cairn/archive/
 aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a  cairn/specs/mc-compatibility/spec.md
 b83bcb6a109092c92a1ac49d80065c15a1abf79706da57a82e1426b2236ff642  docs/evidence/protocol-763-equipment-slot-item-expansion-contract-2026-05-29.b3
 50a84842ee71d269fda99feb67899425658c259355ee59f257283ef5a9fa6a33  docs/evidence/protocol-763-equipment-slot-item-expansion-checker-2026-05-29.b3
-6fb36ae2fadb77c45e86dba015020c9727a6aba794a3a20acbf84450a22f779d  docs/evidence/protocol-763-equipment-slot-item-expansion-rail-2026-05-29.b3
-a3d9b546e1a6070ab5384072f008c382d4a487e49e67ff0bfa25214c6804e78e  docs/evidence/protocol-763-equipment-slot-item-expansion-row-2026-05-29.b3
+63d2ac7cd746ec6c36436f6853b57d37a4ebe6b3020acb15ec9ab7cd614c4a8d  docs/evidence/protocol-763-equipment-slot-item-expansion-rail-2026-05-29.b3
+13c71cb3ae7bed507d211e2f6951dffe32428e152d5d3e3a946ed4ad24e1696f  docs/evidence/protocol-763-equipment-slot-item-expansion-row-2026-05-29.b3
 e21be5e8b6e0ad1e0d3f0f2316ed6445ebd3882e87a42ecc89007742de837a73  docs/evidence/protocol-763-acceptance-matrix.md
 c8096226695be20d4869669a17f5ca7f6c203627f8dd26ba09de31138b5c179e  docs/evidence/protocol-763-current-evidence-bundle.md
-eb9705ce17a8183c4551eba0c9db18c9782ea12b4f2537bd2acb321e8970c304  tools/mc-compat-runner/src/main.rs
+988e11956b1f23156817ecc65f5441da4906c8ea2a08db230755ab6be3a16f63  tools/mc-compat-runner/src/main.rs
 d753144d7ecba1ee8b0ac68b1e59d6dee349cadffe56a03c3529d99763c76324  tools/check_equipment_slot_item_expansion.rs
