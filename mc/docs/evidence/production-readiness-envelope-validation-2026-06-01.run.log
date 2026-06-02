@@ -1,0 +1,11 @@
+# production readiness aggregate validation
+date=2026-06-01
+command=aggregate gates + matrix/current bundle checks
+
+acceptance matrix self-test ok: positive and negative fixtures exercised
+acceptance matrix check passed: 31 rows validated
+current evidence bundle self-test ok: positive and negative fixtures exercised
+current evidence bundle check passed: 31 rows validated
+aggregate claim gate self-test ok: 3 aggregate gates exercised
+aggregate claim gates passed: 3 gates checked
+exit_status=0

@@ -1,0 +1,132 @@
+$ nix run --no-update-lock-file .#cairn -- sync production-readiness-envelope --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/production-readiness-envelope/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/production-readiness-envelope/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "production-readiness-envelope",
+  "delta_specs": [
+    "./cairn/changes/production-readiness-envelope/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "1ed8908df389140c2f8a779e0dd11174c355a1a9bd45464031135c09c5798ad2",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "4eae5eb74a1a1d784a2b61b9dd65196510c3c6856139778a3559434488b2a4cd",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "5be0b13880435342c47dce387386eea9c3dd189a612d75278b19ff11fc04eb74"
+}
+sync_exit_status=0
+$ nix run --no-update-lock-file .#cairn -- archive production-readiness-envelope --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: production-readiness-envelope",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-production-readiness-envelope"
+    }
+  ],
+  "blocked": false,
+  "change": "production-readiness-envelope",
+  "dry_run": false,
+  "input_hash": "1ed8908df389140c2f8a779e0dd11174c355a1a9bd45464031135c09c5798ad2",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "7472d4e3d5b2978590bdcf9fef3522460fb09cabbdfeb2398ecbe1241acbac5c",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-production-readiness-envelope/design.md"
+        },
+        {
+          "content_hash": "f98f711e4cfd52db67461e8916785aa1a27c0999f7c243a75a95ff74eb3f2f56",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-production-readiness-envelope/proposal.md"
+        },
+        {
+          "content_hash": "495ffd363948856e3170d57b6620b92a424b1c60c62aeb8826f7f1fd3b9d3b8b",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-production-readiness-envelope/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "32c6d44e23001bed9601f613defaee1fe9becbd38cdd3978644d59919176489b",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-production-readiness-envelope/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/production-readiness-envelope"
+        }
+      ],
+      "manifest_hash": "6e11ceb3c33a3001e7b45d29487f54654b9cdd8c3e4df8ecd18190d8066ee407"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "7472d4e3d5b2978590bdcf9fef3522460fb09cabbdfeb2398ecbe1241acbac5c",
+          "exists": true,
+          "path": "./cairn/changes/production-readiness-envelope/design.md"
+        },
+        {
+          "content_hash": "f98f711e4cfd52db67461e8916785aa1a27c0999f7c243a75a95ff74eb3f2f56",
+          "exists": true,
+          "path": "./cairn/changes/production-readiness-envelope/proposal.md"
+        },
+        {
+          "content_hash": "495ffd363948856e3170d57b6620b92a424b1c60c62aeb8826f7f1fd3b9d3b8b",
+          "exists": true,
+          "path": "./cairn/changes/production-readiness-envelope/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "32c6d44e23001bed9601f613defaee1fe9becbd38cdd3978644d59919176489b",
+          "exists": true,
+          "path": "./cairn/changes/production-readiness-envelope/tasks.md"
+        }
+      ],
+      "manifest_hash": "742068347018d9cefe14b1207db6db8701d92cae84d8b8814853b69ea326c57e"
+    },
+    "kind": "archive",
+    "manifest_hash": "7b1987304e7ad5a4c445667b17914543b536184eaa881cbf52b3dc53188782b1"
+  },
+  "plan_hash": "76b1694dae1f5a636f1050835be2dbce504253a99292b1d24c9bf502be5fabec",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "d48be5265b31434450449234bc29d69ec8b2275f6883863ac98a35a2754b106e"
+}
+archive_exit_status=0
+archive_rename=2026-06-01-production-readiness-envelope
+exit_status=0
