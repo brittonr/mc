@@ -201,6 +201,30 @@ const SURVIVAL_MOB_DROP_INVENTORY_SLOT: i16 = 36;
 const SURVIVAL_MOB_DROP_INVENTORY_INDEX: usize = 36;
 const SURVIVAL_MOB_DROP_ATTACK_TYPE: i32 = 1;
 const SURVIVAL_MOB_DROP_MAIN_HAND: i32 = 0;
+const SURVIVAL_REDSTONE_TOGGLE_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_REDSTONE_TOGGLE_PROBE";
+const SURVIVAL_REDSTONE_TOGGLE_POSITION_TICK: u32 = 60;
+const SURVIVAL_REDSTONE_TOGGLE_INPUT_TICK: u32 = 100;
+const SURVIVAL_REDSTONE_TOGGLE_RETURN_TICK: u32 = 150;
+const SURVIVAL_REDSTONE_TOGGLE_PLAYER_X: f64 = 20.5;
+const SURVIVAL_REDSTONE_TOGGLE_PLAYER_Y: f64 = 65.0;
+const SURVIVAL_REDSTONE_TOGGLE_PLAYER_Z: f64 = -1.5;
+const SURVIVAL_REDSTONE_TOGGLE_TARGET_YAW: f32 = 0.0;
+const SURVIVAL_REDSTONE_TOGGLE_TARGET_PITCH: f32 = 30.0;
+const SURVIVAL_REDSTONE_TOGGLE_CONTROL_NAME: &str = "Lever";
+const SURVIVAL_REDSTONE_TOGGLE_OUTPUT_NAME: &str = "RedstoneLamp";
+const SURVIVAL_REDSTONE_TOGGLE_CONTROL_X: i32 = 20;
+const SURVIVAL_REDSTONE_TOGGLE_CONTROL_Y: i32 = 64;
+const SURVIVAL_REDSTONE_TOGGLE_CONTROL_Z: i32 = 0;
+const SURVIVAL_REDSTONE_TOGGLE_OUTPUT_X: i32 = 21;
+const SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Y: i32 = 64;
+const SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Z: i32 = 0;
+const SURVIVAL_REDSTONE_TOGGLE_FACE_UP: i32 = 1;
+const SURVIVAL_REDSTONE_TOGGLE_MAIN_HAND: i32 = 0;
+const SURVIVAL_REDSTONE_TOGGLE_CURSOR_CENTER: f32 = 0.5;
+const SURVIVAL_REDSTONE_TOGGLE_CURSOR_TOP: f32 = 1.0;
+const SURVIVAL_REDSTONE_TOGGLE_ON_SEQUENCE: i32 = 911;
+const SURVIVAL_REDSTONE_TOGGLE_OFF_SEQUENCE: i32 = 912;
+const CHUNK_SECTION_WIDTH_LOG2: i32 = 4;
 const SURVIVAL_BIOME_DIMENSION_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_PROBE";
 const SURVIVAL_OVERWORLD_ID: &str = "minecraft:overworld";
 const SURVIVAL_NETHER_ID: &str = "minecraft:the_nether";
@@ -368,6 +392,12 @@ fn survival_mob_drop_position_matches(x: f64, y: f64, z: f64) -> bool {
         && (z - SURVIVAL_MOB_DROP_TARGET_Z).abs() <= SURVIVAL_MOB_DROP_POSITION_TOLERANCE
 }
 
+fn survival_redstone_toggle_output_position_matches(location: Position) -> bool {
+    location.x == SURVIVAL_REDSTONE_TOGGLE_OUTPUT_X
+        && location.y == SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Y
+        && location.z == SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Z
+}
+
 fn should_log_survival_crafting_inventory_slot(
     window_id: u8,
     crafting_window_id: u8,
@@ -471,6 +501,7 @@ pub struct Server {
     survival_furnace_probe_enabled: bool,
     survival_furnace_probe_session: u32,
     survival_hunger_food_probe_enabled: bool,
+    survival_redstone_toggle_probe_enabled: bool,
     survival_biome_dimension_probe_enabled: bool,
     equipment_probe_enabled: bool,
     projectile_probe_enabled: bool,
@@ -547,6 +578,11 @@ pub struct Server {
     survival_mob_drop_inventory_seen: bool,
     survival_mob_drop_target_entity_id: Option<i32>,
     survival_mob_drop_drop_entity_id: Option<i32>,
+    survival_redstone_toggle_position_sent: bool,
+    survival_redstone_toggle_input_sent: bool,
+    survival_redstone_toggle_output_on_seen: bool,
+    survival_redstone_toggle_return_input_sent: bool,
+    survival_redstone_toggle_output_off_seen: bool,
     inventory_probe_click_sent: bool,
     inventory_probe_container_click_sent: bool,
     inventory_probe_container_id: u8,
@@ -1099,6 +1135,11 @@ impl Server {
             survival_mob_drop_probe_enabled: std::env::var(SURVIVAL_MOB_DROP_PROBE_ENV)
                 .map(|value| value != "0")
                 .unwrap_or(false),
+            survival_redstone_toggle_probe_enabled: std::env::var(
+                SURVIVAL_REDSTONE_TOGGLE_PROBE_ENV,
+            )
+            .map(|value| value != "0")
+            .unwrap_or(false),
             survival_biome_dimension_probe_enabled: std::env::var(
                 SURVIVAL_BIOME_DIMENSION_PROBE_ENV,
             )
@@ -1186,6 +1227,11 @@ impl Server {
             survival_mob_drop_inventory_seen: false,
             survival_mob_drop_target_entity_id: None,
             survival_mob_drop_drop_entity_id: None,
+            survival_redstone_toggle_position_sent: false,
+            survival_redstone_toggle_input_sent: false,
+            survival_redstone_toggle_output_on_seen: false,
+            survival_redstone_toggle_return_input_sent: false,
+            survival_redstone_toggle_output_off_seen: false,
             inventory_probe_click_sent: false,
             inventory_probe_container_click_sent: false,
             inventory_probe_container_id: 0,
@@ -1311,6 +1357,7 @@ impl Server {
             && !self.survival_furnace_probe_enabled
             && !self.survival_hunger_food_probe_enabled
             && !self.survival_mob_drop_probe_enabled
+            && !self.survival_redstone_toggle_probe_enabled
         {
             return;
         }
@@ -1762,6 +1809,7 @@ impl Server {
         self.apply_mc_compat_survival_furnace_probe(player);
         self.apply_mc_compat_survival_hunger_food_probe();
         self.apply_mc_compat_survival_mob_drop_probe(player);
+        self.apply_mc_compat_survival_redstone_toggle_probe(player);
 
         if self.inventory_probe_enabled && self.active_probe_ticks == 520 {
             info!("MC-COMPAT-MILESTONE inventory_probe_select_hotbar_slot slot=0");
@@ -3577,6 +3625,137 @@ impl Server {
         );
     }
 
+    fn apply_mc_compat_survival_redstone_toggle_probe(&mut self, player: ecs::Entity) {
+        if !self.survival_redstone_toggle_probe_enabled {
+            return;
+        }
+        if self.active_probe_ticks >= SURVIVAL_REDSTONE_TOGGLE_POSITION_TICK
+            && !self.survival_redstone_toggle_position_sent
+        {
+            if let Some(position) = self.entities.get_component_mut(player, self.position) {
+                position.position = cgmath::Vector3::new(
+                    SURVIVAL_REDSTONE_TOGGLE_PLAYER_X,
+                    SURVIVAL_REDSTONE_TOGGLE_PLAYER_Y,
+                    SURVIVAL_REDSTONE_TOGGLE_PLAYER_Z,
+                );
+                position.moved = true;
+            }
+            self.write_packet(packet::play::serverbound::PlayerPositionLook {
+                x: SURVIVAL_REDSTONE_TOGGLE_PLAYER_X,
+                y: SURVIVAL_REDSTONE_TOGGLE_PLAYER_Y,
+                z: SURVIVAL_REDSTONE_TOGGLE_PLAYER_Z,
+                yaw: SURVIVAL_REDSTONE_TOGGLE_TARGET_YAW,
+                pitch: SURVIVAL_REDSTONE_TOGGLE_TARGET_PITCH,
+                on_ground: true,
+            });
+            info!(
+                "MC-COMPAT-MILESTONE survival_redstone_toggle_move_near_control x={:.1} y={:.1} z={:.1} control={},{},{} output={},{},{}",
+                SURVIVAL_REDSTONE_TOGGLE_PLAYER_X,
+                SURVIVAL_REDSTONE_TOGGLE_PLAYER_Y,
+                SURVIVAL_REDSTONE_TOGGLE_PLAYER_Z,
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_X,
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_Y,
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_Z,
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_X,
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Y,
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Z
+            );
+            self.survival_redstone_toggle_position_sent = true;
+        }
+        if self.active_probe_ticks >= SURVIVAL_REDSTONE_TOGGLE_INPUT_TICK
+            && self.survival_redstone_toggle_position_sent
+            && !self.survival_redstone_toggle_input_sent
+        {
+            self.write_packet(
+                packet::play::serverbound::PlayerBlockPlacement_insideblock_sequence {
+                    hand: protocol::VarInt(SURVIVAL_REDSTONE_TOGGLE_MAIN_HAND),
+                    location: Position::new(
+                        SURVIVAL_REDSTONE_TOGGLE_CONTROL_X,
+                        SURVIVAL_REDSTONE_TOGGLE_CONTROL_Y,
+                        SURVIVAL_REDSTONE_TOGGLE_CONTROL_Z,
+                    ),
+                    face: protocol::VarInt(SURVIVAL_REDSTONE_TOGGLE_FACE_UP),
+                    cursor_x: SURVIVAL_REDSTONE_TOGGLE_CURSOR_CENTER,
+                    cursor_y: SURVIVAL_REDSTONE_TOGGLE_CURSOR_TOP,
+                    cursor_z: SURVIVAL_REDSTONE_TOGGLE_CURSOR_CENTER,
+                    inside_block: false,
+                    sequence: protocol::VarInt(SURVIVAL_REDSTONE_TOGGLE_ON_SEQUENCE),
+                },
+            );
+            self.survival_redstone_toggle_input_sent = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_redstone_toggle_input_sent control={} position={},{},{} powered_before=false powered_after=true",
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_NAME,
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_X,
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_Y,
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_Z
+            );
+        }
+        if self.active_probe_ticks >= SURVIVAL_REDSTONE_TOGGLE_RETURN_TICK
+            && self.survival_redstone_toggle_output_on_seen
+            && !self.survival_redstone_toggle_return_input_sent
+        {
+            self.write_packet(
+                packet::play::serverbound::PlayerBlockPlacement_insideblock_sequence {
+                    hand: protocol::VarInt(SURVIVAL_REDSTONE_TOGGLE_MAIN_HAND),
+                    location: Position::new(
+                        SURVIVAL_REDSTONE_TOGGLE_CONTROL_X,
+                        SURVIVAL_REDSTONE_TOGGLE_CONTROL_Y,
+                        SURVIVAL_REDSTONE_TOGGLE_CONTROL_Z,
+                    ),
+                    face: protocol::VarInt(SURVIVAL_REDSTONE_TOGGLE_FACE_UP),
+                    cursor_x: SURVIVAL_REDSTONE_TOGGLE_CURSOR_CENTER,
+                    cursor_y: SURVIVAL_REDSTONE_TOGGLE_CURSOR_TOP,
+                    cursor_z: SURVIVAL_REDSTONE_TOGGLE_CURSOR_CENTER,
+                    inside_block: false,
+                    sequence: protocol::VarInt(SURVIVAL_REDSTONE_TOGGLE_OFF_SEQUENCE),
+                },
+            );
+            self.survival_redstone_toggle_return_input_sent = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_redstone_toggle_return_input_sent control={} position={},{},{} powered_before=true powered_after=false",
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_NAME,
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_X,
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_Y,
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_Z
+            );
+        }
+    }
+
+    fn log_survival_redstone_toggle_block_update(&mut self, location: Position, raw_id: i32) {
+        if !self.survival_redstone_toggle_probe_enabled
+            || !survival_redstone_toggle_output_position_matches(location)
+        {
+            return;
+        }
+        if self.survival_redstone_toggle_input_sent && !self.survival_redstone_toggle_output_on_seen
+        {
+            self.survival_redstone_toggle_output_on_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_redstone_toggle_output_update output={} position={},{},{} powered=true raw_id={}",
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_NAME,
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_X,
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Y,
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Z,
+                raw_id
+            );
+            return;
+        }
+        if self.survival_redstone_toggle_return_input_sent
+            && !self.survival_redstone_toggle_output_off_seen
+        {
+            self.survival_redstone_toggle_output_off_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_redstone_toggle_return_update output={} position={},{},{} powered=false raw_id={}",
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_NAME,
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_X,
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Y,
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Z,
+                raw_id
+            );
+        }
+    }
+
     fn log_survival_mob_drop_inventory_from_slot(
         &mut self,
         slot: i16,
@@ -5270,6 +5449,7 @@ impl Server {
                 .id_map
                 .by_vanilla_id(id as usize, &self.world.modded_block_ids),
         );
+        self.log_survival_redstone_toggle_block_update(location, id);
         if self.survival_probe_enabled
             && location.x == SURVIVAL_PROBE_BREAK_X
             && location.z == SURVIVAL_PROBE_BREAK_Z
@@ -5327,12 +5507,18 @@ impl Server {
             let ly = ((record.0 >> 4) & 0xf) as i32;
             let lx = ((record.0 >> 8) & 0xf) as i32;
 
+            let location = Position::new(
+                (sx << CHUNK_SECTION_WIDTH_LOG2) + lx as i32,
+                (sy << CHUNK_SECTION_WIDTH_LOG2) + ly as i32,
+                (sz << CHUNK_SECTION_WIDTH_LOG2) + lz as i32,
+            );
             self.world.set_block(
-                Position::new(sx + lx as i32, sy + ly as i32, sz + lz as i32),
+                location,
                 self.world
                     .id_map
                     .by_vanilla_id(block_raw_id as usize, &self.world.modded_block_ids),
             );
+            self.log_survival_redstone_toggle_block_update(location, block_raw_id as i32);
         }
     }
 
@@ -5343,16 +5529,18 @@ impl Server {
         let ox = block_change.chunk_x << 4;
         let oz = block_change.chunk_z << 4;
         for record in block_change.records.data {
+            let location = Position::new(
+                ox + (record.xz >> 4) as i32,
+                record.y as i32,
+                oz + (record.xz & 0xF) as i32,
+            );
             self.world.set_block(
-                Position::new(
-                    ox + (record.xz >> 4) as i32,
-                    record.y as i32,
-                    oz + (record.xz & 0xF) as i32,
-                ),
+                location,
                 self.world
                     .id_map
                     .by_vanilla_id(record.block_id.0 as usize, &self.world.modded_block_ids),
             );
+            self.log_survival_redstone_toggle_block_update(location, record.block_id.0);
         }
     }
 
@@ -5375,12 +5563,14 @@ impl Server {
             let z = oz + ((record & 0x0f00_0000) >> 24) as i32;
             let x = ox + ((record & 0xf000_0000) >> 28) as i32;
 
+            let location = Position::new(x, y, z);
             self.world.set_block(
-                Position::new(x, y, z),
+                location,
                 self.world
                     .id_map
                     .by_vanilla_id(id as usize, &self.world.modded_block_ids),
             );
+            self.log_survival_redstone_toggle_block_update(location, id as i32);
         }
     }
 
@@ -5456,11 +5646,11 @@ mod tests {
         survival_hunger_food_float_matches, survival_hunger_food_item_matches,
         survival_hunger_food_post_update_matches, survival_hunger_food_pre_update_matches,
         survival_hunger_food_slot_is_empty, survival_mob_drop_item_matches,
-        survival_mob_drop_position_matches, DEFAULT_FLAG_PROBE_REPEAT_TARGET,
-        MAX_FLAG_PROBE_REPEAT_TARGET, PLAYER_INVENTORY_WINDOW_ID, SURVIVAL_CRAFTING_INPUT_A_SLOT,
-        SURVIVAL_CRAFTING_INPUT_COUNT, SURVIVAL_CRAFTING_INPUT_ITEM_ID,
-        SURVIVAL_CRAFTING_INVENTORY_INDEX, SURVIVAL_CRAFTING_INVENTORY_SLOT,
-        SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_INDEX,
+        survival_mob_drop_position_matches, survival_redstone_toggle_output_position_matches,
+        DEFAULT_FLAG_PROBE_REPEAT_TARGET, MAX_FLAG_PROBE_REPEAT_TARGET, PLAYER_INVENTORY_WINDOW_ID,
+        SURVIVAL_CRAFTING_INPUT_A_SLOT, SURVIVAL_CRAFTING_INPUT_COUNT,
+        SURVIVAL_CRAFTING_INPUT_ITEM_ID, SURVIVAL_CRAFTING_INVENTORY_INDEX,
+        SURVIVAL_CRAFTING_INVENTORY_SLOT, SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_INDEX,
         SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_SLOT, SURVIVAL_CRAFTING_RESULT_COUNT,
         SURVIVAL_CRAFTING_RESULT_ITEM_ID, SURVIVAL_CRAFTING_TABLE_X, SURVIVAL_CRAFTING_TABLE_Y,
         SURVIVAL_CRAFTING_TABLE_Z, SURVIVAL_END_ID, SURVIVAL_FURNACE_FUEL_ITEM_ID,
@@ -5474,11 +5664,13 @@ mod tests {
         SURVIVAL_HUNGER_FOOD_PRE_HEALTH, SURVIVAL_HUNGER_FOOD_PRE_SATURATION,
         SURVIVAL_MOB_DROP_ITEM_COUNT, SURVIVAL_MOB_DROP_ITEM_ID,
         SURVIVAL_MOB_DROP_POSITION_TOLERANCE, SURVIVAL_MOB_DROP_PROTOCOL_758_ITEM_ID,
-        SURVIVAL_MOB_DROP_TARGET_X,
-        SURVIVAL_MOB_DROP_TARGET_Y, SURVIVAL_MOB_DROP_TARGET_Z, SURVIVAL_NETHER_ID,
-        SURVIVAL_OVERWORLD_ID, SURVIVAL_UNKNOWN_ENVIRONMENT_ID,
+        SURVIVAL_MOB_DROP_TARGET_X, SURVIVAL_MOB_DROP_TARGET_Y, SURVIVAL_MOB_DROP_TARGET_Z,
+        SURVIVAL_NETHER_ID, SURVIVAL_OVERWORLD_ID, SURVIVAL_REDSTONE_TOGGLE_OUTPUT_X,
+        SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Y, SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Z,
+        SURVIVAL_UNKNOWN_ENVIRONMENT_ID,
     };
     use crate::protocol::{self, packet};
+    use crate::shared::Position;
     use steven_protocol::item;
 
     #[test]
@@ -5708,6 +5900,23 @@ mod tests {
             SURVIVAL_MOB_DROP_TARGET_Y,
             SURVIVAL_MOB_DROP_TARGET_Z
         ));
+    }
+
+    #[test]
+    fn survival_redstone_toggle_output_position_match_rejects_wrong_target() {
+        let expected = Position::new(
+            SURVIVAL_REDSTONE_TOGGLE_OUTPUT_X,
+            SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Y,
+            SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Z,
+        );
+        let wrong = Position::new(
+            SURVIVAL_REDSTONE_TOGGLE_OUTPUT_X,
+            SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Y,
+            SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Z + 1,
+        );
+
+        assert!(survival_redstone_toggle_output_position_matches(expected));
+        assert!(!survival_redstone_toggle_output_position_matches(wrong));
     }
 
     #[test]
