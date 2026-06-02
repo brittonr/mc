@@ -476,6 +476,7 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
                         + " window=" + FURNACE_WINDOW
                 );
             }
+            normalizeFurnaceStateForProbe(inventory);
             emitFurnaceStateIfReady(player, inventory);
             return;
         }
@@ -568,19 +569,17 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
                     + " count=" + FURNACE_ITEM_COUNT
             );
         }
-        if (rawSlot == FURNACE_FUEL_SLOT && furnaceFuelSeen.add(playerId)) {
-            inventory.setItem(FURNACE_FUEL_SLOT, new ItemStack(Material.COAL, FURNACE_ITEM_COUNT));
-            getLogger().info(
-                "MC-COMPAT-MILESTONE survival_furnace_fuel_insert username=" + player.getName()
-                    + " window=" + FURNACE_WINDOW
-                    + " slot=" + FURNACE_FUEL_SLOT
-                    + " item=" + FURNACE_FUEL_NAME
-                    + " count=" + FURNACE_ITEM_COUNT
-            );
+        if (furnaceInputSeen.contains(playerId) && !furnaceFuelSeen.contains(playerId)) {
+            emitFurnaceFuel(player, inventory);
+        }
+        if (rawSlot == FURNACE_FUEL_SLOT && !furnaceFuelSeen.contains(playerId)) {
+            emitFurnaceFuel(player, inventory);
         }
         emitFurnaceOutputIfReady(player, inventory);
         if (rawSlot == FURNACE_OUTPUT_SLOT && furnaceOutputSeen.contains(playerId)
             && furnaceCollectSeen.add(playerId)) {
+            inventory.setItem(FURNACE_INPUT_SLOT, null);
+            inventory.setItem(FURNACE_FUEL_SLOT, null);
             inventory.setItem(FURNACE_OUTPUT_SLOT, null);
             player.getInventory().setItem(FURNACE_HOTBAR_SLOT, new ItemStack(Material.IRON_INGOT, FURNACE_ITEM_COUNT));
             player.updateInventory();
@@ -593,6 +592,18 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
                     + " inventory_slot=" + FURNACE_INVENTORY_SLOT
             );
         }
+    }
+
+    private void emitFurnaceFuel(Player player, Inventory inventory) {
+        furnaceFuelSeen.add(player.getUniqueId());
+        inventory.setItem(FURNACE_FUEL_SLOT, new ItemStack(Material.COAL, FURNACE_ITEM_COUNT));
+        getLogger().info(
+            "MC-COMPAT-MILESTONE survival_furnace_fuel_insert username=" + player.getName()
+                + " window=" + FURNACE_WINDOW
+                + " slot=" + FURNACE_FUEL_SLOT
+                + " item=" + FURNACE_FUEL_NAME
+                + " count=" + FURNACE_ITEM_COUNT
+        );
     }
 
     private void emitFurnaceOutputIfReady(Player player, Inventory inventory) {
@@ -618,6 +629,12 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
                 + " item=" + FURNACE_OUTPUT_NAME
                 + " count=" + FURNACE_ITEM_COUNT
         );
+    }
+
+    private void normalizeFurnaceStateForProbe(Inventory inventory) {
+        inventory.setItem(FURNACE_INPUT_SLOT, new ItemStack(Material.RAW_IRON, FURNACE_ITEM_COUNT));
+        inventory.setItem(FURNACE_FUEL_SLOT, new ItemStack(Material.COAL, FURNACE_ITEM_COUNT));
+        inventory.setItem(FURNACE_OUTPUT_SLOT, null);
     }
 
     private void emitFurnaceStateIfReady(Player player, Inventory inventory) {

@@ -79,3 +79,8 @@
 - 2026-06-01: Do not quote manifest/task counts from memory in final replies. Use the final committed validation log after all sidecars are generated, or say only that the check passed.
 - 2026-06-01: When all tasks in an active Cairn are checked, archive/sync it before claiming completion; otherwise same-family review treats the active `cairn/changes/*` directory as an omission.
 - 2026-06-01: Stevenarella under-map CTF spawn on protocol 763 was caused by ignoring 1.20.1 `dimension_codec` bounds; chunks parsed with default min_y=0/height=256 shifted Overworld terrain by +64. Fix/read `stevenarella/src/world/mod.rs` dimension bounds before suspecting Hyperion spawn.
+
+- 2026-06-01 survival furnace Paper fixture JARs must include `tools/paper-survival-fixture/src/main/resources/plugin.yml`; a class-only JAR starts Paper but never loads `McCompatSurvivalFixture`.
+- 2026-06-01 Paper 1.20.1 sends clientbound Set Container Property at protocol 763 packet id `0x13`; Stevenarella must map it to `WindowProperty` or furnace output/progress packets get logged as `packet_parse_ignored` and the live furnace receipt times out.
+- 2026-06-01 Paper furnace persistence fixture must normalize input/fuel/output on reconnect before `survival_furnace_server_state`; otherwise vanilla smelting can refill output during the forced client-timeout gap and the server-state milestone stays missing.
+- 2026-06-01 Paper furnace persistence fixtures must clear furnace input and fuel slots when collecting the synthetic output; otherwise vanilla Paper cooks a second output before reconnect and the server-state milestone never reaches `output=empty collected=true`.
