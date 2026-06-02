@@ -1,0 +1,70 @@
+## cairn gates
+$ nix run --no-update-lock-file .#cairn -- gate proposal full-protocol-763-compatibility-gate --root .
+{
+  "change": "full-protocol-763-compatibility-gate",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e0471f5fb191ee34a4bbe0468c8c245d9301600548ca24e49fd074a72596d210",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "a7108fcfe6e3b97ffd1108bf6cc09d5d72878df0f592d84c4438881de02397b2",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_proposal_exit_status=0
+$ nix run --no-update-lock-file .#cairn -- gate design full-protocol-763-compatibility-gate --root .
+{
+  "change": "full-protocol-763-compatibility-gate",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "d98d57bf2830eac2a9e9585ffd80297e3d1b57db0fb4a75db5c4a33562395aac",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "a4410ce2363487d92df277f55913bd39c3d58496a88c6429c5f10d9e29ac2071",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_design_exit_status=0
+$ nix run --no-update-lock-file .#cairn -- gate tasks full-protocol-763-compatibility-gate --root .
+{
+  "change": "full-protocol-763-compatibility-gate",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "636e48d2a6da57f0ef750603b8b0a4be655096b86f519d6c7be0e408ed94f633",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "fe81142688cc0e982292a2426c8dfddb838cabc0744a78eea7ad30689bb02f26",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_tasks_exit_status=0

@@ -1,0 +1,132 @@
+$ nix run --no-update-lock-file .#cairn -- sync full-protocol-763-compatibility-gate --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/full-protocol-763-compatibility-gate/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/full-protocol-763-compatibility-gate/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "full-protocol-763-compatibility-gate",
+  "delta_specs": [
+    "./cairn/changes/full-protocol-763-compatibility-gate/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "8ca2bf8cfb1e46489bef1e076f820f9d7cba652d2eb475a2f182f12abe938493",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "7cf83d9e97f322e02c5a0a3a1ef9c32510689bdfdd514f22c94ee74c9609d77a",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "3d8db9267e0e0297d49d20cde6a31867ef8f3cba7f22440ac2a3fbf84b706c94"
+}
+sync_exit_status=0
+$ nix run --no-update-lock-file .#cairn -- archive full-protocol-763-compatibility-gate --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: full-protocol-763-compatibility-gate",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-full-protocol-763-compatibility-gate"
+    }
+  ],
+  "blocked": false,
+  "change": "full-protocol-763-compatibility-gate",
+  "dry_run": false,
+  "input_hash": "8ca2bf8cfb1e46489bef1e076f820f9d7cba652d2eb475a2f182f12abe938493",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "c9f71e12655b5e00bd34aaec464b855c4bc16fa7590fd46ab30d3acd8a5a5b46",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-full-protocol-763-compatibility-gate/design.md"
+        },
+        {
+          "content_hash": "d6cc918d62dfb63e6716b1081b3e1653300165bc551ff9b5c0a0566f6bd1b5a5",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-full-protocol-763-compatibility-gate/proposal.md"
+        },
+        {
+          "content_hash": "d8f5ac80cb2039cff09449e7051164c00b8c926d656375f8d2809a299dcafa42",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-full-protocol-763-compatibility-gate/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "20a61103d2f084cd73de6def8cbf11a52f802afc55ff0c7753ede7ab1d887148",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-full-protocol-763-compatibility-gate/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/full-protocol-763-compatibility-gate"
+        }
+      ],
+      "manifest_hash": "a0b12a9ab20e46d1b07c6dde5c145f6f9d8f080e0d3f88ca69c76c716af93415"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "c9f71e12655b5e00bd34aaec464b855c4bc16fa7590fd46ab30d3acd8a5a5b46",
+          "exists": true,
+          "path": "./cairn/changes/full-protocol-763-compatibility-gate/design.md"
+        },
+        {
+          "content_hash": "d6cc918d62dfb63e6716b1081b3e1653300165bc551ff9b5c0a0566f6bd1b5a5",
+          "exists": true,
+          "path": "./cairn/changes/full-protocol-763-compatibility-gate/proposal.md"
+        },
+        {
+          "content_hash": "d8f5ac80cb2039cff09449e7051164c00b8c926d656375f8d2809a299dcafa42",
+          "exists": true,
+          "path": "./cairn/changes/full-protocol-763-compatibility-gate/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "20a61103d2f084cd73de6def8cbf11a52f802afc55ff0c7753ede7ab1d887148",
+          "exists": true,
+          "path": "./cairn/changes/full-protocol-763-compatibility-gate/tasks.md"
+        }
+      ],
+      "manifest_hash": "f150ddefa0b2d992e2d3e4a24e7570722c910c1ab9c2748e781ae959b8cc8efb"
+    },
+    "kind": "archive",
+    "manifest_hash": "f4eda7db8d2d37bff9c5e97a5eea4173c8cda09f51b623ecf79ef5773858fc79"
+  },
+  "plan_hash": "c10b84056a0d111e862c637757cf670eb6d6f65cbc238eb37e51129215db1ab2",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "bc2b43d8b813c9d1737683081a2fb040962a9beb80be910b99c5ba694d193ff6"
+}
+archive_exit_status=0
+archive_rename=2026-06-01-full-protocol-763-compatibility-gate
+exit_status=0
