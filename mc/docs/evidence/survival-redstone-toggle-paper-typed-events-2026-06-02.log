@@ -1,0 +1,12 @@
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-redstone-toggle session=paper username=compatbot seq=1 event=protocol_detected
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-redstone-toggle session=paper username=compatbot seq=2 event=join_game
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-redstone-toggle session=paper username=compatbot seq=3 event=render_tick
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-redstone-toggle session=paper username=compatbot seq=4 event=survival_redstone_toggle_input_sent
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-redstone-toggle session=paper username=compatbot seq=5 event=survival_redstone_toggle_output_update
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-redstone-toggle session=paper username=compatbot seq=6 event=survival_redstone_toggle_return_input_sent
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-redstone-toggle session=paper username=compatbot seq=7 event=survival_redstone_toggle_return_update
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-redstone-toggle session=paper username=compatbot seq=8 event=server_username_seen
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-redstone-toggle session=paper username=compatbot seq=9 event=server_survival_redstone_toggle_input
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-redstone-toggle session=paper username=compatbot seq=10 event=server_survival_redstone_toggle_powered_on
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-redstone-toggle session=paper username=compatbot seq=11 event=server_survival_redstone_toggle_powered_off
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-redstone-toggle session=paper username=compatbot seq=12 event=server_survival_redstone_toggle_state

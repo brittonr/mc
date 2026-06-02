@@ -1,0 +1,5 @@
+4639241e2ae8300e3f68a9e0068acc620ff2877dc89b95d6f8e2700f9c795950  docs/evidence/survival-redstone-toggle-runner-client-2026-06-02.run.log
+83134869257848d25508e763c12da92fa238eb96928b87bf19e246fe0a4120b6  tools/mc-compat-runner/src/main.rs
+756cbd12edd071f551bbe4e5f52c73d1f8161afa921133fd91b64dd7b862086a  tools/mc-compat-runner/src/scenario_manifest_generated.rs
+b7281b18acdfd49fd63c083f3afd108e38b9c499b56b5d3cd9f756a39ceea9a1  config/mc-compat/scenario-manifest.ncl
+d963def120f340306d514264e3ccccf1e5cfaed9591ab5f5d7f03079ab49eb46  stevenarella/src/server/mod.rs

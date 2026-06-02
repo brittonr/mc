@@ -1,0 +1,9 @@
+row=survival-redstone-toggle
+backend=valence
+revision_status=clean
+child_revision=469558f87501a979fbcc8a56e21716c43bfec356
+metric.input_interaction=control=Lever position=20,64,0 powered_before=false powered_after=true
+metric.powered_on=output=RedstoneLamp position=21,64,0 powered=true
+metric.client_state_update=output=RedstoneLamp position=21,64,0 powered_on=true powered_off=true raw_on=7417 raw_off=7418
+metric.powered_off=output=RedstoneLamp position=21,64,0 powered=false
+metric.server_power_state=control=Lever output=RedstoneLamp on_seen=true off_seen=true unintended_outputs=false

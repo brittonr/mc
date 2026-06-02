@@ -45,6 +45,7 @@ const REQUIRED_SEAMS: &[&str] = &[
     "Survival furnace persistence",
     "Survival hunger/food",
     "Survival mob drops",
+    "Survival redstone toggle",
     "Survival biome/dimension join state",
     "MCP-controlled observability",
 ];

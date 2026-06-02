@@ -1,0 +1,48 @@
+[main.rs:1037][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:1173][INFO] Shader version: #version 150
+[main.rs:290][INFO] Detected server protocol version 763
+[server/mod.rs:639][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25566
+[server/mod.rs:644][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:661][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:675][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:682][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:743][WARN] Server is running in offline mode
+[server/mod.rs:744][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbot properties=0
+[server/mod.rs:2764][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[world/mod.rs:1123][INFO] Dimension bounds: min_y=-64 height=384
+[server/mod.rs:2849][INFO] MC-COMPAT-MILESTONE join_game entity_id=410 gamemode=Survival
+[server/mod.rs:5086][INFO] Received chat message: unhandled: multiplayer.player.joined
+[server/mod.rs:1325][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:3397][INFO] MC-COMPAT-MILESTONE update_health health=20.0 food=20 saturation=5.0
+[server/mod.rs:5234][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=1 chunk_z=-1
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:standing_banner
+[model/mod.rs:196][ERROR] Error loading model minecraft:standing_banner
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:stripped_spruce_log_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:stripped_spruce_log_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:dark_oak_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:dark_oak_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:mushroom_stem
+[model/mod.rs:196][ERROR] Error loading model minecraft:mushroom_stem
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:jungle_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:jungle_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:stripped_birch_log_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:stripped_birch_log_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:acacia_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:acacia_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:stripped_jungle_log_wood
+[model/mod.rs:196][ERROR] Error loading model minecraft:stripped_jungle_log_wood
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:stripped_birch_log_log
+[model/mod.rs:196][ERROR] Error loading model minecraft:stripped_birch_log_log
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:stripped_dark_oak_log_log
+[model/mod.rs:196][ERROR] Error loading model minecraft:stripped_dark_oak_log_log
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:stripped_jungle_log_log
+[model/mod.rs:196][ERROR] Error loading model minecraft:stripped_jungle_log_log
+[server/mod.rs:3651][INFO] MC-COMPAT-MILESTONE survival_redstone_toggle_move_near_control x=20.5 y=65.0 z=-1.5 control=20,64,0 output=21,64,0
+[server/mod.rs:3686][INFO] MC-COMPAT-MILESTONE survival_redstone_toggle_input_sent control=Lever position=20,64,0 powered_before=false powered_after=true
+[server/mod.rs:3734][INFO] MC-COMPAT-MILESTONE survival_redstone_toggle_output_update output=RedstoneLamp position=21,64,0 powered=true raw_id=7417
+[server/mod.rs:3715][INFO] MC-COMPAT-MILESTONE survival_redstone_toggle_return_input_sent control=Lever position=20,64,0 powered_before=true powered_after=false
+[server/mod.rs:3748][INFO] MC-COMPAT-MILESTONE survival_redstone_toggle_return_update output=RedstoneLamp position=21,64,0 powered=false raw_id=7418
+[model/mod.rs:226][ERROR] Error missing block state for minecraft:stripped_acacia_log_log
+[model/mod.rs:196][ERROR] Error loading model minecraft:stripped_acacia_log_log

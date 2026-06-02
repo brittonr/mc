@@ -332,6 +332,34 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         migration_state: "substring-fallback",
     },
     GeneratedScenarioRow {
+        name: "survival-redstone-toggle",
+        aliases: &["survival-redstone-toggle"],
+        client_milestones: &[
+            "protocol_detected",
+            "join_game",
+            "render_tick",
+            "survival_redstone_toggle_input_sent",
+            "survival_redstone_toggle_output_update",
+            "survival_redstone_toggle_return_input_sent",
+            "survival_redstone_toggle_return_update",
+        ],
+        server_milestones: &[
+            "server_username_seen",
+            "server_survival_redstone_toggle_input",
+            "server_survival_redstone_toggle_powered_on",
+            "server_survival_redstone_toggle_powered_off",
+            "server_survival_redstone_toggle_state",
+        ],
+        forbidden_patterns: DEFAULT_FORBIDDEN_PATTERNS,
+        client_count: ONE_CLIENT,
+        session_count: ONE_SESSION,
+        dry_run_check: "",
+        dry_run_wrapper: "mc-compat-smoke",
+        dry_run_exclusion_reason:
+            "survival-redstone-toggle-parity uses live paired fixture receipts instead of a dedicated dry-run wrapper",
+        migration_state: "substring-fallback",
+    },
+    GeneratedScenarioRow {
         name: "survival-biome-dimension-state",
         aliases: &["survival-biome-dimension-state"],
         client_milestones: &[

@@ -1,0 +1,10 @@
+survival-redstone-toggle row parity 2026-06-02T21:14:58Z
+command=nix develop --no-update-lock-file -c rustc tools/check_survival_row_parity.rs -o /tmp/check_survival_row_parity_redstone
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+compile_exit_status=0
+command=/tmp/check_survival_row_parity_redstone --row survival-redstone-toggle --paper docs/evidence/survival-redstone-toggle-paper-2026-06-02.evidence --valence docs/evidence/survival-redstone-toggle-valence-2026-06-02.evidence
+redstone row check passed
+row_parity_exit_status=0
+exit_status=0

@@ -180,6 +180,24 @@ const SURVIVAL_MOB_DROP_SERVER_STATE_NEEDLE: &str =
     "survival_mob_drop_state username=compatbot mob=IronGolem drop=IronIngot count=1 extra_drops=false";
 const SURVIVAL_MOB_DROP_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_MOB_DROP_PROBE";
 const SURVIVAL_MOB_DROP_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_MOB_DROP_FIXTURE";
+const SURVIVAL_REDSTONE_TOGGLE_CLIENT_INPUT_ON_NEEDLE: &str =
+    "survival_redstone_toggle_input_sent control=Lever position=20,64,0 powered_before=false powered_after=true";
+const SURVIVAL_REDSTONE_TOGGLE_CLIENT_OUTPUT_ON_NEEDLE: &str =
+    "survival_redstone_toggle_output_update output=RedstoneLamp position=21,64,0 powered=true";
+const SURVIVAL_REDSTONE_TOGGLE_CLIENT_INPUT_OFF_NEEDLE: &str =
+    "survival_redstone_toggle_return_input_sent control=Lever position=20,64,0 powered_before=true powered_after=false";
+const SURVIVAL_REDSTONE_TOGGLE_CLIENT_OUTPUT_OFF_NEEDLE: &str =
+    "survival_redstone_toggle_return_update output=RedstoneLamp position=21,64,0 powered=false";
+const SURVIVAL_REDSTONE_TOGGLE_SERVER_INPUT_NEEDLE: &str =
+    "survival_redstone_toggle_input username=compatbot control=Lever position=20,64,0 powered_before=false powered_after=true";
+const SURVIVAL_REDSTONE_TOGGLE_SERVER_ON_NEEDLE: &str =
+    "survival_redstone_toggle_powered_on username=compatbot output=RedstoneLamp position=21,64,0 powered=true";
+const SURVIVAL_REDSTONE_TOGGLE_SERVER_OFF_NEEDLE: &str =
+    "survival_redstone_toggle_powered_off username=compatbot output=RedstoneLamp position=21,64,0 powered=false";
+const SURVIVAL_REDSTONE_TOGGLE_SERVER_STATE_NEEDLE: &str =
+    "survival_redstone_toggle_state username=compatbot control=Lever output=RedstoneLamp on_seen=true off_seen=true unintended_outputs=false";
+const SURVIVAL_REDSTONE_TOGGLE_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_REDSTONE_TOGGLE_PROBE";
+const SURVIVAL_REDSTONE_TOGGLE_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_REDSTONE_TOGGLE_FIXTURE";
 const SURVIVAL_BIOME_DIMENSION_CLIENT_STATE_NEEDLE: &str =
     "survival_biome_dimension_state spawn_environment=minecraft:overworld environment_identifier=minecraft:overworld client_environment_update=minecraft:overworld normalized_identifier=minecraft:overworld";
 const SURVIVAL_BIOME_DIMENSION_SERVER_STATE_NEEDLE: &str =
@@ -274,7 +292,7 @@ const FRAME_ARTIFACT_NON_CLAIMS: &[&str] = &[
     "visual_regression_approval",
     "semantic_equivalence",
 ];
-const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-furnace-persistence|survival-hunger-food|survival-mob-drop|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset";
+const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-furnace-persistence|survival-hunger-food|survival-mob-drop|survival-redstone-toggle|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
     "Dimension type:",
@@ -402,6 +420,7 @@ enum Scenario {
     SurvivalFurnacePersistence,
     SurvivalHungerFood,
     SurvivalMobDrop,
+    SurvivalRedstoneToggle,
     SurvivalBiomeDimensionState,
     McpControlledSmoke,
     CombatDamage,
@@ -1892,6 +1911,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
         "survival-furnace-persistence" => Ok(Scenario::SurvivalFurnacePersistence),
         "survival-hunger-food" => Ok(Scenario::SurvivalHungerFood),
         "survival-mob-drop" => Ok(Scenario::SurvivalMobDrop),
+        "survival-redstone-toggle" => Ok(Scenario::SurvivalRedstoneToggle),
         "survival-biome-dimension-state" => Ok(Scenario::SurvivalBiomeDimensionState),
         MCP_CONTROLLED_SMOKE_SCENARIO => Ok(Scenario::McpControlledSmoke),
         "combat-damage" => Ok(Scenario::CombatDamage),
@@ -1935,6 +1955,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::SurvivalFurnacePersistence => "survival-furnace-persistence",
         Scenario::SurvivalHungerFood => "survival-hunger-food",
         Scenario::SurvivalMobDrop => "survival-mob-drop",
+        Scenario::SurvivalRedstoneToggle => "survival-redstone-toggle",
         Scenario::SurvivalBiomeDimensionState => "survival-biome-dimension-state",
         Scenario::McpControlledSmoke => MCP_CONTROLLED_SMOKE_SCENARIO,
         Scenario::CombatDamage => "combat-damage",
@@ -2174,6 +2195,27 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             (
                 "survival_mob_drop_inventory_updated",
                 SURVIVAL_MOB_DROP_CLIENT_INVENTORY_NEEDLE,
+            ),
+        ],
+        Scenario::SurvivalRedstoneToggle => &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "survival_redstone_toggle_input_sent",
+                SURVIVAL_REDSTONE_TOGGLE_CLIENT_INPUT_ON_NEEDLE,
+            ),
+            (
+                "survival_redstone_toggle_output_update",
+                SURVIVAL_REDSTONE_TOGGLE_CLIENT_OUTPUT_ON_NEEDLE,
+            ),
+            (
+                "survival_redstone_toggle_return_input_sent",
+                SURVIVAL_REDSTONE_TOGGLE_CLIENT_INPUT_OFF_NEEDLE,
+            ),
+            (
+                "survival_redstone_toggle_return_update",
+                SURVIVAL_REDSTONE_TOGGLE_CLIENT_OUTPUT_OFF_NEEDLE,
             ),
         ],
         Scenario::SurvivalBiomeDimensionState => &[
@@ -2723,6 +2765,25 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
             (
                 "server_survival_mob_drop_state",
                 SURVIVAL_MOB_DROP_SERVER_STATE_NEEDLE,
+            ),
+        ],
+        Scenario::SurvivalRedstoneToggle => &[
+            ("server_username_seen", "compatbot"),
+            (
+                "server_survival_redstone_toggle_input",
+                SURVIVAL_REDSTONE_TOGGLE_SERVER_INPUT_NEEDLE,
+            ),
+            (
+                "server_survival_redstone_toggle_powered_on",
+                SURVIVAL_REDSTONE_TOGGLE_SERVER_ON_NEEDLE,
+            ),
+            (
+                "server_survival_redstone_toggle_powered_off",
+                SURVIVAL_REDSTONE_TOGGLE_SERVER_OFF_NEEDLE,
+            ),
+            (
+                "server_survival_redstone_toggle_state",
+                SURVIVAL_REDSTONE_TOGGLE_SERVER_STATE_NEEDLE,
             ),
         ],
         Scenario::SurvivalBiomeDimensionState => &[
@@ -3587,7 +3648,7 @@ Automates a local Stevenarella compatibility smoke against a Minecraft {} / prot
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from legacy Nickel config, or --steel-config/MC_COMPAT_STEEL_CONFIG a restricted Steel module; env vars and later CLI flags override either config source.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.scenario.receipt.v2 JSON receipt for Cairn/Octet evidence flows.
-Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario survival-crafting-table for one crafting-table open/input/result/collect rail. Use --scenario survival-furnace-persistence for one furnace input/fuel/output/reconnect rail. Use --scenario survival-hunger-food for one hunger deficit, food consume, and inventory decrement rail. Use --scenario survival-mob-drop for one configured mob kill, drop, pickup, and inventory increment rail. Use --scenario survival-biome-dimension-state for one client-observed dimension/world identifier rail. Use --scenario mcp-controlled-smoke for deterministic MCP receipt/checker dry-run evidence before live client driving. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario ctf-invalid-return-drop for one contained own-base return/drop attempt with server rejection evidence. Use --scenario ctf-score-limit-win-condition for one near-limit capture that emits exactly one win/end milestone. Use --scenario ctf-simultaneous-pickup-capture-race for one bounded two-client same-flag race with one accepted transition and one rejected duplicate pickup. Use --scenario ctf-spawn-team-balance-reset for one bounded two-client team assignment, spawn/resource, and post-score reset row. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
+Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario survival-crafting-table for one crafting-table open/input/result/collect rail. Use --scenario survival-furnace-persistence for one furnace input/fuel/output/reconnect rail. Use --scenario survival-hunger-food for one hunger deficit, food consume, and inventory decrement rail. Use --scenario survival-mob-drop for one configured mob kill, drop, pickup, and inventory increment rail. Use --scenario survival-redstone-toggle for one configured control on/off output update rail. Use --scenario survival-biome-dimension-state for one client-observed dimension/world identifier rail. Use --scenario mcp-controlled-smoke for deterministic MCP receipt/checker dry-run evidence before live client driving. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario ctf-invalid-return-drop for one contained own-base return/drop attempt with server rejection evidence. Use --scenario ctf-score-limit-win-condition for one near-limit capture that emits exactly one win/end milestone. Use --scenario ctf-simultaneous-pickup-capture-race for one bounded two-client same-flag race with one accepted transition and one rejected duplicate pickup. Use --scenario ctf-spawn-team-balance-reset for one bounded two-client team assignment, spawn/resource, and post-score reset row. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
 Use --expect-status-description/--expect-status-version/--expect-status-sample to assert status response fixture data, --packet-capture-summary for redacted capture summary metadata, and --proxy-route/--proxy-forwarding-mode for proxied-route receipt fields.\n\
 Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
 Use --run-matrix --receipt-dir DIR to run Paper and Valence receipts then compare them; add --dry-run after --run-matrix for a non-side-effecting matrix fixture.\n\
@@ -4149,6 +4210,9 @@ fn start_valence_server(cfg: &Config) -> Result<ManagedServer, String> {
     if cfg.scenario == Scenario::SurvivalMobDrop {
         cmd.env(SURVIVAL_MOB_DROP_FIXTURE_ENV, "1");
     }
+    if cfg.scenario == Scenario::SurvivalRedstoneToggle {
+        cmd.env(SURVIVAL_REDSTONE_TOGGLE_FIXTURE_ENV, "1");
+    }
     if cfg.scenario == Scenario::SurvivalBiomeDimensionState {
         cmd.env(SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV, "1");
     }
@@ -4239,6 +4303,10 @@ fn configure_paper_run_command(cfg: &Config, cmd: &mut Command) -> Result<(), St
     if cfg.scenario == Scenario::SurvivalMobDrop {
         cmd.arg("-e")
             .arg(format!("{SURVIVAL_MOB_DROP_FIXTURE_ENV}=1"));
+    }
+    if cfg.scenario == Scenario::SurvivalRedstoneToggle {
+        cmd.arg("-e")
+            .arg(format!("{SURVIVAL_REDSTONE_TOGGLE_FIXTURE_ENV}=1"));
     }
     if cfg.scenario == Scenario::SurvivalBiomeDimensionState {
         cmd.arg("-e")
@@ -5442,6 +5510,9 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
         Scenario::SurvivalMobDrop => {
             cmd.env(SURVIVAL_MOB_DROP_PROBE_ENV, "1");
         }
+        Scenario::SurvivalRedstoneToggle => {
+            cmd.env(SURVIVAL_REDSTONE_TOGGLE_PROBE_ENV, "1");
+        }
         Scenario::SurvivalBiomeDimensionState => {
             cmd.env(SURVIVAL_BIOME_DIMENSION_PROBE_ENV, "1");
         }
@@ -5669,6 +5740,7 @@ fn requires_server_correlation(cfg: &Config) -> bool {
             | Scenario::SurvivalFurnacePersistence
             | Scenario::SurvivalHungerFood
             | Scenario::SurvivalMobDrop
+            | Scenario::SurvivalRedstoneToggle
             | Scenario::CombatDamage
             | Scenario::CombatKnockback
             | Scenario::ArmorEquipmentMitigation
@@ -6626,6 +6698,13 @@ fn smoke_receipt_json_with_typed_event_oracle(
             "collect_item",
             "inventory_update",
         ],
+        Scenario::SurvivalRedstoneToggle => vec![
+            "login_success",
+            "play_join_game",
+            "use_item_on_block",
+            "redstone_powered_update",
+            "redstone_return_update",
+        ],
         Scenario::SurvivalBiomeDimensionState => vec![
             "login_success",
             "play_join_game",
@@ -6878,6 +6957,14 @@ fn smoke_receipt_json_with_typed_event_oracle(
         "server_survival_mob_drop_pickup",
         "server_survival_mob_drop_inventory",
         "server_survival_mob_drop_state",
+        "survival_redstone_toggle_input_sent",
+        "survival_redstone_toggle_output_update",
+        "survival_redstone_toggle_return_input_sent",
+        "survival_redstone_toggle_return_update",
+        "server_survival_redstone_toggle_input",
+        "server_survival_redstone_toggle_powered_on",
+        "server_survival_redstone_toggle_powered_off",
+        "server_survival_redstone_toggle_state",
         "server_inventory_hotbar_select",
         "server_inventory_drop",
         "server_inventory_pickup",
@@ -8706,6 +8793,10 @@ mod tests {
         let mob_drop = test_config(&["--scenario", "survival-mob-drop"], &[])
             .expect("survival mob-drop scenario parses");
         assert_eq!(mob_drop.scenario, Scenario::SurvivalMobDrop);
+
+        let redstone = test_config(&["--scenario", "survival-redstone-toggle"], &[])
+            .expect("survival redstone toggle scenario parses");
+        assert_eq!(redstone.scenario, Scenario::SurvivalRedstoneToggle);
 
         let biome_dimension = test_config(&["--scenario", "survival-biome-dimension-state"], &[])
             .expect("survival biome/dimension scenario parses");
@@ -11068,6 +11159,54 @@ RED: 1
         assert!(missing_state
             .missing_milestones
             .contains(&"server_survival_mob_drop_state"));
+    }
+
+    #[test]
+    fn survival_redstone_toggle_scenario_tracks_client_and_server_evidence() {
+        let client = evaluate_scenario(
+            Scenario::SurvivalRedstoneToggle,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nsurvival_redstone_toggle_input_sent control=Lever position=20,64,0 powered_before=false powered_after=true\nsurvival_redstone_toggle_output_update output=RedstoneLamp position=21,64,0 powered=true raw_id=123\nsurvival_redstone_toggle_return_input_sent control=Lever position=20,64,0 powered_before=true powered_after=false\nsurvival_redstone_toggle_return_update output=RedstoneLamp position=21,64,0 powered=false raw_id=122\n",
+        );
+        assert!(client.passed, "{client:?}");
+        assert!(client.missing_milestones.is_empty());
+
+        let missing_return = evaluate_scenario(
+            Scenario::SurvivalRedstoneToggle,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nsurvival_redstone_toggle_input_sent control=Lever position=20,64,0 powered_before=false powered_after=true\nsurvival_redstone_toggle_output_update output=RedstoneLamp position=21,64,0 powered=true raw_id=123\n",
+        );
+        assert!(!missing_return.passed, "{missing_return:?}");
+        assert!(missing_return
+            .missing_milestones
+            .contains(&"survival_redstone_toggle_return_update"));
+
+        let wrong_client_values = evaluate_scenario(
+            Scenario::SurvivalRedstoneToggle,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nsurvival_redstone_toggle_input_sent control=Button position=20,64,0 powered_before=false powered_after=true\nsurvival_redstone_toggle_output_update output=RedstoneTorch position=21,64,0 powered=true raw_id=123\nsurvival_redstone_toggle_return_input_sent control=Button position=20,64,0 powered_before=true powered_after=false\nsurvival_redstone_toggle_return_update output=RedstoneTorch position=21,64,0 powered=false raw_id=122\n",
+        );
+        assert!(!wrong_client_values.passed, "{wrong_client_values:?}");
+        assert!(wrong_client_values
+            .missing_milestones
+            .contains(&"survival_redstone_toggle_input_sent"));
+        assert!(wrong_client_values
+            .missing_milestones
+            .contains(&"survival_redstone_toggle_output_update"));
+
+        let server = evaluate_server_scenario(
+            Scenario::SurvivalRedstoneToggle,
+            "compatbot joined\nMC-COMPAT-MILESTONE survival_redstone_toggle_input username=compatbot control=Lever position=20,64,0 powered_before=false powered_after=true\nMC-COMPAT-MILESTONE survival_redstone_toggle_powered_on username=compatbot output=RedstoneLamp position=21,64,0 powered=true\nMC-COMPAT-MILESTONE survival_redstone_toggle_powered_off username=compatbot output=RedstoneLamp position=21,64,0 powered=false\nMC-COMPAT-MILESTONE survival_redstone_toggle_state username=compatbot control=Lever output=RedstoneLamp on_seen=true off_seen=true unintended_outputs=false\n",
+            "compatbot",
+        );
+        assert!(server.passed, "{server:?}");
+
+        let missing_state = evaluate_server_scenario(
+            Scenario::SurvivalRedstoneToggle,
+            "compatbot joined\nMC-COMPAT-MILESTONE survival_redstone_toggle_input username=compatbot control=Lever position=20,64,0 powered_before=false powered_after=true\n",
+            "compatbot",
+        );
+        assert!(!missing_state.passed, "{missing_state:?}");
+        assert!(missing_state
+            .missing_milestones
+            .contains(&"server_survival_redstone_toggle_state"));
     }
 
     #[test]

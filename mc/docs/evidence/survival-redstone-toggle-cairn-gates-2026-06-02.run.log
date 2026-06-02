@@ -1,0 +1,83 @@
+## survival-redstone-toggle Cairn gates 2026-06-02T21:26:32Z
+command=nix run --no-update-lock-file .#cairn -- gate proposal survival-redstone-toggle-parity --root .
+{
+  "change": "survival-redstone-toggle-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "3dfc4484ac8ad2db82c1606cf138712ad54fa3850a8f177c5753b343b736d07c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "8acff2977e6fd62931fd2389a2c9c90bdb200187453b37a4c986725fda20b8ae",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+proposal_gate_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate design survival-redstone-toggle-parity --root .
+{
+  "change": "survival-redstone-toggle-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "59c8313c6a900d5ab7c8acee60291bbb8f1f7b097176e08406271ca8cbe59db2",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "a680bd16d6405939e7de0f0150eb07fa79c296013e5e5ab94ad86562524d80af",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+design_gate_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate tasks survival-redstone-toggle-parity --root .
+{
+  "change": "survival-redstone-toggle-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "3295654348bc5c832101ad1da085fb709344558778b53efb486ed79c5ec74e25",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "831c0d6fc9a1cd3afd9fb880d514e2eed930df02f2a9a3dcd79c3ec517ba5880",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+tasks_gate_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 2,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 4,
+  "valid": true
+}
+cairn_validate_exit_status=0
+exit_status=0

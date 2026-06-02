@@ -1,0 +1,58 @@
+survival-redstone-toggle fixture validation 2026-06-02T21:16:24Z
+stevenarella_git_rev=357021defa46ec678221a1590b6e56e9b3239aa8
+valence_git_rev=469558f87501a979fbcc8a56e21716c43bfec356
+paper_fixture_source=docs/evidence/mc-compat-paper-survival-redstone-toggle-fixture-2026-06-02.java
+paper_fixture_jar=docs/evidence/mc-compat-paper-survival-redstone-toggle-fixture-2026-06-02.jar
+command=cd valence && nix develop --no-update-lock-file /home/brittonr/git/mc/valence -c cargo test --example survival_compat survival_redstone_toggle -- --nocapture
+/home/brittonr/git/mc/valence
+   Compiling valence_protocol v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_protocol)
+   Compiling valence_server_common v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_server_common)
+   Compiling valence_registry v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_registry)
+   Compiling valence_entity v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_entity)
+   Compiling valence_server v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_server)
+   Compiling valence_inventory v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_inventory)
+   Compiling valence_player_list v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_player_list)
+   Compiling valence_advancement v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_advancement)
+   Compiling valence_command v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_command)
+   Compiling valence_world_border v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_world_border)
+   Compiling valence_boss_bar v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_boss_bar)
+   Compiling valence_network v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_network)
+   Compiling valence_weather v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_weather)
+   Compiling valence_scoreboard v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_scoreboard)
+   Compiling valence_anvil v0.1.0 (/home/brittonr/git/mc/valence/crates/valence_anvil)
+   Compiling valence_equipment v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence/crates/valence_equipment)
+   Compiling valence v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/valence)
+    Finished `test` profile [optimized + debuginfo] target(s) in 6.76s
+     Running unittests examples/survival_compat.rs (/home/brittonr/.cargo-target/debug/examples/survival_compat-6feb93d647225da7)
+
+running 2 tests
+test tests::survival_redstone_toggle_accepts_only_main_hand_survival_control ... ok
+test tests::survival_redstone_toggle_states_use_powered_properties ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 16 filtered out; finished in 0.00s
+
+valence_redstone_tests_exit_status=0
+command=nix shell --no-update-lock-file nixpkgs#jdk -c jar tf docs/evidence/mc-compat-paper-survival-redstone-toggle-fixture-2026-06-02.jar
+META-INF/
+META-INF/MANIFEST.MF
+mc/
+mc/compat/
+mc/compat/paper/
+mc/compat/paper/SurvivalFixturePlugin.class
+plugin.yml
+paper_jar_listing_exit_status=0
+command=unzip -p docs/evidence/mc-compat-paper-survival-redstone-toggle-fixture-2026-06-02.jar plugin.yml
+name: McCompatSurvivalFixture
+version: 0.1.0
+main: mc.compat.paper.SurvivalFixturePlugin
+api-version: '1.18'
+description: MC compatibility survival redstone-toggle fixture for protocol-763 reference receipts.
+paper_plugin_manifest_exit_status=0
+command=nix develop --no-update-lock-file -c b3sum docs/evidence/mc-compat-paper-survival-redstone-toggle-fixture-2026-06-02.java docs/evidence/mc-compat-paper-survival-redstone-toggle-fixture-2026-06-02.jar
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+f22cb60bb435aa1ff0231fe828de7825fcf6160da18a01429e820e21f865fd1a  docs/evidence/mc-compat-paper-survival-redstone-toggle-fixture-2026-06-02.java
+bb54bb20e86e9aa171e825960dcf9ebb148db3623637d8e731ef905a6fd21162  docs/evidence/mc-compat-paper-survival-redstone-toggle-fixture-2026-06-02.jar
+fixture_hashes_exit_status=0
+exit_status=0

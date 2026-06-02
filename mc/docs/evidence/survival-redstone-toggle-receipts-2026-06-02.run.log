@@ -1,0 +1,38 @@
+survival-redstone-toggle live receipts 2026-06-02T21:17:08Z
+stevenarella_git_rev=357021defa46ec678221a1590b6e56e9b3239aa8
+valence_git_rev=469558f87501a979fbcc8a56e21716c43bfec356
+paper_fixture_source_b3=f22cb60bb435aa1ff0231fe828de7825fcf6160da18a01429e820e21f865fd1a
+paper_fixture_jar_b3=bb54bb20e86e9aa171e825960dcf9ebb148db3623637d8e731ef905a6fd21162
+paper_task_id=530 status=success
+paper_command=SERVER_VERSION=1.20.1 SERVER_PROTOCOL=763 PAPER_PLUGIN_JAR=/home/brittonr/git/mc/docs/evidence/mc-compat-paper-survival-redstone-toggle-fixture-2026-06-02.jar CLIENT_DIR=/tmp/stevenarella-redstone-357021d CLIENT_TIMEOUT=30 nix run --no-update-lock-file .#mc-compat-smoke -- --run --keep-server --server-backend paper --scenario survival-redstone-toggle --receipt target/survival-redstone-toggle-receipts-2026-06-02-final/paper.json
+valence_task_id=531 status=success
+valence_command=SERVER_VERSION=1.20.1 SERVER_PROTOCOL=763 CLIENT_DIR=/tmp/stevenarella-redstone-357021d CLIENT_TIMEOUT=30 VALENCE_REPO=/home/brittonr/git/mc/valence VALENCE_REV=469558f VALENCE_WORKTREE=/tmp/valence-redstone-469558f VALENCE_TARGET_DIR=/tmp/valence-redstone-469558f-target VALENCE_PID_FILE=/tmp/valence-redstone-469558f.pid VALENCE_EXAMPLE=survival_compat nix run --no-update-lock-file .#mc-compat-smoke -- --run --server-backend valence --scenario survival-redstone-toggle --receipt target/survival-redstone-toggle-receipts-2026-06-02-final/valence.json
+command=jq receipt status summary
+receipt=paper status=pass scenario=survival-redstone-toggle scenario_passed=true server_passed=null typed_events=12
+receipt=valence status=pass scenario=survival-redstone-toggle scenario_passed=true server_passed=null typed_events=12
+receipt_summary_exit_status=0
+command=grep redstone milestones copied logs
+docs/evidence/survival-redstone-toggle-paper-2026-06-02.client.log:[server/mod.rs:3651][INFO] MC-COMPAT-MILESTONE survival_redstone_toggle_move_near_control x=20.5 y=65.0 z=-1.5 control=20,64,0 output=21,64,0
+docs/evidence/survival-redstone-toggle-paper-2026-06-02.client.log:[server/mod.rs:3686][INFO] MC-COMPAT-MILESTONE survival_redstone_toggle_input_sent control=Lever position=20,64,0 powered_before=false powered_after=true
+docs/evidence/survival-redstone-toggle-paper-2026-06-02.client.log:[server/mod.rs:3734][INFO] MC-COMPAT-MILESTONE survival_redstone_toggle_output_update output=RedstoneLamp position=21,64,0 powered=true raw_id=7417
+docs/evidence/survival-redstone-toggle-paper-2026-06-02.client.log:[server/mod.rs:3715][INFO] MC-COMPAT-MILESTONE survival_redstone_toggle_return_input_sent control=Lever position=20,64,0 powered_before=true powered_after=false
+docs/evidence/survival-redstone-toggle-paper-2026-06-02.client.log:[server/mod.rs:3748][INFO] MC-COMPAT-MILESTONE survival_redstone_toggle_return_update output=RedstoneLamp position=21,64,0 powered=false raw_id=7418
+docs/evidence/survival-redstone-toggle-paper-2026-06-02.server.log:[21:12:11 INFO]: [McCompatSurvivalFixture] MC-COMPAT-MILESTONE survival_redstone_toggle_input username=compatbot control=Lever position=20,64,0 powered_before=false powered_after=true
+docs/evidence/survival-redstone-toggle-paper-2026-06-02.server.log:[21:12:11 INFO]: [McCompatSurvivalFixture] MC-COMPAT-MILESTONE survival_redstone_toggle_powered_on username=compatbot output=RedstoneLamp position=21,64,0 powered=true
+docs/evidence/survival-redstone-toggle-paper-2026-06-02.server.log:[21:12:11 INFO]: [McCompatSurvivalFixture] MC-COMPAT-MILESTONE survival_redstone_toggle_powered_off username=compatbot output=RedstoneLamp position=21,64,0 powered=false
+docs/evidence/survival-redstone-toggle-paper-2026-06-02.server.log:[21:12:11 INFO]: [McCompatSurvivalFixture] MC-COMPAT-MILESTONE survival_redstone_toggle_state username=compatbot control=Lever output=RedstoneLamp on_seen=true off_seen=true unintended_outputs=false
+docs/evidence/survival-redstone-toggle-valence-2026-06-02.client.log:[server/mod.rs:3651][INFO] MC-COMPAT-MILESTONE survival_redstone_toggle_move_near_control x=20.5 y=65.0 z=-1.5 control=20,64,0 output=21,64,0
+docs/evidence/survival-redstone-toggle-valence-2026-06-02.client.log:[server/mod.rs:3686][INFO] MC-COMPAT-MILESTONE survival_redstone_toggle_input_sent control=Lever position=20,64,0 powered_before=false powered_after=true
+docs/evidence/survival-redstone-toggle-valence-2026-06-02.client.log:[server/mod.rs:3734][INFO] MC-COMPAT-MILESTONE survival_redstone_toggle_output_update output=RedstoneLamp position=21,64,0 powered=true raw_id=7417
+docs/evidence/survival-redstone-toggle-valence-2026-06-02.client.log:[server/mod.rs:3715][INFO] MC-COMPAT-MILESTONE survival_redstone_toggle_return_input_sent control=Lever position=20,64,0 powered_before=true powered_after=false
+docs/evidence/survival-redstone-toggle-valence-2026-06-02.client.log:[server/mod.rs:3748][INFO] MC-COMPAT-MILESTONE survival_redstone_toggle_return_update output=RedstoneLamp position=21,64,0 powered=false raw_id=7418
+docs/evidence/survival-redstone-toggle-valence-2026-06-02.server.log:[2m2026-06-02T21:12:11.035767Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_redstone_toggle_input username=compatbot control=Lever position=20,64,0 powered_before=false powered_after=true
+docs/evidence/survival-redstone-toggle-valence-2026-06-02.server.log:MC-COMPAT-MILESTONE survival_redstone_toggle_input username=compatbot control=Lever position=20,64,0 powered_before=false powered_after=true
+docs/evidence/survival-redstone-toggle-valence-2026-06-02.server.log:[2m2026-06-02T21:12:11.035788Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_redstone_toggle_powered_on username=compatbot output=RedstoneLamp position=21,64,0 powered=true
+docs/evidence/survival-redstone-toggle-valence-2026-06-02.server.log:MC-COMPAT-MILESTONE survival_redstone_toggle_powered_on username=compatbot output=RedstoneLamp position=21,64,0 powered=true
+docs/evidence/survival-redstone-toggle-valence-2026-06-02.server.log:[2m2026-06-02T21:12:11.486220Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_redstone_toggle_powered_off username=compatbot output=RedstoneLamp position=21,64,0 powered=false
+docs/evidence/survival-redstone-toggle-valence-2026-06-02.server.log:MC-COMPAT-MILESTONE survival_redstone_toggle_powered_off username=compatbot output=RedstoneLamp position=21,64,0 powered=false
+docs/evidence/survival-redstone-toggle-valence-2026-06-02.server.log:[2m2026-06-02T21:12:11.486242Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_redstone_toggle_state username=compatbot control=Lever output=RedstoneLamp on_seen=true off_seen=true unintended_outputs=false
+docs/evidence/survival-redstone-toggle-valence-2026-06-02.server.log:MC-COMPAT-MILESTONE survival_redstone_toggle_state username=compatbot control=Lever output=RedstoneLamp on_seen=true off_seen=true unintended_outputs=false
+milestone_grep_exit_status=0
+exit_status=0

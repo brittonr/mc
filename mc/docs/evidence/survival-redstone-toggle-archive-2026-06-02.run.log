@@ -1,0 +1,144 @@
+## archive survival-redstone-toggle-parity 2026-06-02T21:30:55Z
+command=nix run --no-update-lock-file .#cairn -- sync survival-redstone-toggle-parity --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/survival-redstone-toggle-parity/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/survival-redstone-toggle-parity/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-redstone-toggle-parity",
+  "delta_specs": [
+    "./cairn/changes/survival-redstone-toggle-parity/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "a96a5f5ec702b32d16921b6e24a901f009eb5cb3885dcfdf6bd7877b11be689c",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "b11dc11bdfd945f26655b9588f90187299b077a121e23b71113bf3601dbca487",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "25fe96dbbe410bc720ff43b2450293aed32c74d5b03acdd097443d355fc8bd91"
+}
+sync_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- archive survival-redstone-toggle-parity --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-redstone-toggle-parity",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-survival-redstone-toggle-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-redstone-toggle-parity",
+  "dry_run": false,
+  "input_hash": "a96a5f5ec702b32d16921b6e24a901f009eb5cb3885dcfdf6bd7877b11be689c",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "e8b2a8f4e2c05230839b4b73bd9e8767899e2ef36f4e48021c21ec77aca83275",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-redstone-toggle-parity/design.md"
+        },
+        {
+          "content_hash": "3404c5caacbfbaffc48ae96bfb620f2771027c3babff114be4f494b516ef2225",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-redstone-toggle-parity/proposal.md"
+        },
+        {
+          "content_hash": "067943cc634b4fdecc2b794462b78bb4d53cdc9b9fd585d0733eba2e57c79340",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-redstone-toggle-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "dc75f756b89a39062d6f99d51617020e0b1989bd8cc92eadad9b9178dcd0b630",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-redstone-toggle-parity/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-redstone-toggle-parity"
+        }
+      ],
+      "manifest_hash": "bacd8d1022b7f2c7b64d35abb63bb5ed39a3c0d14f9c3abd73f46fd9a11014c2"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "e8b2a8f4e2c05230839b4b73bd9e8767899e2ef36f4e48021c21ec77aca83275",
+          "exists": true,
+          "path": "./cairn/changes/survival-redstone-toggle-parity/design.md"
+        },
+        {
+          "content_hash": "3404c5caacbfbaffc48ae96bfb620f2771027c3babff114be4f494b516ef2225",
+          "exists": true,
+          "path": "./cairn/changes/survival-redstone-toggle-parity/proposal.md"
+        },
+        {
+          "content_hash": "067943cc634b4fdecc2b794462b78bb4d53cdc9b9fd585d0733eba2e57c79340",
+          "exists": true,
+          "path": "./cairn/changes/survival-redstone-toggle-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "dc75f756b89a39062d6f99d51617020e0b1989bd8cc92eadad9b9178dcd0b630",
+          "exists": true,
+          "path": "./cairn/changes/survival-redstone-toggle-parity/tasks.md"
+        }
+      ],
+      "manifest_hash": "2d0936b7c2626224a15ff093367a5181074312043a6b4996923ee8476cc6649b"
+    },
+    "kind": "archive",
+    "manifest_hash": "619c56f5e3642ea86995b0eb946ee8378bddd61c41c56d4c13c94a79241df709"
+  },
+  "plan_hash": "8126de070f1f24032a88046ebe4c6085290f74565f36b5170dd6b0d5be612110",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "7b088e7624148fe93f3bde5e1978f389bf1d8027d6da0aafa0d2c55cbbac739b"
+}
+archive_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+validate_exit_status=0
+exit_status=0

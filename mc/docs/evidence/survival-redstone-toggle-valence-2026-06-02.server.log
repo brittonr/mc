@@ -1,0 +1,21 @@
+warning: function `is_survival_mob_drop_stack` is never used
+    --> examples/survival_compat.rs:1809:4
+     |
+1809 | fn is_survival_mob_drop_stack(stack: &ItemStack) -> bool {
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `valence` (example "survival_compat") generated 1 warning
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.26s
+     Running `/tmp/valence-redstone-469558f-target/debug/examples/survival_compat`
+[2m2026-06-02T21:12:09.534288Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+[2m2026-06-02T21:12:11.035767Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_redstone_toggle_input username=compatbot control=Lever position=20,64,0 powered_before=false powered_after=true
+MC-COMPAT-MILESTONE survival_redstone_toggle_input username=compatbot control=Lever position=20,64,0 powered_before=false powered_after=true
+[2m2026-06-02T21:12:11.035788Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_redstone_toggle_powered_on username=compatbot output=RedstoneLamp position=21,64,0 powered=true
+MC-COMPAT-MILESTONE survival_redstone_toggle_powered_on username=compatbot output=RedstoneLamp position=21,64,0 powered=true
+[2m2026-06-02T21:12:11.486220Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_redstone_toggle_powered_off username=compatbot output=RedstoneLamp position=21,64,0 powered=false
+MC-COMPAT-MILESTONE survival_redstone_toggle_powered_off username=compatbot output=RedstoneLamp position=21,64,0 powered=false
+[2m2026-06-02T21:12:11.486242Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_redstone_toggle_state username=compatbot control=Lever output=RedstoneLamp on_seen=true off_seen=true unintended_outputs=false
+MC-COMPAT-MILESTONE survival_redstone_toggle_state username=compatbot control=Lever output=RedstoneLamp on_seen=true off_seen=true unintended_outputs=false

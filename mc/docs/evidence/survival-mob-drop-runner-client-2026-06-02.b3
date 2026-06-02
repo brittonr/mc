@@ -1,5 +1,5 @@
 cf0e39f15dcffda19d2586a0f1754623bc12ebbf43cef4a30a152704671507ae  docs/evidence/survival-mob-drop-runner-client-2026-06-02.run.log
 df9aef3bc6d039c6b6c8d9ca0a9a0c09328d3a5f80e550c080d9e1528cc29fe4  docs/evidence/survival-mob-drop-client-rail-oracle-2026-06-02.md
-d04cfa5ade0c0007bfb242bf295f31d6c160c35e5dc9ab67c7de3a22ff3552c8  config/mc-compat/scenario-manifest.ncl
-988e11956b1f23156817ecc65f5441da4906c8ea2a08db230755ab6be3a16f63  tools/mc-compat-runner/src/main.rs
-0f8983443526a641064826be14822cf7b5040662adb0751b52ed162fe6d6f43d  tools/mc-compat-runner/src/scenario_manifest_generated.rs
+b7281b18acdfd49fd63c083f3afd108e38b9c499b56b5d3cd9f756a39ceea9a1  config/mc-compat/scenario-manifest.ncl
+83134869257848d25508e763c12da92fa238eb96928b87bf19e246fe0a4120b6  tools/mc-compat-runner/src/main.rs
+756cbd12edd071f551bbe4e5f52c73d1f8161afa921133fd91b64dd7b862086a  tools/mc-compat-runner/src/scenario_manifest_generated.rs

@@ -1,0 +1,35 @@
+survival-redstone-toggle matrix promotion 2026-06-02T21:24:56Z
+command=nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_survival_coverage_matrix.rs -o target/check-survival-coverage-matrix-redstone
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+compile_survival_coverage_exit_status=0
+command=target/check-survival-coverage-matrix-redstone --self-test
+survival coverage matrix self-test ok: positive and negative fixtures exercised
+survival_coverage_self_test_exit_status=0
+command=target/check-survival-coverage-matrix-redstone
+survival coverage matrix check passed: 9 rows validated
+survival_coverage_repo_exit_status=0
+command=nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_acceptance_matrix.rs -o target/check-acceptance-matrix-redstone
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+compile_acceptance_exit_status=0
+command=target/check-acceptance-matrix-redstone --self-test
+acceptance matrix self-test ok: positive and negative fixtures exercised
+acceptance_self_test_exit_status=0
+command=target/check-acceptance-matrix-redstone
+acceptance matrix check passed: 34 rows validated
+acceptance_repo_exit_status=0
+command=nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_current_evidence_bundle.rs -o target/check-current-evidence-bundle-redstone
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+compile_current_bundle_exit_status=0
+command=target/check-current-evidence-bundle-redstone --self-test
+current evidence bundle self-test ok: positive and negative fixtures exercised
+current_bundle_self_test_exit_status=0
+command=target/check-current-evidence-bundle-redstone
+current evidence bundle check passed: 34 rows validated
+current_bundle_repo_exit_status=0
+exit_status=0
