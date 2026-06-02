@@ -780,11 +780,6 @@ fn handle_survival_world_persistence_place(
             SURVIVAL_WORLD_PERSISTENCE_Y,
             SURVIVAL_WORLD_PERSISTENCE_Z
         ));
-        log_milestone(format!(
-            "MC-COMPAT-MILESTONE survival_world_persistence_clean_shutdown username={} \
-             storage=isolated marker=written",
-            username.as_str()
-        ));
     }
 }
 
@@ -2003,11 +1998,6 @@ fn log_survival_world_persistence_post_restart(
         block_id: state,
     });
     fixture.state_logged = true;
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_world_persistence_backend_restart username={} \
-         method=controlled_reload storage=isolated",
-        username
-    ));
     log_milestone(format!(
         "MC-COMPAT-MILESTONE survival_world_persistence_post_restart_observe username={} block={} \
          position={},{},{} persisted=true",
