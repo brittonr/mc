@@ -113,6 +113,12 @@ nix run .#mc-compat-valence-survival-break-place-pickup
 # deterministic, non-side-effecting fixture for the same survival command shape:
 nix run .#mc-compat-valence-survival-break-place-pickup -- --dry-run
 
+# Maintained protocol-763 Valence survival furnace persistence receipt.
+# Requires paired client/server open/input/fuel/burn/output/collect/reconnect/state milestones; remains a row receipt, not aggregate survival parity.
+nix run .#mc-compat-valence-survival-furnace-persistence
+# deterministic, non-side-effecting fixture for the same furnace command shape:
+nix run .#mc-compat-valence-survival-furnace-persistence -- --dry-run
+
 # Deterministic MCP-controlled Stevenarella dry-run contract.
 # Records stdio handshake/tool/outcome contract, child revision status, explicit non-claims, and fail-closed frame artifact placeholders; live --run remains blocked until owned-local capture evidence lands.
 nix run .#mc-compat-mcp-controlled-smoke -- --dry-run

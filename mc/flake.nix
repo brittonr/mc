@@ -763,6 +763,34 @@
               mainProgram = "mc-compat-valence-survival-crafting-table";
             };
           };
+          mc-compat-valence-survival-furnace-persistence = pkgs.writeShellApplication {
+            name = "mc-compat-valence-survival-furnace-persistence";
+            runtimeInputs = [ mc-compat-runner ];
+            text = ''
+              mode="--run"
+              if [[ "''${1:-}" == "--dry-run" || "''${1:-}" == "--run" ]]; then
+                mode="$1"
+                shift
+              fi
+
+              receipt="''${MC_COMPAT_SURVIVAL_FURNACE_RECEIPT:-target/mc-compat-survival-furnace-persistence/survival-furnace-persistence.json}"
+              mkdir -p "$(dirname "$receipt")"
+
+              export SERVER_PROTOCOL="''${SERVER_PROTOCOL:-763}"
+              export SERVER_VERSION="''${SERVER_VERSION:-1.20.1}"
+              export VALENCE_REV="''${VALENCE_REV:-main}"
+              export VALENCE_EXAMPLE="''${VALENCE_EXAMPLE:-survival_compat}"
+              export VALENCE_WORKTREE="''${VALENCE_WORKTREE:-/tmp/valence-compat-survival-furnace}"
+              export VALENCE_TARGET_DIR="''${VALENCE_TARGET_DIR:-/tmp/valence-compat-survival-furnace-target}"
+              export CLIENT_TIMEOUT="''${CLIENT_TIMEOUT:-120}"
+
+              exec mc-compat-runner "$mode"                 --server-backend valence                 --scenario survival-furnace-persistence                 --receipt "$receipt"                 "$@"
+            '';
+            meta = {
+              description = "Run the maintained protocol-763 Valence survival furnace persistence receipt.";
+              mainProgram = "mc-compat-valence-survival-furnace-persistence";
+            };
+          };
           mc-compat-mcp-controlled-smoke = pkgs.writeShellApplication {
             name = "mc-compat-mcp-controlled-smoke";
             runtimeInputs = [ mc-compat-runner ];
@@ -793,7 +821,7 @@
           };
         in
         {
-          inherit valence stevenarella mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-ctf-combat-damage mc-compat-valence-ctf-combat-knockback mc-compat-valence-ctf-armor-equipment-mitigation mc-compat-valence-ctf-equipment-update-observation mc-compat-valence-ctf-projectile-hit mc-compat-valence-ctf-projectile-damage-attribution mc-compat-valence-ctf-flag-carrier-death-return mc-compat-valence-ctf-latency-jitter-inventory mc-compat-valence-ctf-reconnect-flag-state mc-compat-valence-ctf-invalid-pickup-ownership mc-compat-valence-ctf-invalid-return-drop mc-compat-valence-ctf-score-limit-win-condition mc-compat-valence-survival-break-place-pickup mc-compat-valence-survival-crafting-table mc-compat-mcp-controlled-smoke;
+          inherit valence stevenarella mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-ctf-combat-damage mc-compat-valence-ctf-combat-knockback mc-compat-valence-ctf-armor-equipment-mitigation mc-compat-valence-ctf-equipment-update-observation mc-compat-valence-ctf-projectile-hit mc-compat-valence-ctf-projectile-damage-attribution mc-compat-valence-ctf-flag-carrier-death-return mc-compat-valence-ctf-latency-jitter-inventory mc-compat-valence-ctf-reconnect-flag-state mc-compat-valence-ctf-invalid-pickup-ownership mc-compat-valence-ctf-invalid-return-drop mc-compat-valence-ctf-score-limit-win-condition mc-compat-valence-survival-break-place-pickup mc-compat-valence-survival-crafting-table mc-compat-valence-survival-furnace-persistence mc-compat-mcp-controlled-smoke;
           cairn = cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn;
           cargo-octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.cargo-octet;
           octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.octet;
@@ -942,6 +970,13 @@
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-crafting-table
           }/bin/mc-compat-valence-survival-crafting-table";
           meta.description = "Run the maintained protocol-763 Valence survival crafting-table receipt.";
+        };
+        mc-compat-valence-survival-furnace-persistence = {
+          type = "app";
+          program = "${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-furnace-persistence
+          }/bin/mc-compat-valence-survival-furnace-persistence";
+          meta.description = "Run the maintained protocol-763 Valence survival furnace persistence receipt.";
         };
         mc-compat-mcp-controlled-smoke = {
           type = "app";
@@ -1774,6 +1809,54 @@
             mkdir -p "$out"
             cp survival-crafting-dry-run.log receipts/survival-crafting-receipt.json "$out/"
           '';
+        mc-compat-valence-survival-furnace-persistence-dry-run =
+          pkgs.runCommand "mc-compat-valence-survival-furnace-persistence-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
+            mkdir -p fake-stevenarella fake-valence receipts
+            printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+            git -C fake-valence init
+            git -C fake-valence config user.email mc-compat@example.invalid
+            git -C fake-valence config user.name mc-compat
+            printf '%s\n' fake > fake-valence/README.md
+            git -C fake-valence add README.md
+            git -C fake-valence commit -m init
+            MC_COMPAT_SURVIVAL_FURNACE_RECEIPT="$PWD/receipts/survival-furnace-receipt.json" ${
+              self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-furnace-persistence
+            }/bin/mc-compat-valence-survival-furnace-persistence --dry-run --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD > survival-furnace-dry-run.log
+            grep -Fq "scenario 'survival-furnace-persistence'" survival-furnace-dry-run.log
+            grep -Fq '"name": "survival-furnace-persistence"' receipts/survival-furnace-receipt.json
+            grep -Fq '"example": "survival_compat"' receipts/survival-furnace-receipt.json
+            grep -Fq '"version": "1.20.1"' receipts/survival-furnace-receipt.json
+            grep -Fq '"protocol": 763' receipts/survival-furnace-receipt.json
+            grep -Fq '"timeout_secs": 120' receipts/survival-furnace-receipt.json
+            grep -Fq '"survival_furnace_open_seen"' receipts/survival-furnace-receipt.json
+            grep -Fq '"survival_furnace_input_sent"' receipts/survival-furnace-receipt.json
+            grep -Fq '"survival_furnace_fuel_sent"' receipts/survival-furnace-receipt.json
+            grep -Fq '"survival_furnace_burn_progress_seen"' receipts/survival-furnace-receipt.json
+            grep -Fq '"survival_furnace_output_seen"' receipts/survival-furnace-receipt.json
+            grep -Fq '"survival_furnace_output_collected"' receipts/survival-furnace-receipt.json
+            grep -Fq '"survival_furnace_inventory_updated"' receipts/survival-furnace-receipt.json
+            grep -Fq '"survival_furnace_reconnect_sent"' receipts/survival-furnace-receipt.json
+            grep -Fq '"survival_furnace_reopen_seen"' receipts/survival-furnace-receipt.json
+            grep -Fq '"server_survival_furnace_open"' receipts/survival-furnace-receipt.json
+            grep -Fq '"server_survival_furnace_input"' receipts/survival-furnace-receipt.json
+            grep -Fq '"server_survival_furnace_fuel"' receipts/survival-furnace-receipt.json
+            grep -Fq '"server_survival_furnace_burn_progress"' receipts/survival-furnace-receipt.json
+            grep -Fq '"server_survival_furnace_output_available"' receipts/survival-furnace-receipt.json
+            grep -Fq '"server_survival_furnace_output_collect"' receipts/survival-furnace-receipt.json
+            grep -Fq '"server_survival_furnace_reconnect_reopen"' receipts/survival-furnace-receipt.json
+            grep -Fq '"server_survival_furnace_state"' receipts/survival-furnace-receipt.json
+            grep -Fq '"expected_summary_packets": ["login_success", "play_join_game", "open_container", "furnace_input_click", "furnace_fuel_click", "furnace_output_collect", "disconnect_reconnect"]' receipts/survival-furnace-receipt.json
+            paper_fixture=${./tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java}
+            grep -Fq 'PlayerQuitEvent' "$paper_fixture"
+            grep -Fq 'furnaceReconnectJoinSeen.contains(playerId)' "$paper_fixture"
+            grep -Fq 'isExpectedFurnaceInput(inventory.getItem(FURNACE_INPUT_SLOT))' "$paper_fixture"
+            grep -Fq 'isExpectedFurnaceFuel(inventory.getItem(FURNACE_FUEL_SLOT))' "$paper_fixture"
+            grep -Fq 'isEmptyFurnaceOutput(inventory.getItem(FURNACE_OUTPUT_SLOT))' "$paper_fixture"
+            grep -Fq '"claims_correctness": false' receipts/survival-furnace-receipt.json
+            grep -Fq '"claims_semantic_equivalence": false' receipts/survival-furnace-receipt.json
+            mkdir -p "$out"
+            cp survival-furnace-dry-run.log receipts/survival-furnace-receipt.json "$out/"
+          '';
         mc-compat-mcp-controlled-smoke-dry-run =
           pkgs.runCommand "mc-compat-mcp-controlled-smoke-dry-run" { nativeBuildInputs = [ pkgs.git pkgs.rustc pkgs.gcc ]; } ''
             cp -R ${./.} repo
@@ -1828,6 +1911,7 @@
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-score-limit-win-condition-dry-run} "$out/ctf-score-limit-win-condition"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-break-place-pickup-dry-run} "$out/survival-break-place-pickup"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-crafting-table-dry-run} "$out/survival-crafting-table"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-furnace-persistence-dry-run} "$out/survival-furnace-persistence"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-mcp-controlled-smoke-dry-run} "$out/mcp-controlled-smoke"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-bot-probe-dry-run} "$out/compat-bot-probe"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-acceptance-matrix} "$out/acceptance-matrix"
@@ -1869,6 +1953,7 @@
           red-blue-scoring-soak-live-refresh
           survival-break-place-pickup
           survival-crafting-table
+          survival-furnace-persistence
           compat-bot-probe
           acceptance-matrix
           current-evidence-bundle
@@ -2088,7 +2173,7 @@
           grep -Fq -- "--apply" help.log
           grep -Fq -- "--stop" help.log
           grep -Fq -- "--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT" help.log
-          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|mcp-controlled-smoke|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition" help.log
+          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-furnace-persistence|mcp-controlled-smoke|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition" help.log
           grep -Fq "MC_COMPAT_SCENARIO" help.log
           grep -Fq -- "--expect-status-description" help.log
           grep -Fq -- "--packet-capture-summary" help.log

@@ -17,6 +17,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -69,6 +70,21 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
     private static final String CRAFTING_INPUT_NAME = "OakPlanks";
     private static final String CRAFTING_RESULT_NAME = "Stick";
     private static final String CRAFTING_RECIPE = "minecraft:stick";
+    private static final String FURNACE_FIXTURE_ENV = "MC_COMPAT_SURVIVAL_FURNACE_FIXTURE";
+    private static final int FURNACE_X = 12;
+    private static final int FURNACE_Y = 64;
+    private static final int FURNACE_Z = 0;
+    private static final int FURNACE_WINDOW = 1;
+    private static final int FURNACE_INPUT_SLOT = 0;
+    private static final int FURNACE_FUEL_SLOT = 1;
+    private static final int FURNACE_OUTPUT_SLOT = 2;
+    private static final int FURNACE_HOTBAR_SLOT = 0;
+    private static final int FURNACE_INVENTORY_SLOT = 36;
+    private static final int FURNACE_ITEM_COUNT = 1;
+    private static final long FURNACE_OPEN_DELAY_TICKS = 90L;
+    private static final String FURNACE_INPUT_NAME = "RawIron";
+    private static final String FURNACE_FUEL_NAME = "Coal";
+    private static final String FURNACE_OUTPUT_NAME = "IronIngot";
     private static final String BIOME_DIMENSION_FIXTURE_ENV = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_FIXTURE";
     private static final String OVERWORLD_ID = "minecraft:overworld";
     private static final String NETHER_ID = "minecraft:the_nether";
@@ -88,6 +104,16 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
     private final java.util.Set<UUID> craftingInputBSeen = new java.util.HashSet<>();
     private final java.util.Set<UUID> craftingResultSeen = new java.util.HashSet<>();
     private final java.util.Set<UUID> craftingCollectSeen = new java.util.HashSet<>();
+    private final java.util.Set<UUID> furnaceOpenSeen = new java.util.HashSet<>();
+    private final java.util.Set<UUID> furnaceInputSeen = new java.util.HashSet<>();
+    private final java.util.Set<UUID> furnaceFuelSeen = new java.util.HashSet<>();
+    private final java.util.Set<UUID> furnaceBurnSeen = new java.util.HashSet<>();
+    private final java.util.Set<UUID> furnaceOutputSeen = new java.util.HashSet<>();
+    private final java.util.Set<UUID> furnaceCollectSeen = new java.util.HashSet<>();
+    private final java.util.Set<UUID> furnacePostCollectQuitSeen = new java.util.HashSet<>();
+    private final java.util.Set<UUID> furnaceReconnectJoinSeen = new java.util.HashSet<>();
+    private final java.util.Set<UUID> furnaceReopenSeen = new java.util.HashSet<>();
+    private final java.util.Set<UUID> furnaceStateSeen = new java.util.HashSet<>();
 
     @Override
     public void onEnable() {
@@ -98,7 +124,18 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        if (furnaceFixtureEnabled() && furnacePostCollectQuitSeen.contains(player.getUniqueId())) {
+            furnaceReconnectJoinSeen.add(player.getUniqueId());
+        }
         getServer().getScheduler().runTask(this, () -> setupPlayer(player));
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        if (furnaceFixtureEnabled() && furnaceCollectSeen.contains(player.getUniqueId())) {
+            furnacePostCollectQuitSeen.add(player.getUniqueId());
+        }
     }
 
     @EventHandler(ignoreCancelled = false)
@@ -148,6 +185,9 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
         if (craftingFixtureEnabled() && isCraftingInventory(event.getInventory())) {
             logCraftingOpen(player);
         }
+        if (furnaceFixtureEnabled() && isFurnaceInventory(event.getInventory())) {
+            logFurnaceOpen(player, event.getInventory());
+        }
     }
 
     @EventHandler(ignoreCancelled = false)
@@ -160,6 +200,9 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
         }
         if (craftingFixtureEnabled() && isCraftingInventory(event.getInventory())) {
             getServer().getScheduler().runTask(this, () -> storeCraftingClick(player, event.getInventory(), event.getRawSlot()));
+        }
+        if (furnaceFixtureEnabled() && isFurnaceInventory(event.getInventory())) {
+            getServer().getScheduler().runTask(this, () -> storeFurnaceClick(player, event.getInventory(), event.getRawSlot()));
         }
     }
 
@@ -194,6 +237,9 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
         if (craftingFixtureEnabled()) {
             setupCraftingFixture(world);
         }
+        if (furnaceFixtureEnabled()) {
+            setupFurnaceFixture(world);
+        }
         player.getInventory().clear();
         player.setGameMode(GameMode.SURVIVAL);
         if (chestFixtureEnabled()) {
@@ -201,6 +247,9 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
         }
         if (craftingFixtureEnabled()) {
             player.setItemOnCursor(new ItemStack(Material.OAK_PLANKS, CRAFTING_CURSOR_INPUT_COUNT));
+        }
+        if (furnaceFixtureEnabled()) {
+            player.setItemOnCursor(new ItemStack(Material.RAW_IRON, FURNACE_ITEM_COUNT));
         }
         player.teleport(new Location(world, SPAWN_X, SPAWN_Y, SPAWN_Z, SPAWN_YAW, SPAWN_PITCH));
         getLogger().info(
@@ -215,6 +264,9 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
         }
         if (craftingFixtureEnabled()) {
             scheduleCraftingOpen(player);
+        }
+        if (furnaceFixtureEnabled()) {
+            scheduleFurnaceOpen(player);
         }
         scheduleFixtureMilestones(player);
     }
@@ -233,12 +285,23 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
         table.setType(Material.CRAFTING_TABLE, false);
     }
 
+    private void setupFurnaceFixture(World world) {
+        Block furnace = world.getBlockAt(FURNACE_X, FURNACE_Y, FURNACE_Z);
+        if (furnace.getType() != Material.FURNACE) {
+            furnace.setType(Material.FURNACE, false);
+        }
+    }
+
     private boolean chestFixtureEnabled() {
         return "1".equals(System.getenv(CHEST_FIXTURE_ENV));
     }
 
     private boolean craftingFixtureEnabled() {
         return "1".equals(System.getenv(CRAFTING_FIXTURE_ENV));
+    }
+
+    private boolean furnaceFixtureEnabled() {
+        return "1".equals(System.getenv(FURNACE_FIXTURE_ENV));
     }
 
     private boolean biomeDimensionFixtureEnabled() {
@@ -308,6 +371,21 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
         player.openWorkbench(table.getLocation(), true);
     }
 
+    private void scheduleFurnaceOpen(Player player) {
+        getServer().getScheduler().runTaskLater(this, () -> openFurnaceForProbe(player), FURNACE_OPEN_DELAY_TICKS);
+    }
+
+    private void openFurnaceForProbe(Player player) {
+        if (!player.isOnline()) {
+            return;
+        }
+        Block furnace = player.getWorld().getBlockAt(FURNACE_X, FURNACE_Y, FURNACE_Z);
+        if (furnace.getType() != Material.FURNACE) {
+            return;
+        }
+        player.openInventory(((org.bukkit.block.Furnace) furnace.getState()).getInventory());
+    }
+
     private boolean isChestInventory(Inventory inventory) {
         Location location = inventory.getLocation();
         return location != null
@@ -320,6 +398,15 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
         return inventory.getType() == InventoryType.WORKBENCH;
     }
 
+    private boolean isFurnaceInventory(Inventory inventory) {
+        Location location = inventory.getLocation();
+        return inventory.getType() == InventoryType.FURNACE
+            && location != null
+            && location.getBlockX() == FURNACE_X
+            && location.getBlockY() == FURNACE_Y
+            && location.getBlockZ() == FURNACE_Z;
+    }
+
     private boolean isExpectedChestItem(ItemStack item) {
         return item != null && item.getType() == Material.DIRT && item.getAmount() == ITEM_COUNT;
     }
@@ -330,6 +417,18 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
 
     private boolean isExpectedCraftingResult(ItemStack item) {
         return item != null && item.getType() == Material.STICK && item.getAmount() == CRAFTING_RESULT_COUNT;
+    }
+
+    private boolean isExpectedFurnaceInput(ItemStack item) {
+        return item != null && item.getType() == Material.RAW_IRON && item.getAmount() == FURNACE_ITEM_COUNT;
+    }
+
+    private boolean isExpectedFurnaceFuel(ItemStack item) {
+        return item != null && item.getType() == Material.COAL && item.getAmount() == FURNACE_ITEM_COUNT;
+    }
+
+    private boolean isEmptyFurnaceOutput(ItemStack item) {
+        return item == null || item.getType() == Material.AIR || item.getAmount() == 0;
     }
 
     private void logChestOpen(Player player, Inventory inventory) {
@@ -360,6 +459,31 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
                 "MC-COMPAT-MILESTONE survival_crafting_table_open username=" + player.getName()
                     + " position=" + CRAFTING_X + "," + CRAFTING_Y + "," + CRAFTING_Z
                     + " window=" + CRAFTING_WINDOW
+            );
+        }
+    }
+
+    private void logFurnaceOpen(Player player, Inventory inventory) {
+        UUID playerId = player.getUniqueId();
+        if (furnaceCollectSeen.contains(playerId)) {
+            if (!furnaceReconnectJoinSeen.contains(playerId)) {
+                return;
+            }
+            if (furnaceReopenSeen.add(playerId)) {
+                getLogger().info(
+                    "MC-COMPAT-MILESTONE survival_furnace_reconnect_reopen username=" + player.getName()
+                        + " position=" + FURNACE_X + "," + FURNACE_Y + "," + FURNACE_Z
+                        + " window=" + FURNACE_WINDOW
+                );
+            }
+            emitFurnaceStateIfReady(player, inventory);
+            return;
+        }
+        if (furnaceOpenSeen.add(playerId)) {
+            getLogger().info(
+                "MC-COMPAT-MILESTONE survival_furnace_open username=" + player.getName()
+                    + " position=" + FURNACE_X + "," + FURNACE_Y + "," + FURNACE_Z
+                    + " window=" + FURNACE_WINDOW
             );
         }
     }
@@ -429,6 +553,96 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
                 + " item=" + CRAFTING_RESULT_NAME
                 + " count=" + CRAFTING_RESULT_COUNT
                 + " recipe=" + CRAFTING_RECIPE
+        );
+    }
+
+    private void storeFurnaceClick(Player player, Inventory inventory, int rawSlot) {
+        UUID playerId = player.getUniqueId();
+        if (rawSlot == FURNACE_INPUT_SLOT && furnaceInputSeen.add(playerId)) {
+            inventory.setItem(FURNACE_INPUT_SLOT, new ItemStack(Material.RAW_IRON, FURNACE_ITEM_COUNT));
+            getLogger().info(
+                "MC-COMPAT-MILESTONE survival_furnace_input_insert username=" + player.getName()
+                    + " window=" + FURNACE_WINDOW
+                    + " slot=" + FURNACE_INPUT_SLOT
+                    + " item=" + FURNACE_INPUT_NAME
+                    + " count=" + FURNACE_ITEM_COUNT
+            );
+        }
+        if (rawSlot == FURNACE_FUEL_SLOT && furnaceFuelSeen.add(playerId)) {
+            inventory.setItem(FURNACE_FUEL_SLOT, new ItemStack(Material.COAL, FURNACE_ITEM_COUNT));
+            getLogger().info(
+                "MC-COMPAT-MILESTONE survival_furnace_fuel_insert username=" + player.getName()
+                    + " window=" + FURNACE_WINDOW
+                    + " slot=" + FURNACE_FUEL_SLOT
+                    + " item=" + FURNACE_FUEL_NAME
+                    + " count=" + FURNACE_ITEM_COUNT
+            );
+        }
+        emitFurnaceOutputIfReady(player, inventory);
+        if (rawSlot == FURNACE_OUTPUT_SLOT && furnaceOutputSeen.contains(playerId)
+            && furnaceCollectSeen.add(playerId)) {
+            inventory.setItem(FURNACE_OUTPUT_SLOT, null);
+            player.getInventory().setItem(FURNACE_HOTBAR_SLOT, new ItemStack(Material.IRON_INGOT, FURNACE_ITEM_COUNT));
+            player.updateInventory();
+            getLogger().info(
+                "MC-COMPAT-MILESTONE survival_furnace_output_collect username=" + player.getName()
+                    + " window=" + FURNACE_WINDOW
+                    + " slot=" + FURNACE_OUTPUT_SLOT
+                    + " item=" + FURNACE_OUTPUT_NAME
+                    + " count=" + FURNACE_ITEM_COUNT
+                    + " inventory_slot=" + FURNACE_INVENTORY_SLOT
+            );
+        }
+    }
+
+    private void emitFurnaceOutputIfReady(Player player, Inventory inventory) {
+        UUID playerId = player.getUniqueId();
+        if (!furnaceInputSeen.contains(playerId) || !furnaceFuelSeen.contains(playerId)) {
+            return;
+        }
+        if (furnaceBurnSeen.add(playerId)) {
+            getLogger().info(
+                "MC-COMPAT-MILESTONE survival_furnace_burn_progress username=" + player.getName()
+                    + " window=" + FURNACE_WINDOW
+                    + " progress=started"
+            );
+        }
+        if (!furnaceOutputSeen.add(playerId)) {
+            return;
+        }
+        inventory.setItem(FURNACE_OUTPUT_SLOT, new ItemStack(Material.IRON_INGOT, FURNACE_ITEM_COUNT));
+        getLogger().info(
+            "MC-COMPAT-MILESTONE survival_furnace_output_available username=" + player.getName()
+                + " window=" + FURNACE_WINDOW
+                + " slot=" + FURNACE_OUTPUT_SLOT
+                + " item=" + FURNACE_OUTPUT_NAME
+                + " count=" + FURNACE_ITEM_COUNT
+        );
+    }
+
+    private void emitFurnaceStateIfReady(Player player, Inventory inventory) {
+        UUID playerId = player.getUniqueId();
+        if (!furnaceCollectSeen.contains(playerId) || !furnaceReconnectJoinSeen.contains(playerId)) {
+            return;
+        }
+        if (!isExpectedFurnaceInput(inventory.getItem(FURNACE_INPUT_SLOT))) {
+            return;
+        }
+        if (!isExpectedFurnaceFuel(inventory.getItem(FURNACE_FUEL_SLOT))) {
+            return;
+        }
+        if (!isEmptyFurnaceOutput(inventory.getItem(FURNACE_OUTPUT_SLOT))) {
+            return;
+        }
+        if (!furnaceStateSeen.add(playerId)) {
+            return;
+        }
+        getLogger().info(
+            "MC-COMPAT-MILESTONE survival_furnace_server_state username=" + player.getName()
+                + " position=" + FURNACE_X + "," + FURNACE_Y + "," + FURNACE_Z
+                + " input=" + FURNACE_INPUT_NAME
+                + " fuel=" + FURNACE_FUEL_NAME
+                + " output=empty collected=true session_persistent=true"
         );
     }
 

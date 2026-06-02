@@ -93,6 +93,40 @@ const SURVIVAL_CRAFTING_SERVER_RESULT_NEEDLE: &str =
 const SURVIVAL_CRAFTING_SERVER_COLLECT_NEEDLE: &str =
     "survival_crafting_collect username=compatbot window=1 slot=0 item=Stick count=4 inventory_slot=36";
 const SURVIVAL_CRAFTING_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_CRAFTING_FIXTURE";
+const SURVIVAL_FURNACE_CLIENT_OPEN_NEEDLE: &str =
+    "survival_furnace_open_seen window=1 position=12,64,0";
+const SURVIVAL_FURNACE_CLIENT_INPUT_NEEDLE: &str =
+    "survival_furnace_input_sent window=1 slot=0 item=RawIron count=1";
+const SURVIVAL_FURNACE_CLIENT_FUEL_NEEDLE: &str =
+    "survival_furnace_fuel_sent window=1 slot=1 item=Coal count=1";
+const SURVIVAL_FURNACE_CLIENT_BURN_NEEDLE: &str =
+    "survival_furnace_burn_progress_seen window=1 progress=started";
+const SURVIVAL_FURNACE_CLIENT_OUTPUT_NEEDLE: &str =
+    "survival_furnace_output_seen window=1 slot=2 item=IronIngot count=1";
+const SURVIVAL_FURNACE_CLIENT_COLLECT_NEEDLE: &str =
+    "survival_furnace_output_collected window=1 slot=2 item=IronIngot count=1";
+const SURVIVAL_FURNACE_CLIENT_INVENTORY_NEEDLE: &str =
+    "survival_furnace_inventory_updated slot=36 item=IronIngot count=1";
+const SURVIVAL_FURNACE_CLIENT_RECONNECT_NEEDLE: &str = "survival_furnace_reconnect_sent session=1";
+const SURVIVAL_FURNACE_CLIENT_REOPEN_NEEDLE: &str =
+    "survival_furnace_reopen_seen window=1 position=12,64,0";
+const SURVIVAL_FURNACE_SERVER_OPEN_NEEDLE: &str =
+    "survival_furnace_open username=compatbot position=12,64,0 window=1";
+const SURVIVAL_FURNACE_SERVER_INPUT_NEEDLE: &str =
+    "survival_furnace_input_insert username=compatbot window=1 slot=0 item=RawIron count=1";
+const SURVIVAL_FURNACE_SERVER_FUEL_NEEDLE: &str =
+    "survival_furnace_fuel_insert username=compatbot window=1 slot=1 item=Coal count=1";
+const SURVIVAL_FURNACE_SERVER_BURN_NEEDLE: &str =
+    "survival_furnace_burn_progress username=compatbot window=1 progress=started";
+const SURVIVAL_FURNACE_SERVER_OUTPUT_NEEDLE: &str =
+    "survival_furnace_output_available username=compatbot window=1 slot=2 item=IronIngot count=1";
+const SURVIVAL_FURNACE_SERVER_COLLECT_NEEDLE: &str =
+    "survival_furnace_output_collect username=compatbot window=1 slot=2 item=IronIngot count=1 inventory_slot=36";
+const SURVIVAL_FURNACE_SERVER_REOPEN_NEEDLE: &str =
+    "survival_furnace_reconnect_reopen username=compatbot position=12,64,0 window=1";
+const SURVIVAL_FURNACE_SERVER_STATE_NEEDLE: &str =
+    "survival_furnace_server_state username=compatbot position=12,64,0 input=RawIron fuel=Coal output=empty collected=true session_persistent=true";
+const SURVIVAL_FURNACE_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_FURNACE_FIXTURE";
 const SURVIVAL_BIOME_DIMENSION_CLIENT_STATE_NEEDLE: &str =
     "survival_biome_dimension_state spawn_environment=minecraft:overworld environment_identifier=minecraft:overworld client_environment_update=minecraft:overworld normalized_identifier=minecraft:overworld";
 const SURVIVAL_BIOME_DIMENSION_SERVER_STATE_NEEDLE: &str =
@@ -187,7 +221,7 @@ const FRAME_ARTIFACT_NON_CLAIMS: &[&str] = &[
     "visual_regression_approval",
     "semantic_equivalence",
 ];
-const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition";
+const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-furnace-persistence|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
     "Dimension type:",
@@ -302,6 +336,7 @@ enum Scenario {
     SurvivalBreakPlacePickup,
     SurvivalChestPersistence,
     SurvivalCraftingTable,
+    SurvivalFurnacePersistence,
     SurvivalBiomeDimensionState,
     McpControlledSmoke,
     CombatDamage,
@@ -871,6 +906,7 @@ fn safety_reconnect_sessions(scenario: Scenario) -> usize {
         Scenario::ReconnectFlagState
         | Scenario::ReconnectFlagScore
         | Scenario::SurvivalChestPersistence
+        | Scenario::SurvivalFurnacePersistence
         | Scenario::NegativeReconnectRace => SAFETY_RECONNECT_SESSION_COUNT,
         _ => SAFETY_SINGLE_SESSION_COUNT,
     }
@@ -1786,6 +1822,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
         "survival-break-place-pickup" => Ok(Scenario::SurvivalBreakPlacePickup),
         "survival-chest-persistence" => Ok(Scenario::SurvivalChestPersistence),
         "survival-crafting-table" => Ok(Scenario::SurvivalCraftingTable),
+        "survival-furnace-persistence" => Ok(Scenario::SurvivalFurnacePersistence),
         "survival-biome-dimension-state" => Ok(Scenario::SurvivalBiomeDimensionState),
         MCP_CONTROLLED_SMOKE_SCENARIO => Ok(Scenario::McpControlledSmoke),
         "combat-damage" => Ok(Scenario::CombatDamage),
@@ -1824,6 +1861,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::SurvivalBreakPlacePickup => "survival-break-place-pickup",
         Scenario::SurvivalChestPersistence => "survival-chest-persistence",
         Scenario::SurvivalCraftingTable => "survival-crafting-table",
+        Scenario::SurvivalFurnacePersistence => "survival-furnace-persistence",
         Scenario::SurvivalBiomeDimensionState => "survival-biome-dimension-state",
         Scenario::McpControlledSmoke => MCP_CONTROLLED_SMOKE_SCENARIO,
         Scenario::CombatDamage => "combat-damage",
@@ -1966,6 +2004,47 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             (
                 "survival_crafting_inventory_updated",
                 SURVIVAL_CRAFTING_CLIENT_INVENTORY_NEEDLE,
+            ),
+        ],
+        Scenario::SurvivalFurnacePersistence => &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "survival_furnace_open_seen",
+                SURVIVAL_FURNACE_CLIENT_OPEN_NEEDLE,
+            ),
+            (
+                "survival_furnace_input_sent",
+                SURVIVAL_FURNACE_CLIENT_INPUT_NEEDLE,
+            ),
+            (
+                "survival_furnace_fuel_sent",
+                SURVIVAL_FURNACE_CLIENT_FUEL_NEEDLE,
+            ),
+            (
+                "survival_furnace_burn_progress_seen",
+                SURVIVAL_FURNACE_CLIENT_BURN_NEEDLE,
+            ),
+            (
+                "survival_furnace_output_seen",
+                SURVIVAL_FURNACE_CLIENT_OUTPUT_NEEDLE,
+            ),
+            (
+                "survival_furnace_output_collected",
+                SURVIVAL_FURNACE_CLIENT_COLLECT_NEEDLE,
+            ),
+            (
+                "survival_furnace_inventory_updated",
+                SURVIVAL_FURNACE_CLIENT_INVENTORY_NEEDLE,
+            ),
+            (
+                "survival_furnace_reconnect_sent",
+                SURVIVAL_FURNACE_CLIENT_RECONNECT_NEEDLE,
+            ),
+            (
+                "survival_furnace_reopen_seen",
+                SURVIVAL_FURNACE_CLIENT_REOPEN_NEEDLE,
             ),
         ],
         Scenario::SurvivalBiomeDimensionState => &[
@@ -2380,6 +2459,41 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
             (
                 "server_survival_crafting_collect",
                 SURVIVAL_CRAFTING_SERVER_COLLECT_NEEDLE,
+            ),
+        ],
+        Scenario::SurvivalFurnacePersistence => &[
+            ("server_username_seen", "compatbot"),
+            (
+                "server_survival_furnace_open",
+                SURVIVAL_FURNACE_SERVER_OPEN_NEEDLE,
+            ),
+            (
+                "server_survival_furnace_input",
+                SURVIVAL_FURNACE_SERVER_INPUT_NEEDLE,
+            ),
+            (
+                "server_survival_furnace_fuel",
+                SURVIVAL_FURNACE_SERVER_FUEL_NEEDLE,
+            ),
+            (
+                "server_survival_furnace_burn_progress",
+                SURVIVAL_FURNACE_SERVER_BURN_NEEDLE,
+            ),
+            (
+                "server_survival_furnace_output_available",
+                SURVIVAL_FURNACE_SERVER_OUTPUT_NEEDLE,
+            ),
+            (
+                "server_survival_furnace_output_collect",
+                SURVIVAL_FURNACE_SERVER_COLLECT_NEEDLE,
+            ),
+            (
+                "server_survival_furnace_reconnect_reopen",
+                SURVIVAL_FURNACE_SERVER_REOPEN_NEEDLE,
+            ),
+            (
+                "server_survival_furnace_state",
+                SURVIVAL_FURNACE_SERVER_STATE_NEEDLE,
             ),
         ],
         Scenario::SurvivalBiomeDimensionState => &[
@@ -3767,6 +3881,9 @@ fn start_valence_server(cfg: &Config) -> Result<ManagedServer, String> {
     if cfg.scenario == Scenario::SurvivalCraftingTable {
         cmd.env(SURVIVAL_CRAFTING_FIXTURE_ENV, "1");
     }
+    if cfg.scenario == Scenario::SurvivalFurnacePersistence {
+        cmd.env(SURVIVAL_FURNACE_FIXTURE_ENV, "1");
+    }
     if cfg.scenario == Scenario::SurvivalBiomeDimensionState {
         cmd.env(SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV, "1");
     }
@@ -3839,6 +3956,10 @@ fn configure_paper_run_command(cfg: &Config, cmd: &mut Command) -> Result<(), St
     if cfg.scenario == Scenario::SurvivalCraftingTable {
         cmd.arg("-e")
             .arg(format!("{SURVIVAL_CRAFTING_FIXTURE_ENV}=1"));
+    }
+    if cfg.scenario == Scenario::SurvivalFurnacePersistence {
+        cmd.arg("-e")
+            .arg(format!("{SURVIVAL_FURNACE_FIXTURE_ENV}=1"));
     }
     if cfg.scenario == Scenario::SurvivalBiomeDimensionState {
         cmd.arg("-e")
@@ -4023,6 +4144,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         cfg.scenario,
         Scenario::ReconnectFlagState
             | Scenario::SurvivalChestPersistence
+            | Scenario::SurvivalFurnacePersistence
             | Scenario::NegativeReconnectRace
     ) {
         run_reconnect_sequence_scenario(cfg)?
@@ -4079,6 +4201,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         Scenario::ReconnectFlagScore
             | Scenario::ReconnectFlagState
             | Scenario::SurvivalChestPersistence
+            | Scenario::SurvivalFurnacePersistence
             | Scenario::NegativeReconnectRace
     ) {
         combined_output.push_str("mc_compat_reconnect_session=2\n");
@@ -4181,6 +4304,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
             | Scenario::FlagCarrierDeathReturn
             | Scenario::ReconnectFlagState
             | Scenario::SurvivalChestPersistence
+            | Scenario::SurvivalFurnacePersistence
             | Scenario::NegativeReconnectRace
     ) && mixed_success
     {
@@ -5015,6 +5139,12 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
         Scenario::SurvivalCraftingTable => {
             cmd.env("MC_COMPAT_SURVIVAL_CRAFTING_PROBE", "1");
         }
+        Scenario::SurvivalFurnacePersistence => {
+            cmd.env("MC_COMPAT_SURVIVAL_FURNACE_PROBE", "1").env(
+                "MC_COMPAT_SURVIVAL_FURNACE_SESSION",
+                (client_index + 1).to_string(),
+            );
+        }
         Scenario::SurvivalBiomeDimensionState => {
             cmd.env(SURVIVAL_BIOME_DIMENSION_PROBE_ENV, "1");
         }
@@ -5212,6 +5342,7 @@ fn requires_server_correlation(cfg: &Config) -> bool {
             | Scenario::SurvivalBreakPlacePickup
             | Scenario::SurvivalChestPersistence
             | Scenario::SurvivalCraftingTable
+            | Scenario::SurvivalFurnacePersistence
             | Scenario::CombatDamage
             | Scenario::CombatKnockback
             | Scenario::ArmorEquipmentMitigation
@@ -6140,6 +6271,15 @@ fn smoke_receipt_json_with_typed_event_oracle(
             "crafting_result_collect",
             "inventory_update",
         ],
+        Scenario::SurvivalFurnacePersistence => vec![
+            "login_success",
+            "play_join_game",
+            "open_container",
+            "furnace_input_click",
+            "furnace_fuel_click",
+            "furnace_output_collect",
+            "disconnect_reconnect",
+        ],
         Scenario::SurvivalBiomeDimensionState => vec![
             "login_success",
             "play_join_game",
@@ -6336,6 +6476,23 @@ fn smoke_receipt_json_with_typed_event_oracle(
         "server_survival_crafting_input_b",
         "server_survival_crafting_result",
         "server_survival_crafting_collect",
+        "survival_furnace_open_seen",
+        "survival_furnace_input_sent",
+        "survival_furnace_fuel_sent",
+        "survival_furnace_burn_progress_seen",
+        "survival_furnace_output_seen",
+        "survival_furnace_output_collected",
+        "survival_furnace_inventory_updated",
+        "survival_furnace_reconnect_sent",
+        "survival_furnace_reopen_seen",
+        "server_survival_furnace_open",
+        "server_survival_furnace_input",
+        "server_survival_furnace_fuel",
+        "server_survival_furnace_burn_progress",
+        "server_survival_furnace_output_available",
+        "server_survival_furnace_output_collect",
+        "server_survival_furnace_reconnect_reopen",
+        "server_survival_furnace_state",
         "server_inventory_hotbar_select",
         "server_inventory_drop",
         "server_inventory_pickup",
@@ -7497,6 +7654,7 @@ mod tests {
         Scenario::SurvivalBreakPlacePickup,
         Scenario::SurvivalChestPersistence,
         Scenario::SurvivalCraftingTable,
+        Scenario::SurvivalFurnacePersistence,
         Scenario::SurvivalBiomeDimensionState,
         Scenario::McpControlledSmoke,
         Scenario::CombatDamage,
@@ -8140,6 +8298,10 @@ mod tests {
         let crafting = test_config(&["--scenario", "survival-crafting-table"], &[])
             .expect("survival crafting-table scenario parses");
         assert_eq!(crafting.scenario, Scenario::SurvivalCraftingTable);
+
+        let furnace = test_config(&["--scenario", "survival-furnace-persistence"], &[])
+            .expect("survival furnace scenario parses");
+        assert_eq!(furnace.scenario, Scenario::SurvivalFurnacePersistence);
 
         let biome_dimension = test_config(&["--scenario", "survival-biome-dimension-state"], &[])
             .expect("survival biome/dimension scenario parses");
@@ -10306,6 +10468,57 @@ RED: 1
         assert!(missing_collect
             .missing_milestones
             .contains(&"server_survival_crafting_collect"));
+    }
+
+    #[test]
+    fn survival_furnace_persistence_scenario_tracks_client_and_server_evidence() {
+        let client = evaluate_scenario(
+            Scenario::SurvivalFurnacePersistence,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nsurvival_furnace_open_seen window=1 position=12,64,0\nsurvival_furnace_input_sent window=1 slot=0 item=RawIron count=1\nsurvival_furnace_fuel_sent window=1 slot=1 item=Coal count=1\nsurvival_furnace_burn_progress_seen window=1 progress=started\nsurvival_furnace_output_seen window=1 slot=2 item=IronIngot count=1\nsurvival_furnace_output_collected window=1 slot=2 item=IronIngot count=1\nsurvival_furnace_inventory_updated slot=36 item=IronIngot count=1\nsurvival_furnace_reconnect_sent session=1\nsurvival_furnace_reopen_seen window=1 position=12,64,0\n",
+        );
+        assert!(client.passed, "{client:?}");
+        assert!(client.missing_milestones.is_empty());
+
+        let missing_output = evaluate_scenario(
+            Scenario::SurvivalFurnacePersistence,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nsurvival_furnace_open_seen window=1 position=12,64,0\nsurvival_furnace_input_sent window=1 slot=0 item=RawIron count=1\nsurvival_furnace_fuel_sent window=1 slot=1 item=Coal count=1\n",
+        );
+        assert!(!missing_output.passed, "{missing_output:?}");
+        assert!(missing_output
+            .missing_milestones
+            .contains(&"survival_furnace_output_seen"));
+
+        let wrong_client_values = evaluate_scenario(
+            Scenario::SurvivalFurnacePersistence,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nsurvival_furnace_open_seen window=2 position=13,64,0\nsurvival_furnace_input_sent window=2 slot=0 item=Sand count=1\nsurvival_furnace_fuel_sent window=2 slot=1 item=Charcoal count=1\nsurvival_furnace_burn_progress_seen window=2 progress=done\nsurvival_furnace_output_seen window=2 slot=2 item=Glass count=1\nsurvival_furnace_output_collected window=2 slot=2 item=Glass count=1\nsurvival_furnace_inventory_updated slot=37 item=Glass count=1\nsurvival_furnace_reconnect_sent session=2\nsurvival_furnace_reopen_seen window=2 position=13,64,0\n",
+        );
+        assert!(!wrong_client_values.passed, "{wrong_client_values:?}");
+        assert!(wrong_client_values
+            .missing_milestones
+            .contains(&"survival_furnace_open_seen"));
+        assert!(wrong_client_values
+            .missing_milestones
+            .contains(&"survival_furnace_input_sent"));
+        assert!(wrong_client_values
+            .missing_milestones
+            .contains(&"survival_furnace_reopen_seen"));
+
+        let server = evaluate_server_scenario(
+            Scenario::SurvivalFurnacePersistence,
+            "compatbot joined\nMC-COMPAT-MILESTONE survival_furnace_open username=compatbot position=12,64,0 window=1\nMC-COMPAT-MILESTONE survival_furnace_input_insert username=compatbot window=1 slot=0 item=RawIron count=1\nMC-COMPAT-MILESTONE survival_furnace_fuel_insert username=compatbot window=1 slot=1 item=Coal count=1\nMC-COMPAT-MILESTONE survival_furnace_burn_progress username=compatbot window=1 progress=started\nMC-COMPAT-MILESTONE survival_furnace_output_available username=compatbot window=1 slot=2 item=IronIngot count=1\nMC-COMPAT-MILESTONE survival_furnace_output_collect username=compatbot window=1 slot=2 item=IronIngot count=1 inventory_slot=36\nMC-COMPAT-MILESTONE survival_furnace_reconnect_reopen username=compatbot position=12,64,0 window=1\nMC-COMPAT-MILESTONE survival_furnace_server_state username=compatbot position=12,64,0 input=RawIron fuel=Coal output=empty collected=true session_persistent=true\n",
+            "compatbot",
+        );
+        assert!(server.passed, "{server:?}");
+
+        let missing_state = evaluate_server_scenario(
+            Scenario::SurvivalFurnacePersistence,
+            "compatbot joined\nMC-COMPAT-MILESTONE survival_furnace_open username=compatbot position=12,64,0 window=1\n",
+            "compatbot",
+        );
+        assert!(!missing_state.passed, "{missing_state:?}");
+        assert!(missing_state
+            .missing_milestones
+            .contains(&"server_survival_furnace_state"));
     }
 
     #[test]
