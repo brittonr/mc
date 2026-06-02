@@ -150,6 +150,8 @@ const SURVIVAL_FURNACE_OUTPUT_SLOT: i16 = 2;
 const SURVIVAL_FURNACE_OUTPUT_INDEX: usize = 2;
 const SURVIVAL_FURNACE_INVENTORY_SLOT: i16 = 36;
 const SURVIVAL_FURNACE_INVENTORY_INDEX: usize = 36;
+const SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_SLOT: i16 = 30;
+const SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_INDEX: usize = 30;
 const SURVIVAL_FURNACE_INPUT_ITEM_ID: isize = 769;
 const SURVIVAL_FURNACE_FUEL_ITEM_ID: isize = 762;
 const SURVIVAL_FURNACE_OUTPUT_ITEM_ID: isize = 770;
@@ -286,6 +288,22 @@ fn should_log_survival_crafting_inventory_slot(
 fn should_log_survival_crafting_inventory_index(slot_index: usize) -> bool {
     slot_index == SURVIVAL_CRAFTING_INVENTORY_INDEX
         || slot_index == SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_INDEX
+}
+
+fn should_log_survival_furnace_inventory_slot(
+    window_id: u8,
+    furnace_window_id: u8,
+    slot: i16,
+) -> bool {
+    (window_id == PLAYER_INVENTORY_WINDOW_ID && slot == SURVIVAL_FURNACE_INVENTORY_SLOT)
+        || (window_id == furnace_window_id
+            && furnace_window_id > EMPTY_WINDOW_ID
+            && slot == SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_SLOT)
+}
+
+fn should_log_survival_furnace_inventory_index(slot_index: usize) -> bool {
+    slot_index == SURVIVAL_FURNACE_INVENTORY_INDEX
+        || slot_index == SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_INDEX
 }
 
 fn normalize_survival_environment_id(raw: &str) -> &'static str {
@@ -3571,7 +3589,7 @@ impl Server {
     ) {
         if !self.survival_furnace_probe_enabled
             || self.survival_furnace_inventory_seen
-            || slot_index != SURVIVAL_FURNACE_INVENTORY_INDEX
+            || !should_log_survival_furnace_inventory_index(slot_index)
         {
             return;
         }
@@ -3861,6 +3879,13 @@ impl Server {
                 SURVIVAL_FURNACE_INVENTORY_INDEX,
                 window.items.data.get(SURVIVAL_FURNACE_INVENTORY_INDEX),
             );
+            self.log_survival_furnace_inventory_from_slot(
+                SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_INDEX,
+                window
+                    .items
+                    .data
+                    .get(SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_INDEX),
+            );
         }
 
         if let Some(Some(stack)) = window.items.data.get(36) {
@@ -3945,9 +3970,11 @@ impl Server {
                     );
                 }
             }
-            if slot.id == PLAYER_INVENTORY_WINDOW_ID
-                && slot.property == SURVIVAL_FURNACE_INVENTORY_SLOT
-            {
+            if should_log_survival_furnace_inventory_slot(
+                slot.id,
+                self.survival_furnace_window_id,
+                slot.property,
+            ) {
                 self.log_survival_furnace_inventory_from_slot(
                     SURVIVAL_FURNACE_INVENTORY_INDEX,
                     Some(&slot.item),
@@ -4980,7 +5007,8 @@ mod tests {
     use super::{
         derive_survival_environment_id, normalize_survival_environment_id,
         parse_flag_probe_repeat_target, should_log_survival_crafting_inventory_index,
-        should_log_survival_crafting_inventory_slot, survival_crafting_input_stack,
+        should_log_survival_crafting_inventory_slot, should_log_survival_furnace_inventory_index,
+        should_log_survival_furnace_inventory_slot, survival_crafting_input_stack,
         survival_crafting_result_matches, survival_crafting_result_stack,
         survival_crafting_table_position, survival_furnace_fuel_stack,
         survival_furnace_input_stack, survival_furnace_output_matches,
@@ -4992,9 +5020,12 @@ mod tests {
         SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_SLOT, SURVIVAL_CRAFTING_RESULT_COUNT,
         SURVIVAL_CRAFTING_RESULT_ITEM_ID, SURVIVAL_CRAFTING_TABLE_X, SURVIVAL_CRAFTING_TABLE_Y,
         SURVIVAL_CRAFTING_TABLE_Z, SURVIVAL_END_ID, SURVIVAL_FURNACE_FUEL_ITEM_ID,
-        SURVIVAL_FURNACE_INPUT_ITEM_ID, SURVIVAL_FURNACE_ITEM_COUNT,
-        SURVIVAL_FURNACE_OUTPUT_ITEM_ID, SURVIVAL_FURNACE_X, SURVIVAL_FURNACE_Y,
-        SURVIVAL_FURNACE_Z, SURVIVAL_NETHER_ID, SURVIVAL_OVERWORLD_ID,
+        SURVIVAL_FURNACE_INPUT_ITEM_ID, SURVIVAL_FURNACE_INVENTORY_INDEX,
+        SURVIVAL_FURNACE_INVENTORY_SLOT, SURVIVAL_FURNACE_ITEM_COUNT,
+        SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_INDEX,
+        SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_SLOT, SURVIVAL_FURNACE_OUTPUT_ITEM_ID,
+        SURVIVAL_FURNACE_X, SURVIVAL_FURNACE_Y, SURVIVAL_FURNACE_Z, SURVIVAL_NETHER_ID,
+        SURVIVAL_OVERWORLD_ID,
         SURVIVAL_UNKNOWN_ENVIRONMENT_ID,
     };
     use steven_protocol::item;
@@ -5176,6 +5207,45 @@ mod tests {
         ));
         assert!(!should_log_survival_crafting_inventory_index(
             SURVIVAL_CRAFTING_INPUT_A_SLOT as usize
+        ));
+    }
+
+    #[test]
+    fn survival_furnace_inventory_updates_accept_player_and_open_mirror_slots() {
+        const FURNACE_WINDOW_ID_FOR_TEST: u8 = 1;
+
+        assert!(should_log_survival_furnace_inventory_slot(
+            PLAYER_INVENTORY_WINDOW_ID,
+            FURNACE_WINDOW_ID_FOR_TEST,
+            SURVIVAL_FURNACE_INVENTORY_SLOT
+        ));
+        assert!(should_log_survival_furnace_inventory_slot(
+            FURNACE_WINDOW_ID_FOR_TEST,
+            FURNACE_WINDOW_ID_FOR_TEST,
+            SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_SLOT
+        ));
+        assert!(!should_log_survival_furnace_inventory_slot(
+            PLAYER_INVENTORY_WINDOW_ID,
+            FURNACE_WINDOW_ID_FOR_TEST,
+            SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_SLOT
+        ));
+        assert!(!should_log_survival_furnace_inventory_slot(
+            FURNACE_WINDOW_ID_FOR_TEST,
+            FURNACE_WINDOW_ID_FOR_TEST,
+            SURVIVAL_FURNACE_INVENTORY_SLOT
+        ));
+    }
+
+    #[test]
+    fn survival_furnace_inventory_indices_accept_player_and_open_mirror() {
+        assert!(should_log_survival_furnace_inventory_index(
+            SURVIVAL_FURNACE_INVENTORY_INDEX
+        ));
+        assert!(should_log_survival_furnace_inventory_index(
+            SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_INDEX
+        ));
+        assert!(!should_log_survival_furnace_inventory_index(
+            SURVIVAL_FURNACE_OUTPUT_ITEM_ID as usize
         ));
     }
 }
