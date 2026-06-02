@@ -1,0 +1,98 @@
+valence_git_rev=eba9c8a
+valence_git_status_count=0
+
+command=nix develop --no-update-lock-file -c bash -lc cd valence && cargo test --example survival_compat survival_mob_drop -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+/home/brittonr/git/mc/valence
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.16s
+     Running unittests examples/survival_compat.rs (/home/brittonr/.cargo-target/debug/examples/survival_compat-fc8aeafe148fae07)
+
+running 2 tests
+test tests::survival_mob_drop_attack_requires_survival_attack_on_fixture_mob ... ok
+test tests::survival_mob_drop_stack_requires_iron_ingot_count ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.00s
+
+valence_focused_test_exit_status=0
+
+command=nix develop --no-update-lock-file -c bash -lc cd valence && cargo test --example survival_compat -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+/home/brittonr/git/mc/valence
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.19s
+     Running unittests examples/survival_compat.rs (/home/brittonr/.cargo-target/debug/examples/survival_compat-fc8aeafe148fae07)
+
+running 16 tests
+test tests::survival_biome_dimension_normalizes_known_environment_ids ... ok
+test tests::survival_break_accepts_only_target_stop_destroy ... ok
+test tests::survival_biome_dimension_rejects_unknown_environment_ids ... ok
+test tests::survival_chest_opens_only_main_hand_survival_target ... ok
+test tests::survival_crafting_collect_event_requires_result_slot_and_stack ... ok
+test tests::survival_chest_store_event_requires_exact_slot_window_item ... ok
+test tests::survival_crafting_opens_only_main_hand_survival_target ... ok
+test tests::survival_crafting_input_event_requires_exact_slot_window ... ok
+test tests::survival_furnace_collect_event_requires_output_slot_and_stack ... ok
+test tests::survival_furnace_input_and_fuel_events_require_exact_slot_window ... ok
+test tests::survival_furnace_opens_only_main_hand_survival_target ... ok
+test tests::survival_hunger_food_stack_requires_bread_count ... ok
+test tests::survival_hunger_food_use_requires_main_hand_sequence_slot_and_pre_state ... ok
+test tests::survival_mob_drop_attack_requires_survival_attack_on_fixture_mob ... ok
+test tests::survival_mob_drop_stack_requires_iron_ingot_count ... ok
+test tests::survival_place_accepts_only_main_hand_up_on_target ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+valence_example_test_exit_status=0
+
+command=/nix/store/8xvb04563w3g18nbf6d2xhwj9kahhgr8-temurin-bin-8.0.462/bin/jar tf docs/evidence/mc-compat-paper-survival-mob-drop-fixture-2026-06-02.jar
+META-INF/
+META-INF/MANIFEST.MF
+mc/compat/paper/SurvivalFixturePlugin.class
+plugin.yml
+paper_jar_listing_exit_status=0
+
+command=unzip -p docs/evidence/mc-compat-paper-survival-mob-drop-fixture-2026-06-02.jar plugin.yml
+name: McCompatSurvivalFixture
+version: 0.1.0
+main: mc.compat.paper.SurvivalFixturePlugin
+api-version: '1.20'
+description: MC compatibility survival mob-drop fixture for protocol-763 reference receipts.
+paper_plugin_manifest_exit_status=0
+
+command=nix develop --no-update-lock-file -c b3sum docs/evidence/mc-compat-paper-survival-mob-drop-fixture-2026-06-02.java docs/evidence/mc-compat-paper-survival-mob-drop-fixture-2026-06-02.jar
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+519c07a0afd38df2291a65946352310dbacf33bd77be63ad86e0be494fa786c1  docs/evidence/mc-compat-paper-survival-mob-drop-fixture-2026-06-02.java
+45679bef18ca3cdad3a2d21e5fe6a446156198b4b7deba93ae676737b16f7e3f  docs/evidence/mc-compat-paper-survival-mob-drop-fixture-2026-06-02.jar
+fixture_hashes_exit_status=0
+
+command=env PAPER_PLUGIN_JAR=/home/brittonr/git/mc/docs/evidence/mc-compat-paper-survival-mob-drop-fixture-2026-06-02.jar nix run --no-update-lock-file .#mc-compat-smoke -- --dry-run --scenario survival-mob-drop --server-backend paper
+[mc-compat] plan: build client, start Paper server, wait for protocol 758, run client under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] server start will set EULA=TRUE using recorded user acceptance
+[mc-compat] starting Paper 1.18.2 server on 127.0.0.1:25566 via itzg/minecraft-server:java17 with EULA=TRUE
++ "docker" "run" "-d" "--name" "mc-compat-1-18-2" "-p" "127.0.0.1:25566:25565" "-e" "EULA=TRUE" "-e" "TYPE=PAPER" "-e" "VERSION=1.18.2" "-e" "ONLINE_MODE=FALSE" "-e" "MEMORY=1G" "-e" "VIEW_DISTANCE=2" "-e" "SIMULATION_DISTANCE=2" "-e" "MC_COMPAT_SURVIVAL_MOB_DROP_FIXTURE=1" "-v" "/home/brittonr/git/mc/docs/evidence/mc-compat-paper-survival-mob-drop-fixture-2026-06-02.jar:/plugins/mc-compat-paper-survival-mob-drop-fixture-2026-06-02.jar:ro" "itzg/minecraft-server:java17"
+[mc-compat] probing status 127.0.0.1:25566 expecting protocol 758
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'survival-mob-drop' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+paper_dry_run_exit_status=0
+
+command=env VALENCE_REV=eba9c8a VALENCE_EXAMPLE=survival_compat nix run --no-update-lock-file .#mc-compat-smoke -- --dry-run --scenario survival-mob-drop --server-backend valence
+[mc-compat] plan: build client, start Valence server, wait for protocol 758, run client under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] using existing Valence worktree /tmp/valence-compat-758
+[mc-compat] starting Valence eba9c8a example 'survival_compat' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-758
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 758
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'survival-mob-drop' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+valence_dry_run_exit_status=0
+
