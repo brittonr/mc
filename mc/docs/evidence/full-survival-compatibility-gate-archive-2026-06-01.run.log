@@ -1,0 +1,132 @@
+$ nix run --no-update-lock-file .#cairn -- sync full-survival-compatibility-gate --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/full-survival-compatibility-gate/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/full-survival-compatibility-gate/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "full-survival-compatibility-gate",
+  "delta_specs": [
+    "./cairn/changes/full-survival-compatibility-gate/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "f619d50b9ce4cbf4a2d3c47958f9c491b2e62d881ac76115d9740196f847876a",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a434ffe5db0020917a1c837e0b5be10a55d6ae918c1e0c334ef5fe6eb3c64fe3"
+    },
+    "kind": "sync",
+    "manifest_hash": "6c942e82295489041f51de0b2fa0237f32fa0f24755df913c363a80594bb2076"
+  },
+  "plan_hash": "20a80a1cc69a9be6115fffd743e124240b9728a87859f635fe8147dcea9bdbe4",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "4d7e6acaf1bd4b0d15bcd86f040ee48a187ec48b7b25d29367d43c0d2a5b3c26"
+}
+sync_exit_status=0
+$ nix run --no-update-lock-file .#cairn -- archive full-survival-compatibility-gate --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: full-survival-compatibility-gate",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-full-survival-compatibility-gate"
+    }
+  ],
+  "blocked": false,
+  "change": "full-survival-compatibility-gate",
+  "dry_run": false,
+  "input_hash": "f619d50b9ce4cbf4a2d3c47958f9c491b2e62d881ac76115d9740196f847876a",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "4e06b52c49714c9bec4c6c03827beb0c0217a271fd97b47b202e35887f412b23",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-full-survival-compatibility-gate/design.md"
+        },
+        {
+          "content_hash": "50741b86447ded106929d13b4ba9fcf9b3712e789f3712264109c1750beff845",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-full-survival-compatibility-gate/proposal.md"
+        },
+        {
+          "content_hash": "1d845fc94c5129cc7e4fb76c41d13540b65c522fe88ee4c75913d5cc038d0ff4",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-full-survival-compatibility-gate/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "92659290d6a39687f82938790df5447e9b3af116d4d69867a12de7f8b02317ad",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-full-survival-compatibility-gate/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/full-survival-compatibility-gate"
+        }
+      ],
+      "manifest_hash": "559ab630bcfd910c7a01b57da40cf273468463fa7f8ca4f13d23dc641bb854a5"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "4e06b52c49714c9bec4c6c03827beb0c0217a271fd97b47b202e35887f412b23",
+          "exists": true,
+          "path": "./cairn/changes/full-survival-compatibility-gate/design.md"
+        },
+        {
+          "content_hash": "50741b86447ded106929d13b4ba9fcf9b3712e789f3712264109c1750beff845",
+          "exists": true,
+          "path": "./cairn/changes/full-survival-compatibility-gate/proposal.md"
+        },
+        {
+          "content_hash": "1d845fc94c5129cc7e4fb76c41d13540b65c522fe88ee4c75913d5cc038d0ff4",
+          "exists": true,
+          "path": "./cairn/changes/full-survival-compatibility-gate/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "92659290d6a39687f82938790df5447e9b3af116d4d69867a12de7f8b02317ad",
+          "exists": true,
+          "path": "./cairn/changes/full-survival-compatibility-gate/tasks.md"
+        }
+      ],
+      "manifest_hash": "07c88b06dc6f8cd9060f0f2dd276888540e7bad62059a60e2c2c944cc6f62b5b"
+    },
+    "kind": "archive",
+    "manifest_hash": "ca3437ddc1b679ef3ecc8eabd09aa49baa3f1b68341cf5560205965d5fa6cf6c"
+  },
+  "plan_hash": "4a258c370560630abab0892240a00e597aa9fa3f606dad87c562be14e7c699f1",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "52ebf1ff7a7d0d419f292dc5ca4fc0a8ee5a31f3a901f4eeedd2c8ece779f10e"
+}
+archive_exit_status=0
+archive_rename=2026-06-01-full-survival-compatibility-gate
+exit_status=0

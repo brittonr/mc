@@ -1,0 +1,13 @@
+# full survival compatibility aggregate validation
+date=2026-06-01
+command=full survival gate + survival/matrix/current checks
+
+full survival compatibility gate self-test ok: all-covered success and fail-closed fixtures exercised
+full survival compatibility gate passed: 5 covered rows, 4 missing rows
+survival coverage matrix self-test ok: positive and negative fixtures exercised
+survival coverage matrix check passed: 9 rows validated
+acceptance matrix self-test ok: positive and negative fixtures exercised
+acceptance matrix check passed: 31 rows validated
+current evidence bundle self-test ok: positive and negative fixtures exercised
+current evidence bundle check passed: 31 rows validated
+exit_status=0
