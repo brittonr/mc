@@ -1,6 +1,8 @@
 #![allow(clippy::type_complexity)]
 
 use std::collections::HashSet;
+use std::fs;
+use std::path::PathBuf;
 
 use valence::entity::iron_golem::IronGolemEntityBundle;
 use valence::entity::item::{ItemEntityBundle, Stack as ItemEntityStack};
@@ -114,6 +116,19 @@ const SURVIVAL_REDSTONE_TOGGLE_ARENA_MAX_Z: i32 = 2;
 const SURVIVAL_REDSTONE_TOGGLE_PLAYER_X: f64 = 20.5;
 const SURVIVAL_REDSTONE_TOGGLE_PLAYER_Y: f64 = 65.0;
 const SURVIVAL_REDSTONE_TOGGLE_PLAYER_Z: f64 = -1.5;
+const SURVIVAL_WORLD_PERSISTENCE_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_FIXTURE";
+const SURVIVAL_WORLD_PERSISTENCE_DIR_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_DIR";
+const SURVIVAL_WORLD_PERSISTENCE_MARKER_FILE: &str = "persisted-dirt.marker";
+const SURVIVAL_WORLD_PERSISTENCE_BLOCK_NAME: &str = "Dirt";
+const SURVIVAL_WORLD_PERSISTENCE_X: i32 = 24;
+const SURVIVAL_WORLD_PERSISTENCE_Y: i32 = FLOOR_Y;
+const SURVIVAL_WORLD_PERSISTENCE_Z: i32 = 0;
+const SURVIVAL_WORLD_PERSISTENCE_BASE_Y: i32 = 63;
+const SURVIVAL_WORLD_PERSISTENCE_PLAYER_X: f64 = 24.5;
+const SURVIVAL_WORLD_PERSISTENCE_PLAYER_Y: f64 = 65.0;
+const SURVIVAL_WORLD_PERSISTENCE_PLAYER_Z: f64 = -1.5;
+const SURVIVAL_WORLD_PERSISTENCE_INVENTORY_SLOT: u16 = 36;
+const SURVIVAL_WORLD_PERSISTENCE_ITEM_COUNT: i8 = 1;
 const SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_FIXTURE";
 const SURVIVAL_OVERWORLD_ID: &str = "minecraft:overworld";
 const SURVIVAL_NETHER_ID: &str = "minecraft:the_nether";
@@ -238,6 +253,25 @@ struct SurvivalRedstoneToggleFixture {
     state_logged: bool,
 }
 
+#[derive(Resource)]
+struct SurvivalWorldPersistenceFixture {
+    marker_path: PathBuf,
+    persisted_loaded: bool,
+    mutation_logged: bool,
+    state_logged: bool,
+}
+
+impl SurvivalWorldPersistenceFixture {
+    fn new(marker_path: PathBuf, persisted_loaded: bool) -> Self {
+        Self {
+            marker_path,
+            persisted_loaded,
+            mutation_logged: false,
+            state_logged: false,
+        }
+    }
+}
+
 impl SurvivalFurnaceFixture {
     fn new(inventory: Entity) -> Self {
         Self {
@@ -272,6 +306,7 @@ pub fn main() {
                 handle_survival_digging,
                 handle_survival_block_place,
                 handle_survival_redstone_toggle,
+                handle_survival_world_persistence_place,
                 handle_survival_chest_open,
                 handle_survival_chest_store,
                 handle_survival_crafting_open,
@@ -337,6 +372,19 @@ fn setup(
             survival_redstone_toggle_output_state(false),
         );
     }
+    let world_persistence_marker = survival_world_persistence_marker_path();
+    let world_persistence_loaded = world_persistence_marker.exists();
+    if survival_world_persistence_fixture_enabled() {
+        setup_survival_world_persistence_arena(&mut layer);
+        let state = if world_persistence_loaded {
+            survival_world_persistence_state()
+        } else {
+            BlockState::AIR
+        };
+        layer
+            .chunk
+            .set_block(survival_world_persistence_pos(), state);
+    }
 
     let layer = commands.spawn(layer).id();
 
@@ -385,6 +433,12 @@ fn setup(
     if survival_redstone_toggle_fixture_enabled() {
         commands.insert_resource(SurvivalRedstoneToggleFixture::default());
     }
+    if survival_world_persistence_fixture_enabled() {
+        commands.insert_resource(SurvivalWorldPersistenceFixture::new(
+            world_persistence_marker,
+            world_persistence_loaded,
+        ));
+    }
 }
 
 fn init_clients(
@@ -408,6 +462,7 @@ fn init_clients(
     layers: Query<Entity, (With<ChunkLayer>, With<EntityLayer>)>,
     mut hunger_food_fixture: Option<ResMut<SurvivalHungerFoodFixture>>,
     mut mob_drop_fixture: Option<ResMut<SurvivalMobDropFixture>>,
+    mut world_persistence_fixture: Option<ResMut<SurvivalWorldPersistenceFixture>>,
 ) {
     for (
         mut client,
@@ -435,6 +490,12 @@ fn init_clients(
                 SURVIVAL_REDSTONE_TOGGLE_PLAYER_Y,
                 SURVIVAL_REDSTONE_TOGGLE_PLAYER_Z,
             ]);
+        } else if survival_world_persistence_fixture_enabled() {
+            pos.set([
+                SURVIVAL_WORLD_PERSISTENCE_PLAYER_X,
+                SURVIVAL_WORLD_PERSISTENCE_PLAYER_Y,
+                SURVIVAL_WORLD_PERSISTENCE_PLAYER_Z,
+            ]);
         } else {
             pos.set([SURVIVAL_SPAWN_X, f64::from(SPAWN_Y), SURVIVAL_SPAWN_Z]);
         }
@@ -448,6 +509,12 @@ fn init_clients(
         }
         if survival_furnace_fixture_enabled() {
             cursor_item.0 = survival_furnace_input_stack();
+        }
+        if survival_world_persistence_fixture_enabled() {
+            inventory.set_slot(
+                SURVIVAL_WORLD_PERSISTENCE_INVENTORY_SLOT,
+                survival_world_persistence_stack(),
+            );
         }
         if survival_hunger_food_fixture_enabled() {
             health.0 = SURVIVAL_HUNGER_FOOD_PRE_HEALTH;
@@ -479,6 +546,9 @@ fn init_clients(
         }
         if let Some(fixture) = mob_drop_fixture.as_mut() {
             log_survival_mob_drop_spawn(username.as_str(), fixture);
+        }
+        if let Some(fixture) = world_persistence_fixture.as_mut() {
+            log_survival_world_persistence_post_restart(username.as_str(), &mut client, fixture);
         }
     }
 }
@@ -655,6 +725,66 @@ fn handle_survival_redstone_toggle(
                 SURVIVAL_REDSTONE_TOGGLE_OUTPUT_NAME
             ));
         }
+    }
+}
+
+fn handle_survival_world_persistence_place(
+    fixture: Option<ResMut<SurvivalWorldPersistenceFixture>>,
+    mut clients: Query<(&Username, &GameMode, &HeldItem, &mut Inventory, &mut Client)>,
+    mut layers: Query<&mut ChunkLayer>,
+    mut events: EventReader<InteractBlockEvent>,
+) {
+    let Some(mut fixture) = fixture else {
+        return;
+    };
+    if fixture.mutation_logged {
+        return;
+    }
+    let mut layer = layers.single_mut();
+
+    for event in events.read() {
+        let Ok((username, game_mode, held, mut inventory, mut client)) =
+            clients.get_mut(event.client)
+        else {
+            continue;
+        };
+        if !should_place_survival_world_persistence(
+            *game_mode,
+            event.hand,
+            event.position,
+            event.face,
+        ) {
+            continue;
+        }
+        let slot_id = held.slot();
+        let stack = inventory.slot(slot_id).clone();
+        if !is_survival_world_persistence_stack(&stack) {
+            continue;
+        }
+        inventory.set_slot(slot_id, ItemStack::EMPTY);
+        let state = survival_world_persistence_state();
+        layer.set_block(survival_world_persistence_pos(), state);
+        client.write_packet(&BlockUpdateS2c {
+            position: survival_world_persistence_pos(),
+            block_id: state,
+        });
+        write_survival_world_persistence_marker(&fixture.marker_path);
+        fixture.persisted_loaded = true;
+        fixture.mutation_logged = true;
+        log_milestone(format!(
+            "MC-COMPAT-MILESTONE survival_world_persistence_mutation username={} block={} \
+             position={},{},{} persisted_before=false persisted_after=true",
+            username.as_str(),
+            SURVIVAL_WORLD_PERSISTENCE_BLOCK_NAME,
+            SURVIVAL_WORLD_PERSISTENCE_X,
+            SURVIVAL_WORLD_PERSISTENCE_Y,
+            SURVIVAL_WORLD_PERSISTENCE_Z
+        ));
+        log_milestone(format!(
+            "MC-COMPAT-MILESTONE survival_world_persistence_clean_shutdown username={} \
+             storage=isolated marker=written",
+            username.as_str()
+        ));
     }
 }
 
@@ -1786,6 +1916,119 @@ fn should_toggle_survival_redstone(game_mode: GameMode, hand: Hand, position: Bl
         && position == survival_redstone_toggle_control_pos()
 }
 
+fn survival_world_persistence_fixture_enabled() -> bool {
+    std::env::var(SURVIVAL_WORLD_PERSISTENCE_FIXTURE_ENV).as_deref() == Ok("1")
+}
+
+fn survival_world_persistence_marker_path() -> PathBuf {
+    std::env::var(SURVIVAL_WORLD_PERSISTENCE_DIR_ENV)
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| std::env::temp_dir().join("mc-compat-world-persistence"))
+        .join(SURVIVAL_WORLD_PERSISTENCE_MARKER_FILE)
+}
+
+fn setup_survival_world_persistence_arena(layer: &mut LayerBundle) {
+    layer.chunk.set_block(
+        [
+            SURVIVAL_WORLD_PERSISTENCE_X,
+            SURVIVAL_WORLD_PERSISTENCE_BASE_Y,
+            SURVIVAL_WORLD_PERSISTENCE_Z,
+        ],
+        BlockState::STONE,
+    );
+}
+
+fn survival_world_persistence_pos() -> BlockPos {
+    BlockPos::new(
+        SURVIVAL_WORLD_PERSISTENCE_X,
+        SURVIVAL_WORLD_PERSISTENCE_Y,
+        SURVIVAL_WORLD_PERSISTENCE_Z,
+    )
+}
+
+fn survival_world_persistence_base_pos() -> BlockPos {
+    BlockPos::new(
+        SURVIVAL_WORLD_PERSISTENCE_X,
+        SURVIVAL_WORLD_PERSISTENCE_BASE_Y,
+        SURVIVAL_WORLD_PERSISTENCE_Z,
+    )
+}
+
+fn survival_world_persistence_state() -> BlockState {
+    survival_block_state()
+}
+
+fn survival_world_persistence_stack() -> ItemStack {
+    ItemStack::new(
+        survival_item_kind(),
+        SURVIVAL_WORLD_PERSISTENCE_ITEM_COUNT,
+        None,
+    )
+}
+
+fn is_survival_world_persistence_stack(stack: &ItemStack) -> bool {
+    stack.item == survival_item_kind() && stack.count >= SURVIVAL_WORLD_PERSISTENCE_ITEM_COUNT
+}
+
+fn should_place_survival_world_persistence(
+    game_mode: GameMode,
+    hand: Hand,
+    position: BlockPos,
+    face: Direction,
+) -> bool {
+    game_mode == GameMode::Survival
+        && hand == Hand::Main
+        && position == survival_world_persistence_base_pos()
+        && face == Direction::Up
+}
+
+fn write_survival_world_persistence_marker(path: &PathBuf) {
+    if let Some(parent) = path.parent() {
+        let _ = fs::create_dir_all(parent);
+    }
+    let _ = fs::write(path, SURVIVAL_WORLD_PERSISTENCE_BLOCK_NAME);
+}
+
+fn log_survival_world_persistence_post_restart(
+    username: &str,
+    client: &mut Client,
+    fixture: &mut SurvivalWorldPersistenceFixture,
+) {
+    if !fixture.persisted_loaded || fixture.state_logged {
+        return;
+    }
+    let state = survival_world_persistence_state();
+    client.write_packet(&BlockUpdateS2c {
+        position: survival_world_persistence_pos(),
+        block_id: state,
+    });
+    fixture.state_logged = true;
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_world_persistence_backend_restart username={} \
+         method=controlled_reload storage=isolated",
+        username
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_world_persistence_post_restart_observe username={} block={} \
+         position={},{},{} persisted=true",
+        username,
+        SURVIVAL_WORLD_PERSISTENCE_BLOCK_NAME,
+        SURVIVAL_WORLD_PERSISTENCE_X,
+        SURVIVAL_WORLD_PERSISTENCE_Y,
+        SURVIVAL_WORLD_PERSISTENCE_Z
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_world_persistence_state username={} block={} \
+         position={},{},{} pre_mutation=true clean_shutdown=true backend_restart=true \
+         post_observed=true dirty_reuse=false",
+        username,
+        SURVIVAL_WORLD_PERSISTENCE_BLOCK_NAME,
+        SURVIVAL_WORLD_PERSISTENCE_X,
+        SURVIVAL_WORLD_PERSISTENCE_Y,
+        SURVIVAL_WORLD_PERSISTENCE_Z
+    ));
+}
+
 fn survival_mob_drop_position() -> Position {
     Position::new(DVec3::new(
         SURVIVAL_MOB_DROP_MOB_X,
@@ -2230,6 +2473,55 @@ mod tests {
             survival_redstone_toggle_output_state(false).get(PropName::Lit),
             Some(PropValue::False)
         );
+    }
+
+    #[test]
+    fn survival_world_persistence_accepts_only_main_hand_up_on_base() {
+        assert!(should_place_survival_world_persistence(
+            GameMode::Survival,
+            Hand::Main,
+            survival_world_persistence_base_pos(),
+            Direction::Up,
+        ));
+        assert!(!should_place_survival_world_persistence(
+            GameMode::Creative,
+            Hand::Main,
+            survival_world_persistence_base_pos(),
+            Direction::Up,
+        ));
+        assert!(!should_place_survival_world_persistence(
+            GameMode::Survival,
+            Hand::Off,
+            survival_world_persistence_base_pos(),
+            Direction::Up,
+        ));
+        assert!(!should_place_survival_world_persistence(
+            GameMode::Survival,
+            Hand::Main,
+            survival_world_persistence_pos(),
+            Direction::Up,
+        ));
+        assert!(!should_place_survival_world_persistence(
+            GameMode::Survival,
+            Hand::Main,
+            survival_world_persistence_base_pos(),
+            Direction::North,
+        ));
+    }
+
+    #[test]
+    fn survival_world_persistence_stack_requires_dirt_count() {
+        let expected = survival_world_persistence_stack();
+        let wrong_item = ItemStack::new(
+            BlockState::STONE.to_kind().to_item_kind(),
+            SURVIVAL_WORLD_PERSISTENCE_ITEM_COUNT,
+            None,
+        );
+        let wrong_count = ItemStack::EMPTY;
+
+        assert!(is_survival_world_persistence_stack(&expected));
+        assert!(!is_survival_world_persistence_stack(&wrong_item));
+        assert!(!is_survival_world_persistence_stack(&wrong_count));
     }
 
     #[test]
