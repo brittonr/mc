@@ -22,6 +22,7 @@ const MULTI_CLIENT_START_STAGGER_SECS: u64 = 2;
 const CTF_RACE_ACCEPT_CLIENT_FIRST_TICK: u32 = 760;
 const CTF_RACE_REJECT_CLIENT_FIRST_TICK: u32 = 800;
 const PAPER_PLUGIN_CONTAINER_DIR: &str = "/plugins";
+const PAPER_GRACEFUL_STOP_TIMEOUT_SECS: u64 = 60;
 const PAPER_VIEW_DISTANCE: u32 = 2;
 const PAPER_SIMULATION_DISTANCE: u32 = 2;
 const SAFETY_MAX_LOCAL_CLIENTS: usize = 2;
@@ -209,9 +210,9 @@ const SURVIVAL_WORLD_PERSISTENCE_CLIENT_POST_RESTART_NEEDLE: &str =
 const SURVIVAL_WORLD_PERSISTENCE_SERVER_MUTATION_NEEDLE: &str =
     "survival_world_persistence_mutation username=compatbot block=Dirt position=24,64,0 persisted_before=false persisted_after=true";
 const SURVIVAL_WORLD_PERSISTENCE_SERVER_CLEAN_NEEDLE: &str =
-    "survival_world_persistence_clean_shutdown username=compatbot storage=isolated marker=written";
+    "survival_world_persistence_clean_shutdown username=compatbot storage=isolated shutdown=graceful";
 const SURVIVAL_WORLD_PERSISTENCE_SERVER_RESTART_NEEDLE: &str =
-    "survival_world_persistence_backend_restart username=compatbot method=controlled_reload storage=isolated";
+    "survival_world_persistence_backend_restart username=compatbot method=controlled_reload storage=isolated restart_confirmed=true";
 const SURVIVAL_WORLD_PERSISTENCE_SERVER_POST_NEEDLE: &str =
     "survival_world_persistence_post_restart_observe username=compatbot block=Dirt position=24,64,0 persisted=true";
 const SURVIVAL_WORLD_PERSISTENCE_SERVER_STATE_NEEDLE: &str =
@@ -220,6 +221,9 @@ const SURVIVAL_WORLD_PERSISTENCE_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_PER
 const SURVIVAL_WORLD_PERSISTENCE_SESSION_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_SESSION";
 const SURVIVAL_WORLD_PERSISTENCE_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_FIXTURE";
 const SURVIVAL_WORLD_PERSISTENCE_DIR_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_DIR";
+const SURVIVAL_WORLD_PERSISTENCE_PHASE_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_PHASE";
+const SURVIVAL_WORLD_PERSISTENCE_INITIAL_PHASE: &str = "initial";
+const SURVIVAL_WORLD_PERSISTENCE_POST_RESTART_PHASE: &str = "post_restart";
 const SURVIVAL_BIOME_DIMENSION_CLIENT_STATE_NEEDLE: &str =
     "survival_biome_dimension_state spawn_environment=minecraft:overworld environment_identifier=minecraft:overworld client_environment_update=minecraft:overworld normalized_identifier=minecraft:overworld";
 const SURVIVAL_BIOME_DIMENSION_SERVER_STATE_NEEDLE: &str =
@@ -946,6 +950,16 @@ fn prepare_world_persistence_state_dir(cfg: &Config) -> Result<(), String> {
         fs::remove_dir_all(&dir).map_err(|err| format!("remove {}: {err}", dir.display()))?;
     }
     fs::create_dir_all(&dir).map_err(|err| format!("create {}: {err}", dir.display()))?;
+    let phase_path = world_persistence_restart_phase_path(cfg);
+    if phase_path.exists() {
+        fs::remove_file(&phase_path)
+            .map_err(|err| format!("remove {}: {err}", phase_path.display()))?;
+    }
+    let pre_restart_log = world_persistence_pre_restart_server_log_path(cfg);
+    if pre_restart_log.exists() {
+        fs::remove_file(&pre_restart_log)
+            .map_err(|err| format!("remove {}: {err}", pre_restart_log.display()))?;
+    }
     Ok(())
 }
 
@@ -3823,14 +3837,26 @@ fn start_server(cfg: &Config) -> Result<ManagedServer, String> {
 }
 
 fn stop_server(cfg: &Config) -> Result<(), String> {
-    stop_valence_server(cfg)?;
+    match cfg.server_backend {
+        ServerBackend::Valence => stop_valence_server(cfg),
+        ServerBackend::Paper => stop_paper_server(cfg),
+    }
+}
+
+fn stop_paper_server(cfg: &Config) -> Result<(), String> {
     log(format_args!(
-        "stopping managed Paper container {}",
+        "stopping managed Paper container {} with graceful timeout",
         cfg.server_name
     ));
-    let mut cmd = Command::new("docker");
-    cmd.arg("rm").arg("-f").arg(&cfg.server_name);
-    run_cmd(cfg, &mut cmd)
+    let mut stop = Command::new("docker");
+    stop.arg("stop")
+        .arg("--time")
+        .arg(PAPER_GRACEFUL_STOP_TIMEOUT_SECS.to_string())
+        .arg(&cfg.server_name);
+    run_cmd(cfg, &mut stop)?;
+    let mut remove = Command::new("docker");
+    remove.arg("rm").arg(&cfg.server_name);
+    run_cmd(cfg, &mut remove)
 }
 
 fn print_harness_status(cfg: &Config) -> Result<(), String> {
@@ -4296,10 +4322,15 @@ fn start_valence_server(cfg: &Config) -> Result<ManagedServer, String> {
         cmd.env(SURVIVAL_REDSTONE_TOGGLE_FIXTURE_ENV, "1");
     }
     if cfg.scenario == Scenario::SurvivalWorldPersistenceRestart {
-        cmd.env(SURVIVAL_WORLD_PERSISTENCE_FIXTURE_ENV, "1").env(
-            SURVIVAL_WORLD_PERSISTENCE_DIR_ENV,
-            world_persistence_state_dir(cfg, ServerBackend::Valence),
-        );
+        cmd.env(SURVIVAL_WORLD_PERSISTENCE_FIXTURE_ENV, "1")
+            .env(
+                SURVIVAL_WORLD_PERSISTENCE_DIR_ENV,
+                world_persistence_state_dir(cfg, ServerBackend::Valence),
+            )
+            .env(
+                SURVIVAL_WORLD_PERSISTENCE_PHASE_ENV,
+                world_persistence_phase_value(cfg),
+            );
     }
     if cfg.scenario == Scenario::SurvivalBiomeDimensionState {
         cmd.env(SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV, "1");
@@ -4406,7 +4437,8 @@ fn configure_paper_run_command(cfg: &Config, cmd: &mut Command) -> Result<(), St
             .arg(format!("{SURVIVAL_WORLD_PERSISTENCE_FIXTURE_ENV}=1"))
             .arg("-e")
             .arg(format!(
-                "{SURVIVAL_WORLD_PERSISTENCE_DIR_ENV}=/data/mc-compat-world-persistence"
+                "{SURVIVAL_WORLD_PERSISTENCE_PHASE_ENV}={}",
+                world_persistence_phase_value(cfg)
             ))
             .arg("-v")
             .arg(format!("{}:/data", absolute_state_dir.display()));
@@ -4993,6 +5025,34 @@ fn world_persistence_state_dir(cfg: &Config, backend: ServerBackend) -> PathBuf 
         .join(backend_name)
 }
 
+fn world_persistence_restart_phase_path(cfg: &Config) -> PathBuf {
+    let backend_name = match cfg.server_backend {
+        ServerBackend::Valence => "valence",
+        ServerBackend::Paper => "paper",
+    };
+    cfg.root
+        .join("target")
+        .join("mc-compat-world-persistence-pre-restart")
+        .join(format!("{backend_name}.phase"))
+}
+
+fn world_persistence_phase_value(cfg: &Config) -> &'static str {
+    if world_persistence_restart_phase_path(cfg).exists() {
+        SURVIVAL_WORLD_PERSISTENCE_POST_RESTART_PHASE
+    } else {
+        SURVIVAL_WORLD_PERSISTENCE_INITIAL_PHASE
+    }
+}
+
+fn mark_world_persistence_post_restart_phase(cfg: &Config) -> Result<(), String> {
+    let path = world_persistence_restart_phase_path(cfg);
+    if let Some(parent) = path.parent() {
+        fs::create_dir_all(parent).map_err(|e| format!("create {}: {e}", parent.display()))?;
+    }
+    fs::write(&path, SURVIVAL_WORLD_PERSISTENCE_POST_RESTART_PHASE)
+        .map_err(|e| format!("write {}: {e}", path.display()))
+}
+
 fn run_mcp_controlled_live_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
     let paths = mcp_controlled_live_paths(cfg)?;
     let mut child = KillOnDropChild {
@@ -5443,8 +5503,17 @@ fn run_reconnect_sequence_scenario(cfg: &Config) -> Result<Vec<SingleClientRun>,
         if cfg.scenario == Scenario::SurvivalWorldPersistenceRestart && idx == 0 {
             write_world_persistence_pre_restart_server_log(cfg)?;
             stop_server(cfg)?;
+            append_world_persistence_orchestration_milestone(
+                cfg,
+                SURVIVAL_WORLD_PERSISTENCE_SERVER_CLEAN_NEEDLE,
+            )?;
+            mark_world_persistence_post_restart_phase(cfg)?;
             restarted_server = Some(start_server(cfg)?);
             probe_status(cfg)?;
+            append_world_persistence_orchestration_milestone(
+                cfg,
+                SURVIVAL_WORLD_PERSISTENCE_SERVER_RESTART_NEEDLE,
+            )?;
         }
         thread::sleep(Duration::from_secs(RECONNECT_SEQUENCE_PAUSE_SECS));
     }
@@ -5860,6 +5929,24 @@ fn write_world_persistence_pre_restart_server_log(cfg: &Config) -> Result<(), St
         fs::create_dir_all(parent).map_err(|e| format!("create {}: {e}", parent.display()))?;
     }
     fs::write(&path, text).map_err(|e| format!("write {}: {e}", path.display()))
+}
+
+fn append_world_persistence_orchestration_milestone(
+    cfg: &Config,
+    milestone: &str,
+) -> Result<(), String> {
+    let path = world_persistence_pre_restart_server_log_path(cfg);
+    if let Some(parent) = path.parent() {
+        fs::create_dir_all(parent).map_err(|e| format!("create {}: {e}", parent.display()))?;
+    }
+    let line = format!("MC-COMPAT-MILESTONE {milestone}\n");
+    let mut options = fs::OpenOptions::new();
+    options.create(true).append(true);
+    use std::io::Write as _;
+    options
+        .open(&path)
+        .and_then(|mut file| file.write_all(line.as_bytes()))
+        .map_err(|e| format!("append {}: {e}", path.display()))
 }
 
 fn read_world_persistence_pre_restart_server_log(cfg: &Config) -> Result<String, String> {
@@ -11424,7 +11511,7 @@ RED: 1
 
         let server = evaluate_server_scenario(
             Scenario::SurvivalWorldPersistenceRestart,
-            "compatbot joined\nMC-COMPAT-MILESTONE survival_world_persistence_mutation username=compatbot block=Dirt position=24,64,0 persisted_before=false persisted_after=true\nMC-COMPAT-MILESTONE survival_world_persistence_clean_shutdown username=compatbot storage=isolated marker=written\nMC-COMPAT-MILESTONE survival_world_persistence_backend_restart username=compatbot method=controlled_reload storage=isolated\nMC-COMPAT-MILESTONE survival_world_persistence_post_restart_observe username=compatbot block=Dirt position=24,64,0 persisted=true\nMC-COMPAT-MILESTONE survival_world_persistence_state username=compatbot block=Dirt position=24,64,0 pre_mutation=true clean_shutdown=true backend_restart=true post_observed=true dirty_reuse=false\n",
+            "compatbot joined\nMC-COMPAT-MILESTONE survival_world_persistence_mutation username=compatbot block=Dirt position=24,64,0 persisted_before=false persisted_after=true\nMC-COMPAT-MILESTONE survival_world_persistence_clean_shutdown username=compatbot storage=isolated shutdown=graceful\nMC-COMPAT-MILESTONE survival_world_persistence_backend_restart username=compatbot method=controlled_reload storage=isolated restart_confirmed=true\nMC-COMPAT-MILESTONE survival_world_persistence_post_restart_observe username=compatbot block=Dirt position=24,64,0 persisted=true\nMC-COMPAT-MILESTONE survival_world_persistence_state username=compatbot block=Dirt position=24,64,0 pre_mutation=true clean_shutdown=true backend_restart=true post_observed=true dirty_reuse=false\n",
             "compatbot",
         );
         assert!(server.passed, "{server:?}");

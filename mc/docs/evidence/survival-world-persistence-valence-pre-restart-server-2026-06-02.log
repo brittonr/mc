@@ -1,17 +1,44 @@
+   Compiling valence_build_utils v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703/crates/valence_build_utils)
+   Compiling valence_ident_macros v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703/crates/valence_ident_macros)
+   Compiling valence_math v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703/crates/valence_math)
+   Compiling valence_nbt v0.8.0 (/tmp/valence-world-persistence-6117703/crates/valence_nbt)
+   Compiling valence_protocol_macros v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703/crates/valence_protocol_macros)
+   Compiling valence_command_macros v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703/crates/valence_command_macros)
+   Compiling valence_generated v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703/crates/valence_generated)
+   Compiling valence_entity v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703/crates/valence_entity)
+   Compiling valence_lang v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703/crates/valence_lang)
+   Compiling valence_ident v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703/crates/valence_ident)
+   Compiling valence_text v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703/crates/valence_text)
+   Compiling valence_protocol v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703/crates/valence_protocol)
+   Compiling valence_server_common v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703/crates/valence_server_common)
+   Compiling valence_registry v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703/crates/valence_registry)
+   Compiling valence_server v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703/crates/valence_server)
+   Compiling valence_inventory v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703/crates/valence_inventory)
+   Compiling valence_anvil v0.1.0 (/tmp/valence-world-persistence-6117703/crates/valence_anvil)
+   Compiling valence_player_list v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703/crates/valence_player_list)
+   Compiling valence_advancement v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703/crates/valence_advancement)
+   Compiling valence_scoreboard v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703/crates/valence_scoreboard)
+   Compiling valence_world_border v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703/crates/valence_world_border)
+   Compiling valence_command v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703/crates/valence_command)
+   Compiling valence_boss_bar v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703/crates/valence_boss_bar)
+   Compiling valence_network v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703/crates/valence_network)
+   Compiling valence_weather v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703/crates/valence_weather)
+   Compiling valence_equipment v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703/crates/valence_equipment)
+   Compiling valence v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-world-persistence-6117703)
 warning: function `is_survival_mob_drop_stack` is never used
-    --> examples/survival_compat.rs:2052:4
+    --> examples/survival_compat.rs:2042:4
      |
-2052 | fn is_survival_mob_drop_stack(stack: &ItemStack) -> bool {
+2042 | fn is_survival_mob_drop_stack(stack: &ItemStack) -> bool {
      |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
      |
      = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
 
 warning: `valence` (example "survival_compat") generated 1 warning
-    Finished `dev` profile [optimized + debuginfo] target(s) in 0.26s
-     Running `/tmp/valence-compat-758-target/debug/examples/survival_compat`
-[2m2026-06-02T22:20:31.615591Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+    Finished `dev` profile [optimized + debuginfo] target(s) in 1m 01s
+     Running `/tmp/valence-world-persistence-target/debug/examples/survival_compat`
+[2m2026-06-02T23:20:00.595844Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
 MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
-[2m2026-06-02T22:20:33.467146Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_world_persistence_mutation username=compatbot block=Dirt position=24,64,0 persisted_before=false persisted_after=true
+[2m2026-06-02T23:20:01.997500Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_world_persistence_mutation username=compatbot block=Dirt position=24,64,0 persisted_before=false persisted_after=true
 MC-COMPAT-MILESTONE survival_world_persistence_mutation username=compatbot block=Dirt position=24,64,0 persisted_before=false persisted_after=true
-[2m2026-06-02T22:20:33.467163Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_world_persistence_clean_shutdown username=compatbot storage=isolated marker=written
-MC-COMPAT-MILESTONE survival_world_persistence_clean_shutdown username=compatbot storage=isolated marker=written
+MC-COMPAT-MILESTONE survival_world_persistence_clean_shutdown username=compatbot storage=isolated shutdown=graceful
+MC-COMPAT-MILESTONE survival_world_persistence_backend_restart username=compatbot method=controlled_reload storage=isolated restart_confirmed=true

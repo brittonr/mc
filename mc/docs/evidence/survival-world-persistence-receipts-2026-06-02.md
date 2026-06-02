@@ -12,16 +12,16 @@ Evidence produced:
 Observed matching normalized metrics:
 
 - `pre_restart_mutation=block=Dirt position=24,64,0 persisted_before=false persisted_after=true`
-- `clean_shutdown=storage=isolated marker=written`
-- `backend_restart=method=controlled_reload storage=isolated`
+- `clean_shutdown=storage=isolated shutdown=graceful`
+- `backend_restart=method=controlled_reload storage=isolated restart_confirmed=true`
 - `reconnect=session=restart`
 - `post_restart_observation=block=Dirt position=24,64,0 persisted=true`
 - `server_persistence_state=block=Dirt position=24,64,0 pre_mutation=true clean_shutdown=true backend_restart=true post_observed=true dirty_reuse=false`
 
 Child revisions recorded for this checkpoint:
 
-- Valence: `d6fddd786eaf3da44826285a4c1f7155ffd3988e`
+- Valence: `611770349c741f326add689dcf7bb730ccf1f0a2`
 - Stevenarella: `0a745b04c9bc0589f7c6a5f3f5edf3b4b8014a17`
-- Paper fixture source: `paper-fixture-source-669c6607`
+- Paper fixture source: `paper-fixture-source-de719304`
 
-Non-claims: this proves one configured persisted world directory, one configured `Dirt` mutation at `24,64,0`, one controlled backend restart/reload, and one post-restart observation of the same state on both Paper and Valence. It does not claim long-term durability, crash recovery, multi-chunk persistence, all containers, all block entities, concurrent saves, backups, full survival compatibility, broad vanilla parity, production readiness, or public-server safety.
+Non-claims: this proves one configured persisted world directory, one configured `Dirt` mutation at `24,64,0`, one controlled backend restart/reload, and one post-restart observation of the same state on both Paper and Valence. Paper post-restart observation comes from the mounted Paper world directory after a graceful container stop/start; the Paper fixture no longer recreates the target block from an auxiliary marker file. It does not claim long-term durability, crash recovery, multi-chunk persistence, all containers, all block entities, concurrent saves, backups, full survival compatibility, broad vanilla parity, production readiness, or public-server safety.

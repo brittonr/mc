@@ -1,0 +1,3 @@
+scenario manifest self-test passed: positive and negative fixtures exercised
+scenario manifest check passed: 29 rows validated
+exit_status=0

@@ -3,7 +3,7 @@ f478c126c59c39c04e9aaa64b5e972ce06a8813b745b0a9c99711279fdf0917e  docs/evidence/
 b52650d020aa669f71329d9164013f35c316862e6e811c430c4e61179e7b433a  docs/evidence/survival-furnace-persistence-dry-run-2026-06-01.run.log
 9cb23c6b8e5903f6cc45e2cbda51c46361826366aff159e6db99933e6bf01938  docs/evidence/survival-furnace-persistence-evidence-manifest-2026-06-01.run.log
 346ac81d19e9a56b5331c0e4b0b6a6782dbafc613efff1fee4abf30813437602  docs/evidence/survival-furnace-persistence-task-evidence-gate-2026-06-01.run.log
-89412ed567d82150e56cabf54264b35d47152ad8f9c2d292bf14137c91a97d76  docs/evidence/survival-furnace-persistence-task-evidence-gate-2026-06-01.b3
+d9566b9a6c9ac3dda7abda8e1e84fbeb11448c926f6987c01c9e3784853b3755  docs/evidence/survival-furnace-persistence-task-evidence-gate-2026-06-01.b3
 86f15b76b40ee8dee16a18c09b67982c61dbe8ae13bedbd61ef63e835eef8a0f  docs/evidence/survival-furnace-persistence-cairn-validation-2026-06-01.run.log
 f769ac1da81eaacb1dc6ca5e5cfa28c51ee2c3a8ba36ff7e8867f7a508ec9408  docs/evidence/survival-furnace-persistence-archive-2026-06-01.run.log
 e6f6e8c56c6de629df25a1ee6a589eec62fbb479331935ffc0f1b8ffa5a985da  docs/evidence/survival-furnace-persistence-post-archive-validation-2026-06-01.run.log
@@ -11,5 +11,5 @@ d172026c66e84c983b8ec456c7f0a42a616442ea19d66ef8f294f0b0fe0cf090  docs/evidence/
 13772012953b9be96783278fe8a5ea677228f4bf29ee3c41c65b73eb617e1707  docs/evidence/survival-furnace-persistence-matrix-promotion-2026-06-01.run.log
 a669cb2b9eec35fab280313a7bfdc6f68f83f7a9046d60b670851f1053eee247  docs/evidence/survival-furnace-persistence-bundle-promotion-2026-06-01.run.log
 a7e26e8df833a51c38442f1cbaaf3f32307020deae991cbda6c75f3553870b1a  docs/evidence/survival-furnace-persistence-row-parity-2026-06-01.run.log
-c1deb598a9624802a6aa88c4f1cf76e3e7b0e06b7e76b5bac4ff6373399445d9  docs/evidence/survival-furnace-persistence-receipts-2026-06-01.b3
-448a3b20bd99cf32b161dd5e22b3f3049f40ae942280b7d725a4f422515e0dd8  docs/evidence/survival-furnace-persistence-matrix-promotion-2026-06-01.b3
+72b9890d1d9f0882eb3eddc905d2d514796db4ab9221c4695ed5feb8bf553815  docs/evidence/survival-furnace-persistence-receipts-2026-06-01.b3
+5625747fe49595d2139853bba36da3fa1a35f6f9c7ab82cfb07e962b87ca9e67  docs/evidence/survival-furnace-persistence-matrix-promotion-2026-06-01.b3

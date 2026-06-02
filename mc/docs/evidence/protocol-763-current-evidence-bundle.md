@@ -17,7 +17,7 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 - Child commits used for the survival hunger/food row: Valence `573b8f0`, Stevenarella `e996816`; machine-recorded in `docs/evidence/survival-hunger-food-valence-2026-06-02.receipt.json` and `docs/evidence/survival-hunger-food-paper-2026-06-02.receipt.json`.
 - Child commits used for the survival mob-drop row: Valence `eba9c8a`, Stevenarella `7122e47`; machine-recorded in `docs/evidence/survival-mob-drop-valence-2026-06-02.receipt.json` and `docs/evidence/survival-mob-drop-paper-2026-06-02.receipt.json`.
 - Child commits used for the survival redstone-toggle row: Valence `469558f`, Stevenarella `357021d`; machine-recorded in `docs/evidence/survival-redstone-toggle-valence-2026-06-02.receipt.json` and `docs/evidence/survival-redstone-toggle-paper-2026-06-02.receipt.json`.
-- Child commits used for the survival world-persistence row: Valence `d6fddd7`, Stevenarella `0a745b0`; machine-recorded in `docs/evidence/survival-world-persistence-valence-2026-06-02.receipt.json` and `docs/evidence/survival-world-persistence-paper-2026-06-02.receipt.json`.
+- Child commits used for the survival world-persistence row: Valence `6117703`, Stevenarella `0a745b0`; machine-recorded in `docs/evidence/survival-world-persistence-valence-2026-06-02.receipt.json` and `docs/evidence/survival-world-persistence-paper-2026-06-02.receipt.json`.
 - Child commits used for the MCP-controlled observability row: Valence `3359f85`, Stevenarella `4d1b155`; machine-recorded in `docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.json`.
 
 ## Evidence rows
@@ -57,7 +57,7 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 | Survival mob drops | Paper+Valence paired `survival-mob-drop` receipts | `09e75b4824c65326809233b60b0ee3e639f638865d2860c6e8f8346553643701` |
 | Survival redstone toggle | Paper+Valence paired `survival-redstone-toggle` receipts | `7a4378075f6392f5893e0797975df01a6dd42ce3ffd797d76057052a7b345eb1` |
 | Survival biome/dimension join state | Paper+Valence paired `survival-biome-dimension-state` receipts | `4c8f59af896af4c3c6f0733a5069350441fc95f02fb8282eaac4097a906c7207` |
-| Survival world persistence restart | Paper+Valence paired `survival-world-persistence-restart` receipts | `e241c52358ee05c0f489975ac36e3a212c1866b63f60e11445fd43d3de71edfc` |
+| Survival world persistence restart | Paper+Valence paired `survival-world-persistence-restart` receipts | `6eb03282f468a6231b367a6aa6bbd3c2d8ff984ece2438641e75e123e934692f` |
 | MCP-controlled observability | `nix run .#mc-compat-mcp-controlled-smoke -- --run` | `5eaa78082bfca069219fed40939e7003c9fce4e5f1d527a68ecdbbae9d610acf` |
 
 ## MCP-controlled observability checkpoint
@@ -142,7 +142,7 @@ The maintained biome/dimension row is validated by `docs/evidence/survival-biome
 
 ## Survival world-persistence restart checkpoint
 
-The maintained world-persistence row is validated by `docs/evidence/survival-world-persistence-receipts-2026-06-02.md` with paired Paper and Valence receipt/log bundles. Covered row is one deterministic client in the Paper fixture and Valence `survival_compat` fixture mutating `Dirt` at `24,64,0`, recording a clean isolated persistence marker, restarting or reloading the backend, reconnecting, and observing the same persisted block state on both backends. `tools/check_survival_row_parity.rs` rejects Valence-only evidence, missing metrics, stale revisions, and mismatched Paper/Valence world-persistence metrics, and passes the paired Paper/Valence evidence. Full survival compatibility, long-term durability, crash recovery, multi-chunk persistence, all containers, all block entities, concurrent saves, backups, broad vanilla parity, and production readiness remain non-claims.
+The maintained world-persistence row is validated by `docs/evidence/survival-world-persistence-receipts-2026-06-02.md` with paired Paper and Valence receipt/log bundles. Covered row is one deterministic client in the Paper fixture and Valence `survival_compat` fixture mutating `Dirt` at `24,64,0`, recording runner-orchestrated graceful shutdown/restart evidence, reconnecting, and observing the same persisted block state on both backends. The Paper observation is loaded from the mounted Paper world directory after restart rather than recreated from an auxiliary marker file. `tools/check_survival_row_parity.rs` rejects Valence-only evidence, missing metrics, stale revisions, and mismatched Paper/Valence world-persistence metrics, and passes the paired Paper/Valence evidence. Full survival compatibility, long-term durability, crash recovery, multi-chunk persistence, all containers, all block entities, concurrent saves, backups, broad vanilla parity, and production readiness remain non-claims.
 
 ## Vanilla combat parity checkpoint
 

@@ -1,7 +1,5 @@
 package mc.compat.paper;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.UUID;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -124,7 +122,8 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
     private static final String REDSTONE_CONTROL_NAME = "Lever";
     private static final String REDSTONE_OUTPUT_NAME = "RedstoneLamp";
     private static final String WORLD_PERSISTENCE_FIXTURE_ENV = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_FIXTURE";
-    private static final String WORLD_PERSISTENCE_DIR_ENV = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_DIR";
+    private static final String WORLD_PERSISTENCE_PHASE_ENV = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_PHASE";
+    private static final String WORLD_PERSISTENCE_POST_RESTART_PHASE = "post_restart";
     private static final int WORLD_PERSISTENCE_X = 24;
     private static final int WORLD_PERSISTENCE_Y = 64;
     private static final int WORLD_PERSISTENCE_Z = 0;
@@ -174,8 +173,6 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
     private final java.util.Set<UUID> redstoneOffSeen = new java.util.HashSet<>();
     private final java.util.Set<UUID> redstoneStateSeen = new java.util.HashSet<>();
     private final java.util.Set<UUID> worldPersistenceMutationSeen = new java.util.HashSet<>();
-    private final java.util.Set<UUID> worldPersistenceCleanSeen = new java.util.HashSet<>();
-    private final java.util.Set<UUID> worldPersistenceRestartSeen = new java.util.HashSet<>();
     private final java.util.Set<UUID> worldPersistencePostSeen = new java.util.HashSet<>();
     private final java.util.Set<UUID> worldPersistenceStateSeen = new java.util.HashSet<>();
 
@@ -521,34 +518,14 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
         }
     }
 
-    private Path worldPersistenceMarkerPath() {
-        String configuredDir = System.getenv(WORLD_PERSISTENCE_DIR_ENV);
-        Path dir = configuredDir == null || configuredDir.isBlank()
-            ? getDataFolder().toPath().resolve("world-persistence")
-            : Path.of(configuredDir);
-        return dir.resolve("persisted-dirt.marker");
-    }
-
-    private boolean worldPersistenceMarkerExists() {
-        return Files.exists(worldPersistenceMarkerPath());
-    }
-
-    private void writeWorldPersistenceMarker() {
-        Path marker = worldPersistenceMarkerPath();
-        try {
-            Files.createDirectories(marker.getParent());
-            Files.writeString(marker, WORLD_PERSISTENCE_BLOCK_NAME + "\n");
-        } catch (Exception error) {
-            getLogger().warning("MC-COMPAT-NONFATAL survival_world_persistence_marker_write_failed error=" + error);
-        }
+    private boolean worldPersistencePostRestartPhase() {
+        return WORLD_PERSISTENCE_POST_RESTART_PHASE.equals(System.getenv(WORLD_PERSISTENCE_PHASE_ENV));
     }
 
     private void setupWorldPersistenceFixture(World world) {
         world.getBlockAt(WORLD_PERSISTENCE_X, WORLD_PERSISTENCE_BASE_Y, WORLD_PERSISTENCE_Z).setType(Material.STONE, false);
         Block target = world.getBlockAt(WORLD_PERSISTENCE_X, WORLD_PERSISTENCE_Y, WORLD_PERSISTENCE_Z);
-        if (worldPersistenceMarkerExists()) {
-            target.setType(Material.DIRT, false);
-        } else if (target.getType() != Material.DIRT) {
+        if (!worldPersistencePostRestartPhase()) {
             target.setType(Material.AIR, false);
         }
     }
@@ -561,12 +538,10 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
     }
 
     private boolean worldPersistenceBlockPersisted(World world) {
-        return worldPersistenceMarkerExists()
-            || world.getBlockAt(WORLD_PERSISTENCE_X, WORLD_PERSISTENCE_Y, WORLD_PERSISTENCE_Z).getType() == Material.DIRT;
+        return world.getBlockAt(WORLD_PERSISTENCE_X, WORLD_PERSISTENCE_Y, WORLD_PERSISTENCE_Z).getType() == Material.DIRT;
     }
 
     private void logWorldPersistenceMutation(Player player) {
-        writeWorldPersistenceMarker();
         UUID playerId = player.getUniqueId();
         if (worldPersistenceMutationSeen.add(playerId)) {
             getLogger().info(
@@ -576,25 +551,13 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
                     + " persisted_before=false persisted_after=true"
             );
         }
-        if (worldPersistenceCleanSeen.add(playerId)) {
-            getLogger().info(
-                "MC-COMPAT-MILESTONE survival_world_persistence_clean_shutdown username=" + player.getName()
-                    + " storage=isolated marker=written"
-            );
-        }
     }
 
     private void logWorldPersistencePostRestart(Player player) {
-        if (!worldPersistenceBlockPersisted(player.getWorld())) {
+        if (!worldPersistencePostRestartPhase() || !worldPersistenceBlockPersisted(player.getWorld())) {
             return;
         }
         UUID playerId = player.getUniqueId();
-        if (worldPersistenceRestartSeen.add(playerId)) {
-            getLogger().info(
-                "MC-COMPAT-MILESTONE survival_world_persistence_backend_restart username=" + player.getName()
-                    + " method=controlled_reload storage=isolated"
-            );
-        }
         if (worldPersistencePostSeen.add(playerId)) {
             player.sendBlockChange(
                 new Location(player.getWorld(), WORLD_PERSISTENCE_X, WORLD_PERSISTENCE_Y, WORLD_PERSISTENCE_Z),

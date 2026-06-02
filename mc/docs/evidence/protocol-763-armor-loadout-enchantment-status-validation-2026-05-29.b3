@@ -4,9 +4,9 @@ b4e56e5edbbbe406581718f534dc859a3f926c48f217ad370da69e7fff131911  cairn/archive/
 aab53fda353f8a3e34813abda9e5d0615070947a5297fffadc9e8e9b2cf46b6a  cairn/specs/mc-compatibility/spec.md
 80a3afb8c38101448432f89bafb062abf731295a6d300de842e3a9c2e94132f5  docs/evidence/protocol-763-armor-loadout-enchantment-status-contract-2026-05-29.b3
 5423d37adc21888d615277aa25e9f68f8b70a034ee497aca4eae242fc7c7391e  docs/evidence/protocol-763-armor-loadout-enchantment-status-checker-2026-05-29.b3
-e9688662a60950400acb432dceaad34fd8d8b3817a3a9cb67ec62e6492060f35  docs/evidence/protocol-763-armor-loadout-enchantment-status-rail-2026-05-29.b3
-a0b97cd5555dc9c720e38ec2a56e8e4b1011521a3f1f3b3df359ab4176238dbe  docs/evidence/protocol-763-armor-loadout-enchantment-status-row-2026-05-29.b3
-7046bed40d011be43e041bee2ca21801603772b90a3f036afae8954e99072068  docs/evidence/protocol-763-acceptance-matrix.md
-32c3b218a06fdc31b3ee8526aecfa94d88952b9d9f4502bff339c349f43c3d53  docs/evidence/protocol-763-current-evidence-bundle.md
-a274d8afecb558bcf13fc80cf3fb62e568e9468b9f1ca77e13b0b2d80b906212  tools/mc-compat-runner/src/main.rs
+a13e816ce9e46d9940aa9e98c898bc459cd1a2a6f7ca434f50f2a1f923627279  docs/evidence/protocol-763-armor-loadout-enchantment-status-rail-2026-05-29.b3
+38c15005e7e5cb43fb004f2a2a481d9f4a1e507807768aa6620e39163875b873  docs/evidence/protocol-763-armor-loadout-enchantment-status-row-2026-05-29.b3
+ea1031b1ee46326750256315c75125f3bc218545e533e7e499858c632d6ee521  docs/evidence/protocol-763-acceptance-matrix.md
+30b37ad7977481b8c3db0fcfe9f2b90994451b4fc07c90d9fec8401859980874  docs/evidence/protocol-763-current-evidence-bundle.md
+486eca6b4a2dd98fe8b900f63d099d388f1ce6a929edfbc77b5050b2e34cda5d  tools/mc-compat-runner/src/main.rs
 e883c3ca16050a62449dd85726b0f117876f46bee841814a2a83544bb7be23dd  tools/check_armor_loadout_enchantment_status.rs

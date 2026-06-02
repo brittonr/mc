@@ -8,8 +8,8 @@ bf5a5cdb18d8193176b3da81d6c7c091225de2c22a55f97a6383dcb669accd4b  docs/evidence/
 657268da164a7c7b2175fc590df49dd050914ef12d3b677ce570d74ee82a173a  docs/evidence/protocol-763-ctf-spawn-team-balance-reset-archive-2026-06-01.run.log
 aa6800d242f9174ebafa9198c41ca0edb6abaeeec975ab20b1e7edc561b175bc  docs/evidence/protocol-763-ctf-spawn-team-balance-reset-post-archive-validation-2026-06-01.run.log
 93e4349bbf4cb31b51661c9c12b876696b150bf5da3d9dd9f1e33de6a4333868  docs/evidence/protocol-763-ctf-spawn-team-balance-reset-archive-2026-06-01.b3
-7046bed40d011be43e041bee2ca21801603772b90a3f036afae8954e99072068  docs/evidence/protocol-763-acceptance-matrix.md
-32c3b218a06fdc31b3ee8526aecfa94d88952b9d9f4502bff339c349f43c3d53  docs/evidence/protocol-763-current-evidence-bundle.md
+ea1031b1ee46326750256315c75125f3bc218545e533e7e499858c632d6ee521  docs/evidence/protocol-763-acceptance-matrix.md
+30b37ad7977481b8c3db0fcfe9f2b90994451b4fc07c90d9fec8401859980874  docs/evidence/protocol-763-current-evidence-bundle.md
 92f6d25fddda6d6c038d547bab5048526becf941645eea8d1d23e9568dc98e89  docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md
 e24e9c2fb6ff43cbeb32b0ea5486200571562d6314a64bc0dc1b8538523e4a5e  cairn/archive/2026-06-01-ctf-spawn-team-balance-reset/tasks.md
 26daace4c9629fe6e38d6b9c9573436afd81ea8eabfbcb368140b02fa4ebbd3a  cairn/archive/2026-06-01-ctf-spawn-team-balance-reset/proposal.md
@@ -20,4 +20,4 @@ e24e9c2fb6ff43cbeb32b0ea5486200571562d6314a64bc0dc1b8538523e4a5e  cairn/archive/
 af8c8572c18d2c6d175f14df18b49b626e89207b7457870704b1988345b65875  tools/check_mc_compat_aggregate_claim_gates.rs
 430eaf58dd991e056f9af6add4bcf9ff77a0d01806a11c01b4049b78c6d180e5  tools/check_mc_compat_row_contracts.rs
 0bdeccbb4b0d9e9474cdcb01fa1be219208865a9727e6b2c1b7f9e5d48d624c9  tools/check_evidence_manifests.rs
-29dda72e83087ed6371653cb5107e55c41ab900ab095beb2ba563ffd0c3d7647  tools/check_cairn_task_evidence.rs
+14b529c03714e8614f76a235d4e1b89f9240f0bce4ae6e217dafa97e9718e950  tools/check_cairn_task_evidence.rs

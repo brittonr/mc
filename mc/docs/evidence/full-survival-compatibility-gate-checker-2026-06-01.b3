@@ -3,5 +3,5 @@
 a5a6c3735d97d4b7a897e4bf02b1e6be85ad2f7d872091c517ed4e10b32fcc79  flake.nix
 b74a44ae24928b70436ee62e7f5bddf3fd186ad9afb6ebc6613e9cc915e6e905  README.md
 8d2857c8df16c14983e2cd03fa36884883b071d02f943037dd7f93e71bf6803d  docs/evidence/protocol-763-survival-coverage-matrix-2026-05-28.md
-32c3b218a06fdc31b3ee8526aecfa94d88952b9d9f4502bff339c349f43c3d53  docs/evidence/protocol-763-current-evidence-bundle.md
-7046bed40d011be43e041bee2ca21801603772b90a3f036afae8954e99072068  docs/evidence/protocol-763-acceptance-matrix.md
+30b37ad7977481b8c3db0fcfe9f2b90994451b4fc07c90d9fec8401859980874  docs/evidence/protocol-763-current-evidence-bundle.md
+ea1031b1ee46326750256315c75125f3bc218545e533e7e499858c632d6ee521  docs/evidence/protocol-763-acceptance-matrix.md

@@ -83,10 +83,17 @@ fn main() -> ExitCode {
         };
     }
 
-    match run_repo_check(Path::new(".")) {
+    let task_path_args = args.iter().skip(1).map(String::as_str).collect::<Vec<_>>();
+    let result = if task_path_args.is_empty() {
+        run_repo_check(Path::new("."))
+    } else {
+        run_explicit_task_file_check(Path::new("."), &task_path_args)
+    };
+
+    match result {
         Ok(summary) => {
             println!(
-                "task evidence gate passed: {} completed tasks checked across {} active task files",
+                "task evidence gate passed: {} completed tasks checked across {} task files",
                 summary.completed_tasks, summary.task_files
             );
             ExitCode::SUCCESS
@@ -108,6 +115,45 @@ fn run_repo_check(root: &Path) -> Result<ValidationSummary, Vec<String>> {
     let task_files = read_active_task_files(root)?;
     let evidence_catalog = read_evidence_catalog(root)?;
     validate_task_files(&task_files, &evidence_catalog)
+}
+
+fn run_explicit_task_file_check(
+    root: &Path,
+    task_path_args: &[&str],
+) -> Result<ValidationSummary, Vec<String>> {
+    let task_files = read_explicit_task_files(root, task_path_args)?;
+    let evidence_catalog = read_evidence_catalog(root)?;
+    validate_task_files(&task_files, &evidence_catalog)
+}
+
+fn read_explicit_task_files(
+    root: &Path,
+    task_path_args: &[&str],
+) -> Result<Vec<TaskFile>, Vec<String>> {
+    let mut errors = Vec::new();
+    let mut task_files = Vec::new();
+    for path_arg in task_path_args {
+        if path_arg.starts_with('-') {
+            errors.push(format!("unknown flag {path_arg}"));
+            continue;
+        }
+        let path = root.join(path_arg);
+        match fs::read_to_string(&path) {
+            Ok(text) => match relative_path(root, &path) {
+                Ok(relative) => task_files.push(TaskFile {
+                    path: relative,
+                    text,
+                }),
+                Err(mut path_errors) => errors.append(&mut path_errors),
+            },
+            Err(err) => errors.push(format!("{}: {err}", path.display())),
+        }
+    }
+    if errors.is_empty() {
+        Ok(task_files)
+    } else {
+        Err(errors)
+    }
 }
 
 fn read_active_task_files(root: &Path) -> Result<Vec<TaskFile>, Vec<String>> {

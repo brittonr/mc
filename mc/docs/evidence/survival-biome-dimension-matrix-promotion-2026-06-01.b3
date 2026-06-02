@@ -1,7 +1,7 @@
 ac511834200eca4aeb0b2ca42792afb798fd2176b58830affbcd1f20f4fb0727  docs/evidence/survival-biome-dimension-matrix-promotion-2026-06-01.run.log
 8d2857c8df16c14983e2cd03fa36884883b071d02f943037dd7f93e71bf6803d  docs/evidence/protocol-763-survival-coverage-matrix-2026-05-28.md
-32c3b218a06fdc31b3ee8526aecfa94d88952b9d9f4502bff339c349f43c3d53  docs/evidence/protocol-763-current-evidence-bundle.md
-7046bed40d011be43e041bee2ca21801603772b90a3f036afae8954e99072068  docs/evidence/protocol-763-acceptance-matrix.md
+30b37ad7977481b8c3db0fcfe9f2b90994451b4fc07c90d9fec8401859980874  docs/evidence/protocol-763-current-evidence-bundle.md
+ea1031b1ee46326750256315c75125f3bc218545e533e7e499858c632d6ee521  docs/evidence/protocol-763-acceptance-matrix.md
 7dae1beb78bfa36e812b46528d59254869addf6f32b01cce4ad3bb6f7d53e181  docs/evidence/survival-biome-dimension-receipts-2026-06-01.md
 9f5c9b2b59cb761dadc5a9da6edbbbba1512a7cc13027b9be526f1ad269f7081  docs/evidence/survival-biome-dimension-receipts-2026-06-01.b3
 bcc6e7f03e160f32642eba346914d97bfa085e585bb1535c58423d9714eebe1b  tools/check_survival_row_parity.rs

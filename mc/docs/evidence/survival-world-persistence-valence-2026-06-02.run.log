@@ -1,3 +1,4 @@
+$ SERVER_VERSION=1.20.1 SERVER_PROTOCOL=763 VALENCE_REPO=/home/brittonr/git/mc/valence VALENCE_REV=611770349c741f326add689dcf7bb730ccf1f0a2 VALENCE_WORKTREE=/tmp/valence-world-persistence-6117703 VALENCE_TARGET_DIR=/tmp/valence-world-persistence-target VALENCE_EXAMPLE=survival_compat CLIENT_DIR=/home/brittonr/git/mc/stevenarella CLIENT_TIMEOUT=120 SMOKE_RECEIPT=target/survival-world-persistence-receipts-2026-06-02/valence.json nix run --no-update-lock-file .#mc-compat-smoke -- --run --server-backend valence --scenario survival-world-persistence-restart --receipt target/survival-world-persistence-receipts-2026-06-02/valence.json
 [mc-compat] building Stevenarella client
 warning: `/home/brittonr/git/mc/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
   |
@@ -33,7 +34,6 @@ help: remove these parentheses
      |
 
 warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
-   Compiling stevenarella v0.0.1 (/home/brittonr/git/mc/stevenarella)
 warning: hiding a lifetime that's elided elsewhere is confusing
    --> src/console/mod.rs:181:32
     |
@@ -73,20 +73,20 @@ help: use `'_` for type paths
 
 warning: `stevenarella` (lib) generated 2 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
 warning: `stevenarella` (bin "stevenarella") generated 2 warnings (2 duplicates)
-    Finished `dev` profile [optimized + debuginfo] target(s) in 9.35s
-[mc-compat] using existing Valence worktree /tmp/valence-world-persistence-live-d6fddd
-[mc-compat] starting Valence d6fddd786eaf3da44826285a4c1f7155ffd3988e example 'survival_compat' on 127.0.0.1:25565; log: target/survival-world-persistence-receipts-2026-06-02/valence-server.log
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.16s
+[mc-compat] creating isolated Valence worktree /tmp/valence-world-persistence-6117703 at 611770349c741f326add689dcf7bb730ccf1f0a2
+Preparing worktree (detached HEAD 6117703)
+HEAD is now at 6117703 record world restart evidence from runner orchestration
+[mc-compat] starting Valence 611770349c741f326add689dcf7bb730ccf1f0a2 example 'survival_compat' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
 [mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
 {"description":{"text":"A Valence Server"},"players":{"max":20,"online":0,"sample":[]},"version":{"name":"1.20.1","protocol":763}}
 [mc-compat] running Stevenarella headless scenario 'survival-world-persistence-restart' isolated from host Wayland compositor
-[mc-compat] stopping managed Valence server process 3522640
-[mc-compat] stopping managed Paper container mc-compat-1-18-2
-Error response from daemon: No such container: mc-compat-1-18-2
-[mc-compat] using existing Valence worktree /tmp/valence-world-persistence-live-d6fddd
-[mc-compat] starting Valence d6fddd786eaf3da44826285a4c1f7155ffd3988e example 'survival_compat' on 127.0.0.1:25565; log: target/survival-world-persistence-receipts-2026-06-02/valence-server.log
+[mc-compat] stopping managed Valence server process 1174525
+[mc-compat] using existing Valence worktree /tmp/valence-world-persistence-6117703
+[mc-compat] starting Valence 611770349c741f326add689dcf7bb730ccf1f0a2 example 'survival_compat' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
 [mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
 {"description":{"text":"A Valence Server"},"players":{"max":20,"online":0,"sample":[]},"version":{"name":"1.20.1","protocol":763}}
-[mc-compat] stopping managed Valence server process 3549405
+[mc-compat] stopping managed Valence server process 1189711
 mc_compat_reconnect_session=2
 [main.rs:1037][INFO] Starting steven
 [platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
@@ -128,14 +128,13 @@ mc_compat_reconnect_session=2
 [server/mod.rs:2910][INFO] MC-COMPAT-MILESTONE join_game entity_id=0 gamemode=Survival
 [server/mod.rs:5262][INFO] Received chat message: Welcome to the Valence survival compatibility fixture.
 [server/mod.rs:3924][INFO] MC-COMPAT-MILESTONE survival_world_persistence_post_restart_update block=Dirt position=24,64,0 raw_id=10
-[server/mod.rs:5410][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=1 chunk_z=-1
 [server/mod.rs:3458][INFO] MC-COMPAT-MILESTONE update_health health=14.0 food=20 saturation=0.0
+[server/mod.rs:5410][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=1 chunk_z=-1
 [server/mod.rs:1384][INFO] MC-COMPAT-MILESTONE render_tick_with_player
 [server/mod.rs:3843][INFO] MC-COMPAT-MILESTONE survival_world_persistence_move_near_target x=24.5 y=65.0 z=-1.5 position=24,64,0 session=2
-[server/mod.rs:2358][WARN] MC-COMPAT-NONFATAL packet_parse_ignored
-[mc-compat] client compatbot finished Some(124); log: /tmp/nix-shell.5ircq8/mc-compat-client.compatbot.survival-world-persistence-restart-session-1.3516054.log
-[mc-compat] client compatbot finished Some(124); log: /tmp/nix-shell.5ircq8/mc-compat-client.compatbot.survival-world-persistence-restart-session-2.3516054.log
-[mc-compat] stopping managed Valence server process 3522640
+[mc-compat] client compatbot finished Some(124); log: /tmp/nix-shell.62l48b/mc-compat-client.compatbot.survival-world-persistence-restart-session-1.1174393.log
+[mc-compat] client compatbot finished Some(124); log: /tmp/nix-shell.62l48b/mc-compat-client.compatbot.survival-world-persistence-restart-session-2.1174393.log
+[mc-compat] stopping managed Valence server process 1174525
 [mc-compat] wrote typed event log target/survival-world-persistence-receipts-2026-06-02/valence.typed-events.log
 [mc-compat] wrote smoke receipt target/survival-world-persistence-receipts-2026-06-02/valence.json
 exit_status=0
