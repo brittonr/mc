@@ -125,6 +125,41 @@ const SURVIVAL_CRAFTING_RESULT_ITEM_ID: isize = 807;
 const SURVIVAL_CRAFTING_INPUT_ITEM_NAME: &str = "OakPlanks";
 const SURVIVAL_CRAFTING_RESULT_ITEM_NAME: &str = "Stick";
 const SURVIVAL_CRAFTING_RECIPE: &str = "minecraft:stick";
+const SURVIVAL_FURNACE_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_FURNACE_PROBE";
+const SURVIVAL_FURNACE_SESSION_ENV: &str = "MC_COMPAT_SURVIVAL_FURNACE_SESSION";
+const SURVIVAL_FURNACE_FIRST_SESSION: u32 = 1;
+const SURVIVAL_FURNACE_REOPEN_SESSION: u32 = 2;
+const SURVIVAL_FURNACE_POSITION_TICK: u32 = 60;
+const SURVIVAL_FURNACE_OPEN_TICK: u32 = 80;
+const SURVIVAL_FURNACE_INPUT_TICK: u32 = 120;
+const SURVIVAL_FURNACE_FUEL_TICK: u32 = 140;
+const SURVIVAL_FURNACE_COLLECT_TICK: u32 = 180;
+const SURVIVAL_FURNACE_CLOSE_TICK: u32 = 220;
+const SURVIVAL_FURNACE_X: i32 = 12;
+const SURVIVAL_FURNACE_Y: i32 = 64;
+const SURVIVAL_FURNACE_Z: i32 = 0;
+const SURVIVAL_FURNACE_PLAYER_X: f64 = 12.5;
+const SURVIVAL_FURNACE_PLAYER_Y: f64 = 65.0;
+const SURVIVAL_FURNACE_PLAYER_Z: f64 = 0.5;
+const SURVIVAL_FURNACE_FACE_UP: i32 = 1;
+const SURVIVAL_FURNACE_MAIN_HAND: i32 = 0;
+const SURVIVAL_FURNACE_SEQUENCE: i32 = 709;
+const SURVIVAL_FURNACE_INPUT_SLOT: i16 = 0;
+const SURVIVAL_FURNACE_FUEL_SLOT: i16 = 1;
+const SURVIVAL_FURNACE_OUTPUT_SLOT: i16 = 2;
+const SURVIVAL_FURNACE_OUTPUT_INDEX: usize = 2;
+const SURVIVAL_FURNACE_INVENTORY_SLOT: i16 = 36;
+const SURVIVAL_FURNACE_INVENTORY_INDEX: usize = 36;
+const SURVIVAL_FURNACE_INPUT_ITEM_ID: isize = 769;
+const SURVIVAL_FURNACE_FUEL_ITEM_ID: isize = 762;
+const SURVIVAL_FURNACE_OUTPUT_ITEM_ID: isize = 770;
+const SURVIVAL_FURNACE_INPUT_ITEM_NAME: &str = "RawIron";
+const SURVIVAL_FURNACE_FUEL_ITEM_NAME: &str = "Coal";
+const SURVIVAL_FURNACE_OUTPUT_ITEM_NAME: &str = "IronIngot";
+const SURVIVAL_FURNACE_ITEM_COUNT: isize = 1;
+const SURVIVAL_FURNACE_CLICK_BUTTON: u8 = 0;
+const SURVIVAL_FURNACE_CLICK_MODE: i32 = 0;
+const SURVIVAL_FURNACE_RECONNECT_SESSION_LABEL: u32 = 1;
 const SURVIVAL_BIOME_DIMENSION_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_PROBE";
 const SURVIVAL_OVERWORLD_ID: &str = "minecraft:overworld";
 const SURVIVAL_NETHER_ID: &str = "minecraft:the_nether";
@@ -169,6 +204,17 @@ fn survival_chest_probe_session_from_env() -> u32 {
         .unwrap_or(SURVIVAL_CHEST_FIRST_SESSION)
 }
 
+fn survival_furnace_probe_session_from_env() -> u32 {
+    std::env::var(SURVIVAL_FURNACE_SESSION_ENV)
+        .ok()
+        .and_then(|raw| raw.trim().parse::<u32>().ok())
+        .filter(|session| {
+            *session == SURVIVAL_FURNACE_FIRST_SESSION
+                || *session == SURVIVAL_FURNACE_REOPEN_SESSION
+        })
+        .unwrap_or(SURVIVAL_FURNACE_FIRST_SESSION)
+}
+
 fn survival_crafting_table_position() -> Position {
     Position::new(
         SURVIVAL_CRAFTING_TABLE_X,
@@ -197,6 +243,35 @@ fn survival_crafting_result_stack() -> item::Stack {
 
 fn survival_crafting_result_matches(stack: &item::Stack) -> bool {
     stack.id == SURVIVAL_CRAFTING_RESULT_ITEM_ID && stack.count == SURVIVAL_CRAFTING_RESULT_COUNT
+}
+
+fn survival_furnace_position() -> Position {
+    Position::new(SURVIVAL_FURNACE_X, SURVIVAL_FURNACE_Y, SURVIVAL_FURNACE_Z)
+}
+
+fn survival_furnace_input_stack() -> item::Stack {
+    survival_furnace_stack(SURVIVAL_FURNACE_INPUT_ITEM_ID)
+}
+
+fn survival_furnace_fuel_stack() -> item::Stack {
+    survival_furnace_stack(SURVIVAL_FURNACE_FUEL_ITEM_ID)
+}
+
+fn survival_furnace_output_stack() -> item::Stack {
+    survival_furnace_stack(SURVIVAL_FURNACE_OUTPUT_ITEM_ID)
+}
+
+fn survival_furnace_stack(item_id: isize) -> item::Stack {
+    item::Stack {
+        id: item_id,
+        count: SURVIVAL_FURNACE_ITEM_COUNT,
+        damage: None,
+        tag: None,
+    }
+}
+
+fn survival_furnace_output_matches(stack: &item::Stack) -> bool {
+    stack.id == SURVIVAL_FURNACE_OUTPUT_ITEM_ID && stack.count == SURVIVAL_FURNACE_ITEM_COUNT
 }
 
 fn should_log_survival_crafting_inventory_slot(
@@ -283,6 +358,8 @@ pub struct Server {
     survival_chest_probe_enabled: bool,
     survival_chest_probe_session: u32,
     survival_crafting_probe_enabled: bool,
+    survival_furnace_probe_enabled: bool,
+    survival_furnace_probe_session: u32,
     survival_biome_dimension_probe_enabled: bool,
     equipment_probe_enabled: bool,
     projectile_probe_enabled: bool,
@@ -330,6 +407,20 @@ pub struct Server {
     survival_crafting_inventory_seen: bool,
     survival_crafting_window_id: u8,
     survival_crafting_window_state_id: i32,
+    survival_furnace_position_sent: bool,
+    survival_furnace_open_sent: bool,
+    survival_furnace_open_seen: bool,
+    survival_furnace_input_sent: bool,
+    survival_furnace_fuel_sent: bool,
+    survival_furnace_burn_seen: bool,
+    survival_furnace_output_seen: bool,
+    survival_furnace_collect_sent: bool,
+    survival_furnace_inventory_seen: bool,
+    survival_furnace_close_sent: bool,
+    survival_furnace_reconnect_sent: bool,
+    survival_furnace_reopen_seen: bool,
+    survival_furnace_window_id: u8,
+    survival_furnace_window_state_id: i32,
     inventory_probe_click_sent: bool,
     inventory_probe_container_click_sent: bool,
     inventory_probe_container_id: u8,
@@ -872,6 +963,10 @@ impl Server {
             survival_crafting_probe_enabled: std::env::var(SURVIVAL_CRAFTING_PROBE_ENV)
                 .map(|value| value != "0")
                 .unwrap_or(false),
+            survival_furnace_probe_enabled: std::env::var(SURVIVAL_FURNACE_PROBE_ENV)
+                .map(|value| value != "0")
+                .unwrap_or(false),
+            survival_furnace_probe_session: survival_furnace_probe_session_from_env(),
             survival_biome_dimension_probe_enabled: std::env::var(
                 SURVIVAL_BIOME_DIMENSION_PROBE_ENV,
             )
@@ -931,6 +1026,20 @@ impl Server {
             survival_crafting_inventory_seen: false,
             survival_crafting_window_id: EMPTY_WINDOW_ID,
             survival_crafting_window_state_id: EMPTY_WINDOW_STATE_ID,
+            survival_furnace_position_sent: false,
+            survival_furnace_open_sent: false,
+            survival_furnace_open_seen: false,
+            survival_furnace_input_sent: false,
+            survival_furnace_fuel_sent: false,
+            survival_furnace_burn_seen: false,
+            survival_furnace_output_seen: false,
+            survival_furnace_collect_sent: false,
+            survival_furnace_inventory_seen: false,
+            survival_furnace_close_sent: false,
+            survival_furnace_reconnect_sent: false,
+            survival_furnace_reopen_seen: false,
+            survival_furnace_window_id: EMPTY_WINDOW_ID,
+            survival_furnace_window_state_id: EMPTY_WINDOW_STATE_ID,
             inventory_probe_click_sent: false,
             inventory_probe_container_click_sent: false,
             inventory_probe_container_id: 0,
@@ -1053,6 +1162,7 @@ impl Server {
             && !self.survival_probe_enabled
             && !self.survival_chest_probe_enabled
             && !self.survival_crafting_probe_enabled
+            && !self.survival_furnace_probe_enabled
         {
             return;
         }
@@ -1501,6 +1611,7 @@ impl Server {
         }
 
         self.apply_mc_compat_survival_crafting_probe(player);
+        self.apply_mc_compat_survival_furnace_probe(player);
 
         if self.inventory_probe_enabled && self.active_probe_ticks == 520 {
             info!("MC-COMPAT-MILESTONE inventory_probe_select_hotbar_slot slot=0");
@@ -3251,6 +3362,234 @@ impl Server {
         });
     }
 
+    fn apply_mc_compat_survival_furnace_probe(&mut self, player: ecs::Entity) {
+        if !self.survival_furnace_probe_enabled {
+            return;
+        }
+
+        if self.active_probe_ticks >= SURVIVAL_FURNACE_POSITION_TICK
+            && !self.survival_furnace_position_sent
+        {
+            if let Some(position) = self.entities.get_component_mut(player, self.position) {
+                position.position = cgmath::Vector3::new(
+                    SURVIVAL_FURNACE_PLAYER_X,
+                    SURVIVAL_FURNACE_PLAYER_Y,
+                    SURVIVAL_FURNACE_PLAYER_Z,
+                );
+                position.moved = true;
+            }
+            self.write_packet(packet::play::serverbound::PlayerPosition {
+                x: SURVIVAL_FURNACE_PLAYER_X,
+                y: SURVIVAL_FURNACE_PLAYER_Y,
+                z: SURVIVAL_FURNACE_PLAYER_Z,
+                on_ground: true,
+            });
+            info!(
+                "MC-COMPAT-MILESTONE survival_furnace_move_near_furnace x={:.1} y={:.1} z={:.1} position={},{},{}",
+                SURVIVAL_FURNACE_PLAYER_X,
+                SURVIVAL_FURNACE_PLAYER_Y,
+                SURVIVAL_FURNACE_PLAYER_Z,
+                SURVIVAL_FURNACE_X,
+                SURVIVAL_FURNACE_Y,
+                SURVIVAL_FURNACE_Z
+            );
+            self.survival_furnace_position_sent = true;
+        }
+
+        if self.active_probe_ticks >= SURVIVAL_FURNACE_OPEN_TICK
+            && self.survival_furnace_position_sent
+            && !self.survival_furnace_open_sent
+        {
+            info!(
+                "MC-COMPAT-MILESTONE survival_furnace_open_request_sent hand=main position={},{},{} face=up sequence={}",
+                SURVIVAL_FURNACE_X,
+                SURVIVAL_FURNACE_Y,
+                SURVIVAL_FURNACE_Z,
+                SURVIVAL_FURNACE_SEQUENCE
+            );
+            self.write_packet(
+                packet::play::serverbound::PlayerBlockPlacement_insideblock_sequence {
+                    hand: protocol::VarInt(SURVIVAL_FURNACE_MAIN_HAND),
+                    location: survival_furnace_position(),
+                    face: protocol::VarInt(SURVIVAL_FURNACE_FACE_UP),
+                    cursor_x: SURVIVAL_PROBE_CURSOR_CENTER,
+                    cursor_y: SURVIVAL_PROBE_CURSOR_TOP,
+                    cursor_z: SURVIVAL_PROBE_CURSOR_CENTER,
+                    inside_block: false,
+                    sequence: protocol::VarInt(SURVIVAL_FURNACE_SEQUENCE),
+                },
+            );
+            self.survival_furnace_open_sent = true;
+        }
+
+        if self.survival_furnace_probe_session == SURVIVAL_FURNACE_FIRST_SESSION
+            && self.active_probe_ticks >= SURVIVAL_FURNACE_INPUT_TICK
+            && self.survival_furnace_open_seen
+            && self.survival_furnace_window_state_id != EMPTY_WINDOW_STATE_ID
+            && !self.survival_furnace_input_sent
+        {
+            self.write_survival_furnace_click(
+                SURVIVAL_FURNACE_INPUT_SLOT,
+                Some(survival_furnace_input_stack()),
+                None,
+            );
+            info!(
+                "MC-COMPAT-MILESTONE survival_furnace_input_sent window={} slot={} item={} count={}",
+                self.survival_furnace_window_id,
+                SURVIVAL_FURNACE_INPUT_SLOT,
+                SURVIVAL_FURNACE_INPUT_ITEM_NAME,
+                SURVIVAL_FURNACE_ITEM_COUNT
+            );
+            self.survival_furnace_input_sent = true;
+        }
+
+        if self.survival_furnace_probe_session == SURVIVAL_FURNACE_FIRST_SESSION
+            && self.active_probe_ticks >= SURVIVAL_FURNACE_FUEL_TICK
+            && self.survival_furnace_input_sent
+            && !self.survival_furnace_fuel_sent
+        {
+            self.write_survival_furnace_click(
+                SURVIVAL_FURNACE_FUEL_SLOT,
+                Some(survival_furnace_fuel_stack()),
+                None,
+            );
+            info!(
+                "MC-COMPAT-MILESTONE survival_furnace_fuel_sent window={} slot={} item={} count={}",
+                self.survival_furnace_window_id,
+                SURVIVAL_FURNACE_FUEL_SLOT,
+                SURVIVAL_FURNACE_FUEL_ITEM_NAME,
+                SURVIVAL_FURNACE_ITEM_COUNT
+            );
+            self.survival_furnace_fuel_sent = true;
+        }
+
+        if self.survival_furnace_probe_session == SURVIVAL_FURNACE_FIRST_SESSION
+            && self.active_probe_ticks >= SURVIVAL_FURNACE_COLLECT_TICK
+            && self.survival_furnace_output_seen
+            && !self.survival_furnace_collect_sent
+        {
+            self.write_survival_furnace_click(
+                SURVIVAL_FURNACE_OUTPUT_SLOT,
+                None,
+                Some(survival_furnace_output_stack()),
+            );
+            info!(
+                "MC-COMPAT-MILESTONE survival_furnace_output_collected window={} slot={} item={} count={}",
+                self.survival_furnace_window_id,
+                SURVIVAL_FURNACE_OUTPUT_SLOT,
+                SURVIVAL_FURNACE_OUTPUT_ITEM_NAME,
+                SURVIVAL_FURNACE_ITEM_COUNT
+            );
+            self.survival_furnace_collect_sent = true;
+        }
+
+        if self.survival_furnace_probe_session == SURVIVAL_FURNACE_FIRST_SESSION
+            && self.active_probe_ticks >= SURVIVAL_FURNACE_CLOSE_TICK
+            && self.survival_furnace_collect_sent
+            && !self.survival_furnace_close_sent
+        {
+            info!(
+                "MC-COMPAT-MILESTONE survival_furnace_close_sent window={}",
+                self.survival_furnace_window_id
+            );
+            self.write_packet(packet::play::serverbound::CloseWindow {
+                id: self.survival_furnace_window_id,
+            });
+            self.survival_furnace_close_sent = true;
+            if !self.survival_furnace_reconnect_sent {
+                info!(
+                    "MC-COMPAT-MILESTONE survival_furnace_reconnect_sent session={}",
+                    SURVIVAL_FURNACE_RECONNECT_SESSION_LABEL
+                );
+                self.survival_furnace_reconnect_sent = true;
+            }
+        }
+    }
+
+    fn write_survival_furnace_click(
+        &mut self,
+        slot: i16,
+        slot_data: Option<item::Stack>,
+        clicked_item: Option<item::Stack>,
+    ) {
+        self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+            id: self.survival_furnace_window_id,
+            state: protocol::VarInt(self.survival_furnace_window_state_id),
+            slot,
+            button: SURVIVAL_FURNACE_CLICK_BUTTON,
+            mode: protocol::VarInt(SURVIVAL_FURNACE_CLICK_MODE),
+            slots: protocol::LenPrefixed::new(vec![packet::NumberedSlot {
+                slot_number: slot,
+                slot_data,
+            }]),
+            clicked_item,
+        });
+    }
+
+    fn log_survival_furnace_output_from_slot(
+        &mut self,
+        window_id: u8,
+        state_id: i32,
+        slot_index: usize,
+        slot_item: Option<&Option<item::Stack>>,
+    ) {
+        if !self.survival_furnace_probe_enabled
+            || self.survival_furnace_output_seen
+            || window_id != self.survival_furnace_window_id
+            || slot_index != SURVIVAL_FURNACE_OUTPUT_INDEX
+        {
+            return;
+        }
+        let Some(Some(stack)) = slot_item else {
+            return;
+        };
+        if !survival_furnace_output_matches(stack) {
+            return;
+        }
+        self.survival_furnace_window_state_id = state_id;
+        if !self.survival_furnace_burn_seen {
+            self.survival_furnace_burn_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_furnace_burn_progress_seen window={} progress=started",
+                window_id
+            );
+        }
+        self.survival_furnace_output_seen = true;
+        info!(
+            "MC-COMPAT-MILESTONE survival_furnace_output_seen window={} slot={} item={} count={}",
+            window_id,
+            SURVIVAL_FURNACE_OUTPUT_SLOT,
+            SURVIVAL_FURNACE_OUTPUT_ITEM_NAME,
+            SURVIVAL_FURNACE_ITEM_COUNT
+        );
+    }
+
+    fn log_survival_furnace_inventory_from_slot(
+        &mut self,
+        slot_index: usize,
+        slot_item: Option<&Option<item::Stack>>,
+    ) {
+        if !self.survival_furnace_probe_enabled
+            || self.survival_furnace_inventory_seen
+            || slot_index != SURVIVAL_FURNACE_INVENTORY_INDEX
+        {
+            return;
+        }
+        let Some(Some(stack)) = slot_item else {
+            return;
+        };
+        if !survival_furnace_output_matches(stack) {
+            return;
+        }
+        self.survival_furnace_inventory_seen = true;
+        info!(
+            "MC-COMPAT-MILESTONE survival_furnace_inventory_updated slot={} item={} count={}",
+            SURVIVAL_FURNACE_INVENTORY_SLOT,
+            SURVIVAL_FURNACE_OUTPUT_ITEM_NAME,
+            SURVIVAL_FURNACE_ITEM_COUNT
+        );
+    }
+
     fn log_survival_crafting_result_from_slot(
         &mut self,
         window_id: u8,
@@ -3353,6 +3692,31 @@ impl Server {
             );
         }
 
+        if self.survival_furnace_probe_enabled && window.id.0 > 0 {
+            self.survival_furnace_window_id = window.id.0 as u8;
+            if self.survival_furnace_probe_session == SURVIVAL_FURNACE_REOPEN_SESSION {
+                if !self.survival_furnace_reopen_seen {
+                    self.survival_furnace_reopen_seen = true;
+                    info!(
+                        "MC-COMPAT-MILESTONE survival_furnace_reopen_seen window={} position={},{},{}",
+                        self.survival_furnace_window_id,
+                        SURVIVAL_FURNACE_X,
+                        SURVIVAL_FURNACE_Y,
+                        SURVIVAL_FURNACE_Z
+                    );
+                }
+            } else if !self.survival_furnace_open_seen {
+                self.survival_furnace_open_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE survival_furnace_open_seen window={} position={},{},{}",
+                    self.survival_furnace_window_id,
+                    SURVIVAL_FURNACE_X,
+                    SURVIVAL_FURNACE_Y,
+                    SURVIVAL_FURNACE_Z
+                );
+            }
+        }
+
         if self.survival_chest_probe_enabled && window.id.0 > 0 {
             self.survival_chest_window_id = window.id.0 as u8;
             if self.survival_chest_probe_session == SURVIVAL_CHEST_REOPEN_SESSION {
@@ -3400,6 +3764,7 @@ impl Server {
             && !self.survival_probe_enabled
             && !self.survival_chest_probe_enabled
             && !self.survival_crafting_probe_enabled
+            && !self.survival_furnace_probe_enabled
         {
             return;
         }
@@ -3481,6 +3846,22 @@ impl Server {
                     .get(SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_INDEX),
             );
         }
+        if self.survival_furnace_probe_enabled
+            && window.id == self.survival_furnace_window_id
+            && window.id > EMPTY_WINDOW_ID
+        {
+            self.survival_furnace_window_state_id = window.state_id.0;
+            self.log_survival_furnace_output_from_slot(
+                window.id,
+                window.state_id.0,
+                SURVIVAL_FURNACE_OUTPUT_INDEX,
+                window.items.data.get(SURVIVAL_FURNACE_OUTPUT_INDEX),
+            );
+            self.log_survival_furnace_inventory_from_slot(
+                SURVIVAL_FURNACE_INVENTORY_INDEX,
+                window.items.data.get(SURVIVAL_FURNACE_INVENTORY_INDEX),
+            );
+        }
 
         if let Some(Some(stack)) = window.items.data.get(36) {
             if !self.inventory_probe_sword_seen && stack.count == 1 {
@@ -3507,6 +3888,7 @@ impl Server {
             && !self.survival_probe_enabled
             && !self.survival_chest_probe_enabled
             && !self.survival_crafting_probe_enabled
+            && !self.survival_furnace_probe_enabled
         {
             return;
         }
@@ -3547,6 +3929,27 @@ impl Server {
             ) {
                 self.log_survival_crafting_inventory_from_slot(
                     SURVIVAL_CRAFTING_INVENTORY_INDEX,
+                    Some(&slot.item),
+                );
+            }
+        }
+        if self.survival_furnace_probe_enabled {
+            if slot.id == self.survival_furnace_window_id && slot.id > EMPTY_WINDOW_ID {
+                self.survival_furnace_window_state_id = slot.state_id.0;
+                if slot.property == SURVIVAL_FURNACE_OUTPUT_SLOT {
+                    self.log_survival_furnace_output_from_slot(
+                        slot.id,
+                        slot.state_id.0,
+                        SURVIVAL_FURNACE_OUTPUT_INDEX,
+                        Some(&slot.item),
+                    );
+                }
+            }
+            if slot.id == PLAYER_INVENTORY_WINDOW_ID
+                && slot.property == SURVIVAL_FURNACE_INVENTORY_SLOT
+            {
+                self.log_survival_furnace_inventory_from_slot(
+                    SURVIVAL_FURNACE_INVENTORY_INDEX,
                     Some(&slot.item),
                 );
             }
@@ -3600,6 +4003,7 @@ impl Server {
             && !self.survival_probe_enabled
             && !self.survival_chest_probe_enabled
             && !self.survival_crafting_probe_enabled
+            && !self.survival_furnace_probe_enabled
         {
             return;
         }
@@ -4578,14 +4982,19 @@ mod tests {
         parse_flag_probe_repeat_target, should_log_survival_crafting_inventory_index,
         should_log_survival_crafting_inventory_slot, survival_crafting_input_stack,
         survival_crafting_result_matches, survival_crafting_result_stack,
-        survival_crafting_table_position, DEFAULT_FLAG_PROBE_REPEAT_TARGET,
+        survival_crafting_table_position, survival_furnace_fuel_stack,
+        survival_furnace_input_stack, survival_furnace_output_matches,
+        survival_furnace_output_stack, survival_furnace_position, DEFAULT_FLAG_PROBE_REPEAT_TARGET,
         MAX_FLAG_PROBE_REPEAT_TARGET, PLAYER_INVENTORY_WINDOW_ID, SURVIVAL_CRAFTING_INPUT_A_SLOT,
         SURVIVAL_CRAFTING_INPUT_COUNT, SURVIVAL_CRAFTING_INPUT_ITEM_ID,
         SURVIVAL_CRAFTING_INVENTORY_INDEX, SURVIVAL_CRAFTING_INVENTORY_SLOT,
         SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_INDEX,
         SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_SLOT, SURVIVAL_CRAFTING_RESULT_COUNT,
         SURVIVAL_CRAFTING_RESULT_ITEM_ID, SURVIVAL_CRAFTING_TABLE_X, SURVIVAL_CRAFTING_TABLE_Y,
-        SURVIVAL_CRAFTING_TABLE_Z, SURVIVAL_END_ID, SURVIVAL_NETHER_ID, SURVIVAL_OVERWORLD_ID,
+        SURVIVAL_CRAFTING_TABLE_Z, SURVIVAL_END_ID, SURVIVAL_FURNACE_FUEL_ITEM_ID,
+        SURVIVAL_FURNACE_INPUT_ITEM_ID, SURVIVAL_FURNACE_ITEM_COUNT,
+        SURVIVAL_FURNACE_OUTPUT_ITEM_ID, SURVIVAL_FURNACE_X, SURVIVAL_FURNACE_Y,
+        SURVIVAL_FURNACE_Z, SURVIVAL_NETHER_ID, SURVIVAL_OVERWORLD_ID,
         SURVIVAL_UNKNOWN_ENVIRONMENT_ID,
     };
     use steven_protocol::item;
@@ -4686,6 +5095,49 @@ mod tests {
 
         assert!(!survival_crafting_result_matches(&wrong_item));
         assert!(!survival_crafting_result_matches(&wrong_count));
+    }
+
+    #[test]
+    fn survival_furnace_fixture_positions_are_named() {
+        let position = survival_furnace_position();
+
+        assert_eq!(position.x, SURVIVAL_FURNACE_X);
+        assert_eq!(position.y, SURVIVAL_FURNACE_Y);
+        assert_eq!(position.z, SURVIVAL_FURNACE_Z);
+    }
+
+    #[test]
+    fn survival_furnace_stacks_use_contract_items() {
+        let input = survival_furnace_input_stack();
+        let fuel = survival_furnace_fuel_stack();
+        let output = survival_furnace_output_stack();
+
+        assert_eq!(input.id, SURVIVAL_FURNACE_INPUT_ITEM_ID);
+        assert_eq!(input.count, SURVIVAL_FURNACE_ITEM_COUNT);
+        assert_eq!(fuel.id, SURVIVAL_FURNACE_FUEL_ITEM_ID);
+        assert_eq!(fuel.count, SURVIVAL_FURNACE_ITEM_COUNT);
+        assert_eq!(output.id, SURVIVAL_FURNACE_OUTPUT_ITEM_ID);
+        assert_eq!(output.count, SURVIVAL_FURNACE_ITEM_COUNT);
+        assert!(survival_furnace_output_matches(&output));
+    }
+
+    #[test]
+    fn survival_furnace_output_match_rejects_wrong_item_or_count() {
+        let wrong_item = item::Stack {
+            id: SURVIVAL_FURNACE_INPUT_ITEM_ID,
+            count: SURVIVAL_FURNACE_ITEM_COUNT,
+            damage: None,
+            tag: None,
+        };
+        let wrong_count = item::Stack {
+            id: SURVIVAL_FURNACE_OUTPUT_ITEM_ID,
+            count: SURVIVAL_FURNACE_ITEM_COUNT + 1,
+            damage: None,
+            tag: None,
+        };
+
+        assert!(!survival_furnace_output_matches(&wrong_item));
+        assert!(!survival_furnace_output_matches(&wrong_count));
     }
 
     #[test]
