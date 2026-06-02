@@ -162,6 +162,24 @@ const SURVIVAL_FURNACE_ITEM_COUNT: isize = 1;
 const SURVIVAL_FURNACE_CLICK_BUTTON: u8 = 0;
 const SURVIVAL_FURNACE_CLICK_MODE: i32 = 0;
 const SURVIVAL_FURNACE_RECONNECT_SESSION_LABEL: u32 = 1;
+const SURVIVAL_HUNGER_FOOD_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_HUNGER_FOOD_PROBE";
+const SURVIVAL_HUNGER_FOOD_USE_TICK: u32 = 120;
+const SURVIVAL_HUNGER_FOOD_HOTBAR_SLOT: i16 = 0;
+const SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT: i16 = 36;
+const SURVIVAL_HUNGER_FOOD_INVENTORY_INDEX: usize = 36;
+const SURVIVAL_HUNGER_FOOD_ITEM_ID: isize = 815;
+const SURVIVAL_HUNGER_FOOD_ITEM_NAME: &str = "Bread";
+const SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE: isize = 1;
+const SURVIVAL_HUNGER_FOOD_ITEM_COUNT_AFTER: isize = 0;
+const SURVIVAL_HUNGER_FOOD_PRE_HEALTH: f32 = 20.0;
+const SURVIVAL_HUNGER_FOOD_PRE_FOOD: i32 = 15;
+const SURVIVAL_HUNGER_FOOD_PRE_SATURATION: f32 = 0.0;
+const SURVIVAL_HUNGER_FOOD_POST_HEALTH: f32 = 20.0;
+const SURVIVAL_HUNGER_FOOD_POST_FOOD: i32 = 20;
+const SURVIVAL_HUNGER_FOOD_POST_SATURATION: f32 = 6.0;
+const SURVIVAL_HUNGER_FOOD_FLOAT_TOLERANCE: f32 = 0.01;
+const SURVIVAL_HUNGER_FOOD_MAIN_HAND: i32 = 0;
+const SURVIVAL_HUNGER_FOOD_USE_SEQUENCE: i32 = 810;
 const SURVIVAL_BIOME_DIMENSION_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_PROBE";
 const SURVIVAL_OVERWORLD_ID: &str = "minecraft:overworld";
 const SURVIVAL_NETHER_ID: &str = "minecraft:the_nether";
@@ -276,6 +294,45 @@ fn survival_furnace_output_matches(stack: &item::Stack) -> bool {
     stack.id == SURVIVAL_FURNACE_OUTPUT_ITEM_ID && stack.count == SURVIVAL_FURNACE_ITEM_COUNT
 }
 
+fn survival_hunger_food_item_matches(stack: &item::Stack) -> bool {
+    stack.id == SURVIVAL_HUNGER_FOOD_ITEM_ID
+        && stack.count == SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE
+}
+
+fn survival_hunger_food_slot_is_empty(slot_item: Option<&Option<item::Stack>>) -> bool {
+    match slot_item {
+        Some(None) => true,
+        Some(Some(stack)) => stack.count == SURVIVAL_HUNGER_FOOD_ITEM_COUNT_AFTER,
+        None => false,
+    }
+}
+
+fn survival_hunger_food_float_matches(observed: f32, expected: f32) -> bool {
+    (observed - expected).abs() <= SURVIVAL_HUNGER_FOOD_FLOAT_TOLERANCE
+}
+
+fn survival_hunger_food_pre_update_matches(
+    update: &packet::play::clientbound::UpdateHealth,
+) -> bool {
+    survival_hunger_food_float_matches(update.health, SURVIVAL_HUNGER_FOOD_PRE_HEALTH)
+        && update.food.0 == SURVIVAL_HUNGER_FOOD_PRE_FOOD
+        && survival_hunger_food_float_matches(
+            update.food_saturation,
+            SURVIVAL_HUNGER_FOOD_PRE_SATURATION,
+        )
+}
+
+fn survival_hunger_food_post_update_matches(
+    update: &packet::play::clientbound::UpdateHealth,
+) -> bool {
+    survival_hunger_food_float_matches(update.health, SURVIVAL_HUNGER_FOOD_POST_HEALTH)
+        && update.food.0 == SURVIVAL_HUNGER_FOOD_POST_FOOD
+        && survival_hunger_food_float_matches(
+            update.food_saturation,
+            SURVIVAL_HUNGER_FOOD_POST_SATURATION,
+        )
+}
+
 fn should_log_survival_crafting_inventory_slot(
     window_id: u8,
     crafting_window_id: u8,
@@ -378,6 +435,7 @@ pub struct Server {
     survival_crafting_probe_enabled: bool,
     survival_furnace_probe_enabled: bool,
     survival_furnace_probe_session: u32,
+    survival_hunger_food_probe_enabled: bool,
     survival_biome_dimension_probe_enabled: bool,
     equipment_probe_enabled: bool,
     projectile_probe_enabled: bool,
@@ -439,6 +497,11 @@ pub struct Server {
     survival_furnace_reopen_seen: bool,
     survival_furnace_window_id: u8,
     survival_furnace_window_state_id: i32,
+    survival_hunger_food_item_seen: bool,
+    survival_hunger_food_pre_seen: bool,
+    survival_hunger_food_use_sent: bool,
+    survival_hunger_food_post_seen: bool,
+    survival_hunger_food_inventory_seen: bool,
     inventory_probe_click_sent: bool,
     inventory_probe_container_click_sent: bool,
     inventory_probe_container_id: u8,
@@ -985,6 +1048,9 @@ impl Server {
                 .map(|value| value != "0")
                 .unwrap_or(false),
             survival_furnace_probe_session: survival_furnace_probe_session_from_env(),
+            survival_hunger_food_probe_enabled: std::env::var(SURVIVAL_HUNGER_FOOD_PROBE_ENV)
+                .map(|value| value != "0")
+                .unwrap_or(false),
             survival_biome_dimension_probe_enabled: std::env::var(
                 SURVIVAL_BIOME_DIMENSION_PROBE_ENV,
             )
@@ -1058,6 +1124,11 @@ impl Server {
             survival_furnace_reopen_seen: false,
             survival_furnace_window_id: EMPTY_WINDOW_ID,
             survival_furnace_window_state_id: EMPTY_WINDOW_STATE_ID,
+            survival_hunger_food_item_seen: false,
+            survival_hunger_food_pre_seen: false,
+            survival_hunger_food_use_sent: false,
+            survival_hunger_food_post_seen: false,
+            survival_hunger_food_inventory_seen: false,
             inventory_probe_click_sent: false,
             inventory_probe_container_click_sent: false,
             inventory_probe_container_id: 0,
@@ -1181,6 +1252,7 @@ impl Server {
             && !self.survival_chest_probe_enabled
             && !self.survival_crafting_probe_enabled
             && !self.survival_furnace_probe_enabled
+            && !self.survival_hunger_food_probe_enabled
         {
             return;
         }
@@ -1630,6 +1702,7 @@ impl Server {
 
         self.apply_mc_compat_survival_crafting_probe(player);
         self.apply_mc_compat_survival_furnace_probe(player);
+        self.apply_mc_compat_survival_hunger_food_probe();
 
         if self.inventory_probe_enabled && self.active_probe_ticks == 520 {
             info!("MC-COMPAT-MILESTONE inventory_probe_select_hotbar_slot slot=0");
@@ -3180,6 +3253,7 @@ impl Server {
             "MC-COMPAT-MILESTONE update_health health={:.1} food={} saturation={:.1}",
             update.health, update.food.0, update.food_saturation
         );
+        self.log_survival_hunger_food_health_update(&update);
         if self.combat_probe_enabled && update.health <= 0.0 {
             self.respawn_probe_death_seen = true;
             info!(
@@ -3239,6 +3313,101 @@ impl Server {
             SURVIVAL_CHEST_ITEM_NAME,
             SURVIVAL_CHEST_ITEM_COUNT
         );
+    }
+
+    fn log_survival_hunger_food_health_update(
+        &mut self,
+        update: &packet::play::clientbound::UpdateHealth,
+    ) {
+        if !self.survival_hunger_food_probe_enabled {
+            return;
+        }
+        if !self.survival_hunger_food_pre_seen && survival_hunger_food_pre_update_matches(update) {
+            self.survival_hunger_food_pre_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_hunger_food_pre_seen health={:.1} food={} saturation={:.1}",
+                update.health, update.food.0, update.food_saturation
+            );
+            return;
+        }
+        if self.survival_hunger_food_use_sent
+            && !self.survival_hunger_food_post_seen
+            && survival_hunger_food_post_update_matches(update)
+        {
+            self.survival_hunger_food_post_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_hunger_food_post_seen health={:.1} food={} saturation={:.1}",
+                update.health, update.food.0, update.food_saturation
+            );
+        }
+    }
+
+    fn apply_mc_compat_survival_hunger_food_probe(&mut self) {
+        if !self.survival_hunger_food_probe_enabled
+            || self.survival_hunger_food_use_sent
+            || !self.survival_hunger_food_item_seen
+            || !self.survival_hunger_food_pre_seen
+            || self.active_probe_ticks < SURVIVAL_HUNGER_FOOD_USE_TICK
+        {
+            return;
+        }
+        info!(
+            "MC-COMPAT-MILESTONE survival_hunger_food_select_hotbar_slot slot={}",
+            SURVIVAL_HUNGER_FOOD_HOTBAR_SLOT
+        );
+        self.write_packet(packet::play::serverbound::HeldItemChange {
+            slot: SURVIVAL_HUNGER_FOOD_HOTBAR_SLOT,
+        });
+        info!(
+            "MC-COMPAT-MILESTONE survival_hunger_food_use_sent slot={} item={} count={} hand=main sequence={}",
+            SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT,
+            SURVIVAL_HUNGER_FOOD_ITEM_NAME,
+            SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE,
+            SURVIVAL_HUNGER_FOOD_USE_SEQUENCE
+        );
+        self.write_packet(packet::play::serverbound::UseItem_WithSequence {
+            hand: protocol::VarInt(SURVIVAL_HUNGER_FOOD_MAIN_HAND),
+            sequence: protocol::VarInt(SURVIVAL_HUNGER_FOOD_USE_SEQUENCE),
+        });
+        self.survival_hunger_food_use_sent = true;
+    }
+
+    fn log_survival_hunger_food_inventory_from_slot(
+        &mut self,
+        slot: i16,
+        slot_item: Option<&Option<item::Stack>>,
+    ) {
+        if !self.survival_hunger_food_probe_enabled || slot != SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT {
+            return;
+        }
+        if !self.survival_hunger_food_item_seen {
+            let Some(Some(stack)) = slot_item else {
+                return;
+            };
+            if !survival_hunger_food_item_matches(stack) {
+                return;
+            }
+            self.survival_hunger_food_item_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_hunger_food_item_seen slot={} item={} count={}",
+                SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT,
+                SURVIVAL_HUNGER_FOOD_ITEM_NAME,
+                SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE
+            );
+            return;
+        }
+        if self.survival_hunger_food_use_sent
+            && !self.survival_hunger_food_inventory_seen
+            && survival_hunger_food_slot_is_empty(slot_item)
+        {
+            self.survival_hunger_food_inventory_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_hunger_food_inventory_updated slot={} item={} count={}",
+                SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT,
+                SURVIVAL_HUNGER_FOOD_ITEM_NAME,
+                SURVIVAL_HUNGER_FOOD_ITEM_COUNT_AFTER
+            );
+        }
     }
 
     fn apply_mc_compat_survival_crafting_probe(&mut self, player: ecs::Entity) {
@@ -3783,6 +3952,7 @@ impl Server {
             && !self.survival_chest_probe_enabled
             && !self.survival_crafting_probe_enabled
             && !self.survival_furnace_probe_enabled
+            && !self.survival_hunger_food_probe_enabled
         {
             return;
         }
@@ -3887,6 +4057,10 @@ impl Server {
                     .get(SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_INDEX),
             );
         }
+        self.log_survival_hunger_food_inventory_from_slot(
+            SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT,
+            window.items.data.get(SURVIVAL_HUNGER_FOOD_INVENTORY_INDEX),
+        );
 
         if let Some(Some(stack)) = window.items.data.get(36) {
             if !self.inventory_probe_sword_seen && stack.count == 1 {
@@ -3914,6 +4088,7 @@ impl Server {
             && !self.survival_chest_probe_enabled
             && !self.survival_crafting_probe_enabled
             && !self.survival_furnace_probe_enabled
+            && !self.survival_hunger_food_probe_enabled
         {
             return;
         }
@@ -3981,6 +4156,7 @@ impl Server {
                 );
             }
         }
+        self.log_survival_hunger_food_inventory_from_slot(slot.property, Some(&slot.item));
         if slot.property == 36 {
             if let Some(stack) = &slot.item {
                 if !self.inventory_probe_sword_seen && stack.count == 1 {
@@ -5012,7 +5188,10 @@ mod tests {
         survival_crafting_result_matches, survival_crafting_result_stack,
         survival_crafting_table_position, survival_furnace_fuel_stack,
         survival_furnace_input_stack, survival_furnace_output_matches,
-        survival_furnace_output_stack, survival_furnace_position, DEFAULT_FLAG_PROBE_REPEAT_TARGET,
+        survival_furnace_output_stack, survival_furnace_position,
+        survival_hunger_food_float_matches, survival_hunger_food_item_matches,
+        survival_hunger_food_post_update_matches, survival_hunger_food_pre_update_matches,
+        survival_hunger_food_slot_is_empty, DEFAULT_FLAG_PROBE_REPEAT_TARGET,
         MAX_FLAG_PROBE_REPEAT_TARGET, PLAYER_INVENTORY_WINDOW_ID, SURVIVAL_CRAFTING_INPUT_A_SLOT,
         SURVIVAL_CRAFTING_INPUT_COUNT, SURVIVAL_CRAFTING_INPUT_ITEM_ID,
         SURVIVAL_CRAFTING_INVENTORY_INDEX, SURVIVAL_CRAFTING_INVENTORY_SLOT,
@@ -5022,12 +5201,15 @@ mod tests {
         SURVIVAL_CRAFTING_TABLE_Z, SURVIVAL_END_ID, SURVIVAL_FURNACE_FUEL_ITEM_ID,
         SURVIVAL_FURNACE_INPUT_ITEM_ID, SURVIVAL_FURNACE_INVENTORY_INDEX,
         SURVIVAL_FURNACE_INVENTORY_SLOT, SURVIVAL_FURNACE_ITEM_COUNT,
-        SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_INDEX,
-        SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_SLOT, SURVIVAL_FURNACE_OUTPUT_ITEM_ID,
-        SURVIVAL_FURNACE_X, SURVIVAL_FURNACE_Y, SURVIVAL_FURNACE_Z, SURVIVAL_NETHER_ID,
-        SURVIVAL_OVERWORLD_ID,
-        SURVIVAL_UNKNOWN_ENVIRONMENT_ID,
+        SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_INDEX, SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_SLOT,
+        SURVIVAL_FURNACE_OUTPUT_ITEM_ID, SURVIVAL_FURNACE_X, SURVIVAL_FURNACE_Y,
+        SURVIVAL_FURNACE_Z, SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE, SURVIVAL_HUNGER_FOOD_ITEM_ID,
+        SURVIVAL_HUNGER_FOOD_POST_FOOD, SURVIVAL_HUNGER_FOOD_POST_HEALTH,
+        SURVIVAL_HUNGER_FOOD_POST_SATURATION, SURVIVAL_HUNGER_FOOD_PRE_FOOD,
+        SURVIVAL_HUNGER_FOOD_PRE_HEALTH, SURVIVAL_HUNGER_FOOD_PRE_SATURATION, SURVIVAL_NETHER_ID,
+        SURVIVAL_OVERWORLD_ID, SURVIVAL_UNKNOWN_ENVIRONMENT_ID,
     };
+    use crate::protocol::{self, packet};
     use steven_protocol::item;
 
     #[test]
@@ -5169,6 +5351,75 @@ mod tests {
 
         assert!(!survival_furnace_output_matches(&wrong_item));
         assert!(!survival_furnace_output_matches(&wrong_count));
+    }
+
+    #[test]
+    fn survival_hunger_food_stack_match_accepts_only_contract_bread() {
+        let bread = item::Stack {
+            id: SURVIVAL_HUNGER_FOOD_ITEM_ID,
+            count: SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE,
+            damage: None,
+            tag: None,
+        };
+        let wrong_item = item::Stack {
+            id: SURVIVAL_FURNACE_OUTPUT_ITEM_ID,
+            count: SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE,
+            damage: None,
+            tag: None,
+        };
+        let wrong_count = item::Stack {
+            id: SURVIVAL_HUNGER_FOOD_ITEM_ID,
+            count: SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE + 1,
+            damage: None,
+            tag: None,
+        };
+
+        assert!(survival_hunger_food_item_matches(&bread));
+        assert!(!survival_hunger_food_item_matches(&wrong_item));
+        assert!(!survival_hunger_food_item_matches(&wrong_count));
+    }
+
+    #[test]
+    fn survival_hunger_food_slot_empty_requires_explicit_empty_slot() {
+        let empty_slot = None;
+        let bread_slot = Some(item::Stack {
+            id: SURVIVAL_HUNGER_FOOD_ITEM_ID,
+            count: SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE,
+            damage: None,
+            tag: None,
+        });
+
+        assert!(survival_hunger_food_slot_is_empty(Some(&empty_slot)));
+        assert!(!survival_hunger_food_slot_is_empty(Some(&bread_slot)));
+        assert!(!survival_hunger_food_slot_is_empty(None));
+    }
+
+    #[test]
+    fn survival_hunger_food_health_updates_match_exact_contract() {
+        let pre = packet::play::clientbound::UpdateHealth {
+            health: SURVIVAL_HUNGER_FOOD_PRE_HEALTH,
+            food: protocol::VarInt(SURVIVAL_HUNGER_FOOD_PRE_FOOD),
+            food_saturation: SURVIVAL_HUNGER_FOOD_PRE_SATURATION,
+        };
+        let post = packet::play::clientbound::UpdateHealth {
+            health: SURVIVAL_HUNGER_FOOD_POST_HEALTH,
+            food: protocol::VarInt(SURVIVAL_HUNGER_FOOD_POST_FOOD),
+            food_saturation: SURVIVAL_HUNGER_FOOD_POST_SATURATION,
+        };
+        let wrong_food = packet::play::clientbound::UpdateHealth {
+            health: SURVIVAL_HUNGER_FOOD_PRE_HEALTH,
+            food: protocol::VarInt(SURVIVAL_HUNGER_FOOD_POST_FOOD),
+            food_saturation: SURVIVAL_HUNGER_FOOD_PRE_SATURATION,
+        };
+
+        assert!(survival_hunger_food_pre_update_matches(&pre));
+        assert!(survival_hunger_food_post_update_matches(&post));
+        assert!(!survival_hunger_food_pre_update_matches(&wrong_food));
+        assert!(!survival_hunger_food_post_update_matches(&wrong_food));
+        assert!(survival_hunger_food_float_matches(
+            SURVIVAL_HUNGER_FOOD_POST_SATURATION,
+            SURVIVAL_HUNGER_FOOD_POST_SATURATION
+        ));
     }
 
     #[test]
