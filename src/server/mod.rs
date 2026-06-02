@@ -180,6 +180,26 @@ const SURVIVAL_HUNGER_FOOD_POST_SATURATION: f32 = 6.0;
 const SURVIVAL_HUNGER_FOOD_FLOAT_TOLERANCE: f32 = 0.01;
 const SURVIVAL_HUNGER_FOOD_MAIN_HAND: i32 = 0;
 const SURVIVAL_HUNGER_FOOD_USE_SEQUENCE: i32 = 810;
+const SURVIVAL_MOB_DROP_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_MOB_DROP_PROBE";
+const SURVIVAL_MOB_DROP_POSITION_TICK: u32 = 60;
+const SURVIVAL_MOB_DROP_ATTACK_TICK: u32 = 140;
+const SURVIVAL_MOB_DROP_PLAYER_X: f64 = 16.5;
+const SURVIVAL_MOB_DROP_PLAYER_Y: f64 = 65.0;
+const SURVIVAL_MOB_DROP_PLAYER_Z: f64 = 0.5;
+const SURVIVAL_MOB_DROP_TARGET_X: f64 = 16.5;
+const SURVIVAL_MOB_DROP_TARGET_Y: f64 = 65.0;
+const SURVIVAL_MOB_DROP_TARGET_Z: f64 = 2.5;
+const SURVIVAL_MOB_DROP_TARGET_YAW: f32 = 0.0;
+const SURVIVAL_MOB_DROP_TARGET_PITCH: f32 = 0.0;
+const SURVIVAL_MOB_DROP_POSITION_TOLERANCE: f64 = 0.75;
+const SURVIVAL_MOB_DROP_MOB_NAME: &str = "IronGolem";
+const SURVIVAL_MOB_DROP_ITEM_NAME: &str = "IronIngot";
+const SURVIVAL_MOB_DROP_ITEM_ID: isize = SURVIVAL_FURNACE_OUTPUT_ITEM_ID;
+const SURVIVAL_MOB_DROP_ITEM_COUNT: isize = SURVIVAL_FURNACE_ITEM_COUNT;
+const SURVIVAL_MOB_DROP_INVENTORY_SLOT: i16 = 36;
+const SURVIVAL_MOB_DROP_INVENTORY_INDEX: usize = 36;
+const SURVIVAL_MOB_DROP_ATTACK_TYPE: i32 = 1;
+const SURVIVAL_MOB_DROP_MAIN_HAND: i32 = 0;
 const SURVIVAL_BIOME_DIMENSION_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_PROBE";
 const SURVIVAL_OVERWORLD_ID: &str = "minecraft:overworld";
 const SURVIVAL_NETHER_ID: &str = "minecraft:the_nether";
@@ -331,6 +351,16 @@ fn survival_hunger_food_post_update_matches(
             update.food_saturation,
             SURVIVAL_HUNGER_FOOD_POST_SATURATION,
         )
+}
+
+fn survival_mob_drop_item_matches(stack: &item::Stack) -> bool {
+    stack.id == SURVIVAL_MOB_DROP_ITEM_ID && stack.count == SURVIVAL_MOB_DROP_ITEM_COUNT
+}
+
+fn survival_mob_drop_position_matches(x: f64, y: f64, z: f64) -> bool {
+    (x - SURVIVAL_MOB_DROP_TARGET_X).abs() <= SURVIVAL_MOB_DROP_POSITION_TOLERANCE
+        && (y - SURVIVAL_MOB_DROP_TARGET_Y).abs() <= SURVIVAL_MOB_DROP_POSITION_TOLERANCE
+        && (z - SURVIVAL_MOB_DROP_TARGET_Z).abs() <= SURVIVAL_MOB_DROP_POSITION_TOLERANCE
 }
 
 fn should_log_survival_crafting_inventory_slot(
@@ -502,6 +532,16 @@ pub struct Server {
     survival_hunger_food_use_sent: bool,
     survival_hunger_food_post_seen: bool,
     survival_hunger_food_inventory_seen: bool,
+    survival_mob_drop_probe_enabled: bool,
+    survival_mob_drop_position_sent: bool,
+    survival_mob_drop_mob_seen: bool,
+    survival_mob_drop_attack_sent: bool,
+    survival_mob_drop_death_seen: bool,
+    survival_mob_drop_drop_seen: bool,
+    survival_mob_drop_pickup_seen: bool,
+    survival_mob_drop_inventory_seen: bool,
+    survival_mob_drop_target_entity_id: Option<i32>,
+    survival_mob_drop_drop_entity_id: Option<i32>,
     inventory_probe_click_sent: bool,
     inventory_probe_container_click_sent: bool,
     inventory_probe_container_id: u8,
@@ -1051,6 +1091,9 @@ impl Server {
             survival_hunger_food_probe_enabled: std::env::var(SURVIVAL_HUNGER_FOOD_PROBE_ENV)
                 .map(|value| value != "0")
                 .unwrap_or(false),
+            survival_mob_drop_probe_enabled: std::env::var(SURVIVAL_MOB_DROP_PROBE_ENV)
+                .map(|value| value != "0")
+                .unwrap_or(false),
             survival_biome_dimension_probe_enabled: std::env::var(
                 SURVIVAL_BIOME_DIMENSION_PROBE_ENV,
             )
@@ -1129,6 +1172,15 @@ impl Server {
             survival_hunger_food_use_sent: false,
             survival_hunger_food_post_seen: false,
             survival_hunger_food_inventory_seen: false,
+            survival_mob_drop_position_sent: false,
+            survival_mob_drop_mob_seen: false,
+            survival_mob_drop_attack_sent: false,
+            survival_mob_drop_death_seen: false,
+            survival_mob_drop_drop_seen: false,
+            survival_mob_drop_pickup_seen: false,
+            survival_mob_drop_inventory_seen: false,
+            survival_mob_drop_target_entity_id: None,
+            survival_mob_drop_drop_entity_id: None,
             inventory_probe_click_sent: false,
             inventory_probe_container_click_sent: false,
             inventory_probe_container_id: 0,
@@ -1253,6 +1305,7 @@ impl Server {
             && !self.survival_crafting_probe_enabled
             && !self.survival_furnace_probe_enabled
             && !self.survival_hunger_food_probe_enabled
+            && !self.survival_mob_drop_probe_enabled
         {
             return;
         }
@@ -1703,6 +1756,7 @@ impl Server {
         self.apply_mc_compat_survival_crafting_probe(player);
         self.apply_mc_compat_survival_furnace_probe(player);
         self.apply_mc_compat_survival_hunger_food_probe();
+        self.apply_mc_compat_survival_mob_drop_probe(player);
 
         if self.inventory_probe_enabled && self.active_probe_ticks == 520 {
             info!("MC-COMPAT-MILESTONE inventory_probe_select_hotbar_slot slot=0");
@@ -2158,6 +2212,9 @@ impl Server {
                             // Entities
                             EntityDestroy => on_entity_destroy,
                             EntityDestroy_u8 => on_entity_destroy_u8,
+                            SpawnObject_VarInt_HeadYaw => on_spawn_object_varint_head_yaw,
+                            SpawnObject_VarInt => on_spawn_object_varint,
+                            SpawnMob_NoMeta => on_spawn_mob_no_meta,
                             SpawnPlayer_f64_NoMeta => on_player_spawn_f64_nometa,
                             SpawnPlayer_f64 => on_player_spawn_f64,
                             SpawnPlayer_i32 => on_player_spawn_i32,
@@ -2831,6 +2888,7 @@ impl Server {
 
     fn on_entity_destroy(&mut self, entity_destroy: packet::play::clientbound::EntityDestroy) {
         for id in entity_destroy.entity_ids.data {
+            self.log_survival_mob_drop_death(id.0);
             if let Some(entity) = self.entity_map.remove(&id.0) {
                 self.entities.remove_entity(entity);
             }
@@ -2842,10 +2900,44 @@ impl Server {
         entity_destroy: packet::play::clientbound::EntityDestroy_u8,
     ) {
         for id in entity_destroy.entity_ids.data {
+            self.log_survival_mob_drop_death(i32::from(id));
             if let Some(entity) = self.entity_map.remove(&id) {
                 self.entities.remove_entity(entity);
             }
         }
+    }
+
+    fn on_spawn_object_varint_head_yaw(
+        &mut self,
+        spawn: packet::play::clientbound::SpawnObject_VarInt_HeadYaw,
+    ) {
+        self.log_survival_mob_drop_spawn_object(
+            spawn.entity_id.0,
+            spawn.ty.0,
+            spawn.x,
+            spawn.y,
+            spawn.z,
+        );
+    }
+
+    fn on_spawn_object_varint(&mut self, spawn: packet::play::clientbound::SpawnObject_VarInt) {
+        self.log_survival_mob_drop_spawn_object(
+            spawn.entity_id.0,
+            spawn.ty.0,
+            spawn.x,
+            spawn.y,
+            spawn.z,
+        );
+    }
+
+    fn on_spawn_mob_no_meta(&mut self, spawn: packet::play::clientbound::SpawnMob_NoMeta) {
+        self.log_survival_mob_drop_spawn_object(
+            spawn.entity_id.0,
+            spawn.ty.0,
+            spawn.x,
+            spawn.y,
+            spawn.z,
+        );
     }
 
     fn on_entity_velocity(&mut self, velocity: packet::play::clientbound::EntityVelocity) {
@@ -3370,6 +3462,140 @@ impl Server {
             sequence: protocol::VarInt(SURVIVAL_HUNGER_FOOD_USE_SEQUENCE),
         });
         self.survival_hunger_food_use_sent = true;
+    }
+
+    fn apply_mc_compat_survival_mob_drop_probe(&mut self, player: ecs::Entity) {
+        if !self.survival_mob_drop_probe_enabled {
+            return;
+        }
+        if self.active_probe_ticks >= SURVIVAL_MOB_DROP_POSITION_TICK
+            && !self.survival_mob_drop_position_sent
+        {
+            if let Some(position) = self.entities.get_component_mut(player, self.position) {
+                position.position = cgmath::Vector3::new(
+                    SURVIVAL_MOB_DROP_PLAYER_X,
+                    SURVIVAL_MOB_DROP_PLAYER_Y,
+                    SURVIVAL_MOB_DROP_PLAYER_Z,
+                );
+                position.moved = true;
+            }
+            self.write_packet(packet::play::serverbound::PlayerPositionLook {
+                x: SURVIVAL_MOB_DROP_PLAYER_X,
+                y: SURVIVAL_MOB_DROP_PLAYER_Y,
+                z: SURVIVAL_MOB_DROP_PLAYER_Z,
+                yaw: SURVIVAL_MOB_DROP_TARGET_YAW,
+                pitch: SURVIVAL_MOB_DROP_TARGET_PITCH,
+                on_ground: true,
+            });
+            info!(
+                "MC-COMPAT-MILESTONE survival_mob_drop_move_near_mob x={:.1} y={:.1} z={:.1} target={:.1},{:.1},{:.1}",
+                SURVIVAL_MOB_DROP_PLAYER_X,
+                SURVIVAL_MOB_DROP_PLAYER_Y,
+                SURVIVAL_MOB_DROP_PLAYER_Z,
+                SURVIVAL_MOB_DROP_TARGET_X,
+                SURVIVAL_MOB_DROP_TARGET_Y,
+                SURVIVAL_MOB_DROP_TARGET_Z
+            );
+            self.survival_mob_drop_position_sent = true;
+        }
+        if self.active_probe_ticks >= SURVIVAL_MOB_DROP_ATTACK_TICK
+            && self.survival_mob_drop_mob_seen
+            && !self.survival_mob_drop_attack_sent
+        {
+            let Some(target_id) = self.survival_mob_drop_target_entity_id else {
+                return;
+            };
+            self.write_packet(packet::play::serverbound::UseEntity_Sneakflag {
+                target_id: protocol::VarInt(target_id),
+                ty: protocol::VarInt(SURVIVAL_MOB_DROP_ATTACK_TYPE),
+                target_x: 0.0,
+                target_y: 0.0,
+                target_z: 0.0,
+                hand: protocol::VarInt(SURVIVAL_MOB_DROP_MAIN_HAND),
+                sneaking: false,
+            });
+            self.survival_mob_drop_attack_sent = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_mob_drop_attack_sent mob={} target_id={}",
+                SURVIVAL_MOB_DROP_MOB_NAME, target_id
+            );
+        }
+    }
+
+    fn log_survival_mob_drop_spawn_object(
+        &mut self,
+        entity_id: i32,
+        entity_type: i32,
+        x: f64,
+        y: f64,
+        z: f64,
+    ) {
+        if !self.survival_mob_drop_probe_enabled || !survival_mob_drop_position_matches(x, y, z) {
+            return;
+        }
+        if !self.survival_mob_drop_mob_seen && !self.survival_mob_drop_attack_sent {
+            self.survival_mob_drop_mob_seen = true;
+            self.survival_mob_drop_target_entity_id = Some(entity_id);
+            info!(
+                "MC-COMPAT-MILESTONE survival_mob_drop_mob_seen mob={} position={:.1},{:.1},{:.1} target_id={} entity_type={}",
+                SURVIVAL_MOB_DROP_MOB_NAME, x, y, z, entity_id, entity_type
+            );
+            return;
+        }
+        if self.survival_mob_drop_attack_sent && !self.survival_mob_drop_drop_seen {
+            self.survival_mob_drop_drop_seen = true;
+            self.survival_mob_drop_drop_entity_id = Some(entity_id);
+            info!(
+                "MC-COMPAT-MILESTONE survival_mob_drop_drop_seen item={} count={} entity_id={} entity_type={} position={:.1},{:.1},{:.1}",
+                SURVIVAL_MOB_DROP_ITEM_NAME,
+                SURVIVAL_MOB_DROP_ITEM_COUNT,
+                entity_id,
+                entity_type,
+                x,
+                y,
+                z
+            );
+        }
+    }
+
+    fn log_survival_mob_drop_death(&mut self, entity_id: i32) {
+        if !self.survival_mob_drop_probe_enabled
+            || self.survival_mob_drop_death_seen
+            || self.survival_mob_drop_target_entity_id != Some(entity_id)
+        {
+            return;
+        }
+        self.survival_mob_drop_death_seen = true;
+        info!(
+            "MC-COMPAT-MILESTONE survival_mob_drop_death_seen mob={} target_id={}",
+            SURVIVAL_MOB_DROP_MOB_NAME, entity_id
+        );
+    }
+
+    fn log_survival_mob_drop_inventory_from_slot(
+        &mut self,
+        slot: i16,
+        slot_item: Option<&Option<item::Stack>>,
+    ) {
+        if !self.survival_mob_drop_probe_enabled
+            || self.survival_mob_drop_inventory_seen
+            || slot != SURVIVAL_MOB_DROP_INVENTORY_SLOT
+        {
+            return;
+        }
+        let Some(Some(stack)) = slot_item else {
+            return;
+        };
+        if !survival_mob_drop_item_matches(stack) {
+            return;
+        }
+        self.survival_mob_drop_inventory_seen = true;
+        info!(
+            "MC-COMPAT-MILESTONE survival_mob_drop_inventory_updated slot={} item={} count={}",
+            SURVIVAL_MOB_DROP_INVENTORY_SLOT,
+            SURVIVAL_MOB_DROP_ITEM_NAME,
+            SURVIVAL_MOB_DROP_ITEM_COUNT
+        );
     }
 
     fn log_survival_hunger_food_inventory_from_slot(
@@ -3953,6 +4179,7 @@ impl Server {
             && !self.survival_crafting_probe_enabled
             && !self.survival_furnace_probe_enabled
             && !self.survival_hunger_food_probe_enabled
+            && !self.survival_mob_drop_probe_enabled
         {
             return;
         }
@@ -4061,6 +4288,10 @@ impl Server {
             SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT,
             window.items.data.get(SURVIVAL_HUNGER_FOOD_INVENTORY_INDEX),
         );
+        self.log_survival_mob_drop_inventory_from_slot(
+            SURVIVAL_MOB_DROP_INVENTORY_SLOT,
+            window.items.data.get(SURVIVAL_MOB_DROP_INVENTORY_INDEX),
+        );
 
         if let Some(Some(stack)) = window.items.data.get(36) {
             if !self.inventory_probe_sword_seen && stack.count == 1 {
@@ -4089,6 +4320,7 @@ impl Server {
             && !self.survival_crafting_probe_enabled
             && !self.survival_furnace_probe_enabled
             && !self.survival_hunger_food_probe_enabled
+            && !self.survival_mob_drop_probe_enabled
         {
             return;
         }
@@ -4157,6 +4389,7 @@ impl Server {
             }
         }
         self.log_survival_hunger_food_inventory_from_slot(slot.property, Some(&slot.item));
+        self.log_survival_mob_drop_inventory_from_slot(slot.property, Some(&slot.item));
         if slot.property == 36 {
             if let Some(stack) = &slot.item {
                 if !self.inventory_probe_sword_seen && stack.count == 1 {
@@ -4207,6 +4440,7 @@ impl Server {
             && !self.survival_chest_probe_enabled
             && !self.survival_crafting_probe_enabled
             && !self.survival_furnace_probe_enabled
+            && !self.survival_mob_drop_probe_enabled
         {
             return;
         }
@@ -4226,6 +4460,31 @@ impl Server {
                 item.collected_entity_id.0,
                 item.collector_entity_id.0,
                 item.number_of_items.0,
+            );
+        }
+        if self.survival_mob_drop_probe_enabled && !self.survival_mob_drop_pickup_seen {
+            if self.survival_mob_drop_drop_entity_id.is_none() {
+                self.survival_mob_drop_drop_entity_id = Some(item.collected_entity_id.0);
+            }
+            if self.survival_mob_drop_drop_entity_id != Some(item.collected_entity_id.0) {
+                return;
+            }
+            if !self.survival_mob_drop_drop_seen {
+                self.survival_mob_drop_drop_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE survival_mob_drop_drop_seen item={} count={} entity_id={}",
+                    SURVIVAL_MOB_DROP_ITEM_NAME,
+                    SURVIVAL_MOB_DROP_ITEM_COUNT,
+                    item.collected_entity_id.0
+                );
+            }
+            self.survival_mob_drop_pickup_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_mob_drop_pickup_seen item={} count={} collected_entity_id={} collector_entity_id={}",
+                SURVIVAL_MOB_DROP_ITEM_NAME,
+                item.number_of_items.0,
+                item.collected_entity_id.0,
+                item.collector_entity_id.0,
             );
         }
     }
@@ -5191,7 +5450,8 @@ mod tests {
         survival_furnace_output_stack, survival_furnace_position,
         survival_hunger_food_float_matches, survival_hunger_food_item_matches,
         survival_hunger_food_post_update_matches, survival_hunger_food_pre_update_matches,
-        survival_hunger_food_slot_is_empty, DEFAULT_FLAG_PROBE_REPEAT_TARGET,
+        survival_hunger_food_slot_is_empty, survival_mob_drop_item_matches,
+        survival_mob_drop_position_matches, DEFAULT_FLAG_PROBE_REPEAT_TARGET,
         MAX_FLAG_PROBE_REPEAT_TARGET, PLAYER_INVENTORY_WINDOW_ID, SURVIVAL_CRAFTING_INPUT_A_SLOT,
         SURVIVAL_CRAFTING_INPUT_COUNT, SURVIVAL_CRAFTING_INPUT_ITEM_ID,
         SURVIVAL_CRAFTING_INVENTORY_INDEX, SURVIVAL_CRAFTING_INVENTORY_SLOT,
@@ -5206,7 +5466,10 @@ mod tests {
         SURVIVAL_FURNACE_Z, SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE, SURVIVAL_HUNGER_FOOD_ITEM_ID,
         SURVIVAL_HUNGER_FOOD_POST_FOOD, SURVIVAL_HUNGER_FOOD_POST_HEALTH,
         SURVIVAL_HUNGER_FOOD_POST_SATURATION, SURVIVAL_HUNGER_FOOD_PRE_FOOD,
-        SURVIVAL_HUNGER_FOOD_PRE_HEALTH, SURVIVAL_HUNGER_FOOD_PRE_SATURATION, SURVIVAL_NETHER_ID,
+        SURVIVAL_HUNGER_FOOD_PRE_HEALTH, SURVIVAL_HUNGER_FOOD_PRE_SATURATION,
+        SURVIVAL_MOB_DROP_ITEM_COUNT, SURVIVAL_MOB_DROP_ITEM_ID,
+        SURVIVAL_MOB_DROP_POSITION_TOLERANCE, SURVIVAL_MOB_DROP_TARGET_X,
+        SURVIVAL_MOB_DROP_TARGET_Y, SURVIVAL_MOB_DROP_TARGET_Z, SURVIVAL_NETHER_ID,
         SURVIVAL_OVERWORLD_ID, SURVIVAL_UNKNOWN_ENVIRONMENT_ID,
     };
     use crate::protocol::{self, packet};
@@ -5392,6 +5655,46 @@ mod tests {
         assert!(survival_hunger_food_slot_is_empty(Some(&empty_slot)));
         assert!(!survival_hunger_food_slot_is_empty(Some(&bread_slot)));
         assert!(!survival_hunger_food_slot_is_empty(None));
+    }
+
+    #[test]
+    fn survival_mob_drop_item_match_accepts_only_contract_drop() {
+        let ingot = item::Stack {
+            id: SURVIVAL_MOB_DROP_ITEM_ID,
+            count: SURVIVAL_MOB_DROP_ITEM_COUNT,
+            damage: None,
+            tag: None,
+        };
+        let wrong_item = item::Stack {
+            id: SURVIVAL_MOB_DROP_ITEM_ID + 1,
+            count: SURVIVAL_MOB_DROP_ITEM_COUNT,
+            damage: None,
+            tag: None,
+        };
+        let wrong_count = item::Stack {
+            id: SURVIVAL_MOB_DROP_ITEM_ID,
+            count: SURVIVAL_MOB_DROP_ITEM_COUNT + 1,
+            damage: None,
+            tag: None,
+        };
+
+        assert!(survival_mob_drop_item_matches(&ingot));
+        assert!(!survival_mob_drop_item_matches(&wrong_item));
+        assert!(!survival_mob_drop_item_matches(&wrong_count));
+    }
+
+    #[test]
+    fn survival_mob_drop_position_match_rejects_wrong_target() {
+        assert!(survival_mob_drop_position_matches(
+            SURVIVAL_MOB_DROP_TARGET_X,
+            SURVIVAL_MOB_DROP_TARGET_Y,
+            SURVIVAL_MOB_DROP_TARGET_Z
+        ));
+        assert!(!survival_mob_drop_position_matches(
+            SURVIVAL_MOB_DROP_TARGET_X + SURVIVAL_MOB_DROP_POSITION_TOLERANCE + 1.0,
+            SURVIVAL_MOB_DROP_TARGET_Y,
+            SURVIVAL_MOB_DROP_TARGET_Z
+        ));
     }
 
     #[test]
