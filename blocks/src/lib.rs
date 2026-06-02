@@ -654,7 +654,7 @@ define_blocks! {
         },
         data { if snowy { None } else { Some(0) } },
         offset { if snowy { Some(0) } else { Some(1) } },
-        model { ("minecraft", "grass") },
+        model { ("minecraft", "grass_block") },
         variant format!("snowy={}", snowy),
         tint TintType::Grass,
         update_state (world, pos) => Block::Grass{snowy: is_snowy(world, pos)},
@@ -6643,6 +6643,20 @@ mod tests {
                 powered: false
             }
         );
+    }
+
+    #[test]
+    fn grass_block_model_uses_post_flattening_asset_name() {
+        let (plugin, model) = (Block::Grass { snowy: false }).get_model();
+        assert_eq!(plugin, "minecraft");
+        assert_eq!(model, "grass_block");
+    }
+
+    #[test]
+    fn missing_block_model_still_uses_steven_fallback_asset() {
+        let (plugin, model) = (Block::Missing {}).get_model();
+        assert_eq!(plugin, "steven");
+        assert_eq!(model, "missing_block");
     }
 
     #[test]

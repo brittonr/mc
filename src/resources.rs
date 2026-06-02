@@ -26,11 +26,21 @@ use std_or_web::fs;
 use crate::types::hash::FNVHash;
 use crate::ui;
 
-const RESOURCES_VERSION: &str = "1.12.2";
+const RESOURCES_VERSION: &str = "1.20.1";
 const VANILLA_CLIENT_URL: &str =
-    "https://launcher.mojang.com/v1/objects/0f275bc1547d01fa5f56ba34bdc87d981ee12daf/client.jar";
-const ASSET_VERSION: &str = "1.12";
-const ASSET_INDEX_URL: &str = "https://launchermeta.mojang.com/mc/assets/1.12/67e29e024e664064c1f04c728604f83c24cbc218/1.12.json";
+    "https://piston-data.mojang.com/v1/objects/0c3ec587af28e5a785c0b4a7b8a30f9a8f78f838/client.jar";
+const ASSET_VERSION: &str = "5";
+const ASSET_INDEX_URL: &str =
+    "https://piston-meta.mojang.com/v1/packages/f0c655bb7ae425f989e00f01dbfd94b8a52353c8/5.json";
+const ASSET_OBJECT_BASE_URL: &str = "https://resources.download.minecraft.net/";
+const MINECRAFT_PLUGIN: &str = "minecraft";
+const RESOURCE_HASH_PREFIX_LEN: usize = 2;
+const LEGACY_BLOCK_TEXTURE_PREFIX: &str = "textures/blocks/";
+const MODERN_BLOCK_TEXTURE_PREFIX: &str = "textures/block/";
+const LEGACY_ITEM_TEXTURE_PREFIX: &str = "textures/items/";
+const MODERN_ITEM_TEXTURE_PREFIX: &str = "textures/item/";
+const LEGACY_STEVE_TEXTURE: &str = "textures/entity/steve.png";
+const MODERN_STEVE_TEXTURE: &str = "textures/entity/player/wide/steve.png";
 
 pub trait Pack: Sync + Send {
     fn open(&self, name: &str) -> Option<Box<dyn io::Read>>;
@@ -74,6 +84,66 @@ struct Task {
 
 unsafe impl Sync for Manager {}
 
+fn asset_object_path(hash: &str) -> Option<String> {
+    if hash.len() < RESOURCE_HASH_PREFIX_LEN {
+        return None;
+    }
+    Some(format!("{}/{}", &hash[..RESOURCE_HASH_PREFIX_LEN], hash))
+}
+
+fn asset_object_url(hash: &str) -> Option<String> {
+    asset_object_path(hash).map(|path| format!("{}{}", ASSET_OBJECT_BASE_URL, path))
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn commit_downloaded_asset(tmp_file: &path::Path, location: &path::Path) -> io::Result<()> {
+    match fs::rename(tmp_file, location) {
+        Ok(()) => Ok(()),
+        Err(error) if error.kind() == io::ErrorKind::NotFound && fs::metadata(location).is_ok() => {
+            Ok(())
+        }
+        Err(error) => Err(error),
+    }
+}
+
+fn legacy_block_texture_alias(name: &str) -> Option<String> {
+    let modern_name = match name {
+        "planks_oak.png" => "oak_planks.png",
+        "planks_spruce.png" => "spruce_planks.png",
+        "planks_birch.png" => "birch_planks.png",
+        "planks_jungle.png" => "jungle_planks.png",
+        "planks_acacia.png" => "acacia_planks.png",
+        "planks_big_oak.png" => "dark_oak_planks.png",
+        "log_oak.png" => "oak_log.png",
+        "log_spruce.png" => "spruce_log.png",
+        "log_birch.png" => "birch_log.png",
+        "log_jungle.png" => "jungle_log.png",
+        "log_acacia.png" => "acacia_log.png",
+        "log_big_oak.png" => "dark_oak_log.png",
+        "grass_top.png" => "grass_block_top.png",
+        "grass_side.png" => "grass_block_side.png",
+        "grass_side_snowed.png" => "grass_block_snow.png",
+        _ => name,
+    };
+    Some(format!("{}{}", MODERN_BLOCK_TEXTURE_PREFIX, modern_name))
+}
+
+fn compatible_resource_name(plugin: &str, name: &str) -> Option<String> {
+    if plugin != MINECRAFT_PLUGIN {
+        return None;
+    }
+    if name == LEGACY_STEVE_TEXTURE {
+        return Some(MODERN_STEVE_TEXTURE.to_owned());
+    }
+    if let Some(texture) = name.strip_prefix(LEGACY_BLOCK_TEXTURE_PREFIX) {
+        return legacy_block_texture_alias(texture);
+    }
+    if let Some(texture) = name.strip_prefix(LEGACY_ITEM_TEXTURE_PREFIX) {
+        return Some(format!("{}{}", MODERN_ITEM_TEXTURE_PREFIX, texture));
+    }
+    None
+}
+
 impl Manager {
     pub fn new() -> (Manager, ManagerUI) {
         let mut m = Manager {
@@ -106,19 +176,40 @@ impl Manager {
 
     pub fn open(&self, plugin: &str, name: &str) -> Option<Box<dyn io::Read>> {
         let path = format!("assets/{}/{}", plugin, name);
+        if let Some(val) = self.open_pack_path(&path) {
+            return Some(val);
+        }
+        compatible_resource_name(plugin, name).and_then(|alias| {
+            let path = format!("assets/{}/{}", plugin, alias);
+            self.open_pack_path(&path)
+        })
+    }
+
+    pub fn open_all(&self, plugin: &str, name: &str) -> Vec<Box<dyn io::Read>> {
+        let path = format!("assets/{}/{}", plugin, name);
+        let ret = self.open_all_pack_paths(&path);
+        if !ret.is_empty() {
+            return ret;
+        }
+        compatible_resource_name(plugin, name).map_or_else(Vec::new, |alias| {
+            let path = format!("assets/{}/{}", plugin, alias);
+            self.open_all_pack_paths(&path)
+        })
+    }
+
+    fn open_pack_path(&self, path: &str) -> Option<Box<dyn io::Read>> {
         for pack in self.packs.iter().rev() {
-            if let Some(val) = pack.open(&path) {
+            if let Some(val) = pack.open(path) {
                 return Some(val);
             }
         }
         None
     }
 
-    pub fn open_all(&self, plugin: &str, name: &str) -> Vec<Box<dyn io::Read>> {
+    fn open_all_pack_paths(&self, path: &str) -> Vec<Box<dyn io::Read>> {
         let mut ret = Vec::new();
-        let path = format!("assets/{}/{}", plugin, name);
         for pack in self.packs.iter().rev() {
-            if let Some(val) = pack.open(&path) {
+            if let Some(val) = pack.open(path) {
                 ret.push(val);
             }
         }
@@ -309,7 +400,12 @@ impl Manager {
             let client = reqwest::blocking::Client::new();
             if fs::metadata(&location).is_err() {
                 fs::create_dir_all(location.parent().unwrap()).unwrap();
-                let res = client.get(ASSET_INDEX_URL).send().unwrap();
+                let res = client
+                    .get(ASSET_INDEX_URL)
+                    .send()
+                    .unwrap()
+                    .error_for_status()
+                    .unwrap();
 
                 let length = res
                     .headers()
@@ -351,16 +447,15 @@ impl Manager {
             );
             for (k, v) in objects {
                 let hash = v.get("hash").and_then(|v| v.as_str()).unwrap();
-                let hash_path = format!("{}/{}", &hash[..2], hash);
+                let hash_path = asset_object_path(hash).unwrap();
                 let location = root_location.join(&hash_path);
                 if fs::metadata(&location).is_err() {
                     fs::create_dir_all(location.parent().unwrap()).unwrap();
                     let res = client
-                        .get(&format!(
-                            "http://resources.download.minecraft.net/{}",
-                            hash_path
-                        ))
+                        .get(asset_object_url(hash).unwrap())
                         .send()
+                        .unwrap()
+                        .error_for_status()
                         .unwrap();
                     let length = v.get("size").and_then(|v| v.as_u64()).unwrap();
                     Self::add_task(&progress_info, "Downloading Asset", k, length);
@@ -376,7 +471,7 @@ impl Manager {
                         };
                         io::copy(&mut progress, &mut file).unwrap();
                     }
-                    fs::rename(&tmp_file, &location).unwrap();
+                    commit_downloaded_asset(&tmp_file, &location).unwrap();
                 }
                 Self::add_task_progress(&progress_info, "Downloading Assets", "./objects", 1);
             }
@@ -397,7 +492,12 @@ impl Manager {
         let progress_info = self.vanilla_progress.clone();
         thread::spawn(move || {
             let client = reqwest::blocking::Client::new();
-            let res = client.get(VANILLA_CLIENT_URL).send().unwrap();
+            let res = client
+                .get(VANILLA_CLIENT_URL)
+                .send()
+                .unwrap()
+                .error_for_status()
+                .unwrap();
             let mut file = fs::File::create(format!("{}.tmp", RESOURCES_VERSION)).unwrap();
 
             let length = res
@@ -536,7 +636,7 @@ impl Pack for ObjectPack {
         let name = &name["assets/".len()..];
         if let Some(hash) = self.objects.get(name) {
             let root_location = path::Path::new("./objects/");
-            let hash_path = format!("{}/{}", &hash[..2], hash);
+            let hash_path = asset_object_path(hash).unwrap();
             let location = root_location.join(&hash_path);
             match fs::File::open(location) {
                 Ok(val) => Some(Box::new(val)),
@@ -560,5 +660,122 @@ impl<'a, T: io::Read> io::Read for ProgressRead<'a, T> {
         let size = self.read.read(buf)?;
         Manager::add_task_progress(self.progress, &self.task_name, &self.task_file, size as u64);
         Ok(size)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const TEST_HASH: &str = "d48940aeab2d4068bd157e6810406c882503a813";
+    const SHORT_HASH: &str = "d";
+    const TEST_TMP_FILE: &str = "asset.tmp";
+    const TEST_DEST_FILE: &str = "asset";
+    const TEST_ASSET_CONTENT: &str = "asset-content";
+
+    #[cfg(not(target_arch = "wasm32"))]
+    fn unique_test_dir(name: &str) -> path::PathBuf {
+        std::env::temp_dir().join(format!(
+            "stevenarella-resource-test-{}-{}",
+            std::process::id(),
+            name
+        ))
+    }
+
+    #[test]
+    fn resource_reference_modernizes_legacy_block_textures() {
+        assert_eq!(
+            compatible_resource_name(MINECRAFT_PLUGIN, "textures/blocks/water_still.png"),
+            Some("textures/block/water_still.png".to_owned())
+        );
+        assert_eq!(
+            compatible_resource_name(MINECRAFT_PLUGIN, "textures/blocks/planks_oak.png"),
+            Some("textures/block/oak_planks.png".to_owned())
+        );
+        assert_eq!(
+            compatible_resource_name(MINECRAFT_PLUGIN, LEGACY_STEVE_TEXTURE),
+            Some(MODERN_STEVE_TEXTURE.to_owned())
+        );
+    }
+
+    #[test]
+    fn resource_reference_rejects_non_minecraft_or_unknown_aliases() {
+        assert_eq!(
+            compatible_resource_name("steven", "textures/blocks/water_still.png"),
+            None
+        );
+        assert_eq!(
+            compatible_resource_name(MINECRAFT_PLUGIN, "lang/en_us.json"),
+            None
+        );
+    }
+
+    #[test]
+    fn asset_object_urls_use_https_and_hash_fanout() {
+        assert_eq!(
+            asset_object_path(TEST_HASH),
+            Some(format!("d4/{}", TEST_HASH))
+        );
+        assert_eq!(
+            asset_object_url(TEST_HASH),
+            Some(format!(
+                "https://resources.download.minecraft.net/d4/{}",
+                TEST_HASH
+            ))
+        );
+    }
+
+    #[test]
+    fn asset_object_urls_reject_short_hashes() {
+        assert_eq!(asset_object_path(SHORT_HASH), None);
+        assert_eq!(asset_object_url(SHORT_HASH), None);
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    #[test]
+    fn downloaded_asset_commit_renames_temp_file() {
+        let dir = unique_test_dir("rename");
+        let _ = fs::remove_dir_all(&dir);
+        fs::create_dir_all(&dir).unwrap();
+        let tmp_file = dir.join(TEST_TMP_FILE);
+        let location = dir.join(TEST_DEST_FILE);
+        fs::write(&tmp_file, TEST_ASSET_CONTENT).unwrap();
+
+        commit_downloaded_asset(&tmp_file, &location).unwrap();
+
+        assert!(fs::metadata(&tmp_file).is_err());
+        assert_eq!(fs::read_to_string(&location).unwrap(), TEST_ASSET_CONTENT);
+        let _ = fs::remove_dir_all(&dir);
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    #[test]
+    fn downloaded_asset_commit_tolerates_parallel_winner() {
+        let dir = unique_test_dir("parallel-winner");
+        let _ = fs::remove_dir_all(&dir);
+        fs::create_dir_all(&dir).unwrap();
+        let tmp_file = dir.join(TEST_TMP_FILE);
+        let location = dir.join(TEST_DEST_FILE);
+        fs::write(&location, TEST_ASSET_CONTENT).unwrap();
+
+        commit_downloaded_asset(&tmp_file, &location).unwrap();
+
+        assert_eq!(fs::read_to_string(&location).unwrap(), TEST_ASSET_CONTENT);
+        let _ = fs::remove_dir_all(&dir);
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    #[test]
+    fn downloaded_asset_commit_rejects_missing_temp_and_destination() {
+        let dir = unique_test_dir("missing");
+        let _ = fs::remove_dir_all(&dir);
+        fs::create_dir_all(&dir).unwrap();
+        let tmp_file = dir.join(TEST_TMP_FILE);
+        let location = dir.join(TEST_DEST_FILE);
+
+        let error = commit_downloaded_asset(&tmp_file, &location).unwrap_err();
+
+        assert_eq!(error.kind(), io::ErrorKind::NotFound);
+        let _ = fs::remove_dir_all(&dir);
     }
 }

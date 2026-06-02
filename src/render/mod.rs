@@ -38,6 +38,20 @@ use std::sync::mpsc;
 use std::thread;
 
 const ATLAS_SIZE: usize = 1024;
+const SKIN_CACHE_PREFIX_LEN: usize = 2;
+const MINECRAFT_TEXTURE_HTTP_PREFIX: &str = "http://textures.minecraft.net/texture/";
+const MINECRAFT_TEXTURE_HTTPS_PREFIX: &str = "https://textures.minecraft.net/texture/";
+
+fn minecraft_texture_hash(url: &str) -> Option<&str> {
+    let hash = url
+        .strip_prefix(MINECRAFT_TEXTURE_HTTPS_PREFIX)
+        .or_else(|| url.strip_prefix(MINECRAFT_TEXTURE_HTTP_PREFIX))?;
+    if hash.is_empty() {
+        None
+    } else {
+        Some(hash)
+    }
+}
 
 pub struct Camera {
     pub pos: cgmath::Point3<f64>,
@@ -753,9 +767,10 @@ impl Renderer {
                 // locks.
                 if let Some(val) = t.get_skin(url) {
                     val
-                } else {
-                    t.load_skin(self, url);
+                } else if t.load_skin(self, url) {
                     t.get_skin(url).unwrap()
+                } else {
+                    t.get_texture("steven:missing_texture").unwrap()
                 }
             }
         }
@@ -1057,7 +1072,10 @@ impl TextureManager {
         use std::io::{Error, ErrorKind};
         use std::path::Path;
         use std_or_web::fs;
-        let path = format!("skin-cache/{}/{}.png", &hash[..2], hash);
+        if hash.len() < SKIN_CACHE_PREFIX_LEN {
+            return Err(Error::new(ErrorKind::InvalidInput, "short skin hash"));
+        }
+        let path = format!("skin-cache/{}/{}.png", &hash[..SKIN_CACHE_PREFIX_LEN], hash);
         let cache_path = Path::new(&path);
         fs::create_dir_all(cache_path.parent().unwrap())?;
         let mut buf = vec![];
@@ -1067,8 +1085,12 @@ impl TextureManager {
             file.read_to_end(&mut buf)?;
         } else {
             // Need to download it
-            let url = &format!("http://textures.minecraft.net/texture/{}", hash);
-            let mut res = match client.get(url).send() {
+            let url = &format!("{}{}", MINECRAFT_TEXTURE_HTTPS_PREFIX, hash);
+            let mut res = match client
+                .get(url)
+                .send()
+                .and_then(|res| res.error_for_status())
+            {
                 Ok(val) => val,
                 Err(err) => {
                     return Err(Error::new(ErrorKind::ConnectionAborted, err));
@@ -1179,7 +1201,7 @@ impl TextureManager {
     }
 
     fn get_skin(&self, url: &str) -> Option<Texture> {
-        let hash = &url["http://textures.minecraft.net/texture/".len()..];
+        let hash = minecraft_texture_hash(url)?;
         if let Some(skin) = self.skins.get(hash) {
             skin.fetch_add(1, Ordering::Relaxed);
         }
@@ -1187,14 +1209,18 @@ impl TextureManager {
     }
 
     pub fn release_skin(&self, url: &str) {
-        let hash = &url["http://textures.minecraft.net/texture/".len()..];
+        let Some(hash) = minecraft_texture_hash(url) else {
+            return;
+        };
         if let Some(skin) = self.skins.get(hash) {
             skin.fetch_sub(1, Ordering::Relaxed);
         }
     }
 
-    fn load_skin(&mut self, renderer: &Renderer, url: &str) {
-        let hash = &url["http://textures.minecraft.net/texture/".len()..];
+    fn load_skin(&mut self, renderer: &Renderer, url: &str) -> bool {
+        let Some(hash) = minecraft_texture_hash(url) else {
+            return false;
+        };
         let res = self.resources.clone();
         // TODO: This shouldn't be hardcoded to steve but instead
         // have a way to select alex as a default.
@@ -1212,6 +1238,7 @@ impl TextureManager {
         self.put_dynamic(&format!("skin-{}", hash), img);
         self.skins.insert(hash.to_owned(), AtomicIsize::new(0));
         renderer.skin_request.send(hash.to_owned()).unwrap();
+        true
     }
 
     fn update_skin(&mut self, hash: String, img: image::DynamicImage) {
@@ -1541,6 +1568,40 @@ impl Texture {
             rel_width: width * self.rel_width,
             rel_height: height * self.rel_height,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const TEST_SKIN_HASH: &str = "0123456789abcdef";
+
+    #[test]
+    fn minecraft_texture_hash_accepts_http_and_https_urls() {
+        assert_eq!(
+            minecraft_texture_hash(&format!(
+                "{}{}",
+                MINECRAFT_TEXTURE_HTTPS_PREFIX, TEST_SKIN_HASH
+            )),
+            Some(TEST_SKIN_HASH)
+        );
+        assert_eq!(
+            minecraft_texture_hash(&format!(
+                "{}{}",
+                MINECRAFT_TEXTURE_HTTP_PREFIX, TEST_SKIN_HASH
+            )),
+            Some(TEST_SKIN_HASH)
+        );
+    }
+
+    #[test]
+    fn minecraft_texture_hash_rejects_empty_or_unknown_urls() {
+        assert_eq!(minecraft_texture_hash(MINECRAFT_TEXTURE_HTTPS_PREFIX), None);
+        assert_eq!(
+            minecraft_texture_hash("https://example.invalid/texture/hash"),
+            None
+        );
     }
 }
 

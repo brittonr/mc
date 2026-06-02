@@ -53,6 +53,178 @@ macro_rules! try_log {
     };
 }
 
+const MINECRAFT_PLUGIN: &str = "minecraft";
+const BLOCK_MODEL_PREFIX: &str = "block/";
+const BUILTIN_MODEL_PREFIX: &str = "builtin/";
+const ITEM_MODEL_PREFIX: &str = "item/";
+const MODEL_FILE_PREFIX: &str = "models/";
+const MODEL_FILE_SUFFIX: &str = ".json";
+
+#[derive(Debug, PartialEq, Eq)]
+struct ResourceReference {
+    plugin: String,
+    location: String,
+}
+
+fn parse_resource_reference(default_plugin: &str, reference: &str) -> Option<ResourceReference> {
+    if reference.is_empty() {
+        return None;
+    }
+    let (plugin, location) = reference
+        .split_once(':')
+        .unwrap_or((default_plugin, reference));
+    if plugin.is_empty() || location.is_empty() {
+        return None;
+    }
+    Some(ResourceReference {
+        plugin: plugin.to_owned(),
+        location: location.to_owned(),
+    })
+}
+
+fn is_absolute_model_location(location: &str) -> bool {
+    location.starts_with(BLOCK_MODEL_PREFIX)
+        || location.starts_with(BUILTIN_MODEL_PREFIX)
+        || location.starts_with(ITEM_MODEL_PREFIX)
+}
+
+fn model_file_path(location: &str) -> String {
+    format!("{}{}{}", MODEL_FILE_PREFIX, location, MODEL_FILE_SUFFIX)
+}
+
+fn modern_block_model_location(location: &str) -> String {
+    if let Some(color) = location.strip_suffix("_stained_hardened_clay") {
+        let color = if color == "silver" {
+            "light_gray"
+        } else {
+            color
+        };
+        return format!("{}_terracotta", color);
+    }
+    match location {
+        "brick_block" => "bricks".to_owned(),
+        "fence" => "oak_fence".to_owned(),
+        "fence_gate" => "oak_fence_gate".to_owned(),
+        "grass_path" => "dirt_path".to_owned(),
+        "hardened_clay" => "terracotta".to_owned(),
+        "lit_pumpkin" => "jack_o_lantern".to_owned(),
+        "melon_block" => "melon".to_owned(),
+        "mob_spawner" => "spawner".to_owned(),
+        "nether_brick" => "nether_bricks".to_owned(),
+        "noteblock" => "note_block".to_owned(),
+        "red_nether_brick" => "red_nether_bricks".to_owned(),
+        "reeds" => "sugar_cane".to_owned(),
+        "silver_glazed_terracotta" => "light_gray_glazed_terracotta".to_owned(),
+        "standing_sign" => "oak_sign".to_owned(),
+        "wall_sign" => "oak_wall_sign".to_owned(),
+        "waterlily" => "lily_pad".to_owned(),
+        "web" => "cobweb".to_owned(),
+        "wooden_button" => "oak_button".to_owned(),
+        "wooden_door" => "oak_door".to_owned(),
+        "wooden_pressure_plate" => "oak_pressure_plate".to_owned(),
+        _ => location.to_owned(),
+    }
+}
+
+fn block_state_model_resource(default_plugin: &str, reference: &str) -> Option<ResourceReference> {
+    let mut resource = parse_resource_reference(default_plugin, reference)?;
+    if is_absolute_model_location(&resource.location) {
+        resource.location = model_file_path(&resource.location);
+    } else {
+        let location = if resource.plugin == MINECRAFT_PLUGIN {
+            modern_block_model_location(&resource.location)
+        } else {
+            resource.location.clone()
+        };
+        resource.location = model_file_path(&format!("{}{}", BLOCK_MODEL_PREFIX, location));
+    }
+    Some(resource)
+}
+
+fn parent_model_resource(default_plugin: &str, reference: &str) -> Option<ResourceReference> {
+    let mut resource = parse_resource_reference(default_plugin, reference)?;
+    resource.location = model_file_path(&resource.location);
+    Some(resource)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const DEFAULT_PLUGIN: &str = "minecraft";
+
+    #[test]
+    fn model_references_accept_namespaced_modern_paths() {
+        assert_eq!(
+            block_state_model_resource(DEFAULT_PLUGIN, "minecraft:block/grass_block"),
+            Some(ResourceReference {
+                plugin: "minecraft".to_owned(),
+                location: "models/block/grass_block.json".to_owned(),
+            })
+        );
+        assert_eq!(
+            parent_model_resource(DEFAULT_PLUGIN, "minecraft:block/cube_all"),
+            Some(ResourceReference {
+                plugin: "minecraft".to_owned(),
+                location: "models/block/cube_all.json".to_owned(),
+            })
+        );
+    }
+
+    #[test]
+    fn model_references_keep_legacy_blockstate_model_names() {
+        assert_eq!(
+            block_state_model_resource(DEFAULT_PLUGIN, "oak_planks"),
+            Some(ResourceReference {
+                plugin: "minecraft".to_owned(),
+                location: "models/block/oak_planks.json".to_owned(),
+            })
+        );
+    }
+
+    #[test]
+    fn model_references_modernize_renamed_legacy_block_names() {
+        assert_eq!(
+            block_state_model_resource(DEFAULT_PLUGIN, "web"),
+            Some(ResourceReference {
+                plugin: "minecraft".to_owned(),
+                location: "models/block/cobweb.json".to_owned(),
+            })
+        );
+        assert_eq!(
+            block_state_model_resource("example", "web"),
+            Some(ResourceReference {
+                plugin: "example".to_owned(),
+                location: "models/block/web.json".to_owned(),
+            })
+        );
+        assert_eq!(
+            block_state_model_resource(DEFAULT_PLUGIN, "orange_stained_hardened_clay"),
+            Some(ResourceReference {
+                plugin: "minecraft".to_owned(),
+                location: "models/block/orange_terracotta.json".to_owned(),
+            })
+        );
+        assert_eq!(
+            block_state_model_resource(DEFAULT_PLUGIN, "silver_glazed_terracotta"),
+            Some(ResourceReference {
+                plugin: "minecraft".to_owned(),
+                location: "models/block/light_gray_glazed_terracotta.json".to_owned(),
+            })
+        );
+    }
+
+    #[test]
+    fn model_references_reject_empty_plugin_or_location() {
+        assert_eq!(parse_resource_reference(DEFAULT_PLUGIN, ""), None);
+        assert_eq!(
+            parse_resource_reference(DEFAULT_PLUGIN, ":block/stone"),
+            None
+        );
+        assert_eq!(parse_resource_reference(DEFAULT_PLUGIN, "minecraft:"), None);
+    }
+}
+
 thread_local!(
     static MULTIPART_CACHE: RefCell<HashMap<(Key, Block), Model, BuildHasherDefault<FNVHash>>> = RefCell::new(HashMap::with_hasher(BuildHasherDefault::default()))
 );
@@ -304,29 +476,36 @@ impl Factory {
             }
         };
 
+        let model_resource = match block_state_model_resource(plugin, model_name) {
+            Some(val) => val,
+            None => {
+                error!("Invalid model reference {}", model_name);
+                return None;
+            }
+        };
         let file = match self
             .resources
             .read()
             .unwrap()
-            .open(plugin, &format!("models/block/{}.json", model_name))
+            .open(&model_resource.plugin, &model_resource.location)
         {
             Some(val) => val,
             None => {
                 error!(
-                    "Couldn't find model {}",
-                    format!("models/block/{}.json", model_name)
+                    "Couldn't find model {}:{}",
+                    model_resource.plugin, model_resource.location
                 );
                 return None;
             }
         };
         let block_model: serde_json::Value = try_log!(opt serde_json::from_reader(file));
 
-        let mut model = match self.parse_model(plugin, &block_model) {
+        let mut model = match self.parse_model(&model_resource.plugin, &block_model) {
             Some(val) => val,
             None => {
                 error!(
-                    "Failed to parse model {}",
-                    format!("models/block/{}.json", model_name)
+                    "Failed to parse model {}:{}",
+                    model_resource.plugin, model_resource.location
                 );
                 return None;
             }
@@ -341,26 +520,42 @@ impl Factory {
 
     fn parse_model(&self, plugin: &str, v: &serde_json::Value) -> Option<RawModel> {
         let parent = v.get("parent").and_then(|v| v.as_str()).unwrap_or("");
-        let mut model = if !parent.is_empty() && !parent.starts_with("builtin/") {
+        let parent_reference = parse_resource_reference(plugin, parent);
+        let parent_location = parent_reference
+            .as_ref()
+            .map(|resource| resource.location.as_str())
+            .unwrap_or("");
+        let mut model = if !parent.is_empty() && !parent_location.starts_with(BUILTIN_MODEL_PREFIX)
+        {
+            let parent_resource = match parent_model_resource(plugin, parent) {
+                Some(val) => val,
+                None => {
+                    error!("Invalid parent model reference {}", parent);
+                    return None;
+                }
+            };
             let file = match self
                 .resources
                 .read()
                 .unwrap()
-                .open(plugin, &format!("models/{}.json", parent))
+                .open(&parent_resource.plugin, &parent_resource.location)
             {
                 Some(val) => val,
                 None => {
-                    error!("Couldn't find model {}", format!("models/{}.json", parent));
+                    error!(
+                        "Couldn't find model {}:{}",
+                        parent_resource.plugin, parent_resource.location
+                    );
                     return None;
                 }
             };
             let block_model: serde_json::Value = try_log!(opt serde_json::from_reader(file));
-            match self.parse_model(plugin, &block_model) {
+            match self.parse_model(&parent_resource.plugin, &block_model) {
                 Some(val) => val,
                 None => {
                     error!(
-                        "Failed to parse model {}",
-                        format!("models/{}.json", parent)
+                        "Failed to parse model {}:{}",
+                        parent_resource.plugin, parent_resource.location
                     );
                     return None;
                 }
@@ -378,7 +573,7 @@ impl Factory {
                 weight: 1.0,
 
                 display: HashMap::with_hasher(BuildHasherDefault::default()),
-                builtin: match parent {
+                builtin: match parent_location {
                     "builtin/generated" => BuiltinType::Generated,
                     "builtin/entity" => BuiltinType::Entity,
                     "builtin/compass" => BuiltinType::Compass,
