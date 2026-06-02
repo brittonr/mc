@@ -750,22 +750,11 @@ fn handle_survival_furnace_click(
             ));
         }
 
+        if fixture.input_logged && !fixture.fuel_logged {
+            emit_survival_furnace_fuel(username, &mut fixture, &mut inventories);
+        }
         if is_survival_furnace_fuel_event(event.window_id, event.slot_id) && !fixture.fuel_logged {
-            fixture.fuel_logged = true;
-            set_survival_slot(
-                &mut inventories,
-                fixture.inventory,
-                SURVIVAL_FURNACE_FUEL_SLOT,
-                survival_furnace_fuel_stack(),
-            );
-            log_milestone(format!(
-                "MC-COMPAT-MILESTONE survival_furnace_fuel_insert username={} window={} slot={} item={} count={}",
-                username.as_str(),
-                SURVIVAL_FURNACE_WINDOW,
-                SURVIVAL_FURNACE_FUEL_SLOT,
-                SURVIVAL_FURNACE_FUEL_NAME,
-                SURVIVAL_FURNACE_ITEM_COUNT
-            ));
+            emit_survival_furnace_fuel(username, &mut fixture, &mut inventories);
         }
 
         emit_survival_furnace_output_if_ready(username, &mut fixture, &mut inventories);
@@ -798,6 +787,28 @@ fn handle_survival_furnace_click(
             ));
         }
     }
+}
+
+fn emit_survival_furnace_fuel(
+    username: &Username,
+    fixture: &mut SurvivalFurnaceFixture,
+    inventories: &mut Query<&mut Inventory>,
+) {
+    fixture.fuel_logged = true;
+    set_survival_slot(
+        inventories,
+        fixture.inventory,
+        SURVIVAL_FURNACE_FUEL_SLOT,
+        survival_furnace_fuel_stack(),
+    );
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_furnace_fuel_insert username={} window={} slot={} item={} count={}",
+        username.as_str(),
+        SURVIVAL_FURNACE_WINDOW,
+        SURVIVAL_FURNACE_FUEL_SLOT,
+        SURVIVAL_FURNACE_FUEL_NAME,
+        SURVIVAL_FURNACE_ITEM_COUNT
+    ));
 }
 
 fn emit_survival_furnace_output_if_ready(
