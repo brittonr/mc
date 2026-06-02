@@ -97,3 +97,7 @@
   - Do not redirect `nix develop -c b3sum ... > file` outside the devshell command; the shell hook banner lands in the `.b3`. Redirect inside `bash -lc` instead.
   - `tools/check_cairn_task_evidence.rs` requires every task-cited `.run.log` to contain `exit_status=0`. Append it to comparator/matrix logs if the harness did not write it.
   - Do not cite the task-evidence gate log directly in the validation task if the gate writes that same file; during the run the checker sees the incomplete self-referential log. Cite stable validation logs/manifest and keep the task-evidence gate log inside the validation `.b3`.
+
+- 2026-06-02: Review can miss unchanged task evidence even when tracked. If archived tasks cite older evidence outside the current diff, add a fresh `docs/evidence/*oracle*` checkpoint with `## Question`, `## Inspected evidence`, `## Decision`, `## Owner`, and `## Next action`, and include it in the validation `.b3`.
+- 2026-06-02: Do not weaken archived task text while adding archive evidence. Preserve the original gate requirement text and add archive as an additional requirement/evidence item.
+- 2026-06-02: After archiving a scenario-owning Cairn, update scenario manifest exclusion text from “active Cairn owns…” to archived/non-active wording and keep generated runner manifest text in sync.

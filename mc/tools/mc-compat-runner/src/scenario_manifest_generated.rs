@@ -295,7 +295,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "",
         dry_run_wrapper: "mc-compat-smoke",
         dry_run_exclusion_reason:
-            "active survival-hunger-food-parity Cairn owns dry-run wrapper and paired fixture promotion",
+            "archived survival-hunger-food-parity Cairn uses live paired fixture receipts instead of a dry-run wrapper",
         migration_state: "substring-fallback",
     },
     GeneratedScenarioRow {

@@ -160,7 +160,7 @@ let ScenarioManifest = {
       client_count = 1,
       session_count = 1,
       maintained = true,
-      dry_run = { check = "", wrapper = "mc-compat-smoke", receipt_shape_check = false, exclusion_reason = "active survival-hunger-food-parity Cairn owns dry-run wrapper and paired fixture promotion" },
+      dry_run = { check = "", wrapper = "mc-compat-smoke", receipt_shape_check = false, exclusion_reason = "archived survival-hunger-food-parity Cairn uses live paired fixture receipts instead of a dry-run wrapper" },
       receipt_expectations = ["schema", "survival_hunger_food", "client_server_correlation", "non-claims"],
       migration_state = "substring-fallback",
       current_bundle_row = "",

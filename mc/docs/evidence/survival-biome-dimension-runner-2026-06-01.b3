@@ -2,5 +2,5 @@
 569bb848dbd467b6c9c5f6214b57226573a81b4a32adfdaf429146ebb24d06d0  docs/evidence/survival-biome-dimension-runner-2026-06-01.run.log
 5da40043d6295671f0de9120d20152607cb046e66d48bfa466d439b1895672c4  docs/evidence/survival-biome-dimension-stevenarella-rail-2026-06-01.patch
 eb9705ce17a8183c4551eba0c9db18c9782ea12b4f2537bd2acb321e8970c304  tools/mc-compat-runner/src/main.rs
-e167f399ec7c5fd83ce73e3d5eae57f451d9ecc8424eba0b67a2cb25ffdef022  tools/mc-compat-runner/src/scenario_manifest_generated.rs
-4cb4bfb35dbb5fdab1f83249b47c3abce163e4e97c8976f7ccf85479b9847c98  config/mc-compat/scenario-manifest.ncl
+323191e2f81381de0eb2540d10a1535b403bd5c815937d72bd060a36c7da276d  tools/mc-compat-runner/src/scenario_manifest_generated.rs
+ca8140a4e78ac45c09c68197f52acd42070c32e4148ca0b4d181cde0da966147  config/mc-compat/scenario-manifest.ncl

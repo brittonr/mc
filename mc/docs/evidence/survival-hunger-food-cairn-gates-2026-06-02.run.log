@@ -1,0 +1,80 @@
+## cairn gates for archived survival-hunger-food-parity artifacts
+command=temporary copy archive to cairn/changes, then gate proposal/design/tasks
+
+## gate proposal
+command=nix run --no-update-lock-file .#cairn -- gate proposal survival-hunger-food-parity --root .
+{
+  "change": "survival-hunger-food-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "51daddc614c8d9c7f4fc8304fbbddee718b7705ce461cb41d98ff294512a9f0e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "a5d145d0c943caeaae705f04ade1907e8755a63a5947c0ade9f7c7b0e5fe36e7",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## gate design
+command=nix run --no-update-lock-file .#cairn -- gate design survival-hunger-food-parity --root .
+{
+  "change": "survival-hunger-food-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "65affecd8e99e233cae025d008671a8713cd95a3259f3509f1ff58c09a9c9c89",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "53abf87626b0133c78ff20e733239d0f71a9e2432dd51e72626326639309c13f",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## gate tasks
+command=nix run --no-update-lock-file .#cairn -- gate tasks survival-hunger-food-parity --root .
+{
+  "change": "survival-hunger-food-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "fe48a3ad0168c0e8b252979dcc95be1915ef2ef456dd09ac0d5d10b4b26833c8",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "2e56913ecd26f06516ab48fb069e23666f1f961a3d232c8a428ccc62fbae7ccf",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+cleanup=removed temporary active copy
+exit_status=0

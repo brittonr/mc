@@ -1,0 +1,26 @@
+## survival hunger/food review fix validation
+command=nickel typecheck config/mc-compat/scenario-manifest.ncl
+exit_status=0
+
+command=rustc --edition=2021 tools/check_scenario_manifest.rs -o /tmp/check_scenario_manifest_fix && /tmp/check_scenario_manifest_fix --self-test && /tmp/check_scenario_manifest_fix
+scenario manifest self-test passed: positive and negative fixtures exercised
+scenario manifest check passed: 26 rows validated
+exit_status=0
+
+command=rustc --edition=2021 tools/check_cairn_task_evidence.rs -o /tmp/check_cairn_task_evidence_fix && /tmp/check_cairn_task_evidence_fix
+task evidence gate passed: 6 completed tasks checked across 3 active task files
+exit_status=0
+
+## cairn validate
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
+exit_status=0
