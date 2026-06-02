@@ -1,5 +1,6 @@
 use crate::protocol::{packet, Direction, State};
 
+const WIRE_PARTICLE: i32 = 0x26;
 const WIRE_FEATURE_FLAGS: i32 = 0x6b;
 const WIRE_ENTITY_EFFECT: i32 = 0x6c;
 
@@ -25,6 +26,7 @@ const PLAY_CLIENTBOUND_OVERRIDES: &[(i32, i32)] = &[
     (0x23, packet::play::clientbound::internal_ids::KeepAliveClientbound_i64),
     (0x24, packet::play::clientbound::internal_ids::ChunkData_AndLight_NoTrustEdges),
     (0x25, packet::play::clientbound::internal_ids::WorldEventRaw),
+    (WIRE_PARTICLE, packet::play::clientbound::internal_ids::ParticleRaw),
     (0x27, packet::play::clientbound::internal_ids::UpdateLightRaw),
     (
         0x28,

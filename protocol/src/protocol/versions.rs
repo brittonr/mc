@@ -561,6 +561,7 @@ mod tests {
             (0x23, crate::protocol::packet::play::clientbound::internal_ids::KeepAliveClientbound_i64),
             (0x24, crate::protocol::packet::play::clientbound::internal_ids::ChunkData_AndLight_NoTrustEdges),
             (0x25, crate::protocol::packet::play::clientbound::internal_ids::WorldEventRaw),
+            (0x26, crate::protocol::packet::play::clientbound::internal_ids::ParticleRaw),
             (0x27, crate::protocol::packet::play::clientbound::internal_ids::UpdateLightRaw),
             (0x2b, crate::protocol::packet::play::clientbound::internal_ids::EntityMove_i16),
             (0x2c, crate::protocol::packet::play::clientbound::internal_ids::EntityLookAndMove_i16),
@@ -673,6 +674,23 @@ mod tests {
                     panic!("expected ChunkDeltaUpdateRaw packet");
                 };
                 assert_eq!(chunk_delta_packet.data, chunk_delta_payload);
+
+                let particle_payload = [0x2a, 0x01, 0xff, 0x00];
+                let mut particle_cursor = &particle_payload[..];
+                let particle_packet = crate::protocol::packet::packet_by_id(
+                    763,
+                    State::Play,
+                    Direction::Clientbound,
+                    0x26,
+                    &mut particle_cursor,
+                )
+                .expect("particle raw packet parses")
+                .expect("particle raw packet is known");
+                let crate::protocol::packet::Packet::ParticleRaw(particle_packet) = particle_packet
+                else {
+                    panic!("expected ParticleRaw packet");
+                };
+                assert_eq!(particle_packet.data, particle_payload);
 
                 let recipe_payload = [0x13, 0x37, 0x00, 0x01];
                 let mut recipe_cursor = &recipe_payload[..];

@@ -2490,6 +2490,10 @@ state_packets!(
             packet WorldEventRaw {
                 field data: Vec<u8> =,
             }
+            /// ParticleRaw consumes modern particle payloads for probes that do not render particles.
+            packet ParticleRaw {
+                field data: Vec<u8> =,
+            }
             packet UpdateLight_WithTrust {
                 field chunk_x: VarInt =,
                 field chunk_z: VarInt =,
