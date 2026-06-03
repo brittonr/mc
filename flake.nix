@@ -84,12 +84,13 @@
               || baseName == "dylint.toml"
               || baseName == "README.md"
               || pkgs.lib.hasSuffix ".rs" baseName
-              || pkgs.lib.hasSuffix ".json" baseName;
+              || pkgs.lib.hasSuffix ".json" baseName
+              || pkgs.lib.hasSuffix ".dat" baseName;
           in pkgs.lib.cleanSourceWith {
             src = ./.;
             filter = isCargoSource;
           };
-          packages = [ "valence_math" "valence_lang" "valence_ident" "valence_text" ];
+          packages = [ "valence_math" "valence_lang" "valence_ident" "valence_text" "valence_weather" ];
           cargoLock = ./Cargo.lock;
           nativeBuildInputs = with pkgs; [ pkg-config stdenv.cc ];
           buildInputs = with pkgs; [

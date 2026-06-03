@@ -153,8 +153,9 @@ pub mod play {
     pub use game_join_s2c::GameJoinS2c;
     pub mod game_message_s2c;
     pub use game_message_s2c::GameMessageS2c;
+    #[path = "game/state/change/s2c.rs"]
     pub mod game_state_change_s2c;
-    pub use game_state_change_s2c::GameStateChangeS2c;
+    pub use game_state_change_s2c::{GameEventKind, GameStateChangeS2c};
     pub mod hand_swing_c2s;
     pub use hand_swing_c2s::HandSwingC2s;
     pub mod health_update_s2c;
