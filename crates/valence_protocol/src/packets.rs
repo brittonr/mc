@@ -225,8 +225,9 @@ pub mod play {
     pub use player_interact_item_c2s::PlayerInteractItemC2s;
     pub mod player_list_header_s2c;
     pub use player_list_header_s2c::PlayerListHeaderS2c;
+    #[path = "player/list/s2c.rs"]
     pub mod player_list_s2c;
-    pub use player_list_s2c::PlayerListS2c;
+    pub use player_list_s2c::{PlayerListActions, PlayerListEntry, PlayerListS2c};
     pub mod player_position_look_s2c;
     pub use player_position_look_s2c::PlayerPositionLookS2c;
     pub mod player_remove_s2c;
