@@ -2,23 +2,19 @@
 
 pub mod biome;
 pub mod codec;
+#[path = "dimension/type.rs"]
 pub mod dimension_type;
 pub mod tags;
-
-use std::fmt::Debug;
-use std::hash::Hash;
-use std::marker::PhantomData;
-use std::ops::{Index, IndexMut};
 
 use bevy_app::prelude::*;
 use bevy_ecs::prelude::*;
 pub use biome::BiomeRegistry;
 pub use codec::RegistryCodec;
 pub use dimension_type::DimensionTypeRegistry;
-use indexmap::map::Entry;
-use indexmap::IndexMap;
+type Entry<'a, K, V> = indexmap::map::Entry<'a, K, V>;
+type IndexMap<K, V> = indexmap::IndexMap<K, V>;
 pub use tags::TagsRegistry;
-use valence_ident::Ident;
+pub use valence_ident::Ident;
 
 pub struct RegistryPlugin;
 
@@ -42,14 +38,14 @@ impl Plugin for RegistryPlugin {
 #[derive(Clone, Debug)]
 pub struct Registry<I, V> {
     items: IndexMap<Ident<String>, V>,
-    _marker: PhantomData<I>,
+    _marker: std::marker::PhantomData<I>,
 }
 
 impl<I: RegistryIdx, V> Registry<I, V> {
     pub fn new() -> Self {
         Self {
             items: IndexMap::new(),
-            _marker: PhantomData,
+            _marker: std::marker::PhantomData,
         }
     }
 
@@ -115,7 +111,9 @@ impl<I: RegistryIdx, V> Registry<I, V> {
     }
 }
 
-impl<I: RegistryIdx, V> Index<I> for Registry<I, V> {
+// Compatibility API: `Index` must panic on missing keys by trait contract.
+#[allow(unknown_lints, no_panic)]
+impl<I: RegistryIdx, V> std::ops::Index<I> for Registry<I, V> {
     type Output = V;
 
     fn index(&self, index: I) -> &Self::Output {
@@ -126,7 +124,9 @@ impl<I: RegistryIdx, V> Index<I> for Registry<I, V> {
     }
 }
 
-impl<I: RegistryIdx, V> IndexMut<I> for Registry<I, V> {
+// Compatibility API: `IndexMut` must panic on missing keys by trait contract.
+#[allow(unknown_lints, no_panic)]
+impl<I: RegistryIdx, V> std::ops::IndexMut<I> for Registry<I, V> {
     fn index_mut(&mut self, index: I) -> &mut Self::Output {
         self.items
             .get_index_mut(index.to_index())
@@ -135,7 +135,9 @@ impl<I: RegistryIdx, V> IndexMut<I> for Registry<I, V> {
     }
 }
 
-impl<'a, I: RegistryIdx, V> Index<Ident<&'a str>> for Registry<I, V> {
+// Compatibility API: `Index` must panic on missing keys by trait contract.
+#[allow(unknown_lints, no_panic)]
+impl<'a, I: RegistryIdx, V> std::ops::Index<Ident<&'a str>> for Registry<I, V> {
     type Output = V;
 
     fn index(&self, index: Ident<&'a str>) -> &Self::Output {
@@ -147,7 +149,9 @@ impl<'a, I: RegistryIdx, V> Index<Ident<&'a str>> for Registry<I, V> {
     }
 }
 
-impl<'a, I: RegistryIdx, V> IndexMut<Ident<&'a str>> for Registry<I, V> {
+// Compatibility API: `IndexMut` must panic on missing keys by trait contract.
+#[allow(unknown_lints, no_panic)]
+impl<'a, I: RegistryIdx, V> std::ops::IndexMut<Ident<&'a str>> for Registry<I, V> {
     fn index_mut(&mut self, index: Ident<&'a str>) -> &mut Self::Output {
         if let Some(item) = self.items.get_mut(index.as_str()) {
             item
@@ -161,12 +165,14 @@ impl<I, V> Default for Registry<I, V> {
     fn default() -> Self {
         Self {
             items: IndexMap::new(),
-            _marker: PhantomData,
+            _marker: std::marker::PhantomData,
         }
     }
 }
 
-pub trait RegistryIdx: Copy + Clone + PartialEq + Eq + PartialOrd + Ord + Hash + Debug {
+pub trait RegistryIdx:
+    Copy + Clone + PartialEq + Eq + PartialOrd + Ord + std::hash::Hash + std::fmt::Debug
+{
     const MAX: usize;
 
     fn to_index(self) -> usize;

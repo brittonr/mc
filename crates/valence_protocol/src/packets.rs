@@ -320,6 +320,7 @@ pub mod play {
     pub use subtitle_s2c::SubtitleS2c;
     pub mod synchronize_recipes_s2c;
     pub use synchronize_recipes_s2c::SynchronizeRecipesS2c;
+    #[path = "synchronize/tags/s2c.rs"]
     pub mod synchronize_tags_s2c;
     pub use synchronize_tags_s2c::SynchronizeTagsS2c;
     pub mod team_s2c;

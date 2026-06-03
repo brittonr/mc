@@ -6,17 +6,13 @@
 //!   break invariants within instances and clients! Make sure there are no
 //!   instances or clients spawned before mutating.
 
-use std::ops::{Deref, DerefMut};
-
 use bevy_app::prelude::*;
 use bevy_ecs::prelude::*;
-use serde::{Deserialize, Serialize};
-use tracing::error;
-use valence_ident::{ident, Ident};
-use valence_nbt::serde::CompoundSerializer;
+pub use valence_ident::{ident, Ident};
 
-use crate::codec::{RegistryCodec, RegistryValue};
-use crate::{Registry, RegistryIdx, RegistrySet};
+type RegistryCodec = crate::codec::RegistryCodec;
+type RegistryValue = crate::codec::RegistryValue;
+type Registry<I, V> = crate::Registry<I, V>;
 pub struct DimensionTypePlugin;
 
 impl Plugin for DimensionTypePlugin {
@@ -25,7 +21,7 @@ impl Plugin for DimensionTypePlugin {
             .add_systems(PreStartup, load_default_dimension_types)
             .add_systems(
                 PostUpdate,
-                update_dimension_type_registry.before(RegistrySet),
+                update_dimension_type_registry.before(crate::RegistrySet),
             );
     }
 }
@@ -34,7 +30,8 @@ impl Plugin for DimensionTypePlugin {
 fn load_default_dimension_types(mut reg: ResMut<DimensionTypeRegistry>, codec: Res<RegistryCodec>) {
     let mut helper = move || -> anyhow::Result<()> {
         for value in codec.registry(DimensionTypeRegistry::KEY) {
-            let mut dimension_type = DimensionType::deserialize(value.element.clone())?;
+            let mut dimension_type =
+                <DimensionType as serde::Deserialize>::deserialize(value.element.clone())?;
 
             // HACK: We don't have a lighting engine implemented. To avoid shrouding the
             // world in darkness, give all dimensions the max ambient light.
@@ -47,7 +44,7 @@ fn load_default_dimension_types(mut reg: ResMut<DimensionTypeRegistry>, codec: R
     };
 
     if let Err(e) = helper() {
-        error!("failed to load default dimension types from registry codec: {e:#}");
+        tracing::error!("failed to load default dimension types from registry codec: {e:#}");
     }
 }
 
@@ -62,13 +59,18 @@ fn update_dimension_type_registry(
 
         dimension_types.clear();
 
-        dimension_types.extend(reg.iter().map(|(_, name, dim)| {
-            RegistryValue {
+        dimension_types.extend(reg.iter().filter_map(|(_, name, dim)| {
+            let Ok(element) = <DimensionType as serde::Serialize>::serialize(
+                dim,
+                valence_nbt::serde::CompoundSerializer,
+            ) else {
+                tracing::error!("failed to serialize dimension type {name}");
+                return None;
+            };
+            Some(RegistryValue {
                 name: name.into(),
-                element: dim
-                    .serialize(CompoundSerializer)
-                    .expect("failed to serialize dimension type"),
-            }
+                element,
+            })
         }));
     }
 }
@@ -82,22 +84,32 @@ impl DimensionTypeRegistry {
     pub const KEY: Ident<&'static str> = ident!("dimension_type");
 }
 
+const DIMENSION_TYPE_ID_MAX_INDEX: usize = 65_535;
+const INVALID_DIMENSION_TYPE_ID: u16 = u16::MAX;
+
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Default, Debug)]
 pub struct DimensionTypeId(u16);
 
-impl RegistryIdx for DimensionTypeId {
-    const MAX: usize = u16::MAX as usize;
+impl crate::RegistryIdx for DimensionTypeId {
+    const MAX: usize = DIMENSION_TYPE_ID_MAX_INDEX;
 
     fn to_index(self) -> usize {
-        self.0 as usize
+        usize::from(self.0)
     }
 
     fn from_index(idx: usize) -> Self {
-        Self(idx as u16)
+        let bounded = idx.min(DIMENSION_TYPE_ID_MAX_INDEX);
+        let Ok(idx) = u16::try_from(bounded) else {
+            return Self(INVALID_DIMENSION_TYPE_ID);
+        };
+        Self(idx)
     }
 }
 
-impl Deref for DimensionTypeRegistry {
+// Compatibility API: registry wrappers historically dereference to their
+// backing registry.
+#[allow(unknown_lints, deref_polymorphism)]
+impl std::ops::Deref for DimensionTypeRegistry {
     type Target = Registry<DimensionTypeId, DimensionType>;
 
     fn deref(&self) -> &Self::Target {
@@ -105,13 +117,16 @@ impl Deref for DimensionTypeRegistry {
     }
 }
 
-impl DerefMut for DimensionTypeRegistry {
+// Compatibility API: registry wrappers historically dereference to their
+// backing registry.
+#[allow(unknown_lints, deref_polymorphism)]
+impl std::ops::DerefMut for DimensionTypeRegistry {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.reg
     }
 }
 
-#[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
+#[derive(serde::Serialize, serde::Deserialize, Clone, PartialEq, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct DimensionType {
     pub ambient_light: f32,
@@ -161,7 +176,7 @@ impl Default for DimensionType {
 }
 
 /// Determines what skybox/fog effects to use in dimensions.
-#[derive(Serialize, Deserialize, Clone, Copy, PartialEq, Eq, Default, Debug)]
+#[derive(serde::Serialize, serde::Deserialize, Clone, Copy, PartialEq, Eq, Default, Debug)]
 pub enum DimensionEffects {
     #[serde(rename = "minecraft:overworld")]
     #[default]
@@ -172,14 +187,14 @@ pub enum DimensionEffects {
     TheEnd,
 }
 
-#[derive(Copy, Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(Copy, Clone, PartialEq, Debug, serde::Serialize, serde::Deserialize)]
 #[serde(untagged)]
 pub enum MonsterSpawnLightLevel {
     Int(i32),
     Tagged(MonsterSpawnLightLevelTagged),
 }
 
-#[derive(Copy, Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(Copy, Clone, PartialEq, Debug, serde::Serialize, serde::Deserialize)]
 #[serde(tag = "type", content = "value")]
 pub enum MonsterSpawnLightLevelTagged {
     #[serde(rename = "minecraft:uniform")]

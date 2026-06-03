@@ -1,13 +1,11 @@
-use std::borrow::Cow;
-
 use bevy_app::prelude::*;
 use bevy_ecs::prelude::*;
-use valence_protocol::encode::{PacketWriter, WritePacket};
+use valence_protocol::encode::WritePacket;
 pub use valence_protocol::packets::play::synchronize_tags_s2c::RegistryMap;
-use valence_protocol::packets::play::SynchronizeTagsS2c;
-use valence_server_common::Server;
 
-use crate::RegistrySet;
+type PacketWriter<'a> = valence_protocol::encode::PacketWriter<'a>;
+type Server = valence_server_common::Server;
+type SynchronizeTagsS2c<'a> = valence_protocol::packets::play::SynchronizeTagsS2c<'a>;
 
 #[derive(Debug, Resource, Default)]
 pub struct TagsRegistry {
@@ -18,13 +16,13 @@ pub struct TagsRegistry {
 pub(super) fn build(app: &mut App) {
     app.init_resource::<TagsRegistry>()
         .add_systems(PreStartup, init_tags_registry)
-        .add_systems(PostUpdate, cache_tags_packet.in_set(RegistrySet));
+        .add_systems(PostUpdate, cache_tags_packet.in_set(crate::RegistrySet));
 }
 
 impl TagsRegistry {
     fn build_synchronize_tags(&self) -> SynchronizeTagsS2c<'_> {
         SynchronizeTagsS2c {
-            groups: Cow::Borrowed(&self.registries),
+            groups: std::borrow::Cow::Borrowed(&self.registries),
         }
     }
 
@@ -35,8 +33,11 @@ impl TagsRegistry {
 }
 
 fn init_tags_registry(mut tags: ResMut<TagsRegistry>) {
-    let registries = serde_json::from_str::<RegistryMap>(include_str!("../extracted/tags.json"))
-        .expect("tags.json must have expected structure");
+    let Ok(registries) =
+        serde_json::from_str::<RegistryMap>(include_str!("../extracted/tags.json"))
+    else {
+        return;
+    };
 
     tags.registries = registries;
 }
