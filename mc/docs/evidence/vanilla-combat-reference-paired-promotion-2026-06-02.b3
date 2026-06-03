@@ -1,0 +1,6 @@
+fbc7ccb6d3374e565618d9d569e218f95768416dcd922b6e9414ba51531737ae  docs/evidence/vanilla-combat-reference-paired-promotion-2026-06-02.run.log
+8d8bb68b46052becda47d115aee832b28da6265ad021c73f520b36a995d5cebf  docs/evidence/protocol-763-acceptance-matrix.md
+d853631d970019b31881c9c506140aa5e663a3dc15d055d8181cc467db348049  docs/evidence/protocol-763-current-evidence-bundle.md
+c7cccdf98776e84af73dfce5c71de9bf4e2004ccad8d1261e67575678a3af8c2  tools/check_acceptance_matrix.rs
+96d59d0f90cae9921ada25a2b8c03e33eea9b022d0ca1f3960867deb893f4764  tools/check_current_evidence_bundle.rs
+842d5e2d226c547dccaed6f1b3ca50db92d6621d1012b37b593e92c8db4255b7  docs/evidence/vanilla-combat-reference-paired-receipts-2026-06-02.md

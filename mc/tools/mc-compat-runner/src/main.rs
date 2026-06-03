@@ -18,7 +18,8 @@ const DEFAULT_SERVER_PROTOCOL: u32 = 758;
 const DEFAULT_CLIENT_USERNAME: &str = "compatbot";
 const DEFAULT_CLIENT_TIMEOUT_SECS: u64 = 20;
 const MULTI_CLIENT_LOAD_PEER_TIMEOUT_SECS: u64 = 10;
-const MULTI_CLIENT_START_STAGGER_SECS: u64 = 2;
+const PAPER_CONNECTION_THROTTLE_CLEAR_SECS: u64 = 5;
+const MULTI_CLIENT_START_STAGGER_SECS: u64 = PAPER_CONNECTION_THROTTLE_CLEAR_SECS;
 const CTF_RACE_ACCEPT_CLIENT_FIRST_TICK: u32 = 760;
 const CTF_RACE_REJECT_CLIENT_FIRST_TICK: u32 = 800;
 const PAPER_PLUGIN_CONTAINER_DIR: &str = "/plugins";
@@ -318,7 +319,7 @@ const FRAME_ARTIFACT_NON_CLAIMS: &[&str] = &[
     "visual_regression_approval",
     "semantic_equivalence",
 ];
-const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-furnace-persistence|survival-hunger-food|survival-mob-drop|survival-redstone-toggle|survival-world-persistence-restart|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset";
+const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-furnace-persistence|survival-hunger-food|survival-mob-drop|survival-redstone-toggle|survival-world-persistence-restart|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|vanilla-combat-reference-parity|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
     "Dimension type:",
@@ -363,6 +364,11 @@ const NEGATIVE_LIVE_RAIL_EVIDENCE_FIELDS: &[&str] = &[
     "server_forbidden_matches",
     "postcondition",
 ];
+const VANILLA_COMBAT_REFERENCE_CLIENT_COUNT_NEEDLE: &str =
+    "mc_compat_vanilla_combat_reference_client_count=2";
+const VANILLA_COMBAT_REFERENCE_DAMAGE_NEEDLE: &str = "vanilla_combat_reference_damage";
+const VANILLA_COMBAT_REFERENCE_KNOCKBACK_NEEDLE: &str = "vanilla_combat_reference_knockback";
+const VANILLA_COMBAT_REFERENCE_PROBE_ENV: &str = "MC_COMPAT_VANILLA_COMBAT_REFERENCE_PROBE";
 const CTF_SCORE_LIMIT_CLIENT_WIN_NEEDLE: &str = "ctf_score_limit_win_seen score_limit=2 winning_team=red red_score=2 blue_score=0 end_state=winner_declared duplicate_win=false";
 const CTF_SCORE_LIMIT_SERVER_PRE_STATE_NEEDLE: &str = "score_limit_pre_state score_limit=2 red_score=1 blue_score=0 next_capture_team=Red outcome=one_capture_before_win";
 const CTF_SCORE_LIMIT_SERVER_FINAL_CAPTURE_NEEDLE: &str = "score_limit_final_capture username=compatbot capture_team=Red carried_flag=Blue score_limit=2 red_score_before=1 blue_score_before=0 red_score_after=2 blue_score_after=0";
@@ -452,6 +458,7 @@ enum Scenario {
     McpControlledSmoke,
     CombatDamage,
     CombatKnockback,
+    VanillaCombatReferenceParity,
     ArmorEquipmentMitigation,
     ArmorLoadoutEnchantmentStatusMatrix,
     EquipmentUpdateObservation,
@@ -1967,6 +1974,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
         MCP_CONTROLLED_SMOKE_SCENARIO => Ok(Scenario::McpControlledSmoke),
         "combat-damage" => Ok(Scenario::CombatDamage),
         "combat-knockback" => Ok(Scenario::CombatKnockback),
+        "vanilla-combat-reference-parity" => Ok(Scenario::VanillaCombatReferenceParity),
         "armor-equipment-mitigation" => Ok(Scenario::ArmorEquipmentMitigation),
         "armor-loadout-enchantment-status-matrix" => {
             Ok(Scenario::ArmorLoadoutEnchantmentStatusMatrix)
@@ -2012,6 +2020,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::McpControlledSmoke => MCP_CONTROLLED_SMOKE_SCENARIO,
         Scenario::CombatDamage => "combat-damage",
         Scenario::CombatKnockback => "combat-knockback",
+        Scenario::VanillaCombatReferenceParity => "vanilla-combat-reference-parity",
         Scenario::ArmorEquipmentMitigation => "armor-equipment-mitigation",
         Scenario::ArmorLoadoutEnchantmentStatusMatrix => "armor-loadout-enchantment-status-matrix",
         Scenario::EquipmentUpdateObservation => "equipment-update-observation",
@@ -2327,6 +2336,19 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             ("remote_player_spawn", "remote_player_spawn"),
             ("combat_attack_sent", "combat_probe_attack_sent"),
             ("combat_health_update", "update_health health=16.0"),
+            ("combat_velocity_update", "combat_probe_velocity_observed"),
+        ],
+        Scenario::VanillaCombatReferenceParity => &[
+            (
+                "multi_client_count",
+                VANILLA_COMBAT_REFERENCE_CLIENT_COUNT_NEEDLE,
+            ),
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("remote_player_spawn", "remote_player_spawn"),
+            ("combat_attack_sent", "combat_probe_attack_sent"),
+            ("combat_health_update", "update_health health=14.0"),
             ("combat_velocity_update", "combat_probe_velocity_observed"),
         ],
         Scenario::ArmorEquipmentMitigation | Scenario::ArmorLoadoutEnchantmentStatusMatrix => &[
@@ -2899,6 +2921,18 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
             ("server_client_b_seen", "compatbotb"),
             ("server_combat_damage", "combat_damage"),
             ("server_combat_knockback", "combat_knockback"),
+        ],
+        Scenario::VanillaCombatReferenceParity => &[
+            ("server_client_a_seen", "compatbota"),
+            ("server_client_b_seen", "compatbotb"),
+            (
+                "server_vanilla_combat_reference_damage",
+                VANILLA_COMBAT_REFERENCE_DAMAGE_NEEDLE,
+            ),
+            (
+                "server_vanilla_combat_reference_knockback",
+                VANILLA_COMBAT_REFERENCE_KNOCKBACK_NEEDLE,
+            ),
         ],
         Scenario::ArmorEquipmentMitigation | Scenario::ArmorLoadoutEnchantmentStatusMatrix => &[
             ("server_client_a_seen", "compatbota"),
@@ -4303,6 +4337,9 @@ fn start_valence_server(cfg: &Config) -> Result<ManagedServer, String> {
     ) {
         cmd.env("MC_COMPAT_PROJECTILE_PROBE", "1");
     }
+    if cfg.scenario == Scenario::VanillaCombatReferenceParity {
+        cmd.env(VANILLA_COMBAT_REFERENCE_PROBE_ENV, "1");
+    }
     if cfg.scenario == Scenario::SurvivalChestPersistence {
         cmd.env(SURVIVAL_CHEST_FIXTURE_ENV, "1");
     }
@@ -4446,6 +4483,10 @@ fn configure_paper_run_command(cfg: &Config, cmd: &mut Command) -> Result<(), St
     if cfg.scenario == Scenario::SurvivalBiomeDimensionState {
         cmd.arg("-e")
             .arg(format!("{SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV}=1"));
+    }
+    if cfg.scenario == Scenario::VanillaCombatReferenceParity {
+        cmd.arg("-e")
+            .arg(format!("{VANILLA_COMBAT_REFERENCE_PROBE_ENV}=1"));
     }
     add_paper_plugin_mount(cfg, cmd)?;
     cmd.arg(&cfg.docker_image);
@@ -4636,6 +4677,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         Scenario::MultiClientLoadScore
             | Scenario::CombatDamage
             | Scenario::CombatKnockback
+            | Scenario::VanillaCombatReferenceParity
             | Scenario::ArmorEquipmentMitigation
             | Scenario::ArmorLoadoutEnchantmentStatusMatrix
             | Scenario::EquipmentUpdateObservation
@@ -4664,6 +4706,10 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
     ) && runs.len() >= 2
     {
         combined_output.push_str("mc_compat_combat_client_count=2\n");
+    }
+    if cfg.scenario == Scenario::VanillaCombatReferenceParity && runs.len() >= 2 {
+        combined_output.push_str(VANILLA_COMBAT_REFERENCE_CLIENT_COUNT_NEEDLE);
+        combined_output.push('\n');
     }
     if cfg.scenario == Scenario::FlagCarrierDeathReturn && runs.len() >= 2 {
         combined_output.push_str("mc_compat_flag_carrier_death_client_count=2\n");
@@ -4787,6 +4833,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         Scenario::MultiClientLoadScore
             | Scenario::CombatDamage
             | Scenario::CombatKnockback
+            | Scenario::VanillaCombatReferenceParity
             | Scenario::ArmorEquipmentMitigation
             | Scenario::ArmorLoadoutEnchantmentStatusMatrix
             | Scenario::EquipmentUpdateObservation
@@ -5235,7 +5282,7 @@ fn spawn_mcp_controlled_client_process(
         .stderr(Stdio::from(err_file));
     apply_build_env(&mut cmd, &cfg.target_dir);
     apply_headless_env(&mut cmd);
-    apply_scenario_probe_env(&mut cmd, cfg.scenario, 0);
+    apply_scenario_probe_env(&mut cmd, cfg.scenario, 0, cfg.server_backend);
     cmd.spawn()
         .map_err(|err| format!("run MCP-controlled client {}: {err}", cfg.client_username))
 }
@@ -5607,7 +5654,7 @@ fn spawn_client_process(
         .stderr(Stdio::from(err_file));
     apply_build_env(&mut cmd, &cfg.target_dir);
     apply_headless_env(&mut cmd);
-    apply_scenario_probe_env(&mut cmd, cfg.scenario, client_index);
+    apply_scenario_probe_env(&mut cmd, cfg.scenario, client_index, cfg.server_backend);
     cmd.spawn()
         .map_err(|e| format!("run client {username}: {e}"))
 }
@@ -5622,7 +5669,12 @@ fn client_timeout_secs(cfg: &Config, client_index: usize) -> u64 {
     }
 }
 
-fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index: usize) {
+fn apply_scenario_probe_env(
+    cmd: &mut Command,
+    scenario: Scenario,
+    client_index: usize,
+    _server_backend: ServerBackend,
+) {
     match scenario {
         Scenario::Smoke => {}
         Scenario::CompatBotProbe => {
@@ -5744,6 +5796,7 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
         }
         Scenario::CombatDamage
         | Scenario::CombatKnockback
+        | Scenario::VanillaCombatReferenceParity
         | Scenario::ArmorEquipmentMitigation
         | Scenario::ArmorLoadoutEnchantmentStatusMatrix
         | Scenario::FlagCarrierDeathReturn => {
@@ -5752,13 +5805,22 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
             } else {
                 ("blue", "victim")
             };
+            let direct_vanilla_reference = scenario == Scenario::VanillaCombatReferenceParity;
             cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE_TEAM", team)
                 .env("MC_COMPAT_COMBAT_PROBE", "1")
                 .env("MC_COMPAT_COMBAT_PROBE_ROLE", role);
+            if !direct_vanilla_reference {
+                cmd.env("MC_COMPAT_TEAM_PROBE", "1")
+                    .env("MC_COMPAT_TEAM_PROBE_TEAM", team);
+            }
             if role == "attacker" {
                 cmd.env("MC_COMPAT_COMBAT_TARGET_USERNAME", "compatbotb");
+            }
+            if scenario == Scenario::VanillaCombatReferenceParity {
+                cmd.env(VANILLA_COMBAT_REFERENCE_PROBE_ENV, "1");
+                if direct_vanilla_reference {
+                    cmd.env("MC_COMPAT_STATIONARY_COMBAT_PROBE", "1");
+                }
             }
             if uses_armor_mitigation_probe(scenario) {
                 cmd.env("MC_COMPAT_ARMOR_MITIGATION_PROBE", "1");
@@ -5857,6 +5919,7 @@ fn planned_client_usernames(cfg: &Config) -> Vec<String> {
         Scenario::MultiClientLoadScore
             | Scenario::CombatDamage
             | Scenario::CombatKnockback
+            | Scenario::VanillaCombatReferenceParity
             | Scenario::ArmorEquipmentMitigation
             | Scenario::ArmorLoadoutEnchantmentStatusMatrix
             | Scenario::EquipmentUpdateObservation
@@ -5998,6 +6061,7 @@ fn requires_server_correlation(cfg: &Config) -> bool {
             | Scenario::SurvivalWorldPersistenceRestart
             | Scenario::CombatDamage
             | Scenario::CombatKnockback
+            | Scenario::VanillaCombatReferenceParity
             | Scenario::ArmorEquipmentMitigation
             | Scenario::ArmorLoadoutEnchantmentStatusMatrix
             | Scenario::EquipmentUpdateObservation
@@ -6987,6 +7051,14 @@ fn smoke_receipt_json_with_typed_event_oracle(
             "use_entity_attack",
             "entity_velocity",
         ],
+        Scenario::VanillaCombatReferenceParity => vec![
+            "two_client_login",
+            "play_join_game",
+            "use_entity_attack",
+            "health_update",
+            "entity_velocity",
+            "reference_comparator_inputs",
+        ],
         Scenario::ArmorEquipmentMitigation | Scenario::ArmorLoadoutEnchantmentStatusMatrix => vec![
             "two_client_login",
             "play_join_game",
@@ -7251,6 +7323,8 @@ fn smoke_receipt_json_with_typed_event_oracle(
         "combat_attack_sent",
         "combat_health_update",
         "combat_velocity_update",
+        "server_vanilla_combat_reference_damage",
+        "server_vanilla_combat_reference_knockback",
         "armor_inventory_slot",
         "entity_equipment_update",
         "server_equipment_state",
@@ -8415,6 +8489,7 @@ mod tests {
         Scenario::McpControlledSmoke,
         Scenario::CombatDamage,
         Scenario::CombatKnockback,
+        Scenario::VanillaCombatReferenceParity,
         Scenario::ArmorEquipmentMitigation,
         Scenario::ArmorLoadoutEnchantmentStatusMatrix,
         Scenario::EquipmentUpdateObservation,
@@ -9086,6 +9161,13 @@ mod tests {
             .expect("combat-knockback scenario parses");
         assert_eq!(knockback.scenario, Scenario::CombatKnockback);
 
+        let vanilla_combat = test_config(&["--scenario", "vanilla-combat-reference-parity"], &[])
+            .expect("vanilla combat reference parity scenario parses");
+        assert_eq!(
+            vanilla_combat.scenario,
+            Scenario::VanillaCombatReferenceParity
+        );
+
         let armor_matrix = test_config(
             &["--scenario", "armor-loadout-enchantment-status-matrix"],
             &[],
@@ -9689,6 +9771,46 @@ mod tests {
                 ("remote_player_spawn", "combat_attack_sent"),
                 ("combat_attack_sent", "combat_health_update"),
                 ("server_client_a_seen", "server_combat_damage"),
+            ],
+        );
+        assert_typed_event_fixture_passes(
+            Scenario::VanillaCombatReferenceParity,
+            None,
+            &[
+                ("client", Some(TEST_ATTACKER_USERNAME), "protocol_detected"),
+                (
+                    "client",
+                    Some(TEST_ATTACKER_USERNAME),
+                    "remote_player_spawn",
+                ),
+                ("client", Some(TEST_ATTACKER_USERNAME), "combat_attack_sent"),
+                ("client", Some(TEST_VICTIM_USERNAME), "combat_health_update"),
+                (
+                    "client",
+                    Some(TEST_VICTIM_USERNAME),
+                    "combat_velocity_update",
+                ),
+                (
+                    "server",
+                    Some(TEST_ATTACKER_USERNAME),
+                    "server_client_a_seen",
+                ),
+                ("server", Some(TEST_VICTIM_USERNAME), "server_client_b_seen"),
+                ("server", None, "server_vanilla_combat_reference_damage"),
+                ("server", None, "server_vanilla_combat_reference_knockback"),
+            ],
+            &[
+                ("remote_player_spawn", "combat_attack_sent"),
+                ("combat_attack_sent", "combat_health_update"),
+                ("combat_health_update", "combat_velocity_update"),
+                (
+                    "server_client_a_seen",
+                    "server_vanilla_combat_reference_damage",
+                ),
+                (
+                    "server_vanilla_combat_reference_damage",
+                    "server_vanilla_combat_reference_knockback",
+                ),
             ],
         );
         assert_typed_event_fixture_passes(

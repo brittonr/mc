@@ -32,6 +32,7 @@ const REQUIRED_SEAMS: &[&str] = &[
     "Spawn/team balance/resource reset",
     "Latency/jitter tolerance",
     "Combat knockback",
+    "Bounded Paper-reference combat parity",
     "Armor equipment mitigation",
     "Equipment update observation",
     "Equipment permutation packet family",

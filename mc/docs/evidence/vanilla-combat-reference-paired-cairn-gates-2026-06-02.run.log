@@ -1,0 +1,95 @@
+# vanilla-combat-reference-paired Cairn gates and validation
+date=2026-06-02
+change=vanilla-combat-reference-paired-receipts
+
+## cairn gate proposal
+command=nix run --no-update-lock-file .#cairn -- gate proposal vanilla-combat-reference-paired-receipts --root .
+{
+  "change": "vanilla-combat-reference-paired-receipts",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "795f585bcf904c4af7724fbdcf287119c71d466439b45ad61bf52bdeca3b7476",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "da522c72ffd4ffa1b358d732dc1a9c8714a21204187ef3fb4c77387678b3326c",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## cairn gate design
+command=nix run --no-update-lock-file .#cairn -- gate design vanilla-combat-reference-paired-receipts --root .
+{
+  "change": "vanilla-combat-reference-paired-receipts",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "afccf10cd015a98f3f4c0dac4f738c7040847b66cd2d2835921f9279ed34011f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "ac48d308767d795c7aa302a6fcf84da9f2f2f839db79b02380c16673e3cf2de2",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## cairn gate tasks
+command=nix run --no-update-lock-file .#cairn -- gate tasks vanilla-combat-reference-paired-receipts --root .
+{
+  "change": "vanilla-combat-reference-paired-receipts",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e7d87bae5b52f76df69bc5d1d9154ecaacfbc36bcd6d64398636613ec005a1de",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "3a5cfcba7ce4ce3d988f5ed6ce500b8882227da323d0a20749da0c76121c3ee1",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## cairn validate
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+exit_status=0
+
+overall_exit_status=0
+exit_status=0

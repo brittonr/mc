@@ -485,6 +485,34 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         migration_state: "substring-fallback",
     },
     GeneratedScenarioRow {
+        name: "vanilla-combat-reference-parity",
+        aliases: &["vanilla-combat-reference-parity"],
+        client_milestones: &[
+            "multi_client_count",
+            "protocol_detected",
+            "join_game",
+            "render_tick",
+            "remote_player_spawn",
+            "combat_attack_sent",
+            "combat_health_update",
+            "combat_velocity_update",
+        ],
+        server_milestones: &[
+            "server_client_a_seen",
+            "server_client_b_seen",
+            "server_vanilla_combat_reference_damage",
+            "server_vanilla_combat_reference_knockback",
+        ],
+        forbidden_patterns: DEFAULT_FORBIDDEN_PATTERNS,
+        client_count: TWO_CLIENTS,
+        session_count: ONE_SESSION,
+        dry_run_check: "",
+        dry_run_wrapper: "mc-compat-vanilla-combat-reference-parity",
+        dry_run_exclusion_reason:
+            "active vanilla-combat-reference-paired-receipts Cairn owns paired fixture promotion and checker-gated receipts",
+        migration_state: "substring-fallback",
+    },
+    GeneratedScenarioRow {
         name: "armor-equipment-mitigation",
         aliases: &["armor-equipment-mitigation"],
         client_milestones: &[

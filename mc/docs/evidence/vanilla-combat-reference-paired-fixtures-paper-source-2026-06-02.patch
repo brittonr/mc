@@ -1,0 +1,703 @@
+diff --git a/mc/config/mc-compat/scenario-manifest.ncl b/mc/config/mc-compat/scenario-manifest.ncl
+index 1cc82d1e..98f58147 100644
+--- a/mc/config/mc-compat/scenario-manifest.ncl
++++ b/mc/config/mc-compat/scenario-manifest.ncl
+@@ -271,6 +271,21 @@ let ScenarioManifest = {
+       current_bundle_row = "knockback",
+       current_bundle_exclusion_reason = "",
+     },
++    {
++      name = "vanilla-combat-reference-parity",
++      aliases = ["vanilla-combat-reference-parity"],
++      client_milestones = ["multi_client_count", "protocol_detected", "join_game", "render_tick", "remote_player_spawn", "combat_attack_sent", "combat_health_update", "combat_velocity_update"],
++      server_milestones = ["server_client_a_seen", "server_client_b_seen", "server_vanilla_combat_reference_damage", "server_vanilla_combat_reference_knockback"],
++      forbidden_patterns = ["panic", "unexpected_eof", "protocol_mismatch", "decode_error"],
++      client_count = 2,
++      session_count = 1,
++      maintained = true,
++      dry_run = { check = "", wrapper = "mc-compat-vanilla-combat-reference-parity", receipt_shape_check = false, exclusion_reason = "active vanilla-combat-reference-paired-receipts Cairn owns paired fixture promotion and checker-gated receipts" },
++      receipt_expectations = ["schema", "paper_reference_combat", "valence_combat_reference", "client_server_correlation", "non-claims"],
++      migration_state = "substring-fallback",
++      current_bundle_row = "vanilla-combat-reference-parity",
++      current_bundle_exclusion_reason = "",
++    },
+     {
+       name = "armor-equipment-mitigation",
+       aliases = ["armor-equipment-mitigation"],
+diff --git a/mc/tools/mc-compat-runner/src/main.rs b/mc/tools/mc-compat-runner/src/main.rs
+index 81729c51..8f78da1a 100644
+--- a/mc/tools/mc-compat-runner/src/main.rs
++++ b/mc/tools/mc-compat-runner/src/main.rs
+@@ -18,7 +18,8 @@ const DEFAULT_SERVER_PROTOCOL: u32 = 758;
+ const DEFAULT_CLIENT_USERNAME: &str = "compatbot";
+ const DEFAULT_CLIENT_TIMEOUT_SECS: u64 = 20;
+ const MULTI_CLIENT_LOAD_PEER_TIMEOUT_SECS: u64 = 10;
+-const MULTI_CLIENT_START_STAGGER_SECS: u64 = 2;
++const PAPER_CONNECTION_THROTTLE_CLEAR_SECS: u64 = 5;
++const MULTI_CLIENT_START_STAGGER_SECS: u64 = PAPER_CONNECTION_THROTTLE_CLEAR_SECS;
+ const CTF_RACE_ACCEPT_CLIENT_FIRST_TICK: u32 = 760;
+ const CTF_RACE_REJECT_CLIENT_FIRST_TICK: u32 = 800;
+ const PAPER_PLUGIN_CONTAINER_DIR: &str = "/plugins";
+@@ -318,7 +319,7 @@ const FRAME_ARTIFACT_NON_CLAIMS: &[&str] = &[
+     "visual_regression_approval",
+     "semantic_equivalence",
+ ];
+-const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-furnace-persistence|survival-hunger-food|survival-mob-drop|survival-redstone-toggle|survival-world-persistence-restart|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset";
++const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-furnace-persistence|survival-hunger-food|survival-mob-drop|survival-redstone-toggle|survival-world-persistence-restart|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|vanilla-combat-reference-parity|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset";
+ const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
+     "Detected server protocol version",
+     "Dimension type:",
+@@ -363,6 +364,11 @@ const NEGATIVE_LIVE_RAIL_EVIDENCE_FIELDS: &[&str] = &[
+     "server_forbidden_matches",
+     "postcondition",
+ ];
++const VANILLA_COMBAT_REFERENCE_CLIENT_COUNT_NEEDLE: &str =
++    "mc_compat_vanilla_combat_reference_client_count=2";
++const VANILLA_COMBAT_REFERENCE_DAMAGE_NEEDLE: &str = "vanilla_combat_reference_damage";
++const VANILLA_COMBAT_REFERENCE_KNOCKBACK_NEEDLE: &str = "vanilla_combat_reference_knockback";
++const VANILLA_COMBAT_REFERENCE_PROBE_ENV: &str = "MC_COMPAT_VANILLA_COMBAT_REFERENCE_PROBE";
+ const CTF_SCORE_LIMIT_CLIENT_WIN_NEEDLE: &str = "ctf_score_limit_win_seen score_limit=2 winning_team=red red_score=2 blue_score=0 end_state=winner_declared duplicate_win=false";
+ const CTF_SCORE_LIMIT_SERVER_PRE_STATE_NEEDLE: &str = "score_limit_pre_state score_limit=2 red_score=1 blue_score=0 next_capture_team=Red outcome=one_capture_before_win";
+ const CTF_SCORE_LIMIT_SERVER_FINAL_CAPTURE_NEEDLE: &str = "score_limit_final_capture username=compatbot capture_team=Red carried_flag=Blue score_limit=2 red_score_before=1 blue_score_before=0 red_score_after=2 blue_score_after=0";
+@@ -452,6 +458,7 @@ enum Scenario {
+     McpControlledSmoke,
+     CombatDamage,
+     CombatKnockback,
++    VanillaCombatReferenceParity,
+     ArmorEquipmentMitigation,
+     ArmorLoadoutEnchantmentStatusMatrix,
+     EquipmentUpdateObservation,
+@@ -1967,6 +1974,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
+         MCP_CONTROLLED_SMOKE_SCENARIO => Ok(Scenario::McpControlledSmoke),
+         "combat-damage" => Ok(Scenario::CombatDamage),
+         "combat-knockback" => Ok(Scenario::CombatKnockback),
++        "vanilla-combat-reference-parity" => Ok(Scenario::VanillaCombatReferenceParity),
+         "armor-equipment-mitigation" => Ok(Scenario::ArmorEquipmentMitigation),
+         "armor-loadout-enchantment-status-matrix" => {
+             Ok(Scenario::ArmorLoadoutEnchantmentStatusMatrix)
+@@ -2012,6 +2020,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
+         Scenario::McpControlledSmoke => MCP_CONTROLLED_SMOKE_SCENARIO,
+         Scenario::CombatDamage => "combat-damage",
+         Scenario::CombatKnockback => "combat-knockback",
++        Scenario::VanillaCombatReferenceParity => "vanilla-combat-reference-parity",
+         Scenario::ArmorEquipmentMitigation => "armor-equipment-mitigation",
+         Scenario::ArmorLoadoutEnchantmentStatusMatrix => "armor-loadout-enchantment-status-matrix",
+         Scenario::EquipmentUpdateObservation => "equipment-update-observation",
+@@ -2329,6 +2338,19 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str,
+             ("combat_health_update", "update_health health=16.0"),
+             ("combat_velocity_update", "combat_probe_velocity_observed"),
+         ],
++        Scenario::VanillaCombatReferenceParity => &[
++            (
++                "multi_client_count",
++                VANILLA_COMBAT_REFERENCE_CLIENT_COUNT_NEEDLE,
++            ),
++            ("protocol_detected", "Detected server protocol version"),
++            ("join_game", "join_game"),
++            ("render_tick", "render_tick_with_player"),
++            ("remote_player_spawn", "remote_player_spawn"),
++            ("combat_attack_sent", "combat_probe_attack_sent"),
++            ("combat_health_update", "update_health health=14.0"),
++            ("combat_velocity_update", "combat_probe_velocity_observed"),
++        ],
+         Scenario::ArmorEquipmentMitigation | Scenario::ArmorLoadoutEnchantmentStatusMatrix => &[
+             ("multi_client_count", "mc_compat_combat_client_count=2"),
+             ("protocol_detected", "Detected server protocol version"),
+@@ -2900,6 +2922,18 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
+             ("server_combat_damage", "combat_damage"),
+             ("server_combat_knockback", "combat_knockback"),
+         ],
++        Scenario::VanillaCombatReferenceParity => &[
++            ("server_client_a_seen", "compatbota"),
++            ("server_client_b_seen", "compatbotb"),
++            (
++                "server_vanilla_combat_reference_damage",
++                VANILLA_COMBAT_REFERENCE_DAMAGE_NEEDLE,
++            ),
++            (
++                "server_vanilla_combat_reference_knockback",
++                VANILLA_COMBAT_REFERENCE_KNOCKBACK_NEEDLE,
++            ),
++        ],
+         Scenario::ArmorEquipmentMitigation | Scenario::ArmorLoadoutEnchantmentStatusMatrix => &[
+             ("server_client_a_seen", "compatbota"),
+             ("server_client_b_seen", "compatbotb"),
+@@ -4303,6 +4337,9 @@ fn start_valence_server(cfg: &Config) -> Result<ManagedServer, String> {
+     ) {
+         cmd.env("MC_COMPAT_PROJECTILE_PROBE", "1");
+     }
++    if cfg.scenario == Scenario::VanillaCombatReferenceParity {
++        cmd.env(VANILLA_COMBAT_REFERENCE_PROBE_ENV, "1");
++    }
+     if cfg.scenario == Scenario::SurvivalChestPersistence {
+         cmd.env(SURVIVAL_CHEST_FIXTURE_ENV, "1");
+     }
+@@ -4447,6 +4484,10 @@ fn configure_paper_run_command(cfg: &Config, cmd: &mut Command) -> Result<(), St
+         cmd.arg("-e")
+             .arg(format!("{SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV}=1"));
+     }
++    if cfg.scenario == Scenario::VanillaCombatReferenceParity {
++        cmd.arg("-e")
++            .arg(format!("{VANILLA_COMBAT_REFERENCE_PROBE_ENV}=1"));
++    }
+     add_paper_plugin_mount(cfg, cmd)?;
+     cmd.arg(&cfg.docker_image);
+     Ok(())
+@@ -4636,6 +4677,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
+         Scenario::MultiClientLoadScore
+             | Scenario::CombatDamage
+             | Scenario::CombatKnockback
++            | Scenario::VanillaCombatReferenceParity
+             | Scenario::ArmorEquipmentMitigation
+             | Scenario::ArmorLoadoutEnchantmentStatusMatrix
+             | Scenario::EquipmentUpdateObservation
+@@ -4665,6 +4707,10 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
+     {
+         combined_output.push_str("mc_compat_combat_client_count=2\n");
+     }
++    if cfg.scenario == Scenario::VanillaCombatReferenceParity && runs.len() >= 2 {
++        combined_output.push_str(VANILLA_COMBAT_REFERENCE_CLIENT_COUNT_NEEDLE);
++        combined_output.push('\n');
++    }
+     if cfg.scenario == Scenario::FlagCarrierDeathReturn && runs.len() >= 2 {
+         combined_output.push_str("mc_compat_flag_carrier_death_client_count=2\n");
+     }
+@@ -4787,6 +4833,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
+         Scenario::MultiClientLoadScore
+             | Scenario::CombatDamage
+             | Scenario::CombatKnockback
++            | Scenario::VanillaCombatReferenceParity
+             | Scenario::ArmorEquipmentMitigation
+             | Scenario::ArmorLoadoutEnchantmentStatusMatrix
+             | Scenario::EquipmentUpdateObservation
+@@ -5235,7 +5282,7 @@ fn spawn_mcp_controlled_client_process(
+         .stderr(Stdio::from(err_file));
+     apply_build_env(&mut cmd, &cfg.target_dir);
+     apply_headless_env(&mut cmd);
+-    apply_scenario_probe_env(&mut cmd, cfg.scenario, 0);
++    apply_scenario_probe_env(&mut cmd, cfg.scenario, 0, cfg.server_backend);
+     cmd.spawn()
+         .map_err(|err| format!("run MCP-controlled client {}: {err}", cfg.client_username))
+ }
+@@ -5607,7 +5654,7 @@ fn spawn_client_process(
+         .stderr(Stdio::from(err_file));
+     apply_build_env(&mut cmd, &cfg.target_dir);
+     apply_headless_env(&mut cmd);
+-    apply_scenario_probe_env(&mut cmd, cfg.scenario, client_index);
++    apply_scenario_probe_env(&mut cmd, cfg.scenario, client_index, cfg.server_backend);
+     cmd.spawn()
+         .map_err(|e| format!("run client {username}: {e}"))
+ }
+@@ -5622,7 +5669,12 @@ fn client_timeout_secs(cfg: &Config, client_index: usize) -> u64 {
+     }
+ }
+ 
+-fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index: usize) {
++fn apply_scenario_probe_env(
++    cmd: &mut Command,
++    scenario: Scenario,
++    client_index: usize,
++    _server_backend: ServerBackend,
++) {
+     match scenario {
+         Scenario::Smoke => {}
+         Scenario::CompatBotProbe => {
+@@ -5744,6 +5796,7 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
+         }
+         Scenario::CombatDamage
+         | Scenario::CombatKnockback
++        | Scenario::VanillaCombatReferenceParity
+         | Scenario::ArmorEquipmentMitigation
+         | Scenario::ArmorLoadoutEnchantmentStatusMatrix
+         | Scenario::FlagCarrierDeathReturn => {
+@@ -5752,14 +5805,23 @@ fn apply_scenario_probe_env(cmd: &mut Command, scenario: Scenario, client_index:
+             } else {
+                 ("blue", "victim")
+             };
++            let direct_vanilla_reference = scenario == Scenario::VanillaCombatReferenceParity;
+             cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
+-                .env("MC_COMPAT_TEAM_PROBE", "1")
+-                .env("MC_COMPAT_TEAM_PROBE_TEAM", team)
+                 .env("MC_COMPAT_COMBAT_PROBE", "1")
+                 .env("MC_COMPAT_COMBAT_PROBE_ROLE", role);
++            if !direct_vanilla_reference {
++                cmd.env("MC_COMPAT_TEAM_PROBE", "1")
++                    .env("MC_COMPAT_TEAM_PROBE_TEAM", team);
++            }
+             if role == "attacker" {
+                 cmd.env("MC_COMPAT_COMBAT_TARGET_USERNAME", "compatbotb");
+             }
++            if scenario == Scenario::VanillaCombatReferenceParity {
++                cmd.env(VANILLA_COMBAT_REFERENCE_PROBE_ENV, "1");
++                if direct_vanilla_reference {
++                    cmd.env("MC_COMPAT_STATIONARY_COMBAT_PROBE", "1");
++                }
++            }
+             if uses_armor_mitigation_probe(scenario) {
+                 cmd.env("MC_COMPAT_ARMOR_MITIGATION_PROBE", "1");
+                 if role == "victim" {
+@@ -5857,6 +5919,7 @@ fn planned_client_usernames(cfg: &Config) -> Vec<String> {
+         Scenario::MultiClientLoadScore
+             | Scenario::CombatDamage
+             | Scenario::CombatKnockback
++            | Scenario::VanillaCombatReferenceParity
+             | Scenario::ArmorEquipmentMitigation
+             | Scenario::ArmorLoadoutEnchantmentStatusMatrix
+             | Scenario::EquipmentUpdateObservation
+@@ -5998,6 +6061,7 @@ fn requires_server_correlation(cfg: &Config) -> bool {
+             | Scenario::SurvivalWorldPersistenceRestart
+             | Scenario::CombatDamage
+             | Scenario::CombatKnockback
++            | Scenario::VanillaCombatReferenceParity
+             | Scenario::ArmorEquipmentMitigation
+             | Scenario::ArmorLoadoutEnchantmentStatusMatrix
+             | Scenario::EquipmentUpdateObservation
+@@ -6987,6 +7051,14 @@ fn smoke_receipt_json_with_typed_event_oracle(
+             "use_entity_attack",
+             "entity_velocity",
+         ],
++        Scenario::VanillaCombatReferenceParity => vec![
++            "two_client_login",
++            "play_join_game",
++            "use_entity_attack",
++            "health_update",
++            "entity_velocity",
++            "reference_comparator_inputs",
++        ],
+         Scenario::ArmorEquipmentMitigation | Scenario::ArmorLoadoutEnchantmentStatusMatrix => vec![
+             "two_client_login",
+             "play_join_game",
+@@ -7251,6 +7323,8 @@ fn smoke_receipt_json_with_typed_event_oracle(
+         "combat_attack_sent",
+         "combat_health_update",
+         "combat_velocity_update",
++        "server_vanilla_combat_reference_damage",
++        "server_vanilla_combat_reference_knockback",
+         "armor_inventory_slot",
+         "entity_equipment_update",
+         "server_equipment_state",
+@@ -8415,6 +8489,7 @@ mod tests {
+         Scenario::McpControlledSmoke,
+         Scenario::CombatDamage,
+         Scenario::CombatKnockback,
++        Scenario::VanillaCombatReferenceParity,
+         Scenario::ArmorEquipmentMitigation,
+         Scenario::ArmorLoadoutEnchantmentStatusMatrix,
+         Scenario::EquipmentUpdateObservation,
+@@ -9086,6 +9161,13 @@ mod tests {
+             .expect("combat-knockback scenario parses");
+         assert_eq!(knockback.scenario, Scenario::CombatKnockback);
+ 
++        let vanilla_combat = test_config(&["--scenario", "vanilla-combat-reference-parity"], &[])
++            .expect("vanilla combat reference parity scenario parses");
++        assert_eq!(
++            vanilla_combat.scenario,
++            Scenario::VanillaCombatReferenceParity
++        );
++
+         let armor_matrix = test_config(
+             &["--scenario", "armor-loadout-enchantment-status-matrix"],
+             &[],
+@@ -9691,6 +9773,46 @@ mod tests {
+                 ("server_client_a_seen", "server_combat_damage"),
+             ],
+         );
++        assert_typed_event_fixture_passes(
++            Scenario::VanillaCombatReferenceParity,
++            None,
++            &[
++                ("client", Some(TEST_ATTACKER_USERNAME), "protocol_detected"),
++                (
++                    "client",
++                    Some(TEST_ATTACKER_USERNAME),
++                    "remote_player_spawn",
++                ),
++                ("client", Some(TEST_ATTACKER_USERNAME), "combat_attack_sent"),
++                ("client", Some(TEST_VICTIM_USERNAME), "combat_health_update"),
++                (
++                    "client",
++                    Some(TEST_VICTIM_USERNAME),
++                    "combat_velocity_update",
++                ),
++                (
++                    "server",
++                    Some(TEST_ATTACKER_USERNAME),
++                    "server_client_a_seen",
++                ),
++                ("server", Some(TEST_VICTIM_USERNAME), "server_client_b_seen"),
++                ("server", None, "server_vanilla_combat_reference_damage"),
++                ("server", None, "server_vanilla_combat_reference_knockback"),
++            ],
++            &[
++                ("remote_player_spawn", "combat_attack_sent"),
++                ("combat_attack_sent", "combat_health_update"),
++                ("combat_health_update", "combat_velocity_update"),
++                (
++                    "server_client_a_seen",
++                    "server_vanilla_combat_reference_damage",
++                ),
++                (
++                    "server_vanilla_combat_reference_damage",
++                    "server_vanilla_combat_reference_knockback",
++                ),
++            ],
++        );
+         assert_typed_event_fixture_passes(
+             Scenario::ProjectileDamageAttribution,
+             None,
+diff --git a/mc/tools/mc-compat-runner/src/scenario_manifest_generated.rs b/mc/tools/mc-compat-runner/src/scenario_manifest_generated.rs
+index da5e17ae..a0bb464d 100644
+--- a/mc/tools/mc-compat-runner/src/scenario_manifest_generated.rs
++++ b/mc/tools/mc-compat-runner/src/scenario_manifest_generated.rs
+@@ -484,6 +484,34 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
+         dry_run_exclusion_reason: "",
+         migration_state: "substring-fallback",
+     },
++    GeneratedScenarioRow {
++        name: "vanilla-combat-reference-parity",
++        aliases: &["vanilla-combat-reference-parity"],
++        client_milestones: &[
++            "multi_client_count",
++            "protocol_detected",
++            "join_game",
++            "render_tick",
++            "remote_player_spawn",
++            "combat_attack_sent",
++            "combat_health_update",
++            "combat_velocity_update",
++        ],
++        server_milestones: &[
++            "server_client_a_seen",
++            "server_client_b_seen",
++            "server_vanilla_combat_reference_damage",
++            "server_vanilla_combat_reference_knockback",
++        ],
++        forbidden_patterns: DEFAULT_FORBIDDEN_PATTERNS,
++        client_count: TWO_CLIENTS,
++        session_count: ONE_SESSION,
++        dry_run_check: "",
++        dry_run_wrapper: "mc-compat-vanilla-combat-reference-parity",
++        dry_run_exclusion_reason:
++            "active vanilla-combat-reference-paired-receipts Cairn owns paired fixture promotion and checker-gated receipts",
++        migration_state: "substring-fallback",
++    },
+     GeneratedScenarioRow {
+         name: "armor-equipment-mitigation",
+         aliases: &["armor-equipment-mitigation"],
+diff --git a/mc/tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java b/mc/tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java
+index 7a7adc76..e0a6079e 100644
+--- a/mc/tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java
++++ b/mc/tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java
+@@ -1,5 +1,6 @@
+ package mc.compat.paper;
+ 
++import java.util.Locale;
+ import java.util.UUID;
+ import org.bukkit.GameMode;
+ import org.bukkit.Location;
+@@ -14,6 +15,7 @@ import org.bukkit.event.EventHandler;
+ import org.bukkit.event.Listener;
+ import org.bukkit.event.block.BlockDamageEvent;
+ import org.bukkit.event.block.BlockPlaceEvent;
++import org.bukkit.event.entity.EntityDamageByEntityEvent;
+ import org.bukkit.event.inventory.InventoryClickEvent;
+ import org.bukkit.event.inventory.InventoryCloseEvent;
+ import org.bukkit.event.inventory.InventoryOpenEvent;
+@@ -21,10 +23,13 @@ import org.bukkit.event.inventory.InventoryType;
+ import org.bukkit.event.player.PlayerInteractEvent;
+ import org.bukkit.event.player.PlayerJoinEvent;
+ import org.bukkit.event.player.PlayerQuitEvent;
++import org.bukkit.event.player.PlayerVelocityEvent;
+ import org.bukkit.inventory.EquipmentSlot;
+ import org.bukkit.inventory.Inventory;
+ import org.bukkit.inventory.ItemStack;
+ import org.bukkit.plugin.java.JavaPlugin;
++import org.bukkit.util.Vector;
++import org.spigotmc.event.player.PlayerSpawnLocationEvent;
+ 
+ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener {
+     private static final int TARGET_X = 0;
+@@ -135,6 +140,36 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener
+     private static final float WORLD_PERSISTENCE_PLAYER_PITCH = 30.0F;
+     private static final String WORLD_PERSISTENCE_BLOCK_NAME = "Dirt";
+     private static final String BIOME_DIMENSION_FIXTURE_ENV = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_FIXTURE";
++    private static final String VANILLA_COMBAT_REFERENCE_FIXTURE_ENV = "MC_COMPAT_VANILLA_COMBAT_REFERENCE_PROBE";
++    private static final String VANILLA_COMBAT_REFERENCE_ROW = "vanilla-combat-reference-parity";
++    private static final String VANILLA_COMBAT_REFERENCE_BACKEND = "paper-reference";
++    private static final String VANILLA_COMBAT_REFERENCE_ORACLE = "paper-1.20.1-reference-harness";
++    private static final String VANILLA_COMBAT_REFERENCE_VERSION = "minecraft-1.20.1-protocol-763";
++    private static final String VANILLA_COMBAT_REFERENCE_ATTACKER = "compatbota";
++    private static final String VANILLA_COMBAT_REFERENCE_VICTIM = "compatbotb";
++    private static final String VANILLA_COMBAT_REFERENCE_RED_MESSAGE = "You are on team RED!";
++    private static final String VANILLA_COMBAT_REFERENCE_BLUE_MESSAGE = "You are on team BLUE!";
++    private static final String VANILLA_COMBAT_REFERENCE_ARMOR_NONE = "none";
++    private static final String VANILLA_COMBAT_REFERENCE_DAMAGE_TOLERANCE = "0.0";
++    private static final String VANILLA_COMBAT_REFERENCE_KNOCKBACK_TOLERANCE = "0.05";
++    private static final int VANILLA_COMBAT_REFERENCE_ITEM_COUNT = 1;
++    private static final int VANILLA_COMBAT_REFERENCE_NO_DAMAGE_TICKS = 0;
++    private static final double VANILLA_COMBAT_REFERENCE_HEALTH = 20.0D;
++    private static final double VANILLA_COMBAT_REFERENCE_MIN_HEALTH = 0.0D;
++    private static final double VANILLA_COMBAT_REFERENCE_ATTACKER_X = 38.0D;
++    private static final double VANILLA_COMBAT_REFERENCE_VICTIM_X = 40.0D;
++    private static final double VANILLA_COMBAT_REFERENCE_PLAYER_Y = 65.0D;
++    private static final double VANILLA_COMBAT_REFERENCE_PLAYER_Z = 0.0D;
++    private static final float VANILLA_COMBAT_REFERENCE_ATTACKER_YAW = -90.0F;
++    private static final float VANILLA_COMBAT_REFERENCE_VICTIM_YAW = 90.0F;
++    private static final float VANILLA_COMBAT_REFERENCE_PITCH = 0.0F;
++    private static final int VANILLA_COMBAT_REFERENCE_FLOOR_MIN_X = 37;
++    private static final int VANILLA_COMBAT_REFERENCE_FLOOR_MAX_X = 41;
++    private static final int VANILLA_COMBAT_REFERENCE_FLOOR_Z = 0;
++    private static final int VANILLA_COMBAT_REFERENCE_CLEAR_MIN_Y = 65;
++    private static final int VANILLA_COMBAT_REFERENCE_CLEAR_MAX_Y = 68;
++    private static final int VANILLA_COMBAT_REFERENCE_CLEAR_MIN_Z = -1;
++    private static final int VANILLA_COMBAT_REFERENCE_CLEAR_MAX_Z = 1;
+     private static final String OVERWORLD_ID = "minecraft:overworld";
+     private static final String NETHER_ID = "minecraft:the_nether";
+     private static final String END_ID = "minecraft:the_end";
+@@ -175,6 +210,8 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener
+     private final java.util.Set<UUID> worldPersistenceMutationSeen = new java.util.HashSet<>();
+     private final java.util.Set<UUID> worldPersistencePostSeen = new java.util.HashSet<>();
+     private final java.util.Set<UUID> worldPersistenceStateSeen = new java.util.HashSet<>();
++    private final java.util.Set<UUID> vanillaCombatReferenceDamageSeen = new java.util.HashSet<>();
++    private final java.util.Set<UUID> vanillaCombatReferenceKnockbackSeen = new java.util.HashSet<>();
+ 
+     @Override
+     public void onEnable() {
+@@ -295,6 +332,52 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener
+         getServer().getScheduler().runTask(this, () -> consumeHungerFood(player));
+     }
+ 
++    @EventHandler(ignoreCancelled = false)
++    public void onPlayerSpawnLocation(PlayerSpawnLocationEvent event) {
++        if (!vanillaCombatReferenceFixtureEnabled()) {
++            return;
++        }
++        Location spawnLocation = vanillaCombatReferenceLocationFor(event.getPlayer(), event.getSpawnLocation().getWorld());
++        if (spawnLocation != null) {
++            event.setSpawnLocation(spawnLocation);
++        }
++    }
++
++    @EventHandler(ignoreCancelled = false)
++    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
++        if (!vanillaCombatReferenceFixtureEnabled()) {
++            return;
++        }
++        if (!(event.getDamager() instanceof Player attacker) || !(event.getEntity() instanceof Player victim)) {
++            return;
++        }
++        if (!isVanillaCombatReferencePair(attacker, victim)) {
++            return;
++        }
++        if (!vanillaCombatReferenceDamageSeen.add(victim.getUniqueId())) {
++            return;
++        }
++        double preHealth = victim.getHealth();
++        double damageDelta = event.getFinalDamage();
++        double postHealth = Math.max(VANILLA_COMBAT_REFERENCE_MIN_HEALTH, preHealth - damageDelta);
++        getLogger().info(vanillaCombatReferenceDamageMilestone(attacker, victim, preHealth, postHealth, damageDelta));
++    }
++
++    @EventHandler(ignoreCancelled = false)
++    public void onPlayerVelocity(PlayerVelocityEvent event) {
++        if (!vanillaCombatReferenceFixtureEnabled()) {
++            return;
++        }
++        Player victim = event.getPlayer();
++        if (!VANILLA_COMBAT_REFERENCE_VICTIM.equals(victim.getName())) {
++            return;
++        }
++        if (!vanillaCombatReferenceKnockbackSeen.add(victim.getUniqueId())) {
++            return;
++        }
++        getLogger().info(vanillaCombatReferenceKnockbackMilestone(event.getVelocity()));
++    }
++
+     @EventHandler(ignoreCancelled = false)
+     public void onInventoryClose(InventoryCloseEvent event) {
+         if (!chestFixtureEnabled() || !(event.getPlayer() instanceof Player player)) {
+@@ -335,6 +418,9 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener
+         if (worldPersistenceFixtureEnabled()) {
+             setupWorldPersistenceFixture(world);
+         }
++        if (vanillaCombatReferenceFixtureEnabled()) {
++            setupVanillaCombatReferenceArena(world);
++        }
+         player.getInventory().clear();
+         player.setGameMode(GameMode.SURVIVAL);
+         if (chestFixtureEnabled()) {
+@@ -349,7 +435,9 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener
+         if (hungerFoodFixtureEnabled()) {
+             setupHungerFoodFixture(player);
+         }
+-        if (redstoneToggleFixtureEnabled()) {
++        if (vanillaCombatReferenceFixtureEnabled()) {
++            setupVanillaCombatReferencePlayer(player, world);
++        } else if (redstoneToggleFixtureEnabled()) {
+             player.teleport(new Location(world, REDSTONE_PLAYER_X, REDSTONE_PLAYER_Y, REDSTONE_PLAYER_Z, REDSTONE_PLAYER_YAW, REDSTONE_PLAYER_PITCH));
+         } else if (worldPersistenceFixtureEnabled()) {
+             player.getInventory().setItem(HOTBAR_SLOT, new ItemStack(Material.DIRT, ITEM_COUNT));
+@@ -376,7 +464,9 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener
+         if (worldPersistenceFixtureEnabled()) {
+             logWorldPersistencePostRestart(player);
+         }
+-        scheduleFixtureMilestones(player);
++        if (!vanillaCombatReferenceFixtureEnabled()) {
++            scheduleFixtureMilestones(player);
++        }
+     }
+ 
+     private void setupHungerFoodFixture(Player player) {
+@@ -431,6 +521,130 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener
+         setLamp(world, false);
+     }
+ 
++    private void setupVanillaCombatReferenceArena(World world) {
++        for (int x = VANILLA_COMBAT_REFERENCE_FLOOR_MIN_X; x <= VANILLA_COMBAT_REFERENCE_FLOOR_MAX_X; x++) {
++            world.getBlockAt(x, FLOOR_Y, VANILLA_COMBAT_REFERENCE_FLOOR_Z).setType(Material.STONE, false);
++            for (int y = VANILLA_COMBAT_REFERENCE_CLEAR_MIN_Y; y <= VANILLA_COMBAT_REFERENCE_CLEAR_MAX_Y; y++) {
++                for (int z = VANILLA_COMBAT_REFERENCE_CLEAR_MIN_Z; z <= VANILLA_COMBAT_REFERENCE_CLEAR_MAX_Z; z++) {
++                    world.getBlockAt(x, y, z).setType(Material.AIR, false);
++                }
++            }
++        }
++    }
++
++    private void setupVanillaCombatReferencePlayer(Player player, World world) {
++        player.setHealth(VANILLA_COMBAT_REFERENCE_HEALTH);
++        player.setNoDamageTicks(VANILLA_COMBAT_REFERENCE_NO_DAMAGE_TICKS);
++        player.setFoodLevel(HUNGER_FOOD_POST_FOOD);
++        player.setSaturation(HUNGER_FOOD_POST_SATURATION);
++        if (VANILLA_COMBAT_REFERENCE_ATTACKER.equals(player.getName())) {
++            player.getInventory().setItem(HOTBAR_SLOT, new ItemStack(Material.IRON_SWORD, VANILLA_COMBAT_REFERENCE_ITEM_COUNT));
++            player.updateInventory();
++            player.teleport(new Location(
++                world,
++                VANILLA_COMBAT_REFERENCE_ATTACKER_X,
++                VANILLA_COMBAT_REFERENCE_PLAYER_Y,
++                VANILLA_COMBAT_REFERENCE_PLAYER_Z,
++                VANILLA_COMBAT_REFERENCE_ATTACKER_YAW,
++                VANILLA_COMBAT_REFERENCE_PITCH
++            ));
++            player.sendMessage(VANILLA_COMBAT_REFERENCE_RED_MESSAGE);
++            return;
++        }
++        if (VANILLA_COMBAT_REFERENCE_VICTIM.equals(player.getName())) {
++            player.teleport(new Location(
++                world,
++                VANILLA_COMBAT_REFERENCE_VICTIM_X,
++                VANILLA_COMBAT_REFERENCE_PLAYER_Y,
++                VANILLA_COMBAT_REFERENCE_PLAYER_Z,
++                VANILLA_COMBAT_REFERENCE_VICTIM_YAW,
++                VANILLA_COMBAT_REFERENCE_PITCH
++            ));
++            player.sendMessage(VANILLA_COMBAT_REFERENCE_BLUE_MESSAGE);
++        }
++    }
++
++    private Location vanillaCombatReferenceLocationFor(Player player, World world) {
++        if (VANILLA_COMBAT_REFERENCE_ATTACKER.equals(player.getName())) {
++            return new Location(
++                world,
++                VANILLA_COMBAT_REFERENCE_ATTACKER_X,
++                VANILLA_COMBAT_REFERENCE_PLAYER_Y,
++                VANILLA_COMBAT_REFERENCE_PLAYER_Z,
++                VANILLA_COMBAT_REFERENCE_ATTACKER_YAW,
++                VANILLA_COMBAT_REFERENCE_PITCH
++            );
++        }
++        if (VANILLA_COMBAT_REFERENCE_VICTIM.equals(player.getName())) {
++            return new Location(
++                world,
++                VANILLA_COMBAT_REFERENCE_VICTIM_X,
++                VANILLA_COMBAT_REFERENCE_PLAYER_Y,
++                VANILLA_COMBAT_REFERENCE_PLAYER_Z,
++                VANILLA_COMBAT_REFERENCE_VICTIM_YAW,
++                VANILLA_COMBAT_REFERENCE_PITCH
++            );
++        }
++        return null;
++    }
++
++    private boolean isVanillaCombatReferencePair(Player attacker, Player victim) {
++        return VANILLA_COMBAT_REFERENCE_ATTACKER.equals(attacker.getName())
++            && VANILLA_COMBAT_REFERENCE_VICTIM.equals(victim.getName());
++    }
++
++    private String vanillaCombatReferenceDamageMilestone(
++        Player attacker,
++        Player victim,
++        double preHealth,
++        double postHealth,
++        double damageDelta
++    ) {
++        return "MC-COMPAT-MILESTONE vanilla_combat_reference_damage"
++            + " row=" + VANILLA_COMBAT_REFERENCE_ROW
++            + " backend=" + VANILLA_COMBAT_REFERENCE_BACKEND
++            + " reference_oracle=" + VANILLA_COMBAT_REFERENCE_ORACLE
++            + " reference_version=" + VANILLA_COMBAT_REFERENCE_VERSION
++            + " attacker_identity=" + attacker.getName()
++            + " victim_identity=" + victim.getName()
++            + " weapon=" + normalizeMaterialName(attacker.getInventory().getItemInMainHand().getType())
++            + " armor_state=" + normalizeArmorState(victim.getInventory().getChestplate())
++            + " pre_health=" + formatOneDecimal(preHealth)
++            + " post_health=" + formatOneDecimal(postHealth)
++            + " damage_delta=" + formatOneDecimal(damageDelta)
++            + " damage_tolerance=" + VANILLA_COMBAT_REFERENCE_DAMAGE_TOLERANCE;
++    }
++
++    private String vanillaCombatReferenceKnockbackMilestone(Vector velocity) {
++        return "MC-COMPAT-MILESTONE vanilla_combat_reference_knockback"
++            + " row=" + VANILLA_COMBAT_REFERENCE_ROW
++            + " backend=" + VANILLA_COMBAT_REFERENCE_BACKEND
++            + " reference_oracle=" + VANILLA_COMBAT_REFERENCE_ORACLE
++            + " reference_version=" + VANILLA_COMBAT_REFERENCE_VERSION
++            + " attacker_identity=" + VANILLA_COMBAT_REFERENCE_ATTACKER
++            + " victim_identity=" + VANILLA_COMBAT_REFERENCE_VICTIM
++            + " knockback_metric=" + formatTwoDecimals(vanillaCombatReferenceKnockbackMetric(velocity))
++            + " velocity_x=" + formatTwoDecimals(velocity.getX())
++            + " velocity_y=" + formatTwoDecimals(velocity.getY())
++            + " velocity_z=" + formatTwoDecimals(velocity.getZ())
++            + " knockback_tolerance=" + VANILLA_COMBAT_REFERENCE_KNOCKBACK_TOLERANCE;
++    }
++
++    private double vanillaCombatReferenceKnockbackMetric(Vector velocity) {
++        return Math.hypot(velocity.getX(), velocity.getZ());
++    }
++
++    private String normalizeArmorState(ItemStack chestplate) {
++        if (chestplate == null || chestplate.getType() == Material.AIR) {
++            return VANILLA_COMBAT_REFERENCE_ARMOR_NONE;
++        }
++        return normalizeMaterialName(chestplate.getType());
++    }
++
++    private String normalizeMaterialName(Material material) {
++        return material.name().toLowerCase(Locale.ROOT);
++    }
++
+     private void setLever(World world, boolean powered) {
+         BlockData data = Material.LEVER.createBlockData();
+         if (data instanceof Powerable powerable) {
+@@ -608,6 +822,10 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener
+         return "1".equals(System.getenv(BIOME_DIMENSION_FIXTURE_ENV));
+     }
+ 
++    private boolean vanillaCombatReferenceFixtureEnabled() {
++        return "1".equals(System.getenv(VANILLA_COMBAT_REFERENCE_FIXTURE_ENV));
++    }
++
+     private String normalizeSurvivalEnvironmentId(String raw) {
+         if (OVERWORLD_ID.equals(raw)) {
+             return OVERWORLD_ID;
+@@ -1046,6 +1264,10 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener
+         return String.format(java.util.Locale.ROOT, "%.1f", value);
+     }
+ 
++    private String formatTwoDecimals(double value) {
++        return String.format(java.util.Locale.ROOT, "%.2f", value);
++    }
++
+     private void scheduleFixtureMilestones(Player player) {
+         getServer().getScheduler().runTaskLater(this, () -> emitBreak(player), BREAK_DELAY_TICKS);
+         getServer().getScheduler().runTaskLater(this, () -> givePickup(player), PICKUP_DELAY_TICKS);

@@ -1,0 +1,92 @@
+# vanilla-combat-reference-paired closeout validation
+date=2026-06-02
+row=vanilla-combat-reference-parity
+valence_child_revision=be02847ea666
+stevenarella_child_revision=75151ca3cd4e
+
+## selected b3 manifests
+command=cd /home/brittonr/git/mc && nix develop --no-update-lock-file /home/brittonr/git/mc -c bash -lc "cd /home/brittonr/git/mc && b3sum --check docs/evidence/vanilla-combat-reference-paired-live-2026-06-02.b3 && b3sum --check docs/evidence/vanilla-combat-reference-paired-compare-2026-06-02.b3 && b3sum --check docs/evidence/vanilla-combat-reference-paired-fixtures-2026-06-02.b3 && b3sum --check docs/evidence/vanilla-combat-reference-paired-promotion-2026-06-02.b3 && b3sum --check docs/evidence/vanilla-combat-reference-paired-receipts-2026-06-02.b3"
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+docs/evidence/vanilla-combat-reference-paired-live-2026-06-02.run.log: OK
+docs/evidence/vanilla-combat-reference-paired-paper-live-2026-06-02.run.log: OK
+docs/evidence/vanilla-combat-reference-paired-paper-server-2026-06-02.log: OK
+docs/evidence/vanilla-combat-reference-paired-paper-server-2026-06-02.log.stderr: OK
+docs/evidence/vanilla-combat-reference-paired-paper-receipt-2026-06-02.json: OK
+docs/evidence/vanilla-combat-reference-paired-paper-typed-events-2026-06-02.log: OK
+docs/evidence/vanilla-combat-reference-paired-paper-reference-2026-06-02.kv: OK
+docs/evidence/vanilla-combat-reference-paired-valence-live-2026-06-02.run.log: OK
+docs/evidence/vanilla-combat-reference-paired-valence-server-2026-06-02.log: OK
+docs/evidence/vanilla-combat-reference-paired-valence-receipt-2026-06-02.json: OK
+docs/evidence/vanilla-combat-reference-paired-valence-typed-events-2026-06-02.log: OK
+docs/evidence/vanilla-combat-reference-paired-valence-reference-2026-06-02.kv: OK
+docs/evidence/vanilla-combat-reference-paired-compare-2026-06-02.run.log: OK
+docs/evidence/vanilla-combat-reference-paired-paper-reference-2026-06-02.kv: OK
+docs/evidence/vanilla-combat-reference-paired-valence-reference-2026-06-02.kv: OK
+tools/check_vanilla_combat_reference_parity.rs: OK
+docs/evidence/vanilla-combat-reference-paired-fixtures-2026-06-02.run.log: OK
+docs/evidence/vanilla-combat-reference-paired-fixtures-paper-source-2026-06-02.patch: OK
+docs/evidence/vanilla-combat-reference-paired-fixtures-valence-source-2026-06-02.patch: OK
+docs/evidence/vanilla-combat-reference-paired-fixtures-stevenarella-source-2026-06-02.patch: OK
+docs/evidence/mc-compat-paper-vanilla-combat-reference-fixture-2026-06-02.jar: OK
+tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java: OK
+tools/mc-compat-runner/src/main.rs: OK
+config/mc-compat/scenario-manifest.ncl: OK
+tools/mc-compat-runner/src/scenario_manifest_generated.rs: OK
+docs/evidence/vanilla-combat-reference-paired-promotion-2026-06-02.run.log: OK
+docs/evidence/protocol-763-acceptance-matrix.md: OK
+docs/evidence/protocol-763-current-evidence-bundle.md: OK
+tools/check_acceptance_matrix.rs: OK
+tools/check_current_evidence_bundle.rs: OK
+docs/evidence/vanilla-combat-reference-paired-receipts-2026-06-02.md: OK
+docs/evidence/vanilla-combat-reference-paired-receipts-2026-06-02.md: OK
+exit_status=0
+
+## scenario manifest checker
+command=cd /home/brittonr/git/mc && nix develop --no-update-lock-file /home/brittonr/git/mc -c bash -lc "cd /home/brittonr/git/mc && rustc --edition=2021 tools/check_scenario_manifest.rs -o /tmp/check_scenario_manifest && /tmp/check_scenario_manifest --self-test && /tmp/check_scenario_manifest"
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+scenario manifest self-test passed: positive and negative fixtures exercised
+scenario manifest check passed: 30 rows validated
+exit_status=0
+
+## acceptance matrix checker
+command=cd /home/brittonr/git/mc && nix develop --no-update-lock-file /home/brittonr/git/mc -c bash -lc "cd /home/brittonr/git/mc && rustc --edition=2021 tools/check_acceptance_matrix.rs -o /tmp/check_acceptance_matrix && /tmp/check_acceptance_matrix --self-test && /tmp/check_acceptance_matrix"
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+acceptance matrix self-test ok: positive and negative fixtures exercised
+acceptance matrix check passed: 36 rows validated
+exit_status=0
+
+## current evidence bundle checker
+command=cd /home/brittonr/git/mc && nix develop --no-update-lock-file /home/brittonr/git/mc -c bash -lc "cd /home/brittonr/git/mc && rustc --edition=2021 tools/check_current_evidence_bundle.rs -o /tmp/check_current_evidence_bundle && /tmp/check_current_evidence_bundle --self-test && /tmp/check_current_evidence_bundle"
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+current evidence bundle self-test ok: positive and negative fixtures exercised
+current evidence bundle check passed: 36 rows validated
+exit_status=0
+
+## evidence manifest checker
+command=cd /home/brittonr/git/mc && nix develop --no-update-lock-file /home/brittonr/git/mc -c bash -lc "cd /home/brittonr/git/mc && rustc --edition=2021 tools/check_evidence_manifests.rs -o /tmp/check_evidence_manifests && /tmp/check_evidence_manifests --self-test && /tmp/check_evidence_manifests"
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest self-test ok: positive and negative fixtures exercised
+evidence manifests ok: 298 manifests, 1791 entries, 92 receipts scanned
+exit_status=0
+
+## task evidence gate for completed tasks
+command=cd /home/brittonr/git/mc && nix develop --no-update-lock-file /home/brittonr/git/mc -c bash -lc "cd /home/brittonr/git/mc && rustc --edition=2021 tools/check_cairn_task_evidence.rs -o /tmp/check_cairn_task_evidence && /tmp/check_cairn_task_evidence --self-test && /tmp/check_cairn_task_evidence cairn/changes/vanilla-combat-reference-paired-receipts/tasks.md"
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task evidence gate passed: 6 completed tasks checked across 1 task files
+exit_status=0
+
+overall_exit_status=0
+exit_status=0

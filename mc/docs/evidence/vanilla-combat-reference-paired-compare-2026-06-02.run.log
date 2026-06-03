@@ -1,0 +1,24 @@
+# vanilla-combat-reference-paired comparator validation
+date=2026-06-02
+valence_child_revision=be02847ea666
+stevenarella_child_revision=75151ca3cd4e
+paper_reference_child_revision=paper-1.20.1-build-196
+
+## checker compile
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c rustc --edition=2021 tools/check_vanilla_combat_reference_parity.rs -o /tmp/pi-check-vanilla-combat-reference-paired
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+exit_status=0
+
+## checker self-test
+command=/tmp/pi-check-vanilla-combat-reference-paired --self-test
+vanilla combat reference parity self-test ok: positive and negative fixtures exercised
+exit_status=0
+
+## paired comparator
+command=/tmp/pi-check-vanilla-combat-reference-paired --row vanilla-combat-reference-parity --reference /home/brittonr/git/mc/docs/evidence/vanilla-combat-reference-paired-paper-reference-2026-06-02.kv --valence /home/brittonr/git/mc/docs/evidence/vanilla-combat-reference-paired-valence-reference-2026-06-02.kv
+vanilla combat reference parity row check passed
+exit_status=0
+overall_exit_status=0
+exit_status=0

@@ -1,0 +1,23 @@
+# vanilla-combat-reference-paired promotion validation
+date=2026-06-02
+row=vanilla-combat-reference-parity
+
+## acceptance matrix checker
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c rustc --edition=2021 tools/check_acceptance_matrix.rs -o /tmp/check_acceptance_matrix && /tmp/check_acceptance_matrix --self-test && /tmp/check_acceptance_matrix
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+acceptance matrix self-test ok: positive and negative fixtures exercised
+acceptance matrix check passed: 36 rows validated
+exit_status=0
+
+## current evidence bundle checker
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c rustc --edition=2021 tools/check_current_evidence_bundle.rs -o /tmp/check_current_evidence_bundle && /tmp/check_current_evidence_bundle --self-test && /tmp/check_current_evidence_bundle
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+current evidence bundle self-test ok: positive and negative fixtures exercised
+current evidence bundle check passed: 36 rows validated
+exit_status=0
+overall_exit_status=0
+exit_status=0

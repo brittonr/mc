@@ -1,0 +1,339 @@
+commit 75151ca3cd4ed6673c0daf3dc3579a5069cc4ac3
+Author:     brittonr <b@robitzs.ch>
+AuthorDate: Wed Jun 3 00:04:55 2026 -0400
+Commit:     brittonr <b@robitzs.ch>
+CommitDate: Wed Jun 3 00:19:51 2026 -0400
+
+    support stationary combat reference probes
+
+diff --git a/protocol/src/protocol/packet.rs b/protocol/src/protocol/packet.rs
+index 119d9e4..8d3bc38 100644
+--- a/protocol/src/protocol/packet.rs
++++ b/protocol/src/protocol/packet.rs
+@@ -863,6 +863,18 @@ state_packets!(
+                 field entity_id: VarInt =,
+                 field animation_id: u8 =,
+             }
++            /// EntityDamageRaw consumes the modern entity damage payload for probes that only need health updates.
++            packet EntityDamageRaw {
++                field data: Vec<u8> =,
++            }
++            /// DamageTiltRaw consumes the modern damage-tilt payload; combat probes do not render it.
++            packet DamageTiltRaw {
++                field data: Vec<u8> =,
++            }
++            /// CombatEventEndRaw consumes the modern empty end-combat packet.
++            packet CombatEventEndRaw {
++                field data: Vec<u8> =,
++            }
+             /// Statistics is used to update the statistics screen for the client.
+             packet Statistics {
+                 field statistices: LenPrefixed<VarInt, packet::Statistic> =,
+diff --git a/protocol/src/protocol/versions.rs b/protocol/src/protocol/versions.rs
+index f3c2e99..502ac09 100644
+--- a/protocol/src/protocol/versions.rs
++++ b/protocol/src/protocol/versions.rs
+@@ -111,6 +111,21 @@ pub fn translate_internal_packet_id_for_version(
+ mod tests {
+     use super::*;
+ 
++    const BYTES_PER_KIB: usize = 1024;
++    const KIB_PER_MIB: usize = 1024;
++    const TEST_PACKET_PARSE_STACK_MIB: usize = 8;
++    const TEST_PACKET_PARSE_STACK_BYTES: usize =
++        TEST_PACKET_PARSE_STACK_MIB * KIB_PER_MIB * BYTES_PER_KIB;
++
++    fn run_high_stack_packet_parse_fixture(parse: impl FnOnce() + Send + 'static) {
++        std::thread::Builder::new()
++            .stack_size(TEST_PACKET_PARSE_STACK_BYTES)
++            .spawn(parse)
++            .expect("spawn packet parse test")
++            .join()
++            .expect("packet parse test passes");
++    }
++
+     #[test]
+     fn protocol_name_accepts_valence_current_1_20_1() {
+         assert_eq!(protocol_name_to_protocol_version("1.20.1".to_string()), 763);
+@@ -248,6 +263,175 @@ mod tests {
+         );
+     }
+ 
++    #[test]
++    fn protocol_763_maps_paper_entity_damage_boundary() {
++        const PROTOCOL_1_20_1: i32 = 763;
++        const WIRE_ENTITY_DAMAGE: i32 = 0x18;
++        const ENTITY_DAMAGE_PAYLOAD: &[u8] = &[0x01, 0x02, 0x03, 0x04];
++        assert_eq!(
++            translate_internal_packet_id_for_version(
++                PROTOCOL_1_20_1,
++                State::Play,
++                Direction::Clientbound,
++                WIRE_ENTITY_DAMAGE,
++                true,
++            ),
++            crate::protocol::packet::play::clientbound::internal_ids::EntityDamageRaw,
++        );
++        assert_ne!(
++            translate_internal_packet_id_for_version(
++                PROTOCOL_1_20_1,
++                State::Play,
++                Direction::Clientbound,
++                WIRE_ENTITY_DAMAGE,
++                true,
++            ),
++            crate::protocol::packet::play::clientbound::internal_ids::PluginMessageClientbound,
++        );
++
++        run_high_stack_packet_parse_fixture(move || {
++            let mut cursor = std::io::Cursor::new(ENTITY_DAMAGE_PAYLOAD.to_vec());
++            let packet = crate::protocol::packet::packet_by_id(
++                PROTOCOL_1_20_1,
++                State::Play,
++                Direction::Clientbound,
++                WIRE_ENTITY_DAMAGE,
++                &mut cursor,
++            )
++            .expect("entity damage parses")
++            .expect("entity damage packet exists");
++            let crate::protocol::packet::Packet::EntityDamageRaw(packet) = packet else {
++                panic!("expected EntityDamageRaw packet");
++            };
++            assert_eq!(packet.data, ENTITY_DAMAGE_PAYLOAD);
++        });
++    }
++
++    #[test]
++    fn protocol_763_maps_paper_damage_tilt_boundary() {
++        const PROTOCOL_1_20_1: i32 = 763;
++        const WIRE_DAMAGE_TILT: i32 = 0x21;
++        const DAMAGE_TILT_PAYLOAD: &[u8] = &[0x01, 0x02, 0x03];
++        assert_eq!(
++            translate_internal_packet_id_for_version(
++                PROTOCOL_1_20_1,
++                State::Play,
++                Direction::Clientbound,
++                WIRE_DAMAGE_TILT,
++                true,
++            ),
++            crate::protocol::packet::play::clientbound::internal_ids::DamageTiltRaw,
++        );
++        assert_ne!(
++            translate_internal_packet_id_for_version(
++                PROTOCOL_1_20_1,
++                State::Play,
++                Direction::Clientbound,
++                WIRE_DAMAGE_TILT,
++                true,
++            ),
++            crate::protocol::packet::play::clientbound::internal_ids::KeepAliveClientbound_i64,
++        );
++
++        run_high_stack_packet_parse_fixture(move || {
++            let mut cursor = std::io::Cursor::new(DAMAGE_TILT_PAYLOAD.to_vec());
++            let packet = crate::protocol::packet::packet_by_id(
++                PROTOCOL_1_20_1,
++                State::Play,
++                Direction::Clientbound,
++                WIRE_DAMAGE_TILT,
++                &mut cursor,
++            )
++            .expect("damage tilt parses")
++            .expect("damage tilt packet exists");
++            let crate::protocol::packet::Packet::DamageTiltRaw(packet) = packet else {
++                panic!("expected DamageTiltRaw packet");
++            };
++            assert_eq!(packet.data, DAMAGE_TILT_PAYLOAD);
++        });
++    }
++
++    #[test]
++    fn protocol_763_maps_paper_combat_event_boundaries() {
++        const PROTOCOL_1_20_1: i32 = 763;
++        const WIRE_COMBAT_EVENT_END: i32 = 0x36;
++        const WIRE_COMBAT_EVENT_ENTER: i32 = 0x37;
++        assert_eq!(
++            translate_internal_packet_id_for_version(
++                PROTOCOL_1_20_1,
++                State::Play,
++                Direction::Clientbound,
++                WIRE_COMBAT_EVENT_END,
++                true,
++            ),
++            crate::protocol::packet::play::clientbound::internal_ids::CombatEventEndRaw,
++        );
++        assert_ne!(
++            translate_internal_packet_id_for_version(
++                PROTOCOL_1_20_1,
++                State::Play,
++                Direction::Clientbound,
++                WIRE_COMBAT_EVENT_END,
++                true,
++            ),
++            crate::protocol::packet::play::clientbound::internal_ids::CombatEventEnd,
++        );
++        assert_eq!(
++            translate_internal_packet_id_for_version(
++                PROTOCOL_1_20_1,
++                State::Play,
++                Direction::Clientbound,
++                WIRE_COMBAT_EVENT_ENTER,
++                true,
++            ),
++            crate::protocol::packet::play::clientbound::internal_ids::CombatEventEnter,
++        );
++        assert_ne!(
++            translate_internal_packet_id_for_version(
++                PROTOCOL_1_20_1,
++                State::Play,
++                Direction::Clientbound,
++                WIRE_COMBAT_EVENT_ENTER,
++                true,
++            ),
++            crate::protocol::packet::play::clientbound::internal_ids::FacePlayer,
++        );
++
++        run_high_stack_packet_parse_fixture(move || {
++            let end_payload: Vec<u8> = Vec::new();
++            let mut end_cursor = std::io::Cursor::new(end_payload);
++            let end_packet = crate::protocol::packet::packet_by_id(
++                PROTOCOL_1_20_1,
++                State::Play,
++                Direction::Clientbound,
++                WIRE_COMBAT_EVENT_END,
++                &mut end_cursor,
++            )
++            .expect("end combat parses")
++            .expect("end combat packet exists");
++            let crate::protocol::packet::Packet::CombatEventEndRaw(packet) = end_packet else {
++                panic!("expected CombatEventEndRaw packet");
++            };
++            assert!(packet.data.is_empty());
++
++            let enter_payload: Vec<u8> = Vec::new();
++            let mut enter_cursor = std::io::Cursor::new(enter_payload);
++            let enter_packet = crate::protocol::packet::packet_by_id(
++                PROTOCOL_1_20_1,
++                State::Play,
++                Direction::Clientbound,
++                WIRE_COMBAT_EVENT_ENTER,
++                &mut enter_cursor,
++            )
++            .expect("enter combat parses")
++            .expect("enter combat packet exists");
++            let crate::protocol::packet::Packet::CombatEventEnter(packet) = enter_packet else {
++                panic!("expected CombatEventEnter packet");
++            };
++            assert!(packet.empty.is_empty());
++        });
++    }
++
+     #[test]
+     fn protocol_763_maps_valence_command_tree_boundary() {
+         assert_eq!(
+diff --git a/protocol/src/protocol/versions/v1_20_1.rs b/protocol/src/protocol/versions/v1_20_1.rs
+index 70aab9d..b28ce7c 100644
+--- a/protocol/src/protocol/versions/v1_20_1.rs
++++ b/protocol/src/protocol/versions/v1_20_1.rs
+@@ -1,6 +1,10 @@
+ use crate::protocol::{packet, Direction, State};
+ 
++const WIRE_ENTITY_DAMAGE: i32 = 0x18;
++const WIRE_DAMAGE_TILT: i32 = 0x21;
+ const WIRE_PARTICLE: i32 = 0x26;
++const WIRE_COMBAT_EVENT_END: i32 = 0x36;
++const WIRE_COMBAT_EVENT_ENTER: i32 = 0x37;
+ const WIRE_FEATURE_FLAGS: i32 = 0x6b;
+ const WIRE_ENTITY_EFFECT: i32 = 0x6c;
+ 
+@@ -19,9 +23,17 @@ const PLAY_CLIENTBOUND_OVERRIDES: &[(i32, i32)] = &[
+     (0x13, packet::play::clientbound::internal_ids::WindowProperty),
+     (0x14, packet::play::clientbound::internal_ids::WindowSetSlot_State),
+     (0x17, packet::play::clientbound::internal_ids::PluginMessageClientbound),
++    (
++        WIRE_ENTITY_DAMAGE,
++        packet::play::clientbound::internal_ids::EntityDamageRaw,
++    ),
+     (0x1c, packet::play::clientbound::internal_ids::EntityStatus),
+     (0x1e, packet::play::clientbound::internal_ids::ChunkUnload),
+     (0x1f, packet::play::clientbound::internal_ids::ChangeGameState),
++    (
++        WIRE_DAMAGE_TILT,
++        packet::play::clientbound::internal_ids::DamageTiltRaw,
++    ),
+     (0x22, packet::play::clientbound::internal_ids::WorldBorderInit),
+     (0x23, packet::play::clientbound::internal_ids::KeepAliveClientbound_i64),
+     (0x24, packet::play::clientbound::internal_ids::ChunkData_AndLight_NoTrustEdges),
+@@ -38,6 +50,14 @@ const PLAY_CLIENTBOUND_OVERRIDES: &[(i32, i32)] = &[
+     (0x2e, packet::play::clientbound::internal_ids::VehicleTeleport),
+     (0x30, packet::play::clientbound::internal_ids::WindowOpen_VarInt),
+     (0x34, packet::play::clientbound::internal_ids::PlayerAbilities),
++    (
++        WIRE_COMBAT_EVENT_END,
++        packet::play::clientbound::internal_ids::CombatEventEndRaw,
++    ),
++    (
++        WIRE_COMBAT_EVENT_ENTER,
++        packet::play::clientbound::internal_ids::CombatEventEnter,
++    ),
+     (0x38, packet::play::clientbound::internal_ids::DeathMessage_VarInt),
+     (0x39, packet::play::clientbound::internal_ids::PlayerRemove_UUIDs),
+     (0x3a, packet::play::clientbound::internal_ids::PlayerInfo_BitSet),
+diff --git a/src/server/mod.rs b/src/server/mod.rs
+index e79beb6..30836d8 100644
+--- a/src/server/mod.rs
++++ b/src/server/mod.rs
+@@ -50,6 +50,7 @@ const CTF_SCORE_LIMIT_CLIENT_WIN_TEAM: &str = "red";
+ const CTF_SCORE_LIMIT_CLIENT_END_STATE: &str = "winner_declared";
+ const FLAG_PROBE_CYCLE_TICKS: u32 = 220;
+ const ACTIVE_PROBE_INPUT_START_TICK: u32 = 1;
++const STATIONARY_COMBAT_PROBE_ENV: &str = "MC_COMPAT_STATIONARY_COMBAT_PROBE";
+ const ACTIVE_PROBE_JUMP_RELEASE_TICK: u32 = 18;
+ const ACTIVE_PROBE_TURN_TICK: u32 = 180;
+ const ACTIVE_PROBE_STOP_TICK: u32 = 300;
+@@ -532,6 +533,7 @@ pub struct Server {
+     active_probe_enabled: bool,
+     team_probe_enabled: bool,
+     combat_probe_enabled: bool,
++    stationary_combat_probe_enabled: bool,
+     respawn_probe_enabled: bool,
+     inventory_probe_enabled: bool,
+     survival_probe_enabled: bool,
+@@ -1156,6 +1158,9 @@ impl Server {
+             combat_probe_enabled: std::env::var("MC_COMPAT_COMBAT_PROBE")
+                 .map(|value| value != "0")
+                 .unwrap_or(false),
++            stationary_combat_probe_enabled: std::env::var(STATIONARY_COMBAT_PROBE_ENV)
++                .map(|value| value != "0")
++                .unwrap_or(false),
+             respawn_probe_enabled: std::env::var("MC_COMPAT_RESPAWN_PROBE")
+                 .map(|value| value != "0")
+                 .unwrap_or(false),
+@@ -1428,15 +1433,18 @@ impl Server {
+ 
+         self.active_probe_ticks = self.active_probe_ticks.saturating_add(1);
+ 
+-        let movement_probe_enabled = self.active_probe_enabled
+-            || self.team_probe_enabled
+-            || self.combat_probe_enabled
+-            || self.respawn_probe_enabled
+-            || self.inventory_probe_enabled
+-            || self.equipment_probe_enabled
+-            || self.projectile_probe_enabled
+-            || self.flag_probe_enabled
+-            || self.score_limit_probe_enabled;
++        let stationary_combat_probe_enabled =
++            self.combat_probe_enabled && self.stationary_combat_probe_enabled;
++        let movement_probe_enabled = !stationary_combat_probe_enabled
++            && (self.active_probe_enabled
++                || self.team_probe_enabled
++                || self.combat_probe_enabled
++                || self.respawn_probe_enabled
++                || self.inventory_probe_enabled
++                || self.equipment_probe_enabled
++                || self.projectile_probe_enabled
++                || self.flag_probe_enabled
++                || self.score_limit_probe_enabled);
+         if movement_probe_enabled {
+             if let Some(movement) = self
+                 .entities

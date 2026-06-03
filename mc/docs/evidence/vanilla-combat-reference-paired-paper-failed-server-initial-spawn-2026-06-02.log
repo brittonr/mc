@@ -1,0 +1,148 @@
+[init] Running as uid=1000 gid=1000 with /data as 'drwxr-xr-x 2 1000 1000 4096 May 27 12:37 /data'
+[init] Image info: buildtime=2026-05-31T14:45:05.064Z,version=java17,revision=a4719f2ba6f5cbcde07fc90ec4b6c42533aba5ad
+[init] Resolving type given PAPER
+[39m[mc-image-helper] 02:59:50.396 INFO  : Downloaded /data/paper-1.20.1-196.jar
+[0;39m[init] Copying any plugins from /plugins to /data/plugins
+[39m[mc-image-helper] 02:59:51.382 INFO  : Copying /plugins/mc-compat-paper-vanilla-combat-reference-fixture-2026-06-02.jar -> /data/plugins/mc-compat-paper-vanilla-combat-reference-fixture-2026-06-02.jar
+[0;39m[init] Copying any configs from /config to /data/config
+[init] Creating server properties in /data/server.properties
+[init] Disabling whitelist functionality
+[39m[mc-image-helper] 02:59:52.035 INFO  : Created/updated 7 properties in /data/server.properties
+[0;39m[39m[mc-image-helper] 02:59:52.824 INFO  : Downloaded /data/config/paper-global.yml from https://raw.githubusercontent.com/Shonz1/minecraft-default-configs/main/1.20.1/paper-global.yml
+[0;39m[39m[mc-image-helper] 02:59:52.824 INFO  : Downloaded /data/config/paper-world-defaults.yml from https://raw.githubusercontent.com/Shonz1/minecraft-default-configs/main/1.20.1/paper-world-defaults.yml
+[0;39m[39m[mc-image-helper] 02:59:53.963 INFO  : Downloaded /data/bukkit.yml from https://raw.githubusercontent.com/Shonz1/minecraft-default-configs/main/1.20.1/bukkit.yml
+[0;39m[39m[mc-image-helper] 02:59:53.962 INFO  : Downloaded /data/spigot.yml from https://raw.githubusercontent.com/Shonz1/minecraft-default-configs/main/1.20.1/spigot.yml
+[0;39m[init] Setting initial memory to 1G and max to 1G
+[init] Starting the Minecraft server...
+Downloading mojang_1.20.1.jar
+Applying patches
+Starting org.bukkit.craftbukkit.Main
+System Info: Java 17 (OpenJDK 64-Bit Server VM 17.0.15+6) Host: Linux 6.18.33 (amd64)
+Loading libraries, please wait...
+2026-06-03 02:59:56,416 ServerMain WARN Advanced terminal features are not available in this environment
+[02:59:58 INFO]: Environment: authHost='https://authserver.mojang.com', accountsHost='https://api.mojang.com', sessionHost='https://sessionserver.mojang.com', servicesHost='https://api.minecraftservices.com', name='PROD'
+[02:59:58 INFO]: Found new data pack file/bukkit, loading it automatically
+[02:59:58 INFO]: Loaded 7 recipes
+[02:59:59 INFO]: Starting minecraft server version 1.20.1
+[02:59:59 INFO]: Loading properties
+[02:59:59 INFO]: This server is running Paper version git-Paper-196 (MC: 1.20.1) (Implementing API version 1.20.1-R0.1-SNAPSHOT) (Git: 773dd72)
+[02:59:59 INFO]: Server Ping Player Sample Count: 12
+[02:59:59 INFO]: Using 4 threads for Netty based IO
+[02:59:59 WARN]: [!] The timings profiler has been enabled but has been scheduled for removal from Paper in the future.
+    We recommend installing the spark profiler as a replacement: https://spark.lucko.me/
+    For more information please visit: https://github.com/PaperMC/Paper/issues/8948
+[02:59:59 INFO]: [ChunkTaskScheduler] Chunk system is using 1 I/O threads, 8 worker threads, and gen parallelism of 8 threads
+[02:59:59 INFO]: Default game type: SURVIVAL
+[02:59:59 INFO]: Generating keypair
+[02:59:59 INFO]: Starting Minecraft server on *:25565
+[02:59:59 INFO]: Using epoll channel type
+[02:59:59 INFO]: Paper: Using libdeflate (Linux x86_64) compression from Velocity.
+[02:59:59 INFO]: Paper: Using OpenSSL 1.1.x (Linux x86_64) cipher from Velocity.
+[02:59:59 INFO]: [McCompatSurvivalFixture] Loading server plugin McCompatSurvivalFixture v0.1.0
+[02:59:59 WARN]: **** SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+[02:59:59 WARN]: The server will make no attempt to authenticate usernames. Beware.
+[02:59:59 WARN]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+[02:59:59 WARN]: To change this, set "online-mode" to "true" in the server.properties file.
+[02:59:59 INFO]: Preparing level "world"
+[03:00:01 INFO]: Preparing start region for dimension minecraft:overworld
+[03:00:02 INFO]: Time elapsed: 79 ms
+[03:00:02 INFO]: Preparing start region for dimension minecraft:the_nether
+[03:00:02 INFO]: Time elapsed: 29 ms
+[03:00:02 INFO]: Preparing start region for dimension minecraft:the_end
+[03:00:02 INFO]: Time elapsed: 34 ms
+[03:00:02 INFO]: [McCompatSurvivalFixture] Enabling McCompatSurvivalFixture v0.1.0
+[03:00:02 INFO]: [McCompatSurvivalFixture] MC-COMPAT-MILESTONE survival_fixture_enabled
+[03:00:02 INFO]: Starting remote control listener
+[03:00:02 INFO]: Thread RCON Listener started
+[03:00:02 INFO]: RCON running on 0.0.0.0:25575
+[03:00:02 INFO]: Running delayed init tasks
+[03:00:02 INFO]: Done (2.935s)! For help, type "help"
+[03:00:02 INFO]: Timings Reset
+[03:00:06 INFO]: UUID of player compatbota is dde1878d-d028-3f14-9223-77e321006b00
+[03:00:06 INFO]: compatbota joined the game
+[03:00:06 INFO]: compatbota[/172.30.0.1:44210] logged in with entity id 278 at ([world]38.0, 65.0, 0.0)
+[03:00:06 INFO]: [McCompatSurvivalFixture] MC-COMPAT-MILESTONE survival_join username=compatbota gamemode=Survival target=0,64,1
+[03:00:10 WARN]: compatbota moved too quickly! -59.95013990722264,20.999899999999997,-0.7619399072226845
+[03:00:10 WARN]: compatbota moved too quickly! -59.95013990722264,20.999899999999997,-0.7619399072226845
+[03:00:10 WARN]: compatbota moved too quickly! -59.95013990722264,20.999899999999997,-0.7619399072226845
+[03:00:10 WARN]: compatbota moved too quickly! -59.95013990722264,20.999899999999997,-0.7619399072226845
+[03:00:10 WARN]: compatbota moved too quickly! -59.95013990722264,20.999899999999997,-0.7619399072226845
+[03:00:11 WARN]: compatbota moved too quickly! -59.95013990722264,20.999899999999997,-0.7619399072226845
+[03:00:11 INFO]: UUID of player compatbotb is 86781496-7422-30a7-9800-bc1f917b8131
+[03:00:11 INFO]: compatbotb joined the game
+[03:00:11 INFO]: compatbotb[/172.30.0.1:45048] logged in with entity id 385 at ([world]40.0, 65.0, 0.0)
+[03:00:11 INFO]: [McCompatSurvivalFixture] MC-COMPAT-MILESTONE survival_join username=compatbotb gamemode=Survival target=0,64,1
+[03:00:12 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:13 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:13 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:13 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:13 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:13 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:13 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:13 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:13 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:13 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:13 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:13 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:13 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:13 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:14 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:14 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:14 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:14 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:14 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:14 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:14 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:14 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:14 WARN]: compatbotb moved too quickly! -19.48690258118019,20.999899999999997,8.166697418819847
+[03:00:15 WARN]: compatbotb moved too quickly! -19.48690258118019,20.999899999999997,8.166697418819847
+[03:00:15 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:15 WARN]: compatbotb moved too quickly! -19.48690258118019,20.999899999999997,8.166697418819847
+[03:00:15 WARN]: compatbotb moved too quickly! -19.48690258118019,20.999899999999997,8.166697418819847
+[03:00:15 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:15 WARN]: compatbotb moved too quickly! -19.48690258118019,20.999899999999997,8.166697418819847
+[03:00:15 WARN]: compatbotb moved too quickly! -19.48690258118019,20.999899999999997,8.166697418819847
+[03:00:15 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:15 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:15 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:15 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:15 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:15 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:15 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:16 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:16 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:16 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:16 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:16 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:16 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:16 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:16 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:17 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:17 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:17 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:17 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:17 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:17 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:17 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:17 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:17 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:18 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:18 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:18 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:18 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:18 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:18 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:18 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:18 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:18 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:18 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:18 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:18 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:18 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:00:18 WARN]: compatbota moved too quickly! -17.950139907222642,1.9998999999999967,-4.7619399072226845
+[03:02:02 INFO]: compatbota lost connection: Disconnected
+[03:02:02 INFO]: compatbota left the game
+[03:02:07 INFO]: compatbotb lost connection: Disconnected
+[03:02:07 INFO]: compatbotb left the game
+*** Warning, you've not updated in a while! ***
+*** Please download a new build as per instructions from https://papermc.io/downloads/paper ***

@@ -1,0 +1,37 @@
+checkpoint: vanilla combat reference paired checker Steel validation
+scope: auxiliary static validation only; not Rust compile/self-test evidence
+
+generated_tool: steel_validate_vanilla_combat_checker
+saved_tool_tests:
+- positive minimal checker source: ok
+- negative missing diagnostics: ok
+- negative command constructor: ok
+
+actual_source_static_tokens:
+- fn compare_combat_parity: present
+- fn normalize_record: present
+- fn run_config: present
+- struct CombatParityRecord: present
+- struct CombatParityPair: present
+- struct CombatParityDecision: present
+- ROW_ID vanilla-combat-reference-parity: present
+- REFERENCE_BACKEND paper-reference: present
+- VALENCE_BACKEND valence: present
+- REFERENCE_ORACLE paper-1.20.1-reference-harness: present
+- REFERENCE_VERSION minecraft-1.20.1-protocol-763: present
+- missing_reference: present
+- valence_only_evidence: present
+- wrong_reference_version: present
+- missing_damage_tolerance: present
+- damage_delta_out_of_tolerance: present
+- knockback_metric_out_of_tolerance: present
+- stale_revision: present
+- mismatched_weapon: present
+- mismatched_armor_state: present
+
+required_followup:
+- compile with rustc through nix develop
+- run target/check-vanilla-combat-reference-parity --self-test
+- copy output to docs/evidence/ with exit_status=0 and BLAKE3 sidecar before checking the Cairn checker task
+
+exit_status=0

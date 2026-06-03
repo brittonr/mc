@@ -19,6 +19,7 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 - Child commits used for the survival redstone-toggle row: Valence `469558f`, Stevenarella `357021d`; machine-recorded in `docs/evidence/survival-redstone-toggle-valence-2026-06-02.receipt.json` and `docs/evidence/survival-redstone-toggle-paper-2026-06-02.receipt.json`.
 - Child commits used for the survival world-persistence row: Valence `6117703`, Stevenarella `0a745b0`; machine-recorded in `docs/evidence/survival-world-persistence-valence-2026-06-02.receipt.json` and `docs/evidence/survival-world-persistence-paper-2026-06-02.receipt.json`.
 - Child commits used for the MCP-controlled observability row: Valence `3359f85`, Stevenarella `4d1b155`; machine-recorded in `docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.json`.
+- Child commits used for the bounded Paper-reference combat parity row: Valence `be02847e`, Stevenarella `75151ca`; machine-recorded in `docs/evidence/vanilla-combat-reference-paired-valence-receipt-2026-06-02.json` and `docs/evidence/vanilla-combat-reference-paired-paper-receipt-2026-06-02.json`.
 
 ## Evidence rows
 
@@ -42,6 +43,7 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 | Spawn/team balance/resource reset | `nix run .#mc-compat-valence-ctf-spawn-team-balance-reset` | `ce4ec8f61c956d5083d6701915a44b9e31c8e0adbfd018b25878774e516f2e6f` |
 | Latency/jitter tolerance | `nix run .#mc-compat-valence-ctf-latency-jitter-inventory` | `a4a407fb1ac3aceae06faeacb794891ff8411c8ac86470c651c89b37b6c7f33d` |
 | Combat knockback | `nix run .#mc-compat-valence-ctf-combat-knockback` | `a5d0ba5ea6155a99b58f245a03195da05b4925d7bd151b5b3f67503ae7a4cf09` |
+| Bounded Paper-reference combat parity | paired Paper/Valence `vanilla-combat-reference-parity` receipts plus Rust comparator | `842d5e2d226c547dccaed6f1b3ca50db92d6621d1012b37b593e92c8db4255b7` |
 | Armor equipment mitigation | `nix run .#mc-compat-valence-ctf-armor-equipment-mitigation` | `3152241bbbca379405a3806987f0b4dc8e4706b291cecebc1f509d0f96914f07` |
 | Equipment update observation | `nix run .#mc-compat-valence-ctf-equipment-update-observation` | `8100dde3ebb3476984235009e277d7e973037b7873b2fdb30c413093e1498d3d` |
 | Equipment permutation packet family | scenario-bounded equipment observer receipt plus row contract fixture | `bb6bf5c18357e9ebb26ff43d72a094923b0c7dbe7726e52f65186fadd36def02` |
@@ -146,7 +148,7 @@ The maintained world-persistence row is validated by `docs/evidence/survival-wor
 
 ## Vanilla combat parity checkpoint
 
-Vanilla combat parity is guarded by `docs/evidence/protocol-763-vanilla-combat-parity-2026-05-27.md` and `tools/check_vanilla_combat_parity.py`. No paired reference/Valence receipts exist today, so exact vanilla combat parity remains a non-claim and Valence-only evidence is rejected for parity promotion.
+The bounded `vanilla-combat-reference-parity` row is validated by `docs/evidence/vanilla-combat-reference-paired-receipts-2026-06-02.md`, paired Paper/Valence receipts, normalized KV inputs, and `tools/check_vanilla_combat_reference_parity.rs`; the comparator log is `docs/evidence/vanilla-combat-reference-paired-compare-2026-06-02.run.log` with `exit_status=0`. This promotes only the named Paper-reference interaction (`compatbota` hits `compatbotb` with iron sword/no armor, first hit `20.0 -> 14.0`, `damage_delta=6.0`, `knockback_metric=0.00`). Exact Mojang vanilla combat parity remains a non-claim, and Valence-only evidence is still rejected for parity promotion.
 
 ## CTF rule ledger checkpoint
 
@@ -252,10 +254,10 @@ The production/network matrix promotes bounded owned-local loopback load safety,
 
 ## Reference parity labels
 
-- `reference-parity-covered`: Survival break/place/pickup, chest persistence, crafting table, furnace persistence, hunger/food, and biome/dimension join state only.
-- `valence-only-containment`: CTF scoring, inventory, combat, projectile, reconnect, latency/jitter, MCP-controlled observability, and load/network rows.
+- `reference-parity-covered`: Survival break/place/pickup, chest persistence, crafting table, furnace persistence, hunger/food, biome/dimension join state, and bounded `vanilla-combat-reference-parity` Paper-reference row only.
+- `valence-only-containment`: CTF scoring, inventory, non-reference combat, projectile, reconnect, latency/jitter, MCP-controlled observability, and load/network rows.
 - `fixture-only-oracle`: The adversarial-network oracle row only; no live traffic or broad security claim.
-- `explicit-non-claim`: exact vanilla combat parity, broad survival, full Minecraft/CTF/protocol correctness, and survival rows not named as reference-parity covered.
+- `explicit-non-claim`: exact Mojang vanilla combat parity, broad survival, full Minecraft/CTF/protocol correctness, and rows not named as reference-parity covered.
 
 Policy/checkpoint: `docs/evidence/protocol-763-reference-parity-expansion-2026-05-29.md`.
 

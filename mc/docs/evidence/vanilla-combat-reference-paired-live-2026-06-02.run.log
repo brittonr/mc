@@ -1,0 +1,29 @@
+# vanilla-combat-reference-paired live receipt validation
+date=2026-06-02
+row=vanilla-combat-reference-parity
+paper_reference_child_revision=paper-1.20.1-build-196
+valence_child_revision=be02847ea666
+stevenarella_child_revision=75151ca3cd4e
+
+## paper live receipt
+command=SERVER_PROTOCOL=763 SERVER_VERSION=1.20.1 PAPER_PLUGIN_JAR=/home/brittonr/git/mc/docs/evidence/mc-compat-paper-vanilla-combat-reference-fixture-2026-06-02.jar SERVER_NAME=mc-compat-vanilla-combat-paper-20260602n CLIENT_TIMEOUT=120 nix run --no-update-lock-file .#mc-compat-smoke -- --run --server-backend paper --scenario vanilla-combat-reference-parity --receipt /home/brittonr/git/mc/target/vanilla-combat-reference-paired-receipts-2026-06-02/paper.receipt.json --keep-server
+raw_stdout_log=docs/evidence/vanilla-combat-reference-paired-paper-live-2026-06-02.run.log
+receipt=docs/evidence/vanilla-combat-reference-paired-paper-receipt-2026-06-02.json
+typed_events=docs/evidence/vanilla-combat-reference-paired-paper-typed-events-2026-06-02.log
+server_log=docs/evidence/vanilla-combat-reference-paired-paper-server-2026-06-02.log
+normalized_comparator_input=docs/evidence/vanilla-combat-reference-paired-paper-reference-2026-06-02.kv
+observed=paper receipt status=pass; server damage_delta=6.0 post_health=14.0 knockback_metric=0.00
+exit_status=0
+
+## valence live receipt
+command=SERVER_PROTOCOL=763 SERVER_VERSION=1.20.1 VALENCE_REPO=/home/brittonr/git/mc/valence VALENCE_REV=be02847ea666 VALENCE_WORKTREE=/tmp/valence-vanilla-combat-reference-live-20260602-final-75151ca-be02847ea666 VALENCE_TARGET_DIR=/tmp/valence-vanilla-combat-reference-live-target-final-75151ca-be02847ea666 VALENCE_EXAMPLE=ctf CLIENT_TIMEOUT=120 nix run --no-update-lock-file .#mc-compat-smoke -- --run --server-backend valence --scenario vanilla-combat-reference-parity --receipt /home/brittonr/git/mc/target/vanilla-combat-reference-paired-receipts-2026-06-02/valence.receipt.json
+raw_stdout_log=docs/evidence/vanilla-combat-reference-paired-valence-live-2026-06-02.run.log
+receipt=docs/evidence/vanilla-combat-reference-paired-valence-receipt-2026-06-02.json
+typed_events=docs/evidence/vanilla-combat-reference-paired-valence-typed-events-2026-06-02.log
+server_log=docs/evidence/vanilla-combat-reference-paired-valence-server-2026-06-02.log
+normalized_comparator_input=docs/evidence/vanilla-combat-reference-paired-valence-reference-2026-06-02.kv
+observed=valence receipt status=pass; server damage_delta=6.0 post_health=14.0 knockback_metric=0.00
+exit_status=0
+
+overall_exit_status=0
+exit_status=0

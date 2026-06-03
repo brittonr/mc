@@ -1,5 +1,6 @@
 package mc.compat.paper;
 
+import java.util.Locale;
 import java.util.UUID;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -14,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -21,10 +23,13 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
+import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 public final class SurvivalFixturePlugin extends JavaPlugin implements Listener {
     private static final int TARGET_X = 0;
@@ -135,6 +140,36 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
     private static final float WORLD_PERSISTENCE_PLAYER_PITCH = 30.0F;
     private static final String WORLD_PERSISTENCE_BLOCK_NAME = "Dirt";
     private static final String BIOME_DIMENSION_FIXTURE_ENV = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_FIXTURE";
+    private static final String VANILLA_COMBAT_REFERENCE_FIXTURE_ENV = "MC_COMPAT_VANILLA_COMBAT_REFERENCE_PROBE";
+    private static final String VANILLA_COMBAT_REFERENCE_ROW = "vanilla-combat-reference-parity";
+    private static final String VANILLA_COMBAT_REFERENCE_BACKEND = "paper-reference";
+    private static final String VANILLA_COMBAT_REFERENCE_ORACLE = "paper-1.20.1-reference-harness";
+    private static final String VANILLA_COMBAT_REFERENCE_VERSION = "minecraft-1.20.1-protocol-763";
+    private static final String VANILLA_COMBAT_REFERENCE_ATTACKER = "compatbota";
+    private static final String VANILLA_COMBAT_REFERENCE_VICTIM = "compatbotb";
+    private static final String VANILLA_COMBAT_REFERENCE_RED_MESSAGE = "You are on team RED!";
+    private static final String VANILLA_COMBAT_REFERENCE_BLUE_MESSAGE = "You are on team BLUE!";
+    private static final String VANILLA_COMBAT_REFERENCE_ARMOR_NONE = "none";
+    private static final String VANILLA_COMBAT_REFERENCE_DAMAGE_TOLERANCE = "0.0";
+    private static final String VANILLA_COMBAT_REFERENCE_KNOCKBACK_TOLERANCE = "0.05";
+    private static final int VANILLA_COMBAT_REFERENCE_ITEM_COUNT = 1;
+    private static final int VANILLA_COMBAT_REFERENCE_NO_DAMAGE_TICKS = 0;
+    private static final double VANILLA_COMBAT_REFERENCE_HEALTH = 20.0D;
+    private static final double VANILLA_COMBAT_REFERENCE_MIN_HEALTH = 0.0D;
+    private static final double VANILLA_COMBAT_REFERENCE_ATTACKER_X = 38.0D;
+    private static final double VANILLA_COMBAT_REFERENCE_VICTIM_X = 40.0D;
+    private static final double VANILLA_COMBAT_REFERENCE_PLAYER_Y = 65.0D;
+    private static final double VANILLA_COMBAT_REFERENCE_PLAYER_Z = 0.0D;
+    private static final float VANILLA_COMBAT_REFERENCE_ATTACKER_YAW = -90.0F;
+    private static final float VANILLA_COMBAT_REFERENCE_VICTIM_YAW = 90.0F;
+    private static final float VANILLA_COMBAT_REFERENCE_PITCH = 0.0F;
+    private static final int VANILLA_COMBAT_REFERENCE_FLOOR_MIN_X = 37;
+    private static final int VANILLA_COMBAT_REFERENCE_FLOOR_MAX_X = 41;
+    private static final int VANILLA_COMBAT_REFERENCE_FLOOR_Z = 0;
+    private static final int VANILLA_COMBAT_REFERENCE_CLEAR_MIN_Y = 65;
+    private static final int VANILLA_COMBAT_REFERENCE_CLEAR_MAX_Y = 68;
+    private static final int VANILLA_COMBAT_REFERENCE_CLEAR_MIN_Z = -1;
+    private static final int VANILLA_COMBAT_REFERENCE_CLEAR_MAX_Z = 1;
     private static final String OVERWORLD_ID = "minecraft:overworld";
     private static final String NETHER_ID = "minecraft:the_nether";
     private static final String END_ID = "minecraft:the_end";
@@ -175,6 +210,8 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
     private final java.util.Set<UUID> worldPersistenceMutationSeen = new java.util.HashSet<>();
     private final java.util.Set<UUID> worldPersistencePostSeen = new java.util.HashSet<>();
     private final java.util.Set<UUID> worldPersistenceStateSeen = new java.util.HashSet<>();
+    private final java.util.Set<UUID> vanillaCombatReferenceDamageSeen = new java.util.HashSet<>();
+    private final java.util.Set<UUID> vanillaCombatReferenceKnockbackSeen = new java.util.HashSet<>();
 
     @Override
     public void onEnable() {
@@ -296,6 +333,52 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
     }
 
     @EventHandler(ignoreCancelled = false)
+    public void onPlayerSpawnLocation(PlayerSpawnLocationEvent event) {
+        if (!vanillaCombatReferenceFixtureEnabled()) {
+            return;
+        }
+        Location spawnLocation = vanillaCombatReferenceLocationFor(event.getPlayer(), event.getSpawnLocation().getWorld());
+        if (spawnLocation != null) {
+            event.setSpawnLocation(spawnLocation);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = false)
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+        if (!vanillaCombatReferenceFixtureEnabled()) {
+            return;
+        }
+        if (!(event.getDamager() instanceof Player attacker) || !(event.getEntity() instanceof Player victim)) {
+            return;
+        }
+        if (!isVanillaCombatReferencePair(attacker, victim)) {
+            return;
+        }
+        if (!vanillaCombatReferenceDamageSeen.add(victim.getUniqueId())) {
+            return;
+        }
+        double preHealth = victim.getHealth();
+        double damageDelta = event.getFinalDamage();
+        double postHealth = Math.max(VANILLA_COMBAT_REFERENCE_MIN_HEALTH, preHealth - damageDelta);
+        getLogger().info(vanillaCombatReferenceDamageMilestone(attacker, victim, preHealth, postHealth, damageDelta));
+    }
+
+    @EventHandler(ignoreCancelled = false)
+    public void onPlayerVelocity(PlayerVelocityEvent event) {
+        if (!vanillaCombatReferenceFixtureEnabled()) {
+            return;
+        }
+        Player victim = event.getPlayer();
+        if (!VANILLA_COMBAT_REFERENCE_VICTIM.equals(victim.getName())) {
+            return;
+        }
+        if (!vanillaCombatReferenceKnockbackSeen.add(victim.getUniqueId())) {
+            return;
+        }
+        getLogger().info(vanillaCombatReferenceKnockbackMilestone(event.getVelocity()));
+    }
+
+    @EventHandler(ignoreCancelled = false)
     public void onInventoryClose(InventoryCloseEvent event) {
         if (!chestFixtureEnabled() || !(event.getPlayer() instanceof Player player)) {
             return;
@@ -335,6 +418,9 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
         if (worldPersistenceFixtureEnabled()) {
             setupWorldPersistenceFixture(world);
         }
+        if (vanillaCombatReferenceFixtureEnabled()) {
+            setupVanillaCombatReferenceArena(world);
+        }
         player.getInventory().clear();
         player.setGameMode(GameMode.SURVIVAL);
         if (chestFixtureEnabled()) {
@@ -349,7 +435,9 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
         if (hungerFoodFixtureEnabled()) {
             setupHungerFoodFixture(player);
         }
-        if (redstoneToggleFixtureEnabled()) {
+        if (vanillaCombatReferenceFixtureEnabled()) {
+            setupVanillaCombatReferencePlayer(player, world);
+        } else if (redstoneToggleFixtureEnabled()) {
             player.teleport(new Location(world, REDSTONE_PLAYER_X, REDSTONE_PLAYER_Y, REDSTONE_PLAYER_Z, REDSTONE_PLAYER_YAW, REDSTONE_PLAYER_PITCH));
         } else if (worldPersistenceFixtureEnabled()) {
             player.getInventory().setItem(HOTBAR_SLOT, new ItemStack(Material.DIRT, ITEM_COUNT));
@@ -376,7 +464,9 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
         if (worldPersistenceFixtureEnabled()) {
             logWorldPersistencePostRestart(player);
         }
-        scheduleFixtureMilestones(player);
+        if (!vanillaCombatReferenceFixtureEnabled()) {
+            scheduleFixtureMilestones(player);
+        }
     }
 
     private void setupHungerFoodFixture(Player player) {
@@ -429,6 +519,130 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
         }
         setLever(world, false);
         setLamp(world, false);
+    }
+
+    private void setupVanillaCombatReferenceArena(World world) {
+        for (int x = VANILLA_COMBAT_REFERENCE_FLOOR_MIN_X; x <= VANILLA_COMBAT_REFERENCE_FLOOR_MAX_X; x++) {
+            world.getBlockAt(x, FLOOR_Y, VANILLA_COMBAT_REFERENCE_FLOOR_Z).setType(Material.STONE, false);
+            for (int y = VANILLA_COMBAT_REFERENCE_CLEAR_MIN_Y; y <= VANILLA_COMBAT_REFERENCE_CLEAR_MAX_Y; y++) {
+                for (int z = VANILLA_COMBAT_REFERENCE_CLEAR_MIN_Z; z <= VANILLA_COMBAT_REFERENCE_CLEAR_MAX_Z; z++) {
+                    world.getBlockAt(x, y, z).setType(Material.AIR, false);
+                }
+            }
+        }
+    }
+
+    private void setupVanillaCombatReferencePlayer(Player player, World world) {
+        player.setHealth(VANILLA_COMBAT_REFERENCE_HEALTH);
+        player.setNoDamageTicks(VANILLA_COMBAT_REFERENCE_NO_DAMAGE_TICKS);
+        player.setFoodLevel(HUNGER_FOOD_POST_FOOD);
+        player.setSaturation(HUNGER_FOOD_POST_SATURATION);
+        if (VANILLA_COMBAT_REFERENCE_ATTACKER.equals(player.getName())) {
+            player.getInventory().setItem(HOTBAR_SLOT, new ItemStack(Material.IRON_SWORD, VANILLA_COMBAT_REFERENCE_ITEM_COUNT));
+            player.updateInventory();
+            player.teleport(new Location(
+                world,
+                VANILLA_COMBAT_REFERENCE_ATTACKER_X,
+                VANILLA_COMBAT_REFERENCE_PLAYER_Y,
+                VANILLA_COMBAT_REFERENCE_PLAYER_Z,
+                VANILLA_COMBAT_REFERENCE_ATTACKER_YAW,
+                VANILLA_COMBAT_REFERENCE_PITCH
+            ));
+            player.sendMessage(VANILLA_COMBAT_REFERENCE_RED_MESSAGE);
+            return;
+        }
+        if (VANILLA_COMBAT_REFERENCE_VICTIM.equals(player.getName())) {
+            player.teleport(new Location(
+                world,
+                VANILLA_COMBAT_REFERENCE_VICTIM_X,
+                VANILLA_COMBAT_REFERENCE_PLAYER_Y,
+                VANILLA_COMBAT_REFERENCE_PLAYER_Z,
+                VANILLA_COMBAT_REFERENCE_VICTIM_YAW,
+                VANILLA_COMBAT_REFERENCE_PITCH
+            ));
+            player.sendMessage(VANILLA_COMBAT_REFERENCE_BLUE_MESSAGE);
+        }
+    }
+
+    private Location vanillaCombatReferenceLocationFor(Player player, World world) {
+        if (VANILLA_COMBAT_REFERENCE_ATTACKER.equals(player.getName())) {
+            return new Location(
+                world,
+                VANILLA_COMBAT_REFERENCE_ATTACKER_X,
+                VANILLA_COMBAT_REFERENCE_PLAYER_Y,
+                VANILLA_COMBAT_REFERENCE_PLAYER_Z,
+                VANILLA_COMBAT_REFERENCE_ATTACKER_YAW,
+                VANILLA_COMBAT_REFERENCE_PITCH
+            );
+        }
+        if (VANILLA_COMBAT_REFERENCE_VICTIM.equals(player.getName())) {
+            return new Location(
+                world,
+                VANILLA_COMBAT_REFERENCE_VICTIM_X,
+                VANILLA_COMBAT_REFERENCE_PLAYER_Y,
+                VANILLA_COMBAT_REFERENCE_PLAYER_Z,
+                VANILLA_COMBAT_REFERENCE_VICTIM_YAW,
+                VANILLA_COMBAT_REFERENCE_PITCH
+            );
+        }
+        return null;
+    }
+
+    private boolean isVanillaCombatReferencePair(Player attacker, Player victim) {
+        return VANILLA_COMBAT_REFERENCE_ATTACKER.equals(attacker.getName())
+            && VANILLA_COMBAT_REFERENCE_VICTIM.equals(victim.getName());
+    }
+
+    private String vanillaCombatReferenceDamageMilestone(
+        Player attacker,
+        Player victim,
+        double preHealth,
+        double postHealth,
+        double damageDelta
+    ) {
+        return "MC-COMPAT-MILESTONE vanilla_combat_reference_damage"
+            + " row=" + VANILLA_COMBAT_REFERENCE_ROW
+            + " backend=" + VANILLA_COMBAT_REFERENCE_BACKEND
+            + " reference_oracle=" + VANILLA_COMBAT_REFERENCE_ORACLE
+            + " reference_version=" + VANILLA_COMBAT_REFERENCE_VERSION
+            + " attacker_identity=" + attacker.getName()
+            + " victim_identity=" + victim.getName()
+            + " weapon=" + normalizeMaterialName(attacker.getInventory().getItemInMainHand().getType())
+            + " armor_state=" + normalizeArmorState(victim.getInventory().getChestplate())
+            + " pre_health=" + formatOneDecimal(preHealth)
+            + " post_health=" + formatOneDecimal(postHealth)
+            + " damage_delta=" + formatOneDecimal(damageDelta)
+            + " damage_tolerance=" + VANILLA_COMBAT_REFERENCE_DAMAGE_TOLERANCE;
+    }
+
+    private String vanillaCombatReferenceKnockbackMilestone(Vector velocity) {
+        return "MC-COMPAT-MILESTONE vanilla_combat_reference_knockback"
+            + " row=" + VANILLA_COMBAT_REFERENCE_ROW
+            + " backend=" + VANILLA_COMBAT_REFERENCE_BACKEND
+            + " reference_oracle=" + VANILLA_COMBAT_REFERENCE_ORACLE
+            + " reference_version=" + VANILLA_COMBAT_REFERENCE_VERSION
+            + " attacker_identity=" + VANILLA_COMBAT_REFERENCE_ATTACKER
+            + " victim_identity=" + VANILLA_COMBAT_REFERENCE_VICTIM
+            + " knockback_metric=" + formatTwoDecimals(vanillaCombatReferenceKnockbackMetric(velocity))
+            + " velocity_x=" + formatTwoDecimals(velocity.getX())
+            + " velocity_y=" + formatTwoDecimals(velocity.getY())
+            + " velocity_z=" + formatTwoDecimals(velocity.getZ())
+            + " knockback_tolerance=" + VANILLA_COMBAT_REFERENCE_KNOCKBACK_TOLERANCE;
+    }
+
+    private double vanillaCombatReferenceKnockbackMetric(Vector velocity) {
+        return Math.hypot(velocity.getX(), velocity.getZ());
+    }
+
+    private String normalizeArmorState(ItemStack chestplate) {
+        if (chestplate == null || chestplate.getType() == Material.AIR) {
+            return VANILLA_COMBAT_REFERENCE_ARMOR_NONE;
+        }
+        return normalizeMaterialName(chestplate.getType());
+    }
+
+    private String normalizeMaterialName(Material material) {
+        return material.name().toLowerCase(Locale.ROOT);
     }
 
     private void setLever(World world, boolean powered) {
@@ -606,6 +820,10 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
 
     private boolean biomeDimensionFixtureEnabled() {
         return "1".equals(System.getenv(BIOME_DIMENSION_FIXTURE_ENV));
+    }
+
+    private boolean vanillaCombatReferenceFixtureEnabled() {
+        return "1".equals(System.getenv(VANILLA_COMBAT_REFERENCE_FIXTURE_ENV));
     }
 
     private String normalizeSurvivalEnvironmentId(String raw) {
@@ -1044,6 +1262,10 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
 
     private String formatOneDecimal(double value) {
         return String.format(java.util.Locale.ROOT, "%.1f", value);
+    }
+
+    private String formatTwoDecimals(double value) {
+        return String.format(java.util.Locale.ROOT, "%.2f", value);
     }
 
     private void scheduleFixtureMilestones(Player player) {

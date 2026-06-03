@@ -1,0 +1,161 @@
+[init] Running as uid=1000 gid=1000 with /data as 'drwxr-xr-x 2 1000 1000 4096 May 27 12:37 /data'
+[init] Image info: buildtime=2026-05-31T14:45:05.064Z,version=java17,revision=a4719f2ba6f5cbcde07fc90ec4b6c42533aba5ad
+[init] Resolving type given PAPER
+[39m[mc-image-helper] 03:13:23.638 INFO  : Downloaded /data/paper-1.20.1-196.jar
+[0;39m[init] Copying any plugins from /plugins to /data/plugins
+[39m[mc-image-helper] 03:13:24.618 INFO  : Copying /plugins/mc-compat-paper-vanilla-combat-reference-fixture-2026-06-02.jar -> /data/plugins/mc-compat-paper-vanilla-combat-reference-fixture-2026-06-02.jar
+[0;39m[init] Copying any configs from /config to /data/config
+[init] Creating server properties in /data/server.properties
+[init] Disabling whitelist functionality
+[39m[mc-image-helper] 03:13:25.265 INFO  : Created/updated 7 properties in /data/server.properties
+[0;39m[39m[mc-image-helper] 03:13:26.158 INFO  : Downloaded /data/config/paper-world-defaults.yml from https://raw.githubusercontent.com/Shonz1/minecraft-default-configs/main/1.20.1/paper-world-defaults.yml
+[0;39m[39m[mc-image-helper] 03:13:26.163 INFO  : Downloaded /data/config/paper-global.yml from https://raw.githubusercontent.com/Shonz1/minecraft-default-configs/main/1.20.1/paper-global.yml
+[0;39m[39m[mc-image-helper] 03:13:27.271 INFO  : Downloaded /data/bukkit.yml from https://raw.githubusercontent.com/Shonz1/minecraft-default-configs/main/1.20.1/bukkit.yml
+[0;39m[39m[mc-image-helper] 03:13:27.294 INFO  : Downloaded /data/spigot.yml from https://raw.githubusercontent.com/Shonz1/minecraft-default-configs/main/1.20.1/spigot.yml
+[0;39m[init] Setting initial memory to 1G and max to 1G
+[init] Starting the Minecraft server...
+Downloading mojang_1.20.1.jar
+Applying patches
+Starting org.bukkit.craftbukkit.Main
+System Info: Java 17 (OpenJDK 64-Bit Server VM 17.0.15+6) Host: Linux 6.18.33 (amd64)
+Loading libraries, please wait...
+2026-06-03 03:13:29,797 ServerMain WARN Advanced terminal features are not available in this environment
+[03:13:31 INFO]: Environment: authHost='https://authserver.mojang.com', accountsHost='https://api.mojang.com', sessionHost='https://sessionserver.mojang.com', servicesHost='https://api.minecraftservices.com', name='PROD'
+[03:13:31 INFO]: Found new data pack file/bukkit, loading it automatically
+[03:13:32 INFO]: Loaded 7 recipes
+[03:13:32 INFO]: Starting minecraft server version 1.20.1
+[03:13:32 INFO]: Loading properties
+[03:13:32 INFO]: This server is running Paper version git-Paper-196 (MC: 1.20.1) (Implementing API version 1.20.1-R0.1-SNAPSHOT) (Git: 773dd72)
+[03:13:32 INFO]: Server Ping Player Sample Count: 12
+[03:13:32 INFO]: Using 4 threads for Netty based IO
+[03:13:32 WARN]: [!] The timings profiler has been enabled but has been scheduled for removal from Paper in the future.
+    We recommend installing the spark profiler as a replacement: https://spark.lucko.me/
+    For more information please visit: https://github.com/PaperMC/Paper/issues/8948
+[03:13:32 INFO]: [ChunkTaskScheduler] Chunk system is using 1 I/O threads, 8 worker threads, and gen parallelism of 8 threads
+[03:13:32 INFO]: Default game type: SURVIVAL
+[03:13:32 INFO]: Generating keypair
+[03:13:32 INFO]: Starting Minecraft server on *:25565
+[03:13:32 INFO]: Using epoll channel type
+[03:13:32 INFO]: Paper: Using libdeflate (Linux x86_64) compression from Velocity.
+[03:13:32 INFO]: Paper: Using OpenSSL 1.1.x (Linux x86_64) cipher from Velocity.
+[03:13:32 ERROR]: [ModernPluginLoadingStrategy] Could not load plugin 'mc-compat-paper-vanilla-combat-reference-fixture-2026-06-02.jar' in folder 'plugins'
+org.bukkit.plugin.InvalidPluginException: java.lang.UnsupportedClassVersionError: mc/compat/paper/SurvivalFixturePlugin has been compiled by a more recent version of the Java Runtime (class file version 65.0), this version of the Java Runtime only recognizes class file versions up to 61.0
+	at io.papermc.paper.plugin.provider.type.spigot.SpigotPluginProvider.createInstance(SpigotPluginProvider.java:127) ~[paper-1.20.1.jar:git-Paper-196]
+	at io.papermc.paper.plugin.provider.type.spigot.SpigotPluginProvider.createInstance(SpigotPluginProvider.java:35) ~[paper-1.20.1.jar:git-Paper-196]
+	at io.papermc.paper.plugin.entrypoint.strategy.modern.ModernPluginLoadingStrategy.loadProviders(ModernPluginLoadingStrategy.java:116) ~[paper-1.20.1.jar:git-Paper-196]
+	at io.papermc.paper.plugin.storage.SimpleProviderStorage.enter(SimpleProviderStorage.java:39) ~[paper-1.20.1.jar:git-Paper-196]
+	at io.papermc.paper.plugin.entrypoint.LaunchEntryPointHandler.enter(LaunchEntryPointHandler.java:36) ~[paper-1.20.1.jar:git-Paper-196]
+	at org.bukkit.craftbukkit.v1_20_R1.CraftServer.loadPlugins(CraftServer.java:510) ~[paper-1.20.1.jar:git-Paper-196]
+	at net.minecraft.server.dedicated.DedicatedServer.initServer(DedicatedServer.java:273) ~[paper-1.20.1.jar:git-Paper-196]
+	at net.minecraft.server.MinecraftServer.runServer(MinecraftServer.java:1100) ~[paper-1.20.1.jar:git-Paper-196]
+	at net.minecraft.server.MinecraftServer.lambda$spin$0(MinecraftServer.java:317) ~[paper-1.20.1.jar:git-Paper-196]
+	at java.lang.Thread.run(Unknown Source) ~[?:?]
+Caused by: java.lang.UnsupportedClassVersionError: mc/compat/paper/SurvivalFixturePlugin has been compiled by a more recent version of the Java Runtime (class file version 65.0), this version of the Java Runtime only recognizes class file versions up to 61.0
+	at java.lang.ClassLoader.defineClass1(Native Method) ~[?:?]
+	at java.lang.ClassLoader.defineClass(Unknown Source) ~[?:?]
+	at java.security.SecureClassLoader.defineClass(Unknown Source) ~[?:?]
+	at org.bukkit.plugin.java.PluginClassLoader.findClass(PluginClassLoader.java:229) ~[paper-api-1.20.1-R0.1-SNAPSHOT.jar:?]
+	at java.lang.ClassLoader.loadClass(Unknown Source) ~[?:?]
+	at org.bukkit.plugin.java.PluginClassLoader.loadClass0(PluginClassLoader.java:155) ~[paper-api-1.20.1-R0.1-SNAPSHOT.jar:?]
+	at org.bukkit.plugin.java.PluginClassLoader.loadClass(PluginClassLoader.java:150) ~[paper-api-1.20.1-R0.1-SNAPSHOT.jar:?]
+	at java.lang.ClassLoader.loadClass(Unknown Source) ~[?:?]
+	at java.lang.Class.forName0(Native Method) ~[?:?]
+	at java.lang.Class.forName(Unknown Source) ~[?:?]
+	at org.bukkit.plugin.java.PluginClassLoader.<init>(PluginClassLoader.java:76) ~[paper-api-1.20.1-R0.1-SNAPSHOT.jar:?]
+	at io.papermc.paper.plugin.provider.type.spigot.SpigotPluginProvider.createInstance(SpigotPluginProvider.java:123) ~[paper-1.20.1.jar:git-Paper-196]
+	... 9 more
+[03:13:32 WARN]: **** SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+[03:13:32 WARN]: The server will make no attempt to authenticate usernames. Beware.
+[03:13:32 WARN]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+[03:13:32 WARN]: To change this, set "online-mode" to "true" in the server.properties file.
+[03:13:32 INFO]: Preparing level "world"
+[03:13:34 INFO]: Preparing start region for dimension minecraft:overworld
+[03:13:35 INFO]: Time elapsed: 63 ms
+[03:13:35 INFO]: Preparing start region for dimension minecraft:the_nether
+[03:13:35 INFO]: Time elapsed: 25 ms
+[03:13:35 INFO]: Preparing start region for dimension minecraft:the_end
+[03:13:35 INFO]: Time elapsed: 25 ms
+[03:13:35 INFO]: Starting remote control listener
+[03:13:35 INFO]: Thread RCON Listener started
+[03:13:35 INFO]: RCON running on 0.0.0.0:25575
+[03:13:35 INFO]: Running delayed init tasks
+[03:13:35 INFO]: Done (2.666s)! For help, type "help"
+[03:13:35 INFO]: Timings Reset
+[03:13:39 INFO]: UUID of player compatbota is dde1878d-d028-3f14-9223-77e321006b00
+[03:13:39 INFO]: compatbota joined the game
+[03:13:39 INFO]: compatbota[/172.30.0.1:43894] logged in with entity id 600 at ([world]-332.5, 64.0, 130.5)
+[03:13:43 INFO]: UUID of player compatbotb is 86781496-7422-30a7-9800-bc1f917b8131
+[03:13:44 INFO]: compatbotb joined the game
+[03:13:44 INFO]: compatbotb[/172.30.0.1:43912] logged in with entity id 766 at ([world]-340.5, 68.0, 131.5)
+[03:13:46 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:46 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:46 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:46 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:46 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:46 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:46 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:46 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:46 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:46 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:46 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:47 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:47 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:47 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:47 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:47 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:47 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:47 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:47 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:47 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:47 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:47 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:47 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:47 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:47 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:47 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:47 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:47 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:47 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:47 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:47 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:48 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:48 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:48 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:48 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:48 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:48 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:48 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:48 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:48 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:48 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:48 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:48 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:48 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:48 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:48 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:48 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:48 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:48 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:48 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:48 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:49 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:49 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:49 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:49 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:49 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:49 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:49 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:49 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:49 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:49 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:49 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:49 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:49 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:49 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:49 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:49 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:13:49 WARN]: compatbota moved too quickly! 370.5,0.9998999999999967,-130.5
+[03:15:35 INFO]: compatbota lost connection: Disconnected
+[03:15:35 INFO]: compatbota left the game
+[03:15:40 INFO]: compatbotb lost connection: Disconnected
+[03:15:40 INFO]: compatbotb left the game
