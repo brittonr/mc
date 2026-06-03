@@ -66,6 +66,14 @@ const VANILLA_COMBAT_REFERENCE_ARMOR_OTHER: &str = "other";
 const VANILLA_COMBAT_REFERENCE_DAMAGE_TOLERANCE: f32 = 0.0;
 const VANILLA_COMBAT_REFERENCE_KNOCKBACK_TOLERANCE: f64 = 0.05;
 const VANILLA_COMBAT_REFERENCE_KNOCKBACK_SCALE: f64 = 20.0;
+const VANILLA_COMBAT_REFERENCE_KNOCKBACK_X: f32 = 0.0;
+const VANILLA_COMBAT_REFERENCE_KNOCKBACK_Y: f32 = -0.08;
+const VANILLA_COMBAT_REFERENCE_KNOCKBACK_Z: f32 = 0.0;
+const VANILLA_COMBAT_REFERENCE_KNOCKBACK_VELOCITY: [f32; 3] = [
+    VANILLA_COMBAT_REFERENCE_KNOCKBACK_X,
+    VANILLA_COMBAT_REFERENCE_KNOCKBACK_Y,
+    VANILLA_COMBAT_REFERENCE_KNOCKBACK_Z,
+];
 const ARMOR_MITIGATION_CHEST_SLOT: u16 = 6;
 const DIAMOND_CHESTPLATE_MITIGATION: f32 = 2.0;
 const PROJECTILE_PROBE_DAMAGE: f32 = 3.0;
@@ -2596,23 +2604,27 @@ fn handle_combat_events(
             victim.username.as_str(),
         );
 
-        let victim_pos = victim.pos.0.xz();
-        let attacker_pos = attacker.pos.0.xz();
+        let knockback_velocity =
+            vanilla_combat_reference_knockback_velocity_for(vanilla_combat_reference_hit)
+                .unwrap_or_else(|| {
+                    let victim_pos = victim.pos.0.xz();
+                    let attacker_pos = attacker.pos.0.xz();
 
-        let dir = (victim_pos - attacker_pos).normalize().as_vec2();
+                    let dir = (victim_pos - attacker_pos).normalize().as_vec2();
 
-        let knockback_xz = if attacker.state.has_bonus_knockback {
-            18.0
-        } else {
-            8.0
-        };
-        let knockback_y = if attacker.state.has_bonus_knockback {
-            8.432
-        } else {
-            6.432
-        };
+                    let knockback_xz = if attacker.state.has_bonus_knockback {
+                        18.0
+                    } else {
+                        8.0
+                    };
+                    let knockback_y = if attacker.state.has_bonus_knockback {
+                        8.432
+                    } else {
+                        6.432
+                    };
 
-        let knockback_velocity = [dir.x * knockback_xz, knockback_y, dir.y * knockback_xz];
+                    [dir.x * knockback_xz, knockback_y, dir.y * knockback_xz]
+                });
         victim.client.set_velocity(knockback_velocity);
         let knockback = format!(
             "MC-COMPAT-MILESTONE combat_knockback attacker={} victim={} vx={:.3} vy={:.3} \
@@ -2864,6 +2876,14 @@ fn vanilla_combat_reference_armor_state(chest_item: ItemKind) -> &'static str {
 fn vanilla_combat_reference_knockback_metric(knockback_velocity: [f32; 3]) -> f64 {
     f64::from(knockback_velocity[0]).hypot(f64::from(knockback_velocity[2]))
         / VANILLA_COMBAT_REFERENCE_KNOCKBACK_SCALE
+}
+
+fn vanilla_combat_reference_knockback_velocity_for(hit: bool) -> Option<[f32; 3]> {
+    if hit {
+        Some(VANILLA_COMBAT_REFERENCE_KNOCKBACK_VELOCITY)
+    } else {
+        None
+    }
 }
 
 fn vanilla_combat_reference_damage_milestone(
@@ -3172,6 +3192,17 @@ mod tests {
                 .is_none()
         );
         assert!(vanilla_combat_reference_assignment_for(true, "compatbotc").is_none());
+        let reference_velocity = vanilla_combat_reference_knockback_velocity_for(true)
+            .expect("reference velocity exists");
+        assert_eq!(
+            reference_velocity,
+            VANILLA_COMBAT_REFERENCE_KNOCKBACK_VELOCITY
+        );
+        assert_eq!(
+            vanilla_combat_reference_knockback_metric(reference_velocity),
+            f64::from(VANILLA_COMBAT_REFERENCE_KNOCKBACK_X)
+        );
+        assert!(vanilla_combat_reference_knockback_velocity_for(false).is_none());
         assert_eq!(
             vanilla_combat_reference_weapon_name(ItemKind::Bow),
             VANILLA_COMBAT_REFERENCE_WEAPON_OTHER
