@@ -1,36 +1,40 @@
 #![doc = include_str!("../README.md")]
 
-use proc_macro::TokenStream as StdTokenStream;
-use proc_macro2::TokenStream;
 use quote::ToTokens;
-use syn::{
-    parse_quote, Attribute, GenericParam, Generics, Lifetime, LifetimeParam, LitInt, Result,
-    Variant,
-};
+
+type Attribute = syn::Attribute;
+type GenericParam = syn::GenericParam;
+type Generics = syn::Generics;
+type Lifetime = syn::Lifetime;
+type LifetimeParam = syn::LifetimeParam;
+type LitInt = syn::LitInt;
+type Result<T> = syn::Result<T>;
+type TokenStream = proc_macro2::TokenStream;
+type Variant = syn::Variant;
 
 mod decode;
 mod encode;
 mod packet;
 
 #[proc_macro_derive(Encode, attributes(packet))]
-pub fn derive_encode(item: StdTokenStream) -> StdTokenStream {
-    match encode::derive_encode(item.into()) {
+pub fn derive_encode(item: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    match encode::derive(item.into()) {
         Ok(tokens) => tokens.into(),
         Err(e) => e.into_compile_error().into(),
     }
 }
 
 #[proc_macro_derive(Decode, attributes(packet))]
-pub fn derive_decode(item: StdTokenStream) -> StdTokenStream {
-    match decode::derive_decode(item.into()) {
+pub fn derive_decode(item: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    match decode::derive(item.into()) {
         Ok(tokens) => tokens.into(),
         Err(e) => e.into_compile_error().into(),
     }
 }
 
 #[proc_macro_derive(Packet, attributes(packet))]
-pub fn derive_packet(item: StdTokenStream) -> StdTokenStream {
-    match packet::derive_packet(item.into()) {
+pub fn derive_packet(item: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    match packet::derive(item.into()) {
         Ok(tokens) => tokens.into(),
         Err(e) => e.into_compile_error().into(),
     }
@@ -56,23 +60,26 @@ fn pair_variants_with_discriminants(
 
 fn parse_tag_attr(attrs: &[Attribute]) -> Result<Option<i32>> {
     for attr in attrs {
-        if attr.path().is_ident("packet") {
-            let mut res = 0;
-
-            attr.parse_nested_meta(|meta| {
-                if meta.path.is_ident("tag") {
-                    res = meta.value()?.parse::<LitInt>()?.base10_parse::<i32>()?;
-                    Ok(())
-                } else {
-                    Err(meta.error("unrecognized argument"))
-                }
-            })?;
-
-            return Ok(Some(res));
+        if !attr.path().is_ident("packet") {
+            continue;
         }
+
+        let mut res = 0;
+        attr.parse_nested_meta(|meta| parse_tag_meta(&mut res, meta))?;
+        return Ok(Some(res));
     }
 
     Ok(None)
+}
+
+fn parse_tag_meta(res: &mut i32, meta: syn::meta::ParseNestedMeta<'_>) -> Result<()> {
+    if meta.path.is_ident("tag") {
+        let tag: LitInt = meta.value()?.parse()?;
+        *res = tag.base10_parse::<i32>()?;
+        return Ok(());
+    }
+
+    Err(meta.error("unrecognized argument"))
 }
 
 /// Adding our lifetime to the generics before calling `.split_for_impl()` would
@@ -102,7 +109,7 @@ fn decode_split_for_impl(
 fn add_trait_bounds(generics: &mut Generics, trait_: TokenStream) {
     for param in &mut generics.params {
         if let GenericParam::Type(type_param) = param {
-            type_param.bounds.push(parse_quote!(#trait_))
+            type_param.bounds.push(syn::parse_quote!(#trait_))
         }
     }
 }

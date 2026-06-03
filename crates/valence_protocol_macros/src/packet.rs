@@ -1,63 +1,43 @@
 use heck::ToShoutySnakeCase;
-use proc_macro2::{Ident, Span, TokenStream};
-use quote::quote;
 use syn::spanned::Spanned;
-use syn::{parse2, parse_quote, Attribute, DeriveInput, Error, Expr, LitInt, LitStr, Result};
 
-use crate::add_trait_bounds;
+type Expr = syn::Expr;
+type Ident = proc_macro2::Ident;
+type LitInt = syn::LitInt;
+type LitStr = syn::LitStr;
+type Span = proc_macro2::Span;
+type Attribute = syn::Attribute;
+type Meta<'a> = syn::meta::ParseNestedMeta<'a>;
+type Result<T> = syn::Result<T>;
+type TokenStream = proc_macro2::TokenStream;
 
-pub(super) fn derive_packet(item: TokenStream) -> Result<TokenStream> {
-    let mut input = parse2::<DeriveInput>(item)?;
+pub(super) fn derive(item: TokenStream) -> Result<TokenStream> {
+    let mut input = syn::parse2::<syn::DeriveInput>(item)?;
+    debug_assert!(
+        !input.ident.to_string().is_empty(),
+        "derive input has an identifier"
+    );
 
-    let packet_attr = parse_packet_helper_attr(&input.attrs)?.unwrap_or_default();
-
+    let attr = parse_helper_attr(&input.attrs)?.unwrap_or_default();
     let name = input.ident.clone();
+    let name_str = name_from_attr(&name, attr.name.as_ref());
+    debug_assert!(!name_str.is_empty(), "packet names cannot be empty");
 
-    let name_str = if let Some(attr_name) = packet_attr.name {
-        attr_name.value()
-    } else {
-        name.to_string()
-    };
-
-    let packet_id: Expr = match packet_attr.id {
-        Some(expr) => expr,
-        None => match syn::parse_str::<Ident>(&name_str.to_shouty_snake_case()) {
-            Ok(ident) => parse_quote!(::valence_protocol::packet_id::#ident),
-            Err(_) => {
-                return Err(Error::new(
-                    packet_attr.span,
-                    "missing valid `id = ...` value from `packet` attr",
-                ))
-            }
-        },
-    };
-
-    add_trait_bounds(&mut input.generics, quote!(::std::fmt::Debug));
+    let id = id_expr(&name_str, &attr)?;
+    crate::add_trait_bounds(&mut input.generics, quote::quote!(::std::fmt::Debug));
 
     let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
-
-    let side = if let Some(side_attr) = packet_attr.side {
-        side_attr
-    } else if name_str.to_lowercase().ends_with("s2c") {
-        parse_quote!(::valence_protocol::PacketSide::Clientbound)
-    } else if name_str.to_lowercase().ends_with("c2s") {
-        parse_quote!(::valence_protocol::PacketSide::Serverbound)
-    } else {
-        return Err(Error::new(
-            packet_attr.span,
-            "missing `side = PacketSide::...` value from `packet` attribute",
-        ));
-    };
-
-    let state = packet_attr
+    let side = side_expr(&name_str, &attr)?;
+    let state = attr
         .state
-        .unwrap_or_else(|| parse_quote!(::valence_protocol::PacketState::Play));
+        .unwrap_or_else(|| syn::parse_quote!(::valence_protocol::PacketState::Play));
+    let packet_trait = quote::quote!(::valence_protocol::__private::Packet);
 
-    Ok(quote! {
-        impl #impl_generics ::valence_protocol::__private::Packet for #name #ty_generics
+    Ok(quote::quote! {
+        impl #impl_generics #packet_trait for #name #ty_generics
         #where_clause
         {
-            const ID: i32 = #packet_id;
+            const ID: i32 = #id;
             const NAME: &'static str = #name_str;
             const SIDE: ::valence_protocol::PacketSide = #side;
             const STATE: ::valence_protocol::PacketState = #state;
@@ -65,7 +45,53 @@ pub(super) fn derive_packet(item: TokenStream) -> Result<TokenStream> {
     })
 }
 
-struct PacketAttr {
+fn name_from_attr(name: &Ident, attr_name: Option<&LitStr>) -> String {
+    if let Some(attr_name) = attr_name {
+        return attr_name.value();
+    }
+    name.to_string()
+}
+
+fn id_expr(name_str: &str, attr: &Attr) -> Result<Expr> {
+    debug_assert!(!name_str.is_empty(), "packet names cannot be empty");
+    if let Some(expr) = attr.id.clone() {
+        return Ok(expr);
+    }
+
+    let Ok(ident) = syn::parse_str::<Ident>(&name_str.to_shouty_snake_case()) else {
+        return Err(syn::Error::new(
+            attr.span,
+            "missing valid `id = ...` value from `packet` attr",
+        ));
+    };
+    Ok(syn::parse_quote!(::valence_protocol::packet_id::#ident))
+}
+
+fn side_expr(name_str: &str, attr: &Attr) -> Result<Expr> {
+    debug_assert!(!name_str.is_empty(), "packet names cannot be empty");
+    if let Some(side_attr) = attr.side.clone() {
+        return Ok(side_attr);
+    }
+
+    let lower_name = name_str.to_lowercase();
+    if lower_name.ends_with("s2c") {
+        return Ok(syn::parse_quote!(
+            ::valence_protocol::PacketSide::Clientbound
+        ));
+    }
+    if lower_name.ends_with("c2s") {
+        return Ok(syn::parse_quote!(
+            ::valence_protocol::PacketSide::Serverbound
+        ));
+    }
+
+    Err(syn::Error::new(
+        attr.span,
+        "missing `side = PacketSide::...` value from `packet` attribute",
+    ))
+}
+
+struct Attr {
     span: Span,
     id: Option<Expr>,
     tag: Option<i32>,
@@ -74,55 +100,65 @@ struct PacketAttr {
     state: Option<Expr>,
 }
 
-impl Default for PacketAttr {
+impl Default for Attr {
     fn default() -> Self {
         Self {
             span: Span::call_site(),
-            id: Default::default(),
-            tag: Default::default(),
-            name: Default::default(),
-            side: Default::default(),
-            state: Default::default(),
+            id: None,
+            tag: None,
+            name: None,
+            side: None,
+            state: None,
         }
     }
 }
 
-fn parse_packet_helper_attr(attrs: &[Attribute]) -> Result<Option<PacketAttr>> {
+fn parse_helper_attr(attrs: &[Attribute]) -> Result<Option<Attr>> {
     for attr in attrs {
-        if attr.path().is_ident("packet") {
-            let mut res = PacketAttr {
-                span: attr.span(),
-                id: None,
-                tag: None,
-                name: None,
-                side: None,
-                state: None,
-            };
-
-            attr.parse_nested_meta(|meta| {
-                if meta.path.is_ident("id") {
-                    res.id = Some(meta.value()?.parse::<Expr>()?);
-                    Ok(())
-                } else if meta.path.is_ident("tag") {
-                    res.tag = Some(meta.value()?.parse::<LitInt>()?.base10_parse::<i32>()?);
-                    Ok(())
-                } else if meta.path.is_ident("name") {
-                    res.name = Some(meta.value()?.parse::<LitStr>()?);
-                    Ok(())
-                } else if meta.path.is_ident("side") {
-                    res.side = Some(meta.value()?.parse::<Expr>()?);
-                    Ok(())
-                } else if meta.path.is_ident("state") {
-                    res.state = Some(meta.value()?.parse::<Expr>()?);
-                    Ok(())
-                } else {
-                    Err(meta.error("unrecognized packet argument"))
-                }
-            })?;
-
-            return Ok(Some(res));
+        if !attr.path().is_ident("packet") {
+            continue;
         }
+
+        debug_assert!(attr.path().is_ident("packet"), "packet attr guard checked");
+        let mut res = Attr {
+            span: attr.span(),
+            id: None,
+            tag: None,
+            name: None,
+            side: None,
+            state: None,
+        };
+
+        attr.parse_nested_meta(|meta| parse_meta(&mut res, meta))?;
+        return Ok(Some(res));
     }
 
     Ok(None)
+}
+
+fn parse_meta(res: &mut Attr, meta: Meta<'_>) -> Result<()> {
+    debug_assert!(!meta.path.segments.is_empty(), "meta paths are non-empty");
+    if meta.path.is_ident("id") {
+        res.id = Some(meta.value()?.parse::<Expr>()?);
+        return Ok(());
+    }
+    if meta.path.is_ident("tag") {
+        let tag: LitInt = meta.value()?.parse()?;
+        res.tag = Some(tag.base10_parse::<i32>()?);
+        return Ok(());
+    }
+    if meta.path.is_ident("name") {
+        res.name = Some(meta.value()?.parse::<LitStr>()?);
+        return Ok(());
+    }
+    if meta.path.is_ident("side") {
+        res.side = Some(meta.value()?.parse::<Expr>()?);
+        return Ok(());
+    }
+    if meta.path.is_ident("state") {
+        res.state = Some(meta.value()?.parse::<Expr>()?);
+        return Ok(());
+    }
+
+    Err(meta.error("unrecognized packet argument"))
 }

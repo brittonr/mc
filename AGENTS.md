@@ -29,7 +29,7 @@
 ## Octet
 - Starter rollout command: `scripts/octet-check.sh`.
 - Flake gate: `nix build .#checks.x86_64-linux.octet --no-link -L --impure`.
-- Strict starter scope is `valence_math`, `valence_lang`, `valence_ident`, `valence_text`, `valence_weather`, `valence_world_border`, `valence_boss_bar`, `valence_player_list`, `valence_scoreboard`, `valence_equipment`, `valence_advancement`, `valence_anvil`, `valence_inventory`, `valence_registry`, `valence_build_utils`, and `valence_ident_macros`; broaden beyond these only after a dedicated cleanup pass.
+- Strict starter scope is `valence_math`, `valence_lang`, `valence_ident`, `valence_text`, `valence_weather`, `valence_world_border`, `valence_boss_bar`, `valence_player_list`, `valence_scoreboard`, `valence_equipment`, `valence_advancement`, `valence_anvil`, `valence_inventory`, `valence_registry`, `valence_build_utils`, `valence_ident_macros`, and `valence_protocol_macros`; broaden beyond these only after a dedicated cleanup pass.
 - Workspace runner config lives in `[workspace.metadata.octet]` in `Cargo.toml`.
 - Workspace lint tuning config lives in `[octet]` in `dylint.toml`.
 - Keep `valence_server_common` out of the starter default for now; a no-arg legacy Dylint run that pulled its `valence_generated` dependency path hit a `dylint-driver` SIGSEGV on nightly-2026-03-21.
