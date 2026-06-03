@@ -1,0 +1,4 @@
+b2b82048e4240d537b001d7badd1d2b05de3ae89c388d53d95c670057265b091  docs/evidence/vanilla-combat-armor-reference-paired-compare-2026-06-03.run.log
+a182bf3edc4c96f6d49c672d1f766c78319cb856fb3ef322d8c6c2b2ffc9998f  docs/evidence/vanilla-combat-armor-reference-paired-paper-reference-2026-06-03.kv
+206d6ff6aac22010f69ca3b2a6ccd284722f50252df8bfa76ab8e161bf086105  docs/evidence/vanilla-combat-armor-reference-paired-valence-reference-2026-06-03.kv
+cc815f7285d5a4ab75afd3e2b5a2b6df1d0961c8d7736952407327c3cdfe1410  tools/check_vanilla_combat_reference_parity.rs

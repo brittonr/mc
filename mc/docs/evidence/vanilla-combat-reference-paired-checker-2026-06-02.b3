@@ -1,2 +1,2 @@
 c0a525d0c1df947eb0b2362ae2ec4e5cf599b071269f7998f61c79274d12c6d1  docs/evidence/vanilla-combat-reference-paired-checker-2026-06-02.run.log
-c2cafd90a52fd92caaf261825196e402550f64fd8e4fa6849b6545fdd8fa57e2  tools/check_vanilla_combat_reference_parity.rs
+cc815f7285d5a4ab75afd3e2b5a2b6df1d0961c8d7736952407327c3cdfe1410  tools/check_vanilla_combat_reference_parity.rs

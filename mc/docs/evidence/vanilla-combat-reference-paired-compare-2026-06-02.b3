@@ -1,4 +1,4 @@
 5d5e6acf1675ce3af9cc5f81af753b39cd6fcdab71daa5ae385dfe6653582033  docs/evidence/vanilla-combat-reference-paired-compare-2026-06-02.run.log
 ada5e35546afc1f3604a2d8cab8ee3c43868cc8f41bd96f17d92f3897fe32199  docs/evidence/vanilla-combat-reference-paired-paper-reference-2026-06-02.kv
 8fe1f3134fd2f4ff08f99b38bf8a15b600d2742ba5d4421506f4f74e376e2413  docs/evidence/vanilla-combat-reference-paired-valence-reference-2026-06-02.kv
-c2cafd90a52fd92caaf261825196e402550f64fd8e4fa6849b6545fdd8fa57e2  tools/check_vanilla_combat_reference_parity.rs
+cc815f7285d5a4ab75afd3e2b5a2b6df1d0961c8d7736952407327c3cdfe1410  tools/check_vanilla_combat_reference_parity.rs

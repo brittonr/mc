@@ -140,6 +140,14 @@ nix run .#mc-compat-valence-ctf-armor-equipment-mitigation
 # deterministic, non-side-effecting fixture for the same armor command shape:
 nix run .#mc-compat-valence-ctf-armor-equipment-mitigation -- --dry-run
 
+# Bounded Paper-reference armor combat parity row; run both backends and compare normalized KV inputs.
+nix run .#mc-compat-smoke -- --run --server-backend paper \
+  --scenario vanilla-combat-armor-reference-parity \
+  --receipt target/vanilla-combat-armor-reference-paper.json
+nix run .#mc-compat-smoke -- --run --server-backend valence \
+  --scenario vanilla-combat-armor-reference-parity \
+  --receipt target/vanilla-combat-armor-reference-valence.json
+
 # Maintained protocol-763 Valence CTF equipment update observation receipt.
 nix run .#mc-compat-valence-ctf-equipment-update-observation
 # deterministic, non-side-effecting fixture for the same equipment update command shape:

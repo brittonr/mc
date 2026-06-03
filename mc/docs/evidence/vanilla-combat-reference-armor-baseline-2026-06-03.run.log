@@ -1,0 +1,31 @@
+checkpoint: vanilla combat reference checker rustc/nix validation
+
+tool=mc_validate_vanilla_combat_checker
+
+repo_dir=/home/brittonr/git/mc
+
+source_path=tools/check_vanilla_combat_reference_parity.rs
+
+output_path=target/check-vanilla-combat-reference-parity
+
+status=pass
+
+## compile
+exit_code=0
+### stdout
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+
+### stderr
+
+
+## self-test
+exit_code=0
+### stdout
+vanilla combat reference parity self-test ok: positive and negative fixtures exercised
+
+### stderr
+
+
+exit_status=0

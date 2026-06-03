@@ -1,0 +1,54 @@
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence promotion self-test passed: positive and negative promotion fixtures exercised
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+# Evidence promotion plan: projectile-damage-attribution
+
+schema: `mc.compat.evidence-promotion-plan.v1`
+
+## Exact writes
+
+- receipt: `docs/evidence/protocol-763-roi-10-projectile-damage-pinned-2026-05-27.receipt.json` -> `target/evidence-promotion-dry-run/protocol-763-roi-10-projectile-damage-pinned-2026-05-27.receipt.json` (BLAKE3 `cf84fcb81ae557ecfbd2ff0b1f8b94af7bf07eaa85c20b1cde442929e3e3e529`)
+- run-log: `docs/evidence/protocol-763-roi-10-projectile-damage-pinned-2026-05-27.run.log` -> `target/evidence-promotion-dry-run/protocol-763-roi-10-projectile-damage-pinned-2026-05-27.run.log` (BLAKE3 `7d4021c5610b79a2cf0d94f1307ea7e3e2413a6db1bc059958e6d8b8905cc4d8`)
+- client-log: `docs/evidence/protocol-763-roi-10-projectile-damage-pinned-2026-05-27.client-compatbota.log` -> `target/evidence-promotion-dry-run/protocol-763-roi-10-projectile-damage-pinned-2026-05-27.client-compatbota.log` (BLAKE3 `2c33e32b8babb0fe53f7dda80c40daa4a6b86b68a4799ffc67ab4c88da56cf70`)
+- client-log: `docs/evidence/protocol-763-roi-10-projectile-damage-pinned-2026-05-27.client-compatbotb.log` -> `target/evidence-promotion-dry-run/protocol-763-roi-10-projectile-damage-pinned-2026-05-27.client-compatbotb.log` (BLAKE3 `7e0af5b09f5b5803e90c77a3f204a7b7c60a52aeb0da9c8894a17ae276b8a272`)
+- server-log: `docs/evidence/protocol-763-roi-10-projectile-damage-pinned-2026-05-27.valence.log` -> `target/evidence-promotion-dry-run/protocol-763-roi-10-projectile-damage-pinned-2026-05-27.valence.log` (BLAKE3 `15106e0feece70feb2d78ad3591634476a9213a05dac256c0ddfcbbdae0de179`)
+
+## Child revisions
+
+- `valence_rev` = `e5d18ad04010d92881267ac1ea43922ae91821f5`
+
+## Matrix/current bundle
+
+- Matrix row: `Projectile damage attribution`
+- Current bundle row: `Projectile damage attribution`
+- Action: plan-only; preserve existing non-claims unless a separate reviewed edit updates rows.
+
+## Required non-claims
+
+- full Minecraft compatibility
+- full CTF/combat correctness
+
+## Validation commands
+
+- `nix build .#checks.x86_64-linux.mc-compat-acceptance-matrix --no-link -L`
+- `nix build .#checks.x86_64-linux.mc-compat-current-evidence-bundle --no-link -L`
+- `nix build .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L`
+- `nix run --no-update-lock-file .#cairn -- validate --root .`
+
+source prefix: `docs/evidence/protocol-763-roi-10-projectile-damage-pinned-2026-05-27`
+
+dry-run planned 5 exact writes under target/evidence-promotion-dry-run
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+applied 5 exact writes plus target/evidence-promotion-apply/promotion-plan.md

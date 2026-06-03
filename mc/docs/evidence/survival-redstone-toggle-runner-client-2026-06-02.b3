@@ -1,5 +1,5 @@
 4639241e2ae8300e3f68a9e0068acc620ff2877dc89b95d6f8e2700f9c795950  docs/evidence/survival-redstone-toggle-runner-client-2026-06-02.run.log
-d51150aa0e075b568c1a0014dcd7a63d993812eea55ab9375955328c8ac3c43e  tools/mc-compat-runner/src/main.rs
-037b99f05db18c5368a0b2360a11f738c7c738de3d14728f838934f3d7dbb68d  tools/mc-compat-runner/src/scenario_manifest_generated.rs
-60d5d2658f1be7346b1aa96f17c1a197fcf069860fe15dd8fce68ef38f055d98  config/mc-compat/scenario-manifest.ncl
+3d5c78f449405bd02357440bd3e216a2ad444e66112a127a6c6a5aa41a5054d3  tools/mc-compat-runner/src/main.rs
+c9d3ecaf623ebae7ec2bcf6598b51388c5bc760f5fb4d276c3069b0eadccbe36  tools/mc-compat-runner/src/scenario_manifest_generated.rs
+434db64bb6af00d34dce290d9a43ffc0df10c7d40454f2322b56aec121b33cbd  config/mc-compat/scenario-manifest.ncl
 96f50c84402dd3ab7aefc3b9c4ed9b070593393adcf02b1146d6955957e7af11  docs/evidence/survival-redstone-toggle-stevenarella-server-source-2026-06-02.rs

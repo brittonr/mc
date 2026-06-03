@@ -1,0 +1,19 @@
+# vanilla-combat-armor-reference promotion checks
+date=2026-06-03T15:36:10Z
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+acceptance_compile_exit_status=0
+acceptance matrix self-test ok: positive and negative fixtures exercised
+acceptance_self_test_exit_status=0
+acceptance matrix check passed: 37 rows validated
+acceptance_check_exit_status=0
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+bundle_compile_exit_status=0
+current evidence bundle self-test ok: positive and negative fixtures exercised
+bundle_self_test_exit_status=0
+current evidence bundle check passed: 37 rows validated
+bundle_check_exit_status=0
+exit_status=0

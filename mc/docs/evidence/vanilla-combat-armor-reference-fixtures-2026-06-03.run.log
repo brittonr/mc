@@ -1,0 +1,12 @@
+# vanilla-combat-armor-reference fixture build
+date=2026-06-03T15:20:31Z
+Note: Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing.
+jar=docs/evidence/mc-compat-paper-vanilla-combat-armor-reference-fixture-2026-06-03.jar
+source_snapshot=docs/evidence/mc-compat-paper-vanilla-combat-armor-reference-fixture-2026-06-03.java
+exit_status=0

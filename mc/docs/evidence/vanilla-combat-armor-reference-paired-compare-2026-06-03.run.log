@@ -1,0 +1,8 @@
+# vanilla-combat-armor-reference paired comparator
+date=2026-06-03T15:34:49Z
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+compile_exit_status=0
+vanilla combat reference parity row check passed
+exit_status=0

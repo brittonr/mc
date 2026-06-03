@@ -1,0 +1,16 @@
+# vanilla-combat-armor-reference valence example tests
+date=2026-06-03T15:19:43Z
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.24s
+     Running unittests examples/ctf.rs (/home/brittonr/.cargo-target/debug/examples/ctf-03ea97c54f418d48)
+
+running 3 tests
+test tests::vanilla_combat_reference_helpers_fail_closed_for_unbounded_inputs ... ok
+test tests::vanilla_combat_armor_reference_helpers_apply_bounded_chestplate_formula ... ok
+test tests::vanilla_combat_reference_milestones_record_normalized_metrics ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 18 filtered out; finished in 0.00s
+
+exit_status=0

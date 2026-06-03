@@ -33,6 +33,7 @@ const REQUIRED_SEAMS: &[&str] = &[
     "Latency/jitter tolerance",
     "Combat knockback",
     "Bounded Paper-reference combat parity",
+    "Bounded Paper-reference armor combat parity",
     "Armor equipment mitigation",
     "Equipment update observation",
     "Equipment permutation packet family",

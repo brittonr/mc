@@ -16,7 +16,9 @@ const FLAG_VALUE_STRIDE: usize = 2;
 const KEY_VALUE_SEPARATOR: char = '=';
 const FLOAT_EPSILON: f64 = 0.000_001;
 
-const ROW_ID: &str = "vanilla-combat-reference-parity";
+const NO_ARMOR_ROW_ID: &str = "vanilla-combat-reference-parity";
+const ARMOR_ROW_ID: &str = "vanilla-combat-armor-reference-parity";
+const ROW_ID: &str = NO_ARMOR_ROW_ID;
 const REFERENCE_BACKEND: &str = "paper-reference";
 const VALENCE_BACKEND: &str = "valence";
 const REFERENCE_ORACLE: &str = "paper-1.20.1-reference-harness";
@@ -50,9 +52,12 @@ const FIXTURE_ATTACKER: &str = "compatbota";
 const FIXTURE_VICTIM: &str = "compatbotb";
 const FIXTURE_WEAPON: &str = "iron_sword";
 const FIXTURE_ARMOR_STATE: &str = "none";
+const FIXTURE_ARMOR_REFERENCE_ARMOR_STATE: &str = "diamond_chestplate";
 const FIXTURE_PRE_HEALTH: &str = "20.0";
 const FIXTURE_POST_HEALTH: &str = "14.0";
 const FIXTURE_DAMAGE_DELTA: &str = "6.0";
+const FIXTURE_ARMOR_REFERENCE_POST_HEALTH: &str = "15.3";
+const FIXTURE_ARMOR_REFERENCE_DAMAGE_DELTA: &str = "4.7";
 const FIXTURE_KNOCKBACK_METRIC: &str = "0.40";
 const FIXTURE_DAMAGE_TOLERANCE: &str = "0.0";
 const FIXTURE_KNOCKBACK_TOLERANCE: &str = "0.05";
@@ -70,6 +75,11 @@ struct CombatParityContract {
     valence_backend: &'static str,
     reference_oracle: &'static str,
     reference_version: &'static str,
+    expected_weapon: &'static str,
+    expected_armor_state: &'static str,
+    expected_pre_health: f64,
+    expected_post_health: f64,
+    expected_damage_delta: f64,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -186,10 +196,7 @@ fn usage() -> String {
 }
 
 fn run_config(config: CliConfig) -> Result<String, Vec<String>> {
-    let contract = default_contract();
-    if config.row != contract.row_id {
-        return Err(vec![format!("unknown row: {}", config.row)]);
-    }
+    let contract = contract_for_row(&config.row)?;
 
     let reference_text = read_file(&config.reference_path)?;
     let valence_text = read_file(&config.valence_path)?;
@@ -218,7 +225,41 @@ fn default_contract() -> CombatParityContract {
         valence_backend: VALENCE_BACKEND,
         reference_oracle: REFERENCE_ORACLE,
         reference_version: REFERENCE_VERSION,
+        expected_weapon: FIXTURE_WEAPON,
+        expected_armor_state: FIXTURE_ARMOR_STATE,
+        expected_pre_health: parse_contract_number(FIXTURE_PRE_HEALTH),
+        expected_post_health: parse_contract_number(FIXTURE_POST_HEALTH),
+        expected_damage_delta: parse_contract_number(FIXTURE_DAMAGE_DELTA),
     }
+}
+
+fn armor_contract() -> CombatParityContract {
+    CombatParityContract {
+        row_id: ARMOR_ROW_ID,
+        reference_backend: REFERENCE_BACKEND,
+        valence_backend: VALENCE_BACKEND,
+        reference_oracle: REFERENCE_ORACLE,
+        reference_version: REFERENCE_VERSION,
+        expected_weapon: FIXTURE_WEAPON,
+        expected_armor_state: FIXTURE_ARMOR_REFERENCE_ARMOR_STATE,
+        expected_pre_health: parse_contract_number(FIXTURE_PRE_HEALTH),
+        expected_post_health: parse_contract_number(FIXTURE_ARMOR_REFERENCE_POST_HEALTH),
+        expected_damage_delta: parse_contract_number(FIXTURE_ARMOR_REFERENCE_DAMAGE_DELTA),
+    }
+}
+
+fn contract_for_row(row: &str) -> Result<CombatParityContract, Vec<String>> {
+    match row {
+        NO_ARMOR_ROW_ID => Ok(default_contract()),
+        ARMOR_ROW_ID => Ok(armor_contract()),
+        _ => Err(vec![format!("unknown row: {row}")]),
+    }
+}
+
+fn parse_contract_number(value: &str) -> f64 {
+    value
+        .parse::<f64>()
+        .expect("contract fixture number is valid")
 }
 
 fn parse_evidence(text: &str) -> Result<CombatParityRecord, Vec<String>> {
@@ -273,14 +314,30 @@ fn compare_combat_parity(
         .and_then(|record| normalize_record(ROLE_VALENCE, record, &mut diagnostics));
 
     if let Some(record) = &reference {
-        validate_record_contract(ROLE_REFERENCE, record, contract.reference_backend, contract, &mut diagnostics);
+        validate_record_contract(
+            ROLE_REFERENCE,
+            record,
+            contract.reference_backend,
+            contract,
+            &mut diagnostics,
+        );
     }
     if let Some(record) = &valence {
-        validate_record_contract(ROLE_VALENCE, record, contract.valence_backend, contract, &mut diagnostics);
+        validate_record_contract(
+            ROLE_VALENCE,
+            record,
+            contract.valence_backend,
+            contract,
+            &mut diagnostics,
+        );
     }
 
     if !raw_backend_is(pair.reference.as_ref(), contract.reference_backend)
-        && raw_backend_present(pair.reference.as_ref(), pair.valence.as_ref(), contract.valence_backend)
+        && raw_backend_present(
+            pair.reference.as_ref(),
+            pair.valence.as_ref(),
+            contract.valence_backend,
+        )
     {
         diagnostics.push("valence_only_evidence".to_string());
     }
@@ -305,35 +362,67 @@ fn normalize_record(
     let backend = required_string(role, &record.fields, FIELD_BACKEND, diagnostics);
     let revision_status = required_string(role, &record.fields, FIELD_REVISION_STATUS, diagnostics);
     let child_revision = required_string(role, &record.fields, FIELD_CHILD_REVISION, diagnostics);
-    let reference_oracle = required_string(role, &record.fields, FIELD_REFERENCE_ORACLE, diagnostics);
-    let reference_version = required_string(role, &record.fields, FIELD_REFERENCE_VERSION, diagnostics);
-    let attacker_identity = required_string(role, &record.fields, FIELD_ATTACKER_IDENTITY, diagnostics);
+    let reference_oracle =
+        required_string(role, &record.fields, FIELD_REFERENCE_ORACLE, diagnostics);
+    let reference_version =
+        required_string(role, &record.fields, FIELD_REFERENCE_VERSION, diagnostics);
+    let attacker_identity =
+        required_string(role, &record.fields, FIELD_ATTACKER_IDENTITY, diagnostics);
     let victim_identity = required_string(role, &record.fields, FIELD_VICTIM_IDENTITY, diagnostics);
     let weapon = required_string(role, &record.fields, FIELD_WEAPON, diagnostics);
     let armor_state = required_string(role, &record.fields, FIELD_ARMOR_STATE, diagnostics);
     let pre_health = required_number(role, &record.fields, FIELD_PRE_HEALTH, diagnostics);
     let post_health = required_number(role, &record.fields, FIELD_POST_HEALTH, diagnostics);
     let damage_delta = required_number(role, &record.fields, FIELD_DAMAGE_DELTA, diagnostics);
-    let knockback_metric = required_number(role, &record.fields, FIELD_KNOCKBACK_METRIC, diagnostics);
-    let damage_tolerance = required_tolerance(role, &record.fields, FIELD_DAMAGE_TOLERANCE, diagnostics);
-    let knockback_tolerance = required_tolerance(role, &record.fields, FIELD_KNOCKBACK_TOLERANCE, diagnostics);
+    let knockback_metric =
+        required_number(role, &record.fields, FIELD_KNOCKBACK_METRIC, diagnostics);
+    let damage_tolerance =
+        required_tolerance(role, &record.fields, FIELD_DAMAGE_TOLERANCE, diagnostics);
+    let knockback_tolerance =
+        required_tolerance(role, &record.fields, FIELD_KNOCKBACK_TOLERANCE, diagnostics);
 
     let Some(row) = row else { return None };
     let Some(backend) = backend else { return None };
-    let Some(revision_status) = revision_status else { return None };
-    let Some(child_revision) = child_revision else { return None };
-    let Some(reference_oracle) = reference_oracle else { return None };
-    let Some(reference_version) = reference_version else { return None };
-    let Some(attacker_identity) = attacker_identity else { return None };
-    let Some(victim_identity) = victim_identity else { return None };
+    let Some(revision_status) = revision_status else {
+        return None;
+    };
+    let Some(child_revision) = child_revision else {
+        return None;
+    };
+    let Some(reference_oracle) = reference_oracle else {
+        return None;
+    };
+    let Some(reference_version) = reference_version else {
+        return None;
+    };
+    let Some(attacker_identity) = attacker_identity else {
+        return None;
+    };
+    let Some(victim_identity) = victim_identity else {
+        return None;
+    };
     let Some(weapon) = weapon else { return None };
-    let Some(armor_state) = armor_state else { return None };
-    let Some(pre_health) = pre_health else { return None };
-    let Some(post_health) = post_health else { return None };
-    let Some(damage_delta) = damage_delta else { return None };
-    let Some(knockback_metric) = knockback_metric else { return None };
-    let Some(damage_tolerance) = damage_tolerance else { return None };
-    let Some(knockback_tolerance) = knockback_tolerance else { return None };
+    let Some(armor_state) = armor_state else {
+        return None;
+    };
+    let Some(pre_health) = pre_health else {
+        return None;
+    };
+    let Some(post_health) = post_health else {
+        return None;
+    };
+    let Some(damage_delta) = damage_delta else {
+        return None;
+    };
+    let Some(knockback_metric) = knockback_metric else {
+        return None;
+    };
+    let Some(damage_tolerance) = damage_tolerance else {
+        return None;
+    };
+    let Some(knockback_tolerance) = knockback_tolerance else {
+        return None;
+    };
 
     Some(NormalizedCombatRecord {
         row,
@@ -415,10 +504,7 @@ fn validate_record_contract(
         diagnostics.push(format!("expected_{role}_backend:{}", record.backend));
     }
     if record.revision_status != CLEAN_REVISION_STATUS {
-        diagnostics.push(format!(
-            "stale_revision:{role}:{}",
-            record.revision_status
-        ));
+        diagnostics.push(format!("stale_revision:{role}:{}", record.revision_status));
     }
     if record.child_revision == UNKNOWN_REVISION || record.child_revision == DIRTY_REVISION {
         diagnostics.push(format!("missing_child_revision:{role}"));
@@ -433,6 +519,73 @@ fn validate_record_contract(
         diagnostics.push(format!(
             "wrong_reference_version:{role}:{}",
             record.reference_version
+        ));
+    }
+    validate_expected_string(
+        role,
+        FIELD_WEAPON,
+        &record.weapon,
+        contract.expected_weapon,
+        diagnostics,
+    );
+    validate_expected_string(
+        role,
+        FIELD_ARMOR_STATE,
+        &record.armor_state,
+        contract.expected_armor_state,
+        diagnostics,
+    );
+    validate_expected_number(
+        role,
+        FIELD_PRE_HEALTH,
+        record.pre_health,
+        contract.expected_pre_health,
+        record.damage_tolerance,
+        diagnostics,
+    );
+    validate_expected_number(
+        role,
+        FIELD_POST_HEALTH,
+        record.post_health,
+        contract.expected_post_health,
+        record.damage_tolerance,
+        diagnostics,
+    );
+    validate_expected_number(
+        role,
+        FIELD_DAMAGE_DELTA,
+        record.damage_delta,
+        contract.expected_damage_delta,
+        record.damage_tolerance,
+        diagnostics,
+    );
+}
+
+fn validate_expected_string(
+    role: &str,
+    field: &str,
+    actual: &str,
+    expected: &str,
+    diagnostics: &mut Vec<String>,
+) {
+    if actual != expected {
+        diagnostics.push(format!(
+            "unexpected_{field}:{role}:expected={expected}:actual={actual}"
+        ));
+    }
+}
+
+fn validate_expected_number(
+    role: &str,
+    field: &str,
+    actual: f64,
+    expected: f64,
+    tolerance: f64,
+    diagnostics: &mut Vec<String>,
+) {
+    if exceeds_tolerance(expected, actual, tolerance) {
+        diagnostics.push(format!(
+            "unexpected_{field}:{role}:expected={expected}:actual={actual}:tolerance={tolerance}"
         ));
     }
 }
@@ -469,7 +622,12 @@ fn compare_shared_metrics(
         &valence.victim_identity,
         diagnostics,
     );
-    compare_string_metric(FIELD_WEAPON, &reference.weapon, &valence.weapon, diagnostics);
+    compare_string_metric(
+        FIELD_WEAPON,
+        &reference.weapon,
+        &valence.weapon,
+        diagnostics,
+    );
     compare_string_metric(
         FIELD_ARMOR_STATE,
         &reference.armor_state,
@@ -567,8 +725,15 @@ fn exceeds_tolerance(reference: f64, valence: f64, tolerance: f64) -> bool {
 
 fn run_self_tests() -> Result<String, Vec<String>> {
     let contract = default_contract();
-    let reference = parse_evidence(&fixture_evidence(REFERENCE_BACKEND))?;
-    let valence = parse_evidence(&fixture_evidence(VALENCE_BACKEND))?;
+    let armor_contract = armor_contract();
+    assert!(contract_for_row(NO_ARMOR_ROW_ID).is_ok());
+    assert!(contract_for_row(ARMOR_ROW_ID).is_ok());
+    assert_contains_error(contract_for_row("unknown-combat-row"), "unknown row")?;
+
+    let reference = parse_evidence(&fixture_evidence(REFERENCE_BACKEND, &contract))?;
+    let valence = parse_evidence(&fixture_evidence(VALENCE_BACKEND, &contract))?;
+    let armor_reference = parse_evidence(&fixture_evidence(REFERENCE_BACKEND, &armor_contract))?;
+    let armor_valence = parse_evidence(&fixture_evidence(VALENCE_BACKEND, &armor_contract))?;
     assert_passes(
         compare_combat_parity(
             &CombatParityPair {
@@ -580,7 +745,18 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         "valid paired evidence",
     )?;
 
-    let within_tolerance = parse_evidence(&fixture_evidence(VALENCE_BACKEND).replace(
+    assert_passes(
+        compare_combat_parity(
+            &CombatParityPair {
+                reference: Some(armor_reference.clone()),
+                valence: Some(armor_valence.clone()),
+            },
+            &armor_contract,
+        ),
+        "valid paired armor evidence",
+    )?;
+
+    let within_tolerance = parse_evidence(&fixture_evidence(VALENCE_BACKEND, &contract).replace(
         &format!("{FIELD_KNOCKBACK_METRIC}={FIXTURE_KNOCKBACK_METRIC}"),
         &format!("{FIELD_KNOCKBACK_METRIC}={FIXTURE_WITHIN_TOLERANCE_KNOCKBACK}"),
     ))?;
@@ -692,7 +868,11 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         compare_combat_parity(
             &CombatParityPair {
                 reference: Some(reference.clone()),
-                valence: Some(replace_field(&valence, FIELD_WEAPON, FIXTURE_MISMATCHED_WEAPON)),
+                valence: Some(replace_field(
+                    &valence,
+                    FIELD_WEAPON,
+                    FIXTURE_MISMATCHED_WEAPON,
+                )),
             },
             &contract,
         ),
@@ -702,7 +882,7 @@ fn run_self_tests() -> Result<String, Vec<String>> {
     assert_contains(
         compare_combat_parity(
             &CombatParityPair {
-                reference: Some(reference),
+                reference: Some(reference.clone()),
                 valence: Some(replace_field(
                     &valence,
                     FIELD_ARMOR_STATE,
@@ -714,12 +894,48 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         "mismatched_armor_state",
     )?;
 
+    assert_contains(
+        compare_combat_parity(
+            &CombatParityPair {
+                reference: Some(armor_reference.clone()),
+                valence: Some(replace_field(
+                    &armor_valence,
+                    FIELD_ARMOR_STATE,
+                    FIXTURE_ARMOR_STATE,
+                )),
+            },
+            &armor_contract,
+        ),
+        "unexpected_armor_state",
+    )?;
+
+    assert_contains(
+        compare_combat_parity(
+            &CombatParityPair {
+                reference: Some(armor_reference),
+                valence: Some(replace_field(
+                    &armor_valence,
+                    FIELD_DAMAGE_DELTA,
+                    FIXTURE_DAMAGE_DELTA,
+                )),
+            },
+            &armor_contract,
+        ),
+        "unexpected_damage_delta",
+    )?;
+
     Ok("positive and negative fixtures exercised".to_string())
 }
 
-fn fixture_evidence(backend: &str) -> String {
+fn fixture_evidence(backend: &str, contract: &CombatParityContract) -> String {
     format!(
-        "{FIELD_ROW}={ROW_ID}\n{FIELD_BACKEND}={backend}\n{FIELD_REVISION_STATUS}={CLEAN_REVISION_STATUS}\n{FIELD_CHILD_REVISION}={FIXTURE_CHILD_REVISION}\n{FIELD_REFERENCE_ORACLE}={REFERENCE_ORACLE}\n{FIELD_REFERENCE_VERSION}={REFERENCE_VERSION}\n{FIELD_ATTACKER_IDENTITY}={FIXTURE_ATTACKER}\n{FIELD_VICTIM_IDENTITY}={FIXTURE_VICTIM}\n{FIELD_WEAPON}={FIXTURE_WEAPON}\n{FIELD_ARMOR_STATE}={FIXTURE_ARMOR_STATE}\n{FIELD_PRE_HEALTH}={FIXTURE_PRE_HEALTH}\n{FIELD_POST_HEALTH}={FIXTURE_POST_HEALTH}\n{FIELD_DAMAGE_DELTA}={FIXTURE_DAMAGE_DELTA}\n{FIELD_KNOCKBACK_METRIC}={FIXTURE_KNOCKBACK_METRIC}\n{FIELD_DAMAGE_TOLERANCE}={FIXTURE_DAMAGE_TOLERANCE}\n{FIELD_KNOCKBACK_TOLERANCE}={FIXTURE_KNOCKBACK_TOLERANCE}\n"
+        "{FIELD_ROW}={}\n{FIELD_BACKEND}={backend}\n{FIELD_REVISION_STATUS}={CLEAN_REVISION_STATUS}\n{FIELD_CHILD_REVISION}={FIXTURE_CHILD_REVISION}\n{FIELD_REFERENCE_ORACLE}={REFERENCE_ORACLE}\n{FIELD_REFERENCE_VERSION}={REFERENCE_VERSION}\n{FIELD_ATTACKER_IDENTITY}={FIXTURE_ATTACKER}\n{FIELD_VICTIM_IDENTITY}={FIXTURE_VICTIM}\n{FIELD_WEAPON}={}\n{FIELD_ARMOR_STATE}={}\n{FIELD_PRE_HEALTH}={:.1}\n{FIELD_POST_HEALTH}={:.1}\n{FIELD_DAMAGE_DELTA}={:.1}\n{FIELD_KNOCKBACK_METRIC}={FIXTURE_KNOCKBACK_METRIC}\n{FIELD_DAMAGE_TOLERANCE}={FIXTURE_DAMAGE_TOLERANCE}\n{FIELD_KNOCKBACK_TOLERANCE}={FIXTURE_KNOCKBACK_TOLERANCE}\n",
+        contract.row_id,
+        contract.expected_weapon,
+        contract.expected_armor_state,
+        contract.expected_pre_health,
+        contract.expected_post_health,
+        contract.expected_damage_delta,
     )
 }
 
@@ -759,5 +975,18 @@ fn assert_contains(decision: CombatParityDecision, needle: &str) -> Result<(), V
             "missing expected diagnostic {needle:?}: {:?}",
             decision.diagnostics
         )])
+    }
+}
+
+fn assert_contains_error<T>(
+    result: Result<T, Vec<String>>,
+    needle: &str,
+) -> Result<(), Vec<String>> {
+    match result {
+        Ok(_) => Err(vec![format!("expected error containing {needle:?}")]),
+        Err(errors) if errors.iter().any(|error| error.contains(needle)) => Ok(()),
+        Err(errors) => Err(vec![format!(
+            "missing expected error {needle:?}: {errors:?}"
+        )]),
     }
 }

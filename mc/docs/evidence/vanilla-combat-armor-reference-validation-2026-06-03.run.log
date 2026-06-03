@@ -1,0 +1,169 @@
+# vanilla-combat-armor-reference final validation
+date=2026-06-03T15:44:06Z
+
+## comparator_compile
+command=nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_vanilla_combat_reference_parity.rs -o target/check-vanilla-combat-reference-parity 
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+comparator_compile_exit_status=0
+
+## comparator_pair
+command=target/check-vanilla-combat-reference-parity --row vanilla-combat-armor-reference-parity --reference docs/evidence/vanilla-combat-armor-reference-paired-paper-reference-2026-06-03.kv --valence docs/evidence/vanilla-combat-armor-reference-paired-valence-reference-2026-06-03.kv 
+vanilla combat reference parity row check passed
+comparator_pair_exit_status=0
+
+## scenario_manifest_typecheck
+command=nix develop --no-update-lock-file -c nickel typecheck config/mc-compat/scenario-manifest.ncl 
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+scenario_manifest_typecheck_exit_status=0
+
+## scenario_manifest_compile
+command=nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_scenario_manifest.rs -o target/check-scenario-manifest 
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+scenario_manifest_compile_exit_status=0
+
+## scenario_manifest_self_test
+command=target/check-scenario-manifest --self-test 
+scenario manifest self-test passed: positive and negative fixtures exercised
+scenario_manifest_self_test_exit_status=0
+
+## scenario_manifest_check
+command=target/check-scenario-manifest 
+scenario manifest check passed: 31 rows validated
+scenario_manifest_check_exit_status=0
+
+## evidence_manifest_compile
+command=nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_evidence_manifests.rs -o target/check-evidence-manifests 
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence_manifest_compile_exit_status=0
+
+## evidence_manifest_self_test
+command=nix develop --no-update-lock-file -c target/check-evidence-manifests --self-test 
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest self-test ok: positive and negative fixtures exercised
+evidence_manifest_self_test_exit_status=0
+
+## evidence_manifest_check
+command=nix develop --no-update-lock-file -c target/check-evidence-manifests 
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifests ok: 308 manifests, 1827 entries, 92 receipts scanned
+evidence_manifest_check_exit_status=0
+pre_task_evidence_ready_exit_status=0
+
+## task_evidence_compile
+command=nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_cairn_task_evidence.rs -o target/check-cairn-task-evidence 
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task_evidence_compile_exit_status=0
+
+## task_evidence_self_test
+command=target/check-cairn-task-evidence --self-test 
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task_evidence_self_test_exit_status=0
+
+## task_evidence_check
+command=target/check-cairn-task-evidence 
+task evidence gate passed: 7 completed tasks checked across 1 task files
+task_evidence_check_exit_status=0
+
+## cairn_gate_proposal
+command=nix run --no-update-lock-file .#cairn -- gate proposal vanilla-combat-armor-reference-parity --root . 
+{
+  "change": "vanilla-combat-armor-reference-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "31302de2a89e3b076ce89a868a88dc1041840dc52397447d6dfc942e1e4b34b0",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "e6102d2104d2e05881340fdfd6e06bac094b848666384687c7704b1c5e648ab8",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+cairn_gate_proposal_exit_status=0
+
+## cairn_gate_design
+command=nix run --no-update-lock-file .#cairn -- gate design vanilla-combat-armor-reference-parity --root . 
+{
+  "change": "vanilla-combat-armor-reference-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "00538f72f8b3d9cff74c7c4bfb5330f505b42938c5c8120c8058c5bd6cf30288",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "cab5b72684b58cbe4aab55a7ee4b266a0d1661739822bb967a11392c35115a10",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+cairn_gate_design_exit_status=0
+
+## cairn_gate_tasks
+command=nix run --no-update-lock-file .#cairn -- gate tasks vanilla-combat-armor-reference-parity --root . 
+{
+  "change": "vanilla-combat-armor-reference-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "6b4653cf8bc18f1c017a973f6784f3f3678d6d2c46ddb54561c705bb5d0cb281",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "b76268ec23cdc55c753c53cae250226366d1445d9cb6d067b3d180f6b385092a",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+cairn_gate_tasks_exit_status=0
+
+## cairn_validate
+command=nix run --no-update-lock-file .#cairn -- validate --root . 
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+cairn_validate_exit_status=0
+exit_status=0

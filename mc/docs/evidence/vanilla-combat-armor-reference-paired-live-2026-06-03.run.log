@@ -1,0 +1,29 @@
+# vanilla-combat-armor-reference paired live receipt validation
+date=2026-06-03
+row=vanilla-combat-armor-reference-parity
+paper_reference_child_revision=paper-1.20.1-build-196
+valence_child_revision=f41e8649ba43
+stevenarella_child_revision=75151ca3cd4e
+
+## paper live receipt
+command=SERVER_PROTOCOL=763 SERVER_VERSION=1.20.1 PAPER_PLUGIN_JAR=/home/brittonr/git/mc/docs/evidence/mc-compat-paper-vanilla-combat-armor-reference-fixture-2026-06-03.jar SERVER_NAME=mc-compat-vanilla-combat-armor-paper-20260603b CLIENT_TIMEOUT=120 nix run --no-update-lock-file .#mc-compat-smoke -- --run --server-backend paper --scenario vanilla-combat-armor-reference-parity --receipt /home/brittonr/git/mc/target/vanilla-combat-armor-reference-paired-2026-06-03/paper.receipt.json --keep-server
+raw_stdout_log=docs/evidence/vanilla-combat-armor-reference-paired-paper-live-2026-06-03.run.log
+receipt=docs/evidence/vanilla-combat-armor-reference-paired-paper-receipt-2026-06-03.json
+typed_events=docs/evidence/vanilla-combat-armor-reference-paired-paper-typed-events-2026-06-03.log
+server_log=docs/evidence/vanilla-combat-armor-reference-paired-paper-server-2026-06-03.log
+normalized_comparator_input=docs/evidence/vanilla-combat-armor-reference-paired-paper-reference-2026-06-03.kv
+observed=paper receipt status=pass; armor_state=diamond_chestplate; damage_delta=4.7; post_health=15.3; knockback_metric=0.00
+exit_status=0
+
+## valence live receipt
+command=SERVER_PROTOCOL=763 SERVER_VERSION=1.20.1 VALENCE_REPO=/home/brittonr/git/mc/valence VALENCE_REV=f41e8649ba436670659e906ee8a36c74aa3e4a96 VALENCE_WORKTREE=/tmp/valence-vanilla-combat-armor-reference-20260603-f41e8649ba43 VALENCE_TARGET_DIR=/tmp/valence-vanilla-combat-armor-reference-target-20260603-f41e8649ba43 VALENCE_EXAMPLE=ctf CLIENT_TIMEOUT=120 nix run --no-update-lock-file .#mc-compat-smoke -- --run --server-backend valence --scenario vanilla-combat-armor-reference-parity --receipt /home/brittonr/git/mc/target/vanilla-combat-armor-reference-paired-2026-06-03/valence.receipt.json
+raw_stdout_log=docs/evidence/vanilla-combat-armor-reference-paired-valence-live-2026-06-03.run.log
+receipt=docs/evidence/vanilla-combat-armor-reference-paired-valence-receipt-2026-06-03.json
+typed_events=docs/evidence/vanilla-combat-armor-reference-paired-valence-typed-events-2026-06-03.log
+server_log=docs/evidence/vanilla-combat-armor-reference-paired-valence-server-2026-06-03.log
+normalized_comparator_input=docs/evidence/vanilla-combat-armor-reference-paired-valence-reference-2026-06-03.kv
+observed=valence receipt status=pass; armor_state=diamond_chestplate; damage_delta=4.7; post_health=15.3; knockback_metric=0.00
+exit_status=0
+
+overall_exit_status=0
+exit_status=0

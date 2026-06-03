@@ -1,5 +1,5 @@
 b054ae89251c08f5a26fc477cc565c5e40ab4cf152d4b22705fccab8d1c24114  docs/evidence/protocol-763-production-network-safety-matrix-2026-05-28.md
-d853631d970019b31881c9c506140aa5e663a3dc15d055d8181cc467db348049  docs/evidence/protocol-763-current-evidence-bundle.md
-8d8bb68b46052becda47d115aee832b28da6265ad021c73f520b36a995d5cebf  docs/evidence/protocol-763-acceptance-matrix.md
+a3c5834fd99f86f9358a2be1a917eacea28a325e06014e33fb7e24dfe59bd34e  docs/evidence/protocol-763-current-evidence-bundle.md
+6de2429efbb8c33f2660c669dab7a21121d7aa061dcf0eea5012592604d91c8a  docs/evidence/protocol-763-acceptance-matrix.md
 bd6d7fd6539373e4b116ff054047cd8261aaed6836faa7099d0890e44cf6a21a  tools/check_adversarial_network_oracle.rs
 5d018c1fd532a18c1ecf4e22c294dc6ef8bda6268dfb8359565c810cf63e9216  docs/evidence/protocol-763-adversarial-network-oracle-matrix-2026-05-29.run.log
