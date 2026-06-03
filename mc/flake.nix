@@ -5,7 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     systems.url = "github:nix-systems/default-linux";
     cairn.url = "git+ssh://git@github.com/onixresearch/cairn.git";
-    octet.url = "git+ssh://git@github.com/onixresearch/octet.git";
+    octet.url = "git+ssh://git@github.com/OnixResearch/octet.git";
   };
 
   outputs =

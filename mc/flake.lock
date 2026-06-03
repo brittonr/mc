@@ -287,11 +287,11 @@
         "rev": "9b6a2065ef9e8e363d81299cf59d74f885926215",
         "revCount": 329,
         "type": "git",
-        "url": "ssh://git@github.com/onixresearch/octet.git"
+        "url": "ssh://git@github.com/OnixResearch/octet.git"
       },
       "original": {
         "type": "git",
-        "url": "ssh://git@github.com/onixresearch/octet.git"
+        "url": "ssh://git@github.com/OnixResearch/octet.git"
       }
     },
     "root": {
