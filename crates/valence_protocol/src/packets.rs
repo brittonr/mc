@@ -29,10 +29,15 @@ pub mod login {
 }
 
 pub mod play {
+    #[path = "advancement/tab/c2s.rs"]
     pub mod advancement_tab_c2s;
     pub use advancement_tab_c2s::AdvancementTabC2s;
+    #[path = "advancement/update/s2c.rs"]
     pub mod advancement_update_s2c;
-    pub use advancement_update_s2c::AdvancementUpdateS2c;
+    pub use advancement_update_s2c::{
+        Advancement, AdvancementCriteria, AdvancementDisplay, AdvancementRequirements,
+        AdvancementUpdateS2c, GenericAdvancementUpdateS2c,
+    };
     pub mod block_breaking_progress_s2c;
     pub use block_breaking_progress_s2c::BlockBreakingProgressS2c;
     pub mod block_entity_update_s2c;
