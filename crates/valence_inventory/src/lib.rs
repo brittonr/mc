@@ -25,6 +25,7 @@ use valence_server::protocol::{VarInt, WritePacket};
 use valence_server::text::IntoText;
 use valence_server::{GameMode, Hand, ItemKind, ItemStack, Text};
 
+#[path = "player/inventory.rs"]
 pub mod player_inventory;
 mod validate;
 

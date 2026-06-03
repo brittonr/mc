@@ -124,8 +124,9 @@ pub mod play {
     pub use entity_attributes_s2c::EntityAttributesS2c;
     pub mod entity_damage_s2c;
     pub use entity_damage_s2c::EntityDamageS2c;
+    #[path = "entity/equipment/update/s2c.rs"]
     pub mod entity_equipment_update_s2c;
-    pub use entity_equipment_update_s2c::EntityEquipmentUpdateS2c;
+    pub use entity_equipment_update_s2c::{EntityEquipmentUpdateS2c, EquipmentEntry};
     pub mod entity_passengers_set_s2c;
     pub use entity_passengers_set_s2c::EntityPassengersSetS2c;
     pub mod entity_position_s2c;
@@ -211,8 +212,9 @@ pub mod play {
     pub use play_sound_s2c::PlaySoundS2c;
     pub mod player_abilities_s2c;
     pub use player_abilities_s2c::PlayerAbilitiesS2c;
+    #[path = "player/action/c2s.rs"]
     pub mod player_action_c2s;
-    pub use player_action_c2s::PlayerActionC2s;
+    pub use player_action_c2s::{PlayerAction, PlayerActionC2s};
     pub mod player_action_response_s2c;
     pub use player_action_response_s2c::PlayerActionResponseS2c;
     pub mod player_input_c2s;
