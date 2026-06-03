@@ -1,19 +1,17 @@
-use std::collections::HashMap;
-
 use bevy_ecs::prelude::*;
-use derive_more::{Deref, DerefMut};
-use valence_server::entity::EntityLayerId;
-use valence_server::protocol::packets::play::scoreboard_display_s2c::ScoreboardPosition;
-use valence_server::protocol::packets::play::scoreboard_objective_update_s2c::ObjectiveRenderType;
 use valence_server::text::IntoText;
-use valence_server::Text;
+
+type LayerId = valence_server::entity::EntityLayerId;
+type DisplayPosition = valence_server::protocol::packets::play::ScoreboardPosition;
+type RenderType = valence_server::protocol::packets::play::ObjectiveRenderType;
+type DisplayText = valence_server::Text;
 
 /// A string that identifies an objective. There is one scoreboard per
 /// objective.It's generally not safe to modify this after it's been created.
 /// Limited to 16 characters.
 ///
 /// Directly analogous to an Objective's Name.
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Component, Deref)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Component, derive_more::Deref)]
 pub struct Objective(pub(crate) String);
 
 impl Objective {
@@ -35,19 +33,19 @@ impl Objective {
 
 /// Optional display name for an objective. If not present, the objective's name
 /// is used.
-#[derive(Debug, Clone, PartialEq, Component, Deref, DerefMut)]
-pub struct ObjectiveDisplay(pub Text);
+#[derive(Debug, Clone, PartialEq, Component, derive_more::Deref, derive_more::DerefMut)]
+pub struct ObjectiveDisplay(pub DisplayText);
 
 /// A mapping of keys to their scores.
 #[derive(Debug, Clone, Component, Default)]
-pub struct ObjectiveScores(pub(crate) HashMap<String, i32>);
+pub struct ObjectiveScores(pub(crate) std::collections::HashMap<String, i32>);
 
 impl ObjectiveScores {
     pub fn new() -> Self {
-        Default::default()
+        Self(std::collections::HashMap::new())
     }
 
-    pub fn with_map<M: Into<HashMap<String, i32>>>(map: M) -> Self {
+    pub fn with_map<M: Into<std::collections::HashMap<String, i32>>>(map: M) -> Self {
         Self(map.into())
     }
 
@@ -65,11 +63,12 @@ impl ObjectiveScores {
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Component)]
-pub struct OldObjectiveScores(pub(crate) HashMap<String, i32>);
+pub struct OldObjectiveScores(pub(crate) std::collections::HashMap<String, i32>);
 
 impl OldObjectiveScores {
     pub fn diff<'a>(&'a self, scores: &'a ObjectiveScores) -> Vec<&'a str> {
-        let mut diff = Vec::new();
+        let max_diff_count = self.0.len().saturating_add(scores.0.len());
+        let mut diff = Vec::with_capacity(max_diff_count);
 
         for (key, value) in &self.0 {
             if scores.0.get(key) != Some(value) {
@@ -99,11 +98,11 @@ impl OldObjectiveScores {
 pub struct ObjectiveBundle {
     pub name: Objective,
     pub display: ObjectiveDisplay,
-    pub render_type: ObjectiveRenderType,
+    pub render_type: RenderType,
     pub scores: ObjectiveScores,
     pub old_scores: OldObjectiveScores,
-    pub position: ScoreboardPosition,
-    pub layer: EntityLayerId,
+    pub position: DisplayPosition,
+    pub layer: LayerId,
 }
 
 impl Default for ObjectiveBundle {
@@ -111,11 +110,11 @@ impl Default for ObjectiveBundle {
         Self {
             name: Objective::new(""),
             display: ObjectiveDisplay("".into_text()),
-            render_type: Default::default(),
-            scores: Default::default(),
-            old_scores: Default::default(),
-            position: Default::default(),
-            layer: Default::default(),
+            render_type: RenderType::Integer,
+            scores: ObjectiveScores::new(),
+            old_scores: OldObjectiveScores(std::collections::HashMap::new()),
+            position: DisplayPosition::Sidebar,
+            layer: valence_server::entity::EntityLayerId(bevy_ecs::prelude::Entity::PLACEHOLDER),
         }
     }
 }

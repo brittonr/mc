@@ -35,6 +35,7 @@ pub mod packets;
 pub mod profile;
 mod raw;
 pub mod sound;
+#[path = "var/int.rs"]
 pub mod var_int;
 mod var_long;
 mod velocity;

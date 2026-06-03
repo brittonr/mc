@@ -268,12 +268,19 @@ pub mod play {
     pub use rotate_s2c::RotateS2c;
     pub mod rotate_and_move_relative_s2c;
     pub use rotate_and_move_relative_s2c::RotateAndMoveRelativeS2c;
+    #[path = "scoreboard/display/s2c.rs"]
     pub mod scoreboard_display_s2c;
-    pub use scoreboard_display_s2c::ScoreboardDisplayS2c;
+    pub use scoreboard_display_s2c::{ScoreboardDisplayS2c, ScoreboardPosition};
+    #[path = "scoreboard/objective/update/s2c.rs"]
     pub mod scoreboard_objective_update_s2c;
-    pub use scoreboard_objective_update_s2c::ScoreboardObjectiveUpdateS2c;
+    pub use scoreboard_objective_update_s2c::{
+        ObjectiveMode, ObjectiveRenderType, ScoreboardObjectiveUpdateS2c,
+    };
+    #[path = "scoreboard/player/update/s2c.rs"]
     pub mod scoreboard_player_update_s2c;
-    pub use scoreboard_player_update_s2c::ScoreboardPlayerUpdateS2c;
+    pub use scoreboard_player_update_s2c::{
+        ScoreboardPlayerUpdateAction, ScoreboardPlayerUpdateS2c,
+    };
     pub mod screen_handler_property_update_s2c;
     pub use screen_handler_property_update_s2c::ScreenHandlerPropertyUpdateS2c;
     pub mod screen_handler_slot_update_s2c;
