@@ -45,8 +45,11 @@ pub mod play {
     pub use boat_paddle_state_c2s::BoatPaddleStateC2s;
     pub mod book_update_c2s;
     pub use book_update_c2s::BookUpdateC2s;
+    #[path = "boss/bar/s2c.rs"]
     pub mod boss_bar_s2c;
-    pub use boss_bar_s2c::BossBarS2c;
+    pub use boss_bar_s2c::{
+        BossBarAction, BossBarColor, BossBarDivision, BossBarFlags, BossBarS2c,
+    };
     pub mod bundle_splitter_s2c;
     pub use bundle_splitter_s2c::BundleSplitterS2c;
     pub mod button_click_c2s;
