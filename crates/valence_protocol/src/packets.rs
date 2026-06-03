@@ -77,8 +77,10 @@ pub mod play {
     pub use chunk_render_distance_center_s2c::ChunkRenderDistanceCenterS2c;
     pub mod clear_title_s2c;
     pub use clear_title_s2c::ClearTitleS2c;
+    #[path = "click/slot/c2s.rs"]
     pub mod click_slot_c2s;
     pub use click_slot_c2s::ClickSlotC2s;
+    #[path = "client/command/c2s.rs"]
     pub mod client_command_c2s;
     pub use client_command_c2s::ClientCommandC2s;
     pub mod client_settings_c2s;
@@ -197,6 +199,7 @@ pub mod play {
     pub use on_ground_only_c2s::OnGroundOnlyC2s;
     pub mod open_horse_screen_s2c;
     pub use open_horse_screen_s2c::OpenHorseScreenS2c;
+    #[path = "open/screen/s2c.rs"]
     pub mod open_screen_s2c;
     pub use open_screen_s2c::OpenScreenS2c;
     pub mod open_written_book_s2c;
@@ -226,6 +229,7 @@ pub mod play {
     pub use player_input_c2s::PlayerInputC2s;
     pub mod player_interact_block_c2s;
     pub use player_interact_block_c2s::PlayerInteractBlockC2s;
+    #[path = "player/interact/entity/c2s.rs"]
     pub mod player_interact_entity_c2s;
     pub use player_interact_entity_c2s::PlayerInteractEntityC2s;
     pub mod player_interact_item_c2s;
