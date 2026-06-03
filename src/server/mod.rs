@@ -50,6 +50,7 @@ const CTF_SCORE_LIMIT_CLIENT_WIN_TEAM: &str = "red";
 const CTF_SCORE_LIMIT_CLIENT_END_STATE: &str = "winner_declared";
 const FLAG_PROBE_CYCLE_TICKS: u32 = 220;
 const ACTIVE_PROBE_INPUT_START_TICK: u32 = 1;
+const STATIONARY_COMBAT_PROBE_ENV: &str = "MC_COMPAT_STATIONARY_COMBAT_PROBE";
 const ACTIVE_PROBE_JUMP_RELEASE_TICK: u32 = 18;
 const ACTIVE_PROBE_TURN_TICK: u32 = 180;
 const ACTIVE_PROBE_STOP_TICK: u32 = 300;
@@ -532,6 +533,7 @@ pub struct Server {
     active_probe_enabled: bool,
     team_probe_enabled: bool,
     combat_probe_enabled: bool,
+    stationary_combat_probe_enabled: bool,
     respawn_probe_enabled: bool,
     inventory_probe_enabled: bool,
     survival_probe_enabled: bool,
@@ -1156,6 +1158,9 @@ impl Server {
             combat_probe_enabled: std::env::var("MC_COMPAT_COMBAT_PROBE")
                 .map(|value| value != "0")
                 .unwrap_or(false),
+            stationary_combat_probe_enabled: std::env::var(STATIONARY_COMBAT_PROBE_ENV)
+                .map(|value| value != "0")
+                .unwrap_or(false),
             respawn_probe_enabled: std::env::var("MC_COMPAT_RESPAWN_PROBE")
                 .map(|value| value != "0")
                 .unwrap_or(false),
@@ -1428,15 +1433,18 @@ impl Server {
 
         self.active_probe_ticks = self.active_probe_ticks.saturating_add(1);
 
-        let movement_probe_enabled = self.active_probe_enabled
-            || self.team_probe_enabled
-            || self.combat_probe_enabled
-            || self.respawn_probe_enabled
-            || self.inventory_probe_enabled
-            || self.equipment_probe_enabled
-            || self.projectile_probe_enabled
-            || self.flag_probe_enabled
-            || self.score_limit_probe_enabled;
+        let stationary_combat_probe_enabled =
+            self.combat_probe_enabled && self.stationary_combat_probe_enabled;
+        let movement_probe_enabled = !stationary_combat_probe_enabled
+            && (self.active_probe_enabled
+                || self.team_probe_enabled
+                || self.combat_probe_enabled
+                || self.respawn_probe_enabled
+                || self.inventory_probe_enabled
+                || self.equipment_probe_enabled
+                || self.projectile_probe_enabled
+                || self.flag_probe_enabled
+                || self.score_limit_probe_enabled);
         if movement_probe_enabled {
             if let Some(movement) = self
                 .entities

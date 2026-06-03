@@ -1,6 +1,10 @@
 use crate::protocol::{packet, Direction, State};
 
+const WIRE_ENTITY_DAMAGE: i32 = 0x18;
+const WIRE_DAMAGE_TILT: i32 = 0x21;
 const WIRE_PARTICLE: i32 = 0x26;
+const WIRE_COMBAT_EVENT_END: i32 = 0x36;
+const WIRE_COMBAT_EVENT_ENTER: i32 = 0x37;
 const WIRE_FEATURE_FLAGS: i32 = 0x6b;
 const WIRE_ENTITY_EFFECT: i32 = 0x6c;
 
@@ -19,9 +23,17 @@ const PLAY_CLIENTBOUND_OVERRIDES: &[(i32, i32)] = &[
     (0x13, packet::play::clientbound::internal_ids::WindowProperty),
     (0x14, packet::play::clientbound::internal_ids::WindowSetSlot_State),
     (0x17, packet::play::clientbound::internal_ids::PluginMessageClientbound),
+    (
+        WIRE_ENTITY_DAMAGE,
+        packet::play::clientbound::internal_ids::EntityDamageRaw,
+    ),
     (0x1c, packet::play::clientbound::internal_ids::EntityStatus),
     (0x1e, packet::play::clientbound::internal_ids::ChunkUnload),
     (0x1f, packet::play::clientbound::internal_ids::ChangeGameState),
+    (
+        WIRE_DAMAGE_TILT,
+        packet::play::clientbound::internal_ids::DamageTiltRaw,
+    ),
     (0x22, packet::play::clientbound::internal_ids::WorldBorderInit),
     (0x23, packet::play::clientbound::internal_ids::KeepAliveClientbound_i64),
     (0x24, packet::play::clientbound::internal_ids::ChunkData_AndLight_NoTrustEdges),
@@ -38,6 +50,14 @@ const PLAY_CLIENTBOUND_OVERRIDES: &[(i32, i32)] = &[
     (0x2e, packet::play::clientbound::internal_ids::VehicleTeleport),
     (0x30, packet::play::clientbound::internal_ids::WindowOpen_VarInt),
     (0x34, packet::play::clientbound::internal_ids::PlayerAbilities),
+    (
+        WIRE_COMBAT_EVENT_END,
+        packet::play::clientbound::internal_ids::CombatEventEndRaw,
+    ),
+    (
+        WIRE_COMBAT_EVENT_ENTER,
+        packet::play::clientbound::internal_ids::CombatEventEnter,
+    ),
     (0x38, packet::play::clientbound::internal_ids::DeathMessage_VarInt),
     (0x39, packet::play::clientbound::internal_ids::PlayerRemove_UUIDs),
     (0x3a, packet::play::clientbound::internal_ids::PlayerInfo_BitSet),

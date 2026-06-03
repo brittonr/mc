@@ -863,6 +863,18 @@ state_packets!(
                 field entity_id: VarInt =,
                 field animation_id: u8 =,
             }
+            /// EntityDamageRaw consumes the modern entity damage payload for probes that only need health updates.
+            packet EntityDamageRaw {
+                field data: Vec<u8> =,
+            }
+            /// DamageTiltRaw consumes the modern damage-tilt payload; combat probes do not render it.
+            packet DamageTiltRaw {
+                field data: Vec<u8> =,
+            }
+            /// CombatEventEndRaw consumes the modern empty end-combat packet.
+            packet CombatEventEndRaw {
+                field data: Vec<u8> =,
+            }
             /// Statistics is used to update the statistics screen for the client.
             packet Statistics {
                 field statistices: LenPrefixed<VarInt, packet::Statistic> =,

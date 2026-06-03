@@ -111,6 +111,21 @@ pub fn translate_internal_packet_id_for_version(
 mod tests {
     use super::*;
 
+    const BYTES_PER_KIB: usize = 1024;
+    const KIB_PER_MIB: usize = 1024;
+    const TEST_PACKET_PARSE_STACK_MIB: usize = 8;
+    const TEST_PACKET_PARSE_STACK_BYTES: usize =
+        TEST_PACKET_PARSE_STACK_MIB * KIB_PER_MIB * BYTES_PER_KIB;
+
+    fn run_high_stack_packet_parse_fixture(parse: impl FnOnce() + Send + 'static) {
+        std::thread::Builder::new()
+            .stack_size(TEST_PACKET_PARSE_STACK_BYTES)
+            .spawn(parse)
+            .expect("spawn packet parse test")
+            .join()
+            .expect("packet parse test passes");
+    }
+
     #[test]
     fn protocol_name_accepts_valence_current_1_20_1() {
         assert_eq!(protocol_name_to_protocol_version("1.20.1".to_string()), 763);
@@ -246,6 +261,175 @@ mod tests {
                 true
             ),
         );
+    }
+
+    #[test]
+    fn protocol_763_maps_paper_entity_damage_boundary() {
+        const PROTOCOL_1_20_1: i32 = 763;
+        const WIRE_ENTITY_DAMAGE: i32 = 0x18;
+        const ENTITY_DAMAGE_PAYLOAD: &[u8] = &[0x01, 0x02, 0x03, 0x04];
+        assert_eq!(
+            translate_internal_packet_id_for_version(
+                PROTOCOL_1_20_1,
+                State::Play,
+                Direction::Clientbound,
+                WIRE_ENTITY_DAMAGE,
+                true,
+            ),
+            crate::protocol::packet::play::clientbound::internal_ids::EntityDamageRaw,
+        );
+        assert_ne!(
+            translate_internal_packet_id_for_version(
+                PROTOCOL_1_20_1,
+                State::Play,
+                Direction::Clientbound,
+                WIRE_ENTITY_DAMAGE,
+                true,
+            ),
+            crate::protocol::packet::play::clientbound::internal_ids::PluginMessageClientbound,
+        );
+
+        run_high_stack_packet_parse_fixture(move || {
+            let mut cursor = std::io::Cursor::new(ENTITY_DAMAGE_PAYLOAD.to_vec());
+            let packet = crate::protocol::packet::packet_by_id(
+                PROTOCOL_1_20_1,
+                State::Play,
+                Direction::Clientbound,
+                WIRE_ENTITY_DAMAGE,
+                &mut cursor,
+            )
+            .expect("entity damage parses")
+            .expect("entity damage packet exists");
+            let crate::protocol::packet::Packet::EntityDamageRaw(packet) = packet else {
+                panic!("expected EntityDamageRaw packet");
+            };
+            assert_eq!(packet.data, ENTITY_DAMAGE_PAYLOAD);
+        });
+    }
+
+    #[test]
+    fn protocol_763_maps_paper_damage_tilt_boundary() {
+        const PROTOCOL_1_20_1: i32 = 763;
+        const WIRE_DAMAGE_TILT: i32 = 0x21;
+        const DAMAGE_TILT_PAYLOAD: &[u8] = &[0x01, 0x02, 0x03];
+        assert_eq!(
+            translate_internal_packet_id_for_version(
+                PROTOCOL_1_20_1,
+                State::Play,
+                Direction::Clientbound,
+                WIRE_DAMAGE_TILT,
+                true,
+            ),
+            crate::protocol::packet::play::clientbound::internal_ids::DamageTiltRaw,
+        );
+        assert_ne!(
+            translate_internal_packet_id_for_version(
+                PROTOCOL_1_20_1,
+                State::Play,
+                Direction::Clientbound,
+                WIRE_DAMAGE_TILT,
+                true,
+            ),
+            crate::protocol::packet::play::clientbound::internal_ids::KeepAliveClientbound_i64,
+        );
+
+        run_high_stack_packet_parse_fixture(move || {
+            let mut cursor = std::io::Cursor::new(DAMAGE_TILT_PAYLOAD.to_vec());
+            let packet = crate::protocol::packet::packet_by_id(
+                PROTOCOL_1_20_1,
+                State::Play,
+                Direction::Clientbound,
+                WIRE_DAMAGE_TILT,
+                &mut cursor,
+            )
+            .expect("damage tilt parses")
+            .expect("damage tilt packet exists");
+            let crate::protocol::packet::Packet::DamageTiltRaw(packet) = packet else {
+                panic!("expected DamageTiltRaw packet");
+            };
+            assert_eq!(packet.data, DAMAGE_TILT_PAYLOAD);
+        });
+    }
+
+    #[test]
+    fn protocol_763_maps_paper_combat_event_boundaries() {
+        const PROTOCOL_1_20_1: i32 = 763;
+        const WIRE_COMBAT_EVENT_END: i32 = 0x36;
+        const WIRE_COMBAT_EVENT_ENTER: i32 = 0x37;
+        assert_eq!(
+            translate_internal_packet_id_for_version(
+                PROTOCOL_1_20_1,
+                State::Play,
+                Direction::Clientbound,
+                WIRE_COMBAT_EVENT_END,
+                true,
+            ),
+            crate::protocol::packet::play::clientbound::internal_ids::CombatEventEndRaw,
+        );
+        assert_ne!(
+            translate_internal_packet_id_for_version(
+                PROTOCOL_1_20_1,
+                State::Play,
+                Direction::Clientbound,
+                WIRE_COMBAT_EVENT_END,
+                true,
+            ),
+            crate::protocol::packet::play::clientbound::internal_ids::CombatEventEnd,
+        );
+        assert_eq!(
+            translate_internal_packet_id_for_version(
+                PROTOCOL_1_20_1,
+                State::Play,
+                Direction::Clientbound,
+                WIRE_COMBAT_EVENT_ENTER,
+                true,
+            ),
+            crate::protocol::packet::play::clientbound::internal_ids::CombatEventEnter,
+        );
+        assert_ne!(
+            translate_internal_packet_id_for_version(
+                PROTOCOL_1_20_1,
+                State::Play,
+                Direction::Clientbound,
+                WIRE_COMBAT_EVENT_ENTER,
+                true,
+            ),
+            crate::protocol::packet::play::clientbound::internal_ids::FacePlayer,
+        );
+
+        run_high_stack_packet_parse_fixture(move || {
+            let end_payload: Vec<u8> = Vec::new();
+            let mut end_cursor = std::io::Cursor::new(end_payload);
+            let end_packet = crate::protocol::packet::packet_by_id(
+                PROTOCOL_1_20_1,
+                State::Play,
+                Direction::Clientbound,
+                WIRE_COMBAT_EVENT_END,
+                &mut end_cursor,
+            )
+            .expect("end combat parses")
+            .expect("end combat packet exists");
+            let crate::protocol::packet::Packet::CombatEventEndRaw(packet) = end_packet else {
+                panic!("expected CombatEventEndRaw packet");
+            };
+            assert!(packet.data.is_empty());
+
+            let enter_payload: Vec<u8> = Vec::new();
+            let mut enter_cursor = std::io::Cursor::new(enter_payload);
+            let enter_packet = crate::protocol::packet::packet_by_id(
+                PROTOCOL_1_20_1,
+                State::Play,
+                Direction::Clientbound,
+                WIRE_COMBAT_EVENT_ENTER,
+                &mut enter_cursor,
+            )
+            .expect("enter combat parses")
+            .expect("enter combat packet exists");
+            let crate::protocol::packet::Packet::CombatEventEnter(packet) = enter_packet else {
+                panic!("expected CombatEventEnter packet");
+            };
+            assert!(packet.empty.is_empty());
+        });
     }
 
     #[test]
