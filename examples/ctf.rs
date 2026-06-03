@@ -40,6 +40,8 @@ const SPAWN_POS: [f64; 3] = [
 const SPAWN_BOX_WIDTH: i32 = 5;
 const SPAWN_BOX_HEIGHT: i32 = 4;
 const PLAYER_MAX_HEALTH: f32 = 20.0;
+const TEAM_RED_YAW: f32 = -90.0;
+const TEAM_BLUE_YAW: f32 = 90.0;
 const VANILLA_COMBAT_REFERENCE_PROBE_ENV: &str = "MC_COMPAT_VANILLA_COMBAT_REFERENCE_PROBE";
 const VANILLA_COMBAT_REFERENCE_ROW: &str = "vanilla-combat-reference-parity";
 const VANILLA_COMBAT_REFERENCE_BACKEND: &str = "valence";
@@ -47,6 +49,12 @@ const VANILLA_COMBAT_REFERENCE_ORACLE: &str = "paper-1.20.1-reference-harness";
 const VANILLA_COMBAT_REFERENCE_VERSION: &str = "minecraft-1.20.1-protocol-763";
 const VANILLA_COMBAT_REFERENCE_ATTACKER: &str = "compatbota";
 const VANILLA_COMBAT_REFERENCE_VICTIM: &str = "compatbotb";
+const VANILLA_COMBAT_REFERENCE_ATTACKER_X: f64 = 38.0;
+const VANILLA_COMBAT_REFERENCE_VICTIM_X: f64 = 40.0;
+const VANILLA_COMBAT_REFERENCE_Y: f64 = 65.0;
+const VANILLA_COMBAT_REFERENCE_Z: f64 = 0.0;
+const VANILLA_COMBAT_REFERENCE_ATTACKER_YAW: f32 = TEAM_RED_YAW;
+const VANILLA_COMBAT_REFERENCE_VICTIM_YAW: f32 = TEAM_BLUE_YAW;
 const VANILLA_COMBAT_REFERENCE_ARMOR_NONE: &str = "none";
 const VANILLA_COMBAT_REFERENCE_WEAPON_IRON_SWORD: &str = "iron_sword";
 const VANILLA_COMBAT_REFERENCE_WEAPON_WOODEN_SWORD: &str = "wooden_sword";
@@ -989,6 +997,13 @@ enum Team {
     Blue,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq)]
+struct VanillaCombatReferenceAssignment {
+    team: Team,
+    position: DVec3,
+    yaw: f32,
+}
+
 impl Team {
     fn spawn_pos(self) -> DVec3 {
         [
@@ -1901,23 +1916,28 @@ fn do_team_selector_portals(
             continue;
         }
 
-        let team = portals
+        let vanilla_assignment = vanilla_combat_reference_assignment(username.as_str());
+        let portal_team = portals
             .portals
             .iter()
             .filter(|(_, area)| area.contains_pos(pos.0))
             .map(|(team, _)| team)
             .next()
             .copied();
+        let team = vanilla_assignment.map_or(portal_team, |assignment| Some(assignment.team));
 
         if let Some(team) = team {
-            if ctf_spawn_team_reset_probe_enabled()
+            if vanilla_assignment.is_none()
+                && ctf_spawn_team_reset_probe_enabled()
                 && ctf_spawn_reset_should_defer_team_assignment(username.as_str(), team)
             {
                 continue;
             }
             *game_mode = GameMode::Survival;
             let mut inventory = Inventory::new(InventoryKind::Player);
-            let main_hand_item = if vanilla_combat_reference_probe_enabled() && team == Team::Red {
+            let main_hand_item = if vanilla_assignment.is_some()
+                && username.as_str() == VANILLA_COMBAT_REFERENCE_ATTACKER
+            {
                 ItemKind::IronSword
             } else {
                 ItemKind::WoodenSword
@@ -2004,11 +2024,15 @@ fn do_team_selector_portals(
                     flag_manager.blue.is_some()
                 );
             }
-            pos.0 = team.spawn_pos();
-            let yaw = match team {
-                Team::Red => -90.0,
-                Team::Blue => 90.0,
-            };
+            pos.0 = vanilla_assignment
+                .map_or_else(|| team.spawn_pos(), |assignment| assignment.position);
+            let yaw = vanilla_assignment.map_or_else(
+                || match team {
+                    Team::Red => TEAM_RED_YAW,
+                    Team::Blue => TEAM_BLUE_YAW,
+                },
+                |assignment| assignment.yaw,
+            );
             look.yaw = yaw;
             look.pitch = 0.0;
             head_yaw.0 = yaw;
@@ -2777,6 +2801,42 @@ fn vanilla_combat_reference_probe_hit(attacker: &str, victim: &str) -> bool {
     )
 }
 
+fn vanilla_combat_reference_assignment_for(
+    enabled: bool,
+    username: &str,
+) -> Option<VanillaCombatReferenceAssignment> {
+    if !enabled {
+        return None;
+    }
+    match username {
+        VANILLA_COMBAT_REFERENCE_ATTACKER => Some(VanillaCombatReferenceAssignment {
+            team: Team::Red,
+            position: [
+                VANILLA_COMBAT_REFERENCE_ATTACKER_X,
+                VANILLA_COMBAT_REFERENCE_Y,
+                VANILLA_COMBAT_REFERENCE_Z,
+            ]
+            .into(),
+            yaw: VANILLA_COMBAT_REFERENCE_ATTACKER_YAW,
+        }),
+        VANILLA_COMBAT_REFERENCE_VICTIM => Some(VanillaCombatReferenceAssignment {
+            team: Team::Blue,
+            position: [
+                VANILLA_COMBAT_REFERENCE_VICTIM_X,
+                VANILLA_COMBAT_REFERENCE_Y,
+                VANILLA_COMBAT_REFERENCE_Z,
+            ]
+            .into(),
+            yaw: VANILLA_COMBAT_REFERENCE_VICTIM_YAW,
+        }),
+        _ => None,
+    }
+}
+
+fn vanilla_combat_reference_assignment(username: &str) -> Option<VanillaCombatReferenceAssignment> {
+    vanilla_combat_reference_assignment_for(vanilla_combat_reference_probe_enabled(), username)
+}
+
 fn vanilla_combat_reference_probe_hit_for(enabled: bool, attacker: &str, victim: &str) -> bool {
     enabled
         && attacker == VANILLA_COMBAT_REFERENCE_ATTACKER
@@ -3086,6 +3146,32 @@ mod tests {
             VANILLA_COMBAT_REFERENCE_VICTIM,
             VANILLA_COMBAT_REFERENCE_ATTACKER
         ));
+        let attacker_assignment =
+            vanilla_combat_reference_assignment_for(true, VANILLA_COMBAT_REFERENCE_ATTACKER)
+                .expect("attacker assignment exists");
+        assert_eq!(attacker_assignment.team, Team::Red);
+        assert_eq!(
+            attacker_assignment.position.x,
+            VANILLA_COMBAT_REFERENCE_ATTACKER_X
+        );
+        assert_eq!(
+            attacker_assignment.yaw,
+            VANILLA_COMBAT_REFERENCE_ATTACKER_YAW
+        );
+        let victim_assignment =
+            vanilla_combat_reference_assignment_for(true, VANILLA_COMBAT_REFERENCE_VICTIM)
+                .expect("victim assignment exists");
+        assert_eq!(victim_assignment.team, Team::Blue);
+        assert_eq!(
+            victim_assignment.position.x,
+            VANILLA_COMBAT_REFERENCE_VICTIM_X
+        );
+        assert_eq!(victim_assignment.yaw, VANILLA_COMBAT_REFERENCE_VICTIM_YAW);
+        assert!(
+            vanilla_combat_reference_assignment_for(false, VANILLA_COMBAT_REFERENCE_ATTACKER)
+                .is_none()
+        );
+        assert!(vanilla_combat_reference_assignment_for(true, "compatbotc").is_none());
         assert_eq!(
             vanilla_combat_reference_weapon_name(ItemKind::Bow),
             VANILLA_COMBAT_REFERENCE_WEAPON_OTHER
