@@ -43,7 +43,10 @@ const PLAYER_MAX_HEALTH: f32 = 20.0;
 const TEAM_RED_YAW: f32 = -90.0;
 const TEAM_BLUE_YAW: f32 = 90.0;
 const VANILLA_COMBAT_REFERENCE_PROBE_ENV: &str = "MC_COMPAT_VANILLA_COMBAT_REFERENCE_PROBE";
+const VANILLA_COMBAT_ARMOR_REFERENCE_PROBE_ENV: &str =
+    "MC_COMPAT_VANILLA_COMBAT_ARMOR_REFERENCE_PROBE";
 const VANILLA_COMBAT_REFERENCE_ROW: &str = "vanilla-combat-reference-parity";
+const VANILLA_COMBAT_ARMOR_REFERENCE_ROW: &str = "vanilla-combat-armor-reference-parity";
 const VANILLA_COMBAT_REFERENCE_BACKEND: &str = "valence";
 const VANILLA_COMBAT_REFERENCE_ORACLE: &str = "paper-1.20.1-reference-harness";
 const VANILLA_COMBAT_REFERENCE_VERSION: &str = "minecraft-1.20.1-protocol-763";
@@ -66,6 +69,13 @@ const VANILLA_COMBAT_REFERENCE_ARMOR_OTHER: &str = "other";
 const VANILLA_COMBAT_REFERENCE_DAMAGE_TOLERANCE: f32 = 0.0;
 const VANILLA_COMBAT_REFERENCE_KNOCKBACK_TOLERANCE: f64 = 0.05;
 const VANILLA_COMBAT_REFERENCE_KNOCKBACK_SCALE: f64 = 20.0;
+const VANILLA_COMBAT_ARMOR_REDUCTION_DENOMINATOR: f32 = 25.0;
+const VANILLA_DIAMOND_CHESTPLATE_ARMOR_POINTS: f32 = 8.0;
+const VANILLA_DIAMOND_CHESTPLATE_TOUGHNESS: f32 = 2.0;
+const VANILLA_ARMOR_TOUGHNESS_QUARTER_DIVISOR: f32 = 4.0;
+const VANILLA_ARMOR_TOUGHNESS_BASE: f32 = 2.0;
+const VANILLA_ARMOR_MIN_REDUCTION_DIVISOR: f32 = 5.0;
+const VANILLA_ARMOR_MAX_REDUCTION_POINTS: f32 = 20.0;
 const VANILLA_COMBAT_REFERENCE_KNOCKBACK_X: f32 = 0.0;
 const VANILLA_COMBAT_REFERENCE_KNOCKBACK_Y: f32 = -0.08;
 const VANILLA_COMBAT_REFERENCE_KNOCKBACK_Z: f32 = 0.0;
@@ -1989,7 +1999,9 @@ fn do_team_selector_portals(
                     }],
                 });
             }
-            if armor_mitigation_probe_enabled() && team == Team::Blue {
+            let armor_reference_probe = vanilla_combat_armor_reference_probe_enabled();
+            let armor_mitigation_probe = armor_mitigation_probe_enabled();
+            if (armor_mitigation_probe || armor_reference_probe) && team == Team::Blue {
                 inventory.set_slot(
                     ARMOR_MITIGATION_CHEST_SLOT,
                     ItemStack::new(ItemKind::DiamondChestplate, 1, None),
@@ -2008,7 +2020,7 @@ fn do_team_selector_portals(
                 equipment.set_chest(ItemStack::new(ItemKind::DiamondChestplate, 1, None));
                 entity.insert(equipment);
             }
-            if armor_mitigation_probe_enabled() && team == Team::Blue {
+            if (armor_mitigation_probe || armor_reference_probe) && team == Team::Blue {
                 entity.insert(EquipmentInventorySync);
             }
             println!(
@@ -2663,12 +2675,12 @@ fn handle_combat_events(
             _ => 1.0,
         };
         let chest_item = victim.inventory.slot(ARMOR_MITIGATION_CHEST_SLOT).item;
-        let armor_mitigation =
-            if armor_mitigation_probe_enabled() && chest_item == ItemKind::DiamondChestplate {
-                DIAMOND_CHESTPLATE_MITIGATION
-            } else {
-                0.0
-            };
+        let armor_mitigation = combat_armor_mitigation_for(
+            vanilla_combat_armor_reference_probe_enabled(),
+            armor_mitigation_probe_enabled(),
+            chest_item,
+            base_damage,
+        );
         let projectile_probe_hit = projectile_probe_enabled()
             && attacker.username.as_str() == "compatbota"
             && victim.username.as_str() == "compatbotb";
@@ -2733,6 +2745,7 @@ fn handle_combat_events(
         println!("{}", milestone);
         if vanilla_combat_reference_hit {
             let reference_damage = vanilla_combat_reference_damage_milestone(
+                vanilla_combat_reference_row(),
                 attacker.username.as_str(),
                 victim.username.as_str(),
                 vanilla_combat_reference_weapon_name(stack.item),
@@ -2800,7 +2813,16 @@ fn handle_combat_events(
 }
 
 fn vanilla_combat_reference_probe_enabled() -> bool {
-    std::env::var(VANILLA_COMBAT_REFERENCE_PROBE_ENV)
+    env_flag_enabled(VANILLA_COMBAT_REFERENCE_PROBE_ENV)
+        || vanilla_combat_armor_reference_probe_enabled()
+}
+
+fn vanilla_combat_armor_reference_probe_enabled() -> bool {
+    env_flag_enabled(VANILLA_COMBAT_ARMOR_REFERENCE_PROBE_ENV)
+}
+
+fn env_flag_enabled(name: &str) -> bool {
+    std::env::var(name)
         .map(|value| value != "0")
         .unwrap_or(false)
 }
@@ -2873,6 +2895,46 @@ fn vanilla_combat_reference_armor_state(chest_item: ItemKind) -> &'static str {
     }
 }
 
+fn vanilla_combat_reference_row() -> &'static str {
+    if vanilla_combat_armor_reference_probe_enabled() {
+        return VANILLA_COMBAT_ARMOR_REFERENCE_ROW;
+    }
+    VANILLA_COMBAT_REFERENCE_ROW
+}
+
+fn combat_armor_mitigation_for(
+    armor_reference_probe: bool,
+    armor_mitigation_probe: bool,
+    chest_item: ItemKind,
+    base_damage: f32,
+) -> f32 {
+    if chest_item != ItemKind::DiamondChestplate {
+        return 0.0;
+    }
+    if armor_reference_probe {
+        return vanilla_armor_mitigation_for(
+            base_damage,
+            VANILLA_DIAMOND_CHESTPLATE_ARMOR_POINTS,
+            VANILLA_DIAMOND_CHESTPLATE_TOUGHNESS,
+        );
+    }
+    if armor_mitigation_probe {
+        return DIAMOND_CHESTPLATE_MITIGATION;
+    }
+    0.0
+}
+
+fn vanilla_armor_mitigation_for(base_damage: f32, armor_points: f32, toughness: f32) -> f32 {
+    let toughness_term = armor_points
+        - base_damage
+            / (toughness / VANILLA_ARMOR_TOUGHNESS_QUARTER_DIVISOR + VANILLA_ARMOR_TOUGHNESS_BASE);
+    let min_reduction = armor_points / VANILLA_ARMOR_MIN_REDUCTION_DIVISOR;
+    let reduction_points = toughness_term
+        .max(min_reduction)
+        .min(VANILLA_ARMOR_MAX_REDUCTION_POINTS);
+    base_damage * reduction_points / VANILLA_COMBAT_ARMOR_REDUCTION_DENOMINATOR
+}
+
 fn vanilla_combat_reference_knockback_metric(knockback_velocity: [f32; 3]) -> f64 {
     f64::from(knockback_velocity[0]).hypot(f64::from(knockback_velocity[2]))
         / VANILLA_COMBAT_REFERENCE_KNOCKBACK_SCALE
@@ -2887,6 +2949,7 @@ fn vanilla_combat_reference_knockback_velocity_for(hit: bool) -> Option<[f32; 3]
 }
 
 fn vanilla_combat_reference_damage_milestone(
+    row: &str,
     attacker: &str,
     victim: &str,
     weapon: &str,
@@ -2900,7 +2963,7 @@ fn vanilla_combat_reference_damage_milestone(
          reference_oracle={} reference_version={} attacker_identity={} victim_identity={} \
          weapon={} armor_state={} pre_health={:.1} post_health={:.1} damage_delta={:.1} \
          damage_tolerance={:.1}",
-        VANILLA_COMBAT_REFERENCE_ROW,
+        row,
         VANILLA_COMBAT_REFERENCE_BACKEND,
         VANILLA_COMBAT_REFERENCE_ORACLE,
         VANILLA_COMBAT_REFERENCE_VERSION,
@@ -2924,7 +2987,7 @@ fn vanilla_combat_reference_knockback_milestone(
         "MC-COMPAT-MILESTONE vanilla_combat_reference_knockback row={} backend={} \
          reference_oracle={} reference_version={} attacker_identity={} victim_identity={} \
          knockback_metric={:.2} knockback_tolerance={:.2}",
-        VANILLA_COMBAT_REFERENCE_ROW,
+        vanilla_combat_reference_row(),
         VANILLA_COMBAT_REFERENCE_BACKEND,
         VANILLA_COMBAT_REFERENCE_ORACLE,
         VANILLA_COMBAT_REFERENCE_VERSION,
@@ -3094,6 +3157,9 @@ mod tests {
     const TEST_HEALTH_AFTER_EDITED_DAMAGE: f32 = 16.0;
     const TEST_REFERENCE_DAMAGE: f32 = 6.0;
     const TEST_REFERENCE_POST_HEALTH: f32 = 14.0;
+    const TEST_ARMOR_REFERENCE_MITIGATION: f32 = 1.344;
+    const TEST_ARMOR_REFERENCE_DAMAGE: f32 = 4.656;
+    const TEST_FLOAT_TOLERANCE: f32 = 0.0001;
     const TEST_KNOCKBACK_X: f32 = 8.0;
     const TEST_KNOCKBACK_Y: f32 = 6.432;
     const TEST_KNOCKBACK_Z: f32 = 0.0;
@@ -3108,6 +3174,7 @@ mod tests {
     #[test]
     fn vanilla_combat_reference_milestones_record_normalized_metrics() {
         let damage = vanilla_combat_reference_damage_milestone(
+            VANILLA_COMBAT_REFERENCE_ROW,
             VANILLA_COMBAT_REFERENCE_ATTACKER,
             VANILLA_COMBAT_REFERENCE_VICTIM,
             vanilla_combat_reference_weapon_name(ItemKind::IronSword),
@@ -3147,6 +3214,62 @@ mod tests {
             ]),
             TEST_NORMALIZED_KNOCKBACK
         );
+    }
+
+    #[test]
+    fn vanilla_combat_armor_reference_helpers_apply_bounded_chestplate_formula() {
+        let mitigation = combat_armor_mitigation_for(
+            true,
+            false,
+            ItemKind::DiamondChestplate,
+            TEST_REFERENCE_DAMAGE,
+        );
+        assert!((mitigation - TEST_ARMOR_REFERENCE_MITIGATION).abs() < TEST_FLOAT_TOLERANCE);
+        let final_damage = TEST_REFERENCE_DAMAGE - mitigation;
+        assert!((final_damage - TEST_ARMOR_REFERENCE_DAMAGE).abs() < TEST_FLOAT_TOLERANCE);
+        assert_eq!(
+            combat_armor_mitigation_for(true, false, ItemKind::Air, TEST_REFERENCE_DAMAGE),
+            0.0
+        );
+        assert_eq!(
+            combat_armor_mitigation_for(
+                false,
+                false,
+                ItemKind::DiamondChestplate,
+                TEST_REFERENCE_DAMAGE
+            ),
+            0.0
+        );
+        assert_eq!(
+            combat_armor_mitigation_for(
+                false,
+                true,
+                ItemKind::DiamondChestplate,
+                TEST_REFERENCE_DAMAGE
+            ),
+            DIAMOND_CHESTPLATE_MITIGATION
+        );
+
+        let damage = vanilla_combat_reference_damage_milestone(
+            VANILLA_COMBAT_ARMOR_REFERENCE_ROW,
+            VANILLA_COMBAT_REFERENCE_ATTACKER,
+            VANILLA_COMBAT_REFERENCE_VICTIM,
+            vanilla_combat_reference_weapon_name(ItemKind::IronSword),
+            vanilla_combat_reference_armor_state(ItemKind::DiamondChestplate),
+            TEST_HEALTH_BEFORE,
+            TEST_HEALTH_BEFORE - TEST_ARMOR_REFERENCE_DAMAGE,
+            TEST_ARMOR_REFERENCE_DAMAGE,
+        );
+        assert!(
+            damage.contains("row=vanilla-combat-armor-reference-parity"),
+            "{damage}"
+        );
+        assert!(
+            damage.contains("armor_state=diamond_chestplate"),
+            "{damage}"
+        );
+        assert!(damage.contains("post_health=15.3"), "{damage}");
+        assert!(damage.contains("damage_delta=4.7"), "{damage}");
     }
 
     #[test]
