@@ -90,7 +90,7 @@
             src = ./.;
             filter = isCargoSource;
           };
-          packages = [ "valence_math" "valence_lang" "valence_ident" "valence_text" "valence_weather" "valence_world_border" "valence_boss_bar" "valence_player_list" "valence_scoreboard" "valence_equipment" "valence_advancement" ];
+          packages = [ "valence_math" "valence_lang" "valence_ident" "valence_text" "valence_weather" "valence_world_border" "valence_boss_bar" "valence_player_list" "valence_scoreboard" "valence_equipment" "valence_advancement" "valence_anvil" ];
           cargoLock = ./Cargo.lock;
           nativeBuildInputs = with pkgs; [ pkg-config stdenv.cc ];
           buildInputs = with pkgs; [
