@@ -8,8 +8,8 @@ d0bf49fb5daf2ca1b671af191fc21ec96d31ddd363103aea609471f6bb33af4a  docs/evidence/
 a1df7220274d1520c10597681bdfb6fa6c7a0b41f9a465a85bc8947a4757f8ab  docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-2026-06-01.kv
 ccc2fa0eb31979b93346901d5c9e93754088d3c9a0174184a8230c021918de5c  docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-2026-06-01.md
 af028c0bbd64ac9e57b0627216ef1e8879ce4f906b33ad9712f7fa4d39f816e6  docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-row-evidence-2026-06-01.run.log
-486eca6b4a2dd98fe8b900f63d099d388f1ce6a929edfbc77b5050b2e34cda5d  tools/mc-compat-runner/src/main.rs
-73ba68da20b99c42e16170e207a2e2641f0ccac3b71638d5ba095cddd6d462e6  tools/mc-compat-runner/src/scenario_manifest_generated.rs
-591b375359d69a8c4e1b9ec6bf3a24a2484201d4a734e1f7c9665fbb97f2bb7a  config/mc-compat/scenario-manifest.ncl
+d51150aa0e075b568c1a0014dcd7a63d993812eea55ab9375955328c8ac3c43e  tools/mc-compat-runner/src/main.rs
+037b99f05db18c5368a0b2360a11f738c7c738de3d14728f838934f3d7dbb68d  tools/mc-compat-runner/src/scenario_manifest_generated.rs
+60d5d2658f1be7346b1aa96f17c1a197fcf069860fe15dd8fce68ef38f055d98  config/mc-compat/scenario-manifest.ncl
 a5a6c3735d97d4b7a897e4bf02b1e6be85ad2f7d872091c517ed4e10b32fcc79  flake.nix
-012b9629344e62423b64c1bf16ebe9443ed49939d73768c9094f84368de11a21  valence/examples/ctf.rs
+eaf4bd29f6eedb3043fe5bee4a76e2c34ff884d937582be5064c7cf72892ffb8  docs/evidence/protocol-763-ctf-valence-source-2026-06-01.rs
