@@ -14,7 +14,7 @@
 - In this environment, `cargo` is not on PATH outside the devshell; use `nix develop --no-update-lock-file -c cargo ...`.
 - Copy `tools/playground/src/playground.template.rs` to `tools/playground/src/playground.rs` before fmt/clippy/test/doc if `playground.rs` is missing.
 - Octet starter rollout uses checked-in `scripts/octet-check.sh`, which runs `nix build .#checks.x86_64-linux.octet --no-link -L --impure`.
-- Strict starter scope for the Octet burndown: `valence_math`, `valence_ident`; `valence_lang` and `valence_text` are next.
+- Strict starter scope for the Octet burndown: `valence_math`, `valence_lang`, `valence_ident`; `valence_text` is next.
 
 ## Patterns That Don't Work
 - Treat `mc/` workspace folder as if it were the `valence/` repo root.
@@ -23,5 +23,5 @@
 ## Domain Notes
 - `valence/` is a Rust workspace with root crate in `src/`, member crates in `crates/*`, and tools in `tools/*`.
 - `cargo +nightly fmt --all` needed because `rustfmt.toml` uses unstable settings.
-- Octet strict starter burndown cleaned `valence_math` and `valence_ident`; `valence_lang` has build-script/JSON source-map findings and `valence_text` has strict findings, so handle those before broadening to `valence_server` or `valence_network`.
+- Octet strict starter burndown cleaned `valence_math`, `valence_lang`, and `valence_ident`; `valence_text` still has strict findings, so handle it before broadening to `valence_server` or `valence_network`.
 - A no-arg legacy Dylint run that included `valence_server_common` tripped a `dylint-driver` SIGSEGV while compiling transitive `valence_generated` on nightly-2026-03-21; keep that crate out of the starter default until toolchain or Dylint behavior changes.
