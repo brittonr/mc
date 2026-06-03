@@ -4,7 +4,7 @@
     flake-utils.url = "github:numtide/flake-utils";
     rust-overlay.url = "github:oxalica/rust-overlay";
     octet = {
-      url = "git+file:///home/brittonr/git/octet";
+      url = "git+ssh://git@github.com/OnixResearch/octet.git";
       # Don't follow nixpkgs or rust-overlay — the Octet check
       # needs its own pinned nightly toolchain and nixpkgs version.
     };
@@ -89,7 +89,7 @@
             src = ./.;
             filter = isCargoSource;
           };
-          packages = [ "valence_math" "valence_lang" "valence_ident" "valence_text" ];
+          packages = [ "valence_math" "valence_ident" ];
           cargoLock = ./Cargo.lock;
           nativeBuildInputs = with pkgs; [ pkg-config stdenv.cc ];
           buildInputs = with pkgs; [

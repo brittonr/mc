@@ -4,7 +4,11 @@ type DVec3 = glam::DVec3;
 ///
 /// The AABB is defined by two points—`min` and `max`. `min` is less than or
 /// equal to `max` componentwise.
+///
+/// The public API keeps the conventional AABB name used by geometry and
+/// Minecraft.
 #[derive(Copy, Clone, PartialEq, Default, Debug)]
+// API: keep the conventional geometry and Minecraft AABB name.
 pub struct Aabb {
     min: DVec3,
     max: DVec3,

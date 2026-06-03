@@ -230,17 +230,17 @@
         "rust-overlay": "rust-overlay_2"
       },
       "locked": {
-        "lastModified": 1779508940,
-        "narHash": "sha256-fn+eCGywIdBLn6Kk/gyxogopdIAPHseLbNkYvRqOaDI=",
+        "lastModified": 1780506327,
+        "narHash": "sha256-pvz/H9Wb8/VmqMpWRw9c8SbW8mi5CbSS0PEs0dndwjY=",
         "ref": "refs/heads/main",
-        "rev": "8cee45e5ea10be9e7a28959bb632bc1ff1cfa7e5",
-        "revCount": 324,
+        "rev": "33b2e2aee3da4fde040ad614fe2de2a35505f654",
+        "revCount": 331,
         "type": "git",
-        "url": "file:///home/brittonr/git/octet"
+        "url": "ssh://git@github.com/OnixResearch/octet.git"
       },
       "original": {
         "type": "git",
-        "url": "file:///home/brittonr/git/octet"
+        "url": "ssh://git@github.com/OnixResearch/octet.git"
       }
     },
     "root": {

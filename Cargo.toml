@@ -102,7 +102,7 @@ exclude = []
 resolver = "2"
 
 [workspace.metadata.octet]
-default_scope = ["valence_math", "valence_lang", "valence_ident", "valence_text"]
+default_scope = ["valence_math", "valence_ident"]
 cargo_check_args = []
 
 [workspace.package]
