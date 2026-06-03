@@ -1,19 +1,14 @@
 #![doc = include_str!("../README.md")]
 
-use proc_macro::TokenStream as StdTokenStream;
-use proc_macro2::TokenStream;
-use quote::quote;
-use syn::{parse2, Error, LitStr, Result};
-
 #[proc_macro]
-pub fn parse_ident_str(item: StdTokenStream) -> StdTokenStream {
+pub fn parse_ident_str(item: proc_macro::TokenStream) -> proc_macro::TokenStream {
     parse_ident_str_inner(item.into())
-        .unwrap_or_else(Error::into_compile_error)
+        .unwrap_or_else(syn::Error::into_compile_error)
         .into()
 }
 
-fn parse_ident_str_inner(item: TokenStream) -> Result<TokenStream> {
-    let ident_lit: LitStr = parse2(item)?;
+fn parse_ident_str_inner(item: proc_macro2::TokenStream) -> syn::Result<proc_macro2::TokenStream> {
+    let ident_lit: syn::LitStr = syn::parse2(item)?;
     let mut ident = ident_lit.value();
 
     match ident.split_once(':') {
@@ -29,7 +24,7 @@ fn parse_ident_str_inner(item: TokenStream) -> Result<TokenStream> {
         }
     }
 
-    Ok(quote!(#ident))
+    Ok(quote::quote!(#ident))
 }
 
 fn check_namespace(s: &str) -> bool {
