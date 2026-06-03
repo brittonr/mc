@@ -89,7 +89,7 @@
             src = ./.;
             filter = isCargoSource;
           };
-          packages = [ "valence_math" "valence_lang" "valence_ident" ];
+          packages = [ "valence_math" "valence_lang" "valence_ident" "valence_text" ];
           cargoLock = ./Cargo.lock;
           nativeBuildInputs = with pkgs; [ pkg-config stdenv.cc ];
           buildInputs = with pkgs; [

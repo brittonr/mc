@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use valence_ident::ident;
 
 use super::*;
