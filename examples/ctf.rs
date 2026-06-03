@@ -40,6 +40,24 @@ const SPAWN_POS: [f64; 3] = [
 const SPAWN_BOX_WIDTH: i32 = 5;
 const SPAWN_BOX_HEIGHT: i32 = 4;
 const PLAYER_MAX_HEALTH: f32 = 20.0;
+const VANILLA_COMBAT_REFERENCE_PROBE_ENV: &str = "MC_COMPAT_VANILLA_COMBAT_REFERENCE_PROBE";
+const VANILLA_COMBAT_REFERENCE_ROW: &str = "vanilla-combat-reference-parity";
+const VANILLA_COMBAT_REFERENCE_BACKEND: &str = "valence";
+const VANILLA_COMBAT_REFERENCE_ORACLE: &str = "paper-1.20.1-reference-harness";
+const VANILLA_COMBAT_REFERENCE_VERSION: &str = "minecraft-1.20.1-protocol-763";
+const VANILLA_COMBAT_REFERENCE_ATTACKER: &str = "compatbota";
+const VANILLA_COMBAT_REFERENCE_VICTIM: &str = "compatbotb";
+const VANILLA_COMBAT_REFERENCE_ARMOR_NONE: &str = "none";
+const VANILLA_COMBAT_REFERENCE_WEAPON_IRON_SWORD: &str = "iron_sword";
+const VANILLA_COMBAT_REFERENCE_WEAPON_WOODEN_SWORD: &str = "wooden_sword";
+const VANILLA_COMBAT_REFERENCE_WEAPON_STONE_SWORD: &str = "stone_sword";
+const VANILLA_COMBAT_REFERENCE_WEAPON_DIAMOND_SWORD: &str = "diamond_sword";
+const VANILLA_COMBAT_REFERENCE_WEAPON_OTHER: &str = "other";
+const VANILLA_COMBAT_REFERENCE_ARMOR_DIAMOND_CHESTPLATE: &str = "diamond_chestplate";
+const VANILLA_COMBAT_REFERENCE_ARMOR_OTHER: &str = "other";
+const VANILLA_COMBAT_REFERENCE_DAMAGE_TOLERANCE: f32 = 0.0;
+const VANILLA_COMBAT_REFERENCE_KNOCKBACK_TOLERANCE: f64 = 0.05;
+const VANILLA_COMBAT_REFERENCE_KNOCKBACK_SCALE: f64 = 20.0;
 const ARMOR_MITIGATION_CHEST_SLOT: u16 = 6;
 const DIAMOND_CHESTPLATE_MITIGATION: f32 = 2.0;
 const PROJECTILE_PROBE_DAMAGE: f32 = 3.0;
@@ -1899,7 +1917,12 @@ fn do_team_selector_portals(
             }
             *game_mode = GameMode::Survival;
             let mut inventory = Inventory::new(InventoryKind::Player);
-            inventory.set_slot(36, ItemStack::new(ItemKind::WoodenSword, 1, None));
+            let main_hand_item = if vanilla_combat_reference_probe_enabled() && team == Team::Red {
+                ItemKind::IronSword
+            } else {
+                ItemKind::WoodenSword
+            };
+            inventory.set_slot(36, ItemStack::new(main_hand_item, 1, None));
             inventory.set_slot(
                 37,
                 ItemStack::new(
@@ -2544,6 +2567,10 @@ fn handle_combat_events(
         }
 
         victim.state.last_attacked_tick = server.current_tick();
+        let vanilla_combat_reference_hit = vanilla_combat_reference_probe_hit(
+            attacker.username.as_str(),
+            victim.username.as_str(),
+        );
 
         let victim_pos = victim.pos.0.xz();
         let attacker_pos = attacker.pos.0.xz();
@@ -2575,6 +2602,15 @@ fn handle_combat_events(
         );
         info!("{}", knockback);
         println!("{}", knockback);
+        if vanilla_combat_reference_hit {
+            let reference_knockback = vanilla_combat_reference_knockback_milestone(
+                attacker.username.as_str(),
+                victim.username.as_str(),
+                vanilla_combat_reference_knockback_metric(knockback_velocity),
+            );
+            info!("{}", reference_knockback);
+            println!("{}", reference_knockback);
+        }
 
         attacker.state.has_bonus_knockback = false;
 
@@ -2659,6 +2695,19 @@ fn handle_combat_events(
         );
         info!("{}", milestone);
         println!("{}", milestone);
+        if vanilla_combat_reference_hit {
+            let reference_damage = vanilla_combat_reference_damage_milestone(
+                attacker.username.as_str(),
+                victim.username.as_str(),
+                vanilla_combat_reference_weapon_name(stack.item),
+                vanilla_combat_reference_armor_state(chest_item),
+                victim.health.0 + damage,
+                victim.health.0,
+                damage,
+            );
+            info!("{}", reference_damage);
+            println!("{}", reference_damage);
+        }
         if projectile_probe_hit {
             let decision = arrow_damage_decision
                 .as_ref()
@@ -2712,6 +2761,98 @@ fn handle_combat_events(
             }
         }
     }
+}
+
+fn vanilla_combat_reference_probe_enabled() -> bool {
+    std::env::var(VANILLA_COMBAT_REFERENCE_PROBE_ENV)
+        .map(|value| value != "0")
+        .unwrap_or(false)
+}
+
+fn vanilla_combat_reference_probe_hit(attacker: &str, victim: &str) -> bool {
+    vanilla_combat_reference_probe_hit_for(
+        vanilla_combat_reference_probe_enabled(),
+        attacker,
+        victim,
+    )
+}
+
+fn vanilla_combat_reference_probe_hit_for(enabled: bool, attacker: &str, victim: &str) -> bool {
+    enabled
+        && attacker == VANILLA_COMBAT_REFERENCE_ATTACKER
+        && victim == VANILLA_COMBAT_REFERENCE_VICTIM
+}
+
+fn vanilla_combat_reference_weapon_name(item: ItemKind) -> &'static str {
+    match item {
+        ItemKind::IronSword => VANILLA_COMBAT_REFERENCE_WEAPON_IRON_SWORD,
+        ItemKind::WoodenSword => VANILLA_COMBAT_REFERENCE_WEAPON_WOODEN_SWORD,
+        ItemKind::StoneSword => VANILLA_COMBAT_REFERENCE_WEAPON_STONE_SWORD,
+        ItemKind::DiamondSword => VANILLA_COMBAT_REFERENCE_WEAPON_DIAMOND_SWORD,
+        _ => VANILLA_COMBAT_REFERENCE_WEAPON_OTHER,
+    }
+}
+
+fn vanilla_combat_reference_armor_state(chest_item: ItemKind) -> &'static str {
+    match chest_item {
+        ItemKind::Air => VANILLA_COMBAT_REFERENCE_ARMOR_NONE,
+        ItemKind::DiamondChestplate => VANILLA_COMBAT_REFERENCE_ARMOR_DIAMOND_CHESTPLATE,
+        _ => VANILLA_COMBAT_REFERENCE_ARMOR_OTHER,
+    }
+}
+
+fn vanilla_combat_reference_knockback_metric(knockback_velocity: [f32; 3]) -> f64 {
+    f64::from(knockback_velocity[0]).hypot(f64::from(knockback_velocity[2]))
+        / VANILLA_COMBAT_REFERENCE_KNOCKBACK_SCALE
+}
+
+fn vanilla_combat_reference_damage_milestone(
+    attacker: &str,
+    victim: &str,
+    weapon: &str,
+    armor_state: &str,
+    pre_health: f32,
+    post_health: f32,
+    damage_delta: f32,
+) -> String {
+    format!(
+        "MC-COMPAT-MILESTONE vanilla_combat_reference_damage row={} backend={} \
+         reference_oracle={} reference_version={} attacker_identity={} victim_identity={} \
+         weapon={} armor_state={} pre_health={:.1} post_health={:.1} damage_delta={:.1} \
+         damage_tolerance={:.1}",
+        VANILLA_COMBAT_REFERENCE_ROW,
+        VANILLA_COMBAT_REFERENCE_BACKEND,
+        VANILLA_COMBAT_REFERENCE_ORACLE,
+        VANILLA_COMBAT_REFERENCE_VERSION,
+        attacker,
+        victim,
+        weapon,
+        armor_state,
+        pre_health,
+        post_health,
+        damage_delta,
+        VANILLA_COMBAT_REFERENCE_DAMAGE_TOLERANCE,
+    )
+}
+
+fn vanilla_combat_reference_knockback_milestone(
+    attacker: &str,
+    victim: &str,
+    knockback_metric: f64,
+) -> String {
+    format!(
+        "MC-COMPAT-MILESTONE vanilla_combat_reference_knockback row={} backend={} \
+         reference_oracle={} reference_version={} attacker_identity={} victim_identity={} \
+         knockback_metric={:.2} knockback_tolerance={:.2}",
+        VANILLA_COMBAT_REFERENCE_ROW,
+        VANILLA_COMBAT_REFERENCE_BACKEND,
+        VANILLA_COMBAT_REFERENCE_ORACLE,
+        VANILLA_COMBAT_REFERENCE_VERSION,
+        attacker,
+        victim,
+        knockback_metric,
+        VANILLA_COMBAT_REFERENCE_KNOCKBACK_TOLERANCE,
+    )
 }
 
 fn projectile_probe_enabled() -> bool {
@@ -2871,12 +3012,93 @@ mod tests {
     const TEST_CUSTOM_MAX_DAMAGE: f32 = 12.0;
     const TEST_HEALTH_BEFORE: f32 = 20.0;
     const TEST_HEALTH_AFTER_EDITED_DAMAGE: f32 = 16.0;
+    const TEST_REFERENCE_DAMAGE: f32 = 6.0;
+    const TEST_REFERENCE_POST_HEALTH: f32 = 14.0;
+    const TEST_KNOCKBACK_X: f32 = 8.0;
+    const TEST_KNOCKBACK_Y: f32 = 6.432;
+    const TEST_KNOCKBACK_Z: f32 = 0.0;
+    const TEST_NORMALIZED_KNOCKBACK: f64 = 0.40;
     const TEST_RED_SCORE: u32 = 2;
     const TEST_PRE_FINAL_RED_SCORE: u32 = 1;
     const TEST_FINAL_RED_SCORE: u32 = 2;
     const TEST_BLUE_SCORE: u32 = 0;
     const TEST_ACCEPTED_RACE_PLAYER: &str = "compatbota";
     const TEST_REJECTED_RACE_PLAYER: &str = "compatbotb";
+
+    #[test]
+    fn vanilla_combat_reference_milestones_record_normalized_metrics() {
+        let damage = vanilla_combat_reference_damage_milestone(
+            VANILLA_COMBAT_REFERENCE_ATTACKER,
+            VANILLA_COMBAT_REFERENCE_VICTIM,
+            vanilla_combat_reference_weapon_name(ItemKind::IronSword),
+            vanilla_combat_reference_armor_state(ItemKind::Air),
+            TEST_HEALTH_BEFORE,
+            TEST_REFERENCE_POST_HEALTH,
+            TEST_REFERENCE_DAMAGE,
+        );
+        let knockback = vanilla_combat_reference_knockback_milestone(
+            VANILLA_COMBAT_REFERENCE_ATTACKER,
+            VANILLA_COMBAT_REFERENCE_VICTIM,
+            vanilla_combat_reference_knockback_metric([
+                TEST_KNOCKBACK_X,
+                TEST_KNOCKBACK_Y,
+                TEST_KNOCKBACK_Z,
+            ]),
+        );
+
+        assert!(
+            damage.contains("vanilla_combat_reference_damage"),
+            "{damage}"
+        );
+        assert!(damage.contains("backend=valence"), "{damage}");
+        assert!(damage.contains("weapon=iron_sword"), "{damage}");
+        assert!(damage.contains("armor_state=none"), "{damage}");
+        assert!(damage.contains("damage_delta=6.0"), "{damage}");
+        assert!(
+            knockback.contains("vanilla_combat_reference_knockback"),
+            "{knockback}"
+        );
+        assert!(knockback.contains("knockback_metric=0.40"), "{knockback}");
+        assert_eq!(
+            vanilla_combat_reference_knockback_metric([
+                TEST_KNOCKBACK_X,
+                TEST_KNOCKBACK_Y,
+                TEST_KNOCKBACK_Z,
+            ]),
+            TEST_NORMALIZED_KNOCKBACK
+        );
+    }
+
+    #[test]
+    fn vanilla_combat_reference_helpers_fail_closed_for_unbounded_inputs() {
+        assert!(vanilla_combat_reference_probe_hit_for(
+            true,
+            VANILLA_COMBAT_REFERENCE_ATTACKER,
+            VANILLA_COMBAT_REFERENCE_VICTIM
+        ));
+        assert!(!vanilla_combat_reference_probe_hit_for(
+            false,
+            VANILLA_COMBAT_REFERENCE_ATTACKER,
+            VANILLA_COMBAT_REFERENCE_VICTIM
+        ));
+        assert!(!vanilla_combat_reference_probe_hit_for(
+            true,
+            VANILLA_COMBAT_REFERENCE_VICTIM,
+            VANILLA_COMBAT_REFERENCE_ATTACKER
+        ));
+        assert_eq!(
+            vanilla_combat_reference_weapon_name(ItemKind::Bow),
+            VANILLA_COMBAT_REFERENCE_WEAPON_OTHER
+        );
+        assert_eq!(
+            vanilla_combat_reference_armor_state(ItemKind::GoldenChestplate),
+            VANILLA_COMBAT_REFERENCE_ARMOR_OTHER
+        );
+        assert_eq!(
+            vanilla_combat_reference_armor_state(ItemKind::Air),
+            VANILLA_COMBAT_REFERENCE_ARMOR_NONE
+        );
+    }
 
     #[test]
     fn invalid_flag_pickup_helper_rejects_own_flag_and_allows_enemy_flag() {
