@@ -1,0 +1,16 @@
+## scenario_manifest_entries
+command=grep -F survival-block-entity-persistence-parity config/mc-compat/scenario-manifest.ncl tools/mc-compat-runner/src/scenario_manifest_generated.rs
+config/mc-compat/scenario-manifest.ncl:      name = "survival-block-entity-persistence-parity",
+config/mc-compat/scenario-manifest.ncl:      aliases = ["survival-block-entity-persistence-parity"],
+config/mc-compat/scenario-manifest.ncl:      dry_run = { check = "", wrapper = "mc-compat-smoke", receipt_shape_check = false, exclusion_reason = "survival-block-entity-persistence-parity uses live paired fixture receipts instead of a dedicated dry-run wrapper" },
+tools/mc-compat-runner/src/scenario_manifest_generated.rs:        name: "survival-block-entity-persistence-parity",
+tools/mc-compat-runner/src/scenario_manifest_generated.rs:        aliases: &["survival-block-entity-persistence-parity"],
+tools/mc-compat-runner/src/scenario_manifest_generated.rs:            "survival-block-entity-persistence-parity uses live paired fixture receipts instead of a dedicated dry-run wrapper",
+scenario_manifest_entry_exit_status=0
+
+## scenario_manifest_milestones
+command=grep -F survival_block_entity_pre_restart_update tools/mc-compat-runner/src/scenario_manifest_generated.rs && grep -F server_survival_block_entity_state tools/mc-compat-runner/src/scenario_manifest_generated.rs
+            "survival_block_entity_pre_restart_update",
+            "server_survival_block_entity_state",
+scenario_manifest_milestones_exit_status=0
+exit_status=0

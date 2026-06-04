@@ -13,4 +13,4 @@ cca8351fa948dd502acbdd337ca0cdc2dac11f1c5c7d856bef2bb01c27efc4ef  docs/evidence/
 67bb9bd815839879f8512e58336d0cb2ec0745a7e9e91e722de1f9c72afa6761  docs/evidence/survival-furnace-persistence-valence-2026-06-01.evidence
 a7e26e8df833a51c38442f1cbaaf3f32307020deae991cbda6c75f3553870b1a  docs/evidence/survival-furnace-persistence-row-parity-2026-06-01.run.log
 1be49d4db20e67968619f0e9b4207578f0f1be183aeccff8cd2000224f10ccbb  docs/evidence/mc-compat-paper-survival-furnace-fixture-2026-06-01.jar
-471a8753c1d08c7fb41179858443a4756811587aae83d4b17e1557f89ce1a0d6  tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java
+864fedc1f1f645058b9ca061829d7c42e3da8d088e8cc394ab0c8abf6b2f5150  tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java

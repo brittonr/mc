@@ -1,0 +1,73 @@
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+warning: `valence_inventory` (lib) generated 1 warning
+warning: unused import: `Value`
+  --> examples/survival_compat.rs:18:36
+   |
+18 | use valence::nbt::{compound, List, Value};
+   |                                    ^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `SURVIVAL_BLOCK_ENTITY_TEXT_LINE_COUNT` is never used
+   --> examples/survival_compat.rs:150:7
+    |
+150 | const SURVIVAL_BLOCK_ENTITY_TEXT_LINE_COUNT: usize = 4;
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `is_survival_mob_drop_stack` is never used
+    --> examples/survival_compat.rs:2231:4
+     |
+2231 | fn is_survival_mob_drop_stack(stack: &ItemStack) -> bool {
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `valence` (example "survival_compat") generated 3 warnings (run `cargo fix --example "survival_compat" -p valence` to apply 1 suggestion)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.19s
+     Running `/tmp/valence-compat-survival-block-entity-target/debug/examples/survival_compat`
+[2m2026-06-04T20:57:06.693101Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+[2m2026-06-04T20:57:06.693140Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_block_entity_persistence_post_restart_observe username=compatbot kind=Sign position=28,64,0 text=MC|Compat|Sign|Persist persisted=true
+MC-COMPAT-MILESTONE survival_block_entity_persistence_post_restart_observe username=compatbot kind=Sign position=28,64,0 text=MC|Compat|Sign|Persist persisted=true
+[2m2026-06-04T20:57:06.693145Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_block_entity_persistence_state username=compatbot kind=Sign position=28,64,0 text=MC|Compat|Sign|Persist pre_mutation=true clean_shutdown=true backend_restart=true post_observed=true dirty_reuse=false
+MC-COMPAT-MILESTONE survival_block_entity_persistence_state username=compatbot kind=Sign position=28,64,0 text=MC|Compat|Sign|Persist pre_mutation=true clean_shutdown=true backend_restart=true post_observed=true dirty_reuse=false

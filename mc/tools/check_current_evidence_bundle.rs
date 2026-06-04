@@ -51,6 +51,7 @@ const REQUIRED_SEAMS: &[&str] = &[
     "Survival biome/dimension join state",
     "Survival world persistence restart",
     "Survival crash recovery",
+    "Survival sign block-entity persistence",
     "MCP-controlled observability",
 ];
 

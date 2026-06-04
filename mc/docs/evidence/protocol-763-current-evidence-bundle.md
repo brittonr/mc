@@ -64,6 +64,7 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 | Survival biome/dimension join state | Paper+Valence paired `survival-biome-dimension-state` receipts | `4c8f59af896af4c3c6f0733a5069350441fc95f02fb8282eaac4097a906c7207` |
 | Survival world persistence restart | Paper+Valence paired `survival-world-persistence-restart` receipts | `6eb03282f468a6231b367a6aa6bbd3c2d8ff984ece2438641e75e123e934692f` |
 | Survival crash recovery | Paper+Valence paired `survival-crash-recovery-parity` receipts | `12be43fa05be32a1f803097c95704ba237778a8b8ab96ba5bc157accffc213fe` |
+| Survival sign block-entity persistence | Paper+Valence paired `survival-block-entity-persistence-parity` receipts | `03339dbd540b31b74b9825907a300a89289d86f299d3c77c2666f2528391583e` |
 | MCP-controlled observability | `nix run .#mc-compat-mcp-controlled-smoke -- --run` | `5eaa78082bfca069219fed40939e7003c9fce4e5f1d527a68ecdbbae9d610acf` |
 
 ## MCP-controlled observability checkpoint
@@ -153,6 +154,10 @@ The maintained world-persistence row is validated by `docs/evidence/survival-wor
 ## Survival crash-recovery checkpoint
 
 The maintained crash-recovery row is validated by `docs/evidence/survival-crash-recovery-receipts-2026-06-04.md` with paired Paper and Valence receipt/log bundles, normalized row evidence, revision oracle, and `docs/evidence/survival-crash-recovery-row-parity-2026-06-04.run.log` with `exit_status=0`. Covered row is one deterministic client in the Paper fixture and Valence `survival_compat` fixture mutating `Dirt` at `24,64,0`, recording runner-forced stop with isolated storage, restarting the backend, reconnecting, and observing the same post-crash block state on both backends. The Paper fixture flushes the configured mutation before the forced stop to make the bounded precondition reviewable; this is not arbitrary crash-consistency proof. `tools/check_survival_row_parity.rs` rejects Valence-only evidence, missing metrics, stale revisions, and mismatched Paper/Valence crash-recovery metrics, and passes the paired Paper/Valence evidence. Full survival compatibility, long-term durability, arbitrary crash consistency, multi-chunk persistence, all containers, all block entities, concurrent saves, backups, broad vanilla parity, public-server safety, and production readiness remain non-claims.
+
+## Survival sign block-entity persistence checkpoint
+
+The maintained sign block-entity row is validated by `docs/evidence/survival-block-entity-persistence-receipts-2026-06-04.md` with paired Paper and Valence receipt/log bundles, normalized row evidence, and `docs/evidence/survival-block-entity-persistence-row-parity-2026-06-04.run.log` with `exit_status=0`. Covered row is one deterministic client in the Paper fixture and Valence `survival_compat` fixture observing one configured `Sign` at `28,64,0` with text payload `MC|Compat|Sign|Persist`, recording runner-orchestrated graceful shutdown/restart evidence, reconnecting, and observing the same sign text after restart on both backends. The Paper observation is loaded from the mounted Paper world directory; the Valence fixture uses isolated marker storage for this bounded payload. `tools/check_survival_row_parity.rs` rejects Valence-only evidence, missing metrics, stale revisions, unknown child revisions, wrong kind/position/text, and mismatched Paper/Valence sign metrics, and passes the paired Paper/Valence evidence. Full survival compatibility, all block-entity parity, arbitrary NBT parity, sign editing UI parity, multi-chunk persistence, broad vanilla parity, public-server safety, and production readiness remain non-claims.
 
 ## Vanilla combat parity checkpoint
 
@@ -264,7 +269,7 @@ The production/network matrix promotes bounded owned-local loopback load safety,
 
 ## Reference parity labels
 
-- `reference-parity-covered`: Survival break/place/pickup, chest persistence, crafting table, furnace persistence, hunger/food, mob drops, redstone toggle, biome/dimension join state, bounded world-persistence restart, bounded crash recovery, bounded `vanilla-combat-reference-parity`, and bounded `vanilla-combat-armor-reference-parity` Paper-reference rows only.
+- `reference-parity-covered`: Survival break/place/pickup, chest persistence, crafting table, furnace persistence, hunger/food, mob drops, redstone toggle, biome/dimension join state, bounded world-persistence restart, bounded crash recovery, bounded sign block-entity persistence, bounded `vanilla-combat-reference-parity`, and bounded `vanilla-combat-armor-reference-parity` Paper-reference rows only.
 - `valence-only-containment`: CTF scoring, inventory, non-reference combat, projectile, reconnect, latency/jitter, MCP-controlled observability, and load/network rows.
 - `fixture-only-oracle`: The adversarial-network oracle row only; no live traffic or broad security claim.
 - `explicit-non-claim`: exact Mojang vanilla combat parity, broad survival, full Minecraft/CTF/protocol correctness, and rows not named as reference-parity covered.

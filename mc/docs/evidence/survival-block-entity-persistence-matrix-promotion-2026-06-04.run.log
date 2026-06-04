@@ -1,0 +1,27 @@
+## survival_coverage_matrix
+command=nix develop --no-update-lock-file -c rustc tools/check_survival_coverage_matrix.rs -o target/check_survival_coverage_matrix && target/check_survival_coverage_matrix docs/evidence/protocol-763-survival-coverage-matrix-2026-05-28.md
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+survival_coverage_compile_exit_status=0
+survival coverage matrix check passed: 11 rows validated
+survival_coverage_check_exit_status=0
+
+## acceptance_matrix
+command=nix develop --no-update-lock-file -c rustc tools/check_acceptance_matrix.rs -o target/check_acceptance_matrix && target/check_acceptance_matrix docs/evidence/protocol-763-acceptance-matrix.md
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+acceptance_compile_exit_status=0
+acceptance matrix check passed: 39 rows validated
+acceptance_check_exit_status=0
+
+## current_evidence_bundle
+command=nix develop --no-update-lock-file -c rustc tools/check_current_evidence_bundle.rs -o target/check_current_evidence_bundle && target/check_current_evidence_bundle docs/evidence/protocol-763-current-evidence-bundle.md
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+current_bundle_compile_exit_status=0
+current evidence bundle check passed: 39 rows validated
+current_bundle_check_exit_status=0
+exit_status=0

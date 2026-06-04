@@ -1,0 +1,16 @@
+## promote_target_receipts
+command=cp target/survival-block-entity-persistence-{valence,paper}-2026-06-04.receipt* docs/evidence/
+promote_receipts_exit_status=0
+
+## promote_client_logs
+command=cp /tmp/mc-compat-client.compatbot.survival-block-entity-persistence-parity-session-{1,2}.*.log docs/evidence/
+promote_client_logs_exit_status=0
+
+## promote_server_logs
+command=cp pre-restart logs and docker logs mc-compat-1-18-2
+promote_server_logs_exit_status=0
+
+## remove_paper_container
+mc-compat-1-18-2
+remove_paper_container_exit_status=0
+exit_status=0

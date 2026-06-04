@@ -1,0 +1,19 @@
+## valence_revision
+command=git -C valence rev-parse HEAD
+f54e6d01b23a08a2977c7bf2d93301d589c65c4d
+valence_revision_exit_status=0
+
+## stevenarella_revision
+command=git -C stevenarella rev-parse HEAD
+79d766c2439120ba2ec0217dd88ee9f708db9844
+stevenarella_revision_exit_status=0
+
+## paper_fixture_hashes
+command=nix develop --no-update-lock-file -c b3sum docs/evidence/mc-compat-paper-survival-block-entity-fixture-2026-06-04.java docs/evidence/mc-compat-paper-survival-block-entity-fixture-2026-06-04.jar
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+864fedc1f1f645058b9ca061829d7c42e3da8d088e8cc394ab0c8abf6b2f5150  docs/evidence/mc-compat-paper-survival-block-entity-fixture-2026-06-04.java
+c521ee9bc862cfb9be8fb6ffcbf3862cba6515869254db080e2a9ea46837e080  docs/evidence/mc-compat-paper-survival-block-entity-fixture-2026-06-04.jar
+paper_fixture_hashes_exit_status=0
+exit_status=0

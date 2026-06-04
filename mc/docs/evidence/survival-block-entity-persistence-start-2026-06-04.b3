@@ -1,8 +1,5 @@
-mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
-Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
-OnixResearch tools are pinned over SSH: cairn, cargo-octet
-0ce25e772c52432f5d6c96ea4961f72687ba1172e423669a3099e9248fcd9a09  cairn/changes/survival-block-entity-persistence-parity/proposal.md
-04efa0a3b86a924fa13b2a56b60a5780b30b00eaa658ad901b6b9edf5109e365  cairn/changes/survival-block-entity-persistence-parity/design.md
-66e1769313a0de1a9a347865c60fb21b2cbc1fdb30c343584a25401b30e48110  cairn/changes/survival-block-entity-persistence-parity/tasks.md
-46b9ab34d3ee94424d5dbd3a6d3dda9487ef3aed4bce291e729c07532b08a3a6  cairn/changes/survival-block-entity-persistence-parity/specs/mc-compatibility/spec.md
+0ce25e772c52432f5d6c96ea4961f72687ba1172e423669a3099e9248fcd9a09  cairn/archive/2026-06-04-survival-block-entity-persistence-parity/proposal.md
+04efa0a3b86a924fa13b2a56b60a5780b30b00eaa658ad901b6b9edf5109e365  cairn/archive/2026-06-04-survival-block-entity-persistence-parity/design.md
+ed7d9daf1983fd02a1822569a5868ece247ca5b90c94ff8a4e63fa4056635a7c  cairn/archive/2026-06-04-survival-block-entity-persistence-parity/tasks.md
+46b9ab34d3ee94424d5dbd3a6d3dda9487ef3aed4bce291e729c07532b08a3a6  cairn/archive/2026-06-04-survival-block-entity-persistence-parity/specs/mc-compatibility/spec.md
 47c93a96abb1810981ba1423c03b5011d82d0695bddeb222c664db7994cb96b9  docs/evidence/survival-block-entity-persistence-start-2026-06-04.run.log

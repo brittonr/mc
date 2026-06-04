@@ -1,0 +1,9 @@
+## row_parity
+command=nix develop --no-update-lock-file -c rustc tools/check_survival_row_parity.rs -o target/check_survival_row_parity && target/check_survival_row_parity --row survival-block-entity-persistence-parity --paper docs/evidence/survival-block-entity-persistence-paper-2026-06-04.evidence --valence docs/evidence/survival-block-entity-persistence-valence-2026-06-04.evidence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+compile_exit_status=0
+block-entity persistence row check passed
+row_parity_exit_status=0
+exit_status=0

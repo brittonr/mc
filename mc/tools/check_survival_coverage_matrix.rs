@@ -25,6 +25,7 @@ const REDSTONE_ROW: &str = "redstone";
 const BIOME_DIMENSION_ROW: &str = "biome/dimension";
 const WORLD_PERSISTENCE_ROW: &str = "world persistence";
 const CRASH_RECOVERY_ROW: &str = "crash recovery";
+const SIGN_BLOCK_ENTITY_ROW: &str = "sign block entity";
 
 const REQUIRED_SYSTEMS: &[&str] = &[
     BREAK_PLACE_PICKUP_ROW,
@@ -37,6 +38,7 @@ const REQUIRED_SYSTEMS: &[&str] = &[
     BIOME_DIMENSION_ROW,
     WORLD_PERSISTENCE_ROW,
     CRASH_RECOVERY_ROW,
+    SIGN_BLOCK_ENTITY_ROW,
 ];
 
 const REQUIRED_TEXT: &[&str] = &[
@@ -51,6 +53,7 @@ const REQUIRED_TEXT: &[&str] = &[
     "No full survival compatibility from biome/dimension row",
     "No full survival compatibility from world persistence row",
     "No full survival compatibility from crash recovery row",
+    "No full survival compatibility from sign block-entity row",
     "paired reference receipt",
     "BLAKE3 manifest entries",
 ];
@@ -119,6 +122,12 @@ const CRASH_RECOVERY_VALENCE_RECEIPT: &str =
     "docs/evidence/survival-crash-recovery-valence-2026-06-04.receipt.json";
 const CRASH_RECOVERY_EVIDENCE_DOC: &str =
     "docs/evidence/survival-crash-recovery-receipts-2026-06-04.md";
+const SIGN_BLOCK_ENTITY_PAPER_RECEIPT: &str =
+    "docs/evidence/survival-block-entity-persistence-paper-2026-06-04.receipt.json";
+const SIGN_BLOCK_ENTITY_VALENCE_RECEIPT: &str =
+    "docs/evidence/survival-block-entity-persistence-valence-2026-06-04.receipt.json";
+const SIGN_BLOCK_ENTITY_EVIDENCE_DOC: &str =
+    "docs/evidence/survival-block-entity-persistence-receipts-2026-06-04.md";
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct SurvivalRow {
@@ -328,6 +337,15 @@ fn validate_row(row: &SurvivalRow, errors: &mut Vec<String>) {
             "covered crash recovery row",
             errors,
         ),
+        SIGN_BLOCK_ENTITY_ROW => validate_covered_row(
+            row,
+            SIGN_BLOCK_ENTITY_PAPER_RECEIPT,
+            SIGN_BLOCK_ENTITY_VALENCE_RECEIPT,
+            SIGN_BLOCK_ENTITY_EVIDENCE_DOC,
+            "all block-entity parity",
+            "covered sign block-entity row",
+            errors,
+        ),
         _ => validate_missing_row(row, errors),
     }
 }
@@ -481,7 +499,8 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         "covered world persistence row missing Paper reference receipt",
     )?;
 
-    let missing_crash_recovery_evidence = good_rows().replacen(CRASH_RECOVERY_PAPER_RECEIPT, "none", 1);
+    let missing_crash_recovery_evidence =
+        good_rows().replacen(CRASH_RECOVERY_PAPER_RECEIPT, "none", 1);
     assert_contains(
         &validate_text(
             &fixture_doc(&missing_crash_recovery_evidence),

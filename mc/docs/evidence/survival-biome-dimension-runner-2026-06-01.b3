@@ -1,6 +1,6 @@
 57d655cd471a76d54df654107ab763c982eeda51b0e839fb3e3156a9eb76ea6a  docs/evidence/survival-biome-dimension-runner-2026-06-01.md
 569bb848dbd467b6c9c5f6214b57226573a81b4a32adfdaf429146ebb24d06d0  docs/evidence/survival-biome-dimension-runner-2026-06-01.run.log
 5da40043d6295671f0de9120d20152607cb046e66d48bfa466d439b1895672c4  docs/evidence/survival-biome-dimension-stevenarella-rail-2026-06-01.patch
-ac54c44eb58a02032b58e75bf676c90b5fcda664500a5e2e90f56744b4694756  tools/mc-compat-runner/src/main.rs
-688a41507a90a45a415f0ac9544bd77a66fd3aad2c6a0d34893538ceb7341371  tools/mc-compat-runner/src/scenario_manifest_generated.rs
-bb3f3c2c595fd4dc77786b81beaf56f07fea58c57c9c34963a267f662307a11d  config/mc-compat/scenario-manifest.ncl
+0ff5bcba626fc4ed84053314490e6d18abd4579e75facb0086a9e7e4cac6b0c2  tools/mc-compat-runner/src/main.rs
+c0df9bc22fb6e7910f4734ac8844c6ff7b956904debf85e12e0007f382646445  tools/mc-compat-runner/src/scenario_manifest_generated.rs
+01e14b0bf70f2335150004faf39ad2c6f182a250c3ae719600476db5eae9298e  config/mc-compat/scenario-manifest.ncl

@@ -1,0 +1,348 @@
+## valence_live
+command=env CLIENT_TIMEOUT=120 SERVER_PROTOCOL=763 SERVER_VERSION=1.20.1 VALENCE_REV=f54e6d01b23a08a2977c7bf2d93301d589c65c4d VALENCE_EXAMPLE=survival_compat VALENCE_WORKTREE=/tmp/valence-compat-survival-block-entity VALENCE_TARGET_DIR=/tmp/valence-compat-survival-block-entity-target nix run --no-update-lock-file .#mc-compat-smoke -- --run --server-backend valence --scenario survival-block-entity-persistence-parity --receipt target/survival-block-entity-persistence-valence-2026-06-04.receipt.json
+[mc-compat] building Stevenarella client
+warning: `/home/brittonr/git/mc/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: file `/home/brittonr/git/mc/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1052:36
+     |
+1052 |         offsets |protocol_version| (instrument.offsets(protocol_version)
+     |                                    ^
+1053 |             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 })),
+     |                                                                                                    ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1052 ~         offsets |protocol_version| instrument.offsets(protocol_version)
+1053 ~             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+     |
+
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1407:36
+     |
+1407 |         offsets |protocol_version| (variant.offsets(protocol_version)),
+     |                                    ^                                 ^
+     |
+help: remove these parentheses
+     |
+1407 -         offsets |protocol_version| (variant.offsets(protocol_version)),
+1407 +         offsets |protocol_version| variant.offsets(protocol_version),
+     |
+
+warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
+   Compiling stevenarella v0.0.1 (/home/brittonr/git/mc/stevenarella)
+warning: constant `SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD` is never used
+   --> src/server/mod.rs:269:7
+    |
+269 | const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &str = "MC|Compat|Sign|Persist";
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `survival_block_entity_expected_lines` is never used
+   --> src/server/mod.rs:490:4
+    |
+490 | fn survival_block_entity_expected_lines() -> [String; SIGN_LINE_COUNT] {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:102:21
+    |
+102 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+252 | / define_elements! {
+253 | |     Image,
+254 | |     Batch,
+255 | |     Text,
+...   |
+258 | |     TextBox,
+259 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+102 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib) generated 4 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (bin "stevenarella") generated 4 warnings (4 duplicates)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 11.58s
+[mc-compat] creating isolated Valence worktree /tmp/valence-compat-survival-block-entity at f54e6d01b23a08a2977c7bf2d93301d589c65c4d
+Preparing worktree (detached HEAD f54e6d0)
+HEAD is now at f54e6d0 persist bounded sign fixture state
+[mc-compat] starting Valence f54e6d01b23a08a2977c7bf2d93301d589c65c4d example 'survival_compat' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+{"description":{"text":"A Valence Server"},"players":{"max":20,"online":0,"sample":[]},"version":{"name":"1.20.1","protocol":763}}
+[mc-compat] running Stevenarella headless scenario 'survival-block-entity-persistence-parity' isolated from host Wayland compositor
+[mc-compat] stopping managed Valence server process 1954142
+[mc-compat] using existing Valence worktree /tmp/valence-compat-survival-block-entity
+[mc-compat] starting Valence f54e6d01b23a08a2977c7bf2d93301d589c65c4d example 'survival_compat' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+{"description":{"text":"A Valence Server"},"players":{"max":20,"online":0,"sample":[]},"version":{"name":"1.20.1","protocol":763}}
+[mc-compat] stopping managed Valence server process 1973551
+mc_compat_reconnect_session=2
+[main.rs:1037][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:1173][INFO] Shader version: #version 150
+[main.rs:290][INFO] Detected server protocol version 763
+[server/mod.rs:821][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25565
+[server/mod.rs:826][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:843][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:857][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:864][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:925][WARN] Server is running in offline mode
+[server/mod.rs:926][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbot properties=0
+[server/mod.rs:2976][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[world/mod.rs:1123][INFO] Dimension bounds: min_y=-64 height=384
+[server/mod.rs:3061][INFO] MC-COMPAT-MILESTONE join_game entity_id=0 gamemode=Survival
+[server/mod.rs:5499][INFO] Received chat message: Welcome to the Valence survival compatibility fixture.
+[server/mod.rs:3609][INFO] MC-COMPAT-MILESTONE update_health health=14.0 food=20 saturation=0.0
+[server/mod.rs:5680][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=1 chunk_z=-1
+[server/mod.rs:4165][INFO] MC-COMPAT-MILESTONE survival_block_entity_pre_restart_update kind=Sign position=28,64,0 text=MC|Compat|Sign|Persist source=chunk
+[server/mod.rs:4175][INFO] MC-COMPAT-MILESTONE survival_block_entity_reconnect_sent session=restart
+[server/mod.rs:1530][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:trapdoor
+[model/mod.rs:368][ERROR] Error loading model minecraft:trapdoor
+[server/mod.rs:4109][INFO] MC-COMPAT-MILESTONE survival_block_entity_move_near_target x=28.5 y=65.0 z=-1.5 position=28,64,0 session=1
+[main.rs:1037][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:1173][INFO] Shader version: #version 150
+[main.rs:290][INFO] Detected server protocol version 763
+[server/mod.rs:821][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25565
+[server/mod.rs:826][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:843][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:857][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:864][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:925][WARN] Server is running in offline mode
+[server/mod.rs:926][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbot properties=0
+[server/mod.rs:2976][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[world/mod.rs:1123][INFO] Dimension bounds: min_y=-64 height=384
+[server/mod.rs:3061][INFO] MC-COMPAT-MILESTONE join_game entity_id=0 gamemode=Survival
+[server/mod.rs:5499][INFO] Received chat message: Welcome to the Valence survival compatibility fixture.
+[server/mod.rs:3609][INFO] MC-COMPAT-MILESTONE update_health health=14.0 food=20 saturation=0.0
+[server/mod.rs:5680][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=1 chunk_z=-1
+[server/mod.rs:4183][INFO] MC-COMPAT-MILESTONE survival_block_entity_post_restart_update kind=Sign position=28,64,0 text=MC|Compat|Sign|Persist source=chunk
+[server/mod.rs:1530][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:trapdoor
+[model/mod.rs:368][ERROR] Error loading model minecraft:trapdoor
+[server/mod.rs:4109][INFO] MC-COMPAT-MILESTONE survival_block_entity_move_near_target x=28.5 y=65.0 z=-1.5 position=28,64,0 session=2
+[mc-compat] client compatbot finished Some(124); log: /tmp/mc-compat-client.compatbot.survival-block-entity-persistence-parity-session-1.1953069.log
+[mc-compat] client compatbot finished Some(124); log: /tmp/mc-compat-client.compatbot.survival-block-entity-persistence-parity-session-2.1953069.log
+[mc-compat] stopping managed Valence server process 1954142
+[mc-compat] wrote typed event log target/survival-block-entity-persistence-valence-2026-06-04.receipt.typed-events.log
+[mc-compat] wrote smoke receipt target/survival-block-entity-persistence-valence-2026-06-04.receipt.json
+valence_live_exit_status=0
+
+## paper_live
+command=env CLIENT_TIMEOUT=120 SERVER_PROTOCOL=763 SERVER_VERSION=1.20.1 PAPER_PLUGIN_JAR=docs/evidence/mc-compat-paper-survival-block-entity-fixture-2026-06-04.jar nix run --no-update-lock-file .#mc-compat-smoke -- --run --keep-server --server-backend paper --scenario survival-block-entity-persistence-parity --receipt target/survival-block-entity-persistence-paper-2026-06-04.receipt.json
+[mc-compat] building Stevenarella client
+warning: `/home/brittonr/git/mc/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: file `/home/brittonr/git/mc/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1052:36
+     |
+1052 |         offsets |protocol_version| (instrument.offsets(protocol_version)
+     |                                    ^
+1053 |             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 })),
+     |                                                                                                    ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1052 ~         offsets |protocol_version| instrument.offsets(protocol_version)
+1053 ~             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+     |
+
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1407:36
+     |
+1407 |         offsets |protocol_version| (variant.offsets(protocol_version)),
+     |                                    ^                                 ^
+     |
+help: remove these parentheses
+     |
+1407 -         offsets |protocol_version| (variant.offsets(protocol_version)),
+1407 +         offsets |protocol_version| variant.offsets(protocol_version),
+     |
+
+warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
+warning: constant `SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD` is never used
+   --> src/server/mod.rs:269:7
+    |
+269 | const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &str = "MC|Compat|Sign|Persist";
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `survival_block_entity_expected_lines` is never used
+   --> src/server/mod.rs:490:4
+    |
+490 | fn survival_block_entity_expected_lines() -> [String; SIGN_LINE_COUNT] {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:102:21
+    |
+102 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+252 | / define_elements! {
+253 | |     Image,
+254 | |     Batch,
+255 | |     Text,
+...   |
+258 | |     TextBox,
+259 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+102 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib) generated 4 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (bin "stevenarella") generated 4 warnings (4 duplicates)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.16s
+[mc-compat] starting Paper 1.20.1 server on 127.0.0.1:25566 via itzg/minecraft-server:java17 with EULA=TRUE
+3046643173f5e7b8aa72ab3052ef8c3a10543f3463b864bb7717cfb70a12ad72
+[mc-compat] probing status 127.0.0.1:25566 expecting protocol 763
+{"version":{"name":"Paper 1.20.1","protocol":763},"description":{"text":"A Minecraft Server"},"players":{"max":20,"online":0}}
+[mc-compat] running Stevenarella headless scenario 'survival-block-entity-persistence-parity' isolated from host Wayland compositor
+[mc-compat] stopping managed Paper container mc-compat-1-18-2 with graceful timeout
+Flag --time has been deprecated, use --timeout instead
+mc-compat-1-18-2
+mc-compat-1-18-2
+[mc-compat] starting Paper 1.20.1 server on 127.0.0.1:25566 via itzg/minecraft-server:java17 with EULA=TRUE
+de8f64fd4d14ecf1500801adb0352595915a55b619513a1906936a8e44bc645d
+[mc-compat] probing status 127.0.0.1:25566 expecting protocol 763
+{"version":{"name":"Paper 1.20.1","protocol":763},"description":{"text":"A Minecraft Server"},"players":{"max":20,"online":0}}
+mc_compat_reconnect_session=2
+[main.rs:1037][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:1173][INFO] Shader version: #version 150
+[main.rs:290][INFO] Detected server protocol version 763
+[server/mod.rs:821][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25566
+[server/mod.rs:826][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:843][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:857][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:864][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:925][WARN] Server is running in offline mode
+[server/mod.rs:926][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbot properties=0
+[server/mod.rs:2976][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[world/mod.rs:1123][INFO] Dimension bounds: min_y=-64 height=384
+[server/mod.rs:3061][INFO] MC-COMPAT-MILESTONE join_game entity_id=383 gamemode=Survival
+[server/mod.rs:1530][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:5499][INFO] Received chat message: unhandled: multiplayer.player.joined
+[server/mod.rs:3609][INFO] MC-COMPAT-MILESTONE update_health health=20.0 food=20 saturation=5.0
+[server/mod.rs:5680][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=1 chunk_z=-1
+[server/mod.rs:4165][INFO] MC-COMPAT-MILESTONE survival_block_entity_pre_restart_update kind=Sign position=28,64,0 text=MC|Compat|Sign|Persist source=chunk
+[server/mod.rs:4175][INFO] MC-COMPAT-MILESTONE survival_block_entity_reconnect_sent session=restart
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:stripped_spruce_log_wood
+[model/mod.rs:368][ERROR] Error loading model minecraft:stripped_spruce_log_wood
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:trapdoor
+[model/mod.rs:368][ERROR] Error loading model minecraft:trapdoor
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:noteblock
+[model/mod.rs:368][ERROR] Error loading model minecraft:noteblock
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:stripped_acacia_log_wood
+[model/mod.rs:368][ERROR] Error loading model minecraft:stripped_acacia_log_wood
+[server/mod.rs:4109][INFO] MC-COMPAT-MILESTONE survival_block_entity_move_near_target x=28.5 y=65.0 z=-1.5 position=28,64,0 session=1
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:stripped_birch_log_wood
+[model/mod.rs:368][ERROR] Error loading model minecraft:stripped_birch_log_wood
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:stripped_birch_log_log
+[model/mod.rs:368][ERROR] Error loading model minecraft:stripped_birch_log_log
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:stripped_acacia_log_log
+[model/mod.rs:368][ERROR] Error loading model minecraft:stripped_acacia_log_log
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:stripped_jungle_log_log
+[model/mod.rs:368][ERROR] Error loading model minecraft:stripped_jungle_log_log
+[main.rs:1037][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:1173][INFO] Shader version: #version 150
+[main.rs:290][INFO] Detected server protocol version 763
+[server/mod.rs:821][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25566
+[server/mod.rs:826][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:843][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:857][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:864][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:925][WARN] Server is running in offline mode
+[server/mod.rs:926][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbot properties=0
+[server/mod.rs:2976][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[world/mod.rs:1123][INFO] Dimension bounds: min_y=-64 height=384
+[server/mod.rs:3061][INFO] MC-COMPAT-MILESTONE join_game entity_id=267 gamemode=Survival
+[server/mod.rs:5499][INFO] Received chat message: unhandled: multiplayer.player.joined
+[server/mod.rs:1530][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:3609][INFO] MC-COMPAT-MILESTONE update_health health=20.0 food=20 saturation=5.0
+[server/mod.rs:5680][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=1 chunk_z=-1
+[server/mod.rs:4183][INFO] MC-COMPAT-MILESTONE survival_block_entity_post_restart_update kind=Sign position=28,64,0 text=MC|Compat|Sign|Persist source=chunk
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:stripped_spruce_log_wood
+[model/mod.rs:368][ERROR] Error loading model minecraft:stripped_spruce_log_wood
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:trapdoor
+[model/mod.rs:368][ERROR] Error loading model minecraft:trapdoor
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:noteblock
+[model/mod.rs:368][ERROR] Error loading model minecraft:noteblock
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:stripped_acacia_log_wood
+[model/mod.rs:368][ERROR] Error loading model minecraft:stripped_acacia_log_wood
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:stripped_birch_log_log
+[model/mod.rs:368][ERROR] Error loading model minecraft:stripped_birch_log_log
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:stripped_birch_log_wood
+[model/mod.rs:368][ERROR] Error loading model minecraft:stripped_birch_log_wood
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:stripped_dark_oak_log_log
+[model/mod.rs:368][ERROR] Error loading model minecraft:stripped_dark_oak_log_log
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:stripped_jungle_log_log
+[model/mod.rs:368][ERROR] Error loading model minecraft:stripped_jungle_log_log
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:stripped_acacia_log_log
+[model/mod.rs:368][ERROR] Error loading model minecraft:stripped_acacia_log_log
+[server/mod.rs:4109][INFO] MC-COMPAT-MILESTONE survival_block_entity_move_near_target x=28.5 y=65.0 z=-1.5 position=28,64,0 session=2
+[mc-compat] client compatbot finished Some(124); log: /tmp/mc-compat-client.compatbot.survival-block-entity-persistence-parity-session-1.1981799.log
+[mc-compat] client compatbot finished Some(124); log: /tmp/mc-compat-client.compatbot.survival-block-entity-persistence-parity-session-2.1981799.log
+[mc-compat] wrote typed event log target/survival-block-entity-persistence-paper-2026-06-04.receipt.typed-events.log
+[mc-compat] wrote smoke receipt target/survival-block-entity-persistence-paper-2026-06-04.receipt.json
+paper_live_exit_status=0
+exit_status=0

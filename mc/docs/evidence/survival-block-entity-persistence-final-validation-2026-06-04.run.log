@@ -1,0 +1,40 @@
+# survival block-entity persistence final validation
+
+## evidence_manifests_nix_check
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-evidence-manifests
+this derivation will be built:
+  /nix/store/ag1507hj4w02xgrp6h4bbfzyyp9gn9jr-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/ag1507hj4w02xgrp6h4bbfzyyp9gn9jr-mc-compat-evidence-manifests.drv'...
+evidence_manifests_nix_check_exit_status=0
+
+## task_evidence_nix_check
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-cairn-task-evidence
+this derivation will be built:
+  /nix/store/nb67wg8ycwyqfy5i61l81ka74sg6hcii-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/nb67wg8ycwyqfy5i61l81ka74sg6hcii-mc-compat-cairn-task-evidence.drv'...
+task_evidence_nix_check_exit_status=0
+
+## scenario_manifest_nix_check
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-scenario-manifest
+this derivation will be built:
+  /nix/store/h4wm39c1p79fypbibva1a6yghg0k0q20-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/h4wm39c1p79fypbibva1a6yghg0k0q20-mc-compat-scenario-manifest.drv'...
+scenario_manifest_nix_check_exit_status=0
+
+## cairn_validate
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+cairn_validate_exit_status=0
+exit_status=0

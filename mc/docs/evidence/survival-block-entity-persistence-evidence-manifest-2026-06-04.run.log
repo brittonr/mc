@@ -1,0 +1,44 @@
+## b3_manifest_check
+command=nix develop --no-update-lock-file -c b3sum --check docs/evidence/survival-block-entity-persistence-receipts-2026-06-04.b3
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+docs/evidence/survival-block-entity-persistence-receipts-2026-06-04.md: OK
+docs/evidence/survival-block-entity-persistence-paper-2026-06-04.receipt.json: OK
+docs/evidence/survival-block-entity-persistence-valence-2026-06-04.receipt.json: OK
+docs/evidence/survival-block-entity-persistence-paper-2026-06-04.evidence: OK
+docs/evidence/survival-block-entity-persistence-valence-2026-06-04.evidence: OK
+docs/evidence/survival-block-entity-persistence-paper-2026-06-04.typed-events.log: OK
+docs/evidence/survival-block-entity-persistence-valence-2026-06-04.typed-events.log: OK
+docs/evidence/survival-block-entity-persistence-paper-client-session-1-2026-06-04.log: OK
+docs/evidence/survival-block-entity-persistence-paper-client-session-2-2026-06-04.log: OK
+docs/evidence/survival-block-entity-persistence-valence-client-session-1-2026-06-04.log: OK
+docs/evidence/survival-block-entity-persistence-valence-client-session-2-2026-06-04.log: OK
+docs/evidence/survival-block-entity-persistence-paper-pre-restart-server-2026-06-04.log: OK
+docs/evidence/survival-block-entity-persistence-paper-post-restart-server-2026-06-04.log: OK
+docs/evidence/survival-block-entity-persistence-valence-pre-restart-server-2026-06-04.log: OK
+docs/evidence/survival-block-entity-persistence-valence-post-restart-server-2026-06-04.log: OK
+docs/evidence/survival-block-entity-persistence-paired-live-2026-06-04.run.log: OK
+docs/evidence/survival-block-entity-persistence-row-parity-2026-06-04.run.log: OK
+docs/evidence/survival-block-entity-persistence-revisions-2026-06-04.run.log: OK
+docs/evidence/survival-block-entity-persistence-revision-oracle-2026-06-04.md: OK
+docs/evidence/survival-block-entity-persistence-artifact-promotion-2026-06-04.run.log: OK
+docs/evidence/survival-block-entity-fixture-paper-2026-06-04.run.log: OK
+docs/evidence/survival-block-entity-persistence-scenario-manifest-2026-06-04.run.log: OK
+docs/evidence/survival-block-entity-persistence-checker-runner-2026-06-04.run.log: OK
+docs/evidence/survival-block-entity-persistence-matrix-promotion-2026-06-04.run.log: OK
+docs/evidence/mc-compat-paper-survival-block-entity-fixture-2026-06-04.java: OK
+docs/evidence/mc-compat-paper-survival-block-entity-fixture-2026-06-04.jar: OK
+docs/evidence/protocol-763-survival-coverage-matrix-2026-05-28.md: OK
+docs/evidence/protocol-763-acceptance-matrix.md: OK
+docs/evidence/protocol-763-current-evidence-bundle.md: OK
+tools/check_survival_row_parity.rs: OK
+tools/check_survival_coverage_matrix.rs: OK
+tools/check_acceptance_matrix.rs: OK
+tools/check_current_evidence_bundle.rs: OK
+tools/mc-compat-runner/src/main.rs: OK
+tools/mc-compat-runner/src/scenario_manifest_generated.rs: OK
+config/mc-compat/scenario-manifest.ncl: OK
+tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java: OK
+b3_manifest_check_exit_status=0
+exit_status=0

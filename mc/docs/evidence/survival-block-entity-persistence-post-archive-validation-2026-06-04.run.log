@@ -1,0 +1,51 @@
+# survival block-entity persistence post-archive validation
+
+## accepted_spec_marker_check
+command=grep -n survival_block_entity_persistence_parity cairn/specs/mc-compatibility/spec.md
+3031:r[mc_compatibility.survival_block_entity_persistence_parity.contract] The `survival-block-entity-persistence-parity` row MUST define a bounded paired-reference evidence contract before any block-entity persistence survival evidence is promoted.
+3035:r[mc_compatibility.survival_block_entity_persistence_parity.contract.scope]
+3043:r[mc_compatibility.survival_block_entity_persistence_parity.checker] A deterministic Rust checker MUST compare normalized paired Paper/reference and Valence sign block-entity persistence metrics before the row is promoted.
+3047:r[mc_compatibility.survival_block_entity_persistence_parity.checker.valid]
+3054:r[mc_compatibility.survival_block_entity_persistence_parity.checker.rejects]
+3061:r[mc_compatibility.survival_block_entity_persistence_parity.rail] The harness MUST expose an isolated `survival-block-entity-persistence-parity` rail without broadening existing survival, graceful world-persistence, or crash-recovery semantics.
+3065:r[mc_compatibility.survival_block_entity_persistence_parity.rail.isolated]
+3073:r[mc_compatibility.survival_block_entity_persistence_parity.fixtures] Paper/reference and Valence fixtures MUST record comparable sign block-entity persistence server metrics for the configured payload.
+3077:r[mc_compatibility.survival_block_entity_persistence_parity.fixtures.comparable]
+3085:r[mc_compatibility.survival_block_entity_persistence_parity.receipts] Paired sign block-entity persistence evidence MUST be durable and reviewable under `docs/evidence/` before promotion.
+3089:r[mc_compatibility.survival_block_entity_persistence_parity.receipts.reviewable]
+3097:r[mc_compatibility.survival_block_entity_persistence_parity.promotion] Acceptance matrix and current-bundle docs MUST promote only the configured `survival-block-entity-persistence-parity` row after the paired comparator passes.
+3101:r[mc_compatibility.survival_block_entity_persistence_parity.promotion.nonclaims]
+3109:r[mc_compatibility.survival_block_entity_persistence_parity.validation] The change MUST record checker, paired comparator, manifest, task gate, Cairn gates, and Cairn validation output before archive.
+3113:r[mc_compatibility.survival_block_entity_persistence_parity.validation.log]
+accepted_spec_marker_check_exit_status=0
+
+## evidence_manifests_nix_check
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-evidence-manifests
+this derivation will be built:
+  /nix/store/7zmswhsn0kg8i9wqmppa4bj4nx2ndr3c-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/7zmswhsn0kg8i9wqmppa4bj4nx2ndr3c-mc-compat-evidence-manifests.drv'...
+evidence_manifests_nix_check_exit_status=0
+
+## task_evidence_nix_check
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-cairn-task-evidence
+this derivation will be built:
+  /nix/store/y54ijk8bllqvh37lbm6picqgyz5m795l-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/y54ijk8bllqvh37lbm6picqgyz5m795l-mc-compat-cairn-task-evidence.drv'...
+task_evidence_nix_check_exit_status=0
+
+## cairn_validate
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 2,
+  "valid": true
+}
+cairn_validate_exit_status=0
+exit_status=0

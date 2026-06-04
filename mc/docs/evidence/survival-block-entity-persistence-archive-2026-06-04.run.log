@@ -1,0 +1,189 @@
+# survival block-entity persistence archive
+
+## cairn_sync_dry_run
+command=nix run --no-update-lock-file .#cairn -- sync survival-block-entity-persistence-parity --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/survival-block-entity-persistence-parity/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/survival-block-entity-persistence-parity/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-block-entity-persistence-parity",
+  "delta_specs": [
+    "./cairn/changes/survival-block-entity-persistence-parity/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "43bfd3265d1b6adc167d0c65b2f4eb90319399a8e6615271a9733fc51b485ba2",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "8154306dcdfe0c450db12d136f54f707d9321d8d27b81fb16a9adf764a541482",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "ed54c6f23126f2b2f05335536352839ea730e46063e46483acb581f6eedd9c45"
+}
+cairn_sync_dry_run_exit_status=0
+
+## cairn_sync_execute
+command=nix run --no-update-lock-file .#cairn -- sync survival-block-entity-persistence-parity --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/survival-block-entity-persistence-parity/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/survival-block-entity-persistence-parity/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-block-entity-persistence-parity",
+  "delta_specs": [
+    "./cairn/changes/survival-block-entity-persistence-parity/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "43bfd3265d1b6adc167d0c65b2f4eb90319399a8e6615271a9733fc51b485ba2",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "0e0753975954195a54fb157ce33090c8d6cdae11675b2e9a5df5f14e2b407eb9",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "4b869e40b335c8c3b7825f50ebc4a6601cad25e66f9e6837ef1b3cd7251c5d76"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "0e0753975954195a54fb157ce33090c8d6cdae11675b2e9a5df5f14e2b407eb9",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "4b869e40b335c8c3b7825f50ebc4a6601cad25e66f9e6837ef1b3cd7251c5d76"
+    },
+    "kind": "sync",
+    "manifest_hash": "46dc1fcf61e476eed4618f3020c1098cddac09d137661a580023af4db0009e23"
+  },
+  "plan_hash": "cc8fc12dfa9472da440fc086ca31b780f03c8324d3c008d7d2979ca81c4ad935",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "ea08e6927e57d83f78911f7b5f6df525e84f8914437b2143c575f2c234583085"
+}
+cairn_sync_execute_exit_status=0
+
+## cairn_archive_dry_run
+command=CAIRN_ARCHIVE_DATE=2026-06-04 nix run --no-update-lock-file .#cairn -- archive survival-block-entity-persistence-parity --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-block-entity-persistence-parity",
+      "kind": "archive_change",
+      "path": "./cairn/changes/survival-block-entity-persistence-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-block-entity-persistence-parity",
+  "dry_run": true,
+  "input_hash": "43bfd3265d1b6adc167d0c65b2f4eb90319399a8e6615271a9733fc51b485ba2",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "75a87173593bce9e2d148263806c304999312a6bfd4daca0865ed3635e2e83f4",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "00a46c417e043aa8a2ac36d089e36e3a8cad2107e22b1ef9386219312533d108"
+}
+cairn_archive_dry_run_exit_status=0
+
+## cairn_archive_execute
+command=CAIRN_ARCHIVE_DATE=2026-06-04 nix run --no-update-lock-file .#cairn -- archive survival-block-entity-persistence-parity --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-block-entity-persistence-parity",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-04-survival-block-entity-persistence-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-block-entity-persistence-parity",
+  "dry_run": false,
+  "input_hash": "43bfd3265d1b6adc167d0c65b2f4eb90319399a8e6615271a9733fc51b485ba2",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "04efa0a3b86a924fa13b2a56b60a5780b30b00eaa658ad901b6b9edf5109e365",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-04-survival-block-entity-persistence-parity/design.md"
+        },
+        {
+          "content_hash": "0ce25e772c52432f5d6c96ea4961f72687ba1172e423669a3099e9248fcd9a09",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-04-survival-block-entity-persistence-parity/proposal.md"
+        },
+        {
+          "content_hash": "46b9ab34d3ee94424d5dbd3a6d3dda9487ef3aed4bce291e729c07532b08a3a6",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-04-survival-block-entity-persistence-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "ed7d9daf1983fd02a1822569a5868ece247ca5b90c94ff8a4e63fa4056635a7c",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-04-survival-block-entity-persistence-parity/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-block-entity-persistence-parity"
+        }
+      ],
+      "manifest_hash": "d6194d9acc30c7e45828118d62a9ab5f7faf91db611cae1626a11b98e061f303"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "04efa0a3b86a924fa13b2a56b60a5780b30b00eaa658ad901b6b9edf5109e365",
+          "exists": true,
+          "path": "./cairn/changes/survival-block-entity-persistence-parity/design.md"
+        },
+        {
+          "content_hash": "0ce25e772c52432f5d6c96ea4961f72687ba1172e423669a3099e9248fcd9a09",
+          "exists": true,
+          "path": "./cairn/changes/survival-block-entity-persistence-parity/proposal.md"
+        },
+        {
+          "content_hash": "46b9ab34d3ee94424d5dbd3a6d3dda9487ef3aed4bce291e729c07532b08a3a6",
+          "exists": true,
+          "path": "./cairn/changes/survival-block-entity-persistence-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "ed7d9daf1983fd02a1822569a5868ece247ca5b90c94ff8a4e63fa4056635a7c",
+          "exists": true,
+          "path": "./cairn/changes/survival-block-entity-persistence-parity/tasks.md"
+        }
+      ],
+      "manifest_hash": "aad413681d5f48965436460d0743f9fbca38bb5a997680c0daa7392d27967298"
+    },
+    "kind": "archive",
+    "manifest_hash": "20621790eb19980ba92d7d4d0a21eb2dc484741086a002e3d81ac8475d4a8f20"
+  },
+  "plan_hash": "e107be2ef055fce511f90e41af0c1ef567f4f063477efc5bb829f3b308716928",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "8457d1bd17632d541fc02ff1d81edbbfac5c09dcd53e8d3032914f1bd686664a"
+}
+cairn_archive_execute_exit_status=0
+exit_status=0

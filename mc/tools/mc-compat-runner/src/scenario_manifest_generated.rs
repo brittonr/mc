@@ -418,6 +418,34 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         migration_state: "substring-fallback",
     },
     GeneratedScenarioRow {
+        name: "survival-block-entity-persistence-parity",
+        aliases: &["survival-block-entity-persistence-parity"],
+        client_milestones: &[
+            "protocol_detected",
+            "join_game",
+            "render_tick",
+            "survival_block_entity_pre_restart_update",
+            "survival_block_entity_reconnect_sent",
+            "survival_block_entity_post_restart_update",
+        ],
+        server_milestones: &[
+            "server_username_seen",
+            "server_survival_block_entity_mutation",
+            "server_survival_block_entity_clean_shutdown",
+            "server_survival_block_entity_backend_restart",
+            "server_survival_block_entity_post_restart",
+            "server_survival_block_entity_state",
+        ],
+        forbidden_patterns: DEFAULT_FORBIDDEN_PATTERNS,
+        client_count: ONE_CLIENT,
+        session_count: TWO_SESSIONS,
+        dry_run_check: "",
+        dry_run_wrapper: "mc-compat-smoke",
+        dry_run_exclusion_reason:
+            "survival-block-entity-persistence-parity uses live paired fixture receipts instead of a dedicated dry-run wrapper",
+        migration_state: "substring-fallback",
+    },
+    GeneratedScenarioRow {
         name: "survival-biome-dimension-state",
         aliases: &["survival-biome-dimension-state"],
         client_milestones: &[

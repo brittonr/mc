@@ -16,6 +16,16 @@ const CLEAN_REVISION_STATUS: &str = "clean";
 const KEY_VALUE_SEPARATOR: char = '=';
 const REQUIRED_ARGUMENT_COUNT: usize = 7;
 const PROGRAM_ARGUMENT_COUNT: usize = 1;
+const SURVIVAL_BLOCK_ENTITY_ACTOR: &str = "compatbot";
+const SURVIVAL_BLOCK_ENTITY_KIND: &str = "Sign";
+const SURVIVAL_BLOCK_ENTITY_POSITION: &str = "28,64,0";
+const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &str = "MC|Compat|Sign|Persist";
+const SURVIVAL_BLOCK_ENTITY_PRE_RESTART_OBSERVATION: &str = "sign_text_visible";
+const SURVIVAL_BLOCK_ENTITY_CLEAN_SHUTDOWN: &str = "graceful";
+const SURVIVAL_BLOCK_ENTITY_BACKEND_RESTART: &str = "controlled_reload";
+const SURVIVAL_BLOCK_ENTITY_RECONNECT: &str = "restart";
+const SURVIVAL_BLOCK_ENTITY_POST_RESTART_OBSERVATION: &str = "sign_text_visible";
+const SURVIVAL_BLOCK_ENTITY_SERVER_STATE: &str = "persisted";
 
 const ROWS: &[RowContract] = &[
     RowContract {
@@ -31,6 +41,7 @@ const ROWS: &[RowContract] = &[
             "reconnect_reopen",
             "server_state",
         ],
+        expected_metrics: &[],
     },
     RowContract {
         id: "survival-hunger-food",
@@ -44,6 +55,7 @@ const ROWS: &[RowContract] = &[
             "saturation_update",
             "server_food_state",
         ],
+        expected_metrics: &[],
     },
     RowContract {
         id: "survival-mob-drop",
@@ -57,6 +69,7 @@ const ROWS: &[RowContract] = &[
             "inventory_increment",
             "server_drop_state",
         ],
+        expected_metrics: &[],
     },
     RowContract {
         id: "survival-redstone-toggle",
@@ -68,6 +81,7 @@ const ROWS: &[RowContract] = &[
             "powered_off",
             "server_power_state",
         ],
+        expected_metrics: &[],
     },
     RowContract {
         id: "survival-biome-dimension-state",
@@ -79,6 +93,7 @@ const ROWS: &[RowContract] = &[
             "server_environment_state",
             "normalized_identifier",
         ],
+        expected_metrics: &[],
     },
     RowContract {
         id: "survival-world-persistence-restart",
@@ -91,6 +106,7 @@ const ROWS: &[RowContract] = &[
             "post_restart_observation",
             "server_persistence_state",
         ],
+        expected_metrics: &[],
     },
     RowContract {
         id: "survival-crash-recovery-parity",
@@ -103,6 +119,44 @@ const ROWS: &[RowContract] = &[
             "post_crash_observation",
             "server_recovery_state",
         ],
+        expected_metrics: &[],
+    },
+    RowContract {
+        id: "survival-block-entity-persistence-parity",
+        label: "block-entity persistence",
+        metrics: &[
+            "actor",
+            "block_entity_kind",
+            "position",
+            "text_payload",
+            "pre_restart_observation",
+            "clean_shutdown",
+            "backend_restart",
+            "reconnect",
+            "post_restart_observation",
+            "server_persistence_state",
+        ],
+        expected_metrics: &[
+            ("actor", SURVIVAL_BLOCK_ENTITY_ACTOR),
+            ("block_entity_kind", SURVIVAL_BLOCK_ENTITY_KIND),
+            ("position", SURVIVAL_BLOCK_ENTITY_POSITION),
+            ("text_payload", SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD),
+            (
+                "pre_restart_observation",
+                SURVIVAL_BLOCK_ENTITY_PRE_RESTART_OBSERVATION,
+            ),
+            ("clean_shutdown", SURVIVAL_BLOCK_ENTITY_CLEAN_SHUTDOWN),
+            ("backend_restart", SURVIVAL_BLOCK_ENTITY_BACKEND_RESTART),
+            ("reconnect", SURVIVAL_BLOCK_ENTITY_RECONNECT),
+            (
+                "post_restart_observation",
+                SURVIVAL_BLOCK_ENTITY_POST_RESTART_OBSERVATION,
+            ),
+            (
+                "server_persistence_state",
+                SURVIVAL_BLOCK_ENTITY_SERVER_STATE,
+            ),
+        ],
     },
 ];
 
@@ -111,6 +165,7 @@ struct RowContract {
     id: &'static str,
     label: &'static str,
     metrics: &'static [&'static str],
+    expected_metrics: &'static [(&'static str, &'static str)],
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -326,6 +381,16 @@ fn validate_document(
             ));
         }
     }
+    for (metric, expected) in contract.expected_metrics {
+        if let Some(observed) = evidence.metrics.get(*metric) {
+            if observed != expected {
+                errors.push(format!(
+                    "{} evidence has unexpected metric value for {metric}: expected {expected} got {observed}",
+                    expected_backend
+                ));
+            }
+        }
+    }
 }
 
 fn validate_metric_agreement(
@@ -356,7 +421,10 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         validate_pair(*contract, &paper, &valence)?;
         exercised_rows.insert(contract.id);
 
-        let missing_metric = paper.replace(&format!("metric.{}=ok\n", contract.metrics[0]), "");
+        let first_metric = contract.metrics[0];
+        let first_metric_value = fixture_metric_value(*contract, first_metric);
+        let missing_metric =
+            paper.replace(&format!("metric.{first_metric}={first_metric_value}\n"), "");
         assert_contains(
             &validate_pair(*contract, &missing_metric, &valence)
                 .expect_err("missing metric fixture should fail"),
@@ -364,8 +432,8 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         )?;
 
         let mismatch = valence.replace(
-            &format!("metric.{}=ok\n", contract.metrics[0]),
-            &format!("metric.{}=different\n", contract.metrics[0]),
+            &format!("metric.{first_metric}={first_metric_value}\n"),
+            &format!("metric.{first_metric}=different\n"),
         );
         assert_contains(
             &validate_pair(*contract, &paper, &mismatch)
@@ -392,6 +460,8 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         assert_contains(&valence_only, "expected paper backend evidence")?;
     }
 
+    exercise_block_entity_expected_metric_fixtures()?;
+
     if exercised_rows.len() != ROWS.len() {
         return Err(vec![
             "not every survival row contract was exercised".to_string()
@@ -406,15 +476,86 @@ fn run_self_tests() -> Result<String, Vec<String>> {
     Ok(format!("{} row contracts exercised", exercised_rows.len()))
 }
 
+fn exercise_block_entity_expected_metric_fixtures() -> Result<(), Vec<String>> {
+    let contract = row_contract("survival-block-entity-persistence-parity")?;
+    let paper = fixture_evidence(contract, PAPER_BACKEND);
+    let valence = fixture_evidence(contract, VALENCE_BACKEND);
+
+    let wrong_kind = fixture_with_metric_value(
+        &paper,
+        "block_entity_kind",
+        SURVIVAL_BLOCK_ENTITY_KIND,
+        "Chest",
+    );
+    assert_contains(
+        &validate_pair(contract, &wrong_kind, &valence)
+            .expect_err("wrong sign kind fixture should fail"),
+        "unexpected metric value for block_entity_kind",
+    )?;
+
+    let wrong_position = fixture_with_metric_value(
+        &paper,
+        "position",
+        SURVIVAL_BLOCK_ENTITY_POSITION,
+        "29,64,0",
+    );
+    assert_contains(
+        &validate_pair(contract, &wrong_position, &valence)
+            .expect_err("wrong sign position fixture should fail"),
+        "unexpected metric value for position",
+    )?;
+
+    let wrong_text = fixture_with_metric_value(
+        &paper,
+        "text_payload",
+        SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD,
+        "MC|Compat|Wrong|Persist",
+    );
+    assert_contains(
+        &validate_pair(contract, &wrong_text, &valence)
+            .expect_err("wrong sign text fixture should fail"),
+        "unexpected metric value for text_payload",
+    )?;
+
+    Ok(())
+}
+
 fn fixture_evidence(contract: RowContract, backend: &str) -> String {
     let mut text = format!(
         "row={}\nbackend={backend}\nrevision_status=clean\nchild_revision=abc1234\n",
         contract.id
     );
     for metric in contract.metrics {
-        text.push_str(&format!("metric.{metric}=ok\n"));
+        let value = fixture_metric_value(contract, metric);
+        text.push_str(&format!("metric.{metric}={value}\n"));
     }
     text
+}
+
+fn fixture_metric_value(contract: RowContract, metric: &str) -> &'static str {
+    contract
+        .expected_metrics
+        .iter()
+        .find_map(|(expected_metric, expected_value)| {
+            if *expected_metric == metric {
+                Some(*expected_value)
+            } else {
+                None
+            }
+        })
+        .unwrap_or("ok")
+}
+
+fn fixture_with_metric_value(
+    fixture: &str,
+    metric: &str,
+    old_value: &str,
+    new_value: &str,
+) -> String {
+    fixture.replace(
+        &format!("metric.{metric}={old_value}\n"),
+        &format!("metric.{metric}={new_value}\n"),
+    )
 }
 
 fn assert_contains(errors: &[String], needle: &str) -> Result<(), Vec<String>> {
