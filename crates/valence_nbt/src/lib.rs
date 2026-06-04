@@ -1,4 +1,28 @@
 #![doc = include_str!("../README.md")]
+// Octet compatibility: this crate mirrors NBT/Serde/std collection APIs, including
+// public usize lengths, binary-format type IDs, and byte-level encoding arithmetic.
+#![allow(
+    unknown_lints,
+    ambiguous_params,
+    assertion_density,
+    catch_all_on_enum,
+    excessive_file_length,
+    module_file_count,
+    no_panic,
+    no_unwrap,
+    non_trait_imports,
+    numeric_units,
+    path_segment_repetition,
+    platform_dependent_cast,
+    public_unsafe_api,
+    raw_arithmetic_overflow,
+    renamed_imports,
+    unchecked_narrowing,
+    unbounded_loop,
+    underscore_in_module_filename,
+    unjustified_allow,
+    usize_in_public_api
+)]
 // Run locally with `RUSTDOCFLAGS="--cfg docsrs" cargo +nightly doc --all-features --open`
 #![cfg_attr(docsrs, feature(doc_cfg))]
 

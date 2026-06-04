@@ -29,11 +29,12 @@
 ## Octet
 - Starter rollout command: `scripts/octet-check.sh`.
 - Flake gate: `nix build .#checks.x86_64-linux.octet --no-link -L --impure`.
-- Strict starter scope is `valence_math`, `valence_lang`, `valence_ident`, `valence_text`, `valence_weather`, `valence_world_border`, `valence_boss_bar`, `valence_player_list`, `valence_scoreboard`, `valence_equipment`, `valence_advancement`, `valence_anvil`, `valence_inventory`, `valence_registry`, `valence_build_utils`, `valence_ident_macros`, `valence_protocol_macros`, `valence_command_macros`, `valence_spatial`, `valence_generated`, and `java_string`; broaden beyond these only after a dedicated cleanup pass.
+- Strict starter scope is `valence_math`, `valence_lang`, `valence_ident`, `valence_text`, `valence_weather`, `valence_world_border`, `valence_boss_bar`, `valence_player_list`, `valence_scoreboard`, `valence_equipment`, `valence_advancement`, `valence_anvil`, `valence_inventory`, `valence_registry`, `valence_build_utils`, `valence_ident_macros`, `valence_protocol_macros`, `valence_command_macros`, `valence_spatial`, `valence_generated`, `java_string`, and `valence_nbt`; broaden beyond these only after a dedicated cleanup pass.
 - Workspace runner config lives in `[workspace.metadata.octet]` in `Cargo.toml`.
 - Workspace lint tuning config lives in `[octet]` in `dylint.toml`.
 - Keep `valence_server_common` out of the starter default for now; a no-arg legacy Dylint run that pulled its `valence_generated` dependency path hit a `dylint-driver` SIGSEGV on nightly-2026-03-21.
 - `java_string` has a crate-level Octet compatibility allow because it mirrors standard string APIs with public `usize` byte indices, unsafe constructors, and byte-level encoding arithmetic.
+- `valence_nbt` has a crate-level Octet compatibility allow because it mirrors NBT/Serde/std collection APIs with public `usize` lengths, binary-format type IDs, and byte-level encoding arithmetic.
 
 ## Conventions from `CONTRIBUTING.md`
 - Keep modules top-down: parent/public items above private helpers and child types.
