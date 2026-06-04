@@ -1,7 +1,5 @@
 #![doc = include_str!("../README.md")]
 
-use vek::{Aabb, Vec3};
-
 pub mod bvh;
 
 pub trait SpatialIndex<N = f64> {
@@ -18,7 +16,7 @@ pub trait SpatialIndex<N = f64> {
     /// returns with `Some`, then query returns `None`.
     fn query<C, F, T>(&self, collides: C, f: F) -> Option<T>
     where
-        C: FnMut(Aabb<N>) -> bool,
+        C: FnMut(vek::Aabb<N>) -> bool,
         F: FnMut(&Self::Object) -> Option<T>;
 
     /// Casts a ray defined by `origin` and `direction` through object AABBs
@@ -33,8 +31,8 @@ pub trait SpatialIndex<N = f64> {
     /// normalized.
     fn raycast<F>(
         &self,
-        origin: Vec3<f64>,
-        direction: Vec3<f64>,
+        origin: vek::Vec3<f64>,
+        direction: vek::Vec3<f64>,
         f: F,
     ) -> Option<RaycastHit<'_, Self::Object, N>>
     where
@@ -42,7 +40,7 @@ pub trait SpatialIndex<N = f64> {
 }
 
 pub trait Bounded3D<N = f64> {
-    fn aabb(&self) -> Aabb<N>;
+    fn aabb(&self) -> vek::Aabb<N>;
 }
 
 /// Represents an intersection between a ray and an entity's axis-aligned
@@ -72,8 +70,8 @@ impl<O, N: Clone> Clone for RaycastHit<'_, O, N> {
 
 impl<O, N: Copy> Copy for RaycastHit<'_, O, N> {}
 
-impl<N: Clone> Bounded3D<N> for Aabb<N> {
-    fn aabb(&self) -> Aabb<N> {
+impl<N: Clone> Bounded3D<N> for vek::Aabb<N> {
+    fn aabb(&self) -> vek::Aabb<N> {
         self.clone()
     }
 }
@@ -81,17 +79,17 @@ impl<N: Clone> Bounded3D<N> for Aabb<N> {
 #[derive(Copy, Clone, PartialEq, Eq, Hash, Default, Debug)]
 pub struct WithAabb<O, N = f64> {
     pub object: O,
-    pub aabb: Aabb<N>,
+    pub aabb: vek::Aabb<N>,
 }
 
 impl<O, N> WithAabb<O, N> {
-    pub fn new(object: O, aabb: Aabb<N>) -> Self {
+    pub fn new(object: O, aabb: vek::Aabb<N>) -> Self {
         Self { object, aabb }
     }
 }
 
 impl<O, N: Clone> Bounded3D<N> for WithAabb<O, N> {
-    fn aabb(&self) -> Aabb<N> {
+    fn aabb(&self) -> vek::Aabb<N> {
         self.aabb.clone()
     }
 }
@@ -103,7 +101,11 @@ impl<O, N: Clone> Bounded3D<N> for WithAabb<O, N> {
 /// are the distance from the origin to the closest and furthest intersection
 /// points respectively. If the intersection occurs inside the bounding box,
 /// then `near` is zero.
-pub fn ray_box_intersect(ro: Vec3<f64>, rd: Vec3<f64>, bb: Aabb<f64>) -> Option<(f64, f64)> {
+pub fn ray_box_intersect(
+    ro: vek::Vec3<f64>,
+    rd: vek::Vec3<f64>,
+    bb: vek::Aabb<f64>,
+) -> Option<(f64, f64)> {
     let mut near = -f64::INFINITY;
     let mut far = f64::INFINITY;
 
@@ -130,33 +132,33 @@ mod tests {
 
     #[test]
     fn ray_box_edge_cases() {
-        let bb = Aabb {
-            min: Vec3::new(0.0, 0.0, 0.0),
-            max: Vec3::new(1.0, 1.0, 1.0),
+        let bb = vek::Aabb {
+            min: vek::Vec3::new(0.0, 0.0, 0.0),
+            max: vek::Vec3::new(1.0, 1.0, 1.0),
         };
 
         let ros = [
             // On a corner
-            Vec3::new(0.0, 0.0, 0.0),
+            vek::Vec3::new(0.0, 0.0, 0.0),
             // Outside
-            Vec3::new(-0.5, 0.5, -0.5),
+            vek::Vec3::new(-0.5, 0.5, -0.5),
             // In the center
-            Vec3::new(0.5, 0.5, 0.5),
+            vek::Vec3::new(0.5, 0.5, 0.5),
             // On an edge
-            Vec3::new(0.0, 0.5, 0.0),
+            vek::Vec3::new(0.0, 0.5, 0.0),
             // On a face
-            Vec3::new(0.0, 0.5, 0.5),
+            vek::Vec3::new(0.0, 0.5, 0.5),
             // Outside slabs
-            Vec3::new(-2.0, -2.0, -2.0),
+            vek::Vec3::new(-2.0, -2.0, -2.0),
         ];
 
         let rds = [
-            Vec3::new(1.0, 0.0, 0.0),
-            Vec3::new(-1.0, 0.0, 0.0),
-            Vec3::new(0.0, 1.0, 0.0),
-            Vec3::new(0.0, -1.0, 0.0),
-            Vec3::new(0.0, 0.0, 1.0),
-            Vec3::new(0.0, 0.0, -1.0),
+            vek::Vec3::new(1.0, 0.0, 0.0),
+            vek::Vec3::new(-1.0, 0.0, 0.0),
+            vek::Vec3::new(0.0, 1.0, 0.0),
+            vek::Vec3::new(0.0, -1.0, 0.0),
+            vek::Vec3::new(0.0, 0.0, 1.0),
+            vek::Vec3::new(0.0, 0.0, -1.0),
         ];
 
         assert!(rds.iter().all(|d| d.is_normalized()));
