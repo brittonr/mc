@@ -1,12 +1,13 @@
-use std::collections::BTreeMap;
-
 use heck::ToPascalCase;
-use proc_macro2::TokenStream;
-use quote::quote;
-use serde::Deserialize;
-use valence_build_utils::{ident, rerun_if_changed};
 
-#[derive(Deserialize)]
+type AttributeMap = std::collections::BTreeMap<String, EntityAttribute>;
+type TokenStream = proc_macro2::TokenStream;
+
+const ADD_OPERATION_ID: u8 = 0;
+const MULTIPLY_BASE_OPERATION_ID: u8 = 1;
+const MULTIPLY_TOTAL_OPERATION_ID: u8 = 2;
+
+#[derive(serde::Deserialize)]
 struct EntityAttribute {
     id: u8,
     default_value: f64,
@@ -16,69 +17,160 @@ struct EntityAttribute {
     max_value: f64,
 }
 
+struct AttributeCode {
+    variants: TokenStream,
+    get_id_arms: TokenStream,
+    from_id_arms: TokenStream,
+    name_arms: TokenStream,
+    default_value_arms: TokenStream,
+    translation_key_arms: TokenStream,
+    tracked_arms: TokenStream,
+    min_value_arms: TokenStream,
+    max_value_arms: TokenStream,
+}
+
 pub(crate) fn build() -> anyhow::Result<TokenStream> {
-    rerun_if_changed(["extracted/attributes.json"]);
-
-    let entity_attributes: BTreeMap<String, EntityAttribute> =
+    valence_build_utils::rerun_if_changed(["extracted/attributes.json"]);
+    let attributes: AttributeMap =
         serde_json::from_str(include_str!("../extracted/attributes.json"))?;
+    debug_assert!(
+        !attributes.is_empty(),
+        "generated attribute list is non-empty"
+    );
+    Ok(output(attribute_code(&attributes)))
+}
 
-    let mut entity_attribute_enum = TokenStream::new();
-    let mut entity_attribute_get_id = TokenStream::new();
-    let mut entity_attribute_from_id = TokenStream::new();
-    let mut entity_attribute_name = TokenStream::new();
-    let mut entity_attribute_default_value = TokenStream::new();
-    let mut entity_attribute_translation_key = TokenStream::new();
-    let mut entity_attribute_tracked = TokenStream::new();
-    let mut entity_attribute_min_value = TokenStream::new();
-    let mut entity_attribute_max_value = TokenStream::new();
-
-    for (name, attribute) in entity_attributes {
-        let key = ident(name.to_pascal_case());
-        let id = attribute.id;
-        let default_value = attribute.default_value;
-        let translation_key = attribute.translation_key;
-        let tracked = attribute.tracked;
-        let min_value = attribute.min_value;
-        let max_value = attribute.max_value;
-
-        entity_attribute_enum.extend([quote! {
-            #key,
-        }]);
-
-        entity_attribute_get_id.extend([quote! {
-            EntityAttribute::#key => #id,
-        }]);
-
-        entity_attribute_from_id.extend([quote! {
-            #id => Some(EntityAttribute::#key),
-        }]);
-
-        entity_attribute_name.extend([quote! {
-            EntityAttribute::#key => #name,
-        }]);
-
-        entity_attribute_default_value.extend([quote! {
-            EntityAttribute::#key => #default_value,
-        }]);
-
-        entity_attribute_translation_key.extend([quote! {
-            EntityAttribute::#key => #translation_key,
-        }]);
-
-        entity_attribute_tracked.extend([quote! {
-            EntityAttribute::#key => #tracked,
-        }]);
-
-        entity_attribute_min_value.extend([quote! {
-            EntityAttribute::#key => #min_value,
-        }]);
-
-        entity_attribute_max_value.extend([quote! {
-            EntityAttribute::#key => #max_value,
-        }]);
+fn attribute_code(attributes: &AttributeMap) -> AttributeCode {
+    debug_assert!(
+        !attributes.is_empty(),
+        "generated attribute list is non-empty"
+    );
+    AttributeCode {
+        variants: variants(attributes),
+        get_id_arms: get_id_arms(attributes),
+        from_id_arms: from_id_arms(attributes),
+        name_arms: name_arms(attributes),
+        default_value_arms: default_value_arms(attributes),
+        translation_key_arms: translation_key_arms(attributes),
+        tracked_arms: tracked_arms(attributes),
+        min_value_arms: min_value_arms(attributes),
+        max_value_arms: max_value_arms(attributes),
     }
+}
 
-    Ok(quote!(
+fn variants(attributes: &AttributeMap) -> TokenStream {
+    attributes
+        .keys()
+        .map(|name| {
+            let key = attribute_key(name);
+            quote::quote! { #key, }
+        })
+        .collect()
+}
+
+fn get_id_arms(attributes: &AttributeMap) -> TokenStream {
+    attributes
+        .iter()
+        .map(|(name, attribute)| {
+            let key = attribute_key(name);
+            let id = attribute.id;
+            quote::quote! { EntityAttribute::#key => #id, }
+        })
+        .collect()
+}
+
+fn from_id_arms(attributes: &AttributeMap) -> TokenStream {
+    attributes
+        .iter()
+        .map(|(name, attribute)| {
+            let key = attribute_key(name);
+            let id = attribute.id;
+            quote::quote! { #id => Some(EntityAttribute::#key), }
+        })
+        .collect()
+}
+
+fn name_arms(attributes: &AttributeMap) -> TokenStream {
+    attributes
+        .keys()
+        .map(|name| {
+            let key = attribute_key(name);
+            quote::quote! { EntityAttribute::#key => #name, }
+        })
+        .collect()
+}
+
+fn default_value_arms(attributes: &AttributeMap) -> TokenStream {
+    attributes
+        .iter()
+        .map(|(name, attribute)| {
+            let key = attribute_key(name);
+            let default_value = attribute.default_value;
+            quote::quote! { EntityAttribute::#key => #default_value, }
+        })
+        .collect()
+}
+
+fn translation_key_arms(attributes: &AttributeMap) -> TokenStream {
+    attributes
+        .iter()
+        .map(|(name, attribute)| {
+            let key = attribute_key(name);
+            let translation_key = &attribute.translation_key;
+            quote::quote! { EntityAttribute::#key => #translation_key, }
+        })
+        .collect()
+}
+
+fn tracked_arms(attributes: &AttributeMap) -> TokenStream {
+    attributes
+        .iter()
+        .map(|(name, attribute)| {
+            let key = attribute_key(name);
+            let is_tracked = attribute.tracked;
+            quote::quote! { EntityAttribute::#key => #is_tracked, }
+        })
+        .collect()
+}
+
+fn min_value_arms(attributes: &AttributeMap) -> TokenStream {
+    attributes
+        .iter()
+        .map(|(name, attribute)| {
+            let key = attribute_key(name);
+            let min_value = attribute.min_value;
+            quote::quote! { EntityAttribute::#key => #min_value, }
+        })
+        .collect()
+}
+
+fn max_value_arms(attributes: &AttributeMap) -> TokenStream {
+    attributes
+        .iter()
+        .map(|(name, attribute)| {
+            let key = attribute_key(name);
+            let max_value = attribute.max_value;
+            quote::quote! { EntityAttribute::#key => #max_value, }
+        })
+        .collect()
+}
+
+fn output(code: AttributeCode) -> TokenStream {
+    debug_assert!(
+        !code.variants.is_empty(),
+        "attribute variants are non-empty"
+    );
+    let variants = code.variants;
+    let get_id_arms = code.get_id_arms;
+    let from_id_arms = code.from_id_arms;
+    let name_arms = code.name_arms;
+    let default_value_arms = code.default_value_arms;
+    let translation_key_arms = code.translation_key_arms;
+    let tracked_arms = code.tracked_arms;
+    let min_value_arms = code.min_value_arms;
+    let max_value_arms = code.max_value_arms;
+
+    quote::quote! {
         #[doc = "An attribute modifier operation."]
         #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
         pub enum EntityAttributeOperation {
@@ -94,9 +186,9 @@ pub(crate) fn build() -> anyhow::Result<TokenStream> {
             #[doc = "Converts from a raw [`u8`]."]
             pub fn from_raw(raw: u8) -> Option<Self> {
                 match raw {
-                    0 => Some(Self::Add),
-                    1 => Some(Self::MultiplyBase),
-                    2 => Some(Self::MultiplyTotal),
+                    #ADD_OPERATION_ID => Some(Self::Add),
+                    #MULTIPLY_BASE_OPERATION_ID => Some(Self::MultiplyBase),
+                    #MULTIPLY_TOTAL_OPERATION_ID => Some(Self::MultiplyTotal),
                     _ => None,
                 }
             }
@@ -104,67 +196,31 @@ pub(crate) fn build() -> anyhow::Result<TokenStream> {
             #[doc = "Converts to a raw [`u8`]."]
             pub fn to_raw(self) -> u8 {
                 match self {
-                    Self::Add => 0,
-                    Self::MultiplyBase => 1,
-                    Self::MultiplyTotal => 2,
+                    Self::Add => #ADD_OPERATION_ID,
+                    Self::MultiplyBase => #MULTIPLY_BASE_OPERATION_ID,
+                    Self::MultiplyTotal => #MULTIPLY_TOTAL_OPERATION_ID,
                 }
             }
         }
 
         #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
-        pub enum EntityAttribute {
-            #entity_attribute_enum
-        }
+        pub enum EntityAttribute { #variants }
 
         impl EntityAttribute {
-            pub fn get_id(self) -> u8 {
-                match self {
-                    #entity_attribute_get_id
-                }
-            }
-
+            pub fn get_id(self) -> u8 { match self { #get_id_arms } }
             pub fn from_id(id: u8) -> Option<Self> {
-                match id {
-                    #entity_attribute_from_id
-                    _ => None,
-                }
+                match id { #from_id_arms _ => None }
             }
-
-            pub fn name(self) -> &'static str {
-                match self {
-                    #entity_attribute_name
-                }
-            }
-
-            pub fn default_value(self) -> f64 {
-                match self {
-                    #entity_attribute_default_value
-                }
-            }
-
-            pub fn translation_key(self) -> &'static str {
-                match self {
-                    #entity_attribute_translation_key
-                }
-            }
-
-            pub fn tracked(self) -> bool {
-                match self {
-                    #entity_attribute_tracked
-                }
-            }
-
-            pub fn min_value(self) -> f64 {
-                match self {
-                    #entity_attribute_min_value
-                }
-            }
-
-            pub fn max_value(self) -> f64 {
-                match self {
-                    #entity_attribute_max_value
-                }
-            }
+            pub fn name(self) -> &'static str { match self { #name_arms } }
+            pub fn default_value(self) -> f64 { match self { #default_value_arms } }
+            pub fn translation_key(self) -> &'static str { match self { #translation_key_arms } }
+            pub fn tracked(self) -> bool { match self { #tracked_arms } }
+            pub fn min_value(self) -> f64 { match self { #min_value_arms } }
+            pub fn max_value(self) -> f64 { match self { #max_value_arms } }
         }
-    ))
+    }
+}
+
+fn attribute_key(name: &str) -> proc_macro2::Ident {
+    valence_build_utils::ident(name.to_pascal_case())
 }

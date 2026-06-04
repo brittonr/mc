@@ -1,29 +1,28 @@
-#![allow(clippy::all)] // TODO: block build script creates many warnings.
-
-use std::fmt;
-use std::fmt::Display;
-use std::iter::FusedIterator;
-
-use valence_ident::{ident, Ident};
-
-use crate::item::ItemKind;
+// Generated block bindings intentionally suppress broad Clippy noise from the
+// included data table.
+#![allow(clippy::all)]
 
 include!(concat!(env!("OUT_DIR"), "/block.rs"));
 
-impl fmt::Debug for BlockState {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl std::fmt::Debug for BlockState {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         fmt_block_state(*self, f)
     }
 }
 
-impl Display for BlockState {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl std::fmt::Display for BlockState {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         fmt_block_state(*self, f)
     }
 }
 
-fn fmt_block_state(bs: BlockState, f: &mut fmt::Formatter) -> fmt::Result {
+fn fmt_block_state(bs: BlockState, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    debug_assert!(
+        BlockState::from_raw(bs.to_raw()).is_some(),
+        "block state is valid"
+    );
     let kind = bs.to_kind();
+    debug_assert!(!kind.to_str().is_empty(), "block kind names are non-empty");
 
     write!(f, "{}", kind.to_str())?;
 
@@ -34,13 +33,17 @@ fn fmt_block_state(bs: BlockState, f: &mut fmt::Formatter) -> fmt::Result {
         for &p in kind.props() {
             struct KeyVal<'a>(&'a str, &'a str);
 
-            impl<'a> fmt::Debug for KeyVal<'a> {
-                fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            impl<'a> std::fmt::Debug for KeyVal<'a> {
+                fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
                     write!(f, "{}={}", self.0, self.1)
                 }
             }
 
-            list.entry(&KeyVal(p.to_str(), bs.get(p).unwrap().to_str()));
+            let Some(prop_value) = bs.get(p) else {
+                debug_assert!(false, "listed block property has a value");
+                continue;
+            };
+            list.entry(&KeyVal(p.to_str(), prop_value.to_str()));
         }
         list.finish()
     } else {
@@ -58,7 +61,12 @@ mod tests {
             let block = kind.to_state();
 
             for &prop in kind.props() {
-                let new_block = block.set(prop, block.get(prop).unwrap());
+                let value = block.get(prop);
+                assert!(value.is_some(), "listed property has a value");
+                let Some(value) = value else {
+                    continue;
+                };
+                let new_block = block.set(prop, value);
                 assert_eq!(new_block, block);
             }
         }
