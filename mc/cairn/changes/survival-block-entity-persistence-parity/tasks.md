@@ -1,0 +1,9 @@
+# Tasks
+
+- [ ] [serial] Define the bounded `survival-block-entity-persistence-parity` evidence contract, sign payload, scenario row, and explicit non-claims. r[mc_compatibility.survival_block_entity_persistence_parity.contract]
+- [ ] [depends:contract] Extend the survival row parity checker with positive and negative fixtures for valid paired sign evidence, missing metrics, mismatched text/position/kind, stale revisions, unknown child revisions, Valence-only evidence, and unknown rows. r[mc_compatibility.survival_block_entity_persistence_parity.checker]
+- [ ] [depends:checker] Add the isolated `survival-block-entity-persistence-parity` runner/client rail without changing existing graceful world-persistence, crash-recovery, survival, combat, protocol, or CTF scenarios. r[mc_compatibility.survival_block_entity_persistence_parity.rail]
+- [ ] [depends:rail] Add or reuse Paper/reference and Valence fixture instrumentation for the same sign block entity payload and normalized server-side milestones. r[mc_compatibility.survival_block_entity_persistence_parity.fixtures]
+- [ ] [depends:fixtures] Produce reviewable paired Paper/reference and Valence receipts/logs under `docs/evidence/`, normalized KV comparator inputs, and BLAKE3 manifests with clean child-revision metadata or record a bounded blocker if live sign persistence cannot be completed safely. r[mc_compatibility.survival_block_entity_persistence_parity.receipts]
+- [ ] [depends:receipts] Promote only the configured sign block-entity row in the acceptance matrix/current bundle and keep all-block-entity plus broad survival/production claims explicit non-claims. r[mc_compatibility.survival_block_entity_persistence_parity.promotion]
+- [ ] [depends:promotion] Run checker, scenario manifest, evidence manifest, task-evidence, Cairn gates, and Cairn validation with output copied under `docs/evidence/`. r[mc_compatibility.survival_block_entity_persistence_parity.validation]
