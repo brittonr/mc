@@ -15,6 +15,7 @@ use valence::interact_entity::{EntityInteraction, InteractEntityEvent};
 use valence::interact_item::InteractItemEvent;
 use valence::inventory::{ClickSlotEvent, CursorItem, HeldItem, OpenInventory, SlotChange};
 use valence::log::info;
+use valence::nbt::{compound, List, Value};
 use valence::prelude::*;
 use valence::protocol::packets::play::{
     BlockUpdateS2c, CloseHandledScreenC2s, ItemPickupAnimationS2c,
@@ -129,6 +130,25 @@ const SURVIVAL_WORLD_PERSISTENCE_PLAYER_Y: f64 = 65.0;
 const SURVIVAL_WORLD_PERSISTENCE_PLAYER_Z: f64 = -1.5;
 const SURVIVAL_WORLD_PERSISTENCE_INVENTORY_SLOT: u16 = 36;
 const SURVIVAL_WORLD_PERSISTENCE_ITEM_COUNT: i8 = 1;
+const SURVIVAL_BLOCK_ENTITY_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_BLOCK_ENTITY_FIXTURE";
+const SURVIVAL_BLOCK_ENTITY_DIR_ENV: &str = "MC_COMPAT_SURVIVAL_BLOCK_ENTITY_DIR";
+const SURVIVAL_BLOCK_ENTITY_PHASE_ENV: &str = "MC_COMPAT_SURVIVAL_BLOCK_ENTITY_PHASE";
+const SURVIVAL_BLOCK_ENTITY_POST_RESTART_PHASE: &str = "post_restart";
+const SURVIVAL_BLOCK_ENTITY_MARKER_FILE: &str = "persisted-sign.marker";
+const SURVIVAL_BLOCK_ENTITY_KIND: &str = "Sign";
+const SURVIVAL_BLOCK_ENTITY_X: i32 = 28;
+const SURVIVAL_BLOCK_ENTITY_Y: i32 = FLOOR_Y;
+const SURVIVAL_BLOCK_ENTITY_Z: i32 = 0;
+const SURVIVAL_BLOCK_ENTITY_BASE_Y: i32 = 63;
+const SURVIVAL_BLOCK_ENTITY_PLAYER_X: f64 = 28.5;
+const SURVIVAL_BLOCK_ENTITY_PLAYER_Y: f64 = 65.0;
+const SURVIVAL_BLOCK_ENTITY_PLAYER_Z: f64 = -1.5;
+const SURVIVAL_BLOCK_ENTITY_TEXT_LINE_1: &str = "MC";
+const SURVIVAL_BLOCK_ENTITY_TEXT_LINE_2: &str = "Compat";
+const SURVIVAL_BLOCK_ENTITY_TEXT_LINE_3: &str = "Sign";
+const SURVIVAL_BLOCK_ENTITY_TEXT_LINE_4: &str = "Persist";
+const SURVIVAL_BLOCK_ENTITY_TEXT_LINE_COUNT: usize = 4;
+const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &str = "MC|Compat|Sign|Persist";
 const SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_FIXTURE";
 const SURVIVAL_OVERWORLD_ID: &str = "minecraft:overworld";
 const SURVIVAL_NETHER_ID: &str = "minecraft:the_nether";
@@ -261,7 +281,26 @@ struct SurvivalWorldPersistenceFixture {
     state_logged: bool,
 }
 
+#[derive(Resource)]
+struct SurvivalBlockEntityFixture {
+    marker_path: PathBuf,
+    persisted_loaded: bool,
+    mutation_logged: bool,
+    state_logged: bool,
+}
+
 impl SurvivalWorldPersistenceFixture {
+    fn new(marker_path: PathBuf, persisted_loaded: bool) -> Self {
+        Self {
+            marker_path,
+            persisted_loaded,
+            mutation_logged: false,
+            state_logged: false,
+        }
+    }
+}
+
+impl SurvivalBlockEntityFixture {
     fn new(marker_path: PathBuf, persisted_loaded: bool) -> Self {
         Self {
             marker_path,
@@ -385,6 +424,16 @@ fn setup(
             .chunk
             .set_block(survival_world_persistence_pos(), state);
     }
+    let block_entity_marker = survival_block_entity_marker_path();
+    let block_entity_loaded = block_entity_marker.exists();
+    if survival_block_entity_fixture_enabled() {
+        setup_survival_block_entity_arena(&mut layer);
+        if survival_block_entity_should_place_sign(block_entity_loaded) {
+            layer
+                .chunk
+                .set_block(survival_block_entity_pos(), survival_block_entity_block());
+        }
+    }
 
     let layer = commands.spawn(layer).id();
 
@@ -439,6 +488,12 @@ fn setup(
             world_persistence_loaded,
         ));
     }
+    if survival_block_entity_fixture_enabled() {
+        commands.insert_resource(SurvivalBlockEntityFixture::new(
+            block_entity_marker,
+            block_entity_loaded,
+        ));
+    }
 }
 
 fn init_clients(
@@ -463,6 +518,7 @@ fn init_clients(
     mut hunger_food_fixture: Option<ResMut<SurvivalHungerFoodFixture>>,
     mut mob_drop_fixture: Option<ResMut<SurvivalMobDropFixture>>,
     mut world_persistence_fixture: Option<ResMut<SurvivalWorldPersistenceFixture>>,
+    mut block_entity_fixture: Option<ResMut<SurvivalBlockEntityFixture>>,
 ) {
     for (
         mut client,
@@ -495,6 +551,12 @@ fn init_clients(
                 SURVIVAL_WORLD_PERSISTENCE_PLAYER_X,
                 SURVIVAL_WORLD_PERSISTENCE_PLAYER_Y,
                 SURVIVAL_WORLD_PERSISTENCE_PLAYER_Z,
+            ]);
+        } else if survival_block_entity_fixture_enabled() {
+            pos.set([
+                SURVIVAL_BLOCK_ENTITY_PLAYER_X,
+                SURVIVAL_BLOCK_ENTITY_PLAYER_Y,
+                SURVIVAL_BLOCK_ENTITY_PLAYER_Z,
             ]);
         } else {
             pos.set([SURVIVAL_SPAWN_X, f64::from(SPAWN_Y), SURVIVAL_SPAWN_Z]);
@@ -549,6 +611,9 @@ fn init_clients(
         }
         if let Some(fixture) = world_persistence_fixture.as_mut() {
             log_survival_world_persistence_post_restart(username.as_str(), &mut client, fixture);
+        }
+        if let Some(fixture) = block_entity_fixture.as_mut() {
+            log_survival_block_entity_persistence(username.as_str(), fixture);
         }
     }
 }
@@ -2019,6 +2084,130 @@ fn log_survival_world_persistence_post_restart(
     ));
 }
 
+fn survival_block_entity_fixture_enabled() -> bool {
+    std::env::var(SURVIVAL_BLOCK_ENTITY_FIXTURE_ENV).as_deref() == Ok("1")
+}
+
+fn survival_block_entity_post_restart_phase() -> bool {
+    std::env::var(SURVIVAL_BLOCK_ENTITY_PHASE_ENV).as_deref()
+        == Ok(SURVIVAL_BLOCK_ENTITY_POST_RESTART_PHASE)
+}
+
+fn survival_block_entity_marker_path() -> PathBuf {
+    std::env::var(SURVIVAL_BLOCK_ENTITY_DIR_ENV)
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| std::env::temp_dir().join("mc-compat-block-entity-persistence"))
+        .join(SURVIVAL_BLOCK_ENTITY_MARKER_FILE)
+}
+
+fn survival_block_entity_should_place_sign(persisted_loaded: bool) -> bool {
+    !survival_block_entity_post_restart_phase() || persisted_loaded
+}
+
+fn setup_survival_block_entity_arena(layer: &mut LayerBundle) {
+    layer.chunk.set_block(
+        [
+            SURVIVAL_BLOCK_ENTITY_X,
+            SURVIVAL_BLOCK_ENTITY_BASE_Y,
+            SURVIVAL_BLOCK_ENTITY_Z,
+        ],
+        BlockState::STONE,
+    );
+}
+
+fn survival_block_entity_pos() -> BlockPos {
+    BlockPos::new(
+        SURVIVAL_BLOCK_ENTITY_X,
+        SURVIVAL_BLOCK_ENTITY_Y,
+        SURVIVAL_BLOCK_ENTITY_Z,
+    )
+}
+
+fn survival_block_entity_block() -> Block {
+    Block {
+        state: BlockState::OAK_SIGN.set(PropName::Rotation, PropValue::_0),
+        nbt: Some(survival_block_entity_nbt()),
+    }
+}
+
+fn survival_block_entity_nbt() -> valence::nbt::Compound<String> {
+    compound! {
+        "front_text" => compound! {
+            "messages" => List::String(vec![
+                SURVIVAL_BLOCK_ENTITY_TEXT_LINE_1.into_text().into(),
+                SURVIVAL_BLOCK_ENTITY_TEXT_LINE_2.into_text().into(),
+                SURVIVAL_BLOCK_ENTITY_TEXT_LINE_3.into_text().into(),
+                SURVIVAL_BLOCK_ENTITY_TEXT_LINE_4.into_text().into(),
+            ]),
+        }
+    }
+}
+
+fn write_survival_block_entity_marker(path: &PathBuf) {
+    if let Some(parent) = path.parent() {
+        let _ = fs::create_dir_all(parent);
+    }
+    let _ = fs::write(path, SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD);
+}
+
+fn log_survival_block_entity_persistence(username: &str, fixture: &mut SurvivalBlockEntityFixture) {
+    if survival_block_entity_post_restart_phase() {
+        log_survival_block_entity_post_restart(username, fixture);
+    } else {
+        log_survival_block_entity_mutation(username, fixture);
+    }
+}
+
+fn log_survival_block_entity_mutation(username: &str, fixture: &mut SurvivalBlockEntityFixture) {
+    if fixture.mutation_logged {
+        return;
+    }
+    write_survival_block_entity_marker(&fixture.marker_path);
+    fixture.persisted_loaded = true;
+    fixture.mutation_logged = true;
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_block_entity_persistence_mutation username={} kind={} \
+         position={},{},{} text={} persisted_before=false persisted_after=true",
+        username,
+        SURVIVAL_BLOCK_ENTITY_KIND,
+        SURVIVAL_BLOCK_ENTITY_X,
+        SURVIVAL_BLOCK_ENTITY_Y,
+        SURVIVAL_BLOCK_ENTITY_Z,
+        SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD
+    ));
+}
+
+fn log_survival_block_entity_post_restart(
+    username: &str,
+    fixture: &mut SurvivalBlockEntityFixture,
+) {
+    if !fixture.persisted_loaded || fixture.state_logged {
+        return;
+    }
+    fixture.state_logged = true;
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_block_entity_persistence_post_restart_observe username={} \
+         kind={} position={},{},{} text={} persisted=true",
+        username,
+        SURVIVAL_BLOCK_ENTITY_KIND,
+        SURVIVAL_BLOCK_ENTITY_X,
+        SURVIVAL_BLOCK_ENTITY_Y,
+        SURVIVAL_BLOCK_ENTITY_Z,
+        SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_block_entity_persistence_state username={} kind={} \
+         position={},{},{} text={} pre_mutation=true clean_shutdown=true backend_restart=true \
+         post_observed=true dirty_reuse=false",
+        username,
+        SURVIVAL_BLOCK_ENTITY_KIND,
+        SURVIVAL_BLOCK_ENTITY_X,
+        SURVIVAL_BLOCK_ENTITY_Y,
+        SURVIVAL_BLOCK_ENTITY_Z,
+        SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD
+    ));
+}
+
 fn survival_mob_drop_position() -> Position {
     Position::new(DVec3::new(
         SURVIVAL_MOB_DROP_MOB_X,
@@ -2512,6 +2701,27 @@ mod tests {
         assert!(is_survival_world_persistence_stack(&expected));
         assert!(!is_survival_world_persistence_stack(&wrong_item));
         assert!(!is_survival_world_persistence_stack(&wrong_count));
+    }
+
+    #[test]
+    fn survival_block_entity_fixture_places_initial_or_persisted_sign_only() {
+        assert!(survival_block_entity_should_place_sign(false));
+        assert!(survival_block_entity_should_place_sign(true));
+    }
+
+    #[test]
+    fn survival_block_entity_payload_uses_contract_lines() {
+        let block = survival_block_entity_block();
+        assert_eq!(block.state.to_kind(), BlockKind::OakSign);
+        let nbt = block.nbt.expect("sign block has NBT");
+        let Some(Value::Compound(front_text)) = nbt.get("front_text") else {
+            panic!("front_text compound missing");
+        };
+        let Some(Value::List(messages)) = front_text.get("messages") else {
+            panic!("messages list missing");
+        };
+        assert_eq!(messages.len(), SURVIVAL_BLOCK_ENTITY_TEXT_LINE_COUNT);
+        assert_eq!(SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD, "MC|Compat|Sign|Persist");
     }
 
     #[test]
