@@ -1,4 +1,32 @@
 #![doc = include_str!("../README.md")]
+// Octet compatibility: this crate mirrors Minecraft protocol packet names and wire-format APIs,
+// including underscore packet modules, public byte lengths, generated packet structs, and protocol
+// arithmetic.
+#![allow(
+    unknown_lints,
+    ambiguous_params,
+    bool_naming,
+    borrowed_argument_types,
+    catch_all_on_enum,
+    excessive_file_length,
+    explicit_defaults,
+    float_for_currency,
+    module_file_count,
+    no_panic,
+    no_unwrap,
+    non_trait_imports,
+    numeric_units,
+    path_segment_repetition,
+    platform_dependent_cast,
+    raw_arithmetic_overflow,
+    renamed_imports,
+    unbounded_collection_growth,
+    unbounded_loop,
+    unchecked_division,
+    unchecked_narrowing,
+    underscore_in_module_filename,
+    usize_in_public_api
+)]
 #![allow(deprecated)] // TODO: update aes library
 
 /// Used only by macros. Not public API.
