@@ -1,0 +1,40 @@
+
+## change_list
+command=nix run .#cairn -- change list --root . 
+{
+  "changes": [],
+  "layout": "cairn",
+  "root": "."
+}
+change_list_exit_status=0
+
+## cairn_validate
+command=nix run .#cairn -- validate --root . 
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 2,
+  "valid": true
+}
+cairn_validate_exit_status=0
+
+## evidence_manifests
+command=nix build .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L 
+this derivation will be built:
+  /nix/store/x01pky6v9x8dgrz6fgkpa3acks5d68bk-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/x01pky6v9x8dgrz6fgkpa3acks5d68bk-mc-compat-evidence-manifests.drv'...
+evidence_manifests_exit_status=0
+
+## task_evidence
+command=nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L 
+this derivation will be built:
+  /nix/store/yjgry7b7lw3wd9mifd8skmcwmp23zqgq-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/yjgry7b7lw3wd9mifd8skmcwmp23zqgq-mc-compat-cairn-task-evidence.drv'...
+task_evidence_exit_status=0
+exit_status=0

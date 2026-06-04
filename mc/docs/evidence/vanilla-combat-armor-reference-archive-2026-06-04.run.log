@@ -1,0 +1,216 @@
+
+## sync_dry_run
+command=nix run .#cairn -- sync vanilla-combat-armor-reference-parity --root . 
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/vanilla-combat-armor-reference-parity/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/vanilla-combat-armor-reference-parity/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "vanilla-combat-armor-reference-parity",
+  "delta_specs": [
+    "./cairn/changes/vanilla-combat-armor-reference-parity/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "652dc07c1f829a229eb42831aa4405f7340d3c4fbcea6c2548914f5f73305496",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "893dbb949d3a5567a5bc667b34d4f64d533c90a95070199345be6c449db23b90",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "4dce10fce0070b152437a588fdbad82b8a7906cabe2253cdc975e80811972f7a"
+}
+sync_dry_run_exit_status=0
+
+## sync_execute
+command=nix run .#cairn -- sync vanilla-combat-armor-reference-parity --root . --execute 
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/vanilla-combat-armor-reference-parity/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/vanilla-combat-armor-reference-parity/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "vanilla-combat-armor-reference-parity",
+  "delta_specs": [
+    "./cairn/changes/vanilla-combat-armor-reference-parity/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "652dc07c1f829a229eb42831aa4405f7340d3c4fbcea6c2548914f5f73305496",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "61564fa9e638b8c835e2e8260055b6cb8f4a632276c9c977ab4a27350bef0952",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a272e7d237f87c50ed43286b1d32db57bb482708195f49654560fecd0a5d0209"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "61564fa9e638b8c835e2e8260055b6cb8f4a632276c9c977ab4a27350bef0952",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a272e7d237f87c50ed43286b1d32db57bb482708195f49654560fecd0a5d0209"
+    },
+    "kind": "sync",
+    "manifest_hash": "066b4ddb4b963e9ce2a7463d3f89d33350cb6e5bef2879a96f8b3d714c530edb"
+  },
+  "plan_hash": "321519efdcb7aa1e1e9867ecc3658deb424ccb574910889b7f2e9e8aa64c5585",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "b36573aa95952ca74c95f9b0ce76c76385241b60d0f6a88fdc52c75c13928fdd"
+}
+sync_execute_exit_status=0
+
+## validate_after_sync
+command=nix run .#cairn -- validate --root . 
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+validate_after_sync_exit_status=0
+
+## archive_dry_run
+command=nix run .#cairn -- archive vanilla-combat-armor-reference-parity --root . 
+{
+  "actions": [
+    {
+      "description": "move active change to archive: vanilla-combat-armor-reference-parity",
+      "kind": "archive_change",
+      "path": "./cairn/changes/vanilla-combat-armor-reference-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "vanilla-combat-armor-reference-parity",
+  "dry_run": true,
+  "input_hash": "652dc07c1f829a229eb42831aa4405f7340d3c4fbcea6c2548914f5f73305496",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "db53e500a272e383ae3b546f79729c9c23eec31caa30edbbb314b6a81b274e7b",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "5fe448e6eea07281c5f3a38c38bdf6f332cd0ec4bdf684cfce106c172b2b0574"
+}
+archive_dry_run_exit_status=0
+
+## archive_execute
+command=env CAIRN_ARCHIVE_DATE=2026-06-04 nix run .#cairn -- archive vanilla-combat-armor-reference-parity --root . --execute 
+{
+  "actions": [
+    {
+      "description": "move active change to archive: vanilla-combat-armor-reference-parity",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-04-vanilla-combat-armor-reference-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "vanilla-combat-armor-reference-parity",
+  "dry_run": false,
+  "input_hash": "652dc07c1f829a229eb42831aa4405f7340d3c4fbcea6c2548914f5f73305496",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "2c78af88a0bcdc28a7f6125d2cfa73485164431f82e9c646e757924041bae19e",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-04-vanilla-combat-armor-reference-parity/design.md"
+        },
+        {
+          "content_hash": "2d0ca60be6c02607bf41225441a05ed510e1af71567002d4d2c09c042cc1d20d",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-04-vanilla-combat-armor-reference-parity/proposal.md"
+        },
+        {
+          "content_hash": "6247804c5d05cc01fb25b9c90b70d75ce2510f996567c564d2571ca61a2450ae",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-04-vanilla-combat-armor-reference-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "426e199d7259d4e9cfdd76ca0aa7e875cbd6f9b1a2f533d53635c75e05ea8a2b",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-04-vanilla-combat-armor-reference-parity/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/vanilla-combat-armor-reference-parity"
+        }
+      ],
+      "manifest_hash": "8bbd2d221e645eb296569f169da56fac34f96c06b63ab1075109608b74e6f257"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "2c78af88a0bcdc28a7f6125d2cfa73485164431f82e9c646e757924041bae19e",
+          "exists": true,
+          "path": "./cairn/changes/vanilla-combat-armor-reference-parity/design.md"
+        },
+        {
+          "content_hash": "2d0ca60be6c02607bf41225441a05ed510e1af71567002d4d2c09c042cc1d20d",
+          "exists": true,
+          "path": "./cairn/changes/vanilla-combat-armor-reference-parity/proposal.md"
+        },
+        {
+          "content_hash": "6247804c5d05cc01fb25b9c90b70d75ce2510f996567c564d2571ca61a2450ae",
+          "exists": true,
+          "path": "./cairn/changes/vanilla-combat-armor-reference-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "426e199d7259d4e9cfdd76ca0aa7e875cbd6f9b1a2f533d53635c75e05ea8a2b",
+          "exists": true,
+          "path": "./cairn/changes/vanilla-combat-armor-reference-parity/tasks.md"
+        }
+      ],
+      "manifest_hash": "e7463eafd5a20fe46f07932e9acd4e1af6993b6df828320506e69d7c421366ff"
+    },
+    "kind": "archive",
+    "manifest_hash": "958a6300dedb886027258e241ceb3ee0e733ec80fbb8a87466ec7c63c2af1188"
+  },
+  "plan_hash": "f1f3bcb741b7c0ab1e83e2e67cf02a84480fb3788addb55493463d78310a66b4",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "493b532fbe0f714e90a7b1e540418c793f4163fe68eff1823dfa7eabc1855a31"
+}
+archive_execute_exit_status=0
+
+## validate_after_archive
+command=nix run .#cairn -- validate --root . 
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 2,
+  "valid": true
+}
+validate_after_archive_exit_status=0
+exit_status=0
