@@ -1,0 +1,22 @@
+# survival crash-recovery matrix promotion
+survival_coverage_rustc_exit_status=0
+survival coverage matrix self-test ok: positive and negative fixtures exercised
+survival_coverage_self_test_exit_status=0
+survival coverage matrix check passed: 10 rows validated
+survival_coverage_check_exit_status=0
+acceptance_matrix_rustc_exit_status=0
+acceptance matrix self-test ok: positive and negative fixtures exercised
+acceptance_matrix_self_test_exit_status=0
+acceptance matrix check passed: 38 rows validated
+acceptance_matrix_check_exit_status=0
+current_bundle_rustc_exit_status=0
+current evidence bundle self-test ok: positive and negative fixtures exercised
+current_bundle_self_test_exit_status=0
+current evidence bundle check passed: 38 rows validated
+current_bundle_check_exit_status=0
+scenario_manifest_rustc_exit_status=0
+scenario manifest self-test passed: positive and negative fixtures exercised
+scenario_manifest_self_test_exit_status=0
+scenario manifest check passed: 32 rows validated
+scenario_manifest_check_exit_status=0
+exit_status=0

@@ -1,0 +1,84 @@
+# survival crash-recovery Cairn archive
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-crash-recovery-parity",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-04-survival-crash-recovery-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-crash-recovery-parity",
+  "dry_run": false,
+  "input_hash": "d2b16b7ef5f4ba81e0052482769a3151961d07651c9f651193594ecc55419c89",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "fa1fcfa26c545a4f7dae9fb86cecac4766a5c2c5bf0e87add160b787dbf57b1a",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-04-survival-crash-recovery-parity/design.md"
+        },
+        {
+          "content_hash": "21d234ec0d954dffa1749f7561c4a65228f0a0508ce621d3ff2010f0a0612c21",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-04-survival-crash-recovery-parity/proposal.md"
+        },
+        {
+          "content_hash": "9e388af8d269805bb7208e9426efafbf517855b37d7dda4721087c6fbd80c63b",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-04-survival-crash-recovery-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "386110d658135db97db8cb445305764d5711c6b1e18b5e3a4b32bd2cea776ef4",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-04-survival-crash-recovery-parity/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-crash-recovery-parity"
+        }
+      ],
+      "manifest_hash": "e269d75d572a5aed2e95f82039a4d4abf434e9ebe11770090230ce8ea8cc3baa"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "fa1fcfa26c545a4f7dae9fb86cecac4766a5c2c5bf0e87add160b787dbf57b1a",
+          "exists": true,
+          "path": "./cairn/changes/survival-crash-recovery-parity/design.md"
+        },
+        {
+          "content_hash": "21d234ec0d954dffa1749f7561c4a65228f0a0508ce621d3ff2010f0a0612c21",
+          "exists": true,
+          "path": "./cairn/changes/survival-crash-recovery-parity/proposal.md"
+        },
+        {
+          "content_hash": "9e388af8d269805bb7208e9426efafbf517855b37d7dda4721087c6fbd80c63b",
+          "exists": true,
+          "path": "./cairn/changes/survival-crash-recovery-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "386110d658135db97db8cb445305764d5711c6b1e18b5e3a4b32bd2cea776ef4",
+          "exists": true,
+          "path": "./cairn/changes/survival-crash-recovery-parity/tasks.md"
+        }
+      ],
+      "manifest_hash": "280678a73f30ab902f21419061813bc7321f191ae8e198d79e426b477ddb1dcb"
+    },
+    "kind": "archive",
+    "manifest_hash": "d05e282d4737d450c35dee2968c21d46c4868ba8ac6925e3fd20ac3ff5b3199a"
+  },
+  "plan_hash": "d6da4b486ebc7c7941cfce01be39b03b1a7f2eb1b7f92e39ad411fbc7c909583",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "d9cf26cc8d566544943b7038771113c0b8365879dfd6f832888d154f54189959"
+}
+cairn_archive_exit_status=0
+archive_dir_exists_exit_status=0
+active_change_removed_exit_status=0
+exit_status=0

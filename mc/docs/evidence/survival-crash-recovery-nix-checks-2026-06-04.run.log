@@ -1,0 +1,12 @@
+# survival crash-recovery Nix checks
+this derivation will be built:
+  /nix/store/afw66i2kfrnq5vah88dzd5r5sp9blhlj-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/afw66i2kfrnq5vah88dzd5r5sp9blhlj-mc-compat-scenario-manifest.drv'...
+scenario_manifest_check_exit_status=0
+this derivation will be built:
+  /nix/store/dwdr0lpfghccj2dnp971n6m9sfyncjri-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/dwdr0lpfghccj2dnp971n6m9sfyncjri-mc-compat-evidence-manifests.drv'...
+evidence_manifests_check_exit_status=0
+exit_status=0

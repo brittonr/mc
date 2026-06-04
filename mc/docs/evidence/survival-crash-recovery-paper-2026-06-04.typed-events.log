@@ -1,0 +1,13 @@
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-crash-recovery-parity session=survival-crash-recovery-paper-2026-06-04.receipt seq=1 event=protocol_detected
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-crash-recovery-parity session=survival-crash-recovery-paper-2026-06-04.receipt seq=2 event=join_game
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-crash-recovery-parity session=survival-crash-recovery-paper-2026-06-04.receipt seq=3 event=render_tick
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-crash-recovery-parity session=survival-crash-recovery-paper-2026-06-04.receipt seq=4 event=survival_crash_recovery_mutation_sent
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-crash-recovery-parity session=survival-crash-recovery-paper-2026-06-04.receipt seq=5 event=survival_crash_recovery_pre_crash_update
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-crash-recovery-parity session=survival-crash-recovery-paper-2026-06-04.receipt seq=6 event=survival_crash_recovery_reconnect_sent
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-crash-recovery-parity session=survival-crash-recovery-paper-2026-06-04.receipt seq=7 event=survival_crash_recovery_post_crash_update
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-crash-recovery-parity session=survival-crash-recovery-paper-2026-06-04.receipt seq=8 event=server_username_seen
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-crash-recovery-parity session=survival-crash-recovery-paper-2026-06-04.receipt seq=9 event=server_survival_crash_recovery_mutation
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-crash-recovery-parity session=survival-crash-recovery-paper-2026-06-04.receipt seq=10 event=server_survival_crash_recovery_forced_stop
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-crash-recovery-parity session=survival-crash-recovery-paper-2026-06-04.receipt seq=11 event=server_survival_crash_recovery_backend_restart
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-crash-recovery-parity session=survival-crash-recovery-paper-2026-06-04.receipt seq=12 event=server_survival_crash_recovery_post_crash
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-crash-recovery-parity session=survival-crash-recovery-paper-2026-06-04.receipt seq=13 event=server_survival_crash_recovery_state

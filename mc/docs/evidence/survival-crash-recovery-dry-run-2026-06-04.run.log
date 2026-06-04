@@ -1,0 +1,33 @@
+
+## valence_dry_run
+command=nix run .#mc-compat-smoke -- --dry-run --server-backend valence --scenario survival-crash-recovery-parity --receipt target/survival-crash-recovery-valence-dry-run.json
+[mc-compat] plan: build client, start Valence server, wait for protocol 758, run client under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
++ "git" "-C" "/home/brittonr/git/mc/valence" "worktree" "prune"
+[mc-compat] creating isolated Valence worktree /tmp/valence-compat-758 at 8ad9c85
++ "git" "-C" "/home/brittonr/git/mc/valence" "worktree" "add" "--detach" "/tmp/valence-compat-758" "8ad9c85"
+[mc-compat] starting Valence 8ad9c85 example 'terrain' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-758
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 758
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'survival-crash-recovery-parity' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/survival-crash-recovery-valence-dry-run.json
+valence_dry_run_exit_status=0
+
+## paper_dry_run
+command=nix run .#mc-compat-smoke -- --dry-run --server-backend paper --scenario survival-crash-recovery-parity --receipt target/survival-crash-recovery-paper-dry-run.json
+[mc-compat] plan: build client, start Paper server, wait for protocol 758, run client under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] server start will set EULA=TRUE using recorded user acceptance
+[mc-compat] starting Paper 1.18.2 server on 127.0.0.1:25566 via itzg/minecraft-server:java17 with EULA=TRUE
++ "docker" "run" "-d" "--name" "mc-compat-1-18-2" "-p" "127.0.0.1:25566:25565" "-e" "EULA=TRUE" "-e" "TYPE=PAPER" "-e" "VERSION=1.18.2" "-e" "ONLINE_MODE=FALSE" "-e" "MEMORY=1G" "-e" "VIEW_DISTANCE=2" "-e" "SIMULATION_DISTANCE=2" "-e" "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_FIXTURE=1" "-e" "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_PHASE=initial" "-v" "/home/brittonr/git/mc/target/mc-compat-survival-crash-recovery/paper:/data" "itzg/minecraft-server:java17"
+[mc-compat] probing status 127.0.0.1:25566 expecting protocol 758
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'survival-crash-recovery-parity' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/survival-crash-recovery-paper-dry-run.json
+paper_dry_run_exit_status=0
+exit_status=0

@@ -218,6 +218,24 @@ const SURVIVAL_WORLD_PERSISTENCE_SERVER_POST_NEEDLE: &str =
     "survival_world_persistence_post_restart_observe username=compatbot block=Dirt position=24,64,0 persisted=true";
 const SURVIVAL_WORLD_PERSISTENCE_SERVER_STATE_NEEDLE: &str =
     "survival_world_persistence_state username=compatbot block=Dirt position=24,64,0 pre_mutation=true clean_shutdown=true backend_restart=true post_observed=true dirty_reuse=false";
+const SURVIVAL_CRASH_RECOVERY_CLIENT_MUTATION_NEEDLE: &str =
+    "survival_crash_recovery_mutation_sent block=Dirt position=24,64,0 slot=36";
+const SURVIVAL_CRASH_RECOVERY_CLIENT_PRE_CRASH_NEEDLE: &str =
+    "survival_crash_recovery_pre_crash_update block=Dirt position=24,64,0";
+const SURVIVAL_CRASH_RECOVERY_CLIENT_RECONNECT_NEEDLE: &str =
+    "survival_crash_recovery_reconnect_sent session=crash_recovery";
+const SURVIVAL_CRASH_RECOVERY_CLIENT_POST_CRASH_NEEDLE: &str =
+    "survival_crash_recovery_post_crash_update block=Dirt position=24,64,0";
+const SURVIVAL_CRASH_RECOVERY_SERVER_MUTATION_NEEDLE: &str =
+    "survival_crash_recovery_mutation username=compatbot block=Dirt position=24,64,0 persisted_before=false persisted_after=true";
+const SURVIVAL_CRASH_RECOVERY_SERVER_FORCED_STOP_NEEDLE: &str =
+    "survival_crash_recovery_forced_stop username=compatbot method=forced_stop storage=isolated graceful=false";
+const SURVIVAL_CRASH_RECOVERY_SERVER_RESTART_NEEDLE: &str =
+    "survival_crash_recovery_backend_restart username=compatbot method=crash_recovery storage=isolated restart_confirmed=true";
+const SURVIVAL_CRASH_RECOVERY_SERVER_POST_NEEDLE: &str =
+    "survival_crash_recovery_post_crash_observe username=compatbot block=Dirt position=24,64,0 persisted=true";
+const SURVIVAL_CRASH_RECOVERY_SERVER_STATE_NEEDLE: &str =
+    "survival_crash_recovery_state username=compatbot block=Dirt position=24,64,0 pre_mutation=true crash_stop=true backend_restart=true post_observed=true dirty_reuse=false";
 const SURVIVAL_WORLD_PERSISTENCE_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_PROBE";
 const SURVIVAL_WORLD_PERSISTENCE_SESSION_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_SESSION";
 const SURVIVAL_WORLD_PERSISTENCE_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_FIXTURE";
@@ -319,7 +337,7 @@ const FRAME_ARTIFACT_NON_CLAIMS: &[&str] = &[
     "visual_regression_approval",
     "semantic_equivalence",
 ];
-const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-furnace-persistence|survival-hunger-food|survival-mob-drop|survival-redstone-toggle|survival-world-persistence-restart|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|vanilla-combat-reference-parity|vanilla-combat-armor-reference-parity|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset";
+const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-furnace-persistence|survival-hunger-food|survival-mob-drop|survival-redstone-toggle|survival-world-persistence-restart|survival-crash-recovery-parity|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|vanilla-combat-reference-parity|vanilla-combat-armor-reference-parity|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
     "Dimension type:",
@@ -457,6 +475,7 @@ enum Scenario {
     SurvivalMobDrop,
     SurvivalRedstoneToggle,
     SurvivalWorldPersistenceRestart,
+    SurvivalCrashRecoveryParity,
     SurvivalBiomeDimensionState,
     McpControlledSmoke,
     CombatDamage,
@@ -953,7 +972,7 @@ fn execute(cfg: &Config) -> Result<Option<ClientRunEvidence>, String> {
 }
 
 fn prepare_world_persistence_state_dir(cfg: &Config) -> Result<(), String> {
-    if cfg.scenario != Scenario::SurvivalWorldPersistenceRestart || cfg.mode != Mode::Run {
+    if !uses_world_persistence_storage(cfg.scenario) || cfg.mode != Mode::Run {
         return Ok(());
     }
     let dir = world_persistence_state_dir(cfg, cfg.server_backend);
@@ -1983,6 +2002,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
         "survival-mob-drop" => Ok(Scenario::SurvivalMobDrop),
         "survival-redstone-toggle" => Ok(Scenario::SurvivalRedstoneToggle),
         "survival-world-persistence-restart" => Ok(Scenario::SurvivalWorldPersistenceRestart),
+        "survival-crash-recovery-parity" => Ok(Scenario::SurvivalCrashRecoveryParity),
         "survival-biome-dimension-state" => Ok(Scenario::SurvivalBiomeDimensionState),
         MCP_CONTROLLED_SMOKE_SCENARIO => Ok(Scenario::McpControlledSmoke),
         "combat-damage" => Ok(Scenario::CombatDamage),
@@ -2030,6 +2050,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::SurvivalMobDrop => "survival-mob-drop",
         Scenario::SurvivalRedstoneToggle => "survival-redstone-toggle",
         Scenario::SurvivalWorldPersistenceRestart => "survival-world-persistence-restart",
+        Scenario::SurvivalCrashRecoveryParity => "survival-crash-recovery-parity",
         Scenario::SurvivalBiomeDimensionState => "survival-biome-dimension-state",
         Scenario::McpControlledSmoke => MCP_CONTROLLED_SMOKE_SCENARIO,
         Scenario::CombatDamage => "combat-damage",
@@ -2313,6 +2334,27 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             (
                 "survival_world_persistence_post_restart_update",
                 SURVIVAL_WORLD_PERSISTENCE_CLIENT_POST_RESTART_NEEDLE,
+            ),
+        ],
+        Scenario::SurvivalCrashRecoveryParity => &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "survival_crash_recovery_mutation_sent",
+                SURVIVAL_CRASH_RECOVERY_CLIENT_MUTATION_NEEDLE,
+            ),
+            (
+                "survival_crash_recovery_pre_crash_update",
+                SURVIVAL_CRASH_RECOVERY_CLIENT_PRE_CRASH_NEEDLE,
+            ),
+            (
+                "survival_crash_recovery_reconnect_sent",
+                SURVIVAL_CRASH_RECOVERY_CLIENT_RECONNECT_NEEDLE,
+            ),
+            (
+                "survival_crash_recovery_post_crash_update",
+                SURVIVAL_CRASH_RECOVERY_CLIENT_POST_CRASH_NEEDLE,
             ),
         ],
         Scenario::SurvivalBiomeDimensionState => &[
@@ -2933,6 +2975,29 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
             (
                 "server_survival_world_persistence_state",
                 SURVIVAL_WORLD_PERSISTENCE_SERVER_STATE_NEEDLE,
+            ),
+        ],
+        Scenario::SurvivalCrashRecoveryParity => &[
+            ("server_username_seen", "compatbot"),
+            (
+                "server_survival_crash_recovery_mutation",
+                SURVIVAL_CRASH_RECOVERY_SERVER_MUTATION_NEEDLE,
+            ),
+            (
+                "server_survival_crash_recovery_forced_stop",
+                SURVIVAL_CRASH_RECOVERY_SERVER_FORCED_STOP_NEEDLE,
+            ),
+            (
+                "server_survival_crash_recovery_backend_restart",
+                SURVIVAL_CRASH_RECOVERY_SERVER_RESTART_NEEDLE,
+            ),
+            (
+                "server_survival_crash_recovery_post_crash",
+                SURVIVAL_CRASH_RECOVERY_SERVER_POST_NEEDLE,
+            ),
+            (
+                "server_survival_crash_recovery_state",
+                SURVIVAL_CRASH_RECOVERY_SERVER_STATE_NEEDLE,
             ),
         ],
         Scenario::SurvivalBiomeDimensionState => &[
@@ -3809,7 +3874,7 @@ Automates a local Stevenarella compatibility smoke against a Minecraft {} / prot
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from legacy Nickel config, or --steel-config/MC_COMPAT_STEEL_CONFIG a restricted Steel module; env vars and later CLI flags override either config source.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.scenario.receipt.v2 JSON receipt for Cairn/Octet evidence flows.
-Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario survival-crafting-table for one crafting-table open/input/result/collect rail. Use --scenario survival-furnace-persistence for one furnace input/fuel/output/reconnect rail. Use --scenario survival-hunger-food for one hunger deficit, food consume, and inventory decrement rail. Use --scenario survival-mob-drop for one configured mob kill, drop, pickup, and inventory increment rail. Use --scenario survival-redstone-toggle for one configured control on/off output update rail. Use --scenario survival-world-persistence-restart for one configured block mutation, controlled reload, reconnect, and post-reload observation rail. Use --scenario survival-biome-dimension-state for one client-observed dimension/world identifier rail. Use --scenario mcp-controlled-smoke for deterministic MCP receipt/checker dry-run evidence before live client driving. Use --scenario vanilla-combat-armor-reference-parity for one Paper/Valence diamond-chestplate combat reference row. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario ctf-invalid-return-drop for one contained own-base return/drop attempt with server rejection evidence. Use --scenario ctf-score-limit-win-condition for one near-limit capture that emits exactly one win/end milestone. Use --scenario ctf-simultaneous-pickup-capture-race for one bounded two-client same-flag race with one accepted transition and one rejected duplicate pickup. Use --scenario ctf-spawn-team-balance-reset for one bounded two-client team assignment, spawn/resource, and post-score reset row. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
+Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario survival-crafting-table for one crafting-table open/input/result/collect rail. Use --scenario survival-furnace-persistence for one furnace input/fuel/output/reconnect rail. Use --scenario survival-hunger-food for one hunger deficit, food consume, and inventory decrement rail. Use --scenario survival-mob-drop for one configured mob kill, drop, pickup, and inventory increment rail. Use --scenario survival-redstone-toggle for one configured control on/off output update rail. Use --scenario survival-world-persistence-restart for one configured block mutation, controlled reload, reconnect, and post-reload observation rail. Use --scenario survival-crash-recovery-parity for one configured block mutation, forced backend stop, crash-recovery restart, reconnect, and post-crash observation rail. Use --scenario survival-biome-dimension-state for one client-observed dimension/world identifier rail. Use --scenario mcp-controlled-smoke for deterministic MCP receipt/checker dry-run evidence before live client driving. Use --scenario vanilla-combat-armor-reference-parity for one Paper/Valence diamond-chestplate combat reference row. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario ctf-invalid-return-drop for one contained own-base return/drop attempt with server rejection evidence. Use --scenario ctf-score-limit-win-condition for one near-limit capture that emits exactly one win/end milestone. Use --scenario ctf-simultaneous-pickup-capture-race for one bounded two-client same-flag race with one accepted transition and one rejected duplicate pickup. Use --scenario ctf-spawn-team-balance-reset for one bounded two-client team assignment, spawn/resource, and post-score reset row. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
 Use --expect-status-description/--expect-status-version/--expect-status-sample to assert status response fixture data, --packet-capture-summary for redacted capture summary metadata, and --proxy-route/--proxy-forwarding-mode for proxied-route receipt fields.\n\
 Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
 Use --run-matrix --receipt-dir DIR to run Paper and Valence receipts then compare them; add --dry-run after --run-matrix for a non-side-effecting matrix fixture.\n\
@@ -3906,6 +3971,38 @@ fn stop_server(cfg: &Config) -> Result<(), String> {
         ServerBackend::Valence => stop_valence_server(cfg),
         ServerBackend::Paper => stop_paper_server(cfg),
     }
+}
+
+fn force_stop_server(cfg: &Config) -> Result<(), String> {
+    match cfg.server_backend {
+        ServerBackend::Valence => force_stop_valence_server(cfg),
+        ServerBackend::Paper => force_stop_paper_server(cfg),
+    }
+}
+
+fn force_stop_valence_server(cfg: &Config) -> Result<(), String> {
+    if let Ok(pid) = fs::read_to_string(&cfg.valence_pid_file) {
+        let pid = pid.trim();
+        if !pid.is_empty() {
+            log(format_args!(
+                "force stopping managed Valence server process {pid}"
+            ));
+            let _ = Command::new("kill").arg("-9").arg(pid).status();
+        }
+        fs::remove_file(&cfg.valence_pid_file)
+            .map_err(|e| format!("remove {}: {e}", cfg.valence_pid_file.display()))?;
+    }
+    Ok(())
+}
+
+fn force_stop_paper_server(cfg: &Config) -> Result<(), String> {
+    log(format_args!(
+        "force stopping managed Paper container {}",
+        cfg.server_name
+    ));
+    let mut remove = Command::new("docker");
+    remove.arg("rm").arg("-f").arg(&cfg.server_name);
+    run_cmd(cfg, &mut remove)
 }
 
 fn stop_paper_server(cfg: &Config) -> Result<(), String> {
@@ -4392,7 +4489,7 @@ fn start_valence_server(cfg: &Config) -> Result<ManagedServer, String> {
     if cfg.scenario == Scenario::SurvivalRedstoneToggle {
         cmd.env(SURVIVAL_REDSTONE_TOGGLE_FIXTURE_ENV, "1");
     }
-    if cfg.scenario == Scenario::SurvivalWorldPersistenceRestart {
+    if uses_world_persistence_storage(cfg.scenario) {
         cmd.env(SURVIVAL_WORLD_PERSISTENCE_FIXTURE_ENV, "1")
             .env(
                 SURVIVAL_WORLD_PERSISTENCE_DIR_ENV,
@@ -4498,7 +4595,7 @@ fn configure_paper_run_command(cfg: &Config, cmd: &mut Command) -> Result<(), St
         cmd.arg("-e")
             .arg(format!("{SURVIVAL_REDSTONE_TOGGLE_FIXTURE_ENV}=1"));
     }
-    if cfg.scenario == Scenario::SurvivalWorldPersistenceRestart {
+    if uses_world_persistence_storage(cfg.scenario) {
         let state_dir = world_persistence_state_dir(cfg, ServerBackend::Paper);
         fs::create_dir_all(&state_dir)
             .map_err(|e| format!("create {}: {e}", state_dir.display()))?;
@@ -4707,6 +4804,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
             | Scenario::SurvivalChestPersistence
             | Scenario::SurvivalFurnacePersistence
             | Scenario::SurvivalWorldPersistenceRestart
+            | Scenario::SurvivalCrashRecoveryParity
             | Scenario::NegativeReconnectRace
     ) {
         run_reconnect_sequence_scenario(cfg)?
@@ -4780,6 +4878,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
             | Scenario::SurvivalChestPersistence
             | Scenario::SurvivalFurnacePersistence
             | Scenario::SurvivalWorldPersistenceRestart
+            | Scenario::SurvivalCrashRecoveryParity
             | Scenario::NegativeReconnectRace
     ) {
         combined_output.push_str("mc_compat_reconnect_session=2\n");
@@ -4789,6 +4888,11 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         if !combined_output.ends_with('\n') {
             combined_output.push('\n');
         }
+    }
+    if cfg.scenario == Scenario::SurvivalCrashRecoveryParity {
+        combined_output.push_str(&derive_survival_crash_recovery_client_milestones(
+            &combined_output,
+        ));
     }
     print!("{combined_output}");
     io::stdout().flush().map_err(|e| e.to_string())?;
@@ -4888,6 +4992,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
             | Scenario::SurvivalChestPersistence
             | Scenario::SurvivalFurnacePersistence
             | Scenario::SurvivalWorldPersistenceRestart
+            | Scenario::SurvivalCrashRecoveryParity
             | Scenario::NegativeReconnectRace
     ) && mixed_success
     {
@@ -5102,6 +5207,20 @@ fn absolute_child_path(root: &Path, path: &Path) -> PathBuf {
     root.join(path)
 }
 
+fn uses_world_persistence_storage(scenario: Scenario) -> bool {
+    matches!(
+        scenario,
+        Scenario::SurvivalWorldPersistenceRestart | Scenario::SurvivalCrashRecoveryParity
+    )
+}
+
+fn world_persistence_artifact_dir_name(scenario: Scenario) -> &'static str {
+    match scenario {
+        Scenario::SurvivalCrashRecoveryParity => "mc-compat-survival-crash-recovery",
+        _ => "mc-compat-world-persistence",
+    }
+}
+
 fn world_persistence_state_dir(cfg: &Config, backend: ServerBackend) -> PathBuf {
     let backend_name = match backend {
         ServerBackend::Valence => "valence",
@@ -5109,7 +5228,7 @@ fn world_persistence_state_dir(cfg: &Config, backend: ServerBackend) -> PathBuf 
     };
     cfg.root
         .join("target")
-        .join("mc-compat-world-persistence")
+        .join(world_persistence_artifact_dir_name(cfg.scenario))
         .join(backend_name)
 }
 
@@ -5120,7 +5239,10 @@ fn world_persistence_restart_phase_path(cfg: &Config) -> PathBuf {
     };
     cfg.root
         .join("target")
-        .join("mc-compat-world-persistence-pre-restart")
+        .join(format!(
+            "{}-pre-restart",
+            world_persistence_artifact_dir_name(cfg.scenario)
+        ))
         .join(format!("{backend_name}.phase"))
 }
 
@@ -5588,25 +5710,45 @@ fn run_reconnect_sequence_scenario(cfg: &Config) -> Result<Vec<SingleClientRun>,
             output,
             matched_success_pattern,
         });
-        if cfg.scenario == Scenario::SurvivalWorldPersistenceRestart && idx == 0 {
-            write_world_persistence_pre_restart_server_log(cfg)?;
-            stop_server(cfg)?;
-            append_world_persistence_orchestration_milestone(
-                cfg,
-                SURVIVAL_WORLD_PERSISTENCE_SERVER_CLEAN_NEEDLE,
-            )?;
-            mark_world_persistence_post_restart_phase(cfg)?;
-            restarted_server = Some(start_server(cfg)?);
-            probe_status(cfg)?;
-            append_world_persistence_orchestration_milestone(
-                cfg,
-                SURVIVAL_WORLD_PERSISTENCE_SERVER_RESTART_NEEDLE,
-            )?;
+        if uses_world_persistence_storage(cfg.scenario) && idx == 0 {
+            restarted_server = Some(run_world_persistence_restart_transition(cfg)?);
         }
         thread::sleep(Duration::from_secs(RECONNECT_SEQUENCE_PAUSE_SECS));
     }
     drop(restarted_server);
     Ok(runs)
+}
+
+fn run_world_persistence_restart_transition(cfg: &Config) -> Result<ManagedServer, String> {
+    write_world_persistence_pre_restart_server_log(cfg)?;
+    if cfg.scenario == Scenario::SurvivalCrashRecoveryParity {
+        force_stop_server(cfg)?;
+        append_world_persistence_orchestration_milestone(
+            cfg,
+            SURVIVAL_CRASH_RECOVERY_SERVER_FORCED_STOP_NEEDLE,
+        )?;
+    } else {
+        stop_server(cfg)?;
+        append_world_persistence_orchestration_milestone(
+            cfg,
+            SURVIVAL_WORLD_PERSISTENCE_SERVER_CLEAN_NEEDLE,
+        )?;
+    }
+    mark_world_persistence_post_restart_phase(cfg)?;
+    let restarted_server = start_server(cfg)?;
+    probe_status(cfg)?;
+    if cfg.scenario == Scenario::SurvivalCrashRecoveryParity {
+        append_world_persistence_orchestration_milestone(
+            cfg,
+            SURVIVAL_CRASH_RECOVERY_SERVER_RESTART_NEEDLE,
+        )?;
+    } else {
+        append_world_persistence_orchestration_milestone(
+            cfg,
+            SURVIVAL_WORLD_PERSISTENCE_SERVER_RESTART_NEEDLE,
+        )?;
+    }
+    Ok(restarted_server)
 }
 
 fn run_multi_client_load_scenario(cfg: &Config) -> Result<Vec<SingleClientRun>, String> {
@@ -5665,6 +5807,74 @@ fn run_single_client(
         output,
         matched_success_pattern,
     })
+}
+
+fn derive_survival_crash_recovery_client_milestones(output: &str) -> String {
+    let mut derived = String::new();
+    append_derived_line_if_contains(
+        &mut derived,
+        output,
+        SURVIVAL_WORLD_PERSISTENCE_CLIENT_MUTATION_NEEDLE,
+        SURVIVAL_CRASH_RECOVERY_CLIENT_MUTATION_NEEDLE,
+    );
+    append_derived_line_if_contains(
+        &mut derived,
+        output,
+        SURVIVAL_WORLD_PERSISTENCE_CLIENT_PRE_RESTART_NEEDLE,
+        SURVIVAL_CRASH_RECOVERY_CLIENT_PRE_CRASH_NEEDLE,
+    );
+    append_derived_line_if_contains(
+        &mut derived,
+        output,
+        SURVIVAL_WORLD_PERSISTENCE_CLIENT_RECONNECT_NEEDLE,
+        SURVIVAL_CRASH_RECOVERY_CLIENT_RECONNECT_NEEDLE,
+    );
+    append_derived_line_if_contains(
+        &mut derived,
+        output,
+        SURVIVAL_WORLD_PERSISTENCE_CLIENT_POST_RESTART_NEEDLE,
+        SURVIVAL_CRASH_RECOVERY_CLIENT_POST_CRASH_NEEDLE,
+    );
+    derived
+}
+
+fn derive_survival_crash_recovery_server_milestones(log: &str) -> String {
+    let mut derived = String::new();
+    append_derived_line_if_contains(
+        &mut derived,
+        log,
+        SURVIVAL_WORLD_PERSISTENCE_SERVER_MUTATION_NEEDLE,
+        SURVIVAL_CRASH_RECOVERY_SERVER_MUTATION_NEEDLE,
+    );
+    append_derived_line_if_contains(
+        &mut derived,
+        log,
+        SURVIVAL_WORLD_PERSISTENCE_SERVER_POST_NEEDLE,
+        SURVIVAL_CRASH_RECOVERY_SERVER_POST_NEEDLE,
+    );
+    if log.contains(SURVIVAL_WORLD_PERSISTENCE_SERVER_STATE_NEEDLE)
+        && log.contains(SURVIVAL_CRASH_RECOVERY_SERVER_FORCED_STOP_NEEDLE)
+        && log.contains(SURVIVAL_CRASH_RECOVERY_SERVER_RESTART_NEEDLE)
+    {
+        append_derived_line(&mut derived, SURVIVAL_CRASH_RECOVERY_SERVER_STATE_NEEDLE);
+    }
+    derived
+}
+
+fn append_derived_line_if_contains(
+    output: &mut String,
+    haystack: &str,
+    source_needle: &str,
+    derived_line: &str,
+) {
+    if haystack.contains(source_needle) {
+        append_derived_line(output, derived_line);
+    }
+}
+
+fn append_derived_line(output: &mut String, line: &str) {
+    output.push_str(line);
+    output.push('\n');
 }
 
 fn spawn_client_process(
@@ -5800,7 +6010,7 @@ fn apply_scenario_probe_env(
         Scenario::SurvivalRedstoneToggle => {
             cmd.env(SURVIVAL_REDSTONE_TOGGLE_PROBE_ENV, "1");
         }
-        Scenario::SurvivalWorldPersistenceRestart => {
+        Scenario::SurvivalWorldPersistenceRestart | Scenario::SurvivalCrashRecoveryParity => {
             cmd.env(SURVIVAL_WORLD_PERSISTENCE_PROBE_ENV, "1").env(
                 SURVIVAL_WORLD_PERSISTENCE_SESSION_ENV,
                 (client_index + 1).to_string(),
@@ -5999,13 +6209,17 @@ fn read_server_scenario_evidence(
         ServerBackend::Paper => read_paper_log(cfg)?,
     };
     let mut correlation_log = server_log;
-    if cfg.scenario == Scenario::SurvivalWorldPersistenceRestart {
+    if uses_world_persistence_storage(cfg.scenario) {
         correlation_log.push('\n');
         correlation_log.push_str(&read_world_persistence_pre_restart_server_log(cfg)?);
     }
     for run in runs {
         correlation_log.push('\n');
         correlation_log.push_str(&run.output);
+    }
+    if cfg.scenario == Scenario::SurvivalCrashRecoveryParity {
+        let derived = derive_survival_crash_recovery_server_milestones(&correlation_log);
+        correlation_log.push_str(&derived);
     }
     let username = &cfg.client_username;
     Ok(Some(evaluate_server_scenario(
@@ -6103,6 +6317,7 @@ fn requires_server_correlation(cfg: &Config) -> bool {
             | Scenario::SurvivalMobDrop
             | Scenario::SurvivalRedstoneToggle
             | Scenario::SurvivalWorldPersistenceRestart
+            | Scenario::SurvivalCrashRecoveryParity
             | Scenario::CombatDamage
             | Scenario::CombatKnockback
             | Scenario::VanillaCombatReferenceParity
@@ -7078,6 +7293,16 @@ fn smoke_receipt_json_with_typed_event_oracle(
             "disconnect_reconnect",
             "post_reload_block_update",
         ],
+        Scenario::SurvivalCrashRecoveryParity => vec![
+            "login_success",
+            "play_join_game",
+            "player_block_placement",
+            "block_update",
+            "forced_stop",
+            "crash_recovery_restart",
+            "disconnect_reconnect",
+            "post_crash_block_update",
+        ],
         Scenario::SurvivalBiomeDimensionState => vec![
             "login_success",
             "play_join_game",
@@ -7357,6 +7582,15 @@ fn smoke_receipt_json_with_typed_event_oracle(
         "server_survival_world_persistence_backend_restart",
         "server_survival_world_persistence_post_restart",
         "server_survival_world_persistence_state",
+        "survival_crash_recovery_mutation_sent",
+        "survival_crash_recovery_pre_crash_update",
+        "survival_crash_recovery_reconnect_sent",
+        "survival_crash_recovery_post_crash_update",
+        "server_survival_crash_recovery_mutation",
+        "server_survival_crash_recovery_forced_stop",
+        "server_survival_crash_recovery_backend_restart",
+        "server_survival_crash_recovery_post_crash",
+        "server_survival_crash_recovery_state",
         "server_inventory_hotbar_select",
         "server_inventory_drop",
         "server_inventory_pickup",
@@ -11705,6 +11939,53 @@ RED: 1
         assert!(missing_state
             .missing_milestones
             .contains(&"server_survival_world_persistence_state"));
+    }
+
+    #[test]
+    fn survival_crash_recovery_scenario_tracks_derived_client_and_server_evidence() {
+        let raw_client = "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nsurvival_world_persistence_mutation_sent block=Dirt position=24,64,0 slot=36 hand=main sequence=933\nsurvival_world_persistence_pre_restart_update block=Dirt position=24,64,0 raw_id=10\nsurvival_world_persistence_reconnect_sent session=restart\nsurvival_world_persistence_post_restart_update block=Dirt position=24,64,0 raw_id=10\n";
+        let raw_client_result = evaluate_scenario(Scenario::SurvivalCrashRecoveryParity, raw_client);
+        assert!(!raw_client_result.passed, "{raw_client_result:?}");
+        assert!(raw_client_result
+            .missing_milestones
+            .contains(&"survival_crash_recovery_mutation_sent"));
+
+        let mut derived_client = raw_client.to_string();
+        derived_client.push_str(&derive_survival_crash_recovery_client_milestones(raw_client));
+        let client = evaluate_scenario(Scenario::SurvivalCrashRecoveryParity, &derived_client);
+        assert!(client.passed, "{client:?}");
+        assert!(client.missing_milestones.is_empty());
+
+        let raw_server = "compatbot joined\nMC-COMPAT-MILESTONE survival_world_persistence_mutation username=compatbot block=Dirt position=24,64,0 persisted_before=false persisted_after=true\nMC-COMPAT-MILESTONE survival_crash_recovery_forced_stop username=compatbot method=forced_stop storage=isolated graceful=false\nMC-COMPAT-MILESTONE survival_crash_recovery_backend_restart username=compatbot method=crash_recovery storage=isolated restart_confirmed=true\nMC-COMPAT-MILESTONE survival_world_persistence_post_restart_observe username=compatbot block=Dirt position=24,64,0 persisted=true\nMC-COMPAT-MILESTONE survival_world_persistence_state username=compatbot block=Dirt position=24,64,0 pre_mutation=true clean_shutdown=true backend_restart=true post_observed=true dirty_reuse=false\n";
+        let mut derived_server = raw_server.to_string();
+        derived_server.push_str(&derive_survival_crash_recovery_server_milestones(raw_server));
+        let server = evaluate_server_scenario(
+            Scenario::SurvivalCrashRecoveryParity,
+            &derived_server,
+            "compatbot",
+        );
+        assert!(server.passed, "{server:?}");
+
+        let missing_forced_stop = raw_server.replace(
+            "MC-COMPAT-MILESTONE survival_crash_recovery_forced_stop username=compatbot method=forced_stop storage=isolated graceful=false\n",
+            "",
+        );
+        let mut derived_missing = missing_forced_stop.clone();
+        derived_missing.push_str(&derive_survival_crash_recovery_server_milestones(
+            &missing_forced_stop,
+        ));
+        let missing_server = evaluate_server_scenario(
+            Scenario::SurvivalCrashRecoveryParity,
+            &derived_missing,
+            "compatbot",
+        );
+        assert!(!missing_server.passed, "{missing_server:?}");
+        assert!(missing_server
+            .missing_milestones
+            .contains(&"server_survival_crash_recovery_forced_stop"));
+        assert!(missing_server
+            .missing_milestones
+            .contains(&"server_survival_crash_recovery_state"));
     }
 
     #[test]

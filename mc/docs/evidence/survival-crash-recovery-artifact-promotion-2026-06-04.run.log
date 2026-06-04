@@ -1,0 +1,38 @@
+
+## copy_receipts
+command=sh -c $'\ncp target/survival-crash-recovery-paper-2026-06-04.receipt.json docs/evidence/survival-crash-recovery-paper-2026-06-04.receipt.json\ncp target/survival-crash-recovery-valence-2026-06-04.receipt.json docs/evidence/survival-crash-recovery-valence-2026-06-04.receipt.json\ncp target/survival-crash-recovery-paper-2026-06-04.receipt.typed-events.log docs/evidence/survival-crash-recovery-paper-2026-06-04.typed-events.log\ncp target/survival-crash-recovery-valence-2026-06-04.receipt.typed-events.log docs/evidence/survival-crash-recovery-valence-2026-06-04.typed-events.log\n'
+copy_receipts_exit_status=0
+
+## copy_server_logs
+command=sh -c $'\ncp target/mc-compat-world-persistence-pre-restart/paper.log docs/evidence/survival-crash-recovery-paper-pre-crash-server-2026-06-04.log\ncp target/mc-compat-world-persistence-pre-restart/valence.log docs/evidence/survival-crash-recovery-valence-pre-crash-server-2026-06-04.log\ncp /tmp/mc-compat-valence.log docs/evidence/survival-crash-recovery-valence-post-crash-server-2026-06-04.log\n'
+copy_server_logs_exit_status=0
+
+## copy_client_logs
+command=sh -c $'\ncp /tmp/mc-compat-client.compatbot.survival-crash-recovery-parity-session-1.4031785.log docs/evidence/survival-crash-recovery-valence-client-session-1-2026-06-04.log\ncp /tmp/mc-compat-client.compatbot.survival-crash-recovery-parity-session-2.4031785.log docs/evidence/survival-crash-recovery-valence-client-session-2-2026-06-04.log\ncp /tmp/mc-compat-client.compatbot.survival-crash-recovery-parity-session-1.4079083.log docs/evidence/survival-crash-recovery-paper-client-session-1-2026-06-04.log\ncp /tmp/mc-compat-client.compatbot.survival-crash-recovery-parity-session-2.4079083.log docs/evidence/survival-crash-recovery-paper-client-session-2-2026-06-04.log\n'
+copy_client_logs_exit_status=0
+
+## copy_fixture_source
+command=cp tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java docs/evidence/mc-compat-paper-survival-crash-recovery-fixture-2026-06-04.java
+copy_fixture_source_exit_status=0
+
+## promoted_hashes
+command=nix develop --no-update-lock-file -c b3sum docs/evidence/survival-crash-recovery-paper-2026-06-04.receipt.json docs/evidence/survival-crash-recovery-valence-2026-06-04.receipt.json docs/evidence/survival-crash-recovery-paper-2026-06-04.typed-events.log docs/evidence/survival-crash-recovery-valence-2026-06-04.typed-events.log docs/evidence/survival-crash-recovery-paper-pre-crash-server-2026-06-04.log docs/evidence/survival-crash-recovery-paper-post-crash-server-2026-06-04.log docs/evidence/survival-crash-recovery-valence-pre-crash-server-2026-06-04.log docs/evidence/survival-crash-recovery-valence-post-crash-server-2026-06-04.log docs/evidence/survival-crash-recovery-paper-client-session-1-2026-06-04.log docs/evidence/survival-crash-recovery-paper-client-session-2-2026-06-04.log docs/evidence/survival-crash-recovery-valence-client-session-1-2026-06-04.log docs/evidence/survival-crash-recovery-valence-client-session-2-2026-06-04.log docs/evidence/mc-compat-paper-survival-crash-recovery-fixture-2026-06-04.java docs/evidence/mc-compat-paper-survival-crash-recovery-fixture-2026-06-04.jar
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+f37ef15617d489fd660de33420cb4533696dbee8b23ca779346051c62e8e22a1  docs/evidence/survival-crash-recovery-paper-2026-06-04.receipt.json
+f1e4db0cb5d8f03dd1322010de2e685b04716bb3ad9b6ffdd5a4939a710f8f97  docs/evidence/survival-crash-recovery-valence-2026-06-04.receipt.json
+debba6bf967e7dcbcf7766a957b9af84e48e5bb7c273d199db95fd4f089122a1  docs/evidence/survival-crash-recovery-paper-2026-06-04.typed-events.log
+4bb68aa03b75d93cc1ab66d913821583e1eb47cd2fbfab3319a45264808c8fb1  docs/evidence/survival-crash-recovery-valence-2026-06-04.typed-events.log
+58a910100fe7842926b43a2e2486187a63825eb514fa020adbff8afd87e46f5c  docs/evidence/survival-crash-recovery-paper-pre-crash-server-2026-06-04.log
+3d3be26384d17f97614469fc9bfc2229c96d303e2e2c5602d9528ecc184dc54b  docs/evidence/survival-crash-recovery-paper-post-crash-server-2026-06-04.log
+1204a3bec6e7d811cb15ac7181df032dbc74528d02edd926928f99c15c7cb445  docs/evidence/survival-crash-recovery-valence-pre-crash-server-2026-06-04.log
+49366e384431664253bd282cd9c5f7cd8bf1c7c81b886f536744dc6e6da4ce19  docs/evidence/survival-crash-recovery-valence-post-crash-server-2026-06-04.log
+3732734d2f66a92946faf8191c67a86781c98d6dadc33ca040135f13bb484d3b  docs/evidence/survival-crash-recovery-paper-client-session-1-2026-06-04.log
+4de19cd80124fdaeb41ea0dc1a4d4ff35a94540b182defd4dccc7f1b074fd192  docs/evidence/survival-crash-recovery-paper-client-session-2-2026-06-04.log
+221796a7ba5b7f8e10b02b5ac1f2a50e7e27136e00ae936b4fa0088943281b13  docs/evidence/survival-crash-recovery-valence-client-session-1-2026-06-04.log
+83085197933b6335aa2c1b363b0f00f3ef428cbe2ed582670d433014815b3bf7  docs/evidence/survival-crash-recovery-valence-client-session-2-2026-06-04.log
+471a8753c1d08c7fb41179858443a4756811587aae83d4b17e1557f89ce1a0d6  docs/evidence/mc-compat-paper-survival-crash-recovery-fixture-2026-06-04.java
+769620b513c73df99136c1a0ba68a19b708a83eee883dd83f9ccfaf5549c9436  docs/evidence/mc-compat-paper-survival-crash-recovery-fixture-2026-06-04.jar
+promoted_hashes_exit_status=0
+exit_status=0

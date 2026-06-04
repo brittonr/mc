@@ -92,6 +92,18 @@ const ROWS: &[RowContract] = &[
             "server_persistence_state",
         ],
     },
+    RowContract {
+        id: "survival-crash-recovery-parity",
+        label: "crash recovery",
+        metrics: &[
+            "pre_crash_mutation",
+            "crash_stop",
+            "backend_restart",
+            "reconnect",
+            "post_crash_observation",
+            "server_recovery_state",
+        ],
+    },
 ];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -385,6 +397,11 @@ fn run_self_tests() -> Result<String, Vec<String>> {
             "not every survival row contract was exercised".to_string()
         ]);
     }
+
+    assert_contains(
+        &row_contract("unknown-survival-row").expect_err("unknown row should fail"),
+        "unknown survival row",
+    )?;
 
     Ok(format!("{} row contracts exercised", exercised_rows.len()))
 }

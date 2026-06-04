@@ -1,0 +1,29 @@
+# survival crash-recovery accepted-spec sync verification
+r[mc_compatibility.survival_crash_recovery_parity.contract] The `survival-crash-recovery-parity` row MUST define a bounded paired-reference evidence contract before any crash-recovery survival evidence is promoted.
+r[mc_compatibility.survival_crash_recovery_parity.contract.scope]
+r[mc_compatibility.survival_crash_recovery_parity.checker] A deterministic Rust checker MUST compare normalized paired Paper/reference and Valence crash-recovery metrics before the row is promoted.
+r[mc_compatibility.survival_crash_recovery_parity.checker.valid]
+r[mc_compatibility.survival_crash_recovery_parity.checker.rejects]
+r[mc_compatibility.survival_crash_recovery_parity.rail] The harness MUST expose an isolated `survival-crash-recovery-parity` rail without broadening existing survival or graceful world-persistence semantics.
+r[mc_compatibility.survival_crash_recovery_parity.rail.isolated]
+r[mc_compatibility.survival_crash_recovery_parity.fixtures] Paper/reference and Valence fixtures MUST record comparable crash-recovery server metrics for the configured mutation.
+r[mc_compatibility.survival_crash_recovery_parity.fixtures.comparable]
+r[mc_compatibility.survival_crash_recovery_parity.receipts] Paired crash-recovery evidence MUST be durable and reviewable under `docs/evidence/` before promotion.
+r[mc_compatibility.survival_crash_recovery_parity.receipts.reviewable]
+r[mc_compatibility.survival_crash_recovery_parity.promotion] Acceptance matrix and current-bundle docs MUST promote only the configured `survival-crash-recovery-parity` row after the paired comparator passes.
+r[mc_compatibility.survival_crash_recovery_parity.promotion.nonclaims]
+r[mc_compatibility.survival_crash_recovery_parity.validation] The change MUST record checker, paired comparator, manifest, task gate, Cairn gates, and Cairn validation output before archive.
+r[mc_compatibility.survival_crash_recovery_parity.validation.log]
+accepted_spec_grep_exit_status=0
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+cairn_validate_exit_status=0
+exit_status=0

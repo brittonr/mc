@@ -1,0 +1,49 @@
+
+## survival_row_checker
+command=nix develop --no-update-lock-file . -c bash -lc rustc\ --edition=2021\ tools/check_survival_row_parity.rs\ -o\ target/check-survival-row-parity\ \&\&\ target/check-survival-row-parity\ --self-test
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+survival row parity self-test ok: 6 row contracts exercised
+survival_row_checker_exit_status=0
+
+## runner_tests
+command=nix develop --no-update-lock-file . -c cargo test --manifest-path tools/mc-compat-runner/Cargo.toml survival_world_persistence_scenario_tracks_client_and_server_evidence -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.13s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 1 test
+test tests::survival_world_persistence_scenario_tracks_client_and_server_evidence ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 98 filtered out; finished in 0.00s
+
+runner_tests_exit_status=0
+
+## cairn_gates
+command=nix run .#cairn -- gate proposal survival-crash-recovery-parity --root .
+{
+  "change": "survival-crash-recovery-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "85d536e80dd7262e3d56758a13ecc00ddff676d5b2d5758924b81b78941a03c1",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "b53df5dd80e625183d9bc72c6b247bd54ed8f7f94c2e0ba6b49282d3bddbcef4",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+cairn_gates_exit_status=0
+exit_status=0

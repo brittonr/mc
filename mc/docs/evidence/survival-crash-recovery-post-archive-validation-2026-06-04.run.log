@@ -1,0 +1,23 @@
+# survival crash-recovery post-archive validation
+this derivation will be built:
+  /nix/store/m8bkzvd5lxqr27qw1bzc3mb8mm2i2639-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/m8bkzvd5lxqr27qw1bzc3mb8mm2i2639-mc-compat-evidence-manifests.drv'...
+evidence_manifests_nix_check_exit_status=0
+this derivation will be built:
+  /nix/store/nbmxj0ivjh743nlx5bfy2098zdrcgjfx-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/nbmxj0ivjh743nlx5bfy2098zdrcgjfx-mc-compat-cairn-task-evidence.drv'...
+task_evidence_nix_check_exit_status=0
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 2,
+  "valid": true
+}
+cairn_validate_exit_status=0
+exit_status=0

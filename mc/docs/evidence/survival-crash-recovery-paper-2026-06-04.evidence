@@ -1,0 +1,15 @@
+row=survival-crash-recovery-parity
+backend=paper
+revision_status=clean
+child_revision=paper-fixture-source-471a8753c1d0
+metric.pre_crash_mutation=block=Dirt position=24,64,0 persisted_before=false persisted_after=true
+metric.crash_stop=method=forced_stop storage=isolated graceful=false
+metric.backend_restart=method=crash_recovery storage=isolated restart_confirmed=true
+metric.reconnect=session=crash_recovery
+metric.post_crash_observation=block=Dirt position=24,64,0 persisted=true
+metric.server_recovery_state=block=Dirt position=24,64,0 pre_mutation=true crash_stop=true backend_restart=true post_observed=true dirty_reuse=false
+stevenarella_revision=75151ca3cd4ed6673c0daf3dc3579a5069cc4ac3
+paper_fixture_source_b3=471a8753c1d08c7fb41179858443a4756811587aae83d4b17e1557f89ce1a0d6
+paper_fixture_jar_b3=769620b513c73df99136c1a0ba68a19b708a83eee883dd83f9ccfaf5549c9436
+paper_storage_proof=target block reloaded from mounted Paper world directory after plugin-flushed configured mutation and forced container stop
+non_claims=arbitrary crash consistency; multi-chunk persistence; block entities; concurrent saves; backups; production readiness

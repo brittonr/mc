@@ -50,6 +50,7 @@ const REQUIRED_SEAMS: &[&str] = &[
     "Survival redstone toggle",
     "Survival biome/dimension join state",
     "Survival world persistence restart",
+    "Survival crash recovery",
     "MCP-controlled observability",
 ];
 

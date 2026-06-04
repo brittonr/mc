@@ -389,6 +389,35 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         migration_state: "substring-fallback",
     },
     GeneratedScenarioRow {
+        name: "survival-crash-recovery-parity",
+        aliases: &["survival-crash-recovery-parity"],
+        client_milestones: &[
+            "protocol_detected",
+            "join_game",
+            "render_tick",
+            "survival_crash_recovery_mutation_sent",
+            "survival_crash_recovery_pre_crash_update",
+            "survival_crash_recovery_reconnect_sent",
+            "survival_crash_recovery_post_crash_update",
+        ],
+        server_milestones: &[
+            "server_username_seen",
+            "server_survival_crash_recovery_mutation",
+            "server_survival_crash_recovery_forced_stop",
+            "server_survival_crash_recovery_backend_restart",
+            "server_survival_crash_recovery_post_crash",
+            "server_survival_crash_recovery_state",
+        ],
+        forbidden_patterns: DEFAULT_FORBIDDEN_PATTERNS,
+        client_count: ONE_CLIENT,
+        session_count: TWO_SESSIONS,
+        dry_run_check: "",
+        dry_run_wrapper: "mc-compat-smoke",
+        dry_run_exclusion_reason:
+            "survival-crash-recovery-parity uses live paired fixture receipts instead of a dedicated dry-run wrapper",
+        migration_state: "substring-fallback",
+    },
+    GeneratedScenarioRow {
         name: "survival-biome-dimension-state",
         aliases: &["survival-biome-dimension-state"],
         client_milestones: &[

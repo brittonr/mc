@@ -12,7 +12,6 @@ const SUCCESS: ExitCode = ExitCode::SUCCESS;
 const FAILURE: ExitCode = ExitCode::FAILURE;
 const TABLE_HEADER: &str = "| Survival system | Status | Valence evidence | Reference evidence | Promotion requirement | Explicit non-claim | Next action |";
 const TABLE_CELL_COUNT: usize = 7;
-const REQUIRED_ROW_COUNT: usize = 9;
 const STATUS_MISSING: &str = "missing";
 const REFERENCE_NONE: &str = "none";
 const COVERED_STATUS: &str = "reference_parity_covered";
@@ -24,6 +23,8 @@ const HUNGER_FOOD_ROW: &str = "hunger/food";
 const MOB_DROP_ROW: &str = "mob drops";
 const REDSTONE_ROW: &str = "redstone";
 const BIOME_DIMENSION_ROW: &str = "biome/dimension";
+const WORLD_PERSISTENCE_ROW: &str = "world persistence";
+const CRASH_RECOVERY_ROW: &str = "crash recovery";
 
 const REQUIRED_SYSTEMS: &[&str] = &[
     BREAK_PLACE_PICKUP_ROW,
@@ -34,7 +35,8 @@ const REQUIRED_SYSTEMS: &[&str] = &[
     MOB_DROP_ROW,
     REDSTONE_ROW,
     BIOME_DIMENSION_ROW,
-    "world persistence",
+    WORLD_PERSISTENCE_ROW,
+    CRASH_RECOVERY_ROW,
 ];
 
 const REQUIRED_TEXT: &[&str] = &[
@@ -48,6 +50,7 @@ const REQUIRED_TEXT: &[&str] = &[
     "No full survival compatibility from redstone row",
     "No full survival compatibility from biome/dimension row",
     "No full survival compatibility from world persistence row",
+    "No full survival compatibility from crash recovery row",
     "paired reference receipt",
     "BLAKE3 manifest entries",
 ];
@@ -110,6 +113,12 @@ const WORLD_PERSISTENCE_VALENCE_RECEIPT: &str =
     "docs/evidence/survival-world-persistence-valence-2026-06-02.receipt.json";
 const WORLD_PERSISTENCE_EVIDENCE_DOC: &str =
     "docs/evidence/survival-world-persistence-receipts-2026-06-02.md";
+const CRASH_RECOVERY_PAPER_RECEIPT: &str =
+    "docs/evidence/survival-crash-recovery-paper-2026-06-04.receipt.json";
+const CRASH_RECOVERY_VALENCE_RECEIPT: &str =
+    "docs/evidence/survival-crash-recovery-valence-2026-06-04.receipt.json";
+const CRASH_RECOVERY_EVIDENCE_DOC: &str =
+    "docs/evidence/survival-crash-recovery-receipts-2026-06-04.md";
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct SurvivalRow {
@@ -161,7 +170,7 @@ fn run_repo_check(root: &Path) -> Result<String, Vec<String>> {
     let matrix_text = read_file(root, ACCEPTANCE_MATRIX_PATH)?;
     let errors = validate_text(&doc_text, &bundle_text, &matrix_text);
     if errors.is_empty() {
-        Ok(format!("{} rows validated", REQUIRED_ROW_COUNT))
+        Ok(format!("{} rows validated", REQUIRED_SYSTEMS.len()))
     } else {
         Err(errors)
     }
@@ -177,9 +186,10 @@ fn validate_text(doc_text: &str, bundle_text: &str, matrix_text: &str) -> Vec<St
     let rows = parse_rows(doc_text, &mut errors);
     let rows_by_system = rows_by_system(&rows);
 
-    if rows.len() != REQUIRED_ROW_COUNT {
+    let expected_row_count = REQUIRED_SYSTEMS.len();
+    if rows.len() != expected_row_count {
         errors.push(format!(
-            "expected {REQUIRED_ROW_COUNT} survival rows, found {}",
+            "expected {expected_row_count} survival rows, found {}",
             rows.len()
         ));
     }
@@ -300,13 +310,22 @@ fn validate_row(row: &SurvivalRow, errors: &mut Vec<String>) {
             "covered biome/dimension row",
             errors,
         ),
-        "world persistence" => validate_covered_row(
+        WORLD_PERSISTENCE_ROW => validate_covered_row(
             row,
             WORLD_PERSISTENCE_PAPER_RECEIPT,
             WORLD_PERSISTENCE_VALENCE_RECEIPT,
             WORLD_PERSISTENCE_EVIDENCE_DOC,
             "long-term durability",
             "covered world persistence row",
+            errors,
+        ),
+        CRASH_RECOVERY_ROW => validate_covered_row(
+            row,
+            CRASH_RECOVERY_PAPER_RECEIPT,
+            CRASH_RECOVERY_VALENCE_RECEIPT,
+            CRASH_RECOVERY_EVIDENCE_DOC,
+            "arbitrary crash consistency",
+            "covered crash recovery row",
             errors,
         ),
         _ => validate_missing_row(row, errors),
@@ -462,6 +481,16 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         "covered world persistence row missing Paper reference receipt",
     )?;
 
+    let missing_crash_recovery_evidence = good_rows().replacen(CRASH_RECOVERY_PAPER_RECEIPT, "none", 1);
+    assert_contains(
+        &validate_text(
+            &fixture_doc(&missing_crash_recovery_evidence),
+            bundle,
+            matrix,
+        ),
+        "covered crash recovery row missing Paper reference receipt",
+    )?;
+
     let overclaim = format!(
         "{}\nfull survival compatibility is covered\n",
         fixture_doc(&good_rows())
@@ -486,7 +515,7 @@ fn assert_contains(errors: &[String], needle: &str) -> Result<(), Vec<String>> {
 
 fn fixture_doc(rows: &str) -> String {
     format!(
-        "# Fixture\n\n## Coverage rows\n\n{TABLE_HEADER}\n| --- | --- | --- | --- | --- | --- | --- |\n{rows}\n\n## Gate decision\n\nfull_survival_compatibility remains a non-claim.\n\npaired reference receipt\nBLAKE3 manifest entries\nNo vanilla parity or full survival compatibility\nNo full survival compatibility from crafting row\nNo full survival compatibility from chest persistence row\nNo full survival compatibility from furnace persistence row\nNo full survival compatibility from hunger/food row\nNo full survival compatibility from mob-drop row\nNo full survival compatibility from redstone row\nNo full survival compatibility from biome/dimension row\nNo full survival compatibility from world persistence row\n"
+        "# Fixture\n\n## Coverage rows\n\n{TABLE_HEADER}\n| --- | --- | --- | --- | --- | --- | --- |\n{rows}\n\n## Gate decision\n\nfull_survival_compatibility remains a non-claim.\n\npaired reference receipt\nBLAKE3 manifest entries\nNo vanilla parity or full survival compatibility\nNo full survival compatibility from crafting row\nNo full survival compatibility from chest persistence row\nNo full survival compatibility from furnace persistence row\nNo full survival compatibility from hunger/food row\nNo full survival compatibility from mob-drop row\nNo full survival compatibility from redstone row\nNo full survival compatibility from biome/dimension row\nNo full survival compatibility from world persistence row\nNo full survival compatibility from crash recovery row\n"
     )
 }
 
@@ -501,6 +530,7 @@ fn good_rows() -> String {
         format!("| redstone | {COVERED_STATUS} | `{REDSTONE_VALENCE_RECEIPT}` | `{REDSTONE_PAPER_RECEIPT}` | Paired comparator evidence: `{REDSTONE_EVIDENCE_DOC}`. | No full survival compatibility from redstone row; no general redstone circuit parity, tick-order parity, pistons, observers, comparators, clocks, farms, or broad vanilla parity coverage. | next |"),
         format!("| biome/dimension | {COVERED_STATUS} | `{BIOME_DIMENSION_VALENCE_RECEIPT}` | `{BIOME_DIMENSION_PAPER_RECEIPT}` | Paired comparator evidence: `{BIOME_DIMENSION_EVIDENCE_DOC}`. | No full survival compatibility from biome/dimension row; no biome lookup semantics, dimension travel, or long-term world persistence durability coverage. | next |"),
         format!("| world persistence | {COVERED_STATUS} | `{WORLD_PERSISTENCE_VALENCE_RECEIPT}` | `{WORLD_PERSISTENCE_PAPER_RECEIPT}` | Paired comparator evidence: `{WORLD_PERSISTENCE_EVIDENCE_DOC}`. | No full survival compatibility from world persistence row; no long-term durability, crash recovery, multi-chunk persistence, all block entities, concurrent saves, backups, broad vanilla parity, or production readiness. | next |"),
+        format!("| crash recovery | {COVERED_STATUS} | `{CRASH_RECOVERY_VALENCE_RECEIPT}` | `{CRASH_RECOVERY_PAPER_RECEIPT}` | Paired comparator evidence: `{CRASH_RECOVERY_EVIDENCE_DOC}`. | No full survival compatibility from crash recovery row; no long-term durability, arbitrary crash consistency, multi-chunk persistence, all block entities, concurrent saves, backups, broad vanilla parity, or production readiness. | next |"),
     ]
     .join("\n")
 }

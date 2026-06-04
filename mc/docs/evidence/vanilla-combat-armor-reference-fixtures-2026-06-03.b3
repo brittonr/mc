@@ -2,4 +2,4 @@
 88c62ab589fbad3f4cb0303d6ad282d6df98dfb11dfe3f9e54eeb8d3d2a5985c  docs/evidence/mc-compat-paper-vanilla-combat-armor-reference-fixture-2026-06-03.jar
 6b47ffa09612743da12f52f8c62423b696c856c6869929e95f96c3f9f813fd03  docs/evidence/mc-compat-paper-vanilla-combat-armor-reference-fixture-2026-06-03.java
 d6549201fb4109f5f01cb261d7e2e875602a3560ddf0e88641932a014720de03  docs/evidence/valence-ctf-vanilla-combat-armor-reference-2026-06-03.rs
-6b47ffa09612743da12f52f8c62423b696c856c6869929e95f96c3f9f813fd03  tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java
+471a8753c1d08c7fb41179858443a4756811587aae83d4b17e1557f89ce1a0d6  tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java

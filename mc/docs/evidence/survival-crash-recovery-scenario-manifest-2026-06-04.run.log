@@ -1,0 +1,9 @@
+
+## scenario_manifest
+command=nix build .#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L
+this derivation will be built:
+  /nix/store/v4hvi3sc5vh7i9s6k3g140i1f4hfbhx1-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/v4hvi3sc5vh7i9s6k3g140i1f4hfbhx1-mc-compat-scenario-manifest.drv'...
+scenario_manifest_exit_status=0
+exit_status=0

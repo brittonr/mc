@@ -1,0 +1,7 @@
+# survival crash-recovery flake task-evidence gate
+this derivation will be built:
+  /nix/store/lds9abjk01h5gf4qmd43zwqyz3khhyrd-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/lds9abjk01h5gf4qmd43zwqyz3khhyrd-mc-compat-cairn-task-evidence.drv'...
+task_evidence_nix_check_exit_status=0
+exit_status=0

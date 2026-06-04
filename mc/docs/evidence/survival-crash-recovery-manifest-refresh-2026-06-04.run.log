@@ -1,0 +1,3 @@
+# refresh BLAKE3 manifests after survival crash-recovery promotion
+manifests_refreshed=313
+exit_status=0

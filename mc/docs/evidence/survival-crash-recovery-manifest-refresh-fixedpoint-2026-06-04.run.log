@@ -1,0 +1,11 @@
+# fixed-point BLAKE3 manifest refresh after survival crash-recovery promotion
+iteration_1_manifests_refreshed=313
+iteration_2_manifests_refreshed=313
+iteration_3_manifests_refreshed=313
+iteration_4_manifests_refreshed=313
+rustc_exit_status=0
+evidence manifest self-test ok: positive and negative fixtures exercised
+self_test_exit_status=0
+evidence manifests ok: 313 manifests, 1878 entries, 94 receipts scanned
+repo_check_exit_status=0
+exit_status=0

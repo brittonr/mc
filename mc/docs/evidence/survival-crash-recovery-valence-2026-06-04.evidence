@@ -1,0 +1,14 @@
+row=survival-crash-recovery-parity
+backend=valence
+revision_status=clean
+child_revision=ed1ed0335114c473424312870a77b37de2091a3e
+metric.pre_crash_mutation=block=Dirt position=24,64,0 persisted_before=false persisted_after=true
+metric.crash_stop=method=forced_stop storage=isolated graceful=false
+metric.backend_restart=method=crash_recovery storage=isolated restart_confirmed=true
+metric.reconnect=session=crash_recovery
+metric.post_crash_observation=block=Dirt position=24,64,0 persisted=true
+metric.server_recovery_state=block=Dirt position=24,64,0 pre_mutation=true crash_stop=true backend_restart=true post_observed=true dirty_reuse=false
+stevenarella_revision=75151ca3cd4ed6673c0daf3dc3579a5069cc4ac3
+valence_revision=ed1ed0335114c473424312870a77b37de2091a3e
+valence_storage_proof=target block reloaded from isolated Valence marker storage after forced process stop
+non_claims=arbitrary crash consistency; multi-chunk persistence; block entities; concurrent saves; backups; production readiness
