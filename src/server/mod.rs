@@ -248,6 +248,37 @@ const SURVIVAL_WORLD_PERSISTENCE_INVENTORY_SLOT: i16 = 36;
 const SURVIVAL_WORLD_PERSISTENCE_CURSOR_CENTER: f32 = 0.5;
 const SURVIVAL_WORLD_PERSISTENCE_CURSOR_TOP: f32 = 1.0;
 const SURVIVAL_WORLD_PERSISTENCE_SEQUENCE: i32 = 933;
+const SURVIVAL_BLOCK_ENTITY_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_BLOCK_ENTITY_PROBE";
+const SURVIVAL_BLOCK_ENTITY_SESSION_ENV: &str = "MC_COMPAT_SURVIVAL_BLOCK_ENTITY_SESSION";
+const SURVIVAL_BLOCK_ENTITY_FIRST_SESSION: u32 = 1;
+const SURVIVAL_BLOCK_ENTITY_RESTART_SESSION: u32 = 2;
+const SURVIVAL_BLOCK_ENTITY_POSITION_TICK: u32 = SURVIVAL_WORLD_PERSISTENCE_POSITION_TICK;
+const SURVIVAL_BLOCK_ENTITY_PLAYER_X: f64 = 28.5;
+const SURVIVAL_BLOCK_ENTITY_PLAYER_Y: f64 = 65.0;
+const SURVIVAL_BLOCK_ENTITY_PLAYER_Z: f64 = -1.5;
+const SURVIVAL_BLOCK_ENTITY_TARGET_YAW: f32 = 0.0;
+const SURVIVAL_BLOCK_ENTITY_TARGET_PITCH: f32 = 30.0;
+const SURVIVAL_BLOCK_ENTITY_KIND: &str = "Sign";
+const SURVIVAL_BLOCK_ENTITY_X: i32 = 28;
+const SURVIVAL_BLOCK_ENTITY_Y: i32 = 64;
+const SURVIVAL_BLOCK_ENTITY_Z: i32 = 0;
+const SURVIVAL_BLOCK_ENTITY_TEXT_LINE_1: &str = "MC";
+const SURVIVAL_BLOCK_ENTITY_TEXT_LINE_2: &str = "Compat";
+const SURVIVAL_BLOCK_ENTITY_TEXT_LINE_3: &str = "Sign";
+const SURVIVAL_BLOCK_ENTITY_TEXT_LINE_4: &str = "Persist";
+const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &str = "MC|Compat|Sign|Persist";
+const SIGN_LINE_COUNT: usize = 4;
+const SIGN_LINE_INDEX_1: usize = 0;
+const SIGN_LINE_INDEX_2: usize = 1;
+const SIGN_LINE_INDEX_3: usize = 2;
+const SIGN_LINE_INDEX_4: usize = 3;
+const MODERN_SIGN_FRONT_TEXT_KEY: &str = "front_text";
+const MODERN_SIGN_MESSAGES_KEY: &str = "messages";
+const LEGACY_SIGN_ID: &str = "Sign";
+const LEGACY_SIGN_BLOCK_ENTITY_ACTION: u8 = 9;
+const LEGACY_SIGN_TEXT_KEYS: [&str; SIGN_LINE_COUNT] = ["Text1", "Text2", "Text3", "Text4"];
+const BLOCK_ENTITY_PACKED_X_SHIFT: u8 = 4;
+const BLOCK_ENTITY_PACKED_COORD_MASK: u8 = 0x0F;
 const CHUNK_SECTION_WIDTH_LOG2: i32 = 4;
 const SURVIVAL_BIOME_DIMENSION_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_PROBE";
 const SURVIVAL_OVERWORLD_ID: &str = "minecraft:overworld";
@@ -313,6 +344,17 @@ fn survival_world_persistence_probe_session_from_env() -> u32 {
                 || *session == SURVIVAL_WORLD_PERSISTENCE_RESTART_SESSION
         })
         .unwrap_or(SURVIVAL_WORLD_PERSISTENCE_FIRST_SESSION)
+}
+
+fn survival_block_entity_probe_session_from_env() -> u32 {
+    std::env::var(SURVIVAL_BLOCK_ENTITY_SESSION_ENV)
+        .ok()
+        .and_then(|raw| raw.trim().parse::<u32>().ok())
+        .filter(|session| {
+            *session == SURVIVAL_BLOCK_ENTITY_FIRST_SESSION
+                || *session == SURVIVAL_BLOCK_ENTITY_RESTART_SESSION
+        })
+        .unwrap_or(SURVIVAL_BLOCK_ENTITY_FIRST_SESSION)
 }
 
 fn survival_crafting_table_position() -> Position {
@@ -439,6 +481,91 @@ fn survival_world_persistence_position_matches(location: Position) -> bool {
         && location.z == SURVIVAL_WORLD_PERSISTENCE_Z
 }
 
+fn survival_block_entity_position_matches(location: Position) -> bool {
+    location.x == SURVIVAL_BLOCK_ENTITY_X
+        && location.y == SURVIVAL_BLOCK_ENTITY_Y
+        && location.z == SURVIVAL_BLOCK_ENTITY_Z
+}
+
+fn survival_block_entity_expected_lines() -> [String; SIGN_LINE_COUNT] {
+    [
+        SURVIVAL_BLOCK_ENTITY_TEXT_LINE_1.to_string(),
+        SURVIVAL_BLOCK_ENTITY_TEXT_LINE_2.to_string(),
+        SURVIVAL_BLOCK_ENTITY_TEXT_LINE_3.to_string(),
+        SURVIVAL_BLOCK_ENTITY_TEXT_LINE_4.to_string(),
+    ]
+}
+
+fn sign_lines_match_payload(lines: &[String; SIGN_LINE_COUNT]) -> bool {
+    lines[SIGN_LINE_INDEX_1] == SURVIVAL_BLOCK_ENTITY_TEXT_LINE_1
+        && lines[SIGN_LINE_INDEX_2] == SURVIVAL_BLOCK_ENTITY_TEXT_LINE_2
+        && lines[SIGN_LINE_INDEX_3] == SURVIVAL_BLOCK_ENTITY_TEXT_LINE_3
+        && lines[SIGN_LINE_INDEX_4] == SURVIVAL_BLOCK_ENTITY_TEXT_LINE_4
+}
+
+fn sign_text_payload(lines: &[String; SIGN_LINE_COUNT]) -> String {
+    lines.join("|")
+}
+
+fn component_text(raw: &str) -> String {
+    format::Component::from_string(raw).to_string()
+}
+
+fn sign_lines_from_vec(lines: Vec<String>) -> Option<[String; SIGN_LINE_COUNT]> {
+    if lines.len() != SIGN_LINE_COUNT {
+        return None;
+    }
+    Some([
+        lines[SIGN_LINE_INDEX_1].clone(),
+        lines[SIGN_LINE_INDEX_2].clone(),
+        lines[SIGN_LINE_INDEX_3].clone(),
+        lines[SIGN_LINE_INDEX_4].clone(),
+    ])
+}
+
+fn extract_modern_sign_lines(nbt: &crate::nbt::NamedTag) -> Option<[String; SIGN_LINE_COUNT]> {
+    let root = nbt.1.as_compound()?;
+    let front_text = root.get(MODERN_SIGN_FRONT_TEXT_KEY)?.as_compound()?;
+    let messages = front_text.get(MODERN_SIGN_MESSAGES_KEY)?.as_list()?;
+    if messages.len() != SIGN_LINE_COUNT {
+        return None;
+    }
+    let lines = messages
+        .iter()
+        .map(|tag| tag.as_str().map(component_text))
+        .collect::<Option<Vec<_>>>()?;
+    sign_lines_from_vec(lines)
+}
+
+fn extract_legacy_sign_lines(nbt: &crate::nbt::NamedTag) -> Option<[String; SIGN_LINE_COUNT]> {
+    let lines = LEGACY_SIGN_TEXT_KEYS
+        .iter()
+        .map(|key| {
+            nbt.1
+                .get(key)
+                .and_then(|tag| tag.as_str())
+                .map(component_text)
+        })
+        .collect::<Option<Vec<_>>>()?;
+    sign_lines_from_vec(lines)
+}
+
+fn extract_sign_lines_from_nbt(nbt: &crate::nbt::NamedTag) -> Option<[String; SIGN_LINE_COUNT]> {
+    extract_modern_sign_lines(nbt).or_else(|| extract_legacy_sign_lines(nbt))
+}
+
+fn packed_block_entity_position(chunk_x: i32, chunk_z: i32, packed_xz: u8, y: i16) -> Position {
+    let chunk_width = 1 << CHUNK_SECTION_WIDTH_LOG2;
+    let local_x =
+        i32::from((packed_xz >> BLOCK_ENTITY_PACKED_X_SHIFT) & BLOCK_ENTITY_PACKED_COORD_MASK);
+    let local_z = i32::from(packed_xz & BLOCK_ENTITY_PACKED_COORD_MASK);
+    Position::new(
+        chunk_x * chunk_width + local_x,
+        i32::from(y),
+        chunk_z * chunk_width + local_z,
+    )
+}
+
 fn should_log_survival_crafting_inventory_slot(
     window_id: u8,
     crafting_window_id: u8,
@@ -546,6 +673,8 @@ pub struct Server {
     survival_redstone_toggle_probe_enabled: bool,
     survival_world_persistence_probe_enabled: bool,
     survival_world_persistence_probe_session: u32,
+    survival_block_entity_probe_enabled: bool,
+    survival_block_entity_probe_session: u32,
     survival_biome_dimension_probe_enabled: bool,
     equipment_probe_enabled: bool,
     projectile_probe_enabled: bool,
@@ -632,6 +761,10 @@ pub struct Server {
     survival_world_persistence_pre_restart_seen: bool,
     survival_world_persistence_reconnect_sent: bool,
     survival_world_persistence_post_restart_seen: bool,
+    survival_block_entity_position_sent: bool,
+    survival_block_entity_pre_restart_seen: bool,
+    survival_block_entity_reconnect_sent: bool,
+    survival_block_entity_post_restart_seen: bool,
     inventory_probe_click_sent: bool,
     inventory_probe_container_click_sent: bool,
     inventory_probe_container_id: u8,
@@ -1199,6 +1332,10 @@ impl Server {
             .unwrap_or(false),
             survival_world_persistence_probe_session:
                 survival_world_persistence_probe_session_from_env(),
+            survival_block_entity_probe_enabled: std::env::var(SURVIVAL_BLOCK_ENTITY_PROBE_ENV)
+                .map(|value| value != "0")
+                .unwrap_or(false),
+            survival_block_entity_probe_session: survival_block_entity_probe_session_from_env(),
             survival_biome_dimension_probe_enabled: std::env::var(
                 SURVIVAL_BIOME_DIMENSION_PROBE_ENV,
             )
@@ -1296,6 +1433,10 @@ impl Server {
             survival_world_persistence_pre_restart_seen: false,
             survival_world_persistence_reconnect_sent: false,
             survival_world_persistence_post_restart_seen: false,
+            survival_block_entity_position_sent: false,
+            survival_block_entity_pre_restart_seen: false,
+            survival_block_entity_reconnect_sent: false,
+            survival_block_entity_post_restart_seen: false,
             inventory_probe_click_sent: false,
             inventory_probe_container_click_sent: false,
             inventory_probe_container_id: 0,
@@ -1423,6 +1564,7 @@ impl Server {
             && !self.survival_mob_drop_probe_enabled
             && !self.survival_redstone_toggle_probe_enabled
             && !self.survival_world_persistence_probe_enabled
+            && !self.survival_block_entity_probe_enabled
         {
             return;
         }
@@ -1879,6 +2021,7 @@ impl Server {
         self.apply_mc_compat_survival_mob_drop_probe(player);
         self.apply_mc_compat_survival_redstone_toggle_probe(player);
         self.apply_mc_compat_survival_world_persistence_probe(player);
+        self.apply_mc_compat_survival_block_entity_probe(player);
 
         if self.inventory_probe_enabled && self.active_probe_ticks == 520 {
             info!("MC-COMPAT-MILESTONE inventory_probe_select_hotbar_slot slot=0");
@@ -3940,6 +4083,114 @@ impl Server {
         }
     }
 
+    fn apply_mc_compat_survival_block_entity_probe(&mut self, player: ecs::Entity) {
+        if !self.survival_block_entity_probe_enabled {
+            return;
+        }
+        if self.active_probe_ticks >= SURVIVAL_BLOCK_ENTITY_POSITION_TICK
+            && !self.survival_block_entity_position_sent
+        {
+            if let Some(position) = self.entities.get_component_mut(player, self.position) {
+                position.position = cgmath::Vector3::new(
+                    SURVIVAL_BLOCK_ENTITY_PLAYER_X,
+                    SURVIVAL_BLOCK_ENTITY_PLAYER_Y,
+                    SURVIVAL_BLOCK_ENTITY_PLAYER_Z,
+                );
+                position.moved = true;
+            }
+            self.write_packet(packet::play::serverbound::PlayerPositionLook {
+                x: SURVIVAL_BLOCK_ENTITY_PLAYER_X,
+                y: SURVIVAL_BLOCK_ENTITY_PLAYER_Y,
+                z: SURVIVAL_BLOCK_ENTITY_PLAYER_Z,
+                yaw: SURVIVAL_BLOCK_ENTITY_TARGET_YAW,
+                pitch: SURVIVAL_BLOCK_ENTITY_TARGET_PITCH,
+                on_ground: true,
+            });
+            info!(
+                "MC-COMPAT-MILESTONE survival_block_entity_move_near_target x={:.1} y={:.1} z={:.1} position={},{},{} session={}",
+                SURVIVAL_BLOCK_ENTITY_PLAYER_X,
+                SURVIVAL_BLOCK_ENTITY_PLAYER_Y,
+                SURVIVAL_BLOCK_ENTITY_PLAYER_Z,
+                SURVIVAL_BLOCK_ENTITY_X,
+                SURVIVAL_BLOCK_ENTITY_Y,
+                SURVIVAL_BLOCK_ENTITY_Z,
+                self.survival_block_entity_probe_session
+            );
+            self.survival_block_entity_position_sent = true;
+        }
+    }
+
+    fn handle_sign_block_entity_update(
+        &mut self,
+        location: Position,
+        nbt: &crate::nbt::NamedTag,
+    ) -> bool {
+        let Some(lines) = extract_sign_lines_from_nbt(nbt) else {
+            return false;
+        };
+        let components = [
+            format::Component::from_string(&lines[SIGN_LINE_INDEX_1]),
+            format::Component::from_string(&lines[SIGN_LINE_INDEX_2]),
+            format::Component::from_string(&lines[SIGN_LINE_INDEX_3]),
+            format::Component::from_string(&lines[SIGN_LINE_INDEX_4]),
+        ];
+        self.world
+            .add_block_entity_action(world::BlockEntityAction::UpdateSignText(Box::new((
+                location,
+                components[SIGN_LINE_INDEX_1].clone(),
+                components[SIGN_LINE_INDEX_2].clone(),
+                components[SIGN_LINE_INDEX_3].clone(),
+                components[SIGN_LINE_INDEX_4].clone(),
+            ))));
+        self.log_survival_block_entity_sign_update(location, &lines);
+        true
+    }
+
+    fn log_survival_block_entity_sign_update(
+        &mut self,
+        location: Position,
+        lines: &[String; SIGN_LINE_COUNT],
+    ) {
+        if !self.survival_block_entity_probe_enabled
+            || !survival_block_entity_position_matches(location)
+            || !sign_lines_match_payload(lines)
+        {
+            return;
+        }
+        let payload = sign_text_payload(lines);
+        if self.survival_block_entity_probe_session == SURVIVAL_BLOCK_ENTITY_FIRST_SESSION
+            && !self.survival_block_entity_pre_restart_seen
+        {
+            self.survival_block_entity_pre_restart_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_block_entity_pre_restart_update kind={} position={},{},{} text={} source=chunk",
+                SURVIVAL_BLOCK_ENTITY_KIND,
+                SURVIVAL_BLOCK_ENTITY_X,
+                SURVIVAL_BLOCK_ENTITY_Y,
+                SURVIVAL_BLOCK_ENTITY_Z,
+                payload
+            );
+            if !self.survival_block_entity_reconnect_sent {
+                self.survival_block_entity_reconnect_sent = true;
+                info!("MC-COMPAT-MILESTONE survival_block_entity_reconnect_sent session=restart");
+            }
+            return;
+        }
+        if self.survival_block_entity_probe_session == SURVIVAL_BLOCK_ENTITY_RESTART_SESSION
+            && !self.survival_block_entity_post_restart_seen
+        {
+            self.survival_block_entity_post_restart_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_block_entity_post_restart_update kind={} position={},{},{} text={} source=chunk",
+                SURVIVAL_BLOCK_ENTITY_KIND,
+                SURVIVAL_BLOCK_ENTITY_X,
+                SURVIVAL_BLOCK_ENTITY_Y,
+                SURVIVAL_BLOCK_ENTITY_Z,
+                payload
+            );
+        }
+    }
+
     fn log_survival_mob_drop_inventory_from_slot(
         &mut self,
         slot: i16,
@@ -5038,46 +5289,24 @@ impl Server {
                     ));
             }
             Some(nbt) => {
-                match block_update.action {
-                    // TODO: support more block update actions
-                    //1 => // Mob spawner
-                    //2 => // Command block text
-                    //3 => // Beacon
-                    //4 => // Mob head
-                    //5 => // Conduit
-                    //6 => // Banner
-                    //7 => // Structure
-                    //8 => // Gateway
-                    9 => {
-                        // Sign
-                        let line1 = format::Component::from_string(
-                            nbt.1.get("Text1").unwrap().as_str().unwrap(),
-                        );
-                        let line2 = format::Component::from_string(
-                            nbt.1.get("Text2").unwrap().as_str().unwrap(),
-                        );
-                        let line3 = format::Component::from_string(
-                            nbt.1.get("Text3").unwrap().as_str().unwrap(),
-                        );
-                        let line4 = format::Component::from_string(
-                            nbt.1.get("Text4").unwrap().as_str().unwrap(),
-                        );
-                        self.world.add_block_entity_action(
-                            world::BlockEntityAction::UpdateSignText(Box::new((
-                                block_update.location,
-                                line1,
-                                line2,
-                                line3,
-                                line4,
-                            ))),
-                        );
-                    }
-                    //10 => // Unused
-                    //11 => // Jigsaw
-                    //12 => // Campfire
-                    //14 => // Beehive
-                    _ => {
-                        debug!("Unsupported block entity action: {}", block_update.action);
+                if !self.handle_sign_block_entity_update(block_update.location, &nbt) {
+                    match block_update.action {
+                        // TODO: support more block update actions
+                        //1 => // Mob spawner
+                        //2 => // Command block text
+                        //3 => // Beacon
+                        //4 => // Mob head
+                        //5 => // Conduit
+                        //6 => // Banner
+                        //7 => // Structure
+                        //8 => // Gateway
+                        //10 => // Unused
+                        //11 => // Jigsaw
+                        //12 => // Campfire
+                        //14 => // Beehive
+                        _ => {
+                            debug!("Unsupported block entity action: {}", block_update.action);
+                        }
                     }
                 }
             }
@@ -5329,14 +5558,23 @@ impl Server {
 
     fn load_block_entities(&mut self, block_entities: Vec<Option<crate::nbt::NamedTag>>) {
         for block_entity in block_entities.into_iter().flatten() {
-            let x = block_entity.1.get("x").unwrap().as_int().unwrap();
-            let y = block_entity.1.get("y").unwrap().as_int().unwrap();
-            let z = block_entity.1.get("z").unwrap().as_int().unwrap();
+            let Some(x) = block_entity.1.get("x").and_then(|tag| tag.as_int()) else {
+                warn!("Block entity missing x tag: {:?}", block_entity);
+                continue;
+            };
+            let Some(y) = block_entity.1.get("y").and_then(|tag| tag.as_int()) else {
+                warn!("Block entity missing y tag: {:?}", block_entity);
+                continue;
+            };
+            let Some(z) = block_entity.1.get("z").and_then(|tag| tag.as_int()) else {
+                warn!("Block entity missing z tag: {:?}", block_entity);
+                continue;
+            };
             if let Some(tile_id) = block_entity.1.get("id") {
-                let tile_id = tile_id.as_str().unwrap();
+                let tile_id = tile_id.as_str().unwrap_or_default();
                 let action = match tile_id {
                     // Fake a sign update
-                    "Sign" => 9,
+                    LEGACY_SIGN_ID => LEGACY_SIGN_BLOCK_ENTITY_ACTION,
                     // Not something we care about, so break the loop
                     _ => continue,
                 };
@@ -5351,6 +5589,26 @@ impl Server {
                     x, y, z, block_entity
                 );
             }
+        }
+    }
+
+    fn load_packed_block_entities(
+        &mut self,
+        chunk_x: i32,
+        chunk_z: i32,
+        block_entities: Vec<packet::BlockEntityAtPackedLocation>,
+    ) {
+        for block_entity in block_entities {
+            let Some(nbt) = block_entity.data else {
+                continue;
+            };
+            let location = packed_block_entity_position(
+                chunk_x,
+                chunk_z,
+                block_entity.packed_xz,
+                block_entity.y,
+            );
+            self.handle_sign_block_entity_update(location, &nbt);
         }
     }
 
@@ -5373,7 +5631,11 @@ impl Server {
                 chunk_data.data.data,
             )
             .unwrap();
-        //self.load_block_entities(chunk_data.block_entities.data); // TODO: load entities
+        self.load_packed_block_entities(
+            chunk_data.chunk_x,
+            chunk_data.chunk_z,
+            chunk_data.block_entities.data,
+        );
 
         // Set block light data
         self.world.set_light_data(
@@ -5429,7 +5691,11 @@ impl Server {
                 chunk_data.data.data,
             )
             .unwrap();
-        //self.load_block_entities(chunk_data.block_entities.data); // TODO: load entities
+        self.load_packed_block_entities(
+            chunk_data.chunk_x,
+            chunk_data.chunk_z,
+            chunk_data.block_entities.data,
+        );
 
         self.world.set_light_data(
             chunk_data.chunk_x,
@@ -5826,20 +6092,23 @@ mod tests {
         derive_survival_environment_id, normalize_survival_environment_id,
         parse_flag_probe_repeat_target, should_log_survival_crafting_inventory_index,
         should_log_survival_crafting_inventory_slot, should_log_survival_furnace_inventory_index,
-        should_log_survival_furnace_inventory_slot, survival_crafting_input_stack,
-        survival_crafting_result_matches, survival_crafting_result_stack,
-        survival_crafting_table_position, survival_furnace_fuel_stack,
-        survival_furnace_input_stack, survival_furnace_output_matches,
+        should_log_survival_furnace_inventory_slot, sign_lines_match_payload, sign_text_payload,
+        survival_block_entity_expected_lines, survival_block_entity_position_matches,
+        survival_crafting_input_stack, survival_crafting_result_matches,
+        survival_crafting_result_stack, survival_crafting_table_position,
+        survival_furnace_fuel_stack, survival_furnace_input_stack, survival_furnace_output_matches,
         survival_furnace_output_stack, survival_furnace_position,
         survival_hunger_food_float_matches, survival_hunger_food_item_matches,
         survival_hunger_food_post_update_matches, survival_hunger_food_pre_update_matches,
         survival_hunger_food_slot_is_empty, survival_mob_drop_item_matches,
         survival_mob_drop_position_matches, survival_redstone_toggle_output_position_matches,
         survival_world_persistence_position_matches, DEFAULT_FLAG_PROBE_REPEAT_TARGET,
-        MAX_FLAG_PROBE_REPEAT_TARGET, PLAYER_INVENTORY_WINDOW_ID, SURVIVAL_CRAFTING_INPUT_A_SLOT,
-        SURVIVAL_CRAFTING_INPUT_COUNT, SURVIVAL_CRAFTING_INPUT_ITEM_ID,
-        SURVIVAL_CRAFTING_INVENTORY_INDEX, SURVIVAL_CRAFTING_INVENTORY_SLOT,
-        SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_INDEX,
+        MAX_FLAG_PROBE_REPEAT_TARGET, PLAYER_INVENTORY_WINDOW_ID, SIGN_LINE_INDEX_1,
+        SIGN_LINE_INDEX_2, SIGN_LINE_INDEX_3, SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD,
+        SURVIVAL_BLOCK_ENTITY_X, SURVIVAL_BLOCK_ENTITY_Y, SURVIVAL_BLOCK_ENTITY_Z,
+        SURVIVAL_CRAFTING_INPUT_A_SLOT, SURVIVAL_CRAFTING_INPUT_COUNT,
+        SURVIVAL_CRAFTING_INPUT_ITEM_ID, SURVIVAL_CRAFTING_INVENTORY_INDEX,
+        SURVIVAL_CRAFTING_INVENTORY_SLOT, SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_INDEX,
         SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_SLOT, SURVIVAL_CRAFTING_RESULT_COUNT,
         SURVIVAL_CRAFTING_RESULT_ITEM_ID, SURVIVAL_CRAFTING_TABLE_X, SURVIVAL_CRAFTING_TABLE_Y,
         SURVIVAL_CRAFTING_TABLE_Z, SURVIVAL_END_ID, SURVIVAL_FURNACE_FUEL_ITEM_ID,
@@ -6230,5 +6499,40 @@ mod tests {
 
         assert!(survival_world_persistence_position_matches(expected));
         assert!(!survival_world_persistence_position_matches(wrong));
+    }
+
+    #[test]
+    fn survival_block_entity_position_match_rejects_wrong_target() {
+        let expected = Position::new(
+            SURVIVAL_BLOCK_ENTITY_X,
+            SURVIVAL_BLOCK_ENTITY_Y,
+            SURVIVAL_BLOCK_ENTITY_Z,
+        );
+        let wrong = Position::new(
+            SURVIVAL_BLOCK_ENTITY_X,
+            SURVIVAL_BLOCK_ENTITY_Y,
+            SURVIVAL_BLOCK_ENTITY_Z + 1,
+        );
+
+        assert!(survival_block_entity_position_matches(expected));
+        assert!(!survival_block_entity_position_matches(wrong));
+    }
+
+    #[test]
+    fn survival_block_entity_sign_lines_match_contract_payload() {
+        let lines = survival_block_entity_expected_lines();
+        let wrong = [
+            lines[SIGN_LINE_INDEX_1].clone(),
+            lines[SIGN_LINE_INDEX_2].clone(),
+            lines[SIGN_LINE_INDEX_3].clone(),
+            "Wrong".to_string(),
+        ];
+
+        assert!(sign_lines_match_payload(&lines));
+        assert_eq!(
+            sign_text_payload(&lines),
+            SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD
+        );
+        assert!(!sign_lines_match_payload(&wrong));
     }
 }
