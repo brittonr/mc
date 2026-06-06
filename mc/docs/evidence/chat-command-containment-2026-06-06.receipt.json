@@ -1,0 +1,25 @@
+{
+  "schema": "mc.compat.targeted_packet_promotion.receipt.v1",
+  "row": "chat-command-containment",
+  "status": "pass",
+  "mode": "deterministic-fixture",
+  "packet_rows": [
+    "play/serverbound/0x05 ChatMessageC2SPacket",
+    "play/serverbound/0x04 CommandExecutionC2SPacket"
+  ],
+  "bounded_claim": "one owned-local harmless chat/command containment fixture with redaction policy",
+  "artifacts": {
+    "kv": "docs/evidence/chat-command-containment-2026-06-06.kv",
+    "doc": "docs/evidence/chat-command-containment-2026-06-06.md",
+    "checker": "tools/check_targeted_packet_promotions.rs"
+  },
+  "non_claims": [
+    "chat_signing_security",
+    "all_commands",
+    "command_permissions",
+    "moderation",
+    "adversarial_resilience",
+    "public_server_safety",
+    "production_readiness"
+  ]
+}

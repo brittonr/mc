@@ -3842,3 +3842,619 @@ r[mc_compatibility.block_entity_sign_packet_family.validation.log]
 - GIVEN the block-entity sign packet-family row is completed
 - WHEN the change is archived
 - THEN repo-local evidence logs record checker self-tests, any runner/fixture checks, packet inventory or row contract checks, acceptance/current-bundle checks, evidence manifest check, task-evidence gate, Cairn proposal/design/tasks gates, and Cairn validation.
+
+
+### Requirement: Block-entity update breadth contract
+
+r[mc_compatibility.block_entity_update_breadth_promotion.contract] The `block-entity-update-breadth` row MUST define a bounded non-sign block-entity promotion contract before coverage is claimed.
+
+#### Scenario: Contract names one non-sign payload
+
+r[mc_compatibility.block_entity_update_breadth_promotion.contract.scope]
+- GIVEN the row is prepared for promotion
+- WHEN reviewers inspect the contract
+- THEN it names one actor or fixture, non-sign block entity kind, position, normalized payload metric, packet row, backend evidence, child revisions if live, and checker metrics
+- AND all block entities, arbitrary NBT parity, persistence breadth, sign editing, full protocol-763 compatibility, broad Minecraft compatibility, public-server safety, and production readiness remain explicit non-claims.
+
+### Requirement: Block-entity update breadth checker
+
+r[mc_compatibility.block_entity_update_breadth_promotion.checker] A deterministic Rust checker MUST validate normalized non-sign block-entity update evidence before promotion.
+
+#### Scenario: Valid non-sign block-entity evidence passes
+
+r[mc_compatibility.block_entity_update_breadth_promotion.checker.valid]
+- GIVEN normalized evidence names `block-entity-update-breadth`, the configured kind, position, payload metric, packet row, backend evidence, and required non-claims
+- WHEN the checker evaluates the record
+- THEN it passes only if every configured metric is present and internally consistent.
+
+#### Scenario: Weak non-sign block-entity evidence fails closed
+
+r[mc_compatibility.block_entity_update_breadth_promotion.checker.rejects]
+- GIVEN evidence is missing the row id, names the wrong kind, position, packet row, or payload, omits backend evidence, lacks required revision metadata, or claims arbitrary NBT/all-block-entity coverage
+- WHEN the checker evaluates the record
+- THEN it fails and names the missing, unexpected, or mismatched metric.
+
+### Requirement: Block-entity update breadth rail
+
+r[mc_compatibility.block_entity_update_breadth_promotion.rail] The harness MUST expose or select an isolated non-sign block-entity update rail without changing existing sign persistence, survival, inventory, CTF, combat, or network semantics.
+
+#### Scenario: Sign and non-sign rows stay separate
+
+r[mc_compatibility.block_entity_update_breadth_promotion.rail.isolated]
+- GIVEN sign block-entity evidence already exists
+- WHEN non-sign block-entity evidence is added
+- THEN sign claims remain unchanged
+- AND the non-sign row records its own fixture and checker output.
+
+### Requirement: Block-entity update breadth artifacts
+
+r[mc_compatibility.block_entity_update_breadth_promotion.artifacts] Review-critical non-sign block-entity artifacts MUST be copied under `docs/evidence/` before promotion.
+
+#### Scenario: Artifacts include checks and payload source
+
+r[mc_compatibility.block_entity_update_breadth_promotion.artifacts.reviewable]
+- GIVEN the row is ready for promotion
+- WHEN reviewers inspect the repository
+- THEN receipts or fixtures, logs, normalized inputs, checker output, BLAKE3 manifests, revision metadata, and any oracle checkpoint are present under `docs/evidence/`.
+
+### Requirement: Narrow block-entity update breadth matrix promotion
+
+r[mc_compatibility.block_entity_update_breadth_promotion.matrix] Packet inventory, acceptance matrix, and current bundle docs MUST promote only the configured non-sign block-entity row after checker and evidence gates pass.
+
+#### Scenario: Broader block-entity coverage remains a non-claim
+
+r[mc_compatibility.block_entity_update_breadth_promotion.matrix.nonclaims]
+- GIVEN non-sign block-entity evidence passes
+- WHEN docs are updated
+- THEN only the configured row is marked covered
+- AND arbitrary NBT, all block entities, persistence breadth, full protocol, public-server safety, and production readiness remain explicit non-claims.
+
+### Requirement: Block-entity update breadth validation evidence
+
+r[mc_compatibility.block_entity_update_breadth_promotion.validation] The change MUST record checker, fixture or runner, packet inventory, manifest, task gate, Cairn gates, and Cairn validation output before archive.
+
+#### Scenario: Closeout evidence is complete
+
+r[mc_compatibility.block_entity_update_breadth_promotion.validation.log]
+- GIVEN the non-sign block-entity row is completed
+- WHEN the change is archived
+- THEN repo-local evidence logs record checker tests, fixture/runner checks, packet inventory checks, evidence manifest check, task-evidence gate, Cairn gates, and Cairn validation.
+
+
+### Requirement: Chat/command containment contract
+
+r[mc_compatibility.chat_command_containment_promotion.contract] The `chat-command-containment` row MUST define a bounded owned-local promotion contract before packet inventory, matrix, or current-bundle coverage is claimed.
+
+#### Scenario: Contract names one harmless payload
+
+r[mc_compatibility.chat_command_containment_promotion.contract.scope]
+- GIVEN the row is prepared for promotion
+- WHEN reviewers inspect the contract
+- THEN it names one actor, packet row or rows, harmless payload, owned-local target scope, server receipt or rejection metric, redaction policy, child revisions, and checker metrics
+- AND all chat signing/security, all commands, command permissions, moderation, public-server safety, adversarial resilience, full protocol-763 compatibility, and production readiness remain explicit non-claims.
+
+### Requirement: Chat/command containment checker
+
+r[mc_compatibility.chat_command_containment_promotion.checker] A deterministic Rust checker MUST validate normalized chat/command containment evidence before promotion.
+
+#### Scenario: Valid chat/command containment evidence passes
+
+r[mc_compatibility.chat_command_containment_promotion.checker.valid]
+- GIVEN normalized evidence names `chat-command-containment`, clean child revisions, owned-local scope, harmless payload identity, server receipt or rejection metric, redaction policy, and required non-claims
+- WHEN the checker evaluates the record
+- THEN it passes only if every configured metric is present and internally consistent.
+
+#### Scenario: Weak chat/command containment evidence fails closed
+
+r[mc_compatibility.chat_command_containment_promotion.checker.rejects]
+- GIVEN evidence is missing the row id, lacks owned-local scope, uses stale revisions, names the wrong payload or packet row, omits server correlation, lacks redaction policy, or claims public-server/security/command breadth
+- WHEN the checker evaluates the record
+- THEN it fails and names the missing, stale, unexpected, or mismatched metric.
+
+### Requirement: Chat/command containment rail
+
+r[mc_compatibility.chat_command_containment_promotion.rail] The harness MUST expose an isolated chat/command containment rail without changing existing CTF, survival, inventory, combat, network, or negative-live semantics.
+
+#### Scenario: Safety scope is isolated
+
+r[mc_compatibility.chat_command_containment_promotion.rail.isolated]
+- GIVEN existing network/public-server rows have separate safety contracts
+- WHEN the chat/command containment rail is added
+- THEN existing safety claims remain unchanged
+- AND the new row records only owned-local fixture evidence.
+
+### Requirement: Chat/command containment artifacts
+
+r[mc_compatibility.chat_command_containment_promotion.artifacts] Review-critical chat/command containment artifacts MUST be copied under `docs/evidence/` before promotion.
+
+#### Scenario: Artifacts include checks and redaction policy
+
+r[mc_compatibility.chat_command_containment_promotion.artifacts.reviewable]
+- GIVEN the row is ready for promotion
+- WHEN reviewers inspect the repository
+- THEN receipts, logs, normalized inputs, checker output, BLAKE3 manifests, redaction policy, child revisions, and any oracle checkpoint are present under `docs/evidence/`.
+
+### Requirement: Narrow chat/command matrix promotion
+
+r[mc_compatibility.chat_command_containment_promotion.matrix] Packet inventory, acceptance matrix, and current bundle docs MUST promote only the configured chat/command containment row after checker and evidence gates pass.
+
+#### Scenario: Broader chat/command safety remains a non-claim
+
+r[mc_compatibility.chat_command_containment_promotion.matrix.nonclaims]
+- GIVEN chat/command containment evidence passes
+- WHEN docs are updated
+- THEN only the configured owned-local row is marked covered
+- AND public-server safety, security, all commands, chat signing, moderation, full protocol, and production claims remain explicit non-claims.
+
+### Requirement: Chat/command containment validation evidence
+
+r[mc_compatibility.chat_command_containment_promotion.validation] The change MUST record checker, runner, packet inventory, manifest, task gate, Cairn gates, and Cairn validation output before archive.
+
+#### Scenario: Closeout evidence is complete
+
+r[mc_compatibility.chat_command_containment_promotion.validation.log]
+- GIVEN the chat/command containment row is completed
+- WHEN the change is archived
+- THEN repo-local evidence logs record checker tests, runner/fixture checks, packet inventory checks, evidence manifest check, task-evidence gate, Cairn gates, and Cairn validation.
+
+
+### Requirement: Chunk biome data packet contract
+
+r[mc_compatibility.chunk_biome_data_packet_promotion.contract] The `chunk-biome-data-packet` row MUST define a bounded promotion contract before packet inventory, matrix, or current-bundle coverage is claimed.
+
+#### Scenario: Contract names one packet fixture
+
+r[mc_compatibility.chunk_biome_data_packet_promotion.contract.scope]
+- GIVEN the row is prepared for promotion
+- WHEN reviewers inspect the contract
+- THEN it names the packet row `ChunkBiomeDataS2CPacket`, fixture source, protocol version, payload identity or hash, parser expectations, optional live context receipt, and checker metrics
+- AND all biome semantics, all chunk semantics, all worldgen packets, dimension travel, Nether/End behavior, full protocol-763 compatibility, broad Minecraft compatibility, and production readiness remain explicit non-claims.
+
+### Requirement: Chunk biome data packet checker
+
+r[mc_compatibility.chunk_biome_data_packet_promotion.checker] A deterministic Rust checker MUST validate normalized chunk biome data packet evidence before promotion.
+
+#### Scenario: Valid chunk biome evidence passes
+
+r[mc_compatibility.chunk_biome_data_packet_promotion.checker.valid]
+- GIVEN normalized evidence names `chunk-biome-data-packet`, the configured packet row, fixture payload identity, parser result, protocol version, and required non-claims
+- WHEN the checker evaluates the record
+- THEN it passes only if every configured metric is present and internally consistent.
+
+#### Scenario: Weak chunk biome evidence fails closed
+
+r[mc_compatibility.chunk_biome_data_packet_promotion.checker.rejects]
+- GIVEN evidence is missing the row id, names the wrong packet, lacks fixture identity, omits parser result, mismatches protocol, or claims broad biome/chunk/worldgen semantics
+- WHEN the checker evaluates the record
+- THEN it fails and names the missing, unexpected, or mismatched metric.
+
+### Requirement: Chunk biome data packet rail
+
+r[mc_compatibility.chunk_biome_data_packet_promotion.rail] The promotion MUST use isolated packet fixture or live-context rails without changing existing survival, chunk/biome, inventory, CTF, combat, or network semantics.
+
+#### Scenario: Existing chunk/biome rows remain separate
+
+r[mc_compatibility.chunk_biome_data_packet_promotion.rail.isolated]
+- GIVEN existing chunk/biome rows cover chunk-delta and overworld environment context
+- WHEN chunk biome data evidence is added
+- THEN existing rows remain unchanged
+- AND the new row records its own packet fixture and checker output.
+
+### Requirement: Chunk biome reviewable artifacts
+
+r[mc_compatibility.chunk_biome_data_packet_promotion.artifacts] Review-critical chunk biome packet artifacts MUST be copied under `docs/evidence/` before promotion.
+
+#### Scenario: Artifacts include checks and fixture source
+
+r[mc_compatibility.chunk_biome_data_packet_promotion.artifacts.reviewable]
+- GIVEN the row is ready for promotion
+- WHEN reviewers inspect the repository
+- THEN fixture payloads or hashes, normalized inputs, checker output, BLAKE3 manifests, optional live receipts, and any oracle checkpoint are present under `docs/evidence/`.
+
+### Requirement: Narrow chunk biome packet matrix promotion
+
+r[mc_compatibility.chunk_biome_data_packet_promotion.matrix] Packet inventory, acceptance matrix, and current bundle docs MUST promote only the configured chunk biome data packet row after checker and evidence gates pass.
+
+#### Scenario: Broader chunk/biome remains a non-claim
+
+r[mc_compatibility.chunk_biome_data_packet_promotion.matrix.nonclaims]
+- GIVEN chunk biome data evidence passes
+- WHEN docs are updated
+- THEN only the configured packet row is marked covered
+- AND all broader biome, chunk, worldgen, dimension, full protocol, and production claims remain explicit non-claims.
+
+### Requirement: Chunk biome packet validation evidence
+
+r[mc_compatibility.chunk_biome_data_packet_promotion.validation] The change MUST record checker, packet inventory, manifest, task gate, Cairn gates, and Cairn validation output before archive.
+
+#### Scenario: Closeout evidence is complete
+
+r[mc_compatibility.chunk_biome_data_packet_promotion.validation.log]
+- GIVEN the chunk biome data packet row is completed
+- WHEN the change is archived
+- THEN repo-local evidence logs record checker tests, fixture or runner checks, packet inventory checks, evidence manifest check, task-evidence gate, Cairn gates, and Cairn validation.
+
+
+### Requirement: Creative inventory action contract
+
+r[mc_compatibility.creative_inventory_action_promotion.contract] The `creative-inventory-action` row MUST define a bounded promotion contract before packet inventory, matrix, or current-bundle coverage is claimed.
+
+#### Scenario: Contract names one creative slot mutation
+
+r[mc_compatibility.creative_inventory_action_promotion.contract.scope]
+- GIVEN the row is prepared for promotion
+- WHEN reviewers inspect the contract
+- THEN it names one actor, creative game-mode precondition, packet row `CreativeInventoryActionC2SPacket`, semantic slot, wire slot, item, count, server acceptance metric, final slot state, child revisions, and checker metrics
+- AND all creative inventory semantics, all slots, all items, all game-mode transitions, all pick-block behavior, full protocol-763 compatibility, public-server safety, and production readiness remain explicit non-claims.
+
+### Requirement: Creative inventory action checker
+
+r[mc_compatibility.creative_inventory_action_promotion.checker] A deterministic Rust checker MUST validate normalized creative inventory evidence before promotion.
+
+#### Scenario: Valid creative action evidence passes
+
+r[mc_compatibility.creative_inventory_action_promotion.checker.valid]
+- GIVEN normalized evidence names `creative-inventory-action`, clean child revisions, creative-mode precondition, configured slot/item/count, client action milestone, Valence acceptance, and final slot state
+- WHEN the checker evaluates the record
+- THEN it passes only if every configured metric is present and internally consistent.
+
+#### Scenario: Weak creative action evidence fails closed
+
+r[mc_compatibility.creative_inventory_action_promotion.checker.rejects]
+- GIVEN evidence is missing the row id, lacks creative game mode, uses stale revisions, names the wrong slot/item/count, omits server acceptance, mismatches final state, or claims broad creative inventory coverage
+- WHEN the checker evaluates the record
+- THEN it fails and names the missing, stale, unexpected, or mismatched metric.
+
+### Requirement: Creative inventory action rail
+
+r[mc_compatibility.creative_inventory_action_promotion.rail] The harness MUST expose an isolated creative inventory rail without changing existing survival/player-inventory, CTF, combat, network, or negative-live semantics.
+
+#### Scenario: Survival inventory rows stay separate
+
+r[mc_compatibility.creative_inventory_action_promotion.rail.isolated]
+- GIVEN existing inventory rows cover survival/player-inventory actions
+- WHEN the creative rail is added
+- THEN existing inventory scenario milestones and non-claims remain unchanged
+- AND the creative row records its own game-mode, packet, and slot-state evidence.
+
+### Requirement: Creative inventory reviewable artifacts
+
+r[mc_compatibility.creative_inventory_action_promotion.artifacts] Review-critical creative inventory artifacts MUST be copied under `docs/evidence/` before promotion.
+
+#### Scenario: Artifacts include checks and revisions
+
+r[mc_compatibility.creative_inventory_action_promotion.artifacts.reviewable]
+- GIVEN the row is ready for promotion
+- WHEN reviewers inspect the repository
+- THEN receipts, logs, normalized inputs, checker output, BLAKE3 manifests, child revisions, and any oracle checkpoint are present under `docs/evidence/`.
+
+### Requirement: Narrow creative inventory matrix promotion
+
+r[mc_compatibility.creative_inventory_action_promotion.matrix] Packet inventory, acceptance matrix, and current bundle docs MUST promote only the configured creative inventory action row after checker and evidence gates pass.
+
+#### Scenario: Broader creative inventory remains a non-claim
+
+r[mc_compatibility.creative_inventory_action_promotion.matrix.nonclaims]
+- GIVEN creative inventory action evidence passes
+- WHEN docs are updated
+- THEN only the configured creative row is marked covered
+- AND all broader creative inventory, all slots/items, game-mode breadth, full protocol, public-server safety, and production readiness remain explicit non-claims.
+
+### Requirement: Creative inventory validation evidence
+
+r[mc_compatibility.creative_inventory_action_promotion.validation] The change MUST record checker, runner, packet inventory, manifest, task gate, Cairn gates, and Cairn validation output before archive.
+
+#### Scenario: Closeout evidence is complete
+
+r[mc_compatibility.creative_inventory_action_promotion.validation.log]
+- GIVEN the creative inventory action row is completed
+- WHEN the change is archived
+- THEN repo-local evidence logs record checker tests, runner/fixture checks, packet inventory checks, evidence manifest check, task-evidence gate, Cairn gates, and Cairn validation.
+
+
+### Requirement: Entity status-effect packet contract
+
+r[mc_compatibility.entity_status_effect_packets_promotion.contract] The `entity-status-effect-packets` row MUST define a bounded promotion contract before packet inventory, matrix, or current-bundle coverage is claimed.
+
+#### Scenario: Contract names one effect apply/remove scope
+
+r[mc_compatibility.entity_status_effect_packets_promotion.contract.scope]
+- GIVEN the row is prepared for promotion
+- WHEN reviewers inspect the contract
+- THEN it names one actor or target entity, effect id or name, amplifier, duration, packet row or rows, server correlation, child revisions, and checker metrics
+- AND all effects, stacking, particles/UI, gameplay modifiers, combat balancing, survival parity, full protocol-763 compatibility, public-server safety, and production readiness remain explicit non-claims.
+
+### Requirement: Entity status-effect checker
+
+r[mc_compatibility.entity_status_effect_packets_promotion.checker] A deterministic Rust checker MUST validate normalized entity status-effect evidence before promotion.
+
+#### Scenario: Valid status-effect evidence passes
+
+r[mc_compatibility.entity_status_effect_packets_promotion.checker.valid]
+- GIVEN normalized evidence names `entity-status-effect-packets`, clean child revisions, the configured effect metrics, client apply and optional remove observations, and Valence server correlation
+- WHEN the checker evaluates the record
+- THEN it passes only if every configured metric is present and internally consistent.
+
+#### Scenario: Weak status-effect evidence fails closed
+
+r[mc_compatibility.entity_status_effect_packets_promotion.checker.rejects]
+- GIVEN evidence is missing the row id, uses stale revisions, names the wrong entity/effect/amplifier/duration, omits required apply or remove correlation, or claims broad effect or modifier semantics
+- WHEN the checker evaluates the record
+- THEN it fails and names the missing, stale, unexpected, or mismatched metric.
+
+### Requirement: Entity status-effect rail
+
+r[mc_compatibility.entity_status_effect_packets_promotion.rail] The harness MUST expose an isolated status-effect rail without changing existing combat, survival, CTF, inventory, network, or negative-live semantics.
+
+#### Scenario: Effect packet row stays separate from modifier claims
+
+r[mc_compatibility.entity_status_effect_packets_promotion.rail.isolated]
+- GIVEN existing combat and survival rows have their own scoped claims
+- WHEN the status-effect rail is added
+- THEN existing rows remain unchanged
+- AND the status-effect row records only packet observation/correlation metrics.
+
+### Requirement: Entity status-effect artifacts
+
+r[mc_compatibility.entity_status_effect_packets_promotion.artifacts] Review-critical status-effect artifacts MUST be copied under `docs/evidence/` before promotion.
+
+#### Scenario: Artifacts include checks and revisions
+
+r[mc_compatibility.entity_status_effect_packets_promotion.artifacts.reviewable]
+- GIVEN the row is ready for promotion
+- WHEN reviewers inspect the repository
+- THEN receipts, logs, normalized inputs, checker output, BLAKE3 manifests, child revisions, and any oracle checkpoint are present under `docs/evidence/`.
+
+### Requirement: Narrow entity status-effect matrix promotion
+
+r[mc_compatibility.entity_status_effect_packets_promotion.matrix] Packet inventory, acceptance matrix, and current bundle docs MUST promote only the configured status-effect row after checker and evidence gates pass.
+
+#### Scenario: Broader effect mechanics remain a non-claim
+
+r[mc_compatibility.entity_status_effect_packets_promotion.matrix.nonclaims]
+- GIVEN status-effect packet evidence passes
+- WHEN docs are updated
+- THEN only the configured effect packet row is marked covered
+- AND all broader effect, modifier, combat, survival, full protocol, and production claims remain explicit non-claims.
+
+### Requirement: Entity status-effect validation evidence
+
+r[mc_compatibility.entity_status_effect_packets_promotion.validation] The change MUST record checker, runner, packet inventory, manifest, task gate, Cairn gates, and Cairn validation output before archive.
+
+#### Scenario: Closeout evidence is complete
+
+r[mc_compatibility.entity_status_effect_packets_promotion.validation.log]
+- GIVEN the status-effect packet row is completed
+- WHEN the change is archived
+- THEN repo-local evidence logs record checker tests, runner/fixture checks, packet inventory checks, evidence manifest check, task-evidence gate, Cairn gates, and Cairn validation.
+
+
+### Requirement: Recipe-book client settings contract
+
+r[mc_compatibility.recipe_book_client_settings_promotion.contract] The `recipe-book-client-settings` row MUST define a bounded promotion contract before packet inventory, matrix, or current-bundle coverage is claimed.
+
+#### Scenario: Contract names one settings transition
+
+r[mc_compatibility.recipe_book_client_settings_promotion.contract.scope]
+- GIVEN the row is prepared for promotion
+- WHEN reviewers inspect the contract
+- THEN it names one actor, packet row `RecipeBookDataC2SPacket`, configured recipe-book state fields, client action metric, Valence server correlation, child revisions, and checker metrics
+- AND recipe-book UI behavior, all recipe categories, recipe discovery, all recipes, full crafting coverage, full protocol-763 compatibility, public-server safety, and production readiness remain explicit non-claims.
+
+### Requirement: Recipe-book client settings checker
+
+r[mc_compatibility.recipe_book_client_settings_promotion.checker] A deterministic Rust checker MUST validate normalized recipe-book settings evidence before promotion.
+
+#### Scenario: Valid recipe-book settings evidence passes
+
+r[mc_compatibility.recipe_book_client_settings_promotion.checker.valid]
+- GIVEN normalized evidence names `recipe-book-client-settings`, clean child revisions, configured settings fields, client action metric, and Valence server correlation
+- WHEN the checker evaluates the record
+- THEN it passes only if every configured metric is present and internally consistent.
+
+#### Scenario: Weak recipe-book settings evidence fails closed
+
+r[mc_compatibility.recipe_book_client_settings_promotion.checker.rejects]
+- GIVEN evidence is missing the row id, uses stale revisions, names the wrong settings fields, omits client or server correlation, or claims broad recipe-book/crafting coverage
+- WHEN the checker evaluates the record
+- THEN it fails and names the missing, stale, unexpected, or mismatched metric.
+
+### Requirement: Recipe-book client settings rail
+
+r[mc_compatibility.recipe_book_client_settings_promotion.rail] The harness MUST expose an isolated recipe-book settings rail without changing existing crafting, survival, inventory, CTF, combat, or network semantics.
+
+#### Scenario: Crafting rows stay separate
+
+r[mc_compatibility.recipe_book_client_settings_promotion.rail.isolated]
+- GIVEN existing crafting evidence covers one crafting-table recipe path
+- WHEN the recipe-book settings rail is added
+- THEN existing crafting claims remain unchanged
+- AND the new row records only settings packet evidence.
+
+### Requirement: Recipe-book settings artifacts
+
+r[mc_compatibility.recipe_book_client_settings_promotion.artifacts] Review-critical recipe-book settings artifacts MUST be copied under `docs/evidence/` before promotion.
+
+#### Scenario: Artifacts include checks and revisions
+
+r[mc_compatibility.recipe_book_client_settings_promotion.artifacts.reviewable]
+- GIVEN the row is ready for promotion
+- WHEN reviewers inspect the repository
+- THEN receipts, logs, normalized inputs, checker output, BLAKE3 manifests, child revisions, and any oracle checkpoint are present under `docs/evidence/`.
+
+### Requirement: Narrow recipe-book settings matrix promotion
+
+r[mc_compatibility.recipe_book_client_settings_promotion.matrix] Packet inventory, acceptance matrix, and current bundle docs MUST promote only the configured recipe-book settings row after checker and evidence gates pass.
+
+#### Scenario: Broader recipe-book semantics remain a non-claim
+
+r[mc_compatibility.recipe_book_client_settings_promotion.matrix.nonclaims]
+- GIVEN recipe-book settings evidence passes
+- WHEN docs are updated
+- THEN only the configured settings row is marked covered
+- AND recipe-book UI, discovery, all recipes, crafting breadth, full protocol, public-server safety, and production readiness remain explicit non-claims.
+
+### Requirement: Recipe-book settings validation evidence
+
+r[mc_compatibility.recipe_book_client_settings_promotion.validation] The change MUST record checker, runner, packet inventory, manifest, task gate, Cairn gates, and Cairn validation output before archive.
+
+#### Scenario: Closeout evidence is complete
+
+r[mc_compatibility.recipe_book_client_settings_promotion.validation.log]
+- GIVEN the recipe-book settings row is completed
+- WHEN the change is archived
+- THEN repo-local evidence logs record checker tests, runner/fixture checks, packet inventory checks, evidence manifest check, task-evidence gate, Cairn gates, and Cairn validation.
+
+
+### Requirement: Resource-pack status contract
+
+r[mc_compatibility.resource_pack_status_promotion.contract] The `resource-pack-status` row MUST define a bounded local promotion contract before packet inventory, matrix, or current-bundle coverage is claimed.
+
+#### Scenario: Contract names one local offer/status exchange
+
+r[mc_compatibility.resource_pack_status_promotion.contract.scope]
+- GIVEN the row is prepared for promotion
+- WHEN reviewers inspect the contract
+- THEN it names one actor, local fixture offer metadata, packet row or rows, configured client status response, server correlation, no-external-fetch guarantee, redaction policy, child revisions, and checker metrics
+- AND asset download/application, trust/security validation, all resource-pack statuses, public-server safety, full protocol-763 compatibility, and production readiness remain explicit non-claims.
+
+### Requirement: Resource-pack status checker
+
+r[mc_compatibility.resource_pack_status_promotion.checker] A deterministic Rust checker MUST validate normalized resource-pack status evidence before promotion.
+
+#### Scenario: Valid resource-pack status evidence passes
+
+r[mc_compatibility.resource_pack_status_promotion.checker.valid]
+- GIVEN normalized evidence names `resource-pack-status`, clean child revisions, local fixture scope, configured offer/status metrics, server correlation, no-external-fetch guarantee, redaction policy, and required non-claims
+- WHEN the checker evaluates the record
+- THEN it passes only if every configured metric is present and internally consistent.
+
+#### Scenario: Weak resource-pack status evidence fails closed
+
+r[mc_compatibility.resource_pack_status_promotion.checker.rejects]
+- GIVEN evidence is missing the row id, lacks local scope, uses stale revisions, names the wrong offer/status, omits server correlation, lacks no-external-fetch or redaction fields, or claims asset/trust/public-server breadth
+- WHEN the checker evaluates the record
+- THEN it fails and names the missing, stale, unexpected, or mismatched metric.
+
+### Requirement: Resource-pack status rail
+
+r[mc_compatibility.resource_pack_status_promotion.rail] The harness MUST expose an isolated resource-pack status rail without changing existing CTF, survival, inventory, combat, network, or public-server semantics.
+
+#### Scenario: External fetch is not required
+
+r[mc_compatibility.resource_pack_status_promotion.rail.isolated]
+- GIVEN the resource-pack status row runs in an owned-local fixture
+- WHEN the rail is executed
+- THEN it records offer/status packet evidence without requiring external resource downloads
+- AND existing public-server and production-safety claims remain unchanged.
+
+### Requirement: Resource-pack status artifacts
+
+r[mc_compatibility.resource_pack_status_promotion.artifacts] Review-critical resource-pack status artifacts MUST be copied under `docs/evidence/` before promotion.
+
+#### Scenario: Artifacts include checks and redaction policy
+
+r[mc_compatibility.resource_pack_status_promotion.artifacts.reviewable]
+- GIVEN the row is ready for promotion
+- WHEN reviewers inspect the repository
+- THEN receipts, logs, normalized inputs, checker output, BLAKE3 manifests, no-external-fetch/redaction metadata, child revisions, and any oracle checkpoint are present under `docs/evidence/`.
+
+### Requirement: Narrow resource-pack status matrix promotion
+
+r[mc_compatibility.resource_pack_status_promotion.matrix] Packet inventory, acceptance matrix, and current bundle docs MUST promote only the configured resource-pack status row after checker and evidence gates pass.
+
+#### Scenario: Broader resource-pack safety remains a non-claim
+
+r[mc_compatibility.resource_pack_status_promotion.matrix.nonclaims]
+- GIVEN resource-pack status evidence passes
+- WHEN docs are updated
+- THEN only the configured local status row is marked covered
+- AND asset loading, trust/security, all statuses, public-server safety, full protocol, and production claims remain explicit non-claims.
+
+### Requirement: Resource-pack status validation evidence
+
+r[mc_compatibility.resource_pack_status_promotion.validation] The change MUST record checker, runner, packet inventory, manifest, task gate, Cairn gates, and Cairn validation output before archive.
+
+#### Scenario: Closeout evidence is complete
+
+r[mc_compatibility.resource_pack_status_promotion.validation.log]
+- GIVEN the resource-pack status row is completed
+- WHEN the change is archived
+- THEN repo-local evidence logs record checker tests, runner/fixture checks, packet inventory checks, evidence manifest check, task-evidence gate, Cairn gates, and Cairn validation.
+
+
+### Requirement: Sign editor open/update contract
+
+r[mc_compatibility.sign_editor_open_update_promotion.contract] The `sign-editor-open-update` row MUST define a bounded promotion contract before packet inventory, matrix, or current-bundle coverage is claimed.
+
+#### Scenario: Contract names one sign edit
+
+r[mc_compatibility.sign_editor_open_update_promotion.contract.scope]
+- GIVEN the row is prepared for promotion
+- WHEN reviewers inspect the contract
+- THEN it names one actor, sign position, initial sign state, submitted four-line payload, `SignEditorOpenS2CPacket`, `UpdateSignC2SPacket`, server acceptance metric, child revisions, and checker metrics
+- AND all sign editing UI behavior, all sign variants, all text formats, arbitrary NBT semantics, all block entities, full protocol-763 compatibility, public-server safety, and production readiness remain explicit non-claims.
+
+### Requirement: Sign editor open/update checker
+
+r[mc_compatibility.sign_editor_open_update_promotion.checker] A deterministic Rust checker MUST validate normalized sign editor open/update evidence before promotion.
+
+#### Scenario: Valid sign edit evidence passes
+
+r[mc_compatibility.sign_editor_open_update_promotion.checker.valid]
+- GIVEN normalized evidence names `sign-editor-open-update`, clean child revisions, the configured sign position and payload, client open/update milestones, and Valence server accepted-update correlation
+- WHEN the checker evaluates the record
+- THEN it passes only if every configured metric is present and internally consistent.
+
+#### Scenario: Weak sign edit evidence fails closed
+
+r[mc_compatibility.sign_editor_open_update_promotion.checker.rejects]
+- GIVEN evidence is missing the row id, omits open or update correlation, uses stale or unknown child revisions, reports the wrong sign position or payload, lacks server acceptance, or claims broad sign editing or block-entity coverage
+- WHEN the checker evaluates the record
+- THEN it fails and names the missing, stale, unexpected, or mismatched metric.
+
+### Requirement: Sign editor open/update rail
+
+r[mc_compatibility.sign_editor_open_update_promotion.rail] The harness MUST expose an isolated sign editor open/update rail without changing existing sign persistence, survival, inventory, CTF, combat, network, or negative-live semantics.
+
+#### Scenario: Existing sign persistence remains separate
+
+r[mc_compatibility.sign_editor_open_update_promotion.rail.isolated]
+- GIVEN existing sign block-entity persistence evidence is already promoted
+- WHEN the sign editor rail is added
+- THEN existing persistence claims remain unchanged
+- AND the new row records separate open/update packet evidence.
+
+### Requirement: Sign editor reviewable artifacts
+
+r[mc_compatibility.sign_editor_open_update_promotion.artifacts] Review-critical sign editor artifacts MUST be copied under `docs/evidence/` before promotion.
+
+#### Scenario: Artifacts include checks and revisions
+
+r[mc_compatibility.sign_editor_open_update_promotion.artifacts.reviewable]
+- GIVEN the row is ready for promotion
+- WHEN reviewers inspect the repository
+- THEN receipts, logs, normalized inputs, checker output, BLAKE3 manifests, child revisions, and any oracle checkpoint are present under `docs/evidence/`.
+
+### Requirement: Narrow sign editor matrix promotion
+
+r[mc_compatibility.sign_editor_open_update_promotion.matrix] Packet inventory, acceptance matrix, and current bundle docs MUST promote only the configured sign editor row after checker and evidence gates pass.
+
+#### Scenario: Broader sign editing remains a non-claim
+
+r[mc_compatibility.sign_editor_open_update_promotion.matrix.nonclaims]
+- GIVEN sign editor evidence passes
+- WHEN docs are updated
+- THEN only the configured sign editor open/update row is marked covered
+- AND broad sign editing, arbitrary sign text, all sign variants, block-entity breadth, full protocol coverage, public-server safety, and production readiness remain explicit non-claims.
+
+### Requirement: Sign editor validation evidence
+
+r[mc_compatibility.sign_editor_open_update_promotion.validation] The change MUST record checker, runner, packet inventory, manifest, task gate, Cairn gates, and Cairn validation output before archive.
+
+#### Scenario: Closeout evidence is complete
+
+r[mc_compatibility.sign_editor_open_update_promotion.validation.log]
+- GIVEN the sign editor row is completed
+- WHEN the change is archived
+- THEN repo-local evidence logs record checker tests, runner/fixture checks, packet inventory checks, evidence manifest check, task-evidence gate, Cairn gates, and Cairn validation.

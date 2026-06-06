@@ -1,0 +1,3 @@
+# targeted packet promotions focused checks
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check .#checks.x86_64-linux.mc-compat-acceptance-matrix .#checks.x86_64-linux.mc-compat-current-evidence-bundle .#checks.x86_64-linux.mc-compat-evidence-manifests
+exit_status=0

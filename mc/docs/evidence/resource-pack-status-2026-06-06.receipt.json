@@ -1,0 +1,23 @@
+{
+  "schema": "mc.compat.targeted_packet_promotion.receipt.v1",
+  "row": "resource-pack-status",
+  "status": "pass",
+  "mode": "deterministic-fixture",
+  "packet_rows": [
+    "play/clientbound/0x40 ResourcePackSendS2CPacket",
+    "play/serverbound/0x24 ResourcePackStatusC2SPacket"
+  ],
+  "bounded_claim": "one owned-local resource-pack offer/status fixture with declined status and no external fetch",
+  "artifacts": {
+    "kv": "docs/evidence/resource-pack-status-2026-06-06.kv",
+    "doc": "docs/evidence/resource-pack-status-2026-06-06.md",
+    "checker": "tools/check_targeted_packet_promotions.rs"
+  },
+  "non_claims": [
+    "asset_download_application",
+    "trust_security_validation",
+    "all_resource_pack_statuses",
+    "public_server_safety",
+    "production_readiness"
+  ]
+}

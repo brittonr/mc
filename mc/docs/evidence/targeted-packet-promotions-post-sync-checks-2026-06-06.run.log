@@ -1,0 +1,13 @@
+# targeted packet promotions post-sync checks
+command=nix build focused checks && nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 9,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 11,
+  "valid": true
+}
+exit_status=0

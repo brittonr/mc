@@ -1,0 +1,34 @@
+# targeted packet promotion checker
+command=rustc --edition=2021 tools/check_targeted_packet_promotions.rs
+compile_exit_status=0
+command=target/check-targeted-packet-promotions --self-test
+targeted packet promotion self-test ok: 8 positive fixtures and targeted negative fixtures exercised
+self_test_exit_status=0
+command=target/check-targeted-packet-promotions --row block-entity-update-breadth --evidence docs/evidence/block-entity-update-breadth-2026-06-06.kv
+block-entity update breadth promotion evidence passed
+block-entity-update-breadth_exit_status=0
+command=target/check-targeted-packet-promotions --row chat-command-containment --evidence docs/evidence/chat-command-containment-2026-06-06.kv
+chat/command containment promotion evidence passed
+chat-command-containment_exit_status=0
+command=target/check-targeted-packet-promotions --row chunk-biome-data-packet --evidence docs/evidence/chunk-biome-data-packet-2026-06-06.kv
+chunk biome data packet promotion evidence passed
+chunk-biome-data-packet_exit_status=0
+command=target/check-targeted-packet-promotions --row creative-inventory-action --evidence docs/evidence/creative-inventory-action-2026-06-06.kv
+creative inventory action promotion evidence passed
+creative-inventory-action_exit_status=0
+command=target/check-targeted-packet-promotions --row entity-status-effect-packets --evidence docs/evidence/entity-status-effect-packets-2026-06-06.kv
+entity status-effect packets promotion evidence passed
+entity-status-effect-packets_exit_status=0
+command=target/check-targeted-packet-promotions --row recipe-book-client-settings --evidence docs/evidence/recipe-book-client-settings-2026-06-06.kv
+recipe-book client settings promotion evidence passed
+recipe-book-client-settings_exit_status=0
+command=target/check-targeted-packet-promotions --row resource-pack-status --evidence docs/evidence/resource-pack-status-2026-06-06.kv
+resource-pack status promotion evidence passed
+resource-pack-status_exit_status=0
+command=target/check-targeted-packet-promotions --row sign-editor-open-update --evidence docs/evidence/sign-editor-open-update-2026-06-06.kv
+sign editor open/update promotion evidence passed
+sign-editor-open-update_exit_status=0
+command=target/check-targeted-packet-promotions docs/evidence/block-entity-update-breadth-2026-06-06.kv docs/evidence/chat-command-containment-2026-06-06.kv docs/evidence/chunk-biome-data-packet-2026-06-06.kv docs/evidence/creative-inventory-action-2026-06-06.kv docs/evidence/entity-status-effect-packets-2026-06-06.kv docs/evidence/recipe-book-client-settings-2026-06-06.kv docs/evidence/resource-pack-status-2026-06-06.kv docs/evidence/sign-editor-open-update-2026-06-06.kv
+targeted packet promotion check passed: 8 fixtures (block-entity update breadth, chat/command containment, chunk biome data packet, creative inventory action, entity status-effect packets, recipe-book client settings, resource-pack status, sign editor open/update)
+batch_exit_status=0
+exit_status=0

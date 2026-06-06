@@ -1,4 +1,4 @@
 390fd691960a0c345b85e0a2c94eb245734aed4ac222c012ba8cde5c73226363  docs/evidence/nix-run-valence-stevenarella-2026-05-30.md
 542f5d0250493823cf87019d20f6ae99019c9de6dad5e076f2882bc8de00f8b0  docs/evidence/nix-run-valence-stevenarella-2026-05-30.run.log
-c27c212b2f0f82e4125cc20d84fb7a39d07656f389b2625a5f6d64bd66d5b5a6  flake.nix
+a232f1274d00edabf2df7dc8cfb4c531b8feaa95405c66f8ebcfef17a2cfb0a5  flake.nix
 a39c27dee1864497738d23524ad3b669c546c6745d80a6573aee72fde8b3557e  README.md

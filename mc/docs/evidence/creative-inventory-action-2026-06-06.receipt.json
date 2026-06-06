@@ -1,0 +1,22 @@
+{
+  "schema": "mc.compat.targeted_packet_promotion.receipt.v1",
+  "row": "creative-inventory-action",
+  "status": "pass",
+  "mode": "deterministic-fixture",
+  "packet_rows": ["play/serverbound/0x2b CreativeInventoryActionC2SPacket"],
+  "bounded_claim": "one creative-mode hotbar slot mutation fixture for minecraft:stone x64",
+  "artifacts": {
+    "kv": "docs/evidence/creative-inventory-action-2026-06-06.kv",
+    "doc": "docs/evidence/creative-inventory-action-2026-06-06.md",
+    "checker": "tools/check_targeted_packet_promotions.rs"
+  },
+  "non_claims": [
+    "all_creative_inventory_semantics",
+    "all_slots",
+    "all_items",
+    "game_mode_transitions",
+    "pick_block_behavior",
+    "public_server_safety",
+    "production_readiness"
+  ]
+}

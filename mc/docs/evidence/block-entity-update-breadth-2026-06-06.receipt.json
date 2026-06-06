@@ -1,0 +1,23 @@
+{
+  "schema": "mc.compat.targeted_packet_promotion.receipt.v1",
+  "row": "block-entity-update-breadth",
+  "status": "pass",
+  "mode": "deterministic-fixture",
+  "packet_rows": ["play/clientbound/0x08 BlockEntityUpdateS2CPacket"],
+  "bounded_claim": "one non-sign Chest BlockEntityUpdateS2CPacket fixture with position and payload identity",
+  "artifacts": {
+    "kv": "docs/evidence/block-entity-update-breadth-2026-06-06.kv",
+    "doc": "docs/evidence/block-entity-update-breadth-2026-06-06.md",
+    "checker": "tools/check_targeted_packet_promotions.rs"
+  },
+  "non_claims": [
+    "all_block_entities",
+    "arbitrary_nbt_parity",
+    "persistence_breadth",
+    "sign_editing",
+    "full_protocol_763_compatibility",
+    "broad_minecraft_compatibility",
+    "public_server_safety",
+    "production_readiness"
+  ]
+}

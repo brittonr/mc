@@ -1,0 +1,846 @@
+# targeted packet promotions Cairn archive
+command=nix run --no-update-lock-file .#cairn -- archive <change> --root . [--execute]; validate
+command=nix run --no-update-lock-file .#cairn -- archive promote-block-entity-update-breadth --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-block-entity-update-breadth",
+      "kind": "archive_change",
+      "path": "./cairn/changes/promote-block-entity-update-breadth"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-block-entity-update-breadth",
+  "dry_run": true,
+  "input_hash": "12d14d4a6dc3f1b985af8397464b735cc0e71a3cfb24e84bd329ef23bcf28aa4",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "63a70917903bb42a3fd3436a11dbbb7514c6dea35f9fd3f15d85eae44e711a5a",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "660526928f7b727ef0bcd50af5250cd10e399e4f01cc1e4ec14d98aa349eb690"
+}
+promote-block-entity-update-breadth_archive_dry_run_exit_status=0
+command=CAIRN_ARCHIVE_DATE=2026-06-06 nix run --no-update-lock-file .#cairn -- archive promote-block-entity-update-breadth --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-block-entity-update-breadth",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-06-promote-block-entity-update-breadth"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-block-entity-update-breadth",
+  "dry_run": false,
+  "input_hash": "12d14d4a6dc3f1b985af8397464b735cc0e71a3cfb24e84bd329ef23bcf28aa4",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "b0f50697f4f1601ae2c3067406dc84a03e70613eccb3f73ec83554ada3697451",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-block-entity-update-breadth/design.md"
+        },
+        {
+          "content_hash": "c5526b35c7c3782da181b677a625abb11107f531e0541e2b8648ea8af3dd3661",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-block-entity-update-breadth/proposal.md"
+        },
+        {
+          "content_hash": "8895d02b6eb642e6c9d0a118eb085d4ca5cceb9cc8a9390bca1300a40b33eebb",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-block-entity-update-breadth/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "b5a052cc6de24d833e3c6cbdefd6afe21ecc3653f84f053bf6aaf8dc294e0644",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-block-entity-update-breadth/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/promote-block-entity-update-breadth"
+        }
+      ],
+      "manifest_hash": "8933b535dab4318b2d56bb8467521dd00f183fd2e44fbaef3488bc130c2e4597"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "b0f50697f4f1601ae2c3067406dc84a03e70613eccb3f73ec83554ada3697451",
+          "exists": true,
+          "path": "./cairn/changes/promote-block-entity-update-breadth/design.md"
+        },
+        {
+          "content_hash": "c5526b35c7c3782da181b677a625abb11107f531e0541e2b8648ea8af3dd3661",
+          "exists": true,
+          "path": "./cairn/changes/promote-block-entity-update-breadth/proposal.md"
+        },
+        {
+          "content_hash": "8895d02b6eb642e6c9d0a118eb085d4ca5cceb9cc8a9390bca1300a40b33eebb",
+          "exists": true,
+          "path": "./cairn/changes/promote-block-entity-update-breadth/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "b5a052cc6de24d833e3c6cbdefd6afe21ecc3653f84f053bf6aaf8dc294e0644",
+          "exists": true,
+          "path": "./cairn/changes/promote-block-entity-update-breadth/tasks.md"
+        }
+      ],
+      "manifest_hash": "af4f7dd6cb978f6806ee2bd45809e67207903a99a6d79bea13092315ba802035"
+    },
+    "kind": "archive",
+    "manifest_hash": "866ba754608df89884c6354e6dc46c7fd9a0f368893b75e4a2ec37ab7c310385"
+  },
+  "plan_hash": "809af6ba147ac6a289960140e7545864c6b503e9c1577f0082f0c8f9777deba1",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "d35463f3d742b01667abb7c1f5a36b609bc49c09a95c92599f8524e0cb934c9e"
+}
+promote-block-entity-update-breadth_archive_execute_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- archive promote-chat-command-containment --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-chat-command-containment",
+      "kind": "archive_change",
+      "path": "./cairn/changes/promote-chat-command-containment"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-chat-command-containment",
+  "dry_run": true,
+  "input_hash": "5d724b48b966450a646aedd3128f0b09cd625f1d0354f9948ad7d63a22270d64",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "3e1ed37bbb36052780cd74d406ddee1bb0407137ad2cbdc866a327e6eecd7907",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "c5217f912e1e18c9dcfd7d4bcf09aa5bda65b0949bca07db2b781b07b023f11c"
+}
+promote-chat-command-containment_archive_dry_run_exit_status=0
+command=CAIRN_ARCHIVE_DATE=2026-06-06 nix run --no-update-lock-file .#cairn -- archive promote-chat-command-containment --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-chat-command-containment",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-06-promote-chat-command-containment"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-chat-command-containment",
+  "dry_run": false,
+  "input_hash": "5d724b48b966450a646aedd3128f0b09cd625f1d0354f9948ad7d63a22270d64",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "7050b231ef5dfad5fd846d060758585d5c23455c8f28adf51f64c3b84fadf161",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-chat-command-containment/design.md"
+        },
+        {
+          "content_hash": "fd1a8cf0bf46d977f87643ff5a659bee3a19ad31f25298590c41f224cdbe4b6d",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-chat-command-containment/proposal.md"
+        },
+        {
+          "content_hash": "04d0d04cf1665677f7dc2f737d6fb149c3dd429009774e46e13bd3116fe20122",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-chat-command-containment/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "ce17c7a97fe2c5c67a63e14c3b2e88ae6594698a2fc96c9911f2aa2a8889835c",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-chat-command-containment/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/promote-chat-command-containment"
+        }
+      ],
+      "manifest_hash": "7b8cd9870bf05e3a143a8fba325b72dd0ee7b8440ac19eed42aa35611a8c002e"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "7050b231ef5dfad5fd846d060758585d5c23455c8f28adf51f64c3b84fadf161",
+          "exists": true,
+          "path": "./cairn/changes/promote-chat-command-containment/design.md"
+        },
+        {
+          "content_hash": "fd1a8cf0bf46d977f87643ff5a659bee3a19ad31f25298590c41f224cdbe4b6d",
+          "exists": true,
+          "path": "./cairn/changes/promote-chat-command-containment/proposal.md"
+        },
+        {
+          "content_hash": "04d0d04cf1665677f7dc2f737d6fb149c3dd429009774e46e13bd3116fe20122",
+          "exists": true,
+          "path": "./cairn/changes/promote-chat-command-containment/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "ce17c7a97fe2c5c67a63e14c3b2e88ae6594698a2fc96c9911f2aa2a8889835c",
+          "exists": true,
+          "path": "./cairn/changes/promote-chat-command-containment/tasks.md"
+        }
+      ],
+      "manifest_hash": "4abc7fdd22ff1744d0bcbf872cc50fb8cae054dde3a79060c6d43d9df3eee16a"
+    },
+    "kind": "archive",
+    "manifest_hash": "10d811827a4f51a5ecde26a534e44e464f97069100aa386ee1db2d82f3d882d5"
+  },
+  "plan_hash": "e7676e166199f202074db898bd8603a5327105407b2cdadc86a647c78e1b9c3f",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "c3d2cec6c418c95c1c171944837f488bd96e82fd0534d26143bc14d391c6595f"
+}
+promote-chat-command-containment_archive_execute_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- archive promote-chunk-biome-data-packet --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-chunk-biome-data-packet",
+      "kind": "archive_change",
+      "path": "./cairn/changes/promote-chunk-biome-data-packet"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-chunk-biome-data-packet",
+  "dry_run": true,
+  "input_hash": "65fd3ff0ea0ed95c3ed20501331361398ae113499624b1b8c51d4268b30a2b1d",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "cfd3bcd1333e0c06c37cb16e3621e3a89e3959467d799d2b71c297143933a28b",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "555c56ebe972b0e9b00a9bb2335c5d579a3c084cd33191539fc8b9facec3cac6"
+}
+promote-chunk-biome-data-packet_archive_dry_run_exit_status=0
+command=CAIRN_ARCHIVE_DATE=2026-06-06 nix run --no-update-lock-file .#cairn -- archive promote-chunk-biome-data-packet --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-chunk-biome-data-packet",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-06-promote-chunk-biome-data-packet"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-chunk-biome-data-packet",
+  "dry_run": false,
+  "input_hash": "65fd3ff0ea0ed95c3ed20501331361398ae113499624b1b8c51d4268b30a2b1d",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "a97cd91c3f7481065eea2a9b837b9d12b4269c7918456c414099dd16a3b38df6",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-chunk-biome-data-packet/design.md"
+        },
+        {
+          "content_hash": "14f00702dc40c80d61d882736f7dbfadfd551f0e828392df0f0a129d614f5a6c",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-chunk-biome-data-packet/proposal.md"
+        },
+        {
+          "content_hash": "67a8671f015332caddf56299d04f8bbcccf3fbe5be9881c465a576f6f846fcf9",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-chunk-biome-data-packet/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "0e985e67a79f97f93d5e85e87cb64dbdcc5b1dca7c0bb3418bbdaebcb641ad7a",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-chunk-biome-data-packet/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/promote-chunk-biome-data-packet"
+        }
+      ],
+      "manifest_hash": "937066831cbb894c3799cbcec1ee989a1e0418e29290dbc0c9854269d30aab4c"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "a97cd91c3f7481065eea2a9b837b9d12b4269c7918456c414099dd16a3b38df6",
+          "exists": true,
+          "path": "./cairn/changes/promote-chunk-biome-data-packet/design.md"
+        },
+        {
+          "content_hash": "14f00702dc40c80d61d882736f7dbfadfd551f0e828392df0f0a129d614f5a6c",
+          "exists": true,
+          "path": "./cairn/changes/promote-chunk-biome-data-packet/proposal.md"
+        },
+        {
+          "content_hash": "67a8671f015332caddf56299d04f8bbcccf3fbe5be9881c465a576f6f846fcf9",
+          "exists": true,
+          "path": "./cairn/changes/promote-chunk-biome-data-packet/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "0e985e67a79f97f93d5e85e87cb64dbdcc5b1dca7c0bb3418bbdaebcb641ad7a",
+          "exists": true,
+          "path": "./cairn/changes/promote-chunk-biome-data-packet/tasks.md"
+        }
+      ],
+      "manifest_hash": "0a4000c8593439b57ac1b933ee31da7eebdc4aeed208eab8ab3c8873b29e9330"
+    },
+    "kind": "archive",
+    "manifest_hash": "973f15ded39d3f63b5ec3150d218decb3826b82d168404345295a58c4dc84e21"
+  },
+  "plan_hash": "bcbf53208485435044c7a6a355b896d967a1b66cad7d24957ea850ab2f523ff0",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "a5b1740929fd712696f343346d8725c0a61d43ed223697a24950046e8253eb1e"
+}
+promote-chunk-biome-data-packet_archive_execute_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- archive promote-creative-inventory-action --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-creative-inventory-action",
+      "kind": "archive_change",
+      "path": "./cairn/changes/promote-creative-inventory-action"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-creative-inventory-action",
+  "dry_run": true,
+  "input_hash": "d393783102ce20fdac1ae1d1404079b6d5ff73f3802ddc332243e271a0554ffe",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "f893154bf83e5ff01acd1c6544ca0b5f881a99f4dd98ebedac47f275be454e81",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "9c6e56f2dc92800bad5e04c6d82807c80b5447371c835d133ab9f7024ac41c09"
+}
+promote-creative-inventory-action_archive_dry_run_exit_status=0
+command=CAIRN_ARCHIVE_DATE=2026-06-06 nix run --no-update-lock-file .#cairn -- archive promote-creative-inventory-action --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-creative-inventory-action",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-06-promote-creative-inventory-action"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-creative-inventory-action",
+  "dry_run": false,
+  "input_hash": "d393783102ce20fdac1ae1d1404079b6d5ff73f3802ddc332243e271a0554ffe",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "eabc24cd6fcdaab1b95782ed5d4d5bd8de84b57e4d2d460eedbb677c21c4560b",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-creative-inventory-action/design.md"
+        },
+        {
+          "content_hash": "f43be072d37bfe2afa72a212ef8b924a88ea6e77c7920291c140a5535659e384",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-creative-inventory-action/proposal.md"
+        },
+        {
+          "content_hash": "e8f765fa81cddb0ffd8f323f88ee9a6399decc7fd9a6fc468cbad0e76bbcac8c",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-creative-inventory-action/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "1aa7dfb4c398c1844b2594cf29fca393c1872f6b84a98b135bb60461c4e56602",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-creative-inventory-action/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/promote-creative-inventory-action"
+        }
+      ],
+      "manifest_hash": "e64ff5674ad940619904b083afbd43ca52b88dd1af9ed5889592a904d1a709ce"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "eabc24cd6fcdaab1b95782ed5d4d5bd8de84b57e4d2d460eedbb677c21c4560b",
+          "exists": true,
+          "path": "./cairn/changes/promote-creative-inventory-action/design.md"
+        },
+        {
+          "content_hash": "f43be072d37bfe2afa72a212ef8b924a88ea6e77c7920291c140a5535659e384",
+          "exists": true,
+          "path": "./cairn/changes/promote-creative-inventory-action/proposal.md"
+        },
+        {
+          "content_hash": "e8f765fa81cddb0ffd8f323f88ee9a6399decc7fd9a6fc468cbad0e76bbcac8c",
+          "exists": true,
+          "path": "./cairn/changes/promote-creative-inventory-action/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "1aa7dfb4c398c1844b2594cf29fca393c1872f6b84a98b135bb60461c4e56602",
+          "exists": true,
+          "path": "./cairn/changes/promote-creative-inventory-action/tasks.md"
+        }
+      ],
+      "manifest_hash": "2f8733edf05ead0fcdf6102707e1d55146bd10e852d1c615a4d9f74a15cfdd91"
+    },
+    "kind": "archive",
+    "manifest_hash": "400e67ca87e56e3b177118bdc3fd8e516f86c7a88897d8625ba34e9cbb48989a"
+  },
+  "plan_hash": "5186fc15f00d59e07529d0993eaa2a7acd8a865adc4bb01e15dab9c12ab24f53",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "f7bbd0220b7c265e2cc533a58d6af1f80d2db69d1efed1fb99676303aa9a6247"
+}
+promote-creative-inventory-action_archive_execute_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- archive promote-entity-status-effect-packets --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-entity-status-effect-packets",
+      "kind": "archive_change",
+      "path": "./cairn/changes/promote-entity-status-effect-packets"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-entity-status-effect-packets",
+  "dry_run": true,
+  "input_hash": "cf451aa773bfd7a84f73c7eb3f5f199bc1ba0dc114a1ec96866a438a3e67b406",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "7aa13135b390c581a595537152bf718980d00747e53ff7b60b0aaa3be319c88f",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "3339ff3b0a55e047f5052cb789ed3416a05f171b365ee5da0580c7aaf719a699"
+}
+promote-entity-status-effect-packets_archive_dry_run_exit_status=0
+command=CAIRN_ARCHIVE_DATE=2026-06-06 nix run --no-update-lock-file .#cairn -- archive promote-entity-status-effect-packets --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-entity-status-effect-packets",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-06-promote-entity-status-effect-packets"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-entity-status-effect-packets",
+  "dry_run": false,
+  "input_hash": "cf451aa773bfd7a84f73c7eb3f5f199bc1ba0dc114a1ec96866a438a3e67b406",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "812f056ca319d9cc581a1946dae55b2606ff54eb295530c1cce19d21b08ce099",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-entity-status-effect-packets/design.md"
+        },
+        {
+          "content_hash": "d95177c0ca60a8fdb8b08cb3ca87179cf7a078fbf63073b349fe9d155c4a4446",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-entity-status-effect-packets/proposal.md"
+        },
+        {
+          "content_hash": "f8303ed0065be701665edba678214582a70500ef943da3421977b01d4404c653",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-entity-status-effect-packets/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "2ad7507065fd49601bc54ac1bd74992be9d07c7a9b9afc826580faa4a390205e",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-entity-status-effect-packets/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/promote-entity-status-effect-packets"
+        }
+      ],
+      "manifest_hash": "5dfb736cb89bd76762b4329dde040c61d43a4e560d0f2dfb919b41afee50a925"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "812f056ca319d9cc581a1946dae55b2606ff54eb295530c1cce19d21b08ce099",
+          "exists": true,
+          "path": "./cairn/changes/promote-entity-status-effect-packets/design.md"
+        },
+        {
+          "content_hash": "d95177c0ca60a8fdb8b08cb3ca87179cf7a078fbf63073b349fe9d155c4a4446",
+          "exists": true,
+          "path": "./cairn/changes/promote-entity-status-effect-packets/proposal.md"
+        },
+        {
+          "content_hash": "f8303ed0065be701665edba678214582a70500ef943da3421977b01d4404c653",
+          "exists": true,
+          "path": "./cairn/changes/promote-entity-status-effect-packets/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "2ad7507065fd49601bc54ac1bd74992be9d07c7a9b9afc826580faa4a390205e",
+          "exists": true,
+          "path": "./cairn/changes/promote-entity-status-effect-packets/tasks.md"
+        }
+      ],
+      "manifest_hash": "02a25ee04d794413dcefcfbddf5a39dd99bd7fc80eea56f58cea036d92c916a4"
+    },
+    "kind": "archive",
+    "manifest_hash": "5a80a9f8aaffbae03fac945622bb4fc54ea45ddfee6ae2ad28070aecf3222daa"
+  },
+  "plan_hash": "1d17c1fba793a94f4d0759c8da3e0160ca7ed552bca65c527f45433666bf5c78",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "96334a9c2a8f26e70c53f56cce7f09a378e543779b6c86328d0db7b3d5c71585"
+}
+promote-entity-status-effect-packets_archive_execute_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- archive promote-recipe-book-client-settings --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-recipe-book-client-settings",
+      "kind": "archive_change",
+      "path": "./cairn/changes/promote-recipe-book-client-settings"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-recipe-book-client-settings",
+  "dry_run": true,
+  "input_hash": "fe6e9094b6c24c4b58a947841e5d383f830da7f9ebc0e6074d989394b65b2559",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "cc271374b728b60b1dfe486832f1e71006909f405d16af203c4a902c577b7048",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "4b9a221009abb06315bdf8cd67b7999f9326b7f7af3fe78b78ea5774936b9e64"
+}
+promote-recipe-book-client-settings_archive_dry_run_exit_status=0
+command=CAIRN_ARCHIVE_DATE=2026-06-06 nix run --no-update-lock-file .#cairn -- archive promote-recipe-book-client-settings --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-recipe-book-client-settings",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-06-promote-recipe-book-client-settings"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-recipe-book-client-settings",
+  "dry_run": false,
+  "input_hash": "fe6e9094b6c24c4b58a947841e5d383f830da7f9ebc0e6074d989394b65b2559",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "5f6179dc54ae720e9e9163b9962d7054c3927071bfaa160ff87174ede0583d93",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-recipe-book-client-settings/design.md"
+        },
+        {
+          "content_hash": "9fdeacaee21e4a090749780db3a00a0ecd66eab328c54cf81d2d8974599fc048",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-recipe-book-client-settings/proposal.md"
+        },
+        {
+          "content_hash": "d2e104eb041125e4010871f2a47dcc9e7a2529254af0f5d71bf1c28510e87a22",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-recipe-book-client-settings/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "316541cdb4a060b59307c79223eccf3dc79e28e7eacab06450a490704a4fd861",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-recipe-book-client-settings/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/promote-recipe-book-client-settings"
+        }
+      ],
+      "manifest_hash": "2c3ce2a26bcb5e2407e1c20bfddfa29c28063e67bd0280437473ecd00cfd5af3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "5f6179dc54ae720e9e9163b9962d7054c3927071bfaa160ff87174ede0583d93",
+          "exists": true,
+          "path": "./cairn/changes/promote-recipe-book-client-settings/design.md"
+        },
+        {
+          "content_hash": "9fdeacaee21e4a090749780db3a00a0ecd66eab328c54cf81d2d8974599fc048",
+          "exists": true,
+          "path": "./cairn/changes/promote-recipe-book-client-settings/proposal.md"
+        },
+        {
+          "content_hash": "d2e104eb041125e4010871f2a47dcc9e7a2529254af0f5d71bf1c28510e87a22",
+          "exists": true,
+          "path": "./cairn/changes/promote-recipe-book-client-settings/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "316541cdb4a060b59307c79223eccf3dc79e28e7eacab06450a490704a4fd861",
+          "exists": true,
+          "path": "./cairn/changes/promote-recipe-book-client-settings/tasks.md"
+        }
+      ],
+      "manifest_hash": "e8476f14e7de33127ebee920631073a7ba2bec272b12084a6c79753dd0663797"
+    },
+    "kind": "archive",
+    "manifest_hash": "dc08a5c72941f5da4dccde0c972e7f69f78ed892c534b1dec0fea1e7b58287db"
+  },
+  "plan_hash": "c930bdf45ec2a24a69e7673a74913c7482b20af120fa652368b937f707639d25",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "51df6c3021af260a54a72bde3204cd4ac62315e273d63843f44dec0187c05b38"
+}
+promote-recipe-book-client-settings_archive_execute_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- archive promote-resource-pack-status --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-resource-pack-status",
+      "kind": "archive_change",
+      "path": "./cairn/changes/promote-resource-pack-status"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-resource-pack-status",
+  "dry_run": true,
+  "input_hash": "8ab5abeb91ecace03d42b9ff683edf9e534324e71281490a6e4829f61d3ef818",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "fa5a1ae95b357af6cea9abad348bffaa3500e214973a0f58a2f5794c014a2c65",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "bd3da42682cb5dd1e6c1298623e0879be429be015eba1414fa5c792dc993b27d"
+}
+promote-resource-pack-status_archive_dry_run_exit_status=0
+command=CAIRN_ARCHIVE_DATE=2026-06-06 nix run --no-update-lock-file .#cairn -- archive promote-resource-pack-status --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-resource-pack-status",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-06-promote-resource-pack-status"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-resource-pack-status",
+  "dry_run": false,
+  "input_hash": "8ab5abeb91ecace03d42b9ff683edf9e534324e71281490a6e4829f61d3ef818",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "a5b339eb1de6cea49bcd8ed34185c4733d38baa8cb13c453a6185b8a5819a68d",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-resource-pack-status/design.md"
+        },
+        {
+          "content_hash": "beec347b33307587440022cf87c7261b477ce75374295e07acb0ec583e4a1252",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-resource-pack-status/proposal.md"
+        },
+        {
+          "content_hash": "f9516e8d40e9c630ac715a69bbb73aa6323dbfadd522e3319cc708ced84d0991",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-resource-pack-status/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "80e0788202af9aeb917e8feec8fcf2c679a72111577ec2f6a0e70ed68cac2029",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-resource-pack-status/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/promote-resource-pack-status"
+        }
+      ],
+      "manifest_hash": "c2218f04c02f6a4376a48754220238af6b68e2cc4497e7150beef781155fccbb"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "a5b339eb1de6cea49bcd8ed34185c4733d38baa8cb13c453a6185b8a5819a68d",
+          "exists": true,
+          "path": "./cairn/changes/promote-resource-pack-status/design.md"
+        },
+        {
+          "content_hash": "beec347b33307587440022cf87c7261b477ce75374295e07acb0ec583e4a1252",
+          "exists": true,
+          "path": "./cairn/changes/promote-resource-pack-status/proposal.md"
+        },
+        {
+          "content_hash": "f9516e8d40e9c630ac715a69bbb73aa6323dbfadd522e3319cc708ced84d0991",
+          "exists": true,
+          "path": "./cairn/changes/promote-resource-pack-status/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "80e0788202af9aeb917e8feec8fcf2c679a72111577ec2f6a0e70ed68cac2029",
+          "exists": true,
+          "path": "./cairn/changes/promote-resource-pack-status/tasks.md"
+        }
+      ],
+      "manifest_hash": "f3cd667b33d57c54b2d242469fd7e1f3d7de547939fad868a137fbfc59070cf3"
+    },
+    "kind": "archive",
+    "manifest_hash": "cb6ec7fc774f470c343319623a60a9e72bb4adddcb35fde4c5ff55f79686c147"
+  },
+  "plan_hash": "b5b7db464af94e7a74acacdce72f371fc9b9bf1492ea5c1e88753316df934f77",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "8d2d38b1cb7f617434e79036ebf71d2bc252f9bf83a327692bc00e80a60d61c4"
+}
+promote-resource-pack-status_archive_execute_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- archive promote-sign-editor-open-update --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-sign-editor-open-update",
+      "kind": "archive_change",
+      "path": "./cairn/changes/promote-sign-editor-open-update"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-sign-editor-open-update",
+  "dry_run": true,
+  "input_hash": "da6d88b1d3064af26566a38fcc7708b31ea421f76a9b3c52f0fd4cd9ca7cc375",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "c357fd965e03c7095758b9c624325169b004945e9c850f69bae70190b883131c",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "58668e4f40e743a84e9a63ec9e2b47b9d5f8c53779aee34a7a86e5938d177c19"
+}
+promote-sign-editor-open-update_archive_dry_run_exit_status=0
+command=CAIRN_ARCHIVE_DATE=2026-06-06 nix run --no-update-lock-file .#cairn -- archive promote-sign-editor-open-update --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-sign-editor-open-update",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-06-promote-sign-editor-open-update"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-sign-editor-open-update",
+  "dry_run": false,
+  "input_hash": "da6d88b1d3064af26566a38fcc7708b31ea421f76a9b3c52f0fd4cd9ca7cc375",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "b7eb1b356d8d931e02ce046399c86a83332ab992c6a7432529036c616d7a8f12",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-sign-editor-open-update/design.md"
+        },
+        {
+          "content_hash": "ae9afe8344816c8d54d08300957e094c5ea3a85e7ca997362fd5f531db5dbbec",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-sign-editor-open-update/proposal.md"
+        },
+        {
+          "content_hash": "811593c17f03a904607752660746cc63e4966c2c52923bab835daafd1dfd9913",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-sign-editor-open-update/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "00dbb4a83baf0f544171ce705881f27a92f63a4d35127a644c394f7b18030a29",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-sign-editor-open-update/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/promote-sign-editor-open-update"
+        }
+      ],
+      "manifest_hash": "6c7ac4a9de9ab7af19b4b5d4d5eb9e8d4b78b032a0162647efec43c900f93f91"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "b7eb1b356d8d931e02ce046399c86a83332ab992c6a7432529036c616d7a8f12",
+          "exists": true,
+          "path": "./cairn/changes/promote-sign-editor-open-update/design.md"
+        },
+        {
+          "content_hash": "ae9afe8344816c8d54d08300957e094c5ea3a85e7ca997362fd5f531db5dbbec",
+          "exists": true,
+          "path": "./cairn/changes/promote-sign-editor-open-update/proposal.md"
+        },
+        {
+          "content_hash": "811593c17f03a904607752660746cc63e4966c2c52923bab835daafd1dfd9913",
+          "exists": true,
+          "path": "./cairn/changes/promote-sign-editor-open-update/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "00dbb4a83baf0f544171ce705881f27a92f63a4d35127a644c394f7b18030a29",
+          "exists": true,
+          "path": "./cairn/changes/promote-sign-editor-open-update/tasks.md"
+        }
+      ],
+      "manifest_hash": "a29c959e473c98ad466a44c9e695ae815d94e6e3537347b2ee87ec58c39e1651"
+    },
+    "kind": "archive",
+    "manifest_hash": "ea31deca78805b0e98a26e3b605c4d7b80b1309a430fc2a3fbf0d37eea157d11"
+  },
+  "plan_hash": "5a439ec2333beec74d65d4d4306f3efb14fa91fbec1bfa0e60d7b7fe18b8f835",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "6395d1f5842d97ff22e0261f041f1278f491cc00db54b993c47106782381eeb6"
+}
+promote-sign-editor-open-update_archive_execute_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+exit_status=0

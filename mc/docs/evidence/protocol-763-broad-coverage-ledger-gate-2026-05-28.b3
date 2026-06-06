@@ -1,5 +1,5 @@
 8250774d1e7d0ad53001a1231e95b19f99594d7581258d61afdab1a97d192758  docs/evidence/protocol-763-broad-coverage-ledger-2026-05-28.md
-1da13d0d84b3eda4c7bd31df5624d2f6756b767cef1b199468a0d0b7e56bfb9a  docs/evidence/protocol-763-packet-inventory-2026-05-28.tsv
+a43051a42f11c34af1c0e6adf73840c61542d102d2535fb52227e098a362c379  docs/evidence/protocol-763-packet-inventory-2026-05-28.tsv
 d4e47d929a9f0a8bba15abe5c72160c1cc64a2dcb1ee517957ada7399d542266  docs/evidence/protocol-763-broad-parser-fixtures-stevenarella-2026-05-28.md
 fc92fc5a65cee89b7de66616822671a2bd1a9fac51a624e7f4977c19be7fcc51  docs/evidence/protocol-763-broad-parser-fixture-oracle-2026-05-28.md
 5e2a751a88baec19aabf1ca168bece3262d5b984d7e7595ea4170b7b6c99023f  docs/evidence/protocol-763-broad-coverage-postreview-verification-2026-05-28.md
@@ -9,7 +9,7 @@ fdc3daff72ddbc55aa171cbfb8ea7b249a951fc5eb737b388a4cbee64ea5b271  tools/check_pr
 c9d8fccee0dfd1965a98b99b1fbefb5f8e0f6d82bdff59d4c42d83ff32273785  cairn/archive/2026-05-28-prove-broad-protocol-763-coverage/design.md
 af3e218cde18f8db188fd09ae28530d3612f0748d5c3d030b8b4c9c57a54f795  cairn/archive/2026-05-28-prove-broad-protocol-763-coverage/tasks.md
 cf0e5fc50484500a4cfe934b19f262a8e45fec8c2bbff297e1120a2fa2b357be  cairn/archive/2026-05-28-prove-broad-protocol-763-coverage/specs/mc-compatibility/spec.md
-20859150af5684572e89c12b0db34826d6a3ceeb736f496e99b31886de606c2b  cairn/specs/mc-compatibility/spec.md
-1d84b0e14a878a816983457e92b08bd9ccebc3e632ab4e64750a0d1f5e13eaa9  docs/evidence/protocol-763-current-evidence-bundle.md
-a9677deedbc72630a616dfe0208a92c2400fa184cc570909d8113cb694d3b288  docs/evidence/protocol-763-acceptance-matrix.md
+6356ad9d9453c5e146a90aaae0c54881665f4dab283fa7b0b4982ef7734dc07b  cairn/specs/mc-compatibility/spec.md
+9fbad7bf6641b93705c76cf76b59bb610a36d697bdbc43a2bdfe531474568deb  docs/evidence/protocol-763-current-evidence-bundle.md
+9a36cc04d97213add7137f2d984d19f05cb051cf8265b23e50c473423018e7ed  docs/evidence/protocol-763-acceptance-matrix.md
 4930ed8a06667ba4b1df848053b47145ffe3d826900a1cf71647cafb50ec3cdb  docs/evidence/stevenarella-protocol-versions-protocol-763-broad-parser-2026-05-28.rs

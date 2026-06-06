@@ -1,0 +1,134 @@
+# targeted packet promotions accepted spec merge verification
+command=grep synced requirement IDs; nix run --no-update-lock-file .#cairn -- validate --root .
+command=grep -F block_entity_update_breadth_promotion cairn/specs/mc-compatibility/spec.md
+r[mc_compatibility.block_entity_update_breadth_promotion.contract] The `block-entity-update-breadth` row MUST define a bounded non-sign block-entity promotion contract before coverage is claimed.
+r[mc_compatibility.block_entity_update_breadth_promotion.contract.scope]
+r[mc_compatibility.block_entity_update_breadth_promotion.checker] A deterministic Rust checker MUST validate normalized non-sign block-entity update evidence before promotion.
+r[mc_compatibility.block_entity_update_breadth_promotion.checker.valid]
+r[mc_compatibility.block_entity_update_breadth_promotion.checker.rejects]
+r[mc_compatibility.block_entity_update_breadth_promotion.rail] The harness MUST expose or select an isolated non-sign block-entity update rail without changing existing sign persistence, survival, inventory, CTF, combat, or network semantics.
+r[mc_compatibility.block_entity_update_breadth_promotion.rail.isolated]
+r[mc_compatibility.block_entity_update_breadth_promotion.artifacts] Review-critical non-sign block-entity artifacts MUST be copied under `docs/evidence/` before promotion.
+r[mc_compatibility.block_entity_update_breadth_promotion.artifacts.reviewable]
+r[mc_compatibility.block_entity_update_breadth_promotion.matrix] Packet inventory, acceptance matrix, and current bundle docs MUST promote only the configured non-sign block-entity row after checker and evidence gates pass.
+r[mc_compatibility.block_entity_update_breadth_promotion.matrix.nonclaims]
+r[mc_compatibility.block_entity_update_breadth_promotion.validation] The change MUST record checker, fixture or runner, packet inventory, manifest, task gate, Cairn gates, and Cairn validation output before archive.
+r[mc_compatibility.block_entity_update_breadth_promotion.validation.log]
+block_entity_update_breadth_promotion_grep_exit_status=0
+command=grep -F chat_command_containment_promotion cairn/specs/mc-compatibility/spec.md
+r[mc_compatibility.chat_command_containment_promotion.contract] The `chat-command-containment` row MUST define a bounded owned-local promotion contract before packet inventory, matrix, or current-bundle coverage is claimed.
+r[mc_compatibility.chat_command_containment_promotion.contract.scope]
+r[mc_compatibility.chat_command_containment_promotion.checker] A deterministic Rust checker MUST validate normalized chat/command containment evidence before promotion.
+r[mc_compatibility.chat_command_containment_promotion.checker.valid]
+r[mc_compatibility.chat_command_containment_promotion.checker.rejects]
+r[mc_compatibility.chat_command_containment_promotion.rail] The harness MUST expose an isolated chat/command containment rail without changing existing CTF, survival, inventory, combat, network, or negative-live semantics.
+r[mc_compatibility.chat_command_containment_promotion.rail.isolated]
+r[mc_compatibility.chat_command_containment_promotion.artifacts] Review-critical chat/command containment artifacts MUST be copied under `docs/evidence/` before promotion.
+r[mc_compatibility.chat_command_containment_promotion.artifacts.reviewable]
+r[mc_compatibility.chat_command_containment_promotion.matrix] Packet inventory, acceptance matrix, and current bundle docs MUST promote only the configured chat/command containment row after checker and evidence gates pass.
+r[mc_compatibility.chat_command_containment_promotion.matrix.nonclaims]
+r[mc_compatibility.chat_command_containment_promotion.validation] The change MUST record checker, runner, packet inventory, manifest, task gate, Cairn gates, and Cairn validation output before archive.
+r[mc_compatibility.chat_command_containment_promotion.validation.log]
+chat_command_containment_promotion_grep_exit_status=0
+command=grep -F chunk_biome_data_packet_promotion cairn/specs/mc-compatibility/spec.md
+r[mc_compatibility.chunk_biome_data_packet_promotion.contract] The `chunk-biome-data-packet` row MUST define a bounded promotion contract before packet inventory, matrix, or current-bundle coverage is claimed.
+r[mc_compatibility.chunk_biome_data_packet_promotion.contract.scope]
+r[mc_compatibility.chunk_biome_data_packet_promotion.checker] A deterministic Rust checker MUST validate normalized chunk biome data packet evidence before promotion.
+r[mc_compatibility.chunk_biome_data_packet_promotion.checker.valid]
+r[mc_compatibility.chunk_biome_data_packet_promotion.checker.rejects]
+r[mc_compatibility.chunk_biome_data_packet_promotion.rail] The promotion MUST use isolated packet fixture or live-context rails without changing existing survival, chunk/biome, inventory, CTF, combat, or network semantics.
+r[mc_compatibility.chunk_biome_data_packet_promotion.rail.isolated]
+r[mc_compatibility.chunk_biome_data_packet_promotion.artifacts] Review-critical chunk biome packet artifacts MUST be copied under `docs/evidence/` before promotion.
+r[mc_compatibility.chunk_biome_data_packet_promotion.artifacts.reviewable]
+r[mc_compatibility.chunk_biome_data_packet_promotion.matrix] Packet inventory, acceptance matrix, and current bundle docs MUST promote only the configured chunk biome data packet row after checker and evidence gates pass.
+r[mc_compatibility.chunk_biome_data_packet_promotion.matrix.nonclaims]
+r[mc_compatibility.chunk_biome_data_packet_promotion.validation] The change MUST record checker, packet inventory, manifest, task gate, Cairn gates, and Cairn validation output before archive.
+r[mc_compatibility.chunk_biome_data_packet_promotion.validation.log]
+chunk_biome_data_packet_promotion_grep_exit_status=0
+command=grep -F creative_inventory_action_promotion cairn/specs/mc-compatibility/spec.md
+r[mc_compatibility.creative_inventory_action_promotion.contract] The `creative-inventory-action` row MUST define a bounded promotion contract before packet inventory, matrix, or current-bundle coverage is claimed.
+r[mc_compatibility.creative_inventory_action_promotion.contract.scope]
+r[mc_compatibility.creative_inventory_action_promotion.checker] A deterministic Rust checker MUST validate normalized creative inventory evidence before promotion.
+r[mc_compatibility.creative_inventory_action_promotion.checker.valid]
+r[mc_compatibility.creative_inventory_action_promotion.checker.rejects]
+r[mc_compatibility.creative_inventory_action_promotion.rail] The harness MUST expose an isolated creative inventory rail without changing existing survival/player-inventory, CTF, combat, network, or negative-live semantics.
+r[mc_compatibility.creative_inventory_action_promotion.rail.isolated]
+r[mc_compatibility.creative_inventory_action_promotion.artifacts] Review-critical creative inventory artifacts MUST be copied under `docs/evidence/` before promotion.
+r[mc_compatibility.creative_inventory_action_promotion.artifacts.reviewable]
+r[mc_compatibility.creative_inventory_action_promotion.matrix] Packet inventory, acceptance matrix, and current bundle docs MUST promote only the configured creative inventory action row after checker and evidence gates pass.
+r[mc_compatibility.creative_inventory_action_promotion.matrix.nonclaims]
+r[mc_compatibility.creative_inventory_action_promotion.validation] The change MUST record checker, runner, packet inventory, manifest, task gate, Cairn gates, and Cairn validation output before archive.
+r[mc_compatibility.creative_inventory_action_promotion.validation.log]
+creative_inventory_action_promotion_grep_exit_status=0
+command=grep -F entity_status_effect_packets_promotion cairn/specs/mc-compatibility/spec.md
+r[mc_compatibility.entity_status_effect_packets_promotion.contract] The `entity-status-effect-packets` row MUST define a bounded promotion contract before packet inventory, matrix, or current-bundle coverage is claimed.
+r[mc_compatibility.entity_status_effect_packets_promotion.contract.scope]
+r[mc_compatibility.entity_status_effect_packets_promotion.checker] A deterministic Rust checker MUST validate normalized entity status-effect evidence before promotion.
+r[mc_compatibility.entity_status_effect_packets_promotion.checker.valid]
+r[mc_compatibility.entity_status_effect_packets_promotion.checker.rejects]
+r[mc_compatibility.entity_status_effect_packets_promotion.rail] The harness MUST expose an isolated status-effect rail without changing existing combat, survival, CTF, inventory, network, or negative-live semantics.
+r[mc_compatibility.entity_status_effect_packets_promotion.rail.isolated]
+r[mc_compatibility.entity_status_effect_packets_promotion.artifacts] Review-critical status-effect artifacts MUST be copied under `docs/evidence/` before promotion.
+r[mc_compatibility.entity_status_effect_packets_promotion.artifacts.reviewable]
+r[mc_compatibility.entity_status_effect_packets_promotion.matrix] Packet inventory, acceptance matrix, and current bundle docs MUST promote only the configured status-effect row after checker and evidence gates pass.
+r[mc_compatibility.entity_status_effect_packets_promotion.matrix.nonclaims]
+r[mc_compatibility.entity_status_effect_packets_promotion.validation] The change MUST record checker, runner, packet inventory, manifest, task gate, Cairn gates, and Cairn validation output before archive.
+r[mc_compatibility.entity_status_effect_packets_promotion.validation.log]
+entity_status_effect_packets_promotion_grep_exit_status=0
+command=grep -F recipe_book_client_settings_promotion cairn/specs/mc-compatibility/spec.md
+r[mc_compatibility.recipe_book_client_settings_promotion.contract] The `recipe-book-client-settings` row MUST define a bounded promotion contract before packet inventory, matrix, or current-bundle coverage is claimed.
+r[mc_compatibility.recipe_book_client_settings_promotion.contract.scope]
+r[mc_compatibility.recipe_book_client_settings_promotion.checker] A deterministic Rust checker MUST validate normalized recipe-book settings evidence before promotion.
+r[mc_compatibility.recipe_book_client_settings_promotion.checker.valid]
+r[mc_compatibility.recipe_book_client_settings_promotion.checker.rejects]
+r[mc_compatibility.recipe_book_client_settings_promotion.rail] The harness MUST expose an isolated recipe-book settings rail without changing existing crafting, survival, inventory, CTF, combat, or network semantics.
+r[mc_compatibility.recipe_book_client_settings_promotion.rail.isolated]
+r[mc_compatibility.recipe_book_client_settings_promotion.artifacts] Review-critical recipe-book settings artifacts MUST be copied under `docs/evidence/` before promotion.
+r[mc_compatibility.recipe_book_client_settings_promotion.artifacts.reviewable]
+r[mc_compatibility.recipe_book_client_settings_promotion.matrix] Packet inventory, acceptance matrix, and current bundle docs MUST promote only the configured recipe-book settings row after checker and evidence gates pass.
+r[mc_compatibility.recipe_book_client_settings_promotion.matrix.nonclaims]
+r[mc_compatibility.recipe_book_client_settings_promotion.validation] The change MUST record checker, runner, packet inventory, manifest, task gate, Cairn gates, and Cairn validation output before archive.
+r[mc_compatibility.recipe_book_client_settings_promotion.validation.log]
+recipe_book_client_settings_promotion_grep_exit_status=0
+command=grep -F resource_pack_status_promotion cairn/specs/mc-compatibility/spec.md
+r[mc_compatibility.resource_pack_status_promotion.contract] The `resource-pack-status` row MUST define a bounded local promotion contract before packet inventory, matrix, or current-bundle coverage is claimed.
+r[mc_compatibility.resource_pack_status_promotion.contract.scope]
+r[mc_compatibility.resource_pack_status_promotion.checker] A deterministic Rust checker MUST validate normalized resource-pack status evidence before promotion.
+r[mc_compatibility.resource_pack_status_promotion.checker.valid]
+r[mc_compatibility.resource_pack_status_promotion.checker.rejects]
+r[mc_compatibility.resource_pack_status_promotion.rail] The harness MUST expose an isolated resource-pack status rail without changing existing CTF, survival, inventory, combat, network, or public-server semantics.
+r[mc_compatibility.resource_pack_status_promotion.rail.isolated]
+r[mc_compatibility.resource_pack_status_promotion.artifacts] Review-critical resource-pack status artifacts MUST be copied under `docs/evidence/` before promotion.
+r[mc_compatibility.resource_pack_status_promotion.artifacts.reviewable]
+r[mc_compatibility.resource_pack_status_promotion.matrix] Packet inventory, acceptance matrix, and current bundle docs MUST promote only the configured resource-pack status row after checker and evidence gates pass.
+r[mc_compatibility.resource_pack_status_promotion.matrix.nonclaims]
+r[mc_compatibility.resource_pack_status_promotion.validation] The change MUST record checker, runner, packet inventory, manifest, task gate, Cairn gates, and Cairn validation output before archive.
+r[mc_compatibility.resource_pack_status_promotion.validation.log]
+resource_pack_status_promotion_grep_exit_status=0
+command=grep -F sign_editor_open_update_promotion cairn/specs/mc-compatibility/spec.md
+r[mc_compatibility.sign_editor_open_update_promotion.contract] The `sign-editor-open-update` row MUST define a bounded promotion contract before packet inventory, matrix, or current-bundle coverage is claimed.
+r[mc_compatibility.sign_editor_open_update_promotion.contract.scope]
+r[mc_compatibility.sign_editor_open_update_promotion.checker] A deterministic Rust checker MUST validate normalized sign editor open/update evidence before promotion.
+r[mc_compatibility.sign_editor_open_update_promotion.checker.valid]
+r[mc_compatibility.sign_editor_open_update_promotion.checker.rejects]
+r[mc_compatibility.sign_editor_open_update_promotion.rail] The harness MUST expose an isolated sign editor open/update rail without changing existing sign persistence, survival, inventory, CTF, combat, network, or negative-live semantics.
+r[mc_compatibility.sign_editor_open_update_promotion.rail.isolated]
+r[mc_compatibility.sign_editor_open_update_promotion.artifacts] Review-critical sign editor artifacts MUST be copied under `docs/evidence/` before promotion.
+r[mc_compatibility.sign_editor_open_update_promotion.artifacts.reviewable]
+r[mc_compatibility.sign_editor_open_update_promotion.matrix] Packet inventory, acceptance matrix, and current bundle docs MUST promote only the configured sign editor row after checker and evidence gates pass.
+r[mc_compatibility.sign_editor_open_update_promotion.matrix.nonclaims]
+r[mc_compatibility.sign_editor_open_update_promotion.validation] The change MUST record checker, runner, packet inventory, manifest, task gate, Cairn gates, and Cairn validation output before archive.
+r[mc_compatibility.sign_editor_open_update_promotion.validation.log]
+sign_editor_open_update_promotion_grep_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 9,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 11,
+  "valid": true
+}
+exit_status=0

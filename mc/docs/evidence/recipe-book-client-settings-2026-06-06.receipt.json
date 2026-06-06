@@ -1,0 +1,22 @@
+{
+  "schema": "mc.compat.targeted_packet_promotion.receipt.v1",
+  "row": "recipe-book-client-settings",
+  "status": "pass",
+  "mode": "deterministic-fixture",
+  "packet_rows": ["play/serverbound/0x22 RecipeBookDataC2SPacket"],
+  "bounded_claim": "one recipe-book crafting settings transition fixture with open=true and filtering=false",
+  "artifacts": {
+    "kv": "docs/evidence/recipe-book-client-settings-2026-06-06.kv",
+    "doc": "docs/evidence/recipe-book-client-settings-2026-06-06.md",
+    "checker": "tools/check_targeted_packet_promotions.rs"
+  },
+  "non_claims": [
+    "recipe_book_ui_behavior",
+    "all_recipe_categories",
+    "recipe_discovery",
+    "all_recipes",
+    "full_crafting_coverage",
+    "public_server_safety",
+    "production_readiness"
+  ]
+}

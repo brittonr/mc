@@ -1,0 +1,614 @@
+# targeted packet promotions Cairn sync
+command=nix run --no-update-lock-file .#cairn -- sync <change> --root . [--execute]; validate
+command=nix run --no-update-lock-file .#cairn -- sync promote-block-entity-update-breadth --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/promote-block-entity-update-breadth/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/promote-block-entity-update-breadth/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-block-entity-update-breadth",
+  "delta_specs": [
+    "./cairn/changes/promote-block-entity-update-breadth/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "12d14d4a6dc3f1b985af8397464b735cc0e71a3cfb24e84bd329ef23bcf28aa4",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "47cd9dfab0cbb1251773f489ca14049e29f900b237b4aab5fa0d77e264666b7f",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "c3e9eae48f20c453aa05ef4b89c620fec8b5f6e8d29ff2f6bbfb49ab07253679"
+}
+promote-block-entity-update-breadth_sync_dry_run_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- sync promote-block-entity-update-breadth --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/promote-block-entity-update-breadth/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/promote-block-entity-update-breadth/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-block-entity-update-breadth",
+  "delta_specs": [
+    "./cairn/changes/promote-block-entity-update-breadth/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "12d14d4a6dc3f1b985af8397464b735cc0e71a3cfb24e84bd329ef23bcf28aa4",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "20859150af5684572e89c12b0db34826d6a3ceeb736f496e99b31886de606c2b",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "297fa1a12009b225bcf42894cd8f1dd295ec90b47784b9846e813ae1a5485e4b"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "20859150af5684572e89c12b0db34826d6a3ceeb736f496e99b31886de606c2b",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "297fa1a12009b225bcf42894cd8f1dd295ec90b47784b9846e813ae1a5485e4b"
+    },
+    "kind": "sync",
+    "manifest_hash": "6a8abe5ba7658d1c02946c29c5284494c9c6957f719eeb0c4a276ef434b7c876"
+  },
+  "plan_hash": "6057125f52401230785289cc9ca4c22c9c11f81e086aff2794108d64a35d9954",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "49f8a4d76b0972993fc8e70244d86be3637bbe4b19d8e3d01ddd3b0ff992ba45"
+}
+promote-block-entity-update-breadth_sync_execute_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- sync promote-chat-command-containment --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/promote-chat-command-containment/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/promote-chat-command-containment/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-chat-command-containment",
+  "delta_specs": [
+    "./cairn/changes/promote-chat-command-containment/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "5d724b48b966450a646aedd3128f0b09cd625f1d0354f9948ad7d63a22270d64",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "ff7e40b042daafb633e93bd167b3b8d23edcd9beb57c772e9d02db63517b91ba",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "0df48e7221a574ae1d71ab56e7562bdda397f2b1b491f6b0f402ac83dfc4ecb6"
+}
+promote-chat-command-containment_sync_dry_run_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- sync promote-chat-command-containment --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/promote-chat-command-containment/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/promote-chat-command-containment/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-chat-command-containment",
+  "delta_specs": [
+    "./cairn/changes/promote-chat-command-containment/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "5d724b48b966450a646aedd3128f0b09cd625f1d0354f9948ad7d63a22270d64",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "20859150af5684572e89c12b0db34826d6a3ceeb736f496e99b31886de606c2b",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "297fa1a12009b225bcf42894cd8f1dd295ec90b47784b9846e813ae1a5485e4b"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "20859150af5684572e89c12b0db34826d6a3ceeb736f496e99b31886de606c2b",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "297fa1a12009b225bcf42894cd8f1dd295ec90b47784b9846e813ae1a5485e4b"
+    },
+    "kind": "sync",
+    "manifest_hash": "6a8abe5ba7658d1c02946c29c5284494c9c6957f719eeb0c4a276ef434b7c876"
+  },
+  "plan_hash": "b578dff355936b810008065c4ec82fc22b9c7a82b9a33001a2aad101f113baf6",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "5935e63f781dd94445d48ccc6644e964973053ad726e1e1ddec3411aaa0dfefd"
+}
+promote-chat-command-containment_sync_execute_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- sync promote-chunk-biome-data-packet --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/promote-chunk-biome-data-packet/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/promote-chunk-biome-data-packet/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-chunk-biome-data-packet",
+  "delta_specs": [
+    "./cairn/changes/promote-chunk-biome-data-packet/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "65fd3ff0ea0ed95c3ed20501331361398ae113499624b1b8c51d4268b30a2b1d",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "5db7ba4064196ba2e5fac6ce27147185e7c92d07f0e9882ae4b7582aa6d272ba",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "6c4ca1c0b60a12c9c6f75a832714910c0f6e8fe062ac9738940304b8485c753d"
+}
+promote-chunk-biome-data-packet_sync_dry_run_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- sync promote-chunk-biome-data-packet --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/promote-chunk-biome-data-packet/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/promote-chunk-biome-data-packet/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-chunk-biome-data-packet",
+  "delta_specs": [
+    "./cairn/changes/promote-chunk-biome-data-packet/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "65fd3ff0ea0ed95c3ed20501331361398ae113499624b1b8c51d4268b30a2b1d",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "20859150af5684572e89c12b0db34826d6a3ceeb736f496e99b31886de606c2b",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "297fa1a12009b225bcf42894cd8f1dd295ec90b47784b9846e813ae1a5485e4b"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "20859150af5684572e89c12b0db34826d6a3ceeb736f496e99b31886de606c2b",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "297fa1a12009b225bcf42894cd8f1dd295ec90b47784b9846e813ae1a5485e4b"
+    },
+    "kind": "sync",
+    "manifest_hash": "6a8abe5ba7658d1c02946c29c5284494c9c6957f719eeb0c4a276ef434b7c876"
+  },
+  "plan_hash": "2d12c35030fa8edbe4baa7b29275b1425cee0ae258a73551f46ba7671eebba34",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "b3109d4bc893917c8419f1fcd8db39f776f314935b8c2eb4bdcf88e1bbcf6ee5"
+}
+promote-chunk-biome-data-packet_sync_execute_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- sync promote-creative-inventory-action --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/promote-creative-inventory-action/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/promote-creative-inventory-action/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-creative-inventory-action",
+  "delta_specs": [
+    "./cairn/changes/promote-creative-inventory-action/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "d393783102ce20fdac1ae1d1404079b6d5ff73f3802ddc332243e271a0554ffe",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "48bd9bfa4a0ad4d25365ca9683c9c7da07006aed5c3ece711a69ddb681685c9a",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "71cabcc61581e4aed37dfb0ee3f426757cca3bebfd256709ac9a0698d74c8d4b"
+}
+promote-creative-inventory-action_sync_dry_run_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- sync promote-creative-inventory-action --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/promote-creative-inventory-action/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/promote-creative-inventory-action/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-creative-inventory-action",
+  "delta_specs": [
+    "./cairn/changes/promote-creative-inventory-action/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "d393783102ce20fdac1ae1d1404079b6d5ff73f3802ddc332243e271a0554ffe",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "20859150af5684572e89c12b0db34826d6a3ceeb736f496e99b31886de606c2b",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "297fa1a12009b225bcf42894cd8f1dd295ec90b47784b9846e813ae1a5485e4b"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "20859150af5684572e89c12b0db34826d6a3ceeb736f496e99b31886de606c2b",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "297fa1a12009b225bcf42894cd8f1dd295ec90b47784b9846e813ae1a5485e4b"
+    },
+    "kind": "sync",
+    "manifest_hash": "6a8abe5ba7658d1c02946c29c5284494c9c6957f719eeb0c4a276ef434b7c876"
+  },
+  "plan_hash": "d7a89d8aa0e72f0f5ab67ea1bef9ddafb1603bf9fdfbcd03b7c348b87e066135",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "1027bf811a43ebe5c535508e06feb07b76354d32166124b0be5a6ded2d6264db"
+}
+promote-creative-inventory-action_sync_execute_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- sync promote-entity-status-effect-packets --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/promote-entity-status-effect-packets/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/promote-entity-status-effect-packets/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-entity-status-effect-packets",
+  "delta_specs": [
+    "./cairn/changes/promote-entity-status-effect-packets/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "cf451aa773bfd7a84f73c7eb3f5f199bc1ba0dc114a1ec96866a438a3e67b406",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "02fc1d452a6e11249f74fc4234cae374bc98a875bff88aed38e66e9f32623237",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "d1fb1296481c812c08f7fc84ece1d4a41b1cbf052f4a2d285a96d2d715e9fe47"
+}
+promote-entity-status-effect-packets_sync_dry_run_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- sync promote-entity-status-effect-packets --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/promote-entity-status-effect-packets/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/promote-entity-status-effect-packets/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-entity-status-effect-packets",
+  "delta_specs": [
+    "./cairn/changes/promote-entity-status-effect-packets/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "cf451aa773bfd7a84f73c7eb3f5f199bc1ba0dc114a1ec96866a438a3e67b406",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "20859150af5684572e89c12b0db34826d6a3ceeb736f496e99b31886de606c2b",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "297fa1a12009b225bcf42894cd8f1dd295ec90b47784b9846e813ae1a5485e4b"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "20859150af5684572e89c12b0db34826d6a3ceeb736f496e99b31886de606c2b",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "297fa1a12009b225bcf42894cd8f1dd295ec90b47784b9846e813ae1a5485e4b"
+    },
+    "kind": "sync",
+    "manifest_hash": "6a8abe5ba7658d1c02946c29c5284494c9c6957f719eeb0c4a276ef434b7c876"
+  },
+  "plan_hash": "8f12d29a849ad9e5f0155d92028cadd8dda1cdb4c28a384ebd4241ad77092c16",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "05065e64e4f780b54af8663ed803316d97063e2131246ab79c009862da58d8a5"
+}
+promote-entity-status-effect-packets_sync_execute_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- sync promote-recipe-book-client-settings --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/promote-recipe-book-client-settings/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/promote-recipe-book-client-settings/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-recipe-book-client-settings",
+  "delta_specs": [
+    "./cairn/changes/promote-recipe-book-client-settings/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "fe6e9094b6c24c4b58a947841e5d383f830da7f9ebc0e6074d989394b65b2559",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "dcb726630bbfefbfcf977341b9baaa0c9730bc56b09955eb8cdb35aecfdaeb8d",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "ee8eea1a5edeac711a55a06f5f53125aa2784cc3812c48b080f292bb6141ee8c"
+}
+promote-recipe-book-client-settings_sync_dry_run_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- sync promote-recipe-book-client-settings --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/promote-recipe-book-client-settings/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/promote-recipe-book-client-settings/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-recipe-book-client-settings",
+  "delta_specs": [
+    "./cairn/changes/promote-recipe-book-client-settings/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "fe6e9094b6c24c4b58a947841e5d383f830da7f9ebc0e6074d989394b65b2559",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "20859150af5684572e89c12b0db34826d6a3ceeb736f496e99b31886de606c2b",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "297fa1a12009b225bcf42894cd8f1dd295ec90b47784b9846e813ae1a5485e4b"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "20859150af5684572e89c12b0db34826d6a3ceeb736f496e99b31886de606c2b",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "297fa1a12009b225bcf42894cd8f1dd295ec90b47784b9846e813ae1a5485e4b"
+    },
+    "kind": "sync",
+    "manifest_hash": "6a8abe5ba7658d1c02946c29c5284494c9c6957f719eeb0c4a276ef434b7c876"
+  },
+  "plan_hash": "62c6d04f6b23b0b4ee809bf46201c0a341d4e1726899fd3cbfad8b97ee4a4fff",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "5a6547b0c39872c39017d0ba312ff019f847f251830172fb75e77d6b74bcb437"
+}
+promote-recipe-book-client-settings_sync_execute_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- sync promote-resource-pack-status --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/promote-resource-pack-status/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/promote-resource-pack-status/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-resource-pack-status",
+  "delta_specs": [
+    "./cairn/changes/promote-resource-pack-status/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "8ab5abeb91ecace03d42b9ff683edf9e534324e71281490a6e4829f61d3ef818",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "e7224efe198d0fa9a8764496b40c21a3171b2ee7572600b6d98f1be8aaa34d96",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "25be5f347b734d7d6af8453d9b155624794c9fb7d3c0e2a5279174447faa12e9"
+}
+promote-resource-pack-status_sync_dry_run_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- sync promote-resource-pack-status --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/promote-resource-pack-status/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/promote-resource-pack-status/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-resource-pack-status",
+  "delta_specs": [
+    "./cairn/changes/promote-resource-pack-status/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "8ab5abeb91ecace03d42b9ff683edf9e534324e71281490a6e4829f61d3ef818",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "20859150af5684572e89c12b0db34826d6a3ceeb736f496e99b31886de606c2b",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "297fa1a12009b225bcf42894cd8f1dd295ec90b47784b9846e813ae1a5485e4b"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "20859150af5684572e89c12b0db34826d6a3ceeb736f496e99b31886de606c2b",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "297fa1a12009b225bcf42894cd8f1dd295ec90b47784b9846e813ae1a5485e4b"
+    },
+    "kind": "sync",
+    "manifest_hash": "6a8abe5ba7658d1c02946c29c5284494c9c6957f719eeb0c4a276ef434b7c876"
+  },
+  "plan_hash": "3fbe1c098db298bcf1d1677cc55da88656dc5fb86d3abee76ff09d7affb43ca7",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "f6c1a7343262ecc350d88cc23164393edb0c070900506c80e5b03e9a532b2b7d"
+}
+promote-resource-pack-status_sync_execute_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- sync promote-sign-editor-open-update --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/promote-sign-editor-open-update/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/promote-sign-editor-open-update/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-sign-editor-open-update",
+  "delta_specs": [
+    "./cairn/changes/promote-sign-editor-open-update/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "da6d88b1d3064af26566a38fcc7708b31ea421f76a9b3c52f0fd4cd9ca7cc375",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "301162021c078a245922d9dece50b6a55f5dec168771f20644171e241a8b00f4",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "db0e5a2d9d80f82f00cc199fc3f2008e3162bbe0b49f8abdf2e965dfb6f79888"
+}
+promote-sign-editor-open-update_sync_dry_run_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- sync promote-sign-editor-open-update --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/promote-sign-editor-open-update/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/promote-sign-editor-open-update/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-sign-editor-open-update",
+  "delta_specs": [
+    "./cairn/changes/promote-sign-editor-open-update/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "da6d88b1d3064af26566a38fcc7708b31ea421f76a9b3c52f0fd4cd9ca7cc375",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "20859150af5684572e89c12b0db34826d6a3ceeb736f496e99b31886de606c2b",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "297fa1a12009b225bcf42894cd8f1dd295ec90b47784b9846e813ae1a5485e4b"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "20859150af5684572e89c12b0db34826d6a3ceeb736f496e99b31886de606c2b",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "297fa1a12009b225bcf42894cd8f1dd295ec90b47784b9846e813ae1a5485e4b"
+    },
+    "kind": "sync",
+    "manifest_hash": "6a8abe5ba7658d1c02946c29c5284494c9c6957f719eeb0c4a276ef434b7c876"
+  },
+  "plan_hash": "cf45a18017744256253e5152bf74c0b942a0f715021b13bf0e8c27649df50e51",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "dc33a71c44832c2a2682f186e8c048239e9f1a0bfcb9ccf81f193594dd100755"
+}
+promote-sign-editor-open-update_sync_execute_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 9,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 11,
+  "valid": true
+}
+exit_status=0
