@@ -22,6 +22,7 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 - Child commits used for the MCP-controlled observability row: Valence `3359f85`, Stevenarella `4d1b155`; machine-recorded in `docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.json`.
 - Child commits used for the bounded Paper-reference combat parity row: Valence `be02847e`, Stevenarella `75151ca`; machine-recorded in `docs/evidence/vanilla-combat-reference-paired-valence-receipt-2026-06-02.json` and `docs/evidence/vanilla-combat-reference-paired-paper-receipt-2026-06-02.json`.
 - Child commits used for the bounded Paper-reference armor combat parity row: Valence `f41e8649`, Stevenarella `75151ca`; machine-recorded in `docs/evidence/vanilla-combat-armor-reference-paired-valence-receipt-2026-06-03.json` and `docs/evidence/vanilla-combat-armor-reference-paired-paper-receipt-2026-06-03.json`.
+- Child commits used for the inventory stack split/merge row: Valence `a8ff748`, Stevenarella `722d950`; machine-recorded in `docs/evidence/inventory-stack-split-merge-2026-06-05.json`.
 
 ## Evidence rows
 
@@ -34,6 +35,7 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 | Player-inventory click/container click | `nix run .#mc-compat-valence-ctf-inventory-interaction` | `c75381feed1d98cd33d584ab9b8efdfe849d85eb3d1bb6cc23a23578cc8d7f7d` |
 | Open-container semantics | `nix run .#mc-compat-valence-ctf-inventory-interaction` | `b7913ddd1f000981f411f7f14331b67820761c1d317c528fbf8a5070c139d3f3` |
 | Inventory transaction packet family | scenario-bounded inventory click receipts plus negative containment rails | `df02262c86a9b1966e613a8485464ea234aa31c06acd06230f3de3123e349d61` |
+| Inventory stack split/merge | `nix run .#mc-compat-valence-inventory-stack-split-merge` | `aed5b9f833e877525cb6444cd51ced99b72c0d06c96f70108ca3e19260252dc7` |
 | Two-client combat/damage | `nix run .#mc-compat-valence-ctf-combat-damage` | `b67962dd5d4fe7242b69fd7c879390e80e13528475d55d7feb5305289f762ac8` |
 | Entity metadata packet family | bounded Valence `ctf` metadata probe | `7e7fc51be2b85c1ceb37890494cf1dda76b28e91220993bc18d47fd2043fdebc` |
 | Flag-carrier death/return | `nix run .#mc-compat-valence-ctf-flag-carrier-death-return` | `d4202d7f04245dd385f16f9a174b84fa59a837fd75a8f9ba7db3cc7adaf692a4` |
@@ -81,11 +83,11 @@ The bounded owned-local WAN telemetry row is validated by `docs/evidence/protoco
 
 ## Inventory semantics matrix checkpoint
 
-The maintained inventory rows are validated as a five-row bounded matrix in `docs/evidence/protocol-763-inventory-semantics-matrix-2026-05-27.md`. Covered rows are drop, pickup, player-inventory click, open-container click, and block placement/use-item-on-block. `docs/evidence/protocol-763-negative-live-rails-2026-05-29.md` adds bounded negative containment receipts for stale state-id and invalid slot/window probes, but these do not promote full inventory semantics, malformed-click breadth, stack splitting/merging, drag transactions, or all-window coverage.
+The maintained inventory rows include the five-row bounded matrix in `docs/evidence/protocol-763-inventory-semantics-matrix-2026-05-27.md` plus the dedicated stack split/merge row in `docs/evidence/inventory-stack-split-merge-2026-06-05.md`. Covered rows are drop, pickup, player-inventory click, open-container click, block placement/use-item-on-block, and one `RedWool x64` slot `37` to slot `38` split/merge-back fixture. `docs/evidence/protocol-763-negative-live-rails-2026-05-29.md` adds bounded negative containment receipts for stale state-id and invalid slot/window probes, but these do not promote full inventory semantics, malformed-click breadth, drag transactions, creative inventory, or all-window coverage.
 
 ## Inventory transaction packet-family checkpoint
 
-The bounded inventory transaction row is validated by `docs/evidence/protocol-inventory-transaction-family-2026-06-01.md`, receipt `docs/evidence/protocol-inventory-transaction-family-2026-06-01.receipt.json`, row contract evidence `docs/evidence/protocol-inventory-transaction-family-2026-06-01.kv`, the inventory semantics matrix, and negative live inventory containment rails. Covered packet row is `play/serverbound/0x0b ClickSlotC2SPacket -> ClickWindow_StateBeforeSlot` for scenario-bounded player-inventory/open-container clicks plus one stale-state and one invalid-click containment row. The packet inventory still marks this row as scenario-bounded with parser shape missing, so broad parser-shape coverage, all inventory semantics, all windows, all click modes, stack split/merge, drag transactions, creative inventory, full protocol-763 compatibility, full Minecraft compatibility, and production readiness remain non-claims.
+The bounded inventory transaction row is validated by `docs/evidence/protocol-inventory-transaction-family-2026-06-01.md`, receipt `docs/evidence/protocol-inventory-transaction-family-2026-06-01.receipt.json`, row contract evidence `docs/evidence/protocol-inventory-transaction-family-2026-06-01.kv`, the inventory semantics matrix, and negative live inventory containment rails. Covered packet row is `play/serverbound/0x0b ClickSlotC2SPacket -> ClickWindow_StateBeforeSlot` for scenario-bounded player-inventory/open-container clicks plus one stale-state and one invalid-click containment row. The dedicated stack split/merge row is separately validated by `docs/evidence/inventory-stack-split-merge-2026-06-05.md`, `docs/evidence/inventory-stack-split-merge-2026-06-05.kv`, and `tools/check_inventory_stack_split_merge_evidence.rs`. The packet inventory still marks inventory transactions as scenario-bounded with parser shape missing, so broad parser-shape coverage, all inventory semantics, all windows, all click modes, drag transactions, creative inventory, full protocol-763 compatibility, full Minecraft compatibility, and production readiness remain non-claims.
 
 ## Entity metadata packet-family checkpoint
 

@@ -107,6 +107,12 @@ nix run .#mc-compat-valence-ctf-inventory-interaction
 # deterministic, non-side-effecting fixture for the same inventory/drop/pickup/click/open-container/block-place command shape:
 nix run .#mc-compat-valence-ctf-inventory-interaction -- --dry-run
 
+# Maintained protocol-763 Valence CTF inventory stack split/merge receipt.
+# Requires one compatbot RedWool 64->32/32 split and merge-back with client state-id progression plus Valence ClickSlot split/merge correlation; not a broad inventory semantics claim.
+nix run .#mc-compat-valence-inventory-stack-split-merge
+# deterministic, non-side-effecting fixture for the same stack split/merge command shape:
+nix run .#mc-compat-valence-inventory-stack-split-merge -- --dry-run
+
 # Maintained protocol-763 Valence survival break/place/pickup receipt.
 # Requires dedicated Valence survival_compat fixture, Stevenarella fixed-coordinate break/place probe, and Valence survival join/break/pickup/place server correlation.
 nix run .#mc-compat-valence-survival-break-place-pickup
@@ -236,7 +242,7 @@ Receipts also include bounded blocks for the remaining compatibility seams:
 
 - `status_response_resource`: configured/default status description, version, and player sample expectations used by the status probe.
 - `packet_capture_oracle`: headless/redacted packet-summary metadata; raw payloads are not durable evidence by default.
-- `typed_event_oracle`: typed event schema/migration metadata. Dry-run and failure receipts mark `migration_status="substring-fallback"`; successful live receipts can write a `.typed-events.log` sidecar derived from client/server milestone evidence and record `event_log_path`, normalized `timeline_blake3`, `event_count`, `contributes_to_pass_fail`, and `raw_payloads_recorded=false`. Smoke and inventory-interaction are the first typed-graph pass/fail rails; unmigrated rails stay explicitly marked as substring fallback.
+- `typed_event_oracle`: typed event schema/migration metadata. Dry-run and failure receipts mark `migration_status="substring-fallback"`; successful live receipts can write a `.typed-events.log` sidecar derived from client/server milestone evidence and record `event_log_path`, normalized `timeline_blake3`, `event_count`, `contributes_to_pass_fail`, and `raw_payloads_recorded=false`. Smoke, inventory-interaction, and inventory-stack-split-merge are the first typed-graph pass/fail rails; unmigrated rails stay explicitly marked as substring fallback.
 - `negative_live_rail`: dry-run/live envelope metadata for bounded invalid-action scenarios. It records the selected rail, invalid action, expected containment/disconnect outcome vocabulary, observed outcome plus client postcondition milestone when live telemetry exists, owned-local/public authorization fields, client/time bounds, required evidence fields, and explicit non-claims for broad invalid-input, adversarial-security, production, inventory, plugin-message, and CTF semantics.
 - `public_server_authorized_safety`: deterministic authorization fixture metadata. It records owner, authorization artifact, non-loopback fixture scope, client/duration/traffic bounds, redaction policy, checkpoint decision, `live_traffic_enabled=false`, and explicit non-claims for live public-server safety, third-party targets without authorization, production readiness, adversarial safety, WAN tolerance, load safety beyond configured bounds, and unbounded public testing.
 - `proxy_compat_seam`: direct/proxied route, forwarding mode, owned-local-proxy guard, and non-claims such as `mtls_ported=false` and `credentials_recorded=false`.

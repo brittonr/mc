@@ -56,6 +56,24 @@ const GIT_STATUS_PORCELAIN_FLAG: &str = "--porcelain";
 const PROJECTILE_DAMAGE_CONTEXT_VELOCITY: f64 = 0.0;
 const PROJECTILE_DAMAGE_CONTEXT_PULL_STRENGTH: f64 = 1.0;
 const PROJECTILE_DAMAGE_VICTIM_START_HEALTH: f64 = 20.0;
+const INVENTORY_STACK_SPLIT_MERGE_PROBE_ENV: &str = "MC_COMPAT_INVENTORY_STACK_SPLIT_MERGE_PROBE";
+const INVENTORY_STACK_CLIENT_INITIAL_NEEDLE: &str =
+    "inventory_stack_initial_slot window=0 state_id=";
+const INVENTORY_STACK_CLIENT_SPLIT_PICKUP_NEEDLE: &str = "inventory_stack_split_pickup_sent";
+const INVENTORY_STACK_CLIENT_SPLIT_SOURCE_NEEDLE: &str = "inventory_stack_split_source_seen";
+const INVENTORY_STACK_CLIENT_SPLIT_PLACE_NEEDLE: &str = "inventory_stack_split_place_sent";
+const INVENTORY_STACK_CLIENT_DESTINATION_NEEDLE: &str = "inventory_stack_split_destination_seen";
+const INVENTORY_STACK_CLIENT_MERGE_PICKUP_NEEDLE: &str = "inventory_stack_merge_pickup_sent";
+const INVENTORY_STACK_CLIENT_MERGE_EMPTY_NEEDLE: &str =
+    "inventory_stack_merge_destination_empty_seen";
+const INVENTORY_STACK_CLIENT_MERGE_PLACE_NEEDLE: &str = "inventory_stack_merge_place_sent";
+const INVENTORY_STACK_CLIENT_FINAL_NEEDLE: &str = "inventory_stack_final_source_seen";
+const INVENTORY_STACK_SERVER_SPLIT_PICKUP_NEEDLE: &str =
+    "inventory_stack_server_split_pickup username=compatbot";
+const INVENTORY_STACK_SERVER_SPLIT_NEEDLE: &str = "inventory_stack_server_split username=compatbot";
+const INVENTORY_STACK_SERVER_MERGE_PICKUP_NEEDLE: &str =
+    "inventory_stack_server_merge_pickup username=compatbot";
+const INVENTORY_STACK_SERVER_MERGE_NEEDLE: &str = "inventory_stack_server_merge username=compatbot";
 const SURVIVAL_CHEST_CLIENT_OPEN_NEEDLE: &str = "survival_chest_open_seen window=1 position=8,64,0";
 const SURVIVAL_CHEST_CLIENT_STORE_NEEDLE: &str =
     "survival_chest_store_sent window=1 slot=0 item=Dirt count=1";
@@ -358,7 +376,7 @@ const FRAME_ARTIFACT_NON_CLAIMS: &[&str] = &[
     "visual_regression_approval",
     "semantic_equivalence",
 ];
-const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-furnace-persistence|survival-hunger-food|survival-mob-drop|survival-redstone-toggle|survival-world-persistence-restart|survival-crash-recovery-parity|survival-block-entity-persistence-parity|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|vanilla-combat-reference-parity|vanilla-combat-armor-reference-parity|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset";
+const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|inventory-stack-split-merge|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-furnace-persistence|survival-hunger-food|survival-mob-drop|survival-redstone-toggle|survival-world-persistence-restart|survival-crash-recovery-parity|survival-block-entity-persistence-parity|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|vanilla-combat-reference-parity|vanilla-combat-armor-reference-parity|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
     "Dimension type:",
@@ -488,6 +506,7 @@ enum Scenario {
     FlagScoreRepeat,
     BlueFlagScore,
     InventoryInteraction,
+    InventoryStackSplitMerge,
     SurvivalBreakPlacePickup,
     SurvivalChestPersistence,
     SurvivalCraftingTable,
@@ -2016,6 +2035,7 @@ fn parse_scenario(value: &str) -> Result<Scenario, String> {
         "flag-score-repeat" => Ok(Scenario::FlagScoreRepeat),
         "blue-flag-score" => Ok(Scenario::BlueFlagScore),
         "inventory-interaction" => Ok(Scenario::InventoryInteraction),
+        "inventory-stack-split-merge" => Ok(Scenario::InventoryStackSplitMerge),
         "survival-break-place-pickup" => Ok(Scenario::SurvivalBreakPlacePickup),
         "survival-chest-persistence" => Ok(Scenario::SurvivalChestPersistence),
         "survival-crafting-table" => Ok(Scenario::SurvivalCraftingTable),
@@ -2067,6 +2087,7 @@ fn scenario_name(scenario: Scenario) -> &'static str {
         Scenario::FlagScoreRepeat => "flag-score-repeat",
         Scenario::BlueFlagScore => "blue-flag-score",
         Scenario::InventoryInteraction => "inventory-interaction",
+        Scenario::InventoryStackSplitMerge => "inventory-stack-split-merge",
         Scenario::SurvivalBreakPlacePickup => "survival-break-place-pickup",
         Scenario::SurvivalChestPersistence => "survival-chest-persistence",
         Scenario::SurvivalCraftingTable => "survival-crafting-table",
@@ -2157,6 +2178,48 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             (
                 "inventory_block_place_sent",
                 "inventory_probe_place_block_sent",
+            ),
+        ],
+        Scenario::InventoryStackSplitMerge => &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            (
+                "inventory_stack_initial_slot",
+                INVENTORY_STACK_CLIENT_INITIAL_NEEDLE,
+            ),
+            (
+                "inventory_stack_split_pickup_sent",
+                INVENTORY_STACK_CLIENT_SPLIT_PICKUP_NEEDLE,
+            ),
+            (
+                "inventory_stack_split_source_seen",
+                INVENTORY_STACK_CLIENT_SPLIT_SOURCE_NEEDLE,
+            ),
+            (
+                "inventory_stack_split_place_sent",
+                INVENTORY_STACK_CLIENT_SPLIT_PLACE_NEEDLE,
+            ),
+            (
+                "inventory_stack_destination_seen",
+                INVENTORY_STACK_CLIENT_DESTINATION_NEEDLE,
+            ),
+            (
+                "inventory_stack_merge_pickup_sent",
+                INVENTORY_STACK_CLIENT_MERGE_PICKUP_NEEDLE,
+            ),
+            (
+                "inventory_stack_merge_destination_empty_seen",
+                INVENTORY_STACK_CLIENT_MERGE_EMPTY_NEEDLE,
+            ),
+            (
+                "inventory_stack_merge_place_sent",
+                INVENTORY_STACK_CLIENT_MERGE_PLACE_NEEDLE,
+            ),
+            (
+                "inventory_stack_final_source_seen",
+                INVENTORY_STACK_CLIENT_FINAL_NEEDLE,
             ),
         ],
         Scenario::SurvivalBreakPlacePickup => &[
@@ -2837,6 +2900,25 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
                 "inventory_container_click",
             ),
             ("server_block_place", "block_place_item"),
+        ],
+        Scenario::InventoryStackSplitMerge => &[
+            ("server_username_seen", "compatbot"),
+            (
+                "server_inventory_stack_split_pickup",
+                INVENTORY_STACK_SERVER_SPLIT_PICKUP_NEEDLE,
+            ),
+            (
+                "server_inventory_stack_split",
+                INVENTORY_STACK_SERVER_SPLIT_NEEDLE,
+            ),
+            (
+                "server_inventory_stack_merge_pickup",
+                INVENTORY_STACK_SERVER_MERGE_PICKUP_NEEDLE,
+            ),
+            (
+                "server_inventory_stack_merge",
+                INVENTORY_STACK_SERVER_MERGE_NEEDLE,
+            ),
         ],
         Scenario::SurvivalBreakPlacePickup => &[
             ("server_username_seen", "compatbot"),
@@ -3664,6 +3746,52 @@ fn typed_event_ordered_edges_for_scenario(scenario: Scenario) -> Vec<(&'static s
             ("server_inventory_drop", "server_inventory_pickup"),
             ("server_inventory_pickup", "server_inventory_click"),
             ("server_inventory_container_click", "server_block_place"),
+        ],
+        Scenario::InventoryStackSplitMerge => vec![
+            (
+                "inventory_stack_initial_slot",
+                "inventory_stack_split_pickup_sent",
+            ),
+            (
+                "inventory_stack_split_pickup_sent",
+                "inventory_stack_split_source_seen",
+            ),
+            (
+                "inventory_stack_split_source_seen",
+                "inventory_stack_split_place_sent",
+            ),
+            (
+                "inventory_stack_split_place_sent",
+                "inventory_stack_destination_seen",
+            ),
+            (
+                "inventory_stack_destination_seen",
+                "inventory_stack_merge_pickup_sent",
+            ),
+            (
+                "inventory_stack_merge_pickup_sent",
+                "inventory_stack_merge_destination_empty_seen",
+            ),
+            (
+                "inventory_stack_merge_destination_empty_seen",
+                "inventory_stack_merge_place_sent",
+            ),
+            (
+                "inventory_stack_merge_place_sent",
+                "inventory_stack_final_source_seen",
+            ),
+            (
+                "server_inventory_stack_split_pickup",
+                "server_inventory_stack_split",
+            ),
+            (
+                "server_inventory_stack_split",
+                "server_inventory_stack_merge_pickup",
+            ),
+            (
+                "server_inventory_stack_merge_pickup",
+                "server_inventory_stack_merge",
+            ),
         ],
         _ => vec![],
     }
@@ -4538,6 +4666,9 @@ fn start_valence_server(cfg: &Config) -> Result<ManagedServer, String> {
     }
     if cfg.scenario == Scenario::VanillaCombatArmorReferenceParity {
         cmd.env(VANILLA_COMBAT_ARMOR_REFERENCE_PROBE_ENV, "1");
+    }
+    if cfg.scenario == Scenario::InventoryStackSplitMerge {
+        cmd.env(INVENTORY_STACK_SPLIT_MERGE_PROBE_ENV, "1");
     }
     if cfg.scenario == Scenario::SurvivalChestPersistence {
         cmd.env(SURVIVAL_CHEST_FIXTURE_ENV, "1");
@@ -6085,6 +6216,13 @@ fn apply_scenario_probe_env(
                 .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
                 .env("MC_COMPAT_INVENTORY_PROBE", "1");
         }
+        Scenario::InventoryStackSplitMerge => {
+            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE", "1")
+                .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
+                .env("MC_COMPAT_INVENTORY_PROBE", "1")
+                .env(INVENTORY_STACK_SPLIT_MERGE_PROBE_ENV, "1");
+        }
         Scenario::NegativeInventoryStaleState | Scenario::NegativeInventoryInvalidClick => {
             let negative_probe = match scenario {
                 Scenario::NegativeInventoryStaleState => "inventory_stale_state",
@@ -7354,6 +7492,12 @@ fn smoke_receipt_json_with_typed_event_oracle(
             "player_window_click",
             "player_block_placement",
         ],
+        Scenario::InventoryStackSplitMerge => vec![
+            "login_success",
+            "play_join_game",
+            "inventory_set_slot",
+            "player_window_click",
+        ],
         Scenario::SurvivalBreakPlacePickup => vec![
             "login_success",
             "play_join_game",
@@ -7630,6 +7774,19 @@ fn smoke_receipt_json_with_typed_event_oracle(
         "inventory_open_container_seen",
         "inventory_container_click_sent",
         "inventory_block_place_sent",
+        "inventory_stack_initial_slot",
+        "inventory_stack_split_pickup_sent",
+        "inventory_stack_split_source_seen",
+        "inventory_stack_split_place_sent",
+        "inventory_stack_destination_seen",
+        "inventory_stack_merge_pickup_sent",
+        "inventory_stack_merge_destination_empty_seen",
+        "inventory_stack_merge_place_sent",
+        "inventory_stack_final_source_seen",
+        "server_inventory_stack_split_pickup",
+        "server_inventory_stack_split",
+        "server_inventory_stack_merge_pickup",
+        "server_inventory_stack_merge",
         "survival_break_sent",
         "survival_break_update",
         "survival_pickup_seen",
@@ -8896,6 +9053,7 @@ mod tests {
         Scenario::FlagScoreRepeat,
         Scenario::BlueFlagScore,
         Scenario::InventoryInteraction,
+        Scenario::InventoryStackSplitMerge,
         Scenario::SurvivalBreakPlacePickup,
         Scenario::SurvivalChestPersistence,
         Scenario::SurvivalCraftingTable,
@@ -9536,6 +9694,10 @@ mod tests {
         let inventory = test_config(&["--scenario", "inventory-interaction"], &[])
             .expect("inventory scenario parses");
         assert_eq!(inventory.scenario, Scenario::InventoryInteraction);
+
+        let inventory_stack = test_config(&["--scenario", "inventory-stack-split-merge"], &[])
+            .expect("inventory stack split/merge scenario parses");
+        assert_eq!(inventory_stack.scenario, Scenario::InventoryStackSplitMerge);
 
         let survival = test_config(&["--scenario", "survival-break-place-pickup"], &[])
             .expect("survival scenario parses");
@@ -11696,6 +11858,41 @@ RED: 1
         assert!(missing_drop
             .missing_milestones
             .contains(&"server_inventory_drop"));
+    }
+
+    #[test]
+    fn inventory_stack_split_merge_tracks_client_and_server_evidence() {
+        let client = evaluate_scenario(
+            Scenario::InventoryStackSplitMerge,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\ninventory_stack_initial_slot window=0 state_id=1\ninventory_stack_split_pickup_sent\ninventory_stack_split_source_seen\ninventory_stack_split_place_sent\ninventory_stack_split_destination_seen\ninventory_stack_merge_pickup_sent\ninventory_stack_merge_destination_empty_seen\ninventory_stack_merge_place_sent\ninventory_stack_final_source_seen\n",
+        );
+        assert!(client.passed, "{client:?}");
+
+        let missing_final = evaluate_scenario(
+            Scenario::InventoryStackSplitMerge,
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\ninventory_stack_initial_slot window=0 state_id=1\ninventory_stack_split_pickup_sent\ninventory_stack_split_source_seen\ninventory_stack_split_place_sent\ninventory_stack_split_destination_seen\ninventory_stack_merge_pickup_sent\ninventory_stack_merge_destination_empty_seen\ninventory_stack_merge_place_sent\n",
+        );
+        assert!(!missing_final.passed, "{missing_final:?}");
+        assert!(missing_final
+            .missing_milestones
+            .contains(&"inventory_stack_final_source_seen"));
+
+        let server = evaluate_server_scenario(
+            Scenario::InventoryStackSplitMerge,
+            "compatbot joined\nMC-COMPAT-MILESTONE inventory_stack_server_split_pickup username=compatbot window=0 state_id=1 source_slot=37 button=1 mode=Click item=RedWool source_count_after=32 carried_count=32\nMC-COMPAT-MILESTONE inventory_stack_server_split username=compatbot window=0 state_id_sequence=1->2 source_slot=37 destination_slot=38 button=0 mode=Click item=RedWool source_count_after=32 destination_count_after=32 carried_count=0\nMC-COMPAT-MILESTONE inventory_stack_server_merge_pickup username=compatbot window=0 state_id=3 destination_slot=38 button=0 mode=Click item=RedWool destination_count_after=0 carried_count=32\nMC-COMPAT-MILESTONE inventory_stack_server_merge username=compatbot window=0 state_id_sequence=2->3->4 source_slot=37 destination_slot=38 button=0 mode=Click item=RedWool source_count_after=64 destination_count_after=0 carried_count=0\n",
+            "compatbot",
+        );
+        assert!(server.passed, "{server:?}");
+
+        let missing_merge = evaluate_server_scenario(
+            Scenario::InventoryStackSplitMerge,
+            "compatbot joined\nMC-COMPAT-MILESTONE inventory_stack_server_split_pickup username=compatbot\nMC-COMPAT-MILESTONE inventory_stack_server_split username=compatbot\n",
+            "compatbot",
+        );
+        assert!(!missing_merge.passed, "{missing_merge:?}");
+        assert!(missing_merge
+            .missing_milestones
+            .contains(&"server_inventory_stack_merge"));
     }
 
     #[test]

@@ -12,12 +12,12 @@ d605799f8ea829ec749f97f52acd20c75f403324439f3d72392ceeb3397abe8d  docs/evidence/
 891af646108bbcd2f5e5fc8206b1dda0c7e098d566f17fc1cc75ea64ac06531d  docs/evidence/protocol-763-red-blue-scoring-soak-blue-2026-05-30.client.log
 9a8dd4253b720e827724352539d3c398a7f03c3c958561c9dedea7c5641ef32d  docs/evidence/protocol-763-red-blue-scoring-soak-blue-2026-05-30.server.log
 e660802c4fc789cbb9b7b4cecb73294aa29aafffb3d2a2ddfe693c5135caf816  docs/evidence/protocol-763-red-blue-scoring-soak-blue-2026-05-30.receipt.typed-events.log
-ca3acfb842d94ce72bd01654bc07b8c4996747a6eead9c9dee50fb2d96416cf2  docs/evidence/protocol-763-acceptance-matrix.md
-93cb8e8ad7f74445c821fb28643b849b0d307a4923a85c48e4b9e7b6c7451f93  docs/evidence/protocol-763-current-evidence-bundle.md
+27e9e4aacf106cd52569113d8d8a912689a40cb436436eb40ab5daff043f9e27  docs/evidence/protocol-763-acceptance-matrix.md
+75114b3832546ecfdaacd3482af28616a3130bc5a505c4caab3edd451c9fd946  docs/evidence/protocol-763-current-evidence-bundle.md
 92f6d25fddda6d6c038d547bab5048526becf941645eea8d1d23e9568dc98e89  docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md
 69cb30f9883659aec0727ca58d7bc4149bc62942eb87f0e503cbf11d283e0496  tools/check_red_blue_scoring_soak_live_refresh.rs
-bee4e0665401e99df5aecf3295ebdf2efb0914728184cb373da11ef7b9d0e720  tools/check_acceptance_matrix.rs
-b477ff7d85ef1346b4faae3d264ce93fdc8cef57d627ba00b69d8c7053492b78  flake.nix
+cb267db45d52384c9b07839348d64b01ecde90f00333d4b0200868cf6903690e  tools/check_acceptance_matrix.rs
+499d794df16818a858c40b4bf92cd1994d971e20cdaaa25544a548415a209e99  flake.nix
 d313fe27f19f79af639b54576f0c391c56ec2580a4404c2aa59a4a24f82b8560  cairn/archive/2026-05-30-refresh-red-blue-scoring-soak-live-evidence/proposal.md
 96060d7b43959e1420ef160c2f7ada16b57a39208e6ef382bd99f55dd8a0f509  cairn/archive/2026-05-30-refresh-red-blue-scoring-soak-live-evidence/design.md
 95b02ace0310a9182453757db625f75f3b2e13fdebc8dd4ac7df7cedd9d4555d  cairn/archive/2026-05-30-refresh-red-blue-scoring-soak-live-evidence/specs/mc-compatibility/spec.md
