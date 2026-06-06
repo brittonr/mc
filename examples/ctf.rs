@@ -17,7 +17,7 @@ use valence::hand_swing::HandSwingEvent;
 use valence::interact_block::InteractBlockEvent;
 use valence::interact_item::InteractItemEvent;
 use valence::inventory::{
-    ClickSlotEvent, DropItemStackEvent, HeldItem, OpenInventory, UpdateSelectedSlotEvent,
+    ClickMode, ClickSlotEvent, DropItemStackEvent, HeldItem, OpenInventory, UpdateSelectedSlotEvent,
 };
 use valence::log::{debug, info};
 use valence::math::Vec3Swizzles;
@@ -42,6 +42,17 @@ const SPAWN_BOX_HEIGHT: i32 = 4;
 const PLAYER_MAX_HEALTH: f32 = 20.0;
 const TEAM_RED_YAW: f32 = -90.0;
 const TEAM_BLUE_YAW: f32 = 90.0;
+const COMPAT_ACTOR_USERNAME: &str = "compatbot";
+const INVENTORY_STACK_SPLIT_MERGE_PROBE_ENV: &str = "MC_COMPAT_INVENTORY_STACK_SPLIT_MERGE_PROBE";
+const INVENTORY_STACK_WINDOW_ID: u8 = 0;
+const INVENTORY_STACK_SOURCE_SLOT: i16 = 37;
+const INVENTORY_STACK_DESTINATION_SLOT: i16 = 38;
+const INVENTORY_STACK_ITEM: ItemKind = ItemKind::RedWool;
+const INVENTORY_STACK_FULL_COUNT: i8 = 64;
+const INVENTORY_STACK_HALF_COUNT: i8 = 32;
+const INVENTORY_STACK_EMPTY_COUNT: i8 = 0;
+const INVENTORY_STACK_LEFT_BUTTON: i8 = 0;
+const INVENTORY_STACK_RIGHT_BUTTON: i8 = 1;
 const VANILLA_COMBAT_REFERENCE_PROBE_ENV: &str = "MC_COMPAT_VANILLA_COMBAT_REFERENCE_PROBE";
 const VANILLA_COMBAT_ARMOR_REFERENCE_PROBE_ENV: &str =
     "MC_COMPAT_VANILLA_COMBAT_ARMOR_REFERENCE_PROBE";
@@ -1814,9 +1825,206 @@ fn log_inventory_drop_events(
     }
 }
 
+#[derive(Debug, Default)]
+struct InventoryStackSplitMergeProbeState {
+    split_pickup_state_id: Option<i32>,
+    split_place_state_id: Option<i32>,
+    merge_pickup_state_id: Option<i32>,
+    merge_place_state_id: Option<i32>,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum InventoryStackSplitMergeServerAction {
+    SplitPickup,
+    SplitPlace,
+    MergePickup,
+    MergePlace,
+}
+
+fn inventory_stack_slot_change_matches(
+    event: &ClickSlotEvent,
+    slot: i16,
+    item: ItemKind,
+    count: i8,
+) -> bool {
+    event.slot_changes.iter().any(|change| {
+        change.idx == slot && change.stack.item == item && change.stack.count == count
+    })
+}
+
+fn inventory_stack_slot_change_empty(event: &ClickSlotEvent, slot: i16) -> bool {
+    event
+        .slot_changes
+        .iter()
+        .any(|change| change.idx == slot && change.stack.is_empty())
+}
+
+fn classify_inventory_stack_split_merge_event(
+    username: &str,
+    event: &ClickSlotEvent,
+    state: &InventoryStackSplitMergeProbeState,
+) -> Option<InventoryStackSplitMergeServerAction> {
+    if username != COMPAT_ACTOR_USERNAME
+        || event.window_id != INVENTORY_STACK_WINDOW_ID
+        || event.mode != ClickMode::Click
+    {
+        return None;
+    }
+
+    if state.split_pickup_state_id.is_none()
+        && event.slot_id == INVENTORY_STACK_SOURCE_SLOT
+        && event.button == INVENTORY_STACK_RIGHT_BUTTON
+        && event.carried_item.item == INVENTORY_STACK_ITEM
+        && event.carried_item.count == INVENTORY_STACK_HALF_COUNT
+        && inventory_stack_slot_change_matches(
+            event,
+            INVENTORY_STACK_SOURCE_SLOT,
+            INVENTORY_STACK_ITEM,
+            INVENTORY_STACK_HALF_COUNT,
+        )
+    {
+        return Some(InventoryStackSplitMergeServerAction::SplitPickup);
+    }
+
+    if state.split_pickup_state_id.is_some()
+        && state.split_place_state_id.is_none()
+        && event.slot_id == INVENTORY_STACK_DESTINATION_SLOT
+        && event.button == INVENTORY_STACK_LEFT_BUTTON
+        && event.carried_item.is_empty()
+        && inventory_stack_slot_change_matches(
+            event,
+            INVENTORY_STACK_DESTINATION_SLOT,
+            INVENTORY_STACK_ITEM,
+            INVENTORY_STACK_HALF_COUNT,
+        )
+    {
+        return Some(InventoryStackSplitMergeServerAction::SplitPlace);
+    }
+
+    if state.split_place_state_id.is_some()
+        && state.merge_pickup_state_id.is_none()
+        && event.slot_id == INVENTORY_STACK_DESTINATION_SLOT
+        && event.button == INVENTORY_STACK_LEFT_BUTTON
+        && event.carried_item.item == INVENTORY_STACK_ITEM
+        && event.carried_item.count == INVENTORY_STACK_HALF_COUNT
+        && inventory_stack_slot_change_empty(event, INVENTORY_STACK_DESTINATION_SLOT)
+    {
+        return Some(InventoryStackSplitMergeServerAction::MergePickup);
+    }
+
+    if state.merge_pickup_state_id.is_some()
+        && state.merge_place_state_id.is_none()
+        && event.slot_id == INVENTORY_STACK_SOURCE_SLOT
+        && event.button == INVENTORY_STACK_LEFT_BUTTON
+        && event.carried_item.is_empty()
+        && inventory_stack_slot_change_matches(
+            event,
+            INVENTORY_STACK_SOURCE_SLOT,
+            INVENTORY_STACK_ITEM,
+            INVENTORY_STACK_FULL_COUNT,
+        )
+    {
+        return Some(InventoryStackSplitMergeServerAction::MergePlace);
+    }
+
+    None
+}
+
+fn log_inventory_stack_split_merge_event(
+    username: &str,
+    event: &ClickSlotEvent,
+    state: &mut InventoryStackSplitMergeProbeState,
+) {
+    if !inventory_stack_split_merge_probe_enabled() {
+        return;
+    }
+
+    let Some(action) = classify_inventory_stack_split_merge_event(username, event, state) else {
+        return;
+    };
+
+    match action {
+        InventoryStackSplitMergeServerAction::SplitPickup => {
+            state.split_pickup_state_id = Some(event.state_id);
+            let milestone = format!(
+                "MC-COMPAT-MILESTONE inventory_stack_server_split_pickup username={} window={} state_id={} source_slot={} button={} mode=Click item={:?} source_count_after={} carried_count={}",
+                username,
+                event.window_id,
+                event.state_id,
+                INVENTORY_STACK_SOURCE_SLOT,
+                INVENTORY_STACK_RIGHT_BUTTON,
+                INVENTORY_STACK_ITEM,
+                INVENTORY_STACK_HALF_COUNT,
+                INVENTORY_STACK_HALF_COUNT
+            );
+            info!("{}", milestone);
+            println!("{}", milestone);
+        }
+        InventoryStackSplitMergeServerAction::SplitPlace => {
+            state.split_place_state_id = Some(event.state_id);
+            let split_pickup_state_id = state.split_pickup_state_id.unwrap_or(event.state_id);
+            let milestone = format!(
+                "MC-COMPAT-MILESTONE inventory_stack_server_split username={} window={} state_id_sequence={}->{} source_slot={} destination_slot={} button={} mode=Click item={:?} source_count_after={} destination_count_after={} carried_count={}",
+                username,
+                event.window_id,
+                split_pickup_state_id,
+                event.state_id,
+                INVENTORY_STACK_SOURCE_SLOT,
+                INVENTORY_STACK_DESTINATION_SLOT,
+                INVENTORY_STACK_LEFT_BUTTON,
+                INVENTORY_STACK_ITEM,
+                INVENTORY_STACK_HALF_COUNT,
+                INVENTORY_STACK_HALF_COUNT,
+                INVENTORY_STACK_EMPTY_COUNT
+            );
+            info!("{}", milestone);
+            println!("{}", milestone);
+        }
+        InventoryStackSplitMergeServerAction::MergePickup => {
+            state.merge_pickup_state_id = Some(event.state_id);
+            let milestone = format!(
+                "MC-COMPAT-MILESTONE inventory_stack_server_merge_pickup username={} window={} state_id={} destination_slot={} button={} mode=Click item={:?} destination_count_after={} carried_count={}",
+                username,
+                event.window_id,
+                event.state_id,
+                INVENTORY_STACK_DESTINATION_SLOT,
+                INVENTORY_STACK_LEFT_BUTTON,
+                INVENTORY_STACK_ITEM,
+                INVENTORY_STACK_EMPTY_COUNT,
+                INVENTORY_STACK_HALF_COUNT
+            );
+            info!("{}", milestone);
+            println!("{}", milestone);
+        }
+        InventoryStackSplitMergeServerAction::MergePlace => {
+            state.merge_place_state_id = Some(event.state_id);
+            let split_place_state_id = state.split_place_state_id.unwrap_or(event.state_id);
+            let merge_pickup_state_id = state.merge_pickup_state_id.unwrap_or(event.state_id);
+            let milestone = format!(
+                "MC-COMPAT-MILESTONE inventory_stack_server_merge username={} window={} state_id_sequence={}->{}->{} source_slot={} destination_slot={} button={} mode=Click item={:?} source_count_after={} destination_count_after={} carried_count={}",
+                username,
+                event.window_id,
+                split_place_state_id,
+                merge_pickup_state_id,
+                event.state_id,
+                INVENTORY_STACK_SOURCE_SLOT,
+                INVENTORY_STACK_DESTINATION_SLOT,
+                INVENTORY_STACK_LEFT_BUTTON,
+                INVENTORY_STACK_ITEM,
+                INVENTORY_STACK_FULL_COUNT,
+                INVENTORY_STACK_EMPTY_COUNT,
+                INVENTORY_STACK_EMPTY_COUNT
+            );
+            info!("{}", milestone);
+            println!("{}", milestone);
+        }
+    }
+}
+
 fn log_inventory_click_state(
     mut commands: Commands,
     mut compat_container_opened: Local<bool>,
+    mut inventory_stack_state: Local<InventoryStackSplitMergeProbeState>,
     mut events: EventReader<ClickSlotEvent>,
     usernames: Query<&Username>,
 ) {
@@ -1838,10 +2046,16 @@ fn log_inventory_click_state(
         );
         info!("{}", milestone);
         println!("{}", milestone);
+        log_inventory_stack_split_merge_event(
+            username.as_str(),
+            event,
+            &mut *inventory_stack_state,
+        );
 
-        if username.as_str() == "compatbot"
-            && event.window_id == 0
-            && event.slot_id == 37
+        if username.as_str() == COMPAT_ACTOR_USERNAME
+            && !inventory_stack_split_merge_probe_enabled()
+            && event.window_id == INVENTORY_STACK_WINDOW_ID
+            && event.slot_id == INVENTORY_STACK_SOURCE_SLOT
             && !*compat_container_opened
         {
             let menu = commands
@@ -1857,7 +2071,9 @@ fn log_inventory_click_state(
             println!("{}", milestone);
         }
 
-        if username.as_str() == "compatbot" && event.window_id != 0 {
+        if username.as_str() == COMPAT_ACTOR_USERNAME
+            && event.window_id != INVENTORY_STACK_WINDOW_ID
+        {
             let milestone = format!(
                 "MC-COMPAT-MILESTONE inventory_container_click username={} window={} slot={} \
                  button={} mode={:?} carried_item={:?} count={} slot_changes={}",
@@ -2821,6 +3037,10 @@ fn vanilla_combat_armor_reference_probe_enabled() -> bool {
     env_flag_enabled(VANILLA_COMBAT_ARMOR_REFERENCE_PROBE_ENV)
 }
 
+fn inventory_stack_split_merge_probe_enabled() -> bool {
+    env_flag_enabled(INVENTORY_STACK_SPLIT_MERGE_PROBE_ENV)
+}
+
 fn env_flag_enabled(name: &str) -> bool {
     std::env::var(name)
         .map(|value| value != "0")
@@ -3170,6 +3390,155 @@ mod tests {
     const TEST_BLUE_SCORE: u32 = 0;
     const TEST_ACCEPTED_RACE_PLAYER: &str = "compatbota";
     const TEST_REJECTED_RACE_PLAYER: &str = "compatbotb";
+    const TEST_CLIENT_ENTITY_ID: u32 = 1;
+    const TEST_CLICK_STATE_ID: i32 = 7;
+
+    fn test_inventory_stack(count: i8) -> ItemStack {
+        ItemStack::new(INVENTORY_STACK_ITEM, count, None)
+    }
+
+    fn test_slot_change(slot: i16, stack: ItemStack) -> valence::inventory::SlotChange {
+        valence::inventory::SlotChange { idx: slot, stack }
+    }
+
+    fn test_click_slot_event(
+        slot_id: i16,
+        button: i8,
+        carried_item: ItemStack,
+        slot_changes: Vec<valence::inventory::SlotChange>,
+    ) -> ClickSlotEvent {
+        ClickSlotEvent {
+            client: Entity::from_raw(TEST_CLIENT_ENTITY_ID),
+            window_id: INVENTORY_STACK_WINDOW_ID,
+            state_id: TEST_CLICK_STATE_ID,
+            slot_id,
+            button,
+            mode: ClickMode::Click,
+            slot_changes,
+            carried_item,
+        }
+    }
+
+    #[test]
+    fn inventory_stack_split_merge_classifier_accepts_ordered_clicks() {
+        let mut state = InventoryStackSplitMergeProbeState::default();
+        let split_pickup = test_click_slot_event(
+            INVENTORY_STACK_SOURCE_SLOT,
+            INVENTORY_STACK_RIGHT_BUTTON,
+            test_inventory_stack(INVENTORY_STACK_HALF_COUNT),
+            vec![test_slot_change(
+                INVENTORY_STACK_SOURCE_SLOT,
+                test_inventory_stack(INVENTORY_STACK_HALF_COUNT),
+            )],
+        );
+        assert_eq!(
+            classify_inventory_stack_split_merge_event(
+                COMPAT_ACTOR_USERNAME,
+                &split_pickup,
+                &state
+            ),
+            Some(InventoryStackSplitMergeServerAction::SplitPickup)
+        );
+        state.split_pickup_state_id = Some(TEST_CLICK_STATE_ID);
+
+        let split_place = test_click_slot_event(
+            INVENTORY_STACK_DESTINATION_SLOT,
+            INVENTORY_STACK_LEFT_BUTTON,
+            ItemStack::EMPTY,
+            vec![test_slot_change(
+                INVENTORY_STACK_DESTINATION_SLOT,
+                test_inventory_stack(INVENTORY_STACK_HALF_COUNT),
+            )],
+        );
+        assert_eq!(
+            classify_inventory_stack_split_merge_event(COMPAT_ACTOR_USERNAME, &split_place, &state),
+            Some(InventoryStackSplitMergeServerAction::SplitPlace)
+        );
+        state.split_place_state_id = Some(TEST_CLICK_STATE_ID);
+
+        let merge_pickup = test_click_slot_event(
+            INVENTORY_STACK_DESTINATION_SLOT,
+            INVENTORY_STACK_LEFT_BUTTON,
+            test_inventory_stack(INVENTORY_STACK_HALF_COUNT),
+            vec![test_slot_change(
+                INVENTORY_STACK_DESTINATION_SLOT,
+                ItemStack::EMPTY,
+            )],
+        );
+        assert_eq!(
+            classify_inventory_stack_split_merge_event(
+                COMPAT_ACTOR_USERNAME,
+                &merge_pickup,
+                &state
+            ),
+            Some(InventoryStackSplitMergeServerAction::MergePickup)
+        );
+        state.merge_pickup_state_id = Some(TEST_CLICK_STATE_ID);
+
+        let merge_place = test_click_slot_event(
+            INVENTORY_STACK_SOURCE_SLOT,
+            INVENTORY_STACK_LEFT_BUTTON,
+            ItemStack::EMPTY,
+            vec![test_slot_change(
+                INVENTORY_STACK_SOURCE_SLOT,
+                test_inventory_stack(INVENTORY_STACK_FULL_COUNT),
+            )],
+        );
+        assert_eq!(
+            classify_inventory_stack_split_merge_event(COMPAT_ACTOR_USERNAME, &merge_place, &state),
+            Some(InventoryStackSplitMergeServerAction::MergePlace)
+        );
+    }
+
+    #[test]
+    fn inventory_stack_split_merge_classifier_rejects_wrong_actor_or_count() {
+        let state = InventoryStackSplitMergeProbeState::default();
+        let split_pickup = test_click_slot_event(
+            INVENTORY_STACK_SOURCE_SLOT,
+            INVENTORY_STACK_RIGHT_BUTTON,
+            test_inventory_stack(INVENTORY_STACK_HALF_COUNT),
+            vec![test_slot_change(
+                INVENTORY_STACK_SOURCE_SLOT,
+                test_inventory_stack(INVENTORY_STACK_HALF_COUNT),
+            )],
+        );
+        assert_eq!(
+            classify_inventory_stack_split_merge_event("other", &split_pickup, &state),
+            None
+        );
+
+        let wrong_count = test_click_slot_event(
+            INVENTORY_STACK_SOURCE_SLOT,
+            INVENTORY_STACK_RIGHT_BUTTON,
+            test_inventory_stack(INVENTORY_STACK_FULL_COUNT),
+            vec![test_slot_change(
+                INVENTORY_STACK_SOURCE_SLOT,
+                test_inventory_stack(INVENTORY_STACK_FULL_COUNT),
+            )],
+        );
+        assert_eq!(
+            classify_inventory_stack_split_merge_event(COMPAT_ACTOR_USERNAME, &wrong_count, &state),
+            None
+        );
+
+        let merge_before_split = test_click_slot_event(
+            INVENTORY_STACK_DESTINATION_SLOT,
+            INVENTORY_STACK_LEFT_BUTTON,
+            test_inventory_stack(INVENTORY_STACK_HALF_COUNT),
+            vec![test_slot_change(
+                INVENTORY_STACK_DESTINATION_SLOT,
+                ItemStack::EMPTY,
+            )],
+        );
+        assert_eq!(
+            classify_inventory_stack_split_merge_event(
+                COMPAT_ACTOR_USERNAME,
+                &merge_before_split,
+                &state
+            ),
+            None
+        );
+    }
 
     #[test]
     fn vanilla_combat_reference_milestones_record_normalized_metrics() {
