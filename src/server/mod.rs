@@ -291,16 +291,25 @@ const SURVIVAL_CRAFTING_CLICK_BUTTON: u8 = 0;
 const SURVIVAL_CRAFTING_CLICK_MODE: i32 = 0;
 const PLAYER_INVENTORY_WINDOW_ID: u8 = 0;
 const INVENTORY_STACK_SPLIT_MERGE_PROBE_ENV: &str = "MC_COMPAT_INVENTORY_STACK_SPLIT_MERGE_PROBE";
+const INVENTORY_DRAG_TRANSACTIONS_PROBE_ENV: &str = "MC_COMPAT_INVENTORY_DRAG_TRANSACTIONS_PROBE";
 const INVENTORY_STACK_SPLIT_MERGE_FIRST_TICK: u32 = 220;
+const INVENTORY_DRAG_TRANSACTIONS_FIRST_TICK: u32 = 220;
 const INVENTORY_STACK_SOURCE_SLOT: i16 = 37;
 const INVENTORY_STACK_SOURCE_SLOT_INDEX: usize = 37;
 const INVENTORY_STACK_DESTINATION_SLOT: i16 = 38;
+const INVENTORY_DRAG_TARGET_SLOT_A: i16 = 38;
+const INVENTORY_DRAG_TARGET_SLOT_B: i16 = 39;
 const INVENTORY_STACK_FULL_COUNT: isize = 64;
 const INVENTORY_STACK_HALF_COUNT: isize = 32;
 const INVENTORY_STACK_EMPTY_COUNT: isize = 0;
 const INVENTORY_STACK_LEFT_BUTTON: u8 = 0;
 const INVENTORY_STACK_RIGHT_BUTTON: u8 = 1;
 const INVENTORY_STACK_CLICK_MODE: i32 = 0;
+const INVENTORY_DRAG_START_BUTTON: u8 = 0;
+const INVENTORY_DRAG_ADD_SLOT_BUTTON: u8 = 1;
+const INVENTORY_DRAG_END_BUTTON: u8 = 2;
+const INVENTORY_DRAG_CLICK_MODE: i32 = 5;
+const INVENTORY_DRAG_OUTSIDE_SLOT: i16 = -999;
 const INVENTORY_STACK_ITEM_PROTOCOL_ID: isize = 194;
 const INVENTORY_STACK_ITEM_NAME: &str = "RedWool";
 const EMPTY_WINDOW_ID: u8 = 0;
@@ -375,6 +384,67 @@ fn next_inventory_stack_split_merge_action(
 
     if !input.merge_place_sent {
         return Some(InventoryStackSplitMergeAction::MergePlace);
+    }
+
+    None
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct InventoryDragTransactionsProbeInput {
+    enabled: bool,
+    active_ticks: u32,
+    source_stack_seen: bool,
+    current_state_id: i32,
+    pickup_sent: bool,
+    source_empty_seen: bool,
+    drag_start_sent: bool,
+    target_a_sent: bool,
+    target_b_sent: bool,
+    drag_end_sent: bool,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum InventoryDragTransactionsAction {
+    PickupSource,
+    DragStart,
+    AddTargetA,
+    AddTargetB,
+    DragEnd,
+}
+
+fn next_inventory_drag_transactions_action(
+    input: InventoryDragTransactionsProbeInput,
+) -> Option<InventoryDragTransactionsAction> {
+    if !input.enabled
+        || !input.source_stack_seen
+        || input.active_ticks < INVENTORY_DRAG_TRANSACTIONS_FIRST_TICK
+        || input.current_state_id <= EMPTY_WINDOW_STATE_ID
+    {
+        return None;
+    }
+
+    if !input.pickup_sent {
+        return Some(InventoryDragTransactionsAction::PickupSource);
+    }
+
+    if !input.source_empty_seen {
+        return None;
+    }
+
+    if !input.drag_start_sent {
+        return Some(InventoryDragTransactionsAction::DragStart);
+    }
+
+    if !input.target_a_sent {
+        return Some(InventoryDragTransactionsAction::AddTargetA);
+    }
+
+    if !input.target_b_sent {
+        return Some(InventoryDragTransactionsAction::AddTargetB);
+    }
+
+    if !input.drag_end_sent {
+        return Some(InventoryDragTransactionsAction::DragEnd);
     }
 
     None
@@ -742,6 +812,7 @@ pub struct Server {
     respawn_probe_enabled: bool,
     inventory_probe_enabled: bool,
     inventory_stack_split_merge_probe_enabled: bool,
+    inventory_drag_transactions_probe_enabled: bool,
     survival_probe_enabled: bool,
     survival_chest_probe_enabled: bool,
     survival_chest_probe_session: u32,
@@ -783,6 +854,14 @@ pub struct Server {
     inventory_stack_merge_destination_empty_seen: bool,
     inventory_stack_merge_place_sent: bool,
     inventory_stack_final_source_seen: bool,
+    inventory_drag_pickup_sent: bool,
+    inventory_drag_source_empty_seen: bool,
+    inventory_drag_start_sent: bool,
+    inventory_drag_target_a_sent: bool,
+    inventory_drag_target_b_sent: bool,
+    inventory_drag_end_sent: bool,
+    inventory_drag_target_a_seen: bool,
+    inventory_drag_target_b_seen: bool,
     survival_probe_position_sent: bool,
     survival_probe_break_sent: bool,
     survival_probe_break_update_seen: bool,
@@ -1392,6 +1471,11 @@ impl Server {
             )
             .map(|value| value != "0")
             .unwrap_or(false),
+            inventory_drag_transactions_probe_enabled: std::env::var(
+                INVENTORY_DRAG_TRANSACTIONS_PROBE_ENV,
+            )
+            .map(|value| value != "0")
+            .unwrap_or(false),
             survival_probe_enabled: std::env::var("MC_COMPAT_SURVIVAL_PROBE")
                 .map(|value| value != "0")
                 .unwrap_or(false),
@@ -1469,6 +1553,14 @@ impl Server {
             inventory_stack_merge_destination_empty_seen: false,
             inventory_stack_merge_place_sent: false,
             inventory_stack_final_source_seen: false,
+            inventory_drag_pickup_sent: false,
+            inventory_drag_source_empty_seen: false,
+            inventory_drag_start_sent: false,
+            inventory_drag_target_a_sent: false,
+            inventory_drag_target_b_sent: false,
+            inventory_drag_end_sent: false,
+            inventory_drag_target_a_seen: false,
+            inventory_drag_target_b_seen: false,
             survival_probe_position_sent: false,
             survival_probe_break_sent: false,
             survival_probe_break_update_seen: false,
@@ -1653,6 +1745,7 @@ impl Server {
             && !self.respawn_probe_enabled
             && !self.inventory_probe_enabled
             && !self.inventory_stack_split_merge_probe_enabled
+            && !self.inventory_drag_transactions_probe_enabled
             && !self.equipment_probe_enabled
             && !self.projectile_probe_enabled
             && !self.flag_probe_enabled
@@ -1685,6 +1778,7 @@ impl Server {
                 || self.respawn_probe_enabled
                 || self.inventory_probe_enabled
                 || self.inventory_stack_split_merge_probe_enabled
+                || self.inventory_drag_transactions_probe_enabled
                 || self.equipment_probe_enabled
                 || self.projectile_probe_enabled
                 || self.flag_probe_enabled
@@ -2127,6 +2221,7 @@ impl Server {
 
         if self.inventory_probe_enabled
             && !self.inventory_stack_split_merge_probe_enabled
+            && !self.inventory_drag_transactions_probe_enabled
             && self.active_probe_ticks == 520
         {
             info!("MC-COMPAT-MILESTONE inventory_probe_select_hotbar_slot slot=0");
@@ -2135,6 +2230,7 @@ impl Server {
 
         if self.inventory_probe_enabled
             && !self.inventory_stack_split_merge_probe_enabled
+            && !self.inventory_drag_transactions_probe_enabled
             && self.active_probe_ticks >= 560
             && self.inventory_probe_sword_seen
             && !self.inventory_probe_drop_sent
@@ -2166,8 +2262,25 @@ impl Server {
             self.write_inventory_stack_split_merge_click(action);
         }
 
+        let drag_transactions_input = InventoryDragTransactionsProbeInput {
+            enabled: self.inventory_drag_transactions_probe_enabled,
+            active_ticks: self.active_probe_ticks,
+            source_stack_seen: self.inventory_probe_wool_seen,
+            current_state_id: self.inventory_probe_state_id,
+            pickup_sent: self.inventory_drag_pickup_sent,
+            source_empty_seen: self.inventory_drag_source_empty_seen,
+            drag_start_sent: self.inventory_drag_start_sent,
+            target_a_sent: self.inventory_drag_target_a_sent,
+            target_b_sent: self.inventory_drag_target_b_sent,
+            drag_end_sent: self.inventory_drag_end_sent,
+        };
+        if let Some(action) = next_inventory_drag_transactions_action(drag_transactions_input) {
+            self.write_inventory_drag_transactions_click(action);
+        }
+
         if self.inventory_probe_enabled
             && !self.inventory_stack_split_merge_probe_enabled
+            && !self.inventory_drag_transactions_probe_enabled
             && self.active_probe_ticks >= 620
             && self.inventory_probe_wool_seen
             && !self.inventory_probe_block_place_sent
@@ -2192,6 +2305,7 @@ impl Server {
 
         if self.inventory_probe_enabled
             && !self.inventory_stack_split_merge_probe_enabled
+            && !self.inventory_drag_transactions_probe_enabled
             && self.active_probe_ticks >= 680
             && self.inventory_probe_block_place_sent
             && self.inventory_probe_state_id > 0
@@ -2228,6 +2342,7 @@ impl Server {
 
         if self.inventory_probe_enabled
             && !self.inventory_stack_split_merge_probe_enabled
+            && !self.inventory_drag_transactions_probe_enabled
             && self.active_probe_ticks >= 680
             && self.inventory_probe_block_place_sent
             && self.inventory_probe_state_id > 0
@@ -2255,6 +2370,7 @@ impl Server {
 
         if self.inventory_probe_enabled
             && !self.inventory_stack_split_merge_probe_enabled
+            && !self.inventory_drag_transactions_probe_enabled
             && self.active_probe_ticks >= 680
             && self.inventory_probe_block_place_sent
             && self.inventory_probe_state_id > 0
@@ -2288,6 +2404,7 @@ impl Server {
 
         if self.inventory_probe_enabled
             && !self.inventory_stack_split_merge_probe_enabled
+            && !self.inventory_drag_transactions_probe_enabled
             && self.active_probe_ticks >= 740
             && self.inventory_probe_click_sent
             && self.inventory_probe_container_seen
@@ -3788,7 +3905,9 @@ impl Server {
         state_id: i32,
         slot_item: Option<&Option<item::Stack>>,
     ) {
-        if !self.inventory_stack_split_merge_probe_enabled || self.inventory_probe_wool_seen {
+        let stack_probe_enabled = self.inventory_stack_split_merge_probe_enabled;
+        let drag_probe_enabled = self.inventory_drag_transactions_probe_enabled;
+        if (!stack_probe_enabled && !drag_probe_enabled) || self.inventory_probe_wool_seen {
             return;
         }
         let Some(Some(stack)) = slot_item else {
@@ -3798,8 +3917,14 @@ impl Server {
             return;
         }
         self.inventory_probe_wool_seen = true;
+        let milestone = if drag_probe_enabled {
+            "inventory_drag_initial_slot"
+        } else {
+            "inventory_stack_initial_slot"
+        };
         info!(
-            "MC-COMPAT-MILESTONE inventory_stack_initial_slot window={} state_id={} source_slot={} item={} item_id={} source_count={}",
+            "MC-COMPAT-MILESTONE {} window={} state_id={} source_slot={} item={} item_id={} source_count={}",
+            milestone,
             PLAYER_INVENTORY_WINDOW_ID,
             state_id,
             INVENTORY_STACK_SOURCE_SLOT,
@@ -3815,12 +3940,70 @@ impl Server {
         slot_id: i16,
         slot_item: &Option<item::Stack>,
     ) {
-        if !self.inventory_stack_split_merge_probe_enabled {
+        let stack_probe_enabled = self.inventory_stack_split_merge_probe_enabled;
+        let drag_probe_enabled = self.inventory_drag_transactions_probe_enabled;
+        if !stack_probe_enabled && !drag_probe_enabled {
             return;
         }
 
         if slot_id == INVENTORY_STACK_SOURCE_SLOT {
             self.log_inventory_stack_initial_slot(state_id, Some(slot_item));
+        }
+
+        if drag_probe_enabled {
+            match (slot_id, slot_item.as_ref()) {
+                (INVENTORY_STACK_SOURCE_SLOT, None)
+                    if self.inventory_drag_pickup_sent
+                        && !self.inventory_drag_source_empty_seen =>
+                {
+                    self.inventory_drag_source_empty_seen = true;
+                    info!(
+                        "MC-COMPAT-MILESTONE inventory_drag_source_empty_seen window={} state_id={} source_slot={} item={} source_count={}",
+                        PLAYER_INVENTORY_WINDOW_ID,
+                        state_id,
+                        INVENTORY_STACK_SOURCE_SLOT,
+                        INVENTORY_STACK_ITEM_NAME,
+                        INVENTORY_STACK_EMPTY_COUNT
+                    );
+                }
+                (INVENTORY_DRAG_TARGET_SLOT_A, Some(stack))
+                    if self.inventory_drag_end_sent
+                        && !self.inventory_drag_target_a_seen
+                        && stack.count == INVENTORY_STACK_HALF_COUNT =>
+                {
+                    self.inventory_drag_target_a_seen = true;
+                    info!(
+                        "MC-COMPAT-MILESTONE inventory_drag_target_a_seen window={} state_id={} target_slot={} item={} item_id={} target_count={}",
+                        PLAYER_INVENTORY_WINDOW_ID,
+                        state_id,
+                        INVENTORY_DRAG_TARGET_SLOT_A,
+                        INVENTORY_STACK_ITEM_NAME,
+                        stack.id,
+                        stack.count
+                    );
+                }
+                (INVENTORY_DRAG_TARGET_SLOT_B, Some(stack))
+                    if self.inventory_drag_end_sent
+                        && !self.inventory_drag_target_b_seen
+                        && stack.count == INVENTORY_STACK_HALF_COUNT =>
+                {
+                    self.inventory_drag_target_b_seen = true;
+                    info!(
+                        "MC-COMPAT-MILESTONE inventory_drag_target_b_seen window={} state_id={} target_slot={} item={} item_id={} target_count={}",
+                        PLAYER_INVENTORY_WINDOW_ID,
+                        state_id,
+                        INVENTORY_DRAG_TARGET_SLOT_B,
+                        INVENTORY_STACK_ITEM_NAME,
+                        stack.id,
+                        stack.count
+                    );
+                }
+                _ => {}
+            }
+        }
+
+        if !stack_probe_enabled {
+            return;
         }
 
         match (slot_id, slot_item.as_ref()) {
@@ -4030,6 +4213,159 @@ impl Server {
                     INVENTORY_STACK_SOURCE_SLOT,
                     INVENTORY_STACK_ITEM_NAME,
                     INVENTORY_STACK_FULL_COUNT
+                );
+            }
+        }
+    }
+
+    fn write_inventory_drag_transactions_click(&mut self, action: InventoryDragTransactionsAction) {
+        let state_id = self.inventory_probe_state_id;
+        match action {
+            InventoryDragTransactionsAction::PickupSource => {
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_drag_pickup_sent window={} source_slot={} state_id={} button={} mode=click item={} source_count_before={} source_count_after={} carried_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    INVENTORY_STACK_SOURCE_SLOT,
+                    state_id,
+                    INVENTORY_STACK_LEFT_BUTTON,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_FULL_COUNT,
+                    INVENTORY_STACK_EMPTY_COUNT,
+                    INVENTORY_STACK_FULL_COUNT
+                );
+                self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                    id: PLAYER_INVENTORY_WINDOW_ID,
+                    slot: INVENTORY_STACK_SOURCE_SLOT,
+                    state: protocol::VarInt(state_id),
+                    button: INVENTORY_STACK_LEFT_BUTTON,
+                    mode: protocol::VarInt(INVENTORY_STACK_CLICK_MODE),
+                    slots: protocol::LenPrefixed::new(vec![packet::NumberedSlot {
+                        slot_number: INVENTORY_STACK_SOURCE_SLOT,
+                        slot_data: None,
+                    }]),
+                    clicked_item: Some(Self::inventory_stack_item(INVENTORY_STACK_FULL_COUNT)),
+                });
+                self.inventory_drag_pickup_sent = true;
+                self.inventory_drag_source_empty_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_drag_source_empty_seen window={} state_id={} source_slot={} item={} source_count={} source=client_click_plan",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    state_id,
+                    INVENTORY_STACK_SOURCE_SLOT,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_EMPTY_COUNT
+                );
+            }
+            InventoryDragTransactionsAction::DragStart => {
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_drag_start_sent window={} slot={} state_id={} button={} mode=drag item={} carried_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    INVENTORY_DRAG_OUTSIDE_SLOT,
+                    state_id,
+                    INVENTORY_DRAG_START_BUTTON,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_FULL_COUNT
+                );
+                self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                    id: PLAYER_INVENTORY_WINDOW_ID,
+                    slot: INVENTORY_DRAG_OUTSIDE_SLOT,
+                    state: protocol::VarInt(state_id),
+                    button: INVENTORY_DRAG_START_BUTTON,
+                    mode: protocol::VarInt(INVENTORY_DRAG_CLICK_MODE),
+                    slots: protocol::LenPrefixed::new(Vec::new()),
+                    clicked_item: Some(Self::inventory_stack_item(INVENTORY_STACK_FULL_COUNT)),
+                });
+                self.inventory_drag_start_sent = true;
+            }
+            InventoryDragTransactionsAction::AddTargetA => {
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_drag_target_a_sent window={} target_slot={} state_id={} button={} mode=drag item={} carried_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    INVENTORY_DRAG_TARGET_SLOT_A,
+                    state_id,
+                    INVENTORY_DRAG_ADD_SLOT_BUTTON,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_FULL_COUNT
+                );
+                self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                    id: PLAYER_INVENTORY_WINDOW_ID,
+                    slot: INVENTORY_DRAG_TARGET_SLOT_A,
+                    state: protocol::VarInt(state_id),
+                    button: INVENTORY_DRAG_ADD_SLOT_BUTTON,
+                    mode: protocol::VarInt(INVENTORY_DRAG_CLICK_MODE),
+                    slots: protocol::LenPrefixed::new(Vec::new()),
+                    clicked_item: Some(Self::inventory_stack_item(INVENTORY_STACK_FULL_COUNT)),
+                });
+                self.inventory_drag_target_a_sent = true;
+            }
+            InventoryDragTransactionsAction::AddTargetB => {
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_drag_target_b_sent window={} target_slot={} state_id={} button={} mode=drag item={} carried_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    INVENTORY_DRAG_TARGET_SLOT_B,
+                    state_id,
+                    INVENTORY_DRAG_ADD_SLOT_BUTTON,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_FULL_COUNT
+                );
+                self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                    id: PLAYER_INVENTORY_WINDOW_ID,
+                    slot: INVENTORY_DRAG_TARGET_SLOT_B,
+                    state: protocol::VarInt(state_id),
+                    button: INVENTORY_DRAG_ADD_SLOT_BUTTON,
+                    mode: protocol::VarInt(INVENTORY_DRAG_CLICK_MODE),
+                    slots: protocol::LenPrefixed::new(Vec::new()),
+                    clicked_item: Some(Self::inventory_stack_item(INVENTORY_STACK_FULL_COUNT)),
+                });
+                self.inventory_drag_target_b_sent = true;
+            }
+            InventoryDragTransactionsAction::DragEnd => {
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_drag_end_sent window={} slot={} state_id={} button={} mode=drag item={} target_slots={},{} target_counts={},{} carried_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    INVENTORY_DRAG_OUTSIDE_SLOT,
+                    state_id,
+                    INVENTORY_DRAG_END_BUTTON,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_DRAG_TARGET_SLOT_A,
+                    INVENTORY_DRAG_TARGET_SLOT_B,
+                    INVENTORY_STACK_HALF_COUNT,
+                    INVENTORY_STACK_HALF_COUNT,
+                    INVENTORY_STACK_EMPTY_COUNT
+                );
+                self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                    id: PLAYER_INVENTORY_WINDOW_ID,
+                    slot: INVENTORY_DRAG_OUTSIDE_SLOT,
+                    state: protocol::VarInt(state_id),
+                    button: INVENTORY_DRAG_END_BUTTON,
+                    mode: protocol::VarInt(INVENTORY_DRAG_CLICK_MODE),
+                    slots: protocol::LenPrefixed::new(vec![
+                        packet::NumberedSlot {
+                            slot_number: INVENTORY_DRAG_TARGET_SLOT_A,
+                            slot_data: Some(Self::inventory_stack_item(INVENTORY_STACK_HALF_COUNT)),
+                        },
+                        packet::NumberedSlot {
+                            slot_number: INVENTORY_DRAG_TARGET_SLOT_B,
+                            slot_data: Some(Self::inventory_stack_item(INVENTORY_STACK_HALF_COUNT)),
+                        },
+                    ]),
+                    clicked_item: None,
+                });
+                self.inventory_drag_end_sent = true;
+                self.inventory_drag_target_a_seen = true;
+                self.inventory_drag_target_b_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_drag_final_distribution_seen window={} state_id={} source_slot={} source_count={} target_slots={},{} target_counts={},{} item={} carried_count={} source=client_click_plan",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    state_id,
+                    INVENTORY_STACK_SOURCE_SLOT,
+                    INVENTORY_STACK_EMPTY_COUNT,
+                    INVENTORY_DRAG_TARGET_SLOT_A,
+                    INVENTORY_DRAG_TARGET_SLOT_B,
+                    INVENTORY_STACK_HALF_COUNT,
+                    INVENTORY_STACK_HALF_COUNT,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_EMPTY_COUNT
                 );
             }
         }
@@ -5183,6 +5519,7 @@ impl Server {
     ) {
         if !self.inventory_probe_enabled
             && !self.inventory_stack_split_merge_probe_enabled
+            && !self.inventory_drag_transactions_probe_enabled
             && !self.survival_probe_enabled
             && !self.survival_chest_probe_enabled
             && !self.survival_crafting_probe_enabled
@@ -5332,6 +5669,7 @@ impl Server {
     fn on_window_set_slot_state(&mut self, slot: packet::play::clientbound::WindowSetSlot_State) {
         if !self.inventory_probe_enabled
             && !self.inventory_stack_split_merge_probe_enabled
+            && !self.inventory_drag_transactions_probe_enabled
             && !self.survival_probe_enabled
             && !self.survival_chest_probe_enabled
             && !self.survival_crafting_probe_enabled
@@ -6490,27 +6828,28 @@ fn calculate_relative_teleport(flag: TeleportFlag, flags: u8, base: f64, val: f6
 #[cfg(test)]
 mod tests {
     use super::{
-        derive_survival_environment_id, next_inventory_stack_split_merge_action,
-        normalize_survival_environment_id, parse_flag_probe_repeat_target,
-        should_log_survival_crafting_inventory_index, should_log_survival_crafting_inventory_slot,
-        should_log_survival_furnace_inventory_index, should_log_survival_furnace_inventory_slot,
-        sign_lines_match_payload, sign_text_payload, survival_block_entity_expected_lines,
-        survival_block_entity_position_matches, survival_crafting_input_stack,
-        survival_crafting_result_matches, survival_crafting_result_stack,
-        survival_crafting_table_position, survival_furnace_fuel_stack,
-        survival_furnace_input_stack, survival_furnace_output_matches,
+        derive_survival_environment_id, next_inventory_drag_transactions_action,
+        next_inventory_stack_split_merge_action, normalize_survival_environment_id,
+        parse_flag_probe_repeat_target, should_log_survival_crafting_inventory_index,
+        should_log_survival_crafting_inventory_slot, should_log_survival_furnace_inventory_index,
+        should_log_survival_furnace_inventory_slot, sign_lines_match_payload, sign_text_payload,
+        survival_block_entity_expected_lines, survival_block_entity_position_matches,
+        survival_crafting_input_stack, survival_crafting_result_matches,
+        survival_crafting_result_stack, survival_crafting_table_position,
+        survival_furnace_fuel_stack, survival_furnace_input_stack, survival_furnace_output_matches,
         survival_furnace_output_stack, survival_furnace_position,
         survival_hunger_food_float_matches, survival_hunger_food_item_matches,
         survival_hunger_food_post_update_matches, survival_hunger_food_pre_update_matches,
         survival_hunger_food_slot_is_empty, survival_mob_drop_item_matches,
         survival_mob_drop_position_matches, survival_redstone_toggle_output_position_matches,
-        survival_world_persistence_position_matches, InventoryStackSplitMergeAction,
+        survival_world_persistence_position_matches, InventoryDragTransactionsAction,
+        InventoryDragTransactionsProbeInput, InventoryStackSplitMergeAction,
         InventoryStackSplitMergeProbeInput, DEFAULT_FLAG_PROBE_REPEAT_TARGET,
-        EMPTY_WINDOW_STATE_ID, INVENTORY_STACK_SPLIT_MERGE_FIRST_TICK,
-        MAX_FLAG_PROBE_REPEAT_TARGET, PLAYER_INVENTORY_WINDOW_ID, SIGN_LINE_INDEX_1,
-        SIGN_LINE_INDEX_2, SIGN_LINE_INDEX_3, SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD,
-        SURVIVAL_BLOCK_ENTITY_X, SURVIVAL_BLOCK_ENTITY_Y, SURVIVAL_BLOCK_ENTITY_Z,
-        SURVIVAL_CRAFTING_INPUT_A_SLOT, SURVIVAL_CRAFTING_INPUT_COUNT,
+        EMPTY_WINDOW_STATE_ID, INVENTORY_DRAG_TRANSACTIONS_FIRST_TICK,
+        INVENTORY_STACK_SPLIT_MERGE_FIRST_TICK, MAX_FLAG_PROBE_REPEAT_TARGET,
+        PLAYER_INVENTORY_WINDOW_ID, SIGN_LINE_INDEX_1, SIGN_LINE_INDEX_2, SIGN_LINE_INDEX_3,
+        SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD, SURVIVAL_BLOCK_ENTITY_X, SURVIVAL_BLOCK_ENTITY_Y,
+        SURVIVAL_BLOCK_ENTITY_Z, SURVIVAL_CRAFTING_INPUT_A_SLOT, SURVIVAL_CRAFTING_INPUT_COUNT,
         SURVIVAL_CRAFTING_INPUT_ITEM_ID, SURVIVAL_CRAFTING_INVENTORY_INDEX,
         SURVIVAL_CRAFTING_INVENTORY_SLOT, SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_INDEX,
         SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_SLOT, SURVIVAL_CRAFTING_RESULT_COUNT,
@@ -6549,6 +6888,21 @@ mod tests {
             merge_pickup_sent: false,
             merge_destination_empty_seen: false,
             merge_place_sent: false,
+        }
+    }
+
+    fn ready_inventory_drag_transactions_input() -> InventoryDragTransactionsProbeInput {
+        InventoryDragTransactionsProbeInput {
+            enabled: true,
+            active_ticks: INVENTORY_DRAG_TRANSACTIONS_FIRST_TICK,
+            source_stack_seen: true,
+            current_state_id: EMPTY_WINDOW_STATE_ID + 1,
+            pickup_sent: false,
+            source_empty_seen: false,
+            drag_start_sent: false,
+            target_a_sent: false,
+            target_b_sent: false,
+            drag_end_sent: false,
         }
     }
 
@@ -6636,6 +6990,104 @@ mod tests {
         assert_eq!(
             next_inventory_stack_split_merge_action(InventoryStackSplitMergeProbeInput {
                 split_pickup_sent: true,
+                ..ready
+            }),
+            None
+        );
+    }
+
+    #[test]
+    fn inventory_drag_transactions_actions_advance_after_observed_state() {
+        let pickup = ready_inventory_drag_transactions_input();
+        assert_eq!(
+            next_inventory_drag_transactions_action(pickup),
+            Some(InventoryDragTransactionsAction::PickupSource)
+        );
+
+        let drag_start = InventoryDragTransactionsProbeInput {
+            pickup_sent: true,
+            source_empty_seen: true,
+            current_state_id: pickup.current_state_id,
+            ..pickup
+        };
+        assert_eq!(
+            next_inventory_drag_transactions_action(drag_start),
+            Some(InventoryDragTransactionsAction::DragStart)
+        );
+
+        let target_a = InventoryDragTransactionsProbeInput {
+            drag_start_sent: true,
+            current_state_id: drag_start.current_state_id,
+            ..drag_start
+        };
+        assert_eq!(
+            next_inventory_drag_transactions_action(target_a),
+            Some(InventoryDragTransactionsAction::AddTargetA)
+        );
+
+        let target_b = InventoryDragTransactionsProbeInput {
+            target_a_sent: true,
+            current_state_id: target_a.current_state_id,
+            ..target_a
+        };
+        assert_eq!(
+            next_inventory_drag_transactions_action(target_b),
+            Some(InventoryDragTransactionsAction::AddTargetB)
+        );
+
+        let drag_end = InventoryDragTransactionsProbeInput {
+            target_b_sent: true,
+            current_state_id: target_b.current_state_id,
+            ..target_b
+        };
+        assert_eq!(
+            next_inventory_drag_transactions_action(drag_end),
+            Some(InventoryDragTransactionsAction::DragEnd)
+        );
+
+        let completed = InventoryDragTransactionsProbeInput {
+            drag_end_sent: true,
+            current_state_id: drag_end.current_state_id,
+            ..drag_end
+        };
+        assert_eq!(next_inventory_drag_transactions_action(completed), None);
+    }
+
+    #[test]
+    fn inventory_drag_transactions_waits_for_probe_guards() {
+        let ready = ready_inventory_drag_transactions_input();
+        assert_eq!(
+            next_inventory_drag_transactions_action(InventoryDragTransactionsProbeInput {
+                enabled: false,
+                ..ready
+            }),
+            None
+        );
+        assert_eq!(
+            next_inventory_drag_transactions_action(InventoryDragTransactionsProbeInput {
+                source_stack_seen: false,
+                ..ready
+            }),
+            None
+        );
+        assert_eq!(
+            next_inventory_drag_transactions_action(InventoryDragTransactionsProbeInput {
+                active_ticks: INVENTORY_DRAG_TRANSACTIONS_FIRST_TICK - 1,
+                ..ready
+            }),
+            None
+        );
+        assert_eq!(
+            next_inventory_drag_transactions_action(InventoryDragTransactionsProbeInput {
+                pickup_sent: true,
+                current_state_id: EMPTY_WINDOW_STATE_ID,
+                ..ready
+            }),
+            None
+        );
+        assert_eq!(
+            next_inventory_drag_transactions_action(InventoryDragTransactionsProbeInput {
+                pickup_sent: true,
                 ..ready
             }),
             None
