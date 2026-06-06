@@ -1,0 +1,39 @@
+# evidence matcher task evidence
+started_at=2026-06-06T20:07:20Z
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence gate failed: unknown flag --change
+task evidence gate failed: ./introduce-evidence-matcher-traits: No such file or directory (os error 2)
+{
+  "change": "introduce-evidence-matcher-traits",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c49f83fdd6680fb8a88d3e14db91697893d736809f38d4e537455024000d9221",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "52bd0cce4cd79306d2b61779b72b044507b0055b84297f69be954bc47de60698",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change_issues": [],
+  "changes": 12,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 14,
+  "valid": true
+}
+exit_status=0

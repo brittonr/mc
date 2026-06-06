@@ -3449,6 +3449,154 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
     }
 }
 
+const PROJECTILE_DAMAGE_UPDATE_MILESTONE: &str = "projectile_damage_update";
+const CLIENT_A_SUFFIX: &str = "a";
+const CLIENT_B_SUFFIX: &str = "b";
+const FLAG_OR_SCORE_NEEDLES: &[&str] = &["flag", "score"];
+
+struct EvidenceCorpus<'a> {
+    text: &'a str,
+    normalized: String,
+}
+
+impl<'a> EvidenceCorpus<'a> {
+    fn new(text: &'a str) -> Self {
+        Self {
+            text,
+            normalized: text.to_lowercase(),
+        }
+    }
+}
+
+struct EvidenceContext<'a> {
+    username: &'a str,
+}
+
+#[derive(Clone, Copy)]
+struct MilestoneRule<'a> {
+    id: &'static str,
+    matcher: MatcherKind<'a>,
+}
+
+#[derive(Clone, Copy)]
+enum MatcherKind<'a> {
+    Literal(&'a str),
+    CaseInsensitive(&'a str),
+    DynamicUsername,
+    DynamicClientSuffix(&'static str),
+    AnyOfCaseInsensitive(&'static [&'static str]),
+}
+
+trait EvidenceMatcher {
+    fn is_match(&self, corpus: &EvidenceCorpus<'_>, context: &EvidenceContext<'_>) -> bool;
+}
+
+impl EvidenceMatcher for MatcherKind<'_> {
+    fn is_match(&self, corpus: &EvidenceCorpus<'_>, context: &EvidenceContext<'_>) -> bool {
+        match self {
+            MatcherKind::Literal(needle) => corpus.text.contains(needle),
+            MatcherKind::CaseInsensitive(needle) => {
+                corpus.normalized.contains(&needle.to_lowercase())
+            }
+            MatcherKind::DynamicUsername => {
+                corpus.normalized.contains(&context.username.to_lowercase())
+            }
+            MatcherKind::DynamicClientSuffix(suffix) => corpus.normalized.contains(&format!(
+                "{}{}",
+                context.username.to_lowercase(),
+                suffix
+            )),
+            MatcherKind::AnyOfCaseInsensitive(needles) => needles
+                .iter()
+                .any(|needle| corpus.normalized.contains(&needle.to_lowercase())),
+        }
+    }
+}
+
+fn client_required_milestone_rules<'a>(
+    scenario: Scenario,
+    projectile_health_needle: &'a str,
+) -> Vec<MilestoneRule<'a>> {
+    scenario_required_milestones(scenario)
+        .iter()
+        .map(|(id, needle)| {
+            let matcher = if scenario == Scenario::ProjectileDamageAttribution
+                && *id == PROJECTILE_DAMAGE_UPDATE_MILESTONE
+            {
+                MatcherKind::Literal(projectile_health_needle)
+            } else {
+                MatcherKind::Literal(*needle)
+            };
+            MilestoneRule { id: *id, matcher }
+        })
+        .collect()
+}
+
+fn server_required_milestone_rules(scenario: Scenario) -> Vec<MilestoneRule<'static>> {
+    server_required_milestones(scenario)
+        .iter()
+        .map(|(id, needle)| MilestoneRule {
+            id: *id,
+            matcher: server_required_matcher(id, *needle),
+        })
+        .collect()
+}
+
+fn server_required_matcher(id: &str, needle: &'static str) -> MatcherKind<'static> {
+    match id {
+        "server_username_seen" => MatcherKind::DynamicUsername,
+        "server_client_a_seen" => MatcherKind::DynamicClientSuffix(CLIENT_A_SUFFIX),
+        "server_client_b_seen" => MatcherKind::DynamicClientSuffix(CLIENT_B_SUFFIX),
+        "server_flag_or_score" => MatcherKind::AnyOfCaseInsensitive(FLAG_OR_SCORE_NEEDLES),
+        _ => MatcherKind::CaseInsensitive(needle),
+    }
+}
+
+fn forbidden_milestone_rules(
+    scenario: Scenario,
+    case_insensitive: bool,
+) -> Vec<MilestoneRule<'static>> {
+    scenario_forbidden_patterns(scenario)
+        .iter()
+        .map(|(id, needle)| MilestoneRule {
+            id: *id,
+            matcher: if case_insensitive {
+                MatcherKind::CaseInsensitive(*needle)
+            } else {
+                MatcherKind::Literal(*needle)
+            },
+        })
+        .collect()
+}
+
+fn evaluate_required_rules(
+    rules: &[MilestoneRule<'_>],
+    corpus: &EvidenceCorpus<'_>,
+    context: &EvidenceContext<'_>,
+) -> (Vec<&'static str>, Vec<&'static str>) {
+    let mut observed = Vec::new();
+    let mut missing = Vec::new();
+    for rule in rules {
+        if rule.matcher.is_match(corpus, context) {
+            observed.push(rule.id);
+        } else {
+            missing.push(rule.id);
+        }
+    }
+    (observed, missing)
+}
+
+fn evaluate_forbidden_rules(
+    rules: &[MilestoneRule<'_>],
+    corpus: &EvidenceCorpus<'_>,
+    context: &EvidenceContext<'_>,
+) -> Vec<&'static str> {
+    rules
+        .iter()
+        .filter_map(|rule| rule.matcher.is_match(corpus, context).then_some(rule.id))
+        .collect()
+}
+
 fn evaluate_scenario(scenario: Scenario, output: &str) -> ScenarioEvidence {
     evaluate_scenario_with_projectile_health(
         scenario,
@@ -3467,28 +3615,13 @@ fn evaluate_scenario_with_projectile_health(
     output: &str,
     projectile_health_needle: &str,
 ) -> ScenarioEvidence {
-    let mut observed_milestones = Vec::new();
-    let mut missing_milestones = Vec::new();
-    for (name, needle) in scenario_required_milestones(scenario) {
-        let effective_needle = if scenario == Scenario::ProjectileDamageAttribution
-            && *name == "projectile_damage_update"
-        {
-            projectile_health_needle
-        } else {
-            needle
-        };
-        if output.contains(effective_needle) {
-            observed_milestones.push(*name);
-        } else {
-            missing_milestones.push(*name);
-        }
-    }
-    let mut forbidden_matches = Vec::new();
-    for (name, needle) in scenario_forbidden_patterns(scenario) {
-        if output.contains(needle) {
-            forbidden_matches.push(*name);
-        }
-    }
+    let corpus = EvidenceCorpus::new(output);
+    let context = EvidenceContext { username: "" };
+    let required_rules = client_required_milestone_rules(scenario, projectile_health_needle);
+    let forbidden_rules = forbidden_milestone_rules(scenario, false);
+    let (observed_milestones, missing_milestones) =
+        evaluate_required_rules(&required_rules, &corpus, &context);
+    let forbidden_matches = evaluate_forbidden_rules(&forbidden_rules, &corpus, &context);
     let passed = missing_milestones.is_empty() && forbidden_matches.is_empty();
     ScenarioEvidence {
         observed_milestones,
@@ -3503,30 +3636,13 @@ fn evaluate_server_scenario(
     server_log: &str,
     username: &str,
 ) -> ServerScenarioEvidence {
-    let normalized = server_log.to_lowercase();
-    let dynamic_username = username.to_lowercase();
-    let mut observed_milestones = Vec::new();
-    let mut missing_milestones = Vec::new();
-    for (name, needle) in server_required_milestones(scenario) {
-        let found = match *name {
-            "server_username_seen" => normalized.contains(&dynamic_username),
-            "server_client_a_seen" => normalized.contains(&format!("{dynamic_username}a")),
-            "server_client_b_seen" => normalized.contains(&format!("{dynamic_username}b")),
-            "server_flag_or_score" => normalized.contains("flag") || normalized.contains("score"),
-            _ => normalized.contains(&needle.to_lowercase()),
-        };
-        if found {
-            observed_milestones.push(*name);
-        } else {
-            missing_milestones.push(*name);
-        }
-    }
-    let mut forbidden_matches = Vec::new();
-    for (name, needle) in scenario_forbidden_patterns(scenario) {
-        if normalized.contains(&needle.to_lowercase()) {
-            forbidden_matches.push(*name);
-        }
-    }
+    let corpus = EvidenceCorpus::new(server_log);
+    let context = EvidenceContext { username };
+    let required_rules = server_required_milestone_rules(scenario);
+    let forbidden_rules = forbidden_milestone_rules(scenario, true);
+    let (observed_milestones, missing_milestones) =
+        evaluate_required_rules(&required_rules, &corpus, &context);
+    let forbidden_matches = evaluate_forbidden_rules(&forbidden_rules, &corpus, &context);
     let passed = missing_milestones.is_empty() && forbidden_matches.is_empty();
     ServerScenarioEvidence {
         observed_milestones,
@@ -10264,6 +10380,73 @@ mod tests {
                 );
             }
         }
+    }
+
+    #[test]
+    fn evidence_matchers_cover_supported_positive_cases() {
+        let corpus = EvidenceCorpus::new(
+            "Detected server protocol version\nCompatBotA joined\nSCOREBOARD flag update\nupdate_health health=17.0\n",
+        );
+        let context = EvidenceContext {
+            username: "CompatBot",
+        };
+
+        assert!(
+            MatcherKind::Literal("Detected server protocol version").is_match(&corpus, &context)
+        );
+        assert!(MatcherKind::CaseInsensitive("scoreboard").is_match(&corpus, &context));
+        assert!(MatcherKind::DynamicUsername.is_match(&corpus, &context));
+        assert!(MatcherKind::DynamicClientSuffix(CLIENT_A_SUFFIX).is_match(&corpus, &context));
+        assert!(
+            MatcherKind::AnyOfCaseInsensitive(FLAG_OR_SCORE_NEEDLES).is_match(&corpus, &context)
+        );
+
+        let client = evaluate_scenario_with_projectile_health(
+            Scenario::ProjectileDamageAttribution,
+            "mc_compat_projectile_damage_client_count=2\nDetected server protocol version\njoin_game\nrender_tick_with_player\nYou are on team RED!\nYou are on team BLUE!\nremote_player_spawn\nprojectile_probe_use_item_sent\nprojectile_probe_swing_sent\ncustom projectile health\n",
+            "custom projectile health",
+        );
+        assert!(client.passed, "{client:?}");
+        assert!(
+            client
+                .observed_milestones
+                .contains(&PROJECTILE_DAMAGE_UPDATE_MILESTONE),
+            "{client:?}"
+        );
+    }
+
+    #[test]
+    fn evidence_matchers_fail_closed_for_missing_case_and_dynamic_context() {
+        let corpus = EvidenceCorpus::new("compatbota joined\nred flag captured\n");
+        let context = EvidenceContext {
+            username: "compatbot",
+        };
+
+        assert!(!MatcherKind::Literal("COMPATBOTA").is_match(&corpus, &context));
+        assert!(!MatcherKind::DynamicClientSuffix(CLIENT_B_SUFFIX).is_match(&corpus, &context));
+        assert!(!MatcherKind::DynamicUsername.is_match(
+            &corpus,
+            &EvidenceContext {
+                username: "otherbot"
+            }
+        ));
+        assert!(!MatcherKind::AnyOfCaseInsensitive(&["capture"])
+            .is_match(&EvidenceCorpus::new("no matching evidence"), &context));
+
+        let server = evaluate_server_scenario(
+            Scenario::MultiClientLoadScore,
+            "compatbota joined\nred flag captured\n",
+            "compatbot",
+        );
+        assert!(!server.passed, "{server:?}");
+        assert!(server.missing_milestones.contains(&"server_client_b_seen"));
+
+        let forbidden = evaluate_scenario(
+            Scenario::NegativeCustomPayload,
+            "Detected server protocol version\njoin_game\nrender_tick_with_player\nnegative_custom_payload_sent\nnegative_custom_payload_contained\npanicked\n",
+        );
+        assert!(!forbidden.passed, "{forbidden:?}");
+        assert!(forbidden.forbidden_matches.contains(&"panic"));
     }
 
     #[test]

@@ -1,0 +1,8 @@
+# Tasks
+
+- [x] [serial] Define the pure evidence corpus, evaluation context, matcher trait or matcher-kind enum, milestone rule shape, and stable output-ID contract. r[mc_compatibility.evidence_matcher_traits.contract]
+- [x] [depends:contract] Implement literal, case-insensitive, dynamic username, dynamic client-suffix, and any-of matchers without filesystem, process, environment, clock, or network access. r[mc_compatibility.evidence_matcher_traits.core]
+- [x] [depends:core] Attach matcher values to client, server, and forbidden milestone rules while preserving observed/missing/forbidden output IDs. r[mc_compatibility.evidence_matcher_traits.rules]
+- [x] [depends:rules] Replace milestone-name string special cases in scenario evaluation with matcher evaluation and keep receipt/evidence structs unchanged. r[mc_compatibility.evidence_matcher_traits.migration]
+- [x] [depends:migration] Add positive matcher tests and negative missing/forbidden/case/dynamic-username fixtures, plus scenario evaluation parity tests for existing rows. r[mc_compatibility.evidence_matcher_traits.tests]
+- [x] [depends:tests] Run runner tests, relevant scenario/evidence checkers, Cairn proposal/design/tasks gates, and Cairn validation; see `docs/evidence/evidence-matcher-traits-validation-2026-06-06.run.log` (`exit_status=0`) and `docs/evidence/evidence-matcher-traits-validation-2026-06-06.b3`. r[mc_compatibility.evidence_matcher_traits.validation]
