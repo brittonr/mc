@@ -17,6 +17,15 @@ const DEFAULT_SERVER_VERSION: &str = "1.18.2";
 const DEFAULT_SERVER_PROTOCOL: u32 = 758;
 const DEFAULT_CLIENT_USERNAME: &str = "compatbot";
 const DEFAULT_CLIENT_TIMEOUT_SECS: u64 = 20;
+const STATUS_SOCKET_TIMEOUT_SECS: u64 = 2;
+const STATUS_LOCALHOST_ADDRESS: &str = "127.0.0.1";
+const STATUS_PACKET_ID: u32 = 0;
+const STATUS_HANDSHAKE_NEXT_STATE: u32 = 1;
+const VARINT_SEGMENT_BITS: u32 = 7;
+const VARINT_SEGMENT_BITS_USIZE: usize = VARINT_SEGMENT_BITS as usize;
+const VARINT_SEGMENT_MASK: u32 = 0x7f;
+const VARINT_CONTINUATION_BIT: u8 = 0x80;
+const VARINT_MAX_SHIFT_EXCLUSIVE: u32 = 35;
 const MULTI_CLIENT_LOAD_PEER_TIMEOUT_SECS: u64 = 10;
 const PAPER_CONNECTION_THROTTLE_CLEAR_SECS: u64 = 5;
 const MULTI_CLIENT_START_STAGGER_SECS: u64 = PAPER_CONNECTION_THROTTLE_CLEAR_SECS;
@@ -5062,27 +5071,24 @@ fn assert_status_expectations(cfg: &Config, status: &str) -> Result<(), String> 
 fn read_status(port: u16, protocol: u32) -> Result<String, String> {
     let mut stream = TcpStream::connect(("127.0.0.1", port)).map_err(|e| e.to_string())?;
     stream
-        .set_read_timeout(Some(Duration::from_secs(2)))
+        .set_read_timeout(Some(Duration::from_secs(STATUS_SOCKET_TIMEOUT_SECS)))
         .map_err(|e| e.to_string())?;
     stream
-        .set_write_timeout(Some(Duration::from_secs(2)))
+        .set_write_timeout(Some(Duration::from_secs(STATUS_SOCKET_TIMEOUT_SECS)))
         .map_err(|e| e.to_string())?;
     let mut payload = Vec::new();
-    write_varint(protocol, &mut payload);
-    write_string("127.0.0.1", &mut payload);
+    payload.write_varint(protocol)?;
+    payload.write_mc_string(STATUS_LOCALHOST_ADDRESS)?;
     payload.extend_from_slice(&port.to_be_bytes());
-    write_varint(1, &mut payload);
-    write_packet(0, &payload, &mut stream)?;
-    write_packet(0, &[], &mut stream)?;
-    let _packet_len = read_varint(&mut stream)?;
-    let packet_id = read_varint(&mut stream)?;
-    if packet_id != 0 {
+    payload.write_varint(STATUS_HANDSHAKE_NEXT_STATE)?;
+    stream.write_packet(STATUS_PACKET_ID, &payload)?;
+    stream.write_packet(STATUS_PACKET_ID, &[])?;
+    let _packet_len = stream.read_varint()?;
+    let packet_id = stream.read_varint()?;
+    if packet_id != STATUS_PACKET_ID {
         return Err(format!("unexpected status packet id {packet_id}"));
     }
-    let string_len = read_varint(&mut stream)? as usize;
-    let mut buf = vec![0; string_len];
-    stream.read_exact(&mut buf).map_err(|e| e.to_string())?;
-    String::from_utf8(buf).map_err(|e| e.to_string())
+    stream.read_mc_string()
 }
 
 #[derive(Debug)]
@@ -9065,47 +9071,64 @@ fn run_cmd(cfg: &Config, cmd: &mut Command) -> Result<(), String> {
     }
 }
 
-fn write_packet(id: u32, payload: &[u8], out: &mut TcpStream) -> Result<(), String> {
-    let mut body = Vec::new();
-    write_varint(id, &mut body);
-    body.extend_from_slice(payload);
-    let mut packet = Vec::new();
-    write_varint(body.len() as u32, &mut packet);
-    packet.extend_from_slice(&body);
-    out.write_all(&packet).map_err(|e| e.to_string())
-}
-
-fn write_string(s: &str, out: &mut Vec<u8>) {
-    write_varint(s.len() as u32, out);
-    out.extend_from_slice(s.as_bytes());
-}
-
-fn write_varint(mut value: u32, out: &mut Vec<u8>) {
-    loop {
-        let mut byte = (value & 0x7f) as u8;
-        value >>= 7;
-        if value != 0 {
-            byte |= 0x80;
+trait McWrite: Write {
+    fn write_varint(&mut self, value: u32) -> Result<(), String> {
+        let mut remaining = value;
+        loop {
+            let mut byte = (remaining & VARINT_SEGMENT_MASK) as u8;
+            remaining >>= VARINT_SEGMENT_BITS;
+            if remaining != 0 {
+                byte |= VARINT_CONTINUATION_BIT;
+            }
+            self.write_all(&[byte]).map_err(|e| e.to_string())?;
+            if remaining == 0 {
+                return Ok(());
+            }
         }
-        out.push(byte);
-        if value == 0 {
-            break;
-        }
+    }
+
+    fn write_mc_string(&mut self, value: &str) -> Result<(), String> {
+        let len = u32::try_from(value.len()).map_err(|e| e.to_string())?;
+        self.write_varint(len)?;
+        self.write_all(value.as_bytes()).map_err(|e| e.to_string())
+    }
+
+    fn write_packet(&mut self, id: u32, payload: &[u8]) -> Result<(), String> {
+        let mut body = Vec::new();
+        body.write_varint(id)?;
+        body.extend_from_slice(payload);
+        let mut packet = Vec::new();
+        packet.write_varint(u32::try_from(body.len()).map_err(|e| e.to_string())?)?;
+        packet.extend_from_slice(&body);
+        self.write_all(&packet).map_err(|e| e.to_string())
     }
 }
 
-fn read_varint(input: &mut TcpStream) -> Result<u32, String> {
-    let mut value = 0u32;
-    for shift in (0..35).step_by(7) {
-        let mut byte = [0u8; 1];
-        input.read_exact(&mut byte).map_err(|e| e.to_string())?;
-        value |= u32::from(byte[0] & 0x7f) << shift;
-        if byte[0] & 0x80 == 0 {
-            return Ok(value);
+impl<T> McWrite for T where T: Write + ?Sized {}
+
+trait McRead: Read {
+    fn read_varint(&mut self) -> Result<u32, String> {
+        let mut value = 0u32;
+        for shift in (0..VARINT_MAX_SHIFT_EXCLUSIVE).step_by(VARINT_SEGMENT_BITS_USIZE) {
+            let mut byte = [0u8; 1];
+            self.read_exact(&mut byte).map_err(|e| e.to_string())?;
+            value |= u32::from(byte[0] & (VARINT_SEGMENT_MASK as u8)) << shift;
+            if byte[0] & VARINT_CONTINUATION_BIT == 0 {
+                return Ok(value);
+            }
         }
+        Err("varint too long".to_string())
     }
-    Err("varint too long".to_string())
+
+    fn read_mc_string(&mut self) -> Result<String, String> {
+        let string_len = self.read_varint()? as usize;
+        let mut buf = vec![0; string_len];
+        self.read_exact(&mut buf).map_err(|e| e.to_string())?;
+        String::from_utf8(buf).map_err(|e| e.to_string())
+    }
 }
+
+impl<T> McRead for T where T: Read + ?Sized {}
 
 fn parse_backend(value: &str) -> Result<ServerBackend, String> {
     match value {
@@ -9149,6 +9172,19 @@ fn log(args: std::fmt::Arguments<'_>) {
 mod tests {
     use super::*;
     use std::collections::BTreeMap;
+    use std::io::Cursor;
+
+    const TEST_VARINT_SINGLE_BYTE_VALUE: u32 = VARINT_SEGMENT_MASK;
+    const TEST_VARINT_TWO_BYTE_VALUE: u32 = VARINT_SEGMENT_MASK + STATUS_HANDSHAKE_NEXT_STATE;
+    const TEST_PACKET_PAYLOAD_FIRST_BYTE: u8 = 0x02;
+    const TEST_PACKET_PAYLOAD_SECOND_BYTE: u8 = 0x03;
+    const TEST_PACKET_BODY_LENGTH: u8 = 0x03;
+    const TEST_MC_STRING: &str = "mc";
+    const TEST_MC_STRING_LENGTH: u8 = 0x02;
+    const TEST_STATUS_PORT: u16 = 25565;
+    const TEST_STATUS_PACKET_ID_BYTE_LENGTH: usize = 1;
+    const TEST_TOO_LONG_VARINT_BYTES: usize =
+        (VARINT_MAX_SHIFT_EXCLUSIVE / VARINT_SEGMENT_BITS) as usize + 1;
 
     fn test_config(args: &[&str], env: &[(&str, &str)]) -> Result<Config, String> {
         let env: BTreeMap<String, String> = env
@@ -9552,6 +9588,104 @@ mod tests {
         assert!(is_mc_compat_client_log("mc-compat-client.123.log"));
         assert!(!is_mc_compat_client_log("mc-compat-client.123.txt"));
         assert!(!is_mc_compat_client_log("other-mc-compat-client.123.log"));
+    }
+
+    #[test]
+    fn protocol_varint_round_trips_in_memory() {
+        let cases = [
+            STATUS_PACKET_ID,
+            STATUS_HANDSHAKE_NEXT_STATE,
+            TEST_VARINT_SINGLE_BYTE_VALUE,
+            TEST_VARINT_TWO_BYTE_VALUE,
+            DEFAULT_SERVER_PROTOCOL,
+        ];
+
+        for value in cases {
+            let mut bytes = Vec::new();
+            bytes.write_varint(value).expect("write varint");
+            let decoded = Cursor::new(bytes).read_varint().expect("read varint");
+            assert_eq!(decoded, value);
+        }
+    }
+
+    #[test]
+    fn protocol_string_and_packet_framing_match_expected_bytes() {
+        let mut string_bytes = Vec::new();
+        string_bytes
+            .write_mc_string(TEST_MC_STRING)
+            .expect("write string");
+        assert_eq!(
+            string_bytes,
+            vec![TEST_MC_STRING_LENGTH, b'm', b'c'],
+            "Minecraft string framing changed"
+        );
+        assert_eq!(
+            Cursor::new(string_bytes)
+                .read_mc_string()
+                .expect("read string"),
+            TEST_MC_STRING
+        );
+
+        let payload = [
+            TEST_PACKET_PAYLOAD_FIRST_BYTE,
+            TEST_PACKET_PAYLOAD_SECOND_BYTE,
+        ];
+        let mut packet = Vec::new();
+        packet
+            .write_packet(STATUS_HANDSHAKE_NEXT_STATE, &payload)
+            .expect("write packet");
+        assert_eq!(
+            packet,
+            vec![
+                TEST_PACKET_BODY_LENGTH,
+                STATUS_HANDSHAKE_NEXT_STATE as u8,
+                TEST_PACKET_PAYLOAD_FIRST_BYTE,
+                TEST_PACKET_PAYLOAD_SECOND_BYTE,
+            ]
+        );
+    }
+
+    #[test]
+    fn protocol_status_handshake_fixture_bytes_are_stable() {
+        let mut payload = Vec::new();
+        payload
+            .write_varint(DEFAULT_SERVER_PROTOCOL)
+            .expect("protocol varint");
+        payload
+            .write_mc_string(STATUS_LOCALHOST_ADDRESS)
+            .expect("host string");
+        payload.extend_from_slice(&TEST_STATUS_PORT.to_be_bytes());
+        payload
+            .write_varint(STATUS_HANDSHAKE_NEXT_STATE)
+            .expect("next state");
+
+        let mut framed = Vec::new();
+        framed
+            .write_packet(STATUS_PACKET_ID, &payload)
+            .expect("status handshake packet");
+        let mut cursor = Cursor::new(framed);
+        let packet_length = cursor.read_varint().expect("packet length");
+        let packet_id = cursor.read_varint().expect("packet id");
+
+        assert_eq!(packet_id, STATUS_PACKET_ID);
+        assert_eq!(
+            packet_length as usize,
+            payload.len() + TEST_STATUS_PACKET_ID_BYTE_LENGTH
+        );
+    }
+
+    #[test]
+    fn protocol_invalid_inputs_fail_closed() {
+        let eof = Cursor::new(Vec::new()).read_varint().unwrap_err();
+        assert!(eof.contains("failed to fill whole buffer"), "{eof}");
+
+        let too_long = vec![VARINT_CONTINUATION_BIT; TEST_TOO_LONG_VARINT_BYTES];
+        let err = Cursor::new(too_long).read_varint().unwrap_err();
+        assert_eq!(err, "varint too long");
+
+        let truncated_string = vec![TEST_MC_STRING_LENGTH, b'm'];
+        let err = Cursor::new(truncated_string).read_mc_string().unwrap_err();
+        assert!(err.contains("failed to fill whole buffer"), "{err}");
     }
 
     #[test]

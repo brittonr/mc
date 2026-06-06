@@ -1,0 +1,115 @@
+## minecraft-protocol-io-traits validation
+$ nix develop --no-update-lock-file . -c cargo test --manifest-path tools/mc-compat-runner/Cargo.toml protocol -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 9 tests
+test runtime_config::tests::fixed_protocol_fact_changes_are_rejected ... ok
+test tests::protocol_invalid_inputs_fail_closed ... ok
+test tests::defaults_to_valence_protocol_and_port ... ok
+test tests::compares_protocol_763_matrix_receipts_when_configured ... ok
+test tests::protocol_string_and_packet_framing_match_expected_bytes ... ok
+test tests::protocol_varint_round_trips_in_memory ... ok
+test tests::protocol_status_handshake_fixture_bytes_are_stable ... ok
+test tests::rejects_receipt_protocol_mismatch ... ok
+test tests::rejects_receipts_that_do_not_match_configured_protocol ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 101 filtered out; finished in 0.00s
+
+$ nix develop --no-update-lock-file . -c cargo test --manifest-path tools/mc-compat-runner/Cargo.toml status -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.05s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 5 tests
+test tests::status_and_cleanup_modes_parse_without_server_probe_mode ... ok
+test tests::armor_loadout_enchantment_status_matrix_receipt_keeps_nonclaims ... ok
+test tests::protocol_status_handshake_fixture_bytes_are_stable ... ok
+test tests::armor_loadout_enchantment_status_matrix_tracks_isolated_row_evidence ... ok
+test tests::status_packet_proxy_and_gameplay_receipt_blocks_are_recorded ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 105 filtered out; finished in 0.00s
+
+$ nix run .#cairn -- gate proposal introduce-minecraft-protocol-io-traits --root .
+{
+  "change": "introduce-minecraft-protocol-io-traits",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "6f6cbc2246db967b103cd8ccdd082754885d138fad2590d8381aedec6a3408a7",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "6297dc9aec4b22a748af7f2b622021cc25085292e063089f3492f38e83eaed69",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+$ nix run .#cairn -- gate design introduce-minecraft-protocol-io-traits --root .
+{
+  "change": "introduce-minecraft-protocol-io-traits",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "0f90ecaad05dad8e29ced8362d53b767f7fdf8593fabdb5c55ea6675d9c0b455",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "73a1a3998be53e2cb873f5a3e1a372a3a9e3a1bcec099f89ac1baf0655d2482c",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+$ nix run .#cairn -- gate tasks introduce-minecraft-protocol-io-traits --root .
+{
+  "change": "introduce-minecraft-protocol-io-traits",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "89c2ccde51fd56f1028c34035999b0ccd43c64f9362d38a00a24e7da85fdb050",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "11fe43b36b0c09398fcc0b2e9b60feecc647caf0ab19a1e67cd0d3d10927f481",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+$ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 14,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 16,
+  "valid": true
+}
+exit_status=0
