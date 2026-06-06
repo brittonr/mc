@@ -290,6 +290,19 @@ const SURVIVAL_CRAFTING_RESULT_COUNT: isize = 4;
 const SURVIVAL_CRAFTING_CLICK_BUTTON: u8 = 0;
 const SURVIVAL_CRAFTING_CLICK_MODE: i32 = 0;
 const PLAYER_INVENTORY_WINDOW_ID: u8 = 0;
+const INVENTORY_STACK_SPLIT_MERGE_PROBE_ENV: &str = "MC_COMPAT_INVENTORY_STACK_SPLIT_MERGE_PROBE";
+const INVENTORY_STACK_SPLIT_MERGE_FIRST_TICK: u32 = 220;
+const INVENTORY_STACK_SOURCE_SLOT: i16 = 37;
+const INVENTORY_STACK_SOURCE_SLOT_INDEX: usize = 37;
+const INVENTORY_STACK_DESTINATION_SLOT: i16 = 38;
+const INVENTORY_STACK_FULL_COUNT: isize = 64;
+const INVENTORY_STACK_HALF_COUNT: isize = 32;
+const INVENTORY_STACK_EMPTY_COUNT: isize = 0;
+const INVENTORY_STACK_LEFT_BUTTON: u8 = 0;
+const INVENTORY_STACK_RIGHT_BUTTON: u8 = 1;
+const INVENTORY_STACK_CLICK_MODE: i32 = 0;
+const INVENTORY_STACK_ITEM_PROTOCOL_ID: isize = 194;
+const INVENTORY_STACK_ITEM_NAME: &str = "RedWool";
 const EMPTY_WINDOW_ID: u8 = 0;
 const EMPTY_WINDOW_STATE_ID: i32 = -1;
 const NEGATIVE_INVENTORY_INVALID_SLOT: i16 = 127;
@@ -301,6 +314,71 @@ const NEGATIVE_CUSTOM_PAYLOAD_TICK: u32 = 420;
 const NEGATIVE_CUSTOM_PAYLOAD_CONTAINMENT_TICK: u32 = 460;
 const NEGATIVE_FLAG_CONTAINMENT_TICK_OFFSET: u32 = 120;
 const NEGATIVE_CUSTOM_PAYLOAD_DATA: &[u8] = &[0xff, 0x00, 0xff];
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct InventoryStackSplitMergeProbeInput {
+    enabled: bool,
+    active_ticks: u32,
+    source_stack_seen: bool,
+    current_state_id: i32,
+    split_pickup_sent: bool,
+    split_source_seen: bool,
+    split_place_sent: bool,
+    split_destination_seen: bool,
+    merge_pickup_sent: bool,
+    merge_destination_empty_seen: bool,
+    merge_place_sent: bool,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum InventoryStackSplitMergeAction {
+    SplitPickup,
+    SplitPlace,
+    MergePickup,
+    MergePlace,
+}
+
+fn next_inventory_stack_split_merge_action(
+    input: InventoryStackSplitMergeProbeInput,
+) -> Option<InventoryStackSplitMergeAction> {
+    if !input.enabled
+        || !input.source_stack_seen
+        || input.active_ticks < INVENTORY_STACK_SPLIT_MERGE_FIRST_TICK
+        || input.current_state_id <= EMPTY_WINDOW_STATE_ID
+    {
+        return None;
+    }
+
+    if !input.split_pickup_sent {
+        return Some(InventoryStackSplitMergeAction::SplitPickup);
+    }
+
+    if !input.split_source_seen {
+        return None;
+    }
+
+    if !input.split_place_sent {
+        return Some(InventoryStackSplitMergeAction::SplitPlace);
+    }
+
+    if !input.split_destination_seen {
+        return None;
+    }
+
+    if !input.merge_pickup_sent {
+        return Some(InventoryStackSplitMergeAction::MergePickup);
+    }
+
+    if !input.merge_destination_empty_seen {
+        return None;
+    }
+
+    if !input.merge_place_sent {
+        return Some(InventoryStackSplitMergeAction::MergePlace);
+    }
+
+    None
+}
 
 fn parse_flag_probe_repeat_target(value: Option<&str>) -> u32 {
     value
@@ -663,6 +741,7 @@ pub struct Server {
     stationary_combat_probe_enabled: bool,
     respawn_probe_enabled: bool,
     inventory_probe_enabled: bool,
+    inventory_stack_split_merge_probe_enabled: bool,
     survival_probe_enabled: bool,
     survival_chest_probe_enabled: bool,
     survival_chest_probe_session: u32,
@@ -696,6 +775,14 @@ pub struct Server {
     inventory_probe_drop_sent: bool,
     inventory_probe_pickup_seen: bool,
     inventory_probe_block_place_sent: bool,
+    inventory_stack_split_pickup_sent: bool,
+    inventory_stack_split_source_seen: bool,
+    inventory_stack_split_place_sent: bool,
+    inventory_stack_split_destination_seen: bool,
+    inventory_stack_merge_pickup_sent: bool,
+    inventory_stack_merge_destination_empty_seen: bool,
+    inventory_stack_merge_place_sent: bool,
+    inventory_stack_final_source_seen: bool,
     survival_probe_position_sent: bool,
     survival_probe_break_sent: bool,
     survival_probe_break_update_seen: bool,
@@ -1300,6 +1387,11 @@ impl Server {
             inventory_probe_enabled: std::env::var("MC_COMPAT_INVENTORY_PROBE")
                 .map(|value| value != "0")
                 .unwrap_or(false),
+            inventory_stack_split_merge_probe_enabled: std::env::var(
+                INVENTORY_STACK_SPLIT_MERGE_PROBE_ENV,
+            )
+            .map(|value| value != "0")
+            .unwrap_or(false),
             survival_probe_enabled: std::env::var("MC_COMPAT_SURVIVAL_PROBE")
                 .map(|value| value != "0")
                 .unwrap_or(false),
@@ -1369,6 +1461,14 @@ impl Server {
             inventory_probe_drop_sent: false,
             inventory_probe_pickup_seen: false,
             inventory_probe_block_place_sent: false,
+            inventory_stack_split_pickup_sent: false,
+            inventory_stack_split_source_seen: false,
+            inventory_stack_split_place_sent: false,
+            inventory_stack_split_destination_seen: false,
+            inventory_stack_merge_pickup_sent: false,
+            inventory_stack_merge_destination_empty_seen: false,
+            inventory_stack_merge_place_sent: false,
+            inventory_stack_final_source_seen: false,
             survival_probe_position_sent: false,
             survival_probe_break_sent: false,
             survival_probe_break_update_seen: false,
@@ -1552,6 +1652,7 @@ impl Server {
             && !self.combat_probe_enabled
             && !self.respawn_probe_enabled
             && !self.inventory_probe_enabled
+            && !self.inventory_stack_split_merge_probe_enabled
             && !self.equipment_probe_enabled
             && !self.projectile_probe_enabled
             && !self.flag_probe_enabled
@@ -1583,6 +1684,7 @@ impl Server {
                 || self.combat_probe_enabled
                 || self.respawn_probe_enabled
                 || self.inventory_probe_enabled
+                || self.inventory_stack_split_merge_probe_enabled
                 || self.equipment_probe_enabled
                 || self.projectile_probe_enabled
                 || self.flag_probe_enabled
@@ -2023,12 +2125,16 @@ impl Server {
         self.apply_mc_compat_survival_world_persistence_probe(player);
         self.apply_mc_compat_survival_block_entity_probe(player);
 
-        if self.inventory_probe_enabled && self.active_probe_ticks == 520 {
+        if self.inventory_probe_enabled
+            && !self.inventory_stack_split_merge_probe_enabled
+            && self.active_probe_ticks == 520
+        {
             info!("MC-COMPAT-MILESTONE inventory_probe_select_hotbar_slot slot=0");
             self.write_packet(packet::play::serverbound::HeldItemChange { slot: 0 });
         }
 
         if self.inventory_probe_enabled
+            && !self.inventory_stack_split_merge_probe_enabled
             && self.active_probe_ticks >= 560
             && self.inventory_probe_sword_seen
             && !self.inventory_probe_drop_sent
@@ -2043,7 +2149,25 @@ impl Server {
             self.inventory_probe_drop_sent = true;
         }
 
+        let stack_split_merge_input = InventoryStackSplitMergeProbeInput {
+            enabled: self.inventory_stack_split_merge_probe_enabled,
+            active_ticks: self.active_probe_ticks,
+            source_stack_seen: self.inventory_probe_wool_seen,
+            current_state_id: self.inventory_probe_state_id,
+            split_pickup_sent: self.inventory_stack_split_pickup_sent,
+            split_source_seen: self.inventory_stack_split_source_seen,
+            split_place_sent: self.inventory_stack_split_place_sent,
+            split_destination_seen: self.inventory_stack_split_destination_seen,
+            merge_pickup_sent: self.inventory_stack_merge_pickup_sent,
+            merge_destination_empty_seen: self.inventory_stack_merge_destination_empty_seen,
+            merge_place_sent: self.inventory_stack_merge_place_sent,
+        };
+        if let Some(action) = next_inventory_stack_split_merge_action(stack_split_merge_input) {
+            self.write_inventory_stack_split_merge_click(action);
+        }
+
         if self.inventory_probe_enabled
+            && !self.inventory_stack_split_merge_probe_enabled
             && self.active_probe_ticks >= 620
             && self.inventory_probe_wool_seen
             && !self.inventory_probe_block_place_sent
@@ -2067,6 +2191,7 @@ impl Server {
         }
 
         if self.inventory_probe_enabled
+            && !self.inventory_stack_split_merge_probe_enabled
             && self.active_probe_ticks >= 680
             && self.inventory_probe_block_place_sent
             && self.inventory_probe_state_id > 0
@@ -2102,6 +2227,7 @@ impl Server {
         }
 
         if self.inventory_probe_enabled
+            && !self.inventory_stack_split_merge_probe_enabled
             && self.active_probe_ticks >= 680
             && self.inventory_probe_block_place_sent
             && self.inventory_probe_state_id > 0
@@ -2128,6 +2254,7 @@ impl Server {
         }
 
         if self.inventory_probe_enabled
+            && !self.inventory_stack_split_merge_probe_enabled
             && self.active_probe_ticks >= 680
             && self.inventory_probe_block_place_sent
             && self.inventory_probe_state_id > 0
@@ -2160,6 +2287,7 @@ impl Server {
         }
 
         if self.inventory_probe_enabled
+            && !self.inventory_stack_split_merge_probe_enabled
             && self.active_probe_ticks >= 740
             && self.inventory_probe_click_sent
             && self.inventory_probe_container_seen
@@ -3646,6 +3774,267 @@ impl Server {
         }
     }
 
+    fn inventory_stack_item(count: isize) -> item::Stack {
+        item::Stack {
+            id: INVENTORY_STACK_ITEM_PROTOCOL_ID,
+            count,
+            damage: None,
+            tag: None,
+        }
+    }
+
+    fn log_inventory_stack_initial_slot(
+        &mut self,
+        state_id: i32,
+        slot_item: Option<&Option<item::Stack>>,
+    ) {
+        if !self.inventory_stack_split_merge_probe_enabled || self.inventory_probe_wool_seen {
+            return;
+        }
+        let Some(Some(stack)) = slot_item else {
+            return;
+        };
+        if stack.count != INVENTORY_STACK_FULL_COUNT {
+            return;
+        }
+        self.inventory_probe_wool_seen = true;
+        info!(
+            "MC-COMPAT-MILESTONE inventory_stack_initial_slot window={} state_id={} source_slot={} item={} item_id={} source_count={}",
+            PLAYER_INVENTORY_WINDOW_ID,
+            state_id,
+            INVENTORY_STACK_SOURCE_SLOT,
+            INVENTORY_STACK_ITEM_NAME,
+            stack.id,
+            stack.count
+        );
+    }
+
+    fn log_inventory_stack_slot_update(
+        &mut self,
+        state_id: i32,
+        slot_id: i16,
+        slot_item: &Option<item::Stack>,
+    ) {
+        if !self.inventory_stack_split_merge_probe_enabled {
+            return;
+        }
+
+        if slot_id == INVENTORY_STACK_SOURCE_SLOT {
+            self.log_inventory_stack_initial_slot(state_id, Some(slot_item));
+        }
+
+        match (slot_id, slot_item.as_ref()) {
+            (INVENTORY_STACK_SOURCE_SLOT, Some(stack))
+                if self.inventory_stack_split_pickup_sent
+                    && !self.inventory_stack_split_source_seen
+                    && stack.count == INVENTORY_STACK_HALF_COUNT =>
+            {
+                self.inventory_stack_split_source_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_stack_split_source_seen window={} state_id={} source_slot={} item={} item_id={} source_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    state_id,
+                    INVENTORY_STACK_SOURCE_SLOT,
+                    INVENTORY_STACK_ITEM_NAME,
+                    stack.id,
+                    stack.count
+                );
+            }
+            (INVENTORY_STACK_DESTINATION_SLOT, Some(stack))
+                if self.inventory_stack_split_place_sent
+                    && !self.inventory_stack_split_destination_seen
+                    && stack.count == INVENTORY_STACK_HALF_COUNT =>
+            {
+                self.inventory_stack_split_destination_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_stack_split_destination_seen window={} state_id={} destination_slot={} item={} item_id={} destination_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    state_id,
+                    INVENTORY_STACK_DESTINATION_SLOT,
+                    INVENTORY_STACK_ITEM_NAME,
+                    stack.id,
+                    stack.count
+                );
+            }
+            (INVENTORY_STACK_DESTINATION_SLOT, None)
+                if self.inventory_stack_merge_pickup_sent
+                    && !self.inventory_stack_merge_destination_empty_seen =>
+            {
+                self.inventory_stack_merge_destination_empty_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_stack_merge_destination_empty_seen window={} state_id={} destination_slot={} item={} destination_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    state_id,
+                    INVENTORY_STACK_DESTINATION_SLOT,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_EMPTY_COUNT
+                );
+            }
+            (INVENTORY_STACK_SOURCE_SLOT, Some(stack))
+                if self.inventory_stack_merge_place_sent
+                    && !self.inventory_stack_final_source_seen
+                    && stack.count == INVENTORY_STACK_FULL_COUNT =>
+            {
+                self.inventory_stack_final_source_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_stack_final_source_seen window={} state_id={} source_slot={} item={} item_id={} source_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    state_id,
+                    INVENTORY_STACK_SOURCE_SLOT,
+                    INVENTORY_STACK_ITEM_NAME,
+                    stack.id,
+                    stack.count
+                );
+            }
+            _ => {}
+        }
+    }
+
+    fn write_inventory_stack_split_merge_click(&mut self, action: InventoryStackSplitMergeAction) {
+        let state_id = self.inventory_probe_state_id;
+        match action {
+            InventoryStackSplitMergeAction::SplitPickup => {
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_stack_split_pickup_sent window={} source_slot={} state_id={} button={} mode=click item={} source_count_before={} source_count_after={} carried_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    INVENTORY_STACK_SOURCE_SLOT,
+                    state_id,
+                    INVENTORY_STACK_RIGHT_BUTTON,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_FULL_COUNT,
+                    INVENTORY_STACK_HALF_COUNT,
+                    INVENTORY_STACK_HALF_COUNT
+                );
+                self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                    id: PLAYER_INVENTORY_WINDOW_ID,
+                    slot: INVENTORY_STACK_SOURCE_SLOT,
+                    state: protocol::VarInt(state_id),
+                    button: INVENTORY_STACK_RIGHT_BUTTON,
+                    mode: protocol::VarInt(INVENTORY_STACK_CLICK_MODE),
+                    slots: protocol::LenPrefixed::new(vec![packet::NumberedSlot {
+                        slot_number: INVENTORY_STACK_SOURCE_SLOT,
+                        slot_data: Some(Self::inventory_stack_item(INVENTORY_STACK_HALF_COUNT)),
+                    }]),
+                    clicked_item: Some(Self::inventory_stack_item(INVENTORY_STACK_HALF_COUNT)),
+                });
+                self.inventory_stack_split_pickup_sent = true;
+                self.inventory_stack_split_source_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_stack_split_source_seen window={} state_id={} source_slot={} item={} source_count={} source=client_click_plan",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    state_id,
+                    INVENTORY_STACK_SOURCE_SLOT,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_HALF_COUNT
+                );
+            }
+            InventoryStackSplitMergeAction::SplitPlace => {
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_stack_split_place_sent window={} destination_slot={} state_id={} button={} mode=click item={} destination_count={} carried_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    INVENTORY_STACK_DESTINATION_SLOT,
+                    state_id,
+                    INVENTORY_STACK_LEFT_BUTTON,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_HALF_COUNT,
+                    INVENTORY_STACK_EMPTY_COUNT
+                );
+                self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                    id: PLAYER_INVENTORY_WINDOW_ID,
+                    slot: INVENTORY_STACK_DESTINATION_SLOT,
+                    state: protocol::VarInt(state_id),
+                    button: INVENTORY_STACK_LEFT_BUTTON,
+                    mode: protocol::VarInt(INVENTORY_STACK_CLICK_MODE),
+                    slots: protocol::LenPrefixed::new(vec![packet::NumberedSlot {
+                        slot_number: INVENTORY_STACK_DESTINATION_SLOT,
+                        slot_data: Some(Self::inventory_stack_item(INVENTORY_STACK_HALF_COUNT)),
+                    }]),
+                    clicked_item: None,
+                });
+                self.inventory_stack_split_place_sent = true;
+                self.inventory_stack_split_destination_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_stack_split_destination_seen window={} state_id={} destination_slot={} item={} destination_count={} source=client_click_plan",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    state_id,
+                    INVENTORY_STACK_DESTINATION_SLOT,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_HALF_COUNT
+                );
+            }
+            InventoryStackSplitMergeAction::MergePickup => {
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_stack_merge_pickup_sent window={} destination_slot={} state_id={} button={} mode=click item={} destination_count_after={} carried_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    INVENTORY_STACK_DESTINATION_SLOT,
+                    state_id,
+                    INVENTORY_STACK_LEFT_BUTTON,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_EMPTY_COUNT,
+                    INVENTORY_STACK_HALF_COUNT
+                );
+                self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                    id: PLAYER_INVENTORY_WINDOW_ID,
+                    slot: INVENTORY_STACK_DESTINATION_SLOT,
+                    state: protocol::VarInt(state_id),
+                    button: INVENTORY_STACK_LEFT_BUTTON,
+                    mode: protocol::VarInt(INVENTORY_STACK_CLICK_MODE),
+                    slots: protocol::LenPrefixed::new(vec![packet::NumberedSlot {
+                        slot_number: INVENTORY_STACK_DESTINATION_SLOT,
+                        slot_data: None,
+                    }]),
+                    clicked_item: Some(Self::inventory_stack_item(INVENTORY_STACK_HALF_COUNT)),
+                });
+                self.inventory_stack_merge_pickup_sent = true;
+                self.inventory_stack_merge_destination_empty_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_stack_merge_destination_empty_seen window={} state_id={} destination_slot={} item={} destination_count={} source=client_click_plan",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    state_id,
+                    INVENTORY_STACK_DESTINATION_SLOT,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_EMPTY_COUNT
+                );
+            }
+            InventoryStackSplitMergeAction::MergePlace => {
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_stack_merge_place_sent window={} source_slot={} state_id={} button={} mode=click item={} source_count_after={} destination_slot={} destination_count_after={} carried_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    INVENTORY_STACK_SOURCE_SLOT,
+                    state_id,
+                    INVENTORY_STACK_LEFT_BUTTON,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_FULL_COUNT,
+                    INVENTORY_STACK_DESTINATION_SLOT,
+                    INVENTORY_STACK_EMPTY_COUNT,
+                    INVENTORY_STACK_EMPTY_COUNT
+                );
+                self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                    id: PLAYER_INVENTORY_WINDOW_ID,
+                    slot: INVENTORY_STACK_SOURCE_SLOT,
+                    state: protocol::VarInt(state_id),
+                    button: INVENTORY_STACK_LEFT_BUTTON,
+                    mode: protocol::VarInt(INVENTORY_STACK_CLICK_MODE),
+                    slots: protocol::LenPrefixed::new(vec![packet::NumberedSlot {
+                        slot_number: INVENTORY_STACK_SOURCE_SLOT,
+                        slot_data: Some(Self::inventory_stack_item(INVENTORY_STACK_FULL_COUNT)),
+                    }]),
+                    clicked_item: None,
+                });
+                self.inventory_stack_merge_place_sent = true;
+                self.inventory_stack_final_source_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_stack_final_source_seen window={} state_id={} source_slot={} item={} source_count={} source=client_click_plan",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    state_id,
+                    INVENTORY_STACK_SOURCE_SLOT,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_FULL_COUNT
+                );
+            }
+        }
+    }
+
     fn log_survival_chest_persisted_item(
         &mut self,
         window_id: u8,
@@ -4793,6 +5182,7 @@ impl Server {
         window: packet::play::clientbound::WindowItems_StateCarry,
     ) {
         if !self.inventory_probe_enabled
+            && !self.inventory_stack_split_merge_probe_enabled
             && !self.survival_probe_enabled
             && !self.survival_chest_probe_enabled
             && !self.survival_crafting_probe_enabled
@@ -4839,6 +5229,13 @@ impl Server {
             );
         }
         self.inventory_probe_window_seen = true;
+        if window.id == PLAYER_INVENTORY_WINDOW_ID {
+            self.inventory_probe_state_id = window.state_id.0;
+            self.log_inventory_stack_initial_slot(
+                window.state_id.0,
+                window.items.data.get(INVENTORY_STACK_SOURCE_SLOT_INDEX),
+            );
+        }
         if window.id == self.inventory_probe_container_id && window.id > 0 {
             self.inventory_probe_container_state_id = window.state_id.0;
             self.inventory_probe_container_seen = true;
@@ -4934,6 +5331,7 @@ impl Server {
 
     fn on_window_set_slot_state(&mut self, slot: packet::play::clientbound::WindowSetSlot_State) {
         if !self.inventory_probe_enabled
+            && !self.inventory_stack_split_merge_probe_enabled
             && !self.survival_probe_enabled
             && !self.survival_chest_probe_enabled
             && !self.survival_crafting_probe_enabled
@@ -4952,6 +5350,9 @@ impl Server {
             Self::item_summary(&slot.item),
         );
         self.inventory_probe_state_id = slot.state_id.0;
+        if slot.id == PLAYER_INVENTORY_WINDOW_ID {
+            self.log_inventory_stack_slot_update(slot.state_id.0, slot.property, &slot.item);
+        }
         if self.survival_chest_probe_enabled
             && slot.id == self.survival_chest_window_id
             && slot.id > EMPTY_WINDOW_ID
@@ -6089,20 +6490,23 @@ fn calculate_relative_teleport(flag: TeleportFlag, flags: u8, base: f64, val: f6
 #[cfg(test)]
 mod tests {
     use super::{
-        derive_survival_environment_id, normalize_survival_environment_id,
-        parse_flag_probe_repeat_target, should_log_survival_crafting_inventory_index,
-        should_log_survival_crafting_inventory_slot, should_log_survival_furnace_inventory_index,
-        should_log_survival_furnace_inventory_slot, sign_lines_match_payload, sign_text_payload,
-        survival_block_entity_expected_lines, survival_block_entity_position_matches,
-        survival_crafting_input_stack, survival_crafting_result_matches,
-        survival_crafting_result_stack, survival_crafting_table_position,
-        survival_furnace_fuel_stack, survival_furnace_input_stack, survival_furnace_output_matches,
+        derive_survival_environment_id, next_inventory_stack_split_merge_action,
+        normalize_survival_environment_id, parse_flag_probe_repeat_target,
+        should_log_survival_crafting_inventory_index, should_log_survival_crafting_inventory_slot,
+        should_log_survival_furnace_inventory_index, should_log_survival_furnace_inventory_slot,
+        sign_lines_match_payload, sign_text_payload, survival_block_entity_expected_lines,
+        survival_block_entity_position_matches, survival_crafting_input_stack,
+        survival_crafting_result_matches, survival_crafting_result_stack,
+        survival_crafting_table_position, survival_furnace_fuel_stack,
+        survival_furnace_input_stack, survival_furnace_output_matches,
         survival_furnace_output_stack, survival_furnace_position,
         survival_hunger_food_float_matches, survival_hunger_food_item_matches,
         survival_hunger_food_post_update_matches, survival_hunger_food_pre_update_matches,
         survival_hunger_food_slot_is_empty, survival_mob_drop_item_matches,
         survival_mob_drop_position_matches, survival_redstone_toggle_output_position_matches,
-        survival_world_persistence_position_matches, DEFAULT_FLAG_PROBE_REPEAT_TARGET,
+        survival_world_persistence_position_matches, InventoryStackSplitMergeAction,
+        InventoryStackSplitMergeProbeInput, DEFAULT_FLAG_PROBE_REPEAT_TARGET,
+        EMPTY_WINDOW_STATE_ID, INVENTORY_STACK_SPLIT_MERGE_FIRST_TICK,
         MAX_FLAG_PROBE_REPEAT_TARGET, PLAYER_INVENTORY_WINDOW_ID, SIGN_LINE_INDEX_1,
         SIGN_LINE_INDEX_2, SIGN_LINE_INDEX_3, SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD,
         SURVIVAL_BLOCK_ENTITY_X, SURVIVAL_BLOCK_ENTITY_Y, SURVIVAL_BLOCK_ENTITY_Z,
@@ -6131,6 +6535,112 @@ mod tests {
     use crate::protocol::{self, packet};
     use crate::shared::Position;
     use steven_protocol::item;
+
+    fn ready_stack_split_merge_input() -> InventoryStackSplitMergeProbeInput {
+        InventoryStackSplitMergeProbeInput {
+            enabled: true,
+            active_ticks: INVENTORY_STACK_SPLIT_MERGE_FIRST_TICK,
+            source_stack_seen: true,
+            current_state_id: EMPTY_WINDOW_STATE_ID + 1,
+            split_pickup_sent: false,
+            split_source_seen: false,
+            split_place_sent: false,
+            split_destination_seen: false,
+            merge_pickup_sent: false,
+            merge_destination_empty_seen: false,
+            merge_place_sent: false,
+        }
+    }
+
+    #[test]
+    fn inventory_stack_split_merge_actions_advance_after_observed_state() {
+        let split_pickup = ready_stack_split_merge_input();
+        assert_eq!(
+            next_inventory_stack_split_merge_action(split_pickup),
+            Some(InventoryStackSplitMergeAction::SplitPickup)
+        );
+
+        let split_place = InventoryStackSplitMergeProbeInput {
+            split_pickup_sent: true,
+            split_source_seen: true,
+            current_state_id: split_pickup.current_state_id,
+            ..split_pickup
+        };
+        assert_eq!(
+            next_inventory_stack_split_merge_action(split_place),
+            Some(InventoryStackSplitMergeAction::SplitPlace)
+        );
+
+        let merge_pickup = InventoryStackSplitMergeProbeInput {
+            split_place_sent: true,
+            split_destination_seen: true,
+            current_state_id: split_place.current_state_id,
+            ..split_place
+        };
+        assert_eq!(
+            next_inventory_stack_split_merge_action(merge_pickup),
+            Some(InventoryStackSplitMergeAction::MergePickup)
+        );
+
+        let merge_place = InventoryStackSplitMergeProbeInput {
+            merge_pickup_sent: true,
+            merge_destination_empty_seen: true,
+            current_state_id: merge_pickup.current_state_id,
+            ..merge_pickup
+        };
+        assert_eq!(
+            next_inventory_stack_split_merge_action(merge_place),
+            Some(InventoryStackSplitMergeAction::MergePlace)
+        );
+
+        let completed = InventoryStackSplitMergeProbeInput {
+            merge_place_sent: true,
+            current_state_id: merge_place.current_state_id,
+            ..merge_place
+        };
+        assert_eq!(next_inventory_stack_split_merge_action(completed), None);
+    }
+
+    #[test]
+    fn inventory_stack_split_merge_waits_for_probe_guards() {
+        let ready = ready_stack_split_merge_input();
+        assert_eq!(
+            next_inventory_stack_split_merge_action(InventoryStackSplitMergeProbeInput {
+                enabled: false,
+                ..ready
+            }),
+            None
+        );
+        assert_eq!(
+            next_inventory_stack_split_merge_action(InventoryStackSplitMergeProbeInput {
+                source_stack_seen: false,
+                ..ready
+            }),
+            None
+        );
+        assert_eq!(
+            next_inventory_stack_split_merge_action(InventoryStackSplitMergeProbeInput {
+                active_ticks: INVENTORY_STACK_SPLIT_MERGE_FIRST_TICK - 1,
+                ..ready
+            }),
+            None
+        );
+        assert_eq!(
+            next_inventory_stack_split_merge_action(InventoryStackSplitMergeProbeInput {
+                split_pickup_sent: true,
+                current_state_id: EMPTY_WINDOW_STATE_ID,
+                ..ready
+            }),
+            None
+        );
+        assert_eq!(
+            next_inventory_stack_split_merge_action(InventoryStackSplitMergeProbeInput {
+                split_pickup_sent: true,
+                ..ready
+            }),
+            None
+        );
+    }
 
     #[test]
     fn flag_probe_repeat_target_defaults_when_unset_or_invalid() {
