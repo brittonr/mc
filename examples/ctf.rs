@@ -44,15 +44,22 @@ const TEAM_RED_YAW: f32 = -90.0;
 const TEAM_BLUE_YAW: f32 = 90.0;
 const COMPAT_ACTOR_USERNAME: &str = "compatbot";
 const INVENTORY_STACK_SPLIT_MERGE_PROBE_ENV: &str = "MC_COMPAT_INVENTORY_STACK_SPLIT_MERGE_PROBE";
+const INVENTORY_DRAG_TRANSACTIONS_PROBE_ENV: &str = "MC_COMPAT_INVENTORY_DRAG_TRANSACTIONS_PROBE";
 const INVENTORY_STACK_WINDOW_ID: u8 = 0;
 const INVENTORY_STACK_SOURCE_SLOT: i16 = 37;
 const INVENTORY_STACK_DESTINATION_SLOT: i16 = 38;
+const INVENTORY_DRAG_TARGET_SLOT_A: i16 = 38;
+const INVENTORY_DRAG_TARGET_SLOT_B: i16 = 39;
+const INVENTORY_DRAG_OUTSIDE_SLOT: i16 = -999;
 const INVENTORY_STACK_ITEM: ItemKind = ItemKind::RedWool;
 const INVENTORY_STACK_FULL_COUNT: i8 = 64;
 const INVENTORY_STACK_HALF_COUNT: i8 = 32;
 const INVENTORY_STACK_EMPTY_COUNT: i8 = 0;
 const INVENTORY_STACK_LEFT_BUTTON: i8 = 0;
 const INVENTORY_STACK_RIGHT_BUTTON: i8 = 1;
+const INVENTORY_DRAG_START_BUTTON: i8 = 0;
+const INVENTORY_DRAG_ADD_SLOT_BUTTON: i8 = 1;
+const INVENTORY_DRAG_END_BUTTON: i8 = 2;
 const VANILLA_COMBAT_REFERENCE_PROBE_ENV: &str = "MC_COMPAT_VANILLA_COMBAT_REFERENCE_PROBE";
 const VANILLA_COMBAT_ARMOR_REFERENCE_PROBE_ENV: &str =
     "MC_COMPAT_VANILLA_COMBAT_ARMOR_REFERENCE_PROBE";
@@ -2021,10 +2028,221 @@ fn log_inventory_stack_split_merge_event(
     }
 }
 
+#[derive(Debug, Default)]
+struct InventoryDragTransactionsProbeState {
+    pickup_state_id: Option<i32>,
+    drag_start_state_id: Option<i32>,
+    target_a_state_id: Option<i32>,
+    target_b_state_id: Option<i32>,
+    drag_end_state_id: Option<i32>,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum InventoryDragTransactionsServerAction {
+    PickupSource,
+    DragStart,
+    AddTargetA,
+    AddTargetB,
+    DragEnd,
+}
+
+fn classify_inventory_drag_transactions_event(
+    username: &str,
+    event: &ClickSlotEvent,
+    state: &InventoryDragTransactionsProbeState,
+) -> Option<InventoryDragTransactionsServerAction> {
+    if username != COMPAT_ACTOR_USERNAME || event.window_id != INVENTORY_STACK_WINDOW_ID {
+        return None;
+    }
+
+    if state.pickup_state_id.is_none()
+        && event.mode == ClickMode::Click
+        && event.slot_id == INVENTORY_STACK_SOURCE_SLOT
+        && event.button == INVENTORY_STACK_LEFT_BUTTON
+        && event.carried_item.item == INVENTORY_STACK_ITEM
+        && event.carried_item.count == INVENTORY_STACK_FULL_COUNT
+        && inventory_stack_slot_change_empty(event, INVENTORY_STACK_SOURCE_SLOT)
+    {
+        return Some(InventoryDragTransactionsServerAction::PickupSource);
+    }
+
+    if state.pickup_state_id.is_some()
+        && state.drag_start_state_id.is_none()
+        && event.mode == ClickMode::Drag
+        && event.slot_id == INVENTORY_DRAG_OUTSIDE_SLOT
+        && event.button == INVENTORY_DRAG_START_BUTTON
+        && event.carried_item.item == INVENTORY_STACK_ITEM
+        && event.carried_item.count == INVENTORY_STACK_FULL_COUNT
+        && event.slot_changes.is_empty()
+    {
+        return Some(InventoryDragTransactionsServerAction::DragStart);
+    }
+
+    if state.drag_start_state_id.is_some()
+        && state.target_a_state_id.is_none()
+        && event.mode == ClickMode::Drag
+        && event.slot_id == INVENTORY_DRAG_TARGET_SLOT_A
+        && event.button == INVENTORY_DRAG_ADD_SLOT_BUTTON
+        && event.carried_item.item == INVENTORY_STACK_ITEM
+        && event.carried_item.count == INVENTORY_STACK_FULL_COUNT
+        && event.slot_changes.is_empty()
+    {
+        return Some(InventoryDragTransactionsServerAction::AddTargetA);
+    }
+
+    if state.target_a_state_id.is_some()
+        && state.target_b_state_id.is_none()
+        && event.mode == ClickMode::Drag
+        && event.slot_id == INVENTORY_DRAG_TARGET_SLOT_B
+        && event.button == INVENTORY_DRAG_ADD_SLOT_BUTTON
+        && event.carried_item.item == INVENTORY_STACK_ITEM
+        && event.carried_item.count == INVENTORY_STACK_FULL_COUNT
+        && event.slot_changes.is_empty()
+    {
+        return Some(InventoryDragTransactionsServerAction::AddTargetB);
+    }
+
+    if state.target_b_state_id.is_some()
+        && state.drag_end_state_id.is_none()
+        && event.mode == ClickMode::Drag
+        && event.slot_id == INVENTORY_DRAG_OUTSIDE_SLOT
+        && event.button == INVENTORY_DRAG_END_BUTTON
+        && event.carried_item.is_empty()
+        && inventory_stack_slot_change_matches(
+            event,
+            INVENTORY_DRAG_TARGET_SLOT_A,
+            INVENTORY_STACK_ITEM,
+            INVENTORY_STACK_HALF_COUNT,
+        )
+        && inventory_stack_slot_change_matches(
+            event,
+            INVENTORY_DRAG_TARGET_SLOT_B,
+            INVENTORY_STACK_ITEM,
+            INVENTORY_STACK_HALF_COUNT,
+        )
+    {
+        return Some(InventoryDragTransactionsServerAction::DragEnd);
+    }
+
+    None
+}
+
+fn log_inventory_drag_transactions_event(
+    username: &str,
+    event: &ClickSlotEvent,
+    state: &mut InventoryDragTransactionsProbeState,
+) {
+    if !inventory_drag_transactions_probe_enabled() {
+        return;
+    }
+
+    let Some(action) = classify_inventory_drag_transactions_event(username, event, state) else {
+        return;
+    };
+
+    match action {
+        InventoryDragTransactionsServerAction::PickupSource => {
+            state.pickup_state_id = Some(event.state_id);
+            let milestone = format!(
+                "MC-COMPAT-MILESTONE inventory_drag_server_pickup username={} window={} state_id={} source_slot={} button={} mode=Click item={:?} source_count_after={} carried_count={}",
+                username,
+                event.window_id,
+                event.state_id,
+                INVENTORY_STACK_SOURCE_SLOT,
+                INVENTORY_STACK_LEFT_BUTTON,
+                INVENTORY_STACK_ITEM,
+                INVENTORY_STACK_EMPTY_COUNT,
+                INVENTORY_STACK_FULL_COUNT
+            );
+            info!("{}", milestone);
+            println!("{}", milestone);
+        }
+        InventoryDragTransactionsServerAction::DragStart => {
+            state.drag_start_state_id = Some(event.state_id);
+            let pickup_state_id = state.pickup_state_id.unwrap_or(event.state_id);
+            let milestone = format!(
+                "MC-COMPAT-MILESTONE inventory_drag_server_start username={} window={} state_id_sequence={}->{} slot={} button={} mode=Drag item={:?} carried_count={}",
+                username,
+                event.window_id,
+                pickup_state_id,
+                event.state_id,
+                INVENTORY_DRAG_OUTSIDE_SLOT,
+                INVENTORY_DRAG_START_BUTTON,
+                INVENTORY_STACK_ITEM,
+                INVENTORY_STACK_FULL_COUNT
+            );
+            info!("{}", milestone);
+            println!("{}", milestone);
+        }
+        InventoryDragTransactionsServerAction::AddTargetA => {
+            state.target_a_state_id = Some(event.state_id);
+            let milestone = format!(
+                "MC-COMPAT-MILESTONE inventory_drag_server_target_a username={} window={} state_id={} target_slot={} button={} mode=Drag item={:?} carried_count={}",
+                username,
+                event.window_id,
+                event.state_id,
+                INVENTORY_DRAG_TARGET_SLOT_A,
+                INVENTORY_DRAG_ADD_SLOT_BUTTON,
+                INVENTORY_STACK_ITEM,
+                INVENTORY_STACK_FULL_COUNT
+            );
+            info!("{}", milestone);
+            println!("{}", milestone);
+        }
+        InventoryDragTransactionsServerAction::AddTargetB => {
+            state.target_b_state_id = Some(event.state_id);
+            let target_a_state_id = state.target_a_state_id.unwrap_or(event.state_id);
+            let milestone = format!(
+                "MC-COMPAT-MILESTONE inventory_drag_server_target_b username={} window={} state_id_sequence={}->{} target_slots={},{} button={} mode=Drag item={:?} carried_count={}",
+                username,
+                event.window_id,
+                target_a_state_id,
+                event.state_id,
+                INVENTORY_DRAG_TARGET_SLOT_A,
+                INVENTORY_DRAG_TARGET_SLOT_B,
+                INVENTORY_DRAG_ADD_SLOT_BUTTON,
+                INVENTORY_STACK_ITEM,
+                INVENTORY_STACK_FULL_COUNT
+            );
+            info!("{}", milestone);
+            println!("{}", milestone);
+        }
+        InventoryDragTransactionsServerAction::DragEnd => {
+            state.drag_end_state_id = Some(event.state_id);
+            let pickup_state_id = state.pickup_state_id.unwrap_or(event.state_id);
+            let drag_start_state_id = state.drag_start_state_id.unwrap_or(event.state_id);
+            let target_a_state_id = state.target_a_state_id.unwrap_or(event.state_id);
+            let target_b_state_id = state.target_b_state_id.unwrap_or(event.state_id);
+            let milestone = format!(
+                "MC-COMPAT-MILESTONE inventory_drag_server_end username={} window={} state_id_sequence={}->{}->{}->{}->{} source_slot={} target_slots={},{} button={} mode=Drag item={:?} source_count_after={} target_counts={},{} carried_count={}",
+                username,
+                event.window_id,
+                pickup_state_id,
+                drag_start_state_id,
+                target_a_state_id,
+                target_b_state_id,
+                event.state_id,
+                INVENTORY_STACK_SOURCE_SLOT,
+                INVENTORY_DRAG_TARGET_SLOT_A,
+                INVENTORY_DRAG_TARGET_SLOT_B,
+                INVENTORY_DRAG_END_BUTTON,
+                INVENTORY_STACK_ITEM,
+                INVENTORY_STACK_EMPTY_COUNT,
+                INVENTORY_STACK_HALF_COUNT,
+                INVENTORY_STACK_HALF_COUNT,
+                INVENTORY_STACK_EMPTY_COUNT
+            );
+            info!("{}", milestone);
+            println!("{}", milestone);
+        }
+    }
+}
+
 fn log_inventory_click_state(
     mut commands: Commands,
     mut compat_container_opened: Local<bool>,
     mut inventory_stack_state: Local<InventoryStackSplitMergeProbeState>,
+    mut inventory_drag_state: Local<InventoryDragTransactionsProbeState>,
     mut events: EventReader<ClickSlotEvent>,
     usernames: Query<&Username>,
 ) {
@@ -2051,9 +2269,11 @@ fn log_inventory_click_state(
             event,
             &mut *inventory_stack_state,
         );
+        log_inventory_drag_transactions_event(username.as_str(), event, &mut *inventory_drag_state);
 
         if username.as_str() == COMPAT_ACTOR_USERNAME
             && !inventory_stack_split_merge_probe_enabled()
+            && !inventory_drag_transactions_probe_enabled()
             && event.window_id == INVENTORY_STACK_WINDOW_ID
             && event.slot_id == INVENTORY_STACK_SOURCE_SLOT
             && !*compat_container_opened
@@ -3041,6 +3261,10 @@ fn inventory_stack_split_merge_probe_enabled() -> bool {
     env_flag_enabled(INVENTORY_STACK_SPLIT_MERGE_PROBE_ENV)
 }
 
+fn inventory_drag_transactions_probe_enabled() -> bool {
+    env_flag_enabled(INVENTORY_DRAG_TRANSACTIONS_PROBE_ENV)
+}
+
 fn env_flag_enabled(name: &str) -> bool {
     std::env::var(name)
         .map(|value| value != "0")
@@ -3419,6 +3643,24 @@ mod tests {
         }
     }
 
+    fn test_drag_slot_event(
+        slot_id: i16,
+        button: i8,
+        carried_item: ItemStack,
+        slot_changes: Vec<valence::inventory::SlotChange>,
+    ) -> ClickSlotEvent {
+        ClickSlotEvent {
+            client: Entity::from_raw(TEST_CLIENT_ENTITY_ID),
+            window_id: INVENTORY_STACK_WINDOW_ID,
+            state_id: TEST_CLICK_STATE_ID,
+            slot_id,
+            button,
+            mode: ClickMode::Drag,
+            slot_changes,
+            carried_item,
+        }
+    }
+
     #[test]
     fn inventory_stack_split_merge_classifier_accepts_ordered_clicks() {
         let mut state = InventoryStackSplitMergeProbeState::default();
@@ -3535,6 +3777,123 @@ mod tests {
                 COMPAT_ACTOR_USERNAME,
                 &merge_before_split,
                 &state
+            ),
+            None
+        );
+    }
+
+    #[test]
+    fn inventory_drag_transactions_classifier_accepts_ordered_drag() {
+        let mut state = InventoryDragTransactionsProbeState::default();
+        let pickup = test_click_slot_event(
+            INVENTORY_STACK_SOURCE_SLOT,
+            INVENTORY_STACK_LEFT_BUTTON,
+            test_inventory_stack(INVENTORY_STACK_FULL_COUNT),
+            vec![test_slot_change(
+                INVENTORY_STACK_SOURCE_SLOT,
+                ItemStack::EMPTY,
+            )],
+        );
+        assert_eq!(
+            classify_inventory_drag_transactions_event(COMPAT_ACTOR_USERNAME, &pickup, &state),
+            Some(InventoryDragTransactionsServerAction::PickupSource)
+        );
+        state.pickup_state_id = Some(TEST_CLICK_STATE_ID);
+
+        let drag_start = test_drag_slot_event(
+            INVENTORY_DRAG_OUTSIDE_SLOT,
+            INVENTORY_DRAG_START_BUTTON,
+            test_inventory_stack(INVENTORY_STACK_FULL_COUNT),
+            Vec::new(),
+        );
+        assert_eq!(
+            classify_inventory_drag_transactions_event(COMPAT_ACTOR_USERNAME, &drag_start, &state),
+            Some(InventoryDragTransactionsServerAction::DragStart)
+        );
+        state.drag_start_state_id = Some(TEST_CLICK_STATE_ID);
+
+        let target_a = test_drag_slot_event(
+            INVENTORY_DRAG_TARGET_SLOT_A,
+            INVENTORY_DRAG_ADD_SLOT_BUTTON,
+            test_inventory_stack(INVENTORY_STACK_FULL_COUNT),
+            Vec::new(),
+        );
+        assert_eq!(
+            classify_inventory_drag_transactions_event(COMPAT_ACTOR_USERNAME, &target_a, &state),
+            Some(InventoryDragTransactionsServerAction::AddTargetA)
+        );
+        state.target_a_state_id = Some(TEST_CLICK_STATE_ID);
+
+        let target_b = test_drag_slot_event(
+            INVENTORY_DRAG_TARGET_SLOT_B,
+            INVENTORY_DRAG_ADD_SLOT_BUTTON,
+            test_inventory_stack(INVENTORY_STACK_FULL_COUNT),
+            Vec::new(),
+        );
+        assert_eq!(
+            classify_inventory_drag_transactions_event(COMPAT_ACTOR_USERNAME, &target_b, &state),
+            Some(InventoryDragTransactionsServerAction::AddTargetB)
+        );
+        state.target_b_state_id = Some(TEST_CLICK_STATE_ID);
+
+        let drag_end = test_drag_slot_event(
+            INVENTORY_DRAG_OUTSIDE_SLOT,
+            INVENTORY_DRAG_END_BUTTON,
+            ItemStack::EMPTY,
+            vec![
+                test_slot_change(
+                    INVENTORY_DRAG_TARGET_SLOT_A,
+                    test_inventory_stack(INVENTORY_STACK_HALF_COUNT),
+                ),
+                test_slot_change(
+                    INVENTORY_DRAG_TARGET_SLOT_B,
+                    test_inventory_stack(INVENTORY_STACK_HALF_COUNT),
+                ),
+            ],
+        );
+        assert_eq!(
+            classify_inventory_drag_transactions_event(COMPAT_ACTOR_USERNAME, &drag_end, &state),
+            Some(InventoryDragTransactionsServerAction::DragEnd)
+        );
+    }
+
+    #[test]
+    fn inventory_drag_transactions_classifier_rejects_wrong_order_or_distribution() {
+        let state = InventoryDragTransactionsProbeState::default();
+        let target_before_pickup = test_drag_slot_event(
+            INVENTORY_DRAG_TARGET_SLOT_A,
+            INVENTORY_DRAG_ADD_SLOT_BUTTON,
+            test_inventory_stack(INVENTORY_STACK_FULL_COUNT),
+            Vec::new(),
+        );
+        assert_eq!(
+            classify_inventory_drag_transactions_event(
+                COMPAT_ACTOR_USERNAME,
+                &target_before_pickup,
+                &state
+            ),
+            None
+        );
+
+        let mut ready_for_end = InventoryDragTransactionsProbeState::default();
+        ready_for_end.pickup_state_id = Some(TEST_CLICK_STATE_ID);
+        ready_for_end.drag_start_state_id = Some(TEST_CLICK_STATE_ID);
+        ready_for_end.target_a_state_id = Some(TEST_CLICK_STATE_ID);
+        ready_for_end.target_b_state_id = Some(TEST_CLICK_STATE_ID);
+        let wrong_distribution = test_drag_slot_event(
+            INVENTORY_DRAG_OUTSIDE_SLOT,
+            INVENTORY_DRAG_END_BUTTON,
+            ItemStack::EMPTY,
+            vec![test_slot_change(
+                INVENTORY_DRAG_TARGET_SLOT_A,
+                test_inventory_stack(INVENTORY_STACK_FULL_COUNT),
+            )],
+        );
+        assert_eq!(
+            classify_inventory_drag_transactions_event(
+                COMPAT_ACTOR_USERNAME,
+                &wrong_distribution,
+                &ready_for_end
             ),
             None
         );
