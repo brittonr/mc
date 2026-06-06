@@ -1591,6 +1591,16 @@
           mkdir -p "$out"
           cp ../inventory-drag-transactions-evidence-self-test.log "$out/"
         '';
+        mc-compat-scoreboard-team-packet-family-check = pkgs.runCommand "mc-compat-scoreboard-team-packet-family-check" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc ]; } ''
+          cp -R ${./.} repo
+          chmod -R u+w repo
+          cd repo
+          rustc --edition=2021 tools/check_scoreboard_team_packet_family.rs -o ../check-scoreboard-team-packet-family
+          ../check-scoreboard-team-packet-family --self-test > ../scoreboard-team-packet-family-self-test.log
+          ../check-scoreboard-team-packet-family docs/evidence/scoreboard-team-packet-family-2026-06-06.kv > ../scoreboard-team-packet-family-evidence.log
+          mkdir -p "$out"
+          cp ../scoreboard-team-packet-family-self-test.log ../scoreboard-team-packet-family-evidence.log "$out/"
+        '';
         mc-compat-valence-ctf-combat-damage-dry-run =
           pkgs.runCommand "mc-compat-valence-ctf-combat-damage-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
             mkdir -p fake-stevenarella fake-valence receipts
@@ -2196,6 +2206,7 @@
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-bot-probe-dry-run} "$out/compat-bot-probe"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-acceptance-matrix} "$out/acceptance-matrix"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-current-evidence-bundle} "$out/current-evidence-bundle"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-scoreboard-team-packet-family-check} "$out/scoreboard-team-packet-family"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-evidence-manifests} "$out/evidence-manifests"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-full-survival-gate} "$out/full-survival-gate"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-aggregate-claim-gates} "$out/aggregate-claim-gates"
@@ -2241,6 +2252,7 @@
           compat-bot-probe
           acceptance-matrix
           current-evidence-bundle
+          scoreboard-team-packet-family
           evidence-manifests
           full-survival-gate
           aggregate-claim-gates

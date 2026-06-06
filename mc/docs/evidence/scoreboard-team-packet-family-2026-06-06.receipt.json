@@ -1,0 +1,49 @@
+{
+  "schema": "mc.compat.packet_family.receipt.v1",
+  "row_id": "scoreboard-team-packet-family",
+  "source_receipt": "docs/evidence/protocol-763-ctf-spawn-team-balance-reset-2026-06-01.receipt.json",
+  "source_scenario": "ctf-spawn-team-balance-reset",
+  "packet_rows": [
+    {
+      "state": "play",
+      "side": "clientbound",
+      "wire_id": "0x5a",
+      "valence_packet": "TeamS2CPacket",
+      "stevenarella_internal_id": "Teams_VarInt",
+      "coverage_status": "scenario_bounded"
+    }
+  ],
+  "normalized_metrics": {
+    "red_user": "compatbota",
+    "blue_user": "compatbotb",
+    "team_counts": "red=1,blue=1",
+    "client_milestones": ["team_red", "team_blue"],
+    "server_milestones": [
+      "server_ctf_spawn_red_assignment",
+      "server_ctf_spawn_blue_assignment",
+      "server_ctf_spawn_team_balance"
+    ]
+  },
+  "child_revisions": {
+    "stevenarella": {
+      "rev": "d9caec597041b3443d894701591752d23772e5ae",
+      "status": "clean"
+    },
+    "valence": {
+      "rev": "f40d6d6d5aeee300bdaeb406c475e2607ac3b6a7",
+      "status": "clean"
+    }
+  },
+  "claims": {
+    "scoreboard_team_packet_family_bounded": true,
+    "scoreboard_ui_parity": false,
+    "all_scoreboards": false,
+    "all_team_rules": false,
+    "objective_display_score_variants": false,
+    "full_ctf_correctness": false,
+    "full_protocol_compatibility": false,
+    "public_server_safety": false,
+    "production_readiness": false
+  },
+  "checker": "tools/check_scoreboard_team_packet_family.rs"
+}

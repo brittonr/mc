@@ -1,0 +1,23 @@
+$ nix run .#cairn -- archive promote-scoreboard-team-packet-family --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-scoreboard-team-packet-family",
+      "kind": "archive_change",
+      "path": "./cairn/changes/promote-scoreboard-team-packet-family"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-scoreboard-team-packet-family",
+  "dry_run": true,
+  "input_hash": "7c0a01c01d7e2a775b24e066ca3b0c749e8d4f4f948e873a9abc724f57cc7d13",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "6e4c2e2d679ae62bd70a22a76074e7f76045d8f7f21948210366094a9f5c4215",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "18f28326a5673a0a5e929d527fcb9022559dea0e7f1823e1a6ca8788da82121e"
+}
+exit_status=0

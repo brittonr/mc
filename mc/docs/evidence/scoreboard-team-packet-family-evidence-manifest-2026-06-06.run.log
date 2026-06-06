@@ -1,0 +1,6 @@
+$ nix build .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L
+this derivation will be built:
+  /nix/store/s3q103854w21x80c0xxk0i04rgq4l4ap-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/s3q103854w21x80c0xxk0i04rgq4l4ap-mc-compat-evidence-manifests.drv'...
+exit_status=0

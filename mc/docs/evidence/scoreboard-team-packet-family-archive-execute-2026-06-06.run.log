@@ -1,0 +1,92 @@
+$ CAIRN_ARCHIVE_DATE=2026-06-06 nix run .#cairn -- archive promote-scoreboard-team-packet-family --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-scoreboard-team-packet-family",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-06-promote-scoreboard-team-packet-family"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-scoreboard-team-packet-family",
+  "dry_run": false,
+  "input_hash": "7c0a01c01d7e2a775b24e066ca3b0c749e8d4f4f948e873a9abc724f57cc7d13",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "6d33e180c27df7c55e24d5d3f2d0c4a9b296d481e0914aef1ae9d47accd0c059",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-scoreboard-team-packet-family/design.md"
+        },
+        {
+          "content_hash": "cdc27d457fff4544b4bf76c7cfb732fb2dcd32f7bc651d6399fbd9ccf4f9006c",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-scoreboard-team-packet-family/proposal.md"
+        },
+        {
+          "content_hash": "0a44299dba6d00e7b62d0d453d300fabcf104504ae28f13452114ca7bc7af691",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-scoreboard-team-packet-family/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "469425f86a75b5474c56bd4ce9fe79033b22804b2272a863787be13e509165e4",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-scoreboard-team-packet-family/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/promote-scoreboard-team-packet-family"
+        }
+      ],
+      "manifest_hash": "a775949e2e12ed7b453588613b3600859957befeff4f7f3cf444603888ed9013"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "6d33e180c27df7c55e24d5d3f2d0c4a9b296d481e0914aef1ae9d47accd0c059",
+          "exists": true,
+          "path": "./cairn/changes/promote-scoreboard-team-packet-family/design.md"
+        },
+        {
+          "content_hash": "cdc27d457fff4544b4bf76c7cfb732fb2dcd32f7bc651d6399fbd9ccf4f9006c",
+          "exists": true,
+          "path": "./cairn/changes/promote-scoreboard-team-packet-family/proposal.md"
+        },
+        {
+          "content_hash": "0a44299dba6d00e7b62d0d453d300fabcf104504ae28f13452114ca7bc7af691",
+          "exists": true,
+          "path": "./cairn/changes/promote-scoreboard-team-packet-family/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "469425f86a75b5474c56bd4ce9fe79033b22804b2272a863787be13e509165e4",
+          "exists": true,
+          "path": "./cairn/changes/promote-scoreboard-team-packet-family/tasks.md"
+        }
+      ],
+      "manifest_hash": "307944730ff022814d18a1e70707bb2400db6571ac6c4519dc6629215a9cda7b"
+    },
+    "kind": "archive",
+    "manifest_hash": "48fc4f4ed4395794c8ca3ac55d4882a959f0e5d1e5e632f2aab24c316c09987c"
+  },
+  "plan_hash": "cf15fb2f4c7dea020ada0068cfc032ac08e29cb2a0567fceef8069ea7d14d0fa",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "dd3e138896b37842f7468f1e08953be4693d7d02bc31b6609746dfd573c9ef2f"
+}
+$ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 10,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 12,
+  "valid": true
+}
+exit_status=0

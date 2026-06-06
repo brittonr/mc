@@ -1,0 +1,23 @@
+$ nix build .#checks.x86_64-linux.mc-compat-scoreboard-team-packet-family-check .#checks.x86_64-linux.mc-compat-acceptance-matrix .#checks.x86_64-linux.mc-compat-current-evidence-bundle .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L
+these 4 derivations will be built:
+  /nix/store/bdyywjlfwb8asa9cxh0gz7hyadav1li8-mc-compat-scoreboard-team-packet-family-check.drv
+  /nix/store/pw4cphximlf7f6rfcrhf76ccfxwajmq4-mc-compat-acceptance-matrix.drv
+  /nix/store/pxy0ccbqipg1ar6ap18bjk147z2gj7bg-mc-compat-evidence-manifests.drv
+  /nix/store/wyg5929x9gkszwh2q1fkrd6kf92vk1gm-mc-compat-current-evidence-bundle.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/pw4cphximlf7f6rfcrhf76ccfxwajmq4-mc-compat-acceptance-matrix.drv'...
+building '/nix/store/wyg5929x9gkszwh2q1fkrd6kf92vk1gm-mc-compat-current-evidence-bundle.drv'...
+building '/nix/store/pxy0ccbqipg1ar6ap18bjk147z2gj7bg-mc-compat-evidence-manifests.drv'...
+building '/nix/store/bdyywjlfwb8asa9cxh0gz7hyadav1li8-mc-compat-scoreboard-team-packet-family-check.drv'...
+$ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 10,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 12,
+  "valid": true
+}
+exit_status=0

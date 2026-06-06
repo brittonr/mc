@@ -1,0 +1,6 @@
+$ rustc --edition=2021 tools/check_scoreboard_team_packet_family.rs -o target/check-scoreboard-team-packet-family
+$ target/check-scoreboard-team-packet-family --self-test
+self-test ok
+$ target/check-scoreboard-team-packet-family docs/evidence/scoreboard-team-packet-family-2026-06-06.kv
+docs/evidence/scoreboard-team-packet-family-2026-06-06.kv: ok
+exit_status=0

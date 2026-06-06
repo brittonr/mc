@@ -1,0 +1,34 @@
+$ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 11,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 13,
+  "valid": true
+}
+$ nix run .#cairn -- gate tasks promote-scoreboard-team-packet-family --root .
+{
+  "change": "promote-scoreboard-team-packet-family",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "de7f2581ab04483a316577d73dcce1c69f10235e46d0d383e9d7fde983fe6cea",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "d0544301486afe5a071bfe9f60e1963726950d3db95cd7a8ac4a9bcd07a4448a",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0

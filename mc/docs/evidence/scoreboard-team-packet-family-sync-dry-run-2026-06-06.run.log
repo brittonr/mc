@@ -1,0 +1,26 @@
+$ nix run .#cairn -- sync promote-scoreboard-team-packet-family --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/promote-scoreboard-team-packet-family/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/promote-scoreboard-team-packet-family/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-scoreboard-team-packet-family",
+  "delta_specs": [
+    "./cairn/changes/promote-scoreboard-team-packet-family/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "7c0a01c01d7e2a775b24e066ca3b0c749e8d4f4f948e873a9abc724f57cc7d13",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "09328d740c54e6af8946de8931b3747828cf05b3893a7957fcc2ff3ed0e3036c",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "18070c2828addd5a430e318477abc1a722edd0fbbbb4bffb76ce4798435de151"
+}
+exit_status=0

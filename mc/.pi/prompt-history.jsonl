@@ -1,0 +1,223 @@
+{"text":"write an AGENTS.md file for this dir and its subdirs","timestamp":1776127730289}
+{"text":"do that, and write skill for valence","timestamp":1776127972001}
+{"text":"what next","timestamp":1779892974621}
+{"text":"do it","timestamp":1779893147070}
+{"text":"what next","timestamp":1779893870525}
+{"text":"any open cairns?","timestamp":1779893975565}
+{"text":"drain them","timestamp":1779894300994}
+{"text":"what next","timestamp":1779896567778}
+{"text":"continue","timestamp":1779901900359}
+{"text":"what next","timestamp":1779904016310}
+{"text":"what next","timestamp":1779905053415}
+{"text":"what next","timestamp":1779914014592}
+{"text":"do we have other cairns to drain","timestamp":1779914450131}
+{"text":"do those","timestamp":1779914486399}
+{"text":"do it","timestamp":1779915676521}
+{"text":"what next","timestamp":1779915995860}
+{"text":"what next","timestamp":1779916519690}
+{"text":"do these","timestamp":1779916576227}
+{"text":"what next","timestamp":1779918058335}
+{"text":"do it","timestamp":1779918123767}
+{"text":"drain it","timestamp":1779919609289}
+{"text":"what next","timestamp":1779928143746}
+{"text":"do it","timestamp":1779928240716}
+{"text":"whats the current status of this repo","timestamp":1779928574688}
+{"text":"how can i run our version of stevenrella remotely using nix run","timestamp":1779928708342}
+{"text":"how can i do this with our remote","timestamp":1779928967264}
+{"text":"what hasn","timestamp":1779929116212}
+{"text":"what still needs to be proven between valanece and stevenarella","timestamp":1779929132093}
+{"text":"write cairns for all of these","timestamp":1779929323381}
+{"text":"go through and drain","timestamp":1779930030480}
+{"text":"do it","timestamp":1779930265295}
+{"text":"keep draining","timestamp":1779931814857}
+{"text":"continue draining","timestamp":1779932260031}
+{"text":"keep draining","timestamp":1779933994529}
+{"text":"what next","timestamp":1779935204956}
+{"text":"lets write a cairn for implementing configuration on all values we set. hotloading is better. im thinking steel scheme and or nickel lang","timestamp":1779935968618}
+{"text":"would steel be better for hotloading config? like lets say damage dealt by arrow","timestamp":1779936217601}
+{"text":"i think we should go with steel","timestamp":1779936360790}
+{"text":"continue","timestamp":1779936676077}
+{"text":"drain them","timestamp":1779938346801}
+{"text":"what next","timestamp":1779939428899}
+{"text":"what next","timestamp":1779940085429}
+{"text":"what next?","timestamp":1779940383571}
+{"text":"push","timestamp":1779940463844}
+{"text":"what next","timestamp":1779940908278}
+{"text":"do 1","timestamp":1779940977446}
+{"text":"what next","timestamp":1779941192380}
+{"text":"what next","timestamp":1779941400546}
+{"text":"do it","timestamp":1779941463240}
+{"text":"where we at","timestamp":1779942351107}
+{"text":"do those","timestamp":1779942381765}
+{"text":"do these","timestamp":1779942659584}
+{"text":"do it","timestamp":1779943447370}
+{"text":"what next","timestamp":1779944058393}
+{"text":"what works now what doesnt","timestamp":1779944270219}
+{"text":"do it","timestamp":1779944285658}
+{"text":"keep going","timestamp":1779944526989}
+{"text":"what next","timestamp":1779945548282}
+{"text":"keep working through this","timestamp":1779945758997}
+{"text":"what next for getting this to survival compat","timestamp":1779945888402}
+{"text":"do it","timestamp":1779946034216}
+{"text":"keep wrking until vanilla parity is reached","timestamp":1779946122318}
+{"text":"what next","timestamp":1779984535025}
+{"text":"its intened work.","timestamp":1779984615529}
+{"text":"commit and push","timestamp":1779986172237}
+{"text":"what next","timestamp":1779986451380}
+{"text":"what next?","timestamp":1779987674340}
+{"text":"whta is the status of this","timestamp":1779987985871}
+{"text":"what works and what doesnt yet","timestamp":1779988049080}
+{"text":"can we write cairns for these","timestamp":1779988133298}
+{"text":"begin draining","timestamp":1779988809001}
+{"text":"what next","timestamp":1779990393154}
+{"text":"what next","timestamp":1779993327913}
+{"text":"what next","timestamp":1779993759670}
+{"text":"do it","timestamp":1779994039961}
+{"text":"what next","timestamp":1779994889628}
+{"text":"do it","timestamp":1779995003673}
+{"text":"what next","timestamp":1779999084792}
+{"text":"continue","timestamp":1780008950017}
+{"text":"what next","timestamp":1780011233797}
+{"text":"what next","timestamp":1780011487804}
+{"text":"drain it","timestamp":1780011557841}
+{"text":"what next","timestamp":1780012306711}
+{"text":"what next","timestamp":1780013336146}
+{"text":"why isnt this done","timestamp":1780013812208}
+{"text":"what next","timestamp":1780014349824}
+{"text":"what next","timestamp":1780016481334}
+{"text":"what next","timestamp":1780016900013}
+{"text":"what next","timestamp":1780017150457}
+{"text":"keep going","timestamp":1780017464213}
+{"text":"what next","timestamp":1780020500167}
+{"text":"what next","timestamp":1780020632465}
+{"text":"do it","timestamp":1780020660672}
+{"text":"what next","timestamp":1780021029071}
+{"text":"do it","timestamp":1780021078641}
+{"text":"what next","timestamp":1780021589404}
+{"text":"do it","timestamp":1780021916616}
+{"text":"what next","timestamp":1780023360829}
+{"text":"do it then","timestamp":1780027147215}
+{"text":"make sure we dont use python or bash for checks and scripts. only rust and steel scheme","timestamp":1780027353357}
+{"text":"push","timestamp":1780027880616}
+{"text":"what next","timestamp":1780028388011}
+{"text":"do it","timestamp":1780028733107}
+{"text":"what next","timestamp":1780030864437}
+{"text":"do it","timestamp":1780031415253}
+{"text":"how can we improve our testing harness","timestamp":1780031625341}
+{"text":"write cairns for all","timestamp":1780031765932}
+{"text":"drain them","timestamp":1780032250034}
+{"text":"what next","timestamp":1780065420173}
+{"text":"do it","timestamp":1780065691478}
+{"text":"what next","timestamp":1780071477466}
+{"text":"what next","timestamp":1780076776400}
+{"text":"do it","timestamp":1780076881070}
+{"text":"drain the cairn","timestamp":1780077974509}
+{"text":"Gaps\n\n - No supplied artifact proves all negative preflight\n rejection fixtures required by the completed task.\n - No supplied validation log/checkpoint substantiates the\n full final validation matrix beyond cairn validate.\n - Live evidence should include explicit observed outcome\n fields or server/client milestones for\n rejection/restoration/containment, not only expected outcome\n plus injection milestone.\n\n Next Steps\n\n - Add/check in evidence for each fail-closed rejection case\n named in the task.\n - Add observed outcome fields/milestones to negative rail\n receipts.\n - Add a repo-local validation checkpoint for the final\n test/build/evidence claims.\n\n Promotion Hints\n\n - repeated 9x [class=omission] [scope=tasks] [route=prompt]\n     - Suggestion: Promote into OpenSpec\n rule/template/stage-gate check.\n     - Task: Strengthen OpenSpec tasks gate/template to block\n repeated omission findings. Example trigger: Archived task\n note overclaims the live receipt\n     - Sources: done-review=9","timestamp":1780083164793}
+{"text":"continue","timestamp":1780088912831}
+{"text":"what next","timestamp":1780089543586}
+{"text":"what next","timestamp":1780089867555}
+{"text":"do it","timestamp":1780090637360}
+{"text":"what next","timestamp":1780091838268}
+{"text":"do it","timestamp":1780092451136}
+{"text":"whats the level of compatability between stevenrella and valence","timestamp":1780093176894}
+{"text":"what next","timestamp":1780093690248}
+{"text":"write cairns for all","timestamp":1780093828853}
+{"text":"what other cairns need to be written","timestamp":1780094313682}
+{"text":"write cairns for all","timestamp":1780094557202}
+{"text":"what other cairns need to be written","timestamp":1780095371514}
+{"text":"write cairns for them","timestamp":1780095644965}
+{"text":"start draining the cairns","timestamp":1780096134001}
+{"text":"keep going","timestamp":1780097996071}
+{"text":"keep going","timestamp":1780099814134}
+{"text":"what next","timestamp":1780109604548}
+{"text":"drain it","timestamp":1780109917117}
+{"text":"what next","timestamp":1780111903606}
+{"text":"what next","timestamp":1780112509959}
+{"text":"what next","timestamp":1780113496848}
+{"text":"drain it","timestamp":1780114266245}
+{"text":"what next","timestamp":1780116094454}
+{"text":"what next","timestamp":1780116297551}
+{"text":"do it","timestamp":1780117125880}
+{"text":"what next","timestamp":1780157402273}
+{"text":"do these","timestamp":1780158131325}
+{"text":"how do i use this","timestamp":1780172327503}
+{"text":"what next","timestamp":1780172416367}
+{"text":"do it","timestamp":1780172973261}
+{"text":"commit the flake updates","timestamp":1780173363145}
+{"text":"can we make sure we can nix run valence and stevenarella","timestamp":1780173616260}
+{"text":"what next","timestamp":1780174315531}
+{"text":"push","timestamp":1780175255185}
+{"text":"howdo i run this","timestamp":1780175323338}
+{"text":"how can we make this easier to deploy with nix","timestamp":1780175534728}
+{"text":"i dont want to d a nixosmodule yet","timestamp":1780175600197}
+{"text":"what if i want torun the client and a server","timestamp":1780175741197}
+{"text":"conitnue","timestamp":1780176158128}
+{"text":"do it","timestamp":1780177189628}
+{"text":"what nxt","timestamp":1780191755799}
+{"text":"do it","timestamp":1780192338444}
+{"text":"do it","timestamp":1780194870131}
+{"text":"how can we modify stevenarella so that we can control it via mcp and capture screenshots, frames, etc","timestamp":1780196733225}
+{"text":"write cairns for this","timestamp":1780197171264}
+{"text":"what next","timestamp":1780198678903}
+{"text":"what next","timestamp":1780198941878}
+{"text":"do it","timestamp":1780199007652}
+{"text":"what next","timestamp":1780199440757}
+{"text":"do it","timestamp":1780200302478}
+{"text":"Gaps\n\n - No real stdio MCP transport startup.\n - No TCP listener/bind for loopback or token-gated\n non-loopback.\n - Invalid CLI transport configuration exits successfully.\n - Validation only covers cargo fmt --check and cargo test\n --lib mcp -- --nocapture; no integration/CLI behavior check\n is shown.\n\n Next Steps\n\n - Revert the transport task checkbox to [ ] or implement\n actual stdio/TCP transport wiring.\n - Make invalid MCP transport options exit nonzero.\n - Add verification that CLI invalid transport configuration\n fails with nonzero status.\n──────────────────────────────────────────────","timestamp":1780200750377}
+{"text":"Gaps\n\n - Implement request/connection-level token enforcement for\n non-loopback TCP or narrow the task/spec wording.\n - Add a runtime test proving unauthenticated non-loopback\n TCP access is rejected and authenticated access works.\n - Strengthen stdio test to assert the JSON-RPC output, not\n just thread startup.\n\n Next Steps\n\n - Enforce TcpAuth in the TCP accept/request path.\n - Add non-loopback token-gate runtime tests.\n - Keep/revert the transport task checkbox until token gating\n is actually implemented and verified.\n\n Promotion Hints\n\n - repeated 3x [class=omission] [scope=test] [route=auto-fix]\n     - Suggestion: Promote into deterministic rail: test,\n lint, TigerStyle audit, compile-time check, or proof\n obligation.\n     - Task: Add deterministic rail for repeated omission\n findings in test: test, lint, TigerStyle audit, compile-time\n check, or proof. Example trigger: missing_metric fixture\n does not test the claimed diagnostic\n     - Sources: done-review=3\n - repeated 2x [class=omission] [scope=code] [route=auto-fix]\n     - Suggestion: Promote into deterministic rail: test,\n lint, TigerStyle audit, compile-time check, or proof\n obligation.\n     - Task: Add deterministic rail for repeated omission\n findings in code: test, lint, TigerStyle audit, compile-time\n check, or proof. Example trigger: Invalid MCP options reject\n startup with exit status 0\n     - Sources: done-review=2","timestamp":1780201854512}
+{"text":"do it","timestamp":1780203551003}
+{"text":"Gaps\n\n - Artifact task remains open.\n - Broader mc-compat-cairn-task-evidence gate remains\n failing.\n - No archive/sync should be expected while the artifact task\n is still open.\n\n Next Steps\n\n - Either complete the artifact task by resolving/recording\n the task-evidence gate status as required, or stop claiming\n “Done.”\n - Correct the recorded cargo test --lib mcp count from 27 to\n 28 where applicable.","timestamp":1780204349353}
+{"text":"how can we harden and improve our test harness coverage","timestamp":1780206348435}
+{"text":"do it","timestamp":1780206421332}
+{"text":"continue","timestamp":1780242662587}
+{"text":"keep going","timestamp":1780243104918}
+{"text":"continue","timestamp":1780243586207}
+{"text":"what next","timestamp":1780243949992}
+{"text":"begin","timestamp":1780243997803}
+{"text":"Gaps\n\n - No dedicated digest type despite task text.\n - Final response commit metadata is inconsistent with\n transcript evidence.\n\n Next Steps\n\n - Add a pure digest type, e.g. Blake3DigestHex, and use it\n in artifact metadata or planning as appropriate.\n - Update tests/evidence and only then keep task 1 marked\n [x].\n - Correct the reported parent evidence commit to 4f75ea4.\n\n Promotion Hints\n\n - repeated 7x [class=omission] [scope=tasks]\n [route=auto-fix]\n     - Suggestion: Promote into OpenSpec\n rule/template/stage-gate check.\n     - Task: Strengthen OpenSpec tasks gate/template to block\n repeated omission findings. Example trigger: Parser-shape\n fixture task is marked done without real fixtures\n     - Sources: done-review=7\n - repeated 6x [class=incoherent] [scope=review]\n [route=prompt]\n     - Suggestion: Repeated soft finding: tighten prompt\n guidance now, then promote into a spec rule or deterministic\n check if repeats continue.\n     - Task: Tighten reviewer/prompt guidance for repeated\n incoherent findings, then promote to a spec rule or\n deterministic check if it persists. Example trigger: Final\n evidence doc still points to removed active-change path\n checkpoint: required for future completion claims unless a\n concrete blocker is reported instead\n     - Sources: done-review=6\n──────────────────────────────────────────────────────","timestamp":1780244521594}
+{"text":"continue","timestamp":1780245684559}
+{"text":"Gaps\n\n - Missing oracle checkpoint owner blocks accepting “Oracle\n gap fixed.”\n - Validation success is supported by task 148 logs, but that\n does not cover the missing owner requirement.\n\n Next Steps\n\n - Add an owner field/section to\n mc/docs/evidence/stevenarella-frame-capture-contract-task-or\n acle-2026-05-31.md.\n - Regenerate/update\n mc/docs/evidence/stevenarella-frame-capture-contract-task-or\n acle-2026-05-31.b3.\n - Rerun the same evidence/task gates.\n\n Promotion Hints\n\n - repeated 7x [class=incoherent] [scope=review]\n [route=prompt]\n     - Suggestion: Repeated soft finding: tighten prompt\n guidance now, then promote into a spec rule or deterministic\n check if repeats continue.\n     - Task: Tighten reviewer/prompt guidance for repeated\n incoherent findings, then promote to a spec rule or\n deterministic check if it persists. Example trigger: Final\n evidence doc still points to removed active-change path\n checkpoint: required for future completion claims unless a\n concrete blocker is reported instead\n     - Sources: done-review=7","timestamp":1780245970758}
+{"text":"what next","timestamp":1780246240442}
+{"text":"do it","timestamp":1780246338167}
+{"text":"continue","timestamp":1780246885693}
+{"text":"continue","timestamp":1780249437785}
+{"text":"commit and push","timestamp":1780250215673}
+{"text":"do it","timestamp":1780252060266}
+{"text":"continue","timestamp":1780252973797}
+{"text":"what next","timestamp":1780253957220}
+{"text":"do it","timestamp":1780254288765}
+{"text":"what next","timestamp":1780255569423}
+{"text":"what next","timestamp":1780255802359}
+{"text":"do it","timestamp":1780255825060}
+{"text":"what next","timestamp":1780256704651}
+{"text":"do it","timestamp":1780257075781}
+{"text":"hat next","timestamp":1780264260010}
+{"text":"move any python gate to rust","timestamp":1780266094626}
+{"text":"Gaps\n\n - No complete inventory of Python gates is shown.\n - No checkpoint justifies leaving remaining Python\n gate/checker files unmigrated.\n - Evidence manifest mutation for an older survival parity\n sync bundle is ambiguous and needs human decision.\n\n Next Steps\n\n - Migrate remaining Python gates or document an oracle\n checkpoint approving explicit exemptions.\n - Do not rewrite historical evidence manifests without a\n checkpoint explaining the evidence-integrity decision.\n - Correct the final evidence count claim or regenerate the\n run log/manifest consistently.","timestamp":1780267565789}
+{"text":"Gaps\n\n - Missing repo-local captured Nix build output.\n - The completion claim “capture successful nix build\n completion” is not fully supported by the committed evidence\n file.\n - No OpenSpec sync/archive issue applies from the supplied\n evidence.\n\n Next Steps\n\n - Regenerate\n mc/docs/evidence/protocol-763-python-gate-rust-migration-nix\n -build-2026-05-31.run.log by capturing full nix build ... -L\n  stdout/stderr plus exit_status=0.\n - Refresh\n mc/docs/evidence/protocol-763-python-gate-rust-migration-202\n 6-05-31.b3.\n - Rerun manifest validation and Cairn validation.\n\n Promotion Hints\n\n - repeated 9x [class=incoherent] [scope=review]\n [route=prompt]\n     - Suggestion: Repeated soft finding: tighten prompt\n guidance now, then promote into a spec rule or deterministic\n check if repeats continue.\n     - Task: Tighten reviewer/prompt guidance for repeated\n incoherent findings, then promote to a spec rule or\n deterministic check if it persists. Example trigger: Final\n evidence doc still points to removed active-change path\n checkpoint: required for future completion claims unless a\n concrete blocker is reported instead\n     - Sources: done-review=9\n - repeated 4x [class=omission] [scope=review]\n [route=deterministic-check]\n     - Suggestion: Promote into deterministic rail: test,\n lint, TigerStyle audit, compile-time check, or proof\n obligation.\n     - Task: Add deterministic rail for repeated omission\n findings in review: test, lint, TigerStyle audit,\n compile-time check, or proof. Example trigger: Final\n “evidence manifests passed” claim is not justified after\n archive\n     - Sources: done-review=4","timestamp":1780270594369}
+{"text":"Gaps\n\n - Passing validation output is not reviewable from the\n supplied evidence despite the final response claiming\n validation passed.\n - Live artifacts task remains blocked: no frame artifacts\n were produced; receipt reports\n frame_artifacts.selected=false, artifact_count=0,\n promotion_ready=false.\n\n Next Steps\n\n - Re-run and capture passing validation logs, or amend the\n report to say validation evidence is unavailable/failed.\n - Implement live mcp-controlled-smoke runner path, then\n rerun the owned-local live command and copy passing\n receipt/log/frame artifacts.\n\n Promotion Hints\n\n - repeated 2x [class=overclaim] [scope=review] [route=human]\n     - Suggestion: Promote into explicit human/oracle\n escalation checkpoint or decision note.\n     - Task: Add explicit oracle/human checkpoint for\n repeated overclaim findings in review. Example trigger:\n “Repo clean” claim is not evidenced checkpoint: required for\n future completion claims unless a concrete blocker is\n reported instead\n     - Sources: done-review=2","timestamp":1780272515870}
+{"text":"continue","timestamp":1780277799998}
+{"text":"what next","timestamp":1780280291885}
+{"text":"where we at","timestamp":1780282396195}
+{"text":"begin on the next","timestamp":1780282735126}
+{"text":"are we survival yet","timestamp":1780284053679}
+{"text":"write cairns for these","timestamp":1780284207393}
+{"text":"drain the cairns","timestamp":1780337897109}
+{"text":"keep draining","timestamp":1780339100376}
+{"text":"continue working","timestamp":1780340451429}
+{"text":"with stevenarella client, im spawning under the map. with regular client is spawn correctly for ctf","timestamp":1780344634764}
+{"text":"lets keep draining","timestamp":1780350947944}
+{"text":"keep draining cairns until all our empty","timestamp":1780352758322}
+{"text":"what next","timestamp":1780365834866}
+{"text":"begin","timestamp":1780366065607}
+{"text":"Gaps\n\n - No supplied verification logs for the claimed Rust, Valence, Stevenarella, Nix,\n manifest, or Cairn PASS results.\n - No paired live Paper/Valence receipts; assistant acknowledged this as not done.\n - No oracle checkpoint despite review-critical missing evidence.\n - Paper fixture milestones may be satisfiable without an actual reconnect or\n verified persisted furnace state.\n\n Next Steps\n\n - Add a repo-local oracle checkpoint for the missing validation evidence, or provide\n the actual local logs/receipts.\n - Tighten Paper fixture reconnect detection before emitting\n survival_furnace_reconnect_reopen.\n - Verify furnace state slots before emitting survival_furnace_server_state.\n\n Promotion Hints\n\n - repeated 5x [class=omission] [scope=code] [route=auto-fix]\n     - Suggestion: Promote into deterministic rail: test, lint, TigerStyle audit,\n compile-time check, or proof obligation.\n     - Task: Add deterministic rail for repeated omission findings in code: test,\n lint, TigerStyle audit, compile-time check, or proof. Example trigger: Invalid MCP\n options reject startup with exit status 0\n     - Sources: done-review=5\n - repeated 3x [class=pattern] [scope=code] [route=prompt]\n     - Suggestion: Promote into deterministic rail: test, lint, TigerStyle audit,\n compile-time check, or proof obligation.\n     - Task: Add deterministic rail for repeated pattern findings in code: test,\n lint, TigerStyle audit, compile-time check, or proof. Example trigger: Broad-covered\n status is driven by a hard-coded key set, not verified fixture evidence\n     - Sources: done-review=3","timestamp":1780368180256}
+{"text":"keep draining cairns","timestamp":1780369199166}
+{"text":"keep draining cairns","timestamp":1780411121630}
+{"text":"how can we fix textures and assets in stevenarella","timestamp":1780412736574}
+{"text":"add the 1.20 compat fixes too","timestamp":1780413188697}
+{"text":"what next","timestamp":1780416620050}
+{"text":"what next","timestamp":1780417655598}
+{"text":"keep draining cairns","timestamp":1780418249198}
+{"text":"continue","timestamp":1780432650833}
+{"text":"Gaps\n\n - No reliable proof that Paper world block state persisted through actual world\n storage.\n - Stale manifest metadata says the row is not promoted after the archive claims\n promotion.\n - Some archived task evidence is not reviewable from supplied paths.\n\n Next Steps\n\n - Replace marker-driven Paper persistence with verification of actual world/block\n storage across restart.\n - Log clean shutdown/restart milestones only from actual orchestration evidence.\n - Update scenario-manifest.ncl promotion fields after archive.\n - Add a repo-local oracle checkpoint or include the missing task evidence files.\n\n Promotion Hints\n\n - repeated 2x [class=incoherent] [scope=spec] [route=auto-fix]\n     - Suggestion: Promote into OpenSpec rule/template/stage-gate check.\n     - Task: Strengthen OpenSpec spec gate/template to block repeated incoherent\n findings. Example trigger: Matrix rows do not include the receipt paths required by\n the archived spec\n     - Sources: done-review=2\n - repeated 2x [class=systematic] [scope=code] [route=auto-fix]\n     - Suggestion: Promote into deterministic rail: test, lint, TigerStyle audit,\n compile-time check, or proof obligation.\n     - Task: Add deterministic rail for repeated systematic findings in code: test,\n lint, TigerStyle audit, compile-time check, or proof. Example trigger: Nix check\n validates a partial repo, not all repo-local manifest targets\n     - Sources: done-review=2","timestamp":1780440676692}
+{"text":"Gaps\n\n - No reliable proof that Paper world block state persisted through actual world\n storage.\n - Stale manifest metadata says the row is not promoted after the archive claims\n promotion.\n - Some archived task evidence is not reviewable from supplied paths.\n\n Next Steps\n\n - Replace marker-driven Paper persistence with verification of actual world/block\n storage across restart.\n - Log clean shutdown/restart milestones only from actual orchestration evidence.\n - Update scenario-manifest.ncl promotion fields after archive.\n - Add a repo-local oracle checkpoint or include the missing task evidence files.\n\n Promotion Hints\n\n - repeated 2x [class=incoherent] [scope=spec] [route=auto-fix]\n     - Suggestion: Promote into OpenSpec rule/template/stage-gate check.\n     - Task: Strengthen OpenSpec spec gate/template to block repeated incoherent\n findings. Example trigger: Matrix rows do not include the receipt paths required by\n the archived spec\n     - Sources: done-review=2\n - repeated 2x [class=systematic] [scope=code] [route=auto-fix]\n     - Suggestion: Promote into deterministic rail: test, lint, TigerStyle audit,\n compile-time check, or proof obligation.\n     - Task: Add deterministic rail for repeated systematic findings in code: test,\n lint, TigerStyle audit, compile-time check, or proof. Example trigger: Nix check\n validates a partial repo, not all repo-local manifest targets\n     - Sources: done-review=2","timestamp":1780440759555}

@@ -1,0 +1,60 @@
+$ nix run .#cairn -- sync promote-scoreboard-team-packet-family --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/promote-scoreboard-team-packet-family/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/promote-scoreboard-team-packet-family/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-scoreboard-team-packet-family",
+  "delta_specs": [
+    "./cairn/changes/promote-scoreboard-team-packet-family/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "7c0a01c01d7e2a775b24e066ca3b0c749e8d4f4f948e873a9abc724f57cc7d13",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "b4ef9d56b820cbecdfe890e979d8fdb4956025fc91929ca7d905f901b136fbd6",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "9f0253d95de25f0b3a062cf00846e479ed00a182c19b0e1eefffceed844238fb"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "b4ef9d56b820cbecdfe890e979d8fdb4956025fc91929ca7d905f901b136fbd6",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "9f0253d95de25f0b3a062cf00846e479ed00a182c19b0e1eefffceed844238fb"
+    },
+    "kind": "sync",
+    "manifest_hash": "5d61757415aa15782cbeff6325a842317c1cd183bbe90857d222f81743447d31"
+  },
+  "plan_hash": "95bd07fedeeb84a011a517d544768dd79510b46c2df12254d57a27d82b961c23",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "02b31f24ede7ed3168ca9135020769343146247ddf8dfef9399e8ea82be11103"
+}
+$ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 11,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 13,
+  "valid": true
+}
+exit_status=0

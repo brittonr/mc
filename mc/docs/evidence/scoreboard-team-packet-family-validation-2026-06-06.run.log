@@ -1,0 +1,10 @@
+$ nix build .#checks.x86_64-linux.mc-compat-scoreboard-team-packet-family-check .#checks.x86_64-linux.mc-compat-acceptance-matrix .#checks.x86_64-linux.mc-compat-current-evidence-bundle --no-link -L
+these 3 derivations will be built:
+  /nix/store/lpnn5rp7nmibmkx6q0fg7jsm12kgc587-mc-compat-scoreboard-team-packet-family-check.drv
+  /nix/store/nw108c1b5mfms8z5527gv7y9v79ykpfc-mc-compat-current-evidence-bundle.drv
+  /nix/store/q0pqhbv6rvw938p0hdyhpmmcnspb65wx-mc-compat-acceptance-matrix.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/q0pqhbv6rvw938p0hdyhpmmcnspb65wx-mc-compat-acceptance-matrix.drv'...
+building '/nix/store/nw108c1b5mfms8z5527gv7y9v79ykpfc-mc-compat-current-evidence-bundle.drv'...
+building '/nix/store/lpnn5rp7nmibmkx6q0fg7jsm12kgc587-mc-compat-scoreboard-team-packet-family-check.drv'...
+exit_status=0
