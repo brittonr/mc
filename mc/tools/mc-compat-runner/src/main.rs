@@ -524,6 +524,100 @@ enum ServerBackend {
     Paper,
 }
 
+const VALENCE_DEFAULT_SERVER_PORT: u16 = 25565;
+const PAPER_DEFAULT_SERVER_PORT: u16 = 25566;
+
+struct ValenceRuntime;
+struct PaperRuntime;
+
+static VALENCE_RUNTIME: ValenceRuntime = ValenceRuntime;
+static PAPER_RUNTIME: PaperRuntime = PaperRuntime;
+
+trait ServerRuntime {
+    fn name(&self) -> &'static str;
+    fn default_port(&self) -> u16;
+    fn start(&self, cfg: &Config) -> Result<ManagedServer, String>;
+    fn stop(&self, cfg: &Config) -> Result<(), String>;
+    fn force_stop(&self, cfg: &Config) -> Result<(), String>;
+    fn log_label(&self, cfg: &Config) -> String;
+    fn read_log(&self, cfg: &Config) -> Result<String, String>;
+}
+
+impl ServerBackend {
+    fn runtime(self) -> &'static dyn ServerRuntime {
+        match self {
+            ServerBackend::Valence => &VALENCE_RUNTIME,
+            ServerBackend::Paper => &PAPER_RUNTIME,
+        }
+    }
+}
+
+impl ServerRuntime for ValenceRuntime {
+    fn name(&self) -> &'static str {
+        "valence"
+    }
+
+    fn default_port(&self) -> u16 {
+        VALENCE_DEFAULT_SERVER_PORT
+    }
+
+    fn start(&self, cfg: &Config) -> Result<ManagedServer, String> {
+        start_valence_server(cfg)
+    }
+
+    fn stop(&self, cfg: &Config) -> Result<(), String> {
+        stop_valence_server(cfg)
+    }
+
+    fn force_stop(&self, cfg: &Config) -> Result<(), String> {
+        force_stop_valence_server(cfg)
+    }
+
+    fn log_label(&self, cfg: &Config) -> String {
+        cfg.valence_log.display().to_string()
+    }
+
+    fn read_log(&self, cfg: &Config) -> Result<String, String> {
+        read_valence_log(cfg)
+    }
+}
+
+impl ServerRuntime for PaperRuntime {
+    fn name(&self) -> &'static str {
+        "paper"
+    }
+
+    fn default_port(&self) -> u16 {
+        PAPER_DEFAULT_SERVER_PORT
+    }
+
+    fn start(&self, cfg: &Config) -> Result<ManagedServer, String> {
+        start_paper_server(cfg)?;
+        Ok(ManagedServer {
+            child: None,
+            pid_file: cfg.valence_pid_file.clone(),
+            paper_container: Some(cfg.server_name.clone()),
+            keep: cfg.keep_server || cfg.mode == Mode::DryRun,
+        })
+    }
+
+    fn stop(&self, cfg: &Config) -> Result<(), String> {
+        stop_paper_server(cfg)
+    }
+
+    fn force_stop(&self, cfg: &Config) -> Result<(), String> {
+        force_stop_paper_server(cfg)
+    }
+
+    fn log_label(&self, cfg: &Config) -> String {
+        format!("docker logs {}", cfg.server_name)
+    }
+
+    fn read_log(&self, cfg: &Config) -> Result<String, String> {
+        read_paper_log(cfg)
+    }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Scenario {
     Smoke,
@@ -4122,10 +4216,7 @@ fn client_health_needle(health_after: &str) -> String {
 }
 
 fn default_port(backend: ServerBackend) -> u16 {
-    match backend {
-        ServerBackend::Valence => 25565,
-        ServerBackend::Paper => 25566,
-    }
+    backend.runtime().default_port()
 }
 
 fn default_arrow_damage_policy() -> runtime_config::ArrowDamagePolicy {
@@ -4262,32 +4353,15 @@ fn ensure_client_dir_ready(cfg: &Config) -> Result<(), String> {
 }
 
 fn start_server(cfg: &Config) -> Result<ManagedServer, String> {
-    match cfg.server_backend {
-        ServerBackend::Valence => start_valence_server(cfg),
-        ServerBackend::Paper => {
-            start_paper_server(cfg)?;
-            Ok(ManagedServer {
-                child: None,
-                pid_file: cfg.valence_pid_file.clone(),
-                paper_container: Some(cfg.server_name.clone()),
-                keep: cfg.keep_server || cfg.mode == Mode::DryRun,
-            })
-        }
-    }
+    cfg.server_backend.runtime().start(cfg)
 }
 
 fn stop_server(cfg: &Config) -> Result<(), String> {
-    match cfg.server_backend {
-        ServerBackend::Valence => stop_valence_server(cfg),
-        ServerBackend::Paper => stop_paper_server(cfg),
-    }
+    cfg.server_backend.runtime().stop(cfg)
 }
 
 fn force_stop_server(cfg: &Config) -> Result<(), String> {
-    match cfg.server_backend {
-        ServerBackend::Valence => force_stop_valence_server(cfg),
-        ServerBackend::Paper => force_stop_paper_server(cfg),
-    }
+    cfg.server_backend.runtime().force_stop(cfg)
 }
 
 fn force_stop_valence_server(cfg: &Config) -> Result<(), String> {
@@ -4739,10 +4813,10 @@ fn start_valence_server(cfg: &Config) -> Result<ManagedServer, String> {
             keep: true,
         });
     }
-    if cfg.server_port != 25565 {
+    if cfg.server_port != VALENCE_DEFAULT_SERVER_PORT {
         log(format_args!(
-            "warning: Valence revision {} defaults to 127.0.0.1:25565; SERVER_PORT={} may only work if the example overrides Config::address",
-            cfg.valence_rev, cfg.server_port
+            "warning: Valence revision {} defaults to 127.0.0.1:{}; SERVER_PORT={} may only work if the example overrides Config::address",
+            cfg.valence_rev, VALENCE_DEFAULT_SERVER_PORT, cfg.server_port
         ));
     }
     stop_valence_server(cfg)?;
@@ -5581,10 +5655,7 @@ fn world_persistence_artifact_dir_name(scenario: Scenario) -> &'static str {
 }
 
 fn world_persistence_state_dir(cfg: &Config, backend: ServerBackend) -> PathBuf {
-    let backend_name = match backend {
-        ServerBackend::Valence => "valence",
-        ServerBackend::Paper => "paper",
-    };
+    let backend_name = backend_name(backend);
     cfg.root
         .join("target")
         .join(world_persistence_artifact_dir_name(cfg.scenario))
@@ -5592,10 +5663,7 @@ fn world_persistence_state_dir(cfg: &Config, backend: ServerBackend) -> PathBuf 
 }
 
 fn world_persistence_restart_phase_path(cfg: &Config) -> PathBuf {
-    let backend_name = match cfg.server_backend {
-        ServerBackend::Valence => "valence",
-        ServerBackend::Paper => "paper",
-    };
+    let backend_name = backend_name(cfg.server_backend);
     cfg.root
         .join("target")
         .join(format!(
@@ -6577,20 +6645,14 @@ fn planned_client_usernames(cfg: &Config) -> Vec<String> {
 }
 
 fn server_log_label(cfg: &Config) -> String {
-    match cfg.server_backend {
-        ServerBackend::Valence => cfg.valence_log.display().to_string(),
-        ServerBackend::Paper => format!("docker logs {}", cfg.server_name),
-    }
+    cfg.server_backend.runtime().log_label(cfg)
 }
 
 fn read_server_scenario_evidence(
     cfg: &Config,
     runs: &[SingleClientRun],
 ) -> Result<Option<ServerScenarioEvidence>, String> {
-    let server_log = match cfg.server_backend {
-        ServerBackend::Valence => read_valence_log(cfg)?,
-        ServerBackend::Paper => read_paper_log(cfg)?,
-    };
+    let server_log = cfg.server_backend.runtime().read_log(cfg)?;
     let mut correlation_log = server_log;
     if uses_isolated_restart_storage(cfg.scenario) {
         correlation_log.push('\n');
@@ -6613,10 +6675,7 @@ fn read_server_scenario_evidence(
 }
 
 fn world_persistence_pre_restart_server_log_path(cfg: &Config) -> PathBuf {
-    let backend_name = match cfg.server_backend {
-        ServerBackend::Valence => "valence",
-        ServerBackend::Paper => "paper",
-    };
+    let backend_name = backend_name(cfg.server_backend);
     cfg.root
         .join("target")
         .join(format!(
@@ -6627,10 +6686,7 @@ fn world_persistence_pre_restart_server_log_path(cfg: &Config) -> PathBuf {
 }
 
 fn write_world_persistence_pre_restart_server_log(cfg: &Config) -> Result<(), String> {
-    let text = match cfg.server_backend {
-        ServerBackend::Valence => read_valence_log(cfg)?,
-        ServerBackend::Paper => read_paper_log(cfg)?,
-    };
+    let text = cfg.server_backend.runtime().read_log(cfg)?;
     let path = world_persistence_pre_restart_server_log_path(cfg);
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent).map_err(|e| format!("create {}: {e}", parent.display()))?;
@@ -8992,10 +9048,7 @@ fn mode_name(mode: Mode) -> &'static str {
 }
 
 fn backend_name(backend: ServerBackend) -> &'static str {
-    match backend {
-        ServerBackend::Valence => "valence",
-        ServerBackend::Paper => "paper",
-    }
+    backend.runtime().name()
 }
 
 fn json_optional_string(value: Option<&str>) -> String {
@@ -9495,9 +9548,82 @@ mod tests {
         assert_eq!(cfg.valence_repo, PathBuf::from("/workspace/mc/valence"));
         assert_eq!(cfg.server_backend, ServerBackend::Valence);
         assert_eq!(cfg.server_protocol, DEFAULT_SERVER_PROTOCOL);
-        assert_eq!(cfg.server_port, 25565);
+        assert_eq!(cfg.server_port, VALENCE_DEFAULT_SERVER_PORT);
         assert_eq!(cfg.valence_rev, DEFAULT_VALENCE_REV);
         assert_eq!(cfg.mode, Mode::DryRun);
+    }
+
+    #[test]
+    fn backend_runtime_dispatch_preserves_pure_facts_and_log_labels() {
+        let valence = test_config(&[], &[]).expect("default config parses");
+        let paper =
+            test_config(&["--server-backend=paper"], &[]).expect("paper backend config parses");
+
+        assert_eq!(backend_name(ServerBackend::Valence), "valence");
+        assert_eq!(backend_name(ServerBackend::Paper), "paper");
+        assert_eq!(
+            default_port(ServerBackend::Valence),
+            VALENCE_DEFAULT_SERVER_PORT
+        );
+        assert_eq!(
+            default_port(ServerBackend::Paper),
+            PAPER_DEFAULT_SERVER_PORT
+        );
+        assert_eq!(
+            server_log_label(&valence),
+            valence.valence_log.display().to_string()
+        );
+        assert_eq!(
+            server_log_label(&paper),
+            format!("docker logs {}", paper.server_name)
+        );
+        assert!(
+            world_persistence_state_dir(&valence, ServerBackend::Valence)
+                .display()
+                .to_string()
+                .contains("valence"),
+            "Valence persistence path uses stable backend name"
+        );
+        assert!(
+            world_persistence_state_dir(&paper, ServerBackend::Paper)
+                .display()
+                .to_string()
+                .contains("paper"),
+            "Paper persistence path uses stable backend name"
+        );
+    }
+
+    #[test]
+    fn backend_runtime_dry_run_lifecycle_uses_expected_managed_server_shape() {
+        let temp_root =
+            std::env::temp_dir().join(format!("mc-compat-backend-runtime-{}", std::process::id()));
+        let _ = fs::remove_dir_all(&temp_root);
+        fs::create_dir_all(&temp_root).expect("create backend runtime temp root");
+
+        let mut valence = test_config(&[], &[]).expect("default config parses");
+        valence.valence_repo = temp_root.join("valence-repo");
+        valence.valence_worktree = temp_root.join("valence-worktree");
+        valence.valence_pid_file = temp_root.join("valence.pid");
+        fs::create_dir_all(&valence.valence_repo).expect("create fake Valence repo");
+        let valence_server = start_server(&valence).expect("Valence dry-run lifecycle starts");
+        assert!(valence_server.child.is_none());
+        assert!(valence_server.paper_container.is_none());
+        assert_eq!(valence_server.pid_file, valence.valence_pid_file);
+        assert!(valence_server.keep);
+
+        let mut paper =
+            test_config(&["--server-backend=paper"], &[]).expect("paper backend config parses");
+        paper.valence_pid_file = temp_root.join("paper.pid");
+        let paper_server = start_server(&paper).expect("Paper dry-run lifecycle starts");
+        assert!(paper_server.child.is_none());
+        assert_eq!(
+            paper_server.paper_container.as_deref(),
+            Some(paper.server_name.as_str())
+        );
+        assert_eq!(paper_server.pid_file, paper.valence_pid_file);
+        assert!(paper_server.keep);
+
+        let _ = fs::remove_dir_all(&temp_root);
     }
 
     #[test]
@@ -9520,7 +9646,7 @@ mod tests {
 
         assert_eq!(cfg.mode, Mode::Run);
         assert_eq!(cfg.server_backend, ServerBackend::Paper);
-        assert_eq!(cfg.server_port, 25566);
+        assert_eq!(cfg.server_port, PAPER_DEFAULT_SERVER_PORT);
         assert_eq!(cfg.client_dir, PathBuf::from("/tmp/editable-stevenarella"));
         assert_eq!(cfg.receipt_path, Some(PathBuf::from("/tmp/mc-smoke.json")));
         assert_eq!(cfg.valence_repo, PathBuf::from("/tmp/editable-valence"));
@@ -9550,10 +9676,10 @@ mod tests {
         let valence =
             matrix_backend_config(&cfg, ServerBackend::Valence, PathBuf::from("valence.json"));
         assert_eq!(paper.mode, Mode::DryRun);
-        assert_eq!(paper.server_port, 25566);
+        assert_eq!(paper.server_port, PAPER_DEFAULT_SERVER_PORT);
         assert_eq!(paper.receipt_path, Some(PathBuf::from("paper.json")));
         assert_eq!(valence.mode, Mode::DryRun);
-        assert_eq!(valence.server_port, 25565);
+        assert_eq!(valence.server_port, VALENCE_DEFAULT_SERVER_PORT);
         assert_eq!(valence.receipt_path, Some(PathBuf::from("valence.json")));
     }
 

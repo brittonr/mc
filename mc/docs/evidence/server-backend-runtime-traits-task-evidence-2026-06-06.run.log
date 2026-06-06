@@ -1,0 +1,39 @@
+# server backend runtime task evidence
+started_at=2026-06-06T20:01:11Z
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence gate failed: unknown flag --change
+task evidence gate failed: ./introduce-server-backend-runtime-traits: No such file or directory (os error 2)
+{
+  "change": "introduce-server-backend-runtime-traits",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c37ee2610e445c7be82d43d209b946e51e81cc925a4951d4e4f53cc7cfd9703d",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "496306c5560749637cf7d8ab4b63e466b75f5953115a384c46ffdf31be84260e",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change_issues": [],
+  "changes": 13,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 15,
+  "valid": true
+}
+exit_status=0

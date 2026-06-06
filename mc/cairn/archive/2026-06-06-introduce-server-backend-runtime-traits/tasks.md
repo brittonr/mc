@@ -1,0 +1,8 @@
+# Tasks
+
+- [x] [serial] Define the `ServerRuntime` trait contract, stable `ServerBackend` identity, pure backend facts, and no-behavior-drift scope. r[mc_compatibility.server_backend_runtime_traits.contract]
+- [x] [depends:contract] Implement concrete Valence and Paper runtime boundaries with pure name/default-port/log-label methods and thin lifecycle/log imperative shells. r[mc_compatibility.server_backend_runtime_traits.boundary]
+- [x] [depends:boundary] Replace scattered backend matches in runner start/stop/force-stop/log/matrix paths with the trait dispatch while preserving CLI, receipt, and config strings. r[mc_compatibility.server_backend_runtime_traits.migration]
+- [x] [depends:migration] Add positive tests for Valence/Paper names, default ports, matrix defaults, dry-run lifecycle paths, and log-source selection plus negative tests for unknown backend names and invalid dispatch assumptions. r[mc_compatibility.server_backend_runtime_traits.tests]
+- [x] [depends:tests] Record focused runner test output and dry-run parity evidence in `docs/evidence/server-backend-runtime-traits-validation-2026-06-06.run.log`; BLAKE3 in `docs/evidence/server-backend-runtime-traits-validation-2026-06-06.b3`. r[mc_compatibility.server_backend_runtime_traits.evidence]
+- [x] [depends:evidence] Run runner tests, relevant checker gates, Cairn proposal/design/tasks gates, and Cairn validation; see `docs/evidence/server-backend-runtime-traits-validation-2026-06-06.run.log` (`exit_status=0`). r[mc_compatibility.server_backend_runtime_traits.validation]
