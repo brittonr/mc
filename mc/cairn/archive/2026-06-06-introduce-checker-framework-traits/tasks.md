@@ -1,0 +1,8 @@
+# Tasks
+
+- [x] [serial] Define the checker framework contract, shared diagnostics, `Checker` trait, `KeyValueEvidence` trait, CLI compatibility scope, and exemplar migration list. r[mc_compatibility.checker_framework_traits.contract]
+- [x] [depends:contract] Implement pure key/value parsing, token require/reject helpers, exact-field helpers, overclaim rejection helpers, and fixture assertion helpers with no filesystem or stdout side effects. r[mc_compatibility.checker_framework_traits.core]
+- [x] [depends:core] Implement the thin checker shell for args/self-test/run/exit formatting while preserving current success and failure text shape for migrated checkers. r[mc_compatibility.checker_framework_traits.shell]
+- [x] [depends:shell] Migrate an exemplar pair of repeated evidence checkers to the framework without changing row-specific validation semantics. r[mc_compatibility.checker_framework_traits.migration]
+- [x] [depends:migration] Add positive framework tests and negative malformed-line, duplicate-key, empty-key, missing-field, wrong-field, stale-revision, and overclaim fixtures; rerun migrated checker self-tests. r[mc_compatibility.checker_framework_traits.tests]
+- [x] [depends:tests] Run migrated checker self-tests, task-evidence gate, relevant evidence manifest checks, Cairn proposal/design/tasks gates, and Cairn validation; see `docs/evidence/checker-framework-traits-validation-2026-06-06.run.log` (`exit_status=0`) and `docs/evidence/checker-framework-traits-validation-2026-06-06.b3`. r[mc_compatibility.checker_framework_traits.validation]

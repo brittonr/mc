@@ -1,0 +1,444 @@
+# checker framework traits validation
+started_at=2026-06-06T20:14:19Z
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+
+running 4 tests
+test checker_framework::tests::sequence_helpers_parse_and_reject_invalid_state_ids ... ok
+test checker_framework::tests::key_value_record_parses_valid_rows_and_ignores_comments ... ok
+test checker_framework::tests::key_value_record_rejects_malformed_empty_and_duplicate_keys ... ok
+test checker_framework::tests::helpers_accept_valid_records_and_reject_weak_evidence ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+self-test ok
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+
+running 4 tests
+test checker_framework::tests::sequence_helpers_parse_and_reject_invalid_state_ids ... ok
+test checker_framework::tests::key_value_record_rejects_malformed_empty_and_duplicate_keys ... ok
+test checker_framework::tests::key_value_record_parses_valid_rows_and_ignores_comments ... ok
+test checker_framework::tests::helpers_accept_valid_records_and_reject_weak_evidence ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+self-test ok
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest check failed: b3sum failed for docs/evidence/aggregate-claim-gates-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/aggregate-claim-gates-closeout-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/aggregate-claim-gates-manifest-refresh-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/death-respawn-invalid-respawn-timing-archive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/death-respawn-invalid-respawn-timing-validation-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/death-respawn-inventory-reset-archive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/death-respawn-inventory-reset-validation-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/death-respawn-ordinary-death-archive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/death-respawn-ordinary-death-validation-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/death-respawn-reconnect-during-death-archive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/death-respawn-reconnect-during-death-validation-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/death-respawn-repeated-death-safety-archive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/death-respawn-repeated-death-safety-validation-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/evidence-matcher-traits-task-evidence-2026-06-06.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/evidence-matcher-traits-validation-2026-06-06.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/full-ctf-correctness-gate-archive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/full-ctf-correctness-gate-validation-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/full-protocol-763-compatibility-gate-archive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/full-protocol-763-compatibility-gate-validation-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/full-survival-compatibility-gate-archive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/full-survival-compatibility-gate-checker-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/full-survival-compatibility-gate-closeout-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/full-survival-compatibility-gate-validation-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/harden-mc-compat-harness-coverage-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/inventory-creative-mode-archive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/inventory-creative-mode-validation-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/inventory-drag-transactions-2026-06-06.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/inventory-drag-transactions-archive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/inventory-drag-transactions-validation-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/inventory-extra-window-types-archive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/inventory-extra-window-types-validation-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/inventory-stack-split-merge-2026-06-05.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/inventory-stack-split-merge-archive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/inventory-stack-split-merge-validation-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/mc-compat-row-contract-checker-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/mc-compat-row-contract-checker-closeout-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/mc-compat-row-evidence-standards-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/mc-compat-row-evidence-standards-closeout-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/mc-compat-row-fixture-rail-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/mc-compat-row-fixture-rail-closeout-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/mc-compat-row-fixture-rail-manifest-refresh-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/mcp-controlled-compat-rail-archive-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/mcp-controlled-compat-rail-closeout-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/mcp-controlled-compat-rail-final-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/mcp-controlled-compat-rail-followup-gates-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/mcp-controlled-compat-rail-live-preflight-blocker-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/mcp-controlled-compat-rail-live-preflight-blocker-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/mcp-controlled-compat-rail-live-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/mcp-controlled-compat-rail-manifest-refresh-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/mcp-controlled-compat-rail-matrix-promotion-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/mcp-controlled-compat-rail-matrix-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/mcp-controlled-compat-rail-openspec-alignment-oracle-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/mcp-controlled-compat-rail-overclaim-hardening-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/mcp-controlled-compat-rail-post-archive-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/mcp-controlled-compat-rail-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/minecraft-protocol-io-traits-validation-2026-06-06.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/movement-packet-family-2026-06-06.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/negative-live-rails-ctf-wrong-score-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/negative-live-rails-custom-payload-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/negative-live-rails-dry-run-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/negative-live-rails-inventory-invalid-click-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/negative-live-rails-inventory-stale-state-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/negative-live-rails-public-target-reject-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/negative-live-rails-reconnect-race-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/negative-live-rails-validation-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/nix-run-valence-stevenarella-2026-05-30.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/open-cairn-contract-closeout-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/open-cairn-contracts-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/production-readiness-envelope-archive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/production-readiness-envelope-validation-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/projectile-travel-collision-parity-archive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/projectile-travel-collision-parity-validation-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/projectile-weapon-variants-archive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/projectile-weapon-variants-validation-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-adversarial-network-oracle-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-adversarial-network-oracle-checker-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-adversarial-network-oracle-contract-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-adversarial-network-oracle-fixture-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-adversarial-network-oracle-matrix-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-adversarial-network-oracle-validation-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-armor-loadout-enchantment-status-checker-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-armor-loadout-enchantment-status-contract-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-armor-loadout-enchantment-status-rail-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-armor-loadout-enchantment-status-row-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-armor-loadout-enchantment-status-validation-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-armor-modifier-matrix-gate-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-armor-modifier-matrix-live-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-broad-coverage-ledger-gate-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-broad-coverage-ledger-gate-2026-05-28.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-ctf-invalid-pickup-ownership-2026-05-30.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-ctf-invalid-return-drop-2026-05-30.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-ctf-rule-ledger-gate-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-validation-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-ctf-spawn-team-balance-reset-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-ctf-spawn-team-balance-reset-archive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-ctf-spawn-team-balance-reset-validation-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-current-head-projectile-hit-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-death-respawn-lifecycle-gate-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-equipment-slot-item-expansion-checker-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-equipment-slot-item-expansion-contract-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-equipment-slot-item-expansion-rail-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-equipment-slot-item-expansion-row-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-equipment-slot-item-expansion-validation-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-equipment-slot-item-matrix-gate-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-evidence-freshness-gate-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-evidence-manifest-checker-validation-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-evidence-promotion-validation-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-inventory-semantics-matrix-gate-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-load-network-safety-gate-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-load-network-safety-live-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-matrix-reviewable-receipts-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-negative-live-rails-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-oracle-triage-drain-runner-tests-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-production-network-safety-gate-2026-05-28.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-projectile-travel-collision-gate-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-python-gate-rust-migration-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-2026-05-30.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-red-blue-soak-historical-oracle-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-reference-parity-expansion-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-remaining-cairns-validation-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-roi-01-03-receipt-path-checkpoint-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-roi-01-03-reviewable-receipts-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-roi-02-equipment-update-observation-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-roi-08-projectile-damage-attribution-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-roi-10-dependency-checkpoint-review-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-roi-10-projectile-damage-pin-checkpoint-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-roi-10-projectile-damage-pinned-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-scenario-manifest-validation-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-survival-break-place-pickup-2026-05-28.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-survival-chest-persistence-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-survival-chest-persistence-runner-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-survival-coverage-reference-parity-sync-2026-05-28.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-survival-crafting-table-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-survival-crafting-table-archive-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-survival-crafting-table-fixtures-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-survival-crafting-table-postreview-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-survival-crafting-table-progress-2026-05-30.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-survival-crafting-table-runner-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-survival-crafting-table-runner-source-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-survival-crafting-table-runner-task-oracle-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-survival-reference-pair-2026-05-28.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-survival-reference-paper-fixture-gate-2026-05-28.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-survival-reference-parity-gate-2026-05-28.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-vanilla-combat-parity-gate-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-chunk-biome-family-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-chunk-biome-family-archive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-chunk-biome-family-manifest-refresh-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-chunk-biome-family-matrix-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-chunk-biome-family-postarchive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-chunk-biome-family-postarchive-manifest-refresh-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-chunk-biome-family-prearchive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-chunk-biome-family-row-evidence-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-chunk-biome-family-validation-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-command-recipe-advancement-family-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-command-recipe-family-archive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-command-recipe-family-baseline-manifest-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-command-recipe-family-manifest-refresh-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-command-recipe-family-matrix-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-command-recipe-family-postarchive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-command-recipe-family-prearchive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-command-recipe-family-row-evidence-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-command-recipe-family-validation-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-command-recipe-task-evidence-oracle-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-entity-metadata-family-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-entity-metadata-family-archive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-entity-metadata-family-manifest-refresh-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-entity-metadata-family-matrix-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-entity-metadata-family-postarchive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-entity-metadata-family-prearchive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-entity-metadata-family-row-evidence-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-entity-metadata-family-validation-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-equipment-permutation-family-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-equipment-permutation-family-archive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-equipment-permutation-family-manifest-refresh-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-equipment-permutation-family-matrix-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-equipment-permutation-family-postarchive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-equipment-permutation-family-postarchive-manifest-refresh-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-equipment-permutation-family-prearchive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-equipment-permutation-family-row-evidence-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-equipment-permutation-family-validation-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-inventory-transaction-family-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-inventory-transaction-family-archive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-inventory-transaction-family-manifest-refresh-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-inventory-transaction-family-matrix-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-inventory-transaction-family-postarchive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-inventory-transaction-family-prearchive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-inventory-transaction-family-row-evidence-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/protocol-inventory-transaction-family-validation-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/scoreboard-team-packet-family-2026-06-06.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/server-backend-runtime-traits-task-evidence-2026-06-06.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/server-backend-runtime-traits-validation-2026-06-06.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/shared-row-setup-evidence-oracle-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/source-closure-manifest-validation-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/source-closure-task-evidence-gate-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/steel-runtime-config-gate-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/steel-value-decoder-traits-validation-2026-06-06.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-archive-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-capture-contract-source-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-capture-contract-task-oracle-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-capture-contract-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-final-artifacts-cairn-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-final-artifacts-task-oracle-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-final-artifacts-tests-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-focused-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-focused-validation-source-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-focused-validation-task-oracle-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-mcp-resources-source-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-mcp-resources-task-oracle-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-mcp-resources-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-post-archive-provenance-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-queue-closed-regression-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-queue-closed-regression-source-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-queue-closed-regression-task-oracle-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-readback-source-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-readback-task-oracle-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-readback-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-recording-source-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-recording-task-oracle-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-recording-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-screenshot-hook-source-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-screenshot-hook-task-oracle-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-frame-screenshot-hook-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-mcp-cairn-target-oracle-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-mcp-cairn-target-oracle-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-mcp-control-contract-cairn-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-mcp-control-contract-source-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-mcp-control-contract-source-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-mcp-control-contract-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-mcp-control-plane-archive-manifest-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-mcp-control-plane-archive-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-mcp-main-thread-queue-cairn-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-mcp-main-thread-queue-source-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-mcp-main-thread-queue-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-mcp-transport-cairn-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-mcp-transport-runtime-cairn-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-mcp-transport-runtime-source-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-mcp-transport-runtime-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-mcp-transport-source-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-mcp-transport-token-cairn-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-mcp-transport-token-source-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-mcp-transport-token-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/stevenarella-mcp-transport-validation-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-biome-dimension-archive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-biome-dimension-fixtures-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-biome-dimension-fixtures-closeout-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-biome-dimension-manifest-refresh-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-biome-dimension-matrix-promotion-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-biome-dimension-receipts-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-biome-dimension-runner-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-biome-dimension-runner-closeout-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-biome-dimension-runner-manifest-refresh-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-biome-dimension-validation-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-block-entity-persistence-archive-2026-06-04.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-block-entity-persistence-final-validation-2026-06-04.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-block-entity-persistence-receipts-2026-06-04.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-block-entity-persistence-start-2026-06-04.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-block-entity-persistence-validation-2026-06-04.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-crash-recovery-archive-2026-06-04.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-crash-recovery-receipts-2026-06-04.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-crash-recovery-validation-2026-06-04.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-furnace-persistence-archive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-furnace-persistence-matrix-promotion-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-furnace-persistence-receipts-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-furnace-persistence-task-evidence-gate-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-furnace-persistence-validation-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-gap-cairns-2026-05-31.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-gap-contract-closeout-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-hunger-food-fixtures-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-hunger-food-matrix-promotion-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-hunger-food-rail-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-hunger-food-receipts-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-hunger-food-validation-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-mob-drop-archive-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-mob-drop-cairn-gates-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-mob-drop-final-cairn-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-mob-drop-fixtures-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-mob-drop-matrix-promotion-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-mob-drop-post-archive-validation-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-mob-drop-post-task-validation-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-mob-drop-receipts-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-mob-drop-row-parity-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-mob-drop-runner-client-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-redstone-toggle-archive-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-redstone-toggle-cairn-gates-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-redstone-toggle-fixtures-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-redstone-toggle-matrix-promotion-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-redstone-toggle-post-task-validation-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-redstone-toggle-receipts-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-redstone-toggle-row-parity-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-redstone-toggle-runner-client-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-row-manifests-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-row-parity-checker-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-row-parity-checker-closeout-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/survival-world-persistence-receipts-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/task-evidence-gate-manifest-validation-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/task-evidence-gate-validation-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/typed-event-oracle-smoke-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/typed-event-oracle-validation-2026-05-29.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/valence-combat-loop-steel-policy-archive-2026-05-28.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/valence-combat-loop-steel-policy-core-gate-2026-05-28.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/valence-combat-loop-steel-policy-plan-gates-2026-05-27.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/valence-ctf-baseline-2026-05-30.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/vanilla-combat-armor-reference-archive-2026-06-04.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/vanilla-combat-armor-reference-fixtures-2026-06-03.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/vanilla-combat-armor-reference-nix-checks-2026-06-03.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/vanilla-combat-armor-reference-paired-compare-2026-06-03.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/vanilla-combat-armor-reference-paired-live-2026-06-03.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/vanilla-combat-armor-reference-paired-receipts-2026-06-03.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/vanilla-combat-armor-reference-post-archive-validation-2026-06-04.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/vanilla-combat-armor-reference-promotion-2026-06-03.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/vanilla-combat-armor-reference-runner-tests-2026-06-03.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/vanilla-combat-armor-reference-valence-tests-2026-06-03.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/vanilla-combat-armor-reference-validation-2026-06-03.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/vanilla-combat-reference-armor-baseline-2026-06-03.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/vanilla-combat-reference-armor-comparator-2026-06-03.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/vanilla-combat-reference-paired-checker-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/vanilla-combat-reference-paired-compare-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/vanilla-combat-reference-paired-fixtures-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/vanilla-combat-reference-paired-live-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/vanilla-combat-reference-paired-promotion-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/vanilla-combat-reference-paired-rail-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/vanilla-combat-reference-paired-receipts-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/vanilla-combat-reference-paired-validation-2026-06-02.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/vanilla-combat-reference-parity-archive-2026-06-01.b3: No such file or directory (os error 2)
+evidence manifest check failed: b3sum failed for docs/evidence/vanilla-combat-reference-parity-validation-2026-06-01.b3: No such file or directory (os error 2)
+{
+  "change": "introduce-checker-framework-traits",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e0ebf91f1e88263da5094761f513327e89cdc7ade12b1cb60434947c9c5cfcc1",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "e5da0a46cfa1b8c7360cdb8f3efdf723a45ba99322f685f60a3812260fed3d0e",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "introduce-checker-framework-traits",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "b71361c124f903d9e12213ca723209b514157040cb9b8f1217cb5bd7874d971c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "758a1c7d707e44e3e80aee609852eefa06c01cc4fd4b51f67631850c90141b09",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "introduce-checker-framework-traits",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "ce266d48d1594dee66fde48db9f1d2a24026c4b27c4afd2c41c796d638f6402f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "7d91dd8d4e9f7a227b5e3cd10dac17ec86bc5b292e37d966eeeb86777ebebdeb",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change_issues": [],
+  "changes": 11,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 13,
+  "valid": true
+}
+exit_status=0
