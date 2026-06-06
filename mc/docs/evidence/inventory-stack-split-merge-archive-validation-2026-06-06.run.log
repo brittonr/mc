@@ -1,0 +1,20 @@
+{
+  "changes": [],
+  "layout": "cairn",
+  "root": "."
+}
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 2,
+  "valid": true
+}
+this derivation will be built:
+  /nix/store/vmqzakpx63xd2xw7z9fch824xm60mm83-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/vmqzakpx63xd2xw7z9fch824xm60mm83-mc-compat-cairn-task-evidence.drv'...
+exit_status=0

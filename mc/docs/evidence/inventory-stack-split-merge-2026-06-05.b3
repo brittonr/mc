@@ -10,6 +10,7 @@ ed4ba040b529d40232ed0c459358dcf0066dfa01108717c4f36095f5c825bf0f  docs/evidence/
 9619092a7b8609039f4399872b7815c60973364b552f2a368147bc41596d9fa3  docs/evidence/inventory-stack-split-merge-task-evidence-2026-06-05.run.log
 f84798965b8e87d6ab51333d8ff38d420ecea1c0948c85fd4c7b5e4ba8156d5e  docs/evidence/inventory-stack-split-merge-cairn-final-2026-06-05.run.log
 4fdef822facae840e7430a3d916dfe871d1a1bec9c06678a1aad356d1ed33c77  docs/evidence/inventory-stack-split-merge-flake-final-2026-06-05.run.log
+050b48b312227d4ebb7118aa0e73f6f278d2afb534d221e9458bf8d4a2de36aa  docs/evidence/inventory-stack-split-merge-archive-validation-2026-06-06.run.log
 1056a97970e3e4a069135530d7898f4ba6168123bbc7b07dcdff79ccc76c6c77  README.md
 499d794df16818a858c40b4bf92cd1994d971e20cdaaa25544a548415a209e99  flake.nix
 4279a560afe563ba3c1b1c318e270352e7f039177439eb54ce737341c24edc36  config/mc-compat/scenario-manifest.ncl
@@ -20,3 +21,8 @@ cb267db45d52384c9b07839348d64b01ecde90f00333d4b0200868cf6903690e  tools/check_ac
 1440d46d88cea2d7673026ce4aa13f3b3e81dee2d2b364dfd98eeaf7deace3e0  tools/check_current_evidence_bundle.rs
 27e9e4aacf106cd52569113d8d8a912689a40cb436436eb40ab5daff043f9e27  docs/evidence/protocol-763-acceptance-matrix.md
 75114b3832546ecfdaacd3482af28616a3130bc5a505c4caab3edd451c9fd946  docs/evidence/protocol-763-current-evidence-bundle.md
+273a98fa4b95e9c7b12b3a54b8cb2b858ce78a2535d0f5f19f08087d0918a987  cairn/specs/mc-compatibility/spec.md
+305067df7af0bd3bcadfb4d8119ea0aa7236547af3054728c22c2823b1e09fa0  cairn/archive/2026-06-06-promote-inventory-stack-split-merge/proposal.md
+0556aeffd65b59472380413f5755a3973fd891e5e85df599fe3838b08972c935  cairn/archive/2026-06-06-promote-inventory-stack-split-merge/design.md
+79a277cc5048b611146aab56ce2b673e0c86c42730e772f45f1fec4ddb4aa579  cairn/archive/2026-06-06-promote-inventory-stack-split-merge/tasks.md
+72407c72f5729745f16917e57fe048d4cca5ab949d0f2e85e2eac012e1e67b09  cairn/archive/2026-06-06-promote-inventory-stack-split-merge/specs/mc-compatibility/spec.md
