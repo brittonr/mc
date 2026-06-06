@@ -1,0 +1,69 @@
+## block_entity_sign_packet_family_cairn_gates
+command=nix run .#cairn -- gate proposal/design/tasks promote-block-entity-sign-packet-family --root .
+{
+  "change": "promote-block-entity-sign-packet-family",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "0858d243e928bb3fc992c9865a16e1894eebb38dbd61a57a2770788463b49c0b",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "b6f080ea5b7440483b66a7ae11c7299867de13db0f40aad0b0fdb93215c7f95a",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+proposal_exit_status=0
+{
+  "change": "promote-block-entity-sign-packet-family",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "74117b8262dc9717bbedb7037f6d2fbfa31cf0e22ca9a361b0b41c170f71ab7d",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "36fc777a2560e2f21b8ad000967adf19ce2dc519d82aa080d8238d798b559da1",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+design_exit_status=0
+{
+  "change": "promote-block-entity-sign-packet-family",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "38de28b9e3d169c52162668b8ca929f53b67d607e0bf363fad55cd7d5b4249e8",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "33862bd324cb20a0bb6142577f850c83e175615a65e1bce0f6bfa3f9f8fb5190",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+tasks_exit_status=0
+exit_status=0

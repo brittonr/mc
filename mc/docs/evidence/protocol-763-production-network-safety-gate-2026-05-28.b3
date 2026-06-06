@@ -9,6 +9,6 @@ af7ed7efe751467c5f5e11722800a7fe1156ebc584bbd481e8d185cc7f42dbc5  tools/check_lo
 883d7cb385f94dcb2e3be8c0cbf05d26a34267701e9547d9fb406900eadc5ca7  cairn/archive/2026-05-28-prove-production-network-safety/design.md
 26de1ad37d54b1e461b50d271020bd4d44661035c3d856444cd02086da17ac76  cairn/archive/2026-05-28-prove-production-network-safety/tasks.md
 ec1761f5348815679afc969247d5c76a795b2561c580b8dc49ebe2594d7f1228  cairn/archive/2026-05-28-prove-production-network-safety/specs/mc-compatibility/spec.md
-5607d8cb9a01ae052af8c5e915ed07e947db6387a24801193fe31bf8cb90016c  cairn/specs/mc-compatibility/spec.md
-40c5fe8e838dad00cb16f87fa625b3b84f49266844a654fb950bb865bd7d73b1  docs/evidence/protocol-763-current-evidence-bundle.md
-bdd2149c2480e869b60d0db21459506a7131c9c10f16a2a9354dca0c9c49c6c0  docs/evidence/protocol-763-acceptance-matrix.md
+20859150af5684572e89c12b0db34826d6a3ceeb736f496e99b31886de606c2b  cairn/specs/mc-compatibility/spec.md
+1d84b0e14a878a816983457e92b08bd9ccebc3e632ab4e64750a0d1f5e13eaa9  docs/evidence/protocol-763-current-evidence-bundle.md
+a9677deedbc72630a616dfe0208a92c2400fa184cc570909d8113cb694d3b288  docs/evidence/protocol-763-acceptance-matrix.md

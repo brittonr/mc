@@ -1,0 +1,83 @@
+{
+  "schema": "mc.compat.block_entity_sign_packet_family.receipt.v1",
+  "created_at": "2026-06-06",
+  "row_id": "block-entity-sign-packet-family",
+  "status": "pass",
+  "mode": "repo-local-evidence-index",
+  "source_row": "survival-block-entity-persistence-parity",
+  "source_evidence": {
+    "paper_receipt": "docs/evidence/survival-block-entity-persistence-paper-2026-06-04.receipt.json",
+    "valence_receipt": "docs/evidence/survival-block-entity-persistence-valence-2026-06-04.receipt.json",
+    "paper_kv": "docs/evidence/survival-block-entity-persistence-paper-2026-06-04.evidence",
+    "valence_kv": "docs/evidence/survival-block-entity-persistence-valence-2026-06-04.evidence",
+    "row_parity_log": "docs/evidence/survival-block-entity-persistence-row-parity-2026-06-04.run.log"
+  },
+  "covered_packet_rows": [
+    {
+      "wire_id": "play/clientbound/0x08",
+      "valence_packet": "BlockEntityUpdateS2CPacket",
+      "inventory_status": "scenario_bounded",
+      "parser_shape_status": "shape_review_missing",
+      "scenario_evidence": "block_entity_sign_packet_family",
+      "bounded_payload": {
+        "actor": "compatbot",
+        "kind": "Sign",
+        "position": "28,64,0",
+        "text_payload": "MC|Compat|Sign|Persist"
+      }
+    }
+  ],
+  "adjacent_non_claim_packet_rows": [
+    {
+      "wire_id": "play/clientbound/0x31",
+      "valence_packet": "SignEditorOpenS2CPacket",
+      "coverage_status": "non_claim"
+    },
+    {
+      "wire_id": "play/serverbound/0x2e",
+      "valence_packet": "UpdateSignC2SPacket",
+      "coverage_status": "non_claim"
+    }
+  ],
+  "child_revisions": {
+    "stevenarella": {
+      "rev": "79d766c2439120ba2ec0217dd88ee9f708db9844",
+      "status": "clean"
+    },
+    "valence": {
+      "rev": "f54e6d01b23a08a2977c7bf2d93301d589c65c4d",
+      "status": "clean"
+    },
+    "paper_fixture_source": {
+      "blake3": "864fedc1f1f645058b9ca061829d7c42e3da8d088e8cc394ab0c8abf6b2f5150"
+    }
+  },
+  "normalized_metrics": {
+    "actor": "compatbot",
+    "block_entity_kind": "Sign",
+    "position": "28,64,0",
+    "text_payload": "MC|Compat|Sign|Persist",
+    "paper_sign_payload_observed": "ok",
+    "valence_sign_payload_observed": "ok",
+    "paper_post_restart_observed": "ok",
+    "valence_post_restart_observed": "ok",
+    "paper_storage_proof": "ok",
+    "valence_storage_proof": "ok",
+    "paper_valence_row_parity": "ok"
+  },
+  "non_claims": [
+    "sign_editor_packets",
+    "sign_editing_ui",
+    "all_block_entities",
+    "arbitrary_nbt",
+    "all_sign_text_variants",
+    "all_sign_sides",
+    "all_block_entity_packet_shapes",
+    "broad_parser_shape_coverage",
+    "full_protocol_763_compatibility",
+    "broad_minecraft_compatibility",
+    "public_server_safety",
+    "production_readiness"
+  ],
+  "checker": "tools/check_block_entity_sign_packet_family.rs"
+}

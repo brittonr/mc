@@ -2,7 +2,7 @@ e46e0dad939ac77277e42e752488a3375a988f48aa07cb22a4b3a5b821cee756  docs/evidence/
 246cf10159950582ddc3dcc6b579cc01202619e077e56f1cfb653a0a31cffbec  docs/evidence/protocol-763-survival-crafting-table-progress-2026-05-30.run.log
 afa1d31ca6f0775a62da23bef52138d208e67a70e5bb88845d9e609be5d1371f  docs/evidence/protocol-763-survival-crafting-table-revision-oracle-2026-05-30.md
 90bd68801b16fa10f4a3cf7386746ab6011b0b1c998e06a834d7e928bd4d4164  tools/check_survival_crafting_table.rs
-0882ed8aef547126e47c4b96113da7337df963a7462b3c37d214c652c7c98344  tools/mc-compat-runner/src/main.rs
+3541d817aa8b7798b12de3b940db6686a4d6b4fe1fc260fa1f9a4be22a9d6e6a  tools/mc-compat-runner/src/main.rs
 f774c8a5184825cd307223771d3257d529d5c1a4229028ddb1a0ed845b8144d4  tools/mc-compat-runner/src/scenario_manifest_generated.rs
 c27c212b2f0f82e4125cc20d84fb7a39d07656f389b2625a5f6d64bd66d5b5a6  flake.nix
 04399815d0450e06b7baa7925ed58a5babb7c582956846637ad35ff5fc3703ed  cairn/archive/2026-05-31-survival-crafting-table-parity/tasks.md

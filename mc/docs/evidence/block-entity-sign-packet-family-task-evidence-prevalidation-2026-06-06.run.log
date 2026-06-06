@@ -1,0 +1,11 @@
+## block_entity_sign_packet_family_task_evidence_prevalidation
+command=nix develop --no-update-lock-file -c bash -lc rustc-and-run-task-evidence-check-sign-change
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+compile_exit_status=0
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+self_test_exit_status=0
+task evidence gate passed: 6 completed tasks checked across 1 task files
+task_evidence_exit_status=0
+]0;exit_status=0

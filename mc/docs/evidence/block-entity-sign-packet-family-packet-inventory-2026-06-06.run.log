@@ -1,0 +1,10 @@
+## block_entity_sign_packet_family_packet_inventory
+command=nix develop --no-update-lock-file -c bash -lc targeted-packet-inventory-sign-row-check
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+block_entity_update_row=play	clientbound	0x08	BlockEntityUpdateS2CPacket	fallback_alias_non_claim	none	shape_review_missing	block_entity_sign_packet_family	scenario_bounded	agent	add_mapping_parser_fixture_and_live_receipt
+sign_editor_open_row=play	clientbound	0x31	SignEditorOpenS2CPacket	fallback_alias_non_claim	none	shape_review_missing	none	non_claim	agent	add_mapping_parser_fixture_and_live_receipt
+update_sign_row=play	serverbound	0x2e	UpdateSignC2SPacket	fallback_alias_non_claim	none	shape_review_missing	none	non_claim	agent	add_mapping_parser_fixture_and_live_receipt
+block_entity_sign_packet_family_row_count=1
+exit_status=0

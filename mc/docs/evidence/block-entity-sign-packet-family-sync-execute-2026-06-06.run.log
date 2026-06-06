@@ -1,0 +1,50 @@
+## block_entity_sign_packet_family_sync_execute
+command=nix run .#cairn -- sync promote-block-entity-sign-packet-family --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/promote-block-entity-sign-packet-family/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/promote-block-entity-sign-packet-family/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-block-entity-sign-packet-family",
+  "delta_specs": [
+    "./cairn/changes/promote-block-entity-sign-packet-family/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "576f4671a182465051efe652495ff63fd65c005bf196021f488c7976271297bd",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "f0348b2e7003dcdc6b2450625a24507dae2cbf938fd2160c7d886b46809a1827",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "4ff973ea7b68a9a69fdcb4c611275998b8e5efa0a8357079c6f9a010d4e35c9d"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "f0348b2e7003dcdc6b2450625a24507dae2cbf938fd2160c7d886b46809a1827",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "4ff973ea7b68a9a69fdcb4c611275998b8e5efa0a8357079c6f9a010d4e35c9d"
+    },
+    "kind": "sync",
+    "manifest_hash": "260c86fd3212ddf60cbfc50c4fb7d1ada95cee0cdb3fb9fa3eceeb2e418887b7"
+  },
+  "plan_hash": "976b86f539da151a4cf32b21e7c9c5b3e33e807d87c4ac7d95f0a020292e298f",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "49f703b2b49fa5dadc8192e9cbf1c949c01cc917d20ee422a7755d808b927264"
+}
+exit_status=0

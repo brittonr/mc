@@ -1,0 +1,11 @@
+## block_entity_sign_packet_family_evidence_manifest_post_sync
+command=nix develop --no-update-lock-file -c bash -lc rustc-and-run-evidence-manifest-check
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+compile_exit_status=0
+evidence manifest self-test ok: positive and negative fixtures exercised
+self_test_exit_status=0
+evidence manifests ok: 333 manifests, 2105 entries, 99 receipts scanned
+manifest_exit_status=0
+]0;exit_status=0

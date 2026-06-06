@@ -1,0 +1,24 @@
+## block_entity_sign_packet_family_archive_dry_run
+command=nix run .#cairn -- archive promote-block-entity-sign-packet-family --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-block-entity-sign-packet-family",
+      "kind": "archive_change",
+      "path": "./cairn/changes/promote-block-entity-sign-packet-family"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-block-entity-sign-packet-family",
+  "dry_run": true,
+  "input_hash": "576f4671a182465051efe652495ff63fd65c005bf196021f488c7976271297bd",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "ce6e5ad033c0a6ba01ccb138f9f4c98fb2862fb9268c6f2cfca86c2d577deea3",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "ed4c23934f01505014bae42909d958c4591685ddf61e40c14f05f5c269195cf7"
+}
+exit_status=0

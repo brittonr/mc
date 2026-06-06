@@ -1,0 +1,82 @@
+## block_entity_sign_packet_family_archive_execute
+command=nix run .#cairn -- archive promote-block-entity-sign-packet-family --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-block-entity-sign-packet-family",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-promote-block-entity-sign-packet-family"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-block-entity-sign-packet-family",
+  "dry_run": false,
+  "input_hash": "576f4671a182465051efe652495ff63fd65c005bf196021f488c7976271297bd",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "f775b8a1cf46667b782f153682fe586ca5f953a5543c397bc10ef024fc7c2fd5",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-promote-block-entity-sign-packet-family/design.md"
+        },
+        {
+          "content_hash": "0c9c35021eab14cb956d3a30d2758d26a1b1f8d8c853e1cc84e96a85a88041cc",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-promote-block-entity-sign-packet-family/proposal.md"
+        },
+        {
+          "content_hash": "041ec873402ab02e3cc2494d47f79658df81cfee5c122d5a3de62a6808efd84b",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-promote-block-entity-sign-packet-family/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "f68679c92f1765b49a0581d885df212cad2fa0e75d468c419f91bb2ca6fef288",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-promote-block-entity-sign-packet-family/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/promote-block-entity-sign-packet-family"
+        }
+      ],
+      "manifest_hash": "53c97dbcda0fe333ab6f0343b54b32125a6fbe99e1908f4e98ed42cea788d9c1"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "f775b8a1cf46667b782f153682fe586ca5f953a5543c397bc10ef024fc7c2fd5",
+          "exists": true,
+          "path": "./cairn/changes/promote-block-entity-sign-packet-family/design.md"
+        },
+        {
+          "content_hash": "0c9c35021eab14cb956d3a30d2758d26a1b1f8d8c853e1cc84e96a85a88041cc",
+          "exists": true,
+          "path": "./cairn/changes/promote-block-entity-sign-packet-family/proposal.md"
+        },
+        {
+          "content_hash": "041ec873402ab02e3cc2494d47f79658df81cfee5c122d5a3de62a6808efd84b",
+          "exists": true,
+          "path": "./cairn/changes/promote-block-entity-sign-packet-family/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "f68679c92f1765b49a0581d885df212cad2fa0e75d468c419f91bb2ca6fef288",
+          "exists": true,
+          "path": "./cairn/changes/promote-block-entity-sign-packet-family/tasks.md"
+        }
+      ],
+      "manifest_hash": "d8541afba89e82db51d8a1c183936d2e097ef5af4083c099917632bbc202efe1"
+    },
+    "kind": "archive",
+    "manifest_hash": "0b152f61e608c713cd821c5844f20a07ca4970468a9a467f589ab2e50d018076"
+  },
+  "plan_hash": "4f8845e65bf9756cef4ebec8c1e5a45e1bb28d4d98e56e44ab6dd50f2e2d01bf",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "a405cd18cae824f14979143dc56292fab4a1076bc2fcbc0de14d7889cb1a3bd7"
+}
+exit_status=0

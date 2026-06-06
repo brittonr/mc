@@ -1,0 +1,27 @@
+## block_entity_sign_packet_family_checker
+command=nix develop --no-update-lock-file -c bash -lc rustc-and-check-block-entity-sign-packet-family
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+warning: function `parse_i32_sequence` is never used
+   --> tools/checker_framework.rs:108:8
+    |
+108 | pub fn parse_i32_sequence(raw: &str) -> Result<Vec<i32>, String> {
+    |        ^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `all_at_least` is never used
+   --> tools/checker_framework.rs:123:8
+    |
+123 | pub fn all_at_least(values: &[i32], minimum: i32) -> bool {
+    |        ^^^^^^^^^^^^
+
+warning: 2 warnings emitted
+
+compile_exit_status=0
+self-test ok
+self_test_exit_status=0
+docs/evidence/block-entity-sign-packet-family-2026-06-06.kv: ok
+evidence_exit_status=0
+]0;exit_status=0
