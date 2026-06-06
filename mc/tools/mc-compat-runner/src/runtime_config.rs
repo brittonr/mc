@@ -64,6 +64,56 @@ pub(crate) enum SteelValue {
     StringList(Vec<String>),
 }
 
+trait FromSteelValue: Sized {
+    const EXPECTED_TYPE: &'static str;
+
+    fn from_steel_value(value: &SteelValue) -> Option<Self>;
+}
+
+impl FromSteelValue for String {
+    const EXPECTED_TYPE: &'static str = "string";
+
+    fn from_steel_value(value: &SteelValue) -> Option<Self> {
+        match value {
+            SteelValue::String(value) => Some(value.clone()),
+            _ => None,
+        }
+    }
+}
+
+impl FromSteelValue for Vec<String> {
+    const EXPECTED_TYPE: &'static str = "string list";
+
+    fn from_steel_value(value: &SteelValue) -> Option<Self> {
+        match value {
+            SteelValue::StringList(value) => Some(value.clone()),
+            _ => None,
+        }
+    }
+}
+
+impl FromSteelValue for u32 {
+    const EXPECTED_TYPE: &'static str = "u32";
+
+    fn from_steel_value(value: &SteelValue) -> Option<Self> {
+        match value {
+            SteelValue::U32(value) => Some(*value),
+            _ => None,
+        }
+    }
+}
+
+impl FromSteelValue for f64 {
+    const EXPECTED_TYPE: &'static str = "f64";
+
+    fn from_steel_value(value: &SteelValue) -> Option<Self> {
+        match value {
+            SteelValue::F64(value) => Some(*value),
+            _ => None,
+        }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(crate) struct SteelSource {
     pub(crate) path: String,
@@ -220,7 +270,7 @@ pub(crate) fn normalize_steel_exports(
         });
     }
 
-    let schema_version = required_u32(
+    let schema_version = required_export::<u32>(
         exports,
         "config-version",
         "runtime.config_version",
@@ -237,7 +287,7 @@ pub(crate) fn normalize_steel_exports(
         }
     }
 
-    let server_backend = required_string(
+    let server_backend = required_export::<String>(
         exports,
         "server-backend",
         "server.backend",
@@ -252,53 +302,56 @@ pub(crate) fn normalize_steel_exports(
         }
     }
 
-    let server_version = required_string(
+    let server_version = required_export::<String>(
         exports,
         "server-version",
         "server.version",
         &mut diagnostics,
     );
-    let server_protocol = required_u32(
+    let server_protocol = required_export::<u32>(
         exports,
         "server-protocol",
         "server.protocol",
         &mut diagnostics,
     );
-    let server_port = required_u32(exports, "server-port", "server.port", &mut diagnostics)
-        .and_then(|value| validate_u16_port(value, &mut diagnostics));
-    let valence_rev = required_string(exports, "valence-rev", "valence.rev", &mut diagnostics);
-    let valence_example = required_string(
+    let server_port =
+        required_export::<u32>(exports, "server-port", "server.port", &mut diagnostics)
+            .and_then(|value| validate_u16_port(value, &mut diagnostics));
+    let valence_rev =
+        required_export::<String>(exports, "valence-rev", "valence.rev", &mut diagnostics);
+    let valence_example = required_export::<String>(
         exports,
         "valence-example",
         "valence.example",
         &mut diagnostics,
     );
-    let valence_worktree = required_string(
+    let valence_worktree = required_export::<String>(
         exports,
         "valence-worktree",
         "valence.worktree",
         &mut diagnostics,
     );
-    let valence_target_dir = required_string(
+    let valence_target_dir = required_export::<String>(
         exports,
         "valence-target-dir",
         "valence.target_dir",
         &mut diagnostics,
     );
-    let valence_log = required_string(exports, "valence-log", "valence.log", &mut diagnostics);
-    let valence_pid_file = required_string(
+    let valence_log =
+        required_export::<String>(exports, "valence-log", "valence.log", &mut diagnostics);
+    let valence_pid_file = required_export::<String>(
         exports,
         "valence-pid-file",
         "valence.pid_file",
         &mut diagnostics,
     );
-    let client_username = required_string(
+    let client_username = required_export::<String>(
         exports,
         "client-username",
         "client.username",
         &mut diagnostics,
     );
-    let client_timeout_secs = required_u32(
+    let client_timeout_secs = required_export::<u32>(
         exports,
         "client-timeout-secs",
         "client.timeout_secs",
@@ -312,7 +365,7 @@ pub(crate) fn normalize_steel_exports(
             &mut diagnostics,
         )
     });
-    let client_success_patterns = required_string_list(
+    let client_success_patterns = required_export::<Vec<String>>(
         exports,
         "client-success-patterns",
         "client.success_patterns",
@@ -326,8 +379,10 @@ pub(crate) fn normalize_steel_exports(
             });
         }
     }
-    let receipt_dir = required_string(exports, "receipt-dir", "receipt.dir", &mut diagnostics);
-    let scenario = required_string(exports, "scenario", "scenario.name", &mut diagnostics);
+    let receipt_dir =
+        required_export::<String>(exports, "receipt-dir", "receipt.dir", &mut diagnostics);
+    let scenario =
+        required_export::<String>(exports, "scenario", "scenario.name", &mut diagnostics);
     let arrow_damage = normalize_arrow_damage(exports, &mut diagnostics);
 
     if diagnostics.is_empty() {
@@ -714,7 +769,7 @@ fn normalize_arrow_damage(
     exports: &BTreeMap<String, SteelValue>,
     diagnostics: &mut Vec<ConfigDiagnostic>,
 ) -> Option<ArrowDamagePolicy> {
-    let base_damage = required_f64(
+    let base_damage = required_export::<f64>(
         exports,
         "arrow-base-damage",
         "combat.arrow.base_damage",
@@ -729,7 +784,7 @@ fn normalize_arrow_damage(
             diagnostics,
         )
     });
-    let velocity_multiplier = required_f64(
+    let velocity_multiplier = required_export::<f64>(
         exports,
         "arrow-velocity-multiplier",
         "combat.arrow.velocity_multiplier",
@@ -744,7 +799,7 @@ fn normalize_arrow_damage(
             diagnostics,
         )
     });
-    let max_damage = required_f64(
+    let max_damage = required_export::<f64>(
         exports,
         "arrow-max-damage",
         "combat.arrow.max_damage",
@@ -771,96 +826,26 @@ fn normalize_arrow_damage(
     }
 }
 
-fn required_string(
+fn required_export<T>(
     exports: &BTreeMap<String, SteelValue>,
     export_name: &'static str,
     path: &'static str,
     diagnostics: &mut Vec<ConfigDiagnostic>,
-) -> Option<String> {
+) -> Option<T>
+where
+    T: FromSteelValue,
+{
     match exports.get(export_name) {
-        Some(SteelValue::String(value)) => Some(value.clone()),
-        Some(other) => {
+        Some(value) => T::from_steel_value(value).or_else(|| {
             diagnostics.push(ConfigDiagnostic {
                 path,
-                message: format!("expected string from {export_name}, found {other:?}"),
+                message: format!(
+                    "expected {} from {export_name}, found {value:?}",
+                    T::EXPECTED_TYPE
+                ),
             });
             None
-        }
-        None => {
-            diagnostics.push(ConfigDiagnostic {
-                path,
-                message: format!("missing Steel export {export_name}"),
-            });
-            None
-        }
-    }
-}
-
-fn required_string_list(
-    exports: &BTreeMap<String, SteelValue>,
-    export_name: &'static str,
-    path: &'static str,
-    diagnostics: &mut Vec<ConfigDiagnostic>,
-) -> Option<Vec<String>> {
-    match exports.get(export_name) {
-        Some(SteelValue::StringList(value)) => Some(value.clone()),
-        Some(other) => {
-            diagnostics.push(ConfigDiagnostic {
-                path,
-                message: format!("expected string list from {export_name}, found {other:?}"),
-            });
-            None
-        }
-        None => {
-            diagnostics.push(ConfigDiagnostic {
-                path,
-                message: format!("missing Steel export {export_name}"),
-            });
-            None
-        }
-    }
-}
-
-fn required_u32(
-    exports: &BTreeMap<String, SteelValue>,
-    export_name: &'static str,
-    path: &'static str,
-    diagnostics: &mut Vec<ConfigDiagnostic>,
-) -> Option<u32> {
-    match exports.get(export_name) {
-        Some(SteelValue::U32(value)) => Some(*value),
-        Some(other) => {
-            diagnostics.push(ConfigDiagnostic {
-                path,
-                message: format!("expected u32 from {export_name}, found {other:?}"),
-            });
-            None
-        }
-        None => {
-            diagnostics.push(ConfigDiagnostic {
-                path,
-                message: format!("missing Steel export {export_name}"),
-            });
-            None
-        }
-    }
-}
-
-fn required_f64(
-    exports: &BTreeMap<String, SteelValue>,
-    export_name: &'static str,
-    path: &'static str,
-    diagnostics: &mut Vec<ConfigDiagnostic>,
-) -> Option<f64> {
-    match exports.get(export_name) {
-        Some(SteelValue::F64(value)) => Some(*value),
-        Some(other) => {
-            diagnostics.push(ConfigDiagnostic {
-                path,
-                message: format!("expected f64 from {export_name}, found {other:?}"),
-            });
-            None
-        }
+        }),
         None => {
             diagnostics.push(ConfigDiagnostic {
                 path,
@@ -1119,6 +1104,99 @@ mod tests {
         assert_eq!(snapshot.server_port, TEST_SERVER_PORT as u16);
         assert_eq!(snapshot.client_timeout_secs, TEST_CLIENT_TIMEOUT_SECS);
         assert_eq!(snapshot.arrow_damage.base_damage, TEST_ARROW_BASE_DAMAGE);
+    }
+
+    #[test]
+    fn decodes_supported_steel_export_types() {
+        let exports = valid_exports();
+        let mut diagnostics = Vec::new();
+
+        let backend = required_export::<String>(
+            &exports,
+            "server-backend",
+            "server.backend",
+            &mut diagnostics,
+        )
+        .expect("string export");
+        let success_patterns = required_export::<Vec<String>>(
+            &exports,
+            "client-success-patterns",
+            "client.success_patterns",
+            &mut diagnostics,
+        )
+        .expect("string-list export");
+        let protocol = required_export::<u32>(
+            &exports,
+            "server-protocol",
+            "server.protocol",
+            &mut diagnostics,
+        )
+        .expect("u32 export");
+        let max_damage = required_export::<f64>(
+            &exports,
+            "arrow-max-damage",
+            "combat.arrow.max_damage",
+            &mut diagnostics,
+        )
+        .expect("f64 export");
+
+        assert!(diagnostics.is_empty(), "{diagnostics:?}");
+        assert_eq!(backend, "valence");
+        assert_eq!(
+            success_patterns,
+            vec!["Detected server protocol version".to_string()]
+        );
+        assert_eq!(protocol, TEST_SERVER_PROTOCOL);
+        assert_eq!(max_damage, TEST_ARROW_MAX_DAMAGE);
+    }
+
+    #[test]
+    fn required_export_reports_missing_and_wrong_type_diagnostics() {
+        let exports = valid_exports();
+        let mut diagnostics = Vec::new();
+
+        let missing = required_export::<String>(
+            &exports,
+            "missing-export",
+            "runtime.test_missing",
+            &mut diagnostics,
+        );
+        assert!(missing.is_none());
+        assert!(diagnostics.iter().any(|diagnostic| {
+            diagnostic.path == "runtime.test_missing"
+                && diagnostic
+                    .message
+                    .contains("missing Steel export missing-export")
+        }));
+
+        diagnostics.clear();
+        let wrong_type = required_export::<u32>(
+            &exports,
+            "server-backend",
+            "server.backend",
+            &mut diagnostics,
+        );
+        assert!(wrong_type.is_none());
+        assert!(diagnostics.iter().any(|diagnostic| {
+            diagnostic.path == "server.backend"
+                && diagnostic
+                    .message
+                    .contains("expected u32 from server-backend")
+        }));
+    }
+
+    #[test]
+    fn rejects_malformed_literal_before_typed_decoding() {
+        let malformed_port = valid_module_text().replace(
+            "(define server-port 25565)",
+            "(define server-port not-a-number)",
+        );
+        let diagnostics = evaluate_steel_module(source(), &malformed_port).unwrap_err();
+
+        assert!(diagnostics.iter().any(|diagnostic| {
+            diagnostic.path == "server.port"
+                && diagnostic.message.contains("parse server-port as u32")
+        }));
     }
 
     #[test]

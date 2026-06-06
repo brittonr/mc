@@ -4,7 +4,7 @@
   "source": {
     "language": "steel",
     "path": "config/mc-compat/steel/default.scm",
-    "module_blake3": "06373a43c99d0463611c9ef55dc7e72a624c1335a71078eea6d5d4b5d6998b16",
+    "module_blake3": "394ab2f62d4b3c3534d434fffc3d1725ccd03521ab8ef0bbcdef742a7324d5c6",
     "sandbox_profile": "mc-compat/pure-v1"
   },
   "evaluated_exports": {

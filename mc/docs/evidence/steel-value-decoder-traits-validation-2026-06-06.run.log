@@ -1,0 +1,112 @@
+## steel-value-decoder-traits validation
+$ nix develop --no-update-lock-file . -c cargo test --manifest-path tools/mc-compat-runner/Cargo.toml runtime_config -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 14 tests
+test runtime_config::tests::decodes_supported_steel_export_types ... ok
+test runtime_config::tests::arrow_damage_policy_is_bounded_and_reports_clamping ... ok
+test runtime_config::tests::fixed_protocol_fact_changes_are_rejected ... ok
+test runtime_config::tests::diff_and_apply_plan_separate_hot_next_run_and_restart_only ... ok
+test runtime_config::tests::redaction_hides_secret_like_values ... ok
+test runtime_config::tests::evaluates_restricted_steel_module ... ok
+test runtime_config::tests::rejects_missing_or_wrong_type_exports ... ok
+test runtime_config::tests::normalizes_valid_steel_exports ... ok
+test runtime_config::tests::rejects_range_and_sandbox_violations ... ok
+test runtime_config::tests::rejects_malformed_literal_before_typed_decoding ... ok
+test runtime_config::tests::reload_request_applies_hot_changes_atomically ... ok
+test runtime_config::tests::required_export_reports_missing_and_wrong_type_diagnostics ... ok
+test runtime_config::tests::reload_request_rolls_back_on_apply_failure_or_restart_only_change ... ok
+test runtime_config::tests::rejects_steel_module_unknown_export_and_forbidden_token ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 92 filtered out; finished in 0.00s
+
+$ nix develop --no-update-lock-file . -c rustc --edition=2021 tools/check_runtime_steel_config.rs -o /tmp/check_runtime_steel_config
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+$ nix shell nixpkgs#b3sum -c /tmp/check_runtime_steel_config --self-test
+runtime steel config self-test ok
+$ nix shell nixpkgs#b3sum -c /tmp/check_runtime_steel_config
+runtime steel config ok: 29 inventory rows, 20 Steel exports
+$ nix run .#cairn -- gate proposal introduce-steel-value-decoder-traits --root .
+{
+  "change": "introduce-steel-value-decoder-traits",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "1dfa541d0f96e87f806a18cc9a9b47c0bd1f6314dd8627e77a96951a63c3f947",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "6e4a10e2c7bf4244a156fe5e404f213febcec1214b73c5630a10e7b64623ca5c",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+$ nix run .#cairn -- gate design introduce-steel-value-decoder-traits --root .
+{
+  "change": "introduce-steel-value-decoder-traits",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "28e92f57cff5415c1db93fbf97aeba1cbcb992a33c035d825ce4828cb1144c7a",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "946bfe4f10ce27f088bd78878661bf3e0d938b25db353529251859d48f12ac31",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+$ nix run .#cairn -- gate tasks introduce-steel-value-decoder-traits --root .
+{
+  "change": "introduce-steel-value-decoder-traits",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "52b928d0794d6ed02c4c56c50b0348ffdc8037dc6509069c827a9b9c41dfc849",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "5df55bc649f6eaefc414bb1c23c7c3d57b95170629d37b4ba6894ee3a8f33a0c",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+$ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 15,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 17,
+  "valid": true
+}
+exit_status=0
