@@ -1,0 +1,12 @@
+cairn final inventory-drag-transactions 2026-06-06
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+exit_status=0

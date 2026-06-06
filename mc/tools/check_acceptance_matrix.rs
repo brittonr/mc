@@ -26,6 +26,7 @@ const REQUIRED_SEAMS: &[&str] = &[
     "Open-container semantics",
     "Inventory transaction packet family",
     "Inventory stack split/merge",
+    "Inventory drag transactions",
     "Two-client combat/damage",
     "Entity metadata packet family",
     "Flag-carrier death/return",

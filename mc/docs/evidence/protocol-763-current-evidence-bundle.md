@@ -36,6 +36,7 @@ Current-head index for the maintained Stevenarella ⇄ Valence CTF protocol-763 
 | Open-container semantics | `nix run .#mc-compat-valence-ctf-inventory-interaction` | `b7913ddd1f000981f411f7f14331b67820761c1d317c528fbf8a5070c139d3f3` |
 | Inventory transaction packet family | scenario-bounded inventory click receipts plus negative containment rails | `df02262c86a9b1966e613a8485464ea234aa31c06acd06230f3de3123e349d61` |
 | Inventory stack split/merge | `nix run .#mc-compat-valence-inventory-stack-split-merge` | `aed5b9f833e877525cb6444cd51ced99b72c0d06c96f70108ca3e19260252dc7` |
+| Inventory drag transactions | `nix run .#mc-compat-valence-inventory-drag-transactions` | `717b2f7f3c95da14af10564c66bc5a962bb03415e169ceb953cc71d60c856339` |
 | Two-client combat/damage | `nix run .#mc-compat-valence-ctf-combat-damage` | `b67962dd5d4fe7242b69fd7c879390e80e13528475d55d7feb5305289f762ac8` |
 | Entity metadata packet family | bounded Valence `ctf` metadata probe | `7e7fc51be2b85c1ceb37890494cf1dda76b28e91220993bc18d47fd2043fdebc` |
 | Flag-carrier death/return | `nix run .#mc-compat-valence-ctf-flag-carrier-death-return` | `d4202d7f04245dd385f16f9a174b84fa59a837fd75a8f9ba7db3cc7adaf692a4` |

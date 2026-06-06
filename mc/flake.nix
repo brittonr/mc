@@ -353,6 +353,38 @@
               mainProgram = "mc-compat-valence-inventory-stack-split-merge";
             };
           };
+          mc-compat-valence-inventory-drag-transactions = pkgs.writeShellApplication {
+            name = "mc-compat-valence-inventory-drag-transactions";
+            runtimeInputs = [ mc-compat-runner ];
+            text = ''
+              mode="--run"
+              if [[ "''${1:-}" == "--dry-run" || "''${1:-}" == "--run" ]]; then
+                mode="$1"
+                shift
+              fi
+
+              receipt="''${MC_COMPAT_INVENTORY_DRAG_RECEIPT:-target/mc-compat-inventory-drag/inventory-drag-transactions.json}"
+              mkdir -p "$(dirname "$receipt")"
+
+              export SERVER_PROTOCOL="''${SERVER_PROTOCOL:-763}"
+              export SERVER_VERSION="''${SERVER_VERSION:-1.20.1}"
+              export VALENCE_REV="''${VALENCE_REV:-main}"
+              export VALENCE_EXAMPLE="''${VALENCE_EXAMPLE:-ctf}"
+              export VALENCE_WORKTREE="''${VALENCE_WORKTREE:-/tmp/valence-compat-763}"
+              export VALENCE_TARGET_DIR="''${VALENCE_TARGET_DIR:-/tmp/valence-compat-763-target}"
+              export CLIENT_TIMEOUT="''${CLIENT_TIMEOUT:-120}"
+
+              exec mc-compat-runner "$mode" \
+                --server-backend valence \
+                --scenario inventory-drag-transactions \
+                --receipt "$receipt" \
+                "$@"
+            '';
+            meta = {
+              description = "Run the maintained protocol-763 Valence CTF inventory drag transaction receipt.";
+              mainProgram = "mc-compat-valence-inventory-drag-transactions";
+            };
+          };
           mc-compat-valence-ctf-combat-damage = pkgs.writeShellApplication {
             name = "mc-compat-valence-ctf-combat-damage";
             runtimeInputs = [ mc-compat-runner ];
@@ -909,7 +941,7 @@
           };
         in
         {
-          inherit valence stevenarella mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-inventory-stack-split-merge mc-compat-valence-ctf-combat-damage mc-compat-valence-ctf-combat-knockback mc-compat-valence-ctf-armor-equipment-mitigation mc-compat-valence-ctf-equipment-update-observation mc-compat-valence-ctf-projectile-hit mc-compat-valence-ctf-projectile-damage-attribution mc-compat-valence-ctf-flag-carrier-death-return mc-compat-valence-ctf-latency-jitter-inventory mc-compat-valence-ctf-reconnect-flag-state mc-compat-valence-ctf-invalid-pickup-ownership mc-compat-valence-ctf-invalid-return-drop mc-compat-valence-ctf-score-limit-win-condition mc-compat-valence-ctf-simultaneous-pickup-capture-race mc-compat-valence-ctf-spawn-team-balance-reset mc-compat-valence-survival-break-place-pickup mc-compat-valence-survival-crafting-table mc-compat-valence-survival-furnace-persistence mc-compat-mcp-controlled-smoke;
+          inherit valence stevenarella mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-inventory-stack-split-merge mc-compat-valence-inventory-drag-transactions mc-compat-valence-ctf-combat-damage mc-compat-valence-ctf-combat-knockback mc-compat-valence-ctf-armor-equipment-mitigation mc-compat-valence-ctf-equipment-update-observation mc-compat-valence-ctf-projectile-hit mc-compat-valence-ctf-projectile-damage-attribution mc-compat-valence-ctf-flag-carrier-death-return mc-compat-valence-ctf-latency-jitter-inventory mc-compat-valence-ctf-reconnect-flag-state mc-compat-valence-ctf-invalid-pickup-ownership mc-compat-valence-ctf-invalid-return-drop mc-compat-valence-ctf-score-limit-win-condition mc-compat-valence-ctf-simultaneous-pickup-capture-race mc-compat-valence-ctf-spawn-team-balance-reset mc-compat-valence-survival-break-place-pickup mc-compat-valence-survival-crafting-table mc-compat-valence-survival-furnace-persistence mc-compat-mcp-controlled-smoke;
           cairn = cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn;
           cargo-octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.cargo-octet;
           octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.octet;
@@ -966,6 +998,13 @@
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-inventory-stack-split-merge
           }/bin/mc-compat-valence-inventory-stack-split-merge";
           meta.description = "Run the maintained protocol-763 Valence CTF inventory stack split/merge receipt.";
+        };
+        mc-compat-valence-inventory-drag-transactions = {
+          type = "app";
+          program = "${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-inventory-drag-transactions
+          }/bin/mc-compat-valence-inventory-drag-transactions";
+          meta.description = "Run the maintained protocol-763 Valence CTF inventory drag transaction receipt.";
         };
         mc-compat-valence-ctf-combat-damage = {
           type = "app";
@@ -1507,6 +1546,50 @@
           ../check-inventory-stack-split-merge-evidence --self-test > ../inventory-stack-split-merge-evidence-self-test.log
           mkdir -p "$out"
           cp ../inventory-stack-split-merge-evidence-self-test.log "$out/"
+        '';
+        mc-compat-valence-inventory-drag-transactions-dry-run =
+          pkgs.runCommand "mc-compat-valence-inventory-drag-transactions-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
+            mkdir -p fake-stevenarella fake-valence receipts
+            printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+            git -C fake-valence init
+            git -C fake-valence config user.email ci@example.invalid
+            git -C fake-valence config user.name ci
+            printf 'fake valence\n' > fake-valence/README.md
+            git -C fake-valence add README.md
+            git -C fake-valence commit -m init
+            MC_COMPAT_INVENTORY_DRAG_RECEIPT="$PWD/receipts/inventory-drag-receipt.json" ${
+              self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-inventory-drag-transactions
+            }/bin/mc-compat-valence-inventory-drag-transactions --dry-run --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD > inventory-drag-dry-run.log
+            grep -Fq "scenario 'inventory-drag-transactions'" inventory-drag-dry-run.log
+            grep -Fq '"name": "inventory-drag-transactions"' receipts/inventory-drag-receipt.json
+            grep -Fq '"version": "1.20.1"' receipts/inventory-drag-receipt.json
+            grep -Fq '"protocol": 763' receipts/inventory-drag-receipt.json
+            grep -Fq '"timeout_secs": 120' receipts/inventory-drag-receipt.json
+            grep -Fq '"backend": "valence"' receipts/inventory-drag-receipt.json
+            grep -Fq '"scenario": {' receipts/inventory-drag-receipt.json
+            grep -Fq '"inventory_drag_initial_slot"' receipts/inventory-drag-receipt.json
+            grep -Fq '"inventory_drag_pickup_sent"' receipts/inventory-drag-receipt.json
+            grep -Fq '"inventory_drag_source_empty_seen"' receipts/inventory-drag-receipt.json
+            grep -Fq '"inventory_drag_target_a_sent"' receipts/inventory-drag-receipt.json
+            grep -Fq '"inventory_drag_target_b_sent"' receipts/inventory-drag-receipt.json
+            grep -Fq '"inventory_drag_final_distribution_seen"' receipts/inventory-drag-receipt.json
+            grep -Fq '"server_inventory_drag_pickup"' receipts/inventory-drag-receipt.json
+            grep -Fq '"server_inventory_drag_start"' receipts/inventory-drag-receipt.json
+            grep -Fq '"server_inventory_drag_target_a"' receipts/inventory-drag-receipt.json
+            grep -Fq '"server_inventory_drag_target_b"' receipts/inventory-drag-receipt.json
+            grep -Fq '"server_inventory_drag_end"' receipts/inventory-drag-receipt.json
+            grep -Fq '"expected_summary_packets": ["login_success", "play_join_game", "inventory_set_slot", "player_window_click"]' receipts/inventory-drag-receipt.json
+            mkdir -p "$out"
+            cp inventory-drag-dry-run.log receipts/inventory-drag-receipt.json "$out/"
+          '';
+        mc-compat-inventory-drag-transactions-evidence-check = pkgs.runCommand "mc-compat-inventory-drag-transactions-evidence-check" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc ]; } ''
+          cp -R ${./.} repo
+          chmod -R u+w repo
+          cd repo
+          rustc --edition=2021 tools/check_inventory_drag_transactions_evidence.rs -o ../check-inventory-drag-transactions-evidence
+          ../check-inventory-drag-transactions-evidence --self-test > ../inventory-drag-transactions-evidence-self-test.log
+          mkdir -p "$out"
+          cp ../inventory-drag-transactions-evidence-self-test.log "$out/"
         '';
         mc-compat-valence-ctf-combat-damage-dry-run =
           pkgs.runCommand "mc-compat-valence-ctf-combat-damage-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
@@ -2091,6 +2174,7 @@
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-blue-600s-soak-dry-run} "$out/ctf-blue-600s-soak"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-inventory-interaction-dry-run} "$out/inventory-interaction"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-inventory-stack-split-merge-dry-run} "$out/inventory-stack-split-merge"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-inventory-drag-transactions-dry-run} "$out/inventory-drag-transactions"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-combat-damage-dry-run} "$out/combat-damage"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-combat-knockback-dry-run} "$out/combat-knockback"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-armor-equipment-mitigation-dry-run} "$out/armor-equipment-mitigation"
@@ -2135,6 +2219,7 @@
           ctf-blue-600s-soak
           inventory-interaction
           inventory-stack-split-merge
+          inventory-drag-transactions
           combat-damage
           combat-knockback
           armor-equipment-mitigation
@@ -2372,7 +2457,7 @@
           grep -Fq -- "--apply" help.log
           grep -Fq -- "--stop" help.log
           grep -Fq -- "--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT" help.log
-          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|inventory-stack-split-merge|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-furnace-persistence|survival-hunger-food|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|vanilla-combat-reference-parity|vanilla-combat-armor-reference-parity|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset" help.log
+          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|inventory-stack-split-merge|inventory-drag-transactions|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-furnace-persistence|survival-hunger-food|survival-mob-drop|survival-redstone-toggle|survival-world-persistence-restart|survival-crash-recovery-parity|survival-block-entity-persistence-parity|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|vanilla-combat-reference-parity|vanilla-combat-armor-reference-parity|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset" help.log
           grep -Fq "MC_COMPAT_SCENARIO" help.log
           grep -Fq -- "--expect-status-description" help.log
           grep -Fq -- "--packet-capture-summary" help.log

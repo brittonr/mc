@@ -113,6 +113,12 @@ nix run .#mc-compat-valence-inventory-stack-split-merge
 # deterministic, non-side-effecting fixture for the same stack split/merge command shape:
 nix run .#mc-compat-valence-inventory-stack-split-merge -- --dry-run
 
+# Maintained protocol-763 Valence CTF inventory drag transaction receipt.
+# Requires one compatbot RedWool x64 drag from slot 37 into slots 38 and 39 with a 32/32 final distribution plus Valence ClickSlot drag correlation; not a broad inventory semantics claim.
+nix run .#mc-compat-valence-inventory-drag-transactions
+# deterministic, non-side-effecting fixture for the same drag transaction command shape:
+nix run .#mc-compat-valence-inventory-drag-transactions -- --dry-run
+
 # Maintained protocol-763 Valence survival break/place/pickup receipt.
 # Requires dedicated Valence survival_compat fixture, Stevenarella fixed-coordinate break/place probe, and Valence survival join/break/pickup/place server correlation.
 nix run .#mc-compat-valence-survival-break-place-pickup

@@ -1,0 +1,17 @@
+[server/mod.rs:4281][INFO] MC-COMPAT-MILESTONE inventory_drag_target_a_sent window=0 target_slot=38 state_id=1 button=1 mode=drag item=RedWool carried_count=64
+[server/mod.rs:4302][INFO] MC-COMPAT-MILESTONE inventory_drag_target_b_sent window=0 target_slot=39 state_id=1 button=1 mode=drag item=RedWool carried_count=64
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:wooden_button
+[model/mod.rs:368][ERROR] Error loading model minecraft:wooden_button
+[server/mod.rs:1807][INFO] MC-COMPAT-MILESTONE active_probe_input_stop
+[server/mod.rs:4323][INFO] MC-COMPAT-MILESTONE inventory_drag_end_sent window=0 slot=-999 state_id=1 button=2 mode=drag item=RedWool target_slots=38,39 target_counts=32,32 carried_count=0
+[server/mod.rs:4357][INFO] MC-COMPAT-MILESTONE inventory_drag_final_distribution_seen window=0 state_id=1 source_slot=37 source_count=0 target_slots=38,39 target_counts=32,32 item=RedWool carried_count=0 source=client_click_plan
+[server/mod.rs:1853][INFO] MC-COMPAT-MILESTONE team_probe_enter_red_portal x=-4.0 y=84.0 z=4.0
+[server/mod.rs:1872][INFO] MC-COMPAT-MILESTONE team_probe_hold_red_portal start
+[server/mod.rs:1885][INFO] MC-COMPAT-MILESTONE team_probe_select_hotbar_slot slot=0
+[server/mod.rs:1889][INFO] MC-COMPAT-MILESTONE team_probe_use_item_sent hand=main sequence=0
+[mc-compat] client compatbot finished Some(124); log: /tmp/mc-compat-client.compatbot.1780722237081.log
+[mc-compat] stopping managed Valence server process 2532658
+[mc-compat] wrote typed event log /home/brittonr/git/mc/docs/evidence/inventory-drag-transactions-2026-06-06.typed-events.log
+[mc-compat] wrote smoke receipt /home/brittonr/git/mc/docs/evidence/inventory-drag-transactions-2026-06-06.json
+
+exit_status=0

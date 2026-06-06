@@ -1,0 +1,18 @@
+flake final inventory-drag-transactions 2026-06-06
+this derivation will be built:
+  /nix/store/q8xx49xxmlaiswsk7jfs465qh6ql3ysz-mc-compat-inventory-drag-transactions-evidence-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/q8xx49xxmlaiswsk7jfs465qh6ql3ysz-mc-compat-inventory-drag-transactions-evidence-check.drv'...
+this derivation will be built:
+  /nix/store/4yxic6bbkdm9b8c5mn69fdp4knpgqigl-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/4yxic6bbkdm9b8c5mn69fdp4knpgqigl-mc-compat-scenario-manifest.drv'...
+this derivation will be built:
+  /nix/store/afwngvwm2zy5f90jxhl9ni1wxxf3hmsq-mc-compat-acceptance-matrix.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/afwngvwm2zy5f90jxhl9ni1wxxf3hmsq-mc-compat-acceptance-matrix.drv'...
+this derivation will be built:
+  /nix/store/18bpq12ki17b9mjp23fqr8fd4wzk0cwd-mc-compat-current-evidence-bundle.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/18bpq12ki17b9mjp23fqr8fd4wzk0cwd-mc-compat-current-evidence-bundle.drv'...
+exit_status=0
