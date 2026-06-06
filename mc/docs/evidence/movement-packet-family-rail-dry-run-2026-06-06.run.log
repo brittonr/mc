@@ -1,0 +1,20 @@
+$ nix build .#checks.x86_64-linux.mc-compat-valence-movement-packet-family-dry-run --no-link -L --rebuild
+checking outputs of '/nix/store/cb8kj643zgvr4l178kmprf1dfy7hvd0x-mc-compat-valence-movement-packet-family-dry-run.drv'...
+mc-compat-valence-movement-packet-family-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-valence-movement-packet-family-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-valence-movement-packet-family-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-valence-movement-packet-family-dry-run> hint: call:
+mc-compat-valence-movement-packet-family-dry-run> hint:
+mc-compat-valence-movement-packet-family-dry-run> hint:         git config --global init.defaultBranch <name>
+mc-compat-valence-movement-packet-family-dry-run> hint:
+mc-compat-valence-movement-packet-family-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-valence-movement-packet-family-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-valence-movement-packet-family-dry-run> hint:
+mc-compat-valence-movement-packet-family-dry-run> hint:         git branch -m <name>
+mc-compat-valence-movement-packet-family-dry-run> hint:
+mc-compat-valence-movement-packet-family-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-valence-movement-packet-family-dry-run> Initialized empty Git repository in /build/fake-valence/.git/
+mc-compat-valence-movement-packet-family-dry-run> [master (root-commit) c826923] init
+mc-compat-valence-movement-packet-family-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-valence-movement-packet-family-dry-run>  create mode 100644 README.md
+exit_status=0

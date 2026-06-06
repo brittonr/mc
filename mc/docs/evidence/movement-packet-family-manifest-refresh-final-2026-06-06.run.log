@@ -1,0 +1,5 @@
+$ refresh all docs/evidence/*.b3 manifests after flake minimization
+pass=1 changed=1
+pass=2 changed=1
+pass=3 changed=0
+exit_status=0

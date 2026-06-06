@@ -1,0 +1,74 @@
+{
+  "change": "promote-movement-packet-family",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "91d6d592b194672b56cb9a68e47ad7ce5bc8f394fc774e53a785419784062be1",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "a026b517cf774da042aeb7049e9bfecadcda5ee0f398b378e3e2840df5c433f0",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "promote-movement-packet-family",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "42b6f6d4a324ab7a746631fd1e925684702831e20d873c8f5adc92dd553a5c46",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "1383c5c77690c4aac1885092f0f6c19a884b0f1bce202b4ffd17d92aedfaa5f9",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "promote-movement-packet-family",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "5f77826c2a595863dffffcecfc65fc35fd632c5fd08443097c404359ee0de716",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "595fd7518f2cae8990f64a0b543ad4e37bc14e1766c5182e7bc824550c522f60",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change_issues": [],
+  "changes": 10,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 12,
+  "valid": true
+}
+exit_status=0

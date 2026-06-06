@@ -1,0 +1,21 @@
+$ nix build .#checks.x86_64-linux.mc-compat-movement-packet-family-check .#checks.x86_64-linux.mc-compat-acceptance-matrix .#checks.x86_64-linux.mc-compat-current-evidence-bundle --no-link -L
+these 3 derivations will be built:
+  /nix/store/fv0cn8161ds2ch855qznm2qyzafxsbcj-mc-compat-movement-packet-family-check.drv
+  /nix/store/shjbjrhqiyf07zg62h6x4wcz3qvv2jdl-mc-compat-current-evidence-bundle.drv
+  /nix/store/x1lh52v0dqcckd58zm8kll933b23csld-mc-compat-acceptance-matrix.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/x1lh52v0dqcckd58zm8kll933b23csld-mc-compat-acceptance-matrix.drv'...
+building '/nix/store/shjbjrhqiyf07zg62h6x4wcz3qvv2jdl-mc-compat-current-evidence-bundle.drv'...
+building '/nix/store/fv0cn8161ds2ch855qznm2qyzafxsbcj-mc-compat-movement-packet-family-check.drv'...
+$ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 9,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 11,
+  "valid": true
+}
+exit_status=0

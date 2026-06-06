@@ -1,0 +1,46 @@
+$ nix build movement closeout checks
+these 7 derivations will be built:
+  /nix/store/5ii84p18szinkg417ihlhv791l8zb4bw-mc-compat-current-evidence-bundle.drv
+  /nix/store/8m6jacpsbf8xcpyipcs26x4pwlahialr-mc-compat-valence-movement-packet-family.drv
+  /nix/store/bl19ky90lvjsyhhg6nyk46ai7n3ikhc2-mc-compat-cairn-task-evidence.drv
+  /nix/store/fsj3c8p600k4g3sb8in297sd5sw2870z-mc-compat-acceptance-matrix.drv
+  /nix/store/fv7w0d0g3a7bvlnb6gk3818n4z2vwjfq-mc-compat-movement-packet-family-check.drv
+  /nix/store/g93l6hqn3x5g9adgcb6yasv1pjlgppad-mc-compat-valence-movement-packet-family-dry-run.drv
+  /nix/store/kc9i8mq3ahf6fmddf106khgypbnkz7zr-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/fsj3c8p600k4g3sb8in297sd5sw2870z-mc-compat-acceptance-matrix.drv'...
+building '/nix/store/bl19ky90lvjsyhhg6nyk46ai7n3ikhc2-mc-compat-cairn-task-evidence.drv'...
+building '/nix/store/5ii84p18szinkg417ihlhv791l8zb4bw-mc-compat-current-evidence-bundle.drv'...
+building '/nix/store/kc9i8mq3ahf6fmddf106khgypbnkz7zr-mc-compat-evidence-manifests.drv'...
+building '/nix/store/fv7w0d0g3a7bvlnb6gk3818n4z2vwjfq-mc-compat-movement-packet-family-check.drv'...
+building '/nix/store/8m6jacpsbf8xcpyipcs26x4pwlahialr-mc-compat-valence-movement-packet-family.drv'...
+building '/nix/store/g93l6hqn3x5g9adgcb6yasv1pjlgppad-mc-compat-valence-movement-packet-family-dry-run.drv'...
+mc-compat-valence-movement-packet-family-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-valence-movement-packet-family-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-valence-movement-packet-family-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-valence-movement-packet-family-dry-run> hint: call:
+mc-compat-valence-movement-packet-family-dry-run> hint:
+mc-compat-valence-movement-packet-family-dry-run> hint:         git config --global init.defaultBranch <name>
+mc-compat-valence-movement-packet-family-dry-run> hint:
+mc-compat-valence-movement-packet-family-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-valence-movement-packet-family-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-valence-movement-packet-family-dry-run> hint:
+mc-compat-valence-movement-packet-family-dry-run> hint:         git branch -m <name>
+mc-compat-valence-movement-packet-family-dry-run> hint:
+mc-compat-valence-movement-packet-family-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-valence-movement-packet-family-dry-run> Initialized empty Git repository in /build/fake-valence/.git/
+mc-compat-valence-movement-packet-family-dry-run> [master (root-commit) a41feb4] init
+mc-compat-valence-movement-packet-family-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-valence-movement-packet-family-dry-run>  create mode 100644 README.md
+$ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 9,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 11,
+  "valid": true
+}
+exit_status=0

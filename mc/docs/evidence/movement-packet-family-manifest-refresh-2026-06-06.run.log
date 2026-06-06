@@ -1,0 +1,9 @@
+$ refresh all docs/evidence/*.b3 manifests to fixed point
+pass=1 changed=1
+pass=2 changed=1
+pass=3 changed=1
+pass=4 changed=1
+pass=5 changed=1
+pass=6 changed=1
+pass=7 changed=0
+exit_status=0

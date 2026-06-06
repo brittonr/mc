@@ -84,6 +84,7 @@ COVERED_SURFACES = [
     "survival_break_place_pickup",
     "survival_reference_packet_acceptance",
     "reconnect_flag_state",
+    "movement_packet_family",
 ]
 UNCOVERED_SURFACES = [
     "all_packets_all_states",
@@ -101,7 +102,7 @@ SCENARIO_EVIDENCE_BY_PACKET = {
     "KeepAliveC2SPacket": "latency_jitter_tolerance",
     "SetPlayerPositionAndRotationS2CPacket": "status_login_play_join",
     "PlayerMoveC2SPacket.PositionAndOnGround": "status_login_play_join",
-    "PlayerMoveC2SPacket.Full": "status_login_play_join",
+    "PlayerMoveC2SPacket.Full": "movement_packet_family",
     "PlayerInteractBlockC2SPacket": "inventory_drop_pickup_click_container_block_place",
     "PlayerInteractItemC2SPacket": "inventory_drop_pickup_click_container_block_place",
     "ClickSlotC2SPacket": "inventory_drop_pickup_click_container_block_place",

@@ -1,0 +1,22 @@
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-movement-packet-family",
+      "kind": "archive_change",
+      "path": "./cairn/changes/promote-movement-packet-family"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-movement-packet-family",
+  "dry_run": true,
+  "input_hash": "ab5f4ee5935db4675117fe4f008a8e7928a249cbbf0270eb997e37b6e9d57c39",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "71794554363a2418fa440f8410399a5570affcd4f5833c9456935c26b76308a6",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "e495f1e6b1ad2d55384be5ec3ecbc808bfe0ee33675ec403d1a87a8f478d6d3a"
+}
+exit_status=0

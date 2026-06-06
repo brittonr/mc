@@ -1,0 +1,65 @@
+{
+  "schema": "mc.compat.movement_packet_family.receipt.v1",
+  "created_at": "2026-06-06",
+  "row": "movement-packet-family",
+  "maintained_wrapper": "nix run .#mc-compat-valence-movement-packet-family",
+  "status": "pass",
+  "mode": "repo-local-evidence-index",
+  "source_revision": {
+    "parent": "5b99ac70",
+    "revision_status": "clean-before-movement-row-edits"
+  },
+  "covered_packet_rows": [
+    {
+      "wire_id": "play/serverbound/0x15",
+      "valence_packet_name": "Full",
+      "stevenarella_semantic": "PlayerPositionLook",
+      "packet_inventory_status": "scenario_bounded",
+      "parser_shape_status": "shape_review_missing",
+      "scenario_evidence": "movement_packet_family",
+      "positive_payload_fixture": "compatbota PlayerPositionLook x=-4.0 y=84.0 z=4.0 yaw=0.0 pitch=0.0 on_ground=true in ctf-spawn-team-balance-reset",
+      "malformed_or_broad_fixture": "not promoted; movement physics, collision, anti-cheat, latency tolerance, malicious-client resilience, and all variants remain non-claims"
+    }
+  ],
+  "live_receipt_evidence": {
+    "scenario": "ctf-spawn-team-balance-reset",
+    "receipt": "docs/evidence/protocol-763-ctf-spawn-team-balance-reset-2026-06-01.receipt.json",
+    "client_log": "docs/evidence/protocol-763-ctf-spawn-team-balance-reset-2026-06-01.client-a.log",
+    "server_log": "docs/evidence/protocol-763-ctf-spawn-team-balance-reset-2026-06-01.server.log",
+    "typed_events": "docs/evidence/protocol-763-ctf-spawn-team-balance-reset-2026-06-01.typed-events.log",
+    "source_snapshot": "docs/evidence/movement-packet-family-stevenarella-source-2026-06-06.rs"
+  },
+  "child_revisions": {
+    "stevenarella": {
+      "rev": "d9caec597041b3443d894701591752d23772e5ae",
+      "status": "clean"
+    },
+    "valence": {
+      "rev": "f40d6d6d5aeee300bdaeb406c475e2607ac3b6a7",
+      "status": "clean"
+    }
+  },
+  "normalized_metrics": {
+    "actor": "compatbota",
+    "start_position": "0.000,85.000,0.000",
+    "target_position": "-4.0,84.0,4.0",
+    "look": "yaw=0.0,pitch=0.0",
+    "on_ground": "true",
+    "tolerance": "exact_logged_values",
+    "client_full_position_look_sent": "ok",
+    "client_portal_entry_logged": "ok",
+    "server_red_assignment_correlation": "ok",
+    "packet_full_variant_bound": "ok"
+  },
+  "non_claims": [
+    "movement_physics",
+    "collision",
+    "anti_cheat",
+    "latency_tolerance",
+    "malicious_client_resilience",
+    "all_movement_variants",
+    "full_protocol_763_compatibility",
+    "public_server_safety",
+    "production_readiness"
+  ]
+}

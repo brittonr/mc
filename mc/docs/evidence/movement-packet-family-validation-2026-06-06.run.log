@@ -1,0 +1,9 @@
+these 3 derivations will be built:
+  /nix/store/71fymjky0v0h1b6b6rph6h23i19p6j1g-mc-compat-current-evidence-bundle.drv
+  /nix/store/h1nw835s6wapql19nrhf0nqvdb4wh0xr-mc-compat-acceptance-matrix.drv
+  /nix/store/z80ndb0wavpcgj5i3xm6sc8i7gk9v3rj-mc-compat-movement-packet-family-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/h1nw835s6wapql19nrhf0nqvdb4wh0xr-mc-compat-acceptance-matrix.drv'...
+building '/nix/store/71fymjky0v0h1b6b6rph6h23i19p6j1g-mc-compat-current-evidence-bundle.drv'...
+building '/nix/store/z80ndb0wavpcgj5i3xm6sc8i7gk9v3rj-mc-compat-movement-packet-family-check.drv'...
+exit_status=0

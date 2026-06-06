@@ -1,0 +1,25 @@
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/promote-movement-packet-family/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/promote-movement-packet-family/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-movement-packet-family",
+  "delta_specs": [
+    "./cairn/changes/promote-movement-packet-family/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "ab5f4ee5935db4675117fe4f008a8e7928a249cbbf0270eb997e37b6e9d57c39",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "fbf8d1b7734bea71fe67fec131ec9887058e04149a145d4166b2709ee000f1df",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "422bb6f9e7b9db1f0ce91196ea2f3943cf35d2f22d1c24c681f54303565e4ec7"
+}
+exit_status=0

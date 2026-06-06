@@ -1,0 +1,6 @@
+$ rustc --edition=2021 tools/check_movement_packet_family.rs -o /tmp/check-movement-packet-family
+$ /tmp/check-movement-packet-family --self-test
+movement packet family self-test passed: positive and negative fixtures exercised
+$ /tmp/check-movement-packet-family docs/evidence/movement-packet-family-2026-06-06.kv docs/evidence/protocol-763-packet-inventory-2026-05-28.tsv
+movement packet family evidence ok: docs/evidence/movement-packet-family-2026-06-06.kv; inventory ok: docs/evidence/protocol-763-packet-inventory-2026-05-28.tsv
+exit_status=0

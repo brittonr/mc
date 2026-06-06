@@ -827,6 +827,34 @@
               mainProgram = "mc-compat-valence-ctf-spawn-team-balance-reset";
             };
           };
+          mc-compat-valence-movement-packet-family = pkgs.writeShellApplication {
+            name = "mc-compat-valence-movement-packet-family";
+            runtimeInputs = [ mc-compat-runner ];
+            text = ''
+              mode="--run"
+              if [[ "''${1:-}" == "--dry-run" || "''${1:-}" == "--run" ]]; then
+                mode="$1"
+                shift
+              fi
+
+              receipt="''${MC_COMPAT_MOVEMENT_PACKET_FAMILY_RECEIPT:-target/mc-compat-movement-packet-family/movement-packet-family.json}"
+              mkdir -p "$(dirname "$receipt")"
+
+              export SERVER_PROTOCOL="''${SERVER_PROTOCOL:-763}"
+              export SERVER_VERSION="''${SERVER_VERSION:-1.20.1}"
+              export VALENCE_REV="''${VALENCE_REV:-main}"
+              export VALENCE_EXAMPLE="''${VALENCE_EXAMPLE:-ctf}"
+              export VALENCE_WORKTREE="''${VALENCE_WORKTREE:-/tmp/valence-compat-763}"
+              export VALENCE_TARGET_DIR="''${VALENCE_TARGET_DIR:-/tmp/valence-compat-763-target}"
+              export CLIENT_TIMEOUT="''${CLIENT_TIMEOUT:-120}"
+
+              exec mc-compat-runner "$mode"                 --server-backend valence                 --scenario ctf-spawn-team-balance-reset                 --receipt "$receipt"                 "$@"
+            '';
+            meta = {
+              description = "Run the maintained protocol-763 Valence movement packet-family receipt.";
+              mainProgram = "mc-compat-valence-movement-packet-family";
+            };
+          };
           mc-compat-valence-survival-break-place-pickup = pkgs.writeShellApplication {
             name = "mc-compat-valence-survival-break-place-pickup";
             runtimeInputs = [ mc-compat-runner ];
@@ -941,7 +969,7 @@
           };
         in
         {
-          inherit valence stevenarella mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-inventory-stack-split-merge mc-compat-valence-inventory-drag-transactions mc-compat-valence-ctf-combat-damage mc-compat-valence-ctf-combat-knockback mc-compat-valence-ctf-armor-equipment-mitigation mc-compat-valence-ctf-equipment-update-observation mc-compat-valence-ctf-projectile-hit mc-compat-valence-ctf-projectile-damage-attribution mc-compat-valence-ctf-flag-carrier-death-return mc-compat-valence-ctf-latency-jitter-inventory mc-compat-valence-ctf-reconnect-flag-state mc-compat-valence-ctf-invalid-pickup-ownership mc-compat-valence-ctf-invalid-return-drop mc-compat-valence-ctf-score-limit-win-condition mc-compat-valence-ctf-simultaneous-pickup-capture-race mc-compat-valence-ctf-spawn-team-balance-reset mc-compat-valence-survival-break-place-pickup mc-compat-valence-survival-crafting-table mc-compat-valence-survival-furnace-persistence mc-compat-mcp-controlled-smoke;
+          inherit valence stevenarella mc-compat-runner mc-compat-valence-ctf-600s-soak mc-compat-valence-ctf-blue-600s-soak mc-compat-valence-ctf-inventory-interaction mc-compat-valence-inventory-stack-split-merge mc-compat-valence-inventory-drag-transactions mc-compat-valence-ctf-combat-damage mc-compat-valence-ctf-combat-knockback mc-compat-valence-ctf-armor-equipment-mitigation mc-compat-valence-ctf-equipment-update-observation mc-compat-valence-ctf-projectile-hit mc-compat-valence-ctf-projectile-damage-attribution mc-compat-valence-ctf-flag-carrier-death-return mc-compat-valence-ctf-latency-jitter-inventory mc-compat-valence-ctf-reconnect-flag-state mc-compat-valence-ctf-invalid-pickup-ownership mc-compat-valence-ctf-invalid-return-drop mc-compat-valence-ctf-score-limit-win-condition mc-compat-valence-ctf-simultaneous-pickup-capture-race mc-compat-valence-ctf-spawn-team-balance-reset mc-compat-valence-movement-packet-family mc-compat-valence-survival-break-place-pickup mc-compat-valence-survival-crafting-table mc-compat-valence-survival-furnace-persistence mc-compat-mcp-controlled-smoke;
           cairn = cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn;
           cargo-octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.cargo-octet;
           octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.octet;
@@ -1601,6 +1629,16 @@
           mkdir -p "$out"
           cp ../scoreboard-team-packet-family-self-test.log ../scoreboard-team-packet-family-evidence.log "$out/"
         '';
+        mc-compat-movement-packet-family-check = pkgs.runCommand "mc-compat-movement-packet-family-check" { nativeBuildInputs = [ pkgs.rustc pkgs.gcc ]; } ''
+          cp -R ${./.} repo
+          chmod -R u+w repo
+          cd repo
+          rustc --edition=2021 tools/check_movement_packet_family.rs -o ../check-movement-packet-family
+          ../check-movement-packet-family --self-test > ../movement-packet-family-self-test.log
+          ../check-movement-packet-family docs/evidence/movement-packet-family-2026-06-06.kv > ../movement-packet-family-evidence.log
+          mkdir -p "$out"
+          cp ../movement-packet-family-self-test.log ../movement-packet-family-evidence.log "$out/"
+        '';
         mc-compat-valence-ctf-combat-damage-dry-run =
           pkgs.runCommand "mc-compat-valence-ctf-combat-damage-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
             mkdir -p fake-stevenarella fake-valence receipts
@@ -2025,6 +2063,30 @@
             mkdir -p "$out"
             cp ctf-spawn-team-balance-reset-dry-run.log receipts/ctf-spawn-team-balance-reset-receipt.json "$out/"
           '';
+        mc-compat-valence-movement-packet-family-dry-run =
+          pkgs.runCommand "mc-compat-valence-movement-packet-family-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
+            mkdir -p fake-stevenarella fake-valence receipts
+            printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+            git -C fake-valence init
+            git -C fake-valence config user.email mc-compat@example.invalid
+            git -C fake-valence config user.name mc-compat
+            printf '%s\n' fake > fake-valence/README.md
+            git -C fake-valence add README.md
+            git -C fake-valence commit -m init
+            MC_COMPAT_MOVEMENT_PACKET_FAMILY_RECEIPT="$PWD/receipts/movement-packet-family-receipt.json" ${
+              self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-movement-packet-family
+            }/bin/mc-compat-valence-movement-packet-family --dry-run --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD > movement-packet-family-dry-run.log
+            grep -Fq "scenario 'ctf-spawn-team-balance-reset'" movement-packet-family-dry-run.log
+            grep -Fq '"name": "ctf-spawn-team-balance-reset"' receipts/movement-packet-family-receipt.json
+            grep -Fq '"version": "1.20.1"' receipts/movement-packet-family-receipt.json
+            grep -Fq '"protocol": 763' receipts/movement-packet-family-receipt.json
+            grep -Fq '"ctf_spawn_team_reset_client_count"' receipts/movement-packet-family-receipt.json
+            grep -Fq '"server_ctf_spawn_red_assignment"' receipts/movement-packet-family-receipt.json
+            grep -Fq '"claims_correctness": false' receipts/movement-packet-family-receipt.json
+            grep -Fq '"claims_semantic_equivalence": false' receipts/movement-packet-family-receipt.json
+            mkdir -p "$out"
+            cp movement-packet-family-dry-run.log receipts/movement-packet-family-receipt.json "$out/"
+          '';
         mc-compat-valence-survival-break-place-pickup-dry-run =
           pkgs.runCommand "mc-compat-valence-survival-break-place-pickup-dry-run" { nativeBuildInputs = [ pkgs.git ]; } ''
             mkdir -p fake-stevenarella fake-valence receipts
@@ -2199,6 +2261,7 @@
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-score-limit-win-condition-dry-run} "$out/ctf-score-limit-win-condition"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-simultaneous-pickup-capture-race-dry-run} "$out/ctf-simultaneous-pickup-capture-race"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-spawn-team-balance-reset-dry-run} "$out/ctf-spawn-team-balance-reset"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-movement-packet-family-dry-run} "$out/movement-packet-family-rail"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-break-place-pickup-dry-run} "$out/survival-break-place-pickup"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-crafting-table-dry-run} "$out/survival-crafting-table"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-furnace-persistence-dry-run} "$out/survival-furnace-persistence"
@@ -2207,6 +2270,7 @@
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-acceptance-matrix} "$out/acceptance-matrix"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-current-evidence-bundle} "$out/current-evidence-bundle"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-scoreboard-team-packet-family-check} "$out/scoreboard-team-packet-family"
+          ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-movement-packet-family-check} "$out/movement-packet-family"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-evidence-manifests} "$out/evidence-manifests"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-full-survival-gate} "$out/full-survival-gate"
           ln -s ${self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-aggregate-claim-gates} "$out/aggregate-claim-gates"
@@ -2245,6 +2309,7 @@
           ctf-score-limit-win-condition
           ctf-simultaneous-pickup-capture-race
           ctf-spawn-team-balance-reset
+          movement-packet-family-rail
           red-blue-scoring-soak-live-refresh
           survival-break-place-pickup
           survival-crafting-table
@@ -2253,6 +2318,7 @@
           acceptance-matrix
           current-evidence-bundle
           scoreboard-team-packet-family
+          movement-packet-family
           evidence-manifests
           full-survival-gate
           aggregate-claim-gates

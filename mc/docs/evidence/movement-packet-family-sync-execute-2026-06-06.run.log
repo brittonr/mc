@@ -1,0 +1,48 @@
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/promote-movement-packet-family/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/promote-movement-packet-family/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-movement-packet-family",
+  "delta_specs": [
+    "./cairn/changes/promote-movement-packet-family/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "ab5f4ee5935db4675117fe4f008a8e7928a249cbbf0270eb997e37b6e9d57c39",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "4b17aeb39ac282f6c476bdeaeea44d2a868213475141bd650c791a03421e8f8b",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "f53cfe065ad01ff47374fb992ffc2cee91c5bf2a946a59865f64560aedd6a89a"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "4b17aeb39ac282f6c476bdeaeea44d2a868213475141bd650c791a03421e8f8b",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "f53cfe065ad01ff47374fb992ffc2cee91c5bf2a946a59865f64560aedd6a89a"
+    },
+    "kind": "sync",
+    "manifest_hash": "79eeae45158dee1ee0a561fceb1953a6c01573be95403a0ef8ab375037531071"
+  },
+  "plan_hash": "df31786e76b82cb5e050b21b669bf9249adccc99944a7af2012b6539712b45b4",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "831f31f15d049e3417b1947d0dc08abdecedb5bd11b34cb899821bee7959891d"
+}
+exit_status=0

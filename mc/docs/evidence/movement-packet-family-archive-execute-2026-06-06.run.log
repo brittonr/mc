@@ -1,0 +1,80 @@
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-movement-packet-family",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-06-promote-movement-packet-family"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-movement-packet-family",
+  "dry_run": false,
+  "input_hash": "ab5f4ee5935db4675117fe4f008a8e7928a249cbbf0270eb997e37b6e9d57c39",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "bc70d628d2539869d9ae83e6509fa4b864ca866ae71e3a122cb8f39550274de6",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-movement-packet-family/design.md"
+        },
+        {
+          "content_hash": "6fb2fc606d7ef24876eaa9ef0592d9ccf8008e4508ef022df3b10b21e20de480",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-movement-packet-family/proposal.md"
+        },
+        {
+          "content_hash": "3071dda4ad02cf4ce76c2490da304759f47100f85225902a4aac7a82a3f28185",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-movement-packet-family/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "08677d000d3f91a49cd17fd53de970832fd9a80d69dad77d5b04c86095cea02f",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-movement-packet-family/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/promote-movement-packet-family"
+        }
+      ],
+      "manifest_hash": "51c058a1aa433f841ef0cbe46db87ad958fb1c1019429fbaa0eabd66d999a183"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "bc70d628d2539869d9ae83e6509fa4b864ca866ae71e3a122cb8f39550274de6",
+          "exists": true,
+          "path": "./cairn/changes/promote-movement-packet-family/design.md"
+        },
+        {
+          "content_hash": "6fb2fc606d7ef24876eaa9ef0592d9ccf8008e4508ef022df3b10b21e20de480",
+          "exists": true,
+          "path": "./cairn/changes/promote-movement-packet-family/proposal.md"
+        },
+        {
+          "content_hash": "3071dda4ad02cf4ce76c2490da304759f47100f85225902a4aac7a82a3f28185",
+          "exists": true,
+          "path": "./cairn/changes/promote-movement-packet-family/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "08677d000d3f91a49cd17fd53de970832fd9a80d69dad77d5b04c86095cea02f",
+          "exists": true,
+          "path": "./cairn/changes/promote-movement-packet-family/tasks.md"
+        }
+      ],
+      "manifest_hash": "bb929233485b11b0fcaa78c17ac637817557e43324ab0a82b68348278ea3e9d1"
+    },
+    "kind": "archive",
+    "manifest_hash": "8a85d10c04637363ccf2b3a99c9e9b46378054004ae0104895e214d533daec93"
+  },
+  "plan_hash": "62c7eb612510bff04d04db3a09d23d7a380adafc41b7d71e070d2c96bf1c45a6",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "982bbf195134c461a4b3d0054f287e85f908be49eeb8172219fe22dd9db3b38e"
+}
+exit_status=0

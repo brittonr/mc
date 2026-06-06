@@ -21,6 +21,7 @@ next_action: add packet-family rows only when mapping/parser fixtures and bounde
 | survival_break_place_pickup | Covered only by one bounded survival fixture row | Dedicated break/place/pickup receipt. |
 | survival_reference_packet_acceptance | Four packet families promoted; remaining rows bounded/non-claim | Paper 1.20.1 reference rail plus Stevenarella parser fixtures cover command_tree_raw, chunk_delta_raw, recipe_book_raw, and custom_payload_brand. Other observed mappings stay scenario-bounded until parser fixtures exist. |
 | reconnect_flag_state | Covered only by one bounded reconnect row | Reconnect flag-state receipt. |
+| movement_packet_family | Covered only by one bounded movement packet-family row | `movement-packet-family` normalized evidence covers one `Full -> PlayerPositionLook` RED-portal transition; movement physics and all movement variants remain non-claims. |
 
 ## Uncovered protocol surfaces
 
