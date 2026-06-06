@@ -199,7 +199,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "",
         dry_run_wrapper: "mc-compat-valence-survival-chest-persistence",
         dry_run_exclusion_reason:
-            "active prove-survival-chest-persistence Cairn owns fixture and wrapper promotion",
+            "archived prove-survival-chest-persistence uses live paired fixture receipts instead of a dedicated dry-run wrapper",
         migration_state: "substring-fallback",
     },
     GeneratedScenarioRow {
@@ -464,7 +464,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "",
         dry_run_wrapper: "mc-compat-smoke",
         dry_run_exclusion_reason:
-            "active survival-biome-dimension-parity Cairn owns dry-run wrapper and paired fixture promotion",
+            "archived survival-biome-dimension-parity uses live paired fixture receipts instead of a dedicated dry-run wrapper",
         migration_state: "substring-fallback",
     },
     GeneratedScenarioRow {
@@ -594,7 +594,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "",
         dry_run_wrapper: "mc-compat-smoke",
         dry_run_exclusion_reason:
-            "active vanilla-combat-armor-reference-parity Cairn owns paired fixture promotion and checker-gated receipts",
+            "archived vanilla-combat-armor-reference-parity Cairn owns paired fixture promotion and checker-gated receipts",
         migration_state: "substring-fallback",
     },
     GeneratedScenarioRow {
