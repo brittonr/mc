@@ -1,0 +1,20 @@
+## runner_scenario_modules_evidence_manifest_check
+command=nix run --no-update-lock-file .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=353; entries=2253; current=2253; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+refresh_check_exit_status=0
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/x1nj50lb2kqvci9yn7xfqdk49y216jgp.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 281 ms
+warning: error: unable to download 'http://100.100.103.95:5000/x1nj50lb2kqvci9yn7xfqdk49y216jgp.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 590 ms
+warning: error: unable to download 'http://100.100.103.95:5000/x1nj50lb2kqvci9yn7xfqdk49y216jgp.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1086 ms
+warning: error: unable to download 'http://100.100.103.95:5000/x1nj50lb2kqvci9yn7xfqdk49y216jgp.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 2799 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/x1nj50lb2kqvci9yn7xfqdk49y216jgp.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/x1nj50lb2kqvci9yn7xfqdk49y216jgp.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+this derivation will be built:
+  /nix/store/am4jallfwx1y4h4b29cgspvwgrs5w59x-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/am4jallfwx1y4h4b29cgspvwgrs5w59x-mc-compat-evidence-manifests.drv'...
+evidence_manifests_exit_status=0
+exit_status=0

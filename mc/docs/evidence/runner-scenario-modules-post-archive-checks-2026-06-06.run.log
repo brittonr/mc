@@ -1,0 +1,47 @@
+## runner_scenario_modules_post_archive_checks
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+cairn_validate_exit_status=0
+command=nix run --no-update-lock-file .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=353; entries=2254; current=2254; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+evidence_manifest_refresh_check_exit_status=0
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/0jn95yka0bjixbbgdc918rdk4hc661gz.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 263 ms
+warning: error: unable to download 'http://100.100.103.95:5000/0jn95yka0bjixbbgdc918rdk4hc661gz.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 555 ms
+warning: error: unable to download 'http://100.100.103.95:5000/0jn95yka0bjixbbgdc918rdk4hc661gz.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1267 ms
+warning: error: unable to download 'http://100.100.103.95:5000/0jn95yka0bjixbbgdc918rdk4hc661gz.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 2804 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/0jn95yka0bjixbbgdc918rdk4hc661gz.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/0jn95yka0bjixbbgdc918rdk4hc661gz.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+this derivation will be built:
+  /nix/store/6b55h02llg7ysih97ir592kraqs8x4w4-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/6b55h02llg7ysih97ir592kraqs8x4w4-mc-compat-cairn-task-evidence.drv'...
+task_evidence_exit_status=0
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/zh9wbyapxbzmcbd44n75gkskmqb6nanj.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 263 ms
+warning: error: unable to download 'http://100.100.103.95:5000/zh9wbyapxbzmcbd44n75gkskmqb6nanj.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 594 ms
+warning: error: unable to download 'http://100.100.103.95:5000/zh9wbyapxbzmcbd44n75gkskmqb6nanj.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1005 ms
+warning: error: unable to download 'http://100.100.103.95:5000/zh9wbyapxbzmcbd44n75gkskmqb6nanj.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2033 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/zh9wbyapxbzmcbd44n75gkskmqb6nanj.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/zh9wbyapxbzmcbd44n75gkskmqb6nanj.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds
+this derivation will be built:
+  /nix/store/ihizw6c9dv59anvzlnq78456w6ff1hm1-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/ihizw6c9dv59anvzlnq78456w6ff1hm1-mc-compat-scenario-manifest.drv'...
+scenario_manifest_exit_status=0
+exit_status=0

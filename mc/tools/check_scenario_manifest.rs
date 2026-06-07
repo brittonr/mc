@@ -7,6 +7,8 @@ use std::process::ExitCode;
 const MANIFEST_PATH: &str = "config/mc-compat/scenario-manifest.ncl";
 const GENERATED_RUST_PATH: &str = "tools/mc-compat-runner/src/scenario_manifest_generated.rs";
 const RUNNER_MAIN_PATH: &str = "tools/mc-compat-runner/src/main.rs";
+const RUNNER_SCENARIO_CORE_PATH: &str = "tools/mc-compat-runner/src/scenario_core.rs";
+const RUNNER_SURFACE_PATH: &str = "tools/mc-compat-runner/src/{main.rs,scenario_core.rs}";
 const FLAKE_PATH: &str = "flake.nix";
 const README_PATH: &str = "README.md";
 const CURRENT_BUNDLE_PATH: &str = "docs/evidence/protocol-763-current-evidence-bundle.md";
@@ -95,14 +97,16 @@ fn run_repo_check(root: &Path) -> Result<String, Vec<String>> {
     validate_manifest(&manifest)?;
 
     let generated = read_repo_file(root, GENERATED_RUST_PATH)?;
-    let runner = read_repo_file(root, RUNNER_MAIN_PATH)?;
+    let runner_main = read_repo_file(root, RUNNER_MAIN_PATH)?;
+    let runner_scenario_core = read_repo_file(root, RUNNER_SCENARIO_CORE_PATH)?;
+    let runner_surface = combined_runner_surface(&runner_main, &runner_scenario_core);
     let flake = read_repo_file(root, FLAKE_PATH)?;
     let readme = read_repo_file(root, README_PATH)?;
     let current_bundle = read_repo_file(root, CURRENT_BUNDLE_PATH)?;
 
     let mut errors = Vec::new();
     errors.extend(validate_generated_tables(&manifest.rows, &generated));
-    errors.extend(validate_runner_surfaces(&manifest.rows, &runner));
+    errors.extend(validate_runner_surfaces(&manifest.rows, &runner_surface));
     errors.extend(validate_flake_surfaces(&manifest.rows, &flake));
     errors.extend(validate_readme_surfaces(&manifest.rows, &readme));
     errors.extend(validate_current_bundle_surfaces(
@@ -534,19 +538,23 @@ fn validate_generated_tables(rows: &[ScenarioRow], generated: &str) -> Vec<Strin
     errors
 }
 
+fn combined_runner_surface(main: &str, scenario_core: &str) -> String {
+    format!("{main}\n{scenario_core}")
+}
+
 fn validate_runner_surfaces(rows: &[ScenarioRow], runner: &str) -> Vec<String> {
     let mut errors = Vec::new();
     for row in rows {
         require_contains(
             &mut errors,
-            RUNNER_MAIN_PATH,
+            RUNNER_SURFACE_PATH,
             runner,
             &format!("\"{}\"", row.name),
         );
         for alias in &row.aliases {
             require_contains(
                 &mut errors,
-                RUNNER_MAIN_PATH,
+                RUNNER_SURFACE_PATH,
                 runner,
                 &format!("\"{alias}\""),
             );
@@ -558,7 +566,7 @@ fn validate_runner_surfaces(rows: &[ScenarioRow], runner: &str) -> Vec<String> {
         {
             require_contains(
                 &mut errors,
-                RUNNER_MAIN_PATH,
+                RUNNER_SURFACE_PATH,
                 runner,
                 &format!("\"{milestone}\""),
             );
@@ -566,7 +574,7 @@ fn validate_runner_surfaces(rows: &[ScenarioRow], runner: &str) -> Vec<String> {
         for forbidden in &row.forbidden_patterns {
             require_contains(
                 &mut errors,
-                RUNNER_MAIN_PATH,
+                RUNNER_SURFACE_PATH,
                 runner,
                 &format!("\"{forbidden}\""),
             );
@@ -647,6 +655,15 @@ fn run_self_tests() -> Result<String, Vec<String>> {
             errors.push(format!("self-test case {name} expected pass={should_pass}"));
         }
     }
+    let manifest = parse_manifest(&valid_fixture()).expect("valid fixture parses");
+    let split_surface = combined_runner_surface("", "\"smoke\"\n\"protocol_detected\"\n\"panic\"");
+    if !validate_runner_surfaces(&manifest.rows, &split_surface).is_empty() {
+        errors.push("self-test case split_runner_surface expected pass=true".to_string());
+    }
+    if validate_runner_surfaces(&manifest.rows, "\"smoke\"").is_empty() {
+        errors.push("self-test case missing_split_runner_surface expected pass=false".to_string());
+    }
+
     if errors.is_empty() {
         Ok("positive and negative fixtures exercised".to_string())
     } else {

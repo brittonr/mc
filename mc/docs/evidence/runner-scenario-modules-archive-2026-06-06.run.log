@@ -1,0 +1,106 @@
+## runner_scenario_modules_archive
+command=CAIRN_ARCHIVE_DATE=2026-06-06 nix run --no-update-lock-file .#cairn -- archive split-mc-compat-runner-scenario-modules --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: split-mc-compat-runner-scenario-modules",
+      "kind": "archive_change",
+      "path": "./cairn/changes/split-mc-compat-runner-scenario-modules"
+    }
+  ],
+  "blocked": false,
+  "change": "split-mc-compat-runner-scenario-modules",
+  "dry_run": true,
+  "input_hash": "c907b701ba08172225842356ca77bcc95cdad43f42ca5b186ee1af54d72f2ad8",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "943df58114e6962f0c76b28e1ee14e51c60354a2eb4863309ceeb60d6e290df8",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "d843f5f66953fae94e4e5e3487054614ed37ba9daf6264dec29fbbd90ff61240"
+}
+archive_dry_run_exit_status=0
+command=CAIRN_ARCHIVE_DATE=2026-06-06 nix run --no-update-lock-file .#cairn -- archive split-mc-compat-runner-scenario-modules --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: split-mc-compat-runner-scenario-modules",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-06-split-mc-compat-runner-scenario-modules"
+    }
+  ],
+  "blocked": false,
+  "change": "split-mc-compat-runner-scenario-modules",
+  "dry_run": false,
+  "input_hash": "c907b701ba08172225842356ca77bcc95cdad43f42ca5b186ee1af54d72f2ad8",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "eacc7a28c9a1b417efd15001c56cf007301422f148c9c4723579f209628d8918",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-split-mc-compat-runner-scenario-modules/design.md"
+        },
+        {
+          "content_hash": "e0592c6d0ffb47f02e8110622dc309b441ba3a99ca41b1db137726742a173cc2",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-split-mc-compat-runner-scenario-modules/proposal.md"
+        },
+        {
+          "content_hash": "e6592788b1043db1ad423ffe46e61c4faba010b7c50e3f141ececd6ad84a7afd",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-split-mc-compat-runner-scenario-modules/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "70c46e5f8b320f6201149945d9d2236a41f39d96767bcc90815c8bd7d99350fb",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-split-mc-compat-runner-scenario-modules/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/split-mc-compat-runner-scenario-modules"
+        }
+      ],
+      "manifest_hash": "8895f5be3cd9d57f0b08a4ae0ca28792ef86875e6870716000579cf230586607"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "eacc7a28c9a1b417efd15001c56cf007301422f148c9c4723579f209628d8918",
+          "exists": true,
+          "path": "./cairn/changes/split-mc-compat-runner-scenario-modules/design.md"
+        },
+        {
+          "content_hash": "e0592c6d0ffb47f02e8110622dc309b441ba3a99ca41b1db137726742a173cc2",
+          "exists": true,
+          "path": "./cairn/changes/split-mc-compat-runner-scenario-modules/proposal.md"
+        },
+        {
+          "content_hash": "e6592788b1043db1ad423ffe46e61c4faba010b7c50e3f141ececd6ad84a7afd",
+          "exists": true,
+          "path": "./cairn/changes/split-mc-compat-runner-scenario-modules/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "70c46e5f8b320f6201149945d9d2236a41f39d96767bcc90815c8bd7d99350fb",
+          "exists": true,
+          "path": "./cairn/changes/split-mc-compat-runner-scenario-modules/tasks.md"
+        }
+      ],
+      "manifest_hash": "5e357c3db4ff63af8aaaac9b8714a7becf4f162b7b611be4e67aab51b297c8c4"
+    },
+    "kind": "archive",
+    "manifest_hash": "5084cf6f946c059940c2cd8382c18bfc2c8827d067f343fe0f2e4fd16a9c460a"
+  },
+  "plan_hash": "2ea2b2e74b37b131eabbe6b60a6df9349adb4d001610fd0299e698b093cc8815",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "5608236a81d8a11084a999fa205c57d113ce0587103a539ab22d1b7ea06d39ac"
+}
+archive_execute_exit_status=0
+exit_status=0

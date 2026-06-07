@@ -1,0 +1,72 @@
+## runner_scenario_modules_dry_run_checks
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-dry-run .#checks.x86_64-linux.mc-compat-multi-client-scenario-dry-run .#checks.x86_64-linux.mc-compat-mcp-controlled-smoke-dry-run --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/g1sdizn4qckq0p84ckpscx2h1y3971xs.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 267 ms
+warning: error: unable to download 'http://100.100.103.95:5000/z77a00l5dwmp45r2fzx5ikdyyvh7sh0m.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 267 ms
+warning: error: unable to download 'http://100.100.103.95:5000/147h274rqlld486g8nxjc0vzd9m8jn5c.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 253 ms
+warning: error: unable to download 'http://100.100.103.95:5000/147h274rqlld486g8nxjc0vzd9m8jn5c.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 616 ms
+warning: error: unable to download 'http://100.100.103.95:5000/g1sdizn4qckq0p84ckpscx2h1y3971xs.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 527 ms
+warning: error: unable to download 'http://100.100.103.95:5000/z77a00l5dwmp45r2fzx5ikdyyvh7sh0m.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 564 ms
+warning: error: unable to download 'http://100.100.103.95:5000/g1sdizn4qckq0p84ckpscx2h1y3971xs.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1060 ms
+warning: error: unable to download 'http://100.100.103.95:5000/z77a00l5dwmp45r2fzx5ikdyyvh7sh0m.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 1140 ms
+warning: error: unable to download 'http://100.100.103.95:5000/147h274rqlld486g8nxjc0vzd9m8jn5c.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1058 ms
+warning: error: unable to download 'http://100.100.103.95:5000/g1sdizn4qckq0p84ckpscx2h1y3971xs.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2155 ms
+warning: error: unable to download 'http://100.100.103.95:5000/147h274rqlld486g8nxjc0vzd9m8jn5c.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2037 ms
+warning: error: unable to download 'http://100.100.103.95:5000/z77a00l5dwmp45r2fzx5ikdyyvh7sh0m.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2035 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/147h274rqlld486g8nxjc0vzd9m8jn5c.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/147h274rqlld486g8nxjc0vzd9m8jn5c.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/z77a00l5dwmp45r2fzx5ikdyyvh7sh0m.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/z77a00l5dwmp45r2fzx5ikdyyvh7sh0m.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/g1sdizn4qckq0p84ckpscx2h1y3971xs.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/g1sdizn4qckq0p84ckpscx2h1y3971xs.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+these 4 derivations will be built:
+  /nix/store/ajll5yg52kmypzcsil9wwpsr35vangdm-mc-compat-multi-client-scenario-dry-run.drv
+  /nix/store/jnxdzhkcvlbx2gl1fvimy706mfz1fa5d-mc-compat-mcp-controlled-smoke.drv
+  /nix/store/q24hbbybjj13a0z2h6lnbdhanq11q5qs-mc-compat-dry-run.drv
+  /nix/store/wmlh51xrh1pndb7qi6hgcv5nr4x4d8j4-mc-compat-mcp-controlled-smoke-dry-run.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/q24hbbybjj13a0z2h6lnbdhanq11q5qs-mc-compat-dry-run.drv'...
+building '/nix/store/ajll5yg52kmypzcsil9wwpsr35vangdm-mc-compat-multi-client-scenario-dry-run.drv'...
+building '/nix/store/jnxdzhkcvlbx2gl1fvimy706mfz1fa5d-mc-compat-mcp-controlled-smoke.drv'...
+mc-compat-multi-client-scenario-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-multi-client-scenario-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-multi-client-scenario-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-multi-client-scenario-dry-run> hint: call:
+mc-compat-multi-client-scenario-dry-run> hint:
+mc-compat-multi-client-scenario-dry-run> hint:  git config --global init.defaultBranch <name>
+mc-compat-multi-client-scenario-dry-run> hint:
+mc-compat-multi-client-scenario-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-multi-client-scenario-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-multi-client-scenario-dry-run> hint:
+mc-compat-multi-client-scenario-dry-run> hint:  git branch -m <name>
+mc-compat-multi-client-scenario-dry-run> hint:
+mc-compat-multi-client-scenario-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-multi-client-scenario-dry-run> Initialized empty Git repository in /build/fake-valence/.git/
+mc-compat-multi-client-scenario-dry-run> [master (root-commit) 2f22601] init
+mc-compat-multi-client-scenario-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-multi-client-scenario-dry-run>  create mode 100644 README.md
+building '/nix/store/wmlh51xrh1pndb7qi6hgcv5nr4x4d8j4-mc-compat-mcp-controlled-smoke-dry-run.drv'...
+mc-compat-mcp-controlled-smoke-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-mcp-controlled-smoke-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-mcp-controlled-smoke-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-mcp-controlled-smoke-dry-run> hint: call:
+mc-compat-mcp-controlled-smoke-dry-run> hint:
+mc-compat-mcp-controlled-smoke-dry-run> hint:   git config --global init.defaultBranch <name>
+mc-compat-mcp-controlled-smoke-dry-run> hint:
+mc-compat-mcp-controlled-smoke-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-mcp-controlled-smoke-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-mcp-controlled-smoke-dry-run> hint:
+mc-compat-mcp-controlled-smoke-dry-run> hint:   git branch -m <name>
+mc-compat-mcp-controlled-smoke-dry-run> hint:
+mc-compat-mcp-controlled-smoke-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-mcp-controlled-smoke-dry-run> Initialized empty Git repository in /build/repo/fake-valence/.git/
+mc-compat-mcp-controlled-smoke-dry-run> [master (root-commit) 2f22601] init
+mc-compat-mcp-controlled-smoke-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-mcp-controlled-smoke-dry-run>  create mode 100644 README.md
+exit_status=0

@@ -1,0 +1,16 @@
+## runner_scenario_modules_scenario_manifest
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/748r27rmjqgsjhxm7m53r5zxcwgsby78.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 308 ms
+warning: error: unable to download 'http://100.100.103.95:5000/748r27rmjqgsjhxm7m53r5zxcwgsby78.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 673 ms
+warning: error: unable to download 'http://100.100.103.95:5000/748r27rmjqgsjhxm7m53r5zxcwgsby78.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1214 ms
+warning: error: unable to download 'http://100.100.103.95:5000/748r27rmjqgsjhxm7m53r5zxcwgsby78.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2585 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/748r27rmjqgsjhxm7m53r5zxcwgsby78.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/748r27rmjqgsjhxm7m53r5zxcwgsby78.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds
+this derivation will be built:
+  /nix/store/vy753mvghzbjz0xlm8zvlvk94wjnxrnr-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/vy753mvghzbjz0xlm8zvlvk94wjnxrnr-mc-compat-scenario-manifest.drv'...
+exit_status=0

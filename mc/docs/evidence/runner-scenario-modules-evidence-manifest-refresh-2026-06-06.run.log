@@ -1,0 +1,4 @@
+## runner_scenario_modules_evidence_manifest_refresh
+command=nix run --no-update-lock-file .#evidence-manifest-refresh -- --refresh
+evidence manifest refresh ok: mode=refresh; passes=5; manifests=353; entries=2253; current=2253; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=5; manifest_writes=70
+exit_status=0

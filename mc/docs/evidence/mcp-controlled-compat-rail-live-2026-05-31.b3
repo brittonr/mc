@@ -6,7 +6,7 @@ b622625de62c2c737cf98f09a2dac4d7a028c9d20a07c537c103740bc3ed9e54  docs/evidence/
 af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262  docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.stderr.log
 1d4cf454cf539a1c29b65f309a7f0868b38566c13053491af6ab689018bc7ce6  docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt.typed-events.log
 b0a89dbab5cb4ecc761821b2476532fcb4c44d81d3488df1ed984e8c5c129a99  docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.receipt-frames/mcp-controlled-smoke/latest-frame.png
-2186f8895c7983751fb4688d4f451a27dcd7da864ef59c9e16218f959029f231  tools/mc-compat-runner/src/main.rs
+3ff512d32b8c72e18905f0527ea11e4c49c332732553aa8ba01b8fc771c8de34  tools/mc-compat-runner/src/main.rs
 f774c8a5184825cd307223771d3257d529d5c1a4229028ddb1a0ed845b8144d4  tools/mc-compat-runner/src/scenario_manifest_generated.rs
 2f63d3bf19a6f18144937ed9aee69ea6a0f1e44e60c732e559007665698f269b  tools/check_mcp_controlled_compat_rail.rs
 b18278e1ec5ba4974f22acedecef765aeaceb7413ba7377de1adfd4f4babf118  config/mc-compat/scenario-manifest.ncl

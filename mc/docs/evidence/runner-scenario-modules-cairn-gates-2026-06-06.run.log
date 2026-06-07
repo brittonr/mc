@@ -1,0 +1,69 @@
+## runner_scenario_modules_cairn_gates
+command=nix run --no-update-lock-file .#cairn -- gate <proposal|design|tasks> split-mc-compat-runner-scenario-modules --root .
+{
+  "change": "split-mc-compat-runner-scenario-modules",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "93834eb00bfd2f496f835cfc48f861ef417e9550b22ad1542a7d9059deb38461",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "8e51ff26a1a9a05b177ddbe53a1512dad31b6caf25452b795c86d7169f3ff194",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+proposal_exit_status=0
+{
+  "change": "split-mc-compat-runner-scenario-modules",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "eaf10d08adaaf4f3ac6b2f40503ef5bc50a994be12fe976e871ef43bc3a9cdf3",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "9554dfe5a0fa0f7ae1a4db325788847c0f81bb59c64e8ecf6a7d2d0251500710",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+design_exit_status=0
+{
+  "change": "split-mc-compat-runner-scenario-modules",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "3d39ba8367c3d5deb96920e2de719e4cbfc4e303d7716d68ee6d2b1d4d4c5984",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "09a6c1d0817277f0d91b372a67187a14c88d5f7c753a33fe1c03d34b38287d34",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+tasks_exit_status=0
+exit_status=0

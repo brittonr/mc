@@ -1,0 +1,14 @@
+# Tasks
+
+- [x] [serial] Define runner module boundaries, public scenario-core API, and no-public-surface-change scope. r[mc_compatibility.runner_scenario_modules.boundaries]
+  - Evidence: `docs/evidence/runner-scenario-modules-2026-06-06.md` and `docs/evidence/runner-scenario-modules-runner-tests-2026-06-06.run.log`; BLAKE3 manifest `docs/evidence/runner-scenario-modules-2026-06-06.b3`.
+- [x] [depends:boundaries] Extract scenario identity, static specs, behavior kinds, behavior lookup, and validation into pure scenario modules. r[mc_compatibility.runner_scenario_modules.scenario_core]
+  - Evidence: `docs/evidence/runner-scenario-modules-2026-06-06.md` and `docs/evidence/runner-scenario-modules-runner-tests-2026-06-06.run.log`; BLAKE3 manifest `docs/evidence/runner-scenario-modules-2026-06-06.b3`.
+- [x] [depends:scenario_core] Keep CLI parsing, backend/client orchestration, environment mutation, log collection, and receipt writing in imperative shell code. r[mc_compatibility.runner_scenario_modules.imperative_shell]
+  - Evidence: `docs/evidence/runner-scenario-modules-2026-06-06.md` and `docs/evidence/runner-scenario-modules-runner-tests-2026-06-06.run.log`; BLAKE3 manifest `docs/evidence/runner-scenario-modules-2026-06-06.b3`.
+- [x] [depends:imperative_shell] Preserve scenario names, aliases, dry-run output, manifest surfaces, receipt fields, and non-claim flags across the split. r[mc_compatibility.runner_scenario_modules.surface_parity]
+  - Evidence: `docs/evidence/runner-scenario-modules-scenario-manifest-2026-06-06.run.log`, `docs/evidence/runner-scenario-modules-dry-run-checks-2026-06-06.run.log`, and `docs/evidence/runner-scenario-modules-2026-06-06.md`; BLAKE3 manifest `docs/evidence/runner-scenario-modules-2026-06-06.b3`.
+- [x] [depends:surface_parity] Add positive module parity tests and negative invalid-spec tests for duplicated canonical names, missing aliases, missing milestones, and unsupported behavior defaults. r[mc_compatibility.runner_scenario_modules.tests]
+  - Evidence: `docs/evidence/runner-scenario-modules-runner-tests-2026-06-06.run.log` and `docs/evidence/runner-scenario-modules-2026-06-06.md`; BLAKE3 manifest `docs/evidence/runner-scenario-modules-2026-06-06.b3`.
+- [x] [depends:tests] Run runner tests, scenario manifest checks, dry-run checks, Cairn gates, and Cairn validation with reviewable logs. r[mc_compatibility.runner_scenario_modules.validation]
+  - Evidence: `docs/evidence/runner-scenario-modules-runner-tests-2026-06-06.run.log`, `docs/evidence/runner-scenario-modules-scenario-manifest-2026-06-06.run.log`, `docs/evidence/runner-scenario-modules-dry-run-checks-2026-06-06.run.log`, `docs/evidence/runner-scenario-modules-cairn-gates-2026-06-06.run.log`, and `docs/evidence/runner-scenario-modules-cairn-validate-2026-06-06.run.log`; BLAKE3 manifest `docs/evidence/runner-scenario-modules-2026-06-06.b3`.
