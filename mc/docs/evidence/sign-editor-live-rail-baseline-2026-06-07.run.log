@@ -1,0 +1,40 @@
+## sign_editor_live_rail_baseline
+command=git -C /home/brittonr/git status --short -- mc
+ M mc/docs/evidence/creative-inventory-live-rail-evidence-checks-2026-06-07.run.log
+note=flake has targeted-packet, acceptance-matrix, and current-bundle checks; no standalone mc-compat-packet-inventory check is defined
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check .#checks.x86_64-linux.mc-compat-acceptance-matrix .#checks.x86_64-linux.mc-compat-current-evidence-bundle --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/pmrajj3h7zdx4lgqqmy3j4crg6dxnmz2.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 309 ms
+warning: error: unable to download 'http://100.100.103.95:5000/4vzcawmimjzll674nrchw8fm5x678hhn.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 285 ms
+warning: error: unable to download 'http://100.100.103.95:5000/d3n3rcajqpbsni399izpn7c7xwfc1mbs.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 301 ms
+warning: error: unable to download 'http://100.100.103.95:5000/4vzcawmimjzll674nrchw8fm5x678hhn.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 537 ms
+warning: error: unable to download 'http://100.100.103.95:5000/d3n3rcajqpbsni399izpn7c7xwfc1mbs.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 644 ms
+warning: error: unable to download 'http://100.100.103.95:5000/pmrajj3h7zdx4lgqqmy3j4crg6dxnmz2.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 557 ms
+warning: error: unable to download 'http://100.100.103.95:5000/4vzcawmimjzll674nrchw8fm5x678hhn.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1134 ms
+warning: error: unable to download 'http://100.100.103.95:5000/pmrajj3h7zdx4lgqqmy3j4crg6dxnmz2.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1039 ms
+warning: error: unable to download 'http://100.100.103.95:5000/d3n3rcajqpbsni399izpn7c7xwfc1mbs.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1269 ms
+warning: error: unable to download 'http://100.100.103.95:5000/pmrajj3h7zdx4lgqqmy3j4crg6dxnmz2.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2589 ms
+warning: error: unable to download 'http://100.100.103.95:5000/4vzcawmimjzll674nrchw8fm5x678hhn.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2441 ms
+warning: error: unable to download 'http://100.100.103.95:5000/d3n3rcajqpbsni399izpn7c7xwfc1mbs.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2688 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/4vzcawmimjzll674nrchw8fm5x678hhn.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/4vzcawmimjzll674nrchw8fm5x678hhn.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/pmrajj3h7zdx4lgqqmy3j4crg6dxnmz2.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/pmrajj3h7zdx4lgqqmy3j4crg6dxnmz2.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/d3n3rcajqpbsni399izpn7c7xwfc1mbs.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/d3n3rcajqpbsni399izpn7c7xwfc1mbs.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+these 3 derivations will be built:
+  /nix/store/35phlhh38kav3pnr3i5cmsqfnmqxd1s2-mc-compat-targeted-packet-promotions-check.drv
+  /nix/store/vin1d6irjh9wca2mcz259vz78y347bcj-mc-compat-current-evidence-bundle.drv
+  /nix/store/y3in2jdyr6i1f0g8jikihb156x94s34v-mc-compat-acceptance-matrix.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/y3in2jdyr6i1f0g8jikihb156x94s34v-mc-compat-acceptance-matrix.drv'...
+building '/nix/store/vin1d6irjh9wca2mcz259vz78y347bcj-mc-compat-current-evidence-bundle.drv'...
+building '/nix/store/35phlhh38kav3pnr3i5cmsqfnmqxd1s2-mc-compat-targeted-packet-promotions-check.drv'...
+baseline_checks_exit_status=0
+exit_status=0

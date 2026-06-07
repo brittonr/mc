@@ -2,4 +2,4 @@
 ecb207a4ab8690691fd3fafd9e19874acaac1c1b20ab9be9dc888d8d9ac53d39  docs/evidence/sign-editor-open-update-2026-06-06.md
 183e79a0a404c717f4ed5853f5df4c136a6afb1ac0d0cd4371799c211f08d675  docs/evidence/sign-editor-open-update-2026-06-06.receipt.json
 cb94eb2ea9bf3bcbd00703fdd40d4639a89f943365e53245b9177a41e54a9bd5  docs/evidence/targeted-packet-promotions-2026-06-06.run.log
-ae0ebe9aff0198132aad9982e4bdfd0a9d811f744b0a530c04c310d20f044a4f  tools/check_targeted_packet_promotions.rs
+9f8f010adf47d4de7bcc60ba5d01443307888079c328e1ef123a4174e3701691  tools/check_targeted_packet_promotions.rs

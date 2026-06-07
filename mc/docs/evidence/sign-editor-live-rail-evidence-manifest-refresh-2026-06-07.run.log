@@ -1,0 +1,4 @@
+## sign_editor_live_rail_evidence_manifest_refresh
+command=nix run --no-update-lock-file .#evidence-manifest-refresh -- --refresh
+evidence manifest refresh ok: mode=refresh; passes=2; manifests=359; entries=2346; current=2346; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=2; manifest_writes=15
+exit_status=0

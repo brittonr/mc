@@ -1,0 +1,77 @@
+## sign_editor_live_rail_sync
+command=nix run --no-update-lock-file .#cairn -- sync add-sign-editor-open-update-live-rail --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/add-sign-editor-open-update-live-rail/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/add-sign-editor-open-update-live-rail/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "add-sign-editor-open-update-live-rail",
+  "delta_specs": [
+    "./cairn/changes/add-sign-editor-open-update-live-rail/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "54e2c1fefd8460caac07bb69cf0fd621fa53f37dfe57f7bd3258b17b1c6483b0",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "30fa0dc1ec6b25d1abf1651dd6df1806686a37d6bee842b8de874372b11ef79c",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "f97d19e6d7e6eecf4ce06fd7377ae93b1bd19fd7e216843b6a185162391b9b7d"
+}
+dry_run_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- sync add-sign-editor-open-update-live-rail --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/add-sign-editor-open-update-live-rail/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/add-sign-editor-open-update-live-rail/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "add-sign-editor-open-update-live-rail",
+  "delta_specs": [
+    "./cairn/changes/add-sign-editor-open-update-live-rail/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "54e2c1fefd8460caac07bb69cf0fd621fa53f37dfe57f7bd3258b17b1c6483b0",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "f4277920edfa8a989db42782ffe345af9d1a69afc370451a1151085be8ca866f",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "c51c19f9912cb0b263240408cf57f3d295bbe6dca34c5a545ab5aa3ab3b1bb9a"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "f4277920edfa8a989db42782ffe345af9d1a69afc370451a1151085be8ca866f",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "c51c19f9912cb0b263240408cf57f3d295bbe6dca34c5a545ab5aa3ab3b1bb9a"
+    },
+    "kind": "sync",
+    "manifest_hash": "5bd8a6514a946d5f915c0c85d32649b74559e2a14c8539ed8e2ef8f4daae749a"
+  },
+  "plan_hash": "83627b422c25e06bbfdc55bd9824a532453e2ae784ccc2421f7b7f1e7fa84f3d",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "151fe3882af80172481441db9f0d626913eab2a3ffcc2b92a7e8d23f486d93a2"
+}
+execute_exit_status=0
+exit_status=0

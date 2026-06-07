@@ -1,0 +1,36 @@
+## sign_editor_live_rail_nonpromotion_checks
+command=nix build --no-update-lock-file matrix/bundle/inventory checks --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/cnav1r04pbsrs53hq2hvifd481415fg6.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 262 ms
+warning: error: unable to download 'http://100.100.103.95:5000/cd3y6ifd8vdpy94icm6cf3zq0vdzs7l2.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 323 ms
+warning: error: unable to download 'http://100.100.103.95:5000/ki7vcj9kfyy93yd489n95fh6kxw3yyj2.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 297 ms
+warning: error: unable to download 'http://100.100.103.95:5000/cnav1r04pbsrs53hq2hvifd481415fg6.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 539 ms
+warning: error: unable to download 'http://100.100.103.95:5000/ki7vcj9kfyy93yd489n95fh6kxw3yyj2.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 662 ms
+warning: error: unable to download 'http://100.100.103.95:5000/cd3y6ifd8vdpy94icm6cf3zq0vdzs7l2.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 570 ms
+warning: error: unable to download 'http://100.100.103.95:5000/cnav1r04pbsrs53hq2hvifd481415fg6.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 1231 ms
+warning: error: unable to download 'http://100.100.103.95:5000/cd3y6ifd8vdpy94icm6cf3zq0vdzs7l2.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 1011 ms
+warning: error: unable to download 'http://100.100.103.95:5000/ki7vcj9kfyy93yd489n95fh6kxw3yyj2.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1107 ms
+warning: error: unable to download 'http://100.100.103.95:5000/cd3y6ifd8vdpy94icm6cf3zq0vdzs7l2.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2234 ms
+warning: error: unable to download 'http://100.100.103.95:5000/cnav1r04pbsrs53hq2hvifd481415fg6.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 2312 ms
+warning: error: unable to download 'http://100.100.103.95:5000/ki7vcj9kfyy93yd489n95fh6kxw3yyj2.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2539 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/cd3y6ifd8vdpy94icm6cf3zq0vdzs7l2.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/cd3y6ifd8vdpy94icm6cf3zq0vdzs7l2.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/cnav1r04pbsrs53hq2hvifd481415fg6.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/cnav1r04pbsrs53hq2hvifd481415fg6.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/ki7vcj9kfyy93yd489n95fh6kxw3yyj2.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/ki7vcj9kfyy93yd489n95fh6kxw3yyj2.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+these 3 derivations will be built:
+  /nix/store/3fsyipkqskkz74cr90i4241sqhjqrpv5-mc-compat-targeted-packet-promotions-check.drv
+  /nix/store/gs3zr4f6dki4jbqdk011dfdlyipj9mp5-mc-compat-current-evidence-bundle.drv
+  /nix/store/i1kh9416p8i3v28j70dc1khsl45rp53w-mc-compat-acceptance-matrix.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/i1kh9416p8i3v28j70dc1khsl45rp53w-mc-compat-acceptance-matrix.drv'...
+building '/nix/store/gs3zr4f6dki4jbqdk011dfdlyipj9mp5-mc-compat-current-evidence-bundle.drv'...
+building '/nix/store/3fsyipkqskkz74cr90i4241sqhjqrpv5-mc-compat-targeted-packet-promotions-check.drv'...
+exit_status=0

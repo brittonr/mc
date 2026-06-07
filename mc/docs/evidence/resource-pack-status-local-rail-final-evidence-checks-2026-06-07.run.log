@@ -1,0 +1,44 @@
+## resource_pack_status_local_rail_final_evidence_checks
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-evidence-manifests .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+/home/brittonr/git/mc
+warning: error: unable to download 'http://100.100.103.95:5000/30w5z0igj0l61b75by4snd2ixwrb83zm.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 257 ms
+warning: error: unable to download 'http://100.100.103.95:5000/wcxnb4fwwgcm1xcy3c61kad7mv5y8p24.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 250 ms
+warning: error: unable to download 'http://100.100.103.95:5000/wcxnb4fwwgcm1xcy3c61kad7mv5y8p24.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 702 ms
+warning: error: unable to download 'http://100.100.103.95:5000/30w5z0igj0l61b75by4snd2ixwrb83zm.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 583 ms
+warning: error: unable to download 'http://100.100.103.95:5000/30w5z0igj0l61b75by4snd2ixwrb83zm.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1120 ms
+warning: error: unable to download 'http://100.100.103.95:5000/wcxnb4fwwgcm1xcy3c61kad7mv5y8p24.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1144 ms
+warning: error: unable to download 'http://100.100.103.95:5000/30w5z0igj0l61b75by4snd2ixwrb83zm.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2074 ms
+warning: error: unable to download 'http://100.100.103.95:5000/wcxnb4fwwgcm1xcy3c61kad7mv5y8p24.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2332 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/30w5z0igj0l61b75by4snd2ixwrb83zm.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/30w5z0igj0l61b75by4snd2ixwrb83zm.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/wcxnb4fwwgcm1xcy3c61kad7mv5y8p24.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/wcxnb4fwwgcm1xcy3c61kad7mv5y8p24.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+these 2 derivations will be built:
+  /nix/store/g7j796vbp6s92ifxyi0hlhgmhv0sdd1q-mc-compat-evidence-manifests.drv
+  /nix/store/w3ip1k1097vnxszr70xgfm8hy34h1kla-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/w3ip1k1097vnxszr70xgfm8hy34h1kla-mc-compat-cairn-task-evidence.drv'...
+building '/nix/store/g7j796vbp6s92ifxyi0hlhgmhv0sdd1q-mc-compat-evidence-manifests.drv'...
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-resource-pack-status-local-rail/tasks.md:15 cites missing evidence artifact docs/evidence/resource-pack-status-local-rail-evidence-checks-2026-06-07.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-resource-pack-status-local-rail/tasks.md:15 cites missing evidence artifact docs/evidence/resource-pack-status-local-rail-evidence-manifest-refresh-2026-06-07.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-resource-pack-status-local-rail/tasks.md:15 cites run log docs/evidence/resource-pack-status-local-rail-evidence-checks-2026-06-07.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-resource-pack-status-local-rail/tasks.md:15 cites run log docs/evidence/resource-pack-status-local-rail-evidence-manifest-refresh-2026-06-07.run.log but its text is unavailable
+warning: killing stray builder process 2364290 ()...
+warning: killing stray builder process 2365008 ()...
+error: Cannot build '/nix/store/w3ip1k1097vnxszr70xgfm8hy34h1kla-mc-compat-cairn-task-evidence.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/wcxnb4fwwgcm1xcy3c61kad7mv5y8p24-mc-compat-cairn-task-evidence
+       Last 4 log lines:
+       > task evidence gate failed: cairn/changes/add-resource-pack-status-local-rail/tasks.md:15 cites missing evidence artifact docs/evidence/resource-pack-status-local-rail-evidence-checks-2026-06-07.run.log
+       > task evidence gate failed: cairn/changes/add-resource-pack-status-local-rail/tasks.md:15 cites missing evidence artifact docs/evidence/resource-pack-status-local-rail-evidence-manifest-refresh-2026-06-07.run.log
+       > task evidence gate failed: cairn/changes/add-resource-pack-status-local-rail/tasks.md:15 cites run log docs/evidence/resource-pack-status-local-rail-evidence-checks-2026-06-07.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/add-resource-pack-status-local-rail/tasks.md:15 cites run log docs/evidence/resource-pack-status-local-rail-evidence-manifest-refresh-2026-06-07.run.log but its text is unavailable
+       For full logs, run:
+         nix log /nix/store/w3ip1k1097vnxszr70xgfm8hy34h1kla-mc-compat-cairn-task-evidence.drv
+exit_status=1

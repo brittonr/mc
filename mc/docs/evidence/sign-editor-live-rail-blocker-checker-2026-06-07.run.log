@@ -1,0 +1,18 @@
+## sign_editor_live_rail_blocker_checker
+command=nix develop --no-update-lock-file . -c rustc tools/check_targeted_packet_promotions.rs -o /tmp/check_targeted_packet_promotions_sign_editor
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+compile_exit_status=0
+command=/tmp/check_targeted_packet_promotions_sign_editor --live-evidence docs/evidence/sign-editor-live-rail-2026-06-07.kv
+targeted packet promotion check failed: live.promotion.status expected passed, got blocked
+targeted packet promotion check failed: live.evidence.mode expected owned-local-live, got fixture-bounded-blocker
+targeted packet promotion check failed: live.sign.open_milestone expected sign_editor_open_observed, got contracted-not-live-observed
+targeted packet promotion check failed: live.sign.update_action expected sign_update_sent, got contracted-not-live-observed
+targeted packet promotion check failed: live.sign.server_correlation expected sign_update_accepted_observed, got contracted-not-live-observed
+targeted packet promotion check failed: metric.live.sign_editor_open_observed expected ok, got missing
+targeted packet promotion check failed: metric.live.sign_update_sent expected ok, got missing
+targeted packet promotion check failed: missing metric.live.server_accepted_update
+checker_expected_failure_code=1
+expected_blocker_diagnostic=sign editor blocker evidence lacks required live open/update observations
+exit_status=0

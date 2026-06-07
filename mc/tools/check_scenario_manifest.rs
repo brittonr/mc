@@ -34,6 +34,9 @@ const LIVE_CAPABILITY_REGISTRY_TOKENS: &[&str] = &[
     "ResourcePackStatusLocalContract",
     "RESOURCE_PACK_STATUS_LOCAL_CONTRACT",
     "validate_resource_pack_status_local_contract",
+    "SignEditorLiveContract",
+    "SIGN_EDITOR_LIVE_CONTRACT",
+    "validate_sign_editor_live_contract",
     "SCENARIO_LIVE_CAPABILITIES",
     "validate_static_live_capabilities",
     "targeted-packet-live-blocker",
@@ -43,6 +46,7 @@ const LIVE_CAPABILITY_REGISTRY_TOKENS: &[&str] = &[
     "resource-pack-status",
     "resource_pack_status_declined_observed",
     "sign-editor-open-update",
+    "sign_update_accepted_observed",
 ];
 
 #[derive(Debug, Clone, PartialEq, Eq)]

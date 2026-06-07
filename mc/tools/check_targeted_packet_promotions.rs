@@ -543,6 +543,12 @@ const SIGN_EDITOR_LIVE_FIELDS: &[Field] = &[
     Field::new("live.sign.position", "28,64,0"),
     Field::new("live.sign.initial_state", "blank"),
     Field::new("live.sign.payload", "MC|Compat|Sign|Edit"),
+    Field::new("live.sign.open_milestone", "sign_editor_open_observed"),
+    Field::new("live.sign.update_action", "sign_update_sent"),
+    Field::new(
+        "live.sign.server_correlation",
+        "sign_update_accepted_observed",
+    ),
 ];
 const SIGN_EDITOR_LIVE_METRICS: &[&str] = &[
     "metric.live.sign_editor_open_observed",
@@ -1295,6 +1301,35 @@ fn run_self_tests() -> Result<String, Vec<String>> {
     )?;
     let sign_editor_spec = ROW_SPECS[SIGN_EDITOR_SPEC_INDEX];
     expect_live_error(
+        "missing sign editor open correlation",
+        &valid_live_fixture(sign_editor_spec)
+            .replace("live.sign.open_milestone=sign_editor_open_observed\n", ""),
+        sign_editor_spec,
+        "missing live.sign.open_milestone",
+    )?;
+    expect_live_error(
+        "missing sign editor update correlation",
+        &valid_live_fixture(sign_editor_spec).replace("metric.live.sign_update_sent=ok\n", ""),
+        sign_editor_spec,
+        "missing metric.live.sign_update_sent",
+    )?;
+    expect_live_error(
+        "wrong sign editor packet row",
+        &valid_live_fixture(sign_editor_spec).replace(
+            "live.packet.row=play/clientbound/0x31 SignEditorOpenS2CPacket",
+            "live.packet.row=play/clientbound/0x08 BlockEntityUpdateS2CPacket",
+        ),
+        sign_editor_spec,
+        "live.packet.row expected one of",
+    )?;
+    expect_live_error(
+        "wrong sign editor position",
+        &valid_live_fixture(sign_editor_spec)
+            .replace("live.sign.position=28,64,0", "live.sign.position=0,0,0"),
+        sign_editor_spec,
+        "live.sign.position expected 28,64,0",
+    )?;
+    expect_live_error(
         "wrong sign editor payload",
         &valid_live_fixture(sign_editor_spec).replace(
             "live.sign.payload=MC|Compat|Sign|Edit",
@@ -1302,6 +1337,24 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         ),
         sign_editor_spec,
         "live.sign.payload expected MC|Compat|Sign|Edit",
+    )?;
+    expect_live_error(
+        "stale sign editor receipt digest",
+        &valid_live_fixture(sign_editor_spec).replace(
+            "live.receipt.digest_status=current",
+            "live.receipt.digest_status=stale",
+        ),
+        sign_editor_spec,
+        "live.receipt.digest_status expected current",
+    )?;
+    expect_live_error(
+        "sign editor overclaim",
+        &format!(
+            "{}\nclaim.sign_editing_ui_behavior=true",
+            valid_live_fixture(sign_editor_spec)
+        ),
+        sign_editor_spec,
+        "broad overclaim claim.sign_editing_ui_behavior=true",
     )?;
     let duplicate_key = format!("{}\nrow.id=duplicate", valid_fixture(spec));
     match Evidence::parse(&duplicate_key) {

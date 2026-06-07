@@ -1,0 +1,27 @@
+## creative_inventory_live_rail_post_citation_evidence_checks
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-evidence-manifests .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+/home/brittonr/git/mc
+warning: error: unable to download 'http://100.100.103.95:5000/hnpm7zg2bdmmwz7vw1fxzgr0k4cbx1fm.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 334 ms
+warning: error: unable to download 'http://100.100.103.95:5000/vh06cn5kirgjrkwyxywd1h099wc5p4l9.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 270 ms
+warning: error: unable to download 'http://100.100.103.95:5000/vh06cn5kirgjrkwyxywd1h099wc5p4l9.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 642 ms
+warning: error: unable to download 'http://100.100.103.95:5000/hnpm7zg2bdmmwz7vw1fxzgr0k4cbx1fm.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 684 ms
+warning: error: unable to download 'http://100.100.103.95:5000/vh06cn5kirgjrkwyxywd1h099wc5p4l9.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 1341 ms
+warning: error: unable to download 'http://100.100.103.95:5000/hnpm7zg2bdmmwz7vw1fxzgr0k4cbx1fm.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 1310 ms
+warning: error: unable to download 'http://100.100.103.95:5000/vh06cn5kirgjrkwyxywd1h099wc5p4l9.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2125 ms
+warning: error: unable to download 'http://100.100.103.95:5000/hnpm7zg2bdmmwz7vw1fxzgr0k4cbx1fm.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2418 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/vh06cn5kirgjrkwyxywd1h099wc5p4l9.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/vh06cn5kirgjrkwyxywd1h099wc5p4l9.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/hnpm7zg2bdmmwz7vw1fxzgr0k4cbx1fm.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/hnpm7zg2bdmmwz7vw1fxzgr0k4cbx1fm.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+these 2 derivations will be built:
+  /nix/store/963kicqfzyy9c6b8sbsm8im1lm48rvps-mc-compat-cairn-task-evidence.drv
+  /nix/store/ld32669ib0cbf0hcr42rbzwljbqxw4gl-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/963kicqfzyy9c6b8sbsm8im1lm48rvps-mc-compat-cairn-task-evidence.drv'...
+building '/nix/store/ld32669ib0cbf0hcr42rbzwljbqxw4gl-mc-compat-evidence-manifests.drv'...
+exit_status=0

@@ -1,0 +1,51 @@
+{
+  "schema": "mc.compat.targeted_packet.sign_editor_blocker.v1",
+  "row_id": "sign-editor-open-update",
+  "packet_rows": [
+    "play/clientbound/0x31 SignEditorOpenS2CPacket",
+    "play/serverbound/0x2e UpdateSignC2SPacket"
+  ],
+  "scenario": "survival-block-entity-persistence-parity",
+  "actor": "compatbot",
+  "contract": {
+    "position": "28,64,0",
+    "initial_state": "blank",
+    "submitted_payload": "MC|Compat|Sign|Edit",
+    "expected_open_milestone": "sign_editor_open_observed",
+    "expected_update_action": "sign_update_sent",
+    "expected_server_correlation": "sign_update_accepted_observed"
+  },
+  "capability": {
+    "backend_path": "deterministic-sign-editor-contract",
+    "client_path": "stevenarella-sign-editor-driver-missing",
+    "evidence_mode": "fixture-bounded-blocker",
+    "blocker_reason": "no maintained live Stevenarella sign editor open/update driver exists"
+  },
+  "revision": {
+    "parent_commit_at_recording": "88341586",
+    "client_revision": "not-run-live-driver-missing",
+    "backend_revision": "parent-88341586-deterministic-sign-editor-contract"
+  },
+  "signals": {
+    "sign_editor_open_observed": "contracted-not-live-observed",
+    "sign_update_sent": "contracted-not-live-observed",
+    "sign_update_accepted_observed": "contracted-not-live-observed"
+  },
+  "promotion": {
+    "status": "blocked",
+    "matrix_row_updated": false,
+    "bundle_row_updated": false,
+    "packet_inventory_updated": false
+  },
+  "non_claims": {
+    "sign_editing_ui_behavior": true,
+    "all_sign_variants": true,
+    "all_text_formats": true,
+    "arbitrary_nbt_semantics": true,
+    "all_block_entities": true,
+    "public_server_safety": true,
+    "full_protocol_763_compatibility": true,
+    "broad_minecraft_compatibility": true,
+    "production_readiness": true
+  }
+}

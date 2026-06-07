@@ -216,6 +216,24 @@ pub(crate) struct ResourcePackStatusLocalContract {
     pub(crate) blocker_reason: &'static str,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct SignEditorLiveContract {
+    pub(crate) scenario: &'static str,
+    pub(crate) actor: &'static str,
+    pub(crate) position: &'static str,
+    pub(crate) initial_state: &'static str,
+    pub(crate) submitted_payload: &'static str,
+    pub(crate) packet_rows: &'static [&'static str],
+    pub(crate) backend_path: &'static str,
+    pub(crate) client_path: &'static str,
+    pub(crate) expected_open_milestone: &'static str,
+    pub(crate) expected_update_action: &'static str,
+    pub(crate) expected_server_correlation: &'static str,
+    pub(crate) evidence_mode: &'static str,
+    pub(crate) required_nonclaims: &'static [&'static str],
+    pub(crate) blocker_reason: &'static str,
+}
+
 pub(crate) const LIVE_CAPABILITY_KIND_PROBE: &str = "targeted-packet-live-probe";
 pub(crate) const LIVE_CAPABILITY_KIND_BLOCKED: &str = "targeted-packet-live-blocker";
 pub(crate) const LIVE_EVIDENCE_MODE_OWNED_LOCAL: &str = "owned-local-live";
@@ -2339,6 +2357,36 @@ const SIGN_EDITOR_NONCLAIMS: &[&str] = &[
     "all_block_entities",
 ];
 
+const SIGN_EDITOR_LIVE_SCENARIO: &str = "survival-block-entity-persistence-parity";
+const SIGN_EDITOR_LIVE_ACTOR: &str = "compatbot";
+const SIGN_EDITOR_LIVE_POSITION: &str = "28,64,0";
+const SIGN_EDITOR_LIVE_INITIAL_STATE: &str = "blank";
+const SIGN_EDITOR_LIVE_PAYLOAD: &str = "MC|Compat|Sign|Edit";
+const SIGN_EDITOR_LIVE_BACKEND_PATH: &str = "deterministic-sign-editor-contract";
+const SIGN_EDITOR_LIVE_CLIENT_PATH: &str = "stevenarella-sign-editor-driver-missing";
+const SIGN_EDITOR_LIVE_OPEN_MILESTONE: &str = "sign_editor_open_observed";
+const SIGN_EDITOR_LIVE_UPDATE_ACTION: &str = "sign_update_sent";
+const SIGN_EDITOR_LIVE_SERVER_CORRELATION: &str = "sign_update_accepted_observed";
+const SIGN_EDITOR_LIVE_BLOCKER_REASON: &str =
+    "no maintained live Stevenarella sign editor open/update driver exists";
+
+pub(crate) const SIGN_EDITOR_LIVE_CONTRACT: SignEditorLiveContract = SignEditorLiveContract {
+    scenario: SIGN_EDITOR_LIVE_SCENARIO,
+    actor: SIGN_EDITOR_LIVE_ACTOR,
+    position: SIGN_EDITOR_LIVE_POSITION,
+    initial_state: SIGN_EDITOR_LIVE_INITIAL_STATE,
+    submitted_payload: SIGN_EDITOR_LIVE_PAYLOAD,
+    packet_rows: SIGN_EDITOR_PACKET_ROWS,
+    backend_path: SIGN_EDITOR_LIVE_BACKEND_PATH,
+    client_path: SIGN_EDITOR_LIVE_CLIENT_PATH,
+    expected_open_milestone: SIGN_EDITOR_LIVE_OPEN_MILESTONE,
+    expected_update_action: SIGN_EDITOR_LIVE_UPDATE_ACTION,
+    expected_server_correlation: SIGN_EDITOR_LIVE_SERVER_CORRELATION,
+    evidence_mode: LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER,
+    required_nonclaims: SIGN_EDITOR_NONCLAIMS,
+    blocker_reason: SIGN_EDITOR_LIVE_BLOCKER_REASON,
+};
+
 pub(crate) const SCENARIO_LIVE_CAPABILITIES: &[ScenarioLiveCapability] = &[
     ScenarioLiveCapability {
         scenario: "survival-block-entity-persistence-parity",
@@ -2431,18 +2479,16 @@ pub(crate) const SCENARIO_LIVE_CAPABILITIES: &[ScenarioLiveCapability] = &[
         blocker_reason: Some(RESOURCE_PACK_STATUS_LOCAL_CONTRACT.blocker_reason),
     },
     ScenarioLiveCapability {
-        scenario: "survival-block-entity-persistence-parity",
+        scenario: SIGN_EDITOR_LIVE_CONTRACT.scenario,
         targeted_row: "sign-editor-open-update",
-        packet_rows: SIGN_EDITOR_PACKET_ROWS,
+        packet_rows: SIGN_EDITOR_LIVE_CONTRACT.packet_rows,
         capability_kind: LIVE_CAPABILITY_KIND_BLOCKED,
-        backend_path: "sign-editor-open-update-rail-missing",
-        client_path: "stevenarella-sign-edit-candidate",
-        evidence_mode: LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER,
+        backend_path: SIGN_EDITOR_LIVE_CONTRACT.backend_path,
+        client_path: SIGN_EDITOR_LIVE_CONTRACT.client_path,
+        evidence_mode: SIGN_EDITOR_LIVE_CONTRACT.evidence_mode,
         required_signals: SIGN_EDITOR_SIGNALS,
-        required_nonclaims: SIGN_EDITOR_NONCLAIMS,
-        blocker_reason: Some(
-            "sign persistence rail does not automate sign editor open/update interaction",
-        ),
+        required_nonclaims: SIGN_EDITOR_LIVE_CONTRACT.required_nonclaims,
+        blocker_reason: Some(SIGN_EDITOR_LIVE_CONTRACT.blocker_reason),
     },
 ];
 
@@ -2486,6 +2532,7 @@ pub(crate) fn validate_static_scenario_specs(specs: &[ScenarioSpec]) -> Result<(
     validate_static_scenario_rows(specs)?;
     validate_creative_inventory_live_contract(&CREATIVE_INVENTORY_LIVE_CONTRACT)?;
     validate_resource_pack_status_local_contract(&RESOURCE_PACK_STATUS_LOCAL_CONTRACT)?;
+    validate_sign_editor_live_contract(&SIGN_EDITOR_LIVE_CONTRACT)?;
     validate_static_live_capabilities(SCENARIO_LIVE_CAPABILITIES, specs)
 }
 
@@ -2640,6 +2687,74 @@ pub(crate) fn validate_resource_pack_status_local_contract(
     }
     if contract.blocker_reason.is_empty() {
         return Err("resource-pack local contract has empty blocker reason".to_string());
+    }
+    Ok(())
+}
+
+pub(crate) fn validate_sign_editor_live_contract(
+    contract: &SignEditorLiveContract,
+) -> Result<(), String> {
+    if contract.scenario != SIGN_EDITOR_LIVE_SCENARIO {
+        return Err(format!(
+            "sign editor contract names unexpected scenario {}",
+            contract.scenario
+        ));
+    }
+    if contract.actor != SIGN_EDITOR_LIVE_ACTOR {
+        return Err(format!(
+            "sign editor contract names unexpected actor {}",
+            contract.actor
+        ));
+    }
+    if contract.position != SIGN_EDITOR_LIVE_POSITION {
+        return Err(format!(
+            "sign editor contract names unexpected position {}",
+            contract.position
+        ));
+    }
+    if contract.initial_state != SIGN_EDITOR_LIVE_INITIAL_STATE {
+        return Err(format!(
+            "sign editor contract names unexpected initial state {}",
+            contract.initial_state
+        ));
+    }
+    if contract.submitted_payload != SIGN_EDITOR_LIVE_PAYLOAD {
+        return Err(format!(
+            "sign editor contract names unexpected payload {}",
+            contract.submitted_payload
+        ));
+    }
+    if contract.packet_rows != SIGN_EDITOR_PACKET_ROWS {
+        return Err("sign editor contract packet rows drifted".to_string());
+    }
+    if contract.backend_path.is_empty() {
+        return Err("sign editor contract has empty backend path".to_string());
+    }
+    if contract.client_path.is_empty() {
+        return Err("sign editor contract has empty client path".to_string());
+    }
+    if contract.expected_open_milestone.is_empty() {
+        return Err("sign editor contract has empty open milestone".to_string());
+    }
+    if contract.expected_update_action.is_empty() {
+        return Err("sign editor contract has empty update action".to_string());
+    }
+    if contract.expected_server_correlation.is_empty() {
+        return Err("sign editor contract has empty server correlation".to_string());
+    }
+    if contract.evidence_mode != LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER {
+        return Err(format!(
+            "sign editor contract has unsupported evidence mode {}",
+            contract.evidence_mode
+        ));
+    }
+    for nonclaim in SIGN_EDITOR_NONCLAIMS {
+        if !contract.required_nonclaims.contains(nonclaim) {
+            return Err(format!("sign editor contract missing nonclaim {nonclaim}"));
+        }
+    }
+    if contract.blocker_reason.is_empty() {
+        return Err("sign editor contract has empty blocker reason".to_string());
     }
     Ok(())
 }
@@ -2924,6 +3039,8 @@ mod tests {
     const WRONG_CREATIVE_PACKET_ROW: &str = "play/serverbound/0x00 WrongPacket";
     const WRONG_RESOURCE_PACK_STATUS: &str = "accepted";
     const WRONG_RESOURCE_PACK_NO_EXTERNAL_FETCH: &str = "false";
+    const WRONG_SIGN_EDITOR_POSITION: &str = "0,0,0";
+    const WRONG_SIGN_EDITOR_PAYLOAD: &str = "wrong";
     const COMPAT_ALIAS_MISSING_LEGACY: &[&str] = &["valence-compat-bot-probe"];
 
     #[test]
@@ -2978,6 +3095,20 @@ mod tests {
         );
         validate_resource_pack_status_local_contract(&RESOURCE_PACK_STATUS_LOCAL_CONTRACT)
             .expect("resource-pack local contract validates");
+
+        let sign_editor_capabilities =
+            scenario_live_capabilities_for_row("sign-editor-open-update");
+        assert_eq!(sign_editor_capabilities.len(), 1);
+        assert_eq!(
+            sign_editor_capabilities[0].backend_path,
+            SIGN_EDITOR_LIVE_CONTRACT.backend_path
+        );
+        assert_eq!(
+            sign_editor_capabilities[0].evidence_mode,
+            LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER
+        );
+        validate_sign_editor_live_contract(&SIGN_EDITOR_LIVE_CONTRACT)
+            .expect("sign editor contract validates");
     }
 
     #[test]
@@ -3026,6 +3157,32 @@ mod tests {
         let mut missing_nonclaim = RESOURCE_PACK_STATUS_LOCAL_CONTRACT;
         missing_nonclaim.required_nonclaims = TARGETED_PACKET_LIVE_NONCLAIMS_WITHOUT_PRODUCTION;
         let err = validate_resource_pack_status_local_contract(&missing_nonclaim).unwrap_err();
+        assert!(
+            err.contains("missing nonclaim production_readiness"),
+            "{err}"
+        );
+    }
+
+    #[test]
+    fn scenario_core_rejects_invalid_sign_editor_live_contracts() {
+        let mut wrong_position = SIGN_EDITOR_LIVE_CONTRACT;
+        wrong_position.position = WRONG_SIGN_EDITOR_POSITION;
+        let err = validate_sign_editor_live_contract(&wrong_position).unwrap_err();
+        assert!(err.contains("unexpected position"), "{err}");
+
+        let mut wrong_payload = SIGN_EDITOR_LIVE_CONTRACT;
+        wrong_payload.submitted_payload = WRONG_SIGN_EDITOR_PAYLOAD;
+        let err = validate_sign_editor_live_contract(&wrong_payload).unwrap_err();
+        assert!(err.contains("unexpected payload"), "{err}");
+
+        let mut missing_update = SIGN_EDITOR_LIVE_CONTRACT;
+        missing_update.expected_update_action = "";
+        let err = validate_sign_editor_live_contract(&missing_update).unwrap_err();
+        assert!(err.contains("empty update action"), "{err}");
+
+        let mut missing_nonclaim = SIGN_EDITOR_LIVE_CONTRACT;
+        missing_nonclaim.required_nonclaims = TARGETED_PACKET_LIVE_NONCLAIMS_WITHOUT_PRODUCTION;
+        let err = validate_sign_editor_live_contract(&missing_nonclaim).unwrap_err();
         assert!(
             err.contains("missing nonclaim production_readiness"),
             "{err}"

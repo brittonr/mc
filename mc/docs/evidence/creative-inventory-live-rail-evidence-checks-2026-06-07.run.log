@@ -1,63 +1,27 @@
 ## creative_inventory_live_rail_evidence_checks
 command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-evidence-manifests .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
-warning: error: unable to download 'http://100.100.103.95:5000/yfwpibkyfdkdiqv2s2785qj051vmn4q1.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 299 ms
-warning: error: unable to download 'http://100.100.103.95:5000/1z05faqx5v4a4fi514da65q8jrz1p6ra.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 282 ms
-warning: error: unable to download 'http://100.100.103.95:5000/1z05faqx5v4a4fi514da65q8jrz1p6ra.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 575 ms
-warning: error: unable to download 'http://100.100.103.95:5000/yfwpibkyfdkdiqv2s2785qj051vmn4q1.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 623 ms
-warning: error: unable to download 'http://100.100.103.95:5000/1z05faqx5v4a4fi514da65q8jrz1p6ra.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1204 ms
-warning: error: unable to download 'http://100.100.103.95:5000/yfwpibkyfdkdiqv2s2785qj051vmn4q1.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1322 ms
-warning: error: unable to download 'http://100.100.103.95:5000/1z05faqx5v4a4fi514da65q8jrz1p6ra.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2258 ms
-warning: error: unable to download 'http://100.100.103.95:5000/yfwpibkyfdkdiqv2s2785qj051vmn4q1.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 2808 ms
+/home/brittonr/git/mc
+warning: error: unable to download 'http://100.100.103.95:5000/qzgyhmg9bnymvqqn10b8wl2zl0mm9lh3.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 273 ms
+warning: error: unable to download 'http://100.100.103.95:5000/sh2f4w4q4wkyxmfm0lghq4r1faxi21ks.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 298 ms
+warning: error: unable to download 'http://100.100.103.95:5000/qzgyhmg9bnymvqqn10b8wl2zl0mm9lh3.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 591 ms
+warning: error: unable to download 'http://100.100.103.95:5000/sh2f4w4q4wkyxmfm0lghq4r1faxi21ks.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 587 ms
+warning: error: unable to download 'http://100.100.103.95:5000/qzgyhmg9bnymvqqn10b8wl2zl0mm9lh3.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1001 ms
+warning: error: unable to download 'http://100.100.103.95:5000/sh2f4w4q4wkyxmfm0lghq4r1faxi21ks.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1066 ms
+warning: error: unable to download 'http://100.100.103.95:5000/qzgyhmg9bnymvqqn10b8wl2zl0mm9lh3.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2456 ms
+warning: error: unable to download 'http://100.100.103.95:5000/sh2f4w4q4wkyxmfm0lghq4r1faxi21ks.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 2348 ms
 disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
 error:
-       … during download of 'http://100.100.103.95:5000/1z05faqx5v4a4fi514da65q8jrz1p6ra.narinfo'
+       … during download of 'http://100.100.103.95:5000/sh2f4w4q4wkyxmfm0lghq4r1faxi21ks.narinfo'
 
-       error: unable to download 'http://100.100.103.95:5000/1z05faqx5v4a4fi514da65q8jrz1p6ra.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+       error: unable to download 'http://100.100.103.95:5000/sh2f4w4q4wkyxmfm0lghq4r1faxi21ks.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds
 error:
-       … during download of 'http://100.100.103.95:5000/yfwpibkyfdkdiqv2s2785qj051vmn4q1.narinfo'
+       … during download of 'http://100.100.103.95:5000/qzgyhmg9bnymvqqn10b8wl2zl0mm9lh3.narinfo'
 
-       error: unable to download 'http://100.100.103.95:5000/yfwpibkyfdkdiqv2s2785qj051vmn4q1.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds
+       error: unable to download 'http://100.100.103.95:5000/qzgyhmg9bnymvqqn10b8wl2zl0mm9lh3.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
 these 2 derivations will be built:
-  /nix/store/g479yb8gx36j4l8q3r8i7pqa8d0r21k4-mc-compat-evidence-manifests.drv
-  /nix/store/q229pk8hy3j9gjjykfcj9wn71dspah8f-mc-compat-cairn-task-evidence.drv
+  /nix/store/9dlssgxqkmvn6g3yxdv4yyr4k5hahn92-mc-compat-evidence-manifests.drv
+  /nix/store/km1jcmwkkfls06bvsi4jda7q03vsz586-mc-compat-cairn-task-evidence.drv
 cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
-building '/nix/store/q229pk8hy3j9gjjykfcj9wn71dspah8f-mc-compat-cairn-task-evidence.drv'...
-building '/nix/store/g479yb8gx36j4l8q3r8i7pqa8d0r21k4-mc-compat-evidence-manifests.drv'...
-mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/block-entity-update-breadth-2026-06-06.b3:5: stale digest for tools/check_targeted_packet_promotions.rs: expected 354875efd02330d8d9b10c6897719a8bb9a59ccdd80a3a3030bf48ff43005a2d, found 48dd0f18aa686bb6d5cb3767b31b12f4595e664d65a41a5d45ff93ccfadce29c
-mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/chat-command-containment-2026-06-06.b3:5: stale digest for tools/check_targeted_packet_promotions.rs: expected 354875efd02330d8d9b10c6897719a8bb9a59ccdd80a3a3030bf48ff43005a2d, found 48dd0f18aa686bb6d5cb3767b31b12f4595e664d65a41a5d45ff93ccfadce29c
-mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/chunk-biome-data-packet-2026-06-06.b3:5: stale digest for tools/check_targeted_packet_promotions.rs: expected 354875efd02330d8d9b10c6897719a8bb9a59ccdd80a3a3030bf48ff43005a2d, found 48dd0f18aa686bb6d5cb3767b31b12f4595e664d65a41a5d45ff93ccfadce29c
-mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/creative-inventory-action-2026-06-06.b3:5: stale digest for tools/check_targeted_packet_promotions.rs: expected 354875efd02330d8d9b10c6897719a8bb9a59ccdd80a3a3030bf48ff43005a2d, found 48dd0f18aa686bb6d5cb3767b31b12f4595e664d65a41a5d45ff93ccfadce29c
-mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/entity-status-effect-packets-2026-06-06.b3:5: stale digest for tools/check_targeted_packet_promotions.rs: expected 354875efd02330d8d9b10c6897719a8bb9a59ccdd80a3a3030bf48ff43005a2d, found 48dd0f18aa686bb6d5cb3767b31b12f4595e664d65a41a5d45ff93ccfadce29c
-mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/recipe-book-client-settings-2026-06-06.b3:5: stale digest for tools/check_targeted_packet_promotions.rs: expected 354875efd02330d8d9b10c6897719a8bb9a59ccdd80a3a3030bf48ff43005a2d, found 48dd0f18aa686bb6d5cb3767b31b12f4595e664d65a41a5d45ff93ccfadce29c
-mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/resource-pack-status-2026-06-06.b3:5: stale digest for tools/check_targeted_packet_promotions.rs: expected 354875efd02330d8d9b10c6897719a8bb9a59ccdd80a3a3030bf48ff43005a2d, found 48dd0f18aa686bb6d5cb3767b31b12f4595e664d65a41a5d45ff93ccfadce29c
-mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/runner-scenario-modules-2026-06-06.b3:2: stale digest for tools/mc-compat-runner/src/scenario_core.rs: expected d9b9ba23188e6ab6418a0100ad3ad2c5aba9fa799ddff35cd81f3484d204f63f, found 2fda8e4a994df01bc6123f1359d779b8738b0d2a16a27b0961a6ebb5c9844180
-mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/runner-scenario-modules-2026-06-06.b3:3: stale digest for tools/check_scenario_manifest.rs: expected b3fc190b0dfbc09165b7088ba99391fe7c50b0f84eea38ed295a0c1033d64761, found d39899e63e68c1b228c8bf012bdcac2cdfe47b488ba486f3107e1eceed79ba69
-mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/scenario-live-capability-registry-2026-06-07.b3:1: stale digest for tools/mc-compat-runner/src/scenario_core.rs: expected d9b9ba23188e6ab6418a0100ad3ad2c5aba9fa799ddff35cd81f3484d204f63f, found 2fda8e4a994df01bc6123f1359d779b8738b0d2a16a27b0961a6ebb5c9844180
-mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/scenario-live-capability-registry-2026-06-07.b3:2: stale digest for tools/check_scenario_manifest.rs: expected b3fc190b0dfbc09165b7088ba99391fe7c50b0f84eea38ed295a0c1033d64761, found d39899e63e68c1b228c8bf012bdcac2cdfe47b488ba486f3107e1eceed79ba69
-mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/sign-editor-open-update-2026-06-06.b3:5: stale digest for tools/check_targeted_packet_promotions.rs: expected 354875efd02330d8d9b10c6897719a8bb9a59ccdd80a3a3030bf48ff43005a2d, found 48dd0f18aa686bb6d5cb3767b31b12f4595e664d65a41a5d45ff93ccfadce29c
-mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/targeted-packet-live-kv-schema-2026-06-07.b3:1: stale digest for tools/check_targeted_packet_promotions.rs: expected 354875efd02330d8d9b10c6897719a8bb9a59ccdd80a3a3030bf48ff43005a2d, found 48dd0f18aa686bb6d5cb3767b31b12f4595e664d65a41a5d45ff93ccfadce29c
-mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/targeted-packet-live-parity-2026-06-06.b3:1: stale digest for tools/check_targeted_packet_promotions.rs: expected 354875efd02330d8d9b10c6897719a8bb9a59ccdd80a3a3030bf48ff43005a2d, found 48dd0f18aa686bb6d5cb3767b31b12f4595e664d65a41a5d45ff93ccfadce29c
-mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/targeted-packet-promotions-focused-checks-2026-06-06.b3:3: stale digest for tools/check_targeted_packet_promotions.rs: expected 354875efd02330d8d9b10c6897719a8bb9a59ccdd80a3a3030bf48ff43005a2d, found 48dd0f18aa686bb6d5cb3767b31b12f4595e664d65a41a5d45ff93ccfadce29c
-error: Cannot build '/nix/store/g479yb8gx36j4l8q3r8i7pqa8d0r21k4-mc-compat-evidence-manifests.drv'.
-       Reason: builder failed with exit code 1.
-       Output paths:
-         /nix/store/yfwpibkyfdkdiqv2s2785qj051vmn4q1-mc-compat-evidence-manifests
-       Last 15 log lines:
-       > evidence manifest refresh failed: docs/evidence/block-entity-update-breadth-2026-06-06.b3:5: stale digest for tools/check_targeted_packet_promotions.rs: expected 354875efd02330d8d9b10c6897719a8bb9a59ccdd80a3a3030bf48ff43005a2d, found 48dd0f18aa686bb6d5cb3767b31b12f4595e664d65a41a5d45ff93ccfadce29c
-       > evidence manifest refresh failed: docs/evidence/chat-command-containment-2026-06-06.b3:5: stale digest for tools/check_targeted_packet_promotions.rs: expected 354875efd02330d8d9b10c6897719a8bb9a59ccdd80a3a3030bf48ff43005a2d, found 48dd0f18aa686bb6d5cb3767b31b12f4595e664d65a41a5d45ff93ccfadce29c
-       > evidence manifest refresh failed: docs/evidence/chunk-biome-data-packet-2026-06-06.b3:5: stale digest for tools/check_targeted_packet_promotions.rs: expected 354875efd02330d8d9b10c6897719a8bb9a59ccdd80a3a3030bf48ff43005a2d, found 48dd0f18aa686bb6d5cb3767b31b12f4595e664d65a41a5d45ff93ccfadce29c
-       > evidence manifest refresh failed: docs/evidence/creative-inventory-action-2026-06-06.b3:5: stale digest for tools/check_targeted_packet_promotions.rs: expected 354875efd02330d8d9b10c6897719a8bb9a59ccdd80a3a3030bf48ff43005a2d, found 48dd0f18aa686bb6d5cb3767b31b12f4595e664d65a41a5d45ff93ccfadce29c
-       > evidence manifest refresh failed: docs/evidence/entity-status-effect-packets-2026-06-06.b3:5: stale digest for tools/check_targeted_packet_promotions.rs: expected 354875efd02330d8d9b10c6897719a8bb9a59ccdd80a3a3030bf48ff43005a2d, found 48dd0f18aa686bb6d5cb3767b31b12f4595e664d65a41a5d45ff93ccfadce29c
-       > evidence manifest refresh failed: docs/evidence/recipe-book-client-settings-2026-06-06.b3:5: stale digest for tools/check_targeted_packet_promotions.rs: expected 354875efd02330d8d9b10c6897719a8bb9a59ccdd80a3a3030bf48ff43005a2d, found 48dd0f18aa686bb6d5cb3767b31b12f4595e664d65a41a5d45ff93ccfadce29c
-       > evidence manifest refresh failed: docs/evidence/resource-pack-status-2026-06-06.b3:5: stale digest for tools/check_targeted_packet_promotions.rs: expected 354875efd02330d8d9b10c6897719a8bb9a59ccdd80a3a3030bf48ff43005a2d, found 48dd0f18aa686bb6d5cb3767b31b12f4595e664d65a41a5d45ff93ccfadce29c
-       > evidence manifest refresh failed: docs/evidence/runner-scenario-modules-2026-06-06.b3:2: stale digest for tools/mc-compat-runner/src/scenario_core.rs: expected d9b9ba23188e6ab6418a0100ad3ad2c5aba9fa799ddff35cd81f3484d204f63f, found 2fda8e4a994df01bc6123f1359d779b8738b0d2a16a27b0961a6ebb5c9844180
-       > evidence manifest refresh failed: docs/evidence/runner-scenario-modules-2026-06-06.b3:3: stale digest for tools/check_scenario_manifest.rs: expected b3fc190b0dfbc09165b7088ba99391fe7c50b0f84eea38ed295a0c1033d64761, found d39899e63e68c1b228c8bf012bdcac2cdfe47b488ba486f3107e1eceed79ba69
-       > evidence manifest refresh failed: docs/evidence/scenario-live-capability-registry-2026-06-07.b3:1: stale digest for tools/mc-compat-runner/src/scenario_core.rs: expected d9b9ba23188e6ab6418a0100ad3ad2c5aba9fa799ddff35cd81f3484d204f63f, found 2fda8e4a994df01bc6123f1359d779b8738b0d2a16a27b0961a6ebb5c9844180
-       > evidence manifest refresh failed: docs/evidence/scenario-live-capability-registry-2026-06-07.b3:2: stale digest for tools/check_scenario_manifest.rs: expected b3fc190b0dfbc09165b7088ba99391fe7c50b0f84eea38ed295a0c1033d64761, found d39899e63e68c1b228c8bf012bdcac2cdfe47b488ba486f3107e1eceed79ba69
-       > evidence manifest refresh failed: docs/evidence/sign-editor-open-update-2026-06-06.b3:5: stale digest for tools/check_targeted_packet_promotions.rs: expected 354875efd02330d8d9b10c6897719a8bb9a59ccdd80a3a3030bf48ff43005a2d, found 48dd0f18aa686bb6d5cb3767b31b12f4595e664d65a41a5d45ff93ccfadce29c
-       > evidence manifest refresh failed: docs/evidence/targeted-packet-live-kv-schema-2026-06-07.b3:1: stale digest for tools/check_targeted_packet_promotions.rs: expected 354875efd02330d8d9b10c6897719a8bb9a59ccdd80a3a3030bf48ff43005a2d, found 48dd0f18aa686bb6d5cb3767b31b12f4595e664d65a41a5d45ff93ccfadce29c
-       > evidence manifest refresh failed: docs/evidence/targeted-packet-live-parity-2026-06-06.b3:1: stale digest for tools/check_targeted_packet_promotions.rs: expected 354875efd02330d8d9b10c6897719a8bb9a59ccdd80a3a3030bf48ff43005a2d, found 48dd0f18aa686bb6d5cb3767b31b12f4595e664d65a41a5d45ff93ccfadce29c
-       > evidence manifest refresh failed: docs/evidence/targeted-packet-promotions-focused-checks-2026-06-06.b3:3: stale digest for tools/check_targeted_packet_promotions.rs: expected 354875efd02330d8d9b10c6897719a8bb9a59ccdd80a3a3030bf48ff43005a2d, found 48dd0f18aa686bb6d5cb3767b31b12f4595e664d65a41a5d45ff93ccfadce29c
-       For full logs, run:
-         nix log /nix/store/g479yb8gx36j4l8q3r8i7pqa8d0r21k4-mc-compat-evidence-manifests.drv
-exit_status=1
+building '/nix/store/km1jcmwkkfls06bvsi4jda7q03vsz586-mc-compat-cairn-task-evidence.drv'...
+building '/nix/store/9dlssgxqkmvn6g3yxdv4yyr4k5hahn92-mc-compat-evidence-manifests.drv'...
+exit_status=0

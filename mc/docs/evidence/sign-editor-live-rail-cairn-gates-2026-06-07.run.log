@@ -1,0 +1,83 @@
+## sign_editor_live_rail_cairn_gates
+## gate proposal add-sign-editor-open-update-live-rail
+{
+  "change": "add-sign-editor-open-update-live-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "82ab56665c997ffb4628db59eefa0a565d507296f0ef7a94bfff5bb654e5e013",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "0695a9839f76308d983962bca95982560ee9a9ee75ee4b99f4267ce2d0a89390",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+proposal_exit_status=0
+## gate design add-sign-editor-open-update-live-rail
+{
+  "change": "add-sign-editor-open-update-live-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "285db207dc21c66a934843c399c807bd84858a0e7ac1ee447d659aa1871f64dd",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "47deb47e0a88fd76836ab453b941fa0d9876f4e111c71bed1ce1b3547674d09e",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+design_exit_status=0
+## gate tasks add-sign-editor-open-update-live-rail
+{
+  "change": "add-sign-editor-open-update-live-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "7b22f3a3d60067fef8667484353c4e9f4931d25d4019ab7c48523a66f6329ee0",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "b34464dfa1ccbf1c556ec9923721d537c890e382007e0fd0a8bb2730e0501b35",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+tasks_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+cairn_validate_exit_status=0
+exit_status=0

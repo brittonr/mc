@@ -1,0 +1,106 @@
+## sign_editor_live_rail_archive
+command=nix run --no-update-lock-file .#cairn -- archive add-sign-editor-open-update-live-rail --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-sign-editor-open-update-live-rail",
+      "kind": "archive_change",
+      "path": "./cairn/changes/add-sign-editor-open-update-live-rail"
+    }
+  ],
+  "blocked": false,
+  "change": "add-sign-editor-open-update-live-rail",
+  "dry_run": true,
+  "input_hash": "54e2c1fefd8460caac07bb69cf0fd621fa53f37dfe57f7bd3258b17b1c6483b0",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "9ab6ea555ba193cefa53311f52358d695441caef1fb58c1a914b8f80619e5572",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "02e45b7dcfdcf6159320bfe9de32eaa073c84e37aeb0bd830959f3ef1c1ac3f8"
+}
+dry_run_exit_status=0
+command=CAIRN_ARCHIVE_DATE=2026-06-07 nix run --no-update-lock-file .#cairn -- archive add-sign-editor-open-update-live-rail --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-sign-editor-open-update-live-rail",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-07-add-sign-editor-open-update-live-rail"
+    }
+  ],
+  "blocked": false,
+  "change": "add-sign-editor-open-update-live-rail",
+  "dry_run": false,
+  "input_hash": "54e2c1fefd8460caac07bb69cf0fd621fa53f37dfe57f7bd3258b17b1c6483b0",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "53dcb0921ae9b20976e0cebe7e3ad27b9b1d4e5614ec2007954cd5eabe201425",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-add-sign-editor-open-update-live-rail/design.md"
+        },
+        {
+          "content_hash": "c1edc7452494f5ac4c982b630124ad96781b3af22e0b45c2a773360565c12dbe",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-add-sign-editor-open-update-live-rail/proposal.md"
+        },
+        {
+          "content_hash": "36be9e9ebea0071847c86ea871d7c6d533f13da9370756c65f4ff86181a1732f",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-add-sign-editor-open-update-live-rail/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "0967a3657a54c90872ed92fd856dfb2b64ffc2a066f51c285a859359d78420b8",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-add-sign-editor-open-update-live-rail/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/add-sign-editor-open-update-live-rail"
+        }
+      ],
+      "manifest_hash": "5dcfea78c0d1e292776303697071e4cdec926410148a417cfbaf7201d6486f57"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "53dcb0921ae9b20976e0cebe7e3ad27b9b1d4e5614ec2007954cd5eabe201425",
+          "exists": true,
+          "path": "./cairn/changes/add-sign-editor-open-update-live-rail/design.md"
+        },
+        {
+          "content_hash": "c1edc7452494f5ac4c982b630124ad96781b3af22e0b45c2a773360565c12dbe",
+          "exists": true,
+          "path": "./cairn/changes/add-sign-editor-open-update-live-rail/proposal.md"
+        },
+        {
+          "content_hash": "36be9e9ebea0071847c86ea871d7c6d533f13da9370756c65f4ff86181a1732f",
+          "exists": true,
+          "path": "./cairn/changes/add-sign-editor-open-update-live-rail/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "0967a3657a54c90872ed92fd856dfb2b64ffc2a066f51c285a859359d78420b8",
+          "exists": true,
+          "path": "./cairn/changes/add-sign-editor-open-update-live-rail/tasks.md"
+        }
+      ],
+      "manifest_hash": "ba78733de5af16e2d7dbaf385abbdd9610344295fb0c0c30e2dfba9c5d426d13"
+    },
+    "kind": "archive",
+    "manifest_hash": "d4ca7fbefffc9c93b49bc85cb14647e440006b43f70227d309a85bb8d228c670"
+  },
+  "plan_hash": "a7b0bb2bfe7fae06f5ca7b68fefca292a289f9eefb32dae7ea40d9c5db3f01b2",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "3e8bc1688c9d0b18e69830a1512700b24c86fdecf53644f0ecf674498c801d4b"
+}
+execute_exit_status=0
+exit_status=0
