@@ -1,0 +1,37 @@
+# evidence manifest refresh evidence checks
+command=nix build evidence-manifests task-evidence
+warning: error: unable to download 'http://100.100.103.95:5000/v09kkmq0pyanqr98xs9h9lmpk0wiwm6b.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 288 ms
+warning: error: unable to download 'http://100.100.103.95:5000/ld9x1pbb2ykq6xj8r7il1ld8q78lf6hm.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 307 ms
+warning: error: unable to download 'http://100.100.103.95:5000/8k9flzv966dd5k0d86jf494zy6byrlgr.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 342 ms
+warning: error: unable to download 'http://100.100.103.95:5000/v09kkmq0pyanqr98xs9h9lmpk0wiwm6b.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 610 ms
+warning: error: unable to download 'http://100.100.103.95:5000/ld9x1pbb2ykq6xj8r7il1ld8q78lf6hm.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 665 ms
+warning: error: unable to download 'http://100.100.103.95:5000/8k9flzv966dd5k0d86jf494zy6byrlgr.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 621 ms
+warning: error: unable to download 'http://100.100.103.95:5000/v09kkmq0pyanqr98xs9h9lmpk0wiwm6b.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1096 ms
+warning: error: unable to download 'http://100.100.103.95:5000/8k9flzv966dd5k0d86jf494zy6byrlgr.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1394 ms
+warning: error: unable to download 'http://100.100.103.95:5000/ld9x1pbb2ykq6xj8r7il1ld8q78lf6hm.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 1209 ms
+warning: error: unable to download 'http://100.100.103.95:5000/v09kkmq0pyanqr98xs9h9lmpk0wiwm6b.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2819 ms
+warning: error: unable to download 'http://100.100.103.95:5000/ld9x1pbb2ykq6xj8r7il1ld8q78lf6hm.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2410 ms
+warning: error: unable to download 'http://100.100.103.95:5000/8k9flzv966dd5k0d86jf494zy6byrlgr.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 2229 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/8k9flzv966dd5k0d86jf494zy6byrlgr.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/8k9flzv966dd5k0d86jf494zy6byrlgr.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/ld9x1pbb2ykq6xj8r7il1ld8q78lf6hm.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/ld9x1pbb2ykq6xj8r7il1ld8q78lf6hm.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/v09kkmq0pyanqr98xs9h9lmpk0wiwm6b.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/v09kkmq0pyanqr98xs9h9lmpk0wiwm6b.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+these 3 derivations will be built:
+  /nix/store/1v0lhr79sb5wazjvrkhwi40q6i8p2vwb-mc-compat-cairn-task-evidence.drv
+  /nix/store/b6m8wlc4b1gxhirp41dfxgj66f2fbx48-mc-compat-evidence-manifest-refresh.drv
+  /nix/store/riqq9dg729kmnwirsgg6rprvnni5dmzv-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/1v0lhr79sb5wazjvrkhwi40q6i8p2vwb-mc-compat-cairn-task-evidence.drv'...
+building '/nix/store/b6m8wlc4b1gxhirp41dfxgj66f2fbx48-mc-compat-evidence-manifest-refresh.drv'...
+building '/nix/store/riqq9dg729kmnwirsgg6rprvnni5dmzv-mc-compat-evidence-manifests.drv'...
+nix_build_exit_status=0
+exit_status=0

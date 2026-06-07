@@ -1,0 +1,99 @@
+# evidence manifest refresh post-archive checks
+command=nix build focused checks && cairn validate
+warning: error: unable to download 'http://100.100.103.95:5000/i4m896awsn32flrajds07kg38hgba9q3.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 348 ms
+warning: error: unable to download 'http://100.100.103.95:5000/5ff26vnnfm1cc4gi72f34589aq7ibrrd.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 264 ms
+warning: error: unable to download 'http://100.100.103.95:5000/7086n23wcd5y171r8arxy73ah00jaxxg.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 351 ms
+warning: error: unable to download 'http://100.100.103.95:5000/5ff26vnnfm1cc4gi72f34589aq7ibrrd.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 568 ms
+warning: error: unable to download 'http://100.100.103.95:5000/i4m896awsn32flrajds07kg38hgba9q3.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 687 ms
+warning: error: unable to download 'http://100.100.103.95:5000/7086n23wcd5y171r8arxy73ah00jaxxg.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 519 ms
+warning: error: unable to download 'http://100.100.103.95:5000/5ff26vnnfm1cc4gi72f34589aq7ibrrd.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1228 ms
+warning: error: unable to download 'http://100.100.103.95:5000/7086n23wcd5y171r8arxy73ah00jaxxg.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1128 ms
+warning: error: unable to download 'http://100.100.103.95:5000/i4m896awsn32flrajds07kg38hgba9q3.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1336 ms
+warning: error: unable to download 'http://100.100.103.95:5000/7086n23wcd5y171r8arxy73ah00jaxxg.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2354 ms
+warning: error: unable to download 'http://100.100.103.95:5000/5ff26vnnfm1cc4gi72f34589aq7ibrrd.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2370 ms
+warning: error: unable to download 'http://100.100.103.95:5000/i4m896awsn32flrajds07kg38hgba9q3.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 2631 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/7086n23wcd5y171r8arxy73ah00jaxxg.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/7086n23wcd5y171r8arxy73ah00jaxxg.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/5ff26vnnfm1cc4gi72f34589aq7ibrrd.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/5ff26vnnfm1cc4gi72f34589aq7ibrrd.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/i4m896awsn32flrajds07kg38hgba9q3.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/i4m896awsn32flrajds07kg38hgba9q3.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+these 3 derivations will be built:
+  /nix/store/09jidp1n5k4fmvi7g8nhbm5rcxjfzpdr-mc-compat-evidence-manifests.drv
+  /nix/store/bwwn0ncr8kym4chzhcdk1592pkca0nk6-mc-compat-cairn-task-evidence.drv
+  /nix/store/y0sbik8s4j96378xgwfqhqg0j0np7141-mc-compat-evidence-manifest-refresh.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/bwwn0ncr8kym4chzhcdk1592pkca0nk6-mc-compat-cairn-task-evidence.drv'...
+building '/nix/store/y0sbik8s4j96378xgwfqhqg0j0np7141-mc-compat-evidence-manifest-refresh.drv'...
+building '/nix/store/09jidp1n5k4fmvi7g8nhbm5rcxjfzpdr-mc-compat-evidence-manifests.drv'...
+nix_build_exit_status=0
+{
+  "change_issues": [],
+  "changes": 2,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 4,
+  "valid": true
+}
+cairn_validate_exit_status=0
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "./cairn/changes/promote-targeted-packet-live-parity/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "promote-targeted-packet-live-parity",
+      "path": "./cairn/changes/promote-targeted-packet-live-parity",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/split-mc-compat-runner-scenario-modules/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "split-mc-compat-runner-scenario-modules",
+      "path": "./cairn/changes/split-mc-compat-runner-scenario-modules",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "."
+}
+cairn_change_list_exit_status=0
+exit_status=0

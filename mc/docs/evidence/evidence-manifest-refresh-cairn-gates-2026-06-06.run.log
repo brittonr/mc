@@ -1,0 +1,83 @@
+# evidence manifest refresh Cairn gates
+command=nix run --no-update-lock-file .#cairn -- gate proposal automate-evidence-manifest-refresh --root .
+{
+  "change": "automate-evidence-manifest-refresh",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "ee31c2c03c9467f64bc2dad33ac865e56990a1d2429b2ba76dd4d1d508954b8f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "8064b3c32e197b48752bf08789ef2df420065c3c828b2ed4299930e55dfef27a",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_proposal_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate design automate-evidence-manifest-refresh --root .
+{
+  "change": "automate-evidence-manifest-refresh",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "cef816d56f53843cf7f359d5231d5dc65fd782836d6c8b8851797ad9a5194393",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "89b98348691d00c4216555975bf2c74d8d68c505528e810db04553d20e6e7efc",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_design_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate tasks automate-evidence-manifest-refresh --root .
+{
+  "change": "automate-evidence-manifest-refresh",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "96a04b9e5b7ebb536b3148f967b6d469e6bfef2a997735bb829f873679333b8d",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "200e9947befbc7e7f67e3391dd1209472792e7bd7d5b1b5c6c953877f6aab0c8",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_tasks_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
+cairn_validate_exit_status=0
+exit_status=0

@@ -1,0 +1,36 @@
+# evidence manifest refresh final task-evidence check
+command=nix build mc-compat-evidence-manifest-refresh mc-compat-evidence-manifests mc-compat-cairn-task-evidence
+warning: error: unable to download 'http://100.100.103.95:5000/pav9nl9v6ysn26c49i5jc5hw9b0savn3.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 269 ms
+warning: error: unable to download 'http://100.100.103.95:5000/zpwcxb35fvdc2l4d48cwjfard740cqd9.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 342 ms
+warning: error: unable to download 'http://100.100.103.95:5000/rrc5kjs06cvizz77naxpc4bgl80l6z56.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 277 ms
+warning: error: unable to download 'http://100.100.103.95:5000/pav9nl9v6ysn26c49i5jc5hw9b0savn3.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 640 ms
+warning: error: unable to download 'http://100.100.103.95:5000/rrc5kjs06cvizz77naxpc4bgl80l6z56.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 685 ms
+warning: error: unable to download 'http://100.100.103.95:5000/zpwcxb35fvdc2l4d48cwjfard740cqd9.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 627 ms
+warning: error: unable to download 'http://100.100.103.95:5000/pav9nl9v6ysn26c49i5jc5hw9b0savn3.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1303 ms
+warning: error: unable to download 'http://100.100.103.95:5000/rrc5kjs06cvizz77naxpc4bgl80l6z56.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1131 ms
+warning: error: unable to download 'http://100.100.103.95:5000/zpwcxb35fvdc2l4d48cwjfard740cqd9.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1280 ms
+warning: error: unable to download 'http://100.100.103.95:5000/rrc5kjs06cvizz77naxpc4bgl80l6z56.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2341 ms
+warning: error: unable to download 'http://100.100.103.95:5000/pav9nl9v6ysn26c49i5jc5hw9b0savn3.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2760 ms
+warning: error: unable to download 'http://100.100.103.95:5000/zpwcxb35fvdc2l4d48cwjfard740cqd9.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 2283 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/rrc5kjs06cvizz77naxpc4bgl80l6z56.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/rrc5kjs06cvizz77naxpc4bgl80l6z56.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/zpwcxb35fvdc2l4d48cwjfard740cqd9.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/zpwcxb35fvdc2l4d48cwjfard740cqd9.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/pav9nl9v6ysn26c49i5jc5hw9b0savn3.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/pav9nl9v6ysn26c49i5jc5hw9b0savn3.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+these 3 derivations will be built:
+  /nix/store/3x33fqqbx4pzh5kv0jicz0r6a1ir92w3-mc-compat-evidence-manifests.drv
+  /nix/store/bza4m128pj3d19a8i4vlazbk87xq7m7p-mc-compat-evidence-manifest-refresh.drv
+  /nix/store/fp8c321wimnws04rkjkzr4afsahpxx86-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/fp8c321wimnws04rkjkzr4afsahpxx86-mc-compat-cairn-task-evidence.drv'...
+building '/nix/store/bza4m128pj3d19a8i4vlazbk87xq7m7p-mc-compat-evidence-manifest-refresh.drv'...
+building '/nix/store/3x33fqqbx4pzh5kv0jicz0r6a1ir92w3-mc-compat-evidence-manifests.drv'...
+exit_status=0

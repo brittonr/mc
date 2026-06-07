@@ -1,0 +1,29 @@
+# evidence manifest refresh focused checks
+command=nix build refresh/evidence checks and app check
+warning: error: unable to download 'http://100.100.103.95:5000/f0srvjrrg4ij2d4p2hb0ys5xmcl8awlc.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 314 ms
+warning: error: unable to download 'http://100.100.103.95:5000/dcyjy7cr99v5is6wpbg368zmr6yninvi.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 328 ms
+warning: error: unable to download 'http://100.100.103.95:5000/f0srvjrrg4ij2d4p2hb0ys5xmcl8awlc.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 562 ms
+warning: error: unable to download 'http://100.100.103.95:5000/dcyjy7cr99v5is6wpbg368zmr6yninvi.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 598 ms
+warning: error: unable to download 'http://100.100.103.95:5000/f0srvjrrg4ij2d4p2hb0ys5xmcl8awlc.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1157 ms
+warning: error: unable to download 'http://100.100.103.95:5000/dcyjy7cr99v5is6wpbg368zmr6yninvi.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1093 ms
+warning: error: unable to download 'http://100.100.103.95:5000/dcyjy7cr99v5is6wpbg368zmr6yninvi.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2294 ms
+warning: error: unable to download 'http://100.100.103.95:5000/f0srvjrrg4ij2d4p2hb0ys5xmcl8awlc.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2591 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/dcyjy7cr99v5is6wpbg368zmr6yninvi.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/dcyjy7cr99v5is6wpbg368zmr6yninvi.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/f0srvjrrg4ij2d4p2hb0ys5xmcl8awlc.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/f0srvjrrg4ij2d4p2hb0ys5xmcl8awlc.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+these 2 derivations will be built:
+  /nix/store/m4d5w170bwsni3z9xc9fffpkz0prgdvs-mc-compat-evidence-manifest-refresh.drv
+  /nix/store/pia9niz19swg4gh1x1i3y2ka4rydblws-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/m4d5w170bwsni3z9xc9fffpkz0prgdvs-mc-compat-evidence-manifest-refresh.drv'...
+building '/nix/store/pia9niz19swg4gh1x1i3y2ka4rydblws-mc-compat-evidence-manifests.drv'...
+nix_build_exit_status=0
+evidence manifest refresh ok: mode=check; passes=0; manifests=351; entries=2220; current=2220; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+app_check_exit_status=0
+exit_status=0

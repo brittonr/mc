@@ -1,0 +1,89 @@
+# evidence manifest refresh Cairn sync
+command=nix run --no-update-lock-file .#cairn -- sync automate-evidence-manifest-refresh --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/automate-evidence-manifest-refresh/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/automate-evidence-manifest-refresh/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "automate-evidence-manifest-refresh",
+  "delta_specs": [
+    "./cairn/changes/automate-evidence-manifest-refresh/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "ba3c529f6095cb93ac4419a193d65f987a3769387be3dfd8cf75b2bd27f90391",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "275ab9d2146b7b3b9c16fae71d773735433b3365aac21923363bdc2dd99ae39c",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "c2ba420a5e1423e2808cce4faf00a46a80497bca0942ea3ab035feb505f79ab1"
+}
+sync_dry_run_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- sync automate-evidence-manifest-refresh --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/automate-evidence-manifest-refresh/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/automate-evidence-manifest-refresh/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "automate-evidence-manifest-refresh",
+  "delta_specs": [
+    "./cairn/changes/automate-evidence-manifest-refresh/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "ba3c529f6095cb93ac4419a193d65f987a3769387be3dfd8cf75b2bd27f90391",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "d6bef209868e942a97e202cde210e5b2d038a170d36c3243959ee84c6d7058e8",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "0c038a2fef828dd7ac73b44d6beb90356de95c0fe5fab7055002e1e71114feee"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "d6bef209868e942a97e202cde210e5b2d038a170d36c3243959ee84c6d7058e8",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "0c038a2fef828dd7ac73b44d6beb90356de95c0fe5fab7055002e1e71114feee"
+    },
+    "kind": "sync",
+    "manifest_hash": "558b9360291b13dbdd1471d5135ac71aca1297a65d2c869407184914266cefb9"
+  },
+  "plan_hash": "e696f3d48377125672c689413006530d817b51b2c0141f5856f61094d0425b80",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "c089e6a4273102208b9ae664450c913d485b07104edb191b8563b2262d4439c6"
+}
+sync_execute_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
+post_sync_validate_exit_status=0
+exit_status=0

@@ -1,0 +1,118 @@
+# evidence manifest refresh Cairn archive
+command=CAIRN_ARCHIVE_DATE=2026-06-06 nix run --no-update-lock-file .#cairn -- archive automate-evidence-manifest-refresh --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: automate-evidence-manifest-refresh",
+      "kind": "archive_change",
+      "path": "./cairn/changes/automate-evidence-manifest-refresh"
+    }
+  ],
+  "blocked": false,
+  "change": "automate-evidence-manifest-refresh",
+  "dry_run": true,
+  "input_hash": "ba3c529f6095cb93ac4419a193d65f987a3769387be3dfd8cf75b2bd27f90391",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "76e143eb5fffc050acbebbe4331d28eeac653a3a9495076ee73adcc2a7b74ce1",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "fe4db97cb2886336efcaf1e847bfc71c09e9f9f65ef028ae16a89f48f59b90ae"
+}
+archive_dry_run_exit_status=0
+command=CAIRN_ARCHIVE_DATE=2026-06-06 nix run --no-update-lock-file .#cairn -- archive automate-evidence-manifest-refresh --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: automate-evidence-manifest-refresh",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-06-automate-evidence-manifest-refresh"
+    }
+  ],
+  "blocked": false,
+  "change": "automate-evidence-manifest-refresh",
+  "dry_run": false,
+  "input_hash": "ba3c529f6095cb93ac4419a193d65f987a3769387be3dfd8cf75b2bd27f90391",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "333cc663be3460fcdc391ef9a2158ff16627b9340deed6879819d6926ec5d799",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-automate-evidence-manifest-refresh/design.md"
+        },
+        {
+          "content_hash": "2221d5247690dc0fd17e4427485fdf48248d7523ef27c314a825b22934869db1",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-automate-evidence-manifest-refresh/proposal.md"
+        },
+        {
+          "content_hash": "adaddcff5255cece18afaa3bdc914625fced8333ef5f1f6d454818291cdc8c9f",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-automate-evidence-manifest-refresh/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "4d7ff18ecda178e97044fc6f174f2e605cae9617605c32c0b19d062ec0b62454",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-automate-evidence-manifest-refresh/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/automate-evidence-manifest-refresh"
+        }
+      ],
+      "manifest_hash": "679af15844e45ddb9ad854f96b3ba9b3da7b9730a8349fc95bdef3f5c0fdefca"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "333cc663be3460fcdc391ef9a2158ff16627b9340deed6879819d6926ec5d799",
+          "exists": true,
+          "path": "./cairn/changes/automate-evidence-manifest-refresh/design.md"
+        },
+        {
+          "content_hash": "2221d5247690dc0fd17e4427485fdf48248d7523ef27c314a825b22934869db1",
+          "exists": true,
+          "path": "./cairn/changes/automate-evidence-manifest-refresh/proposal.md"
+        },
+        {
+          "content_hash": "adaddcff5255cece18afaa3bdc914625fced8333ef5f1f6d454818291cdc8c9f",
+          "exists": true,
+          "path": "./cairn/changes/automate-evidence-manifest-refresh/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "4d7ff18ecda178e97044fc6f174f2e605cae9617605c32c0b19d062ec0b62454",
+          "exists": true,
+          "path": "./cairn/changes/automate-evidence-manifest-refresh/tasks.md"
+        }
+      ],
+      "manifest_hash": "9ee243e72767d1e54ea99a70f06aa274917cd04770703a4cc7d9ffbd23ec3270"
+    },
+    "kind": "archive",
+    "manifest_hash": "592694bdea6f0dc870a708dfe6396edbc10ab0788205fda5c6df5860dcf403dd"
+  },
+  "plan_hash": "22c813948c19c0b35f33f245e5cabbe0a96353f76dde9b00f6880499fb8a99ed",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "0702c05cb13d4861035ad97f71ec8d37c3008fa3b60ca10ab2ab747ba6bb8b53"
+}
+archive_execute_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 2,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 4,
+  "valid": true
+}
+post_archive_validate_exit_status=0
+exit_status=0

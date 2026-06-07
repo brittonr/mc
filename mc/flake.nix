@@ -967,6 +967,29 @@
               mainProgram = "mc-compat-mcp-controlled-smoke";
             };
           };
+          evidence-manifest-refresh-bin =
+            pkgs.runCommand "evidence-manifest-refresh-bin"
+              {
+                nativeBuildInputs = [
+                  pkgs.rustc
+                  pkgs.gcc
+                ];
+              }
+              ''
+                mkdir -p "$out/bin"
+                rustc --edition=2021 ${./tools/refresh_evidence_manifests.rs} -o "$out/bin/evidence-manifest-refresh"
+              '';
+          evidence-manifest-refresh = pkgs.writeShellApplication {
+            name = "evidence-manifest-refresh";
+            runtimeInputs = [ pkgs.b3sum ];
+            text = ''
+              exec ${evidence-manifest-refresh-bin}/bin/evidence-manifest-refresh "$@"
+            '';
+            meta = {
+              description = "Check or refresh docs/evidence BLAKE3 manifests to a deterministic fixpoint.";
+              mainProgram = "evidence-manifest-refresh";
+            };
+          };
         in
         {
           inherit
@@ -997,6 +1020,7 @@
             mc-compat-valence-survival-crafting-table
             mc-compat-valence-survival-furnace-persistence
             mc-compat-mcp-controlled-smoke
+            evidence-manifest-refresh
             ;
           cairn = cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn;
           cargo-octet = octet.packages.${pkgs.stdenv.hostPlatform.system}.cargo-octet;
@@ -1022,6 +1046,13 @@
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
           }/bin/mc-compat-runner";
           meta.description = "Run the hardened Stevenarella/Valence compatibility smoke.";
+        };
+        evidence-manifest-refresh = {
+          type = "app";
+          program = "${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.evidence-manifest-refresh
+          }/bin/evidence-manifest-refresh";
+          meta.description = "Check or refresh docs/evidence BLAKE3 manifests to a deterministic fixpoint.";
         };
         mc-compat-valence-ctf-600s-soak = {
           type = "app";
@@ -1256,6 +1287,25 @@
               mkdir -p "$out"
               cp ../current-evidence-bundle-self-test.log ../current-evidence-bundle-check.log "$out/"
             '';
+        mc-compat-evidence-manifest-refresh =
+          pkgs.runCommand "mc-compat-evidence-manifest-refresh"
+            {
+              nativeBuildInputs = [
+                pkgs.b3sum
+                pkgs.rustc
+                pkgs.gcc
+              ];
+            }
+            ''
+              cp -R ${./.} repo
+              chmod -R u+w repo
+              cd repo
+              rustc --edition=2021 tools/refresh_evidence_manifests.rs -o ../refresh-evidence-manifests
+              ../refresh-evidence-manifests --self-test > ../evidence-manifest-refresh-self-test.log
+              ../refresh-evidence-manifests --check > ../evidence-manifest-refresh-check.log
+              mkdir -p "$out"
+              cp ../evidence-manifest-refresh-self-test.log ../evidence-manifest-refresh-check.log "$out/"
+            '';
         mc-compat-evidence-manifests =
           pkgs.runCommand "mc-compat-evidence-manifests"
             {
@@ -1269,11 +1319,14 @@
               cp -R ${./.} repo
               chmod -R u+w repo
               cd repo
+              rustc --edition=2021 tools/refresh_evidence_manifests.rs -o ../refresh-evidence-manifests
+              ../refresh-evidence-manifests --self-test > ../evidence-manifest-refresh-self-test.log
+              ../refresh-evidence-manifests --check > ../evidence-manifest-refresh-check.log
               rustc --edition=2021 tools/check_evidence_manifests.rs -o ../check-evidence-manifests
               ../check-evidence-manifests --self-test > ../evidence-manifest-self-test.log
               ../check-evidence-manifests > ../evidence-manifest-check.log
               mkdir -p "$out"
-              cp ../evidence-manifest-self-test.log ../evidence-manifest-check.log "$out/"
+              cp ../evidence-manifest-refresh-self-test.log ../evidence-manifest-refresh-check.log ../evidence-manifest-self-test.log ../evidence-manifest-check.log "$out/"
             '';
         mc-compat-full-survival-gate =
           pkgs.runCommand "mc-compat-full-survival-gate"
@@ -2612,6 +2665,9 @@
           ln -s ${
             self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-evidence-manifests
           } "$out/evidence-manifests"
+          ln -s ${
+            self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-evidence-manifest-refresh
+          } "$out/evidence-manifest-refresh"
           ln -s ${
             self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-full-survival-gate
           } "$out/full-survival-gate"

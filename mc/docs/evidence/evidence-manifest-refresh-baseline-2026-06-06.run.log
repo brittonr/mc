@@ -1,0 +1,26 @@
+# evidence manifest refresh baseline
+command=nix build mc-compat-evidence-manifests mc-compat-cairn-task-evidence
+warning: error: unable to download 'http://100.100.103.95:5000/lwzjda2l7w4kpmi01zhx5zqfpwy8gfjs.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 299 ms
+warning: error: unable to download 'http://100.100.103.95:5000/fxbv083d1zb7nifajakhlpfarzrbadvq.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 339 ms
+warning: error: unable to download 'http://100.100.103.95:5000/lwzjda2l7w4kpmi01zhx5zqfpwy8gfjs.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 584 ms
+warning: error: unable to download 'http://100.100.103.95:5000/fxbv083d1zb7nifajakhlpfarzrbadvq.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 697 ms
+warning: error: unable to download 'http://100.100.103.95:5000/lwzjda2l7w4kpmi01zhx5zqfpwy8gfjs.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1099 ms
+warning: error: unable to download 'http://100.100.103.95:5000/fxbv083d1zb7nifajakhlpfarzrbadvq.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1087 ms
+warning: error: unable to download 'http://100.100.103.95:5000/lwzjda2l7w4kpmi01zhx5zqfpwy8gfjs.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2432 ms
+warning: error: unable to download 'http://100.100.103.95:5000/fxbv083d1zb7nifajakhlpfarzrbadvq.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2495 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/lwzjda2l7w4kpmi01zhx5zqfpwy8gfjs.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/lwzjda2l7w4kpmi01zhx5zqfpwy8gfjs.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/fxbv083d1zb7nifajakhlpfarzrbadvq.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/fxbv083d1zb7nifajakhlpfarzrbadvq.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+these 2 derivations will be built:
+  /nix/store/c2cwhd52q1c9fkml006fx9iwz1dp256q-mc-compat-evidence-manifests.drv
+  /nix/store/js9375bwb77v2vjscm83r8d5fxky7f1b-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/js9375bwb77v2vjscm83r8d5fxky7f1b-mc-compat-cairn-task-evidence.drv'...
+building '/nix/store/c2cwhd52q1c9fkml006fx9iwz1dp256q-mc-compat-evidence-manifests.drv'...
+exit_status=0

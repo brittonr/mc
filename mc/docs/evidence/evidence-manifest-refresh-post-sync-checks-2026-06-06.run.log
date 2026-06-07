@@ -1,0 +1,23 @@
+# evidence manifest refresh post-sync checks
+command=grep accepted evidence_manifest_refresh requirements
+r[mc_compatibility.evidence_manifest_refresh.contract] The repository MUST define a deterministic contract for checking and refreshing reviewable BLAKE3 evidence manifests.
+accepted_spec_grep_exit_status=0
+command=refresh-evidence-manifests --check
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest refresh ok: mode=check; passes=0; manifests=352; entries=2233; current=2233; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+manifest_refresh_check_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
+cairn_validate_exit_status=0
+exit_status=0
