@@ -1,0 +1,130 @@
+# scenario behavior traits Cairn archive
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+pre_archive_validate_exit_status=0
+command=CAIRN_ARCHIVE_DATE=2026-06-06 nix run --no-update-lock-file .#cairn -- archive introduce-scenario-behavior-traits --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: introduce-scenario-behavior-traits",
+      "kind": "archive_change",
+      "path": "./cairn/changes/introduce-scenario-behavior-traits"
+    }
+  ],
+  "blocked": false,
+  "change": "introduce-scenario-behavior-traits",
+  "dry_run": true,
+  "input_hash": "c0af36d015709a227707b0b199946272b24294788c35430c11e82d20cbfbed59",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "33eb230cca5c4736b69d31fc1f82f9f733ab400f7620dfe8e002c65739d70948",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "195d3e80a67b69ba013519d52777aa68c65dc2af085a2232c21b7ea379e6ae7f"
+}
+archive_dry_run_exit_status=0
+command=CAIRN_ARCHIVE_DATE=2026-06-06 nix run --no-update-lock-file .#cairn -- archive introduce-scenario-behavior-traits --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: introduce-scenario-behavior-traits",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-06-introduce-scenario-behavior-traits"
+    }
+  ],
+  "blocked": false,
+  "change": "introduce-scenario-behavior-traits",
+  "dry_run": false,
+  "input_hash": "c0af36d015709a227707b0b199946272b24294788c35430c11e82d20cbfbed59",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "689ed1306c49871fe60cbedbdce52bfb1ff8003b308ed976a5708555eb7aed5d",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-introduce-scenario-behavior-traits/design.md"
+        },
+        {
+          "content_hash": "f9bd577aeb77995aab377848b69aadb4a78b7516b200b3e9a69fb004cf089096",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-introduce-scenario-behavior-traits/proposal.md"
+        },
+        {
+          "content_hash": "52dd9db2c777e5cf1aab3c94455f6cd3e5c035fa929725574c073d3753df5b23",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-introduce-scenario-behavior-traits/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "a1795c08f68338d001aa47549a4e71d809b641163d8225a6a9b350c79e60e498",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-introduce-scenario-behavior-traits/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/introduce-scenario-behavior-traits"
+        }
+      ],
+      "manifest_hash": "eb877b1619b50801345c996055e2eb152e34e3cef8cde78670ec1c7103e5323b"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "689ed1306c49871fe60cbedbdce52bfb1ff8003b308ed976a5708555eb7aed5d",
+          "exists": true,
+          "path": "./cairn/changes/introduce-scenario-behavior-traits/design.md"
+        },
+        {
+          "content_hash": "f9bd577aeb77995aab377848b69aadb4a78b7516b200b3e9a69fb004cf089096",
+          "exists": true,
+          "path": "./cairn/changes/introduce-scenario-behavior-traits/proposal.md"
+        },
+        {
+          "content_hash": "52dd9db2c777e5cf1aab3c94455f6cd3e5c035fa929725574c073d3753df5b23",
+          "exists": true,
+          "path": "./cairn/changes/introduce-scenario-behavior-traits/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "a1795c08f68338d001aa47549a4e71d809b641163d8225a6a9b350c79e60e498",
+          "exists": true,
+          "path": "./cairn/changes/introduce-scenario-behavior-traits/tasks.md"
+        }
+      ],
+      "manifest_hash": "191dfd29373e8a5ce842cc36d2ef457e2a3da03fc3eb482d8b36ab66c352dda4"
+    },
+    "kind": "archive",
+    "manifest_hash": "dcd43ced4d595212a714f50403c73f81bbb1cd85adeeafd1e4cfffd57184f290"
+  },
+  "plan_hash": "38a35bf4af62623ed31b18121097e661e2056e1f9b5214b5196aea83386251ff",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "5113756e0f968af408acc99bf38d14cfec2dd9202448ce8f9d27ebb68bb660a0"
+}
+archive_execute_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 2,
+  "valid": true
+}
+post_archive_validate_exit_status=0
+exit_status=0

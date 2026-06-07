@@ -1,0 +1,48 @@
+# scenario behavior traits post-archive checks
+command=nix build focused/evidence checks && nix run --no-update-lock-file .#cairn -- validate --root .
+warning: error: unable to download 'http://100.100.103.95:5000/d0hq8m5h1fsgj782sdk2v5gp9nk3099w.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 321 ms
+warning: error: unable to download 'http://100.100.103.95:5000/mnk3yl32grh5mjjbvmyw598dwh3vh9fr.narinfo': Timeout was reached (28) Operation timed out after 5001 milliseconds with 0 bytes received; retrying in 317 ms
+warning: error: unable to download 'http://100.100.103.95:5000/nkibswam1qa4rhhi9am0w6cgxmdf9xq8.narinfo': Timeout was reached (28) Operation timed out after 5001 milliseconds with 0 bytes received; retrying in 352 ms
+warning: error: unable to download 'http://100.100.103.95:5000/mnk3yl32grh5mjjbvmyw598dwh3vh9fr.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 580 ms
+warning: error: unable to download 'http://100.100.103.95:5000/d0hq8m5h1fsgj782sdk2v5gp9nk3099w.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 693 ms
+warning: error: unable to download 'http://100.100.103.95:5000/nkibswam1qa4rhhi9am0w6cgxmdf9xq8.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 691 ms
+warning: error: unable to download 'http://100.100.103.95:5000/mnk3yl32grh5mjjbvmyw598dwh3vh9fr.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1327 ms
+warning: error: unable to download 'http://100.100.103.95:5000/d0hq8m5h1fsgj782sdk2v5gp9nk3099w.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1194 ms
+warning: error: unable to download 'http://100.100.103.95:5000/nkibswam1qa4rhhi9am0w6cgxmdf9xq8.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1042 ms
+warning: error: unable to download 'http://100.100.103.95:5000/nkibswam1qa4rhhi9am0w6cgxmdf9xq8.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2175 ms
+warning: error: unable to download 'http://100.100.103.95:5000/d0hq8m5h1fsgj782sdk2v5gp9nk3099w.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 2589 ms
+warning: error: unable to download 'http://100.100.103.95:5000/mnk3yl32grh5mjjbvmyw598dwh3vh9fr.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2630 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/nkibswam1qa4rhhi9am0w6cgxmdf9xq8.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/nkibswam1qa4rhhi9am0w6cgxmdf9xq8.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/d0hq8m5h1fsgj782sdk2v5gp9nk3099w.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/d0hq8m5h1fsgj782sdk2v5gp9nk3099w.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/mnk3yl32grh5mjjbvmyw598dwh3vh9fr.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/mnk3yl32grh5mjjbvmyw598dwh3vh9fr.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+these 3 derivations will be built:
+  /nix/store/0859f6r52gq3amlc9bz2m6z0mi9hcy4f-mc-compat-scenario-manifest.drv
+  /nix/store/n06kr8lkvjd6m49x3dczq328x1ch6nzd-mc-compat-evidence-manifests.drv
+  /nix/store/qsdcmr42cpv3s0dik2hym8x63b9fdjnw-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/qsdcmr42cpv3s0dik2hym8x63b9fdjnw-mc-compat-cairn-task-evidence.drv'...
+building '/nix/store/n06kr8lkvjd6m49x3dczq328x1ch6nzd-mc-compat-evidence-manifests.drv'...
+building '/nix/store/0859f6r52gq3amlc9bz2m6z0mi9hcy4f-mc-compat-scenario-manifest.drv'...
+nix_build_exit_status=0
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 2,
+  "valid": true
+}
+cairn_validate_exit_status=0
+exit_status=0

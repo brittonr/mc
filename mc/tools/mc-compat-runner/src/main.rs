@@ -1065,6 +1065,7 @@ fn real_main() -> Result<(), String> {
 }
 
 fn execute(cfg: &Config) -> Result<Option<ClientRunEvidence>, String> {
+    validate_static_scenario_specs(SCENARIO_SPECS)?;
     validate_projectile_damage_dependency(cfg)?;
     validate_mcp_controlled_live_preflight(cfg)?;
     validate_load_network_safety_preflight(cfg)?;
@@ -1155,7 +1156,7 @@ fn prepare_world_persistence_state_dir(cfg: &Config) -> Result<(), String> {
 }
 
 fn validate_mcp_controlled_live_preflight(cfg: &Config) -> Result<(), String> {
-    if cfg.scenario != Scenario::McpControlledSmoke || cfg.mode != Mode::Run {
+    if !scenario_behavior(cfg.scenario).is_mcp_controlled_smoke() || cfg.mode != Mode::Run {
         return Ok(());
     }
     if cfg.client_timeout.as_secs() > SAFETY_MAX_DURATION_SECS {
@@ -1168,7 +1169,7 @@ fn validate_mcp_controlled_live_preflight(cfg: &Config) -> Result<(), String> {
 
 fn validate_projectile_damage_dependency(cfg: &Config) -> Result<(), String> {
     if cfg.server_backend != ServerBackend::Valence
-        || cfg.scenario != Scenario::ProjectileDamageAttribution
+        || !scenario_behavior(cfg.scenario).uses_dynamic_projectile_health()
         || !matches!(cfg.mode, Mode::DryRun | Mode::Run)
     {
         return Ok(());
@@ -1229,14 +1230,7 @@ fn load_network_safety_inputs(
 }
 
 fn safety_reconnect_sessions(scenario: Scenario) -> usize {
-    match scenario {
-        Scenario::ReconnectFlagState
-        | Scenario::ReconnectFlagScore
-        | Scenario::SurvivalChestPersistence
-        | Scenario::SurvivalFurnacePersistence
-        | Scenario::NegativeReconnectRace => SAFETY_RECONNECT_SESSION_COUNT,
-        _ => SAFETY_SINGLE_SESSION_COUNT,
-    }
+    scenario_behavior(scenario).safety_reconnect_sessions()
 }
 
 fn evaluate_load_network_safety(input: LoadNetworkSafetyInputs) -> LoadNetworkSafetyEvidence {
@@ -1316,44 +1310,19 @@ fn push_missing_safety_field(
 }
 
 fn is_negative_live_rail(scenario: Scenario) -> bool {
-    matches!(
-        scenario,
-        Scenario::NegativeInventoryStaleState
-            | Scenario::NegativeInventoryInvalidClick
-            | Scenario::NegativeCustomPayload
-            | Scenario::NegativeReconnectRace
-            | Scenario::NegativeCtfWrongScore
-            | Scenario::CtfInvalidPickupOwnership
-            | Scenario::CtfInvalidReturnDrop
-    )
+    scenario_behavior(scenario).negative_live_rail().is_some()
 }
 
 fn negative_live_rail_invalid_action(scenario: Scenario) -> Option<&'static str> {
-    match scenario {
-        Scenario::NegativeInventoryStaleState => Some("stale_inventory_state_id"),
-        Scenario::NegativeInventoryInvalidClick => Some("invalid_slot_or_window_click"),
-        Scenario::NegativeCustomPayload => Some("malformed_custom_payload"),
-        Scenario::NegativeReconnectRace => Some("duplicate_reconnect_flag_transition"),
-        Scenario::NegativeCtfWrongScore => Some("wrong_team_or_wrong_portal_score_attempt"),
-        Scenario::CtfInvalidPickupOwnership => Some("own_flag_pickup_without_ownership_transfer"),
-        Scenario::CtfInvalidReturnDrop => Some("own_base_return_without_carrier"),
-        _ => None,
-    }
+    scenario_behavior(scenario)
+        .negative_live_rail()
+        .map(|behavior| behavior.invalid_action)
 }
 
 fn negative_live_rail_postcondition_milestone(scenario: Scenario) -> Option<&'static str> {
-    match scenario {
-        Scenario::NegativeInventoryStaleState => Some("negative_inventory_stale_state_contained"),
-        Scenario::NegativeInventoryInvalidClick => {
-            Some("negative_inventory_invalid_click_restored")
-        }
-        Scenario::NegativeCustomPayload => Some("negative_custom_payload_contained"),
-        Scenario::NegativeReconnectRace => Some("negative_reconnect_race_contained"),
-        Scenario::NegativeCtfWrongScore => Some("negative_wrong_score_contained"),
-        Scenario::CtfInvalidPickupOwnership => Some("ctf_invalid_pickup_contained"),
-        Scenario::CtfInvalidReturnDrop => Some("ctf_invalid_return_drop_contained"),
-        _ => None,
-    }
+    scenario_behavior(scenario)
+        .negative_live_rail()
+        .map(|behavior| behavior.postcondition)
 }
 
 fn observed_negative_live_rail_outcome(
@@ -1487,19 +1456,11 @@ fn evaluate_negative_live_rail_safety(cfg: &Config) -> NegativeLiveRailEvidence 
 }
 
 fn uses_armor_mitigation_probe(scenario: Scenario) -> bool {
-    matches!(
-        scenario,
-        Scenario::VanillaCombatArmorReferenceParity
-            | Scenario::ArmorEquipmentMitigation
-            | Scenario::ArmorLoadoutEnchantmentStatusMatrix
-    )
+    scenario_behavior(scenario).uses_armor_mitigation_probe()
 }
 
 fn uses_vanilla_combat_reference_probe(scenario: Scenario) -> bool {
-    matches!(
-        scenario,
-        Scenario::VanillaCombatReferenceParity | Scenario::VanillaCombatArmorReferenceParity
-    )
+    scenario_behavior(scenario).uses_vanilla_combat_reference_probe()
 }
 
 fn evaluate_armor_loadout_enchantment_status_matrix(
@@ -2148,118 +2109,952 @@ fn apply_config_json(cfg: &mut Config, text: &str) -> Result<bool, String> {
     Ok(server_port_was_set)
 }
 
-fn parse_scenario(value: &str) -> Result<Scenario, String> {
-    match value {
-        "smoke" => Ok(Scenario::Smoke),
-        "valence-compat-bot-probe" | "compat-bot-probe" => Ok(Scenario::CompatBotProbe),
-        "flag-score-repeat" => Ok(Scenario::FlagScoreRepeat),
-        "blue-flag-score" => Ok(Scenario::BlueFlagScore),
-        "inventory-interaction" => Ok(Scenario::InventoryInteraction),
-        "inventory-stack-split-merge" => Ok(Scenario::InventoryStackSplitMerge),
-        "inventory-drag-transactions" => Ok(Scenario::InventoryDragTransactions),
-        "survival-break-place-pickup" => Ok(Scenario::SurvivalBreakPlacePickup),
-        "survival-chest-persistence" => Ok(Scenario::SurvivalChestPersistence),
-        "survival-crafting-table" => Ok(Scenario::SurvivalCraftingTable),
-        "survival-furnace-persistence" => Ok(Scenario::SurvivalFurnacePersistence),
-        "survival-hunger-food" => Ok(Scenario::SurvivalHungerFood),
-        "survival-mob-drop" => Ok(Scenario::SurvivalMobDrop),
-        "survival-redstone-toggle" => Ok(Scenario::SurvivalRedstoneToggle),
-        "survival-world-persistence-restart" => Ok(Scenario::SurvivalWorldPersistenceRestart),
-        "survival-crash-recovery-parity" => Ok(Scenario::SurvivalCrashRecoveryParity),
-        "survival-block-entity-persistence-parity" => {
-            Ok(Scenario::SurvivalBlockEntityPersistenceParity)
+type ScenarioMilestone = (&'static str, &'static str);
+
+const COMBAT_CLIENT_COUNT_NEEDLE: &str = "mc_compat_combat_client_count=2";
+const FLAG_CARRIER_DEATH_CLIENT_COUNT_NEEDLE: &str = "mc_compat_flag_carrier_death_client_count=2";
+const MULTI_CLIENT_LOAD_COUNT_NEEDLE: &str = "mc_compat_multi_client_count=2";
+const EQUIPMENT_UPDATE_CLIENT_COUNT_NEEDLE: &str = "mc_compat_equipment_update_client_count=2";
+const PROJECTILE_HIT_CLIENT_COUNT_NEEDLE: &str = "mc_compat_projectile_hit_client_count=2";
+const PROJECTILE_DAMAGE_CLIENT_COUNT_NEEDLE: &str = "mc_compat_projectile_damage_client_count=2";
+const RECONNECT_SESSION_COUNT_NEEDLE: &str = "mc_compat_reconnect_session=2";
+const FIRST_CLIENT_INDEX: usize = 0;
+const SECOND_CLIENT_INDEX: usize = 1;
+const SESSION_INDEX_ENV_OFFSET: usize = 1;
+const MULTI_CLIENT_READY_COUNT: usize = 2;
+const PROBE_ENABLED_VALUE: &str = "1";
+const PROBE_REPEAT_SINGLE: &str = "1";
+const PROBE_REPEAT_DOUBLE: &str = "2";
+const TEAM_RED_VALUE: &str = "red";
+const TEAM_BLUE_VALUE: &str = "blue";
+const COMBAT_ATTACKER_ROLE: &str = "attacker";
+const COMBAT_VICTIM_ROLE: &str = "victim";
+const COMBAT_TARGET_USERNAME: &str = "compatbotb";
+const FLAG_CARRIER_DEATH_PICKUP_FIRST_TICK: u32 = 760;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct ScenarioSpec {
+    scenario: Scenario,
+    canonical_name: &'static str,
+    aliases: &'static [&'static str],
+    client_milestones: &'static [ScenarioMilestone],
+    server_milestones: &'static [ScenarioMilestone],
+    forbidden_patterns: &'static [ScenarioMilestone],
+    behavior: ScenarioBehaviorKind,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum ProbeTeam {
+    Red,
+    Blue,
+}
+
+impl ProbeTeam {
+    fn env_value(self) -> &'static str {
+        match self {
+            Self::Red => TEAM_RED_VALUE,
+            Self::Blue => TEAM_BLUE_VALUE,
         }
-        "survival-biome-dimension-state" => Ok(Scenario::SurvivalBiomeDimensionState),
-        MCP_CONTROLLED_SMOKE_SCENARIO => Ok(Scenario::McpControlledSmoke),
-        "combat-damage" => Ok(Scenario::CombatDamage),
-        "combat-knockback" => Ok(Scenario::CombatKnockback),
-        "vanilla-combat-reference-parity" => Ok(Scenario::VanillaCombatReferenceParity),
-        "vanilla-combat-armor-reference-parity" => Ok(Scenario::VanillaCombatArmorReferenceParity),
-        "armor-equipment-mitigation" => Ok(Scenario::ArmorEquipmentMitigation),
-        "armor-loadout-enchantment-status-matrix" => {
-            Ok(Scenario::ArmorLoadoutEnchantmentStatusMatrix)
-        }
-        "equipment-update-observation" => Ok(Scenario::EquipmentUpdateObservation),
-        "equipment-slot-item-matrix-expansion" => Ok(Scenario::EquipmentSlotItemMatrixExpansion),
-        "projectile-hit" => Ok(Scenario::ProjectileHit),
-        "projectile-damage-attribution" => Ok(Scenario::ProjectileDamageAttribution),
-        "flag-carrier-death-return" => Ok(Scenario::FlagCarrierDeathReturn),
-        "reconnect-flag-state" => Ok(Scenario::ReconnectFlagState),
-        "reconnect-flag-score" => Ok(Scenario::ReconnectFlagScore),
-        "multi-client-load-score" => Ok(Scenario::MultiClientLoadScore),
-        "negative-inventory-stale-state" => Ok(Scenario::NegativeInventoryStaleState),
-        "negative-inventory-invalid-click" => Ok(Scenario::NegativeInventoryInvalidClick),
-        "negative-custom-payload" => Ok(Scenario::NegativeCustomPayload),
-        "negative-reconnect-race" => Ok(Scenario::NegativeReconnectRace),
-        "negative-ctf-wrong-score" => Ok(Scenario::NegativeCtfWrongScore),
-        "ctf-invalid-pickup-ownership" => Ok(Scenario::CtfInvalidPickupOwnership),
-        "ctf-invalid-return-drop" => Ok(Scenario::CtfInvalidReturnDrop),
-        "ctf-score-limit-win-condition" => Ok(Scenario::CtfScoreLimitWinCondition),
-        "ctf-simultaneous-pickup-capture-race" => Ok(Scenario::CtfSimultaneousPickupCaptureRace),
-        "ctf-spawn-team-balance-reset" => Ok(Scenario::CtfSpawnTeamBalanceReset),
-        other => Err(format!("unknown scenario: {other}")),
     }
 }
 
-fn scenario_name(scenario: Scenario) -> &'static str {
-    match scenario {
-        Scenario::Smoke => "smoke",
-        Scenario::CompatBotProbe => "valence-compat-bot-probe",
-        Scenario::FlagScoreRepeat => "flag-score-repeat",
-        Scenario::BlueFlagScore => "blue-flag-score",
-        Scenario::InventoryInteraction => "inventory-interaction",
-        Scenario::InventoryStackSplitMerge => "inventory-stack-split-merge",
-        Scenario::InventoryDragTransactions => "inventory-drag-transactions",
-        Scenario::SurvivalBreakPlacePickup => "survival-break-place-pickup",
-        Scenario::SurvivalChestPersistence => "survival-chest-persistence",
-        Scenario::SurvivalCraftingTable => "survival-crafting-table",
-        Scenario::SurvivalFurnacePersistence => "survival-furnace-persistence",
-        Scenario::SurvivalHungerFood => "survival-hunger-food",
-        Scenario::SurvivalMobDrop => "survival-mob-drop",
-        Scenario::SurvivalRedstoneToggle => "survival-redstone-toggle",
-        Scenario::SurvivalWorldPersistenceRestart => "survival-world-persistence-restart",
-        Scenario::SurvivalCrashRecoveryParity => "survival-crash-recovery-parity",
-        Scenario::SurvivalBlockEntityPersistenceParity => {
-            "survival-block-entity-persistence-parity"
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum ScenarioRunStrategy {
+    SingleClient,
+    ReconnectSequence,
+    MultiClient,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct NegativeLiveRailBehavior {
+    invalid_action: &'static str,
+    postcondition: &'static str,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum ScenarioBehaviorKind {
+    Default,
+    CompatBotProbe,
+    FlagScore {
+        team: ProbeTeam,
+        reconnect: bool,
+    },
+    ReconnectFlagState {
+        negative_probe: Option<&'static str>,
+    },
+    InventoryInteraction,
+    InventoryStackSplitMerge,
+    InventoryDragTransactions,
+    NegativeInventory {
+        probe: &'static str,
+        invalid_action: &'static str,
+        postcondition: &'static str,
+    },
+    NegativeCustomPayload,
+    SurvivalBreakPlacePickup,
+    SurvivalChestPersistence,
+    SurvivalCraftingTable,
+    SurvivalFurnacePersistence,
+    SurvivalHungerFood,
+    SurvivalMobDrop,
+    SurvivalRedstoneToggle,
+    WorldPersistenceRestart {
+        crash_recovery: bool,
+        block_entity: bool,
+    },
+    SurvivalBiomeDimensionState,
+    McpControlledSmoke,
+    Combat {
+        reference_probe: bool,
+        armor_reference: bool,
+        armor_mitigation: bool,
+        flag_carrier_death: bool,
+        count_needle: Option<&'static str>,
+    },
+    EquipmentUpdate,
+    Projectile {
+        damage: bool,
+    },
+    MultiClientLoadScore,
+    NegativeCtfWrongScore,
+    CtfInvalidPickupOwnership,
+    CtfInvalidReturnDrop,
+    CtfScoreLimitWinCondition,
+    CtfSimultaneousPickupCaptureRace,
+    CtfSpawnTeamBalanceReset,
+}
+
+trait ScenarioBehavior {
+    fn client_milestone_matcher<'a>(
+        &self,
+        id: &'static str,
+        needle: &'static str,
+        projectile_health_needle: &'a str,
+    ) -> MatcherKind<'a>;
+    fn run_strategy(&self) -> ScenarioRunStrategy;
+    fn safety_reconnect_sessions(&self) -> usize;
+    fn negative_live_rail(&self) -> Option<NegativeLiveRailBehavior>;
+    fn requires_server_correlation(&self) -> bool;
+    fn uses_armor_mitigation_probe(&self) -> bool;
+    fn uses_vanilla_combat_reference_probe(&self) -> bool;
+    fn uses_armor_reference_probe(&self) -> bool;
+    fn uses_dynamic_projectile_health(&self) -> bool;
+    fn is_mcp_controlled_smoke(&self) -> bool;
+    fn uses_isolated_restart_storage(&self) -> bool;
+    fn uses_crash_recovery_restart(&self) -> bool;
+    fn uses_world_persistence_storage(&self) -> bool;
+    fn uses_block_entity_persistence_storage(&self) -> bool;
+    fn world_persistence_artifact_dir_name(&self) -> &'static str;
+    fn uses_reconnect_session_marker(&self) -> bool;
+    fn append_client_count_markers(&self, run_count: usize, output: &mut String);
+    fn apply_client_probe_env(
+        &self,
+        cmd: &mut Command,
+        client_index: usize,
+        server_backend: ServerBackend,
+    );
+    fn apply_valence_server_env(&self, cmd: &mut Command, cfg: &Config);
+    fn apply_paper_server_env(&self, cmd: &mut Command, cfg: &Config) -> Result<(), String>;
+}
+
+impl ScenarioBehavior for ScenarioBehaviorKind {
+    fn client_milestone_matcher<'a>(
+        &self,
+        id: &'static str,
+        needle: &'static str,
+        projectile_health_needle: &'a str,
+    ) -> MatcherKind<'a> {
+        if self.uses_dynamic_projectile_health() && id == PROJECTILE_DAMAGE_UPDATE_MILESTONE {
+            MatcherKind::Literal(projectile_health_needle)
+        } else {
+            MatcherKind::Literal(needle)
         }
-        Scenario::SurvivalBiomeDimensionState => "survival-biome-dimension-state",
-        Scenario::McpControlledSmoke => MCP_CONTROLLED_SMOKE_SCENARIO,
-        Scenario::CombatDamage => "combat-damage",
-        Scenario::CombatKnockback => "combat-knockback",
-        Scenario::VanillaCombatReferenceParity => "vanilla-combat-reference-parity",
-        Scenario::VanillaCombatArmorReferenceParity => "vanilla-combat-armor-reference-parity",
-        Scenario::ArmorEquipmentMitigation => "armor-equipment-mitigation",
-        Scenario::ArmorLoadoutEnchantmentStatusMatrix => "armor-loadout-enchantment-status-matrix",
-        Scenario::EquipmentUpdateObservation => "equipment-update-observation",
-        Scenario::EquipmentSlotItemMatrixExpansion => "equipment-slot-item-matrix-expansion",
-        Scenario::ProjectileHit => "projectile-hit",
-        Scenario::ProjectileDamageAttribution => "projectile-damage-attribution",
-        Scenario::FlagCarrierDeathReturn => "flag-carrier-death-return",
-        Scenario::ReconnectFlagState => "reconnect-flag-state",
-        Scenario::ReconnectFlagScore => "reconnect-flag-score",
-        Scenario::MultiClientLoadScore => "multi-client-load-score",
-        Scenario::NegativeInventoryStaleState => "negative-inventory-stale-state",
-        Scenario::NegativeInventoryInvalidClick => "negative-inventory-invalid-click",
-        Scenario::NegativeCustomPayload => "negative-custom-payload",
-        Scenario::NegativeReconnectRace => "negative-reconnect-race",
-        Scenario::NegativeCtfWrongScore => "negative-ctf-wrong-score",
-        Scenario::CtfInvalidPickupOwnership => "ctf-invalid-pickup-ownership",
-        Scenario::CtfInvalidReturnDrop => "ctf-invalid-return-drop",
-        Scenario::CtfScoreLimitWinCondition => "ctf-score-limit-win-condition",
-        Scenario::CtfSimultaneousPickupCaptureRace => "ctf-simultaneous-pickup-capture-race",
-        Scenario::CtfSpawnTeamBalanceReset => "ctf-spawn-team-balance-reset",
+    }
+
+    fn run_strategy(&self) -> ScenarioRunStrategy {
+        match self {
+            Self::ReconnectFlagState { .. }
+            | Self::SurvivalChestPersistence
+            | Self::SurvivalFurnacePersistence
+            | Self::WorldPersistenceRestart { .. } => ScenarioRunStrategy::ReconnectSequence,
+            Self::Combat { .. }
+            | Self::EquipmentUpdate
+            | Self::Projectile { .. }
+            | Self::MultiClientLoadScore
+            | Self::CtfSimultaneousPickupCaptureRace
+            | Self::CtfSpawnTeamBalanceReset => ScenarioRunStrategy::MultiClient,
+            _ => ScenarioRunStrategy::SingleClient,
+        }
+    }
+
+    fn safety_reconnect_sessions(&self) -> usize {
+        match self {
+            Self::FlagScore {
+                reconnect: true, ..
+            }
+            | Self::ReconnectFlagState { .. }
+            | Self::SurvivalChestPersistence
+            | Self::SurvivalFurnacePersistence => SAFETY_RECONNECT_SESSION_COUNT,
+            _ => SAFETY_SINGLE_SESSION_COUNT,
+        }
+    }
+
+    fn negative_live_rail(&self) -> Option<NegativeLiveRailBehavior> {
+        match self {
+            Self::NegativeInventory {
+                invalid_action,
+                postcondition,
+                ..
+            } => Some(NegativeLiveRailBehavior {
+                invalid_action,
+                postcondition,
+            }),
+            Self::NegativeCustomPayload => Some(NegativeLiveRailBehavior {
+                invalid_action: "malformed_custom_payload",
+                postcondition: "negative_custom_payload_contained",
+            }),
+            Self::ReconnectFlagState {
+                negative_probe: Some(_),
+            } => Some(NegativeLiveRailBehavior {
+                invalid_action: "duplicate_reconnect_flag_transition",
+                postcondition: "negative_reconnect_race_contained",
+            }),
+            Self::NegativeCtfWrongScore => Some(NegativeLiveRailBehavior {
+                invalid_action: "wrong_team_or_wrong_portal_score_attempt",
+                postcondition: "negative_wrong_score_contained",
+            }),
+            Self::CtfInvalidPickupOwnership => Some(NegativeLiveRailBehavior {
+                invalid_action: "own_flag_pickup_without_ownership_transfer",
+                postcondition: "ctf_invalid_pickup_contained",
+            }),
+            Self::CtfInvalidReturnDrop => Some(NegativeLiveRailBehavior {
+                invalid_action: "own_base_return_without_carrier",
+                postcondition: "ctf_invalid_return_drop_contained",
+            }),
+            _ => None,
+        }
+    }
+
+    fn requires_server_correlation(&self) -> bool {
+        matches!(
+            self,
+            Self::FlagScore {
+                team: ProbeTeam::Red,
+                ..
+            } | Self::InventoryInteraction
+                | Self::InventoryStackSplitMerge
+                | Self::InventoryDragTransactions
+                | Self::SurvivalBreakPlacePickup
+                | Self::SurvivalChestPersistence
+                | Self::SurvivalCraftingTable
+                | Self::SurvivalFurnacePersistence
+                | Self::SurvivalHungerFood
+                | Self::SurvivalMobDrop
+                | Self::SurvivalRedstoneToggle
+                | Self::WorldPersistenceRestart { .. }
+                | Self::Combat { .. }
+                | Self::EquipmentUpdate
+                | Self::Projectile { .. }
+                | Self::MultiClientLoadScore
+                | Self::CtfInvalidPickupOwnership
+                | Self::CtfInvalidReturnDrop
+                | Self::CtfScoreLimitWinCondition
+                | Self::CtfSimultaneousPickupCaptureRace
+                | Self::CtfSpawnTeamBalanceReset
+        )
+    }
+
+    fn uses_armor_mitigation_probe(&self) -> bool {
+        matches!(
+            self,
+            Self::Combat {
+                armor_mitigation: true,
+                ..
+            }
+        )
+    }
+
+    fn uses_vanilla_combat_reference_probe(&self) -> bool {
+        matches!(
+            self,
+            Self::Combat {
+                reference_probe: true,
+                ..
+            }
+        )
+    }
+
+    fn uses_armor_reference_probe(&self) -> bool {
+        matches!(
+            self,
+            Self::Combat {
+                armor_reference: true,
+                ..
+            }
+        )
+    }
+
+    fn uses_dynamic_projectile_health(&self) -> bool {
+        matches!(self, Self::Projectile { damage: true })
+    }
+
+    fn is_mcp_controlled_smoke(&self) -> bool {
+        matches!(self, Self::McpControlledSmoke)
+    }
+
+    fn uses_isolated_restart_storage(&self) -> bool {
+        matches!(self, Self::WorldPersistenceRestart { .. })
+    }
+
+    fn uses_crash_recovery_restart(&self) -> bool {
+        matches!(
+            self,
+            Self::WorldPersistenceRestart {
+                crash_recovery: true,
+                ..
+            }
+        )
+    }
+
+    fn uses_world_persistence_storage(&self) -> bool {
+        matches!(
+            self,
+            Self::WorldPersistenceRestart {
+                block_entity: false,
+                ..
+            }
+        )
+    }
+
+    fn uses_block_entity_persistence_storage(&self) -> bool {
+        matches!(
+            self,
+            Self::WorldPersistenceRestart {
+                block_entity: true,
+                ..
+            }
+        )
+    }
+
+    fn world_persistence_artifact_dir_name(&self) -> &'static str {
+        match self {
+            Self::WorldPersistenceRestart {
+                crash_recovery: true,
+                ..
+            } => "mc-compat-survival-crash-recovery",
+            Self::WorldPersistenceRestart {
+                block_entity: true, ..
+            } => "mc-compat-survival-block-entity-persistence",
+            _ => "mc-compat-world-persistence",
+        }
+    }
+
+    fn uses_reconnect_session_marker(&self) -> bool {
+        matches!(
+            self,
+            Self::FlagScore {
+                reconnect: true,
+                ..
+            } | Self::ReconnectFlagState { .. }
+                | Self::SurvivalChestPersistence
+                | Self::SurvivalFurnacePersistence
+                | Self::WorldPersistenceRestart { .. }
+        )
+    }
+
+    fn append_client_count_markers(&self, run_count: usize, output: &mut String) {
+        if run_count < MULTI_CLIENT_READY_COUNT {
+            return;
+        }
+        match self {
+            Self::MultiClientLoadScore => {
+                append_count_marker(output, MULTI_CLIENT_LOAD_COUNT_NEEDLE)
+            }
+            Self::Combat {
+                reference_probe,
+                count_needle,
+                ..
+            } => {
+                if let Some(marker) = count_needle {
+                    append_count_marker(output, marker);
+                }
+                if *reference_probe {
+                    append_count_marker(output, VANILLA_COMBAT_REFERENCE_CLIENT_COUNT_NEEDLE);
+                }
+            }
+            Self::EquipmentUpdate => {
+                append_count_marker(output, EQUIPMENT_UPDATE_CLIENT_COUNT_NEEDLE)
+            }
+            Self::Projectile { damage: false } => {
+                append_count_marker(output, PROJECTILE_HIT_CLIENT_COUNT_NEEDLE)
+            }
+            Self::Projectile { damage: true } => {
+                append_count_marker(output, PROJECTILE_DAMAGE_CLIENT_COUNT_NEEDLE)
+            }
+            Self::CtfSimultaneousPickupCaptureRace => {
+                append_count_marker(output, CTF_RACE_CLIENT_COUNT_NEEDLE)
+            }
+            Self::CtfSpawnTeamBalanceReset => {
+                append_count_marker(output, CTF_SPAWN_TEAM_RESET_CLIENT_COUNT_NEEDLE)
+            }
+            _ => {}
+        }
+    }
+
+    fn apply_client_probe_env(
+        &self,
+        cmd: &mut Command,
+        client_index: usize,
+        _server_backend: ServerBackend,
+    ) {
+        match self {
+            Self::Default => {}
+            Self::CompatBotProbe => {
+                cmd.env("MC_COMPAT_ACTIVE_PROBE", PROBE_ENABLED_VALUE);
+            }
+            Self::FlagScore { team, reconnect } => {
+                let team = team.env_value();
+                cmd.env("MC_COMPAT_ACTIVE_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE_TEAM", team)
+                    .env("MC_COMPAT_FLAG_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_FLAG_PROBE_TEAM", team)
+                    .env("MC_COMPAT_FLAG_PROBE_REPEAT", PROBE_REPEAT_DOUBLE);
+                if *reconnect {
+                    cmd.env("MC_COMPAT_RECONNECT_PROBE", PROBE_ENABLED_VALUE);
+                }
+            }
+            Self::ReconnectFlagState { negative_probe } => {
+                cmd.env("MC_COMPAT_ACTIVE_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE_TEAM", TEAM_RED_VALUE);
+                if client_index == FIRST_CLIENT_INDEX {
+                    cmd.env("MC_COMPAT_FLAG_PROBE", PROBE_ENABLED_VALUE)
+                        .env("MC_COMPAT_FLAG_PROBE_TEAM", TEAM_RED_VALUE)
+                        .env("MC_COMPAT_FLAG_PROBE_PICKUP_ONLY", PROBE_ENABLED_VALUE)
+                        .env("MC_COMPAT_FLAG_PROBE_REPEAT", PROBE_REPEAT_SINGLE);
+                }
+                if let Some(probe) = negative_probe {
+                    cmd.env("MC_COMPAT_NEGATIVE_PROBE", probe);
+                }
+            }
+            Self::InventoryInteraction => {
+                cmd.env("MC_COMPAT_ACTIVE_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE_TEAM", TEAM_RED_VALUE)
+                    .env("MC_COMPAT_INVENTORY_PROBE", PROBE_ENABLED_VALUE);
+            }
+            Self::InventoryStackSplitMerge => {
+                cmd.env("MC_COMPAT_ACTIVE_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE_TEAM", TEAM_RED_VALUE)
+                    .env("MC_COMPAT_INVENTORY_PROBE", PROBE_ENABLED_VALUE)
+                    .env(INVENTORY_STACK_SPLIT_MERGE_PROBE_ENV, PROBE_ENABLED_VALUE);
+            }
+            Self::InventoryDragTransactions => {
+                cmd.env("MC_COMPAT_ACTIVE_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE_TEAM", TEAM_RED_VALUE)
+                    .env("MC_COMPAT_INVENTORY_PROBE", PROBE_ENABLED_VALUE)
+                    .env(INVENTORY_DRAG_TRANSACTIONS_PROBE_ENV, PROBE_ENABLED_VALUE);
+            }
+            Self::NegativeInventory { probe, .. } => {
+                cmd.env("MC_COMPAT_ACTIVE_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE_TEAM", TEAM_RED_VALUE)
+                    .env("MC_COMPAT_INVENTORY_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_NEGATIVE_PROBE", probe);
+            }
+            Self::NegativeCustomPayload => {
+                cmd.env("MC_COMPAT_ACTIVE_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_NEGATIVE_PROBE", "custom_payload_malformed");
+            }
+            Self::SurvivalBreakPlacePickup => {
+                cmd.env("MC_COMPAT_SURVIVAL_PROBE", PROBE_ENABLED_VALUE);
+            }
+            Self::SurvivalChestPersistence => {
+                cmd.env("MC_COMPAT_SURVIVAL_CHEST_PROBE", PROBE_ENABLED_VALUE)
+                    .env(
+                        "MC_COMPAT_SURVIVAL_CHEST_SESSION",
+                        session_env_value(client_index),
+                    );
+            }
+            Self::SurvivalCraftingTable => {
+                cmd.env("MC_COMPAT_SURVIVAL_CRAFTING_PROBE", PROBE_ENABLED_VALUE);
+            }
+            Self::SurvivalFurnacePersistence => {
+                cmd.env("MC_COMPAT_SURVIVAL_FURNACE_PROBE", PROBE_ENABLED_VALUE)
+                    .env(
+                        "MC_COMPAT_SURVIVAL_FURNACE_SESSION",
+                        session_env_value(client_index),
+                    );
+            }
+            Self::SurvivalHungerFood => {
+                cmd.env(SURVIVAL_HUNGER_FOOD_PROBE_ENV, PROBE_ENABLED_VALUE);
+            }
+            Self::SurvivalMobDrop => {
+                cmd.env(SURVIVAL_MOB_DROP_PROBE_ENV, PROBE_ENABLED_VALUE);
+            }
+            Self::SurvivalRedstoneToggle => {
+                cmd.env(SURVIVAL_REDSTONE_TOGGLE_PROBE_ENV, PROBE_ENABLED_VALUE);
+            }
+            Self::WorldPersistenceRestart { block_entity, .. } => {
+                if *block_entity {
+                    cmd.env(SURVIVAL_BLOCK_ENTITY_PROBE_ENV, PROBE_ENABLED_VALUE)
+                        .env(
+                            SURVIVAL_BLOCK_ENTITY_SESSION_ENV,
+                            session_env_value(client_index),
+                        );
+                } else {
+                    cmd.env(SURVIVAL_WORLD_PERSISTENCE_PROBE_ENV, PROBE_ENABLED_VALUE)
+                        .env(
+                            SURVIVAL_WORLD_PERSISTENCE_SESSION_ENV,
+                            session_env_value(client_index),
+                        );
+                }
+            }
+            Self::SurvivalBiomeDimensionState => {
+                cmd.env(SURVIVAL_BIOME_DIMENSION_PROBE_ENV, PROBE_ENABLED_VALUE);
+            }
+            Self::McpControlledSmoke => {
+                cmd.env("MC_COMPAT_MCP_CONTROLLED_SMOKE", PROBE_ENABLED_VALUE);
+            }
+            Self::EquipmentUpdate => {
+                let team = indexed_team(client_index);
+                cmd.env("MC_COMPAT_ACTIVE_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE_TEAM", team)
+                    .env("MC_COMPAT_EQUIPMENT_PROBE", PROBE_ENABLED_VALUE);
+            }
+            Self::Projectile { .. } => {
+                let (team, role) = indexed_combat_team_role(client_index);
+                cmd.env("MC_COMPAT_ACTIVE_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE_TEAM", team)
+                    .env("MC_COMPAT_COMBAT_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_COMBAT_PROBE_ROLE", role)
+                    .env("MC_COMPAT_PROJECTILE_PROBE", PROBE_ENABLED_VALUE);
+                if role == COMBAT_ATTACKER_ROLE {
+                    cmd.env("MC_COMPAT_COMBAT_TARGET_USERNAME", COMBAT_TARGET_USERNAME);
+                }
+            }
+            Self::Combat {
+                reference_probe,
+                armor_reference,
+                armor_mitigation,
+                flag_carrier_death,
+                ..
+            } => {
+                let (team, role) = indexed_combat_team_role(client_index);
+                cmd.env("MC_COMPAT_ACTIVE_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_COMBAT_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_COMBAT_PROBE_ROLE", role);
+                if !reference_probe {
+                    cmd.env("MC_COMPAT_TEAM_PROBE", PROBE_ENABLED_VALUE)
+                        .env("MC_COMPAT_TEAM_PROBE_TEAM", team);
+                }
+                if role == COMBAT_ATTACKER_ROLE {
+                    cmd.env("MC_COMPAT_COMBAT_TARGET_USERNAME", COMBAT_TARGET_USERNAME);
+                }
+                if *reference_probe {
+                    cmd.env(VANILLA_COMBAT_REFERENCE_PROBE_ENV, PROBE_ENABLED_VALUE)
+                        .env("MC_COMPAT_STATIONARY_COMBAT_PROBE", PROBE_ENABLED_VALUE);
+                }
+                if *armor_reference {
+                    cmd.env(
+                        VANILLA_COMBAT_ARMOR_REFERENCE_PROBE_ENV,
+                        PROBE_ENABLED_VALUE,
+                    );
+                }
+                if *armor_mitigation {
+                    cmd.env("MC_COMPAT_ARMOR_MITIGATION_PROBE", PROBE_ENABLED_VALUE);
+                    if role == COMBAT_VICTIM_ROLE {
+                        cmd.env("MC_COMPAT_INVENTORY_PROBE", PROBE_ENABLED_VALUE);
+                    }
+                }
+                if *flag_carrier_death {
+                    cmd.env("MC_COMPAT_FLAG_CARRIER_DEATH_PROBE", PROBE_ENABLED_VALUE)
+                        .env("MC_COMPAT_RESPAWN_PROBE", PROBE_ENABLED_VALUE);
+                    if client_index == SECOND_CLIENT_INDEX {
+                        cmd.env("MC_COMPAT_FLAG_PROBE", PROBE_ENABLED_VALUE)
+                            .env("MC_COMPAT_FLAG_PROBE_TEAM", TEAM_BLUE_VALUE)
+                            .env("MC_COMPAT_FLAG_PROBE_PICKUP_ONLY", PROBE_ENABLED_VALUE)
+                            .env(
+                                "MC_COMPAT_FLAG_PROBE_FIRST_TICK",
+                                FLAG_CARRIER_DEATH_PICKUP_FIRST_TICK.to_string(),
+                            )
+                            .env("MC_COMPAT_FLAG_PROBE_REPEAT", PROBE_REPEAT_SINGLE);
+                    }
+                }
+            }
+            Self::MultiClientLoadScore => {
+                cmd.env("MC_COMPAT_ACTIVE_PROBE", PROBE_ENABLED_VALUE);
+                if client_index == FIRST_CLIENT_INDEX {
+                    cmd.env("MC_COMPAT_TEAM_PROBE", PROBE_ENABLED_VALUE)
+                        .env("MC_COMPAT_TEAM_PROBE_TEAM", TEAM_RED_VALUE)
+                        .env("MC_COMPAT_FLAG_PROBE", PROBE_ENABLED_VALUE)
+                        .env("MC_COMPAT_FLAG_PROBE_REPEAT", PROBE_REPEAT_SINGLE);
+                }
+            }
+            Self::NegativeCtfWrongScore => {
+                cmd.env("MC_COMPAT_ACTIVE_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE_TEAM", TEAM_RED_VALUE)
+                    .env("MC_COMPAT_FLAG_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_FLAG_PROBE_TEAM", TEAM_BLUE_VALUE)
+                    .env("MC_COMPAT_FLAG_PROBE_PICKUP_ONLY", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_NEGATIVE_PROBE", "ctf_wrong_score");
+            }
+            Self::CtfInvalidPickupOwnership => {
+                cmd.env("MC_COMPAT_ACTIVE_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE_TEAM", TEAM_RED_VALUE)
+                    .env("MC_COMPAT_FLAG_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_FLAG_PROBE_TEAM", TEAM_BLUE_VALUE)
+                    .env("MC_COMPAT_FLAG_PROBE_PICKUP_ONLY", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_NEGATIVE_PROBE", "ctf_invalid_pickup_ownership");
+            }
+            Self::CtfInvalidReturnDrop => {
+                cmd.env("MC_COMPAT_ACTIVE_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE_TEAM", TEAM_RED_VALUE)
+                    .env("MC_COMPAT_FLAG_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_FLAG_PROBE_TEAM", TEAM_BLUE_VALUE)
+                    .env("MC_COMPAT_FLAG_PROBE_PICKUP_ONLY", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_NEGATIVE_PROBE", "ctf_invalid_return_drop");
+            }
+            Self::CtfScoreLimitWinCondition => {
+                cmd.env("MC_COMPAT_ACTIVE_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE_TEAM", TEAM_RED_VALUE)
+                    .env("MC_COMPAT_FLAG_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_FLAG_PROBE_TEAM", TEAM_RED_VALUE)
+                    .env("MC_COMPAT_FLAG_PROBE_REPEAT", PROBE_REPEAT_SINGLE)
+                    .env("MC_COMPAT_SCORE_LIMIT_PROBE", PROBE_ENABLED_VALUE);
+            }
+            Self::CtfSimultaneousPickupCaptureRace => {
+                let first_tick = if client_index == FIRST_CLIENT_INDEX {
+                    CTF_RACE_REJECT_CLIENT_FIRST_TICK
+                } else {
+                    CTF_RACE_ACCEPT_CLIENT_FIRST_TICK
+                };
+                cmd.env("MC_COMPAT_ACTIVE_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE_TEAM", TEAM_RED_VALUE)
+                    .env("MC_COMPAT_FLAG_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_FLAG_PROBE_TEAM", TEAM_RED_VALUE)
+                    .env("MC_COMPAT_FLAG_PROBE_REPEAT", PROBE_REPEAT_SINGLE)
+                    .env("MC_COMPAT_FLAG_PROBE_FIRST_TICK", first_tick.to_string());
+            }
+            Self::CtfSpawnTeamBalanceReset => {
+                let team = indexed_team(client_index);
+                cmd.env("MC_COMPAT_ACTIVE_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE", PROBE_ENABLED_VALUE)
+                    .env("MC_COMPAT_TEAM_PROBE_TEAM", team);
+                if client_index == FIRST_CLIENT_INDEX {
+                    cmd.env("MC_COMPAT_FLAG_PROBE", PROBE_ENABLED_VALUE)
+                        .env("MC_COMPAT_FLAG_PROBE_TEAM", TEAM_RED_VALUE)
+                        .env("MC_COMPAT_FLAG_PROBE_REPEAT", PROBE_REPEAT_SINGLE);
+                }
+            }
+        }
+    }
+
+    fn apply_valence_server_env(&self, cmd: &mut Command, cfg: &Config) {
+        if self.uses_armor_mitigation_probe() {
+            cmd.env("MC_COMPAT_ARMOR_MITIGATION_PROBE", PROBE_ENABLED_VALUE);
+        }
+        match self {
+            Self::EquipmentUpdate => {
+                cmd.env("MC_COMPAT_EQUIPMENT_UPDATE_PROBE", PROBE_ENABLED_VALUE);
+            }
+            Self::Projectile { .. } => {
+                cmd.env("MC_COMPAT_PROJECTILE_PROBE", PROBE_ENABLED_VALUE);
+            }
+            Self::Combat {
+                reference_probe,
+                armor_reference,
+                ..
+            } => {
+                if *reference_probe {
+                    cmd.env(VANILLA_COMBAT_REFERENCE_PROBE_ENV, PROBE_ENABLED_VALUE);
+                }
+                if *armor_reference {
+                    cmd.env(
+                        VANILLA_COMBAT_ARMOR_REFERENCE_PROBE_ENV,
+                        PROBE_ENABLED_VALUE,
+                    );
+                }
+            }
+            Self::InventoryStackSplitMerge => {
+                cmd.env(INVENTORY_STACK_SPLIT_MERGE_PROBE_ENV, PROBE_ENABLED_VALUE);
+            }
+            Self::InventoryDragTransactions => {
+                cmd.env(INVENTORY_DRAG_TRANSACTIONS_PROBE_ENV, PROBE_ENABLED_VALUE);
+            }
+            Self::SurvivalChestPersistence => {
+                cmd.env(SURVIVAL_CHEST_FIXTURE_ENV, PROBE_ENABLED_VALUE);
+            }
+            Self::SurvivalCraftingTable => {
+                cmd.env(SURVIVAL_CRAFTING_FIXTURE_ENV, PROBE_ENABLED_VALUE);
+            }
+            Self::SurvivalFurnacePersistence => {
+                cmd.env(SURVIVAL_FURNACE_FIXTURE_ENV, PROBE_ENABLED_VALUE);
+            }
+            Self::SurvivalHungerFood => {
+                cmd.env(SURVIVAL_HUNGER_FOOD_FIXTURE_ENV, PROBE_ENABLED_VALUE);
+            }
+            Self::SurvivalMobDrop => {
+                cmd.env(SURVIVAL_MOB_DROP_FIXTURE_ENV, PROBE_ENABLED_VALUE);
+            }
+            Self::SurvivalRedstoneToggle => {
+                cmd.env(SURVIVAL_REDSTONE_TOGGLE_FIXTURE_ENV, PROBE_ENABLED_VALUE);
+            }
+            Self::WorldPersistenceRestart { block_entity, .. } => {
+                if *block_entity {
+                    cmd.env(SURVIVAL_BLOCK_ENTITY_FIXTURE_ENV, PROBE_ENABLED_VALUE)
+                        .env(
+                            SURVIVAL_BLOCK_ENTITY_DIR_ENV,
+                            world_persistence_state_dir(cfg, ServerBackend::Valence),
+                        )
+                        .env(
+                            SURVIVAL_BLOCK_ENTITY_PHASE_ENV,
+                            world_persistence_phase_value(cfg),
+                        );
+                } else {
+                    cmd.env(SURVIVAL_WORLD_PERSISTENCE_FIXTURE_ENV, PROBE_ENABLED_VALUE)
+                        .env(
+                            SURVIVAL_WORLD_PERSISTENCE_DIR_ENV,
+                            world_persistence_state_dir(cfg, ServerBackend::Valence),
+                        )
+                        .env(
+                            SURVIVAL_WORLD_PERSISTENCE_PHASE_ENV,
+                            world_persistence_phase_value(cfg),
+                        );
+                }
+            }
+            Self::SurvivalBiomeDimensionState => {
+                cmd.env(SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV, PROBE_ENABLED_VALUE);
+            }
+            Self::CtfInvalidReturnDrop => {
+                cmd.env(
+                    "MC_COMPAT_CTF_INVALID_RETURN_DROP_PROBE",
+                    PROBE_ENABLED_VALUE,
+                );
+            }
+            Self::CtfScoreLimitWinCondition => {
+                cmd.env("MC_COMPAT_CTF_SCORE_LIMIT_PROBE", PROBE_ENABLED_VALUE);
+            }
+            Self::CtfSimultaneousPickupCaptureRace => {
+                cmd.env("MC_COMPAT_CTF_RACE_PROBE", PROBE_ENABLED_VALUE);
+            }
+            Self::CtfSpawnTeamBalanceReset => {
+                cmd.env("MC_COMPAT_CTF_SPAWN_TEAM_RESET_PROBE", PROBE_ENABLED_VALUE);
+            }
+            _ => {}
+        }
+    }
+
+    fn apply_paper_server_env(&self, cmd: &mut Command, cfg: &Config) -> Result<(), String> {
+        match self {
+            Self::SurvivalChestPersistence => {
+                add_paper_env(cmd, SURVIVAL_CHEST_FIXTURE_ENV, PROBE_ENABLED_VALUE)
+            }
+            Self::SurvivalCraftingTable => {
+                add_paper_env(cmd, SURVIVAL_CRAFTING_FIXTURE_ENV, PROBE_ENABLED_VALUE)
+            }
+            Self::SurvivalFurnacePersistence => {
+                add_paper_env(cmd, SURVIVAL_FURNACE_FIXTURE_ENV, PROBE_ENABLED_VALUE)
+            }
+            Self::SurvivalHungerFood => {
+                add_paper_env(cmd, SURVIVAL_HUNGER_FOOD_FIXTURE_ENV, PROBE_ENABLED_VALUE)
+            }
+            Self::SurvivalMobDrop => {
+                add_paper_env(cmd, SURVIVAL_MOB_DROP_FIXTURE_ENV, PROBE_ENABLED_VALUE)
+            }
+            Self::SurvivalRedstoneToggle => add_paper_env(
+                cmd,
+                SURVIVAL_REDSTONE_TOGGLE_FIXTURE_ENV,
+                PROBE_ENABLED_VALUE,
+            ),
+            Self::WorldPersistenceRestart { block_entity, .. } => {
+                if *block_entity {
+                    add_paper_persistence_env(
+                        cmd,
+                        cfg,
+                        SURVIVAL_BLOCK_ENTITY_FIXTURE_ENV,
+                        SURVIVAL_BLOCK_ENTITY_PHASE_ENV,
+                    )?;
+                } else {
+                    add_paper_persistence_env(
+                        cmd,
+                        cfg,
+                        SURVIVAL_WORLD_PERSISTENCE_FIXTURE_ENV,
+                        SURVIVAL_WORLD_PERSISTENCE_PHASE_ENV,
+                    )?;
+                }
+            }
+            Self::SurvivalBiomeDimensionState => add_paper_env(
+                cmd,
+                SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV,
+                PROBE_ENABLED_VALUE,
+            ),
+            Self::Combat {
+                reference_probe,
+                armor_reference,
+                ..
+            } => {
+                if *reference_probe {
+                    add_paper_env(cmd, VANILLA_COMBAT_REFERENCE_PROBE_ENV, PROBE_ENABLED_VALUE);
+                }
+                if *armor_reference {
+                    add_paper_env(
+                        cmd,
+                        VANILLA_COMBAT_ARMOR_REFERENCE_PROBE_ENV,
+                        PROBE_ENABLED_VALUE,
+                    );
+                }
+            }
+            _ => {}
+        }
+        Ok(())
     }
 }
 
-fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'static str)] {
-    match scenario {
-        Scenario::Smoke => &[("protocol_detected", "Detected server protocol version")],
-        Scenario::CompatBotProbe => &[
+fn append_count_marker(output: &mut String, marker: &'static str) {
+    output.push_str(marker);
+    output.push('\n');
+}
+
+fn session_env_value(client_index: usize) -> String {
+    (client_index + SESSION_INDEX_ENV_OFFSET).to_string()
+}
+
+fn indexed_team(client_index: usize) -> &'static str {
+    if client_index == FIRST_CLIENT_INDEX {
+        TEAM_RED_VALUE
+    } else {
+        TEAM_BLUE_VALUE
+    }
+}
+
+fn indexed_combat_team_role(client_index: usize) -> (&'static str, &'static str) {
+    if client_index == FIRST_CLIENT_INDEX {
+        (TEAM_RED_VALUE, COMBAT_ATTACKER_ROLE)
+    } else {
+        (TEAM_BLUE_VALUE, COMBAT_VICTIM_ROLE)
+    }
+}
+
+fn add_paper_env(cmd: &mut Command, key: &'static str, value: &'static str) {
+    cmd.arg("-e").arg(format!("{key}={value}"));
+}
+
+fn add_paper_persistence_env(
+    cmd: &mut Command,
+    cfg: &Config,
+    fixture_env: &'static str,
+    phase_env: &'static str,
+) -> Result<(), String> {
+    let state_dir = world_persistence_state_dir(cfg, ServerBackend::Paper);
+    fs::create_dir_all(&state_dir).map_err(|e| format!("create {}: {e}", state_dir.display()))?;
+    let absolute_state_dir = fs::canonicalize(&state_dir)
+        .map_err(|e| format!("canonicalize {}: {e}", state_dir.display()))?;
+    add_paper_env(cmd, fixture_env, PROBE_ENABLED_VALUE);
+    cmd.arg("-e")
+        .arg(format!(
+            "{phase_env}={}",
+            world_persistence_phase_value(cfg)
+        ))
+        .arg("-v")
+        .arg(format!("{}:/data", absolute_state_dir.display()));
+    Ok(())
+}
+
+const ALL_SCENARIOS: &[Scenario] = &[
+    Scenario::Smoke,
+    Scenario::CompatBotProbe,
+    Scenario::FlagScoreRepeat,
+    Scenario::BlueFlagScore,
+    Scenario::InventoryInteraction,
+    Scenario::InventoryStackSplitMerge,
+    Scenario::InventoryDragTransactions,
+    Scenario::SurvivalBreakPlacePickup,
+    Scenario::SurvivalChestPersistence,
+    Scenario::SurvivalCraftingTable,
+    Scenario::SurvivalFurnacePersistence,
+    Scenario::SurvivalHungerFood,
+    Scenario::SurvivalMobDrop,
+    Scenario::SurvivalRedstoneToggle,
+    Scenario::SurvivalWorldPersistenceRestart,
+    Scenario::SurvivalCrashRecoveryParity,
+    Scenario::SurvivalBlockEntityPersistenceParity,
+    Scenario::SurvivalBiomeDimensionState,
+    Scenario::McpControlledSmoke,
+    Scenario::CombatDamage,
+    Scenario::CombatKnockback,
+    Scenario::VanillaCombatReferenceParity,
+    Scenario::VanillaCombatArmorReferenceParity,
+    Scenario::ArmorEquipmentMitigation,
+    Scenario::ArmorLoadoutEnchantmentStatusMatrix,
+    Scenario::EquipmentUpdateObservation,
+    Scenario::EquipmentSlotItemMatrixExpansion,
+    Scenario::ProjectileHit,
+    Scenario::ProjectileDamageAttribution,
+    Scenario::FlagCarrierDeathReturn,
+    Scenario::ReconnectFlagState,
+    Scenario::ReconnectFlagScore,
+    Scenario::MultiClientLoadScore,
+    Scenario::NegativeInventoryStaleState,
+    Scenario::NegativeInventoryInvalidClick,
+    Scenario::NegativeCustomPayload,
+    Scenario::NegativeReconnectRace,
+    Scenario::NegativeCtfWrongScore,
+    Scenario::CtfInvalidPickupOwnership,
+    Scenario::CtfInvalidReturnDrop,
+    Scenario::CtfScoreLimitWinCondition,
+    Scenario::CtfSimultaneousPickupCaptureRace,
+    Scenario::CtfSpawnTeamBalanceReset,
+];
+
+const SCENARIO_SPECS: &[ScenarioSpec] = &[
+    ScenarioSpec {
+        scenario: Scenario::Smoke,
+        canonical_name: "smoke",
+        aliases: &["smoke"],
+        client_milestones: &[("protocol_detected", "Detected server protocol version")],
+        server_milestones: &[],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::Default,
+    },
+    ScenarioSpec {
+        scenario: Scenario::CompatBotProbe,
+        canonical_name: "valence-compat-bot-probe",
+        aliases: &["valence-compat-bot-probe", "compat-bot-probe"],
+        client_milestones: &[
             ("protocol_detected", "Detected server protocol version"),
             ("join_game", "join_game"),
             ("render_tick", "render_tick_with_player"),
         ],
-        Scenario::FlagScoreRepeat => &[
+        server_milestones: &[],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::CompatBotProbe,
+    },
+    ScenarioSpec {
+        scenario: Scenario::FlagScoreRepeat,
+        canonical_name: "flag-score-repeat",
+        aliases: &["flag-score-repeat"],
+        client_milestones: &[
             ("protocol_detected", "Detected server protocol version"),
             ("join_game", "join_game"),
             ("render_tick", "render_tick_with_player"),
@@ -2269,7 +3064,23 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             ("score_red_1", "RED: 1"),
             ("score_red_2", "RED: 2"),
         ],
-        Scenario::BlueFlagScore => &[
+        server_milestones: &[
+            ("server_username_seen", "compatbot"),
+            ("server_flag_or_score", "flag"),
+        ],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::FlagScore { team: ProbeTeam::Red, reconnect: false },
+    },
+    ScenarioSpec {
+        scenario: Scenario::BlueFlagScore,
+        canonical_name: "blue-flag-score",
+        aliases: &["blue-flag-score"],
+        client_milestones: &[
             ("protocol_detected", "Detected server protocol version"),
             ("join_game", "join_game"),
             ("render_tick", "render_tick_with_player"),
@@ -2278,7 +3089,23 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             ("flag_capture", "You captured the flag!"),
             ("score_blue_1", "BLUE: 1"),
         ],
-        Scenario::InventoryInteraction => &[
+        server_milestones: &[
+            ("server_username_seen", "compatbot"),
+            ("server_flag_or_score", "flag"),
+        ],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::FlagScore { team: ProbeTeam::Blue, reconnect: false },
+    },
+    ScenarioSpec {
+        scenario: Scenario::InventoryInteraction,
+        canonical_name: "inventory-interaction",
+        aliases: &["inventory-interaction"],
+        client_milestones: &[
             ("protocol_detected", "Detected server protocol version"),
             ("join_game", "join_game"),
             ("render_tick", "render_tick_with_player"),
@@ -2302,7 +3129,35 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
                 "inventory_probe_place_block_sent",
             ),
         ],
-        Scenario::InventoryStackSplitMerge => &[
+        server_milestones: &[
+            ("server_username_seen", "compatbot"),
+            ("server_inventory_hotbar_select", "inventory_hotbar_select"),
+            ("server_inventory_drop", "inventory_drop_item"),
+            ("server_inventory_pickup", "inventory_pickup_item"),
+            ("server_inventory_click", "inventory_click_slot"),
+            (
+                "server_inventory_open_container",
+                "inventory_open_container",
+            ),
+            (
+                "server_inventory_container_click",
+                "inventory_container_click",
+            ),
+            ("server_block_place", "block_place_item"),
+        ],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::InventoryInteraction,
+    },
+    ScenarioSpec {
+        scenario: Scenario::InventoryStackSplitMerge,
+        canonical_name: "inventory-stack-split-merge",
+        aliases: &["inventory-stack-split-merge"],
+        client_milestones: &[
             ("protocol_detected", "Detected server protocol version"),
             ("join_game", "join_game"),
             ("render_tick", "render_tick_with_player"),
@@ -2344,7 +3199,38 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
                 INVENTORY_STACK_CLIENT_FINAL_NEEDLE,
             ),
         ],
-        Scenario::InventoryDragTransactions => &[
+        server_milestones: &[
+            ("server_username_seen", "compatbot"),
+            (
+                "server_inventory_stack_split_pickup",
+                INVENTORY_STACK_SERVER_SPLIT_PICKUP_NEEDLE,
+            ),
+            (
+                "server_inventory_stack_split",
+                INVENTORY_STACK_SERVER_SPLIT_NEEDLE,
+            ),
+            (
+                "server_inventory_stack_merge_pickup",
+                INVENTORY_STACK_SERVER_MERGE_PICKUP_NEEDLE,
+            ),
+            (
+                "server_inventory_stack_merge",
+                INVENTORY_STACK_SERVER_MERGE_NEEDLE,
+            ),
+        ],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::InventoryStackSplitMerge,
+    },
+    ScenarioSpec {
+        scenario: Scenario::InventoryDragTransactions,
+        canonical_name: "inventory-drag-transactions",
+        aliases: &["inventory-drag-transactions"],
+        client_milestones: &[
             ("protocol_detected", "Detected server protocol version"),
             ("join_game", "join_game"),
             ("render_tick", "render_tick_with_player"),
@@ -2379,7 +3265,33 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
                 INVENTORY_DRAG_CLIENT_FINAL_NEEDLE,
             ),
         ],
-        Scenario::SurvivalBreakPlacePickup => &[
+        server_milestones: &[
+            ("server_username_seen", "compatbot"),
+            ("server_inventory_drag_pickup", INVENTORY_DRAG_SERVER_PICKUP_NEEDLE),
+            ("server_inventory_drag_start", INVENTORY_DRAG_SERVER_START_NEEDLE),
+            (
+                "server_inventory_drag_target_a",
+                INVENTORY_DRAG_SERVER_TARGET_A_NEEDLE,
+            ),
+            (
+                "server_inventory_drag_target_b",
+                INVENTORY_DRAG_SERVER_TARGET_B_NEEDLE,
+            ),
+            ("server_inventory_drag_end", INVENTORY_DRAG_SERVER_END_NEEDLE),
+        ],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::InventoryDragTransactions,
+    },
+    ScenarioSpec {
+        scenario: Scenario::SurvivalBreakPlacePickup,
+        canonical_name: "survival-break-place-pickup",
+        aliases: &["survival-break-place-pickup"],
+        client_milestones: &[
             ("protocol_detected", "Detected server protocol version"),
             ("join_game", "join_game"),
             ("render_tick", "render_tick_with_player"),
@@ -2389,7 +3301,26 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
             ("survival_place_sent", "survival_probe_place_block_sent"),
             ("survival_place_update", "survival_probe_place_update"),
         ],
-        Scenario::SurvivalChestPersistence => &[
+        server_milestones: &[
+            ("server_username_seen", "compatbot"),
+            ("server_survival_join", "survival_join"),
+            ("server_survival_break", "survival_block_break"),
+            ("server_survival_pickup", "survival_pickup_item"),
+            ("server_survival_place", "survival_block_place"),
+        ],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::SurvivalBreakPlacePickup,
+    },
+    ScenarioSpec {
+        scenario: Scenario::SurvivalChestPersistence,
+        canonical_name: "survival-chest-persistence",
+        aliases: &["survival-chest-persistence"],
+        client_milestones: &[
             ("protocol_detected", "Detected server protocol version"),
             ("join_game", "join_game"),
             ("render_tick", "render_tick_with_player"),
@@ -2418,7 +3349,42 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
                 SURVIVAL_CHEST_CLIENT_PERSISTED_NEEDLE,
             ),
         ],
-        Scenario::SurvivalCraftingTable => &[
+        server_milestones: &[
+            ("server_username_seen", "compatbot"),
+            (
+                "server_survival_chest_open",
+                SURVIVAL_CHEST_SERVER_OPEN_NEEDLE,
+            ),
+            (
+                "server_survival_chest_store",
+                SURVIVAL_CHEST_SERVER_STORE_NEEDLE,
+            ),
+            (
+                "server_survival_chest_close",
+                SURVIVAL_CHEST_SERVER_CLOSE_NEEDLE,
+            ),
+            (
+                "server_survival_chest_reopen",
+                SURVIVAL_CHEST_SERVER_REOPEN_NEEDLE,
+            ),
+            (
+                "server_survival_chest_persisted",
+                SURVIVAL_CHEST_SERVER_PERSISTED_NEEDLE,
+            ),
+        ],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::SurvivalChestPersistence,
+    },
+    ScenarioSpec {
+        scenario: Scenario::SurvivalCraftingTable,
+        canonical_name: "survival-crafting-table",
+        aliases: &["survival-crafting-table"],
+        client_milestones: &[
             ("protocol_detected", "Detected server protocol version"),
             ("join_game", "join_game"),
             ("render_tick", "render_tick_with_player"),
@@ -2447,7 +3413,42 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
                 SURVIVAL_CRAFTING_CLIENT_INVENTORY_NEEDLE,
             ),
         ],
-        Scenario::SurvivalFurnacePersistence => &[
+        server_milestones: &[
+            ("server_username_seen", "compatbot"),
+            (
+                "server_survival_crafting_table_open",
+                SURVIVAL_CRAFTING_SERVER_OPEN_NEEDLE,
+            ),
+            (
+                "server_survival_crafting_input_a",
+                SURVIVAL_CRAFTING_SERVER_INPUT_A_NEEDLE,
+            ),
+            (
+                "server_survival_crafting_input_b",
+                SURVIVAL_CRAFTING_SERVER_INPUT_B_NEEDLE,
+            ),
+            (
+                "server_survival_crafting_result",
+                SURVIVAL_CRAFTING_SERVER_RESULT_NEEDLE,
+            ),
+            (
+                "server_survival_crafting_collect",
+                SURVIVAL_CRAFTING_SERVER_COLLECT_NEEDLE,
+            ),
+        ],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::SurvivalCraftingTable,
+    },
+    ScenarioSpec {
+        scenario: Scenario::SurvivalFurnacePersistence,
+        canonical_name: "survival-furnace-persistence",
+        aliases: &["survival-furnace-persistence"],
+        client_milestones: &[
             ("protocol_detected", "Detected server protocol version"),
             ("join_game", "join_game"),
             ("render_tick", "render_tick_with_player"),
@@ -2488,663 +3489,7 @@ fn scenario_required_milestones(scenario: Scenario) -> &'static [(&'static str, 
                 SURVIVAL_FURNACE_CLIENT_REOPEN_NEEDLE,
             ),
         ],
-        Scenario::SurvivalHungerFood => &[
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            (
-                "survival_hunger_food_item_seen",
-                SURVIVAL_HUNGER_FOOD_CLIENT_ITEM_NEEDLE,
-            ),
-            (
-                "survival_hunger_food_pre_seen",
-                SURVIVAL_HUNGER_FOOD_CLIENT_PRE_NEEDLE,
-            ),
-            (
-                "survival_hunger_food_use_sent",
-                SURVIVAL_HUNGER_FOOD_CLIENT_USE_NEEDLE,
-            ),
-            (
-                "survival_hunger_food_post_seen",
-                SURVIVAL_HUNGER_FOOD_CLIENT_POST_NEEDLE,
-            ),
-            (
-                "survival_hunger_food_inventory_updated",
-                SURVIVAL_HUNGER_FOOD_CLIENT_INVENTORY_NEEDLE,
-            ),
-        ],
-        Scenario::SurvivalMobDrop => &[
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            (
-                "survival_mob_drop_mob_seen",
-                SURVIVAL_MOB_DROP_CLIENT_MOB_NEEDLE,
-            ),
-            (
-                "survival_mob_drop_attack_sent",
-                SURVIVAL_MOB_DROP_CLIENT_ATTACK_NEEDLE,
-            ),
-            (
-                "survival_mob_drop_death_seen",
-                SURVIVAL_MOB_DROP_CLIENT_DEATH_NEEDLE,
-            ),
-            (
-                "survival_mob_drop_drop_seen",
-                SURVIVAL_MOB_DROP_CLIENT_DROP_NEEDLE,
-            ),
-            (
-                "survival_mob_drop_pickup_seen",
-                SURVIVAL_MOB_DROP_CLIENT_PICKUP_NEEDLE,
-            ),
-            (
-                "survival_mob_drop_inventory_updated",
-                SURVIVAL_MOB_DROP_CLIENT_INVENTORY_NEEDLE,
-            ),
-        ],
-        Scenario::SurvivalRedstoneToggle => &[
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            (
-                "survival_redstone_toggle_input_sent",
-                SURVIVAL_REDSTONE_TOGGLE_CLIENT_INPUT_ON_NEEDLE,
-            ),
-            (
-                "survival_redstone_toggle_output_update",
-                SURVIVAL_REDSTONE_TOGGLE_CLIENT_OUTPUT_ON_NEEDLE,
-            ),
-            (
-                "survival_redstone_toggle_return_input_sent",
-                SURVIVAL_REDSTONE_TOGGLE_CLIENT_INPUT_OFF_NEEDLE,
-            ),
-            (
-                "survival_redstone_toggle_return_update",
-                SURVIVAL_REDSTONE_TOGGLE_CLIENT_OUTPUT_OFF_NEEDLE,
-            ),
-        ],
-        Scenario::SurvivalWorldPersistenceRestart => &[
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            (
-                "survival_world_persistence_mutation_sent",
-                SURVIVAL_WORLD_PERSISTENCE_CLIENT_MUTATION_NEEDLE,
-            ),
-            (
-                "survival_world_persistence_pre_restart_update",
-                SURVIVAL_WORLD_PERSISTENCE_CLIENT_PRE_RESTART_NEEDLE,
-            ),
-            (
-                "survival_world_persistence_reconnect_sent",
-                SURVIVAL_WORLD_PERSISTENCE_CLIENT_RECONNECT_NEEDLE,
-            ),
-            (
-                "survival_world_persistence_post_restart_update",
-                SURVIVAL_WORLD_PERSISTENCE_CLIENT_POST_RESTART_NEEDLE,
-            ),
-        ],
-        Scenario::SurvivalCrashRecoveryParity => &[
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            (
-                "survival_crash_recovery_mutation_sent",
-                SURVIVAL_CRASH_RECOVERY_CLIENT_MUTATION_NEEDLE,
-            ),
-            (
-                "survival_crash_recovery_pre_crash_update",
-                SURVIVAL_CRASH_RECOVERY_CLIENT_PRE_CRASH_NEEDLE,
-            ),
-            (
-                "survival_crash_recovery_reconnect_sent",
-                SURVIVAL_CRASH_RECOVERY_CLIENT_RECONNECT_NEEDLE,
-            ),
-            (
-                "survival_crash_recovery_post_crash_update",
-                SURVIVAL_CRASH_RECOVERY_CLIENT_POST_CRASH_NEEDLE,
-            ),
-        ],
-        Scenario::SurvivalBlockEntityPersistenceParity => &[
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            (
-                "survival_block_entity_pre_restart_update",
-                SURVIVAL_BLOCK_ENTITY_CLIENT_PRE_RESTART_NEEDLE,
-            ),
-            (
-                "survival_block_entity_reconnect_sent",
-                SURVIVAL_BLOCK_ENTITY_CLIENT_RECONNECT_NEEDLE,
-            ),
-            (
-                "survival_block_entity_post_restart_update",
-                SURVIVAL_BLOCK_ENTITY_CLIENT_POST_RESTART_NEEDLE,
-            ),
-        ],
-        Scenario::SurvivalBiomeDimensionState => &[
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            (
-                "survival_biome_dimension_state",
-                SURVIVAL_BIOME_DIMENSION_CLIENT_STATE_NEEDLE,
-            ),
-        ],
-        Scenario::McpControlledSmoke => &[
-            ("mcp_initialize", "mcp_initialize"),
-            ("mcp_tools_list", "mcp_tools_list"),
-            ("mcp_status_call", "mcp_status_call"),
-            ("mcp_command_outcomes", "mcp_command_outcomes"),
-        ],
-        Scenario::CombatDamage => &[
-            ("multi_client_count", "mc_compat_combat_client_count=2"),
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            ("team_red", "You are on team RED!"),
-            ("team_blue", "You are on team BLUE!"),
-            ("remote_player_spawn", "remote_player_spawn"),
-            ("combat_attack_sent", "combat_probe_attack_sent"),
-            ("combat_health_update", "update_health health=16.0"),
-        ],
-        Scenario::CombatKnockback => &[
-            ("multi_client_count", "mc_compat_combat_client_count=2"),
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            ("team_red", "You are on team RED!"),
-            ("team_blue", "You are on team BLUE!"),
-            ("remote_player_spawn", "remote_player_spawn"),
-            ("combat_attack_sent", "combat_probe_attack_sent"),
-            ("combat_health_update", "update_health health=16.0"),
-            ("combat_velocity_update", "combat_probe_velocity_observed"),
-        ],
-        Scenario::VanillaCombatReferenceParity => &[
-            (
-                "multi_client_count",
-                VANILLA_COMBAT_REFERENCE_CLIENT_COUNT_NEEDLE,
-            ),
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            ("remote_player_spawn", "remote_player_spawn"),
-            ("combat_attack_sent", "combat_probe_attack_sent"),
-            ("combat_health_update", "update_health health=14.0"),
-            ("combat_velocity_update", "combat_probe_velocity_observed"),
-        ],
-        Scenario::VanillaCombatArmorReferenceParity => &[
-            (
-                "multi_client_count",
-                VANILLA_COMBAT_REFERENCE_CLIENT_COUNT_NEEDLE,
-            ),
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            ("remote_player_spawn", "remote_player_spawn"),
-            ("combat_attack_sent", "combat_probe_attack_sent"),
-            (
-                "combat_health_update",
-                VANILLA_COMBAT_ARMOR_REFERENCE_HEALTH_NEEDLE,
-            ),
-            ("combat_velocity_update", "combat_probe_velocity_observed"),
-        ],
-        Scenario::ArmorEquipmentMitigation | Scenario::ArmorLoadoutEnchantmentStatusMatrix => &[
-            ("multi_client_count", "mc_compat_combat_client_count=2"),
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            ("team_red", "You are on team RED!"),
-            ("team_blue", "You are on team BLUE!"),
-            ("remote_player_spawn", "remote_player_spawn"),
-            ("armor_inventory_slot", "inventory_probe_set_slot"),
-            ("combat_attack_sent", "combat_probe_attack_sent"),
-            ("combat_health_update", "update_health health=18.0"),
-        ],
-        Scenario::EquipmentUpdateObservation | Scenario::EquipmentSlotItemMatrixExpansion => &[
-            (
-                "multi_client_count",
-                "mc_compat_equipment_update_client_count=2",
-            ),
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            ("team_red", "You are on team RED!"),
-            ("team_blue", "You are on team BLUE!"),
-            ("remote_player_spawn", "remote_player_spawn"),
-            (
-                "entity_equipment_update",
-                "equipment_probe_entity_equipment",
-            ),
-        ],
-        Scenario::ProjectileHit => &[
-            (
-                "multi_client_count",
-                "mc_compat_projectile_hit_client_count=2",
-            ),
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            ("team_red", "You are on team RED!"),
-            ("remote_player_spawn", "remote_player_spawn"),
-            ("projectile_use_sent", "projectile_probe_use_item_sent"),
-            ("projectile_swing_sent", "projectile_probe_swing_sent"),
-        ],
-        Scenario::ProjectileDamageAttribution => &[
-            (
-                "multi_client_count",
-                "mc_compat_projectile_damage_client_count=2",
-            ),
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            ("team_red", "You are on team RED!"),
-            ("team_blue", "You are on team BLUE!"),
-            ("remote_player_spawn", "remote_player_spawn"),
-            ("projectile_use_sent", "projectile_probe_use_item_sent"),
-            ("projectile_swing_sent", "projectile_probe_swing_sent"),
-            ("projectile_damage_update", "update_health health=17.0"),
-        ],
-        Scenario::FlagCarrierDeathReturn => &[
-            (
-                "multi_client_count",
-                "mc_compat_flag_carrier_death_client_count=2",
-            ),
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            ("team_red", "You are on team RED!"),
-            ("team_blue", "You are on team BLUE!"),
-            ("flag_pickup", "You have the flag!"),
-            ("remote_player_spawn", "remote_player_spawn"),
-            ("combat_attack_sent", "combat_probe_attack_sent"),
-            ("combat_death_observed", "combat_probe_death_observed"),
-            ("respawn_request_sent", "respawn_probe_request_sent"),
-            ("respawn_health_restored", "respawn_probe_health_restored"),
-        ],
-        Scenario::ReconnectFlagState => &[
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            ("team_red", "You are on team RED!"),
-            ("flag_pickup", "You have the flag!"),
-            ("reconnect_session", "mc_compat_reconnect_session=2"),
-        ],
-        Scenario::ReconnectFlagScore => &[
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            ("team_red", "You are on team RED!"),
-            ("flag_pickup", "You have the flag!"),
-            ("flag_capture", "You captured the flag!"),
-            ("score_red_1", "RED: 1"),
-            ("reconnect_session", "mc_compat_reconnect_session=2"),
-        ],
-        Scenario::MultiClientLoadScore => &[
-            ("multi_client_count", "mc_compat_multi_client_count=2"),
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            ("team_red", "You are on team RED!"),
-            ("flag_pickup", "You have the flag!"),
-            ("flag_capture", "You captured the flag!"),
-            ("score_red_1", "RED: 1"),
-        ],
-        Scenario::NegativeInventoryStaleState => &[
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            (
-                "negative_inventory_stale_state_sent",
-                "negative_inventory_stale_state_sent",
-            ),
-            (
-                "negative_inventory_stale_state_contained",
-                "negative_inventory_stale_state_contained",
-            ),
-        ],
-        Scenario::NegativeInventoryInvalidClick => &[
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            (
-                "negative_inventory_invalid_click_sent",
-                "negative_inventory_invalid_click_sent",
-            ),
-            (
-                "negative_inventory_invalid_click_restored",
-                "negative_inventory_invalid_click_restored",
-            ),
-        ],
-        Scenario::NegativeCustomPayload => &[
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            (
-                "negative_custom_payload_sent",
-                "negative_custom_payload_sent",
-            ),
-            (
-                "negative_custom_payload_contained",
-                "negative_custom_payload_contained",
-            ),
-        ],
-        Scenario::NegativeReconnectRace => &[
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            ("flag_pickup", "You have the flag!"),
-            ("reconnect_session", "mc_compat_reconnect_session=2"),
-            (
-                "negative_reconnect_race_attempted",
-                "negative_reconnect_race_attempted",
-            ),
-            (
-                "negative_reconnect_race_contained",
-                "negative_reconnect_race_contained",
-            ),
-        ],
-        Scenario::NegativeCtfWrongScore => &[
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            (
-                "negative_wrong_score_attempted",
-                "negative_wrong_score_attempted",
-            ),
-            (
-                "negative_wrong_score_contained",
-                "negative_wrong_score_contained",
-            ),
-        ],
-        Scenario::CtfInvalidPickupOwnership => &[
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            (
-                "ctf_invalid_pickup_attempted",
-                "ctf_invalid_pickup_attempted",
-            ),
-            (
-                "ctf_invalid_pickup_contained",
-                "ctf_invalid_pickup_contained",
-            ),
-        ],
-        Scenario::CtfInvalidReturnDrop => &[
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            (
-                "ctf_invalid_return_drop_attempted",
-                "ctf_invalid_return_drop_attempted",
-            ),
-            (
-                "ctf_invalid_return_drop_contained",
-                "ctf_invalid_return_drop_contained",
-            ),
-        ],
-        Scenario::CtfScoreLimitWinCondition => &[
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            ("team_red", "You are on team RED!"),
-            ("flag_pickup", "You have the flag!"),
-            ("flag_capture", "You captured the flag!"),
-            ("score_red_2", "RED: 2"),
-            (
-                "ctf_score_limit_win_seen",
-                CTF_SCORE_LIMIT_CLIENT_WIN_NEEDLE,
-            ),
-        ],
-        Scenario::CtfSimultaneousPickupCaptureRace => &[
-            ("ctf_race_client_count", CTF_RACE_CLIENT_COUNT_NEEDLE),
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            ("team_red", "You are on team RED!"),
-            ("flag_pickup", "You have the flag!"),
-            ("flag_capture", "You captured the flag!"),
-            ("score_red_1", "RED: 1"),
-        ],
-        Scenario::CtfSpawnTeamBalanceReset => &[
-            (
-                "ctf_spawn_team_reset_client_count",
-                CTF_SPAWN_TEAM_RESET_CLIENT_COUNT_NEEDLE,
-            ),
-            ("protocol_detected", "Detected server protocol version"),
-            ("join_game", "join_game"),
-            ("render_tick", "render_tick_with_player"),
-            ("team_red", "You are on team RED!"),
-            ("team_blue", "You are on team BLUE!"),
-            ("flag_pickup", "You have the flag!"),
-            ("flag_capture", "You captured the flag!"),
-            ("score_red_1", "RED: 1"),
-        ],
-    }
-}
-
-fn scenario_forbidden_patterns(scenario: Scenario) -> &'static [(&'static str, &'static str)] {
-    match scenario {
-        Scenario::CtfInvalidPickupOwnership => &[
-            ("panic", "panicked"),
-            ("unexpected_eof", "UnexpectedEof"),
-            ("protocol_mismatch", "protocol mismatch"),
-            ("decode_error", "decode error"),
-            ("unexpected_flag_pickup_chat", "You have the flag!"),
-            (
-                "unexpected_flag_pickup_milestone",
-                "flag_probe_have_flag_chat",
-            ),
-            (
-                "unexpected_server_flag_pickup",
-                "MC-COMPAT-MILESTONE flag_pickup username=",
-            ),
-            ("unexpected_flag_capture", "You captured the flag!"),
-            ("unexpected_flag_capture_milestone", "flag_capture"),
-            ("unexpected_red_score", "RED: 1"),
-            ("unexpected_blue_score", "BLUE: 1"),
-        ],
-        Scenario::CtfInvalidReturnDrop => &[
-            ("panic", "panicked"),
-            ("unexpected_eof", "UnexpectedEof"),
-            ("protocol_mismatch", "protocol mismatch"),
-            ("decode_error", "decode error"),
-            ("unexpected_flag_pickup_chat", "You have the flag!"),
-            (
-                "unexpected_server_flag_pickup",
-                "MC-COMPAT-MILESTONE flag_pickup username=",
-            ),
-            ("unexpected_flag_return", "MC-COMPAT-MILESTONE flag_return"),
-            (
-                "unexpected_flag_disconnect_return",
-                "MC-COMPAT-MILESTONE flag_disconnect_return",
-            ),
-            ("unexpected_flag_capture", "You captured the flag!"),
-            ("unexpected_flag_capture_milestone", "flag_capture"),
-            ("unexpected_red_score", "RED: 1"),
-            ("unexpected_blue_score", "BLUE: 1"),
-        ],
-        Scenario::CtfScoreLimitWinCondition => &[
-            ("panic", "panicked"),
-            ("unexpected_eof", "UnexpectedEof"),
-            ("protocol_mismatch", "protocol mismatch"),
-            ("decode_error", "decode error"),
-            ("score_limit_duplicate_win", "score_limit_duplicate_win"),
-            (
-                "score_limit_post_win_score_mutation",
-                "score_limit_post_win_score_mutation",
-            ),
-            ("unexpected_red_score_3", "RED: 3"),
-            ("unexpected_blue_score_1", "BLUE: 1"),
-        ],
-        Scenario::CtfSimultaneousPickupCaptureRace => &[
-            ("panic", "panicked"),
-            ("unexpected_eof", "UnexpectedEof"),
-            ("protocol_mismatch", "protocol mismatch"),
-            ("decode_error", "decode error"),
-            ("ctf_race_double_accept", "ctf_race_double_accept"),
-            ("unexpected_blue_score_1", "BLUE: 1"),
-            ("unexpected_red_score_2", "RED: 2"),
-        ],
-        Scenario::CtfSpawnTeamBalanceReset => &[
-            ("panic", "panicked"),
-            ("unexpected_eof", "UnexpectedEof"),
-            ("protocol_mismatch", "protocol mismatch"),
-            ("decode_error", "decode error"),
-            ("spawn_team_imbalance", "ctf_spawn_team_imbalance"),
-            (
-                "spawn_resource_stale",
-                "ctf_spawn_resource_stale_after_reset",
-            ),
-            ("unexpected_blue_score_1", "BLUE: 1"),
-            ("unexpected_red_score_2", "RED: 2"),
-        ],
-        Scenario::FlagCarrierDeathReturn
-        | Scenario::ReconnectFlagState
-        | Scenario::NegativeReconnectRace
-        | Scenario::NegativeCtfWrongScore => &[
-            ("panic", "panicked"),
-            ("unexpected_eof", "UnexpectedEof"),
-            ("protocol_mismatch", "protocol mismatch"),
-            ("decode_error", "decode error"),
-            ("unexpected_flag_capture", "You captured the flag!"),
-            ("unexpected_flag_capture_milestone", "flag_capture"),
-            ("unexpected_red_score", "RED: 1"),
-            ("unexpected_blue_score", "BLUE: 1"),
-        ],
-        _ => &[
-            ("panic", "panicked"),
-            ("unexpected_eof", "UnexpectedEof"),
-            ("protocol_mismatch", "protocol mismatch"),
-            ("decode_error", "decode error"),
-        ],
-    }
-}
-
-fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'static str)] {
-    match scenario {
-        Scenario::Smoke | Scenario::CompatBotProbe | Scenario::McpControlledSmoke => &[],
-        Scenario::FlagScoreRepeat | Scenario::BlueFlagScore | Scenario::ReconnectFlagScore => &[
-            ("server_username_seen", "compatbot"),
-            ("server_flag_or_score", "flag"),
-        ],
-        Scenario::ReconnectFlagState => &[
-            ("server_username_seen", "compatbot"),
-            ("server_flag_pickup", "flag_pickup"),
-            ("server_flag_disconnect_return", "flag_disconnect_return"),
-            (
-                "server_reconnect_state_coherent",
-                "reconnect_state_coherent",
-            ),
-        ],
-        Scenario::MultiClientLoadScore => &[
-            ("server_client_a_seen", "compatbota"),
-            ("server_client_b_seen", "compatbotb"),
-            ("server_flag_or_score", "flag"),
-        ],
-        Scenario::InventoryInteraction => &[
-            ("server_username_seen", "compatbot"),
-            ("server_inventory_hotbar_select", "inventory_hotbar_select"),
-            ("server_inventory_drop", "inventory_drop_item"),
-            ("server_inventory_pickup", "inventory_pickup_item"),
-            ("server_inventory_click", "inventory_click_slot"),
-            (
-                "server_inventory_open_container",
-                "inventory_open_container",
-            ),
-            (
-                "server_inventory_container_click",
-                "inventory_container_click",
-            ),
-            ("server_block_place", "block_place_item"),
-        ],
-        Scenario::InventoryStackSplitMerge => &[
-            ("server_username_seen", "compatbot"),
-            (
-                "server_inventory_stack_split_pickup",
-                INVENTORY_STACK_SERVER_SPLIT_PICKUP_NEEDLE,
-            ),
-            (
-                "server_inventory_stack_split",
-                INVENTORY_STACK_SERVER_SPLIT_NEEDLE,
-            ),
-            (
-                "server_inventory_stack_merge_pickup",
-                INVENTORY_STACK_SERVER_MERGE_PICKUP_NEEDLE,
-            ),
-            (
-                "server_inventory_stack_merge",
-                INVENTORY_STACK_SERVER_MERGE_NEEDLE,
-            ),
-        ],
-        Scenario::InventoryDragTransactions => &[
-            ("server_username_seen", "compatbot"),
-            ("server_inventory_drag_pickup", INVENTORY_DRAG_SERVER_PICKUP_NEEDLE),
-            ("server_inventory_drag_start", INVENTORY_DRAG_SERVER_START_NEEDLE),
-            (
-                "server_inventory_drag_target_a",
-                INVENTORY_DRAG_SERVER_TARGET_A_NEEDLE,
-            ),
-            (
-                "server_inventory_drag_target_b",
-                INVENTORY_DRAG_SERVER_TARGET_B_NEEDLE,
-            ),
-            ("server_inventory_drag_end", INVENTORY_DRAG_SERVER_END_NEEDLE),
-        ],
-        Scenario::SurvivalBreakPlacePickup => &[
-            ("server_username_seen", "compatbot"),
-            ("server_survival_join", "survival_join"),
-            ("server_survival_break", "survival_block_break"),
-            ("server_survival_pickup", "survival_pickup_item"),
-            ("server_survival_place", "survival_block_place"),
-        ],
-        Scenario::SurvivalChestPersistence => &[
-            ("server_username_seen", "compatbot"),
-            (
-                "server_survival_chest_open",
-                SURVIVAL_CHEST_SERVER_OPEN_NEEDLE,
-            ),
-            (
-                "server_survival_chest_store",
-                SURVIVAL_CHEST_SERVER_STORE_NEEDLE,
-            ),
-            (
-                "server_survival_chest_close",
-                SURVIVAL_CHEST_SERVER_CLOSE_NEEDLE,
-            ),
-            (
-                "server_survival_chest_reopen",
-                SURVIVAL_CHEST_SERVER_REOPEN_NEEDLE,
-            ),
-            (
-                "server_survival_chest_persisted",
-                SURVIVAL_CHEST_SERVER_PERSISTED_NEEDLE,
-            ),
-        ],
-        Scenario::SurvivalCraftingTable => &[
-            ("server_username_seen", "compatbot"),
-            (
-                "server_survival_crafting_table_open",
-                SURVIVAL_CRAFTING_SERVER_OPEN_NEEDLE,
-            ),
-            (
-                "server_survival_crafting_input_a",
-                SURVIVAL_CRAFTING_SERVER_INPUT_A_NEEDLE,
-            ),
-            (
-                "server_survival_crafting_input_b",
-                SURVIVAL_CRAFTING_SERVER_INPUT_B_NEEDLE,
-            ),
-            (
-                "server_survival_crafting_result",
-                SURVIVAL_CRAFTING_SERVER_RESULT_NEEDLE,
-            ),
-            (
-                "server_survival_crafting_collect",
-                SURVIVAL_CRAFTING_SERVER_COLLECT_NEEDLE,
-            ),
-        ],
-        Scenario::SurvivalFurnacePersistence => &[
+        server_milestones: &[
             ("server_username_seen", "compatbot"),
             (
                 "server_survival_furnace_open",
@@ -3179,7 +3524,44 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
                 SURVIVAL_FURNACE_SERVER_STATE_NEEDLE,
             ),
         ],
-        Scenario::SurvivalHungerFood => &[
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::SurvivalFurnacePersistence,
+    },
+    ScenarioSpec {
+        scenario: Scenario::SurvivalHungerFood,
+        canonical_name: "survival-hunger-food",
+        aliases: &["survival-hunger-food"],
+        client_milestones: &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "survival_hunger_food_item_seen",
+                SURVIVAL_HUNGER_FOOD_CLIENT_ITEM_NEEDLE,
+            ),
+            (
+                "survival_hunger_food_pre_seen",
+                SURVIVAL_HUNGER_FOOD_CLIENT_PRE_NEEDLE,
+            ),
+            (
+                "survival_hunger_food_use_sent",
+                SURVIVAL_HUNGER_FOOD_CLIENT_USE_NEEDLE,
+            ),
+            (
+                "survival_hunger_food_post_seen",
+                SURVIVAL_HUNGER_FOOD_CLIENT_POST_NEEDLE,
+            ),
+            (
+                "survival_hunger_food_inventory_updated",
+                SURVIVAL_HUNGER_FOOD_CLIENT_INVENTORY_NEEDLE,
+            ),
+        ],
+        server_milestones: &[
             ("server_username_seen", "compatbot"),
             (
                 "server_survival_hunger_food_pre",
@@ -3202,7 +3584,48 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
                 SURVIVAL_HUNGER_FOOD_SERVER_STATE_NEEDLE,
             ),
         ],
-        Scenario::SurvivalMobDrop => &[
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::SurvivalHungerFood,
+    },
+    ScenarioSpec {
+        scenario: Scenario::SurvivalMobDrop,
+        canonical_name: "survival-mob-drop",
+        aliases: &["survival-mob-drop"],
+        client_milestones: &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "survival_mob_drop_mob_seen",
+                SURVIVAL_MOB_DROP_CLIENT_MOB_NEEDLE,
+            ),
+            (
+                "survival_mob_drop_attack_sent",
+                SURVIVAL_MOB_DROP_CLIENT_ATTACK_NEEDLE,
+            ),
+            (
+                "survival_mob_drop_death_seen",
+                SURVIVAL_MOB_DROP_CLIENT_DEATH_NEEDLE,
+            ),
+            (
+                "survival_mob_drop_drop_seen",
+                SURVIVAL_MOB_DROP_CLIENT_DROP_NEEDLE,
+            ),
+            (
+                "survival_mob_drop_pickup_seen",
+                SURVIVAL_MOB_DROP_CLIENT_PICKUP_NEEDLE,
+            ),
+            (
+                "survival_mob_drop_inventory_updated",
+                SURVIVAL_MOB_DROP_CLIENT_INVENTORY_NEEDLE,
+            ),
+        ],
+        server_milestones: &[
             ("server_username_seen", "compatbot"),
             (
                 "server_survival_mob_drop_spawn",
@@ -3233,7 +3656,40 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
                 SURVIVAL_MOB_DROP_SERVER_STATE_NEEDLE,
             ),
         ],
-        Scenario::SurvivalRedstoneToggle => &[
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::SurvivalMobDrop,
+    },
+    ScenarioSpec {
+        scenario: Scenario::SurvivalRedstoneToggle,
+        canonical_name: "survival-redstone-toggle",
+        aliases: &["survival-redstone-toggle"],
+        client_milestones: &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "survival_redstone_toggle_input_sent",
+                SURVIVAL_REDSTONE_TOGGLE_CLIENT_INPUT_ON_NEEDLE,
+            ),
+            (
+                "survival_redstone_toggle_output_update",
+                SURVIVAL_REDSTONE_TOGGLE_CLIENT_OUTPUT_ON_NEEDLE,
+            ),
+            (
+                "survival_redstone_toggle_return_input_sent",
+                SURVIVAL_REDSTONE_TOGGLE_CLIENT_INPUT_OFF_NEEDLE,
+            ),
+            (
+                "survival_redstone_toggle_return_update",
+                SURVIVAL_REDSTONE_TOGGLE_CLIENT_OUTPUT_OFF_NEEDLE,
+            ),
+        ],
+        server_milestones: &[
             ("server_username_seen", "compatbot"),
             (
                 "server_survival_redstone_toggle_input",
@@ -3252,7 +3708,40 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
                 SURVIVAL_REDSTONE_TOGGLE_SERVER_STATE_NEEDLE,
             ),
         ],
-        Scenario::SurvivalWorldPersistenceRestart => &[
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::SurvivalRedstoneToggle,
+    },
+    ScenarioSpec {
+        scenario: Scenario::SurvivalWorldPersistenceRestart,
+        canonical_name: "survival-world-persistence-restart",
+        aliases: &["survival-world-persistence-restart"],
+        client_milestones: &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "survival_world_persistence_mutation_sent",
+                SURVIVAL_WORLD_PERSISTENCE_CLIENT_MUTATION_NEEDLE,
+            ),
+            (
+                "survival_world_persistence_pre_restart_update",
+                SURVIVAL_WORLD_PERSISTENCE_CLIENT_PRE_RESTART_NEEDLE,
+            ),
+            (
+                "survival_world_persistence_reconnect_sent",
+                SURVIVAL_WORLD_PERSISTENCE_CLIENT_RECONNECT_NEEDLE,
+            ),
+            (
+                "survival_world_persistence_post_restart_update",
+                SURVIVAL_WORLD_PERSISTENCE_CLIENT_POST_RESTART_NEEDLE,
+            ),
+        ],
+        server_milestones: &[
             ("server_username_seen", "compatbot"),
             (
                 "server_survival_world_persistence_mutation",
@@ -3275,7 +3764,40 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
                 SURVIVAL_WORLD_PERSISTENCE_SERVER_STATE_NEEDLE,
             ),
         ],
-        Scenario::SurvivalCrashRecoveryParity => &[
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::WorldPersistenceRestart { crash_recovery: false, block_entity: false },
+    },
+    ScenarioSpec {
+        scenario: Scenario::SurvivalCrashRecoveryParity,
+        canonical_name: "survival-crash-recovery-parity",
+        aliases: &["survival-crash-recovery-parity"],
+        client_milestones: &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "survival_crash_recovery_mutation_sent",
+                SURVIVAL_CRASH_RECOVERY_CLIENT_MUTATION_NEEDLE,
+            ),
+            (
+                "survival_crash_recovery_pre_crash_update",
+                SURVIVAL_CRASH_RECOVERY_CLIENT_PRE_CRASH_NEEDLE,
+            ),
+            (
+                "survival_crash_recovery_reconnect_sent",
+                SURVIVAL_CRASH_RECOVERY_CLIENT_RECONNECT_NEEDLE,
+            ),
+            (
+                "survival_crash_recovery_post_crash_update",
+                SURVIVAL_CRASH_RECOVERY_CLIENT_POST_CRASH_NEEDLE,
+            ),
+        ],
+        server_milestones: &[
             ("server_username_seen", "compatbot"),
             (
                 "server_survival_crash_recovery_mutation",
@@ -3298,7 +3820,36 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
                 SURVIVAL_CRASH_RECOVERY_SERVER_STATE_NEEDLE,
             ),
         ],
-        Scenario::SurvivalBlockEntityPersistenceParity => &[
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::WorldPersistenceRestart { crash_recovery: true, block_entity: false },
+    },
+    ScenarioSpec {
+        scenario: Scenario::SurvivalBlockEntityPersistenceParity,
+        canonical_name: "survival-block-entity-persistence-parity",
+        aliases: &["survival-block-entity-persistence-parity"],
+        client_milestones: &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "survival_block_entity_pre_restart_update",
+                SURVIVAL_BLOCK_ENTITY_CLIENT_PRE_RESTART_NEEDLE,
+            ),
+            (
+                "survival_block_entity_reconnect_sent",
+                SURVIVAL_BLOCK_ENTITY_CLIENT_RECONNECT_NEEDLE,
+            ),
+            (
+                "survival_block_entity_post_restart_update",
+                SURVIVAL_BLOCK_ENTITY_CLIENT_POST_RESTART_NEEDLE,
+            ),
+        ],
+        server_milestones: &[
             ("server_username_seen", "compatbot"),
             (
                 "server_survival_block_entity_mutation",
@@ -3321,25 +3872,137 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
                 SURVIVAL_BLOCK_ENTITY_SERVER_STATE_NEEDLE,
             ),
         ],
-        Scenario::SurvivalBiomeDimensionState => &[
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::WorldPersistenceRestart { crash_recovery: false, block_entity: true },
+    },
+    ScenarioSpec {
+        scenario: Scenario::SurvivalBiomeDimensionState,
+        canonical_name: "survival-biome-dimension-state",
+        aliases: &["survival-biome-dimension-state"],
+        client_milestones: &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "survival_biome_dimension_state",
+                SURVIVAL_BIOME_DIMENSION_CLIENT_STATE_NEEDLE,
+            ),
+        ],
+        server_milestones: &[
             ("server_username_seen", "compatbot"),
             (
                 "server_survival_biome_dimension_state",
                 SURVIVAL_BIOME_DIMENSION_SERVER_STATE_NEEDLE,
             ),
         ],
-        Scenario::CombatDamage => &[
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::SurvivalBiomeDimensionState,
+    },
+    ScenarioSpec {
+        scenario: Scenario::McpControlledSmoke,
+        canonical_name: MCP_CONTROLLED_SMOKE_SCENARIO,
+        aliases: &[MCP_CONTROLLED_SMOKE_SCENARIO],
+        client_milestones: &[
+            ("mcp_initialize", "mcp_initialize"),
+            ("mcp_tools_list", "mcp_tools_list"),
+            ("mcp_status_call", "mcp_status_call"),
+            ("mcp_command_outcomes", "mcp_command_outcomes"),
+        ],
+        server_milestones: &[],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::McpControlledSmoke,
+    },
+    ScenarioSpec {
+        scenario: Scenario::CombatDamage,
+        canonical_name: "combat-damage",
+        aliases: &["combat-damage"],
+        client_milestones: &[
+            ("multi_client_count", "mc_compat_combat_client_count=2"),
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("team_blue", "You are on team BLUE!"),
+            ("remote_player_spawn", "remote_player_spawn"),
+            ("combat_attack_sent", "combat_probe_attack_sent"),
+            ("combat_health_update", "update_health health=16.0"),
+        ],
+        server_milestones: &[
             ("server_client_a_seen", "compatbota"),
             ("server_client_b_seen", "compatbotb"),
             ("server_combat_damage", "combat_damage"),
         ],
-        Scenario::CombatKnockback => &[
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::Combat { reference_probe: false, armor_reference: false, armor_mitigation: false, flag_carrier_death: false, count_needle: Some(COMBAT_CLIENT_COUNT_NEEDLE) },
+    },
+    ScenarioSpec {
+        scenario: Scenario::CombatKnockback,
+        canonical_name: "combat-knockback",
+        aliases: &["combat-knockback"],
+        client_milestones: &[
+            ("multi_client_count", "mc_compat_combat_client_count=2"),
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("team_blue", "You are on team BLUE!"),
+            ("remote_player_spawn", "remote_player_spawn"),
+            ("combat_attack_sent", "combat_probe_attack_sent"),
+            ("combat_health_update", "update_health health=16.0"),
+            ("combat_velocity_update", "combat_probe_velocity_observed"),
+        ],
+        server_milestones: &[
             ("server_client_a_seen", "compatbota"),
             ("server_client_b_seen", "compatbotb"),
             ("server_combat_damage", "combat_damage"),
             ("server_combat_knockback", "combat_knockback"),
         ],
-        Scenario::VanillaCombatReferenceParity | Scenario::VanillaCombatArmorReferenceParity => &[
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::Combat { reference_probe: false, armor_reference: false, armor_mitigation: false, flag_carrier_death: false, count_needle: Some(COMBAT_CLIENT_COUNT_NEEDLE) },
+    },
+    ScenarioSpec {
+        scenario: Scenario::VanillaCombatReferenceParity,
+        canonical_name: "vanilla-combat-reference-parity",
+        aliases: &["vanilla-combat-reference-parity"],
+        client_milestones: &[
+            (
+                "multi_client_count",
+                VANILLA_COMBAT_REFERENCE_CLIENT_COUNT_NEEDLE,
+            ),
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("remote_player_spawn", "remote_player_spawn"),
+            ("combat_attack_sent", "combat_probe_attack_sent"),
+            ("combat_health_update", "update_health health=14.0"),
+            ("combat_velocity_update", "combat_probe_velocity_observed"),
+        ],
+        server_milestones: &[
             ("server_client_a_seen", "compatbota"),
             ("server_client_b_seen", "compatbotb"),
             (
@@ -3351,52 +4014,621 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
                 VANILLA_COMBAT_REFERENCE_KNOCKBACK_NEEDLE,
             ),
         ],
-        Scenario::ArmorEquipmentMitigation | Scenario::ArmorLoadoutEnchantmentStatusMatrix => &[
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::Combat { reference_probe: true, armor_reference: false, armor_mitigation: false, flag_carrier_death: false, count_needle: None },
+    },
+    ScenarioSpec {
+        scenario: Scenario::VanillaCombatArmorReferenceParity,
+        canonical_name: "vanilla-combat-armor-reference-parity",
+        aliases: &["vanilla-combat-armor-reference-parity"],
+        client_milestones: &[
+            (
+                "multi_client_count",
+                VANILLA_COMBAT_REFERENCE_CLIENT_COUNT_NEEDLE,
+            ),
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("remote_player_spawn", "remote_player_spawn"),
+            ("combat_attack_sent", "combat_probe_attack_sent"),
+            (
+                "combat_health_update",
+                VANILLA_COMBAT_ARMOR_REFERENCE_HEALTH_NEEDLE,
+            ),
+            ("combat_velocity_update", "combat_probe_velocity_observed"),
+        ],
+        server_milestones: &[
+            ("server_client_a_seen", "compatbota"),
+            ("server_client_b_seen", "compatbotb"),
+            (
+                "server_vanilla_combat_reference_damage",
+                VANILLA_COMBAT_REFERENCE_DAMAGE_NEEDLE,
+            ),
+            (
+                "server_vanilla_combat_reference_knockback",
+                VANILLA_COMBAT_REFERENCE_KNOCKBACK_NEEDLE,
+            ),
+        ],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::Combat { reference_probe: true, armor_reference: true, armor_mitigation: true, flag_carrier_death: false, count_needle: Some(COMBAT_CLIENT_COUNT_NEEDLE) },
+    },
+    ScenarioSpec {
+        scenario: Scenario::ArmorEquipmentMitigation,
+        canonical_name: "armor-equipment-mitigation",
+        aliases: &["armor-equipment-mitigation"],
+        client_milestones: &[
+            ("multi_client_count", "mc_compat_combat_client_count=2"),
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("team_blue", "You are on team BLUE!"),
+            ("remote_player_spawn", "remote_player_spawn"),
+            ("armor_inventory_slot", "inventory_probe_set_slot"),
+            ("combat_attack_sent", "combat_probe_attack_sent"),
+            ("combat_health_update", "update_health health=18.0"),
+        ],
+        server_milestones: &[
             ("server_client_a_seen", "compatbota"),
             ("server_client_b_seen", "compatbotb"),
             ("server_equipment_state", "armor_equipment_state"),
             ("server_combat_damage", "combat_damage"),
             ("server_armor_mitigation", "combat_armor_mitigation"),
         ],
-        Scenario::EquipmentUpdateObservation | Scenario::EquipmentSlotItemMatrixExpansion => &[
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::Combat { reference_probe: false, armor_reference: false, armor_mitigation: true, flag_carrier_death: false, count_needle: Some(COMBAT_CLIENT_COUNT_NEEDLE) },
+    },
+    ScenarioSpec {
+        scenario: Scenario::ArmorLoadoutEnchantmentStatusMatrix,
+        canonical_name: "armor-loadout-enchantment-status-matrix",
+        aliases: &["armor-loadout-enchantment-status-matrix"],
+        client_milestones: &[
+            ("multi_client_count", "mc_compat_combat_client_count=2"),
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("team_blue", "You are on team BLUE!"),
+            ("remote_player_spawn", "remote_player_spawn"),
+            ("armor_inventory_slot", "inventory_probe_set_slot"),
+            ("combat_attack_sent", "combat_probe_attack_sent"),
+            ("combat_health_update", "update_health health=18.0"),
+        ],
+        server_milestones: &[
+            ("server_client_a_seen", "compatbota"),
+            ("server_client_b_seen", "compatbotb"),
+            ("server_equipment_state", "armor_equipment_state"),
+            ("server_combat_damage", "combat_damage"),
+            ("server_armor_mitigation", "combat_armor_mitigation"),
+        ],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::Combat { reference_probe: false, armor_reference: false, armor_mitigation: true, flag_carrier_death: false, count_needle: Some(COMBAT_CLIENT_COUNT_NEEDLE) },
+    },
+    ScenarioSpec {
+        scenario: Scenario::EquipmentUpdateObservation,
+        canonical_name: "equipment-update-observation",
+        aliases: &["equipment-update-observation"],
+        client_milestones: &[
+            (
+                "multi_client_count",
+                "mc_compat_equipment_update_client_count=2",
+            ),
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("team_blue", "You are on team BLUE!"),
+            ("remote_player_spawn", "remote_player_spawn"),
+            (
+                "entity_equipment_update",
+                "equipment_probe_entity_equipment",
+            ),
+        ],
+        server_milestones: &[
             ("server_client_a_seen", "compatbota"),
             ("server_client_b_seen", "compatbotb"),
             ("server_equipment_update_state", "equipment_update_state"),
         ],
-        Scenario::ProjectileHit => &[
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::EquipmentUpdate,
+    },
+    ScenarioSpec {
+        scenario: Scenario::EquipmentSlotItemMatrixExpansion,
+        canonical_name: "equipment-slot-item-matrix-expansion",
+        aliases: &["equipment-slot-item-matrix-expansion"],
+        client_milestones: &[
+            (
+                "multi_client_count",
+                "mc_compat_equipment_update_client_count=2",
+            ),
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("team_blue", "You are on team BLUE!"),
+            ("remote_player_spawn", "remote_player_spawn"),
+            (
+                "entity_equipment_update",
+                "equipment_probe_entity_equipment",
+            ),
+        ],
+        server_milestones: &[
+            ("server_client_a_seen", "compatbota"),
+            ("server_client_b_seen", "compatbotb"),
+            ("server_equipment_update_state", "equipment_update_state"),
+        ],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::EquipmentUpdate,
+    },
+    ScenarioSpec {
+        scenario: Scenario::ProjectileHit,
+        canonical_name: "projectile-hit",
+        aliases: &["projectile-hit"],
+        client_milestones: &[
+            (
+                "multi_client_count",
+                "mc_compat_projectile_hit_client_count=2",
+            ),
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("remote_player_spawn", "remote_player_spawn"),
+            ("projectile_use_sent", "projectile_probe_use_item_sent"),
+            ("projectile_swing_sent", "projectile_probe_swing_sent"),
+        ],
+        server_milestones: &[
             ("server_client_a_seen", "compatbota"),
             ("server_client_b_seen", "compatbotb"),
             ("server_projectile_loadout", "projectile_loadout"),
         ],
-        Scenario::ProjectileDamageAttribution => &[
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::Projectile { damage: false },
+    },
+    ScenarioSpec {
+        scenario: Scenario::ProjectileDamageAttribution,
+        canonical_name: "projectile-damage-attribution",
+        aliases: &["projectile-damage-attribution"],
+        client_milestones: &[
+            (
+                "multi_client_count",
+                "mc_compat_projectile_damage_client_count=2",
+            ),
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("team_blue", "You are on team BLUE!"),
+            ("remote_player_spawn", "remote_player_spawn"),
+            ("projectile_use_sent", "projectile_probe_use_item_sent"),
+            ("projectile_swing_sent", "projectile_probe_swing_sent"),
+            ("projectile_damage_update", "update_health health=17.0"),
+        ],
+        server_milestones: &[
             ("server_client_a_seen", "compatbota"),
             ("server_client_b_seen", "compatbotb"),
             ("server_projectile_loadout", "projectile_loadout"),
             ("server_projectile_use", "projectile_use"),
             ("server_projectile_hit", "projectile_hit"),
         ],
-        Scenario::FlagCarrierDeathReturn => &[
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::Projectile { damage: true },
+    },
+    ScenarioSpec {
+        scenario: Scenario::FlagCarrierDeathReturn,
+        canonical_name: "flag-carrier-death-return",
+        aliases: &["flag-carrier-death-return"],
+        client_milestones: &[
+            (
+                "multi_client_count",
+                "mc_compat_flag_carrier_death_client_count=2",
+            ),
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("team_blue", "You are on team BLUE!"),
+            ("flag_pickup", "You have the flag!"),
+            ("remote_player_spawn", "remote_player_spawn"),
+            ("combat_attack_sent", "combat_probe_attack_sent"),
+            ("combat_death_observed", "combat_probe_death_observed"),
+            ("respawn_request_sent", "respawn_probe_request_sent"),
+            ("respawn_health_restored", "respawn_probe_health_restored"),
+        ],
+        server_milestones: &[
             ("server_client_a_seen", "compatbota"),
             ("server_client_b_seen", "compatbotb"),
             ("server_flag_pickup", "flag_pickup"),
             ("server_flag_carrier_death", "flag_carrier_death"),
             ("server_flag_return", "flag_return"),
         ],
-        Scenario::CtfInvalidPickupOwnership => &[
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+            ("unexpected_flag_capture", "You captured the flag!"),
+            ("unexpected_flag_capture_milestone", "flag_capture"),
+            ("unexpected_red_score", "RED: 1"),
+            ("unexpected_blue_score", "BLUE: 1"),
+        ],
+        behavior: ScenarioBehaviorKind::Combat { reference_probe: false, armor_reference: false, armor_mitigation: false, flag_carrier_death: true, count_needle: Some(FLAG_CARRIER_DEATH_CLIENT_COUNT_NEEDLE) },
+    },
+    ScenarioSpec {
+        scenario: Scenario::ReconnectFlagState,
+        canonical_name: "reconnect-flag-state",
+        aliases: &["reconnect-flag-state"],
+        client_milestones: &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("flag_pickup", "You have the flag!"),
+            ("reconnect_session", "mc_compat_reconnect_session=2"),
+        ],
+        server_milestones: &[
+            ("server_username_seen", "compatbot"),
+            ("server_flag_pickup", "flag_pickup"),
+            ("server_flag_disconnect_return", "flag_disconnect_return"),
+            (
+                "server_reconnect_state_coherent",
+                "reconnect_state_coherent",
+            ),
+        ],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+            ("unexpected_flag_capture", "You captured the flag!"),
+            ("unexpected_flag_capture_milestone", "flag_capture"),
+            ("unexpected_red_score", "RED: 1"),
+            ("unexpected_blue_score", "BLUE: 1"),
+        ],
+        behavior: ScenarioBehaviorKind::ReconnectFlagState { negative_probe: None },
+    },
+    ScenarioSpec {
+        scenario: Scenario::ReconnectFlagScore,
+        canonical_name: "reconnect-flag-score",
+        aliases: &["reconnect-flag-score"],
+        client_milestones: &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("flag_pickup", "You have the flag!"),
+            ("flag_capture", "You captured the flag!"),
+            ("score_red_1", "RED: 1"),
+            ("reconnect_session", "mc_compat_reconnect_session=2"),
+        ],
+        server_milestones: &[
+            ("server_username_seen", "compatbot"),
+            ("server_flag_or_score", "flag"),
+        ],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::FlagScore { team: ProbeTeam::Red, reconnect: true },
+    },
+    ScenarioSpec {
+        scenario: Scenario::MultiClientLoadScore,
+        canonical_name: "multi-client-load-score",
+        aliases: &["multi-client-load-score"],
+        client_milestones: &[
+            ("multi_client_count", "mc_compat_multi_client_count=2"),
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("flag_pickup", "You have the flag!"),
+            ("flag_capture", "You captured the flag!"),
+            ("score_red_1", "RED: 1"),
+        ],
+        server_milestones: &[
+            ("server_client_a_seen", "compatbota"),
+            ("server_client_b_seen", "compatbotb"),
+            ("server_flag_or_score", "flag"),
+        ],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::MultiClientLoadScore,
+    },
+    ScenarioSpec {
+        scenario: Scenario::NegativeInventoryStaleState,
+        canonical_name: "negative-inventory-stale-state",
+        aliases: &["negative-inventory-stale-state"],
+        client_milestones: &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "negative_inventory_stale_state_sent",
+                "negative_inventory_stale_state_sent",
+            ),
+            (
+                "negative_inventory_stale_state_contained",
+                "negative_inventory_stale_state_contained",
+            ),
+        ],
+        server_milestones: &[("server_username_seen", "compatbot")],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::NegativeInventory { probe: "inventory_stale_state", invalid_action: "stale_inventory_state_id", postcondition: "negative_inventory_stale_state_contained" },
+    },
+    ScenarioSpec {
+        scenario: Scenario::NegativeInventoryInvalidClick,
+        canonical_name: "negative-inventory-invalid-click",
+        aliases: &["negative-inventory-invalid-click"],
+        client_milestones: &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "negative_inventory_invalid_click_sent",
+                "negative_inventory_invalid_click_sent",
+            ),
+            (
+                "negative_inventory_invalid_click_restored",
+                "negative_inventory_invalid_click_restored",
+            ),
+        ],
+        server_milestones: &[("server_username_seen", "compatbot")],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::NegativeInventory { probe: "inventory_invalid_click", invalid_action: "invalid_slot_or_window_click", postcondition: "negative_inventory_invalid_click_restored" },
+    },
+    ScenarioSpec {
+        scenario: Scenario::NegativeCustomPayload,
+        canonical_name: "negative-custom-payload",
+        aliases: &["negative-custom-payload"],
+        client_milestones: &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "negative_custom_payload_sent",
+                "negative_custom_payload_sent",
+            ),
+            (
+                "negative_custom_payload_contained",
+                "negative_custom_payload_contained",
+            ),
+        ],
+        server_milestones: &[("server_username_seen", "compatbot")],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::NegativeCustomPayload,
+    },
+    ScenarioSpec {
+        scenario: Scenario::NegativeReconnectRace,
+        canonical_name: "negative-reconnect-race",
+        aliases: &["negative-reconnect-race"],
+        client_milestones: &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("flag_pickup", "You have the flag!"),
+            ("reconnect_session", "mc_compat_reconnect_session=2"),
+            (
+                "negative_reconnect_race_attempted",
+                "negative_reconnect_race_attempted",
+            ),
+            (
+                "negative_reconnect_race_contained",
+                "negative_reconnect_race_contained",
+            ),
+        ],
+        server_milestones: &[("server_username_seen", "compatbot")],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+            ("unexpected_flag_capture", "You captured the flag!"),
+            ("unexpected_flag_capture_milestone", "flag_capture"),
+            ("unexpected_red_score", "RED: 1"),
+            ("unexpected_blue_score", "BLUE: 1"),
+        ],
+        behavior: ScenarioBehaviorKind::ReconnectFlagState { negative_probe: Some("reconnect_race") },
+    },
+    ScenarioSpec {
+        scenario: Scenario::NegativeCtfWrongScore,
+        canonical_name: "negative-ctf-wrong-score",
+        aliases: &["negative-ctf-wrong-score"],
+        client_milestones: &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "negative_wrong_score_attempted",
+                "negative_wrong_score_attempted",
+            ),
+            (
+                "negative_wrong_score_contained",
+                "negative_wrong_score_contained",
+            ),
+        ],
+        server_milestones: &[("server_username_seen", "compatbot")],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+            ("unexpected_flag_capture", "You captured the flag!"),
+            ("unexpected_flag_capture_milestone", "flag_capture"),
+            ("unexpected_red_score", "RED: 1"),
+            ("unexpected_blue_score", "BLUE: 1"),
+        ],
+        behavior: ScenarioBehaviorKind::NegativeCtfWrongScore,
+    },
+    ScenarioSpec {
+        scenario: Scenario::CtfInvalidPickupOwnership,
+        canonical_name: "ctf-invalid-pickup-ownership",
+        aliases: &["ctf-invalid-pickup-ownership"],
+        client_milestones: &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "ctf_invalid_pickup_attempted",
+                "ctf_invalid_pickup_attempted",
+            ),
+            (
+                "ctf_invalid_pickup_contained",
+                "ctf_invalid_pickup_contained",
+            ),
+        ],
+        server_milestones: &[
             ("server_username_seen", "compatbot"),
             (
                 "server_invalid_pickup_rejected",
                 "invalid_flag_pickup_rejected username=compatbot player_team=Red flag_team=Red pre_owner=none post_owner=none red_score=0 blue_score=0 outcome=no_owner_transfer_no_score",
             ),
         ],
-        Scenario::CtfInvalidReturnDrop => &[
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+            ("unexpected_flag_pickup_chat", "You have the flag!"),
+            (
+                "unexpected_flag_pickup_milestone",
+                "flag_probe_have_flag_chat",
+            ),
+            (
+                "unexpected_server_flag_pickup",
+                "MC-COMPAT-MILESTONE flag_pickup username=",
+            ),
+            ("unexpected_flag_capture", "You captured the flag!"),
+            ("unexpected_flag_capture_milestone", "flag_capture"),
+            ("unexpected_red_score", "RED: 1"),
+            ("unexpected_blue_score", "BLUE: 1"),
+        ],
+        behavior: ScenarioBehaviorKind::CtfInvalidPickupOwnership,
+    },
+    ScenarioSpec {
+        scenario: Scenario::CtfInvalidReturnDrop,
+        canonical_name: "ctf-invalid-return-drop",
+        aliases: &["ctf-invalid-return-drop"],
+        client_milestones: &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "ctf_invalid_return_drop_attempted",
+                "ctf_invalid_return_drop_attempted",
+            ),
+            (
+                "ctf_invalid_return_drop_contained",
+                "ctf_invalid_return_drop_contained",
+            ),
+        ],
+        server_milestones: &[
             ("server_username_seen", "compatbot"),
             (
                 "server_invalid_return_drop_rejected",
                 "invalid_flag_return_drop_rejected username=compatbot actor_team=Red flag_team=Red pre_state=at_base post_state=at_base red_score=0 blue_score=0 outcome=no_flag_state_mutation_no_score",
             ),
         ],
-        Scenario::CtfScoreLimitWinCondition => &[
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+            ("unexpected_flag_pickup_chat", "You have the flag!"),
+            (
+                "unexpected_server_flag_pickup",
+                "MC-COMPAT-MILESTONE flag_pickup username=",
+            ),
+            ("unexpected_flag_return", "MC-COMPAT-MILESTONE flag_return"),
+            (
+                "unexpected_flag_disconnect_return",
+                "MC-COMPAT-MILESTONE flag_disconnect_return",
+            ),
+            ("unexpected_flag_capture", "You captured the flag!"),
+            ("unexpected_flag_capture_milestone", "flag_capture"),
+            ("unexpected_red_score", "RED: 1"),
+            ("unexpected_blue_score", "BLUE: 1"),
+        ],
+        behavior: ScenarioBehaviorKind::CtfInvalidReturnDrop,
+    },
+    ScenarioSpec {
+        scenario: Scenario::CtfScoreLimitWinCondition,
+        canonical_name: "ctf-score-limit-win-condition",
+        aliases: &["ctf-score-limit-win-condition"],
+        client_milestones: &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("flag_pickup", "You have the flag!"),
+            ("flag_capture", "You captured the flag!"),
+            ("score_red_2", "RED: 2"),
+            (
+                "ctf_score_limit_win_seen",
+                CTF_SCORE_LIMIT_CLIENT_WIN_NEEDLE,
+            ),
+        ],
+        server_milestones: &[
             ("server_username_seen", "compatbot"),
             (
                 "server_score_limit_pre_state",
@@ -3411,7 +4643,36 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
                 CTF_SCORE_LIMIT_SERVER_WIN_NEEDLE,
             ),
         ],
-        Scenario::CtfSimultaneousPickupCaptureRace => &[
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+            ("score_limit_duplicate_win", "score_limit_duplicate_win"),
+            (
+                "score_limit_post_win_score_mutation",
+                "score_limit_post_win_score_mutation",
+            ),
+            ("unexpected_red_score_3", "RED: 3"),
+            ("unexpected_blue_score_1", "BLUE: 1"),
+        ],
+        behavior: ScenarioBehaviorKind::CtfScoreLimitWinCondition,
+    },
+    ScenarioSpec {
+        scenario: Scenario::CtfSimultaneousPickupCaptureRace,
+        canonical_name: "ctf-simultaneous-pickup-capture-race",
+        aliases: &["ctf-simultaneous-pickup-capture-race"],
+        client_milestones: &[
+            ("ctf_race_client_count", CTF_RACE_CLIENT_COUNT_NEEDLE),
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("flag_pickup", "You have the flag!"),
+            ("flag_capture", "You captured the flag!"),
+            ("score_red_1", "RED: 1"),
+        ],
+        server_milestones: &[
             ("server_client_a_seen", "compatbota"),
             ("server_client_b_seen", "compatbotb"),
             (
@@ -3424,7 +4685,36 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
             ),
             ("server_ctf_race_final_state", CTF_RACE_FINAL_SERVER_NEEDLE),
         ],
-        Scenario::CtfSpawnTeamBalanceReset => &[
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+            ("ctf_race_double_accept", "ctf_race_double_accept"),
+            ("unexpected_blue_score_1", "BLUE: 1"),
+            ("unexpected_red_score_2", "RED: 2"),
+        ],
+        behavior: ScenarioBehaviorKind::CtfSimultaneousPickupCaptureRace,
+    },
+    ScenarioSpec {
+        scenario: Scenario::CtfSpawnTeamBalanceReset,
+        canonical_name: "ctf-spawn-team-balance-reset",
+        aliases: &["ctf-spawn-team-balance-reset"],
+        client_milestones: &[
+            (
+                "ctf_spawn_team_reset_client_count",
+                CTF_SPAWN_TEAM_RESET_CLIENT_COUNT_NEEDLE,
+            ),
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            ("team_red", "You are on team RED!"),
+            ("team_blue", "You are on team BLUE!"),
+            ("flag_pickup", "You have the flag!"),
+            ("flag_capture", "You captured the flag!"),
+            ("score_red_1", "RED: 1"),
+        ],
+        server_milestones: &[
             ("server_client_a_seen", "compatbota"),
             ("server_client_b_seen", "compatbotb"),
             (
@@ -3441,11 +4731,213 @@ fn server_required_milestones(scenario: Scenario) -> &'static [(&'static str, &'
                 CTF_SPAWN_RESOURCE_RESET_NEEDLE,
             ),
         ],
-        Scenario::NegativeInventoryStaleState
-        | Scenario::NegativeInventoryInvalidClick
-        | Scenario::NegativeCustomPayload
-        | Scenario::NegativeReconnectRace
-        | Scenario::NegativeCtfWrongScore => &[("server_username_seen", "compatbot")],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+            ("spawn_team_imbalance", "ctf_spawn_team_imbalance"),
+            (
+                "spawn_resource_stale",
+                "ctf_spawn_resource_stale_after_reset",
+            ),
+            ("unexpected_blue_score_1", "BLUE: 1"),
+            ("unexpected_red_score_2", "RED: 2"),
+        ],
+        behavior: ScenarioBehaviorKind::CtfSpawnTeamBalanceReset,
+    },
+];
+
+fn parse_scenario(value: &str) -> Result<Scenario, String> {
+    SCENARIO_SPECS
+        .iter()
+        .find(|spec| spec.aliases.iter().any(|alias| *alias == value))
+        .map(|spec| spec.scenario)
+        .ok_or_else(|| format!("unknown scenario: {value}"))
+}
+
+fn scenario_spec(scenario: Scenario) -> &'static ScenarioSpec {
+    SCENARIO_SPECS
+        .iter()
+        .find(|spec| spec.scenario == scenario)
+        .unwrap_or_else(|| panic!("scenario spec missing for {scenario:?}"))
+}
+
+fn scenario_behavior(scenario: Scenario) -> &'static dyn ScenarioBehavior {
+    &scenario_spec(scenario).behavior
+}
+
+fn scenario_name(scenario: Scenario) -> &'static str {
+    scenario_spec(scenario).canonical_name
+}
+
+fn scenario_required_milestones(scenario: Scenario) -> &'static [ScenarioMilestone] {
+    scenario_spec(scenario).client_milestones
+}
+
+fn scenario_forbidden_patterns(scenario: Scenario) -> &'static [ScenarioMilestone] {
+    scenario_spec(scenario).forbidden_patterns
+}
+
+fn server_required_milestones(scenario: Scenario) -> &'static [ScenarioMilestone] {
+    scenario_spec(scenario).server_milestones
+}
+
+fn validate_static_scenario_specs(specs: &[ScenarioSpec]) -> Result<(), String> {
+    validate_static_scenario_coverage(specs)?;
+    validate_static_scenario_rows(specs)
+}
+
+fn validate_static_scenario_coverage(specs: &[ScenarioSpec]) -> Result<(), String> {
+    if specs.len() != ALL_SCENARIOS.len() {
+        return Err(format!(
+            "scenario spec count mismatch: specs={} expected={}",
+            specs.len(),
+            ALL_SCENARIOS.len()
+        ));
+    }
+    for scenario in ALL_SCENARIOS {
+        let count = specs
+            .iter()
+            .filter(|spec| spec.scenario == *scenario)
+            .count();
+        if count != 1 {
+            return Err(format!(
+                "scenario {scenario:?} has {count} specs; expected exactly one"
+            ));
+        }
+    }
+    Ok(())
+}
+
+fn validate_static_scenario_rows(specs: &[ScenarioSpec]) -> Result<(), String> {
+    let mut canonical_names = Vec::new();
+    for spec in specs {
+        if spec.canonical_name.is_empty() {
+            return Err(format!(
+                "scenario {:?} has empty canonical name",
+                spec.scenario
+            ));
+        }
+        if canonical_names.contains(&spec.canonical_name) {
+            return Err(format!("duplicated canonical name {}", spec.canonical_name));
+        }
+        canonical_names.push(spec.canonical_name);
+        if !spec.aliases.contains(&spec.canonical_name) {
+            return Err(format!(
+                "scenario {} aliases omit canonical name",
+                spec.canonical_name
+            ));
+        }
+        if spec.client_milestones.is_empty() {
+            return Err(format!(
+                "scenario {} has missing client milestones",
+                spec.canonical_name
+            ));
+        }
+        if spec.forbidden_patterns.is_empty() {
+            return Err(format!(
+                "scenario {} has missing forbidden patterns",
+                spec.canonical_name
+            ));
+        }
+        validate_scenario_spec_manifest_parity(spec)?;
+        validate_scenario_behavior_capabilities(spec)?;
+    }
+    Ok(())
+}
+
+fn validate_scenario_spec_manifest_parity(spec: &ScenarioSpec) -> Result<(), String> {
+    let Some(row) = scenario_manifest_generated::SCENARIO_MANIFEST_ROWS
+        .iter()
+        .find(|row| row.name == spec.canonical_name)
+    else {
+        return Ok(());
+    };
+    validate_static_str_slice_equal("aliases", spec.canonical_name, spec.aliases, row.aliases)?;
+    validate_static_str_slice_equal(
+        "client milestones",
+        spec.canonical_name,
+        &scenario_milestone_ids(spec.client_milestones),
+        row.client_milestones,
+    )?;
+    validate_static_str_slice_equal(
+        "server milestones",
+        spec.canonical_name,
+        &scenario_milestone_ids(spec.server_milestones),
+        row.server_milestones,
+    )?;
+    validate_static_str_slice_equal(
+        "forbidden patterns",
+        spec.canonical_name,
+        &scenario_milestone_ids(spec.forbidden_patterns),
+        row.forbidden_patterns,
+    )?;
+    Ok(())
+}
+
+fn scenario_milestone_ids(milestones: &[ScenarioMilestone]) -> Vec<&'static str> {
+    milestones.iter().map(|(id, _)| *id).collect()
+}
+
+fn validate_static_str_slice_equal(
+    label: &'static str,
+    scenario: &'static str,
+    actual: &[&'static str],
+    expected: &[&'static str],
+) -> Result<(), String> {
+    if actual == expected {
+        Ok(())
+    } else {
+        Err(format!(
+            "scenario {scenario} {label} drift: actual={actual:?} expected={expected:?}"
+        ))
+    }
+}
+
+fn validate_scenario_behavior_capabilities(spec: &ScenarioSpec) -> Result<(), String> {
+    if spec.scenario == Scenario::ProjectileDamageAttribution
+        && !spec.behavior.uses_dynamic_projectile_health()
+    {
+        return Err("projectile-damage-attribution missing projectile damage hook".to_string());
+    }
+    if spec.scenario == Scenario::McpControlledSmoke && !spec.behavior.is_mcp_controlled_smoke() {
+        return Err("mcp-controlled-smoke missing MCP control hook".to_string());
+    }
+    if expected_negative_live_rail_postcondition(spec.scenario).is_some()
+        && spec.behavior.negative_live_rail().is_none()
+    {
+        return Err(format!(
+            "scenario {} missing negative live rail hook",
+            spec.canonical_name
+        ));
+    }
+    if spec.behavior.run_strategy() == ScenarioRunStrategy::MultiClient
+        && !spec
+            .client_milestones
+            .iter()
+            .any(|(id, _)| id.contains("client_count") || *id == "multi_client_count")
+    {
+        return Err(format!(
+            "scenario {} missing multi-client count milestone",
+            spec.canonical_name
+        ));
+    }
+    Ok(())
+}
+
+fn expected_negative_live_rail_postcondition(scenario: Scenario) -> Option<&'static str> {
+    match scenario {
+        Scenario::NegativeInventoryStaleState => Some("negative_inventory_stale_state_contained"),
+        Scenario::NegativeInventoryInvalidClick => {
+            Some("negative_inventory_invalid_click_restored")
+        }
+        Scenario::NegativeCustomPayload => Some("negative_custom_payload_contained"),
+        Scenario::NegativeReconnectRace => Some("negative_reconnect_race_contained"),
+        Scenario::NegativeCtfWrongScore => Some("negative_wrong_score_contained"),
+        Scenario::CtfInvalidPickupOwnership => Some("ctf_invalid_pickup_contained"),
+        Scenario::CtfInvalidReturnDrop => Some("ctf_invalid_return_drop_contained"),
+        _ => None,
     }
 }
 
@@ -3517,17 +5009,12 @@ fn client_required_milestone_rules<'a>(
     scenario: Scenario,
     projectile_health_needle: &'a str,
 ) -> Vec<MilestoneRule<'a>> {
+    let behavior = scenario_behavior(scenario);
     scenario_required_milestones(scenario)
         .iter()
-        .map(|(id, needle)| {
-            let matcher = if scenario == Scenario::ProjectileDamageAttribution
-                && *id == PROJECTILE_DAMAGE_UPDATE_MILESTONE
-            {
-                MatcherKind::Literal(projectile_health_needle)
-            } else {
-                MatcherKind::Literal(*needle)
-            };
-            MilestoneRule { id: *id, matcher }
+        .map(|(id, needle)| MilestoneRule {
+            id: *id,
+            matcher: behavior.client_milestone_matcher(*id, needle, projectile_health_needle),
         })
         .collect()
 }
@@ -4950,88 +6437,7 @@ fn start_valence_server(cfg: &Config) -> Result<ManagedServer, String> {
         .stderr(Stdio::from(err_file));
     cmd.env("RUSTC_WRAPPER", "")
         .env("CARGO_TARGET_DIR", &cfg.valence_target_dir);
-    if uses_armor_mitigation_probe(cfg.scenario) {
-        cmd.env("MC_COMPAT_ARMOR_MITIGATION_PROBE", "1");
-    }
-    if matches!(
-        cfg.scenario,
-        Scenario::EquipmentUpdateObservation | Scenario::EquipmentSlotItemMatrixExpansion
-    ) {
-        cmd.env("MC_COMPAT_EQUIPMENT_UPDATE_PROBE", "1");
-    }
-    if matches!(
-        cfg.scenario,
-        Scenario::ProjectileHit | Scenario::ProjectileDamageAttribution
-    ) {
-        cmd.env("MC_COMPAT_PROJECTILE_PROBE", "1");
-    }
-    if uses_vanilla_combat_reference_probe(cfg.scenario) {
-        cmd.env(VANILLA_COMBAT_REFERENCE_PROBE_ENV, "1");
-    }
-    if cfg.scenario == Scenario::VanillaCombatArmorReferenceParity {
-        cmd.env(VANILLA_COMBAT_ARMOR_REFERENCE_PROBE_ENV, "1");
-    }
-    if cfg.scenario == Scenario::InventoryStackSplitMerge {
-        cmd.env(INVENTORY_STACK_SPLIT_MERGE_PROBE_ENV, "1");
-    }
-    if cfg.scenario == Scenario::InventoryDragTransactions {
-        cmd.env(INVENTORY_DRAG_TRANSACTIONS_PROBE_ENV, "1");
-    }
-    if cfg.scenario == Scenario::SurvivalChestPersistence {
-        cmd.env(SURVIVAL_CHEST_FIXTURE_ENV, "1");
-    }
-    if cfg.scenario == Scenario::SurvivalCraftingTable {
-        cmd.env(SURVIVAL_CRAFTING_FIXTURE_ENV, "1");
-    }
-    if cfg.scenario == Scenario::SurvivalFurnacePersistence {
-        cmd.env(SURVIVAL_FURNACE_FIXTURE_ENV, "1");
-    }
-    if cfg.scenario == Scenario::SurvivalHungerFood {
-        cmd.env(SURVIVAL_HUNGER_FOOD_FIXTURE_ENV, "1");
-    }
-    if cfg.scenario == Scenario::SurvivalMobDrop {
-        cmd.env(SURVIVAL_MOB_DROP_FIXTURE_ENV, "1");
-    }
-    if cfg.scenario == Scenario::SurvivalRedstoneToggle {
-        cmd.env(SURVIVAL_REDSTONE_TOGGLE_FIXTURE_ENV, "1");
-    }
-    if uses_world_persistence_storage(cfg.scenario) {
-        cmd.env(SURVIVAL_WORLD_PERSISTENCE_FIXTURE_ENV, "1")
-            .env(
-                SURVIVAL_WORLD_PERSISTENCE_DIR_ENV,
-                world_persistence_state_dir(cfg, ServerBackend::Valence),
-            )
-            .env(
-                SURVIVAL_WORLD_PERSISTENCE_PHASE_ENV,
-                world_persistence_phase_value(cfg),
-            );
-    }
-    if uses_block_entity_persistence_storage(cfg.scenario) {
-        cmd.env(SURVIVAL_BLOCK_ENTITY_FIXTURE_ENV, "1")
-            .env(
-                SURVIVAL_BLOCK_ENTITY_DIR_ENV,
-                world_persistence_state_dir(cfg, ServerBackend::Valence),
-            )
-            .env(
-                SURVIVAL_BLOCK_ENTITY_PHASE_ENV,
-                world_persistence_phase_value(cfg),
-            );
-    }
-    if cfg.scenario == Scenario::SurvivalBiomeDimensionState {
-        cmd.env(SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV, "1");
-    }
-    if cfg.scenario == Scenario::CtfInvalidReturnDrop {
-        cmd.env("MC_COMPAT_CTF_INVALID_RETURN_DROP_PROBE", "1");
-    }
-    if cfg.scenario == Scenario::CtfScoreLimitWinCondition {
-        cmd.env("MC_COMPAT_CTF_SCORE_LIMIT_PROBE", "1");
-    }
-    if cfg.scenario == Scenario::CtfSimultaneousPickupCaptureRace {
-        cmd.env("MC_COMPAT_CTF_RACE_PROBE", "1");
-    }
-    if cfg.scenario == Scenario::CtfSpawnTeamBalanceReset {
-        cmd.env("MC_COMPAT_CTF_SPAWN_TEAM_RESET_PROBE", "1");
-    }
+    scenario_behavior(cfg.scenario).apply_valence_server_env(&mut cmd, cfg);
     if let Some(path) = &cfg.steel_config_path {
         cmd.env("MC_COMPAT_STEEL_CONFIG", path);
     }
@@ -5089,73 +6495,7 @@ fn configure_paper_run_command(cfg: &Config, cmd: &mut Command) -> Result<(), St
         .arg(format!("VIEW_DISTANCE={PAPER_VIEW_DISTANCE}"))
         .arg("-e")
         .arg(format!("SIMULATION_DISTANCE={PAPER_SIMULATION_DISTANCE}"));
-    if cfg.scenario == Scenario::SurvivalChestPersistence {
-        cmd.arg("-e").arg(format!("{SURVIVAL_CHEST_FIXTURE_ENV}=1"));
-    }
-    if cfg.scenario == Scenario::SurvivalCraftingTable {
-        cmd.arg("-e")
-            .arg(format!("{SURVIVAL_CRAFTING_FIXTURE_ENV}=1"));
-    }
-    if cfg.scenario == Scenario::SurvivalFurnacePersistence {
-        cmd.arg("-e")
-            .arg(format!("{SURVIVAL_FURNACE_FIXTURE_ENV}=1"));
-    }
-    if cfg.scenario == Scenario::SurvivalHungerFood {
-        cmd.arg("-e")
-            .arg(format!("{SURVIVAL_HUNGER_FOOD_FIXTURE_ENV}=1"));
-    }
-    if cfg.scenario == Scenario::SurvivalMobDrop {
-        cmd.arg("-e")
-            .arg(format!("{SURVIVAL_MOB_DROP_FIXTURE_ENV}=1"));
-    }
-    if cfg.scenario == Scenario::SurvivalRedstoneToggle {
-        cmd.arg("-e")
-            .arg(format!("{SURVIVAL_REDSTONE_TOGGLE_FIXTURE_ENV}=1"));
-    }
-    if uses_world_persistence_storage(cfg.scenario) {
-        let state_dir = world_persistence_state_dir(cfg, ServerBackend::Paper);
-        fs::create_dir_all(&state_dir)
-            .map_err(|e| format!("create {}: {e}", state_dir.display()))?;
-        let absolute_state_dir = fs::canonicalize(&state_dir)
-            .map_err(|e| format!("canonicalize {}: {e}", state_dir.display()))?;
-        cmd.arg("-e")
-            .arg(format!("{SURVIVAL_WORLD_PERSISTENCE_FIXTURE_ENV}=1"))
-            .arg("-e")
-            .arg(format!(
-                "{SURVIVAL_WORLD_PERSISTENCE_PHASE_ENV}={}",
-                world_persistence_phase_value(cfg)
-            ))
-            .arg("-v")
-            .arg(format!("{}:/data", absolute_state_dir.display()));
-    }
-    if uses_block_entity_persistence_storage(cfg.scenario) {
-        let state_dir = world_persistence_state_dir(cfg, ServerBackend::Paper);
-        fs::create_dir_all(&state_dir)
-            .map_err(|e| format!("create {}: {e}", state_dir.display()))?;
-        let absolute_state_dir = fs::canonicalize(&state_dir)
-            .map_err(|e| format!("canonicalize {}: {e}", state_dir.display()))?;
-        cmd.arg("-e")
-            .arg(format!("{SURVIVAL_BLOCK_ENTITY_FIXTURE_ENV}=1"))
-            .arg("-e")
-            .arg(format!(
-                "{SURVIVAL_BLOCK_ENTITY_PHASE_ENV}={}",
-                world_persistence_phase_value(cfg)
-            ))
-            .arg("-v")
-            .arg(format!("{}:/data", absolute_state_dir.display()));
-    }
-    if cfg.scenario == Scenario::SurvivalBiomeDimensionState {
-        cmd.arg("-e")
-            .arg(format!("{SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV}=1"));
-    }
-    if uses_vanilla_combat_reference_probe(cfg.scenario) {
-        cmd.arg("-e")
-            .arg(format!("{VANILLA_COMBAT_REFERENCE_PROBE_ENV}=1"));
-    }
-    if cfg.scenario == Scenario::VanillaCombatArmorReferenceParity {
-        cmd.arg("-e")
-            .arg(format!("{VANILLA_COMBAT_ARMOR_REFERENCE_PROBE_ENV}=1"));
-    }
+    scenario_behavior(cfg.scenario).apply_paper_server_env(cmd, cfg)?;
     add_paper_plugin_mount(cfg, cmd)?;
     cmd.arg(&cfg.docker_image);
     Ok(())
@@ -5297,10 +6637,11 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
     ));
     if cfg.mode == Mode::DryRun {
         log(format_args!("would run Stevenarella under xvfb-run"));
-        if cfg.scenario == Scenario::McpControlledSmoke {
+        let behavior = scenario_behavior(cfg.scenario);
+        if behavior.is_mcp_controlled_smoke() {
             return Ok(mcp_controlled_dry_run_evidence(cfg));
         }
-        if cfg.scenario == Scenario::ProjectileDamageAttribution {
+        if behavior.uses_dynamic_projectile_health() {
             return Ok(projectile_damage_dry_run_evidence(cfg));
         }
         let scenario = evaluate_scenario_for_config(cfg, "");
@@ -5324,96 +6665,25 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         });
     }
 
-    if cfg.scenario == Scenario::McpControlledSmoke {
+    let behavior = scenario_behavior(cfg.scenario);
+    if behavior.is_mcp_controlled_smoke() {
         return run_mcp_controlled_live_client(cfg);
     }
 
-    let runs = if matches!(
-        cfg.scenario,
-        Scenario::ReconnectFlagState
-            | Scenario::SurvivalChestPersistence
-            | Scenario::SurvivalFurnacePersistence
-            | Scenario::SurvivalWorldPersistenceRestart
-            | Scenario::SurvivalCrashRecoveryParity
-            | Scenario::SurvivalBlockEntityPersistenceParity
-            | Scenario::NegativeReconnectRace
-    ) {
-        run_reconnect_sequence_scenario(cfg)?
-    } else if matches!(
-        cfg.scenario,
-        Scenario::MultiClientLoadScore
-            | Scenario::CombatDamage
-            | Scenario::CombatKnockback
-            | Scenario::VanillaCombatReferenceParity
-            | Scenario::VanillaCombatArmorReferenceParity
-            | Scenario::ArmorEquipmentMitigation
-            | Scenario::ArmorLoadoutEnchantmentStatusMatrix
-            | Scenario::EquipmentUpdateObservation
-            | Scenario::EquipmentSlotItemMatrixExpansion
-            | Scenario::ProjectileHit
-            | Scenario::ProjectileDamageAttribution
-            | Scenario::FlagCarrierDeathReturn
-            | Scenario::CtfSimultaneousPickupCaptureRace
-            | Scenario::CtfSpawnTeamBalanceReset
-    ) {
-        run_multi_client_load_scenario(cfg)?
-    } else {
-        vec![run_single_client(cfg, &cfg.client_username, 0)?]
+    let runs = match behavior.run_strategy() {
+        ScenarioRunStrategy::ReconnectSequence => run_reconnect_sequence_scenario(cfg)?,
+        ScenarioRunStrategy::MultiClient => run_multi_client_load_scenario(cfg)?,
+        ScenarioRunStrategy::SingleClient => vec![run_single_client(
+            cfg,
+            &cfg.client_username,
+            FIRST_CLIENT_INDEX,
+        )?],
     };
 
     let mut combined_output = String::new();
-    if cfg.scenario == Scenario::MultiClientLoadScore && runs.len() >= 2 {
-        combined_output.push_str("mc_compat_multi_client_count=2\n");
-    }
-    if matches!(
-        cfg.scenario,
-        Scenario::CombatDamage
-            | Scenario::CombatKnockback
-            | Scenario::VanillaCombatArmorReferenceParity
-            | Scenario::ArmorEquipmentMitigation
-            | Scenario::ArmorLoadoutEnchantmentStatusMatrix
-    ) && runs.len() >= 2
-    {
-        combined_output.push_str("mc_compat_combat_client_count=2\n");
-    }
-    if uses_vanilla_combat_reference_probe(cfg.scenario) && runs.len() >= 2 {
-        combined_output.push_str(VANILLA_COMBAT_REFERENCE_CLIENT_COUNT_NEEDLE);
-        combined_output.push('\n');
-    }
-    if cfg.scenario == Scenario::FlagCarrierDeathReturn && runs.len() >= 2 {
-        combined_output.push_str("mc_compat_flag_carrier_death_client_count=2\n");
-    }
-    if cfg.scenario == Scenario::CtfSimultaneousPickupCaptureRace && runs.len() >= 2 {
-        combined_output.push_str("mc_compat_ctf_race_client_count=2\n");
-    }
-    if cfg.scenario == Scenario::CtfSpawnTeamBalanceReset && runs.len() >= 2 {
-        combined_output.push_str("mc_compat_ctf_spawn_team_reset_client_count=2\n");
-    }
-    if matches!(
-        cfg.scenario,
-        Scenario::EquipmentUpdateObservation | Scenario::EquipmentSlotItemMatrixExpansion
-    ) && runs.len() >= 2
-    {
-        combined_output.push_str("mc_compat_equipment_update_client_count=2\n");
-    }
-    if cfg.scenario == Scenario::ProjectileHit && runs.len() >= 2 {
-        combined_output.push_str("mc_compat_projectile_hit_client_count=2\n");
-    }
-    if cfg.scenario == Scenario::ProjectileDamageAttribution && runs.len() >= 2 {
-        combined_output.push_str("mc_compat_projectile_damage_client_count=2\n");
-    }
-    if matches!(
-        cfg.scenario,
-        Scenario::ReconnectFlagScore
-            | Scenario::ReconnectFlagState
-            | Scenario::SurvivalChestPersistence
-            | Scenario::SurvivalFurnacePersistence
-            | Scenario::SurvivalWorldPersistenceRestart
-            | Scenario::SurvivalCrashRecoveryParity
-            | Scenario::SurvivalBlockEntityPersistenceParity
-            | Scenario::NegativeReconnectRace
-    ) {
-        combined_output.push_str("mc_compat_reconnect_session=2\n");
+    behavior.append_client_count_markers(runs.len(), &mut combined_output);
+    if behavior.uses_reconnect_session_marker() {
+        append_count_marker(&mut combined_output, RECONNECT_SESSION_COUNT_NEEDLE);
     }
     for run in &runs {
         combined_output.push_str(&run.output);
@@ -5421,7 +6691,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
             combined_output.push('\n');
         }
     }
-    if cfg.scenario == Scenario::SurvivalCrashRecoveryParity {
+    if behavior.uses_crash_recovery_restart() {
         combined_output.push_str(&derive_survival_crash_recovery_client_milestones(
             &combined_output,
         ));
@@ -5463,7 +6733,7 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         }
     }
 
-    let projectile_damage_causality = if cfg.scenario == Scenario::ProjectileDamageAttribution {
+    let projectile_damage_causality = if behavior.uses_dynamic_projectile_health() {
         let server_log = read_valence_log(cfg)?;
         let client_logs = runs
             .iter()
@@ -5504,46 +6774,23 @@ fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         run.exit_code == Some(0)
             || (run.exit_code == Some(124) && run.matched_success_pattern.is_some())
     });
-    let classification = if matches!(
-        cfg.scenario,
-        Scenario::MultiClientLoadScore
-            | Scenario::CombatDamage
-            | Scenario::CombatKnockback
-            | Scenario::VanillaCombatReferenceParity
-            | Scenario::VanillaCombatArmorReferenceParity
-            | Scenario::ArmorEquipmentMitigation
-            | Scenario::ArmorLoadoutEnchantmentStatusMatrix
-            | Scenario::EquipmentUpdateObservation
-            | Scenario::EquipmentSlotItemMatrixExpansion
-            | Scenario::ProjectileHit
-            | Scenario::ProjectileDamageAttribution
-            | Scenario::FlagCarrierDeathReturn
-            | Scenario::CtfSimultaneousPickupCaptureRace
-            | Scenario::CtfSpawnTeamBalanceReset
-            | Scenario::ReconnectFlagState
-            | Scenario::SurvivalChestPersistence
-            | Scenario::SurvivalFurnacePersistence
-            | Scenario::SurvivalWorldPersistenceRestart
-            | Scenario::SurvivalCrashRecoveryParity
-            | Scenario::SurvivalBlockEntityPersistenceParity
-            | Scenario::NegativeReconnectRace
-    ) && mixed_success
-    {
-        "multi-client-load-evidence"
-    } else if all_success {
-        "client-exited-success"
-    } else if timeout_success {
-        "timeout-success-evidence"
-    } else {
-        return Err(format!(
-            "client scenario failed; exits={:?}; logs={}",
-            runs.iter().map(|run| run.exit_code).collect::<Vec<_>>(),
-            runs.iter()
-                .map(|run| run.log_path.display().to_string())
-                .collect::<Vec<_>>()
-                .join(",")
-        ));
-    };
+    let classification =
+        if behavior.run_strategy() != ScenarioRunStrategy::SingleClient && mixed_success {
+            "multi-client-load-evidence"
+        } else if all_success {
+            "client-exited-success"
+        } else if timeout_success {
+            "timeout-success-evidence"
+        } else {
+            return Err(format!(
+                "client scenario failed; exits={:?}; logs={}",
+                runs.iter().map(|run| run.exit_code).collect::<Vec<_>>(),
+                runs.iter()
+                    .map(|run| run.log_path.display().to_string())
+                    .collect::<Vec<_>>()
+                    .join(",")
+            ));
+        };
 
     for run in &runs {
         log(format_args!(
@@ -5741,33 +6988,19 @@ fn absolute_child_path(root: &Path, path: &Path) -> PathBuf {
 }
 
 fn uses_isolated_restart_storage(scenario: Scenario) -> bool {
-    matches!(
-        scenario,
-        Scenario::SurvivalWorldPersistenceRestart
-            | Scenario::SurvivalCrashRecoveryParity
-            | Scenario::SurvivalBlockEntityPersistenceParity
-    )
+    scenario_behavior(scenario).uses_isolated_restart_storage()
 }
 
 fn uses_world_persistence_storage(scenario: Scenario) -> bool {
-    matches!(
-        scenario,
-        Scenario::SurvivalWorldPersistenceRestart | Scenario::SurvivalCrashRecoveryParity
-    )
+    scenario_behavior(scenario).uses_world_persistence_storage()
 }
 
 fn uses_block_entity_persistence_storage(scenario: Scenario) -> bool {
-    scenario == Scenario::SurvivalBlockEntityPersistenceParity
+    scenario_behavior(scenario).uses_block_entity_persistence_storage()
 }
 
 fn world_persistence_artifact_dir_name(scenario: Scenario) -> &'static str {
-    match scenario {
-        Scenario::SurvivalCrashRecoveryParity => "mc-compat-survival-crash-recovery",
-        Scenario::SurvivalBlockEntityPersistenceParity => {
-            "mc-compat-survival-block-entity-persistence"
-        }
-        _ => "mc-compat-world-persistence",
-    }
+    scenario_behavior(scenario).world_persistence_artifact_dir_name()
 }
 
 fn world_persistence_state_dir(cfg: &Config, backend: ServerBackend) -> PathBuf {
@@ -6253,7 +7486,7 @@ fn run_reconnect_sequence_scenario(cfg: &Config) -> Result<Vec<SingleClientRun>,
             output,
             matched_success_pattern,
         });
-        if uses_isolated_restart_storage(cfg.scenario) && idx == 0 {
+        if uses_isolated_restart_storage(cfg.scenario) && idx == FIRST_CLIENT_INDEX {
             restarted_server = Some(run_world_persistence_restart_transition(cfg)?);
         }
         thread::sleep(Duration::from_secs(RECONNECT_SEQUENCE_PAUSE_SECS));
@@ -6263,8 +7496,9 @@ fn run_reconnect_sequence_scenario(cfg: &Config) -> Result<Vec<SingleClientRun>,
 }
 
 fn run_world_persistence_restart_transition(cfg: &Config) -> Result<ManagedServer, String> {
+    let behavior = scenario_behavior(cfg.scenario);
     write_world_persistence_pre_restart_server_log(cfg)?;
-    if cfg.scenario == Scenario::SurvivalCrashRecoveryParity {
+    if behavior.uses_crash_recovery_restart() {
         force_stop_server(cfg)?;
         append_world_persistence_orchestration_milestone(
             cfg,
@@ -6272,30 +7506,36 @@ fn run_world_persistence_restart_transition(cfg: &Config) -> Result<ManagedServe
         )?;
     } else {
         stop_server(cfg)?;
-        let clean_milestone = if cfg.scenario == Scenario::SurvivalBlockEntityPersistenceParity {
-            SURVIVAL_BLOCK_ENTITY_SERVER_CLEAN_NEEDLE
-        } else {
-            SURVIVAL_WORLD_PERSISTENCE_SERVER_CLEAN_NEEDLE
-        };
-        append_world_persistence_orchestration_milestone(cfg, clean_milestone)?;
+        append_world_persistence_orchestration_milestone(cfg, restart_clean_milestone(behavior))?;
     }
     mark_world_persistence_post_restart_phase(cfg)?;
     let restarted_server = start_server(cfg)?;
     probe_status(cfg)?;
-    if cfg.scenario == Scenario::SurvivalCrashRecoveryParity {
+    if behavior.uses_crash_recovery_restart() {
         append_world_persistence_orchestration_milestone(
             cfg,
             SURVIVAL_CRASH_RECOVERY_SERVER_RESTART_NEEDLE,
         )?;
     } else {
-        let restart_milestone = if cfg.scenario == Scenario::SurvivalBlockEntityPersistenceParity {
-            SURVIVAL_BLOCK_ENTITY_SERVER_RESTART_NEEDLE
-        } else {
-            SURVIVAL_WORLD_PERSISTENCE_SERVER_RESTART_NEEDLE
-        };
-        append_world_persistence_orchestration_milestone(cfg, restart_milestone)?;
+        append_world_persistence_orchestration_milestone(cfg, restart_backend_milestone(behavior))?;
     }
     Ok(restarted_server)
+}
+
+fn restart_clean_milestone(behavior: &'static dyn ScenarioBehavior) -> &'static str {
+    if behavior.uses_block_entity_persistence_storage() {
+        SURVIVAL_BLOCK_ENTITY_SERVER_CLEAN_NEEDLE
+    } else {
+        SURVIVAL_WORLD_PERSISTENCE_SERVER_CLEAN_NEEDLE
+    }
+}
+
+fn restart_backend_milestone(behavior: &'static dyn ScenarioBehavior) -> &'static str {
+    if behavior.uses_block_entity_persistence_storage() {
+        SURVIVAL_BLOCK_ENTITY_SERVER_RESTART_NEEDLE
+    } else {
+        SURVIVAL_WORLD_PERSISTENCE_SERVER_RESTART_NEEDLE
+    }
 }
 
 fn run_multi_client_load_scenario(cfg: &Config) -> Result<Vec<SingleClientRun>, String> {
@@ -6471,286 +7711,13 @@ fn apply_scenario_probe_env(
     cmd: &mut Command,
     scenario: Scenario,
     client_index: usize,
-    _server_backend: ServerBackend,
+    server_backend: ServerBackend,
 ) {
-    match scenario {
-        Scenario::Smoke => {}
-        Scenario::CompatBotProbe => {
-            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1");
-        }
-        Scenario::FlagScoreRepeat | Scenario::BlueFlagScore | Scenario::ReconnectFlagScore => {
-            let team = if scenario == Scenario::BlueFlagScore {
-                "blue"
-            } else {
-                "red"
-            };
-            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE_TEAM", team)
-                .env("MC_COMPAT_FLAG_PROBE", "1")
-                .env("MC_COMPAT_FLAG_PROBE_TEAM", team)
-                .env("MC_COMPAT_FLAG_PROBE_REPEAT", "2");
-            if scenario == Scenario::ReconnectFlagScore {
-                cmd.env("MC_COMPAT_RECONNECT_PROBE", "1");
-            }
-        }
-        Scenario::ReconnectFlagState | Scenario::NegativeReconnectRace => {
-            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE_TEAM", "red");
-            if client_index == 0 {
-                cmd.env("MC_COMPAT_FLAG_PROBE", "1")
-                    .env("MC_COMPAT_FLAG_PROBE_TEAM", "red")
-                    .env("MC_COMPAT_FLAG_PROBE_PICKUP_ONLY", "1")
-                    .env("MC_COMPAT_FLAG_PROBE_REPEAT", "1");
-            }
-            if scenario == Scenario::NegativeReconnectRace {
-                cmd.env("MC_COMPAT_NEGATIVE_PROBE", "reconnect_race");
-            }
-        }
-        Scenario::InventoryInteraction => {
-            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
-                .env("MC_COMPAT_INVENTORY_PROBE", "1");
-        }
-        Scenario::InventoryStackSplitMerge => {
-            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
-                .env("MC_COMPAT_INVENTORY_PROBE", "1")
-                .env(INVENTORY_STACK_SPLIT_MERGE_PROBE_ENV, "1");
-        }
-        Scenario::InventoryDragTransactions => {
-            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
-                .env("MC_COMPAT_INVENTORY_PROBE", "1")
-                .env(INVENTORY_DRAG_TRANSACTIONS_PROBE_ENV, "1");
-        }
-        Scenario::NegativeInventoryStaleState | Scenario::NegativeInventoryInvalidClick => {
-            let negative_probe = match scenario {
-                Scenario::NegativeInventoryStaleState => "inventory_stale_state",
-                Scenario::NegativeInventoryInvalidClick => "inventory_invalid_click",
-                _ => "",
-            };
-            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
-                .env("MC_COMPAT_INVENTORY_PROBE", "1")
-                .env("MC_COMPAT_NEGATIVE_PROBE", negative_probe);
-        }
-        Scenario::NegativeCustomPayload => {
-            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
-                .env("MC_COMPAT_NEGATIVE_PROBE", "custom_payload_malformed");
-        }
-        Scenario::SurvivalBreakPlacePickup => {
-            cmd.env("MC_COMPAT_SURVIVAL_PROBE", "1");
-        }
-        Scenario::SurvivalChestPersistence => {
-            cmd.env("MC_COMPAT_SURVIVAL_CHEST_PROBE", "1").env(
-                "MC_COMPAT_SURVIVAL_CHEST_SESSION",
-                (client_index + 1).to_string(),
-            );
-        }
-        Scenario::SurvivalCraftingTable => {
-            cmd.env("MC_COMPAT_SURVIVAL_CRAFTING_PROBE", "1");
-        }
-        Scenario::SurvivalFurnacePersistence => {
-            cmd.env("MC_COMPAT_SURVIVAL_FURNACE_PROBE", "1").env(
-                "MC_COMPAT_SURVIVAL_FURNACE_SESSION",
-                (client_index + 1).to_string(),
-            );
-        }
-        Scenario::SurvivalHungerFood => {
-            cmd.env(SURVIVAL_HUNGER_FOOD_PROBE_ENV, "1");
-        }
-        Scenario::SurvivalMobDrop => {
-            cmd.env(SURVIVAL_MOB_DROP_PROBE_ENV, "1");
-        }
-        Scenario::SurvivalRedstoneToggle => {
-            cmd.env(SURVIVAL_REDSTONE_TOGGLE_PROBE_ENV, "1");
-        }
-        Scenario::SurvivalWorldPersistenceRestart | Scenario::SurvivalCrashRecoveryParity => {
-            cmd.env(SURVIVAL_WORLD_PERSISTENCE_PROBE_ENV, "1").env(
-                SURVIVAL_WORLD_PERSISTENCE_SESSION_ENV,
-                (client_index + 1).to_string(),
-            );
-        }
-        Scenario::SurvivalBlockEntityPersistenceParity => {
-            cmd.env(SURVIVAL_BLOCK_ENTITY_PROBE_ENV, "1").env(
-                SURVIVAL_BLOCK_ENTITY_SESSION_ENV,
-                (client_index + 1).to_string(),
-            );
-        }
-        Scenario::SurvivalBiomeDimensionState => {
-            cmd.env(SURVIVAL_BIOME_DIMENSION_PROBE_ENV, "1");
-        }
-        Scenario::McpControlledSmoke => {
-            cmd.env("MC_COMPAT_MCP_CONTROLLED_SMOKE", "1");
-        }
-        Scenario::EquipmentUpdateObservation | Scenario::EquipmentSlotItemMatrixExpansion => {
-            let team = if client_index == 0 { "red" } else { "blue" };
-            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE_TEAM", team)
-                .env("MC_COMPAT_EQUIPMENT_PROBE", "1");
-        }
-        Scenario::ProjectileHit | Scenario::ProjectileDamageAttribution => {
-            let (team, role) = if client_index == 0 {
-                ("red", "attacker")
-            } else {
-                ("blue", "victim")
-            };
-            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE_TEAM", team)
-                .env("MC_COMPAT_COMBAT_PROBE", "1")
-                .env("MC_COMPAT_COMBAT_PROBE_ROLE", role)
-                .env("MC_COMPAT_PROJECTILE_PROBE", "1");
-            if role == "attacker" {
-                cmd.env("MC_COMPAT_COMBAT_TARGET_USERNAME", "compatbotb");
-            }
-        }
-        Scenario::CombatDamage
-        | Scenario::CombatKnockback
-        | Scenario::VanillaCombatReferenceParity
-        | Scenario::VanillaCombatArmorReferenceParity
-        | Scenario::ArmorEquipmentMitigation
-        | Scenario::ArmorLoadoutEnchantmentStatusMatrix
-        | Scenario::FlagCarrierDeathReturn => {
-            let (team, role) = if client_index == 0 {
-                ("red", "attacker")
-            } else {
-                ("blue", "victim")
-            };
-            let direct_vanilla_reference = uses_vanilla_combat_reference_probe(scenario);
-            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
-                .env("MC_COMPAT_COMBAT_PROBE", "1")
-                .env("MC_COMPAT_COMBAT_PROBE_ROLE", role);
-            if !direct_vanilla_reference {
-                cmd.env("MC_COMPAT_TEAM_PROBE", "1")
-                    .env("MC_COMPAT_TEAM_PROBE_TEAM", team);
-            }
-            if role == "attacker" {
-                cmd.env("MC_COMPAT_COMBAT_TARGET_USERNAME", "compatbotb");
-            }
-            if direct_vanilla_reference {
-                cmd.env(VANILLA_COMBAT_REFERENCE_PROBE_ENV, "1")
-                    .env("MC_COMPAT_STATIONARY_COMBAT_PROBE", "1");
-            }
-            if scenario == Scenario::VanillaCombatArmorReferenceParity {
-                cmd.env(VANILLA_COMBAT_ARMOR_REFERENCE_PROBE_ENV, "1");
-            }
-            if uses_armor_mitigation_probe(scenario) {
-                cmd.env("MC_COMPAT_ARMOR_MITIGATION_PROBE", "1");
-                if role == "victim" {
-                    cmd.env("MC_COMPAT_INVENTORY_PROBE", "1");
-                }
-            }
-            if scenario == Scenario::FlagCarrierDeathReturn {
-                cmd.env("MC_COMPAT_FLAG_CARRIER_DEATH_PROBE", "1")
-                    .env("MC_COMPAT_RESPAWN_PROBE", "1");
-                if client_index == 1 {
-                    cmd.env("MC_COMPAT_FLAG_PROBE", "1")
-                        .env("MC_COMPAT_FLAG_PROBE_TEAM", "blue")
-                        .env("MC_COMPAT_FLAG_PROBE_PICKUP_ONLY", "1")
-                        .env("MC_COMPAT_FLAG_PROBE_FIRST_TICK", "760")
-                        .env("MC_COMPAT_FLAG_PROBE_REPEAT", "1");
-                }
-            }
-        }
-        Scenario::MultiClientLoadScore => {
-            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1");
-            if client_index == 0 {
-                cmd.env("MC_COMPAT_TEAM_PROBE", "1")
-                    .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
-                    .env("MC_COMPAT_FLAG_PROBE", "1")
-                    .env("MC_COMPAT_FLAG_PROBE_REPEAT", "1");
-            }
-        }
-        Scenario::NegativeCtfWrongScore => {
-            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
-                .env("MC_COMPAT_FLAG_PROBE", "1")
-                .env("MC_COMPAT_FLAG_PROBE_TEAM", "blue")
-                .env("MC_COMPAT_FLAG_PROBE_PICKUP_ONLY", "1")
-                .env("MC_COMPAT_NEGATIVE_PROBE", "ctf_wrong_score");
-        }
-        Scenario::CtfInvalidPickupOwnership => {
-            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
-                .env("MC_COMPAT_FLAG_PROBE", "1")
-                .env("MC_COMPAT_FLAG_PROBE_TEAM", "blue")
-                .env("MC_COMPAT_FLAG_PROBE_PICKUP_ONLY", "1")
-                .env("MC_COMPAT_NEGATIVE_PROBE", "ctf_invalid_pickup_ownership");
-        }
-        Scenario::CtfInvalidReturnDrop => {
-            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
-                .env("MC_COMPAT_FLAG_PROBE", "1")
-                .env("MC_COMPAT_FLAG_PROBE_TEAM", "blue")
-                .env("MC_COMPAT_FLAG_PROBE_PICKUP_ONLY", "1")
-                .env("MC_COMPAT_NEGATIVE_PROBE", "ctf_invalid_return_drop");
-        }
-        Scenario::CtfScoreLimitWinCondition => {
-            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
-                .env("MC_COMPAT_FLAG_PROBE", "1")
-                .env("MC_COMPAT_FLAG_PROBE_TEAM", "red")
-                .env("MC_COMPAT_FLAG_PROBE_REPEAT", "1")
-                .env("MC_COMPAT_SCORE_LIMIT_PROBE", "1");
-        }
-        Scenario::CtfSimultaneousPickupCaptureRace => {
-            let first_tick = if client_index == 0 {
-                CTF_RACE_REJECT_CLIENT_FIRST_TICK
-            } else {
-                CTF_RACE_ACCEPT_CLIENT_FIRST_TICK
-            };
-            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE_TEAM", "red")
-                .env("MC_COMPAT_FLAG_PROBE", "1")
-                .env("MC_COMPAT_FLAG_PROBE_TEAM", "red")
-                .env("MC_COMPAT_FLAG_PROBE_REPEAT", "1")
-                .env("MC_COMPAT_FLAG_PROBE_FIRST_TICK", first_tick.to_string());
-        }
-        Scenario::CtfSpawnTeamBalanceReset => {
-            let team = if client_index == 0 { "red" } else { "blue" };
-            cmd.env("MC_COMPAT_ACTIVE_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE", "1")
-                .env("MC_COMPAT_TEAM_PROBE_TEAM", team);
-            if client_index == 0 {
-                cmd.env("MC_COMPAT_FLAG_PROBE", "1")
-                    .env("MC_COMPAT_FLAG_PROBE_TEAM", "red")
-                    .env("MC_COMPAT_FLAG_PROBE_REPEAT", "1");
-            }
-        }
-    }
+    scenario_behavior(scenario).apply_client_probe_env(cmd, client_index, server_backend);
 }
 
 fn planned_client_usernames(cfg: &Config) -> Vec<String> {
-    if matches!(
-        cfg.scenario,
-        Scenario::MultiClientLoadScore
-            | Scenario::CombatDamage
-            | Scenario::CombatKnockback
-            | Scenario::VanillaCombatReferenceParity
-            | Scenario::VanillaCombatArmorReferenceParity
-            | Scenario::ArmorEquipmentMitigation
-            | Scenario::ArmorLoadoutEnchantmentStatusMatrix
-            | Scenario::EquipmentUpdateObservation
-            | Scenario::EquipmentSlotItemMatrixExpansion
-            | Scenario::ProjectileHit
-            | Scenario::ProjectileDamageAttribution
-            | Scenario::FlagCarrierDeathReturn
-            | Scenario::CtfSimultaneousPickupCaptureRace
-            | Scenario::CtfSpawnTeamBalanceReset
-    ) {
+    if scenario_behavior(cfg.scenario).run_strategy() == ScenarioRunStrategy::MultiClient {
         vec![
             format!("{}a", cfg.client_username),
             format!("{}b", cfg.client_username),
@@ -6778,7 +7745,7 @@ fn read_server_scenario_evidence(
         correlation_log.push('\n');
         correlation_log.push_str(&run.output);
     }
-    if cfg.scenario == Scenario::SurvivalCrashRecoveryParity {
+    if scenario_behavior(cfg.scenario).uses_crash_recovery_restart() {
         let derived = derive_survival_crash_recovery_server_milestones(&correlation_log);
         correlation_log.push_str(&derived);
     }
@@ -6861,41 +7828,7 @@ fn read_paper_log(cfg: &Config) -> Result<String, String> {
 }
 
 fn requires_server_correlation(cfg: &Config) -> bool {
-    matches!(
-        cfg.scenario,
-        Scenario::FlagScoreRepeat
-            | Scenario::ReconnectFlagScore
-            | Scenario::MultiClientLoadScore
-            | Scenario::InventoryInteraction
-            | Scenario::InventoryStackSplitMerge
-            | Scenario::InventoryDragTransactions
-            | Scenario::SurvivalBreakPlacePickup
-            | Scenario::SurvivalChestPersistence
-            | Scenario::SurvivalCraftingTable
-            | Scenario::SurvivalFurnacePersistence
-            | Scenario::SurvivalHungerFood
-            | Scenario::SurvivalMobDrop
-            | Scenario::SurvivalRedstoneToggle
-            | Scenario::SurvivalWorldPersistenceRestart
-            | Scenario::SurvivalCrashRecoveryParity
-            | Scenario::SurvivalBlockEntityPersistenceParity
-            | Scenario::CombatDamage
-            | Scenario::CombatKnockback
-            | Scenario::VanillaCombatReferenceParity
-            | Scenario::VanillaCombatArmorReferenceParity
-            | Scenario::ArmorEquipmentMitigation
-            | Scenario::ArmorLoadoutEnchantmentStatusMatrix
-            | Scenario::EquipmentUpdateObservation
-            | Scenario::EquipmentSlotItemMatrixExpansion
-            | Scenario::ProjectileHit
-            | Scenario::ProjectileDamageAttribution
-            | Scenario::FlagCarrierDeathReturn
-            | Scenario::CtfInvalidPickupOwnership
-            | Scenario::CtfInvalidReturnDrop
-            | Scenario::CtfScoreLimitWinCondition
-            | Scenario::CtfSimultaneousPickupCaptureRace
-            | Scenario::CtfSpawnTeamBalanceReset
-    )
+    scenario_behavior(cfg.scenario).requires_server_correlation()
 }
 
 fn write_smoke_receipt(
@@ -7438,7 +8371,7 @@ fn evaluate_mcp_control_receipt(
     child_revision: &GitRevisionEvidence,
     client: Option<&ClientRunEvidence>,
 ) -> McpControlReceiptEvidence {
-    let selected = cfg.scenario == Scenario::McpControlledSmoke;
+    let selected = scenario_behavior(cfg.scenario).is_mcp_controlled_smoke();
     if !selected {
         return McpControlReceiptEvidence {
             selected,
@@ -7612,7 +8545,7 @@ fn evaluate_frame_artifacts_receipt(
     }
     FrameArtifactsReceiptEvidence {
         selected: false,
-        capture_requested: cfg.scenario == Scenario::McpControlledSmoke,
+        capture_requested: scenario_behavior(cfg.scenario).is_mcp_controlled_smoke(),
         artifact_count: 0,
         artifacts: Vec::new(),
         missing_digests: Vec::new(),
@@ -7715,7 +8648,7 @@ fn smoke_receipt_json_with_typed_event_oracle(
     let fallback_projectile_damage_causality =
         evaluate_projectile_damage_causality(&[], "", &cfg.client_username);
     let selected_projectile_damage_causality =
-        if cfg.scenario == Scenario::ProjectileDamageAttribution {
+        if scenario_behavior(cfg.scenario).uses_dynamic_projectile_health() {
             Some(projectile_damage_causality.unwrap_or(&fallback_projectile_damage_causality))
         } else {
             None
@@ -7724,7 +8657,7 @@ fn smoke_receipt_json_with_typed_event_oracle(
         .map(|evidence| evidence.passed)
         .unwrap_or(true);
     let projectile_damage_causality_json = projectile_damage_causality_json(
-        cfg.scenario == Scenario::ProjectileDamageAttribution,
+        scenario_behavior(cfg.scenario).uses_dynamic_projectile_health(),
         selected_projectile_damage_causality,
     );
     let scenario_required: Vec<&str> = scenario_required_milestones(cfg.scenario)
@@ -9382,46 +10315,7 @@ mod tests {
         dir
     }
 
-    const ALL_TEST_SCENARIOS: &[Scenario] = &[
-        Scenario::Smoke,
-        Scenario::CompatBotProbe,
-        Scenario::FlagScoreRepeat,
-        Scenario::BlueFlagScore,
-        Scenario::InventoryInteraction,
-        Scenario::InventoryStackSplitMerge,
-        Scenario::InventoryDragTransactions,
-        Scenario::SurvivalBreakPlacePickup,
-        Scenario::SurvivalChestPersistence,
-        Scenario::SurvivalCraftingTable,
-        Scenario::SurvivalFurnacePersistence,
-        Scenario::SurvivalHungerFood,
-        Scenario::SurvivalMobDrop,
-        Scenario::SurvivalBlockEntityPersistenceParity,
-        Scenario::SurvivalBiomeDimensionState,
-        Scenario::McpControlledSmoke,
-        Scenario::CombatDamage,
-        Scenario::CombatKnockback,
-        Scenario::VanillaCombatReferenceParity,
-        Scenario::VanillaCombatArmorReferenceParity,
-        Scenario::ArmorEquipmentMitigation,
-        Scenario::ArmorLoadoutEnchantmentStatusMatrix,
-        Scenario::EquipmentUpdateObservation,
-        Scenario::EquipmentSlotItemMatrixExpansion,
-        Scenario::ProjectileHit,
-        Scenario::ProjectileDamageAttribution,
-        Scenario::FlagCarrierDeathReturn,
-        Scenario::ReconnectFlagState,
-        Scenario::ReconnectFlagScore,
-        Scenario::MultiClientLoadScore,
-        Scenario::NegativeInventoryStaleState,
-        Scenario::NegativeInventoryInvalidClick,
-        Scenario::NegativeCustomPayload,
-        Scenario::NegativeReconnectRace,
-        Scenario::NegativeCtfWrongScore,
-        Scenario::CtfInvalidPickupOwnership,
-        Scenario::CtfInvalidReturnDrop,
-        Scenario::CtfScoreLimitWinCondition,
-    ];
+    const ALL_TEST_SCENARIOS: &[Scenario] = ALL_SCENARIOS;
 
     fn passing_client_lines(scenario: Scenario) -> Vec<(&'static str, String)> {
         scenario_required_milestones(scenario)
@@ -10383,6 +11277,79 @@ mod tests {
     }
 
     #[test]
+    fn static_scenario_specs_validate_all_supported_behavior() {
+        validate_static_scenario_specs(SCENARIO_SPECS).expect("static specs validate");
+        assert_eq!(SCENARIO_SPECS.len(), ALL_SCENARIOS.len());
+
+        for spec in SCENARIO_SPECS {
+            assert_eq!(parse_scenario(spec.canonical_name), Ok(spec.scenario));
+            assert_eq!(scenario_name(spec.scenario), spec.canonical_name);
+            assert_eq!(
+                scenario_required_milestones(spec.scenario),
+                spec.client_milestones
+            );
+            assert_eq!(
+                server_required_milestones(spec.scenario),
+                spec.server_milestones
+            );
+            assert_eq!(
+                scenario_forbidden_patterns(spec.scenario),
+                spec.forbidden_patterns
+            );
+            for alias in spec.aliases {
+                assert_eq!(parse_scenario(alias), Ok(spec.scenario));
+            }
+        }
+    }
+
+    #[test]
+    fn static_scenario_specs_fail_closed_for_invalid_definitions() {
+        assert!(parse_scenario("missing-scenario")
+            .unwrap_err()
+            .contains("unknown scenario: missing-scenario"));
+
+        const COMPAT_ALIAS_MISSING_LEGACY: &[&str] = &["valence-compat-bot-probe"];
+        const EMPTY_MILESTONES: &[ScenarioMilestone] = &[];
+        const EMPTY_FORBIDDEN_PATTERNS: &[ScenarioMilestone] = &[];
+
+        let compat_index = scenario_index(Scenario::CompatBotProbe);
+        let projectile_index = scenario_index(Scenario::ProjectileDamageAttribution);
+        let smoke_index = scenario_index(Scenario::Smoke);
+
+        let mut missing_alias = SCENARIO_SPECS.to_vec();
+        missing_alias[compat_index].aliases = COMPAT_ALIAS_MISSING_LEGACY;
+        let err = validate_static_scenario_specs(&missing_alias).unwrap_err();
+        assert!(err.contains("aliases drift"), "{err}");
+
+        let mut duplicated_name = SCENARIO_SPECS.to_vec();
+        duplicated_name[compat_index].canonical_name = "smoke";
+        let err = validate_static_scenario_specs(&duplicated_name).unwrap_err();
+        assert!(err.contains("duplicated canonical name smoke"), "{err}");
+
+        let mut missing_milestones = SCENARIO_SPECS.to_vec();
+        missing_milestones[smoke_index].client_milestones = EMPTY_MILESTONES;
+        let err = validate_static_scenario_specs(&missing_milestones).unwrap_err();
+        assert!(err.contains("missing client milestones"), "{err}");
+
+        let mut missing_forbidden = SCENARIO_SPECS.to_vec();
+        missing_forbidden[smoke_index].forbidden_patterns = EMPTY_FORBIDDEN_PATTERNS;
+        let err = validate_static_scenario_specs(&missing_forbidden).unwrap_err();
+        assert!(err.contains("missing forbidden patterns"), "{err}");
+
+        let mut missing_hook = SCENARIO_SPECS.to_vec();
+        missing_hook[projectile_index].behavior = ScenarioBehaviorKind::Default;
+        let err = validate_static_scenario_specs(&missing_hook).unwrap_err();
+        assert!(err.contains("missing projectile damage hook"), "{err}");
+    }
+
+    fn scenario_index(scenario: Scenario) -> usize {
+        SCENARIO_SPECS
+            .iter()
+            .position(|spec| spec.scenario == scenario)
+            .expect("scenario index exists")
+    }
+
+    #[test]
     fn evidence_matchers_cover_supported_positive_cases() {
         let corpus = EvidenceCorpus::new(
             "Detected server protocol version\nCompatBotA joined\nSCOREBOARD flag update\nupdate_health health=17.0\n",
@@ -10484,10 +11451,12 @@ mod tests {
             );
 
             for (milestone, _) in &lines {
-                let mutated_output = if *milestone == "server_username_seen" {
-                    output_from_lines(&lines).replace("compatbot", "otherbot")
-                } else {
-                    output_without_line(&lines, milestone)
+                let full_output = output_from_lines(&lines);
+                let mutated_output = match *milestone {
+                    "server_username_seen" => full_output.replace("compatbot", "otherbot"),
+                    "server_client_a_seen" => full_output.replace("compatbota", "otherbota"),
+                    "server_client_b_seen" => full_output.replace("compatbotb", "otherbotb"),
+                    _ => output_without_line(&lines, milestone),
                 };
                 let mutated = evaluate_server_scenario(*scenario, &mutated_output, "compatbot");
                 assert!(

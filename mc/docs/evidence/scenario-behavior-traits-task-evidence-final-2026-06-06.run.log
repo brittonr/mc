@@ -1,0 +1,16 @@
+# scenario behavior traits final task-evidence check
+command=nix build mc-compat-cairn-task-evidence
+warning: error: unable to download 'http://100.100.103.95:5000/wymh3by4j8i2j6n5y47fvnrp76j4q02q.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 254 ms
+warning: error: unable to download 'http://100.100.103.95:5000/wymh3by4j8i2j6n5y47fvnrp76j4q02q.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 544 ms
+warning: error: unable to download 'http://100.100.103.95:5000/wymh3by4j8i2j6n5y47fvnrp76j4q02q.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1065 ms
+warning: error: unable to download 'http://100.100.103.95:5000/wymh3by4j8i2j6n5y47fvnrp76j4q02q.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2314 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/wymh3by4j8i2j6n5y47fvnrp76j4q02q.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/wymh3by4j8i2j6n5y47fvnrp76j4q02q.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+this derivation will be built:
+  /nix/store/ilb1xx2y2dbrvlmkcfhhsghkaaxb3igp-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/ilb1xx2y2dbrvlmkcfhhsghkaaxb3igp-mc-compat-cairn-task-evidence.drv'...
+exit_status=0

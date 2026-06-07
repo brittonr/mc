@@ -3843,7 +3843,6 @@ r[mc_compatibility.block_entity_sign_packet_family.validation.log]
 - WHEN the change is archived
 - THEN repo-local evidence logs record checker self-tests, any runner/fixture checks, packet inventory or row contract checks, acceptance/current-bundle checks, evidence manifest check, task-evidence gate, Cairn proposal/design/tasks gates, and Cairn validation.
 
-
 ### Requirement: Block-entity update breadth contract
 
 r[mc_compatibility.block_entity_update_breadth_promotion.contract] The `block-entity-update-breadth` row MUST define a bounded non-sign block-entity promotion contract before coverage is claimed.
@@ -3919,7 +3918,6 @@ r[mc_compatibility.block_entity_update_breadth_promotion.validation.log]
 - GIVEN the non-sign block-entity row is completed
 - WHEN the change is archived
 - THEN repo-local evidence logs record checker tests, fixture/runner checks, packet inventory checks, evidence manifest check, task-evidence gate, Cairn gates, and Cairn validation.
-
 
 ### Requirement: Chat/command containment contract
 
@@ -3997,7 +3995,6 @@ r[mc_compatibility.chat_command_containment_promotion.validation.log]
 - WHEN the change is archived
 - THEN repo-local evidence logs record checker tests, runner/fixture checks, packet inventory checks, evidence manifest check, task-evidence gate, Cairn gates, and Cairn validation.
 
-
 ### Requirement: Chunk biome data packet contract
 
 r[mc_compatibility.chunk_biome_data_packet_promotion.contract] The `chunk-biome-data-packet` row MUST define a bounded promotion contract before packet inventory, matrix, or current-bundle coverage is claimed.
@@ -4073,7 +4070,6 @@ r[mc_compatibility.chunk_biome_data_packet_promotion.validation.log]
 - GIVEN the chunk biome data packet row is completed
 - WHEN the change is archived
 - THEN repo-local evidence logs record checker tests, fixture or runner checks, packet inventory checks, evidence manifest check, task-evidence gate, Cairn gates, and Cairn validation.
-
 
 ### Requirement: Creative inventory action contract
 
@@ -4151,7 +4147,6 @@ r[mc_compatibility.creative_inventory_action_promotion.validation.log]
 - WHEN the change is archived
 - THEN repo-local evidence logs record checker tests, runner/fixture checks, packet inventory checks, evidence manifest check, task-evidence gate, Cairn gates, and Cairn validation.
 
-
 ### Requirement: Entity status-effect packet contract
 
 r[mc_compatibility.entity_status_effect_packets_promotion.contract] The `entity-status-effect-packets` row MUST define a bounded promotion contract before packet inventory, matrix, or current-bundle coverage is claimed.
@@ -4227,7 +4222,6 @@ r[mc_compatibility.entity_status_effect_packets_promotion.validation.log]
 - GIVEN the status-effect packet row is completed
 - WHEN the change is archived
 - THEN repo-local evidence logs record checker tests, runner/fixture checks, packet inventory checks, evidence manifest check, task-evidence gate, Cairn gates, and Cairn validation.
-
 
 ### Requirement: Recipe-book client settings contract
 
@@ -4305,7 +4299,6 @@ r[mc_compatibility.recipe_book_client_settings_promotion.validation.log]
 - WHEN the change is archived
 - THEN repo-local evidence logs record checker tests, runner/fixture checks, packet inventory checks, evidence manifest check, task-evidence gate, Cairn gates, and Cairn validation.
 
-
 ### Requirement: Resource-pack status contract
 
 r[mc_compatibility.resource_pack_status_promotion.contract] The `resource-pack-status` row MUST define a bounded local promotion contract before packet inventory, matrix, or current-bundle coverage is claimed.
@@ -4381,7 +4374,6 @@ r[mc_compatibility.resource_pack_status_promotion.validation.log]
 - GIVEN the resource-pack status row is completed
 - WHEN the change is archived
 - THEN repo-local evidence logs record checker tests, runner/fixture checks, packet inventory checks, evidence manifest check, task-evidence gate, Cairn gates, and Cairn validation.
-
 
 ### Requirement: Sign editor open/update contract
 

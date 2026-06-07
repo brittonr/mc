@@ -1,0 +1,83 @@
+# scenario behavior traits Cairn gates
+command=nix run --no-update-lock-file .#cairn -- gate proposal introduce-scenario-behavior-traits --root .
+{
+  "change": "introduce-scenario-behavior-traits",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "9c244234dd97ac670d08dfcb587dc6394c797e80f7c7c1e2e8783b320e88a2cf",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "906c0f2bb918c377af0314f327a354f9d21d689390d77ccd874b737dce639bba",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+introduce-scenario-behavior-traits_proposal_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate design introduce-scenario-behavior-traits --root .
+{
+  "change": "introduce-scenario-behavior-traits",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "028bf996edcacaa35f64dc21cc6b1607637f09479d8fd831ecbca393bbd22f8d",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "aabb09819a46bc29ba0f598ffb3229b4111a7537886d012d710a2713793132c8",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+introduce-scenario-behavior-traits_design_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate tasks introduce-scenario-behavior-traits --root .
+{
+  "change": "introduce-scenario-behavior-traits",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "7fc6768f154c760305b7660a0d5076a5762a76fb36cd83af4366983e35da2f97",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "c656bdd7febe1c4501794faa3da155784786206234f07ae39040f133d1398368",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+introduce-scenario-behavior-traits_tasks_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+cairn_validate_exit_status=0
+exit_status=0

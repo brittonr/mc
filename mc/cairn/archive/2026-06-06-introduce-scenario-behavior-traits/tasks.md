@@ -1,0 +1,14 @@
+# Tasks
+
+- [x] [serial] Define the `ScenarioBehavior` contract, static `ScenarioSpec` shape, stable `Scenario` identity, alias policy, and no-receipt-schema-change scope. r[mc_compatibility.scenario_behavior_traits.contract]
+  - Evidence: `docs/evidence/scenario-behavior-traits-2026-06-06.md` and `docs/evidence/scenario-behavior-traits-focused-checks-2026-06-06.run.log`; BLAKE3 manifest `docs/evidence/scenario-behavior-traits-2026-06-06.b3`.
+- [x] [depends:contract] Move simple scenario names, aliases, client milestones, server milestones, and forbidden patterns into static specs with explicit exceptional-hook extension points. r[mc_compatibility.scenario_behavior_traits.specs]
+  - Evidence: `docs/evidence/scenario-behavior-traits-2026-06-06.md` and `docs/evidence/scenario-behavior-traits-focused-checks-2026-06-06.run.log`; BLAKE3 manifest `docs/evidence/scenario-behavior-traits-2026-06-06.b3`.
+- [x] [depends:specs] Implement trait-backed exceptional hooks for dynamic projectile health, MCP control, restart/persistence enrichment, multi-client expectations, and probe environment setup where needed. r[mc_compatibility.scenario_behavior_traits.hooks]
+  - Evidence: `docs/evidence/scenario-behavior-traits-2026-06-06.md` and `docs/evidence/scenario-behavior-traits-focused-checks-2026-06-06.run.log`; BLAKE3 manifest `docs/evidence/scenario-behavior-traits-2026-06-06.b3`.
+- [x] [depends:hooks] Replace large scenario matches with spec/behavior lookups while preserving CLI parsing, receipt names, manifest surfaces, and runner output. r[mc_compatibility.scenario_behavior_traits.migration]
+  - Evidence: `docs/evidence/scenario-behavior-traits-2026-06-06.md` and `docs/evidence/scenario-behavior-traits-focused-checks-2026-06-06.run.log`; BLAKE3 manifest `docs/evidence/scenario-behavior-traits-2026-06-06.b3`.
+- [x] [depends:migration] Add positive parity tests for every existing scenario and negative tests for unknown names, missing aliases, missing milestones, duplicated canonical names, and unsupported hook fallbacks. r[mc_compatibility.scenario_behavior_traits.tests]
+  - Evidence: `docs/evidence/scenario-behavior-traits-2026-06-06.md` and `docs/evidence/scenario-behavior-traits-focused-checks-2026-06-06.run.log`; BLAKE3 manifest `docs/evidence/scenario-behavior-traits-2026-06-06.b3`.
+- [x] [depends:tests] Run runner tests, scenario manifest checks, relevant evidence checkers, Cairn gates, and Cairn validation with reviewable logs. r[mc_compatibility.scenario_behavior_traits.validation]
+  - Evidence: `docs/evidence/scenario-behavior-traits-focused-checks-2026-06-06.run.log`, `docs/evidence/scenario-behavior-traits-cairn-gates-2026-06-06.run.log`, and `docs/evidence/scenario-behavior-traits-evidence-checks-2026-06-06.run.log`; BLAKE3 manifest `docs/evidence/scenario-behavior-traits-2026-06-06.b3`.

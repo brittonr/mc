@@ -1,8 +1,0 @@
-# Tasks
-
-- [ ] [serial] Define the `ScenarioBehavior` contract, static `ScenarioSpec` shape, stable `Scenario` identity, alias policy, and no-receipt-schema-change scope. r[mc_compatibility.scenario_behavior_traits.contract]
-- [ ] [depends:contract] Move simple scenario names, aliases, client milestones, server milestones, and forbidden patterns into static specs with explicit exceptional-hook extension points. r[mc_compatibility.scenario_behavior_traits.specs]
-- [ ] [depends:specs] Implement trait-backed exceptional hooks for dynamic projectile health, MCP control, restart/persistence enrichment, multi-client expectations, and probe environment setup where needed. r[mc_compatibility.scenario_behavior_traits.hooks]
-- [ ] [depends:hooks] Replace large scenario matches with spec/behavior lookups while preserving CLI parsing, receipt names, manifest surfaces, and runner output. r[mc_compatibility.scenario_behavior_traits.migration]
-- [ ] [depends:migration] Add positive parity tests for every existing scenario and negative tests for unknown names, missing aliases, missing milestones, duplicated canonical names, and unsupported hook fallbacks. r[mc_compatibility.scenario_behavior_traits.tests]
-- [ ] [depends:tests] Run runner tests, scenario manifest checks, relevant evidence checkers, Cairn gates, and Cairn validation with reviewable logs. r[mc_compatibility.scenario_behavior_traits.validation]

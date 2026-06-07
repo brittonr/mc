@@ -1,0 +1,36 @@
+# scenario behavior traits focused checks
+command=nix build mc-compat-runner mc-compat-scenario-manifest mc-compat-dry-run mc-compat-multi-client-scenario-dry-run
+warning: error: unable to download 'http://100.100.103.95:5000/1mryqx0lx85f885yx8kwiplds4kr675g.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 301 ms
+warning: error: unable to download 'http://100.100.103.95:5000/27zp47vb46gw4fyyscvnsxni0k73n155.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 261 ms
+warning: error: unable to download 'http://100.100.103.95:5000/92fnwkpwmv0jryg4jp2b23y3sd8ap9w2.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 305 ms
+warning: error: unable to download 'http://100.100.103.95:5000/27zp47vb46gw4fyyscvnsxni0k73n155.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 514 ms
+warning: error: unable to download 'http://100.100.103.95:5000/1mryqx0lx85f885yx8kwiplds4kr675g.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 690 ms
+warning: error: unable to download 'http://100.100.103.95:5000/92fnwkpwmv0jryg4jp2b23y3sd8ap9w2.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 543 ms
+warning: error: unable to download 'http://100.100.103.95:5000/27zp47vb46gw4fyyscvnsxni0k73n155.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1359 ms
+warning: error: unable to download 'http://100.100.103.95:5000/92fnwkpwmv0jryg4jp2b23y3sd8ap9w2.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 1249 ms
+warning: error: unable to download 'http://100.100.103.95:5000/1mryqx0lx85f885yx8kwiplds4kr675g.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1155 ms
+warning: error: unable to download 'http://100.100.103.95:5000/92fnwkpwmv0jryg4jp2b23y3sd8ap9w2.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2282 ms
+warning: error: unable to download 'http://100.100.103.95:5000/27zp47vb46gw4fyyscvnsxni0k73n155.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2331 ms
+warning: error: unable to download 'http://100.100.103.95:5000/1mryqx0lx85f885yx8kwiplds4kr675g.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2317 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/92fnwkpwmv0jryg4jp2b23y3sd8ap9w2.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/92fnwkpwmv0jryg4jp2b23y3sd8ap9w2.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/1mryqx0lx85f885yx8kwiplds4kr675g.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/1mryqx0lx85f885yx8kwiplds4kr675g.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/27zp47vb46gw4fyyscvnsxni0k73n155.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/27zp47vb46gw4fyyscvnsxni0k73n155.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+these 3 derivations will be built:
+  /nix/store/3ql5y8ml4b6m3chmm98x657g76vdp4zc-mc-compat-dry-run.drv
+  /nix/store/55dj0iswi0pc58bkra90asaba5lp8md9-mc-compat-multi-client-scenario-dry-run.drv
+  /nix/store/gvx2mnd2hcfqz579laq8p4xy6m4cjp7h-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/3ql5y8ml4b6m3chmm98x657g76vdp4zc-mc-compat-dry-run.drv'...
+building '/nix/store/55dj0iswi0pc58bkra90asaba5lp8md9-mc-compat-multi-client-scenario-dry-run.drv'...
+building '/nix/store/gvx2mnd2hcfqz579laq8p4xy6m4cjp7h-mc-compat-scenario-manifest.drv'...
+exit_status=0

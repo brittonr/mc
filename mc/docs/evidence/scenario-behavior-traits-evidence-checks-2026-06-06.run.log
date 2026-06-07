@@ -1,0 +1,26 @@
+# scenario behavior traits evidence checks
+command=nix build mc-compat-evidence-manifests mc-compat-cairn-task-evidence
+warning: error: unable to download 'http://100.100.103.95:5000/skrg7ydn3jy025izjsnqqrx4j1hyk3db.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 251 ms
+warning: error: unable to download 'http://100.100.103.95:5000/kgzv90d3x71h70fyk0xdibxpwsd1qwv5.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 314 ms
+warning: error: unable to download 'http://100.100.103.95:5000/skrg7ydn3jy025izjsnqqrx4j1hyk3db.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 686 ms
+warning: error: unable to download 'http://100.100.103.95:5000/kgzv90d3x71h70fyk0xdibxpwsd1qwv5.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 618 ms
+warning: error: unable to download 'http://100.100.103.95:5000/kgzv90d3x71h70fyk0xdibxpwsd1qwv5.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1387 ms
+warning: error: unable to download 'http://100.100.103.95:5000/skrg7ydn3jy025izjsnqqrx4j1hyk3db.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1168 ms
+warning: error: unable to download 'http://100.100.103.95:5000/skrg7ydn3jy025izjsnqqrx4j1hyk3db.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2783 ms
+warning: error: unable to download 'http://100.100.103.95:5000/kgzv90d3x71h70fyk0xdibxpwsd1qwv5.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2291 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/kgzv90d3x71h70fyk0xdibxpwsd1qwv5.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/kgzv90d3x71h70fyk0xdibxpwsd1qwv5.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/skrg7ydn3jy025izjsnqqrx4j1hyk3db.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/skrg7ydn3jy025izjsnqqrx4j1hyk3db.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+these 2 derivations will be built:
+  /nix/store/wpyxk4qih7x7aiv2hw7kq834fg4jc4hs-mc-compat-cairn-task-evidence.drv
+  /nix/store/z6l4cgpx4mvh130bs4yv5b722cy9nwsd-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/wpyxk4qih7x7aiv2hw7kq834fg4jc4hs-mc-compat-cairn-task-evidence.drv'...
+building '/nix/store/z6l4cgpx4mvh130bs4yv5b722cy9nwsd-mc-compat-evidence-manifests.drv'...
+exit_status=0

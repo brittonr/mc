@@ -1,0 +1,77 @@
+# scenario behavior traits Cairn sync
+command=nix run --no-update-lock-file .#cairn -- sync introduce-scenario-behavior-traits --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/introduce-scenario-behavior-traits/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/introduce-scenario-behavior-traits/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "introduce-scenario-behavior-traits",
+  "delta_specs": [
+    "./cairn/changes/introduce-scenario-behavior-traits/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "c0af36d015709a227707b0b199946272b24294788c35430c11e82d20cbfbed59",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "a7417278cc7e386b6db5183dc13d92c6517b996c374daef4a3c72e1398f0fdfa",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "44c99a1665c8338fbcc2418de06efaff2c4bcb201dd12eee2e5e1963707eebbb"
+}
+sync_dry_run_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- sync introduce-scenario-behavior-traits --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/introduce-scenario-behavior-traits/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/introduce-scenario-behavior-traits/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "introduce-scenario-behavior-traits",
+  "delta_specs": [
+    "./cairn/changes/introduce-scenario-behavior-traits/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "c0af36d015709a227707b0b199946272b24294788c35430c11e82d20cbfbed59",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "d6bef209868e942a97e202cde210e5b2d038a170d36c3243959ee84c6d7058e8",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "0c038a2fef828dd7ac73b44d6beb90356de95c0fe5fab7055002e1e71114feee"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "6356ad9d9453c5e146a90aaae0c54881665f4dab283fa7b0b4982ef7734dc07b",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "c1f2e9d52315a24e805d0fecd797d43e636693c93f75bbe9f7f5d1e4f4a4ef2a"
+    },
+    "kind": "sync",
+    "manifest_hash": "196fe46deb1ff1ecd0c042348da648d529aa76bfc063757e2c1453121601b27c"
+  },
+  "plan_hash": "c7430bf0d776e4f80f1ebdf35c4c260aabb88ee935e4494b52ae08fdbb181999",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "89e0f47eb066e0dd02964d36d3a1f42a219abb70361f92a9820bc02546e3f759"
+}
+sync_execute_exit_status=0
+exit_status=0
