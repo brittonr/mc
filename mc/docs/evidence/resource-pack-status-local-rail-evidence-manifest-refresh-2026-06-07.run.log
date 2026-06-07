@@ -1,0 +1,5 @@
+## resource_pack_status_local_rail_evidence_manifest_refresh
+command=nix run --no-update-lock-file .#evidence-manifest-refresh -- --refresh
+/home/brittonr/git/mc
+evidence manifest refresh ok: mode=refresh; passes=2; manifests=358; entries=2327; current=2327; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=2; manifest_writes=14
+exit_status=0

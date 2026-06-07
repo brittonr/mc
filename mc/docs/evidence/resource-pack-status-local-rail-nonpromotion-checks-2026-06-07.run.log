@@ -1,0 +1,26 @@
+## resource_pack_status_local_rail_nonpromotion_checks
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check .#checks.x86_64-linux.mc-compat-acceptance-matrix .#checks.x86_64-linux.mc-compat-current-evidence-bundle --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/rxijb128ma8j9w7q8qgx8s4z4vlqlf7p.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 342 ms
+warning: error: unable to download 'http://100.100.103.95:5000/nglrplg3jirryb2rnc3nz0ap6519p9r9.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 300 ms
+warning: error: unable to download 'http://100.100.103.95:5000/nglrplg3jirryb2rnc3nz0ap6519p9r9.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 606 ms
+warning: error: unable to download 'http://100.100.103.95:5000/rxijb128ma8j9w7q8qgx8s4z4vlqlf7p.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 706 ms
+warning: error: unable to download 'http://100.100.103.95:5000/nglrplg3jirryb2rnc3nz0ap6519p9r9.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 1373 ms
+warning: error: unable to download 'http://100.100.103.95:5000/rxijb128ma8j9w7q8qgx8s4z4vlqlf7p.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1087 ms
+warning: error: unable to download 'http://100.100.103.95:5000/rxijb128ma8j9w7q8qgx8s4z4vlqlf7p.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2325 ms
+warning: error: unable to download 'http://100.100.103.95:5000/nglrplg3jirryb2rnc3nz0ap6519p9r9.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 2015 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/nglrplg3jirryb2rnc3nz0ap6519p9r9.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/nglrplg3jirryb2rnc3nz0ap6519p9r9.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/rxijb128ma8j9w7q8qgx8s4z4vlqlf7p.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/rxijb128ma8j9w7q8qgx8s4z4vlqlf7p.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+these 2 derivations will be built:
+  /nix/store/8prs66lylkwa2b1kjmmqd1yv9fj8qqmg-mc-compat-current-evidence-bundle.drv
+  /nix/store/d6jrdlx46alzg12k1g5lbqrfgl214ql1-mc-compat-acceptance-matrix.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/d6jrdlx46alzg12k1g5lbqrfgl214ql1-mc-compat-acceptance-matrix.drv'...
+building '/nix/store/8prs66lylkwa2b1kjmmqd1yv9fj8qqmg-mc-compat-current-evidence-bundle.drv'...
+exit_status=0

@@ -1,0 +1,81 @@
+## resource_pack_status_local_rail_post_archive_checks
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+/home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+cairn_validate_exit_status=0
+command=nix build --no-update-lock-file focused resource-pack post-archive checks --no-link -L
+/home/brittonr/git/mc
+warning: error: unable to download 'http://100.100.103.95:5000/dxc7a88mrfqj388i1qr8x3ibjxvahrkw.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 282 ms
+warning: error: unable to download 'http://100.100.103.95:5000/r5666h93c90z38s0rdj3lklmfd9zqn84.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 253 ms
+warning: error: unable to download 'http://100.100.103.95:5000/b46v3y87346grhyrg1rrhzv1lr6ywc7k.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 351 ms
+warning: error: unable to download 'http://100.100.103.95:5000/s134hrnlcbvam2kq0j02dg7zd66lfc06.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 274 ms
+warning: error: unable to download 'http://100.100.103.95:5000/iv6xah7fs1ib0mcsls5gz6ylayk227a7.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 266 ms
+warning: error: unable to download 'http://100.100.103.95:5000/44d9srk4q4354isb98fzk0333zz05n2z.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 261 ms
+warning: error: unable to download 'http://100.100.103.95:5000/r5666h93c90z38s0rdj3lklmfd9zqn84.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 516 ms
+warning: error: unable to download 'http://100.100.103.95:5000/44d9srk4q4354isb98fzk0333zz05n2z.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 545 ms
+warning: error: unable to download 'http://100.100.103.95:5000/iv6xah7fs1ib0mcsls5gz6ylayk227a7.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 706 ms
+warning: error: unable to download 'http://100.100.103.95:5000/s134hrnlcbvam2kq0j02dg7zd66lfc06.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 611 ms
+warning: error: unable to download 'http://100.100.103.95:5000/dxc7a88mrfqj388i1qr8x3ibjxvahrkw.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 525 ms
+warning: error: unable to download 'http://100.100.103.95:5000/b46v3y87346grhyrg1rrhzv1lr6ywc7k.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 703 ms
+warning: error: unable to download 'http://100.100.103.95:5000/r5666h93c90z38s0rdj3lklmfd9zqn84.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1182 ms
+warning: error: unable to download 'http://100.100.103.95:5000/44d9srk4q4354isb98fzk0333zz05n2z.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1029 ms
+warning: error: unable to download 'http://100.100.103.95:5000/dxc7a88mrfqj388i1qr8x3ibjxvahrkw.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 1334 ms
+warning: error: unable to download 'http://100.100.103.95:5000/s134hrnlcbvam2kq0j02dg7zd66lfc06.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1061 ms
+warning: error: unable to download 'http://100.100.103.95:5000/iv6xah7fs1ib0mcsls5gz6ylayk227a7.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 1078 ms
+warning: error: unable to download 'http://100.100.103.95:5000/b46v3y87346grhyrg1rrhzv1lr6ywc7k.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 1043 ms
+warning: error: unable to download 'http://100.100.103.95:5000/44d9srk4q4354isb98fzk0333zz05n2z.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2453 ms
+warning: error: unable to download 'http://100.100.103.95:5000/s134hrnlcbvam2kq0j02dg7zd66lfc06.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2545 ms
+warning: error: unable to download 'http://100.100.103.95:5000/r5666h93c90z38s0rdj3lklmfd9zqn84.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2013 ms
+warning: error: unable to download 'http://100.100.103.95:5000/iv6xah7fs1ib0mcsls5gz6ylayk227a7.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 2073 ms
+warning: error: unable to download 'http://100.100.103.95:5000/b46v3y87346grhyrg1rrhzv1lr6ywc7k.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2533 ms
+warning: error: unable to download 'http://100.100.103.95:5000/dxc7a88mrfqj388i1qr8x3ibjxvahrkw.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 2361 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/r5666h93c90z38s0rdj3lklmfd9zqn84.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/r5666h93c90z38s0rdj3lklmfd9zqn84.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/iv6xah7fs1ib0mcsls5gz6ylayk227a7.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/iv6xah7fs1ib0mcsls5gz6ylayk227a7.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/44d9srk4q4354isb98fzk0333zz05n2z.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/44d9srk4q4354isb98fzk0333zz05n2z.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received
+error:
+       … during download of 'http://100.100.103.95:5000/s134hrnlcbvam2kq0j02dg7zd66lfc06.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/s134hrnlcbvam2kq0j02dg7zd66lfc06.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/dxc7a88mrfqj388i1qr8x3ibjxvahrkw.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/dxc7a88mrfqj388i1qr8x3ibjxvahrkw.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received
+error:
+       … during download of 'http://100.100.103.95:5000/b46v3y87346grhyrg1rrhzv1lr6ywc7k.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/b46v3y87346grhyrg1rrhzv1lr6ywc7k.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+these 6 derivations will be built:
+  /nix/store/31f60ri1x1cnphcirzxg99d1qs5cqfrs-mc-compat-scenario-manifest.drv
+  /nix/store/83hc2cqii4hjg5ng7dr8cl8pcz3fny48-mc-compat-cairn-task-evidence.drv
+  /nix/store/cn06jg1y8ydr7pbf0bcdsm43c79fw8mj-mc-compat-targeted-packet-promotions-check.drv
+  /nix/store/ffimm0krsqrvzx5d5v2ag3j8xwvy9wyp-mc-compat-evidence-manifests.drv
+  /nix/store/ix5aw3n5ymwxwwgfz75bn6a5iisb79y1-mc-compat-acceptance-matrix.drv
+  /nix/store/q885qdsxz3ng1by8b4xz7sqwcf73301x-mc-compat-current-evidence-bundle.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/ix5aw3n5ymwxwwgfz75bn6a5iisb79y1-mc-compat-acceptance-matrix.drv'...
+building '/nix/store/83hc2cqii4hjg5ng7dr8cl8pcz3fny48-mc-compat-cairn-task-evidence.drv'...
+building '/nix/store/q885qdsxz3ng1by8b4xz7sqwcf73301x-mc-compat-current-evidence-bundle.drv'...
+building '/nix/store/ffimm0krsqrvzx5d5v2ag3j8xwvy9wyp-mc-compat-evidence-manifests.drv'...
+building '/nix/store/31f60ri1x1cnphcirzxg99d1qs5cqfrs-mc-compat-scenario-manifest.drv'...
+building '/nix/store/cn06jg1y8ydr7pbf0bcdsm43c79fw8mj-mc-compat-targeted-packet-promotions-check.drv'...
+nix_checks_exit_status=0
+exit_status=0

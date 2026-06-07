@@ -198,6 +198,24 @@ pub(crate) struct CreativeInventoryLiveContract {
     pub(crate) blocker_reason: &'static str,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct ResourcePackStatusLocalContract {
+    pub(crate) scenario: &'static str,
+    pub(crate) actor: &'static str,
+    pub(crate) fixture_identity: &'static str,
+    pub(crate) offer_id: &'static str,
+    pub(crate) expected_status: &'static str,
+    pub(crate) packet_rows: &'static [&'static str],
+    pub(crate) no_external_fetch: &'static str,
+    pub(crate) redaction_policy: &'static str,
+    pub(crate) backend_path: &'static str,
+    pub(crate) client_path: &'static str,
+    pub(crate) expected_server_correlation: &'static str,
+    pub(crate) evidence_mode: &'static str,
+    pub(crate) required_nonclaims: &'static [&'static str],
+    pub(crate) blocker_reason: &'static str,
+}
+
 pub(crate) const LIVE_CAPABILITY_KIND_PROBE: &str = "targeted-packet-live-probe";
 pub(crate) const LIVE_CAPABILITY_KIND_BLOCKED: &str = "targeted-packet-live-blocker";
 pub(crate) const LIVE_EVIDENCE_MODE_OWNED_LOCAL: &str = "owned-local-live";
@@ -2280,6 +2298,37 @@ const RESOURCE_PACK_NONCLAIMS: &[&str] = &[
     "asset_download_application",
     "trust_security_validation",
 ];
+
+const RESOURCE_PACK_LOCAL_SCENARIO: &str = "mcp-controlled-smoke";
+const RESOURCE_PACK_LOCAL_ACTOR: &str = "compatbot";
+const RESOURCE_PACK_LOCAL_FIXTURE_IDENTITY: &str = "owned-local-resource-pack-offer-fixture";
+const RESOURCE_PACK_LOCAL_OFFER_ID: &str = "mc-compat-local-resource-pack";
+const RESOURCE_PACK_LOCAL_EXPECTED_STATUS: &str = "declined";
+const RESOURCE_PACK_LOCAL_NO_EXTERNAL_FETCH: &str = "true";
+const RESOURCE_PACK_LOCAL_REDACTION_POLICY: &str = "no-secrets-no-public-addresses";
+const RESOURCE_PACK_LOCAL_BACKEND_PATH: &str = "deterministic-resource-pack-offer-contract";
+const RESOURCE_PACK_LOCAL_CLIENT_PATH: &str = "stevenarella-resource-pack-status-driver-missing";
+const RESOURCE_PACK_LOCAL_SERVER_CORRELATION: &str = "resource_pack_status_declined_observed";
+const RESOURCE_PACK_LOCAL_BLOCKER_REASON: &str =
+    "no maintained live Stevenarella resource-pack status driver exists";
+
+pub(crate) const RESOURCE_PACK_STATUS_LOCAL_CONTRACT: ResourcePackStatusLocalContract =
+    ResourcePackStatusLocalContract {
+        scenario: RESOURCE_PACK_LOCAL_SCENARIO,
+        actor: RESOURCE_PACK_LOCAL_ACTOR,
+        fixture_identity: RESOURCE_PACK_LOCAL_FIXTURE_IDENTITY,
+        offer_id: RESOURCE_PACK_LOCAL_OFFER_ID,
+        expected_status: RESOURCE_PACK_LOCAL_EXPECTED_STATUS,
+        packet_rows: RESOURCE_PACK_PACKET_ROWS,
+        no_external_fetch: RESOURCE_PACK_LOCAL_NO_EXTERNAL_FETCH,
+        redaction_policy: RESOURCE_PACK_LOCAL_REDACTION_POLICY,
+        backend_path: RESOURCE_PACK_LOCAL_BACKEND_PATH,
+        client_path: RESOURCE_PACK_LOCAL_CLIENT_PATH,
+        expected_server_correlation: RESOURCE_PACK_LOCAL_SERVER_CORRELATION,
+        evidence_mode: LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER,
+        required_nonclaims: RESOURCE_PACK_NONCLAIMS,
+        blocker_reason: RESOURCE_PACK_LOCAL_BLOCKER_REASON,
+    };
 const SIGN_EDITOR_NONCLAIMS: &[&str] = &[
     "full_protocol_763_compatibility",
     "broad_minecraft_compatibility",
@@ -2370,18 +2419,16 @@ pub(crate) const SCENARIO_LIVE_CAPABILITIES: &[ScenarioLiveCapability] = &[
         blocker_reason: Some("crafting-table rail does not toggle recipe-book client settings"),
     },
     ScenarioLiveCapability {
-        scenario: "mcp-controlled-smoke",
+        scenario: RESOURCE_PACK_STATUS_LOCAL_CONTRACT.scenario,
         targeted_row: "resource-pack-status",
-        packet_rows: RESOURCE_PACK_PACKET_ROWS,
+        packet_rows: RESOURCE_PACK_STATUS_LOCAL_CONTRACT.packet_rows,
         capability_kind: LIVE_CAPABILITY_KIND_BLOCKED,
-        backend_path: "local-resource-pack-offer-rail-missing",
-        client_path: "stevenarella-resource-pack-status-candidate",
-        evidence_mode: LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER,
+        backend_path: RESOURCE_PACK_STATUS_LOCAL_CONTRACT.backend_path,
+        client_path: RESOURCE_PACK_STATUS_LOCAL_CONTRACT.client_path,
+        evidence_mode: RESOURCE_PACK_STATUS_LOCAL_CONTRACT.evidence_mode,
         required_signals: RESOURCE_PACK_SIGNALS,
-        required_nonclaims: RESOURCE_PACK_NONCLAIMS,
-        blocker_reason: Some(
-            "no owned-local resource-pack offer/status rail with no-external-fetch proof exists",
-        ),
+        required_nonclaims: RESOURCE_PACK_STATUS_LOCAL_CONTRACT.required_nonclaims,
+        blocker_reason: Some(RESOURCE_PACK_STATUS_LOCAL_CONTRACT.blocker_reason),
     },
     ScenarioLiveCapability {
         scenario: "survival-block-entity-persistence-parity",
@@ -2438,6 +2485,7 @@ pub(crate) fn validate_static_scenario_specs(specs: &[ScenarioSpec]) -> Result<(
     validate_static_scenario_coverage(specs)?;
     validate_static_scenario_rows(specs)?;
     validate_creative_inventory_live_contract(&CREATIVE_INVENTORY_LIVE_CONTRACT)?;
+    validate_resource_pack_status_local_contract(&RESOURCE_PACK_STATUS_LOCAL_CONTRACT)?;
     validate_static_live_capabilities(SCENARIO_LIVE_CAPABILITIES, specs)
 }
 
@@ -2516,6 +2564,82 @@ pub(crate) fn validate_creative_inventory_live_contract(
     }
     if contract.blocker_reason.is_empty() {
         return Err("creative live contract has empty blocker reason".to_string());
+    }
+    Ok(())
+}
+
+pub(crate) fn validate_resource_pack_status_local_contract(
+    contract: &ResourcePackStatusLocalContract,
+) -> Result<(), String> {
+    if contract.scenario != RESOURCE_PACK_LOCAL_SCENARIO {
+        return Err(format!(
+            "resource-pack local contract names unexpected scenario {}",
+            contract.scenario
+        ));
+    }
+    if contract.actor != RESOURCE_PACK_LOCAL_ACTOR {
+        return Err(format!(
+            "resource-pack local contract names unexpected actor {}",
+            contract.actor
+        ));
+    }
+    if contract.fixture_identity != RESOURCE_PACK_LOCAL_FIXTURE_IDENTITY {
+        return Err(format!(
+            "resource-pack local contract names unexpected fixture {}",
+            contract.fixture_identity
+        ));
+    }
+    if contract.offer_id != RESOURCE_PACK_LOCAL_OFFER_ID {
+        return Err(format!(
+            "resource-pack local contract names unexpected offer {}",
+            contract.offer_id
+        ));
+    }
+    if contract.expected_status != RESOURCE_PACK_LOCAL_EXPECTED_STATUS {
+        return Err(format!(
+            "resource-pack local contract names unexpected status {}",
+            contract.expected_status
+        ));
+    }
+    if contract.packet_rows != RESOURCE_PACK_PACKET_ROWS {
+        return Err("resource-pack local contract packet rows drifted".to_string());
+    }
+    if contract.no_external_fetch != RESOURCE_PACK_LOCAL_NO_EXTERNAL_FETCH {
+        return Err(format!(
+            "resource-pack local contract has unsupported no-external-fetch value {}",
+            contract.no_external_fetch
+        ));
+    }
+    if contract.redaction_policy != RESOURCE_PACK_LOCAL_REDACTION_POLICY {
+        return Err(format!(
+            "resource-pack local contract names unexpected redaction policy {}",
+            contract.redaction_policy
+        ));
+    }
+    if contract.backend_path.is_empty() {
+        return Err("resource-pack local contract has empty backend path".to_string());
+    }
+    if contract.client_path.is_empty() {
+        return Err("resource-pack local contract has empty client path".to_string());
+    }
+    if contract.expected_server_correlation.is_empty() {
+        return Err("resource-pack local contract has empty server correlation".to_string());
+    }
+    if contract.evidence_mode != LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER {
+        return Err(format!(
+            "resource-pack local contract has unsupported evidence mode {}",
+            contract.evidence_mode
+        ));
+    }
+    for nonclaim in RESOURCE_PACK_NONCLAIMS {
+        if !contract.required_nonclaims.contains(nonclaim) {
+            return Err(format!(
+                "resource-pack local contract missing nonclaim {nonclaim}"
+            ));
+        }
+    }
+    if contract.blocker_reason.is_empty() {
+        return Err("resource-pack local contract has empty blocker reason".to_string());
     }
     Ok(())
 }
@@ -2798,6 +2922,8 @@ mod tests {
         "public_server_safety",
     ];
     const WRONG_CREATIVE_PACKET_ROW: &str = "play/serverbound/0x00 WrongPacket";
+    const WRONG_RESOURCE_PACK_STATUS: &str = "accepted";
+    const WRONG_RESOURCE_PACK_NO_EXTERNAL_FETCH: &str = "false";
     const COMPAT_ALIAS_MISSING_LEGACY: &[&str] = &["valence-compat-bot-probe"];
 
     #[test]
@@ -2839,6 +2965,19 @@ mod tests {
         );
         validate_creative_inventory_live_contract(&CREATIVE_INVENTORY_LIVE_CONTRACT)
             .expect("creative live contract validates");
+
+        let resource_pack_capabilities = scenario_live_capabilities_for_row("resource-pack-status");
+        assert_eq!(resource_pack_capabilities.len(), 1);
+        assert_eq!(
+            resource_pack_capabilities[0].backend_path,
+            RESOURCE_PACK_STATUS_LOCAL_CONTRACT.backend_path
+        );
+        assert_eq!(
+            resource_pack_capabilities[0].evidence_mode,
+            LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER
+        );
+        validate_resource_pack_status_local_contract(&RESOURCE_PACK_STATUS_LOCAL_CONTRACT)
+            .expect("resource-pack local contract validates");
     }
 
     #[test]
@@ -2865,6 +3004,32 @@ mod tests {
         unsupported_mode.evidence_mode = LIVE_EVIDENCE_MODE_OWNED_LOCAL;
         let err = validate_creative_inventory_live_contract(&unsupported_mode).unwrap_err();
         assert!(err.contains("unsupported evidence mode"), "{err}");
+    }
+
+    #[test]
+    fn scenario_core_rejects_invalid_resource_pack_status_local_contracts() {
+        let mut wrong_status = RESOURCE_PACK_STATUS_LOCAL_CONTRACT;
+        wrong_status.expected_status = WRONG_RESOURCE_PACK_STATUS;
+        let err = validate_resource_pack_status_local_contract(&wrong_status).unwrap_err();
+        assert!(err.contains("unexpected status"), "{err}");
+
+        let mut missing_local_scope = RESOURCE_PACK_STATUS_LOCAL_CONTRACT;
+        missing_local_scope.no_external_fetch = WRONG_RESOURCE_PACK_NO_EXTERNAL_FETCH;
+        let err = validate_resource_pack_status_local_contract(&missing_local_scope).unwrap_err();
+        assert!(err.contains("no-external-fetch"), "{err}");
+
+        let mut missing_correlation = RESOURCE_PACK_STATUS_LOCAL_CONTRACT;
+        missing_correlation.expected_server_correlation = "";
+        let err = validate_resource_pack_status_local_contract(&missing_correlation).unwrap_err();
+        assert!(err.contains("empty server correlation"), "{err}");
+
+        let mut missing_nonclaim = RESOURCE_PACK_STATUS_LOCAL_CONTRACT;
+        missing_nonclaim.required_nonclaims = TARGETED_PACKET_LIVE_NONCLAIMS_WITHOUT_PRODUCTION;
+        let err = validate_resource_pack_status_local_contract(&missing_nonclaim).unwrap_err();
+        assert!(
+            err.contains("missing nonclaim production_readiness"),
+            "{err}"
+        );
     }
 
     #[test]

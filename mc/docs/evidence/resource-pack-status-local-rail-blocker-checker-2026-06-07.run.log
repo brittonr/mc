@@ -1,0 +1,19 @@
+## resource_pack_status_local_rail_blocker_checker
+command=nix develop --no-update-lock-file . -c rustc --edition=2021 tools/check_targeted_packet_promotions.rs -o target/resource-pack-status-local-rail/check-targeted-packet-promotions
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+checker_compile_exit_status=0
+command=checker --self-test
+targeted packet promotion self-test ok: 8 positive fixtures and targeted negative fixtures exercised
+checker_self_test_exit_status=0
+command=checker --live-evidence docs/evidence/resource-pack-status-local-rail-2026-06-07.kv (expected failure)
+targeted packet promotion check failed: live.promotion.status expected passed, got blocked
+targeted packet promotion check failed: live.evidence.mode expected owned-local-live, got fixture-bounded-blocker
+targeted packet promotion check failed: metric.live.resource_pack_offer_sent expected ok, got blocked
+targeted packet promotion check failed: metric.live.resource_pack_status_response expected ok, got blocked
+targeted packet promotion check failed: metric.live.no_external_fetch_guarantee expected ok, got blocked
+targeted packet promotion check failed: metric.live.server_correlation expected ok, got blocked
+targeted packet promotion check failed: missing nonclaim.all_resource_pack_statuses
+blocker_live_check_expected_failure_code=1
+exit_status=0

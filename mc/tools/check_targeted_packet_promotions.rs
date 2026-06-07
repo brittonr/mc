@@ -508,11 +508,23 @@ const RECIPE_BOOK_LIVE_EXTENSION: LiveExtension = LiveExtension {
 
 const RESOURCE_PACK_LIVE_FIELDS: &[Field] = &[
     Field::new("live.resource_pack.scope", "owned-local-fixture"),
+    Field::new(
+        "live.resource_pack.fixture_identity",
+        "owned-local-resource-pack-offer-fixture",
+    ),
+    Field::new(
+        "live.resource_pack.offer_id",
+        "mc-compat-local-resource-pack",
+    ),
     Field::new("live.resource_pack.status", "declined"),
     Field::new("live.resource_pack.external_fetch", "false"),
     Field::new(
         "live.resource_pack.redaction_policy",
         "no-secrets-no-public-addresses",
+    ),
+    Field::new(
+        "live.resource_pack.server_correlation",
+        "resource_pack_status_declined_observed",
     ),
 ];
 const RESOURCE_PACK_LIVE_METRICS: &[&str] = &[
@@ -1232,11 +1244,54 @@ fn run_self_tests() -> Result<String, Vec<String>> {
     )?;
     let resource_pack_spec = ROW_SPECS[RESOURCE_PACK_SPEC_INDEX];
     expect_live_error(
+        "wrong resource-pack status",
+        &valid_live_fixture(resource_pack_spec).replace(
+            "live.resource_pack.status=declined",
+            "live.resource_pack.status=accepted",
+        ),
+        resource_pack_spec,
+        "live.resource_pack.status expected declined",
+    )?;
+    expect_live_error(
+        "missing resource-pack local scope",
+        &valid_live_fixture(resource_pack_spec)
+            .replace("live.resource_pack.scope=owned-local-fixture\n", ""),
+        resource_pack_spec,
+        "missing live.resource_pack.scope",
+    )?;
+    expect_live_error(
         "missing resource-pack no-external-fetch metric",
         &valid_live_fixture(resource_pack_spec)
             .replace("metric.live.no_external_fetch_guarantee=ok\n", ""),
         resource_pack_spec,
         "missing metric.live.no_external_fetch_guarantee",
+    )?;
+    expect_live_error(
+        "stale resource-pack live receipt digest",
+        &valid_live_fixture(resource_pack_spec).replace(
+            "live.receipt.digest_status=current",
+            "live.receipt.digest_status=stale",
+        ),
+        resource_pack_spec,
+        "live.receipt.digest_status expected current",
+    )?;
+    expect_live_error(
+        "wrong resource-pack live packet row",
+        &valid_live_fixture(resource_pack_spec).replace(
+            "live.packet.row=play/clientbound/0x40 ResourcePackSendS2CPacket",
+            "live.packet.row=play/clientbound/0x08 BlockEntityUpdateS2CPacket",
+        ),
+        resource_pack_spec,
+        "live.packet.row expected one of",
+    )?;
+    expect_live_error(
+        "resource-pack trust overclaim",
+        &format!(
+            "{}\nclaim.trust_security_validation=true",
+            valid_live_fixture(resource_pack_spec)
+        ),
+        resource_pack_spec,
+        "broad overclaim claim.trust_security_validation=true",
     )?;
     let sign_editor_spec = ROW_SPECS[SIGN_EDITOR_SPEC_INDEX];
     expect_live_error(

@@ -1,0 +1,105 @@
+## resource_pack_status_local_rail_archive
+command=nix run --no-update-lock-file .#cairn -- archive add-resource-pack-status-local-rail --root . && CAIRN_ARCHIVE_DATE=2026-06-07 ... --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-resource-pack-status-local-rail",
+      "kind": "archive_change",
+      "path": "./cairn/changes/add-resource-pack-status-local-rail"
+    }
+  ],
+  "blocked": false,
+  "change": "add-resource-pack-status-local-rail",
+  "dry_run": true,
+  "input_hash": "d4481014f053e5de68f7702f200383b7f23c980c95047dff263108e2449d3d37",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "c5ed8d9702ae4cb897f5e210b510aca7be9f50cbe2f5d95060259a491d716ea1",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "92a6898005f6222b995282770298f47e2b80fe8bb958d1b3bd1355b9f14420a2"
+}
+dry_run_exit_status=0
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-resource-pack-status-local-rail",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-07-add-resource-pack-status-local-rail"
+    }
+  ],
+  "blocked": false,
+  "change": "add-resource-pack-status-local-rail",
+  "dry_run": false,
+  "input_hash": "d4481014f053e5de68f7702f200383b7f23c980c95047dff263108e2449d3d37",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "efafea3f54bcb53a4d43706fba652376f1911f3fe2032e0418b8580ccbc7d0e0",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-add-resource-pack-status-local-rail/design.md"
+        },
+        {
+          "content_hash": "ef6a323ce84104c35dfe4bdcea237c71af0264b2a6566ce1ca1c37eb7d968f48",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-add-resource-pack-status-local-rail/proposal.md"
+        },
+        {
+          "content_hash": "890e241d3bbd4eb4264b48f614bf9bf4f46e7669c28d6a9040effc82074f5353",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-add-resource-pack-status-local-rail/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "8a044e0d8d89c961fd6597888c9d4259ef7331a962b6b5c53d6720906272c2f3",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-add-resource-pack-status-local-rail/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/add-resource-pack-status-local-rail"
+        }
+      ],
+      "manifest_hash": "3143646969b41a1ff2b5d615d2b47d55367cd8152a7f57e596cb3d13acd9ccfc"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "efafea3f54bcb53a4d43706fba652376f1911f3fe2032e0418b8580ccbc7d0e0",
+          "exists": true,
+          "path": "./cairn/changes/add-resource-pack-status-local-rail/design.md"
+        },
+        {
+          "content_hash": "ef6a323ce84104c35dfe4bdcea237c71af0264b2a6566ce1ca1c37eb7d968f48",
+          "exists": true,
+          "path": "./cairn/changes/add-resource-pack-status-local-rail/proposal.md"
+        },
+        {
+          "content_hash": "890e241d3bbd4eb4264b48f614bf9bf4f46e7669c28d6a9040effc82074f5353",
+          "exists": true,
+          "path": "./cairn/changes/add-resource-pack-status-local-rail/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "8a044e0d8d89c961fd6597888c9d4259ef7331a962b6b5c53d6720906272c2f3",
+          "exists": true,
+          "path": "./cairn/changes/add-resource-pack-status-local-rail/tasks.md"
+        }
+      ],
+      "manifest_hash": "f09207223ce346259c8191148c12cbdb31ed1a803f9c7cbdb817dbad5864a74b"
+    },
+    "kind": "archive",
+    "manifest_hash": "f6b80825f8c93f5f948b00638569f83e799f7dad2408667efaacd04ae9ffa788"
+  },
+  "plan_hash": "7107ad36cf0dad41781a4ac3ebf4169fc25879cca82561c2200feba5c54b713c",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "76fad7f53bf0f816c9dee1e368e71489f7b8cd4ea10d611969ec78d5080d95dc"
+}
+execute_exit_status=0
+exit_status=0

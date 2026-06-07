@@ -31,6 +31,9 @@ const LIVE_CAPABILITY_REGISTRY_TOKENS: &[&str] = &[
     "CreativeInventoryLiveContract",
     "CREATIVE_INVENTORY_LIVE_CONTRACT",
     "validate_creative_inventory_live_contract",
+    "ResourcePackStatusLocalContract",
+    "RESOURCE_PACK_STATUS_LOCAL_CONTRACT",
+    "validate_resource_pack_status_local_contract",
     "SCENARIO_LIVE_CAPABILITIES",
     "validate_static_live_capabilities",
     "targeted-packet-live-blocker",
@@ -38,6 +41,7 @@ const LIVE_CAPABILITY_REGISTRY_TOKENS: &[&str] = &[
     "creative-inventory-action",
     "creative_slot_mutation_accepted",
     "resource-pack-status",
+    "resource_pack_status_declined_observed",
     "sign-editor-open-update",
 ];
 

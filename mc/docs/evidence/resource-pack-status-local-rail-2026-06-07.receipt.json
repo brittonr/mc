@@ -1,0 +1,50 @@
+{
+  "schema": "mc.compat.targeted_packet.local_resource_pack_blocker.v1",
+  "row_id": "resource-pack-status",
+  "packet_rows": [
+    "play/clientbound/0x40 ResourcePackSendS2CPacket",
+    "play/serverbound/0x24 ResourcePackStatusC2SPacket"
+  ],
+  "scenario": "mcp-controlled-smoke",
+  "actor": "compatbot",
+  "contract": {
+    "fixture_identity": "owned-local-resource-pack-offer-fixture",
+    "offer_id": "mc-compat-local-resource-pack",
+    "expected_status": "declined",
+    "no_external_fetch": true,
+    "redaction_policy": "no-secrets-no-public-addresses",
+    "expected_server_correlation": "resource_pack_status_declined_observed"
+  },
+  "capability": {
+    "backend_path": "deterministic-resource-pack-offer-contract",
+    "client_path": "stevenarella-resource-pack-status-driver-missing",
+    "evidence_mode": "fixture-bounded-blocker",
+    "blocker_reason": "no maintained live Stevenarella resource-pack status driver exists"
+  },
+  "revision": {
+    "parent_commit_at_recording": "0edd50b1",
+    "client_revision": "not-run-live-driver-missing",
+    "backend_revision": "parent-0edd50b1-deterministic-resource-pack-contract"
+  },
+  "signals": {
+    "resource_pack_offer_sent": "contracted-not-live-observed",
+    "resource_pack_status_response": "contracted-not-live-observed",
+    "no_external_fetch_guarantee": "contracted-not-live-observed",
+    "server_correlation": "contracted-not-live-observed"
+  },
+  "promotion": {
+    "status": "blocked",
+    "matrix_row_updated": false,
+    "bundle_row_updated": false,
+    "packet_inventory_updated": false
+  },
+  "non_claims": {
+    "asset_download_application": true,
+    "trust_security_validation": true,
+    "all_status_variants": true,
+    "public_server_safety": true,
+    "full_protocol_763_compatibility": true,
+    "broad_minecraft_compatibility": true,
+    "production_readiness": true
+  }
+}

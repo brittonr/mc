@@ -1,0 +1,75 @@
+## resource_pack_status_local_rail_baseline
+command=git -C /home/brittonr/git status --short -- mc
+ M mc/docs/evidence/block-entity-sign-packet-family-2026-06-06.b3
+ M mc/docs/evidence/creative-inventory-live-rail-evidence-checks-2026-06-07.run.log
+ M mc/docs/evidence/evidence-manifest-refresh-2026-06-06.b3
+ M mc/docs/evidence/inventory-drag-transactions-2026-06-06.b3
+ M mc/docs/evidence/inventory-stack-split-merge-2026-06-05.b3
+ M mc/docs/evidence/mcp-controlled-compat-rail-manifest-refresh-2026-05-31.b3
+ M mc/docs/evidence/movement-packet-family-2026-06-06.b3
+ M mc/docs/evidence/protocol-763-armor-loadout-enchantment-status-validation-2026-05-29.b3
+ M mc/docs/evidence/protocol-763-broad-coverage-ledger-gate-2026-05-28.b3
+ M mc/docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-validation-2026-06-01.b3
+ M mc/docs/evidence/protocol-763-equipment-slot-item-expansion-validation-2026-05-29.b3
+ M mc/docs/evidence/protocol-763-production-network-safety-gate-2026-05-28.b3
+ M mc/docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.b3
+ M mc/docs/evidence/protocol-763-python-gate-rust-migration-2026-05-31.b3
+ M mc/docs/evidence/protocol-763-survival-coverage-reference-parity-sync-2026-05-28.b3
+ M mc/docs/evidence/protocol-763-survival-reference-paper-fixture-gate-2026-05-28.b3
+ M mc/docs/evidence/protocol-763-survival-reference-parity-gate-2026-05-28.b3
+ M mc/docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.b3
+ M mc/docs/evidence/runner-scenario-modules-2026-06-06.b3
+ M mc/docs/evidence/scenario-behavior-traits-2026-06-06.b3
+ M mc/docs/evidence/scoreboard-team-packet-family-2026-06-06.b3
+ M mc/docs/evidence/stevenarella-frame-archive-validation-2026-05-31.b3
+ M mc/docs/evidence/stevenarella-frame-post-archive-provenance-2026-05-31.b3
+ M mc/docs/evidence/survival-biome-dimension-archive-2026-06-01.b3
+ M mc/docs/evidence/survival-block-entity-persistence-archive-2026-06-04.b3
+ M mc/docs/evidence/survival-crash-recovery-archive-2026-06-04.b3
+ M mc/docs/evidence/survival-mob-drop-archive-2026-06-02.b3
+ M mc/docs/evidence/survival-mob-drop-post-archive-validation-2026-06-02.b3
+ M mc/docs/evidence/targeted-packet-live-kv-schema-2026-06-07.b3
+ M mc/docs/evidence/targeted-packet-live-parity-2026-06-06.b3
+ M mc/docs/evidence/targeted-packet-promotions-archive-2026-06-06.b3
+ M mc/docs/evidence/targeted-packet-promotions-post-archive-checks-2026-06-06.b3
+ M mc/docs/evidence/targeted-packet-promotions-post-sync-checks-2026-06-06.b3
+ M mc/docs/evidence/targeted-packet-promotions-spec-sync-2026-06-06.b3
+ M mc/docs/evidence/vanilla-combat-armor-reference-archive-2026-06-04.b3
+ M mc/docs/evidence/vanilla-combat-armor-reference-post-archive-validation-2026-06-04.b3
+note=flake has targeted-packet, acceptance-matrix, and current-bundle checks; no standalone mc-compat-packet-inventory check is defined
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check .#checks.x86_64-linux.mc-compat-acceptance-matrix .#checks.x86_64-linux.mc-compat-current-evidence-bundle --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/xs5ffx3nsbgfhq6hlkirrz0jm8zcz5q8.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 337 ms
+warning: error: unable to download 'http://100.100.103.95:5000/pkrywsjcfznmmzbj5xcms6s3xlpk8r06.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 299 ms
+warning: error: unable to download 'http://100.100.103.95:5000/pwhkydrlzl9rd2fxyrjvmz2m2mrwhgcx.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 280 ms
+warning: error: unable to download 'http://100.100.103.95:5000/pwhkydrlzl9rd2fxyrjvmz2m2mrwhgcx.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 680 ms
+warning: error: unable to download 'http://100.100.103.95:5000/pkrywsjcfznmmzbj5xcms6s3xlpk8r06.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 531 ms
+warning: error: unable to download 'http://100.100.103.95:5000/xs5ffx3nsbgfhq6hlkirrz0jm8zcz5q8.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 637 ms
+warning: error: unable to download 'http://100.100.103.95:5000/pkrywsjcfznmmzbj5xcms6s3xlpk8r06.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1119 ms
+warning: error: unable to download 'http://100.100.103.95:5000/pwhkydrlzl9rd2fxyrjvmz2m2mrwhgcx.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1256 ms
+warning: error: unable to download 'http://100.100.103.95:5000/xs5ffx3nsbgfhq6hlkirrz0jm8zcz5q8.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1082 ms
+warning: error: unable to download 'http://100.100.103.95:5000/pkrywsjcfznmmzbj5xcms6s3xlpk8r06.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2441 ms
+warning: error: unable to download 'http://100.100.103.95:5000/xs5ffx3nsbgfhq6hlkirrz0jm8zcz5q8.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2299 ms
+warning: error: unable to download 'http://100.100.103.95:5000/pwhkydrlzl9rd2fxyrjvmz2m2mrwhgcx.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2019 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/pwhkydrlzl9rd2fxyrjvmz2m2mrwhgcx.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/pwhkydrlzl9rd2fxyrjvmz2m2mrwhgcx.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/xs5ffx3nsbgfhq6hlkirrz0jm8zcz5q8.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/xs5ffx3nsbgfhq6hlkirrz0jm8zcz5q8.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/pkrywsjcfznmmzbj5xcms6s3xlpk8r06.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/pkrywsjcfznmmzbj5xcms6s3xlpk8r06.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+these 3 derivations will be built:
+  /nix/store/9m4q07injfgl2qlnr6d9isj6ywm34h4r-mc-compat-current-evidence-bundle.drv
+  /nix/store/k16x1d58fnr5fifqm3rranvi3pmrz5is-mc-compat-targeted-packet-promotions-check.drv
+  /nix/store/lw7askpadsd4b067sijb0w5jw545pdck-mc-compat-acceptance-matrix.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/lw7askpadsd4b067sijb0w5jw545pdck-mc-compat-acceptance-matrix.drv'...
+building '/nix/store/9m4q07injfgl2qlnr6d9isj6ywm34h4r-mc-compat-current-evidence-bundle.drv'...
+building '/nix/store/k16x1d58fnr5fifqm3rranvi3pmrz5is-mc-compat-targeted-packet-promotions-check.drv'...
+baseline_checks_exit_status=0
+exit_status=0
