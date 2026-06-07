@@ -1,0 +1,69 @@
+## targeted_packet_live_parity_cairn_gates
+command=nix run --no-update-lock-file .#cairn -- gate <proposal|design|tasks> promote-targeted-packet-live-parity --root .
+{
+  "change": "promote-targeted-packet-live-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "53f86913f057f5155a6486d43f17df0920f594e801835546c2126904a30d1401",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "caa73d9d7422df796dcfb83c5a5f3e395977ee6d056a01b9b07249d0789c2982",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+proposal_exit_status=0
+{
+  "change": "promote-targeted-packet-live-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "eacbe37d7077d842474befe1fa3c0735c96b9e6320a907ce4a8267336a19f81b",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "0accf44e2062d39180dbdeb8a9a295921a943b65f72e514c4a84c7d112d2ed69",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+design_exit_status=0
+{
+  "change": "promote-targeted-packet-live-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "73368bb130f39fdd99c75279c61c0ff7768213bbfe893b2acfa61d94717f8700",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "383715f3e160988df69a296ffb50f13bd684c75b351ca436da26e5bc41e459b9",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+tasks_exit_status=0
+exit_status=0

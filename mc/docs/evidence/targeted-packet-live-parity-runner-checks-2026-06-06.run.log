@@ -1,0 +1,3 @@
+## targeted_packet_live_parity_runner_checks
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-dry-run .#checks.x86_64-linux.mc-compat-multi-client-scenario-dry-run --no-link -L
+exit_status=0

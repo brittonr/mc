@@ -1,0 +1,15 @@
+b6135140920c736adcc84d0f3af7a68d5a8c733f844060f0f0b740fc6a1059f2  tools/check_targeted_packet_promotions.rs
+f81c08d7e5c13567421a5efb0c1886af3eda26c1e7ba001589b2225e6cd31395  cairn/archive/2026-06-06-promote-targeted-packet-live-parity/tasks.md
+36b9b5d19d24199e616dad314e0c5a29ca9f26b4c822372d2804e77ce3a323ac  cairn/specs/mc-compatibility/spec.md
+c730bc6962b47ca546c0a7c3b2d139068d338bc04ba8b37eebadee63f45aba1c  docs/evidence/targeted-packet-live-parity-2026-06-06.md
+37f2ee709804c48b742734e22dfb8a7625df92a54af4a40ca2579989c5a22ee3  docs/evidence/targeted-packet-live-parity-baseline-2026-06-06.run.log
+cb74b4d73888e724e6e2fdd760ad68b7c7aa249dfd102a6ad050e0b6cd9ca12b  docs/evidence/targeted-packet-live-parity-checker-2026-06-06.run.log
+4f681e86bacd729833ac4a887acae2df9d22e1302d7f025f20a43e29c58f1470  docs/evidence/targeted-packet-live-parity-runner-checks-2026-06-06.run.log
+b19e0ced95999ae1c4c66b6b4d407d1b87487e736664febee3d4736d1e4f799c  docs/evidence/targeted-packet-live-parity-cairn-gates-2026-06-06.run.log
+3bc74b565ef8c6c9fb44c168a6a40e32ae63b04a49325222b9cd18cfb3420cb3  docs/evidence/targeted-packet-live-parity-cairn-validate-2026-06-06.run.log
+a348518997dbd106dd569530bc29f777d47e761b659723e9e385c6db540b972f  docs/evidence/targeted-packet-live-parity-sync-2026-06-06.run.log
+4a47ae8ce21904c3f2564c2bbe72c55d47b75e988b502c0dd9bb0799a7d50175  docs/evidence/targeted-packet-live-parity-post-sync-validate-2026-06-06.run.log
+1579e6980551a7cf0db28f7aea2e1c9270e7d8bda860f9edf3e23fe4efe0e220  docs/evidence/targeted-packet-live-parity-evidence-manifest-refresh-2026-06-06.run.log
+8dad5c2f0ac39c3f98484d91314dccb0e7c3b9a1c97021d3936220cd42d5d896  docs/evidence/targeted-packet-live-parity-evidence-manifest-check-2026-06-06.run.log
+cd7368e8ebe2776cc16eb720dcd149591023bd8fd911668c5081b289447a833a  docs/evidence/targeted-packet-live-parity-archive-2026-06-06.run.log
+2f274245723d187896bf9a81c9ba9c9478958d7f65ed1c8399fa12c94ccb51af  docs/evidence/targeted-packet-live-parity-post-archive-checks-2026-06-06.run.log

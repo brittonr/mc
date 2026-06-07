@@ -1,0 +1,4 @@
+## targeted_packet_live_parity_evidence_manifest_refresh
+command=nix run --no-update-lock-file .#evidence-manifest-refresh -- --refresh
+evidence manifest refresh ok: mode=refresh; passes=4; manifests=354; entries=2262; current=2262; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=4; manifest_writes=37
+exit_status=0

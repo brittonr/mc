@@ -1,0 +1,16 @@
+# Tasks
+
+- [x] [serial] Select the bounded packet rows for live parity, record the live signal expected for each row, and preserve non-claim scope for unselected rows. r[mc_compatibility.targeted_packet_live_parity.selection]
+  - Evidence: `docs/evidence/targeted-packet-live-parity-2026-06-06.md` and baseline fixture log `docs/evidence/targeted-packet-live-parity-baseline-2026-06-06.run.log`; BLAKE3 manifest `docs/evidence/targeted-packet-live-parity-2026-06-06.b3`.
+- [x] [depends:selection] Run baseline fixture/evidence checks for the selected rows before changing live promotion checks. r[mc_compatibility.targeted_packet_live_parity.baseline]
+  - Evidence: `docs/evidence/targeted-packet-live-parity-baseline-2026-06-06.run.log`; BLAKE3 manifest `docs/evidence/targeted-packet-live-parity-2026-06-06.b3`.
+- [x] [depends:baseline] Attempt to map selected packet behavior to runner live backend/client paths and record deterministic blockers where no safe owned-local hook exists. r[mc_compatibility.targeted_packet_live_parity.probes]
+  - Evidence: `docs/evidence/targeted-packet-live-parity-2026-06-06.md` and focused runner command log `docs/evidence/targeted-packet-live-parity-runner-checks-2026-06-06.run.log`; BLAKE3 manifest `docs/evidence/targeted-packet-live-parity-2026-06-06.b3`.
+- [x] [depends:probes] Record live receipt requirements or explicit blocker evidence with packet row identifiers, scenario expectations, backend/client paths, and explicit non-claims. r[mc_compatibility.targeted_packet_live_parity.receipts]
+  - Evidence: `docs/evidence/targeted-packet-live-parity-2026-06-06.md` and checker command log `docs/evidence/targeted-packet-live-parity-checker-2026-06-06.run.log`; BLAKE3 manifest `docs/evidence/targeted-packet-live-parity-2026-06-06.b3`.
+- [x] [depends:receipts] Promote only the evidenced packet rows in the matrix/bundle and keep non-exercised rows fixture-bounded. r[mc_compatibility.targeted_packet_live_parity.matrix]
+  - Evidence: `docs/evidence/targeted-packet-live-parity-2026-06-06.md` and checker log `docs/evidence/targeted-packet-live-parity-checker-2026-06-06.run.log`; BLAKE3 manifest `docs/evidence/targeted-packet-live-parity-2026-06-06.b3`.
+- [x] [depends:matrix] Add positive and negative targeted-packet checker tests for live evidence presence, packet-row matching, stale receipts, and overclaim rejection. r[mc_compatibility.targeted_packet_live_parity.tests]
+  - Evidence: `docs/evidence/targeted-packet-live-parity-checker-2026-06-06.run.log` and `docs/evidence/targeted-packet-live-parity-2026-06-06.md`; BLAKE3 manifest `docs/evidence/targeted-packet-live-parity-2026-06-06.b3`.
+- [x] [depends:tests] Run runner checks, targeted packet checks, evidence-manifest/task-evidence checks, Cairn gates, and Cairn validation with reviewable logs. r[mc_compatibility.targeted_packet_live_parity.validation]
+  - Evidence: `docs/evidence/targeted-packet-live-parity-runner-checks-2026-06-06.run.log`, `docs/evidence/targeted-packet-live-parity-checker-2026-06-06.run.log`, `docs/evidence/targeted-packet-live-parity-cairn-gates-2026-06-06.run.log`, `docs/evidence/targeted-packet-live-parity-cairn-validate-2026-06-06.run.log`, and `docs/evidence/targeted-packet-live-parity-2026-06-06.md`; BLAKE3 manifest `docs/evidence/targeted-packet-live-parity-2026-06-06.b3`.

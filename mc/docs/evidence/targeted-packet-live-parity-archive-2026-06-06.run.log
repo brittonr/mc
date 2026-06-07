@@ -1,0 +1,105 @@
+## targeted_packet_live_parity_archive
+command=nix run --no-update-lock-file .#cairn -- archive promote-targeted-packet-live-parity --root . && CAIRN_ARCHIVE_DATE=2026-06-06 ... --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-targeted-packet-live-parity",
+      "kind": "archive_change",
+      "path": "./cairn/changes/promote-targeted-packet-live-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-targeted-packet-live-parity",
+  "dry_run": true,
+  "input_hash": "98bb091755a555782ee4628f980bc3eb8bbb226809b2d084c2d351870fc1ec92",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "d269ab43bf837d4fd76243f904f035995176b43146d5757bcf77fc3ba7f5a86f",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "d2aa339f669216104e6ccce938199ca82819ab37d73c304e33cdd397af849775"
+}
+dry_run_exit_status=0
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-targeted-packet-live-parity",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-06-promote-targeted-packet-live-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-targeted-packet-live-parity",
+  "dry_run": false,
+  "input_hash": "98bb091755a555782ee4628f980bc3eb8bbb226809b2d084c2d351870fc1ec92",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "cf6191158157dd06c95d9d5839f3e453652e62dcd425bc751b8cb661078eb66c",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-targeted-packet-live-parity/design.md"
+        },
+        {
+          "content_hash": "e45e2804c3e8247256ce24b6d2768a64412d80a1981c84db3eae4e35441fcb1a",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-targeted-packet-live-parity/proposal.md"
+        },
+        {
+          "content_hash": "8c6c8efd2c0fd09ec1d1c5d4bc95f591e8815d30d1f9629103a1748d92ca9563",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-targeted-packet-live-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "f81c08d7e5c13567421a5efb0c1886af3eda26c1e7ba001589b2225e6cd31395",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-06-promote-targeted-packet-live-parity/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/promote-targeted-packet-live-parity"
+        }
+      ],
+      "manifest_hash": "392efa45715fdae71384b9dc295bf5e7c79ed4c6cd6114ba5d7e366f32b9bc2f"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "cf6191158157dd06c95d9d5839f3e453652e62dcd425bc751b8cb661078eb66c",
+          "exists": true,
+          "path": "./cairn/changes/promote-targeted-packet-live-parity/design.md"
+        },
+        {
+          "content_hash": "e45e2804c3e8247256ce24b6d2768a64412d80a1981c84db3eae4e35441fcb1a",
+          "exists": true,
+          "path": "./cairn/changes/promote-targeted-packet-live-parity/proposal.md"
+        },
+        {
+          "content_hash": "8c6c8efd2c0fd09ec1d1c5d4bc95f591e8815d30d1f9629103a1748d92ca9563",
+          "exists": true,
+          "path": "./cairn/changes/promote-targeted-packet-live-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "f81c08d7e5c13567421a5efb0c1886af3eda26c1e7ba001589b2225e6cd31395",
+          "exists": true,
+          "path": "./cairn/changes/promote-targeted-packet-live-parity/tasks.md"
+        }
+      ],
+      "manifest_hash": "62541ad2b51826f4f3d10f5a9f4b730191d33802ecfceb880000538317797212"
+    },
+    "kind": "archive",
+    "manifest_hash": "13b4e1f1cf6509f43633e62b45e57d689da37da80a3856b1a57317cdc479b520"
+  },
+  "plan_hash": "cb3a433dac0c3e1583decc6a32a37b2f209ce37e24869daca1cc226d823a30cb",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "a99ed29a9d8df6bb2e9e2bd2d6698e30a9c5c06e7f235bae35c9be636fc052d9"
+}
+execute_exit_status=0
+exit_status=0

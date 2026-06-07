@@ -6,10 +6,12 @@ use std::process::{self, ExitCode};
 const SELF_TEST_FLAG: &str = "--self-test";
 const ROW_FLAG: &str = "--row";
 const EVIDENCE_FLAG: &str = "--evidence";
+const LIVE_EVIDENCE_FLAG: &str = "--live-evidence";
 const SUCCESS: ExitCode = ExitCode::SUCCESS;
 const FAILURE: ExitCode = ExitCode::FAILURE;
 const KEY_VALUE_SEPARATOR: char = '=';
 const SINGLE_ARGUMENT_COUNT: usize = 5;
+const LIVE_ARGUMENT_COUNT: usize = 3;
 const PROGRAM_ARGUMENT_INDEX: usize = 1;
 const MIN_BATCH_ARGUMENT_COUNT: usize = 2;
 const ARG_VALUE_OFFSET: usize = 1;
@@ -17,8 +19,29 @@ const ARG_PAIR_WIDTH: usize = 2;
 const LINE_NUMBER_OFFSET: usize = 1;
 const FIRST_SPEC_INDEX: usize = 0;
 const SECOND_SPEC_INDEX: usize = 1;
+const FIRST_PACKET_ROW_INDEX: usize = 0;
 const OK_VALUE: &str = "ok";
 const TRUE_VALUE: &str = "true";
+const LIVE_PROMOTION_STATUS_KEY: &str = "live.promotion.status";
+const LIVE_PROMOTION_PASSED: &str = "passed";
+const LIVE_EVIDENCE_MODE_KEY: &str = "live.evidence.mode";
+const LIVE_EVIDENCE_MODE_OWNED_LOCAL: &str = "owned-local-live";
+const LIVE_PACKET_ROW_KEY: &str = "live.packet.row";
+const LIVE_RECEIPT_KEY: &str = "live.receipt";
+const LIVE_RECEIPT_BLAKE3_KEY: &str = "live.receipt.blake3";
+const LIVE_RECEIPT_DIGEST_STATUS_KEY: &str = "live.receipt.digest_status";
+const LIVE_RECEIPT_DIGEST_CURRENT: &str = "current";
+const LIVE_SCENARIO_KEY: &str = "live.scenario";
+const LIVE_BACKEND_KEY: &str = "live.backend";
+const REVIEWABLE_EVIDENCE_PREFIX: &str = "docs/evidence/";
+const BLAKE3_HEX_CHAR_COUNT: usize = 64;
+const LIVE_BACKENDS: &[&str] = &["paper", "valence", "paper+valence"];
+const SYNTHETIC_LIVE_RECEIPT: &str =
+    "docs/evidence/targeted-packet-live-parity-synthetic.receipt.json";
+const SYNTHETIC_LIVE_RECEIPT_BLAKE3: &str =
+    "0000000000000000000000000000000000000000000000000000000000000000";
+const SYNTHETIC_LIVE_SCENARIO: &str = "synthetic-live-row";
+const SYNTHETIC_LIVE_BACKEND: &str = "paper+valence";
 const TRUTHY_OVERCLAIM_VALUES: &[&str] = &["true", "yes", "ok", "claimed", "1"];
 const COMMON_EXACT_FIELDS: &[Field] = &[
     Field::new("evidence.mode", "deterministic-fixture"),
@@ -413,6 +436,7 @@ struct Evidence {
 enum CliConfig {
     Single { row: String, evidence_path: String },
     Batch { evidence_paths: Vec<String> },
+    Live { evidence_path: String },
 }
 
 fn main() -> ExitCode {
@@ -449,6 +473,11 @@ fn print_errors(errors: &[String]) {
 }
 
 fn parse_cli(args: &[String]) -> Result<CliConfig, Vec<String>> {
+    if args.len() == LIVE_ARGUMENT_COUNT && args[PROGRAM_ARGUMENT_INDEX] == LIVE_EVIDENCE_FLAG {
+        return Ok(CliConfig::Live {
+            evidence_path: args[PROGRAM_ARGUMENT_INDEX + ARG_VALUE_OFFSET].clone(),
+        });
+    }
     if args.len() >= MIN_BATCH_ARGUMENT_COUNT && args[PROGRAM_ARGUMENT_INDEX] != ROW_FLAG {
         if args[PROGRAM_ARGUMENT_INDEX].starts_with('-') {
             return Err(vec![usage()]);
@@ -484,7 +513,7 @@ fn parse_cli(args: &[String]) -> Result<CliConfig, Vec<String>> {
 }
 
 fn usage() -> String {
-    format!("usage: check_targeted_packet_promotions {ROW_FLAG} <row-id> {EVIDENCE_FLAG} <kv> | <kv>... | {SELF_TEST_FLAG}")
+    format!("usage: check_targeted_packet_promotions {ROW_FLAG} <row-id> {EVIDENCE_FLAG} <kv> | {LIVE_EVIDENCE_FLAG} <kv> | <kv>... | {SELF_TEST_FLAG}")
 }
 
 fn run_config(config: &CliConfig) -> Result<String, Vec<String>> {
@@ -511,6 +540,17 @@ fn run_config(config: &CliConfig) -> Result<String, Vec<String>> {
                 labels.len(),
                 labels.join(", ")
             ))
+        }
+        CliConfig::Live { evidence_path } => {
+            let text = fs::read_to_string(evidence_path)
+                .map_err(|error| vec![format!("{evidence_path}: {error}")])?;
+            let evidence = Evidence::parse(&text).map_err(|error| vec![error])?;
+            let row = evidence
+                .value("row.id")
+                .ok_or_else(|| vec![format!("{evidence_path}: missing row.id")])?;
+            let spec = row_spec(row)?;
+            validate_live_evidence(spec, &evidence)?;
+            Ok(format!("{} live promotion evidence passed", spec.label))
         }
     }
 }
@@ -575,15 +615,7 @@ fn validate_evidence(spec: RowSpec, evidence: &Evidence) -> Result<(), Vec<Strin
     for metric in spec.metrics {
         require_exact(evidence, &mut diagnostics, metric, OK_VALUE);
     }
-    for nonclaim in COMMON_NONCLAIMS.iter().chain(spec.nonclaims.iter()) {
-        require_exact(
-            evidence,
-            &mut diagnostics,
-            &format!("nonclaim.{nonclaim}"),
-            TRUE_VALUE,
-        );
-        reject_truthy_overclaim(evidence, &mut diagnostics, nonclaim);
-    }
+    require_nonclaims(spec, evidence, &mut diagnostics);
 
     if diagnostics.is_empty() {
         Ok(())
@@ -592,12 +624,125 @@ fn validate_evidence(spec: RowSpec, evidence: &Evidence) -> Result<(), Vec<Strin
     }
 }
 
+fn validate_live_evidence(spec: RowSpec, evidence: &Evidence) -> Result<(), Vec<String>> {
+    let mut diagnostics = Vec::new();
+    require_exact(evidence, &mut diagnostics, "row.id", spec.id);
+    require_exact(
+        evidence,
+        &mut diagnostics,
+        LIVE_PROMOTION_STATUS_KEY,
+        LIVE_PROMOTION_PASSED,
+    );
+    require_exact(
+        evidence,
+        &mut diagnostics,
+        LIVE_EVIDENCE_MODE_KEY,
+        LIVE_EVIDENCE_MODE_OWNED_LOCAL,
+    );
+    require_exact(
+        evidence,
+        &mut diagnostics,
+        LIVE_RECEIPT_DIGEST_STATUS_KEY,
+        LIVE_RECEIPT_DIGEST_CURRENT,
+    );
+    require_present_with_prefix(
+        evidence,
+        &mut diagnostics,
+        LIVE_RECEIPT_KEY,
+        REVIEWABLE_EVIDENCE_PREFIX,
+    );
+    require_present(evidence, &mut diagnostics, LIVE_SCENARIO_KEY);
+    require_one_of(evidence, &mut diagnostics, LIVE_BACKEND_KEY, LIVE_BACKENDS);
+    require_one_of(
+        evidence,
+        &mut diagnostics,
+        LIVE_PACKET_ROW_KEY,
+        &expected_packet_rows(spec),
+    );
+    require_blake3_digest(evidence, &mut diagnostics, LIVE_RECEIPT_BLAKE3_KEY);
+    require_nonclaims(spec, evidence, &mut diagnostics);
+
+    if diagnostics.is_empty() {
+        Ok(())
+    } else {
+        Err(diagnostics)
+    }
+}
+
+fn require_nonclaims(spec: RowSpec, evidence: &Evidence, diagnostics: &mut Vec<String>) {
+    for nonclaim in COMMON_NONCLAIMS.iter().chain(spec.nonclaims.iter()) {
+        require_exact(
+            evidence,
+            diagnostics,
+            &format!("nonclaim.{nonclaim}"),
+            TRUE_VALUE,
+        );
+        reject_truthy_overclaim(evidence, diagnostics, nonclaim);
+    }
+}
+
+fn expected_packet_rows(spec: RowSpec) -> Vec<&'static str> {
+    spec.exact_fields
+        .iter()
+        .filter(|field| field.key.starts_with("packet.row"))
+        .map(|field| field.value)
+        .collect()
+}
+
 fn require_exact(evidence: &Evidence, diagnostics: &mut Vec<String>, key: &str, expected: &str) {
     match evidence.value(key) {
         Some(actual) if actual == expected => {}
         Some(actual) => diagnostics.push(format!("{key} expected {expected}, got {actual}")),
         None => diagnostics.push(format!("missing {key}")),
     }
+}
+
+fn require_present(evidence: &Evidence, diagnostics: &mut Vec<String>, key: &str) {
+    match evidence.value(key) {
+        Some(value) if !value.is_empty() => {}
+        Some(_) => diagnostics.push(format!("{key} is empty")),
+        None => diagnostics.push(format!("missing {key}")),
+    }
+}
+
+fn require_present_with_prefix(
+    evidence: &Evidence,
+    diagnostics: &mut Vec<String>,
+    key: &str,
+    prefix: &str,
+) {
+    match evidence.value(key) {
+        Some(value) if value.starts_with(prefix) => {}
+        Some(value) => diagnostics.push(format!("{key} must start with {prefix}, got {value}")),
+        None => diagnostics.push(format!("missing {key}")),
+    }
+}
+
+fn require_one_of(
+    evidence: &Evidence,
+    diagnostics: &mut Vec<String>,
+    key: &str,
+    expected_values: &[&str],
+) {
+    match evidence.value(key) {
+        Some(actual) if expected_values.iter().any(|expected| *expected == actual) => {}
+        Some(actual) => diagnostics.push(format!(
+            "{key} expected one of {expected_values:?}, got {actual}"
+        )),
+        None => diagnostics.push(format!("missing {key}")),
+    }
+}
+
+fn require_blake3_digest(evidence: &Evidence, diagnostics: &mut Vec<String>, key: &str) {
+    match evidence.value(key) {
+        Some(value) if is_blake3_hex_digest(value) => {}
+        Some(value) => diagnostics.push(format!("{key} is not a BLAKE3 hex digest: {value}")),
+        None => diagnostics.push(format!("missing {key}")),
+    }
+}
+
+fn is_blake3_hex_digest(value: &str) -> bool {
+    value.len() == BLAKE3_HEX_CHAR_COUNT && value.chars().all(|ch| ch.is_ascii_hexdigit())
 }
 
 fn reject_truthy_overclaim(evidence: &Evidence, diagnostics: &mut Vec<String>, claim: &str) {
@@ -629,6 +774,34 @@ fn valid_fixture(spec: RowSpec) -> String {
 
 fn fixture_with_replacement(spec: RowSpec, old: &str, new: &str) -> String {
     valid_fixture(spec).replace(old, new)
+}
+
+fn valid_live_fixture(spec: RowSpec) -> String {
+    let mut lines = Vec::new();
+    lines.push(format!("row.id={}", spec.id));
+    lines.push(format!(
+        "{LIVE_PROMOTION_STATUS_KEY}={LIVE_PROMOTION_PASSED}"
+    ));
+    lines.push(format!(
+        "{LIVE_EVIDENCE_MODE_KEY}={LIVE_EVIDENCE_MODE_OWNED_LOCAL}"
+    ));
+    lines.push(format!(
+        "{LIVE_PACKET_ROW_KEY}={}",
+        expected_packet_rows(spec)[FIRST_PACKET_ROW_INDEX]
+    ));
+    lines.push(format!("{LIVE_RECEIPT_KEY}={SYNTHETIC_LIVE_RECEIPT}"));
+    lines.push(format!(
+        "{LIVE_RECEIPT_BLAKE3_KEY}={SYNTHETIC_LIVE_RECEIPT_BLAKE3}"
+    ));
+    lines.push(format!(
+        "{LIVE_RECEIPT_DIGEST_STATUS_KEY}={LIVE_RECEIPT_DIGEST_CURRENT}"
+    ));
+    lines.push(format!("{LIVE_SCENARIO_KEY}={SYNTHETIC_LIVE_SCENARIO}"));
+    lines.push(format!("{LIVE_BACKEND_KEY}={SYNTHETIC_LIVE_BACKEND}"));
+    for nonclaim in COMMON_NONCLAIMS.iter().chain(spec.nonclaims.iter()) {
+        lines.push(format!("nonclaim.{nonclaim}={TRUE_VALUE}"));
+    }
+    lines.join("\n")
 }
 
 fn run_self_tests() -> Result<String, Vec<String>> {
@@ -712,6 +885,45 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         spec,
         "broad overclaim claim.all_block_entities=true",
     )?;
+
+    let live_evidence = Evidence::parse(&valid_live_fixture(spec)).map_err(|error| vec![error])?;
+    validate_live_evidence(spec, &live_evidence)?;
+    expect_live_error(
+        "missing live receipt",
+        &valid_live_fixture(spec).replace(
+            &format!("{LIVE_RECEIPT_KEY}={SYNTHETIC_LIVE_RECEIPT}\n"),
+            "",
+        ),
+        spec,
+        "missing live.receipt",
+    )?;
+    expect_live_error(
+        "wrong live packet row",
+        &valid_live_fixture(spec).replace(
+            "play/clientbound/0x08 BlockEntityUpdateS2CPacket",
+            "play/clientbound/0x09 BlockEventS2CPacket",
+        ),
+        spec,
+        "live.packet.row expected one of",
+    )?;
+    expect_live_error(
+        "stale live receipt digest",
+        &valid_live_fixture(spec).replace(
+            "live.receipt.digest_status=current",
+            "live.receipt.digest_status=stale",
+        ),
+        spec,
+        "live.receipt.digest_status expected current",
+    )?;
+    expect_live_error(
+        "truthy live overclaim",
+        &format!(
+            "{}\nclaim.full_protocol_763_compatibility=true",
+            valid_live_fixture(spec)
+        ),
+        spec,
+        "broad overclaim claim.full_protocol_763_compatibility=true",
+    )?;
     let duplicate_key = format!("{}\nrow.id=duplicate", valid_fixture(spec));
     match Evidence::parse(&duplicate_key) {
         Ok(_) => return Err(vec!["duplicate key fixture unexpectedly parsed".to_string()]),
@@ -736,6 +948,21 @@ fn expect_error(
 ) -> Result<(), Vec<String>> {
     let evidence = Evidence::parse(fixture).map_err(|error| vec![error])?;
     let errors = validate_evidence(spec, &evidence).expect_err(label);
+    expect_diagnostic(label, expected, &errors)
+}
+
+fn expect_live_error(
+    label: &str,
+    fixture: &str,
+    spec: RowSpec,
+    expected: &str,
+) -> Result<(), Vec<String>> {
+    let evidence = Evidence::parse(fixture).map_err(|error| vec![error])?;
+    let errors = validate_live_evidence(spec, &evidence).expect_err(label);
+    expect_diagnostic(label, expected, &errors)
+}
+
+fn expect_diagnostic(label: &str, expected: &str, errors: &[String]) -> Result<(), Vec<String>> {
     if errors.iter().any(|error| error.contains(expected)) {
         Ok(())
     } else {

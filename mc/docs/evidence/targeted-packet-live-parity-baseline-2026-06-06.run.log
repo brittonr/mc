@@ -1,0 +1,16 @@
+## targeted_packet_live_parity_baseline
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/163g3iqaqsm65f4rz9971dbclsrkk80x.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 305 ms
+warning: error: unable to download 'http://100.100.103.95:5000/163g3iqaqsm65f4rz9971dbclsrkk80x.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 523 ms
+warning: error: unable to download 'http://100.100.103.95:5000/163g3iqaqsm65f4rz9971dbclsrkk80x.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1353 ms
+warning: error: unable to download 'http://100.100.103.95:5000/163g3iqaqsm65f4rz9971dbclsrkk80x.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2027 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/163g3iqaqsm65f4rz9971dbclsrkk80x.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/163g3iqaqsm65f4rz9971dbclsrkk80x.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+this derivation will be built:
+  /nix/store/j6wygn7ldrbc7bgp8vk00fbajy1vz346-mc-compat-targeted-packet-promotions-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/j6wygn7ldrbc7bgp8vk00fbajy1vz346-mc-compat-targeted-packet-promotions-check.drv'...
+exit_status=0
