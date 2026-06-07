@@ -1,0 +1,4 @@
+## scenario_live_capability_registry_final_manifest_refresh
+command=nix run --no-update-lock-file .#evidence-manifest-refresh -- --refresh
+evidence manifest refresh ok: mode=refresh; passes=4; manifests=356; entries=2294; current=2294; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=4; manifest_writes=39
+exit_status=0

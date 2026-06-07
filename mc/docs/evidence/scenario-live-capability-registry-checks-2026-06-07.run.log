@@ -1,0 +1,45 @@
+## scenario_live_capability_registry_checks
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/g2zzy5rmrsb2y7mzjaynf61knm2rzcpi.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 321 ms
+warning: error: unable to download 'http://100.100.103.95:5000/g2zzy5rmrsb2y7mzjaynf61knm2rzcpi.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 513 ms
+warning: error: unable to download 'http://100.100.103.95:5000/g2zzy5rmrsb2y7mzjaynf61knm2rzcpi.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1352 ms
+warning: error: unable to download 'http://100.100.103.95:5000/g2zzy5rmrsb2y7mzjaynf61knm2rzcpi.narinfo': Timeout was reached (28) Connection timed out after 5002 milliseconds; retrying in 2271 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/g2zzy5rmrsb2y7mzjaynf61knm2rzcpi.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/g2zzy5rmrsb2y7mzjaynf61knm2rzcpi.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+this derivation will be built:
+  /nix/store/qpn81wgmyz5gch96l53fgnscqqacaa3h-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/qpn81wgmyz5gch96l53fgnscqqacaa3h-mc-compat-scenario-manifest.drv'...
+scenario_manifest_exit_status=0
+command=nix develop --no-update-lock-file . -c cargo test --manifest-path tools/mc-compat-runner/Cargo.toml scenario_core -- --nocapture
+warning: error: unable to download 'http://100.100.103.95:5000/d4fhr7g3zcqxhs6rplq94y0r0qsab7cg.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 310 ms
+warning: error: unable to download 'http://100.100.103.95:5000/d4fhr7g3zcqxhs6rplq94y0r0qsab7cg.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 545 ms
+warning: error: unable to download 'http://100.100.103.95:5000/d4fhr7g3zcqxhs6rplq94y0r0qsab7cg.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1069 ms
+warning: error: unable to download 'http://100.100.103.95:5000/d4fhr7g3zcqxhs6rplq94y0r0qsab7cg.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2493 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/d4fhr7g3zcqxhs6rplq94y0r0qsab7cg.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/d4fhr7g3zcqxhs6rplq94y0r0qsab7cg.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/4gacwrzyxxyqn1sbxlymhd4inrlacgzn-mc-compat-runner-0.1.0.drv'...
+building '/nix/store/m00z0w626mm60257whpiipv7y47ihpq7-nix-shell-env.drv'...
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+   Compiling mc-compat-runner v0.1.0 (/home/brittonr/git/mc/tools/mc-compat-runner)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.48s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 3 tests
+test scenario_core::tests::scenario_core_rejects_invalid_live_capabilities ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_static_specs ... ok
+test scenario_core::tests::scenario_core_validates_static_specs_and_lookup_parity ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 116 filtered out; finished in 0.00s
+
+runner_scenario_core_tests_exit_status=0
+exit_status=0

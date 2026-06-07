@@ -26,6 +26,16 @@ const SCENARIOS_START: &str = "scenarios = [";
 const SCENARIOS_END: &str = "],";
 const EXIT_SUCCESS: ExitCode = ExitCode::SUCCESS;
 const EXIT_FAILURE: ExitCode = ExitCode::FAILURE;
+const LIVE_CAPABILITY_REGISTRY_TOKENS: &[&str] = &[
+    "ScenarioLiveCapability",
+    "SCENARIO_LIVE_CAPABILITIES",
+    "validate_static_live_capabilities",
+    "targeted-packet-live-blocker",
+    "fixture-bounded-blocker",
+    "creative-inventory-action",
+    "resource-pack-status",
+    "sign-editor-open-update",
+];
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct DryRun {
@@ -107,6 +117,9 @@ fn run_repo_check(root: &Path) -> Result<String, Vec<String>> {
     let mut errors = Vec::new();
     errors.extend(validate_generated_tables(&manifest.rows, &generated));
     errors.extend(validate_runner_surfaces(&manifest.rows, &runner_surface));
+    errors.extend(validate_live_capability_registry_surface(
+        &runner_scenario_core,
+    ));
     errors.extend(validate_flake_surfaces(&manifest.rows, &flake));
     errors.extend(validate_readme_surfaces(&manifest.rows, &readme));
     errors.extend(validate_current_bundle_surfaces(
@@ -583,6 +596,14 @@ fn validate_runner_surfaces(rows: &[ScenarioRow], runner: &str) -> Vec<String> {
     errors
 }
 
+fn validate_live_capability_registry_surface(scenario_core: &str) -> Vec<String> {
+    let mut errors = Vec::new();
+    for token in LIVE_CAPABILITY_REGISTRY_TOKENS {
+        require_contains(&mut errors, RUNNER_SCENARIO_CORE_PATH, scenario_core, token);
+    }
+    errors
+}
+
 fn validate_flake_surfaces(rows: &[ScenarioRow], flake: &str) -> Vec<String> {
     let mut errors = Vec::new();
     for row in rows {
@@ -662,6 +683,17 @@ fn run_self_tests() -> Result<String, Vec<String>> {
     }
     if validate_runner_surfaces(&manifest.rows, "\"smoke\"").is_empty() {
         errors.push("self-test case missing_split_runner_surface expected pass=false".to_string());
+    }
+    let live_registry_surface = LIVE_CAPABILITY_REGISTRY_TOKENS.join("\n");
+    if !validate_live_capability_registry_surface(&live_registry_surface).is_empty() {
+        errors
+            .push("self-test case live_capability_registry_surface expected pass=true".to_string());
+    }
+    if validate_live_capability_registry_surface("ScenarioLiveCapability").is_empty() {
+        errors.push(
+            "self-test case missing_live_capability_registry_surface expected pass=false"
+                .to_string(),
+        );
     }
 
     if errors.is_empty() {

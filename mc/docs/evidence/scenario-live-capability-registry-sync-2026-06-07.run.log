@@ -1,0 +1,76 @@
+## scenario_live_capability_registry_sync
+command=nix run --no-update-lock-file .#cairn -- sync scenario-live-probe-capability-registry --root . && ... --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/scenario-live-probe-capability-registry/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/scenario-live-probe-capability-registry/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "scenario-live-probe-capability-registry",
+  "delta_specs": [
+    "./cairn/changes/scenario-live-probe-capability-registry/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "e42726278503e733109343a4aa6f00018d8503448dfeb02c8f64978d43b22f5a",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "da15658d0955c310b1952dabfce0bb5fb4752e89b5fa3929feb6a3c63bb68d94",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "f258ffa923ecc871fec79c7dfff43485fddb80f1ebadc1935e3f609c37e51e62"
+}
+dry_run_exit_status=0
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/scenario-live-probe-capability-registry/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/scenario-live-probe-capability-registry/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "scenario-live-probe-capability-registry",
+  "delta_specs": [
+    "./cairn/changes/scenario-live-probe-capability-registry/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "e42726278503e733109343a4aa6f00018d8503448dfeb02c8f64978d43b22f5a",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "c315b296c348c45629bdbe91e29ef7473a5612234274fd234a7938a5d11deb8a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "9aea2212be8e7753695f37bfddec78cfcaa0f58292fe8441ac267e68dfc48aa7"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "c315b296c348c45629bdbe91e29ef7473a5612234274fd234a7938a5d11deb8a",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "9aea2212be8e7753695f37bfddec78cfcaa0f58292fe8441ac267e68dfc48aa7"
+    },
+    "kind": "sync",
+    "manifest_hash": "f8300982c3961601c4cd464e0a20bc6d492cf05cd104475fde94e711ac0a5fe3"
+  },
+  "plan_hash": "30d197956191ffba5d73c37a5a2c72ffaa2f697981c46ccb77d770ffb4d574ca",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "e1597447f00a2db9d0eb31478eb146c995fbdd019f50cab926d82ff2e0beb5c3"
+}
+execute_exit_status=0
+exit_status=0

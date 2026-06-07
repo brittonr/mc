@@ -167,6 +167,46 @@ pub(crate) struct ScenarioSpec {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct ScenarioLiveCapability {
+    pub(crate) scenario: &'static str,
+    pub(crate) targeted_row: &'static str,
+    pub(crate) packet_rows: &'static [&'static str],
+    pub(crate) capability_kind: &'static str,
+    pub(crate) backend_path: &'static str,
+    pub(crate) client_path: &'static str,
+    pub(crate) evidence_mode: &'static str,
+    pub(crate) required_signals: &'static [&'static str],
+    pub(crate) required_nonclaims: &'static [&'static str],
+    pub(crate) blocker_reason: Option<&'static str>,
+}
+
+pub(crate) const LIVE_CAPABILITY_KIND_PROBE: &str = "targeted-packet-live-probe";
+pub(crate) const LIVE_CAPABILITY_KIND_BLOCKED: &str = "targeted-packet-live-blocker";
+pub(crate) const LIVE_EVIDENCE_MODE_OWNED_LOCAL: &str = "owned-local-live";
+pub(crate) const LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER: &str = "fixture-bounded-blocker";
+pub(crate) const TARGETED_PACKET_LIVE_NONCLAIMS: &[&str] = &[
+    "full_protocol_763_compatibility",
+    "broad_minecraft_compatibility",
+    "public_server_safety",
+    "production_readiness",
+];
+const LIVE_CAPABILITY_KINDS: &[&str] = &[LIVE_CAPABILITY_KIND_PROBE, LIVE_CAPABILITY_KIND_BLOCKED];
+const LIVE_EVIDENCE_MODES: &[&str] = &[
+    LIVE_EVIDENCE_MODE_OWNED_LOCAL,
+    LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER,
+];
+const TARGETED_PACKET_ROW_IDS: &[&str] = &[
+    "block-entity-update-breadth",
+    "chat-command-containment",
+    "chunk-biome-data-packet",
+    "creative-inventory-action",
+    "entity-status-effect-packets",
+    "recipe-book-client-settings",
+    "resource-pack-status",
+    "sign-editor-open-update",
+];
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ProbeTeam {
     Red,
     Blue,
@@ -2086,6 +2126,230 @@ pub(crate) const SCENARIO_SPECS: &[ScenarioSpec] = &[
     },
 ];
 
+const BLOCK_ENTITY_PACKET_ROWS: &[&str] = &["play/clientbound/0x08 BlockEntityUpdateS2CPacket"];
+const CHAT_COMMAND_PACKET_ROWS: &[&str] = &[
+    "play/serverbound/0x05 ChatMessageC2SPacket",
+    "play/serverbound/0x04 CommandExecutionC2SPacket",
+];
+const CHUNK_BIOME_PACKET_ROWS: &[&str] = &["play/clientbound/0x0d ChunkBiomeDataS2CPacket"];
+const CREATIVE_PACKET_ROWS: &[&str] = &["play/serverbound/0x2b CreativeInventoryActionC2SPacket"];
+const STATUS_EFFECT_PACKET_ROWS: &[&str] = &[
+    "play/clientbound/0x6c EntityStatusEffectS2CPacket",
+    "play/clientbound/0x3f RemoveEntityStatusEffectS2CPacket",
+];
+const RECIPE_BOOK_PACKET_ROWS: &[&str] = &["play/serverbound/0x22 RecipeBookDataC2SPacket"];
+const RESOURCE_PACK_PACKET_ROWS: &[&str] = &[
+    "play/clientbound/0x40 ResourcePackSendS2CPacket",
+    "play/serverbound/0x24 ResourcePackStatusC2SPacket",
+];
+const SIGN_EDITOR_PACKET_ROWS: &[&str] = &[
+    "play/clientbound/0x31 SignEditorOpenS2CPacket",
+    "play/serverbound/0x2e UpdateSignC2SPacket",
+];
+
+const BLOCK_ENTITY_SIGNALS: &[&str] = &["non-sign-block-entity-payload", "backend-correlation"];
+const CHAT_COMMAND_SIGNALS: &[&str] = &["harmless-chat-payload", "server-containment-correlation"];
+const CHUNK_BIOME_SIGNALS: &[&str] = &["chunk-biome-data-payload", "parser-or-fixture-correlation"];
+const CREATIVE_SIGNALS: &[&str] = &[
+    "creative-mode-precondition",
+    "creative-slot-mutation",
+    "server-correlation",
+];
+const STATUS_EFFECT_SIGNALS: &[&str] = &[
+    "status-effect-apply",
+    "status-effect-remove",
+    "server-correlation",
+];
+const RECIPE_BOOK_SIGNALS: &[&str] = &["recipe-book-settings-transition", "server-correlation"];
+const RESOURCE_PACK_SIGNALS: &[&str] = &[
+    "local-resource-pack-offer",
+    "status-response",
+    "no-external-fetch",
+];
+const SIGN_EDITOR_SIGNALS: &[&str] = &[
+    "sign-editor-open",
+    "sign-update-submit",
+    "server-accepted-update",
+];
+
+const BLOCK_ENTITY_NONCLAIMS: &[&str] = &[
+    "full_protocol_763_compatibility",
+    "broad_minecraft_compatibility",
+    "public_server_safety",
+    "production_readiness",
+    "all_block_entities",
+    "arbitrary_nbt_parity",
+];
+const CHAT_COMMAND_NONCLAIMS: &[&str] = &[
+    "full_protocol_763_compatibility",
+    "broad_minecraft_compatibility",
+    "public_server_safety",
+    "production_readiness",
+    "chat_signing_security",
+    "all_commands",
+];
+const CHUNK_BIOME_NONCLAIMS: &[&str] = &[
+    "full_protocol_763_compatibility",
+    "broad_minecraft_compatibility",
+    "public_server_safety",
+    "production_readiness",
+    "all_biome_semantics",
+    "all_chunk_semantics",
+];
+const CREATIVE_NONCLAIMS: &[&str] = &[
+    "full_protocol_763_compatibility",
+    "broad_minecraft_compatibility",
+    "public_server_safety",
+    "production_readiness",
+    "all_creative_inventory_semantics",
+    "all_slots",
+    "all_items",
+];
+const STATUS_EFFECT_NONCLAIMS: &[&str] = &[
+    "full_protocol_763_compatibility",
+    "broad_minecraft_compatibility",
+    "public_server_safety",
+    "production_readiness",
+    "all_effects",
+    "gameplay_modifiers",
+];
+const RECIPE_BOOK_NONCLAIMS: &[&str] = &[
+    "full_protocol_763_compatibility",
+    "broad_minecraft_compatibility",
+    "public_server_safety",
+    "production_readiness",
+    "recipe_book_ui_behavior",
+    "all_recipes",
+];
+const RESOURCE_PACK_NONCLAIMS: &[&str] = &[
+    "full_protocol_763_compatibility",
+    "broad_minecraft_compatibility",
+    "public_server_safety",
+    "production_readiness",
+    "asset_download_application",
+    "trust_security_validation",
+];
+const SIGN_EDITOR_NONCLAIMS: &[&str] = &[
+    "full_protocol_763_compatibility",
+    "broad_minecraft_compatibility",
+    "public_server_safety",
+    "production_readiness",
+    "sign_editing_ui_behavior",
+    "all_sign_variants",
+    "all_block_entities",
+];
+
+pub(crate) const SCENARIO_LIVE_CAPABILITIES: &[ScenarioLiveCapability] = &[
+    ScenarioLiveCapability {
+        scenario: "survival-block-entity-persistence-parity",
+        targeted_row: "block-entity-update-breadth",
+        packet_rows: BLOCK_ENTITY_PACKET_ROWS,
+        capability_kind: LIVE_CAPABILITY_KIND_BLOCKED,
+        backend_path: "valence-sign-persistence-rail",
+        client_path: "stevenarella-sign-persistence-rail",
+        evidence_mode: LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER,
+        required_signals: BLOCK_ENTITY_SIGNALS,
+        required_nonclaims: BLOCK_ENTITY_NONCLAIMS,
+        blocker_reason: Some(
+            "sign persistence rail does not prove non-sign block-entity update breadth",
+        ),
+    },
+    ScenarioLiveCapability {
+        scenario: "mcp-controlled-smoke",
+        targeted_row: "chat-command-containment",
+        packet_rows: CHAT_COMMAND_PACKET_ROWS,
+        capability_kind: LIVE_CAPABILITY_KIND_BLOCKED,
+        backend_path: "owned-local-chat-or-command-rail-missing",
+        client_path: "stevenarella-mcp-chat-control-candidate",
+        evidence_mode: LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER,
+        required_signals: CHAT_COMMAND_SIGNALS,
+        required_nonclaims: CHAT_COMMAND_NONCLAIMS,
+        blocker_reason: Some(
+            "MCP control exists but no targeted chat/command containment receipt is maintained",
+        ),
+    },
+    ScenarioLiveCapability {
+        scenario: "survival-biome-dimension-state",
+        targeted_row: "chunk-biome-data-packet",
+        packet_rows: CHUNK_BIOME_PACKET_ROWS,
+        capability_kind: LIVE_CAPABILITY_KIND_BLOCKED,
+        backend_path: "valence-chunk-biome-context-rail",
+        client_path: "stevenarella-chunk-context-rail",
+        evidence_mode: LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER,
+        required_signals: CHUNK_BIOME_SIGNALS,
+        required_nonclaims: CHUNK_BIOME_NONCLAIMS,
+        blocker_reason: Some(
+            "chunk/biome context rail does not prove ChunkBiomeDataS2CPacket payload semantics",
+        ),
+    },
+    ScenarioLiveCapability {
+        scenario: "inventory-interaction",
+        targeted_row: "creative-inventory-action",
+        packet_rows: CREATIVE_PACKET_ROWS,
+        capability_kind: LIVE_CAPABILITY_KIND_BLOCKED,
+        backend_path: "creative-mode-rail-missing",
+        client_path: "stevenarella-inventory-control-candidate",
+        evidence_mode: LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER,
+        required_signals: CREATIVE_SIGNALS,
+        required_nonclaims: CREATIVE_NONCLAIMS,
+        blocker_reason: Some(
+            "inventory rail is survival-scoped and lacks deterministic creative-mode mutation",
+        ),
+    },
+    ScenarioLiveCapability {
+        scenario: "combat-damage",
+        targeted_row: "entity-status-effect-packets",
+        packet_rows: STATUS_EFFECT_PACKET_ROWS,
+        capability_kind: LIVE_CAPABILITY_KIND_BLOCKED,
+        backend_path: "status-effect-rail-missing",
+        client_path: "stevenarella-effect-observation-candidate",
+        evidence_mode: LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER,
+        required_signals: STATUS_EFFECT_SIGNALS,
+        required_nonclaims: STATUS_EFFECT_NONCLAIMS,
+        blocker_reason: Some("combat rail does not apply and remove a bounded status effect"),
+    },
+    ScenarioLiveCapability {
+        scenario: "survival-crafting-table",
+        targeted_row: "recipe-book-client-settings",
+        packet_rows: RECIPE_BOOK_PACKET_ROWS,
+        capability_kind: LIVE_CAPABILITY_KIND_BLOCKED,
+        backend_path: "recipe-book-settings-rail-missing",
+        client_path: "stevenarella-crafting-rail",
+        evidence_mode: LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER,
+        required_signals: RECIPE_BOOK_SIGNALS,
+        required_nonclaims: RECIPE_BOOK_NONCLAIMS,
+        blocker_reason: Some("crafting-table rail does not toggle recipe-book client settings"),
+    },
+    ScenarioLiveCapability {
+        scenario: "mcp-controlled-smoke",
+        targeted_row: "resource-pack-status",
+        packet_rows: RESOURCE_PACK_PACKET_ROWS,
+        capability_kind: LIVE_CAPABILITY_KIND_BLOCKED,
+        backend_path: "local-resource-pack-offer-rail-missing",
+        client_path: "stevenarella-resource-pack-status-candidate",
+        evidence_mode: LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER,
+        required_signals: RESOURCE_PACK_SIGNALS,
+        required_nonclaims: RESOURCE_PACK_NONCLAIMS,
+        blocker_reason: Some(
+            "no owned-local resource-pack offer/status rail with no-external-fetch proof exists",
+        ),
+    },
+    ScenarioLiveCapability {
+        scenario: "survival-block-entity-persistence-parity",
+        targeted_row: "sign-editor-open-update",
+        packet_rows: SIGN_EDITOR_PACKET_ROWS,
+        capability_kind: LIVE_CAPABILITY_KIND_BLOCKED,
+        backend_path: "sign-editor-open-update-rail-missing",
+        client_path: "stevenarella-sign-edit-candidate",
+        evidence_mode: LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER,
+        required_signals: SIGN_EDITOR_SIGNALS,
+        required_nonclaims: SIGN_EDITOR_NONCLAIMS,
+        blocker_reason: Some(
+            "sign persistence rail does not automate sign editor open/update interaction",
+        ),
+    },
+];
+
 pub(crate) fn parse_scenario(value: &str) -> Result<Scenario, String> {
     SCENARIO_SPECS
         .iter()
@@ -2123,7 +2387,120 @@ pub(crate) fn server_required_milestones(scenario: Scenario) -> &'static [Scenar
 
 pub(crate) fn validate_static_scenario_specs(specs: &[ScenarioSpec]) -> Result<(), String> {
     validate_static_scenario_coverage(specs)?;
-    validate_static_scenario_rows(specs)
+    validate_static_scenario_rows(specs)?;
+    validate_static_live_capabilities(SCENARIO_LIVE_CAPABILITIES, specs)
+}
+
+pub(crate) fn scenario_live_capabilities_for_row(
+    targeted_row: &str,
+) -> Vec<&'static ScenarioLiveCapability> {
+    SCENARIO_LIVE_CAPABILITIES
+        .iter()
+        .filter(|capability| capability.targeted_row == targeted_row)
+        .collect()
+}
+
+pub(crate) fn validate_static_live_capabilities(
+    capabilities: &[ScenarioLiveCapability],
+    specs: &[ScenarioSpec],
+) -> Result<(), String> {
+    if capabilities.is_empty() {
+        return Err("scenario live capability registry is empty".to_string());
+    }
+    let mut scenario_row_pairs = Vec::new();
+    for capability in capabilities {
+        validate_live_capability(capability, specs)?;
+        let pair = (capability.scenario, capability.targeted_row);
+        if scenario_row_pairs.contains(&pair) {
+            return Err(format!(
+                "duplicate live capability for scenario {} and row {}",
+                capability.scenario, capability.targeted_row
+            ));
+        }
+        scenario_row_pairs.push(pair);
+    }
+    Ok(())
+}
+
+fn validate_live_capability(
+    capability: &ScenarioLiveCapability,
+    specs: &[ScenarioSpec],
+) -> Result<(), String> {
+    if !specs
+        .iter()
+        .any(|spec| spec.canonical_name == capability.scenario)
+    {
+        return Err(format!(
+            "live capability row {} names unknown scenario {}",
+            capability.targeted_row, capability.scenario
+        ));
+    }
+    if !TARGETED_PACKET_ROW_IDS.contains(&capability.targeted_row) {
+        return Err(format!(
+            "live capability names unknown packet row {}",
+            capability.targeted_row
+        ));
+    }
+    if capability.packet_rows.is_empty() {
+        return Err(format!(
+            "live capability {} has empty packet rows",
+            capability.targeted_row
+        ));
+    }
+    if !LIVE_CAPABILITY_KINDS.contains(&capability.capability_kind) {
+        return Err(format!(
+            "live capability {} has unsupported capability kind {}",
+            capability.targeted_row, capability.capability_kind
+        ));
+    }
+    if !LIVE_EVIDENCE_MODES.contains(&capability.evidence_mode) {
+        return Err(format!(
+            "live capability {} has unsupported evidence mode {}",
+            capability.targeted_row, capability.evidence_mode
+        ));
+    }
+    if capability.backend_path.is_empty() {
+        return Err(format!(
+            "live capability {} has empty backend path",
+            capability.targeted_row
+        ));
+    }
+    if capability.client_path.is_empty() {
+        return Err(format!(
+            "live capability {} has empty client path",
+            capability.targeted_row
+        ));
+    }
+    if capability.required_signals.is_empty() {
+        return Err(format!(
+            "live capability {} has empty required signals",
+            capability.targeted_row
+        ));
+    }
+    for nonclaim in TARGETED_PACKET_LIVE_NONCLAIMS {
+        if !capability.required_nonclaims.contains(nonclaim) {
+            return Err(format!(
+                "live capability {} missing nonclaim {}",
+                capability.targeted_row, nonclaim
+            ));
+        }
+    }
+    match (capability.capability_kind, capability.blocker_reason) {
+        (LIVE_CAPABILITY_KIND_BLOCKED, Some(reason)) if !reason.is_empty() => Ok(()),
+        (LIVE_CAPABILITY_KIND_BLOCKED, _) => Err(format!(
+            "blocked live capability {} lacks blocker reason",
+            capability.targeted_row
+        )),
+        (LIVE_CAPABILITY_KIND_PROBE, None) => Ok(()),
+        (LIVE_CAPABILITY_KIND_PROBE, Some(_)) => Err(format!(
+            "live probe capability {} unexpectedly has blocker reason",
+            capability.targeted_row
+        )),
+        _ => Err(format!(
+            "live capability {} has inconsistent kind {}",
+            capability.targeted_row, capability.capability_kind
+        )),
+    }
 }
 
 fn validate_static_scenario_coverage(specs: &[ScenarioSpec]) -> Result<(), String> {
@@ -2285,6 +2662,12 @@ mod tests {
 
     const EMPTY_MILESTONES: &[ScenarioMilestone] = &[];
     const EMPTY_FORBIDDEN_PATTERNS: &[ScenarioMilestone] = &[];
+    const EMPTY_LIVE_SIGNALS: &[&str] = &[];
+    const TARGETED_PACKET_LIVE_NONCLAIMS_WITHOUT_PRODUCTION: &[&str] = &[
+        "full_protocol_763_compatibility",
+        "broad_minecraft_compatibility",
+        "public_server_safety",
+    ];
     const COMPAT_ALIAS_MISSING_LEGACY: &[&str] = &["valence-compat-bot-probe"];
 
     #[test]
@@ -2309,6 +2692,58 @@ mod tests {
             );
             assert_eq!(scenario_behavior_kind(spec.scenario), &spec.behavior);
         }
+
+        let creative_capabilities = scenario_live_capabilities_for_row("creative-inventory-action");
+        assert_eq!(creative_capabilities.len(), 1);
+        assert_eq!(creative_capabilities[0].scenario, "inventory-interaction");
+        assert_eq!(
+            creative_capabilities[0].evidence_mode,
+            LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER
+        );
+    }
+
+    #[test]
+    fn scenario_core_rejects_invalid_live_capabilities() {
+        validate_static_live_capabilities(SCENARIO_LIVE_CAPABILITIES, SCENARIO_SPECS)
+            .expect("static live capabilities validate");
+
+        let mut duplicate = SCENARIO_LIVE_CAPABILITIES.to_vec();
+        duplicate.push(duplicate[0]);
+        let err = validate_static_live_capabilities(&duplicate, SCENARIO_SPECS).unwrap_err();
+        assert!(err.contains("duplicate live capability"), "{err}");
+
+        let mut unknown_scenario = SCENARIO_LIVE_CAPABILITIES.to_vec();
+        unknown_scenario[0].scenario = "missing-scenario";
+        let err = validate_static_live_capabilities(&unknown_scenario, SCENARIO_SPECS).unwrap_err();
+        assert!(err.contains("unknown scenario"), "{err}");
+
+        let mut unknown_row = SCENARIO_LIVE_CAPABILITIES.to_vec();
+        unknown_row[0].targeted_row = "missing-packet-row";
+        let err = validate_static_live_capabilities(&unknown_row, SCENARIO_SPECS).unwrap_err();
+        assert!(err.contains("unknown packet row"), "{err}");
+
+        let mut unsupported_mode = SCENARIO_LIVE_CAPABILITIES.to_vec();
+        unsupported_mode[0].evidence_mode = "magic-mode";
+        let err = validate_static_live_capabilities(&unsupported_mode, SCENARIO_SPECS).unwrap_err();
+        assert!(err.contains("unsupported evidence mode"), "{err}");
+
+        let mut empty_signals = SCENARIO_LIVE_CAPABILITIES.to_vec();
+        empty_signals[0].required_signals = EMPTY_LIVE_SIGNALS;
+        let err = validate_static_live_capabilities(&empty_signals, SCENARIO_SPECS).unwrap_err();
+        assert!(err.contains("empty required signals"), "{err}");
+
+        let mut missing_nonclaim = SCENARIO_LIVE_CAPABILITIES.to_vec();
+        missing_nonclaim[0].required_nonclaims = TARGETED_PACKET_LIVE_NONCLAIMS_WITHOUT_PRODUCTION;
+        let err = validate_static_live_capabilities(&missing_nonclaim, SCENARIO_SPECS).unwrap_err();
+        assert!(
+            err.contains("missing nonclaim production_readiness"),
+            "{err}"
+        );
+
+        let mut missing_blocker = SCENARIO_LIVE_CAPABILITIES.to_vec();
+        missing_blocker[0].blocker_reason = None;
+        let err = validate_static_live_capabilities(&missing_blocker, SCENARIO_SPECS).unwrap_err();
+        assert!(err.contains("lacks blocker reason"), "{err}");
     }
 
     #[test]

@@ -1,0 +1,49 @@
+## scenario_live_capability_registry_post_archive_checks
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
+cairn_validate_exit_status=0
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-scenario-manifest .#checks.x86_64-linux.mc-compat-evidence-manifests .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/3b7lxapl3wy93x6nxz4ywb7gkn1jjgnj.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 338 ms
+warning: error: unable to download 'http://100.100.103.95:5000/4sb56sfnrylk5if53in6w5c0rbd05d2l.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 251 ms
+warning: error: unable to download 'http://100.100.103.95:5000/xw75wa8sizpglwhgszjff2zxa10pq2nf.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 350 ms
+warning: error: unable to download 'http://100.100.103.95:5000/4sb56sfnrylk5if53in6w5c0rbd05d2l.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 535 ms
+warning: error: unable to download 'http://100.100.103.95:5000/3b7lxapl3wy93x6nxz4ywb7gkn1jjgnj.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 524 ms
+warning: error: unable to download 'http://100.100.103.95:5000/xw75wa8sizpglwhgszjff2zxa10pq2nf.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 650 ms
+warning: error: unable to download 'http://100.100.103.95:5000/4sb56sfnrylk5if53in6w5c0rbd05d2l.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1389 ms
+warning: error: unable to download 'http://100.100.103.95:5000/3b7lxapl3wy93x6nxz4ywb7gkn1jjgnj.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 1241 ms
+warning: error: unable to download 'http://100.100.103.95:5000/xw75wa8sizpglwhgszjff2zxa10pq2nf.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1400 ms
+warning: error: unable to download 'http://100.100.103.95:5000/3b7lxapl3wy93x6nxz4ywb7gkn1jjgnj.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2703 ms
+warning: error: unable to download 'http://100.100.103.95:5000/4sb56sfnrylk5if53in6w5c0rbd05d2l.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2521 ms
+warning: error: unable to download 'http://100.100.103.95:5000/xw75wa8sizpglwhgszjff2zxa10pq2nf.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2306 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/4sb56sfnrylk5if53in6w5c0rbd05d2l.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/4sb56sfnrylk5if53in6w5c0rbd05d2l.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/xw75wa8sizpglwhgszjff2zxa10pq2nf.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/xw75wa8sizpglwhgszjff2zxa10pq2nf.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/3b7lxapl3wy93x6nxz4ywb7gkn1jjgnj.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/3b7lxapl3wy93x6nxz4ywb7gkn1jjgnj.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+these 3 derivations will be built:
+  /nix/store/an61nca1mllil5qx1j5xv3qc22x1dqaa-mc-compat-scenario-manifest.drv
+  /nix/store/dsig4yzf8q4ayfis4392mp05jwlnb6nj-mc-compat-evidence-manifests.drv
+  /nix/store/zpd81dxjs29v5va3rdf8pyh5pr2xwmvv-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/zpd81dxjs29v5va3rdf8pyh5pr2xwmvv-mc-compat-cairn-task-evidence.drv'...
+building '/nix/store/dsig4yzf8q4ayfis4392mp05jwlnb6nj-mc-compat-evidence-manifests.drv'...
+building '/nix/store/an61nca1mllil5qx1j5xv3qc22x1dqaa-mc-compat-scenario-manifest.drv'...
+nix_checks_exit_status=0
+exit_status=0

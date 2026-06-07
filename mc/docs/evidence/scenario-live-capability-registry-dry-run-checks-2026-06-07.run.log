@@ -1,0 +1,16 @@
+## scenario_live_capability_registry_dry_run_checks
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-dry-run --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/gz8k0jfq9p18cdv96sa0wnclcm18n3g7.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 301 ms
+warning: error: unable to download 'http://100.100.103.95:5000/gz8k0jfq9p18cdv96sa0wnclcm18n3g7.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 569 ms
+warning: error: unable to download 'http://100.100.103.95:5000/gz8k0jfq9p18cdv96sa0wnclcm18n3g7.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1140 ms
+warning: error: unable to download 'http://100.100.103.95:5000/gz8k0jfq9p18cdv96sa0wnclcm18n3g7.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2196 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/gz8k0jfq9p18cdv96sa0wnclcm18n3g7.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/gz8k0jfq9p18cdv96sa0wnclcm18n3g7.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+this derivation will be built:
+  /nix/store/cxb2fi7qm632wkr32pgifzmf0rwiwc6z-mc-compat-dry-run.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/cxb2fi7qm632wkr32pgifzmf0rwiwc6z-mc-compat-dry-run.drv'...
+exit_status=0

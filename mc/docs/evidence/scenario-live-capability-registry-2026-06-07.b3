@@ -1,0 +1,15 @@
+2fda8e4a994df01bc6123f1359d779b8738b0d2a16a27b0961a6ebb5c9844180  tools/mc-compat-runner/src/scenario_core.rs
+d39899e63e68c1b228c8bf012bdcac2cdfe47b488ba486f3107e1eceed79ba69  tools/check_scenario_manifest.rs
+8ee0e659622a06b7135752ff1a60ae1fef2f7cac0b30523a5ead967c223459f2  cairn/archive/2026-06-07-scenario-live-probe-capability-registry/tasks.md
+49ba5227846a7078a357752630e11dcfec57e68df6ef3bfed87341fde0e95229  docs/evidence/scenario-live-capability-registry-2026-06-07.md
+908b64ae43a7936cfe804adf8bb11fc40e6ffc5ef80caef465acf43ce75336e3  docs/evidence/scenario-live-capability-registry-baseline-2026-06-07.run.log
+d5924fb67ec783a995c3261dd3a0f32bfae30a8b845bbc18aaf9e7f0673c12e0  docs/evidence/scenario-live-capability-registry-checks-2026-06-07.run.log
+ebe8d129c9ddee2ca72892f6b9dac239a15c51da869220802caae31510ea2d1a  docs/evidence/scenario-live-capability-registry-dry-run-checks-2026-06-07.run.log
+1e4ff2afbad60ad6ee33817ec2782f5daeb6e1e545f40612266d6a16fbc09f95  docs/evidence/scenario-live-capability-registry-cairn-gates-2026-06-07.run.log
+7dbdf2c627a4325f72ddb7712ad7208e5988b45966e7de235bbd6fdedbd52e7a  docs/evidence/scenario-live-capability-registry-evidence-manifest-refresh-2026-06-07.run.log
+1dfb25565e046a0ea3434b95af418eb32ea03cb0e616ebbb496914a6bda6f26c  docs/evidence/scenario-live-capability-registry-evidence-checks-2026-06-07.run.log
+1b2b370de9ec7680bbc5367a8f1d871c078717697f9da6784fab0228e67f90d8  docs/evidence/scenario-live-capability-registry-sync-2026-06-07.run.log
+8c378ddd55a9bb6747526f002f348312c95cbd85d7c09374a167b3d87a28668c  docs/evidence/scenario-live-capability-registry-post-sync-validate-2026-06-07.run.log
+47f2f93f62098a80b5c90ae976f92bbc2896bf975c5e99cc3680d0d35093e745  docs/evidence/scenario-live-capability-registry-archive-2026-06-07.run.log
+04c136792d028df0e06a34166a32b3ec7baf919fb72e2d506514b9ebe38b39fd  docs/evidence/scenario-live-capability-registry-final-manifest-refresh-2026-06-07.run.log
+6d34c3eaf9a9a6e703c893df8d59356ef7cc465e5883f664cab9eb5bbdbec10b  docs/evidence/scenario-live-capability-registry-post-archive-checks-2026-06-07.run.log

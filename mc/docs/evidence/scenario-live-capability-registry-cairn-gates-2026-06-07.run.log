@@ -1,0 +1,71 @@
+## scenario_live_capability_registry_cairn_gates
+## gate proposal scenario-live-probe-capability-registry
+{
+  "change": "scenario-live-probe-capability-registry",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "ff7bcae878a9897e26a94c33bcb80af3df3bbcf89ecbd12180396d58d4b4d4fc",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "7ab449f3485cfa1c7730b7c0589f9026477b6eae414c593286db70ed00cbe055",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+proposal_exit_status=0
+## gate design scenario-live-probe-capability-registry
+{
+  "change": "scenario-live-probe-capability-registry",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "4f204e3b084a422f27dc14b50815ad682913eae289a86f2fa3b32d1494f504f0",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "618a749ea33ba63d86b1821f0fdaf226fdc95a38ec9f10f230ab7da44b673d8c",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+design_exit_status=0
+## gate tasks scenario-live-probe-capability-registry
+{
+  "change": "scenario-live-probe-capability-registry",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "fb373ed385c5f75ed0826a1d17348350dbfd7938edc4c136fc055a9e635108e6",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "d9cf67350405c8738d8b0d42d5146079dada647c3e8c3c8857c8954d518d4587",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+tasks_exit_status=0
+exit_status=0

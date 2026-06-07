@@ -1,0 +1,105 @@
+## scenario_live_capability_registry_archive
+command=nix run --no-update-lock-file .#cairn -- archive scenario-live-probe-capability-registry --root . && CAIRN_ARCHIVE_DATE=2026-06-07 ... --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: scenario-live-probe-capability-registry",
+      "kind": "archive_change",
+      "path": "./cairn/changes/scenario-live-probe-capability-registry"
+    }
+  ],
+  "blocked": false,
+  "change": "scenario-live-probe-capability-registry",
+  "dry_run": true,
+  "input_hash": "e42726278503e733109343a4aa6f00018d8503448dfeb02c8f64978d43b22f5a",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "a66d312d3cc0014f35b3e6d983b0f98b6a11db5fd8c07823088f5e8afb6b75ea",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "1e5c6aa7863c8c60f3256166d182272633381c6eebda1b4a13fd6eeeb2e995f6"
+}
+dry_run_exit_status=0
+{
+  "actions": [
+    {
+      "description": "move active change to archive: scenario-live-probe-capability-registry",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-07-scenario-live-probe-capability-registry"
+    }
+  ],
+  "blocked": false,
+  "change": "scenario-live-probe-capability-registry",
+  "dry_run": false,
+  "input_hash": "e42726278503e733109343a4aa6f00018d8503448dfeb02c8f64978d43b22f5a",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "dcde85fb22ee227af2aaf09ed8a6a41f5086f4050a9c55a2fcff61217032b555",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-scenario-live-probe-capability-registry/design.md"
+        },
+        {
+          "content_hash": "a0bb21ab61f136259b6bd5a22ece5c3bd27d14acd17afa95d751c11c6b84154f",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-scenario-live-probe-capability-registry/proposal.md"
+        },
+        {
+          "content_hash": "4a2ae58123ddd4c1877a6208ddb85adbe3a27cc855e6e57c58148592768c47a8",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-scenario-live-probe-capability-registry/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "7ba4e9b26eac4403897cfe161be19e31c4c85883a298c19f852e5b353c159aae",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-scenario-live-probe-capability-registry/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/scenario-live-probe-capability-registry"
+        }
+      ],
+      "manifest_hash": "6f656a81abee0a16527d0f078189cd2769267ba2594548506166e94414ebdc5b"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "dcde85fb22ee227af2aaf09ed8a6a41f5086f4050a9c55a2fcff61217032b555",
+          "exists": true,
+          "path": "./cairn/changes/scenario-live-probe-capability-registry/design.md"
+        },
+        {
+          "content_hash": "a0bb21ab61f136259b6bd5a22ece5c3bd27d14acd17afa95d751c11c6b84154f",
+          "exists": true,
+          "path": "./cairn/changes/scenario-live-probe-capability-registry/proposal.md"
+        },
+        {
+          "content_hash": "4a2ae58123ddd4c1877a6208ddb85adbe3a27cc855e6e57c58148592768c47a8",
+          "exists": true,
+          "path": "./cairn/changes/scenario-live-probe-capability-registry/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "7ba4e9b26eac4403897cfe161be19e31c4c85883a298c19f852e5b353c159aae",
+          "exists": true,
+          "path": "./cairn/changes/scenario-live-probe-capability-registry/tasks.md"
+        }
+      ],
+      "manifest_hash": "77fdd3b510c86144be6ee31e674b7ca725bc64f09c9825341a4fb8388ed36501"
+    },
+    "kind": "archive",
+    "manifest_hash": "aba2c264448ee6e994a3db00620ba3a5c87c472d92d8b78293423ef9fc059522"
+  },
+  "plan_hash": "5078838fe32227c720fd6c8c1a3612f99e75a75d885cc7274d3c2775704cd570",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "6d86abbc8509b2d3acd3f02d75103043695a94e179272cc36522d597b33e6733"
+}
+execute_exit_status=0
+exit_status=0

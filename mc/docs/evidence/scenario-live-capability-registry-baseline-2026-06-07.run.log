@@ -1,0 +1,31 @@
+## scenario_live_capability_registry_baseline
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/wjj10jm24401vad5ay11dqddf0iymy43.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 324 ms
+warning: error: unable to download 'http://100.100.103.95:5000/wjj10jm24401vad5ay11dqddf0iymy43.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 601 ms
+warning: error: unable to download 'http://100.100.103.95:5000/wjj10jm24401vad5ay11dqddf0iymy43.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1094 ms
+warning: error: unable to download 'http://100.100.103.95:5000/wjj10jm24401vad5ay11dqddf0iymy43.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2824 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/wjj10jm24401vad5ay11dqddf0iymy43.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/wjj10jm24401vad5ay11dqddf0iymy43.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+this derivation will be built:
+  /nix/store/5dkipi4xkf4wpmfl8pb9kn4v4pwxn21d-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/5dkipi4xkf4wpmfl8pb9kn4v4pwxn21d-mc-compat-scenario-manifest.drv'...
+scenario_manifest_exit_status=0
+command=nix develop --no-update-lock-file . -c cargo test --manifest-path tools/mc-compat-runner/Cargo.toml scenario_core -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 2 tests
+test scenario_core::tests::scenario_core_rejects_invalid_static_specs ... ok
+test scenario_core::tests::scenario_core_validates_static_specs_and_lookup_parity ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 116 filtered out; finished in 0.00s
+
+runner_scenario_core_tests_exit_status=0
+exit_status=0
