@@ -1,0 +1,71 @@
+## targeted_packet_live_kv_schema_cairn_gates
+## gate proposal targeted-packet-live-evidence-kv-schema
+{
+  "change": "targeted-packet-live-evidence-kv-schema",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "5df7292d5465aecc0a43a9b8b1f94c3bffe5f6e9d905a32d3460a7da6212303c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "95f0853aa8b1c8fd0ea8ee1cb20eb4f32cb08ab0fae778d9e4f16b76753a7f7f",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+proposal_exit_status=0
+## gate design targeted-packet-live-evidence-kv-schema
+{
+  "change": "targeted-packet-live-evidence-kv-schema",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e0c9a028a5f995dea89e93397ac60fc633a255cc9e47d478e56c0a596c33153f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "a6079fb9c4b2e6624b8bd8772816ea5d05c18e7945c1eaa2199c1a859ee609fe",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+design_exit_status=0
+## gate tasks targeted-packet-live-evidence-kv-schema
+{
+  "change": "targeted-packet-live-evidence-kv-schema",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "0fada7b3ffce344cf662d4fbbbf1504a8be778e3d2457f85332ccb7525b9f560",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "b6bae88126daca8b493246fa2569f1401427dce11dc95eed7514c18bc018ce39",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+tasks_exit_status=0
+exit_status=0

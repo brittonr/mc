@@ -1,6 +1,6 @@
-b6135140920c736adcc84d0f3af7a68d5a8c733f844060f0f0b740fc6a1059f2  tools/check_targeted_packet_promotions.rs
+48dd0f18aa686bb6d5cb3767b31b12f4595e664d65a41a5d45ff93ccfadce29c  tools/check_targeted_packet_promotions.rs
 f81c08d7e5c13567421a5efb0c1886af3eda26c1e7ba001589b2225e6cd31395  cairn/archive/2026-06-06-promote-targeted-packet-live-parity/tasks.md
-36b9b5d19d24199e616dad314e0c5a29ca9f26b4c822372d2804e77ce3a323ac  cairn/specs/mc-compatibility/spec.md
+c315b296c348c45629bdbe91e29ef7473a5612234274fd234a7938a5d11deb8a  cairn/specs/mc-compatibility/spec.md
 c730bc6962b47ca546c0a7c3b2d139068d338bc04ba8b37eebadee63f45aba1c  docs/evidence/targeted-packet-live-parity-2026-06-06.md
 37f2ee709804c48b742734e22dfb8a7625df92a54af4a40ca2579989c5a22ee3  docs/evidence/targeted-packet-live-parity-baseline-2026-06-06.run.log
 cb74b4d73888e724e6e2fdd760ad68b7c7aa249dfd102a6ad050e0b6cd9ca12b  docs/evidence/targeted-packet-live-parity-checker-2026-06-06.run.log

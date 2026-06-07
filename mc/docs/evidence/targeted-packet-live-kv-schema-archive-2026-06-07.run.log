@@ -1,0 +1,105 @@
+## targeted_packet_live_kv_schema_archive
+command=nix run --no-update-lock-file .#cairn -- archive targeted-packet-live-evidence-kv-schema --root . && CAIRN_ARCHIVE_DATE=2026-06-07 ... --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: targeted-packet-live-evidence-kv-schema",
+      "kind": "archive_change",
+      "path": "./cairn/changes/targeted-packet-live-evidence-kv-schema"
+    }
+  ],
+  "blocked": false,
+  "change": "targeted-packet-live-evidence-kv-schema",
+  "dry_run": true,
+  "input_hash": "33d8e3ebad58ae6e33a12f015c0582aff76759f52261f7da1ee825161532e789",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "c61892150a5266ebe8d55998e898de96c8f972dc00469bc33f73d982f0bb9197",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "f2e05b2a45084cce1c41a6f53f2ef6784cd7943b6759cea562bd16ab22ace4d9"
+}
+dry_run_exit_status=0
+{
+  "actions": [
+    {
+      "description": "move active change to archive: targeted-packet-live-evidence-kv-schema",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-07-targeted-packet-live-evidence-kv-schema"
+    }
+  ],
+  "blocked": false,
+  "change": "targeted-packet-live-evidence-kv-schema",
+  "dry_run": false,
+  "input_hash": "33d8e3ebad58ae6e33a12f015c0582aff76759f52261f7da1ee825161532e789",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "d3dc2042aeebf4a2a9a5c1a0f6d943214697d0c58b98da87bccc6ecfe1c70d73",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-targeted-packet-live-evidence-kv-schema/design.md"
+        },
+        {
+          "content_hash": "133d60091edbb029073b43b0e7c8cb5d3505504518c197df054c135dfd92475b",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-targeted-packet-live-evidence-kv-schema/proposal.md"
+        },
+        {
+          "content_hash": "d66c17fc60d2398e40b609329d7b8e5b09cc06b87d6fe6bb161eeef4811c246c",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-targeted-packet-live-evidence-kv-schema/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "d6d53a816bd8f66f1d52f7da937b67afcf4d059601cee2cfbc0a34d46fd5c854",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-targeted-packet-live-evidence-kv-schema/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/targeted-packet-live-evidence-kv-schema"
+        }
+      ],
+      "manifest_hash": "ffb4254e563d1edbfb72ebb1555f4dbe748c46faeaba392c0168d6af8dbba655"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "d3dc2042aeebf4a2a9a5c1a0f6d943214697d0c58b98da87bccc6ecfe1c70d73",
+          "exists": true,
+          "path": "./cairn/changes/targeted-packet-live-evidence-kv-schema/design.md"
+        },
+        {
+          "content_hash": "133d60091edbb029073b43b0e7c8cb5d3505504518c197df054c135dfd92475b",
+          "exists": true,
+          "path": "./cairn/changes/targeted-packet-live-evidence-kv-schema/proposal.md"
+        },
+        {
+          "content_hash": "d66c17fc60d2398e40b609329d7b8e5b09cc06b87d6fe6bb161eeef4811c246c",
+          "exists": true,
+          "path": "./cairn/changes/targeted-packet-live-evidence-kv-schema/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "d6d53a816bd8f66f1d52f7da937b67afcf4d059601cee2cfbc0a34d46fd5c854",
+          "exists": true,
+          "path": "./cairn/changes/targeted-packet-live-evidence-kv-schema/tasks.md"
+        }
+      ],
+      "manifest_hash": "555d8a12cc2bd5b1153fc0277e4be9323551f5e1f6d7d4719d047dc9e03c986f"
+    },
+    "kind": "archive",
+    "manifest_hash": "447c06f1025dea41f1973be094000778b45e5e723cbb17d688643d1d2e3edc05"
+  },
+  "plan_hash": "01ae92d3580795524de704fc1d2503dc370e92b7d1a6762c7079bb6d0ab423f2",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "fa44165e74a69189ffa8507bc3ff2f649c05e84db1cc629c3954b25f72eae419"
+}
+execute_exit_status=0
+exit_status=0

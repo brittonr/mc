@@ -1,0 +1,4 @@
+## targeted_packet_live_kv_schema_evidence_manifest_refresh
+command=nix run --no-update-lock-file .#evidence-manifest-refresh -- --refresh
+evidence manifest refresh ok: mode=refresh; passes=4; manifests=355; entries=2281; current=2281; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=4; manifest_writes=39
+exit_status=0

@@ -19,6 +19,9 @@ const ARG_PAIR_WIDTH: usize = 2;
 const LINE_NUMBER_OFFSET: usize = 1;
 const FIRST_SPEC_INDEX: usize = 0;
 const SECOND_SPEC_INDEX: usize = 1;
+const CREATIVE_SPEC_INDEX: usize = 3;
+const RESOURCE_PACK_SPEC_INDEX: usize = 6;
+const SIGN_EDITOR_SPEC_INDEX: usize = 7;
 const FIRST_PACKET_ROW_INDEX: usize = 0;
 const OK_VALUE: &str = "ok";
 const TRUE_VALUE: &str = "true";
@@ -33,6 +36,13 @@ const LIVE_RECEIPT_DIGEST_STATUS_KEY: &str = "live.receipt.digest_status";
 const LIVE_RECEIPT_DIGEST_CURRENT: &str = "current";
 const LIVE_SCENARIO_KEY: &str = "live.scenario";
 const LIVE_BACKEND_KEY: &str = "live.backend";
+const LIVE_CLIENT_PATH_KEY: &str = "live.client.path";
+const LIVE_BACKEND_PATH_KEY: &str = "live.backend.path";
+const LIVE_CLIENT_REVISION_KEY: &str = "live.client.revision";
+const LIVE_BACKEND_REVISION_KEY: &str = "live.backend.revision";
+const LIVE_REVISION_STATUS_KEY: &str = "live.revision.status";
+const LIVE_REVISION_STATUS_CURRENT: &str = "current";
+const LIVE_ROW_EXTENSION_KIND_KEY: &str = "live.row_extension.kind";
 const REVIEWABLE_EVIDENCE_PREFIX: &str = "docs/evidence/";
 const BLAKE3_HEX_CHAR_COUNT: usize = 64;
 const LIVE_BACKENDS: &[&str] = &["paper", "valence", "paper+valence"];
@@ -42,6 +52,10 @@ const SYNTHETIC_LIVE_RECEIPT_BLAKE3: &str =
     "0000000000000000000000000000000000000000000000000000000000000000";
 const SYNTHETIC_LIVE_SCENARIO: &str = "synthetic-live-row";
 const SYNTHETIC_LIVE_BACKEND: &str = "paper+valence";
+const SYNTHETIC_LIVE_CLIENT_PATH: &str = "stevenarella-owned-local";
+const SYNTHETIC_LIVE_BACKEND_PATH: &str = "paper+valence-owned-local";
+const SYNTHETIC_LIVE_CLIENT_REVISION: &str = "synthetic-client-revision";
+const SYNTHETIC_LIVE_BACKEND_REVISION: &str = "synthetic-backend-revision";
 const TRUTHY_OVERCLAIM_VALUES: &[&str] = &["true", "yes", "ok", "claimed", "1"];
 const COMMON_EXACT_FIELDS: &[Field] = &[
     Field::new("evidence.mode", "deterministic-fixture"),
@@ -76,12 +90,20 @@ impl Field {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct LiveExtension {
+    kind: &'static str,
+    exact_fields: &'static [Field],
+    metrics: &'static [&'static str],
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 struct RowSpec {
     id: &'static str,
     label: &'static str,
     exact_fields: &'static [Field],
     metrics: &'static [&'static str],
     nonclaims: &'static [&'static str],
+    live_extension: LiveExtension,
 }
 
 const BLOCK_ENTITY_UPDATE_FIELDS: &[Field] = &[
@@ -368,6 +390,155 @@ const SIGN_EDITOR_NONCLAIMS: &[&str] = &[
     "all_block_entities",
 ];
 
+const BLOCK_ENTITY_LIVE_FIELDS: &[Field] = &[
+    Field::new("live.block_entity.kind", "Chest"),
+    Field::new("live.block_entity.position", "32,64,0"),
+    Field::new(
+        "live.block_entity.payload_metric",
+        "items=1;custom_name=Compat Chest",
+    ),
+];
+const BLOCK_ENTITY_LIVE_METRICS: &[&str] = &[
+    "metric.live.block_entity_payload_correlation",
+    "metric.live.backend_correlation",
+];
+const BLOCK_ENTITY_LIVE_EXTENSION: LiveExtension = LiveExtension {
+    kind: "block-entity-update-breadth",
+    exact_fields: BLOCK_ENTITY_LIVE_FIELDS,
+    metrics: BLOCK_ENTITY_LIVE_METRICS,
+};
+
+const CHAT_COMMAND_LIVE_FIELDS: &[Field] = &[
+    Field::new("live.chat_command.scope", "owned-local-fixture"),
+    Field::new(
+        "live.chat_command.payload_identity",
+        "harmless-chat-command-containment",
+    ),
+    Field::new(
+        "live.chat_command.redaction_policy",
+        "no-secrets-no-public-addresses",
+    ),
+];
+const CHAT_COMMAND_LIVE_METRICS: &[&str] = &[
+    "metric.live.chat_payload_sent",
+    "metric.live.command_payload_sent",
+    "metric.live.server_correlation",
+];
+const CHAT_COMMAND_LIVE_EXTENSION: LiveExtension = LiveExtension {
+    kind: "chat-command-containment",
+    exact_fields: CHAT_COMMAND_LIVE_FIELDS,
+    metrics: CHAT_COMMAND_LIVE_METRICS,
+};
+
+const CHUNK_BIOME_LIVE_FIELDS: &[Field] = &[
+    Field::new("live.chunk_biome.protocol_version", "763"),
+    Field::new(
+        "live.chunk_biome.payload_identity",
+        "single-overworld-column-biome-palette",
+    ),
+    Field::new(
+        "live.chunk_biome.parser_expectation",
+        "byte-preservation-shape-only",
+    ),
+];
+const CHUNK_BIOME_LIVE_METRICS: &[&str] = &[
+    "metric.live.chunk_biome_row_bound",
+    "metric.live.parser_or_fixture_correlation",
+];
+const CHUNK_BIOME_LIVE_EXTENSION: LiveExtension = LiveExtension {
+    kind: "chunk-biome-data-packet",
+    exact_fields: CHUNK_BIOME_LIVE_FIELDS,
+    metrics: CHUNK_BIOME_LIVE_METRICS,
+};
+
+const CREATIVE_INVENTORY_LIVE_FIELDS: &[Field] = &[
+    Field::new("live.creative.game_mode", "creative"),
+    Field::new("live.creative.semantic_slot", "hotbar_0"),
+    Field::new("live.creative.wire_slot", "36"),
+    Field::new("live.creative.item", "minecraft:stone"),
+    Field::new("live.creative.item.count", "64"),
+];
+const CREATIVE_INVENTORY_LIVE_METRICS: &[&str] = &[
+    "metric.live.creative_action_sent",
+    "metric.live.creative_mode_precondition",
+    "metric.live.server_correlation",
+    "metric.live.final_slot_state",
+];
+const CREATIVE_INVENTORY_LIVE_EXTENSION: LiveExtension = LiveExtension {
+    kind: "creative-inventory-action",
+    exact_fields: CREATIVE_INVENTORY_LIVE_FIELDS,
+    metrics: CREATIVE_INVENTORY_LIVE_METRICS,
+};
+
+const STATUS_EFFECT_LIVE_FIELDS: &[Field] = &[
+    Field::new("live.status_effect.target_entity", "compatbot"),
+    Field::new("live.status_effect.effect", "minecraft:speed"),
+    Field::new("live.status_effect.amplifier", "1"),
+    Field::new("live.status_effect.duration_ticks", "200"),
+];
+const STATUS_EFFECT_LIVE_METRICS: &[&str] = &[
+    "metric.live.status_effect_apply_observed",
+    "metric.live.status_effect_remove_observed",
+    "metric.live.server_correlation",
+];
+const STATUS_EFFECT_LIVE_EXTENSION: LiveExtension = LiveExtension {
+    kind: "entity-status-effect-packets",
+    exact_fields: STATUS_EFFECT_LIVE_FIELDS,
+    metrics: STATUS_EFFECT_LIVE_METRICS,
+};
+
+const RECIPE_BOOK_LIVE_FIELDS: &[Field] = &[
+    Field::new("live.recipe_book.book", "crafting"),
+    Field::new("live.recipe_book.open", "true"),
+    Field::new("live.recipe_book.filtering", "false"),
+];
+const RECIPE_BOOK_LIVE_METRICS: &[&str] = &[
+    "metric.live.recipe_book_settings_sent",
+    "metric.live.server_correlation",
+];
+const RECIPE_BOOK_LIVE_EXTENSION: LiveExtension = LiveExtension {
+    kind: "recipe-book-client-settings",
+    exact_fields: RECIPE_BOOK_LIVE_FIELDS,
+    metrics: RECIPE_BOOK_LIVE_METRICS,
+};
+
+const RESOURCE_PACK_LIVE_FIELDS: &[Field] = &[
+    Field::new("live.resource_pack.scope", "owned-local-fixture"),
+    Field::new("live.resource_pack.status", "declined"),
+    Field::new("live.resource_pack.external_fetch", "false"),
+    Field::new(
+        "live.resource_pack.redaction_policy",
+        "no-secrets-no-public-addresses",
+    ),
+];
+const RESOURCE_PACK_LIVE_METRICS: &[&str] = &[
+    "metric.live.resource_pack_offer_sent",
+    "metric.live.resource_pack_status_response",
+    "metric.live.no_external_fetch_guarantee",
+    "metric.live.server_correlation",
+];
+const RESOURCE_PACK_LIVE_EXTENSION: LiveExtension = LiveExtension {
+    kind: "resource-pack-status",
+    exact_fields: RESOURCE_PACK_LIVE_FIELDS,
+    metrics: RESOURCE_PACK_LIVE_METRICS,
+};
+
+const SIGN_EDITOR_LIVE_FIELDS: &[Field] = &[
+    Field::new("live.sign.position", "28,64,0"),
+    Field::new("live.sign.initial_state", "blank"),
+    Field::new("live.sign.payload", "MC|Compat|Sign|Edit"),
+];
+const SIGN_EDITOR_LIVE_METRICS: &[&str] = &[
+    "metric.live.sign_editor_open_observed",
+    "metric.live.sign_update_sent",
+    "metric.live.server_accepted_update",
+];
+const SIGN_EDITOR_LIVE_EXTENSION: LiveExtension = LiveExtension {
+    kind: "sign-editor-open-update",
+    exact_fields: SIGN_EDITOR_LIVE_FIELDS,
+    metrics: SIGN_EDITOR_LIVE_METRICS,
+};
+
 const ROW_SPECS: &[RowSpec] = &[
     RowSpec {
         id: "block-entity-update-breadth",
@@ -375,6 +546,7 @@ const ROW_SPECS: &[RowSpec] = &[
         exact_fields: BLOCK_ENTITY_UPDATE_FIELDS,
         metrics: BLOCK_ENTITY_UPDATE_METRICS,
         nonclaims: BLOCK_ENTITY_UPDATE_NONCLAIMS,
+        live_extension: BLOCK_ENTITY_LIVE_EXTENSION,
     },
     RowSpec {
         id: "chat-command-containment",
@@ -382,6 +554,7 @@ const ROW_SPECS: &[RowSpec] = &[
         exact_fields: CHAT_COMMAND_FIELDS,
         metrics: CHAT_COMMAND_METRICS,
         nonclaims: CHAT_COMMAND_NONCLAIMS,
+        live_extension: CHAT_COMMAND_LIVE_EXTENSION,
     },
     RowSpec {
         id: "chunk-biome-data-packet",
@@ -389,6 +562,7 @@ const ROW_SPECS: &[RowSpec] = &[
         exact_fields: CHUNK_BIOME_FIELDS,
         metrics: CHUNK_BIOME_METRICS,
         nonclaims: CHUNK_BIOME_NONCLAIMS,
+        live_extension: CHUNK_BIOME_LIVE_EXTENSION,
     },
     RowSpec {
         id: "creative-inventory-action",
@@ -396,6 +570,7 @@ const ROW_SPECS: &[RowSpec] = &[
         exact_fields: CREATIVE_INVENTORY_FIELDS,
         metrics: CREATIVE_INVENTORY_METRICS,
         nonclaims: CREATIVE_INVENTORY_NONCLAIMS,
+        live_extension: CREATIVE_INVENTORY_LIVE_EXTENSION,
     },
     RowSpec {
         id: "entity-status-effect-packets",
@@ -403,6 +578,7 @@ const ROW_SPECS: &[RowSpec] = &[
         exact_fields: STATUS_EFFECT_FIELDS,
         metrics: STATUS_EFFECT_METRICS,
         nonclaims: STATUS_EFFECT_NONCLAIMS,
+        live_extension: STATUS_EFFECT_LIVE_EXTENSION,
     },
     RowSpec {
         id: "recipe-book-client-settings",
@@ -410,6 +586,7 @@ const ROW_SPECS: &[RowSpec] = &[
         exact_fields: RECIPE_BOOK_FIELDS,
         metrics: RECIPE_BOOK_METRICS,
         nonclaims: RECIPE_BOOK_NONCLAIMS,
+        live_extension: RECIPE_BOOK_LIVE_EXTENSION,
     },
     RowSpec {
         id: "resource-pack-status",
@@ -417,6 +594,7 @@ const ROW_SPECS: &[RowSpec] = &[
         exact_fields: RESOURCE_PACK_FIELDS,
         metrics: RESOURCE_PACK_METRICS,
         nonclaims: RESOURCE_PACK_NONCLAIMS,
+        live_extension: RESOURCE_PACK_LIVE_EXTENSION,
     },
     RowSpec {
         id: "sign-editor-open-update",
@@ -424,6 +602,7 @@ const ROW_SPECS: &[RowSpec] = &[
         exact_fields: SIGN_EDITOR_FIELDS,
         metrics: SIGN_EDITOR_METRICS,
         nonclaims: SIGN_EDITOR_NONCLAIMS,
+        live_extension: SIGN_EDITOR_LIVE_EXTENSION,
     },
 ];
 
@@ -625,6 +804,15 @@ fn validate_evidence(spec: RowSpec, evidence: &Evidence) -> Result<(), Vec<Strin
 }
 
 fn validate_live_evidence(spec: RowSpec, evidence: &Evidence) -> Result<(), Vec<String>> {
+    let diagnostics = validate_live_schema(spec, evidence);
+    if diagnostics.is_empty() {
+        Ok(())
+    } else {
+        Err(diagnostics)
+    }
+}
+
+fn validate_live_schema(spec: RowSpec, evidence: &Evidence) -> Vec<String> {
     let mut diagnostics = Vec::new();
     require_exact(evidence, &mut diagnostics, "row.id", spec.id);
     require_exact(
@@ -645,6 +833,12 @@ fn validate_live_evidence(spec: RowSpec, evidence: &Evidence) -> Result<(), Vec<
         LIVE_RECEIPT_DIGEST_STATUS_KEY,
         LIVE_RECEIPT_DIGEST_CURRENT,
     );
+    require_exact(
+        evidence,
+        &mut diagnostics,
+        LIVE_REVISION_STATUS_KEY,
+        LIVE_REVISION_STATUS_CURRENT,
+    );
     require_present_with_prefix(
         evidence,
         &mut diagnostics,
@@ -652,6 +846,10 @@ fn validate_live_evidence(spec: RowSpec, evidence: &Evidence) -> Result<(), Vec<
         REVIEWABLE_EVIDENCE_PREFIX,
     );
     require_present(evidence, &mut diagnostics, LIVE_SCENARIO_KEY);
+    require_present(evidence, &mut diagnostics, LIVE_CLIENT_PATH_KEY);
+    require_present(evidence, &mut diagnostics, LIVE_BACKEND_PATH_KEY);
+    require_present(evidence, &mut diagnostics, LIVE_CLIENT_REVISION_KEY);
+    require_present(evidence, &mut diagnostics, LIVE_BACKEND_REVISION_KEY);
     require_one_of(evidence, &mut diagnostics, LIVE_BACKEND_KEY, LIVE_BACKENDS);
     require_one_of(
         evidence,
@@ -660,12 +858,27 @@ fn validate_live_evidence(spec: RowSpec, evidence: &Evidence) -> Result<(), Vec<
         &expected_packet_rows(spec),
     );
     require_blake3_digest(evidence, &mut diagnostics, LIVE_RECEIPT_BLAKE3_KEY);
+    require_live_extension(spec.live_extension, evidence, &mut diagnostics);
     require_nonclaims(spec, evidence, &mut diagnostics);
+    diagnostics
+}
 
-    if diagnostics.is_empty() {
-        Ok(())
-    } else {
-        Err(diagnostics)
+fn require_live_extension(
+    extension: LiveExtension,
+    evidence: &Evidence,
+    diagnostics: &mut Vec<String>,
+) {
+    require_exact(
+        evidence,
+        diagnostics,
+        LIVE_ROW_EXTENSION_KIND_KEY,
+        extension.kind,
+    );
+    for field in extension.exact_fields {
+        require_exact(evidence, diagnostics, field.key, field.value);
+    }
+    for metric in extension.metrics {
+        require_exact(evidence, diagnostics, metric, OK_VALUE);
     }
 }
 
@@ -796,8 +1009,33 @@ fn valid_live_fixture(spec: RowSpec) -> String {
     lines.push(format!(
         "{LIVE_RECEIPT_DIGEST_STATUS_KEY}={LIVE_RECEIPT_DIGEST_CURRENT}"
     ));
+    lines.push(format!(
+        "{LIVE_REVISION_STATUS_KEY}={LIVE_REVISION_STATUS_CURRENT}"
+    ));
     lines.push(format!("{LIVE_SCENARIO_KEY}={SYNTHETIC_LIVE_SCENARIO}"));
     lines.push(format!("{LIVE_BACKEND_KEY}={SYNTHETIC_LIVE_BACKEND}"));
+    lines.push(format!(
+        "{LIVE_CLIENT_PATH_KEY}={SYNTHETIC_LIVE_CLIENT_PATH}"
+    ));
+    lines.push(format!(
+        "{LIVE_BACKEND_PATH_KEY}={SYNTHETIC_LIVE_BACKEND_PATH}"
+    ));
+    lines.push(format!(
+        "{LIVE_CLIENT_REVISION_KEY}={SYNTHETIC_LIVE_CLIENT_REVISION}"
+    ));
+    lines.push(format!(
+        "{LIVE_BACKEND_REVISION_KEY}={SYNTHETIC_LIVE_BACKEND_REVISION}"
+    ));
+    lines.push(format!(
+        "{LIVE_ROW_EXTENSION_KIND_KEY}={}",
+        spec.live_extension.kind
+    ));
+    for field in spec.live_extension.exact_fields {
+        lines.push(format!("{}={}", field.key, field.value));
+    }
+    for metric in spec.live_extension.metrics {
+        lines.push(format!("{metric}={OK_VALUE}"));
+    }
     for nonclaim in COMMON_NONCLAIMS.iter().chain(spec.nonclaims.iter()) {
         lines.push(format!("nonclaim.{nonclaim}={TRUE_VALUE}"));
     }
@@ -808,6 +1046,9 @@ fn run_self_tests() -> Result<String, Vec<String>> {
     for spec in ROW_SPECS {
         let evidence = Evidence::parse(&valid_fixture(*spec)).map_err(|error| vec![error])?;
         validate_evidence(*spec, &evidence)?;
+        let live_evidence =
+            Evidence::parse(&valid_live_fixture(*spec)).map_err(|error| vec![error])?;
+        validate_live_evidence(*spec, &live_evidence)?;
     }
 
     let temp_dir = env::temp_dir().join(format!(
@@ -916,6 +1157,22 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         "live.receipt.digest_status expected current",
     )?;
     expect_live_error(
+        "weak revision metadata",
+        &valid_live_fixture(spec)
+            .replace("live.revision.status=current", "live.revision.status=stale"),
+        spec,
+        "live.revision.status expected current",
+    )?;
+    expect_live_error(
+        "missing client path",
+        &valid_live_fixture(spec).replace(
+            &format!("{LIVE_CLIENT_PATH_KEY}={SYNTHETIC_LIVE_CLIENT_PATH}\n"),
+            "",
+        ),
+        spec,
+        "missing live.client.path",
+    )?;
+    expect_live_error(
         "truthy live overclaim",
         &format!(
             "{}\nclaim.full_protocol_763_compatibility=true",
@@ -923,6 +1180,33 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         ),
         spec,
         "broad overclaim claim.full_protocol_763_compatibility=true",
+    )?;
+
+    let creative_spec = ROW_SPECS[CREATIVE_SPEC_INDEX];
+    expect_live_error(
+        "malformed creative extension field",
+        &valid_live_fixture(creative_spec)
+            .replace("live.creative.wire_slot=36", "live.creative.wire_slot=37"),
+        creative_spec,
+        "live.creative.wire_slot expected 36",
+    )?;
+    let resource_pack_spec = ROW_SPECS[RESOURCE_PACK_SPEC_INDEX];
+    expect_live_error(
+        "missing resource-pack no-external-fetch metric",
+        &valid_live_fixture(resource_pack_spec)
+            .replace("metric.live.no_external_fetch_guarantee=ok\n", ""),
+        resource_pack_spec,
+        "missing metric.live.no_external_fetch_guarantee",
+    )?;
+    let sign_editor_spec = ROW_SPECS[SIGN_EDITOR_SPEC_INDEX];
+    expect_live_error(
+        "wrong sign editor payload",
+        &valid_live_fixture(sign_editor_spec).replace(
+            "live.sign.payload=MC|Compat|Sign|Edit",
+            "live.sign.payload=wrong",
+        ),
+        sign_editor_spec,
+        "live.sign.payload expected MC|Compat|Sign|Edit",
     )?;
     let duplicate_key = format!("{}\nrow.id=duplicate", valid_fixture(spec));
     match Evidence::parse(&duplicate_key) {

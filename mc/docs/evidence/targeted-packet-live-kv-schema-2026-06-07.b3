@@ -1,0 +1,12 @@
+48dd0f18aa686bb6d5cb3767b31b12f4595e664d65a41a5d45ff93ccfadce29c  tools/check_targeted_packet_promotions.rs
+0b078d8fbf0d550675e2ccf7e2a297b923c45a48fdc486a6ec88a0d8447eebee  cairn/archive/2026-06-07-targeted-packet-live-evidence-kv-schema/tasks.md
+c315b296c348c45629bdbe91e29ef7473a5612234274fd234a7938a5d11deb8a  cairn/specs/mc-compatibility/spec.md
+ab042f3a34f369b47053b554fb8950d10c871ee9021d78710dc090abece6343a  docs/evidence/targeted-packet-live-kv-schema-2026-06-07.md
+5c5d78ee188f32ce0e73e7609733fa5e16c485652120f73732c7703cfe001dd6  docs/evidence/targeted-packet-live-kv-schema-baseline-2026-06-07.run.log
+4200afde7ea400ce1fe7c5ba9be48c99036bce718f4aab264431ea197bdacb46  docs/evidence/targeted-packet-live-kv-schema-checker-2026-06-07.run.log
+0e87d5b6700cb5f8a7df3df4999cc9797f7962cded8ea0ed98b700911ef2febd  docs/evidence/targeted-packet-live-kv-schema-cairn-gates-2026-06-07.run.log
+66976e517743df229e7683fc4ac5902a98ff1e8c16d3727b632481e6bcf9d4a3  docs/evidence/targeted-packet-live-kv-schema-evidence-checks-2026-06-07.run.log
+5d55d50d8a007d53321beda36b26b600e27bd9ba500ac4d9349f66091134b204  docs/evidence/targeted-packet-live-kv-schema-sync-2026-06-07.run.log
+5b76e98f706e8886d78459cd95e422498c16d7691cbfb8c56b49bbdf02d6a581  docs/evidence/targeted-packet-live-kv-schema-post-sync-validate-2026-06-07.run.log
+c0ff44f64089efd1b8acb2d03d91b8292e6757dbde50ab5cc161b312f8e8e618  docs/evidence/targeted-packet-live-kv-schema-archive-2026-06-07.run.log
+60336556d8ebc741a5958b314e283066cbc12966a689c0439bc18d9aee33a6c6  docs/evidence/targeted-packet-live-kv-schema-post-archive-checks-2026-06-07.run.log
