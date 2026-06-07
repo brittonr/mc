@@ -1,0 +1,56 @@
+## creative_inventory_live_rail_nonpromotion_checks
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-valence-ctf-inventory-interaction-dry-run .#checks.x86_64-linux.mc-compat-acceptance-matrix .#checks.x86_64-linux.mc-compat-current-evidence-bundle .#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/3q4l25d4waqhpbbvdd6hx31gc7rc0qj0.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 286 ms
+warning: error: unable to download 'http://100.100.103.95:5000/sgnr8r4w7gqrq10kx4mpnn7fgvr80pz0.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 351 ms
+warning: error: unable to download 'http://100.100.103.95:5000/14v6szccd5cp6ny50bhwh9w2r9zb5irw.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 297 ms
+warning: error: unable to download 'http://100.100.103.95:5000/3q4l25d4waqhpbbvdd6hx31gc7rc0qj0.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 531 ms
+warning: error: unable to download 'http://100.100.103.95:5000/14v6szccd5cp6ny50bhwh9w2r9zb5irw.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 509 ms
+warning: error: unable to download 'http://100.100.103.95:5000/sgnr8r4w7gqrq10kx4mpnn7fgvr80pz0.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 699 ms
+warning: error: unable to download 'http://100.100.103.95:5000/14v6szccd5cp6ny50bhwh9w2r9zb5irw.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 1157 ms
+warning: error: unable to download 'http://100.100.103.95:5000/3q4l25d4waqhpbbvdd6hx31gc7rc0qj0.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1379 ms
+warning: error: unable to download 'http://100.100.103.95:5000/sgnr8r4w7gqrq10kx4mpnn7fgvr80pz0.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1380 ms
+warning: error: unable to download 'http://100.100.103.95:5000/14v6szccd5cp6ny50bhwh9w2r9zb5irw.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2564 ms
+warning: error: unable to download 'http://100.100.103.95:5000/3q4l25d4waqhpbbvdd6hx31gc7rc0qj0.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2777 ms
+warning: error: unable to download 'http://100.100.103.95:5000/sgnr8r4w7gqrq10kx4mpnn7fgvr80pz0.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2820 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/14v6szccd5cp6ny50bhwh9w2r9zb5irw.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/14v6szccd5cp6ny50bhwh9w2r9zb5irw.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/3q4l25d4waqhpbbvdd6hx31gc7rc0qj0.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/3q4l25d4waqhpbbvdd6hx31gc7rc0qj0.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/sgnr8r4w7gqrq10kx4mpnn7fgvr80pz0.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/sgnr8r4w7gqrq10kx4mpnn7fgvr80pz0.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+these 4 derivations will be built:
+  /nix/store/7g2v4h2826lwyyhp6hprmg0p7ydb8hhm-mc-compat-valence-ctf-inventory-interaction.drv
+  /nix/store/kc6gxm55mfcgwmx9p2kzvhsf418aqq5n-mc-compat-valence-ctf-inventory-interaction-dry-run.drv
+  /nix/store/mqx368za30inh6xnynzrb29r6adw8fkl-mc-compat-current-evidence-bundle.drv
+  /nix/store/xwj2mnsc8zajbjqh4akm82avivyzyzln-mc-compat-acceptance-matrix.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/xwj2mnsc8zajbjqh4akm82avivyzyzln-mc-compat-acceptance-matrix.drv'...
+building '/nix/store/mqx368za30inh6xnynzrb29r6adw8fkl-mc-compat-current-evidence-bundle.drv'...
+building '/nix/store/7g2v4h2826lwyyhp6hprmg0p7ydb8hhm-mc-compat-valence-ctf-inventory-interaction.drv'...
+building '/nix/store/kc6gxm55mfcgwmx9p2kzvhsf418aqq5n-mc-compat-valence-ctf-inventory-interaction-dry-run.drv'...
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint: call:
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint:
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint:      git config --global init.defaultBranch <name>
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint:
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint:
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint:      git branch -m <name>
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint:
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-valence-ctf-inventory-interaction-dry-run> Initialized empty Git repository in /build/fake-valence/.git/
+mc-compat-valence-ctf-inventory-interaction-dry-run> [master (root-commit) 64319ba] init
+mc-compat-valence-ctf-inventory-interaction-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-valence-ctf-inventory-interaction-dry-run>  create mode 100644 README.md
+nix_checks_exit_status=0
+exit_status=0

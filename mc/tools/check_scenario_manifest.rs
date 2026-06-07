@@ -28,11 +28,15 @@ const EXIT_SUCCESS: ExitCode = ExitCode::SUCCESS;
 const EXIT_FAILURE: ExitCode = ExitCode::FAILURE;
 const LIVE_CAPABILITY_REGISTRY_TOKENS: &[&str] = &[
     "ScenarioLiveCapability",
+    "CreativeInventoryLiveContract",
+    "CREATIVE_INVENTORY_LIVE_CONTRACT",
+    "validate_creative_inventory_live_contract",
     "SCENARIO_LIVE_CAPABILITIES",
     "validate_static_live_capabilities",
     "targeted-packet-live-blocker",
     "fixture-bounded-blocker",
     "creative-inventory-action",
+    "creative_slot_mutation_accepted",
     "resource-pack-status",
     "sign-editor-open-update",
 ];

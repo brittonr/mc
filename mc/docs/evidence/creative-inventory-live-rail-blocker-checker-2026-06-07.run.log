@@ -1,0 +1,18 @@
+## creative_inventory_live_rail_blocker_checker
+command=nix develop --no-update-lock-file . -c rustc --edition=2021 tools/check_targeted_packet_promotions.rs -o target/creative-inventory-live-rail/check-targeted-packet-promotions
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+checker_compile_exit_status=0
+command=checker --self-test
+targeted packet promotion self-test ok: 8 positive fixtures and targeted negative fixtures exercised
+checker_self_test_exit_status=0
+command=checker --live-evidence docs/evidence/creative-inventory-live-rail-2026-06-07.kv (expected failure)
+targeted packet promotion check failed: live.promotion.status expected passed, got blocked
+targeted packet promotion check failed: live.evidence.mode expected owned-local-live, got fixture-bounded-blocker
+targeted packet promotion check failed: metric.live.creative_action_sent expected ok, got blocked
+targeted packet promotion check failed: metric.live.creative_mode_precondition expected ok, got blocked
+targeted packet promotion check failed: metric.live.server_correlation expected ok, got blocked
+targeted packet promotion check failed: metric.live.final_slot_state expected ok, got blocked
+blocker_live_check_expected_failure_code=1
+exit_status=0

@@ -1,0 +1,39 @@
+## creative_inventory_live_rail_baseline
+command=git -C /home/brittonr/git status --short -- mc
+note=flake has targeted-packet, acceptance-matrix, and current-bundle checks; no standalone mc-compat-packet-inventory check is defined
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check .#checks.x86_64-linux.mc-compat-acceptance-matrix .#checks.x86_64-linux.mc-compat-current-evidence-bundle --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/y65dkxh7nwz7k7kljw827c0b65bxkwhz.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 297 ms
+warning: error: unable to download 'http://100.100.103.95:5000/9kq54psad88zbirkp8amdzqhb730ryxy.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 346 ms
+warning: error: unable to download 'http://100.100.103.95:5000/fi7wrj1cmnj0135m19s9pgrf0v0bc2fi.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 264 ms
+warning: error: unable to download 'http://100.100.103.95:5000/fi7wrj1cmnj0135m19s9pgrf0v0bc2fi.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 598 ms
+warning: error: unable to download 'http://100.100.103.95:5000/y65dkxh7nwz7k7kljw827c0b65bxkwhz.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 621 ms
+warning: error: unable to download 'http://100.100.103.95:5000/9kq54psad88zbirkp8amdzqhb730ryxy.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 577 ms
+warning: error: unable to download 'http://100.100.103.95:5000/fi7wrj1cmnj0135m19s9pgrf0v0bc2fi.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1223 ms
+warning: error: unable to download 'http://100.100.103.95:5000/y65dkxh7nwz7k7kljw827c0b65bxkwhz.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1038 ms
+warning: error: unable to download 'http://100.100.103.95:5000/9kq54psad88zbirkp8amdzqhb730ryxy.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1367 ms
+warning: error: unable to download 'http://100.100.103.95:5000/y65dkxh7nwz7k7kljw827c0b65bxkwhz.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2589 ms
+warning: error: unable to download 'http://100.100.103.95:5000/fi7wrj1cmnj0135m19s9pgrf0v0bc2fi.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2774 ms
+warning: error: unable to download 'http://100.100.103.95:5000/9kq54psad88zbirkp8amdzqhb730ryxy.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2334 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/y65dkxh7nwz7k7kljw827c0b65bxkwhz.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/y65dkxh7nwz7k7kljw827c0b65bxkwhz.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/9kq54psad88zbirkp8amdzqhb730ryxy.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/9kq54psad88zbirkp8amdzqhb730ryxy.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/fi7wrj1cmnj0135m19s9pgrf0v0bc2fi.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/fi7wrj1cmnj0135m19s9pgrf0v0bc2fi.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+these 3 derivations will be built:
+  /nix/store/aayqwbzhzyx1rdan9imzwc2rfrvm88zc-mc-compat-acceptance-matrix.drv
+  /nix/store/dbdmb6avqngkx2sqwinap9j6qvhlsz9a-mc-compat-current-evidence-bundle.drv
+  /nix/store/vmp4lqwi74qwm6aqyh1g0qhpr3jrc6s8-mc-compat-targeted-packet-promotions-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/aayqwbzhzyx1rdan9imzwc2rfrvm88zc-mc-compat-acceptance-matrix.drv'...
+building '/nix/store/dbdmb6avqngkx2sqwinap9j6qvhlsz9a-mc-compat-current-evidence-bundle.drv'...
+building '/nix/store/vmp4lqwi74qwm6aqyh1g0qhpr3jrc6s8-mc-compat-targeted-packet-promotions-check.drv'...
+baseline_checks_exit_status=0
+exit_status=0

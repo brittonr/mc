@@ -180,6 +180,24 @@ pub(crate) struct ScenarioLiveCapability {
     pub(crate) blocker_reason: Option<&'static str>,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct CreativeInventoryLiveContract {
+    pub(crate) scenario: &'static str,
+    pub(crate) actor: &'static str,
+    pub(crate) game_mode: &'static str,
+    pub(crate) semantic_slot: &'static str,
+    pub(crate) wire_slot: &'static str,
+    pub(crate) item: &'static str,
+    pub(crate) item_count: &'static str,
+    pub(crate) packet_row: &'static str,
+    pub(crate) backend_path: &'static str,
+    pub(crate) client_path: &'static str,
+    pub(crate) expected_server_correlation: &'static str,
+    pub(crate) evidence_mode: &'static str,
+    pub(crate) required_nonclaims: &'static [&'static str],
+    pub(crate) blocker_reason: &'static str,
+}
+
 pub(crate) const LIVE_CAPABILITY_KIND_PROBE: &str = "targeted-packet-live-probe";
 pub(crate) const LIVE_CAPABILITY_KIND_BLOCKED: &str = "targeted-packet-live-blocker";
 pub(crate) const LIVE_EVIDENCE_MODE_OWNED_LOCAL: &str = "owned-local-live";
@@ -2132,7 +2150,9 @@ const CHAT_COMMAND_PACKET_ROWS: &[&str] = &[
     "play/serverbound/0x04 CommandExecutionC2SPacket",
 ];
 const CHUNK_BIOME_PACKET_ROWS: &[&str] = &["play/clientbound/0x0d ChunkBiomeDataS2CPacket"];
-const CREATIVE_PACKET_ROWS: &[&str] = &["play/serverbound/0x2b CreativeInventoryActionC2SPacket"];
+const CREATIVE_INVENTORY_PACKET_ROW: &str =
+    "play/serverbound/0x2b CreativeInventoryActionC2SPacket";
+const CREATIVE_PACKET_ROWS: &[&str] = &[CREATIVE_INVENTORY_PACKET_ROW];
 const STATUS_EFFECT_PACKET_ROWS: &[&str] = &[
     "play/clientbound/0x6c EntityStatusEffectS2CPacket",
     "play/clientbound/0x3f RemoveEntityStatusEffectS2CPacket",
@@ -2205,6 +2225,37 @@ const CREATIVE_NONCLAIMS: &[&str] = &[
     "all_slots",
     "all_items",
 ];
+
+const CREATIVE_INVENTORY_LIVE_SCENARIO: &str = "inventory-interaction";
+const CREATIVE_INVENTORY_LIVE_ACTOR: &str = "compatbot";
+const CREATIVE_INVENTORY_LIVE_GAME_MODE: &str = "creative";
+const CREATIVE_INVENTORY_LIVE_SEMANTIC_SLOT: &str = "hotbar_0";
+const CREATIVE_INVENTORY_LIVE_WIRE_SLOT: &str = "36";
+const CREATIVE_INVENTORY_LIVE_ITEM: &str = "minecraft:stone";
+const CREATIVE_INVENTORY_LIVE_ITEM_COUNT: &str = "64";
+const CREATIVE_INVENTORY_LIVE_BACKEND_PATH: &str = "deterministic-creative-fixture-contract";
+const CREATIVE_INVENTORY_LIVE_CLIENT_PATH: &str = "stevenarella-creative-action-driver-missing";
+const CREATIVE_INVENTORY_LIVE_SERVER_CORRELATION: &str = "creative_slot_mutation_accepted";
+const CREATIVE_INVENTORY_LIVE_BLOCKER_REASON: &str =
+    "no maintained live Stevenarella creative-mode mutation driver exists";
+
+pub(crate) const CREATIVE_INVENTORY_LIVE_CONTRACT: CreativeInventoryLiveContract =
+    CreativeInventoryLiveContract {
+        scenario: CREATIVE_INVENTORY_LIVE_SCENARIO,
+        actor: CREATIVE_INVENTORY_LIVE_ACTOR,
+        game_mode: CREATIVE_INVENTORY_LIVE_GAME_MODE,
+        semantic_slot: CREATIVE_INVENTORY_LIVE_SEMANTIC_SLOT,
+        wire_slot: CREATIVE_INVENTORY_LIVE_WIRE_SLOT,
+        item: CREATIVE_INVENTORY_LIVE_ITEM,
+        item_count: CREATIVE_INVENTORY_LIVE_ITEM_COUNT,
+        packet_row: CREATIVE_INVENTORY_PACKET_ROW,
+        backend_path: CREATIVE_INVENTORY_LIVE_BACKEND_PATH,
+        client_path: CREATIVE_INVENTORY_LIVE_CLIENT_PATH,
+        expected_server_correlation: CREATIVE_INVENTORY_LIVE_SERVER_CORRELATION,
+        evidence_mode: LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER,
+        required_nonclaims: CREATIVE_NONCLAIMS,
+        blocker_reason: CREATIVE_INVENTORY_LIVE_BLOCKER_REASON,
+    };
 const STATUS_EFFECT_NONCLAIMS: &[&str] = &[
     "full_protocol_763_compatibility",
     "broad_minecraft_compatibility",
@@ -2283,18 +2334,16 @@ pub(crate) const SCENARIO_LIVE_CAPABILITIES: &[ScenarioLiveCapability] = &[
         ),
     },
     ScenarioLiveCapability {
-        scenario: "inventory-interaction",
+        scenario: CREATIVE_INVENTORY_LIVE_CONTRACT.scenario,
         targeted_row: "creative-inventory-action",
         packet_rows: CREATIVE_PACKET_ROWS,
         capability_kind: LIVE_CAPABILITY_KIND_BLOCKED,
-        backend_path: "creative-mode-rail-missing",
-        client_path: "stevenarella-inventory-control-candidate",
-        evidence_mode: LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER,
+        backend_path: CREATIVE_INVENTORY_LIVE_CONTRACT.backend_path,
+        client_path: CREATIVE_INVENTORY_LIVE_CONTRACT.client_path,
+        evidence_mode: CREATIVE_INVENTORY_LIVE_CONTRACT.evidence_mode,
         required_signals: CREATIVE_SIGNALS,
-        required_nonclaims: CREATIVE_NONCLAIMS,
-        blocker_reason: Some(
-            "inventory rail is survival-scoped and lacks deterministic creative-mode mutation",
-        ),
+        required_nonclaims: CREATIVE_INVENTORY_LIVE_CONTRACT.required_nonclaims,
+        blocker_reason: Some(CREATIVE_INVENTORY_LIVE_CONTRACT.blocker_reason),
     },
     ScenarioLiveCapability {
         scenario: "combat-damage",
@@ -2388,7 +2437,87 @@ pub(crate) fn server_required_milestones(scenario: Scenario) -> &'static [Scenar
 pub(crate) fn validate_static_scenario_specs(specs: &[ScenarioSpec]) -> Result<(), String> {
     validate_static_scenario_coverage(specs)?;
     validate_static_scenario_rows(specs)?;
+    validate_creative_inventory_live_contract(&CREATIVE_INVENTORY_LIVE_CONTRACT)?;
     validate_static_live_capabilities(SCENARIO_LIVE_CAPABILITIES, specs)
+}
+
+pub(crate) fn validate_creative_inventory_live_contract(
+    contract: &CreativeInventoryLiveContract,
+) -> Result<(), String> {
+    if contract.scenario != CREATIVE_INVENTORY_LIVE_SCENARIO {
+        return Err(format!(
+            "creative live contract names unexpected scenario {}",
+            contract.scenario
+        ));
+    }
+    if contract.actor != CREATIVE_INVENTORY_LIVE_ACTOR {
+        return Err(format!(
+            "creative live contract names unexpected actor {}",
+            contract.actor
+        ));
+    }
+    if contract.game_mode != CREATIVE_INVENTORY_LIVE_GAME_MODE {
+        return Err(format!(
+            "creative live contract names unexpected game mode {}",
+            contract.game_mode
+        ));
+    }
+    if contract.semantic_slot != CREATIVE_INVENTORY_LIVE_SEMANTIC_SLOT {
+        return Err(format!(
+            "creative live contract names unexpected semantic slot {}",
+            contract.semantic_slot
+        ));
+    }
+    if contract.wire_slot != CREATIVE_INVENTORY_LIVE_WIRE_SLOT {
+        return Err(format!(
+            "creative live contract names unexpected wire slot {}",
+            contract.wire_slot
+        ));
+    }
+    if contract.item != CREATIVE_INVENTORY_LIVE_ITEM {
+        return Err(format!(
+            "creative live contract names unexpected item {}",
+            contract.item
+        ));
+    }
+    if contract.item_count != CREATIVE_INVENTORY_LIVE_ITEM_COUNT {
+        return Err(format!(
+            "creative live contract names unexpected item count {}",
+            contract.item_count
+        ));
+    }
+    if contract.packet_row != CREATIVE_INVENTORY_PACKET_ROW {
+        return Err(format!(
+            "creative live contract names unexpected packet row {}",
+            contract.packet_row
+        ));
+    }
+    if contract.backend_path.is_empty() {
+        return Err("creative live contract has empty backend path".to_string());
+    }
+    if contract.client_path.is_empty() {
+        return Err("creative live contract has empty client path".to_string());
+    }
+    if contract.expected_server_correlation.is_empty() {
+        return Err("creative live contract has empty server correlation".to_string());
+    }
+    if contract.evidence_mode != LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER {
+        return Err(format!(
+            "creative live contract has unsupported evidence mode {}",
+            contract.evidence_mode
+        ));
+    }
+    for nonclaim in CREATIVE_NONCLAIMS {
+        if !contract.required_nonclaims.contains(nonclaim) {
+            return Err(format!(
+                "creative live contract missing nonclaim {nonclaim}"
+            ));
+        }
+    }
+    if contract.blocker_reason.is_empty() {
+        return Err("creative live contract has empty blocker reason".to_string());
+    }
+    Ok(())
 }
 
 pub(crate) fn scenario_live_capabilities_for_row(
@@ -2668,6 +2797,7 @@ mod tests {
         "broad_minecraft_compatibility",
         "public_server_safety",
     ];
+    const WRONG_CREATIVE_PACKET_ROW: &str = "play/serverbound/0x00 WrongPacket";
     const COMPAT_ALIAS_MISSING_LEGACY: &[&str] = &["valence-compat-bot-probe"];
 
     #[test]
@@ -2695,11 +2825,46 @@ mod tests {
 
         let creative_capabilities = scenario_live_capabilities_for_row("creative-inventory-action");
         assert_eq!(creative_capabilities.len(), 1);
-        assert_eq!(creative_capabilities[0].scenario, "inventory-interaction");
+        assert_eq!(
+            creative_capabilities[0].scenario,
+            CREATIVE_INVENTORY_LIVE_CONTRACT.scenario
+        );
+        assert_eq!(
+            creative_capabilities[0].backend_path,
+            CREATIVE_INVENTORY_LIVE_CONTRACT.backend_path
+        );
         assert_eq!(
             creative_capabilities[0].evidence_mode,
             LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER
         );
+        validate_creative_inventory_live_contract(&CREATIVE_INVENTORY_LIVE_CONTRACT)
+            .expect("creative live contract validates");
+    }
+
+    #[test]
+    fn scenario_core_rejects_invalid_creative_inventory_live_contracts() {
+        let mut wrong_packet = CREATIVE_INVENTORY_LIVE_CONTRACT;
+        wrong_packet.packet_row = WRONG_CREATIVE_PACKET_ROW;
+        let err = validate_creative_inventory_live_contract(&wrong_packet).unwrap_err();
+        assert!(err.contains("unexpected packet row"), "{err}");
+
+        let mut missing_correlation = CREATIVE_INVENTORY_LIVE_CONTRACT;
+        missing_correlation.expected_server_correlation = "";
+        let err = validate_creative_inventory_live_contract(&missing_correlation).unwrap_err();
+        assert!(err.contains("empty server correlation"), "{err}");
+
+        let mut missing_nonclaim = CREATIVE_INVENTORY_LIVE_CONTRACT;
+        missing_nonclaim.required_nonclaims = TARGETED_PACKET_LIVE_NONCLAIMS_WITHOUT_PRODUCTION;
+        let err = validate_creative_inventory_live_contract(&missing_nonclaim).unwrap_err();
+        assert!(
+            err.contains("missing nonclaim production_readiness"),
+            "{err}"
+        );
+
+        let mut unsupported_mode = CREATIVE_INVENTORY_LIVE_CONTRACT;
+        unsupported_mode.evidence_mode = LIVE_EVIDENCE_MODE_OWNED_LOCAL;
+        let err = validate_creative_inventory_live_contract(&unsupported_mode).unwrap_err();
+        assert!(err.contains("unsupported evidence mode"), "{err}");
     }
 
     #[test]

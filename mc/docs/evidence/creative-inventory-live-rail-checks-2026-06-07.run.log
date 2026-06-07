@@ -1,0 +1,56 @@
+## creative_inventory_live_rail_checks
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-scenario-manifest .#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/lc3gbnd36vdzm1cz4yjhbklbwafcb534.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 341 ms
+warning: error: unable to download 'http://100.100.103.95:5000/992902950yz5fmhn0n8b8i4k3m01fhjz.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 342 ms
+warning: error: unable to download 'http://100.100.103.95:5000/lc3gbnd36vdzm1cz4yjhbklbwafcb534.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 644 ms
+warning: error: unable to download 'http://100.100.103.95:5000/992902950yz5fmhn0n8b8i4k3m01fhjz.narinfo': Timeout was reached (28) Operation timed out after 5000 milliseconds with 0 bytes received; retrying in 622 ms
+warning: error: unable to download 'http://100.100.103.95:5000/992902950yz5fmhn0n8b8i4k3m01fhjz.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1358 ms
+warning: error: unable to download 'http://100.100.103.95:5000/lc3gbnd36vdzm1cz4yjhbklbwafcb534.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1181 ms
+warning: error: unable to download 'http://100.100.103.95:5000/lc3gbnd36vdzm1cz4yjhbklbwafcb534.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2123 ms
+warning: error: unable to download 'http://100.100.103.95:5000/992902950yz5fmhn0n8b8i4k3m01fhjz.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2699 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/lc3gbnd36vdzm1cz4yjhbklbwafcb534.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/lc3gbnd36vdzm1cz4yjhbklbwafcb534.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/992902950yz5fmhn0n8b8i4k3m01fhjz.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/992902950yz5fmhn0n8b8i4k3m01fhjz.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+these 2 derivations will be built:
+  /nix/store/jr6w5b38dw0l6r0lrcr27y4r09di4sn4-mc-compat-targeted-packet-promotions-check.drv
+  /nix/store/l67vral1nyjbj73kb22x7fzlmz0sd284-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/l67vral1nyjbj73kb22x7fzlmz0sd284-mc-compat-scenario-manifest.drv'...
+building '/nix/store/jr6w5b38dw0l6r0lrcr27y4r09di4sn4-mc-compat-targeted-packet-promotions-check.drv'...
+nix_checker_exit_status=0
+command=nix develop --no-update-lock-file . -c cargo test --manifest-path tools/mc-compat-runner/Cargo.toml scenario_core -- --nocapture
+warning: error: unable to download 'http://100.100.103.95:5000/4wsd41wlkpn9ik44djjq60axsw52bsgy.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 316 ms
+warning: error: unable to download 'http://100.100.103.95:5000/4wsd41wlkpn9ik44djjq60axsw52bsgy.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 529 ms
+warning: error: unable to download 'http://100.100.103.95:5000/4wsd41wlkpn9ik44djjq60axsw52bsgy.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1127 ms
+warning: error: unable to download 'http://100.100.103.95:5000/4wsd41wlkpn9ik44djjq60axsw52bsgy.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2465 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/4wsd41wlkpn9ik44djjq60axsw52bsgy.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/4wsd41wlkpn9ik44djjq60axsw52bsgy.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/hizlyl4zkdgb028hdhlaysa4xxil4nv7-mc-compat-runner-0.1.0.drv'...
+building '/nix/store/1y2qxvcmxsy8xmqv6y7jcn3l6wcy2fkg-nix-shell-env.drv'...
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+   Compiling mc-compat-runner v0.1.0 (/home/brittonr/git/mc/tools/mc-compat-runner)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.35s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 4 tests
+test scenario_core::tests::scenario_core_rejects_invalid_creative_inventory_live_contracts ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_live_capabilities ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_static_specs ... ok
+test scenario_core::tests::scenario_core_validates_static_specs_and_lookup_parity ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 116 filtered out; finished in 0.00s
+
+scenario_core_tests_exit_status=0
+exit_status=0

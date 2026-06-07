@@ -1,0 +1,105 @@
+## creative_inventory_live_rail_archive
+command=nix run --no-update-lock-file .#cairn -- archive add-creative-inventory-action-live-rail --root . && CAIRN_ARCHIVE_DATE=2026-06-07 ... --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-creative-inventory-action-live-rail",
+      "kind": "archive_change",
+      "path": "./cairn/changes/add-creative-inventory-action-live-rail"
+    }
+  ],
+  "blocked": false,
+  "change": "add-creative-inventory-action-live-rail",
+  "dry_run": true,
+  "input_hash": "650a7522f52cb70efb1904da0f4520ba0444d60e50258ac1e7d70e555cc516ed",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "405796bdcab85061d959d6d9b8c3356acb339ee40fd88aac23b77b903ce45c2a",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "7013ca0eec6d9384a981a8373dc6acb7af8ffcadc27eaac156854cbdece94a9e"
+}
+dry_run_exit_status=0
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-creative-inventory-action-live-rail",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-07-add-creative-inventory-action-live-rail"
+    }
+  ],
+  "blocked": false,
+  "change": "add-creative-inventory-action-live-rail",
+  "dry_run": false,
+  "input_hash": "650a7522f52cb70efb1904da0f4520ba0444d60e50258ac1e7d70e555cc516ed",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "2025cbc7bb35f5aa7a18a053806731b011c9ceaf428f23827fa2a32a797a668a",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-add-creative-inventory-action-live-rail/design.md"
+        },
+        {
+          "content_hash": "645bded43f1628a4b62c30c1a054ed9b02e7ad40aa4da8d0b70e567a7b36c753",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-add-creative-inventory-action-live-rail/proposal.md"
+        },
+        {
+          "content_hash": "31a21745b92aca936953ea64d74621705d40214857a433bd4ad1a8516d55da89",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-add-creative-inventory-action-live-rail/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "49a1a23788ad8b3f68cfe8deb125857f87991aafd553c710e0ea99a646ecb083",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-add-creative-inventory-action-live-rail/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/add-creative-inventory-action-live-rail"
+        }
+      ],
+      "manifest_hash": "0189d8739aa71b6fdd064000a5e1833de99c8f520aad827cf8f57c09b532d3dd"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "2025cbc7bb35f5aa7a18a053806731b011c9ceaf428f23827fa2a32a797a668a",
+          "exists": true,
+          "path": "./cairn/changes/add-creative-inventory-action-live-rail/design.md"
+        },
+        {
+          "content_hash": "645bded43f1628a4b62c30c1a054ed9b02e7ad40aa4da8d0b70e567a7b36c753",
+          "exists": true,
+          "path": "./cairn/changes/add-creative-inventory-action-live-rail/proposal.md"
+        },
+        {
+          "content_hash": "31a21745b92aca936953ea64d74621705d40214857a433bd4ad1a8516d55da89",
+          "exists": true,
+          "path": "./cairn/changes/add-creative-inventory-action-live-rail/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "49a1a23788ad8b3f68cfe8deb125857f87991aafd553c710e0ea99a646ecb083",
+          "exists": true,
+          "path": "./cairn/changes/add-creative-inventory-action-live-rail/tasks.md"
+        }
+      ],
+      "manifest_hash": "d2fec107b62423a72c72a2d6132712b6f78c4ea0fb5e0ec337fe65f99a1ea1cd"
+    },
+    "kind": "archive",
+    "manifest_hash": "f817e8bf62e527c5b95eb81fe06b0534fbdfc0f85b9cac12f8f3685b78385815"
+  },
+  "plan_hash": "3d12589d3aa01af81e6e7186a0d71ef5f88a4d508276a2e459cfb5f9a54d522c",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "2dba9b1a892f1d62e66bfc8574c4b17c86b2d681c12026fed610df43da99994a"
+}
+execute_exit_status=0
+exit_status=0

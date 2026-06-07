@@ -457,6 +457,10 @@ const CREATIVE_INVENTORY_LIVE_FIELDS: &[Field] = &[
     Field::new("live.creative.wire_slot", "36"),
     Field::new("live.creative.item", "minecraft:stone"),
     Field::new("live.creative.item.count", "64"),
+    Field::new(
+        "live.creative.server_correlation",
+        "creative_slot_mutation_accepted",
+    ),
 ];
 const CREATIVE_INVENTORY_LIVE_METRICS: &[&str] = &[
     "metric.live.creative_action_sent",
@@ -1189,6 +1193,42 @@ fn run_self_tests() -> Result<String, Vec<String>> {
             .replace("live.creative.wire_slot=36", "live.creative.wire_slot=37"),
         creative_spec,
         "live.creative.wire_slot expected 36",
+    )?;
+    expect_live_error(
+        "wrong creative live packet row",
+        &valid_live_fixture(creative_spec).replace(
+            "live.packet.row=play/serverbound/0x2b CreativeInventoryActionC2SPacket",
+            "live.packet.row=play/serverbound/0x22 RecipeBookDataC2SPacket",
+        ),
+        creative_spec,
+        "live.packet.row expected one of",
+    )?;
+    expect_live_error(
+        "stale creative live receipt digest",
+        &valid_live_fixture(creative_spec).replace(
+            "live.receipt.digest_status=current",
+            "live.receipt.digest_status=stale",
+        ),
+        creative_spec,
+        "live.receipt.digest_status expected current",
+    )?;
+    expect_live_error(
+        "missing creative server correlation",
+        &valid_live_fixture(creative_spec).replace(
+            "live.creative.server_correlation=creative_slot_mutation_accepted\n",
+            "",
+        ),
+        creative_spec,
+        "missing live.creative.server_correlation",
+    )?;
+    expect_live_error(
+        "creative inventory overclaim",
+        &format!(
+            "{}\nclaim.all_creative_inventory_semantics=true",
+            valid_live_fixture(creative_spec)
+        ),
+        creative_spec,
+        "broad overclaim claim.all_creative_inventory_semantics=true",
     )?;
     let resource_pack_spec = ROW_SPECS[RESOURCE_PACK_SPEC_INDEX];
     expect_live_error(

@@ -1,0 +1,71 @@
+## creative_inventory_live_rail_cairn_gates
+## gate proposal add-creative-inventory-action-live-rail
+{
+  "change": "add-creative-inventory-action-live-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "fddbd9777eb9f20714993740ba578f87f1fbefcdb531715e0644faad66294c4a",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "aed1866d05875f54c67c349a711b90400a693fb0ca224e28a9109873a1445eb8",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+proposal_exit_status=0
+## gate design add-creative-inventory-action-live-rail
+{
+  "change": "add-creative-inventory-action-live-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "0a4a60f0a7c4c34f266f5d2801431750ddce2cfd6801ebb0c3aa4ed9f50e0bb6",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "9d87f0bacf384241bbcc67f1860d350cbe7582c12117d74ce6af657507b453d3",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+design_exit_status=0
+## gate tasks add-creative-inventory-action-live-rail
+{
+  "change": "add-creative-inventory-action-live-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "1b010d280e8e113a6f74d1fe5ab3cada6fcdde7b891d6dde2b62dd80ae8f9637",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "64ab4679a0ce512b29a2213fe780cadbbfaa87f1a08c309faee9510fa73e7036",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+tasks_exit_status=0
+exit_status=0

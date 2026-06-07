@@ -1,0 +1,5 @@
+## creative_inventory_live_rail_final_manifest_refresh
+command=nix run --no-update-lock-file .#evidence-manifest-refresh -- --refresh
+/home/brittonr/git/mc
+evidence manifest refresh ok: mode=refresh; passes=4; manifests=357; entries=2313; current=2313; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=4; manifest_writes=39
+exit_status=0

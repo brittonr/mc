@@ -1,0 +1,49 @@
+{
+  "schema": "mc.compat.targeted_packet.live_rail_blocker.v1",
+  "row_id": "creative-inventory-action",
+  "packet_row": "play/serverbound/0x2b CreativeInventoryActionC2SPacket",
+  "scenario": "inventory-interaction",
+  "actor": "compatbot",
+  "contract": {
+    "game_mode_precondition": "creative",
+    "semantic_slot": "hotbar_0",
+    "wire_slot": "36",
+    "item": "minecraft:stone",
+    "item_count": "64",
+    "expected_server_correlation": "creative_slot_mutation_accepted"
+  },
+  "capability": {
+    "backend_path": "deterministic-creative-fixture-contract",
+    "client_path": "stevenarella-creative-action-driver-missing",
+    "evidence_mode": "fixture-bounded-blocker",
+    "blocker_reason": "no maintained live Stevenarella creative-mode mutation driver exists"
+  },
+  "revision": {
+    "parent_commit_at_recording": "c0873779",
+    "client_revision": "not-run-live-driver-missing",
+    "backend_revision": "parent-c0873779-deterministic-fixture-contract"
+  },
+  "signals": {
+    "creative_mode_precondition": "contracted-not-live-observed",
+    "creative_slot_mutation": "contracted-not-live-observed",
+    "server_correlation": "contracted-not-live-observed",
+    "final_slot_state": "contracted-not-live-observed"
+  },
+  "promotion": {
+    "status": "blocked",
+    "matrix_row_updated": false,
+    "bundle_row_updated": false,
+    "packet_inventory_updated": false
+  },
+  "non_claims": {
+    "all_creative_inventory_semantics": true,
+    "all_slots": true,
+    "all_items": true,
+    "game_mode_transitions": true,
+    "pick_block_behavior": true,
+    "public_server_safety": true,
+    "full_protocol_763_compatibility": true,
+    "broad_minecraft_compatibility": true,
+    "production_readiness": true
+  }
+}
