@@ -1,0 +1,477 @@
+## next_live_packet_cairns_gates
+## gate proposal add-creative-inventory-action-live-rail
+{
+  "change": "add-creative-inventory-action-live-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "53037a3e41eb942782b2b9a6038ac1e76aff2eed58c6a52d0f9abf6c6fc7ac5e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "b1cdeee0c812460d1d987500cb0b5092bfc2145b86859b62bd345a98d43d71e9",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+add-creative-inventory-action-live-rail_proposal_exit_status=0
+## gate design add-creative-inventory-action-live-rail
+{
+  "change": "add-creative-inventory-action-live-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "d9fdaa533b29cd5fb2d6fa95a354a0122b1cea58f52d85af4c56eef5bc0a7c5f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "6a7f58b9f4e47fc9afded075d15a8affe61256fd960f8cf3063dd4bdcb5c559a",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+add-creative-inventory-action-live-rail_design_exit_status=0
+## gate tasks add-creative-inventory-action-live-rail
+{
+  "change": "add-creative-inventory-action-live-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "7d312fc632ce8b1f2ee16aa0638a09dc02dfba2d46379dfb2693571f26b8bee6",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "4ab03775924c3d67b68275a011813087bb5f619840be4e47d9195e767fc95e9b",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+add-creative-inventory-action-live-rail_tasks_exit_status=0
+## gate proposal add-resource-pack-status-local-rail
+{
+  "change": "add-resource-pack-status-local-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "83f113cc60e86714252e7fa69093ca0917756ce33c48b673f81571c91c175ffa",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "01f7fe7fc80505328c80f2fab17d6b9d5436cfc5a741731aaa09607058078195",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+add-resource-pack-status-local-rail_proposal_exit_status=0
+## gate design add-resource-pack-status-local-rail
+{
+  "change": "add-resource-pack-status-local-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "58ba9b12f38feb8f99f95ac6cf56934c7d9bc55ecab76ad4160eccde367f12bc",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "c43709b3b35d51749cde2ab047b7b9cdb8e5dbb1dc31e2a4de9744e46e4f9857",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+add-resource-pack-status-local-rail_design_exit_status=0
+## gate tasks add-resource-pack-status-local-rail
+{
+  "change": "add-resource-pack-status-local-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "251ce618ee37a399768293a416e56b45849a6e48d55c5eeb0d47d369f4de78ed",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "c83dfd94827ae92226f1ae06938b6a23493c8078248bba5e375ef0db10ea52fb",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+add-resource-pack-status-local-rail_tasks_exit_status=0
+## gate proposal add-sign-editor-open-update-live-rail
+{
+  "change": "add-sign-editor-open-update-live-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f78d135a37e7485982b5b8e73ac12a08e99cfd4cc8f373affb65c1f3160e7c95",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "b42fbd7f631dc78ce70eb9b9f5e9a074a69ac88cefc2afc85528ab6679c84b86",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+add-sign-editor-open-update-live-rail_proposal_exit_status=0
+## gate design add-sign-editor-open-update-live-rail
+{
+  "change": "add-sign-editor-open-update-live-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "8b62f2af5b2c6e8af32c5be9b2bdce689c7eea211ebdb50efdd52a884b0aac3b",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "e0d99f22480a1bc248cd1f39252d9fa193d7f6482709c9ae432aecf3c4685180",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+add-sign-editor-open-update-live-rail_design_exit_status=0
+## gate tasks add-sign-editor-open-update-live-rail
+{
+  "change": "add-sign-editor-open-update-live-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "de0df2f3d8423cb3e269b8a304bb3391106eaf2d781420234247b82c016457bd",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "4a9458f339c4b121db1373ff343e5b5c340edefae03070e46467fe416db4d0f1",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+add-sign-editor-open-update-live-rail_tasks_exit_status=0
+## gate proposal targeted-packet-live-evidence-kv-schema
+{
+  "change": "targeted-packet-live-evidence-kv-schema",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "7cd7925d5a4573f747bbcd261c649996c147ad892e1029a120b8c7f213092877",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "691f7b80b5ddec4d685f090bc157c76560f276fadfbf4251b0c4856469b1e716",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+targeted-packet-live-evidence-kv-schema_proposal_exit_status=0
+## gate design targeted-packet-live-evidence-kv-schema
+{
+  "change": "targeted-packet-live-evidence-kv-schema",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a3c080b043613c3a73d9d35769797bb5767d1e3c7b148ea47e4f43557cc581e7",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "41a7d85f33c56b8865e4a3fc15d05b0f9d186afff763bb95cd362feed2950a4a",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+targeted-packet-live-evidence-kv-schema_design_exit_status=0
+## gate tasks targeted-packet-live-evidence-kv-schema
+{
+  "change": "targeted-packet-live-evidence-kv-schema",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "48694e8077a988f9bd782007663926e221e28edfd3dae43a831c6908628487c5",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "27029a416c8f77710229915d4e4125aadfe01c75f099e93ef93553ad9d636f0b",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+targeted-packet-live-evidence-kv-schema_tasks_exit_status=0
+## gate proposal scenario-live-probe-capability-registry
+{
+  "change": "scenario-live-probe-capability-registry",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "4b3d61df022e9452b51f8bb0d90d777a66f4cab0af222929cc907336e932b471",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "cf04734fca551c66fedf772c4d476db6abc80a81f822fef2a6656ed071d56e01",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+scenario-live-probe-capability-registry_proposal_exit_status=0
+## gate design scenario-live-probe-capability-registry
+{
+  "change": "scenario-live-probe-capability-registry",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "48310e8d124c5c718048592fde277baa0b6e0151e8f9e5ae735c160ba76b552e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "6f932b3672fc85e5365ad2addbce521d6637787f6300b51ed5357e4dde309401",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+scenario-live-probe-capability-registry_design_exit_status=0
+## gate tasks scenario-live-probe-capability-registry
+{
+  "change": "scenario-live-probe-capability-registry",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "26efc50b331af91ae492aaf4ac2855e03890468035c67c7059b2cf76e9ef0193",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "c618d0a74683715707ecfe6ed67a58bacbf6861b9a041ef3904899b1e7712bdc",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+scenario-live-probe-capability-registry_tasks_exit_status=0
+## change list
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "./cairn/changes/add-creative-inventory-action-live-rail/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "add-creative-inventory-action-live-rail",
+      "path": "./cairn/changes/add-creative-inventory-action-live-rail",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/add-resource-pack-status-local-rail/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "add-resource-pack-status-local-rail",
+      "path": "./cairn/changes/add-resource-pack-status-local-rail",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/add-sign-editor-open-update-live-rail/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "add-sign-editor-open-update-live-rail",
+      "path": "./cairn/changes/add-sign-editor-open-update-live-rail",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/scenario-live-probe-capability-registry/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "scenario-live-probe-capability-registry",
+      "path": "./cairn/changes/scenario-live-probe-capability-registry",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/targeted-packet-live-evidence-kv-schema/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "targeted-packet-live-evidence-kv-schema",
+      "path": "./cairn/changes/targeted-packet-live-evidence-kv-schema",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "."
+}
+change_list_exit_status=0
+## validate
+{
+  "change_issues": [],
+  "changes": 5,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 7,
+  "valid": true
+}
+validate_exit_status=0
+exit_status=0
