@@ -1,0 +1,110 @@
+
+## archive dry-run
+command=nix run path:/home/brittonr/git/mc#cairn -- archive chat-command-containment-live-rail --root /home/brittonr/git/mc
+{
+  "actions": [
+    {
+      "description": "move active change to archive: chat-command-containment-live-rail",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/changes/chat-command-containment-live-rail"
+    }
+  ],
+  "blocked": false,
+  "change": "chat-command-containment-live-rail",
+  "dry_run": true,
+  "input_hash": "e2015cbd62ded38ca7afe237fad41977c5f15fceb4824f19e9566240b6da227d",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "7416b780997f61407c857f3edfdb2768f8f705b7882cd78b8f9c10156387f154",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "6ee5f2636af160d3208053179a4901e8ec6660051fb44c333cc9182f69fa8b8a"
+}
+step_exit_status=0
+
+## archive execute
+command=env CAIRN_ARCHIVE_DATE=2026-06-07 nix run path:/home/brittonr/git/mc#cairn -- archive chat-command-containment-live-rail --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: chat-command-containment-live-rail",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/2026-06-07-chat-command-containment-live-rail"
+    }
+  ],
+  "blocked": false,
+  "change": "chat-command-containment-live-rail",
+  "dry_run": false,
+  "input_hash": "e2015cbd62ded38ca7afe237fad41977c5f15fceb4824f19e9566240b6da227d",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "7472452d79a7366f89fbfc55e6d2e2fc356789589cc022784adde029e4699c93",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-chat-command-containment-live-rail/design.md"
+        },
+        {
+          "content_hash": "83748af8acae8279043c3ef3f953d961df783ce7d97a6a8a2be9a31f71db192a",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-chat-command-containment-live-rail/proposal.md"
+        },
+        {
+          "content_hash": "5b9be008d21a9b7e2953e69cd73b37b900d30685d552b1d824b011bf4bdabaa7",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-chat-command-containment-live-rail/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "eece84401e9ef8e479aced04317fce5c95fedd01bf7e599737b405837f3e6577",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-chat-command-containment-live-rail/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/chat-command-containment-live-rail"
+        }
+      ],
+      "manifest_hash": "81c1f65902763a743b819415e6c986323afd492964651e4587e6be8a6894d6fe"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "7472452d79a7366f89fbfc55e6d2e2fc356789589cc022784adde029e4699c93",
+          "exists": true,
+          "path": "./cairn/changes/chat-command-containment-live-rail/design.md"
+        },
+        {
+          "content_hash": "83748af8acae8279043c3ef3f953d961df783ce7d97a6a8a2be9a31f71db192a",
+          "exists": true,
+          "path": "./cairn/changes/chat-command-containment-live-rail/proposal.md"
+        },
+        {
+          "content_hash": "5b9be008d21a9b7e2953e69cd73b37b900d30685d552b1d824b011bf4bdabaa7",
+          "exists": true,
+          "path": "./cairn/changes/chat-command-containment-live-rail/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "eece84401e9ef8e479aced04317fce5c95fedd01bf7e599737b405837f3e6577",
+          "exists": true,
+          "path": "./cairn/changes/chat-command-containment-live-rail/tasks.md"
+        }
+      ],
+      "manifest_hash": "a166239a98c690ea68fce55a6e3cf38fb62821145fc388d415ba76941b851481"
+    },
+    "kind": "archive",
+    "manifest_hash": "7ebb5527399e114cadbfd116c2f7bf0e7d10e697e34dfc367b38b07a05a22527"
+  },
+  "plan_hash": "cdb6ae05040176c077e630a1389450e5336a52cd88ad2e9c9cf279f6131f81fc",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "3c4e82030b65ed423ae49d5cc563d61de8592f34e65d28312f3a8ed03faaac86"
+}
+step_exit_status=0
+classification=archive-executed
+exit_status=0

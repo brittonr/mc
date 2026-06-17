@@ -1,0 +1,49 @@
+
+## gate tasks chat-command-containment-live-rail
+command=nix run path:/home/brittonr/git/mc#cairn -- gate tasks chat-command-containment-live-rail --root /home/brittonr/git/mc
+{
+  "change": "chat-command-containment-live-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e5eb4a0fddedad37afce35ff803883a831616ed19ef3d521f239e67f0cf1541b",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "31dc6b0e7aa9234af76bd1187c707c1f9c18d76aaaa034a66d9bc290acc8343a",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## cairn task evidence check final
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/8bcx4wiql9r4icj6a3z8kls3b3gzhngc-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/8bcx4wiql9r4icj6a3z8kls3b3gzhngc-mc-compat-cairn-task-evidence.drv'...
+step_exit_status=0
+
+## cairn validate final
+command=nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 7,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 9,
+  "valid": true
+}
+step_exit_status=0
+classification=final-task-evidence-pass
+exit_status=0

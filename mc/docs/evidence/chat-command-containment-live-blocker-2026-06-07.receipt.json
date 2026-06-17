@@ -1,0 +1,33 @@
+{
+  "schema": "mc.compat.targeted_packet_live_blocker.v1",
+  "row": "chat-command-containment",
+  "decision": "fixture-bounded-blocker",
+  "scenario": "mcp-controlled-smoke",
+  "actor": "compatbot",
+  "payload_identity": "harmless-chat-command-containment",
+  "packet_rows": [
+    "play/serverbound/0x05 ChatMessageC2SPacket",
+    "play/serverbound/0x04 CommandExecutionC2SPacket"
+  ],
+  "owned_local_scope": "owned-local-fixture",
+  "redaction_policy": "no-secrets-no-public-addresses",
+  "backend_path": "owned-local-chat-or-command-rail-missing",
+  "client_path": "stevenarella-mcp-chat-control-candidate",
+  "server_containment_metric": "missing-maintained-targeted-receipt",
+  "blocker_reason": "MCP control exists but no targeted chat/command containment receipt is maintained",
+  "live_promotion": false,
+  "matrix_promotion_changed": false,
+  "packet_inventory_promotion_changed": false,
+  "current_bundle_promotion_changed": false,
+  "nonclaims": {
+    "chat_signing_security": true,
+    "command_permissions": true,
+    "moderation": true,
+    "all_commands": true,
+    "malicious_client_resilience": true,
+    "public_server_safety": true,
+    "production_readiness": true,
+    "broad_minecraft_compatibility": true,
+    "full_protocol_763_compatibility": true
+  }
+}

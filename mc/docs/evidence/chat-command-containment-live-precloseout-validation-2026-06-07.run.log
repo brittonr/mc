@@ -1,0 +1,131 @@
+
+## cairn validate
+command=nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 7,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 9,
+  "valid": true
+}
+step_exit_status=0
+
+## gate proposal chat-command-containment-live-rail
+command=nix run path:/home/brittonr/git/mc#cairn -- gate proposal chat-command-containment-live-rail --root /home/brittonr/git/mc
+{
+  "change": "chat-command-containment-live-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c3982f33ec1b75c0a9ec28de4be6dac4c4c828b3e14c29f70870b488c95d1e46",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "9e80e341f2302c5b202e38405661f403c9bc058e3db524c4e0a9a77c023cac54",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## gate design chat-command-containment-live-rail
+command=nix run path:/home/brittonr/git/mc#cairn -- gate design chat-command-containment-live-rail --root /home/brittonr/git/mc
+{
+  "change": "chat-command-containment-live-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "0005eb74670ae3e8f49fb641abb3bd1adb0a901961ae830c8066997b57dbb9ea",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "9e31d07b7cd2c7ddda5de7fcfb0e6070556e5a393a540bc64ccdf9c4fd59ff0e",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## gate tasks chat-command-containment-live-rail
+command=nix run path:/home/brittonr/git/mc#cairn -- gate tasks chat-command-containment-live-rail --root /home/brittonr/git/mc
+{
+  "change": "chat-command-containment-live-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "926529f4279d70e35e029039401183abf5ca1c78412882f6e7d198762bc5f127",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "057d42983cba03f69bb24e66c7a37d8058c99b52124ea098d3edd0f6675793c3",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## evidence manifest check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/z0p1m1wyy1ci3xi6j7771ngvh145m1bn-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/z0p1m1wyy1ci3xi6j7771ngvh145m1bn-mc-compat-evidence-manifests.drv'...
+step_exit_status=0
+
+## cairn task evidence check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/hys8xnv80xpm14l86gnyh3bvs7jh0rjg-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/hys8xnv80xpm14l86gnyh3bvs7jh0rjg-mc-compat-cairn-task-evidence.drv'...
+step_exit_status=0
+
+## targeted packet promotions check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/wv30jgqvxnp50kn7w0c0g83sjyabc3aj-mc-compat-targeted-packet-promotions-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/wv30jgqvxnp50kn7w0c0g83sjyabc3aj-mc-compat-targeted-packet-promotions-check.drv'...
+step_exit_status=0
+
+## acceptance matrix check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-acceptance-matrix --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/0888gsdhqjzml6v7mivjsannc3yab6ij-mc-compat-acceptance-matrix.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/0888gsdhqjzml6v7mivjsannc3yab6ij-mc-compat-acceptance-matrix.drv'...
+step_exit_status=0
+
+## current evidence bundle check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-current-evidence-bundle --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/mw71xks6iq6p48gy2gis9jhcf617dvvp-mc-compat-current-evidence-bundle.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/mw71xks6iq6p48gy2gis9jhcf617dvvp-mc-compat-current-evidence-bundle.drv'...
+step_exit_status=0
+classification=precloseout-validation-pass
+exit_status=0

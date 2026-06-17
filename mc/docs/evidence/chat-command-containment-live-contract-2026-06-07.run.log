@@ -1,0 +1,11 @@
+command=record chat-command-containment live contract
+contract_artifact=docs/evidence/chat-command-containment-live-contract-2026-06-07.md
+row_id=chat-command-containment
+actor=compatbot
+payload_identity=harmless-chat-command-containment
+packet_rows=play/serverbound/0x05 ChatMessageC2SPacket,play/serverbound/0x04 CommandExecutionC2SPacket
+owned_local_scope=owned-local-fixture
+server_containment_metric=missing-maintained-targeted-receipt
+redaction_policy=no-secrets-no-public-addresses
+nonclaims=chat_signing_security,command_permissions,moderation,all_commands,malicious_client_resilience,public_server_safety,production_readiness,broad_minecraft_compatibility,full_protocol_763_compatibility
+exit_status=0

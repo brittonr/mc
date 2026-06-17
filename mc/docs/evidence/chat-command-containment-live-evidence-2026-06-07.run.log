@@ -1,0 +1,13 @@
+command=record chat-command-containment live evidence index
+contract=docs/evidence/chat-command-containment-live-contract-2026-06-07.md
+blocker_kv=docs/evidence/chat-command-containment-live-blocker-2026-06-07.kv
+blocker_receipt=docs/evidence/chat-command-containment-live-blocker-2026-06-07.receipt.json
+baseline_log=docs/evidence/chat-command-containment-live-baseline-2026-06-07.run.log
+rail_log=docs/evidence/chat-command-containment-live-rail-blocker-2026-06-07.run.log
+checker_log=docs/evidence/chat-command-containment-live-checker-2026-06-07.run.log
+promotion_log=docs/evidence/chat-command-containment-live-promotion-2026-06-07.run.log
+live_promotion=false
+matrix_promotion_changed=false
+current_bundle_promotion_changed=false
+packet_inventory_promotion_changed=false
+exit_status=0

@@ -17,7 +17,7 @@ aef4b478fdfcea04b9eff0bdd0fa2472c047674b9a6d3afe400e8b93aa9a89bd  docs/evidence/
 01b74ecc9549437887d911d73b23189f21f157580502d97eac144432b1fb360c  docs/evidence/block-entity-sign-packet-family-archive-dry-run-2026-06-06.run.log
 24341960ba75d14ddc45c8d6cb461e5bdb2301442406913d90c1e0db514cf462  docs/evidence/block-entity-sign-packet-family-archive-execute-2026-06-06.run.log
 0acde522edd63d3af370b9b7286416429e6053dcc115d5d8fb423f86d0a104ad  docs/evidence/block-entity-sign-packet-family-final-validation-2026-06-06.run.log
-20db010c4909681051ef3439c5bd51d8df11bd50b138d4ea83f6e7ed1cb5d791  cairn/specs/mc-compatibility/spec.md
+3cb4eb6514492f4bf44060c75242fb238422ba3f3a6a0ee1e296d1e256a81e21  cairn/specs/mc-compatibility/spec.md
 0c9c35021eab14cb956d3a30d2758d26a1b1f8d8c853e1cc84e96a85a88041cc  cairn/archive/1970-01-01-promote-block-entity-sign-packet-family/proposal.md
 f775b8a1cf46667b782f153682fe586ca5f953a5543c397bc10ef024fc7c2fd5  cairn/archive/1970-01-01-promote-block-entity-sign-packet-family/design.md
 f68679c92f1765b49a0581d885df212cad2fa0e75d468c419f91bb2ca6fef288  cairn/archive/1970-01-01-promote-block-entity-sign-packet-family/tasks.md

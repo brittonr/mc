@@ -1,0 +1,39 @@
+
+## targeted packet promotions fixture check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check --no-link -L --option substituters 
+step_exit_status=0
+
+## acceptance matrix check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-acceptance-matrix --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/20h3jh8n19rf8b6042h4y8gylmj08ps1-mc-compat-acceptance-matrix.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/20h3jh8n19rf8b6042h4y8gylmj08ps1-mc-compat-acceptance-matrix.drv'...
+step_exit_status=0
+
+## current evidence bundle check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-current-evidence-bundle --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/dhprzy6kk0wihvlfi10vhy1prqgfj2v5-mc-compat-current-evidence-bundle.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/dhprzy6kk0wihvlfi10vhy1prqgfj2v5-mc-compat-current-evidence-bundle.drv'...
+step_exit_status=0
+
+## scenario manifest check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/2df213bxir0v43ib9hfcjfgg2b9v9fkd-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/2df213bxir0v43ib9hfcjfgg2b9v9fkd-mc-compat-scenario-manifest.drv'...
+step_exit_status=0
+
+## fixture bounded status grep
+command=grep -n Chat/command containment\|fixture-bounded-blocker\|targeted-packet-live-blocker docs/evidence/protocol-763-acceptance-matrix.md docs/evidence/protocol-763-current-evidence-bundle.md docs/evidence/chat-command-containment-live-blocker-2026-06-07.kv tools/mc-compat-runner/src/scenario_core.rs
+docs/evidence/protocol-763-acceptance-matrix.md:44:| Chat/command containment | `nix run .#cairn -- validate --root .`; `tools/check_targeted_packet_promotions.rs --row chat-command-containment` | `docs/evidence/chat-command-containment-2026-06-06.receipt.json` | `docs/evidence/chat-command-containment-2026-06-06.md` | `89c19cd42e5cb1a788656bdb18b43f49a7bc568da17ae219c38913d8da4511e0` | parent `pending-review`, fixture `deterministic` | One bounded owned-local harmless chat/command containment fixture across `ChatMessageC2SPacket` and `CommandExecutionC2SPacket` with redaction policy. | No chat signing/security, all commands, command permissions, moderation, adversarial resilience, public-server safety, full protocol-763 compatibility, broad Minecraft compatibility, or production readiness. |
+docs/evidence/protocol-763-current-evidence-bundle.md:67:| Chat/command containment | deterministic owned-local chat/command containment fixture plus targeted packet promotion checker | `89c19cd42e5cb1a788656bdb18b43f49a7bc568da17ae219c38913d8da4511e0` |
+docs/evidence/chat-command-containment-live-blocker-2026-06-07.kv:3:live.evidence.mode=fixture-bounded-blocker
+tools/mc-compat-runner/src/scenario_core.rs:238:pub(crate) const LIVE_CAPABILITY_KIND_BLOCKED: &str = "targeted-packet-live-blocker";
+tools/mc-compat-runner/src/scenario_core.rs:240:pub(crate) const LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER: &str = "fixture-bounded-blocker";
+step_exit_status=0
+classification=no-live-promotion-fixture-bounded-blocker
+exit_status=0

@@ -1,0 +1,66 @@
+
+## compile checker
+command=rustc --edition=2021 tools/check_targeted_packet_promotions.rs -o target/check-targeted-packet-promotions-chat
+step_exit_status=0
+
+## checker self-test
+command=target/check-targeted-packet-promotions-chat --self-test
+targeted packet promotion self-test ok: 8 positive fixtures and targeted negative fixtures exercised
+step_exit_status=0
+
+## fixture row check
+command=target/check-targeted-packet-promotions-chat --row chat-command-containment --evidence docs/evidence/chat-command-containment-2026-06-06.kv
+chat/command containment promotion evidence passed
+step_exit_status=0
+
+## synthetic chat live positive
+command=target/check-targeted-packet-promotions-chat --live-evidence target/chat-command-containment-live-checker/chat-valid-live.kv
+chat/command containment live promotion evidence passed
+step_exit_status=0
+
+## missing-scope
+command=target/check-targeted-packet-promotions-chat --live-evidence target/chat-command-containment-live-checker/missing-scope.kv
+targeted packet promotion check failed: missing live.chat_command.scope
+observed_status=1
+expected_failure_observed=true
+
+## wrong-payload
+command=target/check-targeted-packet-promotions-chat --live-evidence target/chat-command-containment-live-checker/wrong-payload.kv
+targeted packet promotion check failed: live.chat_command.payload_identity expected harmless-chat-command-containment, got wrong-payload
+observed_status=1
+expected_failure_observed=true
+
+## stale-digest
+command=target/check-targeted-packet-promotions-chat --live-evidence target/chat-command-containment-live-checker/stale-digest.kv
+targeted packet promotion check failed: live.receipt.digest_status expected current, got stale
+observed_status=1
+expected_failure_observed=true
+
+## missing-correlation
+command=target/check-targeted-packet-promotions-chat --live-evidence target/chat-command-containment-live-checker/missing-correlation.kv
+targeted packet promotion check failed: missing metric.live.server_correlation
+observed_status=1
+expected_failure_observed=true
+
+## overclaim
+command=target/check-targeted-packet-promotions-chat --live-evidence target/chat-command-containment-live-checker/overclaim.kv
+targeted packet promotion check failed: broad overclaim claim.public_server_safety=true
+observed_status=1
+expected_failure_observed=true
+
+## blocker-kv-fails-live-promotion
+command=target/check-targeted-packet-promotions-chat --live-evidence docs/evidence/chat-command-containment-live-blocker-2026-06-07.kv
+targeted packet promotion check failed: live.promotion.status expected passed, got blocked
+targeted packet promotion check failed: live.evidence.mode expected owned-local-live, got fixture-bounded-blocker
+targeted packet promotion check failed: missing live.revision.status
+targeted packet promotion check failed: missing live.client.revision
+targeted packet promotion check failed: missing live.backend.revision
+targeted packet promotion check failed: missing live.backend
+targeted packet promotion check failed: missing live.row_extension.kind
+targeted packet promotion check failed: missing metric.live.chat_payload_sent
+targeted packet promotion check failed: missing metric.live.command_payload_sent
+targeted packet promotion check failed: missing metric.live.server_correlation
+observed_status=1
+expected_failure_observed=true
+classification=checker-positive-and-negative-pass
+exit_status=0

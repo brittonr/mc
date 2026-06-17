@@ -1,0 +1,81 @@
+
+## sync dry-run
+command=nix run path:/home/brittonr/git/mc#cairn -- sync chat-command-containment-live-rail --root /home/brittonr/git/mc
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/chat-command-containment-live-rail/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/chat-command-containment-live-rail/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "chat-command-containment-live-rail",
+  "delta_specs": [
+    "/home/brittonr/git/mc/cairn/changes/chat-command-containment-live-rail/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "e2015cbd62ded38ca7afe237fad41977c5f15fceb4824f19e9566240b6da227d",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "efab12c8f413e2411bb2034409413f9663bd9773f4bdd0b4c706eb5cdfb4b9fa",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "5ce4b00347d9fffb0f343e30781e8367c7fed53f6a771d23330c6778f36b8bfe"
+}
+step_exit_status=0
+
+## sync execute
+command=nix run path:/home/brittonr/git/mc#cairn -- sync chat-command-containment-live-rail --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/chat-command-containment-live-rail/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/chat-command-containment-live-rail/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "chat-command-containment-live-rail",
+  "delta_specs": [
+    "/home/brittonr/git/mc/cairn/changes/chat-command-containment-live-rail/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "e2015cbd62ded38ca7afe237fad41977c5f15fceb4824f19e9566240b6da227d",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "20db010c4909681051ef3439c5bd51d8df11bd50b138d4ea83f6e7ed1cb5d791",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "8543d82f82ff26e4d33af46b0420a6781d2941214adc13541e11bfb61cd0fdff"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "20db010c4909681051ef3439c5bd51d8df11bd50b138d4ea83f6e7ed1cb5d791",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "8543d82f82ff26e4d33af46b0420a6781d2941214adc13541e11bfb61cd0fdff"
+    },
+    "kind": "sync",
+    "manifest_hash": "f51cf6c77202e904dc751f7df3cb5763995f2e4e9934cd3b27a64f08188cbbe7"
+  },
+  "plan_hash": "24c037fc38d324e875130127e9c3b8186fc1d2496bba3263cfefb272bf2fcb60",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "b6d0bf7039d6d8a9acc5c4dec8c64c33ee6efb9dee9c3de6c28af44e78c5206e"
+}
+step_exit_status=0
+classification=sync-executed
+exit_status=0

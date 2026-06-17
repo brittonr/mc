@@ -1,0 +1,11 @@
+command=record deterministic chat-command-containment live rail blocker
+registry_source=tools/mc-compat-runner/src/scenario_core.rs
+scenario=mcp-controlled-smoke
+capability_kind=targeted-packet-live-blocker
+evidence_mode=fixture-bounded-blocker
+backend_path=owned-local-chat-or-command-rail-missing
+client_path=stevenarella-mcp-chat-control-candidate
+blocker_reason=MCP control exists but no targeted chat/command containment receipt is maintained
+existing_scenario_semantics_changed=false
+live_promotion=false
+exit_status=0
