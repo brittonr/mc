@@ -1,0 +1,80 @@
+{
+  "actions": [
+    {
+      "description": "move active change to archive: post-drain-validation-hygiene-pass",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/2026-06-07-post-drain-validation-hygiene-pass"
+    }
+  ],
+  "blocked": false,
+  "change": "post-drain-validation-hygiene-pass",
+  "dry_run": false,
+  "input_hash": "e56a3c5a00f3893ba4ba4ae053641d9a919116c1ca68d7635445d300861b875b",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "5a15efb94e23b5f7edeeeaf87e5b6f9a39479718b775e2102df354d0d2ed72b7",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-post-drain-validation-hygiene-pass/design.md"
+        },
+        {
+          "content_hash": "af6a1e0d059d87a45457157241a070269fe5e9e81cf4d5b87c263136fdc48fcd",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-post-drain-validation-hygiene-pass/proposal.md"
+        },
+        {
+          "content_hash": "6a1fe7699a0a20752c9390722e3d7093dc82d80e4b0d21c7767790ab85bc638f",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-post-drain-validation-hygiene-pass/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "03203477bbb911bcd4695c6b707470aebcc0a1adda2966d116c43c220a4ed829",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-post-drain-validation-hygiene-pass/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/post-drain-validation-hygiene-pass"
+        }
+      ],
+      "manifest_hash": "a6f9aa526e36484d2528acba23f65e930e92a020206d466f631ddb510038b8ad"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "5a15efb94e23b5f7edeeeaf87e5b6f9a39479718b775e2102df354d0d2ed72b7",
+          "exists": true,
+          "path": "./cairn/changes/post-drain-validation-hygiene-pass/design.md"
+        },
+        {
+          "content_hash": "af6a1e0d059d87a45457157241a070269fe5e9e81cf4d5b87c263136fdc48fcd",
+          "exists": true,
+          "path": "./cairn/changes/post-drain-validation-hygiene-pass/proposal.md"
+        },
+        {
+          "content_hash": "6a1fe7699a0a20752c9390722e3d7093dc82d80e4b0d21c7767790ab85bc638f",
+          "exists": true,
+          "path": "./cairn/changes/post-drain-validation-hygiene-pass/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "03203477bbb911bcd4695c6b707470aebcc0a1adda2966d116c43c220a4ed829",
+          "exists": true,
+          "path": "./cairn/changes/post-drain-validation-hygiene-pass/tasks.md"
+        }
+      ],
+      "manifest_hash": "c4cc7bd360a011abd0b1b5a46fe46e14d4a102d4ce38aa09bc7fd952592b51d0"
+    },
+    "kind": "archive",
+    "manifest_hash": "bad3a4022db1cf00c6d7c42f9b68be78701569d0fc16b5caae983c9c9719cc2f"
+  },
+  "plan_hash": "8610509bf9fcb67cf37e23260412bf783a0d084fe650d7ea0b1067d79f8cbcbd",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "96857b16dac4b8d714d21ccd59d3803bb9e527b064e3e369079290f77402f15e"
+}
+exit_status=0

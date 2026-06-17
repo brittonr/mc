@@ -1,0 +1,8 @@
+these 2 derivations will be built:
+  /nix/store/fdi18k783ac73r2ryhzwkp8580a81iii-evidence-manifest-refresh-bin.drv
+  /nix/store/yhzgpahncs5zr87vcskxbswp2dbi6ay1-evidence-manifest-refresh.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/fdi18k783ac73r2ryhzwkp8580a81iii-evidence-manifest-refresh-bin.drv'...
+building '/nix/store/yhzgpahncs5zr87vcskxbswp2dbi6ay1-evidence-manifest-refresh.drv'...
+evidence manifest refresh ok: mode=refresh; passes=4; manifests=360; entries=2360; current=2360; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=4; manifest_writes=40
+exit_status=0

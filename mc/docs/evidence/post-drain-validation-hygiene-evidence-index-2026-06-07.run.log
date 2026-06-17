@@ -1,0 +1,6 @@
+command=record post-drain hygiene evidence index
+artifacts=docs/evidence/post-drain-validation-hygiene-scope-2026-06-07.md,docs/evidence/post-drain-validation-hygiene-contract-2026-06-07.run.log,docs/evidence/post-drain-validation-hygiene-baseline-local-retry-2026-06-07.run.log,docs/evidence/post-drain-validation-hygiene-remediation-2026-06-07.run.log
+positive_outcomes=cairn-validation-and-active-gates-passed,evidence-manifests-passed,cairn-task-evidence-passed,acceptance-matrix-passed,current-evidence-bundle-passed
+negative_or_blocker_outcomes=transient-cache-timeout-recorded-in-primary-baseline-log
+compatibility_claims_broadened=false
+exit_status=0

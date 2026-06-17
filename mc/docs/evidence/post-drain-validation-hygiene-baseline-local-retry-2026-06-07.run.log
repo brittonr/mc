@@ -1,0 +1,34 @@
+
+## evidence manifest check local/no-substituters
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/n09hnkqyf7a0ncl66n6hhx1qzd02l958-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/n09hnkqyf7a0ncl66n6hhx1qzd02l958-mc-compat-evidence-manifests.drv'...
+step_exit_status=0
+
+## cairn task evidence check local/no-substituters
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/329qvm0lv5pxspss094lqj1vxn55aayb-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/329qvm0lv5pxspss094lqj1vxn55aayb-mc-compat-cairn-task-evidence.drv'...
+step_exit_status=0
+
+## acceptance matrix check local/no-substituters
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-acceptance-matrix --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/ci5cdxki60j16qahajqlydixv8bd09ms-mc-compat-acceptance-matrix.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/ci5cdxki60j16qahajqlydixv8bd09ms-mc-compat-acceptance-matrix.drv'...
+step_exit_status=0
+
+## current evidence bundle check local/no-substituters
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-current-evidence-bundle --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/k09lk5q3clw353h0ikds50lwxa03ki1r-mc-compat-current-evidence-bundle.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/k09lk5q3clw353h0ikds50lwxa03ki1r-mc-compat-current-evidence-bundle.drv'...
+step_exit_status=0
+classification=clean-baseline-local-retry-after-cache-timeout
+exit_status=0

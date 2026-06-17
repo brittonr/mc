@@ -1,0 +1,25 @@
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/post-drain-validation-hygiene-pass/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/post-drain-validation-hygiene-pass/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "post-drain-validation-hygiene-pass",
+  "delta_specs": [
+    "/home/brittonr/git/mc/cairn/changes/post-drain-validation-hygiene-pass/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "e56a3c5a00f3893ba4ba4ae053641d9a919116c1ca68d7635445d300861b875b",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "027772575aab8fb4cf79e514fa3dfe39376ac94f52ca8ea0120dc998fb33509b",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "aa18c382eaeadfa55702f69d728b258c3ba3ae98bb54818ecc308480474f36bb"
+}
+exit_status=0

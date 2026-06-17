@@ -1,0 +1,22 @@
+{
+  "actions": [
+    {
+      "description": "move active change to archive: post-drain-validation-hygiene-pass",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/changes/post-drain-validation-hygiene-pass"
+    }
+  ],
+  "blocked": false,
+  "change": "post-drain-validation-hygiene-pass",
+  "dry_run": true,
+  "input_hash": "e56a3c5a00f3893ba4ba4ae053641d9a919116c1ca68d7635445d300861b875b",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "1effd7ab113053acac04ddba8c8ece7681230f91ff4113894de25ccee833110a",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "96b7e4f6efb9507fe9168bedfd5d8e4a322f15ce39660699a6bef83114943443"
+}
+exit_status=0

@@ -1,0 +1,48 @@
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/post-drain-validation-hygiene-pass/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/post-drain-validation-hygiene-pass/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "post-drain-validation-hygiene-pass",
+  "delta_specs": [
+    "/home/brittonr/git/mc/cairn/changes/post-drain-validation-hygiene-pass/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "e56a3c5a00f3893ba4ba4ae053641d9a919116c1ca68d7635445d300861b875b",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "61834dbc3f92b741209697f722072441355bf7723d6772be52e3fc9f97afcf9f",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "95c6ab1d752324a3ffa1e671fb140ebbaed9f88a6b4638b6d0454bc4e18d1e48"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "61834dbc3f92b741209697f722072441355bf7723d6772be52e3fc9f97afcf9f",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "95c6ab1d752324a3ffa1e671fb140ebbaed9f88a6b4638b6d0454bc4e18d1e48"
+    },
+    "kind": "sync",
+    "manifest_hash": "d2bdfa55dfc52e2ed0edae07762d92c77be54ed219a123703bd1ddaf633ef8c8"
+  },
+  "plan_hash": "51077e61488c36d96d58e2bbc8842c1959510cea543c74ff971aa1679cf1beae",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "707cf775e989c153f541231cb27cc2070d4b0e69dcd39984a03cc29b07bd1217"
+}
+exit_status=0

@@ -1,0 +1,8 @@
+command=classify post-drain hygiene baseline and remediation
+baseline_primary=docs/evidence/post-drain-validation-hygiene-baseline-2026-06-07.run.log
+baseline_retry=docs/evidence/post-drain-validation-hygiene-baseline-local-retry-2026-06-07.run.log
+classification=clean-baseline-after-local-no-substituter-retry
+primary_diagnostic=policy-cache/network timeout while fetching narinfo; local no-substituter retry passed evidence-manifests, cairn-task-evidence, acceptance-matrix, and current-evidence-bundle checks
+metadata_repairs_applied=none
+compatibility_behavior_changed=false
+exit_status=0

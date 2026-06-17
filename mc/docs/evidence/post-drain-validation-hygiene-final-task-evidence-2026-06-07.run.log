@@ -1,0 +1,49 @@
+
+## gate tasks post-drain-validation-hygiene-pass
+command=nix run path:/home/brittonr/git/mc#cairn -- gate tasks post-drain-validation-hygiene-pass --root /home/brittonr/git/mc
+{
+  "change": "post-drain-validation-hygiene-pass",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "b20107560eb68f913c7942e97f66e1e011a64f0254f3871b7308a182e86f00f9",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "7368e3a7364755e0b186dcc5aad16d6774b48498bff5559a313b51c8f0228cb2",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## cairn task evidence check final
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/ch0r6vqafa2nqar7wwd6myxlk6wqnfvl-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/ch0r6vqafa2nqar7wwd6myxlk6wqnfvl-mc-compat-cairn-task-evidence.drv'...
+step_exit_status=0
+
+## cairn validate final
+command=nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 8,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 10,
+  "valid": true
+}
+step_exit_status=0
+classification=final-task-evidence-pass
+exit_status=0

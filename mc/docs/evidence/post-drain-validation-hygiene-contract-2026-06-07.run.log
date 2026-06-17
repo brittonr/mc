@@ -1,0 +1,5 @@
+command=record post-drain validation hygiene scope
+scope_artifact=docs/evidence/post-drain-validation-hygiene-scope-2026-06-07.md
+classification=contract-recorded-before-evidence-mutation
+non_claims=gameplay_coverage_unchanged,protocol_coverage_unchanged,public_server_safety_unchanged,production_readiness_unchanged,semantic_equivalence_unchanged
+exit_status=0
