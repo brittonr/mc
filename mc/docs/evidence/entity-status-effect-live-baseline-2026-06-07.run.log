@@ -1,0 +1,35 @@
+
+## targeted packet promotions check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/80daym9siwzbqnxn9i3cplmwz1mlkf0w-mc-compat-targeted-packet-promotions-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/80daym9siwzbqnxn9i3cplmwz1mlkf0w-mc-compat-targeted-packet-promotions-check.drv'...
+step_exit_status=0
+
+## acceptance matrix check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-acceptance-matrix --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/pgnj42mjq9nacab1wbazip0rwzh1f6i4-mc-compat-acceptance-matrix.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/pgnj42mjq9nacab1wbazip0rwzh1f6i4-mc-compat-acceptance-matrix.drv'...
+step_exit_status=0
+
+## current evidence bundle check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-current-evidence-bundle --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/2fszxiap5ps8d3qf46w2kcmsfvh2pn9l-mc-compat-current-evidence-bundle.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/2fszxiap5ps8d3qf46w2kcmsfvh2pn9l-mc-compat-current-evidence-bundle.drv'...
+step_exit_status=0
+
+## packet inventory fixture status grep
+command=grep -n Entity status-effect packets\|entity-status-effect-packets docs/evidence/protocol-763-acceptance-matrix.md docs/evidence/protocol-763-current-evidence-bundle.md docs/evidence/entity-status-effect-packets-2026-06-06.kv
+docs/evidence/protocol-763-acceptance-matrix.md:47:| Entity status-effect packets | `nix run .#cairn -- validate --root .`; `tools/check_targeted_packet_promotions.rs --row entity-status-effect-packets` | `docs/evidence/entity-status-effect-packets-2026-06-06.receipt.json` | `docs/evidence/entity-status-effect-packets-2026-06-06.md` | `1c4f1d08a7277993fd9bcd5ffe7bd9f726fae8620630c86aef8f06f7a4c011e7` | parent `pending-review`, fixture `deterministic` | One bounded status-effect apply/remove fixture for `minecraft:speed` across `EntityStatusEffectS2CPacket` and `RemoveEntityStatusEffectS2CPacket`. | No all effects, effect stacking, particles/UI, gameplay modifiers, combat balancing, survival parity, full protocol-763 compatibility, broad Minecraft compatibility, public-server safety, or production readiness. |
+docs/evidence/protocol-763-current-evidence-bundle.md:70:| Entity status-effect packets | deterministic status-effect apply/remove fixture plus targeted packet promotion checker | `1c4f1d08a7277993fd9bcd5ffe7bd9f726fae8620630c86aef8f06f7a4c011e7` |
+docs/evidence/entity-status-effect-packets-2026-06-06.kv:1:row.id=entity-status-effect-packets
+docs/evidence/entity-status-effect-packets-2026-06-06.kv:7:evidence.receipt=docs/evidence/entity-status-effect-packets-2026-06-06.receipt.json
+docs/evidence/entity-status-effect-packets-2026-06-06.kv:8:evidence.doc=docs/evidence/entity-status-effect-packets-2026-06-06.md
+step_exit_status=0
+classification=baseline-fixture-bounded
+exit_status=0

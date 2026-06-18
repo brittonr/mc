@@ -1,0 +1,11 @@
+command=record deterministic entity-status-effect live rail blocker
+registry_source=tools/mc-compat-runner/src/scenario_core.rs
+scenario=combat-damage
+capability_kind=targeted-packet-live-blocker
+evidence_mode=fixture-bounded-blocker
+backend_path=status-effect-rail-missing
+client_path=stevenarella-effect-observation-candidate
+blocker_reason=combat rail does not apply and remove a bounded status effect
+existing_combat_or_survival_semantics_changed=false
+live_promotion=false
+exit_status=0

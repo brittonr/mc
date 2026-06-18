@@ -1,0 +1,43 @@
+
+## targeted packet promotions fixture check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/hvscivxiyg12523nbayr18x118dc24ik-mc-compat-targeted-packet-promotions-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/hvscivxiyg12523nbayr18x118dc24ik-mc-compat-targeted-packet-promotions-check.drv'...
+step_exit_status=0
+
+## acceptance matrix check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-acceptance-matrix --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/2cx5jgj5a6pi197dhlaslmj2zjlr77d4-mc-compat-acceptance-matrix.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/2cx5jgj5a6pi197dhlaslmj2zjlr77d4-mc-compat-acceptance-matrix.drv'...
+step_exit_status=0
+
+## current evidence bundle check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-current-evidence-bundle --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/yrx217nvnnbsn4ai9c2sszbinmi00c2r-mc-compat-current-evidence-bundle.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/yrx217nvnnbsn4ai9c2sszbinmi00c2r-mc-compat-current-evidence-bundle.drv'...
+step_exit_status=0
+
+## scenario manifest check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/745h7k16rx2sm4854nslascfhq85zjqc-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/745h7k16rx2sm4854nslascfhq85zjqc-mc-compat-scenario-manifest.drv'...
+step_exit_status=0
+
+## fixture bounded status grep
+command=grep -n Entity status-effect packets\|fixture-bounded-blocker\|targeted-packet-live-blocker docs/evidence/protocol-763-acceptance-matrix.md docs/evidence/protocol-763-current-evidence-bundle.md docs/evidence/entity-status-effect-live-blocker-2026-06-07.kv tools/mc-compat-runner/src/scenario_core.rs
+docs/evidence/protocol-763-acceptance-matrix.md:47:| Entity status-effect packets | `nix run .#cairn -- validate --root .`; `tools/check_targeted_packet_promotions.rs --row entity-status-effect-packets` | `docs/evidence/entity-status-effect-packets-2026-06-06.receipt.json` | `docs/evidence/entity-status-effect-packets-2026-06-06.md` | `1c4f1d08a7277993fd9bcd5ffe7bd9f726fae8620630c86aef8f06f7a4c011e7` | parent `pending-review`, fixture `deterministic` | One bounded status-effect apply/remove fixture for `minecraft:speed` across `EntityStatusEffectS2CPacket` and `RemoveEntityStatusEffectS2CPacket`. | No all effects, effect stacking, particles/UI, gameplay modifiers, combat balancing, survival parity, full protocol-763 compatibility, broad Minecraft compatibility, public-server safety, or production readiness. |
+docs/evidence/protocol-763-current-evidence-bundle.md:70:| Entity status-effect packets | deterministic status-effect apply/remove fixture plus targeted packet promotion checker | `1c4f1d08a7277993fd9bcd5ffe7bd9f726fae8620630c86aef8f06f7a4c011e7` |
+docs/evidence/entity-status-effect-live-blocker-2026-06-07.kv:3:live.evidence.mode=fixture-bounded-blocker
+tools/mc-compat-runner/src/scenario_core.rs:238:pub(crate) const LIVE_CAPABILITY_KIND_BLOCKED: &str = "targeted-packet-live-blocker";
+tools/mc-compat-runner/src/scenario_core.rs:240:pub(crate) const LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER: &str = "fixture-bounded-blocker";
+step_exit_status=0
+classification=no-live-promotion-fixture-bounded-blocker
+exit_status=0

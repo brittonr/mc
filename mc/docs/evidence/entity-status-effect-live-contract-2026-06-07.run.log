@@ -1,0 +1,12 @@
+command=record entity-status-effect live contract
+contract_artifact=docs/evidence/entity-status-effect-live-contract-2026-06-07.md
+row_id=entity-status-effect-packets
+target_entity=compatbot
+effect=minecraft:speed
+amplifier=1
+duration_ticks=200
+packet_rows=play/clientbound/0x6c EntityStatusEffectS2CPacket,play/clientbound/0x3f RemoveEntityStatusEffectS2CPacket
+backend_path=status-effect-rail-missing
+client_path=stevenarella-effect-observation-candidate
+nonclaims=all_effects,effect_stacking,particles_ui,gameplay_modifiers,combat_balancing,survival_parity,public_server_safety,production_readiness,broad_minecraft_compatibility,full_protocol_763_compatibility
+exit_status=0

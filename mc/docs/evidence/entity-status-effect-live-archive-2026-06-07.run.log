@@ -1,0 +1,110 @@
+
+## archive dry-run
+command=nix run path:/home/brittonr/git/mc#cairn -- archive entity-status-effect-live-rail --root /home/brittonr/git/mc
+{
+  "actions": [
+    {
+      "description": "move active change to archive: entity-status-effect-live-rail",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/changes/entity-status-effect-live-rail"
+    }
+  ],
+  "blocked": false,
+  "change": "entity-status-effect-live-rail",
+  "dry_run": true,
+  "input_hash": "ba0eb64a2b5959a4610c7e4ccad54b008bf7a8ba9bd092b8ad67e1b66199a817",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "8f53e13721fdcb31fdd7f0a266652a21869761b00475f1c358f774b8f1231be9",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "2b132c0427d619fba3ed5725c6214e076867df0fe3e1b6fd2d0a2bfe42d45bb8"
+}
+step_exit_status=0
+
+## archive execute
+command=env CAIRN_ARCHIVE_DATE=2026-06-07 nix run path:/home/brittonr/git/mc#cairn -- archive entity-status-effect-live-rail --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: entity-status-effect-live-rail",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/2026-06-07-entity-status-effect-live-rail"
+    }
+  ],
+  "blocked": false,
+  "change": "entity-status-effect-live-rail",
+  "dry_run": false,
+  "input_hash": "ba0eb64a2b5959a4610c7e4ccad54b008bf7a8ba9bd092b8ad67e1b66199a817",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "b2e2e60b56e82966f768853254927ef055385a986f366687be0a34f06b5926e5",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-entity-status-effect-live-rail/design.md"
+        },
+        {
+          "content_hash": "b05cef0dcdae1516e57da036158b25fd866449882c12197905420854872805cc",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-entity-status-effect-live-rail/proposal.md"
+        },
+        {
+          "content_hash": "cfeb732991ca8ab3a47610994830531e511270fc13be9652d68b0a57d45130b5",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-entity-status-effect-live-rail/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "40d69c7d02a81d054bb93278a3e110094019d91c5f96f29f607b87d3a8a2aee7",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-entity-status-effect-live-rail/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/entity-status-effect-live-rail"
+        }
+      ],
+      "manifest_hash": "fd00b5c1e245b8dbb19d79c79338ced63bdf32e9c8d4aaafde512649329b8698"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "b2e2e60b56e82966f768853254927ef055385a986f366687be0a34f06b5926e5",
+          "exists": true,
+          "path": "./cairn/changes/entity-status-effect-live-rail/design.md"
+        },
+        {
+          "content_hash": "b05cef0dcdae1516e57da036158b25fd866449882c12197905420854872805cc",
+          "exists": true,
+          "path": "./cairn/changes/entity-status-effect-live-rail/proposal.md"
+        },
+        {
+          "content_hash": "cfeb732991ca8ab3a47610994830531e511270fc13be9652d68b0a57d45130b5",
+          "exists": true,
+          "path": "./cairn/changes/entity-status-effect-live-rail/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "40d69c7d02a81d054bb93278a3e110094019d91c5f96f29f607b87d3a8a2aee7",
+          "exists": true,
+          "path": "./cairn/changes/entity-status-effect-live-rail/tasks.md"
+        }
+      ],
+      "manifest_hash": "846e4c5d202c5fbbcbe508ebae8b1704dda132d0f0eba070fae300850077fc63"
+    },
+    "kind": "archive",
+    "manifest_hash": "d686b385620c93c4140165311824217900925eba60d028c0bef9b6f4ccc9a631"
+  },
+  "plan_hash": "124929b1af2bfdc82721c175d1cb05c0ba5578bea5ea7ba98695e82ad4e5b8a5",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "899e41a373398d3c129dd46dde98bdd7793ddccf32345ca2eb5cf8503c228215"
+}
+step_exit_status=0
+classification=archive-executed
+exit_status=0

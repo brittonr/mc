@@ -1,0 +1,34 @@
+{
+  "schema": "mc.compat.targeted_packet_live_blocker.v1",
+  "row": "entity-status-effect-packets",
+  "decision": "fixture-bounded-blocker",
+  "scenario": "combat-damage",
+  "target_entity": "compatbot",
+  "effect": "minecraft:speed",
+  "amplifier": "1",
+  "duration_ticks": "200",
+  "packet_rows": [
+    "play/clientbound/0x6c EntityStatusEffectS2CPacket",
+    "play/clientbound/0x3f RemoveEntityStatusEffectS2CPacket"
+  ],
+  "backend_path": "status-effect-rail-missing",
+  "client_path": "stevenarella-effect-observation-candidate",
+  "server_correlation_metric": "missing-maintained-status-effect-apply-remove-receipt",
+  "blocker_reason": "combat rail does not apply and remove a bounded status effect",
+  "live_promotion": false,
+  "matrix_promotion_changed": false,
+  "packet_inventory_promotion_changed": false,
+  "current_bundle_promotion_changed": false,
+  "nonclaims": {
+    "all_effects": true,
+    "effect_stacking": true,
+    "particles_ui": true,
+    "gameplay_modifiers": true,
+    "combat_balancing": true,
+    "survival_parity": true,
+    "public_server_safety": true,
+    "production_readiness": true,
+    "broad_minecraft_compatibility": true,
+    "full_protocol_763_compatibility": true
+  }
+}

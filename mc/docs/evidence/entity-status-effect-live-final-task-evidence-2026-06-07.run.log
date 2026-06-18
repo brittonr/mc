@@ -1,0 +1,49 @@
+
+## gate tasks entity-status-effect-live-rail
+command=nix run path:/home/brittonr/git/mc#cairn -- gate tasks entity-status-effect-live-rail --root /home/brittonr/git/mc
+{
+  "change": "entity-status-effect-live-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "4096f54224be0d1f3d1a80ceacbd282e7332b8ee1528e59ee4a1890d6b1893e1",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "523ae6bb473f8358dca9b525668ce40c40dda7d528478c75f11e9ace639f52df",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## cairn task evidence check final
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/r6adviydvz86y93gwrvzlzsainhc61js-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/r6adviydvz86y93gwrvzlzsainhc61js-mc-compat-cairn-task-evidence.drv'...
+step_exit_status=0
+
+## cairn validate final
+command=nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 6,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+step_exit_status=0
+classification=final-task-evidence-pass
+exit_status=0

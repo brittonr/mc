@@ -1,0 +1,72 @@
+
+## compile checker
+command=rustc --edition=2021 tools/check_targeted_packet_promotions.rs -o target/check-targeted-packet-promotions-entity
+step_exit_status=0
+
+## checker self-test
+command=target/check-targeted-packet-promotions-entity --self-test
+targeted packet promotion self-test ok: 8 positive fixtures and targeted negative fixtures exercised
+step_exit_status=0
+
+## fixture row check
+command=target/check-targeted-packet-promotions-entity --row entity-status-effect-packets --evidence docs/evidence/entity-status-effect-packets-2026-06-06.kv
+entity status-effect packets promotion evidence passed
+step_exit_status=0
+
+## synthetic entity live positive
+command=target/check-targeted-packet-promotions-entity --live-evidence target/entity-status-effect-live-checker/entity-valid-live.kv
+entity status-effect packets live promotion evidence passed
+step_exit_status=0
+
+## wrong-effect
+command=target/check-targeted-packet-promotions-entity --live-evidence target/entity-status-effect-live-checker/wrong-effect.kv
+targeted packet promotion check failed: live.status_effect.effect expected minecraft:speed, got minecraft:strength
+observed_status=1
+expected_failure_observed=true
+
+## missing-apply
+command=target/check-targeted-packet-promotions-entity --live-evidence target/entity-status-effect-live-checker/missing-apply.kv
+targeted packet promotion check failed: missing metric.live.status_effect_apply_observed
+observed_status=1
+expected_failure_observed=true
+
+## missing-remove
+command=target/check-targeted-packet-promotions-entity --live-evidence target/entity-status-effect-live-checker/missing-remove.kv
+targeted packet promotion check failed: missing metric.live.status_effect_remove_observed
+observed_status=1
+expected_failure_observed=true
+
+## stale-digest
+command=target/check-targeted-packet-promotions-entity --live-evidence target/entity-status-effect-live-checker/stale-digest.kv
+targeted packet promotion check failed: live.receipt.digest_status expected current, got stale
+observed_status=1
+expected_failure_observed=true
+
+## missing-correlation
+command=target/check-targeted-packet-promotions-entity --live-evidence target/entity-status-effect-live-checker/missing-correlation.kv
+targeted packet promotion check failed: missing metric.live.server_correlation
+observed_status=1
+expected_failure_observed=true
+
+## overclaim
+command=target/check-targeted-packet-promotions-entity --live-evidence target/entity-status-effect-live-checker/overclaim.kv
+targeted packet promotion check failed: broad overclaim claim.all_effects=true
+observed_status=1
+expected_failure_observed=true
+
+## blocker-kv-fails-live-promotion
+command=target/check-targeted-packet-promotions-entity --live-evidence docs/evidence/entity-status-effect-live-blocker-2026-06-07.kv
+targeted packet promotion check failed: live.promotion.status expected passed, got blocked
+targeted packet promotion check failed: live.evidence.mode expected owned-local-live, got fixture-bounded-blocker
+targeted packet promotion check failed: missing live.revision.status
+targeted packet promotion check failed: missing live.client.revision
+targeted packet promotion check failed: missing live.backend.revision
+targeted packet promotion check failed: missing live.backend
+targeted packet promotion check failed: missing live.row_extension.kind
+targeted packet promotion check failed: missing metric.live.status_effect_apply_observed
+targeted packet promotion check failed: missing metric.live.status_effect_remove_observed
+targeted packet promotion check failed: missing metric.live.server_correlation
+observed_status=1
+expected_failure_observed=true
+classification=checker-positive-and-negative-pass
+exit_status=0
