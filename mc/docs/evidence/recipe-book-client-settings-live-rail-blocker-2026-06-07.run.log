@@ -1,0 +1,11 @@
+command=record deterministic recipe-book client settings live rail blocker
+registry_source=tools/mc-compat-runner/src/scenario_core.rs
+scenario=survival-crafting-table
+capability_kind=targeted-packet-live-blocker
+evidence_mode=fixture-bounded-blocker
+backend_path=recipe-book-settings-rail-missing
+client_path=stevenarella-crafting-rail
+blocker_reason=crafting-table rail does not toggle recipe-book client settings
+existing_crafting_semantics_changed=false
+live_promotion=false
+exit_status=0

@@ -1,0 +1,49 @@
+
+## gate tasks recipe-book-client-settings-live-rail
+command=nix run path:/home/brittonr/git/mc#cairn -- gate tasks recipe-book-client-settings-live-rail --root /home/brittonr/git/mc
+{
+  "change": "recipe-book-client-settings-live-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "ecb3d905007bdf4a6e26c1c505800cdf64af0887d1c2aa3c93031f5c945e7c10",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "7ad0c775b5e81535df53cf1223109518db8e05512bb07377b7c0994ad8352253",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## cairn task evidence check final
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/0100dqbvzsi4fyhd6wzkpfp062hpbx6z-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/0100dqbvzsi4fyhd6wzkpfp062hpbx6z-mc-compat-cairn-task-evidence.drv'...
+step_exit_status=0
+
+## cairn validate final
+command=nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 5,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 7,
+  "valid": true
+}
+step_exit_status=0
+classification=final-task-evidence-pass
+exit_status=0

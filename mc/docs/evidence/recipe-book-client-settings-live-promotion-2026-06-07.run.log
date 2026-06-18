@@ -1,0 +1,43 @@
+
+## targeted packet promotions fixture check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/dzk0bxalmc3fb0cpwjg3k0gw02wkim4i-mc-compat-targeted-packet-promotions-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/dzk0bxalmc3fb0cpwjg3k0gw02wkim4i-mc-compat-targeted-packet-promotions-check.drv'...
+step_exit_status=0
+
+## acceptance matrix check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-acceptance-matrix --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/vzwz41gwhk72i8vvxg9fk56n9pnzw05z-mc-compat-acceptance-matrix.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/vzwz41gwhk72i8vvxg9fk56n9pnzw05z-mc-compat-acceptance-matrix.drv'...
+step_exit_status=0
+
+## current evidence bundle check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-current-evidence-bundle --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/652f6z07fiwdq44p0whzb7vlyngjsc82-mc-compat-current-evidence-bundle.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/652f6z07fiwdq44p0whzb7vlyngjsc82-mc-compat-current-evidence-bundle.drv'...
+step_exit_status=0
+
+## scenario manifest check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/qd0v9znhh67hirkhpm622y27crl39q41-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/qd0v9znhh67hirkhpm622y27crl39q41-mc-compat-scenario-manifest.drv'...
+step_exit_status=0
+
+## fixture bounded status grep
+command=grep -n Recipe-book client settings\|fixture-bounded-blocker\|targeted-packet-live-blocker docs/evidence/protocol-763-acceptance-matrix.md docs/evidence/protocol-763-current-evidence-bundle.md docs/evidence/recipe-book-client-settings-live-blocker-2026-06-07.kv tools/mc-compat-runner/src/scenario_core.rs
+docs/evidence/protocol-763-acceptance-matrix.md:48:| Recipe-book client settings | `nix run .#cairn -- validate --root .`; `tools/check_targeted_packet_promotions.rs --row recipe-book-client-settings` | `docs/evidence/recipe-book-client-settings-2026-06-06.receipt.json` | `docs/evidence/recipe-book-client-settings-2026-06-06.md` | `cf0c6876a78cfd42499e819f7c795aff3b1a9fa217c114f6b2e65b00e0753828` | parent `pending-review`, fixture `deterministic` | One bounded `RecipeBookDataC2SPacket` crafting-book settings transition fixture with `open=true` and `filtering=false`. | No recipe-book UI behavior, all recipe categories, recipe discovery, all recipes, full crafting coverage, public-server safety, full protocol-763 compatibility, broad Minecraft compatibility, or production readiness. |
+docs/evidence/protocol-763-current-evidence-bundle.md:71:| Recipe-book client settings | deterministic `RecipeBookDataC2SPacket` fixture plus targeted packet promotion checker | `cf0c6876a78cfd42499e819f7c795aff3b1a9fa217c114f6b2e65b00e0753828` |
+docs/evidence/recipe-book-client-settings-live-blocker-2026-06-07.kv:3:live.evidence.mode=fixture-bounded-blocker
+tools/mc-compat-runner/src/scenario_core.rs:238:pub(crate) const LIVE_CAPABILITY_KIND_BLOCKED: &str = "targeted-packet-live-blocker";
+tools/mc-compat-runner/src/scenario_core.rs:240:pub(crate) const LIVE_EVIDENCE_MODE_FIXTURE_BOUNDED_BLOCKER: &str = "fixture-bounded-blocker";
+step_exit_status=0
+classification=no-live-promotion-fixture-bounded-blocker
+exit_status=0

@@ -1,0 +1,32 @@
+{
+  "schema": "mc.compat.targeted_packet_live_blocker.v1",
+  "row": "recipe-book-client-settings",
+  "decision": "fixture-bounded-blocker",
+  "scenario": "survival-crafting-table",
+  "actor": "compatbot",
+  "packet_rows": [
+    "play/serverbound/0x22 RecipeBookDataC2SPacket"
+  ],
+  "book": "crafting",
+  "open": "true",
+  "filtering": "false",
+  "backend_path": "recipe-book-settings-rail-missing",
+  "client_path": "stevenarella-crafting-rail",
+  "server_correlation_metric": "missing-maintained-recipe-book-settings-receipt",
+  "blocker_reason": "crafting-table rail does not toggle recipe-book client settings",
+  "live_promotion": false,
+  "matrix_promotion_changed": false,
+  "packet_inventory_promotion_changed": false,
+  "current_bundle_promotion_changed": false,
+  "nonclaims": {
+    "recipe_book_ui_behavior": true,
+    "recipe_discovery": true,
+    "all_recipe_categories": true,
+    "all_recipes": true,
+    "full_crafting_coverage": true,
+    "public_server_safety": true,
+    "production_readiness": true,
+    "broad_minecraft_compatibility": true,
+    "full_protocol_763_compatibility": true
+  }
+}

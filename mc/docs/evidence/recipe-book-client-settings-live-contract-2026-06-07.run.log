@@ -1,0 +1,12 @@
+command=record recipe-book client settings live contract
+contract_artifact=docs/evidence/recipe-book-client-settings-live-contract-2026-06-07.md
+row_id=recipe-book-client-settings
+actor=compatbot
+packet_row=play/serverbound/0x22 RecipeBookDataC2SPacket
+book=crafting
+open=true
+filtering=false
+backend_path=recipe-book-settings-rail-missing
+client_path=stevenarella-crafting-rail
+nonclaims=recipe_book_ui_behavior,recipe_discovery,all_recipe_categories,all_recipes,full_crafting_coverage,public_server_safety,production_readiness,broad_minecraft_compatibility,full_protocol_763_compatibility
+exit_status=0

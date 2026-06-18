@@ -1,7 +1,7 @@
 3ff512d32b8c72e18905f0527ea11e4c49c332732553aa8ba01b8fc771c8de34  tools/mc-compat-runner/src/main.rs
 aed8bdb1c5b02934d0ce2272bf787fa1b557d1033cbe2db2e0304fba4b976749  tools/mc-compat-runner/src/scenario_core.rs
 816b36b47db191a695d2c55e1ccef1efc9671d1c81c7bcb7c419914089d6b1cb  tools/check_scenario_manifest.rs
-ca79243039cfa30a9133e5f61f6116fa9ac4373f1b842085de9264190dd0aa03  cairn/specs/mc-compatibility/spec.md
+2e8aa7a6223c3641efb76a3a465df66f9080c0dbcf37a2de65cb201075003996  cairn/specs/mc-compatibility/spec.md
 70c46e5f8b320f6201149945d9d2236a41f39d96767bcc90815c8bd7d99350fb  cairn/archive/2026-06-06-split-mc-compat-runner-scenario-modules/tasks.md
 60b698e08c247b3348021c1e31729a0d23456746c91b20c137a929fbd9a3f1c9  docs/evidence/runner-scenario-modules-2026-06-06.md
 59b976c87956f9a81267fa0592f9d744be20b13b75d0014ba4f22642546538bd  docs/evidence/runner-scenario-modules-baseline-2026-06-06.run.log

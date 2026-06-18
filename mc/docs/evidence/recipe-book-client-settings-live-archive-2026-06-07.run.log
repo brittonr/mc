@@ -1,0 +1,110 @@
+
+## archive dry-run
+command=nix run path:/home/brittonr/git/mc#cairn -- archive recipe-book-client-settings-live-rail --root /home/brittonr/git/mc
+{
+  "actions": [
+    {
+      "description": "move active change to archive: recipe-book-client-settings-live-rail",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/changes/recipe-book-client-settings-live-rail"
+    }
+  ],
+  "blocked": false,
+  "change": "recipe-book-client-settings-live-rail",
+  "dry_run": true,
+  "input_hash": "c0e9d7fad3ac57d594bec3c2ca0c5b765e95e3d1979db656213cdef429178dec",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "3690dcc0db68c0a8e0ef7a4eea4759228555744e81a7dc0de31952367fac588e",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "120b6f4b9213b1e44250ecc9dcc8d11c3a50fcf802edddbe0a9f09212b535ce2"
+}
+step_exit_status=0
+
+## archive execute
+command=env CAIRN_ARCHIVE_DATE=2026-06-07 nix run path:/home/brittonr/git/mc#cairn -- archive recipe-book-client-settings-live-rail --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: recipe-book-client-settings-live-rail",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/2026-06-07-recipe-book-client-settings-live-rail"
+    }
+  ],
+  "blocked": false,
+  "change": "recipe-book-client-settings-live-rail",
+  "dry_run": false,
+  "input_hash": "c0e9d7fad3ac57d594bec3c2ca0c5b765e95e3d1979db656213cdef429178dec",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "ccf7aab1b964805cbb222c5e0ccc2888520516b00542fdd571cfa14a3c72cc81",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-recipe-book-client-settings-live-rail/design.md"
+        },
+        {
+          "content_hash": "7a5965b4218b59145968ea1b07a2395f8e3bdae2cc374ae44c345a180448d788",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-recipe-book-client-settings-live-rail/proposal.md"
+        },
+        {
+          "content_hash": "fcec272f91c0280d6b61f92397e785b104f7a177332b721ba9f1d28a2e659fda",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-recipe-book-client-settings-live-rail/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "7d627a23d5a14da4cd4717562e3de8160c7e4c4cc1c715b8bc53e53ffba0a88d",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-recipe-book-client-settings-live-rail/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/recipe-book-client-settings-live-rail"
+        }
+      ],
+      "manifest_hash": "8ffa590b8b9cdf679b8fc01701d176152d138e6523ae794a272bd8ecdc9df7fa"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "ccf7aab1b964805cbb222c5e0ccc2888520516b00542fdd571cfa14a3c72cc81",
+          "exists": true,
+          "path": "./cairn/changes/recipe-book-client-settings-live-rail/design.md"
+        },
+        {
+          "content_hash": "7a5965b4218b59145968ea1b07a2395f8e3bdae2cc374ae44c345a180448d788",
+          "exists": true,
+          "path": "./cairn/changes/recipe-book-client-settings-live-rail/proposal.md"
+        },
+        {
+          "content_hash": "fcec272f91c0280d6b61f92397e785b104f7a177332b721ba9f1d28a2e659fda",
+          "exists": true,
+          "path": "./cairn/changes/recipe-book-client-settings-live-rail/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "7d627a23d5a14da4cd4717562e3de8160c7e4c4cc1c715b8bc53e53ffba0a88d",
+          "exists": true,
+          "path": "./cairn/changes/recipe-book-client-settings-live-rail/tasks.md"
+        }
+      ],
+      "manifest_hash": "2f0f62341e011e9282d1a437b5814e2f86520926e96659cc38c2e08b2891ae24"
+    },
+    "kind": "archive",
+    "manifest_hash": "04bd8f26e6a51c1c2dd4b5d5e918f9e38960e83eab70312754b255d309e6b23a"
+  },
+  "plan_hash": "00412e739c63e0ffc3e9e950089e42631aa38ab340b6b6ed3aea56439a048c13",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "526c8ac76b37f4d5552ba2c15aa15a658d638e6c433911c3e2ab3b8ed2b64fbd"
+}
+step_exit_status=0
+classification=archive-executed
+exit_status=0

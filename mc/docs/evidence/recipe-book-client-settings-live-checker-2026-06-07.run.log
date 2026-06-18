@@ -1,0 +1,65 @@
+
+## compile checker
+command=rustc --edition=2021 tools/check_targeted_packet_promotions.rs -o target/check-targeted-packet-promotions-recipe
+step_exit_status=0
+
+## checker self-test
+command=target/check-targeted-packet-promotions-recipe --self-test
+targeted packet promotion self-test ok: 8 positive fixtures and targeted negative fixtures exercised
+step_exit_status=0
+
+## fixture row check
+command=target/check-targeted-packet-promotions-recipe --row recipe-book-client-settings --evidence docs/evidence/recipe-book-client-settings-2026-06-06.kv
+recipe-book client settings promotion evidence passed
+step_exit_status=0
+
+## synthetic recipe live positive
+command=target/check-targeted-packet-promotions-recipe --live-evidence target/recipe-book-client-settings-live-checker/recipe-valid-live.kv
+recipe-book client settings live promotion evidence passed
+step_exit_status=0
+
+## wrong-fields
+command=target/check-targeted-packet-promotions-recipe --live-evidence target/recipe-book-client-settings-live-checker/wrong-fields.kv
+targeted packet promotion check failed: live.recipe_book.filtering expected false, got true
+observed_status=1
+expected_failure_observed=true
+
+## missing-client-action
+command=target/check-targeted-packet-promotions-recipe --live-evidence target/recipe-book-client-settings-live-checker/missing-client-action.kv
+targeted packet promotion check failed: missing metric.live.recipe_book_settings_sent
+observed_status=1
+expected_failure_observed=true
+
+## stale-digest
+command=target/check-targeted-packet-promotions-recipe --live-evidence target/recipe-book-client-settings-live-checker/stale-digest.kv
+targeted packet promotion check failed: live.receipt.digest_status expected current, got stale
+observed_status=1
+expected_failure_observed=true
+
+## missing-correlation
+command=target/check-targeted-packet-promotions-recipe --live-evidence target/recipe-book-client-settings-live-checker/missing-correlation.kv
+targeted packet promotion check failed: missing metric.live.server_correlation
+observed_status=1
+expected_failure_observed=true
+
+## overclaim
+command=target/check-targeted-packet-promotions-recipe --live-evidence target/recipe-book-client-settings-live-checker/overclaim.kv
+targeted packet promotion check failed: broad overclaim claim.all_recipes=true
+observed_status=1
+expected_failure_observed=true
+
+## blocker-kv-fails-live-promotion
+command=target/check-targeted-packet-promotions-recipe --live-evidence docs/evidence/recipe-book-client-settings-live-blocker-2026-06-07.kv
+targeted packet promotion check failed: live.promotion.status expected passed, got blocked
+targeted packet promotion check failed: live.evidence.mode expected owned-local-live, got fixture-bounded-blocker
+targeted packet promotion check failed: missing live.revision.status
+targeted packet promotion check failed: missing live.client.revision
+targeted packet promotion check failed: missing live.backend.revision
+targeted packet promotion check failed: missing live.backend
+targeted packet promotion check failed: missing live.row_extension.kind
+targeted packet promotion check failed: missing metric.live.recipe_book_settings_sent
+targeted packet promotion check failed: missing metric.live.server_correlation
+observed_status=1
+expected_failure_observed=true
+classification=checker-positive-and-negative-pass
+exit_status=0

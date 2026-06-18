@@ -1,0 +1,35 @@
+
+## targeted packet promotions check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/kfaj5kycky7javmp596kbh8kki1hnj8l-mc-compat-targeted-packet-promotions-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/kfaj5kycky7javmp596kbh8kki1hnj8l-mc-compat-targeted-packet-promotions-check.drv'...
+step_exit_status=0
+
+## acceptance matrix check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-acceptance-matrix --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/9z1zgyfgnpdxx4i9hajyf9g0ijvvmy3c-mc-compat-acceptance-matrix.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/9z1zgyfgnpdxx4i9hajyf9g0ijvvmy3c-mc-compat-acceptance-matrix.drv'...
+step_exit_status=0
+
+## current evidence bundle check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-current-evidence-bundle --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/yqvj810xcxc3gkhr8yicr3zdqc96j1w9-mc-compat-current-evidence-bundle.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/yqvj810xcxc3gkhr8yicr3zdqc96j1w9-mc-compat-current-evidence-bundle.drv'...
+step_exit_status=0
+
+## packet inventory fixture status grep
+command=grep -n Recipe-book client settings\|recipe-book-client-settings docs/evidence/protocol-763-acceptance-matrix.md docs/evidence/protocol-763-current-evidence-bundle.md docs/evidence/recipe-book-client-settings-2026-06-06.kv
+docs/evidence/protocol-763-acceptance-matrix.md:48:| Recipe-book client settings | `nix run .#cairn -- validate --root .`; `tools/check_targeted_packet_promotions.rs --row recipe-book-client-settings` | `docs/evidence/recipe-book-client-settings-2026-06-06.receipt.json` | `docs/evidence/recipe-book-client-settings-2026-06-06.md` | `cf0c6876a78cfd42499e819f7c795aff3b1a9fa217c114f6b2e65b00e0753828` | parent `pending-review`, fixture `deterministic` | One bounded `RecipeBookDataC2SPacket` crafting-book settings transition fixture with `open=true` and `filtering=false`. | No recipe-book UI behavior, all recipe categories, recipe discovery, all recipes, full crafting coverage, public-server safety, full protocol-763 compatibility, broad Minecraft compatibility, or production readiness. |
+docs/evidence/protocol-763-current-evidence-bundle.md:71:| Recipe-book client settings | deterministic `RecipeBookDataC2SPacket` fixture plus targeted packet promotion checker | `cf0c6876a78cfd42499e819f7c795aff3b1a9fa217c114f6b2e65b00e0753828` |
+docs/evidence/recipe-book-client-settings-2026-06-06.kv:1:row.id=recipe-book-client-settings
+docs/evidence/recipe-book-client-settings-2026-06-06.kv:7:evidence.receipt=docs/evidence/recipe-book-client-settings-2026-06-06.receipt.json
+docs/evidence/recipe-book-client-settings-2026-06-06.kv:8:evidence.doc=docs/evidence/recipe-book-client-settings-2026-06-06.md
+step_exit_status=0
+classification=baseline-fixture-bounded
+exit_status=0
