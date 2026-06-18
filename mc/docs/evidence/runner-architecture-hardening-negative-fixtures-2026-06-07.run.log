@@ -1,0 +1,32 @@
+
+## rustfmt check scenario manifest checker
+command=env TMPDIR=/home/brittonr/git/mc/.pi/tmp nix develop --no-update-lock-file /home/brittonr/git/mc -c rustfmt tools/check_scenario_manifest.rs
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+step_exit_status=0
+
+## compile scenario manifest checker negative fixtures
+command=rustc --edition=2021 tools/check_scenario_manifest.rs -o .pi/tmp/check-scenario-manifest-negative-fixtures
+bash: line 6: rustc: command not found
+step_exit_status=127
+
+## scenario manifest checker self-test negative fixtures
+command=.pi/tmp/check-scenario-manifest-negative-fixtures --self-test
+bash: line 6: .pi/tmp/check-scenario-manifest-negative-fixtures: No such file or directory
+step_exit_status=127
+
+## scenario manifest repository check negative fixtures
+command=.pi/tmp/check-scenario-manifest-negative-fixtures
+bash: line 6: .pi/tmp/check-scenario-manifest-negative-fixtures: No such file or directory
+step_exit_status=127
+
+## flake scenario manifest check negative fixtures
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/yaa214lyyrj1l332cc31zr8q0y09fxgl-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/yaa214lyyrj1l332cc31zr8q0y09fxgl-mc-compat-scenario-manifest.drv'...
+step_exit_status=0
+classification=runner-architecture-negative-fixtures-fail failures=3
+exit_status=1

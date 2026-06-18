@@ -1,0 +1,187 @@
+
+## scenario manifest checker self-test closeout
+command=.pi/tmp/check-scenario-manifest-negative-fixtures --self-test
+bash: line 6: .pi/tmp/check-scenario-manifest-negative-fixtures: No such file or directory
+step_exit_status=127
+
+## scenario manifest repository check closeout
+command=.pi/tmp/check-scenario-manifest-negative-fixtures
+bash: line 6: .pi/tmp/check-scenario-manifest-negative-fixtures: No such file or directory
+step_exit_status=127
+
+## flake scenario manifest check closeout
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/fqqdmxi6civ5nda6ixpkhrzlb43fb3al-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/fqqdmxi6civ5nda6ixpkhrzlb43fb3al-mc-compat-scenario-manifest.drv'...
+step_exit_status=0
+
+## cairn validate
+command=nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
+step_exit_status=0
+
+## gate proposal runner-architecture-hardening-pass
+command=nix run path:/home/brittonr/git/mc#cairn -- gate proposal runner-architecture-hardening-pass --root /home/brittonr/git/mc
+{
+  "change": "runner-architecture-hardening-pass",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "66d2d637f69e0d7fc8d760e7d51279028877cd290b1a284a4c13303d0d124cf0",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "5821c81f02167313a38a240c03de0a42d4d2b57e2d56f85b5d93c7eda6fb402b",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## gate design runner-architecture-hardening-pass
+command=nix run path:/home/brittonr/git/mc#cairn -- gate design runner-architecture-hardening-pass --root /home/brittonr/git/mc
+{
+  "change": "runner-architecture-hardening-pass",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "813dce92da85f1e6585372dc08b3ac4dd045d04d1f180bd9419bf0f6f164f4e5",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "453e25f154bd228e42443696e0003a4abe42782865c8c6a329507e5f351b873f",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## gate tasks runner-architecture-hardening-pass
+command=nix run path:/home/brittonr/git/mc#cairn -- gate tasks runner-architecture-hardening-pass --root /home/brittonr/git/mc
+{
+  "change": "runner-architecture-hardening-pass",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "2538ebae935f532fa0f28f0294a6df70e503b272a8ea0d26f6b43eca3ad338e5",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "95a2705ba74d6448e24b775f1a3764f1c58ee6bdf9df368328032be69e4ed396",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## evidence manifest check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/2dj8q73rqg3mfq2b614ywkydp75swm85-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/2dj8q73rqg3mfq2b614ywkydp75swm85-mc-compat-evidence-manifests.drv'...
+mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/creative-inventory-live-rail-2026-06-07.b3:2: stale digest for tools/check_scenario_manifest.rs: expected 36472333dd3f23382e6effd31d168d1586e46d7cd030c13a4f48b7c72251c5f5, found 816b36b47db191a695d2c55e1ccef1efc9671d1c81c7bcb7c419914089d6b1cb
+mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/resource-pack-status-local-rail-2026-06-07.b3:2: stale digest for tools/check_scenario_manifest.rs: expected 36472333dd3f23382e6effd31d168d1586e46d7cd030c13a4f48b7c72251c5f5, found 816b36b47db191a695d2c55e1ccef1efc9671d1c81c7bcb7c419914089d6b1cb
+mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/runner-scenario-modules-2026-06-06.b3:3: stale digest for tools/check_scenario_manifest.rs: expected 36472333dd3f23382e6effd31d168d1586e46d7cd030c13a4f48b7c72251c5f5, found 816b36b47db191a695d2c55e1ccef1efc9671d1c81c7bcb7c419914089d6b1cb
+mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/scenario-live-capability-registry-2026-06-07.b3:2: stale digest for tools/check_scenario_manifest.rs: expected 36472333dd3f23382e6effd31d168d1586e46d7cd030c13a4f48b7c72251c5f5, found 816b36b47db191a695d2c55e1ccef1efc9671d1c81c7bcb7c419914089d6b1cb
+mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/sign-editor-live-rail-2026-06-07.b3:2: stale digest for tools/check_scenario_manifest.rs: expected 36472333dd3f23382e6effd31d168d1586e46d7cd030c13a4f48b7c72251c5f5, found 816b36b47db191a695d2c55e1ccef1efc9671d1c81c7bcb7c419914089d6b1cb
+error: Cannot build '/nix/store/2dj8q73rqg3mfq2b614ywkydp75swm85-mc-compat-evidence-manifests.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/sznplmf4q8dhr4bx5wpjciy1s13237vv-mc-compat-evidence-manifests
+       Last 5 log lines:
+       > evidence manifest refresh failed: docs/evidence/creative-inventory-live-rail-2026-06-07.b3:2: stale digest for tools/check_scenario_manifest.rs: expected 36472333dd3f23382e6effd31d168d1586e46d7cd030c13a4f48b7c72251c5f5, found 816b36b47db191a695d2c55e1ccef1efc9671d1c81c7bcb7c419914089d6b1cb
+       > evidence manifest refresh failed: docs/evidence/resource-pack-status-local-rail-2026-06-07.b3:2: stale digest for tools/check_scenario_manifest.rs: expected 36472333dd3f23382e6effd31d168d1586e46d7cd030c13a4f48b7c72251c5f5, found 816b36b47db191a695d2c55e1ccef1efc9671d1c81c7bcb7c419914089d6b1cb
+       > evidence manifest refresh failed: docs/evidence/runner-scenario-modules-2026-06-06.b3:3: stale digest for tools/check_scenario_manifest.rs: expected 36472333dd3f23382e6effd31d168d1586e46d7cd030c13a4f48b7c72251c5f5, found 816b36b47db191a695d2c55e1ccef1efc9671d1c81c7bcb7c419914089d6b1cb
+       > evidence manifest refresh failed: docs/evidence/scenario-live-capability-registry-2026-06-07.b3:2: stale digest for tools/check_scenario_manifest.rs: expected 36472333dd3f23382e6effd31d168d1586e46d7cd030c13a4f48b7c72251c5f5, found 816b36b47db191a695d2c55e1ccef1efc9671d1c81c7bcb7c419914089d6b1cb
+       > evidence manifest refresh failed: docs/evidence/sign-editor-live-rail-2026-06-07.b3:2: stale digest for tools/check_scenario_manifest.rs: expected 36472333dd3f23382e6effd31d168d1586e46d7cd030c13a4f48b7c72251c5f5, found 816b36b47db191a695d2c55e1ccef1efc9671d1c81c7bcb7c419914089d6b1cb
+       For full logs, run:
+         nix log /nix/store/2dj8q73rqg3mfq2b614ywkydp75swm85-mc-compat-evidence-manifests.drv
+step_exit_status=1
+
+## task evidence check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/4fbhm1v116xfxpd7g7h5pfijg4k71qls-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/4fbhm1v116xfxpd7g7h5pfijg4k71qls-mc-compat-cairn-task-evidence.drv'...
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:3 completed task lacks verification command output as a docs/evidence/*.run.log path
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:5 cites run log docs/evidence/runner-architecture-hardening-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:5 cites run log docs/evidence/runner-architecture-hardening-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:5 cites run log docs/evidence/runner-architecture-hardening-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:5 cites run log docs/evidence/runner-architecture-hardening-baseline-2026-06-07.run.log with nonzero exit status line: exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:7 completed task lacks verification command output as a docs/evidence/*.run.log path
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-negative-fixtures-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-negative-fixtures-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-negative-fixtures-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-negative-fixtures-2026-06-07.run.log with nonzero exit status line: exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:11 completed task lacks verification command output as a docs/evidence/*.run.log path
+error: Cannot build '/nix/store/4fbhm1v116xfxpd7g7h5pfijg4k71qls-mc-compat-cairn-task-evidence.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/p8m3mmrcws6sl65cmi3cr1w7593jpxai-mc-compat-cairn-task-evidence
+       Last 19 log lines:
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:3 completed task lacks verification command output as a docs/evidence/*.run.log path
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:5 cites run log docs/evidence/runner-architecture-hardening-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:5 cites run log docs/evidence/runner-architecture-hardening-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:5 cites run log docs/evidence/runner-architecture-hardening-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:5 cites run log docs/evidence/runner-architecture-hardening-baseline-2026-06-07.run.log with nonzero exit status line: exit_status=1
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:7 completed task lacks verification command output as a docs/evidence/*.run.log path
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-negative-fixtures-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-negative-fixtures-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-negative-fixtures-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-negative-fixtures-2026-06-07.run.log with nonzero exit status line: exit_status=1
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: exit_status=1
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: exit_status=1
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:11 completed task lacks verification command output as a docs/evidence/*.run.log path
+       For full logs, run:
+         nix log /nix/store/4fbhm1v116xfxpd7g7h5pfijg4k71qls-mc-compat-cairn-task-evidence.drv
+step_exit_status=1
+classification=runner-architecture-closeout-fail failures=4
+exit_status=1

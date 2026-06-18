@@ -1,6 +1,6 @@
 9f8f010adf47d4de7bcc60ba5d01443307888079c328e1ef123a4174e3701691  tools/check_targeted_packet_promotions.rs
 0b078d8fbf0d550675e2ccf7e2a297b923c45a48fdc486a6ec88a0d8447eebee  cairn/archive/2026-06-07-targeted-packet-live-evidence-kv-schema/tasks.md
-4005cede3e3355c918643e54b21b1fb6daa1a24cddc4331408c6d718b2990c75  cairn/specs/mc-compatibility/spec.md
+2cca47ac22bcaeb42d0ae28d308c6caf312439366aea0da9b848c60723a8c988  cairn/specs/mc-compatibility/spec.md
 ab042f3a34f369b47053b554fb8950d10c871ee9021d78710dc090abece6343a  docs/evidence/targeted-packet-live-kv-schema-2026-06-07.md
 5c5d78ee188f32ce0e73e7609733fa5e16c485652120f73732c7703cfe001dd6  docs/evidence/targeted-packet-live-kv-schema-baseline-2026-06-07.run.log
 4200afde7ea400ce1fe7c5ba9be48c99036bce718f4aab264431ea197bdacb46  docs/evidence/targeted-packet-live-kv-schema-checker-2026-06-07.run.log

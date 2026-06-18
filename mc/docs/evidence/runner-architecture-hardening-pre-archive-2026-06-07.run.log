@@ -1,0 +1,230 @@
+
+## accepted spec contains runner architecture ids
+command=grep -n runner_architecture_hardening cairn/specs/mc-compatibility/spec.md
+5427:r[mc_compatibility.runner_architecture_hardening.contract] The architecture hardening pass MUST select one bounded runner or checker seam and name public output invariants before refactoring.
+5431:r[mc_compatibility.runner_architecture_hardening.contract.scope]
+5439:r[mc_compatibility.runner_architecture_hardening.baseline] The hardening pass MUST run focused baseline tests and dry-runs before refactoring the selected seam.
+5443:r[mc_compatibility.runner_architecture_hardening.baseline.recorded]
+5450:r[mc_compatibility.runner_architecture_hardening.core] The selected seam MUST be split into pure deterministic core logic and a thin imperative shell.
+5454:r[mc_compatibility.runner_architecture_hardening.core.pure]
+5462:r[mc_compatibility.runner_architecture_hardening.core.shell]
+5470:r[mc_compatibility.runner_architecture_hardening.tests] The hardening pass MUST include positive parity tests and negative fail-closed tests for the selected seam.
+5474:r[mc_compatibility.runner_architecture_hardening.tests.coverage]
+5482:r[mc_compatibility.runner_architecture_hardening.evidence] Architecture-hardening evidence MUST be reviewable under `docs/evidence/` before closeout.
+5486:r[mc_compatibility.runner_architecture_hardening.evidence.reviewable]
+5494:r[mc_compatibility.runner_architecture_hardening.validation] The change MUST record focused tests, relevant runner/checker checks, evidence checks, Cairn gates, sync/archive checks, and post-archive validation.
+5498:r[mc_compatibility.runner_architecture_hardening.validation.logs]
+step_exit_status=0
+
+## scenario manifest checker self-test pre-archive
+command=.pi/tmp/check-scenario-manifest-negative-fixtures --self-test
+bash: line 6: .pi/tmp/check-scenario-manifest-negative-fixtures: No such file or directory
+step_exit_status=127
+
+## scenario manifest repository check pre-archive
+command=.pi/tmp/check-scenario-manifest-negative-fixtures
+bash: line 6: .pi/tmp/check-scenario-manifest-negative-fixtures: No such file or directory
+step_exit_status=127
+
+## flake scenario manifest check pre-archive
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/csvslvplpzqxypbd7rjwwynx7p98pxn0-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/csvslvplpzqxypbd7rjwwynx7p98pxn0-mc-compat-scenario-manifest.drv'...
+step_exit_status=0
+
+## cairn validate
+command=nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
+step_exit_status=0
+
+## gate proposal runner-architecture-hardening-pass
+command=nix run path:/home/brittonr/git/mc#cairn -- gate proposal runner-architecture-hardening-pass --root /home/brittonr/git/mc
+{
+  "change": "runner-architecture-hardening-pass",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e33f156ce2d50a549da7ef6480aa6ae838ea9362710ae7fbb584c86d4f58a30d",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "24c58d399097f6e748e2c1b5c3bc6cf1d9bd27d28bfe54d81352406bcc37eea6",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## gate design runner-architecture-hardening-pass
+command=nix run path:/home/brittonr/git/mc#cairn -- gate design runner-architecture-hardening-pass --root /home/brittonr/git/mc
+{
+  "change": "runner-architecture-hardening-pass",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "82270317cc6673bcb1762423ad9db1657db26eafafb9d50e3896afdf27691397",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "392bd4324a6c644ff36d295f5828560711f9729d2546439c461db27498f7fb1a",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## gate tasks runner-architecture-hardening-pass
+command=nix run path:/home/brittonr/git/mc#cairn -- gate tasks runner-architecture-hardening-pass --root /home/brittonr/git/mc
+{
+  "change": "runner-architecture-hardening-pass",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "8e60a91f307bbd30673f8c5aafb1d7f8274b5202fe002c46a0fb015161995867",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "881dae017eafc716b8e34dc307f551ba1680cab294101dfc6997612f6eb9b726",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## evidence manifest check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/96q4n6b7rxqiywkwyzk81d6vp4p8a2rj-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/96q4n6b7rxqiywkwyzk81d6vp4p8a2rj-mc-compat-evidence-manifests.drv'...
+step_exit_status=0
+
+## task evidence check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/d3yi0r9cs2w2xwy9shklh2jwpy7ry0hj-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/d3yi0r9cs2w2xwy9shklh2jwpy7ry0hj-mc-compat-cairn-task-evidence.drv'...
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:3 completed task lacks verification command output as a docs/evidence/*.run.log path
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:5 cites run log docs/evidence/runner-architecture-hardening-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:5 cites run log docs/evidence/runner-architecture-hardening-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:5 cites run log docs/evidence/runner-architecture-hardening-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:5 cites run log docs/evidence/runner-architecture-hardening-baseline-2026-06-07.run.log with nonzero exit status line: exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:7 completed task lacks verification command output as a docs/evidence/*.run.log path
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-negative-fixtures-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-negative-fixtures-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-negative-fixtures-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-negative-fixtures-2026-06-07.run.log with nonzero exit status line: exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:11 completed task lacks verification command output as a docs/evidence/*.run.log path
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: step_exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:5 cites run log docs/evidence/runner-architecture-hardening-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:5 cites run log docs/evidence/runner-architecture-hardening-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:5 cites run log docs/evidence/runner-architecture-hardening-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:5 cites run log docs/evidence/runner-architecture-hardening-baseline-2026-06-07.run.log with nonzero exit status line: exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-negative-fixtures-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-negative-fixtures-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-negative-fixtures-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-negative-fixtures-2026-06-07.run.log with nonzero exit status line: exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:5 cites run log docs/evidence/runner-architecture-hardening-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:5 cites run log docs/evidence/runner-architecture-hardening-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:5 cites run log docs/evidence/runner-architecture-hardening-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:5 cites run log docs/evidence/runner-architecture-hardening-baseline-2026-06-07.run.log with nonzero exit status line: exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-negative-fixtures-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-negative-fixtures-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-negative-fixtures-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-negative-fixtures-2026-06-07.run.log with nonzero exit status line: exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: step_exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: exit_status=1
+error: Cannot build '/nix/store/d3yi0r9cs2w2xwy9shklh2jwpy7ry0hj-mc-compat-cairn-task-evidence.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/brrpp8x7l9pqnhbn0gz1bn8d7i4lvg7m-mc-compat-cairn-task-evidence
+       Last 25 log lines:
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: exit_status=1
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: exit_status=1
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:5 cites run log docs/evidence/runner-architecture-hardening-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:5 cites run log docs/evidence/runner-architecture-hardening-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:5 cites run log docs/evidence/runner-architecture-hardening-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:5 cites run log docs/evidence/runner-architecture-hardening-baseline-2026-06-07.run.log with nonzero exit status line: exit_status=1
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-negative-fixtures-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-negative-fixtures-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-negative-fixtures-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-negative-fixtures-2026-06-07.run.log with nonzero exit status line: exit_status=1
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-postfmt-tests-2026-06-07.run.log with nonzero exit status line: exit_status=1
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: step_exit_status=127
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:9 cites run log docs/evidence/runner-architecture-hardening-tests-2026-06-07.run.log with nonzero exit status line: exit_status=1
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: step_exit_status=1
+       > task evidence gate failed: cairn/changes/runner-architecture-hardening-pass/tasks.md:13 cites run log docs/evidence/runner-architecture-hardening-closeout-2026-06-07.run.log with nonzero exit status line: exit_status=1
+       For full logs, run:
+         nix log /nix/store/d3yi0r9cs2w2xwy9shklh2jwpy7ry0hj-mc-compat-cairn-task-evidence.drv
+step_exit_status=1
+classification=runner-architecture-pre-archive-fail failures=3
+exit_status=1

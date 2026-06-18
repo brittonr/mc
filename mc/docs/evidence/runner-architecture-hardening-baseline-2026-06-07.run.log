@@ -1,0 +1,25 @@
+
+## compile scenario manifest checker
+command=rustc --edition=2021 tools/check_scenario_manifest.rs -o .pi/tmp/check-scenario-manifest-baseline
+bash: line 6: rustc: command not found
+step_exit_status=127
+
+## scenario manifest checker self-test baseline
+command=.pi/tmp/check-scenario-manifest-baseline --self-test
+bash: line 6: .pi/tmp/check-scenario-manifest-baseline: No such file or directory
+step_exit_status=127
+
+## scenario manifest repository check baseline
+command=.pi/tmp/check-scenario-manifest-baseline
+bash: line 6: .pi/tmp/check-scenario-manifest-baseline: No such file or directory
+step_exit_status=127
+
+## flake scenario manifest check baseline
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/kip9fb1qr8is9gsd83gg9rirp6a9cwmp-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/kip9fb1qr8is9gsd83gg9rirp6a9cwmp-mc-compat-scenario-manifest.drv'...
+step_exit_status=0
+classification=runner-architecture-baseline-fail failures=3
+exit_status=1

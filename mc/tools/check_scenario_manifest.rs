@@ -80,6 +80,23 @@ struct Manifest {
     rows: Vec<ScenarioRow>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct MissingLiveCapability<'a> {
+    path: &'static str,
+    token: &'a str,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct LiveCapabilityRegistryEvaluation<'a> {
+    missing: Vec<MissingLiveCapability<'a>>,
+}
+
+impl LiveCapabilityRegistryEvaluation<'_> {
+    fn is_complete(&self) -> bool {
+        self.missing.is_empty()
+    }
+}
+
 fn main() -> ExitCode {
     let args: Vec<String> = env::args().collect();
     if args.iter().any(|arg| arg == SELF_TEST_FLAG) {
@@ -609,11 +626,36 @@ fn validate_runner_surfaces(rows: &[ScenarioRow], runner: &str) -> Vec<String> {
 }
 
 fn validate_live_capability_registry_surface(scenario_core: &str) -> Vec<String> {
-    let mut errors = Vec::new();
-    for token in LIVE_CAPABILITY_REGISTRY_TOKENS {
-        require_contains(&mut errors, RUNNER_SCENARIO_CORE_PATH, scenario_core, token);
-    }
-    errors
+    live_capability_registry_diagnostics(&evaluate_live_capability_registry_surface(
+        scenario_core,
+        LIVE_CAPABILITY_REGISTRY_TOKENS,
+    ))
+}
+
+fn evaluate_live_capability_registry_surface<'a>(
+    scenario_core: &str,
+    expected_tokens: &'a [&'a str],
+) -> LiveCapabilityRegistryEvaluation<'a> {
+    let missing = expected_tokens
+        .iter()
+        .copied()
+        .filter(|token| !scenario_core.contains(token))
+        .map(|token| MissingLiveCapability {
+            path: RUNNER_SCENARIO_CORE_PATH,
+            token,
+        })
+        .collect();
+    LiveCapabilityRegistryEvaluation { missing }
+}
+
+fn live_capability_registry_diagnostics(
+    evaluation: &LiveCapabilityRegistryEvaluation<'_>,
+) -> Vec<String> {
+    evaluation
+        .missing
+        .iter()
+        .map(|missing| format!("{} missing {:?}", missing.path, missing.token))
+        .collect()
 }
 
 fn validate_flake_surfaces(rows: &[ScenarioRow], flake: &str) -> Vec<String> {
@@ -697,13 +739,64 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         errors.push("self-test case missing_split_runner_surface expected pass=false".to_string());
     }
     let live_registry_surface = LIVE_CAPABILITY_REGISTRY_TOKENS.join("\n");
-    if !validate_live_capability_registry_surface(&live_registry_surface).is_empty() {
+    let complete_registry = evaluate_live_capability_registry_surface(
+        &live_registry_surface,
+        LIVE_CAPABILITY_REGISTRY_TOKENS,
+    );
+    if !complete_registry.is_complete()
+        || !live_capability_registry_diagnostics(&complete_registry).is_empty()
+    {
         errors
             .push("self-test case live_capability_registry_surface expected pass=true".to_string());
     }
-    if validate_live_capability_registry_surface("ScenarioLiveCapability").is_empty() {
+    let missing_registry = evaluate_live_capability_registry_surface(
+        "ScenarioLiveCapability",
+        LIVE_CAPABILITY_REGISTRY_TOKENS,
+    );
+    if missing_registry.is_complete()
+        || live_capability_registry_diagnostics(&missing_registry).is_empty()
+    {
         errors.push(
             "self-test case missing_live_capability_registry_surface expected pass=false"
+                .to_string(),
+        );
+    }
+    let malformed_registry = evaluate_live_capability_registry_surface(
+        "UnknownLiveCapability\nresource-pack-status",
+        LIVE_CAPABILITY_REGISTRY_TOKENS,
+    );
+    let malformed_errors = live_capability_registry_diagnostics(&malformed_registry);
+    if malformed_registry.is_complete()
+        || !malformed_errors
+            .iter()
+            .any(|error| error.contains("ResourcePackStatusLocalContract"))
+    {
+        errors.push(
+            "self-test case malformed_live_capability_registry_surface expected fail-closed diagnostic"
+                .to_string(),
+        );
+    }
+    let stale_revision_registry = evaluate_live_capability_registry_surface(
+        "ScenarioLiveCapability\nlive.revision.status = stale",
+        LIVE_CAPABILITY_REGISTRY_TOKENS,
+    );
+    if stale_revision_registry.is_complete()
+        || live_capability_registry_diagnostics(&stale_revision_registry).is_empty()
+    {
+        errors.push(
+            "self-test case stale_revision_live_capability_registry_surface expected fail-closed diagnostic"
+                .to_string(),
+        );
+    }
+    let overclaim_registry = evaluate_live_capability_registry_surface(
+        "ScenarioLiveCapability\nbroad_minecraft_compatibility = true",
+        LIVE_CAPABILITY_REGISTRY_TOKENS,
+    );
+    if overclaim_registry.is_complete()
+        || live_capability_registry_diagnostics(&overclaim_registry).is_empty()
+    {
+        errors.push(
+            "self-test case overclaim_live_capability_registry_surface expected fail-closed diagnostic"
                 .to_string(),
         );
     }

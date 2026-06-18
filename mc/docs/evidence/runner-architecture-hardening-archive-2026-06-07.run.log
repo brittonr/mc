@@ -1,0 +1,110 @@
+
+## archive dry-run
+command=nix run path:/home/brittonr/git/mc#cairn -- archive runner-architecture-hardening-pass --root /home/brittonr/git/mc
+{
+  "actions": [
+    {
+      "description": "move active change to archive: runner-architecture-hardening-pass",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/changes/runner-architecture-hardening-pass"
+    }
+  ],
+  "blocked": false,
+  "change": "runner-architecture-hardening-pass",
+  "dry_run": true,
+  "input_hash": "96ebb203eb83e926614ff0b75936be561187b129442089546ae75778580a096c",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "2c70baf3dad64a6689949e3af975aaac5b500ee9b01f4f531391ba36ef8b792d",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "22d5733f43b5778e90808e0f44fd0e439a349a566c9f1a289308c3deddfcc408"
+}
+step_exit_status=0
+
+## archive execute
+command=env CAIRN_ARCHIVE_DATE=2026-06-07 nix run path:/home/brittonr/git/mc#cairn -- archive runner-architecture-hardening-pass --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: runner-architecture-hardening-pass",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/2026-06-07-runner-architecture-hardening-pass"
+    }
+  ],
+  "blocked": false,
+  "change": "runner-architecture-hardening-pass",
+  "dry_run": false,
+  "input_hash": "96ebb203eb83e926614ff0b75936be561187b129442089546ae75778580a096c",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "0d6406d6205e74756cdbf124870719b2fcf06cc45dd71dca97cdcd1119ad1e63",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-runner-architecture-hardening-pass/design.md"
+        },
+        {
+          "content_hash": "54f4ebd0c06a96837c2355eb3e81e34ad95b8bf12ae6fa4c2fc882a910567547",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-runner-architecture-hardening-pass/proposal.md"
+        },
+        {
+          "content_hash": "096b36c9097a84c6ea2dc8a169a5f8ab2a363c19664ac4a63e3cdf7db6bbd444",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-runner-architecture-hardening-pass/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "0dafd63f9a2c4cc0dd220fad1c2b34721b9f61a607f502d2542c318167b2e1f1",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-runner-architecture-hardening-pass/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/runner-architecture-hardening-pass"
+        }
+      ],
+      "manifest_hash": "53f9878615acbcff3173963c3b525d8db65e8bef4e83ffea4cf3577438792dda"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "0d6406d6205e74756cdbf124870719b2fcf06cc45dd71dca97cdcd1119ad1e63",
+          "exists": true,
+          "path": "./cairn/changes/runner-architecture-hardening-pass/design.md"
+        },
+        {
+          "content_hash": "54f4ebd0c06a96837c2355eb3e81e34ad95b8bf12ae6fa4c2fc882a910567547",
+          "exists": true,
+          "path": "./cairn/changes/runner-architecture-hardening-pass/proposal.md"
+        },
+        {
+          "content_hash": "096b36c9097a84c6ea2dc8a169a5f8ab2a363c19664ac4a63e3cdf7db6bbd444",
+          "exists": true,
+          "path": "./cairn/changes/runner-architecture-hardening-pass/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "0dafd63f9a2c4cc0dd220fad1c2b34721b9f61a607f502d2542c318167b2e1f1",
+          "exists": true,
+          "path": "./cairn/changes/runner-architecture-hardening-pass/tasks.md"
+        }
+      ],
+      "manifest_hash": "398cdfc78ba93c1ebd8d2b8fa090ec9dfb083a394af52847ab0b0b0e09572aa8"
+    },
+    "kind": "archive",
+    "manifest_hash": "696c385dd7e683d1e6df73bbb10bea99b0cf0aa938d3084da370594e758cfb44"
+  },
+  "plan_hash": "65252cddfd6c7191e27a148e75aa8138de6143cafc1a9ae557a59391bd0afb42",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "3f4b453299d2db4b41f4c987fb3a9448595240675aaf756d1681d4e4e60358ca"
+}
+step_exit_status=0
+classification=archive-executed
+exit_status=0

@@ -1,0 +1,17 @@
+
+## compile scenario manifest checker postfmt
+command=rustc --edition=2021 tools/check_scenario_manifest.rs -o .pi/tmp/check-scenario-manifest-postfmt
+bash: line 6: rustc: command not found
+step_exit_status=127
+
+## scenario manifest checker self-test postfmt
+command=.pi/tmp/check-scenario-manifest-postfmt --self-test
+bash: line 6: .pi/tmp/check-scenario-manifest-postfmt: No such file or directory
+step_exit_status=127
+
+## scenario manifest repository check postfmt
+command=.pi/tmp/check-scenario-manifest-postfmt
+bash: line 6: .pi/tmp/check-scenario-manifest-postfmt: No such file or directory
+step_exit_status=127
+classification=runner-architecture-postfmt-tests-fail failures=3
+exit_status=1
