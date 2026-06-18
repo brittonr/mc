@@ -931,6 +931,7 @@ pub struct Server {
     survival_block_entity_pre_restart_seen: bool,
     survival_block_entity_reconnect_sent: bool,
     survival_block_entity_post_restart_seen: bool,
+    sign_editor_open_position: Option<Position>,
     inventory_probe_click_sent: bool,
     inventory_probe_container_click_sent: bool,
     inventory_probe_container_id: u8,
@@ -1512,6 +1513,7 @@ impl Server {
                 .map(|value| value != "0")
                 .unwrap_or(false),
             survival_block_entity_probe_session: survival_block_entity_probe_session_from_env(),
+            sign_editor_open_position: None,
             survival_biome_dimension_probe_enabled: std::env::var(
                 SURVIVAL_BIOME_DIMENSION_PROBE_ENV,
             )
@@ -2710,6 +2712,8 @@ impl Server {
                             UpdateBlockEntity_u8 => on_block_entity_update_u8,
                             UpdateBlockEntity_Data => on_block_entity_update_data,
                             UpdateLight_Arrays => on_update_light_arrays,
+                            SignEditorOpen => on_sign_editor_open,
+                            SignEditorOpen_i32 => on_sign_editor_open_i32,
                             UpdateSign => on_sign_update,
                             UpdateSign_u16 => on_sign_update_u16,
                             PlayerInfo => on_player_info,
@@ -3051,6 +3055,10 @@ impl Server {
     pub fn write_packet<T: protocol::PacketType>(&self, p: T) {
         let mut conn = self.conn.write().unwrap();
         let _ = conn.as_mut().unwrap().write_packet(p); // TODO handle errors
+    }
+
+    pub fn sign_editor_open_position(&self) -> Option<Position> {
+        self.sign_editor_open_position
     }
 
     fn on_keep_alive_i64(
@@ -6050,6 +6058,25 @@ impl Server {
                 }
             }
         }
+    }
+
+    fn on_sign_editor_open(&mut self, sign_editor: packet::play::clientbound::SignEditorOpen) {
+        self.record_sign_editor_open(sign_editor.location);
+    }
+
+    fn on_sign_editor_open_i32(
+        &mut self,
+        sign_editor: packet::play::clientbound::SignEditorOpen_i32,
+    ) {
+        self.record_sign_editor_open(Position::new(sign_editor.x, sign_editor.y, sign_editor.z));
+    }
+
+    fn record_sign_editor_open(&mut self, position: Position) {
+        self.sign_editor_open_position = Some(position);
+        info!(
+            "MC-COMPAT-MILESTONE sign_editor_open_observed position={},{},{}",
+            position.x, position.y, position.z
+        );
     }
 
     fn on_sign_update(&mut self, mut update_sign: packet::play::clientbound::UpdateSign) {

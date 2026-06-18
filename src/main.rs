@@ -98,6 +98,12 @@ const MCP_CHAT_APPLIED_MESSAGE: &str = "chat sent";
 #[cfg(not(target_arch = "wasm32"))]
 const MCP_RESOURCE_PACK_STATUS_APPLIED_MESSAGE: &str = "resource pack status sent";
 #[cfg(not(target_arch = "wasm32"))]
+const MCP_SIGN_EDITOR_UPDATE_APPLIED_MESSAGE: &str = "sign editor update sent";
+#[cfg(not(target_arch = "wasm32"))]
+const MCP_SIGN_EDITOR_OPEN_MISSING_MESSAGE: &str = "sign editor open state missing";
+#[cfg(not(target_arch = "wasm32"))]
+const MCP_SIGN_EDITOR_OPEN_POSITION_MISMATCH_MESSAGE: &str = "sign editor open position mismatch";
+#[cfg(not(target_arch = "wasm32"))]
 const MCP_CAPTURE_DEFERRED_MESSAGE: &str = "capture queued for next rendered frame";
 #[cfg(not(target_arch = "wasm32"))]
 const MCP_CAPTURE_QUEUE_CLOSED_MESSAGE: &str = "capture queue closed";
@@ -116,6 +122,14 @@ const MCP_MIN_PITCH_RADIANS: f64 = std::f64::consts::FRAC_PI_2 + MCP_MIN_PITCH_E
 #[cfg(not(target_arch = "wasm32"))]
 const MCP_MAX_PITCH_RADIANS: f64 =
     std::f64::consts::PI + std::f64::consts::FRAC_PI_2 - MCP_MIN_PITCH_EPSILON_RADIANS;
+#[cfg(not(target_arch = "wasm32"))]
+const SIGN_EDITOR_LINE_INDEX_1: usize = 0;
+#[cfg(not(target_arch = "wasm32"))]
+const SIGN_EDITOR_LINE_INDEX_2: usize = 1;
+#[cfg(not(target_arch = "wasm32"))]
+const SIGN_EDITOR_LINE_INDEX_3: usize = 2;
+#[cfg(not(target_arch = "wasm32"))]
+const SIGN_EDITOR_LINE_INDEX_4: usize = 3;
 #[cfg(not(target_arch = "wasm32"))]
 const CAPTURE_START_MILLIS: u64 = 0;
 
@@ -199,6 +213,16 @@ fn control_status_message(connected: bool, connecting: bool, focused: bool) -> S
     format!(
         "{MCP_STATUS_APPLIED_MESSAGE}: connected={connected} connecting={connecting} focused={focused}"
     )
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn control_block_position_to_shared(position: control::BlockPosition) -> shared::Position {
+    shared::Position::new(position.x, position.y, position.z)
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn sign_editor_open_matches(open_position: shared::Position, expected: shared::Position) -> bool {
+    open_position == expected
 }
 
 #[cfg(not(target_arch = "wasm32"))]
@@ -512,6 +536,9 @@ impl Game {
                 );
                 control_applied_response(MCP_RESOURCE_PACK_STATUS_APPLIED_MESSAGE)
             }
+            control::ControlCommand::SignEditorUpdate(decision) => {
+                self.apply_mcp_sign_editor_update(decision)
+            }
             control::ControlCommand::CaptureScreenshot => {
                 let sequence_id = self.next_capture_sequence_id();
                 enqueue_mcp_capture_request(
@@ -557,6 +584,36 @@ impl Game {
         self.server.disconnect(None);
         self.focused = false;
         control_applied_response(MCP_DISCONNECT_APPLIED_MESSAGE)
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    fn apply_mcp_sign_editor_update(
+        &mut self,
+        decision: control::SignEditorUpdateDecision,
+    ) -> control::ControlResponse {
+        let expected_position = control_block_position_to_shared(decision.position);
+        let Some(open_position) = self.server.sign_editor_open_position() else {
+            return control_rejected_response(MCP_SIGN_EDITOR_OPEN_MISSING_MESSAGE);
+        };
+        if !sign_editor_open_matches(open_position, expected_position) {
+            return control_rejected_response(MCP_SIGN_EDITOR_OPEN_POSITION_MISMATCH_MESSAGE);
+        }
+        self.server
+            .write_packet(protocol::packet::play::serverbound::SetSign {
+                location: expected_position,
+                line1: decision.lines[SIGN_EDITOR_LINE_INDEX_1].clone(),
+                line2: decision.lines[SIGN_EDITOR_LINE_INDEX_2].clone(),
+                line3: decision.lines[SIGN_EDITOR_LINE_INDEX_3].clone(),
+                line4: decision.lines[SIGN_EDITOR_LINE_INDEX_4].clone(),
+            });
+        info!(
+            "MC-COMPAT-MILESTONE sign_update_sent position={},{},{} line_count={}",
+            expected_position.x,
+            expected_position.y,
+            expected_position.z,
+            control::SIGN_EDITOR_LINE_COUNT
+        );
+        control_applied_response(MCP_SIGN_EDITOR_UPDATE_APPLIED_MESSAGE)
     }
 
     #[cfg(not(target_arch = "wasm32"))]
@@ -611,6 +668,10 @@ mod mcp_control_tests {
     const TEST_CAPTURE_HEIGHT_PX: u32 = 2;
     const TEST_CAPTURE_FRAME_ID: u64 = 42;
     const TEST_CAPTURE_SEQUENCE_ID: u64 = 7;
+    const TEST_SIGN_X: i32 = 28;
+    const TEST_SIGN_Y: i32 = 64;
+    const TEST_SIGN_Z: i32 = 0;
+    const TEST_POSITION_OFFSET: i32 = 1;
 
     fn synthetic_capture_frame(
         frame: capture::CaptureFrameContext,
@@ -731,6 +792,39 @@ mod mcp_control_tests {
                 status: control::ResourcePackStatusResponse::Declined,
             })
         ));
+        assert!(control_command_requires_connected(
+            &control::ControlCommand::SignEditorUpdate(control::SignEditorUpdateDecision {
+                position: control::BlockPosition::new(TEST_SIGN_X, TEST_SIGN_Y, TEST_SIGN_Z),
+                lines: [
+                    "MC".to_owned(),
+                    "Compat".to_owned(),
+                    "Sign".to_owned(),
+                    "Edit".to_owned(),
+                ],
+            })
+        ));
+    }
+
+    #[test]
+    fn sign_editor_open_match_is_position_exact() {
+        let expected = shared::Position::new(TEST_SIGN_X, TEST_SIGN_Y, TEST_SIGN_Z);
+        assert!(sign_editor_open_matches(expected, expected));
+        assert!(!sign_editor_open_matches(
+            shared::Position::new(TEST_SIGN_X + TEST_POSITION_OFFSET, TEST_SIGN_Y, TEST_SIGN_Z),
+            expected
+        ));
+    }
+
+    #[test]
+    fn maps_control_block_position_to_protocol_position() {
+        assert_eq!(
+            control_block_position_to_shared(control::BlockPosition::new(
+                TEST_SIGN_X,
+                TEST_SIGN_Y,
+                TEST_SIGN_Z,
+            )),
+            shared::Position::new(TEST_SIGN_X, TEST_SIGN_Y, TEST_SIGN_Z)
+        );
     }
 
     #[test]
@@ -797,6 +891,20 @@ mod mcp_control_tests {
                 control::ResourcePackStatusDecision {
                     offer_id: "mc-compat-local-resource-pack".to_owned(),
                     status: control::ResourcePackStatusResponse::Declined,
+                }
+            )),
+            Some(control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
+        );
+        assert_eq!(
+            disconnected_control_rejection(&control::ControlCommand::SignEditorUpdate(
+                control::SignEditorUpdateDecision {
+                    position: control::BlockPosition::new(TEST_SIGN_X, TEST_SIGN_Y, TEST_SIGN_Z),
+                    lines: [
+                        "MC".to_owned(),
+                        "Compat".to_owned(),
+                        "Sign".to_owned(),
+                        "Edit".to_owned(),
+                    ],
                 }
             )),
             Some(control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
