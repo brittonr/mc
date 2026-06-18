@@ -96,6 +96,8 @@ const MCP_ATTACK_APPLIED_MESSAGE: &str = "attack applied";
 #[cfg(not(target_arch = "wasm32"))]
 const MCP_CHAT_APPLIED_MESSAGE: &str = "chat sent";
 #[cfg(not(target_arch = "wasm32"))]
+const MCP_RESOURCE_PACK_STATUS_APPLIED_MESSAGE: &str = "resource pack status sent";
+#[cfg(not(target_arch = "wasm32"))]
 const MCP_CAPTURE_DEFERRED_MESSAGE: &str = "capture queued for next rendered frame";
 #[cfg(not(target_arch = "wasm32"))]
 const MCP_CAPTURE_QUEUE_CLOSED_MESSAGE: &str = "capture queue closed";
@@ -499,6 +501,17 @@ impl Game {
                     .write_packet(protocol::packet::play::serverbound::ChatMessage { message });
                 control_applied_response(MCP_CHAT_APPLIED_MESSAGE)
             }
+            control::ControlCommand::ResourcePackStatus(decision) => {
+                self.server
+                    .write_packet(protocol::packet::play::serverbound::ResourcePackStatus {
+                        result: protocol::VarInt(decision.status.status_code()),
+                    });
+                info!(
+                    "MC-COMPAT-MILESTONE resource_pack_status_sent offer_id={} status=declined no_external_fetch=true",
+                    decision.offer_id
+                );
+                control_applied_response(MCP_RESOURCE_PACK_STATUS_APPLIED_MESSAGE)
+            }
             control::ControlCommand::CaptureScreenshot => {
                 let sequence_id = self.next_capture_sequence_id();
                 enqueue_mcp_capture_request(
@@ -712,6 +725,12 @@ mod mcp_control_tests {
                 message: "hello".to_owned(),
             }
         ));
+        assert!(control_command_requires_connected(
+            &control::ControlCommand::ResourcePackStatus(control::ResourcePackStatusDecision {
+                offer_id: "mc-compat-local-resource-pack".to_owned(),
+                status: control::ResourcePackStatusResponse::Declined,
+            })
+        ));
     }
 
     #[test]
@@ -771,6 +790,15 @@ mod mcp_control_tests {
             disconnected_control_rejection(&control::ControlCommand::Chat {
                 message: "hello".to_owned(),
             }),
+            Some(control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
+        );
+        assert_eq!(
+            disconnected_control_rejection(&control::ControlCommand::ResourcePackStatus(
+                control::ResourcePackStatusDecision {
+                    offer_id: "mc-compat-local-resource-pack".to_owned(),
+                    status: control::ResourcePackStatusResponse::Declined,
+                }
+            )),
             Some(control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
         );
     }

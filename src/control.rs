@@ -8,7 +8,10 @@ use serde_json::{Map, Value};
 
 pub const MAX_SERVER_ADDRESS_CHARS: usize = 255;
 pub const MAX_CHAT_MESSAGE_CHARS: usize = 256;
+pub const MAX_RESOURCE_PACK_OFFER_ID_CHARS: usize = 128;
+pub const MAX_RESOURCE_PACK_URL_CHARS: usize = 2048;
 pub const MAX_ABSOLUTE_LOOK_DELTA_RADIANS: f64 = std::f64::consts::PI;
+pub const RESOURCE_PACK_STATUS_DECLINED_CODE: i32 = 1;
 
 const FIELD_ACTION: &str = "action";
 const FIELD_ADDRESS: &str = "address";
@@ -16,7 +19,11 @@ const FIELD_BUTTON: &str = "button";
 const FIELD_DOWN: &str = "down";
 const FIELD_KEY: &str = "key";
 const FIELD_MESSAGE: &str = "message";
+const FIELD_OFFER_ID: &str = "offer_id";
+const FIELD_OFFER_RECEIVED: &str = "offer_received";
 const FIELD_PITCH_DELTA: &str = "pitch_delta";
+const FIELD_RESOURCE_PACK_STATUS: &str = "status";
+const FIELD_URL: &str = "url";
 const FIELD_YAW_DELTA: &str = "yaw_delta";
 
 const ACTION_STATUS: &str = "status";
@@ -29,6 +36,8 @@ const ACTION_USE_ITEM: &str = "use_item";
 const ACTION_USE_ITEM_ALIAS: &str = "use-item";
 const ACTION_ATTACK: &str = "attack";
 const ACTION_CHAT: &str = "chat";
+const ACTION_RESOURCE_PACK_STATUS: &str = "resource_pack_status";
+const ACTION_RESOURCE_PACK_STATUS_ALIAS: &str = "resource-pack-status";
 const ACTION_CAPTURE_SCREENSHOT: &str = "capture_screenshot";
 const ACTION_CAPTURE_SCREENSHOT_ALIAS: &str = "capture-screenshot";
 const ACTION_CAPTURE_LATEST_FRAME: &str = "capture_latest_frame";
@@ -54,7 +63,20 @@ const REASON_EMPTY_OR_WHITESPACE: &str = "empty_or_whitespace";
 const REASON_EXPECTED_BOOL: &str = "expected_bool";
 const REASON_EXPECTED_NUMBER: &str = "expected_number";
 const REASON_EXPECTED_STRING: &str = "expected_string";
+const REASON_EXTERNAL_RESOURCE_PACK_URL: &str = "external_or_off_scope_url";
 const REASON_NOT_FINITE: &str = "not_finite";
+const REASON_OFFER_NOT_RECEIVED: &str = "offer_not_received";
+const REASON_UNSUPPORTED_RESOURCE_PACK_STATUS: &str = "unsupported_resource_pack_status";
+const RESOURCE_PACK_STATUS_DECLINED: &str = "declined";
+const RESOURCE_PACK_LOCAL_HTTP_PREFIXES: &[&str] = &[
+    "http://localhost",
+    "http://127.0.0.1",
+    "http://[::1]",
+    "https://localhost",
+    "https://127.0.0.1",
+    "https://[::1]",
+];
+const RESOURCE_PACK_LOCAL_FILE_PREFIX: &str = "file://";
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum ControlCommand {
@@ -67,8 +89,20 @@ pub enum ControlCommand {
     UseItem,
     Attack,
     Chat { message: String },
+    ResourcePackStatus(ResourcePackStatusDecision),
     CaptureScreenshot,
     CaptureLatestFrame,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ResourcePackStatusDecision {
+    pub offer_id: String,
+    pub status: ResourcePackStatusResponse,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ResourcePackStatusResponse {
+    Declined,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -146,6 +180,9 @@ pub fn parse_control_command_value(value: &Value) -> Result<ControlCommand, Cont
         ACTION_USE_ITEM | ACTION_USE_ITEM_ALIAS => Ok(ControlCommand::UseItem),
         ACTION_ATTACK => Ok(ControlCommand::Attack),
         ACTION_CHAT => parse_chat(object),
+        ACTION_RESOURCE_PACK_STATUS | ACTION_RESOURCE_PACK_STATUS_ALIAS => {
+            parse_resource_pack_status(object)
+        }
         ACTION_CAPTURE_SCREENSHOT | ACTION_CAPTURE_SCREENSHOT_ALIAS => {
             Ok(ControlCommand::CaptureScreenshot)
         }
@@ -180,6 +217,14 @@ impl MouseButton {
             BUTTON_LEFT => Ok(MouseButton::Left),
             BUTTON_RIGHT => Ok(MouseButton::Right),
             _ => Err(ControlError::UnknownMouseButton(name.to_owned())),
+        }
+    }
+}
+
+impl ResourcePackStatusResponse {
+    pub fn status_code(self) -> i32 {
+        match self {
+            ResourcePackStatusResponse::Declined => RESOURCE_PACK_STATUS_DECLINED_CODE,
         }
     }
 }
@@ -222,6 +267,22 @@ fn parse_chat(object: &Map<String, Value>) -> Result<ControlCommand, ControlErro
     Ok(ControlCommand::Chat {
         message: message.to_owned(),
     })
+}
+
+fn parse_resource_pack_status(object: &Map<String, Value>) -> Result<ControlCommand, ControlError> {
+    let offer_id =
+        required_trimmed_nonblank_string(object, FIELD_OFFER_ID, MAX_RESOURCE_PACK_OFFER_ID_CHARS)?;
+    let url = required_trimmed_nonblank_string(object, FIELD_URL, MAX_RESOURCE_PACK_URL_CHARS)?;
+    validate_owned_local_resource_pack_url(url)?;
+    validate_offer_received(object)?;
+    let status =
+        parse_resource_pack_status_response(required_string(object, FIELD_RESOURCE_PACK_STATUS)?)?;
+    Ok(ControlCommand::ResourcePackStatus(
+        ResourcePackStatusDecision {
+            offer_id: offer_id.to_owned(),
+            status,
+        },
+    ))
 }
 
 fn required_string<'a>(
@@ -291,6 +352,17 @@ fn validate_nonempty_string(field: &'static str, value: &str) -> Result<(), Cont
     Ok(())
 }
 
+fn required_trimmed_nonblank_string<'a>(
+    object: &'a Map<String, Value>,
+    field: &'static str,
+    max_chars: usize,
+) -> Result<&'a str, ControlError> {
+    let value = required_string(object, field)?.trim();
+    validate_nonempty_string(field, value)?;
+    validate_max_chars(field, value, max_chars)?;
+    Ok(value)
+}
+
 fn validate_nonblank_string(field: &'static str, value: &str) -> Result<(), ControlError> {
     if value.trim().is_empty() {
         return Err(ControlError::InvalidField {
@@ -300,6 +372,42 @@ fn validate_nonblank_string(field: &'static str, value: &str) -> Result<(), Cont
     }
 
     Ok(())
+}
+
+fn validate_owned_local_resource_pack_url(url: &str) -> Result<(), ControlError> {
+    if url.starts_with(RESOURCE_PACK_LOCAL_FILE_PREFIX)
+        || RESOURCE_PACK_LOCAL_HTTP_PREFIXES
+            .iter()
+            .any(|prefix| url.starts_with(prefix))
+    {
+        return Ok(());
+    }
+    Err(ControlError::InvalidField {
+        field: FIELD_URL,
+        reason: REASON_EXTERNAL_RESOURCE_PACK_URL,
+    })
+}
+
+fn validate_offer_received(object: &Map<String, Value>) -> Result<(), ControlError> {
+    if required_bool(object, FIELD_OFFER_RECEIVED)? {
+        return Ok(());
+    }
+    Err(ControlError::InvalidField {
+        field: FIELD_OFFER_RECEIVED,
+        reason: REASON_OFFER_NOT_RECEIVED,
+    })
+}
+
+fn parse_resource_pack_status_response(
+    value: &str,
+) -> Result<ResourcePackStatusResponse, ControlError> {
+    match value {
+        RESOURCE_PACK_STATUS_DECLINED => Ok(ResourcePackStatusResponse::Declined),
+        _ => Err(ControlError::InvalidField {
+            field: FIELD_RESOURCE_PACK_STATUS,
+            reason: REASON_UNSUPPORTED_RESOURCE_PACK_STATUS,
+        }),
+    }
 }
 
 fn validate_max_chars(
@@ -327,6 +435,10 @@ mod tests {
     const VALID_LOOK_YAW_DELTA: f64 = 0.25;
     const VALID_LOOK_PITCH_DELTA: f64 = -0.125;
     const OVERSIZED_CHAT_EXTRA_CHARS: usize = 1;
+    const OVERSIZED_RESOURCE_PACK_URL_EXTRA_CHARS: usize = 1;
+    const TEST_RESOURCE_PACK_OFFER_ID: &str = "mc-compat-local-resource-pack";
+    const TEST_RESOURCE_PACK_LOCAL_URL: &str = "http://127.0.0.1:25565/resource-pack.zip";
+    const TEST_RESOURCE_PACK_EXTERNAL_URL: &str = "https://example.com/resource-pack.zip";
 
     #[test]
     fn parses_valid_initial_command_set() {
@@ -396,6 +508,121 @@ mod tests {
         assert_eq!(
             parse_control_command_value(&json!({ "action": "capture_latest_frame" })),
             Ok(ControlCommand::CaptureLatestFrame)
+        );
+    }
+
+    #[test]
+    fn parses_resource_pack_status_decline_for_owned_local_offer() {
+        assert_eq!(
+            parse_control_command_value(&json!({
+                "action": "resource-pack-status",
+                "offer_id": TEST_RESOURCE_PACK_OFFER_ID,
+                "url": TEST_RESOURCE_PACK_LOCAL_URL,
+                "status": "declined",
+                "offer_received": true,
+            })),
+            Ok(ControlCommand::ResourcePackStatus(
+                ResourcePackStatusDecision {
+                    offer_id: TEST_RESOURCE_PACK_OFFER_ID.to_owned(),
+                    status: ResourcePackStatusResponse::Declined,
+                }
+            ))
+        );
+        assert_eq!(
+            ResourcePackStatusResponse::Declined.status_code(),
+            RESOURCE_PACK_STATUS_DECLINED_CODE
+        );
+    }
+
+    #[test]
+    fn rejects_resource_pack_offer_with_blank_identity() {
+        assert_eq!(
+            parse_control_command_value(&json!({
+                "action": "resource_pack_status",
+                "offer_id": "   ",
+                "url": TEST_RESOURCE_PACK_LOCAL_URL,
+                "status": "declined",
+                "offer_received": true,
+            })),
+            Err(ControlError::InvalidField {
+                field: FIELD_OFFER_ID,
+                reason: REASON_EMPTY,
+            })
+        );
+    }
+
+    #[test]
+    fn rejects_external_resource_pack_url_before_protocol_response() {
+        assert_eq!(
+            parse_control_command_value(&json!({
+                "action": "resource_pack_status",
+                "offer_id": TEST_RESOURCE_PACK_OFFER_ID,
+                "url": TEST_RESOURCE_PACK_EXTERNAL_URL,
+                "status": "declined",
+                "offer_received": true,
+            })),
+            Err(ControlError::InvalidField {
+                field: FIELD_URL,
+                reason: REASON_EXTERNAL_RESOURCE_PACK_URL,
+            })
+        );
+    }
+
+    #[test]
+    fn rejects_unsupported_resource_pack_status() {
+        assert_eq!(
+            parse_control_command_value(&json!({
+                "action": "resource_pack_status",
+                "offer_id": TEST_RESOURCE_PACK_OFFER_ID,
+                "url": TEST_RESOURCE_PACK_LOCAL_URL,
+                "status": "accepted",
+                "offer_received": true,
+            })),
+            Err(ControlError::InvalidField {
+                field: FIELD_RESOURCE_PACK_STATUS,
+                reason: REASON_UNSUPPORTED_RESOURCE_PACK_STATUS,
+            })
+        );
+    }
+
+    #[test]
+    fn rejects_resource_pack_status_without_offer_state() {
+        assert_eq!(
+            parse_control_command_value(&json!({
+                "action": "resource_pack_status",
+                "offer_id": TEST_RESOURCE_PACK_OFFER_ID,
+                "url": TEST_RESOURCE_PACK_LOCAL_URL,
+                "status": "declined",
+                "offer_received": false,
+            })),
+            Err(ControlError::InvalidField {
+                field: FIELD_OFFER_RECEIVED,
+                reason: REASON_OFFER_NOT_RECEIVED,
+            })
+        );
+    }
+
+    #[test]
+    fn rejects_oversized_resource_pack_url_before_redaction_boundary() {
+        let oversized_url = format!(
+            "file://{}",
+            "x".repeat(MAX_RESOURCE_PACK_URL_CHARS + OVERSIZED_RESOURCE_PACK_URL_EXTRA_CHARS)
+        );
+        assert_eq!(
+            parse_control_command_value(&json!({
+                "action": "resource_pack_status",
+                "offer_id": TEST_RESOURCE_PACK_OFFER_ID,
+                "url": oversized_url,
+                "status": "declined",
+                "offer_received": true,
+            })),
+            Err(ControlError::ValueTooLong {
+                field: FIELD_URL,
+                max_chars: MAX_RESOURCE_PACK_URL_CHARS,
+                actual_chars: MAX_RESOURCE_PACK_URL_CHARS
+                    + RESOURCE_PACK_LOCAL_FILE_PREFIX.chars().count()
+                    + OVERSIZED_RESOURCE_PACK_URL_EXTRA_CHARS,
+            })
         );
     }
 
