@@ -1,0 +1,110 @@
+
+## archive dry-run
+command=nix run path:/home/brittonr/git/mc#cairn -- archive evidence-refresh-flake-smoke-pass --root /home/brittonr/git/mc
+{
+  "actions": [
+    {
+      "description": "move active change to archive: evidence-refresh-flake-smoke-pass",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/changes/evidence-refresh-flake-smoke-pass"
+    }
+  ],
+  "blocked": false,
+  "change": "evidence-refresh-flake-smoke-pass",
+  "dry_run": true,
+  "input_hash": "0f4385770f862db7f310dbf1ee232cc1170da9907e25b5af985078b06f19f110",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "79da3219675e2c19eb797e833551886d4ece8bb296e8e5ad0f5b58a0f9aa4d01",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "e99778f695bde106fd83cd0c9b1ee9b395e1a6e928254916e25cede2f9632d88"
+}
+step_exit_status=0
+
+## archive execute
+command=env CAIRN_ARCHIVE_DATE=2026-06-07 nix run path:/home/brittonr/git/mc#cairn -- archive evidence-refresh-flake-smoke-pass --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: evidence-refresh-flake-smoke-pass",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/2026-06-07-evidence-refresh-flake-smoke-pass"
+    }
+  ],
+  "blocked": false,
+  "change": "evidence-refresh-flake-smoke-pass",
+  "dry_run": false,
+  "input_hash": "0f4385770f862db7f310dbf1ee232cc1170da9907e25b5af985078b06f19f110",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "aa09265b4de186c8cef7af52df8574904cea4cb960dc1fc29af5053e8c98fec1",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-evidence-refresh-flake-smoke-pass/design.md"
+        },
+        {
+          "content_hash": "067db62889ca447b57da4cfc069c99d34414adc79bc9303847035c24955f8c65",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-evidence-refresh-flake-smoke-pass/proposal.md"
+        },
+        {
+          "content_hash": "0ef78b771d1a7804d395b9114297af986e5b4908c67976c31da3d4abdec553be",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-evidence-refresh-flake-smoke-pass/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "29a3c80ee2db6c5239d89cb238e7278afa714eea66227fc9d6df7df6bad6242a",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-evidence-refresh-flake-smoke-pass/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/evidence-refresh-flake-smoke-pass"
+        }
+      ],
+      "manifest_hash": "7bff62fcd8363892e11eb983786e7eb9fcbf10272dabeaadcb1ef15f389f1167"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "aa09265b4de186c8cef7af52df8574904cea4cb960dc1fc29af5053e8c98fec1",
+          "exists": true,
+          "path": "./cairn/changes/evidence-refresh-flake-smoke-pass/design.md"
+        },
+        {
+          "content_hash": "067db62889ca447b57da4cfc069c99d34414adc79bc9303847035c24955f8c65",
+          "exists": true,
+          "path": "./cairn/changes/evidence-refresh-flake-smoke-pass/proposal.md"
+        },
+        {
+          "content_hash": "0ef78b771d1a7804d395b9114297af986e5b4908c67976c31da3d4abdec553be",
+          "exists": true,
+          "path": "./cairn/changes/evidence-refresh-flake-smoke-pass/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "29a3c80ee2db6c5239d89cb238e7278afa714eea66227fc9d6df7df6bad6242a",
+          "exists": true,
+          "path": "./cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md"
+        }
+      ],
+      "manifest_hash": "9abb05084729f7b5e990acd742a3cba418ac0a26f652bba6139f0911526ea66f"
+    },
+    "kind": "archive",
+    "manifest_hash": "8247fee4f9093d327080e5cb474b77be64b917437a6249ae32fba84605dba654"
+  },
+  "plan_hash": "c6d6c934b782744e48b223bdff91739dc06d03041c2eb84c5dd46b8bc774382a",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "7a12932a895a36ee1b231ad2050e47c06808a610340752ce13ba754c73e3f92d"
+}
+step_exit_status=0
+classification=archive-executed
+exit_status=0

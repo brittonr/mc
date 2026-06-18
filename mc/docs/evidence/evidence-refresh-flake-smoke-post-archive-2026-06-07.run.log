@@ -1,0 +1,32 @@
+
+## cairn validate post-archive
+command=nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
+step_exit_status=0
+
+## evidence manifest check post-archive
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/s4ziz7vh5ws7vgd8gzlvmx9yavrz02sj-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/s4ziz7vh5ws7vgd8gzlvmx9yavrz02sj-mc-compat-evidence-manifests.drv'...
+step_exit_status=0
+
+## task evidence check post-archive
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/41w3yyvykgip52pml9llnz4961kbv042-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/41w3yyvykgip52pml9llnz4961kbv042-mc-compat-cairn-task-evidence.drv'...
+step_exit_status=0
+classification=evidence-refresh-post-archive-pass
+exit_status=0

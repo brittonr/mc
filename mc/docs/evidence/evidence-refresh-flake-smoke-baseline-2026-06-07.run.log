@@ -1,0 +1,115 @@
+
+## cairn validate
+command=nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 4,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 6,
+  "valid": true
+}
+step_exit_status=0
+
+## gate proposal evidence-refresh-flake-smoke-pass
+command=nix run path:/home/brittonr/git/mc#cairn -- gate proposal evidence-refresh-flake-smoke-pass --root /home/brittonr/git/mc
+{
+  "change": "evidence-refresh-flake-smoke-pass",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "32147498e2c4cdbc5b45fd4ff0f32ce7ed039599e5c3bc7e6b72d1c6fa6b4e76",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "025a603d585313ccb20ae4b245b141567c3abc816f810a9b67beff52589acab6",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## gate design evidence-refresh-flake-smoke-pass
+command=nix run path:/home/brittonr/git/mc#cairn -- gate design evidence-refresh-flake-smoke-pass --root /home/brittonr/git/mc
+{
+  "change": "evidence-refresh-flake-smoke-pass",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "9d65a711bd28e5ac62db0fd496ed7f8e3264e379c39bf890c9ccee6669569ebf",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "c83d0afb9be8d4cec68352d749f9c96fa4ee7be5167bd062cb0f6fb955eda620",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## gate tasks evidence-refresh-flake-smoke-pass
+command=nix run path:/home/brittonr/git/mc#cairn -- gate tasks evidence-refresh-flake-smoke-pass --root /home/brittonr/git/mc
+{
+  "change": "evidence-refresh-flake-smoke-pass",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "9d88aa8e29da3f23c921892740612364f215bd3b8ff6564f05101f90fbf97478",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "17f5b69f384541a58e6e5b822e6fd1839bda7270292388f11eb6f14f3161ff1d",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## targeted packet promotions check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/a04rjv1in2dwlnqncnrwp0wiw075d47i-mc-compat-targeted-packet-promotions-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/a04rjv1in2dwlnqncnrwp0wiw075d47i-mc-compat-targeted-packet-promotions-check.drv'...
+step_exit_status=0
+
+## scenario manifest check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/5pcprd84fwfnr33nzddfsn6mary0pxll-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/5pcprd84fwfnr33nzddfsn6mary0pxll-mc-compat-scenario-manifest.drv'...
+step_exit_status=0
+
+## representative dry-run smoke
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-dry-run --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/0476h4jng64i5y79jh396vd5q4w2f3x8-mc-compat-dry-run.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/0476h4jng64i5y79jh396vd5q4w2f3x8-mc-compat-dry-run.drv'...
+step_exit_status=0
+classification=evidence-refresh-baseline-pass
+exit_status=0

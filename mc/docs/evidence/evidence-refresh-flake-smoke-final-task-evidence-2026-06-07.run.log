@@ -1,0 +1,88 @@
+
+## gate tasks evidence-refresh-flake-smoke-pass
+command=nix run path:/home/brittonr/git/mc#cairn -- gate tasks evidence-refresh-flake-smoke-pass --root /home/brittonr/git/mc
+{
+  "change": "evidence-refresh-flake-smoke-pass",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "67ae7ba07d0a677c1763bfec530826664be499e4770f32fb416049b4d71c6e32",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "8380370f919aded4da886bc6fceb3f3c60f74d1724b0a68f06e25cbe2f983a0a",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## task evidence check final
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/s8scpl8dcpi2r7yxr1ymbbdc2n27ssg6-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/s8scpl8dcpi2r7yxr1ymbbdc2n27ssg6-mc-compat-cairn-task-evidence.drv'...
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:3 completed task lacks verification command output as a docs/evidence/*.run.log path
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:3 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:5 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:5 cites run log docs/evidence/evidence-refresh-flake-smoke-baseline-2026-06-07.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:7 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:7 cites run log docs/evidence/evidence-refresh-flake-smoke-baseline-2026-06-07.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:9 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:9 cites run log docs/evidence/evidence-refresh-flake-smoke-manifest-refresh-2026-06-07.run.log with nonzero exit status line: step_exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:9 cites run log docs/evidence/evidence-refresh-flake-smoke-manifest-refresh-2026-06-07.run.log with nonzero exit status line: exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:9 cites run log docs/evidence/evidence-refresh-flake-smoke-manifest-refresh-2026-06-07.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:11 cites run log docs/evidence/evidence-refresh-flake-smoke-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:9 cites run log docs/evidence/evidence-refresh-flake-smoke-manifest-refresh-2026-06-07.run.log with nonzero exit status line: step_exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:11 cites run log docs/evidence/evidence-refresh-flake-smoke-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:9 cites run log docs/evidence/evidence-refresh-flake-smoke-manifest-refresh-2026-06-07.run.log with nonzero exit status line: exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:11 cites run log docs/evidence/evidence-refresh-flake-smoke-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:9 cites run log docs/evidence/evidence-refresh-flake-smoke-manifest-refresh-2026-06-07.run.log with nonzero exit status line: step_exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:11 cites run log docs/evidence/evidence-refresh-flake-smoke-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:9 cites run log docs/evidence/evidence-refresh-flake-smoke-manifest-refresh-2026-06-07.run.log with nonzero exit status line: exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:11 cites run log docs/evidence/evidence-refresh-flake-smoke-closeout-2026-06-07.run.log with nonzero exit status line: step_exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:11 cites run log docs/evidence/evidence-refresh-flake-smoke-closeout-2026-06-07.run.log with nonzero exit status line: exit_status=1
+error: Cannot build '/nix/store/s8scpl8dcpi2r7yxr1ymbbdc2n27ssg6-mc-compat-cairn-task-evidence.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/mkha6siw0gn1y9q9a4yagzfgqcyvvia5-mc-compat-cairn-task-evidence
+       Last 16 log lines:
+       > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:3 completed task lacks verification command output as a docs/evidence/*.run.log path
+       > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:3 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+       > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:5 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+       > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:5 cites run log docs/evidence/evidence-refresh-flake-smoke-baseline-2026-06-07.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:7 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+       > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:7 cites run log docs/evidence/evidence-refresh-flake-smoke-baseline-2026-06-07.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:9 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+       > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:9 cites run log docs/evidence/evidence-refresh-flake-smoke-manifest-refresh-2026-06-07.run.log with nonzero exit status line: step_exit_status=1
+       > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:9 cites run log docs/evidence/evidence-refresh-flake-smoke-manifest-refresh-2026-06-07.run.log with nonzero exit status line: exit_status=1
+       > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:9 cites run log docs/evidence/evidence-refresh-flake-smoke-manifest-refresh-2026-06-07.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:11 cites run log docs/evidence/evidence-refresh-flake-smoke-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:9 cites run log docs/evidence/evidence-refresh-flake-smoke-manifest-refresh-2026-06-07.run.log with nonzero exit status line: step_exit_status=1
+       > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:11 cites run log docs/evidence/evidence-refresh-flake-smoke-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:9 cites run log docs/evidence/evidence-refresh-flake-smoke-manifest-refresh-2026-06-07.run.log with nonzero exit status line: exit_status=1
+       > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:11 cites run log docs/evidence/evidence-refresh-flake-smoke-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:9 cites run log docs/evidence/evidence-refresh-flake-smoke-manifest-refresh-2026-06-07.run.log with nonzero exit status line: step_exit_status=1
+       > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:11 cites run log docs/evidence/evidence-refresh-flake-smoke-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:9 cites run log docs/evidence/evidence-refresh-flake-smoke-manifest-refresh-2026-06-07.run.log with nonzero exit status line: exit_status=1
+       > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:11 cites run log docs/evidence/evidence-refresh-flake-smoke-closeout-2026-06-07.run.log with nonzero exit status line: step_exit_status=1
+       > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:11 cites run log docs/evidence/evidence-refresh-flake-smoke-closeout-2026-06-07.run.log with nonzero exit status line: exit_status=1
+       For full logs, run:
+         nix log /nix/store/s8scpl8dcpi2r7yxr1ymbbdc2n27ssg6-mc-compat-cairn-task-evidence.drv
+step_exit_status=1
+
+## cairn validate final
+command=nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 4,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 6,
+  "valid": true
+}
+step_exit_status=0
+classification=evidence-refresh-final-task-evidence-fail failures=1
+exit_status=1

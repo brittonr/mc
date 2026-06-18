@@ -1,0 +1,42 @@
+
+## manifest refresh
+command=env TMPDIR=/home/brittonr/git/mc/.pi/tmp nix run path:/home/brittonr/git/mc#evidence-manifest-refresh -- --refresh
+evidence manifest refresh ok: mode=refresh; passes=1; manifests=363; entries=2402; current=2402; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=1; manifest_writes=0
+step_exit_status=0
+
+## manifest check after refresh
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/a65d9g79mm3p8idcl22mqyqgcb19gl4b-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/a65d9g79mm3p8idcl22mqyqgcb19gl4b-mc-compat-evidence-manifests.drv'...
+step_exit_status=0
+
+## task evidence after refresh
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/0pz1p369vlwrc1sv1rdfxac8na3pkb81-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/0pz1p369vlwrc1sv1rdfxac8na3pkb81-mc-compat-cairn-task-evidence.drv'...
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:3 completed task lacks verification command output as a docs/evidence/*.run.log path
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:3 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:5 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:5 cites run log docs/evidence/evidence-refresh-flake-smoke-baseline-2026-06-07.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:7 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:7 cites run log docs/evidence/evidence-refresh-flake-smoke-baseline-2026-06-07.run.log without a cited .b3 manifest covering it
+error: Cannot build '/nix/store/0pz1p369vlwrc1sv1rdfxac8na3pkb81-mc-compat-cairn-task-evidence.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/vaf58ikw2yzlmkj7r4r36blb4njyy846-mc-compat-cairn-task-evidence
+       Last 6 log lines:
+       > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:3 completed task lacks verification command output as a docs/evidence/*.run.log path
+       > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:3 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+       > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:5 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+       > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:5 cites run log docs/evidence/evidence-refresh-flake-smoke-baseline-2026-06-07.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:7 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+       > task evidence gate failed: cairn/changes/evidence-refresh-flake-smoke-pass/tasks.md:7 cites run log docs/evidence/evidence-refresh-flake-smoke-baseline-2026-06-07.run.log without a cited .b3 manifest covering it
+       For full logs, run:
+         nix log /nix/store/0pz1p369vlwrc1sv1rdfxac8na3pkb81-mc-compat-cairn-task-evidence.drv
+step_exit_status=1
+classification=evidence-refresh-manifest-fixpoint-fail failures=1
+exit_status=1
