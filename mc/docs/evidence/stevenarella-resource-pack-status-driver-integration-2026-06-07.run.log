@@ -1,0 +1,71 @@
+
+## runner fmt
+command=env TMPDIR=/home/brittonr/git/mc/.pi/tmp nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo fmt --manifest-path tools/mc-compat-runner/Cargo.toml
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/jbsa1405l2zzq0bsnysgz5fxfisjxclm-mc-compat-runner-0.1.0.drv'...
+building '/nix/store/dir06zfy55kjd757w0bs5h9hgd112p70-nix-shell-env.drv'...
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+step_exit_status=0
+
+## runner scenario core tests
+command=env TMPDIR=/home/brittonr/git/mc/.pi/tmp nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test --manifest-path tools/mc-compat-runner/Cargo.toml scenario_core -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+   Compiling blake3 v1.8.5
+   Compiling mc-compat-runner v0.1.0 (/home/brittonr/git/mc/tools/mc-compat-runner)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.38s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 6 tests
+test scenario_core::tests::scenario_core_rejects_invalid_creative_inventory_live_contracts ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_resource_pack_status_local_contracts ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_sign_editor_live_contracts ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_live_capabilities ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_static_specs ... ok
+test scenario_core::tests::scenario_core_validates_static_specs_and_lookup_parity ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 116 filtered out; finished in 0.00s
+
+step_exit_status=0
+
+## scenario manifest check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/7ksgibs2pb9hmn9z7l42194h60gw0msa-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/7ksgibs2pb9hmn9z7l42194h60gw0msa-mc-compat-scenario-manifest.drv'...
+step_exit_status=0
+
+## mcp controlled dry-run
+command=nix run path:/home/brittonr/git/mc#mc-compat-mcp-controlled-smoke -- --dry-run
+this derivation will be built:
+  /nix/store/j74f3f8x26f1cirm5rs08x4xy27d5iii-mc-compat-mcp-controlled-smoke.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/j74f3f8x26f1cirm5rs08x4xy27d5iii-mc-compat-mcp-controlled-smoke.drv'...
+[mc-compat] plan: build client, start Valence server, wait for protocol 763, run client under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
++ "git" "-C" "/home/brittonr/git/mc/valence" "worktree" "prune"
+[mc-compat] creating isolated Valence worktree /tmp/valence-compat-mcp-controlled-smoke at main
++ "git" "-C" "/home/brittonr/git/mc/valence" "worktree" "add" "--detach" "/tmp/valence-compat-mcp-controlled-smoke" "main"
+[mc-compat] starting Valence main example 'survival_compat' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-mcp-controlled-smoke
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'mcp-controlled-smoke' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/mc-compat-mcp-controlled-smoke/mcp-controlled-smoke.json
+step_exit_status=0
+
+## targeted packet nonpromotion check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/lccgkwya6aykh4z2xwr2n1rgh4rl930j-mc-compat-targeted-packet-promotions-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/lccgkwya6aykh4z2xwr2n1rgh4rl930j-mc-compat-targeted-packet-promotions-check.drv'...
+step_exit_status=0
+classification=resource-pack-driver-integration-pass
+exit_status=0

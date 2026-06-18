@@ -1,0 +1,114 @@
+
+## gate proposal stevenarella-resource-pack-status-driver
+command=nix run path:/home/brittonr/git/mc#cairn -- gate proposal stevenarella-resource-pack-status-driver --root /home/brittonr/git/mc
+{
+  "change": "stevenarella-resource-pack-status-driver",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "74d42b42ac6a7dbbfad6aaee79f0d7e2c36b30c2787e369d8faf7b27b5e4eb5d",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "5cb1e0333fc3a77b93e5644747d2e8ced24a2731fdce63793d98d6de68110e38",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## gate design stevenarella-resource-pack-status-driver
+command=nix run path:/home/brittonr/git/mc#cairn -- gate design stevenarella-resource-pack-status-driver --root /home/brittonr/git/mc
+{
+  "change": "stevenarella-resource-pack-status-driver",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "858d2e8477259a3e7ac3ce6a225e37492421be959ef05cde4d547107ec20bdf8",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "5b2d897afd6b97f000d4c1d68857e025b89b0544a4ffe43f14222b4d0f57cb0c",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## gate tasks stevenarella-resource-pack-status-driver
+command=nix run path:/home/brittonr/git/mc#cairn -- gate tasks stevenarella-resource-pack-status-driver --root /home/brittonr/git/mc
+{
+  "change": "stevenarella-resource-pack-status-driver",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "80693e1c0fab858ab6e170f88aca61e2c420a660b8959ecfc6475c2d50f9630f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "3012f8bbcc21340c873ef64a039bb8061d4c76e01489add83c15b0e4913317ac",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## stevenarella control tests baseline
+command=env TMPDIR=/home/brittonr/git/mc/.pi/tmp nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test control::tests -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+error: could not find `Cargo.toml` in `/home/brittonr/git/mc` or any parent directory
+step_exit_status=101
+
+## runner mcp controlled dry-run baseline
+command=nix run path:/home/brittonr/git/mc#mc-compat-mcp-controlled-smoke -- --dry-run
+this derivation will be built:
+  /nix/store/j30n0ndj9c852lkbwg1h732hh0l15wk0-mc-compat-mcp-controlled-smoke.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/j30n0ndj9c852lkbwg1h732hh0l15wk0-mc-compat-mcp-controlled-smoke.drv'...
+[mc-compat] plan: build client, start Valence server, wait for protocol 763, run client under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
++ "git" "-C" "/home/brittonr/git/mc/valence" "worktree" "prune"
+[mc-compat] creating isolated Valence worktree /tmp/valence-compat-mcp-controlled-smoke at main
++ "git" "-C" "/home/brittonr/git/mc/valence" "worktree" "add" "--detach" "/tmp/valence-compat-mcp-controlled-smoke" "main"
+[mc-compat] starting Valence main example 'survival_compat' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-mcp-controlled-smoke
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'mcp-controlled-smoke' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/mc-compat-mcp-controlled-smoke/mcp-controlled-smoke.json
+step_exit_status=0
+
+## targeted packet fixture check baseline
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/jc67xsqvb0ak7a29dhdnkmpbkirpajyi-mc-compat-targeted-packet-promotions-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/jc67xsqvb0ak7a29dhdnkmpbkirpajyi-mc-compat-targeted-packet-promotions-check.drv'...
+step_exit_status=0
+classification=resource-pack-driver-baseline-fail failures=1
+exit_status=1

@@ -1,4 +1,4 @@
-aed8bdb1c5b02934d0ce2272bf787fa1b557d1033cbe2db2e0304fba4b976749  tools/mc-compat-runner/src/scenario_core.rs
+41908bec2232ebddfec8659017b8099ce48cebf7f73987542208cbab6d745550  tools/mc-compat-runner/src/scenario_core.rs
 36472333dd3f23382e6effd31d168d1586e46d7cd030c13a4f48b7c72251c5f5  tools/check_scenario_manifest.rs
 9f8f010adf47d4de7bcc60ba5d01443307888079c328e1ef123a4174e3701691  tools/check_targeted_packet_promotions.rs
 0d77781bce9b2c9a3562f8b2222f80775e69a17f938361e411ad591175d3f12f  cairn/archive/2026-06-07-add-resource-pack-status-local-rail/tasks.md

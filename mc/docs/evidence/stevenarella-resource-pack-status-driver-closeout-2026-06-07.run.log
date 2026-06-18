@@ -1,0 +1,160 @@
+
+## stevenarella child revision
+command=git -C stevenarella log -1 --oneline
+01fb507 add bounded resource pack status driver
+step_exit_status=0
+
+## cairn validate
+command=nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 2,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 4,
+  "valid": true
+}
+step_exit_status=0
+
+## gate proposal stevenarella-resource-pack-status-driver
+command=nix run path:/home/brittonr/git/mc#cairn -- gate proposal stevenarella-resource-pack-status-driver --root /home/brittonr/git/mc
+{
+  "change": "stevenarella-resource-pack-status-driver",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "0dc6198270e018ccd92bfe6e4e5c1b4518c13c2769f06dd2097295f09e65f737",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "ef8d278fc6f343a9f5ba9c77d3c385c27968307fe9e898d686f4c56069821d75",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## gate design stevenarella-resource-pack-status-driver
+command=nix run path:/home/brittonr/git/mc#cairn -- gate design stevenarella-resource-pack-status-driver --root /home/brittonr/git/mc
+{
+  "change": "stevenarella-resource-pack-status-driver",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c1f176159780f9647b462b96264b7955a08ef0e87c3ea862afff3c35303b25dd",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "b1ea46bfc4cfe1143ce5391a944173ca5c758d2d31063fdc8890eaea51f074df",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## gate tasks stevenarella-resource-pack-status-driver
+command=nix run path:/home/brittonr/git/mc#cairn -- gate tasks stevenarella-resource-pack-status-driver --root /home/brittonr/git/mc
+{
+  "change": "stevenarella-resource-pack-status-driver",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "67989d02c9674b82c7afce31d7a464bb3957b495ef059cef9385e97af4d66536",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "a41fe797992591565fcba1c7d95b938e189b6a0ba72187fbc5348370d34c7ee3",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## scenario manifest check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/sqi966zzkn0chhh953pb6r4n4zqpjkiy-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/sqi966zzkn0chhh953pb6r4n4zqpjkiy-mc-compat-scenario-manifest.drv'...
+step_exit_status=0
+
+## targeted packet check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/x5qdmascxkdif73qr0ssyxxngi2v2zgz-mc-compat-targeted-packet-promotions-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/x5qdmascxkdif73qr0ssyxxngi2v2zgz-mc-compat-targeted-packet-promotions-check.drv'...
+step_exit_status=0
+
+## evidence manifest check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/96p95fayz5s0by9bdgzr3zr6dhyjjh5i-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/96p95fayz5s0by9bdgzr3zr6dhyjjh5i-mc-compat-evidence-manifests.drv'...
+mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/creative-inventory-live-rail-2026-06-07.b3:1: stale digest for tools/mc-compat-runner/src/scenario_core.rs: expected 41908bec2232ebddfec8659017b8099ce48cebf7f73987542208cbab6d745550, found aed8bdb1c5b02934d0ce2272bf787fa1b557d1033cbe2db2e0304fba4b976749
+mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/resource-pack-status-local-rail-2026-06-07.b3:1: stale digest for tools/mc-compat-runner/src/scenario_core.rs: expected 41908bec2232ebddfec8659017b8099ce48cebf7f73987542208cbab6d745550, found aed8bdb1c5b02934d0ce2272bf787fa1b557d1033cbe2db2e0304fba4b976749
+mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/runner-scenario-modules-2026-06-06.b3:2: stale digest for tools/mc-compat-runner/src/scenario_core.rs: expected 41908bec2232ebddfec8659017b8099ce48cebf7f73987542208cbab6d745550, found aed8bdb1c5b02934d0ce2272bf787fa1b557d1033cbe2db2e0304fba4b976749
+mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/scenario-live-capability-registry-2026-06-07.b3:1: stale digest for tools/mc-compat-runner/src/scenario_core.rs: expected 41908bec2232ebddfec8659017b8099ce48cebf7f73987542208cbab6d745550, found aed8bdb1c5b02934d0ce2272bf787fa1b557d1033cbe2db2e0304fba4b976749
+mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/sign-editor-live-rail-2026-06-07.b3:1: stale digest for tools/mc-compat-runner/src/scenario_core.rs: expected 41908bec2232ebddfec8659017b8099ce48cebf7f73987542208cbab6d745550, found aed8bdb1c5b02934d0ce2272bf787fa1b557d1033cbe2db2e0304fba4b976749
+error: Cannot build '/nix/store/96p95fayz5s0by9bdgzr3zr6dhyjjh5i-mc-compat-evidence-manifests.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/c17dygq6jb1pd2a66p8rxsgb65sdjrav-mc-compat-evidence-manifests
+       Last 5 log lines:
+       > evidence manifest refresh failed: docs/evidence/creative-inventory-live-rail-2026-06-07.b3:1: stale digest for tools/mc-compat-runner/src/scenario_core.rs: expected 41908bec2232ebddfec8659017b8099ce48cebf7f73987542208cbab6d745550, found aed8bdb1c5b02934d0ce2272bf787fa1b557d1033cbe2db2e0304fba4b976749
+       > evidence manifest refresh failed: docs/evidence/resource-pack-status-local-rail-2026-06-07.b3:1: stale digest for tools/mc-compat-runner/src/scenario_core.rs: expected 41908bec2232ebddfec8659017b8099ce48cebf7f73987542208cbab6d745550, found aed8bdb1c5b02934d0ce2272bf787fa1b557d1033cbe2db2e0304fba4b976749
+       > evidence manifest refresh failed: docs/evidence/runner-scenario-modules-2026-06-06.b3:2: stale digest for tools/mc-compat-runner/src/scenario_core.rs: expected 41908bec2232ebddfec8659017b8099ce48cebf7f73987542208cbab6d745550, found aed8bdb1c5b02934d0ce2272bf787fa1b557d1033cbe2db2e0304fba4b976749
+       > evidence manifest refresh failed: docs/evidence/scenario-live-capability-registry-2026-06-07.b3:1: stale digest for tools/mc-compat-runner/src/scenario_core.rs: expected 41908bec2232ebddfec8659017b8099ce48cebf7f73987542208cbab6d745550, found aed8bdb1c5b02934d0ce2272bf787fa1b557d1033cbe2db2e0304fba4b976749
+       > evidence manifest refresh failed: docs/evidence/sign-editor-live-rail-2026-06-07.b3:1: stale digest for tools/mc-compat-runner/src/scenario_core.rs: expected 41908bec2232ebddfec8659017b8099ce48cebf7f73987542208cbab6d745550, found aed8bdb1c5b02934d0ce2272bf787fa1b557d1033cbe2db2e0304fba4b976749
+       For full logs, run:
+         nix log /nix/store/96p95fayz5s0by9bdgzr3zr6dhyjjh5i-mc-compat-evidence-manifests.drv
+step_exit_status=1
+
+## task evidence check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/5ih7jzy2k01z4qs1gm8qh5zfaaq8wm8q-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/5ih7jzy2k01z4qs1gm8qh5zfaaq8wm8q-mc-compat-cairn-task-evidence.drv'...
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:3 completed task lacks verification command output as a docs/evidence/*.run.log path
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:5 cites run log docs/evidence/stevenarella-resource-pack-status-driver-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=101
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:5 cites run log docs/evidence/stevenarella-resource-pack-status-driver-baseline-2026-06-07.run.log with nonzero exit status line: exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:13 completed task lacks verification command output as a docs/evidence/*.run.log path
+error: Cannot build '/nix/store/5ih7jzy2k01z4qs1gm8qh5zfaaq8wm8q-mc-compat-cairn-task-evidence.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/7n7rpgbcgldvkiww2jc7wrbhj5rhij3q-mc-compat-cairn-task-evidence
+       Last 4 log lines:
+       > task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:3 completed task lacks verification command output as a docs/evidence/*.run.log path
+       > task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:5 cites run log docs/evidence/stevenarella-resource-pack-status-driver-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=101
+       > task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:5 cites run log docs/evidence/stevenarella-resource-pack-status-driver-baseline-2026-06-07.run.log with nonzero exit status line: exit_status=1
+       > task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:13 completed task lacks verification command output as a docs/evidence/*.run.log path
+       For full logs, run:
+         nix log /nix/store/5ih7jzy2k01z4qs1gm8qh5zfaaq8wm8q-mc-compat-cairn-task-evidence.drv
+step_exit_status=1
+classification=resource-pack-driver-closeout-fail failures=2
+exit_status=1

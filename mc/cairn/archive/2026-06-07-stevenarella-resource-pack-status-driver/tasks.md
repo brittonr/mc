@@ -1,0 +1,16 @@
+# Tasks
+
+- [x] [serial] Record the Stevenarella resource-pack driver contract: offer identity, owned-local scope, expected status, no-external-fetch guarantee, redaction policy, protocol output, and non-claims. r[mc_compatibility.stevenarella_resource_pack_status_driver.contract]
+  - Evidence: `docs/evidence/stevenarella-resource-pack-status-driver-contract-2026-06-07.md` and `docs/evidence/stevenarella-resource-pack-status-driver-2026-06-07.b3`.
+- [x] [depends:contract] Run baseline Stevenarella focused tests, runner resource-pack dry-run checks, and targeted-packet fixture checks before driver changes. r[mc_compatibility.stevenarella_resource_pack_status_driver.baseline]
+  - Evidence: `docs/evidence/stevenarella-resource-pack-status-driver-baseline-2026-06-07.run.log` and `docs/evidence/stevenarella-resource-pack-status-driver-2026-06-07.b3`.
+- [x] [depends:baseline] Implement the bounded resource-pack status driver with pure decision logic and a thin protocol-response shell. r[mc_compatibility.stevenarella_resource_pack_status_driver.driver]
+  - Evidence: Stevenarella child revision `01fb507`, `docs/evidence/stevenarella-resource-pack-status-driver-tests-2026-06-07.run.log`, `docs/evidence/stevenarella-resource-pack-status-driver-evidence-2026-06-07.md`, and `docs/evidence/stevenarella-resource-pack-status-driver-2026-06-07.b3`.
+- [x] [depends:driver] Add positive and negative tests for local offer response, malformed offer metadata, external/off-scope URLs, unsupported status, missing state, and no-external-fetch enforcement. r[mc_compatibility.stevenarella_resource_pack_status_driver.tests]
+  - Evidence: `docs/evidence/stevenarella-resource-pack-status-driver-tests-2026-06-07.run.log` and `docs/evidence/stevenarella-resource-pack-status-driver-2026-06-07.b3`.
+- [x] [depends:tests] Integrate the driver into the resource-pack status rail or capability registry without changing unrelated live-row semantics. r[mc_compatibility.stevenarella_resource_pack_status_driver.integration]
+  - Evidence: `docs/evidence/stevenarella-resource-pack-status-driver-integration-2026-06-07.run.log` and `docs/evidence/stevenarella-resource-pack-status-driver-2026-06-07.b3`.
+- [x] [depends:integration] Emit reviewable driver evidence under `docs/evidence/` and validate it with targeted-packet live-evidence checks when live promotion is attempted. r[mc_compatibility.stevenarella_resource_pack_status_driver.evidence]
+  - Evidence: `docs/evidence/stevenarella-resource-pack-status-driver-2026-06-07.kv`, `docs/evidence/stevenarella-resource-pack-status-driver-2026-06-07.receipt.json`, `docs/evidence/stevenarella-resource-pack-status-driver-evidence-2026-06-07.md`, and `docs/evidence/stevenarella-resource-pack-status-driver-2026-06-07.b3`; live promotion was not attempted because a maintained server-correlation receipt remains absent.
+- [x] [depends:evidence] Run evidence-manifest/task-evidence checks, Cairn gates, sync/archive checks, and post-archive validation. r[mc_compatibility.stevenarella_resource_pack_status_driver.validation]
+  - Evidence: `docs/evidence/stevenarella-resource-pack-status-driver-closeout-2026-06-07.run.log` and `docs/evidence/stevenarella-resource-pack-status-driver-2026-06-07.b3`.

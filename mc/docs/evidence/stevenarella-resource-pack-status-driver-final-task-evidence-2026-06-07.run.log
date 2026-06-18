@@ -1,0 +1,78 @@
+
+## gate tasks stevenarella-resource-pack-status-driver
+command=nix run path:/home/brittonr/git/mc#cairn -- gate tasks stevenarella-resource-pack-status-driver --root /home/brittonr/git/mc
+{
+  "change": "stevenarella-resource-pack-status-driver",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "d32bccdef4cd664d331a7bfafa8e1dd8ccedcb645d53cb0bb1ea3a640a402bb8",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "fb85871bf7d27ae0c515295caa3025f19101550fd2a072cf130a64bd5173d7d2",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## task evidence check final
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/fgx9sjr0pmsf3ax1bay5hirblhh3sac7-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/fgx9sjr0pmsf3ax1bay5hirblhh3sac7-mc-compat-cairn-task-evidence.drv'...
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:3 completed task lacks verification command output as a docs/evidence/*.run.log path
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:5 cites run log docs/evidence/stevenarella-resource-pack-status-driver-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=101
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:5 cites run log docs/evidence/stevenarella-resource-pack-status-driver-baseline-2026-06-07.run.log with nonzero exit status line: exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:13 completed task lacks verification command output as a docs/evidence/*.run.log path
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:15 cites run log docs/evidence/stevenarella-resource-pack-status-driver-closeout-2026-06-07.run.log with nonzero exit status line: step_exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:15 cites run log docs/evidence/stevenarella-resource-pack-status-driver-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:5 cites run log docs/evidence/stevenarella-resource-pack-status-driver-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=101
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:15 cites run log docs/evidence/stevenarella-resource-pack-status-driver-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:5 cites run log docs/evidence/stevenarella-resource-pack-status-driver-baseline-2026-06-07.run.log with nonzero exit status line: exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:15 cites run log docs/evidence/stevenarella-resource-pack-status-driver-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:5 cites run log docs/evidence/stevenarella-resource-pack-status-driver-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=101
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:15 cites run log docs/evidence/stevenarella-resource-pack-status-driver-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:5 cites run log docs/evidence/stevenarella-resource-pack-status-driver-baseline-2026-06-07.run.log with nonzero exit status line: exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:15 cites run log docs/evidence/stevenarella-resource-pack-status-driver-closeout-2026-06-07.run.log with nonzero exit status line: step_exit_status=1
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:15 cites run log docs/evidence/stevenarella-resource-pack-status-driver-closeout-2026-06-07.run.log with nonzero exit status line: exit_status=1
+error: Cannot build '/nix/store/fgx9sjr0pmsf3ax1bay5hirblhh3sac7-mc-compat-cairn-task-evidence.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/qps00rwywhz5di1swxjglykxnarx2ylm-mc-compat-cairn-task-evidence
+       Last 11 log lines:
+       > task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:3 completed task lacks verification command output as a docs/evidence/*.run.log path
+       > task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:5 cites run log docs/evidence/stevenarella-resource-pack-status-driver-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=101
+       > task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:5 cites run log docs/evidence/stevenarella-resource-pack-status-driver-baseline-2026-06-07.run.log with nonzero exit status line: exit_status=1
+       > task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:13 completed task lacks verification command output as a docs/evidence/*.run.log path
+       > task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:15 cites run log docs/evidence/stevenarella-resource-pack-status-driver-closeout-2026-06-07.run.log with nonzero exit status line: step_exit_status=1
+       > task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:15 cites run log docs/evidence/stevenarella-resource-pack-status-driver-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:5 cites run log docs/evidence/stevenarella-resource-pack-status-driver-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=101
+       > task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:15 cites run log docs/evidence/stevenarella-resource-pack-status-driver-closeout-2026-06-07.run.log with nonzero exit status line: mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:5 cites run log docs/evidence/stevenarella-resource-pack-status-driver-baseline-2026-06-07.run.log with nonzero exit status line: exit_status=1
+       > task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:15 cites run log docs/evidence/stevenarella-resource-pack-status-driver-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:5 cites run log docs/evidence/stevenarella-resource-pack-status-driver-baseline-2026-06-07.run.log with nonzero exit status line: step_exit_status=101
+       > task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:15 cites run log docs/evidence/stevenarella-resource-pack-status-driver-closeout-2026-06-07.run.log with nonzero exit status line:        > task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:5 cites run log docs/evidence/stevenarella-resource-pack-status-driver-baseline-2026-06-07.run.log with nonzero exit status line: exit_status=1
+       > task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:15 cites run log docs/evidence/stevenarella-resource-pack-status-driver-closeout-2026-06-07.run.log with nonzero exit status line: step_exit_status=1
+       > task evidence gate failed: cairn/changes/stevenarella-resource-pack-status-driver/tasks.md:15 cites run log docs/evidence/stevenarella-resource-pack-status-driver-closeout-2026-06-07.run.log with nonzero exit status line: exit_status=1
+       For full logs, run:
+         nix log /nix/store/fgx9sjr0pmsf3ax1bay5hirblhh3sac7-mc-compat-cairn-task-evidence.drv
+step_exit_status=1
+
+## cairn validate final
+command=nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 2,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 4,
+  "valid": true
+}
+step_exit_status=0
+classification=resource-pack-driver-final-task-evidence-fail failures=1
+exit_status=1

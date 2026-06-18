@@ -1,0 +1,110 @@
+
+## archive dry-run
+command=nix run path:/home/brittonr/git/mc#cairn -- archive stevenarella-resource-pack-status-driver --root /home/brittonr/git/mc
+{
+  "actions": [
+    {
+      "description": "move active change to archive: stevenarella-resource-pack-status-driver",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/changes/stevenarella-resource-pack-status-driver"
+    }
+  ],
+  "blocked": false,
+  "change": "stevenarella-resource-pack-status-driver",
+  "dry_run": true,
+  "input_hash": "51a3a44f77c7cdabf2987d30faaf0a8b0b03c6bfc69b6282d656a265fe39d0d1",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "2aa1044c4d8dfc4381918be3af7025f4af4931484d11be7fd0ba6b813255fe40",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "92fb58491669700ae9f1e2b24ac4412f1c7586bd684ad56d7dd9801b74b0f79b"
+}
+step_exit_status=0
+
+## archive execute
+command=env CAIRN_ARCHIVE_DATE=2026-06-07 nix run path:/home/brittonr/git/mc#cairn -- archive stevenarella-resource-pack-status-driver --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: stevenarella-resource-pack-status-driver",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/2026-06-07-stevenarella-resource-pack-status-driver"
+    }
+  ],
+  "blocked": false,
+  "change": "stevenarella-resource-pack-status-driver",
+  "dry_run": false,
+  "input_hash": "51a3a44f77c7cdabf2987d30faaf0a8b0b03c6bfc69b6282d656a265fe39d0d1",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "84711fbc9d12470dcf5d3ca6e8b825cfc893f4a1b3f905f8b9d2cd47bc065990",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-stevenarella-resource-pack-status-driver/design.md"
+        },
+        {
+          "content_hash": "973c71802ce6f750d4e9dadddfd7d23eb3c001c8b9f89ceee13c5a88cd67eb40",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-stevenarella-resource-pack-status-driver/proposal.md"
+        },
+        {
+          "content_hash": "6a09fe291507c7aebf06c5977c07151d65fc2003c1896b80f8e87b111c345cd9",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-stevenarella-resource-pack-status-driver/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "4ce852c1eb029934a94d0f20f8a51afe8995eb3df8398f0e00d15065831bbd15",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-stevenarella-resource-pack-status-driver/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/stevenarella-resource-pack-status-driver"
+        }
+      ],
+      "manifest_hash": "4bd5a113f9896b0f5697cbe7cf82e99f1e53c713277bf9b02ecc2a0e3f7bd5e8"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "84711fbc9d12470dcf5d3ca6e8b825cfc893f4a1b3f905f8b9d2cd47bc065990",
+          "exists": true,
+          "path": "./cairn/changes/stevenarella-resource-pack-status-driver/design.md"
+        },
+        {
+          "content_hash": "973c71802ce6f750d4e9dadddfd7d23eb3c001c8b9f89ceee13c5a88cd67eb40",
+          "exists": true,
+          "path": "./cairn/changes/stevenarella-resource-pack-status-driver/proposal.md"
+        },
+        {
+          "content_hash": "6a09fe291507c7aebf06c5977c07151d65fc2003c1896b80f8e87b111c345cd9",
+          "exists": true,
+          "path": "./cairn/changes/stevenarella-resource-pack-status-driver/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "4ce852c1eb029934a94d0f20f8a51afe8995eb3df8398f0e00d15065831bbd15",
+          "exists": true,
+          "path": "./cairn/changes/stevenarella-resource-pack-status-driver/tasks.md"
+        }
+      ],
+      "manifest_hash": "af61b3c6c284ec4f0053db6a37078b09a2bee8388e2fe390b47f67b64d142331"
+    },
+    "kind": "archive",
+    "manifest_hash": "e76c12351319117a00a11bb1d4c88fa0285d1f954477e42a47ab7c778447ceb5"
+  },
+  "plan_hash": "3921f26d50e4c0b4d0f93ca7f22541d5b68e0d894af44162e43d3299e0de3dfb",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "9180d7030919d694f9509a4377e02e0414c810b1fa8a5bb2a8cbf216444af3ee"
+}
+step_exit_status=0
+classification=archive-executed
+exit_status=0

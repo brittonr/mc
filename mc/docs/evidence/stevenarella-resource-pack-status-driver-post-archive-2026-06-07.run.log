@@ -1,0 +1,48 @@
+
+## cairn validate post-archive
+command=nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+step_exit_status=0
+
+## scenario manifest check post-archive
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/22lka75hjhrz2yi85abjrb3z5jfn7m5c-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/22lka75hjhrz2yi85abjrb3z5jfn7m5c-mc-compat-scenario-manifest.drv'...
+step_exit_status=0
+
+## targeted packet check post-archive
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/02qzrgvjh9zjbpax2dbg4vhax6psmlcd-mc-compat-targeted-packet-promotions-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/02qzrgvjh9zjbpax2dbg4vhax6psmlcd-mc-compat-targeted-packet-promotions-check.drv'...
+step_exit_status=0
+
+## evidence manifest check post-archive
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/bg4kfbkf24rqj4wfzw5kzrj8phjy67la-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/bg4kfbkf24rqj4wfzw5kzrj8phjy67la-mc-compat-evidence-manifests.drv'...
+step_exit_status=0
+
+## task evidence check post-archive
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/6cq0l2d2hlc0jrbavy9knnxiqdyvmcg0-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/6cq0l2d2hlc0jrbavy9knnxiqdyvmcg0-mc-compat-cairn-task-evidence.drv'...
+step_exit_status=0
+classification=resource-pack-driver-post-archive-pass
+exit_status=0

@@ -2325,10 +2325,10 @@ const RESOURCE_PACK_LOCAL_EXPECTED_STATUS: &str = "declined";
 const RESOURCE_PACK_LOCAL_NO_EXTERNAL_FETCH: &str = "true";
 const RESOURCE_PACK_LOCAL_REDACTION_POLICY: &str = "no-secrets-no-public-addresses";
 const RESOURCE_PACK_LOCAL_BACKEND_PATH: &str = "deterministic-resource-pack-offer-contract";
-const RESOURCE_PACK_LOCAL_CLIENT_PATH: &str = "stevenarella-resource-pack-status-driver-missing";
+const RESOURCE_PACK_LOCAL_CLIENT_PATH: &str = "stevenarella-resource-pack-status-driver";
 const RESOURCE_PACK_LOCAL_SERVER_CORRELATION: &str = "resource_pack_status_declined_observed";
 const RESOURCE_PACK_LOCAL_BLOCKER_REASON: &str =
-    "no maintained live Stevenarella resource-pack status driver exists";
+    "Stevenarella resource-pack status driver exists, but no maintained live server-correlation receipt exists";
 
 pub(crate) const RESOURCE_PACK_STATUS_LOCAL_CONTRACT: ResourcePackStatusLocalContract =
     ResourcePackStatusLocalContract {

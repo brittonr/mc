@@ -1,0 +1,81 @@
+
+## sync dry-run
+command=nix run path:/home/brittonr/git/mc#cairn -- sync stevenarella-resource-pack-status-driver --root /home/brittonr/git/mc
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/stevenarella-resource-pack-status-driver/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/stevenarella-resource-pack-status-driver/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "stevenarella-resource-pack-status-driver",
+  "delta_specs": [
+    "/home/brittonr/git/mc/cairn/changes/stevenarella-resource-pack-status-driver/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "51a3a44f77c7cdabf2987d30faaf0a8b0b03c6bfc69b6282d656a265fe39d0d1",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "c230df0617ac6152851b3b00929a593a5e0d7bd115f2989092bce8aa92685696",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "2497e5407e05b71beab4fe9c8f72367dd051a34f34826277ca7e6c46212dd312"
+}
+step_exit_status=0
+
+## sync execute
+command=nix run path:/home/brittonr/git/mc#cairn -- sync stevenarella-resource-pack-status-driver --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/stevenarella-resource-pack-status-driver/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/stevenarella-resource-pack-status-driver/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "stevenarella-resource-pack-status-driver",
+  "delta_specs": [
+    "/home/brittonr/git/mc/cairn/changes/stevenarella-resource-pack-status-driver/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "51a3a44f77c7cdabf2987d30faaf0a8b0b03c6bfc69b6282d656a265fe39d0d1",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "2cca47ac22bcaeb42d0ae28d308c6caf312439366aea0da9b848c60723a8c988",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "99013fe0c1af219b7dce5d1f905b6e0ca186c51e7255e50708ae54fe8446bed7"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "2cca47ac22bcaeb42d0ae28d308c6caf312439366aea0da9b848c60723a8c988",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "99013fe0c1af219b7dce5d1f905b6e0ca186c51e7255e50708ae54fe8446bed7"
+    },
+    "kind": "sync",
+    "manifest_hash": "9d236c7939b907429bfeab93485603c53494052eb1355ea568f6aef19bca7e94"
+  },
+  "plan_hash": "e6a4cba5277adee1190168b2df17b12475f4ca5e5328b5ad2977cd7b84b4642f",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "433b88c0b80a9081d866188a0bfe685ac80195fca089a7086a95d52c98418e51"
+}
+step_exit_status=0
+classification=sync-executed
+exit_status=0

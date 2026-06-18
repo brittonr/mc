@@ -1,0 +1,30 @@
+{
+  "schema": "mc.compat.stevenarella.resource_pack_status_driver.receipt.v1",
+  "change": "stevenarella-resource-pack-status-driver",
+  "status": "implemented_not_live_promoted",
+  "actor": "compatbot",
+  "scenario": "mcp-controlled-smoke",
+  "fixture_identity": "owned-local-resource-pack-offer-fixture",
+  "offer_id": "mc-compat-local-resource-pack",
+  "expected_status": "declined",
+  "protocol_output": {
+    "packet": "play/serverbound/ResourcePackStatus",
+    "status_code": 1
+  },
+  "no_external_fetch": true,
+  "redaction_policy": "no-secrets-no-public-addresses",
+  "backend_path": "deterministic-resource-pack-offer-contract",
+  "client_path": "stevenarella-resource-pack-status-driver",
+  "client_revision": "01fb507",
+  "server_correlation": "not-maintained-live-receipt",
+  "nonclaims": [
+    "asset_download_application",
+    "trust_security_validation",
+    "all_status_variants",
+    "public_server_safety",
+    "production_readiness",
+    "full_protocol_763_compatibility",
+    "broad_minecraft_compatibility",
+    "wan_behavior"
+  ]
+}
