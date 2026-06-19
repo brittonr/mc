@@ -13,6 +13,8 @@ const MAX_DAMAGE: f64 = 100.0;
 const MIN_MULTIPLIER: f64 = 0.0;
 const MAX_MULTIPLIER: f64 = 100.0;
 const ZERO_DAMAGE: f64 = 0.0;
+const MISSING_VALIDATED_FIELD_MESSAGE: &str =
+    "normalization invariant failed: required value missing after validation";
 
 const FORBIDDEN_STEEL_TOKENS: &[&str] = &[
     "open-input-file",
@@ -141,6 +143,27 @@ pub(crate) struct RuntimeConfigSnapshot {
     pub(crate) receipt_dir: String,
     pub(crate) scenario: String,
     pub(crate) arrow_damage: ArrowDamagePolicy,
+}
+
+struct RuntimeConfigSnapshotParts {
+    schema_version: Option<u32>,
+    source: SteelSource,
+    server_backend: Option<String>,
+    server_version: Option<String>,
+    server_protocol: Option<u32>,
+    server_port: Option<u16>,
+    valence_rev: Option<String>,
+    valence_example: Option<String>,
+    valence_worktree: Option<String>,
+    valence_target_dir: Option<String>,
+    valence_log: Option<String>,
+    valence_pid_file: Option<String>,
+    client_username: Option<String>,
+    client_timeout_secs: Option<u32>,
+    client_success_patterns: Option<Vec<String>>,
+    receipt_dir: Option<String>,
+    scenario: Option<String>,
+    arrow_damage: Option<ArrowDamagePolicy>,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -385,29 +408,86 @@ pub(crate) fn normalize_steel_exports(
         required_export::<String>(exports, "scenario", "scenario.name", &mut diagnostics);
     let arrow_damage = normalize_arrow_damage(exports, &mut diagnostics);
 
-    if diagnostics.is_empty() {
-        Ok(RuntimeConfigSnapshot {
-            schema_version: schema_version.expect("diagnostics checked"),
-            source,
-            server_backend: server_backend.expect("diagnostics checked"),
-            server_version: server_version.expect("diagnostics checked"),
-            server_protocol: server_protocol.expect("diagnostics checked"),
-            server_port: server_port.expect("diagnostics checked"),
-            valence_rev: valence_rev.expect("diagnostics checked"),
-            valence_example: valence_example.expect("diagnostics checked"),
-            valence_worktree: valence_worktree.expect("diagnostics checked"),
-            valence_target_dir: valence_target_dir.expect("diagnostics checked"),
-            valence_log: valence_log.expect("diagnostics checked"),
-            valence_pid_file: valence_pid_file.expect("diagnostics checked"),
-            client_username: client_username.expect("diagnostics checked"),
-            client_timeout_secs: client_timeout_secs.expect("diagnostics checked"),
-            client_success_patterns: client_success_patterns.expect("diagnostics checked"),
-            receipt_dir: receipt_dir.expect("diagnostics checked"),
-            scenario: scenario.expect("diagnostics checked"),
-            arrow_damage: arrow_damage.expect("diagnostics checked"),
-        })
-    } else {
-        Err(diagnostics)
+    if !diagnostics.is_empty() {
+        return Err(diagnostics);
+    }
+
+    finish_runtime_config_snapshot(RuntimeConfigSnapshotParts {
+        schema_version,
+        source,
+        server_backend,
+        server_version,
+        server_protocol,
+        server_port,
+        valence_rev,
+        valence_example,
+        valence_worktree,
+        valence_target_dir,
+        valence_log,
+        valence_pid_file,
+        client_username,
+        client_timeout_secs,
+        client_success_patterns,
+        receipt_dir,
+        scenario,
+        arrow_damage,
+    })
+    .map_err(|diagnostic| vec![diagnostic])
+}
+
+fn finish_runtime_config_snapshot(
+    parts: RuntimeConfigSnapshotParts,
+) -> Result<RuntimeConfigSnapshot, ConfigDiagnostic> {
+    let schema_version = require_validated_value(parts.schema_version, "runtime.config_version")?;
+    let server_backend = require_validated_value(parts.server_backend, "server.backend")?;
+    let server_version = require_validated_value(parts.server_version, "server.version")?;
+    let server_protocol = require_validated_value(parts.server_protocol, "server.protocol")?;
+    let server_port = require_validated_value(parts.server_port, "server.port")?;
+    let valence_rev = require_validated_value(parts.valence_rev, "valence.rev")?;
+    let valence_example = require_validated_value(parts.valence_example, "valence.example")?;
+    let valence_worktree = require_validated_value(parts.valence_worktree, "valence.worktree")?;
+    let valence_target_dir =
+        require_validated_value(parts.valence_target_dir, "valence.target_dir")?;
+    let valence_log = require_validated_value(parts.valence_log, "valence.log")?;
+    let valence_pid_file = require_validated_value(parts.valence_pid_file, "valence.pid_file")?;
+    let client_username = require_validated_value(parts.client_username, "client.username")?;
+    let client_timeout_secs =
+        require_validated_value(parts.client_timeout_secs, "client.timeout_secs")?;
+    let client_success_patterns =
+        require_validated_value(parts.client_success_patterns, "client.success_patterns")?;
+    let receipt_dir = require_validated_value(parts.receipt_dir, "receipt.dir")?;
+    let scenario = require_validated_value(parts.scenario, "scenario.name")?;
+    let arrow_damage = require_validated_value(parts.arrow_damage, "combat.arrow.policy")?;
+
+    Ok(RuntimeConfigSnapshot {
+        schema_version,
+        source: parts.source,
+        server_backend,
+        server_version,
+        server_protocol,
+        server_port,
+        valence_rev,
+        valence_example,
+        valence_worktree,
+        valence_target_dir,
+        valence_log,
+        valence_pid_file,
+        client_username,
+        client_timeout_secs,
+        client_success_patterns,
+        receipt_dir,
+        scenario,
+        arrow_damage,
+    })
+}
+
+fn require_validated_value<T>(value: Option<T>, path: &'static str) -> Result<T, ConfigDiagnostic> {
+    match value {
+        Some(value) => Ok(value),
+        None => Err(ConfigDiagnostic {
+            path,
+            message: MISSING_VALIDATED_FIELD_MESSAGE.to_string(),
+        }),
     }
 }
 
@@ -1104,6 +1184,18 @@ mod tests {
         assert_eq!(snapshot.server_port, TEST_SERVER_PORT as u16);
         assert_eq!(snapshot.client_timeout_secs, TEST_CLIENT_TIMEOUT_SECS);
         assert_eq!(snapshot.arrow_damage.base_damage, TEST_ARROW_BASE_DAMAGE);
+    }
+
+    #[test]
+    fn validated_value_helper_returns_values_and_diagnostics() {
+        let present = require_validated_value(Some("ok".to_string()), "runtime.test_present")
+            .expect("present value");
+        assert_eq!(present, "ok");
+
+        let diagnostic =
+            require_validated_value::<String>(None, "runtime.test_missing").unwrap_err();
+        assert_eq!(diagnostic.path, "runtime.test_missing");
+        assert_eq!(diagnostic.message, MISSING_VALIDATED_FIELD_MESSAGE);
     }
 
     #[test]
