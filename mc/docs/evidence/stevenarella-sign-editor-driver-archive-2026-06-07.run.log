@@ -1,0 +1,110 @@
+
+## archive dry-run
+command=nix run path:/home/brittonr/git/mc#cairn -- archive stevenarella-sign-editor-driver --root /home/brittonr/git/mc
+{
+  "actions": [
+    {
+      "description": "move active change to archive: stevenarella-sign-editor-driver",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/changes/stevenarella-sign-editor-driver"
+    }
+  ],
+  "blocked": false,
+  "change": "stevenarella-sign-editor-driver",
+  "dry_run": true,
+  "input_hash": "f3f39053074cdb9b2ea007a8f6f332265f857068544ea67f9f25b73aa6083593",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "e581613c6472b3fab07094150d3693ba710f2d321b956046431cac04a241fc94",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "201ac594dad1159dfc9fadd6c442b819188b9338a6e9afe67d0dc454b4d4cec5"
+}
+step_exit_status=0
+
+## archive execute
+command=env CAIRN_ARCHIVE_DATE=2026-06-07 nix run path:/home/brittonr/git/mc#cairn -- archive stevenarella-sign-editor-driver --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: stevenarella-sign-editor-driver",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/2026-06-07-stevenarella-sign-editor-driver"
+    }
+  ],
+  "blocked": false,
+  "change": "stevenarella-sign-editor-driver",
+  "dry_run": false,
+  "input_hash": "f3f39053074cdb9b2ea007a8f6f332265f857068544ea67f9f25b73aa6083593",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "9389ea150bfe245cb19baceb6ef0e5ec3cc91cfc1926fef116b798b2fd0221ef",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-stevenarella-sign-editor-driver/design.md"
+        },
+        {
+          "content_hash": "60fb5984fec13c903e0e34f36ee19b7efed028e7ba0d345347ea107e0190c068",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-stevenarella-sign-editor-driver/proposal.md"
+        },
+        {
+          "content_hash": "9c37a9353b369c65b8fc0b51a157a421bd75f97a3f9a0b2e6933e3687396c474",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-stevenarella-sign-editor-driver/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "93f793d0b258a3bbda8a4235b5465958fdbe845ead698291674ba8eba3c131ee",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-07-stevenarella-sign-editor-driver/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/stevenarella-sign-editor-driver"
+        }
+      ],
+      "manifest_hash": "fba397fb2a3be51cbe7790d4606d640e4f0a2ea63629f117a6e6d729f194d173"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "9389ea150bfe245cb19baceb6ef0e5ec3cc91cfc1926fef116b798b2fd0221ef",
+          "exists": true,
+          "path": "./cairn/changes/stevenarella-sign-editor-driver/design.md"
+        },
+        {
+          "content_hash": "60fb5984fec13c903e0e34f36ee19b7efed028e7ba0d345347ea107e0190c068",
+          "exists": true,
+          "path": "./cairn/changes/stevenarella-sign-editor-driver/proposal.md"
+        },
+        {
+          "content_hash": "9c37a9353b369c65b8fc0b51a157a421bd75f97a3f9a0b2e6933e3687396c474",
+          "exists": true,
+          "path": "./cairn/changes/stevenarella-sign-editor-driver/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "93f793d0b258a3bbda8a4235b5465958fdbe845ead698291674ba8eba3c131ee",
+          "exists": true,
+          "path": "./cairn/changes/stevenarella-sign-editor-driver/tasks.md"
+        }
+      ],
+      "manifest_hash": "e2320321c4c84ba63d8a5e42824e48f95543ee94ec4d18af59bb63144b10c90c"
+    },
+    "kind": "archive",
+    "manifest_hash": "2eb286840ddde64a5acecdea2cbcb4cf5c755edf58c630c1c9e89aeebe133455"
+  },
+  "plan_hash": "426b9a65b9224f2c92ed44e0d35614838b03e62bd1e083ddff9ae929b2255080",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "2a117e9f3fb74fe72deac7e638ae72b35d283808286b9525fbd2e5121cf7642e"
+}
+step_exit_status=0
+classification=sign-editor-driver-archive-pass
+exit_status=0

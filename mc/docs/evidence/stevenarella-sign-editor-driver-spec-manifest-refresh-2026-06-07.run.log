@@ -1,0 +1,14 @@
+
+## refresh sign-driver b3
+command=b3sum sign-driver evidence set > docs/evidence/stevenarella-sign-editor-driver-2026-06-07.b3
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+step_exit_status=0
+
+## refresh all evidence manifests
+command=nix run path:/home/brittonr/git/mc#evidence-manifest-refresh -- --refresh --root /home/brittonr/git/mc
+evidence manifest refresh ok: mode=refresh; passes=4; manifests=367; entries=2450; current=2450; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=4; manifest_writes=40
+step_exit_status=0
+classification=sign-editor-driver-spec-manifest-refresh-pass
+exit_status=0

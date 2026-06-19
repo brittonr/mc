@@ -1,0 +1,39 @@
+{
+  "schema": "mc.compat.stevenarella.sign_editor_driver.receipt.v1",
+  "change": "stevenarella-sign-editor-driver",
+  "status": "implemented_not_live_promoted",
+  "actor": "compatbot",
+  "scenario": "survival-block-entity-persistence-parity",
+  "sign_position": "28,64,0",
+  "initial_state": "blank",
+  "submitted_payload": [
+    "MC",
+    "Compat",
+    "Sign",
+    "Edit"
+  ],
+  "line_count": 4,
+  "max_line_chars": 64,
+  "required_open_state": "matching_sign_editor_open_observed",
+  "client_open_milestone": "sign_editor_open_observed",
+  "client_update_milestone": "sign_update_sent",
+  "protocol_output": {
+    "packet": "play/serverbound/SetSign",
+    "targeted_row_packet": "play/serverbound/0x2e UpdateSignC2SPacket"
+  },
+  "backend_path": "deterministic-sign-editor-contract",
+  "client_path": "stevenarella-sign-editor-driver",
+  "client_revision": "c27f0db",
+  "server_correlation": "not-maintained-live-receipt",
+  "nonclaims": [
+    "sign_editing_ui_behavior",
+    "all_sign_variants",
+    "all_text_formats",
+    "arbitrary_nbt_semantics",
+    "all_block_entities",
+    "public_server_safety",
+    "production_readiness",
+    "full_protocol_763_compatibility",
+    "broad_minecraft_compatibility"
+  ]
+}

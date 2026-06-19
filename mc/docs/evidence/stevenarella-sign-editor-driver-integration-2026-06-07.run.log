@@ -1,0 +1,63 @@
+
+## runner fmt
+command=env TMPDIR=/home/brittonr/git/mc/.pi/tmp nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo fmt --manifest-path tools/mc-compat-runner/Cargo.toml
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+step_exit_status=0
+
+## runner scenario core tests
+command=env TMPDIR=/home/brittonr/git/mc/.pi/tmp nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test --manifest-path tools/mc-compat-runner/Cargo.toml scenario_core -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 6 tests
+test scenario_core::tests::scenario_core_rejects_invalid_creative_inventory_live_contracts ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_live_capabilities ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_resource_pack_status_local_contracts ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_sign_editor_live_contracts ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_static_specs ... ok
+test scenario_core::tests::scenario_core_validates_static_specs_and_lookup_parity ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 116 filtered out; finished in 0.00s
+
+step_exit_status=0
+
+## scenario manifest check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/yix7hzgmnh07bz7mmkg4ilsi6k4bba8w-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/yix7hzgmnh07bz7mmkg4ilsi6k4bba8w-mc-compat-scenario-manifest.drv'...
+step_exit_status=0
+
+## sign-editor dry-run
+command=env TMPDIR=/home/brittonr/git/mc/.pi/tmp nix develop --no-update-lock-file /home/brittonr/git/mc -c mc-compat-runner --dry-run --server-backend valence --scenario survival-block-entity-persistence-parity --client-dir stevenarella --receipt target/stevenarella-sign-editor-driver-integration/survival-block-entity-persistence-parity.json
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+[mc-compat] plan: build client, start Valence server, wait for protocol 758, run client under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] using existing Valence worktree /tmp/valence-compat-758
+[mc-compat] starting Valence 8ad9c85 example 'terrain' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-758
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 758
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'survival-block-entity-persistence-parity' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/stevenarella-sign-editor-driver-integration/survival-block-entity-persistence-parity.json
+step_exit_status=0
+
+## targeted packet nonpromotion check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/y0l6gx8vmgrlkhavy69l61ym53qbldhx-mc-compat-targeted-packet-promotions-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/y0l6gx8vmgrlkhavy69l61ym53qbldhx-mc-compat-targeted-packet-promotions-check.drv'...
+step_exit_status=0
+classification=sign-editor-driver-integration-pass
+exit_status=0

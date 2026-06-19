@@ -1,0 +1,224 @@
+
+## record prior sign-editor blocker
+command=grep -E row=sign-editor-open-update|live|blocker|client|server|nonclaim docs/evidence/sign-editor-live-rail-2026-06-07.kv
+live.promotion.status=blocked
+live.evidence.mode=fixture-bounded-blocker
+live.packet.row=play/clientbound/0x31 SignEditorOpenS2CPacket
+live.sign.packet_row.update=play/serverbound/0x2e UpdateSignC2SPacket
+live.receipt=docs/evidence/sign-editor-live-rail-2026-06-07.receipt.json
+live.receipt.blake3=65b7e8a65ee4b2d61db710c462fafe067ebda8788b951b34a566553937e79b1f
+live.receipt.digest_status=current
+live.revision.status=current
+live.scenario=survival-block-entity-persistence-parity
+live.backend=valence
+live.client.path=stevenarella-sign-editor-driver-missing
+live.backend.path=deterministic-sign-editor-contract
+live.client.revision=not-run-live-driver-missing
+live.backend.revision=parent-88341586-deterministic-sign-editor-contract
+live.row_extension.kind=sign-editor-open-update
+live.actor=compatbot
+live.sign.position=28,64,0
+live.sign.initial_state=blank
+live.sign.payload=MC|Compat|Sign|Edit
+live.sign.open_milestone=contracted-not-live-observed
+live.sign.update_action=contracted-not-live-observed
+live.sign.server_correlation=contracted-not-live-observed
+metric.live.sign_editor_open_observed=missing
+metric.live.sign_update_sent=missing
+metric.live.sign_update_accepted_observed=missing
+blocker.reason=no maintained live Stevenarella sign editor open/update driver exists
+nonclaim.sign_editing_ui_behavior=true
+nonclaim.all_sign_variants=true
+nonclaim.all_text_formats=true
+nonclaim.arbitrary_nbt_semantics=true
+nonclaim.all_block_entities=true
+nonclaim.public_server_safety=true
+nonclaim.full_protocol_763_compatibility=true
+nonclaim.broad_minecraft_compatibility=true
+nonclaim.production_readiness=true
+step_exit_status=0
+
+## prepare clean pre-driver Stevenarella worktree
+command=git -C stevenarella worktree add --detach /home/brittonr/git/mc/.pi/tmp/stevenarella-sign-editor-baseline HEAD^
+Preparing worktree (detached HEAD 01fb507)
+HEAD is now at 01fb507 add bounded resource pack status driver
+step_exit_status=0
+
+## stevenarella control tests pre-driver
+command=env TMPDIR=/home/brittonr/git/mc/.pi/tmp nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test --manifest-path /home/brittonr/git/mc/.pi/tmp/stevenarella-sign-editor-baseline/Cargo.toml control::tests -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+warning: file `/home/brittonr/git/mc/.pi/tmp/stevenarella-sign-editor-baseline/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+   Compiling steven_resources v0.1.0 (/home/brittonr/git/mc/.pi/tmp/stevenarella-sign-editor-baseline/resources)
+   Compiling steven_shared v0.0.1 (/home/brittonr/git/mc/.pi/tmp/stevenarella-sign-editor-baseline/shared)
+   Compiling std_or_web v0.0.1 (/home/brittonr/git/mc/.pi/tmp/stevenarella-sign-editor-baseline/std_or_web)
+   Compiling steven_protocol v0.0.1 (/home/brittonr/git/mc/.pi/tmp/stevenarella-sign-editor-baseline/protocol)
+   Compiling steven_blocks v0.0.1 (/home/brittonr/git/mc/.pi/tmp/stevenarella-sign-editor-baseline/blocks)
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1052:36
+     |
+1052 |         offsets |protocol_version| (instrument.offsets(protocol_version)
+     |                                    ^
+1053 |             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 })),
+     |                                                                                                    ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1052 ~         offsets |protocol_version| instrument.offsets(protocol_version)
+1053 ~             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+     |
+
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1407:36
+     |
+1407 |         offsets |protocol_version| (variant.offsets(protocol_version)),
+     |                                    ^                                 ^
+     |
+help: remove these parentheses
+     |
+1407 -         offsets |protocol_version| (variant.offsets(protocol_version)),
+1407 +         offsets |protocol_version| variant.offsets(protocol_version),
+     |
+
+warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
+   Compiling stevenarella v0.0.1 (/home/brittonr/git/mc/.pi/tmp/stevenarella-sign-editor-baseline)
+warning: constant `SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD` is never used
+   --> src/server/mod.rs:269:7
+    |
+269 | const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &str = "MC|Compat|Sign|Persist";
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `survival_block_entity_expected_lines` is never used
+   --> src/server/mod.rs:638:4
+    |
+638 | fn survival_block_entity_expected_lines() -> [String; SIGN_LINE_COUNT] {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:102:21
+    |
+102 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+252 | / define_elements! {
+253 | |     Image,
+254 | |     Batch,
+255 | |     Text,
+...   |
+258 | |     TextBox,
+259 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+102 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib test) generated 2 warnings (2 duplicates)
+warning: `stevenarella` (lib) generated 4 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (bin "stevenarella" test) generated 2 warnings (2 duplicates)
+    Finished `test` profile [optimized + debuginfo] target(s) in 34.68s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-74a8925fb38c5fbd)
+
+running 18 tests
+test control::tests::parses_json_string_entrypoint ... ok
+test control::tests::rejects_invalid_key_name ... ok
+test control::tests::parses_resource_pack_status_decline_for_owned_local_offer ... ok
+test control::tests::parses_all_key_aliases ... ok
+test control::tests::parses_valid_initial_command_set ... ok
+test control::tests::rejects_invalid_mouse_button ... ok
+test control::tests::rejects_malformed_json_entrypoint ... ok
+test control::tests::rejects_blank_chat_message ... ok
+test control::tests::rejects_external_resource_pack_url_before_protocol_response ... ok
+test control::tests::rejects_missing_action_field ... ok
+test control::tests::rejects_missing_required_command_field ... ok
+test control::tests::rejects_out_of_range_look_delta ... ok
+test control::tests::rejects_oversized_chat_message ... ok
+test control::tests::rejects_oversized_resource_pack_url_before_redaction_boundary ... ok
+test control::tests::rejects_resource_pack_offer_with_blank_identity ... ok
+test control::tests::rejects_resource_pack_status_without_offer_state ... ok
+test control::tests::rejects_unknown_action ... ok
+test control::tests::rejects_unsupported_resource_pack_status ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 126 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-4dc39b26672098bf)
+
+running 18 tests
+test control::tests::parses_all_key_aliases ... ok
+test control::tests::rejects_external_resource_pack_url_before_protocol_response ... ok
+test control::tests::parses_json_string_entrypoint ... ok
+test control::tests::parses_resource_pack_status_decline_for_owned_local_offer ... ok
+test control::tests::parses_valid_initial_command_set ... ok
+test control::tests::rejects_blank_chat_message ... ok
+test control::tests::rejects_invalid_key_name ... ok
+test control::tests::rejects_malformed_json_entrypoint ... ok
+test control::tests::rejects_invalid_mouse_button ... ok
+test control::tests::rejects_missing_action_field ... ok
+test control::tests::rejects_missing_required_command_field ... ok
+test control::tests::rejects_out_of_range_look_delta ... ok
+test control::tests::rejects_oversized_chat_message ... ok
+test control::tests::rejects_oversized_resource_pack_url_before_redaction_boundary ... ok
+test control::tests::rejects_resource_pack_offer_with_blank_identity ... ok
+test control::tests::rejects_resource_pack_status_without_offer_state ... ok
+test control::tests::rejects_unknown_action ... ok
+test control::tests::rejects_unsupported_resource_pack_status ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 126 filtered out; finished in 0.00s
+
+step_exit_status=0
+
+## remove clean pre-driver Stevenarella worktree
+command=git -C stevenarella worktree remove -f /home/brittonr/git/mc/.pi/tmp/stevenarella-sign-editor-baseline
+step_exit_status=0
+
+## runner sign-editor dry-run baseline
+command=env TMPDIR=/home/brittonr/git/mc/.pi/tmp nix develop --no-update-lock-file /home/brittonr/git/mc -c mc-compat-runner --dry-run --server-backend valence --scenario survival-block-entity-persistence-parity --client-dir stevenarella --receipt target/stevenarella-sign-editor-driver-baseline/survival-block-entity-persistence-parity.json
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+[mc-compat] plan: build client, start Valence server, wait for protocol 758, run client under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] using existing Valence worktree /tmp/valence-compat-758
+[mc-compat] starting Valence 8ad9c85 example 'terrain' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-758
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 758
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'survival-block-entity-persistence-parity' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/stevenarella-sign-editor-driver-baseline/survival-block-entity-persistence-parity.json
+step_exit_status=0
+
+## targeted packet fixture check baseline
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/9a3qj4mmfi5wfvnk04p3jl4hwhn21g08-mc-compat-targeted-packet-promotions-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/9a3qj4mmfi5wfvnk04p3jl4hwhn21g08-mc-compat-targeted-packet-promotions-check.drv'...
+step_exit_status=0
+classification=sign-editor-driver-baseline-pass
+exit_status=0

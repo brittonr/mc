@@ -1,0 +1,81 @@
+
+## sync dry-run
+command=nix run path:/home/brittonr/git/mc#cairn -- sync stevenarella-sign-editor-driver --root /home/brittonr/git/mc
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/stevenarella-sign-editor-driver/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/stevenarella-sign-editor-driver/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "stevenarella-sign-editor-driver",
+  "delta_specs": [
+    "/home/brittonr/git/mc/cairn/changes/stevenarella-sign-editor-driver/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "f3f39053074cdb9b2ea007a8f6f332265f857068544ea67f9f25b73aa6083593",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "8502a9d88f8de0b0b0ba094074076bf35bfffcf982d2415a81a2e7a7537bea81",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "dcdaf369e13cffebad2cdc81d2d00506506fa382c07eae59cda086c74b5ab8b7"
+}
+step_exit_status=0
+
+## sync execute
+command=nix run path:/home/brittonr/git/mc#cairn -- sync stevenarella-sign-editor-driver --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/stevenarella-sign-editor-driver/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/stevenarella-sign-editor-driver/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "stevenarella-sign-editor-driver",
+  "delta_specs": [
+    "/home/brittonr/git/mc/cairn/changes/stevenarella-sign-editor-driver/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "f3f39053074cdb9b2ea007a8f6f332265f857068544ea67f9f25b73aa6083593",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "01ab4dcb200659e6d385663c2efc102ffe1265685f083bb917e2e7c9db58e707",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "e86e7030b6a7a8c67cb8cc000db18396591c1930cf5a03a58b5616094065060a"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "01ab4dcb200659e6d385663c2efc102ffe1265685f083bb917e2e7c9db58e707",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "e86e7030b6a7a8c67cb8cc000db18396591c1930cf5a03a58b5616094065060a"
+    },
+    "kind": "sync",
+    "manifest_hash": "1835212099e46ca0a3a830a04c3140a177306eb3d8862cf780ea53721be2e04a"
+  },
+  "plan_hash": "d4a16c9a293509dfa4e281e04f2c87398d793987218b9a27f130f54a9ec3bfef",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "bac2c34f31a57624c832fa7c16eee36cb9005a19d19ddc21486eaee9f2b80059"
+}
+step_exit_status=0
+classification=sign-editor-driver-sync-pass
+exit_status=0

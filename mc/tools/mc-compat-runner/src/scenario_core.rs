@@ -2363,12 +2363,12 @@ const SIGN_EDITOR_LIVE_POSITION: &str = "28,64,0";
 const SIGN_EDITOR_LIVE_INITIAL_STATE: &str = "blank";
 const SIGN_EDITOR_LIVE_PAYLOAD: &str = "MC|Compat|Sign|Edit";
 const SIGN_EDITOR_LIVE_BACKEND_PATH: &str = "deterministic-sign-editor-contract";
-const SIGN_EDITOR_LIVE_CLIENT_PATH: &str = "stevenarella-sign-editor-driver-missing";
+const SIGN_EDITOR_LIVE_CLIENT_PATH: &str = "stevenarella-sign-editor-driver";
 const SIGN_EDITOR_LIVE_OPEN_MILESTONE: &str = "sign_editor_open_observed";
 const SIGN_EDITOR_LIVE_UPDATE_ACTION: &str = "sign_update_sent";
 const SIGN_EDITOR_LIVE_SERVER_CORRELATION: &str = "sign_update_accepted_observed";
 const SIGN_EDITOR_LIVE_BLOCKER_REASON: &str =
-    "no maintained live Stevenarella sign editor open/update driver exists";
+    "Stevenarella sign-editor driver exists, but no maintained live server-correlation receipt exists";
 
 pub(crate) const SIGN_EDITOR_LIVE_CONTRACT: SignEditorLiveContract = SignEditorLiveContract {
     scenario: SIGN_EDITOR_LIVE_SCENARIO,

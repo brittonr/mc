@@ -1,0 +1,120 @@
+
+## stevenarella child revision
+command=git -C stevenarella log -1 --oneline
+c27f0db add bounded sign editor driver
+step_exit_status=0
+
+## cairn validate
+command=nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+step_exit_status=0
+
+## gate proposal stevenarella-sign-editor-driver
+command=nix run path:/home/brittonr/git/mc#cairn -- gate proposal stevenarella-sign-editor-driver --root /home/brittonr/git/mc
+{
+  "change": "stevenarella-sign-editor-driver",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "be46d877ea48c4d686140fb42efbf38591cbebb3726bf551f17847c9d4c68c2d",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "b7a95dffc7fc27069e3a82be96f0a6243e8be2125f1ad8153c205d5b92740133",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## gate design stevenarella-sign-editor-driver
+command=nix run path:/home/brittonr/git/mc#cairn -- gate design stevenarella-sign-editor-driver --root /home/brittonr/git/mc
+{
+  "change": "stevenarella-sign-editor-driver",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "125f4c4a60e2c0a77ead3a70d972d84907442fe9d98b199d441b26007462b3f3",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "0bdf4d0eaabc08d50b2119dad39c334d6d56c544bd3a4e2268e4780a41cb5530",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## gate tasks stevenarella-sign-editor-driver
+command=nix run path:/home/brittonr/git/mc#cairn -- gate tasks stevenarella-sign-editor-driver --root /home/brittonr/git/mc
+{
+  "change": "stevenarella-sign-editor-driver",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c43f64df6669c07e6cf94910a11c2b3e2babcf7fd7ee19a81db805830396f2f6",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "05067b5d6fc99eb419fa1ed1bfdc89ff9828ff28ee27184f944ddbe19b0a930c",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## scenario manifest check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/z13plffy4pwymn5kqawsjf7lrssb0zqm-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/z13plffy4pwymn5kqawsjf7lrssb0zqm-mc-compat-scenario-manifest.drv'...
+step_exit_status=0
+
+## targeted packet check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/lrb05vb3xsa7n539fvx29l97di3n2rha-mc-compat-targeted-packet-promotions-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/lrb05vb3xsa7n539fvx29l97di3n2rha-mc-compat-targeted-packet-promotions-check.drv'...
+step_exit_status=0
+
+## evidence manifest check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/n6zv29ydp5b34gs7nlhz3az3lwy3r3s6-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/n6zv29ydp5b34gs7nlhz3az3lwy3r3s6-mc-compat-evidence-manifests.drv'...
+step_exit_status=0
+classification=sign-editor-driver-closeout-pass
+exit_status=0

@@ -1,0 +1,22 @@
+
+## contract names bounded sign-editor scope
+command=grep -F sign position: `28,64,0` docs/evidence/stevenarella-sign-editor-driver-contract-2026-06-07.md
+- sign position: `28,64,0`
+step_exit_status=0
+
+## contract names four-line payload
+command=grep -F submitted payload: `MC|Compat|Sign|Edit` docs/evidence/stevenarella-sign-editor-driver-contract-2026-06-07.md
+- submitted payload: `MC|Compat|Sign|Edit`
+step_exit_status=0
+
+## receipt names client revision
+command=grep -F "client_revision": "c27f0db" docs/evidence/stevenarella-sign-editor-driver-2026-06-07.receipt.json
+  "client_revision": "c27f0db",
+step_exit_status=0
+
+## kv keeps live promotion blocked
+command=grep -F live.promotion.status=blocked docs/evidence/stevenarella-sign-editor-driver-2026-06-07.kv
+live.promotion.status=blocked
+step_exit_status=0
+classification=sign-editor-driver-contract-pass
+exit_status=0
