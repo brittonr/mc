@@ -1926,6 +1926,28 @@
               mkdir -p "$out"
               cp ../targeted-packet-promotions-self-test.log ../targeted-packet-promotions-evidence.log "$out/"
             '';
+        mc-compat-server-correlation-receipts =
+          pkgs.runCommand "mc-compat-server-correlation-receipts"
+            {
+              nativeBuildInputs = [
+                pkgs.rustc
+                pkgs.gcc
+              ];
+            }
+            ''
+              cp -R ${./.} repo
+              chmod -R u+w repo
+              cd repo
+              rustc --edition=2021 tools/check_server_correlation_receipts.rs -o ../check-server-correlation-receipts
+              ../check-server-correlation-receipts --self-test > ../server-correlation-receipts-self-test.log
+              ../check-server-correlation-receipts docs/evidence/server-correlation-resource-pack-fixture-2026-06-18.receipt.json docs/evidence/server-correlation-sign-editor-fixture-2026-06-18.receipt.json > ../server-correlation-receipts-fixtures.log
+              if ../check-server-correlation-receipts --promotable docs/evidence/server-correlation-resource-pack-fixture-2026-06-18.receipt.json > ../server-correlation-receipts-promotable-negative.log 2>&1; then
+                echo "checker fixture unexpectedly passed promotable mode" >&2
+                exit 1
+              fi
+              mkdir -p "$out"
+              cp ../server-correlation-receipts-self-test.log ../server-correlation-receipts-fixtures.log ../server-correlation-receipts-promotable-negative.log "$out/"
+            '';
         mc-compat-valence-ctf-combat-damage-dry-run =
           pkgs.runCommand "mc-compat-valence-ctf-combat-damage-dry-run" { nativeBuildInputs = [ pkgs.git ]; }
             ''
@@ -2663,6 +2685,9 @@
             self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-movement-packet-family-check
           } "$out/movement-packet-family"
           ln -s ${
+            self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-server-correlation-receipts
+          } "$out/server-correlation-receipts"
+          ln -s ${
             self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-evidence-manifests
           } "$out/evidence-manifests"
           ln -s ${
@@ -2743,6 +2768,7 @@
           current-evidence-bundle
           scoreboard-team-packet-family
           movement-packet-family
+          server-correlation-receipts
           evidence-manifests
           full-survival-gate
           aggregate-claim-gates

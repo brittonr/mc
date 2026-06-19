@@ -1,0 +1,27 @@
+{
+  "schema": "mc.compat.server_correlation_rail.receipt.v1",
+  "change": "server-correlation-rail",
+  "status": "implemented_nonpromoting",
+  "checker": "tools/check_server_correlation_receipts.rs",
+  "checker_schema": "mc.compat.server_correlation_receipt.v1",
+  "supported_rows": [
+    "resource-pack-status",
+    "sign-editor-open-update"
+  ],
+  "fixture_receipts": [
+    "docs/evidence/server-correlation-resource-pack-fixture-2026-06-18.receipt.json",
+    "docs/evidence/server-correlation-sign-editor-fixture-2026-06-18.receipt.json"
+  ],
+  "promotable_mode": "requires receipt_kind owned-local-live and correlation_status observed",
+  "nonpromotion": true,
+  "targeted_rows_changed": false,
+  "nonclaims": [
+    "public_server_safety",
+    "production_readiness",
+    "full_protocol_763_compatibility",
+    "broad_minecraft_compatibility",
+    "arbitrary_sign_semantics",
+    "all_block_entities",
+    "resource_pack_asset_trust"
+  ]
+}

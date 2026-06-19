@@ -1,0 +1,39 @@
+{
+  "schema": "mc.compat.server_correlation_receipt.v1",
+  "receipt_kind": "checker-fixture",
+  "row": "resource-pack-status",
+  "scenario": "mcp-controlled-smoke",
+  "actor": "compatbot",
+  "scope": "owned-local",
+  "redaction_policy": "no-secrets-no-public-addresses",
+  "backend_path": "owned-local-resource-pack-correlation-rail",
+  "client_path": "stevenarella-resource-pack-status-driver",
+  "backend_revision": "fixture-backend-rev",
+  "client_revision": "fixture-client-rev",
+  "resource_pack_offer_id": "mc-compat-local-resource-pack",
+  "resource_pack_status": "declined",
+  "resource_pack_no_external_fetch": true,
+  "packet_rows": [
+    "play/clientbound/0x40 ResourcePackSendS2CPacket",
+    "play/serverbound/0x24 ResourcePackStatusC2SPacket"
+  ],
+  "client_milestones": [
+    "resource_pack_status_sent"
+  ],
+  "server_events": [
+    "resource_pack_status_declined_observed"
+  ],
+  "correlation_status": "observed",
+  "nonclaims": [
+    "public_server_safety",
+    "production_readiness",
+    "full_protocol_763_compatibility",
+    "broad_minecraft_compatibility",
+    "resource_pack_asset_trust"
+  ],
+  "claims_public_server_safety": false,
+  "claims_production_readiness": false,
+  "claims_full_protocol_763_compatibility": false,
+  "claims_broad_minecraft_compatibility": false,
+  "claims_resource_pack_asset_trust": false
+}

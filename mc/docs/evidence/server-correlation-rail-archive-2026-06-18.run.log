@@ -1,0 +1,110 @@
+
+## archive dry-run
+command=nix run path:/home/brittonr/git/mc#cairn -- archive server-correlation-rail --root /home/brittonr/git/mc
+{
+  "actions": [
+    {
+      "description": "move active change to archive: server-correlation-rail",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/changes/server-correlation-rail"
+    }
+  ],
+  "blocked": false,
+  "change": "server-correlation-rail",
+  "dry_run": true,
+  "input_hash": "cd85796bd648a7087862b9ac870b276485b2fd1ce7e46444ce2b411a5ab3764b",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "2e3b90f34f233dd5b10fd64f4955e896b3137d0e4497d611eca81b7432be800f",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "77171dad54ad93317410211f95474c87e258d782aeb4bedbdb63965c1bf455db"
+}
+step_exit_status=0
+
+## archive execute
+command=env CAIRN_ARCHIVE_DATE=2026-06-18 nix run path:/home/brittonr/git/mc#cairn -- archive server-correlation-rail --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: server-correlation-rail",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/2026-06-18-server-correlation-rail"
+    }
+  ],
+  "blocked": false,
+  "change": "server-correlation-rail",
+  "dry_run": false,
+  "input_hash": "cd85796bd648a7087862b9ac870b276485b2fd1ce7e46444ce2b411a5ab3764b",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "b3ac1de3e9558aaa56b6f75e1edc4fe4a34a70c17b421c741e5f74bb26e87123",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-18-server-correlation-rail/design.md"
+        },
+        {
+          "content_hash": "220be74a092ddf7bfbfb0228611ae7145cc96138122f129eb22d1539f1903510",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-18-server-correlation-rail/proposal.md"
+        },
+        {
+          "content_hash": "25617f501892ae77d307ffa03470c99c61287a1b8704292ba6bad860f44aba1e",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-18-server-correlation-rail/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "2efac598d1f83ea5e9d161867b27a77e101951ff603be6a866f9083537fd7d7c",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-18-server-correlation-rail/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/server-correlation-rail"
+        }
+      ],
+      "manifest_hash": "7c34f7f0231f2ed1a55248606d6b4112078c19bb7363e52fe32653fd11212e01"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "b3ac1de3e9558aaa56b6f75e1edc4fe4a34a70c17b421c741e5f74bb26e87123",
+          "exists": true,
+          "path": "./cairn/changes/server-correlation-rail/design.md"
+        },
+        {
+          "content_hash": "220be74a092ddf7bfbfb0228611ae7145cc96138122f129eb22d1539f1903510",
+          "exists": true,
+          "path": "./cairn/changes/server-correlation-rail/proposal.md"
+        },
+        {
+          "content_hash": "25617f501892ae77d307ffa03470c99c61287a1b8704292ba6bad860f44aba1e",
+          "exists": true,
+          "path": "./cairn/changes/server-correlation-rail/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "2efac598d1f83ea5e9d161867b27a77e101951ff603be6a866f9083537fd7d7c",
+          "exists": true,
+          "path": "./cairn/changes/server-correlation-rail/tasks.md"
+        }
+      ],
+      "manifest_hash": "753b91447fa683f3edfd65e931519f11683a793efc63571dd7215e9847116de3"
+    },
+    "kind": "archive",
+    "manifest_hash": "3f7c311dc1c854f31a40c28e1e84fd3c082247f758a16c757a0339d43ea814bf"
+  },
+  "plan_hash": "a8356e50adbccbb905c01ae9dbb05280d3f5a03deade0b5bd8adcbd9e5b12525",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "809e357d8f0ee370a6cb8f38766ec3a352a926d5c3a76eae32af765a32f3a104"
+}
+step_exit_status=0
+classification=server-correlation-rail-archive-pass
+exit_status=0

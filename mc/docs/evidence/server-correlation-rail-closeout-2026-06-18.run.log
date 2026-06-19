@@ -1,0 +1,123 @@
+
+## cairn validate
+command=nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+step_exit_status=0
+
+## gate proposal
+command=nix run path:/home/brittonr/git/mc#cairn -- gate proposal server-correlation-rail --root /home/brittonr/git/mc
+{
+  "change": "server-correlation-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "234ca6865144f571398f6c8cbaf6b8eaea8b8fd07cce711b0aae55c11eba721f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "065ed7152e48097f5e273e5cd2b5e70535fa19fb4fddb89673cf55de496126f7",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## gate design
+command=nix run path:/home/brittonr/git/mc#cairn -- gate design server-correlation-rail --root /home/brittonr/git/mc
+{
+  "change": "server-correlation-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "85cdeed763a316cc4ef26d47a62c1c9802575831c3fe1e0d9115d34ed17bcd8a",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "b86f618d2818968e11d90ca7558337040680e09cee73c45ee60fa4b4b14bbd7a",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## gate tasks
+command=nix run path:/home/brittonr/git/mc#cairn -- gate tasks server-correlation-rail --root /home/brittonr/git/mc
+{
+  "change": "server-correlation-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "d6956d191efcaf615df087076333650c6e2e0c8c97a2e92fe731761bddfc820b",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "745a7ba01a8808d20a6876bfaec7f0a16d31efea81eeb32e655c7a2f81910d2c",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## server correlation flake check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-server-correlation-receipts --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/4nh07vz7z9rdxffbc87gpqlzgn87f9sj-mc-compat-server-correlation-receipts.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/4nh07vz7z9rdxffbc87gpqlzgn87f9sj-mc-compat-server-correlation-receipts.drv'...
+step_exit_status=0
+
+## targeted packet nonpromotion check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/lnhv39fdjy68cv8maj10p5mawxm2ldxg-mc-compat-targeted-packet-promotions-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/lnhv39fdjy68cv8maj10p5mawxm2ldxg-mc-compat-targeted-packet-promotions-check.drv'...
+step_exit_status=0
+
+## scenario manifest check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/am1dx44v28jd130pq6q0mld1n5gd4ngi-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/am1dx44v28jd130pq6q0mld1n5gd4ngi-mc-compat-scenario-manifest.drv'...
+step_exit_status=0
+
+## evidence manifest check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/0fzx4ircw7g9y0hf1niv9n84kj5xgngf-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/0fzx4ircw7g9y0hf1niv9n84kj5xgngf-mc-compat-evidence-manifests.drv'...
+step_exit_status=0
+classification=server-correlation-rail-closeout-pass
+exit_status=0

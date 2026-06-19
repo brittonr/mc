@@ -1,0 +1,40 @@
+{
+  "schema": "mc.compat.server_correlation_receipt.v1",
+  "receipt_kind": "checker-fixture",
+  "row": "sign-editor-open-update",
+  "scenario": "survival-block-entity-persistence-parity",
+  "actor": "compatbot",
+  "scope": "owned-local",
+  "redaction_policy": "no-secrets-no-public-addresses",
+  "backend_path": "owned-local-sign-editor-correlation-rail",
+  "client_path": "stevenarella-sign-editor-driver",
+  "backend_revision": "fixture-backend-rev",
+  "client_revision": "fixture-client-rev",
+  "sign_position": "28,64,0",
+  "sign_payload": "MC|Compat|Sign|Edit",
+  "packet_rows": [
+    "play/clientbound/0x31 SignEditorOpenS2CPacket",
+    "play/serverbound/0x2e UpdateSignC2SPacket"
+  ],
+  "client_milestones": [
+    "sign_editor_open_observed",
+    "sign_update_sent"
+  ],
+  "server_events": [
+    "sign_update_accepted_observed"
+  ],
+  "correlation_status": "observed",
+  "nonclaims": [
+    "public_server_safety",
+    "production_readiness",
+    "full_protocol_763_compatibility",
+    "broad_minecraft_compatibility",
+    "arbitrary_sign_semantics",
+    "all_block_entities"
+  ],
+  "claims_public_server_safety": false,
+  "claims_production_readiness": false,
+  "claims_full_protocol_763_compatibility": false,
+  "claims_broad_minecraft_compatibility": false,
+  "claims_arbitrary_sign_semantics": false
+}

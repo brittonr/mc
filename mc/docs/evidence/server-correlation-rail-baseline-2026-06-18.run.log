@@ -1,0 +1,107 @@
+
+## cairn validate with server-correlation change
+command=nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+step_exit_status=0
+
+## gate proposal server-correlation-rail
+command=nix run path:/home/brittonr/git/mc#cairn -- gate proposal server-correlation-rail --root /home/brittonr/git/mc
+{
+  "change": "server-correlation-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "b6662b0fefbb918a41e970e6f2f92e4b549466e09dbecf83e47a13af2bd0a90c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "8fe7957dae6922f79dac11ec043cbb66a8e7a3131b9d5bd9d86bbb73a66d52d6",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## gate design server-correlation-rail
+command=nix run path:/home/brittonr/git/mc#cairn -- gate design server-correlation-rail --root /home/brittonr/git/mc
+{
+  "change": "server-correlation-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c53aea50579829706a8497403777c6dd9e7584108a294bf6768331d43fb35415",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "ce0b444a47b95c239b07181c4997de8d9a5ac2ce0cf09ba56c80338a8cac462f",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## gate tasks server-correlation-rail
+command=nix run path:/home/brittonr/git/mc#cairn -- gate tasks server-correlation-rail --root /home/brittonr/git/mc
+{
+  "change": "server-correlation-rail",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f9752107e6877492267c03815b6dcd63ea475c9aee14c641c5c23a1cb05e7c43",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "f4f151844445252dee73947d42705a0167abaf3fa825324b7bef258aabc6942f",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+## scenario manifest baseline
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/074cb3prd3h66mayj9r9hscjkb3yxq85-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/074cb3prd3h66mayj9r9hscjkb3yxq85-mc-compat-scenario-manifest.drv'...
+step_exit_status=0
+
+## targeted packet nonpromotion baseline
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/1fs5z6g906sycxdlp8j9g2shg8727g03-mc-compat-targeted-packet-promotions-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/1fs5z6g906sycxdlp8j9g2shg8727g03-mc-compat-targeted-packet-promotions-check.drv'...
+step_exit_status=0
+classification=server-correlation-rail-baseline-pass
+exit_status=0

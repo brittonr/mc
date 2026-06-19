@@ -1,0 +1,48 @@
+
+## cairn validate post-archive
+command=nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 2,
+  "valid": true
+}
+step_exit_status=0
+
+## server correlation flake check post-archive
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-server-correlation-receipts --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/wqpqnfsfscai63p4g7bs7hnfb4969j8v-mc-compat-server-correlation-receipts.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/wqpqnfsfscai63p4g7bs7hnfb4969j8v-mc-compat-server-correlation-receipts.drv'...
+step_exit_status=0
+
+## targeted packet nonpromotion check post-archive
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/nl9pxm3741magqs857ypj183gy5cf76z-mc-compat-targeted-packet-promotions-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/nl9pxm3741magqs857ypj183gy5cf76z-mc-compat-targeted-packet-promotions-check.drv'...
+step_exit_status=0
+
+## evidence manifest check post-archive
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/p79bmj38hg3089q2h6wkb5fg6f4dnf61-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/p79bmj38hg3089q2h6wkb5fg6f4dnf61-mc-compat-evidence-manifests.drv'...
+step_exit_status=0
+
+## task evidence check post-archive
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/zv9z53axf1f2dh4jv2ha3p02k4hf4hf1-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/zv9z53axf1f2dh4jv2ha3p02k4hf4hf1-mc-compat-cairn-task-evidence.drv'...
+step_exit_status=0
+classification=server-correlation-rail-post-archive-pass
+exit_status=0

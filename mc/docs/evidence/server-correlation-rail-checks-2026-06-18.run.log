@@ -1,0 +1,49 @@
+
+## compile checker
+command=env TMPDIR=/home/brittonr/git/mc/.pi/tmp nix develop --no-update-lock-file /home/brittonr/git/mc -c rustc --edition=2021 tools/check_server_correlation_receipts.rs -o target/check-server-correlation-receipts
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+step_exit_status=0
+
+## checker self-test
+command=target/check-server-correlation-receipts --self-test
+server correlation receipt self-test passed: 10 fixtures
+step_exit_status=0
+
+## checker fixture receipts
+command=target/check-server-correlation-receipts docs/evidence/server-correlation-resource-pack-fixture-2026-06-18.receipt.json docs/evidence/server-correlation-sign-editor-fixture-2026-06-18.receipt.json
+server correlation receipt check passed: 2 receipt(s)
+step_exit_status=0
+
+## promotable mode rejects checker fixture
+command=target/check-server-correlation-receipts --promotable docs/evidence/server-correlation-resource-pack-fixture-2026-06-18.receipt.json
+server correlation receipt check failed: docs/evidence/server-correlation-resource-pack-fixture-2026-06-18.receipt.json: checker fixture receipts are not promotable live evidence
+expected_status_code=1
+expected_failure=checker-fixture-not-promotable
+
+## flake server-correlation check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-server-correlation-receipts --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/n8j02i1w7pr86rmw8jz08zdlhnn346f2-mc-compat-server-correlation-receipts.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/n8j02i1w7pr86rmw8jz08zdlhnn346f2-mc-compat-server-correlation-receipts.drv'...
+step_exit_status=0
+
+## targeted packet nonpromotion check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-targeted-packet-promotions-check --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/irn1ycar1vi4jy9vas5sp0523rh4y2qr-mc-compat-targeted-packet-promotions-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/irn1ycar1vi4jy9vas5sp0523rh4y2qr-mc-compat-targeted-packet-promotions-check.drv'...
+step_exit_status=0
+
+## scenario manifest check
+command=nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L --option substituters 
+this derivation will be built:
+  /nix/store/ffvjah2x570hnlbz23fxi4gsbh48qnki-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/ffvjah2x570hnlbz23fxi4gsbh48qnki-mc-compat-scenario-manifest.drv'...
+step_exit_status=0
+classification=server-correlation-rail-checks-pass
+exit_status=0

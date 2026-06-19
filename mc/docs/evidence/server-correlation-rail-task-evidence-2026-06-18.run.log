@@ -1,0 +1,7 @@
+this derivation will be built:
+  /nix/store/i8sdn5360yyfd2hrvsj59myb6g7136vc-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/i8sdn5360yyfd2hrvsj59myb6g7136vc-mc-compat-cairn-task-evidence.drv'...
+step_exit_status=0
+classification=server-correlation-rail-task-evidence-pass
+exit_status=0

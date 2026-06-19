@@ -6,7 +6,7 @@ b638dbb44f4065cb538310dc0a4c65b5d6a8924aca2f685cb007830d8e21c047  docs/evidence/
 c241bfd8f573a45250e454d5430d85515fe481bce0ba4e70cc55c6fd2d8aef62  docs/evidence/full-ctf-correctness-gate-post-archive-validation-2026-06-01.run.log
 bdf871b52d76b3dbb1b7d471080cd3f4b86d4df3685161bb0ba1368a562ba87e  docs/evidence/full-ctf-correctness-gate-archive-2026-06-01.b3
 eb739f8d83555254e252e4fe1a3b4202887ea1bfc8df1907ea7dbb5ce38e1853  docs/evidence/aggregate-claim-gates-2026-06-01.run.log
-3220d90b8657ebb696670df715a33305ffed81ada5621dea16d0632023779cf1  docs/evidence/aggregate-claim-gates-2026-06-01.b3
+2d0e5a7e12d6d5ed93620de52b235b7d553b9572e9ee23aa7982ece36898d6b1  docs/evidence/aggregate-claim-gates-2026-06-01.b3
 9a36cc04d97213add7137f2d984d19f05cb051cf8265b23e50c473423018e7ed  docs/evidence/protocol-763-acceptance-matrix.md
 9fbad7bf6641b93705c76cf76b59bb610a36d697bdbc43a2bdfe531474568deb  docs/evidence/protocol-763-current-evidence-bundle.md
 92f6d25fddda6d6c038d547bab5048526becf941645eea8d1d23e9568dc98e89  docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md
