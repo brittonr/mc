@@ -1,0 +1,7 @@
+# Failure evidence bundles evidence-manifest validation 2026-06-20
+root=/home/brittonr/git/mc
+this derivation will be built:
+  /nix/store/zi1z10xjkp5njb20fr25x9wbvlxn41ig-mc-compat-evidence-manifest-refresh.drv
+building '/nix/store/zi1z10xjkp5njb20fr25x9wbvlxn41ig-mc-compat-evidence-manifest-refresh.drv'...
+
+exit_status=0

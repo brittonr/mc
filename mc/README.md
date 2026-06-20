@@ -48,6 +48,8 @@ nix run .#mc-compat-smoke -- --dry-run --server-backend paper --receipt target/m
 
 The current receipt schema is `mc.compat.scenario.receipt.v2`; receipts also retain the legacy marker `mc.compat.smoke.receipt.v1` for older consumers. A receipt records server/client inputs, the headless-isolation contract (`wayland_socket_inherited=false`), typed scenario milestones, server-side correlation when available, and explicit non-claims (`claims_correctness=false`, `claims_semantic_equivalence=false`) for downstream Cairn/Octet review. Dry-run receipts are deterministic harness-shape evidence only; live/reference parity claims remain tied to promoted evidence rows and paired comparators. A receipt is evidence that the bounded scenario ran under the specified local fixture, not a claim of full semantic equivalence.
 
+Failed runs can write `mc.compat.failure.bundle.v1` diagnostics with `--failure-bundle docs/evidence/<name>.failure-bundle.json` or `MC_COMPAT_FAILURE_BUNDLE`. Use this only after copying the receipt/log/typed-event/stderr artifacts you want reviewers to inspect under `docs/evidence/`; the validator rejects path escapes, target-only paths, malformed BLAKE3 digests, missing artifacts, missing non-claims, and success-labeled bundles. Failure bundles are diagnostic only: they do not claim scenario success, gameplay parity, full protocol compatibility, public-server safety, production readiness, or semantic equivalence. Record a `.b3` for the bundle and any critical copied artifacts before citing them from Cairn tasks.
+
 Choose a typed scenario with `--scenario` or `MC_COMPAT_SCENARIO`:
 
 ```sh

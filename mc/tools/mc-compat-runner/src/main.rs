@@ -955,6 +955,7 @@ struct Config {
     proxy_forwarding_mode: Option<String>,
     receipt_path: Option<PathBuf>,
     receipt_dir: Option<PathBuf>,
+    failure_bundle_path: Option<PathBuf>,
     compare_receipts: Option<(PathBuf, PathBuf)>,
     config_path: Option<PathBuf>,
     steel_config_path: Option<PathBuf>,
@@ -1025,17 +1026,31 @@ fn main() -> ExitCode {
 fn real_main() -> Result<(), String> {
     let cfg = Config::from_env_and_args()?;
     let result = execute(&cfg);
+    let mut follow_up_errors = Vec::new();
     if cfg.receipt_path.is_some() {
         if let Err(receipt_err) = write_smoke_receipt(&cfg, result.as_ref()) {
-            return match result {
-                Ok(_) => Err(receipt_err),
-                Err(err) => Err(format!(
-                    "{err}; additionally failed to write receipt: {receipt_err}"
-                )),
-            };
+            follow_up_errors.push(format!("failed to write receipt: {receipt_err}"));
         }
     }
-    result.map(|_| ())
+    if result.is_err() && cfg.failure_bundle_path.is_some() {
+        if let Err(bundle_err) = write_failure_evidence_bundle(&cfg, result.as_ref()) {
+            follow_up_errors.push(format!("failed to write failure bundle: {bundle_err}"));
+        }
+    }
+    combine_runner_result(result, follow_up_errors)
+}
+
+fn combine_runner_result(
+    result: Result<Option<ClientRunEvidence>, String>,
+    follow_up_errors: Vec<String>,
+) -> Result<(), String> {
+    let follow_up = follow_up_errors.join("; ");
+    match (result, follow_up.is_empty()) {
+        (Ok(_), true) => Ok(()),
+        (Ok(_), false) => Err(follow_up),
+        (Err(err), true) => Err(err),
+        (Err(err), false) => Err(format!("{err}; additionally: {follow_up}")),
+    }
 }
 
 fn execute(cfg: &Config) -> Result<Option<ClientRunEvidence>, String> {
@@ -1555,6 +1570,7 @@ impl Config {
             proxy_forwarding_mode: None,
             receipt_path: None,
             receipt_dir: None,
+            failure_bundle_path: None,
             compare_receipts: None,
             config_path: None,
             steel_config_path: None,
@@ -1679,6 +1695,12 @@ impl Config {
                             "--receipt-dir requires a path".to_string()
                         })?));
                 }
+                "--failure-bundle" => {
+                    cfg.failure_bundle_path =
+                        Some(PathBuf::from(args.next().ok_or_else(|| {
+                            "--failure-bundle requires a path".to_string()
+                        })?));
+                }
                 "--scenario" => {
                     let value = args.next().ok_or_else(|| {
                         format!("--scenario requires one of: {SUPPORTED_SCENARIO_USAGE}")
@@ -1755,6 +1777,9 @@ impl Config {
                 }
                 _ if arg.starts_with("--receipt-dir=") => {
                     cfg.receipt_dir = Some(PathBuf::from(&arg[14..]));
+                }
+                _ if arg.starts_with("--failure-bundle=") => {
+                    cfg.failure_bundle_path = Some(PathBuf::from(&arg[17..]));
                 }
                 _ if arg.starts_with("--scenario=") => {
                     cfg.scenario = parse_scenario(&arg[11..])?;
@@ -1938,6 +1963,9 @@ where
     if let Some(value) = get_env("SMOKE_RECEIPT_DIR") {
         cfg.receipt_dir = Some(PathBuf::from(value));
     }
+    if let Some(value) = get_env("MC_COMPAT_FAILURE_BUNDLE") {
+        cfg.failure_bundle_path = Some(PathBuf::from(value));
+    }
     Ok(())
 }
 
@@ -2070,6 +2098,9 @@ fn apply_config_json(cfg: &mut Config, text: &str) -> Result<bool, String> {
     }
     if let Some(value) = json_optional_string_field(text, "receipt_dir")? {
         cfg.receipt_dir = Some(PathBuf::from(value));
+    }
+    if let Some(value) = json_optional_string_field(text, "failure_bundle_path")? {
+        cfg.failure_bundle_path = Some(PathBuf::from(value));
     }
     Ok(server_port_was_set)
 }
@@ -3732,11 +3763,11 @@ fn format_one_decimal(value: f64) -> String {
 
 fn print_usage(cfg: &Config) {
     println!(
-        "Usage: mc-compat-runner [--config PATH] [--steel-config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario {}] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--valence-repo PATH] [--valence-rev REV]\n\n\
+        "Usage: mc-compat-runner [--config PATH] [--steel-config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario {}] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--failure-bundle PATH] [--valence-repo PATH] [--valence-rev REV]\n\n\
 Automates a local Stevenarella compatibility smoke against a Minecraft {} / protocol {} server.\n\
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from legacy Nickel config, or --steel-config/MC_COMPAT_STEEL_CONFIG a restricted Steel module; env vars and later CLI flags override either config source.\n\
-Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.scenario.receipt.v2 JSON receipt for Cairn/Octet evidence flows.
+Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.scenario.receipt.v2 JSON receipt for Cairn/Octet evidence flows. Pass --failure-bundle/MC_COMPAT_FAILURE_BUNDLE with a docs/evidence path to write a fail-only diagnostic bundle after failed runs.
 Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario survival-crafting-table for one crafting-table open/input/result/collect rail. Use --scenario survival-furnace-persistence for one furnace input/fuel/output/reconnect rail. Use --scenario survival-hunger-food for one hunger deficit, food consume, and inventory decrement rail. Use --scenario survival-mob-drop for one configured mob kill, drop, pickup, and inventory increment rail. Use --scenario survival-redstone-toggle for one configured control on/off output update rail. Use --scenario survival-world-persistence-restart for one configured block mutation, controlled reload, reconnect, and post-reload observation rail. Use --scenario survival-crash-recovery-parity for one configured block mutation, forced backend stop, crash-recovery restart, reconnect, and post-crash observation rail. Use --scenario survival-block-entity-persistence-parity for one configured sign block entity, controlled reload, reconnect, and post-reload sign text observation rail. Use --scenario survival-biome-dimension-state for one client-observed dimension/world identifier rail. Use --scenario mcp-controlled-smoke for deterministic MCP receipt/checker dry-run evidence before live client driving. Use --scenario vanilla-combat-armor-reference-parity for one Paper/Valence diamond-chestplate combat reference row. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario ctf-invalid-return-drop for one contained own-base return/drop attempt with server rejection evidence. Use --scenario ctf-score-limit-win-condition for one near-limit capture that emits exactly one win/end milestone. Use --scenario ctf-simultaneous-pickup-capture-race for one bounded two-client same-flag race with one accepted transition and one rejected duplicate pickup. Use --scenario ctf-spawn-team-balance-reset for one bounded two-client team assignment, spawn/resource, and post-score reset row. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
 Use --expect-status-description/--expect-status-version/--expect-status-sample to assert status response fixture data, --packet-capture-summary for redacted capture summary metadata, and --proxy-route/--proxy-forwarding-mode for proxied-route receipt fields.\n\
 Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
@@ -3746,7 +3777,7 @@ Default server backend is Valence, using an editable local Valence checkout plus
 If the Stevenarella or Valence checkout is missing, clone/fetch it or pass --client-dir/CLIENT_DIR and --valence-repo/VALENCE_REPO to editable checkouts.\n\
 Client runs are forced through Xvfb/X11 with software GL and no inherited Wayland socket.\n\
 Paper fallback runs set EULA=TRUE based on recorded user acceptance.\n\n\
-Env: MC_COMPAT_ROOT={} MC_COMPAT_CONFIG={} MC_COMPAT_STEEL_CONFIG={} MC_COMPAT_SCENARIO={} CLIENT_DIR={} TARGET_DIR={} SMOKE_RECEIPT={} SMOKE_RECEIPT_DIR={} VALENCE_REPO={} VALENCE_REV={} VALENCE_WORKTREE={} VALENCE_TARGET_DIR={} CLIENT_TIMEOUT={} PAPER_PLUGIN_JAR={}\n",
+Env: MC_COMPAT_ROOT={} MC_COMPAT_CONFIG={} MC_COMPAT_STEEL_CONFIG={} MC_COMPAT_SCENARIO={} CLIENT_DIR={} TARGET_DIR={} SMOKE_RECEIPT={} SMOKE_RECEIPT_DIR={} MC_COMPAT_FAILURE_BUNDLE={} VALENCE_REPO={} VALENCE_REV={} VALENCE_WORKTREE={} VALENCE_TARGET_DIR={} CLIENT_TIMEOUT={} PAPER_PLUGIN_JAR={}\n",
         SUPPORTED_SCENARIO_USAGE,
         cfg.server_version,
         cfg.server_protocol,
@@ -3767,6 +3798,10 @@ Env: MC_COMPAT_ROOT={} MC_COMPAT_CONFIG={} MC_COMPAT_STEEL_CONFIG={} MC_COMPAT_S
             .map(|path| path.display().to_string())
             .unwrap_or_else(|| "<unset>".to_string()),
         cfg.receipt_dir
+            .as_ref()
+            .map(|path| path.display().to_string())
+            .unwrap_or_else(|| "<unset>".to_string()),
+        cfg.failure_bundle_path
             .as_ref()
             .map(|path| path.display().to_string())
             .unwrap_or_else(|| "<unset>".to_string()),
@@ -5680,6 +5715,384 @@ fn read_paper_log(cfg: &Config) -> Result<String, String> {
 
 fn requires_server_correlation(cfg: &Config) -> bool {
     scenario_behavior(cfg.scenario).requires_server_correlation()
+}
+
+const FAILURE_BUNDLE_SCHEMA: &str = "mc.compat.failure.bundle.v1";
+const FAILURE_BUNDLE_OUTCOME_FAILED: &str = "failed";
+const FAILURE_BUNDLE_OUTCOME_BLOCKED: &str = "blocked";
+const FAILURE_BUNDLE_ARTIFACT_RECEIPT: &str = "receipt";
+const FAILURE_BUNDLE_ARTIFACT_TYPED_EVENTS: &str = "typed_events";
+const FAILURE_BUNDLE_ARTIFACT_MCP_TRANSCRIPT: &str = "mcp_transcript";
+const FAILURE_BUNDLE_ARTIFACT_STDERR: &str = "stderr";
+const FAILURE_BUNDLE_ARTIFACT_SERVER_LOG: &str = "server_log";
+const FAILURE_BUNDLE_REVIEW_STORAGE_PREFIX: &str = "docs/evidence/";
+const FAILURE_BUNDLE_TARGET_COMPONENT: &str = "target";
+const FAILURE_BUNDLE_HASH_BUFFER_BYTES: usize = 8192;
+const FAILURE_BUNDLE_BLAKE3_HEX_CHARS: usize = 64;
+const FAILURE_BUNDLE_MAX_FIRST_FAILURE_CHARS: usize = 512;
+const FAILURE_BUNDLE_MAX_COMMAND_SUMMARY_CHARS: usize = 256;
+const FAILURE_BUNDLE_NON_CLAIM_SCENARIO_SUCCESS: &str = "scenario_success";
+const FAILURE_BUNDLE_NON_CLAIM_GAMEPLAY_PARITY: &str = "gameplay_parity";
+const FAILURE_BUNDLE_NON_CLAIM_FULL_PROTOCOL: &str = "full_protocol_compatibility";
+const FAILURE_BUNDLE_NON_CLAIM_PUBLIC_SERVER_SAFETY: &str = "public_server_safety";
+const FAILURE_BUNDLE_NON_CLAIM_PRODUCTION_READINESS: &str = "production_readiness";
+const FAILURE_BUNDLE_NON_CLAIM_SEMANTIC_EQUIVALENCE: &str = "semantic_equivalence";
+const FAILURE_BUNDLE_REQUIRED_NON_CLAIMS: &[&str] = &[
+    FAILURE_BUNDLE_NON_CLAIM_SCENARIO_SUCCESS,
+    FAILURE_BUNDLE_NON_CLAIM_GAMEPLAY_PARITY,
+    FAILURE_BUNDLE_NON_CLAIM_FULL_PROTOCOL,
+    FAILURE_BUNDLE_NON_CLAIM_PUBLIC_SERVER_SAFETY,
+    FAILURE_BUNDLE_NON_CLAIM_PRODUCTION_READINESS,
+    FAILURE_BUNDLE_NON_CLAIM_SEMANTIC_EQUIVALENCE,
+];
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct FailureBundleArtifact {
+    kind: String,
+    path: String,
+    blake3: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct FailureEvidenceBundle {
+    schema: String,
+    outcome: String,
+    scenario: String,
+    backend: String,
+    mode: String,
+    command_summary: String,
+    first_failure: String,
+    artifacts: Vec<FailureBundleArtifact>,
+    non_claims: Vec<String>,
+}
+
+fn validate_failure_evidence_bundle(bundle: &FailureEvidenceBundle) -> Result<(), Vec<String>> {
+    let mut diagnostics = Vec::new();
+    if bundle.schema != FAILURE_BUNDLE_SCHEMA {
+        diagnostics.push(format!(
+            "unexpected failure bundle schema {}",
+            bundle.schema
+        ));
+    }
+    if !matches!(
+        bundle.outcome.as_str(),
+        FAILURE_BUNDLE_OUTCOME_FAILED | FAILURE_BUNDLE_OUTCOME_BLOCKED
+    ) {
+        diagnostics.push(format!(
+            "failure bundle outcome must be failed or blocked, found {}",
+            bundle.outcome
+        ));
+    }
+    if bundle.scenario.is_empty() {
+        diagnostics.push("failure bundle missing scenario".to_string());
+    }
+    if !matches!(bundle.backend.as_str(), "paper" | "valence") {
+        diagnostics.push(format!(
+            "failure bundle has unsupported backend {}",
+            bundle.backend
+        ));
+    }
+    if bundle.mode.is_empty() {
+        diagnostics.push("failure bundle missing mode".to_string());
+    }
+    if bundle.command_summary.is_empty() {
+        diagnostics.push("failure bundle missing command summary".to_string());
+    }
+    if bundle.first_failure.is_empty() {
+        diagnostics.push("failure bundle missing first failure".to_string());
+    }
+    if bundle.artifacts.is_empty() {
+        diagnostics.push("failure bundle missing artifacts".to_string());
+    }
+    for artifact in &bundle.artifacts {
+        validate_failure_bundle_artifact(artifact, &mut diagnostics);
+    }
+    for required in FAILURE_BUNDLE_REQUIRED_NON_CLAIMS {
+        if !bundle.non_claims.iter().any(|claim| claim == required) {
+            diagnostics.push(format!("failure bundle missing non_claim {required}"));
+        }
+    }
+    if diagnostics.is_empty() {
+        Ok(())
+    } else {
+        Err(diagnostics)
+    }
+}
+
+fn validate_failure_bundle_artifact(
+    artifact: &FailureBundleArtifact,
+    diagnostics: &mut Vec<String>,
+) {
+    if artifact.kind.is_empty() {
+        diagnostics.push("failure bundle artifact missing kind".to_string());
+    }
+    if let Err(err) = validate_failure_bundle_artifact_path(&artifact.path) {
+        diagnostics.push(err);
+    }
+    if !is_blake3_hex(&artifact.blake3) {
+        diagnostics.push(format!(
+            "failure bundle artifact {} has malformed BLAKE3 digest",
+            artifact.kind
+        ));
+    }
+}
+
+fn validate_failure_bundle_artifact_path(path: &str) -> Result<(), String> {
+    if path.is_empty() || path.contains('\0') {
+        return Err("failure bundle artifact path is empty or contains NUL".to_string());
+    }
+    let path_value = Path::new(path);
+    if path_value.is_absolute() {
+        return Err(format!(
+            "failure bundle artifact path must be repo-relative: {path}"
+        ));
+    }
+    for component in path_value.components() {
+        match component {
+            std::path::Component::ParentDir => {
+                return Err(format!("failure bundle artifact path escapes repo: {path}"));
+            }
+            std::path::Component::Normal(value) if value == FAILURE_BUNDLE_TARGET_COMPONENT => {
+                return Err(format!(
+                    "failure bundle artifact path is target-only evidence: {path}"
+                ));
+            }
+            _ => {}
+        }
+    }
+    if !path.starts_with(FAILURE_BUNDLE_REVIEW_STORAGE_PREFIX) {
+        return Err(format!(
+            "failure bundle artifact path must be copied under {FAILURE_BUNDLE_REVIEW_STORAGE_PREFIX}: {path}"
+        ));
+    }
+    Ok(())
+}
+
+fn is_blake3_hex(value: &str) -> bool {
+    value.len() == FAILURE_BUNDLE_BLAKE3_HEX_CHARS && value.chars().all(|ch| ch.is_ascii_hexdigit())
+}
+
+fn failure_bundle_from_config(
+    cfg: &Config,
+    first_failure: &str,
+    artifacts: Vec<FailureBundleArtifact>,
+) -> FailureEvidenceBundle {
+    FailureEvidenceBundle {
+        schema: FAILURE_BUNDLE_SCHEMA.to_string(),
+        outcome: FAILURE_BUNDLE_OUTCOME_FAILED.to_string(),
+        scenario: scenario_name(cfg.scenario).to_string(),
+        backend: backend_name(cfg.server_backend).to_string(),
+        mode: mode_name(cfg.mode).to_string(),
+        command_summary: bounded_failure_bundle_text(
+            &failure_bundle_command_summary(cfg),
+            FAILURE_BUNDLE_MAX_COMMAND_SUMMARY_CHARS,
+        ),
+        first_failure: bounded_failure_bundle_text(
+            first_failure,
+            FAILURE_BUNDLE_MAX_FIRST_FAILURE_CHARS,
+        ),
+        artifacts,
+        non_claims: FAILURE_BUNDLE_REQUIRED_NON_CLAIMS
+            .iter()
+            .map(|claim| (*claim).to_string())
+            .collect(),
+    }
+}
+
+fn failure_bundle_command_summary(cfg: &Config) -> String {
+    format!(
+        "mc-compat-runner --{} --scenario {} --server-backend {}",
+        mode_name(cfg.mode),
+        scenario_name(cfg.scenario),
+        backend_name(cfg.server_backend)
+    )
+}
+
+fn bounded_failure_bundle_text(value: &str, max_chars: usize) -> String {
+    value.chars().take(max_chars).collect()
+}
+
+fn render_failure_evidence_bundle_json(bundle: &FailureEvidenceBundle) -> String {
+    format!(
+        r#"{{
+  "schema": {schema},
+  "outcome": {outcome},
+  "scenario": {scenario},
+  "backend": {backend},
+  "mode": {mode},
+  "command_summary": {command_summary},
+  "first_failure": {first_failure},
+  "artifacts": {artifacts},
+  "non_claims": {non_claims},
+  "diagnostic_only": true,
+  "claims_scenario_success": false,
+  "claims_gameplay_parity": false,
+  "claims_full_protocol_compatibility": false,
+  "claims_public_server_safety": false,
+  "claims_production_readiness": false,
+  "claims_semantic_equivalence": false
+}}"#,
+        schema = json_string(&bundle.schema),
+        outcome = json_string(&bundle.outcome),
+        scenario = json_string(&bundle.scenario),
+        backend = json_string(&bundle.backend),
+        mode = json_string(&bundle.mode),
+        command_summary = json_string(&bundle.command_summary),
+        first_failure = json_string(&bundle.first_failure),
+        artifacts = render_failure_bundle_artifacts_json(&bundle.artifacts),
+        non_claims = json_string_vec(&bundle.non_claims),
+    )
+}
+
+fn render_failure_bundle_artifacts_json(artifacts: &[FailureBundleArtifact]) -> String {
+    let rendered = artifacts
+        .iter()
+        .map(render_failure_bundle_artifact_json)
+        .collect::<Vec<_>>();
+    format!("[{}]", rendered.join(", "))
+}
+
+fn render_failure_bundle_artifact_json(artifact: &FailureBundleArtifact) -> String {
+    format!(
+        r#"{{"kind": {kind}, "path": {path}, "blake3": {blake3}}}"#,
+        kind = json_string(&artifact.kind),
+        path = json_string(&artifact.path),
+        blake3 = json_string(&artifact.blake3),
+    )
+}
+
+fn write_failure_evidence_bundle(
+    cfg: &Config,
+    result: Result<&Option<ClientRunEvidence>, &String>,
+) -> Result<(), String> {
+    let Some(path) = &cfg.failure_bundle_path else {
+        return Ok(());
+    };
+    let Err(first_failure) = result else {
+        return Ok(());
+    };
+    if let Some(parent) = path
+        .parent()
+        .filter(|parent| !parent.as_os_str().is_empty())
+    {
+        fs::create_dir_all(parent)
+            .map_err(|err| format!("create failure bundle dir {}: {err}", parent.display()))?;
+    }
+    let artifacts = collect_failure_bundle_artifacts(cfg)?;
+    let bundle = failure_bundle_from_config(cfg, first_failure, artifacts);
+    validate_failure_evidence_bundle(&bundle).map_err(|diagnostics| {
+        format!(
+            "failure bundle validation failed: {}",
+            diagnostics.join("; ")
+        )
+    })?;
+    fs::write(path, render_failure_evidence_bundle_json(&bundle))
+        .map_err(|err| format!("write failure bundle {}: {err}", path.display()))?;
+    log(format_args!(
+        "wrote failure evidence bundle {}",
+        path.display()
+    ));
+    Ok(())
+}
+
+fn collect_failure_bundle_artifacts(cfg: &Config) -> Result<Vec<FailureBundleArtifact>, String> {
+    let mut artifacts = Vec::new();
+    for (kind, path) in failure_bundle_artifact_candidates(cfg) {
+        push_failure_bundle_artifact(cfg, &mut artifacts, kind, path)?;
+    }
+    Ok(artifacts)
+}
+
+fn failure_bundle_artifact_candidates(cfg: &Config) -> Vec<(&'static str, PathBuf)> {
+    let mut candidates = Vec::new();
+    if let Some(receipt_path) = &cfg.receipt_path {
+        candidates.push((FAILURE_BUNDLE_ARTIFACT_RECEIPT, receipt_path.clone()));
+        candidates.push((
+            FAILURE_BUNDLE_ARTIFACT_TYPED_EVENTS,
+            typed_event_log_path_for_receipt(receipt_path),
+        ));
+        candidates.push((
+            FAILURE_BUNDLE_ARTIFACT_MCP_TRANSCRIPT,
+            receipt_path.with_extension(MCP_CONTROL_LIVE_TRANSCRIPT_EXTENSION),
+        ));
+        candidates.push((
+            FAILURE_BUNDLE_ARTIFACT_STDERR,
+            receipt_path.with_extension(MCP_CONTROL_LIVE_STDERR_LOG_EXTENSION),
+        ));
+    }
+    if cfg.server_backend == ServerBackend::Valence {
+        candidates.push((FAILURE_BUNDLE_ARTIFACT_SERVER_LOG, cfg.valence_log.clone()));
+    }
+    candidates
+}
+
+fn push_failure_bundle_artifact(
+    cfg: &Config,
+    artifacts: &mut Vec<FailureBundleArtifact>,
+    kind: &'static str,
+    path: PathBuf,
+) -> Result<(), String> {
+    let source_path = failure_bundle_source_path(&cfg.root, &path);
+    if !source_path.exists() {
+        return Ok(());
+    }
+    let Some(relative_path) = reviewable_failure_bundle_artifact_path(&cfg.root, &path) else {
+        return Ok(());
+    };
+    if validate_failure_bundle_artifact_path(&relative_path).is_err() {
+        return Ok(());
+    }
+    if artifacts
+        .iter()
+        .any(|artifact| artifact.path == relative_path)
+    {
+        return Ok(());
+    }
+    artifacts.push(FailureBundleArtifact {
+        kind: kind.to_string(),
+        blake3: blake3_file_hex(&source_path)?,
+        path: relative_path,
+    });
+    Ok(())
+}
+
+fn failure_bundle_source_path(root: &Path, path: &Path) -> PathBuf {
+    if path.is_absolute() {
+        path.to_path_buf()
+    } else {
+        root.join(path)
+    }
+}
+
+fn reviewable_failure_bundle_artifact_path(root: &Path, path: &Path) -> Option<String> {
+    if path.is_absolute() {
+        let canonical_root = root.canonicalize().ok()?;
+        let canonical_path = path.canonicalize().ok()?;
+        let relative = canonical_path.strip_prefix(canonical_root).ok()?;
+        return path_to_forward_slashes(relative);
+    }
+    path_to_forward_slashes(path)
+}
+
+fn path_to_forward_slashes(path: &Path) -> Option<String> {
+    let path = path.to_str()?;
+    Some(path.replace(std::path::MAIN_SEPARATOR, "/"))
+}
+
+fn blake3_file_hex(path: &Path) -> Result<String, String> {
+    let mut file = File::open(path).map_err(|err| format!("open {}: {err}", path.display()))?;
+    let mut hasher = blake3::Hasher::new();
+    let mut buffer = [0u8; FAILURE_BUNDLE_HASH_BUFFER_BYTES];
+    loop {
+        let bytes_read = file
+            .read(&mut buffer)
+            .map_err(|err| format!("read {}: {err}", path.display()))?;
+        if bytes_read == 0 {
+            break;
+        }
+        hasher.update(&buffer[..bytes_read]);
+    }
+    Ok(hasher.finalize().to_hex().to_string())
 }
 
 fn write_smoke_receipt(
@@ -8653,6 +9066,137 @@ mod tests {
         Ok(summary)
     }
 
+    const TEST_FAILURE_BUNDLE_ARTIFACT_PATH: &str = "docs/evidence/failure-receipt.json";
+    const TEST_FAILURE_BUNDLE_KIND: &str = "receipt";
+    const TEST_FAILURE_BUNDLE_FIRST_FAILURE: &str = "scenario missing required milestone";
+    const TEST_FAILURE_BUNDLE_PATH_ESCAPE: &str = "docs/evidence/../secret.log";
+    const TEST_FAILURE_BUNDLE_TARGET_PATH: &str = "target/failure-receipt.json";
+    const TEST_FAILURE_BUNDLE_MALFORMED_DIGEST: &str = "not-a-blake3-digest";
+    const TEST_FAILURE_BUNDLE_SUCCESS_OUTCOME: &str = "pass";
+
+    fn failure_bundle_digest_fixture() -> String {
+        blake3::hash(b"failure bundle artifact")
+            .to_hex()
+            .to_string()
+    }
+
+    fn failure_bundle_artifact_fixture() -> FailureBundleArtifact {
+        FailureBundleArtifact {
+            kind: TEST_FAILURE_BUNDLE_KIND.to_string(),
+            path: TEST_FAILURE_BUNDLE_ARTIFACT_PATH.to_string(),
+            blake3: failure_bundle_digest_fixture(),
+        }
+    }
+
+    fn failure_bundle_fixture() -> FailureEvidenceBundle {
+        FailureEvidenceBundle {
+            schema: FAILURE_BUNDLE_SCHEMA.to_string(),
+            outcome: FAILURE_BUNDLE_OUTCOME_FAILED.to_string(),
+            scenario: "smoke".to_string(),
+            backend: "valence".to_string(),
+            mode: "run".to_string(),
+            command_summary: "mc-compat-runner --run --scenario smoke --server-backend valence"
+                .to_string(),
+            first_failure: TEST_FAILURE_BUNDLE_FIRST_FAILURE.to_string(),
+            artifacts: vec![failure_bundle_artifact_fixture()],
+            non_claims: FAILURE_BUNDLE_REQUIRED_NON_CLAIMS
+                .iter()
+                .map(|claim| (*claim).to_string())
+                .collect(),
+        }
+    }
+
+    fn failure_bundle_diagnostics(bundle: &FailureEvidenceBundle) -> String {
+        validate_failure_evidence_bundle(bundle)
+            .expect_err("failure bundle fixture should fail")
+            .join("; ")
+    }
+
+    #[test]
+    fn failure_bundle_validator_accepts_complete_fail_only_bundle() {
+        let bundle = failure_bundle_fixture();
+        validate_failure_evidence_bundle(&bundle).expect("valid failure bundle passes");
+        let json = render_failure_evidence_bundle_json(&bundle);
+
+        assert!(json.contains(FAILURE_BUNDLE_SCHEMA));
+        assert!(json.contains("\"diagnostic_only\": true"));
+        assert!(json.contains("\"claims_scenario_success\": false"));
+        assert!(json.contains(TEST_FAILURE_BUNDLE_ARTIFACT_PATH));
+        assert!(is_blake3_hex(&bundle.artifacts[0].blake3));
+    }
+
+    #[test]
+    fn failure_bundle_validator_rejects_negative_fixtures() {
+        let mut missing_artifacts = failure_bundle_fixture();
+        missing_artifacts.artifacts.clear();
+        assert!(failure_bundle_diagnostics(&missing_artifacts).contains("missing artifacts"));
+
+        let mut path_escape = failure_bundle_fixture();
+        path_escape.artifacts[0].path = TEST_FAILURE_BUNDLE_PATH_ESCAPE.to_string();
+        assert!(failure_bundle_diagnostics(&path_escape).contains("escapes repo"));
+
+        let mut target_only = failure_bundle_fixture();
+        target_only.artifacts[0].path = TEST_FAILURE_BUNDLE_TARGET_PATH.to_string();
+        assert!(failure_bundle_diagnostics(&target_only).contains("target-only"));
+
+        let mut malformed_digest = failure_bundle_fixture();
+        malformed_digest.artifacts[0].blake3 = TEST_FAILURE_BUNDLE_MALFORMED_DIGEST.to_string();
+        assert!(failure_bundle_diagnostics(&malformed_digest).contains("malformed BLAKE3"));
+
+        let mut missing_nonclaim = failure_bundle_fixture();
+        missing_nonclaim
+            .non_claims
+            .retain(|claim| claim != FAILURE_BUNDLE_NON_CLAIM_SEMANTIC_EQUIVALENCE);
+        assert!(failure_bundle_diagnostics(&missing_nonclaim).contains("missing non_claim"));
+
+        let mut success_labeled = failure_bundle_fixture();
+        success_labeled.outcome = TEST_FAILURE_BUNDLE_SUCCESS_OUTCOME.to_string();
+        assert!(failure_bundle_diagnostics(&success_labeled).contains("failed or blocked"));
+    }
+
+    #[test]
+    fn failure_bundle_shell_writes_reviewable_bundle_for_failed_result() {
+        let temp_root =
+            std::env::temp_dir().join(format!("mc-compat-failure-bundle-{}", std::process::id()));
+        let _ = fs::remove_dir_all(&temp_root);
+        let evidence_dir = temp_root.join("docs/evidence");
+        fs::create_dir_all(&evidence_dir).expect("create evidence dir");
+        let receipt_path = evidence_dir.join("failed-receipt.json");
+        let bundle_path = evidence_dir.join("failed-bundle.json");
+        fs::write(&receipt_path, "receipt bytes").expect("write receipt artifact");
+
+        let mut cfg =
+            test_config(&["--run", "--scenario=smoke"], &[]).expect("failure bundle config parses");
+        cfg.root = temp_root.clone();
+        cfg.receipt_path = Some(receipt_path);
+        cfg.failure_bundle_path = Some(bundle_path.clone());
+        cfg.valence_log = evidence_dir.join("valence.log");
+        let first_failure = TEST_FAILURE_BUNDLE_FIRST_FAILURE.to_string();
+        let result: Result<&Option<ClientRunEvidence>, &String> = Err(&first_failure);
+
+        write_failure_evidence_bundle(&cfg, result).expect("failure bundle writes");
+        let json = fs::read_to_string(&bundle_path).expect("read failure bundle");
+
+        assert!(json.contains(FAILURE_BUNDLE_SCHEMA));
+        assert!(json.contains(TEST_FAILURE_BUNDLE_FIRST_FAILURE));
+        assert!(json.contains("docs/evidence/failed-receipt.json"));
+        assert!(json.contains(&blake3::hash(b"receipt bytes").to_hex().to_string()));
+
+        fs::remove_dir_all(&temp_root).expect("remove temp failure bundle root");
+    }
+
+    #[test]
+    fn runner_result_preserves_original_failure_when_follow_up_fails() {
+        let err = combine_runner_result(
+            Err("original failure".to_string()),
+            vec!["failed to write failure bundle: validation failed".to_string()],
+        )
+        .expect_err("combined failure remains failing");
+
+        assert!(err.contains("original failure"));
+        assert!(err.contains("failed to write failure bundle"));
+    }
+
     const ALL_TEST_SCENARIOS: &[Scenario] = ALL_SCENARIOS;
 
     fn passing_client_lines(scenario: Scenario) -> Vec<(&'static str, String)> {
@@ -9009,6 +9553,23 @@ mod tests {
         assert_eq!(cfg.receipt_path, Some(PathBuf::from("/tmp/mc-smoke.json")));
         assert_eq!(cfg.valence_repo, PathBuf::from("/tmp/editable-valence"));
         assert_eq!(cfg.valence_rev, "local-debug-rev");
+    }
+
+    #[test]
+    fn failure_bundle_path_parses_from_env_and_cli_override() {
+        let cfg = test_config(
+            &["--failure-bundle", "docs/evidence/cli-failure-bundle.json"],
+            &[(
+                "MC_COMPAT_FAILURE_BUNDLE",
+                "docs/evidence/env-failure-bundle.json",
+            )],
+        )
+        .expect("failure bundle config parses");
+
+        assert_eq!(
+            cfg.failure_bundle_path,
+            Some(PathBuf::from("docs/evidence/cli-failure-bundle.json"))
+        );
     }
 
     #[test]
