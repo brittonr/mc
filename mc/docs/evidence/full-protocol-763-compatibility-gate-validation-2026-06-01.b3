@@ -5,9 +5,9 @@ b07fe1d6374ed678c20e3357449f5efc1f3bb16296cdd9b74fc210767b81a1b6  docs/evidence/
 2c23651a2cefae0a5d995aff4075fe291cb2b20356e3ce6faf8fff55b1ca224c  docs/evidence/full-protocol-763-compatibility-gate-post-archive-validation-2026-06-01.run.log
 d17b9c599c27ff8d61aee570e12436a35e7873d965becc1e9e25d055d766c18f  docs/evidence/full-protocol-763-compatibility-gate-archive-2026-06-01.b3
 eb739f8d83555254e252e4fe1a3b4202887ea1bfc8df1907ea7dbb5ce38e1853  docs/evidence/aggregate-claim-gates-2026-06-01.run.log
-2d0e5a7e12d6d5ed93620de52b235b7d553b9572e9ee23aa7982ece36898d6b1  docs/evidence/aggregate-claim-gates-2026-06-01.b3
+f2acfda5ab402dd6d56b2ea45d2301adf4abb3def1db72c6bb62480f5074a3ff  docs/evidence/aggregate-claim-gates-2026-06-01.b3
 9a36cc04d97213add7137f2d984d19f05cb051cf8265b23e50c473423018e7ed  docs/evidence/protocol-763-acceptance-matrix.md
-9fbad7bf6641b93705c76cf76b59bb610a36d697bdbc43a2bdfe531474568deb  docs/evidence/protocol-763-current-evidence-bundle.md
+e1601bd71aa55a2546c18643a580c1988ff210522453ec895e384fc806398254  docs/evidence/protocol-763-current-evidence-bundle.md
 8250774d1e7d0ad53001a1231e95b19f99594d7581258d61afdab1a97d192758  docs/evidence/protocol-763-broad-coverage-ledger-2026-05-28.md
 20a61103d2f084cd73de6def8cbf11a52f802afc55ff0c7753ede7ab1d887148  cairn/archive/2026-06-01-full-protocol-763-compatibility-gate/tasks.md
 d6cc918d62dfb63e6716b1081b3e1653300165bc551ff9b5c0a0566f6bd1b5a5  cairn/archive/2026-06-01-full-protocol-763-compatibility-gate/proposal.md

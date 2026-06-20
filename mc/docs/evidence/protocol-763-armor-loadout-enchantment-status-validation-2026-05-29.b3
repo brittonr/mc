@@ -3,10 +3,10 @@ ae1d63d4955974797becd8079391b96c9afed56bffabeb36211f55eedf87827b  docs/evidence/
 b4e56e5edbbbe406581718f534dc859a3f926c48f217ad370da69e7fff131911  cairn/archive/2026-05-29-armor-loadout-enchantment-status-matrix/specs/mc-compatibility/spec.md
 9139ebc2c6f6934e70e48043a8866de218381483645f9c2b13dc4d04237f7980  cairn/specs/mc-compatibility/spec.md
 80a3afb8c38101448432f89bafb062abf731295a6d300de842e3a9c2e94132f5  docs/evidence/protocol-763-armor-loadout-enchantment-status-contract-2026-05-29.b3
-0df9b0b0799c927e1196035d71e470108e7d44db7b2e7c24528eaeb88372f73f  docs/evidence/protocol-763-armor-loadout-enchantment-status-checker-2026-05-29.b3
-b0487bd5cf9ab2868c74d1b3c067163bdc3d665a852b3a2d6734f4f4defcec06  docs/evidence/protocol-763-armor-loadout-enchantment-status-rail-2026-05-29.b3
-1d276f1adbf1c42e8abba67eff19f63f114d8e777e52f42cdfe9e3919602400f  docs/evidence/protocol-763-armor-loadout-enchantment-status-row-2026-05-29.b3
+07b645ec7094bc586e820aa784c17c6edf5c5d45fda5527f342a0808e9ffc13a  docs/evidence/protocol-763-armor-loadout-enchantment-status-checker-2026-05-29.b3
+fd9b22f8ac6419db9201d04dbbf2bed8ba3d1a41ad829880e1210c4ab80a8c39  docs/evidence/protocol-763-armor-loadout-enchantment-status-rail-2026-05-29.b3
+bed9d7732d616de52f626b8026b6aa02761730066f3d9980354fa7ad48c07f33  docs/evidence/protocol-763-armor-loadout-enchantment-status-row-2026-05-29.b3
 9a36cc04d97213add7137f2d984d19f05cb051cf8265b23e50c473423018e7ed  docs/evidence/protocol-763-acceptance-matrix.md
-9fbad7bf6641b93705c76cf76b59bb610a36d697bdbc43a2bdfe531474568deb  docs/evidence/protocol-763-current-evidence-bundle.md
-3ff512d32b8c72e18905f0527ea11e4c49c332732553aa8ba01b8fc771c8de34  tools/mc-compat-runner/src/main.rs
+e1601bd71aa55a2546c18643a580c1988ff210522453ec895e384fc806398254  docs/evidence/protocol-763-current-evidence-bundle.md
+f579cf7092fc07dfacd19a0867d211eedaa2911844306fab41991e738140c601  tools/mc-compat-runner/src/main.rs
 e883c3ca16050a62449dd85726b0f117876f46bee841814a2a83544bb7be23dd  tools/check_armor_loadout_enchantment_status.rs

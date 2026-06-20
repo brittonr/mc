@@ -13,7 +13,7 @@ const EVIDENCE_DIR: &str = "docs/evidence";
 const B3_EXTENSION: &str = "b3";
 const TABLE_HEADER: &str = "| Survival system | Status | Valence evidence | Reference evidence | Promotion requirement | Explicit non-claim | Next action |";
 const TABLE_CELL_COUNT: usize = 7;
-const REQUIRED_ROW_COUNT: usize = 9;
+const REQUIRED_ROW_COUNT: usize = REQUIRED_SYSTEMS.len();
 const STATUS_COVERED: &str = "reference_parity_covered";
 const STATUS_MISSING: &str = "missing";
 const EMPTY_EVIDENCE: &str = "none";
@@ -32,6 +32,8 @@ const REQUIRED_SYSTEMS: &[&str] = &[
     "redstone",
     "biome/dimension",
     "world persistence",
+    "crash recovery",
+    "sign block entity",
 ];
 
 const FORBIDDEN_WHILE_MISSING: &[&str] = &[
@@ -77,6 +79,14 @@ const CURRENT_COVERED_ROWS: &[CoveredRowExpectation] = &[
     CoveredRowExpectation {
         system: "world persistence",
         acceptance_token: "Survival world persistence restart",
+    },
+    CoveredRowExpectation {
+        system: "crash recovery",
+        acceptance_token: "Survival crash recovery",
+    },
+    CoveredRowExpectation {
+        system: "sign block entity",
+        acceptance_token: "Survival sign block-entity persistence",
     },
 ];
 
@@ -544,6 +554,8 @@ fn current_missing_rows() -> String {
         "| redstone | missing | none | none | Add redstone receipts. | No redstone coverage. | next |".to_string(),
         covered_row("biome/dimension", "biome", "Biome"),
         "| world persistence | missing | none | none | Add persistence receipts. | No world persistence coverage. | next |".to_string(),
+        covered_row("crash recovery", "crash-recovery", "Crash recovery"),
+        covered_row("sign block entity", "sign-block-entity", "Sign block entity"),
     ]
     .join("\n")
 }
@@ -573,6 +585,8 @@ fn fixture_acceptance_matrix() -> String {
         "| Survival redstone toggle | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
         "| Survival biome/dimension join state | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
         "| Survival world persistence restart | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
+        "| Survival crash recovery | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
+        "| Survival sign block-entity persistence | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
     ]
     .join("\n")
 }

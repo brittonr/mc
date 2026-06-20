@@ -1,3 +1,3 @@
 d753144d7ecba1ee8b0ac68b1e59d6dee349cadffe56a03c3529d99763c76324  tools/check_equipment_slot_item_expansion.rs
-7e130e8dee4dd00df9a024c07a3f0134e943c74bd6128fe52806d8a503565599  flake.nix
+c797f5231600b8aebaade5f12173560159578a78ac275fe3ddde4be8918d6c02  flake.nix
 bbe178b9e7fddd40f8d72b27eaa694c08b23736323051b2373f2bf1dfd13bdec  docs/evidence/protocol-763-equipment-slot-item-expansion-checker-2026-05-29.run.log

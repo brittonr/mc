@@ -5,7 +5,7 @@ c1b3c91c61dce82a6c5b1255ca907fe16f330b86976829d8490c32fc94f7bf76  docs/evidence/
 68e6f14554281551415bafde97d2b7cd71394ecf5b7d6351fafd01b85dbace76  docs/evidence/scenario-behavior-traits-task-evidence-final-2026-06-06.run.log
 527013ad7a0ebe2037c81a1cedecf17dc19b4b924e13f447c330470c74959e9f  docs/evidence/scenario-behavior-traits-sync-2026-06-06.run.log
 81cbdf1496e5dc6bcc43160167129f27fe4d8e87d78bb27308514ba06b5a1386  docs/evidence/scenario-behavior-traits-archive-2026-06-06.run.log
-3ff512d32b8c72e18905f0527ea11e4c49c332732553aa8ba01b8fc771c8de34  tools/mc-compat-runner/src/main.rs
+f579cf7092fc07dfacd19a0867d211eedaa2911844306fab41991e738140c601  tools/mc-compat-runner/src/main.rs
 9139ebc2c6f6934e70e48043a8866de218381483645f9c2b13dc4d04237f7980  cairn/specs/mc-compatibility/spec.md
 a1795c08f68338d001aa47549a4e71d809b641163d8225a6a9b350c79e60e498  cairn/archive/2026-06-06-introduce-scenario-behavior-traits/tasks.md
 f9bd577aeb77995aab377848b69aadb4a78b7516b200b3e9a69fb004cf089096  cairn/archive/2026-06-06-introduce-scenario-behavior-traits/proposal.md
