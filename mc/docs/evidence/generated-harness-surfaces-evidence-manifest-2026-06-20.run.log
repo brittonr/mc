@@ -1,0 +1,7 @@
+# Generated harness surfaces evidence-manifest validation 2026-06-20
+root=/home/brittonr/git/mc
+this derivation will be built:
+  /nix/store/45mify55j4b3z6z0rl7z1ynjcw5n51ir-mc-compat-evidence-manifest-refresh.drv
+building '/nix/store/45mify55j4b3z6z0rl7z1ynjcw5n51ir-mc-compat-evidence-manifest-refresh.drv'...
+
+exit_status=0

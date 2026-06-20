@@ -1,6 +1,6 @@
 f3a1ae735ebc21c3cbd77be505fa98a9a9c5c0b038dd2bbf9817972cb6ef1851  docs/evidence/mcp-controlled-compat-rail-matrix-promotion-2026-05-31.md
 d175d43d16755bb16b357b458a4fc4eb095a4afcea3f42c933ba52d082f11d43  docs/evidence/mcp-controlled-compat-rail-matrix-promotion-2026-05-31.run.log
-0eb6a305155189be6a5bb7b5e2864a53a9113b3c86298e75d2df871c00368c12  docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.b3
+0147394e73689fa2fd503e6ccad919dcd630dcbb869dd94b32cb9f1acd9fe870  docs/evidence/mcp-controlled-compat-rail-live-2026-05-31.b3
 9524f82cca1cdb795164da343453b341e7d13634d4a7db9bff682d9de4be44db  docs/evidence/protocol-763-acceptance-matrix.md
 1927fd7fdf4e969bd345408da5a2cc48ed381bc4e15448c9df9c38ed0ab4c1b0  docs/evidence/protocol-763-current-evidence-bundle.md
 46c4f6c65084de3cd25a9f84e530107c4d3197208d225b6599cfe801ae08108f  tools/check_acceptance_matrix.rs

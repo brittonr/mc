@@ -12,10 +12,13 @@ const RUNNER_SURFACE_PATH: &str = "tools/mc-compat-runner/src/{main.rs,scenario_
 const FLAKE_PATH: &str = "flake.nix";
 const README_PATH: &str = "README.md";
 const CURRENT_BUNDLE_PATH: &str = "docs/evidence/protocol-763-current-evidence-bundle.md";
+const GENERATED_SCENARIO_INDEX_PATH: &str = "docs/evidence/mc-compat-scenario-index.generated.md";
 const SUPPORTED_SCHEMA: &str = "mc.compat.scenario-manifest.v1";
 const SUBSTRING_FALLBACK_MIGRATION: &str = "substring-fallback";
 const TYPED_EVENT_READY_MIGRATION: &str = "typed-event-ready";
 const SELF_TEST_FLAG: &str = "--self-test";
+const CHECK_GENERATED_SURFACES_FLAG: &str = "--check-generated-surfaces";
+const WRITE_GENERATED_SURFACES_FLAG: &str = "--write-generated-surfaces";
 const MINIMUM_POSITIVE_COUNT: u32 = 1;
 const STRING_FIELD_DELIMITER: &str = " = \"";
 const ARRAY_START: &str = "[";
@@ -156,6 +159,12 @@ struct TypedEventReadinessFixture<'a> {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+struct GeneratedSurface {
+    path: &'static str,
+    content: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
 struct MissingLiveCapability<'a> {
     path: &'static str,
     token: &'a str,
@@ -205,6 +214,30 @@ fn main() -> ExitCode {
         return match run_self_tests() {
             Ok(summary) => {
                 println!("scenario manifest self-test passed: {summary}");
+                EXIT_SUCCESS
+            }
+            Err(errors) => {
+                print_errors(&errors);
+                EXIT_FAILURE
+            }
+        };
+    }
+    if args.iter().any(|arg| arg == CHECK_GENERATED_SURFACES_FLAG) {
+        return match run_generated_surfaces_check(Path::new(".")) {
+            Ok(summary) => {
+                println!("generated surface check passed: {summary}");
+                EXIT_SUCCESS
+            }
+            Err(errors) => {
+                print_errors(&errors);
+                EXIT_FAILURE
+            }
+        };
+    }
+    if args.iter().any(|arg| arg == WRITE_GENERATED_SURFACES_FLAG) {
+        return match run_generated_surfaces_write(Path::new(".")) {
+            Ok(summary) => {
+                println!("generated surface write passed: {summary}");
                 EXIT_SUCCESS
             }
             Err(errors) => {
@@ -270,6 +303,53 @@ fn run_repo_check(root: &Path) -> Result<String, Vec<String>> {
             typed_event_readiness.ready,
             typed_event_readiness.fallback
         ))
+    } else {
+        Err(errors)
+    }
+}
+
+fn run_generated_surfaces_check(root: &Path) -> Result<String, Vec<String>> {
+    let manifest_text = read_repo_file(root, MANIFEST_PATH)?;
+    let manifest = parse_manifest(&manifest_text)?;
+    validate_manifest(&manifest)?;
+    let surfaces = render_generated_surfaces(&manifest.rows)?;
+    let mut errors = Vec::new();
+    for surface in &surfaces {
+        let checked_in = read_repo_file(root, surface.path)?;
+        if checked_in != surface.content {
+            errors.push(format!(
+                "{} is stale; run {WRITE_GENERATED_SURFACES_FLAG}",
+                surface.path
+            ));
+        }
+    }
+    if errors.is_empty() {
+        Ok(format!("{} generated surfaces current", surfaces.len()))
+    } else {
+        Err(errors)
+    }
+}
+
+fn run_generated_surfaces_write(root: &Path) -> Result<String, Vec<String>> {
+    let manifest_text = read_repo_file(root, MANIFEST_PATH)?;
+    let manifest = parse_manifest(&manifest_text)?;
+    validate_manifest(&manifest)?;
+    let surfaces = render_generated_surfaces(&manifest.rows)?;
+    let mut errors = Vec::new();
+    for surface in &surfaces {
+        let path = root.join(surface.path);
+        if let Some(parent) = path.parent() {
+            if let Err(err) = fs::create_dir_all(parent) {
+                errors.push(format!("create {}: {err}", parent.display()));
+                continue;
+            }
+        }
+        if let Err(err) = fs::write(&path, &surface.content) {
+            errors.push(format!("write {}: {err}", path.display()));
+        }
+    }
+    if errors.is_empty() {
+        Ok(format!("{} generated surfaces written", surfaces.len()))
     } else {
         Err(errors)
     }
@@ -847,6 +927,207 @@ fn validate_waiver_metadata_fields(
     errors
 }
 
+fn render_generated_surfaces(rows: &[ScenarioRow]) -> Result<Vec<GeneratedSurface>, Vec<String>> {
+    let surfaces = vec![
+        GeneratedSurface {
+            path: GENERATED_RUST_PATH,
+            content: render_generated_rust(rows)?,
+        },
+        GeneratedSurface {
+            path: GENERATED_SCENARIO_INDEX_PATH,
+            content: render_generated_scenario_index(rows)?,
+        },
+    ];
+    for surface in &surfaces {
+        validate_generated_output_path(surface.path)?;
+    }
+    Ok(surfaces)
+}
+
+fn validate_generated_output_path(path: &str) -> Result<(), Vec<String>> {
+    let unsafe_path = path.is_empty()
+        || path.starts_with('/')
+        || path
+            .split('/')
+            .any(|component| component.is_empty() || component == "." || component == "..");
+    if unsafe_path {
+        return Err(vec![format!("unsafe generated output path {path:?}")]);
+    }
+    Ok(())
+}
+
+fn render_generated_rust(rows: &[ScenarioRow]) -> Result<String, Vec<String>> {
+    let mut output = String::new();
+    output
+        .push_str("// @generated by tools/check_scenario_manifest.rs --write-generated-surfaces\n");
+    output.push_str(
+        "// Do not edit by hand; edit config/mc-compat/scenario-manifest.ncl instead.\n\n",
+    );
+    output.push_str("pub(crate) const ONE_CLIENT: u8 = 1;\n");
+    output.push_str("pub(crate) const TWO_CLIENTS: u8 = 2;\n");
+    output.push_str("pub(crate) const ONE_SESSION: u8 = 1;\n");
+    output.push_str("pub(crate) const TWO_SESSIONS: u8 = 2;\n\n");
+    output.push_str("#[derive(Debug, Clone, Copy, PartialEq, Eq)]\n");
+    output.push_str("pub(crate) struct GeneratedScenarioRow {\n");
+    output.push_str("    pub(crate) name: &'static str,\n");
+    output.push_str("    pub(crate) aliases: &'static [&'static str],\n");
+    output.push_str("    pub(crate) client_milestones: &'static [&'static str],\n");
+    output.push_str("    pub(crate) server_milestones: &'static [&'static str],\n");
+    output.push_str("    pub(crate) forbidden_patterns: &'static [&'static str],\n");
+    output.push_str("    pub(crate) client_count: u8,\n");
+    output.push_str("    pub(crate) session_count: u8,\n");
+    output.push_str("    pub(crate) dry_run_check: &'static str,\n");
+    output.push_str("    pub(crate) dry_run_wrapper: &'static str,\n");
+    output.push_str("    pub(crate) dry_run_exclusion_reason: &'static str,\n");
+    output.push_str("    pub(crate) migration_state: &'static str,\n");
+    output.push_str("}\n\n");
+    output.push_str("pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[\n");
+    let mut seen_names = BTreeSet::new();
+    for row in rows {
+        if !seen_names.insert(row.name.as_str()) {
+            return Err(vec![format!(
+                "duplicate generated scenario name {}",
+                row.name
+            )]);
+        }
+        output.push_str("    GeneratedScenarioRow {\n");
+        output.push_str(&format!("        name: {},\n", rust_string(&row.name)));
+        output.push_str(&format!(
+            "        aliases: {},\n",
+            rust_string_array(&row.aliases, "        ")
+        ));
+        output.push_str(&format!(
+            "        client_milestones: {},\n",
+            rust_string_array(&row.client_milestones, "        ")
+        ));
+        output.push_str(&format!(
+            "        server_milestones: {},\n",
+            rust_string_array(&row.server_milestones, "        ")
+        ));
+        output.push_str(&format!(
+            "        forbidden_patterns: {},\n",
+            rust_string_array(&row.forbidden_patterns, "        ")
+        ));
+        output.push_str(&format!(
+            "        client_count: {},\n",
+            rust_count_expr(row.client_count, "ONE_CLIENT", "TWO_CLIENTS")
+        ));
+        output.push_str(&format!(
+            "        session_count: {},\n",
+            rust_count_expr(row.session_count, "ONE_SESSION", "TWO_SESSIONS")
+        ));
+        output.push_str(&format!(
+            "        dry_run_check: {},\n",
+            rust_string(&row.dry_run.check)
+        ));
+        output.push_str(&format!(
+            "        dry_run_wrapper: {},\n",
+            rust_string(&row.dry_run.wrapper)
+        ));
+        output.push_str(&format!(
+            "        dry_run_exclusion_reason: {},\n",
+            rust_string(&row.dry_run.exclusion_reason)
+        ));
+        output.push_str(&format!(
+            "        migration_state: {},\n",
+            rust_string(&row.migration_state)
+        ));
+        output.push_str("    },\n");
+    }
+    output.push_str("];\n");
+    Ok(output)
+}
+
+fn render_generated_scenario_index(rows: &[ScenarioRow]) -> Result<String, Vec<String>> {
+    let mut output = String::new();
+    output.push_str("<!-- BEGIN: mc-compat-generated-scenario-index -->\n");
+    output.push_str("<!-- @generated by tools/check_scenario_manifest.rs --write-generated-surfaces; edit config/mc-compat/scenario-manifest.ncl instead. -->\n\n");
+    output.push_str("# mc-compat generated scenario index\n\n");
+    output.push_str("This bounded index is generated from `config/mc-compat/scenario-manifest.ncl`. It records harness wiring only and does not broaden compatibility claims.\n\n");
+    output.push_str(
+        "| Scenario | Aliases | Clients | Sessions | Dry-run check | Wrapper | Migration |\n",
+    );
+    output.push_str("| --- | --- | ---: | ---: | --- | --- | --- |\n");
+    let mut seen_names = BTreeSet::new();
+    for row in rows {
+        if !seen_names.insert(row.name.as_str()) {
+            return Err(vec![format!(
+                "duplicate generated scenario name {}",
+                row.name
+            )]);
+        }
+        output.push_str(&format!(
+            "| {} | {} | {} | {} | {} | {} | {} |\n",
+            markdown_cell(&row.name),
+            markdown_cell(&row.aliases.join(", ")),
+            row.client_count,
+            row.session_count,
+            markdown_cell(&empty_as_dash(&row.dry_run.check)),
+            markdown_cell(&empty_as_dash(&row.dry_run.wrapper)),
+            markdown_cell(&row.migration_state)
+        ));
+    }
+    output.push_str("\n<!-- END: mc-compat-generated-scenario-index -->\n");
+    Ok(output)
+}
+
+fn rust_count_expr(count: u32, one: &str, two: &str) -> String {
+    match count {
+        1 => one.to_string(),
+        2 => two.to_string(),
+        other => other.to_string(),
+    }
+}
+
+fn rust_string_array(values: &[String], indent: &str) -> String {
+    if values.is_empty() {
+        return "&[]".to_string();
+    }
+    if values.len() <= MINIMUM_POSITIVE_COUNT as usize {
+        return format!("&[{}]", rust_string(&values[0]));
+    }
+    let child_indent = format!("{indent}    ");
+    let mut output = String::from("&[\n");
+    for value in values {
+        output.push_str(&child_indent);
+        output.push_str(&rust_string(value));
+        output.push_str(",\n");
+    }
+    output.push_str(indent);
+    output.push(']');
+    output
+}
+
+fn rust_string(value: &str) -> String {
+    let mut output = String::with_capacity(value.len() + 2);
+    output.push('"');
+    for ch in value.chars() {
+        match ch {
+            '"' => output.push_str("\\\""),
+            '\\' => output.push_str("\\\\"),
+            '\n' => output.push_str("\\n"),
+            '\r' => output.push_str("\\r"),
+            '\t' => output.push_str("\\t"),
+            ch if ch.is_control() => output.push_str(&format!("\\u{{{:x}}}", ch as u32)),
+            ch => output.push(ch),
+        }
+    }
+    output.push('"');
+    output
+}
+
+fn markdown_cell(value: &str) -> String {
+    value.replace('|', "\\|").replace('\n', " ")
+}
+
+fn empty_as_dash(value: &str) -> String {
+    if value.is_empty() {
+        "-".to_string()
+    } else {
+        value.to_string()
+    }
+}
+
 fn validate_generated_tables(rows: &[ScenarioRow], generated: &str) -> Vec<String> {
     let mut errors = Vec::new();
     for row in rows {
@@ -1085,6 +1366,19 @@ fn run_self_tests() -> Result<String, Vec<String>> {
     let ready_evaluation = evaluate_typed_event_readiness(&ready_manifest);
     if !ready_evaluation.is_complete() {
         errors.push("self-test case typed-event readiness expected pass=true".to_string());
+    }
+    if let Err(generator_errors) = render_generated_surfaces(&manifest.rows) {
+        errors.push(format!(
+            "self-test case generated_surfaces expected pass=true: {generator_errors:?}"
+        ));
+    }
+    if validate_generated_output_path("../escape.rs").is_ok() {
+        errors.push("self-test case unsafe_generated_output_path expected pass=false".to_string());
+    }
+    let duplicate_manifest =
+        parse_manifest(&duplicate_fixture()).expect("duplicate fixture parses");
+    if render_generated_surfaces(&duplicate_manifest.rows).is_ok() {
+        errors.push("self-test case duplicate_generated_surface expected pass=false".to_string());
     }
     let split_surface = combined_runner_surface("", "\"smoke\"\n\"protocol_detected\"\n\"panic\"");
     if !validate_runner_surfaces(&manifest.rows, &split_surface).is_empty() {

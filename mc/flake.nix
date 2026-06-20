@@ -1384,6 +1384,26 @@
               mkdir -p "$out"
               cp ../scenario-manifest-typecheck.log ../scenario-manifest-self-test.log ../scenario-manifest-check.log "$out/"
             '';
+        mc-compat-generated-harness-surfaces =
+          pkgs.runCommand "mc-compat-generated-harness-surfaces"
+            {
+              nativeBuildInputs = [
+                pkgs.rustc
+                pkgs.gcc
+                pkgs.nickel
+              ];
+            }
+            ''
+              cp -R ${./.} repo
+              chmod -R u+w repo
+              cd repo
+              nickel typecheck config/mc-compat/scenario-manifest.ncl > ../generated-harness-surfaces-typecheck.log
+              rustc --edition=2021 tools/check_scenario_manifest.rs -o ../check-scenario-manifest
+              ../check-scenario-manifest --self-test > ../generated-harness-surfaces-self-test.log
+              ../check-scenario-manifest --check-generated-surfaces > ../generated-harness-surfaces-check.log
+              mkdir -p "$out"
+              cp ../generated-harness-surfaces-typecheck.log ../generated-harness-surfaces-self-test.log ../generated-harness-surfaces-check.log "$out/"
+            '';
         mc-compat-evidence-promotion =
           pkgs.runCommand "mc-compat-evidence-promotion"
             {

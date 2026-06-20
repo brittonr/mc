@@ -6,4 +6,4 @@ c7c466d2c63924084fdf04c1771ba0121b535addf8fae4f15b69b9992586b253  docs/evidence/
 864fedc1f1f645058b9ca061829d7c42e3da8d088e8cc394ab0c8abf6b2f5150  tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java
 b101e6fad2ffa59a36d2f4135166024d43bbd0c4bbf3b3a3403521f73a1ea5d6  tools/mc-compat-runner/src/main.rs
 e6bf9c98fa4e9dbc946a7a101816c10c53ccf46ff1edb9182e0b151262da1ad1  config/mc-compat/scenario-manifest.ncl
-18fe4b935b90d8a891232e0135e1263f724c41f7185e264de6781e79d702a769  tools/mc-compat-runner/src/scenario_manifest_generated.rs
+f606f3651005298978efc81ed87d046964d96ef36211f8226812f6779752fa5d  tools/mc-compat-runner/src/scenario_manifest_generated.rs
