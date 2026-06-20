@@ -25,11 +25,13 @@ let ScenarioRow = {
 let ScenarioManifest = {
   schema_version | Number,
   schema | String,
+  typed_event_fallback_waiver | String,
   scenarios | Array ScenarioRow,
 } in
 {
   schema_version = 1,
   schema = "mc.compat.scenario-manifest.v1",
+  typed_event_fallback_waiver = "owner=mc-compat; reason=legacy rows still rely on substring log evidence; non_claim=typed-event migration changes observability only; next_action=migrate rows when typed-event fixtures cover client server and forbidden surfaces",
   scenarios = [
     {
       name = "smoke",
@@ -41,8 +43,8 @@ let ScenarioManifest = {
       session_count = 1,
       maintained = true,
       dry_run = { check = "mc-compat-dry-run", wrapper = "mc-compat-smoke", receipt_shape_check = true, exclusion_reason = "" },
-      receipt_expectations = ["schema", "headless", "typed-scenario", "non-claims"],
-      migration_state = "substring-fallback",
+      receipt_expectations = ["schema", "headless", "typed-scenario", "typed-event-ready", "non-claims"],
+      migration_state = "typed-event-ready",
       current_bundle_row = "",
       current_bundle_exclusion_reason = "baseline smoke is harness health evidence, not a promoted protocol-763 seam row",
     },
@@ -101,8 +103,8 @@ let ScenarioManifest = {
       session_count = 1,
       maintained = true,
       dry_run = { check = "mc-compat-valence-ctf-inventory-interaction-dry-run", wrapper = "mc-compat-valence-ctf-inventory-interaction", receipt_shape_check = true, exclusion_reason = "" },
-      receipt_expectations = ["schema", "inventory_semantics", "client_server_correlation", "non-claims"],
-      migration_state = "substring-fallback",
+      receipt_expectations = ["schema", "inventory_semantics", "client_server_correlation", "typed-event-ready", "non-claims"],
+      migration_state = "typed-event-ready",
       current_bundle_row = "Inventory/drop",
       current_bundle_exclusion_reason = "",
     },

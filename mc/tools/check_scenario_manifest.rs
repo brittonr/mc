@@ -63,6 +63,56 @@ const STALE_DRY_RUN_EXCLUSION_MARKERS: &[&str] = &[
     "instead of a dedicated dry-run wrapper",
     "instead of a dry-run wrapper",
 ];
+const TYPED_EVENT_FALLBACK_WAIVER_FIELD: &str = "typed_event_fallback_waiver";
+const TYPED_EVENT_COMMON_FORBIDDEN_EVENTS: &[&str] = &[
+    "panic",
+    "unexpected_eof",
+    "protocol_mismatch",
+    "decode_error",
+];
+const TYPED_EVENT_EMPTY_EVENTS: &[&str] = &[];
+const SMOKE_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &["protocol_detected"];
+const INVENTORY_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
+    "protocol_detected",
+    "join_game",
+    "render_tick",
+    "team_red",
+    "inventory_slot_update",
+    "inventory_sword_slot",
+    "inventory_wool_slot",
+    "inventory_drop_sent",
+    "inventory_pickup_seen",
+    "inventory_click_sent",
+    "inventory_open_container_seen",
+    "inventory_container_click_sent",
+    "inventory_block_place_sent",
+];
+const INVENTORY_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
+    "server_username_seen",
+    "server_inventory_hotbar_select",
+    "server_inventory_drop",
+    "server_inventory_pickup",
+    "server_inventory_click",
+    "server_inventory_open_container",
+    "server_inventory_container_click",
+    "server_block_place",
+];
+const TYPED_EVENT_READINESS_FIXTURES: &[TypedEventReadinessFixture<'static>] = &[
+    TypedEventReadinessFixture {
+        scenario: "smoke",
+        client_events: SMOKE_TYPED_EVENT_CLIENT_EVENTS,
+        server_events: TYPED_EVENT_EMPTY_EVENTS,
+        forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
+        derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
+    },
+    TypedEventReadinessFixture {
+        scenario: "inventory-interaction",
+        client_events: INVENTORY_TYPED_EVENT_CLIENT_EVENTS,
+        server_events: INVENTORY_TYPED_EVENT_SERVER_EVENTS,
+        forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
+        derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
+    },
+];
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct DryRun {
@@ -92,7 +142,17 @@ struct ScenarioRow {
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct Manifest {
     schema: String,
+    typed_event_fallback_waiver: String,
     rows: Vec<ScenarioRow>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct TypedEventReadinessFixture<'a> {
+    scenario: &'a str,
+    client_events: &'a [&'a str],
+    server_events: &'a [&'a str],
+    forbidden_events: &'a [&'a str],
+    derivation_rules: &'a [&'a str],
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -121,6 +181,19 @@ struct DryRunCoverageEvaluation {
 }
 
 impl DryRunCoverageEvaluation {
+    fn is_complete(&self) -> bool {
+        self.issues.is_empty()
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct TypedEventReadinessEvaluation {
+    ready: usize,
+    fallback: usize,
+    issues: Vec<String>,
+}
+
+impl TypedEventReadinessEvaluation {
     fn is_complete(&self) -> bool {
         self.issues.is_empty()
     }
@@ -164,6 +237,7 @@ fn run_repo_check(root: &Path) -> Result<String, Vec<String>> {
     let manifest = parse_manifest(&manifest_text)?;
     validate_manifest(&manifest)?;
     let dry_run_coverage = evaluate_dry_run_coverage(&manifest.rows);
+    let typed_event_readiness = evaluate_typed_event_readiness(&manifest);
 
     let generated = read_repo_file(root, GENERATED_RUST_PATH)?;
     let runner_main = read_repo_file(root, RUNNER_MAIN_PATH)?;
@@ -188,11 +262,13 @@ fn run_repo_check(root: &Path) -> Result<String, Vec<String>> {
 
     if errors.is_empty() {
         Ok(format!(
-            "{} rows validated; dry-run coverage: {} covered, {} waived, {} unmaintained",
+            "{} rows validated; dry-run coverage: {} covered, {} waived, {} unmaintained; typed-event readiness: {} ready, {} fallback",
             manifest.rows.len(),
             dry_run_coverage.covered,
             dry_run_coverage.waived,
-            dry_run_coverage.unmaintained
+            dry_run_coverage.unmaintained,
+            typed_event_readiness.ready,
+            typed_event_readiness.fallback
         ))
     } else {
         Err(errors)
@@ -206,8 +282,14 @@ fn read_repo_file(root: &Path, relative: &str) -> Result<String, Vec<String>> {
 
 fn parse_manifest(text: &str) -> Result<Manifest, Vec<String>> {
     let schema = parse_top_level_string(text, "schema")?;
+    let typed_event_fallback_waiver =
+        parse_top_level_string(text, TYPED_EVENT_FALLBACK_WAIVER_FIELD)?;
     let rows = parse_scenario_rows(text)?;
-    Ok(Manifest { schema, rows })
+    Ok(Manifest {
+        schema,
+        typed_event_fallback_waiver,
+        rows,
+    })
 }
 
 fn parse_top_level_string(text: &str, field: &str) -> Result<String, Vec<String>> {
@@ -514,6 +596,8 @@ fn validate_manifest(manifest: &Manifest) -> Result<(), Vec<String>> {
     }
     let dry_run_coverage = evaluate_dry_run_coverage(&manifest.rows);
     errors.extend(dry_run_coverage.issues);
+    let typed_event_readiness = evaluate_typed_event_readiness(manifest);
+    errors.extend(typed_event_readiness.issues);
     if errors.is_empty() {
         Ok(())
     } else {
@@ -650,6 +734,117 @@ fn waiver_field_value<'a>(metadata: &'a str, field: &str) -> Option<&'a str> {
         .map(str::trim)
         .find_map(|part| part.strip_prefix(field).map(str::trim))
         .filter(|value| !value.is_empty())
+}
+
+fn evaluate_typed_event_readiness(manifest: &Manifest) -> TypedEventReadinessEvaluation {
+    let mut evaluation = TypedEventReadinessEvaluation {
+        ready: usize::MIN,
+        fallback: usize::MIN,
+        issues: Vec::new(),
+    };
+    for row in &manifest.rows {
+        evaluate_typed_event_readiness_row(row, &mut evaluation);
+    }
+    if evaluation.fallback > usize::MIN {
+        evaluation.issues.extend(validate_waiver_metadata_fields(
+            TYPED_EVENT_FALLBACK_WAIVER_FIELD,
+            &manifest.typed_event_fallback_waiver,
+            &[],
+        ));
+    }
+    evaluation
+}
+
+fn evaluate_typed_event_readiness_row(
+    row: &ScenarioRow,
+    evaluation: &mut TypedEventReadinessEvaluation,
+) {
+    if row.migration_state == TYPED_EVENT_READY_MIGRATION {
+        evaluation.ready += 1;
+        evaluation
+            .issues
+            .extend(validate_typed_event_ready_row(row));
+        return;
+    }
+    if row.migration_state == SUBSTRING_FALLBACK_MIGRATION {
+        evaluation.fallback += 1;
+    }
+}
+
+fn validate_typed_event_ready_row(row: &ScenarioRow) -> Vec<String> {
+    let Some(fixture) = typed_event_readiness_fixture(&row.name) else {
+        return vec![format!(
+            "{}: typed-event-ready row lacks readiness fixture",
+            row.name
+        )];
+    };
+    let mut errors = Vec::new();
+    for milestone in &row.client_milestones {
+        if !typed_event_surface_contains(fixture.client_events, fixture.derivation_rules, milestone)
+        {
+            errors.push(format!(
+                "{}: missing client typed-event surface {milestone}",
+                row.name
+            ));
+        }
+    }
+    for milestone in &row.server_milestones {
+        if !typed_event_surface_contains(fixture.server_events, fixture.derivation_rules, milestone)
+        {
+            errors.push(format!(
+                "{}: missing server typed-event surface {milestone}",
+                row.name
+            ));
+        }
+    }
+    for forbidden in &row.forbidden_patterns {
+        if !typed_event_surface_contains(
+            fixture.forbidden_events,
+            fixture.derivation_rules,
+            forbidden,
+        ) {
+            errors.push(format!(
+                "{}: missing forbidden typed-event surface {forbidden}",
+                row.name
+            ));
+        }
+    }
+    errors
+}
+
+fn typed_event_surface_contains(events: &[&str], derivation_rules: &[&str], value: &str) -> bool {
+    events.contains(&value) || derivation_rules.contains(&value)
+}
+
+fn typed_event_readiness_fixture(
+    name: &str,
+) -> Option<&'static TypedEventReadinessFixture<'static>> {
+    TYPED_EVENT_READINESS_FIXTURES
+        .iter()
+        .find(|fixture| fixture.scenario == name)
+}
+
+fn validate_waiver_metadata_fields(
+    label: &str,
+    metadata: &str,
+    stale_markers: &[&str],
+) -> Vec<String> {
+    let mut errors = Vec::new();
+    let metadata = metadata.trim();
+    for marker in stale_markers {
+        if metadata.contains(marker) {
+            errors.push(format!(
+                "{label}: waiver metadata contains stale marker {:?}",
+                marker
+            ));
+        }
+    }
+    for field in REQUIRED_WAIVER_FIELDS {
+        if waiver_field_value(metadata, field).is_none() {
+            errors.push(format!("{label}: waiver metadata missing nonempty {field}"));
+        }
+    }
+    errors
 }
 
 fn validate_generated_tables(rows: &[ScenarioRow], generated: &str) -> Vec<String> {
@@ -825,6 +1020,7 @@ fn run_self_tests() -> Result<String, Vec<String>> {
     let cases = [
         ("valid", valid_fixture(), true),
         ("waiver_backed", waiver_fixture(), true),
+        ("typed_event_ready", typed_event_ready_fixture(), true),
         ("duplicate", duplicate_fixture(), false),
         ("missing_alias", missing_alias_fixture(), false),
         ("missing_milestone", missing_milestone_fixture(), false),
@@ -837,6 +1033,26 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         ("empty_waiver", empty_waiver_fixture(), false),
         ("incomplete_waiver", incomplete_waiver_fixture(), false),
         ("stale_waiver", stale_waiver_fixture(), false),
+        (
+            "missing_typed_event_client",
+            missing_typed_event_client_fixture(),
+            false,
+        ),
+        (
+            "missing_typed_event_server",
+            missing_typed_event_server_fixture(),
+            false,
+        ),
+        (
+            "missing_typed_event_forbidden",
+            missing_typed_event_forbidden_fixture(),
+            false,
+        ),
+        (
+            "missing_typed_event_fallback_waiver",
+            missing_typed_event_fallback_waiver_fixture(),
+            false,
+        ),
         (
             "covered_row_with_waiver",
             covered_row_with_waiver_fixture(),
@@ -859,6 +1075,16 @@ fn run_self_tests() -> Result<String, Vec<String>> {
     let dry_run_coverage = evaluate_dry_run_coverage(&manifest.rows);
     if !dry_run_coverage.is_complete() {
         errors.push("self-test case valid dry-run coverage expected pass=true".to_string());
+    }
+    let typed_event_readiness = evaluate_typed_event_readiness(&manifest);
+    if !typed_event_readiness.is_complete() {
+        errors.push("self-test case valid typed-event fallback expected pass=true".to_string());
+    }
+    let ready_manifest =
+        parse_manifest(&typed_event_ready_fixture()).expect("ready fixture parses");
+    let ready_evaluation = evaluate_typed_event_readiness(&ready_manifest);
+    if !ready_evaluation.is_complete() {
+        errors.push("self-test case typed-event readiness expected pass=true".to_string());
     }
     let split_surface = combined_runner_surface("", "\"smoke\"\n\"protocol_detected\"\n\"panic\"");
     if !validate_runner_surfaces(&manifest.rows, &split_surface).is_empty() {
@@ -938,7 +1164,17 @@ fn run_self_tests() -> Result<String, Vec<String>> {
 }
 
 fn fixture_with_row(row: &str) -> String {
-    format!("schema = \"{SUPPORTED_SCHEMA}\"\nscenarios = [\n{{\n{row}\n}},\n],\n")
+    fixture_with_row_and_typed_event_waiver(row, complete_typed_event_fallback_waiver_metadata())
+}
+
+fn fixture_with_row_and_typed_event_waiver(row: &str, waiver: &str) -> String {
+    format!(
+        "schema = \"{SUPPORTED_SCHEMA}\"\ntyped_event_fallback_waiver = \"{waiver}\"\nscenarios = [\n{{\n{row}\n}},\n],\n"
+    )
+}
+
+fn complete_typed_event_fallback_waiver_metadata() -> &'static str {
+    "owner=mc-compat; reason=legacy rows still rely on substring log evidence; non_claim=typed-event migration changes observability only; next_action=migrate rows when typed-event fixtures cover client server and forbidden surfaces"
 }
 
 fn valid_row() -> &'static str {
@@ -951,7 +1187,10 @@ fn valid_fixture() -> String {
 
 fn duplicate_fixture() -> String {
     let row = valid_row();
-    format!("schema = \"{SUPPORTED_SCHEMA}\"\nscenarios = [\n{{\n{row}\n}},\n{{\n{row}\n}},\n],\n")
+    let waiver = complete_typed_event_fallback_waiver_metadata();
+    format!(
+        "schema = \"{SUPPORTED_SCHEMA}\"\ntyped_event_fallback_waiver = \"{waiver}\"\nscenarios = [\n{{\n{row}\n}},\n{{\n{row}\n}},\n],\n"
+    )
 }
 
 fn missing_alias_fixture() -> String {
@@ -1017,6 +1256,42 @@ fn covered_row_with_waiver_fixture() -> String {
         "exclusion_reason = \"\"",
         &format!("exclusion_reason = \"{}\"", complete_waiver_metadata()),
     ))
+}
+
+fn typed_event_ready_row() -> String {
+    valid_row().replace(
+        "migration_state = \"substring-fallback\"",
+        "migration_state = \"typed-event-ready\"",
+    )
+}
+
+fn typed_event_ready_fixture() -> String {
+    fixture_with_row(&typed_event_ready_row())
+}
+
+fn missing_typed_event_client_fixture() -> String {
+    fixture_with_row(&typed_event_ready_row().replace(
+        "client_milestones = [\"protocol_detected\"]",
+        "client_milestones = [\"missing_client_event\"]",
+    ))
+}
+
+fn missing_typed_event_server_fixture() -> String {
+    fixture_with_row(&typed_event_ready_row().replace(
+        "server_milestones = []",
+        "server_milestones = [\"missing_server_event\"]",
+    ))
+}
+
+fn missing_typed_event_forbidden_fixture() -> String {
+    fixture_with_row(&typed_event_ready_row().replace(
+        "forbidden_patterns = [\"panic\"]",
+        "forbidden_patterns = [\"unmapped_forbidden_event\"]",
+    ))
+}
+
+fn missing_typed_event_fallback_waiver_fixture() -> String {
+    fixture_with_row_and_typed_event_waiver(valid_row(), "")
 }
 
 fn unsupported_migration_fixture() -> String {

@@ -1,0 +1,166 @@
+# Typed-event readiness validation 2026-06-20
+root=/home/brittonr/git/mc
+
+## nix develop --no-update-lock-file /home/brittonr/git/mc -c rustc tools/check_scenario_manifest.rs -o /tmp/check_scenario_manifest_typed_event_readiness
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+command_exit_status=0
+
+## /tmp/check_scenario_manifest_typed_event_readiness --self-test
+scenario manifest self-test passed: positive and negative fixtures exercised
+command_exit_status=0
+
+## /tmp/check_scenario_manifest_typed_event_readiness
+scenario manifest check passed: 36 rows validated; dry-run coverage: 34 covered, 2 waived, 0 unmaintained; typed-event readiness: 2 ready, 34 fallback
+command_exit_status=0
+
+## nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test --manifest-path tools/mc-compat-runner/Cargo.toml typed_event -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.10s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 7 tests
+test tests::typed_event_parser_accepts_versioned_event_lines ... ok
+test tests::typed_event_graph_checks_required_forbidden_and_ordered_events ... ok
+test tests::typed_event_oracle_validates_migrated_inventory_graph ... ok
+test tests::typed_events_from_receipt_evidence_include_client_and_server_sources ... ok
+test tests::typed_event_receipt_artifact_records_reviewable_timeline_hash ... ok
+test tests::typed_event_oracle_receipt_records_migration_fallback ... ok
+test tests::typed_event_graph_accepts_representative_scenario_fixtures ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 116 filtered out; finished in 0.00s
+
+command_exit_status=0
+
+## nix build --no-update-lock-file --option builders  path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L
+this derivation will be built:
+  /nix/store/j8m47zm6jr6666scm767pa0z4dlfwj0a-mc-compat-scenario-manifest.drv
+building '/nix/store/j8m47zm6jr6666scm767pa0z4dlfwj0a-mc-compat-scenario-manifest.drv'...
+command_exit_status=0
+
+## nix build --no-update-lock-file --option builders  path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-dry-run --no-link -L
+this derivation will be built:
+  /nix/store/q9lcm7hvwxmmzsfli69pdzx9b7mcrqzn-mc-compat-dry-run.drv
+building '/nix/store/q9lcm7hvwxmmzsfli69pdzx9b7mcrqzn-mc-compat-dry-run.drv'...
+command_exit_status=0
+
+## nix build --no-update-lock-file --option builders  path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-valence-ctf-inventory-interaction-dry-run --no-link -L
+these 2 derivations will be built:
+  /nix/store/0lnc5jizx2v96d2bx2fjvrlqh4yri057-mc-compat-valence-ctf-inventory-interaction.drv
+  /nix/store/zdih1bvl679xqqrlmnq5w4wvmbv2191r-mc-compat-valence-ctf-inventory-interaction-dry-run.drv
+building '/nix/store/0lnc5jizx2v96d2bx2fjvrlqh4yri057-mc-compat-valence-ctf-inventory-interaction.drv'...
+building '/nix/store/zdih1bvl679xqqrlmnq5w4wvmbv2191r-mc-compat-valence-ctf-inventory-interaction-dry-run.drv'...
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint: call:
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint:
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint:      git config --global init.defaultBranch <name>
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint:
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint:
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint:      git branch -m <name>
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint:
+mc-compat-valence-ctf-inventory-interaction-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-valence-ctf-inventory-interaction-dry-run> Initialized empty Git repository in /build/fake-valence/.git/
+mc-compat-valence-ctf-inventory-interaction-dry-run> [master (root-commit) f6bf170] init
+mc-compat-valence-ctf-inventory-interaction-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-valence-ctf-inventory-interaction-dry-run>  create mode 100644 README.md
+command_exit_status=0
+
+## nix build --no-update-lock-file --option builders  path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-evidence-manifest-refresh --no-link -L
+this derivation will be built:
+  /nix/store/np4sk67xxh8bb6ia03qws252xchr011z-mc-compat-evidence-manifest-refresh.drv
+building '/nix/store/np4sk67xxh8bb6ia03qws252xchr011z-mc-compat-evidence-manifest-refresh.drv'...
+command_exit_status=0
+
+## nix run --no-update-lock-file path:/home/brittonr/git/mc#cairn -- gate proposal migrate-mc-compat-typed-event-readiness --root /home/brittonr/git/mc
+{
+  "change": "migrate-mc-compat-typed-event-readiness",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "9ae6bec91c62099da362577d52c2fe87eb205a98ba363dcb8a11a89d818a9974",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "067bdda56bef03b653747573b39e40bd9997a07833663474970ae6e1400a63c0",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+## nix run --no-update-lock-file path:/home/brittonr/git/mc#cairn -- gate design migrate-mc-compat-typed-event-readiness --root /home/brittonr/git/mc
+{
+  "change": "migrate-mc-compat-typed-event-readiness",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c088fcf675e741db37fe0841474a2743639b8d0b20d7e304b1e0f6ffaaa520a9",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "a12e53256b97473e536acc8867848b495dfe9d313328f15f734cdf1b6d173075",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+## nix run --no-update-lock-file path:/home/brittonr/git/mc#cairn -- gate tasks migrate-mc-compat-typed-event-readiness --root /home/brittonr/git/mc
+{
+  "change": "migrate-mc-compat-typed-event-readiness",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "69022f298f05f9824308d05cf42199d570b12cc8578e18d307eba0e0e91d28c4",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "a58692d70ec8859df1b68a7f268f6508ec6a5d3b5c7ed57bb39ef31b94fad554",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+## nix run --no-update-lock-file path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 5,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 7,
+  "valid": true
+}
+command_exit_status=0
+
+exit_status=0
