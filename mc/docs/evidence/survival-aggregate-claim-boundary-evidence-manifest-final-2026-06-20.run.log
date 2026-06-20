@@ -1,0 +1,7 @@
+# survival aggregate claim boundary final evidence manifest check
+command: nix build .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L
+this derivation will be built:
+  /nix/store/a8ggcf9byysjgrfwl8n9qwlwa32qy7r5-mc-compat-evidence-manifests.drv
+building '/nix/store/a8ggcf9byysjgrfwl8n9qwlwa32qy7r5-mc-compat-evidence-manifests.drv'...
+
+exit_status=0

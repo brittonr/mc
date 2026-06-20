@@ -2,6 +2,6 @@
 1b6881daa6b1f9c8a2985bc0eb8d61904838d1303445136c3fc93db21c43ab6f  docs/evidence/protocol-763-survival-reference-parity-gate-2026-05-28.run.log
 da9e84ac8712ddca2bd60659be316bb547a1695323ba250df72254d6d4623ac0  tools/check_survival_reference_parity.py
 c0d3a935536996d2ea90b04e87e99294169360e3e0fab544c1a4426ea445f6a3  cairn/archive/2026-05-28-add-survival-reference-parity-receipts/tasks.md
-45ffdf60f6e5b4c21e7310250bc81b514d6b35ffe9184357f1446e53b2569476  cairn/specs/mc-compatibility/spec.md
-1927fd7fdf4e969bd345408da5a2cc48ed381bc4e15448c9df9c38ed0ab4c1b0  docs/evidence/protocol-763-current-evidence-bundle.md
-9524f82cca1cdb795164da343453b341e7d13634d4a7db9bff682d9de4be44db  docs/evidence/protocol-763-acceptance-matrix.md
+e8db0c6df6aa512d80eb1191e02729d8f1c953af474fa7c6a926f7e82dec5303  cairn/specs/mc-compatibility/spec.md
+6eb0d3fbd25b6ee39a5dd22dbc2e32de159cbf57c050b9705497efa6ea5564cc  docs/evidence/protocol-763-current-evidence-bundle.md
+66dae5bfeb0cfb404b53b93a7706525fc06de47936995a855bea8549a49d40f8  docs/evidence/protocol-763-acceptance-matrix.md

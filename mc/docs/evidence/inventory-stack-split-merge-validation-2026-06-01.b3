@@ -6,8 +6,8 @@ d98ef430ed4fb258eb9897e5236f0195b1fd2c87816398d18dae073638dca8a3  docs/evidence/
 26587fdc6ea895495e4c1e51bb90cae2bc256756e8a1471b0d9cbe3d6a832c9d  docs/evidence/mc-compat-row-fixture-rail-2026-06-01/inventory-stack-split-merge.kv
 080961d7e6f3bbdd3be3f68ea08ed6a83edc9a1ac9bd8e4df207b94bafc1352e  docs/evidence/mc-compat-row-fixture-rail-2026-06-01.run.log
 012dcaf4839be25ff4d9d4ec9a82050fd93b5223ea7f2b7c07539e1866967007  docs/evidence/mc-compat-row-fixture-rail-2026-06-01.b3
-9524f82cca1cdb795164da343453b341e7d13634d4a7db9bff682d9de4be44db  docs/evidence/protocol-763-acceptance-matrix.md
-1927fd7fdf4e969bd345408da5a2cc48ed381bc4e15448c9df9c38ed0ab4c1b0  docs/evidence/protocol-763-current-evidence-bundle.md
+66dae5bfeb0cfb404b53b93a7706525fc06de47936995a855bea8549a49d40f8  docs/evidence/protocol-763-acceptance-matrix.md
+6eb0d3fbd25b6ee39a5dd22dbc2e32de159cbf57c050b9705497efa6ea5564cc  docs/evidence/protocol-763-current-evidence-bundle.md
 bd7b2691ee60c2c997a18c8c809e8fedf5b2f7d4aac02f9474e68da2d14dc297  cairn/archive/2026-06-01-inventory-stack-split-merge/tasks.md
 9e483422d5050c1ba830941b55cd50ccfc338c98bbc05fae07417e8b2f6bafd0  cairn/archive/2026-06-01-inventory-stack-split-merge/proposal.md
 2c8a7f17e97a170b49ab79ab4967184de8aeb31c9937835873babefb103aea9a  cairn/archive/2026-06-01-inventory-stack-split-merge/design.md

@@ -1,0 +1,7 @@
+# survival aggregate claim boundary post-sync evidence manifest check
+command: nix build .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L
+this derivation will be built:
+  /nix/store/w3fckm87di1mjshkyphd08gr4gdksgy8-mc-compat-evidence-manifests.drv
+building '/nix/store/w3fckm87di1mjshkyphd08gr4gdksgy8-mc-compat-evidence-manifests.drv'...
+
+exit_status=0

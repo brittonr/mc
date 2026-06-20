@@ -1,0 +1,91 @@
+# survival aggregate claim boundary closeout
+command: rustc checker; checker --self-test; checker repo check; focused flake checks; cairn gates; cairn validate
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+survival aggregate claim boundary self-test ok: all-covered success, pending success, missing row, stale evidence, Valence-only, and overclaim fixtures exercised
+survival aggregate claim boundary passed: 9 prerequisites checked, 0 covered, 9 pending
+this derivation will be built:
+  /nix/store/1fkrdvzn6n712d5yy349pqc72pgpgkyn-mc-compat-survival-aggregate-claim-boundary.drv
+building '/nix/store/1fkrdvzn6n712d5yy349pqc72pgpgkyn-mc-compat-survival-aggregate-claim-boundary.drv'...
+this derivation will be built:
+  /nix/store/8mjq4ad937isppkibzmnvxm5rv1iggnw-mc-compat-full-survival-gate.drv
+building '/nix/store/8mjq4ad937isppkibzmnvxm5rv1iggnw-mc-compat-full-survival-gate.drv'...
+this derivation will be built:
+  /nix/store/1xginihklh5v739iqcm77i205c4bfcq4-mc-compat-current-evidence-bundle.drv
+building '/nix/store/1xginihklh5v739iqcm77i205c4bfcq4-mc-compat-current-evidence-bundle.drv'...
+{
+  "change": "survival-aggregate-parity-claim-boundary",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e8126f64a42f2351a4f5bd5f6767b5e702ef4a7070eb28460adacd3efb5b7afd",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "ec587eb467a7e01b3b872445f7c75233b37a706a4c286deacedfbc4ce95e5c48",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "survival-aggregate-parity-claim-boundary",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c188da5a864d73a7e255bc625ee4ffce25279ab8178e8c6914151e165c776a04",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "aca1272fb5997aaab35e24cd43e7490efbc7cdcc37f3aec8449293a3131082ae",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "survival-aggregate-parity-claim-boundary",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "9a80a469aa60924e7ae82f053f5e96ab14f7dce14bb1e5cab4131c2bdc16a7c8",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "0e5f79576263fab86416cd6fb0ea1fe7944bce4a42b37dc9230592f54a1518e9",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change_issues": [],
+  "changes": 10,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 12,
+  "valid": true
+}
+
+exit_status=0

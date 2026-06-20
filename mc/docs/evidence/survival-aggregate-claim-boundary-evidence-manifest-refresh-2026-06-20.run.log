@@ -1,0 +1,5 @@
+# survival aggregate claim boundary evidence manifest refresh
+command: nix run .#evidence-manifest-refresh -- --refresh
+evidence manifest refresh ok: mode=refresh; passes=8; manifests=383; entries=2518; current=2518; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=8; manifest_writes=144
+
+exit_status=0

@@ -1,0 +1,8 @@
+# survival aggregate claim boundary task evidence contract check
+command: rustc tools/check_cairn_task_evidence.rs; explicit task-file check
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence gate passed: 4 completed tasks checked across 1 task files
+
+exit_status=0

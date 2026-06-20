@@ -24,6 +24,22 @@ This matrix tracks bounded survival evidence rows separately from full survival 
 
 `full_survival_compatibility` remains a non-claim even after the bounded world-persistence restart, crash-recovery, and sign block-entity rows because the matrix still covers only named, deterministic evidence rows, not broad vanilla survival behavior. In plain terms: full_survival_compatibility remains a non-claim.
 
+## Aggregate survival claim boundary
+
+The focused gate `mc-compat-survival-aggregate-claim-boundary` is required before any future full survival compatibility or broad vanilla survival parity wording can be used. Current evidence remains row-scoped reference parity for each bounded survival row; aggregate survival claim blocked is the only allowed aggregate status until every prerequisite below has paired Paper/reference and Valence evidence, comparator output, fresh BLAKE3 manifest linkage, and an aggregate evidence bundle. Each pending breadth prerequisite is a bounded survival row family, not a broad claim.
+
+| Survival aggregate prerequisite | Status | Valence evidence | Reference evidence | Comparator/evidence doc | Manifest | Claim vocabulary |
+| --- | --- | --- | --- | --- | --- | --- |
+| crafting recipe breadth | pending_breadth_evidence | none | none | none | none | aggregate survival claim blocked; non-claim |
+| furnace smelting breadth | pending_breadth_evidence | none | none | none | none | aggregate survival claim blocked; non-claim |
+| hunger health cycle | pending_breadth_evidence | none | none | none | none | aggregate survival claim blocked; non-claim |
+| mob AI loot breadth | pending_breadth_evidence | none | none | none | none | aggregate survival claim blocked; non-claim |
+| redstone circuit breadth | pending_breadth_evidence | none | none | none | none | aggregate survival claim blocked; non-claim |
+| biome dimension travel | pending_breadth_evidence | none | none | none | none | aggregate survival claim blocked; non-claim |
+| world multichunk durability | pending_breadth_evidence | none | none | none | none | aggregate survival claim blocked; non-claim |
+| container block entity breadth | pending_breadth_evidence | none | none | none | none | aggregate survival claim blocked; non-claim |
+| sign editing live parity | pending_breadth_evidence | none | none | none | none | aggregate survival claim blocked; non-claim |
+
 ## Required evidence for row promotion
 
 Each row needs:

@@ -1,0 +1,23 @@
+# survival aggregate claim boundary pre-archive validation
+command: focused gate; evidence manifests; task-evidence flake check; cairn validate
+this derivation will be built:
+  /nix/store/b0psp178xszl6ppb71fggy64w0dxg472-mc-compat-survival-aggregate-claim-boundary.drv
+building '/nix/store/b0psp178xszl6ppb71fggy64w0dxg472-mc-compat-survival-aggregate-claim-boundary.drv'...
+this derivation will be built:
+  /nix/store/n6hjf7pqfb5689ks6gp34f9173aiafzp-mc-compat-evidence-manifests.drv
+building '/nix/store/n6hjf7pqfb5689ks6gp34f9173aiafzp-mc-compat-evidence-manifests.drv'...
+this derivation will be built:
+  /nix/store/h3dp2q1z8i88gqqjpp159zi4l8yrkbr7-mc-compat-cairn-task-evidence.drv
+building '/nix/store/h3dp2q1z8i88gqqjpp159zi4l8yrkbr7-mc-compat-cairn-task-evidence.drv'...
+{
+  "change_issues": [],
+  "changes": 10,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 12,
+  "valid": true
+}
+
+exit_status=0

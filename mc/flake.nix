@@ -1346,6 +1346,24 @@
               mkdir -p "$out"
               cp ../full-survival-gate-self-test.log ../full-survival-gate-check.log "$out/"
             '';
+        mc-compat-survival-aggregate-claim-boundary =
+          pkgs.runCommand "mc-compat-survival-aggregate-claim-boundary"
+            {
+              nativeBuildInputs = [
+                pkgs.rustc
+                pkgs.gcc
+              ];
+            }
+            ''
+              cp -R ${./.} repo
+              chmod -R u+w repo
+              cd repo
+              rustc --edition=2021 tools/check_survival_aggregate_claim_boundary.rs -o ../check-survival-aggregate-claim-boundary
+              ../check-survival-aggregate-claim-boundary --self-test > ../survival-aggregate-claim-boundary-self-test.log
+              ../check-survival-aggregate-claim-boundary > ../survival-aggregate-claim-boundary-check.log
+              mkdir -p "$out"
+              cp ../survival-aggregate-claim-boundary-self-test.log ../survival-aggregate-claim-boundary-check.log "$out/"
+            '';
         mc-compat-aggregate-claim-gates =
           pkgs.runCommand "mc-compat-aggregate-claim-gates"
             {
@@ -2774,6 +2792,9 @@
           ln -s ${
             self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-full-survival-gate
           } "$out/full-survival-gate"
+          ln -s ${
+            self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-survival-aggregate-claim-boundary
+          } "$out/survival-aggregate-claim-boundary"
           ln -s ${
             self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-aggregate-claim-gates
           } "$out/aggregate-claim-gates"

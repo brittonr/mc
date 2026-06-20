@@ -1,0 +1,26 @@
+# survival aggregate claim boundary accepted-spec repair
+command: cairn validate; rg requirement id
+{
+  "change_issues": [],
+  "changes": 10,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 12,
+  "valid": true
+}
+6250:r[mc_compatibility.survival_aggregate_parity_claim_boundary.contract] The repo MUST define an aggregate survival claim boundary before any documentation can claim full survival compatibility or broad vanilla survival parity.
+6254:r[mc_compatibility.survival_aggregate_parity_claim_boundary.contract.scope]
+6262:r[mc_compatibility.survival_aggregate_parity_claim_boundary.checker] A deterministic checker MUST reject aggregate survival claims unless every prerequisite row and evidence artifact passes.
+6266:r[mc_compatibility.survival_aggregate_parity_claim_boundary.checker.rejects]
+6273:r[mc_compatibility.survival_aggregate_parity_claim_boundary.gate] The aggregate boundary checker MUST be available as a focused verification gate without changing row-scoped survival evidence semantics.
+6277:r[mc_compatibility.survival_aggregate_parity_claim_boundary.gate.isolated]
+6285:r[mc_compatibility.survival_aggregate_parity_claim_boundary.docs] Survival matrix, acceptance matrix, and current bundle docs MUST point broad survival claims at the aggregate boundary gate.
+6289:r[mc_compatibility.survival_aggregate_parity_claim_boundary.docs.nonclaims]
+6296:r[mc_compatibility.survival_aggregate_parity_claim_boundary.evidence] Gate output and manifest evidence for the aggregate boundary MUST be copied under `docs/evidence/` before archive.
+6300:r[mc_compatibility.survival_aggregate_parity_claim_boundary.evidence.reviewable]
+6307:r[mc_compatibility.survival_aggregate_parity_claim_boundary.validation] The change MUST record checker, focused flake check, manifest, task gate, Cairn gates, and Cairn validation output before archive.
+6311:r[mc_compatibility.survival_aggregate_parity_claim_boundary.validation.log]
+
+exit_status=0

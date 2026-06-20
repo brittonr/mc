@@ -6,8 +6,8 @@ ba034bafee5b69264d34038cc7eb4a166f36801dc18d106a2e4e6e9733e3f9d9  docs/evidence/
 4bb8f1cc96ce690afedbd9db37688a1fb329cc1687e2ab35319e010570eabffc  docs/evidence/mc-compat-row-fixture-rail-2026-06-01/projectile-travel-collision-parity.kv
 080961d7e6f3bbdd3be3f68ea08ed6a83edc9a1ac9bd8e4df207b94bafc1352e  docs/evidence/mc-compat-row-fixture-rail-2026-06-01.run.log
 012dcaf4839be25ff4d9d4ec9a82050fd93b5223ea7f2b7c07539e1866967007  docs/evidence/mc-compat-row-fixture-rail-2026-06-01.b3
-9524f82cca1cdb795164da343453b341e7d13634d4a7db9bff682d9de4be44db  docs/evidence/protocol-763-acceptance-matrix.md
-1927fd7fdf4e969bd345408da5a2cc48ed381bc4e15448c9df9c38ed0ab4c1b0  docs/evidence/protocol-763-current-evidence-bundle.md
+66dae5bfeb0cfb404b53b93a7706525fc06de47936995a855bea8549a49d40f8  docs/evidence/protocol-763-acceptance-matrix.md
+6eb0d3fbd25b6ee39a5dd22dbc2e32de159cbf57c050b9705497efa6ea5564cc  docs/evidence/protocol-763-current-evidence-bundle.md
 247b76739f73af147475dea20cba039d93a5dde54ed44b7a660d0107a59b9334  cairn/archive/2026-06-01-projectile-travel-collision-parity/tasks.md
 a6ba1cfb6bca11b0694bbbb03b40d32c5ea7e7acf77cf26beb15109a6909f61f  cairn/archive/2026-06-01-projectile-travel-collision-parity/proposal.md
 457a604c53c09e60dde0af4bfc5e4f36896ce876feb599ec586f9192d095dfe9  cairn/archive/2026-06-01-projectile-travel-collision-parity/design.md

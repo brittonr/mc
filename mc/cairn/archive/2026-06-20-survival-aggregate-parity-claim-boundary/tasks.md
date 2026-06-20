@@ -1,0 +1,14 @@
+# Tasks
+
+- [x] [serial] Define the aggregate survival claim boundary, prerequisite row families, and allowed/non-allowed claim vocabulary. r[mc_compatibility.survival_aggregate_parity_claim_boundary.contract]
+  - Evidence: `docs/evidence/survival-aggregate-claim-boundary-closeout-2026-06-20.run.log`; BLAKE3 manifest `docs/evidence/survival-aggregate-claim-boundary-2026-06-20.b3`.
+- [x] [depends:contract] Add deterministic checker positive and negative fixtures for all-required evidence, missing breadth rows, stale manifests, Valence-only rows, and broad-overclaim wording. r[mc_compatibility.survival_aggregate_parity_claim_boundary.checker]
+  - Evidence: `docs/evidence/survival-aggregate-claim-boundary-closeout-2026-06-20.run.log`; BLAKE3 manifest `docs/evidence/survival-aggregate-claim-boundary-2026-06-20.b3`.
+- [x] [depends:checker] Wire the gate into focused flake checks without changing existing row-scoped survival evidence semantics. r[mc_compatibility.survival_aggregate_parity_claim_boundary.gate]
+  - Evidence: `docs/evidence/survival-aggregate-claim-boundary-closeout-2026-06-20.run.log`; BLAKE3 manifest `docs/evidence/survival-aggregate-claim-boundary-2026-06-20.b3`.
+- [x] [depends:gate] Update survival matrix/current bundle wording to point aggregate claims at the new gate while preserving current non-claims. r[mc_compatibility.survival_aggregate_parity_claim_boundary.docs]
+  - Evidence: `docs/evidence/survival-aggregate-claim-boundary-closeout-2026-06-20.run.log`; BLAKE3 manifest `docs/evidence/survival-aggregate-claim-boundary-2026-06-20.b3`.
+- [x] [depends:docs] Produce reviewable checker output, evidence manifests, and task evidence logs under `docs/evidence/`. r[mc_compatibility.survival_aggregate_parity_claim_boundary.evidence]
+  - Evidence: `docs/evidence/survival-aggregate-claim-boundary-closeout-2026-06-20.run.log`, `docs/evidence/survival-aggregate-claim-boundary-task-evidence-contract-2026-06-20.run.log`; BLAKE3 manifest `docs/evidence/survival-aggregate-claim-boundary-2026-06-20.b3`; inline blake3 c6a888e47f6e64a570dcd89cd18fb075a45c7a9cb306aca89db76d8c4d82daaa for the task-evidence log.
+- [x] [depends:evidence] Run checker self-tests, focused flake check, evidence manifest checks, task-evidence gate, Cairn gates, and Cairn validation. r[mc_compatibility.survival_aggregate_parity_claim_boundary.validation]
+  - Evidence: `docs/evidence/survival-aggregate-claim-boundary-closeout-2026-06-20.run.log`, `docs/evidence/survival-aggregate-claim-boundary-evidence-manifest-refresh-2026-06-20.run.log`, `docs/evidence/survival-aggregate-claim-boundary-evidence-manifest-2026-06-20.run.log`, `docs/evidence/survival-aggregate-claim-boundary-task-evidence-prevalidation-2026-06-20.run.log`; BLAKE3 manifest `docs/evidence/survival-aggregate-claim-boundary-2026-06-20.b3`; inline blake3 feaf2bb3cad13ada4393c7aa1213e13f3943e3d0e083251c3e42fb9b185da902 for the prevalidation task-evidence log.

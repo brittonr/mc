@@ -1,0 +1,20 @@
+# survival aggregate claim boundary post-archive validation
+command: cairn validate; focused gate; evidence manifests
+{
+  "change_issues": [],
+  "changes": 9,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 11,
+  "valid": true
+}
+this derivation will be built:
+  /nix/store/sp1lclb1qrc9xzfjj9w1a3ix83bqvg06-mc-compat-survival-aggregate-claim-boundary.drv
+building '/nix/store/sp1lclb1qrc9xzfjj9w1a3ix83bqvg06-mc-compat-survival-aggregate-claim-boundary.drv'...
+this derivation will be built:
+  /nix/store/ynpqx6jc9fbwqqgy4zfag6qvmgbhk23c-mc-compat-evidence-manifests.drv
+building '/nix/store/ynpqx6jc9fbwqqgy4zfag6qvmgbhk23c-mc-compat-evidence-manifests.drv'...
+
+exit_status=0

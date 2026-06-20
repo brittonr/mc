@@ -1,0 +1,93 @@
+# survival aggregate claim boundary archive
+command: cairn archive --execute; cairn validate
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-aggregate-parity-claim-boundary",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/2026-06-20-survival-aggregate-parity-claim-boundary"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-aggregate-parity-claim-boundary",
+  "dry_run": false,
+  "input_hash": "ee5bb8e0adef0218e1b9858404ddc08c9d843b1ecb35714ca1cb888326ebf59e",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "e4c92a6c31028119225087ce4839b5f22534faaa520a1957b8e304d10adf5c95",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-20-survival-aggregate-parity-claim-boundary/design.md"
+        },
+        {
+          "content_hash": "2e1b7bcdf289df9043e829928a8078792389293e9df901ba39377febe8d87564",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-20-survival-aggregate-parity-claim-boundary/proposal.md"
+        },
+        {
+          "content_hash": "f667936f792c4f91d3cca387921b3e8669d3e716be3cd0f1ebfb88e5a6d1598b",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-20-survival-aggregate-parity-claim-boundary/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "ef3d25d68cf1330d932c032a9a188cf76c947ab732bb408d3accf182ff13eb17",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-20-survival-aggregate-parity-claim-boundary/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-aggregate-parity-claim-boundary"
+        }
+      ],
+      "manifest_hash": "eadb11c49df9b8cc2b8e98f5ec676f096dd8d1ee9fae0ad844969eb2d45d86a4"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "e4c92a6c31028119225087ce4839b5f22534faaa520a1957b8e304d10adf5c95",
+          "exists": true,
+          "path": "./cairn/changes/survival-aggregate-parity-claim-boundary/design.md"
+        },
+        {
+          "content_hash": "2e1b7bcdf289df9043e829928a8078792389293e9df901ba39377febe8d87564",
+          "exists": true,
+          "path": "./cairn/changes/survival-aggregate-parity-claim-boundary/proposal.md"
+        },
+        {
+          "content_hash": "f667936f792c4f91d3cca387921b3e8669d3e716be3cd0f1ebfb88e5a6d1598b",
+          "exists": true,
+          "path": "./cairn/changes/survival-aggregate-parity-claim-boundary/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "ef3d25d68cf1330d932c032a9a188cf76c947ab732bb408d3accf182ff13eb17",
+          "exists": true,
+          "path": "./cairn/changes/survival-aggregate-parity-claim-boundary/tasks.md"
+        }
+      ],
+      "manifest_hash": "09719b33a875892a2e527a8df9d83a71d7b3765210a74b191c449ea33c73b76f"
+    },
+    "kind": "archive",
+    "manifest_hash": "03a44f0680bcabe107e4eb07414a841182e4d63ed27d872c9a50fd43de2b0f53"
+  },
+  "plan_hash": "63251242b7b2b97c058dc58bc7c5c3b1094a98b7a93adecc2758bb8ff682f17e",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "eb75ff5438665d1fb923f7946a9dc2ee3b2511596c441dbf73f1253a55a1e013"
+}
+{
+  "change_issues": [],
+  "changes": 9,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 11,
+  "valid": true
+}
+
+exit_status=0
