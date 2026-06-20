@@ -2495,7 +2495,7 @@ pub(crate) const SCENARIO_LIVE_CAPABILITIES: &[ScenarioLiveCapability] = &[
 pub(crate) fn parse_scenario(value: &str) -> Result<Scenario, String> {
     SCENARIO_SPECS
         .iter()
-        .find(|spec| spec.aliases.iter().any(|alias| *alias == value))
+        .find(|spec| spec.aliases.contains(&value))
         .map(|spec| spec.scenario)
         .ok_or_else(|| format!("unknown scenario: {value}"))
 }
@@ -2759,6 +2759,7 @@ pub(crate) fn validate_sign_editor_live_contract(
     Ok(())
 }
 
+#[cfg(test)]
 pub(crate) fn scenario_live_capabilities_for_row(
     targeted_row: &str,
 ) -> Vec<&'static ScenarioLiveCapability> {

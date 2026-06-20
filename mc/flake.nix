@@ -4850,6 +4850,7 @@
                 cmake
                 mold
                 rustfmt
+                clippy
                 shellcheck
                 nickel
                 git

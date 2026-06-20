@@ -66,6 +66,7 @@ const PROJECTILE_DAMAGE_ATTACKER_SUFFIX: &str = "a";
 const PROJECTILE_DAMAGE_VICTIM_SUFFIX: &str = "b";
 const PROJECTILE_DAMAGE_CLIENT_USE_NEEDLE: &str = "projectile_probe_use_item_sent";
 const PROJECTILE_DAMAGE_CLIENT_SWING_NEEDLE: &str = "projectile_probe_swing_sent";
+#[cfg(test)]
 const PROJECTILE_DAMAGE_CLIENT_HEALTH_NEEDLE: &str = "update_health health=17.0";
 const PROJECTILE_DAMAGE_SERVER_USE_NEEDLE: &str = "MC-COMPAT-MILESTONE projectile_use";
 const PROJECTILE_DAMAGE_SERVER_HIT_NEEDLE: &str = "MC-COMPAT-MILESTONE projectile_hit";
@@ -82,6 +83,7 @@ const GIT_STATUS_UNAVAILABLE: &str = "unavailable";
 const GIT_STATUS_PORCELAIN_FLAG: &str = "--porcelain";
 const PROJECTILE_DAMAGE_CONTEXT_VELOCITY: f64 = 0.0;
 const PROJECTILE_DAMAGE_CONTEXT_PULL_STRENGTH: f64 = 1.0;
+const XVFB_SERVER_ARGS: &str = "-screen 0 1280x720x24 +extension GLX +render -noreset";
 const PROJECTILE_DAMAGE_VICTIM_START_HEALTH: f64 = 20.0;
 const INVENTORY_STACK_SPLIT_MERGE_PROBE_ENV: &str = "MC_COMPAT_INVENTORY_STACK_SPLIT_MERGE_PROBE";
 const INVENTORY_STACK_CLIENT_INITIAL_NEEDLE: &str =
@@ -375,6 +377,7 @@ const MCP_CONTROL_REQUIRED_OUTCOME_IDS: &[&str] = &[
     "key.applied",
     "chat.applied",
 ];
+#[cfg(test)]
 const MCP_CONTROL_LIVE_OUTCOME_IDS: &[&str] = &[
     "status.applied",
     "look.applied",
@@ -1054,7 +1057,7 @@ fn execute(cfg: &Config) -> Result<Option<ClientRunEvidence>, String> {
                 "plan: build client, start {:?} server, wait for protocol {}, run client under isolated Xvfb/X11",
                 cfg.server_backend, cfg.server_protocol
             ));
-            build_client(&cfg)?;
+            build_client(cfg)?;
             if cfg.server_backend == ServerBackend::Paper {
                 log(format_args!(
                     "server start will set EULA=TRUE using recorded user acceptance"
@@ -1305,8 +1308,7 @@ fn observed_negative_live_rail_outcome(
     };
     let observed = scenario_evidence
         .observed_milestones
-        .iter()
-        .any(|milestone| *milestone == postcondition);
+        .contains(&postcondition);
     if !observed {
         return (None, None, false);
     }
@@ -2864,8 +2866,8 @@ fn client_required_milestone_rules<'a>(
     scenario_required_milestones(scenario)
         .iter()
         .map(|(id, needle)| MilestoneRule {
-            id: *id,
-            matcher: behavior.client_milestone_matcher(*id, needle, projectile_health_needle),
+            id,
+            matcher: behavior.client_milestone_matcher(id, needle, projectile_health_needle),
         })
         .collect()
 }
@@ -2874,8 +2876,8 @@ fn server_required_milestone_rules(scenario: Scenario) -> Vec<MilestoneRule<'sta
     server_required_milestones(scenario)
         .iter()
         .map(|(id, needle)| MilestoneRule {
-            id: *id,
-            matcher: server_required_matcher(id, *needle),
+            id,
+            matcher: server_required_matcher(id, needle),
         })
         .collect()
 }
@@ -2897,11 +2899,11 @@ fn forbidden_milestone_rules(
     scenario_forbidden_patterns(scenario)
         .iter()
         .map(|(id, needle)| MilestoneRule {
-            id: *id,
+            id,
             matcher: if case_insensitive {
-                MatcherKind::CaseInsensitive(*needle)
+                MatcherKind::CaseInsensitive(needle)
             } else {
-                MatcherKind::Literal(*needle)
+                MatcherKind::Literal(needle)
             },
         })
         .collect()
@@ -2935,6 +2937,7 @@ fn evaluate_forbidden_rules(
         .collect()
 }
 
+#[cfg(test)]
 fn evaluate_scenario(scenario: Scenario, output: &str) -> ScenarioEvidence {
     evaluate_scenario_with_projectile_health(
         scenario,
@@ -2990,6 +2993,7 @@ fn evaluate_server_scenario(
     }
 }
 
+#[cfg(test)]
 fn parse_typed_event_line(line: &str) -> Result<TypedEvent, String> {
     let line = line.trim();
     let Some(rest) = line.strip_prefix(TYPED_EVENT_PREFIX) else {
@@ -3013,6 +3017,7 @@ fn parse_typed_event_line(line: &str) -> Result<TypedEvent, String> {
     })
 }
 
+#[cfg(test)]
 fn parse_typed_event_fields(text: &str) -> Result<Vec<(&str, &str)>, String> {
     let mut fields = Vec::new();
     for token in text.split_whitespace() {
@@ -3024,17 +3029,20 @@ fn parse_typed_event_fields(text: &str) -> Result<Vec<(&str, &str)>, String> {
     Ok(fields)
 }
 
+#[cfg(test)]
 fn typed_event_required_string(fields: &[(&str, &str)], key: &str) -> Result<String, String> {
     typed_event_optional_string(fields, key)
         .ok_or_else(|| format!("missing typed event field {key}"))
 }
 
+#[cfg(test)]
 fn typed_event_optional_string(fields: &[(&str, &str)], key: &str) -> Option<String> {
     fields
         .iter()
         .find_map(|(field_key, value)| (*field_key == key).then(|| (*value).to_string()))
 }
 
+#[cfg(test)]
 fn typed_event_required_u32(fields: &[(&str, &str)], key: &str) -> Result<u32, String> {
     let value = typed_event_required_string(fields, key)?;
     value
@@ -3056,7 +3064,7 @@ fn evaluate_typed_event_graph(
         .filter(|event| {
             event.scenario == scenario
                 && event.session == session
-                && username.map_or(true, |name| event.username.as_deref() == Some(name))
+                && username.is_none_or(|name| event.username.as_deref() == Some(name))
         })
         .collect();
     let mut observed_events = Vec::new();
@@ -5048,7 +5056,7 @@ fn spawn_mcp_controlled_client_process(
         .arg("xvfb-run")
         .arg("-a")
         .arg("-s")
-        .arg("-screen 0 1280x720x24 +extension GLX +render -noreset")
+        .arg(XVFB_SERVER_ARGS)
         .arg(cfg.target_dir.join("debug/stevenarella"))
         .arg("--server")
         .arg(format!("127.0.0.1:{}", cfg.server_port))
@@ -5523,7 +5531,7 @@ fn spawn_client_process(
         .arg("xvfb-run")
         .arg("-a")
         .arg("-s")
-        .arg("-screen 0 1280x720x24 +extension GLX +render -noreset")
+        .arg(XVFB_SERVER_ARGS)
         .arg(cfg.target_dir.join("debug/stevenarella"))
         .arg("--server")
         .arg(format!("127.0.0.1:{}", cfg.server_port))
@@ -6446,6 +6454,7 @@ fn frame_artifact_items_json(items: &[FrameArtifactReceiptItem]) -> String {
     out
 }
 
+#[cfg(test)]
 fn smoke_receipt_json(cfg: &Config, result: Result<&Option<ClientRunEvidence>, &str>) -> String {
     smoke_receipt_json_with_typed_event_oracle(cfg, result, None)
 }
@@ -6530,18 +6539,18 @@ fn smoke_receipt_json_with_typed_event_oracle(
         first_forbidden_pattern,
         requires_server_correlation(cfg),
     );
-    let enriched_triage = build_enriched_triage(
+    let enriched_triage = build_enriched_triage(EnrichedTriageInput {
         scenario,
         server_scenario,
-        scenario_name(cfg.scenario),
-        &client_usernames,
+        scenario_name: scenario_name(cfg.scenario),
+        usernames: &client_usernames,
         error,
         first_missing_client,
         first_missing_server,
         first_forbidden_source,
         first_forbidden_pattern,
         suggested_boundary,
-    );
+    });
     let enriched_triage_json = enriched_triage_json(&enriched_triage);
     let status_sample_json = json_string_vec(&cfg.expected_status_sample);
     let status_resource_configured = cfg.expected_status_description.is_some()
@@ -7043,9 +7052,7 @@ fn smoke_receipt_json_with_typed_event_oracle(
         json_optional_string(child_revisions.valence.resolved_rev.as_deref());
     let valence_git_status_json = json_string(child_revisions.valence.status);
     let valence_git_diagnostics_json = json_string_vec(&child_revisions.valence.diagnostics);
-    let error_json = error
-        .map(|err| json_string(err))
-        .unwrap_or_else(|| "null".to_string());
+    let error_json = error.map(json_string).unwrap_or_else(|| "null".to_string());
     let receipt_path_json = json_optional_string(receipt_path.as_deref());
     let client_log_json = json_optional_string(client_log_path.as_deref());
     let client_logs_json = json_string_vec(&client_log_paths);
@@ -7361,45 +7368,54 @@ fn suggested_triage_boundary(
     }
 }
 
-fn build_enriched_triage(
-    scenario: &ScenarioEvidence,
-    server_scenario: &ServerScenarioEvidence,
-    scenario_name: &str,
-    usernames: &[String],
-    error: Option<&str>,
-    first_missing_client: Option<&str>,
-    first_missing_server: Option<&str>,
-    first_forbidden_source: Option<&str>,
-    first_forbidden_pattern: Option<&str>,
-    suggested_boundary: &str,
-) -> EnrichedTriage {
-    let last_client_event = scenario
+struct EnrichedTriageInput<'a> {
+    scenario: &'a ScenarioEvidence,
+    server_scenario: &'a ServerScenarioEvidence,
+    scenario_name: &'a str,
+    usernames: &'a [String],
+    error: Option<&'a str>,
+    first_missing_client: Option<&'a str>,
+    first_missing_server: Option<&'a str>,
+    first_forbidden_source: Option<&'a str>,
+    first_forbidden_pattern: Option<&'a str>,
+    suggested_boundary: &'a str,
+}
+
+fn build_enriched_triage(input: EnrichedTriageInput<'_>) -> EnrichedTriage {
+    let last_client_event = input
+        .scenario
         .observed_milestones
         .last()
         .map(|name| (*name).to_string());
-    let last_server_event = server_scenario
+    let last_server_event = input
+        .server_scenario
         .observed_milestones
         .last()
         .map(|name| (*name).to_string());
-    let mut correlation_ids = vec![format!("scenario={scenario_name}")];
-    correlation_ids.extend(usernames.iter().map(|username| format!("user={username}")));
+    let mut correlation_ids = vec![format!("scenario={}", input.scenario_name)];
+    correlation_ids.extend(
+        input
+            .usernames
+            .iter()
+            .map(|username| format!("user={username}")),
+    );
 
     let mut timeline_excerpt = Vec::new();
     push_triage_excerpt(
         &mut timeline_excerpt,
-        format!("boundary={suggested_boundary}"),
+        format!("boundary={}", input.suggested_boundary),
     );
-    if let Some(error) = error {
+    if let Some(error) = input.error {
         push_triage_excerpt(&mut timeline_excerpt, format!("error={error}"));
     }
-    if let Some(milestone) = first_missing_client {
+    if let Some(milestone) = input.first_missing_client {
         push_triage_excerpt(&mut timeline_excerpt, format!("missing_client={milestone}"));
     }
-    if let Some(milestone) = first_missing_server {
+    if let Some(milestone) = input.first_missing_server {
         push_triage_excerpt(&mut timeline_excerpt, format!("missing_server={milestone}"));
     }
-    if let Some(pattern) = first_forbidden_pattern {
-        let source = first_forbidden_source.unwrap_or("unknown");
+    if let Some(pattern) = input.first_forbidden_pattern {
+        let source = input.first_forbidden_source.unwrap_or("unknown");
         push_triage_excerpt(
             &mut timeline_excerpt,
             format!("forbidden_{source}={pattern}"),
@@ -7414,7 +7430,7 @@ fn build_enriched_triage(
         last_server_event,
         correlation_ids,
         timeline_excerpt,
-        boundary_confidence: triage_boundary_confidence(suggested_boundary),
+        boundary_confidence: triage_boundary_confidence(input.suggested_boundary),
     }
 }
 
@@ -9341,18 +9357,18 @@ mod tests {
         );
         let server = evaluate_server_scenario(Scenario::FlagScoreRepeat, "compatbot", "compatbot");
         let usernames = vec!["compatbot".to_string()];
-        let triage = build_enriched_triage(
-            &scenario,
-            &server,
-            "flag-score-repeat",
-            &usernames,
-            Some("token=secret /tmp/private/server.log"),
-            scenario.missing_milestones.first().copied(),
-            server.missing_milestones.first().copied(),
-            None,
-            None,
-            "client-probe",
-        );
+        let triage = build_enriched_triage(EnrichedTriageInput {
+            scenario: &scenario,
+            server_scenario: &server,
+            scenario_name: "flag-score-repeat",
+            usernames: &usernames,
+            error: Some("token=secret /tmp/private/server.log"),
+            first_missing_client: scenario.missing_milestones.first().copied(),
+            first_missing_server: server.missing_milestones.first().copied(),
+            first_forbidden_source: None,
+            first_forbidden_pattern: None,
+            suggested_boundary: "client-probe",
+        });
 
         assert_eq!(triage.boundary_confidence, TRIAGE_CONFIDENCE_MEDIUM);
         assert!(triage
@@ -9999,7 +10015,7 @@ mod tests {
             &[],
         )
         .expect("receipt config parses");
-        let json = smoke_receipt_json(&cfg, Err(&"preflight".to_string()));
+        let json = smoke_receipt_json(&cfg, Err("preflight"));
 
         assert!(json.contains("\"typed_event_oracle\""), "{json}");
         assert!(

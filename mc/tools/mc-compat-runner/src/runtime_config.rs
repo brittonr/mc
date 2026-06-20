@@ -50,6 +50,7 @@ const ALLOWED_STEEL_EXPORTS: &[&str] = &[
     "arrow-max-damage",
 ];
 
+#[cfg(test)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum MutabilityClass {
     Hot,
@@ -192,6 +193,7 @@ pub(crate) struct ConfigDiagnostic {
     pub(crate) message: String,
 }
 
+#[cfg(test)]
 #[derive(Clone, Debug, PartialEq)]
 pub(crate) struct FieldDiff {
     pub(crate) path: &'static str,
@@ -200,6 +202,7 @@ pub(crate) struct FieldDiff {
     pub(crate) mutability: MutabilityClass,
 }
 
+#[cfg(test)]
 #[derive(Clone, Debug, PartialEq)]
 pub(crate) struct ApplyPlan {
     pub(crate) hot: Vec<FieldDiff>,
@@ -208,6 +211,7 @@ pub(crate) struct ApplyPlan {
     pub(crate) rejected: Vec<ConfigDiagnostic>,
 }
 
+#[cfg(test)]
 #[derive(Clone, Debug, PartialEq)]
 pub(crate) struct ReloadOutcome {
     pub(crate) active_changed: bool,
@@ -215,11 +219,13 @@ pub(crate) struct ReloadOutcome {
     pub(crate) diagnostics: Vec<ConfigDiagnostic>,
 }
 
+#[cfg(test)]
 #[derive(Clone, Debug, PartialEq)]
 pub(crate) struct RuntimeConfigController {
     active: RuntimeConfigSnapshot,
 }
 
+#[cfg(test)]
 impl RuntimeConfigController {
     pub(crate) fn new(active: RuntimeConfigSnapshot) -> Self {
         Self { active }
@@ -506,6 +512,7 @@ pub(crate) fn evaluate_arrow_damage(
     }
 }
 
+#[cfg(test)]
 pub(crate) fn diff_snapshots(
     before: &RuntimeConfigSnapshot,
     after: &RuntimeConfigSnapshot,
@@ -640,6 +647,7 @@ pub(crate) fn diff_snapshots(
     diffs
 }
 
+#[cfg(test)]
 pub(crate) fn redacted_value(path: &str, value: &str) -> String {
     if path.contains("secret") || path.contains("token") || path.contains("password") {
         "<redacted>".to_string()
@@ -648,6 +656,7 @@ pub(crate) fn redacted_value(path: &str, value: &str) -> String {
     }
 }
 
+#[cfg(test)]
 pub(crate) fn build_apply_plan(diffs: Vec<FieldDiff>, allow_restart_only: bool) -> ApplyPlan {
     let mut plan = ApplyPlan {
         hot: Vec::new(),
@@ -983,6 +992,7 @@ fn validate_range(
     }
 }
 
+#[cfg(test)]
 fn push_diff(
     diffs: &mut Vec<FieldDiff>,
     path: &'static str,
