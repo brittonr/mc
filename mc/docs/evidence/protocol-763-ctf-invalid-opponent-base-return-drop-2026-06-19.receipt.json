@@ -1,0 +1,81 @@
+{
+  "schema": "mc.compat.invalid-action-breadth.fixture.v1",
+  "status": "pass",
+  "mode": "fixture",
+  "dry_run": true,
+  "scenario": {
+    "name": "ctf-invalid-opponent-base-return-drop",
+    "row_id": "opponent-base-return-drop-without-carrier",
+    "action_family": "return/drop",
+    "actor_identity": "compatbot",
+    "actor_team": "red",
+    "flag_team": "blue",
+    "base_state": "opponent_base",
+    "pre_state": "at_base",
+    "post_state": "at_base",
+    "invalid_action": "opponent_base_return_drop_without_carrier",
+    "expected_rejection": "no_flag_state_mutation_no_score",
+    "postcondition": "ctf_invalid_opponent_base_return_drop_contained",
+    "required_milestones": [
+      "ctf_invalid_opponent_base_return_drop_attempted",
+      "ctf_invalid_opponent_base_return_drop_contained"
+    ],
+    "observed_milestones": [
+      "ctf_invalid_opponent_base_return_drop_attempted actor_team=red flag_team=blue pre_state=at_base base=opponent_base action=opponent_base_return_drop_without_carrier expected=no_flag_state_mutation_no_score",
+      "ctf_invalid_opponent_base_return_drop_contained actor_team=red flag_team=blue post_state=at_base red_score=0 blue_score=0 outcome=no_flag_state_mutation_no_score"
+    ],
+    "missing_milestones": [],
+    "forbidden_matches": [],
+    "passed": true
+  },
+  "server": {
+    "backend": "deterministic-fixture",
+    "protocol": 763,
+    "required_milestones": [
+      "server_invalid_opponent_base_return_drop_rejected"
+    ],
+    "observed_milestones": [
+      "server_invalid_opponent_base_return_drop_rejected",
+      "invalid_opponent_base_return_drop_rejected username=compatbot actor_team=Red flag_team=Blue pre_state=at_base post_state=at_base red_score=0 blue_score=0 outcome=no_flag_state_mutation_no_score"
+    ],
+    "missing_milestones": [],
+    "forbidden_matches": [],
+    "passed": true
+  },
+  "invalid_action_breadth": {
+    "matrix": "docs/evidence/protocol-763-ctf-invalid-action-breadth-matrix-2026-06-19.md",
+    "row_record": "docs/evidence/protocol-763-ctf-invalid-opponent-base-return-drop-2026-06-19.record",
+    "evidence_mode": "deterministic-fixture",
+    "target_scope": "owned-local-loopback-fixture",
+    "selected": true,
+    "live_traffic_enabled": false,
+    "existing_rows_unchanged": [
+      "ctf-invalid-pickup-ownership",
+      "ctf-invalid-return-drop"
+    ],
+    "all_invalid_actions_claimed": false,
+    "all_flag_permutations_claimed": false,
+    "full_ctf_correctness_claimed": false,
+    "observed_outcome": "containment_observed"
+  },
+  "forbidden_transitions_absent": [
+    "unexpected_flag_pickup",
+    "unexpected_flag_return",
+    "unexpected_flag_capture",
+    "unexpected_red_score",
+    "unexpected_blue_score"
+  ],
+  "claims_correctness": false,
+  "claims_semantic_equivalence": false,
+  "non_claims": [
+    "all invalid actions",
+    "all flag permutations",
+    "full CTF correctness",
+    "adversarial security",
+    "public-server safety",
+    "production readiness",
+    "broad Minecraft compatibility",
+    "live CTF semantics",
+    "vanilla/reference parity"
+  ]
+}

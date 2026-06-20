@@ -1,0 +1,23 @@
+row_id=opponent-base-return-drop-without-carrier
+scenario=ctf-invalid-opponent-base-return-drop
+seam=CTF invalid-action breadth fixture
+action_family=return/drop
+actor_identity=compatbot
+actor_team=red
+flag_team=blue
+base_state=opponent_base
+pre_state=at_base
+post_state=at_base
+invalid_action=opponent_base_return_drop_without_carrier
+expected_rejection=no_flag_state_mutation_no_score
+postcondition=ctf_invalid_opponent_base_return_drop_contained
+client_attempt=ctf_invalid_opponent_base_return_drop_attempted actor_team=red flag_team=blue pre_state=at_base base=opponent_base action=opponent_base_return_drop_without_carrier expected=no_flag_state_mutation_no_score
+client_contained=ctf_invalid_opponent_base_return_drop_contained actor_team=red flag_team=blue post_state=at_base red_score=0 blue_score=0 outcome=no_flag_state_mutation_no_score
+server_rejection=invalid_opponent_base_return_drop_rejected username=compatbot actor_team=Red flag_team=Blue pre_state=at_base post_state=at_base red_score=0 blue_score=0 outcome=no_flag_state_mutation_no_score
+server_milestone=server_invalid_opponent_base_return_drop_rejected
+target_scope=owned-local-loopback-fixture
+observed_outcome=containment_observed
+evidence_mode=deterministic-fixture
+forbidden_absent=unexpected_flag_pickup,unexpected_flag_return,unexpected_flag_capture,unexpected_red_score,unexpected_blue_score
+receipt=docs/evidence/protocol-763-ctf-invalid-opponent-base-return-drop-2026-06-19.receipt.json
+matrix=docs/evidence/protocol-763-ctf-invalid-action-breadth-matrix-2026-06-19.md

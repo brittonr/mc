@@ -1,12 +1,12 @@
 4a61e43d0da87d739adfd2ee3a5209fc7b77ba7e4dc3ff96b5a4e5cd01a37dd6  docs/evidence/protocol-763-equipment-slot-item-expansion-validation-2026-05-29.run.log
 fa7097d8d5324413de1c0b8288ac0468a4e6890d9d223486a1a8e832bc8804df  cairn/archive/2026-05-29-equipment-slot-item-matrix-expansion/tasks.md
 e87da8ce47c67959cd6f3e3d1af34834ff4da1b8415d821dde079de95f338b64  cairn/archive/2026-05-29-equipment-slot-item-matrix-expansion/specs/mc-compatibility/spec.md
-083afd80a4cb39e5af62f357ef48c70b4c157ba8fe6c9de0fc65243f7882b63c  cairn/specs/mc-compatibility/spec.md
+935955fa2760ee6320e88fa8cc3449210abd1cdf082ebba6862ad0e64a7e226d  cairn/specs/mc-compatibility/spec.md
 b83bcb6a109092c92a1ac49d80065c15a1abf79706da57a82e1426b2236ff642  docs/evidence/protocol-763-equipment-slot-item-expansion-contract-2026-05-29.b3
-87f4d3b4414562e117187063db3f65280fb1b4a85364220ca8fd198f6ecfc5ec  docs/evidence/protocol-763-equipment-slot-item-expansion-checker-2026-05-29.b3
+ee959d77b4b987bb272019eeec895b3ca76e0df4e982b57b753e3440c699ec00  docs/evidence/protocol-763-equipment-slot-item-expansion-checker-2026-05-29.b3
 a1af282c56ef99cc6e51959a6d68cb87f598f1f2f78eaa81ea69eb96270a4c3c  docs/evidence/protocol-763-equipment-slot-item-expansion-rail-2026-05-29.b3
 4e92f4bd687ec839725388258d4f049a42bffd622a636e1744f0361e75ff7bc1  docs/evidence/protocol-763-equipment-slot-item-expansion-row-2026-05-29.b3
-9a36cc04d97213add7137f2d984d19f05cb051cf8265b23e50c473423018e7ed  docs/evidence/protocol-763-acceptance-matrix.md
-fbddc9e82183533227ca925501e3acaa1f5ac4f1856bafd7b5416cafd85ed972  docs/evidence/protocol-763-current-evidence-bundle.md
+9524f82cca1cdb795164da343453b341e7d13634d4a7db9bff682d9de4be44db  docs/evidence/protocol-763-acceptance-matrix.md
+44a1efdde0f3e2c4ec1832e8aab24913323f1af248a38cec1f7e32ce28691d74  docs/evidence/protocol-763-current-evidence-bundle.md
 f579cf7092fc07dfacd19a0867d211eedaa2911844306fab41991e738140c601  tools/mc-compat-runner/src/main.rs
 d753144d7ecba1ee8b0ac68b1e59d6dee349cadffe56a03c3529d99763c76324  tools/check_equipment_slot_item_expansion.rs

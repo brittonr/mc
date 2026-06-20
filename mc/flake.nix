@@ -1515,6 +1515,24 @@
               mkdir -p "$out"
               cp ../ctf-invalid-return-drop-self-test.log ../ctf-invalid-return-drop-check.log "$out/"
             '';
+        mc-compat-ctf-invalid-action-breadth =
+          pkgs.runCommand "mc-compat-ctf-invalid-action-breadth"
+            {
+              nativeBuildInputs = [
+                pkgs.rustc
+                pkgs.gcc
+              ];
+            }
+            ''
+              cp -R ${./.} repo
+              chmod -R u+w repo
+              cd repo
+              rustc --edition=2021 tools/check_ctf_invalid_action_breadth.rs -o ../check-ctf-invalid-action-breadth
+              ../check-ctf-invalid-action-breadth --self-test > ../ctf-invalid-action-breadth-self-test.log
+              ../check-ctf-invalid-action-breadth > ../ctf-invalid-action-breadth-check.log
+              mkdir -p "$out"
+              cp ../ctf-invalid-action-breadth-self-test.log ../ctf-invalid-action-breadth-check.log "$out/"
+            '';
         mc-compat-ctf-score-limit-win-condition =
           pkgs.runCommand "mc-compat-ctf-score-limit-win-condition"
             {
@@ -2724,6 +2742,9 @@
             self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-ctf-invalid-return-drop
           } "$out/ctf-invalid-return-drop-checker"
           ln -s ${
+            self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-ctf-invalid-action-breadth
+          } "$out/ctf-invalid-action-breadth-checker"
+          ln -s ${
             self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-ctf-score-limit-win-condition
           } "$out/ctf-score-limit-win-condition-checker"
           ln -s ${
@@ -2780,6 +2801,7 @@
           public-server-authorized-safety
           ctf-invalid-pickup-ownership-checker
           ctf-invalid-return-drop-checker
+          ctf-invalid-action-breadth-checker
           ctf-score-limit-win-condition-checker
           armor-loadout-enchantment-status
           equipment-slot-item-expansion

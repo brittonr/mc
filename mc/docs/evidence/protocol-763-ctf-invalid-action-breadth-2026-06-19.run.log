@@ -1,0 +1,43 @@
+# Protocol-763 CTF invalid-action breadth validation — 2026-06-19
+
+Closeout commands for `broaden-ctf-invalid-action-coverage`.
+
+$ nix develop --no-update-lock-file -c bash -lc 'rustc --edition=2021 tools/check_ctf_invalid_action_breadth.rs -o target/check-ctf-invalid-action-breadth && target/check-ctf-invalid-action-breadth --self-test && target/check-ctf-invalid-action-breadth'
+ctf invalid-action breadth self-test ok: positive, missing, mismatched, forbidden, overclaim, and manifest fixtures exercised
+ctf invalid-action breadth check passed: matrix, fixture row, manifests, bundle, and ledger validated
+exit_status=0
+
+$ nix build .#checks.x86_64-linux.mc-compat-ctf-invalid-action-breadth .#checks.x86_64-linux.mc-compat-ctf-invalid-pickup-ownership .#checks.x86_64-linux.mc-compat-ctf-invalid-return-drop .#checks.x86_64-linux.mc-compat-acceptance-matrix .#checks.x86_64-linux.mc-compat-current-evidence-bundle .#checks.x86_64-linux.mc-compat-evidence-manifest-refresh .#checks.x86_64-linux.mc-compat-evidence-manifests .#checks.x86_64-linux.mc-compat-scenario-manifest .#checks.x86_64-linux.mc-compat-maintained-dry-runs --no-link -L
+pueue_task=812
+exit_status=0
+
+$ nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L && nix run .#cairn -- gate tasks broaden-ctf-invalid-action-coverage --root .
+pueue_task=717
+exit_status=0
+
+$ nix run .#cairn -- sync broaden-ctf-invalid-action-coverage --root . && nix run .#cairn -- sync broaden-ctf-invalid-action-coverage --root . --execute && nix run .#cairn -- validate --root .
+pueue_task=720
+note=sync executed but accepted spec required manual merge because dry-run/execute did not promote the delta text
+exit_status=0
+
+$ nix run .#evidence-manifest-refresh -- --refresh && git add -f cairn/specs/mc-compatibility/spec.md docs/evidence/*.b3 && nix run .#cairn -- validate --root . && nix run .#cairn -- gate tasks broaden-ctf-invalid-action-coverage --root .
+pueue_task=722
+exit_status=0
+
+$ nix build .#checks.x86_64-linux.mc-compat-ctf-invalid-action-breadth .#checks.x86_64-linux.mc-compat-evidence-manifests .#checks.x86_64-linux.mc-compat-maintained-dry-runs .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L && nix run .#cairn -- gate proposal broaden-ctf-invalid-action-coverage --root . && nix run .#cairn -- gate design broaden-ctf-invalid-action-coverage --root . && nix run .#cairn -- gate tasks broaden-ctf-invalid-action-coverage --root . && nix run .#cairn -- validate --root . && nix run .#cairn -- sync broaden-ctf-invalid-action-coverage --root . && nix run .#cairn -- archive broaden-ctf-invalid-action-coverage --root .
+pueue_task=727
+note=archive dry-run returned blocked=true only because the final task was intentionally still open before this log update
+exit_status=0
+
+$ nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence .#checks.x86_64-linux.mc-compat-ctf-invalid-action-breadth .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L && nix run .#cairn -- gate tasks broaden-ctf-invalid-action-coverage --root . && nix run .#cairn -- validate --root . && nix run .#cairn -- archive broaden-ctf-invalid-action-coverage --root .
+pueue_task=737
+note=archive dry-run returned blocked=false after all tasks were checked
+exit_status=0
+
+$ CAIRN_ARCHIVE_DATE=2026-06-19 nix run .#cairn -- archive broaden-ctf-invalid-action-coverage --root . --execute && nix run .#cairn -- validate --root . && nix run .#cairn -- change list --root .
+pueue_task=739
+archive=docs path cairn/archive/2026-06-19-broaden-ctf-invalid-action-coverage
+active_changes=0
+exit_status=0
+
+row_id=opponent-base-return-drop-without-carrier
