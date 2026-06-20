@@ -1,0 +1,7 @@
+# Receipt schema evidence-manifest validation 2026-06-20
+root=/home/brittonr/git/mc
+this derivation will be built:
+  /nix/store/aksvlhx4maxvcgvyc8dc651m4x9wjxiv-mc-compat-evidence-manifest-refresh.drv
+building '/nix/store/aksvlhx4maxvcgvyc8dc651m4x9wjxiv-mc-compat-evidence-manifest-refresh.drv'...
+
+exit_status=0

@@ -1,0 +1,268 @@
+# Receipt schema hardening validation 2026-06-20
+root=/home/brittonr/git/mc
+
+## nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo fmt --manifest-path tools/mc-compat-runner/Cargo.toml --check
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+command_exit_status=0
+
+## nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test --manifest-path tools/mc-compat-runner/Cargo.toml -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 125 tests
+test runtime_config::tests::decodes_supported_steel_export_types ... ok
+test runtime_config::tests::arrow_damage_policy_is_bounded_and_reports_clamping ... ok
+test runtime_config::tests::diff_and_apply_plan_separate_hot_next_run_and_restart_only ... ok
+test runtime_config::tests::normalizes_valid_steel_exports ... ok
+test runtime_config::tests::fixed_protocol_fact_changes_are_rejected ... ok
+test runtime_config::tests::evaluates_restricted_steel_module ... ok
+test runtime_config::tests::redaction_hides_secret_like_values ... ok
+test runtime_config::tests::rejects_range_and_sandbox_violations ... ok
+test runtime_config::tests::rejects_missing_or_wrong_type_exports ... ok
+test runtime_config::tests::rejects_malformed_literal_before_typed_decoding ... ok
+test runtime_config::tests::reload_request_applies_hot_changes_atomically ... ok
+test runtime_config::tests::validated_value_helper_returns_values_and_diagnostics ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_creative_inventory_live_contracts ... ok
+test runtime_config::tests::required_export_reports_missing_and_wrong_type_diagnostics ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_resource_pack_status_local_contracts ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_live_capabilities ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_sign_editor_live_contracts ... ok
+test runtime_config::tests::reload_request_rolls_back_on_apply_failure_or_restart_only_change ... ok
+test tests::backend_runtime_dispatch_preserves_pure_facts_and_log_labels ... ok
+test tests::armor_loadout_enchantment_status_matrix_tracks_isolated_row_evidence ... ok
++ "git" "-C" "/tmp/nix-shell.MVvtA8/mc-compat-backend-runtime-3653647/valence-repo" "worktree" "prune"
+test scenario_core::tests::scenario_core_rejects_invalid_static_specs ... [mc-compat] creating isolated Valence worktree /tmp/nix-shell.MVvtA8/mc-compat-backend-runtime-3653647/valence-worktree at 8ad9c85
++ "git" "-C" "/tmp/nix-shell.MVvtA8/mc-compat-backend-runtime-3653647/valence-repo" "worktree" "add" "--detach" "/tmp/nix-shell.MVvtA8/mc-compat-backend-runtime-3653647/valence-worktree" "8ad9c85"
+[mc-compat] starting Valence 8ad9c85 example 'terrain' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/nix-shell.MVvtA8/mc-compat-backend-runtime-3653647/valence-worktree
+ok[mc-compat] starting Paper 1.18.2 server on 127.0.0.1:25566 via itzg/minecraft-server:java17 with EULA=TRUE
+would remove test artifact /tmp/nix-shell.MVvtA8/mc-compat-cleanup-dry-run-3653647/artifact.log
+[mc-compat] removing test artifact /tmp/nix-shell.MVvtA8/mc-compat-cleanup-dry-run-3653647/artifact.log
+
++ "docker" "run" "-d" "--name" "mc-compat-1-18-2" "-p" "127.0.0.1:25566:25565" "-e" "EULA=TRUE" "-e" "TYPE=PAPER" "-e" "VERSION=1.18.2" "-e" "ONLINE_MODE=FALSE" "-e" "MEMORY=1G" "-e" "VIEW_DISTANCE=2" "-e" "SIMULATION_DISTANCE=2" "itzg/minecraft-server:java17"
+test scenario_core::tests::scenario_core_validates_static_specs_and_lookup_parity ... ok
+test tests::armor_loadout_enchantment_status_matrix_receipt_keeps_nonclaims ... ok
+test tests::cleanup_client_log_match_is_narrow ... ok
+test runtime_config::tests::rejects_steel_module_unknown_export_and_forbidden_token ... ok
+test tests::cli_overrides_backend_client_dir_valence_repo_and_revision ... ok
+test tests::combat_damage_scenario_tracks_client_and_server_evidence ... ok
+test tests::blue_flag_score_scenario_tracks_mirrored_team_evidence ... ok
+test tests::compares_paper_and_valence_receipts ... ok
+test tests::compares_protocol_763_matrix_receipts_when_configured ... ok
+test tests::defaults_to_valence_protocol_and_port ... ok
+test tests::ctf_spawn_team_balance_reset_tracks_client_server_and_guards ... ok
+test tests::ctf_invalid_pickup_ownership_tracks_client_server_and_envelope ... ok
+test tests::equipment_slot_item_matrix_expansion_receipt_keeps_nonclaims ... ok
+test tests::flag_score_repeat_scenario_tracks_missing_and_forbidden_evidence ... ok
+test tests::client_checkout_must_point_at_manifest_root ... ok
+test tests::git_revision_evidence_core_reports_clean_dirty_and_unavailable ... ok
+test tests::compat_bot_probe_scenario_is_bounded_and_receipted ... ok
+test tests::ctf_score_limit_win_condition_tracks_client_server_and_forbidden_guards ... ok
+test tests::generated_scenario_manifest_matches_runner_parser ... ok
+test tests::evidence_matchers_cover_supported_positive_cases ... ok
+test tests::inventory_drag_transactions_tracks_client_and_server_evidence ... ok
+test tests::ctf_invalid_return_drop_tracks_client_server_and_envelope ... ok
+test tests::latency_jitter_reconnect_count_is_explicit ... ok
+test tests::inventory_interaction_scenario_tracks_client_and_server_evidence ... ok
+test tests::latency_jitter_receipt_renders_bounded_wan_telemetry_fields ... ok
+test tests::load_network_safety_envelope_fails_closed_for_unsafe_inputs ... ok
+test tests::mcp_controlled_live_preflight_rejects_unbounded_timeout ... ok
+test tests::mcp_controlled_live_preflight_allows_bounded_local_rail ... ok
+test tests::missing_client_checkout_has_actionable_diagnostic ... ok
+test tests::equipment_update_scenario_tracks_current_client_equipment_marker ... ok
+test tests::env_overrides_are_parsed_without_global_environment_mutation ... ok
+test tests::mcp_controlled_live_receipt_fails_dirty_child_revision ... ok
+test tests::evidence_matchers_fail_closed_for_missing_case_and_dynamic_context ... ok
+test tests::enriched_triage_core_bounds_and_redacts_context ... ok
+test tests::equipment_slot_item_matrix_expansion_tracks_isolated_row_evidence ... ok
+test tests::mcp_controlled_live_receipt_uses_observed_control_and_frame_evidence ... ok
+test tests::ctf_simultaneous_race_tracks_one_accept_one_reject ... ok
+test tests::invalid_backend_is_rejected ... ok
+test tests::enriched_triage_receipt_preserves_existing_fields_and_adds_context ... ok
+test tests::latency_jitter_receipt_disabled_path_stays_non_claim ... ok
+test tests::cleanup_path_dry_run_preserves_existing_files ... ok
+test tests::backend_runtime_dry_run_lifecycle_uses_expected_managed_server_shape ... ok
+test tests::inventory_stack_split_merge_tracks_client_and_server_evidence ... ok
+test tests::missing_valence_checkout_has_actionable_diagnostic ... ok
+test tests::negative_live_rail_checker_rejects_missing_expected_outcome ... ok
+test tests::multi_client_scenario_tracks_client_and_server_evidence ... ok
+test tests::negative_live_rail_checker_rejects_missing_telemetry ... ok
+test tests::negative_live_rail_checker_rejects_unbounded_public_unauthenticated_inputs ... ok
+test tests::failed_preflight_receipt_triages_before_client_evidence ... ok
+test tests::negative_live_rail_preflight_rejects_public_unowned_targets ... ok
+test tests::projectile_damage_attribution_requires_pinned_valence_revision ... ok
+test tests::nickel_exported_json_config_sets_defaults_and_allows_env_cli_precedence ... ok
+test tests::protocol_invalid_inputs_fail_closed ... ok
+test tests::protocol_status_handshake_fixture_bytes_are_stable ... ok
+test tests::projectile_damage_attribution_scenario_tracks_client_and_server_evidence ... ok
+test tests::protocol_string_and_packet_framing_match_expected_bytes ... ok
+test tests::protocol_varint_round_trips_in_memory ... ok
+test tests::projectile_damage_dry_run_uses_steel_arrow_policy ... ok
+test tests::public_server_authorized_safety_live_mode_fails_closed ... ok
+test tests::public_server_authorized_safety_disabled_path_stays_non_claim ... ok
+test tests::public_server_authorized_safety_receipt_renders_fixture_envelope ... ok
+test tests::rejects_receipt_protocol_mismatch ... ok
+test tests::receipt_summary_mutations_fail_closed ... ok
+test tests::rejects_receipts_that_do_not_match_configured_protocol ... ok
+test tests::negative_live_rail_envelope_records_expected_outcome_and_non_claims ... ok
+test tests::run_matrix_config_sets_receipt_dir_and_backend_defaults ... ok
+test tests::run_matrix_rejects_single_receipt_path ... ok
+test tests::dry_run_receipt_records_deterministic_child_revision_placeholders ... ok
+test tests::restricted_steel_config_rejects_forbidden_capabilities ... ok
+test tests::scenario_cli_and_env_parse ... ok
+test tests::status_and_cleanup_modes_parse_without_server_probe_mode ... ok
+test tests::survival_block_entity_persistence_scenario_tracks_client_and_server_evidence ... ok
+test tests::survival_break_place_pickup_scenario_tracks_client_and_server_evidence ... ok
+test tests::supported_scenario_usage_lists_all_supported_scenarios ... ok
+test tests::static_scenario_specs_fail_closed_for_invalid_definitions ... ok
+test tests::restricted_steel_config_sets_runtime_defaults_and_allows_env_cli_precedence ... ok
+test tests::static_scenario_specs_validate_all_supported_behavior ... ok
+test tests::survival_crafting_table_scenario_tracks_client_and_server_evidence ... ok
+test tests::survival_chest_persistence_scenario_tracks_client_and_server_evidence ... ok
+test tests::survival_hunger_food_scenario_tracks_client_and_server_evidence ... ok
+test tests::survival_crash_recovery_scenario_tracks_derived_client_and_server_evidence ... ok
+test tests::survival_furnace_persistence_scenario_tracks_client_and_server_evidence ... ok
+test tests::survival_mob_drop_scenario_tracks_client_and_server_evidence ... ok
+test tests::typed_event_parser_accepts_versioned_event_lines ... ok
+test tests::typed_events_from_receipt_evidence_include_client_and_server_sources ... ok
+test tests::survival_world_persistence_scenario_tracks_client_and_server_evidence ... ok
+test tests::survival_redstone_toggle_scenario_tracks_client_and_server_evidence ... ok
+test tests::typed_event_receipt_artifact_records_reviewable_timeline_hash ... ok
+test tests::typed_event_oracle_validates_migrated_inventory_graph ... ok
+test tests::valid_client_checkout_preflight_passes ... ok
+test tests::typed_event_graph_checks_required_forbidden_and_ordered_events ... ok
+test tests::smoke_receipt_records_failures_without_success_claims ... ok
+test tests::scenario_receipt_records_actionable_failure_triage ... ok
+test tests::typed_event_oracle_receipt_records_migration_fallback ... ok
+test tests::typed_event_graph_accepts_representative_scenario_fixtures ... ok
+test tests::status_packet_proxy_and_gameplay_receipt_blocks_are_recorded ... ok
+test tests::mcp_controlled_dry_run_receipt_records_control_contract ... ok
+test tests::smoke_receipt_records_cairn_contract_and_octet_surface ... ok
+test tests::scenario_oracle_property_all_required_server_milestones_matter ... ok
+test tests::structured_receipt_schema_parses_representative_shapes ... ok
+test tests::scenario_oracle_property_forbidden_markers_fail ... ok
+test tests::structured_receipt_schema_negative_fixtures_fail_closed ... ok
+test tests::scenario_oracle_property_all_required_client_milestones_matter ... ok
+test tests::negative_live_rail_receipt_records_observed_containment_outcome ... ok
+
+test result: ok. 125 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+command_exit_status=0
+
+## nix build --no-update-lock-file --option builders  path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-dry-run --no-link -L
+command_exit_status=0
+
+## nix build --no-update-lock-file --option builders  path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-mcp-controlled-smoke-dry-run --no-link -L
+this derivation will be built:
+  /nix/store/n2h1nfgr2zc4nhhydsl47q0srx2hnrlh-mc-compat-mcp-controlled-smoke-dry-run.drv
+building '/nix/store/n2h1nfgr2zc4nhhydsl47q0srx2hnrlh-mc-compat-mcp-controlled-smoke-dry-run.drv'...
+mc-compat-mcp-controlled-smoke-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-mcp-controlled-smoke-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-mcp-controlled-smoke-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-mcp-controlled-smoke-dry-run> hint: call:
+mc-compat-mcp-controlled-smoke-dry-run> hint:
+mc-compat-mcp-controlled-smoke-dry-run> hint:   git config --global init.defaultBranch <name>
+mc-compat-mcp-controlled-smoke-dry-run> hint:
+mc-compat-mcp-controlled-smoke-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-mcp-controlled-smoke-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-mcp-controlled-smoke-dry-run> hint:
+mc-compat-mcp-controlled-smoke-dry-run> hint:   git branch -m <name>
+mc-compat-mcp-controlled-smoke-dry-run> hint:
+mc-compat-mcp-controlled-smoke-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-mcp-controlled-smoke-dry-run> Initialized empty Git repository in /build/repo/fake-valence/.git/
+mc-compat-mcp-controlled-smoke-dry-run> [master (root-commit) 141939e] init
+mc-compat-mcp-controlled-smoke-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-mcp-controlled-smoke-dry-run>  create mode 100644 README.md
+command_exit_status=0
+
+## nix run --no-update-lock-file path:/home/brittonr/git/mc#cairn -- gate proposal harden-mc-compat-receipt-schema-tests --root /home/brittonr/git/mc
+{
+  "change": "harden-mc-compat-receipt-schema-tests",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a0c27c0a895b0103d8c7c1b776beb84489244c8c5d316d884664fe52bbd0c9bd",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "1c62a691aa1b60fa1cd59604627e35e3970161f76e8e38d4b9e0b07474b364a6",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+## nix run --no-update-lock-file path:/home/brittonr/git/mc#cairn -- gate design harden-mc-compat-receipt-schema-tests --root /home/brittonr/git/mc
+{
+  "change": "harden-mc-compat-receipt-schema-tests",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "5ce1ca17c7a34f2347ff10a8ba0522827e7ae989376f2adf5916c9e7930285fc",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "0de372411f27daa9b96918b8f9512456f22d45890c22621e1f2b23222388b08b",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+## nix run --no-update-lock-file path:/home/brittonr/git/mc#cairn -- gate tasks harden-mc-compat-receipt-schema-tests --root /home/brittonr/git/mc
+{
+  "change": "harden-mc-compat-receipt-schema-tests",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "be16b0a06ba7b282f5e82bcca8fc7d5387a796b3e3ca2f7d1911ebf65582dfb7",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "c4a788f98dd336e99b55d0cc90ce384a83f748beb9bb95f3caa7c8a6e387c3a8",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+## nix run --no-update-lock-file path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 4,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 6,
+  "valid": true
+}
+command_exit_status=0
+
+exit_status=0
