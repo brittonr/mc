@@ -46,7 +46,7 @@ SMOKE_RECEIPT=target/mc-compat-smoke.json CLIENT_TIMEOUT=8 nix run .#mc-compat-s
 nix run .#mc-compat-smoke -- --dry-run --server-backend paper --receipt target/mc-compat-smoke.json
 ```
 
-The current receipt schema is `mc.compat.scenario.receipt.v2`; receipts also retain the legacy marker `mc.compat.smoke.receipt.v1` for older consumers. A receipt records server/client inputs, the headless-isolation contract (`wayland_socket_inherited=false`), typed scenario milestones, server-side correlation when available, and explicit non-claims (`claims_correctness=false`, `claims_semantic_equivalence=false`) for downstream Cairn/Octet review. It is evidence that the bounded scenario ran under the specified local fixture, not a claim of full semantic equivalence.
+The current receipt schema is `mc.compat.scenario.receipt.v2`; receipts also retain the legacy marker `mc.compat.smoke.receipt.v1` for older consumers. A receipt records server/client inputs, the headless-isolation contract (`wayland_socket_inherited=false`), typed scenario milestones, server-side correlation when available, and explicit non-claims (`claims_correctness=false`, `claims_semantic_equivalence=false`) for downstream Cairn/Octet review. Dry-run receipts are deterministic harness-shape evidence only; live/reference parity claims remain tied to promoted evidence rows and paired comparators. A receipt is evidence that the bounded scenario ran under the specified local fixture, not a claim of full semantic equivalence.
 
 Choose a typed scenario with `--scenario` or `MC_COMPAT_SCENARIO`:
 
@@ -231,6 +231,14 @@ nix run .#mc-compat-valence-ctf-latency-jitter-inventory -- --dry-run
 
 # build every maintained dry-run receipt/check plus the evidence indexes:
 nix build .#checks.x86_64-linux.mc-compat-maintained-dry-runs --no-link -L
+
+# check deterministic dry-run receipt shapes for historical maintained rows:
+# flag-score-repeat, survival-chest-persistence, survival-hunger-food,
+# survival-mob-drop, survival-redstone-toggle, survival-world-persistence-restart,
+# survival-crash-recovery-parity, survival-block-entity-persistence-parity,
+# and survival-biome-dimension-state. This is harness-shape coverage only;
+# live/reference parity remains tied to the promoted evidence rows below.
+nix build .#checks.x86_64-linux.mc-compat-historical-scenario-dry-runs --no-link -L
 
 # check only the survival break/place/pickup dry-run receipt shape:
 nix build .#checks.x86_64-linux.mc-compat-valence-survival-break-place-pickup-dry-run --no-link -L

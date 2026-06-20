@@ -1689,6 +1689,43 @@
               mkdir -p "$out"
               cp blue-flag-dry-run.log blue-flag-receipt.json "$out/"
             '';
+        mc-compat-historical-scenario-dry-runs =
+          pkgs.runCommand "mc-compat-historical-scenario-dry-runs" { nativeBuildInputs = [ pkgs.git ]; }
+            ''
+              mkdir -p fake-stevenarella fake-valence receipts logs
+              printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+              git -C fake-valence init
+              git -C fake-valence config user.email mc-compat@example.invalid
+              git -C fake-valence config user.name mc-compat
+              printf '%s\n' fake > fake-valence/README.md
+              git -C fake-valence add README.md
+              git -C fake-valence commit -m init
+              for scenario in \
+                flag-score-repeat \
+                survival-chest-persistence \
+                survival-hunger-food \
+                survival-mob-drop \
+                survival-redstone-toggle \
+                survival-world-persistence-restart \
+                survival-crash-recovery-parity \
+                survival-block-entity-persistence-parity \
+                survival-biome-dimension-state
+              do
+                receipt="$PWD/receipts/$scenario.json"
+                log="logs/$scenario-dry-run.log"
+                ${
+                  self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
+                }/bin/mc-compat-runner --dry-run --server-backend valence --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD --scenario "$scenario" --receipt "$receipt" > "$log"
+                grep -Fq "scenario '$scenario'" "$log"
+                grep -Fq '"schema": "mc.compat.scenario.receipt.v2"' "$receipt"
+                grep -Fq "\"name\": \"$scenario\"" "$receipt"
+                grep -Fq '"dry_run": true' "$receipt"
+                grep -Fq '"claims_correctness": false' "$receipt"
+                grep -Fq '"claims_semantic_equivalence": false' "$receipt"
+              done
+              mkdir -p "$out"
+              cp -r logs receipts "$out/"
+            '';
         mc-compat-valence-ctf-600s-soak-dry-run =
           pkgs.runCommand "mc-compat-valence-ctf-600s-soak-dry-run" { nativeBuildInputs = [ pkgs.git ]; }
             ''
@@ -2616,6 +2653,9 @@
             self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-blue-flag-score-dry-run
           } "$out/blue-flag-score"
           ln -s ${
+            self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-historical-scenario-dry-runs
+          } "$out/historical-scenario-dry-runs"
+          ln -s ${
             self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-600s-soak-dry-run
           } "$out/ctf-600s-soak"
           ln -s ${
@@ -2760,6 +2800,15 @@
           smoke
           multi-client-load-score
           blue-flag-score
+          flag-score-repeat
+          survival-chest-persistence
+          survival-hunger-food
+          survival-mob-drop
+          survival-redstone-toggle
+          survival-world-persistence-restart
+          survival-crash-recovery-parity
+          survival-block-entity-persistence-parity
+          survival-biome-dimension-state
           ctf-600s-soak
           ctf-blue-600s-soak
           inventory-interaction

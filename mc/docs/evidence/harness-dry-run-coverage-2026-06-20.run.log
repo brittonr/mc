@@ -1,0 +1,118 @@
+# Harness dry-run coverage validation 2026-06-20
+root=/home/brittonr/git/mc
+
+## nix develop --no-update-lock-file /home/brittonr/git/mc -c rustc tools/check_scenario_manifest.rs -o /tmp/check_scenario_manifest_harness_dry_run
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+command_exit_status=0
+
+## /tmp/check_scenario_manifest_harness_dry_run --self-test
+scenario manifest self-test passed: positive and negative fixtures exercised
+command_exit_status=0
+
+## /tmp/check_scenario_manifest_harness_dry_run
+scenario manifest check passed: 36 rows validated; dry-run coverage: 34 covered, 2 waived, 0 unmaintained
+command_exit_status=0
+
+## nix build --no-update-lock-file --option builders  path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-historical-scenario-dry-runs --no-link -L
+command_exit_status=0
+
+## nix build --no-update-lock-file --option builders  path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L
+this derivation will be built:
+  /nix/store/hzi6kpackrd4yldyicq741hmgxrkc9zm-mc-compat-scenario-manifest.drv
+building '/nix/store/hzi6kpackrd4yldyicq741hmgxrkc9zm-mc-compat-scenario-manifest.drv'...
+command_exit_status=0
+
+## nix build --no-update-lock-file --option builders  path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-evidence-manifest-refresh --no-link -L
+this derivation will be built:
+  /nix/store/kjs7yg2v4vfg3cynllwkmipnqhpzm7nm-mc-compat-evidence-manifest-refresh.drv
+building '/nix/store/kjs7yg2v4vfg3cynllwkmipnqhpzm7nm-mc-compat-evidence-manifest-refresh.drv'...
+command_exit_status=0
+
+## nix run --no-update-lock-file path:/home/brittonr/git/mc#cairn -- gate proposal close-mc-compat-dry-run-coverage-gaps --root /home/brittonr/git/mc
+{
+  "change": "close-mc-compat-dry-run-coverage-gaps",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f9a95e89d241a5a7284d9ed8143b9603567269def04056a9ab20e18978964916",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "b2993ec6d8a50a996de04558a7108bd17ecc8ac235f9316f46d6277cd5a8af2f",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+## nix run --no-update-lock-file path:/home/brittonr/git/mc#cairn -- gate design close-mc-compat-dry-run-coverage-gaps --root /home/brittonr/git/mc
+{
+  "change": "close-mc-compat-dry-run-coverage-gaps",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "ee5a1874656d00d8b328af445a08037407f06d372fb795fff1c785384c320588",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "96d157b73f5fc67b62e482cdf040400c0e696784ced3b5b1d5cc3ce9818cb2ac",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+## nix run --no-update-lock-file path:/home/brittonr/git/mc#cairn -- gate tasks close-mc-compat-dry-run-coverage-gaps --root /home/brittonr/git/mc
+{
+  "change": "close-mc-compat-dry-run-coverage-gaps",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "18d14c09c463ffbf74041915daa9aa6ce5ea1f1f0203f62189d607d5166fd66a",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "632a64cc086854cae7a467cb4a47ef2807d188007f631812bd098e7893523301",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+## nix run --no-update-lock-file path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 6,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+command_exit_status=0
+
+exit_status=0

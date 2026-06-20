@@ -80,10 +80,9 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         forbidden_patterns: DEFAULT_FORBIDDEN_PATTERNS,
         client_count: ONE_CLIENT,
         session_count: ONE_SESSION,
-        dry_run_check: "",
+        dry_run_check: "mc-compat-historical-scenario-dry-runs",
         dry_run_wrapper: "mc-compat-smoke",
-        dry_run_exclusion_reason:
-            "covered by historical live receipt and not yet by a dedicated flake dry-run wrapper",
+        dry_run_exclusion_reason: "",
         migration_state: "substring-fallback",
     },
     GeneratedScenarioRow {
@@ -262,10 +261,9 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         forbidden_patterns: DEFAULT_FORBIDDEN_PATTERNS,
         client_count: ONE_CLIENT,
         session_count: TWO_SESSIONS,
-        dry_run_check: "",
+        dry_run_check: "mc-compat-historical-scenario-dry-runs",
         dry_run_wrapper: "mc-compat-valence-survival-chest-persistence",
-        dry_run_exclusion_reason:
-            "archived prove-survival-chest-persistence uses live paired fixture receipts instead of a dedicated dry-run wrapper",
+        dry_run_exclusion_reason: "",
         migration_state: "substring-fallback",
     },
     GeneratedScenarioRow {
@@ -358,10 +356,9 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         forbidden_patterns: DEFAULT_FORBIDDEN_PATTERNS,
         client_count: ONE_CLIENT,
         session_count: ONE_SESSION,
-        dry_run_check: "",
+        dry_run_check: "mc-compat-historical-scenario-dry-runs",
         dry_run_wrapper: "mc-compat-smoke",
-        dry_run_exclusion_reason:
-            "archived survival-hunger-food-parity Cairn uses live paired fixture receipts instead of a dry-run wrapper",
+        dry_run_exclusion_reason: "",
         migration_state: "substring-fallback",
     },
     GeneratedScenarioRow {
@@ -391,10 +388,9 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         forbidden_patterns: DEFAULT_FORBIDDEN_PATTERNS,
         client_count: ONE_CLIENT,
         session_count: ONE_SESSION,
-        dry_run_check: "",
+        dry_run_check: "mc-compat-historical-scenario-dry-runs",
         dry_run_wrapper: "mc-compat-smoke",
-        dry_run_exclusion_reason:
-            "survival-mob-drop-parity uses live paired fixture receipts instead of a dedicated dry-run wrapper",
+        dry_run_exclusion_reason: "",
         migration_state: "substring-fallback",
     },
     GeneratedScenarioRow {
@@ -419,10 +415,9 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         forbidden_patterns: DEFAULT_FORBIDDEN_PATTERNS,
         client_count: ONE_CLIENT,
         session_count: ONE_SESSION,
-        dry_run_check: "",
+        dry_run_check: "mc-compat-historical-scenario-dry-runs",
         dry_run_wrapper: "mc-compat-smoke",
-        dry_run_exclusion_reason:
-            "survival-redstone-toggle-parity uses live paired fixture receipts instead of a dedicated dry-run wrapper",
+        dry_run_exclusion_reason: "",
         migration_state: "substring-fallback",
     },
     GeneratedScenarioRow {
@@ -448,10 +443,9 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         forbidden_patterns: DEFAULT_FORBIDDEN_PATTERNS,
         client_count: ONE_CLIENT,
         session_count: TWO_SESSIONS,
-        dry_run_check: "",
+        dry_run_check: "mc-compat-historical-scenario-dry-runs",
         dry_run_wrapper: "mc-compat-smoke",
-        dry_run_exclusion_reason:
-            "archived survival-world-persistence-parity Cairn uses live paired fixture receipts instead of a dedicated dry-run wrapper",
+        dry_run_exclusion_reason: "",
         migration_state: "substring-fallback",
     },
     GeneratedScenarioRow {
@@ -477,10 +471,9 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         forbidden_patterns: DEFAULT_FORBIDDEN_PATTERNS,
         client_count: ONE_CLIENT,
         session_count: TWO_SESSIONS,
-        dry_run_check: "",
+        dry_run_check: "mc-compat-historical-scenario-dry-runs",
         dry_run_wrapper: "mc-compat-smoke",
-        dry_run_exclusion_reason:
-            "survival-crash-recovery-parity uses live paired fixture receipts instead of a dedicated dry-run wrapper",
+        dry_run_exclusion_reason: "",
         migration_state: "substring-fallback",
     },
     GeneratedScenarioRow {
@@ -505,10 +498,9 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         forbidden_patterns: DEFAULT_FORBIDDEN_PATTERNS,
         client_count: ONE_CLIENT,
         session_count: TWO_SESSIONS,
-        dry_run_check: "",
+        dry_run_check: "mc-compat-historical-scenario-dry-runs",
         dry_run_wrapper: "mc-compat-smoke",
-        dry_run_exclusion_reason:
-            "survival-block-entity-persistence-parity uses live paired fixture receipts instead of a dedicated dry-run wrapper",
+        dry_run_exclusion_reason: "",
         migration_state: "substring-fallback",
     },
     GeneratedScenarioRow {
@@ -527,10 +519,9 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         forbidden_patterns: DEFAULT_FORBIDDEN_PATTERNS,
         client_count: ONE_CLIENT,
         session_count: ONE_SESSION,
-        dry_run_check: "",
+        dry_run_check: "mc-compat-historical-scenario-dry-runs",
         dry_run_wrapper: "mc-compat-smoke",
-        dry_run_exclusion_reason:
-            "archived survival-biome-dimension-parity uses live paired fixture receipts instead of a dedicated dry-run wrapper",
+        dry_run_exclusion_reason: "",
         migration_state: "substring-fallback",
     },
     GeneratedScenarioRow {
@@ -632,7 +623,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "",
         dry_run_wrapper: "mc-compat-vanilla-combat-reference-parity",
         dry_run_exclusion_reason:
-            "archived vanilla-combat-reference-paired-receipts Cairn owns the no-armor paired fixture promotion and checker-gated receipts",
+            "owner=mc-compat; reason=paired Paper/Valence comparator receipts remain the review source; non_claim=dry-run shape coverage would not promote vanilla combat parity; next_action=add dedicated paired-reference dry-run shape only after comparator fixture review",
         migration_state: "substring-fallback",
     },
     GeneratedScenarioRow {
@@ -660,7 +651,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "",
         dry_run_wrapper: "mc-compat-smoke",
         dry_run_exclusion_reason:
-            "archived vanilla-combat-armor-reference-parity Cairn owns paired fixture promotion and checker-gated receipts",
+            "owner=mc-compat; reason=paired Paper/Valence armor comparator receipts remain the review source; non_claim=dry-run shape coverage would not promote armor combat parity; next_action=add dedicated paired-reference dry-run shape only after comparator fixture review",
         migration_state: "substring-fallback",
     },
     GeneratedScenarioRow {

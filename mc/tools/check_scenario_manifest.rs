@@ -48,6 +48,21 @@ const LIVE_CAPABILITY_REGISTRY_TOKENS: &[&str] = &[
     "sign-editor-open-update",
     "sign_update_accepted_observed",
 ];
+const WAIVER_OWNER_FIELD: &str = "owner=";
+const WAIVER_REASON_FIELD: &str = "reason=";
+const WAIVER_NON_CLAIM_FIELD: &str = "non_claim=";
+const WAIVER_NEXT_ACTION_FIELD: &str = "next_action=";
+const REQUIRED_WAIVER_FIELDS: &[&str] = &[
+    WAIVER_OWNER_FIELD,
+    WAIVER_REASON_FIELD,
+    WAIVER_NON_CLAIM_FIELD,
+    WAIVER_NEXT_ACTION_FIELD,
+];
+const STALE_DRY_RUN_EXCLUSION_MARKERS: &[&str] = &[
+    "not yet by a dedicated",
+    "instead of a dedicated dry-run wrapper",
+    "instead of a dry-run wrapper",
+];
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct DryRun {
@@ -97,6 +112,20 @@ impl LiveCapabilityRegistryEvaluation<'_> {
     }
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct DryRunCoverageEvaluation {
+    covered: usize,
+    waived: usize,
+    unmaintained: usize,
+    issues: Vec<String>,
+}
+
+impl DryRunCoverageEvaluation {
+    fn is_complete(&self) -> bool {
+        self.issues.is_empty()
+    }
+}
+
 fn main() -> ExitCode {
     let args: Vec<String> = env::args().collect();
     if args.iter().any(|arg| arg == SELF_TEST_FLAG) {
@@ -134,6 +163,7 @@ fn run_repo_check(root: &Path) -> Result<String, Vec<String>> {
     let manifest_text = read_repo_file(root, MANIFEST_PATH)?;
     let manifest = parse_manifest(&manifest_text)?;
     validate_manifest(&manifest)?;
+    let dry_run_coverage = evaluate_dry_run_coverage(&manifest.rows);
 
     let generated = read_repo_file(root, GENERATED_RUST_PATH)?;
     let runner_main = read_repo_file(root, RUNNER_MAIN_PATH)?;
@@ -157,7 +187,13 @@ fn run_repo_check(root: &Path) -> Result<String, Vec<String>> {
     ));
 
     if errors.is_empty() {
-        Ok(format!("{} rows validated", manifest.rows.len()))
+        Ok(format!(
+            "{} rows validated; dry-run coverage: {} covered, {} waived, {} unmaintained",
+            manifest.rows.len(),
+            dry_run_coverage.covered,
+            dry_run_coverage.waived,
+            dry_run_coverage.unmaintained
+        ))
     } else {
         Err(errors)
     }
@@ -476,6 +512,8 @@ fn validate_manifest(manifest: &Manifest) -> Result<(), Vec<String>> {
             }
         }
     }
+    let dry_run_coverage = evaluate_dry_run_coverage(&manifest.rows);
+    errors.extend(dry_run_coverage.issues);
     if errors.is_empty() {
         Ok(())
     } else {
@@ -514,21 +552,6 @@ fn validate_row(row: &ScenarioRow, errors: &mut Vec<String>) {
             row.name, row.migration_state
         ));
     }
-    if row.maintained && row.dry_run.check.is_empty() && row.dry_run.exclusion_reason.is_empty() {
-        errors.push(format!(
-            "{}: maintained row needs dry-run check or exclusion reason",
-            row.name
-        ));
-    }
-    if !row.dry_run.check.is_empty() && row.dry_run.wrapper.is_empty() {
-        errors.push(format!("{}: dry-run wrapper metadata missing", row.name));
-    }
-    if row.dry_run.receipt_shape_check && row.dry_run.check.is_empty() {
-        errors.push(format!(
-            "{}: receipt_shape_check requires dry-run check",
-            row.name
-        ));
-    }
     if row.current_bundle_row.is_empty() && row.current_bundle_exclusion_reason.is_empty() {
         errors.push(format!(
             "{}: current bundle row or exclusion reason required",
@@ -539,6 +562,94 @@ fn validate_row(row: &ScenarioRow, errors: &mut Vec<String>) {
 
 fn is_supported_migration_state(value: &str) -> bool {
     value == SUBSTRING_FALLBACK_MIGRATION || value == TYPED_EVENT_READY_MIGRATION
+}
+
+fn evaluate_dry_run_coverage(rows: &[ScenarioRow]) -> DryRunCoverageEvaluation {
+    let mut evaluation = DryRunCoverageEvaluation {
+        covered: usize::MIN,
+        waived: usize::MIN,
+        unmaintained: usize::MIN,
+        issues: Vec::new(),
+    };
+    for row in rows {
+        evaluate_dry_run_coverage_row(row, &mut evaluation);
+    }
+    evaluation
+}
+
+fn evaluate_dry_run_coverage_row(row: &ScenarioRow, evaluation: &mut DryRunCoverageEvaluation) {
+    if !row.maintained {
+        evaluation.unmaintained += 1;
+        return;
+    }
+    if row.dry_run.wrapper.is_empty() {
+        evaluation
+            .issues
+            .push(format!("{}: dry-run wrapper metadata missing", row.name));
+    }
+    if !row.dry_run.check.is_empty() {
+        evaluation.covered += 1;
+        if !row.dry_run.receipt_shape_check {
+            evaluation.issues.push(format!(
+                "{}: dry-run check must set receipt_shape_check=true",
+                row.name
+            ));
+        }
+        if !row.dry_run.exclusion_reason.is_empty() {
+            evaluation.issues.push(format!(
+                "{}: covered row must not carry waiver metadata",
+                row.name
+            ));
+        }
+        return;
+    }
+    if !row.dry_run.exclusion_reason.is_empty() {
+        evaluation.waived += 1;
+        if row.dry_run.receipt_shape_check {
+            evaluation.issues.push(format!(
+                "{}: waived row must set receipt_shape_check=false",
+                row.name
+            ));
+        }
+        evaluation
+            .issues
+            .extend(validate_dry_run_waiver_metadata(row));
+        return;
+    }
+    evaluation.issues.push(format!(
+        "{}: maintained row needs dry-run check or waiver metadata",
+        row.name
+    ));
+}
+
+fn validate_dry_run_waiver_metadata(row: &ScenarioRow) -> Vec<String> {
+    let mut errors = Vec::new();
+    let metadata = row.dry_run.exclusion_reason.trim();
+    for marker in STALE_DRY_RUN_EXCLUSION_MARKERS {
+        if metadata.contains(marker) {
+            errors.push(format!(
+                "{}: waiver metadata contains stale exclusion marker {:?}",
+                row.name, marker
+            ));
+        }
+    }
+    for field in REQUIRED_WAIVER_FIELDS {
+        if waiver_field_value(metadata, field).is_none() {
+            errors.push(format!(
+                "{}: waiver metadata missing nonempty {field}",
+                row.name
+            ));
+        }
+    }
+    errors
+}
+
+fn waiver_field_value<'a>(metadata: &'a str, field: &str) -> Option<&'a str> {
+    metadata
+        .split(';')
+        .map(str::trim)
+        .find_map(|part| part.strip_prefix(field).map(str::trim))
+        .filter(|value| !value.is_empty())
 }
 
 fn validate_generated_tables(rows: &[ScenarioRow], generated: &str) -> Vec<String> {
@@ -713,10 +824,24 @@ fn require_contains(errors: &mut Vec<String>, path: &str, haystack: &str, needle
 fn run_self_tests() -> Result<String, Vec<String>> {
     let cases = [
         ("valid", valid_fixture(), true),
+        ("waiver_backed", waiver_fixture(), true),
         ("duplicate", duplicate_fixture(), false),
         ("missing_alias", missing_alias_fixture(), false),
         ("missing_milestone", missing_milestone_fixture(), false),
         ("invalid_wrapper", invalid_wrapper_fixture(), false),
+        (
+            "missing_waiver_wrapper",
+            missing_waiver_wrapper_fixture(),
+            false,
+        ),
+        ("empty_waiver", empty_waiver_fixture(), false),
+        ("incomplete_waiver", incomplete_waiver_fixture(), false),
+        ("stale_waiver", stale_waiver_fixture(), false),
+        (
+            "covered_row_with_waiver",
+            covered_row_with_waiver_fixture(),
+            false,
+        ),
         (
             "unsupported_migration",
             unsupported_migration_fixture(),
@@ -731,6 +856,10 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         }
     }
     let manifest = parse_manifest(&valid_fixture()).expect("valid fixture parses");
+    let dry_run_coverage = evaluate_dry_run_coverage(&manifest.rows);
+    if !dry_run_coverage.is_complete() {
+        errors.push("self-test case valid dry-run coverage expected pass=true".to_string());
+    }
     let split_surface = combined_runner_surface("", "\"smoke\"\n\"protocol_detected\"\n\"panic\"");
     if !validate_runner_surfaces(&manifest.rows, &split_surface).is_empty() {
         errors.push("self-test case split_runner_surface expected pass=true".to_string());
@@ -840,6 +969,53 @@ fn invalid_wrapper_fixture() -> String {
     fixture_with_row(&valid_row().replace(
         "dry_run = { check = \"mc-compat-dry-run\", wrapper = \"mc-compat-smoke\", receipt_shape_check = true, exclusion_reason = \"\" }",
         "dry_run = { check = \"\", wrapper = \"\", receipt_shape_check = false, exclusion_reason = \"\" }",
+    ))
+}
+
+fn complete_waiver_metadata() -> &'static str {
+    "owner=mc-compat; reason=paired reference comparator remains the review source; non_claim=dry-run shape coverage would not promote live parity; next_action=add dedicated wrapper after comparator fixture review"
+}
+
+fn waiver_row() -> String {
+    valid_row().replace(
+        "dry_run = { check = \"mc-compat-dry-run\", wrapper = \"mc-compat-smoke\", receipt_shape_check = true, exclusion_reason = \"\" }",
+        &format!(
+            "dry_run = {{ check = \"\", wrapper = \"mc-compat-smoke\", receipt_shape_check = false, exclusion_reason = \"{}\" }}",
+            complete_waiver_metadata()
+        ),
+    )
+}
+
+fn waiver_fixture() -> String {
+    fixture_with_row(&waiver_row())
+}
+
+fn missing_waiver_wrapper_fixture() -> String {
+    fixture_with_row(&waiver_row().replace("wrapper = \"mc-compat-smoke\"", "wrapper = \"\""))
+}
+
+fn empty_waiver_fixture() -> String {
+    fixture_with_row(&waiver_row().replace(complete_waiver_metadata(), ""))
+}
+
+fn incomplete_waiver_fixture() -> String {
+    fixture_with_row(&waiver_row().replace(
+        "; next_action=add dedicated wrapper after comparator fixture review",
+        "",
+    ))
+}
+
+fn stale_waiver_fixture() -> String {
+    fixture_with_row(&waiver_row().replace(
+        complete_waiver_metadata(),
+        "owner=mc-compat; reason=covered by historical live receipt and not yet by a dedicated flake dry-run wrapper; non_claim=dry-run shape coverage would not promote live parity; next_action=add dedicated wrapper after comparator fixture review",
+    ))
+}
+
+fn covered_row_with_waiver_fixture() -> String {
+    fixture_with_row(&valid_row().replace(
+        "exclusion_reason = \"\"",
+        &format!("exclusion_reason = \"{}\"", complete_waiver_metadata()),
     ))
 }
 
