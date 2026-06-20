@@ -1,0 +1,128 @@
+# canonical evidence gate wording archive
+cwd=/home/brittonr/git/mc
+started_at=2026-06-20T02:04:05Z
+
+$ grep -Fq mc_compatibility.canonical_evidence_gate_wording.validation cairn/specs/mc-compatibility/spec.md
+command_exit_status=0
+
+$ nix run --option builders  .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+command_exit_status=0
+
+$ nix run --option builders  .#cairn -- archive canonicalize-evidence-gate-wording --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: canonicalize-evidence-gate-wording",
+      "kind": "archive_change",
+      "path": "./cairn/changes/canonicalize-evidence-gate-wording"
+    }
+  ],
+  "blocked": false,
+  "change": "canonicalize-evidence-gate-wording",
+  "dry_run": true,
+  "input_hash": "6677451ea3c48d2a86729d71daf0ba0194fc924bbda55aa5a8b5787d3a2c328f",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "6ddb18658d858303c1f52f87c6184601417462ea3ca2a1f10d5ce646ad64ddb9",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "3d7d49e513fedfd58675171991cc83296c921fe402a28016d43138626843b9e0"
+}
+command_exit_status=0
+
+$ env CAIRN_ARCHIVE_DATE=2026-06-19 nix run --option builders  .#cairn -- archive canonicalize-evidence-gate-wording --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: canonicalize-evidence-gate-wording",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-19-canonicalize-evidence-gate-wording"
+    }
+  ],
+  "blocked": false,
+  "change": "canonicalize-evidence-gate-wording",
+  "dry_run": false,
+  "input_hash": "6677451ea3c48d2a86729d71daf0ba0194fc924bbda55aa5a8b5787d3a2c328f",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "7421ac2f70eff1c810dfd4996e46f7382a7a3bd4ae5a58b7939b706fa28600ca",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-19-canonicalize-evidence-gate-wording/design.md"
+        },
+        {
+          "content_hash": "9cb2b92c8a821afb57f07cf5e29fdff6d78f6241daa4ceeb14df14f842fddbd5",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-19-canonicalize-evidence-gate-wording/proposal.md"
+        },
+        {
+          "content_hash": "f61c0bae52b19457bd700a2acd48573ba31c0307229494d0b9e202e62506207c",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-19-canonicalize-evidence-gate-wording/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "95ae57b2673f40f38c28612e3a21a994db1814eb478f64828736e755b26c7c4c",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-19-canonicalize-evidence-gate-wording/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/canonicalize-evidence-gate-wording"
+        }
+      ],
+      "manifest_hash": "95c3ffa930b1e8c5b9aaeb696861719b05496e0a6242fab6acc566bd8e23be02"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "7421ac2f70eff1c810dfd4996e46f7382a7a3bd4ae5a58b7939b706fa28600ca",
+          "exists": true,
+          "path": "./cairn/changes/canonicalize-evidence-gate-wording/design.md"
+        },
+        {
+          "content_hash": "9cb2b92c8a821afb57f07cf5e29fdff6d78f6241daa4ceeb14df14f842fddbd5",
+          "exists": true,
+          "path": "./cairn/changes/canonicalize-evidence-gate-wording/proposal.md"
+        },
+        {
+          "content_hash": "f61c0bae52b19457bd700a2acd48573ba31c0307229494d0b9e202e62506207c",
+          "exists": true,
+          "path": "./cairn/changes/canonicalize-evidence-gate-wording/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "95ae57b2673f40f38c28612e3a21a994db1814eb478f64828736e755b26c7c4c",
+          "exists": true,
+          "path": "./cairn/changes/canonicalize-evidence-gate-wording/tasks.md"
+        }
+      ],
+      "manifest_hash": "167a60b8f9afb34dba29af27ed69b740f7990506d26ff3fb3a2f2e90b14e074b"
+    },
+    "kind": "archive",
+    "manifest_hash": "6c9a4f8fa1a7299dbd1305febc30c6ec3f5a41a75b78f636bbe6a2e9c6aa236c"
+  },
+  "plan_hash": "0cdd0540f7d776a2ea8b0f893745e17a9df3e5f1d86c8b474fbcffca0618024b",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "dbd28d3f54674a5f914ff6e5d55db8ceba37d98e13155cd8969ee09512949d85"
+}
+command_exit_status=0
+
+finished_at=2026-06-20T02:04:07Z
+exit_status=0

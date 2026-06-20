@@ -1,0 +1,13 @@
+# canonical evidence gate wording task evidence
+cwd=/home/brittonr/git/mc
+started_at=2026-06-20T02:05:26Z
+
+$ nix develop --option builders  . -c bash -lc rustc --edition=2021 tools/check_cairn_task_evidence.rs -o target/check-cairn-task-evidence && target/check-cairn-task-evidence cairn/archive/2026-06-19-canonicalize-evidence-gate-wording/tasks.md
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence gate passed: 5 completed tasks checked across 1 task files
+command_exit_status=0
+
+finished_at=2026-06-20T02:05:27Z
+exit_status=0

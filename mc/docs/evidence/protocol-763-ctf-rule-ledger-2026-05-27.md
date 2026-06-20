@@ -30,8 +30,6 @@ full CTF correctness remains a non-claim.
 | all team balancing algorithms | Non-claim | Only one two-client RED/BLUE assignment/reset sequence is promoted; add alternate maps, larger teams, and more reset triggers before claiming broader team-balance coverage. |
 | full CTF correctness | Non-claim | Requires all rule rows complete. |
 
-Compatibility alias retained for the invalid-pickup checker: `invalid_return_accepted | Non-claim`.
-
 ## Positive validation
 
 `tools/check_ctf_rule_ledger.py` requires:

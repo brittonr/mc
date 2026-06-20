@@ -13,8 +13,8 @@ d605799f8ea829ec749f97f52acd20c75f403324439f3d72392ceeb3397abe8d  docs/evidence/
 9a8dd4253b720e827724352539d3c398a7f03c3c958561c9dedea7c5641ef32d  docs/evidence/protocol-763-red-blue-scoring-soak-blue-2026-05-30.server.log
 e660802c4fc789cbb9b7b4cecb73294aa29aafffb3d2a2ddfe693c5135caf816  docs/evidence/protocol-763-red-blue-scoring-soak-blue-2026-05-30.receipt.typed-events.log
 9a36cc04d97213add7137f2d984d19f05cb051cf8265b23e50c473423018e7ed  docs/evidence/protocol-763-acceptance-matrix.md
-e1601bd71aa55a2546c18643a580c1988ff210522453ec895e384fc806398254  docs/evidence/protocol-763-current-evidence-bundle.md
-9f3b5d4288cb64e697f206569f90bddb26f4b985cf62abaf0001f509b0a47f39  docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md
+fbddc9e82183533227ca925501e3acaa1f5ac4f1856bafd7b5416cafd85ed972  docs/evidence/protocol-763-current-evidence-bundle.md
+92f6d25fddda6d6c038d547bab5048526becf941645eea8d1d23e9568dc98e89  docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md
 69cb30f9883659aec0727ca58d7bc4149bc62942eb87f0e503cbf11d283e0496  tools/check_red_blue_scoring_soak_live_refresh.rs
 942a9d7abdec5c8f5459dafbac91dcfad91fc10609f52bec8f157493cccfcc49  tools/check_acceptance_matrix.rs
 c797f5231600b8aebaade5f12173560159578a78ac275fe3ddde4be8918d6c02  flake.nix

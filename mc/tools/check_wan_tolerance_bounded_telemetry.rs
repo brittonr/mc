@@ -40,6 +40,8 @@ const EXPECTED_RECONNECT_COUNT: &str = "0";
 const EXPECTED_STATUS: &str = "pass";
 const EXPECTED_PASS_FAIL_CRITERIA: &str = "inventory_interaction_client_server_milestones";
 const EXPECTED_MATRIX_STATUS: &str = "covered_owned_local_bounded_telemetry";
+const PUBLIC_INTERNET_WAN_NON_CLAIM: &str = "Public/internet WAN safety remains a non-claim";
+const MATRIX_PUBLIC_INTERNET_WAN_NON_CLAIM: &str = "No public/internet WAN safety";
 
 const REQUIRED_TELEMETRY: &[&str] = &[
     "scenario_required_milestones",
@@ -85,7 +87,7 @@ const CONTRACT_TOKENS: &[&str] = &[
     "wan_overclaim",
     "public_target_overclaim",
     "production_readiness_overclaim",
-    "internet-path safety remains a non-claim",
+    PUBLIC_INTERNET_WAN_NON_CLAIM,
 ];
 
 const ROW_RECEIPT_TOKENS: &[&str] = &[
@@ -143,7 +145,7 @@ const CURRENT_BUNDLE_TOKENS: &[&str] = &[
     ROW_RECEIPT,
     "tools/check_wan_tolerance_bounded_telemetry.rs",
     EXPECTED_MATRIX_STATUS,
-    "internet-path safety remains a non-claim",
+    PUBLIC_INTERNET_WAN_NON_CLAIM,
 ];
 
 const ACCEPTANCE_MATRIX_TOKENS: &[&str] = &[
@@ -151,7 +153,7 @@ const ACCEPTANCE_MATRIX_TOKENS: &[&str] = &[
     "bounded owned-local WAN telemetry row",
     "target_ownership=owned-local-loopback",
     "authorization=owned-local-fixture-approved",
-    "No public/internet WAN safety",
+    MATRIX_PUBLIC_INTERNET_WAN_NON_CLAIM,
 ];
 
 const ROW_DOC_TOKENS: &[&str] = &[
@@ -166,7 +168,7 @@ const ROW_DOC_TOKENS: &[&str] = &[
     "promote only the bounded owned-local WAN telemetry row",
     "claims.wan_safety=false",
     "claims.packet_loss_tolerance=false",
-    "No public/internet WAN safety",
+    MATRIX_PUBLIC_INTERNET_WAN_NON_CLAIM,
 ];
 
 #[derive(Debug, Clone, PartialEq, Eq)]

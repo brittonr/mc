@@ -39,6 +39,8 @@ const EXPECTED_TARGET_SCOPE: &str = "owned-local-loopback";
 const EXPECTED_OBSERVED_OUTCOME: &str = "containment_observed";
 const EXPECTED_RULE_ID: &str = "invalid_pickup_rejected_without_ownership_transfer";
 const EXPECTED_DIGEST_PLACEHOLDER: &str = "{{DIGEST}}";
+const INVALID_RETURN_BREADTH_NON_CLAIM: &str =
+    "invalid_return_accepted broad invalid return/drop breadth | Non-claim";
 
 const CONTRACT_TOKENS: &[&str] = &[
     EXPECTED_SCENARIO,
@@ -123,7 +125,7 @@ const LEDGER_TOKENS: &[&str] = &[
     "unexpected_flag_pickup_chat",
     "unexpected_server_flag_pickup",
     ROW_RECEIPT,
-    "invalid_return_accepted | Non-claim",
+    INVALID_RETURN_BREADTH_NON_CLAIM,
     "full CTF correctness remains a non-claim",
 ];
 
@@ -427,7 +429,7 @@ fn fixture_evidence() -> EvidenceTexts {
             "{EXPECTED_SEAM}\n{EXPECTED_COMMAND}\nctf-invalid-pickup-ownership\ninvalid flag pickup/ownership checkpoint\n{EXPECTED_INVALID_ACTION}\nfull CTF correctness remains a non-claim\n"
         ),
         ledger: format!(
-            "{EXPECTED_RULE_ID}\n{EXPECTED_SEAM}\nctf_invalid_pickup_attempted\nctf_invalid_pickup_contained\nserver_invalid_pickup_rejected\nunexpected_flag_pickup_chat\nunexpected_server_flag_pickup\n{ROW_RECEIPT}\ninvalid_return_accepted | Non-claim\nfull CTF correctness remains a non-claim\n"
+            "{EXPECTED_RULE_ID}\n{EXPECTED_SEAM}\nctf_invalid_pickup_attempted\nctf_invalid_pickup_contained\nserver_invalid_pickup_rejected\nunexpected_flag_pickup_chat\nunexpected_server_flag_pickup\n{ROW_RECEIPT}\n{INVALID_RETURN_BREADTH_NON_CLAIM}\nfull CTF correctness remains a non-claim\n"
         ),
     }
 }

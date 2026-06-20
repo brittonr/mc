@@ -36,6 +36,8 @@ const EXPECTED_TARGET_SCOPE: &str = "owned-local-loopback";
 const EXPECTED_OBSERVED_OUTCOME: &str = "containment_observed";
 const EXPECTED_RULE_ID: &str = "invalid_return_drop_rejected_without_state_mutation";
 const EXPECTED_DIGEST_PLACEHOLDER: &str = "{{DIGEST}}";
+const INVALID_RETURN_BREADTH_NON_CLAIM: &str =
+    "invalid_return_accepted broad invalid return/drop breadth | Non-claim";
 
 const CONTRACT_TOKENS: &[&str] = &[
     EXPECTED_SCENARIO,
@@ -120,7 +122,7 @@ const LEDGER_TOKENS: &[&str] = &[
     "unexpected_flag_return",
     "unexpected_server_flag_pickup",
     ROW_RECEIPT,
-    "invalid_return_accepted broad invalid return/drop breadth | Non-claim",
+    INVALID_RETURN_BREADTH_NON_CLAIM,
     "full CTF correctness remains a non-claim",
 ];
 
@@ -427,7 +429,7 @@ fn fixture_evidence() -> EvidenceTexts {
             "{EXPECTED_SEAM}\n{EXPECTED_COMMAND}\nctf-invalid-return-drop\ninvalid flag return/drop checkpoint\n{EXPECTED_INVALID_ACTION}\nfull CTF correctness remains a non-claim\n"
         ),
         ledger: format!(
-            "{EXPECTED_RULE_ID}\n{EXPECTED_SEAM}\nctf_invalid_return_drop_attempted\nctf_invalid_return_drop_contained\nserver_invalid_return_drop_rejected\nunexpected_flag_return\nunexpected_server_flag_pickup\n{ROW_RECEIPT}\ninvalid_return_accepted broad invalid return/drop breadth | Non-claim\nfull CTF correctness remains a non-claim\n"
+            "{EXPECTED_RULE_ID}\n{EXPECTED_SEAM}\nctf_invalid_return_drop_attempted\nctf_invalid_return_drop_contained\nserver_invalid_return_drop_rejected\nunexpected_flag_return\nunexpected_server_flag_pickup\n{ROW_RECEIPT}\n{INVALID_RETURN_BREADTH_NON_CLAIM}\nfull CTF correctness remains a non-claim\n"
         ),
     }
 }

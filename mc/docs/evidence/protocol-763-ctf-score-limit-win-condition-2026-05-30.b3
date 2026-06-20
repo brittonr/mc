@@ -11,8 +11,8 @@ ad37a692b15f623c707b8312bd22fbcfce96435a6b4f817a28a092ecf3b29395  docs/evidence/
 40967a69f6a3b9efba4d735f7d9133a0c47b0774e6551096a90933264418b651  docs/evidence/protocol-763-ctf-score-limit-win-condition-archive-2026-05-30.run.log
 5918b7cec821e39834e6e7ef763696b258d6c3c3df907500e5f53db5fcf4367d  docs/evidence/protocol-763-ctf-score-limit-win-condition-archive-validation-2026-05-30.run.log
 9a36cc04d97213add7137f2d984d19f05cb051cf8265b23e50c473423018e7ed  docs/evidence/protocol-763-acceptance-matrix.md
-e1601bd71aa55a2546c18643a580c1988ff210522453ec895e384fc806398254  docs/evidence/protocol-763-current-evidence-bundle.md
-9f3b5d4288cb64e697f206569f90bddb26f4b985cf62abaf0001f509b0a47f39  docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md
+fbddc9e82183533227ca925501e3acaa1f5ac4f1856bafd7b5416cafd85ed972  docs/evidence/protocol-763-current-evidence-bundle.md
+92f6d25fddda6d6c038d547bab5048526becf941645eea8d1d23e9568dc98e89  docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md
 b18278e1ec5ba4974f22acedecef765aeaceb7413ba7377de1adfd4f4babf118  config/mc-compat/scenario-manifest.ncl
 f579cf7092fc07dfacd19a0867d211eedaa2911844306fab41991e738140c601  tools/mc-compat-runner/src/main.rs
 f774c8a5184825cd307223771d3257d529d5c1a4229028ddb1a0ed845b8144d4  tools/mc-compat-runner/src/scenario_manifest_generated.rs

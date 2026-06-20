@@ -1,0 +1,33 @@
+# canonical evidence gate wording post-archive validation
+cwd=/home/brittonr/git/mc
+started_at=2026-06-20T02:04:38Z
+
+$ nix run --option builders  .#cairn -- change list --root .
+{
+  "changes": [],
+  "layout": "cairn",
+  "root": "."
+}
+command_exit_status=0
+
+$ grep -Fq mc_compatibility.canonical_evidence_gate_wording.validation cairn/specs/mc-compatibility/spec.md
+command_exit_status=0
+
+$ nix run --option builders  .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 2,
+  "valid": true
+}
+command_exit_status=0
+
+$ git -C /home/brittonr/git diff --check -- mc
+command_exit_status=0
+
+finished_at=2026-06-20T02:04:38Z
+exit_status=0

@@ -1,0 +1,91 @@
+# canonical evidence gate wording Cairn gates
+cwd=/home/brittonr/git/mc
+started_at=2026-06-20T02:02:47Z
+
+$ nix run --option builders  .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+command_exit_status=0
+
+$ nix run --option builders  .#cairn -- gate proposal canonicalize-evidence-gate-wording --root .
+{
+  "change": "canonicalize-evidence-gate-wording",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "60a0312b9f0c835848a73ecd232322f93a1f45eb4503184c87fb6cc0768ebfe9",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "221847e43d23afa4426df68d7f384f106b3ee3b6d95f39a9950b8d424918d09e",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+$ nix run --option builders  .#cairn -- gate design canonicalize-evidence-gate-wording --root .
+{
+  "change": "canonicalize-evidence-gate-wording",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "9e5135945c06eb9ee0b4a0168c9ad8f1f290a4a53932e08b34329c5fab438a56",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "e2e838e6c707fdbdc9bc3b45cbe70fd39c83bd771c121f68d00e2ee07c578f0d",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+$ nix run --option builders  .#cairn -- gate tasks canonicalize-evidence-gate-wording --root .
+{
+  "change": "canonicalize-evidence-gate-wording",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "9b698a67fa29be2a54034fb7fda538e6c4ac8539c3b07f78f9d4b09066046153",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "0c809543be0376249b0ae14cdeb2cac2ca05bd8c4ba020e8aeaa9e737bc2686a",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+finished_at=2026-06-20T02:02:48Z
+exit_status=0

@@ -1,0 +1,22 @@
+# canonical evidence gate wording baseline
+cwd=/home/brittonr/git/mc
+started_at=2026-06-20T01:57:31Z
+
+$ nix build --option builders  .#checks.x86_64-linux.mc-compat-wan-tolerance-bounded-telemetry --no-link -L
+command_exit_status=0
+
+$ nix build --option builders  .#checks.x86_64-linux.mc-compat-ctf-invalid-pickup-ownership --no-link -L
+command_exit_status=0
+
+$ nix build --option builders  .#checks.x86_64-linux.mc-compat-ctf-invalid-return-drop --no-link -L
+command_exit_status=0
+
+$ nix build --option builders  .#checks.x86_64-linux.mc-compat-full-survival-gate --no-link -L
+command_exit_status=0
+
+$ nix run --option builders  .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=368; entries=2474; current=2474; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+command_exit_status=0
+
+finished_at=2026-06-20T01:57:36Z
+exit_status=0

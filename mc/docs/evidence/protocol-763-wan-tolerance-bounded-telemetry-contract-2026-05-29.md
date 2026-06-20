@@ -4,7 +4,7 @@
 
 `wan-tolerance-bounded-telemetry` covers one owned-local, authorized, bounded telemetry row over the maintained `inventory-interaction` rail. It reuses the bounded Valence CTF inventory semantic oracle and records WAN-like delay/jitter metadata without privileged host network mutation.
 
-This row promotes only the bounded owned-local telemetry envelope. Public-server safety, internet-path safety remains a non-claim, adversarial-network safety, production readiness, unbounded soak/reconnect safety, third-party target safety, and packet-loss tolerance beyond `loss_percent=0` remain non-claims.
+This row promotes only the bounded owned-local telemetry envelope. Public/internet WAN safety remains a non-claim; public-server safety, adversarial-network safety, production readiness, unbounded soak/reconnect safety, third-party target safety, and packet-loss tolerance beyond `loss_percent=0` remain non-claims.
 
 ## Normalized metric contract
 

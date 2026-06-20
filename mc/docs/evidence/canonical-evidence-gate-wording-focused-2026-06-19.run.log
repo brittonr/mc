@@ -1,0 +1,109 @@
+# canonical evidence gate wording focused validation
+cwd=/home/brittonr/git/mc
+started_at=2026-06-20T01:59:49Z
+
+$ nix build --option builders  .#checks.x86_64-linux.mc-compat-wan-tolerance-bounded-telemetry --no-link -L
+this derivation will be built:
+  /nix/store/mnpf7ad2cs75af1brv2vxvcq3xc2k9im-mc-compat-wan-tolerance-bounded-telemetry.drv
+building '/nix/store/mnpf7ad2cs75af1brv2vxvcq3xc2k9im-mc-compat-wan-tolerance-bounded-telemetry.drv'...
+command_exit_status=0
+
+$ nix build --option builders  .#checks.x86_64-linux.mc-compat-ctf-invalid-pickup-ownership --no-link -L
+this derivation will be built:
+  /nix/store/2fg4x17my1dk49yvrbqy0k521fw4fy2f-mc-compat-ctf-invalid-pickup-ownership.drv
+building '/nix/store/2fg4x17my1dk49yvrbqy0k521fw4fy2f-mc-compat-ctf-invalid-pickup-ownership.drv'...
+command_exit_status=0
+
+$ nix build --option builders  .#checks.x86_64-linux.mc-compat-ctf-invalid-return-drop --no-link -L
+this derivation will be built:
+  /nix/store/70f0blqbv9zfi377r6yw6j0lnkdjay3w-mc-compat-ctf-invalid-return-drop.drv
+building '/nix/store/70f0blqbv9zfi377r6yw6j0lnkdjay3w-mc-compat-ctf-invalid-return-drop.drv'...
+command_exit_status=0
+
+$ nix build --option builders  .#checks.x86_64-linux.mc-compat-full-survival-gate --no-link -L
+this derivation will be built:
+  /nix/store/whv2p60myd578j8784zbz07ac4ab7q7f-mc-compat-full-survival-gate.drv
+building '/nix/store/whv2p60myd578j8784zbz07ac4ab7q7f-mc-compat-full-survival-gate.drv'...
+command_exit_status=0
+
+$ nix run --option builders  .#evidence-manifest-refresh -- --refresh
+evidence manifest refresh ok: mode=refresh; passes=8; manifests=368; entries=2474; current=2474; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=8; manifest_writes=118
+command_exit_status=0
+
+$ nix run --option builders  .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=368; entries=2474; current=2474; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+command_exit_status=0
+
+$ nix build --option builders  .#checks.x86_64-linux.mc-compat-current-evidence-bundle --no-link -L
+this derivation will be built:
+  /nix/store/wbppghx8m2nbigpdvibrbh6ykrs94b0x-mc-compat-current-evidence-bundle.drv
+building '/nix/store/wbppghx8m2nbigpdvibrbh6ykrs94b0x-mc-compat-current-evidence-bundle.drv'...
+command_exit_status=0
+
+$ nix build --option builders  .#checks.x86_64-linux.mc-compat-maintained-dry-runs --no-link -L
+these 22 derivations will be built:
+  /nix/store/2hd9ccqa0zd0iib190m0iq428h7lngfn-mc-compat-mcp-controlled-smoke-dry-run.drv
+  /nix/store/3d4xhqxfqca1v2wjw0krd1v5dxrlxrjl-mc-compat-ctf-invalid-return-drop.drv
+  /nix/store/4j634hzzaspd92x9rbxn4anbrf1xxh7q-mc-compat-server-correlation-receipts.drv
+  /nix/store/5i82zgf8amgd461bjp8fkyhj82j675xd-mc-compat-armor-loadout-enchantment-status.drv
+  /nix/store/6m5hdlhsbclv5bg2nkv7gim19v5x1zd3-mc-compat-ctf-invalid-pickup-ownership.drv
+  /nix/store/7658gmyf6wb6hkzr0xzivjxjkyzfbr4l-mc-compat-wan-tolerance-bounded-telemetry.drv
+  /nix/store/9f8dqw57ajcw7iv7kxpr8wvxmvxy8sjx-mc-compat-evidence-manifests.drv
+  /nix/store/azp194m99mr4aiv2pxk692i3vfwc3594-mc-compat-movement-packet-family-check.drv
+  /nix/store/bj5vf7zpkhyqn1948yqzn4cpiplaag1w-mc-compat-evidence-manifest-refresh.drv
+  /nix/store/bkfkf9nbpkqkbpg3b2nq9r6hlx1b9sgl-mc-compat-scoreboard-team-packet-family-check.drv
+  /nix/store/fpb4yk9qi9d0c26kzzp0dkbydz86chl4-mc-compat-adversarial-network-oracle.drv
+  /nix/store/g9bqnifclchasybzamx7swrwrmyd8blb-mc-compat-scenario-manifest.drv
+  /nix/store/i39nh480jpgnyxrnm3s2w9npplpvf9xv-mc-compat-cairn-task-evidence.drv
+  /nix/store/ik8frjkydv4qgzkdn3vpfmscs6x736wz-mc-compat-full-survival-gate.drv
+  /nix/store/mfq6vnn96gf5jl88naqva142i1fbdvbm-mc-compat-public-server-authorized-safety.drv
+  /nix/store/mrd3ffcaq15cr82yaz1bm0qgn37rgzmc-mc-compat-equipment-slot-item-expansion.drv
+  /nix/store/q0pya30a0rjf1kbg25iqpgb4f74bnsbh-mc-compat-acceptance-matrix.drv
+  /nix/store/r5lp19y7iv4vbsdjk575gxxfmmzxx5zj-mc-compat-red-blue-scoring-soak-live-refresh.drv
+  /nix/store/s337sa4c8893491qg5phwml55b0mg7i8-mc-compat-ctf-score-limit-win-condition.drv
+  /nix/store/y30cp3ixwf4jwbmh7744cwmhbpciw5x5-mc-compat-aggregate-claim-gates.drv
+  /nix/store/zzwlir39cc0ankb72swa9q421jww2cdy-mc-compat-evidence-promotion.drv
+  /nix/store/af0s2vbwjm8ji3g2g8jhvk2nbm5l044v-mc-compat-maintained-dry-runs.drv
+building '/nix/store/q0pya30a0rjf1kbg25iqpgb4f74bnsbh-mc-compat-acceptance-matrix.drv'...
+building '/nix/store/fpb4yk9qi9d0c26kzzp0dkbydz86chl4-mc-compat-adversarial-network-oracle.drv'...
+building '/nix/store/y30cp3ixwf4jwbmh7744cwmhbpciw5x5-mc-compat-aggregate-claim-gates.drv'...
+building '/nix/store/5i82zgf8amgd461bjp8fkyhj82j675xd-mc-compat-armor-loadout-enchantment-status.drv'...
+building '/nix/store/i39nh480jpgnyxrnm3s2w9npplpvf9xv-mc-compat-cairn-task-evidence.drv'...
+building '/nix/store/6m5hdlhsbclv5bg2nkv7gim19v5x1zd3-mc-compat-ctf-invalid-pickup-ownership.drv'...
+building '/nix/store/3d4xhqxfqca1v2wjw0krd1v5dxrlxrjl-mc-compat-ctf-invalid-return-drop.drv'...
+building '/nix/store/s337sa4c8893491qg5phwml55b0mg7i8-mc-compat-ctf-score-limit-win-condition.drv'...
+building '/nix/store/mrd3ffcaq15cr82yaz1bm0qgn37rgzmc-mc-compat-equipment-slot-item-expansion.drv'...
+building '/nix/store/bj5vf7zpkhyqn1948yqzn4cpiplaag1w-mc-compat-evidence-manifest-refresh.drv'...
+building '/nix/store/9f8dqw57ajcw7iv7kxpr8wvxmvxy8sjx-mc-compat-evidence-manifests.drv'...
+building '/nix/store/zzwlir39cc0ankb72swa9q421jww2cdy-mc-compat-evidence-promotion.drv'...
+building '/nix/store/ik8frjkydv4qgzkdn3vpfmscs6x736wz-mc-compat-full-survival-gate.drv'...
+building '/nix/store/2hd9ccqa0zd0iib190m0iq428h7lngfn-mc-compat-mcp-controlled-smoke-dry-run.drv'...
+mc-compat-mcp-controlled-smoke-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-mcp-controlled-smoke-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-mcp-controlled-smoke-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-mcp-controlled-smoke-dry-run> hint: call:
+mc-compat-mcp-controlled-smoke-dry-run> hint:
+mc-compat-mcp-controlled-smoke-dry-run> hint:   git config --global init.defaultBranch <name>
+mc-compat-mcp-controlled-smoke-dry-run> hint:
+mc-compat-mcp-controlled-smoke-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-mcp-controlled-smoke-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-mcp-controlled-smoke-dry-run> hint:
+mc-compat-mcp-controlled-smoke-dry-run> hint:   git branch -m <name>
+mc-compat-mcp-controlled-smoke-dry-run> hint:
+mc-compat-mcp-controlled-smoke-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-mcp-controlled-smoke-dry-run> Initialized empty Git repository in /build/repo/fake-valence/.git/
+mc-compat-mcp-controlled-smoke-dry-run> [master (root-commit) 02b1e71] init
+mc-compat-mcp-controlled-smoke-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-mcp-controlled-smoke-dry-run>  create mode 100644 README.md
+building '/nix/store/azp194m99mr4aiv2pxk692i3vfwc3594-mc-compat-movement-packet-family-check.drv'...
+building '/nix/store/mfq6vnn96gf5jl88naqva142i1fbdvbm-mc-compat-public-server-authorized-safety.drv'...
+building '/nix/store/r5lp19y7iv4vbsdjk575gxxfmmzxx5zj-mc-compat-red-blue-scoring-soak-live-refresh.drv'...
+building '/nix/store/g9bqnifclchasybzamx7swrwrmyd8blb-mc-compat-scenario-manifest.drv'...
+building '/nix/store/bkfkf9nbpkqkbpg3b2nq9r6hlx1b9sgl-mc-compat-scoreboard-team-packet-family-check.drv'...
+building '/nix/store/4j634hzzaspd92x9rbxn4anbrf1xxh7q-mc-compat-server-correlation-receipts.drv'...
+building '/nix/store/7658gmyf6wb6hkzr0xzivjxjkyzfbr4l-mc-compat-wan-tolerance-bounded-telemetry.drv'...
+building '/nix/store/af0s2vbwjm8ji3g2g8jhvk2nbm5l044v-mc-compat-maintained-dry-runs.drv'...
+command_exit_status=0
+
+finished_at=2026-06-20T02:00:27Z
+exit_status=0

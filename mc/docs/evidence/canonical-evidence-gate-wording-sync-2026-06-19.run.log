@@ -1,0 +1,83 @@
+# canonical evidence gate wording sync
+cwd=/home/brittonr/git/mc
+started_at=2026-06-20T02:03:01Z
+
+$ nix run --option builders  .#cairn -- sync canonicalize-evidence-gate-wording --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/canonicalize-evidence-gate-wording/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/canonicalize-evidence-gate-wording/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "canonicalize-evidence-gate-wording",
+  "delta_specs": [
+    "./cairn/changes/canonicalize-evidence-gate-wording/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "6677451ea3c48d2a86729d71daf0ba0194fc924bbda55aa5a8b5787d3a2c328f",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "a930d095c340673eca343c546f7e82caf620b9eb56c7106d4ecd85c898cedb74",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "b1124a19ec36379170b08ce2d1db5c948d8a08bc3fe2b4e069406bc98a962c4b"
+}
+command_exit_status=0
+
+$ nix run --option builders  .#cairn -- sync canonicalize-evidence-gate-wording --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/canonicalize-evidence-gate-wording/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/canonicalize-evidence-gate-wording/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "canonicalize-evidence-gate-wording",
+  "delta_specs": [
+    "./cairn/changes/canonicalize-evidence-gate-wording/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "6677451ea3c48d2a86729d71daf0ba0194fc924bbda55aa5a8b5787d3a2c328f",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "9139ebc2c6f6934e70e48043a8866de218381483645f9c2b13dc4d04237f7980",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "4c0df12e74d55ded275fc48aeeadd31f5314dd5abf796570b3d4ffe34ee1c358"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "9139ebc2c6f6934e70e48043a8866de218381483645f9c2b13dc4d04237f7980",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "4c0df12e74d55ded275fc48aeeadd31f5314dd5abf796570b3d4ffe34ee1c358"
+    },
+    "kind": "sync",
+    "manifest_hash": "a0f9278f176efcf094796400ec390ac128e5a3bcb7dfb946515f7fffcf72a826"
+  },
+  "plan_hash": "f835abd89887c025a67dbd3c1f960312bbb4762990b2fd9eaa2ef7347af440b8",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "ca3403a8657b3152aa509e28a11934a6f3ee5a8e5e6eac9401cf4f85e68452df"
+}
+command_exit_status=0
+
+finished_at=2026-06-20T02:03:01Z
+exit_status=0

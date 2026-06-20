@@ -18,8 +18,8 @@ c4e00e10a285f2b0aae49411cbd44ef8d72e5fae462521f021650befbfdbab18  docs/evidence/
 88fe6978d6211138a3dc5cb6e23df5c4a188f1668726fc6add1409255259a866  docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-post-archive-validation-2026-06-01.run.log
 d34c7758cdc2fb5fcb1bdcf203b3c649349747041643c0a149e8ba3938dad052  docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-2026-06-01.b3
 9a36cc04d97213add7137f2d984d19f05cb051cf8265b23e50c473423018e7ed  docs/evidence/protocol-763-acceptance-matrix.md
-e1601bd71aa55a2546c18643a580c1988ff210522453ec895e384fc806398254  docs/evidence/protocol-763-current-evidence-bundle.md
-9f3b5d4288cb64e697f206569f90bddb26f4b985cf62abaf0001f509b0a47f39  docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md
+fbddc9e82183533227ca925501e3acaa1f5ac4f1856bafd7b5416cafd85ed972  docs/evidence/protocol-763-current-evidence-bundle.md
+92f6d25fddda6d6c038d547bab5048526becf941645eea8d1d23e9568dc98e89  docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md
 746fc4de3d96938983861f347e9159f2349c8a06371d1da72e5998b197cc5058  README.md
 c797f5231600b8aebaade5f12173560159578a78ac275fe3ddde4be8918d6c02  flake.nix
 b18278e1ec5ba4974f22acedecef765aeaceb7413ba7377de1adfd4f4babf118  config/mc-compat/scenario-manifest.ncl
@@ -35,4 +35,4 @@ af8c8572c18d2c6d175f14df18b49b626e89207b7457870704b1988345b65875  tools/check_mc
 0143fd27cbdcc77cc21e66598e86c860494532ab392f6cde176a472c9f16ba67  cairn/archive/2026-06-01-ctf-simultaneous-pickup-capture-race/specs/mc-compatibility/spec.md
 66a6864ef8aa5c11f28c1c8cb85f01a4b08dc01c90f0b246a540bd5eeaf0ae93  cairn/archive/2026-06-01-ctf-simultaneous-pickup-capture-race/design.md
 c6ba8b241eb052b29d4cb0c766fce05844f4aedb200d4207b1e236b49590ee44  cairn/archive/2026-06-01-ctf-simultaneous-pickup-capture-race/proposal.md
-9139ebc2c6f6934e70e48043a8866de218381483645f9c2b13dc4d04237f7980  cairn/specs/mc-compatibility/spec.md
+083afd80a4cb39e5af62f357ef48c70b4c157ba8fe6c9de0fc65243f7882b63c  cairn/specs/mc-compatibility/spec.md
