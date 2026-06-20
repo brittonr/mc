@@ -1055,6 +1055,7 @@ fn combine_runner_result(
 
 fn execute(cfg: &Config) -> Result<Option<ClientRunEvidence>, String> {
     validate_static_scenario_specs(SCENARIO_SPECS)?;
+    let plan = harness_plan_from_config(cfg).map_err(format_plan_diagnostics)?;
     validate_projectile_damage_dependency(cfg)?;
     validate_mcp_controlled_live_preflight(cfg)?;
     validate_load_network_safety_preflight(cfg)?;
@@ -1068,10 +1069,7 @@ fn execute(cfg: &Config) -> Result<Option<ClientRunEvidence>, String> {
     }
     match cfg.mode {
         Mode::DryRun => {
-            log(format_args!(
-                "plan: build client, start {:?} server, wait for protocol {}, run client under isolated Xvfb/X11",
-                cfg.server_backend, cfg.server_protocol
-            ));
+            log_harness_plan(&plan);
             build_client(cfg)?;
             if cfg.server_backend == ServerBackend::Paper {
                 log(format_args!(
@@ -1096,7 +1094,7 @@ fn execute(cfg: &Config) -> Result<Option<ClientRunEvidence>, String> {
             Ok(None)
         }
         Mode::Cleanup => {
-            cleanup_harness_state(cfg)?;
+            cleanup_harness_state(cfg, &plan.cleanup)?;
             Ok(None)
         }
         Mode::Stop => {
@@ -1108,7 +1106,11 @@ fn execute(cfg: &Config) -> Result<Option<ClientRunEvidence>, String> {
             Ok(None)
         }
         Mode::RunMatrix => {
-            run_matrix(cfg)?;
+            let matrix = plan
+                .matrix
+                .as_ref()
+                .ok_or_else(|| "run-matrix mode missing matrix plan".to_string())?;
+            run_matrix(cfg, matrix)?;
             Ok(None)
         }
         Mode::Run => {
@@ -3938,8 +3940,8 @@ fn print_harness_status(cfg: &Config) -> Result<(), String> {
     Ok(())
 }
 
-fn cleanup_harness_state(cfg: &Config) -> Result<(), String> {
-    let apply = cfg.cleanup_apply;
+fn cleanup_harness_state(_cfg: &Config, plan: &CleanupPlan) -> Result<(), String> {
+    let apply = plan.apply;
     if apply {
         log(format_args!("cleaning harness-owned state"));
     } else {
@@ -3948,10 +3950,11 @@ fn cleanup_harness_state(cfg: &Config) -> Result<(), String> {
         ));
     }
 
-    cleanup_paper_container(&cfg.server_name, apply)?;
-    cleanup_valence_pid(&cfg.valence_pid_file, apply)?;
-    cleanup_path("valence target dir", &cfg.valence_target_dir, apply)?;
-    cleanup_path("valence log", &cfg.valence_log, apply)?;
+    cleanup_paper_container(&plan.paper_container, apply)?;
+    cleanup_valence_pid(Path::new(&plan.valence_pid_file), apply)?;
+    for action in &plan.path_actions {
+        cleanup_path(&action.label, Path::new(&action.path), apply)?;
+    }
     for path in client_log_paths()? {
         cleanup_path("client log", &path, apply)?;
     }
@@ -5715,6 +5718,435 @@ fn read_paper_log(cfg: &Config) -> Result<String, String> {
 
 fn requires_server_correlation(cfg: &Config) -> bool {
     scenario_behavior(cfg.scenario).requires_server_correlation()
+}
+
+const SCENARIO_RECEIPT_SCHEMA: &str = "mc.compat.scenario.receipt.v2";
+const DEFAULT_MATRIX_RECEIPT_DIR: &str = "target/mc-compat-matrix";
+const PLAN_CLIENT_LOG_ENV_OR_TEMP: &str = "CLIENT_LOG-or-temp-mc-compat-client-log";
+const PLAN_CLIENT_LOG_TEMP: &str = "temp-mc-compat-client-log";
+const PLAN_CLIENT_LOG_RECONNECT_TEMP: &str = "temp-mc-compat-reconnect-session-log";
+const PLAN_CLEANUP_CLIENT_LOG_DISCOVERY: &str = "discover-/tmp-mc-compat-client-logs";
+const PLAN_NON_CLAIM_ARCHITECTURE_ONLY: &str = "architecture_only_no_new_compatibility_claim";
+const HARNESS_TEMP_ROOT: &str = "/tmp";
+const CLEANUP_ROOT_PATH: &str = "/";
+const CLEANUP_MIN_SAFE_COMPONENTS: usize = 2;
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct PlanningDiagnostic {
+    field: String,
+    message: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct HarnessPlan {
+    server: ServerStartupPlan,
+    client_sessions: Vec<ClientSessionPlan>,
+    receipt: ReceiptOutputPlan,
+    artifacts: ArtifactCollectionPlan,
+    cleanup: CleanupPlan,
+    matrix: Option<MatrixPlan>,
+    non_claims: Vec<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct ServerStartupPlan {
+    backend: String,
+    protocol: u32,
+    port: u16,
+    server_name: String,
+    keep_server: bool,
+    eula_acceptance_required: bool,
+    valence_worktree: Option<String>,
+    valence_log: Option<String>,
+    docker_image: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct ClientSessionPlan {
+    index: usize,
+    username: String,
+    timeout_secs: u64,
+    scenario: String,
+    session_count: usize,
+    log_path_strategy: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct ReceiptOutputPlan {
+    receipt_path: Option<String>,
+    receipt_dir: Option<String>,
+    failure_bundle_path: Option<String>,
+    schema: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct ArtifactCollectionPlan {
+    typed_event_log_path: Option<String>,
+    failure_bundle_path: Option<String>,
+    failure_artifact_candidates: Vec<ArtifactCandidatePlan>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct ArtifactCandidatePlan {
+    kind: String,
+    path: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct CleanupPlan {
+    apply: bool,
+    paper_container: String,
+    valence_pid_file: String,
+    path_actions: Vec<CleanupPathPlan>,
+    client_log_discovery: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct CleanupPathPlan {
+    label: String,
+    path: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct MatrixPlan {
+    dry_run: bool,
+    matrix_mode: String,
+    receipt_dir: String,
+    paper_receipt: String,
+    valence_receipt: String,
+}
+
+fn harness_plan_from_config(cfg: &Config) -> Result<HarnessPlan, Vec<PlanningDiagnostic>> {
+    let mut diagnostics = Vec::new();
+    let receipt = receipt_output_plan_from_config(cfg, &mut diagnostics);
+    let artifacts = artifact_collection_plan_from_config(cfg, &mut diagnostics);
+    let cleanup = cleanup_plan_from_config(cfg, &mut diagnostics);
+    let matrix = matrix_plan_from_config(cfg, &mut diagnostics);
+    let plan = HarnessPlan {
+        server: server_startup_plan_from_config(cfg),
+        client_sessions: client_session_plans_from_config(cfg),
+        receipt,
+        artifacts,
+        cleanup,
+        matrix,
+        non_claims: vec![PLAN_NON_CLAIM_ARCHITECTURE_ONLY.to_string()],
+    };
+    if diagnostics.is_empty() {
+        Ok(plan)
+    } else {
+        Err(diagnostics)
+    }
+}
+
+fn server_startup_plan_from_config(cfg: &Config) -> ServerStartupPlan {
+    let (valence_worktree, valence_log, docker_image) = match cfg.server_backend {
+        ServerBackend::Valence => (
+            Some(cfg.valence_worktree.display().to_string()),
+            Some(cfg.valence_log.display().to_string()),
+            None,
+        ),
+        ServerBackend::Paper => (None, None, Some(cfg.docker_image.clone())),
+    };
+    ServerStartupPlan {
+        backend: backend_name(cfg.server_backend).to_string(),
+        protocol: cfg.server_protocol,
+        port: cfg.server_port,
+        server_name: cfg.server_name.clone(),
+        keep_server: cfg.keep_server || cfg.mode == Mode::DryRun,
+        eula_acceptance_required: cfg.server_backend == ServerBackend::Paper,
+        valence_worktree,
+        valence_log,
+        docker_image,
+    }
+}
+
+fn client_session_plans_from_config(cfg: &Config) -> Vec<ClientSessionPlan> {
+    let usernames = planned_client_usernames(cfg);
+    let session_count = planned_client_session_count(cfg);
+    usernames
+        .into_iter()
+        .enumerate()
+        .map(|(index, username)| ClientSessionPlan {
+            index,
+            username,
+            timeout_secs: client_timeout_secs(cfg, index),
+            scenario: scenario_name(cfg.scenario).to_string(),
+            session_count,
+            log_path_strategy: client_log_path_strategy(cfg),
+        })
+        .collect()
+}
+
+fn planned_client_session_count(cfg: &Config) -> usize {
+    if scenario_behavior(cfg.scenario).run_strategy() == ScenarioRunStrategy::ReconnectSequence {
+        RECONNECT_SEQUENCE_SESSION_COUNT
+    } else {
+        1
+    }
+}
+
+fn client_log_path_strategy(cfg: &Config) -> String {
+    match scenario_behavior(cfg.scenario).run_strategy() {
+        ScenarioRunStrategy::ReconnectSequence => PLAN_CLIENT_LOG_RECONNECT_TEMP.to_string(),
+        ScenarioRunStrategy::MultiClient => PLAN_CLIENT_LOG_TEMP.to_string(),
+        ScenarioRunStrategy::SingleClient => PLAN_CLIENT_LOG_ENV_OR_TEMP.to_string(),
+    }
+}
+
+fn receipt_output_plan_from_config(
+    cfg: &Config,
+    diagnostics: &mut Vec<PlanningDiagnostic>,
+) -> ReceiptOutputPlan {
+    let receipt_path = cfg.receipt_path.as_ref().map(|path| display_path(path));
+    let receipt_dir = cfg.receipt_dir.as_ref().map(|path| display_path(path));
+    let failure_bundle_path = cfg
+        .failure_bundle_path
+        .as_ref()
+        .map(|path| display_path(path));
+    if cfg.failure_bundle_path.is_some() && cfg.receipt_path.is_none() {
+        push_plan_diagnostic(
+            diagnostics,
+            "failure_bundle_path",
+            "failure bundle planning requires a receipt path for reviewable artifact identity",
+        );
+    }
+    if let Some(path) = &cfg.failure_bundle_path {
+        validate_reviewable_plan_path(
+            diagnostics,
+            "failure_bundle_path",
+            &cfg.root,
+            path,
+            "failure bundle output",
+        );
+    }
+    ReceiptOutputPlan {
+        receipt_path,
+        receipt_dir,
+        failure_bundle_path,
+        schema: SCENARIO_RECEIPT_SCHEMA.to_string(),
+    }
+}
+
+fn artifact_collection_plan_from_config(
+    cfg: &Config,
+    diagnostics: &mut Vec<PlanningDiagnostic>,
+) -> ArtifactCollectionPlan {
+    let typed_event_log_path = cfg
+        .receipt_path
+        .as_ref()
+        .map(|path| display_path(&typed_event_log_path_for_receipt(path)));
+    let failure_bundle_path = cfg
+        .failure_bundle_path
+        .as_ref()
+        .map(|path| display_path(path));
+    let mut failure_artifact_candidates = Vec::new();
+    for (kind, path) in failure_bundle_artifact_candidates(cfg) {
+        if cfg.failure_bundle_path.is_some() && kind != FAILURE_BUNDLE_ARTIFACT_SERVER_LOG {
+            validate_reviewable_plan_path(
+                diagnostics,
+                "failure_artifact_candidate",
+                &cfg.root,
+                &path,
+                kind,
+            );
+        }
+        failure_artifact_candidates.push(ArtifactCandidatePlan {
+            kind: kind.to_string(),
+            path: display_path(&path),
+        });
+    }
+    ArtifactCollectionPlan {
+        typed_event_log_path,
+        failure_bundle_path,
+        failure_artifact_candidates,
+    }
+}
+
+fn cleanup_plan_from_config(
+    cfg: &Config,
+    diagnostics: &mut Vec<PlanningDiagnostic>,
+) -> CleanupPlan {
+    if cfg.mode == Mode::Cleanup {
+        validate_cleanup_plan_path(
+            diagnostics,
+            &cfg.root,
+            "valence pid file",
+            &cfg.valence_pid_file,
+        );
+        validate_cleanup_plan_path(
+            diagnostics,
+            &cfg.root,
+            "valence target dir",
+            &cfg.valence_target_dir,
+        );
+        validate_cleanup_plan_path(diagnostics, &cfg.root, "valence log", &cfg.valence_log);
+    }
+    CleanupPlan {
+        apply: cfg.cleanup_apply,
+        paper_container: cfg.server_name.clone(),
+        valence_pid_file: display_path(&cfg.valence_pid_file),
+        path_actions: vec![
+            CleanupPathPlan {
+                label: "valence target dir".to_string(),
+                path: display_path(&cfg.valence_target_dir),
+            },
+            CleanupPathPlan {
+                label: "valence log".to_string(),
+                path: display_path(&cfg.valence_log),
+            },
+        ],
+        client_log_discovery: PLAN_CLEANUP_CLIENT_LOG_DISCOVERY.to_string(),
+    }
+}
+
+fn matrix_plan_from_config(
+    cfg: &Config,
+    diagnostics: &mut Vec<PlanningDiagnostic>,
+) -> Option<MatrixPlan> {
+    if cfg.mode != Mode::RunMatrix {
+        return None;
+    }
+    if cfg.receipt_path.is_some() {
+        push_plan_diagnostic(
+            diagnostics,
+            "receipt_path",
+            "run-matrix planning writes backend receipts under receipt_dir and rejects a single receipt path",
+        );
+    }
+    let receipt_dir = cfg
+        .receipt_dir
+        .clone()
+        .unwrap_or_else(|| cfg.root.join(DEFAULT_MATRIX_RECEIPT_DIR));
+    let paper_receipt = receipt_dir.join("paper.json");
+    let valence_receipt = receipt_dir.join("valence.json");
+    Some(MatrixPlan {
+        dry_run: cfg.matrix_dry_run,
+        matrix_mode: if cfg.matrix_dry_run { "dry-run" } else { "run" }.to_string(),
+        receipt_dir: display_path(&receipt_dir),
+        paper_receipt: display_path(&paper_receipt),
+        valence_receipt: display_path(&valence_receipt),
+    })
+}
+
+fn validate_reviewable_plan_path(
+    diagnostics: &mut Vec<PlanningDiagnostic>,
+    field: &str,
+    root: &Path,
+    path: &Path,
+    label: &str,
+) {
+    let Some(review_path) = plan_reviewable_path(root, path) else {
+        push_plan_diagnostic(
+            diagnostics,
+            field,
+            &format!("{label} path must be under docs/evidence for review"),
+        );
+        return;
+    };
+    if let Err(err) = validate_failure_bundle_artifact_path(&review_path) {
+        push_plan_diagnostic(diagnostics, field, &err);
+    }
+}
+
+fn plan_reviewable_path(root: &Path, path: &Path) -> Option<String> {
+    if path.is_absolute() {
+        let relative = path.strip_prefix(root).ok()?;
+        return path_to_forward_slashes(relative);
+    }
+    path_to_forward_slashes(path)
+}
+
+fn validate_cleanup_plan_path(
+    diagnostics: &mut Vec<PlanningDiagnostic>,
+    root: &Path,
+    label: &str,
+    path: &Path,
+) {
+    if path.as_os_str().is_empty() {
+        push_plan_diagnostic(diagnostics, "cleanup", &format!("{label} path is empty"));
+        return;
+    }
+    if path == Path::new(CLEANUP_ROOT_PATH)
+        || cleanup_component_count(path) < CLEANUP_MIN_SAFE_COMPONENTS
+    {
+        push_plan_diagnostic(
+            diagnostics,
+            "cleanup",
+            &format!("{label} path is too broad for cleanup: {}", path.display()),
+        );
+        return;
+    }
+    if path
+        .components()
+        .any(|component| matches!(component, std::path::Component::ParentDir))
+    {
+        push_plan_diagnostic(
+            diagnostics,
+            "cleanup",
+            &format!("{label} path contains parent traversal: {}", path.display()),
+        );
+        return;
+    }
+    let absolute_path = if path.is_absolute() {
+        path.to_path_buf()
+    } else {
+        root.join(path)
+    };
+    let target_root = root.join("target");
+    if !absolute_path.starts_with(Path::new(HARNESS_TEMP_ROOT))
+        && !absolute_path.starts_with(target_root)
+    {
+        push_plan_diagnostic(
+            diagnostics,
+            "cleanup",
+            &format!(
+                "{label} path is outside harness-owned cleanup roots: {}",
+                path.display()
+            ),
+        );
+    }
+}
+
+fn cleanup_component_count(path: &Path) -> usize {
+    path.components()
+        .filter(|component| matches!(component, std::path::Component::Normal(_)))
+        .count()
+}
+
+fn push_plan_diagnostic(diagnostics: &mut Vec<PlanningDiagnostic>, field: &str, message: &str) {
+    diagnostics.push(PlanningDiagnostic {
+        field: field.to_string(),
+        message: message.to_string(),
+    });
+}
+
+fn format_plan_diagnostics(diagnostics: Vec<PlanningDiagnostic>) -> String {
+    let rendered = diagnostics
+        .into_iter()
+        .map(|diagnostic| format!("{}: {}", diagnostic.field, diagnostic.message))
+        .collect::<Vec<_>>();
+    format!("harness planning failed: {}", rendered.join("; "))
+}
+
+fn display_path(path: &Path) -> String {
+    path.display().to_string()
+}
+
+fn log_harness_plan(plan: &HarnessPlan) {
+    log(format_args!(
+        "plan: build client, start {} server, wait for protocol {}, run {} client session plan(s) under isolated Xvfb/X11",
+        plan_backend_display_name(&plan.server.backend),
+        plan.server.protocol,
+        plan.client_sessions.len()
+    ));
+}
+
+fn plan_backend_display_name(backend: &str) -> &str {
+    match backend {
+        "paper" => "Paper",
+        "valence" => "Valence",
+        _ => backend,
+    }
 }
 
 const FAILURE_BUNDLE_SCHEMA: &str = "mc.compat.failure.bundle.v1";
@@ -7924,17 +8356,14 @@ struct ReceiptSummary {
     wayland_socket_inherited: bool,
 }
 
-fn run_matrix(cfg: &Config) -> Result<(), String> {
-    let receipt_dir = cfg
-        .receipt_dir
-        .clone()
-        .unwrap_or_else(|| cfg.root.join("target/mc-compat-matrix"));
+fn run_matrix(cfg: &Config, plan: &MatrixPlan) -> Result<(), String> {
+    let receipt_dir = PathBuf::from(&plan.receipt_dir);
     fs::create_dir_all(&receipt_dir)
         .map_err(|e| format!("create receipt dir {}: {e}", receipt_dir.display()))?;
 
-    let paper_receipt = receipt_dir.join("paper.json");
-    let valence_receipt = receipt_dir.join("valence.json");
-    let matrix_mode = if cfg.matrix_dry_run { "dry-run" } else { "run" };
+    let paper_receipt = PathBuf::from(&plan.paper_receipt);
+    let valence_receipt = PathBuf::from(&plan.valence_receipt);
+    let matrix_mode = plan.matrix_mode.as_str();
     log(format_args!(
         "starting {matrix_mode} matrix: paper receipt={} valence receipt={}",
         paper_receipt.display(),
@@ -9195,6 +9624,176 @@ mod tests {
 
         assert!(err.contains("original failure"));
         assert!(err.contains("failed to write failure bundle"));
+    }
+
+    fn assert_plan_is_deterministic(cfg: &Config) -> HarnessPlan {
+        let first = harness_plan_from_config(cfg).expect("first plan succeeds");
+        let second = harness_plan_from_config(cfg).expect("second plan succeeds");
+        assert_eq!(first, second);
+        first
+    }
+
+    fn plan_diagnostic_text(result: Result<HarnessPlan, Vec<PlanningDiagnostic>>) -> String {
+        format_plan_diagnostics(result.expect_err("plan should fail"))
+    }
+
+    #[test]
+    fn planning_core_positive_fixtures_cover_representative_modes() {
+        let dry_paper = test_config(
+            &[
+                "--dry-run",
+                "--server-backend=paper",
+                "--receipt=docs/evidence/smoke.json",
+            ],
+            &[],
+        )
+        .expect("dry paper config parses");
+        let dry_plan = assert_plan_is_deterministic(&dry_paper);
+        assert_eq!(dry_plan.server.backend, "paper");
+        assert!(dry_plan.server.eula_acceptance_required);
+        assert_eq!(dry_plan.client_sessions.len(), 1);
+        assert_eq!(
+            dry_plan.receipt.receipt_path.as_deref(),
+            Some("docs/evidence/smoke.json")
+        );
+
+        let live_valence = test_config(
+            &[
+                "--run",
+                "--server-backend=valence",
+                "--scenario=inventory-interaction",
+                "--receipt=docs/evidence/live.json",
+            ],
+            &[],
+        )
+        .expect("live valence config parses");
+        let live_plan = assert_plan_is_deterministic(&live_valence);
+        assert_eq!(live_plan.server.backend, "valence");
+        assert_eq!(
+            live_plan.client_sessions[0].scenario,
+            "inventory-interaction"
+        );
+        assert!(!live_plan.server.keep_server);
+
+        let matrix = test_config(
+            &[
+                "--run-matrix",
+                "--dry-run",
+                "--receipt-dir=target/matrix-plan",
+            ],
+            &[],
+        )
+        .expect("matrix config parses");
+        let matrix_plan = assert_plan_is_deterministic(&matrix)
+            .matrix
+            .expect("matrix plan present");
+        assert!(matrix_plan.dry_run);
+        assert!(matrix_plan.paper_receipt.ends_with("paper.json"));
+        assert!(matrix_plan.valence_receipt.ends_with("valence.json"));
+
+        let reconnect = test_config(&["--dry-run", "--scenario=reconnect-flag-state"], &[])
+            .expect("reconnect config parses");
+        let reconnect_plan = assert_plan_is_deterministic(&reconnect);
+        assert_eq!(
+            reconnect_plan.client_sessions[0].session_count,
+            RECONNECT_SEQUENCE_SESSION_COUNT
+        );
+        assert_eq!(
+            reconnect_plan.client_sessions[0].log_path_strategy,
+            PLAN_CLIENT_LOG_RECONNECT_TEMP
+        );
+
+        let multi_client = test_config(&["--dry-run", "--scenario=multi-client-load-score"], &[])
+            .expect("multi-client config parses");
+        let multi_plan = assert_plan_is_deterministic(&multi_client);
+        assert_eq!(multi_plan.client_sessions.len(), MULTI_CLIENT_READY_COUNT);
+        assert_eq!(
+            multi_plan.client_sessions[SECOND_CLIENT_INDEX].username,
+            "compatbotb"
+        );
+
+        let cleanup = test_config(&["--cleanup", "--dry-run"], &[]).expect("cleanup config parses");
+        let cleanup_plan = assert_plan_is_deterministic(&cleanup).cleanup;
+        assert!(!cleanup_plan.apply);
+        assert!(cleanup_plan
+            .path_actions
+            .iter()
+            .any(|action| action.label == "valence target dir"));
+        assert!(cleanup_plan
+            .path_actions
+            .iter()
+            .any(|action| action.label == "valence log"));
+        assert_eq!(
+            cleanup_plan.client_log_discovery,
+            PLAN_CLEANUP_CLIENT_LOG_DISCOVERY
+        );
+
+        let failure_bundle = test_config(
+            &[
+                "--run",
+                "--receipt=docs/evidence/failed-receipt.json",
+                "--failure-bundle=docs/evidence/failed-bundle.json",
+            ],
+            &[("VALENCE_LOG", "docs/evidence/failed-valence.log")],
+        )
+        .expect("failure bundle config parses");
+        let failure_plan = assert_plan_is_deterministic(&failure_bundle);
+        assert_eq!(
+            failure_plan.receipt.failure_bundle_path.as_deref(),
+            Some("docs/evidence/failed-bundle.json")
+        );
+        assert!(failure_plan
+            .artifacts
+            .failure_artifact_candidates
+            .iter()
+            .any(|artifact| artifact.kind == FAILURE_BUNDLE_ARTIFACT_RECEIPT));
+    }
+
+    #[test]
+    fn planning_core_negative_fixtures_fail_before_side_effects() {
+        let missing_receipt = test_config(
+            &["--run", "--failure-bundle=docs/evidence/failed-bundle.json"],
+            &[],
+        )
+        .expect("missing receipt config parses");
+        let missing_receipt_err = plan_diagnostic_text(harness_plan_from_config(&missing_receipt));
+        assert!(missing_receipt_err.contains("requires a receipt path"));
+
+        let path_escape = test_config(
+            &[
+                "--run",
+                "--receipt=docs/evidence/failed-receipt.json",
+                "--failure-bundle=../failed-bundle.json",
+            ],
+            &[],
+        )
+        .expect("path escape config parses");
+        let path_escape_err = plan_diagnostic_text(harness_plan_from_config(&path_escape));
+        assert!(path_escape_err.contains("escapes repo"));
+
+        let target_artifact = test_config(
+            &[
+                "--run",
+                "--receipt=target/failed-receipt.json",
+                "--failure-bundle=docs/evidence/failed-bundle.json",
+            ],
+            &[],
+        )
+        .expect("target artifact config parses");
+        let target_artifact_err = plan_diagnostic_text(harness_plan_from_config(&target_artifact));
+        assert!(target_artifact_err.contains("target-only"));
+
+        let mut matrix_conflict =
+            test_config(&["--run-matrix"], &[]).expect("matrix conflict base config parses");
+        matrix_conflict.receipt_path = Some(PathBuf::from("docs/evidence/one.json"));
+        let matrix_conflict_err = plan_diagnostic_text(harness_plan_from_config(&matrix_conflict));
+        assert!(matrix_conflict_err.contains("run-matrix planning"));
+
+        let mut cleanup_hazard =
+            test_config(&["--cleanup", "--apply"], &[]).expect("cleanup hazard config parses");
+        cleanup_hazard.valence_target_dir = PathBuf::from(CLEANUP_ROOT_PATH);
+        let cleanup_hazard_err = plan_diagnostic_text(harness_plan_from_config(&cleanup_hazard));
+        assert!(cleanup_hazard_err.contains("too broad for cleanup"));
     }
 
     const ALL_TEST_SCENARIOS: &[Scenario] = ALL_SCENARIOS;

@@ -1,0 +1,7 @@
+# Harness planning core evidence-manifest validation 2026-06-20
+root=/home/brittonr/git/mc
+this derivation will be built:
+  /nix/store/av4ydccd7wd5x2ivjgdsmzqx3ns4f16x-mc-compat-evidence-manifest-refresh.drv
+building '/nix/store/av4ydccd7wd5x2ivjgdsmzqx3ns4f16x-mc-compat-evidence-manifest-refresh.drv'...
+
+exit_status=0
