@@ -1,0 +1,86 @@
+closeout=survival-hunger-health-cycle-parity
+2026-06-21T18:48:35-04:00
+repo=/home/brittonr/git/mc
+## task evidence gate
+this derivation will be built:
+  /nix/store/gw6a939zlay1n61q815yyyqpwzdp9g49-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/gw6a939zlay1n61q815yyyqpwzdp9g49-mc-compat-cairn-task-evidence.drv'...
+## Cairn proposal gate
+{
+  "change": "survival-hunger-health-cycle-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "908faf9fff5e3c9f65e0cfe5a8134427a13f0072bab0541926eeb98d7c1c5349",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "6833eebd29e8c6a77d7804e11ec3701f633cd419ddfe9c6309a1a4e9f5051428",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+## Cairn design gate
+{
+  "change": "survival-hunger-health-cycle-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "7ccaea9f94836355c0a69f2ac8ce5f0e18fd6592c185c8a1fd15c904d57b7742",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "391e456d2d89b155d112a4889b027af1cdec11abedb47c42eefeb7c2b028f746",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+## Cairn tasks gate
+{
+  "change": "survival-hunger-health-cycle-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "d874b0be123754cb703d5e394fa64657ed95c989c4c58a5f53cdb4ffdcebe9c0",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "66c157a3fcb4a683a40b910217d4f6df9715dc973dde12a8070c3780ccabb7c0",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+## Cairn validate
+{
+  "change_issues": [],
+  "changes": 7,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 9,
+  "valid": true
+}
+exit_status=0

@@ -1,0 +1,84 @@
+## survival_hunger_health_cycle_baseline
+command=nix run .#mc-compat-smoke -- --dry-run --server-backend valence --scenario survival-hunger-food --receipt target/survival-hunger-health-cycle-baseline.json
+[mc-compat] plan: build client, start Valence server, wait for protocol 758, run 1 client session plan(s) under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] using existing Valence worktree /tmp/valence-compat-758
+[mc-compat] starting Valence 8ad9c85 example 'terrain' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-758
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 758
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'survival-hunger-food' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/survival-hunger-health-cycle-baseline.json
+hunger_food_dry_run_exit_status=0
+command=nix run .#cairn -- gate proposal survival-hunger-health-cycle-parity --root .
+{
+  "change": "survival-hunger-health-cycle-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "b248da57c62f6cb430bcf0754e81588c3281b9212b49c14b7b76f435e1248247",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "848d95691cb6f3360d3f6955964fe3839e6490ad215a6fc2861ed61466a9c0d2",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_proposal_exit_status=0
+command=nix run .#cairn -- gate design survival-hunger-health-cycle-parity --root .
+{
+  "change": "survival-hunger-health-cycle-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "5c4887f43a47ee1f43de10326c52d804c399ac4bec3c33d9b394c0af29c517d9",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "c547c1c0f22c51d5c535548da892040266b84fd5c07862b3b123663f2e0faf07",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_design_exit_status=0
+command=nix run .#cairn -- gate tasks survival-hunger-health-cycle-parity --root .
+{
+  "change": "survival-hunger-health-cycle-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "beaf8c563b5f1f80fb4762bdeb6e7057eac2d5555382dcec833458a690c74086",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "e2a979041493ce2ef224035759d8d8e0143dcc11f7e659c4ba897d9140d9913c",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_tasks_exit_status=0
+exit_status=0

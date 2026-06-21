@@ -1,0 +1,87 @@
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+   Compiling ring v0.17.14
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+warning: `valence_inventory` (lib) generated 1 warning
+   Compiling rustls v0.23.38
+   Compiling rustls-webpki v0.103.11
+   Compiling tokio-rustls v0.26.4
+   Compiling hyper-rustls v0.27.8
+   Compiling reqwest v0.12.28
+   Compiling valence_network v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-hunger-health-cycle/crates/valence_network)
+   Compiling valence v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-hunger-health-cycle)
+warning: unused import: `Value`
+  --> examples/survival_compat.rs:18:36
+   |
+18 | use valence::nbt::{compound, List, Value};
+   |                                    ^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `SURVIVAL_BLOCK_ENTITY_TEXT_LINE_COUNT` is never used
+   --> examples/survival_compat.rs:155:7
+    |
+155 | const SURVIVAL_BLOCK_ENTITY_TEXT_LINE_COUNT: usize = 4;
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `is_survival_mob_drop_stack` is never used
+    --> examples/survival_compat.rs:2381:4
+     |
+2381 | fn is_survival_mob_drop_stack(stack: &ItemStack) -> bool {
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `valence` (example "survival_compat") generated 3 warnings (run `cargo fix --example "survival_compat" -p valence` to apply 1 suggestion)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 15.47s
+     Running `/tmp/valence-compat-survival-hunger-health-cycle-target/debug/examples/survival_compat`
+[2m2026-06-21T21:49:01.908039Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_hunger_food_pre username=compatbot health=20.0 food=15 saturation=0.0 item=Bread count=1 slot=36
+MC-COMPAT-MILESTONE survival_hunger_food_pre username=compatbot health=20.0 food=15 saturation=0.0 item=Bread count=1 slot=36
+[2m2026-06-21T21:49:01.908101Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+[2m2026-06-21T21:49:02.908996Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_hunger_food_consume_start username=compatbot item=Bread slot=36 food_before=15 saturation_before=0.0
+MC-COMPAT-MILESTONE survival_hunger_food_consume_start username=compatbot item=Bread slot=36 food_before=15 saturation_before=0.0
+[2m2026-06-21T21:49:02.909028Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_hunger_food_consume_finish username=compatbot item=Bread slot=36 food_after=20 saturation_after=6.0
+MC-COMPAT-MILESTONE survival_hunger_food_consume_finish username=compatbot item=Bread slot=36 food_after=20 saturation_after=6.0
+[2m2026-06-21T21:49:02.909033Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_hunger_food_inventory username=compatbot slot=36 item=Bread count_before=1 count_after=0
+MC-COMPAT-MILESTONE survival_hunger_food_inventory username=compatbot slot=36 item=Bread count_before=1 count_after=0
+[2m2026-06-21T21:49:02.909037Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_hunger_food_state username=compatbot health=20.0 food_before=15 food_after=20 saturation_before=0.0 saturation_after=6.0 unexpected_damage=false death=false
+MC-COMPAT-MILESTONE survival_hunger_food_state username=compatbot health=20.0 food_before=15 food_after=20 saturation_before=0.0 saturation_after=6.0 unexpected_damage=false death=false

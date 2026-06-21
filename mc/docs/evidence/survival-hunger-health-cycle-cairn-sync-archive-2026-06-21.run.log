@@ -1,0 +1,165 @@
+sync_archive=survival-hunger-health-cycle-parity
+2026-06-21T18:56:51-04:00
+repo=/home/brittonr/git/mc
+## manual sync repair
+cairn sync --execute reported success without adding delta text, so the delta requirements were merged into cairn/specs/mc-compatibility/spec.md before archive.
+## accepted spec requirement IDs
+2242:r[mc_compatibility.survival_hunger_health_cycle_parity.contract] The `survival-hunger-health-cycle-parity` row MUST define a bounded health-cycle evidence contract before promotion.
+2246:r[mc_compatibility.survival_hunger_health_cycle_parity.contract.scope]
+2254:r[mc_compatibility.survival_hunger_health_cycle_parity.checker] A deterministic checker MUST compare paired Paper/reference and Valence hunger-health metrics before promotion.
+2258:r[mc_compatibility.survival_hunger_health_cycle_parity.checker.rejects]
+2265:r[mc_compatibility.survival_hunger_health_cycle_parity.rail] The harness MUST expose an isolated hunger-health rail without changing the existing Bread consumption row.
+2269:r[mc_compatibility.survival_hunger_health_cycle_parity.rail.isolated]
+2277:r[mc_compatibility.survival_hunger_health_cycle_parity.receipts] Paired hunger-health receipts and logs MUST be copied under `docs/evidence/` with child revision metadata and BLAKE3 manifests.
+2281:r[mc_compatibility.survival_hunger_health_cycle_parity.receipts.reviewable]
+2288:r[mc_compatibility.survival_hunger_health_cycle_parity.promotion] Matrix and bundle docs MUST promote only the bounded hunger-health cycle row after paired evidence passes.
+2292:r[mc_compatibility.survival_hunger_health_cycle_parity.promotion.nonclaims]
+2300:r[mc_compatibility.survival_hunger_health_cycle_parity.validation] The change MUST record checker, comparator, manifest, task gate, Cairn gates, and Cairn validation output before archive.
+2304:r[mc_compatibility.survival_hunger_health_cycle_parity.validation.log]
+## validate after accepted spec merge
+{
+  "change_issues": [],
+  "changes": 7,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 9,
+  "valid": true
+}
+## Cairn tasks gate after accepted spec merge
+{
+  "change": "survival-hunger-health-cycle-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "abcb2b6ab8f31768831140e8cdc438beae49f9fe007ba03ed50437ca07a39971",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "f1da3d7703f3631fcdbaddb2a8c8e80b47c31945da6a5774d932ba3d8b9ceed9",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+## archive dry-run
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-hunger-health-cycle-parity",
+      "kind": "archive_change",
+      "path": "./cairn/changes/survival-hunger-health-cycle-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-hunger-health-cycle-parity",
+  "dry_run": true,
+  "input_hash": "33ff5fbcc8bdb8ed36d72e5ea5b875e27619bb3826b9d57088c5b8db477c685f",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "529ca9eba198a9a4d456e672cc55654d1036664195c5a3dfc30f0deb0d9ac8d6",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "8c3070ad1d8dec492b38fef8ba2b9bfc41af466ab2efadfd2c225c8bc51adef5"
+}
+## archive execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-hunger-health-cycle-parity",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-21-survival-hunger-health-cycle-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-hunger-health-cycle-parity",
+  "dry_run": false,
+  "input_hash": "33ff5fbcc8bdb8ed36d72e5ea5b875e27619bb3826b9d57088c5b8db477c685f",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "e26dc105d8f8787ebc3379259cfb92496aa8a335b013135de59e67643e5ba316",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-hunger-health-cycle-parity/design.md"
+        },
+        {
+          "content_hash": "bf326c048a2531e637a0559f3ce2fa489c827b7906b52b8886b093013deaeb4a",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-hunger-health-cycle-parity/proposal.md"
+        },
+        {
+          "content_hash": "0d9076b0fce9b45c0481fec555e8a8e83113f1a4a4d49f6776939d14e1bac5f8",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-hunger-health-cycle-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "d5c31699b988e11b485d9abe395c5c594125a3d32d762a55357aa45ed1966bf3",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-hunger-health-cycle-parity/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-hunger-health-cycle-parity"
+        }
+      ],
+      "manifest_hash": "f3a54a52b9ab3c0d5d214170ee8f4f1a3ca548e47bd9aff546f7278e6283e4c7"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "e26dc105d8f8787ebc3379259cfb92496aa8a335b013135de59e67643e5ba316",
+          "exists": true,
+          "path": "./cairn/changes/survival-hunger-health-cycle-parity/design.md"
+        },
+        {
+          "content_hash": "bf326c048a2531e637a0559f3ce2fa489c827b7906b52b8886b093013deaeb4a",
+          "exists": true,
+          "path": "./cairn/changes/survival-hunger-health-cycle-parity/proposal.md"
+        },
+        {
+          "content_hash": "0d9076b0fce9b45c0481fec555e8a8e83113f1a4a4d49f6776939d14e1bac5f8",
+          "exists": true,
+          "path": "./cairn/changes/survival-hunger-health-cycle-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "d5c31699b988e11b485d9abe395c5c594125a3d32d762a55357aa45ed1966bf3",
+          "exists": true,
+          "path": "./cairn/changes/survival-hunger-health-cycle-parity/tasks.md"
+        }
+      ],
+      "manifest_hash": "110b6c2bd9a27613a8f6effca98de5e9b242d9526f20fbf7764821486b192d1b"
+    },
+    "kind": "archive",
+    "manifest_hash": "8fbc6fdbaf19a81d6a48f56caf240791651a4a650f082770f6f1c23d1112bda2"
+  },
+  "plan_hash": "d4f41431d100c7d49568481b3d2f81b3ab642460c81567cfac6aa1e95b4f62ef",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "f58b16f125b890c521cc325e60dfdb58b617b10d50a964de7373731ee610a4c0"
+}
+## validate after archive
+{
+  "change_issues": [],
+  "changes": 6,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+exit_status=0

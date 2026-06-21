@@ -1,0 +1,129 @@
+[mc-compat] building Stevenarella client
+warning: `/home/brittonr/git/mc/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: file `/home/brittonr/git/mc/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1052:36
+     |
+1052 |         offsets |protocol_version| (instrument.offsets(protocol_version)
+     |                                    ^
+1053 |             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 })),
+     |                                                                                                    ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1052 ~         offsets |protocol_version| instrument.offsets(protocol_version)
+1053 ~             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+     |
+
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1407:36
+     |
+1407 |         offsets |protocol_version| (variant.offsets(protocol_version)),
+     |                                    ^                                 ^
+     |
+help: remove these parentheses
+     |
+1407 -         offsets |protocol_version| (variant.offsets(protocol_version)),
+1407 +         offsets |protocol_version| variant.offsets(protocol_version),
+     |
+
+warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
+warning: constant `SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD` is never used
+   --> src/server/mod.rs:276:7
+    |
+276 | const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &str = "MC|Compat|Sign|Persist";
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `survival_block_entity_expected_lines` is never used
+   --> src/server/mod.rs:653:4
+    |
+653 | fn survival_block_entity_expected_lines() -> [String; SIGN_LINE_COUNT] {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:102:21
+    |
+102 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+252 | / define_elements! {
+253 | |     Image,
+254 | |     Batch,
+255 | |     Text,
+...   |
+258 | |     TextBox,
+259 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+102 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib) generated 4 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (bin "stevenarella") generated 4 warnings (4 duplicates)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.40s
+[mc-compat] using existing Valence worktree /tmp/valence-compat-survival-hunger-health-cycle
+[mc-compat] starting Valence main example 'survival_compat' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+{"description":{"text":"A Valence Server"},"players":{"max":20,"online":0,"sample":[]},"version":{"name":"1.20.1","protocol":763}}
+[mc-compat] running Stevenarella headless scenario 'survival-hunger-health-cycle' isolated from host Wayland compositor
+[main.rs:1173][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:1309][INFO] Shader version: #version 150
+[main.rs:316][INFO] Detected server protocol version 763
+[server/mod.rs:1008][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25565
+[server/mod.rs:1013][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:1030][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:1044][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:1051][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:1112][WARN] Server is running in offline mode
+[server/mod.rs:1113][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbot properties=0
+[server/mod.rs:3265][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[world/mod.rs:1123][INFO] Dimension bounds: min_y=-64 height=384
+[server/mod.rs:3350][INFO] MC-COMPAT-MILESTONE join_game entity_id=0 gamemode=Survival
+[server/mod.rs:6389][INFO] Received chat message: Welcome to the Valence survival compatibility fixture.
+[server/mod.rs:5808][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=1 slot=36 item=id=815 count=1
+[server/mod.rs:5005][INFO] MC-COMPAT-MILESTONE survival_hunger_food_item_seen slot=36 item=Bread count=1
+[server/mod.rs:5887][INFO] MC-COMPAT-MILESTONE inventory_probe_slot36_nonempty count=1 item_id=815
+[server/mod.rs:5808][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=255 state_id=1 slot=-1 item=empty
+[server/mod.rs:3898][INFO] MC-COMPAT-MILESTONE update_health health=20.0 food=15 saturation=0.0
+[server/mod.rs:4453][INFO] MC-COMPAT-MILESTONE survival_hunger_food_pre_seen health=20.0 food=15 saturation=0.0
+[server/mod.rs:6570][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=0
+[server/mod.rs:1757][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:4480][INFO] MC-COMPAT-MILESTONE survival_hunger_food_select_hotbar_slot slot=0
+[server/mod.rs:4487][INFO] MC-COMPAT-MILESTONE survival_hunger_food_use_sent slot=36 item=Bread count=1 hand=main sequence=810
+[server/mod.rs:5808][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=2 slot=36 item=empty
+[server/mod.rs:5018][INFO] MC-COMPAT-MILESTONE survival_hunger_food_inventory_updated slot=36 item=Bread count=0
+[server/mod.rs:3898][INFO] MC-COMPAT-MILESTONE update_health health=20.0 food=20 saturation=6.0
+[server/mod.rs:4464][INFO] MC-COMPAT-MILESTONE survival_hunger_food_post_seen health=20.0 food=20 saturation=6.0
+[mc-compat] client compatbot finished Some(124); log: /tmp/mc-compat-client.compatbot.1782078537982.log
+[mc-compat] stopping managed Valence server process 39831
+[mc-compat] wrote typed event log target/survival-hunger-health-cycle-valence-2026-06-21.receipt.typed-events.log
+[mc-compat] wrote smoke receipt target/survival-hunger-health-cycle-valence-2026-06-21.receipt.json
+exit_status=0

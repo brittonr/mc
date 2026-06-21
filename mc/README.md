@@ -151,6 +151,12 @@ nix run .#mc-compat-valence-survival-furnace-smelting-breadth
 # deterministic, non-side-effecting fixture for the same furnace breadth command shape:
 nix run .#mc-compat-valence-survival-furnace-smelting-breadth -- --dry-run
 
+# Maintained protocol-763 Valence survival hunger/health-cycle receipt.
+# Requires isolated health, food, saturation, recovery, and inventory checkpoints; remains a bounded row receipt, not aggregate hunger parity.
+nix run .#mc-compat-valence-survival-hunger-health-cycle
+# deterministic, non-side-effecting fixture for the same hunger/health-cycle command shape:
+nix run .#mc-compat-valence-survival-hunger-health-cycle -- --dry-run
+
 # Deterministic MCP-controlled Stevenarella dry-run contract.
 # Records stdio handshake/tool/outcome contract, child revision status, explicit non-claims, and fail-closed frame artifact placeholders; live --run remains blocked until owned-local capture evidence lands.
 nix run .#mc-compat-mcp-controlled-smoke -- --dry-run
@@ -248,7 +254,8 @@ nix build .#checks.x86_64-linux.mc-compat-maintained-dry-runs --no-link -L
 
 # check deterministic dry-run receipt shapes for historical maintained rows:
 # flag-score-repeat, survival-chest-persistence, survival-hunger-food,
-# survival-mob-drop, survival-redstone-toggle, survival-world-persistence-restart,
+# survival-hunger-health-cycle, survival-mob-drop, survival-redstone-toggle,
+# survival-world-persistence-restart,
 # survival-crash-recovery-parity, survival-block-entity-persistence-parity,
 # and survival-biome-dimension-state. This is harness-shape coverage only;
 # live/reference parity remains tied to the promoted evidence rows below.

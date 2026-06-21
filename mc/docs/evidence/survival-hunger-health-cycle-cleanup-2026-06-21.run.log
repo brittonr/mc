@@ -1,0 +1,9 @@
+[mc-compat] cleaning harness-owned state
+[mc-compat] removing Paper container mc-compat-1-18-2
+mc-compat-1-18-2
+cleanup valence_pid_file /tmp/mc-compat-valence.pid: absent
+cleanup valence target dir /tmp/valence-compat-758-target: absent
+[mc-compat] removing valence log /tmp/mc-compat-valence.log
+[mc-compat] removing client log /tmp/mc-compat-client.compatbot.1782069932350.log
+[mc-compat] removing client log /tmp/mc-compat-client.compatbot.1782078537982.log
+exit_status=0

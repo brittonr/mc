@@ -1,0 +1,17 @@
+## survival_breadth_drain_baseline
+command=tools/check_survival_breadth_contracts.rs --self-test
+survival breadth contracts self-test ok: 8 breadth row contracts exercised
+checker_self_test_exit_status=0
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 7,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 9,
+  "valid": true
+}
+cairn_validate_exit_status=0
+exit_status=0

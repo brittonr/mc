@@ -8,8 +8,8 @@ c57e601331de4aafa8e6de1b24769b6b91b9c6d83ddfd90a570727b1f84e57e3  docs/evidence/
 1a1ecacda926dc0cd7d539e021d14027c8ed3ccfb81f6162ba888e30ae107356  docs/evidence/protocol-763-ctf-spawn-team-balance-reset-2026-06-01.kv
 759263375efa19ba39693b3b206e28282c9c28a6384261af99006b33bcb1e149  docs/evidence/protocol-763-ctf-spawn-team-balance-reset-2026-06-01.md
 8881abea7bfb93e41e018268146ebd9081815384dc389aec5e36c39917095f03  docs/evidence/protocol-763-ctf-spawn-team-balance-reset-row-evidence-2026-06-01.run.log
-9395d766810e6ea2b8899ebbb1d620fac393e68716cd63dd78bed440699bd9cd  tools/mc-compat-runner/src/main.rs
-dab6154de601f8895b4a0c737b5eaa1e6278a35228f18aed65063d1c459b1613  tools/mc-compat-runner/src/scenario_manifest_generated.rs
-72d8f8376e1d3160c884fe2759ffd1f38b1aaa8c7d48c24589a082edbc69d5ac  config/mc-compat/scenario-manifest.ncl
-80608ae35ec532ecf07542a2ccc090e5a3aef3f09b1d412d042cc10ec8005da0  flake.nix
+693c5e865d8c05fa73460fcc7b6924594bef966d94c8f2752dd89fe0d025caeb  tools/mc-compat-runner/src/main.rs
+05052937e866a662ae79b30e6a4368c8ad43daad1f82699a48aaa781383bb0f5  tools/mc-compat-runner/src/scenario_manifest_generated.rs
+83428f0da687adc2c2350f9c5588910d28ab17781d1a8c402b3cac4a9d9aa555  config/mc-compat/scenario-manifest.ncl
+26d06d9fbf91f191ae24ef6a89da4f6b0d55171f132c0f2a4fae9e4eeba24ed3  flake.nix
 eaf4bd29f6eedb3043fe5bee4a76e2c34ff884d937582be5064c7cf72892ffb8  docs/evidence/protocol-763-ctf-valence-source-2026-06-01.rs

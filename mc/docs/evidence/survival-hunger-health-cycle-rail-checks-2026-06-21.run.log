@@ -1,0 +1,4 @@
+## survival_hunger_health_cycle_rail_checks
+command=nix build .#checks.x86_64-linux.mc-compat-valence-survival-hunger-health-cycle-dry-run --no-link -L
+hunger_health_cycle_dry_run_check_exit_status=0
+command=nix build .#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L
