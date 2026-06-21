@@ -45,8 +45,7 @@ const SURVIVAL_CHEST_WINDOW: u8 = 1;
 const SURVIVAL_CHEST_ITEM_COUNT: i8 = 1;
 const SURVIVAL_CHEST_TITLE: &str = "MC Compat Chest";
 const SURVIVAL_CRAFTING_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_CRAFTING_FIXTURE";
-const SURVIVAL_CRAFTING_BREADTH_FIXTURE_ENV: &str =
-    "MC_COMPAT_SURVIVAL_CRAFTING_BREADTH_FIXTURE";
+const SURVIVAL_CRAFTING_BREADTH_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_CRAFTING_BREADTH_FIXTURE";
 const SURVIVAL_CRAFTING_X: i32 = 4;
 const SURVIVAL_CRAFTING_Y: i32 = FLOOR_Y;
 const SURVIVAL_CRAFTING_Z: i32 = 0;
@@ -64,6 +63,8 @@ const SURVIVAL_CRAFTING_RESULT_COUNT: i8 = 4;
 const SURVIVAL_CRAFTING_RECIPE: &str = "minecraft:stick";
 const SURVIVAL_CRAFTING_TITLE: &str = "MC Compat Crafting";
 const SURVIVAL_FURNACE_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_FURNACE_FIXTURE";
+const SURVIVAL_FURNACE_SMELTING_BREADTH_FIXTURE_ENV: &str =
+    "MC_COMPAT_SURVIVAL_FURNACE_SMELTING_BREADTH_FIXTURE";
 const SURVIVAL_FURNACE_X: i32 = 12;
 const SURVIVAL_FURNACE_Y: i32 = FLOOR_Y;
 const SURVIVAL_FURNACE_Z: i32 = 0;
@@ -80,6 +81,8 @@ const SURVIVAL_FURNACE_TITLE: &str = "MC Compat Furnace";
 const SURVIVAL_FURNACE_INPUT_NAME: &str = "RawIron";
 const SURVIVAL_FURNACE_FUEL_NAME: &str = "Coal";
 const SURVIVAL_FURNACE_OUTPUT_NAME: &str = "IronIngot";
+const SURVIVAL_FURNACE_SMELTING_RECIPE: &str = "minecraft:iron_ingot";
+const SURVIVAL_FURNACE_INVALID_FUEL_OUTCOME: &str = "no_burn";
 const SURVIVAL_HUNGER_FOOD_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_HUNGER_FOOD_FIXTURE";
 const SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT: u16 = 36;
 const SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE: i8 = 1;
@@ -222,6 +225,9 @@ struct SurvivalFurnaceFixture {
     burn_logged: bool,
     output_logged: bool,
     collect_logged: bool,
+    smelting_breadth_enabled: bool,
+    invalid_fuel_logged: bool,
+    breadth_state_logged: bool,
     reopen_logged: bool,
     state_logged: bool,
 }
@@ -319,7 +325,7 @@ impl SurvivalBlockEntityFixture {
 }
 
 impl SurvivalFurnaceFixture {
-    fn new(inventory: Entity) -> Self {
+    fn new(inventory: Entity, smelting_breadth_enabled: bool) -> Self {
         Self {
             inventory,
             open_clients: HashSet::new(),
@@ -329,6 +335,9 @@ impl SurvivalFurnaceFixture {
             burn_logged: false,
             output_logged: false,
             collect_logged: false,
+            smelting_breadth_enabled,
+            invalid_fuel_logged: false,
+            breadth_state_logged: false,
             reopen_logged: false,
             state_logged: false,
         }
@@ -472,7 +481,10 @@ fn setup(
                 SURVIVAL_FURNACE_TITLE,
             ))
             .id();
-        commands.insert_resource(SurvivalFurnaceFixture::new(inventory));
+        commands.insert_resource(SurvivalFurnaceFixture::new(
+            inventory,
+            survival_furnace_smelting_breadth_fixture_enabled(),
+        ));
     }
     if survival_hunger_food_fixture_enabled() {
         commands.insert_resource(SurvivalHungerFoodFixture::default());
@@ -1348,6 +1360,24 @@ fn handle_survival_furnace_click(
                 SURVIVAL_FURNACE_INVENTORY_SLOT
             ));
         }
+
+        if should_emit_survival_furnace_breadth_rejection(
+            fixture.smelting_breadth_enabled,
+            fixture.collect_logged,
+        ) && !fixture.invalid_fuel_logged
+        {
+            emit_survival_furnace_invalid_fuel_rejection(username, &mut fixture, &mut inventories);
+        }
+
+        if should_reject_survival_furnace_invalid_fuel(
+            fixture.smelting_breadth_enabled,
+            fixture.collect_logged,
+            event.window_id,
+            event.slot_id,
+        ) && !fixture.invalid_fuel_logged
+        {
+            emit_survival_furnace_invalid_fuel_rejection(username, &mut fixture, &mut inventories);
+        }
     }
 }
 
@@ -1487,6 +1517,58 @@ fn emit_survival_furnace_fuel(
     ));
 }
 
+fn emit_survival_furnace_invalid_fuel_rejection(
+    username: &Username,
+    fixture: &mut SurvivalFurnaceFixture,
+    inventories: &mut Query<&mut Inventory>,
+) {
+    fixture.invalid_fuel_logged = true;
+    set_survival_slot(
+        inventories,
+        fixture.inventory,
+        SURVIVAL_FURNACE_FUEL_SLOT,
+        survival_furnace_input_stack(),
+    );
+    set_survival_slot(
+        inventories,
+        fixture.inventory,
+        SURVIVAL_FURNACE_OUTPUT_SLOT,
+        ItemStack::EMPTY,
+    );
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_furnace_invalid_fuel_rejected username={} window={} \
+         slot={} item={} outcome={}",
+        username.as_str(),
+        SURVIVAL_FURNACE_WINDOW,
+        SURVIVAL_FURNACE_FUEL_SLOT,
+        SURVIVAL_FURNACE_INPUT_NAME,
+        SURVIVAL_FURNACE_INVALID_FUEL_OUTCOME
+    ));
+    emit_survival_furnace_breadth_state_if_ready(username, fixture);
+}
+
+fn emit_survival_furnace_breadth_state_if_ready(
+    username: &Username,
+    fixture: &mut SurvivalFurnaceFixture,
+) {
+    if !fixture.invalid_fuel_logged || fixture.breadth_state_logged {
+        return;
+    }
+    fixture.breadth_state_logged = true;
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_furnace_breadth_state username={} recipe={} input={} \
+         fuel={} output={} count={} invalid_fuel={} invalid_fuel_outcome={} broad_all_furnaces=false",
+        username.as_str(),
+        SURVIVAL_FURNACE_SMELTING_RECIPE,
+        SURVIVAL_FURNACE_INPUT_NAME,
+        SURVIVAL_FURNACE_FUEL_NAME,
+        SURVIVAL_FURNACE_OUTPUT_NAME,
+        SURVIVAL_FURNACE_ITEM_COUNT,
+        SURVIVAL_FURNACE_INPUT_NAME,
+        SURVIVAL_FURNACE_INVALID_FUEL_OUTCOME
+    ));
+}
+
 fn emit_survival_furnace_output_if_ready(
     username: &Username,
     fixture: &mut SurvivalFurnaceFixture,
@@ -1564,10 +1646,7 @@ fn log_survival_furnace_reopen(
     ));
 }
 
-fn log_survival_crafting_breadth(
-    username: &str,
-    fixture: &mut SurvivalCraftingBreadthFixture,
-) {
+fn log_survival_crafting_breadth(username: &str, fixture: &mut SurvivalCraftingBreadthFixture) {
     if fixture.logged {
         return;
     }
@@ -1861,6 +1940,11 @@ fn survival_crafting_result_kind() -> ItemKind {
 
 fn survival_furnace_fixture_enabled() -> bool {
     std::env::var(SURVIVAL_FURNACE_FIXTURE_ENV).as_deref() == Ok("1")
+        || survival_furnace_smelting_breadth_fixture_enabled()
+}
+
+fn survival_furnace_smelting_breadth_fixture_enabled() -> bool {
+    std::env::var(SURVIVAL_FURNACE_SMELTING_BREADTH_FIXTURE_ENV).as_deref() == Ok("1")
 }
 
 fn survival_hunger_food_fixture_enabled() -> bool {
@@ -1901,6 +1985,24 @@ fn is_survival_furnace_collect_event(
     window_id == SURVIVAL_FURNACE_WINDOW
         && slot_id == SURVIVAL_FURNACE_OUTPUT_SLOT_ID
         && is_survival_furnace_output(carried_item)
+}
+
+fn should_emit_survival_furnace_breadth_rejection(
+    smelting_breadth_enabled: bool,
+    collect_logged: bool,
+) -> bool {
+    smelting_breadth_enabled && collect_logged
+}
+
+fn should_reject_survival_furnace_invalid_fuel(
+    smelting_breadth_enabled: bool,
+    collect_logged: bool,
+    window_id: u8,
+    slot_id: i16,
+) -> bool {
+    should_emit_survival_furnace_breadth_rejection(smelting_breadth_enabled, collect_logged)
+        && window_id == SURVIVAL_FURNACE_WINDOW
+        && slot_id == SURVIVAL_FURNACE_FUEL_SLOT_ID
 }
 
 fn is_survival_furnace_output(stack: &ItemStack) -> bool {
@@ -2813,6 +2915,43 @@ mod tests {
             SURVIVAL_FURNACE_WINDOW,
             SURVIVAL_FURNACE_OUTPUT_SLOT_ID,
             &survival_furnace_input_stack()
+        ));
+    }
+
+    #[test]
+    fn survival_furnace_invalid_fuel_rejection_requires_breadth_collect_and_fuel_slot() {
+        assert!(should_emit_survival_furnace_breadth_rejection(true, true));
+        assert!(!should_emit_survival_furnace_breadth_rejection(false, true));
+        assert!(!should_emit_survival_furnace_breadth_rejection(true, false));
+        assert!(should_reject_survival_furnace_invalid_fuel(
+            true,
+            true,
+            SURVIVAL_FURNACE_WINDOW,
+            SURVIVAL_FURNACE_FUEL_SLOT_ID,
+        ));
+        assert!(!should_reject_survival_furnace_invalid_fuel(
+            false,
+            true,
+            SURVIVAL_FURNACE_WINDOW,
+            SURVIVAL_FURNACE_FUEL_SLOT_ID,
+        ));
+        assert!(!should_reject_survival_furnace_invalid_fuel(
+            true,
+            false,
+            SURVIVAL_FURNACE_WINDOW,
+            SURVIVAL_FURNACE_FUEL_SLOT_ID,
+        ));
+        assert!(!should_reject_survival_furnace_invalid_fuel(
+            true,
+            true,
+            SURVIVAL_FURNACE_WINDOW,
+            SURVIVAL_FURNACE_INPUT_SLOT_ID,
+        ));
+        assert!(!should_reject_survival_furnace_invalid_fuel(
+            true,
+            true,
+            SURVIVAL_FURNACE_WINDOW + 1,
+            SURVIVAL_FURNACE_FUEL_SLOT_ID,
         ));
     }
 
