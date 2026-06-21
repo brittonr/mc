@@ -1,0 +1,6 @@
+## refresh scenario manifest generated surfaces
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+generated surface write passed: 2 generated surfaces written
+exit_status=0

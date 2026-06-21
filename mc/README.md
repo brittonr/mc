@@ -145,6 +145,12 @@ nix run .#mc-compat-valence-survival-furnace-persistence
 # deterministic, non-side-effecting fixture for the same furnace command shape:
 nix run .#mc-compat-valence-survival-furnace-persistence -- --dry-run
 
+# Maintained protocol-763 Valence survival furnace smelting breadth receipt.
+# Requires paired raw-iron/coal smelt and invalid-fuel rejection milestones; remains a bounded row receipt, not aggregate furnace parity.
+nix run .#mc-compat-valence-survival-furnace-smelting-breadth
+# deterministic, non-side-effecting fixture for the same furnace breadth command shape:
+nix run .#mc-compat-valence-survival-furnace-smelting-breadth -- --dry-run
+
 # Deterministic MCP-controlled Stevenarella dry-run contract.
 # Records stdio handshake/tool/outcome contract, child revision status, explicit non-claims, and fail-closed frame artifact placeholders; live --run remains blocked until owned-local capture evidence lands.
 nix run .#mc-compat-mcp-controlled-smoke -- --dry-run

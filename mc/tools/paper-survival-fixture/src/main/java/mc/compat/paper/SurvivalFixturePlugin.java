@@ -82,6 +82,8 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
     private static final String CRAFTING_RESULT_NAME = "Stick";
     private static final String CRAFTING_RECIPE = "minecraft:stick";
     private static final String FURNACE_FIXTURE_ENV = "MC_COMPAT_SURVIVAL_FURNACE_FIXTURE";
+    private static final String FURNACE_SMELTING_BREADTH_FIXTURE_ENV =
+        "MC_COMPAT_SURVIVAL_FURNACE_SMELTING_BREADTH_FIXTURE";
     private static final int FURNACE_X = 12;
     private static final int FURNACE_Y = 64;
     private static final int FURNACE_Z = 0;
@@ -96,6 +98,8 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
     private static final String FURNACE_INPUT_NAME = "RawIron";
     private static final String FURNACE_FUEL_NAME = "Coal";
     private static final String FURNACE_OUTPUT_NAME = "IronIngot";
+    private static final String FURNACE_SMELTING_RECIPE = "minecraft:iron_ingot";
+    private static final String FURNACE_INVALID_FUEL_OUTCOME = "no_burn";
     private static final String HUNGER_FOOD_FIXTURE_ENV = "MC_COMPAT_SURVIVAL_HUNGER_FOOD_FIXTURE";
     private static final int HUNGER_FOOD_HOTBAR_SLOT = 0;
     private static final int HUNGER_FOOD_PROTOCOL_SLOT = 36;
@@ -237,6 +241,8 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
     private final java.util.Set<UUID> furnaceBurnSeen = new java.util.HashSet<>();
     private final java.util.Set<UUID> furnaceOutputSeen = new java.util.HashSet<>();
     private final java.util.Set<UUID> furnaceCollectSeen = new java.util.HashSet<>();
+    private final java.util.Set<UUID> furnaceInvalidFuelSeen = new java.util.HashSet<>();
+    private final java.util.Set<UUID> furnaceBreadthStateSeen = new java.util.HashSet<>();
     private final java.util.Set<UUID> furnacePostCollectQuitSeen = new java.util.HashSet<>();
     private final java.util.Set<UUID> furnaceReconnectJoinSeen = new java.util.HashSet<>();
     private final java.util.Set<UUID> furnaceReopenSeen = new java.util.HashSet<>();
@@ -998,7 +1004,11 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
     }
 
     private boolean furnaceFixtureEnabled() {
-        return "1".equals(System.getenv(FURNACE_FIXTURE_ENV));
+        return "1".equals(System.getenv(FURNACE_FIXTURE_ENV)) || furnaceSmeltingBreadthFixtureEnabled();
+    }
+
+    private boolean furnaceSmeltingBreadthFixtureEnabled() {
+        return "1".equals(System.getenv(FURNACE_SMELTING_BREADTH_FIXTURE_ENV));
     }
 
     private boolean hungerFoodFixtureEnabled() {
@@ -1351,6 +1361,52 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
                     + " inventory_slot=" + FURNACE_INVENTORY_SLOT
             );
         }
+        if (shouldEmitFurnaceBreadthRejection(playerId) && furnaceInvalidFuelSeen.add(playerId)) {
+            emitFurnaceInvalidFuelRejection(player, inventory);
+        }
+        if (shouldRejectFurnaceInvalidFuel(playerId, rawSlot) && furnaceInvalidFuelSeen.add(playerId)) {
+            emitFurnaceInvalidFuelRejection(player, inventory);
+        }
+    }
+
+    private boolean shouldEmitFurnaceBreadthRejection(UUID playerId) {
+        return furnaceSmeltingBreadthFixtureEnabled() && furnaceCollectSeen.contains(playerId);
+    }
+
+    private boolean shouldRejectFurnaceInvalidFuel(UUID playerId, int rawSlot) {
+        return shouldEmitFurnaceBreadthRejection(playerId) && rawSlot == FURNACE_FUEL_SLOT;
+    }
+
+    private void emitFurnaceInvalidFuelRejection(Player player, Inventory inventory) {
+        inventory.setItem(FURNACE_FUEL_SLOT, new ItemStack(Material.RAW_IRON, FURNACE_ITEM_COUNT));
+        inventory.setItem(FURNACE_OUTPUT_SLOT, null);
+        player.updateInventory();
+        getLogger().info(
+            "MC-COMPAT-MILESTONE survival_furnace_invalid_fuel_rejected username=" + player.getName()
+                + " window=" + FURNACE_WINDOW
+                + " slot=" + FURNACE_FUEL_SLOT
+                + " item=" + FURNACE_INPUT_NAME
+                + " outcome=" + FURNACE_INVALID_FUEL_OUTCOME
+        );
+        emitFurnaceBreadthStateIfReady(player);
+    }
+
+    private void emitFurnaceBreadthStateIfReady(Player player) {
+        UUID playerId = player.getUniqueId();
+        if (!furnaceInvalidFuelSeen.contains(playerId) || !furnaceBreadthStateSeen.add(playerId)) {
+            return;
+        }
+        getLogger().info(
+            "MC-COMPAT-MILESTONE survival_furnace_breadth_state username=" + player.getName()
+                + " recipe=" + FURNACE_SMELTING_RECIPE
+                + " input=" + FURNACE_INPUT_NAME
+                + " fuel=" + FURNACE_FUEL_NAME
+                + " output=" + FURNACE_OUTPUT_NAME
+                + " count=" + FURNACE_ITEM_COUNT
+                + " invalid_fuel=" + FURNACE_INPUT_NAME
+                + " invalid_fuel_outcome=" + FURNACE_INVALID_FUEL_OUTCOME
+                + " broad_all_furnaces=false"
+        );
     }
 
     private void emitFurnaceFuel(Player player, Inventory inventory) {

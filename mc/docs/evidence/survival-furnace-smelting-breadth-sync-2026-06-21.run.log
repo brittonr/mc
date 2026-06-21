@@ -1,0 +1,63 @@
+## cairn sync execute for survival furnace smelting breadth
+command=nix run --no-update-lock-file .#cairn -- sync survival-furnace-smelting-breadth-parity --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/survival-furnace-smelting-breadth-parity/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/survival-furnace-smelting-breadth-parity/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-furnace-smelting-breadth-parity",
+  "delta_specs": [
+    "./cairn/changes/survival-furnace-smelting-breadth-parity/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "1bd748f7a8bbcbebfb4169fad69557423479137d6ffe13e0cd401b0574944928",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "4b4cd3a97391015887e3a8e0a14a457bfbcf5ca6f7ec286c6c44765783017d50",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "e8dbc32a887ae06136314e5d697e2e6af1798df5800e93d54cf9d9c5eb78629f"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "4b4cd3a97391015887e3a8e0a14a457bfbcf5ca6f7ec286c6c44765783017d50",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "e8dbc32a887ae06136314e5d697e2e6af1798df5800e93d54cf9d9c5eb78629f"
+    },
+    "kind": "sync",
+    "manifest_hash": "9220e73e21952fbc56b05257abf323402f2063884826c4dde81167b9b90559d4"
+  },
+  "plan_hash": "4f5cbd809900d71b6f520c18f8aaaa9ed519f69fc0d0b402423977610cc2c18f",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "e56abf387001a4b32bd43c955b20409eb1b6719a72d890dc50113845a70ebf47"
+}
+sync_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 8,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 10,
+  "valid": true
+}
+validate_after_sync_exit_status=0
+exit_status=0

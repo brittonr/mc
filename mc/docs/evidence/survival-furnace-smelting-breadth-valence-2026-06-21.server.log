@@ -1,0 +1,112 @@
+   Compiling valence_build_utils v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_build_utils)
+   Compiling valence_ident_macros v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_ident_macros)
+   Compiling valence_nbt v0.8.0 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_nbt)
+   Compiling valence_math v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_math)
+   Compiling valence_protocol_macros v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_protocol_macros)
+   Compiling valence_command_macros v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_command_macros)
+   Compiling valence_generated v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_generated)
+   Compiling valence_entity v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_entity)
+   Compiling valence_lang v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_lang)
+   Compiling valence_ident v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_ident)
+   Compiling valence_text v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_text)
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+   Compiling valence_protocol v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_protocol)
+   Compiling valence_server_common v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_server_common)
+   Compiling valence_registry v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_registry)
+   Compiling valence_server v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_server)
+   Compiling valence_inventory v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_inventory)
+   Compiling valence_boss_bar v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_boss_bar)
+   Compiling valence_scoreboard v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_scoreboard)
+   Compiling valence_world_border v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_world_border)
+   Compiling valence_anvil v0.1.0 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_anvil)
+   Compiling valence_network v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_network)
+   Compiling valence_command v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_command)
+   Compiling valence_advancement v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_advancement)
+   Compiling valence_player_list v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_player_list)
+   Compiling valence_weather v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_weather)
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+   Compiling valence_equipment v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c/crates/valence_equipment)
+   Compiling valence v0.2.0-alpha.1+mc.1.20.1 (/tmp/valence-compat-survival-furnace-smelting-breadth-53ec70c)
+warning: `valence_inventory` (lib) generated 1 warning
+warning: unused import: `Value`
+  --> examples/survival_compat.rs:18:36
+   |
+18 | use valence::nbt::{compound, List, Value};
+   |                                    ^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `SURVIVAL_BLOCK_ENTITY_TEXT_LINE_COUNT` is never used
+   --> examples/survival_compat.rs:155:7
+    |
+155 | const SURVIVAL_BLOCK_ENTITY_TEXT_LINE_COUNT: usize = 4;
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `is_survival_mob_drop_stack` is never used
+    --> examples/survival_compat.rs:2381:4
+     |
+2381 | fn is_survival_mob_drop_stack(stack: &ItemStack) -> bool {
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `valence` (example "survival_compat") generated 3 warnings (run `cargo fix --example "survival_compat" -p valence` to apply 1 suggestion)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 53.94s
+     Running `/tmp/valence-compat-survival-furnace-smelting-breadth-target/debug/examples/survival_compat`
+[2m2026-06-21T17:47:15.055493Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+MC-COMPAT-MILESTONE survival_join username=compatbot gamemode=Survival target=0,64,1
+[2m2026-06-21T17:47:15.805281Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_furnace_open username=compatbot position=12,64,0 window=1
+MC-COMPAT-MILESTONE survival_furnace_open username=compatbot position=12,64,0 window=1
+[2m2026-06-21T17:47:15.955421Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_furnace_input_insert username=compatbot window=1 slot=0 item=RawIron count=1
+MC-COMPAT-MILESTONE survival_furnace_input_insert username=compatbot window=1 slot=0 item=RawIron count=1
+[2m2026-06-21T17:47:15.955463Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_furnace_fuel_insert username=compatbot window=1 slot=1 item=Coal count=1
+MC-COMPAT-MILESTONE survival_furnace_fuel_insert username=compatbot window=1 slot=1 item=Coal count=1
+[2m2026-06-21T17:47:15.955467Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_furnace_burn_progress username=compatbot window=1 progress=started
+MC-COMPAT-MILESTONE survival_furnace_burn_progress username=compatbot window=1 progress=started
+[2m2026-06-21T17:47:15.955471Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_furnace_output_available username=compatbot window=1 slot=2 item=IronIngot count=1
+MC-COMPAT-MILESTONE survival_furnace_output_available username=compatbot window=1 slot=2 item=IronIngot count=1
+[2m2026-06-21T17:47:16.155699Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_furnace_output_collect username=compatbot window=1 slot=2 item=IronIngot count=1 inventory_slot=36
+MC-COMPAT-MILESTONE survival_furnace_output_collect username=compatbot window=1 slot=2 item=IronIngot count=1 inventory_slot=36
+[2m2026-06-21T17:47:16.155739Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_furnace_invalid_fuel_rejected username=compatbot window=1 slot=1 item=RawIron outcome=no_burn
+MC-COMPAT-MILESTONE survival_furnace_invalid_fuel_rejected username=compatbot window=1 slot=1 item=RawIron outcome=no_burn
+[2m2026-06-21T17:47:16.155744Z[0m [32m INFO[0m [2msurvival_compat[0m[2m:[0m MC-COMPAT-MILESTONE survival_furnace_breadth_state username=compatbot recipe=minecraft:iron_ingot input=RawIron fuel=Coal output=IronIngot count=1 invalid_fuel=RawIron invalid_fuel_outcome=no_burn broad_all_furnaces=false
+MC-COMPAT-MILESTONE survival_furnace_breadth_state username=compatbot recipe=minecraft:iron_ingot input=RawIron fuel=Coal output=IronIngot count=1 invalid_fuel=RawIron invalid_fuel_outcome=no_burn broad_all_furnaces=false

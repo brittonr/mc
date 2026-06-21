@@ -1,0 +1,25 @@
+## furnace smelting breadth dry-run flake check
+these 2 derivations will be built:
+  /nix/store/hdbbcfsj0jn9ywwm20dljakfkrm8z8i8-mc-compat-valence-survival-furnace-smelting-breadth.drv
+  /nix/store/0gj6y8dmdcdlm0sbbyxz66qrplwcd8jz-mc-compat-valence-survival-furnace-smelting-breadth-dry-run.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/hdbbcfsj0jn9ywwm20dljakfkrm8z8i8-mc-compat-valence-survival-furnace-smelting-breadth.drv'...
+building '/nix/store/0gj6y8dmdcdlm0sbbyxz66qrplwcd8jz-mc-compat-valence-survival-furnace-smelting-breadth-dry-run.drv'...
+mc-compat-valence-survival-furnace-smelting-breadth-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-valence-survival-furnace-smelting-breadth-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-valence-survival-furnace-smelting-breadth-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-valence-survival-furnace-smelting-breadth-dry-run> hint: call:
+mc-compat-valence-survival-furnace-smelting-breadth-dry-run> hint:
+mc-compat-valence-survival-furnace-smelting-breadth-dry-run> hint:      git config --global init.defaultBranch <name>
+mc-compat-valence-survival-furnace-smelting-breadth-dry-run> hint:
+mc-compat-valence-survival-furnace-smelting-breadth-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-valence-survival-furnace-smelting-breadth-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-valence-survival-furnace-smelting-breadth-dry-run> hint:
+mc-compat-valence-survival-furnace-smelting-breadth-dry-run> hint:      git branch -m <name>
+mc-compat-valence-survival-furnace-smelting-breadth-dry-run> hint:
+mc-compat-valence-survival-furnace-smelting-breadth-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-valence-survival-furnace-smelting-breadth-dry-run> Initialized empty Git repository in /build/fake-valence/.git/
+mc-compat-valence-survival-furnace-smelting-breadth-dry-run> [master (root-commit) b5b8965] init
+mc-compat-valence-survival-furnace-smelting-breadth-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-valence-survival-furnace-smelting-breadth-dry-run>  create mode 100644 README.md
+exit_status=0

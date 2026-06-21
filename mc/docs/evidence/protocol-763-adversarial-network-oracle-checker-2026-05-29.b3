@@ -1,3 +1,3 @@
 bd6d7fd6539373e4b116ff054047cd8261aaed6836faa7099d0890e44cf6a21a  tools/check_adversarial_network_oracle.rs
-60ed0ad1848442856900ac2497691bbe77e19b1d6ab84b7404858038dabdcd8f  flake.nix
+80608ae35ec532ecf07542a2ccc090e5a3aef3f09b1d412d042cc10ec8005da0  flake.nix
 ab9695b77bad42cd16726c92f95b58be94238a382255614fc40ab5717dd8a039  docs/evidence/protocol-763-adversarial-network-oracle-checker-2026-05-29.run.log

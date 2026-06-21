@@ -1,0 +1,71 @@
+## cairn gates for survival furnace smelting breadth
+command=nix run --no-update-lock-file .#cairn -- gate proposal survival-furnace-smelting-breadth-parity --root .
+{
+  "change": "survival-furnace-smelting-breadth-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "2eac1a89c3abb8d2d7f8c1f30e8137125cef245ed4c089ca9455a17e832ce7eb",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "a0636d6817de4ba849da4acaa9c2ecaff262b304791083b661dcbb56d77b49c1",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+proposal_gate_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate design survival-furnace-smelting-breadth-parity --root .
+{
+  "change": "survival-furnace-smelting-breadth-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "75e847605a751eaf781d3fd12c372e4f2e541f1f0dc3bccc8ffa2c140be78925",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "cceba08287e1fb8e6b4b7c74f2c378cecac1ed20d33dc06a6123bbaf022dd17e",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+design_gate_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate tasks survival-furnace-smelting-breadth-parity --root .
+{
+  "change": "survival-furnace-smelting-breadth-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "bcea570150b99677ee891fc5b3f7324fbb4f8b5ab7ab1594c8256e70fa15f338",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "62594248308f16cea73b3f39df7dc402b1fcd6a7afec6d1d85f3dadd01fc0034",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+tasks_gate_exit_status=0
+exit_status=0

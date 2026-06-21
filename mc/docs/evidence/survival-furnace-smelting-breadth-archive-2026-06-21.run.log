@@ -1,0 +1,95 @@
+## cairn archive execute for survival furnace smelting breadth
+command=CAIRN_ARCHIVE_DATE=2026-06-21 nix run --no-update-lock-file .#cairn -- archive survival-furnace-smelting-breadth-parity --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-furnace-smelting-breadth-parity",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-21-survival-furnace-smelting-breadth-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-furnace-smelting-breadth-parity",
+  "dry_run": false,
+  "input_hash": "1bd748f7a8bbcbebfb4169fad69557423479137d6ffe13e0cd401b0574944928",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "dffa8f6a420ef1c8f45c117c81eed1cd73417d8ef90a6ac80b1ba89457621727",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-furnace-smelting-breadth-parity/design.md"
+        },
+        {
+          "content_hash": "aa652f41c07b99999dba3e6709d0abcb13ef472bf5a148c7278e7981ae7dd67e",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-furnace-smelting-breadth-parity/proposal.md"
+        },
+        {
+          "content_hash": "87a041a5c2e17c709509c4536419cf76266bf8286f6013e86c8a481965b68028",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-furnace-smelting-breadth-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "6816b73ab1278e32633578d66b1a43ce102ab72f1d0f560a29a887bdd12b49d7",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-furnace-smelting-breadth-parity/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-furnace-smelting-breadth-parity"
+        }
+      ],
+      "manifest_hash": "d6404dd0a6a72bc92a929bb9747583c286877b4e7d4c8f61692ca965ff5fe49d"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "dffa8f6a420ef1c8f45c117c81eed1cd73417d8ef90a6ac80b1ba89457621727",
+          "exists": true,
+          "path": "./cairn/changes/survival-furnace-smelting-breadth-parity/design.md"
+        },
+        {
+          "content_hash": "aa652f41c07b99999dba3e6709d0abcb13ef472bf5a148c7278e7981ae7dd67e",
+          "exists": true,
+          "path": "./cairn/changes/survival-furnace-smelting-breadth-parity/proposal.md"
+        },
+        {
+          "content_hash": "87a041a5c2e17c709509c4536419cf76266bf8286f6013e86c8a481965b68028",
+          "exists": true,
+          "path": "./cairn/changes/survival-furnace-smelting-breadth-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "6816b73ab1278e32633578d66b1a43ce102ab72f1d0f560a29a887bdd12b49d7",
+          "exists": true,
+          "path": "./cairn/changes/survival-furnace-smelting-breadth-parity/tasks.md"
+        }
+      ],
+      "manifest_hash": "061fdc38de9e561b8f04ab4bee3c56744d0a08fb36d2aa94e43b931479f77016"
+    },
+    "kind": "archive",
+    "manifest_hash": "b1a3c4fa6abc16483a2c5b47e7374c323cb70f50b9080bb4d0daac906d2ca101"
+  },
+  "plan_hash": "6d4d97279e12190325e29b2f5c85a08d145434be1fde60b4f37113c090d45eb4",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "fec489f0d705ba298ecdb2db8381f96134cf2ce2346fdba86525f647d211b578"
+}
+archive_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 7,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 9,
+  "valid": true
+}
+validate_after_archive_exit_status=0
+exit_status=0

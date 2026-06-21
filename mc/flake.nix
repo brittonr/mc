@@ -967,6 +967,34 @@
               mainProgram = "mc-compat-valence-survival-furnace-persistence";
             };
           };
+          mc-compat-valence-survival-furnace-smelting-breadth = pkgs.writeShellApplication {
+            name = "mc-compat-valence-survival-furnace-smelting-breadth";
+            runtimeInputs = [ mc-compat-runner ];
+            text = ''
+              mode="--run"
+              if [[ "''${1:-}" == "--dry-run" || "''${1:-}" == "--run" ]]; then
+                mode="$1"
+                shift
+              fi
+
+              receipt="''${MC_COMPAT_SURVIVAL_FURNACE_SMELTING_BREADTH_RECEIPT:-target/mc-compat-survival-furnace-smelting-breadth/survival-furnace-smelting-breadth.json}"
+              mkdir -p "$(dirname "$receipt")"
+
+              export SERVER_PROTOCOL="''${SERVER_PROTOCOL:-763}"
+              export SERVER_VERSION="''${SERVER_VERSION:-1.20.1}"
+              export VALENCE_REV="''${VALENCE_REV:-main}"
+              export VALENCE_EXAMPLE="''${VALENCE_EXAMPLE:-survival_compat}"
+              export VALENCE_WORKTREE="''${VALENCE_WORKTREE:-/tmp/valence-compat-survival-furnace-smelting-breadth}"
+              export VALENCE_TARGET_DIR="''${VALENCE_TARGET_DIR:-/tmp/valence-compat-survival-furnace-smelting-breadth-target}"
+              export CLIENT_TIMEOUT="''${CLIENT_TIMEOUT:-120}"
+
+              exec mc-compat-runner "$mode"                 --server-backend valence                 --scenario survival-furnace-smelting-breadth                 --receipt "$receipt"                 "$@"
+            '';
+            meta = {
+              description = "Run the maintained protocol-763 Valence survival furnace smelting breadth receipt.";
+              mainProgram = "mc-compat-valence-survival-furnace-smelting-breadth";
+            };
+          };
           mc-compat-mcp-controlled-smoke = pkgs.writeShellApplication {
             name = "mc-compat-mcp-controlled-smoke";
             runtimeInputs = [ mc-compat-runner ];
@@ -1048,6 +1076,7 @@
             mc-compat-valence-survival-crafting-table
             mc-compat-valence-survival-crafting-recipe-breadth
             mc-compat-valence-survival-furnace-persistence
+            mc-compat-valence-survival-furnace-smelting-breadth
             mc-compat-mcp-controlled-smoke
             evidence-manifest-refresh
             ;
@@ -1230,6 +1259,13 @@
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-furnace-persistence
           }/bin/mc-compat-valence-survival-furnace-persistence";
           meta.description = "Run the maintained protocol-763 Valence survival furnace persistence receipt.";
+        };
+        mc-compat-valence-survival-furnace-smelting-breadth = {
+          type = "app";
+          program = "${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-furnace-smelting-breadth
+          }/bin/mc-compat-valence-survival-furnace-smelting-breadth";
+          meta.description = "Run the maintained protocol-763 Valence survival furnace smelting breadth receipt.";
         };
         mc-compat-mcp-controlled-smoke = {
           type = "app";
@@ -2714,6 +2750,54 @@
               mkdir -p "$out"
               cp survival-furnace-dry-run.log receipts/survival-furnace-receipt.json "$out/"
             '';
+        mc-compat-valence-survival-furnace-smelting-breadth-dry-run =
+          pkgs.runCommand "mc-compat-valence-survival-furnace-smelting-breadth-dry-run"
+            { nativeBuildInputs = [ pkgs.git ]; }
+            ''
+              mkdir -p fake-stevenarella fake-valence receipts
+              printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+              git -C fake-valence init
+              git -C fake-valence config user.email mc-compat@example.invalid
+              git -C fake-valence config user.name mc-compat
+              printf '%s\n' fake > fake-valence/README.md
+              git -C fake-valence add README.md
+              git -C fake-valence commit -m init
+              MC_COMPAT_SURVIVAL_FURNACE_SMELTING_BREADTH_RECEIPT="$PWD/receipts/survival-furnace-smelting-breadth-receipt.json" ${
+                self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-furnace-smelting-breadth
+              }/bin/mc-compat-valence-survival-furnace-smelting-breadth --dry-run --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD > survival-furnace-smelting-breadth-dry-run.log
+              grep -Fq "scenario 'survival-furnace-smelting-breadth'" survival-furnace-smelting-breadth-dry-run.log
+              grep -Fq '"name": "survival-furnace-smelting-breadth"' receipts/survival-furnace-smelting-breadth-receipt.json
+              grep -Fq '"example": "survival_compat"' receipts/survival-furnace-smelting-breadth-receipt.json
+              grep -Fq '"version": "1.20.1"' receipts/survival-furnace-smelting-breadth-receipt.json
+              grep -Fq '"protocol": 763' receipts/survival-furnace-smelting-breadth-receipt.json
+              grep -Fq '"timeout_secs": 120' receipts/survival-furnace-smelting-breadth-receipt.json
+              grep -Fq '"survival_furnace_open_seen"' receipts/survival-furnace-smelting-breadth-receipt.json
+              grep -Fq '"survival_furnace_input_sent"' receipts/survival-furnace-smelting-breadth-receipt.json
+              grep -Fq '"survival_furnace_fuel_sent"' receipts/survival-furnace-smelting-breadth-receipt.json
+              grep -Fq '"survival_furnace_burn_progress_seen"' receipts/survival-furnace-smelting-breadth-receipt.json
+              grep -Fq '"survival_furnace_output_seen"' receipts/survival-furnace-smelting-breadth-receipt.json
+              grep -Fq '"survival_furnace_output_collected"' receipts/survival-furnace-smelting-breadth-receipt.json
+              grep -Fq '"survival_furnace_inventory_updated"' receipts/survival-furnace-smelting-breadth-receipt.json
+              grep -Fq '"survival_furnace_invalid_fuel_sent"' receipts/survival-furnace-smelting-breadth-receipt.json
+              grep -Fq '"server_survival_furnace_open"' receipts/survival-furnace-smelting-breadth-receipt.json
+              grep -Fq '"server_survival_furnace_input"' receipts/survival-furnace-smelting-breadth-receipt.json
+              grep -Fq '"server_survival_furnace_fuel"' receipts/survival-furnace-smelting-breadth-receipt.json
+              grep -Fq '"server_survival_furnace_burn_progress"' receipts/survival-furnace-smelting-breadth-receipt.json
+              grep -Fq '"server_survival_furnace_output_available"' receipts/survival-furnace-smelting-breadth-receipt.json
+              grep -Fq '"server_survival_furnace_output_collect"' receipts/survival-furnace-smelting-breadth-receipt.json
+              grep -Fq '"server_survival_furnace_invalid_fuel_rejected"' receipts/survival-furnace-smelting-breadth-receipt.json
+              grep -Fq '"server_survival_furnace_breadth_state"' receipts/survival-furnace-smelting-breadth-receipt.json
+              grep -Fq '"expected_summary_packets": ["login_success", "play_join_game", "open_container", "furnace_input", "fuel_inserted", "burn_progress", "output_available", "output_collected", "inventory_update", "invalid_fuel_attempt", "invalid_fuel_reject"]' receipts/survival-furnace-smelting-breadth-receipt.json
+              paper_fixture=${./tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java}
+              grep -Fq 'FURNACE_SMELTING_BREADTH_FIXTURE_ENV' "$paper_fixture"
+              grep -Fq 'survival_furnace_invalid_fuel_rejected' "$paper_fixture"
+              grep -Fq 'survival_furnace_breadth_state' "$paper_fixture"
+              grep -Fq 'FURNACE_INVALID_FUEL_OUTCOME' "$paper_fixture"
+              grep -Fq '"claims_correctness": false' receipts/survival-furnace-smelting-breadth-receipt.json
+              grep -Fq '"claims_semantic_equivalence": false' receipts/survival-furnace-smelting-breadth-receipt.json
+              mkdir -p "$out"
+              cp survival-furnace-smelting-breadth-dry-run.log receipts/survival-furnace-smelting-breadth-receipt.json "$out/"
+            '';
         mc-compat-mcp-controlled-smoke-dry-run =
           pkgs.runCommand "mc-compat-mcp-controlled-smoke-dry-run"
             {
@@ -2839,6 +2923,9 @@
             self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-furnace-persistence-dry-run
           } "$out/survival-furnace-persistence"
           ln -s ${
+            self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-furnace-smelting-breadth-dry-run
+          } "$out/survival-furnace-smelting-breadth"
+          ln -s ${
             self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-mcp-controlled-smoke-dry-run
           } "$out/mcp-controlled-smoke"
           ln -s ${
@@ -2950,6 +3037,7 @@
           survival-break-place-pickup
           survival-crafting-table
           survival-furnace-persistence
+          survival-furnace-smelting-breadth
           compat-bot-probe
           acceptance-matrix
           current-evidence-bundle
@@ -3175,7 +3263,7 @@
           grep -Fq -- "--apply" help.log
           grep -Fq -- "--stop" help.log
           grep -Fq -- "--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT" help.log
-          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|inventory-stack-split-merge|inventory-drag-transactions|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-crafting-recipe-breadth|survival-furnace-persistence|survival-hunger-food|survival-mob-drop|survival-redstone-toggle|survival-world-persistence-restart|survival-crash-recovery-parity|survival-block-entity-persistence-parity|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|vanilla-combat-reference-parity|vanilla-combat-armor-reference-parity|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset" help.log
+          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|inventory-stack-split-merge|inventory-drag-transactions|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-crafting-recipe-breadth|survival-furnace-persistence|survival-furnace-smelting-breadth|survival-hunger-food|survival-mob-drop|survival-redstone-toggle|survival-world-persistence-restart|survival-crash-recovery-parity|survival-block-entity-persistence-parity|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|vanilla-combat-reference-parity|vanilla-combat-armor-reference-parity|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset" help.log
           grep -Fq "MC_COMPAT_SCENARIO" help.log
           grep -Fq -- "--expect-status-description" help.log
           grep -Fq -- "--packet-capture-summary" help.log

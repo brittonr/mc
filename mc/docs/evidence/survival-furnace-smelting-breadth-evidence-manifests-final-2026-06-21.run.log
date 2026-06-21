@@ -1,0 +1,7 @@
+## evidence manifest checker after final furnace manifest update
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest self-test ok: positive and negative fixtures exercised
+evidence manifests ok: 386 manifests, 2610 entries, 123 receipts scanned
+exit_status=0

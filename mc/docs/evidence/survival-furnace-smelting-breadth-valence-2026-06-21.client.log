@@ -1,0 +1,40 @@
+[main.rs:1173][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:1309][INFO] Shader version: #version 150
+[main.rs:316][INFO] Detected server protocol version 763
+[server/mod.rs:1008][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25565
+[server/mod.rs:1013][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:1030][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:1044][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:1051][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:1112][WARN] Server is running in offline mode
+[server/mod.rs:1113][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbot properties=0
+[server/mod.rs:3265][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[world/mod.rs:1123][INFO] Dimension bounds: min_y=-64 height=384
+[server/mod.rs:3350][INFO] MC-COMPAT-MILESTONE join_game entity_id=0 gamemode=Survival
+[server/mod.rs:6389][INFO] Received chat message: Welcome to the Valence survival compatibility fixture.
+[server/mod.rs:5808][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=255 state_id=0 slot=-1 item=id=769 count=1
+[server/mod.rs:3898][INFO] MC-COMPAT-MILESTONE update_health health=14.0 food=20 saturation=0.0
+[server/mod.rs:6570][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=0
+[server/mod.rs:1757][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:trapdoor
+[model/mod.rs:368][ERROR] Error loading model minecraft:trapdoor
+[server/mod.rs:5213][INFO] MC-COMPAT-MILESTONE survival_furnace_move_near_furnace x=12.5 y=65.0 z=0.5 position=12,64,0
+[server/mod.rs:5229][INFO] MC-COMPAT-MILESTONE survival_furnace_open_request_sent hand=main position=12,64,0 face=up sequence=709
+[server/mod.rs:5587][INFO] MC-COMPAT-MILESTONE survival_furnace_open_seen window=1 position=12,64,0
+[server/mod.rs:5667][INFO] MC-COMPAT-MILESTONE inventory_probe_window_items window=1 state_id=0 slots=3 slot36=missing slot37=missing carried=id=769 count=1
+[server/mod.rs:5262][INFO] MC-COMPAT-MILESTONE survival_furnace_input_sent window=1 slot=0 item=RawIron count=1
+[server/mod.rs:5808][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=1 state_id=0 slot=1 item=id=762 count=1
+[server/mod.rs:5808][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=1 state_id=0 slot=2 item=id=770 count=1
+[server/mod.rs:5399][INFO] MC-COMPAT-MILESTONE survival_furnace_burn_progress_seen window=1 progress=started
+[server/mod.rs:5405][INFO] MC-COMPAT-MILESTONE survival_furnace_output_seen window=1 slot=2 item=IronIngot count=1
+[server/mod.rs:5282][INFO] MC-COMPAT-MILESTONE survival_furnace_fuel_sent window=1 slot=1 item=Coal count=1
+[server/mod.rs:5667][INFO] MC-COMPAT-MILESTONE inventory_probe_window_items window=1 state_id=0 slots=3 slot36=missing slot37=missing carried=empty
+[server/mod.rs:5302][INFO] MC-COMPAT-MILESTONE survival_furnace_output_collected window=1 slot=2 item=IronIngot count=1
+[server/mod.rs:5808][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=1 state_id=0 slot=1 item=id=769 count=1
+[server/mod.rs:5808][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=1 state_id=0 slot=30 item=id=770 count=1
+[server/mod.rs:5462][INFO] MC-COMPAT-MILESTONE survival_furnace_inventory_updated slot=36 item=IronIngot count=1
+[server/mod.rs:5322][INFO] MC-COMPAT-MILESTONE survival_furnace_invalid_fuel_sent window=1 slot=1 item=RawIron outcome=no_burn
+[server/mod.rs:5667][INFO] MC-COMPAT-MILESTONE inventory_probe_window_items window=1 state_id=0 slots=3 slot36=missing slot37=missing carried=id=770 count=1
+[server/mod.rs:5435][INFO] MC-COMPAT-MILESTONE survival_furnace_invalid_fuel_seen window=1 slot=1 item=RawIron outcome=no_burn

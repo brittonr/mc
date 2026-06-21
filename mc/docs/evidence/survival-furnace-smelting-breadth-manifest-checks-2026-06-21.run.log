@@ -1,0 +1,14 @@
+## scenario manifest checks
+this derivation will be built:
+  /nix/store/ljaj54wx10ldvff9rxm42d77bmwp4pgs-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/ljaj54wx10ldvff9rxm42d77bmwp4pgs-mc-compat-scenario-manifest.drv'...
+mc-compat-scenario-manifest> scenario manifest check failed: survival-furnace-smelting-breadth current bundle row marker "Survival furnace smelting breadth" missing
+error: Cannot build '/nix/store/ljaj54wx10ldvff9rxm42d77bmwp4pgs-mc-compat-scenario-manifest.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/mdkbqy5frgq5zgiwsfripf7mkgr8awqs-mc-compat-scenario-manifest
+       Last 1 log lines:
+       > scenario manifest check failed: survival-furnace-smelting-breadth current bundle row marker "Survival furnace smelting breadth" missing
+       For full logs, run:
+         nix log /nix/store/ljaj54wx10ldvff9rxm42d77bmwp4pgs-mc-compat-scenario-manifest.drv

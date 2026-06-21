@@ -1,0 +1,10 @@
+## scenario manifest and generated harness surface checks
+this derivation will be built:
+  /nix/store/sf8j2cbig7zhw9lbbxrv9gypgln9vl8z-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/sf8j2cbig7zhw9lbbxrv9gypgln9vl8z-mc-compat-scenario-manifest.drv'...
+this derivation will be built:
+  /nix/store/7hxq9h6578nr06drhr9yziqgks603ahp-mc-compat-generated-harness-surfaces.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/7hxq9h6578nr06drhr9yziqgks603ahp-mc-compat-generated-harness-surfaces.drv'...
+exit_status=0

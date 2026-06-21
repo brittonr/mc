@@ -59,6 +59,7 @@ const REQUIRED_SEAMS: &[&str] = &[
     "Survival chest persistence",
     "Survival crafting table",
     "Survival crafting recipe breadth",
+    "Survival furnace smelting breadth",
     "Survival furnace persistence",
     "Survival hunger/food",
     "Survival mob drops",
@@ -99,6 +100,7 @@ const REQUIRED_TEXT: &[&str] = &[
     "ResourcePackStatusC2SPacket",
     "MCP-controlled observability",
     "Survival crafting recipe breadth",
+    "Survival furnace smelting breadth",
 ];
 
 #[derive(Debug, Clone, PartialEq, Eq)]
