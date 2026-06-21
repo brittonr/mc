@@ -1,0 +1,183 @@
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/survival-biome-dimension-travel-parity/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "survival-biome-dimension-travel-parity",
+      "path": "/home/brittonr/git/mc/cairn/changes/survival-biome-dimension-travel-parity",
+      "task_counts": {
+        "done": 2,
+        "in_progress": 0,
+        "todo": 4,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/survival-container-block-entity-breadth-parity/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "survival-container-block-entity-breadth-parity",
+      "path": "/home/brittonr/git/mc/cairn/changes/survival-container-block-entity-breadth-parity",
+      "task_counts": {
+        "done": 2,
+        "in_progress": 0,
+        "todo": 4,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/survival-furnace-smelting-breadth-parity/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "survival-furnace-smelting-breadth-parity",
+      "path": "/home/brittonr/git/mc/cairn/changes/survival-furnace-smelting-breadth-parity",
+      "task_counts": {
+        "done": 2,
+        "in_progress": 0,
+        "todo": 4,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/survival-hunger-health-cycle-parity/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "survival-hunger-health-cycle-parity",
+      "path": "/home/brittonr/git/mc/cairn/changes/survival-hunger-health-cycle-parity",
+      "task_counts": {
+        "done": 2,
+        "in_progress": 0,
+        "todo": 4,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/survival-mob-ai-loot-breadth-parity/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "survival-mob-ai-loot-breadth-parity",
+      "path": "/home/brittonr/git/mc/cairn/changes/survival-mob-ai-loot-breadth-parity",
+      "task_counts": {
+        "done": 2,
+        "in_progress": 0,
+        "todo": 4,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/survival-redstone-circuit-breadth-parity/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "survival-redstone-circuit-breadth-parity",
+      "path": "/home/brittonr/git/mc/cairn/changes/survival-redstone-circuit-breadth-parity",
+      "task_counts": {
+        "done": 2,
+        "in_progress": 0,
+        "todo": 4,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/survival-sign-editing-live-parity/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "survival-sign-editing-live-parity",
+      "path": "/home/brittonr/git/mc/cairn/changes/survival-sign-editing-live-parity",
+      "task_counts": {
+        "done": 2,
+        "in_progress": 0,
+        "todo": 4,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/survival-world-multichunk-durability-parity/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "survival-world-multichunk-durability-parity",
+      "path": "/home/brittonr/git/mc/cairn/changes/survival-world-multichunk-durability-parity",
+      "task_counts": {
+        "done": 2,
+        "in_progress": 0,
+        "todo": 4,
+        "total": 6,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "/home/brittonr/git/mc"
+}
+exit_status=0

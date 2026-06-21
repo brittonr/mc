@@ -1,0 +1,80 @@
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-crafting-recipe-breadth-parity",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/2026-06-20-survival-crafting-recipe-breadth-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-crafting-recipe-breadth-parity",
+  "dry_run": false,
+  "input_hash": "dcb6c8d49cfbc73dc8d1b0b8676701c4ed0a34e789c9a4dab2f32f81edcd26df",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "2c209403bdc8132c44aa85995babd283b3c1ffd59cf2facdf946ae485dbbaf03",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-20-survival-crafting-recipe-breadth-parity/design.md"
+        },
+        {
+          "content_hash": "e01b5e172aa9fea89b6f52009323ac09eb19db0617a44ccd738954b753c64d21",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-20-survival-crafting-recipe-breadth-parity/proposal.md"
+        },
+        {
+          "content_hash": "c1670a92814ba2b5d9fe6571a9261a00fda28afc7ee1972f183f164e1ea74812",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-20-survival-crafting-recipe-breadth-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "5dc15738b66fc9c7737c72c257e8ab46683e6e089f118cd1bf8272ffc867b6f1",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-20-survival-crafting-recipe-breadth-parity/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-crafting-recipe-breadth-parity"
+        }
+      ],
+      "manifest_hash": "733033eaeb8ba6a22aded3b427fef37ecb5b823982321938cf3e05c47ca9d4e7"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "2c209403bdc8132c44aa85995babd283b3c1ffd59cf2facdf946ae485dbbaf03",
+          "exists": true,
+          "path": "./cairn/changes/survival-crafting-recipe-breadth-parity/design.md"
+        },
+        {
+          "content_hash": "e01b5e172aa9fea89b6f52009323ac09eb19db0617a44ccd738954b753c64d21",
+          "exists": true,
+          "path": "./cairn/changes/survival-crafting-recipe-breadth-parity/proposal.md"
+        },
+        {
+          "content_hash": "c1670a92814ba2b5d9fe6571a9261a00fda28afc7ee1972f183f164e1ea74812",
+          "exists": true,
+          "path": "./cairn/changes/survival-crafting-recipe-breadth-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "5dc15738b66fc9c7737c72c257e8ab46683e6e089f118cd1bf8272ffc867b6f1",
+          "exists": true,
+          "path": "./cairn/changes/survival-crafting-recipe-breadth-parity/tasks.md"
+        }
+      ],
+      "manifest_hash": "d0e069c08323630208f7455a23314aa4b035774d961932eb4b56b58249f8ca78"
+    },
+    "kind": "archive",
+    "manifest_hash": "f15732c2c965e931e4e9e4d8b570d22a06a7cb3929b1825478252434cd68914c"
+  },
+  "plan_hash": "b2fccd5efc543c5f6a83c29546f87b23164d353d6335fb383a8a492fe95528a1",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "7650c6832277b5f1c79003e74586b83dc7cbbc2cc12ee5e76a9f81fdfaef34fe"
+}
+exit_status=0

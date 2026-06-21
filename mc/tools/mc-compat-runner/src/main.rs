@@ -161,6 +161,30 @@ const SURVIVAL_CRAFTING_SERVER_RESULT_NEEDLE: &str =
 const SURVIVAL_CRAFTING_SERVER_COLLECT_NEEDLE: &str =
     "survival_crafting_collect username=compatbot window=1 slot=0 item=Stick count=4 inventory_slot=36";
 const SURVIVAL_CRAFTING_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_CRAFTING_FIXTURE";
+const SURVIVAL_CRAFTING_BREADTH_PROBE_ENV: &str =
+    "MC_COMPAT_SURVIVAL_CRAFTING_BREADTH_PROBE";
+const SURVIVAL_CRAFTING_BREADTH_FIXTURE_ENV: &str =
+    "MC_COMPAT_SURVIVAL_CRAFTING_BREADTH_FIXTURE";
+const SURVIVAL_CRAFTING_BREADTH_CLIENT_SHAPED_NEEDLE: &str =
+    "survival_crafting_breadth_shaped_seen window=1 recipe=minecraft:chest input=oak_planksx8 result=Chest count=1";
+const SURVIVAL_CRAFTING_BREADTH_CLIENT_SHAPELESS_NEEDLE: &str =
+    "survival_crafting_breadth_shapeless_seen window=1 recipe=minecraft:oak_planks input=oak_logx1 result=OakPlanks count=4";
+const SURVIVAL_CRAFTING_BREADTH_CLIENT_CLEAR_NEEDLE: &str =
+    "survival_crafting_breadth_grid_clear_seen window=1 occupied_slots=0";
+const SURVIVAL_CRAFTING_BREADTH_CLIENT_INVALID_NEEDLE: &str =
+    "survival_crafting_breadth_invalid_seen window=1 recipe=minecraft:stick_insufficient_input_rejection input=single_oak_plank outcome=no_result";
+const SURVIVAL_CRAFTING_BREADTH_CLIENT_INVENTORY_NEEDLE: &str =
+    "survival_crafting_breadth_inventory_updated slot=36 item=Chest count=1 slot=37 item=OakPlanks count=4";
+const SURVIVAL_CRAFTING_BREADTH_SERVER_SHAPED_NEEDLE: &str =
+    "survival_crafting_breadth_shaped username=compatbot recipe=minecraft:chest input=oak_planksx8 result=Chest count=1";
+const SURVIVAL_CRAFTING_BREADTH_SERVER_SHAPELESS_NEEDLE: &str =
+    "survival_crafting_breadth_shapeless username=compatbot recipe=minecraft:oak_planks input=oak_logx1 result=OakPlanks count=4";
+const SURVIVAL_CRAFTING_BREADTH_SERVER_CLEAR_NEEDLE: &str =
+    "survival_crafting_breadth_grid_clear username=compatbot window=1 occupied_slots=0";
+const SURVIVAL_CRAFTING_BREADTH_SERVER_INVALID_NEEDLE: &str =
+    "survival_crafting_breadth_invalid_rejected username=compatbot recipe=minecraft:stick_insufficient_input_rejection input=single_oak_plank outcome=no_result";
+const SURVIVAL_CRAFTING_BREADTH_SERVER_STATE_NEEDLE: &str =
+    "survival_crafting_breadth_state username=compatbot shaped=true shapeless=true invalid_rejected=true extra_outputs=false";
 const SURVIVAL_FURNACE_CLIENT_OPEN_NEEDLE: &str =
     "survival_furnace_open_seen window=1 position=12,64,0";
 const SURVIVAL_FURNACE_CLIENT_INPUT_NEEDLE: &str =
@@ -422,7 +446,7 @@ const FRAME_ARTIFACT_NON_CLAIMS: &[&str] = &[
     "visual_regression_approval",
     "semantic_equivalence",
 ];
-const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|inventory-stack-split-merge|inventory-drag-transactions|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-furnace-persistence|survival-hunger-food|survival-mob-drop|survival-redstone-toggle|survival-world-persistence-restart|survival-crash-recovery-parity|survival-block-entity-persistence-parity|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|vanilla-combat-reference-parity|vanilla-combat-armor-reference-parity|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset";
+const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|inventory-stack-split-merge|inventory-drag-transactions|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-crafting-recipe-breadth|survival-furnace-persistence|survival-hunger-food|survival-mob-drop|survival-redstone-toggle|survival-world-persistence-restart|survival-crash-recovery-parity|survival-block-entity-persistence-parity|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|vanilla-combat-reference-parity|vanilla-combat-armor-reference-parity|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
     "Dimension type:",
@@ -2438,6 +2462,9 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
             ScenarioBehaviorKind::SurvivalCraftingTable => {
                 cmd.env("MC_COMPAT_SURVIVAL_CRAFTING_PROBE", PROBE_ENABLED_VALUE);
             }
+            ScenarioBehaviorKind::SurvivalCraftingRecipeBreadth => {
+                cmd.env(SURVIVAL_CRAFTING_BREADTH_PROBE_ENV, PROBE_ENABLED_VALUE);
+            }
             ScenarioBehaviorKind::SurvivalFurnacePersistence => {
                 cmd.env("MC_COMPAT_SURVIVAL_FURNACE_PROBE", PROBE_ENABLED_VALUE)
                     .env(
@@ -2654,6 +2681,9 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
             ScenarioBehaviorKind::SurvivalCraftingTable => {
                 cmd.env(SURVIVAL_CRAFTING_FIXTURE_ENV, PROBE_ENABLED_VALUE);
             }
+            ScenarioBehaviorKind::SurvivalCraftingRecipeBreadth => {
+                cmd.env(SURVIVAL_CRAFTING_BREADTH_FIXTURE_ENV, PROBE_ENABLED_VALUE);
+            }
             ScenarioBehaviorKind::SurvivalFurnacePersistence => {
                 cmd.env(SURVIVAL_FURNACE_FIXTURE_ENV, PROBE_ENABLED_VALUE);
             }
@@ -2719,6 +2749,11 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
             ScenarioBehaviorKind::SurvivalCraftingTable => {
                 add_paper_env(cmd, SURVIVAL_CRAFTING_FIXTURE_ENV, PROBE_ENABLED_VALUE)
             }
+            ScenarioBehaviorKind::SurvivalCraftingRecipeBreadth => add_paper_env(
+                cmd,
+                SURVIVAL_CRAFTING_BREADTH_FIXTURE_ENV,
+                PROBE_ENABLED_VALUE,
+            ),
             ScenarioBehaviorKind::SurvivalFurnacePersistence => {
                 add_paper_env(cmd, SURVIVAL_FURNACE_FIXTURE_ENV, PROBE_ENABLED_VALUE)
             }
@@ -3770,7 +3805,7 @@ Automates a local Stevenarella compatibility smoke against a Minecraft {} / prot
 Default client checkout is the editable local Stevenarella sibling at ./stevenarella; pass --client-dir/CLIENT_DIR to use another checkout.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from legacy Nickel config, or --steel-config/MC_COMPAT_STEEL_CONFIG a restricted Steel module; env vars and later CLI flags override either config source.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.scenario.receipt.v2 JSON receipt for Cairn/Octet evidence flows. Pass --failure-bundle/MC_COMPAT_FAILURE_BUNDLE with a docs/evidence path to write a fail-only diagnostic bundle after failed runs.
-Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario survival-crafting-table for one crafting-table open/input/result/collect rail. Use --scenario survival-furnace-persistence for one furnace input/fuel/output/reconnect rail. Use --scenario survival-hunger-food for one hunger deficit, food consume, and inventory decrement rail. Use --scenario survival-mob-drop for one configured mob kill, drop, pickup, and inventory increment rail. Use --scenario survival-redstone-toggle for one configured control on/off output update rail. Use --scenario survival-world-persistence-restart for one configured block mutation, controlled reload, reconnect, and post-reload observation rail. Use --scenario survival-crash-recovery-parity for one configured block mutation, forced backend stop, crash-recovery restart, reconnect, and post-crash observation rail. Use --scenario survival-block-entity-persistence-parity for one configured sign block entity, controlled reload, reconnect, and post-reload sign text observation rail. Use --scenario survival-biome-dimension-state for one client-observed dimension/world identifier rail. Use --scenario mcp-controlled-smoke for deterministic MCP receipt/checker dry-run evidence before live client driving. Use --scenario vanilla-combat-armor-reference-parity for one Paper/Valence diamond-chestplate combat reference row. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario ctf-invalid-return-drop for one contained own-base return/drop attempt with server rejection evidence. Use --scenario ctf-score-limit-win-condition for one near-limit capture that emits exactly one win/end milestone. Use --scenario ctf-simultaneous-pickup-capture-race for one bounded two-client same-flag race with one accepted transition and one rejected duplicate pickup. Use --scenario ctf-spawn-team-balance-reset for one bounded two-client team assignment, spawn/resource, and post-score reset row. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
+Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario survival-crafting-table for one crafting-table open/input/result/collect rail. Use --scenario survival-crafting-recipe-breadth for one bounded shaped/shapeless/invalid recipe breadth rail. Use --scenario survival-furnace-persistence for one furnace input/fuel/output/reconnect rail. Use --scenario survival-hunger-food for one hunger deficit, food consume, and inventory decrement rail. Use --scenario survival-mob-drop for one configured mob kill, drop, pickup, and inventory increment rail. Use --scenario survival-redstone-toggle for one configured control on/off output update rail. Use --scenario survival-world-persistence-restart for one configured block mutation, controlled reload, reconnect, and post-reload observation rail. Use --scenario survival-crash-recovery-parity for one configured block mutation, forced backend stop, crash-recovery restart, reconnect, and post-crash observation rail. Use --scenario survival-block-entity-persistence-parity for one configured sign block entity, controlled reload, reconnect, and post-reload sign text observation rail. Use --scenario survival-biome-dimension-state for one client-observed dimension/world identifier rail. Use --scenario mcp-controlled-smoke for deterministic MCP receipt/checker dry-run evidence before live client driving. Use --scenario vanilla-combat-armor-reference-parity for one Paper/Valence diamond-chestplate combat reference row. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario ctf-invalid-return-drop for one contained own-base return/drop attempt with server rejection evidence. Use --scenario ctf-score-limit-win-condition for one near-limit capture that emits exactly one win/end milestone. Use --scenario ctf-simultaneous-pickup-capture-race for one bounded two-client same-flag race with one accepted transition and one rejected duplicate pickup. Use --scenario ctf-spawn-team-balance-reset for one bounded two-client team assignment, spawn/resource, and post-score reset row. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
 Use --expect-status-description/--expect-status-version/--expect-status-sample to assert status response fixture data, --packet-capture-summary for redacted capture summary metadata, and --proxy-route/--proxy-forwarding-mode for proxied-route receipt fields.\n\
 Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
 Use --run-matrix --receipt-dir DIR to run Paper and Valence receipts then compare them; add --dry-run after --run-matrix for a non-side-effecting matrix fixture.\n\
@@ -7447,6 +7482,15 @@ fn smoke_receipt_json_with_typed_event_oracle(
             "crafting_result_collect",
             "inventory_update",
         ],
+        Scenario::SurvivalCraftingRecipeBreadth => vec![
+            "login_success",
+            "play_join_game",
+            "open_container",
+            "shaped_recipe_result",
+            "shapeless_recipe_result",
+            "invalid_recipe_reject",
+            "inventory_update",
+        ],
         Scenario::SurvivalFurnacePersistence => vec![
             "login_success",
             "play_join_game",
@@ -7756,6 +7800,16 @@ fn smoke_receipt_json_with_typed_event_oracle(
         "server_survival_crafting_input_b",
         "server_survival_crafting_result",
         "server_survival_crafting_collect",
+        "survival_crafting_breadth_shaped_seen",
+        "survival_crafting_breadth_shapeless_seen",
+        "survival_crafting_breadth_grid_clear_seen",
+        "survival_crafting_breadth_invalid_seen",
+        "survival_crafting_breadth_inventory_updated",
+        "server_survival_crafting_breadth_shaped",
+        "server_survival_crafting_breadth_shapeless",
+        "server_survival_crafting_breadth_grid_clear",
+        "server_survival_crafting_breadth_invalid_rejected",
+        "server_survival_crafting_breadth_state",
         "survival_furnace_open_seen",
         "survival_furnace_input_sent",
         "survival_furnace_fuel_sent",
@@ -10623,6 +10677,13 @@ mod tests {
         let crafting = test_config(&["--scenario", "survival-crafting-table"], &[])
             .expect("survival crafting-table scenario parses");
         assert_eq!(crafting.scenario, Scenario::SurvivalCraftingTable);
+
+        let crafting_breadth = test_config(&["--scenario", "survival-crafting-recipe-breadth"], &[])
+            .expect("survival crafting recipe breadth scenario parses");
+        assert_eq!(
+            crafting_breadth.scenario,
+            Scenario::SurvivalCraftingRecipeBreadth
+        );
 
         let furnace = test_config(&["--scenario", "survival-furnace-persistence"], &[])
             .expect("survival furnace scenario parses");

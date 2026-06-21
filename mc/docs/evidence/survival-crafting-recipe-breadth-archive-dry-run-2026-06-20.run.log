@@ -1,0 +1,22 @@
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-crafting-recipe-breadth-parity",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/changes/survival-crafting-recipe-breadth-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-crafting-recipe-breadth-parity",
+  "dry_run": true,
+  "input_hash": "dcb6c8d49cfbc73dc8d1b0b8676701c4ed0a34e789c9a4dab2f32f81edcd26df",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "b0ec264121410fb2719c890b7ee4ab063630925f73023ce1858652cf69a758f6",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "f23fad181573a07cdbd7f7f12bc24354bd717fa5e71cd03302a18909406012fb"
+}
+exit_status=0

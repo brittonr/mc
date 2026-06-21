@@ -3,7 +3,7 @@ c7fe2ec5026122c917625054789036153a3cd395a604ba3d9be19e82eb47ebd6  docs/evidence/
 b5683b638c718ab1b6bf6f988e34b8c0f226c534b7582cee2d81cf75ffad0787  docs/evidence/vanilla-combat-reference-paired-fixtures-valence-source-2026-06-02.patch
 c7c466d2c63924084fdf04c1771ba0121b535addf8fae4f15b69b9992586b253  docs/evidence/vanilla-combat-reference-paired-fixtures-stevenarella-source-2026-06-02.patch
 86bdc672585766c95e5b0b39cea20e00a6a42cc4f5c2e87dccb51593f95e853a  docs/evidence/mc-compat-paper-vanilla-combat-reference-fixture-2026-06-02.jar
-864fedc1f1f645058b9ca061829d7c42e3da8d088e8cc394ab0c8abf6b2f5150  tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java
-6b5878bde066cb86d0710f504d30ebd2c01acb61adeeab986c53cbc46cb509b5  tools/mc-compat-runner/src/main.rs
-e6bf9c98fa4e9dbc946a7a101816c10c53ccf46ff1edb9182e0b151262da1ad1  config/mc-compat/scenario-manifest.ncl
-f606f3651005298978efc81ed87d046964d96ef36211f8226812f6779752fa5d  tools/mc-compat-runner/src/scenario_manifest_generated.rs
+04ee7f5b58ae243f7fef38228f6df36390ea6ce41cd80bc4b9c1ac9935ac84e0  tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java
+12ee0e38e712c48653e7031fb48e539fdb70be86df4355efa490c3926c772063  tools/mc-compat-runner/src/main.rs
+344e71895d24e15df283e884a6abeee4fa97942198e92e79d0b674e10f1f6c07  config/mc-compat/scenario-manifest.ncl
+8c0b151ec5a1b336eac8c5b5ee47a42d1810489416a0a89939114cb1f68cb1ce  tools/mc-compat-runner/src/scenario_manifest_generated.rs

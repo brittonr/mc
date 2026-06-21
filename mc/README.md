@@ -133,6 +133,12 @@ nix run .#mc-compat-valence-survival-crafting-table
 # deterministic, non-side-effecting fixture for the same crafting-table command shape:
 nix run .#mc-compat-valence-survival-crafting-table -- --dry-run
 
+# Maintained protocol-763 Valence survival crafting recipe breadth receipt.
+# Requires paired shaped, shapeless, and invalid-recipe rejection milestones; remains a bounded row receipt, not aggregate survival parity.
+nix run .#mc-compat-valence-survival-crafting-recipe-breadth
+# deterministic, non-side-effecting fixture for the same crafting breadth command shape:
+nix run .#mc-compat-valence-survival-crafting-recipe-breadth -- --dry-run
+
 # Maintained protocol-763 Valence survival furnace persistence receipt.
 # Requires paired client/server open/input/fuel/burn/output/collect/reconnect/state milestones; remains a row receipt, not aggregate survival parity.
 nix run .#mc-compat-valence-survival-furnace-persistence

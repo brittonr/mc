@@ -1,0 +1,6 @@
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest refresh ok: mode=refresh; passes=4; manifests=385; entries=2565; current=2565; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=4; manifest_writes=42
+evidence manifests ok: 385 manifests, 2565 entries, 121 receipts scanned
+exit_status=0

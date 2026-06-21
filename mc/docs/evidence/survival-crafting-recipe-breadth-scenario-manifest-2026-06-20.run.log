@@ -1,0 +1,4 @@
+scenario manifest self-test passed: positive and negative fixtures exercised
+generated surface check passed: 2 generated surfaces current
+scenario manifest check passed: 37 rows validated; dry-run coverage: 35 covered, 2 waived, 0 unmaintained; typed-event readiness: 2 ready, 35 fallback
+exit_status=0

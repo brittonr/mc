@@ -1,0 +1,48 @@
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/survival-crafting-recipe-breadth-parity/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/survival-crafting-recipe-breadth-parity/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-crafting-recipe-breadth-parity",
+  "delta_specs": [
+    "/home/brittonr/git/mc/cairn/changes/survival-crafting-recipe-breadth-parity/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "dcb6c8d49cfbc73dc8d1b0b8676701c4ed0a34e789c9a4dab2f32f81edcd26df",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "e8db0c6df6aa512d80eb1191e02729d8f1c953af474fa7c6a926f7e82dec5303",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "644f3cdd7f48c4773b070199f44c12bfcc6ef744b0bf2c18e2d4bb4b80fed02d"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "e8db0c6df6aa512d80eb1191e02729d8f1c953af474fa7c6a926f7e82dec5303",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "644f3cdd7f48c4773b070199f44c12bfcc6ef744b0bf2c18e2d4bb4b80fed02d"
+    },
+    "kind": "sync",
+    "manifest_hash": "27ccd0befe883188a985d93df46d2edd18803aabfeb60827cf2e9f57d69362c8"
+  },
+  "plan_hash": "efc3016238961410efc429a08e5ba7bc87db734c75d9f9941b0fba22848ff14c",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "dc8b592ac39a2cd6e61ab0f81e61cb6906e1448655bf34285798a2f96d33446c"
+}
+exit_status=0

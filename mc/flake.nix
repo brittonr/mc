@@ -911,6 +911,34 @@
               mainProgram = "mc-compat-valence-survival-crafting-table";
             };
           };
+          mc-compat-valence-survival-crafting-recipe-breadth = pkgs.writeShellApplication {
+            name = "mc-compat-valence-survival-crafting-recipe-breadth";
+            runtimeInputs = [ mc-compat-runner ];
+            text = ''
+              mode="--run"
+              if [[ "''${1:-}" == "--dry-run" || "''${1:-}" == "--run" ]]; then
+                mode="$1"
+                shift
+              fi
+
+              receipt="''${MC_COMPAT_SURVIVAL_CRAFTING_RECIPE_BREADTH_RECEIPT:-target/mc-compat-survival-crafting-recipe-breadth/survival-crafting-recipe-breadth.json}"
+              mkdir -p "$(dirname "$receipt")"
+
+              export SERVER_PROTOCOL="''${SERVER_PROTOCOL:-763}"
+              export SERVER_VERSION="''${SERVER_VERSION:-1.20.1}"
+              export VALENCE_REV="''${VALENCE_REV:-main}"
+              export VALENCE_EXAMPLE="''${VALENCE_EXAMPLE:-survival_compat}"
+              export VALENCE_WORKTREE="''${VALENCE_WORKTREE:-/tmp/valence-compat-survival-crafting-recipe-breadth}"
+              export VALENCE_TARGET_DIR="''${VALENCE_TARGET_DIR:-/tmp/valence-compat-survival-crafting-recipe-breadth-target}"
+              export CLIENT_TIMEOUT="''${CLIENT_TIMEOUT:-120}"
+
+              exec mc-compat-runner "$mode"                 --server-backend valence                 --scenario survival-crafting-recipe-breadth                 --receipt "$receipt"                 "$@"
+            '';
+            meta = {
+              description = "Run the maintained protocol-763 Valence survival crafting recipe breadth receipt.";
+              mainProgram = "mc-compat-valence-survival-crafting-recipe-breadth";
+            };
+          };
           mc-compat-valence-survival-furnace-persistence = pkgs.writeShellApplication {
             name = "mc-compat-valence-survival-furnace-persistence";
             runtimeInputs = [ mc-compat-runner ];
@@ -1018,6 +1046,7 @@
             mc-compat-valence-movement-packet-family
             mc-compat-valence-survival-break-place-pickup
             mc-compat-valence-survival-crafting-table
+            mc-compat-valence-survival-crafting-recipe-breadth
             mc-compat-valence-survival-furnace-persistence
             mc-compat-mcp-controlled-smoke
             evidence-manifest-refresh
@@ -1187,6 +1216,13 @@
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-crafting-table
           }/bin/mc-compat-valence-survival-crafting-table";
           meta.description = "Run the maintained protocol-763 Valence survival crafting-table receipt.";
+        };
+        mc-compat-valence-survival-crafting-recipe-breadth = {
+          type = "app";
+          program = "${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-crafting-recipe-breadth
+          }/bin/mc-compat-valence-survival-crafting-recipe-breadth";
+          meta.description = "Run the maintained protocol-763 Valence survival crafting recipe breadth receipt.";
         };
         mc-compat-valence-survival-furnace-persistence = {
           type = "app";
@@ -2591,6 +2627,43 @@
               mkdir -p "$out"
               cp survival-crafting-dry-run.log receipts/survival-crafting-receipt.json "$out/"
             '';
+        mc-compat-valence-survival-crafting-recipe-breadth-dry-run =
+          pkgs.runCommand "mc-compat-valence-survival-crafting-recipe-breadth-dry-run"
+            { nativeBuildInputs = [ pkgs.git ]; }
+            ''
+              mkdir -p fake-stevenarella fake-valence receipts
+              printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+              git -C fake-valence init
+              git -C fake-valence config user.email mc-compat@example.invalid
+              git -C fake-valence config user.name mc-compat
+              printf '%s\n' fake > fake-valence/README.md
+              git -C fake-valence add README.md
+              git -C fake-valence commit -m init
+              MC_COMPAT_SURVIVAL_CRAFTING_RECIPE_BREADTH_RECEIPT="$PWD/receipts/survival-crafting-recipe-breadth-receipt.json" ${
+                self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-crafting-recipe-breadth
+              }/bin/mc-compat-valence-survival-crafting-recipe-breadth --dry-run --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD > survival-crafting-recipe-breadth-dry-run.log
+              grep -Fq "scenario 'survival-crafting-recipe-breadth'" survival-crafting-recipe-breadth-dry-run.log
+              grep -Fq '"name": "survival-crafting-recipe-breadth"' receipts/survival-crafting-recipe-breadth-receipt.json
+              grep -Fq '"example": "survival_compat"' receipts/survival-crafting-recipe-breadth-receipt.json
+              grep -Fq '"version": "1.20.1"' receipts/survival-crafting-recipe-breadth-receipt.json
+              grep -Fq '"protocol": 763' receipts/survival-crafting-recipe-breadth-receipt.json
+              grep -Fq '"timeout_secs": 120' receipts/survival-crafting-recipe-breadth-receipt.json
+              grep -Fq '"survival_crafting_breadth_shaped_seen"' receipts/survival-crafting-recipe-breadth-receipt.json
+              grep -Fq '"survival_crafting_breadth_shapeless_seen"' receipts/survival-crafting-recipe-breadth-receipt.json
+              grep -Fq '"survival_crafting_breadth_grid_clear_seen"' receipts/survival-crafting-recipe-breadth-receipt.json
+              grep -Fq '"survival_crafting_breadth_invalid_seen"' receipts/survival-crafting-recipe-breadth-receipt.json
+              grep -Fq '"survival_crafting_breadth_inventory_updated"' receipts/survival-crafting-recipe-breadth-receipt.json
+              grep -Fq '"server_survival_crafting_breadth_shaped"' receipts/survival-crafting-recipe-breadth-receipt.json
+              grep -Fq '"server_survival_crafting_breadth_shapeless"' receipts/survival-crafting-recipe-breadth-receipt.json
+              grep -Fq '"server_survival_crafting_breadth_grid_clear"' receipts/survival-crafting-recipe-breadth-receipt.json
+              grep -Fq '"server_survival_crafting_breadth_invalid_rejected"' receipts/survival-crafting-recipe-breadth-receipt.json
+              grep -Fq '"server_survival_crafting_breadth_state"' receipts/survival-crafting-recipe-breadth-receipt.json
+              grep -Fq '"expected_summary_packets": ["login_success", "play_join_game", "open_container", "shaped_recipe_result", "shapeless_recipe_result", "invalid_recipe_reject", "inventory_update"]' receipts/survival-crafting-recipe-breadth-receipt.json
+              grep -Fq '"claims_correctness": false' receipts/survival-crafting-recipe-breadth-receipt.json
+              grep -Fq '"claims_semantic_equivalence": false' receipts/survival-crafting-recipe-breadth-receipt.json
+              mkdir -p "$out"
+              cp survival-crafting-recipe-breadth-dry-run.log receipts/survival-crafting-recipe-breadth-receipt.json "$out/"
+            '';
         mc-compat-valence-survival-furnace-persistence-dry-run =
           pkgs.runCommand "mc-compat-valence-survival-furnace-persistence-dry-run"
             { nativeBuildInputs = [ pkgs.git ]; }
@@ -2759,6 +2832,9 @@
           ln -s ${
             self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-crafting-table-dry-run
           } "$out/survival-crafting-table"
+          ln -s ${
+            self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-crafting-recipe-breadth-dry-run
+          } "$out/survival-crafting-recipe-breadth"
           ln -s ${
             self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-survival-furnace-persistence-dry-run
           } "$out/survival-furnace-persistence"
@@ -3099,7 +3175,7 @@
           grep -Fq -- "--apply" help.log
           grep -Fq -- "--stop" help.log
           grep -Fq -- "--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT" help.log
-          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|inventory-stack-split-merge|inventory-drag-transactions|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-furnace-persistence|survival-hunger-food|survival-mob-drop|survival-redstone-toggle|survival-world-persistence-restart|survival-crash-recovery-parity|survival-block-entity-persistence-parity|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|vanilla-combat-reference-parity|vanilla-combat-armor-reference-parity|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset" help.log
+          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|inventory-stack-split-merge|inventory-drag-transactions|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-crafting-recipe-breadth|survival-furnace-persistence|survival-hunger-food|survival-mob-drop|survival-redstone-toggle|survival-world-persistence-restart|survival-crash-recovery-parity|survival-block-entity-persistence-parity|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|vanilla-combat-reference-parity|vanilla-combat-armor-reference-parity|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset" help.log
           grep -Fq "MC_COMPAT_SCENARIO" help.log
           grep -Fq -- "--expect-status-description" help.log
           grep -Fq -- "--packet-capture-summary" help.log

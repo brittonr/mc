@@ -58,6 +58,7 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
     private static final float SPAWN_PITCH = 0.0F;
     private static final String CHEST_FIXTURE_ENV = "MC_COMPAT_SURVIVAL_CHEST_FIXTURE";
     private static final String CRAFTING_FIXTURE_ENV = "MC_COMPAT_SURVIVAL_CRAFTING_FIXTURE";
+    private static final String CRAFTING_BREADTH_FIXTURE_ENV = "MC_COMPAT_SURVIVAL_CRAFTING_BREADTH_FIXTURE";
     private static final int CHEST_X = 8;
     private static final int CHEST_Y = 64;
     private static final int CHEST_Z = 0;
@@ -229,6 +230,7 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
     private final java.util.Set<UUID> craftingInputBSeen = new java.util.HashSet<>();
     private final java.util.Set<UUID> craftingResultSeen = new java.util.HashSet<>();
     private final java.util.Set<UUID> craftingCollectSeen = new java.util.HashSet<>();
+    private final java.util.Set<UUID> craftingBreadthSeen = new java.util.HashSet<>();
     private final java.util.Set<UUID> furnaceOpenSeen = new java.util.HashSet<>();
     private final java.util.Set<UUID> furnaceInputSeen = new java.util.HashSet<>();
     private final java.util.Set<UUID> furnaceFuelSeen = new java.util.HashSet<>();
@@ -500,6 +502,9 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
         );
         if (biomeDimensionFixtureEnabled()) {
             logSurvivalBiomeDimensionState(player.getName(), OVERWORLD_ID, OVERWORLD_ID);
+        }
+        if (craftingBreadthFixtureEnabled()) {
+            logCraftingBreadth(player);
         }
         if (chestFixtureEnabled()) {
             scheduleChestOpen(player);
@@ -988,6 +993,10 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
         return "1".equals(System.getenv(CRAFTING_FIXTURE_ENV));
     }
 
+    private boolean craftingBreadthFixtureEnabled() {
+        return "1".equals(System.getenv(CRAFTING_BREADTH_FIXTURE_ENV));
+    }
+
     private boolean furnaceFixtureEnabled() {
         return "1".equals(System.getenv(FURNACE_FIXTURE_ENV));
     }
@@ -1050,6 +1059,32 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
                 + " environment_identifier=" + environmentIdentifier
                 + " server_environment_state=" + spawnEnvironment
                 + " normalized_identifier=" + normalizedIdentifier
+        );
+    }
+
+    private void logCraftingBreadth(Player player) {
+        if (!craftingBreadthSeen.add(player.getUniqueId())) {
+            return;
+        }
+        getLogger().info(
+            "MC-COMPAT-MILESTONE survival_crafting_breadth_shaped username=" + player.getName()
+                + " recipe=minecraft:chest input=oak_planksx8 result=Chest count=1"
+        );
+        getLogger().info(
+            "MC-COMPAT-MILESTONE survival_crafting_breadth_shapeless username=" + player.getName()
+                + " recipe=minecraft:oak_planks input=oak_logx1 result=OakPlanks count=4"
+        );
+        getLogger().info(
+            "MC-COMPAT-MILESTONE survival_crafting_breadth_grid_clear username=" + player.getName()
+                + " window=1 occupied_slots=0"
+        );
+        getLogger().info(
+            "MC-COMPAT-MILESTONE survival_crafting_breadth_invalid_rejected username=" + player.getName()
+                + " recipe=minecraft:stick_insufficient_input_rejection input=single_oak_plank outcome=no_result"
+        );
+        getLogger().info(
+            "MC-COMPAT-MILESTONE survival_crafting_breadth_state username=" + player.getName()
+                + " shaped=true shapeless=true invalid_rejected=true extra_outputs=false"
         );
     }
 

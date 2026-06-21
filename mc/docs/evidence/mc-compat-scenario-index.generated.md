@@ -17,6 +17,7 @@ This bounded index is generated from `config/mc-compat/scenario-manifest.ncl`. I
 | survival-break-place-pickup | survival-break-place-pickup | 1 | 1 | mc-compat-valence-survival-break-place-pickup-dry-run | mc-compat-valence-survival-break-place-pickup | substring-fallback |
 | survival-chest-persistence | survival-chest-persistence | 1 | 2 | mc-compat-historical-scenario-dry-runs | mc-compat-valence-survival-chest-persistence | substring-fallback |
 | survival-crafting-table | survival-crafting-table | 1 | 1 | mc-compat-valence-survival-crafting-table-dry-run | mc-compat-valence-survival-crafting-table | substring-fallback |
+| survival-crafting-recipe-breadth | survival-crafting-recipe-breadth | 1 | 1 | mc-compat-valence-survival-crafting-recipe-breadth-dry-run | mc-compat-valence-survival-crafting-recipe-breadth | substring-fallback |
 | survival-furnace-persistence | survival-furnace-persistence | 1 | 2 | mc-compat-valence-survival-furnace-persistence-dry-run | mc-compat-valence-survival-furnace-persistence | substring-fallback |
 | survival-hunger-food | survival-hunger-food | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
 | survival-mob-drop | survival-mob-drop | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |

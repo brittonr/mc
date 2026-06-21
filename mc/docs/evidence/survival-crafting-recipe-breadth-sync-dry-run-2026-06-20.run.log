@@ -1,0 +1,25 @@
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/survival-crafting-recipe-breadth-parity/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/survival-crafting-recipe-breadth-parity/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-crafting-recipe-breadth-parity",
+  "delta_specs": [
+    "/home/brittonr/git/mc/cairn/changes/survival-crafting-recipe-breadth-parity/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "dcb6c8d49cfbc73dc8d1b0b8676701c4ed0a34e789c9a4dab2f32f81edcd26df",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "24ac992bb1930c008599f50e5e2ced85a7b577ba985bcded79636fc7d24a1d15",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "d155be7c2cb0da874d8272f89e7d5c416ae52a65bfd82bdfc94e4509f7e7f75d"
+}
+exit_status=0
