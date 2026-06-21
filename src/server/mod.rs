@@ -129,6 +129,8 @@ const SURVIVAL_CRAFTING_INPUT_ITEM_NAME: &str = "OakPlanks";
 const SURVIVAL_CRAFTING_RESULT_ITEM_NAME: &str = "Stick";
 const SURVIVAL_CRAFTING_RECIPE: &str = "minecraft:stick";
 const SURVIVAL_FURNACE_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_FURNACE_PROBE";
+const SURVIVAL_FURNACE_SMELTING_BREADTH_PROBE_ENV: &str =
+    "MC_COMPAT_SURVIVAL_FURNACE_SMELTING_BREADTH_PROBE";
 const SURVIVAL_FURNACE_SESSION_ENV: &str = "MC_COMPAT_SURVIVAL_FURNACE_SESSION";
 const SURVIVAL_FURNACE_FIRST_SESSION: u32 = 1;
 const SURVIVAL_FURNACE_REOPEN_SESSION: u32 = 2;
@@ -137,6 +139,7 @@ const SURVIVAL_FURNACE_OPEN_TICK: u32 = 80;
 const SURVIVAL_FURNACE_INPUT_TICK: u32 = 120;
 const SURVIVAL_FURNACE_FUEL_TICK: u32 = 140;
 const SURVIVAL_FURNACE_COLLECT_TICK: u32 = 180;
+const SURVIVAL_FURNACE_INVALID_FUEL_TICK: u32 = 210;
 const SURVIVAL_FURNACE_CLOSE_TICK: u32 = 220;
 const SURVIVAL_FURNACE_X: i32 = 12;
 const SURVIVAL_FURNACE_Y: i32 = 64;
@@ -150,6 +153,7 @@ const SURVIVAL_FURNACE_SEQUENCE: i32 = 709;
 const SURVIVAL_FURNACE_INPUT_SLOT: i16 = 0;
 const SURVIVAL_FURNACE_FUEL_SLOT: i16 = 1;
 const SURVIVAL_FURNACE_OUTPUT_SLOT: i16 = 2;
+const SURVIVAL_FURNACE_FUEL_INDEX: usize = 1;
 const SURVIVAL_FURNACE_OUTPUT_INDEX: usize = 2;
 const SURVIVAL_FURNACE_INVENTORY_SLOT: i16 = 36;
 const SURVIVAL_FURNACE_INVENTORY_INDEX: usize = 36;
@@ -159,6 +163,7 @@ const SURVIVAL_FURNACE_INPUT_ITEM_ID: isize = 769;
 const SURVIVAL_FURNACE_FUEL_ITEM_ID: isize = 762;
 const SURVIVAL_FURNACE_OUTPUT_ITEM_ID: isize = 770;
 const SURVIVAL_FURNACE_INPUT_ITEM_NAME: &str = "RawIron";
+const SURVIVAL_FURNACE_INVALID_FUEL_OUTCOME: &str = "no_burn";
 const SURVIVAL_FURNACE_FUEL_ITEM_NAME: &str = "Coal";
 const SURVIVAL_FURNACE_OUTPUT_ITEM_NAME: &str = "IronIngot";
 const SURVIVAL_FURNACE_ITEM_COUNT: isize = 1;
@@ -549,6 +554,10 @@ fn survival_furnace_fuel_stack() -> item::Stack {
     survival_furnace_stack(SURVIVAL_FURNACE_FUEL_ITEM_ID)
 }
 
+fn survival_furnace_invalid_fuel_stack() -> item::Stack {
+    survival_furnace_input_stack()
+}
+
 fn survival_furnace_output_stack() -> item::Stack {
     survival_furnace_stack(SURVIVAL_FURNACE_OUTPUT_ITEM_ID)
 }
@@ -564,6 +573,10 @@ fn survival_furnace_stack(item_id: isize) -> item::Stack {
 
 fn survival_furnace_output_matches(stack: &item::Stack) -> bool {
     stack.id == SURVIVAL_FURNACE_OUTPUT_ITEM_ID && stack.count == SURVIVAL_FURNACE_ITEM_COUNT
+}
+
+fn survival_furnace_invalid_fuel_matches(stack: &item::Stack) -> bool {
+    stack.id == SURVIVAL_FURNACE_INPUT_ITEM_ID && stack.count == SURVIVAL_FURNACE_ITEM_COUNT
 }
 
 fn survival_hunger_food_item_matches(stack: &item::Stack) -> bool {
@@ -821,6 +834,7 @@ pub struct Server {
     survival_crafting_probe_enabled: bool,
     survival_crafting_breadth_probe_enabled: bool,
     survival_furnace_probe_enabled: bool,
+    survival_furnace_smelting_breadth_probe_enabled: bool,
     survival_furnace_probe_session: u32,
     survival_hunger_food_probe_enabled: bool,
     survival_redstone_toggle_probe_enabled: bool,
@@ -901,6 +915,8 @@ pub struct Server {
     survival_furnace_output_seen: bool,
     survival_furnace_collect_sent: bool,
     survival_furnace_inventory_seen: bool,
+    survival_furnace_invalid_fuel_sent: bool,
+    survival_furnace_invalid_fuel_seen: bool,
     survival_furnace_close_sent: bool,
     survival_furnace_reconnect_sent: bool,
     survival_furnace_reopen_seen: bool,
@@ -1491,12 +1507,19 @@ impl Server {
             survival_crafting_probe_enabled: std::env::var(SURVIVAL_CRAFTING_PROBE_ENV)
                 .map(|value| value != "0")
                 .unwrap_or(false),
-            survival_crafting_breadth_probe_enabled: std::env::var(SURVIVAL_CRAFTING_BREADTH_PROBE_ENV)
-                .map(|value| value != "0")
-                .unwrap_or(false),
+            survival_crafting_breadth_probe_enabled: std::env::var(
+                SURVIVAL_CRAFTING_BREADTH_PROBE_ENV,
+            )
+            .map(|value| value != "0")
+            .unwrap_or(false),
             survival_furnace_probe_enabled: std::env::var(SURVIVAL_FURNACE_PROBE_ENV)
                 .map(|value| value != "0")
                 .unwrap_or(false),
+            survival_furnace_smelting_breadth_probe_enabled: std::env::var(
+                SURVIVAL_FURNACE_SMELTING_BREADTH_PROBE_ENV,
+            )
+            .map(|value| value != "0")
+            .unwrap_or(false),
             survival_furnace_probe_session: survival_furnace_probe_session_from_env(),
             survival_hunger_food_probe_enabled: std::env::var(SURVIVAL_HUNGER_FOOD_PROBE_ENV)
                 .map(|value| value != "0")
@@ -1606,6 +1629,8 @@ impl Server {
             survival_furnace_output_seen: false,
             survival_furnace_collect_sent: false,
             survival_furnace_inventory_seen: false,
+            survival_furnace_invalid_fuel_sent: false,
+            survival_furnace_invalid_fuel_seen: false,
             survival_furnace_close_sent: false,
             survival_furnace_reconnect_sent: false,
             survival_furnace_reopen_seen: false,
@@ -1765,6 +1790,7 @@ impl Server {
             && !self.survival_crafting_probe_enabled
             && !self.survival_crafting_breadth_probe_enabled
             && !self.survival_furnace_probe_enabled
+            && !self.survival_furnace_smelting_breadth_probe_enabled
             && !self.survival_hunger_food_probe_enabled
             && !self.survival_mob_drop_probe_enabled
             && !self.survival_redstone_toggle_probe_enabled
@@ -5283,7 +5309,28 @@ impl Server {
             self.survival_furnace_collect_sent = true;
         }
 
+        if self.survival_furnace_smelting_breadth_probe_enabled
+            && self.active_probe_ticks >= SURVIVAL_FURNACE_INVALID_FUEL_TICK
+            && self.survival_furnace_collect_sent
+            && !self.survival_furnace_invalid_fuel_sent
+        {
+            self.write_survival_furnace_click(
+                SURVIVAL_FURNACE_FUEL_SLOT,
+                Some(survival_furnace_invalid_fuel_stack()),
+                Some(survival_furnace_output_stack()),
+            );
+            info!(
+                "MC-COMPAT-MILESTONE survival_furnace_invalid_fuel_sent window={} slot={} item={} outcome={}",
+                self.survival_furnace_window_id,
+                SURVIVAL_FURNACE_FUEL_SLOT,
+                SURVIVAL_FURNACE_INPUT_ITEM_NAME,
+                SURVIVAL_FURNACE_INVALID_FUEL_OUTCOME
+            );
+            self.survival_furnace_invalid_fuel_sent = true;
+        }
+
         if self.survival_furnace_probe_session == SURVIVAL_FURNACE_FIRST_SESSION
+            && !self.survival_furnace_smelting_breadth_probe_enabled
             && self.active_probe_ticks >= SURVIVAL_FURNACE_CLOSE_TICK
             && self.survival_furnace_collect_sent
             && !self.survival_furnace_close_sent
@@ -5361,6 +5408,36 @@ impl Server {
             SURVIVAL_FURNACE_OUTPUT_SLOT,
             SURVIVAL_FURNACE_OUTPUT_ITEM_NAME,
             SURVIVAL_FURNACE_ITEM_COUNT
+        );
+    }
+
+    fn log_survival_furnace_invalid_fuel_from_slot(
+        &mut self,
+        window_id: u8,
+        slot_index: usize,
+        slot_item: Option<&Option<item::Stack>>,
+    ) {
+        if !self.survival_furnace_smelting_breadth_probe_enabled
+            || !self.survival_furnace_invalid_fuel_sent
+            || self.survival_furnace_invalid_fuel_seen
+            || window_id != self.survival_furnace_window_id
+            || slot_index != SURVIVAL_FURNACE_FUEL_INDEX
+        {
+            return;
+        }
+        let Some(Some(stack)) = slot_item else {
+            return;
+        };
+        if !survival_furnace_invalid_fuel_matches(stack) {
+            return;
+        }
+        self.survival_furnace_invalid_fuel_seen = true;
+        info!(
+            "MC-COMPAT-MILESTONE survival_furnace_invalid_fuel_seen window={} slot={} item={} outcome={}",
+            window_id,
+            SURVIVAL_FURNACE_FUEL_SLOT,
+            SURVIVAL_FURNACE_INPUT_ITEM_NAME,
+            SURVIVAL_FURNACE_INVALID_FUEL_OUTCOME
         );
     }
 
@@ -5668,6 +5745,11 @@ impl Server {
                 SURVIVAL_FURNACE_OUTPUT_INDEX,
                 window.items.data.get(SURVIVAL_FURNACE_OUTPUT_INDEX),
             );
+            self.log_survival_furnace_invalid_fuel_from_slot(
+                window.id,
+                SURVIVAL_FURNACE_FUEL_INDEX,
+                window.items.data.get(SURVIVAL_FURNACE_FUEL_INDEX),
+            );
             self.log_survival_furnace_inventory_from_slot(
                 SURVIVAL_FURNACE_INVENTORY_INDEX,
                 window.items.data.get(SURVIVAL_FURNACE_INVENTORY_INDEX),
@@ -5769,6 +5851,13 @@ impl Server {
         if self.survival_furnace_probe_enabled {
             if slot.id == self.survival_furnace_window_id && slot.id > EMPTY_WINDOW_ID {
                 self.survival_furnace_window_state_id = slot.state_id.0;
+                if slot.property == SURVIVAL_FURNACE_FUEL_SLOT {
+                    self.log_survival_furnace_invalid_fuel_from_slot(
+                        slot.id,
+                        SURVIVAL_FURNACE_FUEL_INDEX,
+                        Some(&slot.item),
+                    );
+                }
                 if slot.property == SURVIVAL_FURNACE_OUTPUT_SLOT {
                     self.log_survival_furnace_output_from_slot(
                         slot.id,
@@ -6898,8 +6987,9 @@ mod tests {
         survival_block_entity_expected_lines, survival_block_entity_position_matches,
         survival_crafting_input_stack, survival_crafting_result_matches,
         survival_crafting_result_stack, survival_crafting_table_position,
-        survival_furnace_fuel_stack, survival_furnace_input_stack, survival_furnace_output_matches,
-        survival_furnace_output_stack, survival_furnace_position,
+        survival_furnace_fuel_stack, survival_furnace_input_stack,
+        survival_furnace_invalid_fuel_matches, survival_furnace_invalid_fuel_stack,
+        survival_furnace_output_matches, survival_furnace_output_stack, survival_furnace_position,
         survival_hunger_food_float_matches, survival_hunger_food_item_matches,
         survival_hunger_food_post_update_matches, survival_hunger_food_pre_update_matches,
         survival_hunger_food_slot_is_empty, survival_mob_drop_item_matches,
@@ -7268,6 +7358,7 @@ mod tests {
         let input = survival_furnace_input_stack();
         let fuel = survival_furnace_fuel_stack();
         let output = survival_furnace_output_stack();
+        let invalid_fuel = survival_furnace_invalid_fuel_stack();
 
         assert_eq!(input.id, SURVIVAL_FURNACE_INPUT_ITEM_ID);
         assert_eq!(input.count, SURVIVAL_FURNACE_ITEM_COUNT);
@@ -7275,7 +7366,10 @@ mod tests {
         assert_eq!(fuel.count, SURVIVAL_FURNACE_ITEM_COUNT);
         assert_eq!(output.id, SURVIVAL_FURNACE_OUTPUT_ITEM_ID);
         assert_eq!(output.count, SURVIVAL_FURNACE_ITEM_COUNT);
+        assert_eq!(invalid_fuel.id, SURVIVAL_FURNACE_INPUT_ITEM_ID);
+        assert_eq!(invalid_fuel.count, SURVIVAL_FURNACE_ITEM_COUNT);
         assert!(survival_furnace_output_matches(&output));
+        assert!(survival_furnace_invalid_fuel_matches(&invalid_fuel));
     }
 
     #[test]
@@ -7295,6 +7389,7 @@ mod tests {
 
         assert!(!survival_furnace_output_matches(&wrong_item));
         assert!(!survival_furnace_output_matches(&wrong_count));
+        assert!(!survival_furnace_invalid_fuel_matches(&wrong_count));
     }
 
     #[test]
