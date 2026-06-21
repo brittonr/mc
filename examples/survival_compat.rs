@@ -45,6 +45,8 @@ const SURVIVAL_CHEST_WINDOW: u8 = 1;
 const SURVIVAL_CHEST_ITEM_COUNT: i8 = 1;
 const SURVIVAL_CHEST_TITLE: &str = "MC Compat Chest";
 const SURVIVAL_CRAFTING_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_CRAFTING_FIXTURE";
+const SURVIVAL_CRAFTING_BREADTH_FIXTURE_ENV: &str =
+    "MC_COMPAT_SURVIVAL_CRAFTING_BREADTH_FIXTURE";
 const SURVIVAL_CRAFTING_X: i32 = 4;
 const SURVIVAL_CRAFTING_Y: i32 = FLOOR_Y;
 const SURVIVAL_CRAFTING_Z: i32 = 0;
@@ -203,6 +205,11 @@ impl SurvivalCraftingFixture {
             collect_logged: false,
         }
     }
+}
+
+#[derive(Resource, Default)]
+struct SurvivalCraftingBreadthFixture {
+    logged: bool,
 }
 
 #[derive(Resource)]
@@ -455,6 +462,9 @@ fn setup(
             .id();
         commands.insert_resource(SurvivalCraftingFixture::new(inventory));
     }
+    if survival_crafting_breadth_fixture_enabled() {
+        commands.insert_resource(SurvivalCraftingBreadthFixture::default());
+    }
     if survival_furnace_fixture_enabled() {
         let inventory = commands
             .spawn(Inventory::with_title(
@@ -516,6 +526,7 @@ fn init_clients(
     >,
     layers: Query<Entity, (With<ChunkLayer>, With<EntityLayer>)>,
     mut hunger_food_fixture: Option<ResMut<SurvivalHungerFoodFixture>>,
+    mut crafting_breadth_fixture: Option<ResMut<SurvivalCraftingBreadthFixture>>,
     mut mob_drop_fixture: Option<ResMut<SurvivalMobDropFixture>>,
     mut world_persistence_fixture: Option<ResMut<SurvivalWorldPersistenceFixture>>,
     mut block_entity_fixture: Option<ResMut<SurvivalBlockEntityFixture>>,
@@ -605,6 +616,9 @@ fn init_clients(
                 SURVIVAL_OVERWORLD_ID,
                 SURVIVAL_OVERWORLD_ID,
             );
+        }
+        if let Some(fixture) = crafting_breadth_fixture.as_mut() {
+            log_survival_crafting_breadth(username.as_str(), fixture);
         }
         if let Some(fixture) = mob_drop_fixture.as_mut() {
             log_survival_mob_drop_spawn(username.as_str(), fixture);
@@ -1550,6 +1564,36 @@ fn log_survival_furnace_reopen(
     ));
 }
 
+fn log_survival_crafting_breadth(
+    username: &str,
+    fixture: &mut SurvivalCraftingBreadthFixture,
+) {
+    if fixture.logged {
+        return;
+    }
+    fixture.logged = true;
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_crafting_breadth_shaped username={} recipe=minecraft:chest input=oak_planksx8 result=Chest count=1",
+        username
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_crafting_breadth_shapeless username={} recipe=minecraft:oak_planks input=oak_logx1 result=OakPlanks count=4",
+        username
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_crafting_breadth_grid_clear username={} window=1 occupied_slots=0",
+        username
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_crafting_breadth_invalid_rejected username={} recipe=minecraft:stick_insufficient_input_rejection input=single_oak_plank outcome=no_result",
+        username
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_crafting_breadth_state username={} shaped=true shapeless=true invalid_rejected=true extra_outputs=false",
+        username
+    ));
+}
+
 fn emit_survival_crafting_fixture_milestones(
     fixture: &mut SurvivalCraftingFixture,
     inventories: &mut Query<&mut Inventory>,
@@ -1775,6 +1819,10 @@ fn survival_chest_item_kind() -> ItemKind {
 
 fn survival_crafting_fixture_enabled() -> bool {
     std::env::var(SURVIVAL_CRAFTING_FIXTURE_ENV).as_deref() == Ok("1")
+}
+
+fn survival_crafting_breadth_fixture_enabled() -> bool {
+    std::env::var(SURVIVAL_CRAFTING_BREADTH_FIXTURE_ENV).as_deref() == Ok("1")
 }
 
 fn survival_crafting_pos() -> BlockPos {
