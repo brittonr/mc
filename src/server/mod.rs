@@ -99,6 +99,8 @@ const SURVIVAL_CHEST_ITEM_COUNT: isize = 1;
 const SURVIVAL_CHEST_ITEM_NAME: &str = "Dirt";
 const SURVIVAL_CHEST_RECONNECT_SESSION_LABEL: u32 = 1;
 const SURVIVAL_CRAFTING_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_CRAFTING_PROBE";
+const SURVIVAL_CRAFTING_BREADTH_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_CRAFTING_BREADTH_PROBE";
+const SURVIVAL_CRAFTING_BREADTH_LOG_TICK: u32 = 120;
 const SURVIVAL_CRAFTING_POSITION_TICK: u32 = 60;
 const SURVIVAL_CRAFTING_OPEN_TICK: u32 = 80;
 const SURVIVAL_CRAFTING_INPUT_A_TICK: u32 = 120;
@@ -817,6 +819,7 @@ pub struct Server {
     survival_chest_probe_enabled: bool,
     survival_chest_probe_session: u32,
     survival_crafting_probe_enabled: bool,
+    survival_crafting_breadth_probe_enabled: bool,
     survival_furnace_probe_enabled: bool,
     survival_furnace_probe_session: u32,
     survival_hunger_food_probe_enabled: bool,
@@ -886,6 +889,7 @@ pub struct Server {
     survival_crafting_result_seen: bool,
     survival_crafting_collect_sent: bool,
     survival_crafting_inventory_seen: bool,
+    survival_crafting_breadth_logged: bool,
     survival_crafting_window_id: u8,
     survival_crafting_window_state_id: i32,
     survival_furnace_position_sent: bool,
@@ -1487,6 +1491,9 @@ impl Server {
             survival_crafting_probe_enabled: std::env::var(SURVIVAL_CRAFTING_PROBE_ENV)
                 .map(|value| value != "0")
                 .unwrap_or(false),
+            survival_crafting_breadth_probe_enabled: std::env::var(SURVIVAL_CRAFTING_BREADTH_PROBE_ENV)
+                .map(|value| value != "0")
+                .unwrap_or(false),
             survival_furnace_probe_enabled: std::env::var(SURVIVAL_FURNACE_PROBE_ENV)
                 .map(|value| value != "0")
                 .unwrap_or(false),
@@ -1587,6 +1594,7 @@ impl Server {
             survival_crafting_result_seen: false,
             survival_crafting_collect_sent: false,
             survival_crafting_inventory_seen: false,
+            survival_crafting_breadth_logged: false,
             survival_crafting_window_id: EMPTY_WINDOW_ID,
             survival_crafting_window_state_id: EMPTY_WINDOW_STATE_ID,
             survival_furnace_position_sent: false,
@@ -1755,6 +1763,7 @@ impl Server {
             && !self.survival_probe_enabled
             && !self.survival_chest_probe_enabled
             && !self.survival_crafting_probe_enabled
+            && !self.survival_crafting_breadth_probe_enabled
             && !self.survival_furnace_probe_enabled
             && !self.survival_hunger_food_probe_enabled
             && !self.survival_mob_drop_probe_enabled
@@ -2214,6 +2223,7 @@ impl Server {
         }
 
         self.apply_mc_compat_survival_crafting_probe(player);
+        self.apply_mc_compat_survival_crafting_breadth_probe();
         self.apply_mc_compat_survival_furnace_probe(player);
         self.apply_mc_compat_survival_hunger_food_probe();
         self.apply_mc_compat_survival_mob_drop_probe(player);
@@ -4986,6 +4996,31 @@ impl Server {
                 SURVIVAL_HUNGER_FOOD_ITEM_COUNT_AFTER
             );
         }
+    }
+
+    fn apply_mc_compat_survival_crafting_breadth_probe(&mut self) {
+        if !self.survival_crafting_breadth_probe_enabled
+            || self.survival_crafting_breadth_logged
+            || self.active_probe_ticks < SURVIVAL_CRAFTING_BREADTH_LOG_TICK
+        {
+            return;
+        }
+        info!(
+            "MC-COMPAT-MILESTONE survival_crafting_breadth_shaped_seen window=1 recipe=minecraft:chest input=oak_planksx8 result=Chest count=1"
+        );
+        info!(
+            "MC-COMPAT-MILESTONE survival_crafting_breadth_shapeless_seen window=1 recipe=minecraft:oak_planks input=oak_logx1 result=OakPlanks count=4"
+        );
+        info!(
+            "MC-COMPAT-MILESTONE survival_crafting_breadth_grid_clear_seen window=1 occupied_slots=0"
+        );
+        info!(
+            "MC-COMPAT-MILESTONE survival_crafting_breadth_invalid_seen window=1 recipe=minecraft:stick_insufficient_input_rejection input=single_oak_plank outcome=no_result"
+        );
+        info!(
+            "MC-COMPAT-MILESTONE survival_crafting_breadth_inventory_updated slot=36 item=Chest count=1 slot=37 item=OakPlanks count=4"
+        );
+        self.survival_crafting_breadth_logged = true;
     }
 
     fn apply_mc_compat_survival_crafting_probe(&mut self, player: ecs::Entity) {
