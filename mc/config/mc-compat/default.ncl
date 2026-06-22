@@ -37,8 +37,8 @@ let SmokeConfig = {
   receipt_dir | String | optional,
 } in
 {
-  client_dir = "./stevenarella",
-  valence_repo = "./valence",
+  client_dir = "./clients/stevenarella",
+  valence_repo = "./servers/valence",
   valence_rev = "8ad9c85",
   valence_worktree = "/tmp/valence-compat-758",
   valence_example = "terrain",

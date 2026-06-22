@@ -1,0 +1,90 @@
+## core component layout core-move Cairn gates
+command=check_cairn_task_evidence --self-test and core-component-layout tasks
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task evidence gate passed: 3 completed tasks checked across 1 task files
+task_evidence_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate proposal core-component-layout --root .
+{
+  "change": "core-component-layout",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c98e0d9765a1bdefc8c4a9cb18eb0724e84996e0d0b2694168755b902de9c0fd",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "8e0ce2045916cf8553caea56b66d0e3565103096d79841a063e0787d6b5becae",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+proposal_gate_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate design core-component-layout --root .
+{
+  "change": "core-component-layout",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "8bc1b6bdbc3c5f37f9f17faa04e3969bd565d3d71f7c9109b8e8b1de031360fe",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "aa97205316cc24c5561492d012f75d9eeff94b4624e3e6a16915411ae312d5c0",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+design_gate_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate tasks core-component-layout --root .
+{
+  "change": "core-component-layout",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "d225962714ba0421da951ed758610347b7d138f5860ff9d7f4e7d9fc687f350b",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "5fb7f74b265e4d478f7ef5890d407ba633acec70e35abe8b480b80cc67bcd61b",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+tasks_gate_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+validate_exit_status=0
+exit_status=0

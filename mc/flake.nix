@@ -86,7 +86,7 @@
             runtimeInputs = editableCargoTools;
             text = ''
               missing_checkout_exit=64
-              repo="''${VALENCE_REPO:-$PWD/valence}"
+              repo="''${VALENCE_REPO:-$PWD/servers/valence}"
               example="''${VALENCE_EXAMPLE:-ctf}"
               target_dir="''${VALENCE_TARGET_DIR:-$PWD/target/nix-run-valence}"
 
@@ -99,7 +99,7 @@
                 nix run .#valence -- --dry-run
 
               Environment:
-                VALENCE_REPO       checkout path; default: $PWD/valence
+                VALENCE_REPO       source tree path; default: $PWD/servers/valence
                 VALENCE_EXAMPLE    cargo example name; default: ctf
                 VALENCE_TARGET_DIR cargo target dir; default: $PWD/target/nix-run-valence
               USAGE
@@ -107,7 +107,7 @@
               fi
 
               if [[ ! -f "$repo/Cargo.toml" ]]; then
-                printf 'missing Valence checkout at %s; set VALENCE_REPO or run from mc root\n' "$repo" >&2
+                printf 'missing Valence source tree at %s; set VALENCE_REPO or run from mc root\n' "$repo" >&2
                 exit "$missing_checkout_exit"
               fi
 
@@ -135,7 +135,7 @@
               exec cargo run --example "$example" -- "$@"
             '';
             meta = {
-              description = "Run the editable local Valence checkout through the mc flake dev environment.";
+              description = "Run the core Valence server tree through the mc flake dev environment.";
               mainProgram = "valence";
             };
           };
@@ -144,7 +144,7 @@
             runtimeInputs = editableCargoTools;
             text = ''
               missing_checkout_exit=64
-              repo="''${CLIENT_DIR:-$PWD/stevenarella}"
+              repo="''${CLIENT_DIR:-$PWD/clients/stevenarella}"
               target_dir="''${CLIENT_TARGET_DIR:-$PWD/target/nix-run-stevenarella}"
 
               if [[ "''${1:-}" == "--help" ]]; then
@@ -156,14 +156,14 @@
                 nix run .#stevenarella -- --dry-run
 
               Environment:
-                CLIENT_DIR        checkout path; default: $PWD/stevenarella
+                CLIENT_DIR        source tree path; default: $PWD/clients/stevenarella
                 CLIENT_TARGET_DIR cargo target dir; default: $PWD/target/nix-run-stevenarella
               USAGE
                 exit 0
               fi
 
               if [[ ! -f "$repo/Cargo.toml" ]]; then
-                printf 'missing Stevenarella checkout at %s; set CLIENT_DIR or run from mc root\n' "$repo" >&2
+                printf 'missing Stevenarella source tree at %s; set CLIENT_DIR or run from mc root\n' "$repo" >&2
                 exit "$missing_checkout_exit"
               fi
 
@@ -197,7 +197,7 @@
               exec cargo run -- "$@"
             '';
             meta = {
-              description = "Run the editable local Stevenarella checkout through the mc flake dev environment.";
+              description = "Run the core Stevenarella client tree through the mc flake dev environment.";
               mainProgram = "stevenarella";
             };
           };
@@ -1120,12 +1120,12 @@
         valence = {
           type = "app";
           program = "${self.packages.${pkgs.stdenv.hostPlatform.system}.valence}/bin/valence";
-          meta.description = "Run the editable local Valence checkout through the mc flake dev environment.";
+          meta.description = "Run the core Valence server tree through the mc flake dev environment.";
         };
         stevenarella = {
           type = "app";
           program = "${self.packages.${pkgs.stdenv.hostPlatform.system}.stevenarella}/bin/stevenarella";
-          meta.description = "Run the editable local Stevenarella checkout through the mc flake dev environment.";
+          meta.description = "Run the core Stevenarella client tree through the mc flake dev environment.";
         };
         mc-compat-smoke = {
           type = "app";
@@ -1318,9 +1318,9 @@
         mc-compat-editable-app-dry-runs =
           pkgs.runCommand "mc-compat-editable-app-dry-runs" { nativeBuildInputs = [ pkgs.gnugrep ]; }
             ''
-              mkdir -p fake-root/valence fake-root/stevenarella
-              printf '%s\n' '[package]' 'name = "fake-valence"' 'version = "0.0.0"' 'edition = "2021"' > fake-root/valence/Cargo.toml
-              printf '%s\n' '[package]' 'name = "fake-stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-root/stevenarella/Cargo.toml
+              mkdir -p fake-root/servers/valence fake-root/clients/stevenarella
+              printf '%s\n' '[package]' 'name = "fake-valence"' 'version = "0.0.0"' 'edition = "2021"' > fake-root/servers/valence/Cargo.toml
+              printf '%s\n' '[package]' 'name = "fake-stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-root/clients/stevenarella/Cargo.toml
 
               (
                 cd fake-root
@@ -1333,11 +1333,11 @@
               )
 
               grep -Fq 'repo=' valence.log
-              grep -Fq '/valence' valence.log
+              grep -Fq '/servers/valence' valence.log
               grep -Fq -- '--example ctf' valence.log
               grep -Fq -- '--example-arg' valence.log
               grep -Fq 'repo=' stevenarella.log
-              grep -Fq '/stevenarella' stevenarella.log
+              grep -Fq '/clients/stevenarella' stevenarella.log
               grep -Fq -- '--client-arg' stevenarella.log
 
               if VALENCE_REPO="$PWD/missing-valence" ${
@@ -1346,7 +1346,7 @@
                 echo 'expected missing Valence checkout to fail' >&2
                 exit 1
               fi
-              grep -Fq 'missing Valence checkout' missing-valence.log
+              grep -Fq 'missing Valence source tree' missing-valence.log
 
               if CLIENT_DIR="$PWD/missing-stevenarella" ${
                 self.packages.${pkgs.stdenv.hostPlatform.system}.stevenarella
@@ -1354,7 +1354,7 @@
                 echo 'expected missing Stevenarella checkout to fail' >&2
                 exit 1
               fi
-              grep -Fq 'missing Stevenarella checkout' missing-stevenarella.log
+              grep -Fq 'missing Stevenarella source tree' missing-stevenarella.log
 
               mkdir -p "$out"
               cp valence.log stevenarella.log missing-valence.log missing-stevenarella.log "$out/"

@@ -1,5 +1,5 @@
 {
-  "client_dir": "./stevenarella",
+  "client_dir": "./clients/stevenarella",
   "client_success_patterns": [
     "Detected server protocol version",
     "Dimension type:",
@@ -16,7 +16,7 @@
   "valence_example": "terrain",
   "valence_log": "/tmp/mc-compat-valence.log",
   "valence_pid_file": "/tmp/mc-compat-valence.pid",
-  "valence_repo": "./valence",
+  "valence_repo": "./servers/valence",
   "valence_rev": "8ad9c85",
   "valence_target_dir": "/tmp/valence-compat-758-target",
   "valence_worktree": "/tmp/valence-compat-758"

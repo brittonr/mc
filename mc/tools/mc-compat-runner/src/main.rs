@@ -4132,8 +4132,8 @@ Use --expect-status-description/--expect-status-version/--expect-status-sample t
 Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
 Use --run-matrix --receipt-dir DIR to run Paper and Valence receipts then compare them; add --dry-run after --run-matrix for a non-side-effecting matrix fixture.\n\
 Use --status to inspect harness-owned Paper/Valence/tmp state; use --cleanup --dry-run to preview cleanup and --cleanup --apply to remove it.\n\
-Default server backend is Valence, using the vendored Valence tree plus an isolated worktree when a pinned revision is requested so the current checkout is untouched.\n\
-If the Stevenarella or Valence source tree is missing, restore the vendored tree or pass --client-dir/CLIENT_DIR and --valence-repo/VALENCE_REPO to alternate source trees.\n\
+Default server backend is Valence, using the resolved core Valence server tree plus an isolated worktree when a pinned revision is requested so the current source tree is untouched.\n\
+If the Stevenarella or Valence source tree is missing, restore the core component tree or pass --client-dir/CLIENT_DIR and --valence-repo/VALENCE_REPO to alternate source trees.\n\
 Client runs are forced through Xvfb/X11 with software GL and no inherited Wayland socket.\n\
 Paper fallback runs set EULA=TRUE based on recorded user acceptance.\n\n\
 Env: MC_COMPAT_ROOT={} MC_COMPAT_CONFIG={} MC_COMPAT_STEEL_CONFIG={} MC_COMPAT_SCENARIO={} CLIENT_DIR={} TARGET_DIR={} SMOKE_RECEIPT={} SMOKE_RECEIPT_DIR={} MC_COMPAT_FAILURE_BUNDLE={} VALENCE_REPO={} VALENCE_REV={} VALENCE_WORKTREE={} VALENCE_TARGET_DIR={} CLIENT_TIMEOUT={} PAPER_PLUGIN_JAR={}\n",

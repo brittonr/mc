@@ -17,7 +17,7 @@ c4bf83c2f44a44b91a9f8d075226eafdc475cfa174b5bb284e35390954f9a1ac  docs/evidence/
 d911d9a35c16cd080f653ef347b706ab78ce186e631a17762f0e329ef9f772c3  docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md
 69cb30f9883659aec0727ca58d7bc4149bc62942eb87f0e503cbf11d283e0496  tools/check_red_blue_scoring_soak_live_refresh.rs
 6a40eaca8611c5ab2d71e8573bd0ba078c79dcc47591ac0ec7ba27993c46f81c  tools/check_acceptance_matrix.rs
-06972ffe900e4fead8a67609594f41234ce7e2e2a45630275cc4dbade18fe7ae  flake.nix
+27b514ed51057ffdbe71122000c82db79befb79522e1fd2eef80d21695eaad80  flake.nix
 d313fe27f19f79af639b54576f0c391c56ec2580a4404c2aa59a4a24f82b8560  cairn/archive/2026-05-30-refresh-red-blue-scoring-soak-live-evidence/proposal.md
 96060d7b43959e1420ef160c2f7ada16b57a39208e6ef382bd99f55dd8a0f509  cairn/archive/2026-05-30-refresh-red-blue-scoring-soak-live-evidence/design.md
 95b02ace0310a9182453757db625f75f3b2e13fdebc8dd4ac7df7cedd9d4555d  cairn/archive/2026-05-30-refresh-red-blue-scoring-soak-live-evidence/specs/mc-compatibility/spec.md

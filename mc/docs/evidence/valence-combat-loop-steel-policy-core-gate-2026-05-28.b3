@@ -1,10 +1,10 @@
 1e73dde0556de58fd4171fc3acb97426fd2617a41cb7dcf949d34d69efda1db1  docs/evidence/valence-ctf-steel-policy-source-2026-05-28.rs
-0cd6c44c1516ecf62ba711e5fdb08f3eabf930fbf667abce6ceba9259ae338c5  tools/check_runtime_steel_config.rs
+9e3e8210237538d468e9f483a897612f71718650313d0265c6dc85759c3e29d2  tools/check_runtime_steel_config.rs
 e1d6a3eb37c41c8975b80de79fb18943d511a7b1eab17c3ba78ff3ee8c172b30  cairn/archive/2026-05-28-valence-combat-loop-steel-policy/proposal.md
 4ad4183734174a99d53976d5f9c222b4fc07235e1fd51000bc887b237facf50d  cairn/archive/2026-05-28-valence-combat-loop-steel-policy/design.md
 fa596a4b6509b3049d309e1b9054ca9448b7e1ab558e4cced9c85e9512f5cadf  cairn/archive/2026-05-28-valence-combat-loop-steel-policy/tasks.md
 96514e8ed7c0771b1ac4c1d40eee127c49a8917b69a90bb591e09c8a11e7f44c  cairn/archive/2026-05-28-valence-combat-loop-steel-policy/specs/runtime-configuration/spec.md
-aef1321890f94d1cb9680d43971f455ff27ad260f931685f6f814c9e01606479  docs/evidence/valence-combat-loop-steel-policy-call-sites-2026-05-28.tsv
+b0e8c02a4ce0b0a0aa10f0a38b54fd2cff62079bc89f4043c0e08acdf1f28056  docs/evidence/valence-combat-loop-steel-policy-call-sites-2026-05-28.tsv
 4c66ac5f76c6ed5ee7b282a6aae983b86bff58e0c51e29394d595b3cb4a73277  docs/evidence/valence-combat-loop-steel-policy-oracle-2026-05-28.md
 c98ce757404e3fbca06497051e0039e95b81aad36aa70075c68bedd12f99aaaf  docs/evidence/valence-combat-loop-steel-policy-implementation-excerpts-2026-05-28.md
 4917517f95333e97a9e7124a27523c5dbf46fa8f557e71566b8901a4acaa111b  docs/evidence/valence-combat-loop-steel-policy-nested-diff-2026-05-28.md

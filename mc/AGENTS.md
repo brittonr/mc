@@ -3,28 +3,28 @@
 ## Scope
 - This `mc/` directory is a workspace folder, not one buildable repo.
 - `hyperion/` remains an independent nested Rust repo. Run Hyperion commands from inside `hyperion/`, not from `mc/`.
-- `valence/` and `stevenarella/` are vendored into the parent `/home/brittonr/git` repository, not submodules or nested Git repos.
+- `servers/valence/` and `clients/stevenarella/` are core component trees owned by the parent `/home/brittonr/git` repository, not submodules or nested Git repos.
 - Keep changes scoped to the affected subtree unless user explicitly asks for cross-repo work.
 
 ## VCS boundaries
-- `git rev-parse` from `mc/` resolves to parent repo `/home/brittonr/git`; this is now the owning repo for `mc/valence` and `mc/stevenarella`.
+- `git rev-parse` from `mc/` resolves to parent repo `/home/brittonr/git`; this is now the owning repo for `mc/servers/valence` and `mc/clients/stevenarella`.
 - `hyperion/` has both `.git/` and `.jj/`. Check `.jj/` before assuming git-only workflow, and do not use parent repo status as Hyperion status.
 
 ## Layout
 - `hyperion/`: Minecraft engine/proxy workspace. Core crates live under `crates/`; event/game logic lives under `events/bedwars`; helper tools live under `tools/`. Repo-specific workflow now lives in `hyperion/AGENTS.md`.
-- `valence/`: vendored Minecraft server framework. Main crate in `src/`; workspace crates in `crates/*`; runnable examples in `examples/`; protocol/data extractor in `extractor/`; docs site in `website/`. Repo-specific workflow lives in `valence/AGENTS.md`.
-- `stevenarella/`: vendored Rust Minecraft client used by mc-compat rails and manual client checks. It has no repo-local AGENTS notes yet; use the mc devshell for Cargo and native UI dependencies.
+- `servers/valence/`: core Minecraft server framework. Main crate in `src/`; workspace crates in `crates/*`; runnable examples in `examples/`; protocol/data extractor in `extractor/`; docs site in `website/`. Repo-specific workflow lives in `servers/valence/AGENTS.md`.
+- `clients/stevenarella/`: core Rust Minecraft client used by mc-compat rails and manual client checks. It has no repo-local AGENTS notes yet; use the mc devshell for Cargo and native UI dependencies.
 - `hyperion/` already has repo-local agent notes in `hyperion/.agent/napkin.md`. Keep workspace-wide notes here; prefer subtree-local `AGENTS.md` files for repo-specific commands and conventions.
 
 ## Workflow
 - Before editing inside a major subtree, read that subtree's `README.md`, `CONTRIBUTING.md`, and any local `AGENTS.md` or `.agent/napkin.md`.
 - Prefer repo-local commands and toolchains. Root `mc/` has no shared Cargo workspace, test runner, or formatter.
-- For `stevenarella/`, run Cargo through the mc devshell, for example `nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test world::tests -- --nocapture` from the Stevenarella repo.
+- For `clients/stevenarella/`, run Cargo through the mc devshell, for example `nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test world::tests -- --nocapture` from the Stevenarella repo.
 - New checks/scripts for this workspace should be Rust or Steel Scheme, not Python or Bash. Existing Python gates may remain until touched; migrate touched gates before extending them.
-- Avoid mixed commits across `hyperion/` and the parent-owned `valence/`/`stevenarella/` trees unless user asks for cross-repo change.
+- Avoid mixed commits across `hyperion/` and the parent-owned `servers/valence/`/`clients/stevenarella/` trees unless user asks for cross-repo change.
 - For Cairn evidence, do not leave review-critical receipts only under untracked `target/`; copy receipt/log artifacts into `docs/evidence/` and record BLAKE3 when tasks/docs cite them.
 - Paper backend containers are removed after runner exit unless `--keep-server` is used; use `--keep-server`, copy `docker logs <server>` into `docs/evidence/`, then `docker rm -f <server>` for reviewable Paper server logs.
-- If promoted evidence cites source-tree revisions that the receipt does not machine-record (for example a vendored Stevenarella or Valence subtree rev), add a `docs/evidence/*oracle*` checkpoint with `## Question`, `## Inspected evidence`, `## Decision`, `## Owner`, and `## Next action`; otherwise reviewers cannot verify the revision claim from repo-local artifacts.
+- If promoted evidence cites source-tree revisions that the receipt does not machine-record (for example a core Stevenarella or Valence subtree rev), add a `docs/evidence/*oracle*` checkpoint with `## Question`, `## Inspected evidence`, `## Decision`, `## Owner`, and `## Next action`; otherwise reviewers cannot verify the revision claim from repo-local artifacts.
 - Before archiving a Cairn, compare every checked task and proposal scope against promoted evidence rows. If a doc says a behavior remains a non-claim, do not mark the task as completed for that behavior; narrow the archive scope or leave/reopen the proof gap.
 - Accepted spec edits can stale existing `.b3` manifests that include `cairn/specs/mc-compatibility/spec.md`; run the evidence manifest checker and refresh every cited-spec digest before final validation.
 - Nix evidence-manifest checks see only the parent repo source closure; `.b3` rows must cite tracked parent files (prefer `docs/evidence/` copies) rather than independent nested-repo paths or `target/` outputs.
@@ -45,7 +45,7 @@
 
 ## Valence
 - CI copies playground template first: `cp tools/playground/src/playground.template.rs tools/playground/src/playground.rs`. Do same before fmt/clippy/test/doc if `playground.rs` is missing.
-- `valence/rustfmt.toml` uses unstable rustfmt settings. Use `cargo +nightly fmt` locally.
+- `servers/valence/rustfmt.toml` uses unstable rustfmt settings. Use `cargo +nightly fmt` locally.
 - CI-equivalent checks:
   - `cargo clippy --workspace --no-deps --all-features --all-targets -- -D warnings`
   - `cargo test --workspace --all-features --all-targets`

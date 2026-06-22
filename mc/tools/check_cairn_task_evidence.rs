@@ -17,12 +17,16 @@ const TARGET_ARTIFACT_PREFIX: &str = "target/";
 const TARGET_ARTIFACT_INFIX: &str = "/target/";
 const STEVENARELLA_CHILD_PREFIX: &str = "stevenarella/";
 const VALENCE_CHILD_PREFIX: &str = "valence/";
+const STEVENARELLA_CORE_PREFIX: &str = "clients/stevenarella/";
+const VALENCE_CORE_PREFIX: &str = "servers/valence/";
 const HYPERION_CHILD_PREFIX: &str = "hyperion/";
 const LEAFISH_CHILD_PREFIX: &str = "Leafish/";
 const FORBIDDEN_ARTIFACT_PREFIXES: &[&str] = &[
     TARGET_ARTIFACT_PREFIX,
     STEVENARELLA_CHILD_PREFIX,
     VALENCE_CHILD_PREFIX,
+    STEVENARELLA_CORE_PREFIX,
+    VALENCE_CORE_PREFIX,
     HYPERION_CHILD_PREFIX,
     LEAFISH_CHILD_PREFIX,
 ];
@@ -617,6 +621,11 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         nested_child_artifact_fixture(),
         "non-reviewable artifact path stevenarella/src/main.rs",
     ));
+    errors.extend(expect_error(
+        "core component artifact rejected",
+        core_component_artifact_fixture(),
+        "non-reviewable artifact path stevenarella/src/main.rs",
+    ));
 
     if errors.is_empty() {
         Ok("positive fixtures and fail-closed mutations passed".to_string())
@@ -802,6 +811,13 @@ fn target_artifact_fixture() -> Fixture {
 fn nested_child_artifact_fixture() -> Fixture {
     fixture(
         "## Tasks\n\n- [x] [serial] Ship gate.\n  - Evidence: stevenarella/src/main.rs was copied to `docs/evidence/gate.run.log`; BLAKE3 manifest `docs/evidence/gate.b3`.\n",
+        &["docs/evidence/gate.run.log", "docs/evidence/gate.b3"],
+    )
+}
+
+fn core_component_artifact_fixture() -> Fixture {
+    fixture(
+        "## Tasks\n\n- [x] [serial] Ship gate.\n  - Evidence: clients/stevenarella/src/main.rs was copied to `docs/evidence/gate.run.log`; BLAKE3 manifest `docs/evidence/gate.b3`.\n",
         &["docs/evidence/gate.run.log", "docs/evidence/gate.b3"],
     )
 }

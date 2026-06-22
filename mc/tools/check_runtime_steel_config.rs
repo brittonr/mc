@@ -10,7 +10,7 @@ const STEEL_MODULE_PATH: &str = "config/mc-compat/steel/default.scm";
 const SNAPSHOT_PATH: &str = "docs/evidence/steel-runtime-config-default.snapshot.json";
 const RUNNER_MAIN_PATH: &str = "tools/mc-compat-runner/src/main.rs";
 const RUNTIME_CORE_PATH: &str = "tools/mc-compat-runner/src/runtime_config.rs";
-const VALENCE_CTF_PATH: &str = "valence/examples/ctf.rs";
+const VALENCE_CTF_PATH: &str = "servers/valence/examples/ctf.rs";
 const VALENCE_CALL_SITE_PATH: &str =
     "docs/evidence/valence-combat-loop-steel-policy-call-sites-2026-05-28.tsv";
 const VALENCE_LIVE_EQUIVALENT_RECEIPT_PATH: &str =
@@ -1384,8 +1384,8 @@ fn valid_valence_call_site_text() -> String {
     let header = "call_site_id\tsource_path\tstart_line\tend_line\tcurrent_default\texpected_config_paths\tconsumer\tmutability\tevidence";
     format!(
         "{header}\n{}\n{}\n",
-        "valence_ctf.combat_event_projectile_probe\tvalence/examples/ctf.rs\t1\t8\tPROJECTILE_PROBE_DAMAGE=3.0 as default policy input\tcombat.arrow.base_damage|combat.arrow.velocity_multiplier|combat.arrow.max_damage\thandle_combat_events projectile_probe_hit branch\thot\tprojectile_use/projectile_hit milestones include policy,generation,clamped,damage,health delta",
-        "valence_ctf.projectile_interaction_probe\tvalence/examples/ctf.rs\t9\t16\tPROJECTILE_PROBE_DAMAGE=3.0 as default policy input\tcombat.arrow.base_damage|combat.arrow.velocity_multiplier|combat.arrow.max_damage\thandle_projectile_events interact_item branch\thot\tprojectile_use/projectile_hit milestones include policy,generation,clamped,damage,health delta"
+        "valence_ctf.combat_event_projectile_probe\tservers/valence/examples/ctf.rs\t1\t8\tPROJECTILE_PROBE_DAMAGE=3.0 as default policy input\tcombat.arrow.base_damage|combat.arrow.velocity_multiplier|combat.arrow.max_damage\thandle_combat_events projectile_probe_hit branch\thot\tprojectile_use/projectile_hit milestones include policy,generation,clamped,damage,health delta",
+        "valence_ctf.projectile_interaction_probe\tservers/valence/examples/ctf.rs\t9\t16\tPROJECTILE_PROBE_DAMAGE=3.0 as default policy input\tcombat.arrow.base_damage|combat.arrow.velocity_multiplier|combat.arrow.max_damage\thandle_projectile_events interact_item branch\thot\tprojectile_use/projectile_hit milestones include policy,generation,clamped,damage,health delta"
     )
 }
 

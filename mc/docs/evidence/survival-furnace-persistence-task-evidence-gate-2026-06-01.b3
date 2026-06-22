@@ -1,3 +1,3 @@
 346ac81d19e9a56b5331c0e4b0b6a6782dbafc613efff1fee4abf30813437602  docs/evidence/survival-furnace-persistence-task-evidence-gate-2026-06-01.run.log
-14b529c03714e8614f76a235d4e1b89f9240f0bce4ae6e217dafa97e9718e950  tools/check_cairn_task_evidence.rs
+6647c899c5d72ee1f5377250180ffb62619092b5c3103e9c5b83d4332cb4ead1  tools/check_cairn_task_evidence.rs
 825541abe357de08327c2ef37d2928ff9a0c9248e2ea808a9fc522ac5fa229fb  cairn/archive/2026-06-01-survival-furnace-persistence-parity/tasks.md

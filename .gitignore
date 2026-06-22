@@ -1,4 +1,4 @@
-# This repository tracks the mc compatibility harness and its vendored Valence/Stevenarella trees.
+# This repository tracks the mc compatibility harness and its core Valence/Stevenarella component trees.
 # /home/brittonr/git is otherwise a multi-repo workspace; keep sibling repos,
 # scratch artifacts, and unrelated nested project checkouts out of this repo by default.
 /*
@@ -12,12 +12,15 @@
 !/mc/README.md
 !/mc/flake.nix
 !/mc/flake.lock
+!/mc/docs/
+/mc/docs/*
+!/mc/docs/architecture.md
 
-# Keep the vendored, formerly nested, upstream projects tracked in this repo.
-!/mc/stevenarella/
-!/mc/stevenarella/**
-!/mc/valence/
-!/mc/valence/**
+# Keep the core client/server component trees tracked in this repo.
+!/mc/clients/
+!/mc/clients/**
+!/mc/servers/
+!/mc/servers/**
 
 !/mc/config/
 /mc/config/*
@@ -41,5 +44,6 @@
 !/mc/tools/mc-compat-runner/src/
 /mc/tools/mc-compat-runner/src/*
 !/mc/tools/mc-compat-runner/src/main.rs
+!/mc/tools/mc-compat-runner/src/layout.rs
 
 .pi/
