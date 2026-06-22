@@ -1,0 +1,83 @@
+## core component layout Cairn authoring validation
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+validate_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate proposal core-component-layout --root .
+{
+  "change": "core-component-layout",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "cd82dbac8be16f1207b2ef2b65b86026bd718cfce12e2a87dbd3574f16c5138d",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "b9b6e91308615170aa0dc6842a6fe9b2b870202f735bda405ccb785bfd156b9d",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+proposal_gate_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate design core-component-layout --root .
+{
+  "change": "core-component-layout",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "b64b804e6d17f31b3f948f938133d975bf99e73aa365d1ad657fd86eddc08b4b",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "07068440aa22658f1ecfbacaed0b2aff420e842c99277a2f4d1b28a0c603ec2b",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+design_gate_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate tasks core-component-layout --root .
+{
+  "change": "core-component-layout",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "6ed21d05e54cfcc02c35ba9405a68b72e163dd431013785faf7463d7f42bd4ba",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "a926de877420736706f4c0fdc9537069fdf8ebf98c92e07d271bee1e10d33b2c",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+tasks_gate_exit_status=0
+exit_status=0
