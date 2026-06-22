@@ -1,12 +1,12 @@
 4a61e43d0da87d739adfd2ee3a5209fc7b77ba7e4dc3ff96b5a4e5cd01a37dd6  docs/evidence/protocol-763-equipment-slot-item-expansion-validation-2026-05-29.run.log
 fa7097d8d5324413de1c0b8288ac0468a4e6890d9d223486a1a8e832bc8804df  cairn/archive/2026-05-29-equipment-slot-item-matrix-expansion/tasks.md
 e87da8ce47c67959cd6f3e3d1af34834ff4da1b8415d821dde079de95f338b64  cairn/archive/2026-05-29-equipment-slot-item-matrix-expansion/specs/mc-compatibility/spec.md
-10decf7940bc1c50335c44a326a1c3acf13db03e65022e6d045561aca323e70a  cairn/specs/mc-compatibility/spec.md
+1586f22b2a2b0e317da6a3b28c65cac6983bd6ba5ce966d02aa4df5e08faacf6  cairn/specs/mc-compatibility/spec.md
 b83bcb6a109092c92a1ac49d80065c15a1abf79706da57a82e1426b2236ff642  docs/evidence/protocol-763-equipment-slot-item-expansion-contract-2026-05-29.b3
 2cc0d06f3c59fb67a47fc12ead2e440c3dafa4c56dda382b951851e85c19eef1  docs/evidence/protocol-763-equipment-slot-item-expansion-checker-2026-05-29.b3
-1bea590495d6171b483e9cc4037f81533e87a1d431797bfa2e39420e7744ee1d  docs/evidence/protocol-763-equipment-slot-item-expansion-rail-2026-05-29.b3
-36f73b1e97c59da33ef24cd71c966f39e4c623399eb79b45cd88df57f02a0032  docs/evidence/protocol-763-equipment-slot-item-expansion-row-2026-05-29.b3
+e46099d28bbbc2c6e62c62edc4b15ec542304ec82504f8687e9c04d7781ce62e  docs/evidence/protocol-763-equipment-slot-item-expansion-rail-2026-05-29.b3
+022d65a70d4034f7fe2eac6bb4fa5b0e330d830c9c0ab0db614d828131b888ff  docs/evidence/protocol-763-equipment-slot-item-expansion-row-2026-05-29.b3
 5f9e9183b71c4347d31c95e8d8e8638a86f28aef80e8e34c21f8134ce5743fb7  docs/evidence/protocol-763-acceptance-matrix.md
 c4bf83c2f44a44b91a9f8d075226eafdc475cfa174b5bb284e35390954f9a1ac  docs/evidence/protocol-763-current-evidence-bundle.md
-7d6d1b281767bd39b51820039fc35c1188cd2097ec06f59113dc822bbad67820  compat/runner/src/main.rs
+37a6b1243209a4f59b93c25897b1f03c657dd0f71e7c2e627a47480507096ba9  compat/runner/src/main.rs
 d753144d7ecba1ee8b0ac68b1e59d6dee349cadffe56a03c3529d99763c76324  tools/check_equipment_slot_item_expansion.rs

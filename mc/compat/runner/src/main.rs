@@ -3815,6 +3815,7 @@ fn typed_event_oracle_contributes_to_pass_fail(scenario: Scenario) -> bool {
             | Scenario::SurvivalBreakPlacePickup
             | Scenario::SurvivalChestPersistence
             | Scenario::SurvivalCraftingTable
+            | Scenario::SurvivalCraftingRecipeBreadth
             | Scenario::SurvivalFurnacePersistence
             | Scenario::SurvivalFurnaceSmeltingBreadth
     )
@@ -4117,6 +4118,40 @@ fn typed_event_ordered_edges_for_scenario(scenario: Scenario) -> Vec<(&'static s
             (
                 "server_survival_furnace_invalid_fuel_rejected",
                 "server_survival_furnace_breadth_state",
+            ),
+        ],
+        Scenario::SurvivalCraftingRecipeBreadth => vec![
+            (
+                "survival_crafting_breadth_shaped_seen",
+                "survival_crafting_breadth_shapeless_seen",
+            ),
+            (
+                "survival_crafting_breadth_shapeless_seen",
+                "survival_crafting_breadth_grid_clear_seen",
+            ),
+            (
+                "survival_crafting_breadth_shapeless_seen",
+                "survival_crafting_breadth_invalid_seen",
+            ),
+            (
+                "survival_crafting_breadth_invalid_seen",
+                "survival_crafting_breadth_inventory_updated",
+            ),
+            (
+                "server_survival_crafting_breadth_shaped",
+                "server_survival_crafting_breadth_shapeless",
+            ),
+            (
+                "server_survival_crafting_breadth_shapeless",
+                "server_survival_crafting_breadth_grid_clear",
+            ),
+            (
+                "server_survival_crafting_breadth_grid_clear",
+                "server_survival_crafting_breadth_invalid_rejected",
+            ),
+            (
+                "server_survival_crafting_breadth_invalid_rejected",
+                "server_survival_crafting_breadth_state",
             ),
         ],
         Scenario::SurvivalCraftingTable => vec![
@@ -12209,6 +12244,9 @@ mod tests {
             Scenario::SurvivalCraftingTable
         ));
         assert!(typed_event_oracle_contributes_to_pass_fail(
+            Scenario::SurvivalCraftingRecipeBreadth
+        ));
+        assert!(typed_event_oracle_contributes_to_pass_fail(
             Scenario::SurvivalChestPersistence
         ));
         assert!(typed_event_oracle_contributes_to_pass_fail(
@@ -13543,6 +13581,92 @@ mod tests {
                 .expect_err("misordered typed furnace collection before output fails");
         assert!(
             err.contains("survival_furnace_output_seen_before_survival_furnace_output_collected"),
+            "{err}"
+        );
+    }
+
+    #[test]
+    fn typed_event_oracle_validates_migrated_survival_crafting_recipe_breadth_graph() {
+        let cfg = test_config(
+            &[
+                "--scenario",
+                "survival-crafting-recipe-breadth",
+                "--receipt",
+                "/tmp/survival-crafting-recipe-breadth.receipt.json",
+            ],
+            &[],
+        )
+        .expect("survival crafting recipe breadth config parses");
+        let client_observed = scenario_required_milestones(Scenario::SurvivalCraftingRecipeBreadth)
+            .iter()
+            .map(|(name, _)| *name)
+            .collect::<Vec<_>>();
+        let server_observed = server_required_milestones(Scenario::SurvivalCraftingRecipeBreadth)
+            .iter()
+            .map(|(name, _)| *name)
+            .collect::<Vec<_>>();
+        let passing = ClientRunEvidence {
+            log_path: None,
+            log_paths: Vec::new(),
+            usernames: vec![TEST_USERNAME.to_string()],
+            exit_code: Some(0),
+            classification: "client-exited-success",
+            matched_success_pattern: Some("Detected server protocol version".to_string()),
+            scenario: Some(ScenarioEvidence {
+                observed_milestones: client_observed,
+                missing_milestones: Vec::new(),
+                forbidden_matches: Vec::new(),
+                passed: true,
+            }),
+            server_scenario: Some(ServerScenarioEvidence {
+                observed_milestones: server_observed,
+                missing_milestones: Vec::new(),
+                forbidden_matches: Vec::new(),
+                passed: true,
+            }),
+            projectile_damage_causality: None,
+            mcp_control: None,
+            frame_artifacts: None,
+        };
+        validate_typed_event_oracle_for_migrated_scenario(&cfg, &passing)
+            .expect("complete typed survival crafting recipe breadth graph passes");
+
+        let mut missing_server_invalid = passing.clone();
+        missing_server_invalid
+            .server_scenario
+            .as_mut()
+            .expect("server evidence")
+            .observed_milestones
+            .retain(|name| *name != "server_survival_crafting_breadth_invalid_rejected");
+        let err = validate_typed_event_oracle_for_migrated_scenario(&cfg, &missing_server_invalid)
+            .expect_err("missing typed crafting breadth invalid rejection fails");
+        assert!(
+            err.contains("server_survival_crafting_breadth_invalid_rejected"),
+            "{err}"
+        );
+
+        let mut misordered_client_crafting = passing;
+        misordered_client_crafting
+            .scenario
+            .as_mut()
+            .expect("client evidence")
+            .observed_milestones = vec![
+            "protocol_detected",
+            "join_game",
+            "render_tick",
+            "survival_crafting_breadth_shaped_seen",
+            "survival_crafting_breadth_grid_clear_seen",
+            "survival_crafting_breadth_shapeless_seen",
+            "survival_crafting_breadth_invalid_seen",
+            "survival_crafting_breadth_inventory_updated",
+        ];
+        let err =
+            validate_typed_event_oracle_for_migrated_scenario(&cfg, &misordered_client_crafting)
+                .expect_err("misordered typed crafting breadth phases fail");
+        assert!(
+            err.contains(
+                "survival_crafting_breadth_shapeless_seen_before_survival_crafting_breadth_grid_clear_seen"
+            ),
             "{err}"
         );
     }

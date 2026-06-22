@@ -376,7 +376,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-valence-survival-crafting-recipe-breadth-dry-run",
         dry_run_wrapper: "mc-compat-valence-survival-crafting-recipe-breadth",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "survival-furnace-persistence",

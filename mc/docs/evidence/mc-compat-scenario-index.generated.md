@@ -17,7 +17,7 @@ This bounded index is generated from `compat/config/scenario-manifest.ncl`. It r
 | survival-break-place-pickup | survival-break-place-pickup | 1 | 1 | mc-compat-valence-survival-break-place-pickup-dry-run | mc-compat-valence-survival-break-place-pickup | typed-event-ready |
 | survival-chest-persistence | survival-chest-persistence | 1 | 2 | mc-compat-historical-scenario-dry-runs | mc-compat-valence-survival-chest-persistence | typed-event-ready |
 | survival-crafting-table | survival-crafting-table | 1 | 1 | mc-compat-valence-survival-crafting-table-dry-run | mc-compat-valence-survival-crafting-table | typed-event-ready |
-| survival-crafting-recipe-breadth | survival-crafting-recipe-breadth | 1 | 1 | mc-compat-valence-survival-crafting-recipe-breadth-dry-run | mc-compat-valence-survival-crafting-recipe-breadth | substring-fallback |
+| survival-crafting-recipe-breadth | survival-crafting-recipe-breadth | 1 | 1 | mc-compat-valence-survival-crafting-recipe-breadth-dry-run | mc-compat-valence-survival-crafting-recipe-breadth | typed-event-ready |
 | survival-furnace-persistence | survival-furnace-persistence | 1 | 2 | mc-compat-valence-survival-furnace-persistence-dry-run | mc-compat-valence-survival-furnace-persistence | typed-event-ready |
 | survival-furnace-smelting-breadth | survival-furnace-smelting-breadth | 1 | 1 | mc-compat-valence-survival-furnace-smelting-breadth-dry-run | mc-compat-valence-survival-furnace-smelting-breadth | typed-event-ready |
 | survival-hunger-food | survival-hunger-food | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |

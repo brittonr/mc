@@ -1,0 +1,9 @@
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+evidence manifest refresh ok: mode=refresh; passes=4; manifests=432; entries=3074; current=3074; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=4; manifest_writes=46
+this derivation will be built:
+  /nix/store/xw779y5czx3s3lsdgb2c58hggr0hkx5p-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/xw779y5czx3s3lsdgb2c58hggr0hkx5p-mc-compat-evidence-manifests.drv'...
+exit_status=0

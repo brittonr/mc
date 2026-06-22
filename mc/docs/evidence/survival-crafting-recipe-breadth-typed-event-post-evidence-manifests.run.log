@@ -1,0 +1,5 @@
+this derivation will be built:
+  /nix/store/7ch40n6hfi8p8g522wg5ikz2zdbdgsw5-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/7ch40n6hfi8p8g522wg5ikz2zdbdgsw5-mc-compat-evidence-manifests.drv'...
+exit_status=0

@@ -1,0 +1,80 @@
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-crafting-recipe-breadth-typed-event-migration",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-22-survival-crafting-recipe-breadth-typed-event-migration"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-crafting-recipe-breadth-typed-event-migration",
+  "dry_run": false,
+  "input_hash": "65cea78480ecc05ca403ee344a2aecc301b561c94ea47dd89149be51a202192a",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "55df82b7a605c66b4156475e19ed459530ee0f224f2f6621f8d7676aa7b69319",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-22-survival-crafting-recipe-breadth-typed-event-migration/design.md"
+        },
+        {
+          "content_hash": "2ae081ed739077af4a879b0d13417070d73ec0b4be9e8c7541704df50b514616",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-22-survival-crafting-recipe-breadth-typed-event-migration/proposal.md"
+        },
+        {
+          "content_hash": "3e092ea4faed3fed53fbbb5378579d9dabd9169b167b9641995223e19135982d",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-22-survival-crafting-recipe-breadth-typed-event-migration/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "8d66a3534df42646ef9c08bbe2d71d06bf32bd663e58b1bd90f0e760f1df20f1",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-22-survival-crafting-recipe-breadth-typed-event-migration/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-crafting-recipe-breadth-typed-event-migration"
+        }
+      ],
+      "manifest_hash": "303e4261ef794cd19af2e17fcbc57ec8a1212c58218aa0cd46053f2f8f25e576"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "55df82b7a605c66b4156475e19ed459530ee0f224f2f6621f8d7676aa7b69319",
+          "exists": true,
+          "path": "./cairn/changes/survival-crafting-recipe-breadth-typed-event-migration/design.md"
+        },
+        {
+          "content_hash": "2ae081ed739077af4a879b0d13417070d73ec0b4be9e8c7541704df50b514616",
+          "exists": true,
+          "path": "./cairn/changes/survival-crafting-recipe-breadth-typed-event-migration/proposal.md"
+        },
+        {
+          "content_hash": "3e092ea4faed3fed53fbbb5378579d9dabd9169b167b9641995223e19135982d",
+          "exists": true,
+          "path": "./cairn/changes/survival-crafting-recipe-breadth-typed-event-migration/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "8d66a3534df42646ef9c08bbe2d71d06bf32bd663e58b1bd90f0e760f1df20f1",
+          "exists": true,
+          "path": "./cairn/changes/survival-crafting-recipe-breadth-typed-event-migration/tasks.md"
+        }
+      ],
+      "manifest_hash": "0cebcb9bd11ee4a1317b894ab0bdd8d30047a4ce004068f774ebec424753d3dd"
+    },
+    "kind": "archive",
+    "manifest_hash": "7b8684fcd9865748d61dbda4b6f0806ad393863064d68d32f52b8f9ce8302955"
+  },
+  "plan_hash": "6eebc4e155988a39ca51ef3dd6b7c616e6fe3b9c56b879ff2608191e19b98277",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "02c1ae3cd4cc6ecf50a38184dee249747baa06b010a947f15078cac68ad1622f"
+}
+exit_status=0

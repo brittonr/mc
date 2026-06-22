@@ -1,7 +1,7 @@
 627348828e4bd5790c4086f03e9b94bd53f70fec5088c409f42faa1c9ebca72c  docs/evidence/survival-crash-recovery-sync-2026-06-04.run.log
 585a0ef6b96935fc8376236b21bd20928d7643bf2d05a530ba28ed644c1e4548  docs/evidence/survival-crash-recovery-archive-2026-06-04.run.log
 d423fff708ef904aae98aa56ba9e1e697163b7aeaff8ee83c07506edbc7b9873  docs/evidence/survival-crash-recovery-post-archive-validation-2026-06-04.run.log
-10decf7940bc1c50335c44a326a1c3acf13db03e65022e6d045561aca323e70a  cairn/specs/mc-compatibility/spec.md
+1586f22b2a2b0e317da6a3b28c65cac6983bd6ba5ce966d02aa4df5e08faacf6  cairn/specs/mc-compatibility/spec.md
 21d234ec0d954dffa1749f7561c4a65228f0a0508ce621d3ff2010f0a0612c21  cairn/archive/2026-06-04-survival-crash-recovery-parity/proposal.md
 fa1fcfa26c545a4f7dae9fb86cecac4766a5c2c5bf0e87add160b787dbf57b1a  cairn/archive/2026-06-04-survival-crash-recovery-parity/design.md
 386110d658135db97db8cb445305764d5711c6b1e18b5e3a4b32bd2cea776ef4  cairn/archive/2026-06-04-survival-crash-recovery-parity/tasks.md

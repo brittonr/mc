@@ -264,6 +264,24 @@ const SURVIVAL_CRAFTING_TABLE_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
     "server_survival_crafting_result",
     "server_survival_crafting_collect",
 ];
+const SURVIVAL_CRAFTING_RECIPE_BREADTH_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
+    "protocol_detected",
+    "join_game",
+    "render_tick",
+    "survival_crafting_breadth_shaped_seen",
+    "survival_crafting_breadth_shapeless_seen",
+    "survival_crafting_breadth_grid_clear_seen",
+    "survival_crafting_breadth_invalid_seen",
+    "survival_crafting_breadth_inventory_updated",
+];
+const SURVIVAL_CRAFTING_RECIPE_BREADTH_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
+    "server_username_seen",
+    "server_survival_crafting_breadth_shaped",
+    "server_survival_crafting_breadth_shapeless",
+    "server_survival_crafting_breadth_grid_clear",
+    "server_survival_crafting_breadth_invalid_rejected",
+    "server_survival_crafting_breadth_state",
+];
 const TYPED_EVENT_READINESS_FIXTURES: &[TypedEventReadinessFixture<'static>] = &[
     TypedEventReadinessFixture {
         scenario: "smoke",
@@ -332,6 +350,13 @@ const TYPED_EVENT_READINESS_FIXTURES: &[TypedEventReadinessFixture<'static>] = &
         scenario: "survival-crafting-table",
         client_events: SURVIVAL_CRAFTING_TABLE_TYPED_EVENT_CLIENT_EVENTS,
         server_events: SURVIVAL_CRAFTING_TABLE_TYPED_EVENT_SERVER_EVENTS,
+        forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
+        derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
+    },
+    TypedEventReadinessFixture {
+        scenario: "survival-crafting-recipe-breadth",
+        client_events: SURVIVAL_CRAFTING_RECIPE_BREADTH_TYPED_EVENT_CLIENT_EVENTS,
+        server_events: SURVIVAL_CRAFTING_RECIPE_BREADTH_TYPED_EVENT_SERVER_EVENTS,
         forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
         derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
     },
