@@ -1,6 +1,6 @@
-# This repository tracks only the mc compatibility harness snapshot.
+# This repository tracks the mc compatibility harness and its vendored Valence/Stevenarella trees.
 # /home/brittonr/git is otherwise a multi-repo workspace; keep sibling repos,
-# scratch artifacts, and nested project checkouts out of this repo by default.
+# scratch artifacts, and unrelated nested project checkouts out of this repo by default.
 /*
 
 # Keep this ignore policy tracked.
@@ -12,6 +12,12 @@
 !/mc/README.md
 !/mc/flake.nix
 !/mc/flake.lock
+
+# Keep the vendored, formerly nested, upstream projects tracked in this repo.
+!/mc/stevenarella/
+!/mc/stevenarella/**
+!/mc/valence/
+!/mc/valence/**
 
 !/mc/config/
 /mc/config/*

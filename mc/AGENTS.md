@@ -2,18 +2,18 @@
 
 ## Scope
 - This `mc/` directory is a workspace folder, not one buildable repo.
-- `hyperion/` and `valence/` are independent nested Rust repos. Run commands from inside target repo, not from `mc/`.
-- Keep changes scoped to one child repo unless user explicitly asks for cross-repo work.
+- `hyperion/` remains an independent nested Rust repo. Run Hyperion commands from inside `hyperion/`, not from `mc/`.
+- `valence/` and `stevenarella/` are vendored into the parent `/home/brittonr/git` repository, not submodules or nested Git repos.
+- Keep changes scoped to the affected subtree unless user explicitly asks for cross-repo work.
 
 ## VCS boundaries
-- `git rev-parse` from `mc/` resolves to parent repo `/home/brittonr/git`. Do not use parent repo status as status of `hyperion/` or `valence/`.
-- `hyperion/` has both `.git/` and `.jj/`. Check `.jj/` before assuming git-only workflow.
-- `valence/` is a plain git repo.
+- `git rev-parse` from `mc/` resolves to parent repo `/home/brittonr/git`; this is now the owning repo for `mc/valence` and `mc/stevenarella`.
+- `hyperion/` has both `.git/` and `.jj/`. Check `.jj/` before assuming git-only workflow, and do not use parent repo status as Hyperion status.
 
 ## Layout
 - `hyperion/`: Minecraft engine/proxy workspace. Core crates live under `crates/`; event/game logic lives under `events/bedwars`; helper tools live under `tools/`. Repo-specific workflow now lives in `hyperion/AGENTS.md`.
-- `valence/`: Minecraft server framework. Main crate in `src/`; workspace crates in `crates/*`; runnable examples in `examples/`; protocol/data extractor in `extractor/`; docs site in `website/`. Repo-specific workflow now lives in `valence/AGENTS.md`.
-- `stevenarella/`: Rust Minecraft client used by mc-compat rails and manual client checks. It has no repo-local AGENTS notes yet; use the mc devshell for Cargo and native UI dependencies.
+- `valence/`: vendored Minecraft server framework. Main crate in `src/`; workspace crates in `crates/*`; runnable examples in `examples/`; protocol/data extractor in `extractor/`; docs site in `website/`. Repo-specific workflow lives in `valence/AGENTS.md`.
+- `stevenarella/`: vendored Rust Minecraft client used by mc-compat rails and manual client checks. It has no repo-local AGENTS notes yet; use the mc devshell for Cargo and native UI dependencies.
 - `hyperion/` already has repo-local agent notes in `hyperion/.agent/napkin.md`. Keep workspace-wide notes here; prefer child-repo `AGENTS.md` files for repo-specific commands and conventions.
 
 ## Workflow
@@ -21,7 +21,7 @@
 - Prefer repo-local commands and toolchains. Root `mc/` has no shared Cargo workspace, test runner, or formatter.
 - For `stevenarella/`, run Cargo through the mc devshell, for example `nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test world::tests -- --nocapture` from the Stevenarella repo.
 - New checks/scripts for this workspace should be Rust or Steel Scheme, not Python or Bash. Existing Python gates may remain until touched; migrate touched gates before extending them.
-- Avoid mixed commits across `hyperion/` and `valence/` unless user asks for cross-repo change.
+- Avoid mixed commits across `hyperion/` and the parent-owned `valence/`/`stevenarella/` trees unless user asks for cross-repo change.
 - For Cairn evidence, do not leave review-critical receipts only under untracked `target/`; copy receipt/log artifacts into `docs/evidence/` and record BLAKE3 when tasks/docs cite them.
 - Paper backend containers are removed after runner exit unless `--keep-server` is used; use `--keep-server`, copy `docker logs <server>` into `docs/evidence/`, then `docker rm -f <server>` for reviewable Paper server logs.
 - If promoted evidence cites child-repo revisions that the receipt does not machine-record (for example Stevenarella client git rev), add a `docs/evidence/*oracle*` checkpoint with `## Question`, `## Inspected evidence`, `## Decision`, `## Owner`, and `## Next action`; otherwise reviewers cannot verify the child-revision claim from repo-local artifacts.

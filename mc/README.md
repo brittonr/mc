@@ -8,6 +8,10 @@ This workspace contains local Minecraft compatibility experiments. The hardened 
 
 The legacy shell entrypoint is intentionally only a thin compatibility shim around the flake app.
 
+## Repository layout
+
+`stevenarella/` and `valence/` are vendored source trees tracked directly by this repository, not submodules. They were imported from the local fork heads used by the compatibility rails so harness, client, and server changes can evolve in one history.
+
 ## Commands
 
 Launch the editable local server/client checkouts through the root flake environment:
