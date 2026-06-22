@@ -1,0 +1,46 @@
+## core component layout accepted spec post-archive validation
+command=rg core_component_layout cairn/specs/mc-compatibility/spec.md
+r[mc_compatibility.core_component_layout.boundaries] Core Minecraft source trees SHOULD be organized by product role rather than upstream provenance when the project owns ongoing changes to that source tree.
+r[mc_compatibility.core_component_layout.boundaries.roles]
+r[mc_compatibility.core_component_layout.resolver] The compatibility harness MUST resolve core component source roots through a single typed layout resolver instead of scattering path probes across runner, wrapper, and documentation code.
+r[mc_compatibility.core_component_layout.resolver.fixtures]
+r[mc_compatibility.core_component_layout.core_moves] Moving Valence or Stevenarella into role-based component roots MUST preserve parent-owned source-tree semantics and path-scoped revision evidence.
+r[mc_compatibility.core_component_layout.core_moves.revision_scope]
+r[mc_compatibility.core_component_layout.compat_boundary] Compatibility runner source, scenario manifests, generated harness surfaces, and Paper/reference fixtures SHOULD live under a dedicated compatibility boundary when moving them does not weaken generated-surface freshness or evidence checks.
+r[mc_compatibility.core_component_layout.compat_boundary.generated]
+r[mc_compatibility.core_component_layout.docs] Documentation MUST describe the current role-based ownership model for clients, servers, and compatibility harnesses, including upstream ancestry where relevant.
+r[mc_compatibility.core_component_layout.docs.terminology]
+r[mc_compatibility.core_component_layout.validation] The layout migration MUST NOT be marked complete until tests and reviewable evidence prove the resolver, moved paths, docs, generated surfaces, and Cairn lifecycle are consistent.
+r[mc_compatibility.core_component_layout.validation.evidence]
+accepted_spec_grep_exit_status=0
+command=nix run --no-update-lock-file .#evidence-manifest-refresh -- --refresh --root .
+evidence manifest refresh ok: mode=refresh; passes=4; manifests=404; entries=2887; current=2887; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=4; manifest_writes=42
+evidence_manifest_refresh_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 2,
+  "valid": true
+}
+cairn_validate_exit_status=0
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link
+warning: error: unable to download 'http://100.100.103.95:5000/j3mjqm3v6h1m7z646bhj8z36624w8771.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 297 ms
+warning: error: unable to download 'http://100.100.103.95:5000/j3mjqm3v6h1m7z646bhj8z36624w8771.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 506 ms
+warning: error: unable to download 'http://100.100.103.95:5000/j3mjqm3v6h1m7z646bhj8z36624w8771.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1405 ms
+warning: error: unable to download 'http://100.100.103.95:5000/j3mjqm3v6h1m7z646bhj8z36624w8771.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2554 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/j3mjqm3v6h1m7z646bhj8z36624w8771.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/j3mjqm3v6h1m7z646bhj8z36624w8771.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+this derivation will be built:
+  /nix/store/7srh1gmlkhd3hi9gjbscz798fsjkvi30-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/7srh1gmlkhd3hi9gjbscz798fsjkvi30-mc-compat-evidence-manifests.drv'...
+evidence_manifest_exit_status=0
+exit_status=0

@@ -1,0 +1,153 @@
+## core component layout sync and archive
+command=nix run --no-update-lock-file .#cairn -- sync core-component-layout --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/core-component-layout/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/core-component-layout/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "core-component-layout",
+  "delta_specs": [
+    "./cairn/changes/core-component-layout/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "15e1aae6614a9a9415a892871c54d0fd5302c5f2d55ec59c1f61fd1aec49169d",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "756e065afe0ff616b6da815d558b059331a1ab12029747d131d8dbea7d4da2a9",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "f115a63aacd0549b962ec4a47f670f86fc945ceab3a0ea84a65b8c24e978176c"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "756e065afe0ff616b6da815d558b059331a1ab12029747d131d8dbea7d4da2a9",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "f115a63aacd0549b962ec4a47f670f86fc945ceab3a0ea84a65b8c24e978176c"
+    },
+    "kind": "sync",
+    "manifest_hash": "26ef327113ec848ac370508a09ea734c9438b0a64bbb25a6b9b40b9225284b0b"
+  },
+  "plan_hash": "feb41a96e93303f93733dc4d9f17305f61853d15fa4077586f33c4ea3dd37be0",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "fcfd3cc54b70fb5d63af5870dd719a7f9ccbad942ef530330db14763513b541a"
+}
+cairn_sync_exit_status=0
+command=nix run --no-update-lock-file .#evidence-manifest-refresh -- --refresh --root .
+evidence manifest refresh ok: mode=refresh; passes=1; manifests=403; entries=2886; current=2886; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=1; manifest_writes=0
+evidence_manifest_refresh_exit_status=0
+command=CAIRN_ARCHIVE_DATE=2026-06-22 nix run --no-update-lock-file .#cairn -- archive core-component-layout --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: core-component-layout",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-22-core-component-layout"
+    }
+  ],
+  "blocked": false,
+  "change": "core-component-layout",
+  "dry_run": false,
+  "input_hash": "15e1aae6614a9a9415a892871c54d0fd5302c5f2d55ec59c1f61fd1aec49169d",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "0126f5a1c402735f5684a8538e1c0984f744320e113c8e0cf9059ca8e716929d",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-22-core-component-layout/design.md"
+        },
+        {
+          "content_hash": "635f4fb6e1f43700d64a23edc4e95cc46c2971a596c255ec1bb3ffda07895136",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-22-core-component-layout/proposal.md"
+        },
+        {
+          "content_hash": "c9adcb0916e329c19f4df1ad0b9e97f14335bdbf12e17e76a93d364799487499",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-22-core-component-layout/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "025937d654e9668ab4869717d1fb5a6a8c23e63a6dc25fcbfce91c4d6af1d8e3",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-22-core-component-layout/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/core-component-layout"
+        }
+      ],
+      "manifest_hash": "adb8c2364c30d498d928534088a28ff6463bfe55b43a9d698d8def9563d117c9"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "0126f5a1c402735f5684a8538e1c0984f744320e113c8e0cf9059ca8e716929d",
+          "exists": true,
+          "path": "./cairn/changes/core-component-layout/design.md"
+        },
+        {
+          "content_hash": "635f4fb6e1f43700d64a23edc4e95cc46c2971a596c255ec1bb3ffda07895136",
+          "exists": true,
+          "path": "./cairn/changes/core-component-layout/proposal.md"
+        },
+        {
+          "content_hash": "c9adcb0916e329c19f4df1ad0b9e97f14335bdbf12e17e76a93d364799487499",
+          "exists": true,
+          "path": "./cairn/changes/core-component-layout/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "025937d654e9668ab4869717d1fb5a6a8c23e63a6dc25fcbfce91c4d6af1d8e3",
+          "exists": true,
+          "path": "./cairn/changes/core-component-layout/tasks.md"
+        }
+      ],
+      "manifest_hash": "e4f827b18193fc7bcff1565dc30d3e9ee047a197a659d6567c41f4a92fbec748"
+    },
+    "kind": "archive",
+    "manifest_hash": "381b7f208529f320355c271456c69145778b558e475203a61d7a5e2081c6dcb6"
+  },
+  "plan_hash": "d0351c3e62fe8a181c257bee1e58b1c17ddd8120e926fb5aff0ab283d6086240",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "bc99e0f68cd33c5ba186d1b4fbbc0a9ebb82cadbb4bf4203b8b83bb585dabb4b"
+}
+cairn_archive_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 2,
+  "valid": true
+}
+cairn_validate_exit_status=0
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link
+this derivation will be built:
+  /nix/store/i06yl895h92zg1b3c0cshs94z70gm2c2-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/i06yl895h92zg1b3c0cshs94z70gm2c2-mc-compat-evidence-manifests.drv'...
+evidence_manifest_exit_status=0
+exit_status=0
