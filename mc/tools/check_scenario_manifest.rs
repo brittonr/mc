@@ -5,6 +5,7 @@ use std::path::Path;
 use std::process::ExitCode;
 
 const MANIFEST_PATH: &str = "compat/config/scenario-manifest.ncl";
+const FALLBACK_BUDGET_BASELINE_PATH: &str = "compat/config/scenario-fallback-budget-baseline.ncl";
 const GENERATED_RUST_PATH: &str = "compat/runner/src/scenario_manifest_generated.rs";
 const RUNNER_MAIN_PATH: &str = "compat/runner/src/main.rs";
 const RUNNER_SCENARIO_CORE_PATH: &str = "compat/runner/src/scenario_core.rs";
@@ -14,6 +15,7 @@ const README_PATH: &str = "README.md";
 const CURRENT_BUNDLE_PATH: &str = "docs/evidence/protocol-763-current-evidence-bundle.md";
 const GENERATED_SCENARIO_INDEX_PATH: &str = "docs/evidence/mc-compat-scenario-index.generated.md";
 const SUPPORTED_SCHEMA: &str = "mc.compat.scenario-manifest.v1";
+const FALLBACK_BUDGET_BASELINE_SCHEMA: &str = "mc.compat.scenario-fallback-budget-baseline.v1";
 const SUBSTRING_FALLBACK_MIGRATION: &str = "substring-fallback";
 const TYPED_EVENT_READY_MIGRATION: &str = "typed-event-ready";
 const SELF_TEST_FLAG: &str = "--self-test";
@@ -27,6 +29,9 @@ const ROW_START: &str = "{";
 const ROW_END: &str = "},";
 const SCENARIOS_START: &str = "scenarios = [";
 const SCENARIOS_END: &str = "],";
+const FALLBACK_BUDGET_FALLBACK_ROWS_START: &str = "fallback_rows = [";
+const FALLBACK_BUDGET_TYPED_READY_FIELD: &str = "typed_event_ready_rows";
+const COMMON_WAIVER_REFERENCE_PREFIX: &str = "common_waiver.";
 const EXIT_SUCCESS: ExitCode = ExitCode::SUCCESS;
 const EXIT_FAILURE: ExitCode = ExitCode::FAILURE;
 const LIVE_CAPABILITY_REGISTRY_TOKENS: &[&str] = &[
@@ -258,6 +263,41 @@ struct Manifest {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+struct FallbackBudgetEntry {
+    name: String,
+    owner: String,
+    reason: String,
+    non_claim: String,
+    next_action: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct FallbackBudgetBaseline {
+    schema: String,
+    fallback_rows: Vec<FallbackBudgetEntry>,
+    typed_event_ready_rows: Vec<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct FallbackBudgetReport {
+    approved_fallback_rows: Vec<String>,
+    removed_fallback_rows: Vec<String>,
+    new_fallback_rows: Vec<String>,
+    missing_waiver_metadata: Vec<String>,
+    typed_event_regressions: Vec<String>,
+    baseline_issues: Vec<String>,
+}
+
+impl FallbackBudgetReport {
+    fn is_complete(&self) -> bool {
+        self.new_fallback_rows.is_empty()
+            && self.missing_waiver_metadata.is_empty()
+            && self.typed_event_regressions.is_empty()
+            && self.baseline_issues.is_empty()
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
 struct TypedEventReadinessFixture<'a> {
     scenario: &'a str,
     client_events: &'a [&'a str],
@@ -379,6 +419,7 @@ fn run_repo_check(root: &Path) -> Result<String, Vec<String>> {
     validate_manifest(&manifest)?;
     let dry_run_coverage = evaluate_dry_run_coverage(&manifest.rows);
     let typed_event_readiness = evaluate_typed_event_readiness(&manifest);
+    let fallback_budget = evaluate_repo_fallback_budget(root, &manifest)?;
 
     let generated = read_repo_file(root, GENERATED_RUST_PATH)?;
     let runner_main = read_repo_file(root, RUNNER_MAIN_PATH)?;
@@ -403,13 +444,14 @@ fn run_repo_check(root: &Path) -> Result<String, Vec<String>> {
 
     if errors.is_empty() {
         Ok(format!(
-            "{} rows validated; dry-run coverage: {} covered, {} waived, {} unmaintained; typed-event readiness: {} ready, {} fallback",
+            "{} rows validated; dry-run coverage: {} covered, {} waived, {} unmaintained; typed-event readiness: {} ready, {} fallback; {}",
             manifest.rows.len(),
             dry_run_coverage.covered,
             dry_run_coverage.waived,
             dry_run_coverage.unmaintained,
             typed_event_readiness.ready,
-            typed_event_readiness.fallback
+            typed_event_readiness.fallback,
+            render_fallback_budget_report(&fallback_budget)
         ))
     } else {
         Err(errors)
@@ -420,6 +462,7 @@ fn run_generated_surfaces_check(root: &Path) -> Result<String, Vec<String>> {
     let manifest_text = read_repo_file(root, MANIFEST_PATH)?;
     let manifest = parse_manifest(&manifest_text)?;
     validate_manifest(&manifest)?;
+    let fallback_budget = evaluate_repo_fallback_budget(root, &manifest)?;
     let surfaces = render_generated_surfaces(&manifest.rows)?;
     let mut errors = Vec::new();
     for surface in &surfaces {
@@ -432,7 +475,11 @@ fn run_generated_surfaces_check(root: &Path) -> Result<String, Vec<String>> {
         }
     }
     if errors.is_empty() {
-        Ok(format!("{} generated surfaces current", surfaces.len()))
+        Ok(format!(
+            "{} generated surfaces current; {}",
+            surfaces.len(),
+            render_fallback_budget_report(&fallback_budget)
+        ))
     } else {
         Err(errors)
     }
@@ -442,6 +489,7 @@ fn run_generated_surfaces_write(root: &Path) -> Result<String, Vec<String>> {
     let manifest_text = read_repo_file(root, MANIFEST_PATH)?;
     let manifest = parse_manifest(&manifest_text)?;
     validate_manifest(&manifest)?;
+    let fallback_budget = evaluate_repo_fallback_budget(root, &manifest)?;
     let surfaces = render_generated_surfaces(&manifest.rows)?;
     let mut errors = Vec::new();
     for surface in &surfaces {
@@ -457,7 +505,11 @@ fn run_generated_surfaces_write(root: &Path) -> Result<String, Vec<String>> {
         }
     }
     if errors.is_empty() {
-        Ok(format!("{} generated surfaces written", surfaces.len()))
+        Ok(format!(
+            "{} generated surfaces written; {}",
+            surfaces.len(),
+            render_fallback_budget_report(&fallback_budget)
+        ))
     } else {
         Err(errors)
     }
@@ -478,6 +530,167 @@ fn parse_manifest(text: &str) -> Result<Manifest, Vec<String>> {
         typed_event_fallback_waiver,
         rows,
     })
+}
+
+fn parse_fallback_budget_baseline(text: &str) -> Result<FallbackBudgetBaseline, Vec<String>> {
+    let mut errors = Vec::new();
+    let schema = parse_top_level_string(text, "schema").unwrap_or_else(|mut schema_errors| {
+        errors.append(&mut schema_errors);
+        String::new()
+    });
+    if !schema.is_empty() && schema != FALLBACK_BUDGET_BASELINE_SCHEMA {
+        errors.push(format!(
+            "unsupported fallback budget baseline schema {schema}"
+        ));
+    }
+    let typed_event_ready_rows = parse_top_level_array(text, FALLBACK_BUDGET_TYPED_READY_FIELD)
+        .unwrap_or_else(|mut array_errors| {
+            errors.append(&mut array_errors);
+            Vec::new()
+        });
+    let common_waiver =
+        parse_common_fallback_budget_waiver(text).unwrap_or_else(|mut waiver_errors| {
+            errors.append(&mut waiver_errors);
+            empty_fallback_budget_entry()
+        });
+    let fallback_rows =
+        parse_fallback_budget_rows(text, &common_waiver).unwrap_or_else(|mut row_errors| {
+            errors.append(&mut row_errors);
+            Vec::new()
+        });
+    if errors.is_empty() {
+        Ok(FallbackBudgetBaseline {
+            schema,
+            fallback_rows,
+            typed_event_ready_rows,
+        })
+    } else {
+        Err(errors)
+    }
+}
+
+fn parse_top_level_array(text: &str, field: &str) -> Result<Vec<String>, Vec<String>> {
+    for raw_line in text.lines() {
+        let line = raw_line.trim();
+        let prefix = format!("{field} = ");
+        if line.starts_with(&prefix) {
+            return parse_string_array(line, field).map_err(|err| vec![err]);
+        }
+    }
+    Err(vec![format!("missing top-level array field {field}")])
+}
+
+fn parse_common_fallback_budget_waiver(text: &str) -> Result<FallbackBudgetEntry, Vec<String>> {
+    let mut errors = Vec::new();
+    let owner = parse_top_level_string(text, "owner").unwrap_or_else(|mut field_errors| {
+        errors.append(&mut field_errors);
+        String::new()
+    });
+    let reason = parse_top_level_string(text, "reason").unwrap_or_else(|mut field_errors| {
+        errors.append(&mut field_errors);
+        String::new()
+    });
+    let non_claim = parse_top_level_string(text, "non_claim").unwrap_or_else(|mut field_errors| {
+        errors.append(&mut field_errors);
+        String::new()
+    });
+    let next_action =
+        parse_top_level_string(text, "next_action").unwrap_or_else(|mut field_errors| {
+            errors.append(&mut field_errors);
+            String::new()
+        });
+    if errors.is_empty() {
+        Ok(FallbackBudgetEntry {
+            name: String::new(),
+            owner,
+            reason,
+            non_claim,
+            next_action,
+        })
+    } else {
+        Err(errors)
+    }
+}
+
+fn parse_fallback_budget_rows(
+    text: &str,
+    common_waiver: &FallbackBudgetEntry,
+) -> Result<Vec<FallbackBudgetEntry>, Vec<String>> {
+    let mut rows = Vec::new();
+    let mut errors = Vec::new();
+    let mut in_rows = false;
+
+    for raw_line in text.lines() {
+        let line = raw_line.trim();
+        if !in_rows {
+            if line == FALLBACK_BUDGET_FALLBACK_ROWS_START {
+                in_rows = true;
+            }
+            continue;
+        }
+        if line == SCENARIOS_END {
+            break;
+        }
+        if !line.starts_with(ROW_START) {
+            continue;
+        }
+        match parse_fallback_budget_row(line, common_waiver) {
+            Ok(row) => rows.push(row),
+            Err(mut row_errors) => errors.append(&mut row_errors),
+        }
+    }
+
+    if rows.is_empty() {
+        errors.push("fallback budget baseline has no fallback rows".to_string());
+    }
+    if errors.is_empty() {
+        Ok(rows)
+    } else {
+        Err(errors)
+    }
+}
+
+fn parse_fallback_budget_row(
+    line: &str,
+    common_waiver: &FallbackBudgetEntry,
+) -> Result<FallbackBudgetEntry, Vec<String>> {
+    let mut errors = Vec::new();
+    let name = parse_inline_record_string(line, "name").unwrap_or_else(|err| {
+        errors.push(err);
+        String::new()
+    });
+    let owner =
+        parse_inline_record_waiver_value(line, "owner", common_waiver).unwrap_or_else(|err| {
+            errors.push(err);
+            String::new()
+        });
+    let reason =
+        parse_inline_record_waiver_value(line, "reason", common_waiver).unwrap_or_else(|err| {
+            errors.push(err);
+            String::new()
+        });
+    let non_claim = parse_inline_record_waiver_value(line, "non_claim", common_waiver)
+        .unwrap_or_else(|err| {
+            errors.push(err);
+            String::new()
+        });
+    let next_action = parse_inline_record_waiver_value(line, "next_action", common_waiver)
+        .unwrap_or_else(|err| {
+            errors.push(err);
+            String::new()
+        });
+
+    if errors.is_empty() {
+        Ok(FallbackBudgetEntry {
+            name,
+            owner,
+            reason,
+            non_claim,
+            next_action,
+        })
+    } else {
+        Err(errors)
+    }
 }
 
 fn parse_top_level_string(text: &str, field: &str) -> Result<String, Vec<String>> {
@@ -662,6 +875,16 @@ fn empty_dry_run() -> DryRun {
     }
 }
 
+fn empty_fallback_budget_entry() -> FallbackBudgetEntry {
+    FallbackBudgetEntry {
+        name: String::new(),
+        owner: String::new(),
+        reason: String::new(),
+        non_claim: String::new(),
+        next_action: String::new(),
+    }
+}
+
 fn find_field_line<'a>(lines: &'a [String], field: &str) -> Option<&'a str> {
     let prefix = format!("{field} =");
     lines
@@ -759,6 +982,43 @@ fn parse_inline_record_bool(line: &str, field: &str) -> Result<bool, String> {
     value
         .parse::<bool>()
         .map_err(|err| format!("dry_run.{field}: invalid bool {value}: {err}"))
+}
+
+fn parse_inline_record_waiver_value(
+    line: &str,
+    field: &str,
+    common_waiver: &FallbackBudgetEntry,
+) -> Result<String, String> {
+    let needle = format!("{field} = ");
+    let rest = line
+        .split(&needle)
+        .nth(MINIMUM_POSITIVE_COUNT as usize)
+        .ok_or_else(|| format!("fallback_budget.{field}: missing field"))?;
+    let value = rest
+        .split([',', '}'])
+        .next()
+        .ok_or_else(|| format!("fallback_budget.{field}: invalid field"))?
+        .trim();
+    if let Some(value) = value
+        .strip_prefix('"')
+        .and_then(|value| value.strip_suffix('"'))
+    {
+        return Ok(value.to_string());
+    }
+    let Some(reference) = value.strip_prefix(COMMON_WAIVER_REFERENCE_PREFIX) else {
+        return Err(format!(
+            "fallback_budget.{field}: unsupported waiver value {value:?}"
+        ));
+    };
+    match reference {
+        "owner" => Ok(common_waiver.owner.clone()),
+        "reason" => Ok(common_waiver.reason.clone()),
+        "non_claim" => Ok(common_waiver.non_claim.clone()),
+        "next_action" => Ok(common_waiver.next_action.clone()),
+        other => Err(format!(
+            "fallback_budget.{field}: unsupported common waiver reference {other:?}"
+        )),
+    }
 }
 
 fn validate_manifest(manifest: &Manifest) -> Result<(), Vec<String>> {
@@ -1033,6 +1293,211 @@ fn validate_waiver_metadata_fields(
         }
     }
     errors
+}
+
+fn evaluate_repo_fallback_budget(
+    root: &Path,
+    manifest: &Manifest,
+) -> Result<FallbackBudgetReport, Vec<String>> {
+    let baseline_text = read_repo_file(root, FALLBACK_BUDGET_BASELINE_PATH)?;
+    let baseline = parse_fallback_budget_baseline(&baseline_text)?;
+    let report = evaluate_fallback_budget(&manifest.rows, &baseline);
+    let diagnostics = fallback_budget_diagnostics(&report);
+    if diagnostics.is_empty() {
+        Ok(report)
+    } else {
+        Err(diagnostics)
+    }
+}
+
+fn evaluate_fallback_budget(
+    rows: &[ScenarioRow],
+    baseline: &FallbackBudgetBaseline,
+) -> FallbackBudgetReport {
+    let mut report = FallbackBudgetReport {
+        approved_fallback_rows: Vec::new(),
+        removed_fallback_rows: Vec::new(),
+        new_fallback_rows: Vec::new(),
+        missing_waiver_metadata: Vec::new(),
+        typed_event_regressions: Vec::new(),
+        baseline_issues: Vec::new(),
+    };
+    let current_rows = current_rows_by_name(rows, &mut report.baseline_issues);
+    let baseline_fallback_rows = baseline_fallback_rows_by_name(baseline, &mut report);
+    let typed_event_ready_rows = baseline_typed_event_ready_rows(baseline, &mut report);
+
+    for row in rows {
+        if row.migration_state != SUBSTRING_FALLBACK_MIGRATION {
+            continue;
+        }
+        if baseline_fallback_rows.contains_key(row.name.as_str()) {
+            report.approved_fallback_rows.push(row.name.clone());
+        } else {
+            report.new_fallback_rows.push(row.name.clone());
+        }
+        if typed_event_ready_rows.contains(row.name.as_str()) {
+            report.typed_event_regressions.push(row.name.clone());
+        }
+    }
+
+    for entry in &baseline.fallback_rows {
+        if current_rows.get(entry.name.as_str()).map_or(true, |row| {
+            row.migration_state != SUBSTRING_FALLBACK_MIGRATION
+        }) {
+            report.removed_fallback_rows.push(entry.name.clone());
+        }
+    }
+
+    sort_fallback_budget_report(&mut report);
+    report
+}
+
+fn current_rows_by_name<'a>(
+    rows: &'a [ScenarioRow],
+    baseline_issues: &mut Vec<String>,
+) -> BTreeMap<&'a str, &'a ScenarioRow> {
+    let mut current_rows = BTreeMap::new();
+    for row in rows {
+        if current_rows.insert(row.name.as_str(), row).is_some() {
+            baseline_issues.push(format!("duplicate current scenario row {}", row.name));
+        }
+    }
+    current_rows
+}
+
+fn baseline_fallback_rows_by_name<'a>(
+    baseline: &'a FallbackBudgetBaseline,
+    report: &mut FallbackBudgetReport,
+) -> BTreeMap<&'a str, &'a FallbackBudgetEntry> {
+    let mut rows = BTreeMap::new();
+    if baseline.schema != FALLBACK_BUDGET_BASELINE_SCHEMA {
+        report.baseline_issues.push(format!(
+            "unsupported fallback budget baseline schema {}",
+            baseline.schema
+        ));
+    }
+    for entry in &baseline.fallback_rows {
+        if entry.name.is_empty() {
+            report
+                .baseline_issues
+                .push("fallback budget baseline contains empty row name".to_string());
+            continue;
+        }
+        if rows.insert(entry.name.as_str(), entry).is_some() {
+            report.baseline_issues.push(format!(
+                "duplicate fallback budget baseline row {}",
+                entry.name
+            ));
+        }
+        report
+            .missing_waiver_metadata
+            .extend(fallback_budget_entry_metadata_diagnostics(entry));
+    }
+    rows
+}
+
+fn baseline_typed_event_ready_rows<'a>(
+    baseline: &'a FallbackBudgetBaseline,
+    report: &mut FallbackBudgetReport,
+) -> BTreeSet<&'a str> {
+    let mut rows = BTreeSet::new();
+    let fallback_rows: BTreeSet<&str> = baseline
+        .fallback_rows
+        .iter()
+        .map(|entry| entry.name.as_str())
+        .collect();
+    for row in &baseline.typed_event_ready_rows {
+        if row.is_empty() {
+            report
+                .baseline_issues
+                .push("fallback budget baseline contains empty typed-event-ready row".to_string());
+            continue;
+        }
+        if !rows.insert(row.as_str()) {
+            report
+                .baseline_issues
+                .push(format!("duplicate typed-event-ready baseline row {row}"));
+        }
+        if fallback_rows.contains(row.as_str()) {
+            report.baseline_issues.push(format!(
+                "{row}: baseline cannot be both fallback and typed-event-ready"
+            ));
+        }
+    }
+    rows
+}
+
+fn fallback_budget_entry_metadata_diagnostics(entry: &FallbackBudgetEntry) -> Vec<String> {
+    let mut errors = Vec::new();
+    if entry.owner.trim().is_empty() {
+        errors.push(format!(
+            "{}: fallback budget waiver missing owner",
+            entry.name
+        ));
+    }
+    if entry.reason.trim().is_empty() {
+        errors.push(format!(
+            "{}: fallback budget waiver missing reason",
+            entry.name
+        ));
+    }
+    if entry.non_claim.trim().is_empty() {
+        errors.push(format!(
+            "{}: fallback budget waiver missing non_claim",
+            entry.name
+        ));
+    }
+    if entry.next_action.trim().is_empty() {
+        errors.push(format!(
+            "{}: fallback budget waiver missing next_action",
+            entry.name
+        ));
+    }
+    errors
+}
+
+fn fallback_budget_diagnostics(report: &FallbackBudgetReport) -> Vec<String> {
+    let mut errors = report.baseline_issues.clone();
+    errors.extend(report.missing_waiver_metadata.clone());
+    errors.extend(
+        report
+            .new_fallback_rows
+            .iter()
+            .map(|row| format!("{row}: unapproved substring fallback row")),
+    );
+    errors.extend(
+        report.typed_event_regressions.iter().map(|row| {
+            format!("{row}: typed-event-ready baseline regressed to substring fallback")
+        }),
+    );
+    errors
+}
+
+fn sort_fallback_budget_report(report: &mut FallbackBudgetReport) {
+    report.approved_fallback_rows.sort();
+    report.removed_fallback_rows.sort();
+    report.new_fallback_rows.sort();
+    report.missing_waiver_metadata.sort();
+    report.typed_event_regressions.sort();
+    report.baseline_issues.sort();
+}
+
+fn render_fallback_budget_report(report: &FallbackBudgetReport) -> String {
+    format!(
+        "fallback budget: approved=[{}]; removed=[{}]; new=[{}]; typed_event_regressions=[{}]; missing_waiver_metadata=[{}]",
+        comma_list(&report.approved_fallback_rows),
+        comma_list(&report.removed_fallback_rows),
+        comma_list(&report.new_fallback_rows),
+        comma_list(&report.typed_event_regressions),
+        comma_list(&report.missing_waiver_metadata)
+    )
+}
+
+fn comma_list(values: &[String]) -> String {
+    if values.is_empty() {
+        return String::new();
+    }
+    values.join(",")
 }
 
 fn render_generated_surfaces(rows: &[ScenarioRow]) -> Result<Vec<GeneratedSurface>, Vec<String>> {
@@ -1474,6 +1939,54 @@ fn run_self_tests() -> Result<String, Vec<String>> {
     if !ready_evaluation.is_complete() {
         errors.push("self-test case typed-event readiness expected pass=true".to_string());
     }
+    let fallback_budget =
+        evaluate_fallback_budget(&manifest.rows, &fallback_budget_baseline_fixture());
+    if !fallback_budget.is_complete()
+        || fallback_budget.approved_fallback_rows != vec!["smoke".to_string()]
+    {
+        errors.push(
+            "self-test case fallback budget unchanged baseline expected pass=true".to_string(),
+        );
+    }
+    let fallback_removed =
+        evaluate_fallback_budget(&ready_manifest.rows, &fallback_budget_baseline_fixture());
+    if !fallback_removed.is_complete()
+        || fallback_removed.removed_fallback_rows != vec!["smoke".to_string()]
+    {
+        errors.push("self-test case fallback budget removal expected pass=true".to_string());
+    }
+    let new_fallback =
+        evaluate_fallback_budget(&manifest.rows, &empty_fallback_budget_baseline_fixture());
+    if new_fallback.is_complete()
+        || !new_fallback
+            .new_fallback_rows
+            .iter()
+            .any(|row| row == "smoke")
+    {
+        errors.push("self-test case fallback budget new fallback expected pass=false".to_string());
+    }
+    let missing_waiver = evaluate_fallback_budget(
+        &manifest.rows,
+        &missing_waiver_fallback_budget_baseline_fixture(),
+    );
+    if missing_waiver.is_complete() || missing_waiver.missing_waiver_metadata.is_empty() {
+        errors
+            .push("self-test case fallback budget missing waiver expected pass=false".to_string());
+    }
+    let typed_event_regression = evaluate_fallback_budget(
+        &manifest.rows,
+        &typed_event_ready_fallback_budget_baseline_fixture(),
+    );
+    if typed_event_regression.is_complete()
+        || !typed_event_regression
+            .typed_event_regressions
+            .iter()
+            .any(|row| row == "smoke")
+    {
+        errors.push(
+            "self-test case fallback budget typed-event regression expected pass=false".to_string(),
+        );
+    }
     if let Err(generator_errors) = render_generated_surfaces(&manifest.rows) {
         errors.push(format!(
             "self-test case generated_surfaces expected pass=true: {generator_errors:?}"
@@ -1700,4 +2213,52 @@ fn unsupported_migration_fixture() -> String {
         "migration_state = \"substring-fallback\"",
         "migration_state = \"magic\"",
     ))
+}
+
+fn fallback_budget_baseline_fixture() -> FallbackBudgetBaseline {
+    FallbackBudgetBaseline {
+        schema: FALLBACK_BUDGET_BASELINE_SCHEMA.to_string(),
+        fallback_rows: vec![fallback_budget_entry("smoke")],
+        typed_event_ready_rows: Vec::new(),
+    }
+}
+
+fn empty_fallback_budget_baseline_fixture() -> FallbackBudgetBaseline {
+    FallbackBudgetBaseline {
+        schema: FALLBACK_BUDGET_BASELINE_SCHEMA.to_string(),
+        fallback_rows: Vec::new(),
+        typed_event_ready_rows: Vec::new(),
+    }
+}
+
+fn missing_waiver_fallback_budget_baseline_fixture() -> FallbackBudgetBaseline {
+    FallbackBudgetBaseline {
+        schema: FALLBACK_BUDGET_BASELINE_SCHEMA.to_string(),
+        fallback_rows: vec![FallbackBudgetEntry {
+            name: "smoke".to_string(),
+            owner: String::new(),
+            reason: "legacy row".to_string(),
+            non_claim: "observability only".to_string(),
+            next_action: "migrate typed-event fixture".to_string(),
+        }],
+        typed_event_ready_rows: Vec::new(),
+    }
+}
+
+fn typed_event_ready_fallback_budget_baseline_fixture() -> FallbackBudgetBaseline {
+    FallbackBudgetBaseline {
+        schema: FALLBACK_BUDGET_BASELINE_SCHEMA.to_string(),
+        fallback_rows: Vec::new(),
+        typed_event_ready_rows: vec!["smoke".to_string()],
+    }
+}
+
+fn fallback_budget_entry(name: &str) -> FallbackBudgetEntry {
+    FallbackBudgetEntry {
+        name: name.to_string(),
+        owner: "mc-compat".to_string(),
+        reason: "legacy rows still rely on substring log evidence".to_string(),
+        non_claim: "typed-event migration changes observability only".to_string(),
+        next_action: "migrate rows when typed-event fixtures cover surfaces".to_string(),
+    }
 }

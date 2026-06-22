@@ -1,0 +1,14 @@
+# Tasks
+
+- [x] [serial] Record the current typed-event-ready and substring-fallback manifest baseline with waiver metadata. r[mc_compatibility.scenario_manifest_fallback_budget_gate.baseline]
+  - Evidence: `compat/config/scenario-fallback-budget-baseline.ncl`; `docs/evidence/scenario-manifest-fallback-budget-baseline.run.log`; `docs/evidence/scenario-manifest-fallback-budget-2026-06-22.b3`.
+- [x] [depends:baseline] Implement the pure fallback-budget evaluator with positive fixtures for unchanged baseline and fallback removal. r[mc_compatibility.scenario_manifest_fallback_budget_gate.gate]
+  - Evidence: `tools/check_scenario_manifest.rs`; `docs/evidence/scenario-manifest-fallback-budget-baseline.run.log`; `docs/evidence/scenario-manifest-fallback-budget-2026-06-22.b3`.
+- [x] [depends:gate] Add negative fixtures for new fallback debt, missing waiver metadata, and typed-event-ready regression. r[mc_compatibility.scenario_manifest_fallback_budget_gate.gate]
+  - Evidence: `tools/check_scenario_manifest.rs`; `docs/evidence/scenario-manifest-fallback-budget-baseline.run.log`; `docs/evidence/scenario-manifest-fallback-budget-2026-06-22.b3`.
+- [x] [depends:gate] Wire the checker into focused mc-compat validation and generated-surface freshness without changing scenario behavior. r[mc_compatibility.scenario_manifest_fallback_budget_gate.integration]
+  - Evidence: `flake.nix`; `docs/evidence/scenario-manifest-fallback-budget-generated-surfaces.run.log`; `docs/evidence/scenario-manifest-fallback-budget-flake-check.run.log`; `docs/evidence/scenario-manifest-fallback-budget-2026-06-22.b3`.
+- [x] [depends:integration] Update README/evidence docs with the fallback-budget report shape and non-claim boundary. r[mc_compatibility.scenario_manifest_fallback_budget_gate.docs]
+  - Evidence: `README.md`; `docs/evidence/mc-compat-fallback-budget.md`; `docs/evidence/scenario-manifest-fallback-budget-baseline.run.log`; `docs/evidence/scenario-manifest-fallback-budget-2026-06-22.b3`.
+- [x] [depends:docs] Run checker tests, scenario manifest checks, generated-surface freshness, evidence manifests, Cairn gates, task-evidence validation, and Cairn validation with reviewable logs. r[mc_compatibility.scenario_manifest_fallback_budget_gate.validation]
+  - Evidence: `docs/evidence/scenario-manifest-fallback-budget-baseline.run.log`; `docs/evidence/scenario-manifest-fallback-budget-generated-surfaces.run.log`; `docs/evidence/scenario-manifest-fallback-budget-evidence-manifest-refresh.run.log`; `docs/evidence/scenario-manifest-fallback-budget-evidence-manifests.run.log`; `docs/evidence/scenario-manifest-fallback-budget-cairn-gates.run.log`; `docs/evidence/scenario-manifest-fallback-budget-cairn-validate.run.log`; `docs/evidence/scenario-manifest-fallback-budget-task-evidence-preflight.run.log`; `docs/evidence/scenario-manifest-fallback-budget-2026-06-22.b3`.

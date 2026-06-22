@@ -1504,11 +1504,12 @@
               chmod -R u+w repo
               cd repo
               nickel typecheck compat/config/scenario-manifest.ncl > ../scenario-manifest-typecheck.log
+              nickel typecheck compat/config/scenario-fallback-budget-baseline.ncl > ../scenario-fallback-budget-baseline-typecheck.log
               rustc --edition=2021 tools/check_scenario_manifest.rs -o ../check-scenario-manifest
               ../check-scenario-manifest --self-test > ../scenario-manifest-self-test.log
               ../check-scenario-manifest > ../scenario-manifest-check.log
               mkdir -p "$out"
-              cp ../scenario-manifest-typecheck.log ../scenario-manifest-self-test.log ../scenario-manifest-check.log "$out/"
+              cp ../scenario-manifest-typecheck.log ../scenario-fallback-budget-baseline-typecheck.log ../scenario-manifest-self-test.log ../scenario-manifest-check.log "$out/"
             '';
         mc-compat-generated-harness-surfaces =
           pkgs.runCommand "mc-compat-generated-harness-surfaces"
@@ -1524,11 +1525,12 @@
               chmod -R u+w repo
               cd repo
               nickel typecheck compat/config/scenario-manifest.ncl > ../generated-harness-surfaces-typecheck.log
+              nickel typecheck compat/config/scenario-fallback-budget-baseline.ncl > ../generated-fallback-budget-baseline-typecheck.log
               rustc --edition=2021 tools/check_scenario_manifest.rs -o ../check-scenario-manifest
               ../check-scenario-manifest --self-test > ../generated-harness-surfaces-self-test.log
               ../check-scenario-manifest --check-generated-surfaces > ../generated-harness-surfaces-check.log
               mkdir -p "$out"
-              cp ../generated-harness-surfaces-typecheck.log ../generated-harness-surfaces-self-test.log ../generated-harness-surfaces-check.log "$out/"
+              cp ../generated-harness-surfaces-typecheck.log ../generated-fallback-budget-baseline-typecheck.log ../generated-harness-surfaces-self-test.log ../generated-harness-surfaces-check.log "$out/"
             '';
         mc-compat-evidence-promotion =
           pkgs.runCommand "mc-compat-evidence-promotion"

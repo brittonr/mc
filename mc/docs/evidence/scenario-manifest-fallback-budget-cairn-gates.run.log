@@ -1,0 +1,64 @@
+{
+  "change": "scenario-manifest-fallback-budget-gate",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "6f7983364dca55880ef13266b72b7f54a080b463c93e50a693d4cfcc5a46f5cd",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "baa80be4d2e17fc80a9b8f88dadeaf6ced4050aae369e4521af474da47cb3959",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "scenario-manifest-fallback-budget-gate",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "908f37abbe64d83d03c914e631b0fac82cba750c3e7064b0e482302344eb48c4",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "3f924eddccca79f06cdc22e8fd6eabf11ffc3e6ae5023cdd59d06d15cf0e4ab5",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "scenario-manifest-fallback-budget-gate",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "2e732d5d7c6e889add9aa7078b6335af93a8c1518fd849cf24e7738874ba1253",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "58370240e4b6df716f5ccaa83df2a647387729bb5f5f0e71f51b94db12984f49",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
