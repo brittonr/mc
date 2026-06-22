@@ -12,7 +12,7 @@ This bounded index is generated from `config/mc-compat/scenario-manifest.ncl`. I
 | flag-score-repeat | flag-score-repeat | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
 | blue-flag-score | blue-flag-score | 1 | 1 | mc-compat-blue-flag-score-dry-run | mc-compat-smoke | substring-fallback |
 | inventory-interaction | inventory-interaction | 1 | 1 | mc-compat-valence-ctf-inventory-interaction-dry-run | mc-compat-valence-ctf-inventory-interaction | typed-event-ready |
-| inventory-stack-split-merge | inventory-stack-split-merge | 1 | 1 | mc-compat-valence-inventory-stack-split-merge-dry-run | mc-compat-valence-inventory-stack-split-merge | substring-fallback |
+| inventory-stack-split-merge | inventory-stack-split-merge | 1 | 1 | mc-compat-valence-inventory-stack-split-merge-dry-run | mc-compat-valence-inventory-stack-split-merge | typed-event-ready |
 | inventory-drag-transactions | inventory-drag-transactions | 1 | 1 | mc-compat-valence-inventory-drag-transactions-dry-run | mc-compat-valence-inventory-drag-transactions | substring-fallback |
 | survival-break-place-pickup | survival-break-place-pickup | 1 | 1 | mc-compat-valence-survival-break-place-pickup-dry-run | mc-compat-valence-survival-break-place-pickup | substring-fallback |
 | survival-chest-persistence | survival-chest-persistence | 1 | 2 | mc-compat-historical-scenario-dry-runs | mc-compat-valence-survival-chest-persistence | substring-fallback |

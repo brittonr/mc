@@ -3693,7 +3693,10 @@ fn typed_event_oracle_receipt_json(artifact: Option<&TypedEventOracleArtifact>) 
 }
 
 fn typed_event_oracle_contributes_to_pass_fail(scenario: Scenario) -> bool {
-    matches!(scenario, Scenario::Smoke | Scenario::InventoryInteraction)
+    matches!(
+        scenario,
+        Scenario::Smoke | Scenario::InventoryInteraction | Scenario::InventoryStackSplitMerge
+    )
 }
 
 fn validate_typed_event_oracle_for_migrated_scenario(
@@ -11844,6 +11847,20 @@ mod tests {
             wrong_schema.contains("unsupported typed event schema"),
             "{wrong_schema}"
         );
+    }
+
+    #[test]
+    fn typed_event_pass_fail_gate_includes_only_migrated_rows() {
+        assert!(typed_event_oracle_contributes_to_pass_fail(Scenario::Smoke));
+        assert!(typed_event_oracle_contributes_to_pass_fail(
+            Scenario::InventoryInteraction
+        ));
+        assert!(typed_event_oracle_contributes_to_pass_fail(
+            Scenario::InventoryStackSplitMerge
+        ));
+        assert!(!typed_event_oracle_contributes_to_pass_fail(
+            Scenario::InventoryDragTransactions
+        ));
     }
 
     #[test]

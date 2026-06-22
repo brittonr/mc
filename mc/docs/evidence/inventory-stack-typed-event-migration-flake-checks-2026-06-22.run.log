@@ -1,0 +1,9 @@
+## inventory stack typed-event migration flake checks
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-scenario-manifest .#checks.x86_64-linux.mc-compat-generated-harness-surfaces --no-link
+these 2 derivations will be built:
+  /nix/store/5q8wwlamjnv8ihvl4mrlyvm3bjz49bg3-mc-compat-scenario-manifest.drv
+  /nix/store/yczyabw4k5q4inrj5d8rd1x5hz7mzb69-mc-compat-generated-harness-surfaces.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/yczyabw4k5q4inrj5d8rd1x5hz7mzb69-mc-compat-generated-harness-surfaces.drv'...
+building '/nix/store/5q8wwlamjnv8ihvl4mrlyvm3bjz49bg3-mc-compat-scenario-manifest.drv'...
+exit_status=0
