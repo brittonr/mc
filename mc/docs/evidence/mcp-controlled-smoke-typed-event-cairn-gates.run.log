@@ -1,0 +1,65 @@
+error (ignored): SQLite database '/home/brittonr/.cache/nix/eval-cache-v6/c3529049975f81378e95daa7995d97d5cf03421e4faa70887c01d5f9b08bf2cd.sqlite' is busy
+{
+  "change": "mcp-controlled-smoke-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "19c0d1f334e37a65f63eaf2ce1b766285d3eecbd932e270786c3339edc47a5fe",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "5f4c1d39eb8bd1b8232e450a994468a8cfcd5b8a73b2662a92ff693761f4b64a",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "mcp-controlled-smoke-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "9240bf0b2d1cd1faaf959f7efa0f827c7588023df60f29e2dec7728a85cbf6ae",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "b5679d0195954c9035c3857d0923a69eb4fec33fdf680eef8cf466a059fb1653",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "mcp-controlled-smoke-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "882c7dbfa770be393977313e8d89ff362662fc50d455b74b664e0afebb79bccb",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "203226b2fc3b24874dd4a87091f76d852c025dbcaac3d1302bc9489c133c18d4",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0

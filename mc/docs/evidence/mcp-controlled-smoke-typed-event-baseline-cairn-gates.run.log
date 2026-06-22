@@ -1,0 +1,64 @@
+{
+  "change": "mcp-controlled-smoke-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "9071a432d639296080274f46d2c775f250c7a6602018cd3802f474762480452e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "b7f0b144a20e89da7f223577df827aaa1597dfa8e3e0786020a906e8c9dbbf0a",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "mcp-controlled-smoke-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "591a318aaaeda6385376d3dd2b1e0d3a403b2314d91ac9937cac36f1cca271ed",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "c88b6ce8fe99d79808a3bff36ed1c29d57771c04f839ee9727b8085f1cc8d12e",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "mcp-controlled-smoke-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "5a5f9f178a4d01a5ab33fcb4a66452873f9d68d969c01b88a4cbacfebd1ad23e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "0cb3b23b22e8d3ea2d41a49f03abe66013380be8515a91da78996e6b217fc819",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0

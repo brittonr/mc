@@ -80,6 +80,17 @@ const TYPED_EVENT_COMMON_FORBIDDEN_EVENTS: &[&str] = &[
 ];
 const TYPED_EVENT_EMPTY_EVENTS: &[&str] = &[];
 const SMOKE_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &["protocol_detected"];
+const MCP_CONTROLLED_SMOKE_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
+    "mcp_initialize",
+    "mcp_tools_list",
+    "mcp_status_call",
+    "mcp_command_outcomes",
+    "mcp_stdout_clean",
+    "mcp_look_call",
+    "mcp_input_call",
+    "mcp_capture_latest_frame",
+    "mcp_frame_artifact_identity",
+];
 const INVENTORY_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
     "protocol_detected",
     "join_game",
@@ -257,6 +268,13 @@ const TYPED_EVENT_READINESS_FIXTURES: &[TypedEventReadinessFixture<'static>] = &
     TypedEventReadinessFixture {
         scenario: "smoke",
         client_events: SMOKE_TYPED_EVENT_CLIENT_EVENTS,
+        server_events: TYPED_EVENT_EMPTY_EVENTS,
+        forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
+        derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
+    },
+    TypedEventReadinessFixture {
+        scenario: "mcp-controlled-smoke",
+        client_events: MCP_CONTROLLED_SMOKE_TYPED_EVENT_CLIENT_EVENTS,
         server_events: TYPED_EVENT_EMPTY_EVENTS,
         forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
         derivation_rules: TYPED_EVENT_EMPTY_EVENTS,

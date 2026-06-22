@@ -940,7 +940,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-mcp-controlled-smoke-dry-run",
         dry_run_wrapper: "mc-compat-mcp-controlled-smoke",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "combat-damage",

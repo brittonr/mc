@@ -34,7 +34,7 @@ This bounded index is generated from `compat/config/scenario-manifest.ncl`. It r
 | survival-biome-dimension-state | survival-biome-dimension-state | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
 | survival-biome-dimension-travel | survival-biome-dimension-travel | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
 | survival-sign-editing-live | survival-sign-editing-live | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
-| mcp-controlled-smoke | mcp-controlled-smoke | 1 | 1 | mc-compat-mcp-controlled-smoke-dry-run | mc-compat-mcp-controlled-smoke | substring-fallback |
+| mcp-controlled-smoke | mcp-controlled-smoke | 1 | 1 | mc-compat-mcp-controlled-smoke-dry-run | mc-compat-mcp-controlled-smoke | typed-event-ready |
 | combat-damage | combat-damage | 2 | 1 | mc-compat-valence-ctf-combat-damage-dry-run | mc-compat-valence-ctf-combat-damage | substring-fallback |
 | combat-knockback | combat-knockback | 2 | 1 | mc-compat-valence-ctf-combat-knockback-dry-run | mc-compat-valence-ctf-combat-knockback | substring-fallback |
 | vanilla-combat-reference-parity | vanilla-combat-reference-parity | 2 | 1 | - | mc-compat-vanilla-combat-reference-parity | substring-fallback |

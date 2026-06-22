@@ -1,0 +1,80 @@
+{
+  "actions": [
+    {
+      "description": "move active change to archive: mcp-controlled-smoke-typed-event-migration",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-22-mcp-controlled-smoke-typed-event-migration"
+    }
+  ],
+  "blocked": false,
+  "change": "mcp-controlled-smoke-typed-event-migration",
+  "dry_run": false,
+  "input_hash": "ff0ae2db68b707e613d8e9f819f9d2cdf7206397fe7033168456edaa4b7dbb41",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "fed89c9aae7a973930b08beb8e687cebcb4dcd8bd58e1e9658c0a53121f11e47",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-22-mcp-controlled-smoke-typed-event-migration/design.md"
+        },
+        {
+          "content_hash": "2944d4eef66bf05a28fc40837e4e04ad60831b500955ce9baef5c524aa5ea53f",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-22-mcp-controlled-smoke-typed-event-migration/proposal.md"
+        },
+        {
+          "content_hash": "5ebe979dd5f6dcb99b26d85f7d336658875c958d13f5413698781a96310c027d",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-22-mcp-controlled-smoke-typed-event-migration/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "bb6471b6732954340790da4847b78e4d3919e48943847b509bcd9d74c03af871",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-22-mcp-controlled-smoke-typed-event-migration/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/mcp-controlled-smoke-typed-event-migration"
+        }
+      ],
+      "manifest_hash": "e1a258fe9ff5859d5cd683691f5b835cf20d6c3a06df53ad95f3c915aab975cf"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "fed89c9aae7a973930b08beb8e687cebcb4dcd8bd58e1e9658c0a53121f11e47",
+          "exists": true,
+          "path": "./cairn/changes/mcp-controlled-smoke-typed-event-migration/design.md"
+        },
+        {
+          "content_hash": "2944d4eef66bf05a28fc40837e4e04ad60831b500955ce9baef5c524aa5ea53f",
+          "exists": true,
+          "path": "./cairn/changes/mcp-controlled-smoke-typed-event-migration/proposal.md"
+        },
+        {
+          "content_hash": "5ebe979dd5f6dcb99b26d85f7d336658875c958d13f5413698781a96310c027d",
+          "exists": true,
+          "path": "./cairn/changes/mcp-controlled-smoke-typed-event-migration/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "bb6471b6732954340790da4847b78e4d3919e48943847b509bcd9d74c03af871",
+          "exists": true,
+          "path": "./cairn/changes/mcp-controlled-smoke-typed-event-migration/tasks.md"
+        }
+      ],
+      "manifest_hash": "437ffb8c7a814bf182b5f06d329cac2f28567c6df653460d2ffede07e1ea03e6"
+    },
+    "kind": "archive",
+    "manifest_hash": "3189d98da85d208866350786d56745bf0521391c381e763fc03794ec18db6b38"
+  },
+  "plan_hash": "0e7044ccdc51f5731972c6c38076763f779406eef6a3e204849945e3cf27b955",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "8bf359343236510550e20e5b18c933de54f8a8589c80ab4b4c1dcccb6cbaecb2"
+}
+exit_status=0

@@ -1,0 +1,6 @@
+error (ignored): SQLite database '/home/brittonr/.cache/nix/eval-cache-v6/01bef1f9cb86a8be83e7ee00a6ceee1d84cab1103fc0988da8561d768bcb5d56.sqlite' is busy
+this derivation will be built:
+  /nix/store/p6ryvig52164z777nw4sazzx3xb3gma8-mc-compat-generated-harness-surfaces.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/p6ryvig52164z777nw4sazzx3xb3gma8-mc-compat-generated-harness-surfaces.drv'...
+exit_status=0

@@ -3531,6 +3531,14 @@ fn typed_events_from_receipt_evidence(
             )?;
         }
     }
+    append_mcp_control_typed_events(
+        &mut events,
+        cfg,
+        client,
+        &scenario_label,
+        &session,
+        default_username,
+    )?;
     if let Some(causality) = &client.projectile_damage_causality {
         for step in &causality.observed_steps {
             let (source, username) = typed_event_projectile_step_source_username(
@@ -3549,6 +3557,106 @@ fn typed_events_from_receipt_evidence(
         }
     }
     Ok(events)
+}
+
+fn append_mcp_control_typed_events(
+    events: &mut Vec<TypedEvent>,
+    cfg: &Config,
+    client: &ClientRunEvidence,
+    scenario_label: &str,
+    session: &str,
+    username: Option<&str>,
+) -> Result<(), String> {
+    if cfg.scenario != Scenario::McpControlledSmoke {
+        return Ok(());
+    }
+    if let Some(control) = &client.mcp_control {
+        if control.stdout_clean {
+            push_typed_event(
+                events,
+                "mcp",
+                scenario_label,
+                session,
+                username,
+                "mcp_stdout_clean",
+            )?;
+        }
+        if control
+            .command_outcome_ids
+            .iter()
+            .any(|outcome| *outcome == "look.applied")
+        {
+            push_typed_event(
+                events,
+                "mcp",
+                scenario_label,
+                session,
+                username,
+                "mcp_look_call",
+            )?;
+        }
+        if control
+            .command_outcome_ids
+            .iter()
+            .any(|outcome| matches!(*outcome, "key.applied" | "chat.applied"))
+        {
+            push_typed_event(
+                events,
+                "mcp",
+                scenario_label,
+                session,
+                username,
+                "mcp_input_call",
+            )?;
+        }
+        if control
+            .command_outcome_ids
+            .iter()
+            .any(|outcome| *outcome == "capture_latest_frame.captured")
+            || control
+                .calls_succeeded
+                .iter()
+                .any(|call| *call == "tools/call capture_latest_frame")
+        {
+            push_typed_event(
+                events,
+                "mcp",
+                scenario_label,
+                session,
+                username,
+                "mcp_capture_latest_frame",
+            )?;
+        }
+    }
+    if client
+        .frame_artifacts
+        .as_ref()
+        .is_some_and(frame_artifacts_have_reviewable_identity)
+    {
+        push_typed_event(
+            events,
+            "mcp",
+            scenario_label,
+            session,
+            username,
+            "mcp_frame_artifact_identity",
+        )?;
+    }
+    Ok(())
+}
+
+fn frame_artifacts_have_reviewable_identity(frame: &FrameArtifactsReceiptEvidence) -> bool {
+    frame.selected
+        && frame.capture_requested
+        && frame.artifact_count > 0
+        && frame.path_containment_checked
+        && frame.missing_digests.is_empty()
+        && frame.artifacts.iter().any(|artifact| {
+            !artifact.path.is_empty()
+                && !artifact.relative_path.is_empty()
+                && !artifact.blake3.is_empty()
+                && artifact.byte_len > 0
+        })
 }
 
 fn push_typed_event(
@@ -3700,6 +3808,7 @@ fn typed_event_oracle_contributes_to_pass_fail(scenario: Scenario) -> bool {
     matches!(
         scenario,
         Scenario::Smoke
+            | Scenario::McpControlledSmoke
             | Scenario::InventoryInteraction
             | Scenario::InventoryStackSplitMerge
             | Scenario::InventoryDragTransactions
@@ -3759,12 +3868,29 @@ fn typed_event_required_events_for_graph(scenario: Scenario) -> Vec<String> {
             .iter()
             .map(|(name, _)| (*name).to_string()),
     );
+    if scenario == Scenario::McpControlledSmoke {
+        required.extend([
+            "mcp_stdout_clean".to_string(),
+            "mcp_look_call".to_string(),
+            "mcp_input_call".to_string(),
+            "mcp_capture_latest_frame".to_string(),
+            "mcp_frame_artifact_identity".to_string(),
+        ]);
+    }
     required
 }
 
 fn typed_event_ordered_edges_for_scenario(scenario: Scenario) -> Vec<(&'static str, &'static str)> {
     match scenario {
         Scenario::Smoke => vec![],
+        Scenario::McpControlledSmoke => vec![
+            ("mcp_initialize", "mcp_tools_list"),
+            ("mcp_tools_list", "mcp_status_call"),
+            ("mcp_status_call", "mcp_look_call"),
+            ("mcp_look_call", "mcp_input_call"),
+            ("mcp_input_call", "mcp_capture_latest_frame"),
+            ("mcp_capture_latest_frame", "mcp_frame_artifact_identity"),
+        ],
         Scenario::InventoryInteraction => vec![
             ("protocol_detected", "inventory_drop_sent"),
             ("inventory_drop_sent", "inventory_pickup_seen"),
@@ -12028,7 +12154,7 @@ mod tests {
         assert!(events.iter().all(|event| event.session == TEST_SESSION_ID));
         assert!(events
             .iter()
-            .all(|event| event.source == "client" || event.source == "server"));
+            .all(|event| matches!(event.source.as_str(), "client" | "server" | "mcp")));
         assert!(events
             .windows(2)
             .all(|pair| pair[0].sequence < pair[1].sequence));
@@ -12064,6 +12190,9 @@ mod tests {
     #[test]
     fn typed_event_pass_fail_gate_includes_only_migrated_rows() {
         assert!(typed_event_oracle_contributes_to_pass_fail(Scenario::Smoke));
+        assert!(typed_event_oracle_contributes_to_pass_fail(
+            Scenario::McpControlledSmoke
+        ));
         assert!(typed_event_oracle_contributes_to_pass_fail(
             Scenario::InventoryInteraction
         ));
@@ -12223,6 +12352,27 @@ mod tests {
                 ("client", Some(TEST_USERNAME), "render_tick"),
             ],
             &[("protocol_detected", "render_tick")],
+        );
+        assert_typed_event_fixture_passes(
+            Scenario::McpControlledSmoke,
+            Some(TEST_USERNAME),
+            &[
+                ("client", Some(TEST_USERNAME), "mcp_initialize"),
+                ("client", Some(TEST_USERNAME), "mcp_tools_list"),
+                ("client", Some(TEST_USERNAME), "mcp_status_call"),
+                ("mcp", Some(TEST_USERNAME), "mcp_stdout_clean"),
+                ("mcp", Some(TEST_USERNAME), "mcp_look_call"),
+                ("mcp", Some(TEST_USERNAME), "mcp_input_call"),
+                ("mcp", Some(TEST_USERNAME), "mcp_capture_latest_frame"),
+                ("mcp", Some(TEST_USERNAME), "mcp_frame_artifact_identity"),
+                ("client", Some(TEST_USERNAME), "mcp_command_outcomes"),
+            ],
+            &[
+                ("mcp_initialize", "mcp_tools_list"),
+                ("mcp_tools_list", "mcp_status_call"),
+                ("mcp_status_call", "mcp_look_call"),
+                ("mcp_capture_latest_frame", "mcp_frame_artifact_identity"),
+            ],
         );
         assert_typed_event_fixture_passes(
             Scenario::InventoryInteraction,
@@ -12828,6 +12978,99 @@ mod tests {
         assert!(
             timeline.contains("event=server_inventory_drop"),
             "{timeline}"
+        );
+    }
+
+    #[test]
+    fn typed_event_oracle_validates_migrated_mcp_controlled_smoke_graph() {
+        let cfg = test_config(
+            &[
+                "--scenario",
+                MCP_CONTROLLED_SMOKE_SCENARIO,
+                "--receipt",
+                "/tmp/mcp-controlled-smoke.receipt.json",
+            ],
+            &[],
+        )
+        .expect("mcp-controlled smoke config parses");
+        let mut passing = mcp_controlled_dry_run_evidence(&cfg);
+        if let Some(control) = passing.mcp_control.as_mut() {
+            control.calls_attempted = MCP_CONTROL_LIVE_CALLS.to_vec();
+            control.calls_succeeded = MCP_CONTROL_LIVE_CALLS.to_vec();
+            control.command_outcome_ids = MCP_CONTROL_LIVE_OUTCOME_IDS.to_vec();
+        }
+        passing.frame_artifacts = Some(FrameArtifactsReceiptEvidence {
+            selected: true,
+            capture_requested: true,
+            artifact_count: 1,
+            artifacts: vec![FrameArtifactReceiptItem {
+                path: "docs/evidence/mcp-controlled-smoke-frames/latest-frame.png".to_string(),
+                relative_path: MCP_CONTROL_LIVE_CAPTURE_RELATIVE_PATH.to_string(),
+                format: "png".to_string(),
+                width_px: 1280,
+                height_px: 720,
+                frame_id: 1,
+                sequence_id: 1,
+                byte_len: 16,
+                blake3: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+                    .to_string(),
+                redaction: "not_reviewed".to_string(),
+                includes_ui: true,
+            }],
+            missing_digests: Vec::new(),
+            path_containment_checked: true,
+            promotion_ready: true,
+            non_claims: FRAME_ARTIFACT_NON_CLAIMS.to_vec(),
+        });
+        validate_typed_event_oracle_for_migrated_scenario(&cfg, &passing)
+            .expect("complete typed MCP graph passes");
+
+        let mut missing_artifact_identity = passing.clone();
+        missing_artifact_identity.frame_artifacts = Some(FrameArtifactsReceiptEvidence {
+            selected: true,
+            capture_requested: true,
+            artifact_count: 1,
+            artifacts: Vec::new(),
+            missing_digests: vec!["frame_blake3"],
+            path_containment_checked: true,
+            promotion_ready: false,
+            non_claims: FRAME_ARTIFACT_NON_CLAIMS.to_vec(),
+        });
+        let err =
+            validate_typed_event_oracle_for_migrated_scenario(&cfg, &missing_artifact_identity)
+                .expect_err("missing MCP frame artifact identity fails");
+        assert!(err.contains("mcp_frame_artifact_identity"), "{err}");
+
+        let misordered = typed_event_fixture_from_steps(
+            Scenario::McpControlledSmoke,
+            &[
+                ("client", Some(TEST_USERNAME), "mcp_initialize"),
+                ("client", Some(TEST_USERNAME), "mcp_tools_list"),
+                ("mcp", Some(TEST_USERNAME), "mcp_capture_latest_frame"),
+                ("client", Some(TEST_USERNAME), "mcp_status_call"),
+                ("mcp", Some(TEST_USERNAME), "mcp_look_call"),
+                ("mcp", Some(TEST_USERNAME), "mcp_input_call"),
+                ("mcp", Some(TEST_USERNAME), "mcp_frame_artifact_identity"),
+                ("client", Some(TEST_USERNAME), "mcp_command_outcomes"),
+            ],
+        );
+        let required = typed_event_required_events_for_graph(Scenario::McpControlledSmoke);
+        let required_refs = required.iter().map(String::as_str).collect::<Vec<_>>();
+        let result = evaluate_typed_event_graph(
+            &misordered,
+            MCP_CONTROLLED_SMOKE_SCENARIO,
+            TEST_SESSION_ID,
+            Some(TEST_USERNAME),
+            &required_refs,
+            &[],
+            &typed_event_ordered_edges_for_scenario(Scenario::McpControlledSmoke),
+        );
+        assert!(!result.passed, "{result:?}");
+        assert!(
+            result
+                .order_violations
+                .contains(&"mcp_input_call_before_mcp_capture_latest_frame".to_string()),
+            "{result:?}"
         );
     }
 
