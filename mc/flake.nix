@@ -204,8 +204,8 @@
           mc-compat-runner = pkgs.rustPlatform.buildRustPackage {
             pname = "mc-compat-runner";
             version = "0.1.0";
-            src = ./tools/mc-compat-runner;
-            cargoLock.lockFile = ./tools/mc-compat-runner/Cargo.lock;
+            src = ./compat/runner;
+            cargoLock.lockFile = ./compat/runner/Cargo.lock;
             nativeBuildInputs = [ pkgs.makeWrapper ];
             postInstall = ''
               wrapProgram "$out/bin/mc-compat-runner" \
@@ -1503,7 +1503,7 @@
               cp -R ${./.} repo
               chmod -R u+w repo
               cd repo
-              nickel typecheck config/mc-compat/scenario-manifest.ncl > ../scenario-manifest-typecheck.log
+              nickel typecheck compat/config/scenario-manifest.ncl > ../scenario-manifest-typecheck.log
               rustc --edition=2021 tools/check_scenario_manifest.rs -o ../check-scenario-manifest
               ../check-scenario-manifest --self-test > ../scenario-manifest-self-test.log
               ../check-scenario-manifest > ../scenario-manifest-check.log
@@ -1523,7 +1523,7 @@
               cp -R ${./.} repo
               chmod -R u+w repo
               cd repo
-              nickel typecheck config/mc-compat/scenario-manifest.ncl > ../generated-harness-surfaces-typecheck.log
+              nickel typecheck compat/config/scenario-manifest.ncl > ../generated-harness-surfaces-typecheck.log
               rustc --edition=2021 tools/check_scenario_manifest.rs -o ../check-scenario-manifest
               ../check-scenario-manifest --self-test > ../generated-harness-surfaces-self-test.log
               ../check-scenario-manifest --check-generated-surfaces > ../generated-harness-surfaces-check.log
@@ -1544,7 +1544,7 @@
               cp -R ${./.} repo
               chmod -R u+w repo
               cd repo
-              nickel typecheck config/mc-compat/evidence-promotion-plan.ncl > ../evidence-promotion-typecheck.log
+              nickel typecheck compat/config/evidence-promotion-plan.ncl > ../evidence-promotion-typecheck.log
               rustc --edition=2021 tools/promote_evidence.rs -o ../promote-evidence
               ../promote-evidence --self-test > ../evidence-promotion-self-test.log
               ../promote-evidence --out-dir target/evidence-promotion-dry-run > ../evidence-promotion-dry-run.log
@@ -1765,7 +1765,7 @@
           grep -Fq '"cairn_contract": "mc.compat.scenario.receipt.v2"' smoke-receipt.json
           grep -Fq '"name": "smoke"' smoke-receipt.json
           grep -Fq '"required_milestones": ["protocol_detected"]' smoke-receipt.json
-          grep -Fq '"octet_producer_surface": "tools/mc-compat-runner/src/main.rs"' smoke-receipt.json
+          grep -Fq '"octet_producer_surface": "compat/runner/src/main.rs"' smoke-receipt.json
           grep -Fq '"claims_correctness": false' smoke-receipt.json
           grep -Fq '"claims_semantic_equivalence": false' smoke-receipt.json
           grep -Fq '"wayland_socket_inherited": false' smoke-receipt.json
@@ -2782,7 +2782,7 @@
               grep -Fq '"server_survival_furnace_reconnect_reopen"' receipts/survival-furnace-receipt.json
               grep -Fq '"server_survival_furnace_state"' receipts/survival-furnace-receipt.json
               grep -Fq '"expected_summary_packets": ["login_success", "play_join_game", "open_container", "furnace_input_click", "furnace_fuel_click", "furnace_output_collect", "disconnect_reconnect"]' receipts/survival-furnace-receipt.json
-              paper_fixture=${./tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java}
+              paper_fixture=${./compat/fixtures/paper-survival/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java}
               grep -Fq 'PlayerQuitEvent' "$paper_fixture"
               grep -Fq 'furnaceReconnectJoinSeen.contains(playerId)' "$paper_fixture"
               grep -Fq 'isExpectedFurnaceInput(inventory.getItem(FURNACE_INPUT_SLOT))' "$paper_fixture"
@@ -2831,7 +2831,7 @@
               grep -Fq '"server_survival_furnace_invalid_fuel_rejected"' receipts/survival-furnace-smelting-breadth-receipt.json
               grep -Fq '"server_survival_furnace_breadth_state"' receipts/survival-furnace-smelting-breadth-receipt.json
               grep -Fq '"expected_summary_packets": ["login_success", "play_join_game", "open_container", "furnace_input", "fuel_inserted", "burn_progress", "output_available", "output_collected", "inventory_update", "invalid_fuel_attempt", "invalid_fuel_reject"]' receipts/survival-furnace-smelting-breadth-receipt.json
-              paper_fixture=${./tools/paper-survival-fixture/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java}
+              paper_fixture=${./compat/fixtures/paper-survival/src/main/java/mc/compat/paper/SurvivalFixturePlugin.java}
               grep -Fq 'FURNACE_SMELTING_BREADTH_FIXTURE_ENV' "$paper_fixture"
               grep -Fq 'survival_furnace_invalid_fuel_rejected' "$paper_fixture"
               grep -Fq 'survival_furnace_breadth_state' "$paper_fixture"
@@ -3371,15 +3371,15 @@
         mc-compat-nickel-config =
           pkgs.runCommand "mc-compat-nickel-config" { nativeBuildInputs = [ pkgs.nickel ]; }
             ''
-              nickel typecheck ${./config/mc-compat/default.ncl}
-              nickel export ${./config/mc-compat/default.ncl} > exported.json
-              cmp exported.json ${./config/mc-compat/generated/default.json}
+              nickel typecheck ${./compat/config/default.ncl}
+              nickel export ${./compat/config/default.ncl} > exported.json
+              cmp exported.json ${./compat/config/generated/default.json}
 
               mkdir -p fake-stevenarella
               printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
               ${
                 self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
-              }/bin/mc-compat-runner --config ${./config/mc-compat/generated/default.json} --dry-run --server-backend paper --client-dir "$PWD/fake-stevenarella" > config-dry-run.log
+              }/bin/mc-compat-runner --config ${./compat/config/generated/default.json} --dry-run --server-backend paper --client-dir "$PWD/fake-stevenarella" > config-dry-run.log
               grep -Fq "start Paper server" config-dry-run.log
               grep -Fq "protocol 758" config-dry-run.log
               mkdir -p "$out"
@@ -3394,10 +3394,12 @@
           ${cairn.packages.${pkgs.stdenv.hostPlatform.system}.cairn}/bin/cairn --help > cairn-help.log
           ${
             octet.packages.${pkgs.stdenv.hostPlatform.system}.cargo-octet
-          }/bin/cargo-octet fingerprint --check --output-format json ${./tools/mc-compat-runner/src/main.rs} > octet-fingerprint.json
-          grep -Fq '"schema": "mc.compat.smoke.receipt.v1"' smoke-receipt.json
-          grep -Fq '"cairn_contract": "mc.compat.smoke.receipt.v1"' smoke-receipt.json
-          grep -Fq '"octet_producer_surface": "tools/mc-compat-runner/src/main.rs"' smoke-receipt.json
+          }/bin/cargo-octet fingerprint --check --output-format json ${./compat/runner/src/main.rs} > octet-fingerprint.json
+          grep -Fq '"schema": "mc.compat.scenario.receipt.v2"' smoke-receipt.json
+          grep -Fq '"legacy_schema": "mc.compat.smoke.receipt.v1"' smoke-receipt.json
+          grep -Fq '"cairn_contract": "mc.compat.scenario.receipt.v2"' smoke-receipt.json
+          grep -Fq '"legacy_cairn_contract": "mc.compat.smoke.receipt.v1"' smoke-receipt.json
+          grep -Fq '"octet_producer_surface": "compat/runner/src/main.rs"' smoke-receipt.json
           grep -Fq '"headless_isolation"' smoke-receipt.json
           grep -Fq 'agent-receipt validate' cairn-help.log
           grep -Fq '"schema_version": 1' octet-fingerprint.json

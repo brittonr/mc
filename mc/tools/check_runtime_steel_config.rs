@@ -6,10 +6,10 @@ use std::process::{Command, ExitCode};
 
 const INVENTORY_PATH: &str = "docs/evidence/runtime-config-inventory-2026-05-27.tsv";
 const CONTRACT_PATH: &str = "docs/evidence/steel-runtime-config-contract-2026-05-27.md";
-const STEEL_MODULE_PATH: &str = "config/mc-compat/steel/default.scm";
+const STEEL_MODULE_PATH: &str = "compat/config/steel/default.scm";
 const SNAPSHOT_PATH: &str = "docs/evidence/steel-runtime-config-default.snapshot.json";
-const RUNNER_MAIN_PATH: &str = "tools/mc-compat-runner/src/main.rs";
-const RUNTIME_CORE_PATH: &str = "tools/mc-compat-runner/src/runtime_config.rs";
+const RUNNER_MAIN_PATH: &str = "compat/runner/src/main.rs";
+const RUNTIME_CORE_PATH: &str = "compat/runner/src/runtime_config.rs";
 const VALENCE_CTF_PATH: &str = "servers/valence/examples/ctf.rs";
 const VALENCE_CALL_SITE_PATH: &str =
     "docs/evidence/valence-combat-loop-steel-policy-call-sites-2026-05-28.tsv";
@@ -1154,7 +1154,7 @@ fn validate_snapshot(text: &str, module_hash: &str) -> Vec<String> {
     let mut issues = Vec::new();
     for token in [
         "mc.compat.runtime_config.snapshot.v1",
-        "config/mc-compat/steel/default.scm",
+        "compat/config/steel/default.scm",
         SANDBOX_PROFILE,
         "\"arrow-damage\"",
         "\"arrow_base_damage\"",
@@ -1367,7 +1367,7 @@ fn run_self_tests() -> Result<String, Vec<String>> {
     );
 
     let snapshot_issues = validate_snapshot(
-        "mc.compat.runtime_config.snapshot.v1 config/mc-compat/steel/default.scm mc-compat/pure-v1 \"arrow-damage\" \"arrow_base_damage\" \"hot\" \"next_run\" \"restart_only\" abc",
+        "mc.compat.runtime_config.snapshot.v1 compat/config/steel/default.scm mc-compat/pure-v1 \"arrow-damage\" \"arrow_base_damage\" \"hot\" \"next_run\" \"restart_only\" abc",
         "def0000000000000000000000000000000000000000000000000000000000000",
     );
     assert!(
@@ -1429,7 +1429,7 @@ fn contract_text_for_specs() -> String {
 
 fn snapshot_text_for_specs(bucket_override: Option<(&str, &str)>) -> String {
     let mut text = String::from(
-        "{\n  \"schema\": \"mc.compat.runtime_config.snapshot.v1\",\n  \"source\": {\n    \"path\": \"config/mc-compat/steel/default.scm\",\n    \"sandbox_profile\": \"mc-compat/pure-v1\"\n  },\n  \"evaluated_exports\": {\n",
+        "{\n  \"schema\": \"mc.compat.runtime_config.snapshot.v1\",\n  \"source\": {\n    \"path\": \"compat/config/steel/default.scm\",\n    \"sandbox_profile\": \"mc-compat/pure-v1\"\n  },\n  \"evaluated_exports\": {\n",
     );
     for spec in MANAGED_PATH_SPECS {
         text.push_str(&format!("    {}: \"value\",\n", spec.snapshot_token));

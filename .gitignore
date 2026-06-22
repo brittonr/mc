@@ -22,14 +22,10 @@
 !/mc/servers/
 !/mc/servers/**
 
-!/mc/config/
-/mc/config/*
-!/mc/config/mc-compat/
-/mc/config/mc-compat/*
-!/mc/config/mc-compat/default.ncl
-!/mc/config/mc-compat/generated/
-/mc/config/mc-compat/generated/*
-!/mc/config/mc-compat/generated/default.json
+# Keep the compatibility harness/config/fixtures tracked in this repo.
+!/mc/compat/
+!/mc/compat/**
+/mc/compat/**/target/
 
 !/mc/scripts/
 /mc/scripts/*
@@ -37,13 +33,5 @@
 
 !/mc/tools/
 /mc/tools/*
-!/mc/tools/mc-compat-runner/
-/mc/tools/mc-compat-runner/*
-!/mc/tools/mc-compat-runner/Cargo.lock
-!/mc/tools/mc-compat-runner/Cargo.toml
-!/mc/tools/mc-compat-runner/src/
-/mc/tools/mc-compat-runner/src/*
-!/mc/tools/mc-compat-runner/src/main.rs
-!/mc/tools/mc-compat-runner/src/layout.rs
 
 .pi/

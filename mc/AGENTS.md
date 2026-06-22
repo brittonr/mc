@@ -12,6 +12,7 @@
 
 ## Layout
 - `hyperion/`: Minecraft engine/proxy workspace. Core crates live under `crates/`; event/game logic lives under `events/bedwars`; helper tools live under `tools/`. Repo-specific workflow now lives in `hyperion/AGENTS.md`.
+- `compat/`: mc-compat runner, Nickel/Steel config, generated runner surfaces, and Paper/reference fixtures.
 - `servers/valence/`: core Minecraft server framework. Main crate in `src/`; workspace crates in `crates/*`; runnable examples in `examples/`; protocol/data extractor in `extractor/`; docs site in `website/`. Repo-specific workflow lives in `servers/valence/AGENTS.md`.
 - `clients/stevenarella/`: core Rust Minecraft client used by mc-compat rails and manual client checks. It has no repo-local AGENTS notes yet; use the mc devshell for Cargo and native UI dependencies.
 - `hyperion/` already has repo-local agent notes in `hyperion/.agent/napkin.md`. Keep workspace-wide notes here; prefer subtree-local `AGENTS.md` files for repo-specific commands and conventions.

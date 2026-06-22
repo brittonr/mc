@@ -8462,7 +8462,7 @@ fn smoke_receipt_json_with_typed_event_oracle(
   "contract": {{
     "cairn_contract": "mc.compat.scenario.receipt.v2",
     "legacy_cairn_contract": "mc.compat.smoke.receipt.v1",
-    "octet_producer_surface": "tools/mc-compat-runner/src/main.rs",
+    "octet_producer_surface": "compat/runner/src/main.rs",
     "claims_correctness": false,
     "claims_semantic_equivalence": false
   }},
@@ -14465,7 +14465,7 @@ RED: 1
         );
         assert_eq!(
             json_string_field(contract, "octet_producer_surface").expect("octet surface"),
-            "tools/mc-compat-runner/src/main.rs"
+            "compat/runner/src/main.rs"
         );
         assert_eq!(
             receipt.client_classification.as_deref(),

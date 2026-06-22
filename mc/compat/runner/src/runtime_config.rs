@@ -1016,7 +1016,7 @@ mod tests {
 
     const TEST_MODULE_HASH: &str =
         "06373a43c99d0463611c9ef55dc7e72a624c1335a71078eea6d5d4b5d6998b16";
-    const TEST_MODULE_PATH: &str = "config/mc-compat/steel/default.scm";
+    const TEST_MODULE_PATH: &str = "compat/config/steel/default.scm";
     const TEST_SERVER_PROTOCOL: u32 = 763;
     const TEST_SERVER_PORT: u32 = 25565;
     const TEST_CLIENT_TIMEOUT_SECS: u32 = 120;

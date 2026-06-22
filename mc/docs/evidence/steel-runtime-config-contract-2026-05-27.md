@@ -7,7 +7,7 @@ This checkpoint implements the first Steel-first configuration slice for `hotloa
 ## Source files
 
 - Inventory: `docs/evidence/runtime-config-inventory-2026-05-27.tsv`
-- Steel module: `config/mc-compat/steel/default.scm`
+- Steel module: `compat/config/steel/default.scm`
 - Normalized snapshot: `docs/evidence/steel-runtime-config-default.snapshot.json`
 - Checker: `tools/check_runtime_steel_config.rs`
 - Pure runtime core/restricted evaluator: `tools/mc-compat-runner/src/runtime_config.rs`

@@ -6,9 +6,9 @@ The `mc/` workspace is organized around product roles:
 
 - `clients/stevenarella/`: core Rust Minecraft client used by compatibility rails and manual client checks.
 - `servers/valence/`: core Rust Minecraft server framework used by compatibility rails.
-- `tools/mc-compat-runner/`: compatibility runner that orchestrates client/server/Paper fixtures and writes receipts.
-- `config/mc-compat/`: typed mc-compat configuration and scenario manifests.
-- `tools/paper-survival-fixture/`: Paper reference fixture used for paired survival evidence.
+- `compat/runner/`: compatibility runner that orchestrates client/server/Paper fixtures and writes receipts.
+- `compat/config/`: typed mc-compat configuration and scenario manifests.
+- `compat/fixtures/paper-survival/`: Paper reference fixture used for paired survival evidence.
 - `cairn/`: lifecycle specs, active changes, and archived changes.
 - `docs/evidence/`: promoted receipts, run logs, manifests, and review notes.
 
@@ -16,7 +16,7 @@ Stevenarella and Valence retain upstream ancestry, but they are not treated as p
 
 ## Layout resolution
 
-`tools/mc-compat-runner/src/layout.rs` is the central resolver for client, server, and compatibility roots. It accepts the final role-based layout and the old transition layout while this migration is active, and it fails closed for missing required roots, ambiguous duplicate roots, or nested Git directories inside core component trees.
+`compat/runner/src/layout.rs` is the central resolver for client, server, and compatibility roots. It accepts the final role-based layout and the old transition layout while this migration is active, and it fails closed for missing required roots, ambiguous duplicate roots, or nested Git directories inside core component trees.
 
 Runner defaults, Valence worktree source detection, and validation tests should use this resolver rather than adding ad hoc path probes.
 

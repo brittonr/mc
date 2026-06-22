@@ -1,6 +1,6 @@
 # Nickel-authored defaults for the local Minecraft compatibility smoke runner.
 # Export with:
-#   nix shell nixpkgs#nickel -c nickel export config/mc-compat/default.ncl > config/mc-compat/generated/default.json
+#   nix shell nixpkgs#nickel -c nickel export compat/config/default.ncl > compat/config/generated/default.json
 
 let Port = std.contract.from_predicate (fun value =>
   std.is_number value && std.number.is_integer value && value >= 1 && value <= 65535

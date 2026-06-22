@@ -3,7 +3,7 @@
   "schema_version": 1,
   "source": {
     "language": "steel",
-    "path": "config/mc-compat/steel/default.scm",
+    "path": "compat/config/steel/default.scm",
     "module_blake3": "394ab2f62d4b3c3534d434fffc3d1725ccd03521ab8ef0bbcdef742a7324d5c6",
     "sandbox_profile": "mc-compat/pure-v1"
   },

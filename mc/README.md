@@ -4,7 +4,7 @@ This workspace contains local Minecraft compatibility experiments. The hardened 
 
 - client: `clients/stevenarella`
 - server: `servers/valence` pinned to Minecraft `1.18.2` / protocol `758`
-- runner: `tools/mc-compat-runner`, packaged by the root flake
+- runner: `compat/runner`, packaged by the root flake
 
 The legacy shell entrypoint is intentionally only a thin compatibility shim around the flake app.
 
@@ -285,7 +285,7 @@ Receipts also include bounded blocks for the remaining compatibility seams:
 - `packet_capture_oracle`: headless/redacted packet-summary metadata; raw payloads are not durable evidence by default.
 - `typed_event_oracle`: typed event schema/migration metadata. Dry-run and failure receipts mark `migration_status="substring-fallback"`; successful live receipts can write a `.typed-events.log` sidecar derived from client/server milestone evidence and record `event_log_path`, normalized `timeline_blake3`, `event_count`, `contributes_to_pass_fail`, and `raw_payloads_recorded=false`. The scenario manifest marks `smoke`, `inventory-interaction`, and `inventory-stack-split-merge` as `typed-event-ready`; those rows have typed-event readiness fixtures and fail closed on missing structured events before substring fallback can satisfy pass/fail. Remaining maintained rows stay waiver-backed substring fallback under the manifest-level owner/reason/non-claim/next-action metadata until typed-event fixtures cover their client, server, and forbidden surfaces.
 - Receipt-schema tests structurally parse evidence-critical JSON fields instead of accepting substring-only matches. The structured checks cover non-claims, child revision cleanliness, typed-event artifact identity, MCP control evidence, frame artifact paths/digests, backend identity, duplicate/wrong-typed fields, and broad overclaim keys; retained substring checks are limited to intentionally free-form text surfaces.
-- Scenario-derived harness surfaces are generated from `config/mc-compat/scenario-manifest.ncl` into checked-in static files. `tools/mc-compat-runner/src/scenario_manifest_generated.rs` remains Rust-only at runtime, while `docs/evidence/mc-compat-scenario-index.generated.md` is a bounded machine-owned index for reviewer navigation. Refresh with `tools/check_scenario_manifest.rs --write-generated-surfaces` and verify with the `mc-compat-generated-harness-surfaces` flake check.
+- Scenario-derived harness surfaces are generated from `compat/config/scenario-manifest.ncl` into checked-in static files. `compat/runner/src/scenario_manifest_generated.rs` remains Rust-only at runtime, while `docs/evidence/mc-compat-scenario-index.generated.md` is a bounded machine-owned index for reviewer navigation. Refresh with `tools/check_scenario_manifest.rs --write-generated-surfaces` and verify with the `mc-compat-generated-harness-surfaces` flake check.
 - `negative_live_rail`: dry-run/live envelope metadata for bounded invalid-action scenarios. It records the selected rail, invalid action, expected containment/disconnect outcome vocabulary, observed outcome plus client postcondition milestone when live telemetry exists, owned-local/public authorization fields, client/time bounds, required evidence fields, and explicit non-claims for broad invalid-input, adversarial-security, production, inventory, plugin-message, and CTF semantics.
 - `public_server_authorized_safety`: deterministic authorization fixture metadata. It records owner, authorization artifact, non-loopback fixture scope, client/duration/traffic bounds, redaction policy, checkpoint decision, `live_traffic_enabled=false`, and explicit non-claims for live public-server safety, third-party targets without authorization, production readiness, adversarial safety, WAN tolerance, load safety beyond configured bounds, and unbounded public testing.
 - `proxy_compat_seam`: direct/proxied route, forwarding mode, owned-local-proxy guard, and non-claims such as `mtls_ported=false` and `credentials_recorded=false`.
@@ -295,27 +295,27 @@ For `flag-score-repeat`, `reconnect-flag-score`, and `multi-client-load-score`, 
 
 ## Nickel-backed config
 
-The scenario manifest source of truth is `config/mc-compat/scenario-manifest.ncl`. Update it before adding or changing a maintained scenario, then run `nix build .#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L` to typecheck Nickel, run positive/negative manifest fixtures, and check drift against runner tables, flake dry-run checks, README command listings, and current evidence bundle rows. Runtime code consumes checked-in Rust tables in `tools/mc-compat-runner/src/scenario_manifest_generated.rs`; it does not evaluate Nickel at startup.
+The scenario manifest source of truth is `compat/config/scenario-manifest.ncl`. Update it before adding or changing a maintained scenario, then run `nix build .#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L` to typecheck Nickel, run positive/negative manifest fixtures, and check drift against runner tables, flake dry-run checks, README command listings, and current evidence bundle rows. Runtime code consumes checked-in Rust tables in `compat/runner/src/scenario_manifest_generated.rs`; it does not evaluate Nickel at startup.
 
-Evidence promotion plans use the typed shape in `config/mc-compat/evidence-promotion-plan.ncl` and the Rust tool `tools/promote_evidence.rs`. Safe workflow: run `nix build .#checks.x86_64-linux.mc-compat-evidence-promotion --no-link -L`, inspect the dry-run plan, apply only to an explicit output directory, then run acceptance matrix, current bundle, evidence manifest, and Cairn validation before claiming a row. The tool never force-adds broad directories; it copies only planned artifacts and writes `promotion-plan.md`.
+Evidence promotion plans use the typed shape in `compat/config/evidence-promotion-plan.ncl` and the Rust tool `tools/promote_evidence.rs`. Safe workflow: run `nix build .#checks.x86_64-linux.mc-compat-evidence-promotion --no-link -L`, inspect the dry-run plan, apply only to an explicit output directory, then run acceptance matrix, current bundle, evidence manifest, and Cairn validation before claiming a row. The tool never force-adds broad directories; it copies only planned artifacts and writes `promotion-plan.md`.
 
 Evidence BLAKE3 manifests can be checked or refreshed with `nix run .#evidence-manifest-refresh -- --check` and `nix run .#evidence-manifest-refresh -- --refresh`. The helper scans reviewable `docs/evidence/*.b3` manifests, rewrites stale digest fields only in explicit refresh mode, leaves missing-file rows visible for review, and repeats until a deterministic fixpoint or a non-convergence diagnostic. Run `nix build .#checks.x86_64-linux.mc-compat-evidence-manifest-refresh --no-link -L` before the broader evidence-manifest/task-evidence gates when a Cairn drain updates logs, accepted specs, archive tasks, or nested manifests.
 
 Cairn task closeout evidence is checked by `tools/check_cairn_task_evidence.rs` and the flake check `mc-compat-cairn-task-evidence`. Before marking an active Cairn task complete, cite copied `docs/evidence/` command output such as a `.run.log` plus either its `.b3` manifest or an inline BLAKE3 digest; missing files, target-only receipts, and checked tasks without verification output fail the gate.
 
-The checked-in default config is Nickel-authored at `config/mc-compat/default.ncl` and exported to `config/mc-compat/generated/default.json`. The runner consumes exported JSON, not Nickel at runtime:
+The checked-in default config is Nickel-authored at `compat/config/default.ncl` and exported to `compat/config/generated/default.json`. The runner consumes exported JSON, not Nickel at runtime:
 
 ```sh
 nix shell nixpkgs#nickel -c nickel export \
-  config/mc-compat/default.ncl \
-  > config/mc-compat/generated/default.json
+  compat/config/default.ncl \
+  > compat/config/generated/default.json
 
 nix run .#mc-compat-smoke -- \
-  --config config/mc-compat/generated/default.json \
+  --config compat/config/generated/default.json \
   --dry-run
 ```
 
-Config provides defaults; environment variables and later CLI flags override it. You can also set `MC_COMPAT_CONFIG=config/mc-compat/generated/default.json`.
+Config provides defaults; environment variables and later CLI flags override it. You can also set `MC_COMPAT_CONFIG=compat/config/generated/default.json`.
 
 Run both fallback/control Paper and intended/default Valence receipts, then compare them in one local gate:
 
