@@ -3699,7 +3699,10 @@ fn typed_event_oracle_receipt_json(artifact: Option<&TypedEventOracleArtifact>) 
 fn typed_event_oracle_contributes_to_pass_fail(scenario: Scenario) -> bool {
     matches!(
         scenario,
-        Scenario::Smoke | Scenario::InventoryInteraction | Scenario::InventoryStackSplitMerge
+        Scenario::Smoke
+            | Scenario::InventoryInteraction
+            | Scenario::InventoryStackSplitMerge
+            | Scenario::InventoryDragTransactions
     )
 }
 
@@ -11892,8 +11895,11 @@ mod tests {
         assert!(typed_event_oracle_contributes_to_pass_fail(
             Scenario::InventoryStackSplitMerge
         ));
-        assert!(!typed_event_oracle_contributes_to_pass_fail(
+        assert!(typed_event_oracle_contributes_to_pass_fail(
             Scenario::InventoryDragTransactions
+        ));
+        assert!(!typed_event_oracle_contributes_to_pass_fail(
+            Scenario::SurvivalBreakPlacePickup
         ));
     }
 
@@ -12064,6 +12070,78 @@ mod tests {
                 ("inventory_drop_sent", "inventory_pickup_seen"),
                 ("server_inventory_drop", "server_inventory_pickup"),
                 ("server_inventory_container_click", "server_block_place"),
+            ],
+        );
+        assert_typed_event_fixture_passes(
+            Scenario::InventoryDragTransactions,
+            Some(TEST_USERNAME),
+            &[
+                ("client", Some(TEST_USERNAME), "protocol_detected"),
+                ("client", Some(TEST_USERNAME), "join_game"),
+                ("client", Some(TEST_USERNAME), "render_tick"),
+                ("client", Some(TEST_USERNAME), "team_red"),
+                ("client", Some(TEST_USERNAME), "inventory_drag_initial_slot"),
+                ("client", Some(TEST_USERNAME), "inventory_drag_pickup_sent"),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "inventory_drag_source_empty_seen",
+                ),
+                ("client", Some(TEST_USERNAME), "inventory_drag_start_sent"),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "inventory_drag_target_a_sent",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "inventory_drag_target_b_sent",
+                ),
+                ("client", Some(TEST_USERNAME), "inventory_drag_end_sent"),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "inventory_drag_final_distribution_seen",
+                ),
+                ("server", Some(TEST_USERNAME), "server_username_seen"),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_inventory_drag_pickup",
+                ),
+                ("server", Some(TEST_USERNAME), "server_inventory_drag_start"),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_inventory_drag_target_a",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_inventory_drag_target_b",
+                ),
+                ("server", Some(TEST_USERNAME), "server_inventory_drag_end"),
+            ],
+            &[
+                ("inventory_drag_initial_slot", "inventory_drag_pickup_sent"),
+                ("inventory_drag_pickup_sent", "inventory_drag_start_sent"),
+                (
+                    "inventory_drag_target_a_sent",
+                    "inventory_drag_target_b_sent",
+                ),
+                (
+                    "inventory_drag_end_sent",
+                    "inventory_drag_final_distribution_seen",
+                ),
+                (
+                    "server_inventory_drag_pickup",
+                    "server_inventory_drag_start",
+                ),
+                (
+                    "server_inventory_drag_target_b",
+                    "server_inventory_drag_end",
+                ),
             ],
         );
         assert_typed_event_fixture_passes(
@@ -12386,6 +12464,84 @@ mod tests {
         let err = validate_typed_event_oracle_for_migrated_scenario(&cfg, &missing_server)
             .expect_err("missing typed server event fails");
         assert!(err.contains("server_block_place"), "{err}");
+    }
+
+    #[test]
+    fn typed_event_oracle_validates_migrated_inventory_drag_graph() {
+        let cfg = test_config(
+            &[
+                "--scenario",
+                "inventory-drag-transactions",
+                "--receipt",
+                "/tmp/inventory-drag.receipt.json",
+            ],
+            &[],
+        )
+        .expect("inventory drag config parses");
+        let client_observed = scenario_required_milestones(Scenario::InventoryDragTransactions)
+            .iter()
+            .map(|(name, _)| *name)
+            .collect::<Vec<_>>();
+        let server_observed = server_required_milestones(Scenario::InventoryDragTransactions)
+            .iter()
+            .map(|(name, _)| *name)
+            .collect::<Vec<_>>();
+        let passing = ClientRunEvidence {
+            log_path: None,
+            log_paths: Vec::new(),
+            usernames: vec![TEST_USERNAME.to_string()],
+            exit_code: Some(0),
+            classification: "client-exited-success",
+            matched_success_pattern: Some("Detected server protocol version".to_string()),
+            scenario: Some(ScenarioEvidence {
+                observed_milestones: client_observed,
+                missing_milestones: Vec::new(),
+                forbidden_matches: Vec::new(),
+                passed: true,
+            }),
+            server_scenario: Some(ServerScenarioEvidence {
+                observed_milestones: server_observed,
+                missing_milestones: Vec::new(),
+                forbidden_matches: Vec::new(),
+                passed: true,
+            }),
+            projectile_damage_causality: None,
+            mcp_control: None,
+            frame_artifacts: None,
+        };
+        validate_typed_event_oracle_for_migrated_scenario(&cfg, &passing)
+            .expect("complete typed inventory drag graph passes");
+
+        let mut missing_client_drag = passing.clone();
+        missing_client_drag
+            .scenario
+            .as_mut()
+            .expect("client evidence")
+            .observed_milestones
+            .retain(|name| *name != "inventory_drag_target_b_sent");
+        let err = validate_typed_event_oracle_for_migrated_scenario(&cfg, &missing_client_drag)
+            .expect_err("missing typed drag client event fails");
+        assert!(err.contains("inventory_drag_target_b_sent"), "{err}");
+
+        let mut misordered_server_drag = passing;
+        misordered_server_drag
+            .server_scenario
+            .as_mut()
+            .expect("server evidence")
+            .observed_milestones = vec![
+            "server_username_seen",
+            "server_inventory_drag_pickup",
+            "server_inventory_drag_start",
+            "server_inventory_drag_target_a",
+            "server_inventory_drag_end",
+            "server_inventory_drag_target_b",
+        ];
+        let err = validate_typed_event_oracle_for_migrated_scenario(&cfg, &misordered_server_drag)
+            .expect_err("misordered typed drag server phases fail");
+        assert!(
+            err.contains("server_inventory_drag_target_b_before_server_inventory_drag_end"),
+            "{err}"
+        );
     }
 
     #[test]

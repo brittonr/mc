@@ -4,9 +4,9 @@ b4e56e5edbbbe406581718f534dc859a3f926c48f217ad370da69e7fff131911  cairn/archive/
 3207d028c9768d3ef1fc4a60c569718405e8d7b8d995071fa3d693bb55f59fb2  cairn/specs/mc-compatibility/spec.md
 80a3afb8c38101448432f89bafb062abf731295a6d300de842e3a9c2e94132f5  docs/evidence/protocol-763-armor-loadout-enchantment-status-contract-2026-05-29.b3
 4aa3c332bfa51eecc661b801698b4c16df0b2715dbf53b863743480f9647e992  docs/evidence/protocol-763-armor-loadout-enchantment-status-checker-2026-05-29.b3
-f65f66bd11d08d4cf1dba449e8b5ac2443fe540d6c099a3cafb11bff69a19f08  docs/evidence/protocol-763-armor-loadout-enchantment-status-rail-2026-05-29.b3
-d5f675ec571559be6c886a9fcccb82f45e7d23bb2392c09119c2e06e74ce9e60  docs/evidence/protocol-763-armor-loadout-enchantment-status-row-2026-05-29.b3
+9f0a661b90a9e94211376c53ea10ede1e59fe479409a72f751051d358802f76a  docs/evidence/protocol-763-armor-loadout-enchantment-status-rail-2026-05-29.b3
+735edc9c974ecb074ab4d52434e044b86da16993f8b726b1c0a16147de194b64  docs/evidence/protocol-763-armor-loadout-enchantment-status-row-2026-05-29.b3
 5f9e9183b71c4347d31c95e8d8e8638a86f28aef80e8e34c21f8134ce5743fb7  docs/evidence/protocol-763-acceptance-matrix.md
 c4bf83c2f44a44b91a9f8d075226eafdc475cfa174b5bb284e35390954f9a1ac  docs/evidence/protocol-763-current-evidence-bundle.md
-070ae19d215f6d20ca9e3836e1d26b0fe318a15001c64c428beee4eb8e25fe04  compat/runner/src/main.rs
+fa837a170556967089d865c1af9bb6744262f3abf28c9ae0fe24b4f11d78fc60  compat/runner/src/main.rs
 e883c3ca16050a62449dd85726b0f117876f46bee841814a2a83544bb7be23dd  tools/check_armor_loadout_enchantment_status.rs

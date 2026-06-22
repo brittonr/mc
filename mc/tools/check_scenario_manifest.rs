@@ -122,6 +122,28 @@ const INVENTORY_STACK_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
     "server_inventory_stack_merge_pickup",
     "server_inventory_stack_merge",
 ];
+const INVENTORY_DRAG_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
+    "protocol_detected",
+    "join_game",
+    "render_tick",
+    "team_red",
+    "inventory_drag_initial_slot",
+    "inventory_drag_pickup_sent",
+    "inventory_drag_source_empty_seen",
+    "inventory_drag_start_sent",
+    "inventory_drag_target_a_sent",
+    "inventory_drag_target_b_sent",
+    "inventory_drag_end_sent",
+    "inventory_drag_final_distribution_seen",
+];
+const INVENTORY_DRAG_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
+    "server_username_seen",
+    "server_inventory_drag_pickup",
+    "server_inventory_drag_start",
+    "server_inventory_drag_target_a",
+    "server_inventory_drag_target_b",
+    "server_inventory_drag_end",
+];
 const TYPED_EVENT_READINESS_FIXTURES: &[TypedEventReadinessFixture<'static>] = &[
     TypedEventReadinessFixture {
         scenario: "smoke",
@@ -141,6 +163,13 @@ const TYPED_EVENT_READINESS_FIXTURES: &[TypedEventReadinessFixture<'static>] = &
         scenario: "inventory-stack-split-merge",
         client_events: INVENTORY_STACK_TYPED_EVENT_CLIENT_EVENTS,
         server_events: INVENTORY_STACK_TYPED_EVENT_SERVER_EVENTS,
+        forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
+        derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
+    },
+    TypedEventReadinessFixture {
+        scenario: "inventory-drag-transactions",
+        client_events: INVENTORY_DRAG_TYPED_EVENT_CLIENT_EVENTS,
+        server_events: INVENTORY_DRAG_TYPED_EVENT_SERVER_EVENTS,
         forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
         derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
     },
