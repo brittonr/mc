@@ -3704,6 +3704,7 @@ fn typed_event_oracle_contributes_to_pass_fail(scenario: Scenario) -> bool {
             | Scenario::InventoryStackSplitMerge
             | Scenario::InventoryDragTransactions
             | Scenario::SurvivalBreakPlacePickup
+            | Scenario::SurvivalCraftingTable
     )
 }
 
@@ -3865,6 +3866,44 @@ fn typed_event_ordered_edges_for_scenario(scenario: Scenario) -> Vec<(&'static s
             ("server_survival_join", "server_survival_break"),
             ("server_survival_break", "server_survival_pickup"),
             ("server_survival_pickup", "server_survival_place"),
+        ],
+        Scenario::SurvivalCraftingTable => vec![
+            (
+                "survival_crafting_table_open_seen",
+                "survival_crafting_input_a_sent",
+            ),
+            (
+                "survival_crafting_input_a_sent",
+                "survival_crafting_input_b_sent",
+            ),
+            (
+                "survival_crafting_input_b_sent",
+                "survival_crafting_result_seen",
+            ),
+            (
+                "survival_crafting_result_seen",
+                "survival_crafting_result_collected",
+            ),
+            (
+                "survival_crafting_result_collected",
+                "survival_crafting_inventory_updated",
+            ),
+            (
+                "server_survival_crafting_table_open",
+                "server_survival_crafting_input_a",
+            ),
+            (
+                "server_survival_crafting_input_a",
+                "server_survival_crafting_input_b",
+            ),
+            (
+                "server_survival_crafting_input_b",
+                "server_survival_crafting_result",
+            ),
+            (
+                "server_survival_crafting_result",
+                "server_survival_crafting_collect",
+            ),
         ],
         _ => vec![],
     }
@@ -11911,6 +11950,9 @@ mod tests {
         assert!(typed_event_oracle_contributes_to_pass_fail(
             Scenario::SurvivalBreakPlacePickup
         ));
+        assert!(typed_event_oracle_contributes_to_pass_fail(
+            Scenario::SurvivalCraftingTable
+        ));
         assert!(!typed_event_oracle_contributes_to_pass_fail(
             Scenario::SurvivalChestPersistence
         ));
@@ -12631,6 +12673,85 @@ mod tests {
                 .expect_err("misordered typed survival server phases fail");
         assert!(
             err.contains("server_survival_pickup_before_server_survival_place"),
+            "{err}"
+        );
+    }
+
+    #[test]
+    fn typed_event_oracle_validates_migrated_survival_crafting_table_graph() {
+        let cfg = test_config(
+            &[
+                "--scenario",
+                "survival-crafting-table",
+                "--receipt",
+                "/tmp/survival-crafting-table.receipt.json",
+            ],
+            &[],
+        )
+        .expect("survival crafting-table config parses");
+        let client_observed = scenario_required_milestones(Scenario::SurvivalCraftingTable)
+            .iter()
+            .map(|(name, _)| *name)
+            .collect::<Vec<_>>();
+        let server_observed = server_required_milestones(Scenario::SurvivalCraftingTable)
+            .iter()
+            .map(|(name, _)| *name)
+            .collect::<Vec<_>>();
+        let passing = ClientRunEvidence {
+            log_path: None,
+            log_paths: Vec::new(),
+            usernames: vec![TEST_USERNAME.to_string()],
+            exit_code: Some(0),
+            classification: "client-exited-success",
+            matched_success_pattern: Some("Detected server protocol version".to_string()),
+            scenario: Some(ScenarioEvidence {
+                observed_milestones: client_observed,
+                missing_milestones: Vec::new(),
+                forbidden_matches: Vec::new(),
+                passed: true,
+            }),
+            server_scenario: Some(ServerScenarioEvidence {
+                observed_milestones: server_observed,
+                missing_milestones: Vec::new(),
+                forbidden_matches: Vec::new(),
+                passed: true,
+            }),
+            projectile_damage_causality: None,
+            mcp_control: None,
+            frame_artifacts: None,
+        };
+        validate_typed_event_oracle_for_migrated_scenario(&cfg, &passing)
+            .expect("complete typed survival crafting-table graph passes");
+
+        let mut missing_client_crafting = passing.clone();
+        missing_client_crafting
+            .scenario
+            .as_mut()
+            .expect("client evidence")
+            .observed_milestones
+            .retain(|name| *name != "survival_crafting_result_collected");
+        let err = validate_typed_event_oracle_for_migrated_scenario(&cfg, &missing_client_crafting)
+            .expect_err("missing typed crafting client event fails");
+        assert!(err.contains("survival_crafting_result_collected"), "{err}");
+
+        let mut misordered_server_crafting = passing;
+        misordered_server_crafting
+            .server_scenario
+            .as_mut()
+            .expect("server evidence")
+            .observed_milestones = vec![
+            "server_username_seen",
+            "server_survival_crafting_table_open",
+            "server_survival_crafting_input_a",
+            "server_survival_crafting_input_b",
+            "server_survival_crafting_collect",
+            "server_survival_crafting_result",
+        ];
+        let err =
+            validate_typed_event_oracle_for_migrated_scenario(&cfg, &misordered_server_crafting)
+                .expect_err("misordered typed crafting server phases fail");
+        assert!(
+            err.contains("server_survival_crafting_result_before_server_survival_crafting_collect"),
             "{err}"
         );
     }

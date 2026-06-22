@@ -161,6 +161,25 @@ const SURVIVAL_BREAK_PLACE_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
     "server_survival_pickup",
     "server_survival_place",
 ];
+const SURVIVAL_CRAFTING_TABLE_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
+    "protocol_detected",
+    "join_game",
+    "render_tick",
+    "survival_crafting_table_open_seen",
+    "survival_crafting_input_a_sent",
+    "survival_crafting_input_b_sent",
+    "survival_crafting_result_seen",
+    "survival_crafting_result_collected",
+    "survival_crafting_inventory_updated",
+];
+const SURVIVAL_CRAFTING_TABLE_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
+    "server_username_seen",
+    "server_survival_crafting_table_open",
+    "server_survival_crafting_input_a",
+    "server_survival_crafting_input_b",
+    "server_survival_crafting_result",
+    "server_survival_crafting_collect",
+];
 const TYPED_EVENT_READINESS_FIXTURES: &[TypedEventReadinessFixture<'static>] = &[
     TypedEventReadinessFixture {
         scenario: "smoke",
@@ -194,6 +213,13 @@ const TYPED_EVENT_READINESS_FIXTURES: &[TypedEventReadinessFixture<'static>] = &
         scenario: "survival-break-place-pickup",
         client_events: SURVIVAL_BREAK_PLACE_TYPED_EVENT_CLIENT_EVENTS,
         server_events: SURVIVAL_BREAK_PLACE_TYPED_EVENT_SERVER_EVENTS,
+        forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
+        derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
+    },
+    TypedEventReadinessFixture {
+        scenario: "survival-crafting-table",
+        client_events: SURVIVAL_CRAFTING_TABLE_TYPED_EVENT_CLIENT_EVENTS,
+        server_events: SURVIVAL_CRAFTING_TABLE_TYPED_EVENT_SERVER_EVENTS,
         forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
         derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
     },
