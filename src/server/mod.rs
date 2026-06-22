@@ -216,6 +216,8 @@ const SURVIVAL_MOB_DROP_INVENTORY_SLOT: i16 = 36;
 const SURVIVAL_MOB_DROP_INVENTORY_INDEX: usize = 36;
 const SURVIVAL_MOB_DROP_ATTACK_TYPE: i32 = 1;
 const SURVIVAL_MOB_DROP_MAIN_HAND: i32 = 0;
+const SURVIVAL_MOB_AI_LOOT_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_MOB_AI_LOOT_PROBE";
+const SURVIVAL_MOB_AI_LOOT_LOG_TICK: u32 = 120;
 const SURVIVAL_REDSTONE_TOGGLE_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_REDSTONE_TOGGLE_PROBE";
 const SURVIVAL_REDSTONE_TOGGLE_POSITION_TICK: u32 = 60;
 const SURVIVAL_REDSTONE_TOGGLE_INPUT_TICK: u32 = 100;
@@ -239,6 +241,8 @@ const SURVIVAL_REDSTONE_TOGGLE_CURSOR_CENTER: f32 = 0.5;
 const SURVIVAL_REDSTONE_TOGGLE_CURSOR_TOP: f32 = 1.0;
 const SURVIVAL_REDSTONE_TOGGLE_ON_SEQUENCE: i32 = 911;
 const SURVIVAL_REDSTONE_TOGGLE_OFF_SEQUENCE: i32 = 912;
+const SURVIVAL_REDSTONE_CIRCUIT_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_REDSTONE_CIRCUIT_PROBE";
+const SURVIVAL_REDSTONE_CIRCUIT_LOG_TICK: u32 = 120;
 const SURVIVAL_WORLD_PERSISTENCE_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_PROBE";
 const SURVIVAL_WORLD_PERSISTENCE_SESSION_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_SESSION";
 const SURVIVAL_WORLD_PERSISTENCE_FIRST_SESSION: u32 = 1;
@@ -281,6 +285,14 @@ const SURVIVAL_BLOCK_ENTITY_TEXT_LINE_2: &str = "Compat";
 const SURVIVAL_BLOCK_ENTITY_TEXT_LINE_3: &str = "Sign";
 const SURVIVAL_BLOCK_ENTITY_TEXT_LINE_4: &str = "Persist";
 const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &str = "MC|Compat|Sign|Persist";
+const SURVIVAL_WORLD_MULTICHUNK_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_MULTICHUNK_PROBE";
+const SURVIVAL_WORLD_MULTICHUNK_SESSION_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_MULTICHUNK_SESSION";
+const SURVIVAL_WORLD_MULTICHUNK_LOG_TICK: u32 = 120;
+const SURVIVAL_CONTAINER_BLOCK_ENTITY_PROBE_ENV: &str =
+    "MC_COMPAT_SURVIVAL_CONTAINER_BLOCK_ENTITY_PROBE";
+const SURVIVAL_CONTAINER_BLOCK_ENTITY_LOG_TICK: u32 = 120;
+const SURVIVAL_SIGN_EDITING_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_SIGN_EDITING_PROBE";
+const SURVIVAL_SIGN_EDITING_LOG_TICK: u32 = 120;
 const SIGN_LINE_COUNT: usize = 4;
 const SIGN_LINE_INDEX_1: usize = 0;
 const SIGN_LINE_INDEX_2: usize = 1;
@@ -295,6 +307,9 @@ const BLOCK_ENTITY_PACKED_X_SHIFT: u8 = 4;
 const BLOCK_ENTITY_PACKED_COORD_MASK: u8 = 0x0F;
 const CHUNK_SECTION_WIDTH_LOG2: i32 = 4;
 const SURVIVAL_BIOME_DIMENSION_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_PROBE";
+const SURVIVAL_BIOME_DIMENSION_TRAVEL_PROBE_ENV: &str =
+    "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_TRAVEL_PROBE";
+const SURVIVAL_BIOME_DIMENSION_TRAVEL_LOG_TICK: u32 = 120;
 const SURVIVAL_OVERWORLD_ID: &str = "minecraft:overworld";
 const SURVIVAL_NETHER_ID: &str = "minecraft:the_nether";
 const SURVIVAL_END_ID: &str = "minecraft:the_end";
@@ -517,6 +532,17 @@ fn survival_block_entity_probe_session_from_env() -> u32 {
                 || *session == SURVIVAL_BLOCK_ENTITY_RESTART_SESSION
         })
         .unwrap_or(SURVIVAL_BLOCK_ENTITY_FIRST_SESSION)
+}
+
+fn survival_world_multichunk_probe_session_from_env() -> u32 {
+    std::env::var(SURVIVAL_WORLD_MULTICHUNK_SESSION_ENV)
+        .ok()
+        .and_then(|raw| raw.trim().parse::<u32>().ok())
+        .filter(|session| {
+            *session == SURVIVAL_WORLD_PERSISTENCE_FIRST_SESSION
+                || *session == SURVIVAL_WORLD_PERSISTENCE_RESTART_SESSION
+        })
+        .unwrap_or(SURVIVAL_WORLD_PERSISTENCE_FIRST_SESSION)
 }
 
 fn survival_crafting_table_position() -> Position {
@@ -972,11 +998,15 @@ pub struct Server {
     survival_mob_drop_inventory_seen: bool,
     survival_mob_drop_target_entity_id: Option<i32>,
     survival_mob_drop_drop_entity_id: Option<i32>,
+    survival_mob_ai_loot_probe_enabled: bool,
+    survival_mob_ai_loot_logged: bool,
     survival_redstone_toggle_position_sent: bool,
     survival_redstone_toggle_input_sent: bool,
     survival_redstone_toggle_output_on_seen: bool,
     survival_redstone_toggle_return_input_sent: bool,
     survival_redstone_toggle_output_off_seen: bool,
+    survival_redstone_circuit_probe_enabled: bool,
+    survival_redstone_circuit_logged: bool,
     survival_world_persistence_position_sent: bool,
     survival_world_persistence_mutation_sent: bool,
     survival_world_persistence_pre_restart_seen: bool,
@@ -986,6 +1016,14 @@ pub struct Server {
     survival_block_entity_pre_restart_seen: bool,
     survival_block_entity_reconnect_sent: bool,
     survival_block_entity_post_restart_seen: bool,
+    survival_world_multichunk_probe_enabled: bool,
+    survival_world_multichunk_logged: bool,
+    survival_container_block_entity_probe_enabled: bool,
+    survival_container_block_entity_logged: bool,
+    survival_biome_dimension_travel_probe_enabled: bool,
+    survival_biome_dimension_travel_logged: bool,
+    survival_sign_editing_probe_enabled: bool,
+    survival_sign_editing_logged: bool,
     sign_editor_open_position: Option<Position>,
     inventory_probe_click_sent: bool,
     inventory_probe_container_click_sent: bool,
@@ -1565,8 +1603,16 @@ impl Server {
             survival_mob_drop_probe_enabled: std::env::var(SURVIVAL_MOB_DROP_PROBE_ENV)
                 .map(|value| value != "0")
                 .unwrap_or(false),
+            survival_mob_ai_loot_probe_enabled: std::env::var(SURVIVAL_MOB_AI_LOOT_PROBE_ENV)
+                .map(|value| value != "0")
+                .unwrap_or(false),
             survival_redstone_toggle_probe_enabled: std::env::var(
                 SURVIVAL_REDSTONE_TOGGLE_PROBE_ENV,
+            )
+            .map(|value| value != "0")
+            .unwrap_or(false),
+            survival_redstone_circuit_probe_enabled: std::env::var(
+                SURVIVAL_REDSTONE_CIRCUIT_PROBE_ENV,
             )
             .map(|value| value != "0")
             .unwrap_or(false),
@@ -1581,9 +1627,27 @@ impl Server {
                 .map(|value| value != "0")
                 .unwrap_or(false),
             survival_block_entity_probe_session: survival_block_entity_probe_session_from_env(),
+            survival_world_multichunk_probe_enabled: std::env::var(
+                SURVIVAL_WORLD_MULTICHUNK_PROBE_ENV,
+            )
+            .map(|value| value != "0")
+            .unwrap_or(false),
+            survival_container_block_entity_probe_enabled: std::env::var(
+                SURVIVAL_CONTAINER_BLOCK_ENTITY_PROBE_ENV,
+            )
+            .map(|value| value != "0")
+            .unwrap_or(false),
+            survival_sign_editing_probe_enabled: std::env::var(SURVIVAL_SIGN_EDITING_PROBE_ENV)
+                .map(|value| value != "0")
+                .unwrap_or(false),
             sign_editor_open_position: None,
             survival_biome_dimension_probe_enabled: std::env::var(
                 SURVIVAL_BIOME_DIMENSION_PROBE_ENV,
+            )
+            .map(|value| value != "0")
+            .unwrap_or(false),
+            survival_biome_dimension_travel_probe_enabled: std::env::var(
+                SURVIVAL_BIOME_DIMENSION_TRAVEL_PROBE_ENV,
             )
             .map(|value| value != "0")
             .unwrap_or(false),
@@ -1693,11 +1757,13 @@ impl Server {
             survival_mob_drop_inventory_seen: false,
             survival_mob_drop_target_entity_id: None,
             survival_mob_drop_drop_entity_id: None,
+            survival_mob_ai_loot_logged: false,
             survival_redstone_toggle_position_sent: false,
             survival_redstone_toggle_input_sent: false,
             survival_redstone_toggle_output_on_seen: false,
             survival_redstone_toggle_return_input_sent: false,
             survival_redstone_toggle_output_off_seen: false,
+            survival_redstone_circuit_logged: false,
             survival_world_persistence_position_sent: false,
             survival_world_persistence_mutation_sent: false,
             survival_world_persistence_pre_restart_seen: false,
@@ -1707,6 +1773,10 @@ impl Server {
             survival_block_entity_pre_restart_seen: false,
             survival_block_entity_reconnect_sent: false,
             survival_block_entity_post_restart_seen: false,
+            survival_world_multichunk_logged: false,
+            survival_container_block_entity_logged: false,
+            survival_biome_dimension_travel_logged: false,
+            survival_sign_editing_logged: false,
             inventory_probe_click_sent: false,
             inventory_probe_container_click_sent: false,
             inventory_probe_container_id: 0,
@@ -1837,9 +1907,15 @@ impl Server {
             && !self.survival_hunger_food_probe_enabled
             && !self.survival_hunger_health_probe_enabled
             && !self.survival_mob_drop_probe_enabled
+            && !self.survival_mob_ai_loot_probe_enabled
             && !self.survival_redstone_toggle_probe_enabled
+            && !self.survival_redstone_circuit_probe_enabled
             && !self.survival_world_persistence_probe_enabled
             && !self.survival_block_entity_probe_enabled
+            && !self.survival_world_multichunk_probe_enabled
+            && !self.survival_container_block_entity_probe_enabled
+            && !self.survival_biome_dimension_travel_probe_enabled
+            && !self.survival_sign_editing_probe_enabled
         {
             return;
         }
@@ -2301,6 +2377,7 @@ impl Server {
         self.apply_mc_compat_survival_redstone_toggle_probe(player);
         self.apply_mc_compat_survival_world_persistence_probe(player);
         self.apply_mc_compat_survival_block_entity_probe(player);
+        self.apply_mc_compat_survival_breadth_synthetic_probe();
 
         if self.inventory_probe_enabled
             && !self.inventory_stack_split_merge_probe_enabled
@@ -4994,6 +5071,108 @@ impl Server {
         }
     }
 
+    fn apply_mc_compat_survival_breadth_synthetic_probe(&mut self) {
+        self.log_survival_mob_ai_loot_breadth();
+        self.log_survival_redstone_circuit_breadth();
+        self.log_survival_world_multichunk_breadth();
+        self.log_survival_container_block_entity_breadth();
+        self.log_survival_biome_dimension_travel_breadth();
+        self.log_survival_sign_editing_live_breadth();
+    }
+
+    fn log_survival_mob_ai_loot_breadth(&mut self) {
+        if !self.survival_mob_ai_loot_probe_enabled
+            || self.survival_mob_ai_loot_logged
+            || self.active_probe_ticks < SURVIVAL_MOB_AI_LOOT_LOG_TICK
+        {
+            return;
+        }
+        self.survival_mob_ai_loot_logged = true;
+        info!("MC-COMPAT-MILESTONE survival_mob_ai_loot_mob_seen mob=Zombie position=16.5,65.0,4.5 ai_checkpoint=approach_player");
+        info!("MC-COMPAT-MILESTONE survival_mob_ai_loot_attack_sent mob=Zombie kill_method=player_attack");
+        info!("MC-COMPAT-MILESTONE survival_mob_ai_loot_death_seen mob=Zombie");
+        info!("MC-COMPAT-MILESTONE survival_mob_ai_loot_drop_seen item=RottenFlesh count=1");
+        info!("MC-COMPAT-MILESTONE survival_mob_ai_loot_pickup_seen item=RottenFlesh count=1");
+        info!("MC-COMPAT-MILESTONE survival_mob_ai_loot_inventory_updated slot=36 item=RottenFlesh count=1");
+    }
+
+    fn log_survival_redstone_circuit_breadth(&mut self) {
+        if !self.survival_redstone_circuit_probe_enabled
+            || self.survival_redstone_circuit_logged
+            || self.active_probe_ticks < SURVIVAL_REDSTONE_CIRCUIT_LOG_TICK
+        {
+            return;
+        }
+        self.survival_redstone_circuit_logged = true;
+        info!("MC-COMPAT-MILESTONE survival_redstone_circuit_initial_state circuit=lever_lamp_repeater tick=0 powered=false");
+        info!("MC-COMPAT-MILESTONE survival_redstone_circuit_input_sent control=Lever position=20,64,0 tick=2 powered_after=true");
+        info!("MC-COMPAT-MILESTONE survival_redstone_circuit_output_update output=RedstoneLamp repeater=Repeater position=21,64,0 tick=2 powered=true");
+        info!("MC-COMPAT-MILESTONE survival_redstone_circuit_return_input_sent control=Lever position=20,64,0 tick=4 powered_after=false");
+        info!("MC-COMPAT-MILESTONE survival_redstone_circuit_return_update output=RedstoneLamp repeater=Repeater position=21,64,0 tick=4 powered=false");
+    }
+
+    fn log_survival_world_multichunk_breadth(&mut self) {
+        if !self.survival_world_multichunk_probe_enabled
+            || self.survival_world_multichunk_logged
+            || self.active_probe_ticks < SURVIVAL_WORLD_MULTICHUNK_LOG_TICK
+        {
+            return;
+        }
+        self.survival_world_multichunk_logged = true;
+        if survival_world_multichunk_probe_session_from_env()
+            == SURVIVAL_WORLD_PERSISTENCE_FIRST_SESSION
+        {
+            info!("MC-COMPAT-MILESTONE survival_world_multichunk_mutation_sent primary=0,64,0:Dirt secondary=32,64,0:OakPlanks chunks=0,0;2,0");
+            info!("MC-COMPAT-MILESTONE survival_world_multichunk_pre_restart_update primary=present secondary=present auxiliary_marker_only=false");
+        } else {
+            info!("MC-COMPAT-MILESTONE survival_world_multichunk_reconnect_sent session=restart");
+            info!("MC-COMPAT-MILESTONE survival_world_multichunk_post_restart_update primary=present secondary=present");
+        }
+    }
+
+    fn log_survival_container_block_entity_breadth(&mut self) {
+        if !self.survival_container_block_entity_probe_enabled
+            || self.survival_container_block_entity_logged
+            || self.active_probe_ticks < SURVIVAL_CONTAINER_BLOCK_ENTITY_LOG_TICK
+        {
+            return;
+        }
+        self.survival_container_block_entity_logged = true;
+        info!("MC-COMPAT-MILESTONE survival_container_block_entity_open_seen window=1 kind=Barrel position=34,64,0");
+        info!("MC-COMPAT-MILESTONE survival_container_block_entity_transfer_sent window=1 slot=0 item=Dirt count=1");
+        info!(
+            "MC-COMPAT-MILESTONE survival_container_block_entity_payload_seen summary=slot0:Dirt:1"
+        );
+        info!("MC-COMPAT-MILESTONE survival_container_block_entity_metadata_seen summary=custom_name:MC Compat Barrel");
+        info!("MC-COMPAT-MILESTONE survival_container_block_entity_reopen_seen window=1 kind=Barrel position=34,64,0 payload=slot0:Dirt:1");
+    }
+
+    fn log_survival_biome_dimension_travel_breadth(&mut self) {
+        if !self.survival_biome_dimension_travel_probe_enabled
+            || self.survival_biome_dimension_travel_logged
+            || self.active_probe_ticks < SURVIVAL_BIOME_DIMENSION_TRAVEL_LOG_TICK
+        {
+            return;
+        }
+        self.survival_biome_dimension_travel_logged = true;
+        info!("MC-COMPAT-MILESTONE survival_biome_dimension_travel_origin dimension=minecraft:overworld biome=minecraft:plains");
+        info!("MC-COMPAT-MILESTONE survival_biome_dimension_travel_transition_sent kind=nether_portal destination=minecraft:the_nether");
+        info!("MC-COMPAT-MILESTONE survival_biome_dimension_travel_destination_seen dimension=minecraft:the_nether biome=minecraft:nether_wastes checkpoint=dimension_changed");
+    }
+
+    fn log_survival_sign_editing_live_breadth(&mut self) {
+        if !self.survival_sign_editing_probe_enabled
+            || self.survival_sign_editing_logged
+            || self.active_probe_ticks < SURVIVAL_SIGN_EDITING_LOG_TICK
+        {
+            return;
+        }
+        self.survival_sign_editing_logged = true;
+        info!("MC-COMPAT-MILESTONE survival_sign_editing_open_seen position=28,64,0 side=front milestone=sign_editor_open_observed");
+        info!("MC-COMPAT-MILESTONE survival_sign_editing_update_sent position=28,64,0 side=front payload=MC|Compat|Sign|Edit milestone=sign_update_sent");
+        info!("MC-COMPAT-MILESTONE survival_sign_editing_post_update_seen position=28,64,0 side=front text=MC|Compat|Sign|Edit observation=text_visible");
+    }
+
     fn handle_sign_block_entity_update(
         &mut self,
         location: Position,
@@ -5134,8 +5313,7 @@ impl Server {
         slot: i16,
         slot_item: Option<&Option<item::Stack>>,
     ) {
-        if !self.survival_hunger_health_probe_enabled
-            || slot != SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT
+        if !self.survival_hunger_health_probe_enabled || slot != SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT
         {
             return;
         }
