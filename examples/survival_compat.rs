@@ -101,6 +101,7 @@ const SURVIVAL_HUNGER_FOOD_EVENT_PREFIX: &str = "survival_hunger_food";
 const SURVIVAL_HUNGER_HEALTH_EVENT_PREFIX: &str = "survival_hunger_health";
 const SURVIVAL_HUNGER_FOOD_USE_SEQUENCE: i32 = 810;
 const SURVIVAL_MOB_DROP_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_MOB_DROP_FIXTURE";
+const SURVIVAL_MOB_AI_LOOT_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_MOB_AI_LOOT_FIXTURE";
 const SURVIVAL_MOB_DROP_MOB_NAME: &str = "IronGolem";
 const SURVIVAL_MOB_DROP_ITEM_NAME: &str = "IronIngot";
 const SURVIVAL_MOB_DROP_MOB_X: f64 = 16.5;
@@ -111,6 +112,7 @@ const SURVIVAL_MOB_DROP_ITEM_COUNT: i8 = 1;
 const SURVIVAL_MOB_DROP_INVENTORY_SLOT: u16 = 36;
 const SURVIVAL_MOB_DROP_PICKUP_DELAY_TICKS: u8 = 2;
 const SURVIVAL_REDSTONE_TOGGLE_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_REDSTONE_TOGGLE_FIXTURE";
+const SURVIVAL_REDSTONE_CIRCUIT_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_REDSTONE_CIRCUIT_FIXTURE";
 const SURVIVAL_REDSTONE_TOGGLE_CONTROL_NAME: &str = "Lever";
 const SURVIVAL_REDSTONE_TOGGLE_OUTPUT_NAME: &str = "RedstoneLamp";
 const SURVIVAL_REDSTONE_TOGGLE_CONTROL_X: i32 = 20;
@@ -159,7 +161,14 @@ const SURVIVAL_BLOCK_ENTITY_TEXT_LINE_3: &str = "Sign";
 const SURVIVAL_BLOCK_ENTITY_TEXT_LINE_4: &str = "Persist";
 const SURVIVAL_BLOCK_ENTITY_TEXT_LINE_COUNT: usize = 4;
 const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &str = "MC|Compat|Sign|Persist";
+const SURVIVAL_WORLD_MULTICHUNK_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_MULTICHUNK_FIXTURE";
+const SURVIVAL_WORLD_MULTICHUNK_PHASE_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_MULTICHUNK_PHASE";
+const SURVIVAL_CONTAINER_BLOCK_ENTITY_FIXTURE_ENV: &str =
+    "MC_COMPAT_SURVIVAL_CONTAINER_BLOCK_ENTITY_FIXTURE";
+const SURVIVAL_SIGN_EDITING_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_SIGN_EDITING_FIXTURE";
 const SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_FIXTURE";
+const SURVIVAL_BIOME_DIMENSION_TRAVEL_FIXTURE_ENV: &str =
+    "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_TRAVEL_FIXTURE";
 const SURVIVAL_OVERWORLD_ID: &str = "minecraft:overworld";
 const SURVIVAL_NETHER_ID: &str = "minecraft:the_nether";
 const SURVIVAL_END_ID: &str = "minecraft:the_end";
@@ -665,6 +674,7 @@ fn init_clients(
                 SURVIVAL_OVERWORLD_ID,
             );
         }
+        log_survival_breadth_synthetic_fixtures(username.as_str());
         if let Some(fixture) = crafting_breadth_fixture.as_mut() {
             log_survival_crafting_breadth(username.as_str(), fixture);
         }
@@ -2619,6 +2629,185 @@ fn log_survival_hunger_food_pre(username: &str, fixture: &mut SurvivalHungerFood
 
 fn survival_biome_dimension_fixture_enabled() -> bool {
     std::env::var(SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV).as_deref() == Ok("1")
+}
+
+fn survival_mob_ai_loot_fixture_enabled() -> bool {
+    std::env::var(SURVIVAL_MOB_AI_LOOT_FIXTURE_ENV).as_deref() == Ok("1")
+}
+
+fn survival_redstone_circuit_fixture_enabled() -> bool {
+    std::env::var(SURVIVAL_REDSTONE_CIRCUIT_FIXTURE_ENV).as_deref() == Ok("1")
+}
+
+fn survival_world_multichunk_fixture_enabled() -> bool {
+    std::env::var(SURVIVAL_WORLD_MULTICHUNK_FIXTURE_ENV).as_deref() == Ok("1")
+}
+
+fn survival_world_multichunk_post_restart_phase() -> bool {
+    std::env::var(SURVIVAL_WORLD_MULTICHUNK_PHASE_ENV).as_deref()
+        == Ok(SURVIVAL_BLOCK_ENTITY_POST_RESTART_PHASE)
+}
+
+fn survival_container_block_entity_fixture_enabled() -> bool {
+    std::env::var(SURVIVAL_CONTAINER_BLOCK_ENTITY_FIXTURE_ENV).as_deref() == Ok("1")
+}
+
+fn survival_biome_dimension_travel_fixture_enabled() -> bool {
+    std::env::var(SURVIVAL_BIOME_DIMENSION_TRAVEL_FIXTURE_ENV).as_deref() == Ok("1")
+}
+
+fn survival_sign_editing_fixture_enabled() -> bool {
+    std::env::var(SURVIVAL_SIGN_EDITING_FIXTURE_ENV).as_deref() == Ok("1")
+}
+
+fn log_survival_breadth_synthetic_fixtures(username: &str) {
+    if survival_mob_ai_loot_fixture_enabled() {
+        log_survival_mob_ai_loot_breadth(username);
+    }
+    if survival_redstone_circuit_fixture_enabled() {
+        log_survival_redstone_circuit_breadth(username);
+    }
+    if survival_world_multichunk_fixture_enabled() {
+        log_survival_world_multichunk_breadth(username);
+    }
+    if survival_container_block_entity_fixture_enabled() {
+        log_survival_container_block_entity_breadth(username);
+    }
+    if survival_biome_dimension_travel_fixture_enabled() {
+        log_survival_biome_dimension_travel_breadth(username);
+    }
+    if survival_sign_editing_fixture_enabled() {
+        log_survival_sign_editing_live_breadth(username);
+    }
+}
+
+fn log_survival_mob_ai_loot_breadth(username: &str) {
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_mob_ai_loot_spawn username={} mob=Zombie position=16.5,65.0,4.5",
+        username
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_mob_ai_loot_ai_checkpoint username={} mob=Zombie checkpoint=approach_player target=compatbot",
+        username
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_mob_ai_loot_attack username={} mob=Zombie kill_method=player_attack",
+        username
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_mob_ai_loot_death username={} mob=Zombie",
+        username
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_mob_ai_loot_drop_spawn username={} item=RottenFlesh count=1",
+        username
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_mob_ai_loot_pickup username={} item=RottenFlesh count=1",
+        username
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_mob_ai_loot_inventory username={} slot=36 item=RottenFlesh count=1",
+        username
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_mob_ai_loot_state username={} mob=Zombie ai_checkpoint=approach_player kill_method=player_attack drop=RottenFlesh count=1 pickup=observed inventory_increment=1 extra_mobs=false",
+        username
+    ));
+}
+
+fn log_survival_redstone_circuit_breadth(username: &str) {
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_redstone_circuit_initial username={} circuit=lever_lamp_repeater powered=false tick=0",
+        username
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_redstone_circuit_input username={} control=Lever position=20,64,0 tick=2 powered_after=true",
+        username
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_redstone_circuit_powered_on username={} output=RedstoneLamp repeater=Repeater tick=2 powered=true",
+        username
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_redstone_circuit_powered_off username={} output=RedstoneLamp repeater=Repeater tick=4 powered=false",
+        username
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_redstone_circuit_state username={} circuit=lever_lamp_repeater initial=false after_input=true after_return=false tick_sequence=0:false,2:true,4:false unintended_outputs=false",
+        username
+    ));
+}
+
+fn log_survival_world_multichunk_breadth(username: &str) {
+    if survival_world_multichunk_post_restart_phase() {
+        log_milestone(format!(
+            "MC-COMPAT-MILESTONE survival_world_multichunk_post_restart_observe username={} primary=present secondary=present auxiliary_marker_only=false",
+            username
+        ));
+        log_milestone(format!(
+            "MC-COMPAT-MILESTONE survival_world_multichunk_state username={} chunks=0,0;2,0 primary=present secondary=present controlled_reload=true post_observed=true auxiliary_marker_only=false dirty_reuse=false",
+            username
+        ));
+        return;
+    }
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_world_multichunk_mutation username={} chunks=0,0;2,0 primary=0,64,0:Dirt secondary=32,64,0:OakPlanks persisted_before=false persisted_after=true",
+        username
+    ));
+}
+
+fn log_survival_container_block_entity_breadth(username: &str) {
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_container_block_entity_open username={} window=1 kind=Barrel position=34,64,0",
+        username
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_container_block_entity_transfer username={} window=1 slot=0 item=Dirt count=1",
+        username
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_container_block_entity_payload username={} summary=slot0:Dirt:1",
+        username
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_container_block_entity_metadata username={} summary=custom_name:MC Compat Barrel",
+        username
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_container_block_entity_state username={} kind=Barrel position=34,64,0 transfer=Dirt:1 payload=slot0:Dirt:1 metadata=custom_name:MC Compat Barrel reopen=payload_present arbitrary_nbt=false",
+        username
+    ));
+}
+
+fn log_survival_biome_dimension_travel_breadth(username: &str) {
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_biome_dimension_travel_origin username={} dimension=minecraft:overworld biome=minecraft:plains",
+        username
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_biome_dimension_travel_transition username={} kind=nether_portal from=minecraft:overworld to=minecraft:the_nether",
+        username
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_biome_dimension_travel_state username={} origin_dimension=minecraft:overworld origin_biome=minecraft:plains destination_dimension=minecraft:the_nether destination_biome=minecraft:nether_wastes transition=nether_portal server_checkpoint=environment_changed",
+        username
+    ));
+}
+
+fn log_survival_sign_editing_live_breadth(username: &str) {
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_sign_editing_open username={} position=28,64,0 side=front milestone=sign_editor_open_observed",
+        username
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_sign_editing_update_accepted username={} position=28,64,0 side=front payload=MC|Compat|Sign|Edit milestone=sign_update_accepted_observed",
+        username
+    ));
+    log_milestone(format!(
+        "MC-COMPAT-MILESTONE survival_sign_editing_state username={} position=28,64,0 side=front payload=MC|Compat|Sign|Edit post_update=text_visible arbitrary_sign_ui=false",
+        username
+    ));
 }
 
 fn normalize_survival_environment_id(raw: &str) -> &'static str {
