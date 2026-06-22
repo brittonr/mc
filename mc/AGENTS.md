@@ -14,20 +14,20 @@
 - `hyperion/`: Minecraft engine/proxy workspace. Core crates live under `crates/`; event/game logic lives under `events/bedwars`; helper tools live under `tools/`. Repo-specific workflow now lives in `hyperion/AGENTS.md`.
 - `valence/`: vendored Minecraft server framework. Main crate in `src/`; workspace crates in `crates/*`; runnable examples in `examples/`; protocol/data extractor in `extractor/`; docs site in `website/`. Repo-specific workflow lives in `valence/AGENTS.md`.
 - `stevenarella/`: vendored Rust Minecraft client used by mc-compat rails and manual client checks. It has no repo-local AGENTS notes yet; use the mc devshell for Cargo and native UI dependencies.
-- `hyperion/` already has repo-local agent notes in `hyperion/.agent/napkin.md`. Keep workspace-wide notes here; prefer child-repo `AGENTS.md` files for repo-specific commands and conventions.
+- `hyperion/` already has repo-local agent notes in `hyperion/.agent/napkin.md`. Keep workspace-wide notes here; prefer subtree-local `AGENTS.md` files for repo-specific commands and conventions.
 
 ## Workflow
-- Before editing inside a child repo, read that repo's `README.md`, `CONTRIBUTING.md`, and any local `AGENTS.md` or `.agent/napkin.md`.
+- Before editing inside a major subtree, read that subtree's `README.md`, `CONTRIBUTING.md`, and any local `AGENTS.md` or `.agent/napkin.md`.
 - Prefer repo-local commands and toolchains. Root `mc/` has no shared Cargo workspace, test runner, or formatter.
 - For `stevenarella/`, run Cargo through the mc devshell, for example `nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test world::tests -- --nocapture` from the Stevenarella repo.
 - New checks/scripts for this workspace should be Rust or Steel Scheme, not Python or Bash. Existing Python gates may remain until touched; migrate touched gates before extending them.
 - Avoid mixed commits across `hyperion/` and the parent-owned `valence/`/`stevenarella/` trees unless user asks for cross-repo change.
 - For Cairn evidence, do not leave review-critical receipts only under untracked `target/`; copy receipt/log artifacts into `docs/evidence/` and record BLAKE3 when tasks/docs cite them.
 - Paper backend containers are removed after runner exit unless `--keep-server` is used; use `--keep-server`, copy `docker logs <server>` into `docs/evidence/`, then `docker rm -f <server>` for reviewable Paper server logs.
-- If promoted evidence cites child-repo revisions that the receipt does not machine-record (for example Stevenarella client git rev), add a `docs/evidence/*oracle*` checkpoint with `## Question`, `## Inspected evidence`, `## Decision`, `## Owner`, and `## Next action`; otherwise reviewers cannot verify the child-revision claim from repo-local artifacts.
+- If promoted evidence cites source-tree revisions that the receipt does not machine-record (for example a vendored Stevenarella or Valence subtree rev), add a `docs/evidence/*oracle*` checkpoint with `## Question`, `## Inspected evidence`, `## Decision`, `## Owner`, and `## Next action`; otherwise reviewers cannot verify the revision claim from repo-local artifacts.
 - Before archiving a Cairn, compare every checked task and proposal scope against promoted evidence rows. If a doc says a behavior remains a non-claim, do not mark the task as completed for that behavior; narrow the archive scope or leave/reopen the proof gap.
 - Accepted spec edits can stale existing `.b3` manifests that include `cairn/specs/mc-compatibility/spec.md`; run the evidence manifest checker and refresh every cited-spec digest before final validation.
-- Nix evidence-manifest checks see only the parent repo source closure; `.b3` rows must cite tracked parent files (prefer `docs/evidence/` copies) rather than nested child-repo paths or `target/` outputs.
+- Nix evidence-manifest checks see only the parent repo source closure; `.b3` rows must cite tracked parent files (prefer `docs/evidence/` copies) rather than independent nested-repo paths or `target/` outputs.
 - Run mc Cairn validation/gates with the repo-pinned app from `mc/` (`nix run .#cairn -- ... --root .`). A newer sibling `/home/brittonr/git/cairn` binary can reject this repo's generated policy schema.
 - When writing `.b3` manifests through `nix develop`, redirect inside the devshell command (`nix develop ... -c bash -lc 'b3sum ... > file'`); redirecting the outer `nix develop` command captures the shell-hook banner and corrupts the manifest.
 - Task-cited `.run.log` files must contain an explicit `exit_status=0` for `tools/check_cairn_task_evidence.rs`; avoid citing the task-evidence gate log in the task whose gate writes that same file, or the checker reads the incomplete log during the run.

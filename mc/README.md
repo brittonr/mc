@@ -12,6 +12,8 @@ The legacy shell entrypoint is intentionally only a thin compatibility shim arou
 
 `stevenarella/` and `valence/` are vendored source trees tracked directly by this repository, not submodules. They were imported from the local fork heads used by the compatibility rails so harness, client, and server changes can evolve in one history.
 
+Some receipt fields keep their historical names for schema compatibility, including `client.git_rev`, `valence.git_rev_resolved`, and MCP `stevenarella_child_revision`. For vendored trees those values are scoped source-tree evidence: the last Git commit affecting that subtree plus dirty checks limited to that subtree, not an independent nested-repo HEAD.
+
 ## Commands
 
 Launch the editable local server/client checkouts through the root flake environment:
@@ -341,11 +343,11 @@ nix run .#mc-compat-smoke -- --compare-receipts \
 
 Matrix and comparison checks require one `paper` receipt and one `valence` receipt, both passing, both protocol `758`, expected backend ports, successful client evidence, and niri-safe Xvfb/X11/software-GL isolation.
 
-## Editable Stevenarella checkout
+## Vendored Stevenarella source
 
-Stevenarella is intentionally a local sibling checkout so it can be patched while debugging the client side of the compatibility seam. By default the runner expects `./stevenarella` to be an editable Stevenarella repository root containing `Cargo.toml`.
+Stevenarella is tracked directly in this repository so the client side of the compatibility seam can be patched with the harness. By default the runner expects `./stevenarella` to be the vendored Stevenarella source root containing `Cargo.toml`.
 
-Use another checkout without moving files:
+Use another source tree without moving files:
 
 ```sh
 nix run .#mc-compat-smoke -- --dry-run --client-dir /path/to/stevenarella
@@ -353,17 +355,19 @@ nix run .#mc-compat-smoke -- --dry-run --client-dir /path/to/stevenarella
 CLIENT_DIR=/path/to/stevenarella nix run .#mc-compat-smoke -- --dry-run
 ```
 
-If the checkout is missing or does not look like the repository root, the runner fails before starting the smoke and tells you whether to clone Stevenarella or pass `--client-dir` / `CLIENT_DIR`.
+If the source tree is missing or does not look like the Stevenarella root, the runner fails before starting the smoke and tells you whether to restore the vendored tree or pass `--client-dir` / `CLIENT_DIR`.
 
-## Editable Valence checkout
+## Vendored Valence source
 
-Valence is intentionally a local sibling checkout so it can be patched while debugging the compatibility seam. By default the runner expects:
+Valence is tracked directly in this repository so server fixtures can be patched with the harness. By default the runner expects:
 
-- `./valence` to be an editable Valence git checkout
-- `VALENCE_REV=c86b828^` to exist in that checkout; this is the compatible Minecraft `1.18.2` / protocol `758` revision
-- `VALENCE_WORKTREE=/tmp/valence-compat-758` to be a disposable detached worktree created from that checkout
+- `./valence` to be the vendored Valence source tree
+- `VALENCE_REV=8ad9c85` to exist in the parent repository history for the compatible Minecraft `1.18.2` / protocol `758` default
+- `VALENCE_WORKTREE=/tmp/valence-compat-758` to be a disposable detached worktree created from that history
 
-Use another checkout without moving files:
+Protocol `763` rails usually set `VALENCE_REV=main`; those worktrees check out the monorepo root, and the runner automatically runs Cargo from the nested `mc/valence` source directory.
+
+Use another source tree without moving files:
 
 ```sh
 nix run .#mc-compat-smoke -- --dry-run --valence-repo /path/to/valence
@@ -371,7 +375,7 @@ nix run .#mc-compat-smoke -- --dry-run --valence-repo /path/to/valence
 VALENCE_REPO=/path/to/valence nix run .#mc-compat-smoke -- --dry-run
 ```
 
-If the checkout or revision is missing, the runner fails before starting the smoke and tells you whether to clone/fetch Valence or pass `--valence-repo` / `VALENCE_REPO`.
+If the source tree or revision is missing, the runner fails before starting the smoke and tells you whether to restore/fetch the parent history or pass `--valence-repo` / `VALENCE_REPO`.
 
 Paper remains available as a fallback/control backend:
 
