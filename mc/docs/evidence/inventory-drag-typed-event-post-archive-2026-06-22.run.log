@@ -1,0 +1,31 @@
+## inventory drag typed-event post-archive validation
+command=test archived change present and active change absent
+archive_dir_exit_status=0
+active_change_absent_exit_status=0
+command=rg inventory_drag_typed_event_migration cairn/specs/mc-compatibility/spec.md
+r[mc_compatibility.inventory_drag_typed_event_migration.readiness] The `inventory-drag-transactions` scenario SHOULD move from waiver-backed substring fallback to `typed-event-ready` only when typed events cover the row's required client milestones, Valence quick-craft server milestones, forbidden surfaces, and ordered drag phases.
+r[mc_compatibility.inventory_drag_typed_event_migration.readiness.complete]
+r[mc_compatibility.inventory_drag_typed_event_migration.gate] The runner MUST include `inventory-drag-transactions` in the typed-event pass/fail gate so missing or invalid structured drag events fail before substring fallback can satisfy the row.
+r[mc_compatibility.inventory_drag_typed_event_migration.gate.missing]
+r[mc_compatibility.inventory_drag_typed_event_migration.gate.order]
+r[mc_compatibility.inventory_drag_typed_event_migration.validation] The migration MUST record reviewable evidence for runner fixtures, scenario-manifest checks, generated-surface freshness, dry-run receipt shape, evidence manifests, Cairn gates, and Cairn validation before archive.
+r[mc_compatibility.inventory_drag_typed_event_migration.validation.log]
+accepted_spec_grep_exit_status=0
+command=nix run --no-update-lock-file .#evidence-manifest-refresh -- --refresh --root .
+evidence manifest refresh ok: mode=refresh; passes=1; manifests=410; entries=2893; current=2893; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=1; manifest_writes=0
+evidence_manifest_refresh_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 2,
+  "valid": true
+}
+cairn_validate_exit_status=0
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link
+evidence_manifest_exit_status=0
+exit_status=0
