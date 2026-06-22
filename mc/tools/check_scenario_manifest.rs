@@ -282,6 +282,24 @@ const SURVIVAL_CRAFTING_RECIPE_BREADTH_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
     "server_survival_crafting_breadth_invalid_rejected",
     "server_survival_crafting_breadth_state",
 ];
+const SURVIVAL_HUNGER_HEALTH_CYCLE_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
+    "protocol_detected",
+    "join_game",
+    "render_tick",
+    "survival_hunger_health_item_seen",
+    "survival_hunger_health_pre_seen",
+    "survival_hunger_health_consume_sent",
+    "survival_hunger_health_recovery_seen",
+    "survival_hunger_health_inventory_updated",
+];
+const SURVIVAL_HUNGER_HEALTH_CYCLE_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
+    "server_username_seen",
+    "server_survival_hunger_health_pre",
+    "server_survival_hunger_health_consume_start",
+    "server_survival_hunger_health_consume_finish",
+    "server_survival_hunger_health_inventory",
+    "server_survival_hunger_health_state",
+];
 const TYPED_EVENT_READINESS_FIXTURES: &[TypedEventReadinessFixture<'static>] = &[
     TypedEventReadinessFixture {
         scenario: "smoke",
@@ -357,6 +375,13 @@ const TYPED_EVENT_READINESS_FIXTURES: &[TypedEventReadinessFixture<'static>] = &
         scenario: "survival-crafting-recipe-breadth",
         client_events: SURVIVAL_CRAFTING_RECIPE_BREADTH_TYPED_EVENT_CLIENT_EVENTS,
         server_events: SURVIVAL_CRAFTING_RECIPE_BREADTH_TYPED_EVENT_SERVER_EVENTS,
+        forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
+        derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
+    },
+    TypedEventReadinessFixture {
+        scenario: "survival-hunger-health-cycle",
+        client_events: SURVIVAL_HUNGER_HEALTH_CYCLE_TYPED_EVENT_CLIENT_EVENTS,
+        server_events: SURVIVAL_HUNGER_HEALTH_CYCLE_TYPED_EVENT_SERVER_EVENTS,
         forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
         derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
     },

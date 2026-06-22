@@ -21,7 +21,7 @@ This bounded index is generated from `compat/config/scenario-manifest.ncl`. It r
 | survival-furnace-persistence | survival-furnace-persistence | 1 | 2 | mc-compat-valence-survival-furnace-persistence-dry-run | mc-compat-valence-survival-furnace-persistence | typed-event-ready |
 | survival-furnace-smelting-breadth | survival-furnace-smelting-breadth | 1 | 1 | mc-compat-valence-survival-furnace-smelting-breadth-dry-run | mc-compat-valence-survival-furnace-smelting-breadth | typed-event-ready |
 | survival-hunger-food | survival-hunger-food | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
-| survival-hunger-health-cycle | survival-hunger-health-cycle | 1 | 1 | mc-compat-valence-survival-hunger-health-cycle-dry-run | mc-compat-valence-survival-hunger-health-cycle | substring-fallback |
+| survival-hunger-health-cycle | survival-hunger-health-cycle | 1 | 1 | mc-compat-valence-survival-hunger-health-cycle-dry-run | mc-compat-valence-survival-hunger-health-cycle | typed-event-ready |
 | survival-mob-drop | survival-mob-drop | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
 | survival-mob-ai-loot-breadth | survival-mob-ai-loot-breadth | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
 | survival-redstone-toggle | survival-redstone-toggle | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |

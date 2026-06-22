@@ -1,0 +1,48 @@
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/survival-hunger-health-cycle-typed-event-migration/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/survival-hunger-health-cycle-typed-event-migration/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-hunger-health-cycle-typed-event-migration",
+  "delta_specs": [
+    "./cairn/changes/survival-hunger-health-cycle-typed-event-migration/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "c345e8d2c7da5d0de18d4a0ec38b01ff8b76e339ae1c1b4451607982718a2d3d",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "1586f22b2a2b0e317da6a3b28c65cac6983bd6ba5ce966d02aa4df5e08faacf6",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "04a2701babf66c7d8564034a9c440454bf1e71ab08f0fedc1b3a8ecf3892de05"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "1586f22b2a2b0e317da6a3b28c65cac6983bd6ba5ce966d02aa4df5e08faacf6",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "04a2701babf66c7d8564034a9c440454bf1e71ab08f0fedc1b3a8ecf3892de05"
+    },
+    "kind": "sync",
+    "manifest_hash": "822e1af23e934d20cf208d2a587c54e217f2b702a1e6abc2c2a915057d5f10af"
+  },
+  "plan_hash": "48fcb7db5794378e3cc81db5de2f526bd839cc72fdf61c3afdea64fb40836098",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "436413f4b290822d460a891954b73198dff96898561b17f1c9e69e1a582aae0c"
+}
+exit_status=0

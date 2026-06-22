@@ -1,0 +1,80 @@
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-hunger-health-cycle-typed-event-migration",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-22-survival-hunger-health-cycle-typed-event-migration"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-hunger-health-cycle-typed-event-migration",
+  "dry_run": false,
+  "input_hash": "2c6ea3e648ffb84b7b18ae7764bbb55b87ec3d1e53ff9367789fb51717851d36",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "3af73eecc1c53cc8566da779b22d0a433260be93dd0727dbc32179cce8255638",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-22-survival-hunger-health-cycle-typed-event-migration/design.md"
+        },
+        {
+          "content_hash": "dc08f03deb02decbe53865cf66f98c28895f6500d12c3826e603362778545e02",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-22-survival-hunger-health-cycle-typed-event-migration/proposal.md"
+        },
+        {
+          "content_hash": "5ee0971feb78c5e1a7006592060015760ff899e998835a9a914e4a586a8ddf96",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-22-survival-hunger-health-cycle-typed-event-migration/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "363c812844c36baf716a1f63950bcf6806172c8c5ee2f1208639c4c58193e342",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-22-survival-hunger-health-cycle-typed-event-migration/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-hunger-health-cycle-typed-event-migration"
+        }
+      ],
+      "manifest_hash": "17138aa4c023db87c1152befe3cb548e784a4eab7d98c4fe3272cd917b3cb275"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "3af73eecc1c53cc8566da779b22d0a433260be93dd0727dbc32179cce8255638",
+          "exists": true,
+          "path": "./cairn/changes/survival-hunger-health-cycle-typed-event-migration/design.md"
+        },
+        {
+          "content_hash": "dc08f03deb02decbe53865cf66f98c28895f6500d12c3826e603362778545e02",
+          "exists": true,
+          "path": "./cairn/changes/survival-hunger-health-cycle-typed-event-migration/proposal.md"
+        },
+        {
+          "content_hash": "5ee0971feb78c5e1a7006592060015760ff899e998835a9a914e4a586a8ddf96",
+          "exists": true,
+          "path": "./cairn/changes/survival-hunger-health-cycle-typed-event-migration/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "363c812844c36baf716a1f63950bcf6806172c8c5ee2f1208639c4c58193e342",
+          "exists": true,
+          "path": "./cairn/changes/survival-hunger-health-cycle-typed-event-migration/tasks.md"
+        }
+      ],
+      "manifest_hash": "a4581174bdc5f056f7e6a1b8bc3dea31776c1c992a879701f7860401977f0c25"
+    },
+    "kind": "archive",
+    "manifest_hash": "1cd789cc9cb92c441c1d0dfb16a21f3fbd1fa8667c0b5f3357dd9f02ef1c5ab6"
+  },
+  "plan_hash": "b8a5c354a9c4a91a1b194de83ef48884da774955e342ae9830ae796ae1aae4ff",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "4b8a63dbe6f060c47e9034a64d0210414015f6dedc9d0d0f7f841f1dc08a45ba"
+}
+exit_status=0

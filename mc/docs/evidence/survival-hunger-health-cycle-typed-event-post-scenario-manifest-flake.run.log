@@ -1,0 +1,6 @@
+error (ignored): SQLite database '/home/brittonr/.cache/nix/eval-cache-v6/9fec3273d73846c4feef55d9a64db3f713c73bb4a02b297632efdbd96e037bc3.sqlite' is busy
+this derivation will be built:
+  /nix/store/fz52aghwsr8cbigb19ynw8zpyxv7r2r0-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/fz52aghwsr8cbigb19ynw8zpyxv7r2r0-mc-compat-scenario-manifest.drv'...
+exit_status=0

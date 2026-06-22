@@ -3818,6 +3818,7 @@ fn typed_event_oracle_contributes_to_pass_fail(scenario: Scenario) -> bool {
             | Scenario::SurvivalCraftingRecipeBreadth
             | Scenario::SurvivalFurnacePersistence
             | Scenario::SurvivalFurnaceSmeltingBreadth
+            | Scenario::SurvivalHungerHealthCycle
     )
 }
 
@@ -4118,6 +4119,36 @@ fn typed_event_ordered_edges_for_scenario(scenario: Scenario) -> Vec<(&'static s
             (
                 "server_survival_furnace_invalid_fuel_rejected",
                 "server_survival_furnace_breadth_state",
+            ),
+        ],
+        Scenario::SurvivalHungerHealthCycle => vec![
+            (
+                "survival_hunger_health_pre_seen",
+                "survival_hunger_health_consume_sent",
+            ),
+            (
+                "survival_hunger_health_consume_sent",
+                "survival_hunger_health_recovery_seen",
+            ),
+            (
+                "survival_hunger_health_recovery_seen",
+                "survival_hunger_health_inventory_updated",
+            ),
+            (
+                "server_survival_hunger_health_pre",
+                "server_survival_hunger_health_consume_start",
+            ),
+            (
+                "server_survival_hunger_health_consume_start",
+                "server_survival_hunger_health_consume_finish",
+            ),
+            (
+                "server_survival_hunger_health_consume_finish",
+                "server_survival_hunger_health_inventory",
+            ),
+            (
+                "server_survival_hunger_health_inventory",
+                "server_survival_hunger_health_state",
             ),
         ],
         Scenario::SurvivalCraftingRecipeBreadth => vec![
@@ -12250,6 +12281,9 @@ mod tests {
             Scenario::SurvivalChestPersistence
         ));
         assert!(typed_event_oracle_contributes_to_pass_fail(
+            Scenario::SurvivalHungerHealthCycle
+        ));
+        assert!(typed_event_oracle_contributes_to_pass_fail(
             Scenario::SurvivalFurnacePersistence
         ));
         assert!(typed_event_oracle_contributes_to_pass_fail(
@@ -13746,6 +13780,89 @@ mod tests {
                 .expect_err("misordered typed crafting server phases fail");
         assert!(
             err.contains("server_survival_crafting_result_before_server_survival_crafting_collect"),
+            "{err}"
+        );
+    }
+
+    #[test]
+    fn typed_event_oracle_validates_migrated_survival_hunger_health_cycle_graph() {
+        let cfg = test_config(
+            &[
+                "--scenario",
+                "survival-hunger-health-cycle",
+                "--receipt",
+                "/tmp/survival-hunger-health-cycle.receipt.json",
+            ],
+            &[],
+        )
+        .expect("survival hunger health-cycle config parses");
+        let client_observed = scenario_required_milestones(Scenario::SurvivalHungerHealthCycle)
+            .iter()
+            .map(|(name, _)| *name)
+            .collect::<Vec<_>>();
+        let server_observed = server_required_milestones(Scenario::SurvivalHungerHealthCycle)
+            .iter()
+            .map(|(name, _)| *name)
+            .collect::<Vec<_>>();
+        let passing = ClientRunEvidence {
+            log_path: None,
+            log_paths: Vec::new(),
+            usernames: vec![TEST_USERNAME.to_string()],
+            exit_code: Some(0),
+            classification: "client-exited-success",
+            matched_success_pattern: Some("Detected server protocol version".to_string()),
+            scenario: Some(ScenarioEvidence {
+                observed_milestones: client_observed,
+                missing_milestones: Vec::new(),
+                forbidden_matches: Vec::new(),
+                passed: true,
+            }),
+            server_scenario: Some(ServerScenarioEvidence {
+                observed_milestones: server_observed,
+                missing_milestones: Vec::new(),
+                forbidden_matches: Vec::new(),
+                passed: true,
+            }),
+            projectile_damage_causality: None,
+            mcp_control: None,
+            frame_artifacts: None,
+        };
+        validate_typed_event_oracle_for_migrated_scenario(&cfg, &passing)
+            .expect("complete typed survival hunger health-cycle graph passes");
+
+        let mut missing_server_state = passing.clone();
+        missing_server_state
+            .server_scenario
+            .as_mut()
+            .expect("server evidence")
+            .observed_milestones
+            .retain(|name| *name != "server_survival_hunger_health_state");
+        let err = validate_typed_event_oracle_for_migrated_scenario(&cfg, &missing_server_state)
+            .expect_err("missing typed hunger health final state fails");
+        assert!(err.contains("server_survival_hunger_health_state"), "{err}");
+
+        let mut misordered_client_inventory = passing;
+        misordered_client_inventory
+            .scenario
+            .as_mut()
+            .expect("client evidence")
+            .observed_milestones = vec![
+            "protocol_detected",
+            "join_game",
+            "render_tick",
+            "survival_hunger_health_item_seen",
+            "survival_hunger_health_pre_seen",
+            "survival_hunger_health_consume_sent",
+            "survival_hunger_health_inventory_updated",
+            "survival_hunger_health_recovery_seen",
+        ];
+        let err =
+            validate_typed_event_oracle_for_migrated_scenario(&cfg, &misordered_client_inventory)
+                .expect_err("misordered typed hunger inventory before recovery fails");
+        assert!(
+            err.contains(
+                "survival_hunger_health_recovery_seen_before_survival_hunger_health_inventory_updated"
+            ),
             "{err}"
         );
     }

@@ -525,7 +525,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-valence-survival-hunger-health-cycle-dry-run",
         dry_run_wrapper: "mc-compat-valence-survival-hunger-health-cycle",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "survival-mob-drop",

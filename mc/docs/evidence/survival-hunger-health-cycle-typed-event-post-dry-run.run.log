@@ -1,0 +1,19 @@
+error (ignored): SQLite database '/home/brittonr/.cache/nix/eval-cache-v6/9fec3273d73846c4feef55d9a64db3f713c73bb4a02b297632efdbd96e037bc3.sqlite' is busy
+these 2 derivations will be built:
+  /nix/store/cwn23irs75wsxqwb2qrm8nmxaviihys0-mc-compat-runner-0.1.0.drv
+  /nix/store/1gym4yvp95npgda5fygacl7lixqp2z1v-mc-compat-valence-survival-hunger-health-cycle.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/cwn23irs75wsxqwb2qrm8nmxaviihys0-mc-compat-runner-0.1.0.drv'...
+building '/nix/store/1gym4yvp95npgda5fygacl7lixqp2z1v-mc-compat-valence-survival-hunger-health-cycle.drv'...
+[mc-compat] plan: build client, start Valence server, wait for protocol 763, run 1 client session plan(s) under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/clients/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] using existing Valence worktree /tmp/valence-compat-survival-hunger-health-cycle
+[mc-compat] starting Valence main example 'survival_compat' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-survival-hunger-health-cycle
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'survival-hunger-health-cycle' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/survival-hunger-health-cycle-typed-event-dry-run.json
+exit_status=0
