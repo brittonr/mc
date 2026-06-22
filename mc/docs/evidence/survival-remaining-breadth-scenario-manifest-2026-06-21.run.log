@@ -1,0 +1,7 @@
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+scenario manifest self-test passed: positive and negative fixtures exercised
+generated surface check passed: 2 generated surfaces current
+scenario manifest check passed: 45 rows validated; dry-run coverage: 43 covered, 2 waived, 0 unmaintained; typed-event readiness: 2 ready, 43 fallback
+exit_status=0

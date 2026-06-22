@@ -6,7 +6,7 @@ e470aba0b2efd1266779d6c309e1f3c8181552af4a3f994e2fd650179a572ee7  docs/evidence/
 c83495b2de848e66d7525e1c8e5bb2feefe43629b26193dd53fcee5edf443376  docs/evidence/canonical-evidence-gate-wording-post-archive-2026-06-19.run.log
 76255bc56d45a28ce2fe556e7a5f8fdddf3bdeea26c3de105770e1795ea9adac  docs/evidence/canonical-evidence-gate-wording-task-evidence-2026-06-19.run.log
 f6d9a5d6c4bbe14ceae7f5bf6ff11dd550bb4cbd82e4f82bed43f730f3284e3c  docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-contract-2026-05-29.md
-2a2912b0215106315aa578e9992426020463c1a6d87f6fa1278333e59d1873ed  docs/evidence/protocol-763-current-evidence-bundle.md
+c4bf83c2f44a44b91a9f8d075226eafdc475cfa174b5bb284e35390954f9a1ac  docs/evidence/protocol-763-current-evidence-bundle.md
 d911d9a35c16cd080f653ef347b706ab78ce186e631a17762f0e329ef9f772c3  docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md
 cc202f72a9c5d0f488c1029ef37ca1ad561e7e4a1d03705595fa8fa59b56e200  tools/check_wan_tolerance_bounded_telemetry.rs
 3f4764c0ccb2c87901487fe1469deade6d43eaafbfaf6fa78841eee681c00c65  tools/check_ctf_invalid_pickup_ownership.rs

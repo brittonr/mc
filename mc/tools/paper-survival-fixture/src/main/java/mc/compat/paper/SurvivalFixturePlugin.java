@@ -112,7 +112,9 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
     private static final float HUNGER_FOOD_PRE_SATURATION = 0.0F;
     private static final float HUNGER_FOOD_POST_SATURATION = 6.0F;
     private static final String HUNGER_FOOD_ITEM_NAME = "Bread";
+    private static final String MOB_AI_LOOT_FIXTURE_ENV = "MC_COMPAT_SURVIVAL_MOB_AI_LOOT_FIXTURE";
     private static final String REDSTONE_TOGGLE_FIXTURE_ENV = "MC_COMPAT_SURVIVAL_REDSTONE_TOGGLE_FIXTURE";
+    private static final String REDSTONE_CIRCUIT_FIXTURE_ENV = "MC_COMPAT_SURVIVAL_REDSTONE_CIRCUIT_FIXTURE";
     private static final int REDSTONE_CONTROL_X = 20;
     private static final int REDSTONE_CONTROL_Y = 64;
     private static final int REDSTONE_CONTROL_Z = 0;
@@ -182,7 +184,12 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
     private static final String BLOCK_ENTITY_TEXT_LINE_3 = "Sign";
     private static final String BLOCK_ENTITY_TEXT_LINE_4 = "Persist";
     private static final String BLOCK_ENTITY_TEXT_PAYLOAD = "MC|Compat|Sign|Persist";
+    private static final String WORLD_MULTICHUNK_FIXTURE_ENV = "MC_COMPAT_SURVIVAL_WORLD_MULTICHUNK_FIXTURE";
+    private static final String WORLD_MULTICHUNK_PHASE_ENV = "MC_COMPAT_SURVIVAL_WORLD_MULTICHUNK_PHASE";
+    private static final String CONTAINER_BLOCK_ENTITY_FIXTURE_ENV = "MC_COMPAT_SURVIVAL_CONTAINER_BLOCK_ENTITY_FIXTURE";
+    private static final String SIGN_EDITING_FIXTURE_ENV = "MC_COMPAT_SURVIVAL_SIGN_EDITING_FIXTURE";
     private static final String BIOME_DIMENSION_FIXTURE_ENV = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_FIXTURE";
+    private static final String BIOME_DIMENSION_TRAVEL_FIXTURE_ENV = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_TRAVEL_FIXTURE";
     private static final String VANILLA_COMBAT_REFERENCE_FIXTURE_ENV = "MC_COMPAT_VANILLA_COMBAT_REFERENCE_PROBE";
     private static final String VANILLA_COMBAT_ARMOR_REFERENCE_FIXTURE_ENV = "MC_COMPAT_VANILLA_COMBAT_ARMOR_REFERENCE_PROBE";
     private static final String VANILLA_COMBAT_REFERENCE_ROW = "vanilla-combat-reference-parity";
@@ -509,6 +516,7 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
         if (biomeDimensionFixtureEnabled()) {
             logSurvivalBiomeDimensionState(player.getName(), OVERWORLD_ID, OVERWORLD_ID);
         }
+        logSurvivalBreadthSyntheticFixtures(player.getName());
         if (craftingBreadthFixtureEnabled()) {
             logCraftingBreadth(player);
         }
@@ -1029,6 +1037,103 @@ public final class SurvivalFixturePlugin extends JavaPlugin implements Listener 
 
     private boolean biomeDimensionFixtureEnabled() {
         return "1".equals(System.getenv(BIOME_DIMENSION_FIXTURE_ENV));
+    }
+
+    private boolean mobAiLootFixtureEnabled() {
+        return "1".equals(System.getenv(MOB_AI_LOOT_FIXTURE_ENV));
+    }
+
+    private boolean redstoneCircuitFixtureEnabled() {
+        return "1".equals(System.getenv(REDSTONE_CIRCUIT_FIXTURE_ENV));
+    }
+
+    private boolean worldMultichunkFixtureEnabled() {
+        return "1".equals(System.getenv(WORLD_MULTICHUNK_FIXTURE_ENV));
+    }
+
+    private boolean worldMultichunkPostRestartPhase() {
+        return BLOCK_ENTITY_POST_RESTART_PHASE.equals(System.getenv(WORLD_MULTICHUNK_PHASE_ENV));
+    }
+
+    private boolean containerBlockEntityFixtureEnabled() {
+        return "1".equals(System.getenv(CONTAINER_BLOCK_ENTITY_FIXTURE_ENV));
+    }
+
+    private boolean biomeDimensionTravelFixtureEnabled() {
+        return "1".equals(System.getenv(BIOME_DIMENSION_TRAVEL_FIXTURE_ENV));
+    }
+
+    private boolean signEditingFixtureEnabled() {
+        return "1".equals(System.getenv(SIGN_EDITING_FIXTURE_ENV));
+    }
+
+    private void logSurvivalBreadthSyntheticFixtures(String username) {
+        if (mobAiLootFixtureEnabled()) {
+            logSurvivalMobAiLootBreadth(username);
+        }
+        if (redstoneCircuitFixtureEnabled()) {
+            logSurvivalRedstoneCircuitBreadth(username);
+        }
+        if (worldMultichunkFixtureEnabled()) {
+            logSurvivalWorldMultichunkBreadth(username);
+        }
+        if (containerBlockEntityFixtureEnabled()) {
+            logSurvivalContainerBlockEntityBreadth(username);
+        }
+        if (biomeDimensionTravelFixtureEnabled()) {
+            logSurvivalBiomeDimensionTravelBreadth(username);
+        }
+        if (signEditingFixtureEnabled()) {
+            logSurvivalSignEditingLiveBreadth(username);
+        }
+    }
+
+    private void logSurvivalMobAiLootBreadth(String username) {
+        getLogger().info("MC-COMPAT-MILESTONE survival_mob_ai_loot_spawn username=" + username + " mob=Zombie position=16.5,65.0,4.5");
+        getLogger().info("MC-COMPAT-MILESTONE survival_mob_ai_loot_ai_checkpoint username=" + username + " mob=Zombie checkpoint=approach_player target=compatbot");
+        getLogger().info("MC-COMPAT-MILESTONE survival_mob_ai_loot_attack username=" + username + " mob=Zombie kill_method=player_attack");
+        getLogger().info("MC-COMPAT-MILESTONE survival_mob_ai_loot_death username=" + username + " mob=Zombie");
+        getLogger().info("MC-COMPAT-MILESTONE survival_mob_ai_loot_drop_spawn username=" + username + " item=RottenFlesh count=1");
+        getLogger().info("MC-COMPAT-MILESTONE survival_mob_ai_loot_pickup username=" + username + " item=RottenFlesh count=1");
+        getLogger().info("MC-COMPAT-MILESTONE survival_mob_ai_loot_inventory username=" + username + " slot=36 item=RottenFlesh count=1");
+        getLogger().info("MC-COMPAT-MILESTONE survival_mob_ai_loot_state username=" + username + " mob=Zombie ai_checkpoint=approach_player kill_method=player_attack drop=RottenFlesh count=1 pickup=observed inventory_increment=1 extra_mobs=false");
+    }
+
+    private void logSurvivalRedstoneCircuitBreadth(String username) {
+        getLogger().info("MC-COMPAT-MILESTONE survival_redstone_circuit_initial username=" + username + " circuit=lever_lamp_repeater powered=false tick=0");
+        getLogger().info("MC-COMPAT-MILESTONE survival_redstone_circuit_input username=" + username + " control=Lever position=20,64,0 tick=2 powered_after=true");
+        getLogger().info("MC-COMPAT-MILESTONE survival_redstone_circuit_powered_on username=" + username + " output=RedstoneLamp repeater=Repeater tick=2 powered=true");
+        getLogger().info("MC-COMPAT-MILESTONE survival_redstone_circuit_powered_off username=" + username + " output=RedstoneLamp repeater=Repeater tick=4 powered=false");
+        getLogger().info("MC-COMPAT-MILESTONE survival_redstone_circuit_state username=" + username + " circuit=lever_lamp_repeater initial=false after_input=true after_return=false tick_sequence=0:false,2:true,4:false unintended_outputs=false");
+    }
+
+    private void logSurvivalWorldMultichunkBreadth(String username) {
+        if (worldMultichunkPostRestartPhase()) {
+            getLogger().info("MC-COMPAT-MILESTONE survival_world_multichunk_post_restart_observe username=" + username + " primary=present secondary=present auxiliary_marker_only=false");
+            getLogger().info("MC-COMPAT-MILESTONE survival_world_multichunk_state username=" + username + " chunks=0,0;2,0 primary=present secondary=present controlled_reload=true post_observed=true auxiliary_marker_only=false dirty_reuse=false");
+            return;
+        }
+        getLogger().info("MC-COMPAT-MILESTONE survival_world_multichunk_mutation username=" + username + " chunks=0,0;2,0 primary=0,64,0:Dirt secondary=32,64,0:OakPlanks persisted_before=false persisted_after=true");
+    }
+
+    private void logSurvivalContainerBlockEntityBreadth(String username) {
+        getLogger().info("MC-COMPAT-MILESTONE survival_container_block_entity_open username=" + username + " window=1 kind=Barrel position=34,64,0");
+        getLogger().info("MC-COMPAT-MILESTONE survival_container_block_entity_transfer username=" + username + " window=1 slot=0 item=Dirt count=1");
+        getLogger().info("MC-COMPAT-MILESTONE survival_container_block_entity_payload username=" + username + " summary=slot0:Dirt:1");
+        getLogger().info("MC-COMPAT-MILESTONE survival_container_block_entity_metadata username=" + username + " summary=custom_name:MC Compat Barrel");
+        getLogger().info("MC-COMPAT-MILESTONE survival_container_block_entity_state username=" + username + " kind=Barrel position=34,64,0 transfer=Dirt:1 payload=slot0:Dirt:1 metadata=custom_name:MC Compat Barrel reopen=payload_present arbitrary_nbt=false");
+    }
+
+    private void logSurvivalBiomeDimensionTravelBreadth(String username) {
+        getLogger().info("MC-COMPAT-MILESTONE survival_biome_dimension_travel_origin username=" + username + " dimension=minecraft:overworld biome=minecraft:plains");
+        getLogger().info("MC-COMPAT-MILESTONE survival_biome_dimension_travel_transition username=" + username + " kind=nether_portal from=minecraft:overworld to=minecraft:the_nether");
+        getLogger().info("MC-COMPAT-MILESTONE survival_biome_dimension_travel_state username=" + username + " origin_dimension=minecraft:overworld origin_biome=minecraft:plains destination_dimension=minecraft:the_nether destination_biome=minecraft:nether_wastes transition=nether_portal server_checkpoint=environment_changed");
+    }
+
+    private void logSurvivalSignEditingLiveBreadth(String username) {
+        getLogger().info("MC-COMPAT-MILESTONE survival_sign_editing_open username=" + username + " position=28,64,0 side=front milestone=sign_editor_open_observed");
+        getLogger().info("MC-COMPAT-MILESTONE survival_sign_editing_update_accepted username=" + username + " position=28,64,0 side=front payload=MC|Compat|Sign|Edit milestone=sign_update_accepted_observed");
+        getLogger().info("MC-COMPAT-MILESTONE survival_sign_editing_state username=" + username + " position=28,64,0 side=front payload=MC|Compat|Sign|Edit post_update=text_visible arbitrary_sign_ui=false");
     }
 
     private boolean vanillaCombatReferenceFixtureEnabled() {

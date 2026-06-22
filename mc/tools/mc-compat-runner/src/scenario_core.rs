@@ -20,6 +20,12 @@ use crate::{
     INVENTORY_STACK_SERVER_MERGE_PICKUP_NEEDLE, INVENTORY_STACK_SERVER_SPLIT_NEEDLE,
     INVENTORY_STACK_SERVER_SPLIT_PICKUP_NEEDLE, MCP_CONTROLLED_SMOKE_SCENARIO,
     SURVIVAL_BIOME_DIMENSION_CLIENT_STATE_NEEDLE, SURVIVAL_BIOME_DIMENSION_SERVER_STATE_NEEDLE,
+    SURVIVAL_BIOME_DIMENSION_TRAVEL_CLIENT_DESTINATION_NEEDLE,
+    SURVIVAL_BIOME_DIMENSION_TRAVEL_CLIENT_ORIGIN_NEEDLE,
+    SURVIVAL_BIOME_DIMENSION_TRAVEL_CLIENT_TRANSITION_NEEDLE,
+    SURVIVAL_BIOME_DIMENSION_TRAVEL_SERVER_ORIGIN_NEEDLE,
+    SURVIVAL_BIOME_DIMENSION_TRAVEL_SERVER_STATE_NEEDLE,
+    SURVIVAL_BIOME_DIMENSION_TRAVEL_SERVER_TRANSITION_NEEDLE,
     SURVIVAL_BLOCK_ENTITY_CLIENT_POST_RESTART_NEEDLE,
     SURVIVAL_BLOCK_ENTITY_CLIENT_PRE_RESTART_NEEDLE, SURVIVAL_BLOCK_ENTITY_CLIENT_RECONNECT_NEEDLE,
     SURVIVAL_BLOCK_ENTITY_SERVER_CLEAN_NEEDLE, SURVIVAL_BLOCK_ENTITY_SERVER_MUTATION_NEEDLE,
@@ -30,6 +36,16 @@ use crate::{
     SURVIVAL_CHEST_CLIENT_STORE_NEEDLE, SURVIVAL_CHEST_SERVER_CLOSE_NEEDLE,
     SURVIVAL_CHEST_SERVER_OPEN_NEEDLE, SURVIVAL_CHEST_SERVER_PERSISTED_NEEDLE,
     SURVIVAL_CHEST_SERVER_REOPEN_NEEDLE, SURVIVAL_CHEST_SERVER_STORE_NEEDLE,
+    SURVIVAL_CONTAINER_BLOCK_ENTITY_CLIENT_METADATA_NEEDLE,
+    SURVIVAL_CONTAINER_BLOCK_ENTITY_CLIENT_OPEN_NEEDLE,
+    SURVIVAL_CONTAINER_BLOCK_ENTITY_CLIENT_PAYLOAD_NEEDLE,
+    SURVIVAL_CONTAINER_BLOCK_ENTITY_CLIENT_REOPEN_NEEDLE,
+    SURVIVAL_CONTAINER_BLOCK_ENTITY_CLIENT_TRANSFER_NEEDLE,
+    SURVIVAL_CONTAINER_BLOCK_ENTITY_SERVER_METADATA_NEEDLE,
+    SURVIVAL_CONTAINER_BLOCK_ENTITY_SERVER_OPEN_NEEDLE,
+    SURVIVAL_CONTAINER_BLOCK_ENTITY_SERVER_PAYLOAD_NEEDLE,
+    SURVIVAL_CONTAINER_BLOCK_ENTITY_SERVER_STATE_NEEDLE,
+    SURVIVAL_CONTAINER_BLOCK_ENTITY_SERVER_TRANSFER_NEEDLE,
     SURVIVAL_CRAFTING_BREADTH_CLIENT_CLEAR_NEEDLE, SURVIVAL_CRAFTING_BREADTH_CLIENT_INVALID_NEEDLE,
     SURVIVAL_CRAFTING_BREADTH_CLIENT_INVENTORY_NEEDLE,
     SURVIVAL_CRAFTING_BREADTH_CLIENT_SHAPED_NEEDLE,
@@ -70,19 +86,42 @@ use crate::{
     SURVIVAL_HUNGER_HEALTH_CLIENT_USE_NEEDLE, SURVIVAL_HUNGER_HEALTH_SERVER_CONSUME_FINISH_NEEDLE,
     SURVIVAL_HUNGER_HEALTH_SERVER_CONSUME_START_NEEDLE,
     SURVIVAL_HUNGER_HEALTH_SERVER_INVENTORY_NEEDLE, SURVIVAL_HUNGER_HEALTH_SERVER_PRE_NEEDLE,
-    SURVIVAL_HUNGER_HEALTH_SERVER_STATE_NEEDLE, SURVIVAL_MOB_DROP_CLIENT_ATTACK_NEEDLE,
+    SURVIVAL_HUNGER_HEALTH_SERVER_STATE_NEEDLE, SURVIVAL_MOB_AI_LOOT_CLIENT_ATTACK_NEEDLE,
+    SURVIVAL_MOB_AI_LOOT_CLIENT_DEATH_NEEDLE, SURVIVAL_MOB_AI_LOOT_CLIENT_DROP_NEEDLE,
+    SURVIVAL_MOB_AI_LOOT_CLIENT_INVENTORY_NEEDLE, SURVIVAL_MOB_AI_LOOT_CLIENT_MOB_NEEDLE,
+    SURVIVAL_MOB_AI_LOOT_CLIENT_PICKUP_NEEDLE, SURVIVAL_MOB_AI_LOOT_SERVER_AI_NEEDLE,
+    SURVIVAL_MOB_AI_LOOT_SERVER_ATTACK_NEEDLE, SURVIVAL_MOB_AI_LOOT_SERVER_DEATH_NEEDLE,
+    SURVIVAL_MOB_AI_LOOT_SERVER_DROP_NEEDLE, SURVIVAL_MOB_AI_LOOT_SERVER_INVENTORY_NEEDLE,
+    SURVIVAL_MOB_AI_LOOT_SERVER_PICKUP_NEEDLE, SURVIVAL_MOB_AI_LOOT_SERVER_SPAWN_NEEDLE,
+    SURVIVAL_MOB_AI_LOOT_SERVER_STATE_NEEDLE, SURVIVAL_MOB_DROP_CLIENT_ATTACK_NEEDLE,
     SURVIVAL_MOB_DROP_CLIENT_DEATH_NEEDLE, SURVIVAL_MOB_DROP_CLIENT_DROP_NEEDLE,
     SURVIVAL_MOB_DROP_CLIENT_INVENTORY_NEEDLE, SURVIVAL_MOB_DROP_CLIENT_MOB_NEEDLE,
     SURVIVAL_MOB_DROP_CLIENT_PICKUP_NEEDLE, SURVIVAL_MOB_DROP_SERVER_ATTACK_NEEDLE,
     SURVIVAL_MOB_DROP_SERVER_DEATH_NEEDLE, SURVIVAL_MOB_DROP_SERVER_DROP_NEEDLE,
     SURVIVAL_MOB_DROP_SERVER_INVENTORY_NEEDLE, SURVIVAL_MOB_DROP_SERVER_PICKUP_NEEDLE,
     SURVIVAL_MOB_DROP_SERVER_SPAWN_NEEDLE, SURVIVAL_MOB_DROP_SERVER_STATE_NEEDLE,
+    SURVIVAL_REDSTONE_CIRCUIT_CLIENT_INITIAL_NEEDLE, SURVIVAL_REDSTONE_CIRCUIT_CLIENT_INPUT_NEEDLE,
+    SURVIVAL_REDSTONE_CIRCUIT_CLIENT_OUTPUT_OFF_NEEDLE,
+    SURVIVAL_REDSTONE_CIRCUIT_CLIENT_OUTPUT_ON_NEEDLE,
+    SURVIVAL_REDSTONE_CIRCUIT_CLIENT_RETURN_NEEDLE,
+    SURVIVAL_REDSTONE_CIRCUIT_SERVER_INITIAL_NEEDLE, SURVIVAL_REDSTONE_CIRCUIT_SERVER_INPUT_NEEDLE,
+    SURVIVAL_REDSTONE_CIRCUIT_SERVER_OFF_NEEDLE, SURVIVAL_REDSTONE_CIRCUIT_SERVER_ON_NEEDLE,
+    SURVIVAL_REDSTONE_CIRCUIT_SERVER_STATE_NEEDLE,
     SURVIVAL_REDSTONE_TOGGLE_CLIENT_INPUT_OFF_NEEDLE,
     SURVIVAL_REDSTONE_TOGGLE_CLIENT_INPUT_ON_NEEDLE,
     SURVIVAL_REDSTONE_TOGGLE_CLIENT_OUTPUT_OFF_NEEDLE,
     SURVIVAL_REDSTONE_TOGGLE_CLIENT_OUTPUT_ON_NEEDLE, SURVIVAL_REDSTONE_TOGGLE_SERVER_INPUT_NEEDLE,
     SURVIVAL_REDSTONE_TOGGLE_SERVER_OFF_NEEDLE, SURVIVAL_REDSTONE_TOGGLE_SERVER_ON_NEEDLE,
-    SURVIVAL_REDSTONE_TOGGLE_SERVER_STATE_NEEDLE,
+    SURVIVAL_REDSTONE_TOGGLE_SERVER_STATE_NEEDLE, SURVIVAL_SIGN_EDITING_CLIENT_OPEN_NEEDLE,
+    SURVIVAL_SIGN_EDITING_CLIENT_POST_NEEDLE, SURVIVAL_SIGN_EDITING_CLIENT_UPDATE_NEEDLE,
+    SURVIVAL_SIGN_EDITING_SERVER_OPEN_NEEDLE, SURVIVAL_SIGN_EDITING_SERVER_STATE_NEEDLE,
+    SURVIVAL_SIGN_EDITING_SERVER_UPDATE_NEEDLE, SURVIVAL_WORLD_MULTICHUNK_CLIENT_MUTATION_NEEDLE,
+    SURVIVAL_WORLD_MULTICHUNK_CLIENT_POST_RESTART_NEEDLE,
+    SURVIVAL_WORLD_MULTICHUNK_CLIENT_PRE_RESTART_NEEDLE,
+    SURVIVAL_WORLD_MULTICHUNK_CLIENT_RECONNECT_NEEDLE,
+    SURVIVAL_WORLD_MULTICHUNK_SERVER_CLEAN_NEEDLE,
+    SURVIVAL_WORLD_MULTICHUNK_SERVER_MUTATION_NEEDLE, SURVIVAL_WORLD_MULTICHUNK_SERVER_POST_NEEDLE,
+    SURVIVAL_WORLD_MULTICHUNK_SERVER_RESTART_NEEDLE, SURVIVAL_WORLD_MULTICHUNK_SERVER_STATE_NEEDLE,
     SURVIVAL_WORLD_PERSISTENCE_CLIENT_MUTATION_NEEDLE,
     SURVIVAL_WORLD_PERSISTENCE_CLIENT_POST_RESTART_NEEDLE,
     SURVIVAL_WORLD_PERSISTENCE_CLIENT_PRE_RESTART_NEEDLE,
@@ -114,11 +153,17 @@ pub(crate) enum Scenario {
     SurvivalHungerFood,
     SurvivalHungerHealthCycle,
     SurvivalMobDrop,
+    SurvivalMobAiLootBreadth,
     SurvivalRedstoneToggle,
+    SurvivalRedstoneCircuitBreadth,
     SurvivalWorldPersistenceRestart,
+    SurvivalWorldMultichunkDurability,
     SurvivalCrashRecoveryParity,
     SurvivalBlockEntityPersistenceParity,
+    SurvivalContainerBlockEntityBreadth,
     SurvivalBiomeDimensionState,
+    SurvivalBiomeDimensionTravel,
+    SurvivalSignEditingLive,
     McpControlledSmoke,
     CombatDamage,
     CombatKnockback,
@@ -335,12 +380,18 @@ pub(crate) enum ScenarioBehaviorKind {
     SurvivalHungerFood,
     SurvivalHungerHealthCycle,
     SurvivalMobDrop,
+    SurvivalMobAiLootBreadth,
     SurvivalRedstoneToggle,
+    SurvivalRedstoneCircuitBreadth,
     WorldPersistenceRestart {
         crash_recovery: bool,
         block_entity: bool,
     },
+    SurvivalWorldMultichunkDurability,
+    SurvivalContainerBlockEntityBreadth,
     SurvivalBiomeDimensionState,
+    SurvivalBiomeDimensionTravel,
+    SurvivalSignEditingLive,
     McpControlledSmoke,
     Combat {
         reference_probe: bool,
@@ -368,7 +419,8 @@ impl ScenarioBehaviorKind {
             Self::ReconnectFlagState { .. }
             | Self::SurvivalChestPersistence
             | Self::SurvivalFurnacePersistence
-            | Self::WorldPersistenceRestart { .. } => ScenarioRunStrategy::ReconnectSequence,
+            | Self::WorldPersistenceRestart { .. }
+            | Self::SurvivalWorldMultichunkDurability => ScenarioRunStrategy::ReconnectSequence,
             Self::Combat { .. }
             | Self::EquipmentUpdate
             | Self::Projectile { .. }
@@ -441,11 +493,17 @@ pub(crate) const ALL_SCENARIOS: &[Scenario] = &[
     Scenario::SurvivalHungerFood,
     Scenario::SurvivalHungerHealthCycle,
     Scenario::SurvivalMobDrop,
+    Scenario::SurvivalMobAiLootBreadth,
     Scenario::SurvivalRedstoneToggle,
+    Scenario::SurvivalRedstoneCircuitBreadth,
     Scenario::SurvivalWorldPersistenceRestart,
+    Scenario::SurvivalWorldMultichunkDurability,
     Scenario::SurvivalCrashRecoveryParity,
     Scenario::SurvivalBlockEntityPersistenceParity,
+    Scenario::SurvivalContainerBlockEntityBreadth,
     Scenario::SurvivalBiomeDimensionState,
+    Scenario::SurvivalBiomeDimensionTravel,
+    Scenario::SurvivalSignEditingLive,
     Scenario::McpControlledSmoke,
     Scenario::CombatDamage,
     Scenario::CombatKnockback,
@@ -1325,6 +1383,82 @@ pub(crate) const SCENARIO_SPECS: &[ScenarioSpec] = &[
         behavior: ScenarioBehaviorKind::SurvivalMobDrop,
     },
     ScenarioSpec {
+        scenario: Scenario::SurvivalMobAiLootBreadth,
+        canonical_name: "survival-mob-ai-loot-breadth",
+        aliases: &["survival-mob-ai-loot-breadth"],
+        client_milestones: &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "survival_mob_ai_loot_mob_seen",
+                SURVIVAL_MOB_AI_LOOT_CLIENT_MOB_NEEDLE,
+            ),
+            (
+                "survival_mob_ai_loot_attack_sent",
+                SURVIVAL_MOB_AI_LOOT_CLIENT_ATTACK_NEEDLE,
+            ),
+            (
+                "survival_mob_ai_loot_death_seen",
+                SURVIVAL_MOB_AI_LOOT_CLIENT_DEATH_NEEDLE,
+            ),
+            (
+                "survival_mob_ai_loot_drop_seen",
+                SURVIVAL_MOB_AI_LOOT_CLIENT_DROP_NEEDLE,
+            ),
+            (
+                "survival_mob_ai_loot_pickup_seen",
+                SURVIVAL_MOB_AI_LOOT_CLIENT_PICKUP_NEEDLE,
+            ),
+            (
+                "survival_mob_ai_loot_inventory_updated",
+                SURVIVAL_MOB_AI_LOOT_CLIENT_INVENTORY_NEEDLE,
+            ),
+        ],
+        server_milestones: &[
+            ("server_username_seen", "compatbot"),
+            (
+                "server_survival_mob_ai_loot_spawn",
+                SURVIVAL_MOB_AI_LOOT_SERVER_SPAWN_NEEDLE,
+            ),
+            (
+                "server_survival_mob_ai_loot_ai_checkpoint",
+                SURVIVAL_MOB_AI_LOOT_SERVER_AI_NEEDLE,
+            ),
+            (
+                "server_survival_mob_ai_loot_attack",
+                SURVIVAL_MOB_AI_LOOT_SERVER_ATTACK_NEEDLE,
+            ),
+            (
+                "server_survival_mob_ai_loot_death",
+                SURVIVAL_MOB_AI_LOOT_SERVER_DEATH_NEEDLE,
+            ),
+            (
+                "server_survival_mob_ai_loot_drop_spawn",
+                SURVIVAL_MOB_AI_LOOT_SERVER_DROP_NEEDLE,
+            ),
+            (
+                "server_survival_mob_ai_loot_pickup",
+                SURVIVAL_MOB_AI_LOOT_SERVER_PICKUP_NEEDLE,
+            ),
+            (
+                "server_survival_mob_ai_loot_inventory",
+                SURVIVAL_MOB_AI_LOOT_SERVER_INVENTORY_NEEDLE,
+            ),
+            (
+                "server_survival_mob_ai_loot_state",
+                SURVIVAL_MOB_AI_LOOT_SERVER_STATE_NEEDLE,
+            ),
+        ],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::SurvivalMobAiLootBreadth,
+    },
+    ScenarioSpec {
         scenario: Scenario::SurvivalRedstoneToggle,
         canonical_name: "survival-redstone-toggle",
         aliases: &["survival-redstone-toggle"],
@@ -1375,6 +1509,66 @@ pub(crate) const SCENARIO_SPECS: &[ScenarioSpec] = &[
             ("decode_error", "decode error"),
         ],
         behavior: ScenarioBehaviorKind::SurvivalRedstoneToggle,
+    },
+    ScenarioSpec {
+        scenario: Scenario::SurvivalRedstoneCircuitBreadth,
+        canonical_name: "survival-redstone-circuit-breadth",
+        aliases: &["survival-redstone-circuit-breadth"],
+        client_milestones: &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "survival_redstone_circuit_initial_state",
+                SURVIVAL_REDSTONE_CIRCUIT_CLIENT_INITIAL_NEEDLE,
+            ),
+            (
+                "survival_redstone_circuit_input_sent",
+                SURVIVAL_REDSTONE_CIRCUIT_CLIENT_INPUT_NEEDLE,
+            ),
+            (
+                "survival_redstone_circuit_output_update",
+                SURVIVAL_REDSTONE_CIRCUIT_CLIENT_OUTPUT_ON_NEEDLE,
+            ),
+            (
+                "survival_redstone_circuit_return_input_sent",
+                SURVIVAL_REDSTONE_CIRCUIT_CLIENT_RETURN_NEEDLE,
+            ),
+            (
+                "survival_redstone_circuit_return_update",
+                SURVIVAL_REDSTONE_CIRCUIT_CLIENT_OUTPUT_OFF_NEEDLE,
+            ),
+        ],
+        server_milestones: &[
+            ("server_username_seen", "compatbot"),
+            (
+                "server_survival_redstone_circuit_initial",
+                SURVIVAL_REDSTONE_CIRCUIT_SERVER_INITIAL_NEEDLE,
+            ),
+            (
+                "server_survival_redstone_circuit_input",
+                SURVIVAL_REDSTONE_CIRCUIT_SERVER_INPUT_NEEDLE,
+            ),
+            (
+                "server_survival_redstone_circuit_powered_on",
+                SURVIVAL_REDSTONE_CIRCUIT_SERVER_ON_NEEDLE,
+            ),
+            (
+                "server_survival_redstone_circuit_powered_off",
+                SURVIVAL_REDSTONE_CIRCUIT_SERVER_OFF_NEEDLE,
+            ),
+            (
+                "server_survival_redstone_circuit_state",
+                SURVIVAL_REDSTONE_CIRCUIT_SERVER_STATE_NEEDLE,
+            ),
+        ],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::SurvivalRedstoneCircuitBreadth,
     },
     ScenarioSpec {
         scenario: Scenario::SurvivalWorldPersistenceRestart,
@@ -1431,6 +1625,62 @@ pub(crate) const SCENARIO_SPECS: &[ScenarioSpec] = &[
             ("decode_error", "decode error"),
         ],
         behavior: ScenarioBehaviorKind::WorldPersistenceRestart { crash_recovery: false, block_entity: false },
+    },
+    ScenarioSpec {
+        scenario: Scenario::SurvivalWorldMultichunkDurability,
+        canonical_name: "survival-world-multichunk-durability",
+        aliases: &["survival-world-multichunk-durability"],
+        client_milestones: &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "survival_world_multichunk_mutation_sent",
+                SURVIVAL_WORLD_MULTICHUNK_CLIENT_MUTATION_NEEDLE,
+            ),
+            (
+                "survival_world_multichunk_pre_restart_update",
+                SURVIVAL_WORLD_MULTICHUNK_CLIENT_PRE_RESTART_NEEDLE,
+            ),
+            (
+                "survival_world_multichunk_reconnect_sent",
+                SURVIVAL_WORLD_MULTICHUNK_CLIENT_RECONNECT_NEEDLE,
+            ),
+            (
+                "survival_world_multichunk_post_restart_update",
+                SURVIVAL_WORLD_MULTICHUNK_CLIENT_POST_RESTART_NEEDLE,
+            ),
+        ],
+        server_milestones: &[
+            ("server_username_seen", "compatbot"),
+            (
+                "server_survival_world_multichunk_mutation",
+                SURVIVAL_WORLD_MULTICHUNK_SERVER_MUTATION_NEEDLE,
+            ),
+            (
+                "server_survival_world_multichunk_clean_shutdown",
+                SURVIVAL_WORLD_MULTICHUNK_SERVER_CLEAN_NEEDLE,
+            ),
+            (
+                "server_survival_world_multichunk_backend_restart",
+                SURVIVAL_WORLD_MULTICHUNK_SERVER_RESTART_NEEDLE,
+            ),
+            (
+                "server_survival_world_multichunk_post_restart",
+                SURVIVAL_WORLD_MULTICHUNK_SERVER_POST_NEEDLE,
+            ),
+            (
+                "server_survival_world_multichunk_state",
+                SURVIVAL_WORLD_MULTICHUNK_SERVER_STATE_NEEDLE,
+            ),
+        ],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::SurvivalWorldMultichunkDurability,
     },
     ScenarioSpec {
         scenario: Scenario::SurvivalCrashRecoveryParity,
@@ -1541,6 +1791,66 @@ pub(crate) const SCENARIO_SPECS: &[ScenarioSpec] = &[
         behavior: ScenarioBehaviorKind::WorldPersistenceRestart { crash_recovery: false, block_entity: true },
     },
     ScenarioSpec {
+        scenario: Scenario::SurvivalContainerBlockEntityBreadth,
+        canonical_name: "survival-container-block-entity-breadth",
+        aliases: &["survival-container-block-entity-breadth"],
+        client_milestones: &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "survival_container_block_entity_open_seen",
+                SURVIVAL_CONTAINER_BLOCK_ENTITY_CLIENT_OPEN_NEEDLE,
+            ),
+            (
+                "survival_container_block_entity_transfer_sent",
+                SURVIVAL_CONTAINER_BLOCK_ENTITY_CLIENT_TRANSFER_NEEDLE,
+            ),
+            (
+                "survival_container_block_entity_payload_seen",
+                SURVIVAL_CONTAINER_BLOCK_ENTITY_CLIENT_PAYLOAD_NEEDLE,
+            ),
+            (
+                "survival_container_block_entity_metadata_seen",
+                SURVIVAL_CONTAINER_BLOCK_ENTITY_CLIENT_METADATA_NEEDLE,
+            ),
+            (
+                "survival_container_block_entity_reopen_seen",
+                SURVIVAL_CONTAINER_BLOCK_ENTITY_CLIENT_REOPEN_NEEDLE,
+            ),
+        ],
+        server_milestones: &[
+            ("server_username_seen", "compatbot"),
+            (
+                "server_survival_container_block_entity_open",
+                SURVIVAL_CONTAINER_BLOCK_ENTITY_SERVER_OPEN_NEEDLE,
+            ),
+            (
+                "server_survival_container_block_entity_transfer",
+                SURVIVAL_CONTAINER_BLOCK_ENTITY_SERVER_TRANSFER_NEEDLE,
+            ),
+            (
+                "server_survival_container_block_entity_payload",
+                SURVIVAL_CONTAINER_BLOCK_ENTITY_SERVER_PAYLOAD_NEEDLE,
+            ),
+            (
+                "server_survival_container_block_entity_metadata",
+                SURVIVAL_CONTAINER_BLOCK_ENTITY_SERVER_METADATA_NEEDLE,
+            ),
+            (
+                "server_survival_container_block_entity_state",
+                SURVIVAL_CONTAINER_BLOCK_ENTITY_SERVER_STATE_NEEDLE,
+            ),
+        ],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::SurvivalContainerBlockEntityBreadth,
+    },
+    ScenarioSpec {
         scenario: Scenario::SurvivalBiomeDimensionState,
         canonical_name: "survival-biome-dimension-state",
         aliases: &["survival-biome-dimension-state"],
@@ -1567,6 +1877,94 @@ pub(crate) const SCENARIO_SPECS: &[ScenarioSpec] = &[
             ("decode_error", "decode error"),
         ],
         behavior: ScenarioBehaviorKind::SurvivalBiomeDimensionState,
+    },
+    ScenarioSpec {
+        scenario: Scenario::SurvivalBiomeDimensionTravel,
+        canonical_name: "survival-biome-dimension-travel",
+        aliases: &["survival-biome-dimension-travel"],
+        client_milestones: &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "survival_biome_dimension_travel_origin",
+                SURVIVAL_BIOME_DIMENSION_TRAVEL_CLIENT_ORIGIN_NEEDLE,
+            ),
+            (
+                "survival_biome_dimension_travel_transition_sent",
+                SURVIVAL_BIOME_DIMENSION_TRAVEL_CLIENT_TRANSITION_NEEDLE,
+            ),
+            (
+                "survival_biome_dimension_travel_destination_seen",
+                SURVIVAL_BIOME_DIMENSION_TRAVEL_CLIENT_DESTINATION_NEEDLE,
+            ),
+        ],
+        server_milestones: &[
+            ("server_username_seen", "compatbot"),
+            (
+                "server_survival_biome_dimension_travel_origin",
+                SURVIVAL_BIOME_DIMENSION_TRAVEL_SERVER_ORIGIN_NEEDLE,
+            ),
+            (
+                "server_survival_biome_dimension_travel_transition",
+                SURVIVAL_BIOME_DIMENSION_TRAVEL_SERVER_TRANSITION_NEEDLE,
+            ),
+            (
+                "server_survival_biome_dimension_travel_state",
+                SURVIVAL_BIOME_DIMENSION_TRAVEL_SERVER_STATE_NEEDLE,
+            ),
+        ],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::SurvivalBiomeDimensionTravel,
+    },
+    ScenarioSpec {
+        scenario: Scenario::SurvivalSignEditingLive,
+        canonical_name: "survival-sign-editing-live",
+        aliases: &["survival-sign-editing-live"],
+        client_milestones: &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "survival_sign_editing_open_seen",
+                SURVIVAL_SIGN_EDITING_CLIENT_OPEN_NEEDLE,
+            ),
+            (
+                "survival_sign_editing_update_sent",
+                SURVIVAL_SIGN_EDITING_CLIENT_UPDATE_NEEDLE,
+            ),
+            (
+                "survival_sign_editing_post_update_seen",
+                SURVIVAL_SIGN_EDITING_CLIENT_POST_NEEDLE,
+            ),
+        ],
+        server_milestones: &[
+            ("server_username_seen", "compatbot"),
+            (
+                "server_survival_sign_editing_open",
+                SURVIVAL_SIGN_EDITING_SERVER_OPEN_NEEDLE,
+            ),
+            (
+                "server_survival_sign_editing_update_accepted",
+                SURVIVAL_SIGN_EDITING_SERVER_UPDATE_NEEDLE,
+            ),
+            (
+                "server_survival_sign_editing_state",
+                SURVIVAL_SIGN_EDITING_SERVER_STATE_NEEDLE,
+            ),
+        ],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+        ],
+        behavior: ScenarioBehaviorKind::SurvivalSignEditingLive,
     },
     ScenarioSpec {
         scenario: Scenario::McpControlledSmoke,

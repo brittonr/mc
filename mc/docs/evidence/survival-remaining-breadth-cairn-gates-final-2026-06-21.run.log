@@ -1,0 +1,397 @@
+{
+  "change": "survival-mob-ai-loot-breadth-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "407e7571343b1306eec793ffa384680f7f64fb30d77f9382d2c2fcae513b1b17",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "faa2617025bb073ddbf4465705d8388ea01c9a73399ceab7bd29262f117257ae",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+survival-mob-ai-loot-breadth-parity_proposal_exit_status=0
+{
+  "change": "survival-mob-ai-loot-breadth-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "cf4bccb65033b9191e0756caaed5eaa6cc7983933c4e2c9346c37fd24209ba51",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "b8021a578d7477d43d795c075afdf8015f0fa25a72cd1849441881ca513257f6",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+survival-mob-ai-loot-breadth-parity_design_exit_status=0
+{
+  "change": "survival-mob-ai-loot-breadth-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "6c14d360f9b11d1aa1bff4f21c21efd7dee1ad5f97f10561bbe46b892006ca3f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "fb8ac8c8d3643708ab294ecd5fe4b12abba8cc1b7b0982fd9ffcd7bc724f7b8d",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+survival-mob-ai-loot-breadth-parity_tasks_exit_status=0
+{
+  "change": "survival-redstone-circuit-breadth-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f029f8a89de2c7b4d8c5cfdfd8a27055a1be8c3cf60affb18817b94acd229525",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "2ba57e949e1198e0062aadcff9f173274932e18a1e3bfdc87e1f85be08dbf798",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+survival-redstone-circuit-breadth-parity_proposal_exit_status=0
+{
+  "change": "survival-redstone-circuit-breadth-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "2a3d3dc2a32706227dbda4b8338e3ef5edce3f2cb2b49135757aa1cf30fb8ccd",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "317d77891d0bc86664fea867e4083d20fd86ebaecdfaab5e98f1ab6929de10c3",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+survival-redstone-circuit-breadth-parity_design_exit_status=0
+{
+  "change": "survival-redstone-circuit-breadth-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e8fd057b44dd5992637a4edee6c980498dad6bc1a86398560db00ca9ecaefc99",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "1aa448cd13c2eb83c33ca88a3476f42dbc36a25e45567c32a7c6feb75bc9c882",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+survival-redstone-circuit-breadth-parity_tasks_exit_status=0
+{
+  "change": "survival-biome-dimension-travel-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "1ea7649d52aa0cde70e8ac24036410ac8faa84ecae7def926967ebcc027d6aaf",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "258e29f7b9bbbfd7fd0588c09f63b9bfb7880b562ad4b824be5d0f86b138e5a9",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+survival-biome-dimension-travel-parity_proposal_exit_status=0
+{
+  "change": "survival-biome-dimension-travel-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c58dbbf8a8cfd2aa22997c7c564f815296f1560745f55ef43bc43dc9e5f41c7f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "f7aa7ffb3b19a542a2f6f3a1e45724225a2d14de4b7b67747a54346f3c174afe",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+survival-biome-dimension-travel-parity_design_exit_status=0
+{
+  "change": "survival-biome-dimension-travel-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a8fb246e55ab4cf8979b193c791166cf789d194a117c3c671784a61dc70adced",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "6e524aa8500bca24a5cd8b77dcddef569bf102805102f20b5b7d64a7fe67c5a2",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+survival-biome-dimension-travel-parity_tasks_exit_status=0
+{
+  "change": "survival-world-multichunk-durability-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "025d2253c294119736a997e98ce70b4a7db5258043ddca1d39de138d67f9415d",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "f487d1a7a9cdc9d0dba5961be1d99f3092eb9c88fc06f93433901959669eff13",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+survival-world-multichunk-durability-parity_proposal_exit_status=0
+{
+  "change": "survival-world-multichunk-durability-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "7bdacdc4ec4ec958a6ab8617c0e44b36178312b1221d5f5ebb060d10ddff168a",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "e2db6d33ea9ccfb98300cf76e60253b6c3771e91acdcdf8cdfcc8491bb08d6a5",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+survival-world-multichunk-durability-parity_design_exit_status=0
+{
+  "change": "survival-world-multichunk-durability-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "014c317730efe1ff96382b8d4364672b8957b4d7986703f81055c2ca39fef92f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "9f0e80ad3fc3e54e8f2bd0dd14f53a9e4a77124af4b19c735f7a2f85fe68a6f7",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+survival-world-multichunk-durability-parity_tasks_exit_status=0
+{
+  "change": "survival-container-block-entity-breadth-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "1fb38e7df49aa48b463d96d1718099594eb8197b35ad5caae1a7886eef7529c7",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "77cbe30112d0cd628bbd57bdf1dc94d558d1c4244387ab72e51fad3881c10196",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+survival-container-block-entity-breadth-parity_proposal_exit_status=0
+{
+  "change": "survival-container-block-entity-breadth-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "fe4779da12bb4aaf7b940fef87d90db1f5ad5e654aa4ea1a32ac5b20071b1f7d",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "4b93f599805f5248985390c934ee43cf9a8449b390baf07b7e17f8448da8a833",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+survival-container-block-entity-breadth-parity_design_exit_status=0
+{
+  "change": "survival-container-block-entity-breadth-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f627afe5aa63e6c2f24ffb0ae77d652203494652644dfc66538bba5c4ce816bc",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "a70361c10c01666047413fa6d27af1e91c174000dd501014ae793cfe0ca948f7",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+survival-container-block-entity-breadth-parity_tasks_exit_status=0
+{
+  "change": "survival-sign-editing-live-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "67b526e2ad9eef04d382538a09c390c1e52088bed872ff29a2238a98b02006bf",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "38d4f79a0747f5e7ee58de64ec00bd4692e945e3cf16ab7cc8ebb4a6d16c2144",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+survival-sign-editing-live-parity_proposal_exit_status=0
+{
+  "change": "survival-sign-editing-live-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "35238b83442c3fa7007fe4e25426bc4f35692ce46d3306f691cc2d192889745d",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "8de9365ae528bcb3774718c59f9ed5c745d2525be7be262c2d02f4987a62856f",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+survival-sign-editing-live-parity_design_exit_status=0
+{
+  "change": "survival-sign-editing-live-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "4e23b0e532c191e384739c7f43eed9d8773ea6c1806dae7f6238564f05209e80",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "8299e0af9c09bc599d3c1634140293cce242882a6c23c956a23a47b5d309a5a3",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+survival-sign-editing-live-parity_tasks_exit_status=0
+exit_status=0

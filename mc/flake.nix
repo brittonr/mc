@@ -1852,11 +1852,17 @@
                 survival-hunger-food \
                 survival-hunger-health-cycle \
                 survival-mob-drop \
+                survival-mob-ai-loot-breadth \
                 survival-redstone-toggle \
+                survival-redstone-circuit-breadth \
                 survival-world-persistence-restart \
+                survival-world-multichunk-durability \
                 survival-crash-recovery-parity \
                 survival-block-entity-persistence-parity \
-                survival-biome-dimension-state
+                survival-container-block-entity-breadth \
+                survival-biome-dimension-state \
+                survival-biome-dimension-travel \
+                survival-sign-editing-live
               do
                 receipt="$PWD/receipts/$scenario.json"
                 log="logs/$scenario-dry-run.log"
@@ -3086,11 +3092,17 @@
           survival-hunger-food
           survival-hunger-health-cycle
           survival-mob-drop
+          survival-mob-ai-loot-breadth
           survival-redstone-toggle
+          survival-redstone-circuit-breadth
           survival-world-persistence-restart
+          survival-world-multichunk-durability
           survival-crash-recovery-parity
           survival-block-entity-persistence-parity
+          survival-container-block-entity-breadth
           survival-biome-dimension-state
+          survival-biome-dimension-travel
+          survival-sign-editing-live
           ctf-600s-soak
           ctf-blue-600s-soak
           inventory-interaction
@@ -3342,7 +3354,7 @@
           grep -Fq -- "--apply" help.log
           grep -Fq -- "--stop" help.log
           grep -Fq -- "--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT" help.log
-          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|inventory-stack-split-merge|inventory-drag-transactions|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-crafting-recipe-breadth|survival-furnace-persistence|survival-furnace-smelting-breadth|survival-hunger-food|survival-hunger-health-cycle|survival-mob-drop|survival-redstone-toggle|survival-world-persistence-restart|survival-crash-recovery-parity|survival-block-entity-persistence-parity|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|vanilla-combat-reference-parity|vanilla-combat-armor-reference-parity|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset" help.log
+          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|inventory-stack-split-merge|inventory-drag-transactions|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-crafting-recipe-breadth|survival-furnace-persistence|survival-furnace-smelting-breadth|survival-hunger-food|survival-hunger-health-cycle|survival-mob-drop|survival-mob-ai-loot-breadth|survival-redstone-toggle|survival-redstone-circuit-breadth|survival-world-persistence-restart|survival-world-multichunk-durability|survival-crash-recovery-parity|survival-block-entity-persistence-parity|survival-container-block-entity-breadth|survival-biome-dimension-state|survival-biome-dimension-travel|survival-sign-editing-live|mcp-controlled-smoke|combat-damage|combat-knockback|vanilla-combat-reference-parity|vanilla-combat-armor-reference-parity|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset" help.log
           grep -Fq "MC_COMPAT_SCENARIO" help.log
           grep -Fq -- "--expect-status-description" help.log
           grep -Fq -- "--packet-capture-summary" help.log

@@ -1,0 +1,553 @@
+## survival_remaining_breadth_drain_assessment
+command=git child status; cairn change list/validate/gates
+== stevenarella status ==
+ M src/server/mod.rs
+== valence status ==
+ M examples/survival_compat.rs
+== cairn change list ==
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/survival-biome-dimension-travel-parity/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "survival-biome-dimension-travel-parity",
+      "path": "/home/brittonr/git/mc/cairn/changes/survival-biome-dimension-travel-parity",
+      "task_counts": {
+        "done": 2,
+        "in_progress": 0,
+        "todo": 4,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/survival-container-block-entity-breadth-parity/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "survival-container-block-entity-breadth-parity",
+      "path": "/home/brittonr/git/mc/cairn/changes/survival-container-block-entity-breadth-parity",
+      "task_counts": {
+        "done": 2,
+        "in_progress": 0,
+        "todo": 4,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/survival-mob-ai-loot-breadth-parity/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "survival-mob-ai-loot-breadth-parity",
+      "path": "/home/brittonr/git/mc/cairn/changes/survival-mob-ai-loot-breadth-parity",
+      "task_counts": {
+        "done": 2,
+        "in_progress": 0,
+        "todo": 4,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/survival-redstone-circuit-breadth-parity/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "survival-redstone-circuit-breadth-parity",
+      "path": "/home/brittonr/git/mc/cairn/changes/survival-redstone-circuit-breadth-parity",
+      "task_counts": {
+        "done": 2,
+        "in_progress": 0,
+        "todo": 4,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/survival-sign-editing-live-parity/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "survival-sign-editing-live-parity",
+      "path": "/home/brittonr/git/mc/cairn/changes/survival-sign-editing-live-parity",
+      "task_counts": {
+        "done": 2,
+        "in_progress": 0,
+        "todo": 4,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/survival-world-multichunk-durability-parity/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "survival-world-multichunk-durability-parity",
+      "path": "/home/brittonr/git/mc/cairn/changes/survival-world-multichunk-durability-parity",
+      "task_counts": {
+        "done": 2,
+        "in_progress": 0,
+        "todo": 4,
+        "total": 6,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "/home/brittonr/git/mc"
+}
+== cairn validate ==
+{
+  "change_issues": [],
+  "changes": 6,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+== survival-biome-dimension-travel-parity proposal ==
+{
+  "change": "survival-biome-dimension-travel-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "9c8f3c6c81fff9d5d7f8e4d733e8cc62519ac26712c9bf3bd3b851992699cc84",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "4e47d940f98e6b52015e3081beec23faca5289aaead9b784f3efb1e8c8470b24",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+== survival-biome-dimension-travel-parity design ==
+{
+  "change": "survival-biome-dimension-travel-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "7aa1a41975ecdf8eb4f273b13d5fd550832e6779dd34c71e21b4a42633f40203",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "cb22927f5fab031ad49bad173afdea0bd17ded509b1f2e42c0afbce539c0e80e",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+== survival-biome-dimension-travel-parity tasks ==
+{
+  "change": "survival-biome-dimension-travel-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "2e6f59c1930df9e4ababf9e06f9ca0593e9812c7e0099a940352e29e28f9606a",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "125b0cf4aa8b08337e398c661adee808eaf2650fb69b94e02416341d9e65cc77",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+== survival-container-block-entity-breadth-parity proposal ==
+{
+  "change": "survival-container-block-entity-breadth-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "9bcc93e22ec30e56f87b0d0bb57848ba6ef16737aa955d27a86e844fd7ee3bbd",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "80fd24c991691c60bab840ac3550069584f276b8034b61bea72c31187a71493a",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+== survival-container-block-entity-breadth-parity design ==
+{
+  "change": "survival-container-block-entity-breadth-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a31d4f21d9b2ce676bc6ff8d8ffe92fd5f1772ce95a154214b1e600f9f1a7a2e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "2c3d28c3b2d1bd04fbde1758ef09d98ca95da960227bf4992f75e649f09c5129",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+== survival-container-block-entity-breadth-parity tasks ==
+{
+  "change": "survival-container-block-entity-breadth-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "7909fbf11246d1cad53df67da8429cb368d766975288fc171dc846c80f7d43cd",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "e0f5c34c15363eb28e62167286e432086287bceb172cf7de152721506e9231a1",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+== survival-mob-ai-loot-breadth-parity proposal ==
+{
+  "change": "survival-mob-ai-loot-breadth-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "346f23dbc28b619e291ebe21a70fda217abec9c1ae21407f4d1d6d9ba3406d42",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "f1469df3fc1ad67b5e144e255ef50402b3c34a0036a4bd5fac4e902bc1778ad1",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+== survival-mob-ai-loot-breadth-parity design ==
+{
+  "change": "survival-mob-ai-loot-breadth-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "4f79ea42ef51017ede51d0673412b7b85897640fa8c0cff3b3411812f89ad803",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "fce868cb90ccf8a89884974ad10da801ad786fca567e42bdbda0582aee42db4a",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+== survival-mob-ai-loot-breadth-parity tasks ==
+{
+  "change": "survival-mob-ai-loot-breadth-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c3e6e967d04ee5b996d1dab91c6ce4e80283ea81299defbd61dcf334aa5be247",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "7d22e57bd51fd36ce5ad4fcf3519013603527b769ee3956b42ce6594dc1b14e4",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+== survival-redstone-circuit-breadth-parity proposal ==
+{
+  "change": "survival-redstone-circuit-breadth-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "30036047e6e9f00617199c938ce8501825183c27b35e552ce6c0f1e7e5970f0c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "50dfa349e38d67f3667f72bad5133d847cc7d469a913a7119cade7e40b5bdf08",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+== survival-redstone-circuit-breadth-parity design ==
+{
+  "change": "survival-redstone-circuit-breadth-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c978ef55608bb23ceb3bcb194b563484276049817565505d12d7094976040bbe",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "67d67fc61573debabed3411da75a2af100dbd5382439c3c40711f16aed399027",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+== survival-redstone-circuit-breadth-parity tasks ==
+{
+  "change": "survival-redstone-circuit-breadth-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "0852b642802b486923c6448a19b1299ce736fd11fe6b01883effce9530b9c7dd",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "69ba0dc973faaf94fd65afae229755cb09e76cf20e0257d1f5aacb7816fbd12d",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+== survival-sign-editing-live-parity proposal ==
+{
+  "change": "survival-sign-editing-live-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "d983f4effffacee07372d4b3249f87cf98286289adef795064281191aecd4074",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "806852d5deaf095bc5804005f732284be91533c58900f58da9d2eae0c9dca68a",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+== survival-sign-editing-live-parity design ==
+{
+  "change": "survival-sign-editing-live-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "db133861f96d1151cfe5d68c513951cd96372a183d66687e9fe8cef35a8fe085",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "8856acd4e725ef0cf42d5a1d8ec0c4b38aca9acdde2053ce693afe4caf65b8d9",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+== survival-sign-editing-live-parity tasks ==
+{
+  "change": "survival-sign-editing-live-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c29abadd3002c302d1592b7bb9864909dafccd10889c9fe66c691357f8f2764c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "afb9a9213ac4b362122fede09737c03da5f94d54e5f61e3e43db6277f661e7ea",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+== survival-world-multichunk-durability-parity proposal ==
+{
+  "change": "survival-world-multichunk-durability-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e060b81870607155c52465469811fda36ce407995f1c01f1a1c43d28baaaea83",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "3d1ccaf7c8739742f526fe87c96a23adbfe4e5ab01178c514056ac499779d0a5",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+== survival-world-multichunk-durability-parity design ==
+{
+  "change": "survival-world-multichunk-durability-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "23a83555b9d9885460f86126f7d8899affb05443eb38e7bfaf5e306e1857a706",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "98ae74fef8ce1e5a87eaa82b15656507b92ee88bbd2e80df705a4ec514b85a45",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+== survival-world-multichunk-durability-parity tasks ==
+{
+  "change": "survival-world-multichunk-durability-parity",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "315c9c26975a08094088bb83031feff98ec0236f4bda95d0c1815a3e00d51d34",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "11e88febb523ab0b0f08592d90c3f34116de9d5662d78b3642c60a13963123a6",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0

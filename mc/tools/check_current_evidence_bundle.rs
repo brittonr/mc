@@ -64,11 +64,17 @@ const REQUIRED_SEAMS: &[&str] = &[
     "Survival hunger/food",
     "Survival hunger/health cycle",
     "Survival mob drops",
+    "Survival mob AI/loot breadth",
     "Survival redstone toggle",
+    "Survival redstone circuit breadth",
     "Survival biome/dimension join state",
+    "Survival biome/dimension travel",
     "Survival world persistence restart",
+    "Survival world multichunk durability",
     "Survival crash recovery",
     "Survival sign block-entity persistence",
+    "Survival container block-entity breadth",
+    "Survival sign editing live",
     "MCP-controlled observability",
 ];
 
@@ -103,6 +109,12 @@ const REQUIRED_TEXT: &[&str] = &[
     "Survival crafting recipe breadth",
     "Survival furnace smelting breadth",
     "Survival hunger/health cycle",
+    "Survival mob AI/loot breadth",
+    "Survival redstone circuit breadth",
+    "Survival biome/dimension travel",
+    "Survival world multichunk durability",
+    "Survival container block-entity breadth",
+    "Survival sign editing live",
 ];
 
 #[derive(Debug, Clone, PartialEq, Eq)]

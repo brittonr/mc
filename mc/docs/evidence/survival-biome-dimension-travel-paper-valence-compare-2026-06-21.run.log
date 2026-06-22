@@ -1,0 +1,5 @@
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+[mc-compat] receipt comparison passed: paper=docs/evidence/survival-biome-dimension-travel-paper-2026-06-21.receipt.json valence=docs/evidence/survival-biome-dimension-travel-valence-2026-06-21.receipt.json protocol=763 headless=xvfb/x11/software-gl/no-wayland
+exit_status=0

@@ -1,0 +1,25 @@
+[main.rs:1173][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:1309][INFO] Shader version: #version 150
+[main.rs:316][INFO] Detected server protocol version 763
+[server/mod.rs:1081][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25565
+[server/mod.rs:1086][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:1103][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:1117][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:1124][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:1185][WARN] Server is running in offline mode
+[server/mod.rs:1186][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbot properties=0
+[server/mod.rs:3387][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[world/mod.rs:1123][INFO] Dimension bounds: min_y=-64 height=384
+[server/mod.rs:3472][INFO] MC-COMPAT-MILESTONE join_game entity_id=0 gamemode=Survival
+[server/mod.rs:6719][INFO] Received chat message: Welcome to the Valence survival compatibility fixture.
+[server/mod.rs:4020][INFO] MC-COMPAT-MILESTONE update_health health=14.0 food=20 saturation=0.0
+[server/mod.rs:6900][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=0
+[server/mod.rs:1870][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:5091][INFO] MC-COMPAT-MILESTONE survival_mob_ai_loot_mob_seen mob=Zombie position=16.5,65.0,4.5 ai_checkpoint=approach_player
+[server/mod.rs:5092][INFO] MC-COMPAT-MILESTONE survival_mob_ai_loot_attack_sent mob=Zombie kill_method=player_attack
+[server/mod.rs:5093][INFO] MC-COMPAT-MILESTONE survival_mob_ai_loot_death_seen mob=Zombie
+[server/mod.rs:5094][INFO] MC-COMPAT-MILESTONE survival_mob_ai_loot_drop_seen item=RottenFlesh count=1
+[server/mod.rs:5095][INFO] MC-COMPAT-MILESTONE survival_mob_ai_loot_pickup_seen item=RottenFlesh count=1
+[server/mod.rs:5096][INFO] MC-COMPAT-MILESTONE survival_mob_ai_loot_inventory_updated slot=36 item=RottenFlesh count=1

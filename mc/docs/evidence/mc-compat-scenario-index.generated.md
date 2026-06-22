@@ -23,11 +23,17 @@ This bounded index is generated from `config/mc-compat/scenario-manifest.ncl`. I
 | survival-hunger-food | survival-hunger-food | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
 | survival-hunger-health-cycle | survival-hunger-health-cycle | 1 | 1 | mc-compat-valence-survival-hunger-health-cycle-dry-run | mc-compat-valence-survival-hunger-health-cycle | substring-fallback |
 | survival-mob-drop | survival-mob-drop | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
+| survival-mob-ai-loot-breadth | survival-mob-ai-loot-breadth | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
 | survival-redstone-toggle | survival-redstone-toggle | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
+| survival-redstone-circuit-breadth | survival-redstone-circuit-breadth | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
 | survival-world-persistence-restart | survival-world-persistence-restart | 1 | 2 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
+| survival-world-multichunk-durability | survival-world-multichunk-durability | 1 | 2 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
 | survival-crash-recovery-parity | survival-crash-recovery-parity | 1 | 2 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
 | survival-block-entity-persistence-parity | survival-block-entity-persistence-parity | 1 | 2 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
+| survival-container-block-entity-breadth | survival-container-block-entity-breadth | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
 | survival-biome-dimension-state | survival-biome-dimension-state | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
+| survival-biome-dimension-travel | survival-biome-dimension-travel | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
+| survival-sign-editing-live | survival-sign-editing-live | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
 | mcp-controlled-smoke | mcp-controlled-smoke | 1 | 1 | mc-compat-mcp-controlled-smoke-dry-run | mc-compat-mcp-controlled-smoke | substring-fallback |
 | combat-damage | combat-damage | 2 | 1 | mc-compat-valence-ctf-combat-damage-dry-run | mc-compat-valence-ctf-combat-damage | substring-fallback |
 | combat-knockback | combat-knockback | 2 | 1 | mc-compat-valence-ctf-combat-knockback-dry-run | mc-compat-valence-ctf-combat-knockback | substring-fallback |

@@ -1,0 +1,4 @@
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-biome-dimension-travel session=survival-biome-dimension-travel-paper-2026-06-21.receipt username=compatbot seq=7 event=server_username_seen
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-biome-dimension-travel session=survival-biome-dimension-travel-paper-2026-06-21.receipt username=compatbot seq=8 event=server_survival_biome_dimension_travel_origin
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-biome-dimension-travel session=survival-biome-dimension-travel-paper-2026-06-21.receipt username=compatbot seq=9 event=server_survival_biome_dimension_travel_transition
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-biome-dimension-travel session=survival-biome-dimension-travel-paper-2026-06-21.receipt username=compatbot seq=10 event=server_survival_biome_dimension_travel_state

@@ -1,0 +1,5 @@
+this derivation will be built:
+  /nix/store/dia479p3fnrs2afwbq90z6kwdclxgq2h-mc-compat-historical-scenario-dry-runs.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/dia479p3fnrs2afwbq90z6kwdclxgq2h-mc-compat-historical-scenario-dry-runs.drv'...
+exit_status=0

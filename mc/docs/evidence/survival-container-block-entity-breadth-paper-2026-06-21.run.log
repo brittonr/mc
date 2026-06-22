@@ -1,0 +1,133 @@
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+[mc-compat] building Stevenarella client
+warning: `/home/brittonr/git/mc/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: file `/home/brittonr/git/mc/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1052:36
+     |
+1052 |         offsets |protocol_version| (instrument.offsets(protocol_version)
+     |                                    ^
+1053 |             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 })),
+     |                                                                                                    ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1052 ~         offsets |protocol_version| instrument.offsets(protocol_version)
+1053 ~             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+     |
+
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1407:36
+     |
+1407 |         offsets |protocol_version| (variant.offsets(protocol_version)),
+     |                                    ^                                 ^
+     |
+help: remove these parentheses
+     |
+1407 -         offsets |protocol_version| (variant.offsets(protocol_version)),
+1407 +         offsets |protocol_version| variant.offsets(protocol_version),
+     |
+
+warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
+warning: constant `SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD` is never used
+   --> src/server/mod.rs:287:7
+    |
+287 | const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &str = "MC|Compat|Sign|Persist";
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `survival_block_entity_expected_lines` is never used
+   --> src/server/mod.rs:708:4
+    |
+708 | fn survival_block_entity_expected_lines() -> [String; SIGN_LINE_COUNT] {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:102:21
+    |
+102 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+252 | / define_elements! {
+253 | |     Image,
+254 | |     Batch,
+255 | |     Text,
+...   |
+258 | |     TextBox,
+259 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+102 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib) generated 4 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (bin "stevenarella") generated 4 warnings (4 duplicates)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.16s
+[mc-compat] starting Paper 1.20.1 server on 127.0.0.1:25566 via itzg/minecraft-server:java17 with EULA=TRUE
+092e1c05e7faff076cd64a4734f73dfbd652d66d70637df98416e6d4a80d1ec7
+[mc-compat] probing status 127.0.0.1:25566 expecting protocol 763
+{"version":{"name":"Paper 1.20.1","protocol":763},"description":{"text":"A Minecraft Server"},"players":{"max":20,"online":0}}
+[mc-compat] running Stevenarella headless scenario 'survival-container-block-entity-breadth' isolated from host Wayland compositor
+[main.rs:1173][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:1309][INFO] Shader version: #version 150
+[main.rs:316][INFO] Detected server protocol version 763
+[server/mod.rs:1081][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25566
+[server/mod.rs:1086][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:1103][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:1117][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:1124][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:1185][WARN] Server is running in offline mode
+[server/mod.rs:1186][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbot properties=0
+[server/mod.rs:3387][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[world/mod.rs:1123][INFO] Dimension bounds: min_y=-64 height=384
+[server/mod.rs:3472][INFO] MC-COMPAT-MILESTONE join_game entity_id=374 gamemode=Survival
+[server/mod.rs:1870][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:6719][INFO] Received chat message: unhandled: multiplayer.player.joined
+[server/mod.rs:4020][INFO] MC-COMPAT-MILESTONE update_health health=20.0 food=20 saturation=5.0
+[server/mod.rs:6900][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=0
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:stripped_spruce_log_wood
+[model/mod.rs:368][ERROR] Error loading model minecraft:stripped_spruce_log_wood
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:noteblock
+[model/mod.rs:368][ERROR] Error loading model minecraft:noteblock
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:wall_banner
+[model/mod.rs:368][ERROR] Error loading model minecraft:wall_banner
+[server/mod.rs:5141][INFO] MC-COMPAT-MILESTONE survival_container_block_entity_open_seen window=1 kind=Barrel position=34,64,0
+[server/mod.rs:5142][INFO] MC-COMPAT-MILESTONE survival_container_block_entity_transfer_sent window=1 slot=0 item=Dirt count=1
+[server/mod.rs:5143][INFO] MC-COMPAT-MILESTONE survival_container_block_entity_payload_seen summary=slot0:Dirt:1
+[server/mod.rs:5146][INFO] MC-COMPAT-MILESTONE survival_container_block_entity_metadata_seen summary=custom_name:MC Compat Barrel
+[server/mod.rs:5147][INFO] MC-COMPAT-MILESTONE survival_container_block_entity_reopen_seen window=1 kind=Barrel position=34,64,0 payload=slot0:Dirt:1
+[mc-compat] client compatbot finished Some(124); log: /tmp/mc-compat-client.compatbot.1782094442174.log
+[mc-compat] stopping managed Paper container mc-compat-survival-container-block-entity-breadth
+mc-compat-survival-container-block-entity-breadth
+[mc-compat] wrote typed event log docs/evidence/survival-container-block-entity-breadth-paper-2026-06-21.receipt.typed-events.log
+[mc-compat] wrote smoke receipt docs/evidence/survival-container-block-entity-breadth-paper-2026-06-21.receipt.json
+exit_status=0

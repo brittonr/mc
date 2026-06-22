@@ -1,0 +1,24 @@
+[main.rs:1173][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:1309][INFO] Shader version: #version 150
+[main.rs:316][INFO] Detected server protocol version 763
+[server/mod.rs:1081][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25565
+[server/mod.rs:1086][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:1103][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:1117][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:1124][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:1185][WARN] Server is running in offline mode
+[server/mod.rs:1186][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbot properties=0
+[server/mod.rs:3387][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[world/mod.rs:1123][INFO] Dimension bounds: min_y=-64 height=384
+[server/mod.rs:3472][INFO] MC-COMPAT-MILESTONE join_game entity_id=0 gamemode=Survival
+[server/mod.rs:6719][INFO] Received chat message: Welcome to the Valence survival compatibility fixture.
+[server/mod.rs:4020][INFO] MC-COMPAT-MILESTONE update_health health=14.0 food=20 saturation=0.0
+[server/mod.rs:6900][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=0
+[server/mod.rs:1870][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:5107][INFO] MC-COMPAT-MILESTONE survival_redstone_circuit_initial_state circuit=lever_lamp_repeater tick=0 powered=false
+[server/mod.rs:5108][INFO] MC-COMPAT-MILESTONE survival_redstone_circuit_input_sent control=Lever position=20,64,0 tick=2 powered_after=true
+[server/mod.rs:5109][INFO] MC-COMPAT-MILESTONE survival_redstone_circuit_output_update output=RedstoneLamp repeater=Repeater position=21,64,0 tick=2 powered=true
+[server/mod.rs:5110][INFO] MC-COMPAT-MILESTONE survival_redstone_circuit_return_input_sent control=Lever position=20,64,0 tick=4 powered_after=false
+[server/mod.rs:5111][INFO] MC-COMPAT-MILESTONE survival_redstone_circuit_return_update output=RedstoneLamp repeater=Repeater position=21,64,0 tick=4 powered=false

@@ -1,0 +1,10 @@
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-sign-editing-live session=survival-sign-editing-live-paper-2026-06-21.receipt username=compatbot seq=1 event=protocol_detected
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-sign-editing-live session=survival-sign-editing-live-paper-2026-06-21.receipt username=compatbot seq=2 event=join_game
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-sign-editing-live session=survival-sign-editing-live-paper-2026-06-21.receipt username=compatbot seq=3 event=render_tick
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-sign-editing-live session=survival-sign-editing-live-paper-2026-06-21.receipt username=compatbot seq=4 event=survival_sign_editing_open_seen
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-sign-editing-live session=survival-sign-editing-live-paper-2026-06-21.receipt username=compatbot seq=5 event=survival_sign_editing_update_sent
+MC-COMPAT-EVENT schema=1 source=client scenario=survival-sign-editing-live session=survival-sign-editing-live-paper-2026-06-21.receipt username=compatbot seq=6 event=survival_sign_editing_post_update_seen
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-sign-editing-live session=survival-sign-editing-live-paper-2026-06-21.receipt username=compatbot seq=7 event=server_username_seen
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-sign-editing-live session=survival-sign-editing-live-paper-2026-06-21.receipt username=compatbot seq=8 event=server_survival_sign_editing_open
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-sign-editing-live session=survival-sign-editing-live-paper-2026-06-21.receipt username=compatbot seq=9 event=server_survival_sign_editing_update_accepted
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-sign-editing-live session=survival-sign-editing-live-paper-2026-06-21.receipt username=compatbot seq=10 event=server_survival_sign_editing_state

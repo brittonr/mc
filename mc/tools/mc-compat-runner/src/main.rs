@@ -301,6 +301,35 @@ const SURVIVAL_MOB_DROP_SERVER_STATE_NEEDLE: &str =
     "survival_mob_drop_state username=compatbot mob=IronGolem drop=IronIngot count=1 extra_drops=false";
 const SURVIVAL_MOB_DROP_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_MOB_DROP_PROBE";
 const SURVIVAL_MOB_DROP_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_MOB_DROP_FIXTURE";
+const SURVIVAL_MOB_AI_LOOT_CLIENT_MOB_NEEDLE: &str =
+    "survival_mob_ai_loot_mob_seen mob=Zombie position=16.5,65.0,4.5 ai_checkpoint=approach_player";
+const SURVIVAL_MOB_AI_LOOT_CLIENT_ATTACK_NEEDLE: &str =
+    "survival_mob_ai_loot_attack_sent mob=Zombie kill_method=player_attack";
+const SURVIVAL_MOB_AI_LOOT_CLIENT_DEATH_NEEDLE: &str = "survival_mob_ai_loot_death_seen mob=Zombie";
+const SURVIVAL_MOB_AI_LOOT_CLIENT_DROP_NEEDLE: &str =
+    "survival_mob_ai_loot_drop_seen item=RottenFlesh count=1";
+const SURVIVAL_MOB_AI_LOOT_CLIENT_PICKUP_NEEDLE: &str =
+    "survival_mob_ai_loot_pickup_seen item=RottenFlesh count=1";
+const SURVIVAL_MOB_AI_LOOT_CLIENT_INVENTORY_NEEDLE: &str =
+    "survival_mob_ai_loot_inventory_updated slot=36 item=RottenFlesh count=1";
+const SURVIVAL_MOB_AI_LOOT_SERVER_SPAWN_NEEDLE: &str =
+    "survival_mob_ai_loot_spawn username=compatbot mob=Zombie position=16.5,65.0,4.5";
+const SURVIVAL_MOB_AI_LOOT_SERVER_AI_NEEDLE: &str =
+    "survival_mob_ai_loot_ai_checkpoint username=compatbot mob=Zombie checkpoint=approach_player target=compatbot";
+const SURVIVAL_MOB_AI_LOOT_SERVER_ATTACK_NEEDLE: &str =
+    "survival_mob_ai_loot_attack username=compatbot mob=Zombie kill_method=player_attack";
+const SURVIVAL_MOB_AI_LOOT_SERVER_DEATH_NEEDLE: &str =
+    "survival_mob_ai_loot_death username=compatbot mob=Zombie";
+const SURVIVAL_MOB_AI_LOOT_SERVER_DROP_NEEDLE: &str =
+    "survival_mob_ai_loot_drop_spawn username=compatbot item=RottenFlesh count=1";
+const SURVIVAL_MOB_AI_LOOT_SERVER_PICKUP_NEEDLE: &str =
+    "survival_mob_ai_loot_pickup username=compatbot item=RottenFlesh count=1";
+const SURVIVAL_MOB_AI_LOOT_SERVER_INVENTORY_NEEDLE: &str =
+    "survival_mob_ai_loot_inventory username=compatbot slot=36 item=RottenFlesh count=1";
+const SURVIVAL_MOB_AI_LOOT_SERVER_STATE_NEEDLE: &str =
+    "survival_mob_ai_loot_state username=compatbot mob=Zombie ai_checkpoint=approach_player kill_method=player_attack drop=RottenFlesh count=1 pickup=observed inventory_increment=1 extra_mobs=false";
+const SURVIVAL_MOB_AI_LOOT_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_MOB_AI_LOOT_PROBE";
+const SURVIVAL_MOB_AI_LOOT_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_MOB_AI_LOOT_FIXTURE";
 const SURVIVAL_REDSTONE_TOGGLE_CLIENT_INPUT_ON_NEEDLE: &str =
     "survival_redstone_toggle_input_sent control=Lever position=20,64,0 powered_before=false powered_after=true";
 const SURVIVAL_REDSTONE_TOGGLE_CLIENT_OUTPUT_ON_NEEDLE: &str =
@@ -319,6 +348,28 @@ const SURVIVAL_REDSTONE_TOGGLE_SERVER_STATE_NEEDLE: &str =
     "survival_redstone_toggle_state username=compatbot control=Lever output=RedstoneLamp on_seen=true off_seen=true unintended_outputs=false";
 const SURVIVAL_REDSTONE_TOGGLE_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_REDSTONE_TOGGLE_PROBE";
 const SURVIVAL_REDSTONE_TOGGLE_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_REDSTONE_TOGGLE_FIXTURE";
+const SURVIVAL_REDSTONE_CIRCUIT_CLIENT_INITIAL_NEEDLE: &str =
+    "survival_redstone_circuit_initial_state circuit=lever_lamp_repeater tick=0 powered=false";
+const SURVIVAL_REDSTONE_CIRCUIT_CLIENT_INPUT_NEEDLE: &str =
+    "survival_redstone_circuit_input_sent control=Lever position=20,64,0 tick=2 powered_after=true";
+const SURVIVAL_REDSTONE_CIRCUIT_CLIENT_OUTPUT_ON_NEEDLE: &str =
+    "survival_redstone_circuit_output_update output=RedstoneLamp repeater=Repeater position=21,64,0 tick=2 powered=true";
+const SURVIVAL_REDSTONE_CIRCUIT_CLIENT_RETURN_NEEDLE: &str =
+    "survival_redstone_circuit_return_input_sent control=Lever position=20,64,0 tick=4 powered_after=false";
+const SURVIVAL_REDSTONE_CIRCUIT_CLIENT_OUTPUT_OFF_NEEDLE: &str =
+    "survival_redstone_circuit_return_update output=RedstoneLamp repeater=Repeater position=21,64,0 tick=4 powered=false";
+const SURVIVAL_REDSTONE_CIRCUIT_SERVER_INITIAL_NEEDLE: &str =
+    "survival_redstone_circuit_initial username=compatbot circuit=lever_lamp_repeater powered=false tick=0";
+const SURVIVAL_REDSTONE_CIRCUIT_SERVER_INPUT_NEEDLE: &str =
+    "survival_redstone_circuit_input username=compatbot control=Lever position=20,64,0 tick=2 powered_after=true";
+const SURVIVAL_REDSTONE_CIRCUIT_SERVER_ON_NEEDLE: &str =
+    "survival_redstone_circuit_powered_on username=compatbot output=RedstoneLamp repeater=Repeater tick=2 powered=true";
+const SURVIVAL_REDSTONE_CIRCUIT_SERVER_OFF_NEEDLE: &str =
+    "survival_redstone_circuit_powered_off username=compatbot output=RedstoneLamp repeater=Repeater tick=4 powered=false";
+const SURVIVAL_REDSTONE_CIRCUIT_SERVER_STATE_NEEDLE: &str =
+    "survival_redstone_circuit_state username=compatbot circuit=lever_lamp_repeater initial=false after_input=true after_return=false tick_sequence=0:false,2:true,4:false unintended_outputs=false";
+const SURVIVAL_REDSTONE_CIRCUIT_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_REDSTONE_CIRCUIT_PROBE";
+const SURVIVAL_REDSTONE_CIRCUIT_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_REDSTONE_CIRCUIT_FIXTURE";
 const SURVIVAL_WORLD_PERSISTENCE_CLIENT_MUTATION_NEEDLE: &str =
     "survival_world_persistence_mutation_sent block=Dirt position=24,64,0 slot=36";
 const SURVIVAL_WORLD_PERSISTENCE_CLIENT_PRE_RESTART_NEEDLE: &str =
@@ -353,6 +404,67 @@ const SURVIVAL_BLOCK_ENTITY_SERVER_POST_NEEDLE: &str =
     "survival_block_entity_persistence_post_restart_observe username=compatbot kind=Sign position=28,64,0 text=MC|Compat|Sign|Persist persisted=true";
 const SURVIVAL_BLOCK_ENTITY_SERVER_STATE_NEEDLE: &str =
     "survival_block_entity_persistence_state username=compatbot kind=Sign position=28,64,0 text=MC|Compat|Sign|Persist pre_mutation=true clean_shutdown=true backend_restart=true post_observed=true dirty_reuse=false";
+const SURVIVAL_WORLD_MULTICHUNK_CLIENT_MUTATION_NEEDLE: &str =
+    "survival_world_multichunk_mutation_sent primary=0,64,0:Dirt secondary=32,64,0:OakPlanks chunks=0,0;2,0";
+const SURVIVAL_WORLD_MULTICHUNK_CLIENT_PRE_RESTART_NEEDLE: &str =
+    "survival_world_multichunk_pre_restart_update primary=present secondary=present auxiliary_marker_only=false";
+const SURVIVAL_WORLD_MULTICHUNK_CLIENT_RECONNECT_NEEDLE: &str =
+    "survival_world_multichunk_reconnect_sent session=restart";
+const SURVIVAL_WORLD_MULTICHUNK_CLIENT_POST_RESTART_NEEDLE: &str =
+    "survival_world_multichunk_post_restart_update primary=present secondary=present";
+const SURVIVAL_WORLD_MULTICHUNK_SERVER_MUTATION_NEEDLE: &str =
+    "survival_world_multichunk_mutation username=compatbot chunks=0,0;2,0 primary=0,64,0:Dirt secondary=32,64,0:OakPlanks persisted_before=false persisted_after=true";
+const SURVIVAL_WORLD_MULTICHUNK_SERVER_CLEAN_NEEDLE: &str =
+    "survival_world_multichunk_clean_shutdown username=compatbot storage=isolated shutdown=graceful";
+const SURVIVAL_WORLD_MULTICHUNK_SERVER_RESTART_NEEDLE: &str =
+    "survival_world_multichunk_backend_restart username=compatbot method=controlled_reload storage=isolated restart_confirmed=true";
+const SURVIVAL_WORLD_MULTICHUNK_SERVER_POST_NEEDLE: &str =
+    "survival_world_multichunk_post_restart_observe username=compatbot primary=present secondary=present auxiliary_marker_only=false";
+const SURVIVAL_WORLD_MULTICHUNK_SERVER_STATE_NEEDLE: &str =
+    "survival_world_multichunk_state username=compatbot chunks=0,0;2,0 primary=present secondary=present controlled_reload=true post_observed=true auxiliary_marker_only=false dirty_reuse=false";
+const SURVIVAL_CONTAINER_BLOCK_ENTITY_CLIENT_OPEN_NEEDLE: &str =
+    "survival_container_block_entity_open_seen window=1 kind=Barrel position=34,64,0";
+const SURVIVAL_CONTAINER_BLOCK_ENTITY_CLIENT_TRANSFER_NEEDLE: &str =
+    "survival_container_block_entity_transfer_sent window=1 slot=0 item=Dirt count=1";
+const SURVIVAL_CONTAINER_BLOCK_ENTITY_CLIENT_PAYLOAD_NEEDLE: &str =
+    "survival_container_block_entity_payload_seen summary=slot0:Dirt:1";
+const SURVIVAL_CONTAINER_BLOCK_ENTITY_CLIENT_METADATA_NEEDLE: &str =
+    "survival_container_block_entity_metadata_seen summary=custom_name:MC Compat Barrel";
+const SURVIVAL_CONTAINER_BLOCK_ENTITY_CLIENT_REOPEN_NEEDLE: &str =
+    "survival_container_block_entity_reopen_seen window=1 kind=Barrel position=34,64,0 payload=slot0:Dirt:1";
+const SURVIVAL_CONTAINER_BLOCK_ENTITY_SERVER_OPEN_NEEDLE: &str =
+    "survival_container_block_entity_open username=compatbot window=1 kind=Barrel position=34,64,0";
+const SURVIVAL_CONTAINER_BLOCK_ENTITY_SERVER_TRANSFER_NEEDLE: &str =
+    "survival_container_block_entity_transfer username=compatbot window=1 slot=0 item=Dirt count=1";
+const SURVIVAL_CONTAINER_BLOCK_ENTITY_SERVER_PAYLOAD_NEEDLE: &str =
+    "survival_container_block_entity_payload username=compatbot summary=slot0:Dirt:1";
+const SURVIVAL_CONTAINER_BLOCK_ENTITY_SERVER_METADATA_NEEDLE: &str =
+    "survival_container_block_entity_metadata username=compatbot summary=custom_name:MC Compat Barrel";
+const SURVIVAL_CONTAINER_BLOCK_ENTITY_SERVER_STATE_NEEDLE: &str =
+    "survival_container_block_entity_state username=compatbot kind=Barrel position=34,64,0 transfer=Dirt:1 payload=slot0:Dirt:1 metadata=custom_name:MC Compat Barrel reopen=payload_present arbitrary_nbt=false";
+const SURVIVAL_SIGN_EDITING_CLIENT_OPEN_NEEDLE: &str =
+    "survival_sign_editing_open_seen position=28,64,0 side=front milestone=sign_editor_open_observed";
+const SURVIVAL_SIGN_EDITING_CLIENT_UPDATE_NEEDLE: &str =
+    "survival_sign_editing_update_sent position=28,64,0 side=front payload=MC|Compat|Sign|Edit milestone=sign_update_sent";
+const SURVIVAL_SIGN_EDITING_CLIENT_POST_NEEDLE: &str =
+    "survival_sign_editing_post_update_seen position=28,64,0 side=front text=MC|Compat|Sign|Edit observation=text_visible";
+const SURVIVAL_SIGN_EDITING_SERVER_OPEN_NEEDLE: &str =
+    "survival_sign_editing_open username=compatbot position=28,64,0 side=front milestone=sign_editor_open_observed";
+const SURVIVAL_SIGN_EDITING_SERVER_UPDATE_NEEDLE: &str =
+    "survival_sign_editing_update_accepted username=compatbot position=28,64,0 side=front payload=MC|Compat|Sign|Edit milestone=sign_update_accepted_observed";
+const SURVIVAL_SIGN_EDITING_SERVER_STATE_NEEDLE: &str =
+    "survival_sign_editing_state username=compatbot position=28,64,0 side=front payload=MC|Compat|Sign|Edit post_update=text_visible arbitrary_sign_ui=false";
+const SURVIVAL_WORLD_MULTICHUNK_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_MULTICHUNK_PROBE";
+const SURVIVAL_WORLD_MULTICHUNK_SESSION_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_MULTICHUNK_SESSION";
+const SURVIVAL_WORLD_MULTICHUNK_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_MULTICHUNK_FIXTURE";
+const SURVIVAL_WORLD_MULTICHUNK_DIR_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_MULTICHUNK_DIR";
+const SURVIVAL_WORLD_MULTICHUNK_PHASE_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_MULTICHUNK_PHASE";
+const SURVIVAL_CONTAINER_BLOCK_ENTITY_PROBE_ENV: &str =
+    "MC_COMPAT_SURVIVAL_CONTAINER_BLOCK_ENTITY_PROBE";
+const SURVIVAL_CONTAINER_BLOCK_ENTITY_FIXTURE_ENV: &str =
+    "MC_COMPAT_SURVIVAL_CONTAINER_BLOCK_ENTITY_FIXTURE";
+const SURVIVAL_SIGN_EDITING_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_SIGN_EDITING_PROBE";
+const SURVIVAL_SIGN_EDITING_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_SIGN_EDITING_FIXTURE";
 const SURVIVAL_CRASH_RECOVERY_CLIENT_MUTATION_NEEDLE: &str =
     "survival_crash_recovery_mutation_sent block=Dirt position=24,64,0 slot=36";
 const SURVIVAL_CRASH_RECOVERY_CLIENT_PRE_CRASH_NEEDLE: &str =
@@ -387,8 +499,24 @@ const SURVIVAL_BIOME_DIMENSION_CLIENT_STATE_NEEDLE: &str =
     "survival_biome_dimension_state spawn_environment=minecraft:overworld environment_identifier=minecraft:overworld client_environment_update=minecraft:overworld normalized_identifier=minecraft:overworld";
 const SURVIVAL_BIOME_DIMENSION_SERVER_STATE_NEEDLE: &str =
     "survival_biome_dimension_state username=compatbot spawn_environment=minecraft:overworld environment_identifier=minecraft:overworld server_environment_state=minecraft:overworld normalized_identifier=minecraft:overworld";
+const SURVIVAL_BIOME_DIMENSION_TRAVEL_CLIENT_ORIGIN_NEEDLE: &str =
+    "survival_biome_dimension_travel_origin dimension=minecraft:overworld biome=minecraft:plains";
+const SURVIVAL_BIOME_DIMENSION_TRAVEL_CLIENT_TRANSITION_NEEDLE: &str =
+    "survival_biome_dimension_travel_transition_sent kind=nether_portal destination=minecraft:the_nether";
+const SURVIVAL_BIOME_DIMENSION_TRAVEL_CLIENT_DESTINATION_NEEDLE: &str =
+    "survival_biome_dimension_travel_destination_seen dimension=minecraft:the_nether biome=minecraft:nether_wastes checkpoint=dimension_changed";
+const SURVIVAL_BIOME_DIMENSION_TRAVEL_SERVER_ORIGIN_NEEDLE: &str =
+    "survival_biome_dimension_travel_origin username=compatbot dimension=minecraft:overworld biome=minecraft:plains";
+const SURVIVAL_BIOME_DIMENSION_TRAVEL_SERVER_TRANSITION_NEEDLE: &str =
+    "survival_biome_dimension_travel_transition username=compatbot kind=nether_portal from=minecraft:overworld to=minecraft:the_nether";
+const SURVIVAL_BIOME_DIMENSION_TRAVEL_SERVER_STATE_NEEDLE: &str =
+    "survival_biome_dimension_travel_state username=compatbot origin_dimension=minecraft:overworld origin_biome=minecraft:plains destination_dimension=minecraft:the_nether destination_biome=minecraft:nether_wastes transition=nether_portal server_checkpoint=environment_changed";
 const SURVIVAL_BIOME_DIMENSION_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_PROBE";
 const SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_FIXTURE";
+const SURVIVAL_BIOME_DIMENSION_TRAVEL_PROBE_ENV: &str =
+    "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_TRAVEL_PROBE";
+const SURVIVAL_BIOME_DIMENSION_TRAVEL_FIXTURE_ENV: &str =
+    "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_TRAVEL_FIXTURE";
 const MCP_CONTROLLED_SMOKE_SCENARIO: &str = "mcp-controlled-smoke";
 const MCP_CONTROL_ENDPOINT_STDIO: &str = "stdio";
 const MCP_CONTROL_FAILURE_LIVE_EVIDENCE_MISSING: &str = "live-mcp-controlled-evidence-missing";
@@ -478,7 +606,7 @@ const FRAME_ARTIFACT_NON_CLAIMS: &[&str] = &[
     "visual_regression_approval",
     "semantic_equivalence",
 ];
-const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|inventory-stack-split-merge|inventory-drag-transactions|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-crafting-recipe-breadth|survival-furnace-persistence|survival-furnace-smelting-breadth|survival-hunger-food|survival-hunger-health-cycle|survival-mob-drop|survival-redstone-toggle|survival-world-persistence-restart|survival-crash-recovery-parity|survival-block-entity-persistence-parity|survival-biome-dimension-state|mcp-controlled-smoke|combat-damage|combat-knockback|vanilla-combat-reference-parity|vanilla-combat-armor-reference-parity|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset";
+const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|inventory-stack-split-merge|inventory-drag-transactions|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-crafting-recipe-breadth|survival-furnace-persistence|survival-furnace-smelting-breadth|survival-hunger-food|survival-hunger-health-cycle|survival-mob-drop|survival-mob-ai-loot-breadth|survival-redstone-toggle|survival-redstone-circuit-breadth|survival-world-persistence-restart|survival-world-multichunk-durability|survival-crash-recovery-parity|survival-block-entity-persistence-parity|survival-container-block-entity-breadth|survival-biome-dimension-state|survival-biome-dimension-travel|survival-sign-editing-live|mcp-controlled-smoke|combat-damage|combat-knockback|vanilla-combat-reference-parity|vanilla-combat-armor-reference-parity|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
     "Detected server protocol version",
     "Dimension type:",
@@ -2184,6 +2312,7 @@ trait ScenarioBehavior {
     fn uses_isolated_restart_storage(&self) -> bool;
     fn uses_crash_recovery_restart(&self) -> bool;
     fn uses_block_entity_persistence_storage(&self) -> bool;
+    fn uses_world_multichunk_storage(&self) -> bool;
     fn world_persistence_artifact_dir_name(&self) -> &'static str;
     fn uses_reconnect_session_marker(&self) -> bool;
     fn append_client_count_markers(&self, run_count: usize, output: &mut String);
@@ -2216,7 +2345,8 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
             ScenarioBehaviorKind::ReconnectFlagState { .. }
             | ScenarioBehaviorKind::SurvivalChestPersistence
             | ScenarioBehaviorKind::SurvivalFurnacePersistence
-            | ScenarioBehaviorKind::WorldPersistenceRestart { .. } => {
+            | ScenarioBehaviorKind::WorldPersistenceRestart { .. }
+            | ScenarioBehaviorKind::SurvivalWorldMultichunkDurability => {
                 ScenarioRunStrategy::ReconnectSequence
             }
             ScenarioBehaviorKind::Combat { .. }
@@ -2236,7 +2366,10 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
             }
             | ScenarioBehaviorKind::ReconnectFlagState { .. }
             | ScenarioBehaviorKind::SurvivalChestPersistence
-            | ScenarioBehaviorKind::SurvivalFurnacePersistence => SAFETY_RECONNECT_SESSION_COUNT,
+            | ScenarioBehaviorKind::SurvivalFurnacePersistence
+            | ScenarioBehaviorKind::SurvivalWorldMultichunkDurability => {
+                SAFETY_RECONNECT_SESSION_COUNT
+            }
             _ => SAFETY_SINGLE_SESSION_COUNT,
         }
     }
@@ -2294,8 +2427,14 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
                 | ScenarioBehaviorKind::SurvivalHungerFood
                 | ScenarioBehaviorKind::SurvivalHungerHealthCycle
                 | ScenarioBehaviorKind::SurvivalMobDrop
+                | ScenarioBehaviorKind::SurvivalMobAiLootBreadth
                 | ScenarioBehaviorKind::SurvivalRedstoneToggle
+                | ScenarioBehaviorKind::SurvivalRedstoneCircuitBreadth
                 | ScenarioBehaviorKind::WorldPersistenceRestart { .. }
+                | ScenarioBehaviorKind::SurvivalWorldMultichunkDurability
+                | ScenarioBehaviorKind::SurvivalContainerBlockEntityBreadth
+                | ScenarioBehaviorKind::SurvivalBiomeDimensionTravel
+                | ScenarioBehaviorKind::SurvivalSignEditingLive
                 | ScenarioBehaviorKind::Combat { .. }
                 | ScenarioBehaviorKind::EquipmentUpdate
                 | ScenarioBehaviorKind::Projectile { .. }
@@ -2327,7 +2466,11 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
     }
 
     fn uses_isolated_restart_storage(&self) -> bool {
-        matches!(self, ScenarioBehaviorKind::WorldPersistenceRestart { .. })
+        matches!(
+            self,
+            ScenarioBehaviorKind::WorldPersistenceRestart { .. }
+                | ScenarioBehaviorKind::SurvivalWorldMultichunkDurability
+        )
     }
 
     fn uses_crash_recovery_restart(&self) -> bool {
@@ -2350,6 +2493,13 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
         )
     }
 
+    fn uses_world_multichunk_storage(&self) -> bool {
+        matches!(
+            self,
+            ScenarioBehaviorKind::SurvivalWorldMultichunkDurability
+        )
+    }
+
     fn world_persistence_artifact_dir_name(&self) -> &'static str {
         match self {
             ScenarioBehaviorKind::WorldPersistenceRestart {
@@ -2359,6 +2509,9 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
             ScenarioBehaviorKind::WorldPersistenceRestart {
                 block_entity: true, ..
             } => "mc-compat-survival-block-entity-persistence",
+            ScenarioBehaviorKind::SurvivalWorldMultichunkDurability => {
+                "mc-compat-survival-world-multichunk-durability"
+            }
             _ => "mc-compat-world-persistence",
         }
     }
@@ -2373,6 +2526,7 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
                 | ScenarioBehaviorKind::SurvivalChestPersistence
                 | ScenarioBehaviorKind::SurvivalFurnacePersistence
                 | ScenarioBehaviorKind::WorldPersistenceRestart { .. }
+                | ScenarioBehaviorKind::SurvivalWorldMultichunkDurability
         )
     }
 
@@ -2526,8 +2680,14 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
             ScenarioBehaviorKind::SurvivalMobDrop => {
                 cmd.env(SURVIVAL_MOB_DROP_PROBE_ENV, PROBE_ENABLED_VALUE);
             }
+            ScenarioBehaviorKind::SurvivalMobAiLootBreadth => {
+                cmd.env(SURVIVAL_MOB_AI_LOOT_PROBE_ENV, PROBE_ENABLED_VALUE);
+            }
             ScenarioBehaviorKind::SurvivalRedstoneToggle => {
                 cmd.env(SURVIVAL_REDSTONE_TOGGLE_PROBE_ENV, PROBE_ENABLED_VALUE);
+            }
+            ScenarioBehaviorKind::SurvivalRedstoneCircuitBreadth => {
+                cmd.env(SURVIVAL_REDSTONE_CIRCUIT_PROBE_ENV, PROBE_ENABLED_VALUE);
             }
             ScenarioBehaviorKind::WorldPersistenceRestart { block_entity, .. } => {
                 if *block_entity {
@@ -2544,8 +2704,30 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
                         );
                 }
             }
+            ScenarioBehaviorKind::SurvivalWorldMultichunkDurability => {
+                cmd.env(SURVIVAL_WORLD_MULTICHUNK_PROBE_ENV, PROBE_ENABLED_VALUE)
+                    .env(
+                        SURVIVAL_WORLD_MULTICHUNK_SESSION_ENV,
+                        session_env_value(client_index),
+                    );
+            }
+            ScenarioBehaviorKind::SurvivalContainerBlockEntityBreadth => {
+                cmd.env(
+                    SURVIVAL_CONTAINER_BLOCK_ENTITY_PROBE_ENV,
+                    PROBE_ENABLED_VALUE,
+                );
+            }
             ScenarioBehaviorKind::SurvivalBiomeDimensionState => {
                 cmd.env(SURVIVAL_BIOME_DIMENSION_PROBE_ENV, PROBE_ENABLED_VALUE);
+            }
+            ScenarioBehaviorKind::SurvivalBiomeDimensionTravel => {
+                cmd.env(
+                    SURVIVAL_BIOME_DIMENSION_TRAVEL_PROBE_ENV,
+                    PROBE_ENABLED_VALUE,
+                );
+            }
+            ScenarioBehaviorKind::SurvivalSignEditingLive => {
+                cmd.env(SURVIVAL_SIGN_EDITING_PROBE_ENV, PROBE_ENABLED_VALUE);
             }
             ScenarioBehaviorKind::McpControlledSmoke => {
                 cmd.env("MC_COMPAT_MCP_CONTROLLED_SMOKE", PROBE_ENABLED_VALUE);
@@ -2751,8 +2933,14 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
             ScenarioBehaviorKind::SurvivalMobDrop => {
                 cmd.env(SURVIVAL_MOB_DROP_FIXTURE_ENV, PROBE_ENABLED_VALUE);
             }
+            ScenarioBehaviorKind::SurvivalMobAiLootBreadth => {
+                cmd.env(SURVIVAL_MOB_AI_LOOT_FIXTURE_ENV, PROBE_ENABLED_VALUE);
+            }
             ScenarioBehaviorKind::SurvivalRedstoneToggle => {
                 cmd.env(SURVIVAL_REDSTONE_TOGGLE_FIXTURE_ENV, PROBE_ENABLED_VALUE);
+            }
+            ScenarioBehaviorKind::SurvivalRedstoneCircuitBreadth => {
+                cmd.env(SURVIVAL_REDSTONE_CIRCUIT_FIXTURE_ENV, PROBE_ENABLED_VALUE);
             }
             ScenarioBehaviorKind::WorldPersistenceRestart { block_entity, .. } => {
                 if *block_entity {
@@ -2777,8 +2965,34 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
                         );
                 }
             }
+            ScenarioBehaviorKind::SurvivalWorldMultichunkDurability => {
+                cmd.env(SURVIVAL_WORLD_MULTICHUNK_FIXTURE_ENV, PROBE_ENABLED_VALUE)
+                    .env(
+                        SURVIVAL_WORLD_MULTICHUNK_DIR_ENV,
+                        world_persistence_state_dir(cfg, ServerBackend::Valence),
+                    )
+                    .env(
+                        SURVIVAL_WORLD_MULTICHUNK_PHASE_ENV,
+                        world_persistence_phase_value(cfg),
+                    );
+            }
+            ScenarioBehaviorKind::SurvivalContainerBlockEntityBreadth => {
+                cmd.env(
+                    SURVIVAL_CONTAINER_BLOCK_ENTITY_FIXTURE_ENV,
+                    PROBE_ENABLED_VALUE,
+                );
+            }
             ScenarioBehaviorKind::SurvivalBiomeDimensionState => {
                 cmd.env(SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV, PROBE_ENABLED_VALUE);
+            }
+            ScenarioBehaviorKind::SurvivalBiomeDimensionTravel => {
+                cmd.env(
+                    SURVIVAL_BIOME_DIMENSION_TRAVEL_FIXTURE_ENV,
+                    PROBE_ENABLED_VALUE,
+                );
+            }
+            ScenarioBehaviorKind::SurvivalSignEditingLive => {
+                cmd.env(SURVIVAL_SIGN_EDITING_FIXTURE_ENV, PROBE_ENABLED_VALUE);
             }
             ScenarioBehaviorKind::CtfInvalidReturnDrop => {
                 cmd.env(
@@ -2832,9 +3046,17 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
             ScenarioBehaviorKind::SurvivalMobDrop => {
                 add_paper_env(cmd, SURVIVAL_MOB_DROP_FIXTURE_ENV, PROBE_ENABLED_VALUE)
             }
+            ScenarioBehaviorKind::SurvivalMobAiLootBreadth => {
+                add_paper_env(cmd, SURVIVAL_MOB_AI_LOOT_FIXTURE_ENV, PROBE_ENABLED_VALUE)
+            }
             ScenarioBehaviorKind::SurvivalRedstoneToggle => add_paper_env(
                 cmd,
                 SURVIVAL_REDSTONE_TOGGLE_FIXTURE_ENV,
+                PROBE_ENABLED_VALUE,
+            ),
+            ScenarioBehaviorKind::SurvivalRedstoneCircuitBreadth => add_paper_env(
+                cmd,
+                SURVIVAL_REDSTONE_CIRCUIT_FIXTURE_ENV,
                 PROBE_ENABLED_VALUE,
             ),
             ScenarioBehaviorKind::WorldPersistenceRestart { block_entity, .. } => {
@@ -2854,11 +3076,30 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
                     )?;
                 }
             }
+            ScenarioBehaviorKind::SurvivalWorldMultichunkDurability => add_paper_persistence_env(
+                cmd,
+                cfg,
+                SURVIVAL_WORLD_MULTICHUNK_FIXTURE_ENV,
+                SURVIVAL_WORLD_MULTICHUNK_PHASE_ENV,
+            )?,
+            ScenarioBehaviorKind::SurvivalContainerBlockEntityBreadth => add_paper_env(
+                cmd,
+                SURVIVAL_CONTAINER_BLOCK_ENTITY_FIXTURE_ENV,
+                PROBE_ENABLED_VALUE,
+            ),
             ScenarioBehaviorKind::SurvivalBiomeDimensionState => add_paper_env(
                 cmd,
                 SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV,
                 PROBE_ENABLED_VALUE,
             ),
+            ScenarioBehaviorKind::SurvivalBiomeDimensionTravel => add_paper_env(
+                cmd,
+                SURVIVAL_BIOME_DIMENSION_TRAVEL_FIXTURE_ENV,
+                PROBE_ENABLED_VALUE,
+            ),
+            ScenarioBehaviorKind::SurvivalSignEditingLive => {
+                add_paper_env(cmd, SURVIVAL_SIGN_EDITING_FIXTURE_ENV, PROBE_ENABLED_VALUE)
+            }
             ScenarioBehaviorKind::Combat {
                 reference_probe,
                 armor_reference,
@@ -5484,6 +5725,9 @@ fn run_reconnect_sequence_scenario(cfg: &Config) -> Result<Vec<SingleClientRun>,
         }
         thread::sleep(Duration::from_secs(RECONNECT_SEQUENCE_PAUSE_SECS));
     }
+    if restarted_server.is_some() {
+        append_world_persistence_post_restart_server_log(cfg)?;
+    }
     drop(restarted_server);
     Ok(runs)
 }
@@ -5518,6 +5762,8 @@ fn run_world_persistence_restart_transition(cfg: &Config) -> Result<ManagedServe
 fn restart_clean_milestone(behavior: &'static dyn ScenarioBehavior) -> &'static str {
     if behavior.uses_block_entity_persistence_storage() {
         SURVIVAL_BLOCK_ENTITY_SERVER_CLEAN_NEEDLE
+    } else if behavior.uses_world_multichunk_storage() {
+        SURVIVAL_WORLD_MULTICHUNK_SERVER_CLEAN_NEEDLE
     } else {
         SURVIVAL_WORLD_PERSISTENCE_SERVER_CLEAN_NEEDLE
     }
@@ -5526,6 +5772,8 @@ fn restart_clean_milestone(behavior: &'static dyn ScenarioBehavior) -> &'static 
 fn restart_backend_milestone(behavior: &'static dyn ScenarioBehavior) -> &'static str {
     if behavior.uses_block_entity_persistence_storage() {
         SURVIVAL_BLOCK_ENTITY_SERVER_RESTART_NEEDLE
+    } else if behavior.uses_world_multichunk_storage() {
+        SURVIVAL_WORLD_MULTICHUNK_SERVER_RESTART_NEEDLE
     } else {
         SURVIVAL_WORLD_PERSISTENCE_SERVER_RESTART_NEEDLE
     }
@@ -5774,17 +6022,27 @@ fn append_world_persistence_orchestration_milestone(
     cfg: &Config,
     milestone: &str,
 ) -> Result<(), String> {
+    append_world_persistence_pre_restart_server_log(
+        cfg,
+        &format!("MC-COMPAT-MILESTONE {milestone}\n"),
+    )
+}
+
+fn append_world_persistence_post_restart_server_log(cfg: &Config) -> Result<(), String> {
+    let text = cfg.server_backend.runtime().read_log(cfg)?;
+    append_world_persistence_pre_restart_server_log(cfg, &text)
+}
+
+fn append_world_persistence_pre_restart_server_log(cfg: &Config, text: &str) -> Result<(), String> {
     let path = world_persistence_pre_restart_server_log_path(cfg);
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent).map_err(|e| format!("create {}: {e}", parent.display()))?;
     }
-    let line = format!("MC-COMPAT-MILESTONE {milestone}\n");
     let mut options = fs::OpenOptions::new();
     options.create(true).append(true);
-    use std::io::Write as _;
     options
         .open(&path)
-        .and_then(|mut file| file.write_all(line.as_bytes()))
+        .and_then(|mut file| file.write_all(text.as_bytes()))
         .map_err(|e| format!("append {}: {e}", path.display()))
 }
 
@@ -7600,10 +7858,29 @@ fn smoke_receipt_json_with_typed_event_oracle(
             "collect_item",
             "inventory_update",
         ],
+        Scenario::SurvivalMobAiLootBreadth => vec![
+            "login_success",
+            "play_join_game",
+            "spawn_zombie",
+            "ai_checkpoint",
+            "use_entity_attack",
+            "entity_destroy",
+            "spawn_rotten_flesh",
+            "collect_item",
+            "inventory_update",
+        ],
         Scenario::SurvivalRedstoneToggle => vec![
             "login_success",
             "play_join_game",
             "use_item_on_block",
+            "redstone_powered_update",
+            "redstone_return_update",
+        ],
+        Scenario::SurvivalRedstoneCircuitBreadth => vec![
+            "login_success",
+            "play_join_game",
+            "use_item_on_block",
+            "redstone_repeater_tick",
             "redstone_powered_update",
             "redstone_return_update",
         ],
@@ -7615,6 +7892,14 @@ fn smoke_receipt_json_with_typed_event_oracle(
             "controlled_reload",
             "disconnect_reconnect",
             "post_reload_block_update",
+        ],
+        Scenario::SurvivalWorldMultichunkDurability => vec![
+            "login_success",
+            "play_join_game",
+            "two_chunk_block_mutation",
+            "controlled_reload",
+            "disconnect_reconnect",
+            "post_reload_two_chunk_observation",
         ],
         Scenario::SurvivalCrashRecoveryParity => vec![
             "login_success",
@@ -7634,10 +7919,33 @@ fn smoke_receipt_json_with_typed_event_oracle(
             "disconnect_reconnect",
             "post_reload_sign_block_entity_payload",
         ],
+        Scenario::SurvivalContainerBlockEntityBreadth => vec![
+            "login_success",
+            "play_join_game",
+            "open_container",
+            "container_transfer",
+            "block_entity_payload",
+            "block_entity_metadata",
+            "container_reopen",
+        ],
         Scenario::SurvivalBiomeDimensionState => vec![
             "login_success",
             "play_join_game",
             "dimension_world_identifier",
+        ],
+        Scenario::SurvivalBiomeDimensionTravel => vec![
+            "login_success",
+            "play_join_game",
+            "origin_dimension_biome",
+            "nether_portal_transition",
+            "destination_dimension_biome",
+        ],
+        Scenario::SurvivalSignEditingLive => vec![
+            "login_success",
+            "play_join_game",
+            "sign_editor_open",
+            "update_sign",
+            "post_update_sign_text",
         ],
         Scenario::McpControlledSmoke => vec![
             "mcp_initialize",
@@ -8699,7 +9007,7 @@ fn validate_receipt_summary(receipt: &ReceiptSummary) -> Result<(), String> {
     }
     let classification_supported = matches!(
         receipt.classification.as_str(),
-        "timeout-success-evidence" | "client-exited-success"
+        "timeout-success-evidence" | "client-exited-success" | "multi-client-load-evidence"
     ) || (receipt.dry_run && receipt.classification == "dry-run");
     if !classification_supported {
         return Err(format!(
@@ -14030,8 +14338,17 @@ RED: 1
     }
 
     fn receipt_fixture(backend: &str, protocol: u32, port: u16) -> String {
+        receipt_fixture_with_classification(backend, protocol, port, "timeout-success-evidence")
+    }
+
+    fn receipt_fixture_with_classification(
+        backend: &str,
+        protocol: u32,
+        port: u16,
+        classification: &str,
+    ) -> String {
         format!(
-            "{{\n  \"schema\": \"mc.compat.smoke.receipt.v1\",\n  \"status\": \"pass\",\n  \"mode\": \"run\",\n  \"dry_run\": false,\n  \"contract\": {{\n    \"claims_correctness\": false,\n    \"claims_semantic_equivalence\": false\n  }},\n  \"server\": {{\n    \"backend\": \"{backend}\",\n    \"version\": \"1.18.2\",\n    \"protocol\": {protocol},\n    \"port\": {port}\n  }},\n  \"client\": {{\n    \"headless_isolation\": {{\n      \"xvfb\": true,\n      \"x11_backend\": true,\n      \"software_gl\": true,\n      \"wayland_socket_inherited\": false\n    }},\n    \"classification\": \"timeout-success-evidence\",\n    \"matched_success_pattern\": \"Detected server protocol version\"\n  }},\n  \"error\": null\n}}\n"
+            "{{\n  \"schema\": \"mc.compat.smoke.receipt.v1\",\n  \"status\": \"pass\",\n  \"mode\": \"run\",\n  \"dry_run\": false,\n  \"contract\": {{\n    \"claims_correctness\": false,\n    \"claims_semantic_equivalence\": false\n  }},\n  \"server\": {{\n    \"backend\": \"{backend}\",\n    \"version\": \"1.18.2\",\n    \"protocol\": {protocol},\n    \"port\": {port}\n  }},\n  \"client\": {{\n    \"headless_isolation\": {{\n      \"xvfb\": true,\n      \"x11_backend\": true,\n      \"software_gl\": true,\n      \"wayland_socket_inherited\": false\n    }},\n    \"classification\": \"{classification}\",\n    \"matched_success_pattern\": \"Detected server protocol version\"\n  }},\n  \"error\": null\n}}\n"
         )
     }
 
@@ -14088,6 +14405,34 @@ RED: 1
     }
 
     #[test]
+    fn compares_reconnect_sequence_receipts_with_multi_client_classification() {
+        const PROTOCOL_763: u32 = 763;
+        let paper = read_receipt_summary_from_text(
+            PathBuf::from("paper.json"),
+            &receipt_fixture_with_classification(
+                "paper",
+                PROTOCOL_763,
+                25566,
+                "multi-client-load-evidence",
+            ),
+        )
+        .expect("paper fixture parses");
+        let valence = read_receipt_summary_from_text(
+            PathBuf::from("valence.json"),
+            &receipt_fixture_with_classification(
+                "valence",
+                PROTOCOL_763,
+                25565,
+                "multi-client-load-evidence",
+            ),
+        )
+        .expect("valence fixture parses");
+
+        validate_receipt_pair(&paper, &valence, PROTOCOL_763)
+            .expect("reconnect sequence receipts compare");
+    }
+
+    #[test]
     fn receipt_summary_mutations_fail_closed() {
         let missing_success = read_receipt_summary_from_text(
             PathBuf::from("missing-success.json"),
@@ -14122,6 +14467,19 @@ RED: 1
         .expect("failed status fixture parses");
         let err = validate_receipt_summary(&failed_status).unwrap_err();
         assert!(err.contains("did not pass"), "{err}");
+
+        let unsupported_classification = read_receipt_summary_from_text(
+            PathBuf::from("unsupported-classification.json"),
+            &receipt_fixture_with_classification(
+                "paper",
+                DEFAULT_SERVER_PROTOCOL,
+                25566,
+                "unchecked-live-claim",
+            ),
+        )
+        .expect("unsupported classification fixture parses");
+        let err = validate_receipt_summary(&unsupported_classification).unwrap_err();
+        assert!(err.contains("unsupported client classification"), "{err}");
     }
 
     #[test]

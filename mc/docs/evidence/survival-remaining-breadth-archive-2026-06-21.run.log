@@ -1,0 +1,505 @@
+## cairn archive execute for survival-mob-ai-loot-breadth-parity
+command=CAIRN_ARCHIVE_DATE=2026-06-21 nix run --no-update-lock-file .#cairn -- archive survival-mob-ai-loot-breadth-parity --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-mob-ai-loot-breadth-parity",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-21-survival-mob-ai-loot-breadth-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-mob-ai-loot-breadth-parity",
+  "dry_run": false,
+  "input_hash": "5a89bc969811cfa118864e18ca6ec6509d823cd9f5e684aa5020474e8100ded1",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "37c764a842a5d73979c26e2cbe5c2b91a1ab815fbb3367186dc5f3fde78aa432",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-mob-ai-loot-breadth-parity/design.md"
+        },
+        {
+          "content_hash": "832004d8410fb4b32260a86a2d6d29a447c3ed0198a9b756d956cbc2732b6f3a",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-mob-ai-loot-breadth-parity/proposal.md"
+        },
+        {
+          "content_hash": "78a9144a98a8a181af9e0c0558fd91c51e8c48690a2aa995c8ad7d6faa6cdfc7",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-mob-ai-loot-breadth-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "3d549a7b8c47717b8a5f644ff09f8d3cb230d6faca0b13d871f63c14f10f97ff",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-mob-ai-loot-breadth-parity/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-mob-ai-loot-breadth-parity"
+        }
+      ],
+      "manifest_hash": "9b09d472ab710b9adfabc7056cb6e52eb004d8f08313d6945e6bbbdf2c567153"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "37c764a842a5d73979c26e2cbe5c2b91a1ab815fbb3367186dc5f3fde78aa432",
+          "exists": true,
+          "path": "./cairn/changes/survival-mob-ai-loot-breadth-parity/design.md"
+        },
+        {
+          "content_hash": "832004d8410fb4b32260a86a2d6d29a447c3ed0198a9b756d956cbc2732b6f3a",
+          "exists": true,
+          "path": "./cairn/changes/survival-mob-ai-loot-breadth-parity/proposal.md"
+        },
+        {
+          "content_hash": "78a9144a98a8a181af9e0c0558fd91c51e8c48690a2aa995c8ad7d6faa6cdfc7",
+          "exists": true,
+          "path": "./cairn/changes/survival-mob-ai-loot-breadth-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "3d549a7b8c47717b8a5f644ff09f8d3cb230d6faca0b13d871f63c14f10f97ff",
+          "exists": true,
+          "path": "./cairn/changes/survival-mob-ai-loot-breadth-parity/tasks.md"
+        }
+      ],
+      "manifest_hash": "4102ca8119139049aa973c87486907385520b9dac30b923b328f362345398ec8"
+    },
+    "kind": "archive",
+    "manifest_hash": "3e43615cb77d3d737a9f8ffdb62ce46574a617b17629a3b702a16a3dd22d8d1f"
+  },
+  "plan_hash": "20026ed6ab5e7a89f633b5d6a058397dec2efe84405cba861201d8ae5167514e",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "f458f504e808cec212887884698f950a26559ed6628e5fc40f8e611dbb226fde"
+}
+survival-mob-ai-loot-breadth-parity_archive_exit_status=0
+## cairn archive execute for survival-redstone-circuit-breadth-parity
+command=CAIRN_ARCHIVE_DATE=2026-06-21 nix run --no-update-lock-file .#cairn -- archive survival-redstone-circuit-breadth-parity --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-redstone-circuit-breadth-parity",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-21-survival-redstone-circuit-breadth-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-redstone-circuit-breadth-parity",
+  "dry_run": false,
+  "input_hash": "1ca84145aeb24c466672866c71685ac175c633c8238bc350f01b94ef63ed111d",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "5ab52d045ea51769e909fc49003892d651f27f5607a11d5655834ac88a9951d6",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-redstone-circuit-breadth-parity/design.md"
+        },
+        {
+          "content_hash": "70caaba7271c6d5325cc5d8c8f59dda2816a65734d7b8d7b7ed225c52ae91b51",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-redstone-circuit-breadth-parity/proposal.md"
+        },
+        {
+          "content_hash": "71d97d13a5c214426a1053b17c179d2236c3375c3ab86db44e7bfe1d1357dd9f",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-redstone-circuit-breadth-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "3c3d1fab09eecae45e0bbc500127fd17796ef9bdab0dfc226821da6b5b22b29d",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-redstone-circuit-breadth-parity/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-redstone-circuit-breadth-parity"
+        }
+      ],
+      "manifest_hash": "27446554af7fde3204ba01ef84c5f30043c6dd392a498744d0acbff9a92e6a26"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "5ab52d045ea51769e909fc49003892d651f27f5607a11d5655834ac88a9951d6",
+          "exists": true,
+          "path": "./cairn/changes/survival-redstone-circuit-breadth-parity/design.md"
+        },
+        {
+          "content_hash": "70caaba7271c6d5325cc5d8c8f59dda2816a65734d7b8d7b7ed225c52ae91b51",
+          "exists": true,
+          "path": "./cairn/changes/survival-redstone-circuit-breadth-parity/proposal.md"
+        },
+        {
+          "content_hash": "71d97d13a5c214426a1053b17c179d2236c3375c3ab86db44e7bfe1d1357dd9f",
+          "exists": true,
+          "path": "./cairn/changes/survival-redstone-circuit-breadth-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "3c3d1fab09eecae45e0bbc500127fd17796ef9bdab0dfc226821da6b5b22b29d",
+          "exists": true,
+          "path": "./cairn/changes/survival-redstone-circuit-breadth-parity/tasks.md"
+        }
+      ],
+      "manifest_hash": "ebb663230bdafe29c4244979f4bc8f23776261af128c5f8a9b4ed4295999f5a9"
+    },
+    "kind": "archive",
+    "manifest_hash": "f4cb4dcbe1400cf96342a85412a8d4a44b618ada68e9212e3e0b2ea2119afdc4"
+  },
+  "plan_hash": "ceef1c54ab1a4b4706c04be107a61450bd2cb0e540a01b087e14bd11014e2095",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "cd36188398c663bbaaa528de5b6d95828a337d0e1918e42a3a4fa8db01bbd8c5"
+}
+survival-redstone-circuit-breadth-parity_archive_exit_status=0
+## cairn archive execute for survival-biome-dimension-travel-parity
+command=CAIRN_ARCHIVE_DATE=2026-06-21 nix run --no-update-lock-file .#cairn -- archive survival-biome-dimension-travel-parity --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-biome-dimension-travel-parity",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-21-survival-biome-dimension-travel-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-biome-dimension-travel-parity",
+  "dry_run": false,
+  "input_hash": "94bf4a97636d35b6903b9affb370a0a44cef3e6845fbd59bc1dc1d69e5605798",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "f5ea6ab530d15b67b6c4610a6d142e520a4c4ffedf8fae096077233f7c3c6057",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-biome-dimension-travel-parity/design.md"
+        },
+        {
+          "content_hash": "e87da986b45652eded926e075646b9839577332c7b8808488d76b0a69970bb1c",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-biome-dimension-travel-parity/proposal.md"
+        },
+        {
+          "content_hash": "2a4a0e333e514d1ff52231b8cf7e1b846f9a1623d0c9d9be34be3ec2da9fd13b",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-biome-dimension-travel-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "daedcb745552ed2424dd10f199ad37684ffbefea0b5ab9d11bd57aa0b3212be9",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-biome-dimension-travel-parity/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-biome-dimension-travel-parity"
+        }
+      ],
+      "manifest_hash": "4ad88e619b98312d741e7bddc26af248e2b689ed8e3f47676360785d152eba8b"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "f5ea6ab530d15b67b6c4610a6d142e520a4c4ffedf8fae096077233f7c3c6057",
+          "exists": true,
+          "path": "./cairn/changes/survival-biome-dimension-travel-parity/design.md"
+        },
+        {
+          "content_hash": "e87da986b45652eded926e075646b9839577332c7b8808488d76b0a69970bb1c",
+          "exists": true,
+          "path": "./cairn/changes/survival-biome-dimension-travel-parity/proposal.md"
+        },
+        {
+          "content_hash": "2a4a0e333e514d1ff52231b8cf7e1b846f9a1623d0c9d9be34be3ec2da9fd13b",
+          "exists": true,
+          "path": "./cairn/changes/survival-biome-dimension-travel-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "daedcb745552ed2424dd10f199ad37684ffbefea0b5ab9d11bd57aa0b3212be9",
+          "exists": true,
+          "path": "./cairn/changes/survival-biome-dimension-travel-parity/tasks.md"
+        }
+      ],
+      "manifest_hash": "fd28eb85fbfa6bbc16186f66c5b22a7a1513e53459c757bb0bd249f7fcf6c02b"
+    },
+    "kind": "archive",
+    "manifest_hash": "c7616b84063297a2bbe909d262ff55bab9b9e724b571ca509f13db840aae4038"
+  },
+  "plan_hash": "94583df6de28083a275d2330afa664019398ea3a975bc33e0bc0c4547212ecd8",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "a28318d5a87fdab90775aea7b08a1a7cccc9ed8645ceba6ee61ca08af915c3f3"
+}
+survival-biome-dimension-travel-parity_archive_exit_status=0
+## cairn archive execute for survival-world-multichunk-durability-parity
+command=CAIRN_ARCHIVE_DATE=2026-06-21 nix run --no-update-lock-file .#cairn -- archive survival-world-multichunk-durability-parity --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-world-multichunk-durability-parity",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-21-survival-world-multichunk-durability-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-world-multichunk-durability-parity",
+  "dry_run": false,
+  "input_hash": "dc91c6b1af26a1ddcda30f7884c31c9319ad5cd06a2ee149e883ddee95166259",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "cc4c7edebec13d1a3d2970978e41ed0bedad5b725a124a45ca5b18a54de08754",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-world-multichunk-durability-parity/design.md"
+        },
+        {
+          "content_hash": "2048e2bf625a51c5f113ec4ef50ef2d9a404dc8a1122f1764e54cbd397efd50d",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-world-multichunk-durability-parity/proposal.md"
+        },
+        {
+          "content_hash": "156b5f6752ab35691d2cfe862ae45ef23cb4461c8e2dbcaf6b608e10484d6353",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-world-multichunk-durability-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "443ef9174c850295d88d7dc733d5926942bd67075b9b1aaaacf15fd89c2a7c4f",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-world-multichunk-durability-parity/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-world-multichunk-durability-parity"
+        }
+      ],
+      "manifest_hash": "e5c9943139f0c6a68d79f3f0ef67124ee1296db18955f7c6336af2f3ddde4807"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "cc4c7edebec13d1a3d2970978e41ed0bedad5b725a124a45ca5b18a54de08754",
+          "exists": true,
+          "path": "./cairn/changes/survival-world-multichunk-durability-parity/design.md"
+        },
+        {
+          "content_hash": "2048e2bf625a51c5f113ec4ef50ef2d9a404dc8a1122f1764e54cbd397efd50d",
+          "exists": true,
+          "path": "./cairn/changes/survival-world-multichunk-durability-parity/proposal.md"
+        },
+        {
+          "content_hash": "156b5f6752ab35691d2cfe862ae45ef23cb4461c8e2dbcaf6b608e10484d6353",
+          "exists": true,
+          "path": "./cairn/changes/survival-world-multichunk-durability-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "443ef9174c850295d88d7dc733d5926942bd67075b9b1aaaacf15fd89c2a7c4f",
+          "exists": true,
+          "path": "./cairn/changes/survival-world-multichunk-durability-parity/tasks.md"
+        }
+      ],
+      "manifest_hash": "9d81e16f8ae8475568013079008c64406878d20854717274d40261e09c8cac21"
+    },
+    "kind": "archive",
+    "manifest_hash": "f5be0f1146f2c40234f5db4cfc809caa5d0d63c4dead6ab7d6b019c8e455815b"
+  },
+  "plan_hash": "7b434ce839a3c5d067f2c5328dacb75156f12e3d8a0c425e4fc38859782a66b0",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "13ad55647f03def7059f6e98909415f9a2b7c72d7803716df1560aa52ccec1a7"
+}
+survival-world-multichunk-durability-parity_archive_exit_status=0
+## cairn archive execute for survival-container-block-entity-breadth-parity
+command=CAIRN_ARCHIVE_DATE=2026-06-21 nix run --no-update-lock-file .#cairn -- archive survival-container-block-entity-breadth-parity --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-container-block-entity-breadth-parity",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-21-survival-container-block-entity-breadth-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-container-block-entity-breadth-parity",
+  "dry_run": false,
+  "input_hash": "3d140a29876fd687b947ba1b6ff5b319b4799aff1104197c02503ad6a2964e00",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "815c765fcb0dfd2b19bfcf6c151dd6c94811ae3a2dad2e03b45c0d035d34ef20",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-container-block-entity-breadth-parity/design.md"
+        },
+        {
+          "content_hash": "dde3222bfb7c39c1bc98f3f0ee3b94381f34359f42e9f4e409cc90228f910a10",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-container-block-entity-breadth-parity/proposal.md"
+        },
+        {
+          "content_hash": "3b43f19950e0db4aa42aaf47425c059341806993955a3e5c4b347915240cc040",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-container-block-entity-breadth-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "f7caf0b2403549ba26e4e841a261039048e200f1cbd8ad8c279b1e4080962c7f",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-container-block-entity-breadth-parity/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-container-block-entity-breadth-parity"
+        }
+      ],
+      "manifest_hash": "122b5ad481e3b1db97b71fc64363e71a81d6906f7e5aec1f42ad9b07e09c001f"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "815c765fcb0dfd2b19bfcf6c151dd6c94811ae3a2dad2e03b45c0d035d34ef20",
+          "exists": true,
+          "path": "./cairn/changes/survival-container-block-entity-breadth-parity/design.md"
+        },
+        {
+          "content_hash": "dde3222bfb7c39c1bc98f3f0ee3b94381f34359f42e9f4e409cc90228f910a10",
+          "exists": true,
+          "path": "./cairn/changes/survival-container-block-entity-breadth-parity/proposal.md"
+        },
+        {
+          "content_hash": "3b43f19950e0db4aa42aaf47425c059341806993955a3e5c4b347915240cc040",
+          "exists": true,
+          "path": "./cairn/changes/survival-container-block-entity-breadth-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "f7caf0b2403549ba26e4e841a261039048e200f1cbd8ad8c279b1e4080962c7f",
+          "exists": true,
+          "path": "./cairn/changes/survival-container-block-entity-breadth-parity/tasks.md"
+        }
+      ],
+      "manifest_hash": "36131c69e7ccbd450bc36f20a7730ebaad895ec3e02d44cdabf7da07492563a4"
+    },
+    "kind": "archive",
+    "manifest_hash": "aa7b47641a1b9c94af41672d9b4c9a0b470df5cbbef9c0aafa4dd52332a5da60"
+  },
+  "plan_hash": "752fece858ccb690613a6a73ffb94329677fb4825831422f1700d8565968e667",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "387d11a4e90b12bd86239b0a1d0d61a4a43a78ce286ad6bba5577ff276fed663"
+}
+survival-container-block-entity-breadth-parity_archive_exit_status=0
+## cairn archive execute for survival-sign-editing-live-parity
+command=CAIRN_ARCHIVE_DATE=2026-06-21 nix run --no-update-lock-file .#cairn -- archive survival-sign-editing-live-parity --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-sign-editing-live-parity",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-21-survival-sign-editing-live-parity"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-sign-editing-live-parity",
+  "dry_run": false,
+  "input_hash": "5ce361ff3efd719aede11cf13f755b5d517244ed0ae3b3d4b69f8ccd6f67b704",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "d481b0fc7f3f760e7d5eac950313dc1cc6e77809c1e104eb8e3daf0e92975ef6",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-sign-editing-live-parity/design.md"
+        },
+        {
+          "content_hash": "3583355a552090f1e60783b5bcfe17624594812a5ac06fbfb3822d8f29966aee",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-sign-editing-live-parity/proposal.md"
+        },
+        {
+          "content_hash": "91d144eb4f58b1e60e34feb014ba3a81100eccd4914d8fd67e41edb2e6d8f3e9",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-sign-editing-live-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "b9fbb81c82dbd3217b649bd161d7876f2a408a5ff0477aaf2bf482cbc1d7bead",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-21-survival-sign-editing-live-parity/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-sign-editing-live-parity"
+        }
+      ],
+      "manifest_hash": "a5cd361c790c8ddeba626bf9e41589d92cca526535e564dcbd110f0283a92cc4"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "d481b0fc7f3f760e7d5eac950313dc1cc6e77809c1e104eb8e3daf0e92975ef6",
+          "exists": true,
+          "path": "./cairn/changes/survival-sign-editing-live-parity/design.md"
+        },
+        {
+          "content_hash": "3583355a552090f1e60783b5bcfe17624594812a5ac06fbfb3822d8f29966aee",
+          "exists": true,
+          "path": "./cairn/changes/survival-sign-editing-live-parity/proposal.md"
+        },
+        {
+          "content_hash": "91d144eb4f58b1e60e34feb014ba3a81100eccd4914d8fd67e41edb2e6d8f3e9",
+          "exists": true,
+          "path": "./cairn/changes/survival-sign-editing-live-parity/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "b9fbb81c82dbd3217b649bd161d7876f2a408a5ff0477aaf2bf482cbc1d7bead",
+          "exists": true,
+          "path": "./cairn/changes/survival-sign-editing-live-parity/tasks.md"
+        }
+      ],
+      "manifest_hash": "1828591f8e2820edb1c0fbf8057849ef4ec633e4b9412d339369c4affcb7d18a"
+    },
+    "kind": "archive",
+    "manifest_hash": "87b9492f2d152ce4ad59e0d98200401745af2f3936a8684e7594ae69956cc0d1"
+  },
+  "plan_hash": "cd7948cd91eec392c7cbdaa9d4df572237894655ff04be437eb4196f651c2762",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "a2f1574d27313e53d9d5bfb709aa4142fe2c54b521c7137a37cda00b5e7814c7"
+}
+survival-sign-editing-live-parity_archive_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 2,
+  "valid": true
+}
+validate_after_archive_exit_status=0
+exit_status=0

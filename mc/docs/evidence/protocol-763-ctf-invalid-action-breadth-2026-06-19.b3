@@ -5,7 +5,7 @@ b14786d1408fc3136284cfd83f68e8b8648d52576641784ebf003ba479a9f797  docs/evidence/
 99f46de7bbb2c2a99a0950ad497ad35193106753be04c1aabd747d5ddda6b7f3  docs/evidence/protocol-763-ctf-invalid-action-breadth-2026-06-19.run.log
 d323696db5f11309e4f1f4fba087680bd6e4143f6dfe9b7fb08b95931d9022b4  docs/evidence/protocol-763-ctf-invalid-opponent-base-return-drop-2026-06-19.client.log
 973a4bc59eb235222615f3919c78265c18b5d5a04be291118ca749f537f6c7ff  docs/evidence/protocol-763-ctf-invalid-opponent-base-return-drop-2026-06-19.server.log
-dd009b409a8a705d09896057ca44a0c330e1fe5ba527a5c24937eb33cc05ece3  docs/evidence/protocol-763-acceptance-matrix.md
-2a2912b0215106315aa578e9992426020463c1a6d87f6fa1278333e59d1873ed  docs/evidence/protocol-763-current-evidence-bundle.md
+5f9e9183b71c4347d31c95e8d8e8638a86f28aef80e8e34c21f8134ce5743fb7  docs/evidence/protocol-763-acceptance-matrix.md
+c4bf83c2f44a44b91a9f8d075226eafdc475cfa174b5bb284e35390954f9a1ac  docs/evidence/protocol-763-current-evidence-bundle.md
 d911d9a35c16cd080f653ef347b706ab78ce186e631a17762f0e329ef9f772c3  docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md
 0d6cb8e59431f810a218f629c871bb01fa94120e33e91872269341dc99fa34ec  tools/check_ctf_invalid_action_breadth.rs

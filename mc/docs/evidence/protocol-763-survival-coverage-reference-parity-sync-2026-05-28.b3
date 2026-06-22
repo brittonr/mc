@@ -1,4 +1,4 @@
-bd6906de05392f39b533eb76c1ff015a30652abd8b0fde73d3d23766df4eb1bd  docs/evidence/protocol-763-survival-coverage-matrix-2026-05-28.md
+beea811db1ee90e08a931e52295f46f50def96d9cca16a7bdc76f25048e67c0d  docs/evidence/protocol-763-survival-coverage-matrix-2026-05-28.md
 87d585314a2c86398994df4b5ed0dce2ebc93bb3a6633929fe5b0999cc886ba5  docs/evidence/protocol-763-survival-coverage-matrix-oracle-2026-05-28.md
 ab9cb552d7187d2c7c70ce4a95f1496959e49d553a3b700e9e1aab0253aa065a  docs/evidence/protocol-763-survival-coverage-reference-parity-sync-2026-05-28.run.log
 866e2090904e94c27ba3ecf355d0c38f352f4255f44cd486c4a23373b680e5cf  tools/check_survival_coverage_matrix.rs
@@ -8,6 +8,6 @@ da9e84ac8712ddca2bd60659be316bb547a1695323ba250df72254d6d4623ac0  tools/check_su
 0c9100e62ccbb68469ad3887b96d7ecb4f28e8b425dfdfe1825bd08d7f250787  cairn/archive/2026-05-28-sync-survival-coverage-reference-parity/tasks.md
 613d0a8915a52490e17038fe1b4b58f3da0074aa1ac1b2cd0d60433f903736b3  cairn/archive/2026-05-28-sync-survival-coverage-reference-parity/specs/mc-compatibility/spec.md
 756e065afe0ff616b6da815d558b059331a1ab12029747d131d8dbea7d4da2a9  cairn/specs/mc-compatibility/spec.md
-2a2912b0215106315aa578e9992426020463c1a6d87f6fa1278333e59d1873ed  docs/evidence/protocol-763-current-evidence-bundle.md
-dd009b409a8a705d09896057ca44a0c330e1fe5ba527a5c24937eb33cc05ece3  docs/evidence/protocol-763-acceptance-matrix.md
+c4bf83c2f44a44b91a9f8d075226eafdc475cfa174b5bb284e35390954f9a1ac  docs/evidence/protocol-763-current-evidence-bundle.md
+5f9e9183b71c4347d31c95e8d8e8638a86f28aef80e8e34c21f8134ce5743fb7  docs/evidence/protocol-763-acceptance-matrix.md
 6928822345c85ec7736ae84a0f558e4e61c8f20dc7ec015d92e3e90c25cccb04  docs/evidence/protocol-763-survival-reference-parity-2026-05-28.md

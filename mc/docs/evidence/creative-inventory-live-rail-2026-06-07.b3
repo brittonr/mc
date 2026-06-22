@@ -1,4 +1,4 @@
-7b8cd3bdf7a70bf046bace458cc6e9b3d81e9a4cc3d6cff3579ccf2a05280573  tools/mc-compat-runner/src/scenario_core.rs
+b099e9a1f07f8aa5fe50de95515473527205a2b25c17977d512ed344e27c585b  tools/mc-compat-runner/src/scenario_core.rs
 495158f2f77e5fea4f9a59ba6899ff366939b6db62bfcf1cca8d03f2fb103a50  tools/check_scenario_manifest.rs
 9f8f010adf47d4de7bcc60ba5d01443307888079c328e1ef123a4174e3701691  tools/check_targeted_packet_promotions.rs
 fc235ad71bf571449411e8b9510b6b4ee0d18afe69a7c8a4950e7de3fbe59500  cairn/archive/2026-06-07-add-creative-inventory-action-live-rail/tasks.md

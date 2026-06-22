@@ -1,0 +1,6 @@
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-world-multichunk-durability session=survival-world-multichunk-durability-paper-2026-06-21.receipt seq=8 event=server_username_seen
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-world-multichunk-durability session=survival-world-multichunk-durability-paper-2026-06-21.receipt seq=9 event=server_survival_world_multichunk_mutation
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-world-multichunk-durability session=survival-world-multichunk-durability-paper-2026-06-21.receipt seq=10 event=server_survival_world_multichunk_clean_shutdown
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-world-multichunk-durability session=survival-world-multichunk-durability-paper-2026-06-21.receipt seq=11 event=server_survival_world_multichunk_backend_restart
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-world-multichunk-durability session=survival-world-multichunk-durability-paper-2026-06-21.receipt seq=12 event=server_survival_world_multichunk_post_restart
+MC-COMPAT-EVENT schema=1 source=server scenario=survival-world-multichunk-durability session=survival-world-multichunk-durability-paper-2026-06-21.receipt seq=13 event=server_survival_world_multichunk_state
