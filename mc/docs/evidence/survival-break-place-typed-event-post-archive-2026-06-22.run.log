@@ -1,0 +1,165 @@
+## survival break/place typed-event sync and post-archive validation
+command=nix run --no-update-lock-file .#cairn -- sync survival-break-place-typed-event-migration --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/survival-break-place-typed-event-migration/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/survival-break-place-typed-event-migration/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-break-place-typed-event-migration",
+  "delta_specs": [
+    "./cairn/changes/survival-break-place-typed-event-migration/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "2701c89f02a78cfcad5be0eff74047c7076363012fa9057f7cdd38208ef06f97",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "8046126fac4899f534976a93cb897202e0314330ec65db240a6aed483d03cfc1",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a8f28bed1cce9ef9b224dceb765fe6149124cfc20ccdfd42c4f6bcd8cf155e8e"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "8046126fac4899f534976a93cb897202e0314330ec65db240a6aed483d03cfc1",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "a8f28bed1cce9ef9b224dceb765fe6149124cfc20ccdfd42c4f6bcd8cf155e8e"
+    },
+    "kind": "sync",
+    "manifest_hash": "bfac496fe343f75fc00f8ec3f0cec2e7c67f705cd2a4b81817886c60477abb86"
+  },
+  "plan_hash": "fb807414878e9f961b42976adb319a82f4a0f363163196c69919a92248581d33",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "ef5970fbe4a807975027f42c9e5849535161ef3c3028677ba1d4e13d261e5e17"
+}
+cairn_sync_exit_status=0
+command=rg survival_break_place_typed_event_migration cairn/specs/mc-compatibility/spec.md
+r[mc_compatibility.survival_break_place_typed_event_migration.readiness] The `survival-break-place-pickup` scenario SHOULD move from waiver-backed substring fallback to `typed-event-ready` only when typed events cover the row's required client milestones, Valence survival server milestones, forbidden surfaces, and ordered break/pickup/place phases.
+r[mc_compatibility.survival_break_place_typed_event_migration.readiness.complete]
+r[mc_compatibility.survival_break_place_typed_event_migration.gate] The runner MUST include `survival-break-place-pickup` in the typed-event pass/fail gate so missing or invalid structured survival events fail before substring fallback can satisfy the row.
+r[mc_compatibility.survival_break_place_typed_event_migration.gate.missing]
+r[mc_compatibility.survival_break_place_typed_event_migration.gate.order]
+r[mc_compatibility.survival_break_place_typed_event_migration.validation] The migration MUST record reviewable evidence for runner fixtures, scenario-manifest checks, generated-surface freshness, dry-run receipt shape, evidence manifests, Cairn gates, and Cairn validation before archive.
+r[mc_compatibility.survival_break_place_typed_event_migration.validation.log]
+accepted_spec_grep_exit_status=0
+command=nix run --no-update-lock-file .#evidence-manifest-refresh -- --refresh --root .
+evidence manifest refresh ok: mode=refresh; passes=4; manifests=417; entries=2900; current=2900; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=4; manifest_writes=42
+evidence_manifest_refresh_exit_status=0
+command=CAIRN_ARCHIVE_DATE=2026-06-22 nix run --no-update-lock-file .#cairn -- archive survival-break-place-typed-event-migration --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-break-place-typed-event-migration",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-22-survival-break-place-typed-event-migration"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-break-place-typed-event-migration",
+  "dry_run": false,
+  "input_hash": "2701c89f02a78cfcad5be0eff74047c7076363012fa9057f7cdd38208ef06f97",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "5ede4d362bf5dcc9320a749d62700097ee54c2bc89fd9f9ed56e62763a5a4188",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-22-survival-break-place-typed-event-migration/design.md"
+        },
+        {
+          "content_hash": "394f62c622e9bea615041097f8d53ef622ad16ede1d5389c0d1ddd50928bc761",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-22-survival-break-place-typed-event-migration/proposal.md"
+        },
+        {
+          "content_hash": "6a37bca94a1913fd67e72c6fdfb0f1a18bdc443d71edf99882cd69764760d29d",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-22-survival-break-place-typed-event-migration/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "e7ccbba60469654bd6702aa0696e7a9566fb4127e1667e8782e9ad72112c0180",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-22-survival-break-place-typed-event-migration/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-break-place-typed-event-migration"
+        }
+      ],
+      "manifest_hash": "47d36fb4c681dc900b5d0d2060c219fc02a3f39715cbfd40f724a840e5e7c2fa"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "5ede4d362bf5dcc9320a749d62700097ee54c2bc89fd9f9ed56e62763a5a4188",
+          "exists": true,
+          "path": "./cairn/changes/survival-break-place-typed-event-migration/design.md"
+        },
+        {
+          "content_hash": "394f62c622e9bea615041097f8d53ef622ad16ede1d5389c0d1ddd50928bc761",
+          "exists": true,
+          "path": "./cairn/changes/survival-break-place-typed-event-migration/proposal.md"
+        },
+        {
+          "content_hash": "6a37bca94a1913fd67e72c6fdfb0f1a18bdc443d71edf99882cd69764760d29d",
+          "exists": true,
+          "path": "./cairn/changes/survival-break-place-typed-event-migration/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "e7ccbba60469654bd6702aa0696e7a9566fb4127e1667e8782e9ad72112c0180",
+          "exists": true,
+          "path": "./cairn/changes/survival-break-place-typed-event-migration/tasks.md"
+        }
+      ],
+      "manifest_hash": "82e4a3cde0f7086b8da08b51b34e24e4fb2f27c1f30b03c4ee24c2bde7c91286"
+    },
+    "kind": "archive",
+    "manifest_hash": "60b1ec93ed36484f0109e98324167eb4efc7ec917a78dd70db6060d84fbecf3c"
+  },
+  "plan_hash": "2be0693c48bcc1df35368bbf6b791c85a45086a763ed166644ddefbcf213ad2b",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "675504e99e7b7bf857ea481ecd2657f87830fc0832fa44ed96f15a71c59f8fa0"
+}
+cairn_archive_exit_status=0
+command=test archived change present and active change absent
+archive_dir_exit_status=0
+active_change_absent_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 2,
+  "valid": true
+}
+cairn_validate_exit_status=0
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link
+this derivation will be built:
+  /nix/store/a5jqayvfn4b5bf5m6ff4h35x5idm0sxw-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/a5jqayvfn4b5bf5m6ff4h35x5idm0sxw-mc-compat-evidence-manifests.drv'...
+evidence_manifest_exit_status=0
+exit_status=0
