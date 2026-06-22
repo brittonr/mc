@@ -1,0 +1,15 @@
+[package]
+name = "steven_blocks"
+version = "0.0.1"
+authors = [ "Thinkofdeath <thinkofdeath@spigotmc.org>" ]
+edition = "2021"
+
+[dependencies]
+lazy_static = "1.4.0"
+cgmath = "0.17.0"
+collision = "0.20.1"
+
+
+[dependencies.steven_shared]
+path = "../shared"
+version = "0"

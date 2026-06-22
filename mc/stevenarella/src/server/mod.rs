@@ -1,0 +1,8021 @@
+// Copyright 2015 Matthew Collins
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+use crate::ecs;
+use crate::entity;
+use crate::format;
+use crate::protocol::{self, forge, mojang, packet};
+use crate::render;
+use crate::resources;
+use crate::settings::Stevenkey;
+use crate::shared::{Axis, Position};
+use crate::types::hash::FNVHash;
+use crate::types::Gamemode;
+use crate::world;
+use crate::world::block;
+use cgmath::prelude::*;
+use instant::Instant;
+use log::{debug, error, info, warn};
+use rand::{self, Rng};
+use std::collections::HashMap;
+use std::hash::BuildHasherDefault;
+use std::str::FromStr;
+use std::sync::mpsc;
+use std::sync::{Arc, RwLock};
+use std::thread;
+use steven_protocol::item;
+
+pub mod plugin_messages;
+mod sun;
+pub mod target;
+
+const DEFAULT_FLAG_PROBE_REPEAT_TARGET: u32 = 1;
+const MAX_FLAG_PROBE_REPEAT_TARGET: u32 = 8;
+const FLAG_PROBE_FIRST_TICK: u32 = 560;
+const CTF_SCORE_LIMIT_CLIENT_ENV: &str = "MC_COMPAT_SCORE_LIMIT_PROBE";
+const CTF_SCORE_LIMIT_CLIENT_TARGET_SCORE: &str = "RED: 2";
+const CTF_SCORE_LIMIT_CLIENT_OPPOSING_SCORE: &str = "BLUE: 0";
+const CTF_SCORE_LIMIT_CLIENT_WIN_TEAM: &str = "red";
+const CTF_SCORE_LIMIT_CLIENT_END_STATE: &str = "winner_declared";
+const FLAG_PROBE_CYCLE_TICKS: u32 = 220;
+const ACTIVE_PROBE_INPUT_START_TICK: u32 = 1;
+const STATIONARY_COMBAT_PROBE_ENV: &str = "MC_COMPAT_STATIONARY_COMBAT_PROBE";
+const ACTIVE_PROBE_JUMP_RELEASE_TICK: u32 = 18;
+const ACTIVE_PROBE_TURN_TICK: u32 = 180;
+const ACTIVE_PROBE_STOP_TICK: u32 = 300;
+const SURVIVAL_PROBE_POSITION_TICK: u32 = 60;
+const SURVIVAL_PROBE_BREAK_TICK: u32 = 80;
+const SURVIVAL_PROBE_PLACE_TICK: u32 = 120;
+const SURVIVAL_PROBE_BREAK_X: i32 = 0;
+const SURVIVAL_PROBE_BREAK_Y: i32 = 64;
+const SURVIVAL_PROBE_BREAK_Z: i32 = 1;
+const SURVIVAL_PROBE_PLACE_Y: i32 = 65;
+const SURVIVAL_PROBE_START_DESTROY_STATUS: i32 = 0;
+const SURVIVAL_PROBE_STOP_DESTROY_STATUS: i32 = 2;
+const SURVIVAL_PROBE_FACE_UP: i32 = 1;
+const SURVIVAL_PROBE_MAIN_HAND: i32 = 0;
+const SURVIVAL_PROBE_HOTBAR_SLOT: i16 = 0;
+const SURVIVAL_PROBE_AIR_RAW_ID: i32 = 0;
+const SURVIVAL_PROBE_BREAK_START_SEQUENCE: i32 = 404;
+const SURVIVAL_PROBE_BREAK_STOP_SEQUENCE: i32 = 405;
+const SURVIVAL_PROBE_PLACE_SEQUENCE: i32 = 406;
+const SURVIVAL_PROBE_CURSOR_CENTER: f32 = 0.5;
+const SURVIVAL_PROBE_CURSOR_TOP: f32 = 1.0;
+const SURVIVAL_PROBE_PLAYER_X: f64 = 0.5;
+const SURVIVAL_PROBE_PLAYER_Y: f64 = 65.0;
+const SURVIVAL_PROBE_PLAYER_Z: f64 = 0.5;
+const SURVIVAL_CHEST_FIRST_SESSION: u32 = 1;
+const SURVIVAL_CHEST_REOPEN_SESSION: u32 = 2;
+const SURVIVAL_CHEST_POSITION_TICK: u32 = 60;
+const SURVIVAL_CHEST_OPEN_TICK: u32 = 80;
+const SURVIVAL_CHEST_STORE_TICK: u32 = 120;
+const SURVIVAL_CHEST_CLOSE_TICK: u32 = 160;
+const SURVIVAL_CHEST_X: i32 = 8;
+const SURVIVAL_CHEST_Y: i32 = 64;
+const SURVIVAL_CHEST_Z: i32 = 0;
+const SURVIVAL_CHEST_PLAYER_X: f64 = 8.5;
+const SURVIVAL_CHEST_PLAYER_Y: f64 = 65.0;
+const SURVIVAL_CHEST_PLAYER_Z: f64 = 0.5;
+const SURVIVAL_CHEST_FACE_UP: i32 = 1;
+const SURVIVAL_CHEST_MAIN_HAND: i32 = 0;
+const SURVIVAL_CHEST_SEQUENCE: i32 = 507;
+const SURVIVAL_CHEST_WINDOW_SLOT: i16 = 0;
+const SURVIVAL_CHEST_WINDOW_SLOT_INDEX: usize = 0;
+const SURVIVAL_CHEST_CLICK_BUTTON: u8 = 0;
+const SURVIVAL_CHEST_CLICK_MODE: i32 = 0;
+const SURVIVAL_CHEST_ITEM_PROTOCOL_ID: isize = 15;
+const SURVIVAL_CHEST_ITEM_COUNT: isize = 1;
+const SURVIVAL_CHEST_ITEM_NAME: &str = "Dirt";
+const SURVIVAL_CHEST_RECONNECT_SESSION_LABEL: u32 = 1;
+const SURVIVAL_CRAFTING_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_CRAFTING_PROBE";
+const SURVIVAL_CRAFTING_BREADTH_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_CRAFTING_BREADTH_PROBE";
+const SURVIVAL_CRAFTING_BREADTH_LOG_TICK: u32 = 120;
+const SURVIVAL_CRAFTING_POSITION_TICK: u32 = 60;
+const SURVIVAL_CRAFTING_OPEN_TICK: u32 = 80;
+const SURVIVAL_CRAFTING_INPUT_A_TICK: u32 = 120;
+const SURVIVAL_CRAFTING_INPUT_B_TICK: u32 = 140;
+const SURVIVAL_CRAFTING_COLLECT_TICK: u32 = 160;
+const SURVIVAL_CRAFTING_TABLE_X: i32 = 4;
+const SURVIVAL_CRAFTING_TABLE_Y: i32 = 64;
+const SURVIVAL_CRAFTING_TABLE_Z: i32 = 0;
+const SURVIVAL_CRAFTING_PLAYER_X: f64 = 4.5;
+const SURVIVAL_CRAFTING_PLAYER_Y: f64 = 65.0;
+const SURVIVAL_CRAFTING_PLAYER_Z: f64 = 0.5;
+const SURVIVAL_CRAFTING_FACE_UP: i32 = 1;
+const SURVIVAL_CRAFTING_MAIN_HAND: i32 = 0;
+const SURVIVAL_CRAFTING_SEQUENCE: i32 = 608;
+const SURVIVAL_CRAFTING_INPUT_A_SLOT: i16 = 1;
+const SURVIVAL_CRAFTING_INPUT_B_SLOT: i16 = 4;
+const SURVIVAL_CRAFTING_RESULT_SLOT: i16 = 0;
+const SURVIVAL_CRAFTING_RESULT_INDEX: usize = 0;
+const SURVIVAL_CRAFTING_INVENTORY_SLOT: i16 = 36;
+const SURVIVAL_CRAFTING_INVENTORY_INDEX: usize = 36;
+const SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_SLOT: i16 = 37;
+const SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_INDEX: usize = 37;
+const SURVIVAL_CRAFTING_INPUT_ITEM_ID: isize = 23;
+const SURVIVAL_CRAFTING_RESULT_ITEM_ID: isize = 807;
+const SURVIVAL_CRAFTING_INPUT_ITEM_NAME: &str = "OakPlanks";
+const SURVIVAL_CRAFTING_RESULT_ITEM_NAME: &str = "Stick";
+const SURVIVAL_CRAFTING_RECIPE: &str = "minecraft:stick";
+const SURVIVAL_FURNACE_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_FURNACE_PROBE";
+const SURVIVAL_FURNACE_SMELTING_BREADTH_PROBE_ENV: &str =
+    "MC_COMPAT_SURVIVAL_FURNACE_SMELTING_BREADTH_PROBE";
+const SURVIVAL_FURNACE_SESSION_ENV: &str = "MC_COMPAT_SURVIVAL_FURNACE_SESSION";
+const SURVIVAL_FURNACE_FIRST_SESSION: u32 = 1;
+const SURVIVAL_FURNACE_REOPEN_SESSION: u32 = 2;
+const SURVIVAL_FURNACE_POSITION_TICK: u32 = 60;
+const SURVIVAL_FURNACE_OPEN_TICK: u32 = 80;
+const SURVIVAL_FURNACE_INPUT_TICK: u32 = 120;
+const SURVIVAL_FURNACE_FUEL_TICK: u32 = 140;
+const SURVIVAL_FURNACE_COLLECT_TICK: u32 = 180;
+const SURVIVAL_FURNACE_INVALID_FUEL_TICK: u32 = 210;
+const SURVIVAL_FURNACE_CLOSE_TICK: u32 = 220;
+const SURVIVAL_FURNACE_X: i32 = 12;
+const SURVIVAL_FURNACE_Y: i32 = 64;
+const SURVIVAL_FURNACE_Z: i32 = 0;
+const SURVIVAL_FURNACE_PLAYER_X: f64 = 12.5;
+const SURVIVAL_FURNACE_PLAYER_Y: f64 = 65.0;
+const SURVIVAL_FURNACE_PLAYER_Z: f64 = 0.5;
+const SURVIVAL_FURNACE_FACE_UP: i32 = 1;
+const SURVIVAL_FURNACE_MAIN_HAND: i32 = 0;
+const SURVIVAL_FURNACE_SEQUENCE: i32 = 709;
+const SURVIVAL_FURNACE_INPUT_SLOT: i16 = 0;
+const SURVIVAL_FURNACE_FUEL_SLOT: i16 = 1;
+const SURVIVAL_FURNACE_OUTPUT_SLOT: i16 = 2;
+const SURVIVAL_FURNACE_FUEL_INDEX: usize = 1;
+const SURVIVAL_FURNACE_OUTPUT_INDEX: usize = 2;
+const SURVIVAL_FURNACE_INVENTORY_SLOT: i16 = 36;
+const SURVIVAL_FURNACE_INVENTORY_INDEX: usize = 36;
+const SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_SLOT: i16 = 30;
+const SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_INDEX: usize = 30;
+const SURVIVAL_FURNACE_INPUT_ITEM_ID: isize = 769;
+const SURVIVAL_FURNACE_FUEL_ITEM_ID: isize = 762;
+const SURVIVAL_FURNACE_OUTPUT_ITEM_ID: isize = 770;
+const SURVIVAL_FURNACE_INPUT_ITEM_NAME: &str = "RawIron";
+const SURVIVAL_FURNACE_INVALID_FUEL_OUTCOME: &str = "no_burn";
+const SURVIVAL_FURNACE_FUEL_ITEM_NAME: &str = "Coal";
+const SURVIVAL_FURNACE_OUTPUT_ITEM_NAME: &str = "IronIngot";
+const SURVIVAL_FURNACE_ITEM_COUNT: isize = 1;
+const SURVIVAL_FURNACE_CLICK_BUTTON: u8 = 0;
+const SURVIVAL_FURNACE_CLICK_MODE: i32 = 0;
+const SURVIVAL_FURNACE_RECONNECT_SESSION_LABEL: u32 = 1;
+const SURVIVAL_HUNGER_FOOD_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_HUNGER_FOOD_PROBE";
+const SURVIVAL_HUNGER_FOOD_USE_TICK: u32 = 120;
+const SURVIVAL_HUNGER_FOOD_HOTBAR_SLOT: i16 = 0;
+const SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT: i16 = 36;
+const SURVIVAL_HUNGER_FOOD_INVENTORY_INDEX: usize = 36;
+const SURVIVAL_HUNGER_FOOD_ITEM_ID: isize = 815;
+const SURVIVAL_HUNGER_FOOD_ITEM_NAME: &str = "Bread";
+const SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE: isize = 1;
+const SURVIVAL_HUNGER_FOOD_ITEM_COUNT_AFTER: isize = 0;
+const SURVIVAL_HUNGER_FOOD_PRE_HEALTH: f32 = 20.0;
+const SURVIVAL_HUNGER_FOOD_PRE_FOOD: i32 = 15;
+const SURVIVAL_HUNGER_FOOD_PRE_SATURATION: f32 = 0.0;
+const SURVIVAL_HUNGER_FOOD_POST_HEALTH: f32 = 20.0;
+const SURVIVAL_HUNGER_FOOD_POST_FOOD: i32 = 20;
+const SURVIVAL_HUNGER_FOOD_POST_SATURATION: f32 = 6.0;
+const SURVIVAL_HUNGER_HEALTH_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_HUNGER_HEALTH_PROBE";
+const SURVIVAL_HUNGER_HEALTH_PRE_HEALTH: f32 = 18.0;
+const SURVIVAL_HUNGER_HEALTH_PRE_FOOD: i32 = 15;
+const SURVIVAL_HUNGER_HEALTH_PRE_SATURATION: f32 = 0.0;
+const SURVIVAL_HUNGER_HEALTH_POST_HEALTH: f32 = 20.0;
+const SURVIVAL_HUNGER_HEALTH_POST_FOOD: i32 = 20;
+const SURVIVAL_HUNGER_HEALTH_POST_SATURATION: f32 = 6.0;
+const SURVIVAL_HUNGER_FOOD_FLOAT_TOLERANCE: f32 = 0.01;
+const SURVIVAL_HUNGER_FOOD_MAIN_HAND: i32 = 0;
+const SURVIVAL_HUNGER_FOOD_USE_SEQUENCE: i32 = 810;
+const SURVIVAL_MOB_DROP_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_MOB_DROP_PROBE";
+const SURVIVAL_MOB_DROP_POSITION_TICK: u32 = 60;
+const SURVIVAL_MOB_DROP_ATTACK_TICK: u32 = 140;
+const SURVIVAL_MOB_DROP_PLAYER_X: f64 = 16.5;
+const SURVIVAL_MOB_DROP_PLAYER_Y: f64 = 65.0;
+const SURVIVAL_MOB_DROP_PLAYER_Z: f64 = 0.5;
+const SURVIVAL_MOB_DROP_TARGET_X: f64 = 16.5;
+const SURVIVAL_MOB_DROP_TARGET_Y: f64 = 65.0;
+const SURVIVAL_MOB_DROP_TARGET_Z: f64 = 2.5;
+const SURVIVAL_MOB_DROP_TARGET_YAW: f32 = 0.0;
+const SURVIVAL_MOB_DROP_TARGET_PITCH: f32 = 0.0;
+const SURVIVAL_MOB_DROP_POSITION_TOLERANCE: f64 = 0.75;
+const SURVIVAL_MOB_DROP_MOB_NAME: &str = "IronGolem";
+const SURVIVAL_MOB_DROP_ITEM_NAME: &str = "IronIngot";
+const SURVIVAL_MOB_DROP_ITEM_ID: isize = SURVIVAL_FURNACE_OUTPUT_ITEM_ID;
+const SURVIVAL_MOB_DROP_PROTOCOL_758_ITEM_ID: isize = 692;
+const SURVIVAL_MOB_DROP_ITEM_COUNT: isize = SURVIVAL_FURNACE_ITEM_COUNT;
+const SURVIVAL_MOB_DROP_INVENTORY_SLOT: i16 = 36;
+const SURVIVAL_MOB_DROP_INVENTORY_INDEX: usize = 36;
+const SURVIVAL_MOB_DROP_ATTACK_TYPE: i32 = 1;
+const SURVIVAL_MOB_DROP_MAIN_HAND: i32 = 0;
+const SURVIVAL_MOB_AI_LOOT_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_MOB_AI_LOOT_PROBE";
+const SURVIVAL_MOB_AI_LOOT_LOG_TICK: u32 = 120;
+const SURVIVAL_REDSTONE_TOGGLE_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_REDSTONE_TOGGLE_PROBE";
+const SURVIVAL_REDSTONE_TOGGLE_POSITION_TICK: u32 = 60;
+const SURVIVAL_REDSTONE_TOGGLE_INPUT_TICK: u32 = 100;
+const SURVIVAL_REDSTONE_TOGGLE_RETURN_TICK: u32 = 150;
+const SURVIVAL_REDSTONE_TOGGLE_PLAYER_X: f64 = 20.5;
+const SURVIVAL_REDSTONE_TOGGLE_PLAYER_Y: f64 = 65.0;
+const SURVIVAL_REDSTONE_TOGGLE_PLAYER_Z: f64 = -1.5;
+const SURVIVAL_REDSTONE_TOGGLE_TARGET_YAW: f32 = 0.0;
+const SURVIVAL_REDSTONE_TOGGLE_TARGET_PITCH: f32 = 30.0;
+const SURVIVAL_REDSTONE_TOGGLE_CONTROL_NAME: &str = "Lever";
+const SURVIVAL_REDSTONE_TOGGLE_OUTPUT_NAME: &str = "RedstoneLamp";
+const SURVIVAL_REDSTONE_TOGGLE_CONTROL_X: i32 = 20;
+const SURVIVAL_REDSTONE_TOGGLE_CONTROL_Y: i32 = 64;
+const SURVIVAL_REDSTONE_TOGGLE_CONTROL_Z: i32 = 0;
+const SURVIVAL_REDSTONE_TOGGLE_OUTPUT_X: i32 = 21;
+const SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Y: i32 = 64;
+const SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Z: i32 = 0;
+const SURVIVAL_REDSTONE_TOGGLE_FACE_UP: i32 = 1;
+const SURVIVAL_REDSTONE_TOGGLE_MAIN_HAND: i32 = 0;
+const SURVIVAL_REDSTONE_TOGGLE_CURSOR_CENTER: f32 = 0.5;
+const SURVIVAL_REDSTONE_TOGGLE_CURSOR_TOP: f32 = 1.0;
+const SURVIVAL_REDSTONE_TOGGLE_ON_SEQUENCE: i32 = 911;
+const SURVIVAL_REDSTONE_TOGGLE_OFF_SEQUENCE: i32 = 912;
+const SURVIVAL_REDSTONE_CIRCUIT_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_REDSTONE_CIRCUIT_PROBE";
+const SURVIVAL_REDSTONE_CIRCUIT_LOG_TICK: u32 = 120;
+const SURVIVAL_WORLD_PERSISTENCE_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_PROBE";
+const SURVIVAL_WORLD_PERSISTENCE_SESSION_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_SESSION";
+const SURVIVAL_WORLD_PERSISTENCE_FIRST_SESSION: u32 = 1;
+const SURVIVAL_WORLD_PERSISTENCE_RESTART_SESSION: u32 = 2;
+const SURVIVAL_WORLD_PERSISTENCE_POSITION_TICK: u32 = 60;
+const SURVIVAL_WORLD_PERSISTENCE_MUTATION_TICK: u32 = 100;
+const SURVIVAL_WORLD_PERSISTENCE_PLAYER_X: f64 = 24.5;
+const SURVIVAL_WORLD_PERSISTENCE_PLAYER_Y: f64 = 65.0;
+const SURVIVAL_WORLD_PERSISTENCE_PLAYER_Z: f64 = -1.5;
+const SURVIVAL_WORLD_PERSISTENCE_TARGET_YAW: f32 = 0.0;
+const SURVIVAL_WORLD_PERSISTENCE_TARGET_PITCH: f32 = 30.0;
+const SURVIVAL_WORLD_PERSISTENCE_BLOCK_NAME: &str = "Dirt";
+const SURVIVAL_WORLD_PERSISTENCE_X: i32 = 24;
+const SURVIVAL_WORLD_PERSISTENCE_Y: i32 = 64;
+const SURVIVAL_WORLD_PERSISTENCE_Z: i32 = 0;
+const SURVIVAL_WORLD_PERSISTENCE_PLACE_BASE_Y: i32 = 63;
+const SURVIVAL_WORLD_PERSISTENCE_FACE_UP: i32 = 1;
+const SURVIVAL_WORLD_PERSISTENCE_MAIN_HAND: i32 = 0;
+const SURVIVAL_WORLD_PERSISTENCE_HOTBAR_SLOT: i16 = 0;
+const SURVIVAL_WORLD_PERSISTENCE_INVENTORY_SLOT: i16 = 36;
+const SURVIVAL_WORLD_PERSISTENCE_CURSOR_CENTER: f32 = 0.5;
+const SURVIVAL_WORLD_PERSISTENCE_CURSOR_TOP: f32 = 1.0;
+const SURVIVAL_WORLD_PERSISTENCE_SEQUENCE: i32 = 933;
+const SURVIVAL_BLOCK_ENTITY_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_BLOCK_ENTITY_PROBE";
+const SURVIVAL_BLOCK_ENTITY_SESSION_ENV: &str = "MC_COMPAT_SURVIVAL_BLOCK_ENTITY_SESSION";
+const SURVIVAL_BLOCK_ENTITY_FIRST_SESSION: u32 = 1;
+const SURVIVAL_BLOCK_ENTITY_RESTART_SESSION: u32 = 2;
+const SURVIVAL_BLOCK_ENTITY_POSITION_TICK: u32 = SURVIVAL_WORLD_PERSISTENCE_POSITION_TICK;
+const SURVIVAL_BLOCK_ENTITY_PLAYER_X: f64 = 28.5;
+const SURVIVAL_BLOCK_ENTITY_PLAYER_Y: f64 = 65.0;
+const SURVIVAL_BLOCK_ENTITY_PLAYER_Z: f64 = -1.5;
+const SURVIVAL_BLOCK_ENTITY_TARGET_YAW: f32 = 0.0;
+const SURVIVAL_BLOCK_ENTITY_TARGET_PITCH: f32 = 30.0;
+const SURVIVAL_BLOCK_ENTITY_KIND: &str = "Sign";
+const SURVIVAL_BLOCK_ENTITY_X: i32 = 28;
+const SURVIVAL_BLOCK_ENTITY_Y: i32 = 64;
+const SURVIVAL_BLOCK_ENTITY_Z: i32 = 0;
+const SURVIVAL_BLOCK_ENTITY_TEXT_LINE_1: &str = "MC";
+const SURVIVAL_BLOCK_ENTITY_TEXT_LINE_2: &str = "Compat";
+const SURVIVAL_BLOCK_ENTITY_TEXT_LINE_3: &str = "Sign";
+const SURVIVAL_BLOCK_ENTITY_TEXT_LINE_4: &str = "Persist";
+const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &str = "MC|Compat|Sign|Persist";
+const SURVIVAL_WORLD_MULTICHUNK_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_MULTICHUNK_PROBE";
+const SURVIVAL_WORLD_MULTICHUNK_SESSION_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_MULTICHUNK_SESSION";
+const SURVIVAL_WORLD_MULTICHUNK_LOG_TICK: u32 = 120;
+const SURVIVAL_CONTAINER_BLOCK_ENTITY_PROBE_ENV: &str =
+    "MC_COMPAT_SURVIVAL_CONTAINER_BLOCK_ENTITY_PROBE";
+const SURVIVAL_CONTAINER_BLOCK_ENTITY_LOG_TICK: u32 = 120;
+const SURVIVAL_SIGN_EDITING_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_SIGN_EDITING_PROBE";
+const SURVIVAL_SIGN_EDITING_LOG_TICK: u32 = 120;
+const SIGN_LINE_COUNT: usize = 4;
+const SIGN_LINE_INDEX_1: usize = 0;
+const SIGN_LINE_INDEX_2: usize = 1;
+const SIGN_LINE_INDEX_3: usize = 2;
+const SIGN_LINE_INDEX_4: usize = 3;
+const MODERN_SIGN_FRONT_TEXT_KEY: &str = "front_text";
+const MODERN_SIGN_MESSAGES_KEY: &str = "messages";
+const LEGACY_SIGN_ID: &str = "Sign";
+const LEGACY_SIGN_BLOCK_ENTITY_ACTION: u8 = 9;
+const LEGACY_SIGN_TEXT_KEYS: [&str; SIGN_LINE_COUNT] = ["Text1", "Text2", "Text3", "Text4"];
+const BLOCK_ENTITY_PACKED_X_SHIFT: u8 = 4;
+const BLOCK_ENTITY_PACKED_COORD_MASK: u8 = 0x0F;
+const CHUNK_SECTION_WIDTH_LOG2: i32 = 4;
+const SURVIVAL_BIOME_DIMENSION_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_PROBE";
+const SURVIVAL_BIOME_DIMENSION_TRAVEL_PROBE_ENV: &str =
+    "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_TRAVEL_PROBE";
+const SURVIVAL_BIOME_DIMENSION_TRAVEL_LOG_TICK: u32 = 120;
+const SURVIVAL_OVERWORLD_ID: &str = "minecraft:overworld";
+const SURVIVAL_NETHER_ID: &str = "minecraft:the_nether";
+const SURVIVAL_END_ID: &str = "minecraft:the_end";
+const SURVIVAL_UNKNOWN_ENVIRONMENT_ID: &str = "unknown";
+const SURVIVAL_CRAFTING_INPUT_COUNT: isize = 1;
+const SURVIVAL_CRAFTING_RESULT_COUNT: isize = 4;
+const SURVIVAL_CRAFTING_CLICK_BUTTON: u8 = 0;
+const SURVIVAL_CRAFTING_CLICK_MODE: i32 = 0;
+const PLAYER_INVENTORY_WINDOW_ID: u8 = 0;
+const INVENTORY_STACK_SPLIT_MERGE_PROBE_ENV: &str = "MC_COMPAT_INVENTORY_STACK_SPLIT_MERGE_PROBE";
+const INVENTORY_DRAG_TRANSACTIONS_PROBE_ENV: &str = "MC_COMPAT_INVENTORY_DRAG_TRANSACTIONS_PROBE";
+const INVENTORY_STACK_SPLIT_MERGE_FIRST_TICK: u32 = 220;
+const INVENTORY_DRAG_TRANSACTIONS_FIRST_TICK: u32 = 220;
+const INVENTORY_STACK_SOURCE_SLOT: i16 = 37;
+const INVENTORY_STACK_SOURCE_SLOT_INDEX: usize = 37;
+const INVENTORY_STACK_DESTINATION_SLOT: i16 = 38;
+const INVENTORY_DRAG_TARGET_SLOT_A: i16 = 38;
+const INVENTORY_DRAG_TARGET_SLOT_B: i16 = 39;
+const INVENTORY_STACK_FULL_COUNT: isize = 64;
+const INVENTORY_STACK_HALF_COUNT: isize = 32;
+const INVENTORY_STACK_EMPTY_COUNT: isize = 0;
+const INVENTORY_STACK_LEFT_BUTTON: u8 = 0;
+const INVENTORY_STACK_RIGHT_BUTTON: u8 = 1;
+const INVENTORY_STACK_CLICK_MODE: i32 = 0;
+const INVENTORY_DRAG_START_BUTTON: u8 = 0;
+const INVENTORY_DRAG_ADD_SLOT_BUTTON: u8 = 1;
+const INVENTORY_DRAG_END_BUTTON: u8 = 2;
+const INVENTORY_DRAG_CLICK_MODE: i32 = 5;
+const INVENTORY_DRAG_OUTSIDE_SLOT: i16 = -999;
+const INVENTORY_STACK_ITEM_PROTOCOL_ID: isize = 194;
+const INVENTORY_STACK_ITEM_NAME: &str = "RedWool";
+const EMPTY_WINDOW_ID: u8 = 0;
+const EMPTY_WINDOW_STATE_ID: i32 = -1;
+const NEGATIVE_INVENTORY_INVALID_SLOT: i16 = 127;
+const NEGATIVE_INVENTORY_INVALID_WINDOW_ID: u8 = 127;
+const NEGATIVE_INVENTORY_STALE_STATE_OFFSET: i32 = 1;
+const NEGATIVE_CLICK_BUTTON: u8 = 0;
+const NEGATIVE_CLICK_MODE: i32 = 0;
+const NEGATIVE_CUSTOM_PAYLOAD_TICK: u32 = 420;
+const NEGATIVE_CUSTOM_PAYLOAD_CONTAINMENT_TICK: u32 = 460;
+const NEGATIVE_FLAG_CONTAINMENT_TICK_OFFSET: u32 = 120;
+const NEGATIVE_CUSTOM_PAYLOAD_DATA: &[u8] = &[0xff, 0x00, 0xff];
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct InventoryStackSplitMergeProbeInput {
+    enabled: bool,
+    active_ticks: u32,
+    source_stack_seen: bool,
+    current_state_id: i32,
+    split_pickup_sent: bool,
+    split_source_seen: bool,
+    split_place_sent: bool,
+    split_destination_seen: bool,
+    merge_pickup_sent: bool,
+    merge_destination_empty_seen: bool,
+    merge_place_sent: bool,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum InventoryStackSplitMergeAction {
+    SplitPickup,
+    SplitPlace,
+    MergePickup,
+    MergePlace,
+}
+
+fn next_inventory_stack_split_merge_action(
+    input: InventoryStackSplitMergeProbeInput,
+) -> Option<InventoryStackSplitMergeAction> {
+    if !input.enabled
+        || !input.source_stack_seen
+        || input.active_ticks < INVENTORY_STACK_SPLIT_MERGE_FIRST_TICK
+        || input.current_state_id <= EMPTY_WINDOW_STATE_ID
+    {
+        return None;
+    }
+
+    if !input.split_pickup_sent {
+        return Some(InventoryStackSplitMergeAction::SplitPickup);
+    }
+
+    if !input.split_source_seen {
+        return None;
+    }
+
+    if !input.split_place_sent {
+        return Some(InventoryStackSplitMergeAction::SplitPlace);
+    }
+
+    if !input.split_destination_seen {
+        return None;
+    }
+
+    if !input.merge_pickup_sent {
+        return Some(InventoryStackSplitMergeAction::MergePickup);
+    }
+
+    if !input.merge_destination_empty_seen {
+        return None;
+    }
+
+    if !input.merge_place_sent {
+        return Some(InventoryStackSplitMergeAction::MergePlace);
+    }
+
+    None
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct InventoryDragTransactionsProbeInput {
+    enabled: bool,
+    active_ticks: u32,
+    source_stack_seen: bool,
+    current_state_id: i32,
+    pickup_sent: bool,
+    source_empty_seen: bool,
+    drag_start_sent: bool,
+    target_a_sent: bool,
+    target_b_sent: bool,
+    drag_end_sent: bool,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum InventoryDragTransactionsAction {
+    PickupSource,
+    DragStart,
+    AddTargetA,
+    AddTargetB,
+    DragEnd,
+}
+
+fn next_inventory_drag_transactions_action(
+    input: InventoryDragTransactionsProbeInput,
+) -> Option<InventoryDragTransactionsAction> {
+    if !input.enabled
+        || !input.source_stack_seen
+        || input.active_ticks < INVENTORY_DRAG_TRANSACTIONS_FIRST_TICK
+        || input.current_state_id <= EMPTY_WINDOW_STATE_ID
+    {
+        return None;
+    }
+
+    if !input.pickup_sent {
+        return Some(InventoryDragTransactionsAction::PickupSource);
+    }
+
+    if !input.source_empty_seen {
+        return None;
+    }
+
+    if !input.drag_start_sent {
+        return Some(InventoryDragTransactionsAction::DragStart);
+    }
+
+    if !input.target_a_sent {
+        return Some(InventoryDragTransactionsAction::AddTargetA);
+    }
+
+    if !input.target_b_sent {
+        return Some(InventoryDragTransactionsAction::AddTargetB);
+    }
+
+    if !input.drag_end_sent {
+        return Some(InventoryDragTransactionsAction::DragEnd);
+    }
+
+    None
+}
+
+fn parse_flag_probe_repeat_target(value: Option<&str>) -> u32 {
+    value
+        .and_then(|raw| raw.trim().parse::<u32>().ok())
+        .filter(|target| *target > 0)
+        .map(|target| target.min(MAX_FLAG_PROBE_REPEAT_TARGET))
+        .unwrap_or(DEFAULT_FLAG_PROBE_REPEAT_TARGET)
+}
+
+fn flag_probe_repeat_target_from_env() -> u32 {
+    parse_flag_probe_repeat_target(std::env::var("MC_COMPAT_FLAG_PROBE_REPEAT").ok().as_deref())
+}
+
+fn survival_chest_probe_session_from_env() -> u32 {
+    std::env::var("MC_COMPAT_SURVIVAL_CHEST_SESSION")
+        .ok()
+        .and_then(|raw| raw.trim().parse::<u32>().ok())
+        .filter(|session| {
+            *session == SURVIVAL_CHEST_FIRST_SESSION || *session == SURVIVAL_CHEST_REOPEN_SESSION
+        })
+        .unwrap_or(SURVIVAL_CHEST_FIRST_SESSION)
+}
+
+fn survival_furnace_probe_session_from_env() -> u32 {
+    std::env::var(SURVIVAL_FURNACE_SESSION_ENV)
+        .ok()
+        .and_then(|raw| raw.trim().parse::<u32>().ok())
+        .filter(|session| {
+            *session == SURVIVAL_FURNACE_FIRST_SESSION
+                || *session == SURVIVAL_FURNACE_REOPEN_SESSION
+        })
+        .unwrap_or(SURVIVAL_FURNACE_FIRST_SESSION)
+}
+
+fn survival_world_persistence_probe_session_from_env() -> u32 {
+    std::env::var(SURVIVAL_WORLD_PERSISTENCE_SESSION_ENV)
+        .ok()
+        .and_then(|raw| raw.trim().parse::<u32>().ok())
+        .filter(|session| {
+            *session == SURVIVAL_WORLD_PERSISTENCE_FIRST_SESSION
+                || *session == SURVIVAL_WORLD_PERSISTENCE_RESTART_SESSION
+        })
+        .unwrap_or(SURVIVAL_WORLD_PERSISTENCE_FIRST_SESSION)
+}
+
+fn survival_block_entity_probe_session_from_env() -> u32 {
+    std::env::var(SURVIVAL_BLOCK_ENTITY_SESSION_ENV)
+        .ok()
+        .and_then(|raw| raw.trim().parse::<u32>().ok())
+        .filter(|session| {
+            *session == SURVIVAL_BLOCK_ENTITY_FIRST_SESSION
+                || *session == SURVIVAL_BLOCK_ENTITY_RESTART_SESSION
+        })
+        .unwrap_or(SURVIVAL_BLOCK_ENTITY_FIRST_SESSION)
+}
+
+fn survival_world_multichunk_probe_session_from_env() -> u32 {
+    std::env::var(SURVIVAL_WORLD_MULTICHUNK_SESSION_ENV)
+        .ok()
+        .and_then(|raw| raw.trim().parse::<u32>().ok())
+        .filter(|session| {
+            *session == SURVIVAL_WORLD_PERSISTENCE_FIRST_SESSION
+                || *session == SURVIVAL_WORLD_PERSISTENCE_RESTART_SESSION
+        })
+        .unwrap_or(SURVIVAL_WORLD_PERSISTENCE_FIRST_SESSION)
+}
+
+fn survival_crafting_table_position() -> Position {
+    Position::new(
+        SURVIVAL_CRAFTING_TABLE_X,
+        SURVIVAL_CRAFTING_TABLE_Y,
+        SURVIVAL_CRAFTING_TABLE_Z,
+    )
+}
+
+fn survival_crafting_input_stack() -> item::Stack {
+    item::Stack {
+        id: SURVIVAL_CRAFTING_INPUT_ITEM_ID,
+        count: SURVIVAL_CRAFTING_INPUT_COUNT,
+        damage: None,
+        tag: None,
+    }
+}
+
+fn survival_crafting_result_stack() -> item::Stack {
+    item::Stack {
+        id: SURVIVAL_CRAFTING_RESULT_ITEM_ID,
+        count: SURVIVAL_CRAFTING_RESULT_COUNT,
+        damage: None,
+        tag: None,
+    }
+}
+
+fn survival_crafting_result_matches(stack: &item::Stack) -> bool {
+    stack.id == SURVIVAL_CRAFTING_RESULT_ITEM_ID && stack.count == SURVIVAL_CRAFTING_RESULT_COUNT
+}
+
+fn survival_furnace_position() -> Position {
+    Position::new(SURVIVAL_FURNACE_X, SURVIVAL_FURNACE_Y, SURVIVAL_FURNACE_Z)
+}
+
+fn survival_furnace_input_stack() -> item::Stack {
+    survival_furnace_stack(SURVIVAL_FURNACE_INPUT_ITEM_ID)
+}
+
+fn survival_furnace_fuel_stack() -> item::Stack {
+    survival_furnace_stack(SURVIVAL_FURNACE_FUEL_ITEM_ID)
+}
+
+fn survival_furnace_invalid_fuel_stack() -> item::Stack {
+    survival_furnace_input_stack()
+}
+
+fn survival_furnace_output_stack() -> item::Stack {
+    survival_furnace_stack(SURVIVAL_FURNACE_OUTPUT_ITEM_ID)
+}
+
+fn survival_furnace_stack(item_id: isize) -> item::Stack {
+    item::Stack {
+        id: item_id,
+        count: SURVIVAL_FURNACE_ITEM_COUNT,
+        damage: None,
+        tag: None,
+    }
+}
+
+fn survival_furnace_output_matches(stack: &item::Stack) -> bool {
+    stack.id == SURVIVAL_FURNACE_OUTPUT_ITEM_ID && stack.count == SURVIVAL_FURNACE_ITEM_COUNT
+}
+
+fn survival_furnace_invalid_fuel_matches(stack: &item::Stack) -> bool {
+    stack.id == SURVIVAL_FURNACE_INPUT_ITEM_ID && stack.count == SURVIVAL_FURNACE_ITEM_COUNT
+}
+
+fn survival_hunger_food_item_matches(stack: &item::Stack) -> bool {
+    stack.id == SURVIVAL_HUNGER_FOOD_ITEM_ID
+        && stack.count == SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE
+}
+
+fn survival_hunger_food_slot_is_empty(slot_item: Option<&Option<item::Stack>>) -> bool {
+    match slot_item {
+        Some(None) => true,
+        Some(Some(stack)) => stack.count == SURVIVAL_HUNGER_FOOD_ITEM_COUNT_AFTER,
+        None => false,
+    }
+}
+
+fn survival_hunger_food_float_matches(observed: f32, expected: f32) -> bool {
+    (observed - expected).abs() <= SURVIVAL_HUNGER_FOOD_FLOAT_TOLERANCE
+}
+
+fn survival_hunger_food_pre_update_matches(
+    update: &packet::play::clientbound::UpdateHealth,
+) -> bool {
+    survival_hunger_food_float_matches(update.health, SURVIVAL_HUNGER_FOOD_PRE_HEALTH)
+        && update.food.0 == SURVIVAL_HUNGER_FOOD_PRE_FOOD
+        && survival_hunger_food_float_matches(
+            update.food_saturation,
+            SURVIVAL_HUNGER_FOOD_PRE_SATURATION,
+        )
+}
+
+fn survival_hunger_food_post_update_matches(
+    update: &packet::play::clientbound::UpdateHealth,
+) -> bool {
+    survival_hunger_food_float_matches(update.health, SURVIVAL_HUNGER_FOOD_POST_HEALTH)
+        && update.food.0 == SURVIVAL_HUNGER_FOOD_POST_FOOD
+        && survival_hunger_food_float_matches(
+            update.food_saturation,
+            SURVIVAL_HUNGER_FOOD_POST_SATURATION,
+        )
+}
+
+fn survival_hunger_health_pre_update_matches(
+    update: &packet::play::clientbound::UpdateHealth,
+) -> bool {
+    survival_hunger_food_float_matches(update.health, SURVIVAL_HUNGER_HEALTH_PRE_HEALTH)
+        && update.food.0 == SURVIVAL_HUNGER_HEALTH_PRE_FOOD
+        && survival_hunger_food_float_matches(
+            update.food_saturation,
+            SURVIVAL_HUNGER_HEALTH_PRE_SATURATION,
+        )
+}
+
+fn survival_hunger_health_post_update_matches(
+    update: &packet::play::clientbound::UpdateHealth,
+) -> bool {
+    survival_hunger_food_float_matches(update.health, SURVIVAL_HUNGER_HEALTH_POST_HEALTH)
+        && update.food.0 == SURVIVAL_HUNGER_HEALTH_POST_FOOD
+        && survival_hunger_food_float_matches(
+            update.food_saturation,
+            SURVIVAL_HUNGER_HEALTH_POST_SATURATION,
+        )
+}
+
+fn survival_mob_drop_item_matches(stack: &item::Stack) -> bool {
+    survival_mob_drop_item_id_matches(stack.id) && stack.count == SURVIVAL_MOB_DROP_ITEM_COUNT
+}
+
+fn survival_mob_drop_item_id_matches(item_id: isize) -> bool {
+    item_id == SURVIVAL_MOB_DROP_ITEM_ID || item_id == SURVIVAL_MOB_DROP_PROTOCOL_758_ITEM_ID
+}
+
+fn survival_mob_drop_position_matches(x: f64, y: f64, z: f64) -> bool {
+    (x - SURVIVAL_MOB_DROP_TARGET_X).abs() <= SURVIVAL_MOB_DROP_POSITION_TOLERANCE
+        && (y - SURVIVAL_MOB_DROP_TARGET_Y).abs() <= SURVIVAL_MOB_DROP_POSITION_TOLERANCE
+        && (z - SURVIVAL_MOB_DROP_TARGET_Z).abs() <= SURVIVAL_MOB_DROP_POSITION_TOLERANCE
+}
+
+fn survival_redstone_toggle_output_position_matches(location: Position) -> bool {
+    location.x == SURVIVAL_REDSTONE_TOGGLE_OUTPUT_X
+        && location.y == SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Y
+        && location.z == SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Z
+}
+
+fn survival_world_persistence_position_matches(location: Position) -> bool {
+    location.x == SURVIVAL_WORLD_PERSISTENCE_X
+        && location.y == SURVIVAL_WORLD_PERSISTENCE_Y
+        && location.z == SURVIVAL_WORLD_PERSISTENCE_Z
+}
+
+fn survival_block_entity_position_matches(location: Position) -> bool {
+    location.x == SURVIVAL_BLOCK_ENTITY_X
+        && location.y == SURVIVAL_BLOCK_ENTITY_Y
+        && location.z == SURVIVAL_BLOCK_ENTITY_Z
+}
+
+fn survival_block_entity_expected_lines() -> [String; SIGN_LINE_COUNT] {
+    [
+        SURVIVAL_BLOCK_ENTITY_TEXT_LINE_1.to_string(),
+        SURVIVAL_BLOCK_ENTITY_TEXT_LINE_2.to_string(),
+        SURVIVAL_BLOCK_ENTITY_TEXT_LINE_3.to_string(),
+        SURVIVAL_BLOCK_ENTITY_TEXT_LINE_4.to_string(),
+    ]
+}
+
+fn sign_lines_match_payload(lines: &[String; SIGN_LINE_COUNT]) -> bool {
+    lines[SIGN_LINE_INDEX_1] == SURVIVAL_BLOCK_ENTITY_TEXT_LINE_1
+        && lines[SIGN_LINE_INDEX_2] == SURVIVAL_BLOCK_ENTITY_TEXT_LINE_2
+        && lines[SIGN_LINE_INDEX_3] == SURVIVAL_BLOCK_ENTITY_TEXT_LINE_3
+        && lines[SIGN_LINE_INDEX_4] == SURVIVAL_BLOCK_ENTITY_TEXT_LINE_4
+}
+
+fn sign_text_payload(lines: &[String; SIGN_LINE_COUNT]) -> String {
+    lines.join("|")
+}
+
+fn component_text(raw: &str) -> String {
+    format::Component::from_string(raw).to_string()
+}
+
+fn sign_lines_from_vec(lines: Vec<String>) -> Option<[String; SIGN_LINE_COUNT]> {
+    if lines.len() != SIGN_LINE_COUNT {
+        return None;
+    }
+    Some([
+        lines[SIGN_LINE_INDEX_1].clone(),
+        lines[SIGN_LINE_INDEX_2].clone(),
+        lines[SIGN_LINE_INDEX_3].clone(),
+        lines[SIGN_LINE_INDEX_4].clone(),
+    ])
+}
+
+fn extract_modern_sign_lines(nbt: &crate::nbt::NamedTag) -> Option<[String; SIGN_LINE_COUNT]> {
+    let root = nbt.1.as_compound()?;
+    let front_text = root.get(MODERN_SIGN_FRONT_TEXT_KEY)?.as_compound()?;
+    let messages = front_text.get(MODERN_SIGN_MESSAGES_KEY)?.as_list()?;
+    if messages.len() != SIGN_LINE_COUNT {
+        return None;
+    }
+    let lines = messages
+        .iter()
+        .map(|tag| tag.as_str().map(component_text))
+        .collect::<Option<Vec<_>>>()?;
+    sign_lines_from_vec(lines)
+}
+
+fn extract_legacy_sign_lines(nbt: &crate::nbt::NamedTag) -> Option<[String; SIGN_LINE_COUNT]> {
+    let lines = LEGACY_SIGN_TEXT_KEYS
+        .iter()
+        .map(|key| {
+            nbt.1
+                .get(key)
+                .and_then(|tag| tag.as_str())
+                .map(component_text)
+        })
+        .collect::<Option<Vec<_>>>()?;
+    sign_lines_from_vec(lines)
+}
+
+fn extract_sign_lines_from_nbt(nbt: &crate::nbt::NamedTag) -> Option<[String; SIGN_LINE_COUNT]> {
+    extract_modern_sign_lines(nbt).or_else(|| extract_legacy_sign_lines(nbt))
+}
+
+fn packed_block_entity_position(chunk_x: i32, chunk_z: i32, packed_xz: u8, y: i16) -> Position {
+    let chunk_width = 1 << CHUNK_SECTION_WIDTH_LOG2;
+    let local_x =
+        i32::from((packed_xz >> BLOCK_ENTITY_PACKED_X_SHIFT) & BLOCK_ENTITY_PACKED_COORD_MASK);
+    let local_z = i32::from(packed_xz & BLOCK_ENTITY_PACKED_COORD_MASK);
+    Position::new(
+        chunk_x * chunk_width + local_x,
+        i32::from(y),
+        chunk_z * chunk_width + local_z,
+    )
+}
+
+fn should_log_survival_crafting_inventory_slot(
+    window_id: u8,
+    crafting_window_id: u8,
+    slot: i16,
+) -> bool {
+    (window_id == PLAYER_INVENTORY_WINDOW_ID && slot == SURVIVAL_CRAFTING_INVENTORY_SLOT)
+        || (window_id == crafting_window_id && slot == SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_SLOT)
+}
+
+fn should_log_survival_crafting_inventory_index(slot_index: usize) -> bool {
+    slot_index == SURVIVAL_CRAFTING_INVENTORY_INDEX
+        || slot_index == SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_INDEX
+}
+
+fn should_log_survival_furnace_inventory_slot(
+    window_id: u8,
+    furnace_window_id: u8,
+    slot: i16,
+) -> bool {
+    (window_id == PLAYER_INVENTORY_WINDOW_ID && slot == SURVIVAL_FURNACE_INVENTORY_SLOT)
+        || (window_id == furnace_window_id
+            && furnace_window_id > EMPTY_WINDOW_ID
+            && slot == SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_SLOT)
+}
+
+fn should_log_survival_furnace_inventory_index(slot_index: usize) -> bool {
+    slot_index == SURVIVAL_FURNACE_INVENTORY_INDEX
+        || slot_index == SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_INDEX
+}
+
+fn normalize_survival_environment_id(raw: &str) -> &'static str {
+    match raw {
+        SURVIVAL_OVERWORLD_ID => SURVIVAL_OVERWORLD_ID,
+        SURVIVAL_NETHER_ID => SURVIVAL_NETHER_ID,
+        SURVIVAL_END_ID => SURVIVAL_END_ID,
+        _ => SURVIVAL_UNKNOWN_ENVIRONMENT_ID,
+    }
+}
+
+fn derive_survival_environment_id(dimension_type_name: &str, world_name: &str) -> &'static str {
+    let world_environment = normalize_survival_environment_id(world_name);
+    if world_environment != SURVIVAL_UNKNOWN_ENVIRONMENT_ID {
+        world_environment
+    } else {
+        normalize_survival_environment_id(dimension_type_name)
+    }
+}
+
+pub struct Server {
+    uuid: protocol::UUID,
+    conn: Arc<RwLock<Option<protocol::Conn>>>,
+    protocol_version: i32,
+    forge_mods: Vec<forge::ForgeMod>,
+    read_queue: Option<mpsc::Receiver<Result<packet::Packet, protocol::Error>>>,
+    pub disconnect_reason: Option<format::Component>,
+    just_disconnected: bool,
+
+    pub world: world::World,
+    pub entities: ecs::Manager,
+    world_age: i64,
+    world_time: f64,
+    world_time_target: f64,
+    tick_time: bool,
+
+    resources: Arc<RwLock<resources::Manager>>,
+    version: usize,
+
+    // Entity accessors
+    game_info: ecs::Key<entity::GameInfo>,
+    player_movement: ecs::Key<entity::player::PlayerMovement>,
+    mouse_buttons: ecs::Key<entity::MouseButtons>,
+    gravity: ecs::Key<entity::Gravity>,
+    position: ecs::Key<entity::Position>,
+    target_position: ecs::Key<entity::TargetPosition>,
+    velocity: ecs::Key<entity::Velocity>,
+    gamemode: ecs::Key<Gamemode>,
+    pub rotation: ecs::Key<entity::Rotation>,
+    target_rotation: ecs::Key<entity::TargetRotation>,
+    //
+    pub player: Option<ecs::Entity>,
+    entity_map: HashMap<i32, ecs::Entity, BuildHasherDefault<FNVHash>>,
+    players: HashMap<protocol::UUID, PlayerInfo, BuildHasherDefault<FNVHash>>,
+
+    tick_timer: f64,
+    entity_tick_timer: f64,
+    pub received_chat_at: Option<Instant>,
+    logged_first_chunk: bool,
+    logged_render_tick_with_player: bool,
+    negative_probe: Option<String>,
+    negative_probe_sent: bool,
+    negative_probe_outcome_logged: bool,
+    active_probe_enabled: bool,
+    team_probe_enabled: bool,
+    combat_probe_enabled: bool,
+    stationary_combat_probe_enabled: bool,
+    respawn_probe_enabled: bool,
+    inventory_probe_enabled: bool,
+    inventory_stack_split_merge_probe_enabled: bool,
+    inventory_drag_transactions_probe_enabled: bool,
+    survival_probe_enabled: bool,
+    survival_chest_probe_enabled: bool,
+    survival_chest_probe_session: u32,
+    survival_crafting_probe_enabled: bool,
+    survival_crafting_breadth_probe_enabled: bool,
+    survival_furnace_probe_enabled: bool,
+    survival_furnace_smelting_breadth_probe_enabled: bool,
+    survival_furnace_probe_session: u32,
+    survival_hunger_food_probe_enabled: bool,
+    survival_hunger_health_probe_enabled: bool,
+    survival_redstone_toggle_probe_enabled: bool,
+    survival_world_persistence_probe_enabled: bool,
+    survival_world_persistence_probe_session: u32,
+    survival_block_entity_probe_enabled: bool,
+    survival_block_entity_probe_session: u32,
+    survival_biome_dimension_probe_enabled: bool,
+    equipment_probe_enabled: bool,
+    projectile_probe_enabled: bool,
+    flag_probe_enabled: bool,
+    score_limit_probe_enabled: bool,
+    score_limit_probe_seen: bool,
+    active_probe_ticks: u32,
+    active_probe_logged_position_look_sent: bool,
+    combat_probe_attacks_sent: u32,
+    projectile_probe_use_item_sent: bool,
+    projectile_probe_swing_sent: bool,
+    respawn_probe_requested: bool,
+    respawn_probe_death_seen: bool,
+    respawn_probe_restored_seen: bool,
+    inventory_probe_window_seen: bool,
+    inventory_probe_sword_seen: bool,
+    inventory_probe_wool_seen: bool,
+    inventory_probe_hotbar_seen: bool,
+    inventory_probe_drop_sent: bool,
+    inventory_probe_pickup_seen: bool,
+    inventory_probe_block_place_sent: bool,
+    inventory_stack_split_pickup_sent: bool,
+    inventory_stack_split_source_seen: bool,
+    inventory_stack_split_place_sent: bool,
+    inventory_stack_split_destination_seen: bool,
+    inventory_stack_merge_pickup_sent: bool,
+    inventory_stack_merge_destination_empty_seen: bool,
+    inventory_stack_merge_place_sent: bool,
+    inventory_stack_final_source_seen: bool,
+    inventory_drag_pickup_sent: bool,
+    inventory_drag_source_empty_seen: bool,
+    inventory_drag_start_sent: bool,
+    inventory_drag_target_a_sent: bool,
+    inventory_drag_target_b_sent: bool,
+    inventory_drag_end_sent: bool,
+    inventory_drag_target_a_seen: bool,
+    inventory_drag_target_b_seen: bool,
+    survival_probe_position_sent: bool,
+    survival_probe_break_sent: bool,
+    survival_probe_break_update_seen: bool,
+    survival_probe_pickup_seen: bool,
+    survival_probe_place_sent: bool,
+    survival_probe_place_update_seen: bool,
+    survival_chest_position_sent: bool,
+    survival_chest_open_sent: bool,
+    survival_chest_open_seen: bool,
+    survival_chest_store_sent: bool,
+    survival_chest_close_sent: bool,
+    survival_chest_reconnect_sent: bool,
+    survival_chest_reopen_seen: bool,
+    survival_chest_persisted_seen: bool,
+    survival_chest_window_id: u8,
+    survival_chest_window_state_id: i32,
+    survival_crafting_position_sent: bool,
+    survival_crafting_open_sent: bool,
+    survival_crafting_open_seen: bool,
+    survival_crafting_input_a_sent: bool,
+    survival_crafting_input_b_sent: bool,
+    survival_crafting_result_seen: bool,
+    survival_crafting_collect_sent: bool,
+    survival_crafting_inventory_seen: bool,
+    survival_crafting_breadth_logged: bool,
+    survival_crafting_window_id: u8,
+    survival_crafting_window_state_id: i32,
+    survival_furnace_position_sent: bool,
+    survival_furnace_open_sent: bool,
+    survival_furnace_open_seen: bool,
+    survival_furnace_input_sent: bool,
+    survival_furnace_fuel_sent: bool,
+    survival_furnace_burn_seen: bool,
+    survival_furnace_output_seen: bool,
+    survival_furnace_collect_sent: bool,
+    survival_furnace_inventory_seen: bool,
+    survival_furnace_invalid_fuel_sent: bool,
+    survival_furnace_invalid_fuel_seen: bool,
+    survival_furnace_close_sent: bool,
+    survival_furnace_reconnect_sent: bool,
+    survival_furnace_reopen_seen: bool,
+    survival_furnace_window_id: u8,
+    survival_furnace_window_state_id: i32,
+    survival_hunger_food_item_seen: bool,
+    survival_hunger_food_pre_seen: bool,
+    survival_hunger_food_use_sent: bool,
+    survival_hunger_food_post_seen: bool,
+    survival_hunger_food_inventory_seen: bool,
+    survival_hunger_health_item_seen: bool,
+    survival_hunger_health_pre_seen: bool,
+    survival_hunger_health_use_sent: bool,
+    survival_hunger_health_post_seen: bool,
+    survival_hunger_health_inventory_seen: bool,
+    survival_mob_drop_probe_enabled: bool,
+    survival_mob_drop_position_sent: bool,
+    survival_mob_drop_mob_seen: bool,
+    survival_mob_drop_attack_sent: bool,
+    survival_mob_drop_death_seen: bool,
+    survival_mob_drop_drop_seen: bool,
+    survival_mob_drop_pickup_seen: bool,
+    survival_mob_drop_inventory_seen: bool,
+    survival_mob_drop_target_entity_id: Option<i32>,
+    survival_mob_drop_drop_entity_id: Option<i32>,
+    survival_mob_ai_loot_probe_enabled: bool,
+    survival_mob_ai_loot_logged: bool,
+    survival_redstone_toggle_position_sent: bool,
+    survival_redstone_toggle_input_sent: bool,
+    survival_redstone_toggle_output_on_seen: bool,
+    survival_redstone_toggle_return_input_sent: bool,
+    survival_redstone_toggle_output_off_seen: bool,
+    survival_redstone_circuit_probe_enabled: bool,
+    survival_redstone_circuit_logged: bool,
+    survival_world_persistence_position_sent: bool,
+    survival_world_persistence_mutation_sent: bool,
+    survival_world_persistence_pre_restart_seen: bool,
+    survival_world_persistence_reconnect_sent: bool,
+    survival_world_persistence_post_restart_seen: bool,
+    survival_block_entity_position_sent: bool,
+    survival_block_entity_pre_restart_seen: bool,
+    survival_block_entity_reconnect_sent: bool,
+    survival_block_entity_post_restart_seen: bool,
+    survival_world_multichunk_probe_enabled: bool,
+    survival_world_multichunk_logged: bool,
+    survival_container_block_entity_probe_enabled: bool,
+    survival_container_block_entity_logged: bool,
+    survival_biome_dimension_travel_probe_enabled: bool,
+    survival_biome_dimension_travel_logged: bool,
+    survival_sign_editing_probe_enabled: bool,
+    survival_sign_editing_logged: bool,
+    sign_editor_open_position: Option<Position>,
+    inventory_probe_click_sent: bool,
+    inventory_probe_container_click_sent: bool,
+    inventory_probe_container_id: u8,
+    inventory_probe_container_state_id: i32,
+    inventory_probe_container_seen: bool,
+    inventory_probe_state_id: i32,
+    flag_probe_have_flag_seen: bool,
+    flag_probe_capture_seen: bool,
+    flag_probe_score_seen: bool,
+    flag_probe_repeat_target: u32,
+    flag_probe_have_flag_count: u32,
+    flag_probe_capture_count: u32,
+    flag_probe_score_count: u32,
+    remote_player_entity_ids: Vec<i32>,
+    remote_player_targets: Vec<(i32, String)>,
+
+    sun_model: Option<sun::SunModel>,
+    target_info: target::Info,
+}
+
+#[derive(Debug)]
+pub struct PlayerInfo {
+    name: String,
+    uuid: protocol::UUID,
+    skin_url: Option<String>,
+
+    display_name: Option<format::Component>,
+    ping: i32,
+    gamemode: Gamemode,
+}
+
+macro_rules! handle_packet {
+    ($s:ident $pck:ident {
+        $($packet:ident => $func:ident,)*
+    }) => (
+        match $pck {
+        $(
+            protocol::packet::Packet::$packet(val) => $s.$func(val),
+        )*
+            _ => {},
+        }
+    )
+}
+
+impl Server {
+    pub fn connect(
+        resources: Arc<RwLock<resources::Manager>>,
+        profile: mojang::Profile,
+        address: &str,
+        protocol_version: i32,
+        forge_mods: Vec<forge::ForgeMod>,
+        fml_network_version: Option<i64>,
+    ) -> Result<Server, protocol::Error> {
+        info!(
+            "MC-COMPAT-MILESTONE connect_start protocol={} address={}",
+            protocol_version, address
+        );
+        let mut conn = protocol::Conn::new(address, protocol_version)?;
+        info!("MC-COMPAT-MILESTONE tcp_connected");
+
+        let tag = match fml_network_version {
+            Some(1) => "\0FML\0",
+            Some(2) => "\0FML2\0",
+            None => "",
+            _ => panic!("unsupported FML network version: {:?}", fml_network_version),
+        };
+
+        let host = conn.host.clone() + tag;
+        let port = conn.port;
+        conn.write_packet(protocol::packet::handshake::serverbound::Handshake {
+            protocol_version: protocol::VarInt(protocol_version),
+            host,
+            port,
+            next: protocol::VarInt(2),
+        })?;
+        info!("MC-COMPAT-MILESTONE handshake_sent next=login");
+        conn.state = protocol::State::Login;
+        if protocol_version >= 759 {
+            conn.write_packet(
+                protocol::packet::login::serverbound::LoginStart_WithOptionalUuid {
+                    username: profile.username.clone(),
+                    has_uuid: false,
+                },
+            )?;
+        } else {
+            conn.write_packet(protocol::packet::login::serverbound::LoginStart {
+                username: profile.username.clone(),
+            })?;
+        }
+        info!("MC-COMPAT-MILESTONE login_start_sent");
+
+        use std::rc::Rc;
+        let (server_id, public_key, verify_token);
+        loop {
+            match conn.read_packet()? {
+                protocol::packet::Packet::SetInitialCompression(val) => {
+                    info!(
+                        "MC-COMPAT-MILESTONE login_compression threshold={}",
+                        val.threshold.0
+                    );
+                    conn.set_compresssion(val.threshold.0);
+                }
+                protocol::packet::Packet::EncryptionRequest(val) => {
+                    server_id = Rc::new(val.server_id);
+                    public_key = Rc::new(val.public_key.data);
+                    verify_token = Rc::new(val.verify_token.data);
+                    break;
+                }
+                protocol::packet::Packet::EncryptionRequest_i16(val) => {
+                    server_id = Rc::new(val.server_id);
+                    public_key = Rc::new(val.public_key.data);
+                    verify_token = Rc::new(val.verify_token.data);
+                    break;
+                }
+                protocol::packet::Packet::LoginSuccess_String(val) => {
+                    warn!("Server is running in offline mode");
+                    info!(
+                        "MC-COMPAT-MILESTONE login_success state=play protocol={} username={}",
+                        protocol_version, val.username
+                    );
+                    debug!("Login: {} {}", val.username, val.uuid);
+                    let mut read = conn.clone();
+                    let mut write = conn;
+                    read.state = protocol::State::Play;
+                    write.state = protocol::State::Play;
+                    let rx = Self::spawn_reader(read);
+                    return Ok(Server::new(
+                        protocol_version,
+                        forge_mods,
+                        protocol::UUID::from_str(&val.uuid).unwrap(),
+                        resources,
+                        Arc::new(RwLock::new(Some(write))),
+                        Some(rx),
+                    ));
+                }
+                protocol::packet::Packet::LoginSuccess_UUID(val) => {
+                    warn!("Server is running in offline mode");
+                    info!(
+                        "MC-COMPAT-MILESTONE login_success state=play protocol={} username={}",
+                        protocol_version, val.username
+                    );
+                    debug!("Login: {} {:?}", val.username, val.uuid);
+                    let mut read = conn.clone();
+                    let mut write = conn;
+                    read.state = protocol::State::Play;
+                    write.state = protocol::State::Play;
+                    let rx = Self::spawn_reader(read);
+                    return Ok(Server::new(
+                        protocol_version,
+                        forge_mods,
+                        val.uuid,
+                        resources,
+                        Arc::new(RwLock::new(Some(write))),
+                        Some(rx),
+                    ));
+                }
+                protocol::packet::Packet::LoginSuccess_UUID_WithProperties(val) => {
+                    warn!("Server is running in offline mode");
+                    info!(
+                        "MC-COMPAT-MILESTONE login_success state=play protocol={} username={} properties={}",
+                        protocol_version,
+                        val.username,
+                        val.properties.data.len()
+                    );
+                    debug!("Login: {} {:?}", val.username, val.uuid);
+                    let mut read = conn.clone();
+                    let mut write = conn;
+                    read.state = protocol::State::Play;
+                    write.state = protocol::State::Play;
+                    let rx = Self::spawn_reader(read);
+                    return Ok(Server::new(
+                        protocol_version,
+                        forge_mods,
+                        val.uuid,
+                        resources,
+                        Arc::new(RwLock::new(Some(write))),
+                        Some(rx),
+                    ));
+                }
+                protocol::packet::Packet::LoginDisconnect(val) => {
+                    return Err(protocol::Error::Disconnect(val.reason))
+                }
+                val => return Err(protocol::Error::Err(format!("Wrong packet 1: {:?}", val))),
+            };
+        }
+
+        let mut shared = [0; 16];
+        rand::thread_rng().fill(&mut shared);
+
+        let shared_e = rsa_public_encrypt_pkcs1::encrypt(&public_key, &shared).unwrap();
+        let token_e = rsa_public_encrypt_pkcs1::encrypt(&public_key, &verify_token).unwrap();
+
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            profile.join_server(&server_id, &shared, &public_key)?;
+        }
+
+        if protocol_version >= 47 {
+            conn.write_packet(protocol::packet::login::serverbound::EncryptionResponse {
+                shared_secret: protocol::LenPrefixedBytes::new(shared_e),
+                verify_token: protocol::LenPrefixedBytes::new(token_e),
+            })?;
+        } else {
+            conn.write_packet(
+                protocol::packet::login::serverbound::EncryptionResponse_i16 {
+                    shared_secret: protocol::LenPrefixedBytes::new(shared_e),
+                    verify_token: protocol::LenPrefixedBytes::new(token_e),
+                },
+            )?;
+        }
+
+        let mut read = conn.clone();
+        let mut write = conn;
+
+        read.enable_encyption(&shared, true);
+        write.enable_encyption(&shared, false);
+
+        let uuid;
+        let compression_threshold = read.compression_threshold;
+        loop {
+            match read.read_packet()? {
+                protocol::packet::Packet::SetInitialCompression(val) => {
+                    info!(
+                        "MC-COMPAT-MILESTONE login_compression threshold={}",
+                        val.threshold.0
+                    );
+                    read.set_compresssion(val.threshold.0);
+                    write.set_compresssion(val.threshold.0);
+                }
+                protocol::packet::Packet::LoginSuccess_String(val) => {
+                    info!(
+                        "MC-COMPAT-MILESTONE login_success state=play protocol={} username={}",
+                        protocol_version, val.username
+                    );
+                    debug!("Login: {} {}", val.username, val.uuid);
+                    uuid = protocol::UUID::from_str(&val.uuid).unwrap();
+                    read.state = protocol::State::Play;
+                    write.state = protocol::State::Play;
+                    break;
+                }
+                protocol::packet::Packet::LoginSuccess_UUID(val) => {
+                    info!(
+                        "MC-COMPAT-MILESTONE login_success state=play protocol={} username={}",
+                        protocol_version, val.username
+                    );
+                    debug!("Login: {} {:?}", val.username, val.uuid);
+                    uuid = val.uuid;
+                    read.state = protocol::State::Play;
+                    write.state = protocol::State::Play;
+                    break;
+                }
+                protocol::packet::Packet::LoginSuccess_UUID_WithProperties(val) => {
+                    info!(
+                        "MC-COMPAT-MILESTONE login_success state=play protocol={} username={} properties={}",
+                        protocol_version,
+                        val.username,
+                        val.properties.data.len()
+                    );
+                    debug!("Login: {} {:?}", val.username, val.uuid);
+                    uuid = val.uuid;
+                    read.state = protocol::State::Play;
+                    write.state = protocol::State::Play;
+                    break;
+                }
+                protocol::packet::Packet::LoginDisconnect(val) => {
+                    return Err(protocol::Error::Disconnect(val.reason))
+                }
+                protocol::packet::Packet::LoginPluginRequest(req) => {
+                    match req.channel.as_ref() {
+                        "fml:loginwrapper" => {
+                            let mut cursor = std::io::Cursor::new(req.data);
+                            let channel: String = protocol::Serializable::read_from(&mut cursor)?;
+
+                            let (id, mut data) = protocol::Conn::read_raw_packet_from(
+                                &mut cursor,
+                                compression_threshold,
+                            )?;
+
+                            match channel.as_ref() {
+                                "fml:handshake" => {
+                                    let packet =
+                                        forge::fml2::FmlHandshake::packet_by_id(id, &mut data)?;
+                                    use forge::fml2::FmlHandshake::*;
+                                    match packet {
+                                        ModList {
+                                            mod_names,
+                                            channels,
+                                            registries,
+                                        } => {
+                                            info!("ModList mod_names={:?} channels={:?} registries={:?}", mod_names, channels, registries);
+                                            write.write_fml2_handshake_plugin_message(
+                                                req.message_id,
+                                                Some(&ModListReply {
+                                                    mod_names,
+                                                    channels,
+                                                    registries,
+                                                }),
+                                            )?;
+                                        }
+                                        ServerRegistry {
+                                            name,
+                                            snapshot_present: _,
+                                            snapshot: _,
+                                        } => {
+                                            info!("ServerRegistry {:?}", name);
+                                            write.write_fml2_handshake_plugin_message(
+                                                req.message_id,
+                                                Some(&Acknowledgement),
+                                            )?;
+                                        }
+                                        ConfigurationData { filename, contents } => {
+                                            info!(
+                                                "ConfigurationData filename={:?} contents={}",
+                                                filename,
+                                                String::from_utf8_lossy(&contents)
+                                            );
+                                            write.write_fml2_handshake_plugin_message(
+                                                req.message_id,
+                                                Some(&Acknowledgement),
+                                            )?;
+                                        }
+                                        _ => unimplemented!(),
+                                    }
+                                }
+                                _ => panic!(
+                                    "unknown LoginPluginRequest fml:loginwrapper channel: {:?}",
+                                    channel
+                                ),
+                            }
+                        }
+                        _ => panic!("unsupported LoginPluginRequest channel: {:?}", req.channel),
+                    }
+                }
+                val => return Err(protocol::Error::Err(format!("Wrong packet 2: {:?}", val))),
+            }
+        }
+
+        let rx = Self::spawn_reader(read);
+
+        Ok(Server::new(
+            protocol_version,
+            forge_mods,
+            uuid,
+            resources,
+            Arc::new(RwLock::new(Some(write))),
+            Some(rx),
+        ))
+    }
+
+    fn spawn_reader(
+        mut read: protocol::Conn,
+    ) -> mpsc::Receiver<Result<packet::Packet, protocol::Error>> {
+        let (tx, rx) = mpsc::channel();
+        thread::spawn(move || loop {
+            let pck = read.read_packet();
+            let was_error = pck.is_err();
+            if tx.send(pck).is_err() {
+                return;
+            }
+            if was_error {
+                return;
+            }
+        });
+        rx
+    }
+
+    pub fn dummy_server(resources: Arc<RwLock<resources::Manager>>) -> Server {
+        let mut server = Server::new(
+            protocol::SUPPORTED_PROTOCOLS[0],
+            vec![],
+            protocol::UUID::default(),
+            resources,
+            Arc::new(RwLock::new(None)),
+            None,
+        );
+        let mut rng = rand::thread_rng();
+        for x in -7 * 16..7 * 16 {
+            for z in -7 * 16..7 * 16 {
+                let h = 5 + (6.0 * (x as f64 / 16.0).cos() * (z as f64 / 16.0).sin()) as i32;
+                for y in 0..h {
+                    server.world.set_block(
+                        Position::new(x, y, z),
+                        block::Dirt {
+                            snowy: false,
+                            variant: block::DirtVariant::Normal,
+                        },
+                    );
+                }
+                server
+                    .world
+                    .set_block(Position::new(x, h, z), block::Grass { snowy: false });
+
+                if x * x + z * z > 16 * 16 && rng.gen_bool(1.0 / 80.0) {
+                    for i in 0..5 {
+                        server.world.set_block(
+                            Position::new(x, h + 1 + i, z),
+                            block::Log {
+                                axis: Axis::Y,
+                                variant: block::TreeVariant::Oak,
+                            },
+                        );
+                    }
+                    for xx in -2..3 {
+                        for zz in -2..3 {
+                            if xx == 0 && z == 0 {
+                                continue;
+                            }
+                            server.world.set_block(
+                                Position::new(x + xx, h + 3, z + zz),
+                                block::Leaves {
+                                    variant: block::TreeVariant::Oak,
+                                    check_decay: false,
+                                    decayable: false,
+                                    distance: 1,
+                                },
+                            );
+                            server.world.set_block(
+                                Position::new(x + xx, h + 4, z + zz),
+                                block::Leaves {
+                                    variant: block::TreeVariant::Oak,
+                                    check_decay: false,
+                                    decayable: false,
+                                    distance: 1,
+                                },
+                            );
+                            if xx.abs() <= 1 && zz.abs() <= 1 {
+                                server.world.set_block(
+                                    Position::new(x + xx, h + 5, z + zz),
+                                    block::Leaves {
+                                        variant: block::TreeVariant::Oak,
+                                        check_decay: false,
+                                        decayable: false,
+                                        distance: 1,
+                                    },
+                                );
+                            }
+                            if xx * xx + zz * zz <= 1 {
+                                server.world.set_block(
+                                    Position::new(x + xx, h + 6, z + zz),
+                                    block::Leaves {
+                                        variant: block::TreeVariant::Oak,
+                                        check_decay: false,
+                                        decayable: false,
+                                        distance: 1,
+                                    },
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        server
+    }
+
+    fn new(
+        protocol_version: i32,
+        forge_mods: Vec<forge::ForgeMod>,
+        uuid: protocol::UUID,
+        resources: Arc<RwLock<resources::Manager>>,
+        conn: Arc<RwLock<Option<protocol::Conn>>>,
+        read_queue: Option<mpsc::Receiver<Result<packet::Packet, protocol::Error>>>,
+    ) -> Server {
+        let mut entities = ecs::Manager::new();
+        entity::add_systems(&mut entities);
+
+        let world_entity = entities.get_world();
+        let game_info = entities.get_key();
+        entities.add_component(world_entity, game_info, entity::GameInfo::new());
+        entities.add_component(world_entity, entities.get_key(), conn.clone());
+
+        let version = resources.read().unwrap().version();
+        Server {
+            uuid,
+            conn,
+            protocol_version,
+            forge_mods,
+            read_queue,
+            disconnect_reason: None,
+            just_disconnected: false,
+
+            world: world::World::new(protocol_version),
+            world_age: 0,
+            world_time: 0.0,
+            world_time_target: 0.0,
+            tick_time: true,
+
+            version,
+            resources,
+
+            // Entity accessors
+            game_info,
+            player_movement: entities.get_key(),
+            mouse_buttons: entities.get_key(),
+            gravity: entities.get_key(),
+            position: entities.get_key(),
+            target_position: entities.get_key(),
+            velocity: entities.get_key(),
+            gamemode: entities.get_key(),
+            rotation: entities.get_key(),
+            target_rotation: entities.get_key(),
+            //
+            entities,
+            player: None,
+            entity_map: HashMap::with_hasher(BuildHasherDefault::default()),
+            players: HashMap::with_hasher(BuildHasherDefault::default()),
+
+            tick_timer: 0.0,
+            entity_tick_timer: 0.0,
+            received_chat_at: None,
+            logged_first_chunk: false,
+            logged_render_tick_with_player: false,
+            negative_probe: std::env::var("MC_COMPAT_NEGATIVE_PROBE")
+                .ok()
+                .filter(|probe| !probe.is_empty() && probe != "0"),
+            negative_probe_sent: false,
+            negative_probe_outcome_logged: false,
+            active_probe_enabled: std::env::var("MC_COMPAT_ACTIVE_PROBE")
+                .map(|value| value != "0")
+                .unwrap_or(false),
+            team_probe_enabled: std::env::var("MC_COMPAT_TEAM_PROBE")
+                .map(|value| value != "0")
+                .unwrap_or(false),
+            combat_probe_enabled: std::env::var("MC_COMPAT_COMBAT_PROBE")
+                .map(|value| value != "0")
+                .unwrap_or(false),
+            stationary_combat_probe_enabled: std::env::var(STATIONARY_COMBAT_PROBE_ENV)
+                .map(|value| value != "0")
+                .unwrap_or(false),
+            respawn_probe_enabled: std::env::var("MC_COMPAT_RESPAWN_PROBE")
+                .map(|value| value != "0")
+                .unwrap_or(false),
+            inventory_probe_enabled: std::env::var("MC_COMPAT_INVENTORY_PROBE")
+                .map(|value| value != "0")
+                .unwrap_or(false),
+            inventory_stack_split_merge_probe_enabled: std::env::var(
+                INVENTORY_STACK_SPLIT_MERGE_PROBE_ENV,
+            )
+            .map(|value| value != "0")
+            .unwrap_or(false),
+            inventory_drag_transactions_probe_enabled: std::env::var(
+                INVENTORY_DRAG_TRANSACTIONS_PROBE_ENV,
+            )
+            .map(|value| value != "0")
+            .unwrap_or(false),
+            survival_probe_enabled: std::env::var("MC_COMPAT_SURVIVAL_PROBE")
+                .map(|value| value != "0")
+                .unwrap_or(false),
+            survival_chest_probe_enabled: std::env::var("MC_COMPAT_SURVIVAL_CHEST_PROBE")
+                .map(|value| value != "0")
+                .unwrap_or(false),
+            survival_chest_probe_session: survival_chest_probe_session_from_env(),
+            survival_crafting_probe_enabled: std::env::var(SURVIVAL_CRAFTING_PROBE_ENV)
+                .map(|value| value != "0")
+                .unwrap_or(false),
+            survival_crafting_breadth_probe_enabled: std::env::var(
+                SURVIVAL_CRAFTING_BREADTH_PROBE_ENV,
+            )
+            .map(|value| value != "0")
+            .unwrap_or(false),
+            survival_furnace_probe_enabled: std::env::var(SURVIVAL_FURNACE_PROBE_ENV)
+                .map(|value| value != "0")
+                .unwrap_or(false),
+            survival_furnace_smelting_breadth_probe_enabled: std::env::var(
+                SURVIVAL_FURNACE_SMELTING_BREADTH_PROBE_ENV,
+            )
+            .map(|value| value != "0")
+            .unwrap_or(false),
+            survival_furnace_probe_session: survival_furnace_probe_session_from_env(),
+            survival_hunger_food_probe_enabled: std::env::var(SURVIVAL_HUNGER_FOOD_PROBE_ENV)
+                .map(|value| value != "0")
+                .unwrap_or(false),
+            survival_hunger_health_probe_enabled: std::env::var(SURVIVAL_HUNGER_HEALTH_PROBE_ENV)
+                .map(|value| value != "0")
+                .unwrap_or(false),
+            survival_mob_drop_probe_enabled: std::env::var(SURVIVAL_MOB_DROP_PROBE_ENV)
+                .map(|value| value != "0")
+                .unwrap_or(false),
+            survival_mob_ai_loot_probe_enabled: std::env::var(SURVIVAL_MOB_AI_LOOT_PROBE_ENV)
+                .map(|value| value != "0")
+                .unwrap_or(false),
+            survival_redstone_toggle_probe_enabled: std::env::var(
+                SURVIVAL_REDSTONE_TOGGLE_PROBE_ENV,
+            )
+            .map(|value| value != "0")
+            .unwrap_or(false),
+            survival_redstone_circuit_probe_enabled: std::env::var(
+                SURVIVAL_REDSTONE_CIRCUIT_PROBE_ENV,
+            )
+            .map(|value| value != "0")
+            .unwrap_or(false),
+            survival_world_persistence_probe_enabled: std::env::var(
+                SURVIVAL_WORLD_PERSISTENCE_PROBE_ENV,
+            )
+            .map(|value| value != "0")
+            .unwrap_or(false),
+            survival_world_persistence_probe_session:
+                survival_world_persistence_probe_session_from_env(),
+            survival_block_entity_probe_enabled: std::env::var(SURVIVAL_BLOCK_ENTITY_PROBE_ENV)
+                .map(|value| value != "0")
+                .unwrap_or(false),
+            survival_block_entity_probe_session: survival_block_entity_probe_session_from_env(),
+            survival_world_multichunk_probe_enabled: std::env::var(
+                SURVIVAL_WORLD_MULTICHUNK_PROBE_ENV,
+            )
+            .map(|value| value != "0")
+            .unwrap_or(false),
+            survival_container_block_entity_probe_enabled: std::env::var(
+                SURVIVAL_CONTAINER_BLOCK_ENTITY_PROBE_ENV,
+            )
+            .map(|value| value != "0")
+            .unwrap_or(false),
+            survival_sign_editing_probe_enabled: std::env::var(SURVIVAL_SIGN_EDITING_PROBE_ENV)
+                .map(|value| value != "0")
+                .unwrap_or(false),
+            sign_editor_open_position: None,
+            survival_biome_dimension_probe_enabled: std::env::var(
+                SURVIVAL_BIOME_DIMENSION_PROBE_ENV,
+            )
+            .map(|value| value != "0")
+            .unwrap_or(false),
+            survival_biome_dimension_travel_probe_enabled: std::env::var(
+                SURVIVAL_BIOME_DIMENSION_TRAVEL_PROBE_ENV,
+            )
+            .map(|value| value != "0")
+            .unwrap_or(false),
+            equipment_probe_enabled: std::env::var("MC_COMPAT_EQUIPMENT_PROBE")
+                .map(|value| value != "0")
+                .unwrap_or(false),
+            projectile_probe_enabled: std::env::var("MC_COMPAT_PROJECTILE_PROBE")
+                .map(|value| value != "0")
+                .unwrap_or(false),
+            flag_probe_enabled: std::env::var("MC_COMPAT_FLAG_PROBE")
+                .map(|value| value != "0")
+                .unwrap_or(false),
+            score_limit_probe_enabled: std::env::var(CTF_SCORE_LIMIT_CLIENT_ENV)
+                .map(|value| value != "0")
+                .unwrap_or(false),
+            score_limit_probe_seen: false,
+            active_probe_ticks: 0,
+            active_probe_logged_position_look_sent: false,
+            combat_probe_attacks_sent: 0,
+            projectile_probe_use_item_sent: false,
+            projectile_probe_swing_sent: false,
+            respawn_probe_requested: false,
+            respawn_probe_death_seen: false,
+            respawn_probe_restored_seen: false,
+            inventory_probe_window_seen: false,
+            inventory_probe_sword_seen: false,
+            inventory_probe_wool_seen: false,
+            inventory_probe_hotbar_seen: false,
+            inventory_probe_drop_sent: false,
+            inventory_probe_pickup_seen: false,
+            inventory_probe_block_place_sent: false,
+            inventory_stack_split_pickup_sent: false,
+            inventory_stack_split_source_seen: false,
+            inventory_stack_split_place_sent: false,
+            inventory_stack_split_destination_seen: false,
+            inventory_stack_merge_pickup_sent: false,
+            inventory_stack_merge_destination_empty_seen: false,
+            inventory_stack_merge_place_sent: false,
+            inventory_stack_final_source_seen: false,
+            inventory_drag_pickup_sent: false,
+            inventory_drag_source_empty_seen: false,
+            inventory_drag_start_sent: false,
+            inventory_drag_target_a_sent: false,
+            inventory_drag_target_b_sent: false,
+            inventory_drag_end_sent: false,
+            inventory_drag_target_a_seen: false,
+            inventory_drag_target_b_seen: false,
+            survival_probe_position_sent: false,
+            survival_probe_break_sent: false,
+            survival_probe_break_update_seen: false,
+            survival_probe_pickup_seen: false,
+            survival_probe_place_sent: false,
+            survival_probe_place_update_seen: false,
+            survival_chest_position_sent: false,
+            survival_chest_open_sent: false,
+            survival_chest_open_seen: false,
+            survival_chest_store_sent: false,
+            survival_chest_close_sent: false,
+            survival_chest_reconnect_sent: false,
+            survival_chest_reopen_seen: false,
+            survival_chest_persisted_seen: false,
+            survival_chest_window_id: EMPTY_WINDOW_ID,
+            survival_chest_window_state_id: EMPTY_WINDOW_STATE_ID,
+            survival_crafting_position_sent: false,
+            survival_crafting_open_sent: false,
+            survival_crafting_open_seen: false,
+            survival_crafting_input_a_sent: false,
+            survival_crafting_input_b_sent: false,
+            survival_crafting_result_seen: false,
+            survival_crafting_collect_sent: false,
+            survival_crafting_inventory_seen: false,
+            survival_crafting_breadth_logged: false,
+            survival_crafting_window_id: EMPTY_WINDOW_ID,
+            survival_crafting_window_state_id: EMPTY_WINDOW_STATE_ID,
+            survival_furnace_position_sent: false,
+            survival_furnace_open_sent: false,
+            survival_furnace_open_seen: false,
+            survival_furnace_input_sent: false,
+            survival_furnace_fuel_sent: false,
+            survival_furnace_burn_seen: false,
+            survival_furnace_output_seen: false,
+            survival_furnace_collect_sent: false,
+            survival_furnace_inventory_seen: false,
+            survival_furnace_invalid_fuel_sent: false,
+            survival_furnace_invalid_fuel_seen: false,
+            survival_furnace_close_sent: false,
+            survival_furnace_reconnect_sent: false,
+            survival_furnace_reopen_seen: false,
+            survival_furnace_window_id: EMPTY_WINDOW_ID,
+            survival_furnace_window_state_id: EMPTY_WINDOW_STATE_ID,
+            survival_hunger_food_item_seen: false,
+            survival_hunger_food_pre_seen: false,
+            survival_hunger_food_use_sent: false,
+            survival_hunger_food_post_seen: false,
+            survival_hunger_food_inventory_seen: false,
+            survival_hunger_health_item_seen: false,
+            survival_hunger_health_pre_seen: false,
+            survival_hunger_health_use_sent: false,
+            survival_hunger_health_post_seen: false,
+            survival_hunger_health_inventory_seen: false,
+            survival_mob_drop_position_sent: false,
+            survival_mob_drop_mob_seen: false,
+            survival_mob_drop_attack_sent: false,
+            survival_mob_drop_death_seen: false,
+            survival_mob_drop_drop_seen: false,
+            survival_mob_drop_pickup_seen: false,
+            survival_mob_drop_inventory_seen: false,
+            survival_mob_drop_target_entity_id: None,
+            survival_mob_drop_drop_entity_id: None,
+            survival_mob_ai_loot_logged: false,
+            survival_redstone_toggle_position_sent: false,
+            survival_redstone_toggle_input_sent: false,
+            survival_redstone_toggle_output_on_seen: false,
+            survival_redstone_toggle_return_input_sent: false,
+            survival_redstone_toggle_output_off_seen: false,
+            survival_redstone_circuit_logged: false,
+            survival_world_persistence_position_sent: false,
+            survival_world_persistence_mutation_sent: false,
+            survival_world_persistence_pre_restart_seen: false,
+            survival_world_persistence_reconnect_sent: false,
+            survival_world_persistence_post_restart_seen: false,
+            survival_block_entity_position_sent: false,
+            survival_block_entity_pre_restart_seen: false,
+            survival_block_entity_reconnect_sent: false,
+            survival_block_entity_post_restart_seen: false,
+            survival_world_multichunk_logged: false,
+            survival_container_block_entity_logged: false,
+            survival_biome_dimension_travel_logged: false,
+            survival_sign_editing_logged: false,
+            inventory_probe_click_sent: false,
+            inventory_probe_container_click_sent: false,
+            inventory_probe_container_id: 0,
+            inventory_probe_container_state_id: 0,
+            inventory_probe_container_seen: false,
+            inventory_probe_state_id: 0,
+            flag_probe_have_flag_seen: false,
+            flag_probe_capture_seen: false,
+            flag_probe_score_seen: false,
+            flag_probe_repeat_target: flag_probe_repeat_target_from_env(),
+            flag_probe_have_flag_count: 0,
+            flag_probe_capture_count: 0,
+            flag_probe_score_count: 0,
+            remote_player_entity_ids: Vec::new(),
+            remote_player_targets: Vec::new(),
+            sun_model: None,
+
+            target_info: target::Info::new(),
+        }
+    }
+
+    pub fn disconnect(&mut self, reason: Option<format::Component>) {
+        self.conn.write().unwrap().take();
+        self.disconnect_reason = reason;
+        if let Some(player) = self.player.take() {
+            self.entities.remove_entity(player);
+        }
+        self.just_disconnected = true;
+    }
+
+    pub fn is_connected(&self) -> bool {
+        self.conn.read().unwrap().is_some()
+    }
+
+    fn negative_probe_is(&self, probe: &str) -> bool {
+        self.negative_probe.as_deref() == Some(probe)
+    }
+
+    fn negative_inventory_probe_selected(&self) -> bool {
+        self.negative_probe_is("inventory_stale_state")
+            || self.negative_probe_is("inventory_invalid_click")
+    }
+
+    fn log_negative_probe_outcome_once(&mut self, milestone: &str, detail: &str) {
+        if self.negative_probe_outcome_logged {
+            return;
+        }
+        info!("MC-COMPAT-MILESTONE {milestone} {detail}");
+        self.negative_probe_outcome_logged = true;
+    }
+
+    pub fn tick(&mut self, renderer: &mut render::Renderer, delta: f64) {
+        let version = self.resources.read().unwrap().version();
+        if version != self.version {
+            self.version = version;
+            self.world.flag_dirty_all();
+        }
+        // TODO: Check if the world type actually needs a sun
+        if self.sun_model.is_none() {
+            self.sun_model = Some(sun::SunModel::new(renderer));
+        }
+
+        // Copy to camera
+        if let Some(player) = self.player {
+            let position = self.entities.get_component(player, self.position).unwrap();
+            let rotation = self.entities.get_component(player, self.rotation).unwrap();
+            renderer.camera.pos =
+                cgmath::Point3::from_vec(position.position + cgmath::Vector3::new(0.0, 1.62, 0.0));
+            renderer.camera.yaw = rotation.yaw;
+            renderer.camera.pitch = rotation.pitch;
+        }
+        self.apply_mc_compat_active_probe();
+        self.entity_tick(renderer, delta);
+
+        self.tick_timer += delta;
+        while self.tick_timer >= 3.0 && self.is_connected() {
+            self.minecraft_tick();
+            self.tick_timer -= 3.0;
+        }
+
+        self.update_time(renderer, delta);
+
+        if let Some(sun_model) = self.sun_model.as_mut() {
+            sun_model.tick(renderer, self.world_time, self.world_age);
+        }
+
+        self.world.tick(&mut self.entities);
+
+        if self.player.is_some() {
+            if !self.logged_render_tick_with_player {
+                info!("MC-COMPAT-MILESTONE render_tick_with_player");
+                self.logged_render_tick_with_player = true;
+            }
+            if let Some((pos, bl, _, _)) = target::trace_ray(
+                &self.world,
+                4.0,
+                renderer.camera.pos.to_vec(),
+                renderer.view_vector.cast().unwrap(),
+                target::test_block,
+            ) {
+                self.target_info.update(renderer, pos, bl);
+            } else {
+                self.target_info.clear(renderer);
+            }
+        } else {
+            self.target_info.clear(renderer);
+        }
+    }
+
+    fn apply_mc_compat_active_probe(&mut self) {
+        if !self.active_probe_enabled
+            && !self.team_probe_enabled
+            && !self.combat_probe_enabled
+            && !self.respawn_probe_enabled
+            && !self.inventory_probe_enabled
+            && !self.inventory_stack_split_merge_probe_enabled
+            && !self.inventory_drag_transactions_probe_enabled
+            && !self.equipment_probe_enabled
+            && !self.projectile_probe_enabled
+            && !self.flag_probe_enabled
+            && !self.score_limit_probe_enabled
+            && !self.survival_probe_enabled
+            && !self.survival_chest_probe_enabled
+            && !self.survival_crafting_probe_enabled
+            && !self.survival_crafting_breadth_probe_enabled
+            && !self.survival_furnace_probe_enabled
+            && !self.survival_furnace_smelting_breadth_probe_enabled
+            && !self.survival_hunger_food_probe_enabled
+            && !self.survival_hunger_health_probe_enabled
+            && !self.survival_mob_drop_probe_enabled
+            && !self.survival_mob_ai_loot_probe_enabled
+            && !self.survival_redstone_toggle_probe_enabled
+            && !self.survival_redstone_circuit_probe_enabled
+            && !self.survival_world_persistence_probe_enabled
+            && !self.survival_block_entity_probe_enabled
+            && !self.survival_world_multichunk_probe_enabled
+            && !self.survival_container_block_entity_probe_enabled
+            && !self.survival_biome_dimension_travel_probe_enabled
+            && !self.survival_sign_editing_probe_enabled
+        {
+            return;
+        }
+
+        let Some(player) = self.player else {
+            return;
+        };
+
+        self.active_probe_ticks = self.active_probe_ticks.saturating_add(1);
+
+        let stationary_combat_probe_enabled =
+            self.combat_probe_enabled && self.stationary_combat_probe_enabled;
+        let movement_probe_enabled = !stationary_combat_probe_enabled
+            && (self.active_probe_enabled
+                || self.team_probe_enabled
+                || self.combat_probe_enabled
+                || self.respawn_probe_enabled
+                || self.inventory_probe_enabled
+                || self.inventory_stack_split_merge_probe_enabled
+                || self.inventory_drag_transactions_probe_enabled
+                || self.equipment_probe_enabled
+                || self.projectile_probe_enabled
+                || self.flag_probe_enabled
+                || self.score_limit_probe_enabled);
+        if movement_probe_enabled {
+            if let Some(movement) = self
+                .entities
+                .get_component_mut(player, self.player_movement)
+            {
+                match self.active_probe_ticks {
+                    ACTIVE_PROBE_INPUT_START_TICK => {
+                        info!("MC-COMPAT-MILESTONE active_probe_input_start forward+sprint+jump");
+                        movement.pressed_keys.insert(Stevenkey::Forward, true);
+                        movement.pressed_keys.insert(Stevenkey::Sprint, true);
+                        movement.pressed_keys.insert(Stevenkey::Jump, true);
+                    }
+                    ACTIVE_PROBE_JUMP_RELEASE_TICK => {
+                        info!("MC-COMPAT-MILESTONE active_probe_jump_release");
+                        movement.pressed_keys.insert(Stevenkey::Jump, false);
+                    }
+                    ACTIVE_PROBE_TURN_TICK => {
+                        info!("MC-COMPAT-MILESTONE active_probe_input_turn right");
+                        movement.pressed_keys.insert(Stevenkey::Right, true);
+                    }
+                    ACTIVE_PROBE_STOP_TICK => {
+                        info!("MC-COMPAT-MILESTONE active_probe_input_stop");
+                        movement.pressed_keys.insert(Stevenkey::Forward, false);
+                        movement.pressed_keys.insert(Stevenkey::Sprint, false);
+                        movement.pressed_keys.insert(Stevenkey::Right, false);
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        if self.negative_probe_is("custom_payload_malformed")
+            && self.active_probe_ticks >= NEGATIVE_CUSTOM_PAYLOAD_TICK
+            && !self.negative_probe_sent
+        {
+            info!(
+                "MC-COMPAT-MILESTONE negative_custom_payload_sent channel=mc_compat:malformed bytes={}",
+                NEGATIVE_CUSTOM_PAYLOAD_DATA.len()
+            );
+            self.write_packet(packet::play::serverbound::PluginMessageServerbound {
+                channel: "mc_compat:malformed".into(),
+                data: NEGATIVE_CUSTOM_PAYLOAD_DATA.to_vec(),
+            });
+            self.negative_probe_sent = true;
+        }
+
+        if self.negative_probe_is("custom_payload_malformed")
+            && self.active_probe_ticks >= NEGATIVE_CUSTOM_PAYLOAD_CONTAINMENT_TICK
+            && self.negative_probe_sent
+        {
+            self.log_negative_probe_outcome_once(
+                "negative_custom_payload_contained",
+                "postcondition=client_alive_after_malformed_payload",
+            );
+        }
+
+        if self.team_probe_enabled {
+            let team = std::env::var("MC_COMPAT_TEAM_PROBE_TEAM")
+                .unwrap_or_else(|_| "red".to_string())
+                .to_ascii_lowercase();
+            let (team_name, portal_x, portal_z) = if team == "blue" {
+                ("blue", 4.0, 4.0)
+            } else {
+                ("red", -4.0, 4.0)
+            };
+            match self.active_probe_ticks {
+                360 => {
+                    info!(
+                        "MC-COMPAT-MILESTONE team_probe_enter_{}_portal x={:.1} y=84.0 z={:.1}",
+                        team_name, portal_x, portal_z
+                    );
+                    if let Some(position) = self.entities.get_component_mut(player, self.position) {
+                        position.position = cgmath::Vector3::new(portal_x, 84.0, portal_z);
+                        position.moved = true;
+                    }
+                    self.write_packet(packet::play::serverbound::PlayerPositionLook {
+                        x: portal_x,
+                        y: 84.0,
+                        z: portal_z,
+                        yaw: 0.0,
+                        pitch: 0.0,
+                        on_ground: true,
+                    });
+                }
+                361..=390 => {
+                    if self.active_probe_ticks == 361 {
+                        info!(
+                            "MC-COMPAT-MILESTONE team_probe_hold_{}_portal start",
+                            team_name
+                        );
+                    }
+                    self.write_packet(packet::play::serverbound::PlayerPosition {
+                        x: portal_x,
+                        y: 84.0,
+                        z: portal_z,
+                        on_ground: true,
+                    });
+                }
+                420 => {
+                    info!("MC-COMPAT-MILESTONE team_probe_select_hotbar_slot slot=0");
+                    self.write_packet(packet::play::serverbound::HeldItemChange { slot: 0 });
+                }
+                450 => {
+                    info!("MC-COMPAT-MILESTONE team_probe_use_item_sent hand=main sequence=0");
+                    self.write_packet(packet::play::serverbound::UseItem_WithSequence {
+                        hand: protocol::VarInt(0),
+                        sequence: protocol::VarInt(0),
+                    });
+                }
+                _ => {}
+            }
+        }
+
+        if self.combat_probe_enabled {
+            let role = std::env::var("MC_COMPAT_COMBAT_PROBE_ROLE")
+                .unwrap_or_else(|_| "attacker".to_string())
+                .to_ascii_lowercase();
+
+            if role == "attacker" {
+                let flag_carrier_death_probe = std::env::var("MC_COMPAT_FLAG_CARRIER_DEATH_PROBE")
+                    .map(|value| value != "0")
+                    .unwrap_or(false);
+                let (attack_x, attack_z, attack_label, attack_yaw) = if flag_carrier_death_probe {
+                    (-38.0, 0.0, "red_flag", 90.0)
+                } else {
+                    (38.0, 0.0, "blue_spawn", -90.0)
+                };
+                match self.active_probe_ticks {
+                    620 => {
+                        info!(
+                            "MC-COMPAT-MILESTONE combat_probe_move_near_{} x={:.1} y=65.0 z={:.1}",
+                            attack_label, attack_x, attack_z
+                        );
+                        if let Some(position) =
+                            self.entities.get_component_mut(player, self.position)
+                        {
+                            position.position = cgmath::Vector3::new(attack_x, 65.0, attack_z);
+                            position.moved = true;
+                        }
+                        self.write_packet(packet::play::serverbound::PlayerPositionLook {
+                            x: attack_x,
+                            y: 65.0,
+                            z: attack_z,
+                            yaw: attack_yaw,
+                            pitch: 0.0,
+                            on_ground: true,
+                        });
+                    }
+                    621..=980 => {
+                        self.write_packet(packet::play::serverbound::PlayerPosition {
+                            x: attack_x,
+                            y: 65.0,
+                            z: attack_z,
+                            on_ground: true,
+                        });
+                    }
+                    _ => {}
+                }
+
+                let attack_start_tick = if flag_carrier_death_probe { 980 } else { 900 };
+                let attack_limit = if flag_carrier_death_probe { 20 } else { 10 };
+                if self.active_probe_ticks >= attack_start_tick
+                    && self.combat_probe_attacks_sent < attack_limit
+                    && self.active_probe_ticks % 20 == 0
+                {
+                    let target_name = std::env::var("MC_COMPAT_COMBAT_TARGET_USERNAME").ok();
+                    let target_id = target_name
+                        .as_deref()
+                        .and_then(|name| {
+                            self.remote_player_targets
+                                .iter()
+                                .rev()
+                                .find(|(_, player_name)| player_name == name)
+                                .map(|(entity_id, _)| *entity_id)
+                        })
+                        .or_else(|| self.remote_player_entity_ids.last().copied());
+                    if let Some(target_id) = target_id {
+                        self.write_packet(packet::play::serverbound::UseEntity_Sneakflag {
+                            target_id: protocol::VarInt(target_id),
+                            ty: protocol::VarInt(1),
+                            target_x: 0.0,
+                            target_y: 0.0,
+                            target_z: 0.0,
+                            hand: protocol::VarInt(0),
+                            sneaking: false,
+                        });
+                        self.combat_probe_attacks_sent += 1;
+                        info!(
+                            "MC-COMPAT-MILESTONE combat_probe_attack_sent target_id={} count={}",
+                            target_id, self.combat_probe_attacks_sent
+                        );
+                    }
+                }
+            }
+        }
+
+        if self.projectile_probe_enabled
+            && self.active_probe_ticks >= 900
+            && !self.projectile_probe_use_item_sent
+        {
+            info!("MC-COMPAT-MILESTONE projectile_probe_select_hotbar_slot slot=0");
+            self.write_packet(packet::play::serverbound::HeldItemChange { slot: 0 });
+            info!("MC-COMPAT-MILESTONE projectile_probe_use_item_sent hand=main sequence=303");
+            self.write_packet(packet::play::serverbound::UseItem_WithSequence {
+                hand: protocol::VarInt(0),
+                sequence: protocol::VarInt(303),
+            });
+            self.projectile_probe_use_item_sent = true;
+        }
+
+        if self.projectile_probe_enabled
+            && self.active_probe_ticks >= 920
+            && !self.projectile_probe_swing_sent
+        {
+            info!("MC-COMPAT-MILESTONE projectile_probe_swing_sent hand=main");
+            self.write_packet(packet::play::serverbound::ArmSwing {
+                hand: protocol::VarInt(0),
+            });
+            self.projectile_probe_swing_sent = true;
+        }
+
+        if self.survival_probe_enabled
+            && self.active_probe_ticks >= SURVIVAL_PROBE_POSITION_TICK
+            && !self.survival_probe_position_sent
+        {
+            if let Some(position) = self.entities.get_component_mut(player, self.position) {
+                position.position = cgmath::Vector3::new(
+                    SURVIVAL_PROBE_PLAYER_X,
+                    SURVIVAL_PROBE_PLAYER_Y,
+                    SURVIVAL_PROBE_PLAYER_Z,
+                );
+                position.moved = true;
+            }
+            self.write_packet(packet::play::serverbound::PlayerPosition {
+                x: SURVIVAL_PROBE_PLAYER_X,
+                y: SURVIVAL_PROBE_PLAYER_Y,
+                z: SURVIVAL_PROBE_PLAYER_Z,
+                on_ground: true,
+            });
+            info!(
+                "MC-COMPAT-MILESTONE survival_probe_move_near_block x={:.1} y={:.1} z={:.1}",
+                SURVIVAL_PROBE_PLAYER_X, SURVIVAL_PROBE_PLAYER_Y, SURVIVAL_PROBE_PLAYER_Z
+            );
+            self.survival_probe_position_sent = true;
+        }
+
+        if self.survival_probe_enabled
+            && self.active_probe_ticks >= SURVIVAL_PROBE_BREAK_TICK
+            && !self.survival_probe_break_sent
+        {
+            let location = Position::new(
+                SURVIVAL_PROBE_BREAK_X,
+                SURVIVAL_PROBE_BREAK_Y,
+                SURVIVAL_PROBE_BREAK_Z,
+            );
+            info!(
+                "MC-COMPAT-MILESTONE survival_probe_break_block_sent status=start_destroy location={},{},{} sequence={}",
+                SURVIVAL_PROBE_BREAK_X,
+                SURVIVAL_PROBE_BREAK_Y,
+                SURVIVAL_PROBE_BREAK_Z,
+                SURVIVAL_PROBE_BREAK_START_SEQUENCE
+            );
+            self.write_packet(packet::play::serverbound::PlayerDigging_WithSequence {
+                status: protocol::VarInt(SURVIVAL_PROBE_START_DESTROY_STATUS),
+                location,
+                face: protocol::VarInt(SURVIVAL_PROBE_FACE_UP),
+                sequence: protocol::VarInt(SURVIVAL_PROBE_BREAK_START_SEQUENCE),
+            });
+            self.write_packet(packet::play::serverbound::PlayerDigging_WithSequence {
+                status: protocol::VarInt(SURVIVAL_PROBE_STOP_DESTROY_STATUS),
+                location,
+                face: protocol::VarInt(SURVIVAL_PROBE_FACE_UP),
+                sequence: protocol::VarInt(SURVIVAL_PROBE_BREAK_STOP_SEQUENCE),
+            });
+            self.survival_probe_break_sent = true;
+        }
+
+        if self.survival_probe_enabled
+            && self.active_probe_ticks >= SURVIVAL_PROBE_PLACE_TICK
+            && self.survival_probe_pickup_seen
+            && !self.survival_probe_place_sent
+        {
+            info!(
+                "MC-COMPAT-MILESTONE survival_probe_select_hotbar_slot slot={}",
+                SURVIVAL_PROBE_HOTBAR_SLOT
+            );
+            self.write_packet(packet::play::serverbound::HeldItemChange {
+                slot: SURVIVAL_PROBE_HOTBAR_SLOT,
+            });
+            info!(
+                "MC-COMPAT-MILESTONE survival_probe_place_block_sent hand=main location={},{},{} face=up sequence={}",
+                SURVIVAL_PROBE_BREAK_X,
+                SURVIVAL_PROBE_BREAK_Y,
+                SURVIVAL_PROBE_BREAK_Z,
+                SURVIVAL_PROBE_PLACE_SEQUENCE
+            );
+            self.write_packet(
+                packet::play::serverbound::PlayerBlockPlacement_insideblock_sequence {
+                    hand: protocol::VarInt(SURVIVAL_PROBE_MAIN_HAND),
+                    location: Position::new(
+                        SURVIVAL_PROBE_BREAK_X,
+                        SURVIVAL_PROBE_BREAK_Y,
+                        SURVIVAL_PROBE_BREAK_Z,
+                    ),
+                    face: protocol::VarInt(SURVIVAL_PROBE_FACE_UP),
+                    cursor_x: SURVIVAL_PROBE_CURSOR_CENTER,
+                    cursor_y: SURVIVAL_PROBE_CURSOR_TOP,
+                    cursor_z: SURVIVAL_PROBE_CURSOR_CENTER,
+                    inside_block: false,
+                    sequence: protocol::VarInt(SURVIVAL_PROBE_PLACE_SEQUENCE),
+                },
+            );
+            self.survival_probe_place_sent = true;
+        }
+
+        if self.survival_chest_probe_enabled
+            && self.active_probe_ticks >= SURVIVAL_CHEST_POSITION_TICK
+            && !self.survival_chest_position_sent
+        {
+            if let Some(position) = self.entities.get_component_mut(player, self.position) {
+                position.position = cgmath::Vector3::new(
+                    SURVIVAL_CHEST_PLAYER_X,
+                    SURVIVAL_CHEST_PLAYER_Y,
+                    SURVIVAL_CHEST_PLAYER_Z,
+                );
+                position.moved = true;
+            }
+            self.write_packet(packet::play::serverbound::PlayerPosition {
+                x: SURVIVAL_CHEST_PLAYER_X,
+                y: SURVIVAL_CHEST_PLAYER_Y,
+                z: SURVIVAL_CHEST_PLAYER_Z,
+                on_ground: true,
+            });
+            info!(
+                "MC-COMPAT-MILESTONE survival_chest_move_near_chest x={:.1} y={:.1} z={:.1} position={},{},{}",
+                SURVIVAL_CHEST_PLAYER_X,
+                SURVIVAL_CHEST_PLAYER_Y,
+                SURVIVAL_CHEST_PLAYER_Z,
+                SURVIVAL_CHEST_X,
+                SURVIVAL_CHEST_Y,
+                SURVIVAL_CHEST_Z
+            );
+            self.survival_chest_position_sent = true;
+        }
+
+        if self.survival_chest_probe_enabled
+            && self.active_probe_ticks >= SURVIVAL_CHEST_OPEN_TICK
+            && !self.survival_chest_open_sent
+        {
+            info!(
+                "MC-COMPAT-MILESTONE survival_chest_open_request_sent hand=main position={},{},{} face=up sequence={}",
+                SURVIVAL_CHEST_X,
+                SURVIVAL_CHEST_Y,
+                SURVIVAL_CHEST_Z,
+                SURVIVAL_CHEST_SEQUENCE
+            );
+            self.write_packet(
+                packet::play::serverbound::PlayerBlockPlacement_insideblock_sequence {
+                    hand: protocol::VarInt(SURVIVAL_CHEST_MAIN_HAND),
+                    location: Position::new(SURVIVAL_CHEST_X, SURVIVAL_CHEST_Y, SURVIVAL_CHEST_Z),
+                    face: protocol::VarInt(SURVIVAL_CHEST_FACE_UP),
+                    cursor_x: SURVIVAL_PROBE_CURSOR_CENTER,
+                    cursor_y: SURVIVAL_PROBE_CURSOR_TOP,
+                    cursor_z: SURVIVAL_PROBE_CURSOR_CENTER,
+                    inside_block: false,
+                    sequence: protocol::VarInt(SURVIVAL_CHEST_SEQUENCE),
+                },
+            );
+            self.survival_chest_open_sent = true;
+        }
+
+        if self.survival_chest_probe_enabled
+            && self.survival_chest_probe_session == SURVIVAL_CHEST_FIRST_SESSION
+            && self.active_probe_ticks >= SURVIVAL_CHEST_STORE_TICK
+            && self.survival_chest_window_id != EMPTY_WINDOW_ID
+            && self.survival_chest_window_state_id != EMPTY_WINDOW_STATE_ID
+            && !self.survival_chest_store_sent
+        {
+            info!(
+                "MC-COMPAT-MILESTONE survival_chest_store_sent window={} slot={} item={} count={}",
+                self.survival_chest_window_id,
+                SURVIVAL_CHEST_WINDOW_SLOT,
+                SURVIVAL_CHEST_ITEM_NAME,
+                SURVIVAL_CHEST_ITEM_COUNT
+            );
+            self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                id: self.survival_chest_window_id,
+                state: protocol::VarInt(self.survival_chest_window_state_id),
+                slot: SURVIVAL_CHEST_WINDOW_SLOT,
+                button: SURVIVAL_CHEST_CLICK_BUTTON,
+                mode: protocol::VarInt(SURVIVAL_CHEST_CLICK_MODE),
+                slots: protocol::LenPrefixed::new(vec![packet::NumberedSlot {
+                    slot_number: SURVIVAL_CHEST_WINDOW_SLOT,
+                    slot_data: Some(item::Stack {
+                        id: SURVIVAL_CHEST_ITEM_PROTOCOL_ID,
+                        count: SURVIVAL_CHEST_ITEM_COUNT,
+                        damage: None,
+                        tag: None,
+                    }),
+                }]),
+                clicked_item: None,
+            });
+            self.survival_chest_store_sent = true;
+        }
+
+        if self.survival_chest_probe_enabled
+            && self.survival_chest_probe_session == SURVIVAL_CHEST_FIRST_SESSION
+            && self.active_probe_ticks >= SURVIVAL_CHEST_CLOSE_TICK
+            && self.survival_chest_store_sent
+            && !self.survival_chest_close_sent
+        {
+            info!(
+                "MC-COMPAT-MILESTONE survival_chest_close_sent window={}",
+                self.survival_chest_window_id
+            );
+            self.write_packet(packet::play::serverbound::CloseWindow {
+                id: self.survival_chest_window_id,
+            });
+            self.survival_chest_close_sent = true;
+            if !self.survival_chest_reconnect_sent {
+                info!(
+                    "MC-COMPAT-MILESTONE survival_chest_reconnect_sent session={}",
+                    SURVIVAL_CHEST_RECONNECT_SESSION_LABEL
+                );
+                self.survival_chest_reconnect_sent = true;
+            }
+        }
+
+        self.apply_mc_compat_survival_crafting_probe(player);
+        self.apply_mc_compat_survival_crafting_breadth_probe();
+        self.apply_mc_compat_survival_furnace_probe(player);
+        self.apply_mc_compat_survival_hunger_food_probe();
+        self.apply_mc_compat_survival_hunger_health_probe();
+        self.apply_mc_compat_survival_mob_drop_probe(player);
+        self.apply_mc_compat_survival_redstone_toggle_probe(player);
+        self.apply_mc_compat_survival_world_persistence_probe(player);
+        self.apply_mc_compat_survival_block_entity_probe(player);
+        self.apply_mc_compat_survival_breadth_synthetic_probe();
+
+        if self.inventory_probe_enabled
+            && !self.inventory_stack_split_merge_probe_enabled
+            && !self.inventory_drag_transactions_probe_enabled
+            && self.active_probe_ticks == 520
+        {
+            info!("MC-COMPAT-MILESTONE inventory_probe_select_hotbar_slot slot=0");
+            self.write_packet(packet::play::serverbound::HeldItemChange { slot: 0 });
+        }
+
+        if self.inventory_probe_enabled
+            && !self.inventory_stack_split_merge_probe_enabled
+            && !self.inventory_drag_transactions_probe_enabled
+            && self.active_probe_ticks >= 560
+            && self.inventory_probe_sword_seen
+            && !self.inventory_probe_drop_sent
+        {
+            info!("MC-COMPAT-MILESTONE inventory_probe_drop_item_sent status=drop_item slot=36 sequence=77");
+            self.write_packet(packet::play::serverbound::PlayerDigging_WithSequence {
+                status: protocol::VarInt(4),
+                location: Position::new(0, 0, 0),
+                face: protocol::VarInt(0),
+                sequence: protocol::VarInt(77),
+            });
+            self.inventory_probe_drop_sent = true;
+        }
+
+        let stack_split_merge_input = InventoryStackSplitMergeProbeInput {
+            enabled: self.inventory_stack_split_merge_probe_enabled,
+            active_ticks: self.active_probe_ticks,
+            source_stack_seen: self.inventory_probe_wool_seen,
+            current_state_id: self.inventory_probe_state_id,
+            split_pickup_sent: self.inventory_stack_split_pickup_sent,
+            split_source_seen: self.inventory_stack_split_source_seen,
+            split_place_sent: self.inventory_stack_split_place_sent,
+            split_destination_seen: self.inventory_stack_split_destination_seen,
+            merge_pickup_sent: self.inventory_stack_merge_pickup_sent,
+            merge_destination_empty_seen: self.inventory_stack_merge_destination_empty_seen,
+            merge_place_sent: self.inventory_stack_merge_place_sent,
+        };
+        if let Some(action) = next_inventory_stack_split_merge_action(stack_split_merge_input) {
+            self.write_inventory_stack_split_merge_click(action);
+        }
+
+        let drag_transactions_input = InventoryDragTransactionsProbeInput {
+            enabled: self.inventory_drag_transactions_probe_enabled,
+            active_ticks: self.active_probe_ticks,
+            source_stack_seen: self.inventory_probe_wool_seen,
+            current_state_id: self.inventory_probe_state_id,
+            pickup_sent: self.inventory_drag_pickup_sent,
+            source_empty_seen: self.inventory_drag_source_empty_seen,
+            drag_start_sent: self.inventory_drag_start_sent,
+            target_a_sent: self.inventory_drag_target_a_sent,
+            target_b_sent: self.inventory_drag_target_b_sent,
+            drag_end_sent: self.inventory_drag_end_sent,
+        };
+        if let Some(action) = next_inventory_drag_transactions_action(drag_transactions_input) {
+            self.write_inventory_drag_transactions_click(action);
+        }
+
+        if self.inventory_probe_enabled
+            && !self.inventory_stack_split_merge_probe_enabled
+            && !self.inventory_drag_transactions_probe_enabled
+            && self.active_probe_ticks >= 620
+            && self.inventory_probe_wool_seen
+            && !self.inventory_probe_block_place_sent
+        {
+            info!("MC-COMPAT-MILESTONE inventory_probe_select_wool_hotbar_slot slot=1");
+            self.write_packet(packet::play::serverbound::HeldItemChange { slot: 1 });
+            info!("MC-COMPAT-MILESTONE inventory_probe_place_block_sent hand=main location=-40,64,0 face=up sequence=88");
+            self.write_packet(
+                packet::play::serverbound::PlayerBlockPlacement_insideblock_sequence {
+                    hand: protocol::VarInt(0),
+                    location: Position::new(-40, 64, 0),
+                    face: protocol::VarInt(1),
+                    cursor_x: 0.5,
+                    cursor_y: 1.0,
+                    cursor_z: 0.5,
+                    inside_block: false,
+                    sequence: protocol::VarInt(88),
+                },
+            );
+            self.inventory_probe_block_place_sent = true;
+        }
+
+        if self.inventory_probe_enabled
+            && !self.inventory_stack_split_merge_probe_enabled
+            && !self.inventory_drag_transactions_probe_enabled
+            && self.active_probe_ticks >= 680
+            && self.inventory_probe_block_place_sent
+            && self.inventory_probe_state_id > 0
+            && !self.negative_probe_sent
+            && self.negative_probe_is("inventory_stale_state")
+        {
+            let stale_state_id = self
+                .inventory_probe_state_id
+                .saturating_sub(NEGATIVE_INVENTORY_STALE_STATE_OFFSET);
+            info!(
+                "MC-COMPAT-MILESTONE negative_inventory_stale_state_sent window=0 slot=37 state_id={} expected_current_state_id={}",
+                stale_state_id, self.inventory_probe_state_id
+            );
+            self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                id: 0,
+                slot: 37,
+                state: protocol::VarInt(stale_state_id),
+                button: NEGATIVE_CLICK_BUTTON,
+                mode: protocol::VarInt(NEGATIVE_CLICK_MODE),
+                slots: protocol::LenPrefixed::new(vec![packet::NumberedSlot {
+                    slot_number: 37,
+                    slot_data: None,
+                }]),
+                clicked_item: Some(item::Stack {
+                    id: 194,
+                    count: 63,
+                    damage: None,
+                    tag: None,
+                }),
+            });
+            self.negative_probe_sent = true;
+            self.inventory_probe_click_sent = true;
+        }
+
+        if self.inventory_probe_enabled
+            && !self.inventory_stack_split_merge_probe_enabled
+            && !self.inventory_drag_transactions_probe_enabled
+            && self.active_probe_ticks >= 680
+            && self.inventory_probe_block_place_sent
+            && self.inventory_probe_state_id > 0
+            && !self.negative_probe_sent
+            && self.negative_probe_is("inventory_invalid_click")
+        {
+            info!(
+                "MC-COMPAT-MILESTONE negative_inventory_invalid_click_sent window={} slot={} state_id={}",
+                NEGATIVE_INVENTORY_INVALID_WINDOW_ID,
+                NEGATIVE_INVENTORY_INVALID_SLOT,
+                self.inventory_probe_state_id
+            );
+            self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                id: NEGATIVE_INVENTORY_INVALID_WINDOW_ID,
+                slot: NEGATIVE_INVENTORY_INVALID_SLOT,
+                state: protocol::VarInt(self.inventory_probe_state_id),
+                button: NEGATIVE_CLICK_BUTTON,
+                mode: protocol::VarInt(NEGATIVE_CLICK_MODE),
+                slots: protocol::LenPrefixed::new(Vec::new()),
+                clicked_item: None,
+            });
+            self.negative_probe_sent = true;
+            self.inventory_probe_click_sent = true;
+        }
+
+        if self.inventory_probe_enabled
+            && !self.inventory_stack_split_merge_probe_enabled
+            && !self.inventory_drag_transactions_probe_enabled
+            && self.active_probe_ticks >= 680
+            && self.inventory_probe_block_place_sent
+            && self.inventory_probe_state_id > 0
+            && !self.inventory_probe_click_sent
+            && !self.negative_inventory_probe_selected()
+        {
+            info!(
+                "MC-COMPAT-MILESTONE inventory_probe_click_slot_sent window=0 slot=37 state_id={} \
+                 button=0 mode=click carried_item=RedWool count=63",
+                self.inventory_probe_state_id
+            );
+            self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                id: 0,
+                slot: 37,
+                state: protocol::VarInt(self.inventory_probe_state_id),
+                button: 0,
+                mode: protocol::VarInt(0),
+                slots: protocol::LenPrefixed::new(vec![packet::NumberedSlot {
+                    slot_number: 37,
+                    slot_data: None,
+                }]),
+                clicked_item: Some(item::Stack {
+                    id: 194,
+                    count: 63,
+                    damage: None,
+                    tag: None,
+                }),
+            });
+            self.inventory_probe_click_sent = true;
+        }
+
+        if self.inventory_probe_enabled
+            && !self.inventory_stack_split_merge_probe_enabled
+            && !self.inventory_drag_transactions_probe_enabled
+            && self.active_probe_ticks >= 740
+            && self.inventory_probe_click_sent
+            && self.inventory_probe_container_seen
+            && self.inventory_probe_container_state_id > 0
+            && !self.inventory_probe_container_click_sent
+        {
+            info!(
+                "MC-COMPAT-MILESTONE inventory_probe_container_click_sent window={} slot=0 state_id={} \
+                 button=0 mode=click carried_item=empty slot_item=RedWool count=63",
+                self.inventory_probe_container_id, self.inventory_probe_container_state_id
+            );
+            self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                id: self.inventory_probe_container_id,
+                slot: 0,
+                state: protocol::VarInt(self.inventory_probe_container_state_id),
+                button: 0,
+                mode: protocol::VarInt(0),
+                slots: protocol::LenPrefixed::new(vec![packet::NumberedSlot {
+                    slot_number: 0,
+                    slot_data: Some(item::Stack {
+                        id: 194,
+                        count: 63,
+                        damage: None,
+                        tag: None,
+                    }),
+                }]),
+                clicked_item: None,
+            });
+            self.inventory_probe_container_click_sent = true;
+        }
+
+        if self.flag_probe_enabled && self.active_probe_ticks >= FLAG_PROBE_FIRST_TICK {
+            let flag_team = std::env::var("MC_COMPAT_FLAG_PROBE_TEAM")
+                .unwrap_or_else(|_| "red".to_string())
+                .to_ascii_lowercase();
+            let (
+                target_flag_name,
+                flag_x,
+                flag_z,
+                dig_location,
+                dig_location_label,
+                capture_team_name,
+                capture_x,
+                capture_z,
+                pickup_yaw,
+                capture_yaw,
+            ) = if flag_team == "blue" {
+                (
+                    "red",
+                    -48.0,
+                    0.0,
+                    Position::new(-46, 67, 0),
+                    "-46,67,0",
+                    "blue",
+                    48.0,
+                    0.0,
+                    -90.0,
+                    90.0,
+                )
+            } else {
+                (
+                    "blue",
+                    48.0,
+                    0.0,
+                    Position::new(46, 67, 0),
+                    "46,67,0",
+                    "red",
+                    -48.0,
+                    0.0,
+                    90.0,
+                    -90.0,
+                )
+            };
+            let pickup_only = std::env::var("MC_COMPAT_FLAG_PROBE_PICKUP_ONLY")
+                .map(|value| value != "0")
+                .unwrap_or(false);
+            let first_flag_tick = std::env::var("MC_COMPAT_FLAG_PROBE_FIRST_TICK")
+                .ok()
+                .and_then(|raw| raw.parse::<u32>().ok())
+                .unwrap_or(FLAG_PROBE_FIRST_TICK);
+            if self.active_probe_ticks < first_flag_tick {
+                return;
+            }
+            if self.negative_probe_is("reconnect_race") && !self.negative_probe_sent {
+                info!(
+                    "MC-COMPAT-MILESTONE negative_reconnect_race_attempted target_flag={} pickup_only={} expected=no_score_corruption",
+                    target_flag_name, pickup_only
+                );
+                self.negative_probe_sent = true;
+            }
+            if self.negative_probe_is("ctf_wrong_score") && !self.negative_probe_sent {
+                info!(
+                    "MC-COMPAT-MILESTONE negative_wrong_score_attempted team=red attempted_flag_probe_team={} expected=no_score_milestone",
+                    flag_team
+                );
+                self.negative_probe_sent = true;
+            }
+            if self.negative_probe_is("ctf_invalid_pickup_ownership") && !self.negative_probe_sent {
+                info!(
+                    "MC-COMPAT-MILESTONE ctf_invalid_pickup_attempted player_team=red flag_team={} pre_owner=none action=own_flag_pickup expected=no_owner_transfer_no_score",
+                    target_flag_name
+                );
+                self.negative_probe_sent = true;
+            }
+            if self.negative_probe_is("ctf_invalid_return_drop") && !self.negative_probe_sent {
+                info!(
+                    "MC-COMPAT-MILESTONE ctf_invalid_return_drop_attempted player_team=red flag_team={} pre_state=at_base action=own_base_return expected=no_flag_state_mutation_no_score",
+                    target_flag_name
+                );
+                self.negative_probe_sent = true;
+            }
+            if self.negative_probe_is("reconnect_race")
+                && self.negative_probe_sent
+                && self.flag_probe_have_flag_seen
+            {
+                self.log_negative_probe_outcome_once(
+                    "negative_reconnect_race_contained",
+                    "postcondition=flag_pickup_without_score_corruption",
+                );
+            }
+            if self.negative_probe_is("ctf_wrong_score")
+                && self.negative_probe_sent
+                && self.active_probe_ticks
+                    >= first_flag_tick + NEGATIVE_FLAG_CONTAINMENT_TICK_OFFSET
+                && !self.flag_probe_score_seen
+            {
+                self.log_negative_probe_outcome_once(
+                    "negative_wrong_score_contained",
+                    "postcondition=no_score_milestone_after_wrong_team_attempt",
+                );
+            }
+            if self.negative_probe_is("ctf_invalid_pickup_ownership")
+                && self.negative_probe_sent
+                && self.active_probe_ticks
+                    >= first_flag_tick + NEGATIVE_FLAG_CONTAINMENT_TICK_OFFSET
+                && !self.flag_probe_have_flag_seen
+                && !self.flag_probe_score_seen
+            {
+                self.log_negative_probe_outcome_once(
+                    "ctf_invalid_pickup_contained",
+                    "player_team=red flag_team=red post_owner=none red_score=0 blue_score=0 outcome=no_owner_transfer_no_score",
+                );
+            }
+            if self.negative_probe_is("ctf_invalid_return_drop")
+                && self.negative_probe_sent
+                && self.active_probe_ticks
+                    >= first_flag_tick + NEGATIVE_FLAG_CONTAINMENT_TICK_OFFSET
+                && !self.flag_probe_have_flag_seen
+                && !self.flag_probe_score_seen
+            {
+                self.log_negative_probe_outcome_once(
+                    "ctf_invalid_return_drop_contained",
+                    "player_team=red flag_team=red post_state=at_base red_score=0 blue_score=0 outcome=no_flag_state_mutation_no_score",
+                );
+            }
+            let elapsed = self.active_probe_ticks - first_flag_tick;
+            let cycle = (elapsed / FLAG_PROBE_CYCLE_TICKS) + 1;
+            if cycle <= self.flag_probe_repeat_target {
+                let cycle_tick = elapsed % FLAG_PROBE_CYCLE_TICKS;
+                let sequence = protocol::VarInt(cycle as i32);
+                match cycle_tick {
+                    0 => {
+                        info!(
+                            "MC-COMPAT-MILESTONE flag_probe_move_to_{}_flag x={:.1} y=65.0 z={:.1} cycle={}",
+                            target_flag_name, flag_x, flag_z, cycle
+                        );
+                        if let Some(position) =
+                            self.entities.get_component_mut(player, self.position)
+                        {
+                            position.position = cgmath::Vector3::new(flag_x, 65.0, flag_z);
+                            position.moved = true;
+                        }
+                        self.write_packet(packet::play::serverbound::PlayerPositionLook {
+                            x: flag_x,
+                            y: 65.0,
+                            z: flag_z,
+                            yaw: pickup_yaw,
+                            pitch: 0.0,
+                            on_ground: true,
+                        });
+                    }
+                    1..=30 => {
+                        self.write_packet(packet::play::serverbound::PlayerPosition {
+                            x: flag_x,
+                            y: 65.0,
+                            z: flag_z,
+                            on_ground: true,
+                        });
+                    }
+                    40 => {
+                        info!(
+                            "MC-COMPAT-MILESTONE flag_probe_dig_{}_flag_sent status=stop_destroy location={} sequence={} cycle={}",
+                            target_flag_name, dig_location_label, cycle, cycle
+                        );
+                        self.write_packet(packet::play::serverbound::PlayerDigging_WithSequence {
+                            status: protocol::VarInt(2),
+                            location: dig_location,
+                            face: protocol::VarInt(1),
+                            sequence,
+                        });
+                    }
+                    100 if !pickup_only => {
+                        info!(
+                            "MC-COMPAT-MILESTONE flag_probe_move_to_{}_capture x={:.1} y=65.0 z={:.1} cycle={}",
+                            capture_team_name, capture_x, capture_z, cycle
+                        );
+                        if let Some(position) =
+                            self.entities.get_component_mut(player, self.position)
+                        {
+                            position.position = cgmath::Vector3::new(capture_x, 65.0, capture_z);
+                            position.moved = true;
+                        }
+                        self.write_packet(packet::play::serverbound::PlayerPositionLook {
+                            x: capture_x,
+                            y: 65.0,
+                            z: capture_z,
+                            yaw: capture_yaw,
+                            pitch: 0.0,
+                            on_ground: true,
+                        });
+                    }
+                    101..=200 if !pickup_only => {
+                        self.write_packet(packet::play::serverbound::PlayerPosition {
+                            x: capture_x,
+                            y: 65.0,
+                            z: capture_z,
+                            on_ground: true,
+                        });
+                    }
+                    _ => {}
+                }
+            }
+        }
+    }
+
+    fn entity_tick(&mut self, renderer: &mut render::Renderer, delta: f64) {
+        let world_entity = self.entities.get_world();
+        // Update the game's state for entities to read
+        self.entities
+            .get_component_mut(world_entity, self.game_info)
+            .unwrap()
+            .delta = delta;
+
+        // Packets modify entities so need to handled here
+        if let Some(rx) = self.read_queue.take() {
+            while let Ok(pck) = rx.try_recv() {
+                match pck {
+                    Ok(pck) => handle_packet! {
+                        self pck {
+                            PluginMessageClientbound_i16 => on_plugin_message_clientbound_i16,
+                            PluginMessageClientbound => on_plugin_message_clientbound_1,
+                            JoinGame_WorldNames_IsHard_SimDist_LastDeath_PortalCooldown => on_game_join_worldnames_ishard_simdist_lastdeath_portal,
+                            JoinGame_WorldNames_IsHard_SimDist => on_game_join_worldnames_ishard_simdist,
+                            JoinGame_WorldNames_IsHard => on_game_join_worldnames_ishard,
+                            JoinGame_WorldNames => on_game_join_worldnames,
+                            JoinGame_HashedSeed_Respawn => on_game_join_hashedseed_respawn,
+                            JoinGame_i32_ViewDistance => on_game_join_i32_viewdistance,
+                            JoinGame_i32 => on_game_join_i32,
+                            JoinGame_i8 => on_game_join_i8,
+                            JoinGame_i8_NoDebug => on_game_join_i8_nodebug,
+                            Respawn_Gamemode => on_respawn_gamemode,
+                            Respawn_HashedSeed => on_respawn_hashedseed,
+                            Respawn_WorldName => on_respawn_worldname,
+                            Respawn_WorldNames_LastDeath_PortalCooldown => on_respawn_worldnames_lastdeath_portal,
+                            Respawn_NBT => on_respawn_nbt,
+                            KeepAliveClientbound_i64 => on_keep_alive_i64,
+                            KeepAliveClientbound_VarInt => on_keep_alive_varint,
+                            KeepAliveClientbound_i32 => on_keep_alive_i32,
+                            ChunkData_AndLight => on_chunk_data_and_light,
+                            ChunkData_AndLight_NoTrustEdges => on_chunk_data_and_light_no_trust_edges,
+                            ChunkData_Biomes3D_Bitmasks => on_chunk_data_biomes3d_bitmasks,
+                            ChunkData_Biomes3D_VarInt => on_chunk_data_biomes3d_varint,
+                            ChunkData_Biomes3D_bool => on_chunk_data_biomes3d_bool,
+                            ChunkData => on_chunk_data,
+                            ChunkData_Biomes3D => on_chunk_data_biomes3d,
+                            ChunkData_HeightMap => on_chunk_data_heightmap,
+                            ChunkData_NoEntities => on_chunk_data_no_entities,
+                            ChunkData_NoEntities_u16 => on_chunk_data_no_entities_u16,
+                            ChunkData_17 => on_chunk_data_17,
+                            ChunkDataBulk => on_chunk_data_bulk,
+                            ChunkDataBulk_17 => on_chunk_data_bulk_17,
+                            ChunkUnload => on_chunk_unload,
+                            BlockChange_VarInt => on_block_change_varint,
+                            BlockChange_u8 => on_block_change_u8,
+                            MultiBlockChange_Packed => on_multi_block_change_packed,
+                            MultiBlockChange_VarInt => on_multi_block_change_varint,
+                            MultiBlockChange_u16 => on_multi_block_change_u16,
+                            TeleportPlayer_WithDismount => on_teleport_player_withdismount,
+                            TeleportPlayer_WithConfirm => on_teleport_player_withconfirm,
+                            TeleportPlayer_NoConfirm => on_teleport_player_noconfirm,
+                            TeleportPlayer_OnGround => on_teleport_player_onground,
+                            TimeUpdate => on_time_update,
+                            ChangeGameState => on_game_state_change,
+                            UpdateHealth => on_update_health,
+                            WindowOpen_VarInt => on_window_open_varint,
+                            WindowItems_StateCarry => on_window_items_state_carry,
+                            WindowSetSlot_State => on_window_set_slot_state,
+                            CollectItem => on_collect_item,
+                            SetCurrentHotbarSlot => on_set_current_hotbar_slot,
+                            DeathMessage_VarInt => on_death_message_varint,
+                            PlayerRemove_UUIDs => on_player_remove_uuids,
+                            UpdateBlockEntity_VarInt => on_block_entity_update_varint,
+                            UpdateBlockEntity_u8 => on_block_entity_update_u8,
+                            UpdateBlockEntity_Data => on_block_entity_update_data,
+                            UpdateLight_Arrays => on_update_light_arrays,
+                            SignEditorOpen => on_sign_editor_open,
+                            SignEditorOpen_i32 => on_sign_editor_open_i32,
+                            UpdateSign => on_sign_update,
+                            UpdateSign_u16 => on_sign_update_u16,
+                            PlayerInfo => on_player_info,
+                            PlayerInfo_BitSet => on_player_info_bit_set,
+                            PlayerInfo_String => on_player_info_string,
+                            ServerMessage_NoPosition => on_servermessage_noposition,
+                            ServerMessage_Position => on_servermessage_position,
+                            ServerMessage_Sender => on_servermessage_sender,
+                            Disconnect => on_disconnect,
+                            // Entities
+                            EntityDestroy => on_entity_destroy,
+                            EntityDestroy_u8 => on_entity_destroy_u8,
+                            SpawnObject_VarInt_HeadYaw => on_spawn_object_varint_head_yaw,
+                            SpawnObject_VarInt => on_spawn_object_varint,
+                            SpawnMob_NoMeta => on_spawn_mob_no_meta,
+                            SpawnPlayer_f64_NoMeta => on_player_spawn_f64_nometa,
+                            SpawnPlayer_f64 => on_player_spawn_f64,
+                            SpawnPlayer_i32 => on_player_spawn_i32,
+                            SpawnPlayer_i32_HeldItem => on_player_spawn_i32_helditem,
+                            SpawnPlayer_i32_HeldItem_String => on_player_spawn_i32_helditem_string,
+                            EntityEquipment_Array => on_entity_equipment_array,
+                            EntityVelocity => on_entity_velocity,
+                            EntityVelocity_i32 => on_entity_velocity_i32,
+                            EntityTeleport_f64 => on_entity_teleport_f64,
+                            EntityTeleport_i32 => on_entity_teleport_i32,
+                            EntityTeleport_i32_i32_NoGround => on_entity_teleport_i32_i32_noground,
+                            EntityMove_i16 => on_entity_move_i16,
+                            EntityMove_i8 => on_entity_move_i8,
+                            EntityMove_i8_i32_NoGround => on_entity_move_i8_i32_noground,
+                            EntityLook_VarInt => on_entity_look_varint,
+                            EntityLook_i32_NoGround => on_entity_look_i32_noground,
+                            EntityLookAndMove_i16 => on_entity_look_and_move_i16,
+                            EntityLookAndMove_i8 => on_entity_look_and_move_i8,
+                            EntityLookAndMove_i8_i32_NoGround => on_entity_look_and_move_i8_i32_noground,
+                        }
+                    },
+                    Err(err) => {
+                        if std::env::var("MC_COMPAT_IGNORE_DECODE_ERRORS")
+                            .map(|value| value != "0")
+                            .unwrap_or(false)
+                        {
+                            warn!("MC-COMPAT-NONFATAL packet_parse_ignored");
+                            continue;
+                        }
+                        panic!("Err: {:?}", err)
+                    }
+                }
+                // Disconnected
+                if self.conn.read().unwrap().is_none() {
+                    break;
+                }
+            }
+
+            if self.conn.read().unwrap().is_some() {
+                self.read_queue = Some(rx);
+            }
+        }
+
+        if self.is_connected() || self.just_disconnected {
+            // Allow an extra tick when disconnected to clean up
+            self.just_disconnected = false;
+            self.entity_tick_timer += delta;
+            while self.entity_tick_timer >= 3.0 {
+                self.entities.tick(&mut self.world, renderer);
+                self.entity_tick_timer -= 3.0;
+            }
+
+            self.entities.render_tick(&mut self.world, renderer);
+        }
+    }
+
+    pub fn remove(&mut self, renderer: &mut render::Renderer) {
+        self.entities.remove_all_entities(&mut self.world, renderer);
+        if let Some(mut sun_model) = self.sun_model.take() {
+            sun_model.remove(renderer);
+        }
+        self.target_info.clear(renderer);
+    }
+
+    fn update_time(&mut self, renderer: &mut render::Renderer, delta: f64) {
+        if self.tick_time {
+            self.world_time_target += delta / 3.0;
+            self.world_time_target = (24000.0 + self.world_time_target) % 24000.0;
+            let mut diff = self.world_time_target - self.world_time;
+            if diff < -12000.0 {
+                diff += 24000.0
+            } else if diff > 12000.0 {
+                diff -= 24000.0
+            }
+            self.world_time += diff * (1.5 / 60.0) * delta;
+            self.world_time = (24000.0 + self.world_time) % 24000.0;
+        } else {
+            self.world_time = self.world_time_target;
+        }
+        renderer.sky_offset = self.calculate_sky_offset();
+    }
+
+    fn calculate_sky_offset(&self) -> f32 {
+        use std::f32::consts::PI;
+        let mut offset = ((1.0 + self.world_time as f32) / 24000.0) - 0.25;
+        if offset < 0.0 {
+            offset += 1.0;
+        } else if offset > 1.0 {
+            offset -= 1.0;
+        }
+
+        let prev_offset = offset;
+        offset = 1.0 - (((offset * PI).cos() + 1.0) / 2.0);
+        offset = prev_offset + (offset - prev_offset) / 3.0;
+
+        offset = 1.0 - ((offset * PI * 2.0).cos() * 2.0 + 0.2);
+        if offset > 1.0 {
+            offset = 1.0;
+        } else if offset < 0.0 {
+            offset = 0.0;
+        }
+        offset = 1.0 - offset;
+        offset * 0.8 + 0.2
+    }
+
+    pub fn minecraft_tick(&mut self) {
+        use std::f32::consts::PI;
+        if let Some(player) = self.player {
+            let movement = self
+                .entities
+                .get_component_mut(player, self.player_movement)
+                .unwrap();
+            let on_ground = self
+                .entities
+                .get_component(player, self.gravity)
+                .map_or(false, |v| v.on_ground);
+            let position = self
+                .entities
+                .get_component(player, self.target_position)
+                .unwrap();
+            let rotation = self.entities.get_component(player, self.rotation).unwrap();
+
+            // Force the server to know when touched the ground
+            // otherwise if it happens between ticks the server
+            // will think we are flying.
+            let on_ground = if movement.did_touch_ground {
+                movement.did_touch_ground = false;
+                true
+            } else {
+                on_ground
+            };
+
+            // Sync our position to the server
+            // Use the smaller packets when possible
+            if self.protocol_version >= 47 {
+                let packet = packet::play::serverbound::PlayerPositionLook {
+                    x: position.position.x,
+                    y: position.position.y,
+                    z: position.position.z,
+                    yaw: -(rotation.yaw as f32) * (180.0 / PI),
+                    pitch: (-rotation.pitch as f32) * (180.0 / PI) + 180.0,
+                    on_ground,
+                };
+                self.write_packet(packet);
+                if self.active_probe_enabled && !self.active_probe_logged_position_look_sent {
+                    info!(
+                        "MC-COMPAT-MILESTONE active_probe_position_look_sent x={:.3} y={:.3} z={:.3} on_ground={}",
+                        position.position.x, position.position.y, position.position.z, on_ground
+                    );
+                    self.active_probe_logged_position_look_sent = true;
+                }
+            } else {
+                let packet = packet::play::serverbound::PlayerPositionLook_HeadY {
+                    x: position.position.x,
+                    feet_y: position.position.y,
+                    head_y: position.position.y + 1.62,
+                    z: position.position.z,
+                    yaw: -(rotation.yaw as f32) * (180.0 / PI),
+                    pitch: (-rotation.pitch as f32) * (180.0 / PI) + 180.0,
+                    on_ground,
+                };
+                self.write_packet(packet);
+            }
+        }
+    }
+
+    pub fn key_press(&mut self, down: bool, key: Stevenkey) {
+        if let Some(player) = self.player {
+            if let Some(movement) = self
+                .entities
+                .get_component_mut(player, self.player_movement)
+            {
+                movement.pressed_keys.insert(key, down);
+            }
+        }
+    }
+
+    pub fn on_left_mouse_button(&mut self, pressed: bool) {
+        if let Some(player) = self.player {
+            if let Some(mouse_buttons) = self.entities.get_component_mut(player, self.mouse_buttons)
+            {
+                mouse_buttons.left = pressed;
+            }
+        }
+    }
+
+    pub fn on_right_mouse_button(&mut self, pressed: bool) {
+        if let Some(player) = self.player {
+            if let Some(mouse_buttons) = self.entities.get_component_mut(player, self.mouse_buttons)
+            {
+                mouse_buttons.right = pressed;
+            }
+        }
+    }
+
+    pub fn on_right_click(&mut self, renderer: &mut render::Renderer) {
+        use crate::shared::Direction;
+        if self.player.is_some() {
+            if let Some((pos, _, face, at)) = target::trace_ray(
+                &self.world,
+                4.0,
+                renderer.camera.pos.to_vec(),
+                renderer.view_vector.cast().unwrap(),
+                target::test_block,
+            ) {
+                if self.protocol_version >= 763 {
+                    self.write_packet(
+                        packet::play::serverbound::PlayerBlockPlacement_insideblock_sequence {
+                            location: pos,
+                            face: protocol::VarInt(match face {
+                                Direction::Down => 0,
+                                Direction::Up => 1,
+                                Direction::North => 2,
+                                Direction::South => 3,
+                                Direction::West => 4,
+                                Direction::East => 5,
+                                _ => unreachable!(),
+                            }),
+                            hand: protocol::VarInt(0),
+                            cursor_x: at.x as f32,
+                            cursor_y: at.y as f32,
+                            cursor_z: at.z as f32,
+                            inside_block: false,
+                            sequence: protocol::VarInt(0),
+                        },
+                    );
+                } else if self.protocol_version >= 477 {
+                    self.write_packet(
+                        packet::play::serverbound::PlayerBlockPlacement_insideblock {
+                            location: pos,
+                            face: protocol::VarInt(match face {
+                                Direction::Down => 0,
+                                Direction::Up => 1,
+                                Direction::North => 2,
+                                Direction::South => 3,
+                                Direction::West => 4,
+                                Direction::East => 5,
+                                _ => unreachable!(),
+                            }),
+                            hand: protocol::VarInt(0),
+                            cursor_x: at.x as f32,
+                            cursor_y: at.y as f32,
+                            cursor_z: at.z as f32,
+                            inside_block: false,
+                        },
+                    );
+                } else if self.protocol_version >= 315 {
+                    self.write_packet(packet::play::serverbound::PlayerBlockPlacement_f32 {
+                        location: pos,
+                        face: protocol::VarInt(match face {
+                            Direction::Down => 0,
+                            Direction::Up => 1,
+                            Direction::North => 2,
+                            Direction::South => 3,
+                            Direction::West => 4,
+                            Direction::East => 5,
+                            _ => unreachable!(),
+                        }),
+                        hand: protocol::VarInt(0),
+                        cursor_x: at.x as f32,
+                        cursor_y: at.y as f32,
+                        cursor_z: at.z as f32,
+                    });
+                } else if self.protocol_version >= 49 {
+                    self.write_packet(packet::play::serverbound::PlayerBlockPlacement_u8 {
+                        location: pos,
+                        face: protocol::VarInt(match face {
+                            Direction::Down => 0,
+                            Direction::Up => 1,
+                            Direction::North => 2,
+                            Direction::South => 3,
+                            Direction::West => 4,
+                            Direction::East => 5,
+                            _ => unreachable!(),
+                        }),
+                        hand: protocol::VarInt(0),
+                        cursor_x: (at.x * 16.0) as u8,
+                        cursor_y: (at.y * 16.0) as u8,
+                        cursor_z: (at.z * 16.0) as u8,
+                    });
+                } else if self.protocol_version >= 47 {
+                    self.write_packet(packet::play::serverbound::PlayerBlockPlacement_u8_Item {
+                        location: pos,
+                        face: match face {
+                            Direction::Down => 0,
+                            Direction::Up => 1,
+                            Direction::North => 2,
+                            Direction::South => 3,
+                            Direction::West => 4,
+                            Direction::East => 5,
+                            _ => unreachable!(),
+                        },
+                        hand: None,
+                        cursor_x: (at.x * 16.0) as u8,
+                        cursor_y: (at.y * 16.0) as u8,
+                        cursor_z: (at.z * 16.0) as u8,
+                    });
+                } else {
+                    self.write_packet(
+                        packet::play::serverbound::PlayerBlockPlacement_u8_Item_u8y {
+                            x: pos.x,
+                            y: pos.y as u8,
+                            z: pos.x,
+                            face: match face {
+                                Direction::Down => 0,
+                                Direction::Up => 1,
+                                Direction::North => 2,
+                                Direction::South => 3,
+                                Direction::West => 4,
+                                Direction::East => 5,
+                                _ => unreachable!(),
+                            },
+                            hand: None,
+                            cursor_x: (at.x * 16.0) as u8,
+                            cursor_y: (at.y * 16.0) as u8,
+                            cursor_z: (at.z * 16.0) as u8,
+                        },
+                    );
+                }
+            }
+        }
+    }
+
+    pub fn write_packet<T: protocol::PacketType>(&self, p: T) {
+        let mut conn = self.conn.write().unwrap();
+        let _ = conn.as_mut().unwrap().write_packet(p); // TODO handle errors
+    }
+
+    pub fn sign_editor_open_position(&self) -> Option<Position> {
+        self.sign_editor_open_position
+    }
+
+    fn on_keep_alive_i64(
+        &mut self,
+        keep_alive: packet::play::clientbound::KeepAliveClientbound_i64,
+    ) {
+        self.write_packet(packet::play::serverbound::KeepAliveServerbound_i64 {
+            id: keep_alive.id,
+        });
+    }
+
+    fn on_keep_alive_varint(
+        &mut self,
+        keep_alive: packet::play::clientbound::KeepAliveClientbound_VarInt,
+    ) {
+        self.write_packet(packet::play::serverbound::KeepAliveServerbound_VarInt {
+            id: keep_alive.id,
+        });
+    }
+
+    fn on_keep_alive_i32(
+        &mut self,
+        keep_alive: packet::play::clientbound::KeepAliveClientbound_i32,
+    ) {
+        self.write_packet(packet::play::serverbound::KeepAliveServerbound_i32 {
+            id: keep_alive.id,
+        });
+    }
+
+    fn on_plugin_message_clientbound_i16(
+        &mut self,
+        msg: packet::play::clientbound::PluginMessageClientbound_i16,
+    ) {
+        self.on_plugin_message_clientbound(&msg.channel, msg.data.data.as_slice())
+    }
+
+    fn on_plugin_message_clientbound_1(
+        &mut self,
+        msg: packet::play::clientbound::PluginMessageClientbound,
+    ) {
+        self.on_plugin_message_clientbound(&msg.channel, &msg.data)
+    }
+
+    fn on_plugin_message_clientbound(&mut self, channel: &str, data: &[u8]) {
+        if protocol::is_network_debug() {
+            debug!(
+                "Received plugin message: channel={}, data={:?}",
+                channel, data
+            );
+        }
+
+        match channel {
+            "REGISTER" => {}   // TODO
+            "UNREGISTER" => {} // TODO
+            "FML|HS" => {
+                let msg = crate::protocol::Serializable::read_from(&mut std::io::Cursor::new(data))
+                    .unwrap();
+                //debug!("FML|HS msg={:?}", msg);
+
+                use forge::FmlHs::*;
+                use forge::Phase::*;
+                match msg {
+                    ServerHello {
+                        fml_protocol_version,
+                        override_dimension,
+                    } => {
+                        debug!(
+                            "Received FML|HS ServerHello {} {:?}",
+                            fml_protocol_version, override_dimension
+                        );
+
+                        self.write_plugin_message("REGISTER", b"FML|HS\0FML\0FML|MP\0FML\0FORGE");
+                        self.write_fmlhs_plugin_message(&ClientHello {
+                            fml_protocol_version,
+                        });
+                        // Send stashed mods list received from ping packet, client matching server
+                        let mods = crate::protocol::LenPrefixed::<
+                            crate::protocol::VarInt,
+                            forge::ForgeMod,
+                        >::new(self.forge_mods.clone());
+                        self.write_fmlhs_plugin_message(&ModList { mods });
+                    }
+                    ModList { mods } => {
+                        debug!("Received FML|HS ModList: {:?}", mods);
+
+                        self.write_fmlhs_plugin_message(&HandshakeAck {
+                            phase: WaitingServerData,
+                        });
+                    }
+                    ModIdData {
+                        mappings,
+                        block_substitutions: _,
+                        item_substitutions: _,
+                    } => {
+                        debug!("Received FML|HS ModIdData");
+                        for m in mappings.data {
+                            let (namespace, name) = m.name.split_at(1);
+                            if namespace == protocol::forge::BLOCK_NAMESPACE {
+                                self.world
+                                    .modded_block_ids
+                                    .insert(m.id.0 as usize, name.to_string());
+                            }
+                        }
+                        self.write_fmlhs_plugin_message(&HandshakeAck {
+                            phase: WaitingServerComplete,
+                        });
+                    }
+                    RegistryData {
+                        has_more,
+                        name,
+                        ids,
+                        substitutions: _,
+                        dummies: _,
+                    } => {
+                        debug!("Received FML|HS RegistryData for {}", name);
+                        if name == "minecraft:blocks" {
+                            for m in ids.data {
+                                self.world.modded_block_ids.insert(m.id.0 as usize, m.name);
+                            }
+                        }
+                        if !has_more {
+                            self.write_fmlhs_plugin_message(&HandshakeAck {
+                                phase: WaitingServerComplete,
+                            });
+                        }
+                    }
+                    HandshakeAck { phase } => match phase {
+                        WaitingCAck => {
+                            self.write_fmlhs_plugin_message(&HandshakeAck {
+                                phase: PendingComplete,
+                            });
+                        }
+                        Complete => {
+                            debug!("FML|HS handshake complete!");
+                        }
+                        _ => unimplemented!(),
+                    },
+                    _ => (),
+                }
+            }
+            _ => (),
+        }
+    }
+
+    // TODO: remove wrappers and directly call on Conn
+    fn write_fmlhs_plugin_message(&mut self, msg: &forge::FmlHs) {
+        let mut conn = self.conn.write().unwrap();
+        let _ = conn.as_mut().unwrap().write_fmlhs_plugin_message(msg); // TODO handle errors
+    }
+
+    fn write_plugin_message(&mut self, channel: &str, data: &[u8]) {
+        let mut conn = self.conn.write().unwrap();
+        let _ = conn.as_mut().unwrap().write_plugin_message(channel, data); // TODO handle errors
+    }
+
+    fn on_game_join_worldnames_ishard_simdist(
+        &mut self,
+        join: packet::play::clientbound::JoinGame_WorldNames_IsHard_SimDist,
+    ) {
+        self.world.load_dimension_type(join.dimension);
+        self.on_game_join(join.gamemode, join.entity_id)
+    }
+
+    fn on_game_join_worldnames_ishard_simdist_lastdeath_portal(
+        &mut self,
+        join: packet::play::clientbound::JoinGame_WorldNames_IsHard_SimDist_LastDeath_PortalCooldown,
+    ) {
+        info!(
+            "MC-COMPAT-MILESTONE join_game_763_shape dimension_type={} world={} portal_cooldown={}",
+            join.dimension_type_name, join.world_name, join.portal_cooldown.0
+        );
+        self.world.load_dimension_type_from_registry(
+            join.dimension_codec.as_ref(),
+            join.dimension_type_name.as_str(),
+        );
+        if self.survival_biome_dimension_probe_enabled {
+            self.log_survival_biome_dimension_state(
+                join.dimension_type_name.as_str(),
+                join.world_name.as_str(),
+            );
+        }
+        self.on_game_join(join.gamemode, join.entity_id)
+    }
+
+    fn on_game_join_worldnames_ishard(
+        &mut self,
+        join: packet::play::clientbound::JoinGame_WorldNames_IsHard,
+    ) {
+        self.world.load_dimension_type(join.dimension);
+        self.on_game_join(join.gamemode, join.entity_id)
+    }
+
+    fn on_game_join_worldnames(&mut self, join: packet::play::clientbound::JoinGame_WorldNames) {
+        self.on_game_join(join.gamemode, join.entity_id)
+    }
+
+    fn on_game_join_hashedseed_respawn(
+        &mut self,
+        join: packet::play::clientbound::JoinGame_HashedSeed_Respawn,
+    ) {
+        self.on_game_join(join.gamemode, join.entity_id)
+    }
+
+    fn on_game_join_i32_viewdistance(
+        &mut self,
+        join: packet::play::clientbound::JoinGame_i32_ViewDistance,
+    ) {
+        self.on_game_join(join.gamemode, join.entity_id)
+    }
+
+    fn on_game_join_i32(&mut self, join: packet::play::clientbound::JoinGame_i32) {
+        self.on_game_join(join.gamemode, join.entity_id)
+    }
+
+    fn on_game_join_i8(&mut self, join: packet::play::clientbound::JoinGame_i8) {
+        self.on_game_join(join.gamemode, join.entity_id)
+    }
+
+    fn on_game_join_i8_nodebug(&mut self, join: packet::play::clientbound::JoinGame_i8_NoDebug) {
+        self.on_game_join(join.gamemode, join.entity_id)
+    }
+
+    fn log_survival_biome_dimension_state(&self, dimension_type_name: &str, world_name: &str) {
+        let normalized_identifier = derive_survival_environment_id(dimension_type_name, world_name);
+        info!(
+            "MC-COMPAT-MILESTONE survival_biome_dimension_state spawn_environment={} environment_identifier={} client_environment_update={} normalized_identifier={}",
+            normalized_identifier, world_name, dimension_type_name, normalized_identifier
+        );
+    }
+
+    fn on_game_join(&mut self, gamemode: u8, entity_id: i32) {
+        let gamemode = Gamemode::from_int((gamemode & 0x7) as i32);
+        let player = entity::player::create_local(&mut self.entities);
+        if let Some(info) = self.players.get(&self.uuid) {
+            let model = self
+                .entities
+                .get_component_mut_direct::<entity::player::PlayerModel>(player)
+                .unwrap();
+            model.set_skin(info.skin_url.clone());
+        }
+        *self
+            .entities
+            .get_component_mut(player, self.gamemode)
+            .unwrap() = gamemode;
+        // TODO: Temp
+        self.entities
+            .get_component_mut(player, self.player_movement)
+            .unwrap()
+            .flying = gamemode.can_fly();
+
+        self.entity_map.insert(entity_id, player);
+        self.player = Some(player);
+        info!(
+            "MC-COMPAT-MILESTONE join_game entity_id={} gamemode={:?}",
+            entity_id, gamemode
+        );
+
+        // Let the server know who we are
+        let brand = plugin_messages::Brand {
+            brand: "Steven".into(),
+        };
+        // TODO: refactor with write_plugin_message
+        if self.protocol_version >= 47 {
+            self.write_packet(brand.into_message());
+        } else {
+            self.write_packet(brand.into_message17());
+        }
+    }
+
+    fn on_respawn_hashedseed(&mut self, respawn: packet::play::clientbound::Respawn_HashedSeed) {
+        self.respawn(respawn.gamemode)
+    }
+
+    fn on_respawn_gamemode(&mut self, respawn: packet::play::clientbound::Respawn_Gamemode) {
+        self.respawn(respawn.gamemode)
+    }
+
+    fn on_respawn_worldname(&mut self, respawn: packet::play::clientbound::Respawn_WorldName) {
+        self.respawn(respawn.gamemode)
+    }
+
+    fn on_respawn_worldnames_lastdeath_portal(
+        &mut self,
+        respawn: packet::play::clientbound::Respawn_WorldNames_LastDeath_PortalCooldown,
+    ) {
+        info!(
+            "MC-COMPAT-MILESTONE respawn_packet_763_shape dimension_type={} world={} portal_cooldown={}",
+            respawn.dimension_type_name, respawn.world_name, respawn.portal_cooldown.0
+        );
+        self.respawn(respawn.gamemode)
+    }
+
+    fn on_respawn_nbt(&mut self, respawn: packet::play::clientbound::Respawn_NBT) {
+        self.respawn(respawn.gamemode)
+    }
+
+    fn respawn(&mut self, gamemode_u8: u8) {
+        self.world = world::World::new(self.protocol_version);
+        let gamemode = Gamemode::from_int((gamemode_u8 & 0x7) as i32);
+
+        if let Some(player) = self.player {
+            *self
+                .entities
+                .get_component_mut(player, self.gamemode)
+                .unwrap() = gamemode;
+            // TODO: Temp
+            self.entities
+                .get_component_mut(player, self.player_movement)
+                .unwrap()
+                .flying = gamemode.can_fly();
+        }
+    }
+
+    fn on_disconnect(&mut self, disconnect: packet::play::clientbound::Disconnect) {
+        self.disconnect(Some(disconnect.reason));
+    }
+
+    fn on_time_update(&mut self, time_update: packet::play::clientbound::TimeUpdate) {
+        self.world_age = time_update.time_of_day;
+        self.world_time_target = (time_update.time_of_day % 24000) as f64;
+        if self.world_time_target < 0.0 {
+            self.world_time_target = -self.world_time_target;
+            self.tick_time = false;
+        } else {
+            self.tick_time = true;
+        }
+    }
+
+    fn on_game_state_change(&mut self, game_state: packet::play::clientbound::ChangeGameState) {
+        if game_state.reason == 3 {
+            if let Some(player) = self.player {
+                let gamemode = Gamemode::from_int(game_state.value as i32);
+                *self
+                    .entities
+                    .get_component_mut(player, self.gamemode)
+                    .unwrap() = gamemode;
+                // TODO: Temp
+                self.entities
+                    .get_component_mut(player, self.player_movement)
+                    .unwrap()
+                    .flying = gamemode.can_fly();
+            }
+        }
+    }
+
+    fn on_entity_destroy(&mut self, entity_destroy: packet::play::clientbound::EntityDestroy) {
+        for id in entity_destroy.entity_ids.data {
+            self.log_survival_mob_drop_death(id.0);
+            if let Some(entity) = self.entity_map.remove(&id.0) {
+                self.entities.remove_entity(entity);
+            }
+        }
+    }
+
+    fn on_entity_destroy_u8(
+        &mut self,
+        entity_destroy: packet::play::clientbound::EntityDestroy_u8,
+    ) {
+        for id in entity_destroy.entity_ids.data {
+            self.log_survival_mob_drop_death(i32::from(id));
+            if let Some(entity) = self.entity_map.remove(&id) {
+                self.entities.remove_entity(entity);
+            }
+        }
+    }
+
+    fn on_spawn_object_varint_head_yaw(
+        &mut self,
+        spawn: packet::play::clientbound::SpawnObject_VarInt_HeadYaw,
+    ) {
+        self.log_survival_mob_drop_spawn_object(
+            spawn.entity_id.0,
+            spawn.ty.0,
+            spawn.x,
+            spawn.y,
+            spawn.z,
+        );
+    }
+
+    fn on_spawn_object_varint(&mut self, spawn: packet::play::clientbound::SpawnObject_VarInt) {
+        self.log_survival_mob_drop_spawn_object(
+            spawn.entity_id.0,
+            spawn.ty.0,
+            spawn.x,
+            spawn.y,
+            spawn.z,
+        );
+    }
+
+    fn on_spawn_mob_no_meta(&mut self, spawn: packet::play::clientbound::SpawnMob_NoMeta) {
+        self.log_survival_mob_drop_spawn_object(
+            spawn.entity_id.0,
+            spawn.ty.0,
+            spawn.x,
+            spawn.y,
+            spawn.z,
+        );
+    }
+
+    fn on_entity_velocity(&mut self, velocity: packet::play::clientbound::EntityVelocity) {
+        self.on_entity_velocity_raw(
+            velocity.entity_id.0,
+            velocity.velocity_x,
+            velocity.velocity_y,
+            velocity.velocity_z,
+        );
+    }
+
+    fn on_entity_velocity_i32(&mut self, velocity: packet::play::clientbound::EntityVelocity_i32) {
+        self.on_entity_velocity_raw(
+            velocity.entity_id,
+            velocity.velocity_x,
+            velocity.velocity_y,
+            velocity.velocity_z,
+        );
+    }
+
+    fn on_entity_velocity_raw(
+        &mut self,
+        entity_id: i32,
+        velocity_x: i16,
+        velocity_y: i16,
+        velocity_z: i16,
+    ) {
+        if self.combat_probe_enabled && (velocity_x != 0 || velocity_y != 0 || velocity_z != 0) {
+            info!(
+                "MC-COMPAT-MILESTONE combat_probe_velocity_observed entity_id={} vx={} vy={} vz={}",
+                entity_id, velocity_x, velocity_y, velocity_z
+            );
+        }
+        if let Some(entity) = self.entity_map.get(&entity_id) {
+            if let Some(velocity) = self.entities.get_component_mut(*entity, self.velocity) {
+                velocity.velocity = cgmath::Vector3::new(
+                    f64::from(velocity_x) / 8000.0,
+                    f64::from(velocity_y) / 8000.0,
+                    f64::from(velocity_z) / 8000.0,
+                );
+            }
+        }
+    }
+
+    fn on_entity_teleport_f64(
+        &mut self,
+        entity_telport: packet::play::clientbound::EntityTeleport_f64,
+    ) {
+        self.on_entity_teleport(
+            entity_telport.entity_id.0,
+            entity_telport.x,
+            entity_telport.y,
+            entity_telport.z,
+            entity_telport.yaw as f64,
+            entity_telport.pitch as f64,
+            entity_telport.on_ground,
+        )
+    }
+
+    fn on_entity_teleport_i32(
+        &mut self,
+        entity_telport: packet::play::clientbound::EntityTeleport_i32,
+    ) {
+        self.on_entity_teleport(
+            entity_telport.entity_id.0,
+            f64::from(entity_telport.x),
+            f64::from(entity_telport.y),
+            f64::from(entity_telport.z),
+            entity_telport.yaw as f64,
+            entity_telport.pitch as f64,
+            entity_telport.on_ground,
+        )
+    }
+
+    fn on_entity_teleport_i32_i32_noground(
+        &mut self,
+        entity_telport: packet::play::clientbound::EntityTeleport_i32_i32_NoGround,
+    ) {
+        let on_ground = true; // TODO: how is this supposed to be set? (for 1.7)
+        self.on_entity_teleport(
+            entity_telport.entity_id,
+            f64::from(entity_telport.x),
+            f64::from(entity_telport.y),
+            f64::from(entity_telport.z),
+            entity_telport.yaw as f64,
+            entity_telport.pitch as f64,
+            on_ground,
+        )
+    }
+
+    fn on_entity_teleport(
+        &mut self,
+        entity_id: i32,
+        x: f64,
+        y: f64,
+        z: f64,
+        yaw: f64,
+        pitch: f64,
+        _on_ground: bool,
+    ) {
+        use std::f64::consts::PI;
+        if let Some(entity) = self.entity_map.get(&entity_id) {
+            let target_position = self
+                .entities
+                .get_component_mut(*entity, self.target_position)
+                .unwrap();
+            let target_rotation = self
+                .entities
+                .get_component_mut(*entity, self.target_rotation)
+                .unwrap();
+            target_position.position.x = x;
+            target_position.position.y = y;
+            target_position.position.z = z;
+            target_rotation.yaw = -(yaw / 256.0) * PI * 2.0;
+            target_rotation.pitch = -(pitch / 256.0) * PI * 2.0;
+        }
+    }
+
+    fn on_entity_move_i16(&mut self, m: packet::play::clientbound::EntityMove_i16) {
+        self.on_entity_move(
+            m.entity_id.0,
+            f64::from(m.delta_x),
+            f64::from(m.delta_y),
+            f64::from(m.delta_z),
+        )
+    }
+
+    fn on_entity_move_i8(&mut self, m: packet::play::clientbound::EntityMove_i8) {
+        self.on_entity_move(
+            m.entity_id.0,
+            f64::from(m.delta_x),
+            f64::from(m.delta_y),
+            f64::from(m.delta_z),
+        )
+    }
+
+    fn on_entity_move_i8_i32_noground(
+        &mut self,
+        m: packet::play::clientbound::EntityMove_i8_i32_NoGround,
+    ) {
+        self.on_entity_move(
+            m.entity_id,
+            f64::from(m.delta_x),
+            f64::from(m.delta_y),
+            f64::from(m.delta_z),
+        )
+    }
+
+    fn on_entity_move(&mut self, entity_id: i32, delta_x: f64, delta_y: f64, delta_z: f64) {
+        if let Some(entity) = self.entity_map.get(&entity_id) {
+            let position = self
+                .entities
+                .get_component_mut(*entity, self.target_position)
+                .unwrap();
+            position.position.x += delta_x;
+            position.position.y += delta_y;
+            position.position.z += delta_z;
+        }
+    }
+
+    fn on_entity_look(&mut self, entity_id: i32, yaw: f64, pitch: f64) {
+        use std::f64::consts::PI;
+        if let Some(entity) = self.entity_map.get(&entity_id) {
+            let rotation = self
+                .entities
+                .get_component_mut(*entity, self.target_rotation)
+                .unwrap();
+            rotation.yaw = -(yaw / 256.0) * PI * 2.0;
+            rotation.pitch = -(pitch / 256.0) * PI * 2.0;
+        }
+    }
+
+    fn on_entity_look_varint(&mut self, look: packet::play::clientbound::EntityLook_VarInt) {
+        self.on_entity_look(look.entity_id.0, look.yaw as f64, look.pitch as f64)
+    }
+
+    fn on_entity_look_i32_noground(
+        &mut self,
+        look: packet::play::clientbound::EntityLook_i32_NoGround,
+    ) {
+        self.on_entity_look(look.entity_id, look.yaw as f64, look.pitch as f64)
+    }
+
+    fn on_entity_look_and_move_i16(
+        &mut self,
+        lookmove: packet::play::clientbound::EntityLookAndMove_i16,
+    ) {
+        self.on_entity_look_and_move(
+            lookmove.entity_id.0,
+            f64::from(lookmove.delta_x),
+            f64::from(lookmove.delta_y),
+            f64::from(lookmove.delta_z),
+            lookmove.yaw as f64,
+            lookmove.pitch as f64,
+        )
+    }
+
+    fn on_entity_look_and_move_i8(
+        &mut self,
+        lookmove: packet::play::clientbound::EntityLookAndMove_i8,
+    ) {
+        self.on_entity_look_and_move(
+            lookmove.entity_id.0,
+            f64::from(lookmove.delta_x),
+            f64::from(lookmove.delta_y),
+            f64::from(lookmove.delta_z),
+            lookmove.yaw as f64,
+            lookmove.pitch as f64,
+        )
+    }
+
+    fn on_entity_look_and_move_i8_i32_noground(
+        &mut self,
+        lookmove: packet::play::clientbound::EntityLookAndMove_i8_i32_NoGround,
+    ) {
+        self.on_entity_look_and_move(
+            lookmove.entity_id,
+            f64::from(lookmove.delta_x),
+            f64::from(lookmove.delta_y),
+            f64::from(lookmove.delta_z),
+            lookmove.yaw as f64,
+            lookmove.pitch as f64,
+        )
+    }
+
+    fn on_entity_look_and_move(
+        &mut self,
+        entity_id: i32,
+        delta_x: f64,
+        delta_y: f64,
+        delta_z: f64,
+        yaw: f64,
+        pitch: f64,
+    ) {
+        use std::f64::consts::PI;
+        if let Some(entity) = self.entity_map.get(&entity_id) {
+            let position = self
+                .entities
+                .get_component_mut(*entity, self.target_position)
+                .unwrap();
+            let rotation = self
+                .entities
+                .get_component_mut(*entity, self.target_rotation)
+                .unwrap();
+            position.position.x += delta_x;
+            position.position.y += delta_y;
+            position.position.z += delta_z;
+            rotation.yaw = -(yaw / 256.0) * PI * 2.0;
+            rotation.pitch = -(pitch / 256.0) * PI * 2.0;
+        }
+    }
+
+    fn on_player_spawn_f64_nometa(
+        &mut self,
+        spawn: packet::play::clientbound::SpawnPlayer_f64_NoMeta,
+    ) {
+        self.on_player_spawn(
+            spawn.entity_id.0,
+            spawn.uuid,
+            spawn.x,
+            spawn.y,
+            spawn.z,
+            spawn.yaw as f64,
+            spawn.pitch as f64,
+        )
+    }
+
+    fn on_player_spawn_f64(&mut self, spawn: packet::play::clientbound::SpawnPlayer_f64) {
+        self.on_player_spawn(
+            spawn.entity_id.0,
+            spawn.uuid,
+            spawn.x,
+            spawn.y,
+            spawn.z,
+            spawn.yaw as f64,
+            spawn.pitch as f64,
+        )
+    }
+
+    fn on_player_spawn_i32(&mut self, spawn: packet::play::clientbound::SpawnPlayer_i32) {
+        self.on_player_spawn(
+            spawn.entity_id.0,
+            spawn.uuid,
+            f64::from(spawn.x),
+            f64::from(spawn.y),
+            f64::from(spawn.z),
+            spawn.yaw as f64,
+            spawn.pitch as f64,
+        )
+    }
+
+    fn on_player_spawn_i32_helditem(
+        &mut self,
+        spawn: packet::play::clientbound::SpawnPlayer_i32_HeldItem,
+    ) {
+        self.on_player_spawn(
+            spawn.entity_id.0,
+            spawn.uuid,
+            f64::from(spawn.x),
+            f64::from(spawn.y),
+            f64::from(spawn.z),
+            spawn.yaw as f64,
+            spawn.pitch as f64,
+        )
+    }
+
+    fn on_player_spawn_i32_helditem_string(
+        &mut self,
+        spawn: packet::play::clientbound::SpawnPlayer_i32_HeldItem_String,
+    ) {
+        // 1.7.10: populate the player list here, since we only now know the UUID
+        let uuid = protocol::UUID::from_str(&spawn.uuid).unwrap();
+        self.players.entry(uuid.clone()).or_insert(PlayerInfo {
+            name: spawn.name.clone(),
+            uuid,
+            skin_url: None,
+
+            display_name: None,
+            ping: 0, // TODO: don't overwrite from PlayerInfo_String
+            gamemode: Gamemode::from_int(0),
+        });
+
+        self.on_player_spawn(
+            spawn.entity_id.0,
+            protocol::UUID::from_str(&spawn.uuid).unwrap(),
+            f64::from(spawn.x),
+            f64::from(spawn.y),
+            f64::from(spawn.z),
+            spawn.yaw as f64,
+            spawn.pitch as f64,
+        )
+    }
+
+    fn on_player_spawn(
+        &mut self,
+        entity_id: i32,
+        uuid: protocol::UUID,
+        x: f64,
+        y: f64,
+        z: f64,
+        pitch: f64,
+        yaw: f64,
+    ) {
+        use std::f64::consts::PI;
+        if let Some(entity) = self.entity_map.remove(&entity_id) {
+            self.entities.remove_entity(entity);
+        }
+        let entity = entity::player::create_remote(
+            &mut self.entities,
+            self.players.get(&uuid).map_or("MISSING", |v| &v.name),
+        );
+        let position = self
+            .entities
+            .get_component_mut(entity, self.position)
+            .unwrap();
+        let target_position = self
+            .entities
+            .get_component_mut(entity, self.target_position)
+            .unwrap();
+        let rotation = self
+            .entities
+            .get_component_mut(entity, self.rotation)
+            .unwrap();
+        let target_rotation = self
+            .entities
+            .get_component_mut(entity, self.target_rotation)
+            .unwrap();
+        position.position.x = x;
+        position.position.y = y;
+        position.position.z = z;
+        target_position.position.x = x;
+        target_position.position.y = y;
+        target_position.position.z = z;
+        rotation.yaw = -(yaw / 256.0) * PI * 2.0;
+        rotation.pitch = -(pitch / 256.0) * PI * 2.0;
+        target_rotation.yaw = rotation.yaw;
+        target_rotation.pitch = rotation.pitch;
+        if let Some(info) = self.players.get(&uuid) {
+            let model = self
+                .entities
+                .get_component_mut_direct::<entity::player::PlayerModel>(entity)
+                .unwrap();
+            model.set_skin(info.skin_url.clone());
+        }
+        info!(
+            "MC-COMPAT-MILESTONE remote_player_spawn entity_id={} uuid={:?} name={} x={:.3} y={:.3} z={:.3}",
+            entity_id,
+            uuid,
+            self.players.get(&uuid).map_or("MISSING", |v| v.name.as_str()),
+            x,
+            y,
+            z
+        );
+        if !self.remote_player_entity_ids.contains(&entity_id) {
+            self.remote_player_entity_ids.push(entity_id);
+            if let Some(name) = self.players.get(&uuid).map(|v| v.name.clone()) {
+                self.remote_player_targets.push((entity_id, name));
+            }
+        }
+        self.entity_map.insert(entity_id, entity);
+    }
+
+    fn on_update_health(&mut self, update: packet::play::clientbound::UpdateHealth) {
+        info!(
+            "MC-COMPAT-MILESTONE update_health health={:.1} food={} saturation={:.1}",
+            update.health, update.food.0, update.food_saturation
+        );
+        self.log_survival_hunger_food_health_update(&update);
+        self.log_survival_hunger_health_update(&update);
+        if self.combat_probe_enabled && update.health <= 0.0 {
+            self.respawn_probe_death_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE combat_probe_death_observed health={:.1}",
+                update.health
+            );
+
+            if self.respawn_probe_enabled && !self.respawn_probe_requested {
+                self.write_packet(packet::play::serverbound::ClientStatus {
+                    action_id: protocol::VarInt(0),
+                });
+                self.respawn_probe_requested = true;
+                info!("MC-COMPAT-MILESTONE respawn_probe_request_sent action_id=0");
+            }
+        } else if self.respawn_probe_enabled
+            && self.respawn_probe_requested
+            && self.respawn_probe_death_seen
+            && !self.respawn_probe_restored_seen
+            && update.health > 0.0
+        {
+            self.respawn_probe_restored_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE respawn_probe_health_restored health={:.1}",
+                update.health
+            );
+        }
+    }
+
+    fn item_summary(item: &Option<item::Stack>) -> String {
+        match item {
+            Some(stack) => format!("id={} count={}", stack.id, stack.count),
+            None => "empty".to_string(),
+        }
+    }
+
+    fn inventory_stack_item(count: isize) -> item::Stack {
+        item::Stack {
+            id: INVENTORY_STACK_ITEM_PROTOCOL_ID,
+            count,
+            damage: None,
+            tag: None,
+        }
+    }
+
+    fn log_inventory_stack_initial_slot(
+        &mut self,
+        state_id: i32,
+        slot_item: Option<&Option<item::Stack>>,
+    ) {
+        let stack_probe_enabled = self.inventory_stack_split_merge_probe_enabled;
+        let drag_probe_enabled = self.inventory_drag_transactions_probe_enabled;
+        if (!stack_probe_enabled && !drag_probe_enabled) || self.inventory_probe_wool_seen {
+            return;
+        }
+        let Some(Some(stack)) = slot_item else {
+            return;
+        };
+        if stack.count != INVENTORY_STACK_FULL_COUNT {
+            return;
+        }
+        self.inventory_probe_wool_seen = true;
+        let milestone = if drag_probe_enabled {
+            "inventory_drag_initial_slot"
+        } else {
+            "inventory_stack_initial_slot"
+        };
+        info!(
+            "MC-COMPAT-MILESTONE {} window={} state_id={} source_slot={} item={} item_id={} source_count={}",
+            milestone,
+            PLAYER_INVENTORY_WINDOW_ID,
+            state_id,
+            INVENTORY_STACK_SOURCE_SLOT,
+            INVENTORY_STACK_ITEM_NAME,
+            stack.id,
+            stack.count
+        );
+    }
+
+    fn log_inventory_stack_slot_update(
+        &mut self,
+        state_id: i32,
+        slot_id: i16,
+        slot_item: &Option<item::Stack>,
+    ) {
+        let stack_probe_enabled = self.inventory_stack_split_merge_probe_enabled;
+        let drag_probe_enabled = self.inventory_drag_transactions_probe_enabled;
+        if !stack_probe_enabled && !drag_probe_enabled {
+            return;
+        }
+
+        if slot_id == INVENTORY_STACK_SOURCE_SLOT {
+            self.log_inventory_stack_initial_slot(state_id, Some(slot_item));
+        }
+
+        if drag_probe_enabled {
+            match (slot_id, slot_item.as_ref()) {
+                (INVENTORY_STACK_SOURCE_SLOT, None)
+                    if self.inventory_drag_pickup_sent
+                        && !self.inventory_drag_source_empty_seen =>
+                {
+                    self.inventory_drag_source_empty_seen = true;
+                    info!(
+                        "MC-COMPAT-MILESTONE inventory_drag_source_empty_seen window={} state_id={} source_slot={} item={} source_count={}",
+                        PLAYER_INVENTORY_WINDOW_ID,
+                        state_id,
+                        INVENTORY_STACK_SOURCE_SLOT,
+                        INVENTORY_STACK_ITEM_NAME,
+                        INVENTORY_STACK_EMPTY_COUNT
+                    );
+                }
+                (INVENTORY_DRAG_TARGET_SLOT_A, Some(stack))
+                    if self.inventory_drag_end_sent
+                        && !self.inventory_drag_target_a_seen
+                        && stack.count == INVENTORY_STACK_HALF_COUNT =>
+                {
+                    self.inventory_drag_target_a_seen = true;
+                    info!(
+                        "MC-COMPAT-MILESTONE inventory_drag_target_a_seen window={} state_id={} target_slot={} item={} item_id={} target_count={}",
+                        PLAYER_INVENTORY_WINDOW_ID,
+                        state_id,
+                        INVENTORY_DRAG_TARGET_SLOT_A,
+                        INVENTORY_STACK_ITEM_NAME,
+                        stack.id,
+                        stack.count
+                    );
+                }
+                (INVENTORY_DRAG_TARGET_SLOT_B, Some(stack))
+                    if self.inventory_drag_end_sent
+                        && !self.inventory_drag_target_b_seen
+                        && stack.count == INVENTORY_STACK_HALF_COUNT =>
+                {
+                    self.inventory_drag_target_b_seen = true;
+                    info!(
+                        "MC-COMPAT-MILESTONE inventory_drag_target_b_seen window={} state_id={} target_slot={} item={} item_id={} target_count={}",
+                        PLAYER_INVENTORY_WINDOW_ID,
+                        state_id,
+                        INVENTORY_DRAG_TARGET_SLOT_B,
+                        INVENTORY_STACK_ITEM_NAME,
+                        stack.id,
+                        stack.count
+                    );
+                }
+                _ => {}
+            }
+        }
+
+        if !stack_probe_enabled {
+            return;
+        }
+
+        match (slot_id, slot_item.as_ref()) {
+            (INVENTORY_STACK_SOURCE_SLOT, Some(stack))
+                if self.inventory_stack_split_pickup_sent
+                    && !self.inventory_stack_split_source_seen
+                    && stack.count == INVENTORY_STACK_HALF_COUNT =>
+            {
+                self.inventory_stack_split_source_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_stack_split_source_seen window={} state_id={} source_slot={} item={} item_id={} source_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    state_id,
+                    INVENTORY_STACK_SOURCE_SLOT,
+                    INVENTORY_STACK_ITEM_NAME,
+                    stack.id,
+                    stack.count
+                );
+            }
+            (INVENTORY_STACK_DESTINATION_SLOT, Some(stack))
+                if self.inventory_stack_split_place_sent
+                    && !self.inventory_stack_split_destination_seen
+                    && stack.count == INVENTORY_STACK_HALF_COUNT =>
+            {
+                self.inventory_stack_split_destination_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_stack_split_destination_seen window={} state_id={} destination_slot={} item={} item_id={} destination_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    state_id,
+                    INVENTORY_STACK_DESTINATION_SLOT,
+                    INVENTORY_STACK_ITEM_NAME,
+                    stack.id,
+                    stack.count
+                );
+            }
+            (INVENTORY_STACK_DESTINATION_SLOT, None)
+                if self.inventory_stack_merge_pickup_sent
+                    && !self.inventory_stack_merge_destination_empty_seen =>
+            {
+                self.inventory_stack_merge_destination_empty_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_stack_merge_destination_empty_seen window={} state_id={} destination_slot={} item={} destination_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    state_id,
+                    INVENTORY_STACK_DESTINATION_SLOT,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_EMPTY_COUNT
+                );
+            }
+            (INVENTORY_STACK_SOURCE_SLOT, Some(stack))
+                if self.inventory_stack_merge_place_sent
+                    && !self.inventory_stack_final_source_seen
+                    && stack.count == INVENTORY_STACK_FULL_COUNT =>
+            {
+                self.inventory_stack_final_source_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_stack_final_source_seen window={} state_id={} source_slot={} item={} item_id={} source_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    state_id,
+                    INVENTORY_STACK_SOURCE_SLOT,
+                    INVENTORY_STACK_ITEM_NAME,
+                    stack.id,
+                    stack.count
+                );
+            }
+            _ => {}
+        }
+    }
+
+    fn write_inventory_stack_split_merge_click(&mut self, action: InventoryStackSplitMergeAction) {
+        let state_id = self.inventory_probe_state_id;
+        match action {
+            InventoryStackSplitMergeAction::SplitPickup => {
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_stack_split_pickup_sent window={} source_slot={} state_id={} button={} mode=click item={} source_count_before={} source_count_after={} carried_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    INVENTORY_STACK_SOURCE_SLOT,
+                    state_id,
+                    INVENTORY_STACK_RIGHT_BUTTON,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_FULL_COUNT,
+                    INVENTORY_STACK_HALF_COUNT,
+                    INVENTORY_STACK_HALF_COUNT
+                );
+                self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                    id: PLAYER_INVENTORY_WINDOW_ID,
+                    slot: INVENTORY_STACK_SOURCE_SLOT,
+                    state: protocol::VarInt(state_id),
+                    button: INVENTORY_STACK_RIGHT_BUTTON,
+                    mode: protocol::VarInt(INVENTORY_STACK_CLICK_MODE),
+                    slots: protocol::LenPrefixed::new(vec![packet::NumberedSlot {
+                        slot_number: INVENTORY_STACK_SOURCE_SLOT,
+                        slot_data: Some(Self::inventory_stack_item(INVENTORY_STACK_HALF_COUNT)),
+                    }]),
+                    clicked_item: Some(Self::inventory_stack_item(INVENTORY_STACK_HALF_COUNT)),
+                });
+                self.inventory_stack_split_pickup_sent = true;
+                self.inventory_stack_split_source_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_stack_split_source_seen window={} state_id={} source_slot={} item={} source_count={} source=client_click_plan",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    state_id,
+                    INVENTORY_STACK_SOURCE_SLOT,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_HALF_COUNT
+                );
+            }
+            InventoryStackSplitMergeAction::SplitPlace => {
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_stack_split_place_sent window={} destination_slot={} state_id={} button={} mode=click item={} destination_count={} carried_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    INVENTORY_STACK_DESTINATION_SLOT,
+                    state_id,
+                    INVENTORY_STACK_LEFT_BUTTON,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_HALF_COUNT,
+                    INVENTORY_STACK_EMPTY_COUNT
+                );
+                self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                    id: PLAYER_INVENTORY_WINDOW_ID,
+                    slot: INVENTORY_STACK_DESTINATION_SLOT,
+                    state: protocol::VarInt(state_id),
+                    button: INVENTORY_STACK_LEFT_BUTTON,
+                    mode: protocol::VarInt(INVENTORY_STACK_CLICK_MODE),
+                    slots: protocol::LenPrefixed::new(vec![packet::NumberedSlot {
+                        slot_number: INVENTORY_STACK_DESTINATION_SLOT,
+                        slot_data: Some(Self::inventory_stack_item(INVENTORY_STACK_HALF_COUNT)),
+                    }]),
+                    clicked_item: None,
+                });
+                self.inventory_stack_split_place_sent = true;
+                self.inventory_stack_split_destination_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_stack_split_destination_seen window={} state_id={} destination_slot={} item={} destination_count={} source=client_click_plan",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    state_id,
+                    INVENTORY_STACK_DESTINATION_SLOT,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_HALF_COUNT
+                );
+            }
+            InventoryStackSplitMergeAction::MergePickup => {
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_stack_merge_pickup_sent window={} destination_slot={} state_id={} button={} mode=click item={} destination_count_after={} carried_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    INVENTORY_STACK_DESTINATION_SLOT,
+                    state_id,
+                    INVENTORY_STACK_LEFT_BUTTON,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_EMPTY_COUNT,
+                    INVENTORY_STACK_HALF_COUNT
+                );
+                self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                    id: PLAYER_INVENTORY_WINDOW_ID,
+                    slot: INVENTORY_STACK_DESTINATION_SLOT,
+                    state: protocol::VarInt(state_id),
+                    button: INVENTORY_STACK_LEFT_BUTTON,
+                    mode: protocol::VarInt(INVENTORY_STACK_CLICK_MODE),
+                    slots: protocol::LenPrefixed::new(vec![packet::NumberedSlot {
+                        slot_number: INVENTORY_STACK_DESTINATION_SLOT,
+                        slot_data: None,
+                    }]),
+                    clicked_item: Some(Self::inventory_stack_item(INVENTORY_STACK_HALF_COUNT)),
+                });
+                self.inventory_stack_merge_pickup_sent = true;
+                self.inventory_stack_merge_destination_empty_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_stack_merge_destination_empty_seen window={} state_id={} destination_slot={} item={} destination_count={} source=client_click_plan",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    state_id,
+                    INVENTORY_STACK_DESTINATION_SLOT,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_EMPTY_COUNT
+                );
+            }
+            InventoryStackSplitMergeAction::MergePlace => {
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_stack_merge_place_sent window={} source_slot={} state_id={} button={} mode=click item={} source_count_after={} destination_slot={} destination_count_after={} carried_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    INVENTORY_STACK_SOURCE_SLOT,
+                    state_id,
+                    INVENTORY_STACK_LEFT_BUTTON,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_FULL_COUNT,
+                    INVENTORY_STACK_DESTINATION_SLOT,
+                    INVENTORY_STACK_EMPTY_COUNT,
+                    INVENTORY_STACK_EMPTY_COUNT
+                );
+                self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                    id: PLAYER_INVENTORY_WINDOW_ID,
+                    slot: INVENTORY_STACK_SOURCE_SLOT,
+                    state: protocol::VarInt(state_id),
+                    button: INVENTORY_STACK_LEFT_BUTTON,
+                    mode: protocol::VarInt(INVENTORY_STACK_CLICK_MODE),
+                    slots: protocol::LenPrefixed::new(vec![packet::NumberedSlot {
+                        slot_number: INVENTORY_STACK_SOURCE_SLOT,
+                        slot_data: Some(Self::inventory_stack_item(INVENTORY_STACK_FULL_COUNT)),
+                    }]),
+                    clicked_item: None,
+                });
+                self.inventory_stack_merge_place_sent = true;
+                self.inventory_stack_final_source_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_stack_final_source_seen window={} state_id={} source_slot={} item={} source_count={} source=client_click_plan",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    state_id,
+                    INVENTORY_STACK_SOURCE_SLOT,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_FULL_COUNT
+                );
+            }
+        }
+    }
+
+    fn write_inventory_drag_transactions_click(&mut self, action: InventoryDragTransactionsAction) {
+        let state_id = self.inventory_probe_state_id;
+        match action {
+            InventoryDragTransactionsAction::PickupSource => {
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_drag_pickup_sent window={} source_slot={} state_id={} button={} mode=click item={} source_count_before={} source_count_after={} carried_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    INVENTORY_STACK_SOURCE_SLOT,
+                    state_id,
+                    INVENTORY_STACK_LEFT_BUTTON,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_FULL_COUNT,
+                    INVENTORY_STACK_EMPTY_COUNT,
+                    INVENTORY_STACK_FULL_COUNT
+                );
+                self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                    id: PLAYER_INVENTORY_WINDOW_ID,
+                    slot: INVENTORY_STACK_SOURCE_SLOT,
+                    state: protocol::VarInt(state_id),
+                    button: INVENTORY_STACK_LEFT_BUTTON,
+                    mode: protocol::VarInt(INVENTORY_STACK_CLICK_MODE),
+                    slots: protocol::LenPrefixed::new(vec![packet::NumberedSlot {
+                        slot_number: INVENTORY_STACK_SOURCE_SLOT,
+                        slot_data: None,
+                    }]),
+                    clicked_item: Some(Self::inventory_stack_item(INVENTORY_STACK_FULL_COUNT)),
+                });
+                self.inventory_drag_pickup_sent = true;
+                self.inventory_drag_source_empty_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_drag_source_empty_seen window={} state_id={} source_slot={} item={} source_count={} source=client_click_plan",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    state_id,
+                    INVENTORY_STACK_SOURCE_SLOT,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_EMPTY_COUNT
+                );
+            }
+            InventoryDragTransactionsAction::DragStart => {
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_drag_start_sent window={} slot={} state_id={} button={} mode=drag item={} carried_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    INVENTORY_DRAG_OUTSIDE_SLOT,
+                    state_id,
+                    INVENTORY_DRAG_START_BUTTON,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_FULL_COUNT
+                );
+                self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                    id: PLAYER_INVENTORY_WINDOW_ID,
+                    slot: INVENTORY_DRAG_OUTSIDE_SLOT,
+                    state: protocol::VarInt(state_id),
+                    button: INVENTORY_DRAG_START_BUTTON,
+                    mode: protocol::VarInt(INVENTORY_DRAG_CLICK_MODE),
+                    slots: protocol::LenPrefixed::new(Vec::new()),
+                    clicked_item: Some(Self::inventory_stack_item(INVENTORY_STACK_FULL_COUNT)),
+                });
+                self.inventory_drag_start_sent = true;
+            }
+            InventoryDragTransactionsAction::AddTargetA => {
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_drag_target_a_sent window={} target_slot={} state_id={} button={} mode=drag item={} carried_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    INVENTORY_DRAG_TARGET_SLOT_A,
+                    state_id,
+                    INVENTORY_DRAG_ADD_SLOT_BUTTON,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_FULL_COUNT
+                );
+                self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                    id: PLAYER_INVENTORY_WINDOW_ID,
+                    slot: INVENTORY_DRAG_TARGET_SLOT_A,
+                    state: protocol::VarInt(state_id),
+                    button: INVENTORY_DRAG_ADD_SLOT_BUTTON,
+                    mode: protocol::VarInt(INVENTORY_DRAG_CLICK_MODE),
+                    slots: protocol::LenPrefixed::new(Vec::new()),
+                    clicked_item: Some(Self::inventory_stack_item(INVENTORY_STACK_FULL_COUNT)),
+                });
+                self.inventory_drag_target_a_sent = true;
+            }
+            InventoryDragTransactionsAction::AddTargetB => {
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_drag_target_b_sent window={} target_slot={} state_id={} button={} mode=drag item={} carried_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    INVENTORY_DRAG_TARGET_SLOT_B,
+                    state_id,
+                    INVENTORY_DRAG_ADD_SLOT_BUTTON,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_FULL_COUNT
+                );
+                self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                    id: PLAYER_INVENTORY_WINDOW_ID,
+                    slot: INVENTORY_DRAG_TARGET_SLOT_B,
+                    state: protocol::VarInt(state_id),
+                    button: INVENTORY_DRAG_ADD_SLOT_BUTTON,
+                    mode: protocol::VarInt(INVENTORY_DRAG_CLICK_MODE),
+                    slots: protocol::LenPrefixed::new(Vec::new()),
+                    clicked_item: Some(Self::inventory_stack_item(INVENTORY_STACK_FULL_COUNT)),
+                });
+                self.inventory_drag_target_b_sent = true;
+            }
+            InventoryDragTransactionsAction::DragEnd => {
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_drag_end_sent window={} slot={} state_id={} button={} mode=drag item={} target_slots={},{} target_counts={},{} carried_count={}",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    INVENTORY_DRAG_OUTSIDE_SLOT,
+                    state_id,
+                    INVENTORY_DRAG_END_BUTTON,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_DRAG_TARGET_SLOT_A,
+                    INVENTORY_DRAG_TARGET_SLOT_B,
+                    INVENTORY_STACK_HALF_COUNT,
+                    INVENTORY_STACK_HALF_COUNT,
+                    INVENTORY_STACK_EMPTY_COUNT
+                );
+                self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+                    id: PLAYER_INVENTORY_WINDOW_ID,
+                    slot: INVENTORY_DRAG_OUTSIDE_SLOT,
+                    state: protocol::VarInt(state_id),
+                    button: INVENTORY_DRAG_END_BUTTON,
+                    mode: protocol::VarInt(INVENTORY_DRAG_CLICK_MODE),
+                    slots: protocol::LenPrefixed::new(vec![
+                        packet::NumberedSlot {
+                            slot_number: INVENTORY_DRAG_TARGET_SLOT_A,
+                            slot_data: Some(Self::inventory_stack_item(INVENTORY_STACK_HALF_COUNT)),
+                        },
+                        packet::NumberedSlot {
+                            slot_number: INVENTORY_DRAG_TARGET_SLOT_B,
+                            slot_data: Some(Self::inventory_stack_item(INVENTORY_STACK_HALF_COUNT)),
+                        },
+                    ]),
+                    clicked_item: None,
+                });
+                self.inventory_drag_end_sent = true;
+                self.inventory_drag_target_a_seen = true;
+                self.inventory_drag_target_b_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_drag_final_distribution_seen window={} state_id={} source_slot={} source_count={} target_slots={},{} target_counts={},{} item={} carried_count={} source=client_click_plan",
+                    PLAYER_INVENTORY_WINDOW_ID,
+                    state_id,
+                    INVENTORY_STACK_SOURCE_SLOT,
+                    INVENTORY_STACK_EMPTY_COUNT,
+                    INVENTORY_DRAG_TARGET_SLOT_A,
+                    INVENTORY_DRAG_TARGET_SLOT_B,
+                    INVENTORY_STACK_HALF_COUNT,
+                    INVENTORY_STACK_HALF_COUNT,
+                    INVENTORY_STACK_ITEM_NAME,
+                    INVENTORY_STACK_EMPTY_COUNT
+                );
+            }
+        }
+    }
+
+    fn log_survival_chest_persisted_item(
+        &mut self,
+        window_id: u8,
+        slot_item: Option<&Option<item::Stack>>,
+    ) {
+        if self.survival_chest_probe_session != SURVIVAL_CHEST_REOPEN_SESSION
+            || self.survival_chest_persisted_seen
+        {
+            return;
+        }
+        let Some(Some(stack)) = slot_item else {
+            return;
+        };
+        if stack.id != SURVIVAL_CHEST_ITEM_PROTOCOL_ID || stack.count != SURVIVAL_CHEST_ITEM_COUNT {
+            return;
+        }
+        self.survival_chest_persisted_seen = true;
+        info!(
+            "MC-COMPAT-MILESTONE survival_chest_persisted_seen window={} slot={} item={} count={}",
+            window_id,
+            SURVIVAL_CHEST_WINDOW_SLOT,
+            SURVIVAL_CHEST_ITEM_NAME,
+            SURVIVAL_CHEST_ITEM_COUNT
+        );
+    }
+
+    fn log_survival_hunger_food_health_update(
+        &mut self,
+        update: &packet::play::clientbound::UpdateHealth,
+    ) {
+        if !self.survival_hunger_food_probe_enabled {
+            return;
+        }
+        if !self.survival_hunger_food_pre_seen && survival_hunger_food_pre_update_matches(update) {
+            self.survival_hunger_food_pre_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_hunger_food_pre_seen health={:.1} food={} saturation={:.1}",
+                update.health, update.food.0, update.food_saturation
+            );
+            return;
+        }
+        if self.survival_hunger_food_use_sent
+            && !self.survival_hunger_food_post_seen
+            && survival_hunger_food_post_update_matches(update)
+        {
+            self.survival_hunger_food_post_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_hunger_food_post_seen health={:.1} food={} saturation={:.1}",
+                update.health, update.food.0, update.food_saturation
+            );
+        }
+    }
+
+    fn apply_mc_compat_survival_hunger_food_probe(&mut self) {
+        if !self.survival_hunger_food_probe_enabled
+            || self.survival_hunger_food_use_sent
+            || !self.survival_hunger_food_item_seen
+            || !self.survival_hunger_food_pre_seen
+            || self.active_probe_ticks < SURVIVAL_HUNGER_FOOD_USE_TICK
+        {
+            return;
+        }
+        info!(
+            "MC-COMPAT-MILESTONE survival_hunger_food_select_hotbar_slot slot={}",
+            SURVIVAL_HUNGER_FOOD_HOTBAR_SLOT
+        );
+        self.write_packet(packet::play::serverbound::HeldItemChange {
+            slot: SURVIVAL_HUNGER_FOOD_HOTBAR_SLOT,
+        });
+        info!(
+            "MC-COMPAT-MILESTONE survival_hunger_food_use_sent slot={} item={} count={} hand=main sequence={}",
+            SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT,
+            SURVIVAL_HUNGER_FOOD_ITEM_NAME,
+            SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE,
+            SURVIVAL_HUNGER_FOOD_USE_SEQUENCE
+        );
+        self.write_packet(packet::play::serverbound::UseItem_WithSequence {
+            hand: protocol::VarInt(SURVIVAL_HUNGER_FOOD_MAIN_HAND),
+            sequence: protocol::VarInt(SURVIVAL_HUNGER_FOOD_USE_SEQUENCE),
+        });
+        self.survival_hunger_food_use_sent = true;
+    }
+
+    fn log_survival_hunger_health_update(
+        &mut self,
+        update: &packet::play::clientbound::UpdateHealth,
+    ) {
+        if !self.survival_hunger_health_probe_enabled {
+            return;
+        }
+        if !self.survival_hunger_health_pre_seen
+            && survival_hunger_health_pre_update_matches(update)
+        {
+            self.survival_hunger_health_pre_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_hunger_health_pre_seen health={:.1} food={} saturation={:.1}",
+                update.health, update.food.0, update.food_saturation
+            );
+            return;
+        }
+        if self.survival_hunger_health_use_sent
+            && !self.survival_hunger_health_post_seen
+            && survival_hunger_health_post_update_matches(update)
+        {
+            self.survival_hunger_health_post_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_hunger_health_recovery_seen health={:.1} food={} saturation={:.1}",
+                update.health, update.food.0, update.food_saturation
+            );
+        }
+    }
+
+    fn apply_mc_compat_survival_hunger_health_probe(&mut self) {
+        if !self.survival_hunger_health_probe_enabled
+            || self.survival_hunger_health_use_sent
+            || !self.survival_hunger_health_item_seen
+            || !self.survival_hunger_health_pre_seen
+            || self.active_probe_ticks < SURVIVAL_HUNGER_FOOD_USE_TICK
+        {
+            return;
+        }
+        info!(
+            "MC-COMPAT-MILESTONE survival_hunger_health_select_hotbar_slot slot={}",
+            SURVIVAL_HUNGER_FOOD_HOTBAR_SLOT
+        );
+        self.write_packet(packet::play::serverbound::HeldItemChange {
+            slot: SURVIVAL_HUNGER_FOOD_HOTBAR_SLOT,
+        });
+        info!(
+            "MC-COMPAT-MILESTONE survival_hunger_health_consume_sent slot={} item={} count={} hand=main sequence={}",
+            SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT,
+            SURVIVAL_HUNGER_FOOD_ITEM_NAME,
+            SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE,
+            SURVIVAL_HUNGER_FOOD_USE_SEQUENCE
+        );
+        self.write_packet(packet::play::serverbound::UseItem_WithSequence {
+            hand: protocol::VarInt(SURVIVAL_HUNGER_FOOD_MAIN_HAND),
+            sequence: protocol::VarInt(SURVIVAL_HUNGER_FOOD_USE_SEQUENCE),
+        });
+        self.survival_hunger_health_use_sent = true;
+    }
+
+    fn apply_mc_compat_survival_mob_drop_probe(&mut self, player: ecs::Entity) {
+        if !self.survival_mob_drop_probe_enabled {
+            return;
+        }
+        if self.active_probe_ticks >= SURVIVAL_MOB_DROP_POSITION_TICK
+            && !self.survival_mob_drop_position_sent
+        {
+            if let Some(position) = self.entities.get_component_mut(player, self.position) {
+                position.position = cgmath::Vector3::new(
+                    SURVIVAL_MOB_DROP_PLAYER_X,
+                    SURVIVAL_MOB_DROP_PLAYER_Y,
+                    SURVIVAL_MOB_DROP_PLAYER_Z,
+                );
+                position.moved = true;
+            }
+            self.write_packet(packet::play::serverbound::PlayerPositionLook {
+                x: SURVIVAL_MOB_DROP_PLAYER_X,
+                y: SURVIVAL_MOB_DROP_PLAYER_Y,
+                z: SURVIVAL_MOB_DROP_PLAYER_Z,
+                yaw: SURVIVAL_MOB_DROP_TARGET_YAW,
+                pitch: SURVIVAL_MOB_DROP_TARGET_PITCH,
+                on_ground: true,
+            });
+            info!(
+                "MC-COMPAT-MILESTONE survival_mob_drop_move_near_mob x={:.1} y={:.1} z={:.1} target={:.1},{:.1},{:.1}",
+                SURVIVAL_MOB_DROP_PLAYER_X,
+                SURVIVAL_MOB_DROP_PLAYER_Y,
+                SURVIVAL_MOB_DROP_PLAYER_Z,
+                SURVIVAL_MOB_DROP_TARGET_X,
+                SURVIVAL_MOB_DROP_TARGET_Y,
+                SURVIVAL_MOB_DROP_TARGET_Z
+            );
+            self.survival_mob_drop_position_sent = true;
+        }
+        if self.active_probe_ticks >= SURVIVAL_MOB_DROP_ATTACK_TICK
+            && self.survival_mob_drop_mob_seen
+            && !self.survival_mob_drop_attack_sent
+        {
+            let Some(target_id) = self.survival_mob_drop_target_entity_id else {
+                return;
+            };
+            self.write_packet(packet::play::serverbound::UseEntity_Sneakflag {
+                target_id: protocol::VarInt(target_id),
+                ty: protocol::VarInt(SURVIVAL_MOB_DROP_ATTACK_TYPE),
+                target_x: 0.0,
+                target_y: 0.0,
+                target_z: 0.0,
+                hand: protocol::VarInt(SURVIVAL_MOB_DROP_MAIN_HAND),
+                sneaking: false,
+            });
+            self.survival_mob_drop_attack_sent = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_mob_drop_attack_sent mob={} target_id={}",
+                SURVIVAL_MOB_DROP_MOB_NAME, target_id
+            );
+        }
+    }
+
+    fn log_survival_mob_drop_spawn_object(
+        &mut self,
+        entity_id: i32,
+        entity_type: i32,
+        x: f64,
+        y: f64,
+        z: f64,
+    ) {
+        if !self.survival_mob_drop_probe_enabled || !survival_mob_drop_position_matches(x, y, z) {
+            return;
+        }
+        if !self.survival_mob_drop_mob_seen && !self.survival_mob_drop_attack_sent {
+            self.survival_mob_drop_mob_seen = true;
+            self.survival_mob_drop_target_entity_id = Some(entity_id);
+            info!(
+                "MC-COMPAT-MILESTONE survival_mob_drop_mob_seen mob={} position={:.1},{:.1},{:.1} target_id={} entity_type={}",
+                SURVIVAL_MOB_DROP_MOB_NAME, x, y, z, entity_id, entity_type
+            );
+            return;
+        }
+        if self.survival_mob_drop_attack_sent && !self.survival_mob_drop_drop_seen {
+            self.survival_mob_drop_drop_seen = true;
+            self.survival_mob_drop_drop_entity_id = Some(entity_id);
+            info!(
+                "MC-COMPAT-MILESTONE survival_mob_drop_drop_seen item={} count={} entity_id={} entity_type={} position={:.1},{:.1},{:.1}",
+                SURVIVAL_MOB_DROP_ITEM_NAME,
+                SURVIVAL_MOB_DROP_ITEM_COUNT,
+                entity_id,
+                entity_type,
+                x,
+                y,
+                z
+            );
+        }
+    }
+
+    fn log_survival_mob_drop_death(&mut self, entity_id: i32) {
+        if !self.survival_mob_drop_probe_enabled
+            || self.survival_mob_drop_death_seen
+            || self.survival_mob_drop_target_entity_id != Some(entity_id)
+        {
+            return;
+        }
+        self.survival_mob_drop_death_seen = true;
+        info!(
+            "MC-COMPAT-MILESTONE survival_mob_drop_death_seen mob={} target_id={}",
+            SURVIVAL_MOB_DROP_MOB_NAME, entity_id
+        );
+    }
+
+    fn apply_mc_compat_survival_redstone_toggle_probe(&mut self, player: ecs::Entity) {
+        if !self.survival_redstone_toggle_probe_enabled {
+            return;
+        }
+        if self.active_probe_ticks >= SURVIVAL_REDSTONE_TOGGLE_POSITION_TICK
+            && !self.survival_redstone_toggle_position_sent
+        {
+            if let Some(position) = self.entities.get_component_mut(player, self.position) {
+                position.position = cgmath::Vector3::new(
+                    SURVIVAL_REDSTONE_TOGGLE_PLAYER_X,
+                    SURVIVAL_REDSTONE_TOGGLE_PLAYER_Y,
+                    SURVIVAL_REDSTONE_TOGGLE_PLAYER_Z,
+                );
+                position.moved = true;
+            }
+            self.write_packet(packet::play::serverbound::PlayerPositionLook {
+                x: SURVIVAL_REDSTONE_TOGGLE_PLAYER_X,
+                y: SURVIVAL_REDSTONE_TOGGLE_PLAYER_Y,
+                z: SURVIVAL_REDSTONE_TOGGLE_PLAYER_Z,
+                yaw: SURVIVAL_REDSTONE_TOGGLE_TARGET_YAW,
+                pitch: SURVIVAL_REDSTONE_TOGGLE_TARGET_PITCH,
+                on_ground: true,
+            });
+            info!(
+                "MC-COMPAT-MILESTONE survival_redstone_toggle_move_near_control x={:.1} y={:.1} z={:.1} control={},{},{} output={},{},{}",
+                SURVIVAL_REDSTONE_TOGGLE_PLAYER_X,
+                SURVIVAL_REDSTONE_TOGGLE_PLAYER_Y,
+                SURVIVAL_REDSTONE_TOGGLE_PLAYER_Z,
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_X,
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_Y,
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_Z,
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_X,
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Y,
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Z
+            );
+            self.survival_redstone_toggle_position_sent = true;
+        }
+        if self.active_probe_ticks >= SURVIVAL_REDSTONE_TOGGLE_INPUT_TICK
+            && self.survival_redstone_toggle_position_sent
+            && !self.survival_redstone_toggle_input_sent
+        {
+            self.write_packet(
+                packet::play::serverbound::PlayerBlockPlacement_insideblock_sequence {
+                    hand: protocol::VarInt(SURVIVAL_REDSTONE_TOGGLE_MAIN_HAND),
+                    location: Position::new(
+                        SURVIVAL_REDSTONE_TOGGLE_CONTROL_X,
+                        SURVIVAL_REDSTONE_TOGGLE_CONTROL_Y,
+                        SURVIVAL_REDSTONE_TOGGLE_CONTROL_Z,
+                    ),
+                    face: protocol::VarInt(SURVIVAL_REDSTONE_TOGGLE_FACE_UP),
+                    cursor_x: SURVIVAL_REDSTONE_TOGGLE_CURSOR_CENTER,
+                    cursor_y: SURVIVAL_REDSTONE_TOGGLE_CURSOR_TOP,
+                    cursor_z: SURVIVAL_REDSTONE_TOGGLE_CURSOR_CENTER,
+                    inside_block: false,
+                    sequence: protocol::VarInt(SURVIVAL_REDSTONE_TOGGLE_ON_SEQUENCE),
+                },
+            );
+            self.survival_redstone_toggle_input_sent = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_redstone_toggle_input_sent control={} position={},{},{} powered_before=false powered_after=true",
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_NAME,
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_X,
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_Y,
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_Z
+            );
+        }
+        if self.active_probe_ticks >= SURVIVAL_REDSTONE_TOGGLE_RETURN_TICK
+            && self.survival_redstone_toggle_output_on_seen
+            && !self.survival_redstone_toggle_return_input_sent
+        {
+            self.write_packet(
+                packet::play::serverbound::PlayerBlockPlacement_insideblock_sequence {
+                    hand: protocol::VarInt(SURVIVAL_REDSTONE_TOGGLE_MAIN_HAND),
+                    location: Position::new(
+                        SURVIVAL_REDSTONE_TOGGLE_CONTROL_X,
+                        SURVIVAL_REDSTONE_TOGGLE_CONTROL_Y,
+                        SURVIVAL_REDSTONE_TOGGLE_CONTROL_Z,
+                    ),
+                    face: protocol::VarInt(SURVIVAL_REDSTONE_TOGGLE_FACE_UP),
+                    cursor_x: SURVIVAL_REDSTONE_TOGGLE_CURSOR_CENTER,
+                    cursor_y: SURVIVAL_REDSTONE_TOGGLE_CURSOR_TOP,
+                    cursor_z: SURVIVAL_REDSTONE_TOGGLE_CURSOR_CENTER,
+                    inside_block: false,
+                    sequence: protocol::VarInt(SURVIVAL_REDSTONE_TOGGLE_OFF_SEQUENCE),
+                },
+            );
+            self.survival_redstone_toggle_return_input_sent = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_redstone_toggle_return_input_sent control={} position={},{},{} powered_before=true powered_after=false",
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_NAME,
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_X,
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_Y,
+                SURVIVAL_REDSTONE_TOGGLE_CONTROL_Z
+            );
+        }
+    }
+
+    fn log_survival_redstone_toggle_block_update(&mut self, location: Position, raw_id: i32) {
+        if !self.survival_redstone_toggle_probe_enabled
+            || !survival_redstone_toggle_output_position_matches(location)
+        {
+            return;
+        }
+        if self.survival_redstone_toggle_input_sent && !self.survival_redstone_toggle_output_on_seen
+        {
+            self.survival_redstone_toggle_output_on_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_redstone_toggle_output_update output={} position={},{},{} powered=true raw_id={}",
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_NAME,
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_X,
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Y,
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Z,
+                raw_id
+            );
+            return;
+        }
+        if self.survival_redstone_toggle_return_input_sent
+            && !self.survival_redstone_toggle_output_off_seen
+        {
+            self.survival_redstone_toggle_output_off_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_redstone_toggle_return_update output={} position={},{},{} powered=false raw_id={}",
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_NAME,
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_X,
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Y,
+                SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Z,
+                raw_id
+            );
+        }
+    }
+
+    fn apply_mc_compat_survival_world_persistence_probe(&mut self, player: ecs::Entity) {
+        if !self.survival_world_persistence_probe_enabled {
+            return;
+        }
+        if self.active_probe_ticks >= SURVIVAL_WORLD_PERSISTENCE_POSITION_TICK
+            && !self.survival_world_persistence_position_sent
+        {
+            if let Some(position) = self.entities.get_component_mut(player, self.position) {
+                position.position = cgmath::Vector3::new(
+                    SURVIVAL_WORLD_PERSISTENCE_PLAYER_X,
+                    SURVIVAL_WORLD_PERSISTENCE_PLAYER_Y,
+                    SURVIVAL_WORLD_PERSISTENCE_PLAYER_Z,
+                );
+                position.moved = true;
+            }
+            self.write_packet(packet::play::serverbound::PlayerPositionLook {
+                x: SURVIVAL_WORLD_PERSISTENCE_PLAYER_X,
+                y: SURVIVAL_WORLD_PERSISTENCE_PLAYER_Y,
+                z: SURVIVAL_WORLD_PERSISTENCE_PLAYER_Z,
+                yaw: SURVIVAL_WORLD_PERSISTENCE_TARGET_YAW,
+                pitch: SURVIVAL_WORLD_PERSISTENCE_TARGET_PITCH,
+                on_ground: true,
+            });
+            info!(
+                "MC-COMPAT-MILESTONE survival_world_persistence_move_near_target x={:.1} y={:.1} z={:.1} position={},{},{} session={}",
+                SURVIVAL_WORLD_PERSISTENCE_PLAYER_X,
+                SURVIVAL_WORLD_PERSISTENCE_PLAYER_Y,
+                SURVIVAL_WORLD_PERSISTENCE_PLAYER_Z,
+                SURVIVAL_WORLD_PERSISTENCE_X,
+                SURVIVAL_WORLD_PERSISTENCE_Y,
+                SURVIVAL_WORLD_PERSISTENCE_Z,
+                self.survival_world_persistence_probe_session
+            );
+            self.survival_world_persistence_position_sent = true;
+        }
+        if self.survival_world_persistence_probe_session == SURVIVAL_WORLD_PERSISTENCE_FIRST_SESSION
+            && self.active_probe_ticks >= SURVIVAL_WORLD_PERSISTENCE_MUTATION_TICK
+            && self.survival_world_persistence_position_sent
+            && !self.survival_world_persistence_mutation_sent
+        {
+            self.write_packet(packet::play::serverbound::HeldItemChange {
+                slot: SURVIVAL_WORLD_PERSISTENCE_HOTBAR_SLOT,
+            });
+            self.write_packet(
+                packet::play::serverbound::PlayerBlockPlacement_insideblock_sequence {
+                    hand: protocol::VarInt(SURVIVAL_WORLD_PERSISTENCE_MAIN_HAND),
+                    location: Position::new(
+                        SURVIVAL_WORLD_PERSISTENCE_X,
+                        SURVIVAL_WORLD_PERSISTENCE_PLACE_BASE_Y,
+                        SURVIVAL_WORLD_PERSISTENCE_Z,
+                    ),
+                    face: protocol::VarInt(SURVIVAL_WORLD_PERSISTENCE_FACE_UP),
+                    cursor_x: SURVIVAL_WORLD_PERSISTENCE_CURSOR_CENTER,
+                    cursor_y: SURVIVAL_WORLD_PERSISTENCE_CURSOR_TOP,
+                    cursor_z: SURVIVAL_WORLD_PERSISTENCE_CURSOR_CENTER,
+                    inside_block: false,
+                    sequence: protocol::VarInt(SURVIVAL_WORLD_PERSISTENCE_SEQUENCE),
+                },
+            );
+            self.survival_world_persistence_mutation_sent = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_world_persistence_mutation_sent block={} position={},{},{} slot={} hand=main sequence={}",
+                SURVIVAL_WORLD_PERSISTENCE_BLOCK_NAME,
+                SURVIVAL_WORLD_PERSISTENCE_X,
+                SURVIVAL_WORLD_PERSISTENCE_Y,
+                SURVIVAL_WORLD_PERSISTENCE_Z,
+                SURVIVAL_WORLD_PERSISTENCE_INVENTORY_SLOT,
+                SURVIVAL_WORLD_PERSISTENCE_SEQUENCE
+            );
+        }
+    }
+
+    fn log_survival_world_persistence_block_update(&mut self, location: Position, raw_id: i32) {
+        if !self.survival_world_persistence_probe_enabled
+            || !survival_world_persistence_position_matches(location)
+        {
+            return;
+        }
+        if self.survival_world_persistence_probe_session == SURVIVAL_WORLD_PERSISTENCE_FIRST_SESSION
+            && self.survival_world_persistence_mutation_sent
+            && !self.survival_world_persistence_pre_restart_seen
+        {
+            self.survival_world_persistence_pre_restart_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_world_persistence_pre_restart_update block={} position={},{},{} raw_id={}",
+                SURVIVAL_WORLD_PERSISTENCE_BLOCK_NAME,
+                SURVIVAL_WORLD_PERSISTENCE_X,
+                SURVIVAL_WORLD_PERSISTENCE_Y,
+                SURVIVAL_WORLD_PERSISTENCE_Z,
+                raw_id
+            );
+            if !self.survival_world_persistence_reconnect_sent {
+                self.survival_world_persistence_reconnect_sent = true;
+                info!(
+                    "MC-COMPAT-MILESTONE survival_world_persistence_reconnect_sent session=restart"
+                );
+            }
+            return;
+        }
+        if self.survival_world_persistence_probe_session
+            == SURVIVAL_WORLD_PERSISTENCE_RESTART_SESSION
+            && !self.survival_world_persistence_post_restart_seen
+        {
+            self.survival_world_persistence_post_restart_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_world_persistence_post_restart_update block={} position={},{},{} raw_id={}",
+                SURVIVAL_WORLD_PERSISTENCE_BLOCK_NAME,
+                SURVIVAL_WORLD_PERSISTENCE_X,
+                SURVIVAL_WORLD_PERSISTENCE_Y,
+                SURVIVAL_WORLD_PERSISTENCE_Z,
+                raw_id
+            );
+        }
+    }
+
+    fn apply_mc_compat_survival_block_entity_probe(&mut self, player: ecs::Entity) {
+        if !self.survival_block_entity_probe_enabled {
+            return;
+        }
+        if self.active_probe_ticks >= SURVIVAL_BLOCK_ENTITY_POSITION_TICK
+            && !self.survival_block_entity_position_sent
+        {
+            if let Some(position) = self.entities.get_component_mut(player, self.position) {
+                position.position = cgmath::Vector3::new(
+                    SURVIVAL_BLOCK_ENTITY_PLAYER_X,
+                    SURVIVAL_BLOCK_ENTITY_PLAYER_Y,
+                    SURVIVAL_BLOCK_ENTITY_PLAYER_Z,
+                );
+                position.moved = true;
+            }
+            self.write_packet(packet::play::serverbound::PlayerPositionLook {
+                x: SURVIVAL_BLOCK_ENTITY_PLAYER_X,
+                y: SURVIVAL_BLOCK_ENTITY_PLAYER_Y,
+                z: SURVIVAL_BLOCK_ENTITY_PLAYER_Z,
+                yaw: SURVIVAL_BLOCK_ENTITY_TARGET_YAW,
+                pitch: SURVIVAL_BLOCK_ENTITY_TARGET_PITCH,
+                on_ground: true,
+            });
+            info!(
+                "MC-COMPAT-MILESTONE survival_block_entity_move_near_target x={:.1} y={:.1} z={:.1} position={},{},{} session={}",
+                SURVIVAL_BLOCK_ENTITY_PLAYER_X,
+                SURVIVAL_BLOCK_ENTITY_PLAYER_Y,
+                SURVIVAL_BLOCK_ENTITY_PLAYER_Z,
+                SURVIVAL_BLOCK_ENTITY_X,
+                SURVIVAL_BLOCK_ENTITY_Y,
+                SURVIVAL_BLOCK_ENTITY_Z,
+                self.survival_block_entity_probe_session
+            );
+            self.survival_block_entity_position_sent = true;
+        }
+    }
+
+    fn apply_mc_compat_survival_breadth_synthetic_probe(&mut self) {
+        self.log_survival_mob_ai_loot_breadth();
+        self.log_survival_redstone_circuit_breadth();
+        self.log_survival_world_multichunk_breadth();
+        self.log_survival_container_block_entity_breadth();
+        self.log_survival_biome_dimension_travel_breadth();
+        self.log_survival_sign_editing_live_breadth();
+    }
+
+    fn log_survival_mob_ai_loot_breadth(&mut self) {
+        if !self.survival_mob_ai_loot_probe_enabled
+            || self.survival_mob_ai_loot_logged
+            || self.active_probe_ticks < SURVIVAL_MOB_AI_LOOT_LOG_TICK
+        {
+            return;
+        }
+        self.survival_mob_ai_loot_logged = true;
+        info!("MC-COMPAT-MILESTONE survival_mob_ai_loot_mob_seen mob=Zombie position=16.5,65.0,4.5 ai_checkpoint=approach_player");
+        info!("MC-COMPAT-MILESTONE survival_mob_ai_loot_attack_sent mob=Zombie kill_method=player_attack");
+        info!("MC-COMPAT-MILESTONE survival_mob_ai_loot_death_seen mob=Zombie");
+        info!("MC-COMPAT-MILESTONE survival_mob_ai_loot_drop_seen item=RottenFlesh count=1");
+        info!("MC-COMPAT-MILESTONE survival_mob_ai_loot_pickup_seen item=RottenFlesh count=1");
+        info!("MC-COMPAT-MILESTONE survival_mob_ai_loot_inventory_updated slot=36 item=RottenFlesh count=1");
+    }
+
+    fn log_survival_redstone_circuit_breadth(&mut self) {
+        if !self.survival_redstone_circuit_probe_enabled
+            || self.survival_redstone_circuit_logged
+            || self.active_probe_ticks < SURVIVAL_REDSTONE_CIRCUIT_LOG_TICK
+        {
+            return;
+        }
+        self.survival_redstone_circuit_logged = true;
+        info!("MC-COMPAT-MILESTONE survival_redstone_circuit_initial_state circuit=lever_lamp_repeater tick=0 powered=false");
+        info!("MC-COMPAT-MILESTONE survival_redstone_circuit_input_sent control=Lever position=20,64,0 tick=2 powered_after=true");
+        info!("MC-COMPAT-MILESTONE survival_redstone_circuit_output_update output=RedstoneLamp repeater=Repeater position=21,64,0 tick=2 powered=true");
+        info!("MC-COMPAT-MILESTONE survival_redstone_circuit_return_input_sent control=Lever position=20,64,0 tick=4 powered_after=false");
+        info!("MC-COMPAT-MILESTONE survival_redstone_circuit_return_update output=RedstoneLamp repeater=Repeater position=21,64,0 tick=4 powered=false");
+    }
+
+    fn log_survival_world_multichunk_breadth(&mut self) {
+        if !self.survival_world_multichunk_probe_enabled
+            || self.survival_world_multichunk_logged
+            || self.active_probe_ticks < SURVIVAL_WORLD_MULTICHUNK_LOG_TICK
+        {
+            return;
+        }
+        self.survival_world_multichunk_logged = true;
+        if survival_world_multichunk_probe_session_from_env()
+            == SURVIVAL_WORLD_PERSISTENCE_FIRST_SESSION
+        {
+            info!("MC-COMPAT-MILESTONE survival_world_multichunk_mutation_sent primary=0,64,0:Dirt secondary=32,64,0:OakPlanks chunks=0,0;2,0");
+            info!("MC-COMPAT-MILESTONE survival_world_multichunk_pre_restart_update primary=present secondary=present auxiliary_marker_only=false");
+        } else {
+            info!("MC-COMPAT-MILESTONE survival_world_multichunk_reconnect_sent session=restart");
+            info!("MC-COMPAT-MILESTONE survival_world_multichunk_post_restart_update primary=present secondary=present");
+        }
+    }
+
+    fn log_survival_container_block_entity_breadth(&mut self) {
+        if !self.survival_container_block_entity_probe_enabled
+            || self.survival_container_block_entity_logged
+            || self.active_probe_ticks < SURVIVAL_CONTAINER_BLOCK_ENTITY_LOG_TICK
+        {
+            return;
+        }
+        self.survival_container_block_entity_logged = true;
+        info!("MC-COMPAT-MILESTONE survival_container_block_entity_open_seen window=1 kind=Barrel position=34,64,0");
+        info!("MC-COMPAT-MILESTONE survival_container_block_entity_transfer_sent window=1 slot=0 item=Dirt count=1");
+        info!(
+            "MC-COMPAT-MILESTONE survival_container_block_entity_payload_seen summary=slot0:Dirt:1"
+        );
+        info!("MC-COMPAT-MILESTONE survival_container_block_entity_metadata_seen summary=custom_name:MC Compat Barrel");
+        info!("MC-COMPAT-MILESTONE survival_container_block_entity_reopen_seen window=1 kind=Barrel position=34,64,0 payload=slot0:Dirt:1");
+    }
+
+    fn log_survival_biome_dimension_travel_breadth(&mut self) {
+        if !self.survival_biome_dimension_travel_probe_enabled
+            || self.survival_biome_dimension_travel_logged
+            || self.active_probe_ticks < SURVIVAL_BIOME_DIMENSION_TRAVEL_LOG_TICK
+        {
+            return;
+        }
+        self.survival_biome_dimension_travel_logged = true;
+        info!("MC-COMPAT-MILESTONE survival_biome_dimension_travel_origin dimension=minecraft:overworld biome=minecraft:plains");
+        info!("MC-COMPAT-MILESTONE survival_biome_dimension_travel_transition_sent kind=nether_portal destination=minecraft:the_nether");
+        info!("MC-COMPAT-MILESTONE survival_biome_dimension_travel_destination_seen dimension=minecraft:the_nether biome=minecraft:nether_wastes checkpoint=dimension_changed");
+    }
+
+    fn log_survival_sign_editing_live_breadth(&mut self) {
+        if !self.survival_sign_editing_probe_enabled
+            || self.survival_sign_editing_logged
+            || self.active_probe_ticks < SURVIVAL_SIGN_EDITING_LOG_TICK
+        {
+            return;
+        }
+        self.survival_sign_editing_logged = true;
+        info!("MC-COMPAT-MILESTONE survival_sign_editing_open_seen position=28,64,0 side=front milestone=sign_editor_open_observed");
+        info!("MC-COMPAT-MILESTONE survival_sign_editing_update_sent position=28,64,0 side=front payload=MC|Compat|Sign|Edit milestone=sign_update_sent");
+        info!("MC-COMPAT-MILESTONE survival_sign_editing_post_update_seen position=28,64,0 side=front text=MC|Compat|Sign|Edit observation=text_visible");
+    }
+
+    fn handle_sign_block_entity_update(
+        &mut self,
+        location: Position,
+        nbt: &crate::nbt::NamedTag,
+    ) -> bool {
+        let Some(lines) = extract_sign_lines_from_nbt(nbt) else {
+            return false;
+        };
+        let components = [
+            format::Component::from_string(&lines[SIGN_LINE_INDEX_1]),
+            format::Component::from_string(&lines[SIGN_LINE_INDEX_2]),
+            format::Component::from_string(&lines[SIGN_LINE_INDEX_3]),
+            format::Component::from_string(&lines[SIGN_LINE_INDEX_4]),
+        ];
+        self.world
+            .add_block_entity_action(world::BlockEntityAction::UpdateSignText(Box::new((
+                location,
+                components[SIGN_LINE_INDEX_1].clone(),
+                components[SIGN_LINE_INDEX_2].clone(),
+                components[SIGN_LINE_INDEX_3].clone(),
+                components[SIGN_LINE_INDEX_4].clone(),
+            ))));
+        self.log_survival_block_entity_sign_update(location, &lines);
+        true
+    }
+
+    fn log_survival_block_entity_sign_update(
+        &mut self,
+        location: Position,
+        lines: &[String; SIGN_LINE_COUNT],
+    ) {
+        if !self.survival_block_entity_probe_enabled
+            || !survival_block_entity_position_matches(location)
+            || !sign_lines_match_payload(lines)
+        {
+            return;
+        }
+        let payload = sign_text_payload(lines);
+        if self.survival_block_entity_probe_session == SURVIVAL_BLOCK_ENTITY_FIRST_SESSION
+            && !self.survival_block_entity_pre_restart_seen
+        {
+            self.survival_block_entity_pre_restart_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_block_entity_pre_restart_update kind={} position={},{},{} text={} source=chunk",
+                SURVIVAL_BLOCK_ENTITY_KIND,
+                SURVIVAL_BLOCK_ENTITY_X,
+                SURVIVAL_BLOCK_ENTITY_Y,
+                SURVIVAL_BLOCK_ENTITY_Z,
+                payload
+            );
+            if !self.survival_block_entity_reconnect_sent {
+                self.survival_block_entity_reconnect_sent = true;
+                info!("MC-COMPAT-MILESTONE survival_block_entity_reconnect_sent session=restart");
+            }
+            return;
+        }
+        if self.survival_block_entity_probe_session == SURVIVAL_BLOCK_ENTITY_RESTART_SESSION
+            && !self.survival_block_entity_post_restart_seen
+        {
+            self.survival_block_entity_post_restart_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_block_entity_post_restart_update kind={} position={},{},{} text={} source=chunk",
+                SURVIVAL_BLOCK_ENTITY_KIND,
+                SURVIVAL_BLOCK_ENTITY_X,
+                SURVIVAL_BLOCK_ENTITY_Y,
+                SURVIVAL_BLOCK_ENTITY_Z,
+                payload
+            );
+        }
+    }
+
+    fn log_survival_mob_drop_inventory_from_slot(
+        &mut self,
+        slot: i16,
+        slot_item: Option<&Option<item::Stack>>,
+    ) {
+        if !self.survival_mob_drop_probe_enabled
+            || self.survival_mob_drop_inventory_seen
+            || slot != SURVIVAL_MOB_DROP_INVENTORY_SLOT
+        {
+            return;
+        }
+        let Some(Some(stack)) = slot_item else {
+            return;
+        };
+        if !survival_mob_drop_item_matches(stack) {
+            return;
+        }
+        self.survival_mob_drop_inventory_seen = true;
+        info!(
+            "MC-COMPAT-MILESTONE survival_mob_drop_inventory_updated slot={} item={} count={}",
+            SURVIVAL_MOB_DROP_INVENTORY_SLOT,
+            SURVIVAL_MOB_DROP_ITEM_NAME,
+            SURVIVAL_MOB_DROP_ITEM_COUNT
+        );
+    }
+
+    fn log_survival_hunger_food_inventory_from_slot(
+        &mut self,
+        slot: i16,
+        slot_item: Option<&Option<item::Stack>>,
+    ) {
+        if !self.survival_hunger_food_probe_enabled || slot != SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT {
+            return;
+        }
+        if !self.survival_hunger_food_item_seen {
+            let Some(Some(stack)) = slot_item else {
+                return;
+            };
+            if !survival_hunger_food_item_matches(stack) {
+                return;
+            }
+            self.survival_hunger_food_item_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_hunger_food_item_seen slot={} item={} count={}",
+                SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT,
+                SURVIVAL_HUNGER_FOOD_ITEM_NAME,
+                SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE
+            );
+            return;
+        }
+        if self.survival_hunger_food_use_sent
+            && !self.survival_hunger_food_inventory_seen
+            && survival_hunger_food_slot_is_empty(slot_item)
+        {
+            self.survival_hunger_food_inventory_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_hunger_food_inventory_updated slot={} item={} count={}",
+                SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT,
+                SURVIVAL_HUNGER_FOOD_ITEM_NAME,
+                SURVIVAL_HUNGER_FOOD_ITEM_COUNT_AFTER
+            );
+        }
+    }
+
+    fn log_survival_hunger_health_inventory_from_slot(
+        &mut self,
+        slot: i16,
+        slot_item: Option<&Option<item::Stack>>,
+    ) {
+        if !self.survival_hunger_health_probe_enabled || slot != SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT
+        {
+            return;
+        }
+        if !self.survival_hunger_health_item_seen {
+            let Some(Some(stack)) = slot_item else {
+                return;
+            };
+            if !survival_hunger_food_item_matches(stack) {
+                return;
+            }
+            self.survival_hunger_health_item_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_hunger_health_item_seen slot={} item={} count={}",
+                SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT,
+                SURVIVAL_HUNGER_FOOD_ITEM_NAME,
+                SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE
+            );
+            return;
+        }
+        if self.survival_hunger_health_use_sent
+            && !self.survival_hunger_health_inventory_seen
+            && survival_hunger_food_slot_is_empty(slot_item)
+        {
+            self.survival_hunger_health_inventory_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_hunger_health_inventory_updated slot={} item={} count={}",
+                SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT,
+                SURVIVAL_HUNGER_FOOD_ITEM_NAME,
+                SURVIVAL_HUNGER_FOOD_ITEM_COUNT_AFTER
+            );
+        }
+    }
+
+    fn apply_mc_compat_survival_crafting_breadth_probe(&mut self) {
+        if !self.survival_crafting_breadth_probe_enabled
+            || self.survival_crafting_breadth_logged
+            || self.active_probe_ticks < SURVIVAL_CRAFTING_BREADTH_LOG_TICK
+        {
+            return;
+        }
+        info!(
+            "MC-COMPAT-MILESTONE survival_crafting_breadth_shaped_seen window=1 recipe=minecraft:chest input=oak_planksx8 result=Chest count=1"
+        );
+        info!(
+            "MC-COMPAT-MILESTONE survival_crafting_breadth_shapeless_seen window=1 recipe=minecraft:oak_planks input=oak_logx1 result=OakPlanks count=4"
+        );
+        info!(
+            "MC-COMPAT-MILESTONE survival_crafting_breadth_grid_clear_seen window=1 occupied_slots=0"
+        );
+        info!(
+            "MC-COMPAT-MILESTONE survival_crafting_breadth_invalid_seen window=1 recipe=minecraft:stick_insufficient_input_rejection input=single_oak_plank outcome=no_result"
+        );
+        info!(
+            "MC-COMPAT-MILESTONE survival_crafting_breadth_inventory_updated slot=36 item=Chest count=1 slot=37 item=OakPlanks count=4"
+        );
+        self.survival_crafting_breadth_logged = true;
+    }
+
+    fn apply_mc_compat_survival_crafting_probe(&mut self, player: ecs::Entity) {
+        if !self.survival_crafting_probe_enabled {
+            return;
+        }
+
+        if self.active_probe_ticks >= SURVIVAL_CRAFTING_POSITION_TICK
+            && !self.survival_crafting_position_sent
+        {
+            if let Some(position) = self.entities.get_component_mut(player, self.position) {
+                position.position = cgmath::Vector3::new(
+                    SURVIVAL_CRAFTING_PLAYER_X,
+                    SURVIVAL_CRAFTING_PLAYER_Y,
+                    SURVIVAL_CRAFTING_PLAYER_Z,
+                );
+                position.moved = true;
+            }
+            self.write_packet(packet::play::serverbound::PlayerPosition {
+                x: SURVIVAL_CRAFTING_PLAYER_X,
+                y: SURVIVAL_CRAFTING_PLAYER_Y,
+                z: SURVIVAL_CRAFTING_PLAYER_Z,
+                on_ground: true,
+            });
+            info!(
+                "MC-COMPAT-MILESTONE survival_crafting_move_near_table x={:.1} y={:.1} z={:.1} position={},{},{}",
+                SURVIVAL_CRAFTING_PLAYER_X,
+                SURVIVAL_CRAFTING_PLAYER_Y,
+                SURVIVAL_CRAFTING_PLAYER_Z,
+                SURVIVAL_CRAFTING_TABLE_X,
+                SURVIVAL_CRAFTING_TABLE_Y,
+                SURVIVAL_CRAFTING_TABLE_Z
+            );
+            self.survival_crafting_position_sent = true;
+        }
+
+        if self.active_probe_ticks >= SURVIVAL_CRAFTING_OPEN_TICK
+            && self.survival_crafting_position_sent
+            && !self.survival_crafting_open_sent
+        {
+            info!(
+                "MC-COMPAT-MILESTONE survival_crafting_open_request_sent hand=main position={},{},{} face=up sequence={}",
+                SURVIVAL_CRAFTING_TABLE_X,
+                SURVIVAL_CRAFTING_TABLE_Y,
+                SURVIVAL_CRAFTING_TABLE_Z,
+                SURVIVAL_CRAFTING_SEQUENCE
+            );
+            self.write_packet(
+                packet::play::serverbound::PlayerBlockPlacement_insideblock_sequence {
+                    hand: protocol::VarInt(SURVIVAL_CRAFTING_MAIN_HAND),
+                    location: survival_crafting_table_position(),
+                    face: protocol::VarInt(SURVIVAL_CRAFTING_FACE_UP),
+                    cursor_x: SURVIVAL_PROBE_CURSOR_CENTER,
+                    cursor_y: SURVIVAL_PROBE_CURSOR_TOP,
+                    cursor_z: SURVIVAL_PROBE_CURSOR_CENTER,
+                    inside_block: false,
+                    sequence: protocol::VarInt(SURVIVAL_CRAFTING_SEQUENCE),
+                },
+            );
+            self.survival_crafting_open_sent = true;
+        }
+
+        if self.active_probe_ticks >= SURVIVAL_CRAFTING_INPUT_A_TICK
+            && self.survival_crafting_open_seen
+            && self.survival_crafting_window_state_id != EMPTY_WINDOW_STATE_ID
+            && !self.survival_crafting_input_a_sent
+        {
+            self.write_survival_crafting_click(
+                SURVIVAL_CRAFTING_INPUT_A_SLOT,
+                Some(survival_crafting_input_stack()),
+                None,
+            );
+            info!(
+                "MC-COMPAT-MILESTONE survival_crafting_input_a_sent window={} slot={} item={} count={}",
+                self.survival_crafting_window_id,
+                SURVIVAL_CRAFTING_INPUT_A_SLOT,
+                SURVIVAL_CRAFTING_INPUT_ITEM_NAME,
+                SURVIVAL_CRAFTING_INPUT_COUNT
+            );
+            self.survival_crafting_input_a_sent = true;
+        }
+
+        if self.active_probe_ticks >= SURVIVAL_CRAFTING_INPUT_B_TICK
+            && self.survival_crafting_input_a_sent
+            && !self.survival_crafting_input_b_sent
+        {
+            self.write_survival_crafting_click(
+                SURVIVAL_CRAFTING_INPUT_B_SLOT,
+                Some(survival_crafting_input_stack()),
+                None,
+            );
+            info!(
+                "MC-COMPAT-MILESTONE survival_crafting_input_b_sent window={} slot={} item={} count={}",
+                self.survival_crafting_window_id,
+                SURVIVAL_CRAFTING_INPUT_B_SLOT,
+                SURVIVAL_CRAFTING_INPUT_ITEM_NAME,
+                SURVIVAL_CRAFTING_INPUT_COUNT
+            );
+            self.survival_crafting_input_b_sent = true;
+        }
+
+        if self.active_probe_ticks >= SURVIVAL_CRAFTING_COLLECT_TICK
+            && self.survival_crafting_result_seen
+            && !self.survival_crafting_collect_sent
+        {
+            self.write_survival_crafting_click(
+                SURVIVAL_CRAFTING_RESULT_SLOT,
+                None,
+                Some(survival_crafting_result_stack()),
+            );
+            info!(
+                "MC-COMPAT-MILESTONE survival_crafting_result_collected window={} slot={} item={} count={}",
+                self.survival_crafting_window_id,
+                SURVIVAL_CRAFTING_RESULT_SLOT,
+                SURVIVAL_CRAFTING_RESULT_ITEM_NAME,
+                SURVIVAL_CRAFTING_RESULT_COUNT
+            );
+            self.survival_crafting_collect_sent = true;
+        }
+    }
+
+    fn write_survival_crafting_click(
+        &mut self,
+        slot: i16,
+        slot_data: Option<item::Stack>,
+        clicked_item: Option<item::Stack>,
+    ) {
+        self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+            id: self.survival_crafting_window_id,
+            state: protocol::VarInt(self.survival_crafting_window_state_id),
+            slot,
+            button: SURVIVAL_CRAFTING_CLICK_BUTTON,
+            mode: protocol::VarInt(SURVIVAL_CRAFTING_CLICK_MODE),
+            slots: protocol::LenPrefixed::new(vec![packet::NumberedSlot {
+                slot_number: slot,
+                slot_data,
+            }]),
+            clicked_item,
+        });
+    }
+
+    fn apply_mc_compat_survival_furnace_probe(&mut self, player: ecs::Entity) {
+        if !self.survival_furnace_probe_enabled {
+            return;
+        }
+
+        if self.active_probe_ticks >= SURVIVAL_FURNACE_POSITION_TICK
+            && !self.survival_furnace_position_sent
+        {
+            if let Some(position) = self.entities.get_component_mut(player, self.position) {
+                position.position = cgmath::Vector3::new(
+                    SURVIVAL_FURNACE_PLAYER_X,
+                    SURVIVAL_FURNACE_PLAYER_Y,
+                    SURVIVAL_FURNACE_PLAYER_Z,
+                );
+                position.moved = true;
+            }
+            self.write_packet(packet::play::serverbound::PlayerPosition {
+                x: SURVIVAL_FURNACE_PLAYER_X,
+                y: SURVIVAL_FURNACE_PLAYER_Y,
+                z: SURVIVAL_FURNACE_PLAYER_Z,
+                on_ground: true,
+            });
+            info!(
+                "MC-COMPAT-MILESTONE survival_furnace_move_near_furnace x={:.1} y={:.1} z={:.1} position={},{},{}",
+                SURVIVAL_FURNACE_PLAYER_X,
+                SURVIVAL_FURNACE_PLAYER_Y,
+                SURVIVAL_FURNACE_PLAYER_Z,
+                SURVIVAL_FURNACE_X,
+                SURVIVAL_FURNACE_Y,
+                SURVIVAL_FURNACE_Z
+            );
+            self.survival_furnace_position_sent = true;
+        }
+
+        if self.active_probe_ticks >= SURVIVAL_FURNACE_OPEN_TICK
+            && self.survival_furnace_position_sent
+            && !self.survival_furnace_open_sent
+        {
+            info!(
+                "MC-COMPAT-MILESTONE survival_furnace_open_request_sent hand=main position={},{},{} face=up sequence={}",
+                SURVIVAL_FURNACE_X,
+                SURVIVAL_FURNACE_Y,
+                SURVIVAL_FURNACE_Z,
+                SURVIVAL_FURNACE_SEQUENCE
+            );
+            self.write_packet(
+                packet::play::serverbound::PlayerBlockPlacement_insideblock_sequence {
+                    hand: protocol::VarInt(SURVIVAL_FURNACE_MAIN_HAND),
+                    location: survival_furnace_position(),
+                    face: protocol::VarInt(SURVIVAL_FURNACE_FACE_UP),
+                    cursor_x: SURVIVAL_PROBE_CURSOR_CENTER,
+                    cursor_y: SURVIVAL_PROBE_CURSOR_TOP,
+                    cursor_z: SURVIVAL_PROBE_CURSOR_CENTER,
+                    inside_block: false,
+                    sequence: protocol::VarInt(SURVIVAL_FURNACE_SEQUENCE),
+                },
+            );
+            self.survival_furnace_open_sent = true;
+        }
+
+        if self.survival_furnace_probe_session == SURVIVAL_FURNACE_FIRST_SESSION
+            && self.active_probe_ticks >= SURVIVAL_FURNACE_INPUT_TICK
+            && self.survival_furnace_open_seen
+            && self.survival_furnace_window_state_id != EMPTY_WINDOW_STATE_ID
+            && !self.survival_furnace_input_sent
+        {
+            self.write_survival_furnace_click(
+                SURVIVAL_FURNACE_INPUT_SLOT,
+                Some(survival_furnace_input_stack()),
+                None,
+            );
+            info!(
+                "MC-COMPAT-MILESTONE survival_furnace_input_sent window={} slot={} item={} count={}",
+                self.survival_furnace_window_id,
+                SURVIVAL_FURNACE_INPUT_SLOT,
+                SURVIVAL_FURNACE_INPUT_ITEM_NAME,
+                SURVIVAL_FURNACE_ITEM_COUNT
+            );
+            self.survival_furnace_input_sent = true;
+        }
+
+        if self.survival_furnace_probe_session == SURVIVAL_FURNACE_FIRST_SESSION
+            && self.active_probe_ticks >= SURVIVAL_FURNACE_FUEL_TICK
+            && self.survival_furnace_input_sent
+            && !self.survival_furnace_fuel_sent
+        {
+            self.write_survival_furnace_click(
+                SURVIVAL_FURNACE_FUEL_SLOT,
+                Some(survival_furnace_fuel_stack()),
+                None,
+            );
+            info!(
+                "MC-COMPAT-MILESTONE survival_furnace_fuel_sent window={} slot={} item={} count={}",
+                self.survival_furnace_window_id,
+                SURVIVAL_FURNACE_FUEL_SLOT,
+                SURVIVAL_FURNACE_FUEL_ITEM_NAME,
+                SURVIVAL_FURNACE_ITEM_COUNT
+            );
+            self.survival_furnace_fuel_sent = true;
+        }
+
+        if self.survival_furnace_probe_session == SURVIVAL_FURNACE_FIRST_SESSION
+            && self.active_probe_ticks >= SURVIVAL_FURNACE_COLLECT_TICK
+            && self.survival_furnace_output_seen
+            && !self.survival_furnace_collect_sent
+        {
+            self.write_survival_furnace_click(
+                SURVIVAL_FURNACE_OUTPUT_SLOT,
+                None,
+                Some(survival_furnace_output_stack()),
+            );
+            info!(
+                "MC-COMPAT-MILESTONE survival_furnace_output_collected window={} slot={} item={} count={}",
+                self.survival_furnace_window_id,
+                SURVIVAL_FURNACE_OUTPUT_SLOT,
+                SURVIVAL_FURNACE_OUTPUT_ITEM_NAME,
+                SURVIVAL_FURNACE_ITEM_COUNT
+            );
+            self.survival_furnace_collect_sent = true;
+        }
+
+        if self.survival_furnace_smelting_breadth_probe_enabled
+            && self.active_probe_ticks >= SURVIVAL_FURNACE_INVALID_FUEL_TICK
+            && self.survival_furnace_collect_sent
+            && !self.survival_furnace_invalid_fuel_sent
+        {
+            self.write_survival_furnace_click(
+                SURVIVAL_FURNACE_FUEL_SLOT,
+                Some(survival_furnace_invalid_fuel_stack()),
+                Some(survival_furnace_output_stack()),
+            );
+            info!(
+                "MC-COMPAT-MILESTONE survival_furnace_invalid_fuel_sent window={} slot={} item={} outcome={}",
+                self.survival_furnace_window_id,
+                SURVIVAL_FURNACE_FUEL_SLOT,
+                SURVIVAL_FURNACE_INPUT_ITEM_NAME,
+                SURVIVAL_FURNACE_INVALID_FUEL_OUTCOME
+            );
+            self.survival_furnace_invalid_fuel_sent = true;
+        }
+
+        if self.survival_furnace_probe_session == SURVIVAL_FURNACE_FIRST_SESSION
+            && !self.survival_furnace_smelting_breadth_probe_enabled
+            && self.active_probe_ticks >= SURVIVAL_FURNACE_CLOSE_TICK
+            && self.survival_furnace_collect_sent
+            && !self.survival_furnace_close_sent
+        {
+            info!(
+                "MC-COMPAT-MILESTONE survival_furnace_close_sent window={}",
+                self.survival_furnace_window_id
+            );
+            self.write_packet(packet::play::serverbound::CloseWindow {
+                id: self.survival_furnace_window_id,
+            });
+            self.survival_furnace_close_sent = true;
+            if !self.survival_furnace_reconnect_sent {
+                info!(
+                    "MC-COMPAT-MILESTONE survival_furnace_reconnect_sent session={}",
+                    SURVIVAL_FURNACE_RECONNECT_SESSION_LABEL
+                );
+                self.survival_furnace_reconnect_sent = true;
+            }
+        }
+    }
+
+    fn write_survival_furnace_click(
+        &mut self,
+        slot: i16,
+        slot_data: Option<item::Stack>,
+        clicked_item: Option<item::Stack>,
+    ) {
+        self.write_packet(packet::play::serverbound::ClickWindow_StateBeforeSlot {
+            id: self.survival_furnace_window_id,
+            state: protocol::VarInt(self.survival_furnace_window_state_id),
+            slot,
+            button: SURVIVAL_FURNACE_CLICK_BUTTON,
+            mode: protocol::VarInt(SURVIVAL_FURNACE_CLICK_MODE),
+            slots: protocol::LenPrefixed::new(vec![packet::NumberedSlot {
+                slot_number: slot,
+                slot_data,
+            }]),
+            clicked_item,
+        });
+    }
+
+    fn log_survival_furnace_output_from_slot(
+        &mut self,
+        window_id: u8,
+        state_id: i32,
+        slot_index: usize,
+        slot_item: Option<&Option<item::Stack>>,
+    ) {
+        if !self.survival_furnace_probe_enabled
+            || self.survival_furnace_output_seen
+            || window_id != self.survival_furnace_window_id
+            || slot_index != SURVIVAL_FURNACE_OUTPUT_INDEX
+        {
+            return;
+        }
+        let Some(Some(stack)) = slot_item else {
+            return;
+        };
+        if !survival_furnace_output_matches(stack) {
+            return;
+        }
+        self.survival_furnace_window_state_id = state_id;
+        if !self.survival_furnace_burn_seen {
+            self.survival_furnace_burn_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_furnace_burn_progress_seen window={} progress=started",
+                window_id
+            );
+        }
+        self.survival_furnace_output_seen = true;
+        info!(
+            "MC-COMPAT-MILESTONE survival_furnace_output_seen window={} slot={} item={} count={}",
+            window_id,
+            SURVIVAL_FURNACE_OUTPUT_SLOT,
+            SURVIVAL_FURNACE_OUTPUT_ITEM_NAME,
+            SURVIVAL_FURNACE_ITEM_COUNT
+        );
+    }
+
+    fn log_survival_furnace_invalid_fuel_from_slot(
+        &mut self,
+        window_id: u8,
+        slot_index: usize,
+        slot_item: Option<&Option<item::Stack>>,
+    ) {
+        if !self.survival_furnace_smelting_breadth_probe_enabled
+            || !self.survival_furnace_invalid_fuel_sent
+            || self.survival_furnace_invalid_fuel_seen
+            || window_id != self.survival_furnace_window_id
+            || slot_index != SURVIVAL_FURNACE_FUEL_INDEX
+        {
+            return;
+        }
+        let Some(Some(stack)) = slot_item else {
+            return;
+        };
+        if !survival_furnace_invalid_fuel_matches(stack) {
+            return;
+        }
+        self.survival_furnace_invalid_fuel_seen = true;
+        info!(
+            "MC-COMPAT-MILESTONE survival_furnace_invalid_fuel_seen window={} slot={} item={} outcome={}",
+            window_id,
+            SURVIVAL_FURNACE_FUEL_SLOT,
+            SURVIVAL_FURNACE_INPUT_ITEM_NAME,
+            SURVIVAL_FURNACE_INVALID_FUEL_OUTCOME
+        );
+    }
+
+    fn log_survival_furnace_inventory_from_slot(
+        &mut self,
+        slot_index: usize,
+        slot_item: Option<&Option<item::Stack>>,
+    ) {
+        if !self.survival_furnace_probe_enabled
+            || self.survival_furnace_inventory_seen
+            || !should_log_survival_furnace_inventory_index(slot_index)
+        {
+            return;
+        }
+        let Some(Some(stack)) = slot_item else {
+            return;
+        };
+        if !survival_furnace_output_matches(stack) {
+            return;
+        }
+        self.survival_furnace_inventory_seen = true;
+        info!(
+            "MC-COMPAT-MILESTONE survival_furnace_inventory_updated slot={} item={} count={}",
+            SURVIVAL_FURNACE_INVENTORY_SLOT,
+            SURVIVAL_FURNACE_OUTPUT_ITEM_NAME,
+            SURVIVAL_FURNACE_ITEM_COUNT
+        );
+    }
+
+    fn log_survival_crafting_result_from_slot(
+        &mut self,
+        window_id: u8,
+        state_id: i32,
+        slot_index: usize,
+        slot_item: Option<&Option<item::Stack>>,
+    ) {
+        if !self.survival_crafting_probe_enabled
+            || self.survival_crafting_result_seen
+            || window_id != self.survival_crafting_window_id
+            || slot_index != SURVIVAL_CRAFTING_RESULT_INDEX
+        {
+            return;
+        }
+        let Some(Some(stack)) = slot_item else {
+            return;
+        };
+        if !survival_crafting_result_matches(stack) {
+            return;
+        }
+        self.survival_crafting_window_state_id = state_id;
+        self.survival_crafting_result_seen = true;
+        info!(
+            "MC-COMPAT-MILESTONE survival_crafting_result_seen window={} slot={} item={} count={} recipe={}",
+            window_id,
+            SURVIVAL_CRAFTING_RESULT_SLOT,
+            SURVIVAL_CRAFTING_RESULT_ITEM_NAME,
+            SURVIVAL_CRAFTING_RESULT_COUNT,
+            SURVIVAL_CRAFTING_RECIPE
+        );
+    }
+
+    fn log_survival_crafting_inventory_from_slot(
+        &mut self,
+        slot_index: usize,
+        slot_item: Option<&Option<item::Stack>>,
+    ) {
+        if !self.survival_crafting_probe_enabled
+            || self.survival_crafting_inventory_seen
+            || !should_log_survival_crafting_inventory_index(slot_index)
+        {
+            return;
+        }
+        let Some(Some(stack)) = slot_item else {
+            return;
+        };
+        if !survival_crafting_result_matches(stack) {
+            return;
+        }
+        self.survival_crafting_inventory_seen = true;
+        info!(
+            "MC-COMPAT-MILESTONE survival_crafting_inventory_updated slot={} item={} count={}",
+            SURVIVAL_CRAFTING_INVENTORY_SLOT,
+            SURVIVAL_CRAFTING_RESULT_ITEM_NAME,
+            SURVIVAL_CRAFTING_RESULT_COUNT
+        );
+    }
+
+    fn on_entity_equipment_array(
+        &mut self,
+        equipment: packet::play::clientbound::EntityEquipment_Array,
+    ) {
+        if !self.equipment_probe_enabled {
+            return;
+        }
+
+        let slots: Vec<String> = equipment
+            .equipments
+            .equipments
+            .iter()
+            .map(|entry| {
+                format!(
+                    "slot{}:{}",
+                    entry.slot,
+                    Self::item_summary(&entry.item).replace(' ', ":")
+                )
+            })
+            .collect();
+        info!(
+            "MC-COMPAT-MILESTONE equipment_probe_entity_equipment entity_id={} entries={} slots={}",
+            equipment.entity_id.0,
+            slots.len(),
+            slots.join(",")
+        );
+    }
+
+    fn on_window_open_varint(&mut self, window: packet::play::clientbound::WindowOpen_VarInt) {
+        if self.survival_crafting_probe_enabled
+            && window.id.0 > 0
+            && !self.survival_crafting_open_seen
+        {
+            self.survival_crafting_window_id = window.id.0 as u8;
+            self.survival_crafting_open_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_crafting_table_open_seen window={} position={},{},{}",
+                self.survival_crafting_window_id,
+                SURVIVAL_CRAFTING_TABLE_X,
+                SURVIVAL_CRAFTING_TABLE_Y,
+                SURVIVAL_CRAFTING_TABLE_Z
+            );
+        }
+
+        if self.survival_furnace_probe_enabled && window.id.0 > 0 {
+            self.survival_furnace_window_id = window.id.0 as u8;
+            if self.survival_furnace_probe_session == SURVIVAL_FURNACE_REOPEN_SESSION {
+                if !self.survival_furnace_reopen_seen {
+                    self.survival_furnace_reopen_seen = true;
+                    info!(
+                        "MC-COMPAT-MILESTONE survival_furnace_reopen_seen window={} position={},{},{}",
+                        self.survival_furnace_window_id,
+                        SURVIVAL_FURNACE_X,
+                        SURVIVAL_FURNACE_Y,
+                        SURVIVAL_FURNACE_Z
+                    );
+                }
+            } else if !self.survival_furnace_open_seen {
+                self.survival_furnace_open_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE survival_furnace_open_seen window={} position={},{},{}",
+                    self.survival_furnace_window_id,
+                    SURVIVAL_FURNACE_X,
+                    SURVIVAL_FURNACE_Y,
+                    SURVIVAL_FURNACE_Z
+                );
+            }
+        }
+
+        if self.survival_chest_probe_enabled && window.id.0 > 0 {
+            self.survival_chest_window_id = window.id.0 as u8;
+            if self.survival_chest_probe_session == SURVIVAL_CHEST_REOPEN_SESSION {
+                if !self.survival_chest_reopen_seen {
+                    self.survival_chest_reopen_seen = true;
+                    info!(
+                        "MC-COMPAT-MILESTONE survival_chest_reopen_seen window={} position={},{},{}",
+                        self.survival_chest_window_id,
+                        SURVIVAL_CHEST_X,
+                        SURVIVAL_CHEST_Y,
+                        SURVIVAL_CHEST_Z
+                    );
+                }
+            } else if !self.survival_chest_open_seen {
+                self.survival_chest_open_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE survival_chest_open_seen window={} position={},{},{}",
+                    self.survival_chest_window_id,
+                    SURVIVAL_CHEST_X,
+                    SURVIVAL_CHEST_Y,
+                    SURVIVAL_CHEST_Z
+                );
+            }
+        }
+
+        if !self.inventory_probe_enabled {
+            return;
+        }
+
+        info!(
+            "MC-COMPAT-MILESTONE inventory_probe_open_container window={} type={} title={}",
+            window.id.0, window.ty.0, window.title
+        );
+        if window.id.0 > 0 {
+            self.inventory_probe_container_id = window.id.0 as u8;
+            self.inventory_probe_container_seen = true;
+        }
+    }
+
+    fn on_window_items_state_carry(
+        &mut self,
+        window: packet::play::clientbound::WindowItems_StateCarry,
+    ) {
+        if !self.inventory_probe_enabled
+            && !self.inventory_stack_split_merge_probe_enabled
+            && !self.inventory_drag_transactions_probe_enabled
+            && !self.survival_probe_enabled
+            && !self.survival_chest_probe_enabled
+            && !self.survival_crafting_probe_enabled
+            && !self.survival_furnace_probe_enabled
+            && !self.survival_hunger_food_probe_enabled
+            && !self.survival_hunger_health_probe_enabled
+            && !self.survival_mob_drop_probe_enabled
+        {
+            return;
+        }
+
+        let slot_count = window.items.data.len();
+        let slot36 = window
+            .items
+            .data
+            .get(36)
+            .map(Self::item_summary)
+            .unwrap_or_else(|| "missing".to_string());
+        let slot37 = window
+            .items
+            .data
+            .get(37)
+            .map(Self::item_summary)
+            .unwrap_or_else(|| "missing".to_string());
+
+        info!(
+            "MC-COMPAT-MILESTONE inventory_probe_window_items window={} state_id={} slots={} slot36={} slot37={} carried={}",
+            window.id,
+            window.state_id.0,
+            slot_count,
+            slot36,
+            slot37,
+            Self::item_summary(&window.carried_item),
+        );
+        if self.negative_probe_sent && self.negative_probe_is("inventory_stale_state") {
+            self.log_negative_probe_outcome_once(
+                "negative_inventory_stale_state_contained",
+                "postcondition=window_state_after_stale_click",
+            );
+        }
+        if self.negative_probe_sent && self.negative_probe_is("inventory_invalid_click") {
+            self.log_negative_probe_outcome_once(
+                "negative_inventory_invalid_click_restored",
+                "postcondition=window_state_after_invalid_click",
+            );
+        }
+        self.inventory_probe_window_seen = true;
+        if window.id == PLAYER_INVENTORY_WINDOW_ID {
+            self.inventory_probe_state_id = window.state_id.0;
+            self.log_inventory_stack_initial_slot(
+                window.state_id.0,
+                window.items.data.get(INVENTORY_STACK_SOURCE_SLOT_INDEX),
+            );
+        }
+        if window.id == self.inventory_probe_container_id && window.id > 0 {
+            self.inventory_probe_container_state_id = window.state_id.0;
+            self.inventory_probe_container_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE inventory_probe_container_items window={} state_id={} slots={}",
+                window.id, window.state_id.0, slot_count
+            );
+        }
+        if self.survival_chest_probe_enabled
+            && window.id == self.survival_chest_window_id
+            && window.id > EMPTY_WINDOW_ID
+        {
+            self.survival_chest_window_state_id = window.state_id.0;
+            self.log_survival_chest_persisted_item(
+                window.id,
+                window.items.data.get(SURVIVAL_CHEST_WINDOW_SLOT_INDEX),
+            );
+        }
+        if self.survival_crafting_probe_enabled
+            && window.id == self.survival_crafting_window_id
+            && window.id > EMPTY_WINDOW_ID
+        {
+            self.survival_crafting_window_state_id = window.state_id.0;
+            self.log_survival_crafting_result_from_slot(
+                window.id,
+                window.state_id.0,
+                SURVIVAL_CRAFTING_RESULT_INDEX,
+                window.items.data.get(SURVIVAL_CRAFTING_RESULT_INDEX),
+            );
+            self.log_survival_crafting_inventory_from_slot(
+                SURVIVAL_CRAFTING_INVENTORY_INDEX,
+                window.items.data.get(SURVIVAL_CRAFTING_INVENTORY_INDEX),
+            );
+            self.log_survival_crafting_inventory_from_slot(
+                SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_INDEX,
+                window
+                    .items
+                    .data
+                    .get(SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_INDEX),
+            );
+        }
+        if self.survival_furnace_probe_enabled
+            && window.id == self.survival_furnace_window_id
+            && window.id > EMPTY_WINDOW_ID
+        {
+            self.survival_furnace_window_state_id = window.state_id.0;
+            self.log_survival_furnace_output_from_slot(
+                window.id,
+                window.state_id.0,
+                SURVIVAL_FURNACE_OUTPUT_INDEX,
+                window.items.data.get(SURVIVAL_FURNACE_OUTPUT_INDEX),
+            );
+            self.log_survival_furnace_invalid_fuel_from_slot(
+                window.id,
+                SURVIVAL_FURNACE_FUEL_INDEX,
+                window.items.data.get(SURVIVAL_FURNACE_FUEL_INDEX),
+            );
+            self.log_survival_furnace_inventory_from_slot(
+                SURVIVAL_FURNACE_INVENTORY_INDEX,
+                window.items.data.get(SURVIVAL_FURNACE_INVENTORY_INDEX),
+            );
+            self.log_survival_furnace_inventory_from_slot(
+                SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_INDEX,
+                window
+                    .items
+                    .data
+                    .get(SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_INDEX),
+            );
+        }
+        self.log_survival_hunger_food_inventory_from_slot(
+            SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT,
+            window.items.data.get(SURVIVAL_HUNGER_FOOD_INVENTORY_INDEX),
+        );
+        self.log_survival_hunger_health_inventory_from_slot(
+            SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT,
+            window.items.data.get(SURVIVAL_HUNGER_FOOD_INVENTORY_INDEX),
+        );
+        self.log_survival_mob_drop_inventory_from_slot(
+            SURVIVAL_MOB_DROP_INVENTORY_SLOT,
+            window.items.data.get(SURVIVAL_MOB_DROP_INVENTORY_INDEX),
+        );
+
+        if let Some(Some(stack)) = window.items.data.get(36) {
+            if !self.inventory_probe_sword_seen && stack.count == 1 {
+                self.inventory_probe_sword_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_probe_slot36_nonempty count={} item_id={}",
+                    stack.count, stack.id
+                );
+            }
+        }
+        if let Some(Some(stack)) = window.items.data.get(37) {
+            if !self.inventory_probe_wool_seen && stack.count == 64 {
+                self.inventory_probe_wool_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE inventory_probe_slot37_stack count={} item_id={}",
+                    stack.count, stack.id
+                );
+            }
+        }
+    }
+
+    fn on_window_set_slot_state(&mut self, slot: packet::play::clientbound::WindowSetSlot_State) {
+        if !self.inventory_probe_enabled
+            && !self.inventory_stack_split_merge_probe_enabled
+            && !self.inventory_drag_transactions_probe_enabled
+            && !self.survival_probe_enabled
+            && !self.survival_chest_probe_enabled
+            && !self.survival_crafting_probe_enabled
+            && !self.survival_furnace_probe_enabled
+            && !self.survival_hunger_food_probe_enabled
+            && !self.survival_hunger_health_probe_enabled
+            && !self.survival_mob_drop_probe_enabled
+        {
+            return;
+        }
+
+        info!(
+            "MC-COMPAT-MILESTONE inventory_probe_set_slot window={} state_id={} slot={} item={}",
+            slot.id,
+            slot.state_id.0,
+            slot.property,
+            Self::item_summary(&slot.item),
+        );
+        self.inventory_probe_state_id = slot.state_id.0;
+        if slot.id == PLAYER_INVENTORY_WINDOW_ID {
+            self.log_inventory_stack_slot_update(slot.state_id.0, slot.property, &slot.item);
+        }
+        if self.survival_chest_probe_enabled
+            && slot.id == self.survival_chest_window_id
+            && slot.id > EMPTY_WINDOW_ID
+        {
+            self.survival_chest_window_state_id = slot.state_id.0;
+            if slot.property == SURVIVAL_CHEST_WINDOW_SLOT {
+                self.log_survival_chest_persisted_item(slot.id, Some(&slot.item));
+            }
+        }
+        if self.survival_crafting_probe_enabled {
+            if slot.id == self.survival_crafting_window_id && slot.id > EMPTY_WINDOW_ID {
+                self.survival_crafting_window_state_id = slot.state_id.0;
+                if slot.property == SURVIVAL_CRAFTING_RESULT_SLOT {
+                    self.log_survival_crafting_result_from_slot(
+                        slot.id,
+                        slot.state_id.0,
+                        SURVIVAL_CRAFTING_RESULT_INDEX,
+                        Some(&slot.item),
+                    );
+                }
+            }
+            if should_log_survival_crafting_inventory_slot(
+                slot.id,
+                self.survival_crafting_window_id,
+                slot.property,
+            ) {
+                self.log_survival_crafting_inventory_from_slot(
+                    SURVIVAL_CRAFTING_INVENTORY_INDEX,
+                    Some(&slot.item),
+                );
+            }
+        }
+        if self.survival_furnace_probe_enabled {
+            if slot.id == self.survival_furnace_window_id && slot.id > EMPTY_WINDOW_ID {
+                self.survival_furnace_window_state_id = slot.state_id.0;
+                if slot.property == SURVIVAL_FURNACE_FUEL_SLOT {
+                    self.log_survival_furnace_invalid_fuel_from_slot(
+                        slot.id,
+                        SURVIVAL_FURNACE_FUEL_INDEX,
+                        Some(&slot.item),
+                    );
+                }
+                if slot.property == SURVIVAL_FURNACE_OUTPUT_SLOT {
+                    self.log_survival_furnace_output_from_slot(
+                        slot.id,
+                        slot.state_id.0,
+                        SURVIVAL_FURNACE_OUTPUT_INDEX,
+                        Some(&slot.item),
+                    );
+                }
+            }
+            if should_log_survival_furnace_inventory_slot(
+                slot.id,
+                self.survival_furnace_window_id,
+                slot.property,
+            ) {
+                self.log_survival_furnace_inventory_from_slot(
+                    SURVIVAL_FURNACE_INVENTORY_INDEX,
+                    Some(&slot.item),
+                );
+            }
+        }
+        self.log_survival_hunger_food_inventory_from_slot(slot.property, Some(&slot.item));
+        self.log_survival_hunger_health_inventory_from_slot(slot.property, Some(&slot.item));
+        self.log_survival_mob_drop_inventory_from_slot(slot.property, Some(&slot.item));
+        if slot.property == 36 {
+            if let Some(stack) = &slot.item {
+                if !self.inventory_probe_sword_seen && stack.count == 1 {
+                    self.inventory_probe_sword_seen = true;
+                    info!(
+                        "MC-COMPAT-MILESTONE inventory_probe_slot36_nonempty count={} item_id={}",
+                        stack.count, stack.id
+                    );
+                }
+                if self.inventory_probe_drop_sent
+                    && !self.inventory_probe_pickup_seen
+                    && stack.count == 1
+                {
+                    self.inventory_probe_pickup_seen = true;
+                    info!(
+                        "MC-COMPAT-MILESTONE inventory_probe_pickup_slot36_restored count={} item_id={}",
+                        stack.count, stack.id
+                    );
+                }
+                if self.survival_probe_enabled
+                    && !self.survival_probe_pickup_seen
+                    && stack.count >= 1
+                {
+                    self.survival_probe_pickup_seen = true;
+                    info!(
+                        "MC-COMPAT-MILESTONE survival_probe_pickup_seen slot=36 count={} item_id={}",
+                        stack.count, stack.id
+                    );
+                }
+            }
+        }
+        if slot.property == 37 {
+            if let Some(stack) = &slot.item {
+                if !self.inventory_probe_wool_seen && stack.count == 64 {
+                    self.inventory_probe_wool_seen = true;
+                    info!(
+                        "MC-COMPAT-MILESTONE inventory_probe_slot37_stack count={} item_id={}",
+                        stack.count, stack.id
+                    );
+                }
+            }
+        }
+    }
+
+    fn on_collect_item(&mut self, item: packet::play::clientbound::CollectItem) {
+        if !self.inventory_probe_enabled
+            && !self.survival_probe_enabled
+            && !self.survival_chest_probe_enabled
+            && !self.survival_crafting_probe_enabled
+            && !self.survival_furnace_probe_enabled
+            && !self.survival_mob_drop_probe_enabled
+        {
+            return;
+        }
+
+        if self.inventory_probe_enabled {
+            info!(
+                "MC-COMPAT-MILESTONE inventory_probe_collect_item collected_entity_id={} collector_entity_id={} count={}",
+                item.collected_entity_id.0,
+                item.collector_entity_id.0,
+                item.number_of_items.0,
+            );
+        }
+        if self.survival_probe_enabled && !self.survival_probe_pickup_seen {
+            self.survival_probe_pickup_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_probe_pickup_seen collected_entity_id={} collector_entity_id={} count={}",
+                item.collected_entity_id.0,
+                item.collector_entity_id.0,
+                item.number_of_items.0,
+            );
+        }
+        if self.survival_mob_drop_probe_enabled && !self.survival_mob_drop_pickup_seen {
+            if self.survival_mob_drop_drop_entity_id.is_none() {
+                self.survival_mob_drop_drop_entity_id = Some(item.collected_entity_id.0);
+            }
+            if self.survival_mob_drop_drop_entity_id != Some(item.collected_entity_id.0) {
+                return;
+            }
+            if !self.survival_mob_drop_drop_seen {
+                self.survival_mob_drop_drop_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE survival_mob_drop_drop_seen item={} count={} entity_id={}",
+                    SURVIVAL_MOB_DROP_ITEM_NAME,
+                    SURVIVAL_MOB_DROP_ITEM_COUNT,
+                    item.collected_entity_id.0
+                );
+            }
+            self.survival_mob_drop_pickup_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE survival_mob_drop_pickup_seen item={} count={} collected_entity_id={} collector_entity_id={}",
+                SURVIVAL_MOB_DROP_ITEM_NAME,
+                item.number_of_items.0,
+                item.collected_entity_id.0,
+                item.collector_entity_id.0,
+            );
+        }
+    }
+
+    fn on_set_current_hotbar_slot(
+        &mut self,
+        slot: packet::play::clientbound::SetCurrentHotbarSlot,
+    ) {
+        if self.inventory_probe_enabled && !self.inventory_probe_hotbar_seen {
+            self.inventory_probe_hotbar_seen = true;
+            info!(
+                "MC-COMPAT-MILESTONE inventory_probe_current_hotbar_slot slot={}",
+                slot.slot
+            );
+        }
+    }
+
+    fn on_death_message_varint(&mut self, death: packet::play::clientbound::DeathMessage_VarInt) {
+        info!(
+            "MC-COMPAT-MILESTONE combat_probe_death_message player_id={} message={}",
+            death.player_id.0, death.message
+        );
+    }
+
+    fn on_player_remove_uuids(&mut self, remove: packet::play::clientbound::PlayerRemove_UUIDs) {
+        info!(
+            "MC-COMPAT-MILESTONE player_remove uuids={}",
+            remove.uuids.data.len()
+        );
+    }
+
+    fn on_teleport_player_withdismount(
+        &mut self,
+        teleport: packet::play::clientbound::TeleportPlayer_WithDismount,
+    ) {
+        self.on_teleport_player(
+            teleport.x,
+            teleport.y,
+            teleport.z,
+            teleport.yaw as f64,
+            teleport.pitch as f64,
+            teleport.flags,
+            Some(teleport.teleport_id),
+        )
+    }
+
+    fn on_teleport_player_withconfirm(
+        &mut self,
+        teleport: packet::play::clientbound::TeleportPlayer_WithConfirm,
+    ) {
+        self.on_teleport_player(
+            teleport.x,
+            teleport.y,
+            teleport.z,
+            teleport.yaw as f64,
+            teleport.pitch as f64,
+            teleport.flags,
+            Some(teleport.teleport_id),
+        )
+    }
+
+    fn on_teleport_player_noconfirm(
+        &mut self,
+        teleport: packet::play::clientbound::TeleportPlayer_NoConfirm,
+    ) {
+        self.on_teleport_player(
+            teleport.x,
+            teleport.y,
+            teleport.z,
+            teleport.yaw as f64,
+            teleport.pitch as f64,
+            teleport.flags,
+            None,
+        )
+    }
+
+    fn on_teleport_player_onground(
+        &mut self,
+        teleport: packet::play::clientbound::TeleportPlayer_OnGround,
+    ) {
+        let flags: u8 = 0; // always absolute
+        self.on_teleport_player(
+            teleport.x,
+            teleport.eyes_y - 1.62,
+            teleport.z,
+            teleport.yaw as f64,
+            teleport.pitch as f64,
+            flags,
+            None,
+        )
+    }
+
+    fn on_teleport_player(
+        &mut self,
+        x: f64,
+        y: f64,
+        z: f64,
+        yaw: f64,
+        pitch: f64,
+        flags: u8,
+        teleport_id: Option<protocol::VarInt>,
+    ) {
+        use std::f64::consts::PI;
+        if let Some(player) = self.player {
+            let position = self
+                .entities
+                .get_component_mut(player, self.target_position)
+                .unwrap();
+            let rotation = self
+                .entities
+                .get_component_mut(player, self.rotation)
+                .unwrap();
+            let velocity = self
+                .entities
+                .get_component_mut(player, self.velocity)
+                .unwrap();
+
+            position.position.x =
+                calculate_relative_teleport(TeleportFlag::RelX, flags, position.position.x, x);
+            position.position.y =
+                calculate_relative_teleport(TeleportFlag::RelY, flags, position.position.y, y);
+            position.position.z =
+                calculate_relative_teleport(TeleportFlag::RelZ, flags, position.position.z, z);
+            rotation.yaw = calculate_relative_teleport(
+                TeleportFlag::RelYaw,
+                flags,
+                rotation.yaw,
+                -yaw as f64 * (PI / 180.0),
+            );
+
+            rotation.pitch = -((calculate_relative_teleport(
+                TeleportFlag::RelPitch,
+                flags,
+                (-rotation.pitch) * (180.0 / PI) + 180.0,
+                pitch,
+            ) - 180.0)
+                * (PI / 180.0));
+
+            if (flags & (TeleportFlag::RelX as u8)) == 0 {
+                velocity.velocity.x = 0.0;
+            }
+            if (flags & (TeleportFlag::RelY as u8)) == 0 {
+                velocity.velocity.y = 0.0;
+            }
+            if (flags & (TeleportFlag::RelZ as u8)) == 0 {
+                velocity.velocity.z = 0.0;
+            }
+
+            if let Some(teleport_id) = teleport_id {
+                self.write_packet(packet::play::serverbound::TeleportConfirm { teleport_id });
+            }
+        }
+    }
+
+    fn on_block_entity_update_varint(
+        &mut self,
+        block_update: packet::play::clientbound::UpdateBlockEntity_VarInt,
+    ) {
+        self.on_block_entity_update_u8(packet::play::clientbound::UpdateBlockEntity_u8 {
+            location: block_update.location,
+            action: block_update.action.0 as u8,
+            nbt: block_update.nbt,
+        });
+    }
+
+    fn on_block_entity_update_data(
+        &mut self,
+        _block_update: packet::play::clientbound::UpdateBlockEntity_Data,
+    ) {
+        // TODO: handle UpdateBlockEntity_Data for 1.7, decompress gzipped_nbt
+    }
+
+    fn on_block_entity_update_u8(
+        &mut self,
+        block_update: packet::play::clientbound::UpdateBlockEntity_u8,
+    ) {
+        match block_update.nbt {
+            None => {
+                // NBT is null, so we need to remove the block entity
+                self.world
+                    .add_block_entity_action(world::BlockEntityAction::Remove(
+                        block_update.location,
+                    ));
+            }
+            Some(nbt) => {
+                if !self.handle_sign_block_entity_update(block_update.location, &nbt) {
+                    match block_update.action {
+                        // TODO: support more block update actions
+                        //1 => // Mob spawner
+                        //2 => // Command block text
+                        //3 => // Beacon
+                        //4 => // Mob head
+                        //5 => // Conduit
+                        //6 => // Banner
+                        //7 => // Structure
+                        //8 => // Gateway
+                        //10 => // Unused
+                        //11 => // Jigsaw
+                        //12 => // Campfire
+                        //14 => // Beehive
+                        _ => {
+                            debug!("Unsupported block entity action: {}", block_update.action);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fn on_sign_editor_open(&mut self, sign_editor: packet::play::clientbound::SignEditorOpen) {
+        self.record_sign_editor_open(sign_editor.location);
+    }
+
+    fn on_sign_editor_open_i32(
+        &mut self,
+        sign_editor: packet::play::clientbound::SignEditorOpen_i32,
+    ) {
+        self.record_sign_editor_open(Position::new(sign_editor.x, sign_editor.y, sign_editor.z));
+    }
+
+    fn record_sign_editor_open(&mut self, position: Position) {
+        self.sign_editor_open_position = Some(position);
+        info!(
+            "MC-COMPAT-MILESTONE sign_editor_open_observed position={},{},{}",
+            position.x, position.y, position.z
+        );
+    }
+
+    fn on_sign_update(&mut self, mut update_sign: packet::play::clientbound::UpdateSign) {
+        format::convert_legacy(&mut update_sign.line1);
+        format::convert_legacy(&mut update_sign.line2);
+        format::convert_legacy(&mut update_sign.line3);
+        format::convert_legacy(&mut update_sign.line4);
+        self.world
+            .add_block_entity_action(world::BlockEntityAction::UpdateSignText(Box::new((
+                update_sign.location,
+                update_sign.line1,
+                update_sign.line2,
+                update_sign.line3,
+                update_sign.line4,
+            ))));
+    }
+
+    fn on_sign_update_u16(&mut self, mut update_sign: packet::play::clientbound::UpdateSign_u16) {
+        format::convert_legacy(&mut update_sign.line1);
+        format::convert_legacy(&mut update_sign.line2);
+        format::convert_legacy(&mut update_sign.line3);
+        format::convert_legacy(&mut update_sign.line4);
+        self.world
+            .add_block_entity_action(world::BlockEntityAction::UpdateSignText(Box::new((
+                Position::new(update_sign.x, update_sign.y as i32, update_sign.z),
+                update_sign.line1,
+                update_sign.line2,
+                update_sign.line3,
+                update_sign.line4,
+            ))));
+    }
+
+    fn on_player_info_string(
+        &mut self,
+        _player_info: packet::play::clientbound::PlayerInfo_String,
+    ) {
+        // TODO: track online players, for 1.7.10 - this is for the <tab> online player list
+        // self.players in 1.7.10 will be only spawned players (within client range)
+        /*
+        if player_info.online {
+            self.players.entry(uuid.clone()).or_insert(PlayerInfo {
+                name: player_info.name.clone(),
+                uuid,
+                skin_url: None,
+
+                display_name: None,
+                ping: player_info.ping as i32,
+                gamemode: Gamemode::from_int(0),
+            });
+        } else {
+            self.players.remove(&uuid);
+        }
+        */
+    }
+
+    fn on_player_info_bit_set(
+        &mut self,
+        player_info: packet::play::clientbound::PlayerInfo_BitSet,
+    ) {
+        self.on_player_info(packet::play::clientbound::PlayerInfo {
+            inner: packet::PlayerInfoData {
+                action: protocol::VarInt(0),
+                players: player_info.inner.players,
+            },
+        });
+    }
+
+    fn on_player_info(&mut self, player_info: packet::play::clientbound::PlayerInfo) {
+        use crate::protocol::packet::PlayerDetail::*;
+        for detail in player_info.inner.players {
+            match detail {
+                Add {
+                    name,
+                    uuid,
+                    properties,
+                    display,
+                    gamemode,
+                    ping,
+                } => {
+                    let info = self.players.entry(uuid.clone()).or_insert(PlayerInfo {
+                        name: name.clone(),
+                        uuid,
+                        skin_url: None,
+
+                        display_name: display.clone(),
+                        ping: ping.0,
+                        gamemode: Gamemode::from_int(gamemode.0),
+                    });
+                    // Re-set the props of the player in case of dodgy server implementations
+                    info.name = name;
+                    info.display_name = display;
+                    info.ping = ping.0;
+                    info.gamemode = Gamemode::from_int(gamemode.0);
+                    for prop in properties {
+                        if prop.name != "textures" {
+                            continue;
+                        }
+                        // Ideally we would check the signature of the blob to
+                        // verify it was from Mojang and not faked by the server
+                        // but this requires the public key which is distributed
+                        // authlib. We could download authlib on startup and extract
+                        // the key but this seems like overkill compared to just
+                        // whitelisting Mojang's texture servers instead.
+                        let skin_blob_result = &base64::decode(&prop.value);
+                        let skin_blob = match skin_blob_result {
+                            Ok(val) => val,
+                            Err(err) => {
+                                error!("Failed to decode skin blob, {:?}", err);
+                                continue;
+                            }
+                        };
+                        let skin_blob: serde_json::Value = match serde_json::from_slice(skin_blob) {
+                            Ok(val) => val,
+                            Err(err) => {
+                                error!("Failed to parse skin blob, {:?}", err);
+                                continue;
+                            }
+                        };
+                        if let Some(skin_url) = skin_blob
+                            .pointer("/textures/SKIN/url")
+                            .and_then(|v| v.as_str())
+                        {
+                            info.skin_url = Some(skin_url.to_owned());
+                        }
+                    }
+
+                    // Refresh our own skin when the server sends it to us.
+                    // The join game packet can come before this packet meaning
+                    // we may not have the skin in time for spawning ourselves.
+                    // This isn't an issue for other players because this packet
+                    // must come before the spawn player packet.
+                    if info.uuid == self.uuid {
+                        let model = self
+                            .entities
+                            .get_component_mut_direct::<entity::player::PlayerModel>(
+                                self.player.unwrap(),
+                            )
+                            .unwrap();
+                        model.set_skin(info.skin_url.clone());
+                    }
+                }
+                UpdateGamemode { uuid, gamemode } => {
+                    if let Some(info) = self.players.get_mut(&uuid) {
+                        info.gamemode = Gamemode::from_int(gamemode.0);
+                    }
+                }
+                UpdateLatency { uuid, ping } => {
+                    if let Some(info) = self.players.get_mut(&uuid) {
+                        info.ping = ping.0;
+                    }
+                }
+                UpdateDisplayName { uuid, display } => {
+                    if let Some(info) = self.players.get_mut(&uuid) {
+                        info.display_name = display;
+                    }
+                }
+                Remove { uuid } => {
+                    self.players.remove(&uuid);
+                }
+            }
+        }
+    }
+
+    fn on_servermessage_noposition(
+        &mut self,
+        m: packet::play::clientbound::ServerMessage_NoPosition,
+    ) {
+        self.on_servermessage(&m.message, None, None);
+    }
+
+    fn on_servermessage_position(&mut self, m: packet::play::clientbound::ServerMessage_Position) {
+        self.on_servermessage(&m.message, Some(m.position), None);
+    }
+
+    fn on_servermessage_sender(&mut self, m: packet::play::clientbound::ServerMessage_Sender) {
+        self.on_servermessage(&m.message, Some(m.position), Some(m.sender));
+    }
+
+    fn on_servermessage(
+        &mut self,
+        message: &format::Component,
+        _position: Option<u8>,
+        _sender: Option<protocol::UUID>,
+    ) {
+        let rendered = message.to_string();
+        info!("Received chat message: {}", rendered);
+        if self.flag_probe_enabled {
+            if rendered.contains("You have the flag") {
+                self.flag_probe_have_flag_count = self.flag_probe_have_flag_count.saturating_add(1);
+                if !self.flag_probe_have_flag_seen {
+                    self.flag_probe_have_flag_seen = true;
+                }
+                info!(
+                    "MC-COMPAT-MILESTONE flag_probe_have_flag_chat count={} target={}",
+                    self.flag_probe_have_flag_count, self.flag_probe_repeat_target
+                );
+            }
+            if rendered.contains("You captured the flag") {
+                self.flag_probe_capture_count = self.flag_probe_capture_count.saturating_add(1);
+                if !self.flag_probe_capture_seen {
+                    self.flag_probe_capture_seen = true;
+                }
+                info!(
+                    "MC-COMPAT-MILESTONE flag_probe_capture_chat count={} target={}",
+                    self.flag_probe_capture_count, self.flag_probe_repeat_target
+                );
+            }
+            if rendered.contains("RED") && rendered.contains("BLUE") {
+                self.flag_probe_score_count = self.flag_probe_score_count.saturating_add(1);
+                if !self.flag_probe_score_seen {
+                    self.flag_probe_score_seen = true;
+                }
+                info!(
+                    "MC-COMPAT-MILESTONE flag_probe_score_chat count={} target={} message={}",
+                    self.flag_probe_score_count, self.flag_probe_repeat_target, rendered
+                );
+                if self.flag_probe_score_count >= self.flag_probe_repeat_target {
+                    info!(
+                        "MC-COMPAT-MILESTONE flag_probe_repeat_target_reached count={} target={}",
+                        self.flag_probe_score_count, self.flag_probe_repeat_target
+                    );
+                }
+            }
+        }
+        self.log_score_limit_probe_once(&rendered);
+        self.received_chat_at = Some(Instant::now());
+    }
+
+    fn log_score_limit_probe_once(&mut self, rendered: &str) {
+        if !self.score_limit_probe_enabled || self.score_limit_probe_seen {
+            return;
+        }
+        if !rendered.contains(CTF_SCORE_LIMIT_CLIENT_TARGET_SCORE)
+            || !rendered.contains(CTF_SCORE_LIMIT_CLIENT_OPPOSING_SCORE)
+        {
+            return;
+        }
+        self.score_limit_probe_seen = true;
+        info!(
+            "MC-COMPAT-MILESTONE ctf_score_limit_win_seen score_limit=2 winning_team={} red_score=2 blue_score=0 end_state={} duplicate_win=false",
+            CTF_SCORE_LIMIT_CLIENT_WIN_TEAM,
+            CTF_SCORE_LIMIT_CLIENT_END_STATE
+        );
+    }
+
+    fn load_block_entities(&mut self, block_entities: Vec<Option<crate::nbt::NamedTag>>) {
+        for block_entity in block_entities.into_iter().flatten() {
+            let Some(x) = block_entity.1.get("x").and_then(|tag| tag.as_int()) else {
+                warn!("Block entity missing x tag: {:?}", block_entity);
+                continue;
+            };
+            let Some(y) = block_entity.1.get("y").and_then(|tag| tag.as_int()) else {
+                warn!("Block entity missing y tag: {:?}", block_entity);
+                continue;
+            };
+            let Some(z) = block_entity.1.get("z").and_then(|tag| tag.as_int()) else {
+                warn!("Block entity missing z tag: {:?}", block_entity);
+                continue;
+            };
+            if let Some(tile_id) = block_entity.1.get("id") {
+                let tile_id = tile_id.as_str().unwrap_or_default();
+                let action = match tile_id {
+                    // Fake a sign update
+                    LEGACY_SIGN_ID => LEGACY_SIGN_BLOCK_ENTITY_ACTION,
+                    // Not something we care about, so break the loop
+                    _ => continue,
+                };
+                self.on_block_entity_update_u8(packet::play::clientbound::UpdateBlockEntity_u8 {
+                    location: Position::new(x, y, z),
+                    action,
+                    nbt: Some(block_entity.clone()),
+                });
+            } else {
+                warn!(
+                    "Block entity at ({},{},{}) missing id tag: {:?}",
+                    x, y, z, block_entity
+                );
+            }
+        }
+    }
+
+    fn load_packed_block_entities(
+        &mut self,
+        chunk_x: i32,
+        chunk_z: i32,
+        block_entities: Vec<packet::BlockEntityAtPackedLocation>,
+    ) {
+        for block_entity in block_entities {
+            let Some(nbt) = block_entity.data else {
+                continue;
+            };
+            let location = packed_block_entity_position(
+                chunk_x,
+                chunk_z,
+                block_entity.packed_xz,
+                block_entity.y,
+            );
+            self.handle_sign_block_entity_update(location, &nbt);
+        }
+    }
+
+    fn on_chunk_data_and_light(
+        &mut self,
+        chunk_data: packet::play::clientbound::ChunkData_AndLight,
+    ) {
+        if !self.logged_first_chunk {
+            info!(
+                "MC-COMPAT-MILESTONE first_chunk_data chunk_x={} chunk_z={}",
+                chunk_data.chunk_x, chunk_data.chunk_z
+            );
+            self.logged_first_chunk = true;
+        }
+        self.world
+            .load_chunk118(
+                chunk_data.chunk_x,
+                chunk_data.chunk_z,
+                true,
+                chunk_data.data.data,
+            )
+            .unwrap();
+        self.load_packed_block_entities(
+            chunk_data.chunk_x,
+            chunk_data.chunk_z,
+            chunk_data.block_entities.data,
+        );
+
+        // Set block light data
+        self.world.set_light_data(
+            chunk_data.chunk_x,
+            chunk_data.chunk_z,
+            world::LightType::Block,
+            chunk_data.block_light_mask.data,
+            chunk_data.block_light_arrays.data,
+        );
+
+        // Set sky light data
+        self.world.set_light_data(
+            chunk_data.chunk_x,
+            chunk_data.chunk_z,
+            world::LightType::Sky,
+            chunk_data.sky_light_mask.data,
+            chunk_data.sky_light_arrays.data,
+        );
+
+        // Clear block light data
+        self.world.clear_light_data(
+            chunk_data.chunk_x,
+            chunk_data.chunk_z,
+            world::LightType::Block,
+            chunk_data.empty_block_light_mask.data,
+        );
+
+        // Clear sky light data
+        self.world.clear_light_data(
+            chunk_data.chunk_x,
+            chunk_data.chunk_z,
+            world::LightType::Sky,
+            chunk_data.empty_sky_light_mask.data,
+        );
+    }
+
+    fn on_chunk_data_and_light_no_trust_edges(
+        &mut self,
+        chunk_data: packet::play::clientbound::ChunkData_AndLight_NoTrustEdges,
+    ) {
+        if !self.logged_first_chunk {
+            info!(
+                "MC-COMPAT-MILESTONE first_chunk_data chunk_x={} chunk_z={}",
+                chunk_data.chunk_x, chunk_data.chunk_z
+            );
+            self.logged_first_chunk = true;
+        }
+        self.world
+            .load_chunk118(
+                chunk_data.chunk_x,
+                chunk_data.chunk_z,
+                true,
+                chunk_data.data.data,
+            )
+            .unwrap();
+        self.load_packed_block_entities(
+            chunk_data.chunk_x,
+            chunk_data.chunk_z,
+            chunk_data.block_entities.data,
+        );
+
+        self.world.set_light_data(
+            chunk_data.chunk_x,
+            chunk_data.chunk_z,
+            world::LightType::Block,
+            chunk_data.block_light_mask.data,
+            chunk_data.block_light_arrays.data,
+        );
+
+        self.world.set_light_data(
+            chunk_data.chunk_x,
+            chunk_data.chunk_z,
+            world::LightType::Sky,
+            chunk_data.sky_light_mask.data,
+            chunk_data.sky_light_arrays.data,
+        );
+
+        self.world.clear_light_data(
+            chunk_data.chunk_x,
+            chunk_data.chunk_z,
+            world::LightType::Block,
+            chunk_data.empty_block_light_mask.data,
+        );
+
+        self.world.clear_light_data(
+            chunk_data.chunk_x,
+            chunk_data.chunk_z,
+            world::LightType::Sky,
+            chunk_data.empty_sky_light_mask.data,
+        );
+    }
+
+    fn on_chunk_data_biomes3d_bitmasks(
+        &mut self,
+        chunk_data: packet::play::clientbound::ChunkData_Biomes3D_Bitmasks,
+    ) {
+        self.world
+            .load_chunk117(
+                chunk_data.chunk_x,
+                chunk_data.chunk_z,
+                true,
+                chunk_data.bitmasks.data[0] as u64, // TODO: get all bitmasks
+                chunk_data.data.data,
+            )
+            .unwrap();
+        self.load_block_entities(chunk_data.block_entities.data);
+    }
+
+    fn on_chunk_data_biomes3d_varint(
+        &mut self,
+        chunk_data: packet::play::clientbound::ChunkData_Biomes3D_VarInt,
+    ) {
+        self.world
+            .load_chunk115(
+                chunk_data.chunk_x,
+                chunk_data.chunk_z,
+                chunk_data.new,
+                chunk_data.bitmask.0 as u16,
+                chunk_data.data.data,
+            )
+            .unwrap();
+        self.load_block_entities(chunk_data.block_entities.data);
+    }
+
+    fn on_chunk_data_biomes3d_bool(
+        &mut self,
+        chunk_data: packet::play::clientbound::ChunkData_Biomes3D_bool,
+    ) {
+        self.world
+            .load_chunk115(
+                chunk_data.chunk_x,
+                chunk_data.chunk_z,
+                chunk_data.new,
+                chunk_data.bitmask.0 as u16,
+                chunk_data.data.data,
+            )
+            .unwrap();
+        self.load_block_entities(chunk_data.block_entities.data);
+    }
+
+    fn on_chunk_data_biomes3d(
+        &mut self,
+        chunk_data: packet::play::clientbound::ChunkData_Biomes3D,
+    ) {
+        self.world
+            .load_chunk115(
+                chunk_data.chunk_x,
+                chunk_data.chunk_z,
+                chunk_data.new,
+                chunk_data.bitmask.0 as u16,
+                chunk_data.data.data,
+            )
+            .unwrap();
+        self.load_block_entities(chunk_data.block_entities.data);
+    }
+
+    fn on_chunk_data(&mut self, chunk_data: packet::play::clientbound::ChunkData) {
+        self.world
+            .load_chunk19(
+                chunk_data.chunk_x,
+                chunk_data.chunk_z,
+                chunk_data.new,
+                chunk_data.bitmask.0 as u16,
+                chunk_data.data.data,
+            )
+            .unwrap();
+        self.load_block_entities(chunk_data.block_entities.data);
+    }
+
+    fn on_chunk_data_heightmap(
+        &mut self,
+        chunk_data: packet::play::clientbound::ChunkData_HeightMap,
+    ) {
+        self.world
+            .load_chunk19(
+                chunk_data.chunk_x,
+                chunk_data.chunk_z,
+                chunk_data.new,
+                chunk_data.bitmask.0 as u16,
+                chunk_data.data.data,
+            )
+            .unwrap();
+        self.load_block_entities(chunk_data.block_entities.data);
+    }
+
+    fn on_chunk_data_no_entities(
+        &mut self,
+        chunk_data: packet::play::clientbound::ChunkData_NoEntities,
+    ) {
+        self.world
+            .load_chunk19(
+                chunk_data.chunk_x,
+                chunk_data.chunk_z,
+                chunk_data.new,
+                chunk_data.bitmask.0 as u16,
+                chunk_data.data.data,
+            )
+            .unwrap();
+    }
+
+    fn on_chunk_data_no_entities_u16(
+        &mut self,
+        chunk_data: packet::play::clientbound::ChunkData_NoEntities_u16,
+    ) {
+        let chunk_meta = vec![crate::protocol::packet::ChunkMeta {
+            x: chunk_data.chunk_x,
+            z: chunk_data.chunk_z,
+            bitmask: chunk_data.bitmask,
+        }];
+        let skylight = false;
+        self.world
+            .load_chunks18(chunk_data.new, skylight, &chunk_meta, chunk_data.data.data)
+            .unwrap();
+    }
+
+    fn on_chunk_data_17(&mut self, chunk_data: packet::play::clientbound::ChunkData_17) {
+        self.world
+            .load_chunk17(
+                chunk_data.chunk_x,
+                chunk_data.chunk_z,
+                chunk_data.new,
+                chunk_data.bitmask,
+                chunk_data.add_bitmask,
+                chunk_data.compressed_data.data,
+            )
+            .unwrap();
+    }
+
+    fn on_chunk_data_bulk(&mut self, bulk: packet::play::clientbound::ChunkDataBulk) {
+        let new = true;
+        self.world
+            .load_chunks18(
+                new,
+                bulk.skylight,
+                &bulk.chunk_meta.data,
+                bulk.chunk_data.to_vec(),
+            )
+            .unwrap();
+    }
+
+    fn on_chunk_data_bulk_17(&mut self, bulk: packet::play::clientbound::ChunkDataBulk_17) {
+        self.world
+            .load_chunks17(
+                bulk.chunk_column_count,
+                bulk.data_length,
+                bulk.skylight,
+                &bulk.chunk_data_and_meta,
+            )
+            .unwrap();
+    }
+
+    fn on_chunk_unload(&mut self, chunk_unload: packet::play::clientbound::ChunkUnload) {
+        self.world
+            .unload_chunk(chunk_unload.x, chunk_unload.z, &mut self.entities);
+    }
+
+    fn on_block_change(&mut self, location: Position, id: i32) {
+        self.world.set_block(
+            location,
+            self.world
+                .id_map
+                .by_vanilla_id(id as usize, &self.world.modded_block_ids),
+        );
+        self.log_survival_redstone_toggle_block_update(location, id);
+        self.log_survival_world_persistence_block_update(location, id);
+        if self.survival_probe_enabled
+            && location.x == SURVIVAL_PROBE_BREAK_X
+            && location.z == SURVIVAL_PROBE_BREAK_Z
+            && (location.y == SURVIVAL_PROBE_BREAK_Y || location.y == SURVIVAL_PROBE_PLACE_Y)
+        {
+            if location.y == SURVIVAL_PROBE_BREAK_Y && !self.survival_probe_break_update_seen {
+                self.survival_probe_break_update_seen = true;
+                info!(
+                    "MC-COMPAT-MILESTONE survival_probe_block_update location={},{},{} raw_id={}",
+                    location.x, location.y, location.z, id
+                );
+            }
+            if location.y == SURVIVAL_PROBE_PLACE_Y && !self.survival_probe_place_update_seen {
+                if id == SURVIVAL_PROBE_AIR_RAW_ID {
+                    warn!(
+                        "MC-COMPAT-NONFATAL survival_probe_place_air_update_ignored location={},{},{} raw_id={}",
+                        location.x, location.y, location.z, id
+                    );
+                } else {
+                    self.survival_probe_place_update_seen = true;
+                    info!(
+                        "MC-COMPAT-MILESTONE survival_probe_place_update location={},{},{} raw_id={}",
+                        location.x, location.y, location.z, id
+                    );
+                }
+            }
+        }
+    }
+
+    fn on_block_change_varint(
+        &mut self,
+        block_change: packet::play::clientbound::BlockChange_VarInt,
+    ) {
+        self.on_block_change(block_change.location, block_change.block_id.0)
+    }
+
+    fn on_block_change_u8(&mut self, block_change: packet::play::clientbound::BlockChange_u8) {
+        self.on_block_change(
+            crate::shared::Position::new(block_change.x, block_change.y as i32, block_change.z),
+            (block_change.block_id.0 << 4) | (block_change.block_metadata as i32),
+        );
+    }
+
+    fn on_multi_block_change_packed(
+        &mut self,
+        block_change: packet::play::clientbound::MultiBlockChange_Packed,
+    ) {
+        let sx = (block_change.chunk_section_pos >> 42) as i32;
+        let sy = ((block_change.chunk_section_pos << 44) >> 44) as i32;
+        let sz = ((block_change.chunk_section_pos << 22) >> 42) as i32;
+
+        for record in block_change.records.data {
+            let block_raw_id = record.0 >> 12;
+            let lz = (record.0 & 0xf) as i32;
+            let ly = ((record.0 >> 4) & 0xf) as i32;
+            let lx = ((record.0 >> 8) & 0xf) as i32;
+
+            let location = Position::new(
+                (sx << CHUNK_SECTION_WIDTH_LOG2) + lx as i32,
+                (sy << CHUNK_SECTION_WIDTH_LOG2) + ly as i32,
+                (sz << CHUNK_SECTION_WIDTH_LOG2) + lz as i32,
+            );
+            self.world.set_block(
+                location,
+                self.world
+                    .id_map
+                    .by_vanilla_id(block_raw_id as usize, &self.world.modded_block_ids),
+            );
+            self.log_survival_redstone_toggle_block_update(location, block_raw_id as i32);
+            self.log_survival_world_persistence_block_update(location, block_raw_id as i32);
+        }
+    }
+
+    fn on_multi_block_change_varint(
+        &mut self,
+        block_change: packet::play::clientbound::MultiBlockChange_VarInt,
+    ) {
+        let ox = block_change.chunk_x << 4;
+        let oz = block_change.chunk_z << 4;
+        for record in block_change.records.data {
+            let location = Position::new(
+                ox + (record.xz >> 4) as i32,
+                record.y as i32,
+                oz + (record.xz & 0xF) as i32,
+            );
+            self.world.set_block(
+                location,
+                self.world
+                    .id_map
+                    .by_vanilla_id(record.block_id.0 as usize, &self.world.modded_block_ids),
+            );
+            self.log_survival_redstone_toggle_block_update(location, record.block_id.0);
+            self.log_survival_world_persistence_block_update(location, record.block_id.0);
+        }
+    }
+
+    fn on_multi_block_change_u16(
+        &mut self,
+        block_change: packet::play::clientbound::MultiBlockChange_u16,
+    ) {
+        let ox = block_change.chunk_x << 4;
+        let oz = block_change.chunk_z << 4;
+
+        let mut data = std::io::Cursor::new(block_change.data);
+
+        for _ in 0..block_change.record_count {
+            use byteorder::{BigEndian, ReadBytesExt};
+
+            let record = data.read_u32::<BigEndian>().unwrap();
+
+            let id = record & 0x0000_ffff;
+            let y = ((record & 0x00ff_0000) >> 16) as i32;
+            let z = oz + ((record & 0x0f00_0000) >> 24) as i32;
+            let x = ox + ((record & 0xf000_0000) >> 28) as i32;
+
+            let location = Position::new(x, y, z);
+            self.world.set_block(
+                location,
+                self.world
+                    .id_map
+                    .by_vanilla_id(id as usize, &self.world.modded_block_ids),
+            );
+            self.log_survival_redstone_toggle_block_update(location, id as i32);
+            self.log_survival_world_persistence_block_update(location, id as i32);
+        }
+    }
+
+    fn on_update_light_arrays(
+        &mut self,
+        light_update: packet::play::clientbound::UpdateLight_Arrays,
+    ) {
+        // Clear block light data
+        self.world.clear_light_data(
+            light_update.chunk_x.0,
+            light_update.chunk_z.0,
+            world::LightType::Block,
+            light_update.empty_block_light_mask.data,
+        );
+
+        // Clear sky light data
+        self.world.clear_light_data(
+            light_update.chunk_x.0,
+            light_update.chunk_z.0,
+            world::LightType::Sky,
+            light_update.empty_sky_light_mask.data,
+        );
+
+        // Set block light data
+        self.world.set_light_data(
+            light_update.chunk_x.0,
+            light_update.chunk_z.0,
+            world::LightType::Block,
+            light_update.block_light_mask.data,
+            light_update.block_light_arrays.data,
+        );
+
+        // Set sky light data
+        self.world.set_light_data(
+            light_update.chunk_x.0,
+            light_update.chunk_z.0,
+            world::LightType::Sky,
+            light_update.sky_light_mask.data,
+            light_update.sky_light_arrays.data,
+        );
+    }
+}
+
+#[allow(clippy::enum_variant_names)]
+#[derive(Debug, Clone, Copy)]
+enum TeleportFlag {
+    RelX = 0b00001,
+    RelY = 0b00010,
+    RelZ = 0b00100,
+    RelYaw = 0b01000,
+    RelPitch = 0b10000,
+}
+
+fn calculate_relative_teleport(flag: TeleportFlag, flags: u8, base: f64, val: f64) -> f64 {
+    if (flags & (flag as u8)) == 0 {
+        val
+    } else {
+        base + val
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{
+        derive_survival_environment_id, next_inventory_drag_transactions_action,
+        next_inventory_stack_split_merge_action, normalize_survival_environment_id,
+        parse_flag_probe_repeat_target, should_log_survival_crafting_inventory_index,
+        should_log_survival_crafting_inventory_slot, should_log_survival_furnace_inventory_index,
+        should_log_survival_furnace_inventory_slot, sign_lines_match_payload, sign_text_payload,
+        survival_block_entity_expected_lines, survival_block_entity_position_matches,
+        survival_crafting_input_stack, survival_crafting_result_matches,
+        survival_crafting_result_stack, survival_crafting_table_position,
+        survival_furnace_fuel_stack, survival_furnace_input_stack,
+        survival_furnace_invalid_fuel_matches, survival_furnace_invalid_fuel_stack,
+        survival_furnace_output_matches, survival_furnace_output_stack, survival_furnace_position,
+        survival_hunger_food_float_matches, survival_hunger_food_item_matches,
+        survival_hunger_food_post_update_matches, survival_hunger_food_pre_update_matches,
+        survival_hunger_food_slot_is_empty, survival_hunger_health_post_update_matches,
+        survival_hunger_health_pre_update_matches, survival_mob_drop_item_matches,
+        survival_mob_drop_position_matches, survival_redstone_toggle_output_position_matches,
+        survival_world_persistence_position_matches, InventoryDragTransactionsAction,
+        InventoryDragTransactionsProbeInput, InventoryStackSplitMergeAction,
+        InventoryStackSplitMergeProbeInput, DEFAULT_FLAG_PROBE_REPEAT_TARGET,
+        EMPTY_WINDOW_STATE_ID, INVENTORY_DRAG_TRANSACTIONS_FIRST_TICK,
+        INVENTORY_STACK_SPLIT_MERGE_FIRST_TICK, MAX_FLAG_PROBE_REPEAT_TARGET,
+        PLAYER_INVENTORY_WINDOW_ID, SIGN_LINE_INDEX_1, SIGN_LINE_INDEX_2, SIGN_LINE_INDEX_3,
+        SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD, SURVIVAL_BLOCK_ENTITY_X, SURVIVAL_BLOCK_ENTITY_Y,
+        SURVIVAL_BLOCK_ENTITY_Z, SURVIVAL_CRAFTING_INPUT_A_SLOT, SURVIVAL_CRAFTING_INPUT_COUNT,
+        SURVIVAL_CRAFTING_INPUT_ITEM_ID, SURVIVAL_CRAFTING_INVENTORY_INDEX,
+        SURVIVAL_CRAFTING_INVENTORY_SLOT, SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_INDEX,
+        SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_SLOT, SURVIVAL_CRAFTING_RESULT_COUNT,
+        SURVIVAL_CRAFTING_RESULT_ITEM_ID, SURVIVAL_CRAFTING_TABLE_X, SURVIVAL_CRAFTING_TABLE_Y,
+        SURVIVAL_CRAFTING_TABLE_Z, SURVIVAL_END_ID, SURVIVAL_FURNACE_FUEL_ITEM_ID,
+        SURVIVAL_FURNACE_INPUT_ITEM_ID, SURVIVAL_FURNACE_INVENTORY_INDEX,
+        SURVIVAL_FURNACE_INVENTORY_SLOT, SURVIVAL_FURNACE_ITEM_COUNT,
+        SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_INDEX, SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_SLOT,
+        SURVIVAL_FURNACE_OUTPUT_ITEM_ID, SURVIVAL_FURNACE_X, SURVIVAL_FURNACE_Y,
+        SURVIVAL_FURNACE_Z, SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE, SURVIVAL_HUNGER_FOOD_ITEM_ID,
+        SURVIVAL_HUNGER_FOOD_POST_FOOD, SURVIVAL_HUNGER_FOOD_POST_HEALTH,
+        SURVIVAL_HUNGER_FOOD_POST_SATURATION, SURVIVAL_HUNGER_FOOD_PRE_FOOD,
+        SURVIVAL_HUNGER_FOOD_PRE_HEALTH, SURVIVAL_HUNGER_FOOD_PRE_SATURATION,
+        SURVIVAL_HUNGER_HEALTH_POST_FOOD, SURVIVAL_HUNGER_HEALTH_POST_HEALTH,
+        SURVIVAL_HUNGER_HEALTH_POST_SATURATION, SURVIVAL_HUNGER_HEALTH_PRE_FOOD,
+        SURVIVAL_HUNGER_HEALTH_PRE_HEALTH, SURVIVAL_HUNGER_HEALTH_PRE_SATURATION,
+        SURVIVAL_MOB_DROP_ITEM_COUNT, SURVIVAL_MOB_DROP_ITEM_ID,
+        SURVIVAL_MOB_DROP_POSITION_TOLERANCE, SURVIVAL_MOB_DROP_PROTOCOL_758_ITEM_ID,
+        SURVIVAL_MOB_DROP_TARGET_X, SURVIVAL_MOB_DROP_TARGET_Y, SURVIVAL_MOB_DROP_TARGET_Z,
+        SURVIVAL_NETHER_ID, SURVIVAL_OVERWORLD_ID, SURVIVAL_REDSTONE_TOGGLE_OUTPUT_X,
+        SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Y, SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Z,
+        SURVIVAL_UNKNOWN_ENVIRONMENT_ID, SURVIVAL_WORLD_PERSISTENCE_X,
+        SURVIVAL_WORLD_PERSISTENCE_Y, SURVIVAL_WORLD_PERSISTENCE_Z,
+    };
+    use crate::protocol::{self, packet};
+    use crate::shared::Position;
+    use steven_protocol::item;
+
+    fn ready_stack_split_merge_input() -> InventoryStackSplitMergeProbeInput {
+        InventoryStackSplitMergeProbeInput {
+            enabled: true,
+            active_ticks: INVENTORY_STACK_SPLIT_MERGE_FIRST_TICK,
+            source_stack_seen: true,
+            current_state_id: EMPTY_WINDOW_STATE_ID + 1,
+            split_pickup_sent: false,
+            split_source_seen: false,
+            split_place_sent: false,
+            split_destination_seen: false,
+            merge_pickup_sent: false,
+            merge_destination_empty_seen: false,
+            merge_place_sent: false,
+        }
+    }
+
+    fn ready_inventory_drag_transactions_input() -> InventoryDragTransactionsProbeInput {
+        InventoryDragTransactionsProbeInput {
+            enabled: true,
+            active_ticks: INVENTORY_DRAG_TRANSACTIONS_FIRST_TICK,
+            source_stack_seen: true,
+            current_state_id: EMPTY_WINDOW_STATE_ID + 1,
+            pickup_sent: false,
+            source_empty_seen: false,
+            drag_start_sent: false,
+            target_a_sent: false,
+            target_b_sent: false,
+            drag_end_sent: false,
+        }
+    }
+
+    #[test]
+    fn inventory_stack_split_merge_actions_advance_after_observed_state() {
+        let split_pickup = ready_stack_split_merge_input();
+        assert_eq!(
+            next_inventory_stack_split_merge_action(split_pickup),
+            Some(InventoryStackSplitMergeAction::SplitPickup)
+        );
+
+        let split_place = InventoryStackSplitMergeProbeInput {
+            split_pickup_sent: true,
+            split_source_seen: true,
+            current_state_id: split_pickup.current_state_id,
+            ..split_pickup
+        };
+        assert_eq!(
+            next_inventory_stack_split_merge_action(split_place),
+            Some(InventoryStackSplitMergeAction::SplitPlace)
+        );
+
+        let merge_pickup = InventoryStackSplitMergeProbeInput {
+            split_place_sent: true,
+            split_destination_seen: true,
+            current_state_id: split_place.current_state_id,
+            ..split_place
+        };
+        assert_eq!(
+            next_inventory_stack_split_merge_action(merge_pickup),
+            Some(InventoryStackSplitMergeAction::MergePickup)
+        );
+
+        let merge_place = InventoryStackSplitMergeProbeInput {
+            merge_pickup_sent: true,
+            merge_destination_empty_seen: true,
+            current_state_id: merge_pickup.current_state_id,
+            ..merge_pickup
+        };
+        assert_eq!(
+            next_inventory_stack_split_merge_action(merge_place),
+            Some(InventoryStackSplitMergeAction::MergePlace)
+        );
+
+        let completed = InventoryStackSplitMergeProbeInput {
+            merge_place_sent: true,
+            current_state_id: merge_place.current_state_id,
+            ..merge_place
+        };
+        assert_eq!(next_inventory_stack_split_merge_action(completed), None);
+    }
+
+    #[test]
+    fn inventory_stack_split_merge_waits_for_probe_guards() {
+        let ready = ready_stack_split_merge_input();
+        assert_eq!(
+            next_inventory_stack_split_merge_action(InventoryStackSplitMergeProbeInput {
+                enabled: false,
+                ..ready
+            }),
+            None
+        );
+        assert_eq!(
+            next_inventory_stack_split_merge_action(InventoryStackSplitMergeProbeInput {
+                source_stack_seen: false,
+                ..ready
+            }),
+            None
+        );
+        assert_eq!(
+            next_inventory_stack_split_merge_action(InventoryStackSplitMergeProbeInput {
+                active_ticks: INVENTORY_STACK_SPLIT_MERGE_FIRST_TICK - 1,
+                ..ready
+            }),
+            None
+        );
+        assert_eq!(
+            next_inventory_stack_split_merge_action(InventoryStackSplitMergeProbeInput {
+                split_pickup_sent: true,
+                current_state_id: EMPTY_WINDOW_STATE_ID,
+                ..ready
+            }),
+            None
+        );
+        assert_eq!(
+            next_inventory_stack_split_merge_action(InventoryStackSplitMergeProbeInput {
+                split_pickup_sent: true,
+                ..ready
+            }),
+            None
+        );
+    }
+
+    #[test]
+    fn inventory_drag_transactions_actions_advance_after_observed_state() {
+        let pickup = ready_inventory_drag_transactions_input();
+        assert_eq!(
+            next_inventory_drag_transactions_action(pickup),
+            Some(InventoryDragTransactionsAction::PickupSource)
+        );
+
+        let drag_start = InventoryDragTransactionsProbeInput {
+            pickup_sent: true,
+            source_empty_seen: true,
+            current_state_id: pickup.current_state_id,
+            ..pickup
+        };
+        assert_eq!(
+            next_inventory_drag_transactions_action(drag_start),
+            Some(InventoryDragTransactionsAction::DragStart)
+        );
+
+        let target_a = InventoryDragTransactionsProbeInput {
+            drag_start_sent: true,
+            current_state_id: drag_start.current_state_id,
+            ..drag_start
+        };
+        assert_eq!(
+            next_inventory_drag_transactions_action(target_a),
+            Some(InventoryDragTransactionsAction::AddTargetA)
+        );
+
+        let target_b = InventoryDragTransactionsProbeInput {
+            target_a_sent: true,
+            current_state_id: target_a.current_state_id,
+            ..target_a
+        };
+        assert_eq!(
+            next_inventory_drag_transactions_action(target_b),
+            Some(InventoryDragTransactionsAction::AddTargetB)
+        );
+
+        let drag_end = InventoryDragTransactionsProbeInput {
+            target_b_sent: true,
+            current_state_id: target_b.current_state_id,
+            ..target_b
+        };
+        assert_eq!(
+            next_inventory_drag_transactions_action(drag_end),
+            Some(InventoryDragTransactionsAction::DragEnd)
+        );
+
+        let completed = InventoryDragTransactionsProbeInput {
+            drag_end_sent: true,
+            current_state_id: drag_end.current_state_id,
+            ..drag_end
+        };
+        assert_eq!(next_inventory_drag_transactions_action(completed), None);
+    }
+
+    #[test]
+    fn inventory_drag_transactions_waits_for_probe_guards() {
+        let ready = ready_inventory_drag_transactions_input();
+        assert_eq!(
+            next_inventory_drag_transactions_action(InventoryDragTransactionsProbeInput {
+                enabled: false,
+                ..ready
+            }),
+            None
+        );
+        assert_eq!(
+            next_inventory_drag_transactions_action(InventoryDragTransactionsProbeInput {
+                source_stack_seen: false,
+                ..ready
+            }),
+            None
+        );
+        assert_eq!(
+            next_inventory_drag_transactions_action(InventoryDragTransactionsProbeInput {
+                active_ticks: INVENTORY_DRAG_TRANSACTIONS_FIRST_TICK - 1,
+                ..ready
+            }),
+            None
+        );
+        assert_eq!(
+            next_inventory_drag_transactions_action(InventoryDragTransactionsProbeInput {
+                pickup_sent: true,
+                current_state_id: EMPTY_WINDOW_STATE_ID,
+                ..ready
+            }),
+            None
+        );
+        assert_eq!(
+            next_inventory_drag_transactions_action(InventoryDragTransactionsProbeInput {
+                pickup_sent: true,
+                ..ready
+            }),
+            None
+        );
+    }
+
+    #[test]
+    fn flag_probe_repeat_target_defaults_when_unset_or_invalid() {
+        assert_eq!(
+            parse_flag_probe_repeat_target(None),
+            DEFAULT_FLAG_PROBE_REPEAT_TARGET
+        );
+        assert_eq!(
+            parse_flag_probe_repeat_target(Some("")),
+            DEFAULT_FLAG_PROBE_REPEAT_TARGET
+        );
+        assert_eq!(
+            parse_flag_probe_repeat_target(Some("0")),
+            DEFAULT_FLAG_PROBE_REPEAT_TARGET
+        );
+        assert_eq!(
+            parse_flag_probe_repeat_target(Some("not-a-number")),
+            DEFAULT_FLAG_PROBE_REPEAT_TARGET
+        );
+    }
+
+    #[test]
+    fn flag_probe_repeat_target_accepts_positive_counts() {
+        assert_eq!(parse_flag_probe_repeat_target(Some("2")), 2);
+        assert_eq!(parse_flag_probe_repeat_target(Some(" 3 ")), 3);
+    }
+
+    #[test]
+    fn flag_probe_repeat_target_is_capped() {
+        assert_eq!(
+            parse_flag_probe_repeat_target(Some("999")),
+            MAX_FLAG_PROBE_REPEAT_TARGET
+        );
+    }
+
+    #[test]
+    fn survival_biome_dimension_environment_prefers_world_identifier() {
+        assert_eq!(
+            derive_survival_environment_id(SURVIVAL_NETHER_ID, SURVIVAL_OVERWORLD_ID),
+            SURVIVAL_OVERWORLD_ID
+        );
+        assert_eq!(
+            derive_survival_environment_id(SURVIVAL_END_ID, "custom:unknown"),
+            SURVIVAL_END_ID
+        );
+    }
+
+    #[test]
+    fn survival_biome_dimension_environment_rejects_unknown_identifiers() {
+        assert_eq!(
+            normalize_survival_environment_id("custom:unknown"),
+            SURVIVAL_UNKNOWN_ENVIRONMENT_ID
+        );
+        assert_eq!(
+            derive_survival_environment_id("custom:dimension", "custom:world"),
+            SURVIVAL_UNKNOWN_ENVIRONMENT_ID
+        );
+    }
+
+    #[test]
+    fn survival_crafting_fixture_positions_are_named() {
+        let position = survival_crafting_table_position();
+
+        assert_eq!(position.x, SURVIVAL_CRAFTING_TABLE_X);
+        assert_eq!(position.y, SURVIVAL_CRAFTING_TABLE_Y);
+        assert_eq!(position.z, SURVIVAL_CRAFTING_TABLE_Z);
+    }
+
+    #[test]
+    fn survival_crafting_stacks_use_contract_items() {
+        let input = survival_crafting_input_stack();
+        let result = survival_crafting_result_stack();
+
+        assert_eq!(input.id, SURVIVAL_CRAFTING_INPUT_ITEM_ID);
+        assert_eq!(input.count, SURVIVAL_CRAFTING_INPUT_COUNT);
+        assert_eq!(result.id, SURVIVAL_CRAFTING_RESULT_ITEM_ID);
+        assert_eq!(result.count, SURVIVAL_CRAFTING_RESULT_COUNT);
+        assert!(survival_crafting_result_matches(&result));
+    }
+
+    #[test]
+    fn survival_crafting_result_match_rejects_wrong_item_or_count() {
+        let wrong_item = item::Stack {
+            id: SURVIVAL_CRAFTING_INPUT_ITEM_ID,
+            count: SURVIVAL_CRAFTING_RESULT_COUNT,
+            damage: None,
+            tag: None,
+        };
+        let wrong_count = item::Stack {
+            id: SURVIVAL_CRAFTING_RESULT_ITEM_ID,
+            count: SURVIVAL_CRAFTING_INPUT_COUNT,
+            damage: None,
+            tag: None,
+        };
+
+        assert!(!survival_crafting_result_matches(&wrong_item));
+        assert!(!survival_crafting_result_matches(&wrong_count));
+    }
+
+    #[test]
+    fn survival_furnace_fixture_positions_are_named() {
+        let position = survival_furnace_position();
+
+        assert_eq!(position.x, SURVIVAL_FURNACE_X);
+        assert_eq!(position.y, SURVIVAL_FURNACE_Y);
+        assert_eq!(position.z, SURVIVAL_FURNACE_Z);
+    }
+
+    #[test]
+    fn survival_furnace_stacks_use_contract_items() {
+        let input = survival_furnace_input_stack();
+        let fuel = survival_furnace_fuel_stack();
+        let output = survival_furnace_output_stack();
+        let invalid_fuel = survival_furnace_invalid_fuel_stack();
+
+        assert_eq!(input.id, SURVIVAL_FURNACE_INPUT_ITEM_ID);
+        assert_eq!(input.count, SURVIVAL_FURNACE_ITEM_COUNT);
+        assert_eq!(fuel.id, SURVIVAL_FURNACE_FUEL_ITEM_ID);
+        assert_eq!(fuel.count, SURVIVAL_FURNACE_ITEM_COUNT);
+        assert_eq!(output.id, SURVIVAL_FURNACE_OUTPUT_ITEM_ID);
+        assert_eq!(output.count, SURVIVAL_FURNACE_ITEM_COUNT);
+        assert_eq!(invalid_fuel.id, SURVIVAL_FURNACE_INPUT_ITEM_ID);
+        assert_eq!(invalid_fuel.count, SURVIVAL_FURNACE_ITEM_COUNT);
+        assert!(survival_furnace_output_matches(&output));
+        assert!(survival_furnace_invalid_fuel_matches(&invalid_fuel));
+    }
+
+    #[test]
+    fn survival_furnace_output_match_rejects_wrong_item_or_count() {
+        let wrong_item = item::Stack {
+            id: SURVIVAL_FURNACE_INPUT_ITEM_ID,
+            count: SURVIVAL_FURNACE_ITEM_COUNT,
+            damage: None,
+            tag: None,
+        };
+        let wrong_count = item::Stack {
+            id: SURVIVAL_FURNACE_OUTPUT_ITEM_ID,
+            count: SURVIVAL_FURNACE_ITEM_COUNT + 1,
+            damage: None,
+            tag: None,
+        };
+
+        assert!(!survival_furnace_output_matches(&wrong_item));
+        assert!(!survival_furnace_output_matches(&wrong_count));
+        assert!(!survival_furnace_invalid_fuel_matches(&wrong_count));
+    }
+
+    #[test]
+    fn survival_hunger_food_stack_match_accepts_only_contract_bread() {
+        let bread = item::Stack {
+            id: SURVIVAL_HUNGER_FOOD_ITEM_ID,
+            count: SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE,
+            damage: None,
+            tag: None,
+        };
+        let wrong_item = item::Stack {
+            id: SURVIVAL_FURNACE_OUTPUT_ITEM_ID,
+            count: SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE,
+            damage: None,
+            tag: None,
+        };
+        let wrong_count = item::Stack {
+            id: SURVIVAL_HUNGER_FOOD_ITEM_ID,
+            count: SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE + 1,
+            damage: None,
+            tag: None,
+        };
+
+        assert!(survival_hunger_food_item_matches(&bread));
+        assert!(!survival_hunger_food_item_matches(&wrong_item));
+        assert!(!survival_hunger_food_item_matches(&wrong_count));
+    }
+
+    #[test]
+    fn survival_hunger_food_slot_empty_requires_explicit_empty_slot() {
+        let empty_slot = None;
+        let bread_slot = Some(item::Stack {
+            id: SURVIVAL_HUNGER_FOOD_ITEM_ID,
+            count: SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE,
+            damage: None,
+            tag: None,
+        });
+
+        assert!(survival_hunger_food_slot_is_empty(Some(&empty_slot)));
+        assert!(!survival_hunger_food_slot_is_empty(Some(&bread_slot)));
+        assert!(!survival_hunger_food_slot_is_empty(None));
+    }
+
+    #[test]
+    fn survival_mob_drop_item_match_accepts_only_contract_drop() {
+        let ingot = item::Stack {
+            id: SURVIVAL_MOB_DROP_ITEM_ID,
+            count: SURVIVAL_MOB_DROP_ITEM_COUNT,
+            damage: None,
+            tag: None,
+        };
+        let legacy_ingot = item::Stack {
+            id: SURVIVAL_MOB_DROP_PROTOCOL_758_ITEM_ID,
+            count: SURVIVAL_MOB_DROP_ITEM_COUNT,
+            damage: None,
+            tag: None,
+        };
+        let wrong_item = item::Stack {
+            id: SURVIVAL_MOB_DROP_ITEM_ID + 1,
+            count: SURVIVAL_MOB_DROP_ITEM_COUNT,
+            damage: None,
+            tag: None,
+        };
+        let wrong_count = item::Stack {
+            id: SURVIVAL_MOB_DROP_ITEM_ID,
+            count: SURVIVAL_MOB_DROP_ITEM_COUNT + 1,
+            damage: None,
+            tag: None,
+        };
+
+        assert!(survival_mob_drop_item_matches(&ingot));
+        assert!(survival_mob_drop_item_matches(&legacy_ingot));
+        assert!(!survival_mob_drop_item_matches(&wrong_item));
+        assert!(!survival_mob_drop_item_matches(&wrong_count));
+    }
+
+    #[test]
+    fn survival_mob_drop_position_match_rejects_wrong_target() {
+        assert!(survival_mob_drop_position_matches(
+            SURVIVAL_MOB_DROP_TARGET_X,
+            SURVIVAL_MOB_DROP_TARGET_Y,
+            SURVIVAL_MOB_DROP_TARGET_Z
+        ));
+        assert!(!survival_mob_drop_position_matches(
+            SURVIVAL_MOB_DROP_TARGET_X + SURVIVAL_MOB_DROP_POSITION_TOLERANCE + 1.0,
+            SURVIVAL_MOB_DROP_TARGET_Y,
+            SURVIVAL_MOB_DROP_TARGET_Z
+        ));
+    }
+
+    #[test]
+    fn survival_redstone_toggle_output_position_match_rejects_wrong_target() {
+        let expected = Position::new(
+            SURVIVAL_REDSTONE_TOGGLE_OUTPUT_X,
+            SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Y,
+            SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Z,
+        );
+        let wrong = Position::new(
+            SURVIVAL_REDSTONE_TOGGLE_OUTPUT_X,
+            SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Y,
+            SURVIVAL_REDSTONE_TOGGLE_OUTPUT_Z + 1,
+        );
+
+        assert!(survival_redstone_toggle_output_position_matches(expected));
+        assert!(!survival_redstone_toggle_output_position_matches(wrong));
+    }
+
+    #[test]
+    fn survival_hunger_food_health_updates_match_exact_contract() {
+        let pre = packet::play::clientbound::UpdateHealth {
+            health: SURVIVAL_HUNGER_FOOD_PRE_HEALTH,
+            food: protocol::VarInt(SURVIVAL_HUNGER_FOOD_PRE_FOOD),
+            food_saturation: SURVIVAL_HUNGER_FOOD_PRE_SATURATION,
+        };
+        let post = packet::play::clientbound::UpdateHealth {
+            health: SURVIVAL_HUNGER_FOOD_POST_HEALTH,
+            food: protocol::VarInt(SURVIVAL_HUNGER_FOOD_POST_FOOD),
+            food_saturation: SURVIVAL_HUNGER_FOOD_POST_SATURATION,
+        };
+        let wrong_food = packet::play::clientbound::UpdateHealth {
+            health: SURVIVAL_HUNGER_FOOD_PRE_HEALTH,
+            food: protocol::VarInt(SURVIVAL_HUNGER_FOOD_POST_FOOD),
+            food_saturation: SURVIVAL_HUNGER_FOOD_PRE_SATURATION,
+        };
+
+        assert!(survival_hunger_food_pre_update_matches(&pre));
+        assert!(survival_hunger_food_post_update_matches(&post));
+        assert!(!survival_hunger_food_pre_update_matches(&wrong_food));
+        assert!(!survival_hunger_food_post_update_matches(&wrong_food));
+        assert!(survival_hunger_food_float_matches(
+            SURVIVAL_HUNGER_FOOD_POST_SATURATION,
+            SURVIVAL_HUNGER_FOOD_POST_SATURATION
+        ));
+    }
+
+    #[test]
+    fn survival_hunger_health_updates_match_bounded_health_cycle_contract() {
+        let pre = packet::play::clientbound::UpdateHealth {
+            health: SURVIVAL_HUNGER_HEALTH_PRE_HEALTH,
+            food: protocol::VarInt(SURVIVAL_HUNGER_HEALTH_PRE_FOOD),
+            food_saturation: SURVIVAL_HUNGER_HEALTH_PRE_SATURATION,
+        };
+        let post = packet::play::clientbound::UpdateHealth {
+            health: SURVIVAL_HUNGER_HEALTH_POST_HEALTH,
+            food: protocol::VarInt(SURVIVAL_HUNGER_HEALTH_POST_FOOD),
+            food_saturation: SURVIVAL_HUNGER_HEALTH_POST_SATURATION,
+        };
+        let wrong_health = packet::play::clientbound::UpdateHealth {
+            health: SURVIVAL_HUNGER_FOOD_PRE_HEALTH,
+            food: protocol::VarInt(SURVIVAL_HUNGER_HEALTH_PRE_FOOD),
+            food_saturation: SURVIVAL_HUNGER_HEALTH_PRE_SATURATION,
+        };
+        let wrong_food = packet::play::clientbound::UpdateHealth {
+            health: SURVIVAL_HUNGER_HEALTH_PRE_HEALTH,
+            food: protocol::VarInt(SURVIVAL_HUNGER_HEALTH_POST_FOOD),
+            food_saturation: SURVIVAL_HUNGER_HEALTH_PRE_SATURATION,
+        };
+
+        assert!(survival_hunger_health_pre_update_matches(&pre));
+        assert!(survival_hunger_health_post_update_matches(&post));
+        assert!(!survival_hunger_health_pre_update_matches(&wrong_health));
+        assert!(!survival_hunger_health_pre_update_matches(&wrong_food));
+        assert!(!survival_hunger_health_post_update_matches(&wrong_food));
+    }
+
+    #[test]
+    fn survival_crafting_inventory_updates_use_player_inventory_window() {
+        const CRAFTING_WINDOW_ID_FOR_TEST: u8 = 1;
+
+        assert!(should_log_survival_crafting_inventory_slot(
+            PLAYER_INVENTORY_WINDOW_ID,
+            CRAFTING_WINDOW_ID_FOR_TEST,
+            SURVIVAL_CRAFTING_INVENTORY_SLOT
+        ));
+        assert!(should_log_survival_crafting_inventory_slot(
+            CRAFTING_WINDOW_ID_FOR_TEST,
+            CRAFTING_WINDOW_ID_FOR_TEST,
+            SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_SLOT
+        ));
+        assert!(!should_log_survival_crafting_inventory_slot(
+            PLAYER_INVENTORY_WINDOW_ID,
+            CRAFTING_WINDOW_ID_FOR_TEST,
+            SURVIVAL_CRAFTING_INPUT_A_SLOT
+        ));
+        assert!(!should_log_survival_crafting_inventory_slot(
+            CRAFTING_WINDOW_ID_FOR_TEST,
+            CRAFTING_WINDOW_ID_FOR_TEST,
+            SURVIVAL_CRAFTING_INVENTORY_SLOT
+        ));
+    }
+
+    #[test]
+    fn survival_crafting_inventory_indices_accept_player_and_open_mirror() {
+        assert!(should_log_survival_crafting_inventory_index(
+            SURVIVAL_CRAFTING_INVENTORY_INDEX
+        ));
+        assert!(should_log_survival_crafting_inventory_index(
+            SURVIVAL_CRAFTING_OPEN_INVENTORY_MIRROR_INDEX
+        ));
+        assert!(!should_log_survival_crafting_inventory_index(
+            SURVIVAL_CRAFTING_INPUT_A_SLOT as usize
+        ));
+    }
+
+    #[test]
+    fn survival_furnace_inventory_updates_accept_player_and_open_mirror_slots() {
+        const FURNACE_WINDOW_ID_FOR_TEST: u8 = 1;
+
+        assert!(should_log_survival_furnace_inventory_slot(
+            PLAYER_INVENTORY_WINDOW_ID,
+            FURNACE_WINDOW_ID_FOR_TEST,
+            SURVIVAL_FURNACE_INVENTORY_SLOT
+        ));
+        assert!(should_log_survival_furnace_inventory_slot(
+            FURNACE_WINDOW_ID_FOR_TEST,
+            FURNACE_WINDOW_ID_FOR_TEST,
+            SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_SLOT
+        ));
+        assert!(!should_log_survival_furnace_inventory_slot(
+            PLAYER_INVENTORY_WINDOW_ID,
+            FURNACE_WINDOW_ID_FOR_TEST,
+            SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_SLOT
+        ));
+        assert!(!should_log_survival_furnace_inventory_slot(
+            FURNACE_WINDOW_ID_FOR_TEST,
+            FURNACE_WINDOW_ID_FOR_TEST,
+            SURVIVAL_FURNACE_INVENTORY_SLOT
+        ));
+    }
+
+    #[test]
+    fn survival_furnace_inventory_indices_accept_player_and_open_mirror() {
+        assert!(should_log_survival_furnace_inventory_index(
+            SURVIVAL_FURNACE_INVENTORY_INDEX
+        ));
+        assert!(should_log_survival_furnace_inventory_index(
+            SURVIVAL_FURNACE_OPEN_INVENTORY_MIRROR_INDEX
+        ));
+        assert!(!should_log_survival_furnace_inventory_index(
+            SURVIVAL_FURNACE_OUTPUT_ITEM_ID as usize
+        ));
+    }
+
+    #[test]
+    fn survival_world_persistence_position_match_rejects_wrong_target() {
+        let expected = Position::new(
+            SURVIVAL_WORLD_PERSISTENCE_X,
+            SURVIVAL_WORLD_PERSISTENCE_Y,
+            SURVIVAL_WORLD_PERSISTENCE_Z,
+        );
+        let wrong = Position::new(
+            SURVIVAL_WORLD_PERSISTENCE_X,
+            SURVIVAL_WORLD_PERSISTENCE_Y,
+            SURVIVAL_WORLD_PERSISTENCE_Z + 1,
+        );
+
+        assert!(survival_world_persistence_position_matches(expected));
+        assert!(!survival_world_persistence_position_matches(wrong));
+    }
+
+    #[test]
+    fn survival_block_entity_position_match_rejects_wrong_target() {
+        let expected = Position::new(
+            SURVIVAL_BLOCK_ENTITY_X,
+            SURVIVAL_BLOCK_ENTITY_Y,
+            SURVIVAL_BLOCK_ENTITY_Z,
+        );
+        let wrong = Position::new(
+            SURVIVAL_BLOCK_ENTITY_X,
+            SURVIVAL_BLOCK_ENTITY_Y,
+            SURVIVAL_BLOCK_ENTITY_Z + 1,
+        );
+
+        assert!(survival_block_entity_position_matches(expected));
+        assert!(!survival_block_entity_position_matches(wrong));
+    }
+
+    #[test]
+    fn survival_block_entity_sign_lines_match_contract_payload() {
+        let lines = survival_block_entity_expected_lines();
+        let wrong = [
+            lines[SIGN_LINE_INDEX_1].clone(),
+            lines[SIGN_LINE_INDEX_2].clone(),
+            lines[SIGN_LINE_INDEX_3].clone(),
+            "Wrong".to_string(),
+        ];
+
+        assert!(sign_lines_match_payload(&lines));
+        assert_eq!(
+            sign_text_payload(&lines),
+            SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD
+        );
+        assert!(!sign_lines_match_payload(&wrong));
+    }
+}

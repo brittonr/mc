@@ -1,0 +1,22 @@
+# Rust
+target/
+**/*.rs.bk
+.rust/
+
+working/
+*.log
+pkg
+
+# IntelliJ
+.idea
+*.iml
+
+# Steven Data
+conf.cfg
+index
+objects
+resources-*
+servers.json
+skin-cache
+
+.pi/

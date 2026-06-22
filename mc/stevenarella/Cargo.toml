@@ -1,0 +1,83 @@
+[package]
+name = "stevenarella"
+version = "0.0.1"
+authors = [ "Thinkofdeath <thinkofdeath@spigotmc.org>", "iceiix <ice_ix@protonmail.ch>" ]
+edition = "2021"
+rust-version = "1.64.0"
+resolver = "2"
+description = "Multi-protocol multi-platform Minecraft-compatible client"
+repository = "https://github.com/iceiix/stevenarella"
+license = "MIT/Apache-2.0"
+
+[package.metadata.bundle]
+name = "Stevenarella"
+identifier = "io.github.iceiix.stevenarella"
+icon = ["resources/icon*.png"]
+category = "Game"
+osx_minimum_system_version = "10.14"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+path = "src/main.rs"
+
+[profile.dev]
+split-debuginfo = "unpacked"
+# Steven runs horrendously slow with no optimizations, and often freezes.
+# However, building with full -O3 optimizations takes too long for a debug build.
+# Use an -O1 optimization level strikes a good compromise between build and program performance.
+opt-level = 1
+
+[dependencies]
+cfg-if = "1.0.0"
+wasm-bindgen = "0.2.88"
+winit = "0.27.5"
+glow = "0.11.2"
+byteorder = "1.4.3"
+serde = "1.0.228"
+serde_json = "1.0.145"
+flate2 = { version = "1.0.25", features = ["rust_backend"], default-features = false }
+zip = { version = "0.6.3", features = ["deflate"], default-features = false }
+image = "0.25.8"
+getrandom = { version = "0.2.8", features = ["js"] }
+rand = "0.8.5"
+rand_pcg = "0.3.1"
+base64 = "0.13.1"
+blake3 = "1.5.5"
+log = { version = "0.4.28", features = ["std"] }
+cgmath = "0.17.0"
+lazy_static = "1.4.0"
+collision = "0.20.1"
+rsa_public_encrypt_pkcs1 = "0.4.0"
+structopt = "0.3.26"
+clipboard = { git = "https://github.com/iceiix/rust-clipboard", rev = "71089e792fd5e52f05d5b22c54bd2d206d20ec0d" }
+instant = "0.1.13"
+dirs = "4.0.0"
+# clippy = "*"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+reqwest = { version = "0.11.13", features = [ "blocking" ]}
+glutin = "0.29.0"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+console_error_panic_hook = "0.1.7"
+web-sys = "0.3.60"
+
+[dependencies.steven_resources]
+path = "./resources"
+version = "0"
+
+[dependencies.steven_blocks]
+path = "./blocks"
+version = "0"
+
+[dependencies.steven_shared]
+path = "./shared"
+version = "0"
+
+[dependencies.steven_protocol]
+path = "./protocol"
+version = "0"
+
+[dependencies.std_or_web]
+path = "./std_or_web"
+version = "0"
