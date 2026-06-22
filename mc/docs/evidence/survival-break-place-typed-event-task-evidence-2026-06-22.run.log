@@ -1,0 +1,32 @@
+## survival break/place typed-event task evidence validation
+command=check_cairn_task_evidence --self-test && cairn/changes/survival-break-place-typed-event-migration/tasks.md
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task evidence gate passed: 5 completed tasks checked across 1 task files
+task_evidence_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate tasks survival-break-place-typed-event-migration --root .
+{
+  "change": "survival-break-place-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "5c0081c2f367350621b8f56b13179245006e8f56f76bb54748cf9b5c091b7990",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "8a0652fad099c72982f872a2e7be3f1592046430baa8cc041195b0ab23ed430a",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+cairn_gate_tasks_exit_status=0
+exit_status=0
