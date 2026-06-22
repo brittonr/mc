@@ -1,0 +1,80 @@
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-furnace-persistence-typed-event-migration",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-survival-furnace-persistence-typed-event-migration"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-furnace-persistence-typed-event-migration",
+  "dry_run": false,
+  "input_hash": "760da2389f9055253706dcd37249b8d96b46268ff98fd5ee83108de2f46d155f",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "db18dbc22ae43c76d3ee75305452baa6068e5782f59cf436aaf9ede04c8729f0",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-furnace-persistence-typed-event-migration/design.md"
+        },
+        {
+          "content_hash": "6d547c9f080be1cf632e22237f4a7600723442caa89a4d3fe065c42c4d7f8fd8",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-furnace-persistence-typed-event-migration/proposal.md"
+        },
+        {
+          "content_hash": "d06673f41dc845e3886a49408652d60ede3680b27a5398c29784a20f41dcf737",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-furnace-persistence-typed-event-migration/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "fbe6d3534164d07e2e565ed818ce558b2f3395c737cbef4e0ea72df1a254e01a",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-furnace-persistence-typed-event-migration/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-furnace-persistence-typed-event-migration"
+        }
+      ],
+      "manifest_hash": "e137dd807993fbf49a8b61c0ca5dd6e82e422d9f709fa0e61996594b380b1800"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "db18dbc22ae43c76d3ee75305452baa6068e5782f59cf436aaf9ede04c8729f0",
+          "exists": true,
+          "path": "./cairn/changes/survival-furnace-persistence-typed-event-migration/design.md"
+        },
+        {
+          "content_hash": "6d547c9f080be1cf632e22237f4a7600723442caa89a4d3fe065c42c4d7f8fd8",
+          "exists": true,
+          "path": "./cairn/changes/survival-furnace-persistence-typed-event-migration/proposal.md"
+        },
+        {
+          "content_hash": "d06673f41dc845e3886a49408652d60ede3680b27a5398c29784a20f41dcf737",
+          "exists": true,
+          "path": "./cairn/changes/survival-furnace-persistence-typed-event-migration/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "fbe6d3534164d07e2e565ed818ce558b2f3395c737cbef4e0ea72df1a254e01a",
+          "exists": true,
+          "path": "./cairn/changes/survival-furnace-persistence-typed-event-migration/tasks.md"
+        }
+      ],
+      "manifest_hash": "7a8e8b7361c342479d4035f666e2874e903d89b49ffe83929fdace9bf13034fb"
+    },
+    "kind": "archive",
+    "manifest_hash": "6ebd2fdba3b06b272ef8d0b77eeadfa55c1a9d6c24bf9eda2bcdc3671d1a24bb"
+  },
+  "plan_hash": "c69c316b71bcec969a9b93d01cc8793f8be40da886fca183413ffa4edc73da6c",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "db4d0d5f4a2c58ccd87581302ee48cc2e1d648ec8398addbdb5d01fd6c56332a"
+}
+exit_status=0

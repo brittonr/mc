@@ -185,6 +185,31 @@ const SURVIVAL_CHEST_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
     "server_survival_chest_reopen",
     "server_survival_chest_persisted",
 ];
+const SURVIVAL_FURNACE_PERSISTENCE_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
+    "protocol_detected",
+    "join_game",
+    "render_tick",
+    "survival_furnace_open_seen",
+    "survival_furnace_input_sent",
+    "survival_furnace_fuel_sent",
+    "survival_furnace_burn_progress_seen",
+    "survival_furnace_output_seen",
+    "survival_furnace_output_collected",
+    "survival_furnace_inventory_updated",
+    "survival_furnace_reconnect_sent",
+    "survival_furnace_reopen_seen",
+];
+const SURVIVAL_FURNACE_PERSISTENCE_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
+    "server_username_seen",
+    "server_survival_furnace_open",
+    "server_survival_furnace_input",
+    "server_survival_furnace_fuel",
+    "server_survival_furnace_burn_progress",
+    "server_survival_furnace_output_available",
+    "server_survival_furnace_output_collect",
+    "server_survival_furnace_reconnect_reopen",
+    "server_survival_furnace_state",
+];
 const SURVIVAL_CRAFTING_TABLE_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
     "protocol_detected",
     "join_game",
@@ -244,6 +269,13 @@ const TYPED_EVENT_READINESS_FIXTURES: &[TypedEventReadinessFixture<'static>] = &
         scenario: "survival-chest-persistence",
         client_events: SURVIVAL_CHEST_TYPED_EVENT_CLIENT_EVENTS,
         server_events: SURVIVAL_CHEST_TYPED_EVENT_SERVER_EVENTS,
+        forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
+        derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
+    },
+    TypedEventReadinessFixture {
+        scenario: "survival-furnace-persistence",
+        client_events: SURVIVAL_FURNACE_PERSISTENCE_TYPED_EVENT_CLIENT_EVENTS,
+        server_events: SURVIVAL_FURNACE_PERSISTENCE_TYPED_EVENT_SERVER_EVENTS,
         forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
         derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
     },

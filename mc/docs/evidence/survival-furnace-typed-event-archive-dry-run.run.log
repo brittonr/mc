@@ -1,0 +1,22 @@
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-furnace-persistence-typed-event-migration",
+      "kind": "archive_change",
+      "path": "./cairn/changes/survival-furnace-persistence-typed-event-migration"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-furnace-persistence-typed-event-migration",
+  "dry_run": true,
+  "input_hash": "760da2389f9055253706dcd37249b8d96b46268ff98fd5ee83108de2f46d155f",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "bed8af41713757008ace58518f052d58a1bbd31448e56bb64afd4bf194b7dc46",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "315d6f278eeaba9770c4fd40db8daa1eced70aceb1e48760471137d395900774"
+}
+exit_status=0

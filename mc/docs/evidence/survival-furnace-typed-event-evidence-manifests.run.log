@@ -1,0 +1,6 @@
+evidence manifest refresh ok: mode=refresh; passes=5; manifests=428; entries=2954; current=2954; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=5; manifest_writes=73
+this derivation will be built:
+  /nix/store/r0fgz5gy6g7pccv2ni5gnsyfwkb8l0i3-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/r0fgz5gy6g7pccv2ni5gnsyfwkb8l0i3-mc-compat-evidence-manifests.drv'...
+exit_status=0

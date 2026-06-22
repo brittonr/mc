@@ -1,0 +1,18 @@
+this derivation will be built:
+  /nix/store/9fv4rsns49b36gxyccqs4kvmsn8xia53-mc-compat-valence-survival-furnace-persistence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/9fv4rsns49b36gxyccqs4kvmsn8xia53-mc-compat-valence-survival-furnace-persistence.drv'...
+[mc-compat] plan: build client, start Valence server, wait for protocol 763, run 1 client session plan(s) under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/clients/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
++ "git" "-C" "/home/brittonr/git/mc/servers/valence" "worktree" "prune"
+[mc-compat] creating isolated Valence worktree /tmp/valence-compat-survival-furnace at main
++ "git" "-C" "/home/brittonr/git/mc/servers/valence" "worktree" "add" "--detach" "/tmp/valence-compat-survival-furnace" "main"
+[mc-compat] starting Valence main example 'survival_compat' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-survival-furnace
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'survival-furnace-persistence' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/survival-furnace-typed-event-baseline-dry-run.json
+exit_status=0

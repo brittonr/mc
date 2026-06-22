@@ -1,0 +1,42 @@
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/survival-furnace-persistence-typed-event-migration/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/survival-furnace-persistence-typed-event-migration/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-furnace-persistence-typed-event-migration",
+  "delta_specs": [
+    "./cairn/changes/survival-furnace-persistence-typed-event-migration/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "2ca7e4db7901de075080e6f8c77a1c1c6c0d3e0197d3756a97d04f6b16bf40d1",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "ae103aefa7893e5a6b0d3318b20ba5b49e3b0d03c9f6bac7d27a02a50953e7d3",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "afef503284fe8d7cd6eb935c971d07e1dd2852eb5187216b818a59373f839e78"
+}
+r[mc_compatibility.survival_furnace_persistence_typed_event_migration.readiness] The `survival-furnace-persistence` scenario SHOULD move from waiver-backed substring fallback to `typed-event-ready` only when typed events cover the row's required client milestones, Valence furnace server milestones, forbidden surfaces, and ordered persistence phases.
+r[mc_compatibility.survival_furnace_persistence_typed_event_migration.readiness.complete]
+r[mc_compatibility.survival_furnace_persistence_typed_event_migration.gate] The runner MUST include `survival-furnace-persistence` in the typed-event pass/fail gate so missing or invalid structured furnace events fail before substring fallback can satisfy the row.
+r[mc_compatibility.survival_furnace_persistence_typed_event_migration.gate.missing]
+r[mc_compatibility.survival_furnace_persistence_typed_event_migration.gate.order]
+r[mc_compatibility.survival_furnace_persistence_typed_event_migration.validation] The migration MUST record reviewable evidence for runner fixtures, scenario-manifest checks, generated-surface freshness, dry-run receipt shape, evidence manifests, Cairn gates, and Cairn validation before archive.
+r[mc_compatibility.survival_furnace_persistence_typed_event_migration.validation.log]
+{
+  "change_issues": [],
+  "changes": 8,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 10,
+  "valid": true
+}
+exit_status=0

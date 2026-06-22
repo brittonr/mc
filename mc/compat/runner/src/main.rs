@@ -3706,6 +3706,7 @@ fn typed_event_oracle_contributes_to_pass_fail(scenario: Scenario) -> bool {
             | Scenario::SurvivalBreakPlacePickup
             | Scenario::SurvivalChestPersistence
             | Scenario::SurvivalCraftingTable
+            | Scenario::SurvivalFurnacePersistence
     )
 }
 
@@ -3889,6 +3890,58 @@ fn typed_event_ordered_edges_for_scenario(scenario: Scenario) -> Vec<(&'static s
             (
                 "server_survival_chest_reopen",
                 "server_survival_chest_persisted",
+            ),
+        ],
+        Scenario::SurvivalFurnacePersistence => vec![
+            ("survival_furnace_open_seen", "survival_furnace_input_sent"),
+            ("survival_furnace_input_sent", "survival_furnace_fuel_sent"),
+            (
+                "survival_furnace_fuel_sent",
+                "survival_furnace_burn_progress_seen",
+            ),
+            (
+                "survival_furnace_burn_progress_seen",
+                "survival_furnace_output_seen",
+            ),
+            (
+                "survival_furnace_output_seen",
+                "survival_furnace_output_collected",
+            ),
+            (
+                "survival_furnace_output_collected",
+                "survival_furnace_reconnect_sent",
+            ),
+            (
+                "survival_furnace_reconnect_sent",
+                "survival_furnace_reopen_seen",
+            ),
+            (
+                "server_survival_furnace_open",
+                "server_survival_furnace_input",
+            ),
+            (
+                "server_survival_furnace_input",
+                "server_survival_furnace_fuel",
+            ),
+            (
+                "server_survival_furnace_fuel",
+                "server_survival_furnace_burn_progress",
+            ),
+            (
+                "server_survival_furnace_burn_progress",
+                "server_survival_furnace_output_available",
+            ),
+            (
+                "server_survival_furnace_output_available",
+                "server_survival_furnace_output_collect",
+            ),
+            (
+                "server_survival_furnace_output_collect",
+                "server_survival_furnace_reconnect_reopen",
+            ),
+            (
+                "server_survival_furnace_reconnect_reopen",
+                "server_survival_furnace_state",
             ),
         ],
         Scenario::SurvivalCraftingTable => vec![
@@ -11980,6 +12033,9 @@ mod tests {
         assert!(typed_event_oracle_contributes_to_pass_fail(
             Scenario::SurvivalChestPersistence
         ));
+        assert!(typed_event_oracle_contributes_to_pass_fail(
+            Scenario::SurvivalFurnacePersistence
+        ));
     }
 
     #[test]
@@ -12288,6 +12344,104 @@ mod tests {
                 (
                     "server_survival_chest_reopen",
                     "server_survival_chest_persisted",
+                ),
+            ],
+        );
+        assert_typed_event_fixture_passes(
+            Scenario::SurvivalFurnacePersistence,
+            Some(TEST_USERNAME),
+            &[
+                ("client", Some(TEST_USERNAME), "protocol_detected"),
+                ("client", Some(TEST_USERNAME), "join_game"),
+                ("client", Some(TEST_USERNAME), "render_tick"),
+                ("client", Some(TEST_USERNAME), "survival_furnace_open_seen"),
+                ("client", Some(TEST_USERNAME), "survival_furnace_input_sent"),
+                ("client", Some(TEST_USERNAME), "survival_furnace_fuel_sent"),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_furnace_burn_progress_seen",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_furnace_output_seen",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_furnace_output_collected",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_furnace_inventory_updated",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_furnace_reconnect_sent",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_furnace_reopen_seen",
+                ),
+                ("server", Some(TEST_USERNAME), "server_username_seen"),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_furnace_open",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_furnace_input",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_furnace_fuel",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_furnace_burn_progress",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_furnace_output_available",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_furnace_output_collect",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_furnace_reconnect_reopen",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_furnace_state",
+                ),
+            ],
+            &[
+                ("survival_furnace_open_seen", "survival_furnace_input_sent"),
+                (
+                    "survival_furnace_output_seen",
+                    "survival_furnace_output_collected",
+                ),
+                (
+                    "survival_furnace_output_collected",
+                    "survival_furnace_reconnect_sent",
+                ),
+                (
+                    "server_survival_furnace_output_collect",
+                    "server_survival_furnace_reconnect_reopen",
                 ),
             ],
         );
@@ -12826,6 +12980,93 @@ mod tests {
         assert!(
             err.contains("survival_chest_close_sent_before_survival_chest_reconnect_sent")
                 || err.contains("survival_chest_reconnect_sent_before_survival_chest_reopen_seen"),
+            "{err}"
+        );
+    }
+
+    #[test]
+    fn typed_event_oracle_validates_migrated_survival_furnace_persistence_graph() {
+        let cfg = test_config(
+            &[
+                "--scenario",
+                "survival-furnace-persistence",
+                "--receipt",
+                "/tmp/survival-furnace-persistence.receipt.json",
+            ],
+            &[],
+        )
+        .expect("survival furnace persistence config parses");
+        let client_observed = scenario_required_milestones(Scenario::SurvivalFurnacePersistence)
+            .iter()
+            .map(|(name, _)| *name)
+            .collect::<Vec<_>>();
+        let server_observed = server_required_milestones(Scenario::SurvivalFurnacePersistence)
+            .iter()
+            .map(|(name, _)| *name)
+            .collect::<Vec<_>>();
+        let passing = ClientRunEvidence {
+            log_path: None,
+            log_paths: Vec::new(),
+            usernames: vec![TEST_USERNAME.to_string()],
+            exit_code: Some(0),
+            classification: "client-exited-success",
+            matched_success_pattern: Some("Detected server protocol version".to_string()),
+            scenario: Some(ScenarioEvidence {
+                observed_milestones: client_observed,
+                missing_milestones: Vec::new(),
+                forbidden_matches: Vec::new(),
+                passed: true,
+            }),
+            server_scenario: Some(ServerScenarioEvidence {
+                observed_milestones: server_observed,
+                missing_milestones: Vec::new(),
+                forbidden_matches: Vec::new(),
+                passed: true,
+            }),
+            projectile_damage_causality: None,
+            mcp_control: None,
+            frame_artifacts: None,
+        };
+        validate_typed_event_oracle_for_migrated_scenario(&cfg, &passing)
+            .expect("complete typed survival furnace graph passes");
+
+        let mut missing_client_output = passing.clone();
+        missing_client_output
+            .scenario
+            .as_mut()
+            .expect("client evidence")
+            .observed_milestones
+            .retain(|name| *name != "survival_furnace_output_seen");
+        let err = validate_typed_event_oracle_for_migrated_scenario(&cfg, &missing_client_output)
+            .expect_err("missing typed furnace output client event fails");
+        assert!(err.contains("survival_furnace_output_seen"), "{err}");
+
+        let mut misordered_client_reconnect = passing;
+        misordered_client_reconnect
+            .scenario
+            .as_mut()
+            .expect("client evidence")
+            .observed_milestones = vec![
+            "protocol_detected",
+            "join_game",
+            "render_tick",
+            "survival_furnace_open_seen",
+            "survival_furnace_input_sent",
+            "survival_furnace_fuel_sent",
+            "survival_furnace_burn_progress_seen",
+            "survival_furnace_output_seen",
+            "survival_furnace_reconnect_sent",
+            "survival_furnace_output_collected",
+            "survival_furnace_inventory_updated",
+            "survival_furnace_reopen_seen",
+        ];
+        let err =
+            validate_typed_event_oracle_for_migrated_scenario(&cfg, &misordered_client_reconnect)
+                .expect_err("misordered typed furnace reconnect before collection fails");
+        assert!(
+            err.contains(
+                "survival_furnace_output_collected_before_survival_furnace_reconnect_sent"
+            ),
             "{err}"
         );
     }
