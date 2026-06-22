@@ -1,0 +1,22 @@
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-chest-persistence-typed-event-migration",
+      "kind": "archive_change",
+      "path": "./cairn/changes/survival-chest-persistence-typed-event-migration"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-chest-persistence-typed-event-migration",
+  "dry_run": true,
+  "input_hash": "d9ba981f1313edef9f384045718b921d2821a9195ed7e5326cec40284928bd46",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "3bafab7b5f67b9505fa0fa61bb4ee9978dad7f39b0910028d681b07954fed70a",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "318ff081e66acadd4db5c9686c3764c8e890e5d5d6e57dc217476ac0d9992ce9"
+}
+exit_status=0

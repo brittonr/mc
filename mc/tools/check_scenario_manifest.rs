@@ -166,6 +166,25 @@ const SURVIVAL_BREAK_PLACE_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
     "server_survival_pickup",
     "server_survival_place",
 ];
+const SURVIVAL_CHEST_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
+    "protocol_detected",
+    "join_game",
+    "render_tick",
+    "survival_chest_open_seen",
+    "survival_chest_store_sent",
+    "survival_chest_close_sent",
+    "survival_chest_reconnect_sent",
+    "survival_chest_reopen_seen",
+    "survival_chest_persisted_seen",
+];
+const SURVIVAL_CHEST_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
+    "server_username_seen",
+    "server_survival_chest_open",
+    "server_survival_chest_store",
+    "server_survival_chest_close",
+    "server_survival_chest_reopen",
+    "server_survival_chest_persisted",
+];
 const SURVIVAL_CRAFTING_TABLE_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
     "protocol_detected",
     "join_game",
@@ -218,6 +237,13 @@ const TYPED_EVENT_READINESS_FIXTURES: &[TypedEventReadinessFixture<'static>] = &
         scenario: "survival-break-place-pickup",
         client_events: SURVIVAL_BREAK_PLACE_TYPED_EVENT_CLIENT_EVENTS,
         server_events: SURVIVAL_BREAK_PLACE_TYPED_EVENT_SERVER_EVENTS,
+        forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
+        derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
+    },
+    TypedEventReadinessFixture {
+        scenario: "survival-chest-persistence",
+        client_events: SURVIVAL_CHEST_TYPED_EVENT_CLIENT_EVENTS,
+        server_events: SURVIVAL_CHEST_TYPED_EVENT_SERVER_EVENTS,
         forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
         derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
     },

@@ -1,0 +1,42 @@
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/survival-chest-persistence-typed-event-migration/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/survival-chest-persistence-typed-event-migration/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-chest-persistence-typed-event-migration",
+  "delta_specs": [
+    "./cairn/changes/survival-chest-persistence-typed-event-migration/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "13ab33662a9541bd1ebcab76d5003691360d642d9f0f2090f78ea0ada51f8ab1",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "39e4403a42e172bd4cfec3feeb98f402bc9e1362d6d7d61fce5a44c332c98be8",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "172243c074d21b12570b7e90b0d4ce1d7f5137b7ba8cd7e3c9764d908578e4b0"
+}
+r[mc_compatibility.survival_chest_persistence_typed_event_migration.readiness] The `survival-chest-persistence` scenario SHOULD move from waiver-backed substring fallback to `typed-event-ready` only when typed events cover the row's required client milestones, Valence chest server milestones, forbidden surfaces, and ordered two-session persistence phases.
+r[mc_compatibility.survival_chest_persistence_typed_event_migration.readiness.complete]
+r[mc_compatibility.survival_chest_persistence_typed_event_migration.gate] The runner MUST include `survival-chest-persistence` in the typed-event pass/fail gate so missing or invalid structured chest events fail before substring fallback can satisfy the row.
+r[mc_compatibility.survival_chest_persistence_typed_event_migration.gate.missing]
+r[mc_compatibility.survival_chest_persistence_typed_event_migration.gate.order]
+r[mc_compatibility.survival_chest_persistence_typed_event_migration.validation] The migration MUST record reviewable evidence for runner fixtures, scenario-manifest checks, generated-surface freshness, dry-run receipt shape, evidence manifests, Cairn gates, and Cairn validation before archive.
+r[mc_compatibility.survival_chest_persistence_typed_event_migration.validation.log]
+{
+  "change_issues": [],
+  "changes": 9,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 11,
+  "valid": true
+}
+exit_status=0

@@ -1,0 +1,80 @@
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-chest-persistence-typed-event-migration",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-survival-chest-persistence-typed-event-migration"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-chest-persistence-typed-event-migration",
+  "dry_run": false,
+  "input_hash": "d9ba981f1313edef9f384045718b921d2821a9195ed7e5326cec40284928bd46",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "6dab729db16d9cb1e3fe4eeb21375888cb43da38d7318489b0e6543ec7c7c27c",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-chest-persistence-typed-event-migration/design.md"
+        },
+        {
+          "content_hash": "75f044089ce37e5c29d22ed159afb2bd391e6de2e612d7998e3d745c63c3123b",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-chest-persistence-typed-event-migration/proposal.md"
+        },
+        {
+          "content_hash": "82590055a4582b5854a7664e30bc93243d658f8de250aaf3126dc6d39dd5d620",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-chest-persistence-typed-event-migration/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "a05c896401dce3bce10eceaab980c01c2bb0c17431765ce7307c88b60a16db0d",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-chest-persistence-typed-event-migration/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-chest-persistence-typed-event-migration"
+        }
+      ],
+      "manifest_hash": "bc6f79da5f2a3386e6a0df8b1db41a38d724b787acc82ca0d690f533fea9e8d1"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "6dab729db16d9cb1e3fe4eeb21375888cb43da38d7318489b0e6543ec7c7c27c",
+          "exists": true,
+          "path": "./cairn/changes/survival-chest-persistence-typed-event-migration/design.md"
+        },
+        {
+          "content_hash": "75f044089ce37e5c29d22ed159afb2bd391e6de2e612d7998e3d745c63c3123b",
+          "exists": true,
+          "path": "./cairn/changes/survival-chest-persistence-typed-event-migration/proposal.md"
+        },
+        {
+          "content_hash": "82590055a4582b5854a7664e30bc93243d658f8de250aaf3126dc6d39dd5d620",
+          "exists": true,
+          "path": "./cairn/changes/survival-chest-persistence-typed-event-migration/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "a05c896401dce3bce10eceaab980c01c2bb0c17431765ce7307c88b60a16db0d",
+          "exists": true,
+          "path": "./cairn/changes/survival-chest-persistence-typed-event-migration/tasks.md"
+        }
+      ],
+      "manifest_hash": "8560bc866538b13310d9e75452a1843f2975dadd385463425ef1fdf46729fdab"
+    },
+    "kind": "archive",
+    "manifest_hash": "498e897d3bf29de00e9b5e58048673fb8a6e573ec48296ebda5b746dc51e41fc"
+  },
+  "plan_hash": "ac7b10525420c42487d4c0d527f8e4ddb190000c6a2a69326d9b9b235b84de69",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "440942fc9a923f862c4aa7cccf0b0e3af714e7589cd4866941fb0a4469361e14"
+}
+exit_status=0

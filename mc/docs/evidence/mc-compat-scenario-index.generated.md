@@ -15,7 +15,7 @@ This bounded index is generated from `compat/config/scenario-manifest.ncl`. It r
 | inventory-stack-split-merge | inventory-stack-split-merge | 1 | 1 | mc-compat-valence-inventory-stack-split-merge-dry-run | mc-compat-valence-inventory-stack-split-merge | typed-event-ready |
 | inventory-drag-transactions | inventory-drag-transactions | 1 | 1 | mc-compat-valence-inventory-drag-transactions-dry-run | mc-compat-valence-inventory-drag-transactions | typed-event-ready |
 | survival-break-place-pickup | survival-break-place-pickup | 1 | 1 | mc-compat-valence-survival-break-place-pickup-dry-run | mc-compat-valence-survival-break-place-pickup | typed-event-ready |
-| survival-chest-persistence | survival-chest-persistence | 1 | 2 | mc-compat-historical-scenario-dry-runs | mc-compat-valence-survival-chest-persistence | substring-fallback |
+| survival-chest-persistence | survival-chest-persistence | 1 | 2 | mc-compat-historical-scenario-dry-runs | mc-compat-valence-survival-chest-persistence | typed-event-ready |
 | survival-crafting-table | survival-crafting-table | 1 | 1 | mc-compat-valence-survival-crafting-table-dry-run | mc-compat-valence-survival-crafting-table | typed-event-ready |
 | survival-crafting-recipe-breadth | survival-crafting-recipe-breadth | 1 | 1 | mc-compat-valence-survival-crafting-recipe-breadth-dry-run | mc-compat-valence-survival-crafting-recipe-breadth | substring-fallback |
 | survival-furnace-persistence | survival-furnace-persistence | 1 | 2 | mc-compat-valence-survival-furnace-persistence-dry-run | mc-compat-valence-survival-furnace-persistence | substring-fallback |

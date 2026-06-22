@@ -3704,6 +3704,7 @@ fn typed_event_oracle_contributes_to_pass_fail(scenario: Scenario) -> bool {
             | Scenario::InventoryStackSplitMerge
             | Scenario::InventoryDragTransactions
             | Scenario::SurvivalBreakPlacePickup
+            | Scenario::SurvivalChestPersistence
             | Scenario::SurvivalCraftingTable
     )
 }
@@ -3866,6 +3867,29 @@ fn typed_event_ordered_edges_for_scenario(scenario: Scenario) -> Vec<(&'static s
             ("server_survival_join", "server_survival_break"),
             ("server_survival_break", "server_survival_pickup"),
             ("server_survival_pickup", "server_survival_place"),
+        ],
+        Scenario::SurvivalChestPersistence => vec![
+            ("survival_chest_open_seen", "survival_chest_store_sent"),
+            ("survival_chest_store_sent", "survival_chest_close_sent"),
+            ("survival_chest_close_sent", "survival_chest_reconnect_sent"),
+            (
+                "survival_chest_reconnect_sent",
+                "survival_chest_reopen_seen",
+            ),
+            (
+                "survival_chest_reopen_seen",
+                "survival_chest_persisted_seen",
+            ),
+            ("server_survival_chest_open", "server_survival_chest_store"),
+            ("server_survival_chest_store", "server_survival_chest_close"),
+            (
+                "server_survival_chest_close",
+                "server_survival_chest_reopen",
+            ),
+            (
+                "server_survival_chest_reopen",
+                "server_survival_chest_persisted",
+            ),
         ],
         Scenario::SurvivalCraftingTable => vec![
             (
@@ -11953,7 +11977,7 @@ mod tests {
         assert!(typed_event_oracle_contributes_to_pass_fail(
             Scenario::SurvivalCraftingTable
         ));
-        assert!(!typed_event_oracle_contributes_to_pass_fail(
+        assert!(typed_event_oracle_contributes_to_pass_fail(
             Scenario::SurvivalChestPersistence
         ));
     }
@@ -12220,6 +12244,51 @@ mod tests {
                 ("survival_break_sent", "survival_pickup_seen"),
                 ("survival_pickup_seen", "survival_place_sent"),
                 ("server_survival_break", "server_survival_place"),
+            ],
+        );
+        assert_typed_event_fixture_passes(
+            Scenario::SurvivalChestPersistence,
+            Some(TEST_USERNAME),
+            &[
+                ("client", Some(TEST_USERNAME), "protocol_detected"),
+                ("client", Some(TEST_USERNAME), "join_game"),
+                ("client", Some(TEST_USERNAME), "render_tick"),
+                ("client", Some(TEST_USERNAME), "survival_chest_open_seen"),
+                ("client", Some(TEST_USERNAME), "survival_chest_store_sent"),
+                ("client", Some(TEST_USERNAME), "survival_chest_close_sent"),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_chest_reconnect_sent",
+                ),
+                ("client", Some(TEST_USERNAME), "survival_chest_reopen_seen"),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_chest_persisted_seen",
+                ),
+                ("server", Some(TEST_USERNAME), "server_username_seen"),
+                ("server", Some(TEST_USERNAME), "server_survival_chest_open"),
+                ("server", Some(TEST_USERNAME), "server_survival_chest_store"),
+                ("server", Some(TEST_USERNAME), "server_survival_chest_close"),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_chest_reopen",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_chest_persisted",
+                ),
+            ],
+            &[
+                ("survival_chest_open_seen", "survival_chest_store_sent"),
+                ("survival_chest_close_sent", "survival_chest_reopen_seen"),
+                (
+                    "server_survival_chest_reopen",
+                    "server_survival_chest_persisted",
+                ),
             ],
         );
         assert_typed_event_fixture_passes(
@@ -12673,6 +12742,90 @@ mod tests {
                 .expect_err("misordered typed survival server phases fail");
         assert!(
             err.contains("server_survival_pickup_before_server_survival_place"),
+            "{err}"
+        );
+    }
+
+    #[test]
+    fn typed_event_oracle_validates_migrated_survival_chest_persistence_graph() {
+        let cfg = test_config(
+            &[
+                "--scenario",
+                "survival-chest-persistence",
+                "--receipt",
+                "/tmp/survival-chest-persistence.receipt.json",
+            ],
+            &[],
+        )
+        .expect("survival chest persistence config parses");
+        let client_observed = scenario_required_milestones(Scenario::SurvivalChestPersistence)
+            .iter()
+            .map(|(name, _)| *name)
+            .collect::<Vec<_>>();
+        let server_observed = server_required_milestones(Scenario::SurvivalChestPersistence)
+            .iter()
+            .map(|(name, _)| *name)
+            .collect::<Vec<_>>();
+        let passing = ClientRunEvidence {
+            log_path: None,
+            log_paths: Vec::new(),
+            usernames: vec![TEST_USERNAME.to_string()],
+            exit_code: Some(0),
+            classification: "client-exited-success",
+            matched_success_pattern: Some("Detected server protocol version".to_string()),
+            scenario: Some(ScenarioEvidence {
+                observed_milestones: client_observed,
+                missing_milestones: Vec::new(),
+                forbidden_matches: Vec::new(),
+                passed: true,
+            }),
+            server_scenario: Some(ServerScenarioEvidence {
+                observed_milestones: server_observed,
+                missing_milestones: Vec::new(),
+                forbidden_matches: Vec::new(),
+                passed: true,
+            }),
+            projectile_damage_causality: None,
+            mcp_control: None,
+            frame_artifacts: None,
+        };
+        validate_typed_event_oracle_for_migrated_scenario(&cfg, &passing)
+            .expect("complete typed survival chest graph passes");
+
+        let mut missing_client_persisted = passing.clone();
+        missing_client_persisted
+            .scenario
+            .as_mut()
+            .expect("client evidence")
+            .observed_milestones
+            .retain(|name| *name != "survival_chest_persisted_seen");
+        let err =
+            validate_typed_event_oracle_for_migrated_scenario(&cfg, &missing_client_persisted)
+                .expect_err("missing typed chest persisted client event fails");
+        assert!(err.contains("survival_chest_persisted_seen"), "{err}");
+
+        let mut misordered_client_reopen = passing;
+        misordered_client_reopen
+            .scenario
+            .as_mut()
+            .expect("client evidence")
+            .observed_milestones = vec![
+            "protocol_detected",
+            "join_game",
+            "render_tick",
+            "survival_chest_open_seen",
+            "survival_chest_store_sent",
+            "survival_chest_reopen_seen",
+            "survival_chest_close_sent",
+            "survival_chest_reconnect_sent",
+            "survival_chest_persisted_seen",
+        ];
+        let err =
+            validate_typed_event_oracle_for_migrated_scenario(&cfg, &misordered_client_reopen)
+                .expect_err("misordered typed chest reopen before close fails");
+        assert!(
+            err.contains("survival_chest_close_sent_before_survival_chest_reconnect_sent")
+                || err.contains("survival_chest_reconnect_sent_before_survival_chest_reopen_seen"),
             "{err}"
         );
     }

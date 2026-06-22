@@ -1,0 +1,22 @@
+this derivation will be built:
+  /nix/store/pfgjwgwx4kjzc086m60qm5sdkkakrhi5-mc-compat-historical-scenario-dry-runs.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/pfgjwgwx4kjzc086m60qm5sdkkakrhi5-mc-compat-historical-scenario-dry-runs.drv'...
+mc-compat-historical-scenario-dry-runs> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-historical-scenario-dry-runs> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-historical-scenario-dry-runs> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-historical-scenario-dry-runs> hint: call:
+mc-compat-historical-scenario-dry-runs> hint:
+mc-compat-historical-scenario-dry-runs> hint:   git config --global init.defaultBranch <name>
+mc-compat-historical-scenario-dry-runs> hint:
+mc-compat-historical-scenario-dry-runs> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-historical-scenario-dry-runs> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-historical-scenario-dry-runs> hint:
+mc-compat-historical-scenario-dry-runs> hint:   git branch -m <name>
+mc-compat-historical-scenario-dry-runs> hint:
+mc-compat-historical-scenario-dry-runs> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-historical-scenario-dry-runs> Initialized empty Git repository in /build/fake-valence/.git/
+mc-compat-historical-scenario-dry-runs> [master (root-commit) 741c958] init
+mc-compat-historical-scenario-dry-runs>  1 file changed, 1 insertion(+)
+mc-compat-historical-scenario-dry-runs>  create mode 100644 README.md
+exit_status=0

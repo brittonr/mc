@@ -1,0 +1,2 @@
+evidence manifest refresh ok: mode=refresh; passes=1; manifests=428; entries=2953; current=2953; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=1; manifest_writes=0
+exit_status=0
