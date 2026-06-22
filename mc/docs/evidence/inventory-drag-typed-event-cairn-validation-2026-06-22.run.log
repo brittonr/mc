@@ -1,0 +1,90 @@
+## inventory drag typed-event Cairn validation
+command=check_cairn_task_evidence --self-test && cairn/changes/inventory-drag-typed-event-migration/tasks.md
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task evidence gate passed: 4 completed tasks checked across 1 task files
+task_evidence_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+cairn_validate_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate proposal inventory-drag-typed-event-migration --root .
+{
+  "change": "inventory-drag-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "5b88ad0869c177e07929c7fbc122bdcb5c05e171949929a1be134fafd6d7310f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "3e463c0c12f131c2349b5ee396fcb2f8333bdbc124d401b820e4d39ed36f89d1",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+cairn_gate_proposal_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate design inventory-drag-typed-event-migration --root .
+{
+  "change": "inventory-drag-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e82d370b2124b5ce771c4ceb85537f3a904509f31c260f6dd29da8bb90b3615b",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "1df3123c6d753538796b3af18680bed768a5d24ac0d8334ff0995abdb611f88b",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+cairn_gate_design_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate tasks inventory-drag-typed-event-migration --root .
+{
+  "change": "inventory-drag-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "b2145bb612266d68b35ce13570d33938092b0d2ab0468cb4d6d8f26d804bda04",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "008445446f36768a1b98cbda49b39585cdfc1ee0c0cd0f0beba839e413ef5768",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+cairn_gate_tasks_exit_status=0
+exit_status=0

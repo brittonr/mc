@@ -1,0 +1,32 @@
+## inventory drag typed-event task evidence validation
+command=check_cairn_task_evidence --self-test && cairn/changes/inventory-drag-typed-event-migration/tasks.md
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task evidence gate passed: 5 completed tasks checked across 1 task files
+task_evidence_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate tasks inventory-drag-typed-event-migration --root .
+{
+  "change": "inventory-drag-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "727dfdc7bd4e031533ab88a43dc35a1548d42b732548a8217637b5db828a6ec2",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "37933395f59886e014f4b7359968ebb2d99a540dc20a33e1591e5150c76ce008",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+cairn_gate_tasks_exit_status=0
+exit_status=0
