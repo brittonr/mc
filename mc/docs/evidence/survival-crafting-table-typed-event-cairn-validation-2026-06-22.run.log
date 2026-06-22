@@ -1,0 +1,90 @@
+## survival crafting-table typed-event Cairn validation
+command=check_cairn_task_evidence --self-test && cairn/changes/survival-crafting-table-typed-event-migration/tasks.md
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task evidence gate passed: 4 completed tasks checked across 1 task files
+task_evidence_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+cairn_validate_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate proposal survival-crafting-table-typed-event-migration --root .
+{
+  "change": "survival-crafting-table-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "12ce1592fe89a28cdd811d78ae7fcb0799091a5b0367eaa1de8d293b75887351",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "5d03258431c3c0533e81c8a8f6f62274e6800e20bc9eb65734493af34ea1ec0b",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+cairn_gate_proposal_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate design survival-crafting-table-typed-event-migration --root .
+{
+  "change": "survival-crafting-table-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "557abc61b37a5a1c4963858f86571f824d42e43de2e3b4f05242f033981b7332",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "48c40dbd9d124312bb9ec025c1f19e1c4bcab930431f9e6bd44ed64afd59cee2",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+cairn_gate_design_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate tasks survival-crafting-table-typed-event-migration --root .
+{
+  "change": "survival-crafting-table-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "55ddbd76ef8fc66dd1d9513ceaf97b8ed24f80a6964fb82373c465ee740d5c46",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "a533738a48e804bd8128d8f0ea31cae4fcceb7d1f8e9181c01acf329d208538e",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+cairn_gate_tasks_exit_status=0
+exit_status=0
