@@ -3703,6 +3703,7 @@ fn typed_event_oracle_contributes_to_pass_fail(scenario: Scenario) -> bool {
             | Scenario::InventoryInteraction
             | Scenario::InventoryStackSplitMerge
             | Scenario::InventoryDragTransactions
+            | Scenario::SurvivalBreakPlacePickup
     )
 }
 
@@ -3855,6 +3856,15 @@ fn typed_event_ordered_edges_for_scenario(scenario: Scenario) -> Vec<(&'static s
                 "server_inventory_drag_target_b",
                 "server_inventory_drag_end",
             ),
+        ],
+        Scenario::SurvivalBreakPlacePickup => vec![
+            ("survival_break_sent", "survival_break_update"),
+            ("survival_break_update", "survival_pickup_seen"),
+            ("survival_pickup_seen", "survival_place_sent"),
+            ("survival_place_sent", "survival_place_update"),
+            ("server_survival_join", "server_survival_break"),
+            ("server_survival_break", "server_survival_pickup"),
+            ("server_survival_pickup", "server_survival_place"),
         ],
         _ => vec![],
     }
@@ -11898,8 +11908,11 @@ mod tests {
         assert!(typed_event_oracle_contributes_to_pass_fail(
             Scenario::InventoryDragTransactions
         ));
-        assert!(!typed_event_oracle_contributes_to_pass_fail(
+        assert!(typed_event_oracle_contributes_to_pass_fail(
             Scenario::SurvivalBreakPlacePickup
+        ));
+        assert!(!typed_event_oracle_contributes_to_pass_fail(
+            Scenario::SurvivalChestPersistence
         ));
     }
 
@@ -12540,6 +12553,84 @@ mod tests {
             .expect_err("misordered typed drag server phases fail");
         assert!(
             err.contains("server_inventory_drag_target_b_before_server_inventory_drag_end"),
+            "{err}"
+        );
+    }
+
+    #[test]
+    fn typed_event_oracle_validates_migrated_survival_break_place_graph() {
+        let cfg = test_config(
+            &[
+                "--scenario",
+                "survival-break-place-pickup",
+                "--receipt",
+                "/tmp/survival-break-place.receipt.json",
+            ],
+            &[],
+        )
+        .expect("survival break/place config parses");
+        let client_observed = scenario_required_milestones(Scenario::SurvivalBreakPlacePickup)
+            .iter()
+            .map(|(name, _)| *name)
+            .collect::<Vec<_>>();
+        let server_observed = server_required_milestones(Scenario::SurvivalBreakPlacePickup)
+            .iter()
+            .map(|(name, _)| *name)
+            .collect::<Vec<_>>();
+        let passing = ClientRunEvidence {
+            log_path: None,
+            log_paths: Vec::new(),
+            usernames: vec![TEST_USERNAME.to_string()],
+            exit_code: Some(0),
+            classification: "client-exited-success",
+            matched_success_pattern: Some("Detected server protocol version".to_string()),
+            scenario: Some(ScenarioEvidence {
+                observed_milestones: client_observed,
+                missing_milestones: Vec::new(),
+                forbidden_matches: Vec::new(),
+                passed: true,
+            }),
+            server_scenario: Some(ServerScenarioEvidence {
+                observed_milestones: server_observed,
+                missing_milestones: Vec::new(),
+                forbidden_matches: Vec::new(),
+                passed: true,
+            }),
+            projectile_damage_causality: None,
+            mcp_control: None,
+            frame_artifacts: None,
+        };
+        validate_typed_event_oracle_for_migrated_scenario(&cfg, &passing)
+            .expect("complete typed survival break/place graph passes");
+
+        let mut missing_client_survival = passing.clone();
+        missing_client_survival
+            .scenario
+            .as_mut()
+            .expect("client evidence")
+            .observed_milestones
+            .retain(|name| *name != "survival_place_update");
+        let err = validate_typed_event_oracle_for_migrated_scenario(&cfg, &missing_client_survival)
+            .expect_err("missing typed survival client event fails");
+        assert!(err.contains("survival_place_update"), "{err}");
+
+        let mut misordered_server_survival = passing;
+        misordered_server_survival
+            .server_scenario
+            .as_mut()
+            .expect("server evidence")
+            .observed_milestones = vec![
+            "server_username_seen",
+            "server_survival_join",
+            "server_survival_break",
+            "server_survival_place",
+            "server_survival_pickup",
+        ];
+        let err =
+            validate_typed_event_oracle_for_migrated_scenario(&cfg, &misordered_server_survival)
+                .expect_err("misordered typed survival server phases fail");
+        assert!(
+            err.contains("server_survival_pickup_before_server_survival_place"),
             "{err}"
         );
     }

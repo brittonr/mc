@@ -144,6 +144,23 @@ const INVENTORY_DRAG_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
     "server_inventory_drag_target_b",
     "server_inventory_drag_end",
 ];
+const SURVIVAL_BREAK_PLACE_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
+    "protocol_detected",
+    "join_game",
+    "render_tick",
+    "survival_break_sent",
+    "survival_break_update",
+    "survival_pickup_seen",
+    "survival_place_sent",
+    "survival_place_update",
+];
+const SURVIVAL_BREAK_PLACE_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
+    "server_username_seen",
+    "server_survival_join",
+    "server_survival_break",
+    "server_survival_pickup",
+    "server_survival_place",
+];
 const TYPED_EVENT_READINESS_FIXTURES: &[TypedEventReadinessFixture<'static>] = &[
     TypedEventReadinessFixture {
         scenario: "smoke",
@@ -170,6 +187,13 @@ const TYPED_EVENT_READINESS_FIXTURES: &[TypedEventReadinessFixture<'static>] = &
         scenario: "inventory-drag-transactions",
         client_events: INVENTORY_DRAG_TYPED_EVENT_CLIENT_EVENTS,
         server_events: INVENTORY_DRAG_TYPED_EVENT_SERVER_EVENTS,
+        forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
+        derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
+    },
+    TypedEventReadinessFixture {
+        scenario: "survival-break-place-pickup",
+        client_events: SURVIVAL_BREAK_PLACE_TYPED_EVENT_CLIENT_EVENTS,
+        server_events: SURVIVAL_BREAK_PLACE_TYPED_EVENT_SERVER_EVENTS,
         forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
         derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
     },
