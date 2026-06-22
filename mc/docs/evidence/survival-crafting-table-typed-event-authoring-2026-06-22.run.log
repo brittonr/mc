@@ -1,0 +1,83 @@
+## survival crafting-table typed-event Cairn authoring validation
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+cairn_validate_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate proposal survival-crafting-table-typed-event-migration --root .
+{
+  "change": "survival-crafting-table-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "951b33b1e9d0af5e3e28da3d9987eb1358a215673035e01aeda19b2175451c5c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "2c6df4ed0d2cef7fc5a90c7e5dc2a92c15eb282ed413186785ea26c447d2a789",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+cairn_gate_proposal_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate design survival-crafting-table-typed-event-migration --root .
+{
+  "change": "survival-crafting-table-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "162984d7da5fdf56ae66b250d666b58cebae1149aae7cf08e1cbe4b5cebcb993",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "f9e9c52d41a0237503828defada088a016f2b46401a3943d6712d1895a19264d",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+cairn_gate_design_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate tasks survival-crafting-table-typed-event-migration --root .
+{
+  "change": "survival-crafting-table-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "3daaedc3c6a8acec5bd73e0701d4b62c95daf45c73a970bafacffff92574b6fc",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "d6e65fa5e7d3e41cc14b7e4f3bf646302a05a37c5a614676b4a2f96f4a155994",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+cairn_gate_tasks_exit_status=0
+exit_status=0

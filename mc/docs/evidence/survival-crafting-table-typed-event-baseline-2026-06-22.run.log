@@ -1,0 +1,172 @@
+## survival crafting-table typed-event baseline
+command=git status --short --branch -- mc .gitignore
+## main...origin/main
+git_status_exit_status=0
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test --manifest-path compat/runner/Cargo.toml
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 146 tests
+test runtime_config::tests::decodes_supported_steel_export_types ... ok
+test runtime_config::tests::arrow_damage_policy_is_bounded_and_reports_clamping ... ok
+test runtime_config::tests::fixed_protocol_fact_changes_are_rejected ... ok
+test runtime_config::tests::diff_and_apply_plan_separate_hot_next_run_and_restart_only ... ok
+test runtime_config::tests::rejects_missing_or_wrong_type_exports ... ok
+test runtime_config::tests::evaluates_restricted_steel_module ... ok
+test runtime_config::tests::redaction_hides_secret_like_values ... ok
+test layout::tests::repository_layout_allows_missing_defaults_to_role_paths ... ok
+test runtime_config::tests::normalizes_valid_steel_exports ... ok
+test runtime_config::tests::rejects_range_and_sandbox_violations ... ok
+test runtime_config::tests::rejects_malformed_literal_before_typed_decoding ... ok
+test runtime_config::tests::reload_request_applies_hot_changes_atomically ... ok
+test runtime_config::tests::reload_request_rolls_back_on_apply_failure_or_restart_only_change ... ok
+test runtime_config::tests::required_export_reports_missing_and_wrong_type_diagnostics ... ok
+test runtime_config::tests::validated_value_helper_returns_values_and_diagnostics ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_creative_inventory_live_contracts ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_live_capabilities ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_resource_pack_status_local_contracts ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_sign_editor_live_contracts ... ok
+test layout::tests::repository_layout_accepts_transition_paths_during_migration ... ok
+test runtime_config::tests::rejects_steel_module_unknown_export_and_forbidden_token ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_static_specs ... ok
+test tests::backend_runtime_dispatch_preserves_pure_facts_and_log_labels ... ok
+test layout::tests::repository_layout_prefers_role_paths_when_present ... ok
+test tests::armor_loadout_enchantment_status_matrix_tracks_isolated_row_evidence ... ok
+test scenario_core::tests::scenario_core_validates_static_specs_and_lookup_parity ... ok
+test tests::cleanup_client_log_match_is_narrow ... ok
+test tests::blue_flag_score_scenario_tracks_mirrored_team_evidence ... ok
+test tests::armor_loadout_enchantment_status_matrix_receipt_keeps_nonclaims ... ok
+test tests::combat_damage_scenario_tracks_client_and_server_evidence ... ok
+test tests::compares_protocol_763_matrix_receipts_when_configured ... ok
+test tests::compares_paper_and_valence_receipts ... ok
+test tests::cli_overrides_backend_client_dir_valence_repo_and_revision ... ok
+test tests::compares_reconnect_sequence_receipts_with_multi_client_classification ... ok
+test tests::ctf_simultaneous_race_tracks_one_accept_one_reject ... ok
+test layout::tests::valence_source_dir_fails_for_ambiguous_or_nested_component_roots ... ok
+test tests::client_checkout_must_point_at_manifest_root ... ok
+test tests::ctf_invalid_return_drop_tracks_client_server_and_envelope ... ok
+test tests::ctf_spawn_team_balance_reset_tracks_client_server_and_guards ... ok
+test tests::env_overrides_are_parsed_without_global_environment_mutation ... ok
+test tests::equipment_slot_item_matrix_expansion_tracks_isolated_row_evidence ... ok
+test tests::equipment_update_scenario_tracks_current_client_equipment_marker ... ok
+test tests::evidence_matchers_cover_supported_positive_cases ... ok
+test tests::backend_runtime_dry_run_lifecycle_uses_expected_managed_server_shape ... ok
+test tests::ctf_invalid_pickup_ownership_tracks_client_server_and_envelope ... ok
+test tests::failure_bundle_path_parses_from_env_and_cli_override ... ok
+test tests::cleanup_path_dry_run_preserves_existing_files ... ok
+test tests::git_revision_evidence_core_reports_clean_dirty_and_unavailable ... ok
+test tests::compat_bot_probe_scenario_is_bounded_and_receipted ... ok
+test tests::ctf_score_limit_win_condition_tracks_client_server_and_forbidden_guards ... ok
+test tests::evidence_matchers_fail_closed_for_missing_case_and_dynamic_context ... ok
+test tests::inventory_drag_transactions_tracks_client_and_server_evidence ... ok
+test tests::inventory_interaction_scenario_tracks_client_and_server_evidence ... ok
+test tests::inventory_stack_split_merge_tracks_client_and_server_evidence ... ok
+test tests::latency_jitter_receipt_disabled_path_stays_non_claim ... ok
+test tests::latency_jitter_reconnect_count_is_explicit ... ok
+test tests::failure_bundle_validator_accepts_complete_fail_only_bundle ... ok
+test tests::latency_jitter_receipt_renders_bounded_wan_telemetry_fields ... ok
+test tests::load_network_safety_envelope_fails_closed_for_unsafe_inputs ... ok
+test tests::equipment_slot_item_matrix_expansion_receipt_keeps_nonclaims ... ok
+test tests::mcp_controlled_live_preflight_rejects_unbounded_timeout ... ok
+test tests::mcp_controlled_live_preflight_allows_bounded_local_rail ... ok
+test tests::mcp_controlled_live_receipt_uses_observed_control_and_frame_evidence ... ok
+test tests::mcp_controlled_live_receipt_fails_dirty_child_revision ... ok
+test tests::generated_scenario_manifest_matches_runner_parser ... ok
+test layout::tests::repository_layout_fails_closed_for_missing_ambiguous_and_nested_git_roots ... ok
+test tests::missing_client_checkout_has_actionable_diagnostic ... ok
+test tests::failed_preflight_receipt_triages_before_client_evidence ... ok
+test layout::tests::valence_source_dir_detects_direct_role_and_transition_worktree_shapes ... ok
+test tests::missing_valence_checkout_has_actionable_diagnostic ... ok
+test tests::multi_client_scenario_tracks_client_and_server_evidence ... ok
+test tests::defaults_to_valence_protocol_and_port ... ok
+test tests::invalid_backend_is_rejected ... ok
+test tests::enriched_triage_core_bounds_and_redacts_context ... ok
+test tests::negative_live_rail_checker_rejects_missing_expected_outcome ... ok
+test tests::flag_score_repeat_scenario_tracks_missing_and_forbidden_evidence ... ok
+test tests::failure_bundle_validator_rejects_negative_fixtures ... ok
+test tests::negative_live_rail_checker_rejects_missing_telemetry ... ok
+test tests::negative_live_rail_checker_rejects_unbounded_public_unauthenticated_inputs ... ok
+test tests::negative_live_rail_preflight_rejects_public_unowned_targets ... ok
+test tests::enriched_triage_receipt_preserves_existing_fields_and_adds_context ... ok
+test tests::protocol_invalid_inputs_fail_closed ... ok
+test tests::protocol_status_handshake_fixture_bytes_are_stable ... ok
+test tests::protocol_varint_round_trips_in_memory ... ok
+test tests::projectile_damage_attribution_requires_pinned_valence_revision ... ok
+test tests::protocol_string_and_packet_framing_match_expected_bytes ... ok
+test tests::nickel_exported_json_config_sets_defaults_and_allows_env_cli_precedence ... ok
+test tests::projectile_damage_attribution_scenario_tracks_client_and_server_evidence ... ok
+test tests::planning_core_negative_fixtures_fail_before_side_effects ... ok
+test tests::public_server_authorized_safety_live_mode_fails_closed ... ok
+test tests::public_server_authorized_safety_disabled_path_stays_non_claim ... ok
+test tests::projectile_damage_dry_run_uses_steel_arrow_policy ... ok
+test tests::planning_core_positive_fixtures_cover_representative_modes ... ok
+test tests::public_server_authorized_safety_receipt_renders_fixture_envelope ... ok
+test tests::rejects_receipts_that_do_not_match_configured_protocol ... ok
+test tests::rejects_receipt_protocol_mismatch ... ok
+test tests::runner_result_preserves_original_failure_when_follow_up_fails ... ok
+test tests::dry_run_receipt_records_deterministic_child_revision_placeholders ... ok
+test tests::run_matrix_config_sets_receipt_dir_and_backend_defaults ... ok
+git version 2.54.0
+test tests::run_matrix_rejects_single_receipt_path ... ok
+test tests::receipt_summary_mutations_fail_closed ... ok
+test tests::failure_bundle_shell_writes_reviewable_bundle_for_failed_result ... ok
+test tests::mcp_controlled_dry_run_receipt_records_control_contract ... ok
+test tests::negative_live_rail_envelope_records_expected_outcome_and_non_claims ... ok
+test tests::status_and_cleanup_modes_parse_without_server_probe_mode ... ok
+test tests::restricted_steel_config_rejects_forbidden_capabilities ... ok
+test tests::survival_break_place_pickup_scenario_tracks_client_and_server_evidence ... ok
+test tests::restricted_steel_config_sets_runtime_defaults_and_allows_env_cli_precedence ... ok
+test tests::survival_block_entity_persistence_scenario_tracks_client_and_server_evidence ... ok
+test tests::supported_scenario_usage_lists_all_supported_scenarios ... ok
+test tests::survival_crafting_table_scenario_tracks_client_and_server_evidence ... ok
+test tests::static_scenario_specs_fail_closed_for_invalid_definitions ... ok
+test tests::static_scenario_specs_validate_all_supported_behavior ... ok
+test tests::survival_chest_persistence_scenario_tracks_client_and_server_evidence ... ok
+test tests::survival_furnace_persistence_scenario_tracks_client_and_server_evidence ... ok
+test tests::survival_hunger_food_scenario_tracks_client_and_server_evidence ... ok
+test tests::survival_crash_recovery_scenario_tracks_derived_client_and_server_evidence ... ok
+test tests::survival_hunger_health_cycle_scenario_tracks_client_and_server_evidence ... ok
+test tests::survival_furnace_smelting_breadth_scenario_tracks_client_and_server_evidence ... ok
+test tests::scenario_cli_and_env_parse ... ok
+test tests::survival_redstone_toggle_scenario_tracks_client_and_server_evidence ... ok
+test tests::survival_world_persistence_scenario_tracks_client_and_server_evidence ... ok
+test tests::typed_event_graph_checks_required_forbidden_and_ordered_events ... ok
+test tests::survival_mob_drop_scenario_tracks_client_and_server_evidence ... ok
+test tests::typed_event_pass_fail_gate_includes_only_migrated_rows ... ok
+test tests::typed_event_parser_accepts_versioned_event_lines ... ok
+test tests::typed_event_oracle_validates_migrated_inventory_graph ... ok
+test tests::typed_event_receipt_artifact_records_reviewable_timeline_hash ... ok
+test tests::typed_event_oracle_validates_migrated_inventory_drag_graph ... ok
+test tests::smoke_receipt_records_failures_without_success_claims ... ok
+test tests::typed_event_oracle_validates_migrated_survival_break_place_graph ... ok
+test tests::typed_events_from_receipt_evidence_include_client_and_server_sources ... ok
+test tests::scenario_receipt_records_actionable_failure_triage ... ok
+test tests::typed_event_oracle_receipt_records_migration_fallback ... ok
+test tests::status_packet_proxy_and_gameplay_receipt_blocks_are_recorded ... ok
+test tests::valid_client_checkout_preflight_passes ... ok
+test tests::typed_event_graph_accepts_representative_scenario_fixtures ... ok
+test tests::valence_source_dir_detects_monorepo_and_legacy_worktree_shapes ... ok
+test tests::smoke_receipt_records_cairn_contract_and_octet_surface ... ok
+test tests::structured_receipt_schema_parses_representative_shapes ... ok
+test tests::scenario_oracle_property_forbidden_markers_fail ... ok
+test tests::structured_receipt_schema_negative_fixtures_fail_closed ... ok
+test tests::scenario_oracle_property_all_required_server_milestones_matter ... ok
+test tests::negative_live_rail_receipt_records_observed_containment_outcome ... ok
+test tests::scenario_oracle_property_all_required_client_milestones_matter ... ok
+test tests::git_revision_evidence_scopes_to_core_source_directory ... ok
+
+test result: ok. 146 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+runner_tests_exit_status=0
+command=check_scenario_manifest --self-test && check && --check-generated-surfaces
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+scenario manifest self-test passed: positive and negative fixtures exercised
+scenario manifest check passed: 45 rows validated; dry-run coverage: 43 covered, 2 waived, 0 unmaintained; typed-event readiness: 5 ready, 40 fallback
+generated surface check passed: 2 generated surfaces current
+scenario_manifest_exit_status=0
+exit_status=0
