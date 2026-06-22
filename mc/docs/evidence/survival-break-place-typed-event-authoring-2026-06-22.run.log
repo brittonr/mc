@@ -1,0 +1,83 @@
+## survival break/place typed-event Cairn authoring validation
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+cairn_validate_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate proposal survival-break-place-typed-event-migration --root .
+{
+  "change": "survival-break-place-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "82f175a8861a3d750586dc749209efc322fa0547c711599f2bba47a0592aa28e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "16dfc4536161f37c9fd755e0d4decd9702d98eb1146aadced9f4e0ffa89a21aa",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+cairn_gate_proposal_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate design survival-break-place-typed-event-migration --root .
+{
+  "change": "survival-break-place-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "ff0c704f95501131e542c840fd167d39fe08e71136326adfd69d33ee350bdf2b",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "6f08b6c2c9025a2eb3bd71f5be81b7a250e588ab122e5d7ca316c9f5706cd625",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+cairn_gate_design_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate tasks survival-break-place-typed-event-migration --root .
+{
+  "change": "survival-break-place-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "6c85dd7d1282e492f9d08821b09b2ae5f6e1a0be98d99304f355556508734ba0",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "b7d29ee7e13d17c5fe142fcaaa741408090b65a7adf22f0e04ac4fc77081ed9c",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+cairn_gate_tasks_exit_status=0
+exit_status=0
