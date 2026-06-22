@@ -1,0 +1,35 @@
+## survival crafting-table typed-event post-archive accepted-spec repair and validation
+note=archive execute completed in prior attempt; prior failure was the accepted-spec grep before manual accepted-spec append
+command=rg survival_crafting_table_typed_event_migration cairn/specs/mc-compatibility/spec.md
+r[mc_compatibility.survival_crafting_table_typed_event_migration.readiness] The `survival-crafting-table` scenario SHOULD move from waiver-backed substring fallback to `typed-event-ready` only when typed events cover the row's required client milestones, Valence crafting-table server milestones, forbidden surfaces, and ordered crafting phases.
+r[mc_compatibility.survival_crafting_table_typed_event_migration.readiness.complete]
+r[mc_compatibility.survival_crafting_table_typed_event_migration.gate] The runner MUST include `survival-crafting-table` in the typed-event pass/fail gate so missing or invalid structured crafting events fail before substring fallback can satisfy the row.
+r[mc_compatibility.survival_crafting_table_typed_event_migration.gate.missing]
+r[mc_compatibility.survival_crafting_table_typed_event_migration.gate.order]
+r[mc_compatibility.survival_crafting_table_typed_event_migration.validation] The migration MUST record reviewable evidence for runner fixtures, scenario-manifest checks, generated-surface freshness, dry-run receipt shape, evidence manifests, Cairn gates, and Cairn validation before archive.
+r[mc_compatibility.survival_crafting_table_typed_event_migration.validation.log]
+accepted_spec_grep_exit_status=0
+command=test archived change present and active change absent
+archive_dir_exit_status=0
+active_change_absent_exit_status=0
+command=rg post-archive evidence pointer in archived tasks
+  Evidence: docs/evidence/survival-crafting-table-typed-event-post-archive-2026-06-22.run.log; docs/evidence/survival-crafting-table-typed-event-post-archive-2026-06-22.b3
+archived_task_pointer_exit_status=0
+command=nix run --no-update-lock-file .#evidence-manifest-refresh -- --refresh --root .
+evidence manifest refresh ok: mode=refresh; passes=2; manifests=425; entries=2908; current=2908; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=2; manifest_writes=1
+evidence_manifest_refresh_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 2,
+  "valid": true
+}
+cairn_validate_exit_status=0
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link
+evidence_manifest_exit_status=0
+exit_status=0

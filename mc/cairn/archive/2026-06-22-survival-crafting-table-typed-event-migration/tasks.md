@@ -10,5 +10,5 @@
   Evidence: docs/evidence/survival-crafting-table-typed-event-migration-2026-06-22.run.log; docs/evidence/survival-crafting-table-typed-event-migration-2026-06-22.b3
 - [x] [depends:validation] Run Cairn proposal/design/tasks gates, task-evidence validation for completed implementation tasks, and Cairn validation with reviewable logs. r[mc_compatibility.survival_crafting_table_typed_event_migration.validation]
   Evidence: docs/evidence/survival-crafting-table-typed-event-cairn-validation-2026-06-22.run.log; docs/evidence/survival-crafting-table-typed-event-cairn-validation-2026-06-22.b3
-- [ ] [depends:validation] Sync/archive the completed change and run accepted-spec post-archive validation with reviewable logs. r[mc_compatibility.survival_crafting_table_typed_event_migration.validation]
-  Evidence: TBD
+- [x] [depends:validation] Sync/archive the completed change and run accepted-spec post-archive validation with reviewable logs. r[mc_compatibility.survival_crafting_table_typed_event_migration.validation]
+  Evidence: docs/evidence/survival-crafting-table-typed-event-post-archive-2026-06-22.run.log; docs/evidence/survival-crafting-table-typed-event-post-archive-2026-06-22.b3
