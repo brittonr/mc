@@ -1,8 +1,10 @@
+mod layout;
 mod runtime_config;
 mod scenario_core;
 #[allow(dead_code)]
 mod scenario_manifest_generated;
 
+use layout::{resolve_repository_layout, resolve_valence_source_dir, LayoutResolutionMode};
 use scenario_core::{
     parse_scenario, scenario_behavior_kind, scenario_forbidden_patterns, scenario_name,
     scenario_required_milestones, server_required_milestones, validate_static_scenario_specs,
@@ -36,7 +38,8 @@ const CARGO_MANIFEST_FILE: &str = "Cargo.toml";
 const GIT_HEAD_REV: &str = "HEAD";
 const GIT_CURRENT_DIR_PATHSPEC: &str = ".";
 const GIT_LOG_COMMIT_FORMAT: &str = "--format=%H";
-const VALENCE_MONOREPO_SUBTREE_DIR: &str = "mc/valence";
+const GIT_DIRTY_SKIPPED_LAYOUT_DIAGNOSTIC: &str =
+    "skipped dirty-state check because source layout did not resolve";
 const DEFAULT_SERVER_PROTOCOL: u32 = 758;
 const DEFAULT_CLIENT_USERNAME: &str = "compatbot";
 const DEFAULT_CLIENT_TIMEOUT_SECS: u64 = 20;
@@ -1726,10 +1729,11 @@ fn validate_negative_live_rail_preflight(cfg: &Config) -> Result<(), String> {
 }
 
 impl Config {
-    fn defaults(root: PathBuf) -> Self {
-        Config {
-            client_dir: root.join("stevenarella"),
-            valence_repo: root.join("valence"),
+    fn defaults(root: PathBuf) -> Result<Self, String> {
+        let source_layout = resolve_repository_layout(&root, LayoutResolutionMode::AllowMissing)?;
+        Ok(Config {
+            client_dir: source_layout.client.path,
+            valence_repo: source_layout.valence.path,
             valence_rev: DEFAULT_VALENCE_REV.to_string(),
             valence_worktree: PathBuf::from("/tmp/valence-compat-758"),
             valence_example: DEFAULT_VALENCE_EXAMPLE.to_string(),
@@ -1771,7 +1775,7 @@ impl Config {
             negative_external_authorized: false,
             arrow_damage_policy: default_arrow_damage_policy(),
             root,
-        }
+        })
     }
 
     fn from_env_and_args() -> Result<Self, String> {
@@ -1792,7 +1796,7 @@ impl Config {
             .or_else(|| get_env("ROOT"))
             .map(PathBuf::from)
             .unwrap_or(current_dir);
-        let mut cfg = Config::defaults(root);
+        let mut cfg = Config::defaults(root)?;
 
         let config_path = find_config_path(get_env("MC_COMPAT_CONFIG"), &args_vec)?;
         let steel_config_path = find_named_config_path(
@@ -4120,7 +4124,7 @@ fn print_usage(cfg: &Config) {
     println!(
         "Usage: mc-compat-runner [--config PATH] [--steel-config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario {}] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--failure-bundle PATH] [--valence-repo PATH] [--valence-rev REV]\n\n\
 Automates a local Stevenarella compatibility smoke against a Minecraft {} / protocol {} server.\n\
-Default client source is the vendored Stevenarella tree at ./stevenarella; pass --client-dir/CLIENT_DIR to use another source tree.\n\
+Default client source is the core Stevenarella client tree resolved from ./clients/stevenarella or the transition ./stevenarella path; pass --client-dir/CLIENT_DIR to use another source tree.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from legacy Nickel config, or --steel-config/MC_COMPAT_STEEL_CONFIG a restricted Steel module; env vars and later CLI flags override either config source.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.scenario.receipt.v2 JSON receipt for Cairn/Octet evidence flows. Pass --failure-bundle/MC_COMPAT_FAILURE_BUNDLE with a docs/evidence path to write a fail-only diagnostic bundle after failed runs.
 Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario survival-crafting-table for one crafting-table open/input/result/collect rail. Use --scenario survival-crafting-recipe-breadth for one bounded shaped/shapeless/invalid recipe breadth rail. Use --scenario survival-furnace-persistence for one furnace input/fuel/output/reconnect rail. Use --scenario survival-furnace-smelting-breadth for one bounded raw-iron/coal smelt plus invalid-fuel rejection rail. Use --scenario survival-hunger-food for one hunger deficit, food consume, and inventory decrement rail. Use --scenario survival-hunger-health-cycle for the isolated bounded health-cycle row using explicit food, saturation, health recovery, and inventory checkpoints. Use --scenario survival-mob-drop for one configured mob kill, drop, pickup, and inventory increment rail. Use --scenario survival-redstone-toggle for one configured control on/off output update rail. Use --scenario survival-world-persistence-restart for one configured block mutation, controlled reload, reconnect, and post-reload observation rail. Use --scenario survival-crash-recovery-parity for one configured block mutation, forced backend stop, crash-recovery restart, reconnect, and post-crash observation rail. Use --scenario survival-block-entity-persistence-parity for one configured sign block entity, controlled reload, reconnect, and post-reload sign text observation rail. Use --scenario survival-biome-dimension-state for one client-observed dimension/world identifier rail. Use --scenario mcp-controlled-smoke for deterministic MCP receipt/checker dry-run evidence before live client driving. Use --scenario vanilla-combat-armor-reference-parity for one Paper/Valence diamond-chestplate combat reference row. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario ctf-invalid-return-drop for one contained own-base return/drop attempt with server rejection evidence. Use --scenario ctf-score-limit-win-condition for one near-limit capture that emits exactly one win/end milestone. Use --scenario ctf-simultaneous-pickup-capture-race for one bounded two-client same-flag race with one accepted transition and one rejected duplicate pickup. Use --scenario ctf-spawn-team-balance-reset for one bounded two-client team assignment, spawn/resource, and post-score reset row. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
@@ -4187,7 +4191,7 @@ fn build_client(cfg: &Config) -> Result<(), String> {
 fn ensure_client_dir_ready(cfg: &Config) -> Result<(), String> {
     if !cfg.client_dir.exists() {
         return Err(format!(
-            "Stevenarella source tree not found at {}. Keep the vendored mc/stevenarella tree present or pass --client-dir/CLIENT_DIR to another checkout.",
+            "Stevenarella source tree not found at {}. Keep the core client tree present at clients/stevenarella (or the transition stevenarella path) or pass --client-dir/CLIENT_DIR to another checkout.",
             cfg.client_dir.display()
         ));
     }
@@ -4633,25 +4637,27 @@ fn git_revision_evidence(repo: &Path, requested_rev: Option<&str>) -> GitRevisio
     )
 }
 
-fn valence_source_dir(cfg: &Config) -> PathBuf {
-    if cfg.valence_worktree.join(CARGO_MANIFEST_FILE).exists() {
-        cfg.valence_worktree.clone()
-    } else {
-        let vendored_source = cfg.valence_worktree.join(VALENCE_MONOREPO_SUBTREE_DIR);
-        if vendored_source.join(CARGO_MANIFEST_FILE).exists() {
-            vendored_source
-        } else {
-            cfg.valence_worktree.clone()
-        }
-    }
+fn valence_source_dir(cfg: &Config) -> Result<PathBuf, String> {
+    resolve_valence_source_dir(&cfg.valence_worktree)
 }
 
-fn valence_revision_dir(cfg: &Config) -> PathBuf {
+fn valence_revision_dir(cfg: &Config) -> Result<PathBuf, String> {
     if cfg.valence_worktree.exists() {
         valence_source_dir(cfg)
     } else {
-        cfg.valence_repo.clone()
+        Ok(cfg.valence_repo.clone())
     }
+}
+
+fn git_revision_evidence_unavailable(
+    requested_rev: Option<&str>,
+    diagnostic: String,
+) -> GitRevisionEvidence {
+    build_git_revision_evidence(
+        requested_rev,
+        Err(diagnostic),
+        Err(GIT_DIRTY_SKIPPED_LAYOUT_DIAGNOSTIC.to_string()),
+    )
 }
 
 fn child_revision_evidence_for_receipt(cfg: &Config) -> ChildRevisionEvidence {
@@ -4661,9 +4667,13 @@ fn child_revision_evidence_for_receipt(cfg: &Config) -> ChildRevisionEvidence {
             valence: GitRevisionEvidence::dry_run(Some(cfg.valence_rev.clone())),
         };
     }
+    let valence = match valence_revision_dir(cfg) {
+        Ok(path) => git_revision_evidence(&path, Some(&cfg.valence_rev)),
+        Err(err) => git_revision_evidence_unavailable(Some(&cfg.valence_rev), err),
+    };
     ChildRevisionEvidence {
         client: git_revision_evidence(&cfg.client_dir, None),
-        valence: git_revision_evidence(&valence_revision_dir(cfg), Some(&cfg.valence_rev)),
+        valence,
     }
 }
 
@@ -4679,7 +4689,7 @@ fn prune_stale_valence_worktrees(cfg: &Config) -> Result<(), String> {
 fn ensure_valence_repo_ready(cfg: &Config) -> Result<(), String> {
     if !cfg.valence_repo.exists() {
         return Err(format!(
-            "Valence source tree not found at {}. Keep the vendored mc/valence tree present or pass --valence-repo/VALENCE_REPO to another checkout.",
+            "Valence source tree not found at {}. Keep the core server tree present at servers/valence (or the transition valence path) or pass --valence-repo/VALENCE_REPO to another checkout.",
             cfg.valence_repo.display()
         ));
     }
@@ -4724,7 +4734,7 @@ fn start_valence_server(cfg: &Config) -> Result<ManagedServer, String> {
         cfg.valence_log.display()
     ));
     if cfg.mode == Mode::DryRun {
-        let source_dir = valence_source_dir(cfg);
+        let source_dir = valence_source_dir(cfg)?;
         log(format_args!(
             "would run Valence example from {}",
             source_dir.display()
@@ -4748,7 +4758,7 @@ fn start_valence_server(cfg: &Config) -> Result<ManagedServer, String> {
     let err_file = log_file
         .try_clone()
         .map_err(|e| format!("clone valence log handle: {e}"))?;
-    let source_dir = valence_source_dir(cfg);
+    let source_dir = valence_source_dir(cfg)?;
     let mut cmd = Command::new("cargo");
     cmd.current_dir(&source_dir)
         .arg("run")
@@ -9532,7 +9542,7 @@ mod tests {
         (VARINT_MAX_SHIFT_EXCLUSIVE / VARINT_SEGMENT_BITS) as usize + 1;
     const TEST_GIT_USER_EMAIL: &str = "mc-compat@example.invalid";
     const TEST_GIT_USER_NAME: &str = "mc-compat";
-    const TEST_STEVENARELLA_SUBTREE_DIR: &str = "mc/stevenarella";
+    const TEST_STEVENARELLA_SUBTREE_DIR: &str = "mc/clients/stevenarella";
 
     fn test_config(args: &[&str], env: &[(&str, &str)]) -> Result<Config, String> {
         let env: BTreeMap<String, String> = env
@@ -10454,7 +10464,7 @@ mod tests {
     }
 
     #[test]
-    fn git_revision_evidence_scopes_to_vendored_source_directory() {
+    fn git_revision_evidence_scopes_to_core_source_directory() {
         if !git_available() {
             return;
         }
@@ -10463,14 +10473,14 @@ mod tests {
         run_git_fixture(&root, &["config", "user.email", TEST_GIT_USER_EMAIL]);
         run_git_fixture(&root, &["config", "user.name", TEST_GIT_USER_NAME]);
         let source_dir = root.join(TEST_STEVENARELLA_SUBTREE_DIR);
-        fs::create_dir_all(&source_dir).expect("create vendored source dir");
+        fs::create_dir_all(&source_dir).expect("create core source dir");
         fs::write(
             source_dir.join(CARGO_MANIFEST_FILE),
             "[package]\nname = \"stevenarella\"\nversion = \"0.0.0\"\nedition = \"2021\"\n",
         )
-        .expect("write vendored manifest");
+        .expect("write core manifest");
         run_git_fixture(&root, &["add", TEST_STEVENARELLA_SUBTREE_DIR]);
-        run_git_fixture(&root, &["commit", "-m", "add vendored client"]);
+        run_git_fixture(&root, &["commit", "-m", "add core client"]);
         let source_commit = git_rev_parse(&root, GIT_HEAD_REV).expect("source commit resolves");
 
         fs::write(root.join("README.md"), "parent docs\n").expect("write parent docs");
@@ -10514,19 +10524,36 @@ mod tests {
         .expect("write legacy manifest");
         let mut legacy_cfg = test_config(&[], &[]).expect("default config parses");
         legacy_cfg.valence_worktree = legacy.clone();
-        assert_eq!(valence_source_dir(&legacy_cfg), legacy);
+        assert_eq!(valence_source_dir(&legacy_cfg).unwrap(), legacy);
 
-        let monorepo = root.join("monorepo-worktree");
-        let vendored = monorepo.join(VALENCE_MONOREPO_SUBTREE_DIR);
-        fs::create_dir_all(&vendored).expect("create monorepo Valence subtree");
+        let monorepo_transition = root.join("monorepo-transition-worktree");
+        let transition_source = monorepo_transition
+            .join("mc")
+            .join(layout::VALENCE_TRANSITION_REL);
+        fs::create_dir_all(&transition_source).expect("create transition Valence subtree");
         fs::write(
-            vendored.join(CARGO_MANIFEST_FILE),
+            transition_source.join(CARGO_MANIFEST_FILE),
             "[package]\nname = \"valence\"\n",
         )
-        .expect("write vendored manifest");
-        let mut monorepo_cfg = test_config(&[], &[]).expect("default config parses");
-        monorepo_cfg.valence_worktree = monorepo;
-        assert_eq!(valence_source_dir(&monorepo_cfg), vendored);
+        .expect("write transition manifest");
+        let mut transition_cfg = test_config(&[], &[]).expect("default config parses");
+        transition_cfg.valence_worktree = monorepo_transition;
+        assert_eq!(
+            valence_source_dir(&transition_cfg).unwrap(),
+            transition_source
+        );
+
+        let monorepo_role = root.join("monorepo-role-worktree");
+        let role_source = monorepo_role.join("mc").join(layout::VALENCE_ROLE_REL);
+        fs::create_dir_all(&role_source).expect("create role-based Valence subtree");
+        fs::write(
+            role_source.join(CARGO_MANIFEST_FILE),
+            "[package]\nname = \"valence\"\n",
+        )
+        .expect("write role-based manifest");
+        let mut role_cfg = test_config(&[], &[]).expect("default config parses");
+        role_cfg.valence_worktree = monorepo_role;
+        assert_eq!(valence_source_dir(&role_cfg).unwrap(), role_source);
 
         let _ = fs::remove_dir_all(&root);
     }
@@ -10702,8 +10729,14 @@ mod tests {
         let cfg = test_config(&[], &[]).expect("default config parses");
 
         assert_eq!(cfg.root, PathBuf::from("/workspace/mc"));
-        assert_eq!(cfg.client_dir, PathBuf::from("/workspace/mc/stevenarella"));
-        assert_eq!(cfg.valence_repo, PathBuf::from("/workspace/mc/valence"));
+        assert_eq!(
+            cfg.client_dir,
+            PathBuf::from("/workspace/mc/clients/stevenarella")
+        );
+        assert_eq!(
+            cfg.valence_repo,
+            PathBuf::from("/workspace/mc/servers/valence")
+        );
         assert_eq!(cfg.server_backend, ServerBackend::Valence);
         assert_eq!(cfg.server_protocol, DEFAULT_SERVER_PROTOCOL);
         assert_eq!(cfg.server_port, VALENCE_DEFAULT_SERVER_PORT);
@@ -11019,7 +11052,8 @@ mod tests {
           "client_success_patterns": ["Detected server protocol version", "Dimension type:"],
           "receipt_path": "/config/receipt.json"
         }"#;
-        let mut cfg = Config::defaults(PathBuf::from("/workspace/mc"));
+        let mut cfg = Config::defaults(PathBuf::from("/workspace/mc"))
+            .expect("default config resolves source layout");
 
         let server_port_was_set = apply_config_json(&mut cfg, config_json).expect("config applies");
 
@@ -14339,7 +14373,7 @@ RED: 1
         let err = ensure_valence_repo_ready(&cfg).unwrap_err();
 
         assert!(err.contains("Valence source tree not found"), "{err}");
-        assert!(err.contains("vendored mc/valence"), "{err}");
+        assert!(err.contains("core server tree"), "{err}");
         assert!(err.contains("--valence-repo/VALENCE_REPO"), "{err}");
     }
 
@@ -14355,7 +14389,7 @@ RED: 1
         let err = ensure_client_dir_ready(&cfg).unwrap_err();
 
         assert!(err.contains("Stevenarella source tree not found"), "{err}");
-        assert!(err.contains("vendored mc/stevenarella"), "{err}");
+        assert!(err.contains("core client tree"), "{err}");
         assert!(err.contains("--client-dir/CLIENT_DIR"), "{err}");
     }
 
