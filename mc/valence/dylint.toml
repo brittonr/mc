@@ -1,0 +1,88 @@
+# Copy into the consumer workspace root as `dylint.toml`.
+#
+# Valence runs a strict Octet burndown for the starter rollout scope. Tight
+# package scope carries the first phase; every registered lint is deny-level.
+#
+# Keep this file consumer-owned. Octet defaults stay in the lint crate;
+# workspace-specific thresholds and allowlists live here.
+#
+# For every non-default value, record three things in rollout notes:
+#   1. why the workspace differs from the default
+#   2. which crates or packages currently need the override
+#   3. what cleanup would let you remove it later
+
+[octet]
+
+# Threshold overrides
+# Keep only the fields you actively tune. Delete the rest.
+
+# Larger handlers are still being decomposed. Tighten after the rollout proves
+# the check path and hotspot owners are clear.
+# function_length_max = 90
+
+# Some coordinator or RPC paths still nest one level deeper than the default.
+# Use this only with a concrete cleanup plan.
+# nesting_max_depth = 4
+
+# Focus assertion-density checks on functions large enough to matter. Thin shell
+# wrappers should not need placeholder assertions just to pass the lint.
+# assertion_density_min_lines = 30
+# assertion_density_min_assertions = 2
+
+# Narrow allowlists
+# Keep these explicit and domain-specific. Avoid catch-all naming exceptions.
+
+# `glam::DVec3` uses the `D` prefix for double-precision vectors; Valence keeps
+# that external math type spelling at its local alias boundary.
+acronym_allowlist = ["D"]
+
+[octet.lint_levels]
+# Burndown mode: every registered Octet lint is an error in the starter scope.
+# Keep this list in sync with Octet's lint inventory when the pinned input moves.
+compound_assertion = "deny"
+function_length = "deny"
+acronym_style = "deny"
+numeric_units = "deny"
+magic_number = "deny"
+excessive_file_length = "deny"
+module_file_count = "deny"
+underscore_in_module_filename = "deny"
+non_trait_imports = "deny"
+renamed_imports = "deny"
+path_segment_repetition = "deny"
+unbounded_loop = "deny"
+compound_condition = "deny"
+verified_purity = "deny"
+unjustified_allow = "deny"
+nested_conditionals = "deny"
+assertion_density = "deny"
+multi_lock_ordering = "deny"
+explicit_defaults = "deny"
+unbounded_channel = "deny"
+unbounded_collection_growth = "deny"
+sentinel_fallback = "deny"
+usize_in_public_api = "deny"
+borrowed_argument_types = "deny"
+deref_polymorphism = "deny"
+clone_then_borrow = "deny"
+too_many_parameters = "deny"
+negated_predicate = "deny"
+bool_naming = "deny"
+ignored_result = "deny"
+drop_must_use = "deny"
+fallible_int_fallback = "deny"
+unchecked_narrowing = "deny"
+unchecked_division = "deny"
+contradictory_time = "deny"
+ambient_clock = "deny"
+catch_all_on_enum = "deny"
+platform_dependent_cast = "deny"
+float_for_currency = "deny"
+ambiguous_params = "deny"
+raw_arithmetic_overflow = "deny"
+no_unwrap = "deny"
+no_panic = "deny"
+public_unsafe_api = "deny"
+no_todo = "deny"
+unjustified_no_todo_allow = "deny"
+no_recursion = "deny"
