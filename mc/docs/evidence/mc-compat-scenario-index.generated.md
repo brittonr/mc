@@ -19,7 +19,7 @@ This bounded index is generated from `compat/config/scenario-manifest.ncl`. It r
 | survival-crafting-table | survival-crafting-table | 1 | 1 | mc-compat-valence-survival-crafting-table-dry-run | mc-compat-valence-survival-crafting-table | typed-event-ready |
 | survival-crafting-recipe-breadth | survival-crafting-recipe-breadth | 1 | 1 | mc-compat-valence-survival-crafting-recipe-breadth-dry-run | mc-compat-valence-survival-crafting-recipe-breadth | substring-fallback |
 | survival-furnace-persistence | survival-furnace-persistence | 1 | 2 | mc-compat-valence-survival-furnace-persistence-dry-run | mc-compat-valence-survival-furnace-persistence | typed-event-ready |
-| survival-furnace-smelting-breadth | survival-furnace-smelting-breadth | 1 | 1 | mc-compat-valence-survival-furnace-smelting-breadth-dry-run | mc-compat-valence-survival-furnace-smelting-breadth | substring-fallback |
+| survival-furnace-smelting-breadth | survival-furnace-smelting-breadth | 1 | 1 | mc-compat-valence-survival-furnace-smelting-breadth-dry-run | mc-compat-valence-survival-furnace-smelting-breadth | typed-event-ready |
 | survival-hunger-food | survival-hunger-food | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
 | survival-hunger-health-cycle | survival-hunger-health-cycle | 1 | 1 | mc-compat-valence-survival-hunger-health-cycle-dry-run | mc-compat-valence-survival-hunger-health-cycle | substring-fallback |
 | survival-mob-drop | survival-mob-drop | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |

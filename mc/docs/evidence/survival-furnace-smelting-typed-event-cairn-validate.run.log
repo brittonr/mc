@@ -1,0 +1,12 @@
+error (ignored): SQLite database '/home/brittonr/.cache/nix/eval-cache-v6/f708d55668fbd87dbfb8944d8fed677bfb8240964c72d572956a1d3c7eeb1d17.sqlite' is busy
+{
+  "change_issues": [],
+  "changes": 7,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 9,
+  "valid": true
+}
+exit_status=0

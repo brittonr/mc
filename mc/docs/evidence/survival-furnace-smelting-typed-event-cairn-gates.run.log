@@ -1,0 +1,66 @@
+error (ignored): SQLite database '/home/brittonr/.cache/nix/eval-cache-v6/f708d55668fbd87dbfb8944d8fed677bfb8240964c72d572956a1d3c7eeb1d17.sqlite' is busy
+{
+  "change": "survival-furnace-smelting-breadth-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "5b82a3914e5fab815b27afeeb80dfb39ff3e4ebf1e5f215fed3ca5900112ede5",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "e5205201b796171c0759b2d283e346934ff75625d31ed6985845804cc4b1ec54",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+error (ignored): SQLite database '/home/brittonr/.cache/nix/eval-cache-v6/f708d55668fbd87dbfb8944d8fed677bfb8240964c72d572956a1d3c7eeb1d17.sqlite' is busy
+{
+  "change": "survival-furnace-smelting-breadth-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "df152875a49cbeed6f70debd097f8c4a506672d3e4e5e57e96906c4be4391312",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "e3d784461d549602539ec6b22424a587ef8fc41fb09a8c31beada02c3915d40f",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "survival-furnace-smelting-breadth-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "fabd58598107b7e5b8bcee3785f833853dffd3decfacde8662e820f43922505f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "d18d347ffd094c828e0784dbef9fdb4e49915ee3ed22e9f2136929b0ea18385c",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0

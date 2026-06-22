@@ -1,0 +1,22 @@
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-furnace-smelting-breadth-typed-event-migration",
+      "kind": "archive_change",
+      "path": "./cairn/changes/survival-furnace-smelting-breadth-typed-event-migration"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-furnace-smelting-breadth-typed-event-migration",
+  "dry_run": true,
+  "input_hash": "b9dc799b509eb099c32475f71454a70de239f9f53509a26a5881db0768cf9319",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "0363fc73e026850683502eab89a0ead6d8cc70725bc7a816b90d0b51421c2e47",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "76f9e0893b4416d27a4fea207197d68977ce73cc826276fcaf123fa92bb065ef"
+}
+exit_status=0

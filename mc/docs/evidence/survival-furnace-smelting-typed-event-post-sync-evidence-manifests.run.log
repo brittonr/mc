@@ -1,0 +1,7 @@
+error (ignored): SQLite database '/home/brittonr/.cache/nix/eval-cache-v6/523ea324e3b876e90ed1d06515d9c659225cc72bc81c3e715a9101aae8797073.sqlite' is busy
+evidence manifest refresh ok: mode=refresh; passes=4; manifests=430; entries=3007; current=3007; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=4; manifest_writes=44
+this derivation will be built:
+  /nix/store/lv0l3i01jd9dnj71az1nghajr14dkwv8-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/lv0l3i01jd9dnj71az1nghajr14dkwv8-mc-compat-evidence-manifests.drv'...
+exit_status=0

@@ -1,0 +1,80 @@
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-furnace-smelting-breadth-typed-event-migration",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-survival-furnace-smelting-breadth-typed-event-migration"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-furnace-smelting-breadth-typed-event-migration",
+  "dry_run": false,
+  "input_hash": "b9dc799b509eb099c32475f71454a70de239f9f53509a26a5881db0768cf9319",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "e30ee0b5d8a81c3a3531ecf21ec998770435b91647d5f3fe934892624ebf5ca5",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-furnace-smelting-breadth-typed-event-migration/design.md"
+        },
+        {
+          "content_hash": "1feb5809d418f4dd765f18239ce1a95b39a3346dc86a5eef53324d684ca75220",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-furnace-smelting-breadth-typed-event-migration/proposal.md"
+        },
+        {
+          "content_hash": "1284a6a5a0e3b3f4caadcc5bafd37422ec6c3c12819ff3be562f53226e4091f8",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-furnace-smelting-breadth-typed-event-migration/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "9ea59241a945fc4c0255e97f9fcef6c578a9e42ca23f9fed17d77d52349135b1",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-furnace-smelting-breadth-typed-event-migration/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-furnace-smelting-breadth-typed-event-migration"
+        }
+      ],
+      "manifest_hash": "2e190740325fc3e7ec8093ccda120d800cf034a696b938ad6c6b7cd8df36aabf"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "e30ee0b5d8a81c3a3531ecf21ec998770435b91647d5f3fe934892624ebf5ca5",
+          "exists": true,
+          "path": "./cairn/changes/survival-furnace-smelting-breadth-typed-event-migration/design.md"
+        },
+        {
+          "content_hash": "1feb5809d418f4dd765f18239ce1a95b39a3346dc86a5eef53324d684ca75220",
+          "exists": true,
+          "path": "./cairn/changes/survival-furnace-smelting-breadth-typed-event-migration/proposal.md"
+        },
+        {
+          "content_hash": "1284a6a5a0e3b3f4caadcc5bafd37422ec6c3c12819ff3be562f53226e4091f8",
+          "exists": true,
+          "path": "./cairn/changes/survival-furnace-smelting-breadth-typed-event-migration/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "9ea59241a945fc4c0255e97f9fcef6c578a9e42ca23f9fed17d77d52349135b1",
+          "exists": true,
+          "path": "./cairn/changes/survival-furnace-smelting-breadth-typed-event-migration/tasks.md"
+        }
+      ],
+      "manifest_hash": "3b97da77ff7a3ad59e771ebf36cfaf34f888645a468e1ea02b18d67212ab3e6b"
+    },
+    "kind": "archive",
+    "manifest_hash": "1f7c88e28a5270c3fbce36f3cb8e88a9319feadad2f96c080a8b40f51c3f48d2"
+  },
+  "plan_hash": "11b92cf7c9110a46fc618c2f24e97e008436ab4336881e08aef83eb579c122fc",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "8210af8046c9dad10e8fed27cdbb556c93f45d021410bd06e7bda8a796ebe5c1"
+}
+exit_status=0

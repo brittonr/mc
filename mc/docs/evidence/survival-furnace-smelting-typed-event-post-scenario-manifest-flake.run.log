@@ -1,0 +1,5 @@
+this derivation will be built:
+  /nix/store/a897f0pknsibgd1x6lqg6wr1sasi9b8y-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/a897f0pknsibgd1x6lqg6wr1sasi9b8y-mc-compat-scenario-manifest.drv'...
+exit_status=0

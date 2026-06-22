@@ -1,0 +1,42 @@
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/survival-furnace-smelting-breadth-typed-event-migration/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/survival-furnace-smelting-breadth-typed-event-migration/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-furnace-smelting-breadth-typed-event-migration",
+  "delta_specs": [
+    "./cairn/changes/survival-furnace-smelting-breadth-typed-event-migration/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "435622298fd8b5b90fb7bb7a2025058e3448f1ba4b2981ed3b5839b21d685a86",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "bd33033c43461d554b7476b9d85fa7725a7c73c8bbf719fb0d3ae1da0c57dc97",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "aeb10386bfbdce373b2f4807786f6be2189020023db6bf752c438475d4ecf4ae"
+}
+r[mc_compatibility.survival_furnace_smelting_breadth_typed_event_migration.readiness] The `survival-furnace-smelting-breadth` scenario SHOULD move from waiver-backed substring fallback to `typed-event-ready` only when typed events cover the row's required client milestones, Valence smelting server milestones, forbidden surfaces, and ordered valid/invalid smelting phases.
+r[mc_compatibility.survival_furnace_smelting_breadth_typed_event_migration.readiness.complete]
+r[mc_compatibility.survival_furnace_smelting_breadth_typed_event_migration.gate] The runner MUST include `survival-furnace-smelting-breadth` in the typed-event pass/fail gate so missing or invalid structured smelting events fail before substring fallback can satisfy the row.
+r[mc_compatibility.survival_furnace_smelting_breadth_typed_event_migration.gate.missing]
+r[mc_compatibility.survival_furnace_smelting_breadth_typed_event_migration.gate.order]
+r[mc_compatibility.survival_furnace_smelting_breadth_typed_event_migration.validation] The migration MUST record reviewable evidence for runner fixtures, scenario-manifest checks, generated-surface freshness, dry-run receipt shape, evidence manifests, Cairn gates, and Cairn validation before archive.
+r[mc_compatibility.survival_furnace_smelting_breadth_typed_event_migration.validation.log]
+{
+  "change_issues": [],
+  "changes": 7,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 9,
+  "valid": true
+}
+exit_status=0
