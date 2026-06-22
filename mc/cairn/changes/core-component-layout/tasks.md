@@ -10,5 +10,5 @@
   Evidence: docs/evidence/core-component-layout-compat-boundary-2026-06-22.run.log; docs/evidence/core-component-layout-compat-boundary-2026-06-22.b3
 - [x] [depends:compat_boundary] Update README, AGENTS, architecture notes, and generated scenario index wording to describe clients, servers, and compat harnesses as core project components with documented upstream ancestry. r[mc_compatibility.core_component_layout.docs]
   Evidence: docs/evidence/core-component-layout-compat-boundary-2026-06-22.run.log; docs/evidence/core-component-layout-compat-boundary-2026-06-22.b3
-- [ ] [depends:docs] Run runner layout tests, scenario-manifest checks, generated-surface freshness checks, no-nested-git checks for core components, Cairn gates, and Cairn validation with reviewable logs. r[mc_compatibility.core_component_layout.validation]
-  Evidence: TBD
+- [x] [depends:docs] Run runner layout tests, scenario-manifest checks, generated-surface freshness checks, no-nested-git checks for core components, Cairn gates, and Cairn validation with reviewable logs. r[mc_compatibility.core_component_layout.validation]
+  Evidence: docs/evidence/core-component-layout-final-validation-2026-06-22.run.log; docs/evidence/core-component-layout-final-validation-2026-06-22.b3
