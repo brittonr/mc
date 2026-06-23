@@ -1,0 +1,71 @@
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo bench --bench main chunk_paletted_container -- --sample-count 10 --max-time 0.1 
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+   Compiling valence_server v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_server)
+   Compiling valence_inventory v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_inventory)
+   Compiling valence_network v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_network)
+   Compiling valence_world_border v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_world_border)
+   Compiling valence_player_list v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_player_list)
+   Compiling valence_scoreboard v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_scoreboard)
+   Compiling valence_weather v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_weather)
+   Compiling valence_advancement v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_advancement)
+   Compiling valence_boss_bar v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_boss_bar)
+   Compiling valence_command v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_command)
+   Compiling valence_anvil v0.1.0 (/home/brittonr/git/mc/servers/valence/crates/valence_anvil)
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+   Compiling valence_equipment v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_equipment)
+   Compiling valence v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence)
+warning: `valence_inventory` (lib) generated 1 warning
+    Finished `bench` profile [optimized] target(s) in 11.48s
+     Running benches/main.rs (/home/brittonr/.cargo-target/release/deps/main-f8e5bd73b468fe0e)
+Timer precision: 10 ns
+main                             fastest       │ slowest       │ median        │ mean          │ samples │ iters
+╰─ chunk_paletted_container                    │               │               │               │         │
+   ├─ direct_fallback_mutation   15.55 µs      │ 24.43 µs      │ 15.57 µs      │ 16.51 µs      │ 10      │ 10
+   ├─ indirect_palette_growth    17.35 µs      │ 24.24 µs      │ 17.51 µs      │ 18.2 µs       │ 10      │ 10
+   ├─ shrink_direct_to_indirect  21.37 µs      │ 26.08 µs      │ 21.4 µs       │ 22.02 µs      │ 10      │ 10
+   ╰─ single_section_read        5.068 µs      │ 5.289 µs      │ 5.088 µs      │ 5.106 µs      │ 10      │ 10
+
+exit_status=0

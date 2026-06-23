@@ -55,30 +55,8 @@ struct Section {
 
 impl Section {
     fn count_non_air_blocks(&self) -> u16 {
-        let mut count = 0;
-
-        match &self.block_states {
-            PalettedContainer::Single(s) => {
-                if !s.is_air() {
-                    count += SECTION_BLOCK_COUNT as u16;
-                }
-            }
-            PalettedContainer::Indirect(ind) => {
-                for i in 0..SECTION_BLOCK_COUNT {
-                    if !ind.get(i).is_air() {
-                        count += 1;
-                    }
-                }
-            }
-            PalettedContainer::Direct(dir) => {
-                for s in dir.as_ref() {
-                    if !s.is_air() {
-                        count += 1;
-                    }
-                }
-            }
-        }
-        count
+        let count = self.block_states.count_matching(|state| !state.is_air());
+        u16::try_from(count).expect("section block count should fit in u16")
     }
 }
 
@@ -771,5 +749,70 @@ mod tests {
         );
 
         assert!(!chunk.cached_init_packets.get_mut().is_empty());
+    }
+
+    #[test]
+    fn section_non_air_count_tracks_storage_transitions() {
+        let mut section = Section::default();
+        let section_block_count = u16::try_from(SECTION_BLOCK_COUNT).unwrap();
+
+        assert_eq!(0, section.count_non_air_blocks());
+
+        section.block_states.fill(BlockState::STONE);
+        assert_eq!(section_block_count, section.count_non_air_blocks());
+
+        assert_eq!(
+            BlockState::STONE,
+            section.block_states.set(0, BlockState::AIR)
+        );
+        assert_eq!(section_block_count - 1, section.count_non_air_blocks());
+
+        let mut direct_section = Section::default();
+        for (idx, block) in DIRECT_FALLBACK_BLOCKS.iter().copied().enumerate() {
+            direct_section.block_states.set(idx, block);
+        }
+
+        assert!(matches!(
+            direct_section.block_states,
+            PalettedContainer::Direct(_)
+        ));
+        assert_eq!(
+            direct_fallback_non_air_count(),
+            direct_section.count_non_air_blocks()
+        );
+
+        direct_section.block_states.fill(BlockState::AIR);
+        assert_eq!(0, direct_section.count_non_air_blocks());
+    }
+
+    const DIRECT_FALLBACK_BLOCK_COUNT: usize = 17;
+    const DIRECT_FALLBACK_BLOCKS: [BlockState; DIRECT_FALLBACK_BLOCK_COUNT] = [
+        BlockState::AIR,
+        BlockState::STONE,
+        BlockState::DIRT,
+        BlockState::GRASS_BLOCK,
+        BlockState::OAK_LOG,
+        BlockState::OAK_PLANKS,
+        BlockState::COBBLESTONE,
+        BlockState::SAND,
+        BlockState::GLASS,
+        BlockState::WATER,
+        BlockState::LAVA,
+        BlockState::GOLD_BLOCK,
+        BlockState::IRON_BLOCK,
+        BlockState::DIAMOND_BLOCK,
+        BlockState::EMERALD_BLOCK,
+        BlockState::REDSTONE_BLOCK,
+        BlockState::COAL_BLOCK,
+    ];
+
+    fn direct_fallback_non_air_count() -> u16 {
+        DIRECT_FALLBACK_BLOCKS
+            .iter()
+            .copied()
+            .filter(|block| !block.is_air())
+            .count()
+            .try_into()
+            .unwrap()
     }
 }

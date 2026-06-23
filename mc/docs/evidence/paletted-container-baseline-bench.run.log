@@ -1,0 +1,58 @@
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo bench --bench main chunk_paletted_container -- --sample-count 10 --max-time 0.1 
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+warning: `valence_inventory` (lib) generated 1 warning
+    Finished `bench` profile [optimized] target(s) in 0.20s
+     Running benches/main.rs (/home/brittonr/.cargo-target/release/deps/main-f8e5bd73b468fe0e)
+Timer precision: 10 ns
+main                             fastest       │ slowest       │ median        │ mean          │ samples │ iters
+╰─ chunk_paletted_container                    │               │               │               │         │
+   ├─ direct_fallback_mutation   14.9 µs       │ 26.72 µs      │ 14.95 µs      │ 16.16 µs      │ 10      │ 10
+   ├─ indirect_palette_growth    16.77 µs      │ 17.26 µs      │ 16.83 µs      │ 16.89 µs      │ 10      │ 10
+   ├─ shrink_direct_to_indirect  24.81 µs      │ 45.46 µs      │ 26.43 µs      │ 28.22 µs      │ 10      │ 10
+   ╰─ single_section_read        6.561 µs      │ 7.242 µs      │ 6.851 µs      │ 6.796 µs      │ 10      │ 10
+
+exit_status=0
