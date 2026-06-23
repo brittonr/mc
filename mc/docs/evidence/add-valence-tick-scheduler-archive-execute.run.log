@@ -1,0 +1,82 @@
+command=CAIRN_ARCHIVE_DATE=2026-06-23 nix run .#cairn -- archive add-valence-tick-scheduler --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-valence-tick-scheduler",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-23-add-valence-tick-scheduler"
+    }
+  ],
+  "blocked": false,
+  "change": "add-valence-tick-scheduler",
+  "dry_run": false,
+  "input_hash": "234b345b72a20c4d88006053b8c8c9047781c1a5a57d5fada54131abbd0bbe6d",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "89f8e2feeb37ca695bc3f1d7d7fcc297d6b13c2cf3b196bb0161cd73914cf645",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-add-valence-tick-scheduler/design.md"
+        },
+        {
+          "content_hash": "06624b79aff40cb39279b8d5b0d8d61d27fda6f202647c50f9de8bda07a86398",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-add-valence-tick-scheduler/proposal.md"
+        },
+        {
+          "content_hash": "f99734c691d43e2e8e3cf92961b601aad20b895dd18c8f35763bc022b5ca943b",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-add-valence-tick-scheduler/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "0a6b99550bc39656e47d0a5242f4025869607de3d7dab23220e0c4865a9302e4",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-add-valence-tick-scheduler/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/add-valence-tick-scheduler"
+        }
+      ],
+      "manifest_hash": "8492bcabfc492d8ea270c58b11f6aed7458b1031a22f79bec1cb46acf772cd29"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "89f8e2feeb37ca695bc3f1d7d7fcc297d6b13c2cf3b196bb0161cd73914cf645",
+          "exists": true,
+          "path": "./cairn/changes/add-valence-tick-scheduler/design.md"
+        },
+        {
+          "content_hash": "06624b79aff40cb39279b8d5b0d8d61d27fda6f202647c50f9de8bda07a86398",
+          "exists": true,
+          "path": "./cairn/changes/add-valence-tick-scheduler/proposal.md"
+        },
+        {
+          "content_hash": "f99734c691d43e2e8e3cf92961b601aad20b895dd18c8f35763bc022b5ca943b",
+          "exists": true,
+          "path": "./cairn/changes/add-valence-tick-scheduler/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "0a6b99550bc39656e47d0a5242f4025869607de3d7dab23220e0c4865a9302e4",
+          "exists": true,
+          "path": "./cairn/changes/add-valence-tick-scheduler/tasks.md"
+        }
+      ],
+      "manifest_hash": "aaa5a02a25cca75158b1fd906275852a9c21604b42ffa1eb7990b1f9721b84e5"
+    },
+    "kind": "archive",
+    "manifest_hash": "7c53daaf04a34792dcab306fc247ad7dda5abdc736a06465526b4f07fcb29f61"
+  },
+  "plan_hash": "8ca5c6cc10fb390207d5da2144a5be4c5f314de49578945124ebdaffbef0802c",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "202d31e9f87014c7817dd7a051039c1947a59c923552e692fda1aa2d9ff0532e"
+}
+
+exit_status=0

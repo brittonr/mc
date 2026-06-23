@@ -1,0 +1,110 @@
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo clippy -p valence_server --no-deps --all-targets -- -D warnings
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+    Checking valence_server v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_server)
+warning: lint `clippy::string_to_string` has been removed: `clippy::implicit_clone` covers those cases
+  |
+  = note: requested on the command line with `-W clippy::string_to_string`
+  = note: `#[warn(renamed_and_removed_lints)]` on by default
+
+error: `impl Trait` used as a function parameter
+   --> crates/valence_server/src/observability.rs:439:20
+    |
+439 |     exporter: &mut impl ObservabilityExporter,
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#impl_trait_in_params
+    = note: `-D clippy::impl-trait-in-params` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::impl_trait_in_params)]`
+help: add a type parameter
+    |
+438 | pub fn export_observability_record<{ /* Generic name */ }: ObservabilityExporter>(
+    |                                   +++++++++++++++++++++++++++++++++++++++++++++++
+
+error: this argument (3 byte) is passed by reference, but would be more efficient if passed by value (limit: 8 byte)
+   --> crates/valence_server/src/observability.rs:491:13
+    |
+491 |     config: &ObservabilityConfig,
+    |             ^^^^^^^^^^^^^^^^^^^^ help: consider passing by value instead: `ObservabilityConfig`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#trivially_copy_pass_by_ref
+    = note: `-D clippy::trivially-copy-pass-by-ref` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::trivially_copy_pass_by_ref)]`
+
+warning: `valence_server` (lib) generated 1 warning (1 duplicate)
+error: could not compile `valence_server` (lib) due to 2 previous errors; 1 warning emitted
+warning: build failed, waiting for other jobs to finish...
+error: this call to `clone` can be replaced with `std::slice::from_ref`
+   --> crates/valence_server/src/packet_compose.rs:772:61
+    |
+772 |         let plan = plan_packet_delivery(&intents, &clients, &[bundle.clone()]);
+    |                                                             ^^^^^^^^^^^^^^^^^ help: try: `std::slice::from_ref(&bundle)`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#cloned_ref_to_slice_refs
+    = note: `-D clippy::cloned-ref-to-slice-refs` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::cloned_ref_to_slice_refs)]`
+
+error: called `.get().unwrap()` on a BTreeMap
+   --> crates/valence_server/src/packet_compose.rs:922:13
+    |
+922 |             sinks.get(&first).unwrap().written,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#get_unwrap
+    = note: `-D clippy::get-unwrap` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::get_unwrap)]`
+help: using `[]` is clearer and more concise
+    |
+922 -             sinks.get(&first).unwrap().written,
+922 +             sinks[&first].written,
+    |
+
+error: `to_string()` called on a `&str`
+   --> crates/valence_server/src/packet_compose.rs:940:35
+    |
+940 |                     message: Some(BACKEND_FAILURE_MESSAGE.to_string()),
+    |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: try: `BACKEND_FAILURE_MESSAGE.to_owned()`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#str_to_string
+    = note: `-D clippy::str-to-string` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::str_to_string)]`
+
+warning: `valence_server` (lib test) generated 1 warning
+error: could not compile `valence_server` (lib test) due to 5 previous errors; 1 warning emitted
+
+exit_status=101

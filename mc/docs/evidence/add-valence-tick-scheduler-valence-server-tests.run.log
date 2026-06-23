@@ -1,0 +1,57 @@
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence_server tick_scheduler -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+   Compiling valence_server v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_server)
+    Finished `test` profile [optimized + debuginfo] target(s) in 1.26s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_server-71bc1cc27c5c81f4)
+
+running 9 tests
+test tick_scheduler::tests::cancel_removes_one_pending_item ... ok
+test tick_scheduler::tests::clear_removes_pending_work ... ok
+test tick_scheduler::tests::cancel_unknown_or_drained_handle_is_noop ... ok
+test tick_scheduler::tests::empty_queue_drains_cleanly ... ok
+test tick_scheduler::tests::due_drain_leaves_not_due_work_queued ... ok
+test tick_scheduler::tests::equal_tick_work_drains_in_insertion_order ... ok
+test tick_scheduler::tests::sequence_overflow_fails_without_mutating_queue ... ok
+test tick_scheduler::tests::server_plugin_does_not_install_tick_scheduler_by_default ... ok
+test tick_scheduler::tests::tick_scheduler_plugin_emits_due_events ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 56 filtered out; finished in 0.00s
+
+
+exit_status=0

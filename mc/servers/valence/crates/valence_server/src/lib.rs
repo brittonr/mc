@@ -37,6 +37,7 @@ pub mod status;
 #[path = "status/effect.rs"]
 pub mod status_effect;
 pub mod teleport;
+pub mod tick_scheduler;
 pub mod title;
 
 pub use bevy_app as app;

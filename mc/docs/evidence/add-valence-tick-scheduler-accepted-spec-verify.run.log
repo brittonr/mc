@@ -1,0 +1,15 @@
+command=grep -n tick_scheduler cairn/specs/valence-hyperion-integration/spec.md
+495:r[valence_hyperion_integration.tick_scheduler.scope] The integration MUST review Hyperion scheduler behavior and Valence tick/timer patterns before adding a scheduler utility.
+499:r[valence_hyperion_integration.tick_scheduler.scope.bounded]
+506:r[valence_hyperion_integration.tick_scheduler.contract] The scheduler MUST define scheduling, peeking, draining, equal-key ordering, clearing, optional cancellation, and error behavior.
+510:r[valence_hyperion_integration.tick_scheduler.contract.not_due]
+518:r[valence_hyperion_integration.tick_scheduler.core] Scheduler queue operations MUST be pure deterministic operations over explicit keys and values, with ECS systems and tick resources kept in thin shells.
+522:r[valence_hyperion_integration.tick_scheduler.core.no_time]
+530:r[valence_hyperion_integration.tick_scheduler.fixtures] Scheduler work MUST include positive and negative fixtures for queue boundaries and ordering behavior.
+534:r[valence_hyperion_integration.tick_scheduler.fixtures.empty]
+542:r[valence_hyperion_integration.tick_scheduler.wiring] Valence MAY expose the scheduler through an optional plugin or utility shell, but gameplay policy MUST remain outside the core scheduler.
+546:r[valence_hyperion_integration.tick_scheduler.wiring.disabled]
+553:r[valence_hyperion_integration.tick_scheduler.validation] Scheduler work MUST record pure scheduler tests, plugin smoke tests, example checks, and Cairn gates before archive.
+557:r[valence_hyperion_integration.tick_scheduler.validation.log]
+
+exit_status=0

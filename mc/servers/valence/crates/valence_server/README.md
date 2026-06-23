@@ -20,6 +20,14 @@ Non-claims: this is not a complete anti-cheat, not a vanilla movement legality c
 
 Prefer direct `Client::write_packet` calls when a system already targets one client, when per-client encoding state is easiest to reason about at the write site, or when normal end-of-tick flushing should stay implicit. Prefer compose when broadcast route selection, exclusions, or future proxy-compatible route intents need separate tests. Compose does not claim proxy mode, production-scale performance, broad Minecraft compatibility, or Hyperion compatibility.
 
+## Optional tick scheduler
+
+`tick_scheduler::TickScheduler<K, V>` is a deterministic utility for work keyed by explicit ticks or other ordered keys. The core is independent of Bevy, wall-clock time, async tasks, I/O, and global server state: callers schedule values, inspect the earliest item, drain due work up to an explicit key, cancel by handle, or clear the queue. Equal-key work drains in stable insertion order.
+
+`tick_scheduler::TickSchedulerPlugin<E>` is an opt-in shell for Valence apps that want scheduled values emitted as Bevy events. It registers `tick_scheduler::ServerTickScheduler<E>` and drains it against `Server::current_tick()` only when the plugin is added by user code. It is not part of `DefaultPlugins`, so existing gameplay has no timer behavior by default.
+
+Typical uses are gameplay policy owned by the caller: cooldown expiry events, delayed despawn requests, or temporary block restoration events. The scheduler does not choose durations, mutate entities, restore blocks, retry failed work, run async jobs, or claim vanilla timing parity.
+
 ## Optional cached chunk egress
 
 `ChunkLayer::enable_cached_chunk_egress()` opts a layer into keyed caching for chunk initialization packets. The default path remains uncached. Cache keys cover the chunk position, protocol version, dimension name/height/min-y, biome registry size, compression threshold, explicit light-input fingerprint, and a BLAKE3 content fingerprint.

@@ -1,0 +1,58 @@
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence example_test_server_tick_increment -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+warning: `valence_inventory` (lib) generated 1 warning
+   Compiling valence v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence)
+    Finished `test` profile [optimized + debuginfo] target(s) in 2.46s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence-5998de590ef153fc)
+
+running 1 test
+test tests::example::example_test_server_tick_increment ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 82 filtered out; finished in 0.04s
+
+
+exit_status=0

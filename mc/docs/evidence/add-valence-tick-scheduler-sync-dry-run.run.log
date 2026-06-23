@@ -1,0 +1,27 @@
+command=nix run .#cairn -- sync add-valence-tick-scheduler --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/add-valence-tick-scheduler/specs/valence-hyperion-integration/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/add-valence-tick-scheduler/specs/valence-hyperion-integration/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "add-valence-tick-scheduler",
+  "delta_specs": [
+    "./cairn/changes/add-valence-tick-scheduler/specs/valence-hyperion-integration/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "234b345b72a20c4d88006053b8c8c9047781c1a5a57d5fada54131abbd0bbe6d",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "0b3e15fcb595dfa0b7b05df837b265994b374412d772dee05ea5e50d607ff3f4",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "15375b19da96129eca56dbc31d202f0a2ce624f878fec0735ce1446e5bef1da7"
+}
+
+exit_status=0
