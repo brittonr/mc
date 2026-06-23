@@ -1351,6 +1351,33 @@
 
       checks = eachSystem (pkgs: {
         mc-compat-runner = self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner;
+        mc-cairn-policy-fresh = pkgs.runCommand "mc-cairn-policy-fresh" { } ''
+          cp -R ${./.} repo
+          chmod -R u+w repo
+          cd repo
+          ${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.cairn
+          }/bin/cairn policy export --check > policy-fresh.log
+          grep -Fq "policy fresh: cairn-policy/generated/cairn-policy.json" policy-fresh.log
+          mkdir -p "$out"
+          cp policy-fresh.log "$out/"
+        '';
+        mc-cairn-policy-stale-detects-drift = pkgs.runCommand "mc-cairn-policy-stale-detects-drift" { } ''
+          cp -R ${./.} repo
+          chmod -R u+w repo
+          cd repo
+          substituteInPlace cairn-policy/default.ncl \
+            --replace-fail 'name = "cairn-default"' 'name = "cairn-default-stale-probe"'
+          if ${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.cairn
+          }/bin/cairn policy export --check > policy-stale.out 2> policy-stale.err; then
+            echo "expected stale generated policy check to fail" >&2
+            exit 1
+          fi
+          grep -Fq "generated policy is stale: cairn-policy/generated/cairn-policy.json" policy-stale.err
+          mkdir -p "$out"
+          cp policy-stale.out policy-stale.err "$out/"
+        '';
         mc-compat-editable-app-dry-runs =
           pkgs.runCommand "mc-compat-editable-app-dry-runs" { nativeBuildInputs = [ pkgs.gnugrep ]; }
             ''

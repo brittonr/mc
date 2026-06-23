@@ -1,0 +1,102 @@
+## gate proposal
+command=nix run .#cairn -- gate proposal clarify-cairn-policy-ownership --root .
+{
+  "change": "clarify-cairn-policy-ownership",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "134720e891495fa1628a0fcf35753f3918e5e2ea5ecde2c947d788a801530358",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "6d0547e57c042498f64c2dbaffad12b1e058e73e59f876756b22102e23f11da7",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## gate design
+command=nix run .#cairn -- gate design clarify-cairn-policy-ownership --root .
+{
+  "change": "clarify-cairn-policy-ownership",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "5280a9f6a635d630f0ebab9b528210a01ee2ad0750ab1c61757b6fd8fc4b48cf",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "516ebd0e91ec0c51b28027fd6da4887da4505aa4f7cc136d450179012947cffd",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## gate tasks
+command=nix run .#cairn -- gate tasks clarify-cairn-policy-ownership --root .
+{
+  "change": "clarify-cairn-policy-ownership",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a5dce2bcb54b216b8a05f5edf75764fc51a55ea7b29a64c664937a95e8f3a67c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "e187a2d97fa086a32d39ecdac2c222872b5ea955066e637af22c14a41eb155ba",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## policy freshness
+command=nix run .#cairn -- policy export --check
+policy fresh: cairn-policy/generated/cairn-policy.json
+exit_status=0
+
+## policy fresh flake check
+command=nix build .#checks.x86_64-linux.mc-cairn-policy-fresh --no-link -L
+exit_status=0
+
+## policy stale negative flake check
+command=nix build .#checks.x86_64-linux.mc-cairn-policy-stale-detects-drift --no-link -L
+exit_status=0
+
+## cairn validate
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 34,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 36,
+  "valid": true
+}
+exit_status=0
+

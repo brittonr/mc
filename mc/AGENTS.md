@@ -32,7 +32,7 @@
 - Run mc Cairn validation/gates with the repo-pinned app from `mc/` (`nix run .#cairn -- ... --root .`). A newer sibling `/home/brittonr/git/cairn` binary can reject this repo's generated policy schema.
 - When writing `.b3` manifests through `nix develop`, redirect inside the devshell command (`nix develop ... -c bash -lc 'b3sum ... > file'`); redirecting the outer `nix develop` command captures the shell-hook banner and corrupts the manifest.
 - Task-cited `.run.log` files must contain an explicit `exit_status=0` for `tools/check_cairn_task_evidence.rs`; avoid citing the task-evidence gate log in the task whose gate writes that same file, or the checker reads the incomplete log during the run.
-- After Cairn input updates, keep `cairn-policy/generated/cairn-policy.json` schema-compatible with the pinned binary; current policy needs a disabled `steel_orchestration_policy` block.
+- After Cairn input updates, keep `cairn-policy/default.ncl`, `cairn-policy/contracts.ncl`, and `cairn-policy/generated/cairn-policy.json` schema-compatible with the pinned binary; run `nix run .#cairn -- policy export --check` or `.#checks.x86_64-linux.mc-cairn-policy-fresh`. Current policy needs disabled `steel_orchestration_policy` and explicit `probe_policy` blocks.
 
 ## Hyperion
 - Toolchain pinned in `hyperion/rust-toolchain.toml`: `nightly-2025-02-22` with `rustfmt` and `clippy`.

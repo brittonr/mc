@@ -16,6 +16,12 @@
 /mc/docs/*
 !/mc/docs/architecture.md
 
+# Keep Cairn lifecycle artifacts and generated policy inputs tracked.
+!/mc/cairn/
+!/mc/cairn/**
+!/mc/cairn-policy/
+!/mc/cairn-policy/**
+
 # Keep the core client/server component trees tracked in this repo.
 !/mc/clients/
 !/mc/clients/**

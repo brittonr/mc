@@ -407,6 +407,12 @@ cargo-octet --help
 
 The packages are also available as `.#cairn`, `.#cargo-octet`, and `.#octet`.
 
+### Cairn policy ownership
+
+Cairn lifecycle policy is owned by the pinned Cairn toolchain but checked into this workspace for deterministic validation. The source is Nickel under `cairn-policy/default.ncl` with contracts in `cairn-policy/contracts.ncl`; runtime Cairn commands consume the generated JSON at `cairn-policy/generated/cairn-policy.json` and do not evaluate Nickel.
+
+Keep `cairn-policy/` top-level so the repo-pinned `nix run .#cairn -- policy export --check` default paths continue to work. Regenerate with `nix run .#cairn -- policy export`, then run `nix run .#cairn -- policy export --check` or build `.#checks.x86_64-linux.mc-cairn-policy-fresh`. `.#checks.x86_64-linux.mc-cairn-policy-stale-detects-drift` is the negative fixture proving source drift is rejected.
+
 ## Verification
 
 ```sh
