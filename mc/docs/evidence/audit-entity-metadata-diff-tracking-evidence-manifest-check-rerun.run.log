@@ -1,0 +1,6 @@
+command=nix run .#evidence-manifest-refresh -- --check
+cwd=/home/brittonr/git/mc
+started_at=2026-06-23T12:13:07Z
+evidence manifest refresh ok: mode=check; passes=0; manifests=457; entries=3414; current=3414; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+finished_at=2026-06-23T12:13:11Z
+exit_status=0

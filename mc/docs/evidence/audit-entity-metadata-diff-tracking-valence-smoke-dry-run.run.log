@@ -1,0 +1,15 @@
+command=nix run .#mc-compat-smoke -- --dry-run --server-backend valence --scenario smoke
+cwd=/home/brittonr/git/mc
+started_at=2026-06-23T12:06:32Z
+[mc-compat] plan: build client, start Valence server, wait for protocol 758, run 1 client session plan(s) under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/clients/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] using existing Valence worktree /tmp/valence-compat-758
+[mc-compat] starting Valence 8ad9c85 example 'terrain' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-758
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 758
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'smoke' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+finished_at=2026-06-23T12:06:33Z
+exit_status=0

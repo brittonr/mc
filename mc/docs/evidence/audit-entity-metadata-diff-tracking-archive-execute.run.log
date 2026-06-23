@@ -1,0 +1,84 @@
+command=CAIRN_ARCHIVE_DATE=2026-06-23 nix run .#cairn -- archive audit-entity-metadata-diff-tracking --root . --execute
+cwd=/home/brittonr/git/mc
+started_at=2026-06-23T12:11:30Z
+{
+  "actions": [
+    {
+      "description": "move active change to archive: audit-entity-metadata-diff-tracking",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-23-audit-entity-metadata-diff-tracking"
+    }
+  ],
+  "blocked": false,
+  "change": "audit-entity-metadata-diff-tracking",
+  "dry_run": false,
+  "input_hash": "364a9357b92479fdfb45165c8a34531ab5296ea06b4745473c8e4ccea537a154",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "1aa1562e7ab59ed3ce201829583cc2e1f7f5316e54b4b3d84e9392e92b84ab19",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-audit-entity-metadata-diff-tracking/design.md"
+        },
+        {
+          "content_hash": "49b8c7bd1955ea8ee334456bfe965da11372e93f348718ea50dde61cca253064",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-audit-entity-metadata-diff-tracking/proposal.md"
+        },
+        {
+          "content_hash": "0780f67e2fab6c86dd57093dba2c0e86b1b6c68546a32aa6822e8b11d5221151",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-audit-entity-metadata-diff-tracking/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "265d95898c0c9b4ef801159e2469461b5fe67798057110106503b747982b1d20",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-audit-entity-metadata-diff-tracking/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/audit-entity-metadata-diff-tracking"
+        }
+      ],
+      "manifest_hash": "91df421ebb4412137f6c06beb0844c2fac245b5f43c0b85c279d81822bb4b5c4"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "1aa1562e7ab59ed3ce201829583cc2e1f7f5316e54b4b3d84e9392e92b84ab19",
+          "exists": true,
+          "path": "./cairn/changes/audit-entity-metadata-diff-tracking/design.md"
+        },
+        {
+          "content_hash": "49b8c7bd1955ea8ee334456bfe965da11372e93f348718ea50dde61cca253064",
+          "exists": true,
+          "path": "./cairn/changes/audit-entity-metadata-diff-tracking/proposal.md"
+        },
+        {
+          "content_hash": "0780f67e2fab6c86dd57093dba2c0e86b1b6c68546a32aa6822e8b11d5221151",
+          "exists": true,
+          "path": "./cairn/changes/audit-entity-metadata-diff-tracking/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "265d95898c0c9b4ef801159e2469461b5fe67798057110106503b747982b1d20",
+          "exists": true,
+          "path": "./cairn/changes/audit-entity-metadata-diff-tracking/tasks.md"
+        }
+      ],
+      "manifest_hash": "be87cc117bfd88ae0b7e1f5414f82947e16788e0ea610f1024f609214ac92034"
+    },
+    "kind": "archive",
+    "manifest_hash": "2442fadca367a35077e9826eabf5482c6d57aecf3f3985f69f31ff7b9c8e0fde"
+  },
+  "plan_hash": "ae258f6e690758f129b975fe6b743ca24975b1e28668494051f636118fdf6654",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "ed984187bf675edf869290593dcf5583ed946cbdb2097a0678a77529d455ac10"
+}
+finished_at=2026-06-23T12:11:30Z
+exit_status=0

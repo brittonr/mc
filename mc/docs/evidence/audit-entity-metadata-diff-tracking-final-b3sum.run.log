@@ -1,0 +1,9 @@
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c bash -lc 'b3sum final evidence > docs/evidence/audit-entity-metadata-diff-tracking-validation.b3'
+cwd=/home/brittonr/git/mc
+started_at=2026-06-23T12:12:06Z
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+finished_at=2026-06-23T12:12:10Z
+exit_status=0

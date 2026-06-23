@@ -589,3 +589,40 @@ impl Decode<'_> for OptionalInt {
         }))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use bevy_app::{App, Update};
+
+    const DESPAWNED_ENTITY_ID: i32 = 42;
+    const DESPAWNED_ENTITY_KIND: i32 = 1;
+
+    #[test]
+    fn despawned_entities_are_removed_from_manager() {
+        let mut app = App::new();
+        app.insert_resource(EntityManager::new())
+            .add_systems(Update, remove_despawned_from_manager);
+        let entity = app
+            .world_mut()
+            .spawn((
+                EntityKind::new(DESPAWNED_ENTITY_KIND),
+                EntityId(DESPAWNED_ENTITY_ID),
+                Despawned,
+            ))
+            .id();
+        app.world_mut()
+            .resource_mut::<EntityManager>()
+            .id_to_entity
+            .insert(DESPAWNED_ENTITY_ID, entity);
+
+        app.update();
+
+        assert_eq!(
+            app.world()
+                .resource::<EntityManager>()
+                .get_by_id(DESPAWNED_ENTITY_ID),
+            None
+        );
+    }
+}

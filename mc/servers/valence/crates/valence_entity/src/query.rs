@@ -205,3 +205,69 @@ impl UpdateEntityQueryItem<'_> {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use uuid::Uuid;
+    use valence_protocol::{Encode, Packet};
+
+    const INIT_PACKET_ENTITY_ID: i32 = 123;
+    const INIT_METADATA_INDEX: u8 = 0;
+    const INIT_METADATA_TYPE_ID: u8 = 0;
+    const INIT_METADATA_VALUE: u8 = 1;
+
+    #[derive(Default)]
+    struct PacketNameWriter {
+        names: Vec<&'static str>,
+    }
+
+    impl WritePacket for PacketNameWriter {
+        fn write_packet_fallible<P>(&mut self, _packet: &P) -> anyhow::Result<()>
+        where
+            P: Packet + Encode,
+        {
+            self.names.push(P::NAME);
+            Ok(())
+        }
+
+        fn write_packet_bytes(&mut self, _bytes: &[u8]) {}
+    }
+
+    #[test]
+    fn init_packets_send_spawn_before_metadata() {
+        let entity_id = EntityId(INIT_PACKET_ENTITY_ID);
+        let uuid = UniqueId(Uuid::nil());
+        let kind = EntityKind::ITEM;
+        let look = Look::default();
+        let head_yaw = HeadYaw::default();
+        let on_ground = OnGround::default();
+        let object_data = ObjectData::default();
+        let velocity = Velocity::default();
+        let mut tracked_data = TrackedData::default();
+        tracked_data.insert_init_value(
+            INIT_METADATA_INDEX,
+            INIT_METADATA_TYPE_ID,
+            INIT_METADATA_VALUE,
+        );
+        let init_item = EntityInitQueryItem {
+            entity_id: &entity_id,
+            uuid: &uuid,
+            kind: &kind,
+            look: &look,
+            head_yaw: &head_yaw,
+            on_ground: &on_ground,
+            object_data: &object_data,
+            velocity: &velocity,
+            tracked_data: &tracked_data,
+        };
+        let mut writer = PacketNameWriter::default();
+
+        init_item.write_init_packets(DVec3::ZERO, &mut writer);
+
+        assert_eq!(
+            writer.names,
+            [EntitySpawnS2c::NAME, EntityTrackerUpdateS2c::NAME]
+        );
+    }
+}

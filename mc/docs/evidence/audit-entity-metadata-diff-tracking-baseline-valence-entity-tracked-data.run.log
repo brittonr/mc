@@ -1,0 +1,162 @@
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence_entity tracked_data -- --nocapture
+cwd=/home/brittonr/git/mc/servers/valence
+started_at=2026-06-23T11:56:41Z
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+   Compiling libc v0.2.185
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+   Compiling getrandom v0.3.4
+   Compiling getrandom v0.2.17
+   Compiling ahash v0.8.12
+   Compiling rand_core v0.6.4
+   Compiling rand_chacha v0.3.1
+   Compiling hashbrown v0.14.5
+   Compiling rand v0.8.5
+   Compiling bevy_utils v0.14.2
+   Compiling bevy_ecs v0.14.2
+   Compiling bevy_app v0.14.2
+   Compiling valence_protocol v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_protocol)
+   Compiling valence_server_common v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_server_common)
+   Compiling valence_entity v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_entity)
+error[E0599]: no function or associated item named `new_v4` found for struct `uuid::Uuid` in the current scope
+   --> crates/valence_entity/src/attributes.rs:442:30
+    |
+442 |         let add_uuid = Uuid::new_v4();
+    |                              ^^^^^^ function or associated item not found in `uuid::Uuid`
+    |
+note: if you're trying to build a new `uuid::Uuid` consider using one of the following associated functions:
+      uuid::builder::<impl uuid::Uuid>::nil
+      uuid::builder::<impl uuid::Uuid>::max
+      uuid::builder::<impl uuid::Uuid>::from_fields
+      uuid::builder::<impl uuid::Uuid>::from_fields_le
+      and 10 others
+   --> /home/brittonr/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/uuid-1.23.0/src/builder.rs:72:5
+    |
+ 72 |     pub const fn nil() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+ 98 |     pub const fn max() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+122 |     pub const fn from_fields(d1: u32, d2: u16, d3: u16, d4: &[u8; 8]) -> Uuid {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+168 |     pub const fn from_fields_le(d1: u32, d2: u16, d3: u16, d4: &[u8; 8]) -> Uuid {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `new_v4` found for struct `uuid::Uuid` in the current scope
+   --> crates/valence_entity/src/attributes.rs:448:19
+    |
+448 |             Uuid::new_v4(),
+    |                   ^^^^^^ function or associated item not found in `uuid::Uuid`
+    |
+note: if you're trying to build a new `uuid::Uuid` consider using one of the following associated functions:
+      uuid::builder::<impl uuid::Uuid>::nil
+      uuid::builder::<impl uuid::Uuid>::max
+      uuid::builder::<impl uuid::Uuid>::from_fields
+      uuid::builder::<impl uuid::Uuid>::from_fields_le
+      and 10 others
+   --> /home/brittonr/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/uuid-1.23.0/src/builder.rs:72:5
+    |
+ 72 |     pub const fn nil() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+ 98 |     pub const fn max() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+122 |     pub const fn from_fields(d1: u32, d2: u16, d3: u16, d4: &[u8; 8]) -> Uuid {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+168 |     pub const fn from_fields_le(d1: u32, d2: u16, d3: u16, d4: &[u8; 8]) -> Uuid {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `new_v4` found for struct `uuid::Uuid` in the current scope
+   --> crates/valence_entity/src/attributes.rs:453:19
+    |
+453 |             Uuid::new_v4(),
+    |                   ^^^^^^ function or associated item not found in `uuid::Uuid`
+    |
+note: if you're trying to build a new `uuid::Uuid` consider using one of the following associated functions:
+      uuid::builder::<impl uuid::Uuid>::nil
+      uuid::builder::<impl uuid::Uuid>::max
+      uuid::builder::<impl uuid::Uuid>::from_fields
+      uuid::builder::<impl uuid::Uuid>::from_fields_le
+      and 10 others
+   --> /home/brittonr/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/uuid-1.23.0/src/builder.rs:72:5
+    |
+ 72 |     pub const fn nil() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+ 98 |     pub const fn max() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+122 |     pub const fn from_fields(d1: u32, d2: u16, d3: u16, d4: &[u8; 8]) -> Uuid {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+168 |     pub const fn from_fields_le(d1: u32, d2: u16, d3: u16, d4: &[u8; 8]) -> Uuid {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `new_v4` found for struct `uuid::Uuid` in the current scope
+   --> crates/valence_entity/src/attributes.rs:458:19
+    |
+458 |             Uuid::new_v4(),
+    |                   ^^^^^^ function or associated item not found in `uuid::Uuid`
+    |
+note: if you're trying to build a new `uuid::Uuid` consider using one of the following associated functions:
+      uuid::builder::<impl uuid::Uuid>::nil
+      uuid::builder::<impl uuid::Uuid>::max
+      uuid::builder::<impl uuid::Uuid>::from_fields
+      uuid::builder::<impl uuid::Uuid>::from_fields_le
+      and 10 others
+   --> /home/brittonr/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/uuid-1.23.0/src/builder.rs:72:5
+    |
+ 72 |     pub const fn nil() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+ 98 |     pub const fn max() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+122 |     pub const fn from_fields(d1: u32, d2: u16, d3: u16, d4: &[u8; 8]) -> Uuid {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+168 |     pub const fn from_fields_le(d1: u32, d2: u16, d3: u16, d4: &[u8; 8]) -> Uuid {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `valence_entity` (lib test) due to 4 previous errors
+finished_at=2026-06-23T11:56:59Z
+exit_status=101

@@ -437,38 +437,54 @@ impl TrackedEntityAttributes {
 mod tests {
     use super::*;
 
+    const ADD_MODIFIER_UUID: u128 = 0x0000_0000_0000_0000_0000_0000_0000_0001;
+    const FIRST_MULTIPLY_BASE_MODIFIER_UUID: u128 = 0x0000_0000_0000_0000_0000_0000_0000_0002;
+    const SECOND_MULTIPLY_BASE_MODIFIER_UUID: u128 = 0x0000_0000_0000_0000_0000_0000_0000_0003;
+    const MULTIPLY_TOTAL_MODIFIER_UUID: u128 = 0x0000_0000_0000_0000_0000_0000_0000_0004;
+    const BASE_HEALTH: f64 = 20.0;
+    const ADD_MODIFIER_AMOUNT: f64 = 10.0;
+    const FIRST_MULTIPLY_BASE_AMOUNT: f64 = 0.2;
+    const SECOND_MULTIPLY_BASE_AMOUNT: f64 = 0.2;
+    const MULTIPLY_TOTAL_AMOUNT: f64 = 0.5;
+    const COMPUTED_WITH_ADD_MODIFIER: f64 = 63.0;
+    const COMPUTED_AFTER_ADD_REMOVAL: f64 = 42.0;
+
     #[test]
     fn test_compute_value() {
-        let add_uuid = Uuid::new_v4();
+        let add_uuid = Uuid::from_u128(ADD_MODIFIER_UUID);
         let mut attributes = EntityAttributes::new();
-        attributes.set_base_value(EntityAttribute::GenericMaxHealth, 20.0);
-        attributes.set_add_modifier(EntityAttribute::GenericMaxHealth, add_uuid, 10.0);
-        attributes.set_multiply_base_modifier(
+        attributes.set_base_value(EntityAttribute::GenericMaxHealth, BASE_HEALTH);
+        attributes.set_add_modifier(
             EntityAttribute::GenericMaxHealth,
-            Uuid::new_v4(),
-            0.2,
+            add_uuid,
+            ADD_MODIFIER_AMOUNT,
         );
         attributes.set_multiply_base_modifier(
             EntityAttribute::GenericMaxHealth,
-            Uuid::new_v4(),
-            0.2,
+            Uuid::from_u128(FIRST_MULTIPLY_BASE_MODIFIER_UUID),
+            FIRST_MULTIPLY_BASE_AMOUNT,
+        );
+        attributes.set_multiply_base_modifier(
+            EntityAttribute::GenericMaxHealth,
+            Uuid::from_u128(SECOND_MULTIPLY_BASE_MODIFIER_UUID),
+            SECOND_MULTIPLY_BASE_AMOUNT,
         );
         attributes.set_multiply_total_modifier(
             EntityAttribute::GenericMaxHealth,
-            Uuid::new_v4(),
-            0.5,
+            Uuid::from_u128(MULTIPLY_TOTAL_MODIFIER_UUID),
+            MULTIPLY_TOTAL_AMOUNT,
         );
 
         assert_eq!(
             attributes.get_compute_value(EntityAttribute::GenericMaxHealth),
-            Some(63.0) // ((20 + 10) * (1 + 0.2 + 0.2)) * (1 + 0.5)
+            Some(COMPUTED_WITH_ADD_MODIFIER)
         );
 
         attributes.remove_modifier(EntityAttribute::GenericMaxHealth, add_uuid);
 
         assert_eq!(
             attributes.get_compute_value(EntityAttribute::GenericMaxHealth),
-            Some(42.0) // ((20) * (1 + 0.2 + 0.2)) * (1 + 0.5)
+            Some(COMPUTED_AFTER_ADD_REMOVAL)
         );
     }
 }

@@ -1,0 +1,26 @@
+command=nix run .#cairn -- gate tasks audit-entity-metadata-diff-tracking --root .
+cwd=/home/brittonr/git/mc
+started_at=2026-06-23T12:09:33Z
+{
+  "change": "audit-entity-metadata-diff-tracking",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "10d8aac8c2b16d7d8bdc498cd3921ed4e692f8293a4705a2f8e5fb40fb748030",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "5f8a1d37bbdb32f91cb29b7d5d98000c6b5af7ca4663a91647acf5627131bcb9",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+finished_at=2026-06-23T12:09:33Z
+exit_status=0

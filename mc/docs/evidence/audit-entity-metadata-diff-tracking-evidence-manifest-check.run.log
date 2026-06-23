@@ -1,0 +1,11 @@
+command=nix run .#evidence-manifest-refresh -- --check
+cwd=/home/brittonr/git/mc
+started_at=2026-06-23T12:12:40Z
+evidence manifest refresh failed: docs/evidence/add-anticheat-statistics-plugin.b3:20: stale digest for cairn/specs/valence-hyperion-integration/spec.md: expected 13353a16b7ee850ac186d8457049f2cabc2aacf7d7a51f1f7657060071116c3d, found eb8f2c2322e8ae937f4aa204772341d9404d83b5822da6e1e072d86680de1271
+evidence manifest refresh failed: docs/evidence/add-hyperion-derived-load-tools.b3:1: stale digest for cairn/specs/valence-hyperion-integration/spec.md: expected 13353a16b7ee850ac186d8457049f2cabc2aacf7d7a51f1f7657060071116c3d, found eb8f2c2322e8ae937f4aa204772341d9404d83b5822da6e1e072d86680de1271
+evidence manifest refresh failed: docs/evidence/add-observability-profiling-hooks-2026-06-23.b3:5: stale digest for cairn/specs/valence-hyperion-integration/spec.md: expected 13353a16b7ee850ac186d8457049f2cabc2aacf7d7a51f1f7657060071116c3d, found eb8f2c2322e8ae937f4aa204772341d9404d83b5822da6e1e072d86680de1271
+evidence manifest refresh failed: docs/evidence/add-valence-tick-scheduler-validation.b3:4: stale digest for cairn/specs/valence-hyperion-integration/spec.md: expected 13353a16b7ee850ac186d8457049f2cabc2aacf7d7a51f1f7657060071116c3d, found eb8f2c2322e8ae937f4aa204772341d9404d83b5822da6e1e072d86680de1271
+evidence manifest refresh failed: docs/evidence/hyperion-integration-boundaries-2026-06-22.b3:5: stale digest for cairn/specs/valence-hyperion-integration/spec.md: expected 13353a16b7ee850ac186d8457049f2cabc2aacf7d7a51f1f7657060071116c3d, found eb8f2c2322e8ae937f4aa204772341d9404d83b5822da6e1e072d86680de1271
+evidence manifest refresh failed: docs/evidence/valence-packet-compose-api-2026-06-23.b3:5: stale digest for cairn/specs/valence-hyperion-integration/spec.md: expected 13353a16b7ee850ac186d8457049f2cabc2aacf7d7a51f1f7657060071116c3d, found eb8f2c2322e8ae937f4aa204772341d9404d83b5822da6e1e072d86680de1271
+finished_at=2026-06-23T12:12:43Z
+exit_status=1

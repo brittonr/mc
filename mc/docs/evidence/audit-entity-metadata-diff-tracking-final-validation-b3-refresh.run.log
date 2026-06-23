@@ -1,0 +1,20 @@
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c bash -lc
+  {
+    printf "%s\0" cairn/archive/2026-06-23-audit-entity-metadata-diff-tracking/tasks.md
+    printf "%s\0" cairn/specs/valence-hyperion-integration/spec.md
+    find docs/evidence -maxdepth 1 -type f -name "audit-entity-metadata-diff-tracking*" \
+      ! -name "audit-entity-metadata-diff-tracking-validation.b3" \
+      ! -name "audit-entity-metadata-diff-tracking-b3sum.run.log" \
+      ! -name "audit-entity-metadata-diff-tracking-final-b3sum.run.log" \
+      ! -name "audit-entity-metadata-diff-tracking-final-validation-b3-refresh.run.log" \
+      -print0 | sort -z
+  } | xargs -0 b3sum > docs/evidence/audit-entity-metadata-diff-tracking-validation.b3
+
+cwd=/home/brittonr/git/mc
+started_at=2026-06-23T12:18:17Z
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+finished_at=2026-06-23T12:18:21Z
+exit_status=0

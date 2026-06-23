@@ -1,0 +1,10 @@
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c bash -lc 'rustc tools/check_cairn_task_evidence.rs ... && target/audit-entity-metadata-diff-tracking/check_cairn_task_evidence cairn/changes/audit-entity-metadata-diff-tracking/tasks.md'
+cwd=/home/brittonr/git/mc
+started_at=2026-06-23T12:09:13Z
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+task evidence gate passed: 6 completed tasks checked across 1 task files
+finished_at=2026-06-23T12:09:17Z
+exit_status=0
