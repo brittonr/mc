@@ -1,0 +1,16 @@
+# introduce-valence-proxy-broadcast-backend post-archive validate
+timestamp=2026-06-23
+cwd=/home/brittonr/git/mc
+command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 11,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 15,
+  "valid": true
+}
+command_exit_status validate=0
+exit_status=0

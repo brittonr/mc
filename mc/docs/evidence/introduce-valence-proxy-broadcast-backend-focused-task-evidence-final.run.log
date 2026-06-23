@@ -1,0 +1,13 @@
+# introduce-valence-proxy-broadcast-backend focused archived task-evidence gate
+timestamp=2026-06-23
+cwd=/home/brittonr/git/mc
+command: nix develop --no-update-lock-file /home/brittonr/git/mc -c rustc tools/check_cairn_task_evidence.rs -o target/check_cairn_task_evidence-focused-final
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+command_exit_status rustc=0
+command: target/check_cairn_task_evidence-focused-final cairn/archive/2026-06-23-introduce-valence-proxy-broadcast-backend/tasks.md
+task evidence gate passed: 6 completed tasks checked across 1 task files
+command_exit_status focused_task_evidence=0
+exit_status=0

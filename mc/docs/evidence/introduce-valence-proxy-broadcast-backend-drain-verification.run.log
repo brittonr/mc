@@ -1,0 +1,257 @@
+# introduce-valence-proxy-broadcast-backend drain verification
+timestamp=2026-06-23
+cwd=/home/brittonr/git/mc
+command: nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence_network proxy_broadcast -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.21s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_network-74765dc8689cf660)
+
+running 7 tests
+test proxy_broadcast::tests::state_reducers_reject_invalid_positions_unknown_channels_and_duplicate_streams ... ok
+test proxy_broadcast::tests::global_local_channel_and_unicast_routes_are_deterministic ... ok
+test proxy_broadcast::tests::malformed_unknown_and_backpressure_messages_are_rejected ... ok
+test proxy_broadcast::tests::state_reducers_handle_lifecycle_subscription_position_and_shutdown ... ok
+test proxy_broadcast::tests::proxy_flush_shell_reports_disconnected_streams_and_backpressure ... ok
+test proxy_broadcast::tests::invalid_visibility_state_fails_closed_before_delivery ... ok
+test proxy_broadcast::tests::optional_backend_plugin_is_disabled_until_enabled_by_application ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 0.00s
+
+command_exit_status valence_network_proxy_broadcast_tests=0
+command: nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence_network status_response_resource_tests -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.15s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_network-74765dc8689cf660)
+
+running 2 tests
+test status_response_resource_tests::configured_status_response_resource_is_stable ... ok
+test status_response_resource_tests::default_status_response_resource_matches_existing_defaults ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 24 filtered out; finished in 0.00s
+
+command_exit_status valence_network_status_tests=0
+command: nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence_server packet_compose -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.15s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_server-71bc1cc27c5c81f4)
+
+running 11 tests
+test packet_compose::tests::missing_bundle_reports_flush_failure ... ok
+test packet_compose::tests::helper_imports_keep_btree_set_visible_for_public_examples ... ok
+test packet_compose::tests::invalid_route_targets_are_reported_without_deliveries ... ok
+test packet_compose::tests::non_finite_client_position_reports_local_route_failure ... ok
+test packet_compose::tests::global_route_applies_exclusions_and_preserves_bundle_order ... ok
+test packet_compose::tests::route_resolution_supports_unicast_local_and_group_recipients ... ok
+test packet_compose::tests::exclusions_can_remove_every_group_recipient_without_error ... ok
+test packet_compose::tests::invalid_local_route_inputs_fail_closed ... ok
+test packet_compose::tests::duplicate_clients_are_reported_as_input_failures ... ok
+test packet_compose::tests::direct_flush_reports_closed_clients_and_backend_failures ... ok
+test packet_compose::tests::encode_failure_returns_structured_error_and_keeps_bundle_empty ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 61 filtered out; finished in 0.00s
+
+command_exit_status valence_server_packet_compose_tests=0
+command: nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo fmt --package valence_network -- --check
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+command_exit_status valence_network_fmt=0
+command: nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo clippy -p valence_network --no-deps --all-targets -- -D warnings
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+   Compiling valence_lang v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_lang)
+    Checking valence_protocol v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_protocol)
+    Checking valence_server_common v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_server_common)
+    Checking valence_entity v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_entity)
+    Checking valence_registry v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_registry)
+    Checking valence_server v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_server)
+    Checking valence_network v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_network)
+warning: lint `clippy::string_to_string` has been removed: `clippy::implicit_clone` covers those cases
+  |
+  = note: requested on the command line with `-W clippy::string_to_string`
+  = note: `#[warn(renamed_and_removed_lints)]` on by default
+
+warning: `valence_network` (lib) generated 1 warning
+warning: `valence_network` (lib test) generated 1 warning (1 duplicate)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 9.40s
+command_exit_status valence_network_clippy=0
+command: nix run .#valence -- --dry-run
+repo=/home/brittonr/git/mc/servers/valence
+example=ctf
+target_dir=/home/brittonr/git/mc/target/nix-run-valence
+cd /home/brittonr/git/mc/servers/valence && cargo run --example ctf --
+command_exit_status valence_dry_run=0
+command: nix run .#mc-compat-smoke -- --dry-run --server-backend valence --scenario smoke
+[mc-compat] plan: build client, start Valence server, wait for protocol 758, run 1 client session plan(s) under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/clients/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] using existing Valence worktree /tmp/valence-compat-758
+[mc-compat] starting Valence 8ad9c85 example 'terrain' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-758
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 758
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'smoke' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+command_exit_status mc_compat_valence_smoke_dry_run=0
+command: nix develop --no-update-lock-file /home/brittonr/git/mc -c rustc tools/check_cairn_task_evidence.rs -o /home/brittonr/git/mc/target/check_cairn_task_evidence-focused
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+command_exit_status focused_task_evidence_rustc=0
+command: /home/brittonr/git/mc/target/check_cairn_task_evidence-focused cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md
+task evidence gate passed: 6 completed tasks checked across 1 task files
+command_exit_status focused_task_evidence=0
+exit_status=0

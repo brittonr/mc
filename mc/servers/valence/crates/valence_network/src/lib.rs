@@ -4,6 +4,7 @@ mod byte_channel;
 mod connect;
 mod legacy_ping;
 mod packet_io;
+pub mod proxy_broadcast;
 
 use std::borrow::Cow;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr, SocketAddrV4};

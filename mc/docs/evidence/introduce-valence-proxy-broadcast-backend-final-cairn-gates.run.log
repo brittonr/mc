@@ -1,0 +1,85 @@
+# introduce-valence-proxy-broadcast-backend final Cairn gates
+timestamp=2026-06-23
+cwd=/home/brittonr/git/mc
+command: nix run .#cairn -- gate proposal introduce-valence-proxy-broadcast-backend --root .
+{
+  "change": "introduce-valence-proxy-broadcast-backend",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "10e05d9055f9c84c14b1d899f076a36fe88a16d1c1668c40f322677f7747a073",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "91310ddfbaedc188be963593708cbb9341cc182a3768b8d677b04247ad7964ea",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status gate_proposal=0
+command: nix run .#cairn -- gate design introduce-valence-proxy-broadcast-backend --root .
+{
+  "change": "introduce-valence-proxy-broadcast-backend",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "63883038619b41b40eb863f29e438e4b508d95f970971ea28b7406d73a91e2c9",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "20012a6449df312ab3fb0857e8bffcc0bec0cfccca252c0bcb3a57bd38129df5",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status gate_design=0
+command: nix run .#cairn -- gate tasks introduce-valence-proxy-broadcast-backend --root .
+{
+  "change": "introduce-valence-proxy-broadcast-backend",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "3ace9ac64dcc19631cd62ff376307cfcb27cb970b11289ae4a9f65e300c0e331",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "bbb7eb0fa98d1cfd9d02d438c6a85f3172950cb27570a9e6365cf3070c9146de",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status gate_tasks=0
+command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 18,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 22,
+  "valid": true
+}
+command_exit_status validate=0
+exit_status=0

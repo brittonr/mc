@@ -1,0 +1,7 @@
+# introduce-valence-proxy-broadcast-backend evidence manifest refresh
+timestamp=2026-06-23
+cwd=/home/brittonr/git/mc
+command: nix run .#evidence-manifest-refresh -- --refresh
+evidence manifest refresh ok: mode=refresh; passes=5; manifests=468; entries=3683; current=3683; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=5; manifest_writes=97
+command_exit_status evidence_manifest_refresh=0
+exit_status=0

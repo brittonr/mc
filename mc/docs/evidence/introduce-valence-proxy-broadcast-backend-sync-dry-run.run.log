@@ -1,0 +1,30 @@
+# introduce-valence-proxy-broadcast-backend sync dry-run
+timestamp=2026-06-23
+cwd=/home/brittonr/git/mc
+command: nix run .#cairn -- sync introduce-valence-proxy-broadcast-backend --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/introduce-valence-proxy-broadcast-backend/specs/valence-hyperion-integration/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/introduce-valence-proxy-broadcast-backend/specs/valence-hyperion-integration/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "introduce-valence-proxy-broadcast-backend",
+  "delta_specs": [
+    "./cairn/changes/introduce-valence-proxy-broadcast-backend/specs/valence-hyperion-integration/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "57d53586e16493b2580d0f5482f644a57a91cf18246d05b25e0689dce52ed0af",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "c992e71c172c2b9f8e7ada43e66ff8c0137c237e63f0e6725c668ee2c49330f2",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "143678898948f743db3d383d64066cd1b0eb8275265ea7184cf584c1006a2cab"
+}
+command_exit_status sync_dry_run=0
+exit_status=0
