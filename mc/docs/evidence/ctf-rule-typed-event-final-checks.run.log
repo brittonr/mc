@@ -1,0 +1,28 @@
+# CTF rule typed-event final checks
+started_at=2026-06-23T00:54:37Z
+## focused_manifest_check
+command=nix run .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=435; entries=3141; current=3141; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+focused_manifest_check_exit_status=0
+## task_evidence
+command=nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+this derivation will be built:
+  /nix/store/imzx5w5lklgrgiz5dsizq8j9043cdzgl-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/imzx5w5lklgrgiz5dsizq8j9043cdzgl-mc-compat-cairn-task-evidence.drv'...
+task_evidence_exit_status=0
+## cairn_validate
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+cairn_validate_exit_status=0
+finished_at=2026-06-23T00:54:46Z
+exit_status=0

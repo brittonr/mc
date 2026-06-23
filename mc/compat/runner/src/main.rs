@@ -3825,6 +3825,23 @@ fn typed_event_oracle_contributes_to_pass_fail(scenario: Scenario) -> bool {
             | Scenario::SurvivalContainerBlockEntityBreadth
             | Scenario::SurvivalBiomeDimensionTravel
             | Scenario::SurvivalSignEditingLive
+            | Scenario::FlagScoreRepeat
+            | Scenario::BlueFlagScore
+            | Scenario::CombatDamage
+            | Scenario::CombatKnockback
+            | Scenario::ArmorEquipmentMitigation
+            | Scenario::EquipmentUpdateObservation
+            | Scenario::ProjectileHit
+            | Scenario::ProjectileDamageAttribution
+            | Scenario::FlagCarrierDeathReturn
+            | Scenario::ReconnectFlagState
+            | Scenario::CtfInvalidPickupOwnership
+            | Scenario::CtfInvalidReturnDrop
+            | Scenario::CtfScoreLimitWinCondition
+            | Scenario::CtfSimultaneousPickupCaptureRace
+            | Scenario::CtfSpawnTeamBalanceReset
+            | Scenario::ReconnectFlagScore
+            | Scenario::MultiClientLoadScore
     )
 }
 
@@ -4412,6 +4429,135 @@ fn typed_event_ordered_edges_for_scenario(scenario: Scenario) -> Vec<(&'static s
                 "server_survival_sign_editing_update_accepted",
                 "server_survival_sign_editing_state",
             ),
+        ],
+        Scenario::FlagScoreRepeat => vec![
+            ("team_red", "flag_pickup"),
+            ("flag_pickup", "flag_capture"),
+            ("flag_capture", "score_red_1"),
+            ("score_red_1", "score_red_2"),
+        ],
+        Scenario::BlueFlagScore => vec![
+            ("team_blue", "flag_pickup"),
+            ("flag_pickup", "flag_capture"),
+            ("flag_capture", "score_blue_1"),
+        ],
+        Scenario::CombatDamage => vec![
+            ("remote_player_spawn", "combat_attack_sent"),
+            ("combat_attack_sent", "combat_health_update"),
+            ("server_client_a_seen", "server_combat_damage"),
+        ],
+        Scenario::CombatKnockback => vec![
+            ("remote_player_spawn", "combat_attack_sent"),
+            ("combat_attack_sent", "combat_health_update"),
+            ("combat_health_update", "combat_velocity_update"),
+            ("server_combat_damage", "server_combat_knockback"),
+        ],
+        Scenario::ArmorEquipmentMitigation => vec![
+            ("armor_inventory_slot", "combat_attack_sent"),
+            ("combat_attack_sent", "combat_health_update"),
+            ("server_equipment_state", "server_combat_damage"),
+            ("server_combat_damage", "server_armor_mitigation"),
+        ],
+        Scenario::EquipmentUpdateObservation => vec![
+            ("remote_player_spawn", "entity_equipment_update"),
+            ("server_client_b_seen", "server_equipment_update_state"),
+        ],
+        Scenario::ProjectileHit => vec![
+            ("remote_player_spawn", "projectile_use_sent"),
+            ("projectile_use_sent", "projectile_swing_sent"),
+            ("server_client_a_seen", "server_projectile_loadout"),
+        ],
+        Scenario::ProjectileDamageAttribution => vec![
+            ("remote_player_spawn", "projectile_use_sent"),
+            ("projectile_use_sent", "projectile_swing_sent"),
+            ("projectile_swing_sent", "projectile_damage_update"),
+            ("server_projectile_loadout", "server_projectile_use"),
+            ("server_projectile_use", "server_projectile_hit"),
+        ],
+        Scenario::FlagCarrierDeathReturn => vec![
+            ("flag_pickup", "combat_attack_sent"),
+            ("combat_attack_sent", "combat_death_observed"),
+            ("combat_death_observed", "respawn_request_sent"),
+            ("respawn_request_sent", "respawn_health_restored"),
+            ("server_flag_pickup", "server_flag_carrier_death"),
+            ("server_flag_carrier_death", "server_flag_return"),
+        ],
+        Scenario::ReconnectFlagState => vec![
+            ("flag_pickup", "reconnect_session"),
+            ("server_flag_pickup", "server_flag_disconnect_return"),
+            (
+                "server_flag_disconnect_return",
+                "server_reconnect_state_coherent",
+            ),
+        ],
+        Scenario::CtfInvalidPickupOwnership => vec![
+            (
+                "ctf_invalid_pickup_attempted",
+                "ctf_invalid_pickup_contained",
+            ),
+            ("server_username_seen", "server_invalid_pickup_rejected"),
+        ],
+        Scenario::CtfInvalidReturnDrop => vec![
+            (
+                "ctf_invalid_return_drop_attempted",
+                "ctf_invalid_return_drop_contained",
+            ),
+            ("server_username_seen", "server_invalid_return_drop_rejected"),
+        ],
+        Scenario::CtfScoreLimitWinCondition => vec![
+            ("team_red", "flag_pickup"),
+            ("flag_pickup", "flag_capture"),
+            ("flag_capture", "score_red_2"),
+            ("score_red_2", "ctf_score_limit_win_seen"),
+            (
+                "server_score_limit_pre_state",
+                "server_score_limit_final_capture",
+            ),
+            (
+                "server_score_limit_final_capture",
+                "server_score_limit_win_condition",
+            ),
+        ],
+        Scenario::CtfSimultaneousPickupCaptureRace => vec![
+            ("ctf_race_client_count", "flag_pickup"),
+            ("flag_pickup", "flag_capture"),
+            (
+                "server_ctf_race_accepted_transition",
+                "server_ctf_race_rejected_transition",
+            ),
+            (
+                "server_ctf_race_rejected_transition",
+                "server_ctf_race_final_state",
+            ),
+        ],
+        Scenario::CtfSpawnTeamBalanceReset => vec![
+            ("ctf_spawn_team_reset_client_count", "team_red"),
+            ("team_red", "team_blue"),
+            ("flag_pickup", "flag_capture"),
+            (
+                "server_ctf_spawn_red_assignment",
+                "server_ctf_spawn_blue_assignment",
+            ),
+            (
+                "server_ctf_spawn_blue_assignment",
+                "server_ctf_spawn_team_balance",
+            ),
+            (
+                "server_ctf_spawn_team_balance",
+                "server_ctf_spawn_resource_reset",
+            ),
+        ],
+        Scenario::ReconnectFlagScore => vec![
+            ("flag_pickup", "flag_capture"),
+            ("flag_capture", "score_red_1"),
+            ("score_red_1", "reconnect_session"),
+        ],
+        Scenario::MultiClientLoadScore => vec![
+            ("multi_client_count", "flag_pickup"),
+            ("flag_pickup", "flag_capture"),
+            ("flag_capture", "score_red_1"),
+            ("server_client_a_seen", "server_client_b_seen"),
+            ("server_client_b_seen", "server_flag_or_score"),
         ],
         _ => vec![],
     }
@@ -12550,6 +12696,42 @@ mod tests {
         assert!(typed_event_oracle_contributes_to_pass_fail(
             Scenario::SurvivalSignEditingLive
         ));
+        for scenario in [
+            Scenario::FlagScoreRepeat,
+            Scenario::BlueFlagScore,
+            Scenario::CombatDamage,
+            Scenario::CombatKnockback,
+            Scenario::ArmorEquipmentMitigation,
+            Scenario::EquipmentUpdateObservation,
+            Scenario::ProjectileHit,
+            Scenario::ProjectileDamageAttribution,
+            Scenario::FlagCarrierDeathReturn,
+            Scenario::ReconnectFlagState,
+            Scenario::CtfInvalidPickupOwnership,
+            Scenario::CtfInvalidReturnDrop,
+            Scenario::CtfScoreLimitWinCondition,
+            Scenario::CtfSimultaneousPickupCaptureRace,
+            Scenario::CtfSpawnTeamBalanceReset,
+            Scenario::ReconnectFlagScore,
+            Scenario::MultiClientLoadScore,
+        ] {
+            assert!(
+                typed_event_oracle_contributes_to_pass_fail(scenario),
+                "{scenario:?} should use typed-event pass/fail"
+            );
+        }
+        for scenario in [
+            Scenario::CompatBotProbe,
+            Scenario::SurvivalHungerFood,
+            Scenario::SurvivalMobDrop,
+            Scenario::SurvivalRedstoneToggle,
+            Scenario::SurvivalWorldPersistenceRestart,
+        ] {
+            assert!(
+                !typed_event_oracle_contributes_to_pass_fail(scenario),
+                "{scenario:?} should stay substring fallback"
+            );
+        }
     }
 
     #[test]
@@ -13935,6 +14117,212 @@ mod tests {
             let expected_violation = format!("{misordered_before}_before_{misordered_after}");
             assert!(err.contains(&expected_violation), "{err}");
         }
+    }
+
+    #[test]
+    fn typed_event_oracle_validates_ctf_rule_family_graphs() {
+        for (scenario, missing_client, misordered_before, misordered_after, reorder_server) in [
+            (
+                Scenario::FlagScoreRepeat,
+                "flag_capture",
+                "flag_pickup",
+                "flag_capture",
+                false,
+            ),
+            (
+                Scenario::BlueFlagScore,
+                "flag_capture",
+                "flag_pickup",
+                "flag_capture",
+                false,
+            ),
+            (
+                Scenario::CombatDamage,
+                "combat_attack_sent",
+                "server_client_a_seen",
+                "server_combat_damage",
+                true,
+            ),
+            (
+                Scenario::CombatKnockback,
+                "combat_velocity_update",
+                "server_combat_damage",
+                "server_combat_knockback",
+                true,
+            ),
+            (
+                Scenario::ArmorEquipmentMitigation,
+                "armor_inventory_slot",
+                "server_combat_damage",
+                "server_armor_mitigation",
+                true,
+            ),
+            (
+                Scenario::EquipmentUpdateObservation,
+                "entity_equipment_update",
+                "remote_player_spawn",
+                "entity_equipment_update",
+                false,
+            ),
+            (
+                Scenario::ProjectileHit,
+                "projectile_use_sent",
+                "projectile_use_sent",
+                "projectile_swing_sent",
+                false,
+            ),
+            (
+                Scenario::ProjectileDamageAttribution,
+                "projectile_damage_update",
+                "server_projectile_use",
+                "server_projectile_hit",
+                true,
+            ),
+            (
+                Scenario::FlagCarrierDeathReturn,
+                "respawn_health_restored",
+                "server_flag_carrier_death",
+                "server_flag_return",
+                true,
+            ),
+            (
+                Scenario::ReconnectFlagState,
+                "reconnect_session",
+                "server_flag_disconnect_return",
+                "server_reconnect_state_coherent",
+                true,
+            ),
+            (
+                Scenario::CtfInvalidPickupOwnership,
+                "ctf_invalid_pickup_contained",
+                "ctf_invalid_pickup_attempted",
+                "ctf_invalid_pickup_contained",
+                false,
+            ),
+            (
+                Scenario::CtfInvalidReturnDrop,
+                "ctf_invalid_return_drop_contained",
+                "ctf_invalid_return_drop_attempted",
+                "ctf_invalid_return_drop_contained",
+                false,
+            ),
+            (
+                Scenario::CtfScoreLimitWinCondition,
+                "ctf_score_limit_win_seen",
+                "server_score_limit_final_capture",
+                "server_score_limit_win_condition",
+                true,
+            ),
+            (
+                Scenario::CtfSimultaneousPickupCaptureRace,
+                "score_red_1",
+                "server_ctf_race_rejected_transition",
+                "server_ctf_race_final_state",
+                true,
+            ),
+            (
+                Scenario::CtfSpawnTeamBalanceReset,
+                "score_red_1",
+                "server_ctf_spawn_team_balance",
+                "server_ctf_spawn_resource_reset",
+                true,
+            ),
+            (
+                Scenario::ReconnectFlagScore,
+                "reconnect_session",
+                "flag_capture",
+                "score_red_1",
+                false,
+            ),
+            (
+                Scenario::MultiClientLoadScore,
+                "score_red_1",
+                "server_client_b_seen",
+                "server_flag_or_score",
+                true,
+            ),
+        ] {
+            let cfg = test_config(
+                &[
+                    "--scenario",
+                    scenario_name(scenario),
+                    "--receipt",
+                    "/tmp/ctf-rule.receipt.json",
+                ],
+                &[],
+            )
+            .expect("CTF rule config parses");
+            let passing = typed_event_oracle_evidence_for_scenario(scenario);
+            validate_typed_event_oracle_for_migrated_scenario(&cfg, &passing)
+                .expect("complete CTF typed-event graph passes");
+
+            let mut missing_client_evidence = passing.clone();
+            missing_client_evidence
+                .scenario
+                .as_mut()
+                .expect("client evidence")
+                .observed_milestones
+                .retain(|name| *name != missing_client);
+            let err =
+                validate_typed_event_oracle_for_migrated_scenario(&cfg, &missing_client_evidence)
+                    .expect_err("missing CTF typed event fails");
+            assert!(err.contains(missing_client), "{err}");
+
+            let mut misordered_evidence = passing.clone();
+            let observed = if reorder_server {
+                &mut misordered_evidence
+                    .server_scenario
+                    .as_mut()
+                    .expect("server evidence")
+                    .observed_milestones
+            } else {
+                &mut misordered_evidence
+                    .scenario
+                    .as_mut()
+                    .expect("client evidence")
+                    .observed_milestones
+            };
+            observed.retain(|name| *name != misordered_before && *name != misordered_after);
+            observed.extend([misordered_after, misordered_before]);
+            let err =
+                validate_typed_event_oracle_for_migrated_scenario(&cfg, &misordered_evidence)
+                    .expect_err("misordered CTF typed-event phases fail");
+            let expected_violation = format!("{misordered_before}_before_{misordered_after}");
+            assert!(err.contains(&expected_violation), "{err}");
+        }
+    }
+
+    #[test]
+    fn ctf_rule_typed_event_fixtures_fail_closed_on_wrong_actor() {
+        let events = typed_event_fixture_from_steps(
+            Scenario::CtfInvalidPickupOwnership,
+            &[
+                ("client", Some("otherbot"), "ctf_invalid_pickup_attempted"),
+                ("client", Some("otherbot"), "ctf_invalid_pickup_contained"),
+            ],
+        );
+        let result = evaluate_typed_event_graph(
+            &events,
+            scenario_name(Scenario::CtfInvalidPickupOwnership),
+            TEST_SESSION_ID,
+            Some(TEST_USERNAME),
+            &[
+                "ctf_invalid_pickup_attempted",
+                "ctf_invalid_pickup_contained",
+            ],
+            &[],
+            &[(
+                "ctf_invalid_pickup_attempted",
+                "ctf_invalid_pickup_contained",
+            )],
+        );
+        assert!(!result.passed, "{result:?}");
+        assert!(
+            result
+                .missing_events
+                .contains(&"ctf_invalid_pickup_attempted".to_string()),
+            "{result:?}"
+        );
     }
 
     #[test]

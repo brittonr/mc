@@ -1,0 +1,19 @@
+# CTF rule typed-event evidence manifest refresh
+started_at=2026-06-23T00:44:33Z
+## evidence_manifest_refresh
+command=nix run .#evidence-manifest-refresh -- --refresh
+evidence manifest refresh ok: mode=refresh; passes=5; manifests=434; entries=3121; current=3121; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=5; manifest_writes=79
+evidence_manifest_refresh_exit_status=0
+## evidence_manifest_check
+command=nix run .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=434; entries=3121; current=3121; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+evidence_manifest_check_exit_status=0
+## evidence_manifest_flake_check
+command=nix build .#checks.x86_64-linux.mc-compat-evidence-manifest-refresh --no-link -L
+this derivation will be built:
+  /nix/store/0b7wpd4ih4hf5gpn5ksxqf0jg5lb22rs-mc-compat-evidence-manifest-refresh.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/0b7wpd4ih4hf5gpn5ksxqf0jg5lb22rs-mc-compat-evidence-manifest-refresh.drv'...
+evidence_manifest_flake_check_exit_status=0
+finished_at=2026-06-23T00:45:14Z
+exit_status=0

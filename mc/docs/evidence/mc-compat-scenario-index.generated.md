@@ -9,8 +9,8 @@ This bounded index is generated from `compat/config/scenario-manifest.ncl`. It r
 | --- | --- | ---: | ---: | --- | --- | --- |
 | smoke | smoke | 1 | 1 | mc-compat-dry-run | mc-compat-smoke | typed-event-ready |
 | valence-compat-bot-probe | valence-compat-bot-probe, compat-bot-probe | 1 | 1 | mc-compat-bot-probe-dry-run | mc-compat-smoke | substring-fallback |
-| flag-score-repeat | flag-score-repeat | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
-| blue-flag-score | blue-flag-score | 1 | 1 | mc-compat-blue-flag-score-dry-run | mc-compat-smoke | substring-fallback |
+| flag-score-repeat | flag-score-repeat | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | typed-event-ready |
+| blue-flag-score | blue-flag-score | 1 | 1 | mc-compat-blue-flag-score-dry-run | mc-compat-smoke | typed-event-ready |
 | inventory-interaction | inventory-interaction | 1 | 1 | mc-compat-valence-ctf-inventory-interaction-dry-run | mc-compat-valence-ctf-inventory-interaction | typed-event-ready |
 | inventory-stack-split-merge | inventory-stack-split-merge | 1 | 1 | mc-compat-valence-inventory-stack-split-merge-dry-run | mc-compat-valence-inventory-stack-split-merge | typed-event-ready |
 | inventory-drag-transactions | inventory-drag-transactions | 1 | 1 | mc-compat-valence-inventory-drag-transactions-dry-run | mc-compat-valence-inventory-drag-transactions | typed-event-ready |
@@ -35,22 +35,22 @@ This bounded index is generated from `compat/config/scenario-manifest.ncl`. It r
 | survival-biome-dimension-travel | survival-biome-dimension-travel | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | typed-event-ready |
 | survival-sign-editing-live | survival-sign-editing-live | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | typed-event-ready |
 | mcp-controlled-smoke | mcp-controlled-smoke | 1 | 1 | mc-compat-mcp-controlled-smoke-dry-run | mc-compat-mcp-controlled-smoke | typed-event-ready |
-| combat-damage | combat-damage | 2 | 1 | mc-compat-valence-ctf-combat-damage-dry-run | mc-compat-valence-ctf-combat-damage | substring-fallback |
-| combat-knockback | combat-knockback | 2 | 1 | mc-compat-valence-ctf-combat-knockback-dry-run | mc-compat-valence-ctf-combat-knockback | substring-fallback |
+| combat-damage | combat-damage | 2 | 1 | mc-compat-valence-ctf-combat-damage-dry-run | mc-compat-valence-ctf-combat-damage | typed-event-ready |
+| combat-knockback | combat-knockback | 2 | 1 | mc-compat-valence-ctf-combat-knockback-dry-run | mc-compat-valence-ctf-combat-knockback | typed-event-ready |
 | vanilla-combat-reference-parity | vanilla-combat-reference-parity | 2 | 1 | - | mc-compat-vanilla-combat-reference-parity | substring-fallback |
 | vanilla-combat-armor-reference-parity | vanilla-combat-armor-reference-parity | 2 | 1 | - | mc-compat-smoke | substring-fallback |
-| armor-equipment-mitigation | armor-equipment-mitigation | 2 | 1 | mc-compat-valence-ctf-armor-equipment-mitigation-dry-run | mc-compat-valence-ctf-armor-equipment-mitigation | substring-fallback |
-| equipment-update-observation | equipment-update-observation | 2 | 1 | mc-compat-valence-ctf-equipment-update-observation-dry-run | mc-compat-valence-ctf-equipment-update-observation | substring-fallback |
-| projectile-hit | projectile-hit | 2 | 1 | mc-compat-valence-ctf-projectile-hit-dry-run | mc-compat-valence-ctf-projectile-hit | substring-fallback |
-| projectile-damage-attribution | projectile-damage-attribution | 2 | 1 | mc-compat-valence-ctf-projectile-damage-attribution-dry-run | mc-compat-valence-ctf-projectile-damage-attribution | substring-fallback |
-| flag-carrier-death-return | flag-carrier-death-return | 2 | 1 | mc-compat-valence-ctf-flag-carrier-death-return-dry-run | mc-compat-valence-ctf-flag-carrier-death-return | substring-fallback |
-| reconnect-flag-state | reconnect-flag-state | 1 | 2 | mc-compat-valence-ctf-reconnect-flag-state-dry-run | mc-compat-valence-ctf-reconnect-flag-state | substring-fallback |
-| ctf-invalid-pickup-ownership | ctf-invalid-pickup-ownership | 1 | 1 | mc-compat-valence-ctf-invalid-pickup-ownership-dry-run | mc-compat-valence-ctf-invalid-pickup-ownership | substring-fallback |
-| ctf-invalid-return-drop | ctf-invalid-return-drop | 1 | 1 | mc-compat-valence-ctf-invalid-return-drop-dry-run | mc-compat-valence-ctf-invalid-return-drop | substring-fallback |
-| ctf-score-limit-win-condition | ctf-score-limit-win-condition | 1 | 1 | mc-compat-valence-ctf-score-limit-win-condition-dry-run | mc-compat-valence-ctf-score-limit-win-condition | substring-fallback |
-| ctf-simultaneous-pickup-capture-race | ctf-simultaneous-pickup-capture-race | 2 | 1 | mc-compat-valence-ctf-simultaneous-pickup-capture-race-dry-run | mc-compat-valence-ctf-simultaneous-pickup-capture-race | substring-fallback |
-| ctf-spawn-team-balance-reset | ctf-spawn-team-balance-reset | 2 | 1 | mc-compat-valence-ctf-spawn-team-balance-reset-dry-run | mc-compat-valence-ctf-spawn-team-balance-reset | substring-fallback |
-| reconnect-flag-score | reconnect-flag-score | 1 | 2 | mc-compat-open-cairns-dry-run | mc-compat-smoke | substring-fallback |
-| multi-client-load-score | multi-client-load-score | 2 | 1 | mc-compat-multi-client-scenario-dry-run | mc-compat-smoke | substring-fallback |
+| armor-equipment-mitigation | armor-equipment-mitigation | 2 | 1 | mc-compat-valence-ctf-armor-equipment-mitigation-dry-run | mc-compat-valence-ctf-armor-equipment-mitigation | typed-event-ready |
+| equipment-update-observation | equipment-update-observation | 2 | 1 | mc-compat-valence-ctf-equipment-update-observation-dry-run | mc-compat-valence-ctf-equipment-update-observation | typed-event-ready |
+| projectile-hit | projectile-hit | 2 | 1 | mc-compat-valence-ctf-projectile-hit-dry-run | mc-compat-valence-ctf-projectile-hit | typed-event-ready |
+| projectile-damage-attribution | projectile-damage-attribution | 2 | 1 | mc-compat-valence-ctf-projectile-damage-attribution-dry-run | mc-compat-valence-ctf-projectile-damage-attribution | typed-event-ready |
+| flag-carrier-death-return | flag-carrier-death-return | 2 | 1 | mc-compat-valence-ctf-flag-carrier-death-return-dry-run | mc-compat-valence-ctf-flag-carrier-death-return | typed-event-ready |
+| reconnect-flag-state | reconnect-flag-state | 1 | 2 | mc-compat-valence-ctf-reconnect-flag-state-dry-run | mc-compat-valence-ctf-reconnect-flag-state | typed-event-ready |
+| ctf-invalid-pickup-ownership | ctf-invalid-pickup-ownership | 1 | 1 | mc-compat-valence-ctf-invalid-pickup-ownership-dry-run | mc-compat-valence-ctf-invalid-pickup-ownership | typed-event-ready |
+| ctf-invalid-return-drop | ctf-invalid-return-drop | 1 | 1 | mc-compat-valence-ctf-invalid-return-drop-dry-run | mc-compat-valence-ctf-invalid-return-drop | typed-event-ready |
+| ctf-score-limit-win-condition | ctf-score-limit-win-condition | 1 | 1 | mc-compat-valence-ctf-score-limit-win-condition-dry-run | mc-compat-valence-ctf-score-limit-win-condition | typed-event-ready |
+| ctf-simultaneous-pickup-capture-race | ctf-simultaneous-pickup-capture-race | 2 | 1 | mc-compat-valence-ctf-simultaneous-pickup-capture-race-dry-run | mc-compat-valence-ctf-simultaneous-pickup-capture-race | typed-event-ready |
+| ctf-spawn-team-balance-reset | ctf-spawn-team-balance-reset | 2 | 1 | mc-compat-valence-ctf-spawn-team-balance-reset-dry-run | mc-compat-valence-ctf-spawn-team-balance-reset | typed-event-ready |
+| reconnect-flag-score | reconnect-flag-score | 1 | 2 | mc-compat-open-cairns-dry-run | mc-compat-smoke | typed-event-ready |
+| multi-client-load-score | multi-client-load-score | 2 | 1 | mc-compat-multi-client-scenario-dry-run | mc-compat-smoke | typed-event-ready |
 
 <!-- END: mc-compat-generated-scenario-index -->

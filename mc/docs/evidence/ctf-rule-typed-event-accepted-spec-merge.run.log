@@ -1,0 +1,30 @@
+# CTF rule typed-event accepted spec merge
+started_at=2026-06-23T00:50:24Z
+## grep_requirement
+command=grep -F ctf_rule_typed_event_migration_wave cairn/specs/mc-compatibility/spec.md
+r[mc_compatibility.ctf_rule_typed_event_migration_wave.readiness] The system MUST define a row-family inventory for maintained CTF rows before marking any CTF rule row `typed-event-ready`.
+r[mc_compatibility.ctf_rule_typed_event_migration_wave.readiness.inventory]
+r[mc_compatibility.ctf_rule_typed_event_migration_wave.gate] The runner MUST include migrated CTF rows in typed-event pass/fail gates so missing, misordered, or incorrectly correlated structured CTF events fail before substring fallback can satisfy a row.
+r[mc_compatibility.ctf_rule_typed_event_migration_wave.gate.missing]
+r[mc_compatibility.ctf_rule_typed_event_migration_wave.gate.correlation]
+r[mc_compatibility.ctf_rule_typed_event_migration_wave.gate.order]
+r[mc_compatibility.ctf_rule_typed_event_migration_wave.docs] The migration MUST update generated and human documentation to name migrated CTF rows as typed-event-ready while preserving full CTF correctness and broad compatibility non-claims.
+r[mc_compatibility.ctf_rule_typed_event_migration_wave.docs.non_claiming]
+r[mc_compatibility.ctf_rule_typed_event_migration_wave.validation] The migration MUST record reviewable evidence for row-family fixtures, scenario-manifest checks, generated-surface freshness, dry-run wrappers, evidence manifests, Cairn gates, and Cairn validation before archive.
+r[mc_compatibility.ctf_rule_typed_event_migration_wave.validation.log]
+grep_requirement_exit_status=0
+## cairn_validate
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 2,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 4,
+  "valid": true
+}
+cairn_validate_exit_status=0
+finished_at=2026-06-23T00:50:25Z
+exit_status=0

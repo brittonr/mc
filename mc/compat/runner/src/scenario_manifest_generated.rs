@@ -93,7 +93,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-historical-scenario-dry-runs",
         dry_run_wrapper: "mc-compat-smoke",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "blue-flag-score",
@@ -122,7 +122,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-blue-flag-score-dry-run",
         dry_run_wrapper: "mc-compat-smoke",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "inventory-interaction",
@@ -972,7 +972,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-valence-ctf-combat-damage-dry-run",
         dry_run_wrapper: "mc-compat-valence-ctf-combat-damage",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "combat-knockback",
@@ -1006,7 +1006,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-valence-ctf-combat-knockback-dry-run",
         dry_run_wrapper: "mc-compat-valence-ctf-combat-knockback",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "vanilla-combat-reference-parity",
@@ -1105,7 +1105,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-valence-ctf-armor-equipment-mitigation-dry-run",
         dry_run_wrapper: "mc-compat-valence-ctf-armor-equipment-mitigation",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "equipment-update-observation",
@@ -1136,7 +1136,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-valence-ctf-equipment-update-observation-dry-run",
         dry_run_wrapper: "mc-compat-valence-ctf-equipment-update-observation",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "projectile-hit",
@@ -1167,7 +1167,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-valence-ctf-projectile-hit-dry-run",
         dry_run_wrapper: "mc-compat-valence-ctf-projectile-hit",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "projectile-damage-attribution",
@@ -1202,7 +1202,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-valence-ctf-projectile-damage-attribution-dry-run",
         dry_run_wrapper: "mc-compat-valence-ctf-projectile-damage-attribution",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "flag-carrier-death-return",
@@ -1243,7 +1243,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-valence-ctf-flag-carrier-death-return-dry-run",
         dry_run_wrapper: "mc-compat-valence-ctf-flag-carrier-death-return",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "reconnect-flag-state",
@@ -1277,7 +1277,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-valence-ctf-reconnect-flag-state-dry-run",
         dry_run_wrapper: "mc-compat-valence-ctf-reconnect-flag-state",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "ctf-invalid-pickup-ownership",
@@ -1311,7 +1311,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-valence-ctf-invalid-pickup-ownership-dry-run",
         dry_run_wrapper: "mc-compat-valence-ctf-invalid-pickup-ownership",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "ctf-invalid-return-drop",
@@ -1346,7 +1346,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-valence-ctf-invalid-return-drop-dry-run",
         dry_run_wrapper: "mc-compat-valence-ctf-invalid-return-drop",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "ctf-score-limit-win-condition",
@@ -1382,7 +1382,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-valence-ctf-score-limit-win-condition-dry-run",
         dry_run_wrapper: "mc-compat-valence-ctf-score-limit-win-condition",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "ctf-simultaneous-pickup-capture-race",
@@ -1418,7 +1418,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-valence-ctf-simultaneous-pickup-capture-race-dry-run",
         dry_run_wrapper: "mc-compat-valence-ctf-simultaneous-pickup-capture-race",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "ctf-spawn-team-balance-reset",
@@ -1457,7 +1457,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-valence-ctf-spawn-team-balance-reset-dry-run",
         dry_run_wrapper: "mc-compat-valence-ctf-spawn-team-balance-reset",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "reconnect-flag-score",
@@ -1487,7 +1487,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-open-cairns-dry-run",
         dry_run_wrapper: "mc-compat-smoke",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "multi-client-load-score",
@@ -1518,6 +1518,6 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-multi-client-scenario-dry-run",
         dry_run_wrapper: "mc-compat-smoke",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
 ];

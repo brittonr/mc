@@ -1,0 +1,123 @@
+# CTF rule typed-event archive
+started_at=2026-06-23T00:53:02Z
+## archive_dry_run
+command=nix run .#cairn -- archive ctf-rule-typed-event-migration-wave --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: ctf-rule-typed-event-migration-wave",
+      "kind": "archive_change",
+      "path": "./cairn/changes/ctf-rule-typed-event-migration-wave"
+    }
+  ],
+  "blocked": false,
+  "change": "ctf-rule-typed-event-migration-wave",
+  "dry_run": true,
+  "input_hash": "c4880e0493d553ede4649b37d583010ce0578d8a11a42165f60ff1fb4fef9c81",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "78c9a4e2f55eae8be6ffbb7cd0e9eaf189d5f899d50d1b99b7605f821147c3c7",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "e13f0119cbb131ec8ac94b81cb762ab6af38fdce3a08da291b96ed1b12c26715"
+}
+archive_dry_run_exit_status=0
+## archive_execute
+command=nix run .#cairn -- archive ctf-rule-typed-event-migration-wave --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: ctf-rule-typed-event-migration-wave",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-ctf-rule-typed-event-migration-wave"
+    }
+  ],
+  "blocked": false,
+  "change": "ctf-rule-typed-event-migration-wave",
+  "dry_run": false,
+  "input_hash": "c4880e0493d553ede4649b37d583010ce0578d8a11a42165f60ff1fb4fef9c81",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "a0c25dc177a9b77e9e0a58de8bab47adc67fac06131fa80ab50f808ae7362600",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-ctf-rule-typed-event-migration-wave/design.md"
+        },
+        {
+          "content_hash": "79ccef7780c47b04176dd2d405ba761ea4676d392e78acd623d387e1bada4130",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-ctf-rule-typed-event-migration-wave/proposal.md"
+        },
+        {
+          "content_hash": "297be5a406a770362e2a572cab249bce13e79ce08ed160bdaffc3855532aaf87",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-ctf-rule-typed-event-migration-wave/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "b5efe38927457cbb6a5c9330af07cc0d5a9cd8a3da2e0b3235d1fa24e4c8f0fc",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-ctf-rule-typed-event-migration-wave/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/ctf-rule-typed-event-migration-wave"
+        }
+      ],
+      "manifest_hash": "cbbe05f64cf8cba200ceaf27911625b59ada42606563137f139623897966e63e"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "a0c25dc177a9b77e9e0a58de8bab47adc67fac06131fa80ab50f808ae7362600",
+          "exists": true,
+          "path": "./cairn/changes/ctf-rule-typed-event-migration-wave/design.md"
+        },
+        {
+          "content_hash": "79ccef7780c47b04176dd2d405ba761ea4676d392e78acd623d387e1bada4130",
+          "exists": true,
+          "path": "./cairn/changes/ctf-rule-typed-event-migration-wave/proposal.md"
+        },
+        {
+          "content_hash": "297be5a406a770362e2a572cab249bce13e79ce08ed160bdaffc3855532aaf87",
+          "exists": true,
+          "path": "./cairn/changes/ctf-rule-typed-event-migration-wave/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "b5efe38927457cbb6a5c9330af07cc0d5a9cd8a3da2e0b3235d1fa24e4c8f0fc",
+          "exists": true,
+          "path": "./cairn/changes/ctf-rule-typed-event-migration-wave/tasks.md"
+        }
+      ],
+      "manifest_hash": "d65adc931d12a4c43a50031b31c8f34a29d616f3ba544be8873f6439baed1f6b"
+    },
+    "kind": "archive",
+    "manifest_hash": "2df354caee9ce23a80a33daa543c73dff187c18bd692a5a1d466001d26c00c3c"
+  },
+  "plan_hash": "49b76c514f03fcb63e55b36a0720f8be85206e1fa1bd309f8c1cc43fa26cddfb",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "f9c6be0a91ce417985dd886e87f12a9c4ca6efffcaca4dde4bf4a101b79eba0b"
+}
+archive_execute_exit_status=0
+## cairn_validate
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+cairn_validate_exit_status=0
+finished_at=2026-06-23T00:53:03Z
+exit_status=0

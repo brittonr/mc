@@ -1,0 +1,73 @@
+# CTF rule typed-event post-change validation v2
+started_at=2026-06-23T00:45:34Z
+## runner_typed_event_tests
+command=nix develop --no-update-lock-file . -c cargo test --manifest-path compat/runner/Cargo.toml typed_event -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 21 tests
+test tests::ctf_rule_typed_event_fixtures_fail_closed_on_wrong_actor ... ok
+test tests::typed_event_graph_checks_required_forbidden_and_ordered_events ... ok
+test tests::survival_breadth_typed_event_fixtures_fail_closed ... ok
+test tests::typed_event_oracle_validates_migrated_inventory_graph ... ok
+test tests::typed_event_oracle_validates_migrated_survival_break_place_graph ... ok
+test tests::typed_event_oracle_validates_migrated_survival_chest_persistence_graph ... ok
+test tests::typed_event_oracle_validates_migrated_inventory_drag_graph ... ok
+test tests::typed_event_oracle_validates_migrated_mcp_controlled_smoke_graph ... ok
+test tests::typed_event_oracle_validates_migrated_survival_crafting_recipe_breadth_graph ... ok
+test tests::typed_event_parser_accepts_versioned_event_lines ... ok
+test tests::typed_event_pass_fail_gate_includes_only_migrated_rows ... ok
+test tests::typed_event_oracle_validates_migrated_survival_crafting_table_graph ... ok
+test tests::typed_event_oracle_receipt_records_migration_fallback ... ok
+test tests::typed_event_oracle_validates_migrated_survival_furnace_persistence_graph ... ok
+test tests::typed_event_receipt_artifact_records_reviewable_timeline_hash ... ok
+test tests::typed_events_from_receipt_evidence_include_client_and_server_sources ... ok
+test tests::typed_event_oracle_validates_migrated_survival_furnace_smelting_breadth_graph ... ok
+test tests::typed_event_oracle_validates_migrated_survival_hunger_health_cycle_graph ... ok
+test tests::typed_event_oracle_validates_remaining_survival_breadth_graphs ... ok
+test tests::typed_event_oracle_validates_ctf_rule_family_graphs ... ok
+test tests::typed_event_graph_accepts_representative_scenario_fixtures ... ok
+
+test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 136 filtered out; finished in 0.00s
+
+runner_typed_event_tests_exit_status=0
+## ctf_oracle_tests
+command=nix develop --no-update-lock-file . -c cargo test --manifest-path compat/runner/Cargo.toml ctf_rule_typed_event -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 1 test
+test tests::ctf_rule_typed_event_fixtures_fail_closed_on_wrong_actor ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 156 filtered out; finished in 0.00s
+
+ctf_oracle_tests_exit_status=0
+## scenario_manifest_check
+command=nix build .#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L
+this derivation will be built:
+  /nix/store/5k5yacskcdnnhqf5n8hqwsl0pk8k8vai-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/5k5yacskcdnnhqf5n8hqwsl0pk8k8vai-mc-compat-scenario-manifest.drv'...
+scenario_manifest_check_exit_status=0
+## generated_surface_check
+command=nix build .#checks.x86_64-linux.mc-compat-generated-harness-surfaces --no-link -L
+this derivation will be built:
+  /nix/store/j8vq3cag4xaqk1z1kagphf3klf4c58d5-mc-compat-generated-harness-surfaces.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/j8vq3cag4xaqk1z1kagphf3klf4c58d5-mc-compat-generated-harness-surfaces.drv'...
+generated_surface_check_exit_status=0
+## historical_dry_run_check
+command=nix build .#checks.x86_64-linux.mc-compat-historical-scenario-dry-runs --no-link -L
+historical_dry_run_check_exit_status=0
+## evidence_manifest_check
+command=nix run .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=434; entries=3121; current=3121; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+evidence_manifest_check_exit_status=0
+finished_at=2026-06-23T00:48:05Z
+exit_status=0

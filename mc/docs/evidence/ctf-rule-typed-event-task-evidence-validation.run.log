@@ -1,0 +1,10 @@
+# CTF rule typed-event task evidence validation
+started_at=2026-06-23T00:50:50Z
+command=nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+this derivation will be built:
+  /nix/store/4xlxlhv909wpw2zdqgpwlsxy7awdzpgm-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/4xlxlhv909wpw2zdqgpwlsxy7awdzpgm-mc-compat-cairn-task-evidence.drv'...
+task_evidence_exit_status=0
+finished_at=2026-06-23T00:50:56Z
+exit_status=0
