@@ -1,0 +1,31 @@
+cwd=/home/brittonr/git/mc
+
+command=grep observability requirement IDs in accepted spec
+289:r[valence_hyperion_integration.observability.scope] The integration MUST review Hyperion observability/profiling patterns and Valence tracing/logging surfaces before adding instrumentation hooks.
+293:r[valence_hyperion_integration.observability.scope.bounded]
+300:r[valence_hyperion_integration.observability.contract] Observability hooks MUST define span and metric names, bounded labels, redaction policy, overhead expectations, adapter boundaries, and disabled-mode behavior.
+304:r[valence_hyperion_integration.observability.contract.cardinality]
+311:r[valence_hyperion_integration.observability.core] Mapping subsystem events to observability records SHOULD be pure deterministic classification over explicit inputs, with clocks, exporters, and profilers in shells.
+315:r[valence_hyperion_integration.observability.core.redaction]
+323:r[valence_hyperion_integration.observability.wiring] Valence MAY wire optional observability hooks into selected subsystems, but disabled hooks MUST preserve existing behavior and avoid mandatory exporter dependencies.
+327:r[valence_hyperion_integration.observability.wiring.disabled]
+335:r[valence_hyperion_integration.observability.tests] Observability work MUST include positive and negative tests for disabled hooks, enabled labels, redaction, unknown metrics, exporter failure, and overhead checks when overhead is claimed.
+339:r[valence_hyperion_integration.observability.tests.exporter_failure]
+347:r[valence_hyperion_integration.observability.validation] Observability work MUST record tests, plugin-disabled regressions, smoke trace/export checks, overhead checks if claimed, and Cairn gates before archive.
+351:r[valence_hyperion_integration.observability.validation.log]
+step_exit_status=0
+
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 26,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 30,
+  "valid": true
+}
+step_exit_status=0
+
+exit_status=0

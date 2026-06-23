@@ -1,0 +1,88 @@
+cwd=/home/brittonr/git/mc
+
+command=nix run .#cairn -- gate proposal add-observability-profiling-hooks --root .
+{
+  "change": "add-observability-profiling-hooks",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "b32e5eac872c12dab189908f67737a53254901092ede1a2fdf929fd09e1c8a67",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "c8a4a2862c0abeef8666b52ecc0ccff7077324b739971c48885563a02875e4f4",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+command=nix run .#cairn -- gate design add-observability-profiling-hooks --root .
+{
+  "change": "add-observability-profiling-hooks",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "bad81fe5d0db6559143ae694df56f4094fa9492c48f5dcff82529cad5dc690ae",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "19a42f9bd17def18cf4765e7e0f20dd4b783759cdbc0f83c9bc9e1b727199478",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+command=nix run .#cairn -- gate tasks add-observability-profiling-hooks --root .
+{
+  "change": "add-observability-profiling-hooks",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c120a9e05449e385616d015a1d700f24f135f0a19fbfa34d00ab081f5c36219b",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "a92d23e0dc6c9a84c9f0589ed849149394b387ee01398e2e356fc47ac1637f31",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+step_exit_status=0
+
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 26,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 30,
+  "valid": true
+}
+step_exit_status=0
+
+exit_status=0
