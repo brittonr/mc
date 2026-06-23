@@ -6,7 +6,7 @@ b656eb338d74728350e9b1696132f3a2635238058ef297ad3d210577f0554f22  docs/evidence/
 b822770e5bda89914f1ad700ed9141c733713cbea3e22e0ddcaec0c7fe21d0ac  docs/evidence/mcp-controlled-compat-rail-live-validation-2026-05-31.b3
 5b57a2ee394a4262fb5f35aec461789abba380cae18a2343b70b78f1786f97b9  docs/evidence/mcp-controlled-compat-rail-openspec-alignment-oracle-2026-05-31.b3
 157116ef21cb6e49d2ba441ca63d5aacf086bf2ccf7d9158830936ffbec2e82f  docs/evidence/mcp-controlled-compat-rail-overclaim-hardening-2026-05-31.b3
-bb46ded2a1b113e77a4857c0a3e21f6fd01575b09e897f29fce0e60bdf0ddd94  docs/evidence/nix-run-valence-stevenarella-2026-05-30.b3
+32cdc06f45a8ca941b4d27a50d6bcce23d984f1bd882a0a6214173dad15c3138  docs/evidence/nix-run-valence-stevenarella-2026-05-30.b3
 d52592d975ebc68f5abd2795c0b807ed8d1ea3e0b347c6b96b61a07e4dd79b86  docs/evidence/protocol-763-adversarial-network-oracle-checker-2026-05-29.b3
 06366fc662399358fe57f79e4ea291d8b3f3cb7d83c7c8d082b3a302ae9eb042  docs/evidence/protocol-763-adversarial-network-oracle-matrix-2026-05-29.b3
 bec695f8e36ba0916021fa191306af04daaa94402ac0d8b399f00f9fba614e8b  docs/evidence/protocol-763-adversarial-network-oracle-validation-2026-05-29.b3
@@ -15,15 +15,15 @@ bec695f8e36ba0916021fa191306af04daaa94402ac0d8b399f00f9fba614e8b  docs/evidence/
 98dac0225351098befc2e1393957ea9b0da1f554b43646115b4ee569311f655b  docs/evidence/protocol-763-armor-loadout-enchantment-status-row-2026-05-29.b3
 1ef39f95fdebfd50eff95a9f975b0f5faa51420d884afc38c90c37333659c725  docs/evidence/protocol-763-armor-loadout-enchantment-status-validation-2026-05-29.b3
 20d36c381c032946e5c7100726689f99eabf277abf8f23388f3bfa0f8d33ac40  docs/evidence/protocol-763-broad-coverage-ledger-gate-2026-05-28.b3
-3bfe6f4e369da7a101ce41d9c8e54c4afd94688adfc7db2d1560243c906b9130  docs/evidence/protocol-763-ctf-invalid-pickup-ownership-2026-05-30.b3
-df9c39b71627a16b97475edbf07e80fe2f6f92dcc4c2ba48dec2a18e524dbc26  docs/evidence/protocol-763-ctf-invalid-return-drop-2026-05-30.b3
-2239876bcfdb5b1ae0a23db7dee0d64ff7f0cdd2e9e224ff357b675f6362665c  docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.b3
+ba4e37ce5e7e35d26023a5471faf0ab7637247e03b6aa63c1e9f62c8b3969169  docs/evidence/protocol-763-ctf-invalid-pickup-ownership-2026-05-30.b3
+56703ca781f34fb27c7699d5a3be4f0b56752ed48ca1732b003c9519f8167f27  docs/evidence/protocol-763-ctf-invalid-return-drop-2026-05-30.b3
+d54162682912863c376a50b5d2de1a740e0d6ccc2249877ea628856bc9c13cec  docs/evidence/protocol-763-ctf-score-limit-win-condition-2026-05-30.b3
 f4654bc452db268cd60d65bfe1da0a2036643277bdb132b144e2a98a1c3f1840  docs/evidence/protocol-763-equipment-slot-item-expansion-checker-2026-05-29.b3
 c85aa951b508548d71badec30dfcc35e5858f7e297da1559afa7d71f84ef7ad5  docs/evidence/protocol-763-equipment-slot-item-expansion-rail-2026-05-29.b3
 4d51b94467c9da08e95a8a1be21bc41f6b3fb080095d16fec9d5b1f4a99eedf8  docs/evidence/protocol-763-equipment-slot-item-expansion-row-2026-05-29.b3
 168b48881b305c755a7ce7f4c7c06ed679465ef6cbe839d2e17e8dca89e11022  docs/evidence/protocol-763-equipment-slot-item-expansion-validation-2026-05-29.b3
 111960f081a7244b0128b71fe5fab9ce8fdcc0667c44c414e1ea72c29c50480e  docs/evidence/protocol-763-production-network-safety-gate-2026-05-28.b3
-df485a31527a1dedfbd862b18aaf9e5a403156738ac7a366c10e7562566dea15  docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.b3
+6061a9895bd71a555b6a40601d3c642c6ebe889a06d8ad928647b6e3eb5851cf  docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.b3
 e317df02ca445bd5906a52e3e3a605c4f72e173028503e1b1ec402a9454d4295  docs/evidence/protocol-763-python-gate-rust-migration-2026-05-31.b3
 845583657d726a2abd1d9f5c30659e6e86f07f1a01a7a94474b285491ffe122b  docs/evidence/protocol-763-red-blue-scoring-soak-live-refresh-2026-05-30.b3
 ccd03ff93dd38501102ac4eb9d49078d78a73ff863921c4447aaeb6937660b22  docs/evidence/protocol-763-survival-chest-persistence-runner-2026-05-29.b3
@@ -32,4 +32,4 @@ ccd03ff93dd38501102ac4eb9d49078d78a73ff863921c4447aaeb6937660b22  docs/evidence/
 fcf786c6ad94155a00117c777c9b5d1491f72a88f318c08a24b9ad468fd2dc75  docs/evidence/protocol-763-survival-crafting-table-progress-2026-05-30.b3
 c889c455d10d222ec9d19a328236e668c14a7ece6f4dc6210c88eb7f5713949e  docs/evidence/protocol-763-survival-reference-paper-fixture-gate-2026-05-28.b3
 fda455556f772c9de244ef7eeb6cca1a037ed8e9a09dc92ec4e809e86bcf898f  docs/evidence/protocol-763-survival-reference-parity-gate-2026-05-28.b3
-932b16f81bb645246f03aeb307abe1bbd1e1de2e800d91070619791fd65ad3ad  docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.b3
+c17735328bb2cf0de68973b508958c97a82ba161704c525fb7a19384efa9b0a5  docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.b3

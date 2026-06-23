@@ -12,8 +12,12 @@ const AGENTS_PATH: &str = "AGENTS.md";
 const README_PATH: &str = "README.md";
 const ARCHITECTURE_PATH: &str = "docs/architecture.md";
 const CHECKLIST_PATH: &str = "docs/layout-checklist.md";
+const STEVENARELLA_AGENTS_PATH: &str = "clients/stevenarella/AGENTS.md";
+const VALENCE_AGENTS_PATH: &str = "servers/valence/AGENTS.md";
 const HYPERION_GIT_PATH: &str = "hyperion/.git";
 const LEAFISH_GIT_PATH: &str = "Leafish/.git";
+const STEVENARELLA_LABEL: &str = "clients/stevenarella/";
+const VALENCE_LABEL: &str = "servers/valence/";
 const LEAFISH_LABEL: &str = "Leafish/";
 const HYPERION_LABEL: &str = "hyperion/";
 const REFERENCE_ONLY_TEXT: &str = "reference-only";
@@ -33,6 +37,8 @@ struct LayoutDocs {
     readme: String,
     architecture: String,
     checklist: String,
+    stevenarella_agents_exists: bool,
+    valence_agents_exists: bool,
     leafish_git_exists: bool,
     hyperion_git_exists: bool,
 }
@@ -62,6 +68,106 @@ fn push_missing_doc(
 
 fn check_layout_docs(docs: &LayoutDocs) -> Vec<Diagnostic> {
     let mut diagnostics = Vec::new();
+
+    if !docs.stevenarella_agents_exists {
+        push_missing_doc(
+            &mut diagnostics,
+            "missing_stevenarella_agents",
+            STEVENARELLA_AGENTS_PATH,
+            &["local agent notes for the core client"],
+        );
+    }
+
+    if !docs.valence_agents_exists {
+        push_missing_doc(
+            &mut diagnostics,
+            "missing_valence_agents",
+            VALENCE_AGENTS_PATH,
+            &["local agent notes for the core server"],
+        );
+    }
+
+    if !contains_all(
+        &docs.agents,
+        &[
+            STEVENARELLA_AGENTS_PATH,
+            VALENCE_AGENTS_PATH,
+            CHECKLIST_PATH,
+        ],
+    ) {
+        push_missing_doc(
+            &mut diagnostics,
+            "agents_local_notes_links",
+            AGENTS_PATH,
+            &[
+                STEVENARELLA_AGENTS_PATH,
+                VALENCE_AGENTS_PATH,
+                CHECKLIST_PATH,
+            ],
+        );
+    }
+
+    if !contains_all(
+        &docs.readme,
+        &[
+            STEVENARELLA_AGENTS_PATH,
+            VALENCE_AGENTS_PATH,
+            CHECKLIST_PATH,
+        ],
+    ) {
+        push_missing_doc(
+            &mut diagnostics,
+            "readme_local_notes_links",
+            README_PATH,
+            &[
+                STEVENARELLA_AGENTS_PATH,
+                VALENCE_AGENTS_PATH,
+                CHECKLIST_PATH,
+            ],
+        );
+    }
+
+    if !contains_all(
+        &docs.architecture,
+        &[
+            STEVENARELLA_AGENTS_PATH,
+            VALENCE_AGENTS_PATH,
+            CHECKLIST_PATH,
+        ],
+    ) {
+        push_missing_doc(
+            &mut diagnostics,
+            "architecture_local_notes_links",
+            ARCHITECTURE_PATH,
+            &[
+                STEVENARELLA_AGENTS_PATH,
+                VALENCE_AGENTS_PATH,
+                CHECKLIST_PATH,
+            ],
+        );
+    }
+
+    if !contains_all(
+        &docs.checklist,
+        &[
+            STEVENARELLA_LABEL,
+            VALENCE_LABEL,
+            STEVENARELLA_AGENTS_PATH,
+            VALENCE_AGENTS_PATH,
+        ],
+    ) {
+        push_missing_doc(
+            &mut diagnostics,
+            "checklist_local_notes_inventory",
+            CHECKLIST_PATH,
+            &[
+                STEVENARELLA_LABEL,
+                VALENCE_LABEL,
+                STEVENARELLA_AGENTS_PATH,
+                VALENCE_AGENTS_PATH,
+            ],
+        );
+    }
 
     if docs.leafish_git_exists
         && !contains_all(
@@ -187,6 +293,8 @@ fn load_docs(root: &Path) -> Result<LayoutDocs, String> {
         readme: read_to_string(root, README_PATH)?,
         architecture: read_to_string(root, ARCHITECTURE_PATH)?,
         checklist: read_to_string(root, CHECKLIST_PATH)?,
+        stevenarella_agents_exists: root.join(STEVENARELLA_AGENTS_PATH).exists(),
+        valence_agents_exists: root.join(VALENCE_AGENTS_PATH).exists(),
         leafish_git_exists: root.join(LEAFISH_GIT_PATH).exists(),
         hyperion_git_exists: root.join(HYPERION_GIT_PATH).exists(),
     })
@@ -195,17 +303,19 @@ fn load_docs(root: &Path) -> Result<LayoutDocs, String> {
 fn fixture_valid_docs() -> LayoutDocs {
     LayoutDocs {
         agents: format!(
-            "{LEAFISH_LABEL} is {REFERENCE_ONLY_TEXT} {NESTED_GIT_TEXT}; do not use {PARENT_STATUS_TEXT}."
+            "{STEVENARELLA_AGENTS_PATH} {VALENCE_AGENTS_PATH} {CHECKLIST_PATH} {LEAFISH_LABEL} is {REFERENCE_ONLY_TEXT} {NESTED_GIT_TEXT}; do not use {PARENT_STATUS_TEXT}."
         ),
         readme: format!(
-            "{LEAFISH_LABEL} is {REFERENCE_ONLY_TEXT}, {DEFAULT_GATE_EXCLUSION_TEXT}, and uses {OPT_IN_TEXT} commands."
+            "{STEVENARELLA_AGENTS_PATH} {VALENCE_AGENTS_PATH} {CHECKLIST_PATH} {LEAFISH_LABEL} is {REFERENCE_ONLY_TEXT}, {DEFAULT_GATE_EXCLUSION_TEXT}, and uses {OPT_IN_TEXT} commands."
         ),
         architecture: format!(
-            "{LEAFISH_LABEL} is {REFERENCE_ONLY_TEXT} {NESTED_GIT_TEXT}; see {CHECKLIST_PATH}."
+            "{STEVENARELLA_AGENTS_PATH} {VALENCE_AGENTS_PATH} {CHECKLIST_PATH} {LEAFISH_LABEL} is {REFERENCE_ONLY_TEXT} {NESTED_GIT_TEXT}; see {CHECKLIST_PATH}."
         ),
         checklist: format!(
-            "{LEAFISH_LABEL} {REFERENCE_ONLY_TEXT} {LEAFISH_WAIVER_TEXT} Excluded from default gates unless explicitly selected\n{HYPERION_LABEL} independent separate jj/git workflow"
+            "{STEVENARELLA_LABEL} {VALENCE_LABEL} {STEVENARELLA_AGENTS_PATH} {VALENCE_AGENTS_PATH}\n{LEAFISH_LABEL} {REFERENCE_ONLY_TEXT} {LEAFISH_WAIVER_TEXT} Excluded from default gates unless explicitly selected\n{HYPERION_LABEL} independent separate jj/git workflow"
         ),
+        stevenarella_agents_exists: true,
+        valence_agents_exists: true,
         leafish_git_exists: true,
         hyperion_git_exists: true,
     }
@@ -218,6 +328,32 @@ fn run_self_test() -> Result<(), String> {
         return Err(format!(
             "positive fixture unexpectedly failed: {:?}",
             valid_diagnostics
+        ));
+    }
+
+    let mut missing_stevenarella = valid.clone();
+    missing_stevenarella.stevenarella_agents_exists = false;
+    let missing_stevenarella_diagnostics = check_layout_docs(&missing_stevenarella);
+    if !missing_stevenarella_diagnostics
+        .iter()
+        .any(|diagnostic| diagnostic.code == "missing_stevenarella_agents")
+    {
+        return Err(format!(
+            "negative fixture did not report missing Stevenarella agent docs: {:?}",
+            missing_stevenarella_diagnostics
+        ));
+    }
+
+    let mut missing_root_links = valid.clone();
+    missing_root_links.agents = String::from("workspace guidance without local links");
+    let missing_root_link_diagnostics = check_layout_docs(&missing_root_links);
+    if !missing_root_link_diagnostics
+        .iter()
+        .any(|diagnostic| diagnostic.code == "agents_local_notes_links")
+    {
+        return Err(format!(
+            "negative fixture did not report missing root local-note links: {:?}",
+            missing_root_link_diagnostics
         ));
     }
 

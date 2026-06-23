@@ -6,7 +6,7 @@ Use this checklist for layout-only reviews. Run `tools/check_layout_boundaries.r
 
 | Path | Role | Ownership | Local notes | Default gates |
 | --- | --- | --- | --- | --- |
-| `clients/stevenarella/` | Core client | Parent repository owned | Pending `clients/stevenarella/AGENTS.md` | Included through mc-compat checks when selected by scenario |
+| `clients/stevenarella/` | Core client | Parent repository owned | `clients/stevenarella/AGENTS.md` | Included through mc-compat checks when selected by scenario |
 | `servers/valence/` | Core server | Parent repository owned | `servers/valence/AGENTS.md` | Included through mc-compat and Valence checks when selected |
 | `compat/` | Compatibility harness/config/fixtures | Parent repository owned | Root `AGENTS.md` plus `docs/architecture.md` | Included by runner, generated-surface, and evidence checks |
 | `hyperion/` | Independent engine/proxy repository | Nested repo, separate jj/git workflow | `hyperion/AGENTS.md` and `hyperion/.agent/napkin.md` | Excluded from parent default gates unless explicitly selected |

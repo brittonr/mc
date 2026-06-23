@@ -14,9 +14,9 @@ The `mc/` workspace is organized around product roles:
 - `docs/evidence/`: promoted receipts, run logs, manifests, and review notes.
 - `docs/layout-checklist.md`: current review checklist for component roots, local agent docs, and nested Git exceptions.
 
-Stevenarella and Valence retain upstream ancestry, but they are not treated as passive vendor payloads. They are parent-owned core component trees, and source revision evidence is path-scoped to the resolved component root.
+Stevenarella and Valence retain upstream ancestry, but they are not treated as passive vendor payloads. They are parent-owned core component trees, and source revision evidence is path-scoped to the resolved component root. Component-specific workflows live next to the code in `clients/stevenarella/AGENTS.md` and `servers/valence/AGENTS.md`.
 
-Leafish is classified as a reference-only nested Git checkout at `Leafish/`. It is retained for comparison and historical investigation, excluded from default compatibility gates, and not treated as a parent-owned core client unless a future Cairn explicitly reclassifies it.
+Leafish is classified as a reference-only nested Git checkout at `Leafish/`. It is retained for comparison and historical investigation, excluded from default compatibility gates, and not treated as a parent-owned core client unless a future Cairn explicitly reclassifies it. Its parent-tracked local-doc waiver is recorded in `docs/layout-checklist.md`.
 
 ## Layout resolution
 

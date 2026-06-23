@@ -11,7 +11,7 @@ ed4ba040b529d40232ed0c459358dcf0066dfa01108717c4f36095f5c825bf0f  docs/evidence/
 f84798965b8e87d6ab51333d8ff38d420ecea1c0948c85fd4c7b5e4ba8156d5e  docs/evidence/inventory-stack-split-merge-cairn-final-2026-06-05.run.log
 4fdef822facae840e7430a3d916dfe871d1a1bec9c06678a1aad356d1ed33c77  docs/evidence/inventory-stack-split-merge-flake-final-2026-06-05.run.log
 050b48b312227d4ebb7118aa0e73f6f278d2afb534d221e9458bf8d4a2de36aa  docs/evidence/inventory-stack-split-merge-archive-validation-2026-06-06.run.log
-cc57d5d9e940977b5fcf14fce094560d590b576e3f10c1ff2c22b0038fa9f3ce  README.md
+00f7475ca7993cbf1e80d1f3450b7a7c41413affcc5235a26a5d24599f529209  README.md
 67df1e6f0a832259b8f620fde5b8b07c9548c61e14ff374c797e028cbaf80220  flake.nix
 b471fb927ec046054595bc7d5630322667f240180c64294729ad008cd9153783  compat/config/scenario-manifest.ncl
 87e2fff619200fcfc90a49dc3d3e117968e41755f49264bf309bd6b474f87d24  compat/runner/src/main.rs

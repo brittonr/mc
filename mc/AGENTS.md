@@ -16,15 +16,15 @@
 - `hyperion/`: Minecraft engine/proxy workspace. Core crates live under `crates/`; event/game logic lives under `events/bedwars`; helper tools live under `tools/`. Repo-specific workflow now lives in `hyperion/AGENTS.md`.
 - `compat/`: mc-compat runner, Nickel/Steel config, generated runner surfaces, and Paper/reference fixtures.
 - `servers/valence/`: core Minecraft server framework. Main crate in `src/`; workspace crates in `crates/*`; runnable examples in `examples/`; protocol/data extractor in `extractor/`; docs site in `website/`. Repo-specific workflow lives in `servers/valence/AGENTS.md`.
-- `clients/stevenarella/`: core Rust Minecraft client used by mc-compat rails and manual client checks. It has no repo-local AGENTS notes yet; use the mc devshell for Cargo and native UI dependencies.
-- `Leafish/`: reference-only nested Git checkout. Keep it out of parent-owned component changes and default gates unless a future Cairn explicitly reclassifies it.
-- `docs/layout-checklist.md`: review checklist for major component roots, local agent docs, and documented nested Git exceptions.
+- `clients/stevenarella/`: core Rust Minecraft client used by mc-compat rails and manual client checks. Repo-specific workflow lives in `clients/stevenarella/AGENTS.md`.
+- `Leafish/`: reference-only nested Git checkout. Keep it out of parent-owned component changes and default gates unless a future Cairn explicitly reclassifies it; the parent-tracked waiver is in `docs/layout-checklist.md`.
+- `docs/layout-checklist.md`: review checklist for major component roots, local agent docs, waivers, and documented nested Git exceptions.
 - `hyperion/` already has repo-local agent notes in `hyperion/.agent/napkin.md`. Keep workspace-wide notes here; prefer subtree-local `AGENTS.md` files for repo-specific commands and conventions.
 
 ## Workflow
 - Before editing inside a major subtree, read that subtree's `README.md`, `CONTRIBUTING.md`, and any local `AGENTS.md` or `.agent/napkin.md`.
 - Prefer repo-local commands and toolchains. Root `mc/` has no shared Cargo workspace, test runner, or formatter.
-- For `clients/stevenarella/`, run Cargo through the mc devshell, for example `nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test world::tests -- --nocapture` from the Stevenarella repo.
+- For `clients/stevenarella/`, follow `clients/stevenarella/AGENTS.md`; run Cargo through the mc devshell, for example `nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test world::tests -- --nocapture` from the Stevenarella repo.
 - New checks/scripts for this workspace should be Rust or Steel Scheme, not Python or Bash. Existing Python gates may remain until touched; migrate touched gates before extending them.
 - Avoid mixed commits across `hyperion/` and the parent-owned `servers/valence/`/`clients/stevenarella/` trees unless user asks for cross-repo change.
 - For Cairn evidence, do not leave review-critical receipts only under untracked `target/`; copy receipt/log artifacts into `docs/evidence/` and record BLAKE3 when tasks/docs cite them.
