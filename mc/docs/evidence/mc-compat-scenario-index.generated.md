@@ -47,6 +47,7 @@ This bounded index is generated from `compat/config/scenario-manifest.ncl`. It r
 | reconnect-flag-state | reconnect-flag-state | 1 | 2 | mc-compat-valence-ctf-reconnect-flag-state-dry-run | mc-compat-valence-ctf-reconnect-flag-state | typed-event-ready |
 | ctf-invalid-pickup-ownership | ctf-invalid-pickup-ownership | 1 | 1 | mc-compat-valence-ctf-invalid-pickup-ownership-dry-run | mc-compat-valence-ctf-invalid-pickup-ownership | typed-event-ready |
 | ctf-invalid-return-drop | ctf-invalid-return-drop | 1 | 1 | mc-compat-valence-ctf-invalid-return-drop-dry-run | mc-compat-valence-ctf-invalid-return-drop | typed-event-ready |
+| ctf-invalid-opponent-base-return-drop | ctf-invalid-opponent-base-return-drop | 1 | 1 | mc-compat-valence-ctf-invalid-opponent-base-return-drop-dry-run | mc-compat-valence-ctf-invalid-opponent-base-return-drop | typed-event-ready |
 | ctf-score-limit-win-condition | ctf-score-limit-win-condition | 1 | 1 | mc-compat-valence-ctf-score-limit-win-condition-dry-run | mc-compat-valence-ctf-score-limit-win-condition | typed-event-ready |
 | ctf-simultaneous-pickup-capture-race | ctf-simultaneous-pickup-capture-race | 2 | 1 | mc-compat-valence-ctf-simultaneous-pickup-capture-race-dry-run | mc-compat-valence-ctf-simultaneous-pickup-capture-race | typed-event-ready |
 | ctf-spawn-team-balance-reset | ctf-spawn-team-balance-reset | 2 | 1 | mc-compat-valence-ctf-spawn-team-balance-reset-dry-run | mc-compat-valence-ctf-spawn-team-balance-reset | typed-event-ready |

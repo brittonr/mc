@@ -1,0 +1,21 @@
+# CTF invalid-action live breadth post-archive validation
+started_at=2026-06-23T02:17:45Z
+## cairn_validate
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 2,
+  "valid": true
+}
+cairn_validate_exit_status=0
+## evidence_manifest_check
+command=nix run --no-update-lock-file .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=436; entries=3176; current=3176; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+evidence_manifest_check_exit_status=0
+finished_at=2026-06-23T02:17:50Z
+exit_status=0

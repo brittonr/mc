@@ -1,0 +1,28 @@
+# CTF invalid-action live breadth final validation
+started_at=2026-06-23T02:20:11Z
+## evidence_manifest_check
+command=nix run --no-update-lock-file .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=436; entries=3179; current=3179; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+evidence_manifest_check_exit_status=0
+## task_evidence_nix
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-cairn-task-evidence
+this derivation will be built:
+  /nix/store/x5mid7p23ysaxciw85vfndnxjxbh4j5g-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/x5mid7p23ysaxciw85vfndnxjxbh4j5g-mc-compat-cairn-task-evidence.drv'...
+task_evidence_nix_exit_status=0
+## cairn_validate
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 2,
+  "valid": true
+}
+cairn_validate_exit_status=0
+finished_at=2026-06-23T02:20:23Z
+exit_status=0

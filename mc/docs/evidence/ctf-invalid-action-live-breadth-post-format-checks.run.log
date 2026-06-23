@@ -1,0 +1,92 @@
+# CTF invalid-action live breadth post-format checks
+started_at=2026-06-23T01:52:56Z
+## ctf_invalid_action_checker
+command=nix develop --no-update-lock-file . -c bash -lc rustc --edition=2021 tools/check_ctf_invalid_action_breadth.rs -o /tmp/check_ctf_invalid_action_breadth && /tmp/check_ctf_invalid_action_breadth --self-test && /tmp/check_ctf_invalid_action_breadth
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+ctf invalid-action live breadth self-test ok: 6 fixtures (positive + negative) passed
+ctf invalid-action live breadth check passed: matrix, live row, typed events, manifests, bundle, and ledger validated
+ctf_invalid_action_checker_exit_status=0
+## runner_invalid_opponent_tests
+command=nix develop --no-update-lock-file . -c cargo test --manifest-path compat/runner/Cargo.toml ctf_invalid_opponent_base_return_drop -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+   Compiling mc-compat-runner v0.1.0 (/home/brittonr/git/mc/compat/runner)
+warning: constant `CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE` is never used
+   --> src/main.rs:622:7
+    |
+622 | const CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE: &str =
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `mc-compat-runner` (bin "mc-compat-runner" test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.64s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 1 test
+test tests::ctf_invalid_opponent_base_return_drop_tracks_client_server_and_envelope ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 157 filtered out; finished in 0.00s
+
+runner_invalid_opponent_tests_exit_status=0
+## valence_unit
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test --manifest-path servers/valence/Cargo.toml --example ctf invalid_opponent_base_return_drop_milestone_records_no_state_mutation_or_score -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+warning: `valence_inventory` (lib) generated 1 warning
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.19s
+     Running unittests examples/ctf.rs (/home/brittonr/.cargo-target/debug/examples/ctf-03ea97c54f418d48)
+
+running 1 test
+test tests::invalid_opponent_base_return_drop_milestone_records_no_state_mutation_or_score ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 25 filtered out; finished in 0.00s
+
+valence_unit_exit_status=0
+finished_at=2026-06-23T01:53:01Z
+exit_status=0

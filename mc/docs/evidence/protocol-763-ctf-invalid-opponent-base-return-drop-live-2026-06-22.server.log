@@ -1,0 +1,69 @@
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+warning: `valence_inventory` (lib) generated 1 warning
+warning: struct `ArrowPolicyDiff` is never constructed
+   --> examples/ctf.rs:197:8
+    |
+197 | struct ArrowPolicyDiff {
+    |        ^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `diff_arrow_policy_snapshots` is never used
+   --> examples/ctf.rs:489:4
+    |
+489 | fn diff_arrow_policy_snapshots(
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `push_arrow_policy_diff` is never used
+   --> examples/ctf.rs:515:4
+    |
+515 | fn push_arrow_policy_diff(
+    |    ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `valence` (example "ctf") generated 3 warnings
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.17s
+     Running `/tmp/valence-compat-763-target/debug/examples/ctf`
+MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbot slot=0 source=team_inventory_setup
+MC-COMPAT-MILESTONE inventory_hotbar_select username=compatbot slot=0
+[2m2026-06-23T01:34:20.252746Z[0m [32m INFO[0m [2mctf[0m[2m:[0m MC-COMPAT-MILESTONE invalid_opponent_base_return_drop_rejected username=compatbot actor_team=Red flag_team=Blue pre_state=at_base post_state=at_base red_score=0 blue_score=0 outcome=no_flag_state_mutation_no_score
+MC-COMPAT-MILESTONE invalid_opponent_base_return_drop_rejected username=compatbot actor_team=Red flag_team=Blue pre_state=at_base post_state=at_base red_score=0 blue_score=0 outcome=no_flag_state_mutation_no_score

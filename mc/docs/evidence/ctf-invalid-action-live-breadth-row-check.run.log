@@ -1,0 +1,9 @@
+# CTF invalid-action live breadth row check
+started_at=2026-06-23T01:38:29Z
+command=nix develop --no-update-lock-file . -c rustc --edition=2021 tools/check_ctf_invalid_action_breadth.rs -o /tmp/check_ctf_invalid_action_breadth && /tmp/check_ctf_invalid_action_breadth
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+ctf invalid-action live breadth check passed: matrix, live row, typed events, manifests, bundle, and ledger validated
+finished_at=2026-06-23T01:38:33Z
+exit_status=0

@@ -1,0 +1,16 @@
+# CTF invalid-action live breadth accepted spec merge
+started_at=2026-06-23T02:12:07Z
+requirement=mc_compatibility.ctf_invalid_action_live_breadth_proof.validation
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+finished_at=2026-06-23T02:12:08Z
+exit_status=0

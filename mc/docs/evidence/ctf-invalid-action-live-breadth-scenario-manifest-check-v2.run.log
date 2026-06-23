@@ -1,0 +1,18 @@
+# CTF invalid-action live breadth scenario manifest checks v2
+started_at=2026-06-23T01:43:07Z
+## scenario_manifest
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-scenario-manifest
+this derivation will be built:
+  /nix/store/p7fnlclbxv67jvab84r7q6kncnx7i4kz-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/p7fnlclbxv67jvab84r7q6kncnx7i4kz-mc-compat-scenario-manifest.drv'...
+scenario_manifest_exit_status=0
+## generated_surfaces
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-generated-harness-surfaces
+this derivation will be built:
+  /nix/store/fgc79cjp9fy68ms8dvpm5i2l8yfyqbw5-mc-compat-generated-harness-surfaces.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/fgc79cjp9fy68ms8dvpm5i2l8yfyqbw5-mc-compat-generated-harness-surfaces.drv'...
+generated_surfaces_exit_status=0
+finished_at=2026-06-23T01:43:27Z
+exit_status=0

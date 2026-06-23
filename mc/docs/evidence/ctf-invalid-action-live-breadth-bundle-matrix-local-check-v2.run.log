@@ -1,0 +1,20 @@
+# CTF invalid-action live breadth local bundle/matrix checks v2
+started_at=2026-06-23T01:49:05Z
+## acceptance_matrix
+command=nix develop --no-update-lock-file . -c bash -lc rustc --edition=2021 tools/check_acceptance_matrix.rs -o /tmp/check_acceptance_matrix && /tmp/check_acceptance_matrix --self-test && /tmp/check_acceptance_matrix
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+acceptance matrix self-test ok: positive and negative fixtures exercised
+acceptance matrix check passed: 62 rows validated
+acceptance_matrix_exit_status=0
+## current_bundle
+command=nix develop --no-update-lock-file . -c bash -lc rustc --edition=2021 tools/check_current_evidence_bundle.rs -o /tmp/check_current_evidence_bundle && /tmp/check_current_evidence_bundle --self-test && /tmp/check_current_evidence_bundle
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+current evidence bundle self-test ok: positive and negative fixtures exercised
+current evidence bundle check passed: 62 rows validated
+current_bundle_exit_status=0
+finished_at=2026-06-23T01:49:12Z
+exit_status=0

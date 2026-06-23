@@ -1,0 +1,9 @@
+# CTF invalid-action live breadth dry-run wrapper check v2
+started_at=2026-06-23T01:39:32Z
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-valence-ctf-invalid-opponent-base-return-drop-dry-run
+this derivation will be built:
+  /nix/store/5janl5yi8xch5g14wyp9gb2rzv7b195n-mc-compat-valence-ctf-invalid-opponent-base-return-drop-dry-run.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/5janl5yi8xch5g14wyp9gb2rzv7b195n-mc-compat-valence-ctf-invalid-opponent-base-return-drop-dry-run.drv'...
+finished_at=2026-06-23T01:39:34Z
+exit_status=0

@@ -2676,6 +2676,15 @@ impl Server {
                 );
                 self.negative_probe_sent = true;
             }
+            if self.negative_probe_is("ctf_invalid_opponent_base_return_drop")
+                && !self.negative_probe_sent
+            {
+                info!(
+                    "MC-COMPAT-MILESTONE ctf_invalid_opponent_base_return_drop_attempted actor_team=red flag_team={} pre_state=at_base base=opponent_base action=opponent_base_return_drop_without_carrier expected=no_flag_state_mutation_no_score",
+                    target_flag_name
+                );
+                self.negative_probe_sent = true;
+            }
             if self.negative_probe_is("reconnect_race")
                 && self.negative_probe_sent
                 && self.flag_probe_have_flag_seen
@@ -2718,6 +2727,18 @@ impl Server {
                 self.log_negative_probe_outcome_once(
                     "ctf_invalid_return_drop_contained",
                     "player_team=red flag_team=red post_state=at_base red_score=0 blue_score=0 outcome=no_flag_state_mutation_no_score",
+                );
+            }
+            if self.negative_probe_is("ctf_invalid_opponent_base_return_drop")
+                && self.negative_probe_sent
+                && self.active_probe_ticks
+                    >= first_flag_tick + NEGATIVE_FLAG_CONTAINMENT_TICK_OFFSET
+                && !self.flag_probe_have_flag_seen
+                && !self.flag_probe_score_seen
+            {
+                self.log_negative_probe_outcome_once(
+                    "ctf_invalid_opponent_base_return_drop_contained",
+                    "actor_team=red flag_team=blue post_state=at_base red_score=0 blue_score=0 outcome=no_flag_state_mutation_no_score",
                 );
             }
             let elapsed = self.active_probe_ticks - first_flag_tick;

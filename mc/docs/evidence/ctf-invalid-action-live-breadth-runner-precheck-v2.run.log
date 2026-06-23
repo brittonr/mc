@@ -1,0 +1,73 @@
+# CTF invalid-action live breadth runner precheck v2
+started_at=2026-06-23T01:39:49Z
+## runner_invalid_opponent_tests
+command=nix develop --no-update-lock-file . -c cargo test --manifest-path compat/runner/Cargo.toml ctf_invalid_opponent_base_return_drop -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+   Compiling mc-compat-runner v0.1.0 (/home/brittonr/git/mc/compat/runner)
+warning: constant `CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE` is never used
+   --> src/main.rs:621:7
+    |
+621 | const CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE: &str =
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `mc-compat-runner` (bin "mc-compat-runner" test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.05s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 1 test
+test tests::ctf_invalid_opponent_base_return_drop_tracks_client_server_and_envelope ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 157 filtered out; finished in 0.00s
+
+runner_invalid_opponent_tests_exit_status=0
+## runner_scenario_parse_tests
+command=nix develop --no-update-lock-file . -c cargo test --manifest-path compat/runner/Cargo.toml scenario_cli_and_env_selection -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+warning: constant `CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE` is never used
+   --> src/main.rs:621:7
+    |
+621 | const CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE: &str =
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `mc-compat-runner` (bin "mc-compat-runner" test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 158 filtered out; finished in 0.00s
+
+runner_scenario_parse_tests_exit_status=0
+## runner_typed_event_tests
+command=nix develop --no-update-lock-file . -c cargo test --manifest-path compat/runner/Cargo.toml typed_event_pass_fail_gate_includes_only_migrated_rows -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+warning: constant `CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE` is never used
+   --> src/main.rs:621:7
+    |
+621 | const CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE: &str =
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `mc-compat-runner` (bin "mc-compat-runner" test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 1 test
+test tests::typed_event_pass_fail_gate_includes_only_migrated_rows ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 157 filtered out; finished in 0.00s
+
+runner_typed_event_tests_exit_status=0
+finished_at=2026-06-23T01:39:52Z
+exit_status=0

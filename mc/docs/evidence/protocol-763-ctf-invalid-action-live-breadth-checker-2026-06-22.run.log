@@ -1,0 +1,11 @@
+# CTF invalid-action live breadth checker self-test
+started_at=2026-06-23T01:37:22Z
+row_id=opponent-base-return-drop-without-carrier
+command=nix develop --no-update-lock-file . -c rustc --edition=2021 tools/check_ctf_invalid_action_breadth.rs -o /tmp/check_ctf_invalid_action_breadth && /tmp/check_ctf_invalid_action_breadth --self-test
+building '/nix/store/yx4fw7ghjy2kp6vw4b6s080rsbr8abbf-nix-shell-env.drv'...
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+ctf invalid-action live breadth self-test ok: 6 fixtures (positive + negative) passed
+finished_at=2026-06-23T01:37:27Z
+exit_status=0

@@ -743,6 +743,34 @@
               mainProgram = "mc-compat-valence-ctf-invalid-return-drop";
             };
           };
+          mc-compat-valence-ctf-invalid-opponent-base-return-drop = pkgs.writeShellApplication {
+            name = "mc-compat-valence-ctf-invalid-opponent-base-return-drop";
+            runtimeInputs = [ mc-compat-runner ];
+            text = ''
+              mode="--run"
+              if [[ "''${1:-}" == "--dry-run" || "''${1:-}" == "--run" ]]; then
+                mode="$1"
+                shift
+              fi
+
+              receipt="''${MC_COMPAT_CTF_INVALID_OPPONENT_BASE_RETURN_DROP_RECEIPT:-target/mc-compat-ctf-invalid-opponent-base-return-drop/ctf-invalid-opponent-base-return-drop.json}"
+              mkdir -p "$(dirname "$receipt")"
+
+              export SERVER_PROTOCOL="''${SERVER_PROTOCOL:-763}"
+              export SERVER_VERSION="''${SERVER_VERSION:-1.20.1}"
+              export VALENCE_REV="''${VALENCE_REV:-main}"
+              export VALENCE_EXAMPLE="''${VALENCE_EXAMPLE:-ctf}"
+              export VALENCE_WORKTREE="''${VALENCE_WORKTREE:-/tmp/valence-compat-763}"
+              export VALENCE_TARGET_DIR="''${VALENCE_TARGET_DIR:-/tmp/valence-compat-763-target}"
+              export CLIENT_TIMEOUT="''${CLIENT_TIMEOUT:-120}"
+
+              exec mc-compat-runner "$mode"                 --server-backend valence                 --scenario ctf-invalid-opponent-base-return-drop                 --receipt "$receipt"                 "$@"
+            '';
+            meta = {
+              description = "Run the maintained protocol-763 Valence CTF invalid opponent-base return/drop receipt.";
+              mainProgram = "mc-compat-valence-ctf-invalid-opponent-base-return-drop";
+            };
+          };
           mc-compat-valence-ctf-score-limit-win-condition = pkgs.writeShellApplication {
             name = "mc-compat-valence-ctf-score-limit-win-condition";
             runtimeInputs = [ mc-compat-runner ];
@@ -1096,6 +1124,7 @@
             mc-compat-valence-ctf-reconnect-flag-state
             mc-compat-valence-ctf-invalid-pickup-ownership
             mc-compat-valence-ctf-invalid-return-drop
+            mc-compat-valence-ctf-invalid-opponent-base-return-drop
             mc-compat-valence-ctf-score-limit-win-condition
             mc-compat-valence-ctf-simultaneous-pickup-capture-race
             mc-compat-valence-ctf-spawn-team-balance-reset
@@ -1253,6 +1282,13 @@
             self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-invalid-return-drop
           }/bin/mc-compat-valence-ctf-invalid-return-drop";
           meta.description = "Run the maintained protocol-763 Valence CTF invalid return/drop receipt.";
+        };
+        mc-compat-valence-ctf-invalid-opponent-base-return-drop = {
+          type = "app";
+          program = "${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-invalid-opponent-base-return-drop
+          }/bin/mc-compat-valence-ctf-invalid-opponent-base-return-drop";
+          meta.description = "Run the maintained protocol-763 Valence CTF invalid opponent-base return/drop receipt.";
         };
         mc-compat-valence-ctf-score-limit-win-condition = {
           type = "app";
@@ -2517,6 +2553,36 @@
               mkdir -p "$out"
               cp ctf-invalid-return-drop-dry-run.log receipts/ctf-invalid-return-drop-receipt.json "$out/"
             '';
+        mc-compat-valence-ctf-invalid-opponent-base-return-drop-dry-run =
+          pkgs.runCommand "mc-compat-valence-ctf-invalid-opponent-base-return-drop-dry-run"
+            { nativeBuildInputs = [ pkgs.git ]; }
+            ''
+              mkdir -p fake-stevenarella fake-valence receipts
+              printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+              git -C fake-valence init
+              git -C fake-valence config user.email mc-compat@example.invalid
+              git -C fake-valence config user.name mc-compat
+              printf '%s\n' fake > fake-valence/README.md
+              git -C fake-valence add README.md
+              git -C fake-valence commit -m init
+              MC_COMPAT_CTF_INVALID_OPPONENT_BASE_RETURN_DROP_RECEIPT="$PWD/receipts/ctf-invalid-opponent-base-return-drop-receipt.json" ${
+                self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-invalid-opponent-base-return-drop
+              }/bin/mc-compat-valence-ctf-invalid-opponent-base-return-drop --dry-run --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD > ctf-invalid-opponent-base-return-drop-dry-run.log
+              grep -Fq "scenario 'ctf-invalid-opponent-base-return-drop'" ctf-invalid-opponent-base-return-drop-dry-run.log
+              grep -Fq '"name": "ctf-invalid-opponent-base-return-drop"' receipts/ctf-invalid-opponent-base-return-drop-receipt.json
+              grep -Fq '"version": "1.20.1"' receipts/ctf-invalid-opponent-base-return-drop-receipt.json
+              grep -Fq '"protocol": 763' receipts/ctf-invalid-opponent-base-return-drop-receipt.json
+              grep -Fq '"timeout_secs": 120' receipts/ctf-invalid-opponent-base-return-drop-receipt.json
+              grep -Fq '"ctf_invalid_opponent_base_return_drop_attempted"' receipts/ctf-invalid-opponent-base-return-drop-receipt.json
+              grep -Fq '"ctf_invalid_opponent_base_return_drop_contained"' receipts/ctf-invalid-opponent-base-return-drop-receipt.json
+              grep -Fq '"server_invalid_opponent_base_return_drop_rejected"' receipts/ctf-invalid-opponent-base-return-drop-receipt.json
+              grep -Fq '"invalid_action": "opponent_base_return_drop_without_carrier"' receipts/ctf-invalid-opponent-base-return-drop-receipt.json
+              grep -Fq '"expected_summary_packets": ["login_success", "play_join_game", "opponent_base_return_drop_attempt", "invalid_opponent_base_return_drop_rejected"]' receipts/ctf-invalid-opponent-base-return-drop-receipt.json
+              grep -Fq '"claims_correctness": false' receipts/ctf-invalid-opponent-base-return-drop-receipt.json
+              grep -Fq '"claims_semantic_equivalence": false' receipts/ctf-invalid-opponent-base-return-drop-receipt.json
+              mkdir -p "$out"
+              cp ctf-invalid-opponent-base-return-drop-dry-run.log receipts/ctf-invalid-opponent-base-return-drop-receipt.json "$out/"
+            '';
         mc-compat-valence-ctf-score-limit-win-condition-dry-run =
           pkgs.runCommand "mc-compat-valence-ctf-score-limit-win-condition-dry-run"
             { nativeBuildInputs = [ pkgs.git ]; }
@@ -2981,6 +3047,9 @@
             self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-invalid-return-drop-dry-run
           } "$out/ctf-invalid-return-drop"
           ln -s ${
+            self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-invalid-opponent-base-return-drop-dry-run
+          } "$out/ctf-invalid-opponent-base-return-drop"
+          ln -s ${
             self.checks.${pkgs.stdenv.hostPlatform.system}.mc-compat-valence-ctf-score-limit-win-condition-dry-run
           } "$out/ctf-score-limit-win-condition"
           ln -s ${
@@ -3121,6 +3190,7 @@
           reconnect-flag-state
           ctf-invalid-pickup-ownership
           ctf-invalid-return-drop
+          ctf-invalid-opponent-base-return-drop
           ctf-score-limit-win-condition
           ctf-simultaneous-pickup-capture-race
           ctf-spawn-team-balance-reset
@@ -3356,7 +3426,7 @@
           grep -Fq -- "--apply" help.log
           grep -Fq -- "--stop" help.log
           grep -Fq -- "--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT" help.log
-          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|inventory-stack-split-merge|inventory-drag-transactions|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-crafting-recipe-breadth|survival-furnace-persistence|survival-furnace-smelting-breadth|survival-hunger-food|survival-hunger-health-cycle|survival-mob-drop|survival-mob-ai-loot-breadth|survival-redstone-toggle|survival-redstone-circuit-breadth|survival-world-persistence-restart|survival-world-multichunk-durability|survival-crash-recovery-parity|survival-block-entity-persistence-parity|survival-container-block-entity-breadth|survival-biome-dimension-state|survival-biome-dimension-travel|survival-sign-editing-live|mcp-controlled-smoke|combat-damage|combat-knockback|vanilla-combat-reference-parity|vanilla-combat-armor-reference-parity|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset" help.log
+          grep -Fq -- "--scenario smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|inventory-stack-split-merge|inventory-drag-transactions|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-crafting-recipe-breadth|survival-furnace-persistence|survival-furnace-smelting-breadth|survival-hunger-food|survival-hunger-health-cycle|survival-mob-drop|survival-mob-ai-loot-breadth|survival-redstone-toggle|survival-redstone-circuit-breadth|survival-world-persistence-restart|survival-world-multichunk-durability|survival-crash-recovery-parity|survival-block-entity-persistence-parity|survival-container-block-entity-breadth|survival-biome-dimension-state|survival-biome-dimension-travel|survival-sign-editing-live|mcp-controlled-smoke|combat-damage|combat-knockback|vanilla-combat-reference-parity|vanilla-combat-armor-reference-parity|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-invalid-opponent-base-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset" help.log
           grep -Fq "MC_COMPAT_SCENARIO" help.log
           grep -Fq -- "--expect-status-description" help.log
           grep -Fq -- "--packet-capture-summary" help.log

@@ -29,7 +29,7 @@ const REQUIRED_SEAMS: &[&str] = &[
     "Reconnect flag-state",
     "Invalid flag pickup/ownership",
     "Invalid flag return/drop",
-    "CTF invalid-action breadth fixture",
+    "CTF invalid-action breadth live",
     "Score limit / win condition",
     "Simultaneous pickup/capture race",
     "Spawn/team balance/resource reset",
@@ -90,7 +90,7 @@ const REQUIRED_TEXT: &[&str] = &[
     "projectile travel/collision simulation",
     "Invalid flag pickup/ownership",
     "Invalid flag return/drop",
-    "CTF invalid-action breadth fixture",
+    "CTF invalid-action breadth live",
     "Score limit / win condition",
     "Simultaneous pickup/capture race",
     "Spawn/team balance/resource reset",
@@ -343,7 +343,7 @@ fn fixture_text(seam: &str, digest: &str) -> (String, String) {
         "# Matrix\n\n| Seam | Maintained command | Receipt | Evidence doc | BLAKE3 | Landed commits | Scoped claim | Explicit non-claims |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| {seam} | `nix run .#x` | `docs/evidence/x.receipt.json` | `docs/evidence/x.md` | `{digest}` | parent `abc1234` | Bounded claim. | No broad claim. |\n"
     );
     let bundle = format!(
-        "# Bundle\n\n| Seam | Maintained command | BLAKE3 |\n| --- | --- | --- |\n| {seam} | `nix run .#x` | `{digest}` |\n\ntools/check_acceptance_matrix.rs\ntools/check_current_evidence_bundle.rs\nnix run --no-update-lock-file .#cairn -- validate --root .\nfull Minecraft compatibility\nfull survival compatibility\nvanilla parity\narmor loadouts\nprojectile damage attribution\nprojectile travel/collision simulation\nInvalid flag pickup/ownership\nInvalid flag return/drop\nCTF invalid-action breadth fixture\nScore limit / win condition\nSimultaneous pickup/capture race\nSpawn/team balance/resource reset\nMovement packet family\nmovement physics\nall movement packet variants\nBlock-entity sign packet family\nBlockEntityUpdateS2CPacket\nSignEditorOpenS2CPacket\nUpdateSignC2SPacket\ntools/check_targeted_packet_promotions.rs\nCreativeInventoryActionC2SPacket\nRecipeBookDataC2SPacket\nResourcePackStatusC2SPacket\nMCP-controlled observability\nSurvival crafting recipe breadth\nSurvival furnace smelting breadth\nSurvival hunger/health cycle\n"
+        "# Bundle\n\n| Seam | Maintained command | BLAKE3 |\n| --- | --- | --- |\n| {seam} | `nix run .#x` | `{digest}` |\n\ntools/check_acceptance_matrix.rs\ntools/check_current_evidence_bundle.rs\nnix run --no-update-lock-file .#cairn -- validate --root .\nfull Minecraft compatibility\nfull survival compatibility\nvanilla parity\narmor loadouts\nprojectile damage attribution\nprojectile travel/collision simulation\nInvalid flag pickup/ownership\nInvalid flag return/drop\nCTF invalid-action breadth live\nScore limit / win condition\nSimultaneous pickup/capture race\nSpawn/team balance/resource reset\nMovement packet family\nmovement physics\nall movement packet variants\nBlock-entity sign packet family\nBlockEntityUpdateS2CPacket\nSignEditorOpenS2CPacket\nUpdateSignC2SPacket\ntools/check_targeted_packet_promotions.rs\nCreativeInventoryActionC2SPacket\nRecipeBookDataC2SPacket\nResourcePackStatusC2SPacket\nMCP-controlled observability\nSurvival crafting recipe breadth\nSurvival furnace smelting breadth\nSurvival hunger/health cycle\nSurvival mob AI/loot breadth\nSurvival redstone circuit breadth\nSurvival biome/dimension travel\nSurvival world multichunk durability\nSurvival container block-entity breadth\nSurvival sign editing live\n"
     );
     (matrix, bundle)
 }

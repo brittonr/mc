@@ -1159,6 +1159,23 @@ fn digging(
                 }
                 (Team::Red, BlockState::BLUE_WOOL) => {
                     if event.position == globals.blue_flag {
+                        if invalid_opponent_base_return_drop_probe_enabled() {
+                            let red_score = score_for_team(&score, Team::Red);
+                            let blue_score = score_for_team(&score, Team::Blue);
+                            let pre_state = flag_presence_state(&flag_manager, Team::Blue);
+                            let milestone = invalid_opponent_base_return_drop_rejection_milestone(
+                                username.as_str(),
+                                *team,
+                                Team::Blue,
+                                pre_state,
+                                pre_state,
+                                red_score,
+                                blue_score,
+                            );
+                            info!("{}", milestone);
+                            println!("{}", milestone);
+                            return;
+                        }
                         if flag_manager.blue.is_some()
                             || ctf_race_duplicate_pickup_blocked(&race_probe)
                         {
@@ -1294,10 +1311,20 @@ fn flag_owner(flag_manager: &FlagManager, flag_team: Team) -> Option<Entity> {
     }
 }
 
+const CTF_INVALID_RETURN_DROP_PROBE_ENV: &str = "MC_COMPAT_CTF_INVALID_RETURN_DROP_PROBE";
+const CTF_INVALID_OPPONENT_BASE_RETURN_DROP_PROBE_ENV: &str =
+    "MC_COMPAT_CTF_INVALID_OPPONENT_BASE_RETURN_DROP_PROBE";
+
 fn invalid_flag_return_drop_probe_enabled() -> bool {
-    env::var("MC_COMPAT_CTF_INVALID_RETURN_DROP_PROBE")
-        .map(|value| value != "0")
-        .unwrap_or(false)
+    env_flag_enabled(CTF_INVALID_RETURN_DROP_PROBE_ENV)
+}
+
+fn invalid_opponent_base_return_drop_probe_enabled() -> bool {
+    env_flag_enabled(CTF_INVALID_OPPONENT_BASE_RETURN_DROP_PROBE_ENV)
+}
+
+fn env_flag_enabled(name: &str) -> bool {
+    env::var(name).map(|value| value != "0").unwrap_or(false)
 }
 
 fn score_limit_win_probe_enabled() -> bool {
@@ -1634,10 +1661,54 @@ fn invalid_flag_return_drop_rejection_milestone(
     red_score: u32,
     blue_score: u32,
 ) -> String {
+    format_invalid_return_drop_rejection_milestone(
+        "invalid_flag_return_drop_rejected",
+        username,
+        actor_team,
+        flag_team,
+        pre_state,
+        post_state,
+        red_score,
+        blue_score,
+    )
+}
+
+fn invalid_opponent_base_return_drop_rejection_milestone(
+    username: &str,
+    actor_team: Team,
+    flag_team: Team,
+    pre_state: &str,
+    post_state: &str,
+    red_score: u32,
+    blue_score: u32,
+) -> String {
+    format_invalid_return_drop_rejection_milestone(
+        "invalid_opponent_base_return_drop_rejected",
+        username,
+        actor_team,
+        flag_team,
+        pre_state,
+        post_state,
+        red_score,
+        blue_score,
+    )
+}
+
+fn format_invalid_return_drop_rejection_milestone(
+    milestone: &str,
+    username: &str,
+    actor_team: Team,
+    flag_team: Team,
+    pre_state: &str,
+    post_state: &str,
+    red_score: u32,
+    blue_score: u32,
+) -> String {
     format!(
-        "MC-COMPAT-MILESTONE invalid_flag_return_drop_rejected username={} actor_team={} \
+        "MC-COMPAT-MILESTONE {} username={} actor_team={} \
          flag_team={} pre_state={} post_state={} red_score={} blue_score={} \
          outcome=no_flag_state_mutation_no_score",
+        milestone,
         username,
         team_label(actor_team),
         team_label(flag_team),
@@ -3265,12 +3336,6 @@ fn inventory_drag_transactions_probe_enabled() -> bool {
     env_flag_enabled(INVENTORY_DRAG_TRANSACTIONS_PROBE_ENV)
 }
 
-fn env_flag_enabled(name: &str) -> bool {
-    std::env::var(name)
-        .map(|value| value != "0")
-        .unwrap_or(false)
-}
-
 fn vanilla_combat_reference_probe_hit(attacker: &str, victim: &str) -> bool {
     vanilla_combat_reference_probe_hit_for(
         vanilla_combat_reference_probe_enabled(),
@@ -4140,6 +4205,41 @@ mod tests {
         assert!(milestone.contains("username=compatbot"), "{milestone}");
         assert!(milestone.contains("actor_team=Red"), "{milestone}");
         assert!(milestone.contains("flag_team=Red"), "{milestone}");
+        assert!(milestone.contains("pre_state=at_base"), "{milestone}");
+        assert!(milestone.contains("post_state=at_base"), "{milestone}");
+        assert!(milestone.contains("red_score=2"), "{milestone}");
+        assert!(milestone.contains("blue_score=0"), "{milestone}");
+        assert!(
+            milestone.contains("outcome=no_flag_state_mutation_no_score"),
+            "{milestone}"
+        );
+    }
+
+    #[test]
+    fn invalid_opponent_base_return_drop_milestone_records_no_state_mutation_or_score() {
+        let mut score = Score::default();
+        score.scores.insert(Team::Red, TEST_RED_SCORE);
+        let flag_manager = FlagManager {
+            red: None,
+            blue: None,
+        };
+        let milestone = invalid_opponent_base_return_drop_rejection_milestone(
+            "compatbot",
+            Team::Red,
+            Team::Blue,
+            flag_presence_state(&flag_manager, Team::Blue),
+            flag_presence_state(&flag_manager, Team::Blue),
+            score_for_team(&score, Team::Red),
+            score_for_team(&score, Team::Blue),
+        );
+
+        assert!(
+            milestone.contains("invalid_opponent_base_return_drop_rejected"),
+            "{milestone}"
+        );
+        assert!(milestone.contains("username=compatbot"), "{milestone}");
+        assert!(milestone.contains("actor_team=Red"), "{milestone}");
+        assert!(milestone.contains("flag_team=Blue"), "{milestone}");
         assert!(milestone.contains("pre_state=at_base"), "{milestone}");
         assert!(milestone.contains("post_state=at_base"), "{milestone}");
         assert!(milestone.contains("red_score=2"), "{milestone}");

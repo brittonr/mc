@@ -1,0 +1,123 @@
+# CTF invalid-action live breadth archive
+started_at=2026-06-23T02:17:10Z
+## archive_dry_run
+command=nix run --no-update-lock-file .#cairn -- archive ctf-invalid-action-live-breadth-proof --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: ctf-invalid-action-live-breadth-proof",
+      "kind": "archive_change",
+      "path": "./cairn/changes/ctf-invalid-action-live-breadth-proof"
+    }
+  ],
+  "blocked": false,
+  "change": "ctf-invalid-action-live-breadth-proof",
+  "dry_run": true,
+  "input_hash": "a61c3598b621cf3e24113116580cb4a95102036765d76a3814c8fead99faee5e",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "427bd67ecf56ab10465ccda686031d78d245f5b832196a113765839810f9d8c2",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "9c0fda08e932647d791f84420e26436329d219e2b44d5e850a8f32805e474235"
+}
+archive_dry_run_exit_status=0
+## archive_execute
+command=nix run --no-update-lock-file .#cairn -- archive ctf-invalid-action-live-breadth-proof --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: ctf-invalid-action-live-breadth-proof",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-ctf-invalid-action-live-breadth-proof"
+    }
+  ],
+  "blocked": false,
+  "change": "ctf-invalid-action-live-breadth-proof",
+  "dry_run": false,
+  "input_hash": "a61c3598b621cf3e24113116580cb4a95102036765d76a3814c8fead99faee5e",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "11aa12c591920ce3c98cb1499f3ad5b68482d38b7a374dfe01739648e786e0e4",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-ctf-invalid-action-live-breadth-proof/design.md"
+        },
+        {
+          "content_hash": "605162ca069543f55e4ec26d33b5e5ed349bef9374865dc795a6092923b6267b",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-ctf-invalid-action-live-breadth-proof/proposal.md"
+        },
+        {
+          "content_hash": "b85b96adfd937bc8696890708aa3d2d3559e44795590b94f4622afaddc7d9999",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-ctf-invalid-action-live-breadth-proof/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "6705eaffd0ebdf8789d6fffe1592b763ce35cc8ad4282a532eba1982359cf3e0",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-ctf-invalid-action-live-breadth-proof/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/ctf-invalid-action-live-breadth-proof"
+        }
+      ],
+      "manifest_hash": "02d14200ad344a98d75953f79d731330ae03fe4953e7a416f9a225d25e5f9d35"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "11aa12c591920ce3c98cb1499f3ad5b68482d38b7a374dfe01739648e786e0e4",
+          "exists": true,
+          "path": "./cairn/changes/ctf-invalid-action-live-breadth-proof/design.md"
+        },
+        {
+          "content_hash": "605162ca069543f55e4ec26d33b5e5ed349bef9374865dc795a6092923b6267b",
+          "exists": true,
+          "path": "./cairn/changes/ctf-invalid-action-live-breadth-proof/proposal.md"
+        },
+        {
+          "content_hash": "b85b96adfd937bc8696890708aa3d2d3559e44795590b94f4622afaddc7d9999",
+          "exists": true,
+          "path": "./cairn/changes/ctf-invalid-action-live-breadth-proof/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "6705eaffd0ebdf8789d6fffe1592b763ce35cc8ad4282a532eba1982359cf3e0",
+          "exists": true,
+          "path": "./cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md"
+        }
+      ],
+      "manifest_hash": "a1e58a4ddbe8378a7fe73a1ff3e8513dcf228019b5210f3a54723d82838ab550"
+    },
+    "kind": "archive",
+    "manifest_hash": "85d57ab44ba1952c3f440ce88a702ec0ec75b13f326fe6210cdf92d0ca412045"
+  },
+  "plan_hash": "5e514f434c6bbf9265f046674993e699ce0d9e374c206a0a58c10ecad5b40961",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "33396b28dea16102f0e114febf47bb55f757a1fdf96a80f8a732538c5bdb7532"
+}
+archive_execute_exit_status=0
+## cairn_validate
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 2,
+  "valid": true
+}
+cairn_validate_exit_status=0
+finished_at=2026-06-23T02:17:14Z
+exit_status=0

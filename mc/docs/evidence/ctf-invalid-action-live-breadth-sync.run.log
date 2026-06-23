@@ -1,0 +1,94 @@
+# CTF invalid-action live breadth Cairn sync
+started_at=2026-06-23T02:10:52Z
+## sync_dry_run
+command=nix run --no-update-lock-file .#cairn -- sync ctf-invalid-action-live-breadth-proof --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/ctf-invalid-action-live-breadth-proof/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/ctf-invalid-action-live-breadth-proof/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "ctf-invalid-action-live-breadth-proof",
+  "delta_specs": [
+    "./cairn/changes/ctf-invalid-action-live-breadth-proof/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "53c4c41f5581e1110045e46c250ede1bd473fe2cb20df9b64107436522d1ec5b",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "d0fa873e3031cfcaf8b654ba38e8c557ba5ed2624c2fa101055ed03eef15d2f0",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "0d3b3b5bf3e4f0fafca1dca9c597f1b90d18c2bfa8d7469369dfa6439bb26b9c"
+}
+sync_dry_run_exit_status=0
+## sync_execute
+command=nix run --no-update-lock-file .#cairn -- sync ctf-invalid-action-live-breadth-proof --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/ctf-invalid-action-live-breadth-proof/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/ctf-invalid-action-live-breadth-proof/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "ctf-invalid-action-live-breadth-proof",
+  "delta_specs": [
+    "./cairn/changes/ctf-invalid-action-live-breadth-proof/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "53c4c41f5581e1110045e46c250ede1bd473fe2cb20df9b64107436522d1ec5b",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "081266079a011216d2f3f885a236866008f346b915f40269e3d36b9ab0624df2",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "f01087908f840865e00c8d1f025980aedd29f66d83389a1ef7a5cb32dcdf1bad"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "081266079a011216d2f3f885a236866008f346b915f40269e3d36b9ab0624df2",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "f01087908f840865e00c8d1f025980aedd29f66d83389a1ef7a5cb32dcdf1bad"
+    },
+    "kind": "sync",
+    "manifest_hash": "60b7ccb070f892ae83e72391347b8aca59e56bca772a9b05ce0740068807a8e9"
+  },
+  "plan_hash": "69dbe35a192d9ff770f1e3006d9cf4629df6a6ad5bd8c248ed7c5539e048d7f8",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "a0d0057ccf61026350b94b50d512aef12fcd76988aa046d93e7f536bbbdbb725"
+}
+sync_execute_exit_status=0
+## cairn_validate
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+cairn_validate_exit_status=0
+finished_at=2026-06-23T02:10:53Z
+exit_status=0

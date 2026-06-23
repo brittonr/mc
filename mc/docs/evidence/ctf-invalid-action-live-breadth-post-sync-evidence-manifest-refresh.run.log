@@ -1,0 +1,6 @@
+# CTF invalid-action live breadth post-sync evidence manifest refresh
+started_at=2026-06-23T02:12:25Z
+command=nix run --no-update-lock-file .#evidence-manifest-refresh -- --refresh
+evidence manifest refresh ok: mode=refresh; passes=8; manifests=436; entries=3169; current=3169; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=8; manifest_writes=199
+finished_at=2026-06-23T02:12:44Z
+exit_status=0

@@ -1,6 +1,7 @@
 use crate::{
-    scenario_manifest_generated, CTF_RACE_ACCEPTED_SERVER_NEEDLE, CTF_RACE_CLIENT_COUNT_NEEDLE,
-    CTF_RACE_FINAL_SERVER_NEEDLE, CTF_RACE_REJECTED_SERVER_NEEDLE,
+    scenario_manifest_generated, CTF_OPPONENT_RETURN_DROP_CLIENT_ATTEMPT_NEEDLE,
+    CTF_OPPONENT_RETURN_DROP_CLIENT_CONTAINED_NEEDLE, CTF_RACE_ACCEPTED_SERVER_NEEDLE,
+    CTF_RACE_CLIENT_COUNT_NEEDLE, CTF_RACE_FINAL_SERVER_NEEDLE, CTF_RACE_REJECTED_SERVER_NEEDLE,
     CTF_SCORE_LIMIT_CLIENT_WIN_NEEDLE, CTF_SCORE_LIMIT_SERVER_FINAL_CAPTURE_NEEDLE,
     CTF_SCORE_LIMIT_SERVER_PRE_STATE_NEEDLE, CTF_SCORE_LIMIT_SERVER_WIN_NEEDLE,
     CTF_SPAWN_RESOURCE_RESET_NEEDLE, CTF_SPAWN_TEAM_BALANCE_NEEDLE,
@@ -186,6 +187,7 @@ pub(crate) enum Scenario {
     NegativeCtfWrongScore,
     CtfInvalidPickupOwnership,
     CtfInvalidReturnDrop,
+    CtfInvalidOpponentBaseReturnDrop,
     CtfScoreLimitWinCondition,
     CtfSimultaneousPickupCaptureRace,
     CtfSpawnTeamBalanceReset,
@@ -408,6 +410,7 @@ pub(crate) enum ScenarioBehaviorKind {
     NegativeCtfWrongScore,
     CtfInvalidPickupOwnership,
     CtfInvalidReturnDrop,
+    CtfInvalidOpponentBaseReturnDrop,
     CtfScoreLimitWinCondition,
     CtfSimultaneousPickupCaptureRace,
     CtfSpawnTeamBalanceReset,
@@ -462,6 +465,10 @@ impl ScenarioBehaviorKind {
             Self::CtfInvalidReturnDrop => Some(NegativeLiveRailBehavior {
                 invalid_action: "own_base_return_without_carrier",
                 postcondition: "ctf_invalid_return_drop_contained",
+            }),
+            Self::CtfInvalidOpponentBaseReturnDrop => Some(NegativeLiveRailBehavior {
+                invalid_action: "opponent_base_return_drop_without_carrier",
+                postcondition: CTF_OPPONENT_RETURN_DROP_CLIENT_CONTAINED_NEEDLE,
             }),
             _ => None,
         }
@@ -526,6 +533,7 @@ pub(crate) const ALL_SCENARIOS: &[Scenario] = &[
     Scenario::NegativeCtfWrongScore,
     Scenario::CtfInvalidPickupOwnership,
     Scenario::CtfInvalidReturnDrop,
+    Scenario::CtfInvalidOpponentBaseReturnDrop,
     Scenario::CtfScoreLimitWinCondition,
     Scenario::CtfSimultaneousPickupCaptureRace,
     Scenario::CtfSpawnTeamBalanceReset,
@@ -2670,6 +2678,52 @@ pub(crate) const SCENARIO_SPECS: &[ScenarioSpec] = &[
         behavior: ScenarioBehaviorKind::CtfInvalidReturnDrop,
     },
     ScenarioSpec {
+        scenario: Scenario::CtfInvalidOpponentBaseReturnDrop,
+        canonical_name: "ctf-invalid-opponent-base-return-drop",
+        aliases: &["ctf-invalid-opponent-base-return-drop"],
+        client_milestones: &[
+            ("protocol_detected", "Detected server protocol version"),
+            ("join_game", "join_game"),
+            ("render_tick", "render_tick_with_player"),
+            (
+                "ctf_invalid_opponent_base_return_drop_attempted",
+                CTF_OPPONENT_RETURN_DROP_CLIENT_ATTEMPT_NEEDLE,
+            ),
+            (
+                "ctf_invalid_opponent_base_return_drop_contained",
+                CTF_OPPONENT_RETURN_DROP_CLIENT_CONTAINED_NEEDLE,
+            ),
+        ],
+        server_milestones: &[
+            ("server_username_seen", "compatbot"),
+            (
+                "server_invalid_opponent_base_return_drop_rejected",
+                "invalid_opponent_base_return_drop_rejected username=compatbot actor_team=Red flag_team=Blue pre_state=at_base post_state=at_base red_score=0 blue_score=0 outcome=no_flag_state_mutation_no_score",
+            ),
+        ],
+        forbidden_patterns: &[
+            ("panic", "panicked"),
+            ("unexpected_eof", "UnexpectedEof"),
+            ("protocol_mismatch", "protocol mismatch"),
+            ("decode_error", "decode error"),
+            ("unexpected_flag_pickup_chat", "You have the flag!"),
+            (
+                "unexpected_server_flag_pickup",
+                "MC-COMPAT-MILESTONE flag_pickup username=",
+            ),
+            ("unexpected_flag_return", "MC-COMPAT-MILESTONE flag_return"),
+            (
+                "unexpected_flag_disconnect_return",
+                "MC-COMPAT-MILESTONE flag_disconnect_return",
+            ),
+            ("unexpected_flag_capture", "You captured the flag!"),
+            ("unexpected_flag_capture_milestone", "flag_capture"),
+            ("unexpected_red_score", "RED: 1"),
+            ("unexpected_blue_score", "BLUE: 1"),
+        ],
+        behavior: ScenarioBehaviorKind::CtfInvalidOpponentBaseReturnDrop,
+    },
+    ScenarioSpec {
         scenario: Scenario::CtfScoreLimitWinCondition,
         canonical_name: "ctf-score-limit-win-condition",
         aliases: &["ctf-score-limit-win-condition"],
@@ -3647,6 +3701,9 @@ fn expected_negative_live_rail_postcondition(scenario: Scenario) -> Option<&'sta
         Scenario::NegativeCtfWrongScore => Some("negative_wrong_score_contained"),
         Scenario::CtfInvalidPickupOwnership => Some("ctf_invalid_pickup_contained"),
         Scenario::CtfInvalidReturnDrop => Some("ctf_invalid_return_drop_contained"),
+        Scenario::CtfInvalidOpponentBaseReturnDrop => {
+            Some(CTF_OPPONENT_RETURN_DROP_CLIENT_CONTAINED_NEEDLE)
+        }
         _ => None,
     }
 }
