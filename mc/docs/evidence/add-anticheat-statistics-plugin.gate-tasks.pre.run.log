@@ -1,0 +1,26 @@
+command=nix run .#cairn -- gate tasks add-anticheat-statistics-plugin --root .
+cwd=/home/brittonr/git/mc
+started_at=2026-06-23T05:26:42Z
+{
+  "change": "add-anticheat-statistics-plugin",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "b5a0fae0d51ee7b3c61a5f2e72d063e5b88ac772f0adedd18f5c861e7c499a3a",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "d53dc37bedc3fd7a407c1623095a7b824286bc3b6ecf2d7725182a518bc8a377",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+finished_at=2026-06-23T05:26:42Z
+exit_status=0

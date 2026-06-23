@@ -1,0 +1,77 @@
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence_server --lib
+cwd=/home/brittonr/git/mc/servers/valence
+started_at=2026-06-23T05:43:49Z
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.19s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_server-eff809021d761b6b)
+
+running 28 tests
+test anticheat::tests::empty_window_returns_documented_empty_snapshot ... ok
+test anticheat::tests::burst_samples_trim_to_sample_capacity ... ok
+test anticheat::tests::invalid_window_and_non_finite_sample_fail_closed ... ok
+test anticheat::tests::normal_samples_compute_rolling_statistics ... ok
+test anticheat::tests::overflow_boundary_fails_closed ... ok
+test anticheat::tests::reset_behavior_clears_window ... ok
+test anticheat::tests::plugin_disabled_has_no_anticheat_effect ... ok
+test layer::bvh::tests::partition_middle ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_2 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_0 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_1 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_3 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_5 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_6 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_4 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_8 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_7 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_9 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_get_set ... ok
+test chunk_view::tests::chunk_view_contains ... ok
+test layer::chunk::loaded::tests::loaded_chunk_unviewed_no_changes ... ok
+test layer::chunk::unloaded::tests::unloaded_chunk_resize_removes_block_entities ... ok
+test layer::message::tests::send_global_message ... ok
+test anticheat::tests::plugin_samples_packet_cadence ... ok
+test anticheat::tests::plugin_samples_movement_without_default_enforcement ... ok
+test layer::chunk::loaded::tests::loaded_chunk_changes_clear_packet_cache ... ok
+test layer::chunk::paletted_container::tests::random_assignments ... ok
+test layer::bvh::tests::query_visits_correct_nodes ... ok
+
+test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+finished_at=2026-06-23T05:43:50Z
+exit_status=0

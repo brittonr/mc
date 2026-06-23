@@ -1,0 +1,51 @@
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo clippy -p valence_server --lib --tests --no-deps -- -D warnings
+cwd=/home/brittonr/git/mc/servers/valence
+started_at=2026-06-23T05:43:29Z
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+    Checking valence_server v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_server)
+warning: lint `clippy::string_to_string` has been removed: `clippy::implicit_clone` covers those cases
+  |
+  = note: requested on the command line with `-W clippy::string_to_string`
+  = note: `#[warn(renamed_and_removed_lints)]` on by default
+
+warning: `valence_server` (lib) generated 1 warning (1 duplicate)
+warning: `valence_server` (lib test) generated 1 warning
+    Finished `dev` profile [optimized + debuginfo] target(s) in 1.93s
+finished_at=2026-06-23T05:43:32Z
+exit_status=0

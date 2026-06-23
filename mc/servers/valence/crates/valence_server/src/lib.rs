@@ -2,6 +2,7 @@
 
 pub mod abilities;
 pub mod action;
+pub mod anticheat;
 pub mod brand;
 mod chunk_view;
 pub mod client;

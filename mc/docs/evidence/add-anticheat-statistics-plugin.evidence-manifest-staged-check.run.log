@@ -1,0 +1,6 @@
+command=git checkout-index staged mc snapshot; nix run .#evidence-manifest-refresh -- --check --root <snapshot>/mc
+cwd=/home/brittonr/git/mc
+started_at=2026-06-23T06:02:43Z
+evidence manifest refresh ok: mode=check; passes=0; manifests=443; entries=3232; current=3232; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+finished_at=2026-06-23T06:02:46Z
+exit_status=0

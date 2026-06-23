@@ -1,0 +1,627 @@
+command=nix run .#cairn -- change list --root .
+cwd=/home/brittonr/git/mc
+started_at=2026-06-23T05:57:50Z
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "./cairn/changes/add-cached-chunk-egress-pipeline/specs/valence-hyperion-integration/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "add-cached-chunk-egress-pipeline",
+      "path": "./cairn/changes/add-cached-chunk-egress-pipeline",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/add-gui-helper-plugin/specs/valence-hyperion-integration/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "add-gui-helper-plugin",
+      "path": "./cairn/changes/add-gui-helper-plugin",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/add-hyperion-derived-load-tools/specs/valence-hyperion-integration/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "add-hyperion-derived-load-tools",
+      "path": "./cairn/changes/add-hyperion-derived-load-tools",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/add-observability-profiling-hooks/specs/valence-hyperion-integration/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "add-observability-profiling-hooks",
+      "path": "./cairn/changes/add-observability-profiling-hooks",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/add-profile-skin-cache-rate-limiter/specs/valence-hyperion-integration/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "add-profile-skin-cache-rate-limiter",
+      "path": "./cairn/changes/add-profile-skin-cache-rate-limiter",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/add-repository-layout-guard/specs/repository-layout/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "add-repository-layout-guard",
+      "path": "./cairn/changes/add-repository-layout-guard",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/add-static-world-snapshot-loader/specs/valence-hyperion-integration/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "add-static-world-snapshot-loader",
+      "path": "./cairn/changes/add-static-world-snapshot-loader",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/add-valence-packet-compose-api/specs/valence-hyperion-integration/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "add-valence-packet-compose-api",
+      "path": "./cairn/changes/add-valence-packet-compose-api",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/add-valence-tick-scheduler/specs/valence-hyperion-integration/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "add-valence-tick-scheduler",
+      "path": "./cairn/changes/add-valence-tick-scheduler",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/audit-entity-metadata-diff-tracking/specs/valence-hyperion-integration/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "audit-entity-metadata-diff-tracking",
+      "path": "./cairn/changes/audit-entity-metadata-diff-tracking",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/clean-repo-artifact-boundaries/specs/repository-layout/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "clean-repo-artifact-boundaries",
+      "path": "./cairn/changes/clean-repo-artifact-boundaries",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/consolidate-checkers-crate/specs/repository-layout/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "consolidate-checkers-crate",
+      "path": "./cairn/changes/consolidate-checkers-crate",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/define-admin-permission-ergonomics/specs/valence-hyperion-integration/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "define-admin-permission-ergonomics",
+      "path": "./cairn/changes/define-admin-permission-ergonomics",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/define-workspace-component-registry/specs/repository-layout/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "define-workspace-component-registry",
+      "path": "./cairn/changes/define-workspace-component-registry",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/evaluate-command-ergonomics-macros/specs/valence-hyperion-integration/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "evaluate-command-ergonomics-macros",
+      "path": "./cairn/changes/evaluate-command-ergonomics-macros",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/evaluate-paletted-container-optimizations/specs/valence-hyperion-integration/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "evaluate-paletted-container-optimizations",
+      "path": "./cairn/changes/evaluate-paletted-container-optimizations",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/extend-manifest-derived-surfaces/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "extend-manifest-derived-surfaces",
+      "path": "./cairn/changes/extend-manifest-derived-surfaces",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/introduce-scenario-command-router/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "introduce-scenario-command-router",
+      "path": "./cairn/changes/introduce-scenario-command-router",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/introduce-valence-proxy-broadcast-backend/specs/valence-hyperion-integration/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "introduce-valence-proxy-broadcast-backend",
+      "path": "./cairn/changes/introduce-valence-proxy-broadcast-backend",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/modularize-compat-runner-core/specs/repository-layout/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "modularize-compat-runner-core",
+      "path": "./cairn/changes/modularize-compat-runner-core",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 5,
+        "total": 5,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/optimize-packet-encoder-buffer-reuse/specs/valence-hyperion-integration/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "optimize-packet-encoder-buffer-reuse",
+      "path": "./cairn/changes/optimize-packet-encoder-buffer-reuse",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/partition-evidence-directory/specs/repository-layout/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "partition-evidence-directory",
+      "path": "./cairn/changes/partition-evidence-directory",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/retire-layout-transition-paths/specs/repository-layout/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "retire-layout-transition-paths",
+      "path": "./cairn/changes/retire-layout-transition-paths",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/separate-compat-instrumentation/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "separate-compat-instrumentation",
+      "path": "./cairn/changes/separate-compat-instrumentation",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/split-root-flake-modules/specs/repository-layout/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "split-root-flake-modules",
+      "path": "./cairn/changes/split-root-flake-modules",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/split-root-readme-docs/specs/repository-layout/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "split-root-readme-docs",
+      "path": "./cairn/changes/split-root-readme-docs",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/unify-spatial-raycast-collision/specs/valence-hyperion-integration/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "unify-spatial-raycast-collision",
+      "path": "./cairn/changes/unify-spatial-raycast-collision",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/upstream-byte-backed-protocol-path/specs/valence-hyperion-integration/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "upstream-byte-backed-protocol-path",
+      "path": "./cairn/changes/upstream-byte-backed-protocol-path",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "."
+}
+finished_at=2026-06-23T05:57:51Z
+exit_status=0
