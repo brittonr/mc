@@ -19,11 +19,13 @@
 - `clients/stevenarella/`: core Rust Minecraft client used by mc-compat rails and manual client checks. Repo-specific workflow lives in `clients/stevenarella/AGENTS.md`.
 - `Leafish/`: reference-only nested Git checkout. Keep it out of parent-owned component changes and default gates unless a future Cairn explicitly reclassifies it; the parent-tracked waiver is in `docs/layout-checklist.md`.
 - `docs/layout-checklist.md`: review checklist for major component roots, local agent docs, waivers, and documented nested Git exceptions.
+- `docs/check-tiers.md`: validation tier taxonomy for choosing the smallest sufficient docs, generated, evidence, component, live/manual, and archive checks.
 - `hyperion/` already has repo-local agent notes in `hyperion/.agent/napkin.md`. Keep workspace-wide notes here; prefer subtree-local `AGENTS.md` files for repo-specific commands and conventions.
 
 ## Workflow
 - Before editing inside a major subtree, read that subtree's `README.md`, `CONTRIBUTING.md`, and any local `AGENTS.md` or `.agent/napkin.md`.
 - Prefer repo-local commands and toolchains. Root `mc/` has no shared Cargo workspace, test runner, or formatter.
+- Use `docs/check-tiers.md` to choose validation scope; run the smallest sufficient tier plus affected component checks and Cairn archive gates.
 - For `clients/stevenarella/`, follow `clients/stevenarella/AGENTS.md`; run Cargo through the mc devshell, for example `nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test world::tests -- --nocapture` from the Stevenarella repo.
 - New checks/scripts for this workspace should be Rust or Steel Scheme, not Python or Bash. Existing Python gates may remain until touched; migrate touched gates before extending them.
 - Avoid mixed commits across `hyperion/` and the parent-owned `servers/valence/`/`clients/stevenarella/` trees unless user asks for cross-repo change.

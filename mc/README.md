@@ -417,6 +417,8 @@ Keep `cairn-policy/` top-level so the repo-pinned `nix run .#cairn -- policy exp
 
 ## Verification
 
+Use `docs/check-tiers.md` to choose the smallest sufficient validation tier for docs, generated surfaces, evidence, component code, live/manual rails, and Cairn archive closeout.
+
 ```sh
 nix flake check
 ```
