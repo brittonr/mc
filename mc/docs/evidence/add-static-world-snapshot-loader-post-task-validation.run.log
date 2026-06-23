@@ -1,0 +1,101 @@
+
+== task_evidence_compile ==
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+task_evidence_compile_exit_status=0
+
+== task_evidence_self_test ==
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task_evidence_self_test_exit_status=0
+
+== task_evidence_change ==
+task evidence gate passed: 6 completed tasks checked across 1 task files
+task_evidence_change_exit_status=0
+
+== gate_proposal ==
+{
+  "change": "add-static-world-snapshot-loader",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "9f91441426714bd54d597edf8ada82352b8b0e05a31ecb9d012bb50c1a475833",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "8f1aa5cda459a2d386d1f924d3805a6b45a688224cf3012f1f38d820184d06a1",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_proposal_exit_status=0
+
+== gate_design ==
+{
+  "change": "add-static-world-snapshot-loader",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "730787f0db4b3d8dcec9320b045816907da2fbd611ae8a47fb05c6e24e33c3a7",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "9e974589480986fbb41ed0024105bb9a33399daa9aac5141db404ca90feb8c92",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_design_exit_status=0
+
+== gate_tasks ==
+{
+  "change": "add-static-world-snapshot-loader",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "769b4ff4f2f251e97dde58894cb6f43dd2444a4c684b8de5b31692f528fbd068",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "1938dd6ed44e17a1963b7c84c1ff3003393dea1f4a8cdcb19a2f629c86b37652",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_tasks_exit_status=0
+
+== validate ==
+{
+  "change_issues": [],
+  "changes": 24,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 28,
+  "valid": true
+}
+validate_exit_status=0
+exit_status=0

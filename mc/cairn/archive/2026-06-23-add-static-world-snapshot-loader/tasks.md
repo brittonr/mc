@@ -1,0 +1,14 @@
+# Tasks
+
+- [x] [serial] Review Hyperion block/region loader code and Valence Anvil/layer loading capabilities, then define static snapshot scope and non-goals. r[valence_hyperion_integration.world_snapshot_loader.scope]
+  - evidence: docs/evidence/add-static-world-snapshot-loader-scope.md; docs/evidence/add-static-world-snapshot-loader-pre-gates.run.log; docs/evidence/add-static-world-snapshot-loader-validation.b3
+- [x] [depends:scope] Define typed loader plan inputs, region selection, resource limits, dimension/biome validation, async boundaries, and partial-load policy. r[valence_hyperion_integration.world_snapshot_loader.contract]
+  - evidence: docs/evidence/add-static-world-snapshot-loader-valence-anvil-full-tests.run.log; docs/evidence/add-static-world-snapshot-loader-valence-anvil-fmt.run.log; docs/evidence/add-static-world-snapshot-loader-validation.b3
+- [x] [depends:contract] Implement pure plan validation and chunk snapshot normalization over explicit in-memory inputs. r[valence_hyperion_integration.world_snapshot_loader.core]
+  - evidence: docs/evidence/add-static-world-snapshot-loader-valence-anvil-baseline.run.log; docs/evidence/add-static-world-snapshot-loader-valence-anvil-full-tests.run.log; docs/evidence/add-static-world-snapshot-loader-validation.b3
+- [x] [depends:core] Wire filesystem, mmap if used, async reads, decompression, and layer application as thin adapters. r[valence_hyperion_integration.world_snapshot_loader.adapters]
+  - evidence: docs/evidence/add-static-world-snapshot-loader-valence-anvil-full-tests.run.log; docs/evidence/add-static-world-snapshot-loader-valence-anvil-clippy-nodeps.run.log; docs/evidence/add-static-world-snapshot-loader-validation.b3
+- [x] [depends:adapters] Add positive and negative fixtures for valid regions, missing files, corrupt NBT, out-of-range sections, dimension mismatch, biome mismatch, partial loads, and cancellation. r[valence_hyperion_integration.world_snapshot_loader.tests]
+  - evidence: docs/evidence/add-static-world-snapshot-loader-valence-anvil-full-tests.run.log; docs/evidence/add-static-world-snapshot-loader-validation.b3
+- [x] [depends:tests] Run loader tests, corrupt-region fixtures, loader smoke tests, selected chunk/dimension mc-compat dry runs, Cairn gates, and Cairn validation. r[valence_hyperion_integration.world_snapshot_loader.validation]
+  - evidence: docs/evidence/add-static-world-snapshot-loader-pre-gates.run.log; docs/evidence/add-static-world-snapshot-loader-post-task-validation.run.log; docs/evidence/add-static-world-snapshot-loader-valence-anvil-full-tests.run.log; docs/evidence/add-static-world-snapshot-loader-chunk-dimension-dry-run.run.log; docs/evidence/add-static-world-snapshot-loader-survival-biome-dimension-state-dry-run.json; docs/evidence/add-static-world-snapshot-loader-validation.b3

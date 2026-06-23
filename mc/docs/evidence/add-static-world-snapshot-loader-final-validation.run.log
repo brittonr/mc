@@ -1,0 +1,29 @@
+
+== archived_task_evidence ==
+task evidence gate passed: 6 completed tasks checked across 1 task files
+archived_task_evidence_exit_status=0
+
+== cairn_validate ==
+{
+  "change_issues": [],
+  "changes": 23,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 27,
+  "valid": true
+}
+cairn_validate_exit_status=0
+
+== evidence_manifest_check ==
+evidence manifest refresh ok: mode=check; passes=0; manifests=454; entries=3336; current=3336; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+evidence_manifest_check_exit_status=0
+
+== evidence_manifest_flake ==
+this derivation will be built:
+  /nix/store/x7w6r7lk9yjf0qwc33hf4dbv8in9fwb4-mc-compat-evidence-manifest-refresh.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/x7w6r7lk9yjf0qwc33hf4dbv8in9fwb4-mc-compat-evidence-manifest-refresh.drv'...
+evidence_manifest_flake_exit_status=0
+exit_status=0

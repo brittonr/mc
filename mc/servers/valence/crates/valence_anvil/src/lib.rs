@@ -9,6 +9,8 @@ mod directory;
 #[cfg(feature = "parsing")]
 pub mod parsing;
 mod region;
+#[cfg(feature = "parsing")]
+pub mod snapshot;
 mod types;
 
 pub use directory::RegionFolder;

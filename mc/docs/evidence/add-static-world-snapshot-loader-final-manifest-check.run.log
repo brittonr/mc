@@ -1,0 +1,9 @@
+
+== archived_task_evidence ==
+task evidence gate passed: 6 completed tasks checked across 1 task files
+archived_task_evidence_exit_status=0
+
+== evidence_manifest_check ==
+evidence manifest refresh ok: mode=check; passes=0; manifests=454; entries=3337; current=3337; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+evidence_manifest_check_exit_status=0
+exit_status=0

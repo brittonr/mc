@@ -1,0 +1,80 @@
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-static-world-snapshot-loader",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-23-add-static-world-snapshot-loader"
+    }
+  ],
+  "blocked": false,
+  "change": "add-static-world-snapshot-loader",
+  "dry_run": false,
+  "input_hash": "429743667b950d9ca2c810b657e465ed7213432ae5282c626a718fb793ad2ae7",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "7cc258c136bb35f06febee8a2a3808d38c04f7746add5071e73304240b7c46e1",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-add-static-world-snapshot-loader/design.md"
+        },
+        {
+          "content_hash": "3bdcea1bb612998b738f82578f2a03ef5280d713e139bcb1bd545a2784223fb9",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-add-static-world-snapshot-loader/proposal.md"
+        },
+        {
+          "content_hash": "a4e45c500fd12499a86e1c53ef40d0e45250a995f91d909b9d602588801d2d28",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-add-static-world-snapshot-loader/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "4220d9168e6684f7d94d257737ff51a75289fb62360a26fbe3100fd6e4d35527",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-add-static-world-snapshot-loader/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/add-static-world-snapshot-loader"
+        }
+      ],
+      "manifest_hash": "b0e548f5e9e71cba47cd91bb62da0a02c3c5e7478e1478dcaef8a14d37694dbe"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "7cc258c136bb35f06febee8a2a3808d38c04f7746add5071e73304240b7c46e1",
+          "exists": true,
+          "path": "./cairn/changes/add-static-world-snapshot-loader/design.md"
+        },
+        {
+          "content_hash": "3bdcea1bb612998b738f82578f2a03ef5280d713e139bcb1bd545a2784223fb9",
+          "exists": true,
+          "path": "./cairn/changes/add-static-world-snapshot-loader/proposal.md"
+        },
+        {
+          "content_hash": "a4e45c500fd12499a86e1c53ef40d0e45250a995f91d909b9d602588801d2d28",
+          "exists": true,
+          "path": "./cairn/changes/add-static-world-snapshot-loader/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "4220d9168e6684f7d94d257737ff51a75289fb62360a26fbe3100fd6e4d35527",
+          "exists": true,
+          "path": "./cairn/changes/add-static-world-snapshot-loader/tasks.md"
+        }
+      ],
+      "manifest_hash": "08d9e04be2d48d55019acf40115bd54ae2640a9f2045ce8cda49ffc5e8684872"
+    },
+    "kind": "archive",
+    "manifest_hash": "3f96664e2e0b144ab086e0741e0b0bdab06cc5dff4530846c6198f2588e66fa9"
+  },
+  "plan_hash": "eba97b63c3a2b3c3576275e8b5a544a2ed3124e94cf6a7012edc72a39292f399",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "3d0c2bb3c9cd2c0e86bdf1ea50faa26cea3ea9cb4de6e60562c8d5f031e1e16f"
+}
+exit_status=0

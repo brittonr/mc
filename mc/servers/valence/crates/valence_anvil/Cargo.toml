@@ -28,3 +28,6 @@ lru.workspace = true
 thiserror.workspace = true
 valence_nbt = { workspace = true, features = ["binary"] }
 valence_server = { workspace = true, optional = true }
+
+[dev-dependencies]
+tempfile.workspace = true
