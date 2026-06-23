@@ -1,0 +1,28 @@
+## command: grep -n packet_buffer_reuse cairn/specs/valence-hyperion-integration/spec.md
+1045:r[valence_hyperion_integration.packet_buffer_reuse.audit] The integration MUST audit Hyperion encoder/buffer reuse patterns and Valence packet encode/flush paths before adding reusable buffers.
+1049:r[valence_hyperion_integration.packet_buffer_reuse.audit.scope]
+1056:r[valence_hyperion_integration.packet_buffer_reuse.contract] Buffer reuse work MUST define buffer lifecycle, compression settings, capacity policy, reset/discard behavior, packet limit behavior, and safety invariants.
+1060:r[valence_hyperion_integration.packet_buffer_reuse.contract.error_reset]
+1068:r[valence_hyperion_integration.packet_buffer_reuse.baseline] Packet buffer reuse work MUST record baseline allocation or benchmark evidence for selected workloads before implementation.
+1072:r[valence_hyperion_integration.packet_buffer_reuse.baseline.named]
+1079:r[valence_hyperion_integration.packet_buffer_reuse.implementation] Valence MAY implement reusable encoder buffers or pools only when invariants and baseline evidence justify the change.
+1083:r[valence_hyperion_integration.packet_buffer_reuse.implementation.default_semantics]
+1090:r[valence_hyperion_integration.packet_buffer_reuse.tests] Buffer reuse work MUST include positive and negative tests for compression, packet limits, error resets, stale bytes, closed clients, and default behavior.
+1094:r[valence_hyperion_integration.packet_buffer_reuse.tests.oversized]
+1102:r[valence_hyperion_integration.packet_buffer_reuse.validation] Buffer reuse work MUST record encode tests, compression edge tests, direct-mode regressions, benchmark evidence, selected compatibility dry runs, and Cairn gates before archive.
+1106:r[valence_hyperion_integration.packet_buffer_reuse.validation.log]
+exit_status=0
+
+## command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 11,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 15,
+  "valid": true
+}
+exit_status=0
+

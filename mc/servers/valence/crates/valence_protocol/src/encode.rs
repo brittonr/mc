@@ -16,6 +16,11 @@ use crate::{CompressionThreshold, Encode, Packet, MAX_PACKET_SIZE};
 #[cfg(feature = "encryption")]
 type Cipher = cfb8::Encryptor<aes::Aes128>;
 
+#[cfg(feature = "compression")]
+const ZLIB_COMPRESSION_LEVEL: u32 = 4;
+#[cfg(feature = "compression")]
+const UNCOMPRESSED_DATA_LEN_PREFIX_SIZE: usize = 1;
+
 #[derive(Default)]
 pub struct PacketEncoder {
     buf: BytesMut,
@@ -58,13 +63,28 @@ impl PacketEncoder {
         Ok(())
     }
 
-    #[allow(clippy::needless_borrows_for_generic_args)]
     pub fn append_packet<P>(&mut self, pkt: &P) -> anyhow::Result<()>
     where
         P: Packet + Encode,
     {
         let start_len = self.buf.len();
+        let result = self.append_packet_inner(pkt, start_len);
 
+        if result.is_err() {
+            self.buf.truncate(start_len);
+
+            #[cfg(feature = "compression")]
+            self.compress_buf.clear();
+        }
+
+        result
+    }
+
+    #[allow(clippy::needless_borrows_for_generic_args)]
+    fn append_packet_inner<P>(&mut self, pkt: &P, start_len: usize) -> anyhow::Result<()>
+    where
+        P: Packet + Encode,
+    {
         pkt.encode_with_id((&mut self.buf).writer())?;
 
         let data_len = self.buf.len() - start_len;
@@ -77,7 +97,10 @@ impl PacketEncoder {
             use flate2::Compression;
 
             if data_len > self.threshold.0 as usize {
-                let mut z = ZlibEncoder::new(&self.buf[start_len..], Compression::new(4));
+                let mut z = ZlibEncoder::new(
+                    &self.buf[start_len..],
+                    Compression::new(ZLIB_COMPRESSION_LEVEL),
+                );
 
                 self.compress_buf.clear();
 
@@ -100,7 +123,7 @@ impl PacketEncoder {
                 VarInt(data_len as i32).encode(&mut writer)?;
                 self.buf.extend_from_slice(&self.compress_buf);
             } else {
-                let data_len_size = 1;
+                let data_len_size = UNCOMPRESSED_DATA_LEN_PREFIX_SIZE;
                 let packet_len = data_len_size + data_len;
 
                 ensure!(
@@ -249,6 +272,58 @@ impl<'a> PacketWriter<'a> {
     }
 }
 
+/// Reusable scratch storage for packet encoding helpers.
+///
+/// Callers that encode many compressed packets can retain this value between
+/// writes so compression scratch capacity is reused instead of reallocated.
+#[derive(Debug, Default)]
+pub struct PacketEncodeScratch {
+    #[cfg(feature = "compression")]
+    compress_buf: Vec<u8>,
+}
+
+impl PacketEncodeScratch {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    pub fn clear(&mut self) {
+        #[cfg(feature = "compression")]
+        self.compress_buf.clear();
+    }
+
+    #[cfg(feature = "compression")]
+    fn compress_buf(&mut self) -> &mut Vec<u8> {
+        &mut self.compress_buf
+    }
+}
+
+/// A [`WritePacket`] implementation backed by a `Vec` and reusable scratch.
+///
+/// Like [`PacketWriter`], failed writes truncate the destination back to its
+/// pre-write length. Unlike [`PacketWriter`], compressed writes can reuse
+/// scratch capacity retained by the caller.
+#[derive(Debug)]
+pub struct ReusablePacketWriter<'a, 'scratch> {
+    pub buf: &'a mut Vec<u8>,
+    pub threshold: CompressionThreshold,
+    scratch: &'scratch mut PacketEncodeScratch,
+}
+
+impl<'a, 'scratch> ReusablePacketWriter<'a, 'scratch> {
+    pub fn new(
+        buf: &'a mut Vec<u8>,
+        threshold: CompressionThreshold,
+        scratch: &'scratch mut PacketEncodeScratch,
+    ) -> Self {
+        Self {
+            buf,
+            threshold,
+            scratch,
+        }
+    }
+}
+
 impl WritePacket for PacketWriter<'_> {
     #[cfg_attr(not(feature = "compression"), track_caller)]
     fn write_packet_fallible<P>(&mut self, pkt: &P) -> anyhow::Result<()>
@@ -275,6 +350,50 @@ impl WritePacket for PacketWriter<'_> {
 
         if res.is_err() {
             self.buf.truncate(start);
+        }
+
+        res
+    }
+
+    fn write_packet_bytes(&mut self, bytes: &[u8]) {
+        if let Err(e) = self.buf.write_all(bytes) {
+            warn!("failed to write packet bytes: {e:#}");
+        }
+    }
+}
+
+impl WritePacket for ReusablePacketWriter<'_, '_> {
+    #[cfg_attr(not(feature = "compression"), track_caller)]
+    fn write_packet_fallible<P>(&mut self, pkt: &P) -> anyhow::Result<()>
+    where
+        P: Packet + Encode,
+    {
+        let start = self.buf.len();
+
+        let res;
+
+        if self.threshold.0 >= 0 {
+            #[cfg(feature = "compression")]
+            {
+                res = encode_packet_compressed_with_scratch(
+                    self.buf,
+                    pkt,
+                    self.threshold.0 as u32,
+                    self.scratch.compress_buf(),
+                );
+            }
+
+            #[cfg(not(feature = "compression"))]
+            {
+                panic!("\"compression\" feature must be enabled to write compressed packets");
+            }
+        } else {
+            res = encode_packet(self.buf, pkt)
+        };
+
+        if res.is_err() {
+            self.buf.truncate(start);
+            self.scratch.clear();
         }
 
         res
@@ -330,8 +449,22 @@ where
 }
 
 #[cfg(feature = "compression")]
-#[allow(clippy::needless_borrows_for_generic_args)]
 fn encode_packet_compressed<P>(buf: &mut Vec<u8>, pkt: &P, threshold: u32) -> anyhow::Result<()>
+where
+    P: Packet + Encode,
+{
+    let mut scratch = Vec::new();
+    encode_packet_compressed_with_scratch(buf, pkt, threshold, &mut scratch)
+}
+
+#[cfg(feature = "compression")]
+#[allow(clippy::needless_borrows_for_generic_args)]
+fn encode_packet_compressed_with_scratch<P>(
+    buf: &mut Vec<u8>,
+    pkt: &P,
+    threshold: u32,
+    scratch: &mut Vec<u8>,
+) -> anyhow::Result<()>
 where
     P: Packet + Encode,
 {
@@ -347,11 +480,11 @@ where
     let data_len = buf.len() - start_len;
 
     if data_len > threshold as usize {
-        let mut z = ZlibEncoder::new(&buf[start_len..], Compression::new(4));
+        let mut z = ZlibEncoder::new(&buf[start_len..], Compression::new(ZLIB_COMPRESSION_LEVEL));
 
-        let mut scratch = vec![];
+        scratch.clear();
 
-        let packet_len = VarInt(data_len as i32).written_size() + z.read_to_end(&mut scratch)?;
+        let packet_len = VarInt(data_len as i32).written_size() + z.read_to_end(scratch)?;
 
         ensure!(
             packet_len <= MAX_PACKET_SIZE as usize,
@@ -364,9 +497,9 @@ where
 
         VarInt(packet_len as i32).encode(&mut *buf)?;
         VarInt(data_len as i32).encode(&mut *buf)?;
-        buf.extend_from_slice(&scratch);
+        buf.extend_from_slice(scratch);
     } else {
-        let data_len_size = 1;
+        let data_len_size = UNCOMPRESSED_DATA_LEN_PREFIX_SIZE;
         let packet_len = data_len_size + data_len;
 
         ensure!(
@@ -389,4 +522,168 @@ where
     }
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use std::io::Write;
+
+    use anyhow::bail;
+    use bytes::BytesMut;
+
+    use super::{
+        PacketEncodeScratch, PacketEncoder, PacketWriter, ReusablePacketWriter, WritePacket,
+    };
+    use crate::decode::PacketDecoder;
+    use crate::packets::play::DifficultyS2c;
+    use crate::{
+        CompressionThreshold, Difficulty, Encode, Packet, PacketSide, PacketState, MAX_PACKET_SIZE,
+    };
+
+    const COMPRESS_EVERY_PACKET: CompressionThreshold = CompressionThreshold(0);
+    const FAILING_PACKET_ID: i32 = 99_001;
+    const FAILING_PACKET_NAME: &str = "test_partial_failing_packet";
+    const OVERSIZED_PACKET_ID: i32 = 99_002;
+    const OVERSIZED_PACKET_NAME: &str = "test_oversized_packet";
+    const OVERSIZED_BYTE: u8 = 0xa5;
+    const MAX_PACKET_SIZE_USIZE: usize = MAX_PACKET_SIZE as usize;
+    const OVERSIZED_BODY_LEN: usize = MAX_PACKET_SIZE_USIZE + 1;
+    const STALE_MARKER: &[u8] = b"partial-stale-bytes";
+    const TEST_FAILURE_MESSAGE: &str = "intentional encode failure";
+
+    #[test]
+    fn packet_encoder_matches_packet_writer_for_default_packet() {
+        let packet = valid_packet();
+        let mut encoder = PacketEncoder::new();
+        let mut writer_bytes = Vec::new();
+
+        encoder.append_packet(&packet).unwrap();
+        PacketWriter::new(&mut writer_bytes, CompressionThreshold::DEFAULT)
+            .write_packet_fallible(&packet)
+            .unwrap();
+
+        assert_eq!(encoder.take().as_ref(), writer_bytes.as_slice());
+    }
+
+    #[test]
+    fn packet_encoder_clears_partial_bytes_after_uncompressed_error() {
+        let mut encoder = PacketEncoder::new();
+
+        encoder.append_packet(&PartialFailingPacket).unwrap_err();
+        encoder.append_packet(&valid_packet()).unwrap();
+
+        let bytes = encoder.take();
+        assert_no_stale_marker(&bytes);
+        assert_valid_difficulty_frame(bytes, CompressionThreshold::DEFAULT);
+    }
+
+    #[test]
+    fn oversized_packet_does_not_poison_next_packet() {
+        let mut encoder = PacketEncoder::new();
+
+        encoder.append_packet(&OversizedPacket).unwrap_err();
+        encoder.append_packet(&valid_packet()).unwrap();
+
+        let bytes = encoder.take();
+        assert_valid_difficulty_frame(bytes, CompressionThreshold::DEFAULT);
+    }
+
+    #[cfg(feature = "compression")]
+    #[test]
+    fn packet_encoder_clears_partial_bytes_after_compressed_error() {
+        let mut encoder = PacketEncoder::new();
+        encoder.set_compression(COMPRESS_EVERY_PACKET);
+
+        encoder.append_packet(&PartialFailingPacket).unwrap_err();
+        encoder.append_packet(&valid_packet()).unwrap();
+
+        let bytes = encoder.take();
+        assert_no_stale_marker(&bytes);
+        assert_valid_difficulty_frame(bytes, COMPRESS_EVERY_PACKET);
+    }
+
+    #[cfg(feature = "compression")]
+    #[test]
+    fn reusable_packet_writer_clears_partial_bytes_after_compressed_error() {
+        let mut bytes = Vec::new();
+        let mut scratch = PacketEncodeScratch::new();
+
+        {
+            let mut writer =
+                ReusablePacketWriter::new(&mut bytes, COMPRESS_EVERY_PACKET, &mut scratch);
+            writer
+                .write_packet_fallible(&PartialFailingPacket)
+                .unwrap_err();
+            writer.write_packet_fallible(&valid_packet()).unwrap();
+        }
+
+        assert_no_stale_marker(&bytes);
+        assert_valid_difficulty_frame(BytesMut::from(bytes.as_slice()), COMPRESS_EVERY_PACKET);
+    }
+
+    fn valid_packet() -> DifficultyS2c {
+        DifficultyS2c {
+            difficulty: Difficulty::Peaceful,
+            locked: true,
+        }
+    }
+
+    fn assert_valid_difficulty_frame(bytes: BytesMut, threshold: CompressionThreshold) {
+        let mut decoder = PacketDecoder::new();
+
+        #[cfg(feature = "compression")]
+        decoder.set_compression(threshold);
+
+        #[cfg(not(feature = "compression"))]
+        let _ = threshold;
+
+        decoder.queue_bytes(bytes);
+        let frame = decoder.try_next_packet().unwrap().unwrap();
+        let decoded = frame.decode::<DifficultyS2c>().unwrap();
+
+        assert_eq!(frame.id, DifficultyS2c::ID);
+        assert_eq!(decoded, valid_packet());
+        assert!(decoder.try_next_packet().unwrap().is_none());
+    }
+
+    fn assert_no_stale_marker(bytes: &[u8]) {
+        assert!(!bytes
+            .windows(STALE_MARKER.len())
+            .any(|window| window == STALE_MARKER));
+    }
+
+    #[derive(Debug)]
+    struct PartialFailingPacket;
+
+    impl Packet for PartialFailingPacket {
+        const ID: i32 = FAILING_PACKET_ID;
+        const NAME: &'static str = FAILING_PACKET_NAME;
+        const SIDE: PacketSide = PacketSide::Clientbound;
+        const STATE: PacketState = PacketState::Play;
+    }
+
+    impl Encode for PartialFailingPacket {
+        fn encode(&self, mut w: impl Write) -> anyhow::Result<()> {
+            w.write_all(STALE_MARKER)?;
+            bail!(TEST_FAILURE_MESSAGE)
+        }
+    }
+
+    #[derive(Debug)]
+    struct OversizedPacket;
+
+    impl Packet for OversizedPacket {
+        const ID: i32 = OVERSIZED_PACKET_ID;
+        const NAME: &'static str = OVERSIZED_PACKET_NAME;
+        const SIDE: PacketSide = PacketSide::Clientbound;
+        const STATE: PacketState = PacketState::Play;
+    }
+
+    impl Encode for OversizedPacket {
+        fn encode(&self, mut w: impl Write) -> anyhow::Result<()> {
+            let bytes = vec![OVERSIZED_BYTE; OVERSIZED_BODY_LEN];
+            w.write_all(&bytes)?;
+            Ok(())
+        }
+    }
 }

@@ -1,0 +1,14 @@
+4aa6bac0483e7a77392018dcfa63616d88330247f567cc1a39dac08bb3164e8c  docs/evidence/packet-buffer-reuse-audit-2026-06-23.md
+336f5b3af77cef6f2d4501798907b7d59161742723d56297270dc5ac3adf8327  docs/evidence/packet-buffer-reuse-pre-gates-2026-06-23.run.log
+2d6f86f2093bc7a64ec6d02b09f06c1b9b068e209a07f11dfb93e84be2419c19  docs/evidence/packet-buffer-reuse-baseline-tests-2026-06-23.run.log
+9951c0af2479bb37474db21a8ad707115b25712c5ac803fe1f423d8c8ef21a19  docs/evidence/packet-buffer-reuse-baseline-bench-2026-06-23.run.log
+94a3fe69023b8eb49b2b0b447e90105e9679c38a7dffa1cc8f3c11c1ddd21b5a  docs/evidence/packet-buffer-reuse-final-component-tests-2026-06-23.run.log
+e1f37d7b449f462768a8f7368c14e1a3ecbf00009be1662902d26fed97db4c46  docs/evidence/packet-buffer-reuse-post-server-tests-2026-06-23.run.log
+2095142478b9df184177a121237f810ae824d704f5d99628508ac7b95346da02  docs/evidence/packet-buffer-reuse-fmt-check-2026-06-23.run.log
+587d726a3582b9ef58a218000d40be4a2c6109d5fbb5ae0441e14c5ae3804db9  docs/evidence/packet-buffer-reuse-post-bench-2026-06-23.run.log
+1a69348660eeb1b9a146f0fbe17b4deaa88c43d535b0c9a761025e1ea8fd45a9  docs/evidence/packet-buffer-reuse-smoke-dry-run-2026-06-23.run.log
+f5cf47b56315187dc2657dfa2e0164b1db66630653788f0e9a35e4dcd6b05a9f  docs/evidence/packet-buffer-reuse-final-cairn-gates-2026-06-23.run.log
+83cbcde0e6d27620f20201b671284bfbee4827738a8a04a2d289e93365a58a30  docs/evidence/packet-buffer-reuse-cairn-sync-2026-06-23.run.log
+50a77b4bc75a5f67c838676317ed6163f0798aa348173ece606183dad7eed172  docs/evidence/packet-buffer-reuse-accepted-spec-sync-2026-06-23.run.log
+5ed3f9b7e7eaaa62ffb44f462d587a92d28cb546e1df091c23462b7493c8eb6f  docs/evidence/packet-buffer-reuse-cairn-archive-2026-06-23.run.log
+ee7efd009b35ec369ebe704f831a75d96ef869f29bd19afd518026ed1382b213  docs/evidence/packet-buffer-reuse-task-evidence-focused-2026-06-23.run.log

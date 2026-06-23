@@ -1,0 +1,75 @@
+## command: nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence_protocol --all-features
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+   Compiling crypto-common v0.1.7
+   Compiling valence_text v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_text)
+   Compiling cipher v0.4.4
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+   Compiling aes v0.8.4
+   Compiling cfb8 v0.8.1
+   Compiling valence_protocol v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_protocol)
+warning: `valence_text` (lib) generated 5 warnings
+    Finished `test` profile [optimized + debuginfo] target(s) in 6.78s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_protocol-5a13fb6e7225d127)
+
+running 12 tests
+test bit_set::tests::fixed_bit_set_ops ... ok
+test bit_set::tests::display_fixed_bit_set ... ok
+test block_pos::tests::block_position ... ok
+test chunk_pos::tests::chunk_pos_round_trip_conv ... ok
+test bit_set::tests::fixed_bit_set_out_of_range - should panic ... ok
+test item::tests::empty_item_stack_is_empty ... ok
+test tests::packet_name ... ok
+test velocity::velocity_from_ms ... ok
+test tests::packets_round_trip ... ok
+test var_int::tests::varint_written_size ... ok
+test var_int::tests::varint_round_trip ... ok
+test var_long::tests::encode_decode ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+   Doc-tests valence_protocol
+
+running 4 tests
+test crates/valence_protocol/src/block_pos.rs - block_pos::BlockPos::get_in_direction (line 31) ... ok
+test crates/valence_protocol/src/lib.rs - Encode (line 158) ... ok
+test crates/valence_protocol/src/lib.rs - Decode (line 246) ... ok
+test crates/valence_protocol/src/lib.rs - (line 7) ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.48s
+
+exit_status=0
+

@@ -1301,3 +1301,95 @@ fn cleanup_chunks_after_client_despawn(
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::sync::{Arc, Mutex};
+
+    use anyhow::bail;
+    use bytes::BytesMut;
+    use valence_protocol::packets::play::DifficultyS2c;
+    use valence_protocol::{Difficulty, PacketEncoder};
+
+    use super::{Client, ClientConnection, ReceivedPacket};
+    use crate::protocol::WritePacket;
+
+    const CLOSED_CLIENT_MESSAGE: &str = "client disconnected";
+
+    #[test]
+    fn flush_packets_sends_buffer_and_leaves_empty_reusable_state() {
+        let sent = Arc::new(Mutex::new(Vec::new()));
+        let mut client = test_client(TestConnection::open(sent.clone()));
+
+        client.write_packet(&valid_packet());
+        client.flush_packets().unwrap();
+        client.flush_packets().unwrap();
+
+        assert_eq!(sent.lock().unwrap().len(), 1);
+    }
+
+    #[test]
+    fn flush_packets_closed_client_discards_taken_buffer_before_reuse() {
+        let mut client = test_client(TestConnection::closed());
+
+        client.write_packet(&valid_packet());
+        let error = client.flush_packets().unwrap_err();
+        client.flush_packets().unwrap();
+
+        assert!(error.to_string().contains(CLOSED_CLIENT_MESSAGE));
+    }
+
+    fn valid_packet() -> DifficultyS2c {
+        DifficultyS2c {
+            difficulty: Difficulty::Peaceful,
+            locked: true,
+        }
+    }
+
+    fn test_client(conn: TestConnection) -> Client {
+        Client {
+            conn: Box::new(conn),
+            enc: PacketEncoder::new(),
+        }
+    }
+
+    struct TestConnection {
+        sent: Arc<Mutex<Vec<BytesMut>>>,
+        fail_send: bool,
+    }
+
+    impl TestConnection {
+        fn open(sent: Arc<Mutex<Vec<BytesMut>>>) -> Self {
+            Self {
+                sent,
+                fail_send: false,
+            }
+        }
+
+        fn closed() -> Self {
+            Self {
+                sent: Arc::new(Mutex::new(Vec::new())),
+                fail_send: true,
+            }
+        }
+    }
+
+    impl ClientConnection for TestConnection {
+        fn try_send(&mut self, bytes: BytesMut) -> anyhow::Result<()> {
+            if self.fail_send {
+                bail!(CLOSED_CLIENT_MESSAGE);
+            }
+
+            self.sent.lock().unwrap().push(bytes);
+            Ok(())
+        }
+
+        fn try_recv(&mut self) -> anyhow::Result<Option<ReceivedPacket>> {
+            Ok(None)
+        }
+
+        fn len(&self) -> usize {
+            0
+        }
+    }
+}

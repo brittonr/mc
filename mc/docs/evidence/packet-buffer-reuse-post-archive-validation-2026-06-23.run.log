@@ -1,0 +1,25 @@
+## command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 10,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 14,
+  "valid": true
+}
+exit_status=0
+
+## command: nix develop --no-update-lock-file /home/brittonr/git/mc -c bash -lc rustc tools/check_cairn_task_evidence.rs -o /tmp/check_cairn_task_evidence_packet_buffer && /tmp/check_cairn_task_evidence_packet_buffer cairn/archive/2026-06-23-optimize-packet-encoder-buffer-reuse/tasks.md
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+task evidence gate passed: 6 completed tasks checked across 1 task files
+exit_status=0
+
+## command: nix run .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=469; entries=3696; current=3696; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+exit_status=0
+

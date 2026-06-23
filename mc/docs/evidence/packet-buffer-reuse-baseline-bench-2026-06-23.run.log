@@ -1,0 +1,65 @@
+## command: nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo bench --bench main packet::encode
+## workload: packet::encode* (chunk_data, player_list_header, spawn_entity; existing uncompressed and existing mislabeled compressed-disabled benches)
+## compression_settings: PacketEncoder default CompressionThreshold::DEFAULT (-1/no compression); existing encode_*_compressed benches set CompressionThreshold(-1)
+## batch_size: divan per-benchmark adaptive iterations; max_time=0.2s
+## environment: nix develop --no-update-lock-file /home/brittonr/git/mc from servers/valence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+warning: `valence_inventory` (lib) generated 1 warning
+    Finished `bench` profile [optimized] target(s) in 0.21s
+     Running benches/main.rs (/home/brittonr/.cargo-target/release/deps/main-f8e5bd73b468fe0e)
+Timer precision: 10 ns
+main                                        fastest       │ slowest       │ median        │ mean          │ samples │ iters
+╰─ packet                                                 │               │               │               │         │
+   ├─ encode_chunk_data                     2.203 µs      │ 35.67 µs      │ 2.293 µs      │ 2.625 µs      │ 100     │ 100
+   ├─ encode_chunk_data_compressed          2.193 µs      │ 3.977 µs      │ 2.314 µs      │ 2.353 µs      │ 100     │ 100
+   ├─ encode_player_list_header             409.8 ns      │ 8.575 µs      │ 430.8 ns      │ 519.4 ns      │ 100     │ 100
+   ├─ encode_player_list_header_compressed  410.3 ns      │ 505.8 ns      │ 415.3 ns      │ 416.8 ns      │ 100     │ 200
+   ├─ encode_spawn_entity                   59.8 ns       │ 1.922 µs      │ 69.8 ns       │ 88.73 ns      │ 100     │ 100
+   ╰─ encode_spawn_entity_compressed        51.14 ns      │ 53.01 ns      │ 51.76 ns      │ 51.77 ns      │ 100     │ 3200
+
+exit_status=0
+

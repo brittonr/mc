@@ -1,0 +1,106 @@
+## command: nix run .#cairn -- archive optimize-packet-encoder-buffer-reuse --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: optimize-packet-encoder-buffer-reuse",
+      "kind": "archive_change",
+      "path": "./cairn/changes/optimize-packet-encoder-buffer-reuse"
+    }
+  ],
+  "blocked": false,
+  "change": "optimize-packet-encoder-buffer-reuse",
+  "dry_run": true,
+  "input_hash": "3058e1b7a767527d39e04f42653d0aa91388968e545d433dd08b431ce81e7ae6",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "383492fd910577fc9e66a8684be5b05a089870ad398cd1ac7038341bbbedf942",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "d84419ec66bda1d948d02be6741b6e2fda4667772f3bf17520ff5b06d1b3374b"
+}
+exit_status=0
+
+## command: env CAIRN_ARCHIVE_DATE=2026-06-23 nix run .#cairn -- archive optimize-packet-encoder-buffer-reuse --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: optimize-packet-encoder-buffer-reuse",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-23-optimize-packet-encoder-buffer-reuse"
+    }
+  ],
+  "blocked": false,
+  "change": "optimize-packet-encoder-buffer-reuse",
+  "dry_run": false,
+  "input_hash": "3058e1b7a767527d39e04f42653d0aa91388968e545d433dd08b431ce81e7ae6",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "e1340386fbe969750ca582ccdd8fce1cadf19de54be054387b3b6055c67c6e1d",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-optimize-packet-encoder-buffer-reuse/design.md"
+        },
+        {
+          "content_hash": "2edc6a2571ab5edc0a9cc0663077fb3511a3c25d9405dad546362bf7e88abc10",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-optimize-packet-encoder-buffer-reuse/proposal.md"
+        },
+        {
+          "content_hash": "fa56b348f7ea4e23e51b56bae8bdd43ce34f4533345dd7c0011cb2a418f6d539",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-optimize-packet-encoder-buffer-reuse/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "30c951a01b2a531fd1db28344b3135dc97841820cea838ff0d4752a65836dee2",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-optimize-packet-encoder-buffer-reuse/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/optimize-packet-encoder-buffer-reuse"
+        }
+      ],
+      "manifest_hash": "6504c67621114550713d90d6d12606de3a56eff9d0838118242b6cbfd1d3d7fc"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "e1340386fbe969750ca582ccdd8fce1cadf19de54be054387b3b6055c67c6e1d",
+          "exists": true,
+          "path": "./cairn/changes/optimize-packet-encoder-buffer-reuse/design.md"
+        },
+        {
+          "content_hash": "2edc6a2571ab5edc0a9cc0663077fb3511a3c25d9405dad546362bf7e88abc10",
+          "exists": true,
+          "path": "./cairn/changes/optimize-packet-encoder-buffer-reuse/proposal.md"
+        },
+        {
+          "content_hash": "fa56b348f7ea4e23e51b56bae8bdd43ce34f4533345dd7c0011cb2a418f6d539",
+          "exists": true,
+          "path": "./cairn/changes/optimize-packet-encoder-buffer-reuse/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "30c951a01b2a531fd1db28344b3135dc97841820cea838ff0d4752a65836dee2",
+          "exists": true,
+          "path": "./cairn/changes/optimize-packet-encoder-buffer-reuse/tasks.md"
+        }
+      ],
+      "manifest_hash": "e33d9e65c45975a7c6ad774ca03db21104eea66f0800bac68a05869e4cf13a17"
+    },
+    "kind": "archive",
+    "manifest_hash": "dbb73b56094acc398dd3f8412efc2bea6be3b1ab63f488310422437bd737f081"
+  },
+  "plan_hash": "198df494f864286c8b0334bbf2fa478810bbbec999362520ceb9330613b54591",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "fdc45c83244a582e05424dd3fb4694ccd934ca30b5c06a4983b0935a43ff9ee2"
+}
+exit_status=0
+

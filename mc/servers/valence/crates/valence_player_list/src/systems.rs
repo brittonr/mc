@@ -6,7 +6,9 @@ type Client = valence_server::client::Client;
 type GameMode = valence_server::GameMode;
 type HeaderPacket<'a> = valence_server::protocol::packets::play::PlayerListHeaderS2c<'a>;
 type PacketEntry<'a> = valence_server::protocol::packets::play::PlayerListEntry<'a>;
-type PacketWriter<'a> = valence_server::protocol::encode::PacketWriter<'a>;
+type PacketEncodeScratch = valence_server::protocol::encode::PacketEncodeScratch;
+type ReusablePacketWriter<'a, 'scratch> =
+    valence_server::protocol::encode::ReusablePacketWriter<'a, 'scratch>;
 type Ping = valence_server::keepalive::Ping;
 type Properties = valence_server::client::Properties;
 type RemovePacket<'a> = valence_server::protocol::packets::play::PlayerRemoveS2c<'a>;
@@ -34,12 +36,17 @@ type RefEntry<'a> = (
     &'a Ref<'a, super::Listed>,
 );
 
-pub(super) fn update_header_footer(player_list: ResMut<super::PlayerList>, server: Res<Server>) {
+pub(super) fn update_header_footer(
+    player_list: ResMut<super::PlayerList>,
+    server: Res<Server>,
+    mut scratch: Local<PacketEncodeScratch>,
+) {
     if player_list.changed_header_or_footer {
         let player_list = player_list.into_inner();
-        let mut writer = PacketWriter::new(
+        let mut writer = ReusablePacketWriter::new(
             &mut player_list.cached_update_packets,
             server.compression_threshold(),
+            &mut *scratch,
         );
 
         writer.write_packet(&HeaderPacket {
@@ -119,6 +126,7 @@ pub(super) fn remove_despawned_entries(
     player_list: ResMut<super::PlayerList>,
     server: Res<Server>,
     mut removed: Local<Vec<Uuid>>,
+    mut scratch: Local<PacketEncodeScratch>,
 ) {
     if player_list.manage_clients {
         debug_assert!(removed.is_empty());
@@ -126,9 +134,10 @@ pub(super) fn remove_despawned_entries(
 
         if !removed.is_empty() {
             let player_list = player_list.into_inner();
-            let mut writer = PacketWriter::new(
+            let mut writer = ReusablePacketWriter::new(
                 &mut player_list.cached_update_packets,
                 server.compression_threshold(),
+                &mut *scratch,
             );
 
             writer.write_packet(&RemovePacket {
@@ -166,11 +175,13 @@ pub(super) fn update_entries(
     >,
     server: Res<Server>,
     player_list: ResMut<super::PlayerList>,
+    mut scratch: Local<PacketEncodeScratch>,
 ) {
     let player_list = player_list.into_inner();
-    let mut writer = PacketWriter::new(
+    let mut writer = ReusablePacketWriter::new(
         &mut player_list.cached_update_packets,
         server.compression_threshold(),
+        &mut *scratch,
     );
 
     for (uuid, username, props, game_mode, ping, display_name, listed) in &entries {
