@@ -13,7 +13,7 @@
 - `Leafish/` has its own `.git/`; treat it as a separate reference checkout and do not use parent repo status or default gates as Leafish readiness.
 
 ## Layout
-- `hyperion/`: Minecraft engine/proxy workspace. Core crates live under `crates/`; event/game logic lives under `events/bedwars`; helper tools live under `tools/`. Repo-specific workflow now lives in `hyperion/AGENTS.md`.
+- `hyperion/`: Minecraft engine/proxy workspace. Core crates live under `crates/`; event/game logic lives under `events/bedwars`; helper tools live under `tools/`. Repo-specific workflow now lives in `hyperion/AGENTS.md`; Hyperion-to-Valence integration boundaries live in `docs/hyperion-integration-boundaries.md`.
 - `compat/`: mc-compat runner, Nickel/Steel config, generated runner surfaces, and Paper/reference fixtures.
 - `servers/valence/`: core Minecraft server framework. Main crate in `src/`; workspace crates in `crates/*`; runnable examples in `examples/`; protocol/data extractor in `extractor/`; docs site in `website/`. Repo-specific workflow lives in `servers/valence/AGENTS.md`.
 - `clients/stevenarella/`: core Rust Minecraft client used by mc-compat rails and manual client checks. Repo-specific workflow lives in `clients/stevenarella/AGENTS.md`.
@@ -29,6 +29,7 @@
 - For `clients/stevenarella/`, follow `clients/stevenarella/AGENTS.md`; run Cargo through the mc devshell, for example `nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test world::tests -- --nocapture` from the Stevenarella repo.
 - New checks/scripts for this workspace should be Rust or Steel Scheme, not Python or Bash. Existing Python gates may remain until touched; migrate touched gates before extending them.
 - Avoid mixed commits across `hyperion/` and the parent-owned `servers/valence/`/`clients/stevenarella/` trees unless user asks for cross-repo change.
+- Before using Hyperion code or concepts in Valence work, apply `docs/hyperion-integration-boundaries.md` and record adopt/port/reference/reject classification.
 - For Cairn evidence, do not leave review-critical receipts only under untracked `target/`; copy receipt/log artifacts into `docs/evidence/` and record BLAKE3 when tasks/docs cite them.
 - Paper backend containers are removed after runner exit unless `--keep-server` is used; use `--keep-server`, copy `docker logs <server>` into `docs/evidence/`, then `docker rm -f <server>` for reviewable Paper server logs.
 - If promoted evidence cites source-tree revisions that the receipt does not machine-record (for example a core Stevenarella or Valence subtree rev), add a `docs/evidence/*oracle*` checkpoint with `## Question`, `## Inspected evidence`, `## Decision`, `## Owner`, and `## Next action`; otherwise reviewers cannot verify the revision claim from repo-local artifacts.
