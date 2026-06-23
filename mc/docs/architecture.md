@@ -12,12 +12,17 @@ The `mc/` workspace is organized around product roles:
 - `cairn/`: lifecycle specs, active changes, and archived changes.
 - `cairn-policy/`: Nickel-authored Cairn policy source plus generated JSON consumed by the pinned Cairn binary.
 - `docs/evidence/`: promoted receipts, run logs, manifests, and review notes.
+- `docs/layout-checklist.md`: current review checklist for component roots, local agent docs, and nested Git exceptions.
 
 Stevenarella and Valence retain upstream ancestry, but they are not treated as passive vendor payloads. They are parent-owned core component trees, and source revision evidence is path-scoped to the resolved component root.
+
+Leafish is classified as a reference-only nested Git checkout at `Leafish/`. It is retained for comparison and historical investigation, excluded from default compatibility gates, and not treated as a parent-owned core client unless a future Cairn explicitly reclassifies it.
 
 ## Layout resolution
 
 `compat/runner/src/layout.rs` is the central resolver for client, server, and compatibility roots. It accepts the final role-based layout and the old transition layout while this migration is active, and it fails closed for missing required roots, ambiguous duplicate roots, or nested Git directories inside core component trees.
+
+Root-level nested Git checkouts are intentional only when named in `docs/layout-checklist.md`. Current exceptions are `hyperion/` as an independent engine/proxy repository and `Leafish/` as a reference-only client checkout.
 
 Runner defaults, Valence worktree source detection, and validation tests should use this resolver rather than adding ad hoc path probes.
 

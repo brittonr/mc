@@ -3,18 +3,22 @@
 ## Scope
 - This `mc/` directory is a workspace folder, not one buildable repo.
 - `hyperion/` remains an independent nested Rust repo. Run Hyperion commands from inside `hyperion/`, not from `mc/`.
+- `Leafish/` is a reference-only nested Git checkout retained for comparison and historical investigation; it is excluded from default compatibility gates unless explicitly selected.
 - `servers/valence/` and `clients/stevenarella/` are core component trees owned by the parent `/home/brittonr/git` repository, not submodules or nested Git repos.
 - Keep changes scoped to the affected subtree unless user explicitly asks for cross-repo work.
 
 ## VCS boundaries
 - `git rev-parse` from `mc/` resolves to parent repo `/home/brittonr/git`; this is now the owning repo for `mc/servers/valence` and `mc/clients/stevenarella`.
 - `hyperion/` has both `.git/` and `.jj/`. Check `.jj/` before assuming git-only workflow, and do not use parent repo status as Hyperion status.
+- `Leafish/` has its own `.git/`; treat it as a separate reference checkout and do not use parent repo status or default gates as Leafish readiness.
 
 ## Layout
 - `hyperion/`: Minecraft engine/proxy workspace. Core crates live under `crates/`; event/game logic lives under `events/bedwars`; helper tools live under `tools/`. Repo-specific workflow now lives in `hyperion/AGENTS.md`.
 - `compat/`: mc-compat runner, Nickel/Steel config, generated runner surfaces, and Paper/reference fixtures.
 - `servers/valence/`: core Minecraft server framework. Main crate in `src/`; workspace crates in `crates/*`; runnable examples in `examples/`; protocol/data extractor in `extractor/`; docs site in `website/`. Repo-specific workflow lives in `servers/valence/AGENTS.md`.
 - `clients/stevenarella/`: core Rust Minecraft client used by mc-compat rails and manual client checks. It has no repo-local AGENTS notes yet; use the mc devshell for Cargo and native UI dependencies.
+- `Leafish/`: reference-only nested Git checkout. Keep it out of parent-owned component changes and default gates unless a future Cairn explicitly reclassifies it.
+- `docs/layout-checklist.md`: review checklist for major component roots, local agent docs, and documented nested Git exceptions.
 - `hyperion/` already has repo-local agent notes in `hyperion/.agent/napkin.md`. Keep workspace-wide notes here; prefer subtree-local `AGENTS.md` files for repo-specific commands and conventions.
 
 ## Workflow

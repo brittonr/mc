@@ -12,6 +12,8 @@ The legacy shell entrypoint is intentionally only a thin compatibility shim arou
 
 `clients/stevenarella/` and `servers/valence/` are core component source trees tracked directly by this repository, not submodules. They retain upstream ancestry from the local fork heads used by the compatibility rails, but ongoing harness, client, and server changes now evolve in one parent history.
 
+`Leafish/` is classified as a reference-only nested Git checkout. It is retained for comparison and historical investigation, excluded from default compatibility gates, and may only participate through explicit opt-in work. The current layout checklist lives in `docs/layout-checklist.md`.
+
 Some receipt fields keep their historical names for schema compatibility, including `client.git_rev`, `valence.git_rev_resolved`, and MCP `stevenarella_child_revision`. For core component trees those values are scoped source-tree evidence: the last Git commit affecting that subtree plus dirty checks limited to that subtree, not an independent nested-repo HEAD.
 
 ## Commands
