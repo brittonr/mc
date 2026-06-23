@@ -1,0 +1,24 @@
+command=nix run .#cairn -- gate proposal add-gui-helper-plugin --root .
+{
+  "change": "add-gui-helper-plugin",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "b3a994d74d94db22c5c6b0031650210d684734839b5db3c562649867100bec5c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "c6a06784fdd48db8cf1e369aba84afa73d186590949ea59f225399192f6eef74",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+exit_status=0

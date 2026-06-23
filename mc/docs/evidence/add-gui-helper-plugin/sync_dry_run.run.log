@@ -1,0 +1,27 @@
+command=nix run .#cairn -- sync add-gui-helper-plugin --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/add-gui-helper-plugin/specs/valence-hyperion-integration/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/add-gui-helper-plugin/specs/valence-hyperion-integration/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "add-gui-helper-plugin",
+  "delta_specs": [
+    "./cairn/changes/add-gui-helper-plugin/specs/valence-hyperion-integration/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "de261cfffd0357258745b0f1a10e03cbc6191af1f746014040a1d273ba490d84",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "0810aaa510fd5d7eab5a88e1b66e4311732580bc0a4768beea587001a4b1f7bb",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "640e8627997a867c47cd549829fe78c1ffc43b173006edb0e8f1e82abaf39bbf"
+}
+
+exit_status=0

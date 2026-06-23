@@ -1,0 +1,97 @@
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo check -p playground
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+    Checking serde_json v1.0.149
+    Checking bevy_ecs v0.14.2
+   Compiling num-traits v0.2.19
+    Checking futures-task v0.3.32
+    Checking futures-channel v0.3.32
+    Checking futures-sink v0.3.32
+   Compiling playground v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/tools/playground)
+    Checking clap_builder v4.6.0
+    Checking flume v0.11.1
+    Checking futures-util v0.3.32
+    Checking hyper v1.9.0
+    Checking valence_text v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_text)
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+    Checking num-integer v0.1.46
+    Checking ordered-float v4.6.0
+warning: `valence_text` (lib) generated 5 warnings
+    Checking clap v4.6.0
+    Checking num-bigint v0.4.6
+    Checking num-iter v0.1.45
+    Checking num-bigint-dig v0.8.6
+    Checking hyper-util v0.1.20
+    Checking tower v0.5.3
+    Checking tower-http v0.6.8
+    Checking rsa v0.9.10
+    Checking simple_asn1 v0.6.4
+    Checking hyper-rustls v0.27.8
+    Checking rsa-der v0.3.0
+    Checking reqwest v0.12.28
+    Checking bevy_app v0.14.2
+    Checking valence_protocol v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_protocol)
+    Checking bevy_core v0.14.2
+    Checking bevy_log v0.14.2
+    Checking bevy_hierarchy v0.14.2
+    Checking valence_server_common v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_server_common)
+    Checking valence_registry v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_registry)
+    Checking valence_entity v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_entity)
+    Checking valence_server v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_server)
+    Checking valence_inventory v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_inventory)
+    Checking valence_weather v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_weather)
+    Checking valence_world_border v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_world_border)
+    Checking valence_player_list v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_player_list)
+    Checking valence_command v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_command)
+    Checking valence_network v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_network)
+    Checking valence_anvil v0.1.0 (/home/brittonr/git/mc/servers/valence/crates/valence_anvil)
+    Checking valence_advancement v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_advancement)
+    Checking valence_boss_bar v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_boss_bar)
+    Checking valence_scoreboard v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_scoreboard)
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+warning: `valence_inventory` (lib) generated 1 warning
+    Checking valence_equipment v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_equipment)
+    Checking valence v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 13.80s
+
+exit_status=0

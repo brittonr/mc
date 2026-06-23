@@ -1,0 +1,353 @@
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo clippy -p valence_inventory --all-targets
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: lint `clippy::string_to_string` has been removed: `clippy::implicit_clone` covers those cases
+  |
+  = note: requested on the command line with `-W clippy::string_to_string`
+  = note: `#[warn(renamed_and_removed_lints)]` on by default
+
+warning: `valence_build_utils` (lib) generated 1 warning
+warning: `valence_ident_macros` (lib) generated 1 warning (1 duplicate)
+warning: all fields have the same prefix: `block_entity_kind`
+  --> crates/valence_generated/build/block/entity.rs:6:1
+   |
+ 6 | / pub(super) struct EntityCode {
+ 7 | |     pub block_entity_kind_variants: TokenStream,
+ 8 | |     pub block_entity_kind_from_id_arms: TokenStream,
+ 9 | |     pub block_entity_kind_to_id_arms: TokenStream,
+10 | |     pub block_entity_kind_from_ident_arms: TokenStream,
+11 | |     pub block_entity_kind_to_ident_arms: TokenStream,
+12 | | }
+   | |_^
+   |
+   = help: remove the prefixes
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#struct_field_names
+   = note: requested on the command line with `-W clippy::struct-field-names`
+
+warning: all fields have the same prefix: `prop`
+  --> crates/valence_generated/build/block/property.rs:6:1
+   |
+ 6 | / pub(super) struct PropertyCode {
+ 7 | |     pub prop_name_variants: Vec<proc_macro2::Ident>,
+ 8 | |     pub prop_name_from_str_arms: TokenStream,
+ 9 | |     pub prop_name_to_str_arms: TokenStream,
+...  |
+16 | |     pub prop_value_count: usize,
+17 | | }
+   | |_^
+   |
+   = help: remove the prefixes
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#struct_field_names
+
+warning: this assertion has a constant value
+  --> crates/valence_generated/build/chunk/view.rs:8:5
+   |
+ 8 | /     debug_assert!(
+ 9 | |         MAX_VIEW_DIST > 0,
+10 | |         "chunk-view table includes positive distances"
+11 | |     );
+   | |_____^
+   |
+   = help: consider moving this into a const block: `const { assert!(..) }`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#assertions_on_constants
+   = note: `#[warn(clippy::assertions_on_constants)]` on by default
+
+warning: `valence_ident` (lib) generated 1 warning (1 duplicate)
+warning: `valence_generated` (build script) generated 4 warnings (1 duplicate)
+warning: `valence_nbt` (lib) generated 1 warning (1 duplicate)
+warning: `valence_math` (lib) generated 1 warning (1 duplicate)
+warning: `valence_protocol_macros` (lib) generated 1 warning (1 duplicate)
+warning: `valence_entity` (build script) generated 1 warning (1 duplicate)
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `mod.rs` files are not allowed, found `crates/valence_text/src/color/mod.rs`
+ --> crates/valence_text/src/color/mod.rs:1:1
+  |
+1 | //! [`Color`] and related data structures.
+  | ^
+  |
+  = help: move `crates/valence_text/src/color/mod.rs` to `crates/valence_text/src/color.rs`
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#mod_module_files
+  = note: requested on the command line with `-W clippy::mod-module-files`
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `mod.rs` files are not allowed, found `crates/valence_text/src/textlike/mod.rs`
+ --> crates/valence_text/src/textlike/mod.rs:1:1
+  |
+1 | //! Provides the [`IntoText`] trait and implementations.
+  | ^
+  |
+  = help: move `crates/valence_text/src/textlike/mod.rs` to `crates/valence_text/src/textlike.rs`
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#mod_module_files
+
+warning: `valence_text` (lib) generated 8 warnings (1 duplicate)
+warning: unneeded `return` statement
+    --> /home/brittonr/.cargo-target/debug/build/valence_generated-aff36d7f59017390/out/item.rs:9139:18
+     |
+9139 |             _ => return None,
+     |                  ^^^^^^^^^^^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_return
+     = note: `#[warn(clippy::needless_return)]` on by default
+help: remove `return`
+     |
+9139 -             _ => return None,
+9139 +             _ => None,
+     |
+
+warning: unneeded `return` statement
+    --> /home/brittonr/.cargo-target/debug/build/valence_generated-aff36d7f59017390/out/item.rs:9213:18
+     |
+9213 |             _ => return 0,
+     |                  ^^^^^^^^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_return
+help: remove `return`
+     |
+9213 -             _ => return 0,
+9213 +             _ => 0,
+     |
+
+warning: unneeded `return` statement
+    --> /home/brittonr/.cargo-target/debug/build/valence_generated-aff36d7f59017390/out/item.rs:9281:18
+     |
+9281 |             _ => return 0,
+     |                  ^^^^^^^^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_return
+help: remove `return`
+     |
+9281 -             _ => return 0,
+9281 +             _ => 0,
+     |
+
+warning: unneeded `return` statement
+    --> /home/brittonr/.cargo-target/debug/build/valence_generated-aff36d7f59017390/out/item.rs:9304:18
+     |
+9304 |             _ => return false,
+     |                  ^^^^^^^^^^^^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_return
+help: remove `return`
+     |
+9304 -             _ => return false,
+9304 +             _ => false,
+     |
+
+warning: this lint expectation is unfulfilled
+    --> /home/brittonr/.cargo-target/debug/build/valence_generated-aff36d7f59017390/out/item.rs:9287:13
+     |
+9287 |             clippy::match_like_matches_macro,
+     |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = note: generated item table keeps one match shape
+     = note: `#[warn(unfulfilled_lint_expectations)]` on by default
+
+warning: `valence_generated` (lib) generated 6 warnings (1 duplicate) (run `cargo clippy --fix --lib -p valence_generated -- ` to apply 4 suggestions)
+warning: consider moving the `;` outside the block for consistent formatting
+   --> crates/valence_protocol/src/decode.rs:121:9
+    |
+121 | /         {
+122 | |             self.buf.advance(packet_len_len);
+123 | |             data = self.buf.split_to(packet_len as usize);
+124 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#semicolon_outside_block
+    = note: requested on the command line with `-W clippy::semicolon-outside-block`
+help: put the `;` here
+    |
+123 ~             data = self.buf.split_to(packet_len as usize)
+124 ~         };
+    |
+
+warning: `valence_protocol` (lib) generated 2 warnings (1 duplicate) (run `cargo clippy --fix --lib -p valence_protocol -- ` to apply 1 suggestion)
+warning: `valence_server_common` (lib) generated 1 warning (1 duplicate)
+warning: `valence_registry` (lib) generated 1 warning (1 duplicate)
+warning: `valence_entity` (lib) generated 1 warning (1 duplicate)
+warning: `valence_server` (lib) generated 1 warning (1 duplicate)
+    Checking valence_inventory v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_inventory)
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+warning: this `let...else` may be rewritten with the `?` operator
+   --> crates/valence_inventory/src/click/press.rs:124:5
+    |
+124 | /     let Some(target_slot_id) = slot_idx_to_u16(pkt.slot_idx) else {
+125 | |         return None;
+126 | |     };
+    | |______^ help: replace it with: `let target_slot_id = slot_idx_to_u16(pkt.slot_idx)?;`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#question_mark
+    = note: `#[warn(clippy::question_mark)]` on by default
+
+warning: this `let...else` may be rewritten with the `?` operator
+   --> crates/valence_inventory/src/click/press.rs:147:5
+    |
+147 | /     let Some(packet_slot_id) = slot_idx_to_u16(pkt.slot_idx) else {
+148 | |         return None;
+149 | |     };
+    | |______^ help: replace it with: `let packet_slot_id = slot_idx_to_u16(pkt.slot_idx)?;`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#question_mark
+
+warning: this `let...else` may be rewritten with the `?` operator
+   --> crates/valence_inventory/src/click/press.rs:167:5
+    |
+167 | /     let Some(slot_id) = slot_idx_to_u16(pkt.slot_idx) else {
+168 | |         return None;
+169 | |     };
+    | |______^ help: replace it with: `let slot_id = slot_idx_to_u16(pkt.slot_idx)?;`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#question_mark
+
+warning: checked cast can be simplified
+  --> crates/valence_inventory/src/click.rs:55:19
+   |
+55 |     debug_assert!(pkt.slot_changes.len() <= usize::from(u16::MAX));
+   |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: try: `u16::try_from(pkt.slot_changes.len()).is_ok()`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#checked_conversions
+   = note: requested on the command line with `-W clippy::checked-conversions`
+
+warning: this argument (2 byte) is passed by reference, but would be more efficient if passed by value (limit: 8 byte)
+   --> crates/valence_inventory/src/systems/actions.rs:141:57
+    |
+141 | ...held: &HeldItem, stack: &mut ItemStack) {
+    |          ^^^^^^^^^ help: consider passing by value instead: `HeldItem`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#trivially_copy_pass_by_ref
+    = note: requested on the command line with `-W clippy::trivially-copy-pass-by-ref`
+
+warning: this argument (2 byte) is passed by reference, but would be more efficient if passed by value (limit: 8 byte)
+  --> crates/valence_inventory/src/systems/place.rs:25:59
+   |
+25 | fn interacted_slot(hand: valence_server::Hand, held_item: &HeldItem) -> u16 {
+   |                                                           ^^^^^^^^^ help: consider passing by value instead: `HeldItem`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#trivially_copy_pass_by_ref
+
+warning: `valence_inventory` (lib) generated 8 warnings (1 duplicate) (run `cargo clippy --fix --lib -p valence_inventory -- ` to apply 1 suggestion)
+warning: useless use of `vec!`
+   --> crates/valence_inventory/src/validate/tests.rs:307:19
+    |
+307 |       let packets = vec![
+    |  ___________________^
+308 | |         ClickSlotC2s {
+309 | |             window_id: 0,
+310 | |             button: 0,
+...   |
+371 | |         },
+372 | |     ];
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#useless_vec
+    = note: `#[warn(clippy::useless_vec)]` on by default
+help: you can use an array directly
+    |
+307 ~     let packets = [ClickSlotC2s {
+308 +             window_id: 0,
+309 +             button: 0,
+310 +             mode: ClickMode::ShiftClick,
+311 +             state_id: VarInt(0),
+312 +             slot_idx: 9,
+313 +             slot_changes: vec![
+314 +                 SlotChange {
+315 +                     idx: 9,
+316 +                     stack: ItemStack::EMPTY,
+317 +                 },
+318 +                 SlotChange {
+319 +                     idx: 36,
+320 +                     stack: ItemStack::new(ItemKind::GoldIngot, 2, None),
+321 +                 },
+322 +             ]
+323 +             .into(),
+324 +             carried_item: ItemStack::EMPTY,
+325 +         },
+326 +         ClickSlotC2s {
+327 +             window_id: 0,
+328 +             button: 0,
+329 +             mode: ClickMode::Hotbar,
+330 +             state_id: VarInt(0),
+331 +             slot_idx: 9,
+332 +             slot_changes: vec![
+333 +                 SlotChange {
+334 +                     idx: 9,
+335 +                     stack: ItemStack::EMPTY,
+336 +                 },
+337 +                 SlotChange {
+338 +                     idx: 36,
+339 +                     stack: ItemStack::new(ItemKind::GoldIngot, 2, None),
+340 +                 },
+341 +             ]
+342 +             .into(),
+343 +             carried_item: ItemStack::EMPTY,
+344 +         },
+345 +         ClickSlotC2s {
+346 +             window_id: 0,
+347 +             button: 0,
+348 +             mode: ClickMode::Click,
+349 +             state_id: VarInt(0),
+350 +             slot_idx: 9,
+351 +             slot_changes: vec![SlotChange {
+352 +                 idx: 9,
+353 +                 stack: ItemStack::EMPTY,
+354 +             }]
+355 +             .into(),
+356 +             carried_item: ItemStack::new(ItemKind::GoldIngot, 2, None),
+357 +         },
+358 +         ClickSlotC2s {
+359 +             window_id: 0,
+360 +             button: 0,
+361 +             mode: ClickMode::DropKey,
+362 +             state_id: VarInt(0),
+363 +             slot_idx: 9,
+364 +             slot_changes: vec![SlotChange {
+365 +                 idx: 9,
+366 +                 stack: ItemStack::new(ItemKind::GoldIngot, 1, None),
+367 +             }]
+368 +             .into(),
+369 +             carried_item: ItemStack::EMPTY,
+370 ~         }];
+    |
+
+warning: `valence_inventory` (lib test) generated 9 warnings (8 duplicates) (run `cargo clippy --fix --lib -p valence_inventory --tests -- ` to apply 1 suggestion)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.56s
+
+exit_status=0

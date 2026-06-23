@@ -1,0 +1,24 @@
+command=nix run .#cairn -- gate tasks add-gui-helper-plugin --root .
+{
+  "change": "add-gui-helper-plugin",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "3f792415ebd11c9f5d835f627546aa41fd280e3ba1c324a6a6ac3a416d447757",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "df8d35f3ce057b6a1415b172e9743263fc335465ff40ef577e7ac9d5cdb3d9a7",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+exit_status=0

@@ -28,6 +28,7 @@ mod click;
 mod components;
 #[path = "systems/actions.rs"]
 mod control;
+pub mod gui;
 #[path = "systems/hotbar.rs"]
 mod hotbar;
 #[path = "systems/mode.rs"]

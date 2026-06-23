@@ -1,0 +1,245 @@
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence_inventory --lib
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+   Compiling valence_server v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_server)
+   Compiling valence_inventory v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_inventory)
+error[E0423]: expected function, tuple struct or tuple variant, found type alias `CursorItem`
+  --> crates/valence_inventory/src/validate/tests.rs:39:23
+   |
+39 |     let cursor_item = CursorItem(ItemStack::new(ItemKind::Diamond, 64, None));
+   |                       ^^^^^^^^^^
+   |
+help: you might have meant to use `:` for type annotation
+   |
+39 -     let cursor_item = CursorItem(ItemStack::new(ItemKind::Diamond, 64, None));
+39 +     let cursor_item: CursorItem(ItemStack::new(ItemKind::Diamond, 64, None));
+   |
+help: consider importing this tuple struct through its public re-export instead
+   |
+ 1 + use crate::CursorItem;
+   |
+
+error[E0423]: expected function, tuple struct or tuple variant, found type alias `CursorItem`
+   --> crates/valence_inventory/src/validate/tests.rs:115:23
+    |
+115 |     let cursor_item = CursorItem(ItemStack::EMPTY);
+    |                       ^^^^^^^^^^
+    |
+help: you might have meant to use `:` for type annotation
+    |
+115 -     let cursor_item = CursorItem(ItemStack::EMPTY);
+115 +     let cursor_item: CursorItem(ItemStack::EMPTY);
+    |
+help: consider importing this tuple struct through its public re-export instead
+    |
+  1 + use crate::CursorItem;
+    |
+
+error[E0423]: expected function, tuple struct or tuple variant, found type alias `CursorItem`
+   --> crates/valence_inventory/src/validate/tests.rs:153:23
+    |
+153 |     let cursor_item = CursorItem(ItemStack::new(ItemKind::Diamond, 20, None));
+    |                       ^^^^^^^^^^
+    |
+help: you might have meant to use `:` for type annotation
+    |
+153 -     let cursor_item = CursorItem(ItemStack::new(ItemKind::Diamond, 20, None));
+153 +     let cursor_item: CursorItem(ItemStack::new(ItemKind::Diamond, 20, None));
+    |
+help: consider importing this tuple struct through its public re-export instead
+    |
+  1 + use crate::CursorItem;
+    |
+
+error[E0423]: expected function, tuple struct or tuple variant, found type alias `CursorItem`
+   --> crates/valence_inventory/src/validate/tests.rs:193:23
+    |
+193 |     let cursor_item = CursorItem(ItemStack::new(ItemKind::Diamond, 64, None));
+    |                       ^^^^^^^^^^
+    |
+help: you might have meant to use `:` for type annotation
+    |
+193 -     let cursor_item = CursorItem(ItemStack::new(ItemKind::Diamond, 64, None));
+193 +     let cursor_item: CursorItem(ItemStack::new(ItemKind::Diamond, 64, None));
+    |
+help: consider importing this tuple struct through its public re-export instead
+    |
+  1 + use crate::CursorItem;
+    |
+
+error[E0423]: expected function, tuple struct or tuple variant, found type alias `CursorItem`
+   --> crates/valence_inventory/src/validate/tests.rs:217:23
+    |
+217 |     let cursor_item = CursorItem(ItemStack::new(ItemKind::Diamond, 2, None));
+    |                       ^^^^^^^^^^
+    |
+help: you might have meant to use `:` for type annotation
+    |
+217 -     let cursor_item = CursorItem(ItemStack::new(ItemKind::Diamond, 2, None));
+217 +     let cursor_item: CursorItem(ItemStack::new(ItemKind::Diamond, 2, None));
+    |
+help: consider importing this tuple struct through its public re-export instead
+    |
+  1 + use crate::CursorItem;
+    |
+
+error[E0423]: expected function, tuple struct or tuple variant, found type alias `CursorItem`
+   --> crates/valence_inventory/src/validate/tests.rs:242:23
+    |
+242 |     let cursor_item = CursorItem(ItemStack::new(ItemKind::Diamond, 20, None));
+    |                       ^^^^^^^^^^
+    |
+help: you might have meant to use `:` for type annotation
+    |
+242 -     let cursor_item = CursorItem(ItemStack::new(ItemKind::Diamond, 20, None));
+242 +     let cursor_item: CursorItem(ItemStack::new(ItemKind::Diamond, 20, None));
+    |
+help: consider importing this tuple struct through its public re-export instead
+    |
+  1 + use crate::CursorItem;
+    |
+
+error[E0423]: expected function, tuple struct or tuple variant, found type alias `CursorItem`
+   --> crates/valence_inventory/src/validate/tests.rs:441:23
+    |
+441 |     let cursor_item = CursorItem(ItemStack::new(ItemKind::Apple, 100, None));
+    |                       ^^^^^^^^^^
+    |
+help: you might have meant to use `:` for type annotation
+    |
+441 -     let cursor_item = CursorItem(ItemStack::new(ItemKind::Apple, 100, None));
+441 +     let cursor_item: CursorItem(ItemStack::new(ItemKind::Apple, 100, None));
+    |
+help: consider importing this tuple struct through its public re-export instead
+    |
+  1 + use crate::CursorItem;
+    |
+
+error[E0423]: expected function, tuple struct or tuple variant, found type alias `CursorItem`
+   --> crates/valence_inventory/src/validate/tests.rs:462:23
+    |
+462 |     let cursor_item = CursorItem(ItemStack::new(ItemKind::Air, 0, None));
+    |                       ^^^^^^^^^^
+    |
+help: you might have meant to use `:` for type annotation
+    |
+462 -     let cursor_item = CursorItem(ItemStack::new(ItemKind::Air, 0, None));
+462 +     let cursor_item: CursorItem(ItemStack::new(ItemKind::Air, 0, None));
+    |
+help: consider importing this tuple struct through its public re-export instead
+    |
+  1 + use crate::CursorItem;
+    |
+
+error[E0423]: expected function, tuple struct or tuple variant, found type alias `CursorItem`
+   --> crates/valence_inventory/src/validate/tests.rs:480:23
+    |
+480 |     let cursor_item = CursorItem(ItemStack::new(ItemKind::Air, 0, None));
+    |                       ^^^^^^^^^^
+    |
+help: you might have meant to use `:` for type annotation
+    |
+480 -     let cursor_item = CursorItem(ItemStack::new(ItemKind::Air, 0, None));
+480 +     let cursor_item: CursorItem(ItemStack::new(ItemKind::Air, 0, None));
+    |
+help: consider importing this tuple struct through its public re-export instead
+    |
+  1 + use crate::CursorItem;
+    |
+
+error[E0423]: expected function, tuple struct or tuple variant, found type alias `CursorItem`
+   --> crates/valence_inventory/src/validate/tests.rs:498:23
+    |
+498 |     let cursor_item = CursorItem(ItemStack::new(ItemKind::Air, 0, None));
+    |                       ^^^^^^^^^^
+    |
+help: you might have meant to use `:` for type annotation
+    |
+498 -     let cursor_item = CursorItem(ItemStack::new(ItemKind::Air, 0, None));
+498 +     let cursor_item: CursorItem(ItemStack::new(ItemKind::Air, 0, None));
+    |
+help: consider importing this tuple struct through its public re-export instead
+    |
+  1 + use crate::CursorItem;
+    |
+
+error[E0423]: expected function, tuple struct or tuple variant, found type alias `CursorItem`
+   --> crates/valence_inventory/src/validate/tests.rs:515:23
+    |
+515 |     let cursor_item = CursorItem(ItemStack::new(ItemKind::Air, 0, None));
+    |                       ^^^^^^^^^^
+    |
+help: you might have meant to use `:` for type annotation
+    |
+515 -     let cursor_item = CursorItem(ItemStack::new(ItemKind::Air, 0, None));
+515 +     let cursor_item: CursorItem(ItemStack::new(ItemKind::Air, 0, None));
+    |
+help: consider importing this tuple struct through its public re-export instead
+    |
+  1 + use crate::CursorItem;
+    |
+
+error[E0423]: expected function, tuple struct or tuple variant, found type alias `CursorItem`
+   --> crates/valence_inventory/src/validate/tests.rs:532:23
+    |
+532 |     let cursor_item = CursorItem(ItemStack::new(ItemKind::Air, 0, None));
+    |                       ^^^^^^^^^^
+    |
+help: you might have meant to use `:` for type annotation
+    |
+532 -     let cursor_item = CursorItem(ItemStack::new(ItemKind::Air, 0, None));
+532 +     let cursor_item: CursorItem(ItemStack::new(ItemKind::Air, 0, None));
+    |
+help: consider importing this tuple struct through its public re-export instead
+    |
+  1 + use crate::CursorItem;
+    |
+
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+For more information about this error, try `rustc --explain E0423`.
+warning: `valence_inventory` (lib test) generated 1 warning
+error: could not compile `valence_inventory` (lib test) due to 12 previous errors; 1 warning emitted
+
+exit_status=101

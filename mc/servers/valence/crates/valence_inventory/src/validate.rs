@@ -1,6 +1,7 @@
+use super::CursorItem;
+
 type ClickMode = valence_server::protocol::packets::play::click_slot_c2s::ClickMode;
 type ClickSlotC2s<'a> = valence_server::protocol::packets::play::ClickSlotC2s<'a>;
-type CursorItem = super::CursorItem;
 type Inventory = super::Inventory;
 type InventoryWindow<'a> = super::InventoryWindow<'a>;
 type ItemKind = valence_server::ItemKind;
