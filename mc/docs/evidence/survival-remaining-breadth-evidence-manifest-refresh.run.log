@@ -1,0 +1,11 @@
+# survival remaining breadth evidence manifest refresh
+started_at=2026-06-23T00:14:46Z
+## evidence_manifest_check
+command=nix run .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=434; entries=3109; current=3109; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+evidence_manifest_check_exit_status=0
+## evidence_manifest_flake_check
+command=nix build .#checks.x86_64-linux.mc-compat-evidence-manifest-refresh --no-link -L
+evidence_manifest_flake_check_exit_status=0
+finished_at=2026-06-23T00:14:48Z
+exit_status=0

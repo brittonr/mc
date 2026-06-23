@@ -1,0 +1,123 @@
+# survival remaining breadth typed-event archive
+started_at=2026-06-23T00:22:16Z
+## archive_dry_run
+command=nix run .#cairn -- archive survival-remaining-breadth-typed-event-migration --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-remaining-breadth-typed-event-migration",
+      "kind": "archive_change",
+      "path": "./cairn/changes/survival-remaining-breadth-typed-event-migration"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-remaining-breadth-typed-event-migration",
+  "dry_run": true,
+  "input_hash": "6f1d2479a62557724b6fdcaa73eb11b606537a3e71eb40e35efdbb9cb05c9046",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "b85cb889f1723634a10ae0da727c248e7422b32c6db63e08f7381875cb48025e",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "08e844fe02c23b52a4e701084712f5dd3305c3fa78c98721e50fa14a620d848f"
+}
+archive_dry_run_exit_status=0
+## archive_execute
+command=nix run .#cairn -- archive survival-remaining-breadth-typed-event-migration --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-remaining-breadth-typed-event-migration",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-survival-remaining-breadth-typed-event-migration"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-remaining-breadth-typed-event-migration",
+  "dry_run": false,
+  "input_hash": "6f1d2479a62557724b6fdcaa73eb11b606537a3e71eb40e35efdbb9cb05c9046",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "7b7b31f8920889c7ebd59fc0aedc3338430c4ebe801720310a2399e38da1b405",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-remaining-breadth-typed-event-migration/design.md"
+        },
+        {
+          "content_hash": "efc6c392a30ea2a22dacf31563ef22930756d55635b65d4e2af6cf03d0a0fc35",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-remaining-breadth-typed-event-migration/proposal.md"
+        },
+        {
+          "content_hash": "a17aa03800c132a6ca2569bc3a59ec49aaabc5c4565a7253864a55a806ea7d0f",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-remaining-breadth-typed-event-migration/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "aecb6acca5f081d98117e46149e42a92aab00d0cb7be5ddb0dc6e6c7b5a1435a",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-survival-remaining-breadth-typed-event-migration/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-remaining-breadth-typed-event-migration"
+        }
+      ],
+      "manifest_hash": "ad444a800ca731d66b8880cc236f14d23f631c40bce8304f466e41958dc227c4"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "7b7b31f8920889c7ebd59fc0aedc3338430c4ebe801720310a2399e38da1b405",
+          "exists": true,
+          "path": "./cairn/changes/survival-remaining-breadth-typed-event-migration/design.md"
+        },
+        {
+          "content_hash": "efc6c392a30ea2a22dacf31563ef22930756d55635b65d4e2af6cf03d0a0fc35",
+          "exists": true,
+          "path": "./cairn/changes/survival-remaining-breadth-typed-event-migration/proposal.md"
+        },
+        {
+          "content_hash": "a17aa03800c132a6ca2569bc3a59ec49aaabc5c4565a7253864a55a806ea7d0f",
+          "exists": true,
+          "path": "./cairn/changes/survival-remaining-breadth-typed-event-migration/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "aecb6acca5f081d98117e46149e42a92aab00d0cb7be5ddb0dc6e6c7b5a1435a",
+          "exists": true,
+          "path": "./cairn/changes/survival-remaining-breadth-typed-event-migration/tasks.md"
+        }
+      ],
+      "manifest_hash": "39f20e2a96d43f292b7d1252316e50761021a2f71b1a386395793a59e7670c8b"
+    },
+    "kind": "archive",
+    "manifest_hash": "f552f61d921c7ac41c41ad87486ba5fdb42c06587256dd0ad0a859db7496d2a3"
+  },
+  "plan_hash": "e9d6857045016a7d1dd3644590759fcef2365bdde1a4e30de5ec5c31452b4b36",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "b60b1e15f926c9cdb99e6aca5945944bdd5a9b48b4445851f459a2f433560f7f"
+}
+archive_execute_exit_status=0
+## post_archive_validate
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 2,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 4,
+  "valid": true
+}
+post_archive_validate_exit_status=0
+finished_at=2026-06-23T00:22:17Z
+exit_status=0

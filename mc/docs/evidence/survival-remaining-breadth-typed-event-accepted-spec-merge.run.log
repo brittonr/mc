@@ -1,0 +1,27 @@
+# survival remaining breadth typed-event accepted spec merge
+started_at=2026-06-23T00:18:50Z
+## grep_requirement
+command=grep -F survival_remaining_breadth_typed_event_migration cairn/specs/mc-compatibility/spec.md
+r[mc_compatibility.survival_remaining_breadth_typed_event_migration.readiness] The remaining survival breadth scenarios SHOULD move from waiver-backed substring fallback to `typed-event-ready` only when typed events cover each row's required client milestones, Valence server milestones, forbidden surfaces, and row-specific ordered phases.
+r[mc_compatibility.survival_remaining_breadth_typed_event_migration.readiness.complete]
+r[mc_compatibility.survival_remaining_breadth_typed_event_migration.gate] The runner MUST include the remaining survival breadth rows in typed-event pass/fail gates so missing or invalid structured row evidence fails before substring fallback can satisfy a row.
+r[mc_compatibility.survival_remaining_breadth_typed_event_migration.gate.missing]
+r[mc_compatibility.survival_remaining_breadth_typed_event_migration.gate.order]
+r[mc_compatibility.survival_remaining_breadth_typed_event_migration.validation] The migration MUST record reviewable evidence for runner fixtures, scenario-manifest checks, generated-surface freshness, dry-run coverage, evidence manifests, Cairn gates, and Cairn validation before archive.
+r[mc_compatibility.survival_remaining_breadth_typed_event_migration.validation.log]
+grep_requirement_exit_status=0
+## cairn_validate
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
+cairn_validate_exit_status=0
+finished_at=2026-06-23T00:18:51Z
+exit_status=0

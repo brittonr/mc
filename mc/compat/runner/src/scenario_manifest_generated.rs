@@ -600,7 +600,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-historical-scenario-dry-runs",
         dry_run_wrapper: "mc-compat-smoke",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "survival-redstone-toggle",
@@ -666,7 +666,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-historical-scenario-dry-runs",
         dry_run_wrapper: "mc-compat-smoke",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "survival-world-persistence-restart",
@@ -732,7 +732,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-historical-scenario-dry-runs",
         dry_run_wrapper: "mc-compat-smoke",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "survival-crash-recovery-parity",
@@ -831,7 +831,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-historical-scenario-dry-runs",
         dry_run_wrapper: "mc-compat-smoke",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "survival-biome-dimension-state",
@@ -887,7 +887,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-historical-scenario-dry-runs",
         dry_run_wrapper: "mc-compat-smoke",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "survival-sign-editing-live",
@@ -917,7 +917,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-historical-scenario-dry-runs",
         dry_run_wrapper: "mc-compat-smoke",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "mcp-controlled-smoke",

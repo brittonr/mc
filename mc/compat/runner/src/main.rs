@@ -3819,6 +3819,12 @@ fn typed_event_oracle_contributes_to_pass_fail(scenario: Scenario) -> bool {
             | Scenario::SurvivalFurnacePersistence
             | Scenario::SurvivalFurnaceSmeltingBreadth
             | Scenario::SurvivalHungerHealthCycle
+            | Scenario::SurvivalMobAiLootBreadth
+            | Scenario::SurvivalRedstoneCircuitBreadth
+            | Scenario::SurvivalWorldMultichunkDurability
+            | Scenario::SurvivalContainerBlockEntityBreadth
+            | Scenario::SurvivalBiomeDimensionTravel
+            | Scenario::SurvivalSignEditingLive
     )
 }
 
@@ -4221,6 +4227,190 @@ fn typed_event_ordered_edges_for_scenario(scenario: Scenario) -> Vec<(&'static s
             (
                 "server_survival_crafting_result",
                 "server_survival_crafting_collect",
+            ),
+        ],
+        Scenario::SurvivalMobAiLootBreadth => vec![
+            (
+                "survival_mob_ai_loot_mob_seen",
+                "survival_mob_ai_loot_attack_sent",
+            ),
+            (
+                "survival_mob_ai_loot_attack_sent",
+                "survival_mob_ai_loot_death_seen",
+            ),
+            (
+                "survival_mob_ai_loot_death_seen",
+                "survival_mob_ai_loot_drop_seen",
+            ),
+            (
+                "survival_mob_ai_loot_drop_seen",
+                "survival_mob_ai_loot_pickup_seen",
+            ),
+            (
+                "survival_mob_ai_loot_pickup_seen",
+                "survival_mob_ai_loot_inventory_updated",
+            ),
+            (
+                "server_survival_mob_ai_loot_spawn",
+                "server_survival_mob_ai_loot_ai_checkpoint",
+            ),
+            (
+                "server_survival_mob_ai_loot_ai_checkpoint",
+                "server_survival_mob_ai_loot_attack",
+            ),
+            (
+                "server_survival_mob_ai_loot_attack",
+                "server_survival_mob_ai_loot_death",
+            ),
+            (
+                "server_survival_mob_ai_loot_death",
+                "server_survival_mob_ai_loot_drop_spawn",
+            ),
+            (
+                "server_survival_mob_ai_loot_drop_spawn",
+                "server_survival_mob_ai_loot_pickup",
+            ),
+            (
+                "server_survival_mob_ai_loot_pickup",
+                "server_survival_mob_ai_loot_inventory",
+            ),
+            (
+                "server_survival_mob_ai_loot_inventory",
+                "server_survival_mob_ai_loot_state",
+            ),
+        ],
+        Scenario::SurvivalRedstoneCircuitBreadth => vec![
+            (
+                "survival_redstone_circuit_initial_state",
+                "survival_redstone_circuit_input_sent",
+            ),
+            (
+                "survival_redstone_circuit_input_sent",
+                "survival_redstone_circuit_output_update",
+            ),
+            (
+                "survival_redstone_circuit_output_update",
+                "survival_redstone_circuit_return_input_sent",
+            ),
+            (
+                "survival_redstone_circuit_return_input_sent",
+                "survival_redstone_circuit_return_update",
+            ),
+            (
+                "server_survival_redstone_circuit_initial",
+                "server_survival_redstone_circuit_input",
+            ),
+            (
+                "server_survival_redstone_circuit_input",
+                "server_survival_redstone_circuit_powered_on",
+            ),
+            (
+                "server_survival_redstone_circuit_powered_on",
+                "server_survival_redstone_circuit_powered_off",
+            ),
+            (
+                "server_survival_redstone_circuit_powered_off",
+                "server_survival_redstone_circuit_state",
+            ),
+        ],
+        Scenario::SurvivalWorldMultichunkDurability => vec![
+            (
+                "survival_world_multichunk_mutation_sent",
+                "survival_world_multichunk_pre_restart_update",
+            ),
+            (
+                "survival_world_multichunk_pre_restart_update",
+                "survival_world_multichunk_reconnect_sent",
+            ),
+            (
+                "survival_world_multichunk_reconnect_sent",
+                "survival_world_multichunk_post_restart_update",
+            ),
+            (
+                "server_survival_world_multichunk_mutation",
+                "server_survival_world_multichunk_clean_shutdown",
+            ),
+            (
+                "server_survival_world_multichunk_clean_shutdown",
+                "server_survival_world_multichunk_backend_restart",
+            ),
+            (
+                "server_survival_world_multichunk_backend_restart",
+                "server_survival_world_multichunk_post_restart",
+            ),
+            (
+                "server_survival_world_multichunk_post_restart",
+                "server_survival_world_multichunk_state",
+            ),
+        ],
+        Scenario::SurvivalContainerBlockEntityBreadth => vec![
+            (
+                "survival_container_block_entity_open_seen",
+                "survival_container_block_entity_transfer_sent",
+            ),
+            (
+                "survival_container_block_entity_transfer_sent",
+                "survival_container_block_entity_payload_seen",
+            ),
+            (
+                "survival_container_block_entity_payload_seen",
+                "survival_container_block_entity_metadata_seen",
+            ),
+            (
+                "survival_container_block_entity_metadata_seen",
+                "survival_container_block_entity_reopen_seen",
+            ),
+            (
+                "server_survival_container_block_entity_open",
+                "server_survival_container_block_entity_transfer",
+            ),
+            (
+                "server_survival_container_block_entity_transfer",
+                "server_survival_container_block_entity_payload",
+            ),
+            (
+                "server_survival_container_block_entity_payload",
+                "server_survival_container_block_entity_metadata",
+            ),
+            (
+                "server_survival_container_block_entity_metadata",
+                "server_survival_container_block_entity_state",
+            ),
+        ],
+        Scenario::SurvivalBiomeDimensionTravel => vec![
+            (
+                "survival_biome_dimension_travel_origin",
+                "survival_biome_dimension_travel_transition_sent",
+            ),
+            (
+                "survival_biome_dimension_travel_transition_sent",
+                "survival_biome_dimension_travel_destination_seen",
+            ),
+            (
+                "server_survival_biome_dimension_travel_origin",
+                "server_survival_biome_dimension_travel_transition",
+            ),
+            (
+                "server_survival_biome_dimension_travel_transition",
+                "server_survival_biome_dimension_travel_state",
+            ),
+        ],
+        Scenario::SurvivalSignEditingLive => vec![
+            (
+                "survival_sign_editing_open_seen",
+                "survival_sign_editing_update_sent",
+            ),
+            (
+                "survival_sign_editing_update_sent",
+                "survival_sign_editing_post_update_seen",
+            ),
+            (
+                "server_survival_sign_editing_open",
+                "server_survival_sign_editing_update_accepted",
+            ),
+            (
+                "server_survival_sign_editing_update_accepted",
+                "server_survival_sign_editing_state",
             ),
         ],
         _ => vec![],
@@ -12231,6 +12421,59 @@ mod tests {
         assert!(result.order_violations.is_empty(), "{result:?}");
     }
 
+    fn assert_typed_event_fixture_rejects_missing_event(
+        scenario: Scenario,
+        username: Option<&str>,
+        steps: &[TypedEventFixtureStep],
+        missing_event: &'static str,
+    ) {
+        let events = typed_event_fixture_from_steps(scenario, steps);
+        let mut required_events = typed_event_fixture_required_events(steps);
+        required_events.push(missing_event);
+        let result = evaluate_typed_event_graph(
+            &events,
+            scenario_name(scenario),
+            TEST_SESSION_ID,
+            username,
+            &required_events,
+            &["panic"],
+            &[],
+        );
+
+        assert!(!result.passed, "{result:?}");
+        assert!(
+            result.missing_events.contains(&missing_event.to_string()),
+            "{result:?}"
+        );
+    }
+
+    fn assert_typed_event_fixture_rejects_order(
+        scenario: Scenario,
+        username: Option<&str>,
+        steps: &[TypedEventFixtureStep],
+        before: &'static str,
+        after: &'static str,
+    ) {
+        let events = typed_event_fixture_from_steps(scenario, steps);
+        let required_events = typed_event_fixture_required_events(steps);
+        let result = evaluate_typed_event_graph(
+            &events,
+            scenario_name(scenario),
+            TEST_SESSION_ID,
+            username,
+            &required_events,
+            &["panic"],
+            &[(before, after)],
+        );
+        let expected_violation = format!("{before}_before_{after}");
+
+        assert!(!result.passed, "{result:?}");
+        assert!(
+            result.order_violations.contains(&expected_violation),
+            "{result:?}"
+        );
+    }
+
     #[test]
     fn typed_event_parser_accepts_versioned_event_lines() {
         let event = parse_typed_event_line(typed_event_fixture_lines()[0]).expect("event parses");
@@ -12288,6 +12531,24 @@ mod tests {
         ));
         assert!(typed_event_oracle_contributes_to_pass_fail(
             Scenario::SurvivalFurnaceSmeltingBreadth
+        ));
+        assert!(typed_event_oracle_contributes_to_pass_fail(
+            Scenario::SurvivalMobAiLootBreadth
+        ));
+        assert!(typed_event_oracle_contributes_to_pass_fail(
+            Scenario::SurvivalRedstoneCircuitBreadth
+        ));
+        assert!(typed_event_oracle_contributes_to_pass_fail(
+            Scenario::SurvivalWorldMultichunkDurability
+        ));
+        assert!(typed_event_oracle_contributes_to_pass_fail(
+            Scenario::SurvivalContainerBlockEntityBreadth
+        ));
+        assert!(typed_event_oracle_contributes_to_pass_fail(
+            Scenario::SurvivalBiomeDimensionTravel
+        ));
+        assert!(typed_event_oracle_contributes_to_pass_fail(
+            Scenario::SurvivalSignEditingLive
         ));
     }
 
@@ -12813,6 +13074,433 @@ mod tests {
             ],
         );
         assert_typed_event_fixture_passes(
+            Scenario::SurvivalMobAiLootBreadth,
+            Some(TEST_USERNAME),
+            &[
+                ("client", Some(TEST_USERNAME), "protocol_detected"),
+                ("client", Some(TEST_USERNAME), "join_game"),
+                ("client", Some(TEST_USERNAME), "render_tick"),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_mob_ai_loot_mob_seen",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_mob_ai_loot_attack_sent",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_mob_ai_loot_death_seen",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_mob_ai_loot_drop_seen",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_mob_ai_loot_pickup_seen",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_mob_ai_loot_inventory_updated",
+                ),
+                ("server", Some(TEST_USERNAME), "server_username_seen"),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_mob_ai_loot_spawn",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_mob_ai_loot_ai_checkpoint",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_mob_ai_loot_attack",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_mob_ai_loot_death",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_mob_ai_loot_drop_spawn",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_mob_ai_loot_pickup",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_mob_ai_loot_inventory",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_mob_ai_loot_state",
+                ),
+            ],
+            &[
+                (
+                    "survival_mob_ai_loot_mob_seen",
+                    "survival_mob_ai_loot_attack_sent",
+                ),
+                (
+                    "survival_mob_ai_loot_drop_seen",
+                    "survival_mob_ai_loot_pickup_seen",
+                ),
+                (
+                    "server_survival_mob_ai_loot_spawn",
+                    "server_survival_mob_ai_loot_attack",
+                ),
+                (
+                    "server_survival_mob_ai_loot_inventory",
+                    "server_survival_mob_ai_loot_state",
+                ),
+            ],
+        );
+        assert_typed_event_fixture_passes(
+            Scenario::SurvivalRedstoneCircuitBreadth,
+            Some(TEST_USERNAME),
+            &[
+                ("client", Some(TEST_USERNAME), "protocol_detected"),
+                ("client", Some(TEST_USERNAME), "join_game"),
+                ("client", Some(TEST_USERNAME), "render_tick"),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_redstone_circuit_initial_state",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_redstone_circuit_input_sent",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_redstone_circuit_output_update",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_redstone_circuit_return_input_sent",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_redstone_circuit_return_update",
+                ),
+                ("server", Some(TEST_USERNAME), "server_username_seen"),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_redstone_circuit_initial",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_redstone_circuit_input",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_redstone_circuit_powered_on",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_redstone_circuit_powered_off",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_redstone_circuit_state",
+                ),
+            ],
+            &[
+                (
+                    "survival_redstone_circuit_initial_state",
+                    "survival_redstone_circuit_output_update",
+                ),
+                (
+                    "survival_redstone_circuit_output_update",
+                    "survival_redstone_circuit_return_update",
+                ),
+                (
+                    "server_survival_redstone_circuit_initial",
+                    "server_survival_redstone_circuit_powered_on",
+                ),
+                (
+                    "server_survival_redstone_circuit_powered_on",
+                    "server_survival_redstone_circuit_state",
+                ),
+            ],
+        );
+        assert_typed_event_fixture_passes(
+            Scenario::SurvivalWorldMultichunkDurability,
+            Some(TEST_USERNAME),
+            &[
+                ("client", Some(TEST_USERNAME), "protocol_detected"),
+                ("client", Some(TEST_USERNAME), "join_game"),
+                ("client", Some(TEST_USERNAME), "render_tick"),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_world_multichunk_mutation_sent",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_world_multichunk_pre_restart_update",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_world_multichunk_reconnect_sent",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_world_multichunk_post_restart_update",
+                ),
+                ("server", Some(TEST_USERNAME), "server_username_seen"),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_world_multichunk_mutation",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_world_multichunk_clean_shutdown",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_world_multichunk_backend_restart",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_world_multichunk_post_restart",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_world_multichunk_state",
+                ),
+            ],
+            &[
+                (
+                    "survival_world_multichunk_mutation_sent",
+                    "survival_world_multichunk_reconnect_sent",
+                ),
+                (
+                    "survival_world_multichunk_reconnect_sent",
+                    "survival_world_multichunk_post_restart_update",
+                ),
+                (
+                    "server_survival_world_multichunk_mutation",
+                    "server_survival_world_multichunk_backend_restart",
+                ),
+                (
+                    "server_survival_world_multichunk_post_restart",
+                    "server_survival_world_multichunk_state",
+                ),
+            ],
+        );
+        assert_typed_event_fixture_passes(
+            Scenario::SurvivalContainerBlockEntityBreadth,
+            Some(TEST_USERNAME),
+            &[
+                ("client", Some(TEST_USERNAME), "protocol_detected"),
+                ("client", Some(TEST_USERNAME), "join_game"),
+                ("client", Some(TEST_USERNAME), "render_tick"),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_container_block_entity_open_seen",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_container_block_entity_transfer_sent",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_container_block_entity_payload_seen",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_container_block_entity_metadata_seen",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_container_block_entity_reopen_seen",
+                ),
+                ("server", Some(TEST_USERNAME), "server_username_seen"),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_container_block_entity_open",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_container_block_entity_transfer",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_container_block_entity_payload",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_container_block_entity_metadata",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_container_block_entity_state",
+                ),
+            ],
+            &[
+                (
+                    "survival_container_block_entity_open_seen",
+                    "survival_container_block_entity_transfer_sent",
+                ),
+                (
+                    "survival_container_block_entity_transfer_sent",
+                    "survival_container_block_entity_metadata_seen",
+                ),
+                (
+                    "server_survival_container_block_entity_open",
+                    "server_survival_container_block_entity_payload",
+                ),
+                (
+                    "server_survival_container_block_entity_metadata",
+                    "server_survival_container_block_entity_state",
+                ),
+            ],
+        );
+        assert_typed_event_fixture_passes(
+            Scenario::SurvivalBiomeDimensionTravel,
+            Some(TEST_USERNAME),
+            &[
+                ("client", Some(TEST_USERNAME), "protocol_detected"),
+                ("client", Some(TEST_USERNAME), "join_game"),
+                ("client", Some(TEST_USERNAME), "render_tick"),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_biome_dimension_travel_origin",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_biome_dimension_travel_transition_sent",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_biome_dimension_travel_destination_seen",
+                ),
+                ("server", Some(TEST_USERNAME), "server_username_seen"),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_biome_dimension_travel_origin",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_biome_dimension_travel_transition",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_biome_dimension_travel_state",
+                ),
+            ],
+            &[
+                (
+                    "survival_biome_dimension_travel_origin",
+                    "survival_biome_dimension_travel_destination_seen",
+                ),
+                (
+                    "server_survival_biome_dimension_travel_origin",
+                    "server_survival_biome_dimension_travel_state",
+                ),
+            ],
+        );
+        assert_typed_event_fixture_passes(
+            Scenario::SurvivalSignEditingLive,
+            Some(TEST_USERNAME),
+            &[
+                ("client", Some(TEST_USERNAME), "protocol_detected"),
+                ("client", Some(TEST_USERNAME), "join_game"),
+                ("client", Some(TEST_USERNAME), "render_tick"),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_sign_editing_open_seen",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_sign_editing_update_sent",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_sign_editing_post_update_seen",
+                ),
+                ("server", Some(TEST_USERNAME), "server_username_seen"),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_sign_editing_open",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_sign_editing_update_accepted",
+                ),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_sign_editing_state",
+                ),
+            ],
+            &[
+                (
+                    "survival_sign_editing_open_seen",
+                    "survival_sign_editing_update_sent",
+                ),
+                (
+                    "server_survival_sign_editing_open",
+                    "server_survival_sign_editing_state",
+                ),
+            ],
+        );
+        assert_typed_event_fixture_passes(
             Scenario::ReconnectFlagState,
             Some(TEST_USERNAME),
             &[
@@ -12951,6 +13639,302 @@ mod tests {
                 ),
             ],
         );
+    }
+
+    fn typed_event_oracle_evidence_for_scenario(scenario: Scenario) -> ClientRunEvidence {
+        let client_observed = scenario_required_milestones(scenario)
+            .iter()
+            .map(|(name, _)| *name)
+            .collect::<Vec<_>>();
+        let server_observed = server_required_milestones(scenario)
+            .iter()
+            .map(|(name, _)| *name)
+            .collect::<Vec<_>>();
+
+        ClientRunEvidence {
+            log_path: None,
+            log_paths: Vec::new(),
+            usernames: vec![TEST_USERNAME.to_string()],
+            exit_code: Some(0),
+            classification: "client-exited-success",
+            matched_success_pattern: Some("Detected server protocol version".to_string()),
+            scenario: Some(ScenarioEvidence {
+                observed_milestones: client_observed,
+                missing_milestones: Vec::new(),
+                forbidden_matches: Vec::new(),
+                passed: true,
+            }),
+            server_scenario: Some(ServerScenarioEvidence {
+                observed_milestones: server_observed,
+                missing_milestones: Vec::new(),
+                forbidden_matches: Vec::new(),
+                passed: true,
+            }),
+            projectile_damage_causality: None,
+            mcp_control: None,
+            frame_artifacts: None,
+        }
+    }
+
+    #[test]
+    fn survival_breadth_typed_event_fixtures_fail_closed() {
+        assert_typed_event_fixture_rejects_missing_event(
+            Scenario::SurvivalMobAiLootBreadth,
+            Some(TEST_USERNAME),
+            &[(
+                "client",
+                Some(TEST_USERNAME),
+                "survival_mob_ai_loot_mob_seen",
+            )],
+            "survival_mob_ai_loot_attack_sent",
+        );
+        assert_typed_event_fixture_rejects_order(
+            Scenario::SurvivalMobAiLootBreadth,
+            Some(TEST_USERNAME),
+            &[
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_mob_ai_loot_attack_sent",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_mob_ai_loot_mob_seen",
+                ),
+            ],
+            "survival_mob_ai_loot_mob_seen",
+            "survival_mob_ai_loot_attack_sent",
+        );
+        assert_typed_event_fixture_rejects_missing_event(
+            Scenario::SurvivalRedstoneCircuitBreadth,
+            Some(TEST_USERNAME),
+            &[(
+                "client",
+                Some(TEST_USERNAME),
+                "survival_redstone_circuit_initial_state",
+            )],
+            "survival_redstone_circuit_input_sent",
+        );
+        assert_typed_event_fixture_rejects_order(
+            Scenario::SurvivalRedstoneCircuitBreadth,
+            Some(TEST_USERNAME),
+            &[
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_redstone_circuit_output_update",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_redstone_circuit_input_sent",
+                ),
+            ],
+            "survival_redstone_circuit_input_sent",
+            "survival_redstone_circuit_output_update",
+        );
+        assert_typed_event_fixture_rejects_missing_event(
+            Scenario::SurvivalWorldMultichunkDurability,
+            Some(TEST_USERNAME),
+            &[(
+                "client",
+                Some(TEST_USERNAME),
+                "survival_world_multichunk_mutation_sent",
+            )],
+            "survival_world_multichunk_pre_restart_update",
+        );
+        assert_typed_event_fixture_rejects_order(
+            Scenario::SurvivalWorldMultichunkDurability,
+            Some(TEST_USERNAME),
+            &[
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_world_multichunk_reconnect_sent",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_world_multichunk_pre_restart_update",
+                ),
+            ],
+            "survival_world_multichunk_pre_restart_update",
+            "survival_world_multichunk_reconnect_sent",
+        );
+        assert_typed_event_fixture_rejects_missing_event(
+            Scenario::SurvivalContainerBlockEntityBreadth,
+            Some(TEST_USERNAME),
+            &[(
+                "client",
+                Some(TEST_USERNAME),
+                "survival_container_block_entity_open_seen",
+            )],
+            "survival_container_block_entity_transfer_sent",
+        );
+        assert_typed_event_fixture_rejects_order(
+            Scenario::SurvivalContainerBlockEntityBreadth,
+            Some(TEST_USERNAME),
+            &[
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_container_block_entity_payload_seen",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_container_block_entity_transfer_sent",
+                ),
+            ],
+            "survival_container_block_entity_transfer_sent",
+            "survival_container_block_entity_payload_seen",
+        );
+        assert_typed_event_fixture_rejects_missing_event(
+            Scenario::SurvivalBiomeDimensionTravel,
+            Some(TEST_USERNAME),
+            &[(
+                "client",
+                Some(TEST_USERNAME),
+                "survival_biome_dimension_travel_origin",
+            )],
+            "survival_biome_dimension_travel_transition_sent",
+        );
+        assert_typed_event_fixture_rejects_order(
+            Scenario::SurvivalBiomeDimensionTravel,
+            Some(TEST_USERNAME),
+            &[
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_biome_dimension_travel_destination_seen",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_biome_dimension_travel_transition_sent",
+                ),
+            ],
+            "survival_biome_dimension_travel_transition_sent",
+            "survival_biome_dimension_travel_destination_seen",
+        );
+        assert_typed_event_fixture_rejects_missing_event(
+            Scenario::SurvivalSignEditingLive,
+            Some(TEST_USERNAME),
+            &[(
+                "client",
+                Some(TEST_USERNAME),
+                "survival_sign_editing_open_seen",
+            )],
+            "survival_sign_editing_update_sent",
+        );
+        assert_typed_event_fixture_rejects_order(
+            Scenario::SurvivalSignEditingLive,
+            Some(TEST_USERNAME),
+            &[
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_sign_editing_post_update_seen",
+                ),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_sign_editing_update_sent",
+                ),
+            ],
+            "survival_sign_editing_update_sent",
+            "survival_sign_editing_post_update_seen",
+        );
+    }
+
+    #[test]
+    fn typed_event_oracle_validates_remaining_survival_breadth_graphs() {
+        for (scenario, missing_client, misordered_before, misordered_after) in [
+            (
+                Scenario::SurvivalMobAiLootBreadth,
+                "survival_mob_ai_loot_attack_sent",
+                "server_survival_mob_ai_loot_ai_checkpoint",
+                "server_survival_mob_ai_loot_attack",
+            ),
+            (
+                Scenario::SurvivalRedstoneCircuitBreadth,
+                "survival_redstone_circuit_input_sent",
+                "server_survival_redstone_circuit_input",
+                "server_survival_redstone_circuit_powered_on",
+            ),
+            (
+                Scenario::SurvivalWorldMultichunkDurability,
+                "survival_world_multichunk_pre_restart_update",
+                "server_survival_world_multichunk_clean_shutdown",
+                "server_survival_world_multichunk_backend_restart",
+            ),
+            (
+                Scenario::SurvivalContainerBlockEntityBreadth,
+                "survival_container_block_entity_transfer_sent",
+                "server_survival_container_block_entity_transfer",
+                "server_survival_container_block_entity_payload",
+            ),
+            (
+                Scenario::SurvivalBiomeDimensionTravel,
+                "survival_biome_dimension_travel_transition_sent",
+                "server_survival_biome_dimension_travel_origin",
+                "server_survival_biome_dimension_travel_transition",
+            ),
+            (
+                Scenario::SurvivalSignEditingLive,
+                "survival_sign_editing_update_sent",
+                "server_survival_sign_editing_open",
+                "server_survival_sign_editing_update_accepted",
+            ),
+        ] {
+            let cfg = test_config(
+                &[
+                    "--scenario",
+                    scenario_name(scenario),
+                    "--receipt",
+                    "/tmp/survival-breadth.receipt.json",
+                ],
+                &[],
+            )
+            .expect("remaining survival breadth config parses");
+            let passing = typed_event_oracle_evidence_for_scenario(scenario);
+            validate_typed_event_oracle_for_migrated_scenario(&cfg, &passing)
+                .expect("complete remaining survival breadth graph passes");
+
+            let mut missing_client_evidence = passing.clone();
+            missing_client_evidence
+                .scenario
+                .as_mut()
+                .expect("client evidence")
+                .observed_milestones
+                .retain(|name| *name != missing_client);
+            let err =
+                validate_typed_event_oracle_for_migrated_scenario(&cfg, &missing_client_evidence)
+                    .expect_err("missing typed remaining survival breadth client event fails");
+            assert!(err.contains(missing_client), "{err}");
+
+            let mut misordered_server_evidence = passing.clone();
+            misordered_server_evidence
+                .server_scenario
+                .as_mut()
+                .expect("server evidence")
+                .observed_milestones
+                .retain(|name| *name != misordered_before && *name != misordered_after);
+            misordered_server_evidence
+                .server_scenario
+                .as_mut()
+                .expect("server evidence")
+                .observed_milestones
+                .extend([misordered_after, misordered_before]);
+            let err = validate_typed_event_oracle_for_migrated_scenario(
+                &cfg,
+                &misordered_server_evidence,
+            )
+            .expect_err("misordered typed remaining survival breadth server phases fail");
+            let expected_violation = format!("{misordered_before}_before_{misordered_after}");
+            assert!(err.contains(&expected_violation), "{err}");
+        }
     }
 
     #[test]

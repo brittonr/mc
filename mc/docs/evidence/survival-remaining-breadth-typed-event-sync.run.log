@@ -1,0 +1,94 @@
+# survival remaining breadth typed-event sync
+started_at=2026-06-23T00:17:14Z
+## sync_dry_run
+command=nix run .#cairn -- sync survival-remaining-breadth-typed-event-migration --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/survival-remaining-breadth-typed-event-migration/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/survival-remaining-breadth-typed-event-migration/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-remaining-breadth-typed-event-migration",
+  "delta_specs": [
+    "./cairn/changes/survival-remaining-breadth-typed-event-migration/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "0f07c07c7d8d456bf7bb1b8cc14d93b6a1b0d32231368a4cc7ce4a3f45c75d58",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "529a0dc43dfb990749447190a4fa13749ad9aa2d39c06a89a7d55e67cfcdfbb0",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "6371dfb54aa62c7ea3f3fc91d1e96db95bc09fac17be342a571b17823622ff68"
+}
+sync_dry_run_exit_status=0
+## sync_execute
+command=nix run .#cairn -- sync survival-remaining-breadth-typed-event-migration --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/survival-remaining-breadth-typed-event-migration/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/survival-remaining-breadth-typed-event-migration/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-remaining-breadth-typed-event-migration",
+  "delta_specs": [
+    "./cairn/changes/survival-remaining-breadth-typed-event-migration/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "0f07c07c7d8d456bf7bb1b8cc14d93b6a1b0d32231368a4cc7ce4a3f45c75d58",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "221cf29a0d4510b67afc1ac4f514baef295b2da9e37bf56ec937cd39776be912",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "88a7ad126ab94f95aee5a38b16a19d3d7aa74bd59a1812dbd34c12399bdf5b41"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "221cf29a0d4510b67afc1ac4f514baef295b2da9e37bf56ec937cd39776be912",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "88a7ad126ab94f95aee5a38b16a19d3d7aa74bd59a1812dbd34c12399bdf5b41"
+    },
+    "kind": "sync",
+    "manifest_hash": "dc33a421112d0d30be53c00040e3a00800489339c9f9c09162d1d41f933b8d9e"
+  },
+  "plan_hash": "4ef918c34038834b98c582f71efac3de034cc1e52d67afbdb77bca969b582c81",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "c518a79b19ed9caa725a1c09da00a60cc117fc75f0c15f29450fdeb732263785"
+}
+sync_execute_exit_status=0
+## cairn_validate
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
+cairn_validate_exit_status=0
+finished_at=2026-06-23T00:17:14Z
+exit_status=0

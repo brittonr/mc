@@ -1,0 +1,79 @@
+# survival remaining breadth typed-event post-change
+started_at=2026-06-23T00:11:02Z
+## cargo_runner_tests
+command=nix develop --no-update-lock-file -c bash -lc cd compat/runner && cargo test typed_event
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/9dsmfvz76ss4wl34z19adpryd91rxxm9-mc-compat-runner-0.1.0.drv'...
+building '/nix/store/agbfk70pcdqw34ijcrdjqw0y3yv52w4m-nix-shell-env.drv'...
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+/home/brittonr/git/mc/compat/runner
+   Compiling mc-compat-runner v0.1.0 (/home/brittonr/git/mc/compat/runner)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.19s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 19 tests
+test tests::typed_event_graph_checks_required_forbidden_and_ordered_events ... ok
+test tests::typed_event_oracle_validates_migrated_inventory_graph ... ok
+test tests::survival_breadth_typed_event_fixtures_fail_closed ... ok
+test tests::typed_event_oracle_validates_migrated_inventory_drag_graph ... ok
+test tests::typed_event_oracle_validates_migrated_survival_break_place_graph ... ok
+test tests::typed_event_oracle_validates_migrated_survival_crafting_recipe_breadth_graph ... ok
+test tests::typed_event_oracle_validates_migrated_mcp_controlled_smoke_graph ... ok
+test tests::typed_event_oracle_validates_migrated_survival_chest_persistence_graph ... ok
+test tests::typed_event_oracle_validates_migrated_survival_furnace_persistence_graph ... ok
+test tests::typed_event_oracle_validates_migrated_survival_hunger_health_cycle_graph ... ok
+test tests::typed_event_oracle_validates_migrated_survival_crafting_table_graph ... ok
+test tests::typed_event_oracle_receipt_records_migration_fallback ... ok
+test tests::typed_event_parser_accepts_versioned_event_lines ... ok
+test tests::typed_event_pass_fail_gate_includes_only_migrated_rows ... ok
+test tests::typed_event_oracle_validates_migrated_survival_furnace_smelting_breadth_graph ... ok
+test tests::typed_events_from_receipt_evidence_include_client_and_server_sources ... ok
+test tests::typed_event_receipt_artifact_records_reviewable_timeline_hash ... ok
+test tests::typed_event_oracle_validates_remaining_survival_breadth_graphs ... ok
+test tests::typed_event_graph_accepts_representative_scenario_fixtures ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 136 filtered out; finished in 0.00s
+
+cargo_runner_tests_exit_status=0
+## scenario_manifest
+command=nix build .#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L
+this derivation will be built:
+  /nix/store/71plywpradnrmb3d02i45f9dsb7i681s-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/71plywpradnrmb3d02i45f9dsb7i681s-mc-compat-scenario-manifest.drv'...
+scenario_manifest_exit_status=0
+## generated_harness_surfaces
+command=nix build .#checks.x86_64-linux.mc-compat-generated-harness-surfaces --no-link -L
+this derivation will be built:
+  /nix/store/c4baz85008svdqx38lgcbihaw63p30p5-mc-compat-generated-harness-surfaces.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/c4baz85008svdqx38lgcbihaw63p30p5-mc-compat-generated-harness-surfaces.drv'...
+generated_harness_surfaces_exit_status=0
+## historical_scenario_dry_runs
+command=nix build .#checks.x86_64-linux.mc-compat-historical-scenario-dry-runs --no-link -L
+this derivation will be built:
+  /nix/store/nziyxz8dc3zrf5x2gy8la085a59sj2dn-mc-compat-historical-scenario-dry-runs.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/nziyxz8dc3zrf5x2gy8la085a59sj2dn-mc-compat-historical-scenario-dry-runs.drv'...
+mc-compat-historical-scenario-dry-runs> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-historical-scenario-dry-runs> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-historical-scenario-dry-runs> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-historical-scenario-dry-runs> hint: call:
+mc-compat-historical-scenario-dry-runs> hint:
+mc-compat-historical-scenario-dry-runs> hint:   git config --global init.defaultBranch <name>
+mc-compat-historical-scenario-dry-runs> hint:
+mc-compat-historical-scenario-dry-runs> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-historical-scenario-dry-runs> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-historical-scenario-dry-runs> hint:
+mc-compat-historical-scenario-dry-runs> hint:   git branch -m <name>
+mc-compat-historical-scenario-dry-runs> hint:
+mc-compat-historical-scenario-dry-runs> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-historical-scenario-dry-runs> Initialized empty Git repository in /build/fake-valence/.git/
+mc-compat-historical-scenario-dry-runs> [master (root-commit) 7f4ad4a] init
+mc-compat-historical-scenario-dry-runs>  1 file changed, 1 insertion(+)
+mc-compat-historical-scenario-dry-runs>  create mode 100644 README.md
+historical_scenario_dry_runs_exit_status=0
+finished_at=2026-06-23T00:11:49Z
+exit_status=0

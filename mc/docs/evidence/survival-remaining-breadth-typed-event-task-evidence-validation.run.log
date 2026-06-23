@@ -1,0 +1,6 @@
+# survival remaining breadth typed-event task evidence validation
+started_at=2026-06-23T00:21:50Z
+command=nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+task_evidence_exit_status=0
+finished_at=2026-06-23T00:21:50Z
+exit_status=0

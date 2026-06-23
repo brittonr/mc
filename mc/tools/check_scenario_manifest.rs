@@ -300,6 +300,109 @@ const SURVIVAL_HUNGER_HEALTH_CYCLE_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
     "server_survival_hunger_health_inventory",
     "server_survival_hunger_health_state",
 ];
+const SURVIVAL_MOB_AI_LOOT_BREADTH_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
+    "protocol_detected",
+    "join_game",
+    "render_tick",
+    "survival_mob_ai_loot_mob_seen",
+    "survival_mob_ai_loot_attack_sent",
+    "survival_mob_ai_loot_death_seen",
+    "survival_mob_ai_loot_drop_seen",
+    "survival_mob_ai_loot_pickup_seen",
+    "survival_mob_ai_loot_inventory_updated",
+];
+const SURVIVAL_MOB_AI_LOOT_BREADTH_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
+    "server_username_seen",
+    "server_survival_mob_ai_loot_spawn",
+    "server_survival_mob_ai_loot_ai_checkpoint",
+    "server_survival_mob_ai_loot_attack",
+    "server_survival_mob_ai_loot_death",
+    "server_survival_mob_ai_loot_drop_spawn",
+    "server_survival_mob_ai_loot_pickup",
+    "server_survival_mob_ai_loot_inventory",
+    "server_survival_mob_ai_loot_state",
+];
+const SURVIVAL_REDSTONE_CIRCUIT_BREADTH_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
+    "protocol_detected",
+    "join_game",
+    "render_tick",
+    "survival_redstone_circuit_initial_state",
+    "survival_redstone_circuit_input_sent",
+    "survival_redstone_circuit_output_update",
+    "survival_redstone_circuit_return_input_sent",
+    "survival_redstone_circuit_return_update",
+];
+const SURVIVAL_REDSTONE_CIRCUIT_BREADTH_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
+    "server_username_seen",
+    "server_survival_redstone_circuit_initial",
+    "server_survival_redstone_circuit_input",
+    "server_survival_redstone_circuit_powered_on",
+    "server_survival_redstone_circuit_powered_off",
+    "server_survival_redstone_circuit_state",
+];
+const SURVIVAL_WORLD_MULTICHUNK_DURABILITY_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
+    "protocol_detected",
+    "join_game",
+    "render_tick",
+    "survival_world_multichunk_mutation_sent",
+    "survival_world_multichunk_pre_restart_update",
+    "survival_world_multichunk_reconnect_sent",
+    "survival_world_multichunk_post_restart_update",
+];
+const SURVIVAL_WORLD_MULTICHUNK_DURABILITY_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
+    "server_username_seen",
+    "server_survival_world_multichunk_mutation",
+    "server_survival_world_multichunk_clean_shutdown",
+    "server_survival_world_multichunk_backend_restart",
+    "server_survival_world_multichunk_post_restart",
+    "server_survival_world_multichunk_state",
+];
+const SURVIVAL_CONTAINER_BLOCK_ENTITY_BREADTH_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
+    "protocol_detected",
+    "join_game",
+    "render_tick",
+    "survival_container_block_entity_open_seen",
+    "survival_container_block_entity_transfer_sent",
+    "survival_container_block_entity_payload_seen",
+    "survival_container_block_entity_metadata_seen",
+    "survival_container_block_entity_reopen_seen",
+];
+const SURVIVAL_CONTAINER_BLOCK_ENTITY_BREADTH_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
+    "server_username_seen",
+    "server_survival_container_block_entity_open",
+    "server_survival_container_block_entity_transfer",
+    "server_survival_container_block_entity_payload",
+    "server_survival_container_block_entity_metadata",
+    "server_survival_container_block_entity_state",
+];
+const SURVIVAL_BIOME_DIMENSION_TRAVEL_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
+    "protocol_detected",
+    "join_game",
+    "render_tick",
+    "survival_biome_dimension_travel_origin",
+    "survival_biome_dimension_travel_transition_sent",
+    "survival_biome_dimension_travel_destination_seen",
+];
+const SURVIVAL_BIOME_DIMENSION_TRAVEL_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
+    "server_username_seen",
+    "server_survival_biome_dimension_travel_origin",
+    "server_survival_biome_dimension_travel_transition",
+    "server_survival_biome_dimension_travel_state",
+];
+const SURVIVAL_SIGN_EDITING_LIVE_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
+    "protocol_detected",
+    "join_game",
+    "render_tick",
+    "survival_sign_editing_open_seen",
+    "survival_sign_editing_update_sent",
+    "survival_sign_editing_post_update_seen",
+];
+const SURVIVAL_SIGN_EDITING_LIVE_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
+    "server_username_seen",
+    "server_survival_sign_editing_open",
+    "server_survival_sign_editing_update_accepted",
+    "server_survival_sign_editing_state",
+];
 const TYPED_EVENT_READINESS_FIXTURES: &[TypedEventReadinessFixture<'static>] = &[
     TypedEventReadinessFixture {
         scenario: "smoke",
@@ -382,6 +485,48 @@ const TYPED_EVENT_READINESS_FIXTURES: &[TypedEventReadinessFixture<'static>] = &
         scenario: "survival-hunger-health-cycle",
         client_events: SURVIVAL_HUNGER_HEALTH_CYCLE_TYPED_EVENT_CLIENT_EVENTS,
         server_events: SURVIVAL_HUNGER_HEALTH_CYCLE_TYPED_EVENT_SERVER_EVENTS,
+        forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
+        derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
+    },
+    TypedEventReadinessFixture {
+        scenario: "survival-mob-ai-loot-breadth",
+        client_events: SURVIVAL_MOB_AI_LOOT_BREADTH_TYPED_EVENT_CLIENT_EVENTS,
+        server_events: SURVIVAL_MOB_AI_LOOT_BREADTH_TYPED_EVENT_SERVER_EVENTS,
+        forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
+        derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
+    },
+    TypedEventReadinessFixture {
+        scenario: "survival-redstone-circuit-breadth",
+        client_events: SURVIVAL_REDSTONE_CIRCUIT_BREADTH_TYPED_EVENT_CLIENT_EVENTS,
+        server_events: SURVIVAL_REDSTONE_CIRCUIT_BREADTH_TYPED_EVENT_SERVER_EVENTS,
+        forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
+        derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
+    },
+    TypedEventReadinessFixture {
+        scenario: "survival-world-multichunk-durability",
+        client_events: SURVIVAL_WORLD_MULTICHUNK_DURABILITY_TYPED_EVENT_CLIENT_EVENTS,
+        server_events: SURVIVAL_WORLD_MULTICHUNK_DURABILITY_TYPED_EVENT_SERVER_EVENTS,
+        forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
+        derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
+    },
+    TypedEventReadinessFixture {
+        scenario: "survival-container-block-entity-breadth",
+        client_events: SURVIVAL_CONTAINER_BLOCK_ENTITY_BREADTH_TYPED_EVENT_CLIENT_EVENTS,
+        server_events: SURVIVAL_CONTAINER_BLOCK_ENTITY_BREADTH_TYPED_EVENT_SERVER_EVENTS,
+        forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
+        derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
+    },
+    TypedEventReadinessFixture {
+        scenario: "survival-biome-dimension-travel",
+        client_events: SURVIVAL_BIOME_DIMENSION_TRAVEL_TYPED_EVENT_CLIENT_EVENTS,
+        server_events: SURVIVAL_BIOME_DIMENSION_TRAVEL_TYPED_EVENT_SERVER_EVENTS,
+        forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
+        derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
+    },
+    TypedEventReadinessFixture {
+        scenario: "survival-sign-editing-live",
+        client_events: SURVIVAL_SIGN_EDITING_LIVE_TYPED_EVENT_CLIENT_EVENTS,
+        server_events: SURVIVAL_SIGN_EDITING_LIVE_TYPED_EVENT_SERVER_EVENTS,
         forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
         derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
     },
