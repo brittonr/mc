@@ -152,6 +152,14 @@ pub mod prelude {
     pub use valence_server::math::{DVec2, DVec3, Vec2, Vec3};
     pub use valence_server::message::SendMessage as _;
     pub use valence_server::nbt::Compound;
+    pub use valence_server::packet_compose::{
+        flush_packet_delivery_plan_to_clients, flush_packet_delivery_plan_with,
+        plan_packet_delivery, write_packet_bundle_to_client, PacketBundle, PacketBundleError,
+        PacketBundleId, PacketComposeClient, PacketComposeGroup, PacketDelivery,
+        PacketDeliveryPlan, PacketDirectWriteError, PacketFlushFailure, PacketFlushFailureKind,
+        PacketFlushReport, PacketFrame, PacketPlanFailure, PacketPlanFailureKind, PacketRoute,
+        PacketRouteIntent,
+    };
     pub use valence_server::protocol::packets::play::particle_s2c::Particle;
     pub use valence_server::protocol::text::{Color, IntoText, Text};
     pub use valence_server::spawn::{ClientSpawnQuery, ClientSpawnQueryReadOnly, RespawnPosition};

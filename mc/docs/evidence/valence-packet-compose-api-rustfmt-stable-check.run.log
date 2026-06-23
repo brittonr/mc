@@ -1,0 +1,2 @@
+$ rustfmt --edition 2021 --check --config-path /dev/null crates/valence_server/src/packet_compose.rs crates/valence_server/src/lib.rs src/lib.rs examples/packet_compose.rs
+exit_status=0

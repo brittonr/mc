@@ -29,6 +29,7 @@ pub mod movement;
 pub mod observability;
 #[path = "op/level.rs"]
 pub mod op_level;
+pub mod packet_compose;
 #[path = "resource/pack.rs"]
 pub mod resource_pack;
 pub mod spawn;

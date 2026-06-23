@@ -1,0 +1,23 @@
+$ nix run .#cairn -- archive add-valence-packet-compose-api --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-valence-packet-compose-api",
+      "kind": "archive_change",
+      "path": "./cairn/changes/add-valence-packet-compose-api"
+    }
+  ],
+  "blocked": false,
+  "change": "add-valence-packet-compose-api",
+  "dry_run": true,
+  "input_hash": "60b49e78861b22a05c506c6dee16760b94c054ad4742188d940ce53e45bb6ed4",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "2ea08db5c594d7b6125356834670dc96a5ec61abedf4ab78fff8e747531d7b41",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "dfac09407764c83f8e6682bb7f3f4a6b51eb2d085ce4b8d793ed377b25dd3108"
+}
+exit_status=0
