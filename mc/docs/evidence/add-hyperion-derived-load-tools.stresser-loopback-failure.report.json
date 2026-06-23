@@ -1,0 +1,16 @@
+{
+  "schema": "valence.load_tool.report.v1",
+  "tool": "valence-stresser",
+  "kind": "failure",
+  "phase": "connect",
+  "target": "127.0.0.1:1",
+  "scenario": "loopback-connect-failure",
+  "session_count": 1,
+  "max_starts": 1,
+  "session_timeout_millis": 5000,
+  "target_safety": "loopback",
+  "message": "Connection refused (os error 111)",
+  "exit_status": 70,
+  "load_evidence_pass": false,
+  "compatibility_evidence_pass": false
+}

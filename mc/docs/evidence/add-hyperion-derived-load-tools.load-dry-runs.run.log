@@ -1,0 +1,88 @@
+\n$ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo run -p stresser -- --target 127.0.0.1:25565 --count 1 --dry-run --max-starts 1 --session-timeout-ms 5000 --report ../../docs/evidence/add-hyperion-derived-load-tools.stresser-dry-run.report.json
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+   Compiling stresser v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/tools/stresser)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 1.47s
+     Running `/home/brittonr/.cargo-target/debug/stresser --target '127.0.0.1:25565' --count 1 --dry-run --max-starts 1 --session-timeout-ms 5000 --report ../../docs/evidence/add-hyperion-derived-load-tools.stresser-dry-run.report.json`
+tool_status=0 expected_tool_status=0 command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo run -p stresser -- --target 127.0.0.1:25565 --count 1 --dry-run --max-starts 1 --session-timeout-ms 5000 --report ../../docs/evidence/add-hyperion-derived-load-tools.stresser-dry-run.report.json
+\n$ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo run -p stresser -- --target 127.0.0.1:1 --count 1 --max-starts 1 --session-timeout-ms 5000 --scenario loopback-connect-failure --report ../../docs/evidence/add-hyperion-derived-load-tools.stresser-loopback-failure.report.json
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+    Finished `dev` profile [optimized + debuginfo] target(s) in 0.14s
+     Running `/home/brittonr/.cargo-target/debug/stresser --target '127.0.0.1:1' --count 1 --max-starts 1 --session-timeout-ms 5000 --scenario loopback-connect-failure --report ../../docs/evidence/add-hyperion-derived-load-tools.stresser-loopback-failure.report.json`
+Stresser0 connection failed
+tool_status=70 expected_tool_status=70 command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo run -p stresser -- --target 127.0.0.1:1 --count 1 --max-starts 1 --session-timeout-ms 5000 --scenario loopback-connect-failure --report ../../docs/evidence/add-hyperion-derived-load-tools.stresser-loopback-failure.report.json
+dry_run_report_path=docs/evidence/add-hyperion-derived-load-tools.stresser-dry-run.report.json
+failure_report_path=docs/evidence/add-hyperion-derived-load-tools.stresser-loopback-failure.report.json
+command=load-dry-runs-wrapper
+exit_status=0

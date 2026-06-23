@@ -1,0 +1,82 @@
+$ CAIRN_ARCHIVE_DATE=2026-06-23 nix run .#cairn -- archive add-hyperion-derived-load-tools --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-hyperion-derived-load-tools",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-23-add-hyperion-derived-load-tools"
+    }
+  ],
+  "blocked": false,
+  "change": "add-hyperion-derived-load-tools",
+  "dry_run": false,
+  "input_hash": "18f6f760d17bced913716499bbaebf9d5af3ad22aa9395e4fae16c7a050d55e3",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "59b1bb41ec4bcb94c7f25417d306aa36dafaab0c5318a636b03e136e97df585f",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-add-hyperion-derived-load-tools/design.md"
+        },
+        {
+          "content_hash": "1cb3dbf8a50923df4375124245a8026a76e3caeea560321c1aeb1fdd44345668",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-add-hyperion-derived-load-tools/proposal.md"
+        },
+        {
+          "content_hash": "dd98c169a839a055f73db98ed34ca99a8547f92c7fb81929a915239c1ff6af9a",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-add-hyperion-derived-load-tools/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "f18697a4d044ba6dcc807e8b57bd9f64babac50edbe7202aec0dea4998ff60c7",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-add-hyperion-derived-load-tools/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/add-hyperion-derived-load-tools"
+        }
+      ],
+      "manifest_hash": "09634c038be33da735f0d114e4b9b2bc309f012bf925d6e9eb26af0af791839f"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "59b1bb41ec4bcb94c7f25417d306aa36dafaab0c5318a636b03e136e97df585f",
+          "exists": true,
+          "path": "./cairn/changes/add-hyperion-derived-load-tools/design.md"
+        },
+        {
+          "content_hash": "1cb3dbf8a50923df4375124245a8026a76e3caeea560321c1aeb1fdd44345668",
+          "exists": true,
+          "path": "./cairn/changes/add-hyperion-derived-load-tools/proposal.md"
+        },
+        {
+          "content_hash": "dd98c169a839a055f73db98ed34ca99a8547f92c7fb81929a915239c1ff6af9a",
+          "exists": true,
+          "path": "./cairn/changes/add-hyperion-derived-load-tools/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "f18697a4d044ba6dcc807e8b57bd9f64babac50edbe7202aec0dea4998ff60c7",
+          "exists": true,
+          "path": "./cairn/changes/add-hyperion-derived-load-tools/tasks.md"
+        }
+      ],
+      "manifest_hash": "474102a493aba663a8b529d7aa4f19f7651f1278d0cf703f2fd03bfa84600955"
+    },
+    "kind": "archive",
+    "manifest_hash": "ec47b4474393d778f07825caf9f34f111fb23e4c2c90157a58cfea47966f6e09"
+  },
+  "plan_hash": "1cdbb81b102b9ea1f73bbb9ce347817ab49498bb448fc5629c2136d28453d1e4",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "cf96ceecb2f1916ecf8ab93f004b8805dbfafa88f015d71a6e19c8a7fd689c01"
+}
+command=CAIRN_ARCHIVE_DATE=2026-06-23 nix run .#cairn -- archive add-hyperion-derived-load-tools --root . --execute
+exit_status=0

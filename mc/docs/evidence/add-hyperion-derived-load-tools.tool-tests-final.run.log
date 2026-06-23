@@ -1,0 +1,181 @@
+\n$ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p stresser --all-targets
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+   Compiling stresser v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/tools/stresser)
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.83s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stresser-ebb02b3e351ec4c4)
+
+running 15 tests
+test config::tests::authorized_non_loopback_config_is_valid ... ok
+test config::tests::dns_target_is_rejected_to_avoid_implicit_resolution ... ok
+test config::tests::loopback_config_is_valid ... ok
+test config::tests::localhost_target_maps_to_loopback_without_dns ... ok
+test config::tests::non_loopback_target_without_authorization_note_is_rejected ... ok
+test config::tests::unsafe_non_loopback_target_is_rejected_before_connect ... ok
+test config::tests::zero_read_buffer_is_rejected ... ok
+test config::tests::zero_session_count_is_rejected ... ok
+test config::tests::zero_session_timeout_is_rejected ... ok
+test report::tests::config_failure_report_is_structured ... ok
+test report::tests::dry_run_report_is_not_compatibility_evidence ... ok
+test stresser::tests::session_failure_includes_phase_and_message ... ok
+test stresser::tests::session_params_hold_owned_name_and_nonzero_buffer ... ok
+test stresser::tests::session_timeout_failure_is_structured ... ok
+test tests::session_name_appends_index ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p stresser --all-targets
+exit_status=0
+\n$ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p packet_inspector --no-default-features --features cli --all-targets
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.17s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/packet_inspector-596c3be2b2899a52)
+
+running 6 tests
+test capture::tests::malformed_capture_fails_closed ... ok
+test capture::tests::incomplete_capture_fails_closed ... ok
+test capture::tests::default_policy_redacts_payloads ... ok
+test capture::tests::zero_max_packet_bytes_is_rejected ... ok
+test capture::tests::preview_policy_bounds_payload_output ... ok
+test capture::tests::valid_capture_bytes_pass ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/packet_inspector-ba974d111b5b0b2c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p packet_inspector --no-default-features --features cli --all-targets
+exit_status=0
+\n$ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p packet_inspector --all-targets
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.25s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/packet_inspector-5cc1238e62825cce)
+
+running 6 tests
+test capture::tests::incomplete_capture_fails_closed ... ok
+test capture::tests::default_policy_redacts_payloads ... ok
+test capture::tests::malformed_capture_fails_closed ... ok
+test capture::tests::preview_policy_bounds_payload_output ... ok
+test capture::tests::valid_capture_bytes_pass ... ok
+test capture::tests::zero_max_packet_bytes_is_rejected ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/packet_inspector-f3b85c4c77b19543)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p packet_inspector --all-targets
+exit_status=0

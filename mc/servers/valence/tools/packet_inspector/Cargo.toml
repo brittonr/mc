@@ -11,27 +11,41 @@ publish = false
 [lints]
 workspace = true
 
+[features]
+default = ["gui"]
+gui = [
+    "dep:eframe",
+    "dep:egui",
+    "dep:egui_dock",
+    "dep:image",
+    "dep:itertools",
+    "dep:syntect",
+]
+cli = []
+
 [dependencies]
 valence_protocol = { workspace = true, features = ["compression"] }
 anyhow.workspace = true
 thiserror.workspace = true
 bytes.workspace = true
+clap.workspace = true
 flate2.workspace = true
 flume.workspace = true
 tokio = { workspace = true, features = ["full"] }
 tracing.workspace = true
+tracing-subscriber.workspace = true
 time = { workspace = true, features = ["local-offset"] }
-image.workspace = true
-egui.workspace = true
+image = { workspace = true, optional = true }
+egui = { workspace = true, optional = true }
 eframe = { workspace = true, features = [
     "persistence",
     "wgpu",
-] }
-egui_dock = { workspace = true, features = ["serde"] }
-itertools.workspace = true
+], optional = true }
+egui_dock = { workspace = true, features = ["serde"], optional = true }
+itertools = { workspace = true, optional = true }
 syntect = { workspace = true, default-features = false, features = [
     "default-fancy",
-] }
+], optional = true }
 serde = { workspace = true, features = ["derive"] }
 
 [build-dependencies]

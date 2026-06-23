@@ -1,3 +1,4 @@
+pub mod capture;
 mod packet_io;
 mod packet_registry;
 

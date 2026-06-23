@@ -1,23 +1,47 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+#[cfg(all(not(feature = "gui"), not(feature = "cli")))]
+compile_error!("packet_inspector requires either the gui or cli feature");
+
+#[cfg(all(feature = "cli", not(feature = "gui")))]
+mod main_cli;
+
+#[cfg(all(feature = "cli", not(feature = "gui")))]
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    main_cli::run().await
+}
+
+#[cfg(feature = "gui")]
 use egui::{IconData, ViewportBuilder};
 
+#[cfg(feature = "gui")]
 mod tri_checkbox;
 
+#[cfg(feature = "gui")]
 mod app;
+#[cfg(feature = "gui")]
 mod shared_state;
 
+#[cfg(feature = "gui")]
+const INITIAL_WINDOW_WIDTH: f32 = 1024.0;
+#[cfg(feature = "gui")]
+const INITIAL_WINDOW_HEIGHT: f32 = 768.0;
+#[cfg(feature = "gui")]
+const APP_TITLE: &str = "Valence Packet Inspector";
+
+#[cfg(feature = "gui")]
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let native_options = eframe::NativeOptions {
         viewport: ViewportBuilder::default()
-            .with_inner_size(egui::Vec2::new(1024.0, 768.0))
+            .with_inner_size(egui::Vec2::new(INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT))
             .with_icon(load_icon()),
         ..Default::default()
     };
 
     eframe::run_native(
-        "Valence Packet Inspector",
+        APP_TITLE,
         native_options,
         Box::new(move |cc| {
             let gui_app = app::GuiApp::new(cc);
@@ -29,6 +53,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+#[cfg(feature = "gui")]
 fn load_icon() -> IconData {
     let (icon_rgba, icon_width, icon_height) = {
         let icon = include_bytes!("../../../assets/logo-256x256.png");

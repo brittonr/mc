@@ -4,7 +4,10 @@
 
 The packet inspector is a Minecraft proxy for viewing the contents of packets as
 they are sent/received. It uses Valence's protocol facilities to display packet
-contents. This was made for three purposes:
+contents. It is a development diagnostic tool, not a compatibility oracle: packet
+logs alone do not prove Minecraft compatibility, vanilla/reference parity,
+production readiness, public-server safety, Hyperion compatibility, or full
+gameplay correctness. This was made for three purposes:
 
 - Check that packets between Valence and client are matching your expectations.
 - Check that packets between vanilla server and client are parsed correctly by
@@ -53,8 +56,24 @@ docker exec -i mc rcon-cli
 In a separate terminal, start the packet inspector.
 
 ```sh
-cargo r -r -p packet_inspector --no-default-features --features cli -- 127.0.0.1:25566 127.0.0.1:25565
+cargo r -r -p packet_inspector --no-default-features --features cli -- \
+  127.0.0.1:25566 \
+  127.0.0.1:25565
 ```
+
+CLI packet payloads are redacted by default. For local diagnostics that need a
+bounded hexadecimal preview, opt in explicitly and keep the byte bound small:
+
+```sh
+cargo r -r -p packet_inspector --no-default-features --features cli -- \
+  127.0.0.1:25566 \
+  127.0.0.1:25565 \
+  --include-payload-preview \
+  --max-packet-bytes 512
+```
+
+Malformed packet-length VarInts, incomplete captures, zero byte bounds, and
+over-large capture declarations fail closed with deterministic diagnostics.
 
 Open Minecraft and connect to `localhost:25566`.
 

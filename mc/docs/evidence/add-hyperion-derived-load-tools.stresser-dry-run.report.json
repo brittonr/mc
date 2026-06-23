@@ -1,0 +1,16 @@
+{
+  "schema": "valence.load_tool.report.v1",
+  "tool": "valence-stresser",
+  "kind": "dry_run",
+  "phase": "dry_run",
+  "target": "127.0.0.1:25565",
+  "scenario": "loopback-smoke",
+  "session_count": 1,
+  "max_starts": 1,
+  "session_timeout_millis": 5000,
+  "target_safety": "loopback",
+  "message": "dry run validated config and did not open network connections",
+  "exit_status": 0,
+  "load_evidence_pass": true,
+  "compatibility_evidence_pass": false
+}
