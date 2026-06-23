@@ -1,0 +1,17 @@
+32a5c8b2739a2c6ece411faf7ce15a5afee04c44d667308e16752832b4b33166  docs/evidence/evaluate-command-ergonomics-macros-scope-contract-2026-06-23.md
+b05ea17dc74b0eed00695fb5cc943d8d1916bbc4dabee5ffd19d63f131d23167  docs/evidence/evaluate-command-ergonomics-macros-pre-gates-2026-06-23.run.log
+913d667a440c0422799e15fb1d0c47d7450aa124e2a6bcdbde16eac6ca1f5c66  docs/evidence/evaluate-command-ergonomics-macros-baseline-command-crates-2026-06-23.run.log
+3227d870aeb8fa031ecbb9769551af98326e6acf747466c1d00098a3580861e3  docs/evidence/evaluate-command-ergonomics-macros-command-tests-2026-06-23.run.log
+8817ecc7e044392ca2a729fc331e7b7238b5e2394868582ea1515f939705890f  docs/evidence/evaluate-command-ergonomics-macros-targeted-rustfmt-2026-06-23.run.log
+b56cea3261b2c17629234dd4e05ec83297aec1a368d5ee160b2ddbf213db121f  docs/evidence/evaluate-command-ergonomics-macros-validation-pre-final-2026-06-23.run.log
+df3b6fe020cf422118f0251ad200cc935a21971cbf24864290146f4f37795c91  docs/evidence/evaluate-command-ergonomics-macros-pre-drain-2026-06-23.run.log
+56acdd446c643eddde51f4e74903466cdea84b5f63ccb7352c93f05f1a4360f7  docs/evidence/evaluate-command-ergonomics-macros-final-validation-2026-06-23.run.log
+4b638e2abc381c6981f0bda62efae7191558911e16415b5b3f342f90e328277a  docs/evidence/evaluate-command-ergonomics-macros-post-task-closeout-2026-06-23.run.log
+3745da2a3d7d0d7043ae400b20c07e17e07f3d2db18ea266a67c6fdbf2d7eaad  docs/evidence/evaluate-command-ergonomics-macros-sync-dry-run-2026-06-23.run.log
+55f35aa147aba4c3f691ba912989bba65ec5c65c31f236f51850de28ce9637ad  docs/evidence/evaluate-command-ergonomics-macros-sync-execute-2026-06-23.run.log
+adfe4ccb3c75fadb9864fe595c4d5cb2b3f4d385cf158c3e1ea03b0ab724e8b7  docs/evidence/evaluate-command-ergonomics-macros-post-sync-validation-2026-06-23.run.log
+2b44aee7b4a1c730b57393eb5d609a09159106324faa2c9d3fe1e7066f4c5a2a  docs/evidence/evaluate-command-ergonomics-macros-archive-dry-run-2026-06-23.run.log
+98a6acba85861a3d8ba4c0b1f613c9e7298aca7df3bffc3abcb996cb0d77e8ba  docs/evidence/evaluate-command-ergonomics-macros-archive-execute-2026-06-23.run.log
+ac3584d119f064e3ca6751635abb1b03cbe537feba4f3fa6f4e7a2a29b529a7d  docs/evidence/evaluate-command-ergonomics-macros-final-archive-validation-2026-06-23.run.log
+39046aa3f5b33ffe7c26d7a8af4cdb3d242ac6fcc2beeb7e81de4b169c24c7be  cairn/specs/valence-hyperion-integration/spec.md
+e6adc55a2027265f058f3e4e9a99895a154c57d36a638de4f03803bc8e8733a4  cairn/archive/2026-06-23-evaluate-command-ergonomics-macros/tasks.md

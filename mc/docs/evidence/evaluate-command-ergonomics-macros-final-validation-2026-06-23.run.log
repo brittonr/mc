@@ -1,0 +1,254 @@
+
+## command crates tests
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence_command -p valence_command_macros --all-targets
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.32s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_command-d6a65af963dfdb99)
+
+running 24 tests
+test admin_permissions::tests::missing_required_scope_denies_command ... ok
+test admin_permissions::tests::disabled_plugin_preserves_command_scopes ... ok
+test admin_permissions::tests::missing_permission_data_denies_scoped_command ... ok
+test admin_permissions::tests::denial_diagnostic_names_command_and_scopes ... ok
+test admin_permissions::tests::role_binding_allows_command_scope ... ok
+test admin_permissions::tests::stale_command_tree_scope_plan_replaces_old_scopes ... ok
+test admin_permissions::tests::storage_missing_row_uses_default_profile ... ok
+test admin_permissions::tests::storage_rejects_invalid_rows ... ok
+test parsers::bool::tests::test_bool ... ok
+test parsers::block_pos::tests::test_block_pos ... ok
+test parsers::column_pos::tests::test_column_pos ... ok
+test parsers::entity_selector::tests::test_entity_selector ... ok
+test parsers::strings::tests::test_greedy_string ... ok
+test parsers::numbers::tests::test_number ... ok
+test parsers::strings::tests::test_quotable_string ... ok
+test parsers::strings::tests::test_string ... ok
+test parsers::swizzle::tests::test_swizzle ... ok
+test parsers::test::test_absolute_or_relative ... ok
+test parsers::test::test_parse_input ... ok
+test parsers::time::tests::test_time ... ok
+test parsers::vec2::tests::test_vec2 ... ok
+test parsers::vec3::tests::test_vec3 ... ok
+test admin_permissions::tests::plugin_shell_updates_command_scopes_from_profile ... ok
+test admin_permissions::tests::plugin_shell_disabled_preserves_existing_scopes ... ok
+
+test result: ok. 24 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_command_macros-ead6cb39ecd3eddb)
+
+running 8 tests
+test expand::tests::struct_without_path_is_rejected ... ok
+test expand::tests::invalid_scope_is_rejected ... ok
+test expand::tests::enum_variant_without_path_is_rejected_as_missing_handler ... ok
+test expand::tests::suggestion_attribute_is_rejected_for_manual_fallback ... ok
+test expand::tests::duplicate_literal_route_is_rejected ... ok
+test expand::tests::missing_parser_field_is_rejected ... ok
+test expand::tests::optional_followed_by_literal_is_rejected ... ok
+test expand::tests::enum_expansion_contains_literal_argument_scope_and_handler ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+exit_status=0
+
+## command graph parity/parser/suggestion/plugin-disabled tests
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence --test command_ergonomics_macros
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+warning: `valence_inventory` (lib) generated 1 warning
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.22s
+     Running tests/command_ergonomics_macros.rs (/home/brittonr/.cargo-target/debug/deps/command_ergonomics_macros-c73df921576e9acb)
+
+running 4 tests
+test manual_builder_records_argument_suggestion_metadata ... ok
+test plugin_disabled_does_not_register_command_graph_resources ... ok
+test derived_parser_rejects_invalid_argument_input ... ok
+test derive_output_matches_manual_command_graph ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+exit_status=0
+
+## targeted rustfmt
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c rustfmt --edition 2021 --config-path rustfmt.toml --check crates/valence_command/src/graph.rs crates/valence_command_macros/src/lib.rs crates/valence_command_macros/src/expand.rs tests/command_ergonomics_macros.rs
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+exit_status=0
+
+## gate proposal
+command=nix run .#cairn -- gate proposal evaluate-command-ergonomics-macros --root .
+{
+  "change": "evaluate-command-ergonomics-macros",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a8b14f37518f6a8d21fbaaf073be076a7365e6d195738ca1ef62be0e93017d74",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "0f0dca3922c606e164c44d81aa6cc09ef9793f864420f817e08f07650c88611e",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## gate design
+command=nix run .#cairn -- gate design evaluate-command-ergonomics-macros --root .
+{
+  "change": "evaluate-command-ergonomics-macros",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "80ecf6e8b2ac91247a89cfeb8bba278443f4a280ce58b652d3ad4af7c1633624",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "4ba695fc8dd6978726822e1b1b78d21c659940cff2189156b6d237ad4c25a3bb",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## gate tasks
+command=nix run .#cairn -- gate tasks evaluate-command-ergonomics-macros --root .
+{
+  "change": "evaluate-command-ergonomics-macros",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "8b16e6f392ee9593953b198a9d5ef9b2b45586f38adac23ed3af1dbb87df80eb",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "8345c1327ad2f34dd9a70e3a1e71af44cde52d43f03bd993ade088eb36213f06",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## cairn validate
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 13,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 17,
+  "valid": true
+}
+exit_status=0
+
+overall_exit_status=0

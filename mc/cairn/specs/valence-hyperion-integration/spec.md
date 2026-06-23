@@ -76,6 +76,145 @@ r[valence_hyperion_integration.boundaries.validation.log]
 - WHEN reviewers inspect evidence logs
 - THEN logs show inventory/checklist validation, positive reference-only examples, negative forbidden-import examples, Cairn proposal/design/tasks gates, and Cairn validation.
 
+### Requirement: Command ergonomics scope
+
+r[valence_hyperion_integration.command_ergonomics.scope] The integration MUST review Hyperion command ergonomics and Valence command graph APIs before adding command helper macros or builders.
+
+#### Scenario: Valence command ownership is preserved
+
+r[valence_hyperion_integration.command_ergonomics.scope.ownership]
+- GIVEN command ergonomics work is selected
+- WHEN reviewers inspect the scope notes
+- THEN the notes state that Hyperion's command framework is reference-only
+- AND Valence command graph, parser, scope, and handler internals remain authoritative.
+
+### Requirement: Command helper contract
+
+r[valence_hyperion_integration.command_ergonomics.contract] Optional command helpers SHOULD define semantics for literals, arguments, parsers, suggestions, scopes, handlers, diagnostics, and manual fallback.
+
+#### Scenario: Duplicate literal is rejected
+
+r[valence_hyperion_integration.command_ergonomics.contract.duplicate]
+- GIVEN helper input defines duplicate command literals at the same graph level
+- WHEN the helper validates or expands the command
+- THEN it reports a deterministic diagnostic
+- AND no ambiguous command graph is registered.
+
+### Requirement: Inspectable command helper output
+
+r[valence_hyperion_integration.command_ergonomics.prototype] Command helper output MUST be inspectable as Valence command graph data or equivalent testable structures.
+
+#### Scenario: Helper graph matches manual graph
+
+r[valence_hyperion_integration.command_ergonomics.prototype.parity]
+- GIVEN a helper-defined command and an equivalent manually built command graph
+- WHEN graph parity is checked
+- THEN literals, arguments, parsers, executable nodes, scopes, and suggestions match the documented expected graph.
+
+### Requirement: Command helper tests
+
+r[valence_hyperion_integration.command_ergonomics.tests] Command ergonomics work MUST include positive and negative tests for generated graphs, manual parity, parser errors, duplicate literals, missing handlers, invalid scopes, suggestions, and disabled behavior.
+
+#### Scenario: Missing handler fails clearly
+
+r[valence_hyperion_integration.command_ergonomics.tests.missing_handler]
+- GIVEN helper input defines an executable command without a valid handler
+- WHEN the helper validates or expands it
+- THEN it reports the missing handler with a deterministic diagnostic
+- AND the incomplete command is not registered.
+
+### Requirement: Command helper docs
+
+r[valence_hyperion_integration.command_ergonomics.docs] Command helper documentation SHOULD explain usage, diagnostics, limitations, and when manual graph construction remains preferred.
+
+#### Scenario: Docs avoid framework replacement claim
+
+r[valence_hyperion_integration.command_ergonomics.docs.non_claim]
+- GIVEN command helper docs are published
+- WHEN reviewers inspect them
+- THEN they describe helpers as optional ergonomics over Valence command APIs
+- AND they do not claim replacement of the command graph internals.
+
+### Requirement: Command ergonomics validation
+
+r[valence_hyperion_integration.command_ergonomics.validation] Command ergonomics work MUST record macro or builder tests, graph parity tests, parser/suggestion fixtures, and Cairn gates before archive.
+
+#### Scenario: Command ergonomics closeout is reviewable
+
+r[valence_hyperion_integration.command_ergonomics.validation.log]
+- GIVEN command ergonomics work is ready to archive
+- WHEN reviewers inspect evidence logs
+- THEN logs show positive helper tests, negative diagnostic tests, graph parity fixtures, parser and suggestion fixtures, plugin-disabled checks, and Cairn validation.
+
+### Requirement: Admin permission scope
+
+r[valence_hyperion_integration.admin_permissions.scope] The integration MUST compare Hyperion permission/admin behavior with Valence command scopes before adding permission ergonomics.
+
+#### Scenario: Command-system ownership is clear
+
+r[valence_hyperion_integration.admin_permissions.scope.ownership]
+- GIVEN admin permission work is selected
+- WHEN reviewers inspect the scope notes
+- THEN they identify the Hyperion concepts referenced, the Valence command/scopes surfaces affected, and the decision not to introduce a parallel command framework.
+
+### Requirement: Pure permission evaluator
+
+r[valence_hyperion_integration.admin_permissions.evaluator] Permission decisions MUST be implemented as pure deterministic evaluation over command metadata, player roles/scopes, and explicit context.
+
+#### Scenario: Denied command is deterministic
+
+r[valence_hyperion_integration.admin_permissions.evaluator.denied]
+- GIVEN a player lacks the required role or scope for a command
+- WHEN the evaluator checks that command
+- THEN it returns the documented denial result
+- AND it does not inspect ECS world state, storage, clocks, or network state.
+
+### Requirement: Command integration
+
+r[valence_hyperion_integration.admin_permissions.command_integration] Optional permission ergonomics SHOULD integrate with Valence's existing command system for command visibility, execution denial, and command-tree refresh.
+
+#### Scenario: Role change refreshes command visibility
+
+r[valence_hyperion_integration.admin_permissions.command_integration.refresh]
+- GIVEN a player's command permission context changes
+- WHEN the command integration observes the change
+- THEN the player's command tree visibility is refreshed according to the evaluator result
+- AND commands outside the player's scope are hidden or denied according to the documented policy.
+
+### Requirement: Permission storage boundary
+
+r[valence_hyperion_integration.admin_permissions.storage] Permission persistence MAY be provided, but storage MUST be optional and separated from pure permission evaluation.
+
+#### Scenario: Missing storage row uses documented default
+
+r[valence_hyperion_integration.admin_permissions.storage.missing]
+- GIVEN persistence is enabled and a player has no permission row
+- WHEN the storage adapter loads permission context
+- THEN it returns the documented default or diagnostic
+- AND the evaluator receives an explicit context value.
+
+### Requirement: Admin permission tests
+
+r[valence_hyperion_integration.admin_permissions.tests] Admin permission work MUST include positive and negative tests for allowed commands, denied commands, missing permission data, stale command trees, invalid storage rows, and plugin-disabled behavior.
+
+#### Scenario: Plugin disabled preserves commands
+
+r[valence_hyperion_integration.admin_permissions.tests.disabled]
+- GIVEN the optional admin permission plugin is disabled
+- WHEN existing Valence command tests run
+- THEN command registration, parsing, execution, and suggestions preserve their previous behavior.
+
+### Requirement: Admin permission validation
+
+r[valence_hyperion_integration.admin_permissions.validation] Admin permission work MUST record permission tests, command integration tests, plugin-off regressions, and Cairn gates before archive.
+
+#### Scenario: Admin permission closeout is reviewable
+
+r[valence_hyperion_integration.admin_permissions.validation.log]
+- GIVEN admin permission work is ready to archive
+- WHEN reviewers inspect evidence logs
+- THEN logs show evaluator tests, negative denial/storage fixtures, command integration tests, plugin-off regressions, docs checks if present, and Cairn validation.
+
 ### Requirement: Tool inventory
 
 r[valence_hyperion_integration.tools.inventory] The integration MUST inventory Hyperion tools and Valence tools before adapting load or packet diagnostics.
@@ -693,3 +832,141 @@ r[valence_hyperion_integration.palette_optimization.validation.log]
 - GIVEN paletted container work is ready to archive
 - WHEN reviewers inspect evidence logs
 - THEN logs show baseline results, final benchmarks, positive correctness tests, negative invalid-input tests, encode parity checks, selected chunk dry runs if needed, and Cairn validation.
+
+### Requirement: Chunk cache scope
+
+r[valence_hyperion_integration.chunk_cache.scope] The integration MUST review Hyperion chunk egress/cache behavior and Valence layer/chunk serialization before adding cached chunk egress.
+
+#### Scenario: Cache scope records non-goals
+
+r[valence_hyperion_integration.chunk_cache.scope.non_goals]
+- GIVEN cached chunk egress is selected
+- WHEN reviewers inspect the scope notes
+- THEN they identify cache-eligible chunk states, affected Valence APIs, and non-goals such as world-generation parity or Hyperion map-loader parity.
+
+### Requirement: Chunk cache key contract
+
+r[valence_hyperion_integration.chunk_cache.key] Cached chunk bytes MUST be keyed by every setting and input that can affect client-visible chunk packets, including chunk position, dimension/registry inputs, block/biome/light data, protocol version, and compression behavior.
+
+#### Scenario: Compression change invalidates cache
+
+r[valence_hyperion_integration.chunk_cache.key.compression]
+- GIVEN a cached chunk entry was created with one compression setting
+- WHEN the server sends the same chunk with a different compression setting
+- THEN the cache key does not match the stale entry
+- AND bytes are regenerated or a matching entry is selected.
+
+### Requirement: Pure chunk cache core
+
+r[valence_hyperion_integration.chunk_cache.core] Chunk packet rendering for cacheable inputs SHOULD be a deterministic core over chunk snapshots and render settings, with storage, eviction, metrics, and network writes in shells.
+
+#### Scenario: Same snapshot renders same bytes
+
+r[valence_hyperion_integration.chunk_cache.core.deterministic]
+- GIVEN identical chunk snapshots and render settings
+- WHEN the renderer runs multiple times
+- THEN it returns byte-identical packet payloads and identical cache metadata.
+
+### Requirement: Chunk cache fixture coverage
+
+r[valence_hyperion_integration.chunk_cache.fixtures] Cached chunk egress MUST include positive and negative fixtures for cache hits, invalidation, missing inputs, and stale cached bytes.
+
+#### Scenario: Block mutation invalidates entry
+
+r[valence_hyperion_integration.chunk_cache.fixtures.block_mutation]
+- GIVEN a chunk cache entry exists for a snapshot
+- WHEN a block mutation changes client-visible chunk data
+- THEN the old entry is not reused for the mutated snapshot
+- AND the fixture fails if stale bytes are emitted.
+
+### Requirement: Optional cached egress wiring
+
+r[valence_hyperion_integration.chunk_cache.wiring] Valence MAY expose cached chunk egress as an optional path, but default uncached semantics MUST remain available and compatible.
+
+#### Scenario: Uncached send remains valid
+
+r[valence_hyperion_integration.chunk_cache.wiring.uncached]
+- GIVEN cached egress is disabled
+- WHEN existing chunk-send tests or selected mc-compat chunk scenarios run
+- THEN Valence sends chunks through the existing uncached path with unchanged semantics.
+
+### Requirement: Chunk cache validation
+
+r[valence_hyperion_integration.chunk_cache.validation] Cached chunk egress work MUST record chunk renderer tests, stale-cache rejection, direct chunk-send regressions, selected mc-compat chunk scenarios, and Cairn gates before archive.
+
+#### Scenario: Chunk cache closeout is reviewable
+
+r[valence_hyperion_integration.chunk_cache.validation.log]
+- GIVEN cached chunk egress is ready to archive
+- WHEN reviewers inspect evidence logs
+- THEN logs show deterministic render fixtures, invalidation fixtures, stale-cache rejection, direct chunk-send regressions, selected mc-compat chunk scenarios, optional benchmark output if performance is claimed, and Cairn validation.
+
+### Requirement: Profile cache scope
+
+r[valence_hyperion_integration.profile_cache.scope] The integration MUST review Hyperion profile/cache code and Valence login/profile surfaces before adding profile cache behavior.
+
+#### Scenario: Authentication boundary is recorded
+
+r[valence_hyperion_integration.profile_cache.scope.auth_boundary]
+- GIVEN profile cache work is selected
+- WHEN reviewers inspect the scope notes
+- THEN the notes identify which data is cached, which login/authentication behavior remains unchanged, and which provider/cache policies are out of scope.
+
+### Requirement: Typed profile cache configuration
+
+r[valence_hyperion_integration.profile_cache.config] Profile caching MUST define typed configuration for providers, request budgets, cache backends, TTLs, offline fallback, and privacy retention.
+
+#### Scenario: Missing provider config fails before requests
+
+r[valence_hyperion_integration.profile_cache.config.missing_provider]
+- GIVEN profile lookup is enabled without a valid provider configuration
+- WHEN the configuration validator runs
+- THEN it returns a deterministic diagnostic
+- AND no HTTP request is attempted.
+
+### Requirement: Pure profile cache core
+
+r[valence_hyperion_integration.profile_cache.core] Profile response parsing, cache decisions, staleness decisions, and rate-limit admission MUST be pure deterministic logic over explicit inputs.
+
+#### Scenario: Missing profile id is rejected
+
+r[valence_hyperion_integration.profile_cache.core.missing_id]
+- GIVEN a provider response omits the profile identifier field
+- WHEN the parser evaluates the response
+- THEN it returns the documented parse error
+- AND no cache entry is created.
+
+### Requirement: Optional HTTP and storage adapters
+
+r[valence_hyperion_integration.profile_cache.adapters] HTTP clients and cache storage MUST be optional adapters with explicit configuration and no hard-coded provider or storage path assumptions.
+
+#### Scenario: Corrupted cache entry fails safely
+
+r[valence_hyperion_integration.profile_cache.adapters.corrupt]
+- GIVEN the configured cache backend returns a corrupted profile entry
+- WHEN the adapter decodes it
+- THEN it reports a deterministic corruption diagnostic
+- AND the configured fallback policy determines whether lookup continues or fails.
+
+### Requirement: Profile cache tests
+
+r[valence_hyperion_integration.profile_cache.tests] Profile cache work MUST include positive and negative tests for provider parsing, rate limiting, cache state, storage errors, and disabled behavior.
+
+#### Scenario: Rate limit exhaustion blocks request
+
+r[valence_hyperion_integration.profile_cache.tests.rate_limit]
+- GIVEN the configured request budget is exhausted
+- WHEN a new profile lookup is requested
+- THEN the rate-limit core rejects or delays the request according to policy
+- AND the HTTP shell does not issue an immediate request.
+
+### Requirement: Profile cache validation
+
+r[valence_hyperion_integration.profile_cache.validation] Profile cache work MUST record parser/cache tests, fake-provider tests, storage corruption tests, login/profile smoke tests, and Cairn gates before archive.
+
+#### Scenario: Profile cache closeout is reviewable
+
+r[valence_hyperion_integration.profile_cache.validation.log]
+- GIVEN profile cache work is ready to archive
+- WHEN reviewers inspect evidence logs
+- THEN logs show positive parser tests, negative malformed-provider tests, rate-limit tests, cache corruption tests, plugin-disabled checks, login/profile smoke output, and Cairn validation.

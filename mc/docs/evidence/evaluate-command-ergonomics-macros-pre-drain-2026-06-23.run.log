@@ -1,0 +1,87 @@
+
+$ nix run .#cairn -- gate proposal evaluate-command-ergonomics-macros --root .
+{
+  "change": "evaluate-command-ergonomics-macros",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a8b14f37518f6a8d21fbaaf073be076a7365e6d195738ca1ef62be0e93017d74",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "0f0dca3922c606e164c44d81aa6cc09ef9793f864420f817e08f07650c88611e",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run .#cairn -- gate design evaluate-command-ergonomics-macros --root .
+{
+  "change": "evaluate-command-ergonomics-macros",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "80ecf6e8b2ac91247a89cfeb8bba278443f4a280ce58b652d3ad4af7c1633624",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "4ba695fc8dd6978726822e1b1b78d21c659940cff2189156b6d237ad4c25a3bb",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run .#cairn -- gate tasks evaluate-command-ergonomics-macros --root .
+{
+  "change": "evaluate-command-ergonomics-macros",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "8b16e6f392ee9593953b198a9d5ef9b2b45586f38adac23ed3af1dbb87df80eb",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "8345c1327ad2f34dd9a70e3a1e71af44cde52d43f03bd993ade088eb36213f06",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+$ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 13,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 17,
+  "valid": true
+}
+exit_status=0
+
+final_exit_status=0

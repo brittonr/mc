@@ -76,7 +76,7 @@ use std::fmt::{Display, Formatter};
 use petgraph::dot::Dot;
 use petgraph::prelude::*;
 use valence_server::protocol::packets::play::command_tree_s2c::{
-    Node, NodeData, Parser, StringArg,
+    Node, NodeData, Parser, StringArg, Suggestion,
 };
 use valence_server::protocol::packets::play::CommandTreeS2c;
 use valence_server::protocol::VarInt;
@@ -510,6 +510,28 @@ impl<'a, T> CommandGraphBuilder<'a, T> {
                 name,
                 parser,
                 suggestion,
+            },
+            NodeData::Literal { name } => NodeData::Literal { name },
+            NodeData::Root => NodeData::Root,
+        };
+
+        self
+    }
+
+    /// Sets the client-side suggestion provider for the current argument node.
+    ///
+    /// This preserves the existing parser and argument name. Calling this on a
+    /// literal or root node is a no-op, matching [`Self::with_parser`].
+    pub fn with_suggestion(&mut self, suggestion: Suggestion) -> &mut Self {
+        let graph = &mut self.graph.graph;
+        let current_node = self.current_node;
+
+        let node = graph.node_weight_mut(current_node).unwrap();
+        node.data = match node.data.clone() {
+            NodeData::Argument { name, parser, .. } => NodeData::Argument {
+                name,
+                parser,
+                suggestion: Some(suggestion),
             },
             NodeData::Literal { name } => NodeData::Literal { name },
             NodeData::Root => NodeData::Root,

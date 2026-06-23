@@ -1,0 +1,245 @@
+## gate proposal
+command=nix run .#cairn -- gate proposal evaluate-command-ergonomics-macros --root .
+{
+  "change": "evaluate-command-ergonomics-macros",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "98bf0f39bed9ec975598e4f991fda1409b7ad1f40ac2409747d0b4332ddfb950",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "cb0d7db5b6668d3696d9dc0e4cf594c384fec24c4aef364b059fbb79802b2479",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## gate design
+command=nix run .#cairn -- gate design evaluate-command-ergonomics-macros --root .
+{
+  "change": "evaluate-command-ergonomics-macros",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e0411561799b2033830b99d64ab9a080bd46600a2d431b89f3df7c1dc807db5a",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "484290b85aa2ac58d3912e5b940c2428fd6f5bd65dc172a5802a7160f2e0ba46",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## gate tasks
+command=nix run .#cairn -- gate tasks evaluate-command-ergonomics-macros --root .
+{
+  "change": "evaluate-command-ergonomics-macros",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "8ef713b46d831eff04c6d6c50e4112b45c00ebf6cdc16ccaaf11dde66df8c196",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "73af1a8abcd8a427ad931d84a9e10c94946a6007068698d57a013342510f5425",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## validate
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 19,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 23,
+  "valid": true
+}
+exit_status=0
+
+## evidence manifest check
+command=nix run .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=462; entries=3520; current=3520; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+exit_status=0
+
+## task evidence flake check
+command=nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+this derivation will be built:
+  /nix/store/qgkc9bcnd7m84bgzz2ppybvxv2h4nar1-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/qgkc9bcnd7m84bgzz2ppybvxv2h4nar1-mc-compat-cairn-task-evidence.drv'...
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:3 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-baseline-gate-proposal.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:3 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-scope.md
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:3 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-validation.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:3 cites run log docs/evidence/profile-cache-rate-limiter-baseline-gate-proposal.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:3 cites run log docs/evidence/profile-cache-rate-limiter-baseline-gate-proposal.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:4 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:4 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-validation.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:4 cites non-reviewable artifact path servers/valence/crates/valence_network/README.md; copy review-critical bytes under docs/evidence/
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:4 cites non-reviewable artifact path servers/valence/crates/valence_network/src/profile_cache.rs; copy review-critical bytes under docs/evidence/
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:4 cites non-reviewable artifact path valence/crates/valence_network/README.md; copy review-critical bytes under docs/evidence/
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:4 cites non-reviewable artifact path valence/crates/valence_network/src/profile_cache.rs; copy review-critical bytes under docs/evidence/
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:4 cites run log docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:4 cites run log docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:5 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:5 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-valence-network-clippy-nodeps.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:5 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-validation.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:5 cites non-reviewable artifact path servers/valence/crates/valence_network/src/profile_cache.rs; copy review-critical bytes under docs/evidence/
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:5 cites non-reviewable artifact path valence/crates/valence_network/src/profile_cache.rs; copy review-critical bytes under docs/evidence/
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:5 cites run log docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:5 cites run log docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:5 cites run log docs/evidence/profile-cache-rate-limiter-valence-network-clippy-nodeps.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:5 cites run log docs/evidence/profile-cache-rate-limiter-valence-network-clippy-nodeps.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:6 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:6 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-validation.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:6 cites non-reviewable artifact path servers/valence/crates/valence_network/src/profile_cache.rs; copy review-critical bytes under docs/evidence/
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:6 cites non-reviewable artifact path valence/crates/valence_network/src/profile_cache.rs; copy review-critical bytes under docs/evidence/
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:6 cites run log docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:6 cites run log docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:7 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:7 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-valence-network-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:7 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-validation.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:7 cites non-reviewable artifact path servers/valence/crates/valence_network/src/profile_cache.rs; copy review-critical bytes under docs/evidence/
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:7 cites non-reviewable artifact path valence/crates/valence_network/src/profile_cache.rs; copy review-critical bytes under docs/evidence/
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:7 cites run log docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:7 cites run log docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:7 cites run log docs/evidence/profile-cache-rate-limiter-valence-network-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:7 cites run log docs/evidence/profile-cache-rate-limiter-valence-network-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.md
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.md
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-ignore-rules.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites run log docs/evidence/clean-repo-artifact-boundaries-ignore-rules.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites run log docs/evidence/clean-repo-artifact-boundaries-ignore-rules.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-focused-open.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-self-test.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-focused-open.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-focused-open.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-self-test.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-self-test.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:3 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-preflight-cairn-gates.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:3 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-scope.md
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:3 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-validation.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:3 cites run log docs/evidence/admin-permission-ergonomics-preflight-cairn-gates.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:3 cites run log docs/evidence/admin-permission-ergonomics-preflight-cairn-gates.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:4 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-clippy-final.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:4 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:4 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-validation.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:4 cites run log docs/evidence/admin-permission-ergonomics-valence-command-clippy-final.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:4 cites run log docs/evidence/admin-permission-ergonomics-valence-command-clippy-final.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:4 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:4 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:5 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-doc.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:5 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:5 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-validation.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:5 cites run log docs/evidence/admin-permission-ergonomics-valence-command-doc.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:5 cites run log docs/evidence/admin-permission-ergonomics-valence-command-doc.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:5 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:5 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:6 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-scope.md
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:6 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:6 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-validation.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:6 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:6 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:7 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:7 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-validation.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:7 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:7 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-final-cairn-gates-validate.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-clippy-final.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-doc.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-fmt-shell-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-validation.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-final-cairn-gates-validate.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-final-cairn-gates-validate.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-valence-command-clippy-final.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-valence-command-clippy-final.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-valence-command-doc.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-valence-command-doc.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-valence-command-fmt-shell-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-valence-command-fmt-shell-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log without a cited .b3 manifest covering it
+error: Cannot build '/nix/store/qgkc9bcnd7m84bgzz2ppybvxv2h4nar1-mc-compat-cairn-task-evidence.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/b4ysjdhkn87xl3r62s8gkd2dnmigfazw-mc-compat-cairn-task-evidence
+       Last 25 log lines:
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:6 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-scope.md
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:6 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:6 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-validation.b3
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:6 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:6 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:7 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:7 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-validation.b3
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:7 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:7 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-final-cairn-gates-validate.run.log
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-clippy-final.run.log
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-doc.run.log
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-fmt-shell-tests.run.log
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-validation.b3
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-final-cairn-gates-validate.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-final-cairn-gates-validate.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-valence-command-clippy-final.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-valence-command-clippy-final.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-valence-command-doc.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-valence-command-doc.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-valence-command-fmt-shell-tests.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-valence-command-fmt-shell-tests.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log without a cited .b3 manifest covering it
+       For full logs, run:
+         nix log /nix/store/qgkc9bcnd7m84bgzz2ppybvxv2h4nar1-mc-compat-cairn-task-evidence.drv
+exit_status=1
+
+overall_failures=1
+overall_exit_status=1

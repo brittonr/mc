@@ -1,0 +1,26 @@
+command=nix run .#cairn -- sync evaluate-command-ergonomics-macros --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/evaluate-command-ergonomics-macros/specs/valence-hyperion-integration/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/evaluate-command-ergonomics-macros/specs/valence-hyperion-integration/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "evaluate-command-ergonomics-macros",
+  "delta_specs": [
+    "./cairn/changes/evaluate-command-ergonomics-macros/specs/valence-hyperion-integration/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "98106dec7963aa828399d545d91abd66340728d3d8420ed2f3b46751af79f319",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "0dc479ff92bdf5155dc4bf0ca4b75f50e9424156ce08e0a370c69d79a8f883c0",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "d323be332c13ba9ae2355cfbec928bb45da839915a191dd287dfb15480c1219a"
+}
+exit_status=0
