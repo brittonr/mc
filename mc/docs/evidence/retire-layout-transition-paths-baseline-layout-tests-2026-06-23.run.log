@@ -1,0 +1,52 @@
+command=nix command=develop command=--no-update-lock-file command=. command=-c command=cargo command=test command=--manifest-path command=compat/runner/Cargo.toml command=layout command=-- command=--nocapture 
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: constant `CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE` is never used
+   --> src/main.rs:244:7
+    |
+244 | const CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE: &str =
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `json_object_string_field` is never used
+    --> src/main.rs:9730:4
+     |
+9730 | fn json_object_string_field(text: &str, object: &str, key: &str) -> Result<S...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_optional_string_field` is never used
+    --> src/main.rs:9734:4
+     |
+9734 | fn json_object_optional_string_field(
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_u32_field` is never used
+    --> src/main.rs:9742:4
+     |
+9742 | fn json_object_u32_field(text: &str, object: &str, key: &str) -> Result<u32,...
+     |    ^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_bool_field` is never used
+    --> src/main.rs:9746:4
+     |
+9746 | fn json_object_bool_field(text: &str, object: &str, key: &str) -> Result<boo...
+     |    ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `mc-compat-runner` (bin "mc-compat-runner" test) generated 5 warnings
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 6 tests
+test layout::tests::repository_layout_allows_missing_defaults_to_role_paths ... ok
+test layout::tests::repository_layout_prefers_role_paths_when_present ... ok
+test layout::tests::repository_layout_accepts_transition_paths_during_migration ... ok
+test layout::tests::valence_source_dir_detects_direct_role_and_transition_worktree_shapes ... ok
+test layout::tests::repository_layout_fails_closed_for_missing_ambiguous_and_nested_git_roots ... ok
+test layout::tests::valence_source_dir_fails_for_ambiguous_or_nested_component_roots ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 162 filtered out; finished in 0.00s
+
+exit_status=0

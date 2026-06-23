@@ -1,0 +1,49 @@
+command=nix command=run command=.#cairn command=-- command=sync command=retire-layout-transition-paths command=--root command=. command=--execute 
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/retire-layout-transition-paths/specs/repository-layout/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/retire-layout-transition-paths/specs/repository-layout/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "retire-layout-transition-paths",
+  "delta_specs": [
+    "./cairn/changes/retire-layout-transition-paths/specs/repository-layout/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "10f4c7cb5e93b250866413ecaeec3d8ab510bbbe110b60de9476ab4426d93dff",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "a30bdcb4d7c9dcaaf63254132e49d25cabc7b30c9f655b12d37a5026fcb397ea",
+          "exists": true,
+          "path": "./cairn/specs/repository-layout/spec.md"
+        }
+      ],
+      "manifest_hash": "3007f611ce108ffbae2a7be70da91999386358693bdb2c4bfc9ce7f90c90e056"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "a30bdcb4d7c9dcaaf63254132e49d25cabc7b30c9f655b12d37a5026fcb397ea",
+          "exists": true,
+          "path": "./cairn/specs/repository-layout/spec.md"
+        }
+      ],
+      "manifest_hash": "3007f611ce108ffbae2a7be70da91999386358693bdb2c4bfc9ce7f90c90e056"
+    },
+    "kind": "sync",
+    "manifest_hash": "4fbf9f2e59d4ddefbdf3284c52568f144d0d9af6bd35c70a03f605cc893dae97"
+  },
+  "plan_hash": "8a82442d94026eceecacd7b197efd4b395dd6bdf0c8e8f68fdcc44a1e7588081",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "82f6ec5efcd8b062441f3ebbb9f6548e65e306e9ea46e76ff64149cb5713ffa2"
+}
+exit_status=0

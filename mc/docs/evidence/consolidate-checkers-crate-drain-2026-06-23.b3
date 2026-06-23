@@ -11,7 +11,7 @@ f4b62d11f06c72ddb93cb442831445798258464cd9f5e85d0bc2d4d72724e2f9  docs/evidence/
 dfe9b72a07d4835657e0f1383021828a6627bf081c7fb90eee653c98cf4a87b7  docs/evidence/consolidate-checkers-crate-drain-focused-task-evidence-2026-06-23.run.log
 0af582893b694ab2b5f602eadf46d0be2cbf507075408ec6cae1979052b6825f  docs/evidence/consolidate-checkers-crate-drain-evidence-manifest-check-pre-refresh-2026-06-23.run.log
 6c39734d5846557bf89a6c6e1b7a963a86ae45e0c4a9abef111259d6d51f3355  docs/evidence/consolidate-checkers-crate-drain-final-cairn-validate-and-list-2026-06-23.run.log
-a30bdcb4d7c9dcaaf63254132e49d25cabc7b30c9f655b12d37a5026fcb397ea  cairn/specs/repository-layout/spec.md
+eb0ea90e41dc33288a4094b7ac1b78493ba4fd1a6032fd4d631c103d405e78d5  cairn/specs/repository-layout/spec.md
 292a772d8f0827dad2400cc913256c9a1375c9eafec382aa58ecb1a0033b9b43  cairn/archive/2026-06-23-consolidate-checkers-crate/proposal.md
 77aa2f0a105ad44243947c2edfef69f01a294b7e1bb60f80caed2418b7650523  cairn/archive/2026-06-23-consolidate-checkers-crate/design.md
 e43f323236a6e3d16aa4394e9449e834afe4c47aba7c13a76065d722771b5831  cairn/archive/2026-06-23-consolidate-checkers-crate/tasks.md

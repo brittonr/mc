@@ -5,7 +5,7 @@ dc08f03deb02decbe53865cf66f98c28895f6500d12c3826e603362778545e02  cairn/archive/
 5ee0971feb78c5e1a7006592060015760ff899e998835a9a914e4a586a8ddf96  cairn/archive/2026-06-22-survival-hunger-health-cycle-typed-event-migration/specs/mc-compatibility/spec.md
 921b7d5fcdf85e12d8dcf43ece48b3f3e888974fae96f11b7e24937a3e7dfc72  cairn/specs/mc-compatibility/spec.md
 b471fb927ec046054595bc7d5630322667f240180c64294729ad008cd9153783  compat/config/scenario-manifest.ncl
-87e2fff619200fcfc90a49dc3d3e117968e41755f49264bf309bd6b474f87d24  compat/runner/src/main.rs
+2326dffef981c7eeb283e3c220c7b054dc1dbef903d004d48dc5be8cc9c528f5  compat/runner/src/main.rs
 0c5c6cd53867ec19832895b3ab577703961623c3fb63b22c35965e62cb992905  compat/runner/src/scenario_manifest_generated.rs
 9ae1763e53ee3b1d235aa9e2ea66d18d2b6db290c53fabf5d58b47d989b28abf  docs/evidence/mc-compat-scenario-index.generated.md
 1eb0f9d64f69c71725e3322100fdfb8a5e4c500029a546582b3d6180f4f679d6  docs/evidence/survival-hunger-health-cycle-typed-event-baseline-dry-run.run.log

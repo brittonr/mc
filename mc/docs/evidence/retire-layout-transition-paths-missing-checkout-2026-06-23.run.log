@@ -1,0 +1,17 @@
+
+## missing-client
+command=nix build .#checks.x86_64-linux.mc-compat-missing-client --no-link -L
+this derivation will be built:
+  /nix/store/kj6y572g604id411q7sa9iahpqrscgpz-mc-compat-missing-client.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/kj6y572g604id411q7sa9iahpqrscgpz-mc-compat-missing-client.drv'...
+command_exit_status[missing-client]=0
+
+## missing-valence
+command=nix build .#checks.x86_64-linux.mc-compat-missing-valence --no-link -L
+this derivation will be built:
+  /nix/store/q50wk2snasf5ss0r00331ma99kwaw0w7-mc-compat-missing-valence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/q50wk2snasf5ss0r00331ma99kwaw0w7-mc-compat-missing-valence.drv'...
+command_exit_status[missing-valence]=0
+exit_status=0

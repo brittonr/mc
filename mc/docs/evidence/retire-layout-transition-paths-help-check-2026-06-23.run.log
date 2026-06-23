@@ -1,0 +1,6 @@
+command=nix command=build command=.#checks.x86_64-linux.mc-compat-help command=--no-link command=-L 
+this derivation will be built:
+  /nix/store/ys4fgcv13irp1bywzfr1x4wyr6arb1bg-mc-compat-help.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/ys4fgcv13irp1bywzfr1x4wyr6arb1bg-mc-compat-help.drv'...
+exit_status=0

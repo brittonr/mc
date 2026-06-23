@@ -4875,7 +4875,7 @@ fn print_usage(cfg: &Config) {
     println!(
         "Usage: mc-compat-runner [--config PATH] [--steel-config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario {}] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--failure-bundle PATH] [--valence-repo PATH] [--valence-rev REV]\n\n\
 Automates a local Stevenarella compatibility smoke against a Minecraft {} / protocol {} server.\n\
-Default client source is the core Stevenarella client tree resolved from ./clients/stevenarella or the transition ./stevenarella path; pass --client-dir/CLIENT_DIR to use another source tree.\n\
+Default client source is the core Stevenarella client tree resolved from ./clients/stevenarella; pass --client-dir/CLIENT_DIR to use another source tree.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from legacy Nickel config, or --steel-config/MC_COMPAT_STEEL_CONFIG a restricted Steel module; env vars and later CLI flags override either config source.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.scenario.receipt.v2 JSON receipt for Cairn/Octet evidence flows. Pass --failure-bundle/MC_COMPAT_FAILURE_BUNDLE with a docs/evidence path to write a fail-only diagnostic bundle after failed runs.
 Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario survival-crafting-table for one crafting-table open/input/result/collect rail. Use --scenario survival-crafting-recipe-breadth for one bounded shaped/shapeless/invalid recipe breadth rail. Use --scenario survival-furnace-persistence for one furnace input/fuel/output/reconnect rail. Use --scenario survival-furnace-smelting-breadth for one bounded raw-iron/coal smelt plus invalid-fuel rejection rail. Use --scenario survival-hunger-food for one hunger deficit, food consume, and inventory decrement rail. Use --scenario survival-hunger-health-cycle for the isolated bounded health-cycle row using explicit food, saturation, health recovery, and inventory checkpoints. Use --scenario survival-mob-drop for one configured mob kill, drop, pickup, and inventory increment rail. Use --scenario survival-redstone-toggle for one configured control on/off output update rail. Use --scenario survival-world-persistence-restart for one configured block mutation, controlled reload, reconnect, and post-reload observation rail. Use --scenario survival-crash-recovery-parity for one configured block mutation, forced backend stop, crash-recovery restart, reconnect, and post-crash observation rail. Use --scenario survival-block-entity-persistence-parity for one configured sign block entity, controlled reload, reconnect, and post-reload sign text observation rail. Use --scenario survival-biome-dimension-state for one client-observed dimension/world identifier rail. Use --scenario mcp-controlled-smoke for deterministic MCP receipt/checker dry-run evidence before live client driving. Use --scenario vanilla-combat-armor-reference-parity for one Paper/Valence diamond-chestplate combat reference row. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario ctf-invalid-return-drop for one contained own-base return/drop attempt with server rejection evidence. Use --scenario ctf-invalid-opponent-base-return-drop for one contained opponent-base return/drop attempt with server rejection evidence. Use --scenario ctf-score-limit-win-condition for one near-limit capture that emits exactly one win/end milestone. Use --scenario ctf-simultaneous-pickup-capture-race for one bounded two-client same-flag race with one accepted transition and one rejected duplicate pickup. Use --scenario ctf-spawn-team-balance-reset for one bounded two-client team assignment, spawn/resource, and post-score reset row. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
@@ -4942,7 +4942,7 @@ fn build_client(cfg: &Config) -> Result<(), String> {
 fn ensure_client_dir_ready(cfg: &Config) -> Result<(), String> {
     if !cfg.client_dir.exists() {
         return Err(format!(
-            "Stevenarella source tree not found at {}. Keep the core client tree present at clients/stevenarella (or the transition stevenarella path) or pass --client-dir/CLIENT_DIR to another checkout.",
+            "Stevenarella source tree not found at {}. Keep the core client tree present at clients/stevenarella or pass --client-dir/CLIENT_DIR to another checkout.",
             cfg.client_dir.display()
         ));
     }
@@ -5440,7 +5440,7 @@ fn prune_stale_valence_worktrees(cfg: &Config) -> Result<(), String> {
 fn ensure_valence_repo_ready(cfg: &Config) -> Result<(), String> {
     if !cfg.valence_repo.exists() {
         return Err(format!(
-            "Valence source tree not found at {}. Keep the core server tree present at servers/valence (or the transition valence path) or pass --valence-repo/VALENCE_REPO to another checkout.",
+            "Valence source tree not found at {}. Keep the core server tree present at servers/valence or pass --valence-repo/VALENCE_REPO to another checkout.",
             cfg.valence_repo.display()
         ));
     }
@@ -11273,18 +11273,18 @@ mod tests {
     }
 
     #[test]
-    fn valence_source_dir_detects_monorepo_and_legacy_worktree_shapes() {
+    fn valence_source_dir_detects_direct_role_and_rejects_transition_worktree_shapes() {
         let root = git_fixture_root("valence-source-dir");
-        let legacy = root.join("legacy-valence");
-        fs::create_dir_all(&legacy).expect("create legacy Valence worktree");
+        let direct = root.join("direct-valence");
+        fs::create_dir_all(&direct).expect("create direct Valence worktree");
         fs::write(
-            legacy.join(CARGO_MANIFEST_FILE),
+            direct.join(CARGO_MANIFEST_FILE),
             "[package]\nname = \"valence\"\n",
         )
-        .expect("write legacy manifest");
-        let mut legacy_cfg = test_config(&[], &[]).expect("default config parses");
-        legacy_cfg.valence_worktree = legacy.clone();
-        assert_eq!(valence_source_dir(&legacy_cfg).unwrap(), legacy);
+        .expect("write direct manifest");
+        let mut direct_cfg = test_config(&[], &[]).expect("default config parses");
+        direct_cfg.valence_worktree = direct.clone();
+        assert_eq!(valence_source_dir(&direct_cfg).unwrap(), direct);
 
         let monorepo_transition = root.join("monorepo-transition-worktree");
         let transition_source = monorepo_transition
@@ -11298,10 +11298,11 @@ mod tests {
         .expect("write transition manifest");
         let mut transition_cfg = test_config(&[], &[]).expect("default config parses");
         transition_cfg.valence_worktree = monorepo_transition;
-        assert_eq!(
-            valence_source_dir(&transition_cfg).unwrap(),
-            transition_source
-        );
+        let err = valence_source_dir(&transition_cfg).expect_err("transition source root fails");
+        assert!(err.contains("legacy Valence source root"), "{err}");
+        assert!(err.contains("mc/valence"), "{err}");
+        assert!(err.contains("mc/servers/valence"), "{err}");
+        assert!(err.contains("migration action"), "{err}");
 
         let monorepo_role = root.join("monorepo-role-worktree");
         let role_source = monorepo_role.join("mc").join(layout::VALENCE_ROLE_REL);
@@ -17362,6 +17363,7 @@ RED: 1
         assert!(err.contains("Valence source tree not found"), "{err}");
         assert!(err.contains("core server tree"), "{err}");
         assert!(err.contains("--valence-repo/VALENCE_REPO"), "{err}");
+        assert!(!err.contains("transition"), "{err}");
     }
 
     #[test]
@@ -17378,6 +17380,7 @@ RED: 1
         assert!(err.contains("Stevenarella source tree not found"), "{err}");
         assert!(err.contains("core client tree"), "{err}");
         assert!(err.contains("--client-dir/CLIENT_DIR"), "{err}");
+        assert!(!err.contains("transition"), "{err}");
     }
 
     #[test]

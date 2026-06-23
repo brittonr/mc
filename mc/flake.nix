@@ -3435,7 +3435,8 @@
             cat missing.log >&2
             exit 1
           fi
-          grep -Fq "Stevenarella checkout not found" missing.log
+          grep -Fq "Stevenarella source tree not found" missing.log
+          grep -Fq "clients/stevenarella" missing.log
           grep -Fq -- "--client-dir/CLIENT_DIR" missing.log
           mkdir -p "$out"
           cp missing.log "$out/"
@@ -3450,7 +3451,8 @@
             cat missing.log >&2
             exit 1
           fi
-          grep -Fq "Valence checkout not found" missing.log
+          grep -Fq "Valence source tree not found" missing.log
+          grep -Fq "servers/valence" missing.log
           grep -Fq -- "--valence-repo/VALENCE_REPO" missing.log
           mkdir -p "$out"
           cp missing.log "$out/"

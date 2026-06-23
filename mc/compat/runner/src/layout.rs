@@ -3,6 +3,8 @@ use std::path::{Path, PathBuf};
 const CARGO_MANIFEST_FILE: &str = "Cargo.toml";
 const GIT_DIR: &str = ".git";
 const MONOREPO_MC_ROOT_REL: &str = "mc";
+const MONOREPO_VALENCE_ROLE_REL: &str = "mc/servers/valence";
+const MONOREPO_VALENCE_TRANSITION_REL: &str = "mc/valence";
 
 pub const CLIENT_ROLE_REL: &str = "clients/stevenarella";
 pub const CLIENT_TRANSITION_REL: &str = "stevenarella";
@@ -20,6 +22,15 @@ const VALENCE_COMPONENT: &str = "valence-server";
 const COMPAT_RUNNER_COMPONENT: &str = "compat-runner";
 const COMPAT_CONFIG_COMPONENT: &str = "compat-config";
 const PAPER_SURVIVAL_FIXTURE_COMPONENT: &str = "paper-survival-fixture";
+
+const CLIENT_MIGRATION_ACTION: &str =
+    "move the client tree to clients/stevenarella or pass --client-dir/CLIENT_DIR";
+const VALENCE_MIGRATION_ACTION: &str =
+    "move the server tree to servers/valence or pass --valence-repo/VALENCE_REPO";
+const COMPAT_RUNNER_MIGRATION_ACTION: &str = "move the runner tree to compat/runner";
+const COMPAT_CONFIG_MIGRATION_ACTION: &str = "move checked configuration to compat/config";
+const PAPER_SURVIVAL_FIXTURE_MIGRATION_ACTION: &str =
+    "move the Paper survival fixture to compat/fixtures/paper-survival";
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum LayoutResolutionMode {
@@ -56,6 +67,7 @@ struct ComponentSpec {
     name: &'static str,
     role_relative: &'static str,
     transition_relative: &'static str,
+    migration_action: &'static str,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -73,30 +85,49 @@ struct ComponentSelection {
     kind: LayoutKind,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum ValenceSourceRootKind {
+    RoleBased,
+    Transition,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct ValenceSourceCandidate {
+    path: PathBuf,
+    relative_path: &'static str,
+    kind: ValenceSourceRootKind,
+    nested_git: bool,
+}
+
 const CLIENT_SPEC: ComponentSpec = ComponentSpec {
     name: CLIENT_COMPONENT,
     role_relative: CLIENT_ROLE_REL,
     transition_relative: CLIENT_TRANSITION_REL,
+    migration_action: CLIENT_MIGRATION_ACTION,
 };
 const VALENCE_SPEC: ComponentSpec = ComponentSpec {
     name: VALENCE_COMPONENT,
     role_relative: VALENCE_ROLE_REL,
     transition_relative: VALENCE_TRANSITION_REL,
+    migration_action: VALENCE_MIGRATION_ACTION,
 };
 const COMPAT_RUNNER_SPEC: ComponentSpec = ComponentSpec {
     name: COMPAT_RUNNER_COMPONENT,
     role_relative: COMPAT_RUNNER_ROLE_REL,
     transition_relative: COMPAT_RUNNER_TRANSITION_REL,
+    migration_action: COMPAT_RUNNER_MIGRATION_ACTION,
 };
 const COMPAT_CONFIG_SPEC: ComponentSpec = ComponentSpec {
     name: COMPAT_CONFIG_COMPONENT,
     role_relative: COMPAT_CONFIG_ROLE_REL,
     transition_relative: COMPAT_CONFIG_TRANSITION_REL,
+    migration_action: COMPAT_CONFIG_MIGRATION_ACTION,
 };
 const PAPER_SURVIVAL_FIXTURE_SPEC: ComponentSpec = ComponentSpec {
     name: PAPER_SURVIVAL_FIXTURE_COMPONENT,
     role_relative: PAPER_SURVIVAL_FIXTURE_ROLE_REL,
     transition_relative: PAPER_SURVIVAL_FIXTURE_TRANSITION_REL,
+    migration_action: PAPER_SURVIVAL_FIXTURE_MIGRATION_ACTION,
 };
 
 pub fn resolve_repository_layout(
@@ -129,41 +160,116 @@ pub fn resolve_valence_source_dir(worktree: &Path) -> Result<PathBuf, String> {
         return Ok(worktree.to_path_buf());
     }
 
+    let candidates = valence_source_candidates(worktree);
+    resolve_valence_source_selection(worktree, &candidates)
+}
+
+fn valence_source_candidates(worktree: &Path) -> Vec<ValenceSourceCandidate> {
     let candidates = [
-        worktree.join(MONOREPO_MC_ROOT_REL).join(VALENCE_ROLE_REL),
-        worktree
-            .join(MONOREPO_MC_ROOT_REL)
-            .join(VALENCE_TRANSITION_REL),
-        worktree.join(VALENCE_ROLE_REL),
-        worktree.join(VALENCE_TRANSITION_REL),
+        (
+            worktree.join(MONOREPO_VALENCE_ROLE_REL),
+            MONOREPO_VALENCE_ROLE_REL,
+            ValenceSourceRootKind::RoleBased,
+        ),
+        (
+            worktree.join(MONOREPO_VALENCE_TRANSITION_REL),
+            MONOREPO_VALENCE_TRANSITION_REL,
+            ValenceSourceRootKind::Transition,
+        ),
+        (
+            worktree.join(VALENCE_ROLE_REL),
+            VALENCE_ROLE_REL,
+            ValenceSourceRootKind::RoleBased,
+        ),
+        (
+            worktree.join(VALENCE_TRANSITION_REL),
+            VALENCE_TRANSITION_REL,
+            ValenceSourceRootKind::Transition,
+        ),
     ];
-    let mut matches = Vec::new();
-    for candidate in candidates {
-        if candidate.join(CARGO_MANIFEST_FILE).exists() {
-            if candidate.join(GIT_DIR).exists() {
-                return Err(format!(
-                    "Valence source root {} contains nested Git directory {}",
-                    candidate.display(),
-                    candidate.join(GIT_DIR).display()
-                ));
+
+    candidates
+        .into_iter()
+        .filter_map(|(path, relative_path, kind)| {
+            if path.join(CARGO_MANIFEST_FILE).exists() {
+                Some(ValenceSourceCandidate {
+                    nested_git: path.join(GIT_DIR).exists(),
+                    path,
+                    relative_path,
+                    kind,
+                })
+            } else {
+                None
             }
-            matches.push(candidate);
+        })
+        .collect()
+}
+
+fn resolve_valence_source_selection(
+    worktree: &Path,
+    candidates: &[ValenceSourceCandidate],
+) -> Result<PathBuf, String> {
+    for candidate in candidates {
+        if candidate.nested_git {
+            return Err(format!(
+                "Valence source root {} contains nested Git directory {}; expected canonical role path {}; migration action: {}",
+                candidate.path.display(),
+                candidate.path.join(GIT_DIR).display(),
+                MONOREPO_VALENCE_ROLE_REL,
+                VALENCE_MIGRATION_ACTION
+            ));
         }
     }
 
-    match matches.len() {
-        0 => Ok(worktree.to_path_buf()),
-        1 => Ok(matches.remove(0)),
-        _ => Err(format!(
-            "ambiguous Valence source roots under {}: {}",
+    let role_matches = candidates
+        .iter()
+        .filter(|candidate| candidate.kind == ValenceSourceRootKind::RoleBased)
+        .collect::<Vec<_>>();
+    let transition_matches = candidates
+        .iter()
+        .filter(|candidate| candidate.kind == ValenceSourceRootKind::Transition)
+        .collect::<Vec<_>>();
+
+    if !role_matches.is_empty() && !transition_matches.is_empty() {
+        return Err(format!(
+            "ambiguous Valence source roots under {}: canonical role path(s) {} and legacy transition path(s) {}; migration action: remove legacy transition roots and keep {}",
             worktree.display(),
-            matches
-                .iter()
-                .map(|path| path.display().to_string())
-                .collect::<Vec<_>>()
-                .join(", ")
-        )),
+            join_valence_candidate_paths(&role_matches),
+            join_valence_candidate_paths(&transition_matches),
+            MONOREPO_VALENCE_ROLE_REL
+        ));
     }
+
+    match role_matches.len() {
+        0 => {}
+        1 => return Ok(role_matches[0].path.clone()),
+        _ => {
+            return Err(format!(
+                "ambiguous canonical Valence source roots under {}: {}",
+                worktree.display(),
+                join_valence_candidate_paths(&role_matches)
+            ));
+        }
+    }
+
+    if !transition_matches.is_empty() {
+        return Err(format!(
+            "legacy Valence source root {} is no longer accepted; expected canonical role path {}; migration action: {}",
+            join_valence_candidate_paths(&transition_matches),
+            MONOREPO_VALENCE_ROLE_REL,
+            VALENCE_MIGRATION_ACTION
+        ));
+    }
+
+    Ok(worktree.to_path_buf())
+}
+
+fn join_valence_candidate_paths(candidates: &[&ValenceSourceCandidate]) -> String {
+    candidates
+        .iter()
+        .map(|candidate| format!("{} ({})", candidate.path.display(), candidate.relative_path))
+        .collect::<Vec<_>>()
+        .join(", ")
 }
 
 fn component_probe(root: &Path, spec: ComponentSpec) -> ComponentProbe {
@@ -196,6 +302,16 @@ fn resolve_component_selection(
     probe: ComponentProbe,
     mode: LayoutResolutionMode,
 ) -> Result<ComponentSelection, String> {
+    if probe.role_exists && probe.transition_exists {
+        return Err(format!(
+            "ambiguous {} roots: both canonical role path {} and legacy transition path {} exist; migration action: remove {} or move its contents under {}",
+            probe.spec.name,
+            probe.spec.role_relative,
+            probe.spec.transition_relative,
+            probe.spec.transition_relative,
+            probe.spec.role_relative
+        ));
+    }
     if probe.role_exists && probe.role_nested_git {
         return Err(format!(
             "{} role-based root {} contains nested Git directory",
@@ -204,14 +320,11 @@ fn resolve_component_selection(
     }
     if probe.transition_exists && probe.transition_nested_git {
         return Err(format!(
-            "{} transition root {} contains nested Git directory",
-            probe.spec.name, probe.spec.transition_relative
-        ));
-    }
-    if probe.role_exists && probe.transition_exists {
-        return Err(format!(
-            "ambiguous {} roots: both {} and {} exist",
-            probe.spec.name, probe.spec.role_relative, probe.spec.transition_relative
+            "{} legacy transition root {} contains nested Git directory; expected canonical role path {}; migration action: {}",
+            probe.spec.name,
+            probe.spec.transition_relative,
+            probe.spec.role_relative,
+            probe.spec.migration_action
         ));
     }
     if probe.role_exists {
@@ -221,10 +334,13 @@ fn resolve_component_selection(
         });
     }
     if probe.transition_exists {
-        return Ok(ComponentSelection {
-            relative_path: probe.spec.transition_relative,
-            kind: LayoutKind::Transition,
-        });
+        return Err(format!(
+            "legacy {} root {} is no longer accepted; expected canonical role path {}; migration action: {}",
+            probe.spec.name,
+            probe.spec.transition_relative,
+            probe.spec.role_relative,
+            probe.spec.migration_action
+        ));
     }
     match mode {
         LayoutResolutionMode::AllowMissing => Ok(ComponentSelection {
@@ -232,8 +348,8 @@ fn resolve_component_selection(
             kind: LayoutKind::MissingRoleBasedDefault,
         }),
         LayoutResolutionMode::RequireExisting => Err(format!(
-            "missing {} root: expected {} or {}",
-            probe.spec.name, probe.spec.role_relative, probe.spec.transition_relative
+            "missing {} root: expected canonical role path {}; migration action: {}",
+            probe.spec.name, probe.spec.role_relative, probe.spec.migration_action
         )),
     }
 }
@@ -294,7 +410,7 @@ mod tests {
     }
 
     #[test]
-    fn repository_layout_accepts_transition_paths_during_migration() {
+    fn repository_layout_rejects_transition_paths_with_migration_diagnostic() {
         let root = temp_layout_root("transition");
         create_dir(&root, CLIENT_TRANSITION_REL);
         create_dir(&root, VALENCE_TRANSITION_REL);
@@ -302,25 +418,52 @@ mod tests {
         create_dir(&root, COMPAT_CONFIG_TRANSITION_REL);
         create_dir(&root, PAPER_SURVIVAL_FIXTURE_TRANSITION_REL);
 
-        let layout = resolve_repository_layout(&root, LayoutResolutionMode::RequireExisting)
-            .expect("transition layout resolves");
+        let required_err = resolve_repository_layout(&root, LayoutResolutionMode::RequireExisting)
+            .expect_err("transition layout is no longer accepted");
+        assert!(
+            required_err.contains("legacy client root"),
+            "{required_err}"
+        );
+        assert!(
+            required_err.contains(CLIENT_TRANSITION_REL),
+            "{required_err}"
+        );
+        assert!(required_err.contains(CLIENT_ROLE_REL), "{required_err}");
+        assert!(required_err.contains("migration action"), "{required_err}");
 
-        assert_eq!(layout.client.relative_path, CLIENT_TRANSITION_REL);
-        assert_eq!(layout.client.kind, LayoutKind::Transition);
-        assert_eq!(layout.valence.relative_path, VALENCE_TRANSITION_REL);
-        assert_eq!(
-            layout.compat_runner.relative_path,
-            COMPAT_RUNNER_TRANSITION_REL
-        );
-        assert_eq!(
-            layout.compat_config.relative_path,
-            COMPAT_CONFIG_TRANSITION_REL
-        );
-        assert_eq!(
-            layout.paper_survival_fixture.relative_path,
-            PAPER_SURVIVAL_FIXTURE_TRANSITION_REL
-        );
+        let default_err = resolve_repository_layout(&root, LayoutResolutionMode::AllowMissing)
+            .expect_err("allow-missing defaults still reject transition roots");
+        assert!(default_err.contains("legacy client root"), "{default_err}");
         let _ = fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn component_selection_rejects_each_transition_root() {
+        let cases = [
+            CLIENT_SPEC,
+            VALENCE_SPEC,
+            COMPAT_RUNNER_SPEC,
+            COMPAT_CONFIG_SPEC,
+            PAPER_SURVIVAL_FIXTURE_SPEC,
+        ];
+
+        for spec in cases {
+            let err = resolve_component_selection(
+                ComponentProbe {
+                    spec,
+                    role_exists: false,
+                    transition_exists: true,
+                    role_nested_git: false,
+                    transition_nested_git: false,
+                },
+                LayoutResolutionMode::RequireExisting,
+            )
+            .expect_err("transition root fails closed");
+            assert!(err.contains("legacy"), "{err}");
+            assert!(err.contains(spec.transition_relative), "{err}");
+            assert!(err.contains(spec.role_relative), "{err}");
+            assert!(err.contains("migration action"), "{err}");
+        }
     }
 
     #[test]
@@ -329,6 +472,9 @@ mod tests {
         let err = resolve_repository_layout(&missing, LayoutResolutionMode::RequireExisting)
             .expect_err("missing roots fail");
         assert!(err.contains("missing client root"), "{err}");
+        assert!(err.contains(CLIENT_ROLE_REL), "{err}");
+        assert!(err.contains("migration action"), "{err}");
+        assert!(!err.contains(" or stevenarella"), "{err}");
         let _ = fs::remove_dir_all(&missing);
 
         let ambiguous = temp_layout_root("ambiguous");
@@ -341,6 +487,8 @@ mod tests {
         let err = resolve_repository_layout(&ambiguous, LayoutResolutionMode::RequireExisting)
             .expect_err("duplicate roots fail");
         assert!(err.contains("ambiguous client roots"), "{err}");
+        assert!(err.contains("canonical role path"), "{err}");
+        assert!(err.contains(CLIENT_TRANSITION_REL), "{err}");
         let _ = fs::remove_dir_all(&ambiguous);
 
         let nested = temp_layout_root("nested");
@@ -370,7 +518,7 @@ mod tests {
     }
 
     #[test]
-    fn valence_source_dir_detects_direct_role_and_transition_worktree_shapes() {
+    fn valence_source_dir_detects_direct_and_role_worktree_shapes() {
         let root = temp_layout_root("valence-source");
         let direct = root.join("direct-valence");
         create_manifest(&direct, "", TEST_VALENCE_MANIFEST);
@@ -389,25 +537,41 @@ mod tests {
                 .join(VALENCE_ROLE_REL)
         );
 
-        let monorepo_transition = root.join("monorepo-transition");
-        create_manifest(
-            &monorepo_transition,
-            &format!("{MONOREPO_MC_ROOT_REL}/{VALENCE_TRANSITION_REL}"),
-            TEST_VALENCE_MANIFEST,
-        );
-        assert_eq!(
-            resolve_valence_source_dir(&monorepo_transition).unwrap(),
-            monorepo_transition
-                .join(MONOREPO_MC_ROOT_REL)
-                .join(VALENCE_TRANSITION_REL)
-        );
-
         let mc_root_role = root.join("mc-root-role");
         create_manifest(&mc_root_role, VALENCE_ROLE_REL, TEST_VALENCE_MANIFEST);
         assert_eq!(
             resolve_valence_source_dir(&mc_root_role).unwrap(),
             mc_root_role.join(VALENCE_ROLE_REL)
         );
+        let _ = fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn valence_source_dir_rejects_transition_worktree_shapes() {
+        let root = temp_layout_root("valence-transition-source");
+        let monorepo_transition = root.join("monorepo-transition");
+        create_manifest(
+            &monorepo_transition,
+            &format!("{MONOREPO_MC_ROOT_REL}/{VALENCE_TRANSITION_REL}"),
+            TEST_VALENCE_MANIFEST,
+        );
+        let err = resolve_valence_source_dir(&monorepo_transition)
+            .expect_err("monorepo transition root fails closed");
+        assert!(err.contains("legacy Valence source root"), "{err}");
+        assert!(err.contains(MONOREPO_VALENCE_TRANSITION_REL), "{err}");
+        assert!(err.contains(MONOREPO_VALENCE_ROLE_REL), "{err}");
+        assert!(err.contains("migration action"), "{err}");
+
+        let mc_root_transition = root.join("mc-root-transition");
+        create_manifest(
+            &mc_root_transition,
+            VALENCE_TRANSITION_REL,
+            TEST_VALENCE_MANIFEST,
+        );
+        let err = resolve_valence_source_dir(&mc_root_transition)
+            .expect_err("mc-root transition root fails closed");
+        assert!(err.contains(VALENCE_TRANSITION_REL), "{err}");
+        assert!(err.contains(MONOREPO_VALENCE_ROLE_REL), "{err}");
         let _ = fs::remove_dir_all(&root);
     }
 
