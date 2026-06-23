@@ -1,0 +1,21 @@
+# consolidate-checkers-crate baseline block entity shared-helper checker
+cwd=/home/brittonr/git/mc
+command=rustc --edition=2021 tools/check_block_entity_sign_packet_family.rs -o target/check-block-entity-sign-packet-family && target/check-block-entity-sign-packet-family --self-test
+warning: function `parse_i32_sequence` is never used
+   --> tools/checker_framework.rs:108:8
+    |
+108 | pub fn parse_i32_sequence(raw: &str) -> Result<Vec<i32>, String> {
+    |        ^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `all_at_least` is never used
+   --> tools/checker_framework.rs:123:8
+    |
+123 | pub fn all_at_least(values: &[i32], minimum: i32) -> bool {
+    |        ^^^^^^^^^^^^
+
+warning: 2 warnings emitted
+
+self-test ok
+exit_status=0

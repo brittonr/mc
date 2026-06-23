@@ -225,6 +225,15 @@
               mainProgram = "mc-compat-runner";
             };
           };
+          mc-compat-checkers = pkgs.rustPlatform.buildRustPackage {
+            pname = "mc-compat-checkers";
+            version = "0.1.0";
+            src = ./tools/checkers;
+            cargoLock.lockFile = ./tools/checkers/Cargo.lock;
+            meta = {
+              description = "Rust evidence checker binaries for the mc compatibility workspace";
+            };
+          };
           mc-compat-valence-ctf-600s-soak = pkgs.writeShellApplication {
             name = "mc-compat-valence-ctf-600s-soak";
             runtimeInputs = [ mc-compat-runner ];
@@ -1108,6 +1117,7 @@
             valence
             stevenarella
             mc-compat-runner
+            mc-compat-checkers
             mc-compat-valence-ctf-600s-soak
             mc-compat-valence-ctf-blue-600s-soak
             mc-compat-valence-ctf-inventory-interaction
@@ -2096,18 +2106,13 @@
           pkgs.runCommand "mc-compat-inventory-stack-split-merge-evidence-check"
             {
               nativeBuildInputs = [
-                pkgs.rustc
-                pkgs.gcc
+                self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-checkers
               ];
             }
             ''
-              cp -R ${./.} repo
-              chmod -R u+w repo
-              cd repo
-              rustc --edition=2021 tools/check_inventory_stack_split_merge_evidence.rs -o ../check-inventory-stack-split-merge-evidence
-              ../check-inventory-stack-split-merge-evidence --self-test > ../inventory-stack-split-merge-evidence-self-test.log
+              check-inventory-stack-split-merge-evidence --self-test > inventory-stack-split-merge-evidence-self-test.log
               mkdir -p "$out"
-              cp ../inventory-stack-split-merge-evidence-self-test.log "$out/"
+              cp inventory-stack-split-merge-evidence-self-test.log "$out/"
             '';
         mc-compat-valence-inventory-drag-transactions-dry-run =
           pkgs.runCommand "mc-compat-valence-inventory-drag-transactions-dry-run"
@@ -2150,18 +2155,13 @@
           pkgs.runCommand "mc-compat-inventory-drag-transactions-evidence-check"
             {
               nativeBuildInputs = [
-                pkgs.rustc
-                pkgs.gcc
+                self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-checkers
               ];
             }
             ''
-              cp -R ${./.} repo
-              chmod -R u+w repo
-              cd repo
-              rustc --edition=2021 tools/check_inventory_drag_transactions_evidence.rs -o ../check-inventory-drag-transactions-evidence
-              ../check-inventory-drag-transactions-evidence --self-test > ../inventory-drag-transactions-evidence-self-test.log
+              check-inventory-drag-transactions-evidence --self-test > inventory-drag-transactions-evidence-self-test.log
               mkdir -p "$out"
-              cp ../inventory-drag-transactions-evidence-self-test.log "$out/"
+              cp inventory-drag-transactions-evidence-self-test.log "$out/"
             '';
         mc-compat-scoreboard-team-packet-family-check =
           pkgs.runCommand "mc-compat-scoreboard-team-packet-family-check"

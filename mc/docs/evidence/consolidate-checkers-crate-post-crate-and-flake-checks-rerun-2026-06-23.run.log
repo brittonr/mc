@@ -1,0 +1,159 @@
+# consolidate-checkers-crate post-implementation crate and flake checks rerun
+cwd=/home/brittonr/git/mc
+command=nix develop --no-update-lock-file . -c cargo test --manifest-path tools/checkers/Cargo.toml
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_checkers-c5a6de166b645173)
+
+running 15 tests
+test checkers::block_entity_sign_packet_family::tests::valid_fixture_passes ... ok
+test checkers::block_entity_sign_packet_family::tests::negative_fixture_rejects_overclaim ... ok
+test checkers::inventory_drag_transactions::tests::negative_fixture_rejects_overclaim ... ok
+test checkers::inventory_stack_split_merge::tests::negative_fixture_rejects_overclaim ... ok
+test checkers::inventory_drag_transactions::tests::valid_fixture_passes ... ok
+test cli::tests::missing_args_return_usage ... ok
+test checkers::inventory_stack_split_merge::tests::valid_fixture_passes ... ok
+test cli::tests::self_test_flag_runs_checker_self_test ... ok
+test key_value::tests::helpers_accept_valid_records_and_reject_weak_evidence ... ok
+test key_value::tests::key_value_record_parses_valid_rows_and_ignores_comments ... ok
+test key_value::tests::key_value_record_rejects_malformed_empty_and_duplicate_keys ... ok
+test key_value::tests::sequence_helpers_parse_and_reject_invalid_state_ids ... ok
+test checkers::inventory_stack_split_merge::tests::self_test_runs_positive_and_negative_fixtures ... ok
+test checkers::block_entity_sign_packet_family::tests::self_test_runs_positive_and_negative_fixtures ... ok
+test checkers::inventory_drag_transactions::tests::self_test_runs_positive_and_negative_fixtures ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/check_block_entity_sign_packet_family.rs (/home/brittonr/.cargo-target/debug/deps/check_block_entity_sign_packet_family-3f0f54887c0758bd)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/check_inventory_drag_transactions_evidence.rs (/home/brittonr/.cargo-target/debug/deps/check_inventory_drag_transactions_evidence-fd7e061350573844)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/check_inventory_stack_split_merge_evidence.rs (/home/brittonr/.cargo-target/debug/deps/check_inventory_stack_split_merge_evidence-b775a927b3ae8af3)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests mc_compat_checkers
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+exit_status=0
+
+command=nix build .#mc-compat-checkers --no-link -L
+these 2 derivations will be built:
+  /nix/store/4zn98qiry8j7hmwwr6zk7q1461wq7div-cargo-vendor-dir.drv
+  /nix/store/552prnqi2ym396ax6j35r5lgaa78zkhp-mc-compat-checkers-0.1.0.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/4zn98qiry8j7hmwwr6zk7q1461wq7div-cargo-vendor-dir.drv'...
+cargo-vendor-dir> structuredAttrs is enabled
+building '/nix/store/552prnqi2ym396ax6j35r5lgaa78zkhp-mc-compat-checkers-0.1.0.drv'...
+mc-compat-checkers> Running phase: unpackPhase
+mc-compat-checkers> unpacking source archive /nix/store/4zk4pxnp17xi9h2871kk67wz79mha5na-checkers
+mc-compat-checkers> source root is checkers
+mc-compat-checkers> Executing cargoSetupPostUnpackHook
+mc-compat-checkers> Finished cargoSetupPostUnpackHook
+mc-compat-checkers> Running phase: patchPhase
+mc-compat-checkers> Executing cargoSetupPostPatchHook
+mc-compat-checkers> Validating consistency between /build/checkers/Cargo.lock and /build/cargo-vendor-dir/Cargo.lock
+mc-compat-checkers> Finished cargoSetupPostPatchHook
+mc-compat-checkers> Running phase: updateAutotoolsGnuConfigScriptsPhase
+mc-compat-checkers> Running phase: configurePhase
+mc-compat-checkers> Running phase: buildPhase
+mc-compat-checkers> Executing cargoBuildHook
+mc-compat-checkers> cargoBuildHook flags: -j 4 --target x86_64-unknown-linux-gnu --offline --profile release
+mc-compat-checkers>    Compiling mc-compat-checkers v0.1.0 (/build/checkers)
+mc-compat-checkers>     Finished `release` profile [optimized] target(s) in 0.69s
+mc-compat-checkers> Executing cargoInstallPostBuildHook
+mc-compat-checkers> Finished cargoInstallPostBuildHook
+mc-compat-checkers> Finished cargoBuildHook
+mc-compat-checkers> Running phase: checkPhase
+mc-compat-checkers> Executing cargoCheckHook
+mc-compat-checkers> cargoCheckHook flags: -j 4 --profile release --target x86_64-unknown-linux-gnu --offline --
+mc-compat-checkers>    Compiling mc-compat-checkers v0.1.0 (/build/checkers)
+mc-compat-checkers>     Finished `release` profile [optimized] target(s) in 0.54s
+mc-compat-checkers>      Running unittests src/lib.rs (target/x86_64-unknown-linux-gnu/release/deps/mc_compat_checkers-062d79f663d982e5)
+mc-compat-checkers> 
+mc-compat-checkers> running 15 tests
+mc-compat-checkers> test checkers::inventory_drag_transactions::tests::negative_fixture_rejects_overclaim ... ok
+mc-compat-checkers> test checkers::block_entity_sign_packet_family::tests::valid_fixture_passes ... ok
+mc-compat-checkers> test checkers::block_entity_sign_packet_family::tests::negative_fixture_rejects_overclaim ... ok
+mc-compat-checkers> test checkers::inventory_drag_transactions::tests::valid_fixture_passes ... ok
+mc-compat-checkers> test checkers::block_entity_sign_packet_family::tests::self_test_runs_positive_and_negative_fixtures ... ok
+mc-compat-checkers> test checkers::inventory_stack_split_merge::tests::negative_fixture_rejects_overclaim ... ok
+mc-compat-checkers> test checkers::inventory_stack_split_merge::tests::valid_fixture_passes ... ok
+mc-compat-checkers> test cli::tests::missing_args_return_usage ... ok
+mc-compat-checkers> test cli::tests::self_test_flag_runs_checker_self_test ... ok
+mc-compat-checkers> test key_value::tests::helpers_accept_valid_records_and_reject_weak_evidence ... ok
+mc-compat-checkers> test key_value::tests::key_value_record_parses_valid_rows_and_ignores_comments ... ok
+mc-compat-checkers> test checkers::inventory_stack_split_merge::tests::self_test_runs_positive_and_negative_fixtures ... ok
+mc-compat-checkers> test checkers::inventory_drag_transactions::tests::self_test_runs_positive_and_negative_fixtures ... ok
+mc-compat-checkers> test key_value::tests::key_value_record_rejects_malformed_empty_and_duplicate_keys ... ok
+mc-compat-checkers> test key_value::tests::sequence_helpers_parse_and_reject_invalid_state_ids ... ok
+mc-compat-checkers> 
+mc-compat-checkers> test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+mc-compat-checkers> 
+mc-compat-checkers>      Running unittests src/bin/check_block_entity_sign_packet_family.rs (target/x86_64-unknown-linux-gnu/release/deps/check_block_entity_sign_packet_family-4395455edeb713ff)
+mc-compat-checkers> 
+mc-compat-checkers> running 0 tests
+mc-compat-checkers> 
+mc-compat-checkers> test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+mc-compat-checkers> 
+mc-compat-checkers>      Running unittests src/bin/check_inventory_drag_transactions_evidence.rs (target/x86_64-unknown-linux-gnu/release/deps/check_inventory_drag_transactions_evidence-081f44d63d2b9c55)
+mc-compat-checkers> 
+mc-compat-checkers> running 0 tests
+mc-compat-checkers> 
+mc-compat-checkers> test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+mc-compat-checkers> 
+mc-compat-checkers>      Running unittests src/bin/check_inventory_stack_split_merge_evidence.rs (target/x86_64-unknown-linux-gnu/release/deps/check_inventory_stack_split_merge_evidence-30f9a30b4b2e0430)
+mc-compat-checkers> 
+mc-compat-checkers> running 0 tests
+mc-compat-checkers> 
+mc-compat-checkers> test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+mc-compat-checkers> 
+mc-compat-checkers>    Doc-tests mc_compat_checkers
+mc-compat-checkers> 
+mc-compat-checkers> running 0 tests
+mc-compat-checkers> 
+mc-compat-checkers> test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+mc-compat-checkers> 
+mc-compat-checkers> Finished cargoCheckHook
+mc-compat-checkers> Running phase: installPhase
+mc-compat-checkers> Executing cargoInstallHook
+mc-compat-checkers> Finished cargoInstallHook
+mc-compat-checkers> Running phase: fixupPhase
+mc-compat-checkers> shrinking RPATHs of ELF executables and libraries in /nix/store/84gvzy8n17ydfwcliz28arqshsa18c4r-mc-compat-checkers-0.1.0
+mc-compat-checkers> shrinking /nix/store/84gvzy8n17ydfwcliz28arqshsa18c4r-mc-compat-checkers-0.1.0/bin/check-block-entity-sign-packet-family
+mc-compat-checkers> shrinking /nix/store/84gvzy8n17ydfwcliz28arqshsa18c4r-mc-compat-checkers-0.1.0/bin/check-inventory-stack-split-merge-evidence
+mc-compat-checkers> shrinking /nix/store/84gvzy8n17ydfwcliz28arqshsa18c4r-mc-compat-checkers-0.1.0/bin/check-inventory-drag-transactions-evidence
+mc-compat-checkers> checking for references to /build/ in /nix/store/84gvzy8n17ydfwcliz28arqshsa18c4r-mc-compat-checkers-0.1.0...
+mc-compat-checkers> patching script interpreter paths in /nix/store/84gvzy8n17ydfwcliz28arqshsa18c4r-mc-compat-checkers-0.1.0
+mc-compat-checkers> stripping (with command strip and flags -S -p) in  /nix/store/84gvzy8n17ydfwcliz28arqshsa18c4r-mc-compat-checkers-0.1.0/bin
+exit_status=0
+
+command=nix build .#checks.x86_64-linux.mc-compat-inventory-stack-split-merge-evidence-check --no-link -L
+this derivation will be built:
+  /nix/store/2r36xhgc4qckrjkfz9rbcriymxw3ay5q-mc-compat-inventory-stack-split-merge-evidence-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/2r36xhgc4qckrjkfz9rbcriymxw3ay5q-mc-compat-inventory-stack-split-merge-evidence-check.drv'...
+exit_status=0
+
+command=nix build .#checks.x86_64-linux.mc-compat-inventory-drag-transactions-evidence-check --no-link -L
+this derivation will be built:
+  /nix/store/5gdaccr5kzzp3vnxs2mmin3z6529105b-mc-compat-inventory-drag-transactions-evidence-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/5gdaccr5kzzp3vnxs2mmin3z6529105b-mc-compat-inventory-drag-transactions-evidence-check.drv'...
+exit_status=0

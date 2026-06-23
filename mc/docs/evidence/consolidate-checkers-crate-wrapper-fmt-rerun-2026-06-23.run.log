@@ -1,0 +1,15 @@
+# consolidate-checkers-crate wrapper rustfmt apply and rerun
+cwd=/home/brittonr/git/mc
+command=nix develop --no-update-lock-file . -c rustfmt tools/check_block_entity_sign_packet_family.rs tools/check_inventory_stack_split_merge_evidence.rs tools/check_inventory_drag_transactions_evidence.rs
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+fmt_write_exit_status=0
+command=nix develop --no-update-lock-file . -c rustfmt --check tools/check_block_entity_sign_packet_family.rs tools/check_inventory_stack_split_merge_evidence.rs tools/check_inventory_drag_transactions_evidence.rs
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+fmt_check_exit_status=0
+exit_status=0

@@ -1,0 +1,14 @@
+# consolidate-checkers-crate pre-implementation Cairn validation
+cwd=/home/brittonr/git/mc
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 20,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 24,
+  "valid": true
+}
+exit_status=0

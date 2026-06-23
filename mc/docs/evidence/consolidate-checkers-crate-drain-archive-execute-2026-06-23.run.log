@@ -1,0 +1,81 @@
+command=CAIRN_ARCHIVE_DATE=2026-06-23 nix run .#cairn -- archive consolidate-checkers-crate --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: consolidate-checkers-crate",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-23-consolidate-checkers-crate"
+    }
+  ],
+  "blocked": false,
+  "change": "consolidate-checkers-crate",
+  "dry_run": false,
+  "input_hash": "efdf6eafc67c5b4f248a3bd2b1b3152fde4c40c50ded3773dc3b2040dbddf402",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "77aa2f0a105ad44243947c2edfef69f01a294b7e1bb60f80caed2418b7650523",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-consolidate-checkers-crate/design.md"
+        },
+        {
+          "content_hash": "292a772d8f0827dad2400cc913256c9a1375c9eafec382aa58ecb1a0033b9b43",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-consolidate-checkers-crate/proposal.md"
+        },
+        {
+          "content_hash": "34de4a31c0004c014774cbaa03af8f13255c9be3eaf34c055030518e7fadbb85",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-consolidate-checkers-crate/specs/repository-layout/spec.md"
+        },
+        {
+          "content_hash": "e43f323236a6e3d16aa4394e9449e834afe4c47aba7c13a76065d722771b5831",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-consolidate-checkers-crate/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/consolidate-checkers-crate"
+        }
+      ],
+      "manifest_hash": "389202c9189d2fdaadc3ab91048c9c1ed6d76cd56b9fccc449609fb458ab8226"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "77aa2f0a105ad44243947c2edfef69f01a294b7e1bb60f80caed2418b7650523",
+          "exists": true,
+          "path": "./cairn/changes/consolidate-checkers-crate/design.md"
+        },
+        {
+          "content_hash": "292a772d8f0827dad2400cc913256c9a1375c9eafec382aa58ecb1a0033b9b43",
+          "exists": true,
+          "path": "./cairn/changes/consolidate-checkers-crate/proposal.md"
+        },
+        {
+          "content_hash": "34de4a31c0004c014774cbaa03af8f13255c9be3eaf34c055030518e7fadbb85",
+          "exists": true,
+          "path": "./cairn/changes/consolidate-checkers-crate/specs/repository-layout/spec.md"
+        },
+        {
+          "content_hash": "e43f323236a6e3d16aa4394e9449e834afe4c47aba7c13a76065d722771b5831",
+          "exists": true,
+          "path": "./cairn/changes/consolidate-checkers-crate/tasks.md"
+        }
+      ],
+      "manifest_hash": "b7c9bd0abf715a9740999c6a067519e898d98e36e93f69a747f47b641ce44065"
+    },
+    "kind": "archive",
+    "manifest_hash": "3f2f4c72f25519f087e50a6e70556c76fde0caea8063eb9c8ad103793fdc55bf"
+  },
+  "plan_hash": "713461f9a09438c5a5bac034745f4beb47217251ea9c6e6b0633f6b4c80caead",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "15e6bf9bf5aa71d26cd63157729e04c5b3e8cfdf22784a4230a893973ef1eec1"
+}
+exit_status=0

@@ -1,0 +1,16 @@
+# consolidate-checkers-crate legacy wrapper command shapes rerun
+cwd=/home/brittonr/git/mc
+command=nix develop --no-update-lock-file . -c rustfmt --check wrappers
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+wrapper_fmt_exit_status=0
+command=rustc wrappers and run --self-test
+self-test ok
+block_entity_exit_status=0
+self-test ok
+inventory_stack_exit_status=0
+self-test ok
+inventory_drag_exit_status=0
+exit_status=0

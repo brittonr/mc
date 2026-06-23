@@ -1,0 +1,21 @@
+[package]
+name = "mc-compat-checkers"
+version = "0.1.0"
+edition = "2021"
+description = "Rust evidence checker binaries for the mc compatibility workspace"
+
+[lib]
+name = "mc_compat_checkers"
+path = "src/lib.rs"
+
+[[bin]]
+name = "check-block-entity-sign-packet-family"
+path = "src/bin/check_block_entity_sign_packet_family.rs"
+
+[[bin]]
+name = "check-inventory-stack-split-merge-evidence"
+path = "src/bin/check_inventory_stack_split_merge_evidence.rs"
+
+[[bin]]
+name = "check-inventory-drag-transactions-evidence"
+path = "src/bin/check_inventory_drag_transactions_evidence.rs"

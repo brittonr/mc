@@ -1,0 +1,3 @@
+command=rg forbidden I/O tokens in tools/checkers/src/key_value.rs and tools/checkers/src/checkers
+forbidden_token_scan=none
+exit_status=0

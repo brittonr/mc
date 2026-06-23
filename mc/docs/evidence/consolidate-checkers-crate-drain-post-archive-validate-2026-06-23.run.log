@@ -1,0 +1,35 @@
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 14,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 18,
+  "valid": true
+}
+exit_status=0
+
+command=rg checker_crate_consolidation cairn/specs/repository-layout/spec.md
+r[repository_layout.checker_crate_consolidation.contract] Evidence checkers SHOULD live in a repo-owned Rust checker crate with stable binary or wrapper names for existing flake checks.
+r[repository_layout.checker_crate_consolidation.contract.compat]
+r[repository_layout.checker_crate_consolidation.shared_core] Shared checker parsing and diagnostic helpers MUST be pure functions over in-memory evidence text and typed records.
+r[repository_layout.checker_crate_consolidation.shared_core.negative]
+r[repository_layout.checker_crate_consolidation.rust_migration] Migrated Rust checkers MUST preserve their evidence contract while moving domain-specific validation into crate binaries.
+r[repository_layout.checker_crate_consolidation.rust_migration.parity]
+r[repository_layout.checker_crate_consolidation.python_policy] Legacy Python evidence gates MAY remain only as inventoried migration debt; touched or extended gates SHOULD migrate to Rust unless an explicit waiver records owner, reason, and next action.
+r[repository_layout.checker_crate_consolidation.python_policy.touched]
+r[repository_layout.checker_crate_consolidation.fixtures] Every migrated checker MUST include positive and negative fixtures for evidence it accepts and evidence it rejects.
+r[repository_layout.checker_crate_consolidation.fixtures.negative]
+r[repository_layout.checker_crate_consolidation.validation] Checker consolidation MUST record checker tests, selected flake checks, touched evidence gates, and Cairn gates before archive.
+r[repository_layout.checker_crate_consolidation.validation.log]
+exit_status=0
+
+command=test -d cairn/archive/2026-06-23-consolidate-checkers-crate
+exit_status=0
+
+command=test ! -e cairn/changes/consolidate-checkers-crate
+exit_status=0
+
+overall_exit_status=0

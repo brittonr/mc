@@ -1,0 +1,13 @@
+aba5d777a0a05e542b61b128380f1d67f8499adf8ff16ec599f3c8c32a3c5394  docs/evidence/consolidate-checkers-crate-pre-cairn-gates-2026-06-23.run.log
+0c32875f7bbf4d9cd00a98050433f16d5cb47d1072981226adb9c4a3028a77e7  docs/evidence/consolidate-checkers-crate-pre-cairn-validate-2026-06-23.run.log
+12eb28ea14dc87c67ee81c65fb53eb8c34fbdd14e7405eb2ed15679938b19e45  docs/evidence/consolidate-checkers-crate-baseline-inventory-checks-2026-06-23.run.log
+e715ad4802672164bcc3eca29c47923f5ff122a34dac2e89a8dbdf50c21f551e  docs/evidence/consolidate-checkers-crate-baseline-block-entity-check-2026-06-23.run.log
+50c4add2847f22300b169439742e0fbb05e7582692aec52551498238f88bd719  docs/evidence/consolidate-checkers-crate-cargo-test-2026-06-23.run.log
+55e186c1fe3d73d0107484fceac001a2c3dacae043a0c388cfba0636793edb18  docs/evidence/consolidate-checkers-crate-fmt-2026-06-23.run.log
+873054087d2a458ec170a7b3024afe8655b16893fba151932af5777a4099c02f  docs/evidence/consolidate-checkers-crate-wrapper-fmt-rerun-2026-06-23.run.log
+34a036892e5b293effd71238f90139ad9313ed42cd38b2fc494ef6263bf2c532  docs/evidence/consolidate-checkers-crate-post-crate-and-flake-checks-rerun-2026-06-23.run.log
+83274aabb80cb96529eefe10cbbad9cff32146c8a6f80df551efc5cba8033893  docs/evidence/consolidate-checkers-crate-wrapper-command-shapes-rerun-2026-06-23.run.log
+21dedc5e1cb7ef695527cad6207dc21ec867b3fa513254961a82d7cffec588a9  docs/evidence/consolidate-checkers-crate-pure-core-scan-2026-06-23.run.log
+46e29ee2cfb8bdf2a4d21235b9047278583a7ba84f6e034ec6edc822b301fb3a  docs/evidence/consolidate-checkers-crate-evidence-manifest-refresh-2026-06-23.run.log
+a44908cd4e955968689101120ece2e077f66356c7c501496444e0e8348d4b946  docs/evidence/consolidate-checkers-crate-final-cairn-gates-validate-2026-06-23.run.log
+d24c924e1850e96b7dc2942db87ad5f203a95f0111f4d33cc05806ab0196ad89  docs/evidence/consolidate-checkers-crate-focused-task-evidence-2026-06-23.run.log

@@ -1,0 +1,15 @@
+# consolidate-checkers-crate baseline inventory checker flake checks
+cwd=/home/brittonr/git/mc
+command=nix build .#checks.x86_64-linux.mc-compat-inventory-stack-split-merge-evidence-check --no-link -L
+this derivation will be built:
+  /nix/store/r77s6h1jk8sy0r6hivnpxmdb0izx72sb-mc-compat-inventory-stack-split-merge-evidence-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/r77s6h1jk8sy0r6hivnpxmdb0izx72sb-mc-compat-inventory-stack-split-merge-evidence-check.drv'...
+exit_status=0
+
+command=nix build .#checks.x86_64-linux.mc-compat-inventory-drag-transactions-evidence-check --no-link -L
+this derivation will be built:
+  /nix/store/7kpy5kia5bpfvhc59qmswkrsr4az6vf5-mc-compat-inventory-drag-transactions-evidence-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/7kpy5kia5bpfvhc59qmswkrsr4az6vf5-mc-compat-inventory-drag-transactions-evidence-check.drv'...
+exit_status=0

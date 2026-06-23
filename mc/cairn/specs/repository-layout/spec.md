@@ -215,6 +215,77 @@ r[repository_layout.layout_guard.validation.log]
 - WHEN the change is archived
 - THEN reviewable logs show positive fixtures, negative fixtures for each diagnostic class, focused flake check output, Cairn proposal/design/tasks gates, and Cairn validation.
 
+### Requirement: Component registry contract
+
+r[repository_layout.component_registry.contract] The workspace SHOULD define a typed component registry that records component path, role, owner, VCS boundary, command boundary, default gate participation, and evidence policy.
+
+#### Scenario: Registry row is complete
+
+r[repository_layout.component_registry.contract.complete]
+- GIVEN a component is represented in the registry
+- WHEN registry validation runs
+- THEN the row includes a repository-relative path, role, owner, VCS boundary, build/test command notes, default gate participation, and evidence policy
+- AND invalid enum values or missing required fields are rejected.
+
+### Requirement: Current component inventory
+
+r[repository_layout.component_registry.current_inventory] The initial registry MUST describe the current workspace components and documented nested-repo exceptions before it is used to drive path moves.
+
+#### Scenario: Current layout is captured
+
+r[repository_layout.component_registry.current_inventory.captured]
+- GIVEN Stevenarella, Valence, Hyperion, compat runner/config/fixtures, Cairn, docs/evidence, and any classified reference clients exist
+- WHEN the registry is reviewed
+- THEN each current role or exception is represented with its current path
+- AND no component is silently reclassified by registry introduction alone.
+
+### Requirement: Registry fixtures
+
+r[repository_layout.component_registry.fixtures] Registry validation MUST include positive and negative fixtures for component rows and layout edge cases.
+
+#### Scenario: Invalid registry fails closed
+
+r[repository_layout.component_registry.fixtures.negative]
+- GIVEN a registry fixture has a missing owner, duplicate role key, unsafe path escape, undocumented nested Git boundary, or invalid gate-participation value
+- WHEN validation evaluates the fixture
+- THEN deterministic diagnostics identify the invalid row
+- AND no generated layout artifact is accepted.
+
+### Requirement: Registry-derived surfaces
+
+r[repository_layout.component_registry.generated_surfaces] Registry-derived docs or checks MAY be generated only as checked-in static artifacts or check-time outputs; runtime code MUST NOT evaluate Nickel to discover component layout.
+
+#### Scenario: Runtime remains static
+
+r[repository_layout.component_registry.generated_surfaces.runtime]
+- GIVEN registry-derived artifacts exist
+- WHEN the compatibility runner starts
+- THEN it consumes checked-in Rust/static data or existing CLI arguments
+- AND it does not evaluate Nickel at runtime.
+
+### Requirement: Registry layout guard
+
+r[repository_layout.component_registry.guard] The repository SHOULD use the registry to guard against undocumented component roots, nested Git directories, and gate participation drift.
+
+#### Scenario: Undocumented component is reported
+
+r[repository_layout.component_registry.guard.undocumented]
+- GIVEN a new component-like directory, nested Git checkout, or gate-participating path appears outside the registry
+- WHEN the registry guard runs
+- THEN the path is reported with a classification diagnostic
+- AND default validation does not treat it as an owned component until the registry is updated.
+
+### Requirement: Registry validation evidence
+
+r[repository_layout.component_registry.validation] The registry change MUST record registry validation, fixture tests, generated freshness checks if added, and Cairn gates before archive.
+
+#### Scenario: Registry closeout is reviewable
+
+r[repository_layout.component_registry.validation.log]
+- GIVEN the component registry is introduced
+- WHEN the change is archived
+- THEN reviewable logs show positive fixtures, negative fixtures, registry validation, any generated-surface freshness checks, Cairn proposal/design/tasks gates, and Cairn validation.
+
 ### Requirement: Subtree agent documentation inventory
 
 r[repository_layout.subtree_agent_docs.inventory] The workspace SHOULD inventory major owned and reference subtrees and record whether each has local agent/workflow notes or an explicit waiver.
@@ -352,3 +423,132 @@ r[repository_layout.check_tiers.validation.log]
 - GIVEN check tiers have been documented or wired
 - WHEN the change is archived
 - THEN reviewable logs show inventory validation, tier wrapper dry-runs or evaluation, docs checks, Cairn proposal/design/tasks gates, and Cairn validation.
+
+### Requirement: Runner functional-core boundary
+
+r[repository_layout.compat_runner_modularization.boundary] The compatibility runner MUST document and enforce a boundary between pure deterministic core logic and imperative shell orchestration.
+
+#### Scenario: Boundary is reviewable
+
+r[repository_layout.compat_runner_modularization.boundary.review]
+- GIVEN the runner modularization begins
+- WHEN reviewers inspect the design and code layout
+- THEN scenario parsing, scenario metadata, receipt models, receipt validation, and config normalization are assigned to pure core modules
+- AND CLI parsing, filesystem access, process execution, Docker/Paper handling, sockets, clocks, environment access, stdout/stderr, and exit-code handling are assigned to the shell.
+
+### Requirement: Scenario core extraction
+
+r[repository_layout.compat_runner_modularization.scenario_core] Scenario definitions, milestone specs, forbidden-pattern specs, aliases, behavior metadata, and dry-run metadata MUST live outside the runner shell while preserving existing scenario semantics.
+
+#### Scenario: Scenario behavior remains stable
+
+r[repository_layout.compat_runner_modularization.scenario_core.parity]
+- GIVEN scenario metadata has moved out of the shell
+- WHEN the runner enumerates, parses, and dry-runs every maintained scenario
+- THEN scenario names, aliases, required client milestones, required server milestones, forbidden patterns, behavior kinds, and migration states match the pre-move behavior.
+
+### Requirement: Pure validation modules
+
+r[repository_layout.compat_runner_modularization.pure_validation] Receipt, config, and evidence validation SHOULD be expressed as pure functions over in-memory inputs before any shell writes receipts or exits.
+
+#### Scenario: Invalid validation input fails closed
+
+r[repository_layout.compat_runner_modularization.pure_validation.negative]
+- GIVEN an in-memory receipt/config fixture is missing required fields, has malformed values, has wrong typed fields, or contains broad compatibility overclaims
+- WHEN the pure validation module evaluates it
+- THEN deterministic diagnostics are returned
+- AND no filesystem mutation, process execution, network access, or runtime state mutation occurs.
+
+### Requirement: Dependency direction is shell-to-core
+
+r[repository_layout.compat_runner_modularization.dependency_direction] Core runner modules MUST NOT import constants, helpers, or side-effecting functions from `main.rs` or another shell-only module.
+
+#### Scenario: Core dependency audit passes
+
+r[repository_layout.compat_runner_modularization.dependency_direction.audit]
+- GIVEN the runner core modules are extracted
+- WHEN dependency direction is inspected by tests, static checks, or review
+- THEN shell modules depend on core modules
+- AND core modules do not depend on shell-owned constants, process orchestration helpers, filesystem helpers, or CLI exit behavior.
+
+### Requirement: Modularization validation
+
+r[repository_layout.compat_runner_modularization.validation] The modularization MUST be validated with focused positive and negative tests plus existing dry-run/evidence gates before archive.
+
+#### Scenario: Refactor closeout is reviewable
+
+r[repository_layout.compat_runner_modularization.validation.log]
+- GIVEN the runner internals are modularized
+- WHEN the change is archived
+- THEN reviewable logs show focused positive tests, focused negative tests, maintained dry-run receipt checks, any touched generated-surface freshness checks, Cairn proposal/design/tasks gates, and Cairn validation.
+
+### Requirement: Checker crate contract
+
+r[repository_layout.checker_crate_consolidation.contract] Evidence checkers SHOULD live in a repo-owned Rust checker crate with stable binary or wrapper names for existing flake checks.
+
+#### Scenario: Existing command surface remains available
+
+r[repository_layout.checker_crate_consolidation.contract.compat]
+- GIVEN a checker moves from a standalone `tools/*.rs` file into a checker crate
+- WHEN the corresponding flake check or documented command executes
+- THEN the command name and high-level usage remain available
+- AND any intentional rename is tied to a separate reviewed change.
+
+### Requirement: Shared checker core
+
+r[repository_layout.checker_crate_consolidation.shared_core] Shared checker parsing and diagnostic helpers MUST be pure functions over in-memory evidence text and typed records.
+
+#### Scenario: Shared parser rejects malformed evidence
+
+r[repository_layout.checker_crate_consolidation.shared_core.negative]
+- GIVEN evidence text has malformed key-value rows, duplicate keys, missing required values, or broad truthy overclaims
+- WHEN the shared checker core parses and validates it
+- THEN deterministic diagnostics identify the invalid condition
+- AND no filesystem, process, network, clock, or environment access occurs in the pure core.
+
+### Requirement: Rust checker migration
+
+r[repository_layout.checker_crate_consolidation.rust_migration] Migrated Rust checkers MUST preserve their evidence contract while moving domain-specific validation into crate binaries.
+
+#### Scenario: Migrated checker remains equivalent
+
+r[repository_layout.checker_crate_consolidation.rust_migration.parity]
+- GIVEN a Rust checker has been migrated into the checker crate
+- WHEN its valid and invalid fixtures run through the new binary
+- THEN valid evidence still passes
+- AND invalid evidence still fails with diagnostics that cover the same claim boundary as before.
+
+### Requirement: Python checker migration policy
+
+r[repository_layout.checker_crate_consolidation.python_policy] Legacy Python evidence gates MAY remain only as inventoried migration debt; touched or extended gates SHOULD migrate to Rust unless an explicit waiver records owner, reason, and next action.
+
+#### Scenario: Touched Python gate is not silently extended
+
+r[repository_layout.checker_crate_consolidation.python_policy.touched]
+- GIVEN a legacy Python checker needs new validation behavior
+- WHEN implementation work starts
+- THEN the gate is migrated to Rust or a waiver records why migration is blocked
+- AND the waiver includes owner, reason, non-claim impact, and next action.
+
+### Requirement: Checker fixture coverage
+
+r[repository_layout.checker_crate_consolidation.fixtures] Every migrated checker MUST include positive and negative fixtures for evidence it accepts and evidence it rejects.
+
+#### Scenario: Negative fixture proves fail-closed behavior
+
+r[repository_layout.checker_crate_consolidation.fixtures.negative]
+- GIVEN a migrated checker has invalid evidence with missing fields, wrong values, malformed rows, or overclaiming claim keys
+- WHEN fixture tests run
+- THEN the checker fails closed with a specific diagnostic
+- AND no invalid evidence is reported as acceptable.
+
+### Requirement: Checker consolidation validation
+
+r[repository_layout.checker_crate_consolidation.validation] Checker consolidation MUST record checker tests, selected flake checks, touched evidence gates, and Cairn gates before archive.
+
+#### Scenario: Checker closeout is reviewable
+
+r[repository_layout.checker_crate_consolidation.validation.log]
+- GIVEN checker binaries have been consolidated
+- WHEN the change is archived
+- THEN reviewable logs show positive fixtures, negative fixtures, selected flake checks, any touched evidence/task gates, Cairn proposal/design/tasks gates, and Cairn validation.

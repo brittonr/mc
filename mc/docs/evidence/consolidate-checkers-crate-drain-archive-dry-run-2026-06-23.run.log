@@ -1,0 +1,23 @@
+command=nix run .#cairn -- archive consolidate-checkers-crate --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: consolidate-checkers-crate",
+      "kind": "archive_change",
+      "path": "./cairn/changes/consolidate-checkers-crate"
+    }
+  ],
+  "blocked": false,
+  "change": "consolidate-checkers-crate",
+  "dry_run": true,
+  "input_hash": "efdf6eafc67c5b4f248a3bd2b1b3152fde4c40c50ded3773dc3b2040dbddf402",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "7dd7821170c6cfb20acfc85ec340077b44b20e7aa00ddaf53655cb3fccb4f0a2",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "4f30a12a35bdd1a8f770f57deac4a064dc108a09e9ebbe0457082f32b92f1aa9"
+}
+exit_status=0
