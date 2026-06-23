@@ -1,0 +1,50 @@
+## cairn sync execute
+command=nix run .#cairn -- sync add-repository-layout-guard --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/add-repository-layout-guard/specs/repository-layout/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/add-repository-layout-guard/specs/repository-layout/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "add-repository-layout-guard",
+  "delta_specs": [
+    "./cairn/changes/add-repository-layout-guard/specs/repository-layout/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "47e1f5730b3e08e3407d454a2684536d63de4de6cc14e10b7d80d64241d3cc55",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "10f4362be0adc7e11f37ccdcc3b1cf0da15d21bce2144e7efb499ccb4bb2655d",
+          "exists": true,
+          "path": "./cairn/specs/repository-layout/spec.md"
+        }
+      ],
+      "manifest_hash": "e589b2f6efacebbe2325513112000b42f7ca0bd5959bed07b6ef3c5a19eba8f6"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "10f4362be0adc7e11f37ccdcc3b1cf0da15d21bce2144e7efb499ccb4bb2655d",
+          "exists": true,
+          "path": "./cairn/specs/repository-layout/spec.md"
+        }
+      ],
+      "manifest_hash": "e589b2f6efacebbe2325513112000b42f7ca0bd5959bed07b6ef3c5a19eba8f6"
+    },
+    "kind": "sync",
+    "manifest_hash": "8f66730cb46468dfdc9deac60bf0315a47b09ca1c573fc5f62cf46dd19d22a94"
+  },
+  "plan_hash": "043f9319660ad98955c27e01702cd384e05c4fef60ea0f3099356d2fcb678ce3",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "f71c4433177f82b58a4f3b20f71240107deb68aef99b7842f0b7dd170b93d08e"
+}
+exit_status=0

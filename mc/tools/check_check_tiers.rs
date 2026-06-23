@@ -1,4 +1,4 @@
-#!/usr/bin/env -S nix shell "github:nix-community/fenix?rev=092bd452904e749efa39907aa4a20a42678ac31e#minimal.toolchain" nixpkgs#gcc -c cargo -q -Zscript
+#!/usr/bin/env -S CARGO_TARGET_DIR=target/check-check-tiers-script nix shell "github:nix-community/fenix?rev=092bd452904e749efa39907aa4a20a42678ac31e#minimal.toolchain" nixpkgs#gcc -c cargo -q -Zscript
 
 use std::env;
 use std::fs;
@@ -27,6 +27,7 @@ const TIER_IDS: &[&str] = &[
 
 const REQUIRED_COMMANDS: &[&str] = &[
     "tools/check_layout_boundaries.rs --self-test",
+    "nix build .#checks.x86_64-linux.mc-compat-layout-boundaries --no-link -L",
     "tools/check_check_tiers.rs --self-test",
     "nix run .#cairn -- validate --root .",
     "nix run .#evidence-manifest-refresh -- --check",

@@ -19,6 +19,7 @@ Use the smallest tier that covers the files and claim boundary you changed, then
 | --- | --- | --- | --- |
 | `tools/check_layout_boundaries.rs --self-test` | `tier.docs-layout` | Layout docs, local agent notes, nested Git exception changes | Positive/negative checker output |
 | `tools/check_layout_boundaries.rs --root .` | `tier.docs-layout` | Layout docs, local agent notes, nested Git exception changes | Current-tree checker output |
+| `nix build .#checks.x86_64-linux.mc-compat-layout-boundaries --no-link -L` | `tier.docs-layout` | Layout guard core, fixtures, registry, or flake wiring changes | Focused flake check output |
 | `tools/check_check_tiers.rs --self-test` | `tier.docs-layout` | Check-tier taxonomy/checker changes | Positive/negative checker output |
 | `tools/check_check_tiers.rs --root .` | `tier.docs-layout` | Check-tier taxonomy/checker changes | Current-tree checker output |
 | `nix run .#cairn -- validate --root .` | `tier.archive` | Any Cairn spec/change/archive mutation | Cairn validation JSON |

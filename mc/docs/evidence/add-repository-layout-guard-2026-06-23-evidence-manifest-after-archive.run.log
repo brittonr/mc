@@ -1,0 +1,6 @@
+## evidence manifest after archive check
+command=nix run .#evidence-manifest-refresh -- --check
+evidence manifest refresh failed: docs/evidence/check-tier-taxonomy-2026-06-22.b3:6: stale digest for cairn/specs/repository-layout/spec.md: expected 17562ddacaa177c552dcce2b176f0813144714637ffc2142f4f52a59269e7adb, found 10f4362be0adc7e11f37ccdcc3b1cf0da15d21bce2144e7efb499ccb4bb2655d
+evidence manifest refresh failed: docs/evidence/classify-leafish-layout-2026-06-22.b3:7: stale digest for cairn/specs/repository-layout/spec.md: expected 17562ddacaa177c552dcce2b176f0813144714637ffc2142f4f52a59269e7adb, found 10f4362be0adc7e11f37ccdcc3b1cf0da15d21bce2144e7efb499ccb4bb2655d
+evidence manifest refresh failed: docs/evidence/subtree-agent-docs-2026-06-22.b3:8: stale digest for cairn/specs/repository-layout/spec.md: expected 17562ddacaa177c552dcce2b176f0813144714637ffc2142f4f52a59269e7adb, found 10f4362be0adc7e11f37ccdcc3b1cf0da15d21bce2144e7efb499ccb4bb2655d
+exit_status=1

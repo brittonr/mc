@@ -1,0 +1,14 @@
+## compile task evidence checker
+command=rustc --edition=2021 tools/check_cairn_task_evidence.rs -o target/add-repository-layout-guard-check-cairn-task-evidence
+exit_status=0
+
+## task evidence self-test
+command=target/add-repository-layout-guard-check-cairn-task-evidence --self-test
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+exit_status=0
+
+## task evidence for add-repository-layout-guard
+command=target/add-repository-layout-guard-check-cairn-task-evidence cairn/changes/add-repository-layout-guard/tasks.md
+task evidence gate passed: 6 completed tasks checked across 1 task files
+exit_status=0
+

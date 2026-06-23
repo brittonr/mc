@@ -1378,6 +1378,24 @@
           mkdir -p "$out"
           cp policy-stale.out policy-stale.err "$out/"
         '';
+        mc-compat-layout-boundaries =
+          pkgs.runCommand "mc-compat-layout-boundaries"
+            {
+              nativeBuildInputs = [
+                pkgs.rustc
+                pkgs.gcc
+              ];
+            }
+            ''
+              cp -R ${./.} repo
+              chmod -R u+w repo
+              cd repo
+              rustc --edition=2021 tools/check_layout_boundaries.rs -o ../check-layout-boundaries
+              ../check-layout-boundaries --self-test > ../layout-boundaries-self-test.log
+              ../check-layout-boundaries --root . > ../layout-boundaries-check.log
+              mkdir -p "$out"
+              cp ../layout-boundaries-self-test.log ../layout-boundaries-check.log "$out/"
+            '';
         mc-compat-editable-app-dry-runs =
           pkgs.runCommand "mc-compat-editable-app-dry-runs" { nativeBuildInputs = [ pkgs.gnugrep ]; }
             ''
@@ -5321,6 +5339,7 @@
                 clippy
                 shellcheck
                 nickel
+                steel
                 git
                 coreutils
                 xvfb-run
@@ -5345,6 +5364,7 @@
               echo "mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'"
               echo "Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available"
               echo "OnixResearch tools are pinned over SSH: cairn, cargo-octet"
+              echo "Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test"
             '';
           };
         }

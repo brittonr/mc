@@ -1,0 +1,8 @@
+## layout guard self-test semantic baseline
+command=nix shell github:nix-community/fenix?rev=092bd452904e749efa39907aa4a20a42678ac31e#minimal.toolchain nixpkgs#gcc -c cargo -q -Zscript tools/check_layout_boundaries.rs --self-test
+error: failed to parse lock file at: /home/brittonr/.cargo-target/Cargo.lock
+
+Caused by:
+  lock file version 4 requires `-Znext-lockfile-bump`
+exit_status=101
+

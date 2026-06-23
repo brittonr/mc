@@ -1,0 +1,135 @@
+## rustfmt check layout guard and tier checker
+command=rustfmt --check tools/check_layout_boundaries.rs tools/check_check_tiers.rs
+exit_status=0
+
+## layout guard self-test
+command=tools/check_layout_boundaries.rs --self-test
+layout boundary self-test passed
+exit_status=0
+
+## layout guard current tree
+command=tools/check_layout_boundaries.rs --root .
+layout boundary checks passed; advisory_findings=14
+severity=Advisory code=root_transient_artifact path=result rule=root_transient_artifact message=root transient artifact result should stay scratch-only owner_or_waiver_hint=transient root artifacts are advisory unless cited as review evidence next_action=move review-critical output under docs/evidence/ with a BLAKE3 manifest, otherwise leave it ignored or clean it locally
+severity=Advisory code=root_transient_artifact path=result-1 rule=root_transient_artifact message=root transient artifact result-1 should stay scratch-only owner_or_waiver_hint=transient root artifacts are advisory unless cited as review evidence next_action=move review-critical output under docs/evidence/ with a BLAKE3 manifest, otherwise leave it ignored or clean it locally
+severity=Advisory code=root_transient_artifact path=result-2 rule=root_transient_artifact message=root transient artifact result-2 should stay scratch-only owner_or_waiver_hint=transient root artifacts are advisory unless cited as review evidence next_action=move review-critical output under docs/evidence/ with a BLAKE3 manifest, otherwise leave it ignored or clean it locally
+severity=Advisory code=root_transient_artifact path=result-3 rule=root_transient_artifact message=root transient artifact result-3 should stay scratch-only owner_or_waiver_hint=transient root artifacts are advisory unless cited as review evidence next_action=move review-critical output under docs/evidence/ with a BLAKE3 manifest, otherwise leave it ignored or clean it locally
+severity=Advisory code=root_transient_artifact path=result-4 rule=root_transient_artifact message=root transient artifact result-4 should stay scratch-only owner_or_waiver_hint=transient root artifacts are advisory unless cited as review evidence next_action=move review-critical output under docs/evidence/ with a BLAKE3 manifest, otherwise leave it ignored or clean it locally
+severity=Advisory code=root_transient_artifact path=result-5 rule=root_transient_artifact message=root transient artifact result-5 should stay scratch-only owner_or_waiver_hint=transient root artifacts are advisory unless cited as review evidence next_action=move review-critical output under docs/evidence/ with a BLAKE3 manifest, otherwise leave it ignored or clean it locally
+severity=Advisory code=root_transient_artifact path=target rule=root_transient_artifact message=root transient artifact target should stay scratch-only owner_or_waiver_hint=transient root artifacts are advisory unless cited as review evidence next_action=move review-critical output under docs/evidence/ with a BLAKE3 manifest, otherwise leave it ignored or clean it locally
+severity=Advisory code=root_transient_artifact path=target-mc-compat-block-place-live.log rule=root_transient_artifact message=root transient artifact target-mc-compat-block-place-live.log should stay scratch-only owner_or_waiver_hint=transient root artifacts are advisory unless cited as review evidence next_action=move review-critical output under docs/evidence/ with a BLAKE3 manifest, otherwise leave it ignored or clean it locally
+severity=Advisory code=root_transient_artifact path=target-mc-compat-click-live.log rule=root_transient_artifact message=root transient artifact target-mc-compat-click-live.log should stay scratch-only owner_or_waiver_hint=transient root artifacts are advisory unless cited as review evidence next_action=move review-critical output under docs/evidence/ with a BLAKE3 manifest, otherwise leave it ignored or clean it locally
+severity=Advisory code=root_transient_artifact path=target-mc-compat-combat-live.log rule=root_transient_artifact message=root transient artifact target-mc-compat-combat-live.log should stay scratch-only owner_or_waiver_hint=transient root artifacts are advisory unless cited as review evidence next_action=move review-critical output under docs/evidence/ with a BLAKE3 manifest, otherwise leave it ignored or clean it locally
+severity=Advisory code=root_transient_artifact path=target-mc-compat-inventory-drop-live.log rule=root_transient_artifact message=root transient artifact target-mc-compat-inventory-drop-live.log should stay scratch-only owner_or_waiver_hint=transient root artifacts are advisory unless cited as review evidence next_action=move review-critical output under docs/evidence/ with a BLAKE3 manifest, otherwise leave it ignored or clean it locally
+severity=Advisory code=root_transient_artifact path=target-mc-compat-inventory-live.log rule=root_transient_artifact message=root transient artifact target-mc-compat-inventory-live.log should stay scratch-only owner_or_waiver_hint=transient root artifacts are advisory unless cited as review evidence next_action=move review-critical output under docs/evidence/ with a BLAKE3 manifest, otherwise leave it ignored or clean it locally
+severity=Advisory code=root_transient_artifact path=target-mc-compat-open-container-live.log rule=root_transient_artifact message=root transient artifact target-mc-compat-open-container-live.log should stay scratch-only owner_or_waiver_hint=transient root artifacts are advisory unless cited as review evidence next_action=move review-critical output under docs/evidence/ with a BLAKE3 manifest, otherwise leave it ignored or clean it locally
+severity=Advisory code=root_transient_artifact path=target-mc-compat-pickup-live.log rule=root_transient_artifact message=root transient artifact target-mc-compat-pickup-live.log should stay scratch-only owner_or_waiver_hint=transient root artifacts are advisory unless cited as review evidence next_action=move review-critical output under docs/evidence/ with a BLAKE3 manifest, otherwise leave it ignored or clean it locally
+exit_status=0
+
+## check-tier docs self-test
+command=tools/check_check_tiers.rs --self-test
+check tier docs self-test passed
+exit_status=0
+
+## check-tier docs current tree
+command=tools/check_check_tiers.rs --root .
+check tier docs passed
+exit_status=0
+
+## focused layout flake check
+command=nix build .#checks.x86_64-linux.mc-compat-layout-boundaries --no-link -L
+this derivation will be built:
+  /nix/store/9acdaz3q6vrbfcsq7gsjflx6d8s4cn26-mc-compat-layout-boundaries.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/9acdaz3q6vrbfcsq7gsjflx6d8s4cn26-mc-compat-layout-boundaries.drv'...
+exit_status=0
+
+## cairn gate proposal
+command=nix run .#cairn -- gate proposal add-repository-layout-guard --root .
+{
+  "change": "add-repository-layout-guard",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "2c07168301ac8850a770a89d197edf1ffcf2243585dfb6ba7c7ef13351787f85",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "95a8c3d0f7d19eeae44a752266c2d94bb7dbe85a48deb0209cdf7f2c0566567d",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## cairn gate design
+command=nix run .#cairn -- gate design add-repository-layout-guard --root .
+{
+  "change": "add-repository-layout-guard",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "6fa4534c9c62ca03755ed246d3b8770c08866f36271335cebc9645bfe6902fa9",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "da95c2eb9b88b102480b1e4707b5956fb032de873d1ca446e890fa13b25050d5",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## cairn gate tasks
+command=nix run .#cairn -- gate tasks add-repository-layout-guard --root .
+{
+  "change": "add-repository-layout-guard",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "415848630614b16df299522bcdd9436fee236619e304fd9820f2076473a310c1",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "094b01b9d1096d522c4231f646029f1aef0427f8422148a711bd9cbe7b620f2e",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## cairn validate
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 25,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 29,
+  "valid": true
+}
+exit_status=0
+
