@@ -1,0 +1,210 @@
+## command: nix run .#cairn -- sync introduce-scenario-command-router --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/introduce-scenario-command-router/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/introduce-scenario-command-router/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "introduce-scenario-command-router",
+  "delta_specs": [
+    "./cairn/changes/introduce-scenario-command-router/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "ec73c82612dfdf90e36c8e954e55dd2a2896a05a26fe83f4b51dabc84ca911e2",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "3ea155fbc67741261241ffc69db55b7dfd1a63231fc4b53727b92727fcd91fc3",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "65eda4542caf5d5270928a499196d67940fcfbb612c4edbc3ceb520929db5a1e"
+}
+exit_status=0
+
+## command: nix run .#cairn -- sync introduce-scenario-command-router --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/introduce-scenario-command-router/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/introduce-scenario-command-router/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "introduce-scenario-command-router",
+  "delta_specs": [
+    "./cairn/changes/introduce-scenario-command-router/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "ec73c82612dfdf90e36c8e954e55dd2a2896a05a26fe83f4b51dabc84ca911e2",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "efc5ca3839b0cf2b67fa65fa4436cea2088498ff1f6605bdfbdecb48bc93baca",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "9485c744b9fe793772d65d7cb8553b76a86da6c85ac91970ae3b52f132f4abb7"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "efc5ca3839b0cf2b67fa65fa4436cea2088498ff1f6605bdfbdecb48bc93baca",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "9485c744b9fe793772d65d7cb8553b76a86da6c85ac91970ae3b52f132f4abb7"
+    },
+    "kind": "sync",
+    "manifest_hash": "f77645c06682fa514a7353da90d902135d7eace113ffefeb56b298bbbe4c40e1"
+  },
+  "plan_hash": "b8258ce6a75e8b467e7f1c4901d336228607cc9b19765984176da259a321a8ee",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "0258f7a92616fc569e029261121e4ac4d2aaab0dee964698aa95737875d53308"
+}
+exit_status=0
+
+## command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
+exit_status=0
+
+## command: nix run .#cairn -- archive introduce-scenario-command-router --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: introduce-scenario-command-router",
+      "kind": "archive_change",
+      "path": "./cairn/changes/introduce-scenario-command-router"
+    }
+  ],
+  "blocked": false,
+  "change": "introduce-scenario-command-router",
+  "dry_run": true,
+  "input_hash": "ec73c82612dfdf90e36c8e954e55dd2a2896a05a26fe83f4b51dabc84ca911e2",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "98f9bc4fb38b7270aed58b4ee0e463af8e83c4c3bbb43c65a8ef2ac87285ae9f",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "6b955a17db504158d489686f035ec67e24ff2e237aa52ccdbc89994c8ee989f5"
+}
+exit_status=0
+
+## command: env CAIRN_ARCHIVE_DATE=2026-06-24 nix run .#cairn -- archive introduce-scenario-command-router --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: introduce-scenario-command-router",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-24-introduce-scenario-command-router"
+    }
+  ],
+  "blocked": false,
+  "change": "introduce-scenario-command-router",
+  "dry_run": false,
+  "input_hash": "ec73c82612dfdf90e36c8e954e55dd2a2896a05a26fe83f4b51dabc84ca911e2",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "30aa7abee456e8b87b819989da6ae751725e973a006e39a8eda03c7333b8c6c4",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-24-introduce-scenario-command-router/design.md"
+        },
+        {
+          "content_hash": "020f7f833142267dcf0bf0f7aafef2213719880fe9a3de8c5c426213a7f2134e",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-24-introduce-scenario-command-router/proposal.md"
+        },
+        {
+          "content_hash": "fd0a033ef136d6cdeb4484306d66c7625a866d0873cd1edc577caedb488e46c0",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-24-introduce-scenario-command-router/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "2d5d6ccb0dec47c3ab9783d521d8ce387cb5d5152b8c2bff98d7bc3dca321e4c",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-24-introduce-scenario-command-router/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/introduce-scenario-command-router"
+        }
+      ],
+      "manifest_hash": "1af951d4650ce1ae5c13df8bd0099494973294b624fa93571f3d0b276e7375ef"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "30aa7abee456e8b87b819989da6ae751725e973a006e39a8eda03c7333b8c6c4",
+          "exists": true,
+          "path": "./cairn/changes/introduce-scenario-command-router/design.md"
+        },
+        {
+          "content_hash": "020f7f833142267dcf0bf0f7aafef2213719880fe9a3de8c5c426213a7f2134e",
+          "exists": true,
+          "path": "./cairn/changes/introduce-scenario-command-router/proposal.md"
+        },
+        {
+          "content_hash": "fd0a033ef136d6cdeb4484306d66c7625a866d0873cd1edc577caedb488e46c0",
+          "exists": true,
+          "path": "./cairn/changes/introduce-scenario-command-router/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "2d5d6ccb0dec47c3ab9783d521d8ce387cb5d5152b8c2bff98d7bc3dca321e4c",
+          "exists": true,
+          "path": "./cairn/changes/introduce-scenario-command-router/tasks.md"
+        }
+      ],
+      "manifest_hash": "3bd50f0739517df22e7a2749d92fdb586348566938e4a61fe599972b1995bc9e"
+    },
+    "kind": "archive",
+    "manifest_hash": "629c67c64aebdfd0bda7e831b206f45691450b455bd90183cc31d0cb1979a4d1"
+  },
+  "plan_hash": "f35e1f5b095b14b787067a48bc2d08ac4f71449f2faf2a97e6d6e0d8dc92dd3f",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "79a5e847af81aa83f856df897e5f13e81e99a23e8eb8d9500742a8f38794b2d9"
+}
+exit_status=0
+
+## command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 4,
+  "valid": true
+}
+exit_status=0
+
+overall_exit_status=0

@@ -1,0 +1,301 @@
+## command: nix develop --no-update-lock-file . -c cargo fmt --manifest-path compat/runner/Cargo.toml -- --check
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+exit_status=0
+
+## command: nix develop --no-update-lock-file . -c env CARGO_TARGET_DIR=/home/brittonr/git/mc/target/router-closeout cargo test --manifest-path compat/runner/Cargo.toml scenario_router -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+   Compiling find-msvc-tools v0.1.9
+   Compiling shlex v2.0.1
+   Compiling cfg-if v1.0.4
+   Compiling constant_time_eq v0.4.2
+   Compiling cpufeatures v0.3.0
+   Compiling arrayvec v0.7.6
+   Compiling arrayref v0.3.9
+   Compiling cc v1.2.63
+   Compiling blake3 v1.8.5
+   Compiling mc-compat-runner v0.1.0 (/home/brittonr/git/mc/compat/runner)
+warning: constant `CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE` is never used
+   --> src/main.rs:244:7
+    |
+244 | const CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE: &...
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `json_object_string_field` is never used
+    --> src/main.rs:9730:4
+     |
+9730 | fn json_object_string_field(text: &str, object: &str,...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_optional_string_field` is never used
+    --> src/main.rs:9734:4
+     |
+9734 | fn json_object_optional_string_field(
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_u32_field` is never used
+    --> src/main.rs:9742:4
+     |
+9742 | fn json_object_u32_field(text: &str, object: &str, ke...
+     |    ^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_bool_field` is never used
+    --> src/main.rs:9746:4
+     |
+9746 | fn json_object_bool_field(text: &str, object: &str, k...
+     |    ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `Transition` is never constructed
+  --> src/layout.rs:44:5
+   |
+42 | pub enum LayoutKind {
+   |          ---------- variant in this enum
+43 |     RoleBased,
+44 |     Transition,
+   |     ^^^^^^^^^^
+   |
+   = note: `LayoutKind` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: `mc-compat-runner` (bin "mc-compat-runner" test) generated 6 warnings
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.50s
+     Running unittests src/main.rs (target/router-closeout/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 3 tests
+test tests::scenario_router_negative_fixtures_fail_closed ... ok
+test tests::scenario_router_parses_typed_request_before_planning ... ok
+test tests::scenario_router_alias_plan_matches_legacy_shape ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 167 filtered out; finished in 0.00s
+
+exit_status=0
+
+## command: nix build .#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/lcrgnpz6ysglxswwziipkwg8bakxgrnf.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4136 ms: Could not connect to server; retrying in 254 ms
+warning: error: unable to download 'http://100.100.103.95:5000/lcrgnpz6ysglxswwziipkwg8bakxgrnf.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1026 ms: Could not connect to server; retrying in 706 ms
+warning: error: unable to download 'http://100.100.103.95:5000/lcrgnpz6ysglxswwziipkwg8bakxgrnf.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1180 ms
+warning: error: unable to download 'http://100.100.103.95:5000/lcrgnpz6ysglxswwziipkwg8bakxgrnf.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 2320 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/lcrgnpz6ysglxswwziipkwg8bakxgrnf.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/lcrgnpz6ysglxswwziipkwg8bakxgrnf.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4092 ms: Could not connect to server
+this derivation will be built:
+  /nix/store/jjhn2fqab1f9dhf7420np15kcayfgbnz-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/jjhn2fqab1f9dhf7420np15kcayfgbnz-mc-compat-scenario-manifest.drv'...
+exit_status=0
+
+## command: nix build .#checks.x86_64-linux.mc-compat-generated-harness-surfaces --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/wsskq5nh4j13c9zzxq83f9kv18bmyg51.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 252 ms
+warning: error: unable to download 'http://100.100.103.95:5000/wsskq5nh4j13c9zzxq83f9kv18bmyg51.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1068 ms: Could not connect to server; retrying in 536 ms
+warning: error: unable to download 'http://100.100.103.95:5000/wsskq5nh4j13c9zzxq83f9kv18bmyg51.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3121 ms: Could not connect to server; retrying in 1081 ms
+warning: error: unable to download 'http://100.100.103.95:5000/wsskq5nh4j13c9zzxq83f9kv18bmyg51.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 8 ms: Could not connect to server; retrying in 2550 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/wsskq5nh4j13c9zzxq83f9kv18bmyg51.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/wsskq5nh4j13c9zzxq83f9kv18bmyg51.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+this derivation will be built:
+  /nix/store/lqwjjrpdq691mbv967xv85dsimj29h2c-mc-compat-generated-harness-surfaces.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/lqwjjrpdq691mbv967xv85dsimj29h2c-mc-compat-generated-harness-surfaces.drv'...
+exit_status=0
+
+## command: nix run .#mc-compat-smoke -- scenario run smoke --dry-run --server-backend valence --receipt target/scenario-router-smoke.json
+[mc-compat] plan: build client, start Valence server, wait for protocol 758, run 1 client session plan(s) under isolated Xvfb/X11
+[mc-compat] typed scenario route: scenario 'smoke' backend valence mode dry-run receipt target/scenario-router-smoke.json timeout 20s packet_capture_summary=false proxy_route=<unset> proxy_forwarding_mode=<unset> non_claims=broad_minecraft_compatibility_false,production_readiness_false,semantic_equivalence_false
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/clients/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] using existing Valence worktree /tmp/valence-compat-758
+[mc-compat] starting Valence 8ad9c85 example 'terrain' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-758
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 758
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'smoke' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/scenario-router-smoke.json
+exit_status=0
+
+## command: nix run .#mc-compat-valence-survival-furnace-smelting-breadth -- --dry-run
+[mc-compat] plan: build client, start Valence server, wait for protocol 763, run 1 client session plan(s) under isolated Xvfb/X11
+[mc-compat] typed scenario route: scenario 'survival-furnace-smelting-breadth' backend valence mode dry-run receipt target/mc-compat-survival-furnace-smelting-breadth/survival-furnace-smelting-breadth.json timeout 120s packet_capture_summary=false proxy_route=<unset> proxy_forwarding_mode=<unset> non_claims=broad_minecraft_compatibility_false,production_readiness_false,semantic_equivalence_false
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/clients/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] using existing Valence worktree /tmp/valence-compat-survival-furnace-smelting-breadth
+[mc-compat] starting Valence main example 'survival_compat' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-survival-furnace-smelting-breadth
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'survival-furnace-smelting-breadth' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/mc-compat-survival-furnace-smelting-breadth/survival-furnace-smelting-breadth.json
+exit_status=0
+
+## command: nix build .#checks.x86_64-linux.mc-compat-maintained-dry-runs --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/vx7kkcj90yg5x69214b2ay1rfwxs2fyw.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1026 ms: Could not connect to server; retrying in 316 ms
+warning: error: unable to download 'http://100.100.103.95:5000/vx7kkcj90yg5x69214b2ay1rfwxs2fyw.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 630 ms
+warning: error: unable to download 'http://100.100.103.95:5000/vx7kkcj90yg5x69214b2ay1rfwxs2fyw.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 8 ms: Could not connect to server; retrying in 1023 ms
+warning: error: unable to download 'http://100.100.103.95:5000/vx7kkcj90yg5x69214b2ay1rfwxs2fyw.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4093 ms: Could not connect to server; retrying in 2219 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/vx7kkcj90yg5x69214b2ay1rfwxs2fyw.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/vx7kkcj90yg5x69214b2ay1rfwxs2fyw.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 8 ms: Could not connect to server
+these 22 derivations will be built:
+  /nix/store/1p33wqbvqbvnbn90j8xip3d270581drq-mc-compat-evidence-manifests.drv
+  /nix/store/48rp48lqpk6kp1zqyzx0nhhhc2ff7rk6-mc-compat-movement-packet-family-check.drv
+  /nix/store/4bwjy1mg71b6b7wljmmj4lywa2sz8gph-mc-compat-full-survival-gate.drv
+  /nix/store/4f1plls1pqfvh982vkdh0gm4n3mmifa3-mc-compat-wan-tolerance-bounded-telemetry.drv
+  /nix/store/5m2w7pyfi4fdigvjbrsf7kqsivfmg59z-mc-compat-aggregate-claim-gates.drv
+  /nix/store/637yg3p9x76v4rb9l2qq0yzryn0wmqnv-mc-compat-evidence-promotion.drv
+  /nix/store/77qcj6b9bz091n88kxvri8inmq3qdkbr-mc-compat-acceptance-matrix.drv
+  /nix/store/946w8142w0r3kw4bwfqjcgzf9y6iq9qw-mc-compat-ctf-invalid-pickup-ownership.drv
+  /nix/store/96a9bqmpil75hqnyjw1szll3vzdrag10-mc-compat-red-blue-scoring-soak-live-refresh.drv
+  /nix/store/c1z0wzx6z4vnka50wyrl9hxzazangf55-mc-compat-ctf-invalid-return-drop.drv
+  /nix/store/f4divacdbv099rwx7wp1lc5fg9i67r1a-mc-compat-mcp-controlled-smoke-dry-run.drv
+  /nix/store/h358g66dvk0nm9y4mqrdrbxb55yb4ckh-mc-compat-public-server-authorized-safety.drv
+  /nix/store/i2as7qmznh0vql2wkwb1wrmw4hkdwxc5-mc-compat-current-evidence-bundle.drv
+  /nix/store/kvjwl48b23mwh6rsagadmrv7gj5id3pj-mc-compat-ctf-invalid-action-breadth.drv
+  /nix/store/mywxdcfwz1vyjy20v66qayi2d5iigv91-mc-compat-equipment-slot-item-expansion.drv
+  /nix/store/n04abr2v6qdyjwd1x0xfdvjiz6dfsi6s-mc-compat-ctf-score-limit-win-condition.drv
+  /nix/store/pd40qqyd10qizm8y4g5wfj3yp0j1m54f-mc-compat-survival-aggregate-claim-boundary.drv
+  /nix/store/psn10qhaczabv0vldpyxlds7zawf7v2c-mc-compat-scoreboard-team-packet-family-check.drv
+  /nix/store/r0mcbsdbnbbwikddvxmjv52yhj35632l-mc-compat-armor-loadout-enchantment-status.drv
+  /nix/store/rk3x3gzjy277pzsyjw1gpqnqri2hymxb-mc-compat-adversarial-network-oracle.drv
+  /nix/store/yqm8zwjkbwnvb733zvbjpp2qpsmraz3y-mc-compat-server-correlation-receipts.drv
+  /nix/store/lwxq21zhlknjfnax5966lbmxdm7xrax8-mc-compat-maintained-dry-runs.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/77qcj6b9bz091n88kxvri8inmq3qdkbr-mc-compat-acceptance-matrix.drv'...
+building '/nix/store/rk3x3gzjy277pzsyjw1gpqnqri2hymxb-mc-compat-adversarial-network-oracle.drv'...
+building '/nix/store/5m2w7pyfi4fdigvjbrsf7kqsivfmg59z-mc-compat-aggregate-claim-gates.drv'...
+building '/nix/store/r0mcbsdbnbbwikddvxmjv52yhj35632l-mc-compat-armor-loadout-enchantment-status.drv'...
+building '/nix/store/kvjwl48b23mwh6rsagadmrv7gj5id3pj-mc-compat-ctf-invalid-action-breadth.drv'...
+building '/nix/store/946w8142w0r3kw4bwfqjcgzf9y6iq9qw-mc-compat-ctf-invalid-pickup-ownership.drv'...
+building '/nix/store/c1z0wzx6z4vnka50wyrl9hxzazangf55-mc-compat-ctf-invalid-return-drop.drv'...
+building '/nix/store/n04abr2v6qdyjwd1x0xfdvjiz6dfsi6s-mc-compat-ctf-score-limit-win-condition.drv'...
+building '/nix/store/i2as7qmznh0vql2wkwb1wrmw4hkdwxc5-mc-compat-current-evidence-bundle.drv'...
+building '/nix/store/mywxdcfwz1vyjy20v66qayi2d5iigv91-mc-compat-equipment-slot-item-expansion.drv'...
+building '/nix/store/1p33wqbvqbvnbn90j8xip3d270581drq-mc-compat-evidence-manifests.drv'...
+building '/nix/store/637yg3p9x76v4rb9l2qq0yzryn0wmqnv-mc-compat-evidence-promotion.drv'...
+building '/nix/store/4bwjy1mg71b6b7wljmmj4lywa2sz8gph-mc-compat-full-survival-gate.drv'...
+building '/nix/store/f4divacdbv099rwx7wp1lc5fg9i67r1a-mc-compat-mcp-controlled-smoke-dry-run.drv'...
+mc-compat-mcp-controlled-smoke-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-mcp-controlled-smoke-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-mcp-controlled-smoke-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-mcp-controlled-smoke-dry-run> hint: call:
+mc-compat-mcp-controlled-smoke-dry-run> hint:
+mc-compat-mcp-controlled-smoke-dry-run> hint:   git config --global init.defaultBranch <name>
+mc-compat-mcp-controlled-smoke-dry-run> hint:
+mc-compat-mcp-controlled-smoke-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-mcp-controlled-smoke-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-mcp-controlled-smoke-dry-run> hint:
+mc-compat-mcp-controlled-smoke-dry-run> hint:   git branch -m <name>
+mc-compat-mcp-controlled-smoke-dry-run> hint:
+mc-compat-mcp-controlled-smoke-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-mcp-controlled-smoke-dry-run> Initialized empty Git repository in /build/repo/fake-valence/.git/
+building '/nix/store/48rp48lqpk6kp1zqyzx0nhhhc2ff7rk6-mc-compat-movement-packet-family-check.drv'...
+mc-compat-mcp-controlled-smoke-dry-run> [master (root-commit) 3729674] init
+mc-compat-mcp-controlled-smoke-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-mcp-controlled-smoke-dry-run>  create mode 100644 README.md
+building '/nix/store/h358g66dvk0nm9y4mqrdrbxb55yb4ckh-mc-compat-public-server-authorized-safety.drv'...
+building '/nix/store/96a9bqmpil75hqnyjw1szll3vzdrag10-mc-compat-red-blue-scoring-soak-live-refresh.drv'...
+building '/nix/store/psn10qhaczabv0vldpyxlds7zawf7v2c-mc-compat-scoreboard-team-packet-family-check.drv'...
+building '/nix/store/yqm8zwjkbwnvb733zvbjpp2qpsmraz3y-mc-compat-server-correlation-receipts.drv'...
+building '/nix/store/pd40qqyd10qizm8y4g5wfj3yp0j1m54f-mc-compat-survival-aggregate-claim-boundary.drv'...
+building '/nix/store/4f1plls1pqfvh982vkdh0gm4n3mmifa3-mc-compat-wan-tolerance-bounded-telemetry.drv'...
+building '/nix/store/lwxq21zhlknjfnax5966lbmxdm7xrax8-mc-compat-maintained-dry-runs.drv'...
+exit_status=0
+
+## command: nix run .#cairn -- gate proposal introduce-scenario-command-router --root .
+{
+  "change": "introduce-scenario-command-router",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "9303f557cdada18d125c5ffdf3a92c79f67f3bc610a6525e7feb923ba640789e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "8b362eed937be7cf5b91f1edc1f69976dfcc748742d02421644d73bc490ee8ac",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## command: nix run .#cairn -- gate design introduce-scenario-command-router --root .
+{
+  "change": "introduce-scenario-command-router",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "2632df59bf2aa5a7d1d40a3d967317e712fa78eb47a95a906e73bc9ce0e99c64",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "4ec4394ef5d90ce3e27c662abcaba5afc1e81a4202321eb2dabc040b00dfaffb",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## command: nix run .#cairn -- gate tasks introduce-scenario-command-router --root .
+{
+  "change": "introduce-scenario-command-router",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a4ef46c1cb2eebeb052b72b6bc0f19175e874bb42fc8ae5615dcf1eec616aab1",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "18079d83f0bfcd9805ec79beeffb445f6e32be9ad3fa7dbc9952ddb29313a68e",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
+exit_status=0
+
+overall_exit_status=0
