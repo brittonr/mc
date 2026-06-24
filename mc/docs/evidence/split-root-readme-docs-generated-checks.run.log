@@ -1,0 +1,14 @@
+COMMAND: nix build .#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L
+this derivation will be built:
+  /nix/store/6bc8q21725k9iq9wwn8d9dfaxwl9mfz9-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/6bc8q21725k9iq9wwn8d9dfaxwl9mfz9-mc-compat-scenario-manifest.drv'...
+exit_status=0
+
+COMMAND: nix build .#checks.x86_64-linux.mc-compat-generated-harness-surfaces --no-link -L
+this derivation will be built:
+  /nix/store/q9pxza65zs4d7ajaavlv75sccfvp46bb-mc-compat-generated-harness-surfaces.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/q9pxza65zs4d7ajaavlv75sccfvp46bb-mc-compat-generated-harness-surfaces.drv'...
+exit_status=0
+

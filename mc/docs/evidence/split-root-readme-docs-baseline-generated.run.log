@@ -1,0 +1,144 @@
+COMMAND: nix build .#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L
+this derivation will be built:
+  /nix/store/jm91v7ks5f29ipylwgj5zzw8wj8rfqlq-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/jm91v7ks5f29ipylwgj5zzw8wj8rfqlq-mc-compat-scenario-manifest.drv'...
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "scenarioWrapperMetadata.dryRunChecks"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "scenarioWrapperMetadata.appWrappers"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-bot-probe-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "valence-compat-bot-probe"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-historical-scenario-dry-runs"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "flag-score-repeat"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-blue-flag-score-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "blue-flag-score"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-inventory-interaction-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "inventory-interaction"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-valence-inventory-stack-split-merge-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "inventory-stack-split-merge"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-valence-inventory-drag-transactions-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "inventory-drag-transactions"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-valence-survival-break-place-pickup-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "survival-break-place-pickup"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-historical-scenario-dry-runs"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "survival-chest-persistence"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-valence-survival-crafting-table-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "survival-crafting-table"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-valence-survival-crafting-recipe-breadth-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "survival-crafting-recipe-breadth"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-valence-survival-furnace-persistence-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "survival-furnace-persistence"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-valence-survival-furnace-smelting-breadth-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "survival-furnace-smelting-breadth"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-historical-scenario-dry-runs"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "survival-hunger-food"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-valence-survival-hunger-health-cycle-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "survival-hunger-health-cycle"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-historical-scenario-dry-runs"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "survival-mob-drop"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-historical-scenario-dry-runs"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "survival-mob-ai-loot-breadth"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-historical-scenario-dry-runs"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "survival-redstone-toggle"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-historical-scenario-dry-runs"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "survival-redstone-circuit-breadth"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-historical-scenario-dry-runs"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "survival-world-persistence-restart"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-historical-scenario-dry-runs"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "survival-world-multichunk-durability"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-historical-scenario-dry-runs"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "survival-crash-recovery-parity"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-historical-scenario-dry-runs"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "survival-block-entity-persistence-parity"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-historical-scenario-dry-runs"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "survival-container-block-entity-breadth"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-historical-scenario-dry-runs"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "survival-biome-dimension-state"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-historical-scenario-dry-runs"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "survival-biome-dimension-travel"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-historical-scenario-dry-runs"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "survival-sign-editing-live"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-mcp-controlled-smoke-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mcp-controlled-smoke"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-combat-damage-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "combat-damage"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-combat-knockback-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "combat-knockback"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-armor-equipment-mitigation-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "armor-equipment-mitigation"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-equipment-update-observation-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "equipment-update-observation"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-projectile-hit-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "projectile-hit"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-projectile-damage-attribution-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "projectile-damage-attribution"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-flag-carrier-death-return-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "flag-carrier-death-return"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-reconnect-flag-state-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "reconnect-flag-state"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-invalid-pickup-ownership-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "ctf-invalid-pickup-ownership"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-invalid-return-drop-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "ctf-invalid-return-drop"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-invalid-opponent-base-return-drop-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "ctf-invalid-opponent-base-return-drop"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-score-limit-win-condition-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "ctf-score-limit-win-condition"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-simultaneous-pickup-capture-race-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "ctf-simultaneous-pickup-capture-race"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-spawn-team-balance-reset-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "ctf-spawn-team-balance-reset"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-open-cairns-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "reconnect-flag-score"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "mc-compat-multi-client-scenario-dry-run"
+mc-compat-scenario-manifest> scenario manifest check failed: flake.nix missing "multi-client-load-score"
+error: Cannot build '/nix/store/jm91v7ks5f29ipylwgj5zzw8wj8rfqlq-mc-compat-scenario-manifest.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/3bx5yasqwdpa460zmzjgav1lcbkl98cs-mc-compat-scenario-manifest
+       Last 25 log lines:
+       > scenario manifest check failed: flake.nix missing "equipment-update-observation"
+       > scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-projectile-hit-dry-run"
+       > scenario manifest check failed: flake.nix missing "projectile-hit"
+       > scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-projectile-damage-attribution-dry-run"
+       > scenario manifest check failed: flake.nix missing "projectile-damage-attribution"
+       > scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-flag-carrier-death-return-dry-run"
+       > scenario manifest check failed: flake.nix missing "flag-carrier-death-return"
+       > scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-reconnect-flag-state-dry-run"
+       > scenario manifest check failed: flake.nix missing "reconnect-flag-state"
+       > scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-invalid-pickup-ownership-dry-run"
+       > scenario manifest check failed: flake.nix missing "ctf-invalid-pickup-ownership"
+       > scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-invalid-return-drop-dry-run"
+       > scenario manifest check failed: flake.nix missing "ctf-invalid-return-drop"
+       > scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-invalid-opponent-base-return-drop-dry-run"
+       > scenario manifest check failed: flake.nix missing "ctf-invalid-opponent-base-return-drop"
+       > scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-score-limit-win-condition-dry-run"
+       > scenario manifest check failed: flake.nix missing "ctf-score-limit-win-condition"
+       > scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-simultaneous-pickup-capture-race-dry-run"
+       > scenario manifest check failed: flake.nix missing "ctf-simultaneous-pickup-capture-race"
+       > scenario manifest check failed: flake.nix missing "mc-compat-valence-ctf-spawn-team-balance-reset-dry-run"
+       > scenario manifest check failed: flake.nix missing "ctf-spawn-team-balance-reset"
+       > scenario manifest check failed: flake.nix missing "mc-compat-open-cairns-dry-run"
+       > scenario manifest check failed: flake.nix missing "reconnect-flag-score"
+       > scenario manifest check failed: flake.nix missing "mc-compat-multi-client-scenario-dry-run"
+       > scenario manifest check failed: flake.nix missing "multi-client-load-score"
+       For full logs, run:
+         nix log /nix/store/jm91v7ks5f29ipylwgj5zzw8wj8rfqlq-mc-compat-scenario-manifest.drv
+exit_status=1
+
+COMMAND: nix build .#checks.x86_64-linux.mc-compat-generated-harness-surfaces --no-link -L
+this derivation will be built:
+  /nix/store/n1l8yw3brq998kqpib3yal0djl7cz6lm-mc-compat-generated-harness-surfaces.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/n1l8yw3brq998kqpib3yal0djl7cz6lm-mc-compat-generated-harness-surfaces.drv'...
+mc-compat-generated-harness-surfaces> scenario manifest check failed: docs/evidence/mc-compat-scenario-index.generated.md is stale; run --write-generated-surfaces
+error: Cannot build '/nix/store/n1l8yw3brq998kqpib3yal0djl7cz6lm-mc-compat-generated-harness-surfaces.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/qd2ji9yrqzmyh1fl5wmb5dxwlmbswg5r-mc-compat-generated-harness-surfaces
+       Last 1 log lines:
+       > scenario manifest check failed: docs/evidence/mc-compat-scenario-index.generated.md is stale; run --write-generated-surfaces
+       For full logs, run:
+         nix log /nix/store/n1l8yw3brq998kqpib3yal0djl7cz6lm-mc-compat-generated-harness-surfaces.drv
+exit_status=1
+

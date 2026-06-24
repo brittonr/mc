@@ -1,6 +1,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::env;
 use std::fs;
+use std::io::ErrorKind;
 use std::path::Path;
 use std::process::ExitCode;
 
@@ -11,9 +12,20 @@ const RUNNER_MAIN_PATH: &str = "compat/runner/src/main.rs";
 const RUNNER_SCENARIO_CORE_PATH: &str = "compat/runner/src/scenario_core.rs";
 const RUNNER_SURFACE_PATH: &str = "compat/runner/src/{main.rs,scenario_core.rs}";
 const FLAKE_PATH: &str = "flake.nix";
+const NIX_APPS_PATH: &str = "nix/apps.nix";
+const NIX_PACKAGES_PATH: &str = "nix/packages.nix";
+const NIX_CHECKS_PATH: &str = "nix/checks.nix";
 const README_PATH: &str = "README.md";
+const SCENARIO_COMMANDS_DOC_PATH: &str = "docs/scenario-commands.md";
+const EVIDENCE_WORKFLOW_DOC_PATH: &str = "docs/evidence-workflow.md";
+const CONFIGURATION_DOC_PATH: &str = "docs/configuration.md";
+const VERIFICATION_DOC_PATH: &str = "docs/verification.md";
+const SURFACE_INVENTORY_PATH: &str = "docs/scenario-derived-surfaces.md";
 const CURRENT_BUNDLE_PATH: &str = "docs/evidence/protocol-763-current-evidence-bundle.md";
 const GENERATED_SCENARIO_INDEX_PATH: &str = "docs/evidence/mc-compat-scenario-index.generated.md";
+const GENERATED_SCENARIO_COMMANDS_PATH: &str = "docs/scenario-commands.generated.md";
+const GENERATED_WRAPPER_METADATA_PATH: &str =
+    "compat/config/generated/scenario-wrapper-metadata.nix";
 const SUPPORTED_SCHEMA: &str = "mc.compat.scenario-manifest.v1";
 const FALLBACK_BUDGET_BASELINE_SCHEMA: &str = "mc.compat.scenario-fallback-budget-baseline.v1";
 const SUBSTRING_FALLBACK_MIGRATION: &str = "substring-fallback";
@@ -22,6 +34,7 @@ const SELF_TEST_FLAG: &str = "--self-test";
 const CHECK_GENERATED_SURFACES_FLAG: &str = "--check-generated-surfaces";
 const WRITE_GENERATED_SURFACES_FLAG: &str = "--write-generated-surfaces";
 const MINIMUM_POSITIVE_COUNT: u32 = 1;
+const STRING_QUOTE_OVERHEAD: usize = 2;
 const STRING_FIELD_DELIMITER: &str = " = \"";
 const ARRAY_START: &str = "[";
 const ARRAY_END: &str = "]";
@@ -77,6 +90,47 @@ const TYPED_EVENT_COMMON_FORBIDDEN_EVENTS: &[&str] = &[
     "unexpected_eof",
     "protocol_mismatch",
     "decode_error",
+];
+const WRAPPER_METADATA_FIELDS: &[&str] = &[
+    "scenario",
+    "aliases",
+    "appWrapper",
+    "dryRunCheck",
+    "receiptShapeCheck",
+    "clientCount",
+    "sessionCount",
+    "migrationState",
+];
+const FLAKE_SURFACE_PATHS: &[&str] = &[
+    FLAKE_PATH,
+    NIX_APPS_PATH,
+    NIX_PACKAGES_PATH,
+    NIX_CHECKS_PATH,
+];
+const README_REQUIRED_DOC_LINKS: &[&str] = &[
+    SCENARIO_COMMANDS_DOC_PATH,
+    EVIDENCE_WORKFLOW_DOC_PATH,
+    CONFIGURATION_DOC_PATH,
+    VERIFICATION_DOC_PATH,
+    "docs/check-tiers.md",
+];
+const REQUIRED_SURFACE_INVENTORY_TOKENS: &[&str] = &[
+    MANIFEST_PATH,
+    FALLBACK_BUDGET_BASELINE_PATH,
+    GENERATED_RUST_PATH,
+    GENERATED_WRAPPER_METADATA_PATH,
+    GENERATED_SCENARIO_INDEX_PATH,
+    GENERATED_SCENARIO_COMMANDS_PATH,
+    RUNNER_MAIN_PATH,
+    RUNNER_SCENARIO_CORE_PATH,
+    FLAKE_PATH,
+    NIX_CHECKS_PATH,
+    README_PATH,
+    SCENARIO_COMMANDS_DOC_PATH,
+    CURRENT_BUNDLE_PATH,
+    "Generated",
+    "Human-authored",
+    "Intentionally duplicated",
 ];
 const TYPED_EVENT_EMPTY_EVENTS: &[&str] = &[];
 const SMOKE_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &["protocol_detected"];
@@ -943,8 +997,13 @@ fn run_repo_check(root: &Path) -> Result<String, Vec<String>> {
     let runner_main = read_repo_file(root, RUNNER_MAIN_PATH)?;
     let runner_scenario_core = read_repo_file(root, RUNNER_SCENARIO_CORE_PATH)?;
     let runner_surface = combined_runner_surface(&runner_main, &runner_scenario_core);
-    let flake = read_repo_file(root, FLAKE_PATH)?;
+    let flake_surface = read_repo_files(root, FLAKE_SURFACE_PATHS)?;
     let readme = read_repo_file(root, README_PATH)?;
+    let scenario_commands = read_repo_file(root, SCENARIO_COMMANDS_DOC_PATH)?;
+    let _evidence_workflow = read_repo_file(root, EVIDENCE_WORKFLOW_DOC_PATH)?;
+    let _configuration = read_repo_file(root, CONFIGURATION_DOC_PATH)?;
+    let _verification = read_repo_file(root, VERIFICATION_DOC_PATH)?;
+    let surface_inventory = read_repo_file(root, SURFACE_INVENTORY_PATH)?;
     let current_bundle = read_repo_file(root, CURRENT_BUNDLE_PATH)?;
 
     let mut errors = Vec::new();
@@ -953,8 +1012,13 @@ fn run_repo_check(root: &Path) -> Result<String, Vec<String>> {
     errors.extend(validate_live_capability_registry_surface(
         &runner_scenario_core,
     ));
-    errors.extend(validate_flake_surfaces(&manifest.rows, &flake));
-    errors.extend(validate_readme_surfaces(&manifest.rows, &readme));
+    errors.extend(validate_flake_surfaces(&manifest.rows, &flake_surface));
+    errors.extend(validate_readme_doc_links(&readme));
+    errors.extend(validate_scenario_command_docs(
+        &manifest.rows,
+        &scenario_commands,
+    ));
+    errors.extend(validate_surface_inventory(&surface_inventory));
     errors.extend(validate_current_bundle_surfaces(
         &manifest.rows,
         &current_bundle,
@@ -985,11 +1049,10 @@ fn run_generated_surfaces_check(root: &Path) -> Result<String, Vec<String>> {
     let mut errors = Vec::new();
     for surface in &surfaces {
         let checked_in = read_repo_file(root, surface.path)?;
-        if checked_in != surface.content {
-            errors.push(format!(
-                "{} is stale; run {WRITE_GENERATED_SURFACES_FLAG}",
-                surface.path
-            ));
+        if let Some(error) =
+            generated_surface_stale_diagnostic(surface.path, &surface.content, &checked_in)
+        {
+            errors.push(error);
         }
     }
     if errors.is_empty() {
@@ -1036,6 +1099,23 @@ fn run_generated_surfaces_write(root: &Path) -> Result<String, Vec<String>> {
 fn read_repo_file(root: &Path, relative: &str) -> Result<String, Vec<String>> {
     let path = root.join(relative);
     fs::read_to_string(&path).map_err(|err| vec![format!("{}: {err}", path.display())])
+}
+
+fn read_repo_files(root: &Path, relatives: &[&str]) -> Result<String, Vec<String>> {
+    let mut combined = String::new();
+    for relative in relatives {
+        let path = root.join(relative);
+        let text = match fs::read_to_string(&path) {
+            Ok(text) => text,
+            Err(err) if err.kind() == ErrorKind::NotFound => continue,
+            Err(err) => return Err(vec![format!("{}: {err}", path.display())]),
+        };
+        combined.push_str("\n--- ");
+        combined.push_str(relative);
+        combined.push_str(" ---\n");
+        combined.push_str(&text);
+    }
+    Ok(combined)
 }
 
 fn parse_manifest(text: &str) -> Result<Manifest, Vec<String>> {
@@ -2028,11 +2108,38 @@ fn render_generated_surfaces(rows: &[ScenarioRow]) -> Result<Vec<GeneratedSurfac
             path: GENERATED_SCENARIO_INDEX_PATH,
             content: render_generated_scenario_index(rows)?,
         },
+        GeneratedSurface {
+            path: GENERATED_SCENARIO_COMMANDS_PATH,
+            content: render_generated_scenario_commands(rows)?,
+        },
+        GeneratedSurface {
+            path: GENERATED_WRAPPER_METADATA_PATH,
+            content: render_generated_wrapper_metadata(rows)?,
+        },
     ];
-    for surface in &surfaces {
-        validate_generated_output_path(surface.path)?;
-    }
+    validate_generated_surfaces(&surfaces)?;
     Ok(surfaces)
+}
+
+fn validate_generated_surfaces(surfaces: &[GeneratedSurface]) -> Result<(), Vec<String>> {
+    let mut errors = Vec::new();
+    let mut paths = BTreeSet::new();
+    for surface in surfaces {
+        if let Err(mut path_errors) = validate_generated_output_path(surface.path) {
+            errors.append(&mut path_errors);
+        }
+        if !paths.insert(surface.path) {
+            errors.push(format!("duplicate generated output path {}", surface.path));
+        }
+        if surface.content.is_empty() {
+            errors.push(format!("{} generated content is empty", surface.path));
+        }
+    }
+    if errors.is_empty() {
+        Ok(())
+    } else {
+        Err(errors)
+    }
 }
 
 fn validate_generated_output_path(path: &str) -> Result<(), Vec<String>> {
@@ -2045,6 +2152,19 @@ fn validate_generated_output_path(path: &str) -> Result<(), Vec<String>> {
         return Err(vec![format!("unsafe generated output path {path:?}")]);
     }
     Ok(())
+}
+
+fn generated_surface_stale_diagnostic(
+    path: &str,
+    expected: &str,
+    checked_in: &str,
+) -> Option<String> {
+    if checked_in == expected {
+        return None;
+    }
+    Some(format!(
+        "{path} is stale; run {WRITE_GENERATED_SURFACES_FLAG}"
+    ))
 }
 
 fn render_generated_rust(rows: &[ScenarioRow]) -> Result<String, Vec<String>> {
@@ -2133,11 +2253,11 @@ fn render_generated_scenario_index(rows: &[ScenarioRow]) -> Result<String, Vec<S
     output.push_str("<!-- BEGIN: mc-compat-generated-scenario-index -->\n");
     output.push_str("<!-- @generated by tools/check_scenario_manifest.rs --write-generated-surfaces; edit compat/config/scenario-manifest.ncl instead. -->\n\n");
     output.push_str("# mc-compat generated scenario index\n\n");
-    output.push_str("This bounded index is generated from `compat/config/scenario-manifest.ncl`. It records harness wiring only and does not broaden compatibility claims.\n\n");
+    output.push_str("This bounded index is generated from `compat/config/scenario-manifest.ncl`. It records harness wiring and receipt expectation labels only and does not broaden compatibility claims.\n\n");
     output.push_str(
-        "| Scenario | Aliases | Clients | Sessions | Dry-run check | Wrapper | Migration |\n",
+        "| Scenario | Aliases | Clients | Sessions | Dry-run check | Wrapper | Migration | Receipt expectations |\n",
     );
-    output.push_str("| --- | --- | ---: | ---: | --- | --- | --- |\n");
+    output.push_str("| --- | --- | ---: | ---: | --- | --- | --- | --- |\n");
     let mut seen_names = BTreeSet::new();
     for row in rows {
         if !seen_names.insert(row.name.as_str()) {
@@ -2147,18 +2267,203 @@ fn render_generated_scenario_index(rows: &[ScenarioRow]) -> Result<String, Vec<S
             )]);
         }
         output.push_str(&format!(
-            "| {} | {} | {} | {} | {} | {} | {} |\n",
+            "| {} | {} | {} | {} | {} | {} | {} | {} |\n",
             markdown_cell(&row.name),
             markdown_cell(&row.aliases.join(", ")),
             row.client_count,
             row.session_count,
             markdown_cell(&empty_as_dash(&row.dry_run.check)),
             markdown_cell(&empty_as_dash(&row.dry_run.wrapper)),
-            markdown_cell(&row.migration_state)
+            markdown_cell(&row.migration_state),
+            markdown_cell(&row.receipt_expectations.join(", "))
         ));
     }
     output.push_str("\n<!-- END: mc-compat-generated-scenario-index -->\n");
     Ok(output)
+}
+
+fn render_generated_scenario_commands(rows: &[ScenarioRow]) -> Result<String, Vec<String>> {
+    let mut output = String::new();
+    output.push_str("<!-- BEGIN: mc-compat-generated-scenario-commands -->\n");
+    output.push_str("<!-- @generated by tools/check_scenario_manifest.rs --write-generated-surfaces; edit compat/config/scenario-manifest.ncl instead. -->\n\n");
+    output.push_str("# mc-compat generated scenario commands\n\n");
+    output.push_str("This bounded command index is generated from `compat/config/scenario-manifest.ncl`. Commands are harness-shape references only; they do not claim live success, semantic equivalence, public-server safety, production readiness, or broad Minecraft compatibility.\n\n");
+    output.push_str(
+        "| Scenario | Router dry-run command | Router run command | Wrapper | Dry-run check | Receipt expectations |\n",
+    );
+    output.push_str("| --- | --- | --- | --- | --- | --- |\n");
+    let mut seen_names = BTreeSet::new();
+    for row in rows {
+        if !seen_names.insert(row.name.as_str()) {
+            return Err(vec![format!(
+                "duplicate generated scenario name {}",
+                row.name
+            )]);
+        }
+        output.push_str(&format!(
+            "| {} | {} | {} | {} | {} | {} |\n",
+            markdown_cell(&row.name),
+            markdown_cell(&format!(
+                "`nix run .#mc-compat-smoke -- scenario run {} --dry-run`",
+                row.name
+            )),
+            markdown_cell(&format!(
+                "`nix run .#mc-compat-smoke -- scenario run {} --run`",
+                row.name
+            )),
+            markdown_cell(&empty_as_dash(&row.dry_run.wrapper)),
+            markdown_cell(&empty_as_dash(&row.dry_run.check)),
+            markdown_cell(&row.receipt_expectations.join(", "))
+        ));
+    }
+    output.push_str("\n<!-- END: mc-compat-generated-scenario-commands -->\n");
+    Ok(output)
+}
+
+fn render_generated_wrapper_metadata(rows: &[ScenarioRow]) -> Result<String, Vec<String>> {
+    validate_wrapper_metadata_fields(WRAPPER_METADATA_FIELDS)?;
+    let mut output = String::new();
+    output
+        .push_str("# @generated by tools/check_scenario_manifest.rs --write-generated-surfaces\n");
+    output.push_str("# Do not edit by hand; edit compat/config/scenario-manifest.ncl instead.\n\n");
+    output.push_str("{\n");
+    output.push_str("  schema = \"mc.compat.generated-scenario-wrapper-metadata.v1\";\n");
+    output.push_str("  source = \"compat/config/scenario-manifest.ncl\";\n");
+    output.push_str("  rows = [\n");
+    let mut seen_names = BTreeSet::new();
+    for row in rows {
+        if !seen_names.insert(row.name.as_str()) {
+            return Err(vec![format!(
+                "duplicate generated scenario name {}",
+                row.name
+            )]);
+        }
+        output.push_str("    {\n");
+        output.push_str(&format!("      scenario = {};\n", nix_string(&row.name)));
+        output.push_str(&format!(
+            "      aliases = {};\n",
+            nix_string_array(&row.aliases, "      ")
+        ));
+        output.push_str(&format!(
+            "      appWrapper = {};\n",
+            nix_string(&row.dry_run.wrapper)
+        ));
+        output.push_str(&format!(
+            "      dryRunCheck = {};\n",
+            nix_string(&row.dry_run.check)
+        ));
+        output.push_str(&format!(
+            "      receiptShapeCheck = {};\n",
+            nix_bool(row.dry_run.receipt_shape_check)
+        ));
+        output.push_str(&format!("      clientCount = {};\n", row.client_count));
+        output.push_str(&format!("      sessionCount = {};\n", row.session_count));
+        output.push_str(&format!(
+            "      migrationState = {};\n",
+            nix_string(&row.migration_state)
+        ));
+        output.push_str("    }\n");
+    }
+    output.push_str("  ];\n");
+    output.push_str(&format!(
+        "  appWrappers = {};\n",
+        nix_string_array(
+            &unique_nonempty_values(rows.iter().map(|row| row.dry_run.wrapper.as_str())),
+            "  "
+        )
+    ));
+    output.push_str(&format!(
+        "  dryRunChecks = {};\n",
+        nix_string_array(
+            &unique_nonempty_values(rows.iter().map(|row| row.dry_run.check.as_str())),
+            "  "
+        )
+    ));
+    output.push_str("}\n");
+    Ok(output)
+}
+
+fn validate_wrapper_metadata_fields(fields: &[&str]) -> Result<(), Vec<String>> {
+    let mut errors = Vec::new();
+    let supported: BTreeSet<&str> = WRAPPER_METADATA_FIELDS.iter().copied().collect();
+    let mut seen = BTreeSet::new();
+    if fields.is_empty() {
+        errors.push("wrapper metadata field list is empty".to_string());
+    }
+    for field in fields {
+        if field.is_empty() {
+            errors.push("wrapper metadata field name is empty".to_string());
+            continue;
+        }
+        if !supported.contains(field) {
+            errors.push(format!("unknown generated wrapper metadata field {field}"));
+        }
+        if !seen.insert(*field) {
+            errors.push(format!(
+                "duplicate generated wrapper metadata field {field}"
+            ));
+        }
+    }
+    if errors.is_empty() {
+        Ok(())
+    } else {
+        Err(errors)
+    }
+}
+
+fn unique_nonempty_values<'a>(values: impl Iterator<Item = &'a str>) -> Vec<String> {
+    values
+        .filter(|value| !value.is_empty())
+        .collect::<BTreeSet<&str>>()
+        .into_iter()
+        .map(str::to_string)
+        .collect()
+}
+
+fn nix_bool(value: bool) -> &'static str {
+    if value {
+        "true"
+    } else {
+        "false"
+    }
+}
+
+fn nix_string_array(values: &[String], indent: &str) -> String {
+    if values.is_empty() {
+        return "[ ]".to_string();
+    }
+    if values.len() <= MINIMUM_POSITIVE_COUNT as usize {
+        return format!("[ {} ]", nix_string(&values[0]));
+    }
+    let child_indent = format!("{indent}  ");
+    let mut output = String::from("[\n");
+    for value in values {
+        output.push_str(&child_indent);
+        output.push_str(&nix_string(value));
+        output.push('\n');
+    }
+    output.push_str(indent);
+    output.push(']');
+    output
+}
+
+fn nix_string(value: &str) -> String {
+    let mut output = String::with_capacity(value.len() + STRING_QUOTE_OVERHEAD);
+    let mut chars = value.chars().peekable();
+    output.push('"');
+    while let Some(ch) = chars.next() {
+        match ch {
+            '"' => output.push_str("\\\""),
+            '\\' => output.push_str("\\\\"),
+            '\n' => output.push_str("\\n"),
+            '\r' => output.push_str("\\r"),
+            '\t' => output.push_str("\\t"),
+            '$' if chars.peek() == Some(&'{') => output.push_str("\\$"),
+            ch => output.push(ch),
+        }
+    }
+    output.push('"');
+    output
 }
 
 fn rust_count_expr(count: u32, one: &str, two: &str) -> String {
@@ -2189,7 +2494,7 @@ fn rust_string_array(values: &[String], indent: &str) -> String {
 }
 
 fn rust_string(value: &str) -> String {
-    let mut output = String::with_capacity(value.len() + 2);
+    let mut output = String::with_capacity(value.len() + STRING_QUOTE_OVERHEAD);
     output.push('"');
     for ch in value.chars() {
         match ch {
@@ -2347,20 +2652,40 @@ fn validate_flake_surfaces(rows: &[ScenarioRow], flake: &str) -> Vec<String> {
     errors
 }
 
-fn validate_readme_surfaces(rows: &[ScenarioRow], readme: &str) -> Vec<String> {
+fn validate_readme_doc_links(readme: &str) -> Vec<String> {
+    README_REQUIRED_DOC_LINKS
+        .iter()
+        .copied()
+        .filter(|link| !readme.contains(link))
+        .map(|link| format!("{README_PATH} missing moved-doc link {link:?}"))
+        .collect()
+}
+
+fn validate_scenario_command_docs(rows: &[ScenarioRow], scenario_commands: &str) -> Vec<String> {
     let mut errors = Vec::new();
     for row in rows {
-        if readme.contains(&row.name) || readme.contains(&row.dry_run.wrapper) {
+        let wrapper_documented =
+            !row.dry_run.wrapper.is_empty() && scenario_commands.contains(&row.dry_run.wrapper);
+        if scenario_commands.contains(&row.name) || wrapper_documented {
             continue;
         }
         if row.dry_run.exclusion_reason.is_empty() {
             errors.push(format!(
-                "{} missing from README command listings without exclusion",
-                row.name
+                "{} missing from {} command listings without exclusion",
+                row.name, SCENARIO_COMMANDS_DOC_PATH
             ));
         }
     }
     errors
+}
+
+fn validate_surface_inventory(inventory: &str) -> Vec<String> {
+    REQUIRED_SURFACE_INVENTORY_TOKENS
+        .iter()
+        .copied()
+        .filter(|token| !inventory.contains(token))
+        .map(|token| format!("{SURFACE_INVENTORY_PATH} missing {token:?}"))
+        .collect()
 }
 
 fn validate_current_bundle_surfaces(rows: &[ScenarioRow], current_bundle: &str) -> Vec<String> {
@@ -2505,13 +2830,72 @@ fn run_self_tests() -> Result<String, Vec<String>> {
             "self-test case fallback budget typed-event regression expected pass=false".to_string(),
         );
     }
-    if let Err(generator_errors) = render_generated_surfaces(&manifest.rows) {
+    let generated_surfaces = render_generated_surfaces(&manifest.rows);
+    if let Err(generator_errors) = &generated_surfaces {
         errors.push(format!(
             "self-test case generated_surfaces expected pass=true: {generator_errors:?}"
         ));
     }
+    if let Ok(surfaces) = &generated_surfaces {
+        let wrapper_metadata = surfaces
+            .iter()
+            .find(|surface| surface.path == GENERATED_WRAPPER_METADATA_PATH);
+        match wrapper_metadata {
+            Some(surface)
+                if surface
+                    .content
+                    .contains("appWrapper = \"mc-compat-smoke\";")
+                    && surface.content.contains("dryRunChecks") => {}
+            Some(_) => errors.push(
+                "self-test case generated_wrapper_metadata expected wrapper/check fields"
+                    .to_string(),
+            ),
+            None => errors
+                .push("self-test case generated_wrapper_metadata expected surface".to_string()),
+        }
+        let scenario_commands = surfaces
+            .iter()
+            .find(|surface| surface.path == GENERATED_SCENARIO_COMMANDS_PATH);
+        match scenario_commands {
+            Some(surface)
+                if surface.content.contains("scenario run smoke --dry-run")
+                    && surface.content.contains("Receipt expectations") => {}
+            Some(_) => errors.push(
+                "self-test case generated_scenario_commands expected router command fields"
+                    .to_string(),
+            ),
+            None => errors
+                .push("self-test case generated_scenario_commands expected surface".to_string()),
+        }
+    }
+    let complete_readme_links = README_REQUIRED_DOC_LINKS.join("\n");
+    if !validate_readme_doc_links(&complete_readme_links).is_empty() {
+        errors.push("self-test case readme_doc_links expected pass=true".to_string());
+    }
+    if validate_readme_doc_links(SCENARIO_COMMANDS_DOC_PATH).is_empty() {
+        errors.push("self-test case missing_readme_doc_link expected pass=false".to_string());
+    }
+    let complete_scenario_commands = render_generated_scenario_commands(&manifest.rows)
+        .expect("valid fixture scenario commands render");
+    if !validate_scenario_command_docs(&manifest.rows, &complete_scenario_commands).is_empty() {
+        errors.push("self-test case scenario_command_docs expected pass=true".to_string());
+    }
+    if validate_scenario_command_docs(&manifest.rows, "unrelated docs").is_empty() {
+        errors.push("self-test case missing_scenario_command_docs expected pass=false".to_string());
+    }
     if validate_generated_output_path("../escape.rs").is_ok() {
         errors.push("self-test case unsafe_generated_output_path expected pass=false".to_string());
+    }
+    if validate_wrapper_metadata_fields(&["scenario", "unknownField"]).is_ok() {
+        errors.push(
+            "self-test case unknown_generated_wrapper_metadata_field expected pass=false"
+                .to_string(),
+        );
+    }
+    if generated_surface_stale_diagnostic(GENERATED_WRAPPER_METADATA_PATH, "expected", "stale")
+        .is_none()
+    {
+        errors.push("self-test case stale_generated_surface expected pass=false".to_string());
     }
     let duplicate_manifest =
         parse_manifest(&duplicate_fixture()).expect("duplicate fixture parses");
@@ -2563,6 +2947,14 @@ fn run_self_tests() -> Result<String, Vec<String>> {
                 .to_string(),
         );
     }
+    let complete_inventory = REQUIRED_SURFACE_INVENTORY_TOKENS.join("\n");
+    if !validate_surface_inventory(&complete_inventory).is_empty() {
+        errors.push("self-test case surface_inventory expected pass=true".to_string());
+    }
+    if validate_surface_inventory(MANIFEST_PATH).is_empty() {
+        errors.push("self-test case missing_surface_inventory expected pass=false".to_string());
+    }
+
     let stale_revision_registry = evaluate_live_capability_registry_surface(
         "ScenarioLiveCapability\nlive.revision.status = stale",
         LIVE_CAPABILITY_REGISTRY_TOKENS,
@@ -2589,7 +2981,7 @@ fn run_self_tests() -> Result<String, Vec<String>> {
     }
 
     if errors.is_empty() {
-        Ok("positive and negative fixtures exercised".to_string())
+        Ok("positive and negative fixtures exercised, including wrapper metadata, README links, generated command docs, and stale-output rejection".to_string())
     } else {
         Err(errors)
     }

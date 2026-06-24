@@ -1,0 +1,21 @@
+# Scenario-derived surface inventory
+
+This inventory implements `r[mc_compatibility.manifest_surface_expansion.inventory]` for surfaces that repeat scenario names, aliases, wrapper names, receipt labels, milestone metadata, command examples, or evidence-index rows. It records ownership and freshness strategy only; it does not claim scenario success, semantic equivalence, public-server safety, production readiness, or broad Minecraft compatibility.
+
+| Surface | Path(s) | Classification | Owner | Freshness/check strategy |
+| --- | --- | --- | --- | --- |
+| Scenario manifest source of truth | `compat/config/scenario-manifest.ncl` | Human-authored | mc-compat harness owner | Nickel typecheck plus `tools/check_scenario_manifest.rs` row validation. |
+| Fallback migration budget | `compat/config/scenario-fallback-budget-baseline.ncl` | Intentionally duplicated | mc-compat harness owner | Nickel typecheck plus fallback-budget comparison in `tools/check_scenario_manifest.rs`. |
+| Runtime scenario table | `compat/runner/src/scenario_manifest_generated.rs` | Generated | `tools/check_scenario_manifest.rs --write-generated-surfaces` | `mc-compat-generated-harness-surfaces` fails when stale. |
+| App/check wrapper metadata | `compat/config/generated/scenario-wrapper-metadata.nix` | Generated | `tools/check_scenario_manifest.rs --write-generated-surfaces` | Imported by `flake.nix`; generated-surface freshness check emits app/check metadata summaries and fails when stale. |
+| Generated scenario index | `docs/evidence/mc-compat-scenario-index.generated.md` | Generated | `tools/check_scenario_manifest.rs --write-generated-surfaces` | Machine-owned markers bound edits; generated-surface freshness check fails when stale. |
+| Generated scenario command table | `docs/scenario-commands.generated.md` | Generated | `tools/check_scenario_manifest.rs --write-generated-surfaces` | Machine-owned router command table; generated-surface freshness check fails when stale. |
+| Runner parser/help/milestone logic | `compat/runner/src/main.rs`, `compat/runner/src/scenario_core.rs` | Human-authored orchestration | mc-compat runner owner | Manifest checker validates scenario names, aliases, milestones, and forbidden patterns remain present. |
+| Flake package wrapper bodies | `flake.nix`, `nix/packages.nix` package definitions | Human-authored orchestration | mc-compat harness owner | Manifest checker validates dry-run check names across split flake/Nix surfaces; generated wrapper metadata is imported for app/check summaries. |
+| Flake app/check wrapper listings | `flake.nix`, `nix/apps.nix`, `nix/checks.nix` app/check attributes | Intentionally duplicated | mc-compat harness owner | Generated wrapper metadata plus manifest checks catch missing app/check names before evidence promotion. |
+| README documentation map | `README.md` | Human-authored | mc-compat docs owner | Manifest checker validates README links to moved scenario, evidence, config, verification, and check-tier docs. |
+| Scenario command examples | `docs/scenario-commands.md` | Human-authored | mc-compat docs owner | Manifest checker validates listed scenario/wrapper coverage or explicit manifest exclusions, while machine-owned command rows live in `docs/scenario-commands.generated.md`. |
+| Current evidence bundle row markers | `docs/evidence/protocol-763-current-evidence-bundle.md` | Human-authored evidence interpretation | mc-compat evidence owner | Manifest `current_bundle_row` markers are checked; human prose stays outside generated blocks. |
+| Cairn task/evidence citations | `cairn/changes/**/tasks.md`, `docs/evidence/*.run.log`, `docs/evidence/*.b3` | Human-authored evidence closeout | Cairn change owner | `mc-compat-cairn-task-evidence` and evidence-manifest refresh/check gates reject missing or transient-only evidence. |
+
+Generated surfaces are limited to stable metadata and machine-owned blocks. Human-authored rows remain responsible for evidence interpretation, non-claims, and review decisions.

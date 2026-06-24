@@ -1,0 +1,30 @@
+COMMAND: nix build .#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L
+this derivation will be built:
+  /nix/store/v7r8jiv7h5l827izpgsgvsv6fa3g18vz-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/v7r8jiv7h5l827izpgsgvsv6fa3g18vz-mc-compat-scenario-manifest.drv'...
+exit_status=0
+
+COMMAND: nix build .#checks.x86_64-linux.mc-compat-generated-harness-surfaces --no-link -L
+this derivation will be built:
+  /nix/store/4arxzmcgk0kf40flhls3wc32fylxacwf-mc-compat-generated-harness-surfaces.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/4arxzmcgk0kf40flhls3wc32fylxacwf-mc-compat-generated-harness-surfaces.drv'...
+exit_status=0
+
+COMMAND: nix build .#checks.x86_64-linux.mc-compat-layout-boundaries --no-link -L
+this derivation will be built:
+  /nix/store/67irp6a9bwy0d7y2i4yf0kab0w15yj80-mc-compat-layout-boundaries.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/67irp6a9bwy0d7y2i4yf0kab0w15yj80-mc-compat-layout-boundaries.drv'...
+mc-compat-layout-boundaries> severity=Required code=undocumented_root_directory path=nix rule=undocumented_root_directory message=root directory nix is absent from docs/layout-checklist.md owner_or_waiver_hint=docs/layout-checklist.md is the component registry and root allowlist next_action=document the root directory with ownership/default-gate policy or remove the accidental directory
+error: Cannot build '/nix/store/67irp6a9bwy0d7y2i4yf0kab0w15yj80-mc-compat-layout-boundaries.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/s5mxw9z9305kykrrdvwh4nhvy9czj2ng-mc-compat-layout-boundaries
+       Last 1 log lines:
+       > severity=Required code=undocumented_root_directory path=nix rule=undocumented_root_directory message=root directory nix is absent from docs/layout-checklist.md owner_or_waiver_hint=docs/layout-checklist.md is the component registry and root allowlist next_action=document the root directory with ownership/default-gate policy or remove the accidental directory
+       For full logs, run:
+         nix log /nix/store/67irp6a9bwy0d7y2i4yf0kab0w15yj80-mc-compat-layout-boundaries.drv
+exit_status=1
+

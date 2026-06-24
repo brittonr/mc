@@ -3,55 +3,55 @@
 
 # mc-compat generated scenario index
 
-This bounded index is generated from `compat/config/scenario-manifest.ncl`. It records harness wiring only and does not broaden compatibility claims.
+This bounded index is generated from `compat/config/scenario-manifest.ncl`. It records harness wiring and receipt expectation labels only and does not broaden compatibility claims.
 
-| Scenario | Aliases | Clients | Sessions | Dry-run check | Wrapper | Migration |
-| --- | --- | ---: | ---: | --- | --- | --- |
-| smoke | smoke | 1 | 1 | mc-compat-dry-run | mc-compat-smoke | typed-event-ready |
-| valence-compat-bot-probe | valence-compat-bot-probe, compat-bot-probe | 1 | 1 | mc-compat-bot-probe-dry-run | mc-compat-smoke | substring-fallback |
-| flag-score-repeat | flag-score-repeat | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | typed-event-ready |
-| blue-flag-score | blue-flag-score | 1 | 1 | mc-compat-blue-flag-score-dry-run | mc-compat-smoke | typed-event-ready |
-| inventory-interaction | inventory-interaction | 1 | 1 | mc-compat-valence-ctf-inventory-interaction-dry-run | mc-compat-valence-ctf-inventory-interaction | typed-event-ready |
-| inventory-stack-split-merge | inventory-stack-split-merge | 1 | 1 | mc-compat-valence-inventory-stack-split-merge-dry-run | mc-compat-valence-inventory-stack-split-merge | typed-event-ready |
-| inventory-drag-transactions | inventory-drag-transactions | 1 | 1 | mc-compat-valence-inventory-drag-transactions-dry-run | mc-compat-valence-inventory-drag-transactions | typed-event-ready |
-| survival-break-place-pickup | survival-break-place-pickup | 1 | 1 | mc-compat-valence-survival-break-place-pickup-dry-run | mc-compat-valence-survival-break-place-pickup | typed-event-ready |
-| survival-chest-persistence | survival-chest-persistence | 1 | 2 | mc-compat-historical-scenario-dry-runs | mc-compat-valence-survival-chest-persistence | typed-event-ready |
-| survival-crafting-table | survival-crafting-table | 1 | 1 | mc-compat-valence-survival-crafting-table-dry-run | mc-compat-valence-survival-crafting-table | typed-event-ready |
-| survival-crafting-recipe-breadth | survival-crafting-recipe-breadth | 1 | 1 | mc-compat-valence-survival-crafting-recipe-breadth-dry-run | mc-compat-valence-survival-crafting-recipe-breadth | typed-event-ready |
-| survival-furnace-persistence | survival-furnace-persistence | 1 | 2 | mc-compat-valence-survival-furnace-persistence-dry-run | mc-compat-valence-survival-furnace-persistence | typed-event-ready |
-| survival-furnace-smelting-breadth | survival-furnace-smelting-breadth | 1 | 1 | mc-compat-valence-survival-furnace-smelting-breadth-dry-run | mc-compat-valence-survival-furnace-smelting-breadth | typed-event-ready |
-| survival-hunger-food | survival-hunger-food | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
-| survival-hunger-health-cycle | survival-hunger-health-cycle | 1 | 1 | mc-compat-valence-survival-hunger-health-cycle-dry-run | mc-compat-valence-survival-hunger-health-cycle | typed-event-ready |
-| survival-mob-drop | survival-mob-drop | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
-| survival-mob-ai-loot-breadth | survival-mob-ai-loot-breadth | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | typed-event-ready |
-| survival-redstone-toggle | survival-redstone-toggle | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
-| survival-redstone-circuit-breadth | survival-redstone-circuit-breadth | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | typed-event-ready |
-| survival-world-persistence-restart | survival-world-persistence-restart | 1 | 2 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
-| survival-world-multichunk-durability | survival-world-multichunk-durability | 1 | 2 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | typed-event-ready |
-| survival-crash-recovery-parity | survival-crash-recovery-parity | 1 | 2 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
-| survival-block-entity-persistence-parity | survival-block-entity-persistence-parity | 1 | 2 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
-| survival-container-block-entity-breadth | survival-container-block-entity-breadth | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | typed-event-ready |
-| survival-biome-dimension-state | survival-biome-dimension-state | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback |
-| survival-biome-dimension-travel | survival-biome-dimension-travel | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | typed-event-ready |
-| survival-sign-editing-live | survival-sign-editing-live | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | typed-event-ready |
-| mcp-controlled-smoke | mcp-controlled-smoke | 1 | 1 | mc-compat-mcp-controlled-smoke-dry-run | mc-compat-mcp-controlled-smoke | typed-event-ready |
-| combat-damage | combat-damage | 2 | 1 | mc-compat-valence-ctf-combat-damage-dry-run | mc-compat-valence-ctf-combat-damage | typed-event-ready |
-| combat-knockback | combat-knockback | 2 | 1 | mc-compat-valence-ctf-combat-knockback-dry-run | mc-compat-valence-ctf-combat-knockback | typed-event-ready |
-| vanilla-combat-reference-parity | vanilla-combat-reference-parity | 2 | 1 | - | mc-compat-vanilla-combat-reference-parity | substring-fallback |
-| vanilla-combat-armor-reference-parity | vanilla-combat-armor-reference-parity | 2 | 1 | - | mc-compat-smoke | substring-fallback |
-| armor-equipment-mitigation | armor-equipment-mitigation | 2 | 1 | mc-compat-valence-ctf-armor-equipment-mitigation-dry-run | mc-compat-valence-ctf-armor-equipment-mitigation | typed-event-ready |
-| equipment-update-observation | equipment-update-observation | 2 | 1 | mc-compat-valence-ctf-equipment-update-observation-dry-run | mc-compat-valence-ctf-equipment-update-observation | typed-event-ready |
-| projectile-hit | projectile-hit | 2 | 1 | mc-compat-valence-ctf-projectile-hit-dry-run | mc-compat-valence-ctf-projectile-hit | typed-event-ready |
-| projectile-damage-attribution | projectile-damage-attribution | 2 | 1 | mc-compat-valence-ctf-projectile-damage-attribution-dry-run | mc-compat-valence-ctf-projectile-damage-attribution | typed-event-ready |
-| flag-carrier-death-return | flag-carrier-death-return | 2 | 1 | mc-compat-valence-ctf-flag-carrier-death-return-dry-run | mc-compat-valence-ctf-flag-carrier-death-return | typed-event-ready |
-| reconnect-flag-state | reconnect-flag-state | 1 | 2 | mc-compat-valence-ctf-reconnect-flag-state-dry-run | mc-compat-valence-ctf-reconnect-flag-state | typed-event-ready |
-| ctf-invalid-pickup-ownership | ctf-invalid-pickup-ownership | 1 | 1 | mc-compat-valence-ctf-invalid-pickup-ownership-dry-run | mc-compat-valence-ctf-invalid-pickup-ownership | typed-event-ready |
-| ctf-invalid-return-drop | ctf-invalid-return-drop | 1 | 1 | mc-compat-valence-ctf-invalid-return-drop-dry-run | mc-compat-valence-ctf-invalid-return-drop | typed-event-ready |
-| ctf-invalid-opponent-base-return-drop | ctf-invalid-opponent-base-return-drop | 1 | 1 | mc-compat-valence-ctf-invalid-opponent-base-return-drop-dry-run | mc-compat-valence-ctf-invalid-opponent-base-return-drop | typed-event-ready |
-| ctf-score-limit-win-condition | ctf-score-limit-win-condition | 1 | 1 | mc-compat-valence-ctf-score-limit-win-condition-dry-run | mc-compat-valence-ctf-score-limit-win-condition | typed-event-ready |
-| ctf-simultaneous-pickup-capture-race | ctf-simultaneous-pickup-capture-race | 2 | 1 | mc-compat-valence-ctf-simultaneous-pickup-capture-race-dry-run | mc-compat-valence-ctf-simultaneous-pickup-capture-race | typed-event-ready |
-| ctf-spawn-team-balance-reset | ctf-spawn-team-balance-reset | 2 | 1 | mc-compat-valence-ctf-spawn-team-balance-reset-dry-run | mc-compat-valence-ctf-spawn-team-balance-reset | typed-event-ready |
-| reconnect-flag-score | reconnect-flag-score | 1 | 2 | mc-compat-open-cairns-dry-run | mc-compat-smoke | typed-event-ready |
-| multi-client-load-score | multi-client-load-score | 2 | 1 | mc-compat-multi-client-scenario-dry-run | mc-compat-smoke | typed-event-ready |
+| Scenario | Aliases | Clients | Sessions | Dry-run check | Wrapper | Migration | Receipt expectations |
+| --- | --- | ---: | ---: | --- | --- | --- | --- |
+| smoke | smoke | 1 | 1 | mc-compat-dry-run | mc-compat-smoke | typed-event-ready | schema, headless, typed-scenario, typed-event-ready, non-claims |
+| valence-compat-bot-probe | valence-compat-bot-probe, compat-bot-probe | 1 | 1 | mc-compat-bot-probe-dry-run | mc-compat-smoke | substring-fallback | schema, compat_bot_probe, headless, non-claims |
+| flag-score-repeat | flag-score-repeat | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | typed-event-ready | schema, client_server_correlation, gameplay_oracles, typed-event-ready, non-claims |
+| blue-flag-score | blue-flag-score | 1 | 1 | mc-compat-blue-flag-score-dry-run | mc-compat-smoke | typed-event-ready | schema, client_server_correlation, gameplay_oracles, typed-event-ready, non-claims |
+| inventory-interaction | inventory-interaction | 1 | 1 | mc-compat-valence-ctf-inventory-interaction-dry-run | mc-compat-valence-ctf-inventory-interaction | typed-event-ready | schema, inventory_semantics, client_server_correlation, typed-event-ready, non-claims |
+| inventory-stack-split-merge | inventory-stack-split-merge | 1 | 1 | mc-compat-valence-inventory-stack-split-merge-dry-run | mc-compat-valence-inventory-stack-split-merge | typed-event-ready | schema, inventory_stack_split_merge, client_server_correlation, typed-event-ready, non-claims |
+| inventory-drag-transactions | inventory-drag-transactions | 1 | 1 | mc-compat-valence-inventory-drag-transactions-dry-run | mc-compat-valence-inventory-drag-transactions | typed-event-ready | schema, inventory_drag_transactions, client_server_correlation, typed-event-ready, non-claims |
+| survival-break-place-pickup | survival-break-place-pickup | 1 | 1 | mc-compat-valence-survival-break-place-pickup-dry-run | mc-compat-valence-survival-break-place-pickup | typed-event-ready | schema, survival_reference_pair, client_server_correlation, typed-event-ready, non-claims |
+| survival-chest-persistence | survival-chest-persistence | 1 | 2 | mc-compat-historical-scenario-dry-runs | mc-compat-valence-survival-chest-persistence | typed-event-ready | schema, survival_chest_persistence, client_server_correlation, typed-event-ready, non-claims |
+| survival-crafting-table | survival-crafting-table | 1 | 1 | mc-compat-valence-survival-crafting-table-dry-run | mc-compat-valence-survival-crafting-table | typed-event-ready | schema, survival_crafting_table, client_server_correlation, typed-event-ready, non-claims |
+| survival-crafting-recipe-breadth | survival-crafting-recipe-breadth | 1 | 1 | mc-compat-valence-survival-crafting-recipe-breadth-dry-run | mc-compat-valence-survival-crafting-recipe-breadth | typed-event-ready | schema, survival_crafting_recipe_breadth, client_server_correlation, bounded_recipe_breadth, typed-event-ready, non-claims |
+| survival-furnace-persistence | survival-furnace-persistence | 1 | 2 | mc-compat-valence-survival-furnace-persistence-dry-run | mc-compat-valence-survival-furnace-persistence | typed-event-ready | schema, survival_furnace_persistence, client_server_correlation, typed-event-ready, non-claims |
+| survival-furnace-smelting-breadth | survival-furnace-smelting-breadth | 1 | 1 | mc-compat-valence-survival-furnace-smelting-breadth-dry-run | mc-compat-valence-survival-furnace-smelting-breadth | typed-event-ready | schema, survival_furnace_smelting_breadth, client_server_correlation, bounded_smelting_breadth, typed-event-ready, non-claims |
+| survival-hunger-food | survival-hunger-food | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback | schema, survival_hunger_food, client_server_correlation, non-claims |
+| survival-hunger-health-cycle | survival-hunger-health-cycle | 1 | 1 | mc-compat-valence-survival-hunger-health-cycle-dry-run | mc-compat-valence-survival-hunger-health-cycle | typed-event-ready | schema, survival_hunger_health_cycle, client_server_correlation, bounded_health_cycle, typed-event-ready, non-claims |
+| survival-mob-drop | survival-mob-drop | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback | schema, survival_mob_drop, client_server_correlation, non-claims |
+| survival-mob-ai-loot-breadth | survival-mob-ai-loot-breadth | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | typed-event-ready | schema, survival_mob_ai_loot_breadth, client_server_correlation, bounded_mob_ai_loot, typed-event-ready, non-claims |
+| survival-redstone-toggle | survival-redstone-toggle | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback | schema, survival_redstone_toggle, client_server_correlation, non-claims |
+| survival-redstone-circuit-breadth | survival-redstone-circuit-breadth | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | typed-event-ready | schema, survival_redstone_circuit_breadth, client_server_correlation, bounded_redstone_circuit, typed-event-ready, non-claims |
+| survival-world-persistence-restart | survival-world-persistence-restart | 1 | 2 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback | schema, survival_world_persistence, client_server_correlation, non-claims |
+| survival-world-multichunk-durability | survival-world-multichunk-durability | 1 | 2 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | typed-event-ready | schema, survival_world_multichunk_durability, client_server_correlation, controlled_reload, typed-event-ready, non-claims |
+| survival-crash-recovery-parity | survival-crash-recovery-parity | 1 | 2 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback | schema, survival_crash_recovery, client_server_correlation, non-claims |
+| survival-block-entity-persistence-parity | survival-block-entity-persistence-parity | 1 | 2 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback | schema, survival_block_entity_persistence, client_server_correlation, non-claims |
+| survival-container-block-entity-breadth | survival-container-block-entity-breadth | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | typed-event-ready | schema, survival_container_block_entity_breadth, client_server_correlation, bounded_container_block_entity, typed-event-ready, non-claims |
+| survival-biome-dimension-state | survival-biome-dimension-state | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | substring-fallback | schema, survival_biome_dimension, client_environment_observation, non-claims |
+| survival-biome-dimension-travel | survival-biome-dimension-travel | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | typed-event-ready | schema, survival_biome_dimension_travel, client_server_correlation, bounded_dimension_travel, typed-event-ready, non-claims |
+| survival-sign-editing-live | survival-sign-editing-live | 1 | 1 | mc-compat-historical-scenario-dry-runs | mc-compat-smoke | typed-event-ready | schema, survival_sign_editing_live, client_server_correlation, bounded_sign_editing, typed-event-ready, non-claims |
+| mcp-controlled-smoke | mcp-controlled-smoke | 1 | 1 | mc-compat-mcp-controlled-smoke-dry-run | mc-compat-mcp-controlled-smoke | typed-event-ready | schema, mcp_control, frame_artifacts, typed-event-ready, non-claims |
+| combat-damage | combat-damage | 2 | 1 | mc-compat-valence-ctf-combat-damage-dry-run | mc-compat-valence-ctf-combat-damage | typed-event-ready | schema, combat_damage, client_server_correlation, typed-event-ready, non-claims |
+| combat-knockback | combat-knockback | 2 | 1 | mc-compat-valence-ctf-combat-knockback-dry-run | mc-compat-valence-ctf-combat-knockback | typed-event-ready | schema, combat_knockback, client_server_correlation, typed-event-ready, non-claims |
+| vanilla-combat-reference-parity | vanilla-combat-reference-parity | 2 | 1 | - | mc-compat-vanilla-combat-reference-parity | substring-fallback | schema, paper_reference_combat, valence_combat_reference, client_server_correlation, non-claims |
+| vanilla-combat-armor-reference-parity | vanilla-combat-armor-reference-parity | 2 | 1 | - | mc-compat-smoke | substring-fallback | schema, paper_reference_combat, valence_combat_reference, armor_reference_metrics, client_server_correlation, non-claims |
+| armor-equipment-mitigation | armor-equipment-mitigation | 2 | 1 | mc-compat-valence-ctf-armor-equipment-mitigation-dry-run | mc-compat-valence-ctf-armor-equipment-mitigation | typed-event-ready | schema, armor_mitigation, client_server_correlation, typed-event-ready, non-claims |
+| equipment-update-observation | equipment-update-observation | 2 | 1 | mc-compat-valence-ctf-equipment-update-observation-dry-run | mc-compat-valence-ctf-equipment-update-observation | typed-event-ready | schema, equipment_update, client_server_correlation, typed-event-ready, non-claims |
+| projectile-hit | projectile-hit | 2 | 1 | mc-compat-valence-ctf-projectile-hit-dry-run | mc-compat-valence-ctf-projectile-hit | typed-event-ready | schema, projectile_loadout, client_server_correlation, typed-event-ready, non-claims |
+| projectile-damage-attribution | projectile-damage-attribution | 2 | 1 | mc-compat-valence-ctf-projectile-damage-attribution-dry-run | mc-compat-valence-ctf-projectile-damage-attribution | typed-event-ready | schema, projectile_damage_causality, client_server_correlation, typed-event-ready, non-claims |
+| flag-carrier-death-return | flag-carrier-death-return | 2 | 1 | mc-compat-valence-ctf-flag-carrier-death-return-dry-run | mc-compat-valence-ctf-flag-carrier-death-return | typed-event-ready | schema, death_respawn_lifecycle, client_server_correlation, typed-event-ready, non-claims |
+| reconnect-flag-state | reconnect-flag-state | 1 | 2 | mc-compat-valence-ctf-reconnect-flag-state-dry-run | mc-compat-valence-ctf-reconnect-flag-state | typed-event-ready | schema, reconnect_state, client_server_correlation, typed-event-ready, non-claims |
+| ctf-invalid-pickup-ownership | ctf-invalid-pickup-ownership | 1 | 1 | mc-compat-valence-ctf-invalid-pickup-ownership-dry-run | mc-compat-valence-ctf-invalid-pickup-ownership | typed-event-ready | schema, ctf_invalid_pickup_ownership, client_server_correlation, typed-event-ready, non-claims |
+| ctf-invalid-return-drop | ctf-invalid-return-drop | 1 | 1 | mc-compat-valence-ctf-invalid-return-drop-dry-run | mc-compat-valence-ctf-invalid-return-drop | typed-event-ready | schema, ctf_invalid_return_drop, client_server_correlation, typed-event-ready, non-claims |
+| ctf-invalid-opponent-base-return-drop | ctf-invalid-opponent-base-return-drop | 1 | 1 | mc-compat-valence-ctf-invalid-opponent-base-return-drop-dry-run | mc-compat-valence-ctf-invalid-opponent-base-return-drop | typed-event-ready | schema, ctf_invalid_opponent_base_return_drop, client_server_correlation, typed-event-ready, non-claims |
+| ctf-score-limit-win-condition | ctf-score-limit-win-condition | 1 | 1 | mc-compat-valence-ctf-score-limit-win-condition-dry-run | mc-compat-valence-ctf-score-limit-win-condition | typed-event-ready | schema, ctf_score_limit_win_condition, client_server_correlation, typed-event-ready, non-claims |
+| ctf-simultaneous-pickup-capture-race | ctf-simultaneous-pickup-capture-race | 2 | 1 | mc-compat-valence-ctf-simultaneous-pickup-capture-race-dry-run | mc-compat-valence-ctf-simultaneous-pickup-capture-race | typed-event-ready | schema, ctf_simultaneous_pickup_capture_race, client_server_correlation, typed-event-ready, non-claims |
+| ctf-spawn-team-balance-reset | ctf-spawn-team-balance-reset | 2 | 1 | mc-compat-valence-ctf-spawn-team-balance-reset-dry-run | mc-compat-valence-ctf-spawn-team-balance-reset | typed-event-ready | schema, ctf_spawn_team_balance_reset, client_server_correlation, typed-event-ready, non-claims |
+| reconnect-flag-score | reconnect-flag-score | 1 | 2 | mc-compat-open-cairns-dry-run | mc-compat-smoke | typed-event-ready | schema, reconnect_flag_score, client_server_correlation, typed-event-ready, non-claims |
+| multi-client-load-score | multi-client-load-score | 2 | 1 | mc-compat-multi-client-scenario-dry-run | mc-compat-smoke | typed-event-ready | schema, multi_client, client_server_correlation, typed-event-ready, non-claims |
 
 <!-- END: mc-compat-generated-scenario-index -->

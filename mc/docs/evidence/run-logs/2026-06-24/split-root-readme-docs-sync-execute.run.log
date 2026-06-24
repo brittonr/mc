@@ -1,0 +1,63 @@
+COMMAND: nix run .#cairn -- sync split-root-readme-docs --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/split-root-readme-docs/specs/repository-layout/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/split-root-readme-docs/specs/repository-layout/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "split-root-readme-docs",
+  "delta_specs": [
+    "./cairn/changes/split-root-readme-docs/specs/repository-layout/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "fbff0bdb83f118d663905300a4f4666ea05b6480137918b26c10dc7138edf499",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "3004666727cafc0db3eaf0bd81e5e110038ab31dc0ddae27cd9ab55c3c80f967",
+          "exists": true,
+          "path": "./cairn/specs/repository-layout/spec.md"
+        }
+      ],
+      "manifest_hash": "403d80934dff421eae24e5aaadb3ec5a1aac6d807fb2cb117d0bd02272bc6a51"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "3004666727cafc0db3eaf0bd81e5e110038ab31dc0ddae27cd9ab55c3c80f967",
+          "exists": true,
+          "path": "./cairn/specs/repository-layout/spec.md"
+        }
+      ],
+      "manifest_hash": "403d80934dff421eae24e5aaadb3ec5a1aac6d807fb2cb117d0bd02272bc6a51"
+    },
+    "kind": "sync",
+    "manifest_hash": "02f1b14148cffd05871583b235a3b85c01958b5f7e3d31df65c0743a394ce728"
+  },
+  "plan_hash": "f520ad17d0f1f5fa01a55a77dbf7092dd391e4093cb0eabd5ec4b6b0b4f72736",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "d104374c2d5c1f109aaddd2c04c048d3b771232a1cf5e8d4d4c468ec74b6349e"
+}
+exit_status=0
+
+COMMAND: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 4,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+exit_status=0
+

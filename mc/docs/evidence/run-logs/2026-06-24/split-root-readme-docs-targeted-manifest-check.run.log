@@ -1,0 +1,36 @@
+COMMAND: nix develop --no-update-lock-file . -c b3sum --check docs/evidence/split-root-readme-docs-validation.b3
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+docs/evidence/split-root-readme-docs-pre-gates.run.log: OK
+docs/evidence/split-root-readme-docs-baseline-generated.run.log: OK
+docs/evidence/split-root-readme-docs-generate-surfaces.run.log: OK
+docs/evidence/split-root-readme-docs-local-checks.run.log: OK
+docs/evidence/split-root-readme-docs-rustfmt.run.log: OK
+docs/evidence/split-root-readme-docs-generated-checks.run.log: OK
+docs/evidence/split-root-readme-docs-command-dry-runs.run.log: OK
+docs/evidence/split-root-readme-docs-cairn-gates.run.log: OK
+docs/evidence/split-root-readme-docs-post-generated-checks.run.log: OK
+docs/evidence/run-logs/2026-06-24/split-root-readme-docs-assess.run.log: OK
+docs/evidence/run-logs/2026-06-24/split-root-readme-docs-focused-checks.run.log: OK
+docs/evidence/run-logs/2026-06-24/split-root-readme-docs-sync-dry-run.run.log: OK
+docs/evidence/run-logs/2026-06-24/split-root-readme-docs-sync-execute.run.log: OK
+docs/evidence/run-logs/2026-06-24/split-root-readme-docs-post-sync-validate.run.log: OK
+docs/evidence/run-logs/2026-06-24/split-root-readme-docs-archive-dry-run.run.log: OK
+docs/evidence/run-logs/2026-06-24/split-root-readme-docs-archive-execute.run.log: OK
+docs/evidence/run-logs/2026-06-24/split-root-readme-docs-focused-task-evidence.run.log: OK
+docs/evidence/run-logs/2026-06-24/split-root-readme-docs-final-validate-list.run.log: OK
+README.md: OK
+docs/scenario-commands.md: OK
+docs/scenario-commands.generated.md: OK
+docs/evidence-workflow.md: OK
+docs/configuration.md: OK
+docs/verification.md: OK
+docs/scenario-derived-surfaces.md: OK
+docs/evidence/mc-compat-scenario-index.generated.md: OK
+compat/config/generated/scenario-wrapper-metadata.nix: OK
+tools/check_scenario_manifest.rs: OK
+cairn/specs/repository-layout/spec.md: OK
+cairn/archive/2026-06-24-split-root-readme-docs/tasks.md: OK
+exit_status=0

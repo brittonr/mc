@@ -1,0 +1,182 @@
+COMMAND: nix run .#cairn -- change list --root .
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "./cairn/changes/clean-repo-artifact-boundaries/specs/repository-layout/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "clean-repo-artifact-boundaries",
+      "path": "./cairn/changes/clean-repo-artifact-boundaries",
+      "task_counts": {
+        "done": 5,
+        "in_progress": 0,
+        "todo": 1,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/extend-manifest-derived-surfaces/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "extend-manifest-derived-surfaces",
+      "path": "./cairn/changes/extend-manifest-derived-surfaces",
+      "task_counts": {
+        "done": 5,
+        "in_progress": 0,
+        "todo": 1,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/introduce-scenario-command-router/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "introduce-scenario-command-router",
+      "path": "./cairn/changes/introduce-scenario-command-router",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/split-root-readme-docs/specs/repository-layout/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "split-root-readme-docs",
+      "path": "./cairn/changes/split-root-readme-docs",
+      "task_counts": {
+        "done": 6,
+        "in_progress": 0,
+        "todo": 0,
+        "total": 6,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "."
+}
+exit_status=0
+
+COMMAND: nix run .#cairn -- gate proposal split-root-readme-docs --root .
+{
+  "change": "split-root-readme-docs",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "1735a9cfe24164d7eb7b779f0ca668dd05c78123f12b42af5b6371f97540eaa4",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "8bf20e32d7e53875a14f7a1b6aa7c6e8e0c18dce43cb6ec2b0bba39a33047921",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+COMMAND: nix run .#cairn -- gate design split-root-readme-docs --root .
+{
+  "change": "split-root-readme-docs",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "beb47bb8f0d8832dc77e9c602c1e77f487aa3efa50cf5d5e75030196cb0d9f6e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "ccf99fc31d756478d7b9eeb1070bfa809aaee6869cda8ef117716a5edfdf1e36",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+COMMAND: nix run .#cairn -- gate tasks split-root-readme-docs --root .
+{
+  "change": "split-root-readme-docs",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "068756d79141d1caf519828031c730ab73b874fd07614033cc59aab0c4859698",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "ab81e1541070729bfc9acf3c3ebf1bc328ae90e15abd0735677500cda62a4f20",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+COMMAND: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 4,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+exit_status=0
+
