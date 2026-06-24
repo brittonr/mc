@@ -31,6 +31,8 @@ const REQUIRED_COMMANDS: &[&str] = &[
     "tools/check_check_tiers.rs --self-test",
     "nix run .#cairn -- validate --root .",
     "nix run .#evidence-manifest-refresh -- --check",
+    "tools/check_evidence_partitions.rs --self-test",
+    "tools/check_evidence_partitions.rs --root .",
     "nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L",
     "nix build .#checks.x86_64-linux.mc-compat-evidence-manifest-refresh --no-link -L",
     "nix build .#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L",

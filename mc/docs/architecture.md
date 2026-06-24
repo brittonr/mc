@@ -53,6 +53,12 @@ Repository artifacts are classified before cleanup or citation rules change:
 
 Root `evidence/` is retired. Historical notes that need to remain reviewable live under `docs/evidence/` with a legacy filename, and new task evidence must use `docs/evidence/` directly. Root `config/` is not a checked configuration root; checked configuration lives under `compat/config/`, while local scratch should stay ignored outside source-controlled paths.
 
+## Evidence partitions
+
+New durable evidence SHOULD follow the partition rules in `docs/evidence/README.md`: command receipts under `receipts/<yyyy-mm-dd>/`, command output under `run-logs/<yyyy-mm-dd>/`, BLAKE3 manifests under `manifests/<yyyy-mm-dd>/`, promoted sidecar logs under `logs/<yyyy-mm-dd>/`, oracle notes under `oracles/<yyyy-mm-dd>/`, generated navigation under `indexes/` or existing root generated paths, fixtures under `fixtures/<yyyy-mm-dd>/`, and archive-only artifacts under `archive/<yyyy-mm-dd>/`. Existing flat `docs/evidence/` paths remain citation-stable until a focused migration updates every task/spec/note and manifest reference.
+
+`docs/evidence/evidence-inventory.generated.md` classifies current artifacts, and `docs/evidence/evidence-index.generated.md` maps date/change/scenario keys to durable artifacts and covering manifests. `tools/check_evidence_partitions.rs` owns the freshness and path-safety checks for those generated surfaces.
+
 ## Evidence boundaries
 
 Receipts keep historical field names such as `client.git_rev`, `valence.git_rev_resolved`, and `stevenarella_child_revision` for schema compatibility. In this repository those fields mean parent-repository evidence scoped to the component path, not nested child-repo HEADs.

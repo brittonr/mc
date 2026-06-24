@@ -47,6 +47,10 @@ The layout guard does not claim live compatibility, semantic parity, production 
 | `scripts/` | Compatibility shims and local automation | Parent repository owned | `README.md` | Included only when selected by a focused check |
 | `tools/` | Rust/Steel validation tools and generators | Parent repository owned | `README.md` and `docs/check-tiers.md` | Included by focused tool and flake checks |
 
+## Evidence partitions
+
+Durable evidence partition rules live in `docs/evidence/README.md`; `docs/evidence/evidence-index.generated.md` and `docs/evidence/evidence-inventory.generated.md` are generated navigation surfaces checked by `tools/check_evidence_partitions.rs`.
+
 ## Review rules
 
 - Major owned component roots SHOULD have a local `AGENTS.md` or an explicit waiver in this checklist.

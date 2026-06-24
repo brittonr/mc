@@ -1,0 +1,417 @@
+
+## sync dry-run
+command=nix run .#cairn -- sync partition-evidence-directory --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/partition-evidence-directory/specs/repository-layout/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/partition-evidence-directory/specs/repository-layout/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "partition-evidence-directory",
+  "delta_specs": [
+    "./cairn/changes/partition-evidence-directory/specs/repository-layout/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "fa00fdded9a5e7f16a001bc6afbb94240db7f1d8af1ce095f20e15d7ed82cdb7",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "dd967d3a85b1f5459a75f066e346361bb9cdfeb1be7845626b4e51f301f4633c",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "6e2eeb350e458c60fb3995a311ff0a79e11e2565f3b91567a2baedaa0581f34b"
+}
+exit_status=0
+
+## sync execute
+command=nix run .#cairn -- sync partition-evidence-directory --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/partition-evidence-directory/specs/repository-layout/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/partition-evidence-directory/specs/repository-layout/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "partition-evidence-directory",
+  "delta_specs": [
+    "./cairn/changes/partition-evidence-directory/specs/repository-layout/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "fa00fdded9a5e7f16a001bc6afbb94240db7f1d8af1ce095f20e15d7ed82cdb7",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "eb0ea90e41dc33288a4094b7ac1b78493ba4fd1a6032fd4d631c103d405e78d5",
+          "exists": true,
+          "path": "./cairn/specs/repository-layout/spec.md"
+        }
+      ],
+      "manifest_hash": "48cc8ec34f6c3b2589fc066cbf2d7ae84e51bb9d9e918a9214416a4ca5cf6dbb"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "eb0ea90e41dc33288a4094b7ac1b78493ba4fd1a6032fd4d631c103d405e78d5",
+          "exists": true,
+          "path": "./cairn/specs/repository-layout/spec.md"
+        }
+      ],
+      "manifest_hash": "48cc8ec34f6c3b2589fc066cbf2d7ae84e51bb9d9e918a9214416a4ca5cf6dbb"
+    },
+    "kind": "sync",
+    "manifest_hash": "bd4fae514e9542f77b6ca8a2540df27952d82c106fc09d4df39ac53bbcb1e3ec"
+  },
+  "plan_hash": "d10ff6a24247849371d36da2756837d3df5c19c2d55b1ae6227628e831fb218f",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "87d5f9a2b2f2dfab5c352c2c0de335b68557b8491bcdfd2af5b234921b197cbe"
+}
+exit_status=0
+
+## post-sync cairn validate
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 6,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 10,
+  "valid": true
+}
+exit_status=0
+
+
+## post-sync manifest refresh
+command=target/refresh-evidence-manifests --refresh
+evidence manifest refresh ok: mode=refresh; passes=1; manifests=467; entries=3661; current=3661; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=1; manifest_writes=0
+exit_status=0
+
+## post-sync manifest check
+command=target/refresh-evidence-manifests --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=467; entries=3661; current=3661; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+exit_status=0
+
+## post-sync evidence manifest checker
+command=target/check-evidence-manifests
+evidence manifests ok: 467 manifests, 3661 entries, 138 receipts scanned
+exit_status=0
+
+## manual accepted spec grep
+command=grep -n repository_layout.evidence_partition cairn/specs/repository-layout/spec.md
+629:r[repository_layout.evidence_partition.scheme] Durable evidence under `docs/evidence/` SHOULD follow a documented partition scheme for receipts, run logs, manifests, generated indexes, oracle notes, and archived/historical artifacts.
+633:r[repository_layout.evidence_partition.scheme.clear]
+641:r[repository_layout.evidence_partition.inventory] Existing `docs/evidence/` artifacts MUST be inventoried before bulk movement or partition migration.
+645:r[repository_layout.evidence_partition.inventory.citation]
+653:r[repository_layout.evidence_partition.manifest_rules] Evidence manifest tooling MUST resolve partitioned durable evidence paths and reject stale, missing, target-only, result-only, or path-escaping entries.
+657:r[repository_layout.evidence_partition.manifest_rules.valid]
+665:r[repository_layout.evidence_partition.index] The repository SHOULD provide a reviewable evidence index mapping changes, scenarios, dates, and artifact classes to durable evidence paths.
+669:r[repository_layout.evidence_partition.index.findable]
+676:r[repository_layout.evidence_partition.guards] Partition migration MUST include guards or fixtures for stale manifests, broken citations, missing index rows, and unsafe paths.
+680:r[repository_layout.evidence_partition.guards.broken]
+688:r[repository_layout.evidence_partition.validation] Evidence partitioning MUST record evidence manifest checks, task evidence validation, index freshness checks, and Cairn gates before archive.
+692:r[repository_layout.evidence_partition.validation.log]
+exit_status=0
+
+## manual merge cairn gate tasks
+command=nix run .#cairn -- gate tasks partition-evidence-directory --root .
+{
+  "change": "partition-evidence-directory",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "0f76faaff2e51ed874165f9f4da8267ed98e24003bdc0c9ce099adfc3ff9df97",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "aefd96a8f72b2c22a5ccb2a8d10751596fe46dd6f6f78795a42bdbce01b51d61",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## manual merge cairn validate
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 6,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 10,
+  "valid": true
+}
+exit_status=0
+
+## manual merge manifest refresh
+command=target/refresh-evidence-manifests --refresh
+evidence manifest refresh ok: mode=refresh; passes=2; manifests=478; entries=3880; current=3880; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=2; manifest_writes=9
+exit_status=0
+
+
+## archive dry-run
+command=nix run .#cairn -- archive partition-evidence-directory --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: partition-evidence-directory",
+      "kind": "archive_change",
+      "path": "./cairn/changes/partition-evidence-directory"
+    }
+  ],
+  "blocked": false,
+  "change": "partition-evidence-directory",
+  "dry_run": true,
+  "input_hash": "fa00fdded9a5e7f16a001bc6afbb94240db7f1d8af1ce095f20e15d7ed82cdb7",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "3f3ba873556951293f9095d99257859ed34f18c70df2261dc5bd3e56298f836f",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "a8523d3fffc84874e4976a9fb6eda95c91ee3975f658fd171e72b6bdc599b840"
+}
+exit_status=0
+
+## archive execute
+command=env CAIRN_ARCHIVE_DATE=2026-06-24 nix run .#cairn -- archive partition-evidence-directory --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: partition-evidence-directory",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-24-partition-evidence-directory"
+    }
+  ],
+  "blocked": false,
+  "change": "partition-evidence-directory",
+  "dry_run": false,
+  "input_hash": "fa00fdded9a5e7f16a001bc6afbb94240db7f1d8af1ce095f20e15d7ed82cdb7",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "9ae6bd77c753a748b0612d337884e56908d7d245a89c6ce08078d4a5aff839e2",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-24-partition-evidence-directory/design.md"
+        },
+        {
+          "content_hash": "84462c4c645cba7624666558ba55f4a1032cb98481deee63c658734db06f34be",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-24-partition-evidence-directory/proposal.md"
+        },
+        {
+          "content_hash": "7b8370e0afd11e51bc2574dd8bf9295d442ea492cc06fd9daf6e311c5fd6c2e4",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-24-partition-evidence-directory/specs/repository-layout/spec.md"
+        },
+        {
+          "content_hash": "68f207e46b565c1fdc6b9f9c209a1ac86feca4eb6879c34ef311624733bc1318",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-24-partition-evidence-directory/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/partition-evidence-directory"
+        }
+      ],
+      "manifest_hash": "7276eb9f8da4064a19e58e7c61c76b420fa57f9023610eaf67dd0c3ca37854db"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "9ae6bd77c753a748b0612d337884e56908d7d245a89c6ce08078d4a5aff839e2",
+          "exists": true,
+          "path": "./cairn/changes/partition-evidence-directory/design.md"
+        },
+        {
+          "content_hash": "84462c4c645cba7624666558ba55f4a1032cb98481deee63c658734db06f34be",
+          "exists": true,
+          "path": "./cairn/changes/partition-evidence-directory/proposal.md"
+        },
+        {
+          "content_hash": "7b8370e0afd11e51bc2574dd8bf9295d442ea492cc06fd9daf6e311c5fd6c2e4",
+          "exists": true,
+          "path": "./cairn/changes/partition-evidence-directory/specs/repository-layout/spec.md"
+        },
+        {
+          "content_hash": "68f207e46b565c1fdc6b9f9c209a1ac86feca4eb6879c34ef311624733bc1318",
+          "exists": true,
+          "path": "./cairn/changes/partition-evidence-directory/tasks.md"
+        }
+      ],
+      "manifest_hash": "0a2c23d74d3747a58fddc12190e15072201d62470afdba07afa2e61ad3b15494"
+    },
+    "kind": "archive",
+    "manifest_hash": "f88e80355f6d7722f66daa2c263672edf0eb659beeca1ef332311e1912a022d1"
+  },
+  "plan_hash": "2fa0525b8c9fcb76fd35b635f337967edf7421effc3d8a041ad954aed86d3036",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "cd91e2c1deaa23d5e462a308525f0e9595c035e637e3d93cc7cad427a8d67fe2"
+}
+exit_status=0
+
+## post-archive cairn validate
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 5,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 9,
+  "valid": true
+}
+exit_status=0
+
+## archived task evidence gate
+command=target/check-cairn-task-evidence cairn/archive/2026-06-24-partition-evidence-directory/tasks.md
+task evidence gate passed: 6 completed tasks checked across 1 task files
+exit_status=0
+
+## post-archive change list
+command=nix run .#cairn -- change list --root .
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "./cairn/changes/clean-repo-artifact-boundaries/specs/repository-layout/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "clean-repo-artifact-boundaries",
+      "path": "./cairn/changes/clean-repo-artifact-boundaries",
+      "task_counts": {
+        "done": 5,
+        "in_progress": 0,
+        "todo": 1,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/extend-manifest-derived-surfaces/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "extend-manifest-derived-surfaces",
+      "path": "./cairn/changes/extend-manifest-derived-surfaces",
+      "task_counts": {
+        "done": 5,
+        "in_progress": 0,
+        "todo": 1,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/introduce-scenario-command-router/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "introduce-scenario-command-router",
+      "path": "./cairn/changes/introduce-scenario-command-router",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/split-root-flake-modules/specs/repository-layout/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "split-root-flake-modules",
+      "path": "./cairn/changes/split-root-flake-modules",
+      "task_counts": {
+        "done": 5,
+        "in_progress": 0,
+        "todo": 1,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/split-root-readme-docs/specs/repository-layout/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "split-root-readme-docs",
+      "path": "./cairn/changes/split-root-readme-docs",
+      "task_counts": {
+        "done": 6,
+        "in_progress": 0,
+        "todo": 0,
+        "total": 6,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "."
+}
+exit_status=0

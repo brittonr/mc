@@ -30,6 +30,8 @@ Use the smallest tier that covers the files and claim boundary you changed, then
 | `CAIRN_ARCHIVE_DATE=YYYY-MM-DD nix run .#cairn -- archive <change> --root . --execute` | `tier.archive` | Final archive execution | Archive mutation receipt |
 | `nix run .#evidence-manifest-refresh -- --check` | `tier.evidence` | Any `docs/evidence/*.b3`, README, accepted spec, or cited artifact change | Manifest freshness report |
 | `nix run .#evidence-manifest-refresh -- --refresh` | `tier.evidence` | When a check reports stale digests | Rewritten `.b3` manifests plus check report |
+| `tools/check_evidence_partitions.rs --self-test` | `tier.evidence` | Evidence partition checker or generated inventory/index changes | Positive/negative partition, missing index row, and path escape fixtures |
+| `tools/check_evidence_partitions.rs --root .` | `tier.evidence` | `docs/evidence/README.md`, generated evidence index/inventory, partitioned evidence paths, or partition docs change | Current-tree evidence partition/index freshness output |
 | `nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L` | `tier.evidence` | Checked Cairn tasks or cited task evidence changes | Flake check build log |
 | `nix build .#checks.x86_64-linux.mc-compat-evidence-manifest-refresh --no-link -L` | `tier.evidence` | Evidence manifest checker or manifest refresh changes | Flake check build log |
 | `nix build .#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L` | `tier.generated` | Scenario manifest/config/generated-surface changes | Flake check build log |

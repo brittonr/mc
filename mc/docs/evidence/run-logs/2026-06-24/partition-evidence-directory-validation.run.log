@@ -1,0 +1,130 @@
+
+## evidence partition self-test
+command=target/check-evidence-partitions --self-test
+evidence partitions self-test passed
+exit_status=0
+
+## evidence partition current tree
+command=target/check-evidence-partitions --root .
+evidence partitions passed: artifacts=2733, manifests=466
+exit_status=0
+
+## check-tier docs current tree
+command=target/check-check-tiers --root .
+check tier docs passed
+exit_status=0
+
+## evidence manifest refresh check
+command=target/refresh-evidence-manifests --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=466; entries=3660; current=3660; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+exit_status=0
+
+## evidence manifest checker
+command=target/check-evidence-manifests
+evidence manifests ok: 466 manifests, 3660 entries, 138 receipts scanned
+exit_status=0
+
+
+## preliminary validation manifest
+command=bash -lc b3sum docs/evidence/run-logs/2026-06-24/partition-evidence-directory-validation.run.log > docs/evidence/manifests/2026-06-24/partition-evidence-directory-validation.b3
+exit_status=0
+
+## focused task evidence gate
+command=target/check-cairn-task-evidence cairn/changes/partition-evidence-directory/tasks.md
+task evidence gate passed: 6 completed tasks checked across 1 task files
+exit_status=0
+
+## cairn gate proposal
+command=nix run .#cairn -- gate proposal partition-evidence-directory --root .
+{
+  "change": "partition-evidence-directory",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "28d536f206d8d3db035b46257e19a7fad39e499e3d44faef6761a89b347b7282",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "f2cba73941b6403a2e3de083c55358ebd6baf7081b11ce00f55b7383dade1859",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## cairn gate design
+command=nix run .#cairn -- gate design partition-evidence-directory --root .
+{
+  "change": "partition-evidence-directory",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f51563fea70358d1bb98ec7759b8456e39b1e63ac2f8cc9a349c8a02e42db869",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "d9b533b1768dc846b838537da13e6f80971907864d7b41cc890f81cdd3881319",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## cairn gate tasks
+command=nix run .#cairn -- gate tasks partition-evidence-directory --root .
+{
+  "change": "partition-evidence-directory",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "0f76faaff2e51ed874165f9f4da8267ed98e24003bdc0c9ce099adfc3ff9df97",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "aefd96a8f72b2c22a5ccb2a8d10751596fe46dd6f6f78795a42bdbce01b51d61",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## cairn validate
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 6,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 10,
+  "valid": true
+}
+exit_status=0
+
+## post-index-refresh evidence partition current tree
+command=target/check-evidence-partitions --root .
+evidence partitions passed: artifacts=2735, manifests=467
+exit_status=0
+

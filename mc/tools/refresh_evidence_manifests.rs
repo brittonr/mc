@@ -22,6 +22,11 @@ const DEFAULT_MAX_REFRESH_PASSES: usize = 20;
 const NON_CONVERGENCE_FIXTURE_MAX_PASSES: usize = 2;
 const TEMP_DIR_PREFIX: &str = "evidence-manifest-refresh-self-test";
 const TOOL_NAME: &str = "evidence manifest refresh";
+const GIT_COMMAND: &str = "git";
+const GIT_CWD_FLAG: &str = "-C";
+const GIT_LS_FILES_SUBCOMMAND: &str = "ls-files";
+const GIT_CACHED_FLAG: &str = "--cached";
+const GIT_PATHSPEC_SEPARATOR: &str = "--";
 const SUCCESS: ExitCode = ExitCode::SUCCESS;
 const FAILURE: ExitCode = ExitCode::FAILURE;
 
@@ -332,8 +337,11 @@ fn scan_once(root: &Path, evidence_dir: &Path) -> Result<RefreshPlan, Vec<String
     Ok(plan_from_parsed(&parsed, &file_states))
 }
 
-fn read_manifest_inputs(root: &Path, evidence_dir: &Path) -> Result<Vec<ManifestInput>, Vec<String>> {
-    let manifests = discover_manifests(evidence_dir);
+fn read_manifest_inputs(
+    root: &Path,
+    evidence_dir: &Path,
+) -> Result<Vec<ManifestInput>, Vec<String>> {
+    let manifests = discover_manifests(root, evidence_dir);
     if manifests.is_empty() {
         return Err(vec![format!(
             "no *.{MANIFEST_EXTENSION} manifests found under {}",
@@ -360,18 +368,57 @@ fn read_manifest_inputs(root: &Path, evidence_dir: &Path) -> Result<Vec<Manifest
     }
 }
 
-fn discover_manifests(evidence_dir: &Path) -> Vec<PathBuf> {
+fn discover_manifests(root: &Path, evidence_dir: &Path) -> Vec<PathBuf> {
+    if let Some(paths) = git_cached_manifest_paths(root, evidence_dir) {
+        return paths;
+    }
     let mut manifests = Vec::new();
-    if let Ok(entries) = fs::read_dir(evidence_dir) {
+    collect_manifest_paths(evidence_dir, &mut manifests);
+    manifests.sort();
+    manifests
+}
+
+fn git_cached_manifest_paths(root: &Path, evidence_dir: &Path) -> Option<Vec<PathBuf>> {
+    let evidence_pathspec = display_path(root, evidence_dir);
+    let output = Command::new(GIT_COMMAND)
+        .arg(GIT_CWD_FLAG)
+        .arg(root)
+        .arg(GIT_LS_FILES_SUBCOMMAND)
+        .arg(GIT_CACHED_FLAG)
+        .arg(GIT_PATHSPEC_SEPARATOR)
+        .arg(evidence_pathspec)
+        .output()
+        .ok()?;
+    if !output.status.success() {
+        return None;
+    }
+    let stdout = String::from_utf8(output.stdout).ok()?;
+    let mut manifests = stdout
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+        .filter(|line| Path::new(line).extension() == Some(OsStr::new(MANIFEST_EXTENSION)))
+        .map(|line| root.join(line))
+        .collect::<Vec<_>>();
+    if manifests.is_empty() {
+        None
+    } else {
+        manifests.sort();
+        Some(manifests)
+    }
+}
+
+fn collect_manifest_paths(current: &Path, manifests: &mut Vec<PathBuf>) {
+    if let Ok(entries) = fs::read_dir(current) {
         for entry in entries.flatten() {
             let path = entry.path();
-            if path.is_file() && path.extension() == Some(OsStr::new(MANIFEST_EXTENSION)) {
+            if path.is_dir() {
+                collect_manifest_paths(&path, manifests);
+            } else if path.is_file() && path.extension() == Some(OsStr::new(MANIFEST_EXTENSION)) {
                 manifests.push(path);
             }
         }
     }
-    manifests.sort();
-    manifests
 }
 
 fn parse_all_manifests(inputs: Vec<ManifestInput>) -> Vec<ParsedManifest> {
@@ -570,9 +617,8 @@ fn plan_from_parsed(
                                 "{}:{line_number}: stale digest for {relative_path}: expected {digest}, found {original_digest}",
                                 manifest.display_path
                             ));
-                            output_lines.push(format!(
-                                "{digest}{MANIFEST_SEPARATOR}{relative_path}"
-                            ));
+                            output_lines
+                                .push(format!("{digest}{MANIFEST_SEPARATOR}{relative_path}"));
                             changed = true;
                         }
                         Some(FileState::Missing) => {
@@ -689,6 +735,7 @@ fn run_self_tests() -> Result<String, Vec<String>> {
     stale_manifest_check_does_not_write_fixture()?;
     refresh_updates_stale_manifest_fixture()?;
     cascading_manifest_refresh_fixture()?;
+    partitioned_manifest_fixture()?;
     missing_file_fixture()?;
     malformed_manifest_fixture()?;
     outside_root_fixture()?;
@@ -766,15 +813,35 @@ fn cascading_manifest_refresh_fixture() -> Result<(), Vec<String>> {
     remove_temp_root(&root)
 }
 
+fn partitioned_manifest_fixture() -> Result<(), Vec<String>> {
+    let root = make_temp_root("partitioned")?;
+    let evidence_dir = create_evidence_dir(&root)?;
+    let run_log_dir = evidence_dir.join("run-logs").join("2026-06-24");
+    let manifest_dir = evidence_dir.join("manifests").join("2026-06-24");
+    fs::create_dir_all(&run_log_dir)
+        .map_err(|error| vec![format!("{}: {error}", run_log_dir.display())])?;
+    fs::create_dir_all(&manifest_dir)
+        .map_err(|error| vec![format!("{}: {error}", manifest_dir.display())])?;
+    let run_log = run_log_dir.join("partitioned.run.log");
+    write_file(&run_log, "partitioned evidence\nexit_status=0\n")?;
+    let digest = b3sum_digest(&run_log).map_err(single_error)?;
+    write_manifest(
+        &manifest_dir.join("partitioned.b3"),
+        &digest,
+        "docs/evidence/run-logs/2026-06-24/partitioned.run.log",
+    )?;
+
+    let summary = run_check(&root, &evidence_dir)?;
+    assert_text_contains(&summary, "manifests=1")?;
+    assert_text_contains(&summary, "entries=1")?;
+    remove_temp_root(&root)
+}
+
 fn missing_file_fixture() -> Result<(), Vec<String>> {
     let root = make_temp_root("missing")?;
     let evidence_dir = create_evidence_dir(&root)?;
     let manifest = evidence_dir.join("missing.b3");
-    write_manifest(
-        &manifest,
-        &zero_digest(),
-        "docs/evidence/missing.run.log",
-    )?;
+    write_manifest(&manifest, &zero_digest(), "docs/evidence/missing.run.log")?;
     let before = read_file(&manifest)?;
 
     assert_error_contains(&run_check(&root, &evidence_dir), "missing file")?;
@@ -803,7 +870,11 @@ fn malformed_manifest_fixture() -> Result<(), Vec<String>> {
 fn outside_root_fixture() -> Result<(), Vec<String>> {
     let root = make_temp_root("outside")?;
     let evidence_dir = create_evidence_dir(&root)?;
-    write_manifest(&evidence_dir.join("outside.b3"), &zero_digest(), "../secret")?;
+    write_manifest(
+        &evidence_dir.join("outside.b3"),
+        &zero_digest(),
+        "../secret",
+    )?;
 
     assert_error_contains(&run_check(&root, &evidence_dir), "path outside repository")?;
     assert_error_contains(
@@ -823,11 +894,7 @@ fn non_converging_manifest_fixture() -> Result<(), Vec<String>> {
     )?;
 
     assert_error_contains(
-        &run_refresh(
-            &root,
-            &evidence_dir,
-            NON_CONVERGENCE_FIXTURE_MAX_PASSES,
-        ),
+        &run_refresh(&root, &evidence_dir, NON_CONVERGENCE_FIXTURE_MAX_PASSES),
         "did not converge",
     )?;
     remove_temp_root(&root)
@@ -866,7 +933,10 @@ fn read_file(path: &Path) -> Result<String, Vec<String>> {
 }
 
 fn write_manifest(path: &Path, digest: &str, relative_path: &str) -> Result<(), Vec<String>> {
-    write_file(path, &format!("{digest}{MANIFEST_SEPARATOR}{relative_path}\n"))
+    write_file(
+        path,
+        &format!("{digest}{MANIFEST_SEPARATOR}{relative_path}\n"),
+    )
 }
 
 fn zero_digest() -> String {
@@ -877,7 +947,10 @@ fn single_error(error: String) -> Vec<String> {
     vec![error]
 }
 
-fn assert_error_contains(result: &Result<String, Vec<String>>, needle: &str) -> Result<(), Vec<String>> {
+fn assert_error_contains(
+    result: &Result<String, Vec<String>>,
+    needle: &str,
+) -> Result<(), Vec<String>> {
     match result {
         Ok(summary) => Err(vec![format!(
             "expected diagnostic {needle:?}, got success {summary:?}"

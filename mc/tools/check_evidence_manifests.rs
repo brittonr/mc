@@ -17,6 +17,11 @@ const STALE_RECEIPT_MARKER: &str = "equipment_packet_observed";
 const STALE_RECEIPT_REPLACEMENT: &str = "use entity_equipment_update";
 const TEMP_DIR_PREFIX: &str = "evidence-manifest-self-test-";
 const CHECKER_NAME: &str = "evidence manifest";
+const GIT_COMMAND: &str = "git";
+const GIT_CWD_FLAG: &str = "-C";
+const GIT_LS_FILES_SUBCOMMAND: &str = "ls-files";
+const GIT_CACHED_FLAG: &str = "--cached";
+const GIT_PATHSPEC_SEPARATOR: &str = "--";
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 struct ManifestEntry {
@@ -69,7 +74,7 @@ fn print_errors(errors: &[String]) {
 }
 
 fn check_evidence(root: &Path, evidence_dir: &Path) -> Result<CheckSummary, Vec<String>> {
-    let manifests = discover_by_extension(evidence_dir, MANIFEST_EXTENSION);
+    let manifests = discover_by_extension(root, evidence_dir, MANIFEST_EXTENSION);
     let mut entries = Vec::new();
     let mut errors = Vec::new();
     for manifest in &manifests {
@@ -145,32 +150,85 @@ fn is_blake3_digest(value: &str) -> bool {
     value.len() == BLAKE3_HEX_LENGTH && value.bytes().all(|byte| byte.is_ascii_hexdigit())
 }
 
-fn discover_by_extension(dir: &Path, extension: &str) -> Vec<PathBuf> {
-    let mut paths = Vec::new();
-    if let Ok(entries) = fs::read_dir(dir) {
-        for entry in entries.flatten() {
-            let path = entry.path();
-            if path.is_file() && path.extension() == Some(OsStr::new(extension)) {
-                paths.push(path);
-            }
-        }
+fn discover_by_extension(root: &Path, dir: &Path, extension: &str) -> Vec<PathBuf> {
+    if let Some(paths) = git_cached_matching_paths(root, dir, &|path| {
+        Path::new(path).extension() == Some(OsStr::new(extension))
+    }) {
+        return paths;
     }
+    let mut paths = Vec::new();
+    collect_matching_paths(dir, &mut paths, &|path| {
+        path.extension() == Some(OsStr::new(extension))
+    });
     paths.sort();
     paths
 }
 
-fn discover_receipts(evidence_dir: &Path) -> Vec<PathBuf> {
+fn discover_receipts(root: &Path, evidence_dir: &Path) -> Vec<PathBuf> {
+    if let Some(paths) =
+        git_cached_matching_paths(root, evidence_dir, &|path| path.ends_with(RECEIPT_SUFFIX))
+    {
+        return paths;
+    }
     let mut paths = Vec::new();
-    if let Ok(entries) = fs::read_dir(evidence_dir) {
+    collect_matching_paths(evidence_dir, &mut paths, &|path| {
+        path.to_string_lossy().ends_with(RECEIPT_SUFFIX)
+    });
+    paths.sort();
+    paths
+}
+
+fn git_cached_matching_paths<F>(
+    root: &Path,
+    evidence_dir: &Path,
+    predicate: &F,
+) -> Option<Vec<PathBuf>>
+where
+    F: Fn(&str) -> bool,
+{
+    let evidence_pathspec = display_path(root, evidence_dir);
+    let output = Command::new(GIT_COMMAND)
+        .arg(GIT_CWD_FLAG)
+        .arg(root)
+        .arg(GIT_LS_FILES_SUBCOMMAND)
+        .arg(GIT_CACHED_FLAG)
+        .arg(GIT_PATHSPEC_SEPARATOR)
+        .arg(evidence_pathspec)
+        .output()
+        .ok()?;
+    if !output.status.success() {
+        return None;
+    }
+    let stdout = String::from_utf8(output.stdout).ok()?;
+    let mut paths = stdout
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+        .filter(|line| predicate(line))
+        .map(|line| root.join(line))
+        .collect::<Vec<_>>();
+    if paths.is_empty() {
+        None
+    } else {
+        paths.sort();
+        Some(paths)
+    }
+}
+
+fn collect_matching_paths<F>(current: &Path, paths: &mut Vec<PathBuf>, predicate: &F)
+where
+    F: Fn(&Path) -> bool,
+{
+    if let Ok(entries) = fs::read_dir(current) {
         for entry in entries.flatten() {
             let path = entry.path();
-            if path.is_file() && path.to_string_lossy().ends_with(RECEIPT_SUFFIX) {
+            if path.is_dir() {
+                collect_matching_paths(&path, paths, predicate);
+            } else if path.is_file() && predicate(&path) {
                 paths.push(path);
             }
         }
     }
-    paths.sort();
-    paths
 }
 
 fn validate_manifest_entries(root: &Path, entries: &[ManifestEntry]) -> Vec<String> {
@@ -230,7 +288,7 @@ fn run_b3sum_checks(root: &Path, manifests: &[PathBuf]) -> Vec<String> {
 
 fn receipt_paths(root: &Path, evidence_dir: &Path, entries: &[ManifestEntry]) -> Vec<PathBuf> {
     let mut paths = BTreeSet::new();
-    for path in discover_receipts(evidence_dir) {
+    for path in discover_receipts(root, evidence_dir) {
         paths.insert(canonical_path(&path));
     }
     for entry in entries {
@@ -247,6 +305,13 @@ fn receipt_paths(root: &Path, evidence_dir: &Path, entries: &[ManifestEntry]) ->
 
 fn canonical_path(path: &Path) -> PathBuf {
     path.canonicalize().unwrap_or_else(|_| path.to_path_buf())
+}
+
+fn display_path(root: &Path, path: &Path) -> String {
+    path.strip_prefix(root)
+        .unwrap_or(path)
+        .to_string_lossy()
+        .into_owned()
 }
 
 fn stale_marker_errors(receipts: &[PathBuf]) -> Vec<String> {
@@ -295,6 +360,34 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         },
     )?;
 
+    let partitioned_receipt_dir = evidence_dir.join("receipts").join("2026-06-24");
+    let partitioned_manifest_dir = evidence_dir.join("manifests").join("2026-06-24");
+    fs::create_dir_all(&partitioned_receipt_dir)
+        .map_err(|error| vec![format!("{}: {error}", partitioned_receipt_dir.display())])?;
+    fs::create_dir_all(&partitioned_manifest_dir)
+        .map_err(|error| vec![format!("{}: {error}", partitioned_manifest_dir.display())])?;
+    let partitioned_receipt = partitioned_receipt_dir.join("good.receipt.json");
+    write_file(
+        &partitioned_receipt,
+        "{\"required_milestones\":[\"entity_equipment_update\"],\"partitioned\":true}\n",
+    )?;
+    let partitioned_digest = b3sum_digest(&partitioned_receipt)?;
+    write_file(
+        &partitioned_manifest_dir.join("good.b3"),
+        &format!(
+            "{partitioned_digest}{MANIFEST_SEPARATOR}docs/evidence/receipts/2026-06-24/good.receipt.json\n"
+        ),
+    )?;
+    let summary = check_evidence(&root, &evidence_dir)?;
+    assert_summary(
+        summary,
+        CheckSummary {
+            manifests: 2,
+            entries: 2,
+            receipts_scanned: 2,
+        },
+    )?;
+
     let stale = evidence_dir.join("stale.receipt.json");
     write_file(
         &stale,
@@ -315,9 +408,9 @@ fn run_self_tests() -> Result<String, Vec<String>> {
     assert_summary(
         summary,
         CheckSummary {
-            manifests: 2,
-            entries: 2,
-            receipts_scanned: 1,
+            manifests: 3,
+            entries: 3,
+            receipts_scanned: 2,
         },
     )?;
 
