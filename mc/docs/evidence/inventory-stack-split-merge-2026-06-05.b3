@@ -11,7 +11,7 @@ ed4ba040b529d40232ed0c459358dcf0066dfa01108717c4f36095f5c825bf0f  docs/evidence/
 f84798965b8e87d6ab51333d8ff38d420ecea1c0948c85fd4c7b5e4ba8156d5e  docs/evidence/inventory-stack-split-merge-cairn-final-2026-06-05.run.log
 4fdef822facae840e7430a3d916dfe871d1a1bec9c06678a1aad356d1ed33c77  docs/evidence/inventory-stack-split-merge-flake-final-2026-06-05.run.log
 050b48b312227d4ebb7118aa0e73f6f278d2afb534d221e9458bf8d4a2de36aa  docs/evidence/inventory-stack-split-merge-archive-validation-2026-06-06.run.log
-9c3acc9c336c56b1b620bf54520ff04a187191cc8c56e21be040f4b12990be26  README.md
+d606988f1ee5d021ede83a357e69dff33fa347419d2fad90f4f77988b063dfe6  README.md
 371920873afe846f2413fe6e79e3d80e3beb8da432632fbc312dd1a018b17f18  flake.nix
 b471fb927ec046054595bc7d5630322667f240180c64294729ad008cd9153783  compat/config/scenario-manifest.ncl
 2326dffef981c7eeb283e3c220c7b054dc1dbef903d004d48dc5be8cc9c528f5  compat/runner/src/main.rs
@@ -21,7 +21,7 @@ dd468df16affa6e540afa148e24da7481e2cdb946fe6172e26603dfdb1d94275  tools/check_ac
 a05d30d8289d1d3b9a1c1ad3662982f52ce499162e7818907681ab7dabd4f400  tools/check_current_evidence_bundle.rs
 08bca3daca99b1e61f8d139c7906e872ca5231b0624209e8dd88fa5ff808063a  docs/evidence/protocol-763-acceptance-matrix.md
 8ea2e7031210cdd778e2fb2a90bf86df8e4b6b1eca3b9c4f07fea5899e614784  docs/evidence/protocol-763-current-evidence-bundle.md
-921b7d5fcdf85e12d8dcf43ece48b3f3e888974fae96f11b7e24937a3e7dfc72  cairn/specs/mc-compatibility/spec.md
+efc5ca3839b0cf2b67fa65fa4436cea2088498ff1f6605bdfbdecb48bc93baca  cairn/specs/mc-compatibility/spec.md
 305067df7af0bd3bcadfb4d8119ea0aa7236547af3054728c22c2823b1e09fa0  cairn/archive/2026-06-06-promote-inventory-stack-split-merge/proposal.md
 0556aeffd65b59472380413f5755a3973fd891e5e85df599fe3838b08972c935  cairn/archive/2026-06-06-promote-inventory-stack-split-merge/design.md
 79a277cc5048b611146aab56ce2b673e0c86c42730e772f45f1fec4ddb4aa579  cairn/archive/2026-06-06-promote-inventory-stack-split-merge/tasks.md

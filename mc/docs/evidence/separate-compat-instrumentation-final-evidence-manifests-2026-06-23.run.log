@@ -1,0 +1,11 @@
+
+$ nix run .#evidence-manifest-refresh -- --check --root .
+evidence manifest refresh ok: mode=check; passes=0; manifests=471; entries=3742; current=3742; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+command=nix run .#evidence-manifest-refresh -- --check --root . exit_status=0
+
+$ nix build .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L
+this derivation will be built:
+  /nix/store/rx0xk9lgx5k0xgnn4hnmm3x3qb4q38cz-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/rx0xk9lgx5k0xgnn4hnmm3x3qb4q38cz-mc-compat-evidence-manifests.drv'...
+command=nix build .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L exit_status=0

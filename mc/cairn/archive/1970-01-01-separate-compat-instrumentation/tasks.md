@@ -1,0 +1,14 @@
+# Tasks
+
+- [x] [serial] Inventory client probes, capture hooks, MCP control surfaces, server fixture milestones, and scenario-specific toggles. r[mc_compatibility.compat_instrumentation_boundary.inventory]
+  - Evidence: `docs/evidence/separate-compat-instrumentation-preflight-2026-06-23.run.log` and `docs/evidence/separate-compat-instrumentation-cairn-post-2026-06-23.run.log`; BLAKE3 manifest `docs/evidence/separate-compat-instrumentation-validation-2026-06-23.b3`.
+- [x] [depends:inventory] Define explicit module/feature/entrypoint boundaries for compat instrumentation in client and server components. r[mc_compatibility.compat_instrumentation_boundary.contract]
+  - Evidence: `docs/evidence/separate-compat-instrumentation-stevenarella-post-fix-2026-06-23.run.log` and `docs/evidence/separate-compat-instrumentation-cairn-post-2026-06-23.run.log`; BLAKE3 manifest `docs/evidence/separate-compat-instrumentation-validation-2026-06-23.b3`.
+- [x] [depends:contract] Move or gate an initial instrumentation family while preserving typed-event and milestone vocabulary. r[mc_compatibility.compat_instrumentation_boundary.migration]
+  - Evidence: `docs/evidence/separate-compat-instrumentation-stevenarella-mcp-baseline-2026-06-23.run.log`, `docs/evidence/separate-compat-instrumentation-stevenarella-post-fix-2026-06-23.run.log`, and `docs/evidence/separate-compat-instrumentation-mcp-dry-run-2026-06-23.run.log`; BLAKE3 manifest `docs/evidence/separate-compat-instrumentation-validation-2026-06-23.b3`.
+- [x] [depends:migration] Add positive tests for enabled instrumentation and negative tests proving disabled/core paths do not emit harness-only behavior. r[mc_compatibility.compat_instrumentation_boundary.tests]
+  - Evidence: `docs/evidence/separate-compat-instrumentation-stevenarella-post-fix-2026-06-23.run.log`; BLAKE3 manifest `docs/evidence/separate-compat-instrumentation-validation-2026-06-23.b3`.
+- [x] [depends:tests] Update docs/AGENTS and evidence checker expectations if instrumentation paths or features change. r[mc_compatibility.compat_instrumentation_boundary.docs]
+  - Evidence: `docs/evidence/separate-compat-instrumentation-cairn-post-2026-06-23.run.log`; BLAKE3 manifest `docs/evidence/separate-compat-instrumentation-validation-2026-06-23.b3`.
+- [x] [depends:docs] Run affected component tests, typed-event fixtures, selected dry-runs/live checks if required, Cairn gates, and Cairn validation with reviewable logs. r[mc_compatibility.compat_instrumentation_boundary.validation]
+  - Evidence: `docs/evidence/separate-compat-instrumentation-preflight-2026-06-23.run.log`, `docs/evidence/separate-compat-instrumentation-stevenarella-post-fix-2026-06-23.run.log`, `docs/evidence/separate-compat-instrumentation-mcp-dry-run-2026-06-23.run.log`, and `docs/evidence/separate-compat-instrumentation-cairn-post-2026-06-23.run.log`; BLAKE3 manifest `docs/evidence/separate-compat-instrumentation-validation-2026-06-23.b3`.

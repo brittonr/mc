@@ -1,0 +1,292 @@
+
+$ nix run .#cairn -- change list --root .
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "./cairn/changes/clean-repo-artifact-boundaries/specs/repository-layout/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "clean-repo-artifact-boundaries",
+      "path": "./cairn/changes/clean-repo-artifact-boundaries",
+      "task_counts": {
+        "done": 5,
+        "in_progress": 0,
+        "todo": 1,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/extend-manifest-derived-surfaces/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "extend-manifest-derived-surfaces",
+      "path": "./cairn/changes/extend-manifest-derived-surfaces",
+      "task_counts": {
+        "done": 5,
+        "in_progress": 0,
+        "todo": 1,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/introduce-scenario-command-router/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "introduce-scenario-command-router",
+      "path": "./cairn/changes/introduce-scenario-command-router",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/partition-evidence-directory/specs/repository-layout/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "partition-evidence-directory",
+      "path": "./cairn/changes/partition-evidence-directory",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/separate-compat-instrumentation/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "separate-compat-instrumentation",
+      "path": "./cairn/changes/separate-compat-instrumentation",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/split-root-flake-modules/specs/repository-layout/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "split-root-flake-modules",
+      "path": "./cairn/changes/split-root-flake-modules",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/split-root-readme-docs/specs/repository-layout/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "split-root-readme-docs",
+      "path": "./cairn/changes/split-root-readme-docs",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/unify-spatial-raycast-collision/specs/valence-hyperion-integration/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "unify-spatial-raycast-collision",
+      "path": "./cairn/changes/unify-spatial-raycast-collision",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/upstream-byte-backed-protocol-path/specs/valence-hyperion-integration/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "upstream-byte-backed-protocol-path",
+      "path": "./cairn/changes/upstream-byte-backed-protocol-path",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "."
+}
+command=nix run .#cairn -- change list --root . exit_status=0
+
+$ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 9,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 13,
+  "valid": true
+}
+command=nix run .#cairn -- validate --root . exit_status=0
+
+$ nix run .#cairn -- gate proposal separate-compat-instrumentation --root .
+{
+  "change": "separate-compat-instrumentation",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "48325f8e498f48d4916fe870aa2747635d952b44dcf6f75990ee562f3c845ee5",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "a6cf6da89353ca9a9c5ebbd207b58afbe0d8e5712407a2570c2601c1acc7ba0d",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+command=nix run .#cairn -- gate proposal separate-compat-instrumentation --root . exit_status=0
+
+$ nix run .#cairn -- gate design separate-compat-instrumentation --root .
+{
+  "change": "separate-compat-instrumentation",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "d72276264c384807f4bf0e0463ef501d121f7f1ffbcab6ab139d7be397118b92",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "8f8e8ae41088ba888123e4f9b62226ab5c42fd49d623608aea7b62bcaabe6394",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+command=nix run .#cairn -- gate design separate-compat-instrumentation --root . exit_status=0
+
+$ nix run .#cairn -- gate tasks separate-compat-instrumentation --root .
+{
+  "change": "separate-compat-instrumentation",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a4a803c2d8c58eb17d8dc536d6fc22dc2a658e60602ad4569f75200051a7a246",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "0d2dcf2d741b68d810e6b843928b42f482d1682c9230ca69669a549a90bfa5f9",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+command=nix run .#cairn -- gate tasks separate-compat-instrumentation --root . exit_status=0

@@ -1,0 +1,8 @@
+
+$ nix develop --no-update-lock-file . -c bash -lc rustc tools/check_cairn_task_evidence.rs -o /tmp/check_cairn_task_evidence && /tmp/check_cairn_task_evidence cairn/changes/separate-compat-instrumentation/tasks.md
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+task evidence gate passed: 6 completed tasks checked across 1 task files
+command=nix develop --no-update-lock-file . -c bash -lc rustc tools/check_cairn_task_evidence.rs -o /tmp/check_cairn_task_evidence && /tmp/check_cairn_task_evidence cairn/changes/separate-compat-instrumentation/tasks.md exit_status=0

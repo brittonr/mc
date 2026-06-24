@@ -17,6 +17,8 @@
 
 ## Compatibility instrumentation
 - Compat probes and typed-event hooks are test harness surfaces. Keep them explicit, bounded, and easy to distinguish from normal client behavior.
+- MCP control/frame-capture startup is owned by `src/compat_instrumentation.rs`; default startup must keep MCP command/capture queues absent unless `--mcp-stdio` or `--mcp-listen` opts in.
+- Stable MCP/event vocabulary remains owned by `src/mcp.rs`, `src/control.rs`, `src/capture.rs`, and the runner typed-event fixtures; update `docs/compat-instrumentation-boundary.md` and affected checks if names move.
 - Do not broaden a probe into a gameplay/parity claim without paired evidence and a Cairn requirement that names the claim boundary.
 - On protocol `1.20.1`, under-map CTF symptoms can come from missing dimension-codec bounds. JoinGame supplies `dimension_codec` plus `dimension_type_name`; apply the selected type's `min_y` and `height` before parsing `ChunkData_AndLight` sections.
 

@@ -36,6 +36,8 @@ use steven_protocol::types;
 pub mod auth;
 pub mod capture;
 pub mod chunk_builder;
+#[cfg(not(target_arch = "wasm32"))]
+pub mod compat_instrumentation;
 pub mod console;
 pub mod control;
 pub mod entity;
@@ -1160,9 +1162,17 @@ fn main2() {
         }
         None => None,
     };
+    #[cfg(not(target_arch = "wasm32"))]
+    let compat_instrumentation_options =
+        compat_instrumentation::CompatInstrumentationOptions::from_cli(
+            opt.mcp_stdio,
+            opt.mcp_listen.clone(),
+            opt.mcp_token_env.clone(),
+        );
+
     let con = Arc::new(Mutex::new(console::Console::new()));
     #[cfg(not(target_arch = "wasm32"))]
-    if opt.mcp_stdio {
+    if compat_instrumentation_options.reserves_stdout() {
         con.lock().unwrap().set_terminal_output_enabled(false);
     }
     let proxy = console::ConsoleProxy::new(con.clone());
@@ -1173,48 +1183,24 @@ fn main2() {
     info!("Starting steven");
 
     #[cfg(not(target_arch = "wasm32"))]
-    let (mcp_command_sender, mcp_command_receiver) = mcp::control_command_channel();
-    #[cfg(not(target_arch = "wasm32"))]
-    let (mcp_capture_request_sender, mcp_capture_request_receiver) =
-        capture::capture_request_channel();
-    #[cfg(not(target_arch = "wasm32"))]
-    let capture_sequence_id = Arc::new(AtomicU64::new(capture::CAPTURE_SEQUENCE_INITIAL));
-
-    #[cfg(not(target_arch = "wasm32"))]
-    let _mcp_runtime = {
-        let mcp_options = mcp::McpTransportOptions::from_cli(
-            opt.mcp_stdio,
-            opt.mcp_listen.clone(),
-            opt.mcp_token_env.clone(),
-        );
-        if mcp_options.has_transport() {
-            let validated = match mcp::validate_process_transport_options(&mcp_options) {
-                Ok(validated) => validated,
-                Err(err) => {
-                    error!("Invalid MCP transport options: {:?}", err);
-                    std::process::exit(2);
-                }
-            };
-            let capture_tools = mcp::McpCaptureTools::new(
-                mcp_capture_request_sender.clone(),
-                capture_policy.clone(),
-                Arc::clone(&capture_sequence_id),
-            );
-            match mcp::start_process_transport_with_capture(
-                validated,
-                Some(mcp_command_sender.clone()),
-                Some(capture_tools),
-            ) {
-                Ok(runtime) => Some(runtime),
-                Err(err) => {
-                    error!("Failed to start MCP transport: {:?}", err);
-                    std::process::exit(2);
-                }
-            }
-        } else {
-            None
+    let compat_instrumentation = match compat_instrumentation::start_process_instrumentation(
+        &compat_instrumentation_options,
+        capture_policy.clone(),
+    ) {
+        Ok(instrumentation) => instrumentation,
+        Err(err) => {
+            error!("Failed to start compatibility instrumentation: {:?}", err);
+            std::process::exit(2);
         }
     };
+    #[cfg(not(target_arch = "wasm32"))]
+    let compat_instrumentation::StartedCompatInstrumentation {
+        mcp_runtime: _compat_mcp_runtime,
+        mcp_command_receiver,
+        mcp_capture_request_sender,
+        mcp_capture_request_receiver,
+        capture_sequence_id,
+    } = compat_instrumentation;
 
     let (vars, mut vsync) = {
         let mut vars = console::Vars::new();
@@ -1355,11 +1341,11 @@ fn main2() {
         is_fullscreen: false,
         default_protocol_version,
         #[cfg(not(target_arch = "wasm32"))]
-        mcp_command_receiver: Some(mcp_command_receiver),
+        mcp_command_receiver,
         #[cfg(not(target_arch = "wasm32"))]
-        mcp_capture_request_sender: Some(mcp_capture_request_sender),
+        mcp_capture_request_sender,
         #[cfg(not(target_arch = "wasm32"))]
-        mcp_capture_request_receiver: Some(mcp_capture_request_receiver),
+        mcp_capture_request_receiver,
         #[cfg(not(target_arch = "wasm32"))]
         mcp_release_left_after_server_tick: false,
         #[cfg(not(target_arch = "wasm32"))]

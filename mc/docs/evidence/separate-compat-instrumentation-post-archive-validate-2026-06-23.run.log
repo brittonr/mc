@@ -1,0 +1,212 @@
+
+$ nix run .#cairn -- change list --root .
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "./cairn/changes/clean-repo-artifact-boundaries/specs/repository-layout/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "clean-repo-artifact-boundaries",
+      "path": "./cairn/changes/clean-repo-artifact-boundaries",
+      "task_counts": {
+        "done": 5,
+        "in_progress": 0,
+        "todo": 1,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/extend-manifest-derived-surfaces/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "extend-manifest-derived-surfaces",
+      "path": "./cairn/changes/extend-manifest-derived-surfaces",
+      "task_counts": {
+        "done": 5,
+        "in_progress": 0,
+        "todo": 1,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/introduce-scenario-command-router/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "introduce-scenario-command-router",
+      "path": "./cairn/changes/introduce-scenario-command-router",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/partition-evidence-directory/specs/repository-layout/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "partition-evidence-directory",
+      "path": "./cairn/changes/partition-evidence-directory",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/split-root-flake-modules/specs/repository-layout/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "split-root-flake-modules",
+      "path": "./cairn/changes/split-root-flake-modules",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/split-root-readme-docs/specs/repository-layout/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "split-root-readme-docs",
+      "path": "./cairn/changes/split-root-readme-docs",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/unify-spatial-raycast-collision/specs/valence-hyperion-integration/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "unify-spatial-raycast-collision",
+      "path": "./cairn/changes/unify-spatial-raycast-collision",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/upstream-byte-backed-protocol-path/specs/valence-hyperion-integration/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "upstream-byte-backed-protocol-path",
+      "path": "./cairn/changes/upstream-byte-backed-protocol-path",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "."
+}
+command=nix run .#cairn -- change list --root . exit_status=0
+
+$ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 8,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 12,
+  "valid": true
+}
+command=nix run .#cairn -- validate --root . exit_status=0
+
+$ test -d cairn/archive/1970-01-01-separate-compat-instrumentation
+command=test -d cairn/archive/1970-01-01-separate-compat-instrumentation exit_status=0
+
+$ test ! -e cairn/changes/separate-compat-instrumentation
+command=test ! -e cairn/changes/separate-compat-instrumentation exit_status=0
+
+$ nix develop --no-update-lock-file . -c bash -lc rustc tools/check_cairn_task_evidence.rs -o /tmp/check_cairn_task_evidence && /tmp/check_cairn_task_evidence cairn/archive/1970-01-01-separate-compat-instrumentation/tasks.md
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+task evidence gate passed: 6 completed tasks checked across 1 task files
+command=nix develop --no-update-lock-file . -c bash -lc rustc tools/check_cairn_task_evidence.rs -o /tmp/check_cairn_task_evidence && /tmp/check_cairn_task_evidence cairn/archive/1970-01-01-separate-compat-instrumentation/tasks.md exit_status=0

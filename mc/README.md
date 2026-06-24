@@ -14,6 +14,8 @@ The legacy shell entrypoint is intentionally only a thin compatibility shim arou
 
 `Leafish/` is classified as a reference-only nested Git checkout. It is retained for comparison and historical investigation, excluded from default compatibility gates, and may only participate through explicit opt-in work. Stevenarella-specific workflow lives in `clients/stevenarella/AGENTS.md`, Valence-specific workflow lives in `servers/valence/AGENTS.md`, and the current layout checklist lives in `docs/layout-checklist.md`.
 
+Artifact classes are documented in `docs/architecture.md` and `docs/layout-checklist.md`. Compatibility instrumentation ownership and opt-in boundaries are documented in `docs/compat-instrumentation-boundary.md`. Durable review evidence lives under `docs/evidence/`; generated checked-in outputs stay in their owner-specific generated paths; root `result`, `result-*`, `target/`, `target-*.log`, root `*.run.log`, and interpreter caches are transient; `.pi/` and untracked experiments are local scratch. Root `evidence/` is retired, and checked configuration belongs under `compat/config/` rather than root `config/`.
+
 Some receipt fields keep their historical names for schema compatibility, including `client.git_rev`, `valence.git_rev_resolved`, and MCP `stevenarella_child_revision`. For core component trees those values are scoped source-tree evidence: the last Git commit affecting that subtree plus dirty checks limited to that subtree, not an independent nested-repo HEAD.
 
 ## Commands
@@ -56,12 +58,16 @@ nix run .#mc-compat-smoke -- --dry-run --server-backend paper --receipt target/m
 
 The current receipt schema is `mc.compat.scenario.receipt.v2`; receipts also retain the legacy marker `mc.compat.smoke.receipt.v1` for older consumers. A receipt records server/client inputs, the headless-isolation contract (`wayland_socket_inherited=false`), typed scenario milestones, server-side correlation when available, and explicit non-claims (`claims_correctness=false`, `claims_semantic_equivalence=false`) for downstream Cairn/Octet review. Dry-run receipts are deterministic harness-shape evidence only; live/reference parity claims remain tied to promoted evidence rows and paired comparators. A receipt is evidence that the bounded scenario ran under the specified local fixture, not a claim of full semantic equivalence.
 
-Failed runs can write `mc.compat.failure.bundle.v1` diagnostics with `--failure-bundle docs/evidence/<name>.failure-bundle.json` or `MC_COMPAT_FAILURE_BUNDLE`. Use this only after copying the receipt/log/typed-event/stderr artifacts you want reviewers to inspect under `docs/evidence/`; the validator rejects path escapes, target-only paths, malformed BLAKE3 digests, missing artifacts, missing non-claims, and success-labeled bundles. Failure bundles are diagnostic only: they do not claim scenario success, gameplay parity, full protocol compatibility, public-server safety, production readiness, or semantic equivalence. Record a `.b3` for the bundle and any critical copied artifacts before citing them from Cairn tasks.
+Failed runs can write `mc.compat.failure.bundle.v1` diagnostics with `--failure-bundle docs/evidence/<name>.failure-bundle.json` or `MC_COMPAT_FAILURE_BUNDLE`. Use this only after copying the receipt/log/typed-event/stderr artifacts you want reviewers to inspect under `docs/evidence/`; the validator rejects path escapes, target-only paths, result-only paths, root-transient paths, malformed BLAKE3 digests, missing artifacts, missing non-claims, and success-labeled bundles. Failure bundles are diagnostic only: they do not claim scenario success, gameplay parity, full protocol compatibility, public-server safety, production readiness, or semantic equivalence. Record a `.b3` for the bundle and any critical copied artifacts before citing them from Cairn tasks.
 
-Choose a typed scenario with `--scenario` or `MC_COMPAT_SCENARIO`:
+Choose a typed scenario with the router form `scenario run <scenario>`, the legacy `--scenario` flag, or `MC_COMPAT_SCENARIO`. Maintained flake aliases keep their public app names and route internally through the typed router; dry-run output includes a `typed scenario route` line without changing scenario semantics or compatibility claims.
 
 ```sh
-# Baseline login/status/render smoke.
+# Baseline login/status/render smoke through the typed router.
+nix run .#mc-compat-smoke -- scenario run smoke --dry-run \
+  --receipt target/mc-compat-smoke.json
+
+# Legacy flag form remains supported for compatibility.
 nix run .#mc-compat-smoke -- --dry-run --scenario smoke \
   --receipt target/mc-compat-smoke.json
 
@@ -310,7 +316,7 @@ Evidence promotion plans use the typed shape in `compat/config/evidence-promotio
 
 Evidence BLAKE3 manifests can be checked or refreshed with `nix run .#evidence-manifest-refresh -- --check` and `nix run .#evidence-manifest-refresh -- --refresh`. The helper scans reviewable `docs/evidence/*.b3` manifests, rewrites stale digest fields only in explicit refresh mode, leaves missing-file rows visible for review, and repeats until a deterministic fixpoint or a non-convergence diagnostic. Run `nix build .#checks.x86_64-linux.mc-compat-evidence-manifest-refresh --no-link -L` before the broader evidence-manifest/task-evidence gates when a Cairn drain updates logs, accepted specs, archive tasks, or nested manifests.
 
-Cairn task closeout evidence is checked by `tools/check_cairn_task_evidence.rs` and the flake check `mc-compat-cairn-task-evidence`. Before marking an active Cairn task complete, cite copied `docs/evidence/` command output such as a `.run.log` plus either its `.b3` manifest or an inline BLAKE3 digest; missing files, target-only receipts, and checked tasks without verification output fail the gate.
+Cairn task closeout evidence is checked by `tools/check_cairn_task_evidence.rs` and the flake check `mc-compat-cairn-task-evidence`. Before marking an active Cairn task complete, cite copied `docs/evidence/` command output such as a `.run.log` plus either its `.b3` manifest or an inline BLAKE3 digest; missing files, target-only receipts, result-only outputs, root-transient logs, retired root `evidence/` paths, and checked tasks without verification output fail the gate.
 
 The checked-in default config is Nickel-authored at `compat/config/default.ncl` and exported to `compat/config/generated/default.json`. The runner consumes exported JSON, not Nickel at runtime:
 

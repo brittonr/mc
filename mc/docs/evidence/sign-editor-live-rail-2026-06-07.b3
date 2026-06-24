@@ -1,7 +1,7 @@
 fe747b2ee1e9b47b46f4a2162828d7d67d2c24497f5093a483d5ca721438f573  compat/runner/src/scenario_core.rs
 64b474ea841f8378c1c2b4b9f6a9f6a18c9248d9b3264bedefecbe49d463ff2a  tools/check_scenario_manifest.rs
 9f8f010adf47d4de7bcc60ba5d01443307888079c328e1ef123a4174e3701691  tools/check_targeted_packet_promotions.rs
-921b7d5fcdf85e12d8dcf43ece48b3f3e888974fae96f11b7e24937a3e7dfc72  cairn/specs/mc-compatibility/spec.md
+efc5ca3839b0cf2b67fa65fa4436cea2088498ff1f6605bdfbdecb48bc93baca  cairn/specs/mc-compatibility/spec.md
 fe6a6ff0d50898f93c065624768a7c8848e5c2d4455e3ca25fb7e898207baaa9  cairn/archive/2026-06-07-add-sign-editor-open-update-live-rail/tasks.md
 d2f8fddbe80cf3460e428c45f573dfea218864bbf206cc5636f6ed9453eab933  docs/evidence/sign-editor-live-rail-2026-06-07.md
 90293a5d10b62f06485bcd79f33aad2dcfebae7b755f987b3f0bb250e62645ea  docs/evidence/sign-editor-live-rail-2026-06-07.kv
