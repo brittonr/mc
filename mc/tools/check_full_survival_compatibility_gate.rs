@@ -15,6 +15,7 @@ const TABLE_HEADER: &str = "| Survival system | Status | Valence evidence | Refe
 const TABLE_CELL_COUNT: usize = 7;
 const REQUIRED_ROW_COUNT: usize = REQUIRED_SYSTEMS.len();
 const STATUS_COVERED: &str = "reference_parity_covered";
+const STATUS_COVERED_BOUNDED: &str = "reference_parity_covered_bounded";
 const STATUS_MISSING: &str = "missing";
 const EMPTY_EVIDENCE: &str = "none";
 const DOCS_EVIDENCE_PREFIX: &str = "docs/evidence/";
@@ -25,15 +26,24 @@ const FAILURE: ExitCode = ExitCode::FAILURE;
 const REQUIRED_SYSTEMS: &[&str] = &[
     "break/place/pickup",
     "crafting",
+    "crafting recipe breadth",
     "chest persistence",
     "furnace persistence",
+    "furnace smelting breadth",
     "hunger/food",
+    "hunger health cycle",
     "mob drops",
+    "mob AI/loot breadth",
     "redstone",
+    "redstone circuit breadth",
     "biome/dimension",
+    "biome/dimension travel",
     "world persistence",
+    "world multichunk durability",
     "crash recovery",
     "sign block entity",
+    "container block-entity breadth",
+    "sign editing live",
 ];
 
 const FORBIDDEN_WHILE_MISSING: &[&str] = &[
@@ -53,6 +63,10 @@ const CURRENT_COVERED_ROWS: &[CoveredRowExpectation] = &[
         acceptance_token: "Survival crafting table",
     },
     CoveredRowExpectation {
+        system: "crafting recipe breadth",
+        acceptance_token: "Survival crafting recipe breadth",
+    },
+    CoveredRowExpectation {
         system: "chest persistence",
         acceptance_token: "Survival chest persistence",
     },
@@ -61,24 +75,48 @@ const CURRENT_COVERED_ROWS: &[CoveredRowExpectation] = &[
         acceptance_token: "Survival furnace persistence",
     },
     CoveredRowExpectation {
+        system: "furnace smelting breadth",
+        acceptance_token: "Survival furnace smelting breadth",
+    },
+    CoveredRowExpectation {
         system: "hunger/food",
         acceptance_token: "Survival hunger/food",
+    },
+    CoveredRowExpectation {
+        system: "hunger health cycle",
+        acceptance_token: "Survival hunger/health cycle",
     },
     CoveredRowExpectation {
         system: "mob drops",
         acceptance_token: "Survival mob drops",
     },
     CoveredRowExpectation {
+        system: "mob AI/loot breadth",
+        acceptance_token: "Survival mob AI/loot breadth",
+    },
+    CoveredRowExpectation {
         system: "redstone",
         acceptance_token: "Survival redstone toggle",
+    },
+    CoveredRowExpectation {
+        system: "redstone circuit breadth",
+        acceptance_token: "Survival redstone circuit breadth",
     },
     CoveredRowExpectation {
         system: "biome/dimension",
         acceptance_token: "Survival biome/dimension join state",
     },
     CoveredRowExpectation {
+        system: "biome/dimension travel",
+        acceptance_token: "Survival biome/dimension travel",
+    },
+    CoveredRowExpectation {
         system: "world persistence",
         acceptance_token: "Survival world persistence restart",
+    },
+    CoveredRowExpectation {
+        system: "world multichunk durability",
+        acceptance_token: "Survival world multichunk durability",
     },
     CoveredRowExpectation {
         system: "crash recovery",
@@ -87,6 +125,14 @@ const CURRENT_COVERED_ROWS: &[CoveredRowExpectation] = &[
     CoveredRowExpectation {
         system: "sign block entity",
         acceptance_token: "Survival sign block-entity persistence",
+    },
+    CoveredRowExpectation {
+        system: "container block-entity breadth",
+        acceptance_token: "Survival container block-entity breadth",
+    },
+    CoveredRowExpectation {
+        system: "sign editing live",
+        acceptance_token: "Survival sign editing live",
     },
 ];
 
@@ -223,11 +269,11 @@ fn validate_gate(inputs: &GateInputs) -> Result<GateSummary, Vec<String>> {
         .count();
     let covered_rows = rows
         .iter()
-        .filter(|row| row.status == STATUS_COVERED)
+        .filter(|row| is_covered_status(&row.status))
         .count();
 
     for row in &rows {
-        if row.status == STATUS_COVERED {
+        if is_covered_status(&row.status) {
             validate_covered_row(row, inputs, &mut errors);
         } else if row.status == STATUS_MISSING {
             validate_missing_row(row, &mut errors);
@@ -257,6 +303,10 @@ fn validate_gate(inputs: &GateInputs) -> Result<GateSummary, Vec<String>> {
     } else {
         Err(errors)
     }
+}
+
+fn is_covered_status(status: &str) -> bool {
+    status == STATUS_COVERED || status == STATUS_COVERED_BOUNDED
 }
 
 fn validate_non_claims_while_missing(inputs: &GateInputs, errors: &mut Vec<String>) {
@@ -359,10 +409,14 @@ fn collect_paths(text: &str, paths: &mut BTreeSet<String>) {
         let candidate = token.trim_matches(|character: char| {
             character == ',' || character == '.' || character == ';' || character == ':'
         });
-        if candidate.starts_with(DOCS_EVIDENCE_PREFIX) {
+        if candidate.starts_with(DOCS_EVIDENCE_PREFIX) && !is_manifest_path(candidate) {
             paths.insert(candidate.to_string());
         }
     }
+}
+
+fn is_manifest_path(candidate: &str) -> bool {
+    Path::new(candidate).extension() == Some(OsStr::new(B3_EXTENSION))
 }
 
 fn rows_by_system<'a>(rows: &'a [SurvivalRow]) -> BTreeMap<&'a str, &'a SurvivalRow> {
@@ -496,6 +550,18 @@ fn run_self_tests() -> Result<String, Vec<String>> {
     .expect_err("stale revision fixture should fail");
     assert_contains(&stale_revision, "child revision")?;
 
+    let unsupported_status = current_missing_rows().replacen(STATUS_COVERED_BOUNDED, "experimental", 1);
+    assert_contains(
+        &validate_gate(&GateInputs {
+            survival_matrix: fixture_doc(&unsupported_status),
+            current_bundle: current_missing_inputs.current_bundle.clone(),
+            acceptance_matrix: current_missing_inputs.acceptance_matrix.clone(),
+            manifest_paths: manifest_paths.clone(),
+        })
+        .expect_err("unsupported status fixture should fail"),
+        "unsupported survival status",
+    )?;
+
     let stale_nonclaim = current_missing_rows().replacen(
         "| redstone | missing | none | none | Add redstone receipts. | No redstone coverage. | next |",
         "| redstone | missing | none | none | Add redstone receipts. | pending | next |",
@@ -547,15 +613,24 @@ fn current_missing_rows() -> String {
     [
         covered_row("break/place/pickup", "break", "Break"),
         covered_row("crafting", "crafting", "Crafting"),
+        bounded_row("crafting recipe breadth", "Crafting recipe breadth"),
         covered_row("chest persistence", "chest", "Chest"),
         covered_row("furnace persistence", "furnace", "Furnace"),
+        bounded_row("furnace smelting breadth", "Furnace smelting breadth"),
         covered_row("hunger/food", "hunger", "Hunger"),
+        bounded_row("hunger health cycle", "Hunger health cycle"),
         covered_row("mob drops", "mob-drop", "Mob drops"),
+        bounded_row("mob AI/loot breadth", "Mob AI/loot breadth"),
         "| redstone | missing | none | none | Add redstone receipts. | No redstone coverage. | next |".to_string(),
+        bounded_row("redstone circuit breadth", "Redstone circuit breadth"),
         covered_row("biome/dimension", "biome", "Biome"),
+        bounded_row("biome/dimension travel", "Biome/dimension travel"),
         "| world persistence | missing | none | none | Add persistence receipts. | No world persistence coverage. | next |".to_string(),
+        bounded_row("world multichunk durability", "World multichunk durability"),
         covered_row("crash recovery", "crash-recovery", "Crash recovery"),
         covered_row("sign block entity", "sign-block-entity", "Sign block entity"),
+        bounded_row("container block-entity breadth", "Container block-entity breadth"),
+        bounded_row("sign editing live", "Sign editing live"),
     ]
     .join("\n")
 }
@@ -563,30 +638,54 @@ fn current_missing_rows() -> String {
 fn all_covered_rows() -> String {
     REQUIRED_SYSTEMS
         .iter()
-        .map(|system| covered_row(system, &system.replace(['/', ' '], "-"), system))
+        .map(|system| covered_row_with_status(system, &fixture_slug(system), system, STATUS_COVERED))
         .collect::<Vec<_>>()
         .join("\n")
 }
 
 fn covered_row(system: &str, slug: &str, label: &str) -> String {
+    covered_row_with_status(system, slug, label, STATUS_COVERED)
+}
+
+fn bounded_row(system: &str, label: &str) -> String {
+    let slug = fixture_slug(system);
     format!(
-        "| {system} | {STATUS_COVERED} | `docs/evidence/{slug}-valence.receipt.json` | `docs/evidence/{slug}-paper.receipt.json` | Paired comparator evidence: `docs/evidence/{slug}.md`. | No broad claim beyond {label}. | next |"
+        "| {system} | {STATUS_COVERED_BOUNDED} | `docs/evidence/{slug}-valence.receipt.json` | `docs/evidence/{slug}-paper.receipt.json` | Paired comparator evidence: `docs/evidence/{slug}.md`; BLAKE3 manifest: `docs/evidence/{slug}.b3`. | No broad claim beyond {label}. | next |"
     )
+}
+
+fn covered_row_with_status(system: &str, slug: &str, label: &str, status: &str) -> String {
+    format!(
+        "| {system} | {status} | `docs/evidence/{slug}-valence.receipt.json` | `docs/evidence/{slug}-paper.receipt.json` | Paired comparator evidence: `docs/evidence/{slug}.md`. | No broad claim beyond {label}. | next |"
+    )
+}
+
+fn fixture_slug(system: &str) -> String {
+    system.to_ascii_lowercase().replace(['/', ' '], "-")
 }
 
 fn fixture_acceptance_matrix() -> String {
     [
         "| Survival break/place/pickup | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
         "| Survival crafting table | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
+        "| Survival crafting recipe breadth | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
         "| Survival chest persistence | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
         "| Survival furnace persistence | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
+        "| Survival furnace smelting breadth | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
         "| Survival hunger/food | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
+        "| Survival hunger/health cycle | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
         "| Survival mob drops | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
+        "| Survival mob AI/loot breadth | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
         "| Survival redstone toggle | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
+        "| Survival redstone circuit breadth | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
         "| Survival biome/dimension join state | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
+        "| Survival biome/dimension travel | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
         "| Survival world persistence restart | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
+        "| Survival world multichunk durability | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
         "| Survival crash recovery | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
         "| Survival sign block-entity persistence | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
+        "| Survival container block-entity breadth | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
+        "| Survival sign editing live | command | receipt | doc | digest | parent, Valence, Stevenarella | claim | nonclaim |",
     ]
     .join("\n")
 }
@@ -594,7 +693,7 @@ fn fixture_acceptance_matrix() -> String {
 fn all_rows_manifest_text() -> String {
     let mut text = String::new();
     for system in REQUIRED_SYSTEMS {
-        let slug = system.replace(['/', ' '], "-");
+        let slug = fixture_slug(system);
         text.push_str(&format!(
             "digest  docs/evidence/{slug}-valence.receipt.json\n"
         ));

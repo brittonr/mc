@@ -226,7 +226,7 @@ fn validate_boundary(inputs: &BoundaryInputs) -> Result<BoundarySummary, Vec<Str
     }
 
     if pending == 0 && covered == REQUIRED_PREREQUISITES.len() {
-        validate_aggregate_claim_enabled(inputs, &mut errors);
+        validate_complete_prerequisites_claim_mode(inputs, &mut errors);
     } else {
         validate_aggregate_claim_blocked(inputs, &mut errors);
     }
@@ -370,13 +370,12 @@ fn collect_docs_evidence_paths(text: &str) -> BTreeSet<String> {
         .collect()
 }
 
-fn validate_aggregate_claim_enabled(inputs: &BoundaryInputs, errors: &mut Vec<String>) {
+fn validate_complete_prerequisites_claim_mode(inputs: &BoundaryInputs, errors: &mut Vec<String>) {
     let combined = combined_docs(inputs).to_lowercase();
-    if !combined.contains(AGGREGATE_BUNDLE_TOKEN) {
-        errors.push(format!(
-            "all prerequisites are covered but {AGGREGATE_BUNDLE_TOKEN:?} is missing"
-        ));
+    if combined.contains(AGGREGATE_BUNDLE_TOKEN) {
+        return;
     }
+    validate_aggregate_claim_blocked(inputs, errors);
 }
 
 fn validate_aggregate_claim_blocked(inputs: &BoundaryInputs, errors: &mut Vec<String>) {
@@ -384,7 +383,7 @@ fn validate_aggregate_claim_blocked(inputs: &BoundaryInputs, errors: &mut Vec<St
     for forbidden in FORBIDDEN_PREMATURE_CLAIMS {
         if combined.contains(forbidden) {
             errors.push(format!(
-                "premature aggregate survival claim while prerequisites are pending: {forbidden}"
+                "premature aggregate survival claim without aggregate evidence bundle: {forbidden}"
             ));
         }
     }
@@ -491,6 +490,24 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         ]);
     }
 
+    let covered_but_blocked_inputs = BoundaryInputs {
+        survival_matrix: fixture_doc(&all_covered_rows()),
+        current_bundle: fixture_current_bundle(),
+        acceptance_matrix: fixture_acceptance_matrix(),
+        manifest_catalog: all_covered_manifest_catalog(),
+    };
+    validate_boundary(&covered_but_blocked_inputs)?;
+
+    let covered_overclaim_without_bundle = BoundaryInputs {
+        current_bundle: "full survival compatibility is covered without aggregate bundle".to_string(),
+        ..covered_but_blocked_inputs.clone()
+    };
+    assert_contains(
+        &validate_boundary(&covered_overclaim_without_bundle)
+            .expect_err("covered overclaim without aggregate bundle should fail"),
+        "premature aggregate survival claim",
+    )?;
+
     let pending_inputs = BoundaryInputs {
         survival_matrix: fixture_doc(&pending_rows()),
         current_bundle: fixture_current_bundle(),
@@ -552,7 +569,7 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         "premature aggregate survival claim",
     )?;
 
-    Ok("all-covered success, pending success, missing row, stale evidence, Valence-only, and overclaim fixtures exercised".to_string())
+    Ok("all-covered success, covered blocked success, pending success, missing row, stale evidence, Valence-only, and overclaim fixtures exercised".to_string())
 }
 
 fn assert_contains(errors: &[String], needle: &str) -> Result<(), Vec<String>> {
