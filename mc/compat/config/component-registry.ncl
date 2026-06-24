@@ -119,6 +119,20 @@ let Contracts = import "component-registry-contracts.ncl" in
       nested_git_exception = false,
     },
     {
+      path = "nix/",
+      role = "nix-build-configuration",
+      owner = "parent-repository",
+      vcs_boundary = "parent-git",
+      commands = [
+        "nix build .#checks.x86_64-linux.mc-compat-layout-boundaries --no-link -L",
+        "nix run .#cairn -- validate --root .",
+      ],
+      default_gate_participation = "included",
+      evidence_policy = "generated-checked-in",
+      local_notes = ["README.md", "docs/architecture.md", "docs/check-tiers.md"],
+      nested_git_exception = false,
+    },
+    {
       path = "docs/",
       role = "repository-docs",
       owner = "parent-repository",

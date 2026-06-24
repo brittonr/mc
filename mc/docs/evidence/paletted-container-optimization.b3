@@ -1,4 +1,4 @@
-9eb39a0ddf352039bf49cfaebaa52a97c60fefd0728b92f00e1ba77fb3bce876  cairn/specs/valence-hyperion-integration/spec.md
+3d55f32fded5a2e6034bca178858e2b4c7900561cc39bbed3003272e5aacbbee  cairn/specs/valence-hyperion-integration/spec.md
 4858b712f20b790e0beaecb11e677bd2917fea1587bd75824c3154de76836cb1  cairn/archive/2026-06-23-evaluate-paletted-container-optimizations/proposal.md
 4a7510c5d76a3ef81454b2106aec66f9b721056c5e922ee964c506dc773f9683  cairn/archive/2026-06-23-evaluate-paletted-container-optimizations/design.md
 98c0298034c21e975721734febf77089e348966ac6b60b724a0d62feb779524b  cairn/archive/2026-06-23-evaluate-paletted-container-optimizations/tasks.md
@@ -6,7 +6,7 @@
 c9601dc144e758e592f35dc4e2f6885a1502b110568a9633717248075462db2c  servers/valence/benches/main.rs
 1091b7f06393ceeba189c3431823d6f80fcb4293490be12214f81007a393fa2c  servers/valence/benches/chunk_paletted_container.rs
 f11cb560539da3ca7b9b1e9b7e145db6fccd56e4711515acefdff3a52a0f896c  servers/valence/crates/valence_server/src/layer/chunk/paletted_container.rs
-dc3737f5392e8456688c42bc0306303ec24dd6cdf0f74c7a207d178b2d20b457  servers/valence/crates/valence_server/src/layer/chunk/loaded.rs
+70e34f7de7bfa430287ec345bfea764b205e3b3c1422fb402e26ac7d0b6e1ebc  servers/valence/crates/valence_server/src/layer/chunk/loaded.rs
 207e1e033a875fc368ba8805469830166499bdfc28393d883d8443a03d292b4d  docs/evidence/paletted-container-optimization-inventory.md
 01626decb241547c9d642eef0fd7de0849f82a46ecbc86570cb5ba175ae18578  docs/evidence/paletted-container-pre-gate-proposal.run.log
 649c461db7e06049ce9b3ee21af4c39977867383148ef817f8e01efa5294e10e  docs/evidence/paletted-container-pre-gate-design.run.log

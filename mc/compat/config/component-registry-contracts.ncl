@@ -31,6 +31,7 @@ let ComponentRole = std.contract.from_predicate (fun value =>
     || value == "paper-reference-fixture"
     || value == "cairn-lifecycle"
     || value == "cairn-policy"
+    || value == "nix-build-configuration"
     || value == "repository-docs"
     || value == "durable-evidence"
     || value == "compatibility-scripts"

@@ -1,6 +1,6 @@
 2ef0d449e45d17a0f5777efe10c6144bac33068a5a18bf2c0082009fceb3db75  docs/evidence/survival-redstone-toggle-post-task-validation-2026-06-02.run.log
 dc75f756b89a39062d6f99d51617020e0b1989bd8cc92eadad9b9178dcd0b630  cairn/archive/1970-01-01-survival-redstone-toggle-parity/tasks.md
 674deaba97986585c02d81855885855fefaca7e99d35ffa9b74c914e9f5cef6c  tools/check_evidence_manifests.rs
-6647c899c5d72ee1f5377250180ffb62619092b5c3103e9c5b83d4332cb4ead1  tools/check_cairn_task_evidence.rs
+3970c4b21ae25c01724f5ddcdf84c9acbe2b746cccadc5dfe3cfc41402bc4a1f  tools/check_cairn_task_evidence.rs
 7f6e16871dc2308e55119882d3254d6ed73c862d29ed8dc54bff016f89e6b464  docs/evidence/survival-redstone-toggle-cairn-gates-2026-06-02.run.log
 ab0e439001de0f7dd0954d062deba80c86f974ec302429b8bbec7b82ed277f3c  docs/evidence/survival-redstone-toggle-cairn-gates-2026-06-02.b3

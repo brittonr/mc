@@ -18,7 +18,7 @@ fc9cdc8b0b30c3f4bc939a810d6152d64548af7727420a4e9ea532868fd93b6c  docs/evidence/
 d340731c318c1fd040c78140d2e29e9a5e393a8b4b0e60ab817d823c7a1a616b  docs/evidence/introduce-valence-proxy-broadcast-backend-evidence-manifest-refresh.run.log
 13b8c6af8e5862d5379ff39d6d83aa35953161c6759bda0f7dfd2f732cd47763  docs/evidence/introduce-valence-proxy-broadcast-backend-focused-task-evidence-final.run.log
 93a48204e85c3e1ef671f7d3309aa3c913f52599e47f17f8b398cca7d416e51e  docs/evidence/introduce-valence-proxy-broadcast-backend-proxy-only-commit-state-tests.run.log
-9eb39a0ddf352039bf49cfaebaa52a97c60fefd0728b92f00e1ba77fb3bce876  cairn/specs/valence-hyperion-integration/spec.md
+3d55f32fded5a2e6034bca178858e2b4c7900561cc39bbed3003272e5aacbbee  cairn/specs/valence-hyperion-integration/spec.md
 a245ffbb1bbba69c277ce8768743ef107675c6e0acd9735d7e637ef74b5cdc59  cairn/archive/2026-06-23-introduce-valence-proxy-broadcast-backend/proposal.md
 a28f22ab71b0a4a1f8c893c83a2fee95201c8cf29bfddb63446c6abed365e7af  cairn/archive/2026-06-23-introduce-valence-proxy-broadcast-backend/design.md
 e10c253bcdf7b6dc501f8cf4d090e167aaa02def8d4679477cf38a085bd07bc7  cairn/archive/2026-06-23-introduce-valence-proxy-broadcast-backend/tasks.md

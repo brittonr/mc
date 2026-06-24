@@ -1,13 +1,13 @@
-d606988f1ee5d021ede83a357e69dff33fa347419d2fad90f4f77988b063dfe6  README.md
+192b00c2c1f69ae36d33b611f509f2c5d3a828a16a04c0499609c5c03c0ea913  README.md
 dc08f03deb02decbe53865cf66f98c28895f6500d12c3826e603362778545e02  cairn/archive/2026-06-22-survival-hunger-health-cycle-typed-event-migration/proposal.md
 3af73eecc1c53cc8566da779b22d0a433260be93dd0727dbc32179cce8255638  cairn/archive/2026-06-22-survival-hunger-health-cycle-typed-event-migration/design.md
 363c812844c36baf716a1f63950bcf6806172c8c5ee2f1208639c4c58193e342  cairn/archive/2026-06-22-survival-hunger-health-cycle-typed-event-migration/tasks.md
 5ee0971feb78c5e1a7006592060015760ff899e998835a9a914e4a586a8ddf96  cairn/archive/2026-06-22-survival-hunger-health-cycle-typed-event-migration/specs/mc-compatibility/spec.md
 efc5ca3839b0cf2b67fa65fa4436cea2088498ff1f6605bdfbdecb48bc93baca  cairn/specs/mc-compatibility/spec.md
 b471fb927ec046054595bc7d5630322667f240180c64294729ad008cd9153783  compat/config/scenario-manifest.ncl
-2326dffef981c7eeb283e3c220c7b054dc1dbef903d004d48dc5be8cc9c528f5  compat/runner/src/main.rs
+c110e661cc5c3b6d1c56712d87c9f7e090547fba6d2946ca28afef7d33a1fdb3  compat/runner/src/main.rs
 0c5c6cd53867ec19832895b3ab577703961623c3fb63b22c35965e62cb992905  compat/runner/src/scenario_manifest_generated.rs
-9ae1763e53ee3b1d235aa9e2ea66d18d2b6db290c53fabf5d58b47d989b28abf  docs/evidence/mc-compat-scenario-index.generated.md
+0b523e7ff192e8cff923d19d4e07c468d2bfa79a472af5c2768ddaa4d647e8c7  docs/evidence/mc-compat-scenario-index.generated.md
 1eb0f9d64f69c71725e3322100fdfb8a5e4c500029a546582b3d6180f4f679d6  docs/evidence/survival-hunger-health-cycle-typed-event-baseline-dry-run.run.log
 9010f6f65f06ba10835388566394747402583effcf68b35c7a243df1fa5aa35a  docs/evidence/survival-hunger-health-cycle-typed-event-baseline-manifest.run.log
 5e5d1493bf2d357ee355e1a9208d8da3da5acdc15b064624a83706c598274727  docs/evidence/survival-hunger-health-cycle-typed-event-baseline-runner.run.log
@@ -24,4 +24,4 @@ ef54cbc3b86faec6b4a92b7b76121722811c0d452388d200d023999e614767b8  docs/evidence/
 84894c675c923136a8666e30aee1cc86d521f308dddc52e1893f24d6cbec0ff3  docs/evidence/survival-hunger-health-cycle-typed-event-post-runner.run.log
 195c980072bcc3d62ed23ae7615a1f36e7412e9bd1e7ac65a89d5f598cf10fbe  docs/evidence/survival-hunger-health-cycle-typed-event-post-scenario-manifest-flake.run.log
 4891d5477c38c587b4378dccd4d705f87723db81ee3f44af0fa8c128566bd7cc  docs/evidence/survival-hunger-health-cycle-typed-event-task-evidence-preclose.run.log
-64b474ea841f8378c1c2b4b9f6a9f6a18c9248d9b3264bedefecbe49d463ff2a  tools/check_scenario_manifest.rs
+685d086957e8dea36c4b346e65eadc3907872590f8c188257d3f6a48b10c53d3  tools/check_scenario_manifest.rs

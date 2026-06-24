@@ -62,6 +62,7 @@ Retired root evidence notes have been moved under `docs/evidence/` with legacy f
 | `cairn/` | Cairn lifecycle specs, changes, and archives | Parent repository owned | Root `AGENTS.md` and `README.md` | Included by Cairn gates and validation |
 | `cairn-policy/` | Nickel-authored Cairn policy source plus generated JSON | Parent repository owned | `README.md` and `docs/architecture.md` | Included by policy freshness checks |
 | `docs/` | Architecture, evidence, and workflow documentation | Parent repository owned | `docs/architecture.md`, `docs/check-tiers.md`, and this checklist | Included by docs, evidence, and Cairn gates |
+| `nix/` | Nix flake apps, packages, checks, and generated wrapper wiring | Parent repository owned | `README.md`, `docs/architecture.md`, and `docs/check-tiers.md` | Included by flake and layout checks |
 | `scripts/` | Compatibility shims and local automation | Parent repository owned | `README.md` and root `AGENTS.md` | Included only when selected by a focused check |
 | `tools/` | Rust/Steel validation tools and generators | Parent repository owned | `README.md` and `docs/check-tiers.md` | Included by focused tool and flake checks |
 

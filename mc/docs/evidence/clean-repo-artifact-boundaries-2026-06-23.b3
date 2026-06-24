@@ -54,3 +54,6 @@ dfbec85ec49e7c4f87ec0f00955b96fede1ca4c536b0d66d12529cdff12e3517  docs/evidence/
 52d0ab915ae6289773f3a3b98fd6c901d325c16e6cf16f91b8f0f6297096e84c  docs/evidence/legacy-target-mc-compat-inventory-live.log
 b103a6f8de94c0552e9e7cde51e7b05e4420137e4635712b31a7339f1d101f70  docs/evidence/legacy-target-mc-compat-open-container-live.log
 2bcd89c445c71d65d5dd87c150723133c204c2aaf86e5e586ab7c903fd355b01  docs/evidence/legacy-target-mc-compat-pickup-live.log
+fc758aa4a6c786e2d063cb30fa1d40dcdea1022827c556c1f3061ae1863441cf  docs/evidence/clean-repo-artifact-boundaries-validation-2026-06-24.run.log
+7b8422e44ba3282428bd53ffa409c1e0634f9950a06a947c2560b73d4d041b10  docs/evidence/clean-repo-artifact-boundaries-post-close-2026-06-24.run.log
+3ea6102a678cb3b17740c249cf9b07eca35fc50292b6fc4253dff7201f43ded8  docs/evidence/clean-repo-artifact-boundaries-sync-archive-2026-06-24.run.log
