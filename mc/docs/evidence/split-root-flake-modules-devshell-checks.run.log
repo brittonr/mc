@@ -1,0 +1,17 @@
+$ nix develop --no-update-lock-file . -c bash -lc devshell contract checks
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+/nix/store/k8lrqvh8wlxnhwpx059a2nn8c0pswvh9-mc-compat-runner-0.1.0/bin/mc-compat-runner
+/nix/store/8ihdr59rkgw1h4x6qw6y69lvxwz9v3f3-cairn-0.1.0/bin/cairn
+/nix/store/qc3iazdxs844wwh199v46xikax7xpyhj-cargo-octet-0.1.0/bin/cargo-octet
+/nix/store/l5jars57rgqprdpk122iibk56rvqf040-nickel-1.16.0/bin/nickel
+/nix/store/p5p3blc17l0jqwyjd4wb4zrzarb3im43-steel-0.8.2/bin/steel
+/nix/store/g19nw2m370sincpr6i62j4g312yf4jxz-xvfb-run-1+g87f6705/bin/xvfb-run
+devshell_contract=ok
+CMAKE_POLICY_VERSION_MINIMUM=3.5
+WINIT_UNIX_BACKEND=x11
+LIBGL_ALWAYS_SOFTWARE=1
+command_exit_status=0
+exit_status=0

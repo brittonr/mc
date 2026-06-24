@@ -1,0 +1,27 @@
+
+$ nix develop --no-update-lock-file . -c bash -lc b3sum\ --check\ docs/evidence/split-root-flake-modules-validation.b3
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+docs/evidence/split-root-flake-modules-preflight-cairn-gates.run.log: OK
+docs/evidence/split-root-flake-modules-baseline-output-inventory.run.log: OK
+docs/evidence/split-root-flake-modules-baseline-output-inventory.json: OK
+docs/evidence/split-root-flake-modules-output-inventory-parity.run.log: OK
+docs/evidence/split-root-flake-modules-package-module-checks.run.log: OK
+docs/evidence/split-root-flake-modules-app-check-module-checks.run.log: OK
+docs/evidence/split-root-flake-modules-devshell-checks.run.log: OK
+docs/evidence/split-root-flake-modules-closeout-focused-checks.run.log: OK
+docs/evidence/split-root-flake-modules-closeout-focused-checks-after-stage.run.log: OK
+docs/evidence/split-root-flake-modules-closeout-cairn-gates.run.log: OK
+docs/evidence/split-root-flake-modules-final-cairn-gates.run.log: OK
+command_exit_status=0
+
+$ nix develop --no-update-lock-file . -c bash -lc rustc\ --edition=2021\ tools/check_cairn_task_evidence.rs\ -o\ target/split-root-flake-modules-check-cairn-task-evidence\ \&\&\ target/split-root-flake-modules-check-cairn-task-evidence\ cairn/changes/split-root-flake-modules/tasks.md
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+task evidence gate passed: 6 completed tasks checked across 1 task files
+command_exit_status=0
+exit_status=0

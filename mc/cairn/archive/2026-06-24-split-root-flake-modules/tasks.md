@@ -1,0 +1,14 @@
+# Tasks
+
+- [x] [serial] Record the current public flake output inventory for packages, apps, checks, and dev shells that must remain stable. r[repository_layout.flake_module_split.public_interface]
+  - Evidence: `docs/evidence/split-root-flake-modules-baseline-output-inventory.run.log` records the baseline inventory and `docs/evidence/split-root-flake-modules-output-inventory-parity.run.log` records the focused parity check; BLAKE3 manifest `docs/evidence/split-root-flake-modules-validation.b3`.
+- [x] [depends:public_interface] Factor package definitions and shared native/GUI tool lists into explicit local Nix modules. r[repository_layout.flake_module_split.package_modules]
+  - Evidence: `docs/evidence/split-root-flake-modules-package-module-checks.run.log` builds selected factored package wrappers; BLAKE3 manifest `docs/evidence/split-root-flake-modules-validation.b3`.
+- [x] [depends:package_modules] Factor app wrappers and check definitions into focused local Nix modules while preserving output names and command shapes. r[repository_layout.flake_module_split.app_check_modules]
+  - Evidence: `docs/evidence/split-root-flake-modules-app-check-module-checks.run.log` builds selected app/check dry-run checks after the split; BLAKE3 manifest `docs/evidence/split-root-flake-modules-validation.b3`.
+- [x] [depends:app_check_modules] Factor dev shell definitions into a focused local Nix module without changing documented environment behavior. r[repository_layout.flake_module_split.devshell_module]
+  - Evidence: `docs/evidence/split-root-flake-modules-devshell-checks.run.log` verifies the factored devshell contract; BLAKE3 manifest `docs/evidence/split-root-flake-modules-validation.b3`.
+- [x] [depends:devshell_module] Add or update parity checks for public output names, selected dry-run wrappers, and stale generated wrapper data if touched. r[repository_layout.flake_module_split.parity_checks]
+  - Evidence: `docs/evidence/split-root-flake-modules-output-inventory-parity.run.log` builds the new output-inventory parity check and `docs/evidence/split-root-flake-modules-app-check-module-checks.run.log` builds selected dry-run wrapper checks; BLAKE3 manifest `docs/evidence/split-root-flake-modules-validation.b3`.
+- [x] [depends:parity_checks] Run focused Nix evaluation/dry-runs, selected check builds, Cairn gates, and Cairn validation with reviewable logs. r[repository_layout.flake_module_split.validation]
+  - Evidence: `docs/evidence/split-root-flake-modules-closeout-focused-checks-after-stage.run.log` records nixfmt, output-inventory parity, selected dry-run check builds, and devshell contract checks; `docs/evidence/split-root-flake-modules-final-cairn-gates.run.log` records proposal/design/tasks gates and Cairn validation after all tasks were checked; BLAKE3 manifest `docs/evidence/split-root-flake-modules-validation.b3`.

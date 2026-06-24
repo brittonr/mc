@@ -1,0 +1,47 @@
+
+$ nix run github:Mic92/nixfmt-rs -- --check flake.nix nix/shared-tools.nix nix/packages.nix nix/apps.nix nix/checks.nix nix/devshells.nix
+unpacking 'github:Mic92/nixfmt-rs/264654df5429e62ff029fb8204a85b1a402191a5' into the Git cache...
+command_exit_status=0
+
+$ nix build .#checks.x86_64-linux.mc-flake-output-inventory --no-link -L
+error:
+       … while evaluating a branch condition
+         at /home/brittonr/git/mc/nix/checks.nix:51:5:
+           50|   mc-flake-output-inventory =
+           51|     if hasMismatch then
+             |     ^
+           52|       throw "flake output inventory mismatch: ${reportJson}"
+
+       … while calling the 'any' builtin
+         at /home/brittonr/git/mc/nix/checks.nix:37:17:
+           36|   hasCategoryMismatch = categoryDiff: categoryDiff.missing != [ ] || categoryDiff.unexpected != [ ];
+           37|   hasMismatch = builtins.any hasCategoryMismatch (builtins.attrValues diff);
+             |                 ^
+           38|   report = {
+
+       (stack trace truncated; use '--show-trace' to show the full, detailed trace)
+
+       error: Path 'mc/docs/evidence/split-root-flake-modules-baseline-output-inventory.json' in the repository "/home/brittonr/git" is not tracked by Git.
+
+       To make it visible to Nix, run:
+
+       git -C "/home/brittonr/git" add "mc/docs/evidence/split-root-flake-modules-baseline-output-inventory.json"
+command_exit_status=1
+
+$ nix build .#checks.x86_64-linux.mc-compat-editable-app-dry-runs .#checks.x86_64-linux.mc-compat-dry-run --no-link -L
+command_exit_status=0
+
+$ nix develop --no-update-lock-file . -c bash -lc command\ -v\ cargo\ \&\&\ command\ -v\ rustc\ \&\&\ command\ -v\ nickel\ \&\&\ command\ -v\ cairn\ \&\&\ command\ -v\ cargo-octet\ \&\&\ command\ -v\ xvfb-run\ \&\&\ command\ -v\ docker\ \&\&\ test\ -n\ \"\$OPENSSL_INCLUDE_DIR\"\ \&\&\ test\ -n\ \"\$OPENSSL_LIB_DIR\"\ \&\&\ test\ -n\ \"\$PKG_CONFIG_PATH\"\ \&\&\ test\ -n\ \"\$LD_LIBRARY_PATH\"\ \&\&\ test\ -n\ \"\$LIBRARY_PATH\"\ \&\&\ test\ \"\$WINIT_UNIX_BACKEND\"\ =\ x11\ \&\&\ test\ \"\$LIBGL_ALWAYS_SOFTWARE\"\ =\ 1
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+/nix/store/z480b23kymbmrijrl49246mrzyphli15-cargo-1.95.0/bin/cargo
+/nix/store/wnhmqix7bippbbzasj29qiyb422g9asg-rustc-wrapper-1.95.0/bin/rustc
+/nix/store/l5jars57rgqprdpk122iibk56rvqf040-nickel-1.16.0/bin/nickel
+/nix/store/8ihdr59rkgw1h4x6qw6y69lvxwz9v3f3-cairn-0.1.0/bin/cairn
+/nix/store/qc3iazdxs844wwh199v46xikax7xpyhj-cargo-octet-0.1.0/bin/cargo-octet
+/nix/store/g19nw2m370sincpr6i62j4g312yf4jxz-xvfb-run-1+g87f6705/bin/xvfb-run
+/nix/store/gla5h7ig435y9jj5z0nfbsm7f1jfdf0b-docker-29.5.1/bin/docker
+command_exit_status=0
+exit_status=1

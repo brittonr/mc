@@ -1,0 +1,7 @@
+$ nix build .#checks.x86_64-linux.mc-flake-output-inventory --no-link -L
+this derivation will be built:
+  /nix/store/lbq4vcx1qynhzjd12v48ivxb4nml0jxb-mc-flake-output-inventory.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/lbq4vcx1qynhzjd12v48ivxb4nml0jxb-mc-flake-output-inventory.drv'...
+command_exit_status=0
+exit_status=0

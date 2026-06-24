@@ -1,0 +1,5 @@
+$ nix eval --impure current output inventory
+command_exit_status=0
+inventory_json=docs/evidence/split-root-flake-modules-baseline-output-inventory.json
+bytes=14413
+exit_status=0

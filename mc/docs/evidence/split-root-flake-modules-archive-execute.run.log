@@ -1,0 +1,82 @@
+$ CAIRN_ARCHIVE_DATE=2026-06-24 nix run .#cairn -- archive split-root-flake-modules --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: split-root-flake-modules",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-24-split-root-flake-modules"
+    }
+  ],
+  "blocked": false,
+  "change": "split-root-flake-modules",
+  "dry_run": false,
+  "input_hash": "71c2d1b5b6d189e668ecd979632e108ae45d4ff71e437a9bce1d66fe3453cfea",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "0c2d8494b7b3b24aec83a7b28388da876f886b7c2ee510a4fb2eba070f0bfeba",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-24-split-root-flake-modules/design.md"
+        },
+        {
+          "content_hash": "89f511fe5071c9c6de28e59c7725792836744e3b776a29d2c74e6bd87a6724f8",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-24-split-root-flake-modules/proposal.md"
+        },
+        {
+          "content_hash": "7010ea5c185a8a11612b41ae93540f9bc6eebf74418fe812812af577337c35f3",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-24-split-root-flake-modules/specs/repository-layout/spec.md"
+        },
+        {
+          "content_hash": "90fe3c20ee1c6f1d39e9866ac434dc158419e64d95c10b8a7e92f79636e4175e",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-24-split-root-flake-modules/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/split-root-flake-modules"
+        }
+      ],
+      "manifest_hash": "512c73a7b19de49bbe06705016ae8ba38abeaf78d5a870981e9fc8d3e0efd56b"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "0c2d8494b7b3b24aec83a7b28388da876f886b7c2ee510a4fb2eba070f0bfeba",
+          "exists": true,
+          "path": "./cairn/changes/split-root-flake-modules/design.md"
+        },
+        {
+          "content_hash": "89f511fe5071c9c6de28e59c7725792836744e3b776a29d2c74e6bd87a6724f8",
+          "exists": true,
+          "path": "./cairn/changes/split-root-flake-modules/proposal.md"
+        },
+        {
+          "content_hash": "7010ea5c185a8a11612b41ae93540f9bc6eebf74418fe812812af577337c35f3",
+          "exists": true,
+          "path": "./cairn/changes/split-root-flake-modules/specs/repository-layout/spec.md"
+        },
+        {
+          "content_hash": "90fe3c20ee1c6f1d39e9866ac434dc158419e64d95c10b8a7e92f79636e4175e",
+          "exists": true,
+          "path": "./cairn/changes/split-root-flake-modules/tasks.md"
+        }
+      ],
+      "manifest_hash": "a414e249e929e68633dd714fbdfd7379d26797eea60bc2a7f597c62e3a3a6adc"
+    },
+    "kind": "archive",
+    "manifest_hash": "8dcf98aa1becceeadd50b72f853d541657ef049966eb8a1eb2d0327600303ff3"
+  },
+  "plan_hash": "24b3257f1216d69157b45af6611499b09c6ef0e48729447d1d0db394b11a1489",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "18048fd3bd179012c0466fc8dae0a484bf7df1d185bdabc60395f7815b6e98b4"
+}
+command_exit_status=0
+exit_status=0

@@ -1,0 +1,25 @@
+$ nix develop --no-update-lock-file . -c bash -lc b3sum --check docs/evidence/split-root-flake-modules-validation.b3
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+docs/evidence/split-root-flake-modules-preflight-cairn-gates.run.log: OK
+docs/evidence/split-root-flake-modules-baseline-output-inventory.run.log: OK
+docs/evidence/split-root-flake-modules-baseline-output-inventory.json: OK
+docs/evidence/split-root-flake-modules-output-inventory-parity.run.log: OK
+docs/evidence/split-root-flake-modules-package-module-checks.run.log: OK
+docs/evidence/split-root-flake-modules-app-check-module-checks.run.log: OK
+docs/evidence/split-root-flake-modules-devshell-checks.run.log: OK
+docs/evidence/split-root-flake-modules-closeout-focused-checks.run.log: OK
+docs/evidence/split-root-flake-modules-closeout-focused-checks-after-stage.run.log: OK
+docs/evidence/split-root-flake-modules-closeout-cairn-gates.run.log: OK
+docs/evidence/split-root-flake-modules-final-cairn-gates.run.log: OK
+docs/evidence/split-root-flake-modules-sync-dry-run.run.log: OK
+docs/evidence/split-root-flake-modules-sync-execute.run.log: OK
+docs/evidence/split-root-flake-modules-post-sync-validate.run.log: OK
+docs/evidence/split-root-flake-modules-archive-dry-run.run.log: OK
+docs/evidence/split-root-flake-modules-archive-execute.run.log: OK
+docs/evidence/split-root-flake-modules-post-archive-validate.run.log: OK
+docs/evidence/split-root-flake-modules-archived-task-evidence.run.log: OK
+command_exit_status=0
+exit_status=0
