@@ -22,6 +22,7 @@ use valence_entity::{
     ClearEntityChangesSet, EntityId, EntityStatus, OldPosition, Position, Velocity,
 };
 use valence_math::{DVec3, Vec3};
+use valence_protocol::decode::ByteBackedPacketFrame;
 use valence_protocol::encode::{PacketEncoder, WritePacket};
 use valence_protocol::packets::play::chunk_biome_data_s2c::ChunkBiome;
 use valence_protocol::packets::play::game_state_change_s2c::GameEventKind;
@@ -36,7 +37,7 @@ use valence_protocol::profile::Property;
 use valence_protocol::sound::{Sound, SoundCategory, SoundId};
 use valence_protocol::text::{IntoText, Text};
 use valence_protocol::var_int::VarInt;
-use valence_protocol::{BlockPos, ChunkPos, Encode, GameMode, Packet};
+use valence_protocol::{BlockPos, ByteBackedPacketBody, ChunkPos, Encode, GameMode, Packet};
 use valence_registry::RegistrySet;
 use valence_server_common::{Despawned, UniqueId};
 
@@ -250,6 +251,25 @@ pub struct ReceivedPacket {
     pub id: i32,
     /// The content of the packet, excluding the leading varint packet ID.
     pub body: Bytes,
+}
+
+impl ReceivedPacket {
+    /// Builds a received packet from a shared byte-backed protocol frame.
+    #[must_use]
+    pub fn from_byte_backed_frame(timestamp: Instant, frame: ByteBackedPacketFrame) -> Self {
+        let (id, body) = frame.into_parts();
+        Self {
+            timestamp,
+            id,
+            body: body.into_bytes(),
+        }
+    }
+
+    /// Returns a byte-backed compatibility view of this packet body.
+    #[must_use]
+    pub fn byte_body(&self) -> ByteBackedPacketBody {
+        ByteBackedPacketBody::new(self.body.clone())
+    }
 }
 
 impl Drop for Client {
@@ -1305,16 +1325,20 @@ fn cleanup_chunks_after_client_despawn(
 #[cfg(test)]
 mod tests {
     use std::sync::{Arc, Mutex};
+    use std::time::Instant;
 
     use anyhow::bail;
-    use bytes::BytesMut;
+    use bytes::{Bytes, BytesMut};
+    use valence_protocol::decode::ByteBackedPacketFrame;
     use valence_protocol::packets::play::DifficultyS2c;
-    use valence_protocol::{Difficulty, PacketEncoder};
+    use valence_protocol::{ByteBackedPacketBody, Difficulty, PacketEncoder};
 
     use super::{Client, ClientConnection, ReceivedPacket};
     use crate::protocol::WritePacket;
 
     const CLOSED_CLIENT_MESSAGE: &str = "client disconnected";
+    const TEST_RECEIVED_PACKET_ID: i32 = 42;
+    const TEST_RECEIVED_PACKET_BODY: &[u8] = b"body";
 
     #[test]
     fn flush_packets_sends_buffer_and_leaves_empty_reusable_state() {
@@ -1337,6 +1361,20 @@ mod tests {
         client.flush_packets().unwrap();
 
         assert!(error.to_string().contains(CLOSED_CLIENT_MESSAGE));
+    }
+
+    #[test]
+    fn received_packet_preserves_byte_backed_body_compatibility() {
+        let frame = ByteBackedPacketFrame {
+            id: TEST_RECEIVED_PACKET_ID,
+            body: ByteBackedPacketBody::new(Bytes::from_static(TEST_RECEIVED_PACKET_BODY)),
+        };
+        let packet = ReceivedPacket::from_byte_backed_frame(Instant::now(), frame);
+        let byte_body = packet.byte_body();
+
+        assert_eq!(packet.id, TEST_RECEIVED_PACKET_ID);
+        assert_eq!(packet.body.as_ref(), TEST_RECEIVED_PACKET_BODY);
+        assert_eq!(byte_body.as_bytes(), TEST_RECEIVED_PACKET_BODY);
     }
 
     fn valid_packet() -> DifficultyS2c {

@@ -614,8 +614,8 @@ mod tests {
             writer
                 .write_packet_fallible(&PartialFailingPacket)
                 .unwrap_err();
-            writer.write_packet_fallible(&valid_packet()).unwrap();
-        }
+            writer.write_packet_fallible(&valid_packet()).unwrap()
+        };
 
         assert_no_stale_marker(&bytes);
         assert_valid_difficulty_frame(BytesMut::from(bytes.as_slice()), COMPRESS_EVERY_PACKET);

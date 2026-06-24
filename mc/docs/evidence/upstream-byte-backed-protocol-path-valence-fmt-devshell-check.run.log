@@ -1,0 +1,739 @@
+# command: nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo fmt --all -- --check
+# cwd: /home/brittonr/git/mc/servers/valence
+# started_at_utc: 2026-06-24T02:31:53Z
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Diff in /home/brittonr/git/mc/servers/valence/crates/valence_protocol/src/byte_backed.rs:349:
+     #[test]
+     fn byte_field_rejects_oversized_field() {
+         let body = ByteBackedPacketBody::copy_from_slice(PACKET_BYTES);
+[31m-        let err = ByteBackedBytes::from_body_range(
+(B[m[31m-            &body,
+(B[m[31m-            FIELD_START..FIELD_END,
+(B[m[31m-            TOO_SMALL_FIELD_BYTES,
+(B[m[31m-        )
+(B[m[31m-        .unwrap_err();
+(B[m[32m+        let err =
+(B[m[32m+            ByteBackedBytes::from_body_range(&body, FIELD_START..FIELD_END, TOO_SMALL_FIELD_BYTES)
+(B[m[32m+                .unwrap_err();
+(B[m
+         assert_eq!(
+             err,
+Diff in /home/brittonr/git/mc/servers/valence/crates/valence_protocol/src/byte_backed.rs:400:
+
+     #[test]
+     fn utf8_field_rejects_invalid_utf8() {
+[31m-        let err = ByteBackedStr::new(
+(B[m[31m-            Bytes::copy_from_slice(INVALID_UTF8),
+(B[m[31m-            MAX_VALID_TEXT_CHARS,
+(B[m[31m-        )
+(B[m[31m-        .unwrap_err();
+(B[m[32m+        let err = ByteBackedStr::new(Bytes::copy_from_slice(INVALID_UTF8), MAX_VALID_TEXT_CHARS)
+(B[m[32m+            .unwrap_err();
+(B[m
+         assert_eq!(
+             err,
+Diff in /home/brittonr/git/mc/servers/valence/crates/valence_protocol/src/decode.rs:71:
+     }
+
+     #[cfg(feature = "compression")]
+[31m-    fn decode_compressed_frame(
+(B[m[31m-        &mut self,
+(B[m[31m-        layout: PacketFrameLayout,
+(B[m[31m-    ) -> anyhow::Result<BytesMut> {
+(B[m[32m+    fn decode_compressed_frame(&mut self, layout: PacketFrameLayout) -> anyhow::Result<BytesMut> {
+(B[m         use std::io::Write;
+
+         use bytes::BufMut;
+Diff in /home/brittonr/git/mc/servers/valence/crates/valence_protocol/src/decode.rs:359:
+     #[test]
+     fn complete_frame_decodes_byte_backed_body() {
+         let mut decoder = PacketDecoder::new();
+[31m-        decoder.queue_bytes(encode_test_packet(VALID_TEXT, CompressionThreshold::DEFAULT));
+(B[m[32m+        decoder.queue_bytes(encode_test_packet(
+(B[m[32m+            VALID_TEXT,
+(B[m[32m+            CompressionThreshold::DEFAULT,
+(B[m[32m+        ));
+(B[m
+         let frame = decoder.try_next_packet().unwrap().unwrap();
+         let byte_backed = frame.into_byte_backed();
+Diff in /home/brittonr/git/mc/servers/valence/crates/valence_protocol/src/decode.rs:406:
+     #[test]
+     fn malformed_packet_length_varint_fails_closed() {
+         let mut decoder = PacketDecoder::new();
+[31m-        decoder.queue_bytes(BytesMut::from(&[VARINT_CONTINUE_BYTE; VarInt::MAX_SIZE][..]));
+(B[m[32m+        decoder.queue_bytes(BytesMut::from(
+(B[m[32m+            &[VARINT_CONTINUE_BYTE; VarInt::MAX_SIZE][..],
+(B[m[32m+        ));
+(B[m
+         let err = decoder.try_next_packet().unwrap_err();
+
+Diff in /home/brittonr/git/mc/servers/valence/crates/valence_protocol/src/decode.rs:448:
+
+     #[test]
+     fn invalid_utf8_field_fails_before_public_exposure() {
+[31m-        let err = ByteBackedStr::new(
+(B[m[31m-            Bytes::copy_from_slice(INVALID_UTF8),
+(B[m[31m-            VALID_TEXT_MAX_CHARS,
+(B[m[31m-        )
+(B[m[31m-        .unwrap_err();
+(B[m[32m+        let err = ByteBackedStr::new(Bytes::copy_from_slice(INVALID_UTF8), VALID_TEXT_MAX_CHARS)
+(B[m[32m+            .unwrap_err();
+(B[m
+         assert_eq!(
+             err,
+Diff in /home/brittonr/git/mc/servers/valence/crates/valence_protocol/src/lib.rs:80:
+ pub use block_pos::BlockPos;
+ pub use bounded::Bounded;
+ pub use byte_angle::ByteAngle;
+[31m-pub use byte_backed::{
+(B[m[31m-    ByteBackedBytes, ByteBackedError, ByteBackedPacketBody, ByteBackedStr,
+(B[m[31m-};
+(B[m[32m+pub use byte_backed::{ByteBackedBytes, ByteBackedError, ByteBackedPacketBody, ByteBackedStr};
+(B[m pub use bytes;
+ pub use chunk_pos::ChunkPos;
+ pub use chunk_section_pos::ChunkSectionPos;
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+exit_status=1
+# finished_at_utc: 2026-06-24T02:31:54Z

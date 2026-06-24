@@ -131,9 +131,10 @@ impl PacketIo {
                 };
 
                 let timestamp = Instant::now();
+                let frame = frame.into_byte_backed();
 
                 // Estimate memory usage of this packet.
-                let cost = mem::size_of::<ReceivedPacket>() + frame.body.len();
+                let cost = mem::size_of::<ReceivedPacket>() + frame.body().len();
 
                 if cost > incoming_byte_limit {
                     debug!(
@@ -155,11 +156,7 @@ impl PacketIo {
                 // The permits will be added back on the other side of the channel.
                 permits.forget();
 
-                let packet = ReceivedPacket {
-                    timestamp,
-                    id: frame.id,
-                    body: frame.body.freeze(),
-                };
+                let packet = ReceivedPacket::from_byte_backed_frame(timestamp, frame);
 
                 if incoming_sender.try_send(packet).is_err() {
                     // Channel closed.

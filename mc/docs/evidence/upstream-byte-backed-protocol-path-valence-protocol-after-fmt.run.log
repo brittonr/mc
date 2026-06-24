@@ -1,0 +1,93 @@
+# command: nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence_protocol --all-features
+# cwd: /home/brittonr/git/mc/servers/valence
+# started_at_utc: 2026-06-24T02:33:24Z
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+   Compiling valence_protocol v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_protocol)
+    Finished `test` profile [optimized + debuginfo] target(s) in 1.39s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_protocol-5a13fb6e7225d127)
+
+running 33 tests
+test bit_set::tests::display_fixed_bit_set ... ok
+test block_pos::tests::block_position ... ok
+test bit_set::tests::fixed_bit_set_ops ... ok
+test bit_set::tests::fixed_bit_set_out_of_range - should panic ... ok
+test byte_backed::tests::byte_field_rejects_stale_or_invalid_owner_range ... ok
+test byte_backed::tests::byte_field_rejects_oversized_field ... ok
+test byte_backed::tests::byte_field_slices_shared_packet_body ... ok
+test byte_backed::tests::utf8_field_rejects_invalid_utf8 ... ok
+test byte_backed::tests::utf8_field_rejects_utf16_char_overflow ... ok
+test byte_backed::tests::utf8_field_validates_text_and_ownership ... ok
+test chunk_pos::tests::chunk_pos_round_trip_conv ... ok
+test decode::tests::byte_backed_field_rejects_oversized_public_field ... ok
+test decode::tests::byte_backed_text_field_can_outlive_packet_body ... ok
+test decode::tests::complete_frame_decodes_byte_backed_body ... ok
+test decode::tests::invalid_compressed_length_fails_closed ... ok
+test decode::tests::invalid_utf8_field_fails_before_public_exposure ... ok
+test decode::tests::malformed_packet_length_varint_fails_closed ... ok
+test decode::tests::oversized_packet_length_fails_closed ... ok
+test decode::tests::split_frame_is_decoded_after_remaining_bytes_arrive ... ok
+test decode::tests::zero_length_packet_fails_closed ... ok
+test decode::tests::compressed_frame_decodes_deterministically ... ok
+test encode::tests::packet_encoder_clears_partial_bytes_after_uncompressed_error ... ok
+test encode::tests::packet_encoder_matches_packet_writer_for_default_packet ... ok
+test item::tests::empty_item_stack_is_empty ... ok
+test tests::packet_name ... ok
+test encode::tests::packet_encoder_clears_partial_bytes_after_compressed_error ... ok
+test encode::tests::reusable_packet_writer_clears_partial_bytes_after_compressed_error ... ok
+test velocity::velocity_from_ms ... ok
+test tests::packets_round_trip ... ok
+test var_int::tests::varint_written_size ... ok
+test encode::tests::oversized_packet_does_not_poison_next_packet ... ok
+test var_int::tests::varint_round_trip ... ok
+test var_long::tests::encode_decode ... ok
+
+test result: ok. 33 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+   Doc-tests valence_protocol
+
+running 4 tests
+test crates/valence_protocol/src/block_pos.rs - block_pos::BlockPos::get_in_direction (line 31) ... ok
+test crates/valence_protocol/src/lib.rs - Encode (line 160) ... ok
+test crates/valence_protocol/src/lib.rs - Decode (line 248) ... ok
+test crates/valence_protocol/src/lib.rs - (line 7) ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.38s
+
+exit_status=0
+# finished_at_utc: 2026-06-24T02:33:29Z

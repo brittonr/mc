@@ -1,0 +1,52 @@
+# command: nix run .#cairn -- sync upstream-byte-backed-protocol-path --root . --execute
+# cwd: /home/brittonr/git/mc
+# started_at_utc: 2026-06-24T02:49:26Z
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/upstream-byte-backed-protocol-path/specs/valence-hyperion-integration/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/upstream-byte-backed-protocol-path/specs/valence-hyperion-integration/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "upstream-byte-backed-protocol-path",
+  "delta_specs": [
+    "./cairn/changes/upstream-byte-backed-protocol-path/specs/valence-hyperion-integration/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "8ae9ded03c5923d53daf5780a46ba4da39b6219a1ea702ee4913f01d15c3aa5d",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "db81bcc71ccede52ff67ac4c9b06cacf62f92fb1df311593fa49359baf565c3c",
+          "exists": true,
+          "path": "./cairn/specs/valence-hyperion-integration/spec.md"
+        }
+      ],
+      "manifest_hash": "ffde6fd1620f59a05e7a174adf190ccd47930d7afb36fe774d95e9cf86ab521b"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "db81bcc71ccede52ff67ac4c9b06cacf62f92fb1df311593fa49359baf565c3c",
+          "exists": true,
+          "path": "./cairn/specs/valence-hyperion-integration/spec.md"
+        }
+      ],
+      "manifest_hash": "ffde6fd1620f59a05e7a174adf190ccd47930d7afb36fe774d95e9cf86ab521b"
+    },
+    "kind": "sync",
+    "manifest_hash": "dcafd64b17ce8dd2caac12e0546858baf9366213453174885294270e19a3e910"
+  },
+  "plan_hash": "9bac81ac16ee2d4c927d581ea2f0eca21b1bf0673e7c69f153366f8f6f87593c",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "87255a0de641986a4d38ab76e9805a8a28d98db7270c0fb3d807e37d92e27f9f"
+}
+exit_status=0
+# finished_at_utc: 2026-06-24T02:49:26Z
