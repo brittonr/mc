@@ -1,0 +1,74 @@
+# CTF invalid-action live breadth Cairn gates
+started_at=2026-06-23T02:03:21Z
+## cairn_validate
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+cairn_validate_exit_status=0
+## task_evidence_local
+command=nix develop --no-update-lock-file . -c bash -lc rustc --edition=2021 tools/check_cairn_task_evidence.rs -o /tmp/check_cairn_task_evidence && /tmp/check_cairn_task_evidence --self-test && /tmp/check_cairn_task_evidence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:3 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:3 cites run log docs/evidence/ctf-invalid-action-live-breadth-dry-run-v2.run.log without a cited .b3 manifest covering it
+task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:3 cites run log docs/evidence/ctf-invalid-action-live-breadth-focused-manifest-check-v2.run.log without a cited .b3 manifest covering it
+task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:3 cites run log docs/evidence/ctf-invalid-action-live-breadth-scenario-manifest-check-v2.run.log without a cited .b3 manifest covering it
+task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:5 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:5 cites run log docs/evidence/ctf-invalid-action-live-breadth-row-check.run.log without a cited .b3 manifest covering it
+task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:7 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:7 cites non-reviewable artifact path stevenarella/src/server/mod.rs; copy review-critical bytes under docs/evidence/
+task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:7 cites non-reviewable artifact path valence/examples/ctf.rs; copy review-critical bytes under docs/evidence/
+task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:7 cites run log docs/evidence/protocol-763-ctf-invalid-opponent-base-return-drop-live-2026-06-22.run.log without a cited .b3 manifest covering it
+task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:9 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:9 cites run log docs/evidence/ctf-invalid-action-live-breadth-row-check.run.log without a cited .b3 manifest covering it
+task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:9 cites run log docs/evidence/protocol-763-ctf-invalid-action-live-breadth-checker-2026-06-22.run.log without a cited .b3 manifest covering it
+task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:11 cites run log docs/evidence/ctf-invalid-action-live-breadth-focused-manifest-check-v2.run.log without a cited .b3 manifest covering it
+task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:13 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:13 cites run log docs/evidence/ctf-invalid-action-live-breadth-bundle-matrix-local-check-v2.run.log without a cited .b3 manifest covering it
+task_evidence_local_exit_status=1
+## task_evidence_nix
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-cairn-task-evidence
+this derivation will be built:
+  /nix/store/42f6n40k4l3zwbxh3pp1n6pccn42afir-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/42f6n40k4l3zwbxh3pp1n6pccn42afir-mc-compat-cairn-task-evidence.drv'...
+error: Cannot build '/nix/store/42f6n40k4l3zwbxh3pp1n6pccn42afir-mc-compat-cairn-task-evidence.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/0w570zn3yvarih9c3nmklaqvz0ln0d3r-mc-compat-cairn-task-evidence
+       Last 20 log lines:
+       > task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:3 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+       > task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:3 cites missing evidence artifact docs/evidence/ctf-invalid-action-live-breadth-focused-manifest-check-v2.run.log
+       > task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:3 cites run log docs/evidence/ctf-invalid-action-live-breadth-dry-run-v2.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:3 cites run log docs/evidence/ctf-invalid-action-live-breadth-focused-manifest-check-v2.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:3 cites run log docs/evidence/ctf-invalid-action-live-breadth-focused-manifest-check-v2.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:3 cites run log docs/evidence/ctf-invalid-action-live-breadth-scenario-manifest-check-v2.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:5 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+       > task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:5 cites run log docs/evidence/ctf-invalid-action-live-breadth-row-check.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:7 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+       > task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:7 cites non-reviewable artifact path stevenarella/src/server/mod.rs; copy review-critical bytes under docs/evidence/
+       > task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:7 cites non-reviewable artifact path valence/examples/ctf.rs; copy review-critical bytes under docs/evidence/
+       > task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:7 cites run log docs/evidence/protocol-763-ctf-invalid-opponent-base-return-drop-live-2026-06-22.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:9 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+       > task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:9 cites run log docs/evidence/ctf-invalid-action-live-breadth-row-check.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:9 cites run log docs/evidence/protocol-763-ctf-invalid-action-live-breadth-checker-2026-06-22.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:11 cites missing evidence artifact docs/evidence/ctf-invalid-action-live-breadth-focused-manifest-check-v2.run.log
+       > task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:11 cites run log docs/evidence/ctf-invalid-action-live-breadth-focused-manifest-check-v2.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:11 cites run log docs/evidence/ctf-invalid-action-live-breadth-focused-manifest-check-v2.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:13 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+       > task evidence gate failed: cairn/changes/ctf-invalid-action-live-breadth-proof/tasks.md:13 cites run log docs/evidence/ctf-invalid-action-live-breadth-bundle-matrix-local-check-v2.run.log without a cited .b3 manifest covering it
+       For full logs, run:
+         nix log /nix/store/42f6n40k4l3zwbxh3pp1n6pccn42afir-mc-compat-cairn-task-evidence.drv
+task_evidence_nix_exit_status=1
+finished_at=2026-06-23T02:05:41Z
+exit_status=1

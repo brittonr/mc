@@ -1,0 +1,10 @@
+## focused task evidence for archived define-admin-permission-ergonomics tasks
+cwd=/home/brittonr/git/mc
+date_utc=2026-06-23T20:23:25Z
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c bash -lc "rustc tools/check_cairn_task_evidence.rs -o target/check_cairn_task_evidence && target/check_cairn_task_evidence cairn/archive/2026-06-23-define-admin-permission-ergonomics/tasks.md"
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+task evidence gate passed: 6 completed tasks checked across 1 task files
+exit_status=0

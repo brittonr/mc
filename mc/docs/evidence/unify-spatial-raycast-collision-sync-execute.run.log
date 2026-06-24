@@ -1,0 +1,52 @@
+# Cairn sync execute
+timestamp=2026-06-24T02:11:14Z
+$ nix run .#cairn -- sync unify-spatial-raycast-collision --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/unify-spatial-raycast-collision/specs/valence-hyperion-integration/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/unify-spatial-raycast-collision/specs/valence-hyperion-integration/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "unify-spatial-raycast-collision",
+  "delta_specs": [
+    "./cairn/changes/unify-spatial-raycast-collision/specs/valence-hyperion-integration/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "f93c803d93fc6b3c6b8efb76ff48c479afea22df701a46b7d177ebe3bfbb78e0",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "9e4bf9d602683f46985b2b08b3803fdfd09973a21805868ee2a31086e90400cd",
+          "exists": true,
+          "path": "./cairn/specs/valence-hyperion-integration/spec.md"
+        }
+      ],
+      "manifest_hash": "2d0518b317a2dd067bf5ec5b04895699ed54e3f5f1ff5b950c192b2246c0d493"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "9e4bf9d602683f46985b2b08b3803fdfd09973a21805868ee2a31086e90400cd",
+          "exists": true,
+          "path": "./cairn/specs/valence-hyperion-integration/spec.md"
+        }
+      ],
+      "manifest_hash": "2d0518b317a2dd067bf5ec5b04895699ed54e3f5f1ff5b950c192b2246c0d493"
+    },
+    "kind": "sync",
+    "manifest_hash": "661ab2236dc397a54a225ff71d42c40e5fdd6ff4bbbbc9bed2e4fab62502d64d"
+  },
+  "plan_hash": "741a91c5744b005d837e60aa8c2562f6fdfe3c787742fd263eec5a8a7272a8ac",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "07778ea93fb39ddefe8c100d61cfbebaabb709395a10a2220ac665bff9b1812c"
+}
+exit_status=0
+]0;

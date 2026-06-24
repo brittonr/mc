@@ -1,0 +1,97 @@
+# CTF rule typed-event Cairn sync
+started_at=2026-06-23T00:49:24Z
+## sync_dry_run
+command=nix run .#cairn -- sync ctf-rule-typed-event-migration-wave --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/ctf-rule-typed-event-migration-wave/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/ctf-rule-typed-event-migration-wave/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "ctf-rule-typed-event-migration-wave",
+  "delta_specs": [
+    "./cairn/changes/ctf-rule-typed-event-migration-wave/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "c4880e0493d553ede4649b37d583010ce0578d8a11a42165f60ff1fb4fef9c81",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "19efcb9b9cd3a54ffe69c009b0fcc0c1817eb6e6c6597e118f4d136cd2d5fe7e",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "8747af39c10a37a09e1aac6224b1b78ac5549efbaa4709f350a5912b189abe65"
+}
+sync_dry_run_exit_status=0
+## sync_execute
+command=nix run .#cairn -- sync ctf-rule-typed-event-migration-wave --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/ctf-rule-typed-event-migration-wave/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/ctf-rule-typed-event-migration-wave/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "ctf-rule-typed-event-migration-wave",
+  "delta_specs": [
+    "./cairn/changes/ctf-rule-typed-event-migration-wave/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "c4880e0493d553ede4649b37d583010ce0578d8a11a42165f60ff1fb4fef9c81",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "5de9a6686c1e1ac4da108dd85093fd6fcf2abd278774e3b067a980550e30ecaf",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "161d8fee46ab6757d81d1c4014beed81cef46ace52a59abd6c971fecfac7e3f9"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "5de9a6686c1e1ac4da108dd85093fd6fcf2abd278774e3b067a980550e30ecaf",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "161d8fee46ab6757d81d1c4014beed81cef46ace52a59abd6c971fecfac7e3f9"
+    },
+    "kind": "sync",
+    "manifest_hash": "09581633dccfad687c080ab7ac1d3e89ddd30d40b237b1543d33c48150d27912"
+  },
+  "plan_hash": "d7ffbb161319c1ff12f49ac9dd9e6fdee37e430bead5723c30ae0c1c5d8560ae",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "fa55eb38d95d8574cc893cc7ff4a1a27677b6a5ea0483e6b98ccd11e6e8df11b"
+}
+sync_execute_exit_status=0
+## grep_accepted_spec
+command=grep -F ctf_rule_typed_event_migration_wave cairn/specs/mc-compatibility/spec.md
+grep_accepted_spec_exit_status=1
+## cairn_validate
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 2,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 4,
+  "valid": true
+}
+cairn_validate_exit_status=0
+finished_at=2026-06-23T00:49:24Z
+exit_status=1

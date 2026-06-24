@@ -1,0 +1,51 @@
+## cairn sync execute
+command=nix run .#cairn -- sync define-workspace-component-registry --root
+command=. --execute '' '' '' '' ''
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/define-workspace-component-registry/specs/repository-layout/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/define-workspace-component-registry/specs/repository-layout/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "define-workspace-component-registry",
+  "delta_specs": [
+    "./cairn/changes/define-workspace-component-registry/specs/repository-layout/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "5bba02c98198a942e1ed1bdfc89010ba7e3d16567532efcf791ba44991070608",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "17562ddacaa177c552dcce2b176f0813144714637ffc2142f4f52a59269e7adb",
+          "exists": true,
+          "path": "./cairn/specs/repository-layout/spec.md"
+        }
+      ],
+      "manifest_hash": "6cb9a6772575a97e95b8478e58c40f7adaaa1c87d9c0037209ae89cdc68e0d89"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "17562ddacaa177c552dcce2b176f0813144714637ffc2142f4f52a59269e7adb",
+          "exists": true,
+          "path": "./cairn/specs/repository-layout/spec.md"
+        }
+      ],
+      "manifest_hash": "6cb9a6772575a97e95b8478e58c40f7adaaa1c87d9c0037209ae89cdc68e0d89"
+    },
+    "kind": "sync",
+    "manifest_hash": "0ef7f2c392cb8fd3a3172242e39eb53d17e35c2409dc1e5c40c4f5b4ebb4e554"
+  },
+  "plan_hash": "078631a70864ebe43cf15aa7dc9ef986a3d4e9e838a886866872c8a0dd32a18e",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "d6d4bdf3585a81c6616270e2138d8f542f0b6185ede62236ab2f8cb7a55b9214"
+}
+exit_status=0

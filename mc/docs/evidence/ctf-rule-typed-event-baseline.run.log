@@ -1,0 +1,91 @@
+# CTF rule typed-event migration baseline
+started_at=2026-06-23T00:28:55Z
+## runner_typed_event_tests
+command=nix develop --no-update-lock-file . -c cargo test --manifest-path compat/runner/Cargo.toml typed_event -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.05s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 19 tests
+test tests::typed_event_graph_checks_required_forbidden_and_ordered_events ... ok
+test tests::survival_breadth_typed_event_fixtures_fail_closed ... ok
+test tests::typed_event_oracle_validates_migrated_inventory_drag_graph ... ok
+test tests::typed_event_oracle_validates_migrated_inventory_graph ... ok
+test tests::typed_event_oracle_validates_migrated_survival_break_place_graph ... ok
+test tests::typed_event_oracle_validates_migrated_survival_chest_persistence_graph ... ok
+test tests::typed_event_oracle_validates_migrated_survival_crafting_recipe_breadth_graph ... ok
+test tests::typed_event_oracle_validates_migrated_mcp_controlled_smoke_graph ... ok
+test tests::typed_event_oracle_validates_migrated_survival_crafting_table_graph ... ok
+test tests::typed_event_oracle_receipt_records_migration_fallback ... ok
+test tests::typed_event_oracle_validates_migrated_survival_furnace_persistence_graph ... ok
+test tests::typed_event_parser_accepts_versioned_event_lines ... ok
+test tests::typed_event_oracle_validates_migrated_survival_hunger_health_cycle_graph ... ok
+test tests::typed_event_pass_fail_gate_includes_only_migrated_rows ... ok
+test tests::typed_event_oracle_validates_migrated_survival_furnace_smelting_breadth_graph ... ok
+test tests::typed_events_from_receipt_evidence_include_client_and_server_sources ... ok
+test tests::typed_event_receipt_artifact_records_reviewable_timeline_hash ... ok
+test tests::typed_event_oracle_validates_remaining_survival_breadth_graphs ... ok
+test tests::typed_event_graph_accepts_representative_scenario_fixtures ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 136 filtered out; finished in 0.00s
+
+runner_typed_event_tests_exit_status=0
+## scenario_manifest_check
+command=nix develop --no-update-lock-file . -c rustc tools/check_scenario_manifest.rs -o /tmp/check_scenario_manifest
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+scenario_manifest_check_exit_status=0
+scenario manifest check passed: 45 rows validated; dry-run coverage: 43 covered, 2 waived, 0 unmaintained; typed-event readiness: 18 ready, 27 fallback; fallback budget: approved=[armor-equipment-mitigation,blue-flag-score,combat-damage,combat-knockback,ctf-invalid-pickup-ownership,ctf-invalid-return-drop,ctf-score-limit-win-condition,ctf-simultaneous-pickup-capture-race,ctf-spawn-team-balance-reset,equipment-update-observation,flag-carrier-death-return,flag-score-repeat,multi-client-load-score,projectile-damage-attribution,projectile-hit,reconnect-flag-score,reconnect-flag-state,survival-biome-dimension-state,survival-block-entity-persistence-parity,survival-crash-recovery-parity,survival-hunger-food,survival-mob-drop,survival-redstone-toggle,survival-world-persistence-restart,valence-compat-bot-probe,vanilla-combat-armor-reference-parity,vanilla-combat-reference-parity]; removed=[mcp-controlled-smoke,survival-biome-dimension-travel,survival-chest-persistence,survival-container-block-entity-breadth,survival-crafting-recipe-breadth,survival-furnace-persistence,survival-furnace-smelting-breadth,survival-hunger-health-cycle,survival-mob-ai-loot-breadth,survival-redstone-circuit-breadth,survival-sign-editing-live,survival-world-multichunk-durability]; new=[]; typed_event_regressions=[]; missing_waiver_metadata=[]
+## generated_surface_check
+command=nix run .#scenario-manifest-generate -- --check
+error: flake 'git+file:///home/brittonr/git?dir=mc' does not provide attribute 'apps.x86_64-linux.scenario-manifest-generate', 'packages.x86_64-linux.scenario-manifest-generate', 'legacyPackages.x86_64-linux.scenario-manifest-generate' or 'scenario-manifest-generate'
+generated_surface_check_exit_status=1
+## ctf_wrapper_inventory
+command=grep -F ctf compat/config/scenario-manifest.ncl
+      dry_run = { check = "mc-compat-valence-ctf-inventory-interaction-dry-run", wrapper = "mc-compat-valence-ctf-inventory-interaction", receipt_shape_check = true, exclusion_reason = "" },
+      dry_run = { check = "mc-compat-valence-ctf-combat-damage-dry-run", wrapper = "mc-compat-valence-ctf-combat-damage", receipt_shape_check = true, exclusion_reason = "" },
+      dry_run = { check = "mc-compat-valence-ctf-combat-knockback-dry-run", wrapper = "mc-compat-valence-ctf-combat-knockback", receipt_shape_check = true, exclusion_reason = "" },
+      dry_run = { check = "mc-compat-valence-ctf-armor-equipment-mitigation-dry-run", wrapper = "mc-compat-valence-ctf-armor-equipment-mitigation", receipt_shape_check = true, exclusion_reason = "" },
+      dry_run = { check = "mc-compat-valence-ctf-equipment-update-observation-dry-run", wrapper = "mc-compat-valence-ctf-equipment-update-observation", receipt_shape_check = true, exclusion_reason = "" },
+      dry_run = { check = "mc-compat-valence-ctf-projectile-hit-dry-run", wrapper = "mc-compat-valence-ctf-projectile-hit", receipt_shape_check = true, exclusion_reason = "" },
+      dry_run = { check = "mc-compat-valence-ctf-projectile-damage-attribution-dry-run", wrapper = "mc-compat-valence-ctf-projectile-damage-attribution", receipt_shape_check = true, exclusion_reason = "" },
+      dry_run = { check = "mc-compat-valence-ctf-flag-carrier-death-return-dry-run", wrapper = "mc-compat-valence-ctf-flag-carrier-death-return", receipt_shape_check = true, exclusion_reason = "" },
+      dry_run = { check = "mc-compat-valence-ctf-reconnect-flag-state-dry-run", wrapper = "mc-compat-valence-ctf-reconnect-flag-state", receipt_shape_check = true, exclusion_reason = "" },
+      name = "ctf-invalid-pickup-ownership",
+      aliases = ["ctf-invalid-pickup-ownership"],
+      client_milestones = ["protocol_detected", "join_game", "render_tick", "ctf_invalid_pickup_attempted", "ctf_invalid_pickup_contained"],
+      dry_run = { check = "mc-compat-valence-ctf-invalid-pickup-ownership-dry-run", wrapper = "mc-compat-valence-ctf-invalid-pickup-ownership", receipt_shape_check = true, exclusion_reason = "" },
+      receipt_expectations = ["schema", "ctf_invalid_pickup_ownership", "client_server_correlation", "non-claims"],
+      name = "ctf-invalid-return-drop",
+      aliases = ["ctf-invalid-return-drop"],
+      client_milestones = ["protocol_detected", "join_game", "render_tick", "ctf_invalid_return_drop_attempted", "ctf_invalid_return_drop_contained"],
+      dry_run = { check = "mc-compat-valence-ctf-invalid-return-drop-dry-run", wrapper = "mc-compat-valence-ctf-invalid-return-drop", receipt_shape_check = true, exclusion_reason = "" },
+      receipt_expectations = ["schema", "ctf_invalid_return_drop", "client_server_correlation", "non-claims"],
+      name = "ctf-score-limit-win-condition",
+      aliases = ["ctf-score-limit-win-condition"],
+      client_milestones = ["protocol_detected", "join_game", "render_tick", "team_red", "flag_pickup", "flag_capture", "score_red_2", "ctf_score_limit_win_seen"],
+      dry_run = { check = "mc-compat-valence-ctf-score-limit-win-condition-dry-run", wrapper = "mc-compat-valence-ctf-score-limit-win-condition", receipt_shape_check = true, exclusion_reason = "" },
+      receipt_expectations = ["schema", "ctf_score_limit_win_condition", "client_server_correlation", "non-claims"],
+      name = "ctf-simultaneous-pickup-capture-race",
+      aliases = ["ctf-simultaneous-pickup-capture-race"],
+      client_milestones = ["ctf_race_client_count", "protocol_detected", "join_game", "render_tick", "team_red", "flag_pickup", "flag_capture", "score_red_1"],
+      server_milestones = ["server_client_a_seen", "server_client_b_seen", "server_ctf_race_accepted_transition", "server_ctf_race_rejected_transition", "server_ctf_race_final_state"],
+      forbidden_patterns = ["panic", "unexpected_eof", "protocol_mismatch", "decode_error", "ctf_race_double_accept", "unexpected_blue_score_1", "unexpected_red_score_2"],
+      dry_run = { check = "mc-compat-valence-ctf-simultaneous-pickup-capture-race-dry-run", wrapper = "mc-compat-valence-ctf-simultaneous-pickup-capture-race", receipt_shape_check = true, exclusion_reason = "" },
+      receipt_expectations = ["schema", "ctf_simultaneous_pickup_capture_race", "client_server_correlation", "non-claims"],
+      name = "ctf-spawn-team-balance-reset",
+      aliases = ["ctf-spawn-team-balance-reset"],
+      client_milestones = ["ctf_spawn_team_reset_client_count", "protocol_detected", "join_game", "render_tick", "team_red", "team_blue", "flag_pickup", "flag_capture", "score_red_1"],
+      server_milestones = ["server_client_a_seen", "server_client_b_seen", "server_ctf_spawn_red_assignment", "server_ctf_spawn_blue_assignment", "server_ctf_spawn_team_balance", "server_ctf_spawn_resource_reset"],
+      dry_run = { check = "mc-compat-valence-ctf-spawn-team-balance-reset-dry-run", wrapper = "mc-compat-valence-ctf-spawn-team-balance-reset", receipt_shape_check = true, exclusion_reason = "" },
+      receipt_expectations = ["schema", "ctf_spawn_team_balance_reset", "client_server_correlation", "non-claims"],
+ctf_wrapper_inventory_exit_status=0
+## evidence_manifest_check
+command=nix run .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=434; entries=3121; current=3121; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+evidence_manifest_check_exit_status=0
+finished_at=2026-06-23T00:29:02Z
+exit_status=1

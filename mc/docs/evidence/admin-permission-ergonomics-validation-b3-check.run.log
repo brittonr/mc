@@ -1,0 +1,30 @@
+## focused b3sum check for admin permission validation manifest
+cwd=/home/brittonr/git/mc
+date_utc=2026-06-23T20:24:39Z
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c b3sum --check docs/evidence/admin-permission-ergonomics-validation.b3
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+docs/evidence/admin-permission-ergonomics-scope.md: OK
+docs/evidence/admin-permission-ergonomics-preflight-cairn-gates.run.log: OK
+docs/evidence/admin-permission-ergonomics-preflight-cairn-gates-2026-06-23.run.log: OK
+docs/evidence/admin-permission-ergonomics-baseline-valence-command-tests.run.log: OK
+docs/evidence/admin-permission-ergonomics-valence-command-fmt-shell-tests.run.log: OK
+docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log: OK
+docs/evidence/admin-permission-ergonomics-valence-command-clippy-final.run.log: OK
+docs/evidence/admin-permission-ergonomics-valence-command-doc.run.log: OK
+docs/evidence/admin-permission-ergonomics-final-cairn-gates-validate.run.log: OK
+docs/evidence/admin-permission-ergonomics-focused-task-evidence.run.log: OK
+docs/evidence/admin-permission-ergonomics-post-sync-validate.run.log: OK
+docs/evidence/admin-permission-ergonomics-sync-dry-run.run.log: OK
+docs/evidence/admin-permission-ergonomics-sync-execute.run.log: OK
+docs/evidence/admin-permission-ergonomics-archive-dry-run.run.log: OK
+docs/evidence/admin-permission-ergonomics-archive-execute.run.log: OK
+docs/evidence/admin-permission-ergonomics-post-archive-validate.run.log: OK
+docs/evidence/admin-permission-ergonomics-archived-task-evidence.run.log: OK
+docs/evidence/admin-permission-ergonomics-final-validate.run.log: OK
+docs/evidence/admin-permission-ergonomics-evidence-manifest-check.run.log: OK
+cairn/specs/valence-hyperion-integration/spec.md: OK
+cairn/archive/2026-06-23-define-admin-permission-ergonomics/tasks.md: OK
+exit_status=0

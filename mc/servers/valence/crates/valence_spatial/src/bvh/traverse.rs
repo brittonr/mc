@@ -40,9 +40,7 @@ impl<O: Bounded3D + Send + Sync> SpatialIndex for super::Bvh<O> {
         stack.push(self.traverse()?);
 
         for _ in 0..max_visits {
-            let Some(node) = stack.pop() else {
-                return None;
-            };
+            let node = stack.pop()?;
 
             match node {
                 super::Node::Internal(int) => {

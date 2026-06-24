@@ -1,0 +1,7 @@
+command=git diff --cached --check
+cwd=/home/brittonr/git/mc
+started_at=2026-06-23T12:18:53Z
+mc/docs/evidence/audit-entity-metadata-diff-tracking-final-validation-b3-refresh.run.log:1: trailing whitespace.
++command=nix develop --no-update-lock-file /home/brittonr/git/mc -c bash -lc 
+finished_at=2026-06-23T12:18:53Z
+exit_status=2

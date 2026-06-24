@@ -1,0 +1,71 @@
+# CTF invalid-action live breadth baseline
+started_at=2026-06-23T01:00:00Z
+## invalid_action_breadth_checker
+command=nix build .#checks.x86_64-linux.mc-compat-ctf-invalid-action-breadth --no-link -L
+this derivation will be built:
+  /nix/store/jckbmlz2nmxyky1cqi610xswv5qxf4h0-mc-compat-ctf-invalid-action-breadth.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/jckbmlz2nmxyky1cqi610xswv5qxf4h0-mc-compat-ctf-invalid-action-breadth.drv'...
+invalid_action_breadth_checker_exit_status=0
+## historical_dry_runs
+command=nix build .#checks.x86_64-linux.mc-compat-historical-scenario-dry-runs --no-link -L
+historical_dry_runs_exit_status=0
+## scenario_manifest
+command=nix build .#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L
+this derivation will be built:
+  /nix/store/adm9b4z3jrzqr433gs2m0j86nvm28f9k-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/adm9b4z3jrzqr433gs2m0j86nvm28f9k-mc-compat-scenario-manifest.drv'...
+scenario_manifest_exit_status=0
+## generated_surfaces
+command=nix build .#checks.x86_64-linux.mc-compat-generated-harness-surfaces --no-link -L
+this derivation will be built:
+  /nix/store/l6slsjzjvbx2vmyrfld96h139lkjjjpd-mc-compat-generated-harness-surfaces.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/l6slsjzjvbx2vmyrfld96h139lkjjjpd-mc-compat-generated-harness-surfaces.drv'...
+generated_surfaces_exit_status=0
+## current_bundle
+command=nix build .#checks.x86_64-linux.mc-compat-current-evidence-bundle --no-link -L
+this derivation will be built:
+  /nix/store/hz6pxski56cc4jz4y0lp7cgchzl4b1jq-mc-compat-current-evidence-bundle.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/hz6pxski56cc4jz4y0lp7cgchzl4b1jq-mc-compat-current-evidence-bundle.drv'...
+mc-compat-current-evidence-bundle> current evidence bundle check failed: bundle missing required text: Survival mob AI/loot breadth
+mc-compat-current-evidence-bundle> current evidence bundle check failed: bundle missing required text: Survival redstone circuit breadth
+mc-compat-current-evidence-bundle> current evidence bundle check failed: bundle missing required text: Survival biome/dimension travel
+mc-compat-current-evidence-bundle> current evidence bundle check failed: bundle missing required text: Survival world multichunk durability
+mc-compat-current-evidence-bundle> current evidence bundle check failed: bundle missing required text: Survival container block-entity breadth
+mc-compat-current-evidence-bundle> current evidence bundle check failed: bundle missing required text: Survival sign editing live
+error: Cannot build '/nix/store/hz6pxski56cc4jz4y0lp7cgchzl4b1jq-mc-compat-current-evidence-bundle.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/ryvv4wjgaicqa6vvamahv91avccslk6z-mc-compat-current-evidence-bundle
+       Last 6 log lines:
+       > current evidence bundle check failed: bundle missing required text: Survival mob AI/loot breadth
+       > current evidence bundle check failed: bundle missing required text: Survival redstone circuit breadth
+       > current evidence bundle check failed: bundle missing required text: Survival biome/dimension travel
+       > current evidence bundle check failed: bundle missing required text: Survival world multichunk durability
+       > current evidence bundle check failed: bundle missing required text: Survival container block-entity breadth
+       > current evidence bundle check failed: bundle missing required text: Survival sign editing live
+       For full logs, run:
+         nix log /nix/store/hz6pxski56cc4jz4y0lp7cgchzl4b1jq-mc-compat-current-evidence-bundle.drv
+current_bundle_exit_status=1
+## evidence_manifest
+command=nix run .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=435; entries=3141; current=3141; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+evidence_manifest_exit_status=0
+## cairn_validate
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 3,
+  "valid": true
+}
+cairn_validate_exit_status=0
+finished_at=2026-06-23T01:00:19Z
+exit_status=1

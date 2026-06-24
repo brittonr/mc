@@ -1,0 +1,5 @@
+command=tools/check_layout_boundaries.rs --root .
+layout boundary checks passed; advisory_findings=2
+severity=Advisory code=root_transient_artifact path=result rule=root_transient_artifact message=root transient artifact result should stay scratch-only owner_or_waiver_hint=transient root artifacts are advisory unless cited as review evidence next_action=move review-critical output under docs/evidence/ with a BLAKE3 manifest, otherwise leave it ignored or clean it locally
+severity=Advisory code=root_transient_artifact path=target rule=root_transient_artifact message=root transient artifact target should stay scratch-only owner_or_waiver_hint=transient root artifacts are advisory unless cited as review evidence next_action=move review-critical output under docs/evidence/ with a BLAKE3 manifest, otherwise leave it ignored or clean it locally
+exit_status=0

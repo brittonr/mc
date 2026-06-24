@@ -1,0 +1,13 @@
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 18,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 22,
+  "valid": true
+}
+exit_status=0
+final_exit_status=0

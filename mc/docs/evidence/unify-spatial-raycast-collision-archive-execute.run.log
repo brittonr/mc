@@ -1,0 +1,84 @@
+# Cairn archive execute
+timestamp=2026-06-24T02:15:41Z
+$ CAIRN_ARCHIVE_DATE=2026-06-23 nix run .#cairn -- archive unify-spatial-raycast-collision --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: unify-spatial-raycast-collision",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-23-unify-spatial-raycast-collision"
+    }
+  ],
+  "blocked": false,
+  "change": "unify-spatial-raycast-collision",
+  "dry_run": false,
+  "input_hash": "f93c803d93fc6b3c6b8efb76ff48c479afea22df701a46b7d177ebe3bfbb78e0",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "20d693643afd01893dcf7f3600c6f3fc7c61716345f79d63ef0fdc3051457895",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-unify-spatial-raycast-collision/design.md"
+        },
+        {
+          "content_hash": "8dae0349209b3e2769d186411525ab6a6ce6d179f230a7d37ca9e6fc0d5eabe3",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-unify-spatial-raycast-collision/proposal.md"
+        },
+        {
+          "content_hash": "0c2768fae75b0c48d4aec955e19504ec8f080e84cb256483d835eada2309c8ad",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-unify-spatial-raycast-collision/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "c9b7df43845dde6170efad33612d23a4ec70e659357371e8721bb1cd1592feea",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-unify-spatial-raycast-collision/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/unify-spatial-raycast-collision"
+        }
+      ],
+      "manifest_hash": "84e3fc8bcbc76ea785cf7718983e6a71cbdea6b8d0a604109cf0475d17559507"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "20d693643afd01893dcf7f3600c6f3fc7c61716345f79d63ef0fdc3051457895",
+          "exists": true,
+          "path": "./cairn/changes/unify-spatial-raycast-collision/design.md"
+        },
+        {
+          "content_hash": "8dae0349209b3e2769d186411525ab6a6ce6d179f230a7d37ca9e6fc0d5eabe3",
+          "exists": true,
+          "path": "./cairn/changes/unify-spatial-raycast-collision/proposal.md"
+        },
+        {
+          "content_hash": "0c2768fae75b0c48d4aec955e19504ec8f080e84cb256483d835eada2309c8ad",
+          "exists": true,
+          "path": "./cairn/changes/unify-spatial-raycast-collision/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "c9b7df43845dde6170efad33612d23a4ec70e659357371e8721bb1cd1592feea",
+          "exists": true,
+          "path": "./cairn/changes/unify-spatial-raycast-collision/tasks.md"
+        }
+      ],
+      "manifest_hash": "157aaa998a9cc859fa8452884c4a883c2eb7c6150be3d7616f3e91edd5d78da5"
+    },
+    "kind": "archive",
+    "manifest_hash": "35c04de1aee255396c016194b257713169fb56da5d3348f8afbfb49fff8bdc7f"
+  },
+  "plan_hash": "139934c4f59b7392db301d5a0fb0440fd8afdf0ff5295d91d45e75e4a09064b9",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "55d83c1074a7ff0a9e1d6f66f31ca23865286589d5a64753af600a4ada3d8e5f"
+}
+exit_status=0
+]0;

@@ -1,0 +1,10 @@
+## check tiers self-test
+command=tools/check_check_tiers.rs --self-test 
+check tier docs self-test passed
+exit_status=0
+
+## check tiers root check
+command=tools/check_check_tiers.rs --root . 
+check tier docs passed
+exit_status=0
+

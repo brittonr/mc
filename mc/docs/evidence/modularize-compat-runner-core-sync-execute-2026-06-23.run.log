@@ -1,0 +1,50 @@
+command=nix run .#cairn -- sync modularize-compat-runner-core --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/modularize-compat-runner-core/specs/repository-layout/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/modularize-compat-runner-core/specs/repository-layout/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "modularize-compat-runner-core",
+  "delta_specs": [
+    "./cairn/changes/modularize-compat-runner-core/specs/repository-layout/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "699b89eb85e721eebb6a2a38ab1548dcf3858f1da3ebcea14e2d0ecd95109d1e",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "f9446a94c50fdc22b77248f78cd1b6b1e38c023bd11f3442b4b301176cc80485",
+          "exists": true,
+          "path": "./cairn/specs/repository-layout/spec.md"
+        }
+      ],
+      "manifest_hash": "70179cbab346ca5228c3054a6bedbe6079df27ada5de0f9ba30227aa164a92e4"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "f9446a94c50fdc22b77248f78cd1b6b1e38c023bd11f3442b4b301176cc80485",
+          "exists": true,
+          "path": "./cairn/specs/repository-layout/spec.md"
+        }
+      ],
+      "manifest_hash": "70179cbab346ca5228c3054a6bedbe6079df27ada5de0f9ba30227aa164a92e4"
+    },
+    "kind": "sync",
+    "manifest_hash": "271a03421d24169bc58e27031f9ddea01295c696150f7bd8e614e22391d3313a"
+  },
+  "plan_hash": "0e44ee0854afdd1be55fdb7dbb18e480391d25c424028d54e07b8e714410a410",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "b4b408a22e71f1835b89b1b2ca50dcb28f0b3b34fc83d052a0a8b89b92cb2529"
+}
+exit_status=0
+final_exit_status=0

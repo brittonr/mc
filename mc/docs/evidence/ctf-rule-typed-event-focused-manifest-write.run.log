@@ -1,0 +1,10 @@
+# CTF rule typed-event focused BLAKE3 manifest write
+started_at=2026-06-23T00:54:20Z
+manifest=docs/evidence/ctf-rule-typed-event-migration-wave-2026-06-22.b3
+files=README.md cairn/specs/mc-compatibility/spec.md cairn/archive/1970-01-01-ctf-rule-typed-event-migration-wave/proposal.md cairn/archive/1970-01-01-ctf-rule-typed-event-migration-wave/design.md cairn/archive/1970-01-01-ctf-rule-typed-event-migration-wave/tasks.md cairn/archive/1970-01-01-ctf-rule-typed-event-migration-wave/specs/mc-compatibility/spec.md compat/config/scenario-manifest.ncl compat/runner/src/main.rs compat/runner/src/scenario_manifest_generated.rs tools/check_scenario_manifest.rs docs/evidence/mc-compat-scenario-index.generated.md docs/evidence/ctf-rule-typed-event-baseline-v2.run.log docs/evidence/ctf-rule-typed-event-post-change-v2.run.log docs/evidence/ctf-rule-typed-event-evidence-manifest-refresh.run.log docs/evidence/ctf-rule-typed-event-cairn-gates.run.log docs/evidence/ctf-rule-typed-event-sync.run.log docs/evidence/ctf-rule-typed-event-accepted-spec-merge.run.log docs/evidence/ctf-rule-typed-event-task-evidence-validation.run.log docs/evidence/ctf-rule-typed-event-archive.run.log docs/evidence/ctf-rule-typed-event-post-archive-evidence-manifest-refresh.run.log
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+b3sum_exit_status=0
+finished_at=2026-06-23T00:54:24Z
+exit_status=0

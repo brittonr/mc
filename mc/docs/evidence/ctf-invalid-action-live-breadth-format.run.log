@@ -1,0 +1,22 @@
+# CTF invalid-action live breadth formatting
+started_at=2026-06-23T01:51:27Z
+## mc_rustfmt
+command=nix develop --no-update-lock-file . -c rustfmt --edition=2021 tools/check_ctf_invalid_action_breadth.rs tools/check_acceptance_matrix.rs tools/check_current_evidence_bundle.rs compat/runner/src/main.rs compat/runner/src/scenario_core.rs compat/runner/src/scenario_manifest_generated.rs clients/stevenarella/src/server/mod.rs
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+mc_rustfmt_exit_status=0
+## valence_rustfmt
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo +nightly fmt --manifest-path servers/valence/Cargo.toml -- examples/ctf.rs
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/m6z4ixdj6p9xqw9sliy9kqy7939gcrrj-mc-compat-runner-0.1.0.drv'...
+building '/nix/store/lplc3jd30d3qs6j3zmqgg3g7mdhx86d7-nix-shell-env.drv'...
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+error: no such command: `+nightly`
+
+help: invoke `cargo` through `rustup` to handle `+toolchain` directives
+valence_rustfmt_exit_status=101
+finished_at=2026-06-23T01:52:23Z
+exit_status=1

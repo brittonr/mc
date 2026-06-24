@@ -1,0 +1,26 @@
+# Cairn archive dry-run
+timestamp=2026-06-24T02:15:20Z
+$ nix run .#cairn -- archive unify-spatial-raycast-collision --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: unify-spatial-raycast-collision",
+      "kind": "archive_change",
+      "path": "./cairn/changes/unify-spatial-raycast-collision"
+    }
+  ],
+  "blocked": false,
+  "change": "unify-spatial-raycast-collision",
+  "dry_run": true,
+  "input_hash": "f93c803d93fc6b3c6b8efb76ff48c479afea22df701a46b7d177ebe3bfbb78e0",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "c49a6ba87ef01c8a0c79dcffe9a2af32f1eeefeac21aa8f7b87b29b2cbc1374b",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "3f2ea4e6e168bd057f956ce0f7079f62d7c0aa9f9e5fde4668cfb418e6769a52"
+}
+exit_status=0
+]0;

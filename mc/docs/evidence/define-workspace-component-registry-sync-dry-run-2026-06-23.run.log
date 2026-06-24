@@ -1,0 +1,28 @@
+## cairn sync dry-run
+command=nix run .#cairn -- sync define-workspace-component-registry
+command=--root . '' '' '' ''
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/define-workspace-component-registry/specs/repository-layout/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/define-workspace-component-registry/specs/repository-layout/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "define-workspace-component-registry",
+  "delta_specs": [
+    "./cairn/changes/define-workspace-component-registry/specs/repository-layout/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "5bba02c98198a942e1ed1bdfc89010ba7e3d16567532efcf791ba44991070608",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "0a803e98a4a0d077d809aa77055edfcd6bf9f53eb604dd1dcf24c4139c3d7241",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "3e72fb609bc88695c1fe42e6e929d9b3bffcf4d760b504ae5b5877d2a38e132d"
+}
+exit_status=0

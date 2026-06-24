@@ -1,0 +1,5 @@
+cwd=/home/brittonr/git/mc
+started_at=2026-06-24T11:40:57-04:00
+command=nix build .#checks.x86_64-linux.mc-compat-generated-harness-surfaces --no-link -L
+generated_harness_surfaces_exit_status=0
+exit_status=0

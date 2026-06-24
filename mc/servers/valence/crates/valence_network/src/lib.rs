@@ -4,6 +4,7 @@ mod byte_channel;
 mod connect;
 mod legacy_ping;
 mod packet_io;
+pub mod profile_cache;
 pub mod proxy_broadcast;
 
 use std::borrow::Cow;
@@ -774,11 +775,11 @@ mod status_response_resource_tests {
             online_players: 1,
             max_players: 5,
             player_sample: vec![PlayerSampleEntry {
-                name: "compatbot".to_string(),
+                name: "compatbot".to_owned(),
                 id: sample_id,
             }],
             description: "compat fixture".into_text(),
-            version_name: "compat-version".to_string(),
+            version_name: "compat-version".to_owned(),
             protocol: 763,
             favicon_png: &[],
         };

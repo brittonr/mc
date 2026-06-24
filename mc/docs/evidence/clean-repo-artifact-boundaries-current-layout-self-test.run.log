@@ -1,0 +1,4 @@
+command=./tools/check_layout_boundaries.rs --self-test
+unpacking 'github:nix-community/fenix/092bd452904e749efa39907aa4a20a42678ac31e' into the Git cache...
+layout boundary self-test passed
+exit_status=0

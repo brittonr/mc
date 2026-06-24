@@ -1,0 +1,29 @@
+# add-cached-chunk-egress-pipeline post-sync validation
+cwd=/home/brittonr/git/mc
+command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 17,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 21,
+  "valid": true
+}
+validate_exit_status=0
+command: grep chunk_cache accepted spec
+699:r[valence_hyperion_integration.chunk_cache.scope] The integration MUST review Hyperion chunk egress/cache behavior and Valence layer/chunk serialization before adding cached chunk egress.
+703:r[valence_hyperion_integration.chunk_cache.scope.non_goals]
+710:r[valence_hyperion_integration.chunk_cache.key] Cached chunk bytes MUST be keyed by every setting and input that can affect client-visible chunk packets, including chunk position, dimension/registry inputs, block/biome/light data, protocol version, and compression behavior.
+714:r[valence_hyperion_integration.chunk_cache.key.compression]
+722:r[valence_hyperion_integration.chunk_cache.core] Chunk packet rendering for cacheable inputs SHOULD be a deterministic core over chunk snapshots and render settings, with storage, eviction, metrics, and network writes in shells.
+726:r[valence_hyperion_integration.chunk_cache.core.deterministic]
+733:r[valence_hyperion_integration.chunk_cache.fixtures] Cached chunk egress MUST include positive and negative fixtures for cache hits, invalidation, missing inputs, and stale cached bytes.
+737:r[valence_hyperion_integration.chunk_cache.fixtures.block_mutation]
+745:r[valence_hyperion_integration.chunk_cache.wiring] Valence MAY expose cached chunk egress as an optional path, but default uncached semantics MUST remain available and compatible.
+749:r[valence_hyperion_integration.chunk_cache.wiring.uncached]
+756:r[valence_hyperion_integration.chunk_cache.validation] Cached chunk egress work MUST record chunk renderer tests, stale-cache rejection, direct chunk-send regressions, selected mc-compat chunk scenarios, and Cairn gates before archive.
+760:r[valence_hyperion_integration.chunk_cache.validation.log]
+accepted_spec_grep_exit_status=0
+exit_status=0

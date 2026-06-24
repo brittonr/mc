@@ -1,0 +1,29 @@
+command=verify_inventory 
+present docs/evidence/legacy-mc-compat-maintained-entrypoint-600s-soak-2026-05-24.md
+present docs/evidence/legacy-mc-compat-multi-client-600s-soak-2026-05-24.md
+present docs/evidence/legacy-mc-compat-multi-client-repeatability-2026-05-24.md
+present docs/evidence/legacy-mc-compat-strict-decode-maintained-600s-soak-2026-05-24.md
+present docs/evidence/legacy-target-mc-compat-block-place-live.log
+present docs/evidence/legacy-target-mc-compat-click-live.log
+present docs/evidence/legacy-target-mc-compat-combat-live.log
+present docs/evidence/legacy-target-mc-compat-inventory-drop-live.log
+present docs/evidence/legacy-target-mc-compat-inventory-live.log
+present docs/evidence/legacy-target-mc-compat-open-container-live.log
+present docs/evidence/legacy-target-mc-compat-pickup-live.log
+absent evidence
+absent config
+absent tools/__pycache__
+absent result
+absent result-1
+absent result-2
+absent result-3
+absent result-4
+absent result-5
+absent target-mc-compat-block-place-live.log
+absent target-mc-compat-click-live.log
+absent target-mc-compat-combat-live.log
+absent target-mc-compat-inventory-drop-live.log
+absent target-mc-compat-inventory-live.log
+absent target-mc-compat-open-container-live.log
+absent target-mc-compat-pickup-live.log
+exit_status=0

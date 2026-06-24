@@ -1,0 +1,3 @@
+command=target/check-cairn-task-evidence-clean-repo-postfmt --self-test 
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+exit_status=0

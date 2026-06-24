@@ -1,0 +1,22 @@
+{
+  "change": "add-profile-skin-cache-rate-limiter",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "5131b3046d139d4101f43f27a138f7e78f1f21c7e2e35b87d214ff95d3df573e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "8c82fe7a042a36ce6f4bd0af91513416a829e8af9d40cf94b9f80221c232b970",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0

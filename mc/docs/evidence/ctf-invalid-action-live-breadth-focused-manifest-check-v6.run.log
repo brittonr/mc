@@ -1,0 +1,6 @@
+# CTF invalid-action live breadth focused manifest check v6
+started_at=2026-06-23T02:16:00Z
+command=nix run --no-update-lock-file .#evidence-manifest-refresh -- --check --evidence-dir docs/evidence/ctf-invalid-action-live-breadth-focused-check
+evidence manifest refresh ok: mode=check; passes=0; manifests=1; entries=35; current=35; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+finished_at=2026-06-23T02:16:01Z
+exit_status=0

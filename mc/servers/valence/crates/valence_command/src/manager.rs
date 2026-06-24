@@ -17,6 +17,7 @@ use valence_server::protocol::packets::play::{CommandExecutionC2s, CommandTreeS2
 use valence_server::protocol::WritePacket;
 use valence_server::EventLoopPreUpdate;
 
+use crate::admin_permissions::{evaluate_command_scopes, AdminPermissionDecision};
 use crate::graph::{CommandEdgeType, CommandGraph, CommandNode};
 use crate::parsers::ParseInput;
 use crate::scopes::{CommandScopePlugin, CommandScopes};
@@ -156,20 +157,10 @@ fn update_client_command_tree(
             }
             already_visited.insert((parent.map(|(node_id, _)| node_id), node));
             let node_scopes = &old_graph.graph[node].scopes;
-            if !node_scopes.is_empty() {
-                let mut has_scope = false;
-                for scope in node_scopes {
-                    if scope_registry.any_grants(
-                        &client_scopes.0.iter().map(|scope| scope.as_str()).collect(),
-                        scope,
-                    ) {
-                        has_scope = true;
-                        break;
-                    }
-                }
-                if !has_scope {
-                    continue;
-                }
+            if evaluate_command_scopes(scope_registry.as_ref(), &client_scopes.0, node_scopes)
+                .is_denied()
+            {
+                continue;
             }
 
             let new_node = *old_to_new
@@ -294,25 +285,17 @@ fn parse_command_args(
 ) -> bool {
     let node_scopes = &graph[current_node].scopes;
     let default_scopes = CommandScopes::new();
-    let client_scopes: Vec<&str> = scopes
-        .get(executor)
-        .unwrap_or(&default_scopes)
-        .0
-        .iter()
-        .map(|scope| scope.as_str())
-        .collect();
+    let client_scopes = scopes.get(executor).unwrap_or(&default_scopes);
     // if empty, we assume the node is global
-    if !node_scopes.is_empty() {
-        let mut has_scope = false;
-        for scope in node_scopes {
-            if scope_registry.any_grants(&client_scopes, scope) {
-                has_scope = true;
-                break;
-            }
-        }
-        if !has_scope {
-            return false;
-        }
+    if let AdminPermissionDecision::Denied(denial) =
+        evaluate_command_scopes(scope_registry, &client_scopes.0, node_scopes)
+    {
+        debug!(
+            "command denied for executor {:?}: {}",
+            executor,
+            denial.diagnostic(&graph[current_node].to_string())
+        );
+        return false;
     }
 
     if !coming_from_redirect {

@@ -11,3 +11,5 @@ dispatching commands.
 - Sending the command graph to clients.
 
 See the module level documentation for more information.
+
+Optional admin permission ergonomics are documented in [ADMIN_PERMISSIONS.md](ADMIN_PERMISSIONS.md).

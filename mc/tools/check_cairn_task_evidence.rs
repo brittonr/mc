@@ -15,6 +15,13 @@ const RUN_LOG_SUFFIX: &str = ".run.log";
 const B3_SUFFIX: &str = ".b3";
 const TARGET_ARTIFACT_PREFIX: &str = "target/";
 const TARGET_ARTIFACT_INFIX: &str = "/target/";
+const ROOT_TARGET_LOG_PREFIX: &str = "target-";
+const LOG_SUFFIX: &str = ".log";
+const ROOT_RESULT_ARTIFACT_NAME: &str = "result";
+const ROOT_RESULT_ARTIFACT_PREFIX: &str = "result-";
+const ROOT_RESULT_ARTIFACT_DIR_PREFIX: &str = "result/";
+const RESULT_ONLY_ADJECTIVE: &str = "result-only";
+const ROOT_EVIDENCE_PREFIX: &str = "evidence/";
 const STEVENARELLA_CHILD_PREFIX: &str = "stevenarella/";
 const VALENCE_CHILD_PREFIX: &str = "valence/";
 const STEVENARELLA_CORE_PREFIX: &str = "clients/stevenarella/";
@@ -23,6 +30,9 @@ const HYPERION_CHILD_PREFIX: &str = "hyperion/";
 const LEAFISH_CHILD_PREFIX: &str = "Leafish/";
 const FORBIDDEN_ARTIFACT_PREFIXES: &[&str] = &[
     TARGET_ARTIFACT_PREFIX,
+    ROOT_TARGET_LOG_PREFIX,
+    ROOT_RESULT_ARTIFACT_PREFIX,
+    ROOT_RESULT_ARTIFACT_DIR_PREFIX,
     STEVENARELLA_CHILD_PREFIX,
     VALENCE_CHILD_PREFIX,
     STEVENARELLA_CORE_PREFIX,
@@ -498,6 +508,29 @@ fn extract_forbidden_artifact_paths(text: &str) -> Vec<String> {
             search_start = start + prefix.len();
         }
     }
+    for candidate in extract_code_span_paths(text) {
+        if is_forbidden_artifact_path(&candidate) {
+            paths.insert(candidate);
+        }
+    }
+    paths.into_iter().collect()
+}
+
+fn extract_code_span_paths(text: &str) -> Vec<String> {
+    let mut paths = BTreeSet::new();
+    let mut rest = text;
+    while let Some((_, after_open)) = rest.split_once('`') {
+        let Some((candidate, after_close)) = after_open.split_once('`') else {
+            break;
+        };
+        let path = candidate
+            .trim()
+            .trim_end_matches(is_trailing_path_punctuation);
+        if is_artifact_path(path) {
+            paths.insert(path.to_string());
+        }
+        rest = after_close;
+    }
     paths.into_iter().collect()
 }
 
@@ -520,8 +553,33 @@ fn is_forbidden_artifact_path(candidate: &str) -> bool {
         || candidate.contains(TARGET_ARTIFACT_INFIX)
         || candidate.starts_with(STEVENARELLA_CHILD_PREFIX)
         || candidate.starts_with(VALENCE_CHILD_PREFIX)
+        || candidate.starts_with(STEVENARELLA_CORE_PREFIX)
+        || candidate.starts_with(VALENCE_CORE_PREFIX)
         || candidate.starts_with(HYPERION_CHILD_PREFIX)
         || candidate.starts_with(LEAFISH_CHILD_PREFIX)
+        || is_root_transient_artifact_path(candidate)
+        || candidate.starts_with(ROOT_EVIDENCE_PREFIX)
+}
+
+fn is_root_transient_artifact_path(candidate: &str) -> bool {
+    is_root_result_artifact_path(candidate)
+        || is_root_target_log_path(candidate)
+        || is_root_run_log_path(candidate)
+}
+
+fn is_root_result_artifact_path(candidate: &str) -> bool {
+    candidate == ROOT_RESULT_ARTIFACT_NAME
+        || candidate.starts_with(ROOT_RESULT_ARTIFACT_DIR_PREFIX)
+        || (candidate.starts_with(ROOT_RESULT_ARTIFACT_PREFIX)
+            && candidate != RESULT_ONLY_ADJECTIVE)
+}
+
+fn is_root_target_log_path(candidate: &str) -> bool {
+    candidate.starts_with(ROOT_TARGET_LOG_PREFIX) && candidate.ends_with(LOG_SUFFIX)
+}
+
+fn is_root_run_log_path(candidate: &str) -> bool {
+    !candidate.contains('/') && candidate.ends_with(RUN_LOG_SUFFIX)
 }
 
 fn is_artifact_path(candidate: &str) -> bool {
@@ -615,6 +673,30 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         "target artifact rejected",
         target_artifact_fixture(),
         "non-reviewable artifact path target/mc-compat-smoke.json",
+    ));
+    errors.extend(expect_error(
+        "result artifact rejected",
+        result_artifact_fixture(),
+        "non-reviewable artifact path result-1",
+    ));
+    errors.extend(expect_error(
+        "root target log rejected",
+        root_target_log_fixture(),
+        "non-reviewable artifact path target-mc-compat-live.log",
+    ));
+    errors.extend(expect_error(
+        "root run log rejected",
+        root_run_log_fixture(),
+        "non-reviewable artifact path local-check.run.log",
+    ));
+    errors.extend(expect_error(
+        "retired root evidence rejected",
+        retired_root_evidence_fixture(),
+        "non-reviewable artifact path evidence/legacy-note.md",
+    ));
+    errors.extend(expect_ok(
+        "result-only wording ignored",
+        result_only_wording_fixture(),
     ));
     errors.extend(expect_error(
         "nested child artifact rejected",
@@ -804,6 +886,41 @@ fn manifest_missing_run_log_fixture() -> Fixture {
 fn target_artifact_fixture() -> Fixture {
     fixture(
         "## Tasks\n\n- [x] [serial] Ship gate.\n  - Evidence: target/mc-compat-smoke.json was copied to `docs/evidence/gate.run.log`; BLAKE3 manifest `docs/evidence/gate.b3`.\n",
+        &["docs/evidence/gate.run.log", "docs/evidence/gate.b3"],
+    )
+}
+
+fn result_artifact_fixture() -> Fixture {
+    fixture(
+        "## Tasks\n\n- [x] [serial] Ship gate.\n  - Evidence: root `result-1` output was copied to `docs/evidence/gate.run.log`; BLAKE3 manifest `docs/evidence/gate.b3`.\n",
+        &["docs/evidence/gate.run.log", "docs/evidence/gate.b3"],
+    )
+}
+
+fn root_target_log_fixture() -> Fixture {
+    fixture(
+        "## Tasks\n\n- [x] [serial] Ship gate.\n  - Evidence: target-mc-compat-live.log was copied to `docs/evidence/gate.run.log`; BLAKE3 manifest `docs/evidence/gate.b3`.\n",
+        &["docs/evidence/gate.run.log", "docs/evidence/gate.b3"],
+    )
+}
+
+fn root_run_log_fixture() -> Fixture {
+    fixture(
+        "## Tasks\n\n- [x] [serial] Ship gate.\n  - Evidence: root `local-check.run.log` was copied to `docs/evidence/gate.run.log`; BLAKE3 manifest `docs/evidence/gate.b3`.\n",
+        &["docs/evidence/gate.run.log", "docs/evidence/gate.b3"],
+    )
+}
+
+fn retired_root_evidence_fixture() -> Fixture {
+    fixture(
+        "## Tasks\n\n- [x] [serial] Ship gate.\n  - Evidence: `evidence/legacy-note.md` was copied to `docs/evidence/gate.run.log`; BLAKE3 manifest `docs/evidence/gate.b3`.\n",
+        &["docs/evidence/gate.run.log", "docs/evidence/gate.b3"],
+    )
+}
+
+fn result_only_wording_fixture() -> Fixture {
+    fixture(
+        "## Tasks\n\n- [x] [depends:ignore_rules] Add guards that reject target-only, result-only, root-transient, or missing artifacts.\n  - Evidence: `docs/evidence/gate.run.log`; BLAKE3 manifest `docs/evidence/gate.b3`.\n",
         &["docs/evidence/gate.run.log", "docs/evidence/gate.b3"],
     )
 }

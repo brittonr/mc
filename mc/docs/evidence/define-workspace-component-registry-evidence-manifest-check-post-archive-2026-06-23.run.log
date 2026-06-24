@@ -1,0 +1,5 @@
+## evidence manifest refresh check after archive
+command=nix run .#evidence-manifest-refresh --
+command=--check '' '' ''
+evidence manifest refresh ok: mode=check; passes=0; manifests=461; entries=3515; current=3515; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+exit_status=0

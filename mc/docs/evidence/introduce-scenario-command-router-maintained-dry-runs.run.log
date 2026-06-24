@@ -1,0 +1,151 @@
+cwd=/home/brittonr/git/mc
+started_at=2026-06-24T11:41:06-04:00
+command=nix build .#checks.x86_64-linux.mc-compat-maintained-dry-runs --no-link -L
+these 68 derivations will be built:
+  /nix/store/125xxgq9zr0jqnqv09ixdfjvky1xpig6-mc-compat-valence-ctf-invalid-opponent-base-return-drop.drv
+  /nix/store/hqzp9pz32qlqw41a73sfgigxzfg1amqj-mc-compat-valence-ctf-combat-knockback.drv
+  /nix/store/1jk7kcrxz3qf2734pc20xywckhi378y4-mc-compat-valence-ctf-combat-knockback-dry-run.drv
+  /nix/store/1v9058d8fvgbnjddxa0zbxgzlchfv8mj-mc-compat-cairn-task-evidence.drv
+  /nix/store/2vwwc2dnl9f5m85w6sn6r1m8rawwjyjs-mc-compat-valence-ctf-blue-600s-soak.drv
+  /nix/store/371fg6ksb5hmsin943is97a2167xz0yg-mc-compat-valence-survival-furnace-smelting-breadth-dry-run.drv
+  /nix/store/91qlyiwq6a14dimx0h27f1yaczavkifa-mc-compat-valence-ctf-600s-soak.drv
+  /nix/store/3bdrnlrjp75xs3n5fixf6q0fzjigcvb2-mc-compat-valence-ctf-600s-soak-dry-run.drv
+  /nix/store/4cjlmmva8aljyc4gma5a8ngwbvpj1i1a-mc-compat-valence-ctf-reconnect-flag-state.drv
+  /nix/store/4jc1ck7j01x8kvzbhffj5v7dfb3rhlc6-mc-compat-valence-survival-hunger-health-cycle.drv
+  /nix/store/4vwc45mn3yy9f43qnmbddhrpnvp227a8-mc-compat-valence-ctf-projectile-damage-attribution-dry-run.drv
+  /nix/store/5f6jjzlds9m3fkwbxmw65ywcvw7yxphx-mc-compat-valence-survival-hunger-health-cycle-dry-run.drv
+  /nix/store/5izms9d4cgv5nx1n39bswfv4pc7privw-mc-compat-mcp-controlled-smoke-dry-run.drv
+  /nix/store/64n1qdw984bd9ifi65wkj5d5mwivm0nr-mc-compat-movement-packet-family-check.drv
+  /nix/store/7g8fd7q0l64sdlan96rcas3ncvni2b79-mc-compat-wan-tolerance-bounded-telemetry.drv
+  /nix/store/hp9f4q0qhgh15lxid4vyvvwwsv3fhd1n-mc-compat-valence-ctf-invalid-return-drop.drv
+  /nix/store/8pm7ydb83ycyayd04sb8nc5mmma622m6-mc-compat-valence-ctf-invalid-return-drop-dry-run.drv
+  /nix/store/9gwi7jr7j8scj2901j3sx2k92irpj381-mc-compat-valence-ctf-combat-damage.drv
+  /nix/store/9r5rg6n7sgm15wac9q23iris716pgv58-mc-compat-valence-survival-crafting-table.drv
+  /nix/store/9ws178xk8nbzpfqcaivnvqdw2glz0p74-mc-compat-valence-ctf-reconnect-flag-state-dry-run.drv
+  /nix/store/fgbigswwvan88n11b86rjn2f4zakw06l-mc-compat-valence-ctf-latency-jitter-inventory.drv
+  /nix/store/bpd5l6k2zqf1y2n6fr3yn2495dlbm07b-mc-compat-valence-ctf-latency-jitter-inventory-dry-run.drv
+  /nix/store/mlhsh123vpp6vwsqwzsq1m9w5l80h49g-mc-compat-valence-survival-furnace-persistence.drv
+  /nix/store/d0k1nzjj04gnskr27s7km0ygfsyikaw0-mc-compat-valence-survival-furnace-persistence-dry-run.drv
+  /nix/store/f4flhb616fa8a2p643ymnk6rfc90gwcb-mc-compat-valence-ctf-armor-equipment-mitigation.drv
+  /nix/store/dbrj8sksjcdm5af9qcj39nx40xmbh8xy-mc-compat-valence-ctf-armor-equipment-mitigation-dry-run.drv
+  /nix/store/dlnalcp38rrb8dxh8ryjm6qghhvp03nk-mc-compat-valence-ctf-invalid-opponent-base-return-drop-dry-run.drv
+  /nix/store/f6p36ng7saldbkx2ha9612sghql5q1q6-mc-compat-current-evidence-bundle.drv
+  /nix/store/fwknvl1h2dm5h4c7ixa3mvf7i6wpdkyl-mc-compat-valence-ctf-score-limit-win-condition.drv
+  /nix/store/gy1bq212v7870jgsyppvppbfnzxhrlcf-mc-compat-valence-ctf-spawn-team-balance-reset-dry-run.drv
+  /nix/store/r11rl139c5r85jgl3gymi3bkl6fd56h2-mc-compat-valence-survival-crafting-recipe-breadth.drv
+  /nix/store/i8ad255i97fz4n2282v7kz0j3w4nqwzm-mc-compat-valence-survival-crafting-recipe-breadth-dry-run.drv
+  /nix/store/ia4l5cgis2a9cggmc4h33q26rx3rcv2q-mc-compat-valence-movement-packet-family.drv
+  /nix/store/ihnhvjikkf16zh7qmk645qnh97gbdh08-mc-compat-red-blue-scoring-soak-live-refresh.drv
+  /nix/store/jvyh1p606h7ilamxyd3fdp5157889gmc-mc-compat-valence-ctf-score-limit-win-condition-dry-run.drv
+  /nix/store/kaj8sy1g5vxx9a8xlpn3z7s6116g61gx-mc-compat-valence-movement-packet-family-dry-run.drv
+  /nix/store/sn6i8d8zx6jmqkk01z22cgqfr20ny78d-mc-compat-valence-inventory-drag-transactions.drv
+  /nix/store/kclahp7wrpvnipafq6cplf0ifgv65m9z-mc-compat-valence-inventory-drag-transactions-dry-run.drv
+  /nix/store/qywpkcrqpq6i09ki6zm6cm8irsixldg5-mc-compat-valence-inventory-stack-split-merge.drv
+  /nix/store/mqsc18i3yv7nbkybpgzq0i2x87wwvsj6-mc-compat-valence-inventory-stack-split-merge-dry-run.drv
+  /nix/store/n2wag7kx1ynvhwh48qr78c6mcby87y4f-mc-compat-evidence-manifests.drv
+  /nix/store/n8xhvs2pd5kchhi6dc5h889w262n2zwn-mc-compat-scoreboard-team-packet-family-check.drv
+  /nix/store/p5p40a82pz87c6pcrhi2wlbzhzh4vqvn-mc-compat-multi-client-scenario-dry-run.drv
+  /nix/store/pccx48l1iskshrcbkrymgfkz6zqi32x2-mc-compat-evidence-manifest-refresh.drv
+  /nix/store/pgrcf84j25k1x6hfr25ai2jva727ynag-mc-compat-full-survival-gate.drv
+  /nix/store/q2dwfdahmff332b550zc79s0kpsgnqah-mc-compat-valence-ctf-projectile-hit-dry-run.drv
+  /nix/store/q648kz5k36vz307khhwhmfi5kf6ai2jq-mc-compat-historical-scenario-dry-runs.drv
+  /nix/store/qzzv7dimbd6s4hpziw2j75yz09fb2bql-mc-compat-server-correlation-receipts.drv
+  /nix/store/sxbwx51vgia8h1k5dvdmfam2jdfhl5fi-mc-compat-valence-ctf-flag-carrier-death-return.drv
+  /nix/store/r6f7ajpd4m7da8g08r2bvpa3gh3b0bdl-mc-compat-valence-ctf-flag-carrier-death-return-dry-run.drv
+  /nix/store/rcv7xrb8q7y5ayy541bz2bz34xksbw0w-mc-compat-survival-aggregate-claim-boundary.drv
+  /nix/store/rdk78ql3p5i19w3xp4w6n83xzq637lqi-mc-compat-evidence-promotion.drv
+  /nix/store/sn6mlrc451dv7vcnd6397q5v6f3anpmx-mc-compat-equipment-slot-item-expansion.drv
+  /nix/store/vw1jarwkfjx7a3b7nakbvmb1106n94q1-mc-compat-ctf-score-limit-win-condition.drv
+  /nix/store/x6r2nhx5371d0f4sa38342ayx2w5y87x-mc-compat-valence-ctf-blue-600s-soak-dry-run.drv
+  /nix/store/mfnjyvjvr6xq29mbfxs3yy48f8vd1h42-mc-compat-valence-ctf-simultaneous-pickup-capture-race.drv
+  /nix/store/xsnn27gb7fx5lm36paa53hy6g1pfw1cq-mc-compat-valence-ctf-simultaneous-pickup-capture-race-dry-run.drv
+  /nix/store/xysl8dk5lqg5bmzjjwkg90mcifb50s8q-mc-compat-valence-ctf-inventory-interaction-dry-run.drv
+  /nix/store/yac8di0wwqgkivh2zwi7rgxbrqrfr28y-mc-compat-valence-ctf-combat-damage-dry-run.drv
+  /nix/store/whgh6hp1h7yslq33f44sy269x9h5wlb7-mc-compat-valence-survival-break-place-pickup.drv
+  /nix/store/ycgz0k1bh95qqfjnla004xil4y3mfwzn-mc-compat-valence-survival-break-place-pickup-dry-run.drv
+  /nix/store/yg2b32n9z404d9slv33w3rmlpnn4slqb-mc-compat-valence-survival-crafting-table-dry-run.drv
+  /nix/store/yjsv7w6q9zys01abr3y00mh4dnjs503b-mc-compat-public-server-authorized-safety.drv
+  /nix/store/s9jkqm6jiiyg4hq5jv5awng9c162qyx3-mc-compat-valence-ctf-invalid-pickup-ownership.drv
+  /nix/store/yn8iwn9sj8k8sijqgbx542h44zz4qz7s-mc-compat-valence-ctf-invalid-pickup-ownership-dry-run.drv
+  /nix/store/p2q0j8si9zw6s1l9dg1z3ixpba6vmfl0-mc-compat-valence-ctf-equipment-update-observation.drv
+  /nix/store/zh5mw67wgf7b48xjdzc7vq0lci1fmskg-mc-compat-valence-ctf-equipment-update-observation-dry-run.drv
+  /nix/store/kywv3br0cyx7n499016b2mz91l5bgksf-mc-compat-maintained-dry-runs.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/1v9058d8fvgbnjddxa0zbxgzlchfv8mj-mc-compat-cairn-task-evidence.drv'...
+building '/nix/store/vw1jarwkfjx7a3b7nakbvmb1106n94q1-mc-compat-ctf-score-limit-win-condition.drv'...
+building '/nix/store/f6p36ng7saldbkx2ha9612sghql5q1q6-mc-compat-current-evidence-bundle.drv'...
+building '/nix/store/sn6mlrc451dv7vcnd6397q5v6f3anpmx-mc-compat-equipment-slot-item-expansion.drv'...
+building '/nix/store/pccx48l1iskshrcbkrymgfkz6zqi32x2-mc-compat-evidence-manifest-refresh.drv'...
+building '/nix/store/n2wag7kx1ynvhwh48qr78c6mcby87y4f-mc-compat-evidence-manifests.drv'...
+building '/nix/store/rdk78ql3p5i19w3xp4w6n83xzq637lqi-mc-compat-evidence-promotion.drv'...
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.md
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.md
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-ignore-rules.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites run log docs/evidence/clean-repo-artifact-boundaries-ignore-rules.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites run log docs/evidence/clean-repo-artifact-boundaries-ignore-rules.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-focused-open.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-self-test.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-focused-open.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-focused-open.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-self-test.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-self-test.run.log without a cited .b3 manifest covering it
+error: Cannot build '/nix/store/1v9058d8fvgbnjddxa0zbxgzlchfv8mj-mc-compat-cairn-task-evidence.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/5ap6zn6g4bvp10mzwxgbm6cnz0wj43fc-mc-compat-cairn-task-evidence
+       Last 25 log lines:
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.md
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-ignore-rules.run.log
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites run log docs/evidence/clean-repo-artifact-boundaries-ignore-rules.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites run log docs/evidence/clean-repo-artifact-boundaries-ignore-rules.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-focused-open.run.log
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-self-test.run.log
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-focused-open.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-focused-open.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-self-test.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-self-test.run.log without a cited .b3 manifest covering it
+       For full logs, run:
+         nix log /nix/store/1v9058d8fvgbnjddxa0zbxgzlchfv8mj-mc-compat-cairn-task-evidence.drv
+building '/nix/store/pgrcf84j25k1x6hfr25ai2jva727ynag-mc-compat-full-survival-gate.drv'...
+error: Cannot build '/nix/store/kywv3br0cyx7n499016b2mz91l5bgksf-mc-compat-maintained-dry-runs.drv'.
+       Reason: 1 dependency failed.
+       Output paths:
+         /nix/store/z7fddss2a5n3ish7slzj3pb2vy0b0b1y-mc-compat-maintained-dry-runs
+warning: killing stray builder process 998786 ()...
+warning: killing stray builder process 998907 ()...
+error (ignored): deleting cgroup "/sys/fs/cgroup/system.slice/nix-daemon.service/nix-build-uid-872546304": Device or resource busy
+error: Build failed due to failed dependency
+maintained_dry_runs_exit_status=1
+exit_status=1

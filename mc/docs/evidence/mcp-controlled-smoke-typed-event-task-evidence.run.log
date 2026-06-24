@@ -1,0 +1,20 @@
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+task evidence gate failed: cairn/changes/mcp-controlled-smoke-typed-event-migration/tasks.md:3 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+task evidence gate failed: cairn/changes/mcp-controlled-smoke-typed-event-migration/tasks.md:3 cites run log docs/evidence/mcp-controlled-smoke-typed-event-baseline-cairn-gates.run.log without a cited .b3 manifest covering it
+task evidence gate failed: cairn/changes/mcp-controlled-smoke-typed-event-migration/tasks.md:3 cites run log docs/evidence/mcp-controlled-smoke-typed-event-baseline-dry-run.run.log without a cited .b3 manifest covering it
+task evidence gate failed: cairn/changes/mcp-controlled-smoke-typed-event-migration/tasks.md:3 cites run log docs/evidence/mcp-controlled-smoke-typed-event-baseline-manifest.run.log without a cited .b3 manifest covering it
+task evidence gate failed: cairn/changes/mcp-controlled-smoke-typed-event-migration/tasks.md:3 cites run log docs/evidence/mcp-controlled-smoke-typed-event-baseline-runner.run.log without a cited .b3 manifest covering it
+task evidence gate failed: cairn/changes/mcp-controlled-smoke-typed-event-migration/tasks.md:5 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+task evidence gate failed: cairn/changes/mcp-controlled-smoke-typed-event-migration/tasks.md:5 cites run log docs/evidence/mcp-controlled-smoke-typed-event-post-manifest.run.log without a cited .b3 manifest covering it
+task evidence gate failed: cairn/changes/mcp-controlled-smoke-typed-event-migration/tasks.md:7 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+task evidence gate failed: cairn/changes/mcp-controlled-smoke-typed-event-migration/tasks.md:7 cites run log docs/evidence/mcp-controlled-smoke-typed-event-post-runner.run.log without a cited .b3 manifest covering it
+task evidence gate failed: cairn/changes/mcp-controlled-smoke-typed-event-migration/tasks.md:9 completed task lacks a docs/evidence/*.b3 manifest path or inline BLAKE3 digest
+task evidence gate failed: cairn/changes/mcp-controlled-smoke-typed-event-migration/tasks.md:9 cites run log docs/evidence/mcp-controlled-smoke-typed-event-post-dry-run.run.log without a cited .b3 manifest covering it
+task evidence gate failed: cairn/changes/mcp-controlled-smoke-typed-event-migration/tasks.md:9 cites run log docs/evidence/mcp-controlled-smoke-typed-event-post-evidence-manifests.run.log without a cited .b3 manifest covering it
+task evidence gate failed: cairn/changes/mcp-controlled-smoke-typed-event-migration/tasks.md:9 cites run log docs/evidence/mcp-controlled-smoke-typed-event-post-generated-surfaces.run.log without a cited .b3 manifest covering it
+task evidence gate failed: cairn/changes/mcp-controlled-smoke-typed-event-migration/tasks.md:9 cites run log docs/evidence/mcp-controlled-smoke-typed-event-post-manifest.run.log without a cited .b3 manifest covering it
+task evidence gate failed: cairn/changes/mcp-controlled-smoke-typed-event-migration/tasks.md:9 cites run log docs/evidence/mcp-controlled-smoke-typed-event-post-runner.run.log without a cited .b3 manifest covering it
+task evidence gate failed: cairn/changes/mcp-controlled-smoke-typed-event-migration/tasks.md:9 cites run log docs/evidence/mcp-controlled-smoke-typed-event-post-scenario-manifest-flake.run.log without a cited .b3 manifest covering it
+task evidence gate failed: cairn/changes/mcp-controlled-smoke-typed-event-migration/tasks.md:9 cites run log docs/evidence/mcp-controlled-smoke-typed-event-refresh-evidence-manifests.run.log without a cited .b3 manifest covering it

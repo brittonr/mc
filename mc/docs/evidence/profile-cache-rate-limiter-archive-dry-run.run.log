@@ -1,0 +1,22 @@
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-profile-skin-cache-rate-limiter",
+      "kind": "archive_change",
+      "path": "./cairn/changes/add-profile-skin-cache-rate-limiter"
+    }
+  ],
+  "blocked": false,
+  "change": "add-profile-skin-cache-rate-limiter",
+  "dry_run": true,
+  "input_hash": "2874cf2c4be0f438e8d699ae1d8a82ce5327d0937674410d47335a11ad80a368",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "a7f8d6ce8096d7f4216dac1f040c394f159e12d33f9190a04761d653f457f1a0",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "b1905623fec860c63bae97846fe6a6358c515ce05f5e178061092c4e720f224a"
+}
+exit_status=0

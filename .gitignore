@@ -12,9 +12,14 @@
 !/mc/README.md
 !/mc/flake.nix
 !/mc/flake.lock
+!/mc/nix/
+!/mc/nix/**
 !/mc/docs/
 /mc/docs/*
 !/mc/docs/architecture.md
+!/mc/docs/evidence/
+/mc/docs/evidence/*
+!/mc/docs/evidence/**
 
 # Keep Cairn lifecycle artifacts and generated policy inputs tracked.
 !/mc/cairn/
@@ -36,6 +41,7 @@
 !/mc/scripts/
 /mc/scripts/*
 !/mc/scripts/mc-compat-smoke.sh
+!/mc/scripts/ralph-drain-cairns.scm
 
 !/mc/tools/
 /mc/tools/*

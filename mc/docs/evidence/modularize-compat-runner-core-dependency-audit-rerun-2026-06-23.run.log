@@ -1,0 +1,4 @@
+command=rg -n refined forbidden shell tokens in compat runner core modules
+dependency_audit=no_forbidden_shell_tokens_or_root_glob_imports
+exit_status=0
+final_exit_status=0

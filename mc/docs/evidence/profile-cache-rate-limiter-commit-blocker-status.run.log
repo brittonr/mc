@@ -1,0 +1,25 @@
+# status for profile-cache commit blocker
+## overlapping accepted spec
+MM mc/cairn/specs/valence-hyperion-integration/spec.md
+
+## staged requirement headers already present before profile-cache unstaged hunk
++### Requirement: Chunk cache scope
++### Requirement: Chunk cache key contract
++### Requirement: Pure chunk cache core
++### Requirement: Chunk cache fixture coverage
++### Requirement: Optional cached egress wiring
++### Requirement: Chunk cache validation
+
+## unstaged requirement headers from profile-cache closeout
++### Requirement: Profile cache scope
++### Requirement: Typed profile cache configuration
++### Requirement: Pure profile cache core
++### Requirement: Optional HTTP and storage adapters
++### Requirement: Profile cache tests
++### Requirement: Profile cache validation
+
+## overlapping manifest staged/index/worktree digest example
+HEAD line: d512a723538d2b7406ec895d51e62dbd036de476b43038f4610a8ed1fc17618e  cairn/specs/valence-hyperion-integration/spec.md
+INDEX line: 2ec58838be3c657b148d14e097440def25d5361ef90cca4cf061af264899668d  cairn/specs/valence-hyperion-integration/spec.md
+WORKTREE line: cb03609689a9a1894a5e9b866cb5ca0a59fc4356825d317e3dcef6e080c89ee3  cairn/specs/valence-hyperion-integration/spec.md
+exit_status=0

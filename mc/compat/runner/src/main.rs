@@ -1,10 +1,16 @@
 mod layout;
+mod receipt_validation;
 mod runtime_config;
+mod scenario_catalog;
 mod scenario_core;
 #[allow(dead_code)]
 mod scenario_manifest_generated;
 
 use layout::{resolve_repository_layout, resolve_valence_source_dir, LayoutResolutionMode};
+#[cfg(test)]
+use receipt_validation::validate_receipt_summary;
+use receipt_validation::{read_receipt_summary_from_text, validate_receipt_pair, ReceiptSummary};
+use scenario_catalog::*;
 use scenario_core::{
     parse_scenario, scenario_behavior_kind, scenario_forbidden_patterns, scenario_name,
     scenario_required_milestones, server_required_milestones, validate_static_scenario_specs,
@@ -94,142 +100,11 @@ const PROJECTILE_DAMAGE_CONTEXT_PULL_STRENGTH: f64 = 1.0;
 const XVFB_SERVER_ARGS: &str = "-screen 0 1280x720x24 +extension GLX +render -noreset";
 const PROJECTILE_DAMAGE_VICTIM_START_HEALTH: f64 = 20.0;
 const INVENTORY_STACK_SPLIT_MERGE_PROBE_ENV: &str = "MC_COMPAT_INVENTORY_STACK_SPLIT_MERGE_PROBE";
-const INVENTORY_STACK_CLIENT_INITIAL_NEEDLE: &str =
-    "inventory_stack_initial_slot window=0 state_id=";
-const INVENTORY_STACK_CLIENT_SPLIT_PICKUP_NEEDLE: &str = "inventory_stack_split_pickup_sent";
-const INVENTORY_STACK_CLIENT_SPLIT_SOURCE_NEEDLE: &str = "inventory_stack_split_source_seen";
-const INVENTORY_STACK_CLIENT_SPLIT_PLACE_NEEDLE: &str = "inventory_stack_split_place_sent";
-const INVENTORY_STACK_CLIENT_DESTINATION_NEEDLE: &str = "inventory_stack_split_destination_seen";
-const INVENTORY_STACK_CLIENT_MERGE_PICKUP_NEEDLE: &str = "inventory_stack_merge_pickup_sent";
-const INVENTORY_STACK_CLIENT_MERGE_EMPTY_NEEDLE: &str =
-    "inventory_stack_merge_destination_empty_seen";
-const INVENTORY_STACK_CLIENT_MERGE_PLACE_NEEDLE: &str = "inventory_stack_merge_place_sent";
-const INVENTORY_STACK_CLIENT_FINAL_NEEDLE: &str = "inventory_stack_final_source_seen";
-const INVENTORY_STACK_SERVER_SPLIT_PICKUP_NEEDLE: &str =
-    "inventory_stack_server_split_pickup username=compatbot";
-const INVENTORY_STACK_SERVER_SPLIT_NEEDLE: &str = "inventory_stack_server_split username=compatbot";
-const INVENTORY_STACK_SERVER_MERGE_PICKUP_NEEDLE: &str =
-    "inventory_stack_server_merge_pickup username=compatbot";
-const INVENTORY_STACK_SERVER_MERGE_NEEDLE: &str = "inventory_stack_server_merge username=compatbot";
 const INVENTORY_DRAG_TRANSACTIONS_PROBE_ENV: &str = "MC_COMPAT_INVENTORY_DRAG_TRANSACTIONS_PROBE";
-const INVENTORY_DRAG_CLIENT_INITIAL_NEEDLE: &str = "inventory_drag_initial_slot window=0 state_id=";
-const INVENTORY_DRAG_CLIENT_PICKUP_NEEDLE: &str = "inventory_drag_pickup_sent";
-const INVENTORY_DRAG_CLIENT_SOURCE_EMPTY_NEEDLE: &str = "inventory_drag_source_empty_seen";
-const INVENTORY_DRAG_CLIENT_START_NEEDLE: &str = "inventory_drag_start_sent";
-const INVENTORY_DRAG_CLIENT_TARGET_A_NEEDLE: &str = "inventory_drag_target_a_sent";
-const INVENTORY_DRAG_CLIENT_TARGET_B_NEEDLE: &str = "inventory_drag_target_b_sent";
-const INVENTORY_DRAG_CLIENT_END_NEEDLE: &str = "inventory_drag_end_sent";
-const INVENTORY_DRAG_CLIENT_FINAL_NEEDLE: &str = "inventory_drag_final_distribution_seen";
-const INVENTORY_DRAG_SERVER_PICKUP_NEEDLE: &str = "inventory_drag_server_pickup username=compatbot";
-const INVENTORY_DRAG_SERVER_START_NEEDLE: &str = "inventory_drag_server_start username=compatbot";
-const INVENTORY_DRAG_SERVER_TARGET_A_NEEDLE: &str =
-    "inventory_drag_server_target_a username=compatbot";
-const INVENTORY_DRAG_SERVER_TARGET_B_NEEDLE: &str =
-    "inventory_drag_server_target_b username=compatbot";
-const INVENTORY_DRAG_SERVER_END_NEEDLE: &str = "inventory_drag_server_end username=compatbot";
-const SURVIVAL_CHEST_CLIENT_OPEN_NEEDLE: &str = "survival_chest_open_seen window=1 position=8,64,0";
-const SURVIVAL_CHEST_CLIENT_STORE_NEEDLE: &str =
-    "survival_chest_store_sent window=1 slot=0 item=Dirt count=1";
-const SURVIVAL_CHEST_CLIENT_CLOSE_NEEDLE: &str = "survival_chest_close_sent window=1";
-const SURVIVAL_CHEST_CLIENT_RECONNECT_NEEDLE: &str = "survival_chest_reconnect_sent session=1";
-const SURVIVAL_CHEST_CLIENT_REOPEN_NEEDLE: &str =
-    "survival_chest_reopen_seen window=1 position=8,64,0";
-const SURVIVAL_CHEST_CLIENT_PERSISTED_NEEDLE: &str =
-    "survival_chest_persisted_seen window=1 slot=0 item=Dirt count=1";
-const SURVIVAL_CHEST_SERVER_OPEN_NEEDLE: &str =
-    "survival_chest_open username=compatbot position=8,64,0 window=1";
-const SURVIVAL_CHEST_SERVER_STORE_NEEDLE: &str =
-    "survival_chest_store username=compatbot window=1 slot=0 item=Dirt count=1";
-const SURVIVAL_CHEST_SERVER_CLOSE_NEEDLE: &str = "survival_chest_close username=compatbot window=1";
-const SURVIVAL_CHEST_SERVER_REOPEN_NEEDLE: &str =
-    "survival_chest_reopen username=compatbot position=8,64,0 window=1";
-const SURVIVAL_CHEST_SERVER_PERSISTED_NEEDLE: &str =
-    "survival_chest_persisted username=compatbot slot=0 item=Dirt count=1";
 const SURVIVAL_CHEST_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_CHEST_FIXTURE";
-const SURVIVAL_CRAFTING_CLIENT_OPEN_NEEDLE: &str =
-    "survival_crafting_table_open_seen window=1 position=4,64,0";
-const SURVIVAL_CRAFTING_CLIENT_INPUT_A_NEEDLE: &str =
-    "survival_crafting_input_a_sent window=1 slot=1 item=OakPlanks count=1";
-const SURVIVAL_CRAFTING_CLIENT_INPUT_B_NEEDLE: &str =
-    "survival_crafting_input_b_sent window=1 slot=4 item=OakPlanks count=1";
-const SURVIVAL_CRAFTING_CLIENT_RESULT_NEEDLE: &str =
-    "survival_crafting_result_seen window=1 slot=0 item=Stick count=4 recipe=minecraft:stick";
-const SURVIVAL_CRAFTING_CLIENT_COLLECT_NEEDLE: &str =
-    "survival_crafting_result_collected window=1 slot=0 item=Stick count=4";
-const SURVIVAL_CRAFTING_CLIENT_INVENTORY_NEEDLE: &str =
-    "survival_crafting_inventory_updated slot=36 item=Stick count=4";
-const SURVIVAL_CRAFTING_SERVER_OPEN_NEEDLE: &str =
-    "survival_crafting_table_open username=compatbot position=4,64,0 window=1";
-const SURVIVAL_CRAFTING_SERVER_INPUT_A_NEEDLE: &str =
-    "survival_crafting_input_a username=compatbot window=1 slot=1 item=OakPlanks count=1";
-const SURVIVAL_CRAFTING_SERVER_INPUT_B_NEEDLE: &str =
-    "survival_crafting_input_b username=compatbot window=1 slot=4 item=OakPlanks count=1";
-const SURVIVAL_CRAFTING_SERVER_RESULT_NEEDLE: &str =
-    "survival_crafting_result username=compatbot window=1 slot=0 item=Stick count=4 recipe=minecraft:stick";
-const SURVIVAL_CRAFTING_SERVER_COLLECT_NEEDLE: &str =
-    "survival_crafting_collect username=compatbot window=1 slot=0 item=Stick count=4 inventory_slot=36";
 const SURVIVAL_CRAFTING_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_CRAFTING_FIXTURE";
 const SURVIVAL_CRAFTING_BREADTH_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_CRAFTING_BREADTH_PROBE";
 const SURVIVAL_CRAFTING_BREADTH_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_CRAFTING_BREADTH_FIXTURE";
-const SURVIVAL_CRAFTING_BREADTH_CLIENT_SHAPED_NEEDLE: &str =
-    "survival_crafting_breadth_shaped_seen window=1 recipe=minecraft:chest input=oak_planksx8 result=Chest count=1";
-const SURVIVAL_CRAFTING_BREADTH_CLIENT_SHAPELESS_NEEDLE: &str =
-    "survival_crafting_breadth_shapeless_seen window=1 recipe=minecraft:oak_planks input=oak_logx1 result=OakPlanks count=4";
-const SURVIVAL_CRAFTING_BREADTH_CLIENT_CLEAR_NEEDLE: &str =
-    "survival_crafting_breadth_grid_clear_seen window=1 occupied_slots=0";
-const SURVIVAL_CRAFTING_BREADTH_CLIENT_INVALID_NEEDLE: &str =
-    "survival_crafting_breadth_invalid_seen window=1 recipe=minecraft:stick_insufficient_input_rejection input=single_oak_plank outcome=no_result";
-const SURVIVAL_CRAFTING_BREADTH_CLIENT_INVENTORY_NEEDLE: &str =
-    "survival_crafting_breadth_inventory_updated slot=36 item=Chest count=1 slot=37 item=OakPlanks count=4";
-const SURVIVAL_CRAFTING_BREADTH_SERVER_SHAPED_NEEDLE: &str =
-    "survival_crafting_breadth_shaped username=compatbot recipe=minecraft:chest input=oak_planksx8 result=Chest count=1";
-const SURVIVAL_CRAFTING_BREADTH_SERVER_SHAPELESS_NEEDLE: &str =
-    "survival_crafting_breadth_shapeless username=compatbot recipe=minecraft:oak_planks input=oak_logx1 result=OakPlanks count=4";
-const SURVIVAL_CRAFTING_BREADTH_SERVER_CLEAR_NEEDLE: &str =
-    "survival_crafting_breadth_grid_clear username=compatbot window=1 occupied_slots=0";
-const SURVIVAL_CRAFTING_BREADTH_SERVER_INVALID_NEEDLE: &str =
-    "survival_crafting_breadth_invalid_rejected username=compatbot recipe=minecraft:stick_insufficient_input_rejection input=single_oak_plank outcome=no_result";
-const SURVIVAL_CRAFTING_BREADTH_SERVER_STATE_NEEDLE: &str =
-    "survival_crafting_breadth_state username=compatbot shaped=true shapeless=true invalid_rejected=true extra_outputs=false";
-const SURVIVAL_FURNACE_CLIENT_OPEN_NEEDLE: &str =
-    "survival_furnace_open_seen window=1 position=12,64,0";
-const SURVIVAL_FURNACE_CLIENT_INPUT_NEEDLE: &str =
-    "survival_furnace_input_sent window=1 slot=0 item=RawIron count=1";
-const SURVIVAL_FURNACE_CLIENT_FUEL_NEEDLE: &str =
-    "survival_furnace_fuel_sent window=1 slot=1 item=Coal count=1";
-const SURVIVAL_FURNACE_CLIENT_BURN_NEEDLE: &str =
-    "survival_furnace_burn_progress_seen window=1 progress=started";
-const SURVIVAL_FURNACE_CLIENT_OUTPUT_NEEDLE: &str =
-    "survival_furnace_output_seen window=1 slot=2 item=IronIngot count=1";
-const SURVIVAL_FURNACE_CLIENT_COLLECT_NEEDLE: &str =
-    "survival_furnace_output_collected window=1 slot=2 item=IronIngot count=1";
-const SURVIVAL_FURNACE_CLIENT_INVENTORY_NEEDLE: &str =
-    "survival_furnace_inventory_updated slot=36 item=IronIngot count=1";
-const SURVIVAL_FURNACE_CLIENT_INVALID_FUEL_NEEDLE: &str =
-    "survival_furnace_invalid_fuel_sent window=1 slot=1 item=RawIron outcome=no_burn";
-const SURVIVAL_FURNACE_CLIENT_RECONNECT_NEEDLE: &str = "survival_furnace_reconnect_sent session=1";
-const SURVIVAL_FURNACE_CLIENT_REOPEN_NEEDLE: &str =
-    "survival_furnace_reopen_seen window=1 position=12,64,0";
-const SURVIVAL_FURNACE_SERVER_OPEN_NEEDLE: &str =
-    "survival_furnace_open username=compatbot position=12,64,0 window=1";
-const SURVIVAL_FURNACE_SERVER_INPUT_NEEDLE: &str =
-    "survival_furnace_input_insert username=compatbot window=1 slot=0 item=RawIron count=1";
-const SURVIVAL_FURNACE_SERVER_FUEL_NEEDLE: &str =
-    "survival_furnace_fuel_insert username=compatbot window=1 slot=1 item=Coal count=1";
-const SURVIVAL_FURNACE_SERVER_BURN_NEEDLE: &str =
-    "survival_furnace_burn_progress username=compatbot window=1 progress=started";
-const SURVIVAL_FURNACE_SERVER_OUTPUT_NEEDLE: &str =
-    "survival_furnace_output_available username=compatbot window=1 slot=2 item=IronIngot count=1";
-const SURVIVAL_FURNACE_SERVER_COLLECT_NEEDLE: &str =
-    "survival_furnace_output_collect username=compatbot window=1 slot=2 item=IronIngot count=1 inventory_slot=36";
-const SURVIVAL_FURNACE_SERVER_INVALID_FUEL_NEEDLE: &str =
-    "survival_furnace_invalid_fuel_rejected username=compatbot window=1 slot=1 item=RawIron outcome=no_burn";
-const SURVIVAL_FURNACE_SERVER_BREADTH_STATE_NEEDLE: &str =
-    "survival_furnace_breadth_state username=compatbot recipe=minecraft:iron_ingot input=RawIron fuel=Coal output=IronIngot count=1 invalid_fuel=RawIron invalid_fuel_outcome=no_burn broad_all_furnaces=false";
-const SURVIVAL_FURNACE_SERVER_REOPEN_NEEDLE: &str =
-    "survival_furnace_reconnect_reopen username=compatbot position=12,64,0 window=1";
-const SURVIVAL_FURNACE_SERVER_STATE_NEEDLE: &str =
-    "survival_furnace_server_state username=compatbot position=12,64,0 input=RawIron fuel=Coal output=empty collected=true session_persistent=true";
 const SURVIVAL_FURNACE_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_FURNACE_PROBE";
 const SURVIVAL_FURNACE_SMELTING_BREADTH_PROBE_ENV: &str =
     "MC_COMPAT_SURVIVAL_FURNACE_SMELTING_BREADTH_PROBE";
@@ -237,231 +112,18 @@ const SURVIVAL_FURNACE_SESSION_ENV: &str = "MC_COMPAT_SURVIVAL_FURNACE_SESSION";
 const SURVIVAL_FURNACE_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_FURNACE_FIXTURE";
 const SURVIVAL_FURNACE_SMELTING_BREADTH_FIXTURE_ENV: &str =
     "MC_COMPAT_SURVIVAL_FURNACE_SMELTING_BREADTH_FIXTURE";
-const SURVIVAL_HUNGER_FOOD_CLIENT_ITEM_NEEDLE: &str =
-    "survival_hunger_food_item_seen slot=36 item=Bread count=1";
-const SURVIVAL_HUNGER_FOOD_CLIENT_PRE_NEEDLE: &str =
-    "survival_hunger_food_pre_seen health=20.0 food=15 saturation=0.0";
-const SURVIVAL_HUNGER_FOOD_CLIENT_USE_NEEDLE: &str =
-    "survival_hunger_food_use_sent slot=36 item=Bread count=1 hand=main sequence=810";
-const SURVIVAL_HUNGER_FOOD_CLIENT_POST_NEEDLE: &str =
-    "survival_hunger_food_post_seen health=20.0 food=20 saturation=6.0";
-const SURVIVAL_HUNGER_FOOD_CLIENT_INVENTORY_NEEDLE: &str =
-    "survival_hunger_food_inventory_updated slot=36 item=Bread count=0";
-const SURVIVAL_HUNGER_FOOD_SERVER_PRE_NEEDLE: &str =
-    "survival_hunger_food_pre username=compatbot health=20.0 food=15 saturation=0.0 item=Bread count=1 slot=36";
-const SURVIVAL_HUNGER_FOOD_SERVER_CONSUME_START_NEEDLE: &str =
-    "survival_hunger_food_consume_start username=compatbot item=Bread slot=36 food_before=15 saturation_before=0.0";
-const SURVIVAL_HUNGER_FOOD_SERVER_CONSUME_FINISH_NEEDLE: &str =
-    "survival_hunger_food_consume_finish username=compatbot item=Bread slot=36 food_after=20 saturation_after=6.0";
-const SURVIVAL_HUNGER_FOOD_SERVER_INVENTORY_NEEDLE: &str =
-    "survival_hunger_food_inventory username=compatbot slot=36 item=Bread count_before=1 count_after=0";
-const SURVIVAL_HUNGER_FOOD_SERVER_STATE_NEEDLE: &str =
-    "survival_hunger_food_state username=compatbot health=20.0 food_before=15 food_after=20 saturation_before=0.0 saturation_after=6.0 unexpected_damage=false death=false";
 const SURVIVAL_HUNGER_FOOD_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_HUNGER_FOOD_PROBE";
 const SURVIVAL_HUNGER_FOOD_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_HUNGER_FOOD_FIXTURE";
-const SURVIVAL_HUNGER_HEALTH_CLIENT_ITEM_NEEDLE: &str =
-    "survival_hunger_health_item_seen slot=36 item=Bread count=1";
-const SURVIVAL_HUNGER_HEALTH_CLIENT_PRE_NEEDLE: &str =
-    "survival_hunger_health_pre_seen health=18.0 food=15 saturation=0.0";
-const SURVIVAL_HUNGER_HEALTH_CLIENT_USE_NEEDLE: &str =
-    "survival_hunger_health_consume_sent slot=36 item=Bread count=1 hand=main sequence=810";
-const SURVIVAL_HUNGER_HEALTH_CLIENT_POST_NEEDLE: &str =
-    "survival_hunger_health_recovery_seen health=20.0 food=20 saturation=6.0";
-const SURVIVAL_HUNGER_HEALTH_CLIENT_INVENTORY_NEEDLE: &str =
-    "survival_hunger_health_inventory_updated slot=36 item=Bread count=0";
-const SURVIVAL_HUNGER_HEALTH_SERVER_PRE_NEEDLE: &str =
-    "survival_hunger_health_pre username=compatbot health=18.0 food=15 saturation=0.0 item=Bread count=1 slot=36";
-const SURVIVAL_HUNGER_HEALTH_SERVER_CONSUME_START_NEEDLE: &str =
-    "survival_hunger_health_consume_start username=compatbot item=Bread slot=36 food_before=15 saturation_before=0.0";
-const SURVIVAL_HUNGER_HEALTH_SERVER_CONSUME_FINISH_NEEDLE: &str =
-    "survival_hunger_health_consume_finish username=compatbot item=Bread slot=36 food_after=20 saturation_after=6.0";
-const SURVIVAL_HUNGER_HEALTH_SERVER_INVENTORY_NEEDLE: &str =
-    "survival_hunger_health_inventory username=compatbot slot=36 item=Bread count_before=1 count_after=0";
-const SURVIVAL_HUNGER_HEALTH_SERVER_STATE_NEEDLE: &str =
-    "survival_hunger_health_state username=compatbot pre_health=18.0 post_health=20.0 food_before=15 food_after=20 saturation_before=0.0 saturation_after=6.0 unexpected_damage=false death=false";
 const SURVIVAL_HUNGER_HEALTH_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_HUNGER_HEALTH_PROBE";
 const SURVIVAL_HUNGER_HEALTH_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_HUNGER_HEALTH_FIXTURE";
-const SURVIVAL_MOB_DROP_CLIENT_MOB_NEEDLE: &str =
-    "survival_mob_drop_mob_seen mob=IronGolem position=16.5,65.0,2.5";
-const SURVIVAL_MOB_DROP_CLIENT_ATTACK_NEEDLE: &str =
-    "survival_mob_drop_attack_sent mob=IronGolem target_id=";
-const SURVIVAL_MOB_DROP_CLIENT_DEATH_NEEDLE: &str =
-    "survival_mob_drop_death_seen mob=IronGolem target_id=";
-const SURVIVAL_MOB_DROP_CLIENT_DROP_NEEDLE: &str =
-    "survival_mob_drop_drop_seen item=IronIngot count=1";
-const SURVIVAL_MOB_DROP_CLIENT_PICKUP_NEEDLE: &str =
-    "survival_mob_drop_pickup_seen item=IronIngot count=1";
-const SURVIVAL_MOB_DROP_CLIENT_INVENTORY_NEEDLE: &str =
-    "survival_mob_drop_inventory_updated slot=36 item=IronIngot count=1";
-const SURVIVAL_MOB_DROP_SERVER_SPAWN_NEEDLE: &str =
-    "survival_mob_drop_spawn username=compatbot mob=IronGolem position=16.5,65.0,2.5";
-const SURVIVAL_MOB_DROP_SERVER_ATTACK_NEEDLE: &str =
-    "survival_mob_drop_attack username=compatbot mob=IronGolem damage=20.0";
-const SURVIVAL_MOB_DROP_SERVER_DEATH_NEEDLE: &str =
-    "survival_mob_drop_death username=compatbot mob=IronGolem";
-const SURVIVAL_MOB_DROP_SERVER_DROP_NEEDLE: &str =
-    "survival_mob_drop_drop_spawn username=compatbot item=IronIngot count=1";
-const SURVIVAL_MOB_DROP_SERVER_PICKUP_NEEDLE: &str =
-    "survival_mob_drop_pickup username=compatbot item=IronIngot count=1";
-const SURVIVAL_MOB_DROP_SERVER_INVENTORY_NEEDLE: &str =
-    "survival_mob_drop_inventory username=compatbot slot=36 item=IronIngot count=1";
-const SURVIVAL_MOB_DROP_SERVER_STATE_NEEDLE: &str =
-    "survival_mob_drop_state username=compatbot mob=IronGolem drop=IronIngot count=1 extra_drops=false";
 const SURVIVAL_MOB_DROP_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_MOB_DROP_PROBE";
 const SURVIVAL_MOB_DROP_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_MOB_DROP_FIXTURE";
-const SURVIVAL_MOB_AI_LOOT_CLIENT_MOB_NEEDLE: &str =
-    "survival_mob_ai_loot_mob_seen mob=Zombie position=16.5,65.0,4.5 ai_checkpoint=approach_player";
-const SURVIVAL_MOB_AI_LOOT_CLIENT_ATTACK_NEEDLE: &str =
-    "survival_mob_ai_loot_attack_sent mob=Zombie kill_method=player_attack";
-const SURVIVAL_MOB_AI_LOOT_CLIENT_DEATH_NEEDLE: &str = "survival_mob_ai_loot_death_seen mob=Zombie";
-const SURVIVAL_MOB_AI_LOOT_CLIENT_DROP_NEEDLE: &str =
-    "survival_mob_ai_loot_drop_seen item=RottenFlesh count=1";
-const SURVIVAL_MOB_AI_LOOT_CLIENT_PICKUP_NEEDLE: &str =
-    "survival_mob_ai_loot_pickup_seen item=RottenFlesh count=1";
-const SURVIVAL_MOB_AI_LOOT_CLIENT_INVENTORY_NEEDLE: &str =
-    "survival_mob_ai_loot_inventory_updated slot=36 item=RottenFlesh count=1";
-const SURVIVAL_MOB_AI_LOOT_SERVER_SPAWN_NEEDLE: &str =
-    "survival_mob_ai_loot_spawn username=compatbot mob=Zombie position=16.5,65.0,4.5";
-const SURVIVAL_MOB_AI_LOOT_SERVER_AI_NEEDLE: &str =
-    "survival_mob_ai_loot_ai_checkpoint username=compatbot mob=Zombie checkpoint=approach_player target=compatbot";
-const SURVIVAL_MOB_AI_LOOT_SERVER_ATTACK_NEEDLE: &str =
-    "survival_mob_ai_loot_attack username=compatbot mob=Zombie kill_method=player_attack";
-const SURVIVAL_MOB_AI_LOOT_SERVER_DEATH_NEEDLE: &str =
-    "survival_mob_ai_loot_death username=compatbot mob=Zombie";
-const SURVIVAL_MOB_AI_LOOT_SERVER_DROP_NEEDLE: &str =
-    "survival_mob_ai_loot_drop_spawn username=compatbot item=RottenFlesh count=1";
-const SURVIVAL_MOB_AI_LOOT_SERVER_PICKUP_NEEDLE: &str =
-    "survival_mob_ai_loot_pickup username=compatbot item=RottenFlesh count=1";
-const SURVIVAL_MOB_AI_LOOT_SERVER_INVENTORY_NEEDLE: &str =
-    "survival_mob_ai_loot_inventory username=compatbot slot=36 item=RottenFlesh count=1";
-const SURVIVAL_MOB_AI_LOOT_SERVER_STATE_NEEDLE: &str =
-    "survival_mob_ai_loot_state username=compatbot mob=Zombie ai_checkpoint=approach_player kill_method=player_attack drop=RottenFlesh count=1 pickup=observed inventory_increment=1 extra_mobs=false";
 const SURVIVAL_MOB_AI_LOOT_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_MOB_AI_LOOT_PROBE";
 const SURVIVAL_MOB_AI_LOOT_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_MOB_AI_LOOT_FIXTURE";
-const SURVIVAL_REDSTONE_TOGGLE_CLIENT_INPUT_ON_NEEDLE: &str =
-    "survival_redstone_toggle_input_sent control=Lever position=20,64,0 powered_before=false powered_after=true";
-const SURVIVAL_REDSTONE_TOGGLE_CLIENT_OUTPUT_ON_NEEDLE: &str =
-    "survival_redstone_toggle_output_update output=RedstoneLamp position=21,64,0 powered=true";
-const SURVIVAL_REDSTONE_TOGGLE_CLIENT_INPUT_OFF_NEEDLE: &str =
-    "survival_redstone_toggle_return_input_sent control=Lever position=20,64,0 powered_before=true powered_after=false";
-const SURVIVAL_REDSTONE_TOGGLE_CLIENT_OUTPUT_OFF_NEEDLE: &str =
-    "survival_redstone_toggle_return_update output=RedstoneLamp position=21,64,0 powered=false";
-const SURVIVAL_REDSTONE_TOGGLE_SERVER_INPUT_NEEDLE: &str =
-    "survival_redstone_toggle_input username=compatbot control=Lever position=20,64,0 powered_before=false powered_after=true";
-const SURVIVAL_REDSTONE_TOGGLE_SERVER_ON_NEEDLE: &str =
-    "survival_redstone_toggle_powered_on username=compatbot output=RedstoneLamp position=21,64,0 powered=true";
-const SURVIVAL_REDSTONE_TOGGLE_SERVER_OFF_NEEDLE: &str =
-    "survival_redstone_toggle_powered_off username=compatbot output=RedstoneLamp position=21,64,0 powered=false";
-const SURVIVAL_REDSTONE_TOGGLE_SERVER_STATE_NEEDLE: &str =
-    "survival_redstone_toggle_state username=compatbot control=Lever output=RedstoneLamp on_seen=true off_seen=true unintended_outputs=false";
 const SURVIVAL_REDSTONE_TOGGLE_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_REDSTONE_TOGGLE_PROBE";
 const SURVIVAL_REDSTONE_TOGGLE_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_REDSTONE_TOGGLE_FIXTURE";
-const SURVIVAL_REDSTONE_CIRCUIT_CLIENT_INITIAL_NEEDLE: &str =
-    "survival_redstone_circuit_initial_state circuit=lever_lamp_repeater tick=0 powered=false";
-const SURVIVAL_REDSTONE_CIRCUIT_CLIENT_INPUT_NEEDLE: &str =
-    "survival_redstone_circuit_input_sent control=Lever position=20,64,0 tick=2 powered_after=true";
-const SURVIVAL_REDSTONE_CIRCUIT_CLIENT_OUTPUT_ON_NEEDLE: &str =
-    "survival_redstone_circuit_output_update output=RedstoneLamp repeater=Repeater position=21,64,0 tick=2 powered=true";
-const SURVIVAL_REDSTONE_CIRCUIT_CLIENT_RETURN_NEEDLE: &str =
-    "survival_redstone_circuit_return_input_sent control=Lever position=20,64,0 tick=4 powered_after=false";
-const SURVIVAL_REDSTONE_CIRCUIT_CLIENT_OUTPUT_OFF_NEEDLE: &str =
-    "survival_redstone_circuit_return_update output=RedstoneLamp repeater=Repeater position=21,64,0 tick=4 powered=false";
-const SURVIVAL_REDSTONE_CIRCUIT_SERVER_INITIAL_NEEDLE: &str =
-    "survival_redstone_circuit_initial username=compatbot circuit=lever_lamp_repeater powered=false tick=0";
-const SURVIVAL_REDSTONE_CIRCUIT_SERVER_INPUT_NEEDLE: &str =
-    "survival_redstone_circuit_input username=compatbot control=Lever position=20,64,0 tick=2 powered_after=true";
-const SURVIVAL_REDSTONE_CIRCUIT_SERVER_ON_NEEDLE: &str =
-    "survival_redstone_circuit_powered_on username=compatbot output=RedstoneLamp repeater=Repeater tick=2 powered=true";
-const SURVIVAL_REDSTONE_CIRCUIT_SERVER_OFF_NEEDLE: &str =
-    "survival_redstone_circuit_powered_off username=compatbot output=RedstoneLamp repeater=Repeater tick=4 powered=false";
-const SURVIVAL_REDSTONE_CIRCUIT_SERVER_STATE_NEEDLE: &str =
-    "survival_redstone_circuit_state username=compatbot circuit=lever_lamp_repeater initial=false after_input=true after_return=false tick_sequence=0:false,2:true,4:false unintended_outputs=false";
 const SURVIVAL_REDSTONE_CIRCUIT_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_REDSTONE_CIRCUIT_PROBE";
 const SURVIVAL_REDSTONE_CIRCUIT_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_REDSTONE_CIRCUIT_FIXTURE";
-const SURVIVAL_WORLD_PERSISTENCE_CLIENT_MUTATION_NEEDLE: &str =
-    "survival_world_persistence_mutation_sent block=Dirt position=24,64,0 slot=36";
-const SURVIVAL_WORLD_PERSISTENCE_CLIENT_PRE_RESTART_NEEDLE: &str =
-    "survival_world_persistence_pre_restart_update block=Dirt position=24,64,0";
-const SURVIVAL_WORLD_PERSISTENCE_CLIENT_RECONNECT_NEEDLE: &str =
-    "survival_world_persistence_reconnect_sent session=restart";
-const SURVIVAL_WORLD_PERSISTENCE_CLIENT_POST_RESTART_NEEDLE: &str =
-    "survival_world_persistence_post_restart_update block=Dirt position=24,64,0";
-const SURVIVAL_WORLD_PERSISTENCE_SERVER_MUTATION_NEEDLE: &str =
-    "survival_world_persistence_mutation username=compatbot block=Dirt position=24,64,0 persisted_before=false persisted_after=true";
-const SURVIVAL_WORLD_PERSISTENCE_SERVER_CLEAN_NEEDLE: &str =
-    "survival_world_persistence_clean_shutdown username=compatbot storage=isolated shutdown=graceful";
-const SURVIVAL_WORLD_PERSISTENCE_SERVER_RESTART_NEEDLE: &str =
-    "survival_world_persistence_backend_restart username=compatbot method=controlled_reload storage=isolated restart_confirmed=true";
-const SURVIVAL_WORLD_PERSISTENCE_SERVER_POST_NEEDLE: &str =
-    "survival_world_persistence_post_restart_observe username=compatbot block=Dirt position=24,64,0 persisted=true";
-const SURVIVAL_WORLD_PERSISTENCE_SERVER_STATE_NEEDLE: &str =
-    "survival_world_persistence_state username=compatbot block=Dirt position=24,64,0 pre_mutation=true clean_shutdown=true backend_restart=true post_observed=true dirty_reuse=false";
-const SURVIVAL_BLOCK_ENTITY_CLIENT_PRE_RESTART_NEEDLE: &str =
-    "survival_block_entity_pre_restart_update kind=Sign position=28,64,0 text=MC|Compat|Sign|Persist";
-const SURVIVAL_BLOCK_ENTITY_CLIENT_RECONNECT_NEEDLE: &str =
-    "survival_block_entity_reconnect_sent session=restart";
-const SURVIVAL_BLOCK_ENTITY_CLIENT_POST_RESTART_NEEDLE: &str =
-    "survival_block_entity_post_restart_update kind=Sign position=28,64,0 text=MC|Compat|Sign|Persist";
-const SURVIVAL_BLOCK_ENTITY_SERVER_MUTATION_NEEDLE: &str =
-    "survival_block_entity_persistence_mutation username=compatbot kind=Sign position=28,64,0 text=MC|Compat|Sign|Persist persisted_before=false persisted_after=true";
-const SURVIVAL_BLOCK_ENTITY_SERVER_CLEAN_NEEDLE: &str =
-    "survival_block_entity_persistence_clean_shutdown username=compatbot storage=isolated shutdown=graceful";
-const SURVIVAL_BLOCK_ENTITY_SERVER_RESTART_NEEDLE: &str =
-    "survival_block_entity_persistence_backend_restart username=compatbot method=controlled_reload storage=isolated restart_confirmed=true";
-const SURVIVAL_BLOCK_ENTITY_SERVER_POST_NEEDLE: &str =
-    "survival_block_entity_persistence_post_restart_observe username=compatbot kind=Sign position=28,64,0 text=MC|Compat|Sign|Persist persisted=true";
-const SURVIVAL_BLOCK_ENTITY_SERVER_STATE_NEEDLE: &str =
-    "survival_block_entity_persistence_state username=compatbot kind=Sign position=28,64,0 text=MC|Compat|Sign|Persist pre_mutation=true clean_shutdown=true backend_restart=true post_observed=true dirty_reuse=false";
-const SURVIVAL_WORLD_MULTICHUNK_CLIENT_MUTATION_NEEDLE: &str =
-    "survival_world_multichunk_mutation_sent primary=0,64,0:Dirt secondary=32,64,0:OakPlanks chunks=0,0;2,0";
-const SURVIVAL_WORLD_MULTICHUNK_CLIENT_PRE_RESTART_NEEDLE: &str =
-    "survival_world_multichunk_pre_restart_update primary=present secondary=present auxiliary_marker_only=false";
-const SURVIVAL_WORLD_MULTICHUNK_CLIENT_RECONNECT_NEEDLE: &str =
-    "survival_world_multichunk_reconnect_sent session=restart";
-const SURVIVAL_WORLD_MULTICHUNK_CLIENT_POST_RESTART_NEEDLE: &str =
-    "survival_world_multichunk_post_restart_update primary=present secondary=present";
-const SURVIVAL_WORLD_MULTICHUNK_SERVER_MUTATION_NEEDLE: &str =
-    "survival_world_multichunk_mutation username=compatbot chunks=0,0;2,0 primary=0,64,0:Dirt secondary=32,64,0:OakPlanks persisted_before=false persisted_after=true";
-const SURVIVAL_WORLD_MULTICHUNK_SERVER_CLEAN_NEEDLE: &str =
-    "survival_world_multichunk_clean_shutdown username=compatbot storage=isolated shutdown=graceful";
-const SURVIVAL_WORLD_MULTICHUNK_SERVER_RESTART_NEEDLE: &str =
-    "survival_world_multichunk_backend_restart username=compatbot method=controlled_reload storage=isolated restart_confirmed=true";
-const SURVIVAL_WORLD_MULTICHUNK_SERVER_POST_NEEDLE: &str =
-    "survival_world_multichunk_post_restart_observe username=compatbot primary=present secondary=present auxiliary_marker_only=false";
-const SURVIVAL_WORLD_MULTICHUNK_SERVER_STATE_NEEDLE: &str =
-    "survival_world_multichunk_state username=compatbot chunks=0,0;2,0 primary=present secondary=present controlled_reload=true post_observed=true auxiliary_marker_only=false dirty_reuse=false";
-const SURVIVAL_CONTAINER_BLOCK_ENTITY_CLIENT_OPEN_NEEDLE: &str =
-    "survival_container_block_entity_open_seen window=1 kind=Barrel position=34,64,0";
-const SURVIVAL_CONTAINER_BLOCK_ENTITY_CLIENT_TRANSFER_NEEDLE: &str =
-    "survival_container_block_entity_transfer_sent window=1 slot=0 item=Dirt count=1";
-const SURVIVAL_CONTAINER_BLOCK_ENTITY_CLIENT_PAYLOAD_NEEDLE: &str =
-    "survival_container_block_entity_payload_seen summary=slot0:Dirt:1";
-const SURVIVAL_CONTAINER_BLOCK_ENTITY_CLIENT_METADATA_NEEDLE: &str =
-    "survival_container_block_entity_metadata_seen summary=custom_name:MC Compat Barrel";
-const SURVIVAL_CONTAINER_BLOCK_ENTITY_CLIENT_REOPEN_NEEDLE: &str =
-    "survival_container_block_entity_reopen_seen window=1 kind=Barrel position=34,64,0 payload=slot0:Dirt:1";
-const SURVIVAL_CONTAINER_BLOCK_ENTITY_SERVER_OPEN_NEEDLE: &str =
-    "survival_container_block_entity_open username=compatbot window=1 kind=Barrel position=34,64,0";
-const SURVIVAL_CONTAINER_BLOCK_ENTITY_SERVER_TRANSFER_NEEDLE: &str =
-    "survival_container_block_entity_transfer username=compatbot window=1 slot=0 item=Dirt count=1";
-const SURVIVAL_CONTAINER_BLOCK_ENTITY_SERVER_PAYLOAD_NEEDLE: &str =
-    "survival_container_block_entity_payload username=compatbot summary=slot0:Dirt:1";
-const SURVIVAL_CONTAINER_BLOCK_ENTITY_SERVER_METADATA_NEEDLE: &str =
-    "survival_container_block_entity_metadata username=compatbot summary=custom_name:MC Compat Barrel";
-const SURVIVAL_CONTAINER_BLOCK_ENTITY_SERVER_STATE_NEEDLE: &str =
-    "survival_container_block_entity_state username=compatbot kind=Barrel position=34,64,0 transfer=Dirt:1 payload=slot0:Dirt:1 metadata=custom_name:MC Compat Barrel reopen=payload_present arbitrary_nbt=false";
-const SURVIVAL_SIGN_EDITING_CLIENT_OPEN_NEEDLE: &str =
-    "survival_sign_editing_open_seen position=28,64,0 side=front milestone=sign_editor_open_observed";
-const SURVIVAL_SIGN_EDITING_CLIENT_UPDATE_NEEDLE: &str =
-    "survival_sign_editing_update_sent position=28,64,0 side=front payload=MC|Compat|Sign|Edit milestone=sign_update_sent";
-const SURVIVAL_SIGN_EDITING_CLIENT_POST_NEEDLE: &str =
-    "survival_sign_editing_post_update_seen position=28,64,0 side=front text=MC|Compat|Sign|Edit observation=text_visible";
-const SURVIVAL_SIGN_EDITING_SERVER_OPEN_NEEDLE: &str =
-    "survival_sign_editing_open username=compatbot position=28,64,0 side=front milestone=sign_editor_open_observed";
-const SURVIVAL_SIGN_EDITING_SERVER_UPDATE_NEEDLE: &str =
-    "survival_sign_editing_update_accepted username=compatbot position=28,64,0 side=front payload=MC|Compat|Sign|Edit milestone=sign_update_accepted_observed";
-const SURVIVAL_SIGN_EDITING_SERVER_STATE_NEEDLE: &str =
-    "survival_sign_editing_state username=compatbot position=28,64,0 side=front payload=MC|Compat|Sign|Edit post_update=text_visible arbitrary_sign_ui=false";
 const SURVIVAL_WORLD_MULTICHUNK_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_MULTICHUNK_PROBE";
 const SURVIVAL_WORLD_MULTICHUNK_SESSION_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_MULTICHUNK_SESSION";
 const SURVIVAL_WORLD_MULTICHUNK_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_MULTICHUNK_FIXTURE";
@@ -473,24 +135,6 @@ const SURVIVAL_CONTAINER_BLOCK_ENTITY_FIXTURE_ENV: &str =
     "MC_COMPAT_SURVIVAL_CONTAINER_BLOCK_ENTITY_FIXTURE";
 const SURVIVAL_SIGN_EDITING_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_SIGN_EDITING_PROBE";
 const SURVIVAL_SIGN_EDITING_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_SIGN_EDITING_FIXTURE";
-const SURVIVAL_CRASH_RECOVERY_CLIENT_MUTATION_NEEDLE: &str =
-    "survival_crash_recovery_mutation_sent block=Dirt position=24,64,0 slot=36";
-const SURVIVAL_CRASH_RECOVERY_CLIENT_PRE_CRASH_NEEDLE: &str =
-    "survival_crash_recovery_pre_crash_update block=Dirt position=24,64,0";
-const SURVIVAL_CRASH_RECOVERY_CLIENT_RECONNECT_NEEDLE: &str =
-    "survival_crash_recovery_reconnect_sent session=crash_recovery";
-const SURVIVAL_CRASH_RECOVERY_CLIENT_POST_CRASH_NEEDLE: &str =
-    "survival_crash_recovery_post_crash_update block=Dirt position=24,64,0";
-const SURVIVAL_CRASH_RECOVERY_SERVER_MUTATION_NEEDLE: &str =
-    "survival_crash_recovery_mutation username=compatbot block=Dirt position=24,64,0 persisted_before=false persisted_after=true";
-const SURVIVAL_CRASH_RECOVERY_SERVER_FORCED_STOP_NEEDLE: &str =
-    "survival_crash_recovery_forced_stop username=compatbot method=forced_stop storage=isolated graceful=false";
-const SURVIVAL_CRASH_RECOVERY_SERVER_RESTART_NEEDLE: &str =
-    "survival_crash_recovery_backend_restart username=compatbot method=crash_recovery storage=isolated restart_confirmed=true";
-const SURVIVAL_CRASH_RECOVERY_SERVER_POST_NEEDLE: &str =
-    "survival_crash_recovery_post_crash_observe username=compatbot block=Dirt position=24,64,0 persisted=true";
-const SURVIVAL_CRASH_RECOVERY_SERVER_STATE_NEEDLE: &str =
-    "survival_crash_recovery_state username=compatbot block=Dirt position=24,64,0 pre_mutation=true crash_stop=true backend_restart=true post_observed=true dirty_reuse=false";
 const SURVIVAL_WORLD_PERSISTENCE_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_PROBE";
 const SURVIVAL_WORLD_PERSISTENCE_SESSION_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_SESSION";
 const SURVIVAL_WORLD_PERSISTENCE_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_WORLD_PERSISTENCE_FIXTURE";
@@ -503,29 +147,12 @@ const SURVIVAL_BLOCK_ENTITY_SESSION_ENV: &str = "MC_COMPAT_SURVIVAL_BLOCK_ENTITY
 const SURVIVAL_BLOCK_ENTITY_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_BLOCK_ENTITY_FIXTURE";
 const SURVIVAL_BLOCK_ENTITY_DIR_ENV: &str = "MC_COMPAT_SURVIVAL_BLOCK_ENTITY_DIR";
 const SURVIVAL_BLOCK_ENTITY_PHASE_ENV: &str = "MC_COMPAT_SURVIVAL_BLOCK_ENTITY_PHASE";
-const SURVIVAL_BIOME_DIMENSION_CLIENT_STATE_NEEDLE: &str =
-    "survival_biome_dimension_state spawn_environment=minecraft:overworld environment_identifier=minecraft:overworld client_environment_update=minecraft:overworld normalized_identifier=minecraft:overworld";
-const SURVIVAL_BIOME_DIMENSION_SERVER_STATE_NEEDLE: &str =
-    "survival_biome_dimension_state username=compatbot spawn_environment=minecraft:overworld environment_identifier=minecraft:overworld server_environment_state=minecraft:overworld normalized_identifier=minecraft:overworld";
-const SURVIVAL_BIOME_DIMENSION_TRAVEL_CLIENT_ORIGIN_NEEDLE: &str =
-    "survival_biome_dimension_travel_origin dimension=minecraft:overworld biome=minecraft:plains";
-const SURVIVAL_BIOME_DIMENSION_TRAVEL_CLIENT_TRANSITION_NEEDLE: &str =
-    "survival_biome_dimension_travel_transition_sent kind=nether_portal destination=minecraft:the_nether";
-const SURVIVAL_BIOME_DIMENSION_TRAVEL_CLIENT_DESTINATION_NEEDLE: &str =
-    "survival_biome_dimension_travel_destination_seen dimension=minecraft:the_nether biome=minecraft:nether_wastes checkpoint=dimension_changed";
-const SURVIVAL_BIOME_DIMENSION_TRAVEL_SERVER_ORIGIN_NEEDLE: &str =
-    "survival_biome_dimension_travel_origin username=compatbot dimension=minecraft:overworld biome=minecraft:plains";
-const SURVIVAL_BIOME_DIMENSION_TRAVEL_SERVER_TRANSITION_NEEDLE: &str =
-    "survival_biome_dimension_travel_transition username=compatbot kind=nether_portal from=minecraft:overworld to=minecraft:the_nether";
-const SURVIVAL_BIOME_DIMENSION_TRAVEL_SERVER_STATE_NEEDLE: &str =
-    "survival_biome_dimension_travel_state username=compatbot origin_dimension=minecraft:overworld origin_biome=minecraft:plains destination_dimension=minecraft:the_nether destination_biome=minecraft:nether_wastes transition=nether_portal server_checkpoint=environment_changed";
 const SURVIVAL_BIOME_DIMENSION_PROBE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_PROBE";
 const SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_FIXTURE";
 const SURVIVAL_BIOME_DIMENSION_TRAVEL_PROBE_ENV: &str =
     "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_TRAVEL_PROBE";
 const SURVIVAL_BIOME_DIMENSION_TRAVEL_FIXTURE_ENV: &str =
     "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_TRAVEL_FIXTURE";
-const MCP_CONTROLLED_SMOKE_SCENARIO: &str = "mcp-controlled-smoke";
 const MCP_CONTROL_ENDPOINT_STDIO: &str = "stdio";
 const MCP_CONTROL_FAILURE_LIVE_EVIDENCE_MISSING: &str = "live-mcp-controlled-evidence-missing";
 const MCP_CONTROL_FAILURE_REVISION_DIRTY: &str = "stevenarella-revision-dirty";
@@ -614,11 +241,6 @@ const FRAME_ARTIFACT_NON_CLAIMS: &[&str] = &[
     "visual_regression_approval",
     "semantic_equivalence",
 ];
-const SUPPORTED_SCENARIO_USAGE: &str = "smoke|valence-compat-bot-probe|flag-score-repeat|blue-flag-score|inventory-interaction|inventory-stack-split-merge|inventory-drag-transactions|survival-break-place-pickup|survival-chest-persistence|survival-crafting-table|survival-crafting-recipe-breadth|survival-furnace-persistence|survival-furnace-smelting-breadth|survival-hunger-food|survival-hunger-health-cycle|survival-mob-drop|survival-mob-ai-loot-breadth|survival-redstone-toggle|survival-redstone-circuit-breadth|survival-world-persistence-restart|survival-world-multichunk-durability|survival-crash-recovery-parity|survival-block-entity-persistence-parity|survival-container-block-entity-breadth|survival-biome-dimension-state|survival-biome-dimension-travel|survival-sign-editing-live|mcp-controlled-smoke|combat-damage|combat-knockback|vanilla-combat-reference-parity|vanilla-combat-armor-reference-parity|armor-equipment-mitigation|armor-loadout-enchantment-status-matrix|equipment-update-observation|equipment-slot-item-matrix-expansion|projectile-hit|projectile-damage-attribution|flag-carrier-death-return|reconnect-flag-state|reconnect-flag-score|multi-client-load-score|negative-inventory-stale-state|negative-inventory-invalid-click|negative-custom-payload|negative-reconnect-race|negative-ctf-wrong-score|ctf-invalid-pickup-ownership|ctf-invalid-return-drop|ctf-invalid-opponent-base-return-drop|ctf-score-limit-win-condition|ctf-simultaneous-pickup-capture-race|ctf-spawn-team-balance-reset";
-const CTF_OPPONENT_RETURN_DROP_CLIENT_ATTEMPT_NEEDLE: &str =
-    "ctf_invalid_opponent_base_return_drop_attempted";
-const CTF_OPPONENT_RETURN_DROP_CLIENT_CONTAINED_NEEDLE: &str =
-    "ctf_invalid_opponent_base_return_drop_contained";
 const CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE: &str =
     "invalid_opponent_base_return_drop_rejected";
 const DEFAULT_SUCCESS_PATTERN: &[&str] = &[
@@ -665,28 +287,9 @@ const NEGATIVE_LIVE_RAIL_EVIDENCE_FIELDS: &[&str] = &[
     "server_forbidden_matches",
     "postcondition",
 ];
-const VANILLA_COMBAT_REFERENCE_CLIENT_COUNT_NEEDLE: &str =
-    "mc_compat_vanilla_combat_reference_client_count=2";
-const VANILLA_COMBAT_REFERENCE_DAMAGE_NEEDLE: &str = "vanilla_combat_reference_damage";
-const VANILLA_COMBAT_REFERENCE_KNOCKBACK_NEEDLE: &str = "vanilla_combat_reference_knockback";
 const VANILLA_COMBAT_REFERENCE_PROBE_ENV: &str = "MC_COMPAT_VANILLA_COMBAT_REFERENCE_PROBE";
 const VANILLA_COMBAT_ARMOR_REFERENCE_PROBE_ENV: &str =
     "MC_COMPAT_VANILLA_COMBAT_ARMOR_REFERENCE_PROBE";
-const VANILLA_COMBAT_ARMOR_REFERENCE_HEALTH_NEEDLE: &str = "update_health health=15.3";
-const CTF_SCORE_LIMIT_CLIENT_WIN_NEEDLE: &str = "ctf_score_limit_win_seen score_limit=2 winning_team=red red_score=2 blue_score=0 end_state=winner_declared duplicate_win=false";
-const CTF_SCORE_LIMIT_SERVER_PRE_STATE_NEEDLE: &str = "score_limit_pre_state score_limit=2 red_score=1 blue_score=0 next_capture_team=Red outcome=one_capture_before_win";
-const CTF_SCORE_LIMIT_SERVER_FINAL_CAPTURE_NEEDLE: &str = "score_limit_final_capture username=compatbot capture_team=Red carried_flag=Blue score_limit=2 red_score_before=1 blue_score_before=0 red_score_after=2 blue_score_after=0";
-const CTF_SCORE_LIMIT_SERVER_WIN_NEEDLE: &str = "score_limit_win_condition username=compatbot winning_team=Red score_limit=2 red_score=2 blue_score=0 end_state=winner_declared win_emissions=1 duplicate_win=false post_win_score_delta=0";
-const CTF_RACE_CLIENT_COUNT_NEEDLE: &str = "mc_compat_ctf_race_client_count=2";
-const CTF_RACE_ACCEPTED_SERVER_NEEDLE: &str = "ctf_race_accepted_transition username=compatbotb player_team=Red flag_team=Blue transition=pickup";
-const CTF_RACE_REJECTED_SERVER_NEEDLE: &str = "ctf_race_rejected_transition username=compatbota player_team=Red flag_team=Blue transition=duplicate_pickup";
-const CTF_RACE_FINAL_SERVER_NEEDLE: &str = "ctf_race_final_state capture_username=compatbotb accepted_username=compatbotb rejected_username=compatbota capture_team=Red carried_flag=Blue final_blue_flag_state=at_base red_score=1 blue_score=0";
-const CTF_SPAWN_TEAM_RESET_CLIENT_COUNT_NEEDLE: &str =
-    "mc_compat_ctf_spawn_team_reset_client_count=2";
-const CTF_SPAWN_TEAM_RED_ASSIGNMENT_NEEDLE: &str = "ctf_spawn_team_assignment username=compatbota team=Red red_count=1 blue_count=0 spawn_x=-40.0 spawn_y=65.0 spawn_z=0.0 slot36=WoodenSword:1 slot37=RedWool:64";
-const CTF_SPAWN_TEAM_BLUE_ASSIGNMENT_NEEDLE: &str = "ctf_spawn_team_assignment username=compatbotb team=Blue red_count=1 blue_count=1 spawn_x=40.0 spawn_y=65.0 spawn_z=0.0 slot36=WoodenSword:1 slot37=BlueWool:64";
-const CTF_SPAWN_TEAM_BALANCE_NEEDLE: &str = "ctf_spawn_team_balance red_count=1 blue_count=1 selected_teams=compatbota:Red,compatbotb:Blue outcome=balanced";
-const CTF_SPAWN_RESOURCE_RESET_NEEDLE: &str = "ctf_spawn_resource_reset_state trigger=score capture_username=compatbota capture_team=Red carried_flag=Blue red_count=1 blue_count=1 red_score=1 blue_score=0 red_spawn=-40.0,65.0,0.0 blue_spawn=40.0,65.0,0.0 slot36=WoodenSword:1 slot37=TeamWool:64 reset_state=scoreboard_flags_and_resources_coherent";
 const ARMOR_MATRIX_ROW_ID: &str = "chest_diamond_none_none_melee";
 const ARMOR_MATRIX_LOADOUT_ID: &str = "armor_loadout_chest_only";
 const ARMOR_MATRIX_EQUIPMENT_SLOT: &str = "chest=DiamondChestplate";
@@ -741,6 +344,69 @@ enum Mode {
 enum ServerBackend {
     Valence,
     Paper,
+}
+
+const SCENARIO_ROUTER_COMMAND: &str = "scenario";
+const SCENARIO_ROUTER_RUN_SUBCOMMAND: &str = "run";
+const SCENARIO_ROUTER_BACKEND_FLAG: &str = "--backend";
+const SCENARIO_ROUTER_SERVER_BACKEND_FLAG: &str = "--server-backend";
+const SCENARIO_ROUTER_RECEIPT_FLAG: &str = "--receipt";
+const SCENARIO_ROUTER_FAILURE_BUNDLE_FLAG: &str = "--failure-bundle";
+const SCENARIO_ROUTER_TIMEOUT_FLAG: &str = "--timeout";
+const SCENARIO_ROUTER_PACKET_CAPTURE_FLAG: &str = "--packet-capture-summary";
+const SCENARIO_ROUTER_PROXY_ROUTE_FLAG: &str = "--proxy-route";
+const SCENARIO_ROUTER_PROXY_FORWARDING_MODE_FLAG: &str = "--proxy-forwarding-mode";
+const SCENARIO_ROUTER_DRY_RUN_FLAG: &str = "--dry-run";
+const SCENARIO_ROUTER_RUN_FLAG: &str = "--run";
+const SCENARIO_ROUTER_LIVE_FLAG: &str = "--live";
+const SCENARIO_ROUTER_RECEIPT_EQUALS_PREFIX: &str = "--receipt=";
+const SCENARIO_ROUTER_FAILURE_BUNDLE_EQUALS_PREFIX: &str = "--failure-bundle=";
+const SCENARIO_ROUTER_TIMEOUT_EQUALS_PREFIX: &str = "--timeout=";
+const SCENARIO_ROUTER_BACKEND_EQUALS_PREFIX: &str = "--backend=";
+const SCENARIO_ROUTER_SERVER_BACKEND_EQUALS_PREFIX: &str = "--server-backend=";
+const SCENARIO_ROUTER_PROXY_ROUTE_EQUALS_PREFIX: &str = "--proxy-route=";
+const SCENARIO_ROUTER_PROXY_FORWARDING_MODE_EQUALS_PREFIX: &str = "--proxy-forwarding-mode=";
+const SCENARIO_ROUTER_LEGACY_SCENARIO_FLAG: &str = "--scenario";
+const SCENARIO_ROUTER_LEGACY_SCENARIO_EQUALS_PREFIX: &str = "--scenario=";
+const SCENARIO_ROUTER_SUBCOMMAND_INDEX: usize = 1;
+const SCENARIO_ROUTER_SCENARIO_INDEX: usize = 2;
+const SCENARIO_ROUTER_OPTION_START_INDEX: usize = 3;
+const SCENARIO_ROUTER_MISSING_VALUE: &str = "missing value";
+const SCENARIO_ROUTER_NON_CLAIM_BROAD_COMPATIBILITY: &str = "broad_minecraft_compatibility_false";
+const SCENARIO_ROUTER_NON_CLAIM_PRODUCTION_READINESS: &str = "production_readiness_false";
+const SCENARIO_ROUTER_NON_CLAIM_SEMANTIC_EQUIVALENCE: &str = "semantic_equivalence_false";
+const SCENARIO_ROUTER_NON_CLAIMS: &[&str] = &[
+    SCENARIO_ROUTER_NON_CLAIM_BROAD_COMPATIBILITY,
+    SCENARIO_ROUTER_NON_CLAIM_PRODUCTION_READINESS,
+    SCENARIO_ROUTER_NON_CLAIM_SEMANTIC_EQUIVALENCE,
+];
+const SCENARIO_ROUTER_BLOCKED_COMMAND_FLAGS: &[&str] = &[
+    "--run-matrix",
+    "--build-client",
+    "--status-only",
+    "--status",
+    "--cleanup",
+    "--stop",
+    "--compare-receipts",
+];
+const SCENARIO_ROUTER_BLOCKED_OVERCLAIM_FLAGS: &[&str] = &[
+    "--claim-full-compatibility",
+    "--claim-production-readiness",
+    "--claim-semantic-equivalence",
+];
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct ScenarioRouteRequest {
+    scenario: Scenario,
+    backend: ServerBackend,
+    mode: Mode,
+    receipt_path: Option<PathBuf>,
+    timeout_secs: Option<u64>,
+    packet_capture_summary: bool,
+    proxy_route: Option<String>,
+    proxy_forwarding_mode: Option<String>,
+    failure_bundle_path: Option<PathBuf>,
+    passthrough_args: Vec<String>,
 }
 
 const VALENCE_DEFAULT_SERVER_PORT: u16 = 25565;
@@ -1162,6 +828,7 @@ struct Config {
     negative_public_target: bool,
     negative_external_authorized: bool,
     arrow_damage_policy: runtime_config::ArrowDamagePolicy,
+    scenario_route: Option<ScenarioRouteRequest>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -1734,6 +1401,232 @@ fn validate_negative_live_rail_preflight(cfg: &Config) -> Result<(), String> {
     ))
 }
 
+fn parse_scenario_route_request(args: &[String]) -> Result<Option<ScenarioRouteRequest>, String> {
+    let Some(command) = args.first() else {
+        return Ok(None);
+    };
+    if command != SCENARIO_ROUTER_COMMAND {
+        return Ok(None);
+    }
+    let subcommand = args
+        .get(SCENARIO_ROUTER_SUBCOMMAND_INDEX)
+        .ok_or_else(|| scenario_router_usage_error("missing subcommand"))?;
+    if subcommand != SCENARIO_ROUTER_RUN_SUBCOMMAND {
+        return Err(scenario_router_usage_error(&format!(
+            "unknown subcommand: {subcommand}"
+        )));
+    }
+    let scenario_value = args
+        .get(SCENARIO_ROUTER_SCENARIO_INDEX)
+        .ok_or_else(|| scenario_router_usage_error("missing scenario"))?;
+    let scenario = parse_scenario(scenario_value)?;
+    parse_scenario_route_options(scenario, &args[SCENARIO_ROUTER_OPTION_START_INDEX..])
+}
+
+fn parse_scenario_route_options(
+    scenario: Scenario,
+    args: &[String],
+) -> Result<Option<ScenarioRouteRequest>, String> {
+    let mut request = ScenarioRouteRequest {
+        scenario,
+        backend: ServerBackend::Valence,
+        mode: Mode::DryRun,
+        receipt_path: None,
+        timeout_secs: None,
+        packet_capture_summary: false,
+        proxy_route: None,
+        proxy_forwarding_mode: None,
+        failure_bundle_path: None,
+        passthrough_args: Vec::new(),
+    };
+    let mut iter = args.iter();
+    while let Some(arg) = iter.next() {
+        if let Some(overclaim) = blocked_scenario_route_overclaim_flag(arg) {
+            return Err(format!(
+                "scenario router rejects overclaiming option {overclaim}; broad compatibility, production readiness, and semantic equivalence claims remain false"
+            ));
+        }
+        if SCENARIO_ROUTER_BLOCKED_COMMAND_FLAGS.contains(&arg.as_str()) {
+            return Err(format!(
+                "scenario router blocks non-scenario command option {arg}; use mc-compat-runner {SCENARIO_ROUTER_COMMAND} {SCENARIO_ROUTER_RUN_SUBCOMMAND} <scenario>"
+            ));
+        }
+        match arg.as_str() {
+            SCENARIO_ROUTER_DRY_RUN_FLAG => request.mode = Mode::DryRun,
+            SCENARIO_ROUTER_RUN_FLAG | SCENARIO_ROUTER_LIVE_FLAG => request.mode = Mode::Run,
+            SCENARIO_ROUTER_BACKEND_FLAG | SCENARIO_ROUTER_SERVER_BACKEND_FLAG => {
+                let value = scenario_route_option_value(arg, iter.next())?;
+                request.backend = parse_backend(value)?;
+            }
+            SCENARIO_ROUTER_RECEIPT_FLAG => {
+                let value = scenario_route_option_value(arg, iter.next())?;
+                request.receipt_path = Some(parse_scenario_route_receipt_path(value)?);
+            }
+            SCENARIO_ROUTER_FAILURE_BUNDLE_FLAG => {
+                let value = scenario_route_option_value(arg, iter.next())?;
+                request.failure_bundle_path =
+                    Some(parse_scenario_route_failure_bundle_path(value)?);
+            }
+            SCENARIO_ROUTER_TIMEOUT_FLAG => {
+                let value = scenario_route_option_value(arg, iter.next())?;
+                request.timeout_secs = Some(parse_client_timeout_secs(
+                    value,
+                    SCENARIO_ROUTER_TIMEOUT_FLAG,
+                )?);
+            }
+            SCENARIO_ROUTER_PACKET_CAPTURE_FLAG => request.packet_capture_summary = true,
+            SCENARIO_ROUTER_PROXY_ROUTE_FLAG => {
+                let value = scenario_route_option_value(arg, iter.next())?;
+                request.proxy_route = Some(value.to_string());
+            }
+            SCENARIO_ROUTER_PROXY_FORWARDING_MODE_FLAG => {
+                let value = scenario_route_option_value(arg, iter.next())?;
+                request.proxy_forwarding_mode = Some(value.to_string());
+            }
+            SCENARIO_ROUTER_LEGACY_SCENARIO_FLAG => {
+                return Err("scenario router takes the scenario as a positional argument; do not also pass --scenario".to_string());
+            }
+            _ if arg.starts_with(SCENARIO_ROUTER_LEGACY_SCENARIO_EQUALS_PREFIX) => {
+                return Err("scenario router takes the scenario as a positional argument; do not also pass --scenario".to_string());
+            }
+            _ if arg.starts_with(SCENARIO_ROUTER_BACKEND_EQUALS_PREFIX) => {
+                let value = &arg[SCENARIO_ROUTER_BACKEND_EQUALS_PREFIX.len()..];
+                request.backend = parse_backend(value)?;
+            }
+            _ if arg.starts_with(SCENARIO_ROUTER_SERVER_BACKEND_EQUALS_PREFIX) => {
+                let value = &arg[SCENARIO_ROUTER_SERVER_BACKEND_EQUALS_PREFIX.len()..];
+                request.backend = parse_backend(value)?;
+            }
+            _ if arg.starts_with(SCENARIO_ROUTER_RECEIPT_EQUALS_PREFIX) => {
+                let value = &arg[SCENARIO_ROUTER_RECEIPT_EQUALS_PREFIX.len()..];
+                request.receipt_path = Some(parse_scenario_route_receipt_path(value)?);
+            }
+            _ if arg.starts_with(SCENARIO_ROUTER_FAILURE_BUNDLE_EQUALS_PREFIX) => {
+                let value = &arg[SCENARIO_ROUTER_FAILURE_BUNDLE_EQUALS_PREFIX.len()..];
+                request.failure_bundle_path =
+                    Some(parse_scenario_route_failure_bundle_path(value)?);
+            }
+            _ if arg.starts_with(SCENARIO_ROUTER_TIMEOUT_EQUALS_PREFIX) => {
+                let value = &arg[SCENARIO_ROUTER_TIMEOUT_EQUALS_PREFIX.len()..];
+                request.timeout_secs = Some(parse_client_timeout_secs(
+                    value,
+                    SCENARIO_ROUTER_TIMEOUT_FLAG,
+                )?);
+            }
+            _ if arg.starts_with(SCENARIO_ROUTER_PROXY_ROUTE_EQUALS_PREFIX) => {
+                request.proxy_route =
+                    Some(arg[SCENARIO_ROUTER_PROXY_ROUTE_EQUALS_PREFIX.len()..].to_string());
+            }
+            _ if arg.starts_with(SCENARIO_ROUTER_PROXY_FORWARDING_MODE_EQUALS_PREFIX) => {
+                request.proxy_forwarding_mode = Some(
+                    arg[SCENARIO_ROUTER_PROXY_FORWARDING_MODE_EQUALS_PREFIX.len()..].to_string(),
+                );
+            }
+            _ => request.passthrough_args.push(arg.clone()),
+        }
+    }
+    Ok(Some(request))
+}
+
+fn scenario_route_option_value<'a>(
+    flag: &str,
+    value: Option<&'a String>,
+) -> Result<&'a str, String> {
+    value
+        .map(String::as_str)
+        .ok_or_else(|| format!("{flag} requires a value; got {SCENARIO_ROUTER_MISSING_VALUE}"))
+}
+
+fn parse_scenario_route_receipt_path(value: &str) -> Result<PathBuf, String> {
+    let path = PathBuf::from(value);
+    validate_scenario_route_output_path(&path, "receipt path")?;
+    Ok(path)
+}
+
+fn parse_scenario_route_failure_bundle_path(value: &str) -> Result<PathBuf, String> {
+    let path = PathBuf::from(value);
+    validate_scenario_route_output_path(&path, "failure bundle path")?;
+    Ok(path)
+}
+
+fn validate_scenario_route_output_path(path: &Path, label: &str) -> Result<(), String> {
+    if path.as_os_str().is_empty() {
+        return Err(format!("scenario router {label} is empty"));
+    }
+    if path
+        .components()
+        .any(|component| matches!(component, std::path::Component::ParentDir))
+    {
+        return Err(format!(
+            "scenario router {label} contains parent traversal: {}",
+            path.display()
+        ));
+    }
+    Ok(())
+}
+
+fn blocked_scenario_route_overclaim_flag(arg: &str) -> Option<&'static str> {
+    SCENARIO_ROUTER_BLOCKED_OVERCLAIM_FLAGS
+        .iter()
+        .copied()
+        .find(|flag| {
+            arg == *flag
+                || arg
+                    .strip_prefix(*flag)
+                    .is_some_and(|rest| rest.starts_with('='))
+        })
+}
+
+fn scenario_router_usage_error(reason: &str) -> String {
+    format!(
+        "scenario router usage error: {reason}; expected mc-compat-runner {SCENARIO_ROUTER_COMMAND} {SCENARIO_ROUTER_RUN_SUBCOMMAND} <scenario> [{SCENARIO_ROUTER_DRY_RUN_FLAG}|{SCENARIO_ROUTER_RUN_FLAG}|{SCENARIO_ROUTER_LIVE_FLAG}] [{SCENARIO_ROUTER_BACKEND_FLAG} valence|paper] [{SCENARIO_ROUTER_RECEIPT_FLAG} PATH] [{SCENARIO_ROUTER_TIMEOUT_FLAG} SECS]"
+    )
+}
+
+fn scenario_route_legacy_args(route: &ScenarioRouteRequest) -> Vec<String> {
+    let mut args = Vec::new();
+    args.push(format!("--{}", mode_name(route.mode)));
+    args.push(SCENARIO_ROUTER_SERVER_BACKEND_FLAG.to_string());
+    args.push(backend_name(route.backend).to_string());
+    args.push(SCENARIO_ROUTER_LEGACY_SCENARIO_FLAG.to_string());
+    args.push(scenario_name(route.scenario).to_string());
+    if let Some(path) = &route.receipt_path {
+        args.push(SCENARIO_ROUTER_RECEIPT_FLAG.to_string());
+        args.push(path.display().to_string());
+    }
+    if let Some(path) = &route.failure_bundle_path {
+        args.push(SCENARIO_ROUTER_FAILURE_BUNDLE_FLAG.to_string());
+        args.push(path.display().to_string());
+    }
+    if let Some(timeout_secs) = route.timeout_secs {
+        args.push(SCENARIO_ROUTER_TIMEOUT_FLAG.to_string());
+        args.push(timeout_secs.to_string());
+    }
+    if route.packet_capture_summary {
+        args.push(SCENARIO_ROUTER_PACKET_CAPTURE_FLAG.to_string());
+    }
+    if let Some(proxy_route) = &route.proxy_route {
+        args.push(SCENARIO_ROUTER_PROXY_ROUTE_FLAG.to_string());
+        args.push(proxy_route.clone());
+    }
+    if let Some(proxy_forwarding_mode) = &route.proxy_forwarding_mode {
+        args.push(SCENARIO_ROUTER_PROXY_FORWARDING_MODE_FLAG.to_string());
+        args.push(proxy_forwarding_mode.clone());
+    }
+    args.extend(route.passthrough_args.clone());
+    args
+}
+
+fn parse_client_timeout_secs(value: &str, flag: &str) -> Result<u64, String> {
+    let timeout_secs = value
+        .parse::<u64>()
+        .map_err(|err| format!("parse {flag}: {err}"))?;
+    if timeout_secs == 0 {
+        return Err(format!("{flag} must be greater than zero"));
+    }
+    Ok(timeout_secs)
+}
+
 impl Config {
     fn defaults(root: PathBuf) -> Result<Self, String> {
         let source_layout = resolve_repository_layout(&root, LayoutResolutionMode::AllowMissing)?;
@@ -1780,6 +1673,7 @@ impl Config {
             negative_public_target: false,
             negative_external_authorized: false,
             arrow_damage_policy: default_arrow_damage_policy(),
+            scenario_route: None,
             root,
         })
     }
@@ -1798,6 +1692,11 @@ impl Config {
         F: FnMut(&str) -> Option<String>,
     {
         let args_vec: Vec<String> = args.into_iter().collect();
+        let scenario_route = parse_scenario_route_request(&args_vec)?;
+        let args_vec = scenario_route
+            .as_ref()
+            .map(scenario_route_legacy_args)
+            .unwrap_or(args_vec);
         let root = get_env("MC_COMPAT_ROOT")
             .or_else(|| get_env("ROOT"))
             .map(PathBuf::from)
@@ -1902,6 +1801,13 @@ impl Config {
                             "--failure-bundle requires a path".to_string()
                         })?));
                 }
+                "--timeout" => {
+                    let value = args
+                        .next()
+                        .ok_or_else(|| "--timeout requires seconds".to_string())?;
+                    cfg.client_timeout =
+                        Duration::from_secs(parse_client_timeout_secs(&value, "--timeout")?);
+                }
                 "--scenario" => {
                     let value = args.next().ok_or_else(|| {
                         format!("--scenario requires one of: {SUPPORTED_SCENARIO_USAGE}")
@@ -1982,6 +1888,12 @@ impl Config {
                 _ if arg.starts_with("--failure-bundle=") => {
                     cfg.failure_bundle_path = Some(PathBuf::from(&arg[17..]));
                 }
+                _ if arg.starts_with("--timeout=") => {
+                    cfg.client_timeout = Duration::from_secs(parse_client_timeout_secs(
+                        &arg[SCENARIO_ROUTER_TIMEOUT_EQUALS_PREFIX.len()..],
+                        "--timeout",
+                    )?);
+                }
                 _ if arg.starts_with("--scenario=") => {
                     cfg.scenario = parse_scenario(&arg[11..])?;
                 }
@@ -2023,6 +1935,7 @@ impl Config {
         if cfg.mode == Mode::RunMatrix && cfg.receipt_path.is_some() {
             return Err("--run-matrix writes backend receipts under --receipt-dir; do not combine it with --receipt/SMOKE_RECEIPT".to_string());
         }
+        cfg.scenario_route = scenario_route;
         Ok(cfg)
     }
 }
@@ -4873,11 +4786,12 @@ fn format_one_decimal(value: f64) -> String {
 
 fn print_usage(cfg: &Config) {
     println!(
-        "Usage: mc-compat-runner [--config PATH] [--steel-config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario {}] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--failure-bundle PATH] [--valence-repo PATH] [--valence-rev REV]\n\n\
+        "Usage: mc-compat-runner [--config PATH] [--steel-config PATH] [--dry-run|--run|--run-matrix] [--build-client] [--status-only] [--status] [--cleanup [--dry-run|--apply]] [--stop] [--compare-receipts PAPER_RECEIPT VALENCE_RECEIPT] [--scenario {}] [--keep-server] [--server-backend valence|paper] [--client-dir PATH] [--receipt PATH] [--receipt-dir DIR] [--failure-bundle PATH] [--timeout SECS] [--valence-repo PATH] [--valence-rev REV]\n  mc-compat-runner scenario run <scenario> [--dry-run|--run|--live] [--backend valence|paper] [--receipt PATH] [--timeout SECS] [--packet-capture-summary] [--proxy-route ROUTE] [--proxy-forwarding-mode MODE] [runner options...]\n\n\
 Automates a local Stevenarella compatibility smoke against a Minecraft {} / protocol {} server.\n\
 Default client source is the core Stevenarella client tree resolved from ./clients/stevenarella; pass --client-dir/CLIENT_DIR to use another source tree.\n\
 Pass --config/MC_COMPAT_CONFIG a JSON file exported from legacy Nickel config, or --steel-config/MC_COMPAT_STEEL_CONFIG a restricted Steel module; env vars and later CLI flags override either config source.\n\
 Pass --receipt/SMOKE_RECEIPT to write a machine-readable mc.compat.scenario.receipt.v2 JSON receipt for Cairn/Octet evidence flows. Pass --failure-bundle/MC_COMPAT_FAILURE_BUNDLE with a docs/evidence path to write a fail-only diagnostic bundle after failed runs.
+Use `scenario run <scenario>` for the typed router form; it normalizes scenario, backend, dry-run/live mode, receipt, timeout, and evidence options before launching processes or writing artifacts, and it rejects broad compatibility, production, or semantic-equivalence claim flags.
 Use --scenario valence-compat-bot-probe for a bounded one-client Valence probe with status/login/render milestones and safe non-load receipt fields. Use --scenario flag-score-repeat to require explicit protocol/login/render/team/flag/two-score milestones and forbidden-pattern checks. Use --scenario blue-flag-score to exercise the mirrored BLUE-team flag path. Use --scenario survival-break-place-pickup for the bounded survival fixture. Use --scenario survival-chest-persistence for the two-session chest open/store/close/reconnect/reopen probe. Use --scenario survival-crafting-table for one crafting-table open/input/result/collect rail. Use --scenario survival-crafting-recipe-breadth for one bounded shaped/shapeless/invalid recipe breadth rail. Use --scenario survival-furnace-persistence for one furnace input/fuel/output/reconnect rail. Use --scenario survival-furnace-smelting-breadth for one bounded raw-iron/coal smelt plus invalid-fuel rejection rail. Use --scenario survival-hunger-food for one hunger deficit, food consume, and inventory decrement rail. Use --scenario survival-hunger-health-cycle for the isolated bounded health-cycle row using explicit food, saturation, health recovery, and inventory checkpoints. Use --scenario survival-mob-drop for one configured mob kill, drop, pickup, and inventory increment rail. Use --scenario survival-redstone-toggle for one configured control on/off output update rail. Use --scenario survival-world-persistence-restart for one configured block mutation, controlled reload, reconnect, and post-reload observation rail. Use --scenario survival-crash-recovery-parity for one configured block mutation, forced backend stop, crash-recovery restart, reconnect, and post-crash observation rail. Use --scenario survival-block-entity-persistence-parity for one configured sign block entity, controlled reload, reconnect, and post-reload sign text observation rail. Use --scenario survival-biome-dimension-state for one client-observed dimension/world identifier rail. Use --scenario mcp-controlled-smoke for deterministic MCP receipt/checker dry-run evidence before live client driving. Use --scenario vanilla-combat-armor-reference-parity for one Paper/Valence diamond-chestplate combat reference row. Use --scenario reconnect-flag-state to require disconnect/return state coherence while holding a flag. Use --scenario ctf-invalid-pickup-ownership for one contained own-flag pickup attempt with server rejection evidence. Use --scenario ctf-invalid-return-drop for one contained own-base return/drop attempt with server rejection evidence. Use --scenario ctf-invalid-opponent-base-return-drop for one contained opponent-base return/drop attempt with server rejection evidence. Use --scenario ctf-score-limit-win-condition for one near-limit capture that emits exactly one win/end milestone. Use --scenario ctf-simultaneous-pickup-capture-race for one bounded two-client same-flag race with one accepted transition and one rejected duplicate pickup. Use --scenario ctf-spawn-team-balance-reset for one bounded two-client team assignment, spawn/resource, and post-score reset row. Use --scenario reconnect-flag-score to add reconnect evidence; use --scenario multi-client-load-score for two concurrent clients plus server-side correlation.\n\
 Use --expect-status-description/--expect-status-version/--expect-status-sample to assert status response fixture data, --packet-capture-summary for redacted capture summary metadata, and --proxy-route/--proxy-forwarding-mode for proxied-route receipt fields.\n\
 Use --compare-receipts PAPER_RECEIPT VALENCE_RECEIPT to check the fallback/control and default-backend receipts agree on protocol and headless isolation.\n\
@@ -6947,6 +6861,7 @@ struct HarnessPlan {
     artifacts: ArtifactCollectionPlan,
     cleanup: CleanupPlan,
     matrix: Option<MatrixPlan>,
+    scenario_route: Option<ScenarioRoutePlan>,
     non_claims: Vec<String>,
 }
 
@@ -7018,12 +6933,27 @@ struct MatrixPlan {
     valence_receipt: String,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct ScenarioRoutePlan {
+    scenario: String,
+    backend: String,
+    mode: String,
+    receipt_path: Option<String>,
+    timeout_secs: u64,
+    packet_capture_summary: bool,
+    proxy_route: Option<String>,
+    proxy_forwarding_mode: Option<String>,
+    failure_bundle_path: Option<String>,
+    non_claims: Vec<String>,
+}
+
 fn harness_plan_from_config(cfg: &Config) -> Result<HarnessPlan, Vec<PlanningDiagnostic>> {
     let mut diagnostics = Vec::new();
     let receipt = receipt_output_plan_from_config(cfg, &mut diagnostics);
     let artifacts = artifact_collection_plan_from_config(cfg, &mut diagnostics);
     let cleanup = cleanup_plan_from_config(cfg, &mut diagnostics);
     let matrix = matrix_plan_from_config(cfg, &mut diagnostics);
+    let scenario_route = scenario_route_plan_from_config(cfg);
     let plan = HarnessPlan {
         server: server_startup_plan_from_config(cfg),
         client_sessions: client_session_plans_from_config(cfg),
@@ -7031,7 +6961,8 @@ fn harness_plan_from_config(cfg: &Config) -> Result<HarnessPlan, Vec<PlanningDia
         artifacts,
         cleanup,
         matrix,
-        non_claims: vec![PLAN_NON_CLAIM_ARCHITECTURE_ONLY.to_string()],
+        scenario_route,
+        non_claims: harness_plan_non_claims(),
     };
     if diagnostics.is_empty() {
         Ok(plan)
@@ -7230,6 +7161,38 @@ fn matrix_plan_from_config(
     })
 }
 
+fn scenario_route_plan_from_config(cfg: &Config) -> Option<ScenarioRoutePlan> {
+    cfg.scenario_route.as_ref()?;
+    Some(ScenarioRoutePlan {
+        scenario: scenario_name(cfg.scenario).to_string(),
+        backend: backend_name(cfg.server_backend).to_string(),
+        mode: mode_name(cfg.mode).to_string(),
+        receipt_path: cfg.receipt_path.as_ref().map(|path| display_path(path)),
+        timeout_secs: cfg.client_timeout.as_secs(),
+        packet_capture_summary: cfg.packet_capture_summary,
+        proxy_route: cfg.proxy_route.clone(),
+        proxy_forwarding_mode: cfg.proxy_forwarding_mode.clone(),
+        failure_bundle_path: cfg
+            .failure_bundle_path
+            .as_ref()
+            .map(|path| display_path(path)),
+        non_claims: scenario_route_non_claims(),
+    })
+}
+
+fn scenario_route_non_claims() -> Vec<String> {
+    SCENARIO_ROUTER_NON_CLAIMS
+        .iter()
+        .map(|claim| (*claim).to_string())
+        .collect()
+}
+
+fn harness_plan_non_claims() -> Vec<String> {
+    let mut non_claims = vec![PLAN_NON_CLAIM_ARCHITECTURE_ONLY.to_string()];
+    non_claims.extend(scenario_route_non_claims());
+    non_claims
+}
+
 fn validate_reviewable_plan_path(
     diagnostics: &mut Vec<PlanningDiagnostic>,
     field: &str,
@@ -7341,6 +7304,26 @@ fn log_harness_plan(plan: &HarnessPlan) {
         plan.server.protocol,
         plan.client_sessions.len()
     ));
+    if let Some(route) = &plan.scenario_route {
+        log(format_args!(
+            "typed scenario route: scenario '{}' backend {} mode {} receipt {} timeout {}s packet_capture_summary={} proxy_route={} proxy_forwarding_mode={} non_claims={}",
+            route.scenario,
+            route.backend,
+            route.mode,
+            route
+                .receipt_path
+                .as_deref()
+                .unwrap_or("<unset>"),
+            route.timeout_secs,
+            route.packet_capture_summary,
+            route.proxy_route.as_deref().unwrap_or("<unset>"),
+            route
+                .proxy_forwarding_mode
+                .as_deref()
+                .unwrap_or("<unset>"),
+            route.non_claims.join(",")
+        ));
+    }
 }
 
 fn plan_backend_display_name(backend: &str) -> &str {
@@ -9642,23 +9625,6 @@ fn enriched_triage_json(triage: &EnrichedTriage) -> String {
     )
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-struct ReceiptSummary {
-    path: PathBuf,
-    schema: String,
-    status: String,
-    dry_run: bool,
-    backend: String,
-    protocol: u32,
-    port: u16,
-    classification: String,
-    matched_success_pattern: Option<String>,
-    xvfb: bool,
-    x11_backend: bool,
-    software_gl: bool,
-    wayland_socket_inherited: bool,
-}
-
 fn run_matrix(cfg: &Config, plan: &MatrixPlan) -> Result<(), String> {
     let receipt_dir = PathBuf::from(&plan.receipt_dir);
     fs::create_dir_all(&receipt_dir)
@@ -9759,127 +9725,6 @@ fn read_receipt_summary(path: &Path) -> Result<ReceiptSummary, String> {
     let text =
         fs::read_to_string(path).map_err(|e| format!("read receipt {}: {e}", path.display()))?;
     read_receipt_summary_from_text(path.to_path_buf(), &text)
-}
-
-fn read_receipt_summary_from_text(path: PathBuf, text: &str) -> Result<ReceiptSummary, String> {
-    Ok(ReceiptSummary {
-        path,
-        schema: json_string_field(text, "schema")?,
-        status: json_string_field(text, "status")?,
-        dry_run: json_bool_field(text, "dry_run")?,
-        backend: json_object_string_field(text, "server", "backend")?,
-        protocol: json_object_u32_field(text, "server", "protocol")?,
-        port: json_object_u32_field(text, "server", "port")? as u16,
-        classification: json_object_string_field(text, "client", "classification")?,
-        matched_success_pattern: json_object_optional_string_field(
-            text,
-            "client",
-            "matched_success_pattern",
-        )?,
-        xvfb: json_object_bool_field(text, "headless_isolation", "xvfb")?,
-        x11_backend: json_object_bool_field(text, "headless_isolation", "x11_backend")?,
-        software_gl: json_object_bool_field(text, "headless_isolation", "software_gl")?,
-        wayland_socket_inherited: json_object_bool_field(
-            text,
-            "headless_isolation",
-            "wayland_socket_inherited",
-        )?,
-    })
-}
-
-fn validate_receipt_pair(
-    left: &ReceiptSummary,
-    right: &ReceiptSummary,
-    expected_protocol: u32,
-) -> Result<(), String> {
-    validate_receipt_summary(left)?;
-    validate_receipt_summary(right)?;
-    let backends = [left.backend.as_str(), right.backend.as_str()];
-    if !(backends.contains(&"paper") && backends.contains(&"valence")) {
-        return Err(format!(
-            "expected one paper receipt and one valence receipt, got {} and {}",
-            left.backend, right.backend
-        ));
-    }
-    if left.protocol != right.protocol {
-        return Err(format!(
-            "receipt protocol mismatch: {} has {}, {} has {}",
-            left.path.display(),
-            left.protocol,
-            right.path.display(),
-            right.protocol
-        ));
-    }
-    if left.protocol != expected_protocol {
-        return Err(format!(
-            "expected protocol {}, got {}",
-            expected_protocol, left.protocol
-        ));
-    }
-    for receipt in [left, right] {
-        match receipt.backend.as_str() {
-            "paper" if receipt.port != 25566 => {
-                return Err(format!(
-                    "paper receipt port must be 25566, got {}",
-                    receipt.port
-                ));
-            }
-            "valence" if receipt.port != 25565 => {
-                return Err(format!(
-                    "valence receipt port must be 25565, got {}",
-                    receipt.port
-                ));
-            }
-            _ => {}
-        }
-    }
-    Ok(())
-}
-
-fn validate_receipt_summary(receipt: &ReceiptSummary) -> Result<(), String> {
-    if !matches!(
-        receipt.schema.as_str(),
-        "mc.compat.smoke.receipt.v1" | "mc.compat.scenario.receipt.v2"
-    ) {
-        return Err(format!(
-            "{} has unexpected schema {}",
-            receipt.path.display(),
-            receipt.schema
-        ));
-    }
-    if receipt.status != "pass" {
-        return Err(format!(
-            "{} did not pass; status={}",
-            receipt.path.display(),
-            receipt.status
-        ));
-    }
-    let classification_supported = matches!(
-        receipt.classification.as_str(),
-        "timeout-success-evidence" | "client-exited-success" | "multi-client-load-evidence"
-    ) || (receipt.dry_run && receipt.classification == "dry-run");
-    if !classification_supported {
-        return Err(format!(
-            "{} has unsupported client classification {}",
-            receipt.path.display(),
-            receipt.classification
-        ));
-    }
-    if receipt.matched_success_pattern.is_none() && !receipt.dry_run {
-        return Err(format!(
-            "{} is missing matched client success pattern",
-            receipt.path.display()
-        ));
-    }
-    if !(receipt.xvfb && receipt.x11_backend && receipt.software_gl)
-        || receipt.wayland_socket_inherited
-    {
-        return Err(format!(
-            "{} does not prove niri-safe headless isolation",
-            receipt.path.display()
-        ));
-    }
-    Ok(())
 }
 
 fn json_object_string_field(text: &str, object: &str, key: &str) -> Result<String, String> {
@@ -10303,6 +10148,11 @@ mod tests {
     const TEST_GIT_USER_EMAIL: &str = "mc-compat@example.invalid";
     const TEST_GIT_USER_NAME: &str = "mc-compat";
     const TEST_STEVENARELLA_SUBTREE_DIR: &str = "mc/clients/stevenarella";
+    const TEST_ROUTER_TIMEOUT_SECS: u64 = 33;
+    const TEST_ROUTER_TIMEOUT_ARG: &str = "33";
+    const TEST_ROUTER_ZERO_TIMEOUT_ARG: &str = "0";
+    const TEST_ROUTER_RECEIPT: &str = "docs/evidence/router-receipt.json";
+    const TEST_ROUTER_ALIAS_RECEIPT: &str = "target/router-alias-receipt.json";
 
     fn test_config(args: &[&str], env: &[(&str, &str)]) -> Result<Config, String> {
         let env: BTreeMap<String, String> = env
@@ -10986,6 +10836,152 @@ mod tests {
         format_plan_diagnostics(result.expect_err("plan should fail"))
     }
 
+    fn scenario_route_error(args: &[&str]) -> String {
+        let args: Vec<String> = args.iter().map(|arg| (*arg).to_string()).collect();
+        parse_scenario_route_request(&args).expect_err("scenario route should fail")
+    }
+
+    #[test]
+    fn scenario_router_parses_typed_request_before_planning() {
+        let cfg = test_config(
+            &[
+                SCENARIO_ROUTER_COMMAND,
+                SCENARIO_ROUTER_RUN_SUBCOMMAND,
+                "inventory-interaction",
+                SCENARIO_ROUTER_RUN_FLAG,
+                SCENARIO_ROUTER_BACKEND_FLAG,
+                "paper",
+                SCENARIO_ROUTER_RECEIPT_FLAG,
+                TEST_ROUTER_RECEIPT,
+                SCENARIO_ROUTER_TIMEOUT_FLAG,
+                TEST_ROUTER_TIMEOUT_ARG,
+                SCENARIO_ROUTER_PACKET_CAPTURE_FLAG,
+                SCENARIO_ROUTER_PROXY_ROUTE_FLAG,
+                "velocity-local",
+                SCENARIO_ROUTER_PROXY_FORWARDING_MODE_FLAG,
+                "modern",
+            ],
+            &[],
+        )
+        .expect("typed scenario route config parses");
+        let route = cfg
+            .scenario_route
+            .as_ref()
+            .expect("typed route request is preserved");
+        assert_eq!(route.scenario, Scenario::InventoryInteraction);
+        assert_eq!(route.backend, ServerBackend::Paper);
+        assert_eq!(route.mode, Mode::Run);
+        assert_eq!(
+            route.receipt_path.as_deref(),
+            Some(Path::new(TEST_ROUTER_RECEIPT))
+        );
+        assert_eq!(route.timeout_secs, Some(TEST_ROUTER_TIMEOUT_SECS));
+        assert!(route.packet_capture_summary);
+        assert_eq!(route.proxy_route.as_deref(), Some("velocity-local"));
+        assert_eq!(route.proxy_forwarding_mode.as_deref(), Some("modern"));
+
+        let plan = assert_plan_is_deterministic(&cfg);
+        let route_plan = plan.scenario_route.expect("typed route plan present");
+        assert_eq!(route_plan.scenario, "inventory-interaction");
+        assert_eq!(route_plan.backend, "paper");
+        assert_eq!(route_plan.mode, "run");
+        assert_eq!(
+            route_plan.receipt_path.as_deref(),
+            Some(TEST_ROUTER_RECEIPT)
+        );
+        assert_eq!(route_plan.timeout_secs, TEST_ROUTER_TIMEOUT_SECS);
+        assert_eq!(route_plan.non_claims, scenario_route_non_claims());
+    }
+
+    #[test]
+    fn scenario_router_negative_fixtures_fail_closed() {
+        assert!(
+            scenario_route_error(&[SCENARIO_ROUTER_COMMAND, SCENARIO_ROUTER_RUN_SUBCOMMAND])
+                .contains("missing scenario")
+        );
+        assert!(scenario_route_error(&[
+            SCENARIO_ROUTER_COMMAND,
+            SCENARIO_ROUTER_RUN_SUBCOMMAND,
+            "missing-scenario",
+        ])
+        .contains("unknown scenario"));
+        assert!(scenario_route_error(&[
+            SCENARIO_ROUTER_COMMAND,
+            SCENARIO_ROUTER_RUN_SUBCOMMAND,
+            "smoke",
+            SCENARIO_ROUTER_BACKEND_FLAG,
+            "bukkit",
+        ])
+        .contains("unknown server backend"));
+        assert!(scenario_route_error(&[
+            SCENARIO_ROUTER_COMMAND,
+            SCENARIO_ROUTER_RUN_SUBCOMMAND,
+            "smoke",
+            SCENARIO_ROUTER_RECEIPT_FLAG,
+            "../escape.json",
+        ])
+        .contains("parent traversal"));
+        assert!(scenario_route_error(&[
+            SCENARIO_ROUTER_COMMAND,
+            SCENARIO_ROUTER_RUN_SUBCOMMAND,
+            "smoke",
+            SCENARIO_ROUTER_TIMEOUT_FLAG,
+            TEST_ROUTER_ZERO_TIMEOUT_ARG,
+        ])
+        .contains("greater than zero"));
+        assert!(scenario_route_error(&[
+            SCENARIO_ROUTER_COMMAND,
+            SCENARIO_ROUTER_RUN_SUBCOMMAND,
+            "smoke",
+            "--claim-production-readiness",
+        ])
+        .contains("overclaiming option"));
+        assert!(scenario_route_error(&[
+            SCENARIO_ROUTER_COMMAND,
+            SCENARIO_ROUTER_RUN_SUBCOMMAND,
+            "smoke",
+            "--run-matrix",
+        ])
+        .contains("blocks non-scenario command option"));
+    }
+
+    #[test]
+    fn scenario_router_alias_plan_matches_legacy_shape() {
+        let legacy = test_config(
+            &[
+                SCENARIO_ROUTER_DRY_RUN_FLAG,
+                "--server-backend=valence",
+                "--scenario=inventory-interaction",
+                "--receipt=target/router-alias-receipt.json",
+            ],
+            &[],
+        )
+        .expect("legacy alias-shaped config parses");
+        let routed = test_config(
+            &[
+                SCENARIO_ROUTER_COMMAND,
+                SCENARIO_ROUTER_RUN_SUBCOMMAND,
+                "inventory-interaction",
+                SCENARIO_ROUTER_DRY_RUN_FLAG,
+                SCENARIO_ROUTER_SERVER_BACKEND_FLAG,
+                "valence",
+                SCENARIO_ROUTER_RECEIPT_FLAG,
+                TEST_ROUTER_ALIAS_RECEIPT,
+            ],
+            &[],
+        )
+        .expect("router alias-shaped config parses");
+        let legacy_plan = assert_plan_is_deterministic(&legacy);
+        let routed_plan = assert_plan_is_deterministic(&routed);
+
+        assert_eq!(routed_plan.server, legacy_plan.server);
+        assert_eq!(routed_plan.client_sessions, legacy_plan.client_sessions);
+        assert_eq!(routed_plan.receipt, legacy_plan.receipt);
+        assert_eq!(routed_plan.non_claims, legacy_plan.non_claims);
+        assert!(legacy_plan.scenario_route.is_none());
+        assert!(routed_plan.scenario_route.is_some());
+    }
+
     #[test]
     fn planning_core_positive_fixtures_cover_representative_modes() {
         let dry_paper = test_config(
@@ -11273,7 +11269,7 @@ mod tests {
     }
 
     #[test]
-    fn valence_source_dir_detects_direct_role_and_rejects_transition_worktree_shapes() {
+    fn valence_source_dir_uses_canonical_worktrees_and_rejects_transition_shapes() {
         let root = git_fixture_root("valence-source-dir");
         let direct = root.join("direct-valence");
         fs::create_dir_all(&direct).expect("create direct Valence worktree");

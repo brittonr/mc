@@ -1,0 +1,80 @@
+## nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence_command
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+   Compiling num-traits v0.2.19
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+   Compiling valence_entity v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_entity)
+   Compiling ordered-float v4.6.0
+   Compiling valence_server v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_server)
+   Compiling valence_command v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_command)
+    Finished `test` profile [optimized + debuginfo] target(s) in 24.00s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_command-d6a65af963dfdb99)
+
+running 14 tests
+test parsers::column_pos::tests::test_column_pos ... ok
+test parsers::bool::tests::test_bool ... ok
+test parsers::block_pos::tests::test_block_pos ... ok
+test parsers::numbers::tests::test_number ... ok
+test parsers::entity_selector::tests::test_entity_selector ... ok
+test parsers::strings::tests::test_greedy_string ... ok
+test parsers::strings::tests::test_quotable_string ... ok
+test parsers::strings::tests::test_string ... ok
+test parsers::swizzle::tests::test_swizzle ... ok
+test parsers::test::test_absolute_or_relative ... ok
+test parsers::test::test_parse_input ... ok
+test parsers::time::tests::test_time ... ok
+test parsers::vec2::tests::test_vec2 ... ok
+test parsers::vec3::tests::test_vec3 ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests valence_command
+
+running 9 tests
+test crates/valence_command/src/graph.rs - graph::CommandGraphBuilder<'a,T>::with_modifier (line 424) ... ok
+test crates/valence_command/src/graph.rs - graph::CommandGraphBuilder (line 204) ... ok
+test crates/valence_command/src/graph.rs - graph::CommandGraphBuilder<'a,T>::redirect_to (line 356) ... ok
+test crates/valence_command/src/scopes.rs - scopes::CommandScopeRegistry::grants (line 198) ... ok
+test crates/valence_command/src/scopes.rs - scopes::CommandScopeRegistry::any_grants (line 245) ... ok
+test crates/valence_command/src/scopes.rs - scopes::CommandScopeRegistry::link (line 272) ... ok
+test crates/valence_command/src/scopes.rs - scopes::CommandScopeRegistry::remove_scope (line 175) ... ok
+test crates/valence_command/src/scopes.rs - scopes::CommandScopeRegistry::add_scope (line 136) ... ok
+test crates/valence_command/src/scopes.rs - scopes (line 16) ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.64s
+
+exit_status=0

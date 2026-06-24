@@ -1,0 +1,19 @@
+# extend-manifest-derived-surfaces generated-surface baseline
+cwd=/home/brittonr/git/mc
+date_utc=2026-06-23T16:17:41Z
+
+$ nix build .#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L
+this derivation will be built:
+  /nix/store/x5z9j6g2x7sic44bs6kq4cnrhw7jszgp-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/x5z9j6g2x7sic44bs6kq4cnrhw7jszgp-mc-compat-scenario-manifest.drv'...
+command_exit_status=0
+
+$ nix build .#checks.x86_64-linux.mc-compat-generated-harness-surfaces --no-link -L
+this derivation will be built:
+  /nix/store/95shrwgdmphmvl3hbsglm01hc1ys9bcd-mc-compat-generated-harness-surfaces.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/95shrwgdmphmvl3hbsglm01hc1ys9bcd-mc-compat-generated-harness-surfaces.drv'...
+command_exit_status=0
+
+exit_status=0

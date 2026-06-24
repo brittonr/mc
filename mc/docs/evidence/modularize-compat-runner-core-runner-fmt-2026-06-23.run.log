@@ -1,0 +1,10 @@
+command=nix develop --no-update-lock-file . -c cargo fmt --manifest-path compat/runner/Cargo.toml
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/5p1cmjq69zmhg59rr5rjja5wi118js8j-mc-compat-runner-0.1.0.drv'...
+building '/nix/store/ivxrgpbi2vg1fnd3gyarv3j9zndgiz4i-nix-shell-env.drv'...
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+exit_status=0
+final_exit_status=0

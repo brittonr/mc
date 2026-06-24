@@ -1,0 +1,6 @@
+# add-cached-chunk-egress-pipeline final scoped evidence manifest check
+cwd=/home/brittonr/git/mc
+command: nix run .#evidence-manifest-refresh -- --check --evidence-dir target/add-cached-chunk-egress-pipeline-manifest-scope
+evidence manifest refresh ok: mode=check; passes=0; manifests=2; entries=53; current=53; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+evidence_manifest_scoped_check_exit_status=0
+exit_status=0

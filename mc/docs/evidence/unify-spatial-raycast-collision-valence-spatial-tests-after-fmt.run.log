@@ -1,0 +1,35 @@
+# post-format focused tests: valence_spatial
+timestamp=2026-06-24T01:51:11Z
+$ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence_spatial
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+    Blocking waiting for file lock on artifact directory
+   Compiling valence_spatial v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_spatial)
+    Finished `test` profile [optimized + debuginfo] target(s) in 41.32s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_spatial-ff968b55ca8781ce)
+
+running 11 tests
+test raycast::tests::axis_aligned_voxel_traversal_visits_expected_cells ... ok
+test raycast::tests::block_entity_tie_returns_tie_result ... ok
+test raycast::tests::boundary_hit_reports_entry_distance ... ok
+test raycast::tests::closer_hit_wins_entity_block_comparison ... ok
+test raycast::tests::diagonal_voxel_traversal_uses_deterministic_axis_ties ... ok
+test raycast::tests::inside_hitbox_start_reports_zero_near_distance ... ok
+test raycast::tests::invalid_rays_are_rejected ... ok
+test raycast::tests::invalid_bounds_and_aabbs_are_rejected ... ok
+test raycast::tests::owner_exclusion_keeps_other_entity_hits_eligible ... ok
+test raycast::tests::voxel_block_shell_returns_nearest_shape ... ok
+test tests::ray_box_edge_cases ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests valence_spatial
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+exit_status=0
+]0;

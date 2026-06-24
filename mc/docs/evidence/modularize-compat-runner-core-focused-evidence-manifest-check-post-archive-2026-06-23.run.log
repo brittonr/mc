@@ -1,0 +1,4 @@
+command=copy modularize b3 to target and run evidence-manifest-refresh --check --evidence-dir target/modularize-compat-runner-core-manifest-check
+evidence manifest refresh ok: mode=check; passes=0; manifests=1; entries=16; current=16; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+exit_status=0
+final_exit_status=0

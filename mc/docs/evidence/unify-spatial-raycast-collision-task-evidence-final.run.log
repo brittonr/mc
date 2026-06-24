@@ -1,0 +1,11 @@
+# final focused task evidence check
+timestamp=2026-06-24T02:09:59Z
+$ nix develop --no-update-lock-file /home/brittonr/git/mc -c bash -lc rustc-and-check
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task evidence gate passed: 6 completed tasks checked across 1 task files
+exit_status=0
+]0;

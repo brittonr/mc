@@ -1,0 +1,12 @@
+command=verify_ignore
+ignored result
+ignored result-1
+ignored target/example.o
+ignored target-mc-compat-live.log
+ignored local-check.run.log
+ignored tools/__pycache__/cache.pyc
+visible docs/evidence/example.run.log
+visible docs/evidence/example.b3
+visible docs/evidence/example.receipt.json
+visible compat/config/generated/default.json
+exit_status=0

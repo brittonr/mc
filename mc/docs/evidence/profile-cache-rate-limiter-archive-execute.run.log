@@ -1,0 +1,80 @@
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-profile-skin-cache-rate-limiter",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-23-add-profile-skin-cache-rate-limiter"
+    }
+  ],
+  "blocked": false,
+  "change": "add-profile-skin-cache-rate-limiter",
+  "dry_run": false,
+  "input_hash": "2874cf2c4be0f438e8d699ae1d8a82ce5327d0937674410d47335a11ad80a368",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "f6a9da807b3d7cb4d299b6a95cc4aa7c047018e9dff10b2c82f796cd59eb3fff",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-add-profile-skin-cache-rate-limiter/design.md"
+        },
+        {
+          "content_hash": "5bb0aa0a725097ae6cb9839064472172dd11b40ed022a27278a03bb4c3488b95",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-add-profile-skin-cache-rate-limiter/proposal.md"
+        },
+        {
+          "content_hash": "66c26065e173a23f0cd476feaa6a15f2de321c57c7942f44101fde939c33f1b7",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-add-profile-skin-cache-rate-limiter/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "e3eb88143e4642c6ea7d2d5a82c17fb457fcb314a57e35afeba95e85060a81d5",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-add-profile-skin-cache-rate-limiter/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/add-profile-skin-cache-rate-limiter"
+        }
+      ],
+      "manifest_hash": "bf983d4c5d88520b4a2f8c581f562b1315a68c30916a07b1e7e2b4ce49c8be5f"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "f6a9da807b3d7cb4d299b6a95cc4aa7c047018e9dff10b2c82f796cd59eb3fff",
+          "exists": true,
+          "path": "./cairn/changes/add-profile-skin-cache-rate-limiter/design.md"
+        },
+        {
+          "content_hash": "5bb0aa0a725097ae6cb9839064472172dd11b40ed022a27278a03bb4c3488b95",
+          "exists": true,
+          "path": "./cairn/changes/add-profile-skin-cache-rate-limiter/proposal.md"
+        },
+        {
+          "content_hash": "66c26065e173a23f0cd476feaa6a15f2de321c57c7942f44101fde939c33f1b7",
+          "exists": true,
+          "path": "./cairn/changes/add-profile-skin-cache-rate-limiter/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "e3eb88143e4642c6ea7d2d5a82c17fb457fcb314a57e35afeba95e85060a81d5",
+          "exists": true,
+          "path": "./cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md"
+        }
+      ],
+      "manifest_hash": "bb04dee1509e599dce6d5935fb020030eb4ff53b6da9999b1ed96262da98cf7e"
+    },
+    "kind": "archive",
+    "manifest_hash": "be0039537c713015672c32caa22499a309b40cae04204f46c19b2f3df14006c9"
+  },
+  "plan_hash": "146d889b96c7eaec772e291aa1d5dc19e3ed708e999cae8304c87f88d252ff29",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "50ad29b1acefc00689835c1a561b81476cbc26e2b44a4c5c0e5ca7d8c23c42c6"
+}
+exit_status=0

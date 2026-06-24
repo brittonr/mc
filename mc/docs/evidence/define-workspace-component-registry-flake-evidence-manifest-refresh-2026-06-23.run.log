@@ -1,0 +1,7 @@
+## flake evidence-manifest-refresh check
+command=nix build .#checks.x86_64-linux.mc-compat-evidence-manifest-refresh --no-link -L ''
+this derivation will be built:
+  /nix/store/28maa7lg1pccx0rbw12b7xscylxacm2s-mc-compat-evidence-manifest-refresh.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/28maa7lg1pccx0rbw12b7xscylxacm2s-mc-compat-evidence-manifest-refresh.drv'...
+exit_status=0

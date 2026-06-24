@@ -1,0 +1,6 @@
+# CTF invalid-action live breadth Valence precheck
+started_at=2026-06-23T01:25:27Z
+command=cargo test --example ctf invalid_opponent_base_return_drop_milestone_records_no_state_mutation_or_score -- --nocapture
+sh: line 7: cargo: command not found
+finished_at=2026-06-23T01:25:27Z
+exit_status=127

@@ -1,0 +1,15 @@
+# add-cached-chunk-egress-pipeline final Cairn validation
+cwd=/home/brittonr/git/mc
+command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 16,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 20,
+  "valid": true
+}
+validate_exit_status=0
+exit_status=0

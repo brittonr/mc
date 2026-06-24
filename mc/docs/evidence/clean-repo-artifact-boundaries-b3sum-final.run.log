@@ -1,0 +1,6 @@
+command=nix develop --no-update-lock-file . -c bash -lc find docs/evidence -maxdepth 1 \( -name "clean-repo-artifact-boundaries-2026-06-23.md" -o -name "clean-repo-artifact-boundaries*.run.log" -o -name "legacy-*" \) ! -name "clean-repo-artifact-boundaries-b3sum*.run.log" -print | sort | xargs b3sum > docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3 
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+exit_status=0

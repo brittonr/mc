@@ -1,0 +1,198 @@
+command_group=introduce-scenario-command-router alias/generated/maintained checks
+cwd=/home/brittonr/git/mc
+date_utc=2026-06-23T21:13:05Z
+
+## inventory alias dry-run routes through typed command
+$ env MC_COMPAT_INVENTORY_RECEIPT=target/scenario-command-router-alias/inventory-interaction-alias.json nix run .#mc-compat-valence-ctf-inventory-interaction -- --dry-run
+[mc-compat] plan: build client, start Valence server, wait for protocol 763, run 1 client session plan(s) under isolated Xvfb/X11
+[mc-compat] typed scenario route: scenario 'inventory-interaction' backend valence mode dry-run receipt target/scenario-command-router-alias/inventory-interaction-alias.json timeout 120s packet_capture_summary=false proxy_route=<unset> proxy_forwarding_mode=<unset> non_claims=broad_minecraft_compatibility_false,production_readiness_false,semantic_equivalence_false
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/clients/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] using existing Valence worktree /tmp/valence-compat-763
+[mc-compat] starting Valence main example 'ctf' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-763
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'inventory-interaction' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/scenario-command-router-alias/inventory-interaction-alias.json
+exit_status=0 name=inventory alias dry-run routes through typed command
+
+## inventory direct typed router dry-run
+$ nix run .#mc-compat-smoke -- scenario run inventory-interaction --dry-run --server-backend valence --receipt target/scenario-command-router-alias/inventory-interaction-router.json
+[mc-compat] plan: build client, start Valence server, wait for protocol 758, run 1 client session plan(s) under isolated Xvfb/X11
+[mc-compat] typed scenario route: scenario 'inventory-interaction' backend valence mode dry-run receipt target/scenario-command-router-alias/inventory-interaction-router.json timeout 20s packet_capture_summary=false proxy_route=<unset> proxy_forwarding_mode=<unset> non_claims=broad_minecraft_compatibility_false,production_readiness_false,semantic_equivalence_false
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/clients/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] using existing Valence worktree /tmp/valence-compat-758
+[mc-compat] starting Valence 8ad9c85 example 'terrain' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-758
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 758
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'inventory-interaction' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/scenario-command-router-alias/inventory-interaction-router.json
+exit_status=0 name=inventory direct typed router dry-run
+
+## 600s soak alias dry-run routes through typed command
+$ env MC_COMPAT_SOAK_RECEIPT=target/scenario-command-router-alias/multi-client-load-score-600s.json nix run .#mc-compat-valence-ctf-600s-soak -- --dry-run
+[mc-compat] plan: build client, start Valence server, wait for protocol 763, run 2 client session plan(s) under isolated Xvfb/X11
+[mc-compat] typed scenario route: scenario 'multi-client-load-score' backend valence mode dry-run receipt target/scenario-command-router-alias/multi-client-load-score-600s.json timeout 600s packet_capture_summary=false proxy_route=<unset> proxy_forwarding_mode=<unset> non_claims=broad_minecraft_compatibility_false,production_readiness_false,semantic_equivalence_false
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/clients/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] using existing Valence worktree /tmp/valence-compat-763
+[mc-compat] starting Valence main example 'ctf' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-763
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'multi-client-load-score' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/scenario-command-router-alias/multi-client-load-score-600s.json
+exit_status=0 name=600s soak alias dry-run routes through typed command
+
+## generated harness surfaces freshness
+$ nix build .#checks.x86_64-linux.mc-compat-generated-harness-surfaces --no-link -L
+exit_status=0 name=generated harness surfaces freshness
+
+## maintained dry-run aggregate
+$ nix build .#checks.x86_64-linux.mc-compat-maintained-dry-runs --no-link -L
+these 20 derivations will be built:
+  /nix/store/0wmf386h6mpgs78yrlj62jyidj5i3wsv-mc-compat-evidence-promotion.drv
+  /nix/store/19hajhcv33z9dv7j7cvs08nmdc9h8v7f-mc-compat-evidence-manifest-refresh.drv
+  /nix/store/1c1wxizsxnxkzn0pxpsrpfpd30ciyjmr-mc-compat-ctf-invalid-return-drop.drv
+  /nix/store/2l23bradzbsraspgq91nhfj6dk2rshlc-mc-compat-red-blue-scoring-soak-live-refresh.drv
+  /nix/store/2x7sz0zpr0qvfpk1ssrw8cfj0sl4rd9n-mc-compat-equipment-slot-item-expansion.drv
+  /nix/store/2z46cy2r7p687hasy8glq2jda29xja43-mc-compat-cairn-task-evidence.drv
+  /nix/store/30wlxm1c8qphgh5hz1nwwip6ajyfaiqw-mc-compat-server-correlation-receipts.drv
+  /nix/store/3zcpcbwjpmbz7lrikvavdbav437n9m6b-mc-compat-movement-packet-family-check.drv
+  /nix/store/8fdir33dkzv24bf73x59ggn7hj6mpz9r-mc-compat-ctf-invalid-action-breadth.drv
+  /nix/store/ar0j64inj58arvbqcscni0j9ajbhjqyx-mc-compat-current-evidence-bundle.drv
+  /nix/store/i5gv1y79rh998zprcx058r094jz3fl5w-mc-compat-mcp-controlled-smoke-dry-run.drv
+  /nix/store/im5irp8pkrmjxicdm60azwc6jr9clk0x-mc-compat-scoreboard-team-packet-family-check.drv
+  /nix/store/jvvdrjcyakiivwkshg6p169l3fl9zzmm-mc-compat-ctf-score-limit-win-condition.drv
+  /nix/store/laqc3sasksmif62d1h0bxkavkg6y2hj3-mc-compat-public-server-authorized-safety.drv
+  /nix/store/pajhwqd49jcvvnsnsm7zqppywk53y7x1-mc-compat-ctf-invalid-pickup-ownership.drv
+  /nix/store/pw1p5mj0nsjw7b63jqj1b7jpqmbscb7m-mc-compat-survival-aggregate-claim-boundary.drv
+  /nix/store/q9wf296fxhbyrl7g8pyww7lrw3s0xygj-mc-compat-evidence-manifests.drv
+  /nix/store/r0p74wkb7s9i6pi66gh05gaq8hf47nqg-mc-compat-full-survival-gate.drv
+  /nix/store/smbsd2i7pb2k921cs0iks4zhnjp1g95s-mc-compat-wan-tolerance-bounded-telemetry.drv
+  /nix/store/lwxkwmdk670zlzxqp04d66bmg9ixw6r7-mc-compat-maintained-dry-runs.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/2z46cy2r7p687hasy8glq2jda29xja43-mc-compat-cairn-task-evidence.drv'...
+building '/nix/store/8fdir33dkzv24bf73x59ggn7hj6mpz9r-mc-compat-ctf-invalid-action-breadth.drv'...
+building '/nix/store/pajhwqd49jcvvnsnsm7zqppywk53y7x1-mc-compat-ctf-invalid-pickup-ownership.drv'...
+building '/nix/store/1c1wxizsxnxkzn0pxpsrpfpd30ciyjmr-mc-compat-ctf-invalid-return-drop.drv'...
+building '/nix/store/jvvdrjcyakiivwkshg6p169l3fl9zzmm-mc-compat-ctf-score-limit-win-condition.drv'...
+building '/nix/store/ar0j64inj58arvbqcscni0j9ajbhjqyx-mc-compat-current-evidence-bundle.drv'...
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.md
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.md
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-ignore-rules.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites run log docs/evidence/clean-repo-artifact-boundaries-ignore-rules.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites run log docs/evidence/clean-repo-artifact-boundaries-ignore-rules.run.log without a cited .b3 manifest covering it
+building '/nix/store/2x7sz0zpr0qvfpk1ssrw8cfj0sl4rd9n-mc-compat-equipment-slot-item-expansion.drv'...
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-focused-open.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-self-test.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-focused-open.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-focused-open.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-self-test.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-self-test.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:3 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-evidence.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:3 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-pre-implementation-cairn-gates.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:3 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-scope.md
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:3 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-pre-implementation-cairn-gates.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:3 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-pre-implementation-cairn-gates.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:4 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-contract.md
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:4 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-evidence.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:4 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-proxy-broadcast-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:4 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-proxy-broadcast-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:4 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-proxy-broadcast-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:5 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-evidence.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:5 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-proxy-broadcast-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:5 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-valence-network-fmt-clippy.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:5 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-proxy-broadcast-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:5 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-proxy-broadcast-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:5 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-valence-network-fmt-clippy.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:5 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-valence-network-fmt-clippy.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:6 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-direct-mode-and-dry-runs.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:6 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-evidence.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:6 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-proxy-broadcast-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:6 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-direct-mode-and-dry-runs.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:6 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-direct-mode-and-dry-runs.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:6 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-proxy-broadcast-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:6 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-proxy-broadcast-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:7 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-direct-mode-and-dry-runs.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:7 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-evidence.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:7 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-proxy-broadcast-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:7 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-direct-mode-and-dry-runs.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:7 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-direct-mode-and-dry-runs.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:7 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-proxy-broadcast-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:7 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-proxy-broadcast-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:8 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-evidence.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:8 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-final-cairn-gates.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:8 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-final-cairn-gates.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:8 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-final-cairn-gates.run.log without a cited .b3 manifest covering it
+error: Cannot build '/nix/store/2z46cy2r7p687hasy8glq2jda29xja43-mc-compat-cairn-task-evidence.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/7ydsg4xx9ci964cac1bzq0dmsdajsr8j-mc-compat-cairn-task-evidence
+       Last 25 log lines:
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:5 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-evidence.b3
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:5 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-proxy-broadcast-tests.run.log
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:5 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-valence-network-fmt-clippy.run.log
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:5 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-proxy-broadcast-tests.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:5 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-proxy-broadcast-tests.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:5 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-valence-network-fmt-clippy.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:5 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-valence-network-fmt-clippy.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:6 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-direct-mode-and-dry-runs.run.log
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:6 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-evidence.b3
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:6 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-proxy-broadcast-tests.run.log
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:6 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-direct-mode-and-dry-runs.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:6 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-direct-mode-and-dry-runs.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:6 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-proxy-broadcast-tests.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:6 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-proxy-broadcast-tests.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:7 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-direct-mode-and-dry-runs.run.log
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:7 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-evidence.b3
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:7 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-proxy-broadcast-tests.run.log
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:7 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-direct-mode-and-dry-runs.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:7 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-direct-mode-and-dry-runs.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:7 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-proxy-broadcast-tests.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:7 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-proxy-broadcast-tests.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:8 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-evidence.b3
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:8 cites missing evidence artifact docs/evidence/introduce-valence-proxy-broadcast-backend-final-cairn-gates.run.log
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:8 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-final-cairn-gates.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/introduce-valence-proxy-broadcast-backend/tasks.md:8 cites run log docs/evidence/introduce-valence-proxy-broadcast-backend-final-cairn-gates.run.log without a cited .b3 manifest covering it
+       For full logs, run:
+         nix log /nix/store/2z46cy2r7p687hasy8glq2jda29xja43-mc-compat-cairn-task-evidence.drv
+building '/nix/store/19hajhcv33z9dv7j7cvs08nmdc9h8v7f-mc-compat-evidence-manifest-refresh.drv'...
+error: Cannot build '/nix/store/lwxkwmdk670zlzxqp04d66bmg9ixw6r7-mc-compat-maintained-dry-runs.drv'.
+       Reason: 1 dependency failed.
+       Output paths:
+         /nix/store/5s1zlg92sgz9474ms8rf3s0pdb3y5pz4-mc-compat-maintained-dry-runs
+error (ignored): deleting cgroup "/sys/fs/cgroup/system.slice/nix-daemon.service/nix-build-uid-872546304": Device or resource busy
+warning: killing stray builder process 2270301 ()...
+warning: killing stray builder process 2270362 ()...
+error (ignored): deleting cgroup "/sys/fs/cgroup/system.slice/nix-daemon.service/nix-build-uid-872611840": Device or resource busy
+error (ignored): deleting cgroup "/sys/fs/cgroup/system.slice/nix-daemon.service/nix-build-uid-872480768": Device or resource busy
+warning: killing stray builder process 2270327 ()...
+error (ignored): deleting cgroup "/sys/fs/cgroup/system.slice/nix-daemon.service/nix-build-uid-872415232": Device or resource busy
+error: Build failed due to failed dependency
+exit_status=1 name=maintained dry-run aggregate
+
+command_group_exit_status=1

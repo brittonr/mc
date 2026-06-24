@@ -1,0 +1,15 @@
+## cairn validate after admin permission accepted-spec merge
+cwd=/home/brittonr/git/mc
+date_utc=2026-06-23T20:16:46Z
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 14,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 18,
+  "valid": true
+}
+exit_status=0

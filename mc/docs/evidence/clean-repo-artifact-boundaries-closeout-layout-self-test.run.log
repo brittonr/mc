@@ -1,0 +1,3 @@
+command=./tools/check_layout_boundaries.rs --self-test
+layout boundary self-test passed
+exit_status=0

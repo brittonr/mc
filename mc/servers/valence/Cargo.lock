@@ -4424,6 +4424,7 @@ version = "0.2.0-alpha.1+mc.1.20.1"
 dependencies = [
  "anyhow",
  "bytes",
+ "clap",
  "eframe",
  "egui",
  "egui_dock",
@@ -4441,6 +4442,7 @@ dependencies = [
  "time",
  "tokio",
  "tracing",
+ "tracing-subscriber",
  "valence_build_utils",
  "valence_protocol",
 ]
@@ -5739,6 +5741,8 @@ version = "0.2.0-alpha.1+mc.1.20.1"
 dependencies = [
  "anyhow",
  "clap",
+ "serde",
+ "serde_json",
  "tokio",
  "uuid",
  "valence_protocol",
@@ -6425,6 +6429,7 @@ dependencies = [
  "flate2",
  "flume",
  "lru",
+ "tempfile",
  "thiserror 1.0.69",
  "valence_nbt",
  "valence_server",
@@ -6738,6 +6743,7 @@ dependencies = [
  "bevy_ecs",
  "bevy_utils",
  "bitfield-struct",
+ "blake3",
  "byteorder",
  "bytes",
  "derive_more",

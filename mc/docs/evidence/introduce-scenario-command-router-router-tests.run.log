@@ -1,0 +1,73 @@
+cwd=/home/brittonr/git/mc/compat/runner
+started_at=2026-06-24T11:35:49-04:00
+command=CARGO_TARGET_DIR=/tmp/mc-compat-router-tests-target nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test scenario_router -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+   Compiling shlex v2.0.1
+   Compiling find-msvc-tools v0.1.9
+   Compiling cpufeatures v0.3.0
+   Compiling arrayref v0.3.9
+   Compiling constant_time_eq v0.4.2
+   Compiling arrayvec v0.7.6
+   Compiling cfg-if v1.0.4
+   Compiling cc v1.2.63
+   Compiling blake3 v1.8.5
+   Compiling mc-compat-runner v0.1.0 (/home/brittonr/git/mc/compat/runner)
+warning: constant `CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE` is never used
+   --> src/main.rs:244:7
+    |
+244 | const CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE: &str =
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `json_object_string_field` is never used
+    --> src/main.rs:9730:4
+     |
+9730 | fn json_object_string_field(text: &str, object: &str, key: &str) -> Result<S...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_optional_string_field` is never used
+    --> src/main.rs:9734:4
+     |
+9734 | fn json_object_optional_string_field(
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_u32_field` is never used
+    --> src/main.rs:9742:4
+     |
+9742 | fn json_object_u32_field(text: &str, object: &str, key: &str) -> Result<u32,...
+     |    ^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_bool_field` is never used
+    --> src/main.rs:9746:4
+     |
+9746 | fn json_object_bool_field(text: &str, object: &str, key: &str) -> Result<boo...
+     |    ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `Transition` is never constructed
+  --> src/layout.rs:44:5
+   |
+42 | pub enum LayoutKind {
+   |          ---------- variant in this enum
+43 |     RoleBased,
+44 |     Transition,
+   |     ^^^^^^^^^^
+   |
+   = note: `LayoutKind` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: `mc-compat-runner` (bin "mc-compat-runner" test) generated 6 warnings
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 18.71s
+     Running unittests src/main.rs (/tmp/mc-compat-router-tests-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 3 tests
+test tests::scenario_router_negative_fixtures_fail_closed ... ok
+test tests::scenario_router_parses_typed_request_before_planning ... ok
+test tests::scenario_router_alias_plan_matches_legacy_shape ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 167 filtered out; finished in 0.00s
+
+cargo_test_exit_status=0
+exit_status=0

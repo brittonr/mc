@@ -1,0 +1,96 @@
+# survival remaining breadth typed-event Cairn gates
+started_at=2026-06-23T00:16:40Z
+## gate_proposal
+command=nix run .#cairn -- gate proposal survival-remaining-breadth-typed-event-migration --root .
+{
+  "change": "survival-remaining-breadth-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f4bc817b93af8a33341b1a5b9fdbae513679dc0a03547a935a5a7776eec8ddf3",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "4e94df41caf6837ae0938c6e2a593a0b5861315e27eea90566051dbff954d367",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_proposal_exit_status=0
+## gate_design
+command=nix run .#cairn -- gate design survival-remaining-breadth-typed-event-migration --root .
+{
+  "change": "survival-remaining-breadth-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "fb032a1fb72b52d055d2b1dbb3d921e4bcbb7f017b52a40b0498511a6fdbe3ce",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "9cdf1342e726393530a57bbae9047c34098e71bb404f1cda64180eaeeaa1a730",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_design_exit_status=0
+## gate_tasks
+command=nix run .#cairn -- gate tasks survival-remaining-breadth-typed-event-migration --root .
+{
+  "change": "survival-remaining-breadth-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "1124f6cbe8ae30d37b607be22c4119828d77c7d2569707218cba15bb9b1b6bf7",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "receipt_hash": "7a05402ba77dad7fdee2630f573530055ab572691a2300b0cc95150be342ee29",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_tasks_exit_status=0
+## cairn_validate
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
+cairn_validate_exit_status=0
+## task_evidence
+command=nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+this derivation will be built:
+  /nix/store/132bkwglf7fsbk2lcql0qj6x6m3321vg-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/132bkwglf7fsbk2lcql0qj6x6m3321vg-mc-compat-cairn-task-evidence.drv'...
+task_evidence_exit_status=0
+finished_at=2026-06-23T00:16:44Z
+exit_status=0

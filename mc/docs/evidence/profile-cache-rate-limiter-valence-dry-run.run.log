@@ -1,0 +1,5 @@
+repo=/home/brittonr/git/mc/servers/valence
+example=ctf
+target_dir=/home/brittonr/git/mc/target/nix-run-valence
+cd /home/brittonr/git/mc/servers/valence && cargo run --example ctf --
+exit_status=0

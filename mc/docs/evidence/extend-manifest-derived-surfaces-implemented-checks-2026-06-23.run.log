@@ -1,0 +1,51 @@
+# extend-manifest-derived-surfaces implemented checks
+cwd=/home/brittonr/git/mc
+date_utc=2026-06-23T16:42:49Z
+
+$ nix develop --no-update-lock-file -c sh -c rustc --edition=2021 tools/check_scenario_manifest.rs -o target/check-scenario-manifest-dev && target/check-scenario-manifest-dev --self-test && target/check-scenario-manifest-dev --check-generated-surfaces && target/check-scenario-manifest-dev
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+scenario manifest self-test passed: positive and negative fixtures exercised, including wrapper metadata and stale-output rejection
+generated surface check passed: 3 generated surfaces current; fallback budget: approved=[survival-biome-dimension-state,survival-block-entity-persistence-parity,survival-crash-recovery-parity,survival-hunger-food,survival-mob-drop,survival-redstone-toggle,survival-world-persistence-restart,valence-compat-bot-probe,vanilla-combat-armor-reference-parity,vanilla-combat-reference-parity]; removed=[armor-equipment-mitigation,blue-flag-score,combat-damage,combat-knockback,ctf-invalid-pickup-ownership,ctf-invalid-return-drop,ctf-score-limit-win-condition,ctf-simultaneous-pickup-capture-race,ctf-spawn-team-balance-reset,equipment-update-observation,flag-carrier-death-return,flag-score-repeat,mcp-controlled-smoke,multi-client-load-score,projectile-damage-attribution,projectile-hit,reconnect-flag-score,reconnect-flag-state,survival-biome-dimension-travel,survival-chest-persistence,survival-container-block-entity-breadth,survival-crafting-recipe-breadth,survival-furnace-persistence,survival-furnace-smelting-breadth,survival-hunger-health-cycle,survival-mob-ai-loot-breadth,survival-redstone-circuit-breadth,survival-sign-editing-live,survival-world-multichunk-durability]; new=[]; typed_event_regressions=[]; missing_waiver_metadata=[]
+scenario manifest check passed: 46 rows validated; dry-run coverage: 44 covered, 2 waived, 0 unmaintained; typed-event readiness: 36 ready, 10 fallback; fallback budget: approved=[survival-biome-dimension-state,survival-block-entity-persistence-parity,survival-crash-recovery-parity,survival-hunger-food,survival-mob-drop,survival-redstone-toggle,survival-world-persistence-restart,valence-compat-bot-probe,vanilla-combat-armor-reference-parity,vanilla-combat-reference-parity]; removed=[armor-equipment-mitigation,blue-flag-score,combat-damage,combat-knockback,ctf-invalid-pickup-ownership,ctf-invalid-return-drop,ctf-score-limit-win-condition,ctf-simultaneous-pickup-capture-race,ctf-spawn-team-balance-reset,equipment-update-observation,flag-carrier-death-return,flag-score-repeat,mcp-controlled-smoke,multi-client-load-score,projectile-damage-attribution,projectile-hit,reconnect-flag-score,reconnect-flag-state,survival-biome-dimension-travel,survival-chest-persistence,survival-container-block-entity-breadth,survival-crafting-recipe-breadth,survival-furnace-persistence,survival-furnace-smelting-breadth,survival-hunger-health-cycle,survival-mob-ai-loot-breadth,survival-redstone-circuit-breadth,survival-sign-editing-live,survival-world-multichunk-durability]; new=[]; typed_event_regressions=[]; missing_waiver_metadata=[]
+command_exit_status=0
+
+$ nix build .#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L
+command_exit_status=0
+
+$ nix build .#checks.x86_64-linux.mc-compat-generated-harness-surfaces --no-link -L
+command_exit_status=0
+
+$ nix run .#mc-compat-valence-ctf-inventory-interaction -- --dry-run
+[mc-compat] plan: build client, start Valence server, wait for protocol 763, run 1 client session plan(s) under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/clients/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] using existing Valence worktree /tmp/valence-compat-763
+[mc-compat] starting Valence main example 'ctf' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-763
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'inventory-interaction' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/mc-compat-inventory/inventory-interaction.json
+command_exit_status=0
+
+$ nix run .#mc-compat-mcp-controlled-smoke -- --dry-run
+[mc-compat] plan: build client, start Valence server, wait for protocol 763, run 1 client session plan(s) under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/clients/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
++ "git" "-C" "/home/brittonr/git/mc/servers/valence" "worktree" "prune"
+[mc-compat] creating isolated Valence worktree /tmp/valence-compat-mcp-controlled-smoke at main
++ "git" "-C" "/home/brittonr/git/mc/servers/valence" "worktree" "add" "--detach" "/tmp/valence-compat-mcp-controlled-smoke" "main"
+[mc-compat] starting Valence main example 'survival_compat' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-mcp-controlled-smoke
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'mcp-controlled-smoke' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/mc-compat-mcp-controlled-smoke/mcp-controlled-smoke.json
+command_exit_status=0
+
+exit_status=0

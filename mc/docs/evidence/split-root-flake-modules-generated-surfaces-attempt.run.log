@@ -1,0 +1,18 @@
+$ nix build selected app/check module checks --no-link -L
+these 2 derivations will be built:
+  /nix/store/hafgxaja6vbih3mivf5pqfkavm9c38ry-mc-compat-generated-harness-surfaces.drv
+  /nix/store/w5rl5wjib613rir7sh5a5siacdgz8k1f-mc-compat-dry-run.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/w5rl5wjib613rir7sh5a5siacdgz8k1f-mc-compat-dry-run.drv'...
+building '/nix/store/hafgxaja6vbih3mivf5pqfkavm9c38ry-mc-compat-generated-harness-surfaces.drv'...
+mc-compat-generated-harness-surfaces> scenario manifest check failed: docs/evidence/mc-compat-scenario-index.generated.md is stale; run --write-generated-surfaces
+error: Cannot build '/nix/store/hafgxaja6vbih3mivf5pqfkavm9c38ry-mc-compat-generated-harness-surfaces.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/ck5vxyzmjigf8pm9c582ki4n0ayi8jk7-mc-compat-generated-harness-surfaces
+       Last 1 log lines:
+       > scenario manifest check failed: docs/evidence/mc-compat-scenario-index.generated.md is stale; run --write-generated-surfaces
+       For full logs, run:
+         nix log /nix/store/hafgxaja6vbih3mivf5pqfkavm9c38ry-mc-compat-generated-harness-surfaces.drv
+command_exit_status=1
+exit_status=1

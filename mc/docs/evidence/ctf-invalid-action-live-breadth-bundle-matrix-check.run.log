@@ -1,0 +1,41 @@
+# CTF invalid-action live breadth bundle/matrix checks
+started_at=2026-06-23T01:44:18Z
+## acceptance_matrix
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-acceptance-matrix
+this derivation will be built:
+  /nix/store/fglcj7mfmlx1xl0d03l1yvfb8jbldzrr-mc-compat-acceptance-matrix.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/fglcj7mfmlx1xl0d03l1yvfb8jbldzrr-mc-compat-acceptance-matrix.drv'...
+error: Cannot build '/nix/store/fglcj7mfmlx1xl0d03l1yvfb8jbldzrr-mc-compat-acceptance-matrix.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/qm2kd7158mj849wlhx48mjm446g2kb9r-mc-compat-acceptance-matrix
+       Last 3 log lines:
+       > acceptance matrix check failed: matrix missing seam: CTF invalid-action breadth fixture
+       > acceptance matrix check failed: CTF invalid-action breadth live receipt path missing: docs/evidence/protocol-763-ctf-invalid-opponent-base-return-drop-live-2026-06-22.receipt.json
+       > acceptance matrix check failed: CTF invalid-action breadth live evidence doc missing: docs/evidence/protocol-763-ctf-invalid-action-live-breadth-2026-06-22.md
+       For full logs, run:
+         nix log /nix/store/fglcj7mfmlx1xl0d03l1yvfb8jbldzrr-mc-compat-acceptance-matrix.drv
+acceptance_matrix_exit_status=1
+## current_bundle
+command=nix build --no-update-lock-file .#checks.x86_64-linux.mc-compat-current-evidence-bundle
+this derivation will be built:
+  /nix/store/224pcw4zbd1s17v3wm5k30zr7yvnmxn4-mc-compat-current-evidence-bundle.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/224pcw4zbd1s17v3wm5k30zr7yvnmxn4-mc-compat-current-evidence-bundle.drv'...
+error: Cannot build '/nix/store/224pcw4zbd1s17v3wm5k30zr7yvnmxn4-mc-compat-current-evidence-bundle.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/ilmg5ai8yikj7lmczxcz5kg7kf6bw2rb-mc-compat-current-evidence-bundle
+       Last 6 log lines:
+       > current evidence bundle check failed: bundle missing required text: Survival mob AI/loot breadth
+       > current evidence bundle check failed: bundle missing required text: Survival redstone circuit breadth
+       > current evidence bundle check failed: bundle missing required text: Survival biome/dimension travel
+       > current evidence bundle check failed: bundle missing required text: Survival world multichunk durability
+       > current evidence bundle check failed: bundle missing required text: Survival container block-entity breadth
+       > current evidence bundle check failed: bundle missing required text: Survival sign editing live
+       For full logs, run:
+         nix log /nix/store/224pcw4zbd1s17v3wm5k30zr7yvnmxn4-mc-compat-current-evidence-bundle.drv
+current_bundle_exit_status=1
+finished_at=2026-06-23T01:46:34Z
+exit_status=1

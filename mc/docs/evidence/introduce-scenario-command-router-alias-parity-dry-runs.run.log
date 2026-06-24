@@ -1,0 +1,61 @@
+cwd=/home/brittonr/git/mc
+started_at=2026-06-24T11:37:14-04:00
+
+## inventory_alias
+command=nix run .#mc-compat-valence-ctf-inventory-interaction -- --dry-run
+this derivation will be built:
+  /nix/store/hz9ksjajm2i0qykmx468q8wzwvc27ifa-mc-compat-valence-ctf-inventory-interaction.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/hz9ksjajm2i0qykmx468q8wzwvc27ifa-mc-compat-valence-ctf-inventory-interaction.drv'...
+[mc-compat] plan: build client, start Valence server, wait for protocol 763, run 1 client session plan(s) under isolated Xvfb/X11
+[mc-compat] typed scenario route: scenario 'inventory-interaction' backend valence mode dry-run receipt target/mc-compat-inventory/inventory-interaction.json timeout 120s packet_capture_summary=false proxy_route=<unset> proxy_forwarding_mode=<unset> non_claims=broad_minecraft_compatibility_false,production_readiness_false,semantic_equivalence_false
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/clients/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] using existing Valence worktree /tmp/valence-compat-763
+[mc-compat] starting Valence main example 'ctf' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-763
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'inventory-interaction' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/mc-compat-inventory/inventory-interaction.json
+inventory_alias_exit_status=0
+
+## spawn_alias
+command=nix run .#mc-compat-valence-ctf-spawn-team-balance-reset -- --dry-run
+this derivation will be built:
+  /nix/store/ikdgw43r9zvikgjcfm12zgvmx86dk4g4-mc-compat-valence-ctf-spawn-team-balance-reset.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/ikdgw43r9zvikgjcfm12zgvmx86dk4g4-mc-compat-valence-ctf-spawn-team-balance-reset.drv'...
+[mc-compat] plan: build client, start Valence server, wait for protocol 763, run 2 client session plan(s) under isolated Xvfb/X11
+[mc-compat] typed scenario route: scenario 'ctf-spawn-team-balance-reset' backend valence mode dry-run receipt target/mc-compat-ctf-spawn-team-balance-reset/ctf-spawn-team-balance-reset.json timeout 120s packet_capture_summary=false proxy_route=<unset> proxy_forwarding_mode=<unset> non_claims=broad_minecraft_compatibility_false,production_readiness_false,semantic_equivalence_false
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/clients/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] using existing Valence worktree /tmp/valence-compat-763
+[mc-compat] starting Valence main example 'ctf' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-763
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'ctf-spawn-team-balance-reset' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/mc-compat-ctf-spawn-team-balance-reset/ctf-spawn-team-balance-reset.json
+spawn_alias_exit_status=0
+
+## mcp_alias
+command=nix run .#mc-compat-mcp-controlled-smoke -- --dry-run
+[mc-compat] plan: build client, start Valence server, wait for protocol 763, run 1 client session plan(s) under isolated Xvfb/X11
+[mc-compat] typed scenario route: scenario 'mcp-controlled-smoke' backend valence mode dry-run receipt target/mc-compat-mcp-controlled-smoke/mcp-controlled-smoke.json timeout 120s packet_capture_summary=false proxy_route=<unset> proxy_forwarding_mode=<unset> non_claims=broad_minecraft_compatibility_false,production_readiness_false,semantic_equivalence_false
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/clients/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
++ "git" "-C" "/home/brittonr/git/mc/servers/valence" "worktree" "prune"
+[mc-compat] creating isolated Valence worktree /tmp/valence-compat-mcp-controlled-smoke at main
++ "git" "-C" "/home/brittonr/git/mc/servers/valence" "worktree" "add" "--detach" "/tmp/valence-compat-mcp-controlled-smoke" "main"
+[mc-compat] starting Valence main example 'survival_compat' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-mcp-controlled-smoke
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'mcp-controlled-smoke' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/mc-compat-mcp-controlled-smoke/mcp-controlled-smoke.json
+mcp_alias_exit_status=0
+exit_status=0

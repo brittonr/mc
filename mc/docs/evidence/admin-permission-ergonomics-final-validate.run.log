@@ -1,0 +1,15 @@
+## final cairn validate after admin permission archive and manifest refresh
+cwd=/home/brittonr/git/mc
+date_utc=2026-06-23T20:23:52Z
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 13,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 17,
+  "valid": true
+}
+exit_status=0

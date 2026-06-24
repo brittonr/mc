@@ -1,0 +1,86 @@
+## nix run .#cairn -- gate proposal define-admin-permission-ergonomics --root .
+{
+  "change": "define-admin-permission-ergonomics",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "19a03afbdd9df1b0e8e4d35f57dba40ae716a20b627a0da2bcc7d860bae622b9",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "d85cec34202547224ee58cdba73ecaaccd3b8204f915410d27ca1788e9a6e52e",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+## nix run .#cairn -- gate design define-admin-permission-ergonomics --root .
+{
+  "change": "define-admin-permission-ergonomics",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "ffb375a3430844ca989104b08d36d93a63e14ca501defa833461bbbd0bb45f2f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "b6a3f71039a9aa4818b457ccfcafe07165d9688fd186744b9b8913e3506e9488",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+## nix run .#cairn -- gate tasks define-admin-permission-ergonomics --root .
+{
+  "change": "define-admin-permission-ergonomics",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a501c7bf364ff4a19be0f816c5d908129148e9f002d44694856cecbbd3b2ded0",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "3fbfb38985c17b3225d4690d1b5a8b8e37d8f11dae1e6298131129374b4ac914",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+## nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 20,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 24,
+  "valid": true
+}
+command_exit_status=0
+
+exit_status=0

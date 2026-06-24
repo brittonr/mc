@@ -1,0 +1,3 @@
+command=target/check-cairn-task-evidence-current cairn/changes/clean-repo-artifact-boundaries/tasks.md
+task evidence gate passed: 5 completed tasks checked across 1 task files
+exit_status=0

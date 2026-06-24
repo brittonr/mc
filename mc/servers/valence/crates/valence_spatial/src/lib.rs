@@ -1,6 +1,7 @@
 #![doc = include_str!("../README.md")]
 
 pub mod bvh;
+pub mod raycast;
 
 pub trait SpatialIndex<N = f64> {
     type Object: Bounded3D<N>;

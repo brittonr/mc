@@ -9,9 +9,7 @@ use valence_nbt::{compound, Compound, Value};
 use valence_protocol::encode::{PacketWriter, WritePacket};
 use valence_protocol::packets::play::chunk_data_s2c::ChunkDataBlockEntity;
 use valence_protocol::packets::play::chunk_delta_update_s2c::ChunkDeltaUpdateEntry;
-use valence_protocol::packets::play::{
-    BlockEntityUpdateS2c, BlockUpdateS2c, ChunkDataS2c, ChunkDeltaUpdateS2c,
-};
+use valence_protocol::packets::play::{BlockEntityUpdateS2c, BlockUpdateS2c, ChunkDeltaUpdateS2c};
 use valence_protocol::{BlockPos, BlockState, ChunkPos, ChunkSectionPos, Encode};
 use valence_registry::biome::BiomeId;
 use valence_registry::RegistryIdx;
@@ -20,6 +18,7 @@ use super::chunk::{
     bit_width, check_biome_oob, check_block_oob, check_section_oob, BiomeContainer,
     BlockStateContainer, Chunk, SECTION_BLOCK_COUNT,
 };
+use super::egress_cache::{self, CachedChunkPacket, ChunkEgressCacheProbe, ChunkEgressSnapshot};
 use super::paletted_container::PalettedContainer;
 use super::unloaded::{self, UnloadedChunk};
 use super::{ChunkLayerInfo, ChunkLayerMessages, LocalMsg};
@@ -38,11 +37,18 @@ pub struct LoadedChunk {
     changed_block_entities: BTreeSet<u32>,
     /// If any biomes in this chunk have been modified this tick.
     changed_biomes: bool,
-    /// Cached bytes of the chunk initialization packet. The cache is considered
-    /// invalidated if empty. This should be cleared whenever the chunk is
-    /// modified in an observable way, even if the chunk is not viewed.
-    cached_init_packets: Mutex<Vec<u8>>,
+    /// Monotonic version for client-visible content that participates in keyed cached egress.
+    content_version: u64,
+    /// Keyed cached bytes of the chunk initialization packet for optional cached egress.
+    cached_init_packet: Mutex<Option<CachedChunkPacket>>,
 }
+
+const INITIAL_CONTENT_VERSION: u64 = 0;
+const CONTENT_VERSION_INCREMENT: u64 = 1;
+const BLOCK_PALETTE_MIN_INDIRECT_BITS: usize = 4;
+const BLOCK_PALETTE_MAX_INDIRECT_BITS: usize = 8;
+const BIOME_PALETTE_MIN_INDIRECT_BITS: usize = 0;
+const BIOME_PALETTE_MAX_INDIRECT_BITS: usize = 3;
 
 #[derive(Clone, Default, Debug)]
 struct Section {
@@ -68,7 +74,8 @@ impl LoadedChunk {
             block_entities: BTreeMap::new(),
             changed_block_entities: BTreeSet::new(),
             changed_biomes: false,
-            cached_init_packets: Mutex::new(vec![]),
+            content_version: INITIAL_CONTENT_VERSION,
+            cached_init_packet: Mutex::new(None),
         }
     }
 
@@ -98,7 +105,7 @@ impl LoadedChunk {
         let old_block_entities = mem::replace(&mut self.block_entities, chunk.block_entities);
         self.changed_block_entities.clear();
         self.changed_biomes = false;
-        self.cached_init_packets.get_mut().clear();
+        self.invalidate_init_packet_cache();
         self.assert_no_changes();
 
         UnloadedChunk {
@@ -123,7 +130,7 @@ impl LoadedChunk {
         let old_block_entities = mem::take(&mut self.block_entities);
         self.changed_block_entities.clear();
         self.changed_biomes = false;
-        self.cached_init_packets.get_mut().clear();
+        self.invalidate_init_packet_cache();
 
         self.assert_no_changes();
 
@@ -357,80 +364,139 @@ impl LoadedChunk {
         pos: ChunkPos,
         info: &ChunkLayerInfo,
     ) {
-        let mut init_packets = self.cached_init_packets.lock();
+        if info.cached_chunk_egress {
+            self.write_init_packets_cached(&mut writer, pos, info);
+        } else {
+            self.write_init_packets_uncached(&mut writer, pos, info);
+        }
+    }
 
-        if init_packets.is_empty() {
-            let heightmaps = compound! {
-                "MOTION_BLOCKING" => LoadedChunk::encode_heightmap(self.motion_blocking()),
-                // TODO Implement `WORLD_SURFACE` (or explain why we don't need it)
-                // "WORLD_SURFACE" => self.encode_heightmap(self.world_surface()),
-            };
+    fn write_init_packets_cached(
+        &self,
+        writer: &mut impl WritePacket,
+        pos: ChunkPos,
+        info: &ChunkLayerInfo,
+    ) {
+        let probe = self.cache_probe(pos, info);
+        let mut cached = self.cached_init_packet.lock();
 
-            let mut blocks_and_biomes: Vec<u8> = vec![];
-
-            for sect in &self.sections {
-                sect.count_non_air_blocks()
-                    .encode(&mut blocks_and_biomes)
-                    .unwrap();
-
-                sect.block_states
-                    .encode_mc_format(
-                        &mut blocks_and_biomes,
-                        |b| b.to_raw().into(),
-                        4,
-                        8,
-                        bit_width(BlockState::max_raw().into()),
-                    )
-                    .expect("paletted container encode should always succeed");
-
-                sect.biomes
-                    .encode_mc_format(
-                        &mut blocks_and_biomes,
-                        |b| b.to_index() as u64,
-                        0,
-                        3,
-                        bit_width(info.biome_registry_len - 1),
-                    )
-                    .expect("paletted container encode should always succeed");
-            }
-
-            let block_entities: Vec<_> = self
-                .block_entities
-                .iter()
-                .filter_map(|(&idx, nbt)| {
-                    let x = idx % 16;
-                    let z = idx / 16 % 16;
-                    let y = idx / 16 / 16;
-
-                    let kind = self.sections[y as usize / 16]
-                        .block_states
-                        .get(idx as usize % SECTION_BLOCK_COUNT)
-                        .block_entity_kind();
-
-                    kind.map(|kind| ChunkDataBlockEntity {
-                        packed_xz: ((x << 4) | z) as i8,
-                        y: y as i16 + info.min_y as i16,
-                        kind,
-                        data: Cow::Borrowed(nbt),
-                    })
-                })
-                .collect();
-
-            PacketWriter::new(&mut init_packets, info.threshold).write_packet(&ChunkDataS2c {
-                pos,
-                heightmaps: Cow::Owned(heightmaps),
-                blocks_and_biomes: &blocks_and_biomes,
-                block_entities: Cow::Owned(block_entities),
-                sky_light_mask: Cow::Borrowed(&[]),
-                block_light_mask: Cow::Borrowed(&[]),
-                empty_sky_light_mask: Cow::Borrowed(&[]),
-                empty_block_light_mask: Cow::Borrowed(&[]),
-                sky_light_arrays: Cow::Borrowed(&[]),
-                block_light_arrays: Cow::Borrowed(&[]),
-            })
+        if let Some(bytes) = egress_cache::cached_packet_bytes(cached.as_ref(), &probe) {
+            writer.write_packet_bytes(bytes);
+            return;
         }
 
-        writer.write_packet_bytes(&init_packets);
+        let packet = self.render_init_packet(pos, info);
+        writer.write_packet_bytes(packet.bytes());
+        *cached = Some(packet);
+    }
+
+    fn write_init_packets_uncached(
+        &self,
+        writer: &mut impl WritePacket,
+        pos: ChunkPos,
+        info: &ChunkLayerInfo,
+    ) {
+        let packet = self.render_init_packet(pos, info);
+        writer.write_packet_bytes(packet.bytes());
+    }
+
+    fn render_init_packet(&self, pos: ChunkPos, info: &ChunkLayerInfo) -> CachedChunkPacket {
+        egress_cache::render_chunk_packet(self.init_packet_snapshot(pos, info))
+            .expect("chunk init packet render should have complete inputs")
+    }
+
+    fn cache_probe<'a>(
+        &'a self,
+        pos: ChunkPos,
+        info: &'a ChunkLayerInfo,
+    ) -> ChunkEgressCacheProbe<'a> {
+        ChunkEgressCacheProbe {
+            pos,
+            protocol_version: valence_protocol::PROTOCOL_VERSION,
+            dimension_type_name: info.dimension_type_name.as_str(),
+            height: info.height,
+            min_y: info.min_y,
+            biome_registry_len: info.biome_registry_len,
+            compression_threshold: info.threshold,
+            content_version: self.content_version,
+            light_fingerprint: Some(egress_cache::empty_light_fingerprint()),
+        }
+    }
+
+    fn init_packet_snapshot<'a>(
+        &'a self,
+        pos: ChunkPos,
+        info: &'a ChunkLayerInfo,
+    ) -> ChunkEgressSnapshot<'a> {
+        let heightmaps = compound! {
+            "MOTION_BLOCKING" => LoadedChunk::encode_heightmap(self.motion_blocking()),
+            // TODO Implement `WORLD_SURFACE` (or explain why we don't need it)
+            // "WORLD_SURFACE" => self.encode_heightmap(self.world_surface()),
+        };
+
+        let mut blocks_and_biomes: Vec<u8> = vec![];
+
+        for sect in &self.sections {
+            sect.count_non_air_blocks()
+                .encode(&mut blocks_and_biomes)
+                .unwrap();
+
+            sect.block_states
+                .encode_mc_format(
+                    &mut blocks_and_biomes,
+                    |b| b.to_raw().into(),
+                    BLOCK_PALETTE_MIN_INDIRECT_BITS,
+                    BLOCK_PALETTE_MAX_INDIRECT_BITS,
+                    bit_width(BlockState::max_raw().into()),
+                )
+                .expect("paletted container encode should always succeed");
+
+            sect.biomes
+                .encode_mc_format(
+                    &mut blocks_and_biomes,
+                    |b| b.to_index() as u64,
+                    BIOME_PALETTE_MIN_INDIRECT_BITS,
+                    BIOME_PALETTE_MAX_INDIRECT_BITS,
+                    bit_width(info.biome_registry_len - 1),
+                )
+                .expect("paletted container encode should always succeed");
+        }
+
+        let block_entities: Vec<_> = self
+            .block_entities
+            .iter()
+            .filter_map(|(&idx, nbt)| {
+                let x = idx % 16;
+                let z = idx / 16 % 16;
+                let y = idx / 16 / 16;
+
+                let kind = self.sections[y as usize / 16]
+                    .block_states
+                    .get(idx as usize % SECTION_BLOCK_COUNT)
+                    .block_entity_kind();
+
+                kind.map(|kind| ChunkDataBlockEntity {
+                    packed_xz: ((x << 4) | z) as i8,
+                    y: y as i16 + info.min_y as i16,
+                    kind,
+                    data: Cow::Borrowed(nbt),
+                })
+            })
+            .collect();
+
+        ChunkEgressSnapshot {
+            probe: self.cache_probe(pos, info),
+            heightmaps,
+            blocks_and_biomes,
+            block_entities,
+        }
+    }
+
+    fn invalidate_init_packet_cache(&mut self) {
+        invalidate_init_packet_cache_parts(
+            &mut self.content_version,
+            self.cached_init_packet.get_mut(),
+        );
     }
 
     /// Asserts that no changes to this chunk are currently recorded.
@@ -446,6 +512,16 @@ impl LoadedChunk {
             }
         }
     }
+}
+
+fn invalidate_init_packet_cache_parts(
+    content_version: &mut u64,
+    cached_init_packet: &mut Option<CachedChunkPacket>,
+) {
+    *content_version = content_version
+        .checked_add(CONTENT_VERSION_INCREMENT)
+        .expect("chunk content version should not overflow");
+    cached_init_packet.take();
 }
 
 impl Chunk for LoadedChunk {
@@ -472,7 +548,10 @@ impl Chunk for LoadedChunk {
         let old_block = sect.block_states.set(idx as usize, block);
 
         if block != old_block {
-            self.cached_init_packets.get_mut().clear();
+            invalidate_init_packet_cache_parts(
+                &mut self.content_version,
+                self.cached_init_packet.get_mut(),
+            );
 
             if *self.viewer_count.get_mut() > 0 {
                 sect.updates.push(
@@ -495,7 +574,10 @@ impl Chunk for LoadedChunk {
 
         if let PalettedContainer::Single(b) = &sect.block_states {
             if *b != block {
-                self.cached_init_packets.get_mut().clear();
+                invalidate_init_packet_cache_parts(
+                    &mut self.content_version,
+                    self.cached_init_packet.get_mut(),
+                );
 
                 if *self.viewer_count.get_mut() > 0 {
                     // The whole section is being modified, so any previous modifications would
@@ -526,7 +608,10 @@ impl Chunk for LoadedChunk {
                         let idx = x + z * 16 + (sect_y * 16 + y) * (16 * 16);
 
                         if block != sect.block_states.get(idx as usize) {
-                            self.cached_init_packets.get_mut().clear();
+                            invalidate_init_packet_cache_parts(
+                                &mut self.content_version,
+                                self.cached_init_packet.get_mut(),
+                            );
 
                             if *self.viewer_count.get_mut() > 0 {
                                 sect.updates.push(
@@ -562,7 +647,10 @@ impl Chunk for LoadedChunk {
             if *self.viewer_count.get_mut() > 0 {
                 self.changed_block_entities.insert(idx);
             }
-            self.cached_init_packets.get_mut().clear();
+            invalidate_init_packet_cache_parts(
+                &mut self.content_version,
+                self.cached_init_packet.get_mut(),
+            );
 
             Some(be)
         } else {
@@ -586,7 +674,7 @@ impl Chunk for LoadedChunk {
                 if *self.viewer_count.get_mut() > 0 {
                     self.changed_block_entities.insert(idx);
                 }
-                self.cached_init_packets.get_mut().clear();
+                self.invalidate_init_packet_cache();
 
                 self.block_entities.insert(idx, nbt)
             }
@@ -594,7 +682,7 @@ impl Chunk for LoadedChunk {
                 let res = self.block_entities.remove(&idx);
 
                 if res.is_some() {
-                    self.cached_init_packets.get_mut().clear();
+                    self.invalidate_init_packet_cache();
                 }
 
                 res
@@ -607,7 +695,7 @@ impl Chunk for LoadedChunk {
             return;
         }
 
-        self.cached_init_packets.get_mut().clear();
+        self.invalidate_init_packet_cache();
 
         if *self.viewer_count.get_mut() > 0 {
             self.changed_block_entities
@@ -633,7 +721,7 @@ impl Chunk for LoadedChunk {
             .set(idx as usize, biome);
 
         if biome != old_biome {
-            self.cached_init_packets.get_mut().clear();
+            self.invalidate_init_packet_cache();
 
             if *self.viewer_count.get_mut() > 0 {
                 self.changed_biomes = true;
@@ -650,11 +738,17 @@ impl Chunk for LoadedChunk {
 
         if let PalettedContainer::Single(b) = &sect.biomes {
             if *b != biome {
-                self.cached_init_packets.get_mut().clear();
+                invalidate_init_packet_cache_parts(
+                    &mut self.content_version,
+                    self.cached_init_packet.get_mut(),
+                );
                 self.changed_biomes = *self.viewer_count.get_mut() > 0;
             }
         } else {
-            self.cached_init_packets.get_mut().clear();
+            invalidate_init_packet_cache_parts(
+                &mut self.content_version,
+                self.cached_init_packet.get_mut(),
+            );
             self.changed_biomes = *self.viewer_count.get_mut() > 0;
         }
 
@@ -662,7 +756,9 @@ impl Chunk for LoadedChunk {
     }
 
     fn shrink_to_fit(&mut self) {
-        self.cached_init_packets.get_mut().shrink_to_fit();
+        if let Some(packet) = self.cached_init_packet.get_mut() {
+            packet.shrink_to_fit();
+        }
 
         for sect in &mut self.sections {
             sect.block_states.shrink_to_fit();
@@ -696,59 +792,117 @@ mod tests {
     }
 
     #[test]
-    fn loaded_chunk_changes_clear_packet_cache() {
+    fn loaded_chunk_default_uncached_writer_keeps_packet_cache_empty() {
+        let mut chunk = LoadedChunk::new(TEST_CHUNK_HEIGHT);
+        let info = test_info(false);
+        let mut buf = vec![];
+        let mut writer = PacketWriter::new(&mut buf, CompressionThreshold::DEFAULT);
+
+        chunk.write_init_packets(&mut writer, test_pos(), &info);
+
+        assert!(!buf.is_empty());
+        assert!(chunk.cached_init_packet.get_mut().is_none());
+    }
+
+    #[test]
+    fn loaded_chunk_cache_hit_reuses_identical_packet_bytes() {
+        let mut chunk = LoadedChunk::new(TEST_CHUNK_HEIGHT);
+        let info = test_info(true);
+        let mut first_buf = vec![];
+        let mut first_writer = PacketWriter::new(&mut first_buf, CompressionThreshold::DEFAULT);
+        let mut second_buf = vec![];
+        let mut second_writer = PacketWriter::new(&mut second_buf, CompressionThreshold::DEFAULT);
+
+        chunk.write_init_packets(&mut first_writer, test_pos(), &info);
+        assert!(chunk.cached_init_packet.get_mut().is_some());
+
+        chunk.write_init_packets(&mut second_writer, test_pos(), &info);
+
+        assert_eq!(first_buf, second_buf);
+        assert!(chunk.cached_init_packet.get_mut().is_some());
+    }
+
+    #[test]
+    fn loaded_chunk_changes_invalidate_optional_packet_cache() {
         #[track_caller]
         fn check<T>(chunk: &mut LoadedChunk, change: impl FnOnce(&mut LoadedChunk) -> T) {
-            let info = ChunkLayerInfo {
-                dimension_type_name: ident!("whatever").into(),
-                height: 512,
-                min_y: -16,
-                biome_registry_len: 200,
-                threshold: CompressionThreshold(-1),
-            };
-
+            let info = test_info(true);
             let mut buf = vec![];
-            let mut writer = PacketWriter::new(&mut buf, CompressionThreshold(-1));
+            let mut writer = PacketWriter::new(&mut buf, CompressionThreshold::DEFAULT);
 
             // Rebuild cache.
-            chunk.write_init_packets(&mut writer, ChunkPos::new(3, 4), &info);
+            chunk.write_init_packets(&mut writer, test_pos(), &info);
 
             // Check that the cache is built.
-            assert!(!chunk.cached_init_packets.get_mut().is_empty());
+            assert!(chunk.cached_init_packet.get_mut().is_some());
 
             // Making a change should clear the cache.
             change(chunk);
-            assert!(chunk.cached_init_packets.get_mut().is_empty());
+            assert!(chunk.cached_init_packet.get_mut().is_none());
 
             // Rebuild cache again.
-            chunk.write_init_packets(&mut writer, ChunkPos::new(3, 4), &info);
-            assert!(!chunk.cached_init_packets.get_mut().is_empty());
+            chunk.write_init_packets(&mut writer, test_pos(), &info);
+            assert!(chunk.cached_init_packet.get_mut().is_some());
         }
 
-        let mut chunk = LoadedChunk::new(512);
+        let mut chunk = LoadedChunk::new(TEST_CHUNK_HEIGHT);
 
         check(&mut chunk, |c| {
-            c.set_block_state(0, 4, 0, BlockState::ACACIA_WOOD)
+            c.set_block_state(
+                TEST_BLOCK_X,
+                TEST_BLOCK_Y,
+                TEST_BLOCK_Z,
+                BlockState::ACACIA_WOOD,
+            )
         });
-        check(&mut chunk, |c| c.set_biome(1, 2, 3, BiomeId::from_index(4)));
+        check(&mut chunk, |c| {
+            c.set_biome(
+                TEST_BIOME_X,
+                TEST_BIOME_Y,
+                TEST_BIOME_Z,
+                BiomeId::from_index(TEST_BIOME_ID),
+            )
+        });
         check(&mut chunk, |c| c.fill_biomes(BiomeId::DEFAULT));
         check(&mut chunk, |c| c.fill_block_states(BlockState::WET_SPONGE));
         check(&mut chunk, |c| {
-            c.set_block_entity(3, 40, 5, Some(compound! {}))
+            c.set_block_entity(
+                TEST_BLOCK_ENTITY_X,
+                TEST_BLOCK_ENTITY_Y,
+                TEST_BLOCK_ENTITY_Z,
+                Some(compound! {}),
+            )
         });
         check(&mut chunk, |c| {
-            c.block_entity_mut(3, 40, 5).unwrap();
+            c.block_entity_mut(
+                TEST_BLOCK_ENTITY_X,
+                TEST_BLOCK_ENTITY_Y,
+                TEST_BLOCK_ENTITY_Z,
+            )
+            .unwrap();
         });
-        check(&mut chunk, |c| c.set_block_entity(3, 40, 5, None));
+        check(&mut chunk, |c| {
+            c.set_block_entity(
+                TEST_BLOCK_ENTITY_X,
+                TEST_BLOCK_ENTITY_Y,
+                TEST_BLOCK_ENTITY_Z,
+                None,
+            )
+        });
 
         // Old block state is the same as new block state, so the cache should still be
         // intact.
         assert_eq!(
-            chunk.set_block_state(0, 0, 0, BlockState::WET_SPONGE),
+            chunk.set_block_state(
+                TEST_AIR_BLOCK_X,
+                TEST_AIR_BLOCK_Y,
+                TEST_AIR_BLOCK_Z,
+                BlockState::WET_SPONGE
+            ),
             BlockState::WET_SPONGE
         );
 
-        assert!(!chunk.cached_init_packets.get_mut().is_empty());
+        assert!(chunk.cached_init_packet.get_mut().is_some());
     }
 
     #[test]
@@ -814,5 +968,39 @@ mod tests {
             .count()
             .try_into()
             .unwrap()
+    }
+
+    const TEST_CHUNK_HEIGHT: u32 = 512;
+    const TEST_DIMENSION_MIN_Y: i32 = -16;
+    const TEST_BIOME_REGISTRY_LEN: usize = 200;
+    const TEST_CHUNK_X: i32 = 3;
+    const TEST_CHUNK_Z: i32 = 4;
+    const TEST_BLOCK_X: u32 = 0;
+    const TEST_BLOCK_Y: u32 = 4;
+    const TEST_BLOCK_Z: u32 = 0;
+    const TEST_BIOME_X: u32 = 1;
+    const TEST_BIOME_Y: u32 = 2;
+    const TEST_BIOME_Z: u32 = 3;
+    const TEST_BIOME_ID: usize = 4;
+    const TEST_BLOCK_ENTITY_X: u32 = 3;
+    const TEST_BLOCK_ENTITY_Y: u32 = 40;
+    const TEST_BLOCK_ENTITY_Z: u32 = 5;
+    const TEST_AIR_BLOCK_X: u32 = 0;
+    const TEST_AIR_BLOCK_Y: u32 = 0;
+    const TEST_AIR_BLOCK_Z: u32 = 0;
+
+    fn test_info(cached_chunk_egress: bool) -> ChunkLayerInfo {
+        ChunkLayerInfo {
+            dimension_type_name: ident!("whatever").into(),
+            height: TEST_CHUNK_HEIGHT,
+            min_y: TEST_DIMENSION_MIN_Y,
+            biome_registry_len: TEST_BIOME_REGISTRY_LEN,
+            threshold: CompressionThreshold::DEFAULT,
+            cached_chunk_egress,
+        }
+    }
+
+    fn test_pos() -> ChunkPos {
+        ChunkPos::new(TEST_CHUNK_X, TEST_CHUNK_Z)
     }
 }

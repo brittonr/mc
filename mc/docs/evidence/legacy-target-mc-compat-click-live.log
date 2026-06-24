@@ -1,0 +1,129 @@
+[mc-compat] building Stevenarella client
+warning: `/home/brittonr/git/mc/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: file `/home/brittonr/git/mc/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1052:36
+     |
+1052 |         offsets |protocol_version| (instrument.offsets(protocol_version)
+     |                                    ^
+1053 |             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 })),
+     |                                                                                                    ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1052 ~         offsets |protocol_version| instrument.offsets(protocol_version)
+1053 ~             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+     |
+
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1407:36
+     |
+1407 |         offsets |protocol_version| (variant.offsets(protocol_version)),
+     |                                    ^                                 ^
+     |
+help: remove these parentheses
+     |
+1407 -         offsets |protocol_version| (variant.offsets(protocol_version)),
+1407 +         offsets |protocol_version| variant.offsets(protocol_version),
+     |
+
+warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
+   Compiling steven_protocol v0.0.1 (/home/brittonr/git/mc/stevenarella/protocol)
+   Compiling stevenarella v0.0.1 (/home/brittonr/git/mc/stevenarella)
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:102:21
+    |
+102 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+252 | / define_elements! {
+253 | |     Image,
+254 | |     Batch,
+255 | |     Text,
+...   |
+258 | |     TextBox,
+259 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+102 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib) generated 2 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (bin "stevenarella") generated 2 warnings (2 duplicates)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 19.41s
+[mc-compat] creating isolated Valence worktree /tmp/valence-compat-763 at main
+Preparing worktree (detached HEAD 7d2afee)
+HEAD is now at 7d2afee Log inventory click compatibility milestone
+[mc-compat] starting Valence main example 'ctf' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+{"description":{"text":"A Valence Server"},"players":{"max":20,"online":0,"sample":[]},"version":{"name":"1.20.1","protocol":763}}
+[mc-compat] running Stevenarella headless scenario 'inventory-interaction' isolated from host Wayland compositor
+[main.rs:254][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:346][INFO] Shader version: #version 150
+[main.rs:99][INFO] Detected server protocol version 763
+[server/mod.rs:167][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25565
+[server/mod.rs:172][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:189][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:203][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:210][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:271][WARN] Server is running in offline mode
+[server/mod.rs:272][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbot properties=0
+[server/mod.rs:1673][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[server/mod.rs:1740][INFO] MC-COMPAT-MILESTONE join_game entity_id=0 gamemode=Adventure
+[server/mod.rs:2770][INFO] Received chat message: Welcome to Valence! Select a team by jumping in the team's portal.
+[server/mod.rs:2366][INFO] MC-COMPAT-MILESTONE inventory_probe_current_hotbar_slot slot=0
+[server/mod.rs:2305][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=255 state_id=0 slot=-1 item=empty
+[server/mod.rs:2208][INFO] MC-COMPAT-MILESTONE update_health health=20.0 food=20 saturation=0.0
+[server/mod.rs:2900][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=0
+[server/mod.rs:725][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:767][INFO] MC-COMPAT-MILESTONE active_probe_input_start forward+sprint+jump
+[server/mod.rs:1325][INFO] MC-COMPAT-MILESTONE active_probe_position_look_sent x=0.000 y=82.305 z=2.245 on_ground=false
+[server/mod.rs:773][INFO] MC-COMPAT-MILESTONE active_probe_jump_release
+[server/mod.rs:777][INFO] MC-COMPAT-MILESTONE active_probe_input_turn right
+[server/mod.rs:781][INFO] MC-COMPAT-MILESTONE active_probe_input_stop
+[server/mod.rs:801][INFO] MC-COMPAT-MILESTONE team_probe_enter_red_portal x=-4.0 y=84.0 z=4.0
+[server/mod.rs:820][INFO] MC-COMPAT-MILESTONE team_probe_hold_red_portal start
+[server/mod.rs:2770][INFO] Received chat message: You are on team RED!
+[server/mod.rs:2305][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=1 slot=36 item=id=777 count=1
+[server/mod.rs:2317][INFO] MC-COMPAT-MILESTONE inventory_probe_slot36_nonempty count=1 item_id=777
+[server/mod.rs:2305][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=1 slot=37 item=id=194 count=64
+[server/mod.rs:2338][INFO] MC-COMPAT-MILESTONE inventory_probe_slot37_stack count=64 item_id=194
+[server/mod.rs:2192][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=4 uuid=UUID(2296207233979137544, 12198587176558003987) name=compatbot x=-40.000 y=65.000 z=0.000
+[server/mod.rs:833][INFO] MC-COMPAT-MILESTONE team_probe_select_hotbar_slot slot=0
+[server/mod.rs:837][INFO] MC-COMPAT-MILESTONE team_probe_use_item_sent hand=main sequence=0
+[server/mod.rs:907][INFO] MC-COMPAT-MILESTONE inventory_probe_select_hotbar_slot slot=0
+[server/mod.rs:916][INFO] MC-COMPAT-MILESTONE inventory_probe_drop_item_sent status=drop_item slot=36 sequence=77
+[server/mod.rs:2352][INFO] MC-COMPAT-MILESTONE inventory_probe_collect_item collected_entity_id=7630036 collector_entity_id=3 count=1
+[server/mod.rs:931][INFO] MC-COMPAT-MILESTONE inventory_probe_select_wool_hotbar_slot slot=1
+[server/mod.rs:933][INFO] MC-COMPAT-MILESTONE inventory_probe_place_block_sent hand=main location=-40,64,0 face=up sequence=88
+[server/mod.rs:2305][INFO] MC-COMPAT-MILESTONE inventory_probe_set_slot window=0 state_id=2 slot=37 item=id=194 count=63
+[server/mod.rs:955][INFO] MC-COMPAT-MILESTONE inventory_probe_click_slot_sent window=0 slot=37 state_id=2 button=0 mode=click carried_item=RedWool count=63
+[mc-compat] client compatbot finished Some(124); log: /tmp/mc-compat-client.compatbot.1779759454845.log
+[mc-compat] stopping managed Valence server process 2774556
+[mc-compat] wrote smoke receipt target/mc-compat-click/click.json

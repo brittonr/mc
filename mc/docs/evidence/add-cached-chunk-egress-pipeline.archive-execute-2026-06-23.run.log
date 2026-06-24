@@ -1,0 +1,84 @@
+# add-cached-chunk-egress-pipeline archive execute
+cwd=/home/brittonr/git/mc
+command: CAIRN_ARCHIVE_DATE=2026-06-23 nix run .#cairn -- archive add-cached-chunk-egress-pipeline --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-cached-chunk-egress-pipeline",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-23-add-cached-chunk-egress-pipeline"
+    }
+  ],
+  "blocked": false,
+  "change": "add-cached-chunk-egress-pipeline",
+  "dry_run": false,
+  "input_hash": "d4c33024cc05e532f4ffccefb004e7f4932c78d2e3b703c9062bbd88f7317a1e",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "f90b0427d63bfb55349e2b048c8763742ad0cd0e8d3869e8fe82d4e7b1afedeb",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-add-cached-chunk-egress-pipeline/design.md"
+        },
+        {
+          "content_hash": "7f2b7c3d49af1fb8b93338f77eb21451050d78480fc6412196b69d9afb3e2296",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-add-cached-chunk-egress-pipeline/proposal.md"
+        },
+        {
+          "content_hash": "6a1293219eec071a0fa90dffc704efb27a1caf4eb3d1d821cca5e751e3c2554e",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-add-cached-chunk-egress-pipeline/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "652aa491ddf9873f9972077e4330f02a8ac70426f99b6090c1f07d8bded423ef",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-23-add-cached-chunk-egress-pipeline/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/add-cached-chunk-egress-pipeline"
+        }
+      ],
+      "manifest_hash": "89186dcd1430441436efae7965e0f9063a5f1e6b309eb18b0bc54188ba808307"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "f90b0427d63bfb55349e2b048c8763742ad0cd0e8d3869e8fe82d4e7b1afedeb",
+          "exists": true,
+          "path": "./cairn/changes/add-cached-chunk-egress-pipeline/design.md"
+        },
+        {
+          "content_hash": "7f2b7c3d49af1fb8b93338f77eb21451050d78480fc6412196b69d9afb3e2296",
+          "exists": true,
+          "path": "./cairn/changes/add-cached-chunk-egress-pipeline/proposal.md"
+        },
+        {
+          "content_hash": "6a1293219eec071a0fa90dffc704efb27a1caf4eb3d1d821cca5e751e3c2554e",
+          "exists": true,
+          "path": "./cairn/changes/add-cached-chunk-egress-pipeline/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "652aa491ddf9873f9972077e4330f02a8ac70426f99b6090c1f07d8bded423ef",
+          "exists": true,
+          "path": "./cairn/changes/add-cached-chunk-egress-pipeline/tasks.md"
+        }
+      ],
+      "manifest_hash": "7e5dbda3bc928eb16bf340ec03bfdc94f2cef5ee04bbaa89bf259827fc14979a"
+    },
+    "kind": "archive",
+    "manifest_hash": "46dfe7414f4fbb810f5c9f03f136645d5b9e017b912d2b424630426c002ac362"
+  },
+  "plan_hash": "de7905ec96e333d98de5d6ce23211551335295f670a751ecc65a59aeac71fe0d",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "ed58443d5c92b49da6ac8ad31ae43f6e2f0e75a40cb80b0e6d069e4bae1e5f95"
+}
+archive_execute_exit_status=0
+exit_status=0

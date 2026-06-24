@@ -1,0 +1,8 @@
+dad732a0b92d56200cbeb9c833f090a5db0eb5cbf6bb1250f082f09916984bf6  docs/architecture.md
+c83e3e73d0d5b8b0d4ce27dc89a5e068031cba22ff71d0c9cda1758488a993c5  docs/evidence/modularize-compat-runner-core-pre-gates-2026-06-23.run.log
+75f54bd4520d38de67809135a135230547a511484a99702297ed86ffe3437692  docs/evidence/modularize-compat-runner-core-baseline-runner-tests-2026-06-23.run.log
+47aea32037225f904cf0be5a58fd1a3b0f9f2f13eb5c9cb3f022a02b555d4c7f  docs/evidence/modularize-compat-runner-core-runner-fmt-2026-06-23.run.log
+d6321edd3656039f110c8da5fab2af4b363ef8cd2b6bfeb8c36b60b99488fc49  docs/evidence/modularize-compat-runner-core-postfmt-runner-tests-2026-06-23.run.log
+b4a6f148e9f557a4c492b268a00acdf7013ff7ea9dbf29837f274300a323d4a9  docs/evidence/modularize-compat-runner-core-dependency-audit-rerun-2026-06-23.run.log
+df13346e41778d95d0da9e600ea26eb72d6157e9c29ad724f8142137b09aacf9  docs/evidence/modularize-compat-runner-core-maintained-dry-run-derivations-2026-06-23.run.log
+1682c0d0ca57f03b6240ec8a0cf4cde4af9116222cd3fc5485b0a35df6402f3e  docs/evidence/modularize-compat-runner-core-final-cairn-gates-validate-2026-06-23.run.log

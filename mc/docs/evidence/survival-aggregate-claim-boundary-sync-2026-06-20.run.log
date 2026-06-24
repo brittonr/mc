@@ -1,0 +1,61 @@
+# survival aggregate claim boundary Cairn sync
+command: cairn sync --execute; cairn validate; grep requirement id
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/survival-aggregate-parity-claim-boundary/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/survival-aggregate-parity-claim-boundary/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-aggregate-parity-claim-boundary",
+  "delta_specs": [
+    "/home/brittonr/git/mc/cairn/changes/survival-aggregate-parity-claim-boundary/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "ee5bb8e0adef0218e1b9858404ddc08c9d843b1ecb35714ca1cb888326ebf59e",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "45ffdf60f6e5b4c21e7310250bc81b514d6b35ffe9184357f1446e53b2569476",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "c75de31c2d52bd9bc4cf3d294213feea0f98df008aaf78cd5116b49b4168ec34"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "45ffdf60f6e5b4c21e7310250bc81b514d6b35ffe9184357f1446e53b2569476",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "c75de31c2d52bd9bc4cf3d294213feea0f98df008aaf78cd5116b49b4168ec34"
+    },
+    "kind": "sync",
+    "manifest_hash": "2e9c3c3a22e586d4df04ed1c3780c01761753b586242c7033982db7ae91d8dd0"
+  },
+  "plan_hash": "c8adda26563373a6b627f406f82a23fc56ecbec11ee056f42710730db90c0edb",
+  "policy": "cairn-default",
+  "policy_hash": "7d2c6606b81e38f9414e81df24c64c9a638d4c238d8a9c04412ac95e347c3355",
+  "reasons": [],
+  "receipt_hash": "38e814220445ba8d80b215a66a87baacef8dc1e87c7a3fae9843c06576a06c71"
+}
+{
+  "change_issues": [],
+  "changes": 10,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 12,
+  "valid": true
+}
+
+exit_status=1

@@ -1,0 +1,6 @@
+command=nix build .#checks.x86_64-linux.mc-compat-layout-boundaries --no-link -L 
+this derivation will be built:
+  /nix/store/0mdi8q9539h4j1s7k23mjn9qf6mj3zfi-mc-compat-layout-boundaries.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/0mdi8q9539h4j1s7k23mjn9qf6mj3zfi-mc-compat-layout-boundaries.drv'...
+exit_status=0

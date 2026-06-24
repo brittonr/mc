@@ -1,0 +1,24 @@
+# CTF invalid-action live breadth local bundle/matrix checks
+started_at=2026-06-23T01:48:31Z
+## acceptance_matrix
+command=nix develop --no-update-lock-file . -c bash -lc rustc --edition=2021 tools/check_acceptance_matrix.rs -o /tmp/check_acceptance_matrix && /tmp/check_acceptance_matrix --self-test && /tmp/check_acceptance_matrix
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+acceptance matrix self-test ok: positive and negative fixtures exercised
+acceptance matrix check passed: 62 rows validated
+acceptance_matrix_exit_status=0
+## current_bundle
+command=nix develop --no-update-lock-file . -c bash -lc rustc --edition=2021 tools/check_current_evidence_bundle.rs -o /tmp/check_current_evidence_bundle && /tmp/check_current_evidence_bundle --self-test && /tmp/check_current_evidence_bundle
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+current evidence bundle check failed: bundle missing required text: Survival mob AI/loot breadth
+current evidence bundle check failed: bundle missing required text: Survival redstone circuit breadth
+current evidence bundle check failed: bundle missing required text: Survival biome/dimension travel
+current evidence bundle check failed: bundle missing required text: Survival world multichunk durability
+current evidence bundle check failed: bundle missing required text: Survival container block-entity breadth
+current evidence bundle check failed: bundle missing required text: Survival sign editing live
+current_bundle_exit_status=1
+finished_at=2026-06-23T01:48:38Z
+exit_status=1

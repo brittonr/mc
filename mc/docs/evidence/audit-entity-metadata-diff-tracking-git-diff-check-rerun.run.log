@@ -1,0 +1,5 @@
+command=git diff --cached --check
+cwd=/home/brittonr/git/mc
+started_at=2026-06-23T12:19:23Z
+finished_at=2026-06-23T12:19:23Z
+exit_status=0

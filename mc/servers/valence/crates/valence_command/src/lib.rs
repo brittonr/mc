@@ -1,3 +1,4 @@
+pub mod admin_permissions;
 pub mod graph;
 pub mod handler;
 pub mod manager;

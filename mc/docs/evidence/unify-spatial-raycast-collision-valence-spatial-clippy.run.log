@@ -1,0 +1,43 @@
+# focused clippy: valence_spatial
+timestamp=2026-06-24T01:52:03Z
+$ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo clippy -p valence_spatial --all-targets -- -D warnings
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+    Checking either v1.15.0
+    Checking crossbeam-utils v0.8.21
+    Checking num-traits v0.2.19
+    Checking serde v1.0.228
+    Checking crossbeam-epoch v0.9.18
+    Checking approx v0.5.1
+    Checking num-integer v0.1.46
+    Checking crossbeam-deque v0.8.6
+    Checking vek v0.17.2
+    Checking rayon-core v1.13.0
+    Checking rayon v1.12.0
+    Checking valence_spatial v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_spatial)
+warning: lint `clippy::string_to_string` has been removed: `clippy::implicit_clone` covers those cases
+  |
+  = note: requested on the command line with `-W clippy::string_to_string`
+  = note: `#[warn(renamed_and_removed_lints)]` on by default
+
+error: this `let...else` may be rewritten with the `?` operator
+  --> crates/valence_spatial/src/bvh/traverse.rs:43:13
+   |
+43 | /             let Some(node) = stack.pop() else {
+44 | |                 return None;
+45 | |             };
+   | |______________^ help: replace it with: `let node = stack.pop()?;`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#question_mark
+   = note: `-D clippy::question-mark` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::question_mark)]`
+
+warning: `valence_spatial` (lib) generated 1 warning (1 duplicate)
+error: could not compile `valence_spatial` (lib) due to 1 previous error; 1 warning emitted
+warning: build failed, waiting for other jobs to finish...
+warning: `valence_spatial` (lib test) generated 1 warning
+error: could not compile `valence_spatial` (lib test) due to 1 previous error; 1 warning emitted
+exit_status=101
+]0;

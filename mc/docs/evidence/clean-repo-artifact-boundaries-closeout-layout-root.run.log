@@ -1,0 +1,5 @@
+command=./tools/check_layout_boundaries.rs --root .
+severity=Advisory code=root_transient_artifact path=result rule=root_transient_artifact message=root transient artifact result should stay scratch-only owner_or_waiver_hint=transient root artifacts are advisory unless cited as review evidence next_action=move review-critical output under docs/evidence/ with a BLAKE3 manifest, otherwise leave it ignored or clean it locally
+severity=Advisory code=root_transient_artifact path=target rule=root_transient_artifact message=root transient artifact target should stay scratch-only owner_or_waiver_hint=transient root artifacts are advisory unless cited as review evidence next_action=move review-critical output under docs/evidence/ with a BLAKE3 manifest, otherwise leave it ignored or clean it locally
+severity=Required code=undocumented_root_directory path=nix rule=undocumented_root_directory message=root directory nix is absent from docs/layout-checklist.md owner_or_waiver_hint=docs/layout-checklist.md is the component registry and root allowlist next_action=document the root directory with ownership/default-gate policy or remove the accidental directory
+exit_status=1

@@ -1,0 +1,12 @@
+# format valence_spatial
+timestamp=2026-06-24T01:50:43Z
+$ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo +nightly fmt -p valence_spatial
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+error: no such command: `+nightly`
+
+help: invoke `cargo` through `rustup` to handle `+toolchain` directives
+exit_status=101
+]0;

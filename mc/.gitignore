@@ -1,1 +1,12 @@
 .pi/
+
+# Root-only transient build/run outputs. Durable review evidence stays visible under docs/evidence/.
+/result
+/result-*
+/target/
+/target-*.log
+/*.run.log
+
+# Local interpreter caches.
+__pycache__/
+*.py[cod]

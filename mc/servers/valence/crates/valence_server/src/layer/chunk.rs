@@ -1,5 +1,6 @@
 #[allow(clippy::module_inception)]
 mod chunk;
+mod egress_cache;
 pub mod loaded;
 mod paletted_container;
 pub mod unloaded;
@@ -46,6 +47,7 @@ pub(crate) struct ChunkLayerInfo {
     min_y: i32,
     biome_registry_len: usize,
     threshold: CompressionThreshold,
+    cached_chunk_egress: bool,
 }
 
 impl fmt::Debug for ChunkLayerInfo {
@@ -56,6 +58,7 @@ impl fmt::Debug for ChunkLayerInfo {
             .field("min_y", &self.min_y)
             .field("biome_registry_len", &self.biome_registry_len)
             .field("threshold", &self.threshold)
+            .field("cached_chunk_egress", &self.cached_chunk_egress)
             // Ignore sky light mask and array.
             .finish()
     }
@@ -151,6 +154,7 @@ impl ChunkLayer {
                 min_y: dim.min_y,
                 biome_registry_len: biomes.iter().len(),
                 threshold: server.compression_threshold(),
+                cached_chunk_egress: false,
             },
         }
     }
@@ -168,6 +172,26 @@ impl ChunkLayer {
     /// The `min_y` of this instance's dimension.
     pub fn min_y(&self) -> i32 {
         self.info.min_y
+    }
+
+    /// Returns `true` when chunk initialization packets may use the keyed cached egress path.
+    pub fn cached_chunk_egress_enabled(&self) -> bool {
+        self.info.cached_chunk_egress
+    }
+
+    /// Selects whether chunk initialization packets may use the keyed cached egress path.
+    pub fn set_cached_chunk_egress_enabled(&mut self, enabled: bool) {
+        self.info.cached_chunk_egress = enabled;
+    }
+
+    /// Enables the keyed cached chunk egress path for future chunk initialization sends.
+    pub fn enable_cached_chunk_egress(&mut self) {
+        self.set_cached_chunk_egress_enabled(true);
+    }
+
+    /// Disables the keyed cached chunk egress path and keeps future sends on the uncached renderer.
+    pub fn disable_cached_chunk_egress(&mut self) {
+        self.set_cached_chunk_egress_enabled(false);
     }
 
     /// Get a reference to the chunk at the given position, if it is loaded.

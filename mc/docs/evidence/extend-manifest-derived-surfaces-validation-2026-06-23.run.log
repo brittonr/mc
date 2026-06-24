@@ -1,0 +1,367 @@
+# extend-manifest-derived-surfaces validation
+cwd=/home/brittonr/git/mc
+date_utc=2026-06-23T16:38:59Z
+
+$ nix develop --no-update-lock-file -c sh -c rustc --edition=2021 tools/check_scenario_manifest.rs -o target/check-scenario-manifest-dev && target/check-scenario-manifest-dev --self-test && target/check-scenario-manifest-dev --check-generated-surfaces && target/check-scenario-manifest-dev
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+scenario manifest self-test passed: positive and negative fixtures exercised, including wrapper metadata and stale-output rejection
+generated surface check passed: 3 generated surfaces current; fallback budget: approved=[survival-biome-dimension-state,survival-block-entity-persistence-parity,survival-crash-recovery-parity,survival-hunger-food,survival-mob-drop,survival-redstone-toggle,survival-world-persistence-restart,valence-compat-bot-probe,vanilla-combat-armor-reference-parity,vanilla-combat-reference-parity]; removed=[armor-equipment-mitigation,blue-flag-score,combat-damage,combat-knockback,ctf-invalid-pickup-ownership,ctf-invalid-return-drop,ctf-score-limit-win-condition,ctf-simultaneous-pickup-capture-race,ctf-spawn-team-balance-reset,equipment-update-observation,flag-carrier-death-return,flag-score-repeat,mcp-controlled-smoke,multi-client-load-score,projectile-damage-attribution,projectile-hit,reconnect-flag-score,reconnect-flag-state,survival-biome-dimension-travel,survival-chest-persistence,survival-container-block-entity-breadth,survival-crafting-recipe-breadth,survival-furnace-persistence,survival-furnace-smelting-breadth,survival-hunger-health-cycle,survival-mob-ai-loot-breadth,survival-redstone-circuit-breadth,survival-sign-editing-live,survival-world-multichunk-durability]; new=[]; typed_event_regressions=[]; missing_waiver_metadata=[]
+scenario manifest check passed: 46 rows validated; dry-run coverage: 44 covered, 2 waived, 0 unmaintained; typed-event readiness: 36 ready, 10 fallback; fallback budget: approved=[survival-biome-dimension-state,survival-block-entity-persistence-parity,survival-crash-recovery-parity,survival-hunger-food,survival-mob-drop,survival-redstone-toggle,survival-world-persistence-restart,valence-compat-bot-probe,vanilla-combat-armor-reference-parity,vanilla-combat-reference-parity]; removed=[armor-equipment-mitigation,blue-flag-score,combat-damage,combat-knockback,ctf-invalid-pickup-ownership,ctf-invalid-return-drop,ctf-score-limit-win-condition,ctf-simultaneous-pickup-capture-race,ctf-spawn-team-balance-reset,equipment-update-observation,flag-carrier-death-return,flag-score-repeat,mcp-controlled-smoke,multi-client-load-score,projectile-damage-attribution,projectile-hit,reconnect-flag-score,reconnect-flag-state,survival-biome-dimension-travel,survival-chest-persistence,survival-container-block-entity-breadth,survival-crafting-recipe-breadth,survival-furnace-persistence,survival-furnace-smelting-breadth,survival-hunger-health-cycle,survival-mob-ai-loot-breadth,survival-redstone-circuit-breadth,survival-sign-editing-live,survival-world-multichunk-durability]; new=[]; typed_event_regressions=[]; missing_waiver_metadata=[]
+command_exit_status=0
+
+$ nix build .#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L
+this derivation will be built:
+  /nix/store/5y3kb58ha1gmisiqf8bya9s6d3g1v7my-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/5y3kb58ha1gmisiqf8bya9s6d3g1v7my-mc-compat-scenario-manifest.drv'...
+command_exit_status=0
+
+$ nix build .#checks.x86_64-linux.mc-compat-generated-harness-surfaces --no-link -L
+this derivation will be built:
+  /nix/store/zbpwfq61rwlvv1g0h2hqjrbh50j357j5-mc-compat-generated-harness-surfaces.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/zbpwfq61rwlvv1g0h2hqjrbh50j357j5-mc-compat-generated-harness-surfaces.drv'...
+command_exit_status=0
+
+$ nix run .#mc-compat-valence-ctf-inventory-interaction -- --dry-run
+[mc-compat] plan: build client, start Valence server, wait for protocol 763, run 1 client session plan(s) under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/clients/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] using existing Valence worktree /tmp/valence-compat-763
+[mc-compat] starting Valence main example 'ctf' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-763
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'inventory-interaction' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/mc-compat-inventory/inventory-interaction.json
+command_exit_status=0
+
+$ nix run .#mc-compat-mcp-controlled-smoke -- --dry-run
+this derivation will be built:
+  /nix/store/qcbfynj6hffsqphfvkkp27hm2q61immx-mc-compat-mcp-controlled-smoke.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/qcbfynj6hffsqphfvkkp27hm2q61immx-mc-compat-mcp-controlled-smoke.drv'...
+[mc-compat] plan: build client, start Valence server, wait for protocol 763, run 1 client session plan(s) under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/clients/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
++ "git" "-C" "/home/brittonr/git/mc/servers/valence" "worktree" "prune"
+[mc-compat] creating isolated Valence worktree /tmp/valence-compat-mcp-controlled-smoke at main
++ "git" "-C" "/home/brittonr/git/mc/servers/valence" "worktree" "add" "--detach" "/tmp/valence-compat-mcp-controlled-smoke" "main"
+[mc-compat] starting Valence main example 'survival_compat' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-mcp-controlled-smoke
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'mcp-controlled-smoke' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/mc-compat-mcp-controlled-smoke/mcp-controlled-smoke.json
+command_exit_status=0
+
+$ nix build .#checks.x86_64-linux.mc-compat-maintained-dry-runs --no-link -L
+these 80 derivations will be built:
+  /nix/store/21hmxgg7adf2sxcwdqzrplrm6gp2nz9z-mc-compat-valence-ctf-combat-damage.drv
+  /nix/store/080j1qrczmb4lrjx5ims09fzjlch0wzv-mc-compat-valence-ctf-combat-damage-dry-run.drv
+  /nix/store/0m5wbdriz1cinrxja96907l4np3m74wv-mc-compat-bot-probe-dry-run.drv
+  /nix/store/yr9wqrlqrjw55wgpllnvr14q87r7lrn5-mc-compat-valence-ctf-invalid-pickup-ownership.drv
+  /nix/store/15ajkglrgvxrijlbpjqph8r1w8cvbnvf-mc-compat-valence-ctf-invalid-pickup-ownership-dry-run.drv
+  /nix/store/1q2sglkf67rb81b7ggjgc6xkg8b7ni75-mc-compat-valence-ctf-equipment-update-observation.drv
+  /nix/store/23xkl6wa5w2qk1ns73ql81a5qy99rbjl-mc-compat-full-survival-gate.drv
+  /nix/store/2hlyh17b7sdjbp8q7vx1bm4aqam7pnk1-mc-compat-valence-ctf-invalid-return-drop.drv
+  /nix/store/29kr3mywisyy4zzg2v7623vgpf8bfwmf-mc-compat-valence-ctf-invalid-return-drop-dry-run.drv
+  /nix/store/2rg8r5fxd0i2vxyv5m10vb74yj91hmvg-mc-compat-valence-ctf-inventory-interaction-dry-run.drv
+  /nix/store/2ridmafiwmzr21divpm7dj9zcyypl6yk-mc-compat-valence-inventory-drag-transactions-dry-run.drv
+  /nix/store/395qdnlc71xhyl7x51rsg9754gn52v0d-mc-compat-valence-ctf-reconnect-flag-state.drv
+  /nix/store/4bbi3xj9cgriqzqhypz1r5nqgnqfjhdf-mc-compat-evidence-promotion.drv
+  /nix/store/4m9c55g8dph4mybpwb0g3iphbrbsg5gz-mc-compat-valence-ctf-blue-600s-soak.drv
+  /nix/store/4xhva4mc2h0jh7vxlqq52bzmp57y6mff-mc-compat-historical-scenario-dry-runs.drv
+  /nix/store/4yx5jz7hbh8v0bykp9ksgcx0gr30frsw-mc-compat-dry-run.drv
+  /nix/store/568wkabz5q2m0cpp8q2q8bd1b7j0hwmr-mc-compat-armor-loadout-enchantment-status.drv
+  /nix/store/5927gxd5cp89gga8g08mpvvvgndni21h-mc-compat-valence-survival-furnace-smelting-breadth.drv
+  /nix/store/5jfs166xr5gfamj1461rwlfckmd2nzld-mc-compat-valence-ctf-projectile-hit.drv
+  /nix/store/6cbqp8gk4d61hhsncz9mxj0ilmlbkzpg-mc-compat-valence-survival-furnace-smelting-breadth-dry-run.drv
+  /nix/store/6wf2dcawmklhm1yj249i21lnsjnifz5x-mc-compat-valence-ctf-flag-carrier-death-return.drv
+  /nix/store/b0ywr08nmy06hczll2jvphc610lcj86q-mc-compat-valence-survival-crafting-table.drv
+  /nix/store/6za06l34y5zj77zr67rnn4pwbqahkiqd-mc-compat-valence-survival-crafting-table-dry-run.drv
+  /nix/store/7wjqky80wfmv330wgy2p3svdzgbyqj0v-mc-compat-valence-survival-break-place-pickup.drv
+  /nix/store/ci8x0ca6d5fjq4nkrl1rxw2680qr2d3k-mc-compat-valence-ctf-score-limit-win-condition.drv
+  /nix/store/80ynral4w5vsaskm1x34i564nfr98aaf-mc-compat-valence-ctf-score-limit-win-condition-dry-run.drv
+  /nix/store/8mxpd1j2syh018vmmm778igivyaxzwyr-mc-compat-wan-tolerance-bounded-telemetry.drv
+  /nix/store/90xmvh80iq8y3wqb6qyrpm8v40s3adq5-mc-compat-ctf-score-limit-win-condition.drv
+  /nix/store/93rlddk5yldj8hf8x0dsdc6q8w2i486s-mc-compat-valence-ctf-latency-jitter-inventory.drv
+  /nix/store/9r4i3mfv3gsigvqy0isvia7dbjdgv29p-mc-compat-movement-packet-family-check.drv
+  /nix/store/ak8mm7wxywk4m7wn46sfssxpifsin3xz-mc-compat-ctf-invalid-return-drop.drv
+  /nix/store/ik0dq7vszxcsnfnlfj3i7ja913pjzidx-mc-compat-valence-survival-crafting-recipe-breadth.drv
+  /nix/store/b4886an6w186gi3s59g7h3r3gf72xm3g-mc-compat-valence-survival-crafting-recipe-breadth-dry-run.drv
+  /nix/store/b4m7k15rnsgh353i98jhmicfxqbqsnbp-mc-compat-valence-ctf-latency-jitter-inventory-dry-run.drv
+  /nix/store/b6xan6ic1dikvc5xyk6nckg0pfws971h-mc-compat-blue-flag-score-dry-run.drv
+  /nix/store/bnbslciszvf7wbywapk9iyb1xk57300q-mc-compat-valence-survival-break-place-pickup-dry-run.drv
+  /nix/store/bpq4i8ddqwi9i1avmpwzbm0ipdbk2vdl-mc-compat-valence-ctf-simultaneous-pickup-capture-race.drv
+  /nix/store/c395crsisbfi09zb79m52xv38bhqcbgg-mc-compat-ctf-invalid-action-breadth.drv
+  /nix/store/c47s1rhqm2172nwxgp0slq1grg45is84-mc-compat-multi-client-scenario-dry-run.drv
+  /nix/store/f85fnvkps92ahw2a028x7mjmixk6kqsx-mc-compat-valence-survival-hunger-health-cycle.drv
+  /nix/store/ihaz1kkq5s19g69zzpks9vaq4zssdlwr-mc-compat-valence-survival-furnace-persistence.drv
+  /nix/store/ffw0lxkxx8bkydfzmhwcsz2n6hjzv1y9-mc-compat-valence-survival-furnace-persistence-dry-run.drv
+  /nix/store/h2lyyb4yycbm9s5565594m0xdy4nb5j9-mc-compat-evidence-manifest-refresh.drv
+  /nix/store/h5gcjj596phdp44py8bgx97g7y98yyj9-mc-compat-cairn-task-evidence.drv
+  /nix/store/hkzwfc3i2kbs4d04zyv0fvsl30cbmmxx-mc-compat-mcp-controlled-smoke-dry-run.drv
+  /nix/store/syv37pxbkibgf44zn51z46ac46gcz6hm-mc-compat-valence-ctf-combat-knockback.drv
+  /nix/store/hzph1ygwbmnnxan4nsh2j1kpgf5n99dq-mc-compat-valence-ctf-combat-knockback-dry-run.drv
+  /nix/store/i45cy1vlci251gfqfa51v316rdyrchrz-mc-compat-valence-ctf-equipment-update-observation-dry-run.drv
+  /nix/store/i8yywp7h467zfnvv4438p8jbflxza5wf-mc-compat-public-server-authorized-safety.drv
+  /nix/store/iq6r3pjsr39g46qppd2fz2vy8y0hbd4m-mc-compat-current-evidence-bundle.drv
+  /nix/store/j63q2h03s0lyj4skmmjapcx3gy22gazg-mc-compat-survival-aggregate-claim-boundary.drv
+  /nix/store/jgagv41si4cfy9ig8pv9m72dqm4nw98x-mc-compat-ctf-invalid-pickup-ownership.drv
+  /nix/store/w9d99d1194pgcs60nsb3ggir2zzl6691-mc-compat-valence-ctf-600s-soak.drv
+  /nix/store/kih4rvkgqfbrgnhq35bxb5hmdqyccb5n-mc-compat-valence-ctf-600s-soak-dry-run.drv
+  /nix/store/klljszsmmyzkqh5bi6gcvkj47lljrnba-mc-compat-valence-ctf-reconnect-flag-state-dry-run.drv
+  /nix/store/klrlaibcq42irkg0av65dv6a8ybk9a9k-mc-compat-valence-survival-hunger-health-cycle-dry-run.drv
+  /nix/store/lf0n6c854ha8l48mh2g5zhqngy566fd8-mc-compat-valence-ctf-armor-equipment-mitigation.drv
+  /nix/store/psqrhs65fv8bxpifldyf194hm79i34zg-mc-compat-valence-ctf-invalid-opponent-base-return-drop.drv
+  /nix/store/mynhhw2bijr8hqg0z2zqqa5n1n18p2rd-mc-compat-valence-ctf-invalid-opponent-base-return-drop-dry-run.drv
+  /nix/store/ncklrh5gcw02y0sy8c234bc4cq1qnfka-mc-compat-valence-ctf-simultaneous-pickup-capture-race-dry-run.drv
+  /nix/store/njby9k679mi3zkwa75fp56qkki2yva23-mc-compat-valence-movement-packet-family.drv
+  /nix/store/nmx7ivv2iihvglwj32hzshdqj5bqg2rd-mc-compat-valence-movement-packet-family-dry-run.drv
+  /nix/store/nqr19mz2c4289c9qmasg33s9qbwhyyjh-mc-compat-evidence-manifests.drv
+  /nix/store/nvl6zmh4w0bk5yspi5s4z0dlqwnvxmvq-mc-compat-aggregate-claim-gates.drv
+  /nix/store/p0lndalhy4c8090cgbx0a21kcwbz8hmw-mc-compat-valence-ctf-spawn-team-balance-reset.drv
+  /nix/store/sfrgldn9pj7bvrr42zy07c59i32ixnmx-mc-compat-valence-ctf-armor-equipment-mitigation-dry-run.drv
+  /nix/store/w7zva672ql8dqdyr9xx4npvalijcxkmj-mc-compat-valence-ctf-projectile-damage-attribution.drv
+  /nix/store/w0qab3jh0qq3q6ailpr77wfapl1cpkw7-mc-compat-valence-ctf-projectile-damage-attribution-dry-run.drv
+  /nix/store/wmk9inckcc3c37is9zxijg02lj7gbzpz-mc-compat-valence-ctf-blue-600s-soak-dry-run.drv
+  /nix/store/x62wc5fxxzg2c51ky9gjmv8hh2q5r1d3-mc-compat-server-correlation-receipts.drv
+  /nix/store/xa6c3l3l35wjwkcjg06hzv1svk5xw9bl-mc-compat-equipment-slot-item-expansion.drv
+  /nix/store/xmv6mnziwbhqjv24yzzaii4sk8lgkdki-mc-compat-red-blue-scoring-soak-live-refresh.drv
+  /nix/store/xr71ym91az1ay3id31na08z4imn139b7-mc-compat-scoreboard-team-packet-family-check.drv
+  /nix/store/yg7hdgxv2b86fva8rjw67hsg01ww9d4j-mc-compat-valence-ctf-projectile-hit-dry-run.drv
+  /nix/store/yg86lcmsgqpv6n60j2fzgl25ibnzk6jx-mc-compat-acceptance-matrix.drv
+  /nix/store/ygdbh3hhxjl6ydn4ka11jpwvr1vw1irs-mc-compat-valence-ctf-flag-carrier-death-return-dry-run.drv
+  /nix/store/z27ivi2ji9vr7j96kdk6jnayz4idhpp6-mc-compat-valence-ctf-spawn-team-balance-reset-dry-run.drv
+  /nix/store/z2dpy4k6npj1gcp09311l9na7p899bpz-mc-compat-adversarial-network-oracle.drv
+  /nix/store/z2s32fa13k03h08z8954nc8c6ml9baw4-mc-compat-valence-inventory-stack-split-merge-dry-run.drv
+  /nix/store/pd8zq790m1844a85r1ilnc28425pxmg8-mc-compat-maintained-dry-runs.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/yg86lcmsgqpv6n60j2fzgl25ibnzk6jx-mc-compat-acceptance-matrix.drv'...
+building '/nix/store/z2dpy4k6npj1gcp09311l9na7p899bpz-mc-compat-adversarial-network-oracle.drv'...
+building '/nix/store/nvl6zmh4w0bk5yspi5s4z0dlqwnvxmvq-mc-compat-aggregate-claim-gates.drv'...
+building '/nix/store/568wkabz5q2m0cpp8q2q8bd1b7j0hwmr-mc-compat-armor-loadout-enchantment-status.drv'...
+building '/nix/store/b6xan6ic1dikvc5xyk6nckg0pfws971h-mc-compat-blue-flag-score-dry-run.drv'...
+building '/nix/store/0m5wbdriz1cinrxja96907l4np3m74wv-mc-compat-bot-probe-dry-run.drv'...
+building '/nix/store/h5gcjj596phdp44py8bgx97g7y98yyj9-mc-compat-cairn-task-evidence.drv'...
+building '/nix/store/c395crsisbfi09zb79m52xv38bhqcbgg-mc-compat-ctf-invalid-action-breadth.drv'...
+mc-compat-blue-flag-score-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-blue-flag-score-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-blue-flag-score-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-blue-flag-score-dry-run> hint: call:
+mc-compat-blue-flag-score-dry-run> hint:
+mc-compat-blue-flag-score-dry-run> hint:        git config --global init.defaultBranch <name>
+mc-compat-blue-flag-score-dry-run> hint:
+mc-compat-blue-flag-score-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-blue-flag-score-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-blue-flag-score-dry-run> hint:
+mc-compat-blue-flag-score-dry-run> hint:        git branch -m <name>
+mc-compat-blue-flag-score-dry-run> hint:
+mc-compat-blue-flag-score-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-blue-flag-score-dry-run> Initialized empty Git repository in /build/fake-valence/.git/
+mc-compat-blue-flag-score-dry-run> [master (root-commit) b0380cc] init
+mc-compat-blue-flag-score-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-blue-flag-score-dry-run>  create mode 100644 README.md
+building '/nix/store/jgagv41si4cfy9ig8pv9m72dqm4nw98x-mc-compat-ctf-invalid-pickup-ownership.drv'...
+mc-compat-bot-probe-dry-run> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-bot-probe-dry-run> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-bot-probe-dry-run> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-bot-probe-dry-run> hint: call:
+mc-compat-bot-probe-dry-run> hint:
+mc-compat-bot-probe-dry-run> hint:      git config --global init.defaultBranch <name>
+mc-compat-bot-probe-dry-run> hint:
+mc-compat-bot-probe-dry-run> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-bot-probe-dry-run> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-bot-probe-dry-run> hint:
+mc-compat-bot-probe-dry-run> hint:      git branch -m <name>
+mc-compat-bot-probe-dry-run> hint:
+mc-compat-bot-probe-dry-run> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-bot-probe-dry-run> Initialized empty Git repository in /build/fake-valence/.git/
+mc-compat-bot-probe-dry-run> [master (root-commit) b0380cc] init
+mc-compat-bot-probe-dry-run>  1 file changed, 1 insertion(+)
+mc-compat-bot-probe-dry-run>  create mode 100644 README.md
+building '/nix/store/ak8mm7wxywk4m7wn46sfssxpifsin3xz-mc-compat-ctf-invalid-return-drop.drv'...
+building '/nix/store/90xmvh80iq8y3wqb6qyrpm8v40s3adq5-mc-compat-ctf-score-limit-win-condition.drv'...
+building '/nix/store/iq6r3pjsr39g46qppd2fz2vy8y0hbd4m-mc-compat-current-evidence-bundle.drv'...
+building '/nix/store/4yx5jz7hbh8v0bykp9ksgcx0gr30frsw-mc-compat-dry-run.drv'...
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:3 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-baseline-gate-proposal.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:3 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-scope.md
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:3 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-validation.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:3 cites run log docs/evidence/profile-cache-rate-limiter-baseline-gate-proposal.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:3 cites run log docs/evidence/profile-cache-rate-limiter-baseline-gate-proposal.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:4 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:4 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-validation.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:4 cites non-reviewable artifact path servers/valence/crates/valence_network/README.md; copy review-critical bytes under docs/evidence/
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:4 cites non-reviewable artifact path servers/valence/crates/valence_network/src/profile_cache.rs; copy review-critical bytes under docs/evidence/
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:4 cites non-reviewable artifact path valence/crates/valence_network/README.md; copy review-critical bytes under docs/evidence/
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:4 cites non-reviewable artifact path valence/crates/valence_network/src/profile_cache.rs; copy review-critical bytes under docs/evidence/
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:4 cites run log docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:4 cites run log docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:5 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:5 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-valence-network-clippy-nodeps.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:5 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-validation.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:5 cites non-reviewable artifact path servers/valence/crates/valence_network/src/profile_cache.rs; copy review-critical bytes under docs/evidence/
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:5 cites non-reviewable artifact path valence/crates/valence_network/src/profile_cache.rs; copy review-critical bytes under docs/evidence/
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:5 cites run log docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:5 cites run log docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:5 cites run log docs/evidence/profile-cache-rate-limiter-valence-network-clippy-nodeps.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:5 cites run log docs/evidence/profile-cache-rate-limiter-valence-network-clippy-nodeps.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:6 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:6 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-validation.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:6 cites non-reviewable artifact path servers/valence/crates/valence_network/src/profile_cache.rs; copy review-critical bytes under docs/evidence/
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:6 cites non-reviewable artifact path valence/crates/valence_network/src/profile_cache.rs; copy review-critical bytes under docs/evidence/
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:6 cites run log docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:6 cites run log docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:7 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:7 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-valence-network-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:7 cites missing evidence artifact docs/evidence/profile-cache-rate-limiter-validation.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:7 cites non-reviewable artifact path servers/valence/crates/valence_network/src/profile_cache.rs; copy review-critical bytes under docs/evidence/
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:7 cites non-reviewable artifact path valence/crates/valence_network/src/profile_cache.rs; copy review-critical bytes under docs/evidence/
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:7 cites run log docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:7 cites run log docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:7 cites run log docs/evidence/profile-cache-rate-limiter-valence-network-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/add-profile-skin-cache-rate-limiter/tasks.md:7 cites run log docs/evidence/profile-cache-rate-limiter-valence-network-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.md
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.md
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-ignore-rules.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites run log docs/evidence/clean-repo-artifact-boundaries-ignore-rules.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites run log docs/evidence/clean-repo-artifact-boundaries-ignore-rules.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-focused-open.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-self-test.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-focused-open.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-focused-open.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-self-test.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-self-test.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:3 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-preflight-cairn-gates.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:3 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-scope.md
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:3 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-validation.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:3 cites run log docs/evidence/admin-permission-ergonomics-preflight-cairn-gates.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:3 cites run log docs/evidence/admin-permission-ergonomics-preflight-cairn-gates.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:4 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-clippy-final.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:4 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:4 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-validation.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:4 cites run log docs/evidence/admin-permission-ergonomics-valence-command-clippy-final.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:4 cites run log docs/evidence/admin-permission-ergonomics-valence-command-clippy-final.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:4 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:4 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:5 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-doc.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:5 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:5 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-validation.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:5 cites run log docs/evidence/admin-permission-ergonomics-valence-command-doc.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:5 cites run log docs/evidence/admin-permission-ergonomics-valence-command-doc.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:5 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:5 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:6 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-scope.md
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:6 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:6 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-validation.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:6 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:6 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:7 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:7 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-validation.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:7 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:7 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-final-cairn-gates-validate.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-clippy-final.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-doc.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-fmt-shell-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites missing evidence artifact docs/evidence/admin-permission-ergonomics-validation.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-final-cairn-gates-validate.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-final-cairn-gates-validate.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-valence-command-clippy-final.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-valence-command-clippy-final.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-valence-command-doc.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-valence-command-doc.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-valence-command-fmt-shell-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-valence-command-fmt-shell-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/define-admin-permission-ergonomics/tasks.md:8 cites run log docs/evidence/admin-permission-ergonomics-valence-command-tests-shell-tests.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:3 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-pre-gates-2026-06-23.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:3 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-scope-contract-2026-06-23.md
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:3 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-validation-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:3 cites run log docs/evidence/evaluate-command-ergonomics-macros-pre-gates-2026-06-23.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:3 cites run log docs/evidence/evaluate-command-ergonomics-macros-pre-gates-2026-06-23.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:5 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-command-tests-2026-06-23.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:5 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-scope-contract-2026-06-23.md
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:5 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-validation-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:5 cites run log docs/evidence/evaluate-command-ergonomics-macros-command-tests-2026-06-23.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:5 cites run log docs/evidence/evaluate-command-ergonomics-macros-command-tests-2026-06-23.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:7 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-command-tests-2026-06-23.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:7 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-scope-contract-2026-06-23.md
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:7 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-validation-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:7 cites run log docs/evidence/evaluate-command-ergonomics-macros-command-tests-2026-06-23.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:7 cites run log docs/evidence/evaluate-command-ergonomics-macros-command-tests-2026-06-23.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:9 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-command-tests-2026-06-23.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:9 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-scope-contract-2026-06-23.md
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:9 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-validation-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:9 cites run log docs/evidence/evaluate-command-ergonomics-macros-command-tests-2026-06-23.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:9 cites run log docs/evidence/evaluate-command-ergonomics-macros-command-tests-2026-06-23.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:11 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-scope-contract-2026-06-23.md
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:11 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-targeted-rustfmt-2026-06-23.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:11 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-validation-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:11 cites run log docs/evidence/evaluate-command-ergonomics-macros-targeted-rustfmt-2026-06-23.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:11 cites run log docs/evidence/evaluate-command-ergonomics-macros-targeted-rustfmt-2026-06-23.run.log without a cited .b3 manifest covering it
+error: Cannot build '/nix/store/h5gcjj596phdp44py8bgx97g7y98yyj9-mc-compat-cairn-task-evidence.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/1vvd9qfzhk02jh336r9kcf8aqxdbbvgr-mc-compat-cairn-task-evidence
+       Last 25 log lines:
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:3 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-pre-gates-2026-06-23.run.log
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:3 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-scope-contract-2026-06-23.md
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:3 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-validation-2026-06-23.b3
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:3 cites run log docs/evidence/evaluate-command-ergonomics-macros-pre-gates-2026-06-23.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:3 cites run log docs/evidence/evaluate-command-ergonomics-macros-pre-gates-2026-06-23.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:5 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-command-tests-2026-06-23.run.log
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:5 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-scope-contract-2026-06-23.md
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:5 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-validation-2026-06-23.b3
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:5 cites run log docs/evidence/evaluate-command-ergonomics-macros-command-tests-2026-06-23.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:5 cites run log docs/evidence/evaluate-command-ergonomics-macros-command-tests-2026-06-23.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:7 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-command-tests-2026-06-23.run.log
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:7 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-scope-contract-2026-06-23.md
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:7 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-validation-2026-06-23.b3
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:7 cites run log docs/evidence/evaluate-command-ergonomics-macros-command-tests-2026-06-23.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:7 cites run log docs/evidence/evaluate-command-ergonomics-macros-command-tests-2026-06-23.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:9 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-command-tests-2026-06-23.run.log
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:9 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-scope-contract-2026-06-23.md
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:9 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-validation-2026-06-23.b3
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:9 cites run log docs/evidence/evaluate-command-ergonomics-macros-command-tests-2026-06-23.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:9 cites run log docs/evidence/evaluate-command-ergonomics-macros-command-tests-2026-06-23.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:11 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-scope-contract-2026-06-23.md
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:11 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-targeted-rustfmt-2026-06-23.run.log
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:11 cites missing evidence artifact docs/evidence/evaluate-command-ergonomics-macros-validation-2026-06-23.b3
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:11 cites run log docs/evidence/evaluate-command-ergonomics-macros-targeted-rustfmt-2026-06-23.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/evaluate-command-ergonomics-macros/tasks.md:11 cites run log docs/evidence/evaluate-command-ergonomics-macros-targeted-rustfmt-2026-06-23.run.log without a cited .b3 manifest covering it
+       For full logs, run:
+         nix log /nix/store/h5gcjj596phdp44py8bgx97g7y98yyj9-mc-compat-cairn-task-evidence.drv
+building '/nix/store/xa6c3l3l35wjwkcjg06hzv1svk5xw9bl-mc-compat-equipment-slot-item-expansion.drv'...
+error: Cannot build '/nix/store/pd8zq790m1844a85r1ilnc28425pxmg8-mc-compat-maintained-dry-runs.drv'.
+       Reason: 1 dependency failed.
+       Output paths:
+         /nix/store/rs0ybjn3cv1lm9gjr9m31am0dw8vgl41-mc-compat-maintained-dry-runs
+error: Build failed due to failed dependency
+command_exit_status=1
+
+exit_status=1

@@ -1,0 +1,70 @@
+# introduce-valence-proxy-broadcast-backend final task-evidence gate
+timestamp=2026-06-23
+cwd=/home/brittonr/git/mc
+command: nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+this derivation will be built:
+  /nix/store/16x58m57nrgax5jh94fv5idc8716cgbp-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/16x58m57nrgax5jh94fv5idc8716cgbp-mc-compat-cairn-task-evidence.drv'...
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.md
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.md
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-ignore-rules.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites run log docs/evidence/clean-repo-artifact-boundaries-ignore-rules.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites run log docs/evidence/clean-repo-artifact-boundaries-ignore-rules.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-focused-open.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-self-test.run.log
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-focused-open.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-focused-open.run.log without a cited .b3 manifest covering it
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-self-test.run.log but its text is unavailable
+mc-compat-cairn-task-evidence> task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-self-test.run.log without a cited .b3 manifest covering it
+error: Cannot build '/nix/store/16x58m57nrgax5jh94fv5idc8716cgbp-mc-compat-cairn-task-evidence.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/5k4vipvkmfzqn6rf030ar9d4c7496w44-mc-compat-cairn-task-evidence
+       Last 25 log lines:
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:3 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.md
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:4 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-artifact-inventory.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:5 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-layout-root.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-ignore-rules.run.log
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites run log docs/evidence/clean-repo-artifact-boundaries-ignore-rules.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:6 cites run log docs/evidence/clean-repo-artifact-boundaries-ignore-rules.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-2026-06-23.b3
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-focused-open.run.log
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites missing evidence artifact docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-self-test.run.log
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-focused-open.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-focused-open.run.log without a cited .b3 manifest covering it
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-self-test.run.log but its text is unavailable
+       > task evidence gate failed: cairn/changes/clean-repo-artifact-boundaries/tasks.md:7 cites run log docs/evidence/clean-repo-artifact-boundaries-postfmt-task-evidence-self-test.run.log without a cited .b3 manifest covering it
+       For full logs, run:
+         nix log /nix/store/16x58m57nrgax5jh94fv5idc8716cgbp-mc-compat-cairn-task-evidence.drv
+command_exit_status task_evidence=1
+exit_status=1

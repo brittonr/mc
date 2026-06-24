@@ -1,0 +1,48 @@
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+.gitignore: OK
+servers/valence/crates/valence_network/README.md: OK
+servers/valence/crates/valence_network/src/lib.rs: OK
+servers/valence/crates/valence_network/src/profile_cache.rs: OK
+cairn/specs/valence-hyperion-integration/spec.md: OK
+cairn/archive/2026-06-23-add-profile-skin-cache-rate-limiter/proposal.md: OK
+cairn/archive/2026-06-23-add-profile-skin-cache-rate-limiter/design.md: OK
+cairn/archive/2026-06-23-add-profile-skin-cache-rate-limiter/tasks.md: OK
+cairn/archive/2026-06-23-add-profile-skin-cache-rate-limiter/specs/valence-hyperion-integration/spec.md: OK
+docs/evidence/profile-cache-rate-limiter-scope.md: OK
+docs/evidence/profile-cache-rate-limiter-baseline-gate-proposal.run.log: OK
+docs/evidence/profile-cache-rate-limiter-baseline-gate-design.run.log: OK
+docs/evidence/profile-cache-rate-limiter-baseline-gate-tasks.run.log: OK
+docs/evidence/profile-cache-rate-limiter-baseline-cairn-validate.run.log: OK
+docs/evidence/profile-cache-rate-limiter-baseline-valence-network-auth-digest.run.log: OK
+docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log: OK
+docs/evidence/profile-cache-rate-limiter-valence-network-tests.run.log: OK
+docs/evidence/profile-cache-rate-limiter-valence-network-fmt-rerun.run.log: OK
+docs/evidence/profile-cache-rate-limiter-valence-network-clippy-nodeps.run.log: OK
+docs/evidence/profile-cache-rate-limiter-valence-network-clippy-lib-nodeps.run.log: OK
+docs/evidence/profile-cache-rate-limiter-valence-dry-run.run.log: OK
+docs/evidence/profile-cache-rate-limiter-pre-closeout-change-list.run.log: OK
+docs/evidence/profile-cache-rate-limiter-pre-closeout-gate-proposal.run.log: OK
+docs/evidence/profile-cache-rate-limiter-pre-closeout-gate-design.run.log: OK
+docs/evidence/profile-cache-rate-limiter-pre-closeout-gate-tasks.run.log: OK
+docs/evidence/profile-cache-rate-limiter-pre-closeout-validate.run.log: OK
+docs/evidence/profile-cache-rate-limiter-final-profile-cache-tests.run.log: OK
+docs/evidence/profile-cache-rate-limiter-final-valence-network-tests.run.log: OK
+docs/evidence/profile-cache-rate-limiter-final-valence-network-clippy-nodeps.run.log: OK
+docs/evidence/profile-cache-rate-limiter-final-valence-dry-run.run.log: OK
+docs/evidence/profile-cache-rate-limiter-final-gate-proposal.run.log: OK
+docs/evidence/profile-cache-rate-limiter-final-gate-design.run.log: OK
+docs/evidence/profile-cache-rate-limiter-final-gate-tasks.run.log: OK
+docs/evidence/profile-cache-rate-limiter-final-cairn-validate.run.log: OK
+docs/evidence/profile-cache-rate-limiter-final-b3-check.run.log: OK
+docs/evidence/profile-cache-rate-limiter-final-task-evidence.run.log: OK
+docs/evidence/profile-cache-rate-limiter-sync-dry-run.run.log: OK
+docs/evidence/profile-cache-rate-limiter-sync-execute.run.log: OK
+docs/evidence/profile-cache-rate-limiter-post-sync-manual-validate.run.log: OK
+docs/evidence/profile-cache-rate-limiter-archive-dry-run.run.log: OK
+docs/evidence/profile-cache-rate-limiter-archive-execute.run.log: OK
+docs/evidence/profile-cache-rate-limiter-post-archive-cairn-validate.run.log: OK
+docs/evidence/profile-cache-rate-limiter-post-archive-change-list.run.log: OK
+exit_status=0

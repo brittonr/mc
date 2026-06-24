@@ -1,0 +1,23 @@
+command=nix run .#cairn -- gate design clean-repo-artifact-boundaries --root . 
+{
+  "change": "clean-repo-artifact-boundaries",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "79b202551d95dde8cd1bfa4e2139271873a67cb39693c48a34553e1c847fab80",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "35c6b19aa896816869b94837c34dea720d09b9db0aba6ecf262a58d4f2cbea3c",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
