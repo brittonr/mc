@@ -77,3 +77,11 @@ Use [docs/check-tiers.md](docs/check-tiers.md) to choose the smallest sufficient
 ```sh
 nix flake check
 ```
+
+Aggregate Octet enforcement for owned Rust workspaces:
+
+```sh
+rustc --edition=2021 tools/check_octet_monorepo.rs -o target/check-octet-monorepo
+OCTET_SOURCE_DIR=$(nix eval --raw --impure --expr '(builtins.getFlake (toString ./.)).inputs.octet.outPath')
+target/check-octet-monorepo --root . --octet-source "$OCTET_SOURCE_DIR" --run-octet
+```

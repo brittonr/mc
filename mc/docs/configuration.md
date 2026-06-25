@@ -111,6 +111,24 @@ cargo-octet --help
 
 The packages are also available as `.#cairn`, `.#cargo-octet`, and `.#octet`.
 
+## Octet monorepo enforcement
+
+The repo-owned aggregate checker derives the lint inventory from the pinned Octet input and verifies the owned Rust workspaces:
+
+- `compat/runner`
+- `clients/stevenarella`
+- `servers/valence`
+
+It requires workspace `[workspace.metadata.octet]`, consumer-owned `dylint.toml` files with every current Octet lint at `deny`, and reviewed stable-ID baselines under `compat/octet-baselines/`. The dynamic mode runs the repo-pinned `path:$PWD#cargo-octet` gate for each workspace and fails on any new unaccepted stable ID.
+
+```sh
+rustc --edition=2021 tools/check_octet_monorepo.rs -o target/check-octet-monorepo
+OCTET_SOURCE_DIR=$(nix eval --raw --impure --expr '(builtins.getFlake (toString ./.)).inputs.octet.outPath')
+target/check-octet-monorepo --root . --octet-source "$OCTET_SOURCE_DIR" --run-octet
+```
+
+Run `target/check-octet-monorepo --self-test` for positive and negative fixtures covering lint drift, missing config, and new unaccepted findings.
+
 ## Cairn policy ownership
 
 Cairn lifecycle policy is owned by the pinned Cairn toolchain but checked into this workspace for deterministic validation. The source is Nickel under `cairn-policy/default.ncl` with contracts in `cairn-policy/contracts.ncl`; runtime Cairn commands consume the generated JSON at `cairn-policy/generated/cairn-policy.json` and do not evaluate Nickel.

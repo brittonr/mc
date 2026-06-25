@@ -102,7 +102,7 @@ exclude = []
 resolver = "2"
 
 [workspace.metadata.octet]
-default_scope = ["valence_math", "valence_lang", "valence_ident", "valence_text", "valence_weather", "valence_world_border", "valence_boss_bar", "valence_player_list", "valence_scoreboard", "valence_equipment", "valence_advancement", "valence_anvil", "valence_inventory", "valence_registry", "valence_build_utils", "valence_ident_macros", "valence_protocol_macros", "valence_command_macros", "valence_spatial", "valence_generated", "java_string", "valence_nbt", "valence_protocol"]
+default_scope = ["-p", "valence_math", "-p", "valence_lang", "-p", "valence_ident", "-p", "valence_text", "-p", "valence_weather", "-p", "valence_world_border", "-p", "valence_boss_bar", "-p", "valence_player_list", "-p", "valence_scoreboard", "-p", "valence_equipment", "-p", "valence_advancement", "-p", "valence_anvil", "-p", "valence_inventory", "-p", "valence_registry", "-p", "valence_build_utils", "-p", "valence_ident_macros", "-p", "valence_protocol_macros", "-p", "valence_command_macros", "-p", "valence_spatial", "-p", "valence_generated", "-p", "java_string", "-p", "valence_nbt", "-p", "valence_protocol"]
 cargo_check_args = []
 
 [workspace.package]

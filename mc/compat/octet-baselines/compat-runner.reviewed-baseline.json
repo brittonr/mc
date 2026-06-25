@@ -1,0 +1,3965 @@
+{
+  "accepted_findings": [
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "RUSTLIB/alloc/src/borrow.rs",
+      "line": 1,
+      "lint": "module_file_count",
+      "severity": "error",
+      "stable_id": "b3:484b5dcd682c6f18"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "RUSTLIB/core/src/clone.rs",
+      "line": 1,
+      "lint": "module_file_count",
+      "severity": "error",
+      "stable_id": "b3:cfb9b662dbe7a357"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "RUSTLIB/std/src/env.rs",
+      "line": 1,
+      "lint": "module_file_count",
+      "severity": "error",
+      "stable_id": "b3:dfc36d1d5d78b8e2"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/layout.rs",
+      "line": 1,
+      "lint": "excessive_file_length",
+      "severity": "error",
+      "stable_id": "b3:2af1a2a511413a7c"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/layout.rs",
+      "line": 1,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:548b7cc0246b9c3e"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/layout.rs",
+      "line": 1,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:1d13c89edf01d47d"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/layout.rs",
+      "line": 5,
+      "lint": "dead_code",
+      "severity": "warning",
+      "stable_id": "b3:a5497858d58b6175"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/layout.rs",
+      "line": 36,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:2f8d321f66516473"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/layout.rs",
+      "line": 38,
+      "lint": "dead_code",
+      "severity": "warning",
+      "stable_id": "b3:73ea5269bfa9d792"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/layout.rs",
+      "line": 42,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:2121059b6206af3a"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/layout.rs",
+      "line": 44,
+      "lint": "dead_code",
+      "severity": "warning",
+      "stable_id": "b3:062bdf22fac2c772"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/layout.rs",
+      "line": 167,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:723cb165c66ee1f8"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/layout.rs",
+      "line": 211,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:e5ba6cde19192107"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/layout.rs",
+      "line": 304,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:25c72d0ff16a84dc"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1,
+      "lint": "excessive_file_length",
+      "severity": "error",
+      "stable_id": "b3:9cb0d23a4a1c7248"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:c628ef68b9b13b34"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:c166d505345e9df5"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:3432b9fc9af97139"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 12,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:dd5b5c5678cf2669"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 12,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:cddc5db9bf46d991"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 12,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:c9f578a924b6d901"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 15,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:7c0149037470a1a2"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 15,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:b41dcdfde3376b9a"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 15,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:280180e0d4db9f65"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 15,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:525b6739f96f02ac"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 16,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:f159efada7c24305"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 16,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:c2cdfc7aae4a72fd"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 16,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:8272af5d4089eedc"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 19,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:28d573e35d8ed331"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 19,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:973aba2012d8a550"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 19,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:df3b6b012e171540"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 19,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:50c4abde725a68b2"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 20,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:8fc5222701b6b8cc"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 20,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:8936505431dca500"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 20,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:e30236c8c8dc0fe9"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 21,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:fe2f7235c22855ff"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 21,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:f0208ef8fe6b3eec"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 21,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:c15db1ed5aefad6c"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 22,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:482ae7c3af9b1127"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 22,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:193ff8d36b6320ea"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 22,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:01e869927e94aea1"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 23,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:f27dcd00637d6e0f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 23,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:ab7bc6a8783e9898"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 24,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:6f5d0d1507cc13d4"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 24,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:ec0e27cd86e618b8"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 24,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:4d924de55275be2e"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 24,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:166eeb612b2f0b8f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 25,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:867f2d71d67a301a"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 27,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:972b2d2e8d5bdb0a"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 27,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:d55cb5970309dc17"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 27,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:3d31b617d955bc70"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 27,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:079b6eb0296786a0"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 31,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:0219e02d2c069517"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 32,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:a0e62d58defba215"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 32,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:b191fbcc7f486895"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 33,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:adbe32e01841db60"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 33,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:32f1c86494b49a78"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 34,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:b9be7cf75dd6a773"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 35,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:548b7cc0246b9c3e"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 35,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:1d13c89edf01d47d"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 36,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:f9a1d8ee6e62216c"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 36,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:d618dc708cbbaa2f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 36,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:91aac6254453635e"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 36,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:949ed9d15184895f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 37,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:ef368b3e90d87444"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 38,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:f35fdaacaa7547ff"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 38,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:3a4010136a1f610f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 38,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:06b6e3be867064b4"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 57,
+      "lint": "platform_dependent_cast",
+      "severity": "error",
+      "stable_id": "b3:0397b4c2cf3fca21"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 244,
+      "lint": "dead_code",
+      "severity": "warning",
+      "stable_id": "b3:b6f02691ef6f3b9c"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 921,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:317af4389d3a256d"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 992,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:f0312cb7dc08d110"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1056,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:0878f48bf2c4fa9f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1060,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:254366d32285a0bb"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1061,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:cf327b1327df899d"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1064,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:c0281ba316948fbc"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1092,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:e33e1615d39471db"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1093,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:283ad864d070e204"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1133,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:4a9d68d71821df79"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1134,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:1885349cefef4b7c"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1158,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:2917bacb8f484c82"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1191,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:499318b8d4558928"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1210,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:2aeb798d44d1cbff"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1211,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:9469d2223bbc3236"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1236,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:5ff052c0673b84a1"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1237,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:cae14f2092556a8d"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1281,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:73ce2160df9abf18"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1317,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:19e7f45c059e9942"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1318,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:31139509dabd0c20"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1319,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:f70f30253444bf2b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1355,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:0c29cffb93e1211d"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1356,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:cdea8a473c873c3f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1357,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:f70f30253444bf2b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1404,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:f19da7174fa040c9"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1429,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:aa6733e667df9aab"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1429,
+      "lint": "function_length",
+      "severity": "error",
+      "stable_id": "b3:878f8dde51adb29d"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1443,
+      "lint": "unbounded_loop",
+      "severity": "error",
+      "stable_id": "b3:7dbe2f88265b30e5"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1586,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:c234992500dbca49"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1620,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:b4a808df7f7a920e"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1713,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:3a037682c10c3246"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1713,
+      "lint": "numeric_units",
+      "severity": "error",
+      "stable_id": "b3:0c3d110cee2f3a3b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1726,
+      "lint": "unbounded_loop",
+      "severity": "error",
+      "stable_id": "b3:e01f9e375855ff97"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1947,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:38321df3be8802c8"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1956,
+      "lint": "unbounded_loop",
+      "severity": "error",
+      "stable_id": "b3:acafea1b85b0a81b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1976,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:8cb5cdfb174e7105"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 1976,
+      "lint": "function_length",
+      "severity": "error",
+      "stable_id": "b3:0eabb2126d1efdfe"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 2092,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:db7ecea14a05c15e"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 2127,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:8ee0d9a92f5cef56"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 2127,
+      "lint": "function_length",
+      "severity": "error",
+      "stable_id": "b3:413c2b331172cc88"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 2128,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:3a037682c10c3246"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 2128,
+      "lint": "numeric_units",
+      "severity": "error",
+      "stable_id": "b3:0c3d110cee2f3a3b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3078,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:980d51da156da939"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3084,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:6f0a12c74621ece4"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3103,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:4b179c7f747daec4"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3107,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:a0d97b5f1b971adf"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3216,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:d8c49eac8cb49ee2"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3252,
+      "lint": "unbounded_collection_growth",
+      "severity": "error",
+      "stable_id": "b3:f0ce3b9422894778"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3254,
+      "lint": "unbounded_collection_growth",
+      "severity": "error",
+      "stable_id": "b3:88a4d87a94423678"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3285,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:ade6007fde2accf6"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3297,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:a65444603c381bea"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3306,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:8e3f88f5bd4cb7ac"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3318,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:a65444603c381bea"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3384,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:3ad75c80a26b6c04"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3384,
+      "lint": "too_many_parameters",
+      "severity": "error",
+      "stable_id": "b3:3a69cba3fc6fe809"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3392,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:d0d8b29136650cbe"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3405,
+      "lint": "unbounded_collection_growth",
+      "severity": "error",
+      "stable_id": "b3:41c6a2ffa0863e1b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3407,
+      "lint": "unbounded_collection_growth",
+      "severity": "error",
+      "stable_id": "b3:ff41f936f6523f72"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3413,
+      "lint": "unbounded_collection_growth",
+      "severity": "error",
+      "stable_id": "b3:419e0529839f40fc"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3423,
+      "lint": "unbounded_collection_growth",
+      "severity": "error",
+      "stable_id": "b3:af1a23e3a06032b9"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3427,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:feaaacffee54296c"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3449,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:77e60fc1a2ebbc49"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3506,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:4905cad151ef0ea7"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3506,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:270f0fded3caf9d1"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3506,
+      "lint": "too_many_parameters",
+      "severity": "error",
+      "stable_id": "b3:1dd9234ab985102e"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3513,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:8e411e0e7116a957"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3513,
+      "lint": "function_length",
+      "severity": "error",
+      "stable_id": "b3:7d43ca5e03274c32"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3606,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:0da85a51b5129fad"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3606,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:645842045f8125d2"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3606,
+      "lint": "too_many_parameters",
+      "severity": "error",
+      "stable_id": "b3:2a128d5ad354a26b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3614,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:3cd3dce2351a06d1"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3637,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:bf975213aa12d417"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3711,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:8570f8dfd00c581f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3712,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:6c14ea8919f5fc5c"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3727,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:c8ffdd8965a50118"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3796,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:a9ced7338fd39fa0"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3831,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:4367cb38bfad40cd"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 3853,
+      "lint": "function_length",
+      "severity": "error",
+      "stable_id": "b3:8d883d76a0b9a24e"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 4534,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:d15b9c442fd5d1bc"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 4547,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:1a5d5da5d0d6a039"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 4552,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:4eb371e3bdd27b2e"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 4552,
+      "lint": "function_length",
+      "severity": "error",
+      "stable_id": "b3:1e4918bdaf5e7626"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 4631,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:205f85d1aec623d2"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 4643,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:1e67f5bf67b731f9"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 4656,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:6463906f5bccd89f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 4681,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:594a68000d5aba27"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 4700,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:2122bf2a7e582f39"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 4709,
+      "lint": "compound_condition",
+      "severity": "error",
+      "stable_id": "b3:67e44c2363d2363a"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 4723,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:e92ed9ad531bf5c1"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 4724,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:43536291854a5196"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 4894,
+      "lint": "ignored_result",
+      "severity": "error",
+      "stable_id": "b3:d39a12aaedb00094"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 4928,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:01ed9dc1d69db8f6"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 4959,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:6ab740616eabb63b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 4965,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:ca5d4fa913b005e2"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 4985,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:6f5d60946c1c280b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5012,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:3fdc5b7991de791d"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5035,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:8d758b4b41523a1f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5044,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:444febc54707bb23"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5058,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:e6da7a231d68568f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5070,
+      "lint": "ignored_result",
+      "severity": "error",
+      "stable_id": "b3:bfb9188137586e1b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5112,
+      "lint": "unbounded_collection_growth",
+      "severity": "error",
+      "stable_id": "b3:75d81e2cf8561048"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5123,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:4377b865999ada0b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5170,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:479a290a589869cc"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5195,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:66f05732d4f2b104"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5234,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:2437457e4a26c599"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5354,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:fe0fd1edd044cfb1"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5392,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:dee6a32c37aaa7ac"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5451,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:d00cb0d2e96b5b44"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5461,
+      "lint": "ignored_result",
+      "severity": "error",
+      "stable_id": "b3:3aba3bbbff248b5f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5473,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:b7fbd3b9c78d2e94"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5500,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:b10bf1c9d9342ee6"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5532,
+      "lint": "ignored_result",
+      "severity": "error",
+      "stable_id": "b3:c02ddfea9d2b4261"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5540,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:28c8759e4481db42"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5572,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:1a853ec8527ecd34"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5597,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:dccaccd9e524b269"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5629,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:c5804819b5e8c568"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5629,
+      "lint": "function_length",
+      "severity": "error",
+      "stable_id": "b3:0b57d6e776356a39"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5765,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:beb6b1576ee1522f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5766,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:45aac06a510af7e1"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5766,
+      "lint": "numeric_units",
+      "severity": "error",
+      "stable_id": "b3:b549508f023859f0"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5769,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:779e9ac607917cbe"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5824,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:cf6e589495ea512f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5923,
+      "lint": "unbounded_loop",
+      "severity": "error",
+      "stable_id": "b3:b57b60d531dbea4b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 5946,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:5861831658cc390a"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6030,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:2012b23c0dd910d8"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6030,
+      "lint": "function_length",
+      "severity": "error",
+      "stable_id": "b3:8166d94efe0eaedd"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6187,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:effd8514e1f035aa"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6226,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:6bec8da2b954f6ae"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6235,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:86223b19085a7a91"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6254,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:5ff354009f1c2593"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6282,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:f0d141e66b47228f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6282,
+      "lint": "too_many_parameters",
+      "severity": "error",
+      "stable_id": "b3:38b37beb5e860321"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6310,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:b78a2194f319fee2"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6333,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:948f5d5c18f19fee"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6374,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:de02835e73c39898"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6384,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:51bc6f8be89d320c"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6448,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:d3e00b087dece63f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6456,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:aa8b07d176319a30"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6462,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:6390bfaa4e92f7ff"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6470,
+      "lint": "unbounded_collection_growth",
+      "severity": "error",
+      "stable_id": "b3:7b8b13dfc67798ed"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6485,
+      "lint": "drop_must_use",
+      "severity": "error",
+      "stable_id": "b3:feec16f07bd7ce09"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6489,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:ca2efe051d9664c2"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6536,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:5c7775e3913483fa"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6542,
+      "lint": "unbounded_collection_growth",
+      "severity": "error",
+      "stable_id": "b3:4195d17505bdeb25"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6559,
+      "lint": "unbounded_collection_growth",
+      "severity": "error",
+      "stable_id": "b3:f10d3e07bd4017aa"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6594,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:7871a9eee8b8713b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6623,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:caaa3706f87efc97"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6646,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:2d13093632a06d1b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6646,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:4233c9b76cee11ce"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6657,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:6184813f176c1f5b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6667,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:7b2fe51646e0b0ed"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6732,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:70ab76214ae4f289"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6950,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:3b87772b28a8c0f3"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 6974,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:0087673bf14c6847"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7029,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:2da6db5c9549041a"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7032,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:858c6ff741b4c35b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7063,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:99e8d95da0b49387"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7066,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:3e91bb835b8856f4"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7086,
+      "lint": "unbounded_collection_growth",
+      "severity": "error",
+      "stable_id": "b3:2b1b33c70f922909"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7098,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:4071b24427d6579b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7101,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:4b347e2305fdc00f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7135,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:0329e68334798c60"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7138,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:71c4ddaac5fcf34b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7196,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:e7e3cb48ab417955"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7224,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:8690a7e0957f0ef1"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7229,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:640da5a113dcb00e"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7281,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:3d8da6ffc8f6fc9a"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7281,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:afd098ee4981c05b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7300,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:3cb4f73e4a32e788"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7386,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:6fc73fafffa58a60"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7429,
+      "lint": "unbounded_collection_growth",
+      "severity": "error",
+      "stable_id": "b3:2728db0caee1a9b7"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7439,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:a335f43e4c30cc19"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7457,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:fcf4f71a7361a425"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7584,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:373d68c0aa5a52ab"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7623,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:6c44db4b0bbfddca"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7646,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:3abd6ed941a1b9dd"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7651,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:19354f7656f14338"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7703,
+      "lint": "unbounded_loop",
+      "severity": "error",
+      "stable_id": "b3:acf39a703d16acb5"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7718,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:8339dc9c5bd81ccc"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7748,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:3ece1cacbdad5ce1"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7830,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:4c236b71b6d3606a"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7831,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:296a23c534f16c39"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7981,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:c868afe0d12fc6d2"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7982,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:6d833f0d8f12fd50"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 7984,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:9ffe1496f151fc7a"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 8254,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:1d3de01c92702dae"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 8254,
+      "lint": "function_length",
+      "severity": "error",
+      "stable_id": "b3:25c962c68d5cae3b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 8255,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:a1df55d753e3f3c9"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 8278,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:1f2572f7f1e91741"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 8279,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:d262cad65a120cce"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 8293,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:52bef2b88818aeb0"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 8300,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:1b55b2d57e9af616"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 8307,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:a780a7195b5c0277"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 8308,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:a2e703c6bd6b2895"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 8377,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:c698042e8f182cb6"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 8462,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:e40176a1fcbc78b2"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 8496,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:ecf392c902583c9a"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 8496,
+      "lint": "function_length",
+      "severity": "error",
+      "stable_id": "b3:3611a617065d1c75"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 8538,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:3b90af2b9009ffec"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 8557,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:e3a6bf87501ed23e"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 8586,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:ce15aeec48c7ae44"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 8589,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:6e8db1b633934802"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 8917,
+      "lint": "numeric_units",
+      "severity": "error",
+      "stable_id": "b3:fd3adfcf2cd7dcc4"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 8944,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:dafbf91142959f7f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9425,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:b96eb990a05d49ff"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9479,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:8cd6e7e0a7f7fd84"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9479,
+      "lint": "too_many_parameters",
+      "severity": "error",
+      "stable_id": "b3:f53ac3ec8b946f03"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9493,
+      "lint": "nested_conditionals",
+      "severity": "error",
+      "stable_id": "b3:efdac8b25c723d0d"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9515,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:1fe9d24e0da0fb13"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9568,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:5099becb43099ade"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9600,
+      "lint": "compound_condition",
+      "severity": "error",
+      "stable_id": "b3:d005e7776e872df1"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9628,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:79df0297ae47d9cb"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9676,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:242debdc6bfd4ff7"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9697,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:6d8f7acc8f451764"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9730,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:52333b755fc6a897"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9730,
+      "lint": "dead_code",
+      "severity": "warning",
+      "stable_id": "b3:634e9fa3c40f3d14"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9734,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:ae3ae00fb67033e7"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9734,
+      "lint": "dead_code",
+      "severity": "warning",
+      "stable_id": "b3:838da4ccf89f3b37"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9742,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:4328679fdbda5352"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9742,
+      "lint": "dead_code",
+      "severity": "warning",
+      "stable_id": "b3:a80ccd26e1ec39e9"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9746,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:88ddf54a67081f04"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9746,
+      "lint": "dead_code",
+      "severity": "warning",
+      "stable_id": "b3:f6c30ecc46c97ce9"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9750,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:18dd5cb84f56264c"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9750,
+      "lint": "dead_code",
+      "severity": "warning",
+      "stable_id": "b3:a16f4ad1af583f06"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9750,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:9623f53eaa527828"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9754,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:b5776b59e65ca289"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9755,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:99b95fce676abd7f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9759,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:c12607ca0cf58f3e"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9763,
+      "lint": "numeric_units",
+      "severity": "error",
+      "stable_id": "b3:41cfe15daeca7c15"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9766,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:401a0e5fa8324d1f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9766,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:cbc7c555cd78d6c1"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9774,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:30fdbab36608b0d8"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9785,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:d5bb62fe0906b32b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9790,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:db9b7bb6d9cc356f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9801,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:892f92437c9ab377"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9814,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:9eb960e6b3e5d2ef"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9821,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:43fd1a0092f2f3f8"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9825,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:e855ef2a90a3edd1"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9829,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:ccc81d60fff19482"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9840,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:f08ee96f4b6dd7b3"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9851,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:1a7791e5605d4dd5"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9858,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:02c97c555809820a"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9869,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:bd91598a4364276b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9873,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:dab02a857d299a77"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9878,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:ec3adef96339b47f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9882,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:c0503314aeddf5f5"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9885,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:b25194a8259232e9"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9893,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:58572a5491ce46af"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9909,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:1cdecf6d757b1423"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9917,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:5592d97540448ca8"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9924,
+      "lint": "unbounded_loop",
+      "severity": "error",
+      "stable_id": "b3:621faaa5423ba3fd"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9931,
+      "lint": "unbounded_collection_growth",
+      "severity": "error",
+      "stable_id": "b3:b9c36b68330082d8"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 9986,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:53c9022134ee51f0"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 10038,
+      "lint": "unchecked_narrowing",
+      "severity": "error",
+      "stable_id": "b3:608f1b7ac53e7bea"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 10075,
+      "lint": "unchecked_narrowing",
+      "severity": "error",
+      "stable_id": "b3:9794d1985290a1d9"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 10084,
+      "lint": "platform_dependent_cast",
+      "severity": "error",
+      "stable_id": "b3:640877fc9ec66a3d"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/main.rs",
+      "line": 10110,
+      "lint": "ambient_clock",
+      "severity": "error",
+      "stable_id": "b3:1399f5bbd5db6181"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 1,
+      "lint": "excessive_file_length",
+      "severity": "error",
+      "stable_id": "b3:088c352f23207e08"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 1,
+      "lint": "underscore_in_module_filename",
+      "severity": "error",
+      "stable_id": "b3:81717aed602ca183"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 6,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:ff9749eb3d3665ed"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 39,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:2b6559a0f50e29d7"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 57,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:5dc50f676a4530e9"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 62,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:c464db64db1d390c"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 65,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:445aa12c382b97fc"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 90,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:f12f1ed5a7f451a8"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 94,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:ad44c2b44213698c"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 139,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:37430b8f375e8b8c"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 139,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:4b754fcd4321ea3d"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 157,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:240a0baa69e28b8c"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 157,
+      "lint": "numeric_units",
+      "severity": "error",
+      "stable_id": "b3:7f4496cdd43d5e25"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 194,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:f115c2eff06d2a8a"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 204,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:43d3bf0eb9d9a2ed"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 212,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:52333b755fc6a897"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 216,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:ae3ae00fb67033e7"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 224,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:4328679fdbda5352"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 228,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:0e66702bc1e1c706"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 233,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:18dd5cb84f56264c"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 233,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:9623f53eaa527828"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 237,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:b5776b59e65ca289"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 238,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:99b95fce676abd7f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 242,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:c12607ca0cf58f3e"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 246,
+      "lint": "numeric_units",
+      "severity": "error",
+      "stable_id": "b3:41cfe15daeca7c15"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 249,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:401a0e5fa8324d1f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 249,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:cbc7c555cd78d6c1"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 257,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:30fdbab36608b0d8"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 268,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:d5bb62fe0906b32b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 273,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:db9b7bb6d9cc356f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 284,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:5800965480d1519f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 295,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:02c97c555809820a"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 306,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:bd91598a4364276b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 310,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:dab02a857d299a77"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 315,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:ec3adef96339b47f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 319,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:c0503314aeddf5f5"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 322,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:b25194a8259232e9"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 330,
+      "lint": "bool_naming",
+      "severity": "error",
+      "stable_id": "b3:58572a5491ce46af"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/receipt_validation.rs",
+      "line": 346,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:1cdecf6d757b1423"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 1,
+      "lint": "excessive_file_length",
+      "severity": "error",
+      "stable_id": "b3:ec3ef6868a56d8ec"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 1,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:eedc8a7d98c66400"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 1,
+      "lint": "underscore_in_module_filename",
+      "severity": "error",
+      "stable_id": "b3:8957d4c819f9cb00"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 128,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:2fd577fd868675af"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 149,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:b78101c84d0b338b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 191,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:87eebb8ee13592a6"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 279,
+      "lint": "numeric_units",
+      "severity": "error",
+      "stable_id": "b3:227ceea59089ee45"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 290,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:ef87a78af6cec21a"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 290,
+      "lint": "function_length",
+      "severity": "error",
+      "stable_id": "b3:dd08a0686b21998e"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 346,
+      "lint": "numeric_units",
+      "severity": "error",
+      "stable_id": "b3:84c483ee46c3e41e"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 444,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:dd7076251c619520"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 446,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:5bac049289b3ccac"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 451,
+      "lint": "numeric_units",
+      "severity": "error",
+      "stable_id": "b3:2352ab9305401844"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 685,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:7366f0dda0b5959b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 689,
+      "lint": "unbounded_collection_growth",
+      "severity": "error",
+      "stable_id": "b3:0e0182ba8b91845d"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 706,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:2e551dec3d36594d"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 709,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:77a95b9aebedfce9"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 710,
+      "lint": "numeric_units",
+      "severity": "error",
+      "stable_id": "b3:08c4697de3eb6fa5"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 714,
+      "lint": "unbounded_collection_growth",
+      "severity": "error",
+      "stable_id": "b3:c9e50363f44aaf8b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 748,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:fed859224b7f4737"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 748,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:48fb4a6240d9fd86"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 759,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:3b199d2adc1b5daa"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 767,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:c8a09437d4e9f193"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 770,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:04401d815464cd39"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 770,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:5c2097bf2a73694a"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 820,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:1b8fc59342a7bb2f"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 822,
+      "lint": "unbounded_collection_growth",
+      "severity": "error",
+      "stable_id": "b3:cb66b1cd2d0dc487"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 823,
+      "lint": "raw_arithmetic_overflow",
+      "severity": "error",
+      "stable_id": "b3:b7b5280287918798"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 857,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:6409834a57b8d09b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 860,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:7cd01753972abddd"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 918,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:a347131d709e070e"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 918,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:295d4a6fe3783e56"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 948,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:48af7bdad613832a"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 960,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:8d226129b536fae9"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 960,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:862c5a16fed1abb6"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 977,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:eb5d0f3d98afc937"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/runtime_config.rs",
+      "line": 977,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:d58101776f66de27"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_catalog.rs",
+      "line": 1,
+      "lint": "excessive_file_length",
+      "severity": "error",
+      "stable_id": "b3:7fdaf92dd5f49903"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_catalog.rs",
+      "line": 1,
+      "lint": "underscore_in_module_filename",
+      "severity": "error",
+      "stable_id": "b3:120e22379c37cca4"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 1,
+      "lint": "excessive_file_length",
+      "severity": "error",
+      "stable_id": "b3:6764031ce3841ee2"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 1,
+      "lint": "underscore_in_module_filename",
+      "severity": "error",
+      "stable_id": "b3:5bb79961917e30a8"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 2,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:3a9b006e9ba522e0"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 61,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:efb8cff719125019"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 89,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:5c9be6e511b2c091"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 100,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:dfdc373665c2c21a"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 209,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:8b748ffc275b12a0"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3040,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:969069f35b91affa"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3048,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:2da483df42829c02"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3052,
+      "lint": "no_panic",
+      "severity": "error",
+      "stable_id": "b3:9a27e4e9ccc4b26c"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3055,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:44a5a8b54c34a619"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3059,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:fd08fc9e764315a3"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3063,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:263571e1bae3946c"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3067,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:641cdd8b2e5b9b73"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3075,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:b11a0a63a74c3437"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3086,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:b520cbf6e12712cf"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3086,
+      "lint": "function_length",
+      "severity": "error",
+      "stable_id": "b3:a66b2ce4e63d4cca"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3165,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:946e15a48cd18878"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3165,
+      "lint": "function_length",
+      "severity": "error",
+      "stable_id": "b3:ef845337c90ea6fb"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3241,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:63558d9b569c7cb2"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3334,
+      "lint": "unbounded_collection_growth",
+      "severity": "error",
+      "stable_id": "b3:49e725c58adfa179"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3342,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:82a6abed6d1c0cff"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3342,
+      "lint": "function_length",
+      "severity": "error",
+      "stable_id": "b3:d4503da9953cdaf9"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3420,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:a3f1c3582f053737"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3420,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:c88de1b8f1a9d4c8"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3442,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:e3ced79d52f975a5"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3442,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:d9ee7401760b7741"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3454,
+      "lint": "unbounded_collection_growth",
+      "severity": "error",
+      "stable_id": "b3:3bdab602ce77fbc8"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3479,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:f263fbaf14b98524"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3479,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:023ec744dbae15eb"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3508,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:efd9f40d5fab0b60"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3512,
+      "lint": "ambiguous_params",
+      "severity": "error",
+      "stable_id": "b3:d444bd37567b0c17"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3527,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:69bde90cd96db942"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3527,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:2bca3e30217a813b"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_core.rs",
+      "line": 3572,
+      "lint": "catch_all_on_enum",
+      "severity": "error",
+      "stable_id": "b3:f9089fa2ce843505"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_manifest_generated.rs",
+      "line": 1,
+      "lint": "excessive_file_length",
+      "severity": "error",
+      "stable_id": "b3:dbd4e0c6887151d1"
+    },
+    {
+      "crate_name": "mc-compat-runner",
+      "file": "src/scenario_manifest_generated.rs",
+      "line": 1,
+      "lint": "underscore_in_module_filename",
+      "severity": "error",
+      "stable_id": "b3:bdf0dba9f1ce8ba1"
+    }
+  ],
+  "accepted_stable_ids": [
+    "b3:484b5dcd682c6f18",
+    "b3:cfb9b662dbe7a357",
+    "b3:dfc36d1d5d78b8e2",
+    "b3:2af1a2a511413a7c",
+    "b3:548b7cc0246b9c3e",
+    "b3:1d13c89edf01d47d",
+    "b3:a5497858d58b6175",
+    "b3:2f8d321f66516473",
+    "b3:73ea5269bfa9d792",
+    "b3:2121059b6206af3a",
+    "b3:062bdf22fac2c772",
+    "b3:723cb165c66ee1f8",
+    "b3:e5ba6cde19192107",
+    "b3:25c72d0ff16a84dc",
+    "b3:9cb0d23a4a1c7248",
+    "b3:c628ef68b9b13b34",
+    "b3:c166d505345e9df5",
+    "b3:3432b9fc9af97139",
+    "b3:dd5b5c5678cf2669",
+    "b3:cddc5db9bf46d991",
+    "b3:c9f578a924b6d901",
+    "b3:7c0149037470a1a2",
+    "b3:b41dcdfde3376b9a",
+    "b3:280180e0d4db9f65",
+    "b3:525b6739f96f02ac",
+    "b3:f159efada7c24305",
+    "b3:c2cdfc7aae4a72fd",
+    "b3:8272af5d4089eedc",
+    "b3:28d573e35d8ed331",
+    "b3:973aba2012d8a550",
+    "b3:df3b6b012e171540",
+    "b3:50c4abde725a68b2",
+    "b3:8fc5222701b6b8cc",
+    "b3:8936505431dca500",
+    "b3:e30236c8c8dc0fe9",
+    "b3:fe2f7235c22855ff",
+    "b3:f0208ef8fe6b3eec",
+    "b3:c15db1ed5aefad6c",
+    "b3:482ae7c3af9b1127",
+    "b3:193ff8d36b6320ea",
+    "b3:01e869927e94aea1",
+    "b3:f27dcd00637d6e0f",
+    "b3:ab7bc6a8783e9898",
+    "b3:6f5d0d1507cc13d4",
+    "b3:ec0e27cd86e618b8",
+    "b3:4d924de55275be2e",
+    "b3:166eeb612b2f0b8f",
+    "b3:867f2d71d67a301a",
+    "b3:972b2d2e8d5bdb0a",
+    "b3:d55cb5970309dc17",
+    "b3:3d31b617d955bc70",
+    "b3:079b6eb0296786a0",
+    "b3:0219e02d2c069517",
+    "b3:a0e62d58defba215",
+    "b3:b191fbcc7f486895",
+    "b3:adbe32e01841db60",
+    "b3:32f1c86494b49a78",
+    "b3:b9be7cf75dd6a773",
+    "b3:f9a1d8ee6e62216c",
+    "b3:d618dc708cbbaa2f",
+    "b3:91aac6254453635e",
+    "b3:949ed9d15184895f",
+    "b3:ef368b3e90d87444",
+    "b3:f35fdaacaa7547ff",
+    "b3:3a4010136a1f610f",
+    "b3:06b6e3be867064b4",
+    "b3:0397b4c2cf3fca21",
+    "b3:b6f02691ef6f3b9c",
+    "b3:317af4389d3a256d",
+    "b3:f0312cb7dc08d110",
+    "b3:0878f48bf2c4fa9f",
+    "b3:254366d32285a0bb",
+    "b3:cf327b1327df899d",
+    "b3:c0281ba316948fbc",
+    "b3:e33e1615d39471db",
+    "b3:283ad864d070e204",
+    "b3:4a9d68d71821df79",
+    "b3:1885349cefef4b7c",
+    "b3:2917bacb8f484c82",
+    "b3:499318b8d4558928",
+    "b3:2aeb798d44d1cbff",
+    "b3:9469d2223bbc3236",
+    "b3:5ff052c0673b84a1",
+    "b3:cae14f2092556a8d",
+    "b3:73ce2160df9abf18",
+    "b3:19e7f45c059e9942",
+    "b3:31139509dabd0c20",
+    "b3:f70f30253444bf2b",
+    "b3:0c29cffb93e1211d",
+    "b3:cdea8a473c873c3f",
+    "b3:f19da7174fa040c9",
+    "b3:aa6733e667df9aab",
+    "b3:878f8dde51adb29d",
+    "b3:7dbe2f88265b30e5",
+    "b3:c234992500dbca49",
+    "b3:b4a808df7f7a920e",
+    "b3:3a037682c10c3246",
+    "b3:0c3d110cee2f3a3b",
+    "b3:e01f9e375855ff97",
+    "b3:38321df3be8802c8",
+    "b3:acafea1b85b0a81b",
+    "b3:8cb5cdfb174e7105",
+    "b3:0eabb2126d1efdfe",
+    "b3:db7ecea14a05c15e",
+    "b3:8ee0d9a92f5cef56",
+    "b3:413c2b331172cc88",
+    "b3:980d51da156da939",
+    "b3:6f0a12c74621ece4",
+    "b3:4b179c7f747daec4",
+    "b3:a0d97b5f1b971adf",
+    "b3:d8c49eac8cb49ee2",
+    "b3:f0ce3b9422894778",
+    "b3:88a4d87a94423678",
+    "b3:ade6007fde2accf6",
+    "b3:a65444603c381bea",
+    "b3:8e3f88f5bd4cb7ac",
+    "b3:3ad75c80a26b6c04",
+    "b3:3a69cba3fc6fe809",
+    "b3:d0d8b29136650cbe",
+    "b3:41c6a2ffa0863e1b",
+    "b3:ff41f936f6523f72",
+    "b3:419e0529839f40fc",
+    "b3:af1a23e3a06032b9",
+    "b3:feaaacffee54296c",
+    "b3:77e60fc1a2ebbc49",
+    "b3:4905cad151ef0ea7",
+    "b3:270f0fded3caf9d1",
+    "b3:1dd9234ab985102e",
+    "b3:8e411e0e7116a957",
+    "b3:7d43ca5e03274c32",
+    "b3:0da85a51b5129fad",
+    "b3:645842045f8125d2",
+    "b3:2a128d5ad354a26b",
+    "b3:3cd3dce2351a06d1",
+    "b3:bf975213aa12d417",
+    "b3:8570f8dfd00c581f",
+    "b3:6c14ea8919f5fc5c",
+    "b3:c8ffdd8965a50118",
+    "b3:a9ced7338fd39fa0",
+    "b3:4367cb38bfad40cd",
+    "b3:8d883d76a0b9a24e",
+    "b3:d15b9c442fd5d1bc",
+    "b3:1a5d5da5d0d6a039",
+    "b3:4eb371e3bdd27b2e",
+    "b3:1e4918bdaf5e7626",
+    "b3:205f85d1aec623d2",
+    "b3:1e67f5bf67b731f9",
+    "b3:6463906f5bccd89f",
+    "b3:594a68000d5aba27",
+    "b3:2122bf2a7e582f39",
+    "b3:67e44c2363d2363a",
+    "b3:e92ed9ad531bf5c1",
+    "b3:43536291854a5196",
+    "b3:d39a12aaedb00094",
+    "b3:01ed9dc1d69db8f6",
+    "b3:6ab740616eabb63b",
+    "b3:ca5d4fa913b005e2",
+    "b3:6f5d60946c1c280b",
+    "b3:3fdc5b7991de791d",
+    "b3:8d758b4b41523a1f",
+    "b3:444febc54707bb23",
+    "b3:e6da7a231d68568f",
+    "b3:bfb9188137586e1b",
+    "b3:75d81e2cf8561048",
+    "b3:4377b865999ada0b",
+    "b3:479a290a589869cc",
+    "b3:66f05732d4f2b104",
+    "b3:2437457e4a26c599",
+    "b3:fe0fd1edd044cfb1",
+    "b3:dee6a32c37aaa7ac",
+    "b3:d00cb0d2e96b5b44",
+    "b3:3aba3bbbff248b5f",
+    "b3:b7fbd3b9c78d2e94",
+    "b3:b10bf1c9d9342ee6",
+    "b3:c02ddfea9d2b4261",
+    "b3:28c8759e4481db42",
+    "b3:1a853ec8527ecd34",
+    "b3:dccaccd9e524b269",
+    "b3:c5804819b5e8c568",
+    "b3:0b57d6e776356a39",
+    "b3:beb6b1576ee1522f",
+    "b3:45aac06a510af7e1",
+    "b3:b549508f023859f0",
+    "b3:779e9ac607917cbe",
+    "b3:cf6e589495ea512f",
+    "b3:b57b60d531dbea4b",
+    "b3:5861831658cc390a",
+    "b3:2012b23c0dd910d8",
+    "b3:8166d94efe0eaedd",
+    "b3:effd8514e1f035aa",
+    "b3:6bec8da2b954f6ae",
+    "b3:86223b19085a7a91",
+    "b3:5ff354009f1c2593",
+    "b3:f0d141e66b47228f",
+    "b3:38b37beb5e860321",
+    "b3:b78a2194f319fee2",
+    "b3:948f5d5c18f19fee",
+    "b3:de02835e73c39898",
+    "b3:51bc6f8be89d320c",
+    "b3:d3e00b087dece63f",
+    "b3:aa8b07d176319a30",
+    "b3:6390bfaa4e92f7ff",
+    "b3:7b8b13dfc67798ed",
+    "b3:feec16f07bd7ce09",
+    "b3:ca2efe051d9664c2",
+    "b3:5c7775e3913483fa",
+    "b3:4195d17505bdeb25",
+    "b3:f10d3e07bd4017aa",
+    "b3:7871a9eee8b8713b",
+    "b3:caaa3706f87efc97",
+    "b3:2d13093632a06d1b",
+    "b3:4233c9b76cee11ce",
+    "b3:6184813f176c1f5b",
+    "b3:7b2fe51646e0b0ed",
+    "b3:70ab76214ae4f289",
+    "b3:3b87772b28a8c0f3",
+    "b3:0087673bf14c6847",
+    "b3:2da6db5c9549041a",
+    "b3:858c6ff741b4c35b",
+    "b3:99e8d95da0b49387",
+    "b3:3e91bb835b8856f4",
+    "b3:2b1b33c70f922909",
+    "b3:4071b24427d6579b",
+    "b3:4b347e2305fdc00f",
+    "b3:0329e68334798c60",
+    "b3:71c4ddaac5fcf34b",
+    "b3:e7e3cb48ab417955",
+    "b3:8690a7e0957f0ef1",
+    "b3:640da5a113dcb00e",
+    "b3:3d8da6ffc8f6fc9a",
+    "b3:afd098ee4981c05b",
+    "b3:3cb4f73e4a32e788",
+    "b3:6fc73fafffa58a60",
+    "b3:2728db0caee1a9b7",
+    "b3:a335f43e4c30cc19",
+    "b3:fcf4f71a7361a425",
+    "b3:373d68c0aa5a52ab",
+    "b3:6c44db4b0bbfddca",
+    "b3:3abd6ed941a1b9dd",
+    "b3:19354f7656f14338",
+    "b3:acf39a703d16acb5",
+    "b3:8339dc9c5bd81ccc",
+    "b3:3ece1cacbdad5ce1",
+    "b3:4c236b71b6d3606a",
+    "b3:296a23c534f16c39",
+    "b3:c868afe0d12fc6d2",
+    "b3:6d833f0d8f12fd50",
+    "b3:9ffe1496f151fc7a",
+    "b3:1d3de01c92702dae",
+    "b3:25c962c68d5cae3b",
+    "b3:a1df55d753e3f3c9",
+    "b3:1f2572f7f1e91741",
+    "b3:d262cad65a120cce",
+    "b3:52bef2b88818aeb0",
+    "b3:1b55b2d57e9af616",
+    "b3:a780a7195b5c0277",
+    "b3:a2e703c6bd6b2895",
+    "b3:c698042e8f182cb6",
+    "b3:e40176a1fcbc78b2",
+    "b3:ecf392c902583c9a",
+    "b3:3611a617065d1c75",
+    "b3:3b90af2b9009ffec",
+    "b3:e3a6bf87501ed23e",
+    "b3:ce15aeec48c7ae44",
+    "b3:6e8db1b633934802",
+    "b3:fd3adfcf2cd7dcc4",
+    "b3:dafbf91142959f7f",
+    "b3:b96eb990a05d49ff",
+    "b3:8cd6e7e0a7f7fd84",
+    "b3:f53ac3ec8b946f03",
+    "b3:efdac8b25c723d0d",
+    "b3:1fe9d24e0da0fb13",
+    "b3:5099becb43099ade",
+    "b3:d005e7776e872df1",
+    "b3:79df0297ae47d9cb",
+    "b3:242debdc6bfd4ff7",
+    "b3:6d8f7acc8f451764",
+    "b3:52333b755fc6a897",
+    "b3:634e9fa3c40f3d14",
+    "b3:ae3ae00fb67033e7",
+    "b3:838da4ccf89f3b37",
+    "b3:4328679fdbda5352",
+    "b3:a80ccd26e1ec39e9",
+    "b3:88ddf54a67081f04",
+    "b3:f6c30ecc46c97ce9",
+    "b3:18dd5cb84f56264c",
+    "b3:a16f4ad1af583f06",
+    "b3:9623f53eaa527828",
+    "b3:b5776b59e65ca289",
+    "b3:99b95fce676abd7f",
+    "b3:c12607ca0cf58f3e",
+    "b3:41cfe15daeca7c15",
+    "b3:401a0e5fa8324d1f",
+    "b3:cbc7c555cd78d6c1",
+    "b3:30fdbab36608b0d8",
+    "b3:d5bb62fe0906b32b",
+    "b3:db9b7bb6d9cc356f",
+    "b3:892f92437c9ab377",
+    "b3:9eb960e6b3e5d2ef",
+    "b3:43fd1a0092f2f3f8",
+    "b3:e855ef2a90a3edd1",
+    "b3:ccc81d60fff19482",
+    "b3:f08ee96f4b6dd7b3",
+    "b3:1a7791e5605d4dd5",
+    "b3:02c97c555809820a",
+    "b3:bd91598a4364276b",
+    "b3:dab02a857d299a77",
+    "b3:ec3adef96339b47f",
+    "b3:c0503314aeddf5f5",
+    "b3:b25194a8259232e9",
+    "b3:58572a5491ce46af",
+    "b3:1cdecf6d757b1423",
+    "b3:5592d97540448ca8",
+    "b3:621faaa5423ba3fd",
+    "b3:b9c36b68330082d8",
+    "b3:53c9022134ee51f0",
+    "b3:608f1b7ac53e7bea",
+    "b3:9794d1985290a1d9",
+    "b3:640877fc9ec66a3d",
+    "b3:1399f5bbd5db6181",
+    "b3:088c352f23207e08",
+    "b3:81717aed602ca183",
+    "b3:ff9749eb3d3665ed",
+    "b3:2b6559a0f50e29d7",
+    "b3:5dc50f676a4530e9",
+    "b3:c464db64db1d390c",
+    "b3:445aa12c382b97fc",
+    "b3:f12f1ed5a7f451a8",
+    "b3:ad44c2b44213698c",
+    "b3:37430b8f375e8b8c",
+    "b3:4b754fcd4321ea3d",
+    "b3:240a0baa69e28b8c",
+    "b3:7f4496cdd43d5e25",
+    "b3:f115c2eff06d2a8a",
+    "b3:43d3bf0eb9d9a2ed",
+    "b3:0e66702bc1e1c706",
+    "b3:5800965480d1519f",
+    "b3:ec3ef6868a56d8ec",
+    "b3:eedc8a7d98c66400",
+    "b3:8957d4c819f9cb00",
+    "b3:2fd577fd868675af",
+    "b3:b78101c84d0b338b",
+    "b3:87eebb8ee13592a6",
+    "b3:227ceea59089ee45",
+    "b3:ef87a78af6cec21a",
+    "b3:dd08a0686b21998e",
+    "b3:84c483ee46c3e41e",
+    "b3:dd7076251c619520",
+    "b3:5bac049289b3ccac",
+    "b3:2352ab9305401844",
+    "b3:7366f0dda0b5959b",
+    "b3:0e0182ba8b91845d",
+    "b3:2e551dec3d36594d",
+    "b3:77a95b9aebedfce9",
+    "b3:08c4697de3eb6fa5",
+    "b3:c9e50363f44aaf8b",
+    "b3:fed859224b7f4737",
+    "b3:48fb4a6240d9fd86",
+    "b3:3b199d2adc1b5daa",
+    "b3:c8a09437d4e9f193",
+    "b3:04401d815464cd39",
+    "b3:5c2097bf2a73694a",
+    "b3:1b8fc59342a7bb2f",
+    "b3:cb66b1cd2d0dc487",
+    "b3:b7b5280287918798",
+    "b3:6409834a57b8d09b",
+    "b3:7cd01753972abddd",
+    "b3:a347131d709e070e",
+    "b3:295d4a6fe3783e56",
+    "b3:48af7bdad613832a",
+    "b3:8d226129b536fae9",
+    "b3:862c5a16fed1abb6",
+    "b3:eb5d0f3d98afc937",
+    "b3:d58101776f66de27",
+    "b3:7fdaf92dd5f49903",
+    "b3:120e22379c37cca4",
+    "b3:6764031ce3841ee2",
+    "b3:5bb79961917e30a8",
+    "b3:3a9b006e9ba522e0",
+    "b3:efb8cff719125019",
+    "b3:5c9be6e511b2c091",
+    "b3:dfdc373665c2c21a",
+    "b3:8b748ffc275b12a0",
+    "b3:969069f35b91affa",
+    "b3:2da483df42829c02",
+    "b3:9a27e4e9ccc4b26c",
+    "b3:44a5a8b54c34a619",
+    "b3:fd08fc9e764315a3",
+    "b3:263571e1bae3946c",
+    "b3:641cdd8b2e5b9b73",
+    "b3:b11a0a63a74c3437",
+    "b3:b520cbf6e12712cf",
+    "b3:a66b2ce4e63d4cca",
+    "b3:946e15a48cd18878",
+    "b3:ef845337c90ea6fb",
+    "b3:63558d9b569c7cb2",
+    "b3:49e725c58adfa179",
+    "b3:82a6abed6d1c0cff",
+    "b3:d4503da9953cdaf9",
+    "b3:a3f1c3582f053737",
+    "b3:c88de1b8f1a9d4c8",
+    "b3:e3ced79d52f975a5",
+    "b3:d9ee7401760b7741",
+    "b3:3bdab602ce77fbc8",
+    "b3:f263fbaf14b98524",
+    "b3:023ec744dbae15eb",
+    "b3:efd9f40d5fab0b60",
+    "b3:d444bd37567b0c17",
+    "b3:69bde90cd96db942",
+    "b3:2bca3e30217a813b",
+    "b3:f9089fa2ce843505",
+    "b3:dbd4e0c6887151d1",
+    "b3:bdf0dba9f1ce8ba1"
+  ],
+  "owner": "mc workspace maintainers",
+  "rationale": "Pre-existing Octet findings captured after enabling every pinned Octet lint at deny level; the aggregate gate rejects any stable ID not listed here.",
+  "removal_condition": "Fix accepted findings by improving code quality, rerun the aggregate Octet gate, and regenerate this baseline with fewer or zero accepted IDs.",
+  "schema": "mc.octet.reviewed-baseline.v1",
+  "source": {
+    "config_hash": "b3:f67ce9299ae29f7a0c1b6487c302a638146e271bdc2298fc80237068bb1e26eb",
+    "error_findings": 432,
+    "profile_hash": "b3:20cbf87059d540a571e8fb73369655a08c044e0530c0e4113e26423521190b74",
+    "profile_name": "workspace-metadata",
+    "rustc_version": "rustc 1.96.0-nightly (ac7f9ec7d 2026-03-20)",
+    "tool_name": "cargo-octet",
+    "tool_version": "0.1.0",
+    "toolchain": "nightly-2026-03-21-x86_64-unknown-linux-gnu",
+    "total_findings": 441,
+    "warning_findings": 9
+  },
+  "workspace": "compat-runner",
+  "workspace_path": "compat/runner"
+}

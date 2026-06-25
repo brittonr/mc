@@ -5,5 +5,12 @@ edition = "2021"
 description = "Hardened local Stevenarella/Valence compatibility smoke runner"
 license = "MIT OR Apache-2.0"
 
+[workspace]
+resolver = "2"
+
+[workspace.metadata.octet]
+default_scope = ["-p", "mc-compat-runner"]
+cargo_check_args = []
+
 [dependencies]
 blake3 = "1.8.5"

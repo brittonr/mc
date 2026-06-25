@@ -1,0 +1,182 @@
+{
+  "accepted_findings": [
+    {
+      "crate_name": "valence_math",
+      "file": "CARGO_REGISTRY/glam-0.29.3/src/bool.rs",
+      "line": 1,
+      "lint": "module_file_count",
+      "severity": "error",
+      "stable_id": "b3:74bff6bcfe9c1393"
+    },
+    {
+      "crate_name": "valence_command_macros",
+      "file": "CARGO_REGISTRY/syn-2.0.117/src/attr.rs",
+      "line": 1,
+      "lint": "module_file_count",
+      "severity": "error",
+      "stable_id": "b3:a36f117c5cc90d82"
+    },
+    {
+      "crate_name": "valence_protocol_macros",
+      "file": "CARGO_REGISTRY/syn-2.0.117/src/custom_keyword.rs",
+      "line": 1,
+      "lint": "module_file_count",
+      "severity": "error",
+      "stable_id": "b3:2646ecde4a505b73"
+    },
+    {
+      "crate_name": "valence_protocol_macros",
+      "file": "CARGO_REGISTRY/syn-2.0.117/src/custom_keyword.rs",
+      "line": 1,
+      "lint": "module_file_count",
+      "severity": "error",
+      "stable_id": "b3:2646ecde4a505b73"
+    },
+    {
+      "crate_name": "valence_build_utils",
+      "file": "RUSTLIB/core/src/clone.rs",
+      "line": 1,
+      "lint": "module_file_count",
+      "severity": "error",
+      "stable_id": "b3:91358ae4d09a3dbc"
+    },
+    {
+      "crate_name": "valence_build_utils",
+      "file": "RUSTLIB/core/src/clone.rs",
+      "line": 1,
+      "lint": "module_file_count",
+      "severity": "error",
+      "stable_id": "b3:91358ae4d09a3dbc"
+    },
+    {
+      "crate_name": "valence_command_macros",
+      "file": "RUSTLIB/core/src/clone.rs",
+      "line": 1,
+      "lint": "module_file_count",
+      "severity": "error",
+      "stable_id": "b3:7a7a9d577a0ad14a"
+    },
+    {
+      "crate_name": "valence_ident_macros",
+      "file": "RUSTLIB/core/src/clone.rs",
+      "line": 1,
+      "lint": "module_file_count",
+      "severity": "error",
+      "stable_id": "b3:53589b1ebdcbb482"
+    },
+    {
+      "crate_name": "valence_ident_macros",
+      "file": "RUSTLIB/core/src/clone.rs",
+      "line": 1,
+      "lint": "module_file_count",
+      "severity": "error",
+      "stable_id": "b3:53589b1ebdcbb482"
+    },
+    {
+      "crate_name": "valence_math",
+      "file": "RUSTLIB/core/src/clone.rs",
+      "line": 1,
+      "lint": "module_file_count",
+      "severity": "error",
+      "stable_id": "b3:aa5433ffa8772eb7"
+    },
+    {
+      "crate_name": "valence_protocol_macros",
+      "file": "RUSTLIB/core/src/clone.rs",
+      "line": 1,
+      "lint": "module_file_count",
+      "severity": "error",
+      "stable_id": "b3:f2557d537257ffec"
+    },
+    {
+      "crate_name": "valence_protocol_macros",
+      "file": "RUSTLIB/core/src/clone.rs",
+      "line": 1,
+      "lint": "module_file_count",
+      "severity": "error",
+      "stable_id": "b3:f2557d537257ffec"
+    },
+    {
+      "crate_name": "valence_command_macros",
+      "file": "crates/valence_command_macros/src/expand.rs",
+      "line": 1,
+      "lint": "excessive_file_length",
+      "severity": "error",
+      "stable_id": "b3:aec4969cf70bbc85"
+    },
+    {
+      "crate_name": "valence_command_macros",
+      "file": "crates/valence_command_macros/src/expand.rs",
+      "line": 1,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:0b73cfe338000636"
+    },
+    {
+      "crate_name": "valence_command_macros",
+      "file": "crates/valence_command_macros/src/expand.rs",
+      "line": 28,
+      "lint": "path_segment_repetition",
+      "severity": "error",
+      "stable_id": "b3:52f45f7b395981ce"
+    },
+    {
+      "crate_name": "valence_command_macros",
+      "file": "crates/valence_command_macros/src/expand.rs",
+      "line": 102,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:916521fcee036072"
+    },
+    {
+      "crate_name": "valence_command_macros",
+      "file": "crates/valence_command_macros/src/expand.rs",
+      "line": 116,
+      "lint": "unbounded_collection_growth",
+      "severity": "error",
+      "stable_id": "b3:36f5da925cb2e0e0"
+    },
+    {
+      "crate_name": "valence_command_macros",
+      "file": "crates/valence_command_macros/src/expand.rs",
+      "line": 322,
+      "lint": "unbounded_collection_growth",
+      "severity": "error",
+      "stable_id": "b3:162954a34555f0a6"
+    }
+  ],
+  "accepted_stable_ids": [
+    "b3:74bff6bcfe9c1393",
+    "b3:a36f117c5cc90d82",
+    "b3:2646ecde4a505b73",
+    "b3:91358ae4d09a3dbc",
+    "b3:7a7a9d577a0ad14a",
+    "b3:53589b1ebdcbb482",
+    "b3:aa5433ffa8772eb7",
+    "b3:f2557d537257ffec",
+    "b3:aec4969cf70bbc85",
+    "b3:0b73cfe338000636",
+    "b3:52f45f7b395981ce",
+    "b3:916521fcee036072",
+    "b3:36f5da925cb2e0e0",
+    "b3:162954a34555f0a6"
+  ],
+  "owner": "mc workspace maintainers",
+  "rationale": "Pre-existing Octet findings captured after enabling every pinned Octet lint at deny level; the aggregate gate rejects any stable ID not listed here.",
+  "removal_condition": "Fix accepted findings by improving code quality, rerun the aggregate Octet gate, and regenerate this baseline with fewer or zero accepted IDs.",
+  "schema": "mc.octet.reviewed-baseline.v1",
+  "source": {
+    "config_hash": "b3:96a3c051855175142df95ab6d813c1cec7417e2b311460075b5bda9dcab8ffb2",
+    "error_findings": 18,
+    "profile_hash": "b3:0da7325188b5a5610a80a6b80a63c94c1f12d3d5834026f934281ee63a832b4b",
+    "profile_name": "workspace-metadata",
+    "rustc_version": "rustc 1.96.0-nightly (ac7f9ec7d 2026-03-20)",
+    "tool_name": "cargo-octet",
+    "tool_version": "0.1.0",
+    "toolchain": "nightly-2026-03-21-x86_64-unknown-linux-gnu",
+    "total_findings": 18,
+    "warning_findings": 0
+  },
+  "workspace": "valence",
+  "workspace_path": "servers/valence"
+}
