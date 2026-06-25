@@ -1,0 +1,24 @@
+command=nix run .#cairn -- gate proposal adopt-tick-scheduler-for-valence-gameplay-delays --root .
+error (ignored): SQLite database '/home/brittonr/.cache/nix/eval-cache-v6/5af57de9386e98f614008089f40611b6d62cbc985602cf4f088e92d6dd4f2dfa.sqlite' is busy
+{
+  "change": "adopt-tick-scheduler-for-valence-gameplay-delays",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "3a7f49a97b03e0f7589fd3f9c48139b2ae0bb297df6ccd867072692c6dc189aa",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "3710537dacaf4148a9a64c38f2171bba1d9f299bd6221e6a2f9c5a3afcf8a58d",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0

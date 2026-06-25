@@ -5,21 +5,79 @@ use rand::Rng;
 use valence::entity::EntityStatuses;
 use valence::math::Vec3Swizzles;
 use valence::prelude::*;
+use valence::tick_scheduler::ServerTickScheduler;
 
 const SPAWN_Y: i32 = 64;
 const ARENA_RADIUS: i32 = 32;
+const ATTACK_COOLDOWN_TICKS: i64 = 10;
+const FIRST_COOLDOWN_GENERATION: u64 = 0;
+const COOLDOWN_GENERATION_STEP: u64 = 1;
 
 /// Attached to every client.
-#[derive(Component, Default)]
+#[derive(Component, Debug)]
 struct CombatState {
-    /// The tick the client was last attacked.
-    last_attacked_tick: i64,
+    cooldown: Option<AttackCooldown>,
+    next_cooldown_generation: u64,
     has_bonus_knockback: bool,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+struct AttackCooldown {
+    generation: u64,
+    expires_at_tick: i64,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+struct AttackCooldownExpired {
+    victim: Entity,
+    generation: u64,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+struct AttackCooldownPlan {
+    cooldown: AttackCooldown,
+    event: AttackCooldownExpired,
+    next_generation: u64,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum CombatCooldownError {
+    InvalidDueTick,
+    GenerationExhausted,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum CombatCooldownExpiration {
+    Applied,
+    MissingTarget,
+    NoActiveCooldown,
+    StaleGeneration,
+}
+
+#[derive(Default)]
+struct CombatCooldownPlugin;
+
+impl Default for CombatState {
+    fn default() -> Self {
+        Self {
+            cooldown: None,
+            next_cooldown_generation: FIRST_COOLDOWN_GENERATION,
+            has_bonus_knockback: false,
+        }
+    }
+}
+
+impl Plugin for CombatCooldownPlugin {
+    fn build(&self, app: &mut App) {
+        app.init_resource::<ServerTickScheduler<AttackCooldownExpired>>()
+            .add_systems(Update, expire_combat_cooldowns);
+    }
 }
 
 pub fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
+        .add_plugins(CombatCooldownPlugin)
         .add_systems(Startup, setup)
         .add_systems(EventLoopUpdate, handle_combat_events)
         .add_systems(
@@ -73,6 +131,89 @@ fn setup(
     commands.spawn(layer);
 }
 
+fn expire_combat_cooldowns(
+    server: Res<Server>,
+    mut cooldowns: ResMut<ServerTickScheduler<AttackCooldownExpired>>,
+    mut clients: Query<&mut CombatState, With<Client>>,
+) {
+    let current_tick = server.current_tick();
+
+    for event in cooldowns.drain_due(&current_tick) {
+        match clients.get_mut(event.victim) {
+            Ok(mut state) => {
+                apply_cooldown_expiration(Some(&mut *state), event);
+            }
+            Err(_) => {
+                apply_cooldown_expiration(None, event);
+            }
+        }
+    }
+}
+
+fn attack_cooldown_active(state: &CombatState, current_tick: i64) -> bool {
+    state
+        .cooldown
+        .is_some_and(|cooldown| cooldown.expires_at_tick > current_tick)
+}
+
+fn plan_attack_cooldown(
+    current_tick: i64,
+    cooldown_ticks: i64,
+    victim: Entity,
+    state: &CombatState,
+) -> Result<AttackCooldownPlan, CombatCooldownError> {
+    let Some(expires_at_tick) = current_tick.checked_add(cooldown_ticks) else {
+        return Err(CombatCooldownError::InvalidDueTick);
+    };
+    if expires_at_tick <= current_tick {
+        return Err(CombatCooldownError::InvalidDueTick);
+    }
+    let Some(next_generation) = state
+        .next_cooldown_generation
+        .checked_add(COOLDOWN_GENERATION_STEP)
+    else {
+        return Err(CombatCooldownError::GenerationExhausted);
+    };
+
+    let cooldown = AttackCooldown {
+        generation: state.next_cooldown_generation,
+        expires_at_tick,
+    };
+    let event = AttackCooldownExpired {
+        victim,
+        generation: cooldown.generation,
+    };
+
+    Ok(AttackCooldownPlan {
+        cooldown,
+        event,
+        next_generation,
+    })
+}
+
+fn activate_attack_cooldown(state: &mut CombatState, plan: AttackCooldownPlan) {
+    state.cooldown = Some(plan.cooldown);
+    state.next_cooldown_generation = plan.next_generation;
+}
+
+fn apply_cooldown_expiration(
+    state: Option<&mut CombatState>,
+    event: AttackCooldownExpired,
+) -> CombatCooldownExpiration {
+    let Some(state) = state else {
+        return CombatCooldownExpiration::MissingTarget;
+    };
+
+    match state.cooldown {
+        Some(cooldown) if cooldown.generation == event.generation => {
+            state.cooldown = None;
+            CombatCooldownExpiration::Applied
+        }
+        Some(_) => CombatCooldownExpiration::StaleGeneration,
+        None => CombatCooldownExpiration::NoActiveCooldown,
+    }
+}
+
 fn init_clients(
     mut clients: Query<
         (
@@ -120,10 +261,13 @@ struct CombatQuery {
 
 fn handle_combat_events(
     server: Res<Server>,
+    mut cooldowns: ResMut<ServerTickScheduler<AttackCooldownExpired>>,
     mut clients: Query<CombatQuery>,
     mut sprinting: EventReader<SprintEvent>,
     mut interact_entity: EventReader<InteractEntityEvent>,
 ) {
+    let current_tick = server.current_tick();
+
     for &SprintEvent { client, state } in sprinting.read() {
         if let Ok(mut client) = clients.get_mut(client) {
             client.state.has_bonus_knockback = state == SprintState::Start;
@@ -142,12 +286,26 @@ fn handle_combat_events(
             continue;
         };
 
-        if server.current_tick() - victim.state.last_attacked_tick < 10 {
+        if attack_cooldown_active(&victim.state, current_tick) {
             // Victim is still on attack cooldown.
             continue;
         }
 
-        victim.state.last_attacked_tick = server.current_tick();
+        let Ok(cooldown_plan) = plan_attack_cooldown(
+            current_tick,
+            ATTACK_COOLDOWN_TICKS,
+            victim_client,
+            &victim.state,
+        ) else {
+            continue;
+        };
+        if cooldowns
+            .schedule(cooldown_plan.cooldown.expires_at_tick, cooldown_plan.event)
+            .is_err()
+        {
+            continue;
+        }
+        activate_attack_cooldown(&mut victim.state, cooldown_plan);
 
         let victim_pos = victim.pos.0.xz();
         let attacker_pos = attacker.pos.0.xz();
@@ -182,5 +340,118 @@ fn teleport_oob_clients(mut clients: Query<&mut Position, With<Client>>) {
         if pos.0.y < 0.0 {
             pos.set([0.0, f64::from(SPAWN_Y), 0.0]);
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const TEST_CURRENT_TICK: i64 = 100;
+    const BEFORE_DUE_OFFSET_TICKS: i64 = 1;
+    const EXPECTED_DUE_TICK: i64 = TEST_CURRENT_TICK + ATTACK_COOLDOWN_TICKS;
+    const BEFORE_DUE_TICK: i64 = EXPECTED_DUE_TICK - BEFORE_DUE_OFFSET_TICKS;
+    const INVALID_COOLDOWN_TICKS: i64 = 0;
+
+    #[test]
+    fn combat_cooldown_due_work_applies_once() {
+        let victim = test_entity();
+        let mut state = CombatState::default();
+        let plan = plan_attack_cooldown(TEST_CURRENT_TICK, ATTACK_COOLDOWN_TICKS, victim, &state)
+            .expect("valid cooldown plan");
+        let mut scheduler = ServerTickScheduler::new();
+        scheduler
+            .schedule(plan.cooldown.expires_at_tick, plan.event)
+            .expect("valid scheduled cooldown");
+        activate_attack_cooldown(&mut state, plan);
+
+        assert!(attack_cooldown_active(&state, BEFORE_DUE_TICK));
+        assert!(scheduler.drain_due(&BEFORE_DUE_TICK).is_empty());
+
+        let due = scheduler.drain_due(&EXPECTED_DUE_TICK);
+
+        assert_eq!(due, vec![plan.event]);
+        assert_eq!(
+            apply_cooldown_expiration(Some(&mut state), plan.event),
+            CombatCooldownExpiration::Applied
+        );
+        assert!(!attack_cooldown_active(&state, EXPECTED_DUE_TICK));
+        assert!(scheduler.drain_due(&EXPECTED_DUE_TICK).is_empty());
+    }
+
+    #[test]
+    fn cancelled_combat_cooldown_does_not_emit_due_work() {
+        let victim = test_entity();
+        let mut state = CombatState::default();
+        let plan = plan_attack_cooldown(TEST_CURRENT_TICK, ATTACK_COOLDOWN_TICKS, victim, &state)
+            .expect("valid cooldown plan");
+        let mut scheduler = ServerTickScheduler::new();
+        let handle = scheduler
+            .schedule(plan.cooldown.expires_at_tick, plan.event)
+            .expect("valid scheduled cooldown");
+        activate_attack_cooldown(&mut state, plan);
+
+        assert!(scheduler.cancel(handle));
+        state.cooldown = None;
+
+        assert!(scheduler.drain_due(&EXPECTED_DUE_TICK).is_empty());
+        assert!(!attack_cooldown_active(&state, BEFORE_DUE_TICK));
+    }
+
+    #[test]
+    fn stale_combat_cooldown_target_fails_closed() {
+        let victim = test_entity();
+        let state = CombatState::default();
+        let plan = plan_attack_cooldown(TEST_CURRENT_TICK, ATTACK_COOLDOWN_TICKS, victim, &state)
+            .expect("valid cooldown plan");
+
+        assert_eq!(
+            apply_cooldown_expiration(None, plan.event),
+            CombatCooldownExpiration::MissingTarget
+        );
+    }
+
+    #[test]
+    fn duplicate_combat_cooldown_event_applies_only_once() {
+        let victim = test_entity();
+        let mut state = CombatState::default();
+        let plan = plan_attack_cooldown(TEST_CURRENT_TICK, ATTACK_COOLDOWN_TICKS, victim, &state)
+            .expect("valid cooldown plan");
+        activate_attack_cooldown(&mut state, plan);
+
+        assert_eq!(
+            apply_cooldown_expiration(Some(&mut state), plan.event),
+            CombatCooldownExpiration::Applied
+        );
+        assert_eq!(
+            apply_cooldown_expiration(Some(&mut state), plan.event),
+            CombatCooldownExpiration::NoActiveCooldown
+        );
+    }
+
+    #[test]
+    fn invalid_combat_cooldown_tick_is_rejected() {
+        let victim = test_entity();
+        let state = CombatState::default();
+
+        let error = plan_attack_cooldown(TEST_CURRENT_TICK, INVALID_COOLDOWN_TICKS, victim, &state)
+            .expect_err("zero-duration cooldown must be rejected");
+
+        assert_eq!(error, CombatCooldownError::InvalidDueTick);
+    }
+
+    #[test]
+    fn combat_cooldown_plugin_disabled_leaves_scheduler_absent() {
+        let app = App::new();
+
+        assert!(app
+            .world()
+            .get_resource::<ServerTickScheduler<AttackCooldownExpired>>()
+            .is_none());
+    }
+
+    fn test_entity() -> Entity {
+        let mut app = App::new();
+        app.world_mut().spawn_empty().id()
     }
 }

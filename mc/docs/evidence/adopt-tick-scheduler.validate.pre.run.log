@@ -1,0 +1,13 @@
+command=nix run .#cairn -- validate --root .
+error (ignored): SQLite database '/home/brittonr/.cache/nix/eval-cache-v6/5af57de9386e98f614008089f40611b6d62cbc985602cf4f088e92d6dd4f2dfa.sqlite' is busy
+{
+  "change_issues": [],
+  "changes": 6,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 11,
+  "valid": true
+}
+exit_status=0

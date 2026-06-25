@@ -1,0 +1,3 @@
+command=rg -F r[valence_bevy_ecs.scheduler_adoption.validation] cairn/specs/valence-bevy-ecs/spec.md
+r[valence_bevy_ecs.scheduler_adoption.validation] Scheduler adoption MUST record focused scheduler/example checks, selected compatibility rails when timing changes, Cairn gates, Cairn validation, and task-evidence checks before archive.
+exit_status=0
