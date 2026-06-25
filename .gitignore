@@ -42,6 +42,7 @@
 /mc/scripts/*
 !/mc/scripts/mc-compat-smoke.sh
 !/mc/scripts/ralph-drain-cairns.scm
+!/mc/scripts/ralph-octet-loop.scm
 
 !/mc/tools/
 /mc/tools/*
