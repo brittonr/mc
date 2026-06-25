@@ -1,0 +1,6 @@
+command=nix run .#evidence-manifest-refresh -- --check 
+evidence manifest refresh failed: docs/evidence/gate-optional-systems-with-bevy-run-conditions-validation.b3:31: stale digest for docs/evidence/add-schedule-hygiene-gates.b3: expected 2d96133276ada3e20ef626817c230e0d9ccc78324dd37fbd238395b24b4ae6df, found b282909727432014acb7fae995f731bf9db3f5717ce2390052605726f7f84ae8
+evidence manifest refresh failed: docs/evidence/move-worldgen-work-to-bevy-tasks.closeout.b3:1: stale digest for docs/evidence/move-worldgen-work-to-bevy-tasks.implementation.b3: expected 55a257a7893b5e3f0da5622255ddf19a558b5ec36c3745d7e7bb8ceac2b5b52b, found 7f187093a3cfa6d04eedcd03f8be91075ccc4cf7d9a4b819ca45646d892743dc
+evidence manifest refresh failed: docs/evidence/move-worldgen-work-to-bevy-tasks.closeout.b3:2: stale digest for docs/evidence/move-worldgen-work-to-bevy-tasks.validation.b3: expected 1b8287c7bd6fb84a2a6d68b93c49308bd91a7ce20f9ac90b30fc02494ab47ede, found 70ebafc31fb186e3cee01cc8235948601b834b240df03c9f53899f68b4c0975d
+evidence manifest refresh failed: docs/evidence/move-worldgen-work-to-bevy-tasks.validation.b3:4: stale digest for docs/evidence/move-worldgen-work-to-bevy-tasks.implementation.b3: expected 55a257a7893b5e3f0da5622255ddf19a558b5ec36c3745d7e7bb8ceac2b5b52b, found 7f187093a3cfa6d04eedcd03f8be91075ccc4cf7d9a4b819ca45646d892743dc
+exit_status=1

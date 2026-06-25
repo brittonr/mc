@@ -1,0 +1,3 @@
+command=bash -lc rustc\ --edition=2021\ tools/check_cairn_task_evidence.rs\ -o\ target/check-cairn-task-evidence\ \&\&\ target/check-cairn-task-evidence\ cairn/archive/2026-06-25-replace-entity-keyed-state-with-components/tasks.md 
+task evidence gate passed: 6 completed tasks checked across 1 task files
+exit_status=0

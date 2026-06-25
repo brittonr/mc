@@ -1,0 +1,23 @@
+command=nix command=run command=.#cairn command=-- command=archive command=replace-entity-keyed-state-with-components command=--root command=. 
+{
+  "actions": [
+    {
+      "description": "move active change to archive: replace-entity-keyed-state-with-components",
+      "kind": "archive_change",
+      "path": "./cairn/changes/replace-entity-keyed-state-with-components"
+    }
+  ],
+  "blocked": false,
+  "change": "replace-entity-keyed-state-with-components",
+  "dry_run": true,
+  "input_hash": "54ab1683d25b2be1ecdcfcacafb01ce66e71639a0b1799712479993bc3fc557a",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "4d7cec526e46d6db4c6eb20ffabc985f6ef67c4ce480274ae72b103d7998486c",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "1c4cb71369ba2a6179e5e3e11196502ad22b67fad555c872d677f9e1bcd4a3af"
+}
+exit_status=0

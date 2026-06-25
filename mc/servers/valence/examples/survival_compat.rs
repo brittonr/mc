@@ -4,7 +4,6 @@ mod fixture_core;
 mod scenario_contracts_generated;
 
 use fixture_core::survival as survival_core;
-use std::collections::HashSet;
 use std::fs;
 use std::path::PathBuf;
 
@@ -186,7 +185,6 @@ const SURVIVAL_UNKNOWN_ENVIRONMENT_ID: &str = "unknown";
 #[derive(Resource)]
 struct SurvivalChestFixture {
     inventory: Entity,
-    open_clients: HashSet<Entity>,
     open_logged: bool,
     store_logged: bool,
     close_logged: bool,
@@ -198,7 +196,6 @@ impl SurvivalChestFixture {
     fn new(inventory: Entity) -> Self {
         Self {
             inventory,
-            open_clients: HashSet::new(),
             open_logged: false,
             store_logged: false,
             close_logged: false,
@@ -211,7 +208,6 @@ impl SurvivalChestFixture {
 #[derive(Resource)]
 struct SurvivalCraftingFixture {
     inventory: Entity,
-    open_clients: HashSet<Entity>,
     open_logged: bool,
     input_a_logged: bool,
     input_b_logged: bool,
@@ -223,7 +219,6 @@ impl SurvivalCraftingFixture {
     fn new(inventory: Entity) -> Self {
         Self {
             inventory,
-            open_clients: HashSet::new(),
             open_logged: false,
             input_a_logged: false,
             input_b_logged: false,
@@ -241,7 +236,6 @@ struct SurvivalCraftingBreadthFixture {
 #[derive(Resource)]
 struct SurvivalFurnaceFixture {
     inventory: Entity,
-    open_clients: HashSet<Entity>,
     open_logged: bool,
     input_logged: bool,
     fuel_logged: bool,
@@ -253,6 +247,31 @@ struct SurvivalFurnaceFixture {
     breadth_state_logged: bool,
     reopen_logged: bool,
     state_logged: bool,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum SurvivalContainerKind {
+    Chest,
+    Crafting,
+    Furnace,
+}
+
+#[derive(Clone, Copy, Component, Debug, Eq, PartialEq)]
+struct SurvivalOpenContainer {
+    kind: SurvivalContainerKind,
+}
+
+impl SurvivalOpenContainer {
+    fn new(kind: SurvivalContainerKind) -> Self {
+        Self { kind }
+    }
+}
+
+fn survival_container_is_open(
+    open_container: Option<&SurvivalOpenContainer>,
+    expected_kind: SurvivalContainerKind,
+) -> bool {
+    open_container.is_some_and(|container| container.kind == expected_kind)
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -383,7 +402,6 @@ impl SurvivalFurnaceFixture {
     fn new(inventory: Entity, smelting_breadth_enabled: bool) -> Self {
         Self {
             inventory,
-            open_clients: HashSet::new(),
             open_logged: false,
             input_logged: false,
             fuel_logged: false,
@@ -489,7 +507,12 @@ impl Plugin for SurvivalCompatibilityPlugin {
             )
             .add_systems(
                 Update,
-                despawn_disconnected_clients.in_set(SurvivalGameplayPhase::Cleanup),
+                (
+                    despawn_disconnected_clients,
+                    remove_survival_open_containers_from_despawned,
+                )
+                    .chain()
+                    .in_set(SurvivalGameplayPhase::Cleanup),
             );
     }
 }
@@ -1119,10 +1142,10 @@ fn handle_survival_chest_open(
             continue;
         }
 
-        commands
-            .entity(event.client)
-            .insert(OpenInventory::new(fixture.inventory));
-        fixture.open_clients.insert(event.client);
+        commands.entity(event.client).insert((
+            OpenInventory::new(fixture.inventory),
+            SurvivalOpenContainer::new(SurvivalContainerKind::Chest),
+        ));
 
         if fixture.store_logged {
             log_survival_chest_reopen(username.as_str(), &mut fixture, &inventories);
@@ -1142,7 +1165,7 @@ fn handle_survival_chest_open(
 
 fn handle_survival_chest_store(
     fixture: Option<ResMut<SurvivalChestFixture>>,
-    clients: Query<&Username>,
+    clients: Query<(&Username, Option<&SurvivalOpenContainer>)>,
     mut events: EventReader<ClickSlotEvent>,
 ) {
     let Some(mut fixture) = fixture else {
@@ -1153,10 +1176,10 @@ fn handle_survival_chest_store(
     }
 
     for event in events.read() {
-        let Ok(username) = clients.get(event.client) else {
+        let Ok((username, open_container)) = clients.get(event.client) else {
             continue;
         };
-        if !fixture.open_clients.contains(&event.client)
+        if !survival_container_is_open(open_container, SurvivalContainerKind::Chest)
             || !is_survival_chest_store_event(event.window_id, event.slot_id, &event.slot_changes)
         {
             continue;
@@ -1177,8 +1200,9 @@ fn handle_survival_chest_store(
 }
 
 fn handle_survival_chest_close(
+    mut commands: Commands,
     fixture: Option<ResMut<SurvivalChestFixture>>,
-    clients: Query<&Username>,
+    clients: Query<(&Username, Option<&SurvivalOpenContainer>)>,
     mut packets: EventReader<PacketEvent>,
 ) {
     let Some(mut fixture) = fixture else {
@@ -1192,12 +1216,15 @@ fn handle_survival_chest_close(
         if packet.decode::<CloseHandledScreenC2s>().is_none() {
             continue;
         }
-        if !fixture.open_clients.remove(&packet.client) {
-            continue;
-        }
-        let Ok(username) = clients.get(packet.client) else {
+        let Ok((username, open_container)) = clients.get(packet.client) else {
             continue;
         };
+        if !survival_container_is_open(open_container, SurvivalContainerKind::Chest) {
+            continue;
+        }
+        commands
+            .entity(packet.client)
+            .remove::<SurvivalOpenContainer>();
         fixture.close_logged = true;
         log_milestone(format!(
             "MC-COMPAT-MILESTONE survival_chest_close username={} window={}",
@@ -1205,6 +1232,15 @@ fn handle_survival_chest_close(
             SURVIVAL_CHEST_WINDOW
         ));
         break;
+    }
+}
+
+fn remove_survival_open_containers_from_despawned(
+    mut commands: Commands,
+    clients: Query<Entity, (With<SurvivalOpenContainer>, With<Despawned>)>,
+) {
+    for client in &clients {
+        commands.entity(client).remove::<SurvivalOpenContainer>();
     }
 }
 
@@ -1227,10 +1263,10 @@ fn handle_survival_crafting_open(
             continue;
         }
 
-        commands
-            .entity(event.client)
-            .insert(OpenInventory::new(fixture.inventory));
-        fixture.open_clients.insert(event.client);
+        commands.entity(event.client).insert((
+            OpenInventory::new(fixture.inventory),
+            SurvivalOpenContainer::new(SurvivalContainerKind::Crafting),
+        ));
 
         if !fixture.open_logged {
             fixture.open_logged = true;
@@ -1255,7 +1291,7 @@ fn handle_survival_crafting_open(
 
 fn handle_survival_crafting_click(
     fixture: Option<ResMut<SurvivalCraftingFixture>>,
-    clients: Query<&Username>,
+    clients: Query<(&Username, Option<&SurvivalOpenContainer>)>,
     mut inventories: Query<&mut Inventory>,
     mut events: EventReader<ClickSlotEvent>,
 ) {
@@ -1264,10 +1300,10 @@ fn handle_survival_crafting_click(
     };
 
     for event in events.read() {
-        let Ok(username) = clients.get(event.client) else {
+        let Ok((username, open_container)) = clients.get(event.client) else {
             continue;
         };
-        if !fixture.open_clients.contains(&event.client)
+        if !survival_container_is_open(open_container, SurvivalContainerKind::Crafting)
             || event.window_id != SURVIVAL_CRAFTING_WINDOW
         {
             continue;
@@ -1391,10 +1427,10 @@ fn handle_survival_furnace_open(
             continue;
         }
 
-        commands
-            .entity(event.client)
-            .insert(OpenInventory::new(fixture.inventory));
-        fixture.open_clients.insert(event.client);
+        commands.entity(event.client).insert((
+            OpenInventory::new(fixture.inventory),
+            SurvivalOpenContainer::new(SurvivalContainerKind::Furnace),
+        ));
 
         if fixture.collect_logged {
             log_survival_furnace_reopen(username.as_str(), &mut fixture, &inventories);
@@ -1414,7 +1450,7 @@ fn handle_survival_furnace_open(
 
 fn handle_survival_furnace_click(
     fixture: Option<ResMut<SurvivalFurnaceFixture>>,
-    clients: Query<&Username>,
+    clients: Query<(&Username, Option<&SurvivalOpenContainer>)>,
     mut inventories: Query<&mut Inventory>,
     mut events: EventReader<ClickSlotEvent>,
 ) {
@@ -1423,10 +1459,10 @@ fn handle_survival_furnace_click(
     };
 
     for event in events.read() {
-        let Ok(username) = clients.get(event.client) else {
+        let Ok((username, open_container)) = clients.get(event.client) else {
             continue;
         };
-        if !fixture.open_clients.contains(&event.client)
+        if !survival_container_is_open(open_container, SurvivalContainerKind::Furnace)
             || event.window_id != SURVIVAL_FURNACE_WINDOW
         {
             continue;
@@ -3385,6 +3421,94 @@ mod tests {
                 ),
             }]
         ));
+    }
+
+    #[test]
+    fn survival_open_container_component_matches_active_fixture() {
+        let chest = SurvivalOpenContainer::new(SurvivalContainerKind::Chest);
+
+        assert!(survival_container_is_open(
+            Some(&chest),
+            SurvivalContainerKind::Chest
+        ));
+        assert!(!survival_container_is_open(
+            Some(&chest),
+            SurvivalContainerKind::Furnace
+        ));
+        assert!(!survival_container_is_open(
+            None,
+            SurvivalContainerKind::Chest
+        ));
+    }
+
+    #[test]
+    fn survival_open_container_duplicate_open_replaces_previous_fixture() {
+        let mut app = App::new();
+        let client = app
+            .world_mut()
+            .spawn(SurvivalOpenContainer::new(SurvivalContainerKind::Chest))
+            .id();
+
+        app.world_mut()
+            .entity_mut(client)
+            .insert(SurvivalOpenContainer::new(SurvivalContainerKind::Furnace));
+
+        let open_container = app
+            .world()
+            .get::<SurvivalOpenContainer>(client)
+            .expect("open container component remains on client");
+        assert!(survival_container_is_open(
+            Some(open_container),
+            SurvivalContainerKind::Furnace
+        ));
+        assert!(!survival_container_is_open(
+            Some(open_container),
+            SurvivalContainerKind::Chest
+        ));
+    }
+
+    #[test]
+    fn survival_open_container_cleanup_removes_despawned_client_state() {
+        let mut app = App::new();
+        let client = app
+            .world_mut()
+            .spawn((
+                SurvivalOpenContainer::new(SurvivalContainerKind::Crafting),
+                Despawned,
+            ))
+            .id();
+        let mut cleanup = Schedule::default();
+        cleanup.add_systems(remove_survival_open_containers_from_despawned);
+
+        cleanup.run(app.world_mut());
+
+        assert!(app.world().get::<SurvivalOpenContainer>(client).is_none());
+    }
+
+    #[test]
+    fn survival_open_container_reconnect_starts_without_stale_state() {
+        let mut app = App::new();
+        let stale_client = app
+            .world_mut()
+            .spawn((
+                SurvivalOpenContainer::new(SurvivalContainerKind::Chest),
+                Despawned,
+            ))
+            .id();
+        let reconnect_client = app.world_mut().spawn_empty().id();
+        let mut cleanup = Schedule::default();
+        cleanup.add_systems(remove_survival_open_containers_from_despawned);
+
+        cleanup.run(app.world_mut());
+
+        assert!(app
+            .world()
+            .get::<SurvivalOpenContainer>(stale_client)
+            .is_none());
+        assert!(app
+            .world()
+            .get::<SurvivalOpenContainer>(reconnect_client)
+            .is_none());
     }
 
     #[test]

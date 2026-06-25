@@ -1,0 +1,81 @@
+command=env command=CAIRN_ARCHIVE_DATE=2026-06-25 command=nix command=run command=.#cairn command=-- command=archive command=replace-entity-keyed-state-with-components command=--root command=. command=--execute 
+{
+  "actions": [
+    {
+      "description": "move active change to archive: replace-entity-keyed-state-with-components",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-25-replace-entity-keyed-state-with-components"
+    }
+  ],
+  "blocked": false,
+  "change": "replace-entity-keyed-state-with-components",
+  "dry_run": false,
+  "input_hash": "54ab1683d25b2be1ecdcfcacafb01ce66e71639a0b1799712479993bc3fc557a",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "e3772ade19c12a9950eeb1b4792e0174e36c8fa6928db2a8b788c5635b8a1374",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-replace-entity-keyed-state-with-components/design.md"
+        },
+        {
+          "content_hash": "cf8b98b110a393839212df452454daa81a437d94cc594b05041c94b56d26fea2",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-replace-entity-keyed-state-with-components/proposal.md"
+        },
+        {
+          "content_hash": "3beb78725dca890bbf55765fdd52c0153f64ce827328f890c1d9dd365211ca97",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-replace-entity-keyed-state-with-components/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "b7001d8d744c7fe0078d7957a1a8c9ff2f361f7208bc980b78c628f56978a8f5",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-replace-entity-keyed-state-with-components/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/replace-entity-keyed-state-with-components"
+        }
+      ],
+      "manifest_hash": "b2cc3116a3e8432caeeec3d246b702535ed781b53025862127f422a5fb7dbd75"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "e3772ade19c12a9950eeb1b4792e0174e36c8fa6928db2a8b788c5635b8a1374",
+          "exists": true,
+          "path": "./cairn/changes/replace-entity-keyed-state-with-components/design.md"
+        },
+        {
+          "content_hash": "cf8b98b110a393839212df452454daa81a437d94cc594b05041c94b56d26fea2",
+          "exists": true,
+          "path": "./cairn/changes/replace-entity-keyed-state-with-components/proposal.md"
+        },
+        {
+          "content_hash": "3beb78725dca890bbf55765fdd52c0153f64ce827328f890c1d9dd365211ca97",
+          "exists": true,
+          "path": "./cairn/changes/replace-entity-keyed-state-with-components/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "b7001d8d744c7fe0078d7957a1a8c9ff2f361f7208bc980b78c628f56978a8f5",
+          "exists": true,
+          "path": "./cairn/changes/replace-entity-keyed-state-with-components/tasks.md"
+        }
+      ],
+      "manifest_hash": "d61a18f0b317d80a09828a0da76a532d7f321d466060c44d3cfada1df141ca9f"
+    },
+    "kind": "archive",
+    "manifest_hash": "ab0750ec5619921d7c6850a7c224e484c409cb4fd3f1a559156e356b2f41b6ae"
+  },
+  "plan_hash": "9c7a8e7f154a1b84129800d61831ebfd0e8b053bf26265801c2b4e8179cee816",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "ded3950a787c39a6a7ea8a7dfaaacc158a79e4faac31d08b39cfc54dfb7fa52c"
+}
+exit_status=0

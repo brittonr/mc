@@ -1,0 +1,41 @@
+command=rg entity/player keyed collections in selected Valence examples and compat runner
+compat/runner/src/runtime_config.rs:    exports: &BTreeMap<String, SteelValue>,
+compat/runner/src/runtime_config.rs:) -> BTreeMap<String, SteelValue> {
+compat/runner/src/runtime_config.rs:    exports: &BTreeMap<String, SteelValue>,
+compat/runner/src/runtime_config.rs:    exports: &BTreeMap<String, SteelValue>,
+compat/runner/src/runtime_config.rs:    fn valid_exports() -> BTreeMap<String, SteelValue> {
+compat/runner/src/main.rs:        let env: BTreeMap<String, String> = env
+servers/valence/examples/terrain.rs:    pending: HashMap<ChunkPos, PendingChunkRequest>,
+servers/valence/examples/terrain.rs:    pending: &mut HashMap<ChunkPos, PendingChunkRequest>,
+servers/valence/examples/ctf.rs:    portals: HashMap<Team, TriggerArea>,
+servers/valence/examples/ctf.rs:    joins: HashMap<String, u32>,
+servers/valence/examples/ctf.rs:    scores: HashMap<Team, u32>,
+servers/valence/examples/ctf.rs:    pub(crate) friendly_layers: HashMap<Team, Entity>,
+servers/valence/examples/ctf.rs:    pub(crate) enemy_layers: HashMap<Team, Entity>,
+servers/valence/examples/advancement.rs:struct ClientSave(HashMap<Uuid, (bool, u8)>);
+collection_search_exit_status=0
+command=rg migrated survival open-client resource sets
+struct SurvivalOpenContainer {
+impl SurvivalOpenContainer {
+    open_container: Option<&SurvivalOpenContainer>,
+            SurvivalOpenContainer::new(SurvivalContainerKind::Chest),
+    clients: Query<(&Username, Option<&SurvivalOpenContainer>)>,
+    clients: Query<(&Username, Option<&SurvivalOpenContainer>)>,
+            .remove::<SurvivalOpenContainer>();
+    clients: Query<Entity, (With<SurvivalOpenContainer>, With<Despawned>)>,
+        commands.entity(client).remove::<SurvivalOpenContainer>();
+            SurvivalOpenContainer::new(SurvivalContainerKind::Crafting),
+    clients: Query<(&Username, Option<&SurvivalOpenContainer>)>,
+            SurvivalOpenContainer::new(SurvivalContainerKind::Furnace),
+    clients: Query<(&Username, Option<&SurvivalOpenContainer>)>,
+        let chest = SurvivalOpenContainer::new(SurvivalContainerKind::Chest);
+            .spawn(SurvivalOpenContainer::new(SurvivalContainerKind::Chest))
+            .insert(SurvivalOpenContainer::new(SurvivalContainerKind::Furnace));
+            .get::<SurvivalOpenContainer>(client)
+                SurvivalOpenContainer::new(SurvivalContainerKind::Crafting),
+        assert!(app.world().get::<SurvivalOpenContainer>(client).is_none());
+                SurvivalOpenContainer::new(SurvivalContainerKind::Chest),
+            .get::<SurvivalOpenContainer>(stale_client)
+            .get::<SurvivalOpenContainer>(reconnect_client)
+migration_search_exit_status=0
+exit_status=0
