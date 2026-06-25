@@ -1,0 +1,17 @@
+# survival mob-drop typed-event final validation
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 4,
+  "valid": true
+}
+cairn_validate_exit_status=0
+command=target/check-evidence-manifests
+evidence manifests ok: 487 manifests, 4042 entries, 140 receipts scanned
+evidence_manifest_check_exit_status=0
+exit_status=0

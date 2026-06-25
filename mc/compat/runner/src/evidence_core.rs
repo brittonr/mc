@@ -577,6 +577,7 @@ pub(crate) fn typed_event_oracle_contributes_to_pass_fail(scenario: Scenario) ->
             | Scenario::SurvivalFurnaceSmeltingBreadth
             | Scenario::SurvivalHungerFood
             | Scenario::SurvivalHungerHealthCycle
+            | Scenario::SurvivalMobDrop
             | Scenario::SurvivalMobAiLootBreadth
             | Scenario::SurvivalRedstoneCircuitBreadth
             | Scenario::SurvivalWorldMultichunkDurability
@@ -1035,6 +1036,52 @@ pub(crate) fn typed_event_ordered_edges_for_scenario(
             (
                 "server_survival_crafting_result",
                 "server_survival_crafting_collect",
+            ),
+        ],
+        Scenario::SurvivalMobDrop => vec![
+            (
+                "survival_mob_drop_mob_seen",
+                "survival_mob_drop_attack_sent",
+            ),
+            (
+                "survival_mob_drop_attack_sent",
+                "survival_mob_drop_death_seen",
+            ),
+            (
+                "survival_mob_drop_death_seen",
+                "survival_mob_drop_drop_seen",
+            ),
+            (
+                "survival_mob_drop_drop_seen",
+                "survival_mob_drop_pickup_seen",
+            ),
+            (
+                "survival_mob_drop_pickup_seen",
+                "survival_mob_drop_inventory_updated",
+            ),
+            (
+                "server_survival_mob_drop_spawn",
+                "server_survival_mob_drop_attack",
+            ),
+            (
+                "server_survival_mob_drop_attack",
+                "server_survival_mob_drop_death",
+            ),
+            (
+                "server_survival_mob_drop_death",
+                "server_survival_mob_drop_drop_spawn",
+            ),
+            (
+                "server_survival_mob_drop_drop_spawn",
+                "server_survival_mob_drop_pickup",
+            ),
+            (
+                "server_survival_mob_drop_pickup",
+                "server_survival_mob_drop_inventory",
+            ),
+            (
+                "server_survival_mob_drop_inventory",
+                "server_survival_mob_drop_state",
             ),
         ],
         Scenario::SurvivalMobAiLootBreadth => vec![

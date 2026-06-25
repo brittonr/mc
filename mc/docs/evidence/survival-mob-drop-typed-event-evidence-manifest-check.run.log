@@ -1,0 +1,8 @@
+# survival mob-drop typed-event evidence manifest check
+command=target/check-evidence-manifests --self-test
+evidence manifest self-test ok: positive and negative fixtures exercised
+evidence_manifest_self_test_exit_status=0
+command=target/check-evidence-manifests
+evidence manifests ok: 487 manifests, 4042 entries, 140 receipts scanned
+evidence_manifest_check_exit_status=0
+exit_status=0

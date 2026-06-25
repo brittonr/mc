@@ -166,7 +166,7 @@
       receiptShapeCheck = true;
       clientCount = 1;
       sessionCount = 1;
-      migrationState = "substring-fallback";
+      migrationState = "typed-event-ready";
     }
     {
       scenario = "survival-mob-ai-loot-breadth";

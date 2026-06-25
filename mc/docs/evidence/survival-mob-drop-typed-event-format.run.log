@@ -1,0 +1,26 @@
+# survival mob-drop typed-event format
+command=nix develop --no-update-lock-file -c cargo fmt --manifest-path compat/runner/Cargo.toml
+warning: error: unable to download 'http://100.100.103.95:5000/nri68yy6vmlzy99n0059ffcii8x7dwqa.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1040 ms: Could not connect to server; retrying in 290 ms
+warning: error: unable to download 'http://100.100.103.95:5000/nri68yy6vmlzy99n0059ffcii8x7dwqa.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 701 ms
+warning: error: unable to download 'http://100.100.103.95:5000/nri68yy6vmlzy99n0059ffcii8x7dwqa.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 9 ms: Could not connect to server; retrying in 1394 ms
+warning: error: unable to download 'http://100.100.103.95:5000/nri68yy6vmlzy99n0059ffcii8x7dwqa.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2073 ms: Could not connect to server; retrying in 2121 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/nri68yy6vmlzy99n0059ffcii8x7dwqa.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/nri68yy6vmlzy99n0059ffcii8x7dwqa.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3062 ms: Could not connect to server
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/lhqmhpr9abc2qizm04rr12j3mhqw0wy1-mc-compat-runner-0.1.0.drv'...
+building '/nix/store/bhf0vvga3dwl1rrl551yhyj0cg27mk7a-nix-shell-env.drv'...
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+cargo_fmt_exit_status=0
+command=nix develop --no-update-lock-file -c rustfmt --edition=2021 tools/check_scenario_manifest.rs
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+tool_rustfmt_exit_status=0
+exit_status=0

@@ -6139,6 +6139,9 @@ mod tests {
             Scenario::SurvivalHungerFood
         ));
         assert!(typed_event_oracle_contributes_to_pass_fail(
+            Scenario::SurvivalMobDrop
+        ));
+        assert!(typed_event_oracle_contributes_to_pass_fail(
             Scenario::SurvivalMobAiLootBreadth
         ));
         assert!(typed_event_oracle_contributes_to_pass_fail(
@@ -6183,7 +6186,6 @@ mod tests {
         }
         for scenario in [
             Scenario::CompatBotProbe,
-            Scenario::SurvivalMobDrop,
             Scenario::SurvivalRedstoneToggle,
             Scenario::SurvivalWorldPersistenceRestart,
         ] {
@@ -8755,6 +8757,59 @@ mod tests {
             err.contains(
                 "survival_hunger_health_recovery_seen_before_survival_hunger_health_inventory_updated"
             ),
+            "{err}"
+        );
+    }
+
+    #[test]
+    fn typed_event_oracle_validates_migrated_survival_mob_drop_graph() {
+        let scenario = Scenario::SurvivalMobDrop;
+        let cfg = test_config(
+            &[
+                "--scenario",
+                scenario_name(scenario),
+                "--receipt",
+                "/tmp/survival-mob-drop.receipt.json",
+            ],
+            &[],
+        )
+        .expect("survival mob drop config parses");
+        let passing = typed_event_oracle_evidence_for_scenario(scenario);
+        validate_typed_event_oracle_for_migrated_scenario(&cfg, &passing)
+            .expect("complete typed survival mob drop graph passes");
+
+        let mut missing_server_state = passing.clone();
+        missing_server_state
+            .server_scenario
+            .as_mut()
+            .expect("server evidence")
+            .observed_milestones
+            .retain(|name| *name != "server_survival_mob_drop_state");
+        let err = validate_typed_event_oracle_for_migrated_scenario(&cfg, &missing_server_state)
+            .expect_err("missing typed mob drop final state fails");
+        assert!(err.contains("server_survival_mob_drop_state"), "{err}");
+
+        let mut misordered_client_pickup = passing;
+        misordered_client_pickup
+            .scenario
+            .as_mut()
+            .expect("client evidence")
+            .observed_milestones = vec![
+            "protocol_detected",
+            "join_game",
+            "render_tick",
+            "survival_mob_drop_mob_seen",
+            "survival_mob_drop_attack_sent",
+            "survival_mob_drop_death_seen",
+            "survival_mob_drop_pickup_seen",
+            "survival_mob_drop_drop_seen",
+            "survival_mob_drop_inventory_updated",
+        ];
+        let err =
+            validate_typed_event_oracle_for_migrated_scenario(&cfg, &misordered_client_pickup)
+                .expect_err("misordered typed mob drop pickup before drop fails");
+        assert!(
+            err.contains("survival_mob_drop_drop_seen_before_survival_mob_drop_pickup_seen"),
             "{err}"
         );
     }

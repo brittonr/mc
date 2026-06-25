@@ -562,7 +562,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-historical-scenario-dry-runs",
         dry_run_wrapper: "mc-compat-smoke",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "survival-mob-ai-loot-breadth",

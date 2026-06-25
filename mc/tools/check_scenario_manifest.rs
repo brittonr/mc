@@ -372,6 +372,27 @@ const SURVIVAL_HUNGER_HEALTH_CYCLE_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
     "server_survival_hunger_health_inventory",
     "server_survival_hunger_health_state",
 ];
+const SURVIVAL_MOB_DROP_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
+    "protocol_detected",
+    "join_game",
+    "render_tick",
+    "survival_mob_drop_mob_seen",
+    "survival_mob_drop_attack_sent",
+    "survival_mob_drop_death_seen",
+    "survival_mob_drop_drop_seen",
+    "survival_mob_drop_pickup_seen",
+    "survival_mob_drop_inventory_updated",
+];
+const SURVIVAL_MOB_DROP_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
+    "server_username_seen",
+    "server_survival_mob_drop_spawn",
+    "server_survival_mob_drop_attack",
+    "server_survival_mob_drop_death",
+    "server_survival_mob_drop_drop_spawn",
+    "server_survival_mob_drop_pickup",
+    "server_survival_mob_drop_inventory",
+    "server_survival_mob_drop_state",
+];
 const SURVIVAL_MOB_AI_LOOT_BREADTH_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
     "protocol_detected",
     "join_game",
@@ -654,6 +675,13 @@ const TYPED_EVENT_READINESS_FIXTURES: &[TypedEventReadinessFixture<'static>] = &
         scenario: "survival-hunger-health-cycle",
         client_events: SURVIVAL_HUNGER_HEALTH_CYCLE_TYPED_EVENT_CLIENT_EVENTS,
         server_events: SURVIVAL_HUNGER_HEALTH_CYCLE_TYPED_EVENT_SERVER_EVENTS,
+        forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
+        derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
+    },
+    TypedEventReadinessFixture {
+        scenario: "survival-mob-drop",
+        client_events: SURVIVAL_MOB_DROP_TYPED_EVENT_CLIENT_EVENTS,
+        server_events: SURVIVAL_MOB_DROP_TYPED_EVENT_SERVER_EVENTS,
         forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
         derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
     },

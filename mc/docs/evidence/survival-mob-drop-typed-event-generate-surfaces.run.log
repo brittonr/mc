@@ -1,0 +1,23 @@
+# survival mob-drop typed-event generated surfaces
+command=nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_scenario_manifest.rs -o target/check-scenario-manifest
+warning: error: unable to download 'http://100.100.103.95:5000/h1q8wghaxa13dc77dabrcwkwqhiga8lz.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 324 ms
+warning: error: unable to download 'http://100.100.103.95:5000/h1q8wghaxa13dc77dabrcwkwqhiga8lz.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1046 ms: Could not connect to server; retrying in 542 ms
+warning: error: unable to download 'http://100.100.103.95:5000/h1q8wghaxa13dc77dabrcwkwqhiga8lz.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1057 ms: Could not connect to server; retrying in 1385 ms
+warning: error: unable to download 'http://100.100.103.95:5000/h1q8wghaxa13dc77dabrcwkwqhiga8lz.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2201 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/h1q8wghaxa13dc77dabrcwkwqhiga8lz.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/h1q8wghaxa13dc77dabrcwkwqhiga8lz.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/3d79nk2clrsff07pjj4pm4qz4l0vh651-mc-compat-runner-0.1.0.drv'...
+building '/nix/store/07zy13jqcqwvgbgs9yfkmf423ji97d1y-nix-shell-env.drv'...
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+scenario_manifest_compile_exit_status=0
+command=target/check-scenario-manifest --write-generated-surfaces
+generated surface write passed: 4 generated surfaces written; fallback budget: approved=[survival-biome-dimension-state,survival-block-entity-persistence-parity,survival-crash-recovery-parity,survival-redstone-toggle,survival-world-persistence-restart,valence-compat-bot-probe,vanilla-combat-armor-reference-parity,vanilla-combat-reference-parity]; removed=[armor-equipment-mitigation,blue-flag-score,combat-damage,combat-knockback,ctf-invalid-pickup-ownership,ctf-invalid-return-drop,ctf-score-limit-win-condition,ctf-simultaneous-pickup-capture-race,ctf-spawn-team-balance-reset,equipment-update-observation,flag-carrier-death-return,flag-score-repeat,mcp-controlled-smoke,multi-client-load-score,projectile-damage-attribution,projectile-hit,reconnect-flag-score,reconnect-flag-state,survival-biome-dimension-travel,survival-chest-persistence,survival-container-block-entity-breadth,survival-crafting-recipe-breadth,survival-furnace-persistence,survival-furnace-smelting-breadth,survival-hunger-food,survival-hunger-health-cycle,survival-mob-ai-loot-breadth,survival-mob-drop,survival-redstone-circuit-breadth,survival-sign-editing-live,survival-world-multichunk-durability]; new=[]; typed_event_regressions=[]; missing_waiver_metadata=[]
+scenario_manifest_write_generated_exit_status=0
+exit_status=0
