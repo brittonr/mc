@@ -44,6 +44,9 @@ Use the smallest tier that covers the files and claim boundary you changed, then
 | `nix run .#valence -- --dry-run` | `tier.component` | Valence wrapper or server-command documentation changes | Dry-run plan |
 | `nix run .#mc-compat-smoke -- --dry-run --server-backend valence --scenario smoke` | `tier.component` | Runner command shape or smoke scenario dry-run changes | Dry-run plan |
 | `nix build .#checks.x86_64-linux.mc-compat-maintained-dry-runs --no-link -L` | `tier.component` | Maintained scenario dry-run table changes | Flake check build log |
+| `tools/check_octet_monorepo.rs --self-test` | `tier.component` | Aggregate Octet checker, workspace metadata, consumer `dylint.toml`, reviewed baseline, or exception documentation changes | Positive inventory plus negative lint-drift, missing-config, and new-finding fixture output |
+| `tools/check_octet_monorepo.rs --root . --octet-source <pinned-octet> --run-octet` | `tier.component` | Octet enforced-scope code changes, reviewed baseline updates, or dynamic gate behavior changes | Per-workspace Octet status, finding counts, new/stale stable-ID comparison, and artifact paths |
+| `nix build .#checks.x86_64-linux.mc-octet-monorepo --no-link -L` | `tier.component` | Octet lint inventory, workspace metadata, consumer `dylint.toml`, reviewed baseline, or flake wiring changes | Static lint-inventory/config/baseline drift output plus checker self-test output |
 | `nix build .#checks.x86_64-linux.mc-compat-current-evidence-bundle --no-link -L` | `tier.evidence` | Current evidence bundle, promoted receipt, or index changes | Flake check build log |
 | `nix build .#checks.x86_64-linux.mc-compat-full-survival-gate --no-link -L` | `tier.evidence` | Survival aggregate gate or row matrix changes | Flake check build log |
 | `nix build .#checks.x86_64-linux.mc-compat-aggregate-claim-gates --no-link -L` | `tier.evidence` | Aggregate claim-boundary checker changes | Flake check build log |

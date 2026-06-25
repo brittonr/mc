@@ -133,6 +133,16 @@ OCTET_SOURCE_DIR=$(nix eval --raw --impure --expr '(builtins.getFlake (toString 
 target/check-octet-monorepo --root . --octet-source "$OCTET_SOURCE_DIR" --run-octet
 ```
 
+Reviewed exceptions are intentionally narrow and owned:
+
+| Exception | Owner | Affected crates or scope | Rationale | Removal condition |
+| --- | --- | --- | --- | --- |
+| Reviewed stable-ID baselines in `compat/octet-baselines/` | mc workspace maintainers | `compat/runner`, `clients/stevenarella`, `servers/valence` enforced scope | Existing findings predate this aggregate gate; the dynamic checker rejects any new unaccepted stable ID. | Fix accepted findings by improving code quality, rerun the aggregate gate, and reduce or remove the affected baseline. |
+| Valence starter package scope in `servers/valence/Cargo.toml` | mc workspace and Valence maintainers | Valence root crate, examples/tools, and crates not listed in `default_scope`: `valence_command`, `valence_entity`, `valence_network`, `valence_server`, `valence_server_common` | Valence is being rolled out in a strict starter scope first; prior no-arg Dylint runs through `valence_server_common` dependency paths hit a Dylint driver SIGSEGV and broader cleanup needs a dedicated pass. | Complete the Valence cleanup/toolchain pass, prove the broader gate is stable, then add the remaining packages to `default_scope`. |
+| Valence `acronym_allowlist = ["D"]` | Valence maintainers | `valence_math` local `glam::DVec3` alias boundary | `glam` uses `D` for double-precision vector types and Valence preserves the external math spelling at that boundary. | Remove the allowlist when the alias can be renamed without API churn or Octet gains a narrower external-type acronym exemption. |
+| Valence crate-level compatibility allows | Valence maintainers | `java_string`, `valence_nbt`, `valence_protocol` | These crates mirror Java string, NBT/Serde/std collection, and Minecraft wire-format APIs where public `usize` lengths, unsafe/packet boundaries, generated names, byte arithmetic, and protocol spelling are compatibility surfaces. | Remove per lint as breaking API work isolates byte arithmetic, unsafe constructors, generated names, and protocol/public-length APIs behind checked wrappers. |
+| Valence item-level public-API/format suppressions | Valence maintainers | `valence_inventory`, `valence_equipment`, `valence_spatial`, `valence_registry`, `valence_anvil` | Historical type names, trait contracts, registry deref/index behavior, six-slot equipment constructors, BVH naming, and Anvil wall-clock timestamp storage are public API or file-format compatibility seams. | Remove each suppression when the next compatible redesign introduces non-panicking accessors, renamed wrapper types, explicit clock injection, or format adapters without breaking callers. |
+
 Run `target/check-octet-monorepo --self-test` for positive and negative fixtures covering lint drift, missing config, and new unaccepted findings.
 
 ## Cairn policy ownership
