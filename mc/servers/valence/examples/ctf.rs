@@ -8,6 +8,7 @@ use std::collections::HashMap;
 use std::path::Path;
 use std::{env, fs};
 
+use bevy_ecs::prelude::SystemSet;
 use bevy_ecs::query::QueryData;
 use valence::entity::cow::CowEntityBundle;
 use valence::entity::entity::Flags;
@@ -636,39 +637,113 @@ fn redact_arrow_policy_text(value: &str) -> String {
     }
 }
 
+#[derive(SystemSet, Clone, Copy, Debug, Eq, Hash, PartialEq)]
+enum CtfGameplayPhase {
+    Input,
+    RuleEvaluation,
+    WorldMutation,
+    Presentation,
+    Cleanup,
+}
+
+#[derive(Resource, Clone, Copy, Debug, PartialEq)]
+struct CtfGameplayPluginContract {
+    update_phase_order: &'static [CtfGameplayPhase],
+    event_loop_phase_order: &'static [CtfGameplayPhase],
+}
+
+const CTF_GAMEPLAY_PHASE_ORDER: &[CtfGameplayPhase] = &[
+    CtfGameplayPhase::Input,
+    CtfGameplayPhase::RuleEvaluation,
+    CtfGameplayPhase::WorldMutation,
+    CtfGameplayPhase::Presentation,
+    CtfGameplayPhase::Cleanup,
+];
+
+struct CtfGameplayPlugin;
+
+impl Plugin for CtfGameplayPlugin {
+    fn build(&self, app: &mut App) {
+        let contract = CtfGameplayPluginContract {
+            update_phase_order: CTF_GAMEPLAY_PHASE_ORDER,
+            event_loop_phase_order: CTF_GAMEPLAY_PHASE_ORDER,
+        };
+        assert_eq!(contract.update_phase_order, CTF_GAMEPLAY_PHASE_ORDER);
+        assert_eq!(contract.event_loop_phase_order, CTF_GAMEPLAY_PHASE_ORDER);
+
+        app.insert_resource(ArrowPolicyState::default())
+            .insert_resource(contract)
+            .configure_sets(
+                EventLoopUpdate,
+                (
+                    CtfGameplayPhase::Input,
+                    CtfGameplayPhase::RuleEvaluation.after(CtfGameplayPhase::Input),
+                    CtfGameplayPhase::WorldMutation.after(CtfGameplayPhase::RuleEvaluation),
+                    CtfGameplayPhase::Presentation.after(CtfGameplayPhase::WorldMutation),
+                    CtfGameplayPhase::Cleanup.after(CtfGameplayPhase::Presentation),
+                ),
+            )
+            .configure_sets(
+                Update,
+                (
+                    CtfGameplayPhase::Input,
+                    CtfGameplayPhase::RuleEvaluation.after(CtfGameplayPhase::Input),
+                    CtfGameplayPhase::WorldMutation.after(CtfGameplayPhase::RuleEvaluation),
+                    CtfGameplayPhase::Presentation.after(CtfGameplayPhase::WorldMutation),
+                    CtfGameplayPhase::Cleanup.after(CtfGameplayPhase::Presentation),
+                ),
+            )
+            .add_systems(Startup, setup)
+            .add_systems(
+                EventLoopUpdate,
+                (handle_combat_events, handle_projectile_events)
+                    .in_set(CtfGameplayPhase::WorldMutation),
+            )
+            .add_systems(
+                Update,
+                (
+                    init_clients,
+                    log_inventory_hotbar_select_events,
+                    log_inventory_drop_events,
+                    log_inventory_click_state,
+                )
+                    .in_set(CtfGameplayPhase::Input),
+            )
+            .add_systems(
+                Update,
+                (digging, place_blocks, do_team_selector_portals)
+                    .in_set(CtfGameplayPhase::RuleEvaluation),
+            )
+            .add_systems(
+                Update,
+                (
+                    do_flag_capturing,
+                    // visualize_triggers,
+                    update_clones,
+                    teleport_oob_clients,
+                    necromancy,
+                )
+                    .in_set(CtfGameplayPhase::WorldMutation),
+            )
+            .add_systems(
+                Update,
+                (update_flag_visuals, update_scoreboard).in_set(CtfGameplayPhase::Presentation),
+            )
+            .add_systems(
+                Update,
+                despawn_disconnected_ctf_clients.in_set(CtfGameplayPhase::Cleanup),
+            );
+    }
+}
+
 pub fn main() {
     App::new()
         .insert_resource(NetworkSettings {
             connection_mode: ConnectionMode::Offline,
             ..Default::default()
         })
-        .insert_resource(ArrowPolicyState::default())
         .add_plugins(DefaultPlugins)
-        .add_systems(Startup, setup)
-        .add_systems(
-            EventLoopUpdate,
-            (handle_combat_events, handle_projectile_events),
-        )
-        .add_systems(
-            Update,
-            (
-                init_clients,
-                despawn_disconnected_ctf_clients,
-                digging,
-                place_blocks,
-                do_team_selector_portals,
-                log_inventory_hotbar_select_events,
-                log_inventory_drop_events,
-                log_inventory_click_state,
-                update_flag_visuals,
-                do_flag_capturing,
-                // visualize_triggers,
-                update_clones,
-                teleport_oob_clients,
-                necromancy,
-                update_scoreboard,
-            ),
-        )
+        .add_plugins(CtfGameplayPlugin)
         .run();
 }
 
@@ -3650,6 +3725,10 @@ fn update_scoreboard(
 mod tests {
     use super::*;
 
+    use bevy_ecs::schedule::Schedule;
+
+    const UPDATE_SCHEDULE_LABEL: &str = "Update";
+    const CTF_EVENT_LOOP_SCHEDULE_LABEL: &str = "EventLoopUpdate";
     const TEST_SOURCE: &str = "test-module.scm";
     const TEST_GENERATION: u64 = 7;
     const TEST_EDITED_BASE_DAMAGE: f32 = 4.0;
@@ -3676,6 +3755,55 @@ mod tests {
     const TEST_REJECTED_RACE_PLAYER: &str = "compatbotb";
     const TEST_CLIENT_ENTITY_ID: u32 = 1;
     const TEST_CLICK_STATE_ID: i32 = 7;
+
+    fn app_with_ctf_event_loop_schedule() -> App {
+        let mut app = App::new();
+        app.add_schedule(Schedule::new(EventLoopUpdate));
+        app
+    }
+
+    fn app_has_schedule(app: &App, schedule_label: &str) -> bool {
+        app.world()
+            .resource::<Schedules>()
+            .iter()
+            .any(|(label, _)| format!("{label:?}") == schedule_label)
+    }
+
+    #[test]
+    fn ctf_gameplay_plugin_installs_contract_resources_and_schedules() {
+        let mut app = app_with_ctf_event_loop_schedule();
+
+        app.add_plugins(CtfGameplayPlugin);
+
+        let contract = app.world().resource::<CtfGameplayPluginContract>();
+        assert_eq!(contract.update_phase_order, CTF_GAMEPLAY_PHASE_ORDER);
+        assert_eq!(contract.event_loop_phase_order, CTF_GAMEPLAY_PHASE_ORDER);
+        assert!(app.world().contains_resource::<ArrowPolicyState>());
+        assert!(app_has_schedule(&app, UPDATE_SCHEDULE_LABEL));
+        assert!(app_has_schedule(&app, CTF_EVENT_LOOP_SCHEDULE_LABEL));
+    }
+
+    #[test]
+    fn disabled_ctf_gameplay_plugin_installs_no_contract_or_policy() {
+        let app = app_with_ctf_event_loop_schedule();
+
+        assert!(!app.world().contains_resource::<CtfGameplayPluginContract>());
+        assert!(!app.world().contains_resource::<ArrowPolicyState>());
+    }
+
+    #[test]
+    fn ctf_gameplay_phase_order_rejects_regression() {
+        assert_eq!(
+            CTF_GAMEPLAY_PHASE_ORDER,
+            &[
+                CtfGameplayPhase::Input,
+                CtfGameplayPhase::RuleEvaluation,
+                CtfGameplayPhase::WorldMutation,
+                CtfGameplayPhase::Presentation,
+                CtfGameplayPhase::Cleanup,
+            ]
+        );
+    }
 
     fn test_inventory_stack(count: i8) -> ItemStack {
         ItemStack::new(INVENTORY_STACK_ITEM, count, None)

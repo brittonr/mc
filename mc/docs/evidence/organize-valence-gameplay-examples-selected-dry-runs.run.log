@@ -1,0 +1,32 @@
+## command: nix run .#mc-compat-valence-ctf-inventory-interaction -- --dry-run
+[mc-compat] plan: build client, start Valence server, wait for protocol 763, run 1 client session plan(s) under isolated Xvfb/X11
+[mc-compat] typed scenario route: scenario 'inventory-interaction' backend valence mode dry-run receipt target/mc-compat-inventory/inventory-interaction.json timeout 120s packet_capture_summary=false proxy_route=<unset> proxy_forwarding_mode=<unset> non_claims=broad_minecraft_compatibility_false,production_readiness_false,semantic_equivalence_false
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/clients/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] using existing Valence worktree /tmp/valence-compat-763
+[mc-compat] starting Valence main example 'ctf' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-763
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'inventory-interaction' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/mc-compat-inventory/inventory-interaction.json
+ctf_inventory_dry_run_exit_status=0
+
+## command: nix run .#mc-compat-valence-survival-break-place-pickup -- --dry-run
+[mc-compat] plan: build client, start Valence server, wait for protocol 763, run 1 client session plan(s) under isolated Xvfb/X11
+[mc-compat] typed scenario route: scenario 'survival-break-place-pickup' backend valence mode dry-run receipt target/mc-compat-survival-break-place-pickup/survival-break-place-pickup.json timeout 120s packet_capture_summary=false proxy_route=<unset> proxy_forwarding_mode=<unset> non_claims=broad_minecraft_compatibility_false,production_readiness_false,semantic_equivalence_false
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/clients/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
++ "git" "-C" "/home/brittonr/git/mc/servers/valence" "worktree" "prune"
+[mc-compat] creating isolated Valence worktree /tmp/valence-compat-survival at main
++ "git" "-C" "/home/brittonr/git/mc/servers/valence" "worktree" "add" "--detach" "/tmp/valence-compat-survival" "main"
+[mc-compat] starting Valence main example 'survival_compat' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-survival
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 763
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'survival-break-place-pickup' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt target/mc-compat-survival-break-place-pickup/survival-break-place-pickup.json
+survival_break_place_dry_run_exit_status=0
+overall_exit_status=0

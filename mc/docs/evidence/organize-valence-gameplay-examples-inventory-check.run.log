@@ -1,0 +1,14 @@
+## command: grep required inventory sections
+## Current CTF app wiring
+grep____Current_CTF_app_wiring_exit_status=0
+## Current survival compatibility app wiring
+grep____Current_survival_compatibility_app_wiring_exit_status=0
+## Current terrain app wiring
+grep____Current_terrain_app_wiring_exit_status=0
+## Planned phase contract
+grep____Planned_phase_contract_exit_status=0
+Owner subtree: `servers/valence/examples/` plus review evidence under `docs/evidence/`. No Hyperion code or concepts were adopted, ported, referenced, or rejected for this change.
+grep_No_Hyperion_code_or_concepts_exit_status=0
+- Non-claims remain explicit: no broad Minecraft compatibility, semantic equivalence, production readiness, public-server safety, full CTF correctness, full survival correctness, terrain production worldgen, or vanilla parity.
+grep_no_broad_Minecraft_compatibility_exit_status=0
+overall_exit_status=0

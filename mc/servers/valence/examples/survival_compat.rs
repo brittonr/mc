@@ -8,6 +8,7 @@ use std::collections::HashSet;
 use std::fs;
 use std::path::PathBuf;
 
+use bevy_ecs::prelude::SystemSet;
 use valence::entity::iron_golem::IronGolemEntityBundle;
 use valence::entity::item::{ItemEntityBundle, Stack as ItemEntityStack};
 use valence::entity::living::Health;
@@ -398,6 +399,101 @@ impl SurvivalFurnaceFixture {
     }
 }
 
+#[derive(SystemSet, Clone, Copy, Debug, Eq, Hash, PartialEq)]
+enum SurvivalGameplayPhase {
+    Input,
+    RuleEvaluation,
+    WorldMutation,
+    Presentation,
+    Cleanup,
+}
+
+#[derive(Resource, Clone, Copy, Debug, PartialEq)]
+struct SurvivalCompatibilityPluginContract {
+    update_phase_order: &'static [SurvivalGameplayPhase],
+    event_loop_phase_order: &'static [SurvivalGameplayPhase],
+}
+
+const SURVIVAL_GAMEPLAY_PHASE_ORDER: &[SurvivalGameplayPhase] = &[
+    SurvivalGameplayPhase::Input,
+    SurvivalGameplayPhase::RuleEvaluation,
+    SurvivalGameplayPhase::WorldMutation,
+    SurvivalGameplayPhase::Presentation,
+    SurvivalGameplayPhase::Cleanup,
+];
+
+struct SurvivalCompatibilityPlugin;
+
+impl Plugin for SurvivalCompatibilityPlugin {
+    fn build(&self, app: &mut App) {
+        let contract = SurvivalCompatibilityPluginContract {
+            update_phase_order: SURVIVAL_GAMEPLAY_PHASE_ORDER,
+            event_loop_phase_order: SURVIVAL_GAMEPLAY_PHASE_ORDER,
+        };
+        assert_eq!(contract.update_phase_order, SURVIVAL_GAMEPLAY_PHASE_ORDER);
+        assert_eq!(
+            contract.event_loop_phase_order,
+            SURVIVAL_GAMEPLAY_PHASE_ORDER
+        );
+
+        app.insert_resource(contract)
+            .configure_sets(
+                EventLoopPreUpdate,
+                (
+                    SurvivalGameplayPhase::Input,
+                    SurvivalGameplayPhase::RuleEvaluation.after(SurvivalGameplayPhase::Input),
+                    SurvivalGameplayPhase::WorldMutation
+                        .after(SurvivalGameplayPhase::RuleEvaluation),
+                    SurvivalGameplayPhase::Presentation.after(SurvivalGameplayPhase::WorldMutation),
+                    SurvivalGameplayPhase::Cleanup.after(SurvivalGameplayPhase::Presentation),
+                ),
+            )
+            .configure_sets(
+                Update,
+                (
+                    SurvivalGameplayPhase::Input,
+                    SurvivalGameplayPhase::RuleEvaluation.after(SurvivalGameplayPhase::Input),
+                    SurvivalGameplayPhase::WorldMutation
+                        .after(SurvivalGameplayPhase::RuleEvaluation),
+                    SurvivalGameplayPhase::Presentation.after(SurvivalGameplayPhase::WorldMutation),
+                    SurvivalGameplayPhase::Cleanup.after(SurvivalGameplayPhase::Presentation),
+                ),
+            )
+            .add_systems(Startup, setup)
+            .add_systems(
+                EventLoopPreUpdate,
+                handle_survival_chest_close.in_set(SurvivalGameplayPhase::Input),
+            )
+            .add_systems(Update, init_clients.in_set(SurvivalGameplayPhase::Input))
+            .add_systems(
+                Update,
+                (
+                    handle_survival_digging,
+                    handle_survival_block_place,
+                    handle_survival_redstone_toggle,
+                    handle_survival_world_persistence_place,
+                    handle_survival_chest_open,
+                    handle_survival_chest_store,
+                    handle_survival_crafting_open,
+                    handle_survival_crafting_click,
+                    handle_survival_furnace_open,
+                    handle_survival_furnace_click,
+                    handle_survival_hunger_food_use,
+                    handle_survival_mob_drop_attack,
+                )
+                    .in_set(SurvivalGameplayPhase::RuleEvaluation),
+            )
+            .add_systems(
+                Update,
+                advance_survival_mob_drop_pickup.in_set(SurvivalGameplayPhase::WorldMutation),
+            )
+            .add_systems(
+                Update,
+                despawn_disconnected_clients.in_set(SurvivalGameplayPhase::Cleanup),
+            );
+    }
+}
+
 pub fn main() {
     App::new()
         .insert_resource(NetworkSettings {
@@ -405,28 +501,7 @@ pub fn main() {
             ..Default::default()
         })
         .add_plugins(DefaultPlugins)
-        .add_systems(Startup, setup)
-        .add_systems(EventLoopPreUpdate, handle_survival_chest_close)
-        .add_systems(
-            Update,
-            (
-                init_clients,
-                despawn_disconnected_clients,
-                handle_survival_digging,
-                handle_survival_block_place,
-                handle_survival_redstone_toggle,
-                handle_survival_world_persistence_place,
-                handle_survival_chest_open,
-                handle_survival_chest_store,
-                handle_survival_crafting_open,
-                handle_survival_crafting_click,
-                handle_survival_furnace_open,
-                handle_survival_furnace_click,
-                handle_survival_hunger_food_use,
-                handle_survival_mob_drop_attack,
-                advance_survival_mob_drop_pickup,
-            ),
-        )
+        .add_plugins(SurvivalCompatibilityPlugin)
         .run();
 }
 
@@ -3141,6 +3216,65 @@ fn log_milestone(message: String) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    use bevy_ecs::schedule::Schedule;
+
+    const UPDATE_SCHEDULE_LABEL: &str = "Update";
+    const SURVIVAL_EVENT_LOOP_SCHEDULE_LABEL: &str = "EventLoopPreUpdate";
+
+    fn app_with_survival_event_loop_schedule() -> App {
+        let mut app = App::new();
+        app.add_schedule(Schedule::new(EventLoopPreUpdate));
+        app
+    }
+
+    fn app_has_schedule(app: &App, schedule_label: &str) -> bool {
+        app.world()
+            .resource::<Schedules>()
+            .iter()
+            .any(|(label, _)| format!("{label:?}") == schedule_label)
+    }
+
+    #[test]
+    fn survival_gameplay_plugin_installs_contract_and_schedules() {
+        let mut app = app_with_survival_event_loop_schedule();
+
+        app.add_plugins(SurvivalCompatibilityPlugin);
+
+        let contract = app
+            .world()
+            .resource::<SurvivalCompatibilityPluginContract>();
+        assert_eq!(contract.update_phase_order, SURVIVAL_GAMEPLAY_PHASE_ORDER);
+        assert_eq!(
+            contract.event_loop_phase_order,
+            SURVIVAL_GAMEPLAY_PHASE_ORDER
+        );
+        assert!(app_has_schedule(&app, UPDATE_SCHEDULE_LABEL));
+        assert!(app_has_schedule(&app, SURVIVAL_EVENT_LOOP_SCHEDULE_LABEL));
+    }
+
+    #[test]
+    fn disabled_survival_gameplay_plugin_installs_no_contract() {
+        let app = app_with_survival_event_loop_schedule();
+
+        assert!(!app
+            .world()
+            .contains_resource::<SurvivalCompatibilityPluginContract>());
+    }
+
+    #[test]
+    fn survival_gameplay_phase_order_rejects_regression() {
+        assert_eq!(
+            SURVIVAL_GAMEPLAY_PHASE_ORDER,
+            &[
+                SurvivalGameplayPhase::Input,
+                SurvivalGameplayPhase::RuleEvaluation,
+                SurvivalGameplayPhase::WorldMutation,
+                SurvivalGameplayPhase::Presentation,
+                SurvivalGameplayPhase::Cleanup,
+            ]
+        );
+    }
 
     #[test]
     fn survival_break_accepts_only_target_stop_destroy() {

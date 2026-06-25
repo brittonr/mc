@@ -5,6 +5,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::SystemTime;
 
+use bevy_ecs::prelude::SystemSet;
 use bevy_tasks::{block_on, poll_once, AsyncComputeTaskPool, Task, TaskPool};
 use noise::{NoiseFn, SuperSimplex};
 use tracing::{debug, info, warn};
@@ -161,23 +162,71 @@ enum ChunkCompletionDecision {
 /// values are sent first.
 type Priority = u64;
 
+#[derive(SystemSet, Clone, Copy, Debug, Eq, Hash, PartialEq)]
+enum TerrainGameplayPhase {
+    Input,
+    RuleEvaluation,
+    WorldMutation,
+    Presentation,
+    Cleanup,
+}
+
+#[derive(Resource, Clone, Copy, Debug, PartialEq)]
+struct TerrainGameplayPluginContract {
+    update_phase_order: &'static [TerrainGameplayPhase],
+}
+
+const TERRAIN_GAMEPLAY_PHASE_ORDER: &[TerrainGameplayPhase] = &[
+    TerrainGameplayPhase::Input,
+    TerrainGameplayPhase::RuleEvaluation,
+    TerrainGameplayPhase::WorldMutation,
+    TerrainGameplayPhase::Presentation,
+    TerrainGameplayPhase::Cleanup,
+];
+
+struct TerrainGameplayPlugin;
+
+impl Plugin for TerrainGameplayPlugin {
+    fn build(&self, app: &mut App) {
+        let contract = TerrainGameplayPluginContract {
+            update_phase_order: TERRAIN_GAMEPLAY_PHASE_ORDER,
+        };
+        assert_eq!(contract.update_phase_order, TERRAIN_GAMEPLAY_PHASE_ORDER);
+
+        app.insert_resource(contract)
+            .configure_sets(
+                Update,
+                (
+                    TerrainGameplayPhase::Input,
+                    TerrainGameplayPhase::RuleEvaluation.after(TerrainGameplayPhase::Input),
+                    TerrainGameplayPhase::WorldMutation.after(TerrainGameplayPhase::RuleEvaluation),
+                    TerrainGameplayPhase::Presentation.after(TerrainGameplayPhase::WorldMutation),
+                    TerrainGameplayPhase::Cleanup.after(TerrainGameplayPhase::Presentation),
+                ),
+            )
+            .add_systems(Startup, setup)
+            .add_systems(Update, init_clients.in_set(TerrainGameplayPhase::Input))
+            .add_systems(
+                Update,
+                (remove_unviewed_chunks, update_client_views)
+                    .chain()
+                    .in_set(TerrainGameplayPhase::RuleEvaluation),
+            )
+            .add_systems(
+                Update,
+                run_chunk_tasks.in_set(TerrainGameplayPhase::WorldMutation),
+            )
+            .add_systems(
+                Update,
+                despawn_disconnected_clients.in_set(TerrainGameplayPhase::Cleanup),
+            );
+    }
+}
+
 pub fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_systems(Startup, setup)
-        .add_systems(
-            Update,
-            (
-                (
-                    init_clients,
-                    remove_unviewed_chunks,
-                    update_client_views,
-                    run_chunk_tasks,
-                )
-                    .chain(),
-                despawn_disconnected_clients,
-            ),
-        )
+        .add_plugins(TerrainGameplayPlugin)
         .run();
 }
 
@@ -775,6 +824,7 @@ fn noise01(noise: &SuperSimplex, p: DVec3) -> f64 {
 mod tests {
     use super::*;
 
+    const UPDATE_SCHEDULE_LABEL: &str = "Update";
     const TEST_SEED: u32 = 12_345;
     const TEST_HEIGHT: u32 = 64;
     const INVALID_TEST_HEIGHT: u32 = 0;
@@ -782,6 +832,48 @@ mod tests {
     const OTHER_TEST_POS: ChunkPos = ChunkPos::new(1, 0);
     const NEAR_PRIORITY: Priority = 4;
     const FAR_PRIORITY: Priority = 9;
+
+    fn app_has_schedule(app: &App, schedule_label: &str) -> bool {
+        app.world()
+            .resource::<Schedules>()
+            .iter()
+            .any(|(label, _)| format!("{label:?}") == schedule_label)
+    }
+
+    #[test]
+    fn terrain_gameplay_plugin_installs_contract_and_schedule() {
+        let mut app = App::new();
+
+        app.add_plugins(TerrainGameplayPlugin);
+
+        let contract = app.world().resource::<TerrainGameplayPluginContract>();
+        assert_eq!(contract.update_phase_order, TERRAIN_GAMEPLAY_PHASE_ORDER);
+        assert!(app_has_schedule(&app, UPDATE_SCHEDULE_LABEL));
+    }
+
+    #[test]
+    fn disabled_terrain_gameplay_plugin_installs_no_contract_or_state() {
+        let app = App::new();
+
+        assert!(!app
+            .world()
+            .contains_resource::<TerrainGameplayPluginContract>());
+        assert!(!app.world().contains_resource::<GameState>());
+    }
+
+    #[test]
+    fn terrain_gameplay_phase_order_rejects_regression() {
+        assert_eq!(
+            TERRAIN_GAMEPLAY_PHASE_ORDER,
+            &[
+                TerrainGameplayPhase::Input,
+                TerrainGameplayPhase::RuleEvaluation,
+                TerrainGameplayPhase::WorldMutation,
+                TerrainGameplayPhase::Presentation,
+                TerrainGameplayPhase::Cleanup,
+            ]
+        );
+    }
 
     #[test]
     fn pure_generator_produces_chunk_for_valid_input() {

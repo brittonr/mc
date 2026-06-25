@@ -1,5 +1,5 @@
-312427c0133701923ef70a8a140ed0005f4e1dbb2f4131bef72a26cf8ef5f585  docs/evidence/move-worldgen-work-to-bevy-tasks.implementation.b3
-e1f2d592abeb56a3094e5f9233269806326c4e36b3b2ea2e107f7e36881f5a1b  docs/evidence/move-worldgen-work-to-bevy-tasks.validation.b3
+60f009250e72f7f40b7792ea3b391b5f64e6abc86305df4c17839b76a5d2726c  docs/evidence/move-worldgen-work-to-bevy-tasks.implementation.b3
+f5f93a51436eb2360c7e2635306cdee56642615b7bf4060dbe7372774abef5c2  docs/evidence/move-worldgen-work-to-bevy-tasks.validation.b3
 9ca1bfb6c5813d124ca370ccf41d59f02e9ba52cbe1f2ab77d5f07bb7dfa8f9c  docs/evidence/move-worldgen-work-to-bevy-tasks.final-gates.run.log
 60ed39238bad711393e77c968de8d28f3fec2a92dcd80304fe5ec6116cd4cef2  docs/evidence/move-worldgen-work-to-bevy-tasks.task-evidence-final.run.log
 1b3a23273cdd20ffda9263871d265382f18bc0f719d30baef9c74b587e5315cc  docs/evidence/move-worldgen-work-to-bevy-tasks.sync-dry-run.log
@@ -15,7 +15,7 @@ b0e607da5e0473302cb5e901a082353c7bc3346308a9f63b816ef8fd457dd8f4  docs/evidence/
 2ee19c123e2b6c840a289043eda5aaac844a38b345774dbc3de60f7e0360be62  cairn/archive/2026-06-25-move-worldgen-work-to-bevy-tasks/proposal.md
 ec7aa4c89247a24332b1f86e1873e712553f08020d7a10f0ff8bb31d564636b7  cairn/archive/2026-06-25-move-worldgen-work-to-bevy-tasks/design.md
 2d3673ca0c4000c4ac4b83a9e299dd3cdb07644f3ddfc41fb19ae068ee33dbf6  cairn/archive/2026-06-25-move-worldgen-work-to-bevy-tasks/specs/valence-bevy-ecs/spec.md
-3331eb7cbe4a85932ffeec91a45cd55556ac3772fa48079200c2739855f9f8db  cairn/specs/valence-bevy-ecs/spec.md
+9c578545225b4727c77e0be8d8e8f96cbf6d0af9e5a4e4e6c5519cba1d29a357  cairn/specs/valence-bevy-ecs/spec.md
 ebc87f0436cd1d4c36459a26e2adb402d3c692f8ceec69f012cea65894bebf73  servers/valence/Cargo.toml
 0a2c6cd6e996e75dd824401e5fb6cc6b5b597ad6ae4fded9798f260d55e52a07  servers/valence/Cargo.lock
-60670e078043a2b0a07012199669a4f555abda5ebd2b1d5f7e4b7ffa24dc8a9f  servers/valence/examples/terrain.rs
+fd2e491b70903609577cb8f9624c50d485e911efaa083a1ae4c64a8e530d8f53  servers/valence/examples/terrain.rs

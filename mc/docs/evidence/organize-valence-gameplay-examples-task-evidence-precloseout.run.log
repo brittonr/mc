@@ -1,0 +1,7 @@
+## command: rustc --edition=2021 tools/check_cairn_task_evidence.rs -o target/check-cairn-task-evidence
+compile_exit_status=0
+
+## command: target/check-cairn-task-evidence cairn/changes/organize-valence-gameplay-examples-as-bevy-plugins/tasks.md
+task evidence gate passed: 5 completed tasks checked across 1 task files
+task_evidence_exit_status=0
+overall_exit_status=0

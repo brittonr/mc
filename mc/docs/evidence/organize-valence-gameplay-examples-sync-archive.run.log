@@ -1,0 +1,209 @@
+## command: nix run .#cairn -- sync organize-valence-gameplay-examples-as-bevy-plugins --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/organize-valence-gameplay-examples-as-bevy-plugins/specs/valence-bevy-ecs/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/organize-valence-gameplay-examples-as-bevy-plugins/specs/valence-bevy-ecs/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "organize-valence-gameplay-examples-as-bevy-plugins",
+  "delta_specs": [
+    "./cairn/changes/organize-valence-gameplay-examples-as-bevy-plugins/specs/valence-bevy-ecs/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "4489f06f53e1eb7c13b7a51ec6de69ac61c4c650713ad97a7352db666562eabf",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "2b8e5e4950b5359269d26112a56772501981af11bbe70c0d5030affbbaa71684",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "8c93dbe4f1533d5a095d1684fa92e9c6fcddaaf553656f868517a0881d1cf5f6"
+}
+sync_dry_run_exit_status=0
+
+## command: nix run .#cairn -- sync organize-valence-gameplay-examples-as-bevy-plugins --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/organize-valence-gameplay-examples-as-bevy-plugins/specs/valence-bevy-ecs/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/organize-valence-gameplay-examples-as-bevy-plugins/specs/valence-bevy-ecs/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "organize-valence-gameplay-examples-as-bevy-plugins",
+  "delta_specs": [
+    "./cairn/changes/organize-valence-gameplay-examples-as-bevy-plugins/specs/valence-bevy-ecs/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "4489f06f53e1eb7c13b7a51ec6de69ac61c4c650713ad97a7352db666562eabf",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "3331eb7cbe4a85932ffeec91a45cd55556ac3772fa48079200c2739855f9f8db",
+          "exists": true,
+          "path": "./cairn/specs/valence-bevy-ecs/spec.md"
+        }
+      ],
+      "manifest_hash": "b816a076e6cad34552fab08ff002f92b1619278931e7afde3e2f796398d79ef8"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "3331eb7cbe4a85932ffeec91a45cd55556ac3772fa48079200c2739855f9f8db",
+          "exists": true,
+          "path": "./cairn/specs/valence-bevy-ecs/spec.md"
+        }
+      ],
+      "manifest_hash": "b816a076e6cad34552fab08ff002f92b1619278931e7afde3e2f796398d79ef8"
+    },
+    "kind": "sync",
+    "manifest_hash": "282890b645a1dc236524242e5dd47e18ae4992c4f8bab952577f12dc656d1724"
+  },
+  "plan_hash": "77f70b6e1e6ac941b6e855f5b627c3788c70e787ef62373e7ea1846f88ff6ca4",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "99426bc51f19f75e2b2ad5c3eeac7d1cd9b77cbada32b9174933e9aedc0184a1"
+}
+sync_execute_exit_status=0
+
+## command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+post_sync_validate_exit_status=0
+
+## command: nix run .#cairn -- archive organize-valence-gameplay-examples-as-bevy-plugins --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: organize-valence-gameplay-examples-as-bevy-plugins",
+      "kind": "archive_change",
+      "path": "./cairn/changes/organize-valence-gameplay-examples-as-bevy-plugins"
+    }
+  ],
+  "blocked": false,
+  "change": "organize-valence-gameplay-examples-as-bevy-plugins",
+  "dry_run": true,
+  "input_hash": "4489f06f53e1eb7c13b7a51ec6de69ac61c4c650713ad97a7352db666562eabf",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "82c1d1119329dabb79804b38f273ca1f4cfc5d035dd08ebc192ca7d7b269c10b",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "1e47851e6c81e9b1c92835d3a8af2c8017c3d08cef51797b346e82fc9d83f645"
+}
+archive_dry_run_exit_status=0
+
+## command: CAIRN_ARCHIVE_DATE=2026-06-25 nix run .#cairn -- archive organize-valence-gameplay-examples-as-bevy-plugins --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: organize-valence-gameplay-examples-as-bevy-plugins",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-25-organize-valence-gameplay-examples-as-bevy-plugins"
+    }
+  ],
+  "blocked": false,
+  "change": "organize-valence-gameplay-examples-as-bevy-plugins",
+  "dry_run": false,
+  "input_hash": "4489f06f53e1eb7c13b7a51ec6de69ac61c4c650713ad97a7352db666562eabf",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "fffd80abd82149eaebea7ffc862e558c1bbc3da0e3780c74acdd5f517b73dcb7",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-organize-valence-gameplay-examples-as-bevy-plugins/design.md"
+        },
+        {
+          "content_hash": "3eeff7b99efb9e62b4d5bb901d08a5980dc7d4204d758d52c33ec1910d83cfd1",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-organize-valence-gameplay-examples-as-bevy-plugins/proposal.md"
+        },
+        {
+          "content_hash": "c1b0c07cdca5b408133ef45f1f971bcf459479e0c3114984d49ea4e221526238",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-organize-valence-gameplay-examples-as-bevy-plugins/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "13a4754963eb9b3c0f4f672626e19fa0061220189f07771ad4970aa5d91e24d0",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-organize-valence-gameplay-examples-as-bevy-plugins/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/organize-valence-gameplay-examples-as-bevy-plugins"
+        }
+      ],
+      "manifest_hash": "e394685145b7ce5e01e5a3cfc547ee99769c55087bcbc2c80941afc233cf1efd"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "fffd80abd82149eaebea7ffc862e558c1bbc3da0e3780c74acdd5f517b73dcb7",
+          "exists": true,
+          "path": "./cairn/changes/organize-valence-gameplay-examples-as-bevy-plugins/design.md"
+        },
+        {
+          "content_hash": "3eeff7b99efb9e62b4d5bb901d08a5980dc7d4204d758d52c33ec1910d83cfd1",
+          "exists": true,
+          "path": "./cairn/changes/organize-valence-gameplay-examples-as-bevy-plugins/proposal.md"
+        },
+        {
+          "content_hash": "c1b0c07cdca5b408133ef45f1f971bcf459479e0c3114984d49ea4e221526238",
+          "exists": true,
+          "path": "./cairn/changes/organize-valence-gameplay-examples-as-bevy-plugins/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "13a4754963eb9b3c0f4f672626e19fa0061220189f07771ad4970aa5d91e24d0",
+          "exists": true,
+          "path": "./cairn/changes/organize-valence-gameplay-examples-as-bevy-plugins/tasks.md"
+        }
+      ],
+      "manifest_hash": "5005a204c4ff9220c317715d2c783d9584c5924a4cb4a043b7ac17d1118bc0a2"
+    },
+    "kind": "archive",
+    "manifest_hash": "cee2fa97a919a6158924be3666fbcba78f689010fd5bd682f0083f69013a5cd6"
+  },
+  "plan_hash": "41d0e81a0c43890c03ca8870786099355658d10e70870865f4dfe6ffd1918cf9",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "1d250dbdd7bb0b442385b245a4b0251bc9b4eedab5afa197d7c5563a29260de8"
+}
+archive_execute_exit_status=0
+
+## command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 2,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 7,
+  "valid": true
+}
+post_archive_validate_exit_status=0
+overall_exit_status=0

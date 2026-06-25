@@ -1,0 +1,38 @@
+## command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 2,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 7,
+  "valid": true
+}
+cairn_validate_exit_status=0
+
+## command: grep accepted gameplay plugin requirement IDs
+r[valence_bevy_ecs.gameplay_plugins.inventory] Valence gameplay example plugin work MUST inventory selected example Bevy systems, schedules, resources, events, env toggles, compatibility milestones, and non-goals before refactoring wiring.
+grep_r_valence_bevy_ecs_gameplay_plugins_inventory__exit_status=0
+r[valence_bevy_ecs.gameplay_plugins.contract] Extracted gameplay example plugins SHOULD expose named Bevy `SystemSet`s for stable input, rule evaluation, world mutation, presentation, and cleanup ordering.
+grep_r_valence_bevy_ecs_gameplay_plugins_contract__exit_status=0
+r[valence_bevy_ecs.gameplay_plugins.wiring] Example plugins MUST keep deterministic gameplay and compatibility decisions outside Bevy ECS access unless the code is only an adapter shell.
+grep_r_valence_bevy_ecs_gameplay_plugins_wiring__exit_status=0
+r[valence_bevy_ecs.gameplay_plugins.compatibility] Plugin organization MUST preserve selected example commands, env var contracts, milestone text, scenario behavior, and evidence non-claim boundaries unless another Cairn changes them.
+grep_r_valence_bevy_ecs_gameplay_plugins_compatibility__exit_status=0
+r[valence_bevy_ecs.gameplay_plugins.tests] Gameplay plugin organization MUST include positive plugin/schedule smoke tests and negative disabled-plugin or ordering regression tests.
+grep_r_valence_bevy_ecs_gameplay_plugins_tests__exit_status=0
+r[valence_bevy_ecs.gameplay_plugins.validation] Gameplay plugin organization MUST record focused example checks, selected compatibility rails when touched, Cairn gates, Cairn validation, and task-evidence checks before archive.
+grep_r_valence_bevy_ecs_gameplay_plugins_validation__exit_status=0
+
+## command: rustc --edition=2021 tools/check_cairn_task_evidence.rs -o target/check-cairn-task-evidence
+compile_task_evidence_exit_status=0
+
+## command: target/check-cairn-task-evidence cairn/archive/2026-06-25-organize-valence-gameplay-examples-as-bevy-plugins/tasks.md
+task evidence gate passed: 6 completed tasks checked across 1 task files
+archive_task_evidence_exit_status=0
+
+## command: nix run .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=495; entries=4228; current=4228; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+evidence_manifest_check_exit_status=0
+overall_exit_status=0

@@ -1,0 +1,3182 @@
+## command: cd servers/valence && nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test --example ctf -- --nocapture
+/home/brittonr/git/mc/servers/valence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+    Blocking waiting for file lock on artifact directory
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+warning: `valence_inventory` (lib) generated 1 warning
+warning: constant `VANILLA_COMBAT_REFERENCE_KNOCKBACK_SCALE` is never used
+  --> examples/ctf.rs:95:7
+   |
+95 | const VANILLA_COMBAT_REFERENCE_KNOCKBACK_SCALE: f64 = 20.0;
+   |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `VANILLA_COMBAT_ARMOR_REDUCTION_DENOMINATOR` is never used
+  --> examples/ctf.rs:96:7
+   |
+96 | const VANILLA_COMBAT_ARMOR_REDUCTION_DENOMINATOR: f32 = 25.0;
+   |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `VANILLA_ARMOR_TOUGHNESS_QUARTER_DIVISOR` is never used
+  --> examples/ctf.rs:99:7
+   |
+99 | const VANILLA_ARMOR_TOUGHNESS_QUARTER_DIVISOR: f32 = 4.0;
+   |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `VANILLA_ARMOR_TOUGHNESS_BASE` is never used
+   --> examples/ctf.rs:100:7
+    |
+100 | const VANILLA_ARMOR_TOUGHNESS_BASE: f32 = 2.0;
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `VANILLA_ARMOR_MIN_REDUCTION_DIVISOR` is never used
+   --> examples/ctf.rs:101:7
+    |
+101 | const VANILLA_ARMOR_MIN_REDUCTION_DIVISOR: f32 = 5.0;
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `VANILLA_ARMOR_MAX_REDUCTION_POINTS` is never used
+   --> examples/ctf.rs:102:7
+    |
+102 | const VANILLA_ARMOR_MAX_REDUCTION_POINTS: f32 = 20.0;
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `inventory_stack_slot_change_matches` is never used
+    --> examples/ctf.rs:2001:4
+     |
+2001 | fn inventory_stack_slot_change_matches(
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `inventory_stack_slot_change_empty` is never used
+    --> examples/ctf.rs:2012:4
+     |
+2012 | fn inventory_stack_slot_change_empty(event: &ClickSlotEvent, slot: i16) -> b...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `vanilla_armor_mitigation_for` is never used
+    --> examples/ctf.rs:3513:4
+     |
+3513 | fn vanilla_armor_mitigation_for(base_damage: f32, armor_points: f32, toughne...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `opponent` is never used
+  --> examples/fixture_core/ctf.rs:15:12
+   |
+ 7 | impl Team {
+   | --------- method in this implementation
+...
+15 |     pub fn opponent(self) -> Self {
+   |            ^^^^^^^^
+
+warning: method `for_team` is never used
+  --> examples/fixture_core/ctf.rs:45:12
+   |
+44 | impl ScoreSnapshot {
+   | ------------------ method in this implementation
+45 |     pub fn for_team(self, team: Team) -> u32 {
+   |            ^^^^^^^^
+
+warning: fields `red_slot37_resource` and `blue_slot37_resource` are never read
+   --> examples/fixture_core/ctf.rs:210:9
+    |
+204 | pub struct SpawnResetContract {
+    |            ------------------ fields in this struct
+...
+210 |     pub red_slot37_resource: &'static str,
+    |         ^^^^^^^^^^^^^^^^^^^
+211 |     pub blue_slot37_resource: &'static str,
+    |         ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `spawn_team_assignment_milestone` is never used
+   --> examples/fixture_core/ctf.rs:216:8
+    |
+216 | pub fn spawn_team_assignment_milestone(
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `score_limit_pre_state_milestone` is never used
+   --> examples/fixture_core/ctf.rs:339:8
+    |
+339 | pub fn score_limit_pre_state_milestone(score: ScoreSnapshot, score_limit: u32...
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `score_limit_final_capture_milestone` is never used
+   --> examples/fixture_core/ctf.rs:346:8
+    |
+346 | pub fn score_limit_final_capture_milestone(
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `score_limit_post_win_score_mutation_milestone` is never used
+   --> examples/fixture_core/ctf.rs:396:8
+    |
+396 | pub fn score_limit_post_win_score_mutation_milestone(username: &str, winning_...
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `Other` is never constructed
+  --> examples/fixture_core/survival.rs:16:5
+   |
+14 | pub enum FixtureDirection {
+   |          ---------------- variant in this enum
+15 |     Up,
+16 |     Other,
+   |     ^^^^^
+   |
+   = note: `FixtureDirection` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/mod.rs:8:1
+  |
+8 | pub mod ctf;
+  | ---^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+  = note: requested on the command line with `-W unreachable-pub`
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/mod.rs:9:1
+  |
+9 | pub mod survival;
+  | ---^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/ctf.rs:2:1
+  |
+2 | pub enum Team {
+  | ---^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/ctf.rs:8:5
+  |
+8 |     pub fn label(self) -> &'static str {
+  |     ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |     |
+  |     help: consider restricting its visibility: `pub(crate)`
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:15:5
+   |
+15 |     pub fn opponent(self) -> Self {
+   |     ---^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     |
+   |     help: consider restricting its visibility: `pub(crate)`
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:24:1
+   |
+24 | pub enum FlagPresence {
+   | ---^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:30:5
+   |
+30 |     pub fn label(self) -> &'static str {
+   |     ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     |
+   |     help: consider restricting its visibility: `pub(crate)`
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:39:1
+   |
+39 | pub struct ScoreSnapshot {
+   | ---^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:45:5
+   |
+45 |     pub fn for_team(self, team: Team) -> u32 {
+   |     ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     |
+   |     help: consider restricting its visibility: `pub(crate)`
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:54:1
+   |
+54 | pub struct FlagSnapshot {
+   | ---^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:60:5
+   |
+60 |     pub fn for_team(self, team: Team) -> FlagPresence {
+   |     ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     |
+   |     help: consider restricting its visibility: `pub(crate)`
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:69:1
+   |
+69 | pub enum FlagPickupDecision {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:75:1
+   |
+75 |   pub fn evaluate_flag_pickup(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+76 | |     player_team: Team,
+77 | |     flag_team: Team,
+78 | |     flag_presence: FlagPresence,
+79 | | ) -> FlagPickupDecision {
+   | |_______________________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:89:1
+   |
+89 | pub fn race_duplicate_pickup_blocked(accepted_username_present: bool) -> bool {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:93:1
+   |
+93 |   pub fn race_accepted_transition_milestone(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+94 | |     username: &str,
+95 | |     player_team: Team,
+96 | |     flag_team: Team,
+97 | |     accepted_transition: &str,
+98 | |     race_window_ticks: u32,
+99 | | ) -> String {
+   | |___________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:111:1
+    |
+111 |   pub fn race_rejected_transition_milestone(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+112 | |     username: &str,
+113 | |     player_team: Team,
+114 | |     flag_team: Team,
+115 | |     rejected_transition: &str,
+116 | |     race_window_ticks: u32,
+117 | | ) -> String {
+    | |___________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:129:1
+    |
+129 | pub struct RaceFinalContract<'a> {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:140:1
+    |
+140 |   pub fn race_final_state_milestone(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+141 | |     accepted_username: &str,
+142 | |     rejected_username: &str,
+143 | |     capture_username: &str,
+...   |
+148 | |     contract: RaceFinalContract<'_>,
+149 | | ) -> Option<String> {
+    | |___________________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:182:1
+    |
+182 | pub struct SpawnResetState {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:190:5
+    |
+190 |     pub fn record_assignment(&mut self, username: &str, team: Team) {
+    |     ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     |
+    |     help: consider restricting its visibility: `pub(crate)`
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:204:1
+    |
+204 | pub struct SpawnResetContract {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:216:1
+    |
+216 |   pub fn spawn_team_assignment_milestone(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+217 | |     username: &str,
+218 | |     team: Team,
+219 | |     red_count: u32,
+...   |
+222 | |     slot37_resource: &str,
+223 | | ) -> String {
+    | |___________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:237:1
+    |
+237 |   pub fn spawn_team_balance_milestone(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+238 | |     state: &SpawnResetState,
+239 | |     contract: &SpawnResetContract,
+240 | | ) -> Option<String> {
+    | |___________________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:256:1
+    |
+256 |   pub fn spawn_resource_reset_state_milestone(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+257 | |     state: &SpawnResetState,
+258 | |     username: &str,
+259 | |     team: Team,
+...   |
+262 | |     contract: &SpawnResetContract,
+263 | | ) -> Option<String> {
+    | |___________________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:290:1
+    |
+290 | pub fn defer_spawn_assignment(username: &str, team: Team, expected_blue_username: &str) -> bool {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:294:1
+    |
+294 |   pub fn invalid_flag_pickup_rejection_milestone(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+295 | |     username: &str,
+296 | |     player_team: Team,
+297 | |     flag_team: Team,
+...   |
+300 | |     score: ScoreSnapshot,
+301 | | ) -> String {
+    | |___________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:316:1
+    |
+316 |   pub fn invalid_return_drop_rejection_milestone(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+317 | |     milestone: &str,
+318 | |     username: &str,
+319 | |     actor_team: Team,
+...   |
+323 | |     score: ScoreSnapshot,
+324 | | ) -> String {
+    | |___________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:339:1
+    |
+339 | pub fn score_limit_pre_state_milestone(score: ScoreSnapshot, score_limit: u32) -> String {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:346:1
+    |
+346 |   pub fn score_limit_final_capture_milestone(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+347 | |     username: &str,
+348 | |     capture_team: Team,
+349 | |     carried_flag: Team,
+350 | |     before: ScoreSnapshot,
+351 | |     after: ScoreSnapshot,
+352 | | ) -> String {
+    | |___________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:367:1
+    |
+367 |   pub fn score_limit_win_condition_milestone(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+368 | |     username: &str,
+369 | |     winning_team: Team,
+370 | |     score: ScoreSnapshot,
+371 | |     win_emissions: u32,
+372 | |     score_limit: u32,
+373 | | ) -> String {
+    | |___________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:387:1
+    |
+387 | pub fn score_limit_duplicate_win_milestone(username: &str, winning_team: Team) -> String {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:396:1
+    |
+396 | pub fn score_limit_post_win_score_mutation_milestone(username: &str, winning_team: Team) -> String {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:406:1
+    |
+406 | pub enum InventoryProbeItem {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:413:1
+    |
+413 | pub enum InventoryClickMode {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:420:1
+    |
+420 | pub struct InventoryItemStack {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:426:5
+    |
+426 |     pub fn empty(empty_count: i8) -> Self {
+    |     ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     |
+    |     help: consider restricting its visibility: `pub(crate)`
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:435:1
+    |
+435 | pub struct InventorySlotChange {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:441:1
+    |
+441 | pub struct InventoryClickSnapshot {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:452:1
+    |
+452 | pub struct InventoryStackContract {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:464:1
+    |
+464 | pub struct InventoryStackState {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:471:1
+    |
+471 | pub enum InventoryStackAction {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:478:1
+    |
+478 |   pub fn classify_inventory_stack_split_merge_event(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+479 | |     event: &InventoryClickSnapshot,
+480 | |     state: InventoryStackState,
+481 | |     contract: InventoryStackContract,
+482 | | ) -> Option<InventoryStackAction> {
+    | |_________________________________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:547:1
+    |
+547 | pub struct InventoryDragContract {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:563:1
+    |
+563 | pub struct InventoryDragState {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:571:1
+    |
+571 | pub enum InventoryDragAction {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:579:1
+    |
+579 |   pub fn classify_inventory_drag_transactions_event(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+580 | |     event: &InventoryClickSnapshot,
+581 | |     state: InventoryDragState,
+582 | |     contract: InventoryDragContract,
+583 | | ) -> Option<InventoryDragAction> {
+    | |________________________________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:671:1
+    |
+671 | pub enum ArmorState {
+    | ---^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:677:1
+    |
+677 |   pub fn reference_hit_for(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+678 | |     enabled: bool,
+679 | |     attacker: &str,
+680 | |     victim: &str,
+681 | |     expected_attacker: &str,
+682 | |     expected_victim: &str,
+683 | | ) -> bool {
+    | |_________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:687:1
+    |
+687 |   pub fn combat_armor_mitigation_for(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+688 | |     reference_probe_enabled: bool,
+689 | |     armor_probe_enabled: bool,
+690 | |     chest_item: ArmorState,
+...   |
+694 | |     diamond_toughness: f32,
+695 | | ) -> f32 {
+    | |________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:705:1
+    |
+705 | pub fn vanilla_armor_mitigation_for(base_damage: f32, armor_points: f32, toughness: f32) -> f32 {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:716:1
+    |
+716 | pub fn knockback_metric(knockback_velocity: [f32; KNOCKBACK_VECTOR_COMPONENT_COUNT]) -> f64 {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival.rs:2:1
+  |
+2 | pub enum FixtureGameMode {
+  | ---^^^^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival.rs:8:1
+  |
+8 | pub enum FixtureHand {
+  | ---^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:14:1
+   |
+14 | pub enum FixtureDirection {
+   | ---^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:20:1
+   |
+20 | pub enum FixtureDiggingState {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:26:1
+   |
+26 | pub enum FixtureInteraction {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:32:1
+   |
+32 | pub struct FixtureBlockPos {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:39:1
+   |
+39 | pub struct FixtureStack<'a> {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:45:1
+   |
+45 | pub struct FixtureSlotChange<'a> {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:51:1
+   |
+51 | pub struct FixtureHungerProfile {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:62:1
+   |
+62 | pub enum MarkerDecision {
+   | ---^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:68:1
+   |
+68 |   pub fn should_break_survival_block(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+69 | |     game_mode: FixtureGameMode,
+70 | |     digging_state: FixtureDiggingState,
+71 | |     position: FixtureBlockPos,
+72 | |     target: FixtureBlockPos,
+73 | | ) -> bool {
+   | |_________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:79:1
+   |
+79 |   pub fn should_place_survival_block(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+80 | |     game_mode: FixtureGameMode,
+81 | |     hand: FixtureHand,
+82 | |     position: FixtureBlockPos,
+83 | |     face: FixtureDirection,
+84 | |     target: FixtureBlockPos,
+85 | | ) -> bool {
+   | |_________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:92:1
+   |
+92 |   pub fn should_open_fixture_container(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+93 | |     game_mode: FixtureGameMode,
+94 | |     hand: FixtureHand,
+95 | |     position: FixtureBlockPos,
+96 | |     target: FixtureBlockPos,
+97 | | ) -> bool {
+   | |_________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:101:1
+    |
+101 |   pub fn slot_event_matches<'a>(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+102 | |     window_id: u8,
+103 | |     slot_id: i16,
+104 | |     slot_changes: &[FixtureSlotChange<'a>],
+...   |
+107 | |     expected_stack: FixtureStack<'a>,
+108 | | ) -> bool {
+    | |_________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:116:1
+    |
+116 | pub fn stack_matches(observed: FixtureStack<'_>, expected: FixtureStack<'_>) -> bool {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:120:1
+    |
+120 |   pub fn collect_event_matches(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+121 | |     window_id: u8,
+122 | |     slot_id: i16,
+123 | |     stack: FixtureStack<'_>,
+...   |
+126 | |     expected_stack: FixtureStack<'_>,
+127 | | ) -> bool {
+    | |_________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:133:1
+    |
+133 |   pub fn should_emit_furnace_breadth_rejection(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+134 | |     collect_logged: bool,
+135 | |     invalid_rejection_logged: bool,
+136 | | ) -> bool {
+    | |_________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:140:1
+    |
+140 |   pub fn should_reject_furnace_invalid_fuel(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+141 | |     breadth_enabled: bool,
+142 | |     collect_logged: bool,
+143 | |     window_id: u8,
+...   |
+146 | |     expected_fuel_slot_id: i16,
+147 | | ) -> bool {
+    | |_________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:154:1
+    |
+154 |   pub fn select_hunger_profile(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+155 | |     food_enabled: bool,
+156 | |     health_enabled: bool,
+157 | |     food_profile: FixtureHungerProfile,
+158 | |     health_profile: FixtureHungerProfile,
+159 | | ) -> Option<FixtureHungerProfile> {
+    | |_________________________________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:170:1
+    |
+170 | pub struct HungerUseInput<'a> {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:181:1
+    |
+181 | pub struct HungerUseContract<'a> {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:187:1
+    |
+187 |   pub fn should_consume_hunger_food(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+188 | |     profile: FixtureHungerProfile,
+189 | |     input: HungerUseInput<'_>,
+190 | |     contract: HungerUseContract<'_>,
+191 | | ) -> bool {
+    | |_________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:201:1
+    |
+201 |   pub fn should_handle_mob_drop_attack(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+202 | |     game_mode: FixtureGameMode,
+203 | |     interaction: FixtureInteraction,
+204 | |     target_entity_id: u32,
+205 | |     fixture_entity_id: u32,
+206 | | ) -> bool {
+    | |_________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:212:1
+    |
+212 | pub fn evaluate_marker_decision(post_restart: bool, marker_present: bool) -> MarkerDecision {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:223:1
+    |
+223 | pub fn should_place_block_entity_sign(post_restart: bool, marker_present: bool) -> bool {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:230:1
+    |
+230 |   pub fn validate_block_entity_payload(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+231 | |     lines: &[&str],
+232 | |     expected_payload: &str,
+233 | |     separator: &str,
+234 | |     expected_line_count: usize,
+235 | | ) -> Result<(), &'static str> {
+    | |_____________________________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:246:1
+    |
+246 | pub fn redstone_power_transition(powered: bool) -> bool {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:250:1
+    |
+250 |   pub fn normalize_environment_id(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+251 | |     raw: &str,
+252 | |     known: &[&'static str],
+253 | |     unknown: &'static str,
+254 | | ) -> &'static str {
+    | |_________________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:263:1
+    |
+263 |   pub fn derive_environment_id(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+264 | |     spawn_environment: &str,
+265 | |     environment_identifier: &str,
+266 | |     known: &[&'static str],
+267 | |     unknown: &'static str,
+268 | | ) -> &'static str {
+    | |_________________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:276:1
+    |
+276 |   pub fn biome_dimension_state_milestone(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+277 | |     username: &str,
+278 | |     spawn_environment: &str,
+279 | |     environment_identifier: &str,
+280 | |     derived_environment: &str,
+281 | | ) -> String {
+    | |___________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: `valence` (example "ctf" test) generated 98 warnings (run `cargo fix --example "ctf" -p valence --tests` to apply 81 suggestions)
+    Finished `test` profile [optimized + debuginfo] target(s) in 11.61s
+     Running unittests examples/ctf.rs (/home/brittonr/.cargo-target/debug/examples/ctf-9ba9c1d08b8fff87)
+
+running 40 tests
+test fixture_core::ctf::tests::flag_pickup_accepts_enemy_base_flag_and_rejects_wrong_team_or_duplicate ... ok
+test fixture_core::ctf::tests::combat_core_handles_reference_hits_and_armor_mitigation ... ok
+test fixture_core::ctf::tests::inventory_drag_core_accepts_ordered_sequence_and_rejects_out_of_order_or_bad_distribution ... ok
+test fixture_core::ctf::tests::inventory_stack_core_accepts_ordered_sequence_and_rejects_invalid_inventory ... ok
+test fixture_core::ctf::tests::spawn_reset_core_records_balanced_assignments_and_rejects_malformed_state ... ok
+test fixture_core::survival::tests::biome_dimension_core_normalizes_known_ids_and_rejects_unknown_ids ... ok
+test fixture_core::ctf::tests::race_and_score_milestones_preserve_receipt_strings_and_fail_closed ... ok
+test fixture_core::survival::tests::block_break_place_and_container_decisions_accept_only_survival_main_target ... ok
+test fixture_core::survival::tests::furnace_and_hunger_decisions_accept_valid_flow_and_reject_invalid_flow ... ok
+test fixture_core::survival::tests::mob_redstone_persistence_and_block_entity_decisions_fail_closed ... ok
+test fixture_core::survival::tests::slot_and_collect_events_require_exact_window_slot_and_stack ... ok
+test tests::arrow_policy_clamps_damage_to_maximum ... ok
+test tests::arrow_policy_redacts_secret_like_diagnostics ... ok
+test tests::ctf_gameplay_phase_order_rejects_regression ... ok
+test tests::ctf_race_final_state_rejects_double_score_or_held_flag ... ok
+test tests::ctf_race_milestones_record_one_accept_one_reject_and_final_score ... ok
+test tests::ctf_spawn_team_reset_rejects_imbalance_or_wrong_score ... ok
+test tests::default_arrow_policy_matches_legacy_projectile_damage ... ok
+test tests::ctf_spawn_team_reset_milestones_record_balanced_assignments_and_reset ... ok
+test tests::invalid_flag_pickup_helper_rejects_own_flag_and_allows_enemy_flag ... ok
+test tests::invalid_flag_pickup_milestone_records_no_transfer_and_scores ... ok
+test tests::invalid_flag_return_drop_milestone_records_no_state_mutation_or_score ... ok
+test tests::invalid_opponent_base_return_drop_milestone_records_no_state_mutation_or_score ... ok
+test tests::invalid_module_is_rejected_and_previous_snapshot_survives ... ok
+test tests::disabled_ctf_gameplay_plugin_installs_no_contract_or_policy ... ok
+test tests::inventory_drag_transactions_classifier_accepts_ordered_drag ... ok
+test tests::inventory_stack_split_merge_classifier_accepts_ordered_clicks ... ok
+test tests::inventory_drag_transactions_classifier_rejects_wrong_order_or_distribution ... ok
+test tests::inventory_stack_split_merge_classifier_rejects_wrong_actor_or_count ... ok
+test tests::ctf_gameplay_plugin_installs_contract_resources_and_schedules ... ok
+test tests::malformed_or_capability_invalid_module_is_rejected ... ok
+test tests::non_default_policy_changes_both_projectile_call_site_health_deltas ... ok
+test tests::range_invalid_decision_output_is_rejected ... ok
+test tests::score_limit_forbidden_milestones_are_named_for_duplicate_win_and_late_score_mutation ... ok
+test tests::score_limit_milestones_record_pre_state_final_capture_and_win_once ... ok
+test tests::snapshot_diff_reports_changed_policy_fields ... ok
+test tests::steel_module_edit_changes_arrow_damage_policy ... ok
+test tests::vanilla_combat_armor_reference_helpers_apply_bounded_chestplate_formula ... ok
+test tests::vanilla_combat_reference_helpers_fail_closed_for_unbounded_inputs ... ok
+test tests::vanilla_combat_reference_milestones_record_normalized_metrics ... ok
+
+test result: ok. 40 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+ctf_example_test_exit_status=0
+
+## command: cd servers/valence && nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test --example survival_compat -- --nocapture
+/home/brittonr/git/mc/servers/valence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+warning: `valence_inventory` (lib) generated 1 warning
+   Compiling valence v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence)
+warning: function `is_survival_crafting_result` is never used
+    --> examples/survival_compat.rs:2071:4
+     |
+2071 | fn is_survival_crafting_result(stack: &ItemStack) -> bool {
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `is_survival_furnace_output` is never used
+    --> examples/survival_compat.rs:2281:4
+     |
+2281 | fn is_survival_furnace_output(stack: &ItemStack) -> bool {
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `opponent` is never used
+  --> examples/fixture_core/ctf.rs:15:12
+   |
+ 7 | impl Team {
+   | --------- method in this implementation
+...
+15 |     pub fn opponent(self) -> Self {
+   |            ^^^^^^^^
+
+warning: method `label` is never used
+  --> examples/fixture_core/ctf.rs:30:12
+   |
+29 | impl FlagPresence {
+   | ----------------- method in this implementation
+30 |     pub fn label(self) -> &'static str {
+   |            ^^^^^
+
+warning: method `for_team` is never used
+  --> examples/fixture_core/ctf.rs:45:12
+   |
+44 | impl ScoreSnapshot {
+   | ------------------ method in this implementation
+45 |     pub fn for_team(self, team: Team) -> u32 {
+   |            ^^^^^^^^
+
+warning: function `race_duplicate_pickup_blocked` is never used
+  --> examples/fixture_core/ctf.rs:89:8
+   |
+89 | pub fn race_duplicate_pickup_blocked(accepted_username_present: bool) -> bool {
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: fields `red_slot37_resource` and `blue_slot37_resource` are never read
+   --> examples/fixture_core/ctf.rs:210:9
+    |
+204 | pub struct SpawnResetContract {
+    |            ------------------ fields in this struct
+...
+210 |     pub red_slot37_resource: &'static str,
+    |         ^^^^^^^^^^^^^^^^^^^
+211 |     pub blue_slot37_resource: &'static str,
+    |         ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `spawn_team_assignment_milestone` is never used
+   --> examples/fixture_core/ctf.rs:216:8
+    |
+216 | pub fn spawn_team_assignment_milestone(
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `invalid_flag_pickup_rejection_milestone` is never used
+   --> examples/fixture_core/ctf.rs:294:8
+    |
+294 | pub fn invalid_flag_pickup_rejection_milestone(
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `invalid_return_drop_rejection_milestone` is never used
+   --> examples/fixture_core/ctf.rs:316:8
+    |
+316 | pub fn invalid_return_drop_rejection_milestone(
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `score_limit_pre_state_milestone` is never used
+   --> examples/fixture_core/ctf.rs:339:8
+    |
+339 | pub fn score_limit_pre_state_milestone(score: ScoreSnapshot, score_limit: u32...
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `score_limit_final_capture_milestone` is never used
+   --> examples/fixture_core/ctf.rs:346:8
+    |
+346 | pub fn score_limit_final_capture_milestone(
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `score_limit_post_win_score_mutation_milestone` is never used
+   --> examples/fixture_core/ctf.rs:396:8
+    |
+396 | pub fn score_limit_post_win_score_mutation_milestone(username: &str, winning_...
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `Other` is never constructed
+   --> examples/fixture_core/ctf.rs:408:5
+    |
+406 | pub enum InventoryProbeItem {
+    |          ------------------ variant in this enum
+407 |     ExpectedStackItem,
+408 |     Other,
+    |     ^^^^^
+    |
+    = note: `InventoryProbeItem` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: variant `Other` is never constructed
+   --> examples/fixture_core/ctf.rs:416:5
+    |
+413 | pub enum InventoryClickMode {
+    |          ------------------ variant in this enum
+...
+416 |     Other,
+    |     ^^^^^
+    |
+    = note: `InventoryClickMode` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: variant `Empty` is never constructed
+   --> examples/fixture_core/ctf.rs:674:5
+    |
+671 | pub enum ArmorState {
+    |          ---------- variant in this enum
+...
+674 |     Empty,
+    |     ^^^^^
+    |
+    = note: `ArmorState` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/mod.rs:8:1
+  |
+8 | pub mod ctf;
+  | ---^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+  = note: requested on the command line with `-W unreachable-pub`
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/mod.rs:9:1
+  |
+9 | pub mod survival;
+  | ---^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/ctf.rs:2:1
+  |
+2 | pub enum Team {
+  | ---^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/ctf.rs:8:5
+  |
+8 |     pub fn label(self) -> &'static str {
+  |     ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |     |
+  |     help: consider restricting its visibility: `pub(crate)`
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:15:5
+   |
+15 |     pub fn opponent(self) -> Self {
+   |     ---^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     |
+   |     help: consider restricting its visibility: `pub(crate)`
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:24:1
+   |
+24 | pub enum FlagPresence {
+   | ---^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:30:5
+   |
+30 |     pub fn label(self) -> &'static str {
+   |     ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     |
+   |     help: consider restricting its visibility: `pub(crate)`
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:39:1
+   |
+39 | pub struct ScoreSnapshot {
+   | ---^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:45:5
+   |
+45 |     pub fn for_team(self, team: Team) -> u32 {
+   |     ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     |
+   |     help: consider restricting its visibility: `pub(crate)`
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:54:1
+   |
+54 | pub struct FlagSnapshot {
+   | ---^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:60:5
+   |
+60 |     pub fn for_team(self, team: Team) -> FlagPresence {
+   |     ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     |
+   |     help: consider restricting its visibility: `pub(crate)`
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:69:1
+   |
+69 | pub enum FlagPickupDecision {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:75:1
+   |
+75 |   pub fn evaluate_flag_pickup(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+76 | |     player_team: Team,
+77 | |     flag_team: Team,
+78 | |     flag_presence: FlagPresence,
+79 | | ) -> FlagPickupDecision {
+   | |_______________________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:89:1
+   |
+89 | pub fn race_duplicate_pickup_blocked(accepted_username_present: bool) -> bool {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:93:1
+   |
+93 |   pub fn race_accepted_transition_milestone(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+94 | |     username: &str,
+95 | |     player_team: Team,
+96 | |     flag_team: Team,
+97 | |     accepted_transition: &str,
+98 | |     race_window_ticks: u32,
+99 | | ) -> String {
+   | |___________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:111:1
+    |
+111 |   pub fn race_rejected_transition_milestone(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+112 | |     username: &str,
+113 | |     player_team: Team,
+114 | |     flag_team: Team,
+115 | |     rejected_transition: &str,
+116 | |     race_window_ticks: u32,
+117 | | ) -> String {
+    | |___________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:129:1
+    |
+129 | pub struct RaceFinalContract<'a> {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:140:1
+    |
+140 |   pub fn race_final_state_milestone(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+141 | |     accepted_username: &str,
+142 | |     rejected_username: &str,
+143 | |     capture_username: &str,
+...   |
+148 | |     contract: RaceFinalContract<'_>,
+149 | | ) -> Option<String> {
+    | |___________________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:182:1
+    |
+182 | pub struct SpawnResetState {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:190:5
+    |
+190 |     pub fn record_assignment(&mut self, username: &str, team: Team) {
+    |     ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     |
+    |     help: consider restricting its visibility: `pub(crate)`
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:204:1
+    |
+204 | pub struct SpawnResetContract {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:216:1
+    |
+216 |   pub fn spawn_team_assignment_milestone(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+217 | |     username: &str,
+218 | |     team: Team,
+219 | |     red_count: u32,
+...   |
+222 | |     slot37_resource: &str,
+223 | | ) -> String {
+    | |___________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:237:1
+    |
+237 |   pub fn spawn_team_balance_milestone(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+238 | |     state: &SpawnResetState,
+239 | |     contract: &SpawnResetContract,
+240 | | ) -> Option<String> {
+    | |___________________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:256:1
+    |
+256 |   pub fn spawn_resource_reset_state_milestone(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+257 | |     state: &SpawnResetState,
+258 | |     username: &str,
+259 | |     team: Team,
+...   |
+262 | |     contract: &SpawnResetContract,
+263 | | ) -> Option<String> {
+    | |___________________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:290:1
+    |
+290 | pub fn defer_spawn_assignment(username: &str, team: Team, expected_blue_username: &str) -> bool {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:294:1
+    |
+294 |   pub fn invalid_flag_pickup_rejection_milestone(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+295 | |     username: &str,
+296 | |     player_team: Team,
+297 | |     flag_team: Team,
+...   |
+300 | |     score: ScoreSnapshot,
+301 | | ) -> String {
+    | |___________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:316:1
+    |
+316 |   pub fn invalid_return_drop_rejection_milestone(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+317 | |     milestone: &str,
+318 | |     username: &str,
+319 | |     actor_team: Team,
+...   |
+323 | |     score: ScoreSnapshot,
+324 | | ) -> String {
+    | |___________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:339:1
+    |
+339 | pub fn score_limit_pre_state_milestone(score: ScoreSnapshot, score_limit: u32) -> String {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:346:1
+    |
+346 |   pub fn score_limit_final_capture_milestone(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+347 | |     username: &str,
+348 | |     capture_team: Team,
+349 | |     carried_flag: Team,
+350 | |     before: ScoreSnapshot,
+351 | |     after: ScoreSnapshot,
+352 | | ) -> String {
+    | |___________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:367:1
+    |
+367 |   pub fn score_limit_win_condition_milestone(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+368 | |     username: &str,
+369 | |     winning_team: Team,
+370 | |     score: ScoreSnapshot,
+371 | |     win_emissions: u32,
+372 | |     score_limit: u32,
+373 | | ) -> String {
+    | |___________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:387:1
+    |
+387 | pub fn score_limit_duplicate_win_milestone(username: &str, winning_team: Team) -> String {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:396:1
+    |
+396 | pub fn score_limit_post_win_score_mutation_milestone(username: &str, winning_team: Team) -> String {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:406:1
+    |
+406 | pub enum InventoryProbeItem {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:413:1
+    |
+413 | pub enum InventoryClickMode {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:420:1
+    |
+420 | pub struct InventoryItemStack {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:426:5
+    |
+426 |     pub fn empty(empty_count: i8) -> Self {
+    |     ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     |
+    |     help: consider restricting its visibility: `pub(crate)`
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:435:1
+    |
+435 | pub struct InventorySlotChange {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:441:1
+    |
+441 | pub struct InventoryClickSnapshot {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:452:1
+    |
+452 | pub struct InventoryStackContract {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:464:1
+    |
+464 | pub struct InventoryStackState {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:471:1
+    |
+471 | pub enum InventoryStackAction {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:478:1
+    |
+478 |   pub fn classify_inventory_stack_split_merge_event(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+479 | |     event: &InventoryClickSnapshot,
+480 | |     state: InventoryStackState,
+481 | |     contract: InventoryStackContract,
+482 | | ) -> Option<InventoryStackAction> {
+    | |_________________________________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:547:1
+    |
+547 | pub struct InventoryDragContract {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:563:1
+    |
+563 | pub struct InventoryDragState {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:571:1
+    |
+571 | pub enum InventoryDragAction {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:579:1
+    |
+579 |   pub fn classify_inventory_drag_transactions_event(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+580 | |     event: &InventoryClickSnapshot,
+581 | |     state: InventoryDragState,
+582 | |     contract: InventoryDragContract,
+583 | | ) -> Option<InventoryDragAction> {
+    | |________________________________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:671:1
+    |
+671 | pub enum ArmorState {
+    | ---^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:677:1
+    |
+677 |   pub fn reference_hit_for(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+678 | |     enabled: bool,
+679 | |     attacker: &str,
+680 | |     victim: &str,
+681 | |     expected_attacker: &str,
+682 | |     expected_victim: &str,
+683 | | ) -> bool {
+    | |_________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:687:1
+    |
+687 |   pub fn combat_armor_mitigation_for(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+688 | |     reference_probe_enabled: bool,
+689 | |     armor_probe_enabled: bool,
+690 | |     chest_item: ArmorState,
+...   |
+694 | |     diamond_toughness: f32,
+695 | | ) -> f32 {
+    | |________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:705:1
+    |
+705 | pub fn vanilla_armor_mitigation_for(base_damage: f32, armor_points: f32, toughness: f32) -> f32 {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf.rs:716:1
+    |
+716 | pub fn knockback_metric(knockback_velocity: [f32; KNOCKBACK_VECTOR_COMPONENT_COUNT]) -> f64 {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival.rs:2:1
+  |
+2 | pub enum FixtureGameMode {
+  | ---^^^^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival.rs:8:1
+  |
+8 | pub enum FixtureHand {
+  | ---^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:14:1
+   |
+14 | pub enum FixtureDirection {
+   | ---^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:20:1
+   |
+20 | pub enum FixtureDiggingState {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:26:1
+   |
+26 | pub enum FixtureInteraction {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:32:1
+   |
+32 | pub struct FixtureBlockPos {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:39:1
+   |
+39 | pub struct FixtureStack<'a> {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:45:1
+   |
+45 | pub struct FixtureSlotChange<'a> {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:51:1
+   |
+51 | pub struct FixtureHungerProfile {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:62:1
+   |
+62 | pub enum MarkerDecision {
+   | ---^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:68:1
+   |
+68 |   pub fn should_break_survival_block(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+69 | |     game_mode: FixtureGameMode,
+70 | |     digging_state: FixtureDiggingState,
+71 | |     position: FixtureBlockPos,
+72 | |     target: FixtureBlockPos,
+73 | | ) -> bool {
+   | |_________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:79:1
+   |
+79 |   pub fn should_place_survival_block(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+80 | |     game_mode: FixtureGameMode,
+81 | |     hand: FixtureHand,
+82 | |     position: FixtureBlockPos,
+83 | |     face: FixtureDirection,
+84 | |     target: FixtureBlockPos,
+85 | | ) -> bool {
+   | |_________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:92:1
+   |
+92 |   pub fn should_open_fixture_container(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+93 | |     game_mode: FixtureGameMode,
+94 | |     hand: FixtureHand,
+95 | |     position: FixtureBlockPos,
+96 | |     target: FixtureBlockPos,
+97 | | ) -> bool {
+   | |_________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:101:1
+    |
+101 |   pub fn slot_event_matches<'a>(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+102 | |     window_id: u8,
+103 | |     slot_id: i16,
+104 | |     slot_changes: &[FixtureSlotChange<'a>],
+...   |
+107 | |     expected_stack: FixtureStack<'a>,
+108 | | ) -> bool {
+    | |_________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:116:1
+    |
+116 | pub fn stack_matches(observed: FixtureStack<'_>, expected: FixtureStack<'_>) -> bool {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:120:1
+    |
+120 |   pub fn collect_event_matches(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+121 | |     window_id: u8,
+122 | |     slot_id: i16,
+123 | |     stack: FixtureStack<'_>,
+...   |
+126 | |     expected_stack: FixtureStack<'_>,
+127 | | ) -> bool {
+    | |_________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:133:1
+    |
+133 |   pub fn should_emit_furnace_breadth_rejection(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+134 | |     collect_logged: bool,
+135 | |     invalid_rejection_logged: bool,
+136 | | ) -> bool {
+    | |_________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:140:1
+    |
+140 |   pub fn should_reject_furnace_invalid_fuel(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+141 | |     breadth_enabled: bool,
+142 | |     collect_logged: bool,
+143 | |     window_id: u8,
+...   |
+146 | |     expected_fuel_slot_id: i16,
+147 | | ) -> bool {
+    | |_________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:154:1
+    |
+154 |   pub fn select_hunger_profile(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+155 | |     food_enabled: bool,
+156 | |     health_enabled: bool,
+157 | |     food_profile: FixtureHungerProfile,
+158 | |     health_profile: FixtureHungerProfile,
+159 | | ) -> Option<FixtureHungerProfile> {
+    | |_________________________________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:170:1
+    |
+170 | pub struct HungerUseInput<'a> {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:181:1
+    |
+181 | pub struct HungerUseContract<'a> {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:187:1
+    |
+187 |   pub fn should_consume_hunger_food(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+188 | |     profile: FixtureHungerProfile,
+189 | |     input: HungerUseInput<'_>,
+190 | |     contract: HungerUseContract<'_>,
+191 | | ) -> bool {
+    | |_________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:201:1
+    |
+201 |   pub fn should_handle_mob_drop_attack(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+202 | |     game_mode: FixtureGameMode,
+203 | |     interaction: FixtureInteraction,
+204 | |     target_entity_id: u32,
+205 | |     fixture_entity_id: u32,
+206 | | ) -> bool {
+    | |_________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:212:1
+    |
+212 | pub fn evaluate_marker_decision(post_restart: bool, marker_present: bool) -> MarkerDecision {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:223:1
+    |
+223 | pub fn should_place_block_entity_sign(post_restart: bool, marker_present: bool) -> bool {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:230:1
+    |
+230 |   pub fn validate_block_entity_payload(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+231 | |     lines: &[&str],
+232 | |     expected_payload: &str,
+233 | |     separator: &str,
+234 | |     expected_line_count: usize,
+235 | | ) -> Result<(), &'static str> {
+    | |_____________________________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:246:1
+    |
+246 | pub fn redstone_power_transition(powered: bool) -> bool {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:250:1
+    |
+250 |   pub fn normalize_environment_id(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+251 | |     raw: &str,
+252 | |     known: &[&'static str],
+253 | |     unknown: &'static str,
+254 | | ) -> &'static str {
+    | |_________________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:263:1
+    |
+263 |   pub fn derive_environment_id(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+264 | |     spawn_environment: &str,
+265 | |     environment_identifier: &str,
+266 | |     known: &[&'static str],
+267 | |     unknown: &'static str,
+268 | | ) -> &'static str {
+    | |_________________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival.rs:276:1
+    |
+276 |   pub fn biome_dimension_state_milestone(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+277 | |     username: &str,
+278 | |     spawn_environment: &str,
+279 | |     environment_identifier: &str,
+280 | |     derived_environment: &str,
+281 | | ) -> String {
+    | |___________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: `valence` (example "survival_compat" test) generated 97 warnings (run `cargo fix --example "survival_compat" -p valence --tests` to apply 81 suggestions)
+    Finished `test` profile [optimized + debuginfo] target(s) in 3.11s
+     Running unittests examples/survival_compat.rs (/home/brittonr/.cargo-target/debug/examples/survival_compat-a5a4cc37c0b65023)
+
+running 39 tests
+test fixture_core::ctf::tests::combat_core_handles_reference_hits_and_armor_mitigation ... ok
+test fixture_core::ctf::tests::flag_pickup_accepts_enemy_base_flag_and_rejects_wrong_team_or_duplicate ... ok
+test fixture_core::ctf::tests::inventory_stack_core_accepts_ordered_sequence_and_rejects_invalid_inventory ... ok
+test fixture_core::ctf::tests::spawn_reset_core_records_balanced_assignments_and_rejects_malformed_state ... ok
+test fixture_core::ctf::tests::inventory_drag_core_accepts_ordered_sequence_and_rejects_out_of_order_or_bad_distribution ... ok
+test fixture_core::ctf::tests::race_and_score_milestones_preserve_receipt_strings_and_fail_closed ... ok
+test fixture_core::survival::tests::biome_dimension_core_normalizes_known_ids_and_rejects_unknown_ids ... ok
+test fixture_core::survival::tests::block_break_place_and_container_decisions_accept_only_survival_main_target ... ok
+test fixture_core::survival::tests::furnace_and_hunger_decisions_accept_valid_flow_and_reject_invalid_flow ... ok
+test fixture_core::survival::tests::mob_redstone_persistence_and_block_entity_decisions_fail_closed ... ok
+test fixture_core::survival::tests::slot_and_collect_events_require_exact_window_slot_and_stack ... ok
+test tests::survival_biome_dimension_normalizes_known_environment_ids ... ok
+test tests::survival_biome_dimension_rejects_unknown_environment_ids ... ok
+test tests::survival_block_entity_fixture_places_initial_or_persisted_sign_only ... ok
+test tests::survival_break_accepts_only_target_stop_destroy ... ok
+test tests::survival_chest_opens_only_main_hand_survival_target ... ok
+test tests::survival_chest_store_event_requires_exact_slot_window_item ... ok
+test tests::survival_block_entity_payload_uses_contract_lines ... ok
+test tests::survival_crafting_collect_event_requires_result_slot_and_stack ... ok
+test tests::survival_crafting_input_event_requires_exact_slot_window ... ok
+test tests::survival_crafting_opens_only_main_hand_survival_target ... ok
+test tests::survival_furnace_collect_event_requires_output_slot_and_stack ... ok
+test tests::survival_furnace_input_and_fuel_events_require_exact_slot_window ... ok
+test tests::disabled_survival_gameplay_plugin_installs_no_contract ... ok
+test tests::survival_furnace_invalid_fuel_rejection_requires_breadth_collect_and_fuel_slot ... ok
+test tests::survival_gameplay_phase_order_rejects_regression ... ok
+test tests::survival_furnace_opens_only_main_hand_survival_target ... ok
+test tests::survival_hunger_food_stack_requires_bread_count ... ok
+test tests::survival_hunger_food_use_requires_main_hand_sequence_slot_and_pre_state ... ok
+test tests::survival_hunger_profile_rejects_disabled_contract ... ok
+test tests::survival_hunger_profile_selects_enabled_contract ... ok
+test tests::survival_mob_drop_attack_requires_survival_attack_on_fixture_mob ... ok
+test tests::survival_mob_drop_stack_requires_iron_ingot_count ... ok
+test tests::survival_place_accepts_only_main_hand_up_on_target ... ok
+test tests::survival_redstone_toggle_accepts_only_main_hand_survival_control ... ok
+test tests::survival_world_persistence_accepts_only_main_hand_up_on_base ... ok
+test tests::survival_redstone_toggle_states_use_powered_properties ... ok
+test tests::survival_gameplay_plugin_installs_contract_and_schedules ... ok
+test tests::survival_world_persistence_stack_requires_dirt_count ... ok
+
+test result: ok. 39 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+survival_example_test_exit_status=0
+
+## command: cd servers/valence && nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test --example terrain -- --nocapture
+/home/brittonr/git/mc/servers/valence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+warning: `valence_inventory` (lib) generated 1 warning
+   Compiling valence v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence)
+    Finished `test` profile [optimized + debuginfo] target(s) in 1.68s
+     Running unittests examples/terrain.rs (/home/brittonr/.cargo-target/debug/examples/terrain-c5710af59914aad7)
+
+running 11 tests
+test tests::completion_decision_inserts_requested_unloaded_chunk ... ok
+test tests::mismatched_completion_position_fails_closed ... ok
+test tests::duplicate_request_keeps_running_task_and_minimizes_queued_priority ... ok
+test tests::incomplete_unrequested_task_is_cancelled ... ok
+test tests::stale_completion_is_ignored ... ok
+test tests::shutdown_completion_is_ignored_before_world_mutation ... ok
+test tests::disabled_terrain_gameplay_plugin_installs_no_contract_or_state ... ok
+test tests::terrain_gameplay_phase_order_rejects_regression ... ok
+test tests::worker_failure_fails_closed ... ok
+test tests::terrain_gameplay_plugin_installs_contract_and_schedule ... ok
+test tests::pure_generator_produces_chunk_for_valid_input ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+terrain_example_test_exit_status=0
+
+## command: cd servers/valence && nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo fmt --all --check
+/home/brittonr/git/mc/servers/valence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+Warning: can't set `wrap_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_code_in_doc_comments = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_strings = true`, unstable features are only available in nightly channel.
+Warning: can't set `format_macro_matchers = true`, unstable features are only available in nightly channel.
+Warning: can't set `hex_literal_case = Lower`, unstable features are only available in nightly channel.
+Warning: can't set `imports_granularity = Module`, unstable features are only available in nightly channel.
+Warning: can't set `group_imports = StdExternalCrate`, unstable features are only available in nightly channel.
+Warning: can't set `unstable_features = true`, unstable features are only available in nightly channel.
+fmt_check_exit_status=0
+
+## command: tools/check_valence_schedule_hygiene.rs --root .
+valence schedule hygiene check passed
+schedule_hygiene_exit_status=0
+overall_exit_status=0
