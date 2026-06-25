@@ -575,6 +575,7 @@ pub(crate) fn typed_event_oracle_contributes_to_pass_fail(scenario: Scenario) ->
             | Scenario::SurvivalCraftingRecipeBreadth
             | Scenario::SurvivalFurnacePersistence
             | Scenario::SurvivalFurnaceSmeltingBreadth
+            | Scenario::SurvivalHungerFood
             | Scenario::SurvivalHungerHealthCycle
             | Scenario::SurvivalMobAiLootBreadth
             | Scenario::SurvivalRedstoneCircuitBreadth
@@ -902,6 +903,36 @@ pub(crate) fn typed_event_ordered_edges_for_scenario(
             (
                 "server_survival_furnace_invalid_fuel_rejected",
                 "server_survival_furnace_breadth_state",
+            ),
+        ],
+        Scenario::SurvivalHungerFood => vec![
+            (
+                "survival_hunger_food_pre_seen",
+                "survival_hunger_food_use_sent",
+            ),
+            (
+                "survival_hunger_food_use_sent",
+                "survival_hunger_food_post_seen",
+            ),
+            (
+                "survival_hunger_food_post_seen",
+                "survival_hunger_food_inventory_updated",
+            ),
+            (
+                "server_survival_hunger_food_pre",
+                "server_survival_hunger_food_consume_start",
+            ),
+            (
+                "server_survival_hunger_food_consume_start",
+                "server_survival_hunger_food_consume_finish",
+            ),
+            (
+                "server_survival_hunger_food_consume_finish",
+                "server_survival_hunger_food_inventory",
+            ),
+            (
+                "server_survival_hunger_food_inventory",
+                "server_survival_hunger_food_state",
             ),
         ],
         Scenario::SurvivalHungerHealthCycle => vec![

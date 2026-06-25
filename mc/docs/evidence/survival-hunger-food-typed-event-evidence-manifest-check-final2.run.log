@@ -1,0 +1,5 @@
+# survival hunger-food typed-event final evidence manifest check after digest refresh
+command=target/check-evidence-manifests
+evidence manifests ok: 486 manifests, 4010 entries, 140 receipts scanned
+evidence_manifest_check_exit_status=0
+exit_status=0

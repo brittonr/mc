@@ -1,0 +1,286 @@
+# survival hunger-food typed-event sync/archive
+command=nix run --no-update-lock-file .#cairn -- gate proposal survival-hunger-food-typed-event-migration --root .
+{
+  "change": "survival-hunger-food-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "369d7456a272d606ac72d354692818a4b2d808528f779d6c815a2688701af8e2",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "1eec23ae622eb07c91eb5a7b06fd296338783c0ce2421c57b1db878845d8af3e",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate design survival-hunger-food-typed-event-migration --root .
+{
+  "change": "survival-hunger-food-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "cfe3b8849b27a0783b57b6b3efcd0cbd334a97a54636920548c118f66f613c0c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "a5b57a44ef82bb805f9190c64228cb1963fb8016f3c94d54b6964d7af750956e",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- gate tasks survival-hunger-food-typed-event-migration --root .
+{
+  "change": "survival-hunger-food-typed-event-migration",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "6ee38565415c01c22f42c72ac03401010e992ecde5fbc435e5342530b0e9e77c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "c71dfc58126f2ac058532fd1aed1023369a6815bb18e473dcb8fa832e825daf2",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
+command_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- sync survival-hunger-food-typed-event-migration --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/survival-hunger-food-typed-event-migration/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/survival-hunger-food-typed-event-migration/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-hunger-food-typed-event-migration",
+  "delta_specs": [
+    "./cairn/changes/survival-hunger-food-typed-event-migration/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "28e6285ed4a9c256756985d926dc178c94aefb2412b5affd881d75d8c4cd2367",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "fde105c36799102c3fd218c924cce44922ec316f76ab98cadd4919cb07db1d5b",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "0a45d2da0f61a28f40d81396885934600771ae2a13d0353c3c82d14059143610"
+}
+command_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- sync survival-hunger-food-typed-event-migration --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/survival-hunger-food-typed-event-migration/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/survival-hunger-food-typed-event-migration/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-hunger-food-typed-event-migration",
+  "delta_specs": [
+    "./cairn/changes/survival-hunger-food-typed-event-migration/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "28e6285ed4a9c256756985d926dc178c94aefb2412b5affd881d75d8c4cd2367",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "57844c114c1546d561f2b421441e0a63eecca3e16d67984d7eb8f98655b1f1ad",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "3df8f4b8b6689f6114449a869f11ec068a72c0d71ef59aabe1f64f0a237d314f"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "57844c114c1546d561f2b421441e0a63eecca3e16d67984d7eb8f98655b1f1ad",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "3df8f4b8b6689f6114449a869f11ec068a72c0d71ef59aabe1f64f0a237d314f"
+    },
+    "kind": "sync",
+    "manifest_hash": "ee0e5b71430e6534f98a75b6212f743a74e19f56ff86239c279c054ba698a016"
+  },
+  "plan_hash": "195de3796f380db123e04472b20dabacb441ab07d8eaad9ff7236b3c944bb613",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "7748539e6733fa496460ea888cfe349609596fe4b6c45cb3673a271e4a0eb696"
+}
+command_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
+command_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- archive survival-hunger-food-typed-event-migration --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-hunger-food-typed-event-migration",
+      "kind": "archive_change",
+      "path": "./cairn/changes/survival-hunger-food-typed-event-migration"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-hunger-food-typed-event-migration",
+  "dry_run": true,
+  "input_hash": "28e6285ed4a9c256756985d926dc178c94aefb2412b5affd881d75d8c4cd2367",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "53ef75422b3a9b48129ef9e7423bb9ad6e1d7bdaa6e341c2285e1615e88a71ae",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "137e00997407a80993a2e3ea3c63f21f73c6480815e7a8dac380d19c569cfd48"
+}
+command_exit_status=0
+command=CAIRN_ARCHIVE_DATE=2026-06-25 nix run --no-update-lock-file .#cairn -- archive survival-hunger-food-typed-event-migration --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-hunger-food-typed-event-migration",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-25-survival-hunger-food-typed-event-migration"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-hunger-food-typed-event-migration",
+  "dry_run": false,
+  "input_hash": "28e6285ed4a9c256756985d926dc178c94aefb2412b5affd881d75d8c4cd2367",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "154a9b5a93930b702e6390757e6a05436df5d81b77f8f72de76a034f5e592dec",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-survival-hunger-food-typed-event-migration/design.md"
+        },
+        {
+          "content_hash": "dbabe3f3d595fdd4e0935d87f22477402d04936c9b015385be03adefb0c20a43",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-survival-hunger-food-typed-event-migration/proposal.md"
+        },
+        {
+          "content_hash": "04c17c16ee4f795f4c3f402e869cce1c3181ad5caf79e4af6cb0c3c6b516be68",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-survival-hunger-food-typed-event-migration/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "c9efe0dbfd99255e6f95e49f33a4eb95976e5b9b8e1e13a6ffc3feff8cd71ad3",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-survival-hunger-food-typed-event-migration/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-hunger-food-typed-event-migration"
+        }
+      ],
+      "manifest_hash": "a8e1a1bea003268cc7c4c57194779b4c8bd65c074f3cc03b0f40ff8f12e7d098"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "154a9b5a93930b702e6390757e6a05436df5d81b77f8f72de76a034f5e592dec",
+          "exists": true,
+          "path": "./cairn/changes/survival-hunger-food-typed-event-migration/design.md"
+        },
+        {
+          "content_hash": "dbabe3f3d595fdd4e0935d87f22477402d04936c9b015385be03adefb0c20a43",
+          "exists": true,
+          "path": "./cairn/changes/survival-hunger-food-typed-event-migration/proposal.md"
+        },
+        {
+          "content_hash": "04c17c16ee4f795f4c3f402e869cce1c3181ad5caf79e4af6cb0c3c6b516be68",
+          "exists": true,
+          "path": "./cairn/changes/survival-hunger-food-typed-event-migration/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "c9efe0dbfd99255e6f95e49f33a4eb95976e5b9b8e1e13a6ffc3feff8cd71ad3",
+          "exists": true,
+          "path": "./cairn/changes/survival-hunger-food-typed-event-migration/tasks.md"
+        }
+      ],
+      "manifest_hash": "4aef3a7ff2735897a4b19b7710e6714d0c422dab043df75574ea82ff57d9d4a6"
+    },
+    "kind": "archive",
+    "manifest_hash": "69f1760e57e70656a7eb99176c2edfa1fd18a6acda82ee54c3e7f87d2fe1a75e"
+  },
+  "plan_hash": "b96c43ad2f7f38a4df9f87aa6f774c4afad9a3ffbb3697d84ef2d9350f21aed2",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "428365152948fd387866b98fbc7acedff4200ae136569272b34cdf1f21018b86"
+}
+command_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 4,
+  "valid": true
+}
+command_exit_status=0
+exit_status=0

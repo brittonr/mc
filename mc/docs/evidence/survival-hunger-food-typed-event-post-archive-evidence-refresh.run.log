@@ -1,0 +1,5 @@
+# survival hunger-food typed-event post-archive evidence refresh
+command=target/refresh-evidence-manifests --refresh
+evidence manifest refresh ok: mode=refresh; passes=4; manifests=486; entries=4010; current=4010; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=4; manifest_writes=54
+refresh_exit_status=0
+exit_status=0

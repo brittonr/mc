@@ -1,5 +1,5 @@
 7e9a431a6209bb87b012cf29ca16d904704b01f486c42b35279c2aacf9ec4f7c  docs/evidence/protocol-763-survival-chest-persistence-runner-2026-05-29.run.log
 1bf96294709eb437327d64c4551f41ccc710dad84fd117ca538fb4ff9a3e2d44  docs/evidence/protocol-763-survival-chest-runner-oracle-2026-05-29.md
-cdcb500d44aa1b747c7152f404894b90aeb2018632a6c6182208a41c280b14d1  compat/runner/src/main.rs
+52fab78272dbfed4097b7533e2b2006edb13cfbcc2889d8b032e1f2c50805bed  compat/runner/src/main.rs
 8bfaf57a4a8197d8d6365223cb2e99b503ca3fbecdf3dfd6bd80172f102a3668  docs/evidence/stevenarella-server-mod-survival-chest-2026-05-29.rs
 67fc99c0b6c22e2ae6f504f493676c9071e7e1422703db744b21d580407fe8ed  cairn/archive/2026-05-29-prove-survival-chest-persistence/tasks.md

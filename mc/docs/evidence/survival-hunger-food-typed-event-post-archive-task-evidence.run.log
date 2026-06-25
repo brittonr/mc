@@ -1,0 +1,8 @@
+# survival hunger-food typed-event post-archive task evidence
+command=target/check-cairn-task-evidence --self-test
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task_evidence_self_test_exit_status=0
+command=target/check-cairn-task-evidence
+task evidence gate passed: 0 completed tasks checked across 0 task files
+task_evidence_check_exit_status=0
+exit_status=0

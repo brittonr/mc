@@ -6136,6 +6136,9 @@ mod tests {
             Scenario::SurvivalFurnaceSmeltingBreadth
         ));
         assert!(typed_event_oracle_contributes_to_pass_fail(
+            Scenario::SurvivalHungerFood
+        ));
+        assert!(typed_event_oracle_contributes_to_pass_fail(
             Scenario::SurvivalMobAiLootBreadth
         ));
         assert!(typed_event_oracle_contributes_to_pass_fail(
@@ -6180,7 +6183,6 @@ mod tests {
         }
         for scenario in [
             Scenario::CompatBotProbe,
-            Scenario::SurvivalHungerFood,
             Scenario::SurvivalMobDrop,
             Scenario::SurvivalRedstoneToggle,
             Scenario::SurvivalWorldPersistenceRestart,
@@ -8616,6 +8618,60 @@ mod tests {
                 .expect_err("misordered typed crafting server phases fail");
         assert!(
             err.contains("server_survival_crafting_result_before_server_survival_crafting_collect"),
+            "{err}"
+        );
+    }
+
+    #[test]
+    fn typed_event_oracle_validates_migrated_survival_hunger_food_graph() {
+        let scenario = Scenario::SurvivalHungerFood;
+        let cfg = test_config(
+            &[
+                "--scenario",
+                scenario_name(scenario),
+                "--receipt",
+                "/tmp/survival-hunger-food.receipt.json",
+            ],
+            &[],
+        )
+        .expect("survival hunger food config parses");
+        let passing = typed_event_oracle_evidence_for_scenario(scenario);
+        validate_typed_event_oracle_for_migrated_scenario(&cfg, &passing)
+            .expect("complete typed survival hunger food graph passes");
+
+        let mut missing_server_state = passing.clone();
+        missing_server_state
+            .server_scenario
+            .as_mut()
+            .expect("server evidence")
+            .observed_milestones
+            .retain(|name| *name != "server_survival_hunger_food_state");
+        let err = validate_typed_event_oracle_for_migrated_scenario(&cfg, &missing_server_state)
+            .expect_err("missing typed hunger food final state fails");
+        assert!(err.contains("server_survival_hunger_food_state"), "{err}");
+
+        let mut misordered_client_inventory = passing;
+        misordered_client_inventory
+            .scenario
+            .as_mut()
+            .expect("client evidence")
+            .observed_milestones = vec![
+            "protocol_detected",
+            "join_game",
+            "render_tick",
+            "survival_hunger_food_item_seen",
+            "survival_hunger_food_pre_seen",
+            "survival_hunger_food_use_sent",
+            "survival_hunger_food_inventory_updated",
+            "survival_hunger_food_post_seen",
+        ];
+        let err =
+            validate_typed_event_oracle_for_migrated_scenario(&cfg, &misordered_client_inventory)
+                .expect_err("misordered typed hunger food inventory before post-state fails");
+        assert!(
+            err.contains(
+                "survival_hunger_food_post_seen_before_survival_hunger_food_inventory_updated"
+            ),
             "{err}"
         );
     }

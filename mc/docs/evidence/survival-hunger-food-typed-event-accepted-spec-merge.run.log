@@ -1,0 +1,23 @@
+# survival hunger-food typed-event accepted spec merge
+command=grep -F survival_hunger_food_typed_event_migration cairn/specs/mc-compatibility/spec.md
+r[mc_compatibility.survival_hunger_food_typed_event_migration.readiness] The `survival-hunger-food` scenario SHOULD move from waiver-backed substring fallback to `typed-event-ready` only when typed events cover the row's required client milestones, Valence server milestones, forbidden surfaces, and ordered phases.
+r[mc_compatibility.survival_hunger_food_typed_event_migration.readiness.complete]
+r[mc_compatibility.survival_hunger_food_typed_event_migration.gate] The runner MUST include `survival-hunger-food` in typed-event pass/fail gates so missing or invalid structured row evidence fails before substring fallback can satisfy the row.
+r[mc_compatibility.survival_hunger_food_typed_event_migration.gate.missing]
+r[mc_compatibility.survival_hunger_food_typed_event_migration.gate.order]
+r[mc_compatibility.survival_hunger_food_typed_event_migration.validation] The migration MUST record reviewable evidence for runner typed-event fixtures, scenario-manifest checks, generated-surface freshness, fallback accounting, Cairn gates, task evidence, and Cairn validation before archive.
+r[mc_compatibility.survival_hunger_food_typed_event_migration.validation.log]
+accepted_spec_grep_exit_status=0
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 4,
+  "valid": true
+}
+cairn_validate_exit_status=0
+exit_status=0
