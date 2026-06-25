@@ -6145,6 +6145,9 @@ mod tests {
             Scenario::SurvivalMobAiLootBreadth
         ));
         assert!(typed_event_oracle_contributes_to_pass_fail(
+            Scenario::SurvivalRedstoneToggle
+        ));
+        assert!(typed_event_oracle_contributes_to_pass_fail(
             Scenario::SurvivalRedstoneCircuitBreadth
         ));
         assert!(typed_event_oracle_contributes_to_pass_fail(
@@ -6186,7 +6189,6 @@ mod tests {
         }
         for scenario in [
             Scenario::CompatBotProbe,
-            Scenario::SurvivalRedstoneToggle,
             Scenario::SurvivalWorldPersistenceRestart,
         ] {
             assert!(
@@ -8810,6 +8812,62 @@ mod tests {
                 .expect_err("misordered typed mob drop pickup before drop fails");
         assert!(
             err.contains("survival_mob_drop_drop_seen_before_survival_mob_drop_pickup_seen"),
+            "{err}"
+        );
+    }
+
+    #[test]
+    fn typed_event_oracle_validates_migrated_survival_redstone_toggle_graph() {
+        let scenario = Scenario::SurvivalRedstoneToggle;
+        let cfg = test_config(
+            &[
+                "--scenario",
+                scenario_name(scenario),
+                "--receipt",
+                "/tmp/survival-redstone-toggle.receipt.json",
+            ],
+            &[],
+        )
+        .expect("survival redstone toggle config parses");
+        let passing = typed_event_oracle_evidence_for_scenario(scenario);
+        validate_typed_event_oracle_for_migrated_scenario(&cfg, &passing)
+            .expect("complete typed survival redstone toggle graph passes");
+
+        let mut missing_server_state = passing.clone();
+        missing_server_state
+            .server_scenario
+            .as_mut()
+            .expect("server evidence")
+            .observed_milestones
+            .retain(|name| *name != "server_survival_redstone_toggle_state");
+        let err = validate_typed_event_oracle_for_migrated_scenario(&cfg, &missing_server_state)
+            .expect_err("missing typed redstone toggle final state fails");
+        assert!(
+            err.contains("server_survival_redstone_toggle_state"),
+            "{err}"
+        );
+
+        let mut misordered_client_return = passing;
+        misordered_client_return
+            .scenario
+            .as_mut()
+            .expect("client evidence")
+            .observed_milestones = vec![
+            "protocol_detected",
+            "join_game",
+            "render_tick",
+            "survival_redstone_toggle_input_sent",
+            "survival_redstone_toggle_output_update",
+            "survival_redstone_toggle_return_update",
+            "survival_redstone_toggle_return_input_sent",
+        ];
+        let err =
+            validate_typed_event_oracle_for_migrated_scenario(&cfg, &misordered_client_return)
+                .expect_err("misordered typed redstone return update before input fails");
+        assert!(
+            err.contains(
+                "survival_redstone_toggle_return_input_sent_before_survival_redstone_toggle_return_update"
+            ),
             "{err}"
         );
     }

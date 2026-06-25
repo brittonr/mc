@@ -1,0 +1,155 @@
+# survival redstone-toggle typed-event baseline
+command=nix develop --no-update-lock-file -c cargo test --manifest-path compat/runner/Cargo.toml typed_event -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: constant `CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE` is never used
+   --> src/main.rs:298:7
+    |
+298 | const CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE: &str =
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `json_object_string_field` is never used
+  --> src/json_support.rs:12:15
+   |
+12 | pub(crate) fn json_object_string_field(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_optional_string_field` is never used
+  --> src/json_support.rs:20:15
+   |
+20 | pub(crate) fn json_object_optional_string_field(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_u32_field` is never used
+  --> src/json_support.rs:28:15
+   |
+28 | pub(crate) fn json_object_u32_field(text: &str, object: &str, key: &str) -> Re...
+   |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_bool_field` is never used
+  --> src/json_support.rs:32:15
+   |
+32 | pub(crate) fn json_object_bool_field(text: &str, object: &str, key: &str) -> R...
+   |               ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `Transition` is never constructed
+  --> src/layout.rs:44:5
+   |
+42 | pub enum LayoutKind {
+   |          ---------- variant in this enum
+43 |     RoleBased,
+44 |     Transition,
+   |     ^^^^^^^^^^
+   |
+   = note: `LayoutKind` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: `mc-compat-runner` (bin "mc-compat-runner" test) generated 6 warnings
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.09s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 23 tests
+test tests::ctf_rule_typed_event_fixtures_fail_closed_on_wrong_actor ... ok
+test tests::survival_breadth_typed_event_fixtures_fail_closed ... ok
+test tests::typed_event_graph_checks_required_forbidden_and_ordered_events ... ok
+test tests::typed_event_oracle_validates_migrated_inventory_drag_graph ... ok
+test tests::typed_event_oracle_validates_migrated_inventory_graph ... ok
+test tests::typed_event_oracle_validates_migrated_survival_break_place_graph ... ok
+test tests::typed_event_oracle_validates_migrated_mcp_controlled_smoke_graph ... ok
+test tests::typed_event_oracle_validates_migrated_survival_chest_persistence_graph ... ok
+test tests::typed_event_oracle_validates_migrated_survival_crafting_recipe_breadth_graph ... ok
+test tests::typed_event_oracle_validates_migrated_survival_crafting_table_graph ... ok
+test tests::typed_event_oracle_validates_migrated_survival_furnace_persistence_graph ... ok
+test tests::typed_event_oracle_receipt_records_migration_fallback ... ok
+test tests::typed_event_oracle_validates_migrated_survival_hunger_food_graph ... ok
+test tests::typed_event_oracle_validates_migrated_survival_furnace_smelting_breadth_graph ... ok
+test tests::typed_event_oracle_validates_migrated_survival_mob_drop_graph ... ok
+test tests::typed_event_pass_fail_gate_includes_only_migrated_rows ... ok
+test tests::typed_event_parser_accepts_versioned_event_lines ... ok
+test tests::typed_events_from_receipt_evidence_include_client_and_server_sources ... ok
+test tests::typed_event_oracle_validates_migrated_survival_hunger_health_cycle_graph ... ok
+test tests::typed_event_receipt_artifact_records_reviewable_timeline_hash ... ok
+test tests::typed_event_oracle_validates_ctf_rule_family_graphs ... ok
+test tests::typed_event_oracle_validates_remaining_survival_breadth_graphs ... ok
+test tests::typed_event_graph_accepts_representative_scenario_fixtures ... ok
+
+test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 157 filtered out; finished in 0.00s
+
+cargo_typed_event_exit_status=0
+command=nix develop --no-update-lock-file -c cargo test --manifest-path compat/runner/Cargo.toml survival_redstone_toggle -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: constant `CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE` is never used
+   --> src/main.rs:298:7
+    |
+298 | const CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE: &str =
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `json_object_string_field` is never used
+  --> src/json_support.rs:12:15
+   |
+12 | pub(crate) fn json_object_string_field(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_optional_string_field` is never used
+  --> src/json_support.rs:20:15
+   |
+20 | pub(crate) fn json_object_optional_string_field(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_u32_field` is never used
+  --> src/json_support.rs:28:15
+   |
+28 | pub(crate) fn json_object_u32_field(text: &str, object: &str, key: &str) -> Re...
+   |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_bool_field` is never used
+  --> src/json_support.rs:32:15
+   |
+32 | pub(crate) fn json_object_bool_field(text: &str, object: &str, key: &str) -> R...
+   |               ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `Transition` is never constructed
+  --> src/layout.rs:44:5
+   |
+42 | pub enum LayoutKind {
+   |          ---------- variant in this enum
+43 |     RoleBased,
+44 |     Transition,
+   |     ^^^^^^^^^^
+   |
+   = note: `LayoutKind` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: `mc-compat-runner` (bin "mc-compat-runner" test) generated 6 warnings
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 1 test
+test tests::survival_redstone_toggle_scenario_tracks_client_and_server_evidence ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 179 filtered out; finished in 0.00s
+
+cargo_survival_redstone_toggle_exit_status=0
+command=nix develop --no-update-lock-file -c rustc --edition=2021 tools/check_scenario_manifest.rs -o target/check-scenario-manifest
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+scenario_manifest_compile_exit_status=0
+command=target/check-scenario-manifest --self-test
+scenario manifest self-test passed: positive and negative fixtures exercised, including wrapper metadata, README links, generated command docs, and stale-output rejection
+scenario_manifest_self_test_exit_status=0
+command=target/check-scenario-manifest
+scenario manifest check passed: 46 rows validated; dry-run coverage: 44 covered, 2 waived, 0 unmaintained; typed-event readiness: 38 ready, 8 fallback; fallback budget: approved=[survival-biome-dimension-state,survival-block-entity-persistence-parity,survival-crash-recovery-parity,survival-redstone-toggle,survival-world-persistence-restart,valence-compat-bot-probe,vanilla-combat-armor-reference-parity,vanilla-combat-reference-parity]; removed=[armor-equipment-mitigation,blue-flag-score,combat-damage,combat-knockback,ctf-invalid-pickup-ownership,ctf-invalid-return-drop,ctf-score-limit-win-condition,ctf-simultaneous-pickup-capture-race,ctf-spawn-team-balance-reset,equipment-update-observation,flag-carrier-death-return,flag-score-repeat,mcp-controlled-smoke,multi-client-load-score,projectile-damage-attribution,projectile-hit,reconnect-flag-score,reconnect-flag-state,survival-biome-dimension-travel,survival-chest-persistence,survival-container-block-entity-breadth,survival-crafting-recipe-breadth,survival-furnace-persistence,survival-furnace-smelting-breadth,survival-hunger-food,survival-hunger-health-cycle,survival-mob-ai-loot-breadth,survival-mob-drop,survival-redstone-circuit-breadth,survival-sign-editing-live,survival-world-multichunk-durability]; new=[]; typed_event_regressions=[]; missing_waiver_metadata=[]
+scenario_manifest_check_exit_status=0
+command=target/check-scenario-manifest --check-generated-surfaces
+generated surface check passed: 4 generated surfaces current; fallback budget: approved=[survival-biome-dimension-state,survival-block-entity-persistence-parity,survival-crash-recovery-parity,survival-redstone-toggle,survival-world-persistence-restart,valence-compat-bot-probe,vanilla-combat-armor-reference-parity,vanilla-combat-reference-parity]; removed=[armor-equipment-mitigation,blue-flag-score,combat-damage,combat-knockback,ctf-invalid-pickup-ownership,ctf-invalid-return-drop,ctf-score-limit-win-condition,ctf-simultaneous-pickup-capture-race,ctf-spawn-team-balance-reset,equipment-update-observation,flag-carrier-death-return,flag-score-repeat,mcp-controlled-smoke,multi-client-load-score,projectile-damage-attribution,projectile-hit,reconnect-flag-score,reconnect-flag-state,survival-biome-dimension-travel,survival-chest-persistence,survival-container-block-entity-breadth,survival-crafting-recipe-breadth,survival-furnace-persistence,survival-furnace-smelting-breadth,survival-hunger-food,survival-hunger-health-cycle,survival-mob-ai-loot-breadth,survival-mob-drop,survival-redstone-circuit-breadth,survival-sign-editing-live,survival-world-multichunk-durability]; new=[]; typed_event_regressions=[]; missing_waiver_metadata=[]
+scenario_manifest_generated_exit_status=0
+exit_status=0

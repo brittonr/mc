@@ -579,6 +579,7 @@ pub(crate) fn typed_event_oracle_contributes_to_pass_fail(scenario: Scenario) ->
             | Scenario::SurvivalHungerHealthCycle
             | Scenario::SurvivalMobDrop
             | Scenario::SurvivalMobAiLootBreadth
+            | Scenario::SurvivalRedstoneToggle
             | Scenario::SurvivalRedstoneCircuitBreadth
             | Scenario::SurvivalWorldMultichunkDurability
             | Scenario::SurvivalContainerBlockEntityBreadth
@@ -1132,6 +1133,32 @@ pub(crate) fn typed_event_ordered_edges_for_scenario(
             (
                 "server_survival_mob_ai_loot_inventory",
                 "server_survival_mob_ai_loot_state",
+            ),
+        ],
+        Scenario::SurvivalRedstoneToggle => vec![
+            (
+                "survival_redstone_toggle_input_sent",
+                "survival_redstone_toggle_output_update",
+            ),
+            (
+                "survival_redstone_toggle_output_update",
+                "survival_redstone_toggle_return_input_sent",
+            ),
+            (
+                "survival_redstone_toggle_return_input_sent",
+                "survival_redstone_toggle_return_update",
+            ),
+            (
+                "server_survival_redstone_toggle_input",
+                "server_survival_redstone_toggle_powered_on",
+            ),
+            (
+                "server_survival_redstone_toggle_powered_on",
+                "server_survival_redstone_toggle_powered_off",
+            ),
+            (
+                "server_survival_redstone_toggle_powered_off",
+                "server_survival_redstone_toggle_state",
             ),
         ],
         Scenario::SurvivalRedstoneCircuitBreadth => vec![

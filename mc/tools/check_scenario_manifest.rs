@@ -415,6 +415,22 @@ const SURVIVAL_MOB_AI_LOOT_BREADTH_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
     "server_survival_mob_ai_loot_inventory",
     "server_survival_mob_ai_loot_state",
 ];
+const SURVIVAL_REDSTONE_TOGGLE_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
+    "protocol_detected",
+    "join_game",
+    "render_tick",
+    "survival_redstone_toggle_input_sent",
+    "survival_redstone_toggle_output_update",
+    "survival_redstone_toggle_return_input_sent",
+    "survival_redstone_toggle_return_update",
+];
+const SURVIVAL_REDSTONE_TOGGLE_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
+    "server_username_seen",
+    "server_survival_redstone_toggle_input",
+    "server_survival_redstone_toggle_powered_on",
+    "server_survival_redstone_toggle_powered_off",
+    "server_survival_redstone_toggle_state",
+];
 const SURVIVAL_REDSTONE_CIRCUIT_BREADTH_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
     "protocol_detected",
     "join_game",
@@ -689,6 +705,13 @@ const TYPED_EVENT_READINESS_FIXTURES: &[TypedEventReadinessFixture<'static>] = &
         scenario: "survival-mob-ai-loot-breadth",
         client_events: SURVIVAL_MOB_AI_LOOT_BREADTH_TYPED_EVENT_CLIENT_EVENTS,
         server_events: SURVIVAL_MOB_AI_LOOT_BREADTH_TYPED_EVENT_SERVER_EVENTS,
+        forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
+        derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
+    },
+    TypedEventReadinessFixture {
+        scenario: "survival-redstone-toggle",
+        client_events: SURVIVAL_REDSTONE_TOGGLE_TYPED_EVENT_CLIENT_EVENTS,
+        server_events: SURVIVAL_REDSTONE_TOGGLE_TYPED_EVENT_SERVER_EVENTS,
         forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
         derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
     },

@@ -1,0 +1,38 @@
+# survival redstone-toggle typed-event format
+command=nix develop --no-update-lock-file -c cargo fmt --manifest-path compat/runner/Cargo.toml
+warning: error: unable to download 'http://100.100.103.95:5000/w64wz2xypl8qxp41f1kp7s0khhnwkh8v.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3104 ms: Could not connect to server; retrying in 277 ms
+warning: error: unable to download 'http://100.100.103.95:5000/w64wz2xypl8qxp41f1kp7s0khhnwkh8v.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 8 ms: Could not connect to server; retrying in 631 ms
+warning: error: unable to download 'http://100.100.103.95:5000/w64wz2xypl8qxp41f1kp7s0khhnwkh8v.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 9 ms: Could not connect to server; retrying in 1320 ms
+warning: error: unable to download 'http://100.100.103.95:5000/w64wz2xypl8qxp41f1kp7s0khhnwkh8v.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3067 ms: Could not connect to server; retrying in 2276 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/w64wz2xypl8qxp41f1kp7s0khhnwkh8v.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/w64wz2xypl8qxp41f1kp7s0khhnwkh8v.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2072 ms: Could not connect to server
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/d8qrxd3ibx276r0x73klrvyrjry7zmkl-mc-compat-runner-0.1.0.drv'...
+building '/nix/store/39v9srriz7kzdgmc799hm4qb63mkagfk-nix-shell-env.drv'...
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+cargo_fmt_exit_status=0
+command=nix develop --no-update-lock-file -c rustfmt --edition=2021 tools/check_scenario_manifest.rs
+warning: error: unable to download 'http://100.100.103.95:5000/4kzmrpf0h6zzcvlk8bryjr4v84rj9kj4.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2076 ms: Could not connect to server; retrying in 334 ms
+warning: error: unable to download 'http://100.100.103.95:5000/4kzmrpf0h6zzcvlk8bryjr4v84rj9kj4.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3117 ms: Could not connect to server; retrying in 605 ms
+warning: error: unable to download 'http://100.100.103.95:5000/4kzmrpf0h6zzcvlk8bryjr4v84rj9kj4.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1290 ms
+warning: error: unable to download 'http://100.100.103.95:5000/4kzmrpf0h6zzcvlk8bryjr4v84rj9kj4.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1040 ms: Could not connect to server; retrying in 2506 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/4kzmrpf0h6zzcvlk8bryjr4v84rj9kj4.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/4kzmrpf0h6zzcvlk8bryjr4v84rj9kj4.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/awsc9y6rsgsfrklp0h5vvb8pbrap3ih4-mc-compat-runner-0.1.0.drv'...
+building '/nix/store/zg7qr86ckjdkz8v7zwaqskfndfpqxrc9-nix-shell-env.drv'...
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+tool_rustfmt_exit_status=0
+exit_status=0

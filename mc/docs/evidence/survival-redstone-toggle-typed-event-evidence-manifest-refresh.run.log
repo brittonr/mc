@@ -1,0 +1,14 @@
+# survival redstone-toggle typed-event evidence manifest refresh
+command=nix develop --no-update-lock-file -c rustc --edition=2021 tools/refresh_evidence_manifests.rs -o target/refresh-evidence-manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+refresh_compile_exit_status=0
+command=target/refresh-evidence-manifests --self-test
+evidence manifest refresh self-test ok: positive and negative fixtures exercised
+refresh_self_test_exit_status=0
+command=target/refresh-evidence-manifests --refresh
+evidence manifest refresh ok: mode=refresh; passes=5; manifests=488; entries=4072; current=4072; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=5; manifest_writes=75
+refresh_exit_status=0
+exit_status=0

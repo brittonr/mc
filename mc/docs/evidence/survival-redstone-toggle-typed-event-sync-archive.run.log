@@ -1,0 +1,132 @@
+# survival redstone-toggle typed-event sync and archive
+command=nix run --no-update-lock-file .#cairn -- sync survival-redstone-toggle-typed-event-migration --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/survival-redstone-toggle-typed-event-migration/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/survival-redstone-toggle-typed-event-migration/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-redstone-toggle-typed-event-migration",
+  "delta_specs": [
+    "./cairn/changes/survival-redstone-toggle-typed-event-migration/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "0c4d62b4cb197575d7d1a1f1c52727e12563d291a4c1ee0daa8f75a93b73988b",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "4df3791002ea5bef7718587cd0defadf9e7e36c82f79341a8fbcbc590646f048",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "23729fd08736807275dcb47db9c4e7bd47bf197d73517aeb84b274b2f8924f46"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "4df3791002ea5bef7718587cd0defadf9e7e36c82f79341a8fbcbc590646f048",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "23729fd08736807275dcb47db9c4e7bd47bf197d73517aeb84b274b2f8924f46"
+    },
+    "kind": "sync",
+    "manifest_hash": "b4756b27fd17e1f9d0202e379ea62698847f2006aac95227744325e8ebcb7ee2"
+  },
+  "plan_hash": "4e58c028d7ed41529ad6348b1897af7f5413b024f1e8db7df88f224cfe6c7ceb",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "8a363f8cb52b1709a9df78677b3f8e38899252eeba95c84ea0b87ccab45771d1"
+}
+cairn_sync_exit_status=0
+command=CAIRN_ARCHIVE_DATE=2026-06-25 nix run --no-update-lock-file .#cairn -- archive survival-redstone-toggle-typed-event-migration --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: survival-redstone-toggle-typed-event-migration",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-25-survival-redstone-toggle-typed-event-migration"
+    }
+  ],
+  "blocked": false,
+  "change": "survival-redstone-toggle-typed-event-migration",
+  "dry_run": false,
+  "input_hash": "0c4d62b4cb197575d7d1a1f1c52727e12563d291a4c1ee0daa8f75a93b73988b",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "362234ecb34752a630f8e69ebc9c1f545739e11458b3770992b40b1c0a84c49d",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-survival-redstone-toggle-typed-event-migration/design.md"
+        },
+        {
+          "content_hash": "2117371c8c325de6b9936fd6bb7871b357bb80837567135119801bfb19dd5b17",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-survival-redstone-toggle-typed-event-migration/proposal.md"
+        },
+        {
+          "content_hash": "956b96a411b0a889ee8fdcea91b7909c932596fa94bfd9129922b12bcee04f07",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-survival-redstone-toggle-typed-event-migration/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "d8cd9bb579105af4df15f095b04ab46d91c5251089d17a5bb07b0c00bd95a0ab",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-survival-redstone-toggle-typed-event-migration/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/survival-redstone-toggle-typed-event-migration"
+        }
+      ],
+      "manifest_hash": "40a2448f4e607be369f2e95578376afaefd0c1a0627a4d5c0cbd0d191bfbbd3a"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "362234ecb34752a630f8e69ebc9c1f545739e11458b3770992b40b1c0a84c49d",
+          "exists": true,
+          "path": "./cairn/changes/survival-redstone-toggle-typed-event-migration/design.md"
+        },
+        {
+          "content_hash": "2117371c8c325de6b9936fd6bb7871b357bb80837567135119801bfb19dd5b17",
+          "exists": true,
+          "path": "./cairn/changes/survival-redstone-toggle-typed-event-migration/proposal.md"
+        },
+        {
+          "content_hash": "956b96a411b0a889ee8fdcea91b7909c932596fa94bfd9129922b12bcee04f07",
+          "exists": true,
+          "path": "./cairn/changes/survival-redstone-toggle-typed-event-migration/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "d8cd9bb579105af4df15f095b04ab46d91c5251089d17a5bb07b0c00bd95a0ab",
+          "exists": true,
+          "path": "./cairn/changes/survival-redstone-toggle-typed-event-migration/tasks.md"
+        }
+      ],
+      "manifest_hash": "bbcda227b48fbb24fe3a51c91543814fbd4a9310628281436c028f91779c19cf"
+    },
+    "kind": "archive",
+    "manifest_hash": "ff9b1b0a05aa9217c6f1c4f5f5cda87ba09058842cbf6f07c1d54d6293f3b163"
+  },
+  "plan_hash": "8221a6e9440c91792459b827c7107bb590de8a5816d505d785b2da9dc72c38c0",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "849fa115981b705a778a0c576dde4042bf5acecee48176ac8c00a2693457d3b7"
+}
+cairn_archive_exit_status=0
+exit_status=0
