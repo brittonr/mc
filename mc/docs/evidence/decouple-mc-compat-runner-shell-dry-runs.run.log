@@ -1,0 +1,73 @@
+
+## nix run .#mc-compat-smoke -- --dry-run --scenario smoke --server-backend valence --receipt docs/evidence/decouple-mc-compat-runner-shell-smoke-dry-run-receipt.json
+warning: error: unable to download 'http://100.100.103.95:5000/9zbyi5yl4w92056617l1dp3khhzqz1qv.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3091 ms: Could not connect to server; retrying in 323 ms
+warning: error: unable to download 'http://100.100.103.95:5000/9zbyi5yl4w92056617l1dp3khhzqz1qv.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 670 ms
+warning: error: unable to download 'http://100.100.103.95:5000/9zbyi5yl4w92056617l1dp3khhzqz1qv.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4118 ms: Could not connect to server; retrying in 1095 ms
+warning: error: unable to download 'http://100.100.103.95:5000/9zbyi5yl4w92056617l1dp3khhzqz1qv.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2476 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/9zbyi5yl4w92056617l1dp3khhzqz1qv.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/9zbyi5yl4w92056617l1dp3khhzqz1qv.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1028 ms: Could not connect to server
+this derivation will be built:
+  /nix/store/j6vlqs8lm97qfncim5f54dhkady9ikvn-mc-compat-runner-0.1.0.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/j6vlqs8lm97qfncim5f54dhkady9ikvn-mc-compat-runner-0.1.0.drv'...
+[mc-compat] plan: build client, start Valence server, wait for protocol 758, run 1 client session plan(s) under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/clients/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] using existing Valence worktree /tmp/valence-compat-758
+[mc-compat] starting Valence 8ad9c85 example 'terrain' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-758
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 758
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'smoke' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt docs/evidence/decouple-mc-compat-runner-shell-smoke-dry-run-receipt.json
+command_exit_status=0
+
+## nix run .#mc-compat-smoke -- scenario run smoke --dry-run --backend paper --receipt docs/evidence/decouple-mc-compat-runner-shell-router-dry-run-receipt.json
+[mc-compat] plan: build client, start Paper server, wait for protocol 758, run 1 client session plan(s) under isolated Xvfb/X11
+[mc-compat] typed scenario route: scenario 'smoke' backend paper mode dry-run receipt docs/evidence/decouple-mc-compat-runner-shell-router-dry-run-receipt.json timeout 20s packet_capture_summary=false proxy_route=<unset> proxy_forwarding_mode=<unset> non_claims=broad_minecraft_compatibility_false,production_readiness_false,semantic_equivalence_false
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/clients/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] server start will set EULA=TRUE using recorded user acceptance
+[mc-compat] starting Paper 1.18.2 server on 127.0.0.1:25566 via itzg/minecraft-server:java17 with EULA=TRUE
++ "docker" "run" "-d" "--name" "mc-compat-1-18-2" "-p" "127.0.0.1:25566:25565" "-e" "EULA=TRUE" "-e" "TYPE=PAPER" "-e" "VERSION=1.18.2" "-e" "ONLINE_MODE=FALSE" "-e" "MEMORY=1G" "-e" "VIEW_DISTANCE=2" "-e" "SIMULATION_DISTANCE=2" "itzg/minecraft-server:java17"
+[mc-compat] probing status 127.0.0.1:25566 expecting protocol 758
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'smoke' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt docs/evidence/decouple-mc-compat-runner-shell-router-dry-run-receipt.json
+command_exit_status=0
+
+## nix run .#mc-compat-smoke -- --run-matrix --dry-run --receipt-dir docs/evidence/decouple-mc-compat-runner-shell-matrix
+[mc-compat] starting dry-run matrix: paper receipt=docs/evidence/decouple-mc-compat-runner-shell-matrix/paper.json valence receipt=docs/evidence/decouple-mc-compat-runner-shell-matrix/valence.json
+[mc-compat] matrix backend paper -> docs/evidence/decouple-mc-compat-runner-shell-matrix/paper.json
+[mc-compat] plan: build client, start Paper server, wait for protocol 758, run 1 client session plan(s) under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/clients/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] server start will set EULA=TRUE using recorded user acceptance
+[mc-compat] starting Paper 1.18.2 server on 127.0.0.1:25566 via itzg/minecraft-server:java17 with EULA=TRUE
++ "docker" "run" "-d" "--name" "mc-compat-1-18-2" "-p" "127.0.0.1:25566:25565" "-e" "EULA=TRUE" "-e" "TYPE=PAPER" "-e" "VERSION=1.18.2" "-e" "ONLINE_MODE=FALSE" "-e" "MEMORY=1G" "-e" "VIEW_DISTANCE=2" "-e" "SIMULATION_DISTANCE=2" "itzg/minecraft-server:java17"
+[mc-compat] probing status 127.0.0.1:25566 expecting protocol 758
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'smoke' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt docs/evidence/decouple-mc-compat-runner-shell-matrix/paper.json
+[mc-compat] matrix backend valence -> docs/evidence/decouple-mc-compat-runner-shell-matrix/valence.json
+[mc-compat] plan: build client, start Valence server, wait for protocol 758, run 1 client session plan(s) under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/clients/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] using existing Valence worktree /tmp/valence-compat-758
+[mc-compat] starting Valence 8ad9c85 example 'terrain' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-758
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 758
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'smoke' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+[mc-compat] wrote smoke receipt docs/evidence/decouple-mc-compat-runner-shell-matrix/valence.json
+[mc-compat] matrix passed: paper=docs/evidence/decouple-mc-compat-runner-shell-matrix/paper.json valence=docs/evidence/decouple-mc-compat-runner-shell-matrix/valence.json protocol=758 mode=dry-run
+command_exit_status=0
+
+exit_status=0

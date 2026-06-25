@@ -1,0 +1,35 @@
+command=nix build .#checks.x86_64-linux.mc-compat-scenario-manifest .#checks.x86_64-linux.mc-compat-generated-harness-surfaces .#checks.x86_64-linux.mc-compat-scenario-contracts --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/081ndf44zk74d9j0bcrc7ygyf0sgs057.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1065 ms: Could not connect to server; retrying in 310 ms
+warning: error: unable to download 'http://100.100.103.95:5000/bcd9rgf5pr74zxvdlaqh5hrwjnvradil.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2089 ms: Could not connect to server; retrying in 353 ms
+warning: error: unable to download 'http://100.100.103.95:5000/f46py8c6dw28bbcqh01v1ddnl5qpzpyb.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3114 ms: Could not connect to server; retrying in 266 ms
+warning: error: unable to download 'http://100.100.103.95:5000/081ndf44zk74d9j0bcrc7ygyf0sgs057.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3785 ms: Could not connect to server; retrying in 633 ms
+warning: error: unable to download 'http://100.100.103.95:5000/bcd9rgf5pr74zxvdlaqh5hrwjnvradil.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 621 ms
+warning: error: unable to download 'http://100.100.103.95:5000/f46py8c6dw28bbcqh01v1ddnl5qpzpyb.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 506 ms
+warning: error: unable to download 'http://100.100.103.95:5000/081ndf44zk74d9j0bcrc7ygyf0sgs057.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1304 ms
+warning: error: unable to download 'http://100.100.103.95:5000/bcd9rgf5pr74zxvdlaqh5hrwjnvradil.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 1145 ms
+warning: error: unable to download 'http://100.100.103.95:5000/f46py8c6dw28bbcqh01v1ddnl5qpzpyb.narinfo': Timeout was reached (28) Connection timed out after 5002 milliseconds; retrying in 1019 ms
+warning: error: unable to download 'http://100.100.103.95:5000/081ndf44zk74d9j0bcrc7ygyf0sgs057.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1798 ms: Could not connect to server; retrying in 2440 ms
+warning: error: unable to download 'http://100.100.103.95:5000/bcd9rgf5pr74zxvdlaqh5hrwjnvradil.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2684 ms
+warning: error: unable to download 'http://100.100.103.95:5000/f46py8c6dw28bbcqh01v1ddnl5qpzpyb.narinfo': Timeout was reached (28) Connection timed out after 5002 milliseconds; retrying in 2678 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/081ndf44zk74d9j0bcrc7ygyf0sgs057.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/081ndf44zk74d9j0bcrc7ygyf0sgs057.narinfo': Timeout was reached (28) Connection timed out after 5002 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/bcd9rgf5pr74zxvdlaqh5hrwjnvradil.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/bcd9rgf5pr74zxvdlaqh5hrwjnvradil.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+error:
+       … during download of 'http://100.100.103.95:5000/f46py8c6dw28bbcqh01v1ddnl5qpzpyb.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/f46py8c6dw28bbcqh01v1ddnl5qpzpyb.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+these 3 derivations will be built:
+  /nix/store/9yr246pja8sp2asc52l0wckca4966xj5-mc-compat-generated-harness-surfaces.drv
+  /nix/store/fqh1y4jbrwyfc1d7rm6pk1cqpwam2xa5-mc-compat-scenario-manifest.drv
+  /nix/store/s7q5h8l6062lv8bxl04jvz1x4awr6m43-mc-compat-scenario-contracts.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/9yr246pja8sp2asc52l0wckca4966xj5-mc-compat-generated-harness-surfaces.drv'...
+building '/nix/store/s7q5h8l6062lv8bxl04jvz1x4awr6m43-mc-compat-scenario-contracts.drv'...
+building '/nix/store/fqh1y4jbrwyfc1d7rm6pk1cqpwam2xa5-mc-compat-scenario-manifest.drv'...
+exit_status=0

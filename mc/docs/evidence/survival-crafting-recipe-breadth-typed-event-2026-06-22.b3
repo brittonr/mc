@@ -3,9 +3,9 @@
 55df82b7a605c66b4156475e19ed459530ee0f224f2f6621f8d7676aa7b69319  cairn/archive/2026-06-22-survival-crafting-recipe-breadth-typed-event-migration/design.md
 8d66a3534df42646ef9c08bbe2d71d06bf32bd663e58b1bd90f0e760f1df20f1  cairn/archive/2026-06-22-survival-crafting-recipe-breadth-typed-event-migration/tasks.md
 3e092ea4faed3fed53fbbb5378579d9dabd9169b167b9641995223e19135982d  cairn/archive/2026-06-22-survival-crafting-recipe-breadth-typed-event-migration/specs/mc-compatibility/spec.md
-efc5ca3839b0cf2b67fa65fa4436cea2088498ff1f6605bdfbdecb48bc93baca  cairn/specs/mc-compatibility/spec.md
+dca88a3e266cae22fb41e143f71044aa5267cf6eda2d2b64b40d3b5efd5693a4  cairn/specs/mc-compatibility/spec.md
 b471fb927ec046054595bc7d5630322667f240180c64294729ad008cd9153783  compat/config/scenario-manifest.ncl
-c75329b595fa114fa8bdb034d33498ec703a7e1bb551d784f70291fc84584fb8  compat/runner/src/main.rs
+dec71bd4cc92368500d1d609435b252a80f747f75052c41817065c52208aa67f  compat/runner/src/main.rs
 0c5c6cd53867ec19832895b3ab577703961623c3fb63b22c35965e62cb992905  compat/runner/src/scenario_manifest_generated.rs
 0b523e7ff192e8cff923d19d4e07c468d2bfa79a472af5c2768ddaa4d647e8c7  docs/evidence/mc-compat-scenario-index.generated.md
 4bda9123fd26f272d6fa66e71057e9bfbc1af449b558accf483b9b2af0413c0e  docs/evidence/survival-crafting-recipe-breadth-typed-event-baseline-dry-run.run.log

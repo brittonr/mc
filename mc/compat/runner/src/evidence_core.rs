@@ -1,0 +1,1547 @@
+use super::*;
+
+fn client_required_milestone_rules<'a>(
+    scenario: Scenario,
+    projectile_health_needle: &'a str,
+) -> Vec<MilestoneRule<'a>> {
+    let behavior = scenario_behavior(scenario);
+    scenario_required_milestones(scenario)
+        .iter()
+        .map(|(id, needle)| MilestoneRule {
+            id,
+            matcher: behavior.client_milestone_matcher(id, needle, projectile_health_needle),
+        })
+        .collect()
+}
+
+fn server_required_milestone_rules(scenario: Scenario) -> Vec<MilestoneRule<'static>> {
+    server_required_milestones(scenario)
+        .iter()
+        .map(|(id, needle)| MilestoneRule {
+            id,
+            matcher: server_required_matcher(id, needle),
+        })
+        .collect()
+}
+
+fn server_required_matcher(id: &str, needle: &'static str) -> MatcherKind<'static> {
+    match id {
+        "server_username_seen" => MatcherKind::DynamicUsername,
+        "server_client_a_seen" => MatcherKind::DynamicClientSuffix(CLIENT_A_SUFFIX),
+        "server_client_b_seen" => MatcherKind::DynamicClientSuffix(CLIENT_B_SUFFIX),
+        "server_flag_or_score" => MatcherKind::AnyOfCaseInsensitive(FLAG_OR_SCORE_NEEDLES),
+        _ => MatcherKind::CaseInsensitive(needle),
+    }
+}
+
+fn forbidden_milestone_rules(
+    scenario: Scenario,
+    case_insensitive: bool,
+) -> Vec<MilestoneRule<'static>> {
+    scenario_forbidden_patterns(scenario)
+        .iter()
+        .map(|(id, needle)| MilestoneRule {
+            id,
+            matcher: if case_insensitive {
+                MatcherKind::CaseInsensitive(needle)
+            } else {
+                MatcherKind::Literal(needle)
+            },
+        })
+        .collect()
+}
+
+fn evaluate_required_rules(
+    rules: &[MilestoneRule<'_>],
+    corpus: &EvidenceCorpus<'_>,
+    context: &EvidenceContext<'_>,
+) -> (Vec<&'static str>, Vec<&'static str>) {
+    let mut observed = Vec::new();
+    let mut missing = Vec::new();
+    for rule in rules {
+        if rule.matcher.is_match(corpus, context) {
+            observed.push(rule.id);
+        } else {
+            missing.push(rule.id);
+        }
+    }
+    (observed, missing)
+}
+
+fn evaluate_forbidden_rules(
+    rules: &[MilestoneRule<'_>],
+    corpus: &EvidenceCorpus<'_>,
+    context: &EvidenceContext<'_>,
+) -> Vec<&'static str> {
+    rules
+        .iter()
+        .filter_map(|rule| rule.matcher.is_match(corpus, context).then_some(rule.id))
+        .collect()
+}
+
+#[cfg(test)]
+pub(crate) fn evaluate_scenario(scenario: Scenario, output: &str) -> ScenarioEvidence {
+    evaluate_scenario_with_projectile_health(
+        scenario,
+        output,
+        PROJECTILE_DAMAGE_CLIENT_HEALTH_NEEDLE,
+    )
+}
+
+pub(crate) fn evaluate_scenario_for_config(cfg: &Config, output: &str) -> ScenarioEvidence {
+    let health_needle = projectile_damage_client_health_needle(cfg);
+    evaluate_scenario_with_projectile_health(cfg.scenario, output, &health_needle)
+}
+
+pub(crate) fn evaluate_scenario_with_projectile_health(
+    scenario: Scenario,
+    output: &str,
+    projectile_health_needle: &str,
+) -> ScenarioEvidence {
+    let corpus = EvidenceCorpus::new(output);
+    let context = EvidenceContext { username: "" };
+    let required_rules = client_required_milestone_rules(scenario, projectile_health_needle);
+    let forbidden_rules = forbidden_milestone_rules(scenario, false);
+    let (observed_milestones, missing_milestones) =
+        evaluate_required_rules(&required_rules, &corpus, &context);
+    let forbidden_matches = evaluate_forbidden_rules(&forbidden_rules, &corpus, &context);
+    let passed = missing_milestones.is_empty() && forbidden_matches.is_empty();
+    ScenarioEvidence {
+        observed_milestones,
+        missing_milestones,
+        forbidden_matches,
+        passed,
+    }
+}
+
+pub(crate) fn evaluate_server_scenario(
+    scenario: Scenario,
+    server_log: &str,
+    username: &str,
+) -> ServerScenarioEvidence {
+    let corpus = EvidenceCorpus::new(server_log);
+    let context = EvidenceContext { username };
+    let required_rules = server_required_milestone_rules(scenario);
+    let forbidden_rules = forbidden_milestone_rules(scenario, true);
+    let (observed_milestones, missing_milestones) =
+        evaluate_required_rules(&required_rules, &corpus, &context);
+    let forbidden_matches = evaluate_forbidden_rules(&forbidden_rules, &corpus, &context);
+    let passed = missing_milestones.is_empty() && forbidden_matches.is_empty();
+    ServerScenarioEvidence {
+        observed_milestones,
+        missing_milestones,
+        forbidden_matches,
+        passed,
+    }
+}
+
+#[cfg(test)]
+pub(crate) fn parse_typed_event_line(line: &str) -> Result<TypedEvent, String> {
+    let line = line.trim();
+    let Some(rest) = line.strip_prefix(TYPED_EVENT_PREFIX) else {
+        return Err("typed event line missing prefix".to_string());
+    };
+    let fields = parse_typed_event_fields(rest.trim())?;
+    let schema_version = typed_event_required_u32(&fields, "schema")?;
+    if schema_version != TYPED_EVENT_SCHEMA_VERSION {
+        return Err(format!(
+            "unsupported typed event schema {schema_version}, expected {TYPED_EVENT_SCHEMA_VERSION}"
+        ));
+    }
+    Ok(TypedEvent {
+        schema_version,
+        source: typed_event_required_string(&fields, "source")?,
+        scenario: typed_event_required_string(&fields, "scenario")?,
+        session: typed_event_required_string(&fields, "session")?,
+        username: typed_event_optional_string(&fields, "username"),
+        sequence: u64::from(typed_event_required_u32(&fields, "seq")?),
+        kind: typed_event_required_string(&fields, "event")?,
+    })
+}
+
+#[cfg(test)]
+fn parse_typed_event_fields(text: &str) -> Result<Vec<(&str, &str)>, String> {
+    let mut fields = Vec::new();
+    for token in text.split_whitespace() {
+        let Some((key, value)) = token.split_once('=') else {
+            return Err(format!("typed event token missing '=': {token}"));
+        };
+        fields.push((key, value));
+    }
+    Ok(fields)
+}
+
+#[cfg(test)]
+fn typed_event_required_string(fields: &[(&str, &str)], key: &str) -> Result<String, String> {
+    typed_event_optional_string(fields, key)
+        .ok_or_else(|| format!("missing typed event field {key}"))
+}
+
+#[cfg(test)]
+fn typed_event_optional_string(fields: &[(&str, &str)], key: &str) -> Option<String> {
+    fields
+        .iter()
+        .find_map(|(field_key, value)| (*field_key == key).then(|| (*value).to_string()))
+}
+
+#[cfg(test)]
+fn typed_event_required_u32(fields: &[(&str, &str)], key: &str) -> Result<u32, String> {
+    let value = typed_event_required_string(fields, key)?;
+    value
+        .parse::<u32>()
+        .map_err(|err| format!("parse typed event field {key}: {err}"))
+}
+
+pub(crate) fn evaluate_typed_event_graph(
+    events: &[TypedEvent],
+    scenario: &str,
+    session: &str,
+    username: Option<&str>,
+    required_events: &[&str],
+    forbidden_events: &[&str],
+    ordered_edges: &[(&str, &str)],
+) -> TypedEventGraphEvaluation {
+    let relevant: Vec<&TypedEvent> = events
+        .iter()
+        .filter(|event| {
+            event.scenario == scenario
+                && event.session == session
+                && username.is_none_or(|name| event.username.as_deref() == Some(name))
+        })
+        .collect();
+    let mut observed_events = Vec::new();
+    let mut missing_events = Vec::new();
+    for required in required_events {
+        if relevant.iter().any(|event| event.kind == *required) {
+            observed_events.push((*required).to_string());
+        } else {
+            missing_events.push((*required).to_string());
+        }
+    }
+    let mut forbidden_matches = Vec::new();
+    for forbidden in forbidden_events {
+        if relevant.iter().any(|event| event.kind == *forbidden) {
+            forbidden_matches.push((*forbidden).to_string());
+        }
+    }
+    let mut order_violations = Vec::new();
+    for (before, after) in ordered_edges {
+        if let (Some(before_seq), Some(after_seq)) = (
+            first_typed_event_sequence(&relevant, before),
+            first_typed_event_sequence(&relevant, after),
+        ) {
+            if before_seq >= after_seq {
+                order_violations.push(format!("{before}_before_{after}"));
+            }
+        }
+    }
+    let passed =
+        missing_events.is_empty() && forbidden_matches.is_empty() && order_violations.is_empty();
+    TypedEventGraphEvaluation {
+        observed_events,
+        missing_events,
+        forbidden_events: forbidden_matches,
+        order_violations,
+        passed,
+    }
+}
+
+fn first_typed_event_sequence(events: &[&TypedEvent], kind: &str) -> Option<u64> {
+    events
+        .iter()
+        .filter(|event| event.kind == kind)
+        .map(|event| event.sequence)
+        .min()
+}
+
+pub(crate) fn typed_events_from_receipt_evidence(
+    cfg: &Config,
+    client: &ClientRunEvidence,
+) -> Result<Vec<TypedEvent>, String> {
+    let scenario_label = scenario_name(cfg.scenario).to_string();
+    let session = typed_event_session_id(cfg);
+    let default_username = single_typed_event_username(client);
+    let mut events = Vec::new();
+    if let Some(scenario) = &client.scenario {
+        for milestone in &scenario.observed_milestones {
+            push_typed_event(
+                &mut events,
+                "client",
+                &scenario_label,
+                &session,
+                default_username,
+                milestone,
+            )?;
+        }
+    }
+    if let Some(server) = &client.server_scenario {
+        for milestone in &server.observed_milestones {
+            push_typed_event(
+                &mut events,
+                "server",
+                &scenario_label,
+                &session,
+                default_username,
+                milestone,
+            )?;
+        }
+    }
+    append_mcp_control_typed_events(
+        &mut events,
+        cfg,
+        client,
+        &scenario_label,
+        &session,
+        default_username,
+    )?;
+    if let Some(causality) = &client.projectile_damage_causality {
+        for step in &causality.observed_steps {
+            let (source, username) = typed_event_projectile_step_source_username(
+                step,
+                &causality.attacker_username,
+                &causality.victim_username,
+            );
+            push_typed_event(
+                &mut events,
+                source,
+                &scenario_label,
+                &session,
+                username,
+                step,
+            )?;
+        }
+    }
+    Ok(events)
+}
+
+fn append_mcp_control_typed_events(
+    events: &mut Vec<TypedEvent>,
+    cfg: &Config,
+    client: &ClientRunEvidence,
+    scenario_label: &str,
+    session: &str,
+    username: Option<&str>,
+) -> Result<(), String> {
+    if cfg.scenario != Scenario::McpControlledSmoke {
+        return Ok(());
+    }
+    if let Some(control) = &client.mcp_control {
+        if control.stdout_clean {
+            push_typed_event(
+                events,
+                "mcp",
+                scenario_label,
+                session,
+                username,
+                "mcp_stdout_clean",
+            )?;
+        }
+        if control
+            .command_outcome_ids
+            .iter()
+            .any(|outcome| *outcome == "look.applied")
+        {
+            push_typed_event(
+                events,
+                "mcp",
+                scenario_label,
+                session,
+                username,
+                "mcp_look_call",
+            )?;
+        }
+        if control
+            .command_outcome_ids
+            .iter()
+            .any(|outcome| matches!(*outcome, "key.applied" | "chat.applied"))
+        {
+            push_typed_event(
+                events,
+                "mcp",
+                scenario_label,
+                session,
+                username,
+                "mcp_input_call",
+            )?;
+        }
+        if control
+            .command_outcome_ids
+            .iter()
+            .any(|outcome| *outcome == "capture_latest_frame.captured")
+            || control
+                .calls_succeeded
+                .iter()
+                .any(|call| *call == "tools/call capture_latest_frame")
+        {
+            push_typed_event(
+                events,
+                "mcp",
+                scenario_label,
+                session,
+                username,
+                "mcp_capture_latest_frame",
+            )?;
+        }
+    }
+    if client
+        .frame_artifacts
+        .as_ref()
+        .is_some_and(frame_artifacts_have_reviewable_identity)
+    {
+        push_typed_event(
+            events,
+            "mcp",
+            scenario_label,
+            session,
+            username,
+            "mcp_frame_artifact_identity",
+        )?;
+    }
+    Ok(())
+}
+
+fn frame_artifacts_have_reviewable_identity(frame: &FrameArtifactsReceiptEvidence) -> bool {
+    frame.selected
+        && frame.capture_requested
+        && frame.artifact_count > 0
+        && frame.path_containment_checked
+        && frame.missing_digests.is_empty()
+        && frame.artifacts.iter().any(|artifact| {
+            !artifact.path.is_empty()
+                && !artifact.relative_path.is_empty()
+                && !artifact.blake3.is_empty()
+                && artifact.byte_len > 0
+        })
+}
+
+fn push_typed_event(
+    events: &mut Vec<TypedEvent>,
+    source: &str,
+    scenario: &str,
+    session: &str,
+    username: Option<&str>,
+    kind: &str,
+) -> Result<(), String> {
+    let sequence_index = events.len() + TYPED_EVENT_SEQUENCE_INDEX_OFFSET;
+    let sequence = u64::try_from(sequence_index)
+        .map_err(|err| format!("typed event sequence overflow at {sequence_index}: {err}"))?;
+    events.push(TypedEvent {
+        schema_version: TYPED_EVENT_SCHEMA_VERSION,
+        source: source.to_string(),
+        scenario: scenario.to_string(),
+        session: session.to_string(),
+        username: username.map(sanitize_typed_event_field),
+        sequence,
+        kind: kind.to_string(),
+    });
+    Ok(())
+}
+
+fn single_typed_event_username(client: &ClientRunEvidence) -> Option<&str> {
+    if client.usernames.len() == TYPED_EVENT_SINGLE_USERNAME_COUNT {
+        client.usernames.first().map(String::as_str)
+    } else {
+        None
+    }
+}
+
+fn typed_event_projectile_step_source_username<'a>(
+    step: &str,
+    attacker_username: &'a str,
+    victim_username: &'a str,
+) -> (&'static str, Option<&'a str>) {
+    if step.starts_with("attacker_client") {
+        ("client", Some(attacker_username))
+    } else if step.starts_with("victim_client") {
+        ("client", Some(victim_username))
+    } else {
+        ("server", None)
+    }
+}
+
+fn typed_event_session_id(cfg: &Config) -> String {
+    cfg.receipt_path
+        .as_ref()
+        .and_then(|path| path.file_stem())
+        .and_then(|stem| stem.to_str())
+        .map(sanitize_typed_event_field)
+        .filter(|value| !value.is_empty())
+        .unwrap_or_else(|| TYPED_EVENT_DEFAULT_SESSION_ID.to_string())
+}
+
+fn sanitize_typed_event_field(value: &str) -> String {
+    let mut sanitized = String::with_capacity(value.len().min(TYPED_EVENT_MAX_FIELD_CHARS));
+    for ch in value.chars().take(TYPED_EVENT_MAX_FIELD_CHARS) {
+        if ch.is_ascii_alphanumeric() || matches!(ch, '_' | '-' | '.') {
+            sanitized.push(ch);
+        } else {
+            sanitized.push('_');
+        }
+    }
+    sanitized
+}
+
+pub(crate) fn normalize_typed_event_timeline(events: &[TypedEvent]) -> String {
+    let mut timeline = events.to_vec();
+    timeline.sort_by(|left, right| {
+        left.sequence
+            .cmp(&right.sequence)
+            .then_with(|| left.source.cmp(&right.source))
+            .then_with(|| left.kind.cmp(&right.kind))
+    });
+    let mut output = String::new();
+    for event in &timeline {
+        output.push_str(&render_typed_event_line(event));
+        output.push('\n');
+    }
+    output
+}
+
+fn render_typed_event_line(event: &TypedEvent) -> String {
+    let username_field = event
+        .username
+        .as_ref()
+        .map(|username| format!(" username={username}"))
+        .unwrap_or_default();
+    format!(
+        "{TYPED_EVENT_PREFIX} schema={} source={} scenario={} session={}{} seq={} event={}",
+        event.schema_version,
+        event.source,
+        event.scenario,
+        event.session,
+        username_field,
+        event.sequence,
+        event.kind
+    )
+}
+
+pub(crate) fn typed_event_timeline_blake3(timeline: &str) -> String {
+    blake3::hash(timeline.as_bytes()).to_hex().to_string()
+}
+
+pub(crate) fn typed_event_oracle_receipt_json(
+    artifact: Option<&TypedEventOracleArtifact>,
+) -> String {
+    let selected = artifact.is_some();
+    let migration_status = if selected {
+        TYPED_EVENT_MIGRATION_DERIVED_FROM_MILESTONES
+    } else {
+        TYPED_EVENT_MIGRATION_FALLBACK
+    };
+    let event_log_path_json = artifact
+        .map(|evidence| json_string(&evidence.event_log_path.display().to_string()))
+        .unwrap_or_else(|| "null".to_string());
+    let timeline_blake3_json = artifact
+        .map(|evidence| json_string(&evidence.timeline_blake3))
+        .unwrap_or_else(|| "null".to_string());
+    let event_count = artifact
+        .map(|evidence| evidence.event_count)
+        .unwrap_or_default();
+    let contributes_to_pass_fail = artifact
+        .map(|evidence| evidence.contributes_to_pass_fail)
+        .unwrap_or(false);
+    format!(
+        r#"{{
+    "schema_version": {schema_version},
+    "selected": {selected},
+    "migration_status": {migration_status_json},
+    "event_log_path": {event_log_path_json},
+    "timeline_blake3": {timeline_blake3_json},
+    "event_count": {event_count},
+    "contributes_to_pass_fail": {contributes_to_pass_fail},
+    "raw_payloads_recorded": false
+  }}"#,
+        schema_version = TYPED_EVENT_SCHEMA_VERSION,
+        selected = selected,
+        migration_status_json = json_string(migration_status),
+        event_log_path_json = event_log_path_json,
+        timeline_blake3_json = timeline_blake3_json,
+        event_count = event_count,
+        contributes_to_pass_fail = contributes_to_pass_fail,
+    )
+}
+
+pub(crate) fn typed_event_oracle_contributes_to_pass_fail(scenario: Scenario) -> bool {
+    matches!(
+        scenario,
+        Scenario::Smoke
+            | Scenario::McpControlledSmoke
+            | Scenario::InventoryInteraction
+            | Scenario::InventoryStackSplitMerge
+            | Scenario::InventoryDragTransactions
+            | Scenario::SurvivalBreakPlacePickup
+            | Scenario::SurvivalChestPersistence
+            | Scenario::SurvivalCraftingTable
+            | Scenario::SurvivalCraftingRecipeBreadth
+            | Scenario::SurvivalFurnacePersistence
+            | Scenario::SurvivalFurnaceSmeltingBreadth
+            | Scenario::SurvivalHungerHealthCycle
+            | Scenario::SurvivalMobAiLootBreadth
+            | Scenario::SurvivalRedstoneCircuitBreadth
+            | Scenario::SurvivalWorldMultichunkDurability
+            | Scenario::SurvivalContainerBlockEntityBreadth
+            | Scenario::SurvivalBiomeDimensionTravel
+            | Scenario::SurvivalSignEditingLive
+            | Scenario::FlagScoreRepeat
+            | Scenario::BlueFlagScore
+            | Scenario::CombatDamage
+            | Scenario::CombatKnockback
+            | Scenario::ArmorEquipmentMitigation
+            | Scenario::EquipmentUpdateObservation
+            | Scenario::ProjectileHit
+            | Scenario::ProjectileDamageAttribution
+            | Scenario::FlagCarrierDeathReturn
+            | Scenario::ReconnectFlagState
+            | Scenario::CtfInvalidPickupOwnership
+            | Scenario::CtfInvalidReturnDrop
+            | Scenario::CtfInvalidOpponentBaseReturnDrop
+            | Scenario::CtfScoreLimitWinCondition
+            | Scenario::CtfSimultaneousPickupCaptureRace
+            | Scenario::CtfSpawnTeamBalanceReset
+            | Scenario::ReconnectFlagScore
+            | Scenario::MultiClientLoadScore
+    )
+}
+
+pub(crate) fn validate_typed_event_oracle_for_migrated_scenario(
+    cfg: &Config,
+    client: &ClientRunEvidence,
+) -> Result<(), String> {
+    if !typed_event_oracle_contributes_to_pass_fail(cfg.scenario) {
+        return Ok(());
+    }
+    let events = typed_events_from_receipt_evidence(cfg, client)?;
+    let required = typed_event_required_events_for_graph(cfg.scenario);
+    let required_refs = required.iter().map(String::as_str).collect::<Vec<_>>();
+    let forbidden = scenario_forbidden_patterns(cfg.scenario)
+        .iter()
+        .map(|(name, _)| *name)
+        .collect::<Vec<_>>();
+    let ordered_edges = typed_event_ordered_edges_for_scenario(cfg.scenario);
+    let username = single_typed_event_username(client);
+    let session = typed_event_session_id(cfg);
+    let result = evaluate_typed_event_graph(
+        &events,
+        scenario_name(cfg.scenario),
+        &session,
+        username,
+        &required_refs,
+        &forbidden,
+        &ordered_edges,
+    );
+    if result.passed {
+        return Ok(());
+    }
+    Err(format!(
+        "typed event oracle for scenario {} failed: missing={:?} forbidden={:?} order_violations={:?}",
+        scenario_name(cfg.scenario),
+        result.missing_events,
+        result.forbidden_events,
+        result.order_violations
+    ))
+}
+
+pub(crate) fn typed_event_required_events_for_graph(scenario: Scenario) -> Vec<String> {
+    let mut required = scenario_required_milestones(scenario)
+        .iter()
+        .map(|(name, _)| (*name).to_string())
+        .collect::<Vec<_>>();
+    required.extend(
+        server_required_milestones(scenario)
+            .iter()
+            .map(|(name, _)| (*name).to_string()),
+    );
+    if scenario == Scenario::McpControlledSmoke {
+        required.extend([
+            "mcp_stdout_clean".to_string(),
+            "mcp_look_call".to_string(),
+            "mcp_input_call".to_string(),
+            "mcp_capture_latest_frame".to_string(),
+            "mcp_frame_artifact_identity".to_string(),
+        ]);
+    }
+    required
+}
+
+pub(crate) fn typed_event_ordered_edges_for_scenario(
+    scenario: Scenario,
+) -> Vec<(&'static str, &'static str)> {
+    match scenario {
+        Scenario::Smoke => vec![],
+        Scenario::McpControlledSmoke => vec![
+            ("mcp_initialize", "mcp_tools_list"),
+            ("mcp_tools_list", "mcp_status_call"),
+            ("mcp_status_call", "mcp_look_call"),
+            ("mcp_look_call", "mcp_input_call"),
+            ("mcp_input_call", "mcp_capture_latest_frame"),
+            ("mcp_capture_latest_frame", "mcp_frame_artifact_identity"),
+        ],
+        Scenario::InventoryInteraction => vec![
+            ("protocol_detected", "inventory_drop_sent"),
+            ("inventory_drop_sent", "inventory_pickup_seen"),
+            ("inventory_pickup_seen", "inventory_click_sent"),
+            ("inventory_click_sent", "inventory_container_click_sent"),
+            (
+                "inventory_container_click_sent",
+                "inventory_block_place_sent",
+            ),
+            ("server_inventory_drop", "server_inventory_pickup"),
+            ("server_inventory_pickup", "server_inventory_click"),
+            ("server_inventory_container_click", "server_block_place"),
+        ],
+        Scenario::InventoryStackSplitMerge => vec![
+            (
+                "inventory_stack_initial_slot",
+                "inventory_stack_split_pickup_sent",
+            ),
+            (
+                "inventory_stack_split_pickup_sent",
+                "inventory_stack_split_source_seen",
+            ),
+            (
+                "inventory_stack_split_source_seen",
+                "inventory_stack_split_place_sent",
+            ),
+            (
+                "inventory_stack_split_place_sent",
+                "inventory_stack_destination_seen",
+            ),
+            (
+                "inventory_stack_destination_seen",
+                "inventory_stack_merge_pickup_sent",
+            ),
+            (
+                "inventory_stack_merge_pickup_sent",
+                "inventory_stack_merge_destination_empty_seen",
+            ),
+            (
+                "inventory_stack_merge_destination_empty_seen",
+                "inventory_stack_merge_place_sent",
+            ),
+            (
+                "inventory_stack_merge_place_sent",
+                "inventory_stack_final_source_seen",
+            ),
+            (
+                "server_inventory_stack_split_pickup",
+                "server_inventory_stack_split",
+            ),
+            (
+                "server_inventory_stack_split",
+                "server_inventory_stack_merge_pickup",
+            ),
+            (
+                "server_inventory_stack_merge_pickup",
+                "server_inventory_stack_merge",
+            ),
+        ],
+        Scenario::InventoryDragTransactions => vec![
+            ("inventory_drag_initial_slot", "inventory_drag_pickup_sent"),
+            (
+                "inventory_drag_pickup_sent",
+                "inventory_drag_source_empty_seen",
+            ),
+            (
+                "inventory_drag_source_empty_seen",
+                "inventory_drag_start_sent",
+            ),
+            ("inventory_drag_start_sent", "inventory_drag_target_a_sent"),
+            (
+                "inventory_drag_target_a_sent",
+                "inventory_drag_target_b_sent",
+            ),
+            ("inventory_drag_target_b_sent", "inventory_drag_end_sent"),
+            (
+                "inventory_drag_end_sent",
+                "inventory_drag_final_distribution_seen",
+            ),
+            (
+                "server_inventory_drag_pickup",
+                "server_inventory_drag_start",
+            ),
+            (
+                "server_inventory_drag_start",
+                "server_inventory_drag_target_a",
+            ),
+            (
+                "server_inventory_drag_target_a",
+                "server_inventory_drag_target_b",
+            ),
+            (
+                "server_inventory_drag_target_b",
+                "server_inventory_drag_end",
+            ),
+        ],
+        Scenario::SurvivalBreakPlacePickup => vec![
+            ("survival_break_sent", "survival_break_update"),
+            ("survival_break_update", "survival_pickup_seen"),
+            ("survival_pickup_seen", "survival_place_sent"),
+            ("survival_place_sent", "survival_place_update"),
+            ("server_survival_join", "server_survival_break"),
+            ("server_survival_break", "server_survival_pickup"),
+            ("server_survival_pickup", "server_survival_place"),
+        ],
+        Scenario::SurvivalChestPersistence => vec![
+            ("survival_chest_open_seen", "survival_chest_store_sent"),
+            ("survival_chest_store_sent", "survival_chest_close_sent"),
+            ("survival_chest_close_sent", "survival_chest_reconnect_sent"),
+            (
+                "survival_chest_reconnect_sent",
+                "survival_chest_reopen_seen",
+            ),
+            (
+                "survival_chest_reopen_seen",
+                "survival_chest_persisted_seen",
+            ),
+            ("server_survival_chest_open", "server_survival_chest_store"),
+            ("server_survival_chest_store", "server_survival_chest_close"),
+            (
+                "server_survival_chest_close",
+                "server_survival_chest_reopen",
+            ),
+            (
+                "server_survival_chest_reopen",
+                "server_survival_chest_persisted",
+            ),
+        ],
+        Scenario::SurvivalFurnacePersistence => vec![
+            ("survival_furnace_open_seen", "survival_furnace_input_sent"),
+            ("survival_furnace_input_sent", "survival_furnace_fuel_sent"),
+            (
+                "survival_furnace_fuel_sent",
+                "survival_furnace_burn_progress_seen",
+            ),
+            (
+                "survival_furnace_burn_progress_seen",
+                "survival_furnace_output_seen",
+            ),
+            (
+                "survival_furnace_output_seen",
+                "survival_furnace_output_collected",
+            ),
+            (
+                "survival_furnace_output_collected",
+                "survival_furnace_reconnect_sent",
+            ),
+            (
+                "survival_furnace_reconnect_sent",
+                "survival_furnace_reopen_seen",
+            ),
+            (
+                "server_survival_furnace_open",
+                "server_survival_furnace_input",
+            ),
+            (
+                "server_survival_furnace_input",
+                "server_survival_furnace_fuel",
+            ),
+            (
+                "server_survival_furnace_fuel",
+                "server_survival_furnace_burn_progress",
+            ),
+            (
+                "server_survival_furnace_burn_progress",
+                "server_survival_furnace_output_available",
+            ),
+            (
+                "server_survival_furnace_output_available",
+                "server_survival_furnace_output_collect",
+            ),
+            (
+                "server_survival_furnace_output_collect",
+                "server_survival_furnace_reconnect_reopen",
+            ),
+            (
+                "server_survival_furnace_reconnect_reopen",
+                "server_survival_furnace_state",
+            ),
+        ],
+        Scenario::SurvivalFurnaceSmeltingBreadth => vec![
+            ("survival_furnace_open_seen", "survival_furnace_input_sent"),
+            ("survival_furnace_input_sent", "survival_furnace_fuel_sent"),
+            (
+                "survival_furnace_fuel_sent",
+                "survival_furnace_burn_progress_seen",
+            ),
+            (
+                "survival_furnace_burn_progress_seen",
+                "survival_furnace_output_seen",
+            ),
+            (
+                "survival_furnace_output_seen",
+                "survival_furnace_output_collected",
+            ),
+            (
+                "survival_furnace_output_collected",
+                "survival_furnace_invalid_fuel_sent",
+            ),
+            (
+                "server_survival_furnace_open",
+                "server_survival_furnace_input",
+            ),
+            (
+                "server_survival_furnace_input",
+                "server_survival_furnace_fuel",
+            ),
+            (
+                "server_survival_furnace_fuel",
+                "server_survival_furnace_burn_progress",
+            ),
+            (
+                "server_survival_furnace_burn_progress",
+                "server_survival_furnace_output_available",
+            ),
+            (
+                "server_survival_furnace_output_available",
+                "server_survival_furnace_output_collect",
+            ),
+            (
+                "server_survival_furnace_output_collect",
+                "server_survival_furnace_invalid_fuel_rejected",
+            ),
+            (
+                "server_survival_furnace_invalid_fuel_rejected",
+                "server_survival_furnace_breadth_state",
+            ),
+        ],
+        Scenario::SurvivalHungerHealthCycle => vec![
+            (
+                "survival_hunger_health_pre_seen",
+                "survival_hunger_health_consume_sent",
+            ),
+            (
+                "survival_hunger_health_consume_sent",
+                "survival_hunger_health_recovery_seen",
+            ),
+            (
+                "survival_hunger_health_recovery_seen",
+                "survival_hunger_health_inventory_updated",
+            ),
+            (
+                "server_survival_hunger_health_pre",
+                "server_survival_hunger_health_consume_start",
+            ),
+            (
+                "server_survival_hunger_health_consume_start",
+                "server_survival_hunger_health_consume_finish",
+            ),
+            (
+                "server_survival_hunger_health_consume_finish",
+                "server_survival_hunger_health_inventory",
+            ),
+            (
+                "server_survival_hunger_health_inventory",
+                "server_survival_hunger_health_state",
+            ),
+        ],
+        Scenario::SurvivalCraftingRecipeBreadth => vec![
+            (
+                "survival_crafting_breadth_shaped_seen",
+                "survival_crafting_breadth_shapeless_seen",
+            ),
+            (
+                "survival_crafting_breadth_shapeless_seen",
+                "survival_crafting_breadth_grid_clear_seen",
+            ),
+            (
+                "survival_crafting_breadth_shapeless_seen",
+                "survival_crafting_breadth_invalid_seen",
+            ),
+            (
+                "survival_crafting_breadth_invalid_seen",
+                "survival_crafting_breadth_inventory_updated",
+            ),
+            (
+                "server_survival_crafting_breadth_shaped",
+                "server_survival_crafting_breadth_shapeless",
+            ),
+            (
+                "server_survival_crafting_breadth_shapeless",
+                "server_survival_crafting_breadth_grid_clear",
+            ),
+            (
+                "server_survival_crafting_breadth_grid_clear",
+                "server_survival_crafting_breadth_invalid_rejected",
+            ),
+            (
+                "server_survival_crafting_breadth_invalid_rejected",
+                "server_survival_crafting_breadth_state",
+            ),
+        ],
+        Scenario::SurvivalCraftingTable => vec![
+            (
+                "survival_crafting_table_open_seen",
+                "survival_crafting_input_a_sent",
+            ),
+            (
+                "survival_crafting_input_a_sent",
+                "survival_crafting_input_b_sent",
+            ),
+            (
+                "survival_crafting_input_b_sent",
+                "survival_crafting_result_seen",
+            ),
+            (
+                "survival_crafting_result_seen",
+                "survival_crafting_result_collected",
+            ),
+            (
+                "survival_crafting_result_collected",
+                "survival_crafting_inventory_updated",
+            ),
+            (
+                "server_survival_crafting_table_open",
+                "server_survival_crafting_input_a",
+            ),
+            (
+                "server_survival_crafting_input_a",
+                "server_survival_crafting_input_b",
+            ),
+            (
+                "server_survival_crafting_input_b",
+                "server_survival_crafting_result",
+            ),
+            (
+                "server_survival_crafting_result",
+                "server_survival_crafting_collect",
+            ),
+        ],
+        Scenario::SurvivalMobAiLootBreadth => vec![
+            (
+                "survival_mob_ai_loot_mob_seen",
+                "survival_mob_ai_loot_attack_sent",
+            ),
+            (
+                "survival_mob_ai_loot_attack_sent",
+                "survival_mob_ai_loot_death_seen",
+            ),
+            (
+                "survival_mob_ai_loot_death_seen",
+                "survival_mob_ai_loot_drop_seen",
+            ),
+            (
+                "survival_mob_ai_loot_drop_seen",
+                "survival_mob_ai_loot_pickup_seen",
+            ),
+            (
+                "survival_mob_ai_loot_pickup_seen",
+                "survival_mob_ai_loot_inventory_updated",
+            ),
+            (
+                "server_survival_mob_ai_loot_spawn",
+                "server_survival_mob_ai_loot_ai_checkpoint",
+            ),
+            (
+                "server_survival_mob_ai_loot_ai_checkpoint",
+                "server_survival_mob_ai_loot_attack",
+            ),
+            (
+                "server_survival_mob_ai_loot_attack",
+                "server_survival_mob_ai_loot_death",
+            ),
+            (
+                "server_survival_mob_ai_loot_death",
+                "server_survival_mob_ai_loot_drop_spawn",
+            ),
+            (
+                "server_survival_mob_ai_loot_drop_spawn",
+                "server_survival_mob_ai_loot_pickup",
+            ),
+            (
+                "server_survival_mob_ai_loot_pickup",
+                "server_survival_mob_ai_loot_inventory",
+            ),
+            (
+                "server_survival_mob_ai_loot_inventory",
+                "server_survival_mob_ai_loot_state",
+            ),
+        ],
+        Scenario::SurvivalRedstoneCircuitBreadth => vec![
+            (
+                "survival_redstone_circuit_initial_state",
+                "survival_redstone_circuit_input_sent",
+            ),
+            (
+                "survival_redstone_circuit_input_sent",
+                "survival_redstone_circuit_output_update",
+            ),
+            (
+                "survival_redstone_circuit_output_update",
+                "survival_redstone_circuit_return_input_sent",
+            ),
+            (
+                "survival_redstone_circuit_return_input_sent",
+                "survival_redstone_circuit_return_update",
+            ),
+            (
+                "server_survival_redstone_circuit_initial",
+                "server_survival_redstone_circuit_input",
+            ),
+            (
+                "server_survival_redstone_circuit_input",
+                "server_survival_redstone_circuit_powered_on",
+            ),
+            (
+                "server_survival_redstone_circuit_powered_on",
+                "server_survival_redstone_circuit_powered_off",
+            ),
+            (
+                "server_survival_redstone_circuit_powered_off",
+                "server_survival_redstone_circuit_state",
+            ),
+        ],
+        Scenario::SurvivalWorldMultichunkDurability => vec![
+            (
+                "survival_world_multichunk_mutation_sent",
+                "survival_world_multichunk_pre_restart_update",
+            ),
+            (
+                "survival_world_multichunk_pre_restart_update",
+                "survival_world_multichunk_reconnect_sent",
+            ),
+            (
+                "survival_world_multichunk_reconnect_sent",
+                "survival_world_multichunk_post_restart_update",
+            ),
+            (
+                "server_survival_world_multichunk_mutation",
+                "server_survival_world_multichunk_clean_shutdown",
+            ),
+            (
+                "server_survival_world_multichunk_clean_shutdown",
+                "server_survival_world_multichunk_backend_restart",
+            ),
+            (
+                "server_survival_world_multichunk_backend_restart",
+                "server_survival_world_multichunk_post_restart",
+            ),
+            (
+                "server_survival_world_multichunk_post_restart",
+                "server_survival_world_multichunk_state",
+            ),
+        ],
+        Scenario::SurvivalContainerBlockEntityBreadth => vec![
+            (
+                "survival_container_block_entity_open_seen",
+                "survival_container_block_entity_transfer_sent",
+            ),
+            (
+                "survival_container_block_entity_transfer_sent",
+                "survival_container_block_entity_payload_seen",
+            ),
+            (
+                "survival_container_block_entity_payload_seen",
+                "survival_container_block_entity_metadata_seen",
+            ),
+            (
+                "survival_container_block_entity_metadata_seen",
+                "survival_container_block_entity_reopen_seen",
+            ),
+            (
+                "server_survival_container_block_entity_open",
+                "server_survival_container_block_entity_transfer",
+            ),
+            (
+                "server_survival_container_block_entity_transfer",
+                "server_survival_container_block_entity_payload",
+            ),
+            (
+                "server_survival_container_block_entity_payload",
+                "server_survival_container_block_entity_metadata",
+            ),
+            (
+                "server_survival_container_block_entity_metadata",
+                "server_survival_container_block_entity_state",
+            ),
+        ],
+        Scenario::SurvivalBiomeDimensionTravel => vec![
+            (
+                "survival_biome_dimension_travel_origin",
+                "survival_biome_dimension_travel_transition_sent",
+            ),
+            (
+                "survival_biome_dimension_travel_transition_sent",
+                "survival_biome_dimension_travel_destination_seen",
+            ),
+            (
+                "server_survival_biome_dimension_travel_origin",
+                "server_survival_biome_dimension_travel_transition",
+            ),
+            (
+                "server_survival_biome_dimension_travel_transition",
+                "server_survival_biome_dimension_travel_state",
+            ),
+        ],
+        Scenario::SurvivalSignEditingLive => vec![
+            (
+                "survival_sign_editing_open_seen",
+                "survival_sign_editing_update_sent",
+            ),
+            (
+                "survival_sign_editing_update_sent",
+                "survival_sign_editing_post_update_seen",
+            ),
+            (
+                "server_survival_sign_editing_open",
+                "server_survival_sign_editing_update_accepted",
+            ),
+            (
+                "server_survival_sign_editing_update_accepted",
+                "server_survival_sign_editing_state",
+            ),
+        ],
+        Scenario::FlagScoreRepeat => vec![
+            ("team_red", "flag_pickup"),
+            ("flag_pickup", "flag_capture"),
+            ("flag_capture", "score_red_1"),
+            ("score_red_1", "score_red_2"),
+        ],
+        Scenario::BlueFlagScore => vec![
+            ("team_blue", "flag_pickup"),
+            ("flag_pickup", "flag_capture"),
+            ("flag_capture", "score_blue_1"),
+        ],
+        Scenario::CombatDamage => vec![
+            ("remote_player_spawn", "combat_attack_sent"),
+            ("combat_attack_sent", "combat_health_update"),
+            ("server_client_a_seen", "server_combat_damage"),
+        ],
+        Scenario::CombatKnockback => vec![
+            ("remote_player_spawn", "combat_attack_sent"),
+            ("combat_attack_sent", "combat_health_update"),
+            ("combat_health_update", "combat_velocity_update"),
+            ("server_combat_damage", "server_combat_knockback"),
+        ],
+        Scenario::ArmorEquipmentMitigation => vec![
+            ("armor_inventory_slot", "combat_attack_sent"),
+            ("combat_attack_sent", "combat_health_update"),
+            ("server_equipment_state", "server_combat_damage"),
+            ("server_combat_damage", "server_armor_mitigation"),
+        ],
+        Scenario::EquipmentUpdateObservation => vec![
+            ("remote_player_spawn", "entity_equipment_update"),
+            ("server_client_b_seen", "server_equipment_update_state"),
+        ],
+        Scenario::ProjectileHit => vec![
+            ("remote_player_spawn", "projectile_use_sent"),
+            ("projectile_use_sent", "projectile_swing_sent"),
+            ("server_client_a_seen", "server_projectile_loadout"),
+        ],
+        Scenario::ProjectileDamageAttribution => vec![
+            ("remote_player_spawn", "projectile_use_sent"),
+            ("projectile_use_sent", "projectile_swing_sent"),
+            ("projectile_swing_sent", "projectile_damage_update"),
+            ("server_projectile_loadout", "server_projectile_use"),
+            ("server_projectile_use", "server_projectile_hit"),
+        ],
+        Scenario::FlagCarrierDeathReturn => vec![
+            ("flag_pickup", "combat_attack_sent"),
+            ("combat_attack_sent", "combat_death_observed"),
+            ("combat_death_observed", "respawn_request_sent"),
+            ("respawn_request_sent", "respawn_health_restored"),
+            ("server_flag_pickup", "server_flag_carrier_death"),
+            ("server_flag_carrier_death", "server_flag_return"),
+        ],
+        Scenario::ReconnectFlagState => vec![
+            ("flag_pickup", "reconnect_session"),
+            ("server_flag_pickup", "server_flag_disconnect_return"),
+            (
+                "server_flag_disconnect_return",
+                "server_reconnect_state_coherent",
+            ),
+        ],
+        Scenario::CtfInvalidPickupOwnership => vec![
+            (
+                "ctf_invalid_pickup_attempted",
+                "ctf_invalid_pickup_contained",
+            ),
+            ("server_username_seen", "server_invalid_pickup_rejected"),
+        ],
+        Scenario::CtfInvalidReturnDrop => vec![
+            (
+                "ctf_invalid_return_drop_attempted",
+                "ctf_invalid_return_drop_contained",
+            ),
+            (
+                "server_username_seen",
+                "server_invalid_return_drop_rejected",
+            ),
+        ],
+        Scenario::CtfInvalidOpponentBaseReturnDrop => vec![
+            (
+                "ctf_invalid_opponent_base_return_drop_attempted",
+                "ctf_invalid_opponent_base_return_drop_contained",
+            ),
+            (
+                "server_username_seen",
+                "server_invalid_opponent_base_return_drop_rejected",
+            ),
+        ],
+        Scenario::CtfScoreLimitWinCondition => vec![
+            ("team_red", "flag_pickup"),
+            ("flag_pickup", "flag_capture"),
+            ("flag_capture", "score_red_2"),
+            ("score_red_2", "ctf_score_limit_win_seen"),
+            (
+                "server_score_limit_pre_state",
+                "server_score_limit_final_capture",
+            ),
+            (
+                "server_score_limit_final_capture",
+                "server_score_limit_win_condition",
+            ),
+        ],
+        Scenario::CtfSimultaneousPickupCaptureRace => vec![
+            ("ctf_race_client_count", "flag_pickup"),
+            ("flag_pickup", "flag_capture"),
+            (
+                "server_ctf_race_accepted_transition",
+                "server_ctf_race_rejected_transition",
+            ),
+            (
+                "server_ctf_race_rejected_transition",
+                "server_ctf_race_final_state",
+            ),
+        ],
+        Scenario::CtfSpawnTeamBalanceReset => vec![
+            ("ctf_spawn_team_reset_client_count", "team_red"),
+            ("team_red", "team_blue"),
+            ("flag_pickup", "flag_capture"),
+            (
+                "server_ctf_spawn_red_assignment",
+                "server_ctf_spawn_blue_assignment",
+            ),
+            (
+                "server_ctf_spawn_blue_assignment",
+                "server_ctf_spawn_team_balance",
+            ),
+            (
+                "server_ctf_spawn_team_balance",
+                "server_ctf_spawn_resource_reset",
+            ),
+        ],
+        Scenario::ReconnectFlagScore => vec![
+            ("flag_pickup", "flag_capture"),
+            ("flag_capture", "score_red_1"),
+            ("score_red_1", "reconnect_session"),
+        ],
+        Scenario::MultiClientLoadScore => vec![
+            ("multi_client_count", "flag_pickup"),
+            ("flag_pickup", "flag_capture"),
+            ("flag_capture", "score_red_1"),
+            ("server_client_a_seen", "server_client_b_seen"),
+            ("server_client_b_seen", "server_flag_or_score"),
+        ],
+        _ => vec![],
+    }
+}
+
+pub(crate) fn projectile_damage_required_steps() -> Vec<&'static str> {
+    vec![
+        "attacker_client_projectile_use_sent",
+        "attacker_client_projectile_swing_sent",
+        "server_projectile_use_attacker_victim",
+        "server_projectile_hit_attacker_victim_health_delta",
+        "victim_client_damage_update",
+    ]
+}
+
+pub(crate) fn evaluate_projectile_damage_causality(
+    client_logs: &[ClientLogSlice<'_>],
+    server_log: &str,
+    base_username: &str,
+) -> ProjectileDamageCausalityEvidence {
+    evaluate_projectile_damage_causality_for_damage(
+        client_logs,
+        server_log,
+        base_username,
+        PROJECTILE_DAMAGE_AMOUNT_NEEDLE,
+    )
+}
+
+pub(crate) fn evaluate_projectile_damage_causality_for_damage(
+    client_logs: &[ClientLogSlice<'_>],
+    server_log: &str,
+    base_username: &str,
+    expected_damage_needle: &str,
+) -> ProjectileDamageCausalityEvidence {
+    let fallback_attacker = format!("{base_username}{PROJECTILE_DAMAGE_ATTACKER_SUFFIX}");
+    let fallback_victim = format!("{base_username}{PROJECTILE_DAMAGE_VICTIM_SUFFIX}");
+    let server_use = first_projectile_server_use(server_log, expected_damage_needle);
+    let (attacker_username, victim_username) = server_use
+        .as_ref()
+        .map(|event| (event.attacker.clone(), event.victim.clone()))
+        .unwrap_or_else(|| (fallback_attacker, fallback_victim));
+    let server_hit = first_projectile_server_hit(
+        server_log,
+        &attacker_username,
+        &victim_username,
+        server_use.as_ref().map(|event| event.line),
+    );
+    let attacker_log = client_log_for(client_logs, &attacker_username);
+    let victim_log = client_log_for(client_logs, &victim_username);
+
+    let attacker_use = first_line_index(attacker_log, PROJECTILE_DAMAGE_CLIENT_USE_NEEDLE);
+    let attacker_swing = first_line_index(attacker_log, PROJECTILE_DAMAGE_CLIENT_SWING_NEEDLE);
+    let victim_health = server_hit
+        .as_ref()
+        .and_then(|hit| first_line_index(victim_log, &client_health_needle(&hit.health_after)));
+
+    let mut observed_steps = Vec::new();
+    let mut missing_steps = Vec::new();
+    push_step_presence(
+        &mut observed_steps,
+        &mut missing_steps,
+        "attacker_client_projectile_use_sent",
+        attacker_use,
+    );
+    push_step_presence(
+        &mut observed_steps,
+        &mut missing_steps,
+        "attacker_client_projectile_swing_sent",
+        attacker_swing,
+    );
+    push_step_presence(
+        &mut observed_steps,
+        &mut missing_steps,
+        "server_projectile_use_attacker_victim",
+        server_use.as_ref().map(|event| event.line),
+    );
+    push_step_presence(
+        &mut observed_steps,
+        &mut missing_steps,
+        "server_projectile_hit_attacker_victim_health_delta",
+        server_hit.as_ref().map(|event| event.line),
+    );
+    push_step_presence(
+        &mut observed_steps,
+        &mut missing_steps,
+        "victim_client_damage_update",
+        victim_health,
+    );
+
+    let mut order_violations = Vec::new();
+    if let (Some(use_line), Some(swing_line)) = (attacker_use, attacker_swing) {
+        if use_line >= swing_line {
+            order_violations.push("attacker_client_use_before_swing");
+        }
+    }
+    if let Some(use_event) = &server_use {
+        if let Some(hit_event) = &server_hit {
+            if use_event.line >= hit_event.line {
+                order_violations.push("server_projectile_use_before_hit");
+            }
+        } else if first_projectile_server_hit(
+            server_log,
+            &attacker_username,
+            &victim_username,
+            None,
+        )
+        .is_some_and(|hit_event| hit_event.line < use_event.line)
+        {
+            order_violations.push("server_projectile_use_before_hit");
+        }
+    }
+
+    let passed = missing_steps.is_empty() && order_violations.is_empty();
+    ProjectileDamageCausalityEvidence {
+        required_steps: projectile_damage_required_steps(),
+        observed_steps,
+        missing_steps,
+        order_violations,
+        attacker_username,
+        victim_username,
+        passed,
+    }
+}
+
+fn push_step_presence(
+    observed_steps: &mut Vec<&'static str>,
+    missing_steps: &mut Vec<&'static str>,
+    step: &'static str,
+    line: Option<usize>,
+) {
+    if line.is_some() {
+        observed_steps.push(step);
+    } else {
+        missing_steps.push(step);
+    }
+}
+
+fn first_line_index(output: &str, needle: &str) -> Option<usize> {
+    output.lines().position(|line| line.contains(needle))
+}
+
+fn client_log_for<'a>(client_logs: &'a [ClientLogSlice<'a>], username: &str) -> &'a str {
+    client_logs
+        .iter()
+        .find(|log| log.username == username)
+        .map(|log| log.output)
+        .unwrap_or("")
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct ProjectileServerUse {
+    line: usize,
+    attacker: String,
+    victim: String,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct ProjectileServerHit {
+    line: usize,
+    health_after: String,
+}
+
+fn first_projectile_server_use(
+    server_log: &str,
+    expected_damage_needle: &str,
+) -> Option<ProjectileServerUse> {
+    server_log.lines().enumerate().find_map(|(line, text)| {
+        if !text.contains(PROJECTILE_DAMAGE_SERVER_USE_NEEDLE)
+            || !text.contains(PROJECTILE_DAMAGE_SEQUENCE_NEEDLE)
+            || !text.contains(expected_damage_needle)
+        {
+            return None;
+        }
+        Some(ProjectileServerUse {
+            line,
+            attacker: field_value(text, "attacker=")?.to_string(),
+            victim: field_value(text, "victim=")?.to_string(),
+        })
+    })
+}
+
+fn first_projectile_server_hit(
+    server_log: &str,
+    attacker_username: &str,
+    victim_username: &str,
+    after_line: Option<usize>,
+) -> Option<ProjectileServerHit> {
+    let attacker_needle = format!("attacker={attacker_username}");
+    let victim_needle = format!("victim={victim_username}");
+    server_log.lines().enumerate().find_map(|(line, text)| {
+        if after_line.is_some_and(|minimum_line| line <= minimum_line)
+            || !text.contains(PROJECTILE_DAMAGE_SERVER_HIT_NEEDLE)
+            || !text.contains(&attacker_needle)
+            || !text.contains(&victim_needle)
+        {
+            return None;
+        }
+        Some(ProjectileServerHit {
+            line,
+            health_after: field_value(text, "victim_health_after=")?.to_string(),
+        })
+    })
+}
+
+fn field_value<'a>(line: &'a str, field: &str) -> Option<&'a str> {
+    let value_start = line.find(field)? + field.len();
+    let value = &line[value_start..];
+    let value_end = value.find(char::is_whitespace).unwrap_or(value.len());
+    Some(&value[..value_end])
+}
+
+fn client_health_needle(health_after: &str) -> String {
+    format!("update_health health={health_after}")
+}

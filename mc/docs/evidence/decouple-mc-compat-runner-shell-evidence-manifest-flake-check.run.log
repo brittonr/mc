@@ -1,0 +1,15 @@
+command=nix build .#checks.x86_64-linux.mc-compat-evidence-manifest-refresh --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/vn6pc7wbx5jssya89662a679vpmasbfs.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 266 ms
+warning: error: unable to download 'http://100.100.103.95:5000/vn6pc7wbx5jssya89662a679vpmasbfs.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 573 ms
+warning: error: unable to download 'http://100.100.103.95:5000/vn6pc7wbx5jssya89662a679vpmasbfs.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1371 ms
+warning: error: unable to download 'http://100.100.103.95:5000/vn6pc7wbx5jssya89662a679vpmasbfs.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2527 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/vn6pc7wbx5jssya89662a679vpmasbfs.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/vn6pc7wbx5jssya89662a679vpmasbfs.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 7 ms: Could not connect to server
+this derivation will be built:
+  /nix/store/qgnb8aa5qf4xgzrrxqsqbc1s53pw1d8d-mc-compat-evidence-manifest-refresh.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/qgnb8aa5qf4xgzrrxqsqbc1s53pw1d8d-mc-compat-evidence-manifest-refresh.drv'...
+exit_status=0

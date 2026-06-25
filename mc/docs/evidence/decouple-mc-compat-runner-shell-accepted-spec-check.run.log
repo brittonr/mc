@@ -1,0 +1,17 @@
+command=grep runner_shell_decoupling cairn/specs/mc-compatibility/spec.md
+4673:r[mc_compatibility.runner_shell_decoupling.inventory] The compatibility runner MUST inventory `main.rs` responsibilities, side effects, compatibility surfaces, and candidate module owners before large extraction work begins.
+4677:r[mc_compatibility.runner_shell_decoupling.inventory.reviewable]
+4685:r[mc_compatibility.runner_shell_decoupling.module_boundaries] The runner SHOULD define crate-private modules around stable responsibility boundaries before moving behavior.
+4689:r[mc_compatibility.runner_shell_decoupling.module_boundaries.narrow]
+4697:r[mc_compatibility.runner_shell_decoupling.pure_cores] Planning, scenario/evidence evaluation, typed-event graphing, and receipt shaping MUST be pure deterministic cores over in-memory inputs.
+4701:r[mc_compatibility.runner_shell_decoupling.pure_cores.no_effects]
+4709:r[mc_compatibility.runner_shell_decoupling.shell_modules] Backend lifecycle, client driving, MCP process control, filesystem, socket, and command execution code MUST remain in explicit shell modules or the top-level shell.
+4713:r[mc_compatibility.runner_shell_decoupling.shell_modules.plan_driven]
+4721:r[mc_compatibility.runner_shell_decoupling.compatibility] The decoupling MUST preserve CLI behavior, scenario aliases, generated manifests, receipt schemas, dry-run output, milestone matching, and non-claim boundaries unless a separate Cairn explicitly changes them.
+4725:r[mc_compatibility.runner_shell_decoupling.compatibility.stable]
+4733:r[mc_compatibility.runner_shell_decoupling.tests] The runner split MUST include positive parity tests and negative fail-closed tests for moved cores and migrated shells.
+4737:r[mc_compatibility.runner_shell_decoupling.tests.positive]
+4744:r[mc_compatibility.runner_shell_decoupling.tests.negative]
+4752:r[mc_compatibility.runner_shell_decoupling.validation] Runner decoupling work MUST record focused runner tests, scenario manifest checks, receipt validation, selected dry-runs, Cairn gates, and task-evidence checks before archive.
+4756:r[mc_compatibility.runner_shell_decoupling.validation.log]
+exit_status=0

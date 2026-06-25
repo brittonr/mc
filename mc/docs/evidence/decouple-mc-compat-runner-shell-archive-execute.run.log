@@ -1,0 +1,81 @@
+command=CAIRN_ARCHIVE_DATE=2026-06-25 nix run .#cairn -- archive decouple-mc-compat-runner-shell --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: decouple-mc-compat-runner-shell",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-25-decouple-mc-compat-runner-shell"
+    }
+  ],
+  "blocked": false,
+  "change": "decouple-mc-compat-runner-shell",
+  "dry_run": false,
+  "input_hash": "5ee6dd751d104058ce6d524924c441e4b452a47b90e745124b626a2348e4cdff",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "d50f6bdaa4df60e29491f8b21bbcdfacff3e586306dc0f02b30bb6ffbe5be18c",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-decouple-mc-compat-runner-shell/design.md"
+        },
+        {
+          "content_hash": "46d363479d4edeb707304b672f156f69bb3bae7ecaae31210f922cb1402d4d26",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-decouple-mc-compat-runner-shell/proposal.md"
+        },
+        {
+          "content_hash": "bf128bcf36ffa2b8015a1f328fe641a82ad21ea86064e6569560a493c3a2f190",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-decouple-mc-compat-runner-shell/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "119de6268bb52df83780db9a5dbd36adc792b377d25616f8a271172db9ba6ad9",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-decouple-mc-compat-runner-shell/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/decouple-mc-compat-runner-shell"
+        }
+      ],
+      "manifest_hash": "9dcceab3070de06ab929af8afea992c202f491402c58bf5367c5a20bba673dd2"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "d50f6bdaa4df60e29491f8b21bbcdfacff3e586306dc0f02b30bb6ffbe5be18c",
+          "exists": true,
+          "path": "./cairn/changes/decouple-mc-compat-runner-shell/design.md"
+        },
+        {
+          "content_hash": "46d363479d4edeb707304b672f156f69bb3bae7ecaae31210f922cb1402d4d26",
+          "exists": true,
+          "path": "./cairn/changes/decouple-mc-compat-runner-shell/proposal.md"
+        },
+        {
+          "content_hash": "bf128bcf36ffa2b8015a1f328fe641a82ad21ea86064e6569560a493c3a2f190",
+          "exists": true,
+          "path": "./cairn/changes/decouple-mc-compat-runner-shell/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "119de6268bb52df83780db9a5dbd36adc792b377d25616f8a271172db9ba6ad9",
+          "exists": true,
+          "path": "./cairn/changes/decouple-mc-compat-runner-shell/tasks.md"
+        }
+      ],
+      "manifest_hash": "a28f2ce47831b5fa4a7cf7e6539be5acef94944b7f26439c274586f2e81ae2ff"
+    },
+    "kind": "archive",
+    "manifest_hash": "302181b674b0e06ccf5fd60aa873631216813423f22c49360566b6864910349f"
+  },
+  "plan_hash": "76262f83d3743264c65d9fc4c6180bf4d5b552551d77a54c934e8b4dc0af99df",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "5dce806c6938bec2bf27f8974ee13d38e295ab89a9ace0834dfbbe20584357c2"
+}
+exit_status=0
