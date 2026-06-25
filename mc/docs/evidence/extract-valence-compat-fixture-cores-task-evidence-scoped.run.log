@@ -1,0 +1,8 @@
+## command: rustc --edition=2021 tools/check_cairn_task_evidence.rs -o target/check-cairn-task-evidence
+exit_status=0
+
+## command: target/check-cairn-task-evidence cairn/changes/extract-valence-compat-fixture-cores/tasks.md
+task evidence gate passed: 7 completed tasks checked across 1 task files
+exit_status=0
+
+overall_exit_status=0

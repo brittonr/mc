@@ -28,7 +28,7 @@ pub struct ChunkBuilder {
 
 impl ChunkBuilder {
     pub fn new(
-        resources: Arc<RwLock<resources::Manager>>,
+        resources: resources::SharedManager,
         textures: Arc<RwLock<render::TextureManager>>,
     ) -> ChunkBuilder {
         let models = Arc::new(RwLock::new(model::Factory::new(resources, textures)));

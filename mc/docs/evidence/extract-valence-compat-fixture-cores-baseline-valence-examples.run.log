@@ -1,0 +1,364 @@
+command=cp tools/playground/src/playground.template.rs tools/playground/src/playground.rs (if missing)
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test --example ctf --example survival_compat --all-features
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+   Compiling cfg-if v1.0.4
+   Compiling pin-project-lite v0.2.17
+   Compiling smallvec v1.15.1
+   Compiling itoa v1.0.18
+   Compiling futures-core v0.3.32
+   Compiling once_cell v1.21.4
+   Compiling scopeguard v1.2.0
+   Compiling equivalent v1.0.2
+   Compiling futures-io v0.3.32
+   Compiling stable_deref_trait v1.2.1
+   Compiling hashbrown v0.17.0
+   Compiling libc v0.2.185
+   Compiling serde_core v1.0.228
+   Compiling zerocopy v0.8.48
+   Compiling typenum v1.19.0
+   Compiling slab v0.4.12
+   Compiling zmij v1.0.21
+   Compiling zerofrom v0.1.7
+   Compiling bitflags v2.11.0
+   Compiling bytes v1.11.1
+   Compiling crossbeam-utils v0.8.21
+   Compiling lock_api v0.4.14
+   Compiling parking v2.2.1
+   Compiling thiserror v1.0.69
+   Compiling allocator-api2 v0.2.21
+   Compiling yoke v0.8.2
+   Compiling anyhow v1.0.102
+   Compiling tracing-core v0.1.36
+   Compiling getrandom v0.4.2
+   Compiling serde v1.0.228
+   Compiling serde_json v1.0.149
+   Compiling thread_local v1.1.9
+   Compiling writeable v0.6.3
+   Compiling fastrand v2.4.1
+   Compiling zerovec v0.11.6
+   Compiling litemap v0.8.2
+   Compiling memchr v2.8.0
+   Compiling concurrent-queue v2.5.0
+   Compiling valence_build_utils v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_build_utils)
+   Compiling futures-lite v2.6.1
+   Compiling uuid v1.23.0
+   Compiling zerotrie v0.2.4
+   Compiling typeid v1.0.3
+   Compiling tracing v0.1.44
+   Compiling event-listener v5.4.1
+   Compiling web-time v1.1.0
+   Compiling generic-array v0.14.7
+   Compiling utf8_iter v1.0.4
+   Compiling async-task v4.7.1
+   Compiling indexmap v2.14.0
+   Compiling fixedbitset v0.4.2
+   Compiling bevy_ptr v0.14.2
+   Compiling event-listener-strategy v0.5.4
+   Compiling getrandom v0.2.17
+   Compiling getrandom v0.3.4
+   Compiling parking_lot_core v0.9.12
+   Compiling tinystr v0.8.3
+   Compiling potential_utf v0.1.5
+   Compiling async-channel v2.5.0
+   Compiling percent-encoding v2.3.2
+   Compiling rand_core v0.6.4
+   Compiling arrayvec v0.7.6
+   Compiling icu_collections v2.2.0
+   Compiling icu_locale_core v2.2.0
+   Compiling downcast-rs v1.2.1
+   Compiling smol_str v0.2.2
+   Compiling parking_lot v0.12.5
+   Compiling icu_normalizer_data v2.2.0
+   Compiling icu_properties_data v2.2.0
+   Compiling fixedbitset v0.5.7
+   Compiling nonmax v0.5.5
+   Compiling form_urlencoded v1.2.2
+   Compiling crypto-common v0.1.7
+   Compiling inout v0.1.4
+   Compiling base64 v0.22.1
+   Compiling cpufeatures v0.2.17
+   Compiling byteorder v1.5.0
+   Compiling async-executor v1.14.0
+   Compiling cesu8 v1.1.0
+   Compiling simd-adler32 v0.3.9
+   Compiling cipher v0.4.4
+   Compiling adler2 v2.0.1
+   Compiling glam v0.29.3
+   Compiling miniz_oxide v0.8.9
+   Compiling crc32fast v1.5.0
+   Compiling toml_edit v0.22.27
+   Compiling bevy_tasks v0.14.2
+   Compiling petgraph v0.6.5
+   Compiling derive_more v1.0.0
+   Compiling aes v0.8.4
+   Compiling cfb8 v0.8.1
+   Compiling zeroize v1.8.2
+   Compiling cpufeatures v0.3.0
+   Compiling rustc-hash v2.1.2
+   Compiling arrayref v0.3.9
+   Compiling constant_time_eq v0.4.2
+   Compiling libm v0.2.16
+   Compiling futures-sink v0.3.32
+   Compiling errno v0.3.14
+   Compiling const-oid v0.9.6
+   Compiling blake3 v1.8.4
+   Compiling flate2 v1.1.9
+   Compiling subtle v2.6.1
+   Compiling signal-hook-registry v1.4.8
+   Compiling socket2 v0.6.3
+   Compiling icu_provider v2.2.0
+   Compiling mio v1.2.0
+   Compiling spin v0.9.8
+   Compiling http v1.4.0
+   Compiling rustls-pki-types v1.14.0
+   Compiling erased-serde v0.4.10
+   Compiling icu_properties v2.2.0
+   Compiling icu_normalizer v2.2.0
+   Compiling bevy_macro_utils v0.14.2
+   Compiling valence_ident v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_ident)
+   Compiling valence_nbt v0.8.0 (/home/brittonr/git/mc/servers/valence/crates/valence_nbt)
+   Compiling num-traits v0.2.19
+   Compiling tokio v1.51.1
+   Compiling http-body v1.0.1
+   Compiling block-buffer v0.10.4
+   Compiling futures-task v0.3.32
+   Compiling base64ct v1.8.3
+   Compiling untrusted v0.9.0
+   Compiling lazy_static v1.5.0
+   Compiling digest v0.10.7
+   Compiling ring v0.17.14
+   Compiling futures-util v0.3.32
+   Compiling tower-service v0.3.3
+   Compiling try-lock v0.2.5
+   Compiling httparse v1.10.1
+   Compiling want v0.3.1
+   Compiling idna_adapter v1.2.1
+   Compiling pem-rfc7468 v0.7.0
+   Compiling futures-channel v0.3.32
+   Compiling ahash v0.8.12
+   Compiling ppv-lite86 v0.2.21
+   Compiling valence_generated v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_generated)
+   Compiling idna v1.1.0
+   Compiling hashbrown v0.14.5
+   Compiling valence_text v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_text)
+   Compiling rand_chacha v0.3.1
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+   Compiling valence_entity v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_entity)
+   Compiling num-integer v0.1.46
+   Compiling url v2.5.8
+   Compiling rand v0.8.5
+   Compiling der v0.7.10
+   Compiling log v0.4.29
+   Compiling bevy_utils v0.14.2
+   Compiling atomic-waker v1.1.2
+   Compiling time-core v0.1.8
+   Compiling num-conv v0.2.1
+   Compiling powerfmt v0.2.0
+   Compiling sync_wrapper v1.0.2
+   Compiling ipnet v2.12.0
+   Compiling time-macros v0.2.27
+   Compiling rustls-webpki v0.103.11
+   Compiling deranged v0.5.8
+   Compiling linux-raw-sys v0.12.1
+   Compiling utf8parse v0.2.2
+   Compiling tower-layer v0.3.3
+   Compiling regex-syntax v0.8.10
+   Compiling anstyle-parse v1.0.0
+   Compiling valence_math v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_math)
+   Compiling rustix v1.1.4
+   Compiling spki v0.7.3
+   Compiling rustls v0.23.38
+   Compiling pkcs8 v0.10.2
+   Compiling thiserror v2.0.18
+   Compiling num-iter v0.1.45
+   Compiling num-bigint v0.4.6
+   Compiling valence_lang v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_lang)
+   Compiling webpki-roots v1.0.6
+   Compiling nanorand v0.7.0
+   Compiling regex-automata v0.4.14
+   Compiling colorchoice v1.0.5
+   Compiling tap v1.0.1
+   Compiling anstyle-query v1.1.5
+   Compiling anstyle v1.0.14
+   Compiling ryu v1.0.23
+   Compiling foldhash v0.2.0
+   Compiling is_terminal_polyfill v1.70.2
+   Compiling iri-string v0.7.12
+   Compiling anstream v1.0.0
+   Compiling serde_urlencoded v0.7.1
+   Compiling hashbrown v0.16.1
+   Compiling wyz v0.5.1
+   Compiling flume v0.11.1
+   Compiling num-bigint-dig v0.8.6
+   Compiling terminal_size v0.4.4
+   Compiling pkcs1 v0.7.5
+   Compiling radium v0.7.0
+   Compiling tracing-log v0.2.0
+   Compiling signature v2.2.0
+   Compiling hyper v1.9.0
+   Compiling tower v0.5.3
+   Compiling tokio-util v0.7.18
+   Compiling sharded-slab v0.1.7
+   Compiling http-body-util v0.1.3
+   Compiling nu-ansi-term v0.50.3
+   Compiling funty v2.0.0
+   Compiling strsim v0.11.1
+   Compiling hyper-util v0.1.20
+   Compiling time v0.3.47
+   Compiling matchers v0.2.0
+   Compiling tower-http v0.6.8
+   Compiling clap_lex v1.1.0
+   Compiling tracing-subscriber v0.3.23
+   Compiling tokio-rustls v0.26.4
+   Compiling clap_builder v4.6.0
+   Compiling bitvec v1.0.1
+   Compiling rsa v0.9.10
+   Compiling lru v0.16.4
+   Compiling hyper-rustls v0.27.8
+   Compiling reqwest v0.12.28
+   Compiling ordered-float v4.6.0
+   Compiling simple_asn1 v0.6.4
+   Compiling hmac v0.12.1
+   Compiling rsa-der v0.3.0
+   Compiling bevy_reflect_derive v0.14.2
+   Compiling bevy_ecs_macros v0.14.2
+warning: `valence_text` (lib) generated 5 warnings
+   Compiling bevy_derive v0.14.2
+   Compiling sha2 v0.10.9
+   Compiling sha1 v0.10.6
+   Compiling rand_xorshift v0.3.0
+   Compiling clap v4.6.0
+   Compiling regex-lite v0.1.9
+   Compiling condtype v1.3.0
+   Compiling noise v0.9.0
+   Compiling divan v0.1.21
+   Compiling bevy_reflect v0.14.2
+   Compiling bevy_ecs v0.14.2
+   Compiling bevy_app v0.14.2
+   Compiling valence_protocol v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_protocol)
+   Compiling bevy_core v0.14.2
+   Compiling bevy_log v0.14.2
+   Compiling bevy_hierarchy v0.14.2
+   Compiling valence_server_common v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_server_common)
+   Compiling valence_registry v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_registry)
+   Compiling valence_server v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_server)
+   Compiling valence_inventory v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_inventory)
+   Compiling valence_scoreboard v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_scoreboard)
+   Compiling valence_anvil v0.1.0 (/home/brittonr/git/mc/servers/valence/crates/valence_anvil)
+   Compiling valence_boss_bar v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_boss_bar)
+   Compiling valence_network v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_network)
+   Compiling valence_world_border v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_world_border)
+   Compiling valence_player_list v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_player_list)
+   Compiling valence_advancement v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_advancement)
+   Compiling valence_weather v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_weather)
+   Compiling valence_command v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_command)
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+   Compiling valence_equipment v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_equipment)
+   Compiling valence v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence)
+warning: `valence_inventory` (lib) generated 1 warning
+    Finished `test` profile [optimized + debuginfo] target(s) in 1m 16s
+     Running unittests examples/ctf.rs (/home/brittonr/.cargo-target/debug/examples/ctf-b9c0a4b55722f119)
+
+running 26 tests
+test tests::ctf_race_final_state_rejects_double_score_or_held_flag ... ok
+test tests::arrow_policy_redacts_secret_like_diagnostics ... ok
+test tests::arrow_policy_clamps_damage_to_maximum ... ok
+test tests::ctf_race_milestones_record_one_accept_one_reject_and_final_score ... ok
+test tests::ctf_spawn_team_reset_rejects_imbalance_or_wrong_score ... ok
+test tests::ctf_spawn_team_reset_milestones_record_balanced_assignments_and_reset ... ok
+test tests::default_arrow_policy_matches_legacy_projectile_damage ... ok
+test tests::invalid_flag_pickup_helper_rejects_own_flag_and_allows_enemy_flag ... ok
+test tests::invalid_flag_pickup_milestone_records_no_transfer_and_scores ... ok
+test tests::invalid_flag_return_drop_milestone_records_no_state_mutation_or_score ... ok
+test tests::invalid_opponent_base_return_drop_milestone_records_no_state_mutation_or_score ... ok
+test tests::invalid_module_is_rejected_and_previous_snapshot_survives ... ok
+test tests::inventory_drag_transactions_classifier_accepts_ordered_drag ... ok
+test tests::inventory_drag_transactions_classifier_rejects_wrong_order_or_distribution ... ok
+test tests::inventory_stack_split_merge_classifier_accepts_ordered_clicks ... ok
+test tests::inventory_stack_split_merge_classifier_rejects_wrong_actor_or_count ... ok
+test tests::malformed_or_capability_invalid_module_is_rejected ... ok
+test tests::non_default_policy_changes_both_projectile_call_site_health_deltas ... ok
+test tests::range_invalid_decision_output_is_rejected ... ok
+test tests::score_limit_milestones_record_pre_state_final_capture_and_win_once ... ok
+test tests::snapshot_diff_reports_changed_policy_fields ... ok
+test tests::score_limit_forbidden_milestones_are_named_for_duplicate_win_and_late_score_mutation ... ok
+test tests::steel_module_edit_changes_arrow_damage_policy ... ok
+test tests::vanilla_combat_armor_reference_helpers_apply_bounded_chestplate_formula ... ok
+test tests::vanilla_combat_reference_helpers_fail_closed_for_unbounded_inputs ... ok
+test tests::vanilla_combat_reference_milestones_record_normalized_metrics ... ok
+
+test result: ok. 26 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/survival_compat.rs (/home/brittonr/.cargo-target/debug/examples/survival_compat-eed5f1119b17430f)
+
+running 25 tests
+test tests::survival_biome_dimension_normalizes_known_environment_ids ... ok
+test tests::survival_biome_dimension_rejects_unknown_environment_ids ... ok
+test tests::survival_break_accepts_only_target_stop_destroy ... ok
+test tests::survival_block_entity_fixture_places_initial_or_persisted_sign_only ... ok
+test tests::survival_chest_opens_only_main_hand_survival_target ... ok
+test tests::survival_block_entity_payload_uses_contract_lines ... ok
+test tests::survival_chest_store_event_requires_exact_slot_window_item ... ok
+test tests::survival_crafting_collect_event_requires_result_slot_and_stack ... ok
+test tests::survival_crafting_input_event_requires_exact_slot_window ... ok
+test tests::survival_crafting_opens_only_main_hand_survival_target ... ok
+test tests::survival_furnace_collect_event_requires_output_slot_and_stack ... ok
+test tests::survival_furnace_input_and_fuel_events_require_exact_slot_window ... ok
+test tests::survival_furnace_invalid_fuel_rejection_requires_breadth_collect_and_fuel_slot ... ok
+test tests::survival_furnace_opens_only_main_hand_survival_target ... ok
+test tests::survival_hunger_food_stack_requires_bread_count ... ok
+test tests::survival_hunger_food_use_requires_main_hand_sequence_slot_and_pre_state ... ok
+test tests::survival_hunger_profile_rejects_disabled_contract ... ok
+test tests::survival_hunger_profile_selects_enabled_contract ... ok
+test tests::survival_mob_drop_attack_requires_survival_attack_on_fixture_mob ... ok
+test tests::survival_mob_drop_stack_requires_iron_ingot_count ... ok
+test tests::survival_place_accepts_only_main_hand_up_on_target ... ok
+test tests::survival_redstone_toggle_accepts_only_main_hand_survival_control ... ok
+test tests::survival_redstone_toggle_states_use_powered_properties ... ok
+test tests::survival_world_persistence_accepts_only_main_hand_up_on_base ... ok
+test tests::survival_world_persistence_stack_requires_dirt_count ... ok
+
+test result: ok. 25 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+exit_status=0

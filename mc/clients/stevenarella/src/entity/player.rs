@@ -167,20 +167,16 @@ impl ecs::System for PlayerRenderer {
         use std::f32::consts::PI;
         use std::f64::consts::PI as PI64;
         let world_entity = m.get_world();
-        let delta = m
-            .get_component_mut(world_entity, self.game_info)
-            .unwrap()
-            .delta;
+        let delta = m.get_component(world_entity, self.game_info).unwrap().delta;
         for e in m.find(&self.filter) {
-            let player_model = m.get_component_mut(e, self.player_model).unwrap();
-            let position = m.get_component_mut(e, self.position).unwrap();
-            let rotation = m.get_component_mut(e, self.rotation).unwrap();
-            let light = m.get_component(e, self.light).unwrap();
-
-            if player_model.dirty {
+            let light = *m.get_component(e, self.light).unwrap();
+            if m.get_component(e, self.player_model).unwrap().dirty {
                 self.entity_removed(m, e, world, renderer);
                 self.entity_added(m, e, world, renderer);
             }
+            let (player_model, position, rotation) = m
+                .get_three_components_mut(e, self.player_model, self.position, self.rotation)
+                .unwrap();
 
             if let Some(pmodel) = player_model.model {
                 let mdl = renderer.model.get_model(pmodel).unwrap();
@@ -627,150 +623,172 @@ impl ecs::System for MovementHandler {
 
     fn update(&mut self, m: &mut ecs::Manager, world: &mut world::World, _: &mut render::Renderer) {
         for e in m.find(&self.filter) {
-            let movement = m.get_component_mut(e, self.movement).unwrap();
-            if movement.flying && m.get_component(e, self.gravity).is_some() {
+            let gamemode = *m.get_component(e, self.gamemode).unwrap();
+            let rotation_yaw = m.get_component(e, self.rotation).unwrap().yaw;
+            let player_bounds = m.get_component(e, self.bounds).unwrap().bounds;
+            let movement_flying = m.get_component(e, self.movement).unwrap().flying;
+            let gravity_present = m.get_component(e, self.gravity).is_some();
+            if movement_flying && gravity_present {
                 m.remove_component(e, self.gravity);
-            } else if !movement.flying && m.get_component(e, self.gravity).is_none() {
+            } else if !movement_flying && !gravity_present {
                 m.add_component(e, self.gravity, Gravity::new());
             }
-            let gamemode = m.get_component(e, self.gamemode).unwrap();
-            movement.flying |= gamemode.always_fly();
+            let gravity_state = m.get_component(e, self.gravity).copied();
 
-            // Detect double-tapping jump to toggle creative flight
-            if movement.is_key_pressed(Stevenkey::Jump) {
-                if movement.when_last_jump_pressed.is_none() {
-                    movement.when_last_jump_pressed = Some(Instant::now());
-                    if movement.when_last_jump_released.is_some() {
-                        let dt = movement.when_last_jump_pressed.unwrap()
-                            - movement.when_last_jump_released.unwrap();
-                        if dt.as_secs() == 0
-                            && dt.subsec_millis() <= crate::settings::DOUBLE_JUMP_MS
-                        {
-                            movement.want_to_fly = !movement.want_to_fly;
-                            //info!("double jump! dt={:?} toggle want_to_fly = {}", dt, movement.want_to_fly);
+            let (flying, jump_pressed, sneak_pressed, sprint_pressed, forward, yaw) = {
+                let movement = m.get_component_mut(e, self.movement).unwrap();
+                movement.flying |= gamemode.always_fly();
 
-                            if gamemode.can_fly() && !gamemode.always_fly() {
-                                movement.flying = movement.want_to_fly;
+                // Detect double-tapping jump to toggle creative flight
+                if movement.is_key_pressed(Stevenkey::Jump) {
+                    if movement.when_last_jump_pressed.is_none() {
+                        movement.when_last_jump_pressed = Some(Instant::now());
+                        if movement.when_last_jump_released.is_some() {
+                            let dt = movement.when_last_jump_pressed.unwrap()
+                                - movement.when_last_jump_released.unwrap();
+                            if dt.as_secs() == 0
+                                && dt.subsec_millis() <= crate::settings::DOUBLE_JUMP_MS
+                            {
+                                movement.want_to_fly = !movement.want_to_fly;
+                                //info!("double jump! dt={:?} toggle want_to_fly = {}", dt, movement.want_to_fly);
+
+                                if gamemode.can_fly() && !gamemode.always_fly() {
+                                    movement.flying = movement.want_to_fly;
+                                }
                             }
                         }
                     }
+                } else if movement.when_last_jump_pressed.is_some() {
+                    movement.when_last_jump_released = Some(Instant::now());
+                    movement.when_last_jump_pressed = None;
                 }
-            } else if movement.when_last_jump_pressed.is_some() {
-                movement.when_last_jump_released = Some(Instant::now());
-                movement.when_last_jump_pressed = None;
+
+                let (forward, yaw) = movement.calculate_movement(rotation_yaw);
+                (
+                    movement.flying,
+                    movement.is_key_pressed(Stevenkey::Jump),
+                    movement.is_key_pressed(Stevenkey::Sneak),
+                    movement.is_key_pressed(Stevenkey::Sprint),
+                    forward,
+                    yaw,
+                )
+            };
+
+            let mut ground_update = None;
+            {
+                let (position, velocity) = m
+                    .get_two_components_mut(e, self.position, self.velocity)
+                    .unwrap();
+                let mut last_position = position.position;
+
+                if world.is_chunk_loaded(
+                    (position.position.x as i32) >> 4,
+                    (position.position.z as i32) >> 4,
+                ) {
+                    let mut speed = if sprint_pressed { 0.2806 } else { 0.21585 };
+                    if flying {
+                        speed *= 2.5;
+
+                        if jump_pressed {
+                            position.position.y += speed;
+                        }
+                        if sneak_pressed {
+                            position.position.y -= speed;
+                        }
+                    } else if gravity_state.map_or(false, |v| v.on_ground) {
+                        if jump_pressed && velocity.velocity.y.abs() < 0.001 {
+                            velocity.velocity.y = 0.42;
+                        }
+                    } else {
+                        velocity.velocity.y -= 0.08;
+                        if velocity.velocity.y < -3.92 {
+                            velocity.velocity.y = -3.92;
+                        }
+                    }
+                    velocity.velocity.y *= 0.98;
+                    position.position.x += forward * yaw.cos() * speed;
+                    position.position.z -= forward * yaw.sin() * speed;
+                    position.position.y += velocity.velocity.y;
+
+                    if !gamemode.noclip() {
+                        let mut target = position.position;
+                        position.position.y = last_position.y;
+                        position.position.z = last_position.z;
+
+                        // We handle each axis separately to allow for a sliding
+                        // effect when pushing up against walls.
+
+                        let (bounds, xhit) =
+                            check_collisions(world, position, &last_position, player_bounds);
+                        position.position.x = bounds.min.x + 0.3;
+                        last_position.x = position.position.x;
+
+                        position.position.z = target.z;
+                        let (bounds, zhit) =
+                            check_collisions(world, position, &last_position, player_bounds);
+                        position.position.z = bounds.min.z + 0.3;
+                        last_position.z = position.position.z;
+
+                        // Half block jumps
+                        // Minecraft lets you 'jump' up 0.5 blocks
+                        // for slabs and stairs (or smaller blocks).
+                        // Currently we implement this as a teleport to the
+                        // top of the block if we could move there
+                        // but this isn't smooth.
+                        if (xhit || zhit) && gravity_state.map_or(false, |v| v.on_ground) {
+                            let mut ox = position.position.x;
+                            let mut oz = position.position.z;
+                            position.position.x = target.x;
+                            position.position.z = target.z;
+                            for offset in 1..9 {
+                                let mini = player_bounds.add_v(cgmath::Vector3::new(
+                                    0.0,
+                                    offset as f64 / 16.0,
+                                    0.0,
+                                ));
+                                let (_, hit) =
+                                    check_collisions(world, position, &last_position, mini);
+                                if !hit {
+                                    target.y += offset as f64 / 16.0;
+                                    ox = target.x;
+                                    oz = target.z;
+                                    break;
+                                }
+                            }
+                            position.position.x = ox;
+                            position.position.z = oz;
+                        }
+
+                        position.position.y = target.y;
+                        let (bounds, yhit) =
+                            check_collisions(world, position, &last_position, player_bounds);
+                        position.position.y = bounds.min.y;
+                        last_position.y = position.position.y;
+                        if yhit {
+                            velocity.velocity.y = 0.0;
+                        }
+
+                        if let Some(gravity) = gravity_state {
+                            let ground = Aabb3::new(
+                                Point3::new(-0.3, -0.005, -0.3),
+                                Point3::new(0.3, 0.0, 0.3),
+                            );
+                            let (_, hit) =
+                                check_collisions(world, position, &last_position, ground);
+                            ground_update = Some((hit, !gravity.on_ground && hit));
+                        }
+                    }
+                }
             }
 
-            let position = m.get_component_mut(e, self.position).unwrap();
-            let rotation = m.get_component(e, self.rotation).unwrap();
-            let velocity = m.get_component_mut(e, self.velocity).unwrap();
-            let gravity = m.get_component_mut(e, self.gravity);
-
-            let player_bounds = m.get_component(e, self.bounds).unwrap().bounds;
-
-            let mut last_position = position.position;
-
-            if world.is_chunk_loaded(
-                (position.position.x as i32) >> 4,
-                (position.position.z as i32) >> 4,
-            ) {
-                let (forward, yaw) = movement.calculate_movement(rotation.yaw);
-                let mut speed = if movement.is_key_pressed(Stevenkey::Sprint) {
-                    0.2806
-                } else {
-                    0.21585
-                };
-                if movement.flying {
-                    speed *= 2.5;
-
-                    if movement.is_key_pressed(Stevenkey::Jump) {
-                        position.position.y += speed;
-                    }
-                    if movement.is_key_pressed(Stevenkey::Sneak) {
-                        position.position.y -= speed;
-                    }
-                } else if gravity.as_ref().map_or(false, |v| v.on_ground) {
-                    if movement.is_key_pressed(Stevenkey::Jump) && velocity.velocity.y.abs() < 0.001
-                    {
-                        velocity.velocity.y = 0.42;
-                    }
-                } else {
-                    velocity.velocity.y -= 0.08;
-                    if velocity.velocity.y < -3.92 {
-                        velocity.velocity.y = -3.92;
-                    }
+            if let Some((on_ground, did_touch_ground)) = ground_update {
+                if let Some(gravity) = m.get_component_mut(e, self.gravity) {
+                    gravity.on_ground = on_ground;
                 }
-                velocity.velocity.y *= 0.98;
-                position.position.x += forward * yaw.cos() * speed;
-                position.position.z -= forward * yaw.sin() * speed;
-                position.position.y += velocity.velocity.y;
-
-                if !gamemode.noclip() {
-                    let mut target = position.position;
-                    position.position.y = last_position.y;
-                    position.position.z = last_position.z;
-
-                    // We handle each axis separately to allow for a sliding
-                    // effect when pushing up against walls.
-
-                    let (bounds, xhit) =
-                        check_collisions(world, position, &last_position, player_bounds);
-                    position.position.x = bounds.min.x + 0.3;
-                    last_position.x = position.position.x;
-
-                    position.position.z = target.z;
-                    let (bounds, zhit) =
-                        check_collisions(world, position, &last_position, player_bounds);
-                    position.position.z = bounds.min.z + 0.3;
-                    last_position.z = position.position.z;
-
-                    // Half block jumps
-                    // Minecraft lets you 'jump' up 0.5 blocks
-                    // for slabs and stairs (or smaller blocks).
-                    // Currently we implement this as a teleport to the
-                    // top of the block if we could move there
-                    // but this isn't smooth.
-                    if (xhit || zhit) && gravity.as_ref().map_or(false, |v| v.on_ground) {
-                        let mut ox = position.position.x;
-                        let mut oz = position.position.z;
-                        position.position.x = target.x;
-                        position.position.z = target.z;
-                        for offset in 1..9 {
-                            let mini = player_bounds.add_v(cgmath::Vector3::new(
-                                0.0,
-                                offset as f64 / 16.0,
-                                0.0,
-                            ));
-                            let (_, hit) = check_collisions(world, position, &last_position, mini);
-                            if !hit {
-                                target.y += offset as f64 / 16.0;
-                                ox = target.x;
-                                oz = target.z;
-                                break;
-                            }
-                        }
-                        position.position.x = ox;
-                        position.position.z = oz;
-                    }
-
-                    position.position.y = target.y;
-                    let (bounds, yhit) =
-                        check_collisions(world, position, &last_position, player_bounds);
-                    position.position.y = bounds.min.y;
-                    last_position.y = position.position.y;
-                    if yhit {
-                        velocity.velocity.y = 0.0;
-                    }
-
-                    if let Some(gravity) = gravity {
-                        let ground =
-                            Aabb3::new(Point3::new(-0.3, -0.005, -0.3), Point3::new(0.3, 0.0, 0.3));
-                        let prev = gravity.on_ground;
-                        let (_, hit) = check_collisions(world, position, &last_position, ground);
-                        gravity.on_ground = hit;
-                        if !prev && gravity.on_ground {
-                            movement.did_touch_ground = true;
-                        }
-                    }
+                if did_touch_ground {
+                    m.get_component_mut(e, self.movement)
+                        .unwrap()
+                        .did_touch_ground = true;
                 }
             }
         }

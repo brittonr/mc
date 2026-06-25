@@ -4,7 +4,6 @@ use crate::ui;
 use instant::Instant;
 use rand::{self, seq::SliceRandom};
 use std::f64::consts;
-use std::sync::{Arc, RwLock};
 
 pub struct Logo {
     _shadow: ui::BatchRef,
@@ -19,10 +18,7 @@ pub struct Logo {
 }
 
 impl Logo {
-    pub fn new(
-        resources: Arc<RwLock<resources::Manager>>,
-        ui_container: &mut ui::Container,
-    ) -> Logo {
+    pub fn new(resources: resources::SharedManager, ui_container: &mut ui::Container) -> Logo {
         let logo_str = {
             let res = resources.read().unwrap();
             let mut logo = res.open("steven", "logo/logo.txt").unwrap();

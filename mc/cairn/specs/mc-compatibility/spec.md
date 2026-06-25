@@ -7390,3 +7390,285 @@ r[mc_compatibility.runner_json_evidence_boundary.validation.log]
 - GIVEN JSON/evidence extraction is ready to archive
 - WHEN reviewers inspect task evidence
 - THEN successful logs show positive and negative schema tests, receipt/failure-bundle validation, selected dry-runs, evidence manifest or task-evidence checks, Cairn proposal/design/tasks gates, Cairn validation, and task-evidence validation.
+
+### Requirement: Valence fixture inventory
+
+r[mc_compatibility.valence_fixture_core.inventory] Valence compatibility fixture work MUST inventory CTF and survival fixture responsibilities, rule decisions, Bevy shell code, milestone strings, env toggles, global state, and non-goals before extraction.
+
+#### Scenario: Fixture responsibilities are reviewable
+
+r[mc_compatibility.valence_fixture_core.inventory.reviewable]
+- GIVEN `ctf.rs` or `survival_compat.rs` is selected for fixture-core extraction
+- WHEN reviewers inspect the inventory
+- THEN rule decisions, Bevy systems, resources, env toggles, milestone emitters, global state, and evidence boundaries are classified
+- AND non-goals such as production gameplay, full CTF correctness, full survival correctness, and vanilla parity are explicit.
+
+### Requirement: Valence fixture boundaries
+
+r[mc_compatibility.valence_fixture_core.boundaries] Compatibility fixtures SHOULD separate deterministic fixture cores from Bevy ECS adapter systems.
+
+#### Scenario: Adapter owns ECS access
+
+r[mc_compatibility.valence_fixture_core.boundaries.adapter]
+- GIVEN a fixture rule is extracted
+- WHEN reviewers inspect its boundary
+- THEN the pure core consumes explicit snapshots/events and returns decisions, state transitions, or milestone text
+- AND Bevy queries, commands, resources, timers, logging, file markers, and world mutation remain in adapter systems.
+
+### Requirement: CTF fixture core
+
+r[mc_compatibility.valence_fixture_core.ctf_core] CTF compatibility fixture behavior SHOULD move deterministic flag, score, race, spawn-reset, inventory, combat, and milestone decisions into testable core functions.
+
+#### Scenario: CTF transition is deterministic
+
+r[mc_compatibility.valence_fixture_core.ctf_core.transition]
+- GIVEN explicit CTF state and an observed event such as pickup, return, capture, race attempt, inventory click, or combat hit
+- WHEN the CTF fixture core evaluates it
+- THEN it returns the documented accepted, rejected, milestone, or no-op transition deterministically
+- AND it does not depend on Bevy iteration order or global mutable state.
+
+### Requirement: Survival fixture core
+
+r[mc_compatibility.valence_fixture_core.survival_core] Survival compatibility fixture behavior SHOULD move deterministic block, container, crafting, furnace, hunger, mob, redstone, persistence, block-entity, biome/dimension, and milestone decisions into testable core functions.
+
+#### Scenario: Survival fixture decision is deterministic
+
+r[mc_compatibility.valence_fixture_core.survival_core.decision]
+- GIVEN explicit survival fixture state and an observed interaction or packet-derived event
+- WHEN the survival fixture core evaluates it
+- THEN it returns the documented mutation, rejection, milestone, marker write request, or no-op decision
+- AND filesystem marker writes and Bevy world mutations stay in the adapter shell.
+
+### Requirement: Valence fixture state ownership
+
+r[mc_compatibility.valence_fixture_core.state_ownership] Global mutable fixture state SHOULD be replaced by explicit Bevy resources, fixture state structs, or documented temporary compatibility shims.
+
+#### Scenario: Policy state is explicit
+
+r[mc_compatibility.valence_fixture_core.state_ownership.policy]
+- GIVEN fixture policy or reload state is needed by a Valence compatibility example
+- WHEN the state is read or updated
+- THEN ownership is represented by a resource, fixture state value, or explicit input/output boundary
+- AND any remaining global state is documented with its safety assumptions and retirement path.
+
+### Requirement: Valence fixture compatibility preservation
+
+r[mc_compatibility.valence_fixture_core.compatibility] Fixture-core extraction MUST preserve example commands, env var contracts, milestone text, scenario behavior, and evidence non-claim boundaries unless another Cairn changes them.
+
+#### Scenario: Fixture evidence remains comparable
+
+r[mc_compatibility.valence_fixture_core.compatibility.stable]
+- GIVEN selected mc-compat scenarios run against the extracted fixtures
+- WHEN receipts and logs are compared to the pre-extraction contract
+- THEN required milestones, forbidden milestones, env toggles, and non-claim fields remain compatible
+- AND no default Valence gameplay, production readiness, or vanilla parity claim is added.
+
+### Requirement: Valence fixture tests
+
+r[mc_compatibility.valence_fixture_core.tests] Fixture-core extraction MUST include positive transition tests and negative fail-closed tests for migrated CTF and survival decisions.
+
+#### Scenario: Valid fixture transitions pass
+
+r[mc_compatibility.valence_fixture_core.tests.positive]
+- GIVEN valid CTF and survival fixture states and events
+- WHEN core tests run
+- THEN accepted transitions, expected milestones, and adapter requests match the existing fixture contract.
+
+#### Scenario: Invalid fixture transitions fail closed
+
+r[mc_compatibility.valence_fixture_core.tests.negative]
+- GIVEN duplicate wins, duplicate pickups, wrong-team returns, invalid inventory events, missing persistence markers, malformed block-entity state, unsupported policy output, or out-of-order fixture events
+- WHEN core tests run
+- THEN deterministic rejection/no-op diagnostics are produced
+- AND no false success milestone is emitted.
+
+### Requirement: Valence fixture-core validation
+
+r[mc_compatibility.valence_fixture_core.validation] Fixture-core extraction MUST record focused Valence tests/example checks, selected mc-compat rails, Cairn gates, and task-evidence checks before archive.
+
+#### Scenario: Fixture-core closeout is reviewable
+
+r[mc_compatibility.valence_fixture_core.validation.log]
+- GIVEN fixture-core extraction is ready to archive
+- WHEN reviewers inspect task evidence
+- THEN successful logs show positive and negative fixture-core tests, focused Valence/example checks, selected mc-compat dry-runs or live rails as scoped, Cairn proposal/design/tasks gates, Cairn validation, and task-evidence validation.
+
+### Requirement: Stevenarella unsafe boundary audit
+
+r[mc_compatibility.stevenarella_runtime_boundaries.audit] Stevenarella runtime-boundary work MUST audit unsafe code, global mutable state, synchronization assumptions, caller invariants, and failure modes before refactoring GL, resources, or ECS internals.
+
+#### Scenario: Unsafe assumptions are explicit
+
+r[mc_compatibility.stevenarella_runtime_boundaries.audit.explicit]
+- GIVEN a GL, resource, ECS, render, model, or chunk-builder boundary is selected for hardening
+- WHEN reviewers inspect the audit
+- THEN each unsafe block, unsafe impl, global mutable state item, and relevant unwrap/panic assumption is classified with ownership, invariant, failure mode, and planned mitigation
+- AND unsupported full memory-safety proof claims remain non-claims.
+
+### Requirement: Explicit GL context boundary
+
+r[mc_compatibility.stevenarella_runtime_boundaries.gl_context] Stevenarella rendering SHOULD replace or quarantine the global mutable GL context behind an explicit initialization and context-access boundary.
+
+#### Scenario: GL use is initialization-checked
+
+r[mc_compatibility.stevenarella_runtime_boundaries.gl_context.initialized]
+- GIVEN rendering code needs GL access
+- WHEN it requests the context through the hardened boundary
+- THEN the boundary proves initialization or returns a deterministic diagnostic/panic policy documented for startup-only failure
+- AND raw global mutable pointer access is isolated to the smallest possible module or removed.
+
+### Requirement: Resource manager sharing boundary
+
+r[mc_compatibility.stevenarella_runtime_boundaries.resources] Resource manager sharing MUST separate pack IO, reload/version state, progress reporting, and worker-thread access behind safe ownership or synchronization contracts.
+
+#### Scenario: Resource access is synchronized by design
+
+r[mc_compatibility.stevenarella_runtime_boundaries.resources.synchronized]
+- GIVEN render, model, UI, or chunk-builder code reads resources while reload/progress work may occur
+- WHEN the resource boundary is used
+- THEN immutable reads, mutable pack updates, progress updates, and worker communication are represented by explicit synchronized types or ownership handoffs
+- AND unsafe `Sync` assumptions are removed or documented as temporary shims with tests and retirement tasks.
+
+### Requirement: ECS unsafe storage boundary
+
+r[mc_compatibility.stevenarella_runtime_boundaries.ecs] ECS raw storage and lifetime-sensitive access MUST be encapsulated behind safe APIs that enforce entity generation, component membership, aliasing, and drop invariants.
+
+#### Scenario: Invalid ECS access fails closed
+
+r[mc_compatibility.stevenarella_runtime_boundaries.ecs.invalid]
+- GIVEN an entity key is stale, a component is absent, storage has been removed, or an invalid borrow pattern is attempted through safe APIs
+- WHEN ECS accessors are called
+- THEN they return `None`, a deterministic diagnostic, or a compile-time rejection according to the API contract
+- AND safe callers cannot observe unchecked transmute or raw pointer access.
+
+### Requirement: Stevenarella runtime compatibility preservation
+
+r[mc_compatibility.stevenarella_runtime_boundaries.compatibility] Runtime-boundary hardening MUST preserve observable render/resource/probe behavior and existing mc-compat evidence boundaries unless another Cairn changes them.
+
+#### Scenario: Client rails remain comparable
+
+r[mc_compatibility.stevenarella_runtime_boundaries.compatibility.stable]
+- GIVEN a hardened runtime boundary is used by existing render, resource, ECS, or probe paths
+- WHEN focused Stevenarella checks or selected mc-compat rails run
+- THEN existing user-visible behavior, capture output shape, probe milestones, and receipt fields remain compatible
+- AND the change does not claim full client safety, renderer portability, or full protocol compatibility.
+
+### Requirement: Stevenarella runtime-boundary tests
+
+r[mc_compatibility.stevenarella_runtime_boundaries.tests] Runtime-boundary hardening MUST include positive invariant tests and negative fail-closed tests for each hardened boundary.
+
+#### Scenario: Valid runtime invariants pass
+
+r[mc_compatibility.stevenarella_runtime_boundaries.tests.positive]
+- GIVEN GL initialization, resource reads, progress updates, entity generation, component membership, and component drop cases satisfy the documented invariants
+- WHEN focused tests run
+- THEN the hardened boundaries allow existing behavior and preserve data correctly.
+
+#### Scenario: Invalid runtime invariants fail closed
+
+r[mc_compatibility.stevenarella_runtime_boundaries.tests.negative]
+- GIVEN GL access is uninitialized, a resource is missing, progress state is invalid, an entity generation is stale, a component is absent, removal/drop ordering is invalid, or a borrow pattern is unsupported
+- WHEN boundary tests run
+- THEN deterministic diagnostics, `None`, or documented startup failure behavior occurs
+- AND no undefined behavior is exposed through safe APIs.
+
+### Requirement: Stevenarella runtime-boundary validation
+
+r[mc_compatibility.stevenarella_runtime_boundaries.validation] Runtime-boundary hardening MUST record focused Stevenarella tests/checks, selected render/capture or mc-compat checks, Cairn gates, and task-evidence checks before archive.
+
+#### Scenario: Runtime-boundary closeout is reviewable
+
+r[mc_compatibility.stevenarella_runtime_boundaries.validation.log]
+- GIVEN runtime-boundary hardening is ready to archive
+- WHEN reviewers inspect task evidence
+- THEN successful logs show positive and negative boundary tests, focused Stevenarella checks through the mc devshell, selected render/capture or mc-compat evidence as scoped, Cairn proposal/design/tasks gates, Cairn validation, and task-evidence validation.
+
+### Requirement: Stevenarella server responsibility inventory
+
+r[mc_compatibility.stevenarella_server_probe_split.inventory] Stevenarella server probe work MUST inventory server module responsibilities, probe families, side effects, and shared helpers before extraction.
+
+#### Scenario: Probe ownership is classified
+
+r[mc_compatibility.stevenarella_server_probe_split.inventory.classified]
+- GIVEN `clients/stevenarella/src/server/mod.rs` is selected for modularization
+- WHEN reviewers inspect the inventory
+- THEN general protocol handling, connection state, world/entity updates, inventory/window handling, compatibility probe decisions, environment parsing, and milestone logging are classified
+- AND probe families that can move independently are named.
+
+### Requirement: Stevenarella server module boundaries
+
+r[mc_compatibility.stevenarella_server_probe_split.boundaries] The Stevenarella server split SHOULD define module boundaries for general server state, probe cores, probe shells, inventory/window helpers, block-entity/sign helpers, and environment/config inputs.
+
+#### Scenario: Probe modules do not own packet IO
+
+r[mc_compatibility.stevenarella_server_probe_split.boundaries.packet_io]
+- GIVEN a probe family is extracted
+- WHEN reviewers inspect the module boundary
+- THEN pure probe logic is separate from packet decoding/encoding and connection mutation
+- AND shell handlers remain responsible for interacting with the protocol connection and world state.
+
+### Requirement: Pure Stevenarella probe cores
+
+r[mc_compatibility.stevenarella_server_probe_split.pure_probes] Compatibility probe decisions MUST be pure deterministic state machines over explicit inputs wherever practical.
+
+#### Scenario: Probe core returns actions
+
+r[mc_compatibility.stevenarella_server_probe_split.pure_probes.actions]
+- GIVEN a probe core receives explicit tick, session, inventory, world, entity, dimension, or packet-observation inputs
+- WHEN it evaluates the next probe step
+- THEN it returns an action, expected milestone, state update, or no-op
+- AND it does not read environment variables, write logs, mutate global state, write packets, or access renderer/resources.
+
+### Requirement: Stevenarella probe shell wiring
+
+r[mc_compatibility.stevenarella_server_probe_split.shell_wiring] Packet-handler shells MUST call probe cores and translate returned actions into existing packet writes, state mutations, and milestone logs.
+
+#### Scenario: Shell remains thin
+
+r[mc_compatibility.stevenarella_server_probe_split.shell_wiring.thin]
+- GIVEN a packet handler drives a compatibility probe
+- WHEN probe shell wiring runs
+- THEN raw packet/world inputs are converted into core inputs, core outputs are applied, and diagnostics are logged as before
+- AND scenario-specific decision tables are not duplicated in the shell.
+
+### Requirement: Stevenarella probe compatibility preservation
+
+r[mc_compatibility.stevenarella_server_probe_split.compatibility] The server probe split MUST preserve env var names, milestone text, fixture constants, packet action order, and evidence non-claim boundaries unless another Cairn changes them.
+
+#### Scenario: Existing rail behavior stays stable
+
+r[mc_compatibility.stevenarella_server_probe_split.compatibility.stable]
+- GIVEN an existing mc-compat scenario drives Stevenarella after the split
+- WHEN selected dry-run or focused rail checks run
+- THEN the same probe env vars are honored, the same client actions are sent, and the same milestone text appears
+- AND no full-client, full-survival, full-CTF, or public-server claim is added.
+
+### Requirement: Stevenarella probe tests
+
+r[mc_compatibility.stevenarella_server_probe_split.tests] The probe split MUST include positive action tests and negative fail-closed tests for each migrated probe family.
+
+#### Scenario: Valid probe fixtures pass
+
+r[mc_compatibility.stevenarella_server_probe_split.tests.positive]
+- GIVEN valid probe state, inventory/window state, packet observations, session values, and fixture positions
+- WHEN migrated probe cores are tested
+- THEN the expected actions and milestones match pre-split behavior.
+
+#### Scenario: Invalid probe fixtures fail closed
+
+r[mc_compatibility.stevenarella_server_probe_split.tests.negative]
+- GIVEN malformed env/config input, missing fixture state, out-of-order packets, invalid window IDs, stale sign/block-entity data, missing dimension bounds, or server rejection evidence
+- WHEN migrated probe cores and shells are tested
+- THEN diagnostics or no-op/rejected outcomes are produced deterministically
+- AND no false success milestone is emitted.
+
+### Requirement: Stevenarella probe split validation
+
+r[mc_compatibility.stevenarella_server_probe_split.validation] Stevenarella probe split work MUST record focused Stevenarella tests, selected mc-compat checks, Cairn gates, and task-evidence checks before archive.
+
+#### Scenario: Probe split closeout is reviewable
+
+r[mc_compatibility.stevenarella_server_probe_split.validation.log]
+- GIVEN the Stevenarella server probe split is ready to archive
+- WHEN reviewers inspect task evidence
+- THEN successful logs show positive and negative probe tests, selected component checks through the mc devshell, selected mc-compat dry-runs, Cairn proposal/design/tasks gates, Cairn validation, and task-evidence validation.

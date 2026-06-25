@@ -1,0 +1,12 @@
+## evidence manifest refresh check
++ nix run .#evidence-manifest-refresh -- --check
+evidence manifest refresh failed: docs/evidence/protocol-763-ctf-invalid-action-live-breadth-2026-06-22.b3:35: stale digest for clients/stevenarella/src/server/mod.rs: expected b4abe39f4b2ea8134a391d3d7138ddce52b0ce35acd100ea0635c9fba73a5bd4, found 4caf39dcc7dec7592f5c08ae1986e7e2f2d152719d3b601217f728925cb36c20
+evidence manifest refresh failed: docs/evidence/protocol-763-ctf-invalid-action-live-breadth-2026-06-22.b3:36: stale digest for servers/valence/examples/ctf.rs: expected f60079ed91d6d44a8ae664978f1a3ed6d0f8fee9de7b77d88e72e37e65c53a66, found e597f96d37e9a1bee1e3dfd8e1f6de7a021fe2579d24f1cb4f654f1438aa292d
+evidence manifest refresh failed: docs/evidence/separate-compat-instrumentation-validation-2026-06-23.b3:4: stale digest for clients/stevenarella/src/main.rs: expected 1b6608ee7a4fe430bd364836b6c8eac7a939db4d543c04ba87d69d51f2e78825, found 54209b2bd865ba07bac3acb8e15a9b92580a153e4204e556ea5d2fadf2ae4101
+command_exit_status=1
+
+## mc-compat task evidence
++ nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+command_exit_status=0
+
+exit_status=1

@@ -1,10 +1,11 @@
 #![allow(clippy::type_complexity)]
 
+mod fixture_core;
 mod scenario_contracts_generated;
 
+use fixture_core::ctf as ctf_core;
 use std::collections::HashMap;
 use std::path::Path;
-use std::sync::{OnceLock, RwLock};
 use std::{env, fs};
 
 use bevy_ecs::query::QueryData;
@@ -217,6 +218,21 @@ struct ArrowPolicyController {
     active: ArrowPolicySnapshot,
 }
 
+#[derive(Resource, Clone, Debug, PartialEq)]
+struct ArrowPolicyState {
+    controller: ArrowPolicyController,
+    last_reload_request: Option<String>,
+}
+
+impl Default for ArrowPolicyState {
+    fn default() -> Self {
+        Self {
+            controller: ArrowPolicyController::new(default_arrow_policy_snapshot()),
+            last_reload_request: None,
+        }
+    }
+}
+
 impl ArrowPolicyController {
     fn new(active: ArrowPolicySnapshot) -> Self {
         Self { active }
@@ -272,17 +288,6 @@ impl ArrowPolicyController {
     }
 }
 
-static ARROW_POLICY_SNAPSHOT: OnceLock<RwLock<ArrowPolicySnapshot>> = OnceLock::new();
-static ARROW_POLICY_LAST_RELOAD_REQUEST: OnceLock<RwLock<Option<String>>> = OnceLock::new();
-
-fn arrow_policy_store() -> &'static RwLock<ArrowPolicySnapshot> {
-    ARROW_POLICY_SNAPSHOT.get_or_init(|| RwLock::new(default_arrow_policy_snapshot()))
-}
-
-fn arrow_policy_reload_request_store() -> &'static RwLock<Option<String>> {
-    ARROW_POLICY_LAST_RELOAD_REQUEST.get_or_init(|| RwLock::new(None))
-}
-
 fn default_arrow_policy_snapshot() -> ArrowPolicySnapshot {
     ArrowPolicySnapshot {
         generation: ARROW_POLICY_DEFAULT_GENERATION,
@@ -294,41 +299,36 @@ fn default_arrow_policy_snapshot() -> ArrowPolicySnapshot {
     }
 }
 
-fn initialize_valence_arrow_policy_from_env() {
+fn initialize_valence_arrow_policy_from_env(policy: &mut ArrowPolicyState) {
     let Some(path) = std::env::var(ARROW_POLICY_ENV_CONFIG).ok() else {
         return;
     };
-    let outcome = reload_arrow_policy_from_path(Path::new(&path));
-    log_arrow_policy_reload_outcome(&path, &outcome);
+    let outcome = reload_arrow_policy_from_path(policy, Path::new(&path));
+    log_arrow_policy_reload_outcome(&path, &outcome, policy.controller.active());
 }
 
-fn maybe_reload_valence_arrow_policy_on_request() {
+fn maybe_reload_valence_arrow_policy_on_request(policy: &mut ArrowPolicyState) {
     let Some(request) = std::env::var(ARROW_POLICY_ENV_RELOAD_REQUEST).ok() else {
         return;
     };
-    let Ok(mut last_request) = arrow_policy_reload_request_store().write() else {
-        return;
-    };
-    if last_request.as_ref() == Some(&request) {
+    if policy.last_reload_request.as_ref() == Some(&request) {
         return;
     }
-    *last_request = Some(request);
-    drop(last_request);
-    initialize_valence_arrow_policy_from_env();
+    policy.last_reload_request = Some(request);
+    initialize_valence_arrow_policy_from_env(policy);
 }
 
-fn reload_arrow_policy_from_path(path: &Path) -> ArrowPolicyReloadOutcome {
-    let active = active_arrow_policy_snapshot();
-    let generation = active
+fn reload_arrow_policy_from_path(
+    policy: &mut ArrowPolicyState,
+    path: &Path,
+) -> ArrowPolicyReloadOutcome {
+    let generation = policy
+        .controller
+        .active()
         .generation
         .saturating_add(ARROW_POLICY_FIRST_GENERATION);
     let candidate = load_arrow_policy_snapshot_from_path(path, generation);
-    let mut controller = ArrowPolicyController::new(active);
-    let outcome = controller.reload_candidate(candidate);
-    if outcome.active_changed {
-        publish_arrow_policy_snapshot(controller.active().clone());
-    }
-    outcome
+    policy.controller.reload_candidate(candidate)
 }
 
 fn load_arrow_policy_snapshot_from_path(
@@ -571,23 +571,10 @@ fn validate_arrow_damage_decision(decision: &ArrowDamageDecision) -> Vec<ArrowPo
     diagnostics
 }
 
-fn active_arrow_policy_snapshot() -> ArrowPolicySnapshot {
-    match arrow_policy_store().read() {
-        Ok(snapshot) => snapshot.clone(),
-        Err(_) => default_arrow_policy_snapshot(),
-    }
-}
-
-fn publish_arrow_policy_snapshot(snapshot: ArrowPolicySnapshot) {
-    if let Ok(mut active) = arrow_policy_store().write() {
-        *active = snapshot;
-    }
-}
-
-fn projectile_probe_damage_decision() -> ArrowDamageDecision {
-    maybe_reload_valence_arrow_policy_on_request();
+fn projectile_probe_damage_decision(policy: &mut ArrowPolicyState) -> ArrowDamageDecision {
+    maybe_reload_valence_arrow_policy_on_request(policy);
     evaluate_arrow_policy(
-        &active_arrow_policy_snapshot(),
+        policy.controller.active(),
         ArrowDamageContext {
             projectile_velocity: ARROW_POLICY_DEFAULT_PROJECTILE_VELOCITY,
             pull_strength: ARROW_POLICY_DEFAULT_PULL_STRENGTH,
@@ -595,9 +582,12 @@ fn projectile_probe_damage_decision() -> ArrowDamageDecision {
     )
 }
 
-fn log_arrow_policy_reload_outcome(source: &str, outcome: &ArrowPolicyReloadOutcome) {
+fn log_arrow_policy_reload_outcome(
+    source: &str,
+    outcome: &ArrowPolicyReloadOutcome,
+    snapshot: &ArrowPolicySnapshot,
+) {
     if outcome.active_changed {
-        let snapshot = active_arrow_policy_snapshot();
         let milestone = format!(
             "MC-COMPAT-MILESTONE steel_arrow_policy_publish source={} generation={} policy={} \
              base_damage={:.1} velocity_multiplier={:.1} max_damage={:.1}",
@@ -652,6 +642,7 @@ pub fn main() {
             connection_mode: ConnectionMode::Offline,
             ..Default::default()
         })
+        .insert_resource(ArrowPolicyState::default())
         .add_plugins(DefaultPlugins)
         .add_systems(Startup, setup)
         .add_systems(
@@ -686,8 +677,9 @@ fn setup(
     server: Res<Server>,
     dimensions: Res<DimensionTypeRegistry>,
     biomes: Res<BiomeRegistry>,
+    mut arrow_policy: ResMut<ArrowPolicyState>,
 ) {
-    initialize_valence_arrow_policy_from_env();
+    initialize_valence_arrow_policy_from_env(arrow_policy.as_mut());
 
     let mut layer = LayerBundle::new(ident!("overworld"), &dimensions, &biomes, &server);
 
@@ -1046,6 +1038,13 @@ struct VanillaCombatReferenceAssignment {
 }
 
 impl Team {
+    fn as_ctf_core(self) -> ctf_core::Team {
+        match self {
+            Team::Red => ctf_core::Team::Red,
+            Team::Blue => ctf_core::Team::Blue,
+        }
+    }
+
     fn spawn_pos(self) -> DVec3 {
         [
             match self {
@@ -1301,11 +1300,14 @@ fn flag_owner_state(flag_manager: &FlagManager, flag_team: Team) -> &'static str
 }
 
 fn flag_presence_state(flag_manager: &FlagManager, flag_team: Team) -> &'static str {
-    let owner = flag_owner(flag_manager, flag_team);
+    flag_presence_for(flag_owner(flag_manager, flag_team)).label()
+}
+
+fn flag_presence_for(owner: Option<Entity>) -> ctf_core::FlagPresence {
     if owner.is_some() {
-        "held"
+        ctf_core::FlagPresence::Held
     } else {
-        "at_base"
+        ctf_core::FlagPresence::AtBase
     }
 }
 
@@ -1349,14 +1351,12 @@ fn ctf_race_accepted_transition_milestone(
     player_team: Team,
     flag_team: Team,
 ) -> String {
-    format!(
-        "MC-COMPAT-MILESTONE ctf_race_accepted_transition username={} player_team={} \
-         flag_team={} transition={} race_window_ticks={}",
+    ctf_core::race_accepted_transition_milestone(
         username,
-        team_label(player_team),
-        team_label(flag_team),
+        player_team.as_ctf_core(),
+        flag_team.as_ctf_core(),
         CTF_RACE_ACCEPTED_TRANSITION,
-        CTF_RACE_WINDOW_TICKS
+        CTF_RACE_WINDOW_TICKS,
     )
 }
 
@@ -1365,19 +1365,18 @@ fn ctf_race_rejected_transition_milestone(
     player_team: Team,
     flag_team: Team,
 ) -> String {
-    format!(
-        "MC-COMPAT-MILESTONE ctf_race_rejected_transition username={} player_team={} \
-         flag_team={} transition={} reason=flag_already_held race_window_ticks={}",
+    ctf_core::race_rejected_transition_milestone(
         username,
-        team_label(player_team),
-        team_label(flag_team),
+        player_team.as_ctf_core(),
+        flag_team.as_ctf_core(),
         CTF_RACE_REJECTED_TRANSITION,
-        CTF_RACE_WINDOW_TICKS
+        CTF_RACE_WINDOW_TICKS,
     )
 }
 
 fn ctf_race_duplicate_pickup_blocked(state: &CtfRaceProbeState) -> bool {
-    ctf_race_probe_enabled() && state.accepted_username.is_some()
+    ctf_race_probe_enabled()
+        && ctf_core::race_duplicate_pickup_blocked(state.accepted_username.is_some())
 }
 
 fn log_ctf_race_accepted_transition(
@@ -1432,34 +1431,34 @@ fn ctf_race_final_state_milestone(
     blue_score_after: u32,
     flag_manager: &FlagManager,
 ) -> Option<String> {
-    let blue_flag_at_base = flag_manager.blue.is_none();
-    let red_flag_at_base = flag_manager.red.is_none();
-    if capture_team != Team::Red
-        || carried_flag != Team::Blue
-        || red_score_after != CTF_RACE_FINAL_RED_SCORE
-        || blue_score_after != CTF_RACE_FINAL_BLUE_SCORE
-        || !blue_flag_at_base
-        || !red_flag_at_base
-    {
-        return None;
-    }
-    Some(format!(
-        "MC-COMPAT-MILESTONE ctf_race_final_state capture_username={} \
-         accepted_username={} rejected_username={} capture_team={} carried_flag={} \
-         final_blue_flag_state={} red_score={} blue_score={} race_window_ticks={} \
-         accepted_transition={} rejected_transition={}",
-        capture_username,
+    ctf_core::race_final_state_milestone(
         accepted_username,
         rejected_username,
-        team_label(capture_team),
-        team_label(carried_flag),
-        CTF_RACE_FINAL_BLUE_FLAG_STATE,
-        red_score_after,
-        blue_score_after,
-        CTF_RACE_WINDOW_TICKS,
-        CTF_RACE_ACCEPTED_TRANSITION,
-        CTF_RACE_REJECTED_TRANSITION
-    ))
+        capture_username,
+        capture_team.as_ctf_core(),
+        carried_flag.as_ctf_core(),
+        ctf_core::ScoreSnapshot {
+            red: red_score_after,
+            blue: blue_score_after,
+        },
+        ctf_core::FlagSnapshot {
+            red: flag_presence_for(flag_manager.red),
+            blue: flag_presence_for(flag_manager.blue),
+        },
+        ctf_core::RaceFinalContract {
+            expected_capture_team: ctf_core::Team::Red,
+            expected_carried_flag: ctf_core::Team::Blue,
+            expected_score: ctf_core::ScoreSnapshot {
+                red: CTF_RACE_FINAL_RED_SCORE,
+                blue: CTF_RACE_FINAL_BLUE_SCORE,
+            },
+            expected_flag_state: ctf_core::FlagPresence::AtBase,
+            flag_state_label: CTF_RACE_FINAL_BLUE_FLAG_STATE,
+            race_window_ticks: CTF_RACE_WINDOW_TICKS,
+            accepted_transition: CTF_RACE_ACCEPTED_TRANSITION,
+            rejected_transition: CTF_RACE_REJECTED_TRANSITION,
+        },
+    )
 }
 
 fn log_ctf_race_final_state(
@@ -1524,10 +1523,7 @@ fn score_for_team(score: &Score, team: Team) -> u32 {
 }
 
 fn team_label(team: Team) -> &'static str {
-    match team {
-        Team::Red => "Red",
-        Team::Blue => "Blue",
-    }
+    team.as_ctf_core().label()
 }
 
 fn ctf_spawn_team_reset_probe_enabled() -> bool {
@@ -1547,7 +1543,11 @@ fn team_slot37_resource(team: Team) -> &'static str {
 }
 
 fn ctf_spawn_reset_should_defer_team_assignment(username: &str, team: Team) -> bool {
-    username == CTF_SPAWN_EXPECTED_BLUE_USERNAME && team == Team::Red
+    ctf_core::defer_spawn_assignment(
+        username,
+        team.as_ctf_core(),
+        CTF_SPAWN_EXPECTED_BLUE_USERNAME,
+    )
 }
 
 fn ctf_spawn_team_assignment_milestone(
@@ -1644,16 +1644,16 @@ fn invalid_flag_pickup_rejection_milestone(
     red_score: u32,
     blue_score: u32,
 ) -> String {
-    format!(
-        "MC-COMPAT-MILESTONE invalid_flag_pickup_rejected username={} player_team={} flag_team={} \
-         pre_owner={} post_owner={} red_score={} blue_score={} outcome=no_owner_transfer_no_score",
+    ctf_core::invalid_flag_pickup_rejection_milestone(
         username,
-        team_label(player_team),
-        team_label(flag_team),
+        player_team.as_ctf_core(),
+        flag_team.as_ctf_core(),
         pre_owner,
         post_owner,
-        red_score,
-        blue_score
+        ctf_core::ScoreSnapshot {
+            red: red_score,
+            blue: blue_score,
+        },
     )
 }
 
@@ -1709,18 +1709,17 @@ fn format_invalid_return_drop_rejection_milestone(
     red_score: u32,
     blue_score: u32,
 ) -> String {
-    format!(
-        "MC-COMPAT-MILESTONE {} username={} actor_team={} \
-         flag_team={} pre_state={} post_state={} red_score={} blue_score={} \
-         outcome=no_flag_state_mutation_no_score",
+    ctf_core::invalid_return_drop_rejection_milestone(
         milestone,
         username,
-        team_label(actor_team),
-        team_label(flag_team),
+        actor_team.as_ctf_core(),
+        flag_team.as_ctf_core(),
         pre_state,
         post_state,
-        red_score,
-        blue_score
+        ctf_core::ScoreSnapshot {
+            red: red_score,
+            blue: blue_score,
+        },
     )
 }
 
@@ -1947,70 +1946,107 @@ fn classify_inventory_stack_split_merge_event(
     event: &ClickSlotEvent,
     state: &InventoryStackSplitMergeProbeState,
 ) -> Option<InventoryStackSplitMergeServerAction> {
-    if username != COMPAT_ACTOR_USERNAME
-        || event.window_id != INVENTORY_STACK_WINDOW_ID
-        || event.mode != ClickMode::Click
-    {
-        return None;
-    }
+    let snapshot = ctf_core_inventory_click_snapshot(username, event);
+    let state = ctf_core::InventoryStackState {
+        split_pickup_seen: state.split_pickup_state_id.is_some(),
+        split_place_seen: state.split_place_state_id.is_some(),
+        merge_pickup_seen: state.merge_pickup_state_id.is_some(),
+    };
+    let action = ctf_core::classify_inventory_stack_split_merge_event(
+        &snapshot,
+        state,
+        ctf_core_inventory_stack_contract(),
+    )?;
+    Some(match action {
+        ctf_core::InventoryStackAction::SplitPickup => {
+            InventoryStackSplitMergeServerAction::SplitPickup
+        }
+        ctf_core::InventoryStackAction::SplitPlace => {
+            InventoryStackSplitMergeServerAction::SplitPlace
+        }
+        ctf_core::InventoryStackAction::MergePickup => {
+            InventoryStackSplitMergeServerAction::MergePickup
+        }
+        ctf_core::InventoryStackAction::MergePlace => {
+            InventoryStackSplitMergeServerAction::MergePlace
+        }
+    })
+}
 
-    if state.split_pickup_state_id.is_none()
-        && event.slot_id == INVENTORY_STACK_SOURCE_SLOT
-        && event.button == INVENTORY_STACK_RIGHT_BUTTON
-        && event.carried_item.item == INVENTORY_STACK_ITEM
-        && event.carried_item.count == INVENTORY_STACK_HALF_COUNT
-        && inventory_stack_slot_change_matches(
-            event,
-            INVENTORY_STACK_SOURCE_SLOT,
-            INVENTORY_STACK_ITEM,
-            INVENTORY_STACK_HALF_COUNT,
-        )
-    {
-        return Some(InventoryStackSplitMergeServerAction::SplitPickup);
+fn ctf_core_inventory_stack_contract() -> ctf_core::InventoryStackContract {
+    ctf_core::InventoryStackContract {
+        window_id: INVENTORY_STACK_WINDOW_ID,
+        source_slot: INVENTORY_STACK_SOURCE_SLOT,
+        destination_slot: INVENTORY_STACK_DESTINATION_SLOT,
+        full_count: INVENTORY_STACK_FULL_COUNT,
+        half_count: INVENTORY_STACK_HALF_COUNT,
+        empty_count: INVENTORY_STACK_EMPTY_COUNT,
+        left_button: INVENTORY_STACK_LEFT_BUTTON,
+        right_button: INVENTORY_STACK_RIGHT_BUTTON,
     }
+}
 
-    if state.split_pickup_state_id.is_some()
-        && state.split_place_state_id.is_none()
-        && event.slot_id == INVENTORY_STACK_DESTINATION_SLOT
-        && event.button == INVENTORY_STACK_LEFT_BUTTON
-        && event.carried_item.is_empty()
-        && inventory_stack_slot_change_matches(
-            event,
-            INVENTORY_STACK_DESTINATION_SLOT,
-            INVENTORY_STACK_ITEM,
-            INVENTORY_STACK_HALF_COUNT,
-        )
-    {
-        return Some(InventoryStackSplitMergeServerAction::SplitPlace);
+fn ctf_core_inventory_drag_contract() -> ctf_core::InventoryDragContract {
+    ctf_core::InventoryDragContract {
+        window_id: INVENTORY_STACK_WINDOW_ID,
+        source_slot: INVENTORY_STACK_SOURCE_SLOT,
+        target_slot_a: INVENTORY_DRAG_TARGET_SLOT_A,
+        target_slot_b: INVENTORY_DRAG_TARGET_SLOT_B,
+        outside_slot: INVENTORY_DRAG_OUTSIDE_SLOT,
+        full_count: INVENTORY_STACK_FULL_COUNT,
+        half_count: INVENTORY_STACK_HALF_COUNT,
+        empty_count: INVENTORY_STACK_EMPTY_COUNT,
+        left_button: INVENTORY_STACK_LEFT_BUTTON,
+        drag_start_button: INVENTORY_DRAG_START_BUTTON,
+        drag_add_slot_button: INVENTORY_DRAG_ADD_SLOT_BUTTON,
+        drag_end_button: INVENTORY_DRAG_END_BUTTON,
     }
+}
 
-    if state.split_place_state_id.is_some()
-        && state.merge_pickup_state_id.is_none()
-        && event.slot_id == INVENTORY_STACK_DESTINATION_SLOT
-        && event.button == INVENTORY_STACK_LEFT_BUTTON
-        && event.carried_item.item == INVENTORY_STACK_ITEM
-        && event.carried_item.count == INVENTORY_STACK_HALF_COUNT
-        && inventory_stack_slot_change_empty(event, INVENTORY_STACK_DESTINATION_SLOT)
-    {
-        return Some(InventoryStackSplitMergeServerAction::MergePickup);
+fn ctf_core_inventory_click_snapshot(
+    username: &str,
+    event: &ClickSlotEvent,
+) -> ctf_core::InventoryClickSnapshot {
+    ctf_core::InventoryClickSnapshot {
+        actor_matches: username == COMPAT_ACTOR_USERNAME,
+        window_id: event.window_id,
+        slot_id: event.slot_id,
+        button: event.button,
+        mode: ctf_core_inventory_click_mode(event.mode),
+        carried_item: ctf_core_inventory_item_stack(&event.carried_item),
+        slot_changes: event
+            .slot_changes
+            .iter()
+            .map(|change| ctf_core::InventorySlotChange {
+                slot: change.idx,
+                stack: ctf_core_inventory_item_stack(&change.stack),
+            })
+            .collect(),
     }
+}
 
-    if state.merge_pickup_state_id.is_some()
-        && state.merge_place_state_id.is_none()
-        && event.slot_id == INVENTORY_STACK_SOURCE_SLOT
-        && event.button == INVENTORY_STACK_LEFT_BUTTON
-        && event.carried_item.is_empty()
-        && inventory_stack_slot_change_matches(
-            event,
-            INVENTORY_STACK_SOURCE_SLOT,
-            INVENTORY_STACK_ITEM,
-            INVENTORY_STACK_FULL_COUNT,
-        )
-    {
-        return Some(InventoryStackSplitMergeServerAction::MergePlace);
+fn ctf_core_inventory_click_mode(mode: ClickMode) -> ctf_core::InventoryClickMode {
+    match mode {
+        ClickMode::Click => ctf_core::InventoryClickMode::Click,
+        ClickMode::Drag => ctf_core::InventoryClickMode::Drag,
+        _ => ctf_core::InventoryClickMode::Other,
     }
+}
 
-    None
+fn ctf_core_inventory_item_stack(stack: &ItemStack) -> ctf_core::InventoryItemStack {
+    if stack.is_empty() {
+        return ctf_core::InventoryItemStack::empty(INVENTORY_STACK_EMPTY_COUNT);
+    }
+    if stack.item == INVENTORY_STACK_ITEM {
+        return ctf_core::InventoryItemStack {
+            item: ctf_core::InventoryProbeItem::ExpectedStackItem,
+            count: stack.count,
+        };
+    }
+    ctf_core::InventoryItemStack {
+        item: ctf_core::InventoryProbeItem::Other,
+        count: stack.count,
+    }
 }
 
 fn log_inventory_stack_split_merge_event(
@@ -2127,80 +2163,33 @@ fn classify_inventory_drag_transactions_event(
     event: &ClickSlotEvent,
     state: &InventoryDragTransactionsProbeState,
 ) -> Option<InventoryDragTransactionsServerAction> {
-    if username != COMPAT_ACTOR_USERNAME || event.window_id != INVENTORY_STACK_WINDOW_ID {
-        return None;
-    }
-
-    if state.pickup_state_id.is_none()
-        && event.mode == ClickMode::Click
-        && event.slot_id == INVENTORY_STACK_SOURCE_SLOT
-        && event.button == INVENTORY_STACK_LEFT_BUTTON
-        && event.carried_item.item == INVENTORY_STACK_ITEM
-        && event.carried_item.count == INVENTORY_STACK_FULL_COUNT
-        && inventory_stack_slot_change_empty(event, INVENTORY_STACK_SOURCE_SLOT)
-    {
-        return Some(InventoryDragTransactionsServerAction::PickupSource);
-    }
-
-    if state.pickup_state_id.is_some()
-        && state.drag_start_state_id.is_none()
-        && event.mode == ClickMode::Drag
-        && event.slot_id == INVENTORY_DRAG_OUTSIDE_SLOT
-        && event.button == INVENTORY_DRAG_START_BUTTON
-        && event.carried_item.item == INVENTORY_STACK_ITEM
-        && event.carried_item.count == INVENTORY_STACK_FULL_COUNT
-        && event.slot_changes.is_empty()
-    {
-        return Some(InventoryDragTransactionsServerAction::DragStart);
-    }
-
-    if state.drag_start_state_id.is_some()
-        && state.target_a_state_id.is_none()
-        && event.mode == ClickMode::Drag
-        && event.slot_id == INVENTORY_DRAG_TARGET_SLOT_A
-        && event.button == INVENTORY_DRAG_ADD_SLOT_BUTTON
-        && event.carried_item.item == INVENTORY_STACK_ITEM
-        && event.carried_item.count == INVENTORY_STACK_FULL_COUNT
-        && event.slot_changes.is_empty()
-    {
-        return Some(InventoryDragTransactionsServerAction::AddTargetA);
-    }
-
-    if state.target_a_state_id.is_some()
-        && state.target_b_state_id.is_none()
-        && event.mode == ClickMode::Drag
-        && event.slot_id == INVENTORY_DRAG_TARGET_SLOT_B
-        && event.button == INVENTORY_DRAG_ADD_SLOT_BUTTON
-        && event.carried_item.item == INVENTORY_STACK_ITEM
-        && event.carried_item.count == INVENTORY_STACK_FULL_COUNT
-        && event.slot_changes.is_empty()
-    {
-        return Some(InventoryDragTransactionsServerAction::AddTargetB);
-    }
-
-    if state.target_b_state_id.is_some()
-        && state.drag_end_state_id.is_none()
-        && event.mode == ClickMode::Drag
-        && event.slot_id == INVENTORY_DRAG_OUTSIDE_SLOT
-        && event.button == INVENTORY_DRAG_END_BUTTON
-        && event.carried_item.is_empty()
-        && inventory_stack_slot_change_matches(
-            event,
-            INVENTORY_DRAG_TARGET_SLOT_A,
-            INVENTORY_STACK_ITEM,
-            INVENTORY_STACK_HALF_COUNT,
-        )
-        && inventory_stack_slot_change_matches(
-            event,
-            INVENTORY_DRAG_TARGET_SLOT_B,
-            INVENTORY_STACK_ITEM,
-            INVENTORY_STACK_HALF_COUNT,
-        )
-    {
-        return Some(InventoryDragTransactionsServerAction::DragEnd);
-    }
-
-    None
+    let snapshot = ctf_core_inventory_click_snapshot(username, event);
+    let state = ctf_core::InventoryDragState {
+        pickup_seen: state.pickup_state_id.is_some(),
+        drag_start_seen: state.drag_start_state_id.is_some(),
+        target_a_seen: state.target_a_state_id.is_some(),
+        target_b_seen: state.target_b_state_id.is_some(),
+    };
+    let action = ctf_core::classify_inventory_drag_transactions_event(
+        &snapshot,
+        state,
+        ctf_core_inventory_drag_contract(),
+    )?;
+    Some(match action {
+        ctf_core::InventoryDragAction::PickupSource => {
+            InventoryDragTransactionsServerAction::PickupSource
+        }
+        ctf_core::InventoryDragAction::DragStart => {
+            InventoryDragTransactionsServerAction::DragStart
+        }
+        ctf_core::InventoryDragAction::AddTargetA => {
+            InventoryDragTransactionsServerAction::AddTargetA
+        }
+        ctf_core::InventoryDragAction::AddTargetB => {
+            InventoryDragTransactionsServerAction::AddTargetB
+        }
+        ctf_core::InventoryDragAction::DragEnd => InventoryDragTransactionsServerAction::DragEnd,
+    })
 }
 
 fn log_inventory_drag_transactions_event(
@@ -3087,6 +3076,7 @@ fn handle_combat_events(
     mut sprinting: EventReader<SprintEvent>,
     mut interact_entity: EventReader<InteractEntityEvent>,
     clones: Query<&ClonedEntity>,
+    mut arrow_policy: ResMut<ArrowPolicyState>,
 ) {
     for &SprintEvent { client, state } in sprinting.read() {
         if let Ok(mut client) = clients.get_mut(client) {
@@ -3197,7 +3187,7 @@ fn handle_combat_events(
             && attacker.username.as_str() == "compatbota"
             && victim.username.as_str() == "compatbotb";
         let arrow_damage_decision = if projectile_probe_hit {
-            Some(projectile_probe_damage_decision())
+            Some(projectile_probe_damage_decision(arrow_policy.as_mut()))
         } else {
             None
         };
@@ -3386,9 +3376,13 @@ fn vanilla_combat_reference_assignment(username: &str) -> Option<VanillaCombatRe
 }
 
 fn vanilla_combat_reference_probe_hit_for(enabled: bool, attacker: &str, victim: &str) -> bool {
-    enabled
-        && attacker == VANILLA_COMBAT_REFERENCE_ATTACKER
-        && victim == VANILLA_COMBAT_REFERENCE_VICTIM
+    ctf_core::reference_hit_for(
+        enabled,
+        attacker,
+        victim,
+        VANILLA_COMBAT_REFERENCE_ATTACKER,
+        VANILLA_COMBAT_REFERENCE_VICTIM,
+    )
 }
 
 fn vanilla_combat_reference_weapon_name(item: ItemKind) -> &'static str {
@@ -3422,36 +3416,31 @@ fn combat_armor_mitigation_for(
     chest_item: ItemKind,
     base_damage: f32,
 ) -> f32 {
-    if chest_item != ItemKind::DiamondChestplate {
-        return 0.0;
+    ctf_core::combat_armor_mitigation_for(
+        armor_reference_probe,
+        armor_mitigation_probe,
+        ctf_core_armor_state(chest_item),
+        base_damage,
+        DIAMOND_CHESTPLATE_MITIGATION,
+        VANILLA_DIAMOND_CHESTPLATE_ARMOR_POINTS,
+        VANILLA_DIAMOND_CHESTPLATE_TOUGHNESS,
+    )
+}
+
+fn ctf_core_armor_state(chest_item: ItemKind) -> ctf_core::ArmorState {
+    match chest_item {
+        ItemKind::DiamondChestplate => ctf_core::ArmorState::DiamondChestplate,
+        ItemKind::Air => ctf_core::ArmorState::Empty,
+        _ => ctf_core::ArmorState::Other,
     }
-    if armor_reference_probe {
-        return vanilla_armor_mitigation_for(
-            base_damage,
-            VANILLA_DIAMOND_CHESTPLATE_ARMOR_POINTS,
-            VANILLA_DIAMOND_CHESTPLATE_TOUGHNESS,
-        );
-    }
-    if armor_mitigation_probe {
-        return DIAMOND_CHESTPLATE_MITIGATION;
-    }
-    0.0
 }
 
 fn vanilla_armor_mitigation_for(base_damage: f32, armor_points: f32, toughness: f32) -> f32 {
-    let toughness_term = armor_points
-        - base_damage
-            / (toughness / VANILLA_ARMOR_TOUGHNESS_QUARTER_DIVISOR + VANILLA_ARMOR_TOUGHNESS_BASE);
-    let min_reduction = armor_points / VANILLA_ARMOR_MIN_REDUCTION_DIVISOR;
-    let reduction_points = toughness_term
-        .max(min_reduction)
-        .min(VANILLA_ARMOR_MAX_REDUCTION_POINTS);
-    base_damage * reduction_points / VANILLA_COMBAT_ARMOR_REDUCTION_DENOMINATOR
+    ctf_core::vanilla_armor_mitigation_for(base_damage, armor_points, toughness)
 }
 
 fn vanilla_combat_reference_knockback_metric(knockback_velocity: [f32; 3]) -> f64 {
-    f64::from(knockback_velocity[0]).hypot(f64::from(knockback_velocity[2]))
-        / VANILLA_COMBAT_REFERENCE_KNOCKBACK_SCALE
+    ctf_core::knockback_metric(knockback_velocity)
 }
 
 fn vanilla_combat_reference_knockback_velocity_for(hit: bool) -> Option<[f32; 3]> {
@@ -3522,6 +3511,7 @@ fn handle_projectile_events(
     mut interact_item: EventReader<InteractItemEvent>,
     mut hand_swing: EventReader<HandSwingEvent>,
     mut clients: Query<(Entity, &mut Client, &Username, &mut Health, &Team)>,
+    mut arrow_policy: ResMut<ArrowPolicyState>,
 ) {
     if !projectile_probe_enabled() {
         return;
@@ -3562,7 +3552,7 @@ fn handle_projectile_events(
             continue;
         };
 
-        let decision = projectile_probe_damage_decision();
+        let decision = projectile_probe_damage_decision(arrow_policy.as_mut());
         let before = victim_health.0;
         victim_health.0 -= decision.damage;
         victim_client.trigger_status(EntityStatus::PlayAttackSound);

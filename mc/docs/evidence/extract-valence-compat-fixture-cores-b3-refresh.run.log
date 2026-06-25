@@ -1,0 +1,12 @@
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c bash -lc b3sum ... > docs/evidence/extract-valence-compat-fixture-cores-validation.b3
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+exit_status=0
+bd4b3ef66fad95c4d5a87616b844ba5c3ea78f3c0c0594c47ee7a828a88ddced  docs/evidence/extract-valence-compat-fixture-cores-inventory.md
+d77cfe0d0187162e02930f77faeac16a0bb4b4827695c0c4aca64882c1e3f83f  docs/evidence/extract-valence-compat-fixture-cores-preflight-gates.run.log
+0cf4fab501055368019dbb992a6882aa4736fb75a083e949f4626aa880ea35aa  docs/evidence/extract-valence-compat-fixture-cores-baseline-valence-examples.run.log
+6d74e224b320b667a62aad343be08a76389a1eefb96f3d6e564a5ce825b61b79  docs/evidence/extract-valence-compat-fixture-cores-post-core-valence-examples.run.log
+455e470b61a0474d49cddd92bc3a279506ef4dfc763efb41d20578ba5d9c9f16  docs/evidence/extract-valence-compat-fixture-cores-fmt-check.run.log
+86d38a5c30fd65d2e62f862c9b718ae031ceae0ffc169ac1e7c18d4ecde6d8ff  docs/evidence/extract-valence-compat-fixture-cores-selected-dry-runs.run.log

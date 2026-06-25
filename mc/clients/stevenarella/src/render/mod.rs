@@ -61,7 +61,7 @@ pub struct Camera {
 
 pub struct Renderer {
     resource_version: usize,
-    pub resources: Arc<RwLock<resources::Manager>>,
+    pub resources: resources::SharedManager,
     textures: Arc<RwLock<TextureManager>>,
     pub ui: ui::UIState,
     pub model: model::Manager,
@@ -162,7 +162,7 @@ init_shader! {
 }
 
 impl Renderer {
-    pub fn new(res: Arc<RwLock<resources::Manager>>, shader_version: &str) -> Renderer {
+    pub fn new(res: resources::SharedManager, shader_version: &str) -> Renderer {
         let version = { res.read().unwrap().version() };
         let tex = gl::Texture::new();
         tex.bind(gl::TEXTURE_2D_ARRAY);
@@ -965,7 +965,7 @@ impl TransInfo {
 pub struct TextureManager {
     textures: HashMap<String, Texture, BuildHasherDefault<FNVHash>>,
     version: usize,
-    resources: Arc<RwLock<resources::Manager>>,
+    resources: resources::SharedManager,
     atlases: Vec<atlas::Atlas>,
 
     animated_textures: Vec<AnimatedTexture>,
@@ -983,7 +983,7 @@ impl TextureManager {
     #[allow(clippy::let_and_return)]
     #[allow(clippy::type_complexity)]
     fn new(
-        res: Arc<RwLock<resources::Manager>>,
+        res: resources::SharedManager,
     ) -> (
         TextureManager,
         mpsc::Sender<String>,

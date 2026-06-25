@@ -32,7 +32,7 @@ pub fn add_systems(m: &mut ecs::Manager) {
 }
 
 /// Location of an entity in the world.
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct Position {
     pub position: Vector3<f64>,
     pub last_position: Vector3<f64>,
@@ -53,7 +53,7 @@ impl Position {
     }
 }
 
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct TargetPosition {
     pub position: Vector3<f64>,
     pub lerp_amount: f64,
@@ -73,7 +73,7 @@ impl TargetPosition {
 }
 
 /// Velocity of an entity in the world.
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct Velocity {
     pub velocity: Vector3<f64>,
 }
@@ -91,7 +91,7 @@ impl Velocity {
 }
 
 /// Rotation of an entity in the world
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct Rotation {
     pub yaw: f64,
     pub pitch: f64,
@@ -106,7 +106,7 @@ impl Rotation {
         Rotation::new(0.0, 0.0)
     }
 }
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct TargetRotation {
     pub yaw: f64,
     pub pitch: f64,
@@ -122,7 +122,7 @@ impl TargetRotation {
     }
 }
 
-#[derive(Default)]
+#[derive(Clone, Copy, Default)]
 pub struct Gravity {
     pub on_ground: bool,
 }
@@ -133,6 +133,7 @@ impl Gravity {
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct Bounds {
     pub bounds: Aabb3<f64>,
 }
@@ -143,7 +144,7 @@ impl Bounds {
     }
 }
 
-#[derive(Default)]
+#[derive(Clone, Copy, Default)]
 pub struct GameInfo {
     pub delta: f64,
 }
@@ -154,7 +155,7 @@ impl GameInfo {
     }
 }
 
-#[derive(Default)]
+#[derive(Clone, Copy, Default)]
 pub struct Light {
     pub block_light: f32,
     pub sky_light: f32,
@@ -187,7 +188,7 @@ impl Digging {
     }
 }
 
-#[derive(Default)]
+#[derive(Clone, Copy, Default)]
 pub struct MouseButtons {
     pub left: bool,
     pub right: bool,

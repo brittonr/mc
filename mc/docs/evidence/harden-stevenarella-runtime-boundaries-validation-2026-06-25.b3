@@ -1,0 +1,7 @@
+e95837a919ee3c4753163dbdb3171b949c7a7cd021b66743c40bebc1412b01fe  docs/evidence/harden-stevenarella-runtime-boundaries-audit-2026-06-25.md
+948773487edbcd8721fc284e054c0daecf83e02fc353bf5801e43616197dd945  docs/evidence/harden-stevenarella-runtime-boundaries-preflight-gates.run.log
+63462df87352411f18af6f2865eb02512b8015dc217379feb20d27b606ae6b8d  docs/evidence/harden-stevenarella-runtime-boundaries-baseline-stevenarella.run.log
+55914c4570451a454acc93e1f74b9153f8d1aa244e7e28da58f05fee3f607243  docs/evidence/harden-stevenarella-runtime-boundaries-focused-validation.run.log
+baad43da03e1d837702474c76d406a0508063a5b3bca350b9daa490dca5bc154  docs/evidence/harden-stevenarella-runtime-boundaries-selected-dry-runs.run.log
+542aa0b8f0f2bf0782819f7098e435aa34cc988605bdb6e47f33eafc34502c8c  docs/evidence/harden-stevenarella-runtime-boundaries-task-evidence-pre-validation.run.log
+3f60a687c72be452ec000c1151335eada10d3642d812bf27ece5582473b54474  docs/evidence/harden-stevenarella-runtime-boundaries-final-cairn-gates.run.log

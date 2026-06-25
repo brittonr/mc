@@ -42,9 +42,9 @@ impl ecs::System for ApplyVelocity {
                 // Player's handle their own physics
                 continue;
             }
+            let velocity = m.get_component(e, self.velocity).unwrap().velocity;
             let pos = m.get_component_mut(e, self.position).unwrap();
-            let vel = m.get_component(e, self.velocity).unwrap();
-            pos.position += vel.velocity;
+            pos.position += velocity;
         }
     }
 }
@@ -151,8 +151,8 @@ impl ecs::System for LerpPosition {
             .delta
             .min(5.0);
         for e in m.find(&self.filter) {
+            let target_pos = *m.get_component(e, self.target_position).unwrap();
             let pos = m.get_component_mut(e, self.position).unwrap();
-            let target_pos = m.get_component(e, self.target_position).unwrap();
 
             pos.position = pos.position
                 + (target_pos.position - pos.position) * delta * target_pos.lerp_amount;
@@ -198,8 +198,9 @@ impl ecs::System for LerpRotation {
             .delta
             .min(5.0);
         for e in m.find(&self.filter) {
-            let rot = m.get_component_mut(e, self.rotation).unwrap();
-            let target_rot = m.get_component_mut(e, self.target_rotation).unwrap();
+            let (rot, target_rot) = m
+                .get_two_components_mut(e, self.rotation, self.target_rotation)
+                .unwrap();
             target_rot.yaw = (PI * 2.0 + target_rot.yaw) % (PI * 2.0);
             target_rot.pitch = (PI * 2.0 + target_rot.pitch) % (PI * 2.0);
 
@@ -249,8 +250,8 @@ impl ecs::System for LightEntity {
 
     fn update(&mut self, m: &mut ecs::Manager, world: &mut world::World, _: &mut render::Renderer) {
         for e in m.find(&self.filter) {
-            let pos = m.get_component(e, self.position).unwrap();
-            let bounds = m.get_component(e, self.bounds).unwrap();
+            let pos = *m.get_component(e, self.position).unwrap();
+            let bounds = *m.get_component(e, self.bounds).unwrap();
             let light = m.get_component_mut(e, self.light).unwrap();
             let mut count = 0.0;
             let mut block_light = 0.0;
@@ -421,11 +422,8 @@ impl ecs::System for ApplyDigging {
         use cgmath::EuclideanSpace;
 
         let world_entity = m.get_world();
-        let mut conn = m
-            .get_component(world_entity, self.conn)
-            .unwrap()
-            .write()
-            .unwrap();
+        let conn_lock = m.get_component(world_entity, self.conn).unwrap().clone();
+        let mut conn = conn_lock.write().unwrap();
         let conn = match conn.as_mut() {
             Some(conn) => conn,
             // Don't keep processing digging operations if the connection was
@@ -442,12 +440,12 @@ impl ecs::System for ApplyDigging {
         );
 
         for e in m.find(&self.filter) {
-            let mouse_buttons = m.get_component(e, self.mouse_buttons).unwrap();
+            let mouse_buttons = *m.get_component(e, self.mouse_buttons).unwrap();
             let digging = m.get_component_mut(e, self.digging).unwrap();
 
             // Update last and current state
             std::mem::swap(&mut digging.last, &mut digging.current);
-            digging.current = self.next_state(&digging.last, mouse_buttons, target);
+            digging.current = self.next_state(&digging.last, &mouse_buttons, target);
 
             // Handle digging packets
             match (&digging.last, &mut digging.current) {

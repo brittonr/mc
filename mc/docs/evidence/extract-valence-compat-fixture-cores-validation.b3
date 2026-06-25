@@ -1,0 +1,8 @@
+bd4b3ef66fad95c4d5a87616b844ba5c3ea78f3c0c0594c47ee7a828a88ddced  docs/evidence/extract-valence-compat-fixture-cores-inventory.md
+d77cfe0d0187162e02930f77faeac16a0bb4b4827695c0c4aca64882c1e3f83f  docs/evidence/extract-valence-compat-fixture-cores-preflight-gates.run.log
+0cf4fab501055368019dbb992a6882aa4736fb75a083e949f4626aa880ea35aa  docs/evidence/extract-valence-compat-fixture-cores-baseline-valence-examples.run.log
+6d74e224b320b667a62aad343be08a76389a1eefb96f3d6e564a5ce825b61b79  docs/evidence/extract-valence-compat-fixture-cores-post-core-valence-examples.run.log
+455e470b61a0474d49cddd92bc3a279506ef4dfc763efb41d20578ba5d9c9f16  docs/evidence/extract-valence-compat-fixture-cores-fmt-check.run.log
+86d38a5c30fd65d2e62f862c9b718ae031ceae0ffc169ac1e7c18d4ecde6d8ff  docs/evidence/extract-valence-compat-fixture-cores-selected-dry-runs.run.log
+73850baacbd07958c10afeab45f811c4ed78d45d3b0dae10b9299090844024e8  docs/evidence/extract-valence-compat-fixture-cores-final-cairn-gates.run.log
+5461733b8827442f9ec8649452a165624b4e5d3ce8300dada48d173b7d895677  docs/evidence/extract-valence-compat-fixture-cores-task-evidence-scoped.run.log

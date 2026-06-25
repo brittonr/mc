@@ -76,12 +76,12 @@ impl ecs::System for SignRenderer {
     ) {
         for e in m.find(&self.filter) {
             let position = *m.get_component(e, self.position).unwrap();
-            let info = m.get_component_mut(e, self.sign_info).unwrap();
-            if info.dirty {
+            if m.get_component(e, self.sign_info).unwrap().dirty {
                 self.entity_removed(m, e, world, renderer);
                 self.entity_added(m, e, world, renderer);
             }
-            if let Some(model) = info.model {
+            let model = m.get_component(e, self.sign_info).unwrap().model;
+            if let Some(model) = model {
                 let mdl = renderer.model.get_model(model).unwrap();
                 mdl.block_light = world.get_block_light(position) as f32;
                 mdl.sky_light = world.get_sky_light(position) as f32;

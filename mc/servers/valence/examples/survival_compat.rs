@@ -1,7 +1,9 @@
 #![allow(clippy::type_complexity)]
 
+mod fixture_core;
 mod scenario_contracts_generated;
 
+use fixture_core::survival as survival_core;
 use std::collections::HashSet;
 use std::fs;
 use std::path::PathBuf;
@@ -172,6 +174,9 @@ const SURVIVAL_SIGN_EDITING_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_SIGN_EDITING
 const SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_FIXTURE";
 const SURVIVAL_BIOME_DIMENSION_TRAVEL_FIXTURE_ENV: &str =
     "MC_COMPAT_SURVIVAL_BIOME_DIMENSION_TRAVEL_FIXTURE";
+const SURVIVAL_KNOWN_ENVIRONMENT_COUNT: usize = 3;
+const SURVIVAL_CORE_TENTHS_SCALE: f32 = 10.0;
+const SURVIVAL_OTHER_ITEM_NAME: &str = "other";
 const SURVIVAL_OVERWORLD_ID: &str = "minecraft:overworld";
 const SURVIVAL_NETHER_ID: &str = "minecraft:the_nether";
 const SURVIVAL_END_ID: &str = "minecraft:the_end";
@@ -1875,9 +1880,12 @@ fn should_break_survival_block(
     state: DiggingState,
     position: BlockPos,
 ) -> bool {
-    game_mode == GameMode::Survival
-        && state == DiggingState::Stop
-        && position == survival_break_pos()
+    survival_core::should_break_survival_block(
+        survival_core_game_mode(game_mode),
+        survival_core_digging_state(state),
+        survival_core_block_pos(position),
+        survival_core_block_pos(survival_break_pos()),
+    )
 }
 
 fn should_place_survival_block(
@@ -1886,10 +1894,13 @@ fn should_place_survival_block(
     position: BlockPos,
     face: Direction,
 ) -> bool {
-    game_mode == GameMode::Survival
-        && hand == Hand::Main
-        && position == survival_break_pos()
-        && face == Direction::Up
+    survival_core::should_place_survival_block(
+        survival_core_game_mode(game_mode),
+        survival_core_hand(hand),
+        survival_core_block_pos(position),
+        survival_core_direction(face),
+        survival_core_block_pos(survival_break_pos()),
+    )
 }
 
 fn survival_break_pos() -> BlockPos {
@@ -1901,23 +1912,56 @@ fn survival_block_state() -> BlockState {
 }
 
 fn should_open_survival_chest(game_mode: GameMode, hand: Hand, position: BlockPos) -> bool {
-    game_mode == GameMode::Survival && hand == Hand::Main && position == survival_chest_pos()
+    survival_core::should_open_fixture_container(
+        survival_core_game_mode(game_mode),
+        survival_core_hand(hand),
+        survival_core_block_pos(position),
+        survival_core_block_pos(survival_chest_pos()),
+    )
 }
 
 fn is_survival_chest_store_event(window_id: u8, slot_id: i16, slot_changes: &[SlotChange]) -> bool {
-    window_id == SURVIVAL_CHEST_WINDOW
-        && slot_id == SURVIVAL_CHEST_SLOT_ID
-        && slot_changes.iter().any(|change| {
-            change.idx == SURVIVAL_CHEST_SLOT_ID && is_survival_chest_item(&change.stack)
-        })
+    let expected_stack = survival_core_stack(
+        &survival_chest_item_stack(),
+        survival_chest_item_kind(),
+        SURVIVAL_WORLD_PERSISTENCE_BLOCK_NAME,
+    );
+    let changes = survival_core_slot_changes(
+        slot_changes,
+        survival_chest_item_kind(),
+        SURVIVAL_WORLD_PERSISTENCE_BLOCK_NAME,
+    );
+    survival_core::slot_event_matches(
+        window_id,
+        slot_id,
+        &changes,
+        SURVIVAL_CHEST_WINDOW,
+        SURVIVAL_CHEST_SLOT_ID,
+        expected_stack,
+    )
 }
 
 fn is_survival_chest_item(stack: &ItemStack) -> bool {
-    stack.item == survival_chest_item_kind() && stack.count == SURVIVAL_CHEST_ITEM_COUNT
+    survival_core::stack_matches(
+        survival_core_stack(
+            stack,
+            survival_chest_item_kind(),
+            SURVIVAL_WORLD_PERSISTENCE_BLOCK_NAME,
+        ),
+        survival_core::FixtureStack {
+            item_name: SURVIVAL_WORLD_PERSISTENCE_BLOCK_NAME,
+            count: SURVIVAL_CHEST_ITEM_COUNT,
+        },
+    )
 }
 
 fn should_open_survival_crafting(game_mode: GameMode, hand: Hand, position: BlockPos) -> bool {
-    game_mode == GameMode::Survival && hand == Hand::Main && position == survival_crafting_pos()
+    survival_core::should_open_fixture_container(
+        survival_core_game_mode(game_mode),
+        survival_core_hand(hand),
+        survival_core_block_pos(position),
+        survival_core_block_pos(survival_crafting_pos()),
+    )
 }
 
 fn is_survival_crafting_input_event(window_id: u8, slot_id: i16, expected_slot: i16) -> bool {
@@ -1931,13 +1975,37 @@ fn is_survival_crafting_collect_event(
     slot_id: i16,
     carried_item: &ItemStack,
 ) -> bool {
-    window_id == SURVIVAL_CRAFTING_WINDOW
-        && slot_id == SURVIVAL_CRAFTING_RESULT_SLOT_ID
-        && is_survival_crafting_result(carried_item)
+    survival_core::collect_event_matches(
+        window_id,
+        slot_id,
+        survival_core_stack(
+            carried_item,
+            survival_crafting_result_kind(),
+            SURVIVAL_CRAFTING_RECIPE,
+        ),
+        SURVIVAL_CRAFTING_WINDOW,
+        SURVIVAL_CRAFTING_RESULT_SLOT_ID,
+        survival_core_stack(
+            &survival_crafting_result_stack(),
+            survival_crafting_result_kind(),
+            SURVIVAL_CRAFTING_RECIPE,
+        ),
+    )
 }
 
 fn is_survival_crafting_result(stack: &ItemStack) -> bool {
-    stack.item == survival_crafting_result_kind() && stack.count == SURVIVAL_CRAFTING_RESULT_COUNT
+    survival_core::stack_matches(
+        survival_core_stack(
+            stack,
+            survival_crafting_result_kind(),
+            SURVIVAL_CRAFTING_RECIPE,
+        ),
+        survival_core_stack(
+            &survival_crafting_result_stack(),
+            survival_crafting_result_kind(),
+            SURVIVAL_CRAFTING_RECIPE,
+        ),
+    )
 }
 
 fn set_survival_crafting_slot(
@@ -2046,11 +2114,13 @@ fn survival_hunger_profile_from_flags(
     food_enabled: bool,
     health_enabled: bool,
 ) -> Option<SurvivalHungerProfile> {
-    match (food_enabled, health_enabled) {
-        (false, false) => None,
-        (true, false) => Some(SURVIVAL_HUNGER_FOOD_PROFILE),
-        (false, true) | (true, true) => Some(SURVIVAL_HUNGER_HEALTH_PROFILE),
-    }
+    survival_core::select_hunger_profile(
+        food_enabled,
+        health_enabled,
+        survival_core_hunger_profile(SURVIVAL_HUNGER_FOOD_PROFILE),
+        survival_core_hunger_profile(SURVIVAL_HUNGER_HEALTH_PROFILE),
+    )
+    .map(survival_hunger_profile_from_core)
 }
 
 fn survival_furnace_pos() -> BlockPos {
@@ -2064,7 +2134,12 @@ fn survival_furnace_state() -> BlockState {
 }
 
 fn should_open_survival_furnace(game_mode: GameMode, hand: Hand, position: BlockPos) -> bool {
-    game_mode == GameMode::Survival && hand == Hand::Main && position == survival_furnace_pos()
+    survival_core::should_open_fixture_container(
+        survival_core_game_mode(game_mode),
+        survival_core_hand(hand),
+        survival_core_block_pos(position),
+        survival_core_block_pos(survival_furnace_pos()),
+    )
 }
 
 fn is_survival_furnace_input_event(window_id: u8, slot_id: i16) -> bool {
@@ -2084,16 +2159,32 @@ fn is_survival_furnace_collect_event(
     slot_id: i16,
     carried_item: &ItemStack,
 ) -> bool {
-    window_id == SURVIVAL_FURNACE_WINDOW
-        && slot_id == SURVIVAL_FURNACE_OUTPUT_SLOT_ID
-        && is_survival_furnace_output(carried_item)
+    survival_core::collect_event_matches(
+        window_id,
+        slot_id,
+        survival_core_stack(
+            carried_item,
+            survival_furnace_output_kind(),
+            SURVIVAL_FURNACE_OUTPUT_NAME,
+        ),
+        SURVIVAL_FURNACE_WINDOW,
+        SURVIVAL_FURNACE_OUTPUT_SLOT_ID,
+        survival_core_stack(
+            &survival_furnace_output_stack(),
+            survival_furnace_output_kind(),
+            SURVIVAL_FURNACE_OUTPUT_NAME,
+        ),
+    )
 }
 
 fn should_emit_survival_furnace_breadth_rejection(
     smelting_breadth_enabled: bool,
     collect_logged: bool,
 ) -> bool {
-    smelting_breadth_enabled && collect_logged
+    survival_core::should_emit_furnace_breadth_rejection(
+        smelting_breadth_enabled && collect_logged,
+        false,
+    )
 }
 
 fn should_reject_survival_furnace_invalid_fuel(
@@ -2102,13 +2193,29 @@ fn should_reject_survival_furnace_invalid_fuel(
     window_id: u8,
     slot_id: i16,
 ) -> bool {
-    should_emit_survival_furnace_breadth_rejection(smelting_breadth_enabled, collect_logged)
-        && window_id == SURVIVAL_FURNACE_WINDOW
-        && slot_id == SURVIVAL_FURNACE_FUEL_SLOT_ID
+    survival_core::should_reject_furnace_invalid_fuel(
+        smelting_breadth_enabled,
+        collect_logged,
+        window_id,
+        slot_id,
+        SURVIVAL_FURNACE_WINDOW,
+        SURVIVAL_FURNACE_FUEL_SLOT_ID,
+    )
 }
 
 fn is_survival_furnace_output(stack: &ItemStack) -> bool {
-    stack.item == survival_furnace_output_kind() && stack.count == SURVIVAL_FURNACE_ITEM_COUNT
+    survival_core::stack_matches(
+        survival_core_stack(
+            stack,
+            survival_furnace_output_kind(),
+            SURVIVAL_FURNACE_OUTPUT_NAME,
+        ),
+        survival_core_stack(
+            &survival_furnace_output_stack(),
+            survival_furnace_output_kind(),
+            SURVIVAL_FURNACE_OUTPUT_NAME,
+        ),
+    )
 }
 
 fn is_empty_item(stack: &ItemStack) -> bool {
@@ -2223,9 +2330,12 @@ fn prop_bool(value: bool) -> PropValue {
 }
 
 fn should_toggle_survival_redstone(game_mode: GameMode, hand: Hand, position: BlockPos) -> bool {
-    game_mode == GameMode::Survival
-        && hand == Hand::Main
-        && position == survival_redstone_toggle_control_pos()
+    survival_core::should_open_fixture_container(
+        survival_core_game_mode(game_mode),
+        survival_core_hand(hand),
+        survival_core_block_pos(position),
+        survival_core_block_pos(survival_redstone_toggle_control_pos()),
+    )
 }
 
 fn survival_world_persistence_fixture_enabled() -> bool {
@@ -2279,7 +2389,13 @@ fn survival_world_persistence_stack() -> ItemStack {
 }
 
 fn is_survival_world_persistence_stack(stack: &ItemStack) -> bool {
-    stack.item == survival_item_kind() && stack.count >= SURVIVAL_WORLD_PERSISTENCE_ITEM_COUNT
+    let observed = survival_core_stack(
+        stack,
+        survival_item_kind(),
+        SURVIVAL_WORLD_PERSISTENCE_BLOCK_NAME,
+    );
+    observed.item_name == SURVIVAL_WORLD_PERSISTENCE_BLOCK_NAME
+        && observed.count >= SURVIVAL_WORLD_PERSISTENCE_ITEM_COUNT
 }
 
 fn should_place_survival_world_persistence(
@@ -2288,10 +2404,13 @@ fn should_place_survival_world_persistence(
     position: BlockPos,
     face: Direction,
 ) -> bool {
-    game_mode == GameMode::Survival
-        && hand == Hand::Main
-        && position == survival_world_persistence_base_pos()
-        && face == Direction::Up
+    survival_core::should_place_survival_block(
+        survival_core_game_mode(game_mode),
+        survival_core_hand(hand),
+        survival_core_block_pos(position),
+        survival_core_direction(face),
+        survival_core_block_pos(survival_world_persistence_base_pos()),
+    )
 }
 
 fn write_survival_world_persistence_marker(path: &PathBuf) {
@@ -2353,7 +2472,10 @@ fn survival_block_entity_marker_path() -> PathBuf {
 }
 
 fn survival_block_entity_should_place_sign(persisted_loaded: bool) -> bool {
-    !survival_block_entity_post_restart_phase() || persisted_loaded
+    survival_core::should_place_block_entity_sign(
+        survival_block_entity_post_restart_phase(),
+        persisted_loaded,
+    )
 }
 
 fn setup_survival_block_entity_arena(layer: &mut LayerBundle) {
@@ -2481,7 +2603,18 @@ fn survival_mob_drop_item_kind() -> ItemKind {
 }
 
 fn is_survival_mob_drop_stack(stack: &ItemStack) -> bool {
-    stack.item == survival_mob_drop_item_kind() && stack.count == SURVIVAL_MOB_DROP_ITEM_COUNT
+    survival_core::stack_matches(
+        survival_core_stack(
+            stack,
+            survival_mob_drop_item_kind(),
+            SURVIVAL_MOB_DROP_ITEM_NAME,
+        ),
+        survival_core_stack(
+            &survival_mob_drop_stack(),
+            survival_mob_drop_item_kind(),
+            SURVIVAL_MOB_DROP_ITEM_NAME,
+        ),
+    )
 }
 
 fn should_handle_survival_mob_drop_attack(
@@ -2490,9 +2623,12 @@ fn should_handle_survival_mob_drop_attack(
     target: Entity,
     expected_target: Entity,
 ) -> bool {
-    game_mode == GameMode::Survival
-        && interaction == EntityInteraction::Attack
-        && target == expected_target
+    survival_core::should_handle_mob_drop_attack(
+        survival_core_game_mode(game_mode),
+        survival_core_entity_interaction(interaction),
+        target.index(),
+        expected_target.index(),
+    )
 }
 
 fn spawn_survival_mob_drop_item(
@@ -2602,13 +2738,31 @@ fn should_consume_survival_hunger_food(
     food: i32,
     saturation: f32,
 ) -> bool {
-    hand == Hand::Main
-        && sequence == SURVIVAL_HUNGER_FOOD_USE_SEQUENCE
-        && held_slot == SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT
-        && is_survival_hunger_food_stack(stack)
-        && health == profile.pre_health
-        && food == SURVIVAL_HUNGER_FOOD_PRE_FOOD
-        && saturation == SURVIVAL_HUNGER_FOOD_PRE_SATURATION
+    survival_core::should_consume_hunger_food(
+        survival_core_hunger_profile(profile),
+        survival_core::HungerUseInput {
+            hand: survival_core_hand(hand),
+            sequence,
+            slot: held_slot,
+            stack: survival_core_stack(
+                stack,
+                survival_hunger_food_kind(),
+                SURVIVAL_HUNGER_FOOD_ITEM_NAME,
+            ),
+            health_tenths: survival_core_tenths(health),
+            food,
+            saturation_tenths: survival_core_tenths(saturation),
+        },
+        survival_core::HungerUseContract {
+            expected_sequence: SURVIVAL_HUNGER_FOOD_USE_SEQUENCE,
+            expected_slot: SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT,
+            expected_stack: survival_core_stack(
+                &survival_hunger_food_stack(),
+                survival_hunger_food_kind(),
+                SURVIVAL_HUNGER_FOOD_ITEM_NAME,
+            ),
+        },
+    )
 }
 
 fn log_survival_hunger_food_pre(username: &str, fixture: &mut SurvivalHungerFoodFixture) {
@@ -2814,24 +2968,23 @@ fn log_survival_sign_editing_live_breadth(username: &str) {
 }
 
 fn normalize_survival_environment_id(raw: &str) -> &'static str {
-    match raw {
-        SURVIVAL_OVERWORLD_ID => SURVIVAL_OVERWORLD_ID,
-        SURVIVAL_NETHER_ID => SURVIVAL_NETHER_ID,
-        SURVIVAL_END_ID => SURVIVAL_END_ID,
-        _ => SURVIVAL_UNKNOWN_ENVIRONMENT_ID,
-    }
+    survival_core::normalize_environment_id(
+        raw,
+        &survival_known_environment_ids(),
+        SURVIVAL_UNKNOWN_ENVIRONMENT_ID,
+    )
 }
 
 fn derive_survival_environment_id(
     spawn_environment: &str,
     environment_identifier: &str,
 ) -> &'static str {
-    let environment = normalize_survival_environment_id(environment_identifier);
-    if environment != SURVIVAL_UNKNOWN_ENVIRONMENT_ID {
-        environment
-    } else {
-        normalize_survival_environment_id(spawn_environment)
-    }
+    survival_core::derive_environment_id(
+        spawn_environment,
+        environment_identifier,
+        &survival_known_environment_ids(),
+        SURVIVAL_UNKNOWN_ENVIRONMENT_ID,
+    )
 }
 
 fn log_survival_biome_dimension_state(
@@ -2850,6 +3003,130 @@ fn log_survival_biome_dimension_state(
         spawn_environment,
         normalized_identifier
     ));
+}
+
+fn survival_known_environment_ids() -> [&'static str; SURVIVAL_KNOWN_ENVIRONMENT_COUNT] {
+    [SURVIVAL_OVERWORLD_ID, SURVIVAL_NETHER_ID, SURVIVAL_END_ID]
+}
+
+fn survival_core_game_mode(game_mode: GameMode) -> survival_core::FixtureGameMode {
+    if game_mode == GameMode::Survival {
+        survival_core::FixtureGameMode::Survival
+    } else {
+        survival_core::FixtureGameMode::Other
+    }
+}
+
+fn survival_core_hand(hand: Hand) -> survival_core::FixtureHand {
+    if hand == Hand::Main {
+        survival_core::FixtureHand::Main
+    } else {
+        survival_core::FixtureHand::Other
+    }
+}
+
+fn survival_core_direction(direction: Direction) -> survival_core::FixtureDirection {
+    if direction == Direction::Up {
+        survival_core::FixtureDirection::Up
+    } else {
+        survival_core::FixtureDirection::Other
+    }
+}
+
+fn survival_core_digging_state(state: DiggingState) -> survival_core::FixtureDiggingState {
+    if state == DiggingState::Stop {
+        survival_core::FixtureDiggingState::Stop
+    } else {
+        survival_core::FixtureDiggingState::Other
+    }
+}
+
+fn survival_core_entity_interaction(
+    interaction: EntityInteraction,
+) -> survival_core::FixtureInteraction {
+    if interaction == EntityInteraction::Attack {
+        survival_core::FixtureInteraction::Attack
+    } else {
+        survival_core::FixtureInteraction::Other
+    }
+}
+
+fn survival_core_block_pos(position: BlockPos) -> survival_core::FixtureBlockPos {
+    survival_core::FixtureBlockPos {
+        x: position.x,
+        y: position.y,
+        z: position.z,
+    }
+}
+
+fn survival_core_stack<'a>(
+    stack: &ItemStack,
+    expected_item: ItemKind,
+    expected_name: &'a str,
+) -> survival_core::FixtureStack<'a> {
+    let item_name = if stack.item == expected_item {
+        expected_name
+    } else {
+        SURVIVAL_OTHER_ITEM_NAME
+    };
+    survival_core::FixtureStack {
+        item_name,
+        count: stack.count,
+    }
+}
+
+fn survival_core_slot_changes<'a>(
+    slot_changes: &[SlotChange],
+    expected_item: ItemKind,
+    expected_name: &'a str,
+) -> Vec<survival_core::FixtureSlotChange<'a>> {
+    slot_changes
+        .iter()
+        .map(|change| survival_core::FixtureSlotChange {
+            slot: change.idx,
+            stack: survival_core_stack(&change.stack, expected_item, expected_name),
+        })
+        .collect()
+}
+
+fn survival_core_hunger_profile(
+    profile: SurvivalHungerProfile,
+) -> survival_core::FixtureHungerProfile {
+    let (post_food, post_saturation) =
+        if profile.event_prefix == SURVIVAL_HUNGER_HEALTH_EVENT_PREFIX {
+            (
+                SURVIVAL_HUNGER_FOOD_PRE_FOOD,
+                SURVIVAL_HUNGER_FOOD_PRE_SATURATION,
+            )
+        } else {
+            (
+                SURVIVAL_HUNGER_FOOD_POST_FOOD,
+                SURVIVAL_HUNGER_FOOD_POST_SATURATION,
+            )
+        };
+    survival_core::FixtureHungerProfile {
+        event_prefix: profile.event_prefix,
+        pre_health_tenths: survival_core_tenths(profile.pre_health),
+        pre_food: SURVIVAL_HUNGER_FOOD_PRE_FOOD,
+        pre_saturation_tenths: survival_core_tenths(SURVIVAL_HUNGER_FOOD_PRE_SATURATION),
+        post_health_tenths: survival_core_tenths(profile.post_health),
+        post_food,
+        post_saturation_tenths: survival_core_tenths(post_saturation),
+    }
+}
+
+fn survival_hunger_profile_from_core(
+    profile: survival_core::FixtureHungerProfile,
+) -> SurvivalHungerProfile {
+    if profile.event_prefix == SURVIVAL_HUNGER_HEALTH_EVENT_PREFIX {
+        SURVIVAL_HUNGER_HEALTH_PROFILE
+    } else {
+        SURVIVAL_HUNGER_FOOD_PROFILE
+    }
+}
+
+fn survival_core_tenths(value: f32) -> i32 {
+    (value * SURVIVAL_CORE_TENTHS_SCALE).round() as i32
 }
 
 fn survival_item_kind() -> ItemKind {

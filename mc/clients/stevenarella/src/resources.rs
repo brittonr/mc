@@ -19,7 +19,7 @@ use std::hash::BuildHasherDefault;
 use std::io;
 use std::path;
 use std::sync::mpsc;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, MutexGuard, RwLock};
 use std::thread;
 use std_or_web::fs;
 
@@ -41,6 +41,16 @@ const LEGACY_ITEM_TEXTURE_PREFIX: &str = "textures/items/";
 const MODERN_ITEM_TEXTURE_PREFIX: &str = "textures/item/";
 const LEGACY_STEVE_TEXTURE: &str = "textures/entity/steve.png";
 const MODERN_STEVE_TEXTURE: &str = "textures/entity/player/wide/steve.png";
+const PROGRESS_EMPTY: f64 = 0.0;
+const PROGRESS_COMPLETE: f64 = 1.0;
+
+pub type SharedManager = Arc<RwLock<Manager>>;
+type SharedProgress = Arc<Mutex<Progress>>;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ResourceBoundaryError {
+    ProgressPoisoned,
+}
 
 pub trait Pack: Sync + Send {
     fn open(&self, name: &str) -> Option<Box<dyn io::Read>>;
@@ -50,14 +60,14 @@ pub struct Manager {
     packs: Vec<Box<dyn Pack>>,
     version: usize,
 
-    vanilla_chan: Option<mpsc::Receiver<bool>>,
-    vanilla_assets_chan: Option<mpsc::Receiver<bool>>,
-    vanilla_progress: Arc<Mutex<Progress>>,
+    vanilla_progress: SharedProgress,
 }
 
 pub struct ManagerUI {
     progress_ui: Vec<ProgressUI>,
     num_tasks: isize,
+    vanilla_chan: Option<mpsc::Receiver<bool>>,
+    vanilla_assets_chan: Option<mpsc::Receiver<bool>>,
 }
 
 struct ProgressUI {
@@ -82,7 +92,20 @@ struct Task {
     progress: u64,
 }
 
-unsafe impl Sync for Manager {}
+fn task_progress_ratio(progress: u64, total: u64) -> f64 {
+    if total == 0 {
+        return PROGRESS_COMPLETE;
+    }
+    ((progress as f64) / (total as f64)).clamp(PROGRESS_EMPTY, PROGRESS_COMPLETE)
+}
+
+fn lock_progress(
+    progress: &SharedProgress,
+) -> Result<MutexGuard<'_, Progress>, ResourceBoundaryError> {
+    progress
+        .lock()
+        .map_err(|_| ResourceBoundaryError::ProgressPoisoned)
+}
 
 fn asset_object_path(hash: &str) -> Option<String> {
     if hash.len() < RESOURCE_HASH_PREFIX_LEN {
@@ -149,21 +172,22 @@ impl Manager {
         let mut m = Manager {
             packs: Vec::new(),
             version: 0,
-            vanilla_chan: None,
-            vanilla_assets_chan: None,
             vanilla_progress: Arc::new(Mutex::new(Progress { tasks: vec![] })),
         };
         m.add_pack(Box::new(InternalPack));
+        #[cfg(target_arch = "wasm32")]
+        let vanilla_chan = None;
+        #[cfg(target_arch = "wasm32")]
+        let vanilla_assets_chan = None;
         #[cfg(not(target_arch = "wasm32"))]
-        {
-            m.download_vanilla();
-            m.download_assets();
-        }
+        let (vanilla_chan, vanilla_assets_chan) = (m.download_vanilla(), m.download_assets());
         (
             m,
             ManagerUI {
                 progress_ui: vec![],
                 num_tasks: 0,
+                vanilla_chan,
+                vanilla_assets_chan,
             },
         )
     }
@@ -221,29 +245,31 @@ impl Manager {
         // Check to see if the download of vanilla has completed
         // (if it was started)
         let mut done = false;
-        if let Some(ref recv) = self.vanilla_chan {
+        if let Some(ref recv) = mui.vanilla_chan {
             if recv.try_recv().is_ok() {
                 done = true;
             }
         }
         if done {
-            self.vanilla_chan = None;
+            mui.vanilla_chan = None;
             self.load_vanilla();
         }
         let mut done = false;
-        if let Some(ref recv) = self.vanilla_assets_chan {
+        if let Some(ref recv) = mui.vanilla_assets_chan {
             if recv.try_recv().is_ok() {
                 done = true;
             }
         }
         if done {
-            self.vanilla_assets_chan = None;
+            mui.vanilla_assets_chan = None;
             self.load_assets();
         }
 
         const UI_HEIGHT: f64 = 32.0;
 
-        let mut progress = self.vanilla_progress.lock().unwrap();
+        let Ok(mut progress) = lock_progress(&self.vanilla_progress) else {
+            return;
+        };
         progress.tasks.retain(|v| v.progress < v.total);
         // Find out what we have to work with
         for task in &progress.tasks {
@@ -310,7 +336,7 @@ impl Manager {
                 continue;
             }
             let mut found = false;
-            let mut prog = 1.0;
+            let mut prog = PROGRESS_COMPLETE;
             for task in progress
                 .tasks
                 .iter()
@@ -318,7 +344,7 @@ impl Manager {
                 .filter(|v| v.task_name == ui.task_name)
             {
                 found = true;
-                prog = task.progress as f64 / task.total as f64;
+                prog = task_progress_ratio(task.progress, task.total);
             }
             let background = ui.background.borrow();
             let progress_bar = ui.progress_bar.borrow();
@@ -386,16 +412,17 @@ impl Manager {
     }
 
     #[cfg(not(target_arch = "wasm32"))]
-    fn download_assets(&mut self) {
+    fn download_assets(&mut self) -> Option<mpsc::Receiver<bool>> {
         let loc = format!("./index/{}.json", ASSET_VERSION);
         let location = path::Path::new(&loc).to_owned();
         let progress_info = self.vanilla_progress.clone();
         let (send, recv) = mpsc::channel();
-        if fs::metadata(&location).is_ok() {
+        let completion = if fs::metadata(&location).is_ok() {
             self.load_assets();
+            None
         } else {
-            self.vanilla_assets_chan = Some(recv);
-        }
+            Some(recv)
+        };
         thread::spawn(move || {
             let client = reqwest::blocking::Client::new();
             if fs::metadata(&location).is_err() {
@@ -476,18 +503,18 @@ impl Manager {
                 Self::add_task_progress(&progress_info, "Downloading Assets", "./objects", 1);
             }
         });
+        completion
     }
 
     #[cfg(not(target_arch = "wasm32"))]
-    fn download_vanilla(&mut self) {
+    fn download_vanilla(&mut self) -> Option<mpsc::Receiver<bool>> {
         let loc = format!("./resources-{}", RESOURCES_VERSION);
         let location = path::Path::new(&loc);
         if fs::metadata(location.join("steven.assets")).is_ok() {
             self.load_vanilla();
-            return;
+            return None;
         }
         let (send, recv) = mpsc::channel();
-        self.vanilla_chan = Some(recv);
 
         let progress_info = self.vanilla_progress.clone();
         thread::spawn(move || {
@@ -557,28 +584,49 @@ impl Manager {
 
             fs::remove_file(format!("{}.tmp", RESOURCES_VERSION)).unwrap();
         });
+        Some(recv)
     }
 
-    fn add_task(progress: &Arc<Mutex<Progress>>, name: &str, file: &str, length: u64) {
-        let mut info = progress.lock().unwrap();
+    fn add_task(progress: &SharedProgress, name: &str, file: &str, length: u64) {
+        let _ = Self::try_add_task(progress, name, file, length);
+    }
+
+    fn try_add_task(
+        progress: &SharedProgress,
+        name: &str,
+        file: &str,
+        length: u64,
+    ) -> Result<(), ResourceBoundaryError> {
+        let mut info = lock_progress(progress)?;
         info.tasks.push(Task {
             task_name: name.into(),
             task_file: file.into(),
             total: length,
             progress: 0,
         });
+        Ok(())
     }
 
-    fn add_task_progress(progress: &Arc<Mutex<Progress>>, name: &str, file: &str, prog: u64) {
-        let mut progress = progress.lock().unwrap();
+    fn add_task_progress(progress: &SharedProgress, name: &str, file: &str, prog: u64) {
+        let _ = Self::try_add_task_progress(progress, name, file, prog);
+    }
+
+    fn try_add_task_progress(
+        progress: &SharedProgress,
+        name: &str,
+        file: &str,
+        prog: u64,
+    ) -> Result<(), ResourceBoundaryError> {
+        let mut progress = lock_progress(progress)?;
         for task in progress
             .tasks
             .iter_mut()
             .filter(|v| v.task_file == file)
             .filter(|v| v.task_name == name)
         {
-            task.progress += prog as u64;
+            task.progress += prog;
         }
+        Ok(())
     }
 }
 
@@ -666,12 +714,52 @@ impl<'a, T: io::Read> io::Read for ProgressRead<'a, T> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::io::Read;
 
     const TEST_HASH: &str = "d48940aeab2d4068bd157e6810406c882503a813";
     const SHORT_HASH: &str = "d";
     const TEST_TMP_FILE: &str = "asset.tmp";
     const TEST_DEST_FILE: &str = "asset";
     const TEST_ASSET_CONTENT: &str = "asset-content";
+    const TEST_RESOURCE_PATH: &str = "assets/minecraft/textures/block/stone.png";
+    const TEST_RESOURCE_CONTENT: &[u8] = b"stone";
+    const TEST_TASK_NAME: &str = "test task";
+    const TEST_TASK_FILE: &str = "test file";
+    const TEST_TASK_TOTAL: u64 = 10;
+    const TEST_TASK_PROGRESS: u64 = 4;
+    const TEST_TASK_RATIO: f64 = 0.4;
+
+    struct StaticPack {
+        files: std::collections::HashMap<String, Vec<u8>>,
+    }
+
+    impl StaticPack {
+        fn with_file(path: &str, content: &[u8]) -> StaticPack {
+            let mut files = std::collections::HashMap::new();
+            files.insert(path.to_owned(), content.to_vec());
+            StaticPack { files }
+        }
+    }
+
+    impl Pack for StaticPack {
+        fn open(&self, name: &str) -> Option<Box<dyn io::Read>> {
+            self.files
+                .get(name)
+                .map(|content| Box::new(io::Cursor::new(content.clone())) as Box<dyn io::Read>)
+        }
+    }
+
+    fn manager_without_downloads() -> Manager {
+        Manager {
+            packs: Vec::new(),
+            version: 0,
+            vanilla_progress: Arc::new(Mutex::new(Progress { tasks: Vec::new() })),
+        }
+    }
+
+    fn empty_progress() -> SharedProgress {
+        Arc::new(Mutex::new(Progress { tasks: Vec::new() }))
+    }
 
     #[cfg(not(target_arch = "wasm32"))]
     fn unique_test_dir(name: &str) -> path::PathBuf {
@@ -707,6 +795,91 @@ mod tests {
         assert_eq!(
             compatible_resource_name(MINECRAFT_PLUGIN, "lang/en_us.json"),
             None
+        );
+    }
+
+    #[test]
+    fn resource_manager_opens_existing_pack_resource() {
+        let mut manager = manager_without_downloads();
+        manager.add_pack(Box::new(StaticPack::with_file(
+            TEST_RESOURCE_PATH,
+            TEST_RESOURCE_CONTENT,
+        )));
+
+        let mut reader = manager
+            .open("minecraft", "textures/block/stone.png")
+            .unwrap();
+        let mut content = Vec::new();
+        reader.read_to_end(&mut content).unwrap();
+
+        assert_eq!(content, TEST_RESOURCE_CONTENT);
+        assert_eq!(manager.version(), 1);
+    }
+
+    #[test]
+    fn resource_manager_returns_none_for_missing_resource() {
+        let mut manager = manager_without_downloads();
+        manager.add_pack(Box::new(StaticPack::with_file(
+            TEST_RESOURCE_PATH,
+            TEST_RESOURCE_CONTENT,
+        )));
+
+        assert!(manager
+            .open("minecraft", "textures/block/missing.png")
+            .is_none());
+    }
+
+    #[test]
+    fn progress_updates_record_task_progress() {
+        let progress = empty_progress();
+
+        Manager::try_add_task(&progress, TEST_TASK_NAME, TEST_TASK_FILE, TEST_TASK_TOTAL).unwrap();
+        Manager::try_add_task_progress(
+            &progress,
+            TEST_TASK_NAME,
+            TEST_TASK_FILE,
+            TEST_TASK_PROGRESS,
+        )
+        .unwrap();
+        let progress = lock_progress(&progress).unwrap();
+
+        assert_eq!(progress.tasks.len(), 1);
+        assert_eq!(progress.tasks[0].progress, TEST_TASK_PROGRESS);
+        assert_eq!(
+            task_progress_ratio(progress.tasks[0].progress, progress.tasks[0].total),
+            TEST_TASK_RATIO
+        );
+    }
+
+    #[test]
+    fn progress_updates_fail_closed_after_poison() {
+        let progress = empty_progress();
+        let poison_target = progress.clone();
+        let _ = std::panic::catch_unwind(move || {
+            let _guard = poison_target.lock().unwrap();
+            panic!("poison progress mutex");
+        });
+
+        assert_eq!(
+            Manager::try_add_task(&progress, TEST_TASK_NAME, TEST_TASK_FILE, TEST_TASK_TOTAL),
+            Err(ResourceBoundaryError::ProgressPoisoned)
+        );
+        assert_eq!(
+            Manager::try_add_task_progress(
+                &progress,
+                TEST_TASK_NAME,
+                TEST_TASK_FILE,
+                TEST_TASK_PROGRESS,
+            ),
+            Err(ResourceBoundaryError::ProgressPoisoned)
+        );
+    }
+
+    #[test]
+    fn zero_length_progress_reports_complete_without_nan() {
+        assert_eq!(
+            task_progress_ratio(TEST_TASK_PROGRESS, 0),
+            PROGRESS_COMPLETE
         );
     }
 

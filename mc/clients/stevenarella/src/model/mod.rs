@@ -20,7 +20,7 @@ use rand::seq::SliceRandom;
 use rand::Rng;
 
 pub struct Factory {
-    resources: Arc<RwLock<resources::Manager>>,
+    resources: resources::SharedManager,
     pub textures: Arc<RwLock<render::TextureManager>>,
 
     models: HashMap<Key, StateModel, BuildHasherDefault<FNVHash>>,
@@ -231,7 +231,7 @@ thread_local!(
 
 impl Factory {
     pub fn new(
-        resources: Arc<RwLock<resources::Manager>>,
+        resources: resources::SharedManager,
         textures: Arc<RwLock<render::TextureManager>>,
     ) -> Factory {
         Factory {
@@ -244,7 +244,7 @@ impl Factory {
         }
     }
 
-    fn load_biome_colors(res: Arc<RwLock<resources::Manager>>, name: &str) -> image::DynamicImage {
+    fn load_biome_colors(res: resources::SharedManager, name: &str) -> image::DynamicImage {
         let mut val = match res
             .read()
             .unwrap()

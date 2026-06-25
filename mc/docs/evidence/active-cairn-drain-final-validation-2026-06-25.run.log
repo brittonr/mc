@@ -1,0 +1,33 @@
+## command: nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/v5c6zz0p0xxph73qxbqiqbiir6bf6pij.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1058 ms: Could not connect to server; retrying in 279 ms
+warning: error: unable to download 'http://100.100.103.95:5000/v5c6zz0p0xxph73qxbqiqbiir6bf6pij.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 628 ms
+warning: error: unable to download 'http://100.100.103.95:5000/v5c6zz0p0xxph73qxbqiqbiir6bf6pij.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1127 ms
+warning: error: unable to download 'http://100.100.103.95:5000/v5c6zz0p0xxph73qxbqiqbiir6bf6pij.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 8 ms: Could not connect to server; retrying in 2348 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/v5c6zz0p0xxph73qxbqiqbiir6bf6pij.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/v5c6zz0p0xxph73qxbqiqbiir6bf6pij.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4100 ms: Could not connect to server
+this derivation will be built:
+  /nix/store/0hyx1ym5kymqihkz7rb0k780bfrbk7qm-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/0hyx1ym5kymqihkz7rb0k780bfrbk7qm-mc-compat-cairn-task-evidence.drv'...
+exit_status=0
+
+## command: nix build .#checks.x86_64-linux.mc-compat-evidence-manifest-refresh --no-link -L
+exit_status=0
+
+## command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 7,
+  "valid": true
+}
+exit_status=0
+
+overall_exit_status=0

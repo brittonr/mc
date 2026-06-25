@@ -520,71 +520,148 @@ impl Manager {
     }
 
     /// Returns the given component that the key points to if it exists.
-    pub fn get_component<'a, 'b: 'a, T>(&'a self, entity: Entity, key: Key<T>) -> Option<&'b T> {
-        let components = match self.components.get(key.id).and_then(|v| v.as_ref()) {
-            Some(val) => val,
-            None => return None,
-        };
-        let set = match self.entities.get(entity.id).as_ref() {
-            Some(val) => {
-                if val.1 == entity.generation {
-                    &val.0
-                } else {
-                    return None;
-                }
-            }
-            None => return None,
+    pub fn get_component<T>(&self, entity: Entity, key: Key<T>) -> Option<&T> {
+        let components = self.components.get(key.id).and_then(|v| v.as_ref())?;
+        let set = match self.entities.get(entity.id) {
+            Some(val) if val.1 == entity.generation => &val.0,
+            _ => return None,
         };
         if !set.as_ref().map_or(false, |v| v.components.get(key.id)) {
             return None;
         }
 
-        Some(unsafe { mem::transmute::<&T, &T>(components.get(entity.id)) })
+        components.get(entity.id)
     }
 
     /// Same as `get_component` but doesn't require a key. Using a key
     /// is better for frequent lookups.
-    pub fn get_component_direct<'a, 'b: 'a, T: Any>(&'a self, entity: Entity) -> Option<&'b T> {
+    pub fn get_component_direct<T: Any>(&self, entity: Entity) -> Option<&T> {
         let key = self.get_key();
         self.get_component(entity, key)
     }
 
     /// Returns the given component that the key points to if it exists.
-    pub fn get_component_mut<'a, 'b: 'a, T>(
-        &'a mut self,
-        entity: Entity,
-        key: Key<T>,
-    ) -> Option<&'b mut T> {
-        let components = match self.components.get_mut(key.id).and_then(|v| v.as_mut()) {
-            Some(val) => val,
-            None => return None,
-        };
-        let set = match self.entities.get(entity.id).as_ref() {
-            Some(val) => {
-                if val.1 == entity.generation {
-                    &val.0
-                } else {
-                    return None;
-                }
-            }
-            None => return None,
+    pub fn get_component_mut<T>(&mut self, entity: Entity, key: Key<T>) -> Option<&mut T> {
+        let set = match self.entities.get(entity.id) {
+            Some(val) if val.1 == entity.generation => &val.0,
+            _ => return None,
         };
         if !set.as_ref().map_or(false, |v| v.components.get(key.id)) {
             return None;
         }
+        let components = self.components.get_mut(key.id).and_then(|v| v.as_mut())?;
 
-        Some(unsafe { mem::transmute::<&mut T, &mut T>(components.get_mut(entity.id)) })
+        components.get_mut(entity.id)
     }
 
     /// Same as `get_component_mut` but doesn't require a key. Using a key
     /// is better for frequent lookups.
-    pub fn get_component_mut_direct<'a, 'b: 'a, T: Any>(
-        &'a mut self,
-        entity: Entity,
-    ) -> Option<&'b mut T> {
+    pub fn get_component_mut_direct<T: Any>(&mut self, entity: Entity) -> Option<&mut T> {
         let key = self.get_key();
         self.get_component_mut(entity, key)
     }
+
+    pub fn get_two_components_mut<A, B>(
+        &mut self,
+        entity: Entity,
+        key_a: Key<A>,
+        key_b: Key<B>,
+    ) -> Option<(&mut A, &mut B)> {
+        let component_ids = [key_a.id, key_b.id];
+        if !unique_component_ids(&component_ids)
+            || !self.entity_has_components(entity, &component_ids)
+        {
+            return None;
+        }
+        let component_a = self.component_mem_mut_ptr(key_a.id)?;
+        let component_b = self.component_mem_mut_ptr(key_b.id)?;
+        unsafe {
+            Some((
+                (*component_a).get_mut(entity.id)?,
+                (*component_b).get_mut(entity.id)?,
+            ))
+        }
+    }
+
+    pub fn get_three_components_mut<A, B, C>(
+        &mut self,
+        entity: Entity,
+        key_a: Key<A>,
+        key_b: Key<B>,
+        key_c: Key<C>,
+    ) -> Option<(&mut A, &mut B, &mut C)> {
+        let component_ids = [key_a.id, key_b.id, key_c.id];
+        if !unique_component_ids(&component_ids)
+            || !self.entity_has_components(entity, &component_ids)
+        {
+            return None;
+        }
+        let component_a = self.component_mem_mut_ptr(key_a.id)?;
+        let component_b = self.component_mem_mut_ptr(key_b.id)?;
+        let component_c = self.component_mem_mut_ptr(key_c.id)?;
+        unsafe {
+            Some((
+                (*component_a).get_mut(entity.id)?,
+                (*component_b).get_mut(entity.id)?,
+                (*component_c).get_mut(entity.id)?,
+            ))
+        }
+    }
+
+    pub fn get_four_components_mut<A, B, C, D>(
+        &mut self,
+        entity: Entity,
+        key_a: Key<A>,
+        key_b: Key<B>,
+        key_c: Key<C>,
+        key_d: Key<D>,
+    ) -> Option<(&mut A, &mut B, &mut C, &mut D)> {
+        let component_ids = [key_a.id, key_b.id, key_c.id, key_d.id];
+        if !unique_component_ids(&component_ids)
+            || !self.entity_has_components(entity, &component_ids)
+        {
+            return None;
+        }
+        let component_a = self.component_mem_mut_ptr(key_a.id)?;
+        let component_b = self.component_mem_mut_ptr(key_b.id)?;
+        let component_c = self.component_mem_mut_ptr(key_c.id)?;
+        let component_d = self.component_mem_mut_ptr(key_d.id)?;
+        unsafe {
+            Some((
+                (*component_a).get_mut(entity.id)?,
+                (*component_b).get_mut(entity.id)?,
+                (*component_c).get_mut(entity.id)?,
+                (*component_d).get_mut(entity.id)?,
+            ))
+        }
+    }
+
+    fn entity_has_components(&self, entity: Entity, component_ids: &[usize]) -> bool {
+        let state = match self.entities.get(entity.id) {
+            Some(val) if val.1 == entity.generation => match val.0.as_ref() {
+                Some(state) => state,
+                None => return false,
+            },
+            _ => return false,
+        };
+        component_ids.iter().all(|id| state.components.get(*id))
+    }
+
+    fn component_mem_mut_ptr(&mut self, component_id: usize) -> Option<*mut ComponentMem> {
+        self.components
+            .get_mut(component_id)
+            .and_then(|v| v.as_mut())
+            .map(|component| component as *mut ComponentMem)
+    }
+}
+
+fn unique_component_ids(component_ids: &[usize]) -> bool {
+    for (position, component_id) in component_ids.iter().enumerate() {
+        if component_ids[position + 1..].contains(component_id) {
+            return false;
+        }
+    }
+    true
 }
 
 const COMPONENTS_PER_BLOCK: usize = 64;
@@ -635,7 +712,12 @@ impl ComponentMem {
         let rem = index % COMPONENTS_PER_BLOCK;
 
         let count = {
-            let data = self.data[idx].as_mut().unwrap();
+            let Some(data) = self.data.get_mut(idx).and_then(|v| v.as_mut()) else {
+                return;
+            };
+            if !data.1.get(rem) {
+                return;
+            }
             let start = rem * self.component_size;
             data.1.set(rem, false);
             // We don't have access to the actual type in this method so
@@ -652,20 +734,26 @@ impl ComponentMem {
         }
     }
 
-    fn get<T>(&self, index: usize) -> &T {
+    fn get<T>(&self, index: usize) -> Option<&T> {
         let idx = index / COMPONENTS_PER_BLOCK;
         let rem = index % COMPONENTS_PER_BLOCK;
-        let data = self.data[idx].as_ref().unwrap();
+        let data = self.data.get(idx).and_then(|v| v.as_ref())?;
+        if !data.1.get(rem) {
+            return None;
+        }
         let start = rem * self.component_size;
-        unsafe { &*(data.0.as_ptr().add(start) as *const T) }
+        unsafe { Some(&*(data.0.as_ptr().add(start) as *const T)) }
     }
 
-    fn get_mut<T>(&mut self, index: usize) -> &mut T {
+    fn get_mut<T>(&mut self, index: usize) -> Option<&mut T> {
         let idx = index / COMPONENTS_PER_BLOCK;
         let rem = index % COMPONENTS_PER_BLOCK;
-        let data = self.data[idx].as_mut().unwrap();
+        let data = self.data.get_mut(idx).and_then(|v| v.as_mut())?;
+        if !data.1.get(rem) {
+            return None;
+        }
         let start = rem * self.component_size;
-        unsafe { &mut *(data.0.as_mut_ptr().add(start) as *mut T) }
+        unsafe { Some(&mut *(data.0.as_mut_ptr().add(start) as *mut T)) }
     }
 }
 
@@ -683,5 +771,202 @@ impl Drop for ComponentMem {
                 }
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::sync::atomic::{AtomicUsize, Ordering};
+    use std::sync::Arc;
+
+    const TEST_COMPONENT_VALUE: i32 = 7;
+    const UPDATED_COMPONENT_VALUE: i32 = 11;
+    const STALE_GENERATION_OFFSET: u32 = 1;
+    const TEST_COMPONENT_INDEX: usize = COMPONENTS_PER_BLOCK + 1;
+
+    #[derive(Debug, PartialEq, Eq)]
+    struct TestComponent {
+        value: i32,
+    }
+
+    struct OtherComponent {
+        value: i32,
+    }
+
+    struct DropCounter {
+        drops: Arc<AtomicUsize>,
+    }
+
+    impl Drop for DropCounter {
+        fn drop(&mut self) {
+            self.drops.fetch_add(1, Ordering::SeqCst);
+        }
+    }
+
+    #[test]
+    fn ecs_component_access_reads_and_mutates_valid_entity() {
+        let mut manager = Manager::new();
+        let entity = manager.create_entity();
+        let key = manager.get_key::<TestComponent>();
+
+        manager.add_component(
+            entity,
+            key,
+            TestComponent {
+                value: TEST_COMPONENT_VALUE,
+            },
+        );
+        assert_eq!(
+            manager.get_component(entity, key).unwrap().value,
+            TEST_COMPONENT_VALUE
+        );
+        manager.get_component_mut(entity, key).unwrap().value = UPDATED_COMPONENT_VALUE;
+
+        assert_eq!(
+            manager.get_component(entity, key).unwrap().value,
+            UPDATED_COMPONENT_VALUE
+        );
+    }
+
+    #[test]
+    fn ecs_component_access_returns_none_for_absent_component() {
+        let mut manager = Manager::new();
+        let entity = manager.create_entity();
+        let key = manager.get_key::<TestComponent>();
+        let absent_key = manager.get_key::<OtherComponent>();
+
+        manager.add_component(
+            entity,
+            key,
+            TestComponent {
+                value: TEST_COMPONENT_VALUE,
+            },
+        );
+
+        assert!(manager.get_component(entity, absent_key).is_none());
+        assert!(manager.get_component_mut(entity, absent_key).is_none());
+    }
+
+    #[test]
+    fn ecs_multi_component_access_mutates_distinct_components() {
+        let mut manager = Manager::new();
+        let entity = manager.create_entity();
+        let key = manager.get_key::<TestComponent>();
+        let other_key = manager.get_key::<OtherComponent>();
+        manager.add_component(
+            entity,
+            key,
+            TestComponent {
+                value: TEST_COMPONENT_VALUE,
+            },
+        );
+        manager.add_component(
+            entity,
+            other_key,
+            OtherComponent {
+                value: TEST_COMPONENT_VALUE,
+            },
+        );
+
+        let (first, second) = manager
+            .get_two_components_mut(entity, key, other_key)
+            .unwrap();
+        first.value = UPDATED_COMPONENT_VALUE;
+        second.value = UPDATED_COMPONENT_VALUE;
+
+        assert_eq!(
+            manager.get_component(entity, key).unwrap().value,
+            UPDATED_COMPONENT_VALUE
+        );
+        assert_eq!(
+            manager.get_component(entity, other_key).unwrap().value,
+            UPDATED_COMPONENT_VALUE
+        );
+    }
+
+    #[test]
+    fn ecs_multi_component_access_rejects_duplicate_keys() {
+        let mut manager = Manager::new();
+        let entity = manager.create_entity();
+        let key = manager.get_key::<TestComponent>();
+        manager.add_component(
+            entity,
+            key,
+            TestComponent {
+                value: TEST_COMPONENT_VALUE,
+            },
+        );
+
+        assert!(manager.get_two_components_mut(entity, key, key).is_none());
+    }
+
+    #[test]
+    fn ecs_component_access_returns_none_for_stale_generation() {
+        let mut manager = Manager::new();
+        let entity = manager.create_entity();
+        let key = manager.get_key::<TestComponent>();
+        manager.add_component(
+            entity,
+            key,
+            TestComponent {
+                value: TEST_COMPONENT_VALUE,
+            },
+        );
+        let stale = Entity {
+            id: entity.id,
+            generation: entity.generation + STALE_GENERATION_OFFSET,
+        };
+
+        assert!(manager.get_component(stale, key).is_none());
+        assert!(manager.get_component_mut(stale, key).is_none());
+    }
+
+    #[test]
+    fn ecs_component_access_returns_none_after_entity_removal_request() {
+        let mut manager = Manager::new();
+        let entity = manager.create_entity();
+        let key = manager.get_key::<TestComponent>();
+        manager.add_component(
+            entity,
+            key,
+            TestComponent {
+                value: TEST_COMPONENT_VALUE,
+            },
+        );
+
+        manager.remove_entity(entity);
+
+        assert!(manager.get_component(entity, key).is_none());
+        assert!(manager.get_component_mut(entity, key).is_none());
+    }
+
+    #[test]
+    fn ecs_component_storage_drops_removed_component_once() {
+        let drops = Arc::new(AtomicUsize::new(0));
+        {
+            let mut storage = ComponentMem::new::<DropCounter>();
+            storage.add(
+                TEST_COMPONENT_INDEX,
+                DropCounter {
+                    drops: drops.clone(),
+                },
+            );
+
+            storage.remove(TEST_COMPONENT_INDEX);
+            storage.remove(TEST_COMPONENT_INDEX);
+        }
+
+        assert_eq!(drops.load(Ordering::SeqCst), 1);
+    }
+
+    #[test]
+    fn ecs_component_storage_returns_none_for_missing_slot() {
+        let mut storage = ComponentMem::new::<TestComponent>();
+
+        assert!(storage.get::<TestComponent>(TEST_COMPONENT_INDEX).is_none());
+        assert!(storage
+            .get_mut::<TestComponent>(TEST_COMPONENT_INDEX)
+            .is_none());
     }
 }

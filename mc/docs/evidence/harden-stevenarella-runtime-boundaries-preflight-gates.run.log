@@ -1,0 +1,188 @@
+## cairn change list
++ nix run .#cairn -- change list --root .
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "./cairn/changes/extract-valence-compat-fixture-cores/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "extract-valence-compat-fixture-cores",
+      "path": "./cairn/changes/extract-valence-compat-fixture-cores",
+      "task_counts": {
+        "done": 7,
+        "in_progress": 0,
+        "todo": 1,
+        "total": 8,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/harden-stevenarella-runtime-boundaries/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "harden-stevenarella-runtime-boundaries",
+      "path": "./cairn/changes/harden-stevenarella-runtime-boundaries",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/isolate-runner-json-evidence/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "isolate-runner-json-evidence",
+      "path": "./cairn/changes/isolate-runner-json-evidence",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/split-stevenarella-server-probes/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "split-stevenarella-server-probes",
+      "path": "./cairn/changes/split-stevenarella-server-probes",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "."
+}
+command_exit_status=0
+
+## cairn validate
++ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 4,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+command_exit_status=0
+
+## cairn gate proposal
++ nix run .#cairn -- gate proposal harden-stevenarella-runtime-boundaries --root .
+{
+  "change": "harden-stevenarella-runtime-boundaries",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "5e785e9f78bae6885601922089f1db7ea44e8f4632be6ff7655069e8ec8787a8",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "35c3948bf4a318ef46a5ec78dbe530db59e147f6bfb6365d9866fdafee6cb129",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+## cairn gate design
++ nix run .#cairn -- gate design harden-stevenarella-runtime-boundaries --root .
+{
+  "change": "harden-stevenarella-runtime-boundaries",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "1b40e8011af222f3104417a3de324d1332656bbed8e8cd3c60fe7526f58d7fcb",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "1a88f8d833921e4be5c0a5bcaafd97f326738c4189a5507b1e4c67b68911ad55",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+## cairn gate tasks
++ nix run .#cairn -- gate tasks harden-stevenarella-runtime-boundaries --root .
+{
+  "change": "harden-stevenarella-runtime-boundaries",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "9c78b39b7c4ee0fff62cbf605e3bff259fff399810211e275b565b9dc6bc4f3e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "5bd40b017af02267ae51b8ed7eb7e78509afbd090f37a063a9fbe5429eeb84f2",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+exit_status=0

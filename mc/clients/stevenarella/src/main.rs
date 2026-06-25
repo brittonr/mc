@@ -138,7 +138,7 @@ const CAPTURE_START_MILLIS: u64 = 0;
 pub struct Game {
     renderer: render::Renderer,
     screen_sys: screen::ScreenSystem,
-    resource_manager: Arc<RwLock<resources::Manager>>,
+    resource_manager: resources::SharedManager,
     console: Arc<Mutex<console::Console>>,
     vars: Rc<console::Vars>,
     should_close: bool,
@@ -1291,7 +1291,7 @@ fn main2() {
         (context, shader_version, dpi_factor, glutin_window)
     };
 
-    gl::init(context);
+    let _gl_context = gl::init(context);
     info!("Shader version: {}", shader_version);
 
     let renderer = render::Renderer::new(resource_manager.clone(), shader_version);

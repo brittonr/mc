@@ -27,7 +27,7 @@ const UI_HEIGHT: f64 = 480.0;
 
 pub struct UIState {
     textures: Arc<RwLock<render::TextureManager>>,
-    resources: Arc<RwLock<resources::Manager>>,
+    resources: resources::SharedManager,
     pub version: usize,
 
     data: Vec<u8>,
@@ -71,7 +71,7 @@ impl UIState {
     pub fn new(
         glsl: &glsl::Registry,
         textures: Arc<RwLock<render::TextureManager>>,
-        res: Arc<RwLock<resources::Manager>>,
+        res: resources::SharedManager,
     ) -> UIState {
         let shader = UIShader::new(glsl);
 

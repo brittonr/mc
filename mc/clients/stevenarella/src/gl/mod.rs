@@ -15,21 +15,84 @@
 use glow as gl;
 use glow::{HasContext, PixelPackData, PixelUnpackData};
 use log::error;
+use std::fmt;
 use std::mem;
 use std::ops::BitOr;
 use std::ops::{Deref, DerefMut};
+use std::ptr;
+use std::sync::atomic::{AtomicPtr, Ordering};
 
-static mut CONTEXT: *mut glow::Context = 0 as *mut glow::Context;
+const GL_CONTEXT_UNINITIALIZED: &str = "Stevenarella GL context is not initialized";
+const GL_CONTEXT_ALREADY_INITIALIZED: &str =
+    "Stevenarella GL context was initialized more than once";
 
-/// Inits the gl library. This should be called once a context is ready.
-pub fn init(context: glow::Context) {
-    unsafe {
-        CONTEXT = Box::into_raw(Box::new(context));
+static CONTEXT: AtomicPtr<glow::Context> = AtomicPtr::new(ptr::null_mut());
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum GlContextError {
+    Uninitialized,
+    AlreadyInitialized,
+}
+
+impl GlContextError {
+    fn message(self) -> &'static str {
+        match self {
+            GlContextError::Uninitialized => GL_CONTEXT_UNINITIALIZED,
+            GlContextError::AlreadyInitialized => GL_CONTEXT_ALREADY_INITIALIZED,
+        }
     }
 }
 
+impl fmt::Display for GlContextError {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter.write_str(self.message())
+    }
+}
+
+#[derive(Clone, Copy, Debug)]
+pub struct GlContextToken {
+    _private: (),
+}
+
+/// Inits the gl library. This should be called once a context is ready.
+pub fn init(context: glow::Context) -> GlContextToken {
+    try_init(context).unwrap_or_else(|err| panic!("{}", err))
+}
+
+/// Attempts to install the process GL context for renderer-owned startup code.
+pub fn try_init(context: glow::Context) -> Result<GlContextToken, GlContextError> {
+    let context = Box::new(context);
+    let context = Box::into_raw(context);
+    match CONTEXT.compare_exchange(
+        ptr::null_mut(),
+        context,
+        Ordering::AcqRel,
+        Ordering::Acquire,
+    ) {
+        Ok(_) => Ok(GlContextToken { _private: () }),
+        Err(_) => {
+            unsafe {
+                drop(Box::from_raw(context));
+            }
+            Err(GlContextError::AlreadyInitialized)
+        }
+    }
+}
+
+pub fn context_status() -> Result<(), GlContextError> {
+    try_glow_context().map(|_| ())
+}
+
+fn try_glow_context() -> Result<&'static glow::Context, GlContextError> {
+    let context = CONTEXT.load(Ordering::Acquire);
+    if context.is_null() {
+        return Err(GlContextError::Uninitialized);
+    }
+    unsafe { Ok(&*context) }
+}
+
 fn glow_context() -> &'static glow::Context {
-    unsafe { CONTEXT.as_ref().unwrap() }
+    try_glow_context().unwrap_or_else(|err| panic!("{}", err))
 }
 
 /// Dsed to specify how the vertices will be handled
@@ -1009,5 +1072,21 @@ pub fn clear_buffer(buffer: TargetBuffer, draw_buffer: u32, values: &mut [f32]) 
     unsafe {
         // TODO: why does glow have &mut on clear buffer values, why would it change the color?
         glow_context().clear_buffer_f32_slice(buffer, draw_buffer, values);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn gl_context_status_reports_uninitialized_before_startup() {
+        assert_eq!(context_status(), Err(GlContextError::Uninitialized));
+    }
+
+    #[test]
+    #[should_panic(expected = "Stevenarella GL context is not initialized")]
+    fn gl_context_access_fails_with_deterministic_startup_diagnostic() {
+        let _ = glow_context();
     }
 }
