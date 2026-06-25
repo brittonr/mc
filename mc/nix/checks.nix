@@ -11,7 +11,10 @@
 }:
 let
   system = pkgs.stdenv.hostPlatform.system;
-  allowedNewChecks = [ "mc-flake-output-inventory" ];
+  allowedNewChecks = [
+    "mc-flake-output-inventory"
+    "mc-octet-monorepo"
+  ];
   baseline = builtins.fromJSON (builtins.readFile baselineOutputInventory);
   current = {
     packages = builtins.attrNames self.packages.${system};
@@ -4066,4 +4069,23 @@ in
     mkdir -p "$out"
     cp cairn-help.log cargo-octet-help.log "$out/"
   '';
+  mc-octet-monorepo =
+    pkgs.runCommand "mc-octet-monorepo"
+      {
+        nativeBuildInputs = [
+          pkgs.rustc
+          pkgs.gcc
+        ];
+      }
+      ''
+        cp -R ${srcRoot} repo
+        chmod -R u+w repo
+        cd repo
+        rustc --edition=2021 tools/check_octet_monorepo.rs -o check-octet-monorepo
+        ./check-octet-monorepo --self-test > self-test.log
+        ./check-octet-monorepo --root . --octet-source ${octet} > static.log
+        grep -Fq "mc-octet-monorepo: PASS" static.log
+        mkdir -p "$out"
+        cp self-test.log static.log "$out/"
+      '';
 }

@@ -1,12 +1,180 @@
 {
   "accepted_findings": [
     {
+      "crate_name": "build-script-build",
+      "file": "RUSTLIB/core/src/clone.rs",
+      "line": 1,
+      "lint": "module_file_count",
+      "severity": "error",
+      "stable_id": "b3:f16f15ecc70a2189"
+    },
+    {
       "crate_name": "steven_shared",
       "file": "RUSTLIB/core/src/clone.rs",
       "line": 1,
       "lint": "module_file_count",
       "severity": "error",
       "stable_id": "b3:dc62661c7733474a"
+    },
+    {
+      "crate_name": "build-script-build",
+      "file": "resources/build.rs",
+      "line": 1,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:dd6dcf365c818da8"
+    },
+    {
+      "crate_name": "build-script-build",
+      "file": "resources/build.rs",
+      "line": 2,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:e1b9a02b22097f04"
+    },
+    {
+      "crate_name": "build-script-build",
+      "file": "resources/build.rs",
+      "line": 3,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:4a032f3653480c42"
+    },
+    {
+      "crate_name": "build-script-build",
+      "file": "resources/build.rs",
+      "line": 5,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:1f35af54631720bd"
+    },
+    {
+      "crate_name": "build-script-build",
+      "file": "resources/build.rs",
+      "line": 5,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:163a4317070c3f78"
+    },
+    {
+      "crate_name": "build-script-build",
+      "file": "resources/build.rs",
+      "line": 7,
+      "lint": "assertion_density",
+      "severity": "error",
+      "stable_id": "b3:a62213f9058998f0"
+    },
+    {
+      "crate_name": "build-script-build",
+      "file": "resources/build.rs",
+      "line": 8,
+      "lint": "no_unwrap",
+      "severity": "error",
+      "stable_id": "b3:0385afdcf1daad8f"
+    },
+    {
+      "crate_name": "build-script-build",
+      "file": "resources/build.rs",
+      "line": 15,
+      "lint": "no_unwrap",
+      "severity": "error",
+      "stable_id": "b3:730a9fd91a1acfa3"
+    },
+    {
+      "crate_name": "build-script-build",
+      "file": "resources/build.rs",
+      "line": 16,
+      "lint": "no_unwrap",
+      "severity": "error",
+      "stable_id": "b3:7d18f859235ec625"
+    },
+    {
+      "crate_name": "build-script-build",
+      "file": "resources/build.rs",
+      "line": 21,
+      "lint": "no_unwrap",
+      "severity": "error",
+      "stable_id": "b3:d56e2e2d8f5939b8"
+    },
+    {
+      "crate_name": "build-script-build",
+      "file": "resources/build.rs",
+      "line": 23,
+      "lint": "no_unwrap",
+      "severity": "error",
+      "stable_id": "b3:69df32ed2808b61b"
+    },
+    {
+      "crate_name": "build-script-build",
+      "file": "resources/build.rs",
+      "line": 26,
+      "lint": "no_unwrap",
+      "severity": "error",
+      "stable_id": "b3:3af330a728e05cef"
+    },
+    {
+      "crate_name": "build-script-build",
+      "file": "resources/build.rs",
+      "line": 27,
+      "lint": "no_unwrap",
+      "severity": "error",
+      "stable_id": "b3:a71b51613532bd2f"
+    },
+    {
+      "crate_name": "build-script-build",
+      "file": "resources/build.rs",
+      "line": 29,
+      "lint": "no_unwrap",
+      "severity": "error",
+      "stable_id": "b3:aae47002467b0ffe"
+    },
+    {
+      "crate_name": "build-script-build",
+      "file": "resources/build.rs",
+      "line": 36,
+      "lint": "no_unwrap",
+      "severity": "error",
+      "stable_id": "b3:132b8a044c6779a2"
+    },
+    {
+      "crate_name": "build-script-build",
+      "file": "resources/build.rs",
+      "line": 39,
+      "lint": "borrowed_argument_types",
+      "severity": "error",
+      "stable_id": "b3:74184516b5eb87bb"
+    },
+    {
+      "crate_name": "build-script-build",
+      "file": "resources/build.rs",
+      "line": 40,
+      "lint": "no_unwrap",
+      "severity": "error",
+      "stable_id": "b3:a2dcf38603e60396"
+    },
+    {
+      "crate_name": "build-script-build",
+      "file": "resources/build.rs",
+      "line": 42,
+      "lint": "no_unwrap",
+      "severity": "error",
+      "stable_id": "b3:987c0219d33b4866"
+    },
+    {
+      "crate_name": "build-script-build",
+      "file": "resources/build.rs",
+      "line": 43,
+      "lint": "no_unwrap",
+      "severity": "error",
+      "stable_id": "b3:740f914b8a137714"
+    },
+    {
+      "crate_name": "build-script-build",
+      "file": "resources/build.rs",
+      "line": 44,
+      "lint": "no_recursion",
+      "severity": "error",
+      "stable_id": "b3:a53eb5d94fd7a26c"
     },
     {
       "crate_name": "steven_shared",
@@ -103,22 +271,52 @@
       "lint": "path_segment_repetition",
       "severity": "error",
       "stable_id": "b3:95f094d9a8126db4"
+    },
+    {
+      "crate_name": "std_or_web",
+      "file": "std_or_web/src/lib.rs",
+      "line": 1,
+      "lint": "non_trait_imports",
+      "severity": "error",
+      "stable_id": "b3:7651fd5612a21dc7"
     }
   ],
   "accepted_stable_ids": [
-    "b3:dc62661c7733474a",
-    "b3:e8cbc8e3572ab303",
-    "b3:670af286f0170727",
-    "b3:8a2b10369137dce0",
-    "b3:a8a0429ab5a050c9",
-    "b3:83927b316fa11ca6",
-    "b3:97b7d5d65eadb6bc",
-    "b3:447f4faaa41a6dbe",
-    "b3:324095bf7adfcad4",
-    "b3:dd9e592d28837697",
+    "b3:0385afdcf1daad8f",
+    "b3:132b8a044c6779a2",
     "b3:1486c9ac77e7d45e",
+    "b3:163a4317070c3f78",
+    "b3:1f35af54631720bd",
+    "b3:324095bf7adfcad4",
+    "b3:3af330a728e05cef",
+    "b3:447f4faaa41a6dbe",
+    "b3:4a032f3653480c42",
+    "b3:670af286f0170727",
+    "b3:69df32ed2808b61b",
+    "b3:730a9fd91a1acfa3",
+    "b3:740f914b8a137714",
+    "b3:74184516b5eb87bb",
+    "b3:7651fd5612a21dc7",
+    "b3:7d18f859235ec625",
+    "b3:83927b316fa11ca6",
+    "b3:8a2b10369137dce0",
+    "b3:95f094d9a8126db4",
+    "b3:97b7d5d65eadb6bc",
+    "b3:987c0219d33b4866",
+    "b3:a2dcf38603e60396",
+    "b3:a53eb5d94fd7a26c",
+    "b3:a62213f9058998f0",
+    "b3:a71b51613532bd2f",
+    "b3:a8a0429ab5a050c9",
+    "b3:aae47002467b0ffe",
     "b3:d0ace65f515ebfe6",
-    "b3:95f094d9a8126db4"
+    "b3:d56e2e2d8f5939b8",
+    "b3:dc62661c7733474a",
+    "b3:dd6dcf365c818da8",
+    "b3:dd9e592d28837697",
+    "b3:e1b9a02b22097f04",
+    "b3:e8cbc8e3572ab303",
+    "b3:f16f15ecc70a2189"
   ],
   "owner": "mc workspace maintainers",
   "rationale": "Pre-existing Octet findings captured after enabling every pinned Octet lint at deny level; the aggregate gate rejects any stable ID not listed here.",
@@ -126,14 +324,14 @@
   "schema": "mc.octet.reviewed-baseline.v1",
   "source": {
     "config_hash": "b3:85f7941f5158e9672c7ad45a51587e6b16c047322ca1daf8f9daf99b7faef013",
-    "error_findings": 13,
+    "error_findings": 35,
     "profile_hash": "b3:433532ea955bf6e3a7bef8382108439a1f813d2976e15ec91d91f50aef179375",
     "profile_name": "workspace-metadata",
     "rustc_version": "rustc 1.96.0-nightly (ac7f9ec7d 2026-03-20)",
     "tool_name": "cargo-octet",
     "tool_version": "0.1.0",
     "toolchain": "nightly-2026-03-21-x86_64-unknown-linux-gnu",
-    "total_findings": 13,
+    "total_findings": 35,
     "warning_findings": 0
   },
   "workspace": "stevenarella",

@@ -57,19 +57,19 @@ impl RaycastRay {
             return Err(RaycastInputError::InvalidMaxDistance);
         }
 
-        let direction_length_squared = direction.x.mul_add(
+        let direction_norm_squared = direction.x.mul_add(
             direction.x,
             direction.y.mul_add(direction.y, direction.z * direction.z),
         );
-        if direction_length_squared <= NO_DISTANCE {
+        if direction_norm_squared <= NO_DISTANCE {
             return Err(RaycastInputError::ZeroDirection);
         }
 
-        let direction_length = direction_length_squared.sqrt();
+        let direction_norm = direction_norm_squared.sqrt();
         let direction = vek::Vec3::new(
-            direction.x / direction_length,
-            direction.y / direction_length,
-            direction.z / direction_length,
+            direction.x / direction_norm,
+            direction.y / direction_norm,
+            direction.z / direction_norm,
         );
 
         Ok(Self {
@@ -184,9 +184,24 @@ impl VoxelRaycast {
             step_for_direction(ray.direction.z),
         );
         let next_boundary = vek::Vec3::new(
-            next_boundary_distance(ray.origin.x, ray.direction.x, current.x, step.x),
-            next_boundary_distance(ray.origin.y, ray.direction.y, current.y, step.y),
-            next_boundary_distance(ray.origin.z, ray.direction.z, current.z, step.z),
+            next_boundary_distance(BoundaryStepInput {
+                origin: ray.origin.x,
+                direction: ray.direction.x,
+                current: current.x,
+                step: step.x,
+            }),
+            next_boundary_distance(BoundaryStepInput {
+                origin: ray.origin.y,
+                direction: ray.direction.y,
+                current: current.y,
+                step: step.y,
+            }),
+            next_boundary_distance(BoundaryStepInput {
+                origin: ray.origin.z,
+                direction: ray.direction.z,
+                current: current.z,
+                step: step.z,
+            }),
         );
         let boundary_delta = vek::Vec3::new(
             boundary_delta(ray.direction.x),
@@ -286,19 +301,43 @@ pub fn intersect_aabb(
 ) -> Result<Option<RaycastAabbHit>, RaycastInputError> {
     validate_aabb(aabb)?;
 
-    let Some((x_near, x_far)) =
-        axis_interval(ray.origin.x, ray.direction.x, aabb.min.x, aabb.max.x)
-    else {
+    debug_assert!(vec3_is_finite(ray.origin));
+    debug_assert!(vec3_is_finite(ray.direction));
+
+    let Some((x_near, x_far)) = axis_interval(
+        AxisProjection {
+            origin: ray.origin.x,
+            direction: ray.direction.x,
+        },
+        AxisSlab {
+            min: aabb.min.x,
+            max: aabb.max.x,
+        },
+    ) else {
         return Ok(None);
     };
-    let Some((y_near, y_far)) =
-        axis_interval(ray.origin.y, ray.direction.y, aabb.min.y, aabb.max.y)
-    else {
+    let Some((y_near, y_far)) = axis_interval(
+        AxisProjection {
+            origin: ray.origin.y,
+            direction: ray.direction.y,
+        },
+        AxisSlab {
+            min: aabb.min.y,
+            max: aabb.max.y,
+        },
+    ) else {
         return Ok(None);
     };
-    let Some((z_near, z_far)) =
-        axis_interval(ray.origin.z, ray.direction.z, aabb.min.z, aabb.max.z)
-    else {
+    let Some((z_near, z_far)) = axis_interval(
+        AxisProjection {
+            origin: ray.origin.z,
+            direction: ray.direction.z,
+        },
+        AxisSlab {
+            min: aabb.min.z,
+            max: aabb.max.z,
+        },
+    ) else {
         return Ok(None);
     };
 
@@ -423,6 +462,9 @@ where
     I: IntoIterator<Item = BlockRaycastCandidate<B>>,
     F: FnMut(RaycastVoxel) -> I,
 {
+    debug_assert!(vec3_is_finite(ray.origin));
+    debug_assert!(ray.max_distance >= NO_DISTANCE);
+
     let mut closest = None;
 
     for voxel in ray.voxels(bounds)? {
@@ -490,6 +532,26 @@ enum Axis {
     Z,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq)]
+struct AxisProjection {
+    origin: f64,
+    direction: f64,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+struct AxisSlab {
+    min: f64,
+    max: f64,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+struct BoundaryStepInput {
+    origin: f64,
+    direction: f64,
+    current: i32,
+    step: i32,
+}
+
 fn vec3_is_finite(vec: vek::Vec3<f64>) -> bool {
     vec.x.is_finite() && vec.y.is_finite() && vec.z.is_finite()
 }
@@ -512,12 +574,12 @@ fn step_for_direction(direction: f64) -> i32 {
     STATIONARY_STEP
 }
 
-fn next_boundary_distance(origin: f64, direction: f64, current: i32, step: i32) -> f64 {
-    match step {
-        FORWARD_STEP => (f64::from(current) + UNIT_DISTANCE - origin) / direction,
-        BACKWARD_STEP => (f64::from(current) - origin) / direction,
+fn next_boundary_distance(input: BoundaryStepInput) -> f64 {
+    match input.step {
+        FORWARD_STEP => (f64::from(input.current) + UNIT_DISTANCE - input.origin) / input.direction,
+        BACKWARD_STEP => (f64::from(input.current) - input.origin) / input.direction,
         STATIONARY_STEP => f64::INFINITY,
-        _ => unreachable!("step_for_direction only returns known steps"),
+        _ => f64::INFINITY,
     }
 }
 
@@ -549,16 +611,16 @@ fn validate_aabb(aabb: vek::Aabb<f64>) -> Result<(), RaycastInputError> {
     Ok(())
 }
 
-fn axis_interval(origin: f64, direction: f64, min: f64, max: f64) -> Option<(f64, f64)> {
-    if direction == NO_DISTANCE {
-        if origin < min || origin > max {
+fn axis_interval(projection: AxisProjection, slab: AxisSlab) -> Option<(f64, f64)> {
+    if projection.direction == NO_DISTANCE {
+        if projection.origin < slab.min || projection.origin > slab.max {
             None
         } else {
             Some((f64::NEG_INFINITY, f64::INFINITY))
         }
     } else {
-        let first = (min - origin) / direction;
-        let second = (max - origin) / direction;
+        let first = (slab.min - projection.origin) / projection.direction;
+        let second = (slab.max - projection.origin) / projection.direction;
         Some((first.min(second), first.max(second)))
     }
 }

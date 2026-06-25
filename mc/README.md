@@ -81,7 +81,11 @@ nix flake check
 Aggregate Octet enforcement for owned Rust workspaces:
 
 ```sh
+nix build .#checks.x86_64-linux.mc-octet-monorepo --no-link -L
+
 rustc --edition=2021 tools/check_octet_monorepo.rs -o target/check-octet-monorepo
 OCTET_SOURCE_DIR=$(nix eval --raw --impure --expr '(builtins.getFlake (toString ./.)).inputs.octet.outPath')
 target/check-octet-monorepo --root . --octet-source "$OCTET_SOURCE_DIR" --run-octet
 ```
+
+The flake check covers static lint-inventory/config/baseline drift. The direct checker command additionally runs pinned Octet against each owned Rust workspace and rejects new unaccepted stable IDs.

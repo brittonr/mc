@@ -119,7 +119,13 @@ The repo-owned aggregate checker derives the lint inventory from the pinned Octe
 - `clients/stevenarella`
 - `servers/valence`
 
-It requires workspace `[workspace.metadata.octet]`, consumer-owned `dylint.toml` files with every current Octet lint at `deny`, and reviewed stable-ID baselines under `compat/octet-baselines/`. The dynamic mode runs the repo-pinned `path:$PWD#cargo-octet` gate for each workspace and fails on any new unaccepted stable ID.
+It requires workspace `[workspace.metadata.octet]`, consumer-owned `dylint.toml` files with every current Octet lint at `deny`, and reviewed stable-ID baselines under `compat/octet-baselines/`. The flake check covers static lint-inventory/config/baseline drift:
+
+```sh
+nix build .#checks.x86_64-linux.mc-octet-monorepo --no-link -L
+```
+
+The dynamic mode runs the repo-pinned `path:$PWD#cargo-octet` gate for each workspace and fails on any new unaccepted stable ID:
 
 ```sh
 rustc --edition=2021 tools/check_octet_monorepo.rs -o target/check-octet-monorepo
