@@ -1,0 +1,79 @@
+change=isolate-runner-json-evidence
+phase=json-module-tests
+
+$ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test json_support
+warning: error: unable to download 'http://100.100.103.95:5000/ik4xlcdvazd6x0dlvwk3l5p5piz8jgig.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 7 ms: Could not connect to server; retrying in 350 ms
+warning: error: unable to download 'http://100.100.103.95:5000/ik4xlcdvazd6x0dlvwk3l5p5piz8jgig.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3087 ms: Could not connect to server; retrying in 522 ms
+warning: error: unable to download 'http://100.100.103.95:5000/ik4xlcdvazd6x0dlvwk3l5p5piz8jgig.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3060 ms: Could not connect to server; retrying in 1042 ms
+warning: error: unable to download 'http://100.100.103.95:5000/ik4xlcdvazd6x0dlvwk3l5p5piz8jgig.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2095 ms: Could not connect to server; retrying in 2056 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/ik4xlcdvazd6x0dlvwk3l5p5piz8jgig.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/ik4xlcdvazd6x0dlvwk3l5p5piz8jgig.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 8 ms: Could not connect to server
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/wfn2ddb7qnw5kg0jm33ajr18x86bb6mp-mc-compat-runner-0.1.0.drv'...
+building '/nix/store/l0fv1mc3q9ma4idz5s3vpdc80z8rcgqz-nix-shell-env.drv'...
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+   Compiling mc-compat-runner v0.1.0 (/home/brittonr/git/mc/compat/runner)
+warning: constant `CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE` is never used
+   --> src/main.rs:292:7
+    |
+292 | const CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE: &str =
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `json_object_string_field` is never used
+  --> src/json_support.rs:12:15
+   |
+12 | pub(crate) fn json_object_string_field(text: &str, object: &str, key: &str) ->...
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_optional_string_field` is never used
+  --> src/json_support.rs:16:15
+   |
+16 | pub(crate) fn json_object_optional_string_field(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_u32_field` is never used
+  --> src/json_support.rs:24:15
+   |
+24 | pub(crate) fn json_object_u32_field(text: &str, object: &str, key: &str) -> Re...
+   |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_bool_field` is never used
+  --> src/json_support.rs:28:15
+   |
+28 | pub(crate) fn json_object_bool_field(text: &str, object: &str, key: &str) -> R...
+   |               ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `Transition` is never constructed
+  --> src/layout.rs:44:5
+   |
+42 | pub enum LayoutKind {
+   |          ---------- variant in this enum
+43 |     RoleBased,
+44 |     Transition,
+   |     ^^^^^^^^^^
+   |
+   = note: `LayoutKind` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: `mc-compat-runner` (bin "mc-compat-runner" test) generated 6 warnings
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.26s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 4 tests
+test json_support::tests::json_parser_rejects_malformed_escaping ... ok
+test json_support::tests::json_string_round_trips_escaping_and_control_characters ... ok
+test json_support::tests::json_field_uniqueness_rejects_duplicate_keys ... ok
+test json_support::tests::json_string_array_rejects_missing_delimiters ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 170 filtered out; finished in 0.00s
+
+command_exit_status=0
+
+exit_status=0

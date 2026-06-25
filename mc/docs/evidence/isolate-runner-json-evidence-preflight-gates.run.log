@@ -1,0 +1,186 @@
+change=isolate-runner-json-evidence
+phase=preflight
+
+$ nix run .#cairn -- change list --root .
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "./cairn/changes/extract-valence-compat-fixture-cores/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "extract-valence-compat-fixture-cores",
+      "path": "./cairn/changes/extract-valence-compat-fixture-cores",
+      "task_counts": {
+        "done": 7,
+        "in_progress": 0,
+        "todo": 1,
+        "total": 8,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/harden-stevenarella-runtime-boundaries/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "harden-stevenarella-runtime-boundaries",
+      "path": "./cairn/changes/harden-stevenarella-runtime-boundaries",
+      "task_counts": {
+        "done": 7,
+        "in_progress": 0,
+        "todo": 0,
+        "total": 7,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/isolate-runner-json-evidence/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "isolate-runner-json-evidence",
+      "path": "./cairn/changes/isolate-runner-json-evidence",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/split-stevenarella-server-probes/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "split-stevenarella-server-probes",
+      "path": "./cairn/changes/split-stevenarella-server-probes",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "."
+}
+command_exit_status=0
+
+$ nix run .#cairn -- gate proposal isolate-runner-json-evidence --root .
+{
+  "change": "isolate-runner-json-evidence",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c39274635f887c3feb8c3609b63776b4cae7705e43b626bcf8d86ed8e88cd8f7",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "d5149edfaa15b99c514595d88e9b55e48ffd4b8f6d00d30284f9ebbe45b62105",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+$ nix run .#cairn -- gate design isolate-runner-json-evidence --root .
+{
+  "change": "isolate-runner-json-evidence",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "8f8ddee0fd598d3a1acc05c8455c65ede2be40b86766e7fff322647145d1b65d",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "fb8566f37fa5a1df639917a71673656f56bb470b8fc914889e4248e983d5ed07",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+$ nix run .#cairn -- gate tasks isolate-runner-json-evidence --root .
+{
+  "change": "isolate-runner-json-evidence",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "93a429827db60309cd82d74a336da92fe40e906860360fd37794e46d4d373ddb",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "c002b51b8f5379cf7143cc0664d4cb7aa2cd96e89161810ec0f6cfcc1a2d7cfc",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+$ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 4,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+command_exit_status=0
+
+exit_status=0

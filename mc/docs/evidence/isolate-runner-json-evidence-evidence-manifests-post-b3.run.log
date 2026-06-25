@@ -1,0 +1,20 @@
+change=isolate-runner-json-evidence
+phase=evidence-manifests-post-b3
+
+$ nix build .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/36j2j671yjsjk9bm30mp8f0y9h9c3nlr.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2065 ms: Could not connect to server; retrying in 351 ms
+warning: error: unable to download 'http://100.100.103.95:5000/36j2j671yjsjk9bm30mp8f0y9h9c3nlr.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 8 ms: Could not connect to server; retrying in 572 ms
+warning: error: unable to download 'http://100.100.103.95:5000/36j2j671yjsjk9bm30mp8f0y9h9c3nlr.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1140 ms
+warning: error: unable to download 'http://100.100.103.95:5000/36j2j671yjsjk9bm30mp8f0y9h9c3nlr.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2502 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/36j2j671yjsjk9bm30mp8f0y9h9c3nlr.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/36j2j671yjsjk9bm30mp8f0y9h9c3nlr.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3087 ms: Could not connect to server
+this derivation will be built:
+  /nix/store/szqbxhwwd7xlydb8gr0d79v55gpfzszw-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/szqbxhwwd7xlydb8gr0d79v55gpfzszw-mc-compat-evidence-manifests.drv'...
+command_exit_status=0
+
+exit_status=0

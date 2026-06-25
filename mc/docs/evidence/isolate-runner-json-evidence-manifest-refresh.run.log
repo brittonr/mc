@@ -1,0 +1,8 @@
+change=isolate-runner-json-evidence
+phase=manifest-refresh-after-accepted-spec-sync
+
+$ nix run .#evidence-manifest-refresh -- --refresh --root . --evidence-dir docs/evidence
+evidence manifest refresh ok: mode=refresh; passes=4; manifests=482; entries=3981; current=3981; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=4; manifest_writes=55
+command_exit_status=0
+
+exit_status=0

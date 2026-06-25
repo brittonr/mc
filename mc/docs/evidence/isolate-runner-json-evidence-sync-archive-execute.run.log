@@ -1,0 +1,137 @@
+change=isolate-runner-json-evidence
+phase=sync-archive-execute
+archive_date=2026-06-25
+
+$ nix run .#cairn -- sync isolate-runner-json-evidence --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/isolate-runner-json-evidence/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/isolate-runner-json-evidence/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "isolate-runner-json-evidence",
+  "delta_specs": [
+    "./cairn/changes/isolate-runner-json-evidence/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "4f028f9a4b9ffd24100d8a04765b2d31e716f1ff9c957ad0b0f072179d09ebf5",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "dca88a3e266cae22fb41e143f71044aa5267cf6eda2d2b64b40d3b5efd5693a4",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "f659a1a50b512c3dc50f8c5a1ba797cc56936b02dd166b047b7e5dec1541fece"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "dca88a3e266cae22fb41e143f71044aa5267cf6eda2d2b64b40d3b5efd5693a4",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "f659a1a50b512c3dc50f8c5a1ba797cc56936b02dd166b047b7e5dec1541fece"
+    },
+    "kind": "sync",
+    "manifest_hash": "fad5121e806b08b5c2b929b260917fc4092aaceb1d3b0deff2e131647e3d8e52"
+  },
+  "plan_hash": "e021f2d3ec9e80801bd59cbdc5c16323bec937e37ae6483e88d0be447d8db8a3",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "405cc4fda0c29259a2f57e10c57bf421ade29809ea93323f65805feab89ec53e"
+}
+command_exit_status=0
+
+$ CAIRN_ARCHIVE_DATE=2026-06-25 nix run .#cairn -- archive isolate-runner-json-evidence --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: isolate-runner-json-evidence",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-25-isolate-runner-json-evidence"
+    }
+  ],
+  "blocked": false,
+  "change": "isolate-runner-json-evidence",
+  "dry_run": false,
+  "input_hash": "4f028f9a4b9ffd24100d8a04765b2d31e716f1ff9c957ad0b0f072179d09ebf5",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "2193d4fa35efff65bef0c7c87f20959f724e65025ffd26f63c2d706968fac8ef",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-isolate-runner-json-evidence/design.md"
+        },
+        {
+          "content_hash": "2895d5fa748901aa4ff9f4e653b9217726f033fa25be47bbf64dfb8bda417ba4",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-isolate-runner-json-evidence/proposal.md"
+        },
+        {
+          "content_hash": "0b3bb656749540a162f2abee4a4ca89c3ca1acd725b757a9dac1f46be44384ab",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-isolate-runner-json-evidence/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "b826beb58a6abb1088a1c45b748f287f0be2a5f08ca0490e6ec8d58e86be6d87",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-isolate-runner-json-evidence/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/isolate-runner-json-evidence"
+        }
+      ],
+      "manifest_hash": "4ba6080b0471450be567fd14be08b174f945cbf411295376b3fd68328ed47385"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "2193d4fa35efff65bef0c7c87f20959f724e65025ffd26f63c2d706968fac8ef",
+          "exists": true,
+          "path": "./cairn/changes/isolate-runner-json-evidence/design.md"
+        },
+        {
+          "content_hash": "2895d5fa748901aa4ff9f4e653b9217726f033fa25be47bbf64dfb8bda417ba4",
+          "exists": true,
+          "path": "./cairn/changes/isolate-runner-json-evidence/proposal.md"
+        },
+        {
+          "content_hash": "0b3bb656749540a162f2abee4a4ca89c3ca1acd725b757a9dac1f46be44384ab",
+          "exists": true,
+          "path": "./cairn/changes/isolate-runner-json-evidence/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "b826beb58a6abb1088a1c45b748f287f0be2a5f08ca0490e6ec8d58e86be6d87",
+          "exists": true,
+          "path": "./cairn/changes/isolate-runner-json-evidence/tasks.md"
+        }
+      ],
+      "manifest_hash": "837ff6ac16760acf50e60617ef6cd29fc0e8bc56568650caa9faba3b6d256b30"
+    },
+    "kind": "archive",
+    "manifest_hash": "198e340fd48a5ea26226d1172d4d9eaf7cf7ba24ea4d604cab1316cab01e0350"
+  },
+  "plan_hash": "8b424fef07a6a43843216c5ac242683d72dc1c2a0bfb29ada26fd6a0fe05f67f",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "274caa20245eb332229cbf5d8778ec08169692b95f4b82168f2df0e74b978008"
+}
+command_exit_status=0
+
+exit_status=0

@@ -2,8 +2,8 @@
 d50f6bdaa4df60e29491f8b21bbcdfacff3e586306dc0f02b30bb6ffbe5be18c  cairn/archive/2026-06-25-decouple-mc-compat-runner-shell/design.md
 119de6268bb52df83780db9a5dbd36adc792b377d25616f8a271172db9ba6ad9  cairn/archive/2026-06-25-decouple-mc-compat-runner-shell/tasks.md
 bf128bcf36ffa2b8015a1f328fe641a82ad21ea86064e6569560a493c3a2f190  cairn/archive/2026-06-25-decouple-mc-compat-runner-shell/specs/mc-compatibility/spec.md
-dca88a3e266cae22fb41e143f71044aa5267cf6eda2d2b64b40d3b5efd5693a4  cairn/specs/mc-compatibility/spec.md
-dec71bd4cc92368500d1d609435b252a80f747f75052c41817065c52208aa67f  compat/runner/src/main.rs
+91eb95e1650f9adc4e56a9cee0d546f90ece3604c4986f15280dfc5257080415  cairn/specs/mc-compatibility/spec.md
+cdcb500d44aa1b747c7152f404894b90aeb2018632a6c6182208a41c280b14d1  compat/runner/src/main.rs
 5002524cd91fec143bedcd064d1bf11d8499a6f1dce1e5624902a7dc24c397ee  compat/runner/src/backend_shell.rs
 954cea2c555877b3dec5c96e785f09fa5dd4303f70f885e96919f659cab2381d  compat/runner/src/client_driver.rs
 24dba12eaba89332e53598b82122f9fe6b9f4f542698c9e95194d88b1bd96db9  compat/runner/src/evidence_core.rs

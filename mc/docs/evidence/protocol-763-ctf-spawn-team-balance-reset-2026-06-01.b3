@@ -8,7 +8,7 @@ c57e601331de4aafa8e6de1b24769b6b91b9c6d83ddfd90a570727b1f84e57e3  docs/evidence/
 1a1ecacda926dc0cd7d539e021d14027c8ed3ccfb81f6162ba888e30ae107356  docs/evidence/protocol-763-ctf-spawn-team-balance-reset-2026-06-01.kv
 759263375efa19ba39693b3b206e28282c9c28a6384261af99006b33bcb1e149  docs/evidence/protocol-763-ctf-spawn-team-balance-reset-2026-06-01.md
 8881abea7bfb93e41e018268146ebd9081815384dc389aec5e36c39917095f03  docs/evidence/protocol-763-ctf-spawn-team-balance-reset-row-evidence-2026-06-01.run.log
-dec71bd4cc92368500d1d609435b252a80f747f75052c41817065c52208aa67f  compat/runner/src/main.rs
+cdcb500d44aa1b747c7152f404894b90aeb2018632a6c6182208a41c280b14d1  compat/runner/src/main.rs
 0c5c6cd53867ec19832895b3ab577703961623c3fb63b22c35965e62cb992905  compat/runner/src/scenario_manifest_generated.rs
 b471fb927ec046054595bc7d5630322667f240180c64294729ad008cd9153783  compat/config/scenario-manifest.ncl
 336dff4dcc992f65580fb1f40f75f9ab49f8eec66275695f29bbc82431718299  flake.nix

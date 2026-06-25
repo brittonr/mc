@@ -1,0 +1,20 @@
+change=isolate-runner-json-evidence
+phase=task-evidence-final
+
+$ nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/d59f52kcn65a87yga7zn7x7flhbnphlk.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 9 ms: Could not connect to server; retrying in 275 ms
+warning: error: unable to download 'http://100.100.103.95:5000/d59f52kcn65a87yga7zn7x7flhbnphlk.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3083 ms: Could not connect to server; retrying in 506 ms
+warning: error: unable to download 'http://100.100.103.95:5000/d59f52kcn65a87yga7zn7x7flhbnphlk.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1028 ms: Could not connect to server; retrying in 1369 ms
+warning: error: unable to download 'http://100.100.103.95:5000/d59f52kcn65a87yga7zn7x7flhbnphlk.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 2563 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/d59f52kcn65a87yga7zn7x7flhbnphlk.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/d59f52kcn65a87yga7zn7x7flhbnphlk.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 8 ms: Could not connect to server
+this derivation will be built:
+  /nix/store/66w9b2ihbgrs1852vmnv1hrxgdn0zw6f-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/66w9b2ihbgrs1852vmnv1hrxgdn0zw6f-mc-compat-cairn-task-evidence.drv'...
+command_exit_status=0
+
+exit_status=0

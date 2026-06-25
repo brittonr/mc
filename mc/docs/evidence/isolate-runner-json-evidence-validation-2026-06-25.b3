@@ -1,0 +1,16 @@
+91fc503f2460a14570616543d3b80ac3de8546523d2362b0357972b5707a7c54  docs/evidence/isolate-runner-json-evidence-inventory-2026-06-25.md
+221e0f7bbbe213c60474a7fa636b8748b81b19b00255499018ce29a7e759245a  docs/evidence/isolate-runner-json-evidence-preflight-gates.run.log
+33b1c57f69643528c50215bc2712d295f2c8c0ae9a7ec888819b47e93c542b95  docs/evidence/isolate-runner-json-evidence-baseline-runner-tests.run.log
+38fd27808e2b2c17b7a44721e49d31271f963b61c72ddad3ce161d6674ce2f7f  docs/evidence/isolate-runner-json-evidence-json-module-tests.run.log
+7d5adaff9876bb0aeda675df710fba2f358309850a782237eb4c168b1bb5fc77  docs/evidence/isolate-runner-json-evidence-failure-bundle-tests.run.log
+39602297239691bdb6a5457bc13bd56dbec794333059a379a3aa3b6d80afb44d  docs/evidence/isolate-runner-json-evidence-evidence-types-tests.run.log
+2bda9353ec2ba3f611196e37ca12885de5110ef8ea9f28327c90068bf9d5f7b7  docs/evidence/isolate-runner-json-evidence-receipt-renderer-tests.run.log
+0940a832d70797efe0cfe554ef4cca79b1fac0f93e4687faa61749191b481921  docs/evidence/isolate-runner-json-evidence-fmt.run.log
+2934107b4b139f2716a17e6c2835b6655a8018002ecebfa594b6a5312d6b6666  docs/evidence/isolate-runner-json-evidence-runner-tests.run.log
+d648cb016a59bd5f725eb173a0a853ed602ff6dfc168f66b75242917d372dc93  docs/evidence/isolate-runner-json-evidence-selected-dry-runs.run.log
+8943da3ffa8b4853f1376ee1a1bc9da96ed34eae301e05c55ef928d98ea152ad  docs/evidence/isolate-runner-json-evidence-smoke-dry-run-receipt.json
+4316895d370b769365e944a8ed9a4240d8a43b2f55f532c45b821b1106d577d7  docs/evidence/isolate-runner-json-evidence-mcp-dry-run-receipt.json
+1cd3bd62b6ec454a5d4a628d6f0b7cfce9de4a99186af68ba851889b1f1911a8  docs/evidence/isolate-runner-json-evidence-task-evidence-pre-validation.run.log
+be58639a59e344c2e5012156b9cb448059f4e9197bf1c5bc64f9c03d75fb9fb5  docs/evidence/isolate-runner-json-evidence-manifest-refresh.run.log
+69c10e952223ca2a270e8f6801b500329704942f838acb5f3935e8c65af0424e  docs/evidence/isolate-runner-json-evidence-evidence-manifests.run.log
+3ff229d45ffd722abb2501663aef4d6877d4a1511e63ab2812a7bc192b8e60b1  docs/evidence/isolate-runner-json-evidence-final-cairn-gates.run.log

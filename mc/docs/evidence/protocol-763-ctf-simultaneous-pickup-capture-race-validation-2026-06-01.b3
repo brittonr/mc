@@ -16,14 +16,14 @@ c4e00e10a285f2b0aae49411cbd44ef8d72e5fae462521f021650befbfdbab18  docs/evidence/
 6c19c5620131fcbcfb3c133538eb724d8a0e3dc8c4f588bec6ea3997db55adca  docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-cairn-validation-2026-06-01.run.log
 922a281b8e527a97e7d7eb02f4b47e788df6af252f0fa70d56817c2440a73021  docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-archive-2026-06-01.run.log
 88fe6978d6211138a3dc5cb6e23df5c4a188f1668726fc6add1409255259a866  docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-post-archive-validation-2026-06-01.run.log
-fea7f39c187b71e5b033955519560edaa8948ab6767d34683bee76abd6c500ab  docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-2026-06-01.b3
+c8db2cb89de1d6fad5d25acbce817a5f5ad00802b5acd728b2fe2622ef27f23f  docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-2026-06-01.b3
 08bca3daca99b1e61f8d139c7906e872ca5231b0624209e8dd88fa5ff808063a  docs/evidence/protocol-763-acceptance-matrix.md
 8ea2e7031210cdd778e2fb2a90bf86df8e4b6b1eca3b9c4f07fea5899e614784  docs/evidence/protocol-763-current-evidence-bundle.md
 d8c9d0918f24ae0e8e4df73e09ee39f51b9141f4b51f17b802ac2c4d7ab14d26  docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md
 02e1b66a137cc932a81ed33d7c85ec7870e60317309267a03a3b53fde7b416aa  README.md
 336dff4dcc992f65580fb1f40f75f9ab49f8eec66275695f29bbc82431718299  flake.nix
 b471fb927ec046054595bc7d5630322667f240180c64294729ad008cd9153783  compat/config/scenario-manifest.ncl
-dec71bd4cc92368500d1d609435b252a80f747f75052c41817065c52208aa67f  compat/runner/src/main.rs
+cdcb500d44aa1b747c7152f404894b90aeb2018632a6c6182208a41c280b14d1  compat/runner/src/main.rs
 0c5c6cd53867ec19832895b3ab577703961623c3fb63b22c35965e62cb992905  compat/runner/src/scenario_manifest_generated.rs
 dd468df16affa6e540afa148e24da7481e2cdb946fe6172e26603dfdb1d94275  tools/check_acceptance_matrix.rs
 a05d30d8289d1d3b9a1c1ad3662982f52ce499162e7818907681ab7dabd4f400  tools/check_current_evidence_bundle.rs
@@ -35,4 +35,4 @@ af8c8572c18d2c6d175f14df18b49b626e89207b7457870704b1988345b65875  tools/check_mc
 0143fd27cbdcc77cc21e66598e86c860494532ab392f6cde176a472c9f16ba67  cairn/archive/2026-06-01-ctf-simultaneous-pickup-capture-race/specs/mc-compatibility/spec.md
 66a6864ef8aa5c11f28c1c8cb85f01a4b08dc01c90f0b246a540bd5eeaf0ae93  cairn/archive/2026-06-01-ctf-simultaneous-pickup-capture-race/design.md
 c6ba8b241eb052b29d4cb0c766fce05844f4aedb200d4207b1e236b49590ee44  cairn/archive/2026-06-01-ctf-simultaneous-pickup-capture-race/proposal.md
-dca88a3e266cae22fb41e143f71044aa5267cf6eda2d2b64b40d3b5efd5693a4  cairn/specs/mc-compatibility/spec.md
+91eb95e1650f9adc4e56a9cee0d546f90ece3604c4986f15280dfc5257080415  cairn/specs/mc-compatibility/spec.md
