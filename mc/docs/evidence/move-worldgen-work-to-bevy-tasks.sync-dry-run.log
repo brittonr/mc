@@ -1,0 +1,32 @@
+# move-worldgen-work-to-bevy-tasks sync dry-run
+cwd=/home/brittonr/git/mc
+started_at_utc=2026-06-25T21:07:24Z
+
+## sync_dry_run
+command=nix run .#cairn -- sync move-worldgen-work-to-bevy-tasks --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/move-worldgen-work-to-bevy-tasks/specs/valence-bevy-ecs/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/move-worldgen-work-to-bevy-tasks/specs/valence-bevy-ecs/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "move-worldgen-work-to-bevy-tasks",
+  "delta_specs": [
+    "./cairn/changes/move-worldgen-work-to-bevy-tasks/specs/valence-bevy-ecs/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "807252f17da798730db5961c91bc6e696fa2292e822ffefdff8d3bc17a7bc4b2",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "3f6b31017af08e61c6c35b0a8f46cb6753e9ee6a55e228cd959800112bd865a9",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "84a91644d7bb976558d8606cfc41efd4364ac92915dae56760974e531adbd7d9"
+}
+sync_dry_run_exit_status=0
+exit_status=0

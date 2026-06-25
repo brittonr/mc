@@ -1,0 +1,18 @@
+# move-worldgen-work-to-bevy-tasks post-sync validation
+cwd=/home/brittonr/git/mc
+started_at_utc=2026-06-25T21:08:36Z
+
+## cairn_validate_post_sync
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 4,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 9,
+  "valid": true
+}
+cairn_validate_post_sync_exit_status=0
+exit_status=0

@@ -1,0 +1,29 @@
+# move-worldgen-work-to-bevy-tasks archive dry-run
+cwd=/home/brittonr/git/mc
+started_at_utc=2026-06-25T21:08:46Z
+
+## archive_dry_run
+command=nix run .#cairn -- archive move-worldgen-work-to-bevy-tasks --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: move-worldgen-work-to-bevy-tasks",
+      "kind": "archive_change",
+      "path": "./cairn/changes/move-worldgen-work-to-bevy-tasks"
+    }
+  ],
+  "blocked": false,
+  "change": "move-worldgen-work-to-bevy-tasks",
+  "dry_run": true,
+  "input_hash": "807252f17da798730db5961c91bc6e696fa2292e822ffefdff8d3bc17a7bc4b2",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "58543635a5c698e56f7a16d4f29e649e05bdbbf986286e19953d67300c607133",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "9c61c03ed4426cfbe57fa6693e5399b391d1374278d085be2c0e1420f972f6ae"
+}
+archive_dry_run_exit_status=0
+exit_status=0

@@ -1,0 +1,9 @@
+# move-worldgen-work-to-bevy-tasks evidence manifest check
+cwd=/home/brittonr/git/mc
+started_at_utc=2026-06-25T21:16:06Z
+
+## evidence_manifest_check
+command=nix run .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=492; entries=4190; current=4190; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+evidence_manifest_check_exit_status=0
+exit_status=0

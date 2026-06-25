@@ -1,0 +1,38 @@
+# move-worldgen-work-to-bevy-tasks focused flake checks
+cwd=/home/brittonr/git/mc
+started_at_utc=2026-06-25T21:12:46Z
+
+## task_evidence_flake
+command=nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L 
+warning: error: unable to download 'http://100.100.103.95:5000/zjk4rhi3i73nw3nvbw7xjrw6h5jsq87m.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3084 ms: Could not connect to server; retrying in 338 ms
+warning: error: unable to download 'http://100.100.103.95:5000/zjk4rhi3i73nw3nvbw7xjrw6h5jsq87m.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 612 ms
+warning: error: unable to download 'http://100.100.103.95:5000/zjk4rhi3i73nw3nvbw7xjrw6h5jsq87m.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2048 ms: Could not connect to server; retrying in 1069 ms
+warning: error: unable to download 'http://100.100.103.95:5000/zjk4rhi3i73nw3nvbw7xjrw6h5jsq87m.narinfo': Timeout was reached (28) Connection timed out after 5002 milliseconds; retrying in 2007 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/zjk4rhi3i73nw3nvbw7xjrw6h5jsq87m.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/zjk4rhi3i73nw3nvbw7xjrw6h5jsq87m.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds
+this derivation will be built:
+  /nix/store/i85vv76l8qgp3i2bzm0g888afvw1rgwv-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/i85vv76l8qgp3i2bzm0g888afvw1rgwv-mc-compat-cairn-task-evidence.drv'...
+task_evidence_flake_exit_status=0
+
+## evidence_manifest_flake
+command=nix build .#checks.x86_64-linux.mc-compat-evidence-manifest-refresh --no-link -L 
+warning: error: unable to download 'http://100.100.103.95:5000/7j53sq4jvijlmgax7k7g2v3j280kbjkk.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2040 ms: Could not connect to server; retrying in 264 ms
+warning: error: unable to download 'http://100.100.103.95:5000/7j53sq4jvijlmgax7k7g2v3j280kbjkk.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1014 ms: Could not connect to server; retrying in 563 ms
+warning: error: unable to download 'http://100.100.103.95:5000/7j53sq4jvijlmgax7k7g2v3j280kbjkk.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4115 ms: Could not connect to server; retrying in 1343 ms
+warning: error: unable to download 'http://100.100.103.95:5000/7j53sq4jvijlmgax7k7g2v3j280kbjkk.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2342 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/7j53sq4jvijlmgax7k7g2v3j280kbjkk.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/7j53sq4jvijlmgax7k7g2v3j280kbjkk.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1036 ms: Could not connect to server
+this derivation will be built:
+  /nix/store/53y44j08vpyzna2r30i1ck5a21fbrzdd-mc-compat-evidence-manifest-refresh.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/53y44j08vpyzna2r30i1ck5a21fbrzdd-mc-compat-evidence-manifest-refresh.drv'...
+evidence_manifest_flake_exit_status=0
+exit_status=0
