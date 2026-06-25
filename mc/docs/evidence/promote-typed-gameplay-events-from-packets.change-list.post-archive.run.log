@@ -1,0 +1,30 @@
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "./cairn/changes/replace-entity-keyed-state-with-components/specs/valence-bevy-ecs/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "replace-entity-keyed-state-with-components",
+      "path": "./cairn/changes/replace-entity-keyed-state-with-components",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "."
+}
+
+exit_status=0

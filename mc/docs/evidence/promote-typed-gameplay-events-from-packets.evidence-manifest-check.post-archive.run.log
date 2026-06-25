@@ -1,0 +1,7 @@
+evidence manifest refresh failed: docs/evidence/add-schedule-hygiene-gates.b3:5: stale digest for cairn/specs/valence-bevy-ecs/spec.md: expected 58608c7bb35189f0a6421842c1259c2973f188aca9a3495c4fdb773c7b3d1d8d, found 9c578545225b4727c77e0be8d8e8f96cbf6d0af9e5a4e4e6c5519cba1d29a357
+evidence manifest refresh failed: docs/evidence/gate-optional-systems-with-bevy-run-conditions-validation.b3:28: stale digest for cairn/specs/valence-bevy-ecs/spec.md: expected 58608c7bb35189f0a6421842c1259c2973f188aca9a3495c4fdb773c7b3d1d8d, found 9c578545225b4727c77e0be8d8e8f96cbf6d0af9e5a4e4e6c5519cba1d29a357
+evidence manifest refresh failed: docs/evidence/move-worldgen-work-to-bevy-tasks.closeout.b3:18: stale digest for cairn/specs/valence-bevy-ecs/spec.md: expected 58608c7bb35189f0a6421842c1259c2973f188aca9a3495c4fdb773c7b3d1d8d, found 9c578545225b4727c77e0be8d8e8f96cbf6d0af9e5a4e4e6c5519cba1d29a357
+evidence manifest refresh failed: docs/evidence/move-worldgen-work-to-bevy-tasks.implementation.b3:11: stale digest for cairn/specs/valence-bevy-ecs/spec.md: expected 58608c7bb35189f0a6421842c1259c2973f188aca9a3495c4fdb773c7b3d1d8d, found 9c578545225b4727c77e0be8d8e8f96cbf6d0af9e5a4e4e6c5519cba1d29a357
+evidence manifest refresh failed: docs/evidence/move-worldgen-work-to-bevy-tasks.validation.b3:6: stale digest for cairn/specs/valence-bevy-ecs/spec.md: expected 58608c7bb35189f0a6421842c1259c2973f188aca9a3495c4fdb773c7b3d1d8d, found 9c578545225b4727c77e0be8d8e8f96cbf6d0af9e5a4e4e6c5519cba1d29a357
+
+exit_status=1

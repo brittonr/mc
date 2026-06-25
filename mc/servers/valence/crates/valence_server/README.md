@@ -48,3 +48,30 @@ Typical uses are gameplay policy owned by the caller: cooldown expiry events, de
 `ChunkLayer::enable_cached_chunk_egress()` opts a layer into keyed caching for chunk initialization packets. The default path remains uncached. Cache keys cover the chunk position, protocol version, dimension name/height/min-y, biome registry size, compression threshold, explicit light-input fingerprint, and a BLAKE3 content fingerprint.
 
 Storage and network writes stay in the existing layer/client shells; the cache renderer is deterministic over explicit chunk snapshots. Missing light inputs or changed render settings fail closed by bypassing stale cached bytes. This is a repeated-egress optimization only, not a world-generation, Hyperion map-loader parity, broad chunk correctness, or production-readiness claim.
+
+## Typed packet-derived gameplay events
+
+`action::PlayerActionEvent` is the selected typed event promoted from a raw `PacketEvent` boundary in this pass.
+The adapter is intentionally narrow: raw `PacketEvent` remains public for low-level protocol users and unsupported packet
+semantics.
+
+### Inventory
+
+| Selected semantic | Previous raw reader | Packet type | Event-loop phase | Mutation target | Emitted gameplay semantic | Previous malformed/stale behavior |
+| --- | --- | --- | --- | --- | --- | --- |
+| Player block/action requests | `action::handle_player_action` | `PlayerActionC2s` | `EventLoopPreUpdate` | `ActionSequence` | `DiggingEvent` for start/abort/stop destroy actions | Wrong IDs, decode errors, and partial decodes returned no decoded packet through `PacketEvent::decode`; missing `ActionSequence` skipped sequence tracking but could still emit a digging event. |
+
+### Contract
+
+`action::emit_player_action_events` owns decoding `PlayerActionC2s` during `EventLoopPreUpdate` and emits exactly one
+`PlayerActionEvent` for each valid packet from a live client with an `ActionSequence` component. The event carries the
+source client entity, packet arrival `Instant`, decoded action, block position, direction, and synchronization sequence.
+Wrong packet IDs, decode failures, partial decodes, malformed action payloads, and stale or non-client entities emit no
+`PlayerActionEvent`, no `DiggingEvent`, and no typed rejection event; decode diagnostics remain the existing
+`PacketEvent::decode` tracing warnings when decoding is attempted. `action::handle_player_action` consumes the typed
+event, updates `ActionSequence`, and maps block-destroy actions to `DiggingEvent`, so downstream gameplay no longer
+needs to decode the raw packet body for this semantic.
+
+Non-claims: this adapter does not promote every serverbound gameplay packet, does not remove direct packet access, and
+does not claim broad Minecraft compatibility, vanilla semantic equivalence, public-server safety, or production
+readiness.
