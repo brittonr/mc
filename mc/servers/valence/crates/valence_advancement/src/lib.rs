@@ -12,9 +12,23 @@ type Client = valence_server::client::Client;
 
 pub struct AdvancementPlugin;
 
+/// The [`SystemSet`] in [`PreUpdate`] where new clients receive their
+/// advancement update component.
+#[derive(SystemSet, Clone, Copy, Eq, PartialEq, Hash, Debug)]
+pub struct InitAdvancementClientsSet;
+
+/// The [`SystemSet`] in [`PreUpdate`] where client advancement-tab input is
+/// translated into [`event::AdvancementTabChangeEvent`].
+#[derive(SystemSet, Clone, Copy, Eq, PartialEq, Hash, Debug)]
+pub struct ReadAdvancementTabsSet;
+
+/// The [`SystemSet`] in [`PostUpdate`] where pending advancement client packets
+/// are written before packet flushing.
 #[derive(SystemSet, Clone, Copy, Eq, PartialEq, Hash, Debug)]
 pub struct WriteAdvancementPacketToClientsSet;
 
+/// The [`SystemSet`] in [`PostUpdate`] where advancement packet bytes are
+/// rebuilt before client packets are written.
 #[derive(SystemSet, Clone, Copy, Eq, PartialEq, Hash, Debug)]
 pub struct WriteAdvancementToCacheSet;
 
@@ -34,8 +48,9 @@ impl Plugin for AdvancementPlugin {
                 PreUpdate,
                 (
                     add_advancement_update_component_to_new_clients
+                        .in_set(InitAdvancementClientsSet)
                         .after(valence_server::client::SpawnClientsSet),
-                    event::handle_advancement_tab_change,
+                    event::handle_advancement_tab_change.in_set(ReadAdvancementTabsSet),
                 ),
             )
             .add_systems(

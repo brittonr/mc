@@ -1,5 +1,6 @@
 mod boss_bar;
 mod client;
+mod core_plugin_sets;
 mod equipment;
 mod example;
 mod hunger;

@@ -1,0 +1,3 @@
+command=tools/check_valence_schedule_hygiene.rs --self-test 
+valence schedule hygiene self-test passed
+exit_status=0

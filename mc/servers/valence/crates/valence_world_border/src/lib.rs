@@ -17,6 +17,8 @@ pub const DEFAULT_WARN_BLOCKS: i32 = 5;
 
 pub struct WorldBorderPlugin;
 
+/// The [`SystemSet`] in [`PostUpdate`] where world-border state is sent to
+/// clients and layers before client updates.
 #[derive(SystemSet, Copy, Clone, PartialEq, Eq, Hash, Debug)]
 pub struct UpdateWorldBorderSet;
 

@@ -75,6 +75,7 @@ valence_world_border = { workspace = true, optional = true }
 
 [dev-dependencies]
 anyhow.workspace = true
+bevy_mod_debugdump.workspace = true
 bevy_tasks.workspace = true
 clap.workspace = true
 divan.workspace = true

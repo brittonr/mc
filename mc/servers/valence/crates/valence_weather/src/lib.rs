@@ -12,6 +12,16 @@ type GameStateChangeS2c = valence_server::protocol::packets::play::GameStateChan
 
 pub struct WeatherPlugin;
 
+/// The [`SystemSet`] in [`PostUpdate`] where weather packets are written
+/// directly to clients before packet flushing.
+#[derive(SystemSet, Copy, Clone, PartialEq, Eq, Hash, Debug)]
+pub struct WeatherClientUpdateSet;
+
+/// The [`SystemSet`] in [`PostUpdate`] where weather packets are written to
+/// chunk layers before client layer updates.
+#[derive(SystemSet, Copy, Clone, PartialEq, Eq, Hash, Debug)]
+pub struct WeatherLayerUpdateSet;
+
 impl Plugin for WeatherPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
@@ -21,11 +31,13 @@ impl Plugin for WeatherPlugin {
                 change_client_rain_level,
                 change_client_thunder_level,
             )
+                .in_set(WeatherClientUpdateSet)
                 .before(valence_server::client::FlushPacketsSet),
         )
         .add_systems(
             PostUpdate,
             (change_layer_rain_level, change_layer_thunder_level)
+                .in_set(WeatherLayerUpdateSet)
                 .before(valence_server::client::UpdateClientsSet),
         );
     }

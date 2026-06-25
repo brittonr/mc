@@ -27,6 +27,11 @@ type VisibleEntityLayers = valence_server::client::VisibleEntityLayers;
 
 pub struct BossBarPlugin;
 
+/// The [`SystemSet`] in [`PostUpdate`] where boss bar state changes are written
+/// to entity layers before layer-to-client updates.
+#[derive(SystemSet, Copy, Clone, PartialEq, Eq, Hash, Debug)]
+pub struct BossBarUpdateSet;
+
 impl Plugin for BossBarPlugin {
     fn build(&self, app: &mut bevy_app::App) {
         app.add_systems(
@@ -40,6 +45,7 @@ impl Plugin for BossBarPlugin {
                 update_boss_bar_chunk_view,
                 boss_bar_despawn,
             )
+                .in_set(BossBarUpdateSet)
                 .before(valence_server::layer::UpdateLayersPreClientSet),
         );
     }

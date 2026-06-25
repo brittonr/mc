@@ -43,5 +43,8 @@ impl Plugin for ScoreboardPlugin {
     }
 }
 
+/// The [`SystemSet`] in [`PostUpdate`] where scoreboard objective, display,
+/// client-visibility, and score updates are written before layer-to-client
+/// updates.
 #[derive(SystemSet, Copy, Clone, PartialEq, Eq, Hash, Debug)]
 pub struct ScoreboardSet;

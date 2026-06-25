@@ -1,0 +1,81 @@
+command=CAIRN_ARCHIVE_DATE=2026-06-25 nix run .#cairn -- archive add-core-plugin-system-set-contracts --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-core-plugin-system-set-contracts",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-25-add-core-plugin-system-set-contracts"
+    }
+  ],
+  "blocked": false,
+  "change": "add-core-plugin-system-set-contracts",
+  "dry_run": false,
+  "input_hash": "70aeed9c0aeef88b6f1c4d0570ca01e8f1a75521987866c7f195c118a369f473",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "18f8d6841ea5dd24182f20b12ad4d8811f031d31e21182b13ab6af181d9981fa",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-add-core-plugin-system-set-contracts/design.md"
+        },
+        {
+          "content_hash": "ff89e2a60a3d8631d318de2f90e24aa10477284d953ac5cb102661eb2ee44e52",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-add-core-plugin-system-set-contracts/proposal.md"
+        },
+        {
+          "content_hash": "aba95ffe26de36b5e423dc039086099399b15f7d94b2de09bf7c769509cfab59",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-add-core-plugin-system-set-contracts/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "363626db802972dd3f1074f5f40c4b1dab373a5e89aa49145a798933fd264c7c",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-add-core-plugin-system-set-contracts/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/add-core-plugin-system-set-contracts"
+        }
+      ],
+      "manifest_hash": "03f19cc16c57f0eecee8a97c27f476945daf4310d05045e7b4aa69301574b1bc"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "18f8d6841ea5dd24182f20b12ad4d8811f031d31e21182b13ab6af181d9981fa",
+          "exists": true,
+          "path": "./cairn/changes/add-core-plugin-system-set-contracts/design.md"
+        },
+        {
+          "content_hash": "ff89e2a60a3d8631d318de2f90e24aa10477284d953ac5cb102661eb2ee44e52",
+          "exists": true,
+          "path": "./cairn/changes/add-core-plugin-system-set-contracts/proposal.md"
+        },
+        {
+          "content_hash": "aba95ffe26de36b5e423dc039086099399b15f7d94b2de09bf7c769509cfab59",
+          "exists": true,
+          "path": "./cairn/changes/add-core-plugin-system-set-contracts/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "363626db802972dd3f1074f5f40c4b1dab373a5e89aa49145a798933fd264c7c",
+          "exists": true,
+          "path": "./cairn/changes/add-core-plugin-system-set-contracts/tasks.md"
+        }
+      ],
+      "manifest_hash": "ec9804c73a87dd57c783cd9d936dab8b41a34c383f38199fed34887480928a7c"
+    },
+    "kind": "archive",
+    "manifest_hash": "084e3e01ce75e0e7cabf5adf007b148edb4042d1681106f92e1a4bbe77fc17e0"
+  },
+  "plan_hash": "3f2d5f910515b1836accf8d3a77a3684af52f38f5def1f71ea668bd63967fddf",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "96f2ea0b5176ea04e6e5fe7c4a082f87a549be80a6623f20be1e4820ec0a3a90"
+}
+exit_status=0

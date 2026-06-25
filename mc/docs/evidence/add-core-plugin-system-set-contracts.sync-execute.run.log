@@ -1,0 +1,49 @@
+command=nix run .#cairn -- sync add-core-plugin-system-set-contracts --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/add-core-plugin-system-set-contracts/specs/valence-bevy-ecs/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/add-core-plugin-system-set-contracts/specs/valence-bevy-ecs/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "add-core-plugin-system-set-contracts",
+  "delta_specs": [
+    "./cairn/changes/add-core-plugin-system-set-contracts/specs/valence-bevy-ecs/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "70aeed9c0aeef88b6f1c4d0570ca01e8f1a75521987866c7f195c118a369f473",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "9c958069aeeffcddc0d463d575eefd3e22cdd0ba8c2c7c9bcc70c8d5758d461b",
+          "exists": true,
+          "path": "./cairn/specs/valence-bevy-ecs/spec.md"
+        }
+      ],
+      "manifest_hash": "649525074cba7a4a14062b53d7a1de6257c0d449a50a7b64258b92627e5dff72"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "9c958069aeeffcddc0d463d575eefd3e22cdd0ba8c2c7c9bcc70c8d5758d461b",
+          "exists": true,
+          "path": "./cairn/specs/valence-bevy-ecs/spec.md"
+        }
+      ],
+      "manifest_hash": "649525074cba7a4a14062b53d7a1de6257c0d449a50a7b64258b92627e5dff72"
+    },
+    "kind": "sync",
+    "manifest_hash": "7644d648858c620130e5e9a54ba12504da651e49dbba39a90f6f4cf56e940609"
+  },
+  "plan_hash": "a7a429680e1a4c66fe9166c1240ebc05f7ec2d4ae22f05ae5cc0e5d7bb4e2e80",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "a612b2da5007d72cf44d5e754743c78c6695920fdc390f776c0e34bcb96e2cfe"
+}
+exit_status=0

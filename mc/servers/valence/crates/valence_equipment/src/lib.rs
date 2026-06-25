@@ -24,25 +24,46 @@ type Stack = valence_server::ItemStack;
 
 pub struct EquipmentPlugin;
 
+/// The [`SystemSet`] in [`PreUpdate`] where missing equipment components are
+/// attached to newly initialized living entities.
+#[derive(SystemSet, Copy, Clone, PartialEq, Eq, Hash, Debug)]
+pub struct EquipmentInitSet;
+
+/// The [`SystemSet`] in [`PreUpdate`] where equipment reads client input and
+/// interaction events.
+#[derive(SystemSet, Copy, Clone, PartialEq, Eq, Hash, Debug)]
+pub struct EquipmentInputSet;
+
+/// The [`SystemSet`] in [`PreUpdate`] where player inventory state is
+/// synchronized with visible equipment.
+#[derive(SystemSet, Copy, Clone, PartialEq, Eq, Hash, Debug)]
+pub struct EquipmentSyncSet;
+
+/// The [`SystemSet`] in [`PostUpdate`] where visible equipment changes are
+/// broadcast before packet flushing.
+#[derive(SystemSet, Copy, Clone, PartialEq, Eq, Hash, Debug)]
+pub struct EquipmentBroadcastSet;
+
 impl Plugin for EquipmentPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             PreUpdate,
             (
-                on_entity_init,
-                interaction_broadcast::start,
-                interaction_broadcast::stop,
-                inventory_sync::on_attach,
-                inventory_sync::run,
-                inventory_sync::held_item_from_client,
+                on_entity_init.in_set(EquipmentInitSet),
+                interaction_broadcast::start.in_set(EquipmentInputSet),
+                interaction_broadcast::stop.in_set(EquipmentInputSet),
+                inventory_sync::on_attach.in_set(EquipmentSyncSet),
+                inventory_sync::run.in_set(EquipmentSyncSet),
+                inventory_sync::held_item_from_client.in_set(EquipmentInputSet),
             ),
         )
         .add_systems(
             PostUpdate,
             (
-                update_equipment.before(valence_server::client::FlushPacketsSet),
-                on_entity_load.before(valence_server::client::FlushPacketsSet),
-            ),
+                update_equipment.in_set(EquipmentBroadcastSet),
+                on_entity_load.in_set(EquipmentBroadcastSet),
+            )
+                .before(valence_server::client::FlushPacketsSet),
         )
         .add_event::<EquipmentChangeEvent>();
     }

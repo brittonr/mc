@@ -1,0 +1,136 @@
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence_command -p valence_equipment -p valence_advancement -p valence_scoreboard -p valence_weather -p valence_world_border -p valence_boss_bar --lib
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: method `packet_data_range` is never used
+   --> crates/valence_protocol/src/decode.rs:192:8
+    |
+187 | impl PacketFrameLayout {
+    | ---------------------- method in this implementation
+...
+192 |     fn packet_data_range(self) -> Range<usize> {
+    |        ^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `valence_protocol` (lib) generated 1 warning
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+   Compiling valence_advancement v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_advancement)
+   Compiling valence_world_border v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_world_border)
+   Compiling valence_command v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_command)
+   Compiling valence_weather v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_weather)
+   Compiling valence_boss_bar v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_boss_bar)
+   Compiling valence_scoreboard v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_scoreboard)
+warning: `valence_inventory` (lib) generated 1 warning
+   Compiling valence_equipment v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_equipment)
+    Finished `test` profile [optimized + debuginfo] target(s) in 2.01s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_advancement-2686008b8036e8cf)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_boss_bar-eeaf91a82d3b8c0e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_command-3709fb79f6e27e66)
+
+running 24 tests
+test admin_permissions::tests::denial_diagnostic_names_command_and_scopes ... ok
+test admin_permissions::tests::disabled_plugin_preserves_command_scopes ... ok
+test admin_permissions::tests::missing_permission_data_denies_scoped_command ... ok
+test admin_permissions::tests::missing_required_scope_denies_command ... ok
+test admin_permissions::tests::role_binding_allows_command_scope ... ok
+test admin_permissions::tests::stale_command_tree_scope_plan_replaces_old_scopes ... ok
+test admin_permissions::tests::storage_missing_row_uses_default_profile ... ok
+test admin_permissions::tests::storage_rejects_invalid_rows ... ok
+test parsers::block_pos::tests::test_block_pos ... ok
+test parsers::bool::tests::test_bool ... ok
+test parsers::column_pos::tests::test_column_pos ... ok
+test parsers::entity_selector::tests::test_entity_selector ... ok
+test parsers::numbers::tests::test_number ... ok
+test parsers::strings::tests::test_greedy_string ... ok
+test parsers::strings::tests::test_quotable_string ... ok
+test parsers::strings::tests::test_string ... ok
+test parsers::swizzle::tests::test_swizzle ... ok
+test parsers::test::test_absolute_or_relative ... ok
+test parsers::test::test_parse_input ... ok
+test parsers::vec2::tests::test_vec2 ... ok
+test parsers::vec3::tests::test_vec3 ... ok
+test parsers::time::tests::test_time ... ok
+test admin_permissions::tests::plugin_shell_disabled_preserves_existing_scopes ... ok
+test admin_permissions::tests::plugin_shell_updates_command_scopes_from_profile ... ok
+
+test result: ok. 24 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_equipment-df6b0406541adf10)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-e4e1c2b92cb2bab8)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_weather-e45b9671b206b970)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_world_border-0f202e0ae38ab23b)
+
+running 2 tests
+test tests::remaining_ticks_to_millis_converts_ticks_to_duration ... ok
+test tests::remaining_ticks_to_millis_saturates_invalid_duration ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+exit_status=0

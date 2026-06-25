@@ -1,0 +1,15 @@
+command=grep -F core_plugin_sets cairn/specs/valence-bevy-ecs/spec.md
+r[valence_bevy_ecs.core_plugin_sets.inventory] Core plugin SystemSet work MUST inventory selected plugin systems, schedules, tuple ordering, resources, events, feature/default plugin membership, and downstream ordering assumptions before changing schedule wiring.
+r[valence_bevy_ecs.core_plugin_sets.inventory.reviewable]
+r[valence_bevy_ecs.core_plugin_sets.contract] Selected core plugins SHOULD expose minimal named Bevy `SystemSet`s for stable phase-level ordering where downstream composition benefits from them.
+r[valence_bevy_ecs.core_plugin_sets.contract.phases]
+r[valence_bevy_ecs.core_plugin_sets.wiring] Core plugin SystemSet wiring MUST preserve existing events, resources, behavior, feature gates, and default plugin membership unless another Cairn changes them.
+r[valence_bevy_ecs.core_plugin_sets.wiring.preserve]
+r[valence_bevy_ecs.core_plugin_sets.compatibility] Core plugin SystemSet work MUST preserve downstream compatibility and record non-claims for unpromoted internal ordering points.
+r[valence_bevy_ecs.core_plugin_sets.compatibility.private]
+r[valence_bevy_ecs.core_plugin_sets.tests] Core plugin SystemSet work MUST include positive schedule/plugin smoke tests and negative disabled-plugin or ordering-regression tests for changed plugins.
+r[valence_bevy_ecs.core_plugin_sets.tests.positive]
+r[valence_bevy_ecs.core_plugin_sets.tests.negative]
+r[valence_bevy_ecs.core_plugin_sets.validation] Core plugin SystemSet work MUST record focused crate checks, Valence schedule hygiene, selected examples when touched, Cairn gates, Cairn validation, and task-evidence checks before archive.
+r[valence_bevy_ecs.core_plugin_sets.validation.log]
+exit_status=0

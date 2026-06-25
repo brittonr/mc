@@ -21,7 +21,9 @@ use crate::admin_permissions::{evaluate_command_scopes, AdminPermissionDecision}
 use crate::graph::{CommandEdgeType, CommandGraph, CommandNode};
 use crate::parsers::ParseInput;
 use crate::scopes::{CommandScopePlugin, CommandScopes};
-use crate::{CommandRegistry, CommandScopeRegistry, CommandSystemSet, ModifierValue};
+use crate::{
+    CommandRegistry, CommandScopeRegistry, CommandSystemSet, CommandTreeSet, ModifierValue,
+};
 
 pub struct CommandPlugin;
 
@@ -34,8 +36,8 @@ impl Plugin for CommandPlugin {
             .add_systems(
                 EventLoopPreUpdate,
                 (
-                    update_command_tree,
-                    command_tree_update_with_client,
+                    update_command_tree.in_set(CommandTreeSet),
+                    command_tree_update_with_client.in_set(CommandTreeSet),
                     read_incoming_packets.before(CommandSystemSet),
                     parse_incoming_commands.in_set(CommandSystemSet),
                 ),

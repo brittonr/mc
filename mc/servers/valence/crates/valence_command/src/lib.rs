@@ -20,7 +20,17 @@ use crate::graph::{CommandGraph, CommandGraphBuilder};
 use crate::handler::CommandHandlerPlugin;
 use crate::parsers::ParseInput;
 
-#[derive(SystemSet, Clone, PartialEq, Eq, Hash, Debug)]
+/// The [`SystemSet`] in [`valence_server::EventLoopPreUpdate`] where command
+/// trees are synchronized to clients after command graph or scope changes.
+#[derive(SystemSet, Clone, Copy, PartialEq, Eq, Hash, Debug)]
+pub struct CommandTreeSet;
+
+/// The [`SystemSet`] in [`valence_server::EventLoopPreUpdate`] where incoming
+/// command events are parsed and dispatched to registered command handlers.
+///
+/// Packet input remains an internal ordering point before this set, while
+/// typed command handlers run after it.
+#[derive(SystemSet, Clone, Copy, PartialEq, Eq, Hash, Debug)]
 pub struct CommandSystemSet;
 
 #[derive(Resource, Default)]
