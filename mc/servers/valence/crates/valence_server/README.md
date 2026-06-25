@@ -14,6 +14,21 @@ These metrics are signals, not enforcement. They can be affected by latency, ser
 
 Non-claims: this is not a complete anti-cheat, not a vanilla movement legality checker, not Hyperion compatibility, not public-server safety evidence, not adversarial security evidence, and not production readiness evidence.
 
+## Optional observability hooks
+
+`valence_server::observability::ObservabilityPlugin` is an optional plugin for bounded tick-phase and serverbound packet observations. It is not included in Valence default plugins. Add it explicitly when a server wants `ObservabilityEvent` records.
+
+The run-condition inventory for this plugin is:
+
+| Targeted system | Runtime config | Event reader | Disabled contract | Runtime toggle behavior |
+| --- | --- | --- | --- | --- |
+| `emit_pre_update_phase`, `emit_event_loop_pre_update_phase`, `emit_event_loop_update_phase`, `emit_event_loop_post_update_phase`, `emit_post_update_phase` | `ObservabilityConfig::enabled && ObservabilityConfig::emit_tick_phases` | None | Skip with Bevy `run_if`; no system body runs while disabled. | Re-enabling resumes future tick-phase records only. |
+| `emit_network_packet_records` | `ObservabilityConfig::enabled && ObservabilityConfig::emit_network_packets` | `PacketEvent` | Explicit in-system guard and drain; disabled updates clear the reader and emit no observability records. | Re-enabling observes new packets only; disabled-period packets are not replayed. |
+
+`AnticheatStatisticsPlugin` was inspected as an optional event-reading plugin, but it has no runtime enabled switch: plugin absence is the disabled mode, and adding a runtime run condition is outside this observability change. Cached chunk egress was also inspected and is not targeted because its enable flag is per-layer packet rendering state, not a Bevy system with an event reader.
+
+Non-claims: observability records are local advisory hooks. They are not gameplay correctness evidence, broad Minecraft compatibility evidence, public-server safety evidence, or production readiness evidence.
+
 ## Packet compose API
 
 `packet_compose` is an opt-in API for building ordered packet bundles, resolving unicast/global/local/group route intents, and flushing a pure delivery plan through Valence clients. Planning is deterministic over explicit client snapshots, groups, exclusions, and bundle metadata; it does not read ECS state or write sockets. The direct-mode flush helper is a thin shell that writes planned bundle bytes to `Client` components and reports closed-client or backend-write failures without changing default packet-write behavior for systems that do not call compose.

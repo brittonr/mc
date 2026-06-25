@@ -1,0 +1,16 @@
+command=rg -n "valence_bevy_ecs\.run_conditions\.(inventory|contract|wiring|event_readers|tests|validation)" cairn/specs/valence-bevy-ecs/spec.md
+87:r[valence_bevy_ecs.run_conditions.inventory] Run-condition work MUST inventory targeted optional systems, runtime enabled checks, event readers, resources, and disabled-mode behavior before changing scheduling.
+91:r[valence_bevy_ecs.run_conditions.inventory.visible]
+99:r[valence_bevy_ecs.run_conditions.contract] Each targeted optional system MUST define disabled behavior as skip, drain, transform, reject, or explicit in-system guard before adding a Bevy run condition.
+103:r[valence_bevy_ecs.run_conditions.contract.intentional]
+111:r[valence_bevy_ecs.run_conditions.wiring] Optional systems with pure no-op disabled behavior SHOULD use Bevy `run_if` conditions or set-level conditions instead of repeated per-run guards.
+115:r[valence_bevy_ecs.run_conditions.wiring.no_op]
+123:r[valence_bevy_ecs.run_conditions.event_readers] Optional systems that read Bevy events MUST preserve documented event cursor behavior when disabled, including explicit drains when skipped readers would accumulate stale events.
+127:r[valence_bevy_ecs.run_conditions.event_readers.no_stale_replay]
+135:r[valence_bevy_ecs.run_conditions.tests] Run-condition work MUST include positive enabled tests and negative disabled, stale-event, and runtime-toggle tests for changed systems.
+139:r[valence_bevy_ecs.run_conditions.tests.positive]
+146:r[valence_bevy_ecs.run_conditions.tests.negative]
+153:r[valence_bevy_ecs.run_conditions.validation] Run-condition work MUST record focused Valence checks, positive and negative run-condition tests, Cairn gates, Cairn validation, and task-evidence checks before archive.
+157:r[valence_bevy_ecs.run_conditions.validation.log]
+
+exit_status=0

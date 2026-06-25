@@ -3,6 +3,12 @@
 //! The classification helpers in this module are deterministic over explicit
 //! inputs. [`ObservabilityPlugin`] is a thin Bevy adapter that emits events for
 //! selected tick and network boundaries only when the plugin is added.
+//!
+//! Disabled-mode contracts are intentionally per system. Tick-phase systems have
+//! no event cursors, so Bevy run conditions skip their bodies when disabled.
+//! Packet observation reads [`PacketEvent`] values, so it keeps an explicit
+//! in-system drain guard; disabled updates advance that reader and do not replay
+//! stale packets after re-enable.
 
 use bevy_app::prelude::*;
 use bevy_ecs::prelude::*;
@@ -33,17 +39,29 @@ impl Plugin for ObservabilityPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<ObservabilityConfig>()
             .add_event::<ObservabilityEvent>()
-            .add_systems(PreUpdate, emit_pre_update_phase)
-            .add_systems(EventLoopPreUpdate, emit_event_loop_pre_update_phase)
-            .add_systems(EventLoopUpdate, emit_event_loop_update_phase)
+            .add_systems(
+                PreUpdate,
+                emit_pre_update_phase.run_if(observability_tick_phases_enabled),
+            )
+            .add_systems(
+                EventLoopPreUpdate,
+                emit_event_loop_pre_update_phase.run_if(observability_tick_phases_enabled),
+            )
+            .add_systems(
+                EventLoopUpdate,
+                emit_event_loop_update_phase.run_if(observability_tick_phases_enabled),
+            )
             .add_systems(
                 EventLoopPostUpdate,
                 (
-                    emit_event_loop_post_update_phase,
+                    emit_event_loop_post_update_phase.run_if(observability_tick_phases_enabled),
                     emit_network_packet_records,
                 ),
             )
-            .add_systems(PostUpdate, emit_post_update_phase);
+            .add_systems(
+                PostUpdate,
+                emit_post_update_phase.run_if(observability_tick_phases_enabled),
+            );
     }
 }
 
@@ -66,6 +84,16 @@ impl ObservabilityConfig {
             emit_tick_phases: false,
             emit_network_packets: false,
         }
+    }
+
+    /// Returns whether tick-phase records should be emitted.
+    pub const fn emits_tick_phase_records(&self) -> bool {
+        self.enabled && self.emit_tick_phases
+    }
+
+    /// Returns whether serverbound packet records should be emitted.
+    pub const fn emits_network_packet_records(&self) -> bool {
+        self.enabled && self.emit_network_packets
     }
 }
 
@@ -448,55 +476,34 @@ pub fn export_observability_record(
     }
 }
 
-fn emit_pre_update_phase(
-    config: Res<ObservabilityConfig>,
-    mut events: EventWriter<ObservabilityEvent>,
-) {
-    emit_tick_phase_record(&config, &mut events, ObservabilityPhase::PreUpdate);
+fn observability_tick_phases_enabled(config: Res<ObservabilityConfig>) -> bool {
+    config.emits_tick_phase_records()
 }
 
-fn emit_event_loop_pre_update_phase(
-    config: Res<ObservabilityConfig>,
-    mut events: EventWriter<ObservabilityEvent>,
-) {
-    emit_tick_phase_record(&config, &mut events, ObservabilityPhase::EventLoopPreUpdate);
+fn emit_pre_update_phase(mut events: EventWriter<ObservabilityEvent>) {
+    emit_tick_phase_record(&mut events, ObservabilityPhase::PreUpdate);
 }
 
-fn emit_event_loop_update_phase(
-    config: Res<ObservabilityConfig>,
-    mut events: EventWriter<ObservabilityEvent>,
-) {
-    emit_tick_phase_record(&config, &mut events, ObservabilityPhase::EventLoopUpdate);
+fn emit_event_loop_pre_update_phase(mut events: EventWriter<ObservabilityEvent>) {
+    emit_tick_phase_record(&mut events, ObservabilityPhase::EventLoopPreUpdate);
 }
 
-fn emit_event_loop_post_update_phase(
-    config: Res<ObservabilityConfig>,
-    mut events: EventWriter<ObservabilityEvent>,
-) {
-    emit_tick_phase_record(
-        &config,
-        &mut events,
-        ObservabilityPhase::EventLoopPostUpdate,
-    );
+fn emit_event_loop_update_phase(mut events: EventWriter<ObservabilityEvent>) {
+    emit_tick_phase_record(&mut events, ObservabilityPhase::EventLoopUpdate);
 }
 
-fn emit_post_update_phase(
-    config: Res<ObservabilityConfig>,
-    mut events: EventWriter<ObservabilityEvent>,
-) {
-    emit_tick_phase_record(&config, &mut events, ObservabilityPhase::PostUpdate);
+fn emit_event_loop_post_update_phase(mut events: EventWriter<ObservabilityEvent>) {
+    emit_tick_phase_record(&mut events, ObservabilityPhase::EventLoopPostUpdate);
 }
 
-fn emit_tick_phase_record(
-    config: &ObservabilityConfig,
-    events: &mut EventWriter<ObservabilityEvent>,
-    phase: ObservabilityPhase,
-) {
-    if config.enabled && config.emit_tick_phases {
-        events.send(ObservabilityEvent {
-            record: classify_tick_phase(phase),
-        });
-    }
+fn emit_post_update_phase(mut events: EventWriter<ObservabilityEvent>) {
+    emit_tick_phase_record(&mut events, ObservabilityPhase::PostUpdate);
+}
+
+fn emit_tick_phase_record(events: &mut EventWriter<ObservabilityEvent>, phase: ObservabilityPhase) {
+    events.send(ObservabilityEvent {
+        record: classify_tick_phase(phase),
+    });
 }
 
 fn emit_network_packet_records(
@@ -504,7 +511,7 @@ fn emit_network_packet_records(
     mut packet_events: EventReader<PacketEvent>,
     mut observability_events: EventWriter<ObservabilityEvent>,
 ) {
-    if !config.enabled || !config.emit_network_packets {
+    if !config.emits_network_packet_records() {
         packet_events.clear();
         return;
     }
@@ -530,6 +537,7 @@ mod tests {
     const UNKNOWN_PACKET_ID: i32 = -1;
     const EXPECTED_TICK_PHASE_COUNT: usize = 5;
     const EXPECTED_PACKET_EVENT_COUNT: usize = 1;
+    const NO_OBSERVABILITY_EVENT_COUNT: usize = 0;
     const EXPECTED_TOTAL_EVENT_COUNT: usize =
         EXPECTED_TICK_PHASE_COUNT + EXPECTED_PACKET_EVENT_COUNT;
 
@@ -554,7 +562,100 @@ mod tests {
         app.update();
 
         let events = app.world().resource::<Events<ObservabilityEvent>>();
-        assert_eq!(events.iter_current_update_events().count(), 0);
+        assert_eq!(
+            events.iter_current_update_events().count(),
+            NO_OBSERVABILITY_EVENT_COUNT
+        );
+    }
+
+    #[test]
+    fn config_predicates_expose_enabled_and_disabled_contracts() {
+        let enabled = ObservabilityConfig::default();
+        let disabled = ObservabilityConfig::disabled();
+        let tick_only = ObservabilityConfig {
+            enabled: true,
+            emit_tick_phases: true,
+            emit_network_packets: false,
+        };
+
+        assert!(enabled.emits_tick_phase_records());
+        assert!(enabled.emits_network_packet_records());
+        assert!(!disabled.emits_tick_phase_records());
+        assert!(!disabled.emits_network_packet_records());
+        assert!(tick_only.emits_tick_phase_records());
+        assert!(!tick_only.emits_network_packet_records());
+    }
+
+    #[test]
+    fn tick_phase_run_conditions_follow_runtime_toggle() {
+        let mut app = App::new();
+        app.add_plugins(EventLoopPlugin)
+            .insert_resource(ObservabilityConfig {
+                enabled: true,
+                emit_tick_phases: false,
+                emit_network_packets: false,
+            })
+            .add_plugins(ObservabilityPlugin);
+
+        app.update();
+        assert_eq!(
+            current_observability_records(&app).len(),
+            NO_OBSERVABILITY_EVENT_COUNT
+        );
+
+        app.world_mut()
+            .resource_mut::<ObservabilityConfig>()
+            .emit_tick_phases = true;
+        app.update();
+        let enabled_records = current_observability_records(&app);
+        assert_eq!(enabled_records.len(), EXPECTED_TICK_PHASE_COUNT);
+        assert!(enabled_records
+            .iter()
+            .all(|record| record.name == ObservabilityMetricName::TickPhase));
+
+        app.world_mut()
+            .resource_mut::<ObservabilityConfig>()
+            .enabled = false;
+        app.update();
+        assert_eq!(
+            current_observability_records(&app).len(),
+            NO_OBSERVABILITY_EVENT_COUNT
+        );
+    }
+
+    #[test]
+    fn network_reader_drains_disabled_period_packets_before_reenable() {
+        let mut app = App::new();
+        app.add_plugins(EventLoopPlugin)
+            .insert_resource(ObservabilityConfig {
+                enabled: true,
+                emit_tick_phases: false,
+                emit_network_packets: false,
+            })
+            .add_plugins(ObservabilityPlugin);
+
+        send_packet_event(&mut app, TEST_PACKET_ID);
+        app.update();
+        assert_eq!(
+            current_network_record_count(&app),
+            NO_OBSERVABILITY_EVENT_COUNT
+        );
+
+        app.world_mut()
+            .resource_mut::<ObservabilityConfig>()
+            .emit_network_packets = true;
+        app.update();
+        assert_eq!(
+            current_network_record_count(&app),
+            NO_OBSERVABILITY_EVENT_COUNT
+        );
+
+        send_packet_event(&mut app, TEST_PACKET_ID);
+        app.update();
+        assert_eq!(
+            current_network_record_count(&app),
+            EXPECTED_PACKET_EVENT_COUNT
+        );
     }
 
     #[test]
@@ -684,5 +785,32 @@ mod tests {
                 && event.record.labels.direction == Some(ObservabilityDirection::Serverbound)
         }));
         assert!(app.world().get_entity(client).is_some());
+    }
+
+    fn send_packet_event(app: &mut App, packet_id: i32) {
+        let client = app.world_mut().spawn_empty().id();
+        app.world_mut()
+            .resource_mut::<Events<PacketEvent>>()
+            .send(PacketEvent {
+                client,
+                timestamp: Instant::now(),
+                id: packet_id,
+                data: Bytes::from_static(TEST_PACKET_BYTES),
+            });
+    }
+
+    fn current_network_record_count(app: &App) -> usize {
+        current_observability_records(app)
+            .iter()
+            .filter(|record| record.name == ObservabilityMetricName::ServerboundPacket)
+            .count()
+    }
+
+    fn current_observability_records(app: &App) -> Vec<ObservabilityRecord> {
+        app.world()
+            .resource::<Events<ObservabilityEvent>>()
+            .iter_current_update_events()
+            .map(|event| event.record)
+            .collect()
     }
 }
