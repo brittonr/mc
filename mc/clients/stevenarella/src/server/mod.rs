@@ -37,20 +37,22 @@ use std::thread;
 use steven_protocol::item;
 
 pub mod plugin_messages;
+mod scenario_contracts_generated;
 mod sun;
 pub mod target;
 
 const DEFAULT_FLAG_PROBE_REPEAT_TARGET: u32 = 1;
 const MAX_FLAG_PROBE_REPEAT_TARGET: u32 = 8;
 const FLAG_PROBE_FIRST_TICK: u32 = 560;
-const CTF_SCORE_LIMIT_CLIENT_ENV: &str = "MC_COMPAT_SCORE_LIMIT_PROBE";
+const CTF_SCORE_LIMIT_CLIENT_ENV: &str = scenario_contracts_generated::MC_COMPAT_SCORE_LIMIT_PROBE;
 const CTF_SCORE_LIMIT_CLIENT_TARGET_SCORE: &str = "RED: 2";
 const CTF_SCORE_LIMIT_CLIENT_OPPOSING_SCORE: &str = "BLUE: 0";
 const CTF_SCORE_LIMIT_CLIENT_WIN_TEAM: &str = "red";
 const CTF_SCORE_LIMIT_CLIENT_END_STATE: &str = "winner_declared";
 const FLAG_PROBE_CYCLE_TICKS: u32 = 220;
 const ACTIVE_PROBE_INPUT_START_TICK: u32 = 1;
-const STATIONARY_COMBAT_PROBE_ENV: &str = "MC_COMPAT_STATIONARY_COMBAT_PROBE";
+const STATIONARY_COMBAT_PROBE_ENV: &str =
+    scenario_contracts_generated::MC_COMPAT_STATIONARY_COMBAT_PROBE;
 const ACTIVE_PROBE_JUMP_RELEASE_TICK: u32 = 18;
 const ACTIVE_PROBE_TURN_TICK: u32 = 180;
 const ACTIVE_PROBE_STOP_TICK: u32 = 300;

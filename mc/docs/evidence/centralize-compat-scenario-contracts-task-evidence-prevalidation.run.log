@@ -1,0 +1,4 @@
+## task evidence prevalidation
++ rustc --edition=2021 tools/check_cairn_task_evidence.rs -o target/centralize-contracts/check-cairn-task-evidence && target/centralize-contracts/check-cairn-task-evidence cairn/changes/centralize-compat-scenario-contracts/tasks.md
+task evidence gate passed: 5 completed tasks checked across 1 task files
+exit_status=0

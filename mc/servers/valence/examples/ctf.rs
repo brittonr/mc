@@ -1,5 +1,7 @@
 #![allow(clippy::type_complexity)]
 
+mod scenario_contracts_generated;
+
 use std::collections::HashMap;
 use std::path::Path;
 use std::sync::{OnceLock, RwLock};
@@ -43,8 +45,10 @@ const PLAYER_MAX_HEALTH: f32 = 20.0;
 const TEAM_RED_YAW: f32 = -90.0;
 const TEAM_BLUE_YAW: f32 = 90.0;
 const COMPAT_ACTOR_USERNAME: &str = "compatbot";
-const INVENTORY_STACK_SPLIT_MERGE_PROBE_ENV: &str = "MC_COMPAT_INVENTORY_STACK_SPLIT_MERGE_PROBE";
-const INVENTORY_DRAG_TRANSACTIONS_PROBE_ENV: &str = "MC_COMPAT_INVENTORY_DRAG_TRANSACTIONS_PROBE";
+const INVENTORY_STACK_SPLIT_MERGE_PROBE_ENV: &str =
+    scenario_contracts_generated::MC_COMPAT_INVENTORY_STACK_SPLIT_MERGE_PROBE;
+const INVENTORY_DRAG_TRANSACTIONS_PROBE_ENV: &str =
+    scenario_contracts_generated::MC_COMPAT_INVENTORY_DRAG_TRANSACTIONS_PROBE;
 const INVENTORY_STACK_WINDOW_ID: u8 = 0;
 const INVENTORY_STACK_SOURCE_SLOT: i16 = 37;
 const INVENTORY_STACK_DESTINATION_SLOT: i16 = 38;
@@ -138,7 +142,8 @@ const ARROW_POLICY_FORBIDDEN_STEEL_TOKENS: &[&str] = &[
     "current-second",
     "random",
 ];
-const CTF_SCORE_LIMIT_WIN_PROBE_ENV: &str = "MC_COMPAT_CTF_SCORE_LIMIT_PROBE";
+const CTF_SCORE_LIMIT_WIN_PROBE_ENV: &str =
+    scenario_contracts_generated::MC_COMPAT_CTF_SCORE_LIMIT_PROBE;
 const CTF_SCORE_LIMIT_CONFIGURED: u32 = 2;
 const CTF_SCORE_LIMIT_RED_PRE_FINAL_CAPTURE: u32 = 1;
 const CTF_SCORE_LIMIT_BLUE_PRE_FINAL_CAPTURE: u32 = 0;

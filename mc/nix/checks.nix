@@ -12,6 +12,7 @@
 let
   system = pkgs.stdenv.hostPlatform.system;
   allowedNewChecks = [
+    "mc-compat-scenario-contracts"
     "mc-flake-output-inventory"
     "mc-octet-monorepo"
   ];
@@ -349,6 +350,27 @@ in
         printf '%s\n' ${pkgs.lib.escapeShellArgs scenarioWrapperMetadata.dryRunChecks} > ../generated-wrapper-metadata-dry-run-checks.log
         mkdir -p "$out"
         cp ../generated-harness-surfaces-typecheck.log ../generated-fallback-budget-baseline-typecheck.log ../generated-harness-surfaces-self-test.log ../generated-harness-surfaces-check.log ../generated-wrapper-metadata-summary.log ../generated-wrapper-metadata-app-wrappers.log ../generated-wrapper-metadata-dry-run-checks.log "$out/"
+      '';
+  mc-compat-scenario-contracts =
+    pkgs.runCommand "mc-compat-scenario-contracts"
+      {
+        nativeBuildInputs = [
+          pkgs.rustc
+          pkgs.gcc
+          pkgs.nickel
+        ];
+      }
+      ''
+        cp -R ${srcRoot} repo
+        chmod -R u+w repo
+        cd repo
+        nickel typecheck compat/config/scenario-contracts.ncl > ../scenario-contracts-typecheck.log
+        nickel typecheck compat/config/scenario-manifest.ncl > ../scenario-contracts-manifest-typecheck.log
+        rustc --edition=2021 tools/check_scenario_contracts.rs -o ../check-scenario-contracts
+        ../check-scenario-contracts --self-test > ../scenario-contracts-self-test.log
+        ../check-scenario-contracts --check-generated-surfaces > ../scenario-contracts-check.log
+        mkdir -p "$out"
+        cp ../scenario-contracts-typecheck.log ../scenario-contracts-manifest-typecheck.log ../scenario-contracts-self-test.log ../scenario-contracts-check.log "$out/"
       '';
   mc-compat-evidence-promotion =
     pkgs.runCommand "mc-compat-evidence-promotion"

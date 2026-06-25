@@ -1,0 +1,61 @@
+
+## check-tiers-self-test
++ rustc --edition=2021 tools/check_check_tiers.rs -o target/centralize-contracts/check-check-tiers
+exit_status[check-tiers-self-test]=0
+
+## check-tiers-current
++ target/centralize-contracts/check-check-tiers --root .
+check tier docs passed
+exit_status[check-tiers-current]=0
+
+## scenario-manifest
++ nix build .#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/s9grm1mz3ym3nazdwprqh6a3mspbqmdv.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1050 ms: Could not connect to server; retrying in 294 ms
+warning: error: unable to download 'http://100.100.103.95:5000/s9grm1mz3ym3nazdwprqh6a3mspbqmdv.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2075 ms: Could not connect to server; retrying in 557 ms
+warning: error: unable to download 'http://100.100.103.95:5000/s9grm1mz3ym3nazdwprqh6a3mspbqmdv.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2064 ms: Could not connect to server; retrying in 1409 ms
+warning: error: unable to download 'http://100.100.103.95:5000/s9grm1mz3ym3nazdwprqh6a3mspbqmdv.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 7 ms: Could not connect to server; retrying in 2323 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/s9grm1mz3ym3nazdwprqh6a3mspbqmdv.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/s9grm1mz3ym3nazdwprqh6a3mspbqmdv.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2082 ms: Could not connect to server
+this derivation will be built:
+  /nix/store/mpzin8c7dm7i15v3cvpvya28hiamwgnk-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/mpzin8c7dm7i15v3cvpvya28hiamwgnk-mc-compat-scenario-manifest.drv'...
+exit_status[scenario-manifest]=0
+
+## generated-harness-surfaces
++ nix build .#checks.x86_64-linux.mc-compat-generated-harness-surfaces --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/qbra9jkyph2niw2n5fpgg9anvihimw4c.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 280 ms
+warning: error: unable to download 'http://100.100.103.95:5000/qbra9jkyph2niw2n5fpgg9anvihimw4c.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 8 ms: Could not connect to server; retrying in 701 ms
+warning: error: unable to download 'http://100.100.103.95:5000/qbra9jkyph2niw2n5fpgg9anvihimw4c.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4082 ms: Could not connect to server; retrying in 1058 ms
+warning: error: unable to download 'http://100.100.103.95:5000/qbra9jkyph2niw2n5fpgg9anvihimw4c.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2077 ms: Could not connect to server; retrying in 2343 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/qbra9jkyph2niw2n5fpgg9anvihimw4c.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/qbra9jkyph2niw2n5fpgg9anvihimw4c.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+this derivation will be built:
+  /nix/store/r8zqz0fvqd3vl9a9xjn699hrc0i4czjx-mc-compat-generated-harness-surfaces.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/r8zqz0fvqd3vl9a9xjn699hrc0i4czjx-mc-compat-generated-harness-surfaces.drv'...
+exit_status[generated-harness-surfaces]=0
+
+## flake-output-inventory
++ nix build .#checks.x86_64-linux.mc-flake-output-inventory --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/6fi4ijlbzablr8ahiazvxwmwn7qmvrd7.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 251 ms
+warning: error: unable to download 'http://100.100.103.95:5000/6fi4ijlbzablr8ahiazvxwmwn7qmvrd7.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 9 ms: Could not connect to server; retrying in 501 ms
+warning: error: unable to download 'http://100.100.103.95:5000/6fi4ijlbzablr8ahiazvxwmwn7qmvrd7.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 8 ms: Could not connect to server; retrying in 1270 ms
+warning: error: unable to download 'http://100.100.103.95:5000/6fi4ijlbzablr8ahiazvxwmwn7qmvrd7.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2503 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/6fi4ijlbzablr8ahiazvxwmwn7qmvrd7.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/6fi4ijlbzablr8ahiazvxwmwn7qmvrd7.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds
+this derivation will be built:
+  /nix/store/b54xk53xncbbh7n31s68lycidgr4bmcb-mc-flake-output-inventory.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/b54xk53xncbbh7n31s68lycidgr4bmcb-mc-flake-output-inventory.drv'...
+exit_status[flake-output-inventory]=0
+exit_status=0

@@ -1,0 +1,19 @@
+
+## compile-checker
++ rustc --edition=2021 tools/check_scenario_contracts.rs -o target/centralize-contracts/check-scenario-contracts
+exit_status[compile-checker]=0
+
+## checker-self-test
++ target/centralize-contracts/check-scenario-contracts --self-test
+scenario contract self-test passed: positive plus missing duplicate stale mismatched and retired-alias fixtures
+exit_status[checker-self-test]=0
+
+## check-generated
++ target/centralize-contracts/check-scenario-contracts --check-generated-surfaces
+scenario generated-surface check passed: values=111 scenarios=46 env_tokens=188 receipt_tokens=5
+exit_status[check-generated]=0
+
+## contract-flake
++ nix build .#checks.x86_64-linux.mc-compat-scenario-contracts --no-link -L
+exit_status[contract-flake]=0
+exit_status=0

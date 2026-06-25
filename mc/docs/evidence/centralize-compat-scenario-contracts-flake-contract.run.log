@@ -1,0 +1,16 @@
+## mc-compat-scenario-contracts flake check
++ nix build .#checks.x86_64-linux.mc-compat-scenario-contracts --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/il2nz193kddnssaf03q86ppn4g9q6p4d.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 324 ms
+warning: error: unable to download 'http://100.100.103.95:5000/il2nz193kddnssaf03q86ppn4g9q6p4d.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1045 ms: Could not connect to server; retrying in 670 ms
+warning: error: unable to download 'http://100.100.103.95:5000/il2nz193kddnssaf03q86ppn4g9q6p4d.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 1277 ms
+warning: error: unable to download 'http://100.100.103.95:5000/il2nz193kddnssaf03q86ppn4g9q6p4d.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3098 ms: Could not connect to server; retrying in 2195 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/il2nz193kddnssaf03q86ppn4g9q6p4d.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/il2nz193kddnssaf03q86ppn4g9q6p4d.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+this derivation will be built:
+  /nix/store/y3h12gc8y6b3jj55jjz9g10ivzm3b2dv-mc-compat-scenario-contracts.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/y3h12gc8y6b3jj55jjz9g10ivzm3b2dv-mc-compat-scenario-contracts.drv'...
+exit_status=0

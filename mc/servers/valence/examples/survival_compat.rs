@@ -1,5 +1,7 @@
 #![allow(clippy::type_complexity)]
 
+mod scenario_contracts_generated;
+
 use std::collections::HashSet;
 use std::fs;
 use std::path::PathBuf;
@@ -35,7 +37,8 @@ const SURVIVAL_BLOCK_COUNT: i8 = 1;
 const SURVIVAL_SPAWN_X: f64 = 0.5;
 const SURVIVAL_SPAWN_Z: f64 = 0.5;
 const SURVIVAL_WELCOME: &str = "Welcome to the Valence survival compatibility fixture.";
-const SURVIVAL_CHEST_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_CHEST_FIXTURE";
+const SURVIVAL_CHEST_FIXTURE_ENV: &str =
+    scenario_contracts_generated::MC_COMPAT_SURVIVAL_CHEST_FIXTURE;
 const SURVIVAL_CHEST_X: i32 = 8;
 const SURVIVAL_CHEST_Y: i32 = FLOOR_Y;
 const SURVIVAL_CHEST_Z: i32 = 0;

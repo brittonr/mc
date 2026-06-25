@@ -1,0 +1,5 @@
+## final evidence manifest check
++ rustc --edition=2021 tools/check_evidence_manifests.rs -o target/centralize-contracts/check-evidence-manifests && target/centralize-contracts/check-evidence-manifests --self-test && target/centralize-contracts/check-evidence-manifests
+evidence manifest self-test ok: positive and negative fixtures exercised
+evidence manifests ok: 480 manifests, 3930 entries, 140 receipts scanned
+exit_status=0

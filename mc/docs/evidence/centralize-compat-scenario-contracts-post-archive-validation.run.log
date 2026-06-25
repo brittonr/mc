@@ -1,0 +1,186 @@
+
+## cairn-validate
++ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 5,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 9,
+  "valid": true
+}
+exit_status[cairn-validate]=0
+
+## cairn-change-list
++ nix run .#cairn -- change list --root .
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "./cairn/changes/decouple-mc-compat-runner-shell/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "decouple-mc-compat-runner-shell",
+      "path": "./cairn/changes/decouple-mc-compat-runner-shell",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/extract-valence-compat-fixture-cores/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "extract-valence-compat-fixture-cores",
+      "path": "./cairn/changes/extract-valence-compat-fixture-cores",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 8,
+        "total": 8,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/harden-stevenarella-runtime-boundaries/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "harden-stevenarella-runtime-boundaries",
+      "path": "./cairn/changes/harden-stevenarella-runtime-boundaries",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/isolate-runner-json-evidence/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "isolate-runner-json-evidence",
+      "path": "./cairn/changes/isolate-runner-json-evidence",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/split-stevenarella-server-probes/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "split-stevenarella-server-probes",
+      "path": "./cairn/changes/split-stevenarella-server-probes",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "."
+}
+exit_status[cairn-change-list]=0
+
+## scenario-contracts-check
++ nix build .#checks.x86_64-linux.mc-compat-scenario-contracts --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/p0ishm6hq9nny61zasd40r4s0w3pjpyx.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 8 ms: Could not connect to server; retrying in 328 ms
+warning: error: unable to download 'http://100.100.103.95:5000/p0ishm6hq9nny61zasd40r4s0w3pjpyx.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2039 ms: Could not connect to server; retrying in 567 ms
+warning: error: unable to download 'http://100.100.103.95:5000/p0ishm6hq9nny61zasd40r4s0w3pjpyx.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1022 ms
+warning: error: unable to download 'http://100.100.103.95:5000/p0ishm6hq9nny61zasd40r4s0w3pjpyx.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2675 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/p0ishm6hq9nny61zasd40r4s0w3pjpyx.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/p0ishm6hq9nny61zasd40r4s0w3pjpyx.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 8 ms: Could not connect to server
+this derivation will be built:
+  /nix/store/6zf11drky4f7cbykmmcl2qnk3f7s6jb8-mc-compat-scenario-contracts.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/6zf11drky4f7cbykmmcl2qnk3f7s6jb8-mc-compat-scenario-contracts.drv'...
+exit_status[scenario-contracts-check]=0
+
+## evidence-manifests
++ nix build .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/k3h37f61g1db7dhyiyjgpn9mjqcwzw08.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4141 ms: Could not connect to server; retrying in 315 ms
+warning: error: unable to download 'http://100.100.103.95:5000/k3h37f61g1db7dhyiyjgpn9mjqcwzw08.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2053 ms: Could not connect to server; retrying in 686 ms
+warning: error: unable to download 'http://100.100.103.95:5000/k3h37f61g1db7dhyiyjgpn9mjqcwzw08.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1073 ms
+warning: error: unable to download 'http://100.100.103.95:5000/k3h37f61g1db7dhyiyjgpn9mjqcwzw08.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2580 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/k3h37f61g1db7dhyiyjgpn9mjqcwzw08.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/k3h37f61g1db7dhyiyjgpn9mjqcwzw08.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 9 ms: Could not connect to server
+this derivation will be built:
+  /nix/store/fy5ai2qxcvclc4v8322xzms5fb5an9b2-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/fy5ai2qxcvclc4v8322xzms5fb5an9b2-mc-compat-evidence-manifests.drv'...
+exit_status[evidence-manifests]=0
+
+## cairn-task-evidence
++ nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/kf78294sfmdimv32jf2y426l2ymyg2pv.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 347 ms
+warning: error: unable to download 'http://100.100.103.95:5000/kf78294sfmdimv32jf2y426l2ymyg2pv.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4106 ms: Could not connect to server; retrying in 516 ms
+warning: error: unable to download 'http://100.100.103.95:5000/kf78294sfmdimv32jf2y426l2ymyg2pv.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4091 ms: Could not connect to server; retrying in 1296 ms
+warning: error: unable to download 'http://100.100.103.95:5000/kf78294sfmdimv32jf2y426l2ymyg2pv.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2208 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/kf78294sfmdimv32jf2y426l2ymyg2pv.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/kf78294sfmdimv32jf2y426l2ymyg2pv.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+this derivation will be built:
+  /nix/store/235plf956xgcxb52z5dlkc5mpz7qq8mc-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/235plf956xgcxb52z5dlkc5mpz7qq8mc-mc-compat-cairn-task-evidence.drv'...
+exit_status[cairn-task-evidence]=0
+exit_status=0

@@ -1,11 +1,11 @@
-192b00c2c1f69ae36d33b611f509f2c5d3a828a16a04c0499609c5c03c0ea913  README.md
+02e1b66a137cc932a81ed33d7c85ec7870e60317309267a03a3b53fde7b416aa  README.md
 2944d4eef66bf05a28fc40837e4e04ad60831b500955ce9baef5c524aa5ea53f  cairn/archive/2026-06-22-mcp-controlled-smoke-typed-event-migration/proposal.md
 fed89c9aae7a973930b08beb8e687cebcb4dcd8bd58e1e9658c0a53121f11e47  cairn/archive/2026-06-22-mcp-controlled-smoke-typed-event-migration/design.md
 bb6471b6732954340790da4847b78e4d3919e48943847b509bcd9d74c03af871  cairn/archive/2026-06-22-mcp-controlled-smoke-typed-event-migration/tasks.md
 5ebe979dd5f6dcb99b26d85f7d336658875c958d13f5413698781a96310c027d  cairn/archive/2026-06-22-mcp-controlled-smoke-typed-event-migration/specs/mc-compatibility/spec.md
 efc5ca3839b0cf2b67fa65fa4436cea2088498ff1f6605bdfbdecb48bc93baca  cairn/specs/mc-compatibility/spec.md
 b471fb927ec046054595bc7d5630322667f240180c64294729ad008cd9153783  compat/config/scenario-manifest.ncl
-c110e661cc5c3b6d1c56712d87c9f7e090547fba6d2946ca28afef7d33a1fdb3  compat/runner/src/main.rs
+c75329b595fa114fa8bdb034d33498ec703a7e1bb551d784f70291fc84584fb8  compat/runner/src/main.rs
 0c5c6cd53867ec19832895b3ab577703961623c3fb63b22c35965e62cb992905  compat/runner/src/scenario_manifest_generated.rs
 0b523e7ff192e8cff923d19d4e07c468d2bfa79a472af5c2768ddaa4d647e8c7  docs/evidence/mc-compat-scenario-index.generated.md
 b7fbb69d0ac12a972f4446c431cc909753eadb8b0af658446c1dda948d158f9f  docs/evidence/mcp-controlled-smoke-typed-event-baseline-cairn-gates.run.log

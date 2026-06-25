@@ -37,6 +37,7 @@ Use the smallest tier that covers the files and claim boundary you changed, then
 | `nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L` | `tier.evidence` | Checked Cairn tasks or cited task evidence changes | Flake check build log |
 | `nix build .#checks.x86_64-linux.mc-compat-evidence-manifest-refresh --no-link -L` | `tier.evidence` | Evidence manifest checker or manifest refresh changes | Flake check build log |
 | `nix build .#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L` | `tier.generated` | Scenario manifest/config/generated-surface changes | Flake check build log |
+| `nix build .#checks.x86_64-linux.mc-compat-scenario-contracts --no-link -L` | `tier.generated` | Scenario contract env vars, fixture toggles, receipt identifiers, generated Rust constants, or contract inventory changes | Flake check build log |
 | `nix build .#checks.x86_64-linux.mc-compat-generated-harness-surfaces --no-link -L` | `tier.generated` | Generated runner/index surface changes | Flake check build log |
 | `nix run .#cairn -- policy export --check` | `tier.generated` | Cairn policy source/generated JSON changes | Policy freshness report |
 | `nix build .#checks.x86_64-linux.mc-cairn-policy-fresh --no-link -L` | `tier.generated` | Cairn policy freshness changes | Flake check build log |

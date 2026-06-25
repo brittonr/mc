@@ -1,0 +1,109 @@
+
+## archive-dry-run
++ nix run .#cairn -- archive centralize-compat-scenario-contracts --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: centralize-compat-scenario-contracts",
+      "kind": "archive_change",
+      "path": "./cairn/changes/centralize-compat-scenario-contracts"
+    }
+  ],
+  "blocked": false,
+  "change": "centralize-compat-scenario-contracts",
+  "dry_run": true,
+  "input_hash": "3815542cf49d8878de1301cb401bff0862ae5c763675088d0eaad6bd0370a3fc",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "246bd9689f8e7acfc67c58f8fa1e2a3768c41f2891fe8ed78654a9ae34d1fd34",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "24e090794e4ba638610382266801546a633af5539d691005c56397b961c48650"
+}
+exit_status[archive-dry-run]=0
+
+## archive-execute
++ nix run .#cairn -- archive centralize-compat-scenario-contracts --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: centralize-compat-scenario-contracts",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-centralize-compat-scenario-contracts"
+    }
+  ],
+  "blocked": false,
+  "change": "centralize-compat-scenario-contracts",
+  "dry_run": false,
+  "input_hash": "3815542cf49d8878de1301cb401bff0862ae5c763675088d0eaad6bd0370a3fc",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "1e60de12bb1438b9ff5c98beb8f8c5914431b028cba4339b3f65ac6207aa53b4",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-centralize-compat-scenario-contracts/design.md"
+        },
+        {
+          "content_hash": "eef91784e2c5544ae98b073df7187ac5a0675673e1dfbe3a72fc33f7220bca9b",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-centralize-compat-scenario-contracts/proposal.md"
+        },
+        {
+          "content_hash": "7eb098d3f9fc515c114f018c0c310d18289c3a5c8975a4e50cbff4207bbc4dab",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-centralize-compat-scenario-contracts/specs/runtime-configuration/spec.md"
+        },
+        {
+          "content_hash": "9709572f8405fbc699ee375fc44e30a0d2bb2c3d09bcf558cc69044fc40e8a9d",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-centralize-compat-scenario-contracts/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/centralize-compat-scenario-contracts"
+        }
+      ],
+      "manifest_hash": "fc92ef342a6b06b5f262bdf46485c975d7c022511b9c1aff792daf21072679f3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "1e60de12bb1438b9ff5c98beb8f8c5914431b028cba4339b3f65ac6207aa53b4",
+          "exists": true,
+          "path": "./cairn/changes/centralize-compat-scenario-contracts/design.md"
+        },
+        {
+          "content_hash": "eef91784e2c5544ae98b073df7187ac5a0675673e1dfbe3a72fc33f7220bca9b",
+          "exists": true,
+          "path": "./cairn/changes/centralize-compat-scenario-contracts/proposal.md"
+        },
+        {
+          "content_hash": "7eb098d3f9fc515c114f018c0c310d18289c3a5c8975a4e50cbff4207bbc4dab",
+          "exists": true,
+          "path": "./cairn/changes/centralize-compat-scenario-contracts/specs/runtime-configuration/spec.md"
+        },
+        {
+          "content_hash": "9709572f8405fbc699ee375fc44e30a0d2bb2c3d09bcf558cc69044fc40e8a9d",
+          "exists": true,
+          "path": "./cairn/changes/centralize-compat-scenario-contracts/tasks.md"
+        }
+      ],
+      "manifest_hash": "dfd903c934c24202ed03206758ccddf5136cacee00c12bd51f8cfc8e1d27560a"
+    },
+    "kind": "archive",
+    "manifest_hash": "9540fc7ed84f56b023d3fcbc1c89f66d9871258e5c5a917949f6af779ef9f215"
+  },
+  "plan_hash": "92a296d39c551ca99cd2ee44fb634e657f6b2f7cf6ff5989bb679d3b2196047c",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "ba49859e39fccd889bdd51e7e6a92239391f3238db055387a5811997878d698b"
+}
+exit_status[archive-execute]=0
+exit_status=0
