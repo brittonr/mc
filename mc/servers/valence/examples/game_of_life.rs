@@ -3,6 +3,7 @@
 use std::mem;
 use std::num::NonZeroU32;
 
+use bevy_ecs::prelude::SystemSet;
 use valence::prelude::*;
 
 const BOARD_MIN_X: i32 = -30;
@@ -23,27 +24,77 @@ const SPAWN_POS: DVec3 = DVec3::new(
     (BOARD_MIN_Z + BOARD_MAX_Z) as f64 / 2.0,
 );
 
+#[derive(SystemSet, Clone, Copy, Debug, Eq, Hash, PartialEq)]
+enum LifeGameplayPhase {
+    Input,
+    RuleEvaluation,
+    WorldMutation,
+    Presentation,
+    Cleanup,
+}
+
+#[derive(Resource, Clone, Copy, Debug, PartialEq)]
+struct LifeGameplayPluginContract {
+    update_phase_order: &'static [LifeGameplayPhase],
+}
+
+const LIFE_GAMEPLAY_PHASE_ORDER: &[LifeGameplayPhase] = &[
+    LifeGameplayPhase::Input,
+    LifeGameplayPhase::RuleEvaluation,
+    LifeGameplayPhase::WorldMutation,
+    LifeGameplayPhase::Presentation,
+    LifeGameplayPhase::Cleanup,
+];
+
+struct LifeGameplayPlugin;
+
+impl Plugin for LifeGameplayPlugin {
+    fn build(&self, app: &mut App) {
+        let contract = LifeGameplayPluginContract {
+            update_phase_order: LIFE_GAMEPLAY_PHASE_ORDER,
+        };
+
+        app.insert_resource(contract)
+            .configure_sets(
+                Update,
+                (
+                    LifeGameplayPhase::Input,
+                    LifeGameplayPhase::RuleEvaluation,
+                    LifeGameplayPhase::WorldMutation,
+                    LifeGameplayPhase::Presentation,
+                    LifeGameplayPhase::Cleanup,
+                )
+                    .chain(),
+            )
+            .add_systems(Startup, setup)
+            .add_systems(
+                Update,
+                (init_clients, toggle_cell_on_dig, pause_on_crouch)
+                    .in_set(LifeGameplayPhase::Input),
+            )
+            .add_systems(
+                Update,
+                advance_board
+                    .run_if(board_is_playing)
+                    .run_if(every_ticks(LIFE_STEP_CADENCE))
+                    .in_set(LifeGameplayPhase::RuleEvaluation),
+            )
+            .add_systems(
+                Update,
+                reset_oob_clients.in_set(LifeGameplayPhase::WorldMutation),
+            )
+            .add_systems(Update, render_board.in_set(LifeGameplayPhase::Presentation))
+            .add_systems(
+                Update,
+                despawn_disconnected_clients.in_set(LifeGameplayPhase::Cleanup),
+            );
+    }
+}
+
 pub fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_systems(Startup, setup)
-        .add_systems(
-            Update,
-            (
-                init_clients,
-                despawn_disconnected_clients,
-                toggle_cell_on_dig,
-                (
-                    advance_board
-                        .run_if(board_is_playing)
-                        .run_if(every_ticks(LIFE_STEP_CADENCE)),
-                    render_board,
-                )
-                    .chain(),
-                pause_on_crouch,
-                reset_oob_clients,
-            ),
-        )
+        .add_plugins(LifeGameplayPlugin)
         .run();
 }
 
@@ -259,6 +310,26 @@ fn reset_oob_clients(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn life_gameplay_plugin_installs_contract() {
+        let mut app = App::new();
+
+        app.add_plugins(LifeGameplayPlugin);
+
+        let contract = app.world().resource::<LifeGameplayPluginContract>();
+        assert_eq!(contract.update_phase_order, LIFE_GAMEPLAY_PHASE_ORDER);
+    }
+
+    #[test]
+    fn disabled_life_gameplay_plugin_installs_no_contract_or_board() {
+        let app = App::new();
+
+        assert!(!app
+            .world()
+            .contains_resource::<LifeGameplayPluginContract>());
+        assert!(!app.world().contains_resource::<LifeBoard>());
+    }
 
     #[test]
     fn life_step_cadence_preserves_previous_due_ticks() {

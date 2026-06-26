@@ -1,5 +1,6 @@
 #![allow(clippy::type_complexity)]
 
+use bevy_ecs::prelude::SystemSet;
 use bevy_ecs::query::QueryData;
 use rand::Rng;
 use valence::entity::EntityStatuses;
@@ -54,8 +55,33 @@ enum CombatCooldownExpiration {
     StaleGeneration,
 }
 
+#[derive(Resource, Clone, Copy, Debug, PartialEq)]
+struct CombatGameplayPluginContract {
+    update_phase_order: &'static [CombatGameplayPhase],
+    event_loop_phase_order: &'static [CombatGameplayPhase],
+}
+
+#[derive(SystemSet, Clone, Copy, Debug, Eq, Hash, PartialEq)]
+enum CombatGameplayPhase {
+    Input,
+    RuleEvaluation,
+    WorldMutation,
+    Presentation,
+    Cleanup,
+}
+
+const COMBAT_GAMEPLAY_PHASE_ORDER: &[CombatGameplayPhase] = &[
+    CombatGameplayPhase::Input,
+    CombatGameplayPhase::RuleEvaluation,
+    CombatGameplayPhase::WorldMutation,
+    CombatGameplayPhase::Presentation,
+    CombatGameplayPhase::Cleanup,
+];
+
 #[derive(Default)]
 struct CombatCooldownPlugin;
+
+struct CombatGameplayPlugin;
 
 impl Default for CombatState {
     fn default() -> Self {
@@ -70,24 +96,65 @@ impl Default for CombatState {
 impl Plugin for CombatCooldownPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<ServerTickScheduler<AttackCooldownExpired>>()
-            .add_systems(Update, expire_combat_cooldowns);
+            .add_systems(
+                Update,
+                expire_combat_cooldowns.in_set(CombatGameplayPhase::RuleEvaluation),
+            );
+    }
+}
+
+impl Plugin for CombatGameplayPlugin {
+    fn build(&self, app: &mut App) {
+        let contract = CombatGameplayPluginContract {
+            update_phase_order: COMBAT_GAMEPLAY_PHASE_ORDER,
+            event_loop_phase_order: COMBAT_GAMEPLAY_PHASE_ORDER,
+        };
+
+        app.insert_resource(contract)
+            .configure_sets(
+                Update,
+                (
+                    CombatGameplayPhase::Input,
+                    CombatGameplayPhase::RuleEvaluation,
+                    CombatGameplayPhase::WorldMutation,
+                    CombatGameplayPhase::Presentation,
+                    CombatGameplayPhase::Cleanup,
+                )
+                    .chain(),
+            )
+            .configure_sets(
+                EventLoopUpdate,
+                (
+                    CombatGameplayPhase::Input,
+                    CombatGameplayPhase::RuleEvaluation,
+                    CombatGameplayPhase::WorldMutation,
+                    CombatGameplayPhase::Presentation,
+                    CombatGameplayPhase::Cleanup,
+                )
+                    .chain(),
+            )
+            .add_plugins(CombatCooldownPlugin)
+            .add_systems(Startup, setup)
+            .add_systems(
+                EventLoopUpdate,
+                handle_combat_events.in_set(CombatGameplayPhase::WorldMutation),
+            )
+            .add_systems(Update, init_clients.in_set(CombatGameplayPhase::Input))
+            .add_systems(
+                Update,
+                teleport_oob_clients.in_set(CombatGameplayPhase::RuleEvaluation),
+            )
+            .add_systems(
+                Update,
+                despawn_disconnected_clients.in_set(CombatGameplayPhase::Cleanup),
+            );
     }
 }
 
 pub fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_plugins(CombatCooldownPlugin)
-        .add_systems(Startup, setup)
-        .add_systems(EventLoopUpdate, handle_combat_events)
-        .add_systems(
-            Update,
-            (
-                init_clients,
-                despawn_disconnected_clients,
-                teleport_oob_clients,
-            ),
-        )
+        .add_plugins(CombatGameplayPlugin)
         .run();
 }
 
@@ -347,11 +414,39 @@ fn teleport_oob_clients(mut clients: Query<&mut Position, With<Client>>) {
 mod tests {
     use super::*;
 
+    use bevy_ecs::schedule::Schedule;
+
     const TEST_CURRENT_TICK: i64 = 100;
     const BEFORE_DUE_OFFSET_TICKS: i64 = 1;
     const EXPECTED_DUE_TICK: i64 = TEST_CURRENT_TICK + ATTACK_COOLDOWN_TICKS;
     const BEFORE_DUE_TICK: i64 = EXPECTED_DUE_TICK - BEFORE_DUE_OFFSET_TICKS;
     const INVALID_COOLDOWN_TICKS: i64 = 0;
+
+    #[test]
+    fn combat_gameplay_plugin_installs_contract_and_cooldown_resource() {
+        let mut app = app_with_combat_event_loop_schedule();
+
+        app.add_plugins(CombatGameplayPlugin);
+
+        let contract = app.world().resource::<CombatGameplayPluginContract>();
+        assert_eq!(contract.update_phase_order, COMBAT_GAMEPLAY_PHASE_ORDER);
+        assert_eq!(contract.event_loop_phase_order, COMBAT_GAMEPLAY_PHASE_ORDER);
+        assert!(app
+            .world()
+            .contains_resource::<ServerTickScheduler<AttackCooldownExpired>>());
+    }
+
+    #[test]
+    fn disabled_combat_gameplay_plugin_installs_no_contract_or_scheduler() {
+        let app = app_with_combat_event_loop_schedule();
+
+        assert!(!app
+            .world()
+            .contains_resource::<CombatGameplayPluginContract>());
+        assert!(!app
+            .world()
+            .contains_resource::<ServerTickScheduler<AttackCooldownExpired>>());
+    }
 
     #[test]
     fn combat_cooldown_due_work_applies_once() {
@@ -448,6 +543,12 @@ mod tests {
             .world()
             .get_resource::<ServerTickScheduler<AttackCooldownExpired>>()
             .is_none());
+    }
+
+    fn app_with_combat_event_loop_schedule() -> App {
+        let mut app = App::new();
+        app.add_schedule(Schedule::new(EventLoopUpdate));
+        app
     }
 
     fn test_entity() -> Entity {

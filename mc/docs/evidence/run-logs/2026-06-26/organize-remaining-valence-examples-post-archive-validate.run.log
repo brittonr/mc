@@ -1,0 +1,18 @@
+# Post-archive Cairn validation for organize-remaining-valence-examples-as-plugins
+cwd=/home/brittonr/git/mc
+started_utc=2026-06-26T16:43:58Z
+
+>>> nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 6,
+  "valid": true
+}
+command_exit_status=0
+finished_utc=2026-06-26T16:43:58Z
+exit_status=0

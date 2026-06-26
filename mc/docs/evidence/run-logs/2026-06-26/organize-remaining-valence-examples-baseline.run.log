@@ -1,0 +1,119 @@
+# Focused pre-edit baseline for organize-remaining-valence-examples-as-plugins
+cwd=/home/brittonr/git/mc
+started_utc=2026-06-26T16:22:48Z
+playground.rs already present
+
+>>> nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test --manifest-path servers/valence/Cargo.toml --all-features --example parkour --example game_of_life --example combat --example command --example advancement --example building --example death --example world_border
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+   Compiling valence_inventory v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_inventory)
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+   Compiling valence_equipment v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_equipment)
+   Compiling valence v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence)
+warning: `valence_inventory` (lib) generated 1 warning
+    Finished `test` profile [optimized + debuginfo] target(s) in 5.08s
+     Running unittests examples/advancement.rs (/home/brittonr/.cargo-target/debug/examples/advancement-0f4dfec376af58b6)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/building.rs (/home/brittonr/.cargo-target/debug/examples/building-db46c7738bc239f7)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/combat.rs (/home/brittonr/.cargo-target/debug/examples/combat-7671f57495c99a12)
+
+running 6 tests
+test tests::combat_cooldown_plugin_disabled_leaves_scheduler_absent ... ok
+test tests::combat_cooldown_due_work_applies_once ... ok
+test tests::cancelled_combat_cooldown_does_not_emit_due_work ... ok
+test tests::duplicate_combat_cooldown_event_applies_only_once ... ok
+test tests::invalid_combat_cooldown_tick_is_rejected ... ok
+test tests::stale_combat_cooldown_target_fails_closed ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/command.rs (/home/brittonr/.cargo-target/debug/examples/command-1f3259e743132325)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/death.rs (/home/brittonr/.cargo-target/debug/examples/death-3625d2ac185c3124)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/game_of_life.rs (/home/brittonr/.cargo-target/debug/examples/game_of_life-7e0aa41f59e01a67)
+
+running 2 tests
+test tests::board_play_state_controls_periodic_advance_only ... ok
+test tests::life_step_cadence_preserves_previous_due_ticks ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/parkour.rs (/home/brittonr/.cargo-target/debug/examples/parkour-ab8d4521c5b3fe91)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/world_border.rs (/home/brittonr/.cargo-target/debug/examples/world_border-a058321b2d515aab)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+command_exit_status=0
+
+>>> tools/check_valence_schedule_hygiene.rs --root .
+valence schedule hygiene check passed
+command_exit_status=0
+finished_utc=2026-06-26T16:22:57Z
+exit_status=0

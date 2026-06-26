@@ -2,6 +2,7 @@
 
 use std::ops::DerefMut;
 
+use bevy_ecs::prelude::SystemSet;
 use command::graph::CommandGraphBuilder;
 use command::handler::CommandResultEvent;
 use command::parsers::entity_selector::{EntitySelector, EntitySelectors};
@@ -17,6 +18,67 @@ use valence::*;
 use valence_server::op_level::OpLevel;
 
 const SPAWN_Y: i32 = 64;
+
+#[derive(SystemSet, Clone, Copy, Debug, Eq, Hash, PartialEq)]
+enum CommandExamplePhase {
+    Input,
+    WorldMutation,
+    Cleanup,
+}
+
+#[derive(Resource, Clone, Copy, Debug, PartialEq)]
+struct CommandExamplePluginContract {
+    update_phase_order: &'static [CommandExamplePhase],
+}
+
+const COMMAND_EXAMPLE_PHASE_ORDER: &[CommandExamplePhase] = &[
+    CommandExamplePhase::Input,
+    CommandExamplePhase::WorldMutation,
+    CommandExamplePhase::Cleanup,
+];
+
+struct CommandExamplePlugin;
+
+impl Plugin for CommandExamplePlugin {
+    fn build(&self, app: &mut App) {
+        let contract = CommandExamplePluginContract {
+            update_phase_order: COMMAND_EXAMPLE_PHASE_ORDER,
+        };
+
+        app.insert_resource(contract)
+            .configure_sets(
+                Update,
+                (
+                    CommandExamplePhase::Input,
+                    CommandExamplePhase::WorldMutation,
+                    CommandExamplePhase::Cleanup,
+                )
+                    .chain(),
+            )
+            .add_command::<TestCommand>()
+            .add_command::<TeleportCommand>()
+            .add_command::<GamemodeCommand>()
+            .add_command::<ComplexRedirectionCommand>()
+            .add_command::<StructCommand>()
+            .add_systems(Startup, setup)
+            .add_systems(Update, init_clients.in_set(CommandExamplePhase::Input))
+            .add_systems(
+                Update,
+                (
+                    handle_test_command,
+                    handle_teleport_command,
+                    handle_complex_command,
+                    handle_gamemode_command,
+                    handle_struct_command,
+                )
+                    .in_set(CommandExamplePhase::WorldMutation),
+            )
+            .add_systems(
+                Update,
+                despawn_disconnected_clients.in_set(CommandExamplePhase::Cleanup),
+            );
+    }
+}
 
 #[derive(Command, Debug, Clone)]
 #[paths("teleport", "tp")]
@@ -173,25 +235,7 @@ impl Command for ComplexRedirectionCommand {
 pub fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_command::<TestCommand>()
-        .add_command::<TeleportCommand>()
-        .add_command::<GamemodeCommand>()
-        .add_command::<ComplexRedirectionCommand>()
-        .add_command::<StructCommand>()
-        .add_systems(Startup, setup)
-        .add_systems(
-            Update,
-            (
-                init_clients,
-                despawn_disconnected_clients,
-                // Command handlers
-                handle_test_command,
-                handle_teleport_command,
-                handle_complex_command,
-                handle_gamemode_command,
-                handle_struct_command,
-            ),
-        )
+        .add_plugins(CommandExamplePlugin)
         .run();
 }
 
@@ -669,5 +713,29 @@ fn init_clients(
         op_level.set(4);
 
         permissions.add("valence.admin");
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn command_example_plugin_installs_contract() {
+        let mut app = App::new();
+
+        app.add_plugins(CommandExamplePlugin);
+
+        let contract = app.world().resource::<CommandExamplePluginContract>();
+        assert_eq!(contract.update_phase_order, COMMAND_EXAMPLE_PHASE_ORDER);
+    }
+
+    #[test]
+    fn disabled_command_example_plugin_installs_no_contract() {
+        let app = App::new();
+
+        assert!(!app
+            .world()
+            .contains_resource::<CommandExamplePluginContract>());
     }
 }

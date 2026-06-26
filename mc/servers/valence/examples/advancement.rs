@@ -1,8 +1,76 @@
 use std::collections::HashMap;
 
+use bevy_ecs::prelude::SystemSet;
 use valence::advancement::bevy_hierarchy::{BuildChildren, Children, Parent};
 use valence::advancement::ForceTabUpdate;
 use valence::prelude::*;
+
+const ROOT2_SAVED_COMPLETION_TAB_CHANGE_COUNT: u8 = 5;
+const ROOT2_COMPLETION_TAB_CHANGE_COUNT: u8 = 5;
+const ROOT_TAB_FORCE_UPDATE_TAB_CHANGE_COUNT: u8 = 10;
+
+#[derive(SystemSet, Clone, Copy, Debug, Eq, Hash, PartialEq)]
+enum AdvancementExamplePhase {
+    Input,
+    RuleEvaluation,
+    Presentation,
+    WorldMutation,
+}
+
+#[derive(Resource, Clone, Copy, Debug, PartialEq)]
+struct AdvancementExamplePluginContract {
+    update_phase_order: &'static [AdvancementExamplePhase],
+}
+
+const ADVANCEMENT_EXAMPLE_PHASE_ORDER: &[AdvancementExamplePhase] = &[
+    AdvancementExamplePhase::Input,
+    AdvancementExamplePhase::RuleEvaluation,
+    AdvancementExamplePhase::Presentation,
+    AdvancementExamplePhase::WorldMutation,
+];
+
+struct AdvancementExamplePlugin;
+
+impl Plugin for AdvancementExamplePlugin {
+    fn build(&self, app: &mut App) {
+        let contract = AdvancementExamplePluginContract {
+            update_phase_order: ADVANCEMENT_EXAMPLE_PHASE_ORDER,
+        };
+
+        app.insert_resource(contract)
+            .init_resource::<ClientSave>()
+            .configure_sets(
+                Update,
+                (
+                    AdvancementExamplePhase::Input,
+                    AdvancementExamplePhase::RuleEvaluation,
+                    AdvancementExamplePhase::Presentation,
+                    AdvancementExamplePhase::WorldMutation,
+                )
+                    .chain(),
+            )
+            .add_systems(Startup, setup)
+            .add_systems(
+                Update,
+                (load_clients, init_clients).in_set(AdvancementExamplePhase::Input),
+            )
+            .add_systems(
+                Update,
+                apply_deferred
+                    .in_set(AdvancementExamplePhase::RuleEvaluation)
+                    .after(load_clients)
+                    .before(init_advancements),
+            )
+            .add_systems(
+                Update,
+                init_advancements.in_set(AdvancementExamplePhase::Presentation),
+            )
+            .add_systems(
+                Update,
+                (sneak, tab_change).in_set(AdvancementExamplePhase::WorldMutation),
+            );
+    }
+}
 
 #[derive(Component)]
 struct RootCriteria;
@@ -25,19 +93,7 @@ struct ClientSave(HashMap<Uuid, (bool, u8)>);
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .init_resource::<ClientSave>()
-        .add_systems(Startup, setup)
-        .add_systems(
-            Update,
-            (
-                load_clients,
-                apply_deferred.after(load_clients).before(init_advancements),
-                init_clients,
-                init_advancements,
-                sneak,
-                tab_change,
-            ),
-        )
+        .add_plugins(AdvancementExamplePlugin)
         .run();
 }
 
@@ -238,7 +294,7 @@ fn init_advancements(
             if root_criteria.0 {
                 advancement_client_update.criteria_done(root_c);
             }
-            if tab_change.0 > 5 {
+            if saved_root2_advancement_complete(tab_change.0) {
                 advancement_client_update.criteria_done(root2_c);
             }
         }
@@ -303,9 +359,9 @@ fn tab_change(
                 continue;
             }
         }
-        if tab_change_count.0 == 5 {
+        if tab_change_completes_root2(tab_change_count.0) {
             advancement_client_update.criteria_done(root2_criteria);
-        } else if tab_change_count.0 >= 10 {
+        } else if tab_change_forces_root_tab_update(tab_change_count.0) {
             advancement_client_update.force_tab_update = ForceTabUpdate::Spec(root);
         }
         client_save
@@ -313,5 +369,73 @@ fn tab_change(
             .get_mut(&client_uuid.get(tab_change.client).unwrap().0)
             .unwrap()
             .1 = tab_change_count.0;
+    }
+}
+
+fn saved_root2_advancement_complete(tab_change_count: u8) -> bool {
+    tab_change_count > ROOT2_SAVED_COMPLETION_TAB_CHANGE_COUNT
+}
+
+fn tab_change_completes_root2(tab_change_count: u8) -> bool {
+    tab_change_count == ROOT2_COMPLETION_TAB_CHANGE_COUNT
+}
+
+fn tab_change_forces_root_tab_update(tab_change_count: u8) -> bool {
+    tab_change_count >= ROOT_TAB_FORCE_UPDATE_TAB_CHANGE_COUNT
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const BEFORE_ROOT2_COMPLETION_TAB_CHANGE_COUNT: u8 = ROOT2_COMPLETION_TAB_CHANGE_COUNT - 1;
+    const AFTER_SAVED_ROOT2_COMPLETION_TAB_CHANGE_COUNT: u8 =
+        ROOT2_SAVED_COMPLETION_TAB_CHANGE_COUNT + 1;
+
+    #[test]
+    fn advancement_example_plugin_installs_contract_and_save_resource() {
+        let mut app = App::new();
+
+        app.add_plugins(AdvancementExamplePlugin);
+
+        let contract = app.world().resource::<AdvancementExamplePluginContract>();
+        assert_eq!(contract.update_phase_order, ADVANCEMENT_EXAMPLE_PHASE_ORDER);
+        assert!(app.world().contains_resource::<ClientSave>());
+    }
+
+    #[test]
+    fn disabled_advancement_example_plugin_installs_no_contract_or_save_resource() {
+        let app = App::new();
+
+        assert!(!app
+            .world()
+            .contains_resource::<AdvancementExamplePluginContract>());
+        assert!(!app.world().contains_resource::<ClientSave>());
+    }
+
+    #[test]
+    fn root2_tab_change_thresholds_accept_expected_counts() {
+        assert!(saved_root2_advancement_complete(
+            AFTER_SAVED_ROOT2_COMPLETION_TAB_CHANGE_COUNT
+        ));
+        assert!(tab_change_completes_root2(
+            ROOT2_COMPLETION_TAB_CHANGE_COUNT
+        ));
+        assert!(tab_change_forces_root_tab_update(
+            ROOT_TAB_FORCE_UPDATE_TAB_CHANGE_COUNT
+        ));
+    }
+
+    #[test]
+    fn root2_tab_change_thresholds_reject_early_counts() {
+        assert!(!saved_root2_advancement_complete(
+            ROOT2_SAVED_COMPLETION_TAB_CHANGE_COUNT
+        ));
+        assert!(!tab_change_completes_root2(
+            BEFORE_ROOT2_COMPLETION_TAB_CHANGE_COUNT
+        ));
+        assert!(!tab_change_forces_root_tab_update(
+            BEFORE_ROOT2_COMPLETION_TAB_CHANGE_COUNT
+        ));
     }
 }

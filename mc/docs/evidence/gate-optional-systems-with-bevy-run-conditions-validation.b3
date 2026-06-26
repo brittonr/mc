@@ -25,10 +25,10 @@ ef7fc89f89df86a8700dadfe2d68a043acff4e068fb8d11c88509e86fec1a0c5  cairn/archive/
 d58f4ceb4ab685ba2ba0a945a8f531d3e20deeb448c6161af846df88c63245c2  cairn/archive/2026-06-25-gate-optional-systems-with-bevy-run-conditions/design.md
 d8d394888524594cef029a8447ab66308cf9d13c699f9d8a2c822cffaf038f48  cairn/archive/2026-06-25-gate-optional-systems-with-bevy-run-conditions/tasks.md
 001bfebbbe9c0d1122ef092c274ac37b47e88a9c2439b6989d7f92d549b30fed  cairn/archive/2026-06-25-gate-optional-systems-with-bevy-run-conditions/specs/valence-bevy-ecs/spec.md
-25d40caaaf8a1b28249557d6fa76be4d2c927fcaf3f53d165a825cc9e30b350f  cairn/specs/valence-bevy-ecs/spec.md
+6a1a8aaa01143598e11590616381e7998cb3bf05cb9d1ce588c7d6b77ac5d77e  cairn/specs/valence-bevy-ecs/spec.md
 bdf917e86b1a20f791b467f1a6bb13c9daa6b72886deea46c56b8447b4b6905a  servers/valence/crates/valence_server/src/observability.rs
 71040c4fe0cbb11781c1a489898bd994840fe905bbc3b8bebda4ba1acb73824b  servers/valence/crates/valence_server/README.md
-4059fa16ad94bab89a6037bf0832e60f0f87dedf7fc3237e88f3020429287f5f  docs/evidence/add-schedule-hygiene-gates.b3
+d73d9ffa8941adf640008b1b81f60da3858b82bd2f2fd7029f50c4a8f11791c0  docs/evidence/add-schedule-hygiene-gates.b3
 42d9c42441cf62b6f036c14a6fb818a48ca4c6bf7dec135c96b7df09804b6736  docs/evidence/add-observability-profiling-hooks-2026-06-23.b3
 aafc46e8359d82c2abb48c70311fb039dbb92f33b0c20c820a445727c95d3954  docs/evidence/add-valence-tick-scheduler-validation.b3
 a338b5668625547c8f9eeb44f49458b9a3b02593321d9938e69098a616e88f6f  docs/evidence/valence-packet-compose-api-2026-06-23.b3

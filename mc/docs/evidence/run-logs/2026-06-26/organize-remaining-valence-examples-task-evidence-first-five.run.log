@@ -1,0 +1,16 @@
+# Task evidence check before final validation task is marked
+cwd=/home/brittonr/git/mc
+started_utc=2026-06-26T16:37:17Z
+
+>>> nix develop --no-update-lock-file /home/brittonr/git/mc -c rustc --edition=2021 tools/check_cairn_task_evidence.rs -o target/check-cairn-task-evidence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+command_exit_status=0
+
+>>> target/check-cairn-task-evidence cairn/changes/organize-remaining-valence-examples-as-plugins/tasks.md
+task evidence gate passed: 5 completed tasks checked across 1 task files
+command_exit_status=0
+finished_utc=2026-06-26T16:37:18Z
+exit_status=0

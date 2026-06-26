@@ -1,0 +1,18 @@
+# Post-sync accepted spec validation for organize-remaining-valence-examples-as-plugins
+cwd=/home/brittonr/git/mc
+started_utc=2026-06-26T16:42:57Z
+
+>>> nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 2,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 7,
+  "valid": true
+}
+command_exit_status=0
+finished_utc=2026-06-26T16:42:58Z
+exit_status=0

@@ -1,0 +1,9 @@
+# Final post-archive evidence manifest freshness check
+cwd=/home/brittonr/git/mc
+started_utc=2026-06-26T16:44:53Z
+
+>>> nix run .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=509; entries=4548; current=4548; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+command_exit_status=0
+finished_utc=2026-06-26T16:44:57Z
+exit_status=0

@@ -3,6 +3,7 @@
 use std::collections::VecDeque;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+use bevy_ecs::prelude::SystemSet;
 use rand::seq::SliceRandom;
 use rand::Rng;
 use valence::prelude::*;
@@ -22,19 +23,72 @@ const BLOCK_TYPES: [BlockState; 7] = [
     BlockState::MOSS_BLOCK,
 ];
 
+#[derive(SystemSet, Clone, Copy, Debug, Eq, Hash, PartialEq)]
+enum ParkourGameplayPhase {
+    Input,
+    RuleEvaluation,
+    WorldMutation,
+    Presentation,
+    Cleanup,
+}
+
+#[derive(Resource, Clone, Copy, Debug, PartialEq)]
+struct ParkourGameplayPluginContract {
+    update_phase_order: &'static [ParkourGameplayPhase],
+}
+
+const PARKOUR_GAMEPLAY_PHASE_ORDER: &[ParkourGameplayPhase] = &[
+    ParkourGameplayPhase::Input,
+    ParkourGameplayPhase::RuleEvaluation,
+    ParkourGameplayPhase::WorldMutation,
+    ParkourGameplayPhase::Presentation,
+    ParkourGameplayPhase::Cleanup,
+];
+
+struct ParkourGameplayPlugin;
+
+impl Plugin for ParkourGameplayPlugin {
+    fn build(&self, app: &mut App) {
+        let contract = ParkourGameplayPluginContract {
+            update_phase_order: PARKOUR_GAMEPLAY_PHASE_ORDER,
+        };
+
+        app.insert_resource(contract)
+            .configure_sets(
+                Update,
+                (
+                    ParkourGameplayPhase::Input,
+                    ParkourGameplayPhase::RuleEvaluation,
+                    ParkourGameplayPhase::WorldMutation,
+                    ParkourGameplayPhase::Presentation,
+                    ParkourGameplayPhase::Cleanup,
+                )
+                    .chain(),
+            )
+            .add_systems(Update, init_clients.in_set(ParkourGameplayPhase::Input))
+            .add_systems(
+                Update,
+                reset_clients.in_set(ParkourGameplayPhase::RuleEvaluation),
+            )
+            .add_systems(
+                Update,
+                manage_chunks.in_set(ParkourGameplayPhase::WorldMutation),
+            )
+            .add_systems(
+                Update,
+                manage_blocks.in_set(ParkourGameplayPhase::Presentation),
+            )
+            .add_systems(
+                Update,
+                despawn_disconnected_clients.in_set(ParkourGameplayPhase::Cleanup),
+            );
+    }
+}
+
 pub fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_systems(
-            Update,
-            (
-                init_clients,
-                reset_clients.after(init_clients),
-                manage_chunks.after(reset_clients).before(manage_blocks),
-                manage_blocks,
-                despawn_disconnected_clients,
-            ),
-        )
+        .add_plugins(ParkourGameplayPlugin)
         .run();
 }
 
@@ -250,4 +304,28 @@ fn generate_random_block(pos: BlockPos, target_y: i32) -> BlockPos {
     let x = rng.gen_range(-3..4);
 
     BlockPos::new(pos.x + x, pos.y + y, pos.z + z)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parkour_gameplay_plugin_installs_contract() {
+        let mut app = App::new();
+
+        app.add_plugins(ParkourGameplayPlugin);
+
+        let contract = app.world().resource::<ParkourGameplayPluginContract>();
+        assert_eq!(contract.update_phase_order, PARKOUR_GAMEPLAY_PHASE_ORDER);
+    }
+
+    #[test]
+    fn disabled_parkour_gameplay_plugin_installs_no_contract() {
+        let app = App::new();
+
+        assert!(!app
+            .world()
+            .contains_resource::<ParkourGameplayPluginContract>());
+    }
 }

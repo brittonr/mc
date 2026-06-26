@@ -1,0 +1,40 @@
+# organize-remaining-valence-examples-as-plugins inventory
+
+## Question
+
+Which remaining Valence examples are selected for plugin organization, and what contracts must the refactor preserve?
+
+## Scope and owner
+
+- Owner subtree: `servers/valence`.
+- Selected examples: `parkour`, `game_of_life`, `combat`, `command`, `advancement`, `building`, `death`, and `world_border`.
+- Existing examples already organized as opt-in plugins (`ctf`, `survival_compat`, and `terrain`) are reference patterns only.
+- Hyperion was not used as an input. No adopt/port/reference/reject classification is needed for Hyperion concepts.
+- Requirement IDs: `r[valence_bevy_ecs.remaining_example_plugins.inventory]`, `r[valence_bevy_ecs.remaining_example_plugins.contract]`, `r[valence_bevy_ecs.remaining_example_plugins.wiring]`, `r[valence_bevy_ecs.remaining_example_plugins.compatibility]`, `r[valence_bevy_ecs.remaining_example_plugins.tests]`, and `r[valence_bevy_ecs.remaining_example_plugins.validation]`.
+
+## Selected example baseline
+
+| Example | Current schedules and systems | Resources/components/events | Inputs and visible behavior | Existing pure helpers or deterministic decisions | Non-goals |
+| --- | --- | --- | --- | --- | --- |
+| `parkour` | `Update`: `init_clients`, `reset_clients`, `manage_chunks`, `manage_blocks`, `despawn_disconnected_clients`; explicit ordering keeps reset after init and chunk maintenance before block scoring. | `GameState` component; per-client `ChunkLayer`; no custom events. | No CLI/env input. Joining client is put in Adventure mode, receives welcome text, starts at `START_POS`, generated parkour blocks advance score/combo, out-of-bounds reset reports score. | `generate_random_block` and `generate_next_block` own path generation and score mutation; refactor should keep the plugin as the scheduling shell and avoid moving gameplay calculations into plugin construction. | No vanilla parkour parity, production minigame readiness, or default Valence gameplay claim. |
+| `game_of_life` | `Startup`: `setup`; `Update`: `init_clients`, `despawn_disconnected_clients`, `toggle_cell_on_dig`, chained `advance_board` then `render_board`, `pause_on_crouch`, `reset_oob_clients`. | `LifeBoard` resource; `DiggingEvent`; `SneakEvent`; shared `ChunkLayer`/`EntityLayer`. | No CLI/env input. Joining client is placed over the board in Survival, left-click toggles cells, sneak toggles simulation play/pause, falling below the board resets position and clears the board. | `LifeBoard::get`, `set`, `update`, and `clear`; `TickCadence` cadence helper already has positive/negative tests. | No broad simulation performance or persistence claim. |
+| `combat` | `Startup`: `setup`; `EventLoopUpdate`: `handle_combat_events`; `Update`: `expire_combat_cooldowns` from `CombatCooldownPlugin`, `init_clients`, `despawn_disconnected_clients`, `teleport_oob_clients`. | `CombatState` component; `ServerTickScheduler<AttackCooldownExpired>` resource; `SprintEvent`; `InteractEntityEvent`. | No CLI/env input. Joining client is Creative in an arena. Attacks apply cooldown and knockback; sprinting gives one bonus knockback; falling below arena teleports back. | `attack_cooldown_active`, `plan_attack_cooldown`, `activate_attack_cooldown`, and `apply_cooldown_expiration` already keep cooldown policy testable. | No vanilla combat parity or public-server safety claim. |
+| `command` | `Startup`: `setup`; `Update`: `init_clients`, `despawn_disconnected_clients`, command handlers for test, teleport, complex, gamemode, and struct commands. Command registration is currently direct in `main`. | `CommandScopeRegistry`; `CommandScopes`; `CommandResultEvent<T>` for selected commands. | Command names and aliases must remain `test`/`t`, `teleport`/`tp`, `gamemode`/`gm`, `complex`, and `struct`; joining client receives admin scope and Creative mode. | Selector resolution and handler decisions are inside command systems; refactor should move registration/wiring into an opt-in plugin without changing command syntax or handler output text. | No command-macro API redesign or permission-model upgrade claim. |
+| `advancement` | `Startup`: `setup`; `Update`: `load_clients`, `apply_deferred`, `init_clients`, `init_advancements`, `sneak`, `tab_change`; explicit deferred ordering loads per-client state before advancement initialization. | `ClientSave` resource; root criteria components; `RootCriteriaDone`; `TabChangeCount`; `SneakEvent`; `AdvancementTabChangeEvent`. | No CLI/env input. Joining client sees custom advancements; sneaking toggles root criterion; opening `custom:root2` repeatedly completes or forces tab update. | Save/load and criterion toggles are deterministic over explicit component/resource inputs; refactor should preserve the deferred boundary. | No advancement persistence backend or vanilla advancement parity claim. |
+| `building` | `Startup`: `setup`; `Update`: `init_clients`, `despawn_disconnected_clients`, `toggle_gamemode_on_sneak`, `digging`, `place_blocks`. | `SneakEvent`; `DiggingEvent`; `InteractBlockEvent`; `HeldItem`; `Inventory`. | No CLI/env input. Joining client is Creative, gets welcome text, can toggle Creative/Survival by sneaking, dig blocks, and place held block items. | Gamemode toggle, dig permission, survival stack decrement, and placement-axis decisions are deterministic and can be tested through helpers while ECS systems remain adapters. | No full survival building rules, anti-cheat, or placement legality parity claim. |
+| `death` | `Startup`: `setup`; `Update`: `init_clients`, `squat_and_die`, `necromancy`, `despawn_disconnected_clients`. | `RequestRespawnEvent`; per-layer respawn state and visibility components. | No CLI/env input. Joining client is Creative, sneaking kills the client, respawning rotates the client through the example layers. | Respawn layer selection is deterministic from current layer index and layer count and can remain outside direct ECS mutation. | No death-screen parity or inventory/experience reset claim. |
+| `world_border` | `Startup`: `setup`; `Update`: `despawn_disconnected_clients`, `init_clients`, `border_controls`, `display_diameter`. | `WorldBorderBundle`; `WorldBorderCenter`; `WorldBorderLerp`; `ChatMessageEvent`; `Inventory`/`HeldItem`. | No CLI/env input. Joining client receives a wooden pickaxe and text explaining chat controls. Chat messages `add <value> <ticks>` and `center <x> <z>` adjust the world border; diameter changes are broadcast while lerping. | Chat command parsing and border mutations are deterministic over message tokens and border state; refactor should not change command names or visible chat control wording. | No public-server command safety, vanilla border semantics, or production-readiness claim. |
+
+## Contract target
+
+Each selected example should expose one example-local opt-in plugin and one example-local `SystemSet` enum whose variants document the phases that exist for that example: input, rule evaluation, world mutation, presentation, and cleanup. The plugin should install a small contract resource with the ordered phase slice so unit tests and reviewers can detect disabled-plugin and ordering regressions without running a live server.
+
+## Relevant checks
+
+- Pre-implementation Cairn proposal/design/tasks gates and repository validation: `docs/evidence/run-logs/2026-06-26/organize-remaining-valence-examples-pre-gates.run.log`.
+- Pre-edit focused baseline for selected examples and schedule hygiene: `docs/evidence/run-logs/2026-06-26/organize-remaining-valence-examples-baseline.run.log`.
+- Post-edit checks should include focused selected-example tests, Valence schedule hygiene, Cairn gates/validation, and task-evidence validation.
+
+## Non-claims
+
+This inventory does not claim broad Minecraft compatibility, vanilla parity, semantic equivalence, production readiness, public-server safety, full CTF correctness, full survival correctness, or default Valence gameplay behavior. The selected examples remain opt-in binaries and documentation-quality examples only.
