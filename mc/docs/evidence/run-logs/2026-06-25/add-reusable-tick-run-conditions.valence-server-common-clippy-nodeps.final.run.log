@@ -1,0 +1,104 @@
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo clippy -p valence_server_common --all-targets --no-deps -- -D warnings
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+   Compiling valence_ident_macros v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_ident_macros)
+   Compiling valence_build_utils v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_build_utils)
+    Checking valence_math v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_math)
+    Checking valence_nbt v0.8.0 (/home/brittonr/git/mc/servers/valence/crates/valence_nbt)
+   Compiling valence_protocol_macros v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_protocol_macros)
+    Checking bevy_app v0.14.2
+   Compiling valence_generated v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_generated)
+    Checking valence_ident v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_ident)
+    Checking valence_text v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_text)
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+    Checking valence_protocol v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_protocol)
+warning: method `packet_data_range` is never used
+   --> crates/valence_protocol/src/decode.rs:192:8
+    |
+187 | impl PacketFrameLayout {
+    | ---------------------- method in this implementation
+...
+192 |     fn packet_data_range(self) -> Range<usize> {
+    |        ^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `valence_protocol` (lib) generated 1 warning
+    Checking valence_server_common v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_server_common)
+warning: lint `clippy::string_to_string` has been removed: `clippy::implicit_clone` covers those cases
+  |
+  = note: requested on the command line with `-W clippy::string_to_string`
+  = note: `#[warn(renamed_and_removed_lints)]` on by default
+
+error: this could be rewritten as `let...else`
+  --> crates/valence_server_common/src/tick_run_condition.rs:78:9
+   |
+78 | /         let interval_ticks = match NonZeroU32::new(interval_ticks as u32) {
+79 | |             Some(interval_ticks) => interval_ticks,
+80 | |             None => return Err(InvalidTickInterval::Zero),
+81 | |         };
+   | |__________^ help: consider writing: `let Some(interval_ticks) = NonZeroU32::new(interval_ticks as u32) else { return Err(InvalidTickInterval::Zero) };`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#manual_let_else
+   = note: `-D clippy::manual-let-else` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::manual_let_else)]`
+
+warning: `valence_server_common` (lib) generated 1 warning
+error: could not compile `valence_server_common` (lib) due to 1 previous error; 1 warning emitted
+warning: build failed, waiting for other jobs to finish...
+error: consider moving the `;` outside the block for consistent formatting
+   --> crates/valence_server_common/src/tick_run_condition.rs:278:9
+    |
+278 | /         {
+279 | |             let mut server = app.world_mut().resource_mut::<Server>();
+280 | |             server.current_tick = i64::from(CHANGED_TICK_RATE_VALUE);
+281 | |             server.tick_rate = CHANGED_TICK_RATE;
+282 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#semicolon_outside_block
+    = note: `-D clippy::semicolon-outside-block` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::semicolon_outside_block)]`
+help: put the `;` here
+    |
+281 ~             server.tick_rate = CHANGED_TICK_RATE
+282 ~         };
+    |
+
+warning: `valence_server_common` (lib test) generated 1 warning (1 duplicate)
+error: could not compile `valence_server_common` (lib test) due to 2 previous errors; 1 warning emitted
+exit_status=101

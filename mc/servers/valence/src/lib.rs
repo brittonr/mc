@@ -165,8 +165,9 @@ pub mod prelude {
     pub use valence_server::spawn::{ClientSpawnQuery, ClientSpawnQueryReadOnly, RespawnPosition};
     pub use valence_server::title::SetTitle as _;
     pub use valence_server::{
-        ident, BlockPos, ChunkPos, ChunkView, Despawned, Direction, GameMode, Hand, ItemKind,
-        ItemStack, Server, UniqueId,
+        current_tick_is_due, every_ticks, ident, once_per_second, once_per_second_with_phase,
+        BlockPos, ChunkPos, ChunkView, Despawned, Direction, GameMode, Hand, InvalidTickInterval,
+        ItemKind, ItemStack, Server, TickCadence, TickPhase, UniqueId,
     };
 
     pub use super::DefaultPlugins;

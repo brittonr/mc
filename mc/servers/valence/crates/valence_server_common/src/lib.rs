@@ -1,6 +1,7 @@
 #![doc = include_str!("../README.md")]
 
 mod despawn;
+mod tick_run_condition;
 mod uuid;
 
 use std::num::NonZeroU32;
@@ -10,6 +11,7 @@ use bevy_app::prelude::*;
 use bevy_app::ScheduleRunnerPlugin;
 use bevy_ecs::prelude::*;
 pub use despawn::*;
+pub use tick_run_condition::*;
 use valence_protocol::CompressionThreshold;
 
 pub use crate::uuid::*;

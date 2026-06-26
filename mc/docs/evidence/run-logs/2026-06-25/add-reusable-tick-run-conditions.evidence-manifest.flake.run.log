@@ -1,0 +1,15 @@
+command=nix build .#checks.x86_64-linux.mc-compat-evidence-manifest-refresh --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/a9hxnm8801rf5f1ij10h5kcg49rjband.narinfo': Timeout was reached (28) Connection timed out after 5027 milliseconds; retrying in 286 ms
+warning: error: unable to download 'http://100.100.103.95:5000/a9hxnm8801rf5f1ij10h5kcg49rjband.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 636 ms
+warning: error: unable to download 'http://100.100.103.95:5000/a9hxnm8801rf5f1ij10h5kcg49rjband.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4096 ms: Could not connect to server; retrying in 1381 ms
+warning: error: unable to download 'http://100.100.103.95:5000/a9hxnm8801rf5f1ij10h5kcg49rjband.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2143 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/a9hxnm8801rf5f1ij10h5kcg49rjband.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/a9hxnm8801rf5f1ij10h5kcg49rjband.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2093 ms: Could not connect to server
+this derivation will be built:
+  /nix/store/bwrkyc0hh7jkl6vmnzp1f89cl05ghd72-mc-compat-evidence-manifest-refresh.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/bwrkyc0hh7jkl6vmnzp1f89cl05ghd72-mc-compat-evidence-manifest-refresh.drv'...
+exit_status=0

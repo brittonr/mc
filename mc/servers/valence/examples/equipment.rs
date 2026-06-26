@@ -18,7 +18,7 @@ pub fn main() {
             (
                 init_clients,
                 despawn_disconnected_clients,
-                randomize_equipment,
+                randomize_equipment.run_if(once_per_second()),
             ),
         )
         .run();
@@ -106,13 +106,7 @@ fn init_clients(
     }
 }
 
-fn randomize_equipment(mut query: Query<&mut Equipment, Without<Client>>, server: Res<Server>) {
-    let ticks = server.current_tick() as u32;
-    // every second
-    if ticks % server.tick_rate() != 0 {
-        return;
-    }
-
+fn randomize_equipment(mut query: Query<&mut Equipment, Without<Client>>) {
     for mut equipment in &mut query {
         equipment.clear();
 
@@ -145,5 +139,29 @@ fn randomize_equipment(mut query: Query<&mut Equipment, Without<Client>>, server
         };
 
         equipment.set_slot(slot, item_stack);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::num::NonZeroU32;
+
+    use super::*;
+
+    const EQUIPMENT_RANDOMIZE_TICK_RATE_VALUE: u32 = 20;
+    const EQUIPMENT_RANDOMIZE_TICK_RATE: NonZeroU32 =
+        match NonZeroU32::new(EQUIPMENT_RANDOMIZE_TICK_RATE_VALUE) {
+            Some(tick_rate) => tick_rate,
+            None => unreachable!(),
+        };
+
+    #[test]
+    fn equipment_cadence_preserves_previous_one_second_due_ticks() {
+        let due_tick = i64::from(EQUIPMENT_RANDOMIZE_TICK_RATE_VALUE);
+        let not_due_tick = due_tick + 1;
+        let cadence = TickCadence::from_tick_rate(EQUIPMENT_RANDOMIZE_TICK_RATE);
+
+        assert!(cadence.is_due(due_tick));
+        assert!(!cadence.is_due(not_due_tick));
     }
 }

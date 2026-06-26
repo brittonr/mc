@@ -1,6 +1,7 @@
 #![allow(clippy::type_complexity)]
 
 use std::mem;
+use std::num::NonZeroU32;
 
 use valence::prelude::*;
 
@@ -9,6 +10,9 @@ const BOARD_MAX_X: i32 = 30;
 const BOARD_MIN_Z: i32 = -30;
 const BOARD_MAX_Z: i32 = 30;
 const BOARD_Y: i32 = 64;
+const LIFE_STEP_CADENCE_TICK_COUNT: u32 = 2;
+const LIFE_STEP_CADENCE: TickCadence =
+    TickCadence::new(nonzero_tick_count(LIFE_STEP_CADENCE_TICK_COUNT));
 
 const BOARD_SIZE_X: usize = (BOARD_MAX_X - BOARD_MIN_X + 1) as usize;
 const BOARD_SIZE_Z: usize = (BOARD_MAX_Z - BOARD_MIN_Z + 1) as usize;
@@ -29,7 +33,13 @@ pub fn main() {
                 init_clients,
                 despawn_disconnected_clients,
                 toggle_cell_on_dig,
-                update_board,
+                (
+                    advance_board
+                        .run_if(board_is_playing)
+                        .run_if(every_ticks(LIFE_STEP_CADENCE)),
+                    render_board,
+                )
+                    .chain(),
                 pause_on_crouch,
                 reset_oob_clients,
             ),
@@ -172,6 +182,13 @@ impl LifeBoard {
     }
 }
 
+const fn nonzero_tick_count(tick_count: u32) -> NonZeroU32 {
+    match NonZeroU32::new(tick_count) {
+        Some(tick_count) => tick_count,
+        None => unreachable!(),
+    }
+}
+
 fn toggle_cell_on_dig(mut events: EventReader<DiggingEvent>, mut board: ResMut<LifeBoard>) {
     for event in events.read() {
         if event.state == DiggingState::Start {
@@ -183,15 +200,15 @@ fn toggle_cell_on_dig(mut events: EventReader<DiggingEvent>, mut board: ResMut<L
     }
 }
 
-fn update_board(
-    mut board: ResMut<LifeBoard>,
-    mut layers: Query<&mut ChunkLayer>,
-    server: Res<Server>,
-) {
-    if board.playing && server.current_tick() % 2 == 0 {
-        board.update();
-    }
+fn advance_board(mut board: ResMut<LifeBoard>) {
+    board.update();
+}
 
+fn board_is_playing(board: Res<LifeBoard>) -> bool {
+    board.playing
+}
+
+fn render_board(board: Res<LifeBoard>, mut layers: Query<&mut ChunkLayer>) {
     let mut layer = layers.single_mut();
 
     for z in BOARD_MIN_Z..=BOARD_MAX_Z {
@@ -235,6 +252,44 @@ fn reset_oob_clients(
         if pos.0.y < 0.0 {
             pos.0 = SPAWN_POS;
             board.clear();
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn life_step_cadence_preserves_previous_due_ticks() {
+        let due_tick = i64::from(LIFE_STEP_CADENCE_TICK_COUNT);
+        let not_due_tick = due_tick + 1;
+
+        assert!(LIFE_STEP_CADENCE.is_due(due_tick));
+        assert!(!LIFE_STEP_CADENCE.is_due(not_due_tick));
+    }
+
+    #[test]
+    fn board_play_state_controls_periodic_advance_only() {
+        let due_tick = i64::from(LIFE_STEP_CADENCE_TICK_COUNT);
+        let not_due_tick = due_tick + 1;
+        let mut board = test_board(false);
+
+        assert!(!should_advance_board(&board, due_tick));
+        board.playing = true;
+        assert!(should_advance_board(&board, due_tick));
+        assert!(!should_advance_board(&board, not_due_tick));
+    }
+
+    fn should_advance_board(board: &LifeBoard, current_tick: i64) -> bool {
+        board.playing && LIFE_STEP_CADENCE.is_due(current_tick)
+    }
+
+    fn test_board(playing: bool) -> LifeBoard {
+        LifeBoard {
+            playing,
+            board: vec![false; BOARD_SIZE_X * BOARD_SIZE_Z].into(),
+            board_buf: vec![false; BOARD_SIZE_X * BOARD_SIZE_Z].into(),
         }
     }
 }

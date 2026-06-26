@@ -1,10 +1,14 @@
 #![allow(clippy::type_complexity)]
 
 use std::fmt;
+use std::num::NonZeroU32;
 
 use valence::prelude::*;
 
 const SPAWN_Y: i32 = 64;
+const PARTICLE_CADENCE_TICK_COUNT: u32 = 10;
+const PARTICLE_CADENCE: TickCadence =
+    TickCadence::new(nonzero_tick_count(PARTICLE_CADENCE_TICK_COUNT));
 
 pub fn main() {
     App::new()
@@ -12,7 +16,11 @@ pub fn main() {
         .add_systems(Startup, setup)
         .add_systems(
             Update,
-            (init_clients, despawn_disconnected_clients, manage_particles),
+            (
+                init_clients,
+                despawn_disconnected_clients,
+                manage_particles.run_if(every_ticks(PARTICLE_CADENCE)),
+            ),
         )
         .run();
 }
@@ -74,14 +82,9 @@ fn init_clients(
 
 fn manage_particles(
     particles: Res<ParticleVec>,
-    server: Res<Server>,
     mut layers: Query<&mut ChunkLayer>,
     mut particle_idx: Local<usize>,
 ) {
-    if server.current_tick() % 10 != 0 {
-        return;
-    }
-
     let particle = &particles.0[*particle_idx];
 
     *particle_idx = (*particle_idx + 1) % particles.0.len();
@@ -95,6 +98,13 @@ fn manage_particles(
 
     layer.play_particle(particle, true, pos, offset, 0.1, 100);
     layer.set_action_bar(name.bold());
+}
+
+const fn nonzero_tick_count(tick_count: u32) -> NonZeroU32 {
+    match NonZeroU32::new(tick_count) {
+        Some(tick_count) => tick_count,
+        None => unreachable!(),
+    }
 }
 
 fn dbg_name(dbg: &impl fmt::Debug) -> String {
@@ -220,4 +230,18 @@ fn create_particle_vec() -> Vec<Particle> {
         Particle::Shriek { delay: 0 },
         Particle::EggCrack,
     ]
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn particle_cadence_preserves_previous_due_ticks() {
+        let due_tick = i64::from(PARTICLE_CADENCE_TICK_COUNT);
+        let not_due_tick = due_tick + 1;
+
+        assert!(PARTICLE_CADENCE.is_due(due_tick));
+        assert!(!PARTICLE_CADENCE.is_due(not_due_tick));
+    }
 }

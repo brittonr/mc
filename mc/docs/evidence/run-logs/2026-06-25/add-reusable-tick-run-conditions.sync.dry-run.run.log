@@ -1,0 +1,26 @@
+command=nix run .#cairn -- sync add-reusable-tick-run-conditions --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/add-reusable-tick-run-conditions/specs/valence-bevy-ecs/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/add-reusable-tick-run-conditions/specs/valence-bevy-ecs/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "add-reusable-tick-run-conditions",
+  "delta_specs": [
+    "./cairn/changes/add-reusable-tick-run-conditions/specs/valence-bevy-ecs/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "bace71c0552d9db248ea1f5a59414db10ec2f658d4cf6a991611da862a4be2a1",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "49467afd6352644d3f76298397d9ee1d2ffe78a267253ec1e87a245d7d143d35",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "dfb1392eb6d91fbbb1eadc33507d4afb937ff2f83f72616e3fa3e349ebd5d6ac"
+}
+exit_status=0
