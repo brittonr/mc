@@ -1,0 +1,91 @@
+
+## validate
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 4,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 9,
+  "valid": true
+}
+exit_status[validate]=0
+
+## gate-proposal
+command=nix run .#cairn -- gate proposal migrate-fixture-state-to-components --root .
+{
+  "change": "migrate-fixture-state-to-components",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "59f52394c1bcb9af40ea46b3fc7e7db813a16b7cd8a6d1736837bdb36df4c2b3",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "7ce904f8a2eba56badb1e9d5b65127c77b887753a5016fef109a6ca27fac3151",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status[gate-proposal]=0
+
+## gate-design
+command=nix run .#cairn -- gate design migrate-fixture-state-to-components --root .
+{
+  "change": "migrate-fixture-state-to-components",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a8af9ced00803545b85b86963b822bb139c626c24002b313a14d773a915297a7",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "e4a86e02e7323630389e009c0a376888304e7a782fb13fdf65ac5aee3e808ede",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status[gate-design]=0
+
+## gate-tasks
+command=nix run .#cairn -- gate tasks migrate-fixture-state-to-components --root .
+{
+  "change": "migrate-fixture-state-to-components",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "906e0e0da604ee8397a38dc49f32a404e6154ba14d74d110dca4dd3788d3e659",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "a627d723fcf03133f278bdf81e82e64880ea91436a3845985c44f0520d688145",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status[gate-tasks]=0
+
+exit_status=0

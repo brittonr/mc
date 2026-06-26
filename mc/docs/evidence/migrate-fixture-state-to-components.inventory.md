@@ -1,0 +1,31 @@
+# Fixture component-state inventory
+
+Change: `migrate-fixture-state-to-components`
+
+## Scope and non-claims
+
+This inventory covers the selected Valence fixture/component state named by the change: `servers/valence/examples/ctf.rs`, `servers/valence/examples/survival_compat.rs`, and `servers/valence/crates/valence_inventory/src/gui.rs`. It preserves existing fixture milestones, env/CLI contracts, and cleanup behavior. It does not claim broad Minecraft compatibility, vanilla parity, production readiness, public-server safety, full CTF correctness, or full survival correctness.
+
+## Inventory and classification
+
+| State | Key space | Owner and lifecycle | Cleanup behavior | Consumers | Stale-reference risk | Classification / decision |
+| --- | --- | --- | --- | --- | --- | --- |
+| `GuiViewer` in `valence_inventory::gui` | client entity -> GUI inventory entity | Client-owned GUI view; exists only while that client views the GUI inventory | `GuiPlugin` removes it when `OpenInventory` changes or the client is marked `Despawned` | GUI click routing and close-event emission | Stale client or stale open inventory could route clicks to the wrong GUI | Entity-owned component; migrated/retained as component state |
+| `GuiMenu` in `valence_inventory::gui` | inventory entity | Inventory-owned menu model and readonly policy | Despawns with the inventory entity | GUI open/click planners | Missing menu should reject or ignore GUI open/click work | Entity-owned component; retained as component state |
+| `SurvivalOpenContainer` in `survival_compat.rs` | client entity -> survival container kind | Client-owned active fixture container marker | Removed when the close packet is handled or the client is marked `Despawned` | Chest/crafting/furnace click and close handlers | Stale component could let an old click mutate the wrong fixture | Entity-owned component; migrated/retained as component state |
+| `SurvivalMobDropItem` in `survival_compat.rs` | drop entity -> drop id, collector entity, pickup tick count | Drop-owned pending pickup state; exists only on the spawned drop item entity | Drop is marked `Despawned` after pickup; duplicate pending drop components fail closed before advancing state | Mob-drop pickup system and pickup milestone logging | Resource-held drop/collector references could survive despawn or duplicate drop creation | Entity-owned component; migrated in this change |
+| `SurvivalMobDropFixture` in `survival_compat.rs` | singleton fixture resource | Fixture coordinator and milestone log state for the selected mob-drop scenario | Resource exists only when the fixture env flag enables it; no longer owns pending drop entity state | Mob-drop attack/pickup systems and milestone guards | Resource should not own drop/collector lifecycles | Global fixture resource retained for policy/log flags only |
+| `SurvivalChestFixture`, `SurvivalCraftingFixture`, and `SurvivalFurnaceFixture` in `survival_compat.rs` | singleton fixture resources with inventory entity handles | Fixture coordinators for container inventory entities and milestone log flags | Resources exist only when their env flags enable them; client-open state is held by `SurvivalOpenContainer` | Open/click/close systems and milestone guards | Inventory entity handles are cross-entity references that need explicit query checks | Global fixture resources retained as fixture registries/log guards; client-owned state remains componentized |
+| `CtfGlobals` and `CtfLayers` in `ctf.rs` | singleton arena/layer resources | Global arena positions, layers, and scoreboard wiring | Created during setup and live for the fixture | CTF movement, flag, visual, and scoreboard systems | Not keyed to one entity lifecycle | Global resources retained |
+| `FlagManager` plus `HasFlag` in `ctf.rs` | flag team -> optional carrier entity; carrier entity -> flag team | `HasFlag` owns carrier state on the player; `FlagManager` is an index for visual and duplicate-pickup decisions | Disconnect/capture systems remove `HasFlag` and clear the relevant `FlagManager` index | Flag pickup, capture, disconnect return, visual update, and race-probe systems | Index can stale if carrier cleanup is missed, so cleanup remains explicit and tested by existing CTF race/reset checks | Component plus index/cache state; `HasFlag` remains entity-owned component and `FlagManager` remains documented index |
+| `CtfRaceProbeState` and `CtfSpawnTeamResetProbeState` in `ctf.rs` | fixture-wide probe state keyed by selected usernames/counts | Probe resources track deterministic milestone windows, not an entity lifecycle | Reset/terminal booleans prevent duplicate milestone emission | CTF race and spawn-reset milestone helpers | Username/count state could be over-migrated into components and obscure the pure probe contract | Pure-core/probe resource retained |
+| `ReconnectJoinCounts` in `ctf.rs` | username string -> join count | External identity index across reconnect sessions | Resource persists across reconnects by design | Reconnect coherence milestone | Entity-owned cleanup would lose cross-session identity | External identity state retained |
+
+## Verification notes
+
+- Pre-implementation Cairn gates and validation passed in `docs/evidence/run-logs/2026-06-26/migrate-fixture-state-to-components-pre-gates.run.log`.
+- Focused baseline checks passed in `docs/evidence/run-logs/2026-06-26/migrate-fixture-state-to-components-baseline.run.log`.
+- The component migration slice moved survival mob-drop pending pickup state from `SurvivalMobDropFixture` fields to `SurvivalMobDropItem`, with pure candidate selection and pickup tick planning feeding a thin ECS shell.
+- Focused mob-drop tests passed in `docs/evidence/run-logs/2026-06-26/migrate-fixture-state-to-components-mob-drop-focused.run.log`.
+- The selected survival mob-drop dry-run rail passed in `docs/evidence/run-logs/2026-06-26/migrate-fixture-state-to-components-survival-mob-drop-dry-run.run.log`, with receipt `docs/evidence/migrate-fixture-state-to-components-survival-mob-drop-dry-run.json`; this preserves command/receipt shape only and is not live gameplay evidence.
+- Schedule hygiene is not applicable because no plugin wiring, schedule set, or phase ordering changed.

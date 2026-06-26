@@ -1,0 +1,38 @@
+
+## cairn-validate
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+exit_status[cairn-validate]=0
+
+## task-evidence-local
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c bash -lc rustc --edition=2021 tools/check_cairn_task_evidence.rs -o /tmp/check-cairn-task-evidence && /tmp/check-cairn-task-evidence --self-test && /tmp/check-cairn-task-evidence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task evidence gate passed: 0 completed tasks checked across 3 task files
+exit_status[task-evidence-local]=0
+
+## evidence-manifests-local
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c bash -lc rustc --edition=2021 tools/refresh_evidence_manifests.rs -o /tmp/refresh-evidence-manifests && /tmp/refresh-evidence-manifests --self-test && /tmp/refresh-evidence-manifests --check && rustc --edition=2021 tools/check_evidence_manifests.rs -o /tmp/check-evidence-manifests && /tmp/check-evidence-manifests --self-test && /tmp/check-evidence-manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+evidence manifest refresh self-test ok: positive and negative fixtures exercised
+evidence manifest refresh ok: mode=check; passes=0; manifests=508; entries=4524; current=4524; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+evidence manifest self-test ok: positive and negative fixtures exercised
+evidence manifests ok: 508 manifests, 4524 entries, 140 receipts scanned
+exit_status[evidence-manifests-local]=0
+
+exit_status=0

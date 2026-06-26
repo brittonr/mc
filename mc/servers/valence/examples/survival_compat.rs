@@ -563,10 +563,6 @@ impl SurvivalHungerFoodFixture {
 struct SurvivalMobDropFixture {
     mob: Entity,
     mob_id: i32,
-    drop: Option<Entity>,
-    drop_id: Option<i32>,
-    collector: Option<Entity>,
-    ticks_since_drop: u8,
     spawn_logged: bool,
     attack_logged: bool,
     death_logged: bool,
@@ -581,10 +577,6 @@ impl SurvivalMobDropFixture {
         Self {
             mob,
             mob_id,
-            drop: None,
-            drop_id: None,
-            collector: None,
-            ticks_since_drop: 0,
             spawn_logged: false,
             attack_logged: false,
             death_logged: false,
@@ -594,6 +586,60 @@ impl SurvivalMobDropFixture {
             state_logged: false,
         }
     }
+}
+
+#[derive(Clone, Copy, Component, Debug, Eq, PartialEq)]
+struct SurvivalMobDropItem {
+    drop_id: i32,
+    collector: Entity,
+    ticks_since_drop: u8,
+}
+
+impl SurvivalMobDropItem {
+    fn new(drop_id: i32, collector: Entity) -> Self {
+        Self {
+            drop_id,
+            collector,
+            ticks_since_drop: 0,
+        }
+    }
+
+    fn candidate(self, entity: Entity) -> SurvivalMobDropCandidate {
+        SurvivalMobDropCandidate {
+            entity,
+            drop_id: self.drop_id,
+            collector: self.collector,
+            ticks_since_drop: self.ticks_since_drop,
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+struct SurvivalMobDropCandidate {
+    entity: Entity,
+    drop_id: i32,
+    collector: Entity,
+    ticks_since_drop: u8,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum SurvivalMobDropCandidateSelection {
+    None,
+    Selected(SurvivalMobDropCandidate),
+    Duplicate,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+struct SurvivalMobDropPickupInput {
+    pickup_logged: bool,
+    ticks_since_drop: u8,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum SurvivalMobDropPickupDecision {
+    AlreadyComplete,
+    Pending { ticks_since_drop: u8 },
+    Ready { ticks_since_drop: u8 },
 }
 
 #[derive(Resource, Default)]
@@ -756,7 +802,9 @@ impl Plugin for SurvivalCompatibilityPlugin {
             )
             .add_systems(
                 Update,
-                advance_survival_mob_drop_pickup.in_set(SurvivalGameplayPhase::WorldMutation),
+                advance_survival_mob_drop_pickup
+                    .in_set(SurvivalGameplayPhase::WorldMutation)
+                    .run_if(survival_mob_drop_pickup_fixture_present),
             )
             .add_systems(
                 Update,
@@ -1345,41 +1393,60 @@ fn handle_survival_mob_drop_attack(
 
 fn advance_survival_mob_drop_pickup(
     mut commands: Commands,
-    fixture: Option<ResMut<SurvivalMobDropFixture>>,
+    mut fixture: ResMut<SurvivalMobDropFixture>,
+    mut drops: ParamSet<(
+        Query<(Entity, &SurvivalMobDropItem)>,
+        Query<&mut SurvivalMobDropItem>,
+    )>,
     mut clients: Query<(&Username, &mut Client, &mut Inventory, &EntityId)>,
 ) {
-    let Some(mut fixture) = fixture else {
+    let selection = {
+        let pending_drops = drops.p0();
+        let candidates = pending_drops
+            .iter()
+            .map(|(entity, drop)| drop.candidate(entity));
+        select_survival_mob_drop_candidate(candidates)
+    };
+    let SurvivalMobDropCandidateSelection::Selected(drop) = selection else {
         return;
     };
-    if fixture.pickup_logged || fixture.drop_id.is_none() {
-        return;
-    }
-    fixture.ticks_since_drop = fixture.ticks_since_drop.saturating_add(1);
-    if fixture.ticks_since_drop < SURVIVAL_MOB_DROP_PICKUP_DELAY_TICKS {
-        return;
-    }
 
-    let Some(collector) = fixture.collector else {
-        return;
+    let decision = plan_survival_mob_drop_pickup(SurvivalMobDropPickupInput {
+        pickup_logged: fixture.pickup_logged,
+        ticks_since_drop: drop.ticks_since_drop,
+    });
+    let ticks_since_drop = match decision {
+        SurvivalMobDropPickupDecision::AlreadyComplete => return,
+        SurvivalMobDropPickupDecision::Pending { ticks_since_drop } => {
+            if let Ok(mut state) = drops.p1().get_mut(drop.entity) {
+                state.ticks_since_drop = ticks_since_drop;
+            }
+            return;
+        }
+        SurvivalMobDropPickupDecision::Ready { ticks_since_drop } => ticks_since_drop,
     };
-    let Some(drop) = fixture.drop else {
-        return;
-    };
-    let Some(drop_id) = fixture.drop_id else {
-        return;
-    };
-    let Ok((username, mut client, mut inventory, collector_id)) = clients.get_mut(collector) else {
+
+    if let Ok(mut state) = drops.p1().get_mut(drop.entity) {
+        state.ticks_since_drop = ticks_since_drop;
+    }
+    let Ok((username, mut client, mut inventory, collector_id)) = clients.get_mut(drop.collector)
+    else {
         return;
     };
 
     inventory.set_slot(SURVIVAL_MOB_DROP_INVENTORY_SLOT, survival_mob_drop_stack());
     client.write_packet(&ItemPickupAnimationS2c {
-        collected_entity_id: VarInt(drop_id),
+        collected_entity_id: VarInt(drop.drop_id),
         collector_entity_id: VarInt(collector_id.get()),
         pickup_item_count: VarInt(i32::from(SURVIVAL_MOB_DROP_ITEM_COUNT)),
     });
-    commands.entity(drop).insert(Despawned);
-    log_survival_mob_drop_pickup_and_state(username.as_str(), &mut fixture, collector_id.get());
+    commands.entity(drop.entity).insert(Despawned);
+    log_survival_mob_drop_pickup_and_state(
+        username.as_str(),
+        &mut fixture,
+        drop.drop_id,
+        collector_id.get(),
+    );
 }
 
 fn handle_survival_chest_open(
@@ -1428,9 +1495,11 @@ fn handle_survival_chest_store(
     mut events: EventReader<ClickSlotEvent>,
 ) {
     let Some(mut fixture) = fixture else {
+        drain_survival_chest_store_events(&mut events);
         return;
     };
     if fixture.store_logged {
+        drain_survival_chest_store_events(&mut events);
         return;
     }
 
@@ -1501,6 +1570,48 @@ fn remove_survival_open_containers_from_despawned(
     for client in &clients {
         commands.entity(client).remove::<SurvivalOpenContainer>();
     }
+}
+
+fn drain_survival_chest_store_events(events: &mut EventReader<ClickSlotEvent>) {
+    for _ in events.read() {}
+}
+
+fn survival_mob_drop_pickup_fixture_present(fixture: Option<Res<SurvivalMobDropFixture>>) -> bool {
+    survival_mob_drop_pickup_resource_present(fixture.is_some())
+}
+
+fn survival_mob_drop_pickup_resource_present(resource_present: bool) -> bool {
+    resource_present
+}
+
+fn select_survival_mob_drop_candidate<I>(candidates: I) -> SurvivalMobDropCandidateSelection
+where
+    I: IntoIterator<Item = SurvivalMobDropCandidate>,
+{
+    let mut selected = None;
+    for candidate in candidates {
+        if selected.is_some() {
+            return SurvivalMobDropCandidateSelection::Duplicate;
+        }
+        selected = Some(candidate);
+    }
+    selected.map_or(
+        SurvivalMobDropCandidateSelection::None,
+        SurvivalMobDropCandidateSelection::Selected,
+    )
+}
+
+fn plan_survival_mob_drop_pickup(
+    input: SurvivalMobDropPickupInput,
+) -> SurvivalMobDropPickupDecision {
+    if input.pickup_logged {
+        return SurvivalMobDropPickupDecision::AlreadyComplete;
+    }
+    let ticks_since_drop = input.ticks_since_drop.saturating_add(1);
+    if ticks_since_drop < SURVIVAL_MOB_DROP_PICKUP_DELAY_TICKS {
+        return SurvivalMobDropPickupDecision::Pending { ticks_since_drop };
+    }
+    SurvivalMobDropPickupDecision::Ready { ticks_since_drop }
 }
 
 fn handle_survival_crafting_open(
@@ -3009,18 +3120,16 @@ fn spawn_survival_mob_drop_item(
     username: &str,
 ) {
     let drop_id = entity_manager.next_id();
-    let drop = commands
-        .spawn(ItemEntityBundle {
+    commands.spawn((
+        ItemEntityBundle {
             id: drop_id,
             layer: EntityLayerId(layer),
             position: survival_mob_drop_position(),
             item_stack: ItemEntityStack(survival_mob_drop_stack()),
             ..Default::default()
-        })
-        .id();
-    fixture.drop = Some(drop);
-    fixture.drop_id = Some(drop_id.get());
-    fixture.collector = Some(collector);
+        },
+        SurvivalMobDropItem::new(drop_id.get(), collector),
+    ));
     fixture.drop_logged = true;
     log_milestone(format!(
         "MC-COMPAT-MILESTONE survival_mob_drop_drop_spawn username={} item={} count={} \
@@ -3055,6 +3164,7 @@ fn log_survival_mob_drop_spawn(username: &str, fixture: &mut SurvivalMobDropFixt
 fn log_survival_mob_drop_pickup_and_state(
     username: &str,
     fixture: &mut SurvivalMobDropFixture,
+    drop_id: i32,
     collector_id: i32,
 ) {
     if !fixture.pickup_logged {
@@ -3065,7 +3175,7 @@ fn log_survival_mob_drop_pickup_and_state(
             username,
             SURVIVAL_MOB_DROP_ITEM_NAME,
             SURVIVAL_MOB_DROP_ITEM_COUNT,
-            fixture.drop_id.expect("drop id set before pickup"),
+            drop_id,
             collector_id
         ));
     }
@@ -3511,9 +3621,15 @@ mod tests {
     use super::*;
 
     use bevy_ecs::schedule::Schedule;
+    use valence::inventory::ClickMode;
 
     const UPDATE_SCHEDULE_LABEL: &str = "Update";
     const SURVIVAL_EVENT_LOOP_SCHEDULE_LABEL: &str = "EventLoopPreUpdate";
+    const TEST_USERNAME: &str = "compatbot";
+    const TEST_CLICK_STATE_ID: i32 = 42;
+    const TEST_CLICK_BUTTON: i8 = 0;
+    const TEST_MOB_DROP_ID: i32 = 42_101;
+    const TEST_DUPLICATE_MOB_DROP_ID: i32 = 42_102;
 
     fn app_with_survival_event_loop_schedule() -> App {
         let mut app = App::new();
@@ -3526,6 +3642,72 @@ mod tests {
             .resource::<Schedules>()
             .iter()
             .any(|(label, _)| format!("{label:?}") == schedule_label)
+    }
+
+    fn app_with_chest_store_system() -> App {
+        let mut app = App::new();
+        app.add_event::<ClickSlotEvent>()
+            .add_systems(Update, handle_survival_chest_store);
+        app
+    }
+
+    fn app_with_mob_drop_pickup_system() -> App {
+        let mut app = App::new();
+        app.add_systems(
+            Update,
+            advance_survival_mob_drop_pickup.run_if(survival_mob_drop_pickup_fixture_present),
+        );
+        app
+    }
+
+    fn spawn_chest_store_client(app: &mut App) -> Entity {
+        app.world_mut()
+            .spawn((
+                Username(TEST_USERNAME.to_owned()),
+                SurvivalOpenContainer::new(SurvivalContainerKind::Chest),
+            ))
+            .id()
+    }
+
+    fn insert_chest_fixture(app: &mut App) {
+        let inventory = app.world_mut().spawn_empty().id();
+        app.insert_resource(SurvivalChestFixture::new(inventory));
+    }
+
+    fn send_chest_store_click(app: &mut App, client: Entity) {
+        app.world_mut()
+            .resource_mut::<Events<ClickSlotEvent>>()
+            .send(ClickSlotEvent {
+                client,
+                window_id: SURVIVAL_CHEST_WINDOW,
+                state_id: TEST_CLICK_STATE_ID,
+                slot_id: SURVIVAL_CHEST_SLOT_ID,
+                button: TEST_CLICK_BUTTON,
+                mode: ClickMode::Click,
+                slot_changes: vec![SlotChange {
+                    idx: SURVIVAL_CHEST_SLOT_ID,
+                    stack: survival_chest_item_stack(),
+                }],
+                carried_item: ItemStack::EMPTY,
+            });
+    }
+
+    fn insert_pending_mob_drop_fixture(app: &mut App) -> Entity {
+        let mob = app.world_mut().spawn_empty().id();
+        let collector = app.world_mut().spawn_empty().id();
+        let drop = app
+            .world_mut()
+            .spawn(SurvivalMobDropItem::new(TEST_MOB_DROP_ID, collector))
+            .id();
+        app.insert_resource(SurvivalMobDropFixture::new(mob, TEST_MOB_DROP_ID));
+        drop
+    }
+
+    fn survival_mob_drop_candidate(
+        entity: Entity,
+        drop: &SurvivalMobDropItem,
+    ) -> SurvivalMobDropCandidate {
+        drop.candidate(entity)
     }
 
     #[test]
@@ -3731,6 +3913,165 @@ mod tests {
                 ),
             }]
         ));
+    }
+
+    #[test]
+    fn survival_chest_store_enabled_click_sets_store_logged() {
+        let mut app = app_with_chest_store_system();
+        let client = spawn_chest_store_client(&mut app);
+        insert_chest_fixture(&mut app);
+
+        send_chest_store_click(&mut app, client);
+        app.update();
+
+        let fixture = app.world().resource::<SurvivalChestFixture>();
+        assert!(fixture.store_logged);
+    }
+
+    #[test]
+    fn survival_chest_store_drains_disabled_events_before_runtime_enable() {
+        let mut app = app_with_chest_store_system();
+        let client = spawn_chest_store_client(&mut app);
+
+        send_chest_store_click(&mut app, client);
+        app.update();
+        insert_chest_fixture(&mut app);
+        app.update();
+
+        let fixture = app.world().resource::<SurvivalChestFixture>();
+        assert!(!fixture.store_logged);
+
+        send_chest_store_click(&mut app, client);
+        app.update();
+
+        let fixture = app.world().resource::<SurvivalChestFixture>();
+        assert!(fixture.store_logged);
+    }
+
+    #[test]
+    fn survival_mob_drop_pickup_run_condition_follows_fixture_resource() {
+        assert!(!survival_mob_drop_pickup_resource_present(false));
+        assert!(survival_mob_drop_pickup_resource_present(true));
+
+        let mut app = app_with_mob_drop_pickup_system();
+        app.update();
+        assert!(!app.world().contains_resource::<SurvivalMobDropFixture>());
+
+        let drop = insert_pending_mob_drop_fixture(&mut app);
+        app.update();
+        let drop_state = app
+            .world()
+            .get::<SurvivalMobDropItem>(drop)
+            .expect("pending mob drop component remains on drop entity");
+        assert_eq!(drop_state.ticks_since_drop, 1);
+
+        app.world_mut().remove_resource::<SurvivalMobDropFixture>();
+        app.update();
+        assert!(!app.world().contains_resource::<SurvivalMobDropFixture>());
+    }
+
+    #[test]
+    fn survival_mob_drop_pickup_planner_advances_until_ready() {
+        assert_eq!(
+            plan_survival_mob_drop_pickup(SurvivalMobDropPickupInput {
+                pickup_logged: false,
+                ticks_since_drop: 0,
+            }),
+            SurvivalMobDropPickupDecision::Pending {
+                ticks_since_drop: 1,
+            }
+        );
+        assert_eq!(
+            plan_survival_mob_drop_pickup(SurvivalMobDropPickupInput {
+                pickup_logged: false,
+                ticks_since_drop: SURVIVAL_MOB_DROP_PICKUP_DELAY_TICKS - 1,
+            }),
+            SurvivalMobDropPickupDecision::Ready {
+                ticks_since_drop: SURVIVAL_MOB_DROP_PICKUP_DELAY_TICKS,
+            }
+        );
+        assert_eq!(
+            plan_survival_mob_drop_pickup(SurvivalMobDropPickupInput {
+                pickup_logged: true,
+                ticks_since_drop: SURVIVAL_MOB_DROP_PICKUP_DELAY_TICKS,
+            }),
+            SurvivalMobDropPickupDecision::AlreadyComplete
+        );
+    }
+
+    #[test]
+    fn survival_mob_drop_candidate_selection_fails_closed_for_missing_or_duplicate_drops() {
+        let mut app = App::new();
+        let collector = app.world_mut().spawn_empty().id();
+        let first_drop = app
+            .world_mut()
+            .spawn(SurvivalMobDropItem::new(TEST_MOB_DROP_ID, collector))
+            .id();
+        let second_drop = app
+            .world_mut()
+            .spawn(SurvivalMobDropItem::new(
+                TEST_DUPLICATE_MOB_DROP_ID,
+                collector,
+            ))
+            .id();
+        let first = app
+            .world()
+            .get::<SurvivalMobDropItem>(first_drop)
+            .expect("first drop has fixture component");
+        let second = app
+            .world()
+            .get::<SurvivalMobDropItem>(second_drop)
+            .expect("second drop has fixture component");
+
+        assert_eq!(
+            select_survival_mob_drop_candidate(Vec::<SurvivalMobDropCandidate>::new()),
+            SurvivalMobDropCandidateSelection::None
+        );
+        assert_eq!(
+            select_survival_mob_drop_candidate([survival_mob_drop_candidate(first_drop, first)]),
+            SurvivalMobDropCandidateSelection::Selected(survival_mob_drop_candidate(
+                first_drop, first
+            ))
+        );
+        assert_eq!(
+            select_survival_mob_drop_candidate([
+                survival_mob_drop_candidate(first_drop, first),
+                survival_mob_drop_candidate(second_drop, second),
+            ]),
+            SurvivalMobDropCandidateSelection::Duplicate
+        );
+    }
+
+    #[test]
+    fn survival_mob_drop_duplicate_components_do_not_advance_pickup_state() {
+        let mut app = app_with_mob_drop_pickup_system();
+        let mob = app.world_mut().spawn_empty().id();
+        let collector = app.world_mut().spawn_empty().id();
+        let first_drop = app
+            .world_mut()
+            .spawn(SurvivalMobDropItem::new(TEST_MOB_DROP_ID, collector))
+            .id();
+        let second_drop = app
+            .world_mut()
+            .spawn(SurvivalMobDropItem::new(
+                TEST_DUPLICATE_MOB_DROP_ID,
+                collector,
+            ))
+            .id();
+        app.insert_resource(SurvivalMobDropFixture::new(mob, TEST_MOB_DROP_ID));
+
+        app.update();
+
+        let first = app
+            .world()
+            .get::<SurvivalMobDropItem>(first_drop)
+            .expect("first duplicate drop remains present");
+        let second = app
+            .world()
+            .get::<SurvivalMobDropItem>(second_drop)
+            .expect("second duplicate drop remains present");
+        assert_eq!(first.ticks_since_drop, 0);
+        assert_eq!(second.ticks_since_drop, 0);
     }
 
     #[test]

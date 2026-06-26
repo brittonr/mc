@@ -1,6 +1,6 @@
 62c5081781aa59cfda7edc50eb5978f9f116bbb8006eb5eff6d4651289834845  docs/evidence/move-worldgen-work-to-bevy-tasks.terrain-tests.run.log
 7c83af75f21be5ebf2e4e3667767af2c6c09d969eb0667288ef5a4d9a98e2775  docs/evidence/move-worldgen-work-to-bevy-tasks.cairn-gates.run.log
 12739695204c05b736bd4a58ff9672371c26e46e963773fcc5ae5d3e1ff718fd  docs/evidence/move-worldgen-work-to-bevy-tasks.task-evidence-first-five.run.log
-85dfb85ffdfab2dc814dbaa9fd0a37b8598e32b509acda8e7cfbecba6d3d304b  docs/evidence/move-worldgen-work-to-bevy-tasks.implementation.b3
+8a9532d9eda79113472b53d93df97de7882152c01111ddf2ff1889297afeb3d3  docs/evidence/move-worldgen-work-to-bevy-tasks.implementation.b3
 6a7478d62cbf266a71f5687659449b51b7fa92988450e0c7c416e61291232c71  cairn/archive/2026-06-25-move-worldgen-work-to-bevy-tasks/tasks.md
-90b067a00f0aa97770e90485d75638a91de3a89477b3151568d00e0f3ba7c026  cairn/specs/valence-bevy-ecs/spec.md
+ec2279612cf5d696677b1fceaaad22cd90d2d9ae4b34826e89d644f470cc263e  cairn/specs/valence-bevy-ecs/spec.md
