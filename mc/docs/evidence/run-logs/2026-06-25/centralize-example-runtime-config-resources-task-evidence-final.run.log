@@ -1,0 +1,5 @@
+
+$ nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+command_exit_status=0
+
+exit_status=0

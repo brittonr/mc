@@ -1,0 +1,52 @@
+
+$ nix run .#cairn -- sync centralize-example-runtime-config-resources --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/centralize-example-runtime-config-resources/specs/valence-bevy-ecs/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/centralize-example-runtime-config-resources/specs/valence-bevy-ecs/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "centralize-example-runtime-config-resources",
+  "delta_specs": [
+    "./cairn/changes/centralize-example-runtime-config-resources/specs/valence-bevy-ecs/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "e53e4caf220477c206be2b05996cf6debf6f3a893610d6872362b707db5bf300",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "d559fc693da87538ec4b3b286af1a3be3a24c0d6689220b25c8945cce59a760d",
+          "exists": true,
+          "path": "./cairn/specs/valence-bevy-ecs/spec.md"
+        }
+      ],
+      "manifest_hash": "e588e55908a3761ea8b10ccf8588dc672dcc43f38513bd20324fe9b3d15f6290"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "d559fc693da87538ec4b3b286af1a3be3a24c0d6689220b25c8945cce59a760d",
+          "exists": true,
+          "path": "./cairn/specs/valence-bevy-ecs/spec.md"
+        }
+      ],
+      "manifest_hash": "e588e55908a3761ea8b10ccf8588dc672dcc43f38513bd20324fe9b3d15f6290"
+    },
+    "kind": "sync",
+    "manifest_hash": "89000f666b52b58f697d67ec896ffac43c8580793f2b0ffff084cfc938d3b1d6"
+  },
+  "plan_hash": "19ea71ccd4a655a08896ff054a688fc020992ef72a266ebb5bbd49783e8402f6",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "70224f6799a608e1f4598a546dff947768f8e45636ebfa476289023c8abf06cc"
+}
+command_exit_status=0
+
+exit_status=0

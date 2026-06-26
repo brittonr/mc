@@ -1,0 +1,198 @@
+
+$ nix run .#cairn -- change list --root .
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "./cairn/changes/extract-worldgen-task-orchestration-plugin/specs/valence-bevy-ecs/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "extract-worldgen-task-orchestration-plugin",
+      "path": "./cairn/changes/extract-worldgen-task-orchestration-plugin",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/gate-optional-fixtures-with-run-conditions/specs/valence-bevy-ecs/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "gate-optional-fixtures-with-run-conditions",
+      "path": "./cairn/changes/gate-optional-fixtures-with-run-conditions",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/migrate-anticheat-statistics-to-components/specs/valence-bevy-ecs/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "migrate-anticheat-statistics-to-components",
+      "path": "./cairn/changes/migrate-anticheat-statistics-to-components",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/migrate-fixture-state-to-components/specs/valence-bevy-ecs/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "migrate-fixture-state-to-components",
+      "path": "./cairn/changes/migrate-fixture-state-to-components",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/model-owned-entity-relationships-with-hierarchy/specs/valence-bevy-ecs/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "model-owned-entity-relationships-with-hierarchy",
+      "path": "./cairn/changes/model-owned-entity-relationships-with-hierarchy",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/organize-remaining-valence-examples-as-plugins/specs/valence-bevy-ecs/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "organize-remaining-valence-examples-as-plugins",
+      "path": "./cairn/changes/organize-remaining-valence-examples-as-plugins",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/promote-remaining-packet-semantics-to-typed-events/specs/valence-bevy-ecs/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "promote-remaining-packet-semantics-to-typed-events",
+      "path": "./cairn/changes/promote-remaining-packet-semantics-to-typed-events",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "."
+}
+command_exit_status=0
+
+$ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 7,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 12,
+  "valid": true
+}
+command_exit_status=0
+
+$ nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/p81b8skprqhw7ah2q3qrja8k5bgwmgm5.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 313 ms
+warning: error: unable to download 'http://100.100.103.95:5000/p81b8skprqhw7ah2q3qrja8k5bgwmgm5.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 9 ms: Could not connect to server; retrying in 704 ms
+warning: error: unable to download 'http://100.100.103.95:5000/p81b8skprqhw7ah2q3qrja8k5bgwmgm5.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2033 ms: Could not connect to server; retrying in 1155 ms
+warning: error: unable to download 'http://100.100.103.95:5000/p81b8skprqhw7ah2q3qrja8k5bgwmgm5.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2021 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/p81b8skprqhw7ah2q3qrja8k5bgwmgm5.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/p81b8skprqhw7ah2q3qrja8k5bgwmgm5.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds
+this derivation will be built:
+  /nix/store/iyxc5j4lbgra8rylfbxsgp3lhz2y3xb8-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/iyxc5j4lbgra8rylfbxsgp3lhz2y3xb8-mc-compat-cairn-task-evidence.drv'...
+command_exit_status=0
+
+$ nix run .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=503; entries=4434; current=4434; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+command_exit_status=0
+
+exit_status=0

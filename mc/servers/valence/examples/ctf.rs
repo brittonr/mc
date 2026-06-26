@@ -47,6 +47,8 @@ const PLAYER_MAX_HEALTH: f32 = 20.0;
 const TEAM_RED_YAW: f32 = -90.0;
 const TEAM_BLUE_YAW: f32 = 90.0;
 const COMPAT_ACTOR_USERNAME: &str = "compatbot";
+const ENV_FLAG_DISABLED_VALUE: &str = "0";
+const ENV_FLAG_ENABLED_VALUE: &str = "1";
 const INVENTORY_STACK_SPLIT_MERGE_PROBE_ENV: &str =
     scenario_contracts_generated::MC_COMPAT_INVENTORY_STACK_SPLIT_MERGE_PROBE;
 const INVENTORY_DRAG_TRANSACTIONS_PROBE_ENV: &str =
@@ -168,6 +170,170 @@ const CTF_SPAWN_BLUE_SLOT37_RESOURCE: &str = "BlueWool:64";
 const CTF_SPAWN_RESET_SLOT37_RESOURCE: &str = "TeamWool:64";
 const CTF_SPAWN_RESET_STATE: &str = "scoreboard_flags_and_resources_coherent";
 const CTF_SPAWN_EXPECTED_BLUE_USERNAME: &str = "compatbotb";
+
+#[derive(Resource, Clone, Debug, Default, PartialEq, Eq)]
+struct CtfRuntimeConfig {
+    probes: CtfProbeConfig,
+    arrow_policy: ArrowPolicyRuntimeConfig,
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+struct CtfProbeConfig {
+    inventory_stack_split_merge: bool,
+    inventory_drag_transactions: bool,
+    vanilla_combat_reference: bool,
+    vanilla_combat_armor_reference: bool,
+    score_limit_win: bool,
+    race: bool,
+    spawn_team_reset: bool,
+    invalid_return_drop: bool,
+    invalid_opponent_base_return_drop: bool,
+    projectile: bool,
+    armor_mitigation: bool,
+    equipment_update: bool,
+}
+
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+struct ArrowPolicyRuntimeConfig {
+    config_path: Option<String>,
+    reload_request: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+struct CtfRuntimeConfigInputs {
+    inventory_stack_split_merge_probe: Option<String>,
+    inventory_drag_transactions_probe: Option<String>,
+    vanilla_combat_reference_probe: Option<String>,
+    vanilla_combat_armor_reference_probe: Option<String>,
+    arrow_policy_config: Option<String>,
+    arrow_policy_reload_request: Option<String>,
+    ctf_score_limit_win_probe: Option<String>,
+    ctf_race_probe: Option<String>,
+    ctf_spawn_team_reset_probe: Option<String>,
+    ctf_invalid_return_drop_probe: Option<String>,
+    ctf_invalid_opponent_base_return_drop_probe: Option<String>,
+    projectile_probe: Option<String>,
+    armor_mitigation_probe: Option<String>,
+    equipment_update_probe: Option<String>,
+}
+
+impl CtfRuntimeConfig {
+    fn from_env() -> Self {
+        parse_ctf_runtime_config(&CtfRuntimeConfigInputs::from_env())
+    }
+}
+
+impl CtfRuntimeConfigInputs {
+    fn from_env() -> Self {
+        Self {
+            inventory_stack_split_merge_probe: env::var(INVENTORY_STACK_SPLIT_MERGE_PROBE_ENV).ok(),
+            inventory_drag_transactions_probe: env::var(INVENTORY_DRAG_TRANSACTIONS_PROBE_ENV).ok(),
+            vanilla_combat_reference_probe: env::var(VANILLA_COMBAT_REFERENCE_PROBE_ENV).ok(),
+            vanilla_combat_armor_reference_probe: env::var(
+                VANILLA_COMBAT_ARMOR_REFERENCE_PROBE_ENV,
+            )
+            .ok(),
+            arrow_policy_config: env::var(ARROW_POLICY_ENV_CONFIG).ok(),
+            arrow_policy_reload_request: env::var(ARROW_POLICY_ENV_RELOAD_REQUEST).ok(),
+            ctf_score_limit_win_probe: env::var(CTF_SCORE_LIMIT_WIN_PROBE_ENV).ok(),
+            ctf_race_probe: env::var(CTF_RACE_PROBE_ENV).ok(),
+            ctf_spawn_team_reset_probe: env::var(CTF_SPAWN_TEAM_RESET_PROBE_ENV).ok(),
+            ctf_invalid_return_drop_probe: env::var(CTF_INVALID_RETURN_DROP_PROBE_ENV).ok(),
+            ctf_invalid_opponent_base_return_drop_probe: env::var(
+                CTF_INVALID_OPPONENT_BASE_RETURN_DROP_PROBE_ENV,
+            )
+            .ok(),
+            projectile_probe: env::var(scenario_contracts_generated::MC_COMPAT_PROJECTILE_PROBE)
+                .ok(),
+            armor_mitigation_probe: env::var(
+                scenario_contracts_generated::MC_COMPAT_ARMOR_MITIGATION_PROBE,
+            )
+            .ok(),
+            equipment_update_probe: env::var(
+                scenario_contracts_generated::MC_COMPAT_EQUIPMENT_UPDATE_PROBE,
+            )
+            .ok(),
+        }
+    }
+}
+
+fn parse_ctf_runtime_config(inputs: &CtfRuntimeConfigInputs) -> CtfRuntimeConfig {
+    let vanilla_combat_armor_reference =
+        parse_nonzero_env_flag(inputs.vanilla_combat_armor_reference_probe.as_deref());
+    CtfRuntimeConfig {
+        probes: CtfProbeConfig {
+            inventory_stack_split_merge: parse_nonzero_env_flag(
+                inputs.inventory_stack_split_merge_probe.as_deref(),
+            ),
+            inventory_drag_transactions: parse_nonzero_env_flag(
+                inputs.inventory_drag_transactions_probe.as_deref(),
+            ),
+            vanilla_combat_reference: parse_nonzero_env_flag(
+                inputs.vanilla_combat_reference_probe.as_deref(),
+            ) || vanilla_combat_armor_reference,
+            vanilla_combat_armor_reference,
+            score_limit_win: parse_nonzero_env_flag(inputs.ctf_score_limit_win_probe.as_deref()),
+            race: parse_nonzero_env_flag(inputs.ctf_race_probe.as_deref()),
+            spawn_team_reset: parse_present_env_flag(inputs.ctf_spawn_team_reset_probe.as_deref()),
+            invalid_return_drop: parse_nonzero_env_flag(
+                inputs.ctf_invalid_return_drop_probe.as_deref(),
+            ),
+            invalid_opponent_base_return_drop: parse_nonzero_env_flag(
+                inputs
+                    .ctf_invalid_opponent_base_return_drop_probe
+                    .as_deref(),
+            ),
+            projectile: parse_nonzero_env_flag(inputs.projectile_probe.as_deref()),
+            armor_mitigation: parse_nonzero_env_flag(inputs.armor_mitigation_probe.as_deref()),
+            equipment_update: parse_nonzero_env_flag(inputs.equipment_update_probe.as_deref()),
+        },
+        arrow_policy: ArrowPolicyRuntimeConfig {
+            config_path: inputs.arrow_policy_config.clone(),
+            reload_request: inputs.arrow_policy_reload_request.clone(),
+        },
+    }
+}
+
+fn parse_nonzero_env_flag(value: Option<&str>) -> bool {
+    match value {
+        Some(ENV_FLAG_DISABLED_VALUE) | None => false,
+        Some(ENV_FLAG_ENABLED_VALUE) => true,
+        Some(_) => true,
+    }
+}
+
+fn parse_present_env_flag(value: Option<&str>) -> bool {
+    value.is_some()
+}
+
+#[cfg(test)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum CtfRuntimeConfigIssue {
+    MissingReloadPolicyPath,
+    StaleReloadRequest,
+    DisabledProjectilePolicy,
+}
+
+#[cfg(test)]
+fn ctf_runtime_config_issues(
+    previous: Option<&CtfRuntimeConfig>,
+    config: &CtfRuntimeConfig,
+) -> Vec<CtfRuntimeConfigIssue> {
+    let mut issues = Vec::new();
+    if config.arrow_policy.reload_request.is_some() && config.arrow_policy.config_path.is_none() {
+        issues.push(CtfRuntimeConfigIssue::MissingReloadPolicyPath);
+    }
+    if config.arrow_policy.config_path.is_some() && !config.probes.projectile {
+        issues.push(CtfRuntimeConfigIssue::DisabledProjectilePolicy);
+    }
+    if previous
+        .and_then(|previous| previous.arrow_policy.reload_request.as_ref())
+        .is_some_and(|previous| Some(previous) == config.arrow_policy.reload_request.as_ref())
+    {
+        issues.push(CtfRuntimeConfigIssue::StaleReloadRequest);
+    }
+    issues
+}
 
 #[derive(Clone, Debug, PartialEq)]
 struct ArrowPolicySnapshot {
@@ -300,23 +466,29 @@ fn default_arrow_policy_snapshot() -> ArrowPolicySnapshot {
     }
 }
 
-fn initialize_valence_arrow_policy_from_env(policy: &mut ArrowPolicyState) {
-    let Some(path) = std::env::var(ARROW_POLICY_ENV_CONFIG).ok() else {
+fn initialize_valence_arrow_policy(
+    policy: &mut ArrowPolicyState,
+    config: &ArrowPolicyRuntimeConfig,
+) {
+    let Some(path) = config.config_path.as_deref() else {
         return;
     };
-    let outcome = reload_arrow_policy_from_path(policy, Path::new(&path));
-    log_arrow_policy_reload_outcome(&path, &outcome, policy.controller.active());
+    let outcome = reload_arrow_policy_from_path(policy, Path::new(path));
+    log_arrow_policy_reload_outcome(path, &outcome, policy.controller.active());
 }
 
-fn maybe_reload_valence_arrow_policy_on_request(policy: &mut ArrowPolicyState) {
-    let Some(request) = std::env::var(ARROW_POLICY_ENV_RELOAD_REQUEST).ok() else {
+fn maybe_reload_valence_arrow_policy_on_request(
+    policy: &mut ArrowPolicyState,
+    config: &ArrowPolicyRuntimeConfig,
+) {
+    let Some(request) = config.reload_request.as_deref() else {
         return;
     };
-    if policy.last_reload_request.as_ref() == Some(&request) {
+    if policy.last_reload_request.as_deref() == Some(request) {
         return;
     }
-    policy.last_reload_request = Some(request);
-    initialize_valence_arrow_policy_from_env(policy);
+    policy.last_reload_request = Some(request.to_owned());
+    initialize_valence_arrow_policy(policy, config);
 }
 
 fn reload_arrow_policy_from_path(
@@ -572,8 +744,11 @@ fn validate_arrow_damage_decision(decision: &ArrowDamageDecision) -> Vec<ArrowPo
     diagnostics
 }
 
-fn projectile_probe_damage_decision(policy: &mut ArrowPolicyState) -> ArrowDamageDecision {
-    maybe_reload_valence_arrow_policy_on_request(policy);
+fn projectile_probe_damage_decision(
+    policy: &mut ArrowPolicyState,
+    config: &ArrowPolicyRuntimeConfig,
+) -> ArrowDamageDecision {
+    maybe_reload_valence_arrow_policy_on_request(policy, config);
     evaluate_arrow_policy(
         policy.controller.active(),
         ArrowDamageContext {
@@ -671,7 +846,8 @@ impl Plugin for CtfGameplayPlugin {
         assert_eq!(contract.update_phase_order, CTF_GAMEPLAY_PHASE_ORDER);
         assert_eq!(contract.event_loop_phase_order, CTF_GAMEPLAY_PHASE_ORDER);
 
-        app.insert_resource(ArrowPolicyState::default())
+        app.insert_resource(CtfRuntimeConfig::from_env())
+            .insert_resource(ArrowPolicyState::default())
             .insert_resource(contract)
             .configure_sets(
                 EventLoopUpdate,
@@ -696,12 +872,17 @@ impl Plugin for CtfGameplayPlugin {
             .add_systems(Startup, setup)
             .add_systems(
                 EventLoopUpdate,
+                refresh_ctf_runtime_config_from_env.in_set(CtfGameplayPhase::Input),
+            )
+            .add_systems(
+                EventLoopUpdate,
                 (handle_combat_events, handle_projectile_events)
                     .in_set(CtfGameplayPhase::WorldMutation),
             )
             .add_systems(
                 Update,
                 (
+                    refresh_ctf_runtime_config_from_env,
                     init_clients,
                     log_inventory_hotbar_select_events,
                     log_inventory_drop_events,
@@ -747,14 +928,19 @@ pub fn main() {
         .run();
 }
 
+fn refresh_ctf_runtime_config_from_env(mut runtime_config: ResMut<CtfRuntimeConfig>) {
+    *runtime_config = CtfRuntimeConfig::from_env();
+}
+
 fn setup(
     mut commands: Commands,
     server: Res<Server>,
     dimensions: Res<DimensionTypeRegistry>,
     biomes: Res<BiomeRegistry>,
+    runtime_config: Res<CtfRuntimeConfig>,
     mut arrow_policy: ResMut<ArrowPolicyState>,
 ) {
-    initialize_valence_arrow_policy_from_env(arrow_policy.as_mut());
+    initialize_valence_arrow_policy(arrow_policy.as_mut(), &runtime_config.arrow_policy);
 
     let mut layer = LayerBundle::new(ident!("overworld"), &dimensions, &biomes, &server);
 
@@ -849,8 +1035,8 @@ fn setup(
     cow.insert(Team::Blue);
 
     commands.insert_resource(ctf_team_layers);
-    let score = initial_score_from_env();
-    log_score_limit_pre_state(&score);
+    let score = initial_score(&runtime_config);
+    log_score_limit_pre_state(&runtime_config, &score);
     commands.insert_resource(score);
     commands.insert_resource(WinConditionState::default());
     commands.insert_resource(ReconnectJoinCounts::default());
@@ -1160,6 +1346,7 @@ fn digging(
     mut flag_manager: ResMut<FlagManager>,
     mut race_probe: ResMut<CtfRaceProbeState>,
     score: Res<Score>,
+    runtime_config: Res<CtfRuntimeConfig>,
 ) {
     let mut layer = layers.single_mut();
 
@@ -1179,9 +1366,11 @@ fn digging(
             let is_flag = event.position == globals.red_flag || event.position == globals.blue_flag;
             if event.position == globals.red_flag
                 && *team == Team::Blue
-                && (flag_manager.red.is_some() || ctf_race_duplicate_pickup_blocked(&race_probe))
+                && (flag_manager.red.is_some()
+                    || ctf_race_duplicate_pickup_blocked(&runtime_config, &race_probe))
             {
                 log_ctf_race_rejected_transition(
+                    &runtime_config,
                     &mut race_probe,
                     username.as_str(),
                     *team,
@@ -1191,9 +1380,11 @@ fn digging(
             }
             if event.position == globals.blue_flag
                 && *team == Team::Red
-                && (flag_manager.blue.is_some() || ctf_race_duplicate_pickup_blocked(&race_probe))
+                && (flag_manager.blue.is_some()
+                    || ctf_race_duplicate_pickup_blocked(&runtime_config, &race_probe))
             {
                 log_ctf_race_rejected_transition(
+                    &runtime_config,
                     &mut race_probe,
                     username.as_str(),
                     *team,
@@ -1206,9 +1397,10 @@ fn digging(
                 (Team::Blue, BlockState::RED_WOOL) => {
                     if event.position == globals.red_flag {
                         if flag_manager.red.is_some()
-                            || ctf_race_duplicate_pickup_blocked(&race_probe)
+                            || ctf_race_duplicate_pickup_blocked(&runtime_config, &race_probe)
                         {
                             log_ctf_race_rejected_transition(
+                                &runtime_config,
                                 &mut race_probe,
                                 username.as_str(),
                                 *team,
@@ -1228,6 +1420,7 @@ fn digging(
                         info!("{}", milestone);
                         println!("{}", milestone);
                         log_ctf_race_accepted_transition(
+                            &runtime_config,
                             &mut race_probe,
                             username.as_str(),
                             *team,
@@ -1238,7 +1431,7 @@ fn digging(
                 }
                 (Team::Red, BlockState::BLUE_WOOL) => {
                     if event.position == globals.blue_flag {
-                        if invalid_opponent_base_return_drop_probe_enabled() {
+                        if invalid_opponent_base_return_drop_probe_enabled(&runtime_config) {
                             let red_score = score_for_team(&score, Team::Red);
                             let blue_score = score_for_team(&score, Team::Blue);
                             let pre_state = flag_presence_state(&flag_manager, Team::Blue);
@@ -1256,9 +1449,10 @@ fn digging(
                             return;
                         }
                         if flag_manager.blue.is_some()
-                            || ctf_race_duplicate_pickup_blocked(&race_probe)
+                            || ctf_race_duplicate_pickup_blocked(&runtime_config, &race_probe)
                         {
                             log_ctf_race_rejected_transition(
+                                &runtime_config,
                                 &mut race_probe,
                                 username.as_str(),
                                 *team,
@@ -1278,6 +1472,7 @@ fn digging(
                         info!("{}", milestone);
                         println!("{}", milestone);
                         log_ctf_race_accepted_transition(
+                            &runtime_config,
                             &mut race_probe,
                             username.as_str(),
                             *team,
@@ -1296,7 +1491,7 @@ fn digging(
             {
                 let red_score = score_for_team(&score, Team::Red);
                 let blue_score = score_for_team(&score, Team::Blue);
-                let milestone = if invalid_flag_return_drop_probe_enabled() {
+                let milestone = if invalid_flag_return_drop_probe_enabled(&runtime_config) {
                     let pre_state = flag_presence_state(&flag_manager, flag_team);
                     let post_state = pre_state;
                     invalid_flag_return_drop_rejection_milestone(
@@ -1397,28 +1592,20 @@ const CTF_INVALID_RETURN_DROP_PROBE_ENV: &str = "MC_COMPAT_CTF_INVALID_RETURN_DR
 const CTF_INVALID_OPPONENT_BASE_RETURN_DROP_PROBE_ENV: &str =
     "MC_COMPAT_CTF_INVALID_OPPONENT_BASE_RETURN_DROP_PROBE";
 
-fn invalid_flag_return_drop_probe_enabled() -> bool {
-    env_flag_enabled(CTF_INVALID_RETURN_DROP_PROBE_ENV)
+fn invalid_flag_return_drop_probe_enabled(config: &CtfRuntimeConfig) -> bool {
+    config.probes.invalid_return_drop
 }
 
-fn invalid_opponent_base_return_drop_probe_enabled() -> bool {
-    env_flag_enabled(CTF_INVALID_OPPONENT_BASE_RETURN_DROP_PROBE_ENV)
+fn invalid_opponent_base_return_drop_probe_enabled(config: &CtfRuntimeConfig) -> bool {
+    config.probes.invalid_opponent_base_return_drop
 }
 
-fn env_flag_enabled(name: &str) -> bool {
-    env::var(name).map(|value| value != "0").unwrap_or(false)
+fn score_limit_win_probe_enabled(config: &CtfRuntimeConfig) -> bool {
+    config.probes.score_limit_win
 }
 
-fn score_limit_win_probe_enabled() -> bool {
-    env::var(CTF_SCORE_LIMIT_WIN_PROBE_ENV)
-        .map(|value| value != "0")
-        .unwrap_or(false)
-}
-
-fn ctf_race_probe_enabled() -> bool {
-    env::var(CTF_RACE_PROBE_ENV)
-        .map(|value| value != "0")
-        .unwrap_or(false)
+fn ctf_race_probe_enabled(config: &CtfRuntimeConfig) -> bool {
+    config.probes.race
 }
 
 fn ctf_race_accepted_transition_milestone(
@@ -1449,18 +1636,19 @@ fn ctf_race_rejected_transition_milestone(
     )
 }
 
-fn ctf_race_duplicate_pickup_blocked(state: &CtfRaceProbeState) -> bool {
-    ctf_race_probe_enabled()
+fn ctf_race_duplicate_pickup_blocked(config: &CtfRuntimeConfig, state: &CtfRaceProbeState) -> bool {
+    ctf_race_probe_enabled(config)
         && ctf_core::race_duplicate_pickup_blocked(state.accepted_username.is_some())
 }
 
 fn log_ctf_race_accepted_transition(
+    config: &CtfRuntimeConfig,
     state: &mut CtfRaceProbeState,
     username: &str,
     player_team: Team,
     flag_team: Team,
 ) {
-    if !ctf_race_probe_enabled() {
+    if !ctf_race_probe_enabled(config) {
         return;
     }
     if state.accepted_username.is_some() {
@@ -1482,12 +1670,13 @@ fn log_ctf_race_accepted_transition(
 }
 
 fn log_ctf_race_rejected_transition(
+    config: &CtfRuntimeConfig,
     state: &mut CtfRaceProbeState,
     username: &str,
     player_team: Team,
     flag_team: Team,
 ) {
-    if !ctf_race_probe_enabled() {
+    if !ctf_race_probe_enabled(config) {
         return;
     }
     state.rejected_username = Some(username.to_owned());
@@ -1537,6 +1726,7 @@ fn ctf_race_final_state_milestone(
 }
 
 fn log_ctf_race_final_state(
+    config: &CtfRuntimeConfig,
     state: &mut CtfRaceProbeState,
     capture_username: &str,
     capture_team: Team,
@@ -1545,7 +1735,7 @@ fn log_ctf_race_final_state(
     blue_score_after: u32,
     flag_manager: &FlagManager,
 ) {
-    if !ctf_race_probe_enabled() || state.final_logged {
+    if !ctf_race_probe_enabled(config) || state.final_logged {
         return;
     }
     let Some(accepted_username) = state.accepted_username.as_deref() else {
@@ -1571,9 +1761,9 @@ fn log_ctf_race_final_state(
     println!("{milestone}");
 }
 
-fn initial_score_from_env() -> Score {
+fn initial_score(config: &CtfRuntimeConfig) -> Score {
     let mut score = Score::default();
-    if score_limit_win_probe_enabled() {
+    if score_limit_win_probe_enabled(config) {
         score
             .scores
             .insert(Team::Red, CTF_SCORE_LIMIT_RED_PRE_FINAL_CAPTURE);
@@ -1584,8 +1774,8 @@ fn initial_score_from_env() -> Score {
     score
 }
 
-fn log_score_limit_pre_state(score: &Score) {
-    if !score_limit_win_probe_enabled() {
+fn log_score_limit_pre_state(config: &CtfRuntimeConfig, score: &Score) {
+    if !score_limit_win_probe_enabled(config) {
         return;
     }
     let milestone = score_limit_pre_state_milestone(score);
@@ -1601,8 +1791,8 @@ fn team_label(team: Team) -> &'static str {
     team.as_ctf_core().label()
 }
 
-fn ctf_spawn_team_reset_probe_enabled() -> bool {
-    env::var_os(CTF_SPAWN_TEAM_RESET_PROBE_ENV).is_some()
+fn ctf_spawn_team_reset_probe_enabled(config: &CtfRuntimeConfig) -> bool {
+    config.probes.spawn_team_reset
 }
 
 fn team_spawn_parts(team: Team) -> (f64, f64, f64) {
@@ -2125,11 +2315,12 @@ fn ctf_core_inventory_item_stack(stack: &ItemStack) -> ctf_core::InventoryItemSt
 }
 
 fn log_inventory_stack_split_merge_event(
+    config: &CtfRuntimeConfig,
     username: &str,
     event: &ClickSlotEvent,
     state: &mut InventoryStackSplitMergeProbeState,
 ) {
-    if !inventory_stack_split_merge_probe_enabled() {
+    if !inventory_stack_split_merge_probe_enabled(config) {
         return;
     }
 
@@ -2268,11 +2459,12 @@ fn classify_inventory_drag_transactions_event(
 }
 
 fn log_inventory_drag_transactions_event(
+    config: &CtfRuntimeConfig,
     username: &str,
     event: &ClickSlotEvent,
     state: &mut InventoryDragTransactionsProbeState,
 ) {
-    if !inventory_drag_transactions_probe_enabled() {
+    if !inventory_drag_transactions_probe_enabled(config) {
         return;
     }
 
@@ -2385,6 +2577,7 @@ fn log_inventory_click_state(
     mut inventory_drag_state: Local<InventoryDragTransactionsProbeState>,
     mut events: EventReader<ClickSlotEvent>,
     usernames: Query<&Username>,
+    runtime_config: Res<CtfRuntimeConfig>,
 ) {
     for event in events.read() {
         let Ok(username) = usernames.get(event.client) else {
@@ -2405,15 +2598,21 @@ fn log_inventory_click_state(
         info!("{}", milestone);
         println!("{}", milestone);
         log_inventory_stack_split_merge_event(
+            &runtime_config,
             username.as_str(),
             event,
             &mut *inventory_stack_state,
         );
-        log_inventory_drag_transactions_event(username.as_str(), event, &mut *inventory_drag_state);
+        log_inventory_drag_transactions_event(
+            &runtime_config,
+            username.as_str(),
+            event,
+            &mut *inventory_drag_state,
+        );
 
         if username.as_str() == COMPAT_ACTOR_USERNAME
-            && !inventory_stack_split_merge_probe_enabled()
-            && !inventory_drag_transactions_probe_enabled()
+            && !inventory_stack_split_merge_probe_enabled(&runtime_config)
+            && !inventory_drag_transactions_probe_enabled(&runtime_config)
             && event.window_id == INVENTORY_STACK_WINDOW_ID
             && event.slot_id == INVENTORY_STACK_SOURCE_SLOT
             && !*compat_container_opened
@@ -2491,6 +2690,7 @@ fn do_team_selector_portals(
     mut reconnect_joins: ResMut<ReconnectJoinCounts>,
     mut spawn_reset_probe: ResMut<CtfSpawnTeamResetProbeState>,
     main_layers: Query<Entity, (With<ChunkLayer>, With<EntityLayer>)>,
+    runtime_config: Res<CtfRuntimeConfig>,
 ) {
     for player in &mut players {
         let (
@@ -2510,7 +2710,8 @@ fn do_team_selector_portals(
             continue;
         }
 
-        let vanilla_assignment = vanilla_combat_reference_assignment(username.as_str());
+        let vanilla_assignment =
+            vanilla_combat_reference_assignment(&runtime_config, username.as_str());
         let portal_team = portals
             .portals
             .iter()
@@ -2522,7 +2723,7 @@ fn do_team_selector_portals(
 
         if let Some(team) = team {
             if vanilla_assignment.is_none()
-                && ctf_spawn_team_reset_probe_enabled()
+                && ctf_spawn_team_reset_probe_enabled(&runtime_config)
                 && ctf_spawn_reset_should_defer_team_assignment(username.as_str(), team)
             {
                 continue;
@@ -2548,7 +2749,7 @@ fn do_team_selector_portals(
                     None,
                 ),
             );
-            if projectile_probe_enabled() && team == Team::Red {
+            if projectile_probe_enabled(&runtime_config) && team == Team::Red {
                 inventory.set_slot(36, ItemStack::new(ItemKind::Bow, 1, None));
                 inventory.set_slot(37, ItemStack::new(ItemKind::Arrow, 16, None));
                 println!(
@@ -2556,7 +2757,7 @@ fn do_team_selector_portals(
                     username.as_str()
                 );
             }
-            let equipment_update_probe = equipment_update_probe_enabled();
+            let equipment_update_probe = equipment_update_probe_enabled(&runtime_config);
             if equipment_update_probe && team == Team::Blue {
                 inventory.set_slot(
                     ARMOR_MITIGATION_CHEST_SLOT,
@@ -2575,8 +2776,9 @@ fn do_team_selector_portals(
                     }],
                 });
             }
-            let armor_reference_probe = vanilla_combat_armor_reference_probe_enabled();
-            let armor_mitigation_probe = armor_mitigation_probe_enabled();
+            let armor_reference_probe =
+                vanilla_combat_armor_reference_probe_enabled(&runtime_config);
+            let armor_mitigation_probe = armor_mitigation_probe_enabled(&runtime_config);
             if (armor_mitigation_probe || armor_reference_probe) && team == Team::Blue {
                 inventory.set_slot(
                     ARMOR_MITIGATION_CHEST_SLOT,
@@ -2632,7 +2834,7 @@ fn do_team_selector_portals(
             look.yaw = yaw;
             look.pitch = 0.0;
             head_yaw.0 = yaw;
-            if ctf_spawn_team_reset_probe_enabled() {
+            if ctf_spawn_team_reset_probe_enabled(&runtime_config) {
                 spawn_reset_probe.record_assignment(username.as_str(), team);
                 let assignment = ctf_spawn_team_assignment_milestone(
                     username.as_str(),
@@ -2873,6 +3075,7 @@ fn do_flag_capturing(
     mut win_condition: ResMut<WinConditionState>,
     mut race_probe: ResMut<CtfRaceProbeState>,
     mut spawn_reset_probe: ResMut<CtfSpawnTeamResetProbeState>,
+    runtime_config: Res<CtfRuntimeConfig>,
 ) {
     for (ent, mut client, team, position, has_flag, username) in &mut players {
         let capture_trigger = match team {
@@ -2893,6 +3096,7 @@ fn do_flag_capturing(
             let red_score_after = score_for_team(&score, Team::Red);
             let blue_score_after = score_for_team(&score, Team::Blue);
             log_score_limit_capture_and_win(
+                &runtime_config,
                 username.as_str(),
                 *team,
                 has_flag.0,
@@ -2909,6 +3113,7 @@ fn do_flag_capturing(
                 Team::Blue => flag_manager.blue = None,
             }
             log_ctf_race_final_state(
+                &runtime_config,
                 &mut race_probe,
                 username.as_str(),
                 *team,
@@ -2918,6 +3123,7 @@ fn do_flag_capturing(
                 &flag_manager,
             );
             log_ctf_spawn_resource_reset_state(
+                &runtime_config,
                 &mut spawn_reset_probe,
                 username.as_str(),
                 *team,
@@ -2929,13 +3135,14 @@ fn do_flag_capturing(
 }
 
 fn log_ctf_spawn_resource_reset_state(
+    config: &CtfRuntimeConfig,
     state: &mut CtfSpawnTeamResetProbeState,
     capture_username: &str,
     capture_team: Team,
     carried_flag: Team,
     score: &Score,
 ) {
-    if !ctf_spawn_team_reset_probe_enabled() || state.reset_logged {
+    if !ctf_spawn_team_reset_probe_enabled(config) || state.reset_logged {
         return;
     }
     if let Some(milestone) = ctf_spawn_resource_reset_state_milestone(
@@ -2952,6 +3159,7 @@ fn log_ctf_spawn_resource_reset_state(
 }
 
 fn log_score_limit_capture_and_win(
+    config: &CtfRuntimeConfig,
     username: &str,
     capture_team: Team,
     carried_flag: Team,
@@ -2962,7 +3170,7 @@ fn log_score_limit_capture_and_win(
     score: &Score,
     win_condition: &mut WinConditionState,
 ) {
-    if !score_limit_win_probe_enabled() {
+    if !score_limit_win_probe_enabled(config) {
         return;
     }
     let final_capture = score_limit_final_capture_milestone(
@@ -3152,6 +3360,7 @@ fn handle_combat_events(
     mut interact_entity: EventReader<InteractEntityEvent>,
     clones: Query<&ClonedEntity>,
     mut arrow_policy: ResMut<ArrowPolicyState>,
+    runtime_config: Res<CtfRuntimeConfig>,
 ) {
     for &SprintEvent { client, state } in sprinting.read() {
         if let Ok(mut client) = clients.get_mut(client) {
@@ -3189,6 +3398,7 @@ fn handle_combat_events(
 
         victim.state.last_attacked_tick = server.current_tick();
         let vanilla_combat_reference_hit = vanilla_combat_reference_probe_hit(
+            &runtime_config,
             attacker.username.as_str(),
             victim.username.as_str(),
         );
@@ -3229,6 +3439,7 @@ fn handle_combat_events(
         println!("{}", knockback);
         if vanilla_combat_reference_hit {
             let reference_knockback = vanilla_combat_reference_knockback_milestone(
+                &runtime_config,
                 attacker.username.as_str(),
                 victim.username.as_str(),
                 vanilla_combat_reference_knockback_metric(knockback_velocity),
@@ -3253,16 +3464,19 @@ fn handle_combat_events(
         };
         let chest_item = victim.inventory.slot(ARMOR_MITIGATION_CHEST_SLOT).item;
         let armor_mitigation = combat_armor_mitigation_for(
-            vanilla_combat_armor_reference_probe_enabled(),
-            armor_mitigation_probe_enabled(),
+            vanilla_combat_armor_reference_probe_enabled(&runtime_config),
+            armor_mitigation_probe_enabled(&runtime_config),
             chest_item,
             base_damage,
         );
-        let projectile_probe_hit = projectile_probe_enabled()
+        let projectile_probe_hit = projectile_probe_enabled(&runtime_config)
             && attacker.username.as_str() == "compatbota"
             && victim.username.as_str() == "compatbotb";
         let arrow_damage_decision = if projectile_probe_hit {
-            Some(projectile_probe_damage_decision(arrow_policy.as_mut()))
+            Some(projectile_probe_damage_decision(
+                arrow_policy.as_mut(),
+                &runtime_config.arrow_policy,
+            ))
         } else {
             None
         };
@@ -3322,7 +3536,7 @@ fn handle_combat_events(
         println!("{}", milestone);
         if vanilla_combat_reference_hit {
             let reference_damage = vanilla_combat_reference_damage_milestone(
-                vanilla_combat_reference_row(),
+                vanilla_combat_reference_row(&runtime_config),
                 attacker.username.as_str(),
                 victim.username.as_str(),
                 vanilla_combat_reference_weapon_name(stack.item),
@@ -3389,26 +3603,29 @@ fn handle_combat_events(
     }
 }
 
-fn vanilla_combat_reference_probe_enabled() -> bool {
-    env_flag_enabled(VANILLA_COMBAT_REFERENCE_PROBE_ENV)
-        || vanilla_combat_armor_reference_probe_enabled()
+fn vanilla_combat_reference_probe_enabled(config: &CtfRuntimeConfig) -> bool {
+    config.probes.vanilla_combat_reference
 }
 
-fn vanilla_combat_armor_reference_probe_enabled() -> bool {
-    env_flag_enabled(VANILLA_COMBAT_ARMOR_REFERENCE_PROBE_ENV)
+fn vanilla_combat_armor_reference_probe_enabled(config: &CtfRuntimeConfig) -> bool {
+    config.probes.vanilla_combat_armor_reference
 }
 
-fn inventory_stack_split_merge_probe_enabled() -> bool {
-    env_flag_enabled(INVENTORY_STACK_SPLIT_MERGE_PROBE_ENV)
+fn inventory_stack_split_merge_probe_enabled(config: &CtfRuntimeConfig) -> bool {
+    config.probes.inventory_stack_split_merge
 }
 
-fn inventory_drag_transactions_probe_enabled() -> bool {
-    env_flag_enabled(INVENTORY_DRAG_TRANSACTIONS_PROBE_ENV)
+fn inventory_drag_transactions_probe_enabled(config: &CtfRuntimeConfig) -> bool {
+    config.probes.inventory_drag_transactions
 }
 
-fn vanilla_combat_reference_probe_hit(attacker: &str, victim: &str) -> bool {
+fn vanilla_combat_reference_probe_hit(
+    config: &CtfRuntimeConfig,
+    attacker: &str,
+    victim: &str,
+) -> bool {
     vanilla_combat_reference_probe_hit_for(
-        vanilla_combat_reference_probe_enabled(),
+        vanilla_combat_reference_probe_enabled(config),
         attacker,
         victim,
     )
@@ -3446,8 +3663,14 @@ fn vanilla_combat_reference_assignment_for(
     }
 }
 
-fn vanilla_combat_reference_assignment(username: &str) -> Option<VanillaCombatReferenceAssignment> {
-    vanilla_combat_reference_assignment_for(vanilla_combat_reference_probe_enabled(), username)
+fn vanilla_combat_reference_assignment(
+    config: &CtfRuntimeConfig,
+    username: &str,
+) -> Option<VanillaCombatReferenceAssignment> {
+    vanilla_combat_reference_assignment_for(
+        vanilla_combat_reference_probe_enabled(config),
+        username,
+    )
 }
 
 fn vanilla_combat_reference_probe_hit_for(enabled: bool, attacker: &str, victim: &str) -> bool {
@@ -3478,8 +3701,8 @@ fn vanilla_combat_reference_armor_state(chest_item: ItemKind) -> &'static str {
     }
 }
 
-fn vanilla_combat_reference_row() -> &'static str {
-    if vanilla_combat_armor_reference_probe_enabled() {
+fn vanilla_combat_reference_row(config: &CtfRuntimeConfig) -> &'static str {
+    if vanilla_combat_armor_reference_probe_enabled(config) {
         return VANILLA_COMBAT_ARMOR_REFERENCE_ROW;
     }
     VANILLA_COMBAT_REFERENCE_ROW
@@ -3557,6 +3780,7 @@ fn vanilla_combat_reference_damage_milestone(
 }
 
 fn vanilla_combat_reference_knockback_milestone(
+    config: &CtfRuntimeConfig,
     attacker: &str,
     victim: &str,
     knockback_metric: f64,
@@ -3565,7 +3789,7 @@ fn vanilla_combat_reference_knockback_milestone(
         "MC-COMPAT-MILESTONE vanilla_combat_reference_knockback row={} backend={} \
          reference_oracle={} reference_version={} attacker_identity={} victim_identity={} \
          knockback_metric={:.2} knockback_tolerance={:.2}",
-        vanilla_combat_reference_row(),
+        vanilla_combat_reference_row(config),
         VANILLA_COMBAT_REFERENCE_BACKEND,
         VANILLA_COMBAT_REFERENCE_ORACLE,
         VANILLA_COMBAT_REFERENCE_VERSION,
@@ -3576,10 +3800,8 @@ fn vanilla_combat_reference_knockback_milestone(
     )
 }
 
-fn projectile_probe_enabled() -> bool {
-    std::env::var("MC_COMPAT_PROJECTILE_PROBE")
-        .map(|value| value != "0")
-        .unwrap_or(false)
+fn projectile_probe_enabled(config: &CtfRuntimeConfig) -> bool {
+    config.probes.projectile
 }
 
 fn handle_projectile_events(
@@ -3587,8 +3809,9 @@ fn handle_projectile_events(
     mut hand_swing: EventReader<HandSwingEvent>,
     mut clients: Query<(Entity, &mut Client, &Username, &mut Health, &Team)>,
     mut arrow_policy: ResMut<ArrowPolicyState>,
+    runtime_config: Res<CtfRuntimeConfig>,
 ) {
-    if !projectile_probe_enabled() {
+    if !projectile_probe_enabled(&runtime_config) {
         return;
     }
 
@@ -3627,7 +3850,8 @@ fn handle_projectile_events(
             continue;
         };
 
-        let decision = projectile_probe_damage_decision(arrow_policy.as_mut());
+        let decision =
+            projectile_probe_damage_decision(arrow_policy.as_mut(), &runtime_config.arrow_policy);
         let before = victim_health.0;
         victim_health.0 -= decision.damage;
         victim_client.trigger_status(EntityStatus::PlayAttackSound);
@@ -3663,16 +3887,12 @@ fn handle_projectile_events(
     }
 }
 
-fn armor_mitigation_probe_enabled() -> bool {
-    std::env::var("MC_COMPAT_ARMOR_MITIGATION_PROBE")
-        .map(|value| value != "0")
-        .unwrap_or(false)
+fn armor_mitigation_probe_enabled(config: &CtfRuntimeConfig) -> bool {
+    config.probes.armor_mitigation
 }
 
-fn equipment_update_probe_enabled() -> bool {
-    std::env::var("MC_COMPAT_EQUIPMENT_UPDATE_PROBE")
-        .map(|value| value != "0")
-        .unwrap_or(false)
+fn equipment_update_probe_enabled(config: &CtfRuntimeConfig) -> bool {
+    config.probes.equipment_update
 }
 
 fn teleport_oob_clients(mut clients: Query<(&mut Position, &Team), With<Client>>) {
@@ -3778,6 +3998,7 @@ mod tests {
         let contract = app.world().resource::<CtfGameplayPluginContract>();
         assert_eq!(contract.update_phase_order, CTF_GAMEPLAY_PHASE_ORDER);
         assert_eq!(contract.event_loop_phase_order, CTF_GAMEPLAY_PHASE_ORDER);
+        assert!(app.world().contains_resource::<CtfRuntimeConfig>());
         assert!(app.world().contains_resource::<ArrowPolicyState>());
         assert!(app_has_schedule(&app, UPDATE_SCHEDULE_LABEL));
         assert!(app_has_schedule(&app, CTF_EVENT_LOOP_SCHEDULE_LABEL));
@@ -3788,7 +4009,78 @@ mod tests {
         let app = app_with_ctf_event_loop_schedule();
 
         assert!(!app.world().contains_resource::<CtfGameplayPluginContract>());
+        assert!(!app.world().contains_resource::<CtfRuntimeConfig>());
         assert!(!app.world().contains_resource::<ArrowPolicyState>());
+    }
+
+    #[test]
+    fn ctf_runtime_config_parser_preserves_env_contracts() {
+        let config = parse_ctf_runtime_config(&CtfRuntimeConfigInputs {
+            inventory_stack_split_merge_probe: Some(ENV_FLAG_ENABLED_VALUE.to_owned()),
+            inventory_drag_transactions_probe: Some(ENV_FLAG_DISABLED_VALUE.to_owned()),
+            vanilla_combat_reference_probe: None,
+            vanilla_combat_armor_reference_probe: Some(ENV_FLAG_ENABLED_VALUE.to_owned()),
+            arrow_policy_config: Some(TEST_SOURCE.to_owned()),
+            arrow_policy_reload_request: Some("reload-1".to_owned()),
+            ctf_score_limit_win_probe: Some("nonzero".to_owned()),
+            ctf_race_probe: Some(ENV_FLAG_DISABLED_VALUE.to_owned()),
+            ctf_spawn_team_reset_probe: Some(ENV_FLAG_DISABLED_VALUE.to_owned()),
+            ctf_invalid_return_drop_probe: Some(ENV_FLAG_ENABLED_VALUE.to_owned()),
+            ctf_invalid_opponent_base_return_drop_probe: None,
+            projectile_probe: Some(ENV_FLAG_ENABLED_VALUE.to_owned()),
+            armor_mitigation_probe: Some(ENV_FLAG_DISABLED_VALUE.to_owned()),
+            equipment_update_probe: Some("true".to_owned()),
+        });
+
+        assert!(config.probes.inventory_stack_split_merge);
+        assert!(!config.probes.inventory_drag_transactions);
+        assert!(config.probes.vanilla_combat_reference);
+        assert!(config.probes.vanilla_combat_armor_reference);
+        assert!(config.probes.score_limit_win);
+        assert!(!config.probes.race);
+        assert!(config.probes.spawn_team_reset);
+        assert!(config.probes.invalid_return_drop);
+        assert!(!config.probes.invalid_opponent_base_return_drop);
+        assert!(config.probes.projectile);
+        assert!(!config.probes.armor_mitigation);
+        assert!(config.probes.equipment_update);
+        assert_eq!(
+            config.arrow_policy.config_path.as_deref(),
+            Some(TEST_SOURCE)
+        );
+        assert_eq!(
+            config.arrow_policy.reload_request.as_deref(),
+            Some("reload-1")
+        );
+    }
+
+    #[test]
+    fn ctf_runtime_config_diagnostics_cover_missing_stale_and_disabled_reload() {
+        let previous = parse_ctf_runtime_config(&CtfRuntimeConfigInputs {
+            arrow_policy_reload_request: Some("reload-1".to_owned()),
+            ..Default::default()
+        });
+        let missing_path = parse_ctf_runtime_config(&CtfRuntimeConfigInputs {
+            arrow_policy_reload_request: Some("reload-1".to_owned()),
+            ..Default::default()
+        });
+        let disabled_projectile = parse_ctf_runtime_config(&CtfRuntimeConfigInputs {
+            arrow_policy_config: Some(TEST_SOURCE.to_owned()),
+            projectile_probe: Some(ENV_FLAG_DISABLED_VALUE.to_owned()),
+            ..Default::default()
+        });
+
+        assert_eq!(
+            ctf_runtime_config_issues(Some(&previous), &missing_path),
+            vec![
+                CtfRuntimeConfigIssue::MissingReloadPolicyPath,
+                CtfRuntimeConfigIssue::StaleReloadRequest,
+            ]
+        );
+        assert_eq!(
+            ctf_runtime_config_issues(None, &disabled_projectile),
+            vec![CtfRuntimeConfigIssue::DisabledProjectilePolicy]
+        );
     }
 
     #[test]
@@ -4089,6 +4381,10 @@ mod tests {
 
     #[test]
     fn vanilla_combat_reference_milestones_record_normalized_metrics() {
+        let runtime_config = parse_ctf_runtime_config(&CtfRuntimeConfigInputs {
+            vanilla_combat_reference_probe: Some(ENV_FLAG_ENABLED_VALUE.to_owned()),
+            ..Default::default()
+        });
         let damage = vanilla_combat_reference_damage_milestone(
             VANILLA_COMBAT_REFERENCE_ROW,
             VANILLA_COMBAT_REFERENCE_ATTACKER,
@@ -4100,6 +4396,7 @@ mod tests {
             TEST_REFERENCE_DAMAGE,
         );
         let knockback = vanilla_combat_reference_knockback_milestone(
+            &runtime_config,
             VANILLA_COMBAT_REFERENCE_ATTACKER,
             VANILLA_COMBAT_REFERENCE_VICTIM,
             vanilla_combat_reference_knockback_metric([

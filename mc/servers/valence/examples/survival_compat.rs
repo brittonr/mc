@@ -181,6 +181,250 @@ const SURVIVAL_OVERWORLD_ID: &str = "minecraft:overworld";
 const SURVIVAL_NETHER_ID: &str = "minecraft:the_nether";
 const SURVIVAL_END_ID: &str = "minecraft:the_end";
 const SURVIVAL_UNKNOWN_ENVIRONMENT_ID: &str = "unknown";
+const SURVIVAL_ENV_FLAG_ENABLED_VALUE: &str = "1";
+
+#[derive(Resource, Clone, Debug, PartialEq, Eq)]
+struct SurvivalRuntimeConfig {
+    fixtures: SurvivalFixtureConfig,
+    paths: SurvivalPathConfig,
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+struct SurvivalFixtureConfig {
+    chest: bool,
+    crafting: bool,
+    crafting_breadth: bool,
+    furnace: bool,
+    furnace_smelting_breadth: bool,
+    hunger_food: bool,
+    hunger_health: bool,
+    mob_drop: bool,
+    mob_ai_loot: bool,
+    redstone_toggle: bool,
+    redstone_circuit: bool,
+    world_persistence: bool,
+    block_entity: bool,
+    block_entity_post_restart: bool,
+    world_multichunk: bool,
+    world_multichunk_post_restart: bool,
+    container_block_entity: bool,
+    sign_editing: bool,
+    biome_dimension: bool,
+    biome_dimension_travel: bool,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct SurvivalPathConfig {
+    world_persistence_marker: PathBuf,
+    block_entity_marker: PathBuf,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct SurvivalRuntimeConfigInputs {
+    chest_fixture: Option<String>,
+    crafting_fixture: Option<String>,
+    crafting_breadth_fixture: Option<String>,
+    furnace_fixture: Option<String>,
+    furnace_smelting_breadth_fixture: Option<String>,
+    hunger_food_fixture: Option<String>,
+    hunger_health_fixture: Option<String>,
+    mob_drop_fixture: Option<String>,
+    mob_ai_loot_fixture: Option<String>,
+    redstone_toggle_fixture: Option<String>,
+    redstone_circuit_fixture: Option<String>,
+    world_persistence_fixture: Option<String>,
+    world_persistence_dir: Option<String>,
+    block_entity_fixture: Option<String>,
+    block_entity_dir: Option<String>,
+    block_entity_phase: Option<String>,
+    world_multichunk_fixture: Option<String>,
+    world_multichunk_phase: Option<String>,
+    container_block_entity_fixture: Option<String>,
+    sign_editing_fixture: Option<String>,
+    biome_dimension_fixture: Option<String>,
+    biome_dimension_travel_fixture: Option<String>,
+    temp_dir: PathBuf,
+}
+
+impl Default for SurvivalRuntimeConfigInputs {
+    fn default() -> Self {
+        Self {
+            chest_fixture: None,
+            crafting_fixture: None,
+            crafting_breadth_fixture: None,
+            furnace_fixture: None,
+            furnace_smelting_breadth_fixture: None,
+            hunger_food_fixture: None,
+            hunger_health_fixture: None,
+            mob_drop_fixture: None,
+            mob_ai_loot_fixture: None,
+            redstone_toggle_fixture: None,
+            redstone_circuit_fixture: None,
+            world_persistence_fixture: None,
+            world_persistence_dir: None,
+            block_entity_fixture: None,
+            block_entity_dir: None,
+            block_entity_phase: None,
+            world_multichunk_fixture: None,
+            world_multichunk_phase: None,
+            container_block_entity_fixture: None,
+            sign_editing_fixture: None,
+            biome_dimension_fixture: None,
+            biome_dimension_travel_fixture: None,
+            temp_dir: std::env::temp_dir(),
+        }
+    }
+}
+
+impl SurvivalRuntimeConfig {
+    fn from_env() -> Self {
+        parse_survival_runtime_config(&SurvivalRuntimeConfigInputs::from_env())
+    }
+}
+
+impl SurvivalRuntimeConfigInputs {
+    fn from_env() -> Self {
+        Self {
+            chest_fixture: std::env::var(SURVIVAL_CHEST_FIXTURE_ENV).ok(),
+            crafting_fixture: std::env::var(SURVIVAL_CRAFTING_FIXTURE_ENV).ok(),
+            crafting_breadth_fixture: std::env::var(SURVIVAL_CRAFTING_BREADTH_FIXTURE_ENV).ok(),
+            furnace_fixture: std::env::var(SURVIVAL_FURNACE_FIXTURE_ENV).ok(),
+            furnace_smelting_breadth_fixture: std::env::var(
+                SURVIVAL_FURNACE_SMELTING_BREADTH_FIXTURE_ENV,
+            )
+            .ok(),
+            hunger_food_fixture: std::env::var(SURVIVAL_HUNGER_FOOD_FIXTURE_ENV).ok(),
+            hunger_health_fixture: std::env::var(SURVIVAL_HUNGER_HEALTH_FIXTURE_ENV).ok(),
+            mob_drop_fixture: std::env::var(SURVIVAL_MOB_DROP_FIXTURE_ENV).ok(),
+            mob_ai_loot_fixture: std::env::var(SURVIVAL_MOB_AI_LOOT_FIXTURE_ENV).ok(),
+            redstone_toggle_fixture: std::env::var(SURVIVAL_REDSTONE_TOGGLE_FIXTURE_ENV).ok(),
+            redstone_circuit_fixture: std::env::var(SURVIVAL_REDSTONE_CIRCUIT_FIXTURE_ENV).ok(),
+            world_persistence_fixture: std::env::var(SURVIVAL_WORLD_PERSISTENCE_FIXTURE_ENV).ok(),
+            world_persistence_dir: std::env::var(SURVIVAL_WORLD_PERSISTENCE_DIR_ENV).ok(),
+            block_entity_fixture: std::env::var(SURVIVAL_BLOCK_ENTITY_FIXTURE_ENV).ok(),
+            block_entity_dir: std::env::var(SURVIVAL_BLOCK_ENTITY_DIR_ENV).ok(),
+            block_entity_phase: std::env::var(SURVIVAL_BLOCK_ENTITY_PHASE_ENV).ok(),
+            world_multichunk_fixture: std::env::var(SURVIVAL_WORLD_MULTICHUNK_FIXTURE_ENV).ok(),
+            world_multichunk_phase: std::env::var(SURVIVAL_WORLD_MULTICHUNK_PHASE_ENV).ok(),
+            container_block_entity_fixture: std::env::var(
+                SURVIVAL_CONTAINER_BLOCK_ENTITY_FIXTURE_ENV,
+            )
+            .ok(),
+            sign_editing_fixture: std::env::var(SURVIVAL_SIGN_EDITING_FIXTURE_ENV).ok(),
+            biome_dimension_fixture: std::env::var(SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV).ok(),
+            biome_dimension_travel_fixture: std::env::var(
+                SURVIVAL_BIOME_DIMENSION_TRAVEL_FIXTURE_ENV,
+            )
+            .ok(),
+            temp_dir: std::env::temp_dir(),
+        }
+    }
+}
+
+fn parse_survival_runtime_config(inputs: &SurvivalRuntimeConfigInputs) -> SurvivalRuntimeConfig {
+    let furnace_smelting_breadth =
+        parse_survival_enabled_flag(inputs.furnace_smelting_breadth_fixture.as_deref());
+    SurvivalRuntimeConfig {
+        fixtures: SurvivalFixtureConfig {
+            chest: parse_survival_enabled_flag(inputs.chest_fixture.as_deref()),
+            crafting: parse_survival_enabled_flag(inputs.crafting_fixture.as_deref()),
+            crafting_breadth: parse_survival_enabled_flag(
+                inputs.crafting_breadth_fixture.as_deref(),
+            ),
+            furnace: parse_survival_enabled_flag(inputs.furnace_fixture.as_deref())
+                || furnace_smelting_breadth,
+            furnace_smelting_breadth,
+            hunger_food: parse_survival_enabled_flag(inputs.hunger_food_fixture.as_deref()),
+            hunger_health: parse_survival_enabled_flag(inputs.hunger_health_fixture.as_deref()),
+            mob_drop: parse_survival_enabled_flag(inputs.mob_drop_fixture.as_deref()),
+            mob_ai_loot: parse_survival_enabled_flag(inputs.mob_ai_loot_fixture.as_deref()),
+            redstone_toggle: parse_survival_enabled_flag(inputs.redstone_toggle_fixture.as_deref()),
+            redstone_circuit: parse_survival_enabled_flag(
+                inputs.redstone_circuit_fixture.as_deref(),
+            ),
+            world_persistence: parse_survival_enabled_flag(
+                inputs.world_persistence_fixture.as_deref(),
+            ),
+            block_entity: parse_survival_enabled_flag(inputs.block_entity_fixture.as_deref()),
+            block_entity_post_restart: parse_survival_post_restart_phase(
+                inputs.block_entity_phase.as_deref(),
+            ),
+            world_multichunk: parse_survival_enabled_flag(
+                inputs.world_multichunk_fixture.as_deref(),
+            ),
+            world_multichunk_post_restart: parse_survival_post_restart_phase(
+                inputs.world_multichunk_phase.as_deref(),
+            ),
+            container_block_entity: parse_survival_enabled_flag(
+                inputs.container_block_entity_fixture.as_deref(),
+            ),
+            sign_editing: parse_survival_enabled_flag(inputs.sign_editing_fixture.as_deref()),
+            biome_dimension: parse_survival_enabled_flag(inputs.biome_dimension_fixture.as_deref()),
+            biome_dimension_travel: parse_survival_enabled_flag(
+                inputs.biome_dimension_travel_fixture.as_deref(),
+            ),
+        },
+        paths: SurvivalPathConfig {
+            world_persistence_marker: survival_marker_path(
+                inputs.world_persistence_dir.as_deref(),
+                &inputs.temp_dir,
+                "mc-compat-world-persistence",
+                SURVIVAL_WORLD_PERSISTENCE_MARKER_FILE,
+            ),
+            block_entity_marker: survival_marker_path(
+                inputs.block_entity_dir.as_deref(),
+                &inputs.temp_dir,
+                "mc-compat-block-entity-persistence",
+                SURVIVAL_BLOCK_ENTITY_MARKER_FILE,
+            ),
+        },
+    }
+}
+
+fn parse_survival_enabled_flag(value: Option<&str>) -> bool {
+    matches!(value, Some(SURVIVAL_ENV_FLAG_ENABLED_VALUE))
+}
+
+fn parse_survival_post_restart_phase(value: Option<&str>) -> bool {
+    matches!(value, Some(SURVIVAL_BLOCK_ENTITY_POST_RESTART_PHASE))
+}
+
+fn survival_marker_path(
+    configured_dir: Option<&str>,
+    temp_dir: &std::path::Path,
+    default_dir_name: &str,
+    marker_file: &str,
+) -> PathBuf {
+    configured_dir
+        .map(PathBuf::from)
+        .unwrap_or_else(|| temp_dir.join(default_dir_name))
+        .join(marker_file)
+}
+
+#[cfg(test)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum SurvivalRuntimeConfigIssue {
+    ConflictingHungerFixtures,
+    StaleBlockEntityPhase,
+    StaleWorldMultichunkPhase,
+}
+
+#[cfg(test)]
+fn survival_runtime_config_issues(
+    config: &SurvivalRuntimeConfig,
+) -> Vec<SurvivalRuntimeConfigIssue> {
+    let mut issues = Vec::new();
+    if config.fixtures.hunger_food && config.fixtures.hunger_health {
+        issues.push(SurvivalRuntimeConfigIssue::ConflictingHungerFixtures);
+    }
+    if config.fixtures.block_entity_post_restart && !config.fixtures.block_entity {
+        issues.push(SurvivalRuntimeConfigIssue::StaleBlockEntityPhase);
+    }
+    if config.fixtures.world_multichunk_post_restart && !config.fixtures.world_multichunk {
+        issues.push(SurvivalRuntimeConfigIssue::StaleWorldMultichunkPhase);
+    }
+    issues
+}
 
 #[derive(Resource)]
 struct SurvivalChestFixture {
@@ -454,7 +698,8 @@ impl Plugin for SurvivalCompatibilityPlugin {
             SURVIVAL_GAMEPLAY_PHASE_ORDER
         );
 
-        app.insert_resource(contract)
+        app.insert_resource(SurvivalRuntimeConfig::from_env())
+            .insert_resource(contract)
             .configure_sets(
                 EventLoopPreUpdate,
                 (
@@ -480,9 +725,17 @@ impl Plugin for SurvivalCompatibilityPlugin {
             .add_systems(Startup, setup)
             .add_systems(
                 EventLoopPreUpdate,
+                refresh_survival_runtime_config_from_env.in_set(SurvivalGameplayPhase::Input),
+            )
+            .add_systems(
+                EventLoopPreUpdate,
                 handle_survival_chest_close.in_set(SurvivalGameplayPhase::Input),
             )
-            .add_systems(Update, init_clients.in_set(SurvivalGameplayPhase::Input))
+            .add_systems(
+                Update,
+                (refresh_survival_runtime_config_from_env, init_clients)
+                    .in_set(SurvivalGameplayPhase::Input),
+            )
             .add_systems(
                 Update,
                 (
@@ -528,12 +781,17 @@ pub fn main() {
         .run();
 }
 
+fn refresh_survival_runtime_config_from_env(mut runtime_config: ResMut<SurvivalRuntimeConfig>) {
+    *runtime_config = SurvivalRuntimeConfig::from_env();
+}
+
 fn setup(
     mut commands: Commands,
     server: Res<Server>,
     dimensions: Res<DimensionTypeRegistry>,
     biomes: Res<BiomeRegistry>,
     mut entity_manager: ResMut<EntityManager>,
+    runtime_config: Res<SurvivalRuntimeConfig>,
 ) {
     let mut layer = LayerBundle::new(ident!("overworld"), &dimensions, &biomes, &server);
 
@@ -553,22 +811,22 @@ fn setup(
     layer
         .chunk
         .set_block(survival_break_pos(), survival_block_state());
-    if survival_chest_fixture_enabled() {
+    if survival_chest_fixture_enabled(&runtime_config) {
         layer
             .chunk
             .set_block(survival_chest_pos(), BlockState::CHEST);
     }
-    if survival_crafting_fixture_enabled() {
+    if survival_crafting_fixture_enabled(&runtime_config) {
         layer
             .chunk
             .set_block(survival_crafting_pos(), survival_crafting_table_state());
     }
-    if survival_furnace_fixture_enabled() {
+    if survival_furnace_fixture_enabled(&runtime_config) {
         layer
             .chunk
             .set_block(survival_furnace_pos(), survival_furnace_state());
     }
-    if survival_redstone_toggle_fixture_enabled() {
+    if survival_redstone_toggle_fixture_enabled(&runtime_config) {
         setup_survival_redstone_toggle_arena(&mut layer);
         layer.chunk.set_block(
             survival_redstone_toggle_control_pos(),
@@ -579,9 +837,9 @@ fn setup(
             survival_redstone_toggle_output_state(false),
         );
     }
-    let world_persistence_marker = survival_world_persistence_marker_path();
+    let world_persistence_marker = survival_world_persistence_marker_path(&runtime_config);
     let world_persistence_loaded = world_persistence_marker.exists();
-    if survival_world_persistence_fixture_enabled() {
+    if survival_world_persistence_fixture_enabled(&runtime_config) {
         setup_survival_world_persistence_arena(&mut layer);
         let state = if world_persistence_loaded {
             survival_world_persistence_state()
@@ -592,11 +850,11 @@ fn setup(
             .chunk
             .set_block(survival_world_persistence_pos(), state);
     }
-    let block_entity_marker = survival_block_entity_marker_path();
+    let block_entity_marker = survival_block_entity_marker_path(&runtime_config);
     let block_entity_loaded = block_entity_marker.exists();
-    if survival_block_entity_fixture_enabled() {
+    if survival_block_entity_fixture_enabled(&runtime_config) {
         setup_survival_block_entity_arena(&mut layer);
-        if survival_block_entity_should_place_sign(block_entity_loaded) {
+        if survival_block_entity_should_place_sign(&runtime_config, block_entity_loaded) {
             layer
                 .chunk
                 .set_block(survival_block_entity_pos(), survival_block_entity_block());
@@ -605,7 +863,7 @@ fn setup(
 
     let layer = commands.spawn(layer).id();
 
-    if survival_chest_fixture_enabled() {
+    if survival_chest_fixture_enabled(&runtime_config) {
         let inventory = commands
             .spawn(Inventory::with_title(
                 InventoryKind::Generic9x3,
@@ -614,7 +872,7 @@ fn setup(
             .id();
         commands.insert_resource(SurvivalChestFixture::new(inventory));
     }
-    if survival_crafting_fixture_enabled() {
+    if survival_crafting_fixture_enabled(&runtime_config) {
         let inventory = commands
             .spawn(Inventory::with_title(
                 InventoryKind::Crafting,
@@ -623,10 +881,10 @@ fn setup(
             .id();
         commands.insert_resource(SurvivalCraftingFixture::new(inventory));
     }
-    if survival_crafting_breadth_fixture_enabled() {
+    if survival_crafting_breadth_fixture_enabled(&runtime_config) {
         commands.insert_resource(SurvivalCraftingBreadthFixture::default());
     }
-    if survival_furnace_fixture_enabled() {
+    if survival_furnace_fixture_enabled(&runtime_config) {
         let inventory = commands
             .spawn(Inventory::with_title(
                 InventoryKind::Furnace,
@@ -635,13 +893,13 @@ fn setup(
             .id();
         commands.insert_resource(SurvivalFurnaceFixture::new(
             inventory,
-            survival_furnace_smelting_breadth_fixture_enabled(),
+            survival_furnace_smelting_breadth_fixture_enabled(&runtime_config),
         ));
     }
-    if let Some(profile) = survival_hunger_profile() {
+    if let Some(profile) = survival_hunger_profile(&runtime_config) {
         commands.insert_resource(SurvivalHungerFoodFixture::new(profile));
     }
-    if survival_mob_drop_fixture_enabled() {
+    if survival_mob_drop_fixture_enabled(&runtime_config) {
         let mob_id = entity_manager.next_id();
         let mob = commands
             .spawn(IronGolemEntityBundle {
@@ -653,16 +911,16 @@ fn setup(
             .id();
         commands.insert_resource(SurvivalMobDropFixture::new(mob, mob_id.get()));
     }
-    if survival_redstone_toggle_fixture_enabled() {
+    if survival_redstone_toggle_fixture_enabled(&runtime_config) {
         commands.insert_resource(SurvivalRedstoneToggleFixture::default());
     }
-    if survival_world_persistence_fixture_enabled() {
+    if survival_world_persistence_fixture_enabled(&runtime_config) {
         commands.insert_resource(SurvivalWorldPersistenceFixture::new(
             world_persistence_marker,
             world_persistence_loaded,
         ));
     }
-    if survival_block_entity_fixture_enabled() {
+    if survival_block_entity_fixture_enabled(&runtime_config) {
         commands.insert_resource(SurvivalBlockEntityFixture::new(
             block_entity_marker,
             block_entity_loaded,
@@ -694,6 +952,7 @@ fn init_clients(
     mut mob_drop_fixture: Option<ResMut<SurvivalMobDropFixture>>,
     mut world_persistence_fixture: Option<ResMut<SurvivalWorldPersistenceFixture>>,
     mut block_entity_fixture: Option<ResMut<SurvivalBlockEntityFixture>>,
+    runtime_config: Res<SurvivalRuntimeConfig>,
 ) {
     for (
         mut client,
@@ -715,19 +974,19 @@ fn init_clients(
         layer_id.0 = layer;
         visible_chunk_layer.0 = layer;
         visible_entity_layers.0.insert(layer);
-        if survival_redstone_toggle_fixture_enabled() {
+        if survival_redstone_toggle_fixture_enabled(&runtime_config) {
             pos.set([
                 SURVIVAL_REDSTONE_TOGGLE_PLAYER_X,
                 SURVIVAL_REDSTONE_TOGGLE_PLAYER_Y,
                 SURVIVAL_REDSTONE_TOGGLE_PLAYER_Z,
             ]);
-        } else if survival_world_persistence_fixture_enabled() {
+        } else if survival_world_persistence_fixture_enabled(&runtime_config) {
             pos.set([
                 SURVIVAL_WORLD_PERSISTENCE_PLAYER_X,
                 SURVIVAL_WORLD_PERSISTENCE_PLAYER_Y,
                 SURVIVAL_WORLD_PERSISTENCE_PLAYER_Z,
             ]);
-        } else if survival_block_entity_fixture_enabled() {
+        } else if survival_block_entity_fixture_enabled(&runtime_config) {
             pos.set([
                 SURVIVAL_BLOCK_ENTITY_PLAYER_X,
                 SURVIVAL_BLOCK_ENTITY_PLAYER_Y,
@@ -738,16 +997,16 @@ fn init_clients(
         }
         *game_mode = GameMode::Survival;
         inventory.set_slot(SURVIVAL_ITEM_SLOT, ItemStack::EMPTY);
-        if survival_chest_fixture_enabled() {
+        if survival_chest_fixture_enabled(&runtime_config) {
             cursor_item.0 = survival_chest_item_stack();
         }
-        if survival_crafting_fixture_enabled() {
+        if survival_crafting_fixture_enabled(&runtime_config) {
             cursor_item.0 = survival_crafting_input_stack(SURVIVAL_CRAFTING_TOTAL_INPUT_COUNT);
         }
-        if survival_furnace_fixture_enabled() {
+        if survival_furnace_fixture_enabled(&runtime_config) {
             cursor_item.0 = survival_furnace_input_stack();
         }
-        if survival_world_persistence_fixture_enabled() {
+        if survival_world_persistence_fixture_enabled(&runtime_config) {
             inventory.set_slot(
                 SURVIVAL_WORLD_PERSISTENCE_INVENTORY_SLOT,
                 survival_world_persistence_stack(),
@@ -773,14 +1032,14 @@ fn init_clients(
             FLOOR_Y,
             SURVIVAL_TARGET_Z
         ));
-        if survival_biome_dimension_fixture_enabled() {
+        if survival_biome_dimension_fixture_enabled(&runtime_config) {
             log_survival_biome_dimension_state(
                 username.as_str(),
                 SURVIVAL_OVERWORLD_ID,
                 SURVIVAL_OVERWORLD_ID,
             );
         }
-        log_survival_breadth_synthetic_fixtures(username.as_str());
+        log_survival_breadth_synthetic_fixtures(&runtime_config, username.as_str());
         if let Some(fixture) = crafting_breadth_fixture.as_mut() {
             log_survival_crafting_breadth(username.as_str(), fixture);
         }
@@ -791,7 +1050,7 @@ fn init_clients(
             log_survival_world_persistence_post_restart(username.as_str(), &mut client, fixture);
         }
         if let Some(fixture) = block_entity_fixture.as_mut() {
-            log_survival_block_entity_persistence(username.as_str(), fixture);
+            log_survival_block_entity_persistence(&runtime_config, username.as_str(), fixture);
         }
     }
 }
@@ -2139,8 +2398,8 @@ fn set_survival_slot(
     }
 }
 
-fn survival_chest_fixture_enabled() -> bool {
-    std::env::var(SURVIVAL_CHEST_FIXTURE_ENV).as_deref() == Ok("1")
+fn survival_chest_fixture_enabled(config: &SurvivalRuntimeConfig) -> bool {
+    config.fixtures.chest
 }
 
 fn survival_chest_pos() -> BlockPos {
@@ -2155,12 +2414,12 @@ fn survival_chest_item_kind() -> ItemKind {
     BlockState::DIRT.to_kind().to_item_kind()
 }
 
-fn survival_crafting_fixture_enabled() -> bool {
-    std::env::var(SURVIVAL_CRAFTING_FIXTURE_ENV).as_deref() == Ok("1")
+fn survival_crafting_fixture_enabled(config: &SurvivalRuntimeConfig) -> bool {
+    config.fixtures.crafting
 }
 
-fn survival_crafting_breadth_fixture_enabled() -> bool {
-    std::env::var(SURVIVAL_CRAFTING_BREADTH_FIXTURE_ENV).as_deref() == Ok("1")
+fn survival_crafting_breadth_fixture_enabled(config: &SurvivalRuntimeConfig) -> bool {
+    config.fixtures.crafting_breadth
 }
 
 fn survival_crafting_pos() -> BlockPos {
@@ -2197,27 +2456,26 @@ fn survival_crafting_result_kind() -> ItemKind {
     ItemKind::Stick
 }
 
-fn survival_furnace_fixture_enabled() -> bool {
-    std::env::var(SURVIVAL_FURNACE_FIXTURE_ENV).as_deref() == Ok("1")
-        || survival_furnace_smelting_breadth_fixture_enabled()
+fn survival_furnace_fixture_enabled(config: &SurvivalRuntimeConfig) -> bool {
+    config.fixtures.furnace
 }
 
-fn survival_furnace_smelting_breadth_fixture_enabled() -> bool {
-    std::env::var(SURVIVAL_FURNACE_SMELTING_BREADTH_FIXTURE_ENV).as_deref() == Ok("1")
+fn survival_furnace_smelting_breadth_fixture_enabled(config: &SurvivalRuntimeConfig) -> bool {
+    config.fixtures.furnace_smelting_breadth
 }
 
-fn survival_hunger_food_fixture_enabled() -> bool {
-    std::env::var(SURVIVAL_HUNGER_FOOD_FIXTURE_ENV).as_deref() == Ok("1")
+fn survival_hunger_food_fixture_enabled(config: &SurvivalRuntimeConfig) -> bool {
+    config.fixtures.hunger_food
 }
 
-fn survival_hunger_health_fixture_enabled() -> bool {
-    std::env::var(SURVIVAL_HUNGER_HEALTH_FIXTURE_ENV).as_deref() == Ok("1")
+fn survival_hunger_health_fixture_enabled(config: &SurvivalRuntimeConfig) -> bool {
+    config.fixtures.hunger_health
 }
 
-fn survival_hunger_profile() -> Option<SurvivalHungerProfile> {
+fn survival_hunger_profile(config: &SurvivalRuntimeConfig) -> Option<SurvivalHungerProfile> {
     survival_hunger_profile_from_flags(
-        survival_hunger_food_fixture_enabled(),
-        survival_hunger_health_fixture_enabled(),
+        survival_hunger_food_fixture_enabled(config),
+        survival_hunger_health_fixture_enabled(config),
     )
 }
 
@@ -2381,12 +2639,12 @@ fn survival_hunger_food_kind() -> ItemKind {
     ItemKind::Bread
 }
 
-fn survival_mob_drop_fixture_enabled() -> bool {
-    std::env::var(SURVIVAL_MOB_DROP_FIXTURE_ENV).as_deref() == Ok("1")
+fn survival_mob_drop_fixture_enabled(config: &SurvivalRuntimeConfig) -> bool {
+    config.fixtures.mob_drop
 }
 
-fn survival_redstone_toggle_fixture_enabled() -> bool {
-    std::env::var(SURVIVAL_REDSTONE_TOGGLE_FIXTURE_ENV).as_deref() == Ok("1")
+fn survival_redstone_toggle_fixture_enabled(config: &SurvivalRuntimeConfig) -> bool {
+    config.fixtures.redstone_toggle
 }
 
 fn setup_survival_redstone_toggle_arena(layer: &mut LayerBundle) {
@@ -2449,15 +2707,12 @@ fn should_toggle_survival_redstone(game_mode: GameMode, hand: Hand, position: Bl
     )
 }
 
-fn survival_world_persistence_fixture_enabled() -> bool {
-    std::env::var(SURVIVAL_WORLD_PERSISTENCE_FIXTURE_ENV).as_deref() == Ok("1")
+fn survival_world_persistence_fixture_enabled(config: &SurvivalRuntimeConfig) -> bool {
+    config.fixtures.world_persistence
 }
 
-fn survival_world_persistence_marker_path() -> PathBuf {
-    std::env::var(SURVIVAL_WORLD_PERSISTENCE_DIR_ENV)
-        .map(PathBuf::from)
-        .unwrap_or_else(|_| std::env::temp_dir().join("mc-compat-world-persistence"))
-        .join(SURVIVAL_WORLD_PERSISTENCE_MARKER_FILE)
+fn survival_world_persistence_marker_path(config: &SurvivalRuntimeConfig) -> PathBuf {
+    config.paths.world_persistence_marker.clone()
 }
 
 fn setup_survival_world_persistence_arena(layer: &mut LayerBundle) {
@@ -2566,25 +2821,24 @@ fn log_survival_world_persistence_post_restart(
     ));
 }
 
-fn survival_block_entity_fixture_enabled() -> bool {
-    std::env::var(SURVIVAL_BLOCK_ENTITY_FIXTURE_ENV).as_deref() == Ok("1")
+fn survival_block_entity_fixture_enabled(config: &SurvivalRuntimeConfig) -> bool {
+    config.fixtures.block_entity
 }
 
-fn survival_block_entity_post_restart_phase() -> bool {
-    std::env::var(SURVIVAL_BLOCK_ENTITY_PHASE_ENV).as_deref()
-        == Ok(SURVIVAL_BLOCK_ENTITY_POST_RESTART_PHASE)
+fn survival_block_entity_post_restart_phase(config: &SurvivalRuntimeConfig) -> bool {
+    config.fixtures.block_entity_post_restart
 }
 
-fn survival_block_entity_marker_path() -> PathBuf {
-    std::env::var(SURVIVAL_BLOCK_ENTITY_DIR_ENV)
-        .map(PathBuf::from)
-        .unwrap_or_else(|_| std::env::temp_dir().join("mc-compat-block-entity-persistence"))
-        .join(SURVIVAL_BLOCK_ENTITY_MARKER_FILE)
+fn survival_block_entity_marker_path(config: &SurvivalRuntimeConfig) -> PathBuf {
+    config.paths.block_entity_marker.clone()
 }
 
-fn survival_block_entity_should_place_sign(persisted_loaded: bool) -> bool {
+fn survival_block_entity_should_place_sign(
+    config: &SurvivalRuntimeConfig,
+    persisted_loaded: bool,
+) -> bool {
     survival_core::should_place_block_entity_sign(
-        survival_block_entity_post_restart_phase(),
+        survival_block_entity_post_restart_phase(config),
         persisted_loaded,
     )
 }
@@ -2635,8 +2889,12 @@ fn write_survival_block_entity_marker(path: &PathBuf) {
     let _ = fs::write(path, SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD);
 }
 
-fn log_survival_block_entity_persistence(username: &str, fixture: &mut SurvivalBlockEntityFixture) {
-    if survival_block_entity_post_restart_phase() {
+fn log_survival_block_entity_persistence(
+    config: &SurvivalRuntimeConfig,
+    username: &str,
+    fixture: &mut SurvivalBlockEntityFixture,
+) {
+    if survival_block_entity_post_restart_phase(config) {
         log_survival_block_entity_post_restart(username, fixture);
     } else {
         log_survival_block_entity_mutation(username, fixture);
@@ -2895,56 +3153,55 @@ fn log_survival_hunger_food_pre(username: &str, fixture: &mut SurvivalHungerFood
     ));
 }
 
-fn survival_biome_dimension_fixture_enabled() -> bool {
-    std::env::var(SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV).as_deref() == Ok("1")
+fn survival_biome_dimension_fixture_enabled(config: &SurvivalRuntimeConfig) -> bool {
+    config.fixtures.biome_dimension
 }
 
-fn survival_mob_ai_loot_fixture_enabled() -> bool {
-    std::env::var(SURVIVAL_MOB_AI_LOOT_FIXTURE_ENV).as_deref() == Ok("1")
+fn survival_mob_ai_loot_fixture_enabled(config: &SurvivalRuntimeConfig) -> bool {
+    config.fixtures.mob_ai_loot
 }
 
-fn survival_redstone_circuit_fixture_enabled() -> bool {
-    std::env::var(SURVIVAL_REDSTONE_CIRCUIT_FIXTURE_ENV).as_deref() == Ok("1")
+fn survival_redstone_circuit_fixture_enabled(config: &SurvivalRuntimeConfig) -> bool {
+    config.fixtures.redstone_circuit
 }
 
-fn survival_world_multichunk_fixture_enabled() -> bool {
-    std::env::var(SURVIVAL_WORLD_MULTICHUNK_FIXTURE_ENV).as_deref() == Ok("1")
+fn survival_world_multichunk_fixture_enabled(config: &SurvivalRuntimeConfig) -> bool {
+    config.fixtures.world_multichunk
 }
 
-fn survival_world_multichunk_post_restart_phase() -> bool {
-    std::env::var(SURVIVAL_WORLD_MULTICHUNK_PHASE_ENV).as_deref()
-        == Ok(SURVIVAL_BLOCK_ENTITY_POST_RESTART_PHASE)
+fn survival_world_multichunk_post_restart_phase(config: &SurvivalRuntimeConfig) -> bool {
+    config.fixtures.world_multichunk_post_restart
 }
 
-fn survival_container_block_entity_fixture_enabled() -> bool {
-    std::env::var(SURVIVAL_CONTAINER_BLOCK_ENTITY_FIXTURE_ENV).as_deref() == Ok("1")
+fn survival_container_block_entity_fixture_enabled(config: &SurvivalRuntimeConfig) -> bool {
+    config.fixtures.container_block_entity
 }
 
-fn survival_biome_dimension_travel_fixture_enabled() -> bool {
-    std::env::var(SURVIVAL_BIOME_DIMENSION_TRAVEL_FIXTURE_ENV).as_deref() == Ok("1")
+fn survival_biome_dimension_travel_fixture_enabled(config: &SurvivalRuntimeConfig) -> bool {
+    config.fixtures.biome_dimension_travel
 }
 
-fn survival_sign_editing_fixture_enabled() -> bool {
-    std::env::var(SURVIVAL_SIGN_EDITING_FIXTURE_ENV).as_deref() == Ok("1")
+fn survival_sign_editing_fixture_enabled(config: &SurvivalRuntimeConfig) -> bool {
+    config.fixtures.sign_editing
 }
 
-fn log_survival_breadth_synthetic_fixtures(username: &str) {
-    if survival_mob_ai_loot_fixture_enabled() {
+fn log_survival_breadth_synthetic_fixtures(config: &SurvivalRuntimeConfig, username: &str) {
+    if survival_mob_ai_loot_fixture_enabled(config) {
         log_survival_mob_ai_loot_breadth(username);
     }
-    if survival_redstone_circuit_fixture_enabled() {
+    if survival_redstone_circuit_fixture_enabled(config) {
         log_survival_redstone_circuit_breadth(username);
     }
-    if survival_world_multichunk_fixture_enabled() {
-        log_survival_world_multichunk_breadth(username);
+    if survival_world_multichunk_fixture_enabled(config) {
+        log_survival_world_multichunk_breadth(config, username);
     }
-    if survival_container_block_entity_fixture_enabled() {
+    if survival_container_block_entity_fixture_enabled(config) {
         log_survival_container_block_entity_breadth(username);
     }
-    if survival_biome_dimension_travel_fixture_enabled() {
+    if survival_biome_dimension_travel_fixture_enabled(config) {
         log_survival_biome_dimension_travel_breadth(username);
     }
-    if survival_sign_editing_fixture_enabled() {
+    if survival_sign_editing_fixture_enabled(config) {
         log_survival_sign_editing_live_breadth(username);
     }
 }
@@ -3007,8 +3264,8 @@ fn log_survival_redstone_circuit_breadth(username: &str) {
     ));
 }
 
-fn log_survival_world_multichunk_breadth(username: &str) {
-    if survival_world_multichunk_post_restart_phase() {
+fn log_survival_world_multichunk_breadth(config: &SurvivalRuntimeConfig, username: &str) {
+    if survival_world_multichunk_post_restart_phase(config) {
         log_milestone(format!(
             "MC-COMPAT-MILESTONE survival_world_multichunk_post_restart_observe username={} primary=present secondary=present auxiliary_marker_only=false",
             username
@@ -3285,6 +3542,7 @@ mod tests {
             contract.event_loop_phase_order,
             SURVIVAL_GAMEPLAY_PHASE_ORDER
         );
+        assert!(app.world().contains_resource::<SurvivalRuntimeConfig>());
         assert!(app_has_schedule(&app, UPDATE_SCHEDULE_LABEL));
         assert!(app_has_schedule(&app, SURVIVAL_EVENT_LOOP_SCHEDULE_LABEL));
     }
@@ -3296,6 +3554,58 @@ mod tests {
         assert!(!app
             .world()
             .contains_resource::<SurvivalCompatibilityPluginContract>());
+        assert!(!app.world().contains_resource::<SurvivalRuntimeConfig>());
+    }
+
+    #[test]
+    fn survival_runtime_config_parser_preserves_fixture_contracts() {
+        let temp_dir = PathBuf::from("/tmp/mc-compat-test-runtime");
+        let config = parse_survival_runtime_config(&SurvivalRuntimeConfigInputs {
+            chest_fixture: Some(SURVIVAL_ENV_FLAG_ENABLED_VALUE.to_owned()),
+            crafting_fixture: Some("true".to_owned()),
+            furnace_smelting_breadth_fixture: Some(SURVIVAL_ENV_FLAG_ENABLED_VALUE.to_owned()),
+            hunger_food_fixture: Some(SURVIVAL_ENV_FLAG_ENABLED_VALUE.to_owned()),
+            world_persistence_dir: Some("/tmp/world-fixture".to_owned()),
+            block_entity_phase: Some(SURVIVAL_BLOCK_ENTITY_POST_RESTART_PHASE.to_owned()),
+            temp_dir,
+            ..Default::default()
+        });
+
+        assert!(config.fixtures.chest);
+        assert!(!config.fixtures.crafting);
+        assert!(config.fixtures.furnace);
+        assert!(config.fixtures.furnace_smelting_breadth);
+        assert!(config.fixtures.hunger_food);
+        assert!(!config.fixtures.hunger_health);
+        assert!(config.fixtures.block_entity_post_restart);
+        assert_eq!(
+            config.paths.world_persistence_marker,
+            PathBuf::from("/tmp/world-fixture").join(SURVIVAL_WORLD_PERSISTENCE_MARKER_FILE)
+        );
+    }
+
+    #[test]
+    fn survival_runtime_config_diagnostics_cover_conflicts_and_stale_phases() {
+        let config = parse_survival_runtime_config(&SurvivalRuntimeConfigInputs {
+            hunger_food_fixture: Some(SURVIVAL_ENV_FLAG_ENABLED_VALUE.to_owned()),
+            hunger_health_fixture: Some(SURVIVAL_ENV_FLAG_ENABLED_VALUE.to_owned()),
+            block_entity_phase: Some(SURVIVAL_BLOCK_ENTITY_POST_RESTART_PHASE.to_owned()),
+            world_multichunk_phase: Some(SURVIVAL_BLOCK_ENTITY_POST_RESTART_PHASE.to_owned()),
+            ..Default::default()
+        });
+
+        assert_eq!(
+            survival_runtime_config_issues(&config),
+            vec![
+                SurvivalRuntimeConfigIssue::ConflictingHungerFixtures,
+                SurvivalRuntimeConfigIssue::StaleBlockEntityPhase,
+                SurvivalRuntimeConfigIssue::StaleWorldMultichunkPhase,
+            ]
+        );
+        assert_eq!(
+            survival_hunger_profile(&config).map(|profile| profile.event_prefix),
+            Some(SURVIVAL_HUNGER_HEALTH_EVENT_PREFIX)
+        );
     }
 
     #[test]
@@ -3673,8 +3983,24 @@ mod tests {
 
     #[test]
     fn survival_block_entity_fixture_places_initial_or_persisted_sign_only() {
-        assert!(survival_block_entity_should_place_sign(false));
-        assert!(survival_block_entity_should_place_sign(true));
+        let initial_config = parse_survival_runtime_config(&SurvivalRuntimeConfigInputs::default());
+        let restart_config = parse_survival_runtime_config(&SurvivalRuntimeConfigInputs {
+            block_entity_phase: Some(SURVIVAL_BLOCK_ENTITY_POST_RESTART_PHASE.to_owned()),
+            ..Default::default()
+        });
+
+        assert!(survival_block_entity_should_place_sign(
+            &initial_config,
+            false
+        ));
+        assert!(survival_block_entity_should_place_sign(
+            &restart_config,
+            true
+        ));
+        assert!(!survival_block_entity_should_place_sign(
+            &restart_config,
+            false
+        ));
     }
 
     #[test]

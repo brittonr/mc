@@ -1,0 +1,103 @@
+
+$ nix run .#cairn -- gate proposal centralize-example-runtime-config-resources --root .
+{
+  "change": "centralize-example-runtime-config-resources",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "7820eba6501d5b6ddeab2a41b99c684166aa12e3e4c65d82932647227981b494",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "894bdac55f5e245e236260e11c689e2f56761b555f4f4fd1be7478a40ec8e26c",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+$ nix run .#cairn -- gate design centralize-example-runtime-config-resources --root .
+{
+  "change": "centralize-example-runtime-config-resources",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "7e1078cfd7aebca1456f56e00daf1ce528e27033fe0f04889247e026ed8677d1",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "b3f64f0f03757e86f76cc8e710ff2b569d64944b62935f519e71bf2764e33251",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+$ nix run .#cairn -- gate tasks centralize-example-runtime-config-resources --root .
+{
+  "change": "centralize-example-runtime-config-resources",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "d45a9aaba825c74849dfcfdf161c4a38b23c7428aac67c07686a5b794a09dda4",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "900400062165d014f5cf51b70579dda3bf1d7fcf257f5aaf4d3afc9c528edb76",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+$ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 8,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 13,
+  "valid": true
+}
+command_exit_status=0
+
+$ nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/qg979jshksbb2zf0g9y9rss451nn7py7.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1037 ms: Could not connect to server; retrying in 332 ms
+warning: error: unable to download 'http://100.100.103.95:5000/qg979jshksbb2zf0g9y9rss451nn7py7.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 567 ms
+warning: error: unable to download 'http://100.100.103.95:5000/qg979jshksbb2zf0g9y9rss451nn7py7.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 1163 ms
+warning: error: unable to download 'http://100.100.103.95:5000/qg979jshksbb2zf0g9y9rss451nn7py7.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3102 ms: Could not connect to server; retrying in 2759 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/qg979jshksbb2zf0g9y9rss451nn7py7.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/qg979jshksbb2zf0g9y9rss451nn7py7.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+this derivation will be built:
+  /nix/store/9jdmbaiwh3753hl10i9aaxaz1hd8n5lz-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/9jdmbaiwh3753hl10i9aaxaz1hd8n5lz-mc-compat-cairn-task-evidence.drv'...
+command_exit_status=0
+
+exit_status=0

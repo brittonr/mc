@@ -1,0 +1,18 @@
+
+$ nix build .#checks.x86_64-linux.mc-valence-schedule-hygiene --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/g6jnbc76srln0fjzc583myzrrbyksqr6.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3062 ms: Could not connect to server; retrying in 306 ms
+warning: error: unable to download 'http://100.100.103.95:5000/g6jnbc76srln0fjzc583myzrrbyksqr6.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 524 ms
+warning: error: unable to download 'http://100.100.103.95:5000/g6jnbc76srln0fjzc583myzrrbyksqr6.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3065 ms: Could not connect to server; retrying in 1264 ms
+warning: error: unable to download 'http://100.100.103.95:5000/g6jnbc76srln0fjzc583myzrrbyksqr6.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 2625 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/g6jnbc76srln0fjzc583myzrrbyksqr6.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/g6jnbc76srln0fjzc583myzrrbyksqr6.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2049 ms: Could not connect to server
+this derivation will be built:
+  /nix/store/9ma5yy9vcsav5kjnnnxmf6ibvjjw0z8d-mc-valence-schedule-hygiene.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/9ma5yy9vcsav5kjnnnxmf6ibvjjw0z8d-mc-valence-schedule-hygiene.drv'...
+command_exit_status=0
+
+exit_status=0
