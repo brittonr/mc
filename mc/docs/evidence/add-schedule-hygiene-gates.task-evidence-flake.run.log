@@ -1,0 +1,16 @@
+command=nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+cwd=/home/brittonr/git/mc
+warning: error: unable to download 'http://100.100.103.95:5000/a5gns2lq2a7cx3nv9irx126m1n06yy9w.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 6 ms: Could not connect to server; retrying in 319 ms
+warning: error: unable to download 'http://100.100.103.95:5000/a5gns2lq2a7cx3nv9irx126m1n06yy9w.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4093 ms: Could not connect to server; retrying in 687 ms
+warning: error: unable to download 'http://100.100.103.95:5000/a5gns2lq2a7cx3nv9irx126m1n06yy9w.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1396 ms
+warning: error: unable to download 'http://100.100.103.95:5000/a5gns2lq2a7cx3nv9irx126m1n06yy9w.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2301 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/a5gns2lq2a7cx3nv9irx126m1n06yy9w.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/a5gns2lq2a7cx3nv9irx126m1n06yy9w.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+this derivation will be built:
+  /nix/store/61wr48gz79vnhxmlakf0pflz3q7af246-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/61wr48gz79vnhxmlakf0pflz3q7af246-mc-compat-cairn-task-evidence.drv'...
+exit_status=0

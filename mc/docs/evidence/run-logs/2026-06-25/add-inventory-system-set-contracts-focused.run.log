@@ -1,0 +1,347 @@
+
+## inventory schedule smoke tests
++ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence core_plugin_sets --all-features
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+   Compiling valence_inventory v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_inventory)
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+   Compiling valence_equipment v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_equipment)
+   Compiling valence v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence)
+warning: `valence_inventory` (lib) generated 1 warning
+    Finished `test` profile [optimized + debuginfo] target(s) in 6.39s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence-9f1b0da706a7f0b4)
+
+running 12 tests
+test tests::core_plugin_sets::event_loop_phase_missing_set_fixture_fails_clearly - should panic ... ok
+test tests::core_plugin_sets::event_loop_phase_sets_are_orderable_for_selected_systems ... ok
+test tests::core_plugin_sets::disabled_command_plugin_omits_command_schedule_contract ... ok
+test tests::core_plugin_sets::disabled_action_plugin_omits_selected_event_loop_adapters ... ok
+test tests::core_plugin_sets::disabled_world_border_plugin_omits_world_border_schedule_contract ... ok
+test tests::core_plugin_sets::disabled_weather_plugin_omits_weather_schedule_contract ... ok
+test tests::core_plugin_sets::disabled_equipment_plugin_omits_equipment_schedule_contract ... ok
+test tests::core_plugin_sets::default_core_plugins_expose_selected_ordering_sets ... ok
+test tests::core_plugin_sets::disabled_scoreboard_plugin_omits_scoreboard_schedule_contract ... ok
+test tests::core_plugin_sets::disabled_boss_bar_plugin_omits_boss_bar_schedule_contract ... ok
+test tests::core_plugin_sets::disabled_advancement_plugin_omits_advancement_schedule_contract ... ok
+test tests::core_plugin_sets::disabled_inventory_plugin_omits_inventory_schedule_contract ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 83 filtered out; finished in 0.01s
+
+     Running tests/command_ergonomics_macros.rs (/home/brittonr/.cargo-target/debug/deps/command_ergonomics_macros-3a60725b4e87119f)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+exit_status=0
+
+## inventory behavior regression tests
++ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence inventory:: --all-features
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+warning: `valence_inventory` (lib) generated 1 warning
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.28s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence-9f1b0da706a7f0b4)
+
+running 36 tests
+[2m2026-06-26T01:26:31.286225Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.286231Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.286321Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.286571Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.286583Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.286616Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.286739Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.286997Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.287289Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.287340Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.287542Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.287680Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.288074Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.288143Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.288146Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.288257Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.288297Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.288518Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.288564Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.288950Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.288955Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.289087Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.289323Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.289357Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.289495Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.289525Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.289724Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.289727Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.289769Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.291760Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.293159Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+test tests::inventory::should_send_cursor_item_change_when_modified_on_the_server ... ok
+test tests::inventory::dropping_items::prevent_drop_item_click_container_with_dropkey_single_readonly_inventory ... ok
+[2m2026-06-26T01:26:31.401916Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.401955Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+test tests::inventory::dropping_items::prevent_drop_item_player_action_readonly_inventory ... ok
+test tests::inventory::test_set_creative_mode_slot_handling ... ok
+test tests::inventory::should_not_increment_state_id_on_cursor_item_change ... ok
+[2m2026-06-26T01:26:31.405328Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+[2m2026-06-26T01:26:31.405482Z[0m [31mERROR[0m [2mbevy_log[0m[2m:[0m Could not set global logger and tracing subscriber as they are already set. Consider disabling LogPlugin.
+test tests::inventory::test_should_open_inventory ... ok
+test tests::inventory::test_ignore_set_creative_mode_slot_if_not_creative ... ok
+test tests::inventory::dropping_items::should_drop_item_stack_click_container_outside ... ok
+test tests::inventory::dropping_items::should_drop_item_player_action ... ok
+test tests::inventory::dropping_items::should_drop_item_stack_set_creative_mode_slot ... ok
+test tests::inventory::test_should_modify_player_inventory_click_slot ... ok
+test tests::inventory::dropping_items::should_drop_item_click_container_with_dropkey_single ... ok
+test tests::inventory::dropping_items::should_drop_item_stack_click_container_with_dropkey ... ok
+test tests::inventory::test_should_allow_non_modifying_inventory_clicks ... ok
+test tests::inventory::should_drop_item_stack_player_open_inventory_with_dropkey ... ok
+test tests::inventory::dropping_items::prevent_drop_item_stack_player_action_readonly_inventory ... ok
+test tests::inventory::dropping_items::should_drop_item_stack_player_action ... ok
+test tests::inventory::test_should_modify_open_inventory_server_side ... ok
+test tests::inventory::test_should_close_inventory ... ok
+test tests::inventory::test_should_sync_entire_open_inventory ... ok
+test tests::inventory::test_hotbar_item_swap_container ... ok
+test tests::inventory::dropping_items::prevent_drop_item_player_open_inventory_with_dropkey_readonly_inventory ... ok
+test tests::inventory::test_should_handle_set_held_item ... ok
+test tests::inventory::dropping_items::prevent_drop_item_stack_click_container_with_dropkey_readonly_inventory ... ok
+test tests::inventory::test_prevent_shift_item_click_container_readonly_inventory ... ok
+test tests::inventory::dropping_items::should_drop_item_player_open_inventory_with_dropkey ... ok
+test tests::inventory::test_prevent_modify_open_inventory_click_slot_readonly_inventory ... ok
+test tests::inventory::test_should_modify_player_inventory_server_side ... ok
+test tests::inventory::dragging_items ... ok
+test tests::inventory::test_should_modify_open_inventory_click_slot ... ok
+test tests::inventory::test_should_remove_invalid_open_inventory ... ok
+test tests::inventory::test_prevent_hotbar_item_click_container_readonly_inventory ... ok
+test tests::inventory::test_should_sync_entire_player_inventory ... ok
+test tests::inventory::test_still_allow_hotbar_item_click_in_own_inventory_if_container_readonly_inventory ... ok
+test tests::inventory::test_sync_inventory_change_made_from_valence_while_inventory_is_opened ... ok
+test tests::inventory::test_window_id_increments ... ok
+
+test result: ok. 36 passed; 0 failed; 0 ignored; 0 measured; 59 filtered out; finished in 0.15s
+
+     Running tests/command_ergonomics_macros.rs (/home/brittonr/.cargo-target/debug/deps/command_ergonomics_macros-3a60725b4e87119f)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+exit_status=0
+
+## valence_inventory crate tests
++ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence_inventory --all-features
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: method `packet_data_range` is never used
+   --> crates/valence_protocol/src/decode.rs:192:8
+    |
+187 | impl PacketFrameLayout {
+    | ---------------------- method in this implementation
+...
+192 |     fn packet_data_range(self) -> Range<usize> {
+    |        ^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `valence_protocol` (lib) generated 1 warning
+   Compiling valence_server v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_server)
+   Compiling valence_inventory v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_inventory)
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+warning: `valence_inventory` (lib) generated 1 warning
+warning: `valence_inventory` (lib test) generated 1 warning (1 duplicate)
+    Finished `test` profile [optimized + debuginfo] target(s) in 9.51s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_inventory-5e89102e661fd8f7)
+
+running 30 tests
+test catalog::tests::test_convert_to_player_slot ... ok
+test catalog::tests::test_convert_hotbar_slot_id ... ok
+test gui::tests::gui_click_rejects_invalid_slot_ids ... ok
+test gui::tests::gui_click_rejects_stale_window_id ... ok
+test gui::tests::gui_close_event_plans_cleanup ... ok
+test gui::tests::gui_disconnect_plans_cleanup_and_late_clicks_are_rejected ... ok
+test gui::tests::gui_model_rejects_malformed_inputs ... ok
+test gui::tests::gui_open_disabled_is_rejected ... ok
+test gui::tests::gui_mutable_action_click_allows_valence_inventory_mutation ... ok
+test gui::tests::gui_open_enabled_returns_open_plan ... ok
+test gui::tests::gui_readonly_action_click_emits_action_without_mutation ... ok
+test validate::tests::allow_clicking_hotbar_keybinds_when_both_source_and_target_are_empty ... ok
+test validate::tests::allow_clicking_on_the_margin_area_in_inventory_success ... ok
+test validate::tests::allow_clicking_on_an_empty_slot_with_empty_carried_item_success ... ok
+test validate::tests::allow_clicking_outside_inventory_when_holding_something_success ... ok
+test validate::tests::allow_clicking_outside_inventory_when_not_holding_anything_success ... ok
+test validate::tests::allow_pickup_overfull_stack_click ... ok
+test validate::tests::allow_place_overfull_stack_click ... ok
+test validate::tests::allow_shift_click_overflow_to_new_stack ... ok
+test validate::tests::click_filled_slot_with_empty_cursor_success ... ok
+test validate::tests::click_filled_slot_with_filled_cursor_different_item_success ... ok
+test validate::tests::click_filled_slot_with_filled_cursor_stack_overflow_success ... ok
+test validate::tests::click_filled_slot_with_incorrect_nbt_and_empty_cursor_success ... ok
+test validate::tests::click_slot_with_filled_cursor_failure ... ok
+test validate::tests::net_item_delta_1 ... ok
+test validate::tests::click_slot_with_filled_cursor_success ... ok
+test validate::tests::disallow_item_transmutation ... ok
+test validate::tests::net_item_delta_2 ... ok
+test gui::tests::gui_plugin_cleans_up_closed_viewers ... ok
+test gui::tests::gui_plugin_routes_open_and_click_events ... ok
+
+test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests valence_inventory
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+warning: 1 warning emitted
+
+
+running 14 tests
+test crates/valence_inventory/src/lib.rs - (line 20) ... ok
+test crates/valence_inventory/src/model/search.rs - search::Inventory::first_empty_slot (line 34) ... ok
+test crates/valence_inventory/src/model/storage.rs - storage::Inventory::replace_slot (line 62) ... ok
+test crates/valence_inventory/src/model/storage.rs - storage::Inventory::set_slot (line 44) ... ok
+test crates/valence_inventory/src/lib.rs - (line 31) ... ok
+test crates/valence_inventory/src/model/storage.rs - storage::Inventory::set_title (line 184) ... ok
+test crates/valence_inventory/src/model/view.rs - view::InventoryWindow (line 8) ... ok
+test crates/valence_inventory/src/model/search.rs - search::Inventory::first_slot_with_item_in (line 50) ... ok
+test crates/valence_inventory/src/model/view.rs - view::InventoryWindowMut (line 66) ... ok
+test crates/valence_inventory/src/model/storage.rs - storage::Inventory::set_slot_amount (line 126) ... ok
+test crates/valence_inventory/src/model/storage.rs - storage::Inventory::title (line 169) ... ok
+test crates/valence_inventory/src/model/search.rs - search::Inventory::first_empty_slot_in (line 7) ... ok
+test crates/valence_inventory/src/model/search.rs - search::Inventory::first_slot_with_item (line 87) ... ok
+test crates/valence_inventory/src/model/storage.rs - storage::Inventory::swap_slot (line 88) ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.35s
+
+exit_status=0
+
+final_exit_status=0
+]0;

@@ -1,0 +1,17 @@
+## task evidence final
++ nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/ppi0j097iigrqi6yq1q3vnbn8ka8m72l.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 263 ms
+warning: error: unable to download 'http://100.100.103.95:5000/ppi0j097iigrqi6yq1q3vnbn8ka8m72l.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1011 ms: Could not connect to server; retrying in 607 ms
+warning: error: unable to download 'http://100.100.103.95:5000/ppi0j097iigrqi6yq1q3vnbn8ka8m72l.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1059 ms: Could not connect to server; retrying in 1184 ms
+warning: error: unable to download 'http://100.100.103.95:5000/ppi0j097iigrqi6yq1q3vnbn8ka8m72l.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2517 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/ppi0j097iigrqi6yq1q3vnbn8ka8m72l.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/ppi0j097iigrqi6yq1q3vnbn8ka8m72l.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+this derivation will be built:
+  /nix/store/1vx949lhk7jwis3h3mvdc8ij7k2pgq70-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/1vx949lhk7jwis3h3mvdc8ij7k2pgq70-mc-compat-cairn-task-evidence.drv'...
+exit_status=0
+]0;

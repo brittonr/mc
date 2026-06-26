@@ -1,0 +1,16 @@
+command=nix build .#checks.x86_64-linux.mc-compat-evidence-manifest-refresh --no-link -L
+cwd=/home/brittonr/git/mc
+warning: error: unable to download 'http://100.100.103.95:5000/i78lq9nflha0jdj89rz8w87dbyk9ar5z.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 270 ms
+warning: error: unable to download 'http://100.100.103.95:5000/i78lq9nflha0jdj89rz8w87dbyk9ar5z.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4130 ms: Could not connect to server; retrying in 622 ms
+warning: error: unable to download 'http://100.100.103.95:5000/i78lq9nflha0jdj89rz8w87dbyk9ar5z.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 1401 ms
+warning: error: unable to download 'http://100.100.103.95:5000/i78lq9nflha0jdj89rz8w87dbyk9ar5z.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4109 ms: Could not connect to server; retrying in 2461 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/i78lq9nflha0jdj89rz8w87dbyk9ar5z.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/i78lq9nflha0jdj89rz8w87dbyk9ar5z.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2082 ms: Could not connect to server
+this derivation will be built:
+  /nix/store/7kbw8k1klqmps0r21lmmsf58bpf4x8by-mc-compat-evidence-manifest-refresh.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/7kbw8k1klqmps0r21lmmsf58bpf4x8by-mc-compat-evidence-manifest-refresh.drv'...
+exit_status=0
