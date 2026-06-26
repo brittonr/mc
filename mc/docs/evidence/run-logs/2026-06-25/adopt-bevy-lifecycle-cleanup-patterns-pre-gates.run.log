@@ -1,0 +1,88 @@
+## gate proposal
+command=nix run .#cairn -- gate proposal adopt-bevy-lifecycle-cleanup-patterns --root .
+{
+  "change": "adopt-bevy-lifecycle-cleanup-patterns",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "2b5923cb5b76e87c8239953189f7db6157dedd52b4a5221e864ade69dd1fc3a8",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "041ba1e122e26a8a9b102490a56af82c0fa2778e60c3b16999ed6f84a303a31b",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## gate design
+command=nix run .#cairn -- gate design adopt-bevy-lifecycle-cleanup-patterns --root .
+{
+  "change": "adopt-bevy-lifecycle-cleanup-patterns",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "53a0e7c0846c7f15b5171de04d4a23bbac61374f6aacb00df38c974f855bd2e1",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "6601fded3385eaab61509ca3995fc96f0507978ea522519380b5be58fa94efb4",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## gate tasks
+command=nix run .#cairn -- gate tasks adopt-bevy-lifecycle-cleanup-patterns --root .
+{
+  "change": "adopt-bevy-lifecycle-cleanup-patterns",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "78051a4f2dca51f7e4007620bb5dc1f12041e9ba7dcbefb8732a63fec2e20db8",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "fb7acd7afd0f550e7f960ecfba0a3076668473b453474fdd478bf12f525280fd",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## validate
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 9,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 14,
+  "valid": true
+}
+exit_status=0

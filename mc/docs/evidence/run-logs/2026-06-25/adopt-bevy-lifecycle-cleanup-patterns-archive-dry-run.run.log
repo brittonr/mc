@@ -1,0 +1,23 @@
+command=nix run .#cairn -- archive adopt-bevy-lifecycle-cleanup-patterns --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: adopt-bevy-lifecycle-cleanup-patterns",
+      "kind": "archive_change",
+      "path": "./cairn/changes/adopt-bevy-lifecycle-cleanup-patterns"
+    }
+  ],
+  "blocked": false,
+  "change": "adopt-bevy-lifecycle-cleanup-patterns",
+  "dry_run": true,
+  "input_hash": "fc57592e5a07437e376806367bff668cf2e01edf88883e9071e8ea54f920cb98",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "877439484c2131baeee461968d1d612d5427a04dc211ef6dc1b639e87b3ef340",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "5b0a92e7c54118c18ee6c1c319f30f90c0a8a024827e568d24f609d003ae4f1d"
+}
+exit_status=0

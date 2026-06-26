@@ -1,0 +1,81 @@
+command=CAIRN_ARCHIVE_DATE=2026-06-25 nix run .#cairn -- archive adopt-bevy-lifecycle-cleanup-patterns --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: adopt-bevy-lifecycle-cleanup-patterns",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-25-adopt-bevy-lifecycle-cleanup-patterns"
+    }
+  ],
+  "blocked": false,
+  "change": "adopt-bevy-lifecycle-cleanup-patterns",
+  "dry_run": false,
+  "input_hash": "fc57592e5a07437e376806367bff668cf2e01edf88883e9071e8ea54f920cb98",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "6d3957fa3cab96ede8854a8b53f707b46d64aab77232d3fe1ca680e863416341",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-adopt-bevy-lifecycle-cleanup-patterns/design.md"
+        },
+        {
+          "content_hash": "53f4b6c2ce2f81d4688d097ed31dc9086058aec5947c019c34f8e5a03060f77f",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-adopt-bevy-lifecycle-cleanup-patterns/proposal.md"
+        },
+        {
+          "content_hash": "4cd422354ae4eb542cd0eb25e48085f52e990a2756af0e5f3066fe6cdb879011",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-adopt-bevy-lifecycle-cleanup-patterns/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "4d10d61cabe553101fcbfc96fa47b2cdbfe5ab5e19375bc48f3aeec6ce0cfa36",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-25-adopt-bevy-lifecycle-cleanup-patterns/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/adopt-bevy-lifecycle-cleanup-patterns"
+        }
+      ],
+      "manifest_hash": "2eaffe355de9647d5a36149ac9368c5f819b769f06a76169706b204b9aec40e8"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "6d3957fa3cab96ede8854a8b53f707b46d64aab77232d3fe1ca680e863416341",
+          "exists": true,
+          "path": "./cairn/changes/adopt-bevy-lifecycle-cleanup-patterns/design.md"
+        },
+        {
+          "content_hash": "53f4b6c2ce2f81d4688d097ed31dc9086058aec5947c019c34f8e5a03060f77f",
+          "exists": true,
+          "path": "./cairn/changes/adopt-bevy-lifecycle-cleanup-patterns/proposal.md"
+        },
+        {
+          "content_hash": "4cd422354ae4eb542cd0eb25e48085f52e990a2756af0e5f3066fe6cdb879011",
+          "exists": true,
+          "path": "./cairn/changes/adopt-bevy-lifecycle-cleanup-patterns/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "4d10d61cabe553101fcbfc96fa47b2cdbfe5ab5e19375bc48f3aeec6ce0cfa36",
+          "exists": true,
+          "path": "./cairn/changes/adopt-bevy-lifecycle-cleanup-patterns/tasks.md"
+        }
+      ],
+      "manifest_hash": "a31fdf5f0bfc4d500f8f84a51bf6d988888c844b94d2e3d2de3482010eea6f81"
+    },
+    "kind": "archive",
+    "manifest_hash": "84150dabdaa664228f2dc49b62b881eaf5379caedc8dc0ff745e5d2d8a9bd9d4"
+  },
+  "plan_hash": "03188f181b3169d11900572d370c0e9e953825f99dcdd956886c8c17aa892644",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "c3bf0ecefc928eeb4e7c5f1c3e4ccf7afa18e035bbac8d0a04de49e10299111d"
+}
+exit_status=0

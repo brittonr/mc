@@ -8,7 +8,7 @@ use std::fmt;
 
 use bevy_app::prelude::*;
 use bevy_ecs::prelude::*;
-use valence_server::text::IntoText;
+use valence_server::{text::IntoText, Despawned};
 
 use crate::{
     ClickMode, ClickSlotEvent, ClientInventoryState, Inventory, InventoryKind, OpenInventory,
@@ -395,6 +395,19 @@ pub struct GuiLifecycleInput {
     pub viewer: Option<GuiViewerState>,
 }
 
+/// Input to GUI viewer cleanup planning.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct GuiCleanupInput {
+    /// Whether the optional GUI plugin is active.
+    pub plugin_enabled: bool,
+    /// Current GUI viewer state, if any.
+    pub viewer: Option<GuiViewerState>,
+    /// Inventory entity currently referenced by [`OpenInventory`], if any.
+    pub open_inventory: Option<Entity>,
+    /// Whether Valence has marked the client for explicit despawn finalization.
+    pub despawned: bool,
+}
+
 /// Result of evaluating GUI lifecycle cleanup.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum GuiLifecycleDecision {
@@ -419,6 +432,31 @@ pub fn plan_close(input: GuiLifecycleInput) -> GuiLifecycleDecision {
 #[must_use]
 pub fn plan_disconnect(input: GuiLifecycleInput) -> GuiLifecycleDecision {
     plan_lifecycle(input, GuiCloseReason::Disconnected)
+}
+
+/// Plans GUI viewer cleanup from current component state.
+#[must_use]
+pub fn plan_viewer_cleanup(input: GuiCleanupInput) -> GuiLifecycleDecision {
+    if !input.plugin_enabled {
+        return GuiLifecycleDecision::Noop;
+    }
+
+    let Some(viewer) = input.viewer else {
+        return GuiLifecycleDecision::Noop;
+    };
+
+    let lifecycle_input = GuiLifecycleInput {
+        viewer: Some(viewer),
+    };
+    if input.despawned {
+        return plan_disconnect(lifecycle_input);
+    }
+
+    if input.open_inventory == Some(viewer.inventory) {
+        return GuiLifecycleDecision::Noop;
+    }
+
+    plan_close(lifecycle_input)
 }
 
 fn plan_lifecycle(input: GuiLifecycleInput, reason: GuiCloseReason) -> GuiLifecycleDecision {
@@ -563,11 +601,7 @@ impl Plugin for GuiPlugin {
             .add_event::<GuiCloseEvent>()
             .add_systems(
                 Update,
-                (
-                    open_gui_windows,
-                    route_gui_clicks,
-                    cleanup_closed_gui_viewers,
-                ),
+                (open_gui_windows, route_gui_clicks, cleanup_gui_viewers),
             );
     }
 }
@@ -662,25 +696,23 @@ fn route_gui_clicks(
     }
 }
 
-fn cleanup_closed_gui_viewers(
+fn cleanup_gui_viewers(
     mut commands: Commands,
     clients: Query<(
         Entity,
         &ClientInventoryState,
         &GuiViewer,
         Option<&OpenInventory>,
+        Has<Despawned>,
     )>,
     mut close_events: EventWriter<GuiCloseEvent>,
 ) {
-    for (client_entity, inventory_state, gui_viewer, open_inventory) in &clients {
-        if open_inventory.map(|open_inventory| open_inventory.entity)
-            == Some(gui_viewer.inventory())
-        {
-            continue;
-        }
-
-        let decision = plan_close(GuiLifecycleInput {
+    for (client_entity, inventory_state, gui_viewer, open_inventory, despawned) in &clients {
+        let decision = plan_viewer_cleanup(GuiCleanupInput {
+            plugin_enabled: true,
             viewer: Some(gui_viewer.state(inventory_state.window_id())),
+            open_inventory: open_inventory.map(|open_inventory| open_inventory.entity),
+            despawned,
         });
         let GuiLifecycleDecision::Close { inventory, reason } = decision else {
             continue;
@@ -904,6 +936,74 @@ mod tests {
     }
 
     #[test]
+    fn gui_viewer_cleanup_keeps_current_viewer() {
+        let (inventory, _) = test_entities();
+
+        let decision = plan_viewer_cleanup(GuiCleanupInput {
+            plugin_enabled: true,
+            viewer: Some(viewer_state(inventory)),
+            open_inventory: Some(inventory),
+            despawned: false,
+        });
+
+        assert_eq!(decision, GuiLifecycleDecision::Noop);
+    }
+
+    #[test]
+    fn gui_viewer_cleanup_rejects_missing_owner_and_disabled_plugin() {
+        let (inventory, _) = test_entities();
+
+        assert_eq!(
+            plan_viewer_cleanup(GuiCleanupInput {
+                plugin_enabled: true,
+                viewer: None,
+                open_inventory: Some(inventory),
+                despawned: false,
+            }),
+            GuiLifecycleDecision::Noop
+        );
+        assert_eq!(
+            plan_viewer_cleanup(GuiCleanupInput {
+                plugin_enabled: false,
+                viewer: Some(viewer_state(inventory)),
+                open_inventory: None,
+                despawned: true,
+            }),
+            GuiLifecycleDecision::Noop
+        );
+    }
+
+    #[test]
+    fn gui_viewer_cleanup_closes_stale_and_despawned_viewers() {
+        let (inventory, client) = test_entities();
+
+        assert_eq!(
+            plan_viewer_cleanup(GuiCleanupInput {
+                plugin_enabled: true,
+                viewer: Some(viewer_state(inventory)),
+                open_inventory: Some(client),
+                despawned: false,
+            }),
+            GuiLifecycleDecision::Close {
+                inventory,
+                reason: GuiCloseReason::ClientClosed,
+            }
+        );
+        assert_eq!(
+            plan_viewer_cleanup(GuiCleanupInput {
+                plugin_enabled: true,
+                viewer: Some(viewer_state(inventory)),
+                open_inventory: Some(inventory),
+                despawned: true,
+            }),
+            GuiLifecycleDecision::Close {
+                inventory,
+                reason: GuiCloseReason::Disconnected,
+            }
+        );
+    }
+
+    #[test]
     fn gui_model_rejects_malformed_inputs() {
         assert_eq!(GuiMenuModel::new(0).unwrap_err(), GuiModelError::EmptyMenu);
         assert_eq!(
@@ -996,5 +1096,54 @@ mod tests {
         assert_eq!(closes[0].client, client);
         assert_eq!(closes[0].inventory, inventory);
         assert_eq!(closes[0].reason, GuiCloseReason::ClientClosed);
+    }
+
+    #[test]
+    fn gui_plugin_cleans_up_despawned_viewers_once() {
+        let mut app = App::new();
+        app.add_plugins(GuiPlugin);
+
+        let inventory = app.world_mut().spawn_empty().id();
+        let old_client = app
+            .world_mut()
+            .spawn((
+                ClientInventoryState {
+                    window_id: CURRENT_WINDOW_ID,
+                    state_id: std::num::Wrapping(TEST_STATE_ID),
+                    slots_changed: 0,
+                    client_updated_cursor_item: None,
+                },
+                OpenInventory::new(inventory),
+                GuiViewer::new(inventory),
+                Despawned,
+            ))
+            .id();
+        let reconnect_client = app
+            .world_mut()
+            .spawn((ClientInventoryState {
+                window_id: CURRENT_WINDOW_ID,
+                state_id: std::num::Wrapping(TEST_STATE_ID),
+                slots_changed: 0,
+                client_updated_cursor_item: None,
+            },))
+            .id();
+        let mut reader = app.world().resource::<Events<GuiCloseEvent>>().get_reader();
+
+        app.update();
+
+        assert!(app.world().get::<GuiViewer>(old_client).is_none());
+        assert!(app.world().get::<GuiViewer>(reconnect_client).is_none());
+        let events = app.world().resource::<Events<GuiCloseEvent>>();
+        let closes: Vec<_> = reader.read(events).collect();
+        assert_eq!(closes.len(), 1);
+        assert_eq!(closes[0].client, old_client);
+        assert_eq!(closes[0].inventory, inventory);
+        assert_eq!(closes[0].reason, GuiCloseReason::Disconnected);
+
+        app.update();
+
+        let events = app.world().resource::<Events<GuiCloseEvent>>();
+        let duplicate_closes: Vec<_> = reader.read(events).collect();
+        assert!(duplicate_closes.is_empty());
     }
 }

@@ -1,0 +1,49 @@
+command=nix run .#cairn -- sync adopt-bevy-lifecycle-cleanup-patterns --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/adopt-bevy-lifecycle-cleanup-patterns/specs/valence-bevy-ecs/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/adopt-bevy-lifecycle-cleanup-patterns/specs/valence-bevy-ecs/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "adopt-bevy-lifecycle-cleanup-patterns",
+  "delta_specs": [
+    "./cairn/changes/adopt-bevy-lifecycle-cleanup-patterns/specs/valence-bevy-ecs/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "fc57592e5a07437e376806367bff668cf2e01edf88883e9071e8ea54f920cb98",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "e114391cce3e30a38cebbadc582491d3ffeb6bc14e7c9582136cd91ce1e4f6e6",
+          "exists": true,
+          "path": "./cairn/specs/valence-bevy-ecs/spec.md"
+        }
+      ],
+      "manifest_hash": "602cd38f807b5d39c449040211e8bcbe1d44d5937e6719c53495e2fa24f40e06"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "e114391cce3e30a38cebbadc582491d3ffeb6bc14e7c9582136cd91ce1e4f6e6",
+          "exists": true,
+          "path": "./cairn/specs/valence-bevy-ecs/spec.md"
+        }
+      ],
+      "manifest_hash": "602cd38f807b5d39c449040211e8bcbe1d44d5937e6719c53495e2fa24f40e06"
+    },
+    "kind": "sync",
+    "manifest_hash": "2f7cdf5f3fb937096301b4790bb71d3328265fcda7e7fc8c5301ed1639a51794"
+  },
+  "plan_hash": "4cb3fb3b55834ebc3a4c2910e149a2b97dc7c102870736ebc019bd6ac4a83f7b",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "197674a08073edd563b55e7d2f071fdf27a42643995b3e2ee943cc5526df92b9"
+}
+exit_status=0
