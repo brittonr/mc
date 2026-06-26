@@ -1,0 +1,83 @@
+# Gameplay plugin composition sync dry-run
+date_utc=2026-06-26T19:04:58Z
+cwd=/home/brittonr/git/mc
+changes=introduce-shared-gameplay-plugin-contracts scope-gameplay-plugins-to-arenas separate-gameplay-config-sources
+command=nix run .#cairn -- sync introduce-shared-gameplay-plugin-contracts --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/introduce-shared-gameplay-plugin-contracts/specs/valence-bevy-ecs/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/introduce-shared-gameplay-plugin-contracts/specs/valence-bevy-ecs/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "introduce-shared-gameplay-plugin-contracts",
+  "delta_specs": [
+    "./cairn/changes/introduce-shared-gameplay-plugin-contracts/specs/valence-bevy-ecs/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "ef38e5ba80d276c3d3c50d51e1b2c44122cbcde208094ea8038000d183eaa174",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "794156bbac7da304c34e3c814023d137976c80c9190acee8b34c3b375a3c189d",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "b29200dc3e57c449305bf62a698ddc6f4f44452ef869dafaea4f6569d0fbcf4f"
+}
+sync_introduce-shared-gameplay-plugin-contracts_dry_run_exit_status=0
+command=nix run .#cairn -- sync scope-gameplay-plugins-to-arenas --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/scope-gameplay-plugins-to-arenas/specs/valence-bevy-ecs/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/scope-gameplay-plugins-to-arenas/specs/valence-bevy-ecs/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "scope-gameplay-plugins-to-arenas",
+  "delta_specs": [
+    "./cairn/changes/scope-gameplay-plugins-to-arenas/specs/valence-bevy-ecs/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "726ab09793cdf379db2ed3173602b6678e609b4ded9c53969c2649f2abc0c2d3",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "e2a952a2a3ad72c94d9759573a429635a3cd69d4f338a2f34852c9b9e0badc7d",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "1b6436caff460d16c92aa09fb8aee05ec9c39dabd2f6eb653ce2be525b2e3c59"
+}
+sync_scope-gameplay-plugins-to-arenas_dry_run_exit_status=0
+command=nix run .#cairn -- sync separate-gameplay-config-sources --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/separate-gameplay-config-sources/specs/valence-bevy-ecs/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/separate-gameplay-config-sources/specs/valence-bevy-ecs/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "separate-gameplay-config-sources",
+  "delta_specs": [
+    "./cairn/changes/separate-gameplay-config-sources/specs/valence-bevy-ecs/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "8b00904f3b92e3e292910801ae481289b226e64c4320daeadd8520cd5998887d",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "8992ec5f76b1ccd77b90a6059f17fa765c50ba2539d618f8168431da8b99b599",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "9b1846d5fab64bec3eb304ef10ef9d02c772d5659740d8998daac9af05d22a95"
+}
+sync_separate-gameplay-config-sources_dry_run_exit_status=0
+exit_status=0

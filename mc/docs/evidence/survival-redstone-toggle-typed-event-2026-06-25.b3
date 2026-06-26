@@ -7,7 +7,7 @@
 5f4188156b3ddc4db0277078c2e31d7a907f4b1c93551c0b85e480bd11b8334c  docs/scenario-commands.generated.md
 b46bcd862cd4ee372edb05b5dae5995ab088aae46973cc0b427640df50b09f0b  tools/check_scenario_manifest.rs
 0be1e3087f2ab458d3a89393cbb2620f85be17049bacc7344ef35e434915b30a  cairn/specs/mc-compatibility/spec.md
-4b470202e3fc0c4a002694bd2f5258278e911ec5500296a9b5b6d904c30cf4bb  cairn/changes/.drain-state.md
+2c04ab708688e1588f9bf0c6ddff94f72c6d7c01326fac4ca15ef0f20e78f1b2  cairn/changes/.drain-state.md
 2117371c8c325de6b9936fd6bb7871b357bb80837567135119801bfb19dd5b17  cairn/archive/2026-06-25-survival-redstone-toggle-typed-event-migration/proposal.md
 362234ecb34752a630f8e69ebc9c1f545739e11458b3770992b40b1c0a84c49d  cairn/archive/2026-06-25-survival-redstone-toggle-typed-event-migration/design.md
 d8cd9bb579105af4df15f095b04ab46d91c5251089d17a5bb07b0c00bd95a0ab  cairn/archive/2026-06-25-survival-redstone-toggle-typed-event-migration/tasks.md

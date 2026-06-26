@@ -1,0 +1,7 @@
+# Gameplay plugin composition full Nix evidence-manifests check post-B3 final
+date_utc=2026-06-26T19:26:38Z
+cwd=/home/brittonr/git/mc
+command=nix build .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L
+nix_evidence_manifests_exit_status=0
+exit_status=0
+]0;

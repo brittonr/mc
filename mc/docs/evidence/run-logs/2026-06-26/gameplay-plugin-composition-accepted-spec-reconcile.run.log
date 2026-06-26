@@ -1,0 +1,23 @@
+# Gameplay plugin composition accepted-spec reconciliation
+date_utc=2026-06-26T19:17:38Z
+cwd=/home/brittonr/git/mc
+note=manual reconciliation inserted archived gameplay contract, arena scoping, and config-source requirements after sync receipts showed no accepted-spec content delta
+command=grep accepted spec for reconciled requirements
+785:### Requirement: Gameplay plugin contract inventory
+863:### Requirement: Gameplay arena scoping inventory
+940:### Requirement: Gameplay config source inventory
+grep_exit_status=0
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
+cairn_validate_exit_status=0
+exit_status=0
+]0;

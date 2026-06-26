@@ -1,0 +1,74 @@
+# Gameplay plugin composition archive dry-run
+date_utc=2026-06-26T19:05:55Z
+cwd=/home/brittonr/git/mc
+changes=introduce-shared-gameplay-plugin-contracts scope-gameplay-plugins-to-arenas separate-gameplay-config-sources
+command=nix run .#cairn -- archive introduce-shared-gameplay-plugin-contracts --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: introduce-shared-gameplay-plugin-contracts",
+      "kind": "archive_change",
+      "path": "./cairn/changes/introduce-shared-gameplay-plugin-contracts"
+    }
+  ],
+  "blocked": false,
+  "change": "introduce-shared-gameplay-plugin-contracts",
+  "dry_run": true,
+  "input_hash": "ef38e5ba80d276c3d3c50d51e1b2c44122cbcde208094ea8038000d183eaa174",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "e2fab585f06bd5d2a1ab2dbd0b1c02b447f9103ea76f2d15e306cee004d41b98",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "5490ceb31dffff45505c61f6f79d5087f6bb9b49d70f33a3c67e5dee8ed2d138"
+}
+archive_introduce-shared-gameplay-plugin-contracts_dry_run_exit_status=0
+command=nix run .#cairn -- archive scope-gameplay-plugins-to-arenas --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: scope-gameplay-plugins-to-arenas",
+      "kind": "archive_change",
+      "path": "./cairn/changes/scope-gameplay-plugins-to-arenas"
+    }
+  ],
+  "blocked": false,
+  "change": "scope-gameplay-plugins-to-arenas",
+  "dry_run": true,
+  "input_hash": "726ab09793cdf379db2ed3173602b6678e609b4ded9c53969c2649f2abc0c2d3",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "625869677103088e2dff2a5f3dc71c441961e4975143c467a537701b65381a80",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "df5a3904feb907aa4d97c2201650e021e53012154c7a37659689e1a4aec1ffd0"
+}
+archive_scope-gameplay-plugins-to-arenas_dry_run_exit_status=0
+command=nix run .#cairn -- archive separate-gameplay-config-sources --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: separate-gameplay-config-sources",
+      "kind": "archive_change",
+      "path": "./cairn/changes/separate-gameplay-config-sources"
+    }
+  ],
+  "blocked": false,
+  "change": "separate-gameplay-config-sources",
+  "dry_run": true,
+  "input_hash": "8b00904f3b92e3e292910801ae481289b226e64c4320daeadd8520cd5998887d",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "5db417724e66553f1403cdfb5ef21b7634902e5995413e1f35e3ba3fe487e1b6",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "17bcf37c56f41716414f33c046748d6161acbc7dc30840ad7ff277a1e5b722a3"
+}
+archive_separate-gameplay-config-sources_dry_run_exit_status=0
+exit_status=0

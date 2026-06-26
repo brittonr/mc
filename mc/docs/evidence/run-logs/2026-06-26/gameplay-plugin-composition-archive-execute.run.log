@@ -1,0 +1,248 @@
+# Gameplay plugin composition archive execute
+date_utc=2026-06-26T19:06:21Z
+cwd=/home/brittonr/git/mc
+changes=introduce-shared-gameplay-plugin-contracts scope-gameplay-plugins-to-arenas separate-gameplay-config-sources
+command=CAIRN_ARCHIVE_DATE=2026-06-26 nix run .#cairn -- archive introduce-shared-gameplay-plugin-contracts --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: introduce-shared-gameplay-plugin-contracts",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-26-introduce-shared-gameplay-plugin-contracts"
+    }
+  ],
+  "blocked": false,
+  "change": "introduce-shared-gameplay-plugin-contracts",
+  "dry_run": false,
+  "input_hash": "ef38e5ba80d276c3d3c50d51e1b2c44122cbcde208094ea8038000d183eaa174",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "2cb5a45648feb75a28595e3a3472238907c398e03d432f781746bb5ab135fccc",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-26-introduce-shared-gameplay-plugin-contracts/design.md"
+        },
+        {
+          "content_hash": "99dc236acbd26087fe8ddf3a6d89edd5de14de8592753f525180fcfd6242f67c",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-26-introduce-shared-gameplay-plugin-contracts/proposal.md"
+        },
+        {
+          "content_hash": "55a2fd83ee20ecf2ddc6caaaa7db3412279964c9dca6865ecca164085f091188",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-26-introduce-shared-gameplay-plugin-contracts/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "1a6317b18e877d81675ca0aab86e6f9c6b5dafb8332ca0330c14bed0e0ddb0f9",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-26-introduce-shared-gameplay-plugin-contracts/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/introduce-shared-gameplay-plugin-contracts"
+        }
+      ],
+      "manifest_hash": "f6ca8d87add2901826a1401255b84eb4f13fdcae82ea4fe44dd82b5e4e56ca0d"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "2cb5a45648feb75a28595e3a3472238907c398e03d432f781746bb5ab135fccc",
+          "exists": true,
+          "path": "./cairn/changes/introduce-shared-gameplay-plugin-contracts/design.md"
+        },
+        {
+          "content_hash": "99dc236acbd26087fe8ddf3a6d89edd5de14de8592753f525180fcfd6242f67c",
+          "exists": true,
+          "path": "./cairn/changes/introduce-shared-gameplay-plugin-contracts/proposal.md"
+        },
+        {
+          "content_hash": "55a2fd83ee20ecf2ddc6caaaa7db3412279964c9dca6865ecca164085f091188",
+          "exists": true,
+          "path": "./cairn/changes/introduce-shared-gameplay-plugin-contracts/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "1a6317b18e877d81675ca0aab86e6f9c6b5dafb8332ca0330c14bed0e0ddb0f9",
+          "exists": true,
+          "path": "./cairn/changes/introduce-shared-gameplay-plugin-contracts/tasks.md"
+        }
+      ],
+      "manifest_hash": "c6f2fc82fdacd9e69d7c1567f4d1618de16b40119b4ec7d5e585277b589fa707"
+    },
+    "kind": "archive",
+    "manifest_hash": "446d7cf5035dde8550cee6e723d8023b5781530c5ad203df59f71301a2725c20"
+  },
+  "plan_hash": "0d93b4fc44a5b65e6016238069f806fcffdd7938c6ad25798f94b540bbe03117",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "b7827aa5357dd72d083f509bc5c1058b9e721571fe02d7f386820b2a9ff1a347"
+}
+archive_introduce-shared-gameplay-plugin-contracts_execute_exit_status=0
+command=CAIRN_ARCHIVE_DATE=2026-06-26 nix run .#cairn -- archive scope-gameplay-plugins-to-arenas --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: scope-gameplay-plugins-to-arenas",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-26-scope-gameplay-plugins-to-arenas"
+    }
+  ],
+  "blocked": false,
+  "change": "scope-gameplay-plugins-to-arenas",
+  "dry_run": false,
+  "input_hash": "726ab09793cdf379db2ed3173602b6678e609b4ded9c53969c2649f2abc0c2d3",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "1b20f7512903e98a22428133800ec06c567b64ab2fd384de1ffbfe3bcee249f7",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-26-scope-gameplay-plugins-to-arenas/design.md"
+        },
+        {
+          "content_hash": "94978e53551df11567ffd110dbe115bc9243fe625a5e9ce4333573e77761bdbe",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-26-scope-gameplay-plugins-to-arenas/proposal.md"
+        },
+        {
+          "content_hash": "20f6d9f3c3a0ccd19b340d079bc03e22b0a236829c80ac28574b4e3d3b605727",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-26-scope-gameplay-plugins-to-arenas/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "c05e0acb0190da1eec9311ea33a6ffdaa4e690f13129034f67e8ec2e5e5a0ea9",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-26-scope-gameplay-plugins-to-arenas/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/scope-gameplay-plugins-to-arenas"
+        }
+      ],
+      "manifest_hash": "8887bab05dbf0012a52ff02f62c4df54cbe34391ea2b34c814222592719cc474"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "1b20f7512903e98a22428133800ec06c567b64ab2fd384de1ffbfe3bcee249f7",
+          "exists": true,
+          "path": "./cairn/changes/scope-gameplay-plugins-to-arenas/design.md"
+        },
+        {
+          "content_hash": "94978e53551df11567ffd110dbe115bc9243fe625a5e9ce4333573e77761bdbe",
+          "exists": true,
+          "path": "./cairn/changes/scope-gameplay-plugins-to-arenas/proposal.md"
+        },
+        {
+          "content_hash": "20f6d9f3c3a0ccd19b340d079bc03e22b0a236829c80ac28574b4e3d3b605727",
+          "exists": true,
+          "path": "./cairn/changes/scope-gameplay-plugins-to-arenas/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "c05e0acb0190da1eec9311ea33a6ffdaa4e690f13129034f67e8ec2e5e5a0ea9",
+          "exists": true,
+          "path": "./cairn/changes/scope-gameplay-plugins-to-arenas/tasks.md"
+        }
+      ],
+      "manifest_hash": "b3b3c06c948ea110f5da68ef8e73658aaddca309843621e9b0dbe843b2892467"
+    },
+    "kind": "archive",
+    "manifest_hash": "4437c996d159835704a2fd03d92a2f0ebd456e0c40a75e647628d932adb04ddb"
+  },
+  "plan_hash": "e0f9097912f1a519094ea2bc5676c2439e144dca484bb853880a114c12ecc7e6",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "20b132606b45bc9e07f21edcf02dc84816bf7765720bd0ced41e6d3a0c8e85d6"
+}
+archive_scope-gameplay-plugins-to-arenas_execute_exit_status=0
+command=CAIRN_ARCHIVE_DATE=2026-06-26 nix run .#cairn -- archive separate-gameplay-config-sources --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: separate-gameplay-config-sources",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-26-separate-gameplay-config-sources"
+    }
+  ],
+  "blocked": false,
+  "change": "separate-gameplay-config-sources",
+  "dry_run": false,
+  "input_hash": "8b00904f3b92e3e292910801ae481289b226e64c4320daeadd8520cd5998887d",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "0152f1bfbabe622e7a238dfbfb4ce695a009f9d6a338460eb9a14f5c3121a9bc",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-26-separate-gameplay-config-sources/design.md"
+        },
+        {
+          "content_hash": "6004bc88c22f522f7dc32c5f2b76144fae50179b4ec7186f6bcb9b49cf546f70",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-26-separate-gameplay-config-sources/proposal.md"
+        },
+        {
+          "content_hash": "16fb98d3a3108afc2d94a0baeb71431fc8b56a9c41f1a40053ea33ea0ca40739",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-26-separate-gameplay-config-sources/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "728a8a0d648db2b7577e7408bbb86ed057b338a44b7b977fd0a5bfea1e460eb0",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-26-separate-gameplay-config-sources/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/separate-gameplay-config-sources"
+        }
+      ],
+      "manifest_hash": "f7a43dbef12077089c306c74f43f3d265711f01732e4a39a593964a093668066"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "0152f1bfbabe622e7a238dfbfb4ce695a009f9d6a338460eb9a14f5c3121a9bc",
+          "exists": true,
+          "path": "./cairn/changes/separate-gameplay-config-sources/design.md"
+        },
+        {
+          "content_hash": "6004bc88c22f522f7dc32c5f2b76144fae50179b4ec7186f6bcb9b49cf546f70",
+          "exists": true,
+          "path": "./cairn/changes/separate-gameplay-config-sources/proposal.md"
+        },
+        {
+          "content_hash": "16fb98d3a3108afc2d94a0baeb71431fc8b56a9c41f1a40053ea33ea0ca40739",
+          "exists": true,
+          "path": "./cairn/changes/separate-gameplay-config-sources/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "728a8a0d648db2b7577e7408bbb86ed057b338a44b7b977fd0a5bfea1e460eb0",
+          "exists": true,
+          "path": "./cairn/changes/separate-gameplay-config-sources/tasks.md"
+        }
+      ],
+      "manifest_hash": "ea2b9ff552829830fe800c4ea0e8a81ee3765851fb69af34dbf0977beedcdfdf"
+    },
+    "kind": "archive",
+    "manifest_hash": "38781123a41717ddc82087861fcc146b776c4f3dba9b2800a7d308b5f4fa3e27"
+  },
+  "plan_hash": "de3c606b2ff03c54d514196adc56a6e3d126b0eee78d10bda019556ca6b4f37f",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "2d7b31ed07972c5cce4c673d321b608dfa243b2b3e14a6de6215aeebf4293a73"
+}
+archive_separate-gameplay-config-sources_execute_exit_status=0
+exit_status=0

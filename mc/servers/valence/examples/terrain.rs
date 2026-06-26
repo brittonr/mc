@@ -1,16 +1,24 @@
 #![allow(clippy::type_complexity)]
 
+mod gameplay_contracts;
+
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::SystemTime;
 
-use bevy_ecs::prelude::SystemSet;
 use bevy_tasks::{block_on, poll_once, AsyncComputeTaskPool, Task, TaskPool};
 use noise::{NoiseFn, SuperSimplex};
 use tracing::{debug, info, warn};
 use valence::prelude::*;
 use valence::spawn::IsFlat;
+
+use gameplay_contracts::{
+    register_gameplay_plugin_contract, GameplayArenaId, GameplayInstallMode, GameplayMode,
+    GameplayPhase as TerrainGameplayPhase, GameplayPluginContract, GameplayScheduleContract,
+    GameplayScope, GameplayScopeModel, GAMEPLAY_PHASE_ORDER, TERRAIN_PRIMARY_ARENA_ID,
+    UPDATE_SCHEDULE_LABEL,
+};
 
 const SPAWN_X: f64 = 0.0;
 const SPAWN_Y: f64 = 200.0;
@@ -27,6 +35,38 @@ const WATER_SURFACE_OFFSET: i32 = 1;
 const BLOCK_BELOW_OFFSET: u32 = 1;
 const TALL_GRASS_UPPER_OFFSET: u32 = 1;
 const GRASS_DECORATION_MIN_Y: u32 = 1;
+const TERRAIN_GAMEPLAY_PLUGIN_NAME: &str = "TerrainGameplayPlugin";
+const TERRAIN_PRIMARY_SCOPE: GameplayScope = GameplayScope::new(
+    GameplayMode::Terrain,
+    GameplayArenaId::new(TERRAIN_PRIMARY_ARENA_ID),
+);
+const TERRAIN_GAMEPLAY_PHASE_ORDER: &[TerrainGameplayPhase] = GAMEPLAY_PHASE_ORDER;
+const TERRAIN_GAMEPLAY_SCHEDULES: &[GameplayScheduleContract] = &[GameplayScheduleContract {
+    label: UPDATE_SCHEDULE_LABEL,
+    phases: TERRAIN_GAMEPLAY_PHASE_ORDER,
+}];
+const TERRAIN_GAMEPLAY_OWNED_RESOURCES: &[&str] = &[
+    "TerrainGameplayPluginContract",
+    "WorldgenTaskPluginContract",
+    "WorldgenTaskState",
+];
+const TERRAIN_NO_OWNED_EVENTS: &[&str] = &[];
+const TERRAIN_NON_CLAIMS: &[&str] = &[
+    "dynamic runtime plugins",
+    "default Valence gameplay",
+    "BedWars or Hyperion scope",
+    "vanilla parity",
+    "production readiness",
+];
+const TERRAIN_GAMEPLAY_CONTRACT: GameplayPluginContract = GameplayPluginContract {
+    plugin: TERRAIN_GAMEPLAY_PLUGIN_NAME,
+    install_mode: GameplayInstallMode::ExplicitOptIn,
+    scope_model: GameplayScopeModel::LayerOwnedFixture,
+    schedules: TERRAIN_GAMEPLAY_SCHEDULES,
+    owned_resources: TERRAIN_GAMEPLAY_OWNED_RESOURCES,
+    owned_events: TERRAIN_NO_OWNED_EVENTS,
+    non_claims: TERRAIN_NON_CLAIMS,
+};
 
 const HILLY_SEED_OFFSET: u32 = 1;
 const STONE_SEED_OFFSET: u32 = 2;
@@ -194,18 +234,10 @@ struct CancelledChunkTask {
 /// values are sent first.
 type Priority = u64;
 
-#[derive(SystemSet, Clone, Copy, Debug, Eq, Hash, PartialEq)]
-enum TerrainGameplayPhase {
-    Input,
-    RuleEvaluation,
-    WorldMutation,
-    Presentation,
-    Cleanup,
-}
-
 #[derive(Resource, Clone, Copy, Debug, PartialEq)]
 struct TerrainGameplayPluginContract {
     update_phase_order: &'static [TerrainGameplayPhase],
+    scope: GameplayScope,
 }
 
 #[derive(Resource, Clone, Copy, Debug, PartialEq, Eq)]
@@ -215,14 +247,6 @@ struct WorldgenTaskPluginContract {
 
 const WORLDGEN_TASK_PHASE: TerrainGameplayPhase = TerrainGameplayPhase::WorldMutation;
 
-const TERRAIN_GAMEPLAY_PHASE_ORDER: &[TerrainGameplayPhase] = &[
-    TerrainGameplayPhase::Input,
-    TerrainGameplayPhase::RuleEvaluation,
-    TerrainGameplayPhase::WorldMutation,
-    TerrainGameplayPhase::Presentation,
-    TerrainGameplayPhase::Cleanup,
-];
-
 struct TerrainGameplayPlugin;
 
 struct WorldgenTaskPlugin;
@@ -231,9 +255,12 @@ impl Plugin for TerrainGameplayPlugin {
     fn build(&self, app: &mut App) {
         let contract = TerrainGameplayPluginContract {
             update_phase_order: TERRAIN_GAMEPLAY_PHASE_ORDER,
+            scope: TERRAIN_PRIMARY_SCOPE,
         };
         assert_eq!(contract.update_phase_order, TERRAIN_GAMEPLAY_PHASE_ORDER);
+        assert_eq!(contract.scope, TERRAIN_PRIMARY_SCOPE);
 
+        register_gameplay_plugin_contract(app, TERRAIN_GAMEPLAY_CONTRACT);
         app.insert_resource(contract)
             .configure_sets(
                 Update,
@@ -296,12 +323,14 @@ fn setup_layer(
 ) {
     let layer = LayerBundle::new(ident!("overworld"), &dimensions, &biomes, &server);
 
-    commands.spawn(layer);
+    commands.spawn((layer, TERRAIN_PRIMARY_SCOPE));
 }
 
 fn init_clients(
+    mut commands: Commands,
     mut clients: Query<
         (
+            Entity,
             &mut EntityLayerId,
             &mut VisibleChunkLayer,
             &mut VisibleEntityLayers,
@@ -311,9 +340,10 @@ fn init_clients(
         ),
         Added<Client>,
     >,
-    layers: Query<Entity, (With<ChunkLayer>, With<EntityLayer>)>,
+    layers: Query<Entity, (With<ChunkLayer>, With<EntityLayer>, With<GameplayScope>)>,
 ) {
     for (
+        client_entity,
         mut layer_id,
         mut visible_chunk_layer,
         mut visible_entity_layers,
@@ -327,6 +357,7 @@ fn init_clients(
         layer_id.0 = layer;
         visible_chunk_layer.0 = layer;
         visible_entity_layers.0.insert(layer);
+        commands.entity(client_entity).insert(TERRAIN_PRIMARY_SCOPE);
         pos.set(SPAWN_POS);
         *game_mode = GameMode::Creative;
         is_flat.0 = true;
@@ -940,9 +971,27 @@ mod tests {
         let worldgen_contract = app.world().resource::<WorldgenTaskPluginContract>();
 
         assert_eq!(contract.update_phase_order, TERRAIN_GAMEPLAY_PHASE_ORDER);
+        assert_eq!(contract.scope, TERRAIN_PRIMARY_SCOPE);
         assert_eq!(worldgen_contract.world_mutation_phase, WORLDGEN_TASK_PHASE);
         assert!(app.world().contains_resource::<WorldgenTaskState>());
         assert!(app_has_schedule(&app, UPDATE_SCHEDULE_LABEL));
+
+        let shared_contract = gameplay_contracts::assert_gameplay_contract_present(
+            &app,
+            TERRAIN_GAMEPLAY_PLUGIN_NAME,
+        );
+        assert_eq!(
+            shared_contract.install_mode,
+            GameplayInstallMode::ExplicitOptIn
+        );
+        gameplay_contracts::assert_schedule_phases(
+            shared_contract,
+            UPDATE_SCHEDULE_LABEL,
+            TERRAIN_GAMEPLAY_PHASE_ORDER,
+        );
+        assert!(shared_contract
+            .non_claims
+            .contains(&"BedWars or Hyperion scope"));
     }
 
     #[test]
@@ -968,6 +1017,7 @@ mod tests {
             .world()
             .contains_resource::<WorldgenTaskPluginContract>());
         assert!(!app.world().contains_resource::<WorldgenTaskState>());
+        gameplay_contracts::assert_gameplay_contract_absent(&app, TERRAIN_GAMEPLAY_PLUGIN_NAME);
     }
 
     #[test]
@@ -981,6 +1031,39 @@ mod tests {
                 TerrainGameplayPhase::Presentation,
                 TerrainGameplayPhase::Cleanup,
             ]
+        );
+    }
+
+    #[test]
+    fn terrain_scope_checks_accept_primary_scope_and_reject_invalid_scope() {
+        const TEST_STALE_ARENA_ID: &str = "terrain-stale";
+        let wrong_mode = GameplayScope::new(
+            GameplayMode::Ctf,
+            GameplayArenaId::new(TERRAIN_PRIMARY_ARENA_ID),
+        );
+        let stale_arena = GameplayScope::new(
+            GameplayMode::Terrain,
+            GameplayArenaId::new(TEST_STALE_ARENA_ID),
+        );
+
+        assert_eq!(
+            gameplay_contracts::gameplay_scope_check(
+                Some(&TERRAIN_PRIMARY_SCOPE),
+                TERRAIN_PRIMARY_SCOPE,
+            ),
+            gameplay_contracts::GameplayScopeCheck::Match
+        );
+        assert_eq!(
+            gameplay_contracts::gameplay_scope_check(None, TERRAIN_PRIMARY_SCOPE),
+            gameplay_contracts::GameplayScopeCheck::Missing
+        );
+        assert_eq!(
+            gameplay_contracts::gameplay_scope_check(Some(&wrong_mode), TERRAIN_PRIMARY_SCOPE),
+            gameplay_contracts::GameplayScopeCheck::ModeMismatch
+        );
+        assert_eq!(
+            gameplay_contracts::gameplay_scope_check(Some(&stale_arena), TERRAIN_PRIMARY_SCOPE),
+            gameplay_contracts::GameplayScopeCheck::ArenaMismatch
         );
     }
 

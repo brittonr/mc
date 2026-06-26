@@ -1,14 +1,20 @@
 #![allow(clippy::type_complexity)]
 
 mod fixture_core;
+mod gameplay_contracts;
 mod scenario_contracts_generated;
 
 use fixture_core::ctf as ctf_core;
+use gameplay_contracts::{
+    gameplay_scope_matches, register_gameplay_plugin_contract, GameplayArenaId,
+    GameplayInstallMode, GameplayMode, GameplayPhase as CtfGameplayPhase, GameplayPluginContract,
+    GameplayScheduleContract, GameplayScope, GameplayScopeModel, CTF_PRIMARY_ARENA_ID,
+    EVENT_LOOP_UPDATE_SCHEDULE_LABEL, GAMEPLAY_PHASE_ORDER, UPDATE_SCHEDULE_LABEL,
+};
 use std::collections::HashMap;
 use std::path::Path;
 use std::{env, fs};
 
-use bevy_ecs::prelude::SystemSet;
 use bevy_ecs::query::QueryData;
 use valence::entity::cow::CowEntityBundle;
 use valence::entity::entity::Flags;
@@ -170,6 +176,61 @@ const CTF_SPAWN_BLUE_SLOT37_RESOURCE: &str = "BlueWool:64";
 const CTF_SPAWN_RESET_SLOT37_RESOURCE: &str = "TeamWool:64";
 const CTF_SPAWN_RESET_STATE: &str = "scoreboard_flags_and_resources_coherent";
 const CTF_SPAWN_EXPECTED_BLUE_USERNAME: &str = "compatbotb";
+const CTF_GAMEPLAY_PLUGIN_NAME: &str = "CtfGameplayPlugin";
+const CTF_RUNTIME_CONFIG_SOURCE_PLUGIN_NAME: &str = "CtfRuntimeConfigSourcePlugin";
+const CTF_RUNTIME_CONFIG_RELOAD_EVENT_NAME: &str = "CtfRuntimeConfigReloadEvent";
+const CTF_PRIMARY_SCOPE: GameplayScope = GameplayScope::new(
+    GameplayMode::Ctf,
+    GameplayArenaId::new(CTF_PRIMARY_ARENA_ID),
+);
+const CTF_GAMEPLAY_PHASE_ORDER: &[CtfGameplayPhase] = GAMEPLAY_PHASE_ORDER;
+const CTF_GAMEPLAY_SCHEDULES: &[GameplayScheduleContract] = &[
+    GameplayScheduleContract {
+        label: UPDATE_SCHEDULE_LABEL,
+        phases: CTF_GAMEPLAY_PHASE_ORDER,
+    },
+    GameplayScheduleContract {
+        label: EVENT_LOOP_UPDATE_SCHEDULE_LABEL,
+        phases: CTF_GAMEPLAY_PHASE_ORDER,
+    },
+];
+const CTF_SOURCE_SCHEDULES: &[GameplayScheduleContract] = CTF_GAMEPLAY_SCHEDULES;
+const CTF_GAMEPLAY_OWNED_RESOURCES: &[&str] = &[
+    "ArrowPolicyState",
+    "CtfGlobals",
+    "CtfGameplayPluginContract",
+    "CtfLayers",
+    "FlagManager",
+    "Score",
+];
+const CTF_SOURCE_OWNED_RESOURCES: &[&str] = &["CtfRuntimeConfig"];
+const CTF_SOURCE_OWNED_EVENTS: &[&str] = &[CTF_RUNTIME_CONFIG_RELOAD_EVENT_NAME];
+const CTF_NO_OWNED_EVENTS: &[&str] = &[];
+const CTF_NON_CLAIMS: &[&str] = &[
+    "dynamic runtime plugins",
+    "default Valence gameplay",
+    "BedWars or Hyperion scope",
+    "vanilla parity",
+    "production readiness",
+];
+const CTF_GAMEPLAY_CONTRACT: GameplayPluginContract = GameplayPluginContract {
+    plugin: CTF_GAMEPLAY_PLUGIN_NAME,
+    install_mode: GameplayInstallMode::ExplicitOptIn,
+    scope_model: GameplayScopeModel::ArenaOwnedLayer,
+    schedules: CTF_GAMEPLAY_SCHEDULES,
+    owned_resources: CTF_GAMEPLAY_OWNED_RESOURCES,
+    owned_events: CTF_NO_OWNED_EVENTS,
+    non_claims: CTF_NON_CLAIMS,
+};
+const CTF_RUNTIME_CONFIG_SOURCE_CONTRACT: GameplayPluginContract = GameplayPluginContract {
+    plugin: CTF_RUNTIME_CONFIG_SOURCE_PLUGIN_NAME,
+    install_mode: GameplayInstallMode::SourceAdapter,
+    scope_model: GameplayScopeModel::SourceOnly,
+    schedules: CTF_SOURCE_SCHEDULES,
+    owned_resources: CTF_SOURCE_OWNED_RESOURCES,
+    owned_events: CTF_SOURCE_OWNED_EVENTS,
+    non_claims: CTF_NON_CLAIMS,
+};
 
 #[derive(Resource, Clone, Debug, Default, PartialEq, Eq)]
 struct CtfRuntimeConfig {
@@ -215,6 +276,27 @@ struct CtfRuntimeConfigInputs {
     projectile_probe: Option<String>,
     armor_mitigation_probe: Option<String>,
     equipment_update_probe: Option<String>,
+}
+
+#[derive(Event, Clone, Debug, Default, PartialEq, Eq)]
+struct CtfRuntimeConfigReloadEvent {
+    inputs: Option<CtfRuntimeConfigInputs>,
+}
+
+impl CtfRuntimeConfigReloadEvent {
+    #[cfg(test)]
+    fn from_inputs(inputs: CtfRuntimeConfigInputs) -> Self {
+        Self {
+            inputs: Some(inputs),
+        }
+    }
+
+    fn config(&self) -> CtfRuntimeConfig {
+        match &self.inputs {
+            Some(inputs) => parse_ctf_runtime_config(inputs),
+            None => CtfRuntimeConfig::from_env(),
+        }
+    }
 }
 
 impl CtfRuntimeConfig {
@@ -812,28 +894,30 @@ fn redact_arrow_policy_text(value: &str) -> String {
     }
 }
 
-#[derive(SystemSet, Clone, Copy, Debug, Eq, Hash, PartialEq)]
-enum CtfGameplayPhase {
-    Input,
-    RuleEvaluation,
-    WorldMutation,
-    Presentation,
-    Cleanup,
-}
-
 #[derive(Resource, Clone, Copy, Debug, PartialEq)]
 struct CtfGameplayPluginContract {
     update_phase_order: &'static [CtfGameplayPhase],
     event_loop_phase_order: &'static [CtfGameplayPhase],
+    scope: GameplayScope,
 }
 
-const CTF_GAMEPLAY_PHASE_ORDER: &[CtfGameplayPhase] = &[
-    CtfGameplayPhase::Input,
-    CtfGameplayPhase::RuleEvaluation,
-    CtfGameplayPhase::WorldMutation,
-    CtfGameplayPhase::Presentation,
-    CtfGameplayPhase::Cleanup,
-];
+struct CtfRuntimeConfigSourcePlugin;
+
+impl Plugin for CtfRuntimeConfigSourcePlugin {
+    fn build(&self, app: &mut App) {
+        register_gameplay_plugin_contract(app, CTF_RUNTIME_CONFIG_SOURCE_CONTRACT);
+        app.insert_resource(CtfRuntimeConfig::from_env())
+            .add_event::<CtfRuntimeConfigReloadEvent>()
+            .add_systems(
+                EventLoopUpdate,
+                reload_ctf_runtime_config_from_source.in_set(CtfGameplayPhase::Input),
+            )
+            .add_systems(
+                Update,
+                reload_ctf_runtime_config_from_source.in_set(CtfGameplayPhase::Input),
+            );
+    }
+}
 
 struct CtfGameplayPlugin;
 
@@ -842,11 +926,14 @@ impl Plugin for CtfGameplayPlugin {
         let contract = CtfGameplayPluginContract {
             update_phase_order: CTF_GAMEPLAY_PHASE_ORDER,
             event_loop_phase_order: CTF_GAMEPLAY_PHASE_ORDER,
+            scope: CTF_PRIMARY_SCOPE,
         };
         assert_eq!(contract.update_phase_order, CTF_GAMEPLAY_PHASE_ORDER);
         assert_eq!(contract.event_loop_phase_order, CTF_GAMEPLAY_PHASE_ORDER);
+        assert_eq!(contract.scope, CTF_PRIMARY_SCOPE);
 
-        app.insert_resource(CtfRuntimeConfig::from_env())
+        register_gameplay_plugin_contract(app, CTF_GAMEPLAY_CONTRACT);
+        app.init_resource::<CtfRuntimeConfig>()
             .insert_resource(ArrowPolicyState::default())
             .insert_resource(contract)
             .configure_sets(
@@ -872,17 +959,12 @@ impl Plugin for CtfGameplayPlugin {
             .add_systems(Startup, setup)
             .add_systems(
                 EventLoopUpdate,
-                refresh_ctf_runtime_config_from_env.in_set(CtfGameplayPhase::Input),
-            )
-            .add_systems(
-                EventLoopUpdate,
                 (handle_combat_events, handle_projectile_events)
                     .in_set(CtfGameplayPhase::WorldMutation),
             )
             .add_systems(
                 Update,
                 (
-                    refresh_ctf_runtime_config_from_env,
                     init_clients,
                     log_inventory_hotbar_select_events,
                     log_inventory_drop_events,
@@ -924,12 +1006,22 @@ pub fn main() {
             ..Default::default()
         })
         .add_plugins(DefaultPlugins)
+        .add_plugins(CtfRuntimeConfigSourcePlugin)
         .add_plugins(CtfGameplayPlugin)
         .run();
 }
 
-fn refresh_ctf_runtime_config_from_env(mut runtime_config: ResMut<CtfRuntimeConfig>) {
-    *runtime_config = CtfRuntimeConfig::from_env();
+fn reload_ctf_runtime_config_from_source(
+    mut events: EventReader<CtfRuntimeConfigReloadEvent>,
+    mut runtime_config: ResMut<CtfRuntimeConfig>,
+) {
+    let mut next_config = None;
+    for event in events.read() {
+        next_config = Some(event.config());
+    }
+    if let Some(next_config) = next_config {
+        *runtime_config = next_config;
+    }
 }
 
 fn setup(
@@ -982,7 +1074,7 @@ fn setup(
 
     build_spawn_box(&mut layer, SPAWN_BOX, &mut commands);
 
-    commands.spawn(layer);
+    commands.spawn((layer, CTF_PRIMARY_SCOPE));
 
     let ctf_objective_layer = commands.spawn(EntityLayer::new(&server)).id();
     let ctf_objective = ObjectiveBundle {
@@ -1244,8 +1336,10 @@ fn build_spawn_box(layer: &mut LayerBundle, pos: impl Into<BlockPos>, commands: 
 }
 
 fn init_clients(
+    mut commands: Commands,
     mut clients: Query<
         (
+            Entity,
             &mut Client,
             &mut EntityLayerId,
             &mut VisibleChunkLayer,
@@ -1256,10 +1350,11 @@ fn init_clients(
         ),
         Added<Client>,
     >,
-    main_layers: Query<Entity, (With<ChunkLayer>, With<EntityLayer>)>,
+    main_layers: Query<Entity, (With<ChunkLayer>, With<EntityLayer>, With<GameplayScope>)>,
     globals: Res<CtfGlobals>,
 ) {
     for (
+        client_entity,
         mut client,
         mut layer_id,
         mut visible_chunk_layer,
@@ -1278,6 +1373,7 @@ fn init_clients(
         pos.set(SPAWN_POS);
         *game_mode = GameMode::Adventure;
         health.0 = PLAYER_MAX_HEALTH;
+        commands.entity(client_entity).insert(CTF_PRIMARY_SCOPE);
 
         client.send_chat_message(
             "Welcome to Valence! Select a team by jumping in the team's portal.".italic(),
@@ -3276,9 +3372,13 @@ impl CtfLayers {
         let mut enemy_layers = HashMap::new();
 
         for team in Team::iter() {
-            let friendly_layer = commands.spawn((EntityLayer::new(server), team)).id();
+            let friendly_layer = commands
+                .spawn((EntityLayer::new(server), team, CTF_PRIMARY_SCOPE))
+                .id();
             friendly_layers.insert(team, friendly_layer);
-            let enemy_layer = commands.spawn((EntityLayer::new(server), team)).id();
+            let enemy_layer = commands
+                .spawn((EntityLayer::new(server), team, CTF_PRIMARY_SCOPE))
+                .id();
             enemy_layers.insert(team, enemy_layer);
         }
 
@@ -3895,8 +3995,13 @@ fn equipment_update_probe_enabled(config: &CtfRuntimeConfig) -> bool {
     config.probes.equipment_update
 }
 
-fn teleport_oob_clients(mut clients: Query<(&mut Position, &Team), With<Client>>) {
-    for (mut pos, team) in &mut clients {
+fn teleport_oob_clients(
+    mut clients: Query<(&mut Position, &Team, Option<&GameplayScope>), With<Client>>,
+) {
+    for (mut pos, team, scope) in &mut clients {
+        if !gameplay_scope_matches(scope, CTF_PRIMARY_SCOPE) {
+            continue;
+        }
         if pos.0.y < 0.0 {
             pos.set(team.spawn_pos());
         }
@@ -3998,10 +4103,31 @@ mod tests {
         let contract = app.world().resource::<CtfGameplayPluginContract>();
         assert_eq!(contract.update_phase_order, CTF_GAMEPLAY_PHASE_ORDER);
         assert_eq!(contract.event_loop_phase_order, CTF_GAMEPLAY_PHASE_ORDER);
+        assert_eq!(contract.scope, CTF_PRIMARY_SCOPE);
         assert!(app.world().contains_resource::<CtfRuntimeConfig>());
         assert!(app.world().contains_resource::<ArrowPolicyState>());
         assert!(app_has_schedule(&app, UPDATE_SCHEDULE_LABEL));
         assert!(app_has_schedule(&app, CTF_EVENT_LOOP_SCHEDULE_LABEL));
+
+        let shared_contract =
+            gameplay_contracts::assert_gameplay_contract_present(&app, CTF_GAMEPLAY_PLUGIN_NAME);
+        assert_eq!(
+            shared_contract.install_mode,
+            GameplayInstallMode::ExplicitOptIn
+        );
+        gameplay_contracts::assert_schedule_phases(
+            shared_contract,
+            UPDATE_SCHEDULE_LABEL,
+            CTF_GAMEPLAY_PHASE_ORDER,
+        );
+        gameplay_contracts::assert_schedule_phases(
+            shared_contract,
+            CTF_EVENT_LOOP_SCHEDULE_LABEL,
+            CTF_GAMEPLAY_PHASE_ORDER,
+        );
+        assert!(shared_contract
+            .non_claims
+            .contains(&"BedWars or Hyperion scope"));
     }
 
     #[test]
@@ -4011,6 +4137,51 @@ mod tests {
         assert!(!app.world().contains_resource::<CtfGameplayPluginContract>());
         assert!(!app.world().contains_resource::<CtfRuntimeConfig>());
         assert!(!app.world().contains_resource::<ArrowPolicyState>());
+        gameplay_contracts::assert_gameplay_contract_absent(&app, CTF_GAMEPLAY_PLUGIN_NAME);
+        gameplay_contracts::assert_gameplay_contract_absent(
+            &app,
+            CTF_RUNTIME_CONFIG_SOURCE_PLUGIN_NAME,
+        );
+    }
+
+    #[test]
+    fn ctf_config_source_adapter_owns_env_reload_boundary() {
+        let mut app = app_with_ctf_event_loop_schedule();
+
+        app.add_plugins(CtfRuntimeConfigSourcePlugin);
+
+        let shared_contract = gameplay_contracts::assert_gameplay_contract_present(
+            &app,
+            CTF_RUNTIME_CONFIG_SOURCE_PLUGIN_NAME,
+        );
+        assert_eq!(
+            shared_contract.install_mode,
+            GameplayInstallMode::SourceAdapter
+        );
+        assert!(shared_contract
+            .owned_events
+            .contains(&CTF_RUNTIME_CONFIG_RELOAD_EVENT_NAME));
+        assert!(app
+            .world()
+            .contains_resource::<Events<CtfRuntimeConfigReloadEvent>>());
+
+        app.world_mut()
+            .resource_mut::<Events<CtfRuntimeConfigReloadEvent>>()
+            .send(CtfRuntimeConfigReloadEvent::from_inputs(
+                CtfRuntimeConfigInputs {
+                    projectile_probe: Some(ENV_FLAG_ENABLED_VALUE.to_owned()),
+                    arrow_policy_config: Some(TEST_SOURCE.to_owned()),
+                    ..Default::default()
+                },
+            ));
+        app.update();
+
+        let runtime_config = app.world().resource::<CtfRuntimeConfig>();
+        assert!(runtime_config.probes.projectile);
+        assert_eq!(
+            runtime_config.arrow_policy.config_path.as_deref(),
+            Some(TEST_SOURCE)
+        );
     }
 
     #[test]
@@ -4094,6 +4265,34 @@ mod tests {
                 CtfGameplayPhase::Presentation,
                 CtfGameplayPhase::Cleanup,
             ]
+        );
+    }
+
+    #[test]
+    fn ctf_scope_checks_accept_primary_scope_and_reject_invalid_scope() {
+        const TEST_STALE_ARENA_ID: &str = "ctf-stale";
+        let wrong_mode = GameplayScope::new(
+            GameplayMode::Survival,
+            GameplayArenaId::new(CTF_PRIMARY_ARENA_ID),
+        );
+        let stale_arena =
+            GameplayScope::new(GameplayMode::Ctf, GameplayArenaId::new(TEST_STALE_ARENA_ID));
+
+        assert_eq!(
+            gameplay_contracts::gameplay_scope_check(Some(&CTF_PRIMARY_SCOPE), CTF_PRIMARY_SCOPE),
+            gameplay_contracts::GameplayScopeCheck::Match
+        );
+        assert_eq!(
+            gameplay_contracts::gameplay_scope_check(None, CTF_PRIMARY_SCOPE),
+            gameplay_contracts::GameplayScopeCheck::Missing
+        );
+        assert_eq!(
+            gameplay_contracts::gameplay_scope_check(Some(&wrong_mode), CTF_PRIMARY_SCOPE),
+            gameplay_contracts::GameplayScopeCheck::ModeMismatch
+        );
+        assert_eq!(
+            gameplay_contracts::gameplay_scope_check(Some(&stale_arena), CTF_PRIMARY_SCOPE),
+            gameplay_contracts::GameplayScopeCheck::ArenaMismatch
         );
     }
 

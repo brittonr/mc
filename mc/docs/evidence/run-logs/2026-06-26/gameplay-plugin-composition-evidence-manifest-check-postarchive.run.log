@@ -1,0 +1,8 @@
+# Gameplay plugin composition evidence manifest check post-archive
+date_utc=2026-06-26T19:09:27Z
+cwd=/home/brittonr/git/mc
+command=nix run .#evidence-manifest-refresh -- --check --root .
+evidence manifest refresh ok: mode=check; passes=0; manifests=512; entries=4605; current=4605; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+evidence_manifest_check_exit_status=0
+exit_status=0
+]0;

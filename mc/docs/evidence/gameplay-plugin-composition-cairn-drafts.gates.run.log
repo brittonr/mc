@@ -1,0 +1,275 @@
+command=repo-pinned cairn validate and proposal/design/tasks gates for gameplay plugin composition drafts
+cwd=/home/brittonr/git/mc
+changes=introduce-shared-gameplay-plugin-contracts scope-gameplay-plugins-to-arenas separate-gameplay-config-sources
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+{
+  "change": "introduce-shared-gameplay-plugin-contracts",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "2750d3e090fcfe753e6366a7f35a55095bb929375cb92647825968abc70ee805",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "a03f67931b0cbad03d2f2111faea97efe5287428431de16f3ead6ad77af72e65",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "introduce-shared-gameplay-plugin-contracts",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "b2163ccc30c3012c4d59a21655bda17c61b1a3023c48b43c10f5065b92f2a161",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "be64f3e7e476cae77bab92995efe0f42bfa652ddfedc92b5c48ba6435a286213",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "introduce-shared-gameplay-plugin-contracts",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "25f19f24d32a3f972a46283f2b71169cec7ad11cf902e1cad8fc0c230b9b17df",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "7de74341980ac49bad4527db8309077d300e103dfa23d9519476ca9bf334ce65",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "scope-gameplay-plugins-to-arenas",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "caedaa052106565f3a552c52341e505ab7c0212acd8bfb50fa088631b1073246",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "2b27a4e437a13e9f2e628d2f1c80f10878e90dc02918611f91576548b3c9a6df",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "scope-gameplay-plugins-to-arenas",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "ce61c630a31d92b64c7ac396f3f36c6d603f436cc72232867d9561243941eefc",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "0da24dfed276b644d92934c9e3dfd6eb436dde65adb6a6b3d3363ed987b16974",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "scope-gameplay-plugins-to-arenas",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "eceaf288d2dee6aca999fa976e469c66f8d867791bd957eda08b2a253e2cfa07",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "c68ae88583c9a9b459a245d68d98847cef21014455c45e6031fcc1f70f6faf0c",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "separate-gameplay-config-sources",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "4159dc08bef5634e40a3d839701950f9ac092494a366d20c6beba9ff1908f912",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "e3d65a78310ad9b5580ad3ccfa61c9148ce8e036ad258b040863cb87592432f5",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "separate-gameplay-config-sources",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "ea885df54cbea9d98e18cfa422b43d57c9cd4724f0099c0dc41b8ec7f937e737",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "fb27c0bfa957139cd42a646159f3a6cc2ec267bacdcf195c51a3187cb6485274",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "separate-gameplay-config-sources",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "657c958d55a7d376ea63ef76829548dff73fbd6494f723b79639b3fa215f45e0",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "c05a4fb1a2bd24298c41c1893a94a70077ecff27f9c4d313cc573938e8cbd698",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "./cairn/changes/introduce-shared-gameplay-plugin-contracts/specs/valence-bevy-ecs/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "introduce-shared-gameplay-plugin-contracts",
+      "path": "./cairn/changes/introduce-shared-gameplay-plugin-contracts",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/scope-gameplay-plugins-to-arenas/specs/valence-bevy-ecs/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "scope-gameplay-plugins-to-arenas",
+      "path": "./cairn/changes/scope-gameplay-plugins-to-arenas",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/separate-gameplay-config-sources/specs/valence-bevy-ecs/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "separate-gameplay-config-sources",
+      "path": "./cairn/changes/separate-gameplay-config-sources",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "."
+}
+exit_status=0

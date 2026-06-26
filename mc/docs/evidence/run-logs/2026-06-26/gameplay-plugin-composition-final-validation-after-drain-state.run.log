@@ -1,0 +1,48 @@
+# Gameplay plugin composition final validation after drain-state update
+date_utc=2026-06-26T19:29:05Z
+cwd=/home/brittonr/git/mc
+command=nix build .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 43 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 134 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 301 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1026 ms: Could not connect to server; retrying in 599 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 8 ms: Could not connect to server
+this derivation will be built:
+  /nix/store/7a0wn6ydik6zl9wwvfs0c1p08f9yx7yk-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/7a0wn6ydik6zl9wwvfs0c1p08f9yx7yk-mc-compat-evidence-manifests.drv'...
+nix_evidence_manifests_exit_status=0
+command=nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1062 ms: Could not connect to server; retrying in 4 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 8 ms: Could not connect to server; retrying in 10 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 309 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4142 ms: Could not connect to server; retrying in 3 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5001 milliseconds
+this derivation will be built:
+  /nix/store/br200mp77ph49i712n2bdzfg26s1nmrj-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/br200mp77ph49i712n2bdzfg26s1nmrj-mc-compat-cairn-task-evidence.drv'...
+nix_task_evidence_exit_status=0
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
+cairn_validate_exit_status=0
+command=nix run .#cairn -- change list --root .
+{
+  "changes": [],
+  "layout": "cairn",
+  "root": "."
+}
+change_list_exit_status=0
+exit_status=0
+]0;

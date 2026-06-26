@@ -1,13 +1,20 @@
 #![allow(clippy::type_complexity)]
 
 mod fixture_core;
+mod gameplay_contracts;
 mod scenario_contracts_generated;
 
 use fixture_core::survival as survival_core;
+use gameplay_contracts::{
+    gameplay_scope_matches, register_gameplay_plugin_contract, GameplayArenaId,
+    GameplayInstallMode, GameplayMode, GameplayPhase as SurvivalGameplayPhase,
+    GameplayPluginContract, GameplayScheduleContract, GameplayScope, GameplayScopeModel,
+    EVENT_LOOP_PRE_UPDATE_SCHEDULE_LABEL, GAMEPLAY_PHASE_ORDER, SURVIVAL_PRIMARY_ARENA_ID,
+    UPDATE_SCHEDULE_LABEL,
+};
 use std::fs;
 use std::path::PathBuf;
 
-use bevy_ecs::prelude::SystemSet;
 use valence::entity::iron_golem::IronGolemEntityBundle;
 use valence::entity::item::{ItemEntityBundle, Stack as ItemEntityStack};
 use valence::entity::living::Health;
@@ -181,6 +188,61 @@ const SURVIVAL_NETHER_ID: &str = "minecraft:the_nether";
 const SURVIVAL_END_ID: &str = "minecraft:the_end";
 const SURVIVAL_UNKNOWN_ENVIRONMENT_ID: &str = "unknown";
 const SURVIVAL_ENV_FLAG_ENABLED_VALUE: &str = "1";
+const SURVIVAL_COMPATIBILITY_PLUGIN_NAME: &str = "SurvivalCompatibilityPlugin";
+const SURVIVAL_RUNTIME_CONFIG_SOURCE_PLUGIN_NAME: &str = "SurvivalRuntimeConfigSourcePlugin";
+const SURVIVAL_RUNTIME_CONFIG_RELOAD_EVENT_NAME: &str = "SurvivalRuntimeConfigReloadEvent";
+const SURVIVAL_PRIMARY_SCOPE: GameplayScope = GameplayScope::new(
+    GameplayMode::Survival,
+    GameplayArenaId::new(SURVIVAL_PRIMARY_ARENA_ID),
+);
+const SURVIVAL_GAMEPLAY_PHASE_ORDER: &[SurvivalGameplayPhase] = GAMEPLAY_PHASE_ORDER;
+const SURVIVAL_GAMEPLAY_SCHEDULES: &[GameplayScheduleContract] = &[
+    GameplayScheduleContract {
+        label: UPDATE_SCHEDULE_LABEL,
+        phases: SURVIVAL_GAMEPLAY_PHASE_ORDER,
+    },
+    GameplayScheduleContract {
+        label: EVENT_LOOP_PRE_UPDATE_SCHEDULE_LABEL,
+        phases: SURVIVAL_GAMEPLAY_PHASE_ORDER,
+    },
+];
+const SURVIVAL_SOURCE_SCHEDULES: &[GameplayScheduleContract] = SURVIVAL_GAMEPLAY_SCHEDULES;
+const SURVIVAL_GAMEPLAY_OWNED_RESOURCES: &[&str] = &[
+    "SurvivalChestFixture",
+    "SurvivalCompatibilityPluginContract",
+    "SurvivalCraftingFixture",
+    "SurvivalFurnaceFixture",
+    "SurvivalHungerFoodFixture",
+    "SurvivalMobDropFixture",
+];
+const SURVIVAL_SOURCE_OWNED_RESOURCES: &[&str] = &["SurvivalRuntimeConfig"];
+const SURVIVAL_SOURCE_OWNED_EVENTS: &[&str] = &[SURVIVAL_RUNTIME_CONFIG_RELOAD_EVENT_NAME];
+const SURVIVAL_NO_OWNED_EVENTS: &[&str] = &[];
+const SURVIVAL_NON_CLAIMS: &[&str] = &[
+    "dynamic runtime plugins",
+    "default Valence gameplay",
+    "BedWars or Hyperion scope",
+    "vanilla parity",
+    "production readiness",
+];
+const SURVIVAL_GAMEPLAY_CONTRACT: GameplayPluginContract = GameplayPluginContract {
+    plugin: SURVIVAL_COMPATIBILITY_PLUGIN_NAME,
+    install_mode: GameplayInstallMode::ExplicitOptIn,
+    scope_model: GameplayScopeModel::LayerOwnedFixture,
+    schedules: SURVIVAL_GAMEPLAY_SCHEDULES,
+    owned_resources: SURVIVAL_GAMEPLAY_OWNED_RESOURCES,
+    owned_events: SURVIVAL_NO_OWNED_EVENTS,
+    non_claims: SURVIVAL_NON_CLAIMS,
+};
+const SURVIVAL_RUNTIME_CONFIG_SOURCE_CONTRACT: GameplayPluginContract = GameplayPluginContract {
+    plugin: SURVIVAL_RUNTIME_CONFIG_SOURCE_PLUGIN_NAME,
+    install_mode: GameplayInstallMode::SourceAdapter,
+    scope_model: GameplayScopeModel::SourceOnly,
+    schedules: SURVIVAL_SOURCE_SCHEDULES,
+    owned_resources: SURVIVAL_SOURCE_OWNED_RESOURCES,
+    owned_events: SURVIVAL_SOURCE_OWNED_EVENTS,
+    non_claims: SURVIVAL_NON_CLAIMS,
+};
 
 #[derive(Resource, Clone, Debug, PartialEq, Eq)]
 struct SurvivalRuntimeConfig {
@@ -245,6 +307,27 @@ struct SurvivalRuntimeConfigInputs {
     temp_dir: PathBuf,
 }
 
+#[derive(Event, Clone, Debug, Default, PartialEq, Eq)]
+struct SurvivalRuntimeConfigReloadEvent {
+    inputs: Option<SurvivalRuntimeConfigInputs>,
+}
+
+impl SurvivalRuntimeConfigReloadEvent {
+    #[cfg(test)]
+    fn from_inputs(inputs: SurvivalRuntimeConfigInputs) -> Self {
+        Self {
+            inputs: Some(inputs),
+        }
+    }
+
+    fn config(&self) -> SurvivalRuntimeConfig {
+        match &self.inputs {
+            Some(inputs) => parse_survival_runtime_config(inputs),
+            None => SurvivalRuntimeConfig::from_env(),
+        }
+    }
+}
+
 impl Default for SurvivalRuntimeConfigInputs {
     fn default() -> Self {
         Self {
@@ -272,6 +355,12 @@ impl Default for SurvivalRuntimeConfigInputs {
             biome_dimension_travel_fixture: None,
             temp_dir: std::env::temp_dir(),
         }
+    }
+}
+
+impl Default for SurvivalRuntimeConfig {
+    fn default() -> Self {
+        parse_survival_runtime_config(&SurvivalRuntimeConfigInputs::default())
     }
 }
 
@@ -706,28 +795,30 @@ impl SurvivalFurnaceFixture {
     }
 }
 
-#[derive(SystemSet, Clone, Copy, Debug, Eq, Hash, PartialEq)]
-enum SurvivalGameplayPhase {
-    Input,
-    RuleEvaluation,
-    WorldMutation,
-    Presentation,
-    Cleanup,
-}
-
 #[derive(Resource, Clone, Copy, Debug, PartialEq)]
 struct SurvivalCompatibilityPluginContract {
     update_phase_order: &'static [SurvivalGameplayPhase],
     event_loop_phase_order: &'static [SurvivalGameplayPhase],
+    scope: GameplayScope,
 }
 
-const SURVIVAL_GAMEPLAY_PHASE_ORDER: &[SurvivalGameplayPhase] = &[
-    SurvivalGameplayPhase::Input,
-    SurvivalGameplayPhase::RuleEvaluation,
-    SurvivalGameplayPhase::WorldMutation,
-    SurvivalGameplayPhase::Presentation,
-    SurvivalGameplayPhase::Cleanup,
-];
+struct SurvivalRuntimeConfigSourcePlugin;
+
+impl Plugin for SurvivalRuntimeConfigSourcePlugin {
+    fn build(&self, app: &mut App) {
+        register_gameplay_plugin_contract(app, SURVIVAL_RUNTIME_CONFIG_SOURCE_CONTRACT);
+        app.insert_resource(SurvivalRuntimeConfig::from_env())
+            .add_event::<SurvivalRuntimeConfigReloadEvent>()
+            .add_systems(
+                EventLoopPreUpdate,
+                reload_survival_runtime_config_from_source.in_set(SurvivalGameplayPhase::Input),
+            )
+            .add_systems(
+                Update,
+                reload_survival_runtime_config_from_source.in_set(SurvivalGameplayPhase::Input),
+            );
+    }
+}
 
 struct SurvivalCompatibilityPlugin;
 
@@ -736,14 +827,17 @@ impl Plugin for SurvivalCompatibilityPlugin {
         let contract = SurvivalCompatibilityPluginContract {
             update_phase_order: SURVIVAL_GAMEPLAY_PHASE_ORDER,
             event_loop_phase_order: SURVIVAL_GAMEPLAY_PHASE_ORDER,
+            scope: SURVIVAL_PRIMARY_SCOPE,
         };
         assert_eq!(contract.update_phase_order, SURVIVAL_GAMEPLAY_PHASE_ORDER);
         assert_eq!(
             contract.event_loop_phase_order,
             SURVIVAL_GAMEPLAY_PHASE_ORDER
         );
+        assert_eq!(contract.scope, SURVIVAL_PRIMARY_SCOPE);
 
-        app.insert_resource(SurvivalRuntimeConfig::from_env())
+        register_gameplay_plugin_contract(app, SURVIVAL_GAMEPLAY_CONTRACT);
+        app.init_resource::<SurvivalRuntimeConfig>()
             .insert_resource(contract)
             .configure_sets(
                 EventLoopPreUpdate,
@@ -770,17 +864,9 @@ impl Plugin for SurvivalCompatibilityPlugin {
             .add_systems(Startup, setup)
             .add_systems(
                 EventLoopPreUpdate,
-                refresh_survival_runtime_config_from_env.in_set(SurvivalGameplayPhase::Input),
-            )
-            .add_systems(
-                EventLoopPreUpdate,
                 handle_survival_chest_close.in_set(SurvivalGameplayPhase::Input),
             )
-            .add_systems(
-                Update,
-                (refresh_survival_runtime_config_from_env, init_clients)
-                    .in_set(SurvivalGameplayPhase::Input),
-            )
+            .add_systems(Update, init_clients.in_set(SurvivalGameplayPhase::Input))
             .add_systems(
                 Update,
                 (
@@ -824,12 +910,22 @@ pub fn main() {
             ..Default::default()
         })
         .add_plugins(DefaultPlugins)
+        .add_plugins(SurvivalRuntimeConfigSourcePlugin)
         .add_plugins(SurvivalCompatibilityPlugin)
         .run();
 }
 
-fn refresh_survival_runtime_config_from_env(mut runtime_config: ResMut<SurvivalRuntimeConfig>) {
-    *runtime_config = SurvivalRuntimeConfig::from_env();
+fn reload_survival_runtime_config_from_source(
+    mut events: EventReader<SurvivalRuntimeConfigReloadEvent>,
+    mut runtime_config: ResMut<SurvivalRuntimeConfig>,
+) {
+    let mut next_config = None;
+    for event in events.read() {
+        next_config = Some(event.config());
+    }
+    if let Some(next_config) = next_config {
+        *runtime_config = next_config;
+    }
 }
 
 fn setup(
@@ -908,7 +1004,7 @@ fn setup(
         }
     }
 
-    let layer = commands.spawn(layer).id();
+    let layer = commands.spawn((layer, SURVIVAL_PRIMARY_SCOPE)).id();
 
     if survival_chest_fixture_enabled(&runtime_config) {
         let inventory = commands
@@ -976,8 +1072,10 @@ fn setup(
 }
 
 fn init_clients(
+    mut commands: Commands,
     mut clients: Query<
         (
+            Entity,
             &mut Client,
             &Username,
             &mut EntityLayerId,
@@ -993,7 +1091,7 @@ fn init_clients(
         ),
         Added<Client>,
     >,
-    layers: Query<Entity, (With<ChunkLayer>, With<EntityLayer>)>,
+    layers: Query<Entity, (With<ChunkLayer>, With<EntityLayer>, With<GameplayScope>)>,
     mut hunger_food_fixture: Option<ResMut<SurvivalHungerFoodFixture>>,
     mut crafting_breadth_fixture: Option<ResMut<SurvivalCraftingBreadthFixture>>,
     mut mob_drop_fixture: Option<ResMut<SurvivalMobDropFixture>>,
@@ -1002,6 +1100,7 @@ fn init_clients(
     runtime_config: Res<SurvivalRuntimeConfig>,
 ) {
     for (
+        client_entity,
         mut client,
         username,
         mut layer_id,
@@ -1043,6 +1142,9 @@ fn init_clients(
             pos.set([SURVIVAL_SPAWN_X, f64::from(SPAWN_Y), SURVIVAL_SPAWN_Z]);
         }
         *game_mode = GameMode::Survival;
+        commands
+            .entity(client_entity)
+            .insert(SURVIVAL_PRIMARY_SCOPE);
         inventory.set_slot(SURVIVAL_ITEM_SLOT, ItemStack::EMPTY);
         if survival_chest_fixture_enabled(&runtime_config) {
             cursor_item.0 = survival_chest_item_stack();
@@ -1561,9 +1663,15 @@ fn handle_survival_chest_close(
 
 fn remove_survival_open_containers_from_despawned(
     mut commands: Commands,
-    clients: Query<Entity, (With<SurvivalOpenContainer>, With<Despawned>)>,
+    clients: Query<
+        (Entity, Option<&GameplayScope>),
+        (With<SurvivalOpenContainer>, With<Despawned>),
+    >,
 ) {
-    for client in &clients {
+    for (client, scope) in &clients {
+        if !gameplay_scope_matches(scope, SURVIVAL_PRIMARY_SCOPE) {
+            continue;
+        }
         commands.entity(client).remove::<SurvivalOpenContainer>();
     }
 }
@@ -3720,9 +3828,32 @@ mod tests {
             contract.event_loop_phase_order,
             SURVIVAL_GAMEPLAY_PHASE_ORDER
         );
+        assert_eq!(contract.scope, SURVIVAL_PRIMARY_SCOPE);
         assert!(app.world().contains_resource::<SurvivalRuntimeConfig>());
         assert!(app_has_schedule(&app, UPDATE_SCHEDULE_LABEL));
         assert!(app_has_schedule(&app, SURVIVAL_EVENT_LOOP_SCHEDULE_LABEL));
+
+        let shared_contract = gameplay_contracts::assert_gameplay_contract_present(
+            &app,
+            SURVIVAL_COMPATIBILITY_PLUGIN_NAME,
+        );
+        assert_eq!(
+            shared_contract.install_mode,
+            GameplayInstallMode::ExplicitOptIn
+        );
+        gameplay_contracts::assert_schedule_phases(
+            shared_contract,
+            UPDATE_SCHEDULE_LABEL,
+            SURVIVAL_GAMEPLAY_PHASE_ORDER,
+        );
+        gameplay_contracts::assert_schedule_phases(
+            shared_contract,
+            SURVIVAL_EVENT_LOOP_SCHEDULE_LABEL,
+            SURVIVAL_GAMEPLAY_PHASE_ORDER,
+        );
+        assert!(shared_contract
+            .non_claims
+            .contains(&"BedWars or Hyperion scope"));
     }
 
     #[test]
@@ -3733,6 +3864,54 @@ mod tests {
             .world()
             .contains_resource::<SurvivalCompatibilityPluginContract>());
         assert!(!app.world().contains_resource::<SurvivalRuntimeConfig>());
+        gameplay_contracts::assert_gameplay_contract_absent(
+            &app,
+            SURVIVAL_COMPATIBILITY_PLUGIN_NAME,
+        );
+        gameplay_contracts::assert_gameplay_contract_absent(
+            &app,
+            SURVIVAL_RUNTIME_CONFIG_SOURCE_PLUGIN_NAME,
+        );
+    }
+
+    #[test]
+    fn survival_config_source_adapter_owns_env_reload_boundary() {
+        let mut app = app_with_survival_event_loop_schedule();
+
+        app.add_plugins(SurvivalRuntimeConfigSourcePlugin);
+
+        let shared_contract = gameplay_contracts::assert_gameplay_contract_present(
+            &app,
+            SURVIVAL_RUNTIME_CONFIG_SOURCE_PLUGIN_NAME,
+        );
+        assert_eq!(
+            shared_contract.install_mode,
+            GameplayInstallMode::SourceAdapter
+        );
+        assert!(shared_contract
+            .owned_events
+            .contains(&SURVIVAL_RUNTIME_CONFIG_RELOAD_EVENT_NAME));
+        assert!(app
+            .world()
+            .contains_resource::<Events<SurvivalRuntimeConfigReloadEvent>>());
+
+        app.world_mut()
+            .resource_mut::<Events<SurvivalRuntimeConfigReloadEvent>>()
+            .send(SurvivalRuntimeConfigReloadEvent::from_inputs(
+                SurvivalRuntimeConfigInputs {
+                    chest_fixture: Some(SURVIVAL_ENV_FLAG_ENABLED_VALUE.to_owned()),
+                    world_persistence_dir: Some("/tmp/survival-source".to_owned()),
+                    ..Default::default()
+                },
+            ));
+        app.update();
+
+        let runtime_config = app.world().resource::<SurvivalRuntimeConfig>();
+        assert!(runtime_config.fixtures.chest);
+        assert_eq!(
+            runtime_config.paths.world_persistence_marker,
+            PathBuf::from("/tmp/survival-source").join(SURVIVAL_WORLD_PERSISTENCE_MARKER_FILE)
+        );
     }
 
     #[test]
@@ -3797,6 +3976,39 @@ mod tests {
                 SurvivalGameplayPhase::Presentation,
                 SurvivalGameplayPhase::Cleanup,
             ]
+        );
+    }
+
+    #[test]
+    fn survival_scope_checks_accept_primary_scope_and_reject_invalid_scope() {
+        const TEST_STALE_ARENA_ID: &str = "survival-stale";
+        let wrong_mode = GameplayScope::new(
+            GameplayMode::Ctf,
+            GameplayArenaId::new(SURVIVAL_PRIMARY_ARENA_ID),
+        );
+        let stale_arena = GameplayScope::new(
+            GameplayMode::Survival,
+            GameplayArenaId::new(TEST_STALE_ARENA_ID),
+        );
+
+        assert_eq!(
+            gameplay_contracts::gameplay_scope_check(
+                Some(&SURVIVAL_PRIMARY_SCOPE),
+                SURVIVAL_PRIMARY_SCOPE,
+            ),
+            gameplay_contracts::GameplayScopeCheck::Match
+        );
+        assert_eq!(
+            gameplay_contracts::gameplay_scope_check(None, SURVIVAL_PRIMARY_SCOPE),
+            gameplay_contracts::GameplayScopeCheck::Missing
+        );
+        assert_eq!(
+            gameplay_contracts::gameplay_scope_check(Some(&wrong_mode), SURVIVAL_PRIMARY_SCOPE),
+            gameplay_contracts::GameplayScopeCheck::ModeMismatch
+        );
+        assert_eq!(
+            gameplay_contracts::gameplay_scope_check(Some(&stale_arena), SURVIVAL_PRIMARY_SCOPE),
+            gameplay_contracts::GameplayScopeCheck::ArenaMismatch
         );
     }
 
@@ -4122,6 +4334,18 @@ mod tests {
             .spawn((
                 SurvivalOpenContainer::new(SurvivalContainerKind::Crafting),
                 Despawned,
+                SURVIVAL_PRIMARY_SCOPE,
+            ))
+            .id();
+        let wrong_scope_client = app
+            .world_mut()
+            .spawn((
+                SurvivalOpenContainer::new(SurvivalContainerKind::Crafting),
+                Despawned,
+                GameplayScope::new(
+                    GameplayMode::Ctf,
+                    GameplayArenaId::new(SURVIVAL_PRIMARY_ARENA_ID),
+                ),
             ))
             .id();
         let mut cleanup = Schedule::default();
@@ -4130,6 +4354,10 @@ mod tests {
         cleanup.run(app.world_mut());
 
         assert!(app.world().get::<SurvivalOpenContainer>(client).is_none());
+        assert!(app
+            .world()
+            .get::<SurvivalOpenContainer>(wrong_scope_client)
+            .is_some());
     }
 
     #[test]
@@ -4140,6 +4368,7 @@ mod tests {
             .spawn((
                 SurvivalOpenContainer::new(SurvivalContainerKind::Chest),
                 Despawned,
+                SURVIVAL_PRIMARY_SCOPE,
             ))
             .id();
         let reconnect_client = app.world_mut().spawn_empty().id();

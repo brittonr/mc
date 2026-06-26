@@ -782,6 +782,238 @@ r[valence_bevy_ecs.gameplay_plugins.validation.log]
 - WHEN reviewers inspect task evidence
 - THEN successful logs show focused example checks, positive and negative plugin tests, selected mc-compat dry-runs if fixture behavior changed, Cairn proposal/design/tasks gates, Cairn validation, and task-evidence validation.
 
+### Requirement: Gameplay plugin contract inventory
+
+r[valence_bevy_ecs.gameplay_plugin_contracts.inventory] Shared gameplay plugin contract work MUST inventory selected gameplay/example plugin phase sets, contract resources, schedule labels, resources, events, disabled-plugin tests, and private ordering points before changing shared wiring.
+
+#### Scenario: Existing plugin contracts are reviewable
+
+r[valence_bevy_ecs.gameplay_plugin_contracts.inventory.reviewable]
+- GIVEN a gameplay or example plugin is selected for shared contract work
+- WHEN reviewers inspect the inventory
+- THEN current phase names, schedule labels, owned resources, events, plugin install mode, disabled-plugin behavior, and private ordering points are recorded
+- AND CTF, survival compatibility, terrain, smaller example plugins, and out-of-scope BedWars/Hyperion boundaries are classified explicitly.
+
+### Requirement: Shared gameplay phase contract
+
+r[valence_bevy_ecs.gameplay_plugin_contracts.phase_contract] Opt-in Valence gameplay plugins SHOULD use a shared phase vocabulary for input, rule evaluation, world mutation, presentation, and cleanup where those phases exist.
+
+#### Scenario: Plugins can order around shared phases
+
+r[valence_bevy_ecs.gameplay_plugin_contracts.phase_contract.orderable]
+- GIVEN multiple opt-in gameplay plugins are installed in one app
+- WHEN a downstream system needs to run around gameplay input, rule evaluation, world mutation, presentation, or cleanup
+- THEN it can target the shared phase contract instead of relying on plugin-local anonymous tuple order
+- AND plugin-local subphases remain private unless deliberately promoted.
+
+### Requirement: Gameplay plugin contract metadata
+
+r[valence_bevy_ecs.gameplay_plugin_contracts.metadata] Shared gameplay plugin contracts MUST expose or record minimal metadata for schedule labels, phase order, owned resources, owned events, scope model, installation mode, and non-claim boundaries.
+
+#### Scenario: Contract metadata explains installed behavior
+
+r[valence_bevy_ecs.gameplay_plugin_contracts.metadata.inspectable]
+- GIVEN a gameplay plugin is installed in a minimal test app
+- WHEN tests or reviewers inspect its contract metadata
+- THEN the contract names installed schedules, phase order, owned resources, owned events, expected gameplay scope model, and whether the plugin is default, feature-gated, or explicitly opt-in
+- AND non-claims for dynamic plugins, default gameplay, vanilla parity, production readiness, and BedWars/Hyperion scope are visible.
+
+### Requirement: Gameplay plugin contract tests
+
+r[valence_bevy_ecs.gameplay_plugin_contracts.tests] Shared gameplay plugin contract work MUST include reusable positive contract tests and negative disabled-plugin or ordering-regression tests for selected plugins.
+
+#### Scenario: Installed plugin passes shared contract checks
+
+r[valence_bevy_ecs.gameplay_plugin_contracts.tests.positive]
+- GIVEN a selected gameplay plugin is added to a minimal test app with required schedules
+- WHEN shared contract helpers inspect schedules and resources
+- THEN expected phase sets, contract metadata, resources, events, and schedule labels are present.
+
+#### Scenario: Missing plugin fails closed
+
+r[valence_bevy_ecs.gameplay_plugin_contracts.tests.negative]
+- GIVEN a selected gameplay plugin is not added or an ordering fixture omits a required phase
+- WHEN shared contract helpers inspect the app
+- THEN plugin-owned resources, events, systems, sets, and contract metadata are absent or the ordering failure is diagnosed clearly
+- AND no false gameplay contract is reported as installed.
+
+### Requirement: Gameplay plugin compatibility boundaries
+
+r[valence_bevy_ecs.gameplay_plugin_contracts.compatibility] Shared gameplay plugin contracts MUST preserve example behavior, command/env/CLI contracts, compatibility milestones, and non-claim scope unless another Cairn changes them.
+
+#### Scenario: Shared contracts do not promote gameplay claims
+
+r[valence_bevy_ecs.gameplay_plugin_contracts.compatibility.non_claims]
+- GIVEN an example plugin adopts the shared gameplay contract
+- WHEN its behavior and evidence boundaries are reviewed
+- THEN existing commands, env/CLI inputs, compatibility milestones, and visible behavior remain comparable
+- AND no dynamic plugin loading, default Valence gameplay, BedWars scope, vanilla parity, production readiness, or public-server safety claim is added.
+
+### Requirement: Gameplay plugin contract validation
+
+r[valence_bevy_ecs.gameplay_plugin_contracts.validation] Shared gameplay plugin contract work MUST record focused gameplay/example checks, shared test-helper checks, Valence schedule hygiene, Cairn gates, Cairn validation, task-evidence validation, and evidence manifests before archive.
+
+#### Scenario: Shared contract closeout is reviewable
+
+r[valence_bevy_ecs.gameplay_plugin_contracts.validation.log]
+- GIVEN shared gameplay plugin contract work is ready to archive
+- WHEN reviewers inspect task evidence
+- THEN successful logs show focused gameplay/example checks, positive and negative contract tests, schedule hygiene, Cairn proposal/design/tasks gates, Cairn validation, task-evidence validation, and refreshed evidence manifests.
+
+### Requirement: Gameplay arena scoping inventory
+
+r[valence_bevy_ecs.gameplay_arena_scoping.inventory] Gameplay arena scoping work MUST inventory selected CTF and survival compatibility global resources, event payloads, layer/entity assumptions, cleanup paths, milestone emitters, and cross-mode mutation risks before changing ownership.
+
+#### Scenario: Scope risks are visible
+
+r[valence_bevy_ecs.gameplay_arena_scoping.inventory.visible]
+- GIVEN a CTF or survival compatibility system is selected for arena scoping
+- WHEN reviewers inspect the inventory
+- THEN each global resource, event payload, layer or entity query, cleanup path, milestone emitter, and mutation target records whether it is global, arena-owned, layer-owned, client-owned, or fixture-only
+- AND risks for same-app CTF plus survival, multiple CTF arenas, multiple survival fixtures, stale arenas, and wrong-layer entities are identified.
+
+### Requirement: Gameplay arena ownership model
+
+r[valence_bevy_ecs.gameplay_arena_scoping.model] Runtime gameplay mode state SHOULD be represented by explicit arena or layer ownership rather than single global mode resources when multiple instances or modes can coexist.
+
+#### Scenario: Arena owns gameplay instance state
+
+r[valence_bevy_ecs.gameplay_arena_scoping.model.owned]
+- GIVEN a gameplay mode has score, flag, fixture, container, rule, or presentation state that can vary by arena
+- WHEN the state ownership is reviewed
+- THEN it is attached to an arena entity, layer-owned component, or explicitly scoped state handle
+- AND any remaining global resource records why it is a default, registry, policy, or compatibility shim rather than per-arena state.
+
+### Requirement: Scoped gameplay wiring
+
+r[valence_bevy_ecs.gameplay_arena_scoping.wiring] Gameplay plugin systems MUST filter by explicit scope and mutate only the arenas, layers, clients, entities, resources, and milestones owned by that scope.
+
+#### Scenario: Systems ignore unrelated scope
+
+r[valence_bevy_ecs.gameplay_arena_scoping.wiring.filtered]
+- GIVEN CTF and survival compatibility plugins are installed in the same app with distinct arenas or layers
+- WHEN scoped systems process input, rules, world mutation, presentation, or cleanup
+- THEN each system only reads and mutates data belonging to its matching gameplay scope
+- AND wrong-scope, missing-scope, or stale-scope inputs are ignored, cleaned up, or diagnosed deterministically.
+
+### Requirement: Scoped gameplay events and milestones
+
+r[valence_bevy_ecs.gameplay_arena_scoping.events] Gameplay events, diagnostics, and compatibility milestones SHOULD include arena or scope identity when the same semantic can occur in multiple arenas or modes in one app.
+
+#### Scenario: Receipts distinguish arenas
+
+r[valence_bevy_ecs.gameplay_arena_scoping.events.disambiguated]
+- GIVEN multiple gameplay arenas can emit the same event or milestone text
+- WHEN downstream systems or compatibility receipts observe those events
+- THEN the payload or receipt context identifies the owning arena, layer, or gameplay scope
+- AND legacy receipt comparability is preserved through documented adapters or explicit evidence non-claims.
+
+### Requirement: Gameplay arena scoping tests
+
+r[valence_bevy_ecs.gameplay_arena_scoping.tests] Gameplay arena scoping work MUST include positive multi-mode or multi-arena tests and negative wrong-scope, stale-scope, missing-scope, disabled-plugin, and cross-layer mutation tests.
+
+#### Scenario: Multiple scoped arenas coexist
+
+r[valence_bevy_ecs.gameplay_arena_scoping.tests.positive]
+- GIVEN CTF and survival compatibility plugins or multiple instances of one mode are installed in one app with distinct arenas
+- WHEN valid scoped events and systems run
+- THEN each arena updates only its own state, emits scope-identifiable observations, and preserves selected fixture behavior.
+
+#### Scenario: Invalid scope fails closed
+
+r[valence_bevy_ecs.gameplay_arena_scoping.tests.negative]
+- GIVEN an event, client, entity, container, flag, score, or cleanup target has a missing, stale, disabled-plugin, or wrong-mode scope
+- WHEN gameplay systems process it
+- THEN no unrelated arena mutates, no false milestone is emitted, stale ownership is cleaned or ignored deterministically, and no panic occurs.
+
+### Requirement: Gameplay arena scoping validation
+
+r[valence_bevy_ecs.gameplay_arena_scoping.validation] Gameplay arena scoping work MUST record focused CTF/survival checks, selected compatibility rails when touched, Valence schedule hygiene, Cairn gates, Cairn validation, task-evidence validation, and evidence manifests before archive.
+
+#### Scenario: Arena scoping closeout is reviewable
+
+r[valence_bevy_ecs.gameplay_arena_scoping.validation.log]
+- GIVEN gameplay arena scoping work is ready to archive
+- WHEN reviewers inspect task evidence
+- THEN successful logs show focused CTF and survival checks, positive and negative scoping tests, selected compatibility rails if fixture behavior or receipts changed, schedule hygiene, Cairn proposal/design/tasks gates, Cairn validation, task-evidence validation, and refreshed evidence manifests.
+
+### Requirement: Gameplay config source inventory
+
+r[valence_bevy_ecs.gameplay_config_sources.inventory] Gameplay config source work MUST inventory selected env, CLI, file, default, runtime refresh, validation, test, and receipt-facing input contracts before moving config ownership.
+
+#### Scenario: Config inputs are visible
+
+r[valence_bevy_ecs.gameplay_config_sources.inventory.visible]
+- GIVEN a CTF, survival compatibility, terrain, or selected example config path is selected for source separation
+- WHEN reviewers inspect the inventory
+- THEN each env variable, CLI flag, default value, runtime refresh system, parser, validation rule, test assumption, and receipt-facing input contract is recorded
+- AND process-global state, arena-scoped state, and fixture-only toggles are classified explicitly.
+
+### Requirement: Typed gameplay config cores
+
+r[valence_bevy_ecs.gameplay_config_sources.typed] Gameplay config parsing and validation SHOULD be pure deterministic cores over explicit inputs that return typed config values or typed errors.
+
+#### Scenario: Config validation is testable without process state
+
+r[valence_bevy_ecs.gameplay_config_sources.typed.pure]
+- GIVEN explicit config inputs are provided by a test, env adapter, CLI adapter, or default provider
+- WHEN the config parser validates them
+- THEN it returns a typed config value or typed diagnostic without reading environment variables, files, clocks, ECS state, logging, or global mutable state
+- AND malformed, missing, non-finite, out-of-range, or contradictory inputs fail closed.
+
+### Requirement: Gameplay config source boundary
+
+r[valence_bevy_ecs.gameplay_config_sources.source_boundary] Gameplay plugin systems MUST consume typed config resources or arena-owned config components rather than reading process environment, CLI state, or files directly during gameplay phases.
+
+#### Scenario: Source adapters own side effects
+
+r[valence_bevy_ecs.gameplay_config_sources.source_boundary.adapters]
+- GIVEN an env, CLI, or file source is used for a gameplay example or compatibility fixture
+- WHEN the source is read
+- THEN a source adapter or startup shell performs the I/O and writes typed config into the documented resource or arena scope
+- AND gameplay systems read only the typed config surface.
+
+### Requirement: Explicit gameplay config reload
+
+r[valence_bevy_ecs.gameplay_config_sources.reload] Runtime gameplay config reloads MUST be explicit and scoped when config can affect multiple arenas, modes, or fixture instances.
+
+#### Scenario: Reload affects intended scope only
+
+r[valence_bevy_ecs.gameplay_config_sources.reload.scoped]
+- GIVEN a runtime config reload is requested while multiple gameplay scopes may exist
+- WHEN reload systems apply the new typed config
+- THEN only the requested arena, mode, default profile, or explicitly global config changes
+- AND stale or wrong-scope reload requests are ignored or diagnosed deterministically.
+
+### Requirement: Gameplay config source tests
+
+r[valence_bevy_ecs.gameplay_config_sources.tests] Gameplay config source separation MUST include positive typed-config/default/source-adapter tests and negative malformed, missing, stale, wrong-scope, disabled-source, and process-env-isolation tests.
+
+#### Scenario: Valid config reaches gameplay systems
+
+r[valence_bevy_ecs.gameplay_config_sources.tests.positive]
+- GIVEN valid explicit inputs, defaults, or source-adapter values are supplied
+- WHEN selected gameplay plugins run
+- THEN systems observe the expected typed config in the documented scope and preserve selected fixture or example behavior.
+
+#### Scenario: Invalid config fails closed
+
+r[valence_bevy_ecs.gameplay_config_sources.tests.negative]
+- GIVEN malformed, missing, stale, wrong-scope, disabled-source, or process-env-mutated inputs are present
+- WHEN parsers, source adapters, reload systems, or gameplay systems run
+- THEN invalid config is rejected, scoped defaults are preserved when appropriate, unrelated arenas are unchanged, and no panic or false milestone occurs.
+
+### Requirement: Gameplay config source validation
+
+r[valence_bevy_ecs.gameplay_config_sources.validation] Gameplay config source work MUST record focused config checks, selected CTF/survival/terrain/example checks, schedule hygiene when wiring changes, Cairn gates, Cairn validation, task-evidence validation, and evidence manifests before archive.
+
+#### Scenario: Config source closeout is reviewable
+
+r[valence_bevy_ecs.gameplay_config_sources.validation.log]
+- GIVEN gameplay config source separation is ready to archive
+- WHEN reviewers inspect task evidence
+- THEN successful logs show pure config tests, source-adapter tests, positive and negative reload/scope tests, selected gameplay/example checks, schedule hygiene when applicable, Cairn proposal/design/tasks gates, Cairn validation, task-evidence validation, and refreshed evidence manifests.
+
 ### Requirement: Typed event inventory
 
 r[valence_bevy_ecs.typed_events.inventory] Typed event work MUST inventory selected direct `PacketEvent` consumers, decoded packet types, duplicate decode paths, emitted gameplay semantics, and current malformed-input behavior before adding adapters.

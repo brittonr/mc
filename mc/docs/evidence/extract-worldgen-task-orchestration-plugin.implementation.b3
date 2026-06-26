@@ -5,9 +5,9 @@ c8e3ff18692c1b70703a55f8c16746844994587883364d6328bcb26d83f75997  docs/evidence/
 b8e9740c168390a96e6d97bbedbda1500657f36325ebb065cf93a425a9fd6a79  docs/evidence/run-logs/2026-06-25/extract-worldgen-task-orchestration-plugin-terrain-tests.run.log
 01015ff635bd7a5c8fb1ab1f796d2a5704a96fcfeff2b4214f20a8511bb10a1a  docs/evidence/run-logs/2026-06-25/extract-worldgen-task-orchestration-plugin-fmt-check-available-toolchain.run.log
 a86728f202ce359d7a25191820083cc17c266a4d9c8e692306a82c7db94028c2  docs/evidence/run-logs/2026-06-25/extract-worldgen-task-orchestration-plugin-schedule-hygiene.run.log
-39f22ea0152b1bc49bb820c34c28c8f010e8bf96742034260d373a6027f2fd6e  servers/valence/examples/terrain.rs
+519b48b55eec28a258d094bad69a9349372a3e3c266883ee9ef98138d8e09798  servers/valence/examples/terrain.rs
 f44095e27956a528f3f7b18d1018e465d021b7c077c2ccddfade29a257da9809  cairn/archive/2026-06-25-extract-worldgen-task-orchestration-plugin/proposal.md
 fd48bb595e70b6dd2eb498d392dcd905b733f705bee3e2fdc0969b1e683df2be  cairn/archive/2026-06-25-extract-worldgen-task-orchestration-plugin/design.md
 b13205f06977b4f1df40f505faf67cd295c107e2c36b899a0dac7df8e05cd311  cairn/archive/2026-06-25-extract-worldgen-task-orchestration-plugin/tasks.md
 aecb16b1d14111c6a5ed72384967bd3b75c3d8fa6f8390241dced0f54aa8be50  cairn/archive/2026-06-25-extract-worldgen-task-orchestration-plugin/specs/valence-bevy-ecs/spec.md
-8254e34251093fa21db4a7a63f1a024575ff49b8b8286d30ea8687bc80059abf  cairn/specs/valence-bevy-ecs/spec.md
+a8e8b9061778dfda13e42add0604c0bdb82508337ce6f83b41384b23bf8dce62  cairn/specs/valence-bevy-ecs/spec.md

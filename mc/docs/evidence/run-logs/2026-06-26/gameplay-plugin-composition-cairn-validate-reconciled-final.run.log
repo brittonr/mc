@@ -1,0 +1,24 @@
+# Gameplay plugin composition final reconciled Cairn validation
+date_utc=2026-06-26T19:22:12Z
+cwd=/home/brittonr/git/mc
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
+cairn_validate_exit_status=0
+command=nix run .#cairn -- change list --root .
+{
+  "changes": [],
+  "layout": "cairn",
+  "root": "."
+}
+change_list_exit_status=0
+exit_status=0
+]0;

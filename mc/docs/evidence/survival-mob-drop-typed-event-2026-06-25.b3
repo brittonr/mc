@@ -7,7 +7,7 @@
 5f4188156b3ddc4db0277078c2e31d7a907f4b1c93551c0b85e480bd11b8334c  docs/scenario-commands.generated.md
 b46bcd862cd4ee372edb05b5dae5995ab088aae46973cc0b427640df50b09f0b  tools/check_scenario_manifest.rs
 0be1e3087f2ab458d3a89393cbb2620f85be17049bacc7344ef35e434915b30a  cairn/specs/mc-compatibility/spec.md
-4b470202e3fc0c4a002694bd2f5258278e911ec5500296a9b5b6d904c30cf4bb  cairn/changes/.drain-state.md
+2c04ab708688e1588f9bf0c6ddff94f72c6d7c01326fac4ca15ef0f20e78f1b2  cairn/changes/.drain-state.md
 c19a711474e2cd5c811c83d6dd5e7b75b33768581ad16c6a974a48f82ea3fb04  cairn/archive/2026-06-25-survival-mob-drop-typed-event-migration/proposal.md
 dd328afb9f66c4c18bcf0055d2273d74238933a860977867e40066e5dba664cd  cairn/archive/2026-06-25-survival-mob-drop-typed-event-migration/design.md
 1c8b15a858b8c03fd8cee0b3e3a2e31ca6ccd0911e1cf0b31125805fca6cf3a6  cairn/archive/2026-06-25-survival-mob-drop-typed-event-migration/tasks.md

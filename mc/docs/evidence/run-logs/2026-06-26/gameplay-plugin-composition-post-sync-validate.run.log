@@ -1,0 +1,17 @@
+# Gameplay plugin composition post-sync Cairn validation
+date_utc=2026-06-26T19:05:38Z
+cwd=/home/brittonr/git/mc
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+cairn_validate_exit_status=0
+exit_status=0
+]0;

@@ -1,0 +1,299 @@
+# Gameplay plugin composition Cairn gates
+date_utc=2026-06-26T18:53:31Z
+cwd=/home/brittonr/git/mc
+changes=introduce-shared-gameplay-plugin-contracts scope-gameplay-plugins-to-arenas separate-gameplay-config-sources
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+validate_exit_status=0
+command=nix run .#cairn -- gate proposal introduce-shared-gameplay-plugin-contracts --root .
+{
+  "change": "introduce-shared-gameplay-plugin-contracts",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a6aa162150143cfa3499992b230983bd213a3483ab18d4b7643eb42b29924c2b",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "8210d36301f08e2f018bc6507cf36b359b20348ddb0cd954a4558d191d7e5e75",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+proposal_introduce-shared-gameplay-plugin-contracts_exit_status=0
+command=nix run .#cairn -- gate design introduce-shared-gameplay-plugin-contracts --root .
+{
+  "change": "introduce-shared-gameplay-plugin-contracts",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a833c1a2fa77cd2567b3414d11cd5cbdd222f9b601c06d4c55c2f32e0025fe0e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "4fb131cba0a810c9f78a861117671e11768753bb6b9ac6d0afbd6ff7eb3947aa",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+design_introduce-shared-gameplay-plugin-contracts_exit_status=0
+command=nix run .#cairn -- gate tasks introduce-shared-gameplay-plugin-contracts --root .
+{
+  "change": "introduce-shared-gameplay-plugin-contracts",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c32f68ecee6b041d0d55242c3e4455544db5ba590b6880534c5c8ceec2c64d20",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "e460ed88af32c7376014f41213873e13b036cf77f45bb127ca40e908acc77e1a",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+tasks_introduce-shared-gameplay-plugin-contracts_exit_status=0
+command=nix run .#cairn -- gate proposal scope-gameplay-plugins-to-arenas --root .
+{
+  "change": "scope-gameplay-plugins-to-arenas",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "36ad73fe198eec8971074867990fb3ecc4996ff6b54fc6675439a26689a5fc0e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "96705de3d107850e960514026bd4ee2457cb6bd20f9b788d2d8d0568b7708e28",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+proposal_scope-gameplay-plugins-to-arenas_exit_status=0
+command=nix run .#cairn -- gate design scope-gameplay-plugins-to-arenas --root .
+{
+  "change": "scope-gameplay-plugins-to-arenas",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c5511469b24f76c4f877f8734f4759a8874ef3c5223af21bfabd482793ca932f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "8d705c6222cacd3405c087b3f14a70d48ba64f20fb227ca78e7cfbc629e6e112",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+design_scope-gameplay-plugins-to-arenas_exit_status=0
+command=nix run .#cairn -- gate tasks scope-gameplay-plugins-to-arenas --root .
+{
+  "change": "scope-gameplay-plugins-to-arenas",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "07fceb910107dc501e3bfcaa8e4216b353401e1f6ebbb37ec998420ff4faba44",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "ec3106a1e2ae0d3f2817dc34e0525a66425ba646dea82ee34bf643595a77b3b6",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+tasks_scope-gameplay-plugins-to-arenas_exit_status=0
+command=nix run .#cairn -- gate proposal separate-gameplay-config-sources --root .
+{
+  "change": "separate-gameplay-config-sources",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "9d980749e53efe3cf19d1849a7adfc3f1fc4a660711a166175e3e45839daa83b",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "cb02da04324a2ce5acccda327d79cd9ac1c09244ad189d99edcb11ba4535e626",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+proposal_separate-gameplay-config-sources_exit_status=0
+command=nix run .#cairn -- gate design separate-gameplay-config-sources --root .
+{
+  "change": "separate-gameplay-config-sources",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "39a04f86d598849f8e996846a2db58f2c372307522f2c1763210693e0fc9c57f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "13b5f071d53d9cca831bff722d4fa124cf2647f27b2b0536ee8d1ca356b92a1a",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+design_separate-gameplay-config-sources_exit_status=0
+command=nix run .#cairn -- gate tasks separate-gameplay-config-sources --root .
+{
+  "change": "separate-gameplay-config-sources",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "b3f03ef5c60ff27f2625bf48fdd2ad3ffa3de14e5b85b64460a04772ce223d95",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "c82c9b46d1647b28e06ca68fa1c273e7969ec9ef02b1bc36bb51f7615b3ad6c7",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+tasks_separate-gameplay-config-sources_exit_status=0
+command=nix run .#cairn -- change list --root .
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "./cairn/changes/introduce-shared-gameplay-plugin-contracts/specs/valence-bevy-ecs/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "introduce-shared-gameplay-plugin-contracts",
+      "path": "./cairn/changes/introduce-shared-gameplay-plugin-contracts",
+      "task_counts": {
+        "done": 6,
+        "in_progress": 0,
+        "todo": 0,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/scope-gameplay-plugins-to-arenas/specs/valence-bevy-ecs/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "scope-gameplay-plugins-to-arenas",
+      "path": "./cairn/changes/scope-gameplay-plugins-to-arenas",
+      "task_counts": {
+        "done": 6,
+        "in_progress": 0,
+        "todo": 0,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/separate-gameplay-config-sources/specs/valence-bevy-ecs/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "separate-gameplay-config-sources",
+      "path": "./cairn/changes/separate-gameplay-config-sources",
+      "task_counts": {
+        "done": 6,
+        "in_progress": 0,
+        "todo": 0,
+        "total": 6,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "."
+}
+change_list_exit_status=0
+exit_status=0
+]0;
