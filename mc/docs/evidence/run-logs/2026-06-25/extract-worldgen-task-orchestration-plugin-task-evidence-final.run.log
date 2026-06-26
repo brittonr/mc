@@ -1,0 +1,40 @@
+# extract-worldgen-task-orchestration-plugin final task evidence
+cwd=/home/brittonr/git/mc
+started_at=2026-06-26T04:14:10Z
++ nix run .#cairn -- gate tasks extract-worldgen-task-orchestration-plugin --root .
+{
+  "change": "extract-worldgen-task-orchestration-plugin",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "17ca0f54b5c762d0ce1f5faf022e032b60d4f9c96d2f866fea26b3c4f45e8503",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "643733779c0d9d765d0cebee50d776caec1abb732a505d46a93b666686f484e5",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
++ nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+warning: error: unable to download 'http://100.100.103.95:5000/s3pdh33fvl51rlh0dg0jp4zpivwxlmzv.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4137 ms: Could not connect to server; retrying in 333 ms
+warning: error: unable to download 'http://100.100.103.95:5000/s3pdh33fvl51rlh0dg0jp4zpivwxlmzv.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 611 ms
+warning: error: unable to download 'http://100.100.103.95:5000/s3pdh33fvl51rlh0dg0jp4zpivwxlmzv.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1230 ms
+warning: error: unable to download 'http://100.100.103.95:5000/s3pdh33fvl51rlh0dg0jp4zpivwxlmzv.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2351 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/s3pdh33fvl51rlh0dg0jp4zpivwxlmzv.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/s3pdh33fvl51rlh0dg0jp4zpivwxlmzv.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+this derivation will be built:
+  /nix/store/pnf9qg23sq3q0ginprj43rwby6sy3kj0-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/pnf9qg23sq3q0ginprj43rwby6sy3kj0-mc-compat-cairn-task-evidence.drv'...
+exit_status=0

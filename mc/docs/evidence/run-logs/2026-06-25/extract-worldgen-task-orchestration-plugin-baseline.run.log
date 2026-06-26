@@ -1,0 +1,72 @@
+# extract-worldgen-task-orchestration-plugin focused baseline
+cwd=/home/brittonr/git/mc
+started_at=2026-06-26T03:55:41Z
++ cd servers/valence
++ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test --example terrain
+/home/brittonr/git/mc/servers/valence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+warning: `valence_inventory` (lib) generated 1 warning
+   Compiling valence v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence)
+    Finished `test` profile [optimized + debuginfo] target(s) in 2.39s
+     Running unittests examples/terrain.rs (/home/brittonr/.cargo-target/debug/examples/terrain-bc55d649eeaa6df3)
+
+running 11 tests
+test tests::completion_decision_inserts_requested_unloaded_chunk ... ok
+test tests::duplicate_request_keeps_running_task_and_minimizes_queued_priority ... ok
+test tests::incomplete_unrequested_task_is_cancelled ... ok
+test tests::mismatched_completion_position_fails_closed ... ok
+test tests::shutdown_completion_is_ignored_before_world_mutation ... ok
+test tests::stale_completion_is_ignored ... ok
+test tests::terrain_gameplay_phase_order_rejects_regression ... ok
+test tests::disabled_terrain_gameplay_plugin_installs_no_contract_or_state ... ok
+test tests::worker_failure_fails_closed ... ok
+test tests::terrain_gameplay_plugin_installs_contract_and_schedule ... ok
+test tests::pure_generator_produces_chunk_for_valid_input ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+exit_status=0

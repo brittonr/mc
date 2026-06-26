@@ -1,0 +1,6 @@
+# extract-worldgen-task-orchestration-plugin evidence manifest refresh
+cwd=/home/brittonr/git/mc
+started_at=2026-06-26T04:23:29Z
++ nix run .#evidence-manifest-refresh -- --refresh
+evidence manifest refresh ok: mode=refresh; passes=4; manifests=505; entries=4472; current=4472; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=4; manifest_writes=13
+exit_status=0

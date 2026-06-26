@@ -1,0 +1,81 @@
+# extract-worldgen-task-orchestration-plugin pre-implementation gates
+cwd=/home/brittonr/git/mc
+started_at=2026-06-26T03:54:18Z
++ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 7,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 12,
+  "valid": true
+}
++ nix run .#cairn -- gate proposal extract-worldgen-task-orchestration-plugin --root .
+{
+  "change": "extract-worldgen-task-orchestration-plugin",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "759bc7e1bdcd027e7cef92c1fd87e5bcca2149d4c42c8842e818bc30d82e6e63",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "e6b4b860c02bdcb9bb875346945e840b5a5bf7f8596f8d4209ea2be25cfd07fa",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
++ nix run .#cairn -- gate design extract-worldgen-task-orchestration-plugin --root .
+{
+  "change": "extract-worldgen-task-orchestration-plugin",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "ba695af4f813c731de1097decd85a91b50c795ce228e4b779a373cfa66a63b75",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "31a3c8217ab6353790544b4aa15d3c4c1ca14ff5aa426a6395958f408aff3a82",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
++ nix run .#cairn -- gate tasks extract-worldgen-task-orchestration-plugin --root .
+{
+  "change": "extract-worldgen-task-orchestration-plugin",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c0cc7e1b66f971e8bc2dc9bad622d9ed24cf0b862583adf0bb7441495e9fd8ab",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "88d2147088bebc2a37680e219718d1119d6c298f6a10c59d94eb515a00f36e3f",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0

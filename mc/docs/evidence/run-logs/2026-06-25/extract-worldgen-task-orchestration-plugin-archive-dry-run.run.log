@@ -1,0 +1,26 @@
+# extract-worldgen-task-orchestration-plugin archive dry-run
+cwd=/home/brittonr/git/mc
+started_at=2026-06-26T04:20:15Z
++ nix run .#cairn -- archive extract-worldgen-task-orchestration-plugin --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: extract-worldgen-task-orchestration-plugin",
+      "kind": "archive_change",
+      "path": "./cairn/changes/extract-worldgen-task-orchestration-plugin"
+    }
+  ],
+  "blocked": false,
+  "change": "extract-worldgen-task-orchestration-plugin",
+  "dry_run": true,
+  "input_hash": "c26a63fba067023f8c3ac5273e47286372ffecb2e0e8a01b3f88f12f8df94238",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "38f4aad88a6eb140ebf93703e64e4ec99308aba3664d93731f41c75dfeef495c",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "e3e87dbc9d36a3737caf8b6c6aa5e882e4e27c75c8a4db3fafe803ad3aa33f8b"
+}
+exit_status=0

@@ -1,0 +1,6 @@
+# extract-worldgen-task-orchestration-plugin schedule hygiene
+cwd=/home/brittonr/git/mc
+started_at=2026-06-26T04:02:57Z
++ tools/check_valence_schedule_hygiene.rs --root .
+valence schedule hygiene check passed
+exit_status=0

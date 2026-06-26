@@ -65,11 +65,23 @@ const NOISE_UNIT_OFFSET: f64 = 1.0;
 const NOISE_UNIT_DIVISOR: f64 = 2.0;
 
 #[derive(Resource)]
-struct GameState {
-    /// Chunks that need to be generated or are currently owned by a Bevy task.
+struct WorldgenTaskState {
+    /// Chunks that need to be generated or are currently owned by the worldgen task shell.
     pending: HashMap<ChunkPos, PendingChunkRequest>,
     noise: Arc<ChunkGenerationNoise>,
     generation_settings: ChunkGenerationSettings,
+}
+
+impl WorldgenTaskState {
+    fn from_seed(seed: u32) -> Self {
+        Self {
+            pending: HashMap::new(),
+            noise: Arc::new(ChunkGenerationNoise::from_seed(seed)),
+            generation_settings: ChunkGenerationSettings {
+                height: DEFAULT_CHUNK_HEIGHT,
+            },
+        }
+    }
 }
 
 enum PendingChunkRequest {
@@ -79,6 +91,12 @@ enum PendingChunkRequest {
 
 struct ChunkGenerationTask {
     task: Task<ChunkGenerationResult>,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct ChunkGenerationRequest {
+    pos: ChunkPos,
+    priority: Priority,
 }
 
 #[derive(Debug)]
@@ -137,6 +155,7 @@ enum IncompleteTaskDecision {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 struct CompletionContext {
     expected_pos: ChunkPos,
+    request_owned: bool,
     requested_now: bool,
     already_loaded: bool,
     shutting_down: bool,
@@ -154,8 +173,21 @@ enum ChunkCompletionDecision {
     IgnoreShutdown,
     IgnoreFailure,
     IgnoreMismatchedPosition,
+    IgnoreUnowned,
     IgnoreStale,
     IgnoreDuplicate,
+}
+
+#[derive(Debug)]
+struct CompletedChunkTask {
+    expected_pos: ChunkPos,
+    requested_now: bool,
+    result: ChunkGenerationResult,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct CancelledChunkTask {
+    pos: ChunkPos,
 }
 
 /// The order in which chunks should be processed by the task pool. Smaller
@@ -176,6 +208,13 @@ struct TerrainGameplayPluginContract {
     update_phase_order: &'static [TerrainGameplayPhase],
 }
 
+#[derive(Resource, Clone, Copy, Debug, PartialEq, Eq)]
+struct WorldgenTaskPluginContract {
+    world_mutation_phase: TerrainGameplayPhase,
+}
+
+const WORLDGEN_TASK_PHASE: TerrainGameplayPhase = TerrainGameplayPhase::WorldMutation;
+
 const TERRAIN_GAMEPLAY_PHASE_ORDER: &[TerrainGameplayPhase] = &[
     TerrainGameplayPhase::Input,
     TerrainGameplayPhase::RuleEvaluation,
@@ -185,6 +224,8 @@ const TERRAIN_GAMEPLAY_PHASE_ORDER: &[TerrainGameplayPhase] = &[
 ];
 
 struct TerrainGameplayPlugin;
+
+struct WorldgenTaskPlugin;
 
 impl Plugin for TerrainGameplayPlugin {
     fn build(&self, app: &mut App) {
@@ -204,7 +245,8 @@ impl Plugin for TerrainGameplayPlugin {
                     TerrainGameplayPhase::Cleanup.after(TerrainGameplayPhase::Presentation),
                 ),
             )
-            .add_systems(Startup, setup)
+            .add_plugins(WorldgenTaskPlugin)
+            .add_systems(Startup, setup_layer)
             .add_systems(Update, init_clients.in_set(TerrainGameplayPhase::Input))
             .add_systems(
                 Update,
@@ -214,12 +256,28 @@ impl Plugin for TerrainGameplayPlugin {
             )
             .add_systems(
                 Update,
-                run_chunk_tasks.in_set(TerrainGameplayPhase::WorldMutation),
-            )
-            .add_systems(
-                Update,
                 despawn_disconnected_clients.in_set(TerrainGameplayPhase::Cleanup),
             );
+    }
+}
+
+impl Plugin for WorldgenTaskPlugin {
+    fn build(&self, app: &mut App) {
+        let contract = WorldgenTaskPluginContract {
+            world_mutation_phase: WORLDGEN_TASK_PHASE,
+        };
+        assert_eq!(contract.world_mutation_phase, WORLDGEN_TASK_PHASE);
+
+        let seed = seed_from_current_day();
+        info!("current seed: {seed}");
+
+        // Terrain uses Bevy's asynchronous compute task pool so the example models
+        // Bevy-shaped background work without giving the generator ECS access.
+        terrain_task_pool();
+
+        app.insert_resource(contract)
+            .insert_resource(WorldgenTaskState::from_seed(seed))
+            .add_systems(Update, run_worldgen_task_shell.in_set(WORLDGEN_TASK_PHASE));
     }
 }
 
@@ -230,33 +288,12 @@ pub fn main() {
         .run();
 }
 
-fn setup(
+fn setup_layer(
     mut commands: Commands,
     server: Res<Server>,
     dimensions: Res<DimensionTypeRegistry>,
     biomes: Res<BiomeRegistry>,
 ) {
-    let days_since_epoch = SystemTime::now()
-        .duration_since(SystemTime::UNIX_EPOCH)
-        .unwrap()
-        .as_secs()
-        / SECONDS_PER_DAY;
-    let seed = seed_from_days(days_since_epoch);
-
-    info!("current seed: {seed}");
-
-    // Terrain uses Bevy's asynchronous compute task pool so the example models
-    // Bevy-shaped background work without giving the generator ECS access.
-    terrain_task_pool();
-
-    commands.insert_resource(GameState {
-        pending: HashMap::new(),
-        noise: Arc::new(ChunkGenerationNoise::from_seed(seed)),
-        generation_settings: ChunkGenerationSettings {
-            height: DEFAULT_CHUNK_HEIGHT,
-        },
-    });
-
     let layer = LayerBundle::new(ident!("overworld"), &dimensions, &biomes, &server);
 
     commands.spawn(layer);
@@ -305,7 +342,7 @@ fn remove_unviewed_chunks(mut layers: Query<&mut ChunkLayer>) {
 fn update_client_views(
     mut layers: Query<&mut ChunkLayer>,
     mut clients: Query<(&mut Client, View, OldView)>,
-    mut state: ResMut<GameState>,
+    mut state: ResMut<WorldgenTaskState>,
 ) {
     let layer = layers.single_mut();
 
@@ -314,7 +351,8 @@ fn update_client_views(
         let queue_pos = |pos: ChunkPos| {
             if layer.chunk(pos).is_none() {
                 let priority = view.pos.distance_squared(pos);
-                queue_chunk_request(&mut state.pending, pos, priority);
+                let request = ChunkGenerationRequest { pos, priority };
+                queue_chunk_request(&mut state.pending, request);
             }
         };
 
@@ -330,22 +368,22 @@ fn update_client_views(
     }
 }
 
-fn run_chunk_tasks(
+fn run_worldgen_task_shell(
     mut layers: Query<&mut ChunkLayer>,
     clients: Query<View>,
-    mut state: ResMut<GameState>,
+    mut state: ResMut<WorldgenTaskState>,
 ) {
     let mut layer = layers.single_mut();
     let state = state.as_mut();
 
-    poll_completed_chunk_tasks(&mut layer, &clients, state);
-    spawn_queued_chunk_tasks(&layer, &clients, state);
+    poll_worldgen_task_completions(&mut layer, &clients, state);
+    spawn_queued_worldgen_tasks(&layer, &clients, state);
 }
 
-fn poll_completed_chunk_tasks(
+fn poll_worldgen_task_completions(
     layer: &mut ChunkLayer,
     clients: &Query<View>,
-    state: &mut GameState,
+    state: &mut WorldgenTaskState,
 ) {
     let mut completed = Vec::new();
     let mut cancelled = Vec::new();
@@ -359,32 +397,42 @@ fn poll_completed_chunk_tasks(
         let maybe_completed = block_on(poll_once(&mut task.task));
 
         if let Some(result) = maybe_completed {
-            completed.push((*pos, requested_now, result));
+            completed.push(CompletedChunkTask {
+                expected_pos: *pos,
+                requested_now,
+                result,
+            });
         } else if decide_incomplete_task(requested_now) == IncompleteTaskDecision::Cancel {
-            cancelled.push(*pos);
+            cancelled.push(CancelledChunkTask { pos: *pos });
         }
     }
 
-    for pos in cancelled {
-        state.pending.remove(&pos);
-        debug!(?pos, "cancelled unviewed terrain generation task");
+    for cancellation in cancelled {
+        state.pending.remove(&cancellation.pos);
+        debug!(?cancellation.pos, "cancelled unviewed terrain generation task");
     }
 
-    for (expected_pos, requested_now, result) in completed {
-        let already_loaded = layer.chunk(expected_pos).is_some();
+    for completion in completed {
+        let already_loaded = layer.chunk(completion.expected_pos).is_some();
+        let request_owned = state.pending.contains_key(&completion.expected_pos);
         let context = CompletionContext {
-            expected_pos,
-            requested_now,
+            expected_pos: completion.expected_pos,
+            request_owned,
+            requested_now: completion.requested_now,
             already_loaded,
             shutting_down: false,
         };
 
-        handle_completed_chunk(layer, context, result);
-        state.pending.remove(&expected_pos);
+        handle_completed_chunk(layer, context, completion.result);
+        state.pending.remove(&completion.expected_pos);
     }
 }
 
-fn spawn_queued_chunk_tasks(layer: &ChunkLayer, clients: &Query<View>, state: &mut GameState) {
+fn spawn_queued_worldgen_tasks(
+    layer: &ChunkLayer,
+    clients: &Query<View>,
+    state: &mut WorldgenTaskState,
+) {
     let mut stale = Vec::new();
     let mut to_spawn = Vec::new();
 
@@ -396,7 +444,10 @@ fn spawn_queued_chunk_tasks(layer: &ChunkLayer, clients: &Query<View>, state: &m
         if !is_requested_by_current_view(*pos, clients) || layer.chunk(*pos).is_some() {
             stale.push(*pos);
         } else {
-            to_spawn.push((*priority, *pos));
+            to_spawn.push(ChunkGenerationRequest {
+                pos: *pos,
+                priority: *priority,
+            });
         }
     }
 
@@ -405,26 +456,29 @@ fn spawn_queued_chunk_tasks(layer: &ChunkLayer, clients: &Query<View>, state: &m
         debug!(?pos, "removed stale queued terrain chunk request");
     }
 
-    to_spawn.sort_unstable_by_key(|(priority, _)| *priority);
+    to_spawn.sort_unstable_by_key(|request| request.priority);
 
-    for (_, pos) in to_spawn {
-        let task = spawn_chunk_generation_task(pos, state.noise.clone(), state.generation_settings);
+    for request in to_spawn {
+        let task = spawn_chunk_generation_task(
+            request.pos,
+            state.noise.clone(),
+            state.generation_settings,
+        );
         let previous = state
             .pending
-            .insert(pos, PendingChunkRequest::Generating(task));
+            .insert(request.pos, PendingChunkRequest::Generating(task));
         debug_assert!(matches!(previous, Some(PendingChunkRequest::Queued(_))));
     }
 }
 
 fn queue_chunk_request(
     pending: &mut HashMap<ChunkPos, PendingChunkRequest>,
-    pos: ChunkPos,
-    priority: Priority,
+    request: ChunkGenerationRequest,
 ) {
-    match pending.entry(pos) {
+    match pending.entry(request.pos) {
         Entry::Occupied(mut occupied) => {
             let slot = request_slot(occupied.get());
-            match plan_request_update(slot, priority) {
+            match plan_request_update(slot, request.priority) {
                 RequestUpdate::InsertQueued(_) => unreachable!("occupied entry cannot be vacant"),
                 RequestUpdate::UpdateQueued(next_priority) => {
                     *occupied.get_mut() = PendingChunkRequest::Queued(next_priority);
@@ -434,7 +488,7 @@ fn queue_chunk_request(
         }
         Entry::Vacant(vacant) => {
             if let RequestUpdate::InsertQueued(priority) =
-                plan_request_update(RequestSlot::Vacant, priority)
+                plan_request_update(RequestSlot::Vacant, request.priority)
             {
                 vacant.insert(PendingChunkRequest::Queued(priority));
             }
@@ -488,6 +542,9 @@ fn handle_completed_chunk(
         ChunkCompletionDecision::IgnoreMismatchedPosition => {
             warn!(?context.expected_pos, ?status, "terrain chunk task returned a mismatched position");
         }
+        ChunkCompletionDecision::IgnoreUnowned => {
+            debug!(?context.expected_pos, "ignored unowned terrain chunk completion");
+        }
         ChunkCompletionDecision::IgnoreStale => {
             debug!(?context.expected_pos, "ignored stale terrain chunk completion");
         }
@@ -520,6 +577,10 @@ fn decide_completed_chunk(
         return ChunkCompletionDecision::IgnoreMismatchedPosition;
     }
 
+    if !context.request_owned {
+        return ChunkCompletionDecision::IgnoreUnowned;
+    }
+
     if !context.requested_now {
         return ChunkCompletionDecision::IgnoreStale;
     }
@@ -550,6 +611,16 @@ fn spawn_chunk_generation_task(
 
 fn terrain_task_pool() -> &'static AsyncComputeTaskPool {
     AsyncComputeTaskPool::get_or_init(TaskPool::new)
+}
+
+fn seed_from_current_day() -> u32 {
+    let days_since_epoch = SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .unwrap()
+        .as_secs()
+        / SECONDS_PER_DAY;
+
+    seed_from_days(days_since_epoch)
 }
 
 fn seed_from_days(days_since_epoch: u64) -> u32 {
@@ -840,6 +911,25 @@ mod tests {
             .any(|(label, _)| format!("{label:?}") == schedule_label)
     }
 
+    fn chunk_request(pos: ChunkPos, priority: Priority) -> ChunkGenerationRequest {
+        ChunkGenerationRequest { pos, priority }
+    }
+
+    fn completion_context(
+        request_owned: bool,
+        requested_now: bool,
+        already_loaded: bool,
+        shutting_down: bool,
+    ) -> CompletionContext {
+        CompletionContext {
+            expected_pos: TEST_POS,
+            request_owned,
+            requested_now,
+            already_loaded,
+            shutting_down,
+        }
+    }
+
     #[test]
     fn terrain_gameplay_plugin_installs_contract_and_schedule() {
         let mut app = App::new();
@@ -847,7 +937,23 @@ mod tests {
         app.add_plugins(TerrainGameplayPlugin);
 
         let contract = app.world().resource::<TerrainGameplayPluginContract>();
+        let worldgen_contract = app.world().resource::<WorldgenTaskPluginContract>();
+
         assert_eq!(contract.update_phase_order, TERRAIN_GAMEPLAY_PHASE_ORDER);
+        assert_eq!(worldgen_contract.world_mutation_phase, WORLDGEN_TASK_PHASE);
+        assert!(app.world().contains_resource::<WorldgenTaskState>());
+        assert!(app_has_schedule(&app, UPDATE_SCHEDULE_LABEL));
+    }
+
+    #[test]
+    fn worldgen_task_plugin_installs_shell_contract_and_state() {
+        let mut app = App::new();
+
+        app.add_plugins(WorldgenTaskPlugin);
+
+        let contract = app.world().resource::<WorldgenTaskPluginContract>();
+        assert_eq!(contract.world_mutation_phase, WORLDGEN_TASK_PHASE);
+        assert!(app.world().contains_resource::<WorldgenTaskState>());
         assert!(app_has_schedule(&app, UPDATE_SCHEDULE_LABEL));
     }
 
@@ -858,7 +964,10 @@ mod tests {
         assert!(!app
             .world()
             .contains_resource::<TerrainGameplayPluginContract>());
-        assert!(!app.world().contains_resource::<GameState>());
+        assert!(!app
+            .world()
+            .contains_resource::<WorldgenTaskPluginContract>());
+        assert!(!app.world().contains_resource::<WorldgenTaskState>());
     }
 
     #[test]
@@ -892,12 +1001,7 @@ mod tests {
 
     #[test]
     fn completion_decision_inserts_requested_unloaded_chunk() {
-        let context = CompletionContext {
-            expected_pos: TEST_POS,
-            requested_now: true,
-            already_loaded: false,
-            shutting_down: false,
-        };
+        let context = completion_context(true, true, false, false);
 
         let decision =
             decide_completed_chunk(ChunkCompletionStatus::Generated { pos: TEST_POS }, context);
@@ -907,9 +1011,16 @@ mod tests {
 
     #[test]
     fn duplicate_request_keeps_running_task_and_minimizes_queued_priority() {
+        let mut pending = HashMap::new();
+        queue_chunk_request(&mut pending, chunk_request(TEST_POS, FAR_PRIORITY));
+        queue_chunk_request(&mut pending, chunk_request(TEST_POS, NEAR_PRIORITY));
         let queued = plan_request_update(RequestSlot::Queued(FAR_PRIORITY), NEAR_PRIORITY);
         let generating = plan_request_update(RequestSlot::Generating, NEAR_PRIORITY);
 
+        assert!(matches!(
+            pending.get(&TEST_POS),
+            Some(PendingChunkRequest::Queued(priority)) if *priority == NEAR_PRIORITY
+        ));
         assert_eq!(queued, RequestUpdate::UpdateQueued(NEAR_PRIORITY));
         assert_eq!(generating, RequestUpdate::KeepGenerating);
     }
@@ -925,12 +1036,7 @@ mod tests {
 
     #[test]
     fn stale_completion_is_ignored() {
-        let context = CompletionContext {
-            expected_pos: TEST_POS,
-            requested_now: false,
-            already_loaded: false,
-            shutting_down: false,
-        };
+        let context = completion_context(true, false, false, false);
 
         let decision =
             decide_completed_chunk(ChunkCompletionStatus::Generated { pos: TEST_POS }, context);
@@ -949,12 +1055,7 @@ mod tests {
         };
 
         let err = generate_chunk(input, &noise).unwrap_err();
-        let context = CompletionContext {
-            expected_pos: TEST_POS,
-            requested_now: true,
-            already_loaded: false,
-            shutting_down: false,
-        };
+        let context = completion_context(true, true, false, false);
         let decision = decide_completed_chunk(ChunkCompletionStatus::Failed(err), context);
 
         assert_eq!(
@@ -968,12 +1069,7 @@ mod tests {
 
     #[test]
     fn shutdown_completion_is_ignored_before_world_mutation() {
-        let context = CompletionContext {
-            expected_pos: TEST_POS,
-            requested_now: true,
-            already_loaded: false,
-            shutting_down: true,
-        };
+        let context = completion_context(true, true, false, true);
 
         let decision =
             decide_completed_chunk(ChunkCompletionStatus::Generated { pos: TEST_POS }, context);
@@ -983,12 +1079,7 @@ mod tests {
 
     #[test]
     fn mismatched_completion_position_fails_closed() {
-        let context = CompletionContext {
-            expected_pos: TEST_POS,
-            requested_now: true,
-            already_loaded: false,
-            shutting_down: false,
-        };
+        let context = completion_context(true, true, false, false);
 
         let decision = decide_completed_chunk(
             ChunkCompletionStatus::Generated {
@@ -998,5 +1089,25 @@ mod tests {
         );
 
         assert_eq!(decision, ChunkCompletionDecision::IgnoreMismatchedPosition);
+    }
+
+    #[test]
+    fn unowned_completion_is_ignored_before_world_mutation() {
+        let context = completion_context(false, true, false, false);
+
+        let decision =
+            decide_completed_chunk(ChunkCompletionStatus::Generated { pos: TEST_POS }, context);
+
+        assert_eq!(decision, ChunkCompletionDecision::IgnoreUnowned);
+    }
+
+    #[test]
+    fn already_loaded_completion_is_ignored_as_duplicate() {
+        let context = completion_context(true, true, true, false);
+
+        let decision =
+            decide_completed_chunk(ChunkCompletionStatus::Generated { pos: TEST_POS }, context);
+
+        assert_eq!(decision, ChunkCompletionDecision::IgnoreDuplicate);
     }
 }
