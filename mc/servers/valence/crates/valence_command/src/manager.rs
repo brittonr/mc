@@ -1,17 +1,18 @@
 use std::collections::{HashMap, HashSet};
+use std::time::Instant;
 
 use bevy_app::{App, Plugin, PreUpdate};
 use bevy_ecs::entity::Entity;
 use bevy_ecs::prelude::{
     Added, Changed, Commands, DetectChanges, Event, EventReader, EventWriter, IntoSystemConfigs,
-    Mut, Or, Query, Res,
+    Mut, Or, Query, Res, With,
 };
 use petgraph::graph::NodeIndex;
 use petgraph::prelude::EdgeRef;
 use petgraph::{Direction, Graph};
 use tracing::{debug, info, trace, warn};
 use valence_server::client::{Client, SpawnClientsSet};
-use valence_server::event_loop::PacketEvent;
+use valence_server::event_loop::{EventLoopSet, PacketEvent};
 use valence_server::protocol::packets::play::command_tree_s2c::NodeData;
 use valence_server::protocol::packets::play::{CommandExecutionC2s, CommandTreeS2c};
 use valence_server::protocol::WritePacket;
@@ -30,6 +31,7 @@ pub struct CommandPlugin;
 impl Plugin for CommandPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(CommandScopePlugin)
+            .add_event::<CommandExecutionPacketEvent>()
             .add_event::<CommandExecutionEvent>()
             .add_event::<CommandProcessedEvent>()
             .add_systems(PreUpdate, insert_scope_component.after(SpawnClientsSet))
@@ -38,8 +40,13 @@ impl Plugin for CommandPlugin {
                 (
                     update_command_tree.in_set(CommandTreeSet),
                     command_tree_update_with_client.in_set(CommandTreeSet),
-                    read_incoming_packets.before(CommandSystemSet),
-                    parse_incoming_commands.in_set(CommandSystemSet),
+                    emit_command_execution_packet_events.in_set(EventLoopSet::TypedAdapters),
+                    emit_command_execution_events
+                        .in_set(EventLoopSet::DomainConsumers)
+                        .before(CommandSystemSet),
+                    parse_incoming_commands
+                        .in_set(EventLoopSet::DomainConsumers)
+                        .in_set(CommandSystemSet),
                 ),
             );
 
@@ -57,8 +64,24 @@ impl Plugin for CommandPlugin {
     }
 }
 
+/// A decoded `CommandExecutionC2s` packet from a live command client.
+///
+/// This event is emitted from [`EventLoopSet::TypedAdapters`] during
+/// [`EventLoopPreUpdate`] after the raw packet body and source command client
+/// have been validated. Raw [`PacketEvent`] values remain available for
+/// low-level packet users.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Event)]
+pub struct CommandExecutionPacketEvent {
+    /// The live command client that sent the packet.
+    pub client: Entity,
+    /// The packet arrival timestamp copied from the raw packet boundary.
+    pub timestamp: Instant,
+    /// The decoded command string supplied by the client.
+    pub command: String,
+}
+
 /// This event is sent when a command is sent (you can send this with any
-/// entity)
+/// entity).
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Event)]
 pub struct CommandExecutionEvent {
     /// the command that was executed eg. "teleport @p 0 ~ 0"
@@ -89,19 +112,42 @@ fn insert_scope_component(mut clients: Query<Entity, Added<Client>>, mut command
     }
 }
 
-fn read_incoming_packets(
+fn emit_command_execution_packet_events(
     mut packets: EventReader<PacketEvent>,
-    mut event_writer: EventWriter<CommandExecutionEvent>,
+    live_command_clients: Query<(), With<CommandScopes>>,
+    mut event_writer: EventWriter<CommandExecutionPacketEvent>,
 ) {
     for packet in packets.read() {
-        let client = packet.client;
-        if let Some(packet) = packet.decode::<CommandExecutionC2s>() {
-            event_writer.send(CommandExecutionEvent {
-                command: packet.command.to_string(),
-                executor: client,
-            });
+        if !live_command_clients.contains(packet.client) {
+            continue;
+        }
+        if let Some(event) = command_execution_packet_event_from_packet(packet) {
+            event_writer.send(event);
         }
     }
+}
+
+fn emit_command_execution_events(
+    mut packet_events: EventReader<CommandExecutionPacketEvent>,
+    mut event_writer: EventWriter<CommandExecutionEvent>,
+) {
+    for packet_event in packet_events.read() {
+        event_writer.send(CommandExecutionEvent {
+            command: packet_event.command.clone(),
+            executor: packet_event.client,
+        });
+    }
+}
+
+fn command_execution_packet_event_from_packet(
+    packet: &PacketEvent,
+) -> Option<CommandExecutionPacketEvent> {
+    let pkt = packet.decode::<CommandExecutionC2s>()?;
+    Some(CommandExecutionPacketEvent {
+        client: packet.client,
+        timestamp: packet.timestamp,
+        command: pkt.command.to_string(),
+    })
 }
 
 #[allow(clippy::type_complexity)]
@@ -400,4 +446,301 @@ fn parse_command_args(
         return false;
     }
     true
+}
+
+#[cfg(test)]
+mod tests {
+    use bevy_app::App;
+    use bevy_ecs::event::Events;
+    use bevy_ecs::prelude::{ResMut, Resource};
+    use valence_server::event_loop::{EventLoopPlugin, EventLoopPreUpdate};
+    use valence_server::protocol::{Bounded, Encode, FixedBitSet, Packet, VarInt};
+
+    use super::*;
+
+    const TEST_COMMAND: &str = "say typed events";
+    const TEST_PROTOCOL_TIMESTAMP: u64 = 1_700_000_001;
+    const TEST_COMMAND_SALT: u64 = 99;
+    const TEST_MESSAGE_COUNT: i32 = 0;
+    const INVALID_STRING_BYTE_LEN: i32 = 1;
+    const INVALID_UTF8_BYTE: u8 = 0xff;
+    const WRONG_PACKET_ID_OFFSET: i32 = 1;
+    const PARTIAL_DECODE_TRUNCATED_BYTES: usize = 1;
+    const EXPECTED_SINGLE_EVENT_COUNT: usize = 1;
+
+    #[derive(Resource, Default)]
+    struct RawPacketObservation {
+        count: usize,
+    }
+
+    #[test]
+    fn adapter_emits_command_packet_event_for_live_valid_packet() {
+        let mut app = command_app();
+        let client = spawn_live_command_client(&mut app);
+        let timestamp = Instant::now();
+
+        send_packet_event(
+            &mut app,
+            packet_event(
+                client,
+                timestamp,
+                CommandExecutionC2s::ID,
+                valid_command_execution_body(),
+            ),
+        );
+        app.update();
+
+        let packet_events = command_execution_packet_events(&app);
+        assert_eq!(packet_events.len(), EXPECTED_SINGLE_EVENT_COUNT);
+        let packet_event = &packet_events[0];
+        assert_eq!(packet_event.client, client);
+        assert_eq!(packet_event.timestamp, timestamp);
+        assert_eq!(packet_event.command, TEST_COMMAND);
+    }
+
+    #[test]
+    fn command_execution_event_consumes_typed_packet_event_without_duplicate_public_event() {
+        let mut app = command_app();
+        let client = spawn_live_command_client(&mut app);
+
+        send_valid_command_packet(&mut app, client);
+        app.update();
+
+        let packet_events = command_execution_packet_events(&app);
+        assert!(!has_duplicate_command_packet_event(&packet_events));
+
+        let public_events = command_execution_events(&app);
+        assert_eq!(public_events.len(), EXPECTED_SINGLE_EVENT_COUNT);
+        assert_eq!(public_events[0].executor, client);
+        assert_eq!(public_events[0].command, TEST_COMMAND);
+    }
+
+    #[test]
+    fn raw_packet_observer_reads_before_command_typed_adapter() {
+        let mut app = command_app();
+        app.init_resource::<RawPacketObservation>().add_systems(
+            EventLoopPreUpdate,
+            count_raw_packets.in_set(EventLoopSet::RawPacketObservers),
+        );
+        let client = spawn_live_command_client(&mut app);
+
+        send_valid_command_packet(&mut app, client);
+        app.update();
+
+        assert_eq!(
+            raw_packet_observation_count(&app),
+            EXPECTED_SINGLE_EVENT_COUNT
+        );
+        assert_eq!(
+            command_execution_packet_events(&app).len(),
+            EXPECTED_SINGLE_EVENT_COUNT
+        );
+    }
+
+    #[test]
+    fn duplicate_command_packet_events_are_detected() {
+        let mut app = command_app();
+        let client = spawn_live_command_client(&mut app);
+
+        send_valid_command_packet(&mut app, client);
+        app.update();
+
+        let events = command_execution_packet_events(&app);
+        assert!(!has_duplicate_command_packet_event(&events));
+        assert!(has_duplicate_command_packet_event(&[
+            events[0].clone(),
+            events[0].clone(),
+        ]));
+    }
+
+    #[test]
+    fn adapter_rejects_wrong_command_packet_id() {
+        let mut app = command_app();
+        let client = spawn_live_command_client(&mut app);
+
+        send_packet_event(
+            &mut app,
+            packet_event(
+                client,
+                Instant::now(),
+                CommandExecutionC2s::ID + WRONG_PACKET_ID_OFFSET,
+                valid_command_execution_body(),
+            ),
+        );
+        app.update();
+
+        assert_no_command_events(&app);
+    }
+
+    #[test]
+    fn adapter_rejects_partial_command_decode() {
+        let mut app = command_app();
+        let client = spawn_live_command_client(&mut app);
+
+        send_packet_event(
+            &mut app,
+            packet_event(
+                client,
+                Instant::now(),
+                CommandExecutionC2s::ID,
+                partial_command_execution_body(),
+            ),
+        );
+        app.update();
+
+        assert_no_command_events(&app);
+    }
+
+    #[test]
+    fn adapter_rejects_malformed_command_payload() {
+        let mut app = command_app();
+        let client = spawn_live_command_client(&mut app);
+
+        send_packet_event(
+            &mut app,
+            packet_event(
+                client,
+                Instant::now(),
+                CommandExecutionC2s::ID,
+                malformed_command_execution_body(),
+            ),
+        );
+        app.update();
+
+        assert_no_command_events(&app);
+    }
+
+    #[test]
+    fn adapter_rejects_stale_command_client() {
+        let mut app = command_app();
+        let stale_client = spawn_live_command_client(&mut app);
+        app.world_mut().despawn(stale_client);
+
+        send_valid_command_packet(&mut app, stale_client);
+        app.update();
+
+        assert_no_command_events(&app);
+    }
+
+    fn command_app() -> App {
+        let mut app = App::new();
+        app.add_plugins(EventLoopPlugin).add_plugins(CommandPlugin);
+        app
+    }
+
+    fn spawn_live_command_client(app: &mut App) -> Entity {
+        app.world_mut().spawn(CommandScopes::new()).id()
+    }
+
+    fn send_valid_command_packet(app: &mut App, client: Entity) {
+        send_packet_event(
+            app,
+            packet_event(
+                client,
+                Instant::now(),
+                CommandExecutionC2s::ID,
+                valid_command_execution_body(),
+            ),
+        );
+    }
+
+    fn send_packet_event(app: &mut App, event: PacketEvent) {
+        app.world_mut()
+            .resource_mut::<Events<PacketEvent>>()
+            .send(event);
+    }
+
+    fn packet_event(client: Entity, timestamp: Instant, id: i32, data: Vec<u8>) -> PacketEvent {
+        PacketEvent {
+            client,
+            timestamp,
+            id,
+            data: data.into(),
+        }
+    }
+
+    fn valid_command_execution_body() -> Vec<u8> {
+        encoded_body(&CommandExecutionC2s {
+            command: Bounded(TEST_COMMAND),
+            timestamp: TEST_PROTOCOL_TIMESTAMP,
+            salt: TEST_COMMAND_SALT,
+            argument_signatures: Vec::new(),
+            message_count: VarInt(TEST_MESSAGE_COUNT),
+            acknowledgement: FixedBitSet::default(),
+        })
+    }
+
+    fn partial_command_execution_body() -> Vec<u8> {
+        let mut body = valid_command_execution_body();
+        let remaining_len = body.len() - PARTIAL_DECODE_TRUNCATED_BYTES;
+        body.truncate(remaining_len);
+        body
+    }
+
+    fn malformed_command_execution_body() -> Vec<u8> {
+        let mut body = Vec::new();
+        VarInt(INVALID_STRING_BYTE_LEN).encode(&mut body).unwrap();
+        body.push(INVALID_UTF8_BYTE);
+        body
+    }
+
+    fn encoded_body<P>(packet: &P) -> Vec<u8>
+    where
+        P: Encode,
+    {
+        let mut body = Vec::new();
+        packet.encode(&mut body).unwrap();
+        body
+    }
+
+    fn count_raw_packets(
+        mut packets: EventReader<PacketEvent>,
+        mut observation: ResMut<RawPacketObservation>,
+    ) {
+        observation.count += packets.read().count();
+    }
+
+    fn raw_packet_observation_count(app: &App) -> usize {
+        app.world().resource::<RawPacketObservation>().count
+    }
+
+    fn command_execution_packet_events(app: &App) -> Vec<CommandExecutionPacketEvent> {
+        app.world()
+            .resource::<Events<CommandExecutionPacketEvent>>()
+            .iter_current_update_events()
+            .cloned()
+            .collect()
+    }
+
+    fn command_execution_events(app: &App) -> Vec<CommandExecutionEvent> {
+        app.world()
+            .resource::<Events<CommandExecutionEvent>>()
+            .iter_current_update_events()
+            .cloned()
+            .collect()
+    }
+
+    fn assert_no_command_events(app: &App) {
+        assert!(command_execution_packet_events(app).is_empty());
+        assert!(command_execution_events(app).is_empty());
+    }
+
+    fn has_duplicate_command_packet_event(events: &[CommandExecutionPacketEvent]) -> bool {
+        let mut unique_events = Vec::new();
+        for event in events {
+            if unique_events
+                .iter()
+                .any(|candidate: &CommandExecutionPacketEvent| {
+                    candidate.client == event.client
+                        && candidate.timestamp == event.timestamp
+                        && candidate.command == event.command
+                })
+            {
+                return true;
+            }
+            unique_events.push(event.clone());
+        }
+
+        false
+    }
 }

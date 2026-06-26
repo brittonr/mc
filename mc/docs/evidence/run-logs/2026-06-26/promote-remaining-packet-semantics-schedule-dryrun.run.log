@@ -1,0 +1,23 @@
+## mc valence schedule hygiene
+command=nix build .#checks.x86_64-linux.mc-valence-schedule-hygiene --no-link -L
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 87 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 140 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 7 ms: Could not connect to server; retrying in 40 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 213 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5001 milliseconds
+this derivation will be built:
+  /nix/store/8qikabr0jn7fxmgdbhhbqfasi9g5szkd-mc-valence-schedule-hygiene.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/8qikabr0jn7fxmgdbhhbqfasi9g5szkd-mc-valence-schedule-hygiene.drv'...
+exit_status=0
+
+## valence wrapper dry run
+command=nix run .#valence -- --dry-run
+repo=/home/brittonr/git/mc/servers/valence
+example=ctf
+target_dir=/home/brittonr/git/mc/target/nix-run-valence
+cd /home/brittonr/git/mc/servers/valence && cargo run --example ctf --
+exit_status=0
+
+overall_exit_status=0

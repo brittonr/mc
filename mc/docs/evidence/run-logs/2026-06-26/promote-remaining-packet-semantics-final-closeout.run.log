@@ -1,0 +1,28 @@
+## cairn validate final
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
+exit_status=0
+
+## cairn change list final
+command=nix run .#cairn -- change list --root .
+{
+  "changes": [],
+  "layout": "cairn",
+  "root": "."
+}
+exit_status=0
+
+## task evidence final
+command=nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+exit_status=0
+
+overall_exit_status=0

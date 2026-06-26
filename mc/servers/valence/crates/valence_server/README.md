@@ -51,9 +51,7 @@ Storage and network writes stay in the existing layer/client shells; the cache r
 
 ## Typed packet-derived gameplay events
 
-`action::PlayerActionEvent` is the selected typed event promoted from a raw `PacketEvent` boundary in this pass.
-The adapter is intentionally narrow: raw `PacketEvent` remains public for low-level protocol users and unsupported packet
-semantics.
+`action::PlayerActionEvent` remains the core server typed event promoted from a raw `PacketEvent` boundary. Inventory and command crates now add their own selected typed packet events for hotbar selection, slot clicks, creative inventory actions, handled-screen close, and command execution while keeping raw `PacketEvent` public for low-level protocol users and unsupported packet semantics.
 
 ### Inventory
 
@@ -72,6 +70,6 @@ Wrong packet IDs, decode failures, partial decodes, malformed action payloads, a
 event, updates `ActionSequence`, and maps block-destroy actions to `DiggingEvent`, so downstream gameplay no longer
 needs to decode the raw packet body for this semantic.
 
-Non-claims: this adapter does not promote every serverbound gameplay packet, does not remove direct packet access, and
-does not claim broad Minecraft compatibility, vanilla semantic equivalence, public-server safety, or production
-readiness.
+Inventory packet adapter contracts live in `valence_inventory` documentation, and command packet adapter contracts live in `valence_command` documentation. The selected survival compatibility close hook consumes `CloseHandledScreenEvent` so fixture milestone behavior remains comparable without decoding the close packet a second time.
+
+Non-claims: these adapters do not promote every serverbound gameplay packet, do not remove direct packet access, and do not claim broad Minecraft compatibility, vanilla semantic equivalence, public-server safety, or production readiness.

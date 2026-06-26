@@ -38,6 +38,17 @@ const ADVANCEMENT_POST_UPDATE_SETS: &[&str] = &[
 const EQUIPMENT_PRE_UPDATE_SETS: &[&str] =
     &["EquipmentInitSet", "EquipmentInputSet", "EquipmentSyncSet"];
 const EQUIPMENT_POST_UPDATE_SETS: &[&str] = &["EquipmentBroadcastSet"];
+const INVENTORY_PRE_UPDATE_SETS: &[&str] = &["InventoryInitSet", "InventoryMutationSet"];
+const INVENTORY_EVENT_LOOP_PRE_UPDATE_SETS: &[&str] = &[
+    "InventoryInputSet",
+    "InventoryMutationSet",
+    "InventoryCleanupSet",
+];
+const INVENTORY_POST_UPDATE_SETS: &[&str] = &[
+    "InventoryCleanupSet",
+    "InventoryWindowSyncSet",
+    "InventoryPresentationSet",
+];
 const SCOREBOARD_POST_UPDATE_SETS: &[&str] = &["ScoreboardSet"];
 const WEATHER_POST_UPDATE_SETS: &[&str] = &["WeatherClientUpdateSet", "WeatherLayerUpdateSet"];
 const WORLD_BORDER_POST_UPDATE_SETS: &[&str] = &["UpdateWorldBorderSet"];
@@ -50,18 +61,24 @@ fn default_core_plugins_expose_selected_ordering_sets() {
     let pre_update = schedule_graph(&app, PRE_UPDATE_LABEL);
     assert_schedule_contains_sets(&pre_update, ADVANCEMENT_PRE_UPDATE_SETS);
     assert_schedule_contains_sets(&pre_update, EQUIPMENT_PRE_UPDATE_SETS);
+    assert_schedule_contains_sets(&pre_update, INVENTORY_PRE_UPDATE_SETS);
 
     let event_loop_pre_update = schedule_graph(&app, EVENT_LOOP_PRE_UPDATE_LABEL);
     assert_schedule_contains_sets(&event_loop_pre_update, COMMAND_EVENT_LOOP_PRE_UPDATE_SETS);
+    assert_schedule_contains_sets(&event_loop_pre_update, INVENTORY_EVENT_LOOP_PRE_UPDATE_SETS);
 
     let post_update = schedule_graph(&app, POST_UPDATE_LABEL);
     assert_schedule_contains_sets(&post_update, ADVANCEMENT_POST_UPDATE_SETS);
     assert_schedule_contains_sets(&post_update, EQUIPMENT_POST_UPDATE_SETS);
+    assert_schedule_contains_sets(&post_update, INVENTORY_POST_UPDATE_SETS);
     assert_schedule_contains_sets(&post_update, SCOREBOARD_POST_UPDATE_SETS);
     assert_schedule_contains_sets(&post_update, WEATHER_POST_UPDATE_SETS);
     assert_schedule_contains_sets(&post_update, WORLD_BORDER_POST_UPDATE_SETS);
     assert_schedule_contains_sets(&post_update, BOSS_BAR_POST_UPDATE_SETS);
 
+    assert!(app
+        .world()
+        .contains_resource::<Events<crate::command::manager::CommandExecutionPacketEvent>>());
     assert!(app
         .world()
         .contains_resource::<Events<crate::command::manager::CommandExecutionEvent>>());
@@ -74,6 +91,33 @@ fn default_core_plugins_expose_selected_ordering_sets() {
     assert!(app
         .world()
         .contains_resource::<Events<crate::equipment::EquipmentChangeEvent>>());
+    assert!(app
+        .world()
+        .contains_resource::<crate::inventory::InventorySettings>());
+    assert!(app
+        .world()
+        .contains_resource::<Events<crate::inventory::ClickSlotEvent>>());
+    assert!(app
+        .world()
+        .contains_resource::<Events<crate::inventory::DropItemStackEvent>>());
+    assert!(app
+        .world()
+        .contains_resource::<Events<crate::inventory::CreativeInventoryActionEvent>>());
+    assert!(app
+        .world()
+        .contains_resource::<Events<crate::inventory::UpdateSelectedSlotEvent>>());
+    assert!(app
+        .world()
+        .contains_resource::<Events<crate::inventory::ClickSlotPacketEvent>>());
+    assert!(app
+        .world()
+        .contains_resource::<Events<crate::inventory::CloseHandledScreenEvent>>());
+    assert!(app
+        .world()
+        .contains_resource::<Events<crate::inventory::CreativeInventoryActionPacketEvent>>());
+    assert!(app
+        .world()
+        .contains_resource::<Events<crate::inventory::UpdateSelectedSlotPacketEvent>>());
 }
 
 #[test]
@@ -125,6 +169,9 @@ fn disabled_command_plugin_omits_command_schedule_contract() {
     assert_schedule_omits_sets(&event_loop_pre_update, COMMAND_EVENT_LOOP_PRE_UPDATE_SETS);
     assert!(!app
         .world()
+        .contains_resource::<Events<crate::command::manager::CommandExecutionPacketEvent>>());
+    assert!(!app
+        .world()
         .contains_resource::<Events<crate::command::manager::CommandExecutionEvent>>());
     assert!(!app
         .world()
@@ -155,6 +202,45 @@ fn disabled_equipment_plugin_omits_equipment_schedule_contract() {
     assert!(!app
         .world()
         .contains_resource::<Events<crate::equipment::EquipmentChangeEvent>>());
+}
+
+#[test]
+fn disabled_inventory_plugin_omits_inventory_schedule_contract() {
+    let app = app_without_plugin::<crate::inventory::InventoryPlugin>();
+    let pre_update = schedule_graph(&app, PRE_UPDATE_LABEL);
+    let event_loop_pre_update = schedule_graph(&app, EVENT_LOOP_PRE_UPDATE_LABEL);
+    let post_update = schedule_graph(&app, POST_UPDATE_LABEL);
+
+    assert_schedule_omits_sets(&pre_update, INVENTORY_PRE_UPDATE_SETS);
+    assert_schedule_omits_sets(&event_loop_pre_update, INVENTORY_EVENT_LOOP_PRE_UPDATE_SETS);
+    assert_schedule_omits_sets(&post_update, INVENTORY_POST_UPDATE_SETS);
+    assert!(!app
+        .world()
+        .contains_resource::<crate::inventory::InventorySettings>());
+    assert!(!app
+        .world()
+        .contains_resource::<Events<crate::inventory::ClickSlotEvent>>());
+    assert!(!app
+        .world()
+        .contains_resource::<Events<crate::inventory::DropItemStackEvent>>());
+    assert!(!app
+        .world()
+        .contains_resource::<Events<crate::inventory::CreativeInventoryActionEvent>>());
+    assert!(!app
+        .world()
+        .contains_resource::<Events<crate::inventory::UpdateSelectedSlotEvent>>());
+    assert!(!app
+        .world()
+        .contains_resource::<Events<crate::inventory::ClickSlotPacketEvent>>());
+    assert!(!app
+        .world()
+        .contains_resource::<Events<crate::inventory::CloseHandledScreenEvent>>());
+    assert!(!app
+        .world()
+        .contains_resource::<Events<crate::inventory::CreativeInventoryActionPacketEvent>>());
+    assert!(!app
+        .world()
+        .contains_resource::<Events<crate::inventory::UpdateSelectedSlotPacketEvent>>());
 }
 
 #[test]

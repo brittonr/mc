@@ -1,0 +1,4 @@
+## task evidence final
+command=nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+exit_status=0
+overall_exit_status=0

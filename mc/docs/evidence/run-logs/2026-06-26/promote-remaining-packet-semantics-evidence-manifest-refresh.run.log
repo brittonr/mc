@@ -1,0 +1,5 @@
+## evidence manifest refresh
+command=nix run .#evidence-manifest-refresh -- --refresh
+evidence manifest refresh ok: mode=refresh; passes=4; manifests=510; entries=4563; current=4563; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=4; manifest_writes=20
+exit_status=0
+overall_exit_status=0

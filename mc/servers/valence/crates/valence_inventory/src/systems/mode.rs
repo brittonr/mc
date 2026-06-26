@@ -10,7 +10,7 @@ pub struct CreativeInventoryActionEvent {
 }
 
 pub(super) fn handle_creative_inventory_action(
-    mut packets: EventReader<PacketEvent>,
+    mut packet_events: EventReader<CreativeInventoryActionPacketEvent>,
     mut clients: Query<(
         &mut Client,
         &mut Inventory,
@@ -20,12 +20,9 @@ pub(super) fn handle_creative_inventory_action(
     mut inv_action_events: EventWriter<CreativeInventoryActionEvent>,
     mut drop_item_stack_events: EventWriter<DropItemStackEvent>,
 ) {
-    for packet in packets.read() {
-        let Some(pkt) = packet.decode::<CreativeInventoryActionC2s>() else {
-            continue;
-        };
+    for packet_event in packet_events.read() {
         let Ok((mut client, mut inventory, mut inv_state, game_mode)) =
-            clients.get_mut(packet.client)
+            clients.get_mut(packet_event.client)
         else {
             continue;
         };
@@ -33,34 +30,34 @@ pub(super) fn handle_creative_inventory_action(
         if *game_mode != valence_server::GameMode::Creative {
             continue;
         }
-        if pkt.slot == CREATIVE_DROP_SLOT {
+        if packet_event.slot == CREATIVE_DROP_SLOT {
             drop_creative_stack(
-                packet.client,
-                &pkt.clicked_item,
+                packet_event.client,
+                &packet_event.clicked_item,
                 &mut drop_item_stack_events,
             );
             continue;
         }
 
-        let Some(slot_id) = slot_idx_to_u16(pkt.slot) else {
+        let Some(slot_id) = slot_idx_to_u16(packet_event.slot) else {
             continue;
         };
         if slot_id >= inventory.slot_count() {
             continue;
         }
 
-        inventory.slots[usize::from(slot_id)] = pkt.clicked_item.clone();
+        inventory.slots[usize::from(slot_id)] = packet_event.clicked_item.clone();
         inv_state.state_id += 1;
         client.write_packet(&ScreenHandlerSlotUpdateS2c {
             window_id: 0,
             state_id: valence_server::protocol::VarInt(inv_state.state_id.0),
-            slot_idx: pkt.slot,
-            slot_data: std::borrow::Cow::Borrowed(&pkt.clicked_item),
+            slot_idx: packet_event.slot,
+            slot_data: std::borrow::Cow::Borrowed(&packet_event.clicked_item),
         });
         inv_action_events.send(CreativeInventoryActionEvent {
-            client: packet.client,
-            slot: pkt.slot,
-            clicked_item: pkt.clicked_item,
+            client: packet_event.client,
+            slot: packet_event.slot,
+            clicked_item: packet_event.clicked_item.clone(),
         });
     }
 }

@@ -20,28 +20,25 @@ pub(super) fn update_player_selected_slot(
 
 /// Client to Server `HeldItem` Slot
 pub(super) fn handle_update_selected_slot(
-    mut packets: EventReader<PacketEvent>,
+    mut packet_events: EventReader<UpdateSelectedSlotPacketEvent>,
     mut clients: Query<&mut HeldItem>,
     mut events: EventWriter<UpdateSelectedSlotEvent>,
 ) {
-    for packet in packets.read() {
-        let Some(pkt) = packet.decode::<UpdateSelectedSlotC2s>() else {
-            continue;
-        };
-        let Ok(mut mut_held) = clients.get_mut(packet.client) else {
+    for packet_event in packet_events.read() {
+        let Ok(mut mut_held) = clients.get_mut(packet_event.client) else {
             continue;
         };
         let held = mut_held.bypass_change_detection();
-        if pkt.slot > PlayerInventory::HOTBAR_INDEX_MAX {
+        if packet_event.slot > PlayerInventory::HOTBAR_INDEX_MAX {
             continue;
         }
 
-        let Ok(slot) = u8::try_from(pkt.slot) else {
+        let Ok(slot) = u8::try_from(packet_event.slot) else {
             continue;
         };
         held.set_hotbar_idx(slot);
         events.send(UpdateSelectedSlotEvent {
-            client: packet.client,
+            client: packet_event.client,
             slot,
         });
     }

@@ -1,0 +1,209 @@
+## valence_inventory full lib tests
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence_inventory --lib -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: method `packet_data_range` is never used
+   --> crates/valence_protocol/src/decode.rs:192:8
+    |
+187 | impl PacketFrameLayout {
+    | ---------------------- method in this implementation
+...
+192 |     fn packet_data_range(self) -> Range<usize> {
+    |        ^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `valence_protocol` (lib) generated 1 warning
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+warning: `valence_inventory` (lib test) generated 1 warning
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.17s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_inventory-5e89102e661fd8f7)
+
+running 47 tests
+test catalog::tests::test_convert_hotbar_slot_id ... ok
+test catalog::tests::test_convert_to_player_slot ... ok
+test gui::tests::gui_click_rejects_stale_window_id ... ok
+test gui::tests::gui_click_rejects_wrong_open_inventory_relationship ... ok
+test gui::tests::gui_close_event_plans_cleanup ... ok
+test gui::tests::gui_click_rejects_invalid_slot_ids ... ok
+test gui::tests::gui_model_rejects_malformed_inputs ... ok
+test gui::tests::gui_disconnect_plans_cleanup_and_late_clicks_are_rejected ... ok
+test gui::tests::gui_mutable_action_click_allows_valence_inventory_mutation ... ok
+test gui::tests::gui_open_disabled_is_rejected ... ok
+test gui::tests::gui_open_enabled_returns_open_plan ... ok
+test gui::tests::gui_open_transition_replaces_distinct_current_viewer ... ok
+test gui::tests::gui_readonly_action_click_emits_action_without_mutation ... ok
+test gui::tests::gui_viewer_cleanup_closes_stale_and_despawned_viewers ... ok
+test gui::tests::gui_viewer_cleanup_keeps_current_viewer ... ok
+test gui::tests::gui_viewer_cleanup_rejects_missing_owner_and_disabled_plugin ... ok
+test validate::tests::allow_clicking_hotbar_keybinds_when_both_source_and_target_are_empty ... ok
+test validate::tests::allow_clicking_on_an_empty_slot_with_empty_carried_item_success ... ok
+test validate::tests::allow_clicking_on_the_margin_area_in_inventory_success ... ok
+test validate::tests::allow_clicking_outside_inventory_when_holding_something_success ... ok
+test validate::tests::allow_pickup_overfull_stack_click ... ok
+test validate::tests::allow_shift_click_overflow_to_new_stack ... ok
+test validate::tests::click_filled_slot_with_filled_cursor_different_item_success ... ok
+test validate::tests::click_filled_slot_with_filled_cursor_stack_overflow_success ... ok
+test validate::tests::click_filled_slot_with_incorrect_nbt_and_empty_cursor_success ... ok
+test validate::tests::click_slot_with_filled_cursor_success ... ok
+test validate::tests::allow_clicking_outside_inventory_when_not_holding_anything_success ... ok
+test validate::tests::click_slot_with_filled_cursor_failure ... ok
+test validate::tests::allow_place_overfull_stack_click ... ok
+test validate::tests::net_item_delta_2 ... ok
+test validate::tests::click_filled_slot_with_empty_cursor_success ... ok
+test validate::tests::net_item_delta_1 ... ok
+test validate::tests::disallow_item_transmutation ... ok
+test gui::tests::gui_plugin_cleans_up_closed_viewers ... ok
+test gui::tests::gui_plugin_cleans_up_despawned_viewers_once ... ok
+test gui::tests::gui_plugin_replaces_duplicate_viewer_with_close_event ... ok
+test gui::tests::gui_plugin_routes_open_and_click_events ... ok
+test packet_semantics::tests::duplicate_inventory_packet_events_are_detected ... ok
+test packet_semantics::tests::adapter_emits_click_slot_event_with_owned_packet_body ... ok
+test packet_semantics::tests::adapter_rejects_malformed_payload ... ok
+test packet_semantics::tests::adapter_emits_close_event_and_domain_removes_open_inventory ... ok
+test packet_semantics::tests::adapter_emits_update_selected_slot_event_for_live_valid_packet ... ok
+test packet_semantics::tests::adapter_rejects_wrong_packet_id ... ok
+test packet_semantics::tests::adapter_rejects_partial_decode ... ok
+test packet_semantics::tests::adapter_rejects_stale_client ... ok
+test packet_semantics::tests::adapter_emits_creative_inventory_action_event ... ok
+test packet_semantics::tests::raw_packet_observer_reads_before_inventory_typed_adapter ... ok
+
+test result: ok. 47 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+exit_status=0
+
+## valence_command full lib tests
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence_command --lib -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: method `packet_data_range` is never used
+   --> crates/valence_protocol/src/decode.rs:192:8
+    |
+187 | impl PacketFrameLayout {
+    | ---------------------- method in this implementation
+...
+192 |     fn packet_data_range(self) -> Range<usize> {
+    |        ^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `valence_protocol` (lib) generated 1 warning
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.15s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_command-d6a65af963dfdb99)
+
+running 32 tests
+test admin_permissions::tests::missing_permission_data_denies_scoped_command ... ok
+test admin_permissions::tests::disabled_plugin_preserves_command_scopes ... ok
+test admin_permissions::tests::missing_required_scope_denies_command ... ok
+test admin_permissions::tests::stale_command_tree_scope_plan_replaces_old_scopes ... ok
+test admin_permissions::tests::role_binding_allows_command_scope ... ok
+test admin_permissions::tests::storage_missing_row_uses_default_profile ... ok
+test admin_permissions::tests::denial_diagnostic_names_command_and_scopes ... ok
+test admin_permissions::tests::storage_rejects_invalid_rows ... ok
+test parsers::bool::tests::test_bool ... ok
+test parsers::block_pos::tests::test_block_pos ... ok
+test parsers::column_pos::tests::test_column_pos ... ok
+test parsers::entity_selector::tests::test_entity_selector ... ok
+test parsers::numbers::tests::test_number ... ok
+test parsers::strings::tests::test_string ... ok
+test parsers::strings::tests::test_greedy_string ... ok
+test parsers::strings::tests::test_quotable_string ... ok
+test parsers::swizzle::tests::test_swizzle ... ok
+test parsers::test::test_absolute_or_relative ... ok
+test parsers::test::test_parse_input ... ok
+test parsers::time::tests::test_time ... ok
+test parsers::vec2::tests::test_vec2 ... ok
+test parsers::vec3::tests::test_vec3 ... ok
+test admin_permissions::tests::plugin_shell_disabled_preserves_existing_scopes ... ok
+test admin_permissions::tests::plugin_shell_updates_command_scopes_from_profile ... ok
+test manager::tests::adapter_rejects_wrong_command_packet_id ... ok
+test manager::tests::duplicate_command_packet_events_are_detected ... ok
+test manager::tests::raw_packet_observer_reads_before_command_typed_adapter ... ok
+test manager::tests::adapter_emits_command_packet_event_for_live_valid_packet ... ok
+test manager::tests::adapter_rejects_partial_command_decode ... ok
+test manager::tests::command_execution_event_consumes_typed_packet_event_without_duplicate_public_event ... ok
+test manager::tests::adapter_rejects_stale_command_client ... ok
+test manager::tests::adapter_rejects_malformed_command_payload ... ok
+
+test result: ok. 32 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+exit_status=0
+
+overall_exit_status=0

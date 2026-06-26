@@ -8,6 +8,7 @@ pub use player_inventory::PlayerInventory;
 
 type Client = valence_server::client::Client;
 type PacketEvent = valence_server::event_loop::PacketEvent;
+use valence_server::event_loop::EventLoopSet;
 pub use valence_server::interact_block::InteractBlockEvent;
 pub use valence_server::protocol::packets::play::click_slot_c2s::{ClickMode, SlotChange};
 pub use valence_server::protocol::packets::play::open_screen_s2c::WindowType;
@@ -33,6 +34,7 @@ pub mod gui;
 mod hotbar;
 #[path = "systems/mode.rs"]
 mod mode;
+mod packet_semantics;
 #[path = "systems/place.rs"]
 mod place;
 #[path = "slots.rs"]
@@ -52,44 +54,129 @@ pub use catalog::{InventoryKind, InventorySettings};
 pub use components::{ClientInventoryState, CursorItem, HeldItem, OpenInventory};
 pub use hotbar::UpdateSelectedSlotEvent;
 pub use mode::CreativeInventoryActionEvent;
+pub use packet_semantics::{
+    ClickSlotPacketEvent, CloseHandledScreenEvent, CreativeInventoryActionPacketEvent,
+    UpdateSelectedSlotPacketEvent,
+};
 pub use storage::Inventory;
 pub use view::{InventoryWindow, InventoryWindowMut};
 
 pub struct InventoryPlugin;
 
+/// The [`SystemSet`] in [`PreUpdate`] where inventory components are attached to
+/// newly spawned clients.
+#[derive(SystemSet, Copy, Clone, PartialEq, Eq, Hash, Debug)]
+pub struct InventoryInitSet;
+
+/// The [`SystemSet`] in [`valence_server::event_loop::EventLoopPreUpdate`]
+/// where inventory reads client packets and inventory-related interaction
+/// events.
+#[derive(SystemSet, Copy, Clone, PartialEq, Eq, Hash, Debug)]
+pub struct InventoryInputSet;
+
+/// The [`SystemSet`] where inventory model state can change in response to
+/// input, setup, or readonly resynchronization.
+#[derive(SystemSet, Copy, Clone, PartialEq, Eq, Hash, Debug)]
+pub struct InventoryMutationSet;
+
+/// The [`SystemSet`] in [`PostUpdate`] where open windows, player inventories,
+/// and close notifications are synchronized with clients.
+#[derive(SystemSet, Copy, Clone, PartialEq, Eq, Hash, Debug)]
+pub struct InventoryWindowSyncSet;
+
+/// The [`SystemSet`] in [`PostUpdate`] where inventory packets are prepared
+/// before [`valence_server::client::FlushPacketsSet`].
+#[derive(SystemSet, Copy, Clone, PartialEq, Eq, Hash, Debug)]
+pub struct InventoryPresentationSet;
+
+/// The [`SystemSet`] where inventory close and stale-open cleanup is handled.
+#[derive(SystemSet, Copy, Clone, PartialEq, Eq, Hash, Debug)]
+pub struct InventoryCleanupSet;
+
 impl Plugin for InventoryPlugin {
     fn build(&self, app: &mut bevy_app::App) {
-        app.add_systems(
+        app.configure_sets(
             PreUpdate,
-            init_new_client_inventories.after(valence_server::client::SpawnClientsSet),
+            InventoryInitSet.after(valence_server::client::SpawnClientsSet),
+        )
+        .configure_sets(
+            PostUpdate,
+            InventoryPresentationSet.before(valence_server::client::FlushPacketsSet),
+        )
+        .add_systems(
+            PreUpdate,
+            init_new_client_inventories
+                .in_set(InventoryInitSet)
+                .in_set(InventoryMutationSet),
         )
         .add_systems(
             PostUpdate,
             (
-                update_client_on_close_inventory.before(viewer::update_open_inventories),
-                hotbar::update_player_selected_slot,
-                viewer::update_open_inventories,
-                update_player_inventories,
-                update_cursor_item,
-            )
-                .before(valence_server::client::FlushPacketsSet),
+                update_client_on_close_inventory
+                    .in_set(InventoryCleanupSet)
+                    .in_set(InventoryWindowSyncSet)
+                    .in_set(InventoryPresentationSet)
+                    .before(viewer::update_open_inventories),
+                hotbar::update_player_selected_slot.in_set(InventoryPresentationSet),
+                viewer::update_open_inventories
+                    .in_set(InventoryWindowSyncSet)
+                    .in_set(InventoryPresentationSet),
+                update_player_inventories
+                    .in_set(InventoryWindowSyncSet)
+                    .in_set(InventoryPresentationSet),
+                update_cursor_item.in_set(InventoryPresentationSet),
+            ),
         )
         .add_systems(
             valence_server::event_loop::EventLoopPreUpdate,
             (
-                hotbar::handle_update_selected_slot,
-                click::handle_packets,
-                mode::handle_creative_inventory_action,
-                handle_close_handled_screen,
-                control::handle_player_actions,
-                place::resync_readonly_inventory_after_block_interaction,
+                packet_semantics::emit_update_selected_slot_packet_events
+                    .in_set(EventLoopSet::TypedAdapters)
+                    .in_set(InventoryInputSet),
+                packet_semantics::emit_click_slot_packet_events
+                    .in_set(EventLoopSet::TypedAdapters)
+                    .in_set(InventoryInputSet),
+                packet_semantics::emit_creative_inventory_action_packet_events
+                    .in_set(EventLoopSet::TypedAdapters)
+                    .in_set(InventoryInputSet),
+                packet_semantics::emit_close_handled_screen_events
+                    .in_set(EventLoopSet::TypedAdapters)
+                    .in_set(InventoryInputSet),
+                hotbar::handle_update_selected_slot
+                    .in_set(EventLoopSet::DomainConsumers)
+                    .in_set(InventoryInputSet)
+                    .in_set(InventoryMutationSet),
+                click::handle_packets
+                    .in_set(EventLoopSet::DomainConsumers)
+                    .in_set(InventoryInputSet)
+                    .in_set(InventoryMutationSet),
+                mode::handle_creative_inventory_action
+                    .in_set(EventLoopSet::DomainConsumers)
+                    .in_set(InventoryInputSet)
+                    .in_set(InventoryMutationSet),
+                handle_close_handled_screen
+                    .in_set(EventLoopSet::DomainConsumers)
+                    .in_set(InventoryInputSet)
+                    .in_set(InventoryCleanupSet),
+                control::handle_player_actions
+                    .in_set(EventLoopSet::DomainConsumers)
+                    .in_set(InventoryInputSet)
+                    .in_set(InventoryMutationSet),
+                place::resync_readonly_inventory_after_block_interaction
+                    .in_set(EventLoopSet::DomainConsumers)
+                    .in_set(InventoryInputSet)
+                    .in_set(InventoryMutationSet),
             ),
         )
         .init_resource::<InventorySettings>()
         .add_event::<ClickSlotEvent>()
         .add_event::<DropItemStackEvent>()
         .add_event::<CreativeInventoryActionEvent>()
-        .add_event::<UpdateSelectedSlotEvent>();
+        .add_event::<UpdateSelectedSlotEvent>()
+        .add_event::<ClickSlotPacketEvent>()
+        .add_event::<CloseHandledScreenEvent>()
+        .add_event::<CreativeInventoryActionPacketEvent>()
+        .add_event::<UpdateSelectedSlotPacketEvent>();
     }
 }
 
@@ -203,12 +290,13 @@ fn update_cursor_item(
 }
 
 /// Handles clients telling the server that they are closing an inventory.
-fn handle_close_handled_screen(mut packets: EventReader<PacketEvent>, mut commands: Commands) {
-    for packet in packets.read() {
-        if packet.decode::<CloseHandledScreenC2s>().is_some() {
-            if let Some(mut entity) = commands.get_entity(packet.client) {
-                entity.remove::<OpenInventory>();
-            }
+fn handle_close_handled_screen(
+    mut events: EventReader<CloseHandledScreenEvent>,
+    mut commands: Commands,
+) {
+    for event in events.read() {
+        if let Some(mut entity) = commands.get_entity(event.client) {
+            entity.remove::<OpenInventory>();
         }
     }
 }

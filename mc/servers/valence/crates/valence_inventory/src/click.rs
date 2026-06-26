@@ -6,7 +6,7 @@ mod press;
 const OUTSIDE_WINDOW_SLOT: i16 = -999;
 
 pub(super) fn handle_packets(
-    mut packets: EventReader<PacketEvent>,
+    mut packet_events: EventReader<ClickSlotPacketEvent>,
     mut clients: Query<(
         &mut Client,
         &mut Inventory,
@@ -18,13 +18,10 @@ pub(super) fn handle_packets(
     mut drop_item_stack_events: EventWriter<DropItemStackEvent>,
     mut slot_events: EventWriter<ClickSlotEvent>,
 ) {
-    for packet in packets.read() {
-        let Some(pkt) = packet.decode::<ClickSlotC2s>() else {
-            continue;
-        };
+    for packet_event in packet_events.read() {
         handle_packet(
-            packet.client,
-            pkt,
+            packet_event.client,
+            packet_event.packet.clone(),
             (
                 &mut clients,
                 &mut inventories,

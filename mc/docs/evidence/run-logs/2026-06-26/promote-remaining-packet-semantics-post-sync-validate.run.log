@@ -1,0 +1,32 @@
+## cairn validate after accepted spec merge
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 6,
+  "valid": true
+}
+exit_status=0
+
+## accepted spec contains packet semantic IDs
+command=grep -n packet_semantic_events cairn/specs/valence-bevy-ecs/spec.md
+165:r[valence_bevy_ecs.packet_semantic_events.inventory] Remaining packet semantic event work MUST inventory selected direct `PacketEvent` consumers, decoded packet types, schedule phases, mutation targets, duplicate decode paths, and current malformed-input behavior before adding adapters.
+169:r[valence_bevy_ecs.packet_semantic_events.inventory.reviewable]
+177:r[valence_bevy_ecs.packet_semantic_events.contract] Each promoted packet semantic MUST define typed event ownership, source client, timing metadata, decoded fields, diagnostics, stale-client behavior, schedule phase, and raw-packet compatibility.
+181:r[valence_bevy_ecs.packet_semantic_events.contract.ownership]
+189:r[valence_bevy_ecs.packet_semantic_events.adapters] Packet semantic adapter systems SHOULD decode selected raw packets once and emit typed Bevy events in documented event-loop phases.
+193:r[valence_bevy_ecs.packet_semantic_events.adapters.once]
+201:r[valence_bevy_ecs.packet_semantic_events.compatibility] Remaining packet semantic event work MUST keep raw `PacketEvent` access available for low-level users and preserve selected fixture behavior unless another Cairn changes it.
+205:r[valence_bevy_ecs.packet_semantic_events.compatibility.fixtures]
+213:r[valence_bevy_ecs.packet_semantic_events.tests] Packet semantic event work MUST include positive valid-packet tests and negative wrong-id, malformed-payload, partial-decode, stale-client, duplicate-emission, and raw-access regression tests.
+217:r[valence_bevy_ecs.packet_semantic_events.tests.positive]
+224:r[valence_bevy_ecs.packet_semantic_events.tests.negative]
+232:r[valence_bevy_ecs.packet_semantic_events.validation] Packet semantic event work MUST record focused Valence checks, schedule hygiene when registrations change, selected compatibility rails when fixture behavior changes, Cairn gates, Cairn validation, and task-evidence checks before archive.
+236:r[valence_bevy_ecs.packet_semantic_events.validation.log]
+exit_status=0
+
+overall_exit_status=0

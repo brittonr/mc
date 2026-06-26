@@ -13,17 +13,16 @@ use valence::entity::item::{ItemEntityBundle, Stack as ItemEntityStack};
 use valence::entity::living::Health;
 use valence::entity::player::{Food, Saturation};
 use valence::entity::{EntityId, EntityManager};
-use valence::event_loop::PacketEvent;
 use valence::interact_block::InteractBlockEvent;
 use valence::interact_entity::{EntityInteraction, InteractEntityEvent};
 use valence::interact_item::InteractItemEvent;
-use valence::inventory::{ClickSlotEvent, CursorItem, HeldItem, OpenInventory, SlotChange};
+use valence::inventory::{
+    ClickSlotEvent, CloseHandledScreenEvent, CursorItem, HeldItem, OpenInventory, SlotChange,
+};
 use valence::log::info;
 use valence::nbt::{compound, List, Value};
 use valence::prelude::*;
-use valence::protocol::packets::play::{
-    BlockUpdateS2c, CloseHandledScreenC2s, ItemPickupAnimationS2c,
-};
+use valence::protocol::packets::play::{BlockUpdateS2c, ItemPickupAnimationS2c};
 use valence::protocol::{VarInt, WritePacket};
 
 const CHUNK_RADIUS: i32 = 5;
@@ -1531,7 +1530,7 @@ fn handle_survival_chest_close(
     mut commands: Commands,
     fixture: Option<ResMut<SurvivalChestFixture>>,
     clients: Query<(&Username, Option<&SurvivalOpenContainer>)>,
-    mut packets: EventReader<PacketEvent>,
+    mut close_events: EventReader<CloseHandledScreenEvent>,
 ) {
     let Some(mut fixture) = fixture else {
         return;
@@ -1540,18 +1539,15 @@ fn handle_survival_chest_close(
         return;
     }
 
-    for packet in packets.read() {
-        if packet.decode::<CloseHandledScreenC2s>().is_none() {
-            continue;
-        }
-        let Ok((username, open_container)) = clients.get(packet.client) else {
+    for event in close_events.read() {
+        let Ok((username, open_container)) = clients.get(event.client) else {
             continue;
         };
         if !survival_container_is_open(open_container, SurvivalContainerKind::Chest) {
             continue;
         }
         commands
-            .entity(packet.client)
+            .entity(event.client)
             .remove::<SurvivalOpenContainer>();
         fixture.close_logged = true;
         log_milestone(format!(

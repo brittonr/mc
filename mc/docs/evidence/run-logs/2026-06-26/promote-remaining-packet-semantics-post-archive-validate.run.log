@@ -1,0 +1,24 @@
+## cairn validate post archive
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 5,
+  "valid": true
+}
+exit_status=0
+
+## cairn change list post archive
+command=nix run .#cairn -- change list --root .
+{
+  "changes": [],
+  "layout": "cairn",
+  "root": "."
+}
+exit_status=0
+
+overall_exit_status=0
