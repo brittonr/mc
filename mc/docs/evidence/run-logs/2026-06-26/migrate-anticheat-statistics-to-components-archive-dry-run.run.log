@@ -1,0 +1,24 @@
+$ nix run .#cairn -- archive migrate-anticheat-statistics-to-components --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: migrate-anticheat-statistics-to-components",
+      "kind": "archive_change",
+      "path": "./cairn/changes/migrate-anticheat-statistics-to-components"
+    }
+  ],
+  "blocked": false,
+  "change": "migrate-anticheat-statistics-to-components",
+  "dry_run": true,
+  "input_hash": "e14f4d99f43680d04d026e114aa49ebf9e41b5be4e372307a1cafe19d87f7a29",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "bd03083727a90fdb8854be0bc8147ee8a61772ab54d92a8da1841460299e16f5",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "8cf4d0ee1c7e343df23a0f49e42e8db0eb3b1871716336591d4a94a3a33b33e2"
+}
+command=nix run .#cairn -- archive migrate-anticheat-statistics-to-components --root .
+exit_status=0

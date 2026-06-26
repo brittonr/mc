@@ -5,17 +5,16 @@
 //! an adapter from Valence event streams to those pure calculations; it emits
 //! observations and does not kick, ban, or mutate gameplay state.
 
-use std::collections::HashMap;
-
 use bevy_app::prelude::*;
 use bevy_ecs::prelude::*;
 
+use crate::client::Client;
 use crate::event_loop::{EventLoopPostUpdate, EventLoopSet, PacketEvent};
 use crate::movement::MovementEvent;
 
-/// Default retained samples per metric and player.
+/// Default retained samples per metric and client.
 pub const DEFAULT_SAMPLE_WINDOW_CAPACITY: usize = 64;
-/// Default retained tick span per metric and player.
+/// Default retained tick span per metric and client.
 pub const DEFAULT_SAMPLE_WINDOW_TICKS: u64 = 20;
 
 const COUNT_INCREMENT: u64 = 1;
@@ -320,8 +319,12 @@ pub struct AnticheatStatisticsConfig {
     pub sample_window: SampleWindowSettings,
 }
 
-/// Retained metric windows for one player entity.
-#[derive(Clone, Debug, Default, PartialEq)]
+/// Retained metric windows for one live client entity.
+///
+/// The optional plugin attaches this component to entities that receive a live
+/// [`Client`] component. Query this component directly for retained per-client
+/// statistics; [`AnticheatStatisticsState`] only owns plugin-global state.
+#[derive(Component, Clone, Debug, Default, PartialEq)]
 pub struct PlayerAnticheatStatistics {
     /// Packet cadence observations for this player.
     pub packet_cadence: MetricWindow,
@@ -352,16 +355,10 @@ impl PlayerAnticheatStatistics {
 /// In-memory advisory statistics retained by the optional plugin.
 #[derive(Resource, Clone, Debug, Default)]
 pub struct AnticheatStatisticsState {
-    clients: HashMap<Entity, PlayerAnticheatStatistics>,
     current_tick: u64,
 }
 
 impl AnticheatStatisticsState {
-    /// Returns retained statistics for a player entity.
-    pub fn client(&self, client: Entity) -> Option<&PlayerAnticheatStatistics> {
-        self.clients.get(&client)
-    }
-
     /// Returns the plugin-local tick used to stamp samples.
     pub const fn current_tick(&self) -> u64 {
         self.current_tick
@@ -385,7 +382,12 @@ impl Plugin for AnticheatStatisticsPlugin {
             .add_event::<AnticheatStatisticsEvent>()
             .add_systems(
                 EventLoopPostUpdate,
-                sample_anticheat_statistics.in_set(EventLoopSet::Diagnostics),
+                (
+                    remove_disconnected_anticheat_statistics.in_set(EventLoopSet::Diagnostics),
+                    initialize_anticheat_statistics.in_set(EventLoopSet::Diagnostics),
+                    sample_anticheat_statistics.in_set(EventLoopSet::Diagnostics),
+                )
+                    .chain(),
             );
     }
 }
@@ -405,19 +407,48 @@ pub struct AnticheatStatisticsEvent {
     pub snapshot: MetricSnapshot,
 }
 
+fn remove_disconnected_anticheat_statistics(
+    mut commands: Commands,
+    mut removed_clients: RemovedComponents<Client>,
+    statistics: Query<(), With<PlayerAnticheatStatistics>>,
+) {
+    for client in removed_clients.read() {
+        if statistics.contains(client) {
+            commands
+                .entity(client)
+                .remove::<PlayerAnticheatStatistics>();
+        }
+    }
+}
+
+fn initialize_anticheat_statistics(
+    mut commands: Commands,
+    clients: Query<Entity, (Added<Client>, Without<PlayerAnticheatStatistics>)>,
+) {
+    for client in &clients {
+        commands
+            .entity(client)
+            .insert(PlayerAnticheatStatistics::default());
+    }
+}
+
 fn sample_anticheat_statistics(
     config: Res<AnticheatStatisticsConfig>,
     mut state: ResMut<AnticheatStatisticsState>,
     mut packet_events: EventReader<PacketEvent>,
     mut movement_events: EventReader<MovementEvent>,
+    mut client_statistics: Query<&mut PlayerAnticheatStatistics, With<Client>>,
     mut observations: EventWriter<AnticheatStatisticsEvent>,
 ) {
     let settings = config.sample_window;
     let tick = state.current_tick();
 
     for packet in packet_events.read() {
+        let Ok(mut player_statistics) = client_statistics.get_mut(packet.client) else {
+            continue;
+        };
         if let Some(observation) = record_player_metric(
-            &mut state,
+            &mut player_statistics,
             settings,
             tick,
             packet.client,
@@ -432,8 +463,11 @@ fn sample_anticheat_statistics(
         let Ok(movement_delta) = movement_delta_sample(movement) else {
             continue;
         };
+        let Ok(mut player_statistics) = client_statistics.get_mut(movement.client) else {
+            continue;
+        };
         if let Some(observation) = record_player_metric(
-            &mut state,
+            &mut player_statistics,
             settings,
             tick,
             movement.client,
@@ -447,7 +481,7 @@ fn sample_anticheat_statistics(
             continue;
         };
         if let Some(observation) = record_player_metric(
-            &mut state,
+            &mut player_statistics,
             settings,
             tick,
             movement.client,
@@ -462,14 +496,13 @@ fn sample_anticheat_statistics(
 }
 
 fn record_player_metric(
-    state: &mut AnticheatStatisticsState,
+    player_statistics: &mut PlayerAnticheatStatistics,
     settings: SampleWindowSettings,
     tick: u64,
     client: Entity,
     metric: AnticheatMetric,
     value: f64,
 ) -> Option<AnticheatStatisticsEvent> {
-    let player_statistics = state.clients.entry(client).or_default();
     let sample = TimedSample { tick, value };
     let window = record_sample(settings, player_statistics.window(metric), sample).ok()?;
     let snapshot = window.snapshot();
@@ -486,12 +519,18 @@ fn record_player_metric(
 
 #[cfg(test)]
 mod tests {
+    use std::net::{IpAddr, Ipv4Addr};
+    use std::time::Instant;
+
     use bevy_ecs::event::Events;
-    use bytes::Bytes;
+    use bytes::{Bytes, BytesMut};
+    use uuid::Uuid;
     use valence_entity::Look;
     use valence_math::DVec3;
+    use valence_protocol::encode::PacketEncoder;
 
     use super::*;
+    use crate::client::{Client, ClientBundle, ClientBundleArgs, ClientConnection, ReceivedPacket};
     use crate::event_loop::EventLoopPlugin;
     use crate::movement::MovementPlugin;
 
@@ -508,6 +547,7 @@ mod tests {
     const SECOND_VALUE: f64 = 4.0;
     const THIRD_VALUE: f64 = 6.0;
     const FOURTH_VALUE: f64 = 8.0;
+    const EXPECTED_EMPTY_OBSERVED_COUNT: u64 = 0;
     const EXPECTED_NORMAL_MEAN: f64 = 3.0;
     const EXPECTED_NORMAL_VARIANCE: f64 = 2.0;
     const EXPECTED_NORMAL_OBSERVED_COUNT: u64 = 2;
@@ -516,12 +556,17 @@ mod tests {
     const EXPECTED_BURST_MAX: f64 = 8.0;
     const EXPECTED_RETAINED_BURST_COUNT: usize = 3;
     const EXPECTED_OBSERVED_BURST_COUNT: u64 = 4;
+    const EXPECTED_SINGLE_SAMPLE_COUNT: usize = 1;
+    const EXPECTED_NO_EVENTS: usize = 0;
     const MOVEMENT_X: f64 = 3.0;
     const MOVEMENT_Y: f64 = 4.0;
+    const MOVEMENT_Z: f64 = 0.0;
     const EXPECTED_MOVEMENT_DELTA: f64 = 5.0;
     const CURRENT_YAW: f32 = 10.0;
     const CURRENT_PITCH: f32 = 20.0;
-    const OBSERVATIONS_PER_MOVEMENT_SAMPLE: usize = 2;
+    const EXPECTED_MOVEMENT_OBSERVATION_COUNT: usize = 2;
+    const TEST_PACKET_ID: i32 = 0;
+    const TEST_USERNAME: &str = "anticheat-test-client";
 
     #[test]
     fn normal_samples_compute_rolling_statistics() {
@@ -619,7 +664,10 @@ mod tests {
         let snapshot = MetricWindow::default().snapshot();
 
         assert_eq!(snapshot.sample_count, EMPTY_SAMPLE_COUNT);
-        assert_eq!(snapshot.observed_sample_count, 0);
+        assert_eq!(
+            snapshot.observed_sample_count,
+            EXPECTED_EMPTY_OBSERVED_COUNT
+        );
         assert_eq!(snapshot.mean, None);
         assert_eq!(snapshot.variance, None);
         assert_eq!(snapshot.min, None);
@@ -635,7 +683,7 @@ mod tests {
             "sample window capacity must be greater than zero"
         );
         assert_eq!(
-            SampleWindowSettings::new(NORMAL_WINDOW_CAPACITY, 0)
+            SampleWindowSettings::new(NORMAL_WINDOW_CAPACITY, EMPTY_SAMPLE_COUNT as u64)
                 .unwrap_err()
                 .diagnostic(),
             "sample window tick span must be greater than zero"
@@ -701,12 +749,20 @@ mod tests {
         let snapshot = window.reset().snapshot();
 
         assert_eq!(snapshot.sample_count, EMPTY_SAMPLE_COUNT);
-        assert_eq!(snapshot.observed_sample_count, 0);
+        assert_eq!(
+            snapshot.observed_sample_count,
+            EXPECTED_EMPTY_OBSERVED_COUNT
+        );
     }
 
     #[test]
     fn plugin_disabled_has_no_anticheat_effect() {
-        let app = App::new();
+        let mut app = App::new();
+        app.add_plugins(EventLoopPlugin).add_plugins(MovementPlugin);
+        let client = spawn_live_client(&mut app);
+
+        send_packet_event(&mut app, client);
+        app.update();
 
         assert!(app
             .world()
@@ -716,21 +772,194 @@ mod tests {
             .world()
             .get_resource::<Events<AnticheatStatisticsEvent>>()
             .is_none());
+        assert!(app
+            .world()
+            .get::<PlayerAnticheatStatistics>(client)
+            .is_none());
     }
 
     #[test]
     fn plugin_samples_movement_without_default_enforcement() {
+        let mut app = anticheat_app();
+        let client = spawn_live_client(&mut app);
+
+        send_movement_event(&mut app, client);
+        app.update();
+
+        let events = anticheat_events(&app);
+
+        assert_eq!(events.len(), EXPECTED_MOVEMENT_OBSERVATION_COUNT);
+        assert!(events
+            .iter()
+            .any(|event| event.metric == AnticheatMetric::MovementDelta));
+        assert!(events
+            .iter()
+            .any(|event| event.metric == AnticheatMetric::RotationDelta));
+        assert!(app.world().get_entity(client).is_some());
+
+        let player = app
+            .world()
+            .get::<PlayerAnticheatStatistics>(client)
+            .unwrap();
+        let movement_snapshot = player.movement_delta.snapshot();
+        assert_close(movement_snapshot.mean.unwrap(), EXPECTED_MOVEMENT_DELTA);
+    }
+
+    #[test]
+    fn plugin_samples_packet_cadence() {
+        let mut app = anticheat_app();
+        let client = spawn_live_client(&mut app);
+
+        send_packet_event(&mut app, client);
+        app.update();
+
+        let player = app
+            .world()
+            .get::<PlayerAnticheatStatistics>(client)
+            .unwrap();
+        let packet_snapshot = player.packet_cadence.snapshot();
+
+        assert_eq!(packet_snapshot.sample_count, EXPECTED_SINGLE_SAMPLE_COUNT);
+        assert_close(packet_snapshot.mean.unwrap(), PACKET_CADENCE_SAMPLE_VALUE);
+    }
+
+    #[test]
+    fn stale_despawned_client_sample_is_ignored() {
+        let mut app = anticheat_app();
+        let stale_client = spawn_live_client(&mut app);
+        app.world_mut().despawn(stale_client);
+
+        send_packet_event(&mut app, stale_client);
+        app.update();
+
+        assert_eq!(anticheat_events(&app).len(), EXPECTED_NO_EVENTS);
+        assert!(app.world().get_entity(stale_client).is_none());
+    }
+
+    #[test]
+    fn disconnected_client_loses_statistics_and_samples_are_ignored() {
+        let mut app = anticheat_app();
+        let client = spawn_live_client(&mut app);
+        app.update();
+        assert!(app
+            .world()
+            .get::<PlayerAnticheatStatistics>(client)
+            .is_some());
+
+        app.world_mut().entity_mut(client).remove::<Client>();
+        send_packet_event(&mut app, client);
+        app.update();
+
+        assert_eq!(anticheat_events(&app).len(), EXPECTED_NO_EVENTS);
+        assert!(app.world().get::<Client>(client).is_none());
+        assert!(app
+            .world()
+            .get::<PlayerAnticheatStatistics>(client)
+            .is_none());
+    }
+
+    #[test]
+    fn missing_statistics_component_sample_is_ignored() {
+        let mut app = anticheat_app();
+        let client = spawn_live_client(&mut app);
+        app.update();
+        app.world_mut()
+            .entity_mut(client)
+            .remove::<PlayerAnticheatStatistics>();
+
+        send_packet_event(&mut app, client);
+        app.update();
+
+        assert_eq!(anticheat_events(&app).len(), EXPECTED_NO_EVENTS);
+        assert!(app
+            .world()
+            .get::<PlayerAnticheatStatistics>(client)
+            .is_none());
+    }
+
+    #[test]
+    fn reconnect_like_new_entity_starts_with_fresh_statistics() {
+        let mut app = anticheat_app();
+        let first_client = spawn_live_client(&mut app);
+        send_packet_event(&mut app, first_client);
+        app.update();
+        assert_eq!(
+            packet_sample_count(&app, first_client),
+            EXPECTED_SINGLE_SAMPLE_COUNT
+        );
+
+        app.world_mut().despawn(first_client);
+        let second_client = spawn_live_client(&mut app);
+        send_packet_event(&mut app, second_client);
+        app.update();
+
+        assert!(app.world().get_entity(first_client).is_none());
+        assert_eq!(
+            packet_sample_count(&app, second_client),
+            EXPECTED_SINGLE_SAMPLE_COUNT
+        );
+    }
+
+    #[test]
+    fn preexisting_statistics_component_is_not_overwritten_on_client_initialization() {
+        let mut app = anticheat_app();
+        let initial_statistics = PlayerAnticheatStatistics {
+            packet_cadence: seeded_metric_window(),
+            ..Default::default()
+        };
+        let client = app
+            .world_mut()
+            .spawn((test_client_bundle(), initial_statistics))
+            .id();
+
+        app.update();
+
+        assert_eq!(
+            packet_sample_count(&app, client),
+            EXPECTED_SINGLE_SAMPLE_COUNT
+        );
+    }
+
+    fn anticheat_app() -> App {
         let mut app = App::new();
         app.add_plugins(EventLoopPlugin)
             .add_plugins(MovementPlugin)
             .add_plugins(AnticheatStatisticsPlugin);
-        let client = app.world_mut().spawn_empty().id();
+        app
+    }
 
+    fn spawn_live_client(app: &mut App) -> Entity {
+        app.world_mut().spawn(test_client_bundle()).id()
+    }
+
+    fn test_client_bundle() -> ClientBundle {
+        ClientBundle::new(ClientBundleArgs {
+            username: TEST_USERNAME.to_owned(),
+            uuid: Uuid::nil(),
+            ip: IpAddr::V4(Ipv4Addr::LOCALHOST),
+            properties: Vec::new(),
+            conn: Box::new(TestConnection),
+            enc: PacketEncoder::new(),
+        })
+    }
+
+    fn send_packet_event(app: &mut App, client: Entity) {
+        app.world_mut()
+            .resource_mut::<Events<PacketEvent>>()
+            .send(PacketEvent {
+                client,
+                timestamp: Instant::now(),
+                id: TEST_PACKET_ID,
+                data: Bytes::new(),
+            });
+    }
+
+    fn send_movement_event(app: &mut App, client: Entity) {
         app.world_mut()
             .resource_mut::<Events<MovementEvent>>()
             .send(MovementEvent {
                 client,
-                position: DVec3::new(MOVEMENT_X, MOVEMENT_Y, 0.0),
+                position: DVec3::new(MOVEMENT_X, MOVEMENT_Y, MOVEMENT_Z),
                 old_position: DVec3::ZERO,
                 look: Look {
                     yaw: CURRENT_YAW,
@@ -740,55 +969,37 @@ mod tests {
                 on_ground: true,
                 old_on_ground: true,
             });
-
-        app.update();
-
-        let events = app
-            .world()
-            .resource::<Events<AnticheatStatisticsEvent>>()
-            .iter_current_update_events()
-            .collect::<Vec<_>>();
-
-        assert_eq!(events.len(), OBSERVATIONS_PER_MOVEMENT_SAMPLE);
-        assert!(events
-            .iter()
-            .any(|event| event.metric == AnticheatMetric::MovementDelta));
-        assert!(events
-            .iter()
-            .any(|event| event.metric == AnticheatMetric::RotationDelta));
-        assert!(app.world().get_entity(client).is_some());
-
-        let state = app.world().resource::<AnticheatStatisticsState>();
-        let player = state.client(client).unwrap();
-        let movement_snapshot = player.movement_delta.snapshot();
-        assert_close(movement_snapshot.mean.unwrap(), EXPECTED_MOVEMENT_DELTA);
     }
 
-    #[test]
-    fn plugin_samples_packet_cadence() {
-        let mut app = App::new();
-        app.add_plugins(EventLoopPlugin)
-            .add_plugins(MovementPlugin)
-            .add_plugins(AnticheatStatisticsPlugin);
-        let client = app.world_mut().spawn_empty().id();
+    fn anticheat_events(app: &App) -> Vec<AnticheatStatisticsEvent> {
+        app.world()
+            .resource::<Events<AnticheatStatisticsEvent>>()
+            .iter_current_update_events()
+            .cloned()
+            .collect::<Vec<_>>()
+    }
 
-        app.world_mut()
-            .resource_mut::<Events<PacketEvent>>()
-            .send(PacketEvent {
-                client,
-                timestamp: std::time::Instant::now(),
-                id: 0,
-                data: Bytes::new(),
-            });
+    fn packet_sample_count(app: &App, client: Entity) -> usize {
+        app.world()
+            .get::<PlayerAnticheatStatistics>(client)
+            .unwrap()
+            .packet_cadence
+            .snapshot()
+            .sample_count
+    }
 
-        app.update();
-
-        let state = app.world().resource::<AnticheatStatisticsState>();
-        let player = state.client(client).unwrap();
-        let packet_snapshot = player.packet_cadence.snapshot();
-
-        assert_eq!(packet_snapshot.sample_count, 1);
-        assert_close(packet_snapshot.mean.unwrap(), PACKET_CADENCE_SAMPLE_VALUE);
+    fn seeded_metric_window() -> MetricWindow {
+        let settings =
+            SampleWindowSettings::new(NORMAL_WINDOW_CAPACITY, NORMAL_WINDOW_TICKS).unwrap();
+        record_sample(
+            settings,
+            &MetricWindow::default(),
+            TimedSample {
+                tick: FIRST_TICK,
+                value: PACKET_CADENCE_SAMPLE_VALUE,
+            },
+        )
+        .unwrap()
     }
 
     fn assert_close(actual: f64, expected: f64) {
@@ -797,5 +1008,21 @@ mod tests {
             difference <= EPSILON,
             "expected {expected}, got {actual}, difference {difference} exceeds {EPSILON}"
         );
+    }
+
+    struct TestConnection;
+
+    impl ClientConnection for TestConnection {
+        fn try_send(&mut self, _bytes: BytesMut) -> anyhow::Result<()> {
+            Ok(())
+        }
+
+        fn try_recv(&mut self) -> anyhow::Result<Option<ReceivedPacket>> {
+            Ok(None)
+        }
+
+        fn len(&self) -> usize {
+            EMPTY_SAMPLE_COUNT
+        }
     }
 }

@@ -8,7 +8,7 @@ The contents of `valence_server` are re-exported from the main `valence` crate, 
 
 `valence_server::anticheat::AnticheatStatisticsPlugin` is an optional advisory plugin. It is not included in Valence's default plugins. When added explicitly, it samples Valence event streams and emits `AnticheatStatisticsEvent` observations for packet cadence, movement delta, and rotation delta metrics.
 
-The retained data is in-memory only: a bounded rolling window plus lifetime sample counters per player entity, metric, and running plugin instance. The plugin does not persist raw packet payloads, IP addresses, account identifiers, or cross-session telemetry.
+The retained data is in-memory only: a bounded rolling window plus lifetime sample counters per live client entity, metric, and running plugin instance. Per-client windows are stored on `PlayerAnticheatStatistics` components attached to live `Client` entities; `AnticheatStatisticsState` retains only plugin-global tick state. Query the component directly instead of reading a resource-owned entity map. The plugin does not persist raw packet payloads, IP addresses, account identifiers, or cross-session telemetry.
 
 These metrics are signals, not enforcement. They can be affected by latency, server tick timing, teleports, gameplay context, and client behavior. The plugin does not kick, ban, disconnect, teleport, mutate inventory, or change gameplay by default. Any policy that consumes observations must be implemented and validated separately.
 

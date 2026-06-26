@@ -1,0 +1,4 @@
+$ tools/check_valence_schedule_hygiene.rs --root .
+valence schedule hygiene check passed
+command=tools/check_valence_schedule_hygiene.rs --root .
+exit_status=0
