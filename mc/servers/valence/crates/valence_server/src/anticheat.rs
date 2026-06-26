@@ -10,7 +10,7 @@ use std::collections::HashMap;
 use bevy_app::prelude::*;
 use bevy_ecs::prelude::*;
 
-use crate::event_loop::{EventLoopPostUpdate, PacketEvent};
+use crate::event_loop::{EventLoopPostUpdate, EventLoopSet, PacketEvent};
 use crate::movement::MovementEvent;
 
 /// Default retained samples per metric and player.
@@ -383,7 +383,10 @@ impl Plugin for AnticheatStatisticsPlugin {
         app.init_resource::<AnticheatStatisticsConfig>()
             .init_resource::<AnticheatStatisticsState>()
             .add_event::<AnticheatStatisticsEvent>()
-            .add_systems(EventLoopPostUpdate, sample_anticheat_statistics);
+            .add_systems(
+                EventLoopPostUpdate,
+                sample_anticheat_statistics.in_set(EventLoopSet::Diagnostics),
+            );
     }
 }
 

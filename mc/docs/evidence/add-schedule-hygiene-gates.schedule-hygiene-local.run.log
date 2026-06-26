@@ -1,0 +1,5 @@
+command=rustc --edition=2021 tools/check_valence_schedule_hygiene.rs -o target/check-valence-schedule-hygiene && target/check-valence-schedule-hygiene --self-test && target/check-valence-schedule-hygiene --root .
+cwd=/home/brittonr/git/mc
+valence schedule hygiene self-test passed
+valence schedule hygiene check passed
+exit_status=0

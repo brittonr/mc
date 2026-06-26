@@ -1,0 +1,16 @@
+command=nix build .#checks.x86_64-linux.mc-valence-schedule-hygiene --no-link -L
+cwd=/home/brittonr/git/mc
+warning: error: unable to download 'http://100.100.103.95:5000/rl6k9bfvr0x2x29rgb88v64mzq0vbc32.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1020 ms: Could not connect to server; retrying in 288 ms
+warning: error: unable to download 'http://100.100.103.95:5000/rl6k9bfvr0x2x29rgb88v64mzq0vbc32.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4127 ms: Could not connect to server; retrying in 546 ms
+warning: error: unable to download 'http://100.100.103.95:5000/rl6k9bfvr0x2x29rgb88v64mzq0vbc32.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2077 ms: Could not connect to server; retrying in 1009 ms
+warning: error: unable to download 'http://100.100.103.95:5000/rl6k9bfvr0x2x29rgb88v64mzq0vbc32.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2490 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/rl6k9bfvr0x2x29rgb88v64mzq0vbc32.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/rl6k9bfvr0x2x29rgb88v64mzq0vbc32.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4108 ms: Could not connect to server
+this derivation will be built:
+  /nix/store/dvmiyw49dljjcc06q2pyhqlb12mhww4b-mc-valence-schedule-hygiene.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/dvmiyw49dljjcc06q2pyhqlb12mhww4b-mc-valence-schedule-hygiene.drv'...
+exit_status=0

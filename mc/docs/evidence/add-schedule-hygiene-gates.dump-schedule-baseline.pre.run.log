@@ -1,0 +1,1338 @@
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p dump_schedule -- --nocapture
+cwd=/home/brittonr/git/mc/servers/valence
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+   Compiling unicode-ident v1.0.24
+   Compiling crossbeam-utils v0.8.21
+   Compiling getrandom v0.4.2
+   Compiling memchr v2.8.0
+   Compiling lock_api v0.4.14
+   Compiling bitflags v2.11.0
+   Compiling cfg_aliases v0.1.1
+   Compiling regex-syntax v0.8.10
+   Compiling bit-vec v0.6.3
+   Compiling unicode-width v0.1.14
+   Compiling futures-task v0.3.32
+   Compiling termcolor v1.4.1
+   Compiling rustc-hash v1.1.0
+   Compiling ash v0.37.3+1.3.251
+   Compiling khronos-egl v6.0.0
+   Compiling hexf-parse v0.2.1
+   Compiling foldhash v0.1.5
+   Compiling unicode-xid v0.2.6
+   Compiling libloading v0.7.4
+   Compiling proc-macro2 v1.0.106
+   Compiling wgpu-hal v0.21.1
+   Compiling libloading v0.8.9
+   Compiling uuid v1.23.0
+   Compiling spirv v0.3.0+sdk-1.3.268.0
+   Compiling bit-set v0.5.3
+   Compiling futures-util v0.3.32
+   Compiling wgpu-types v0.20.0
+   Compiling codespan-reporting v0.11.1
+   Compiling parking_lot v0.12.5
+   Compiling spin v0.9.8
+   Compiling gpu-alloc-types v0.3.0
+   Compiling gpu-descriptor-types v0.2.0
+   Compiling hashbrown v0.15.5
+   Compiling futures-channel v0.3.32
+   Compiling raw-window-handle v0.6.2
+   Compiling lazy_static v1.5.0
+   Compiling quote v1.0.45
+   Compiling serde_json v1.0.149
+   Compiling aho-corasick v1.1.4
+   Compiling gpu-alloc v0.6.0
+   Compiling wgpu-core v0.21.1
+   Compiling syn v2.0.117
+   Compiling piper v0.2.5
+   Compiling gpu-descriptor v0.3.2
+   Compiling concurrent-queue v2.5.0
+   Compiling event-listener v5.4.1
+   Compiling async-executor v1.14.0
+   Compiling crossbeam-channel v0.5.15
+   Compiling glow v0.13.1
+   Compiling profiling v1.0.17
+   Compiling litrs v1.0.0
+   Compiling renderdoc-sys v1.1.0
+   Compiling event-listener-strategy v0.5.4
+   Compiling typewit v1.15.1
+   Compiling wgpu v0.20.1
+   Compiling async-channel v2.5.0
+   Compiling async-lock v3.4.2
+   Compiling futures-sink v0.3.32
+   Compiling const_panic v0.2.15
+   Compiling base64 v0.21.7
+   Compiling accesskit v0.14.0
+   Compiling bevy_tasks v0.14.2
+   Compiling regex-automata v0.4.14
+   Compiling blocking v1.6.2
+   Compiling event-listener v2.5.3
+   Compiling pxfm v0.1.28
+   Compiling const_soft_float v0.1.4
+   Compiling flume v0.11.1
+   Compiling num-bigint-dig v0.8.6
+   Compiling async-broadcast v0.5.1
+   Compiling sharded-slab v0.1.7
+   Compiling constgebra v0.1.4
+   Compiling async-fs v2.2.0
+   Compiling data-encoding v2.10.0
+   Compiling static_assertions v1.1.0
+   Compiling const-fnv1a-hash v1.1.0
+   Compiling document-features v0.2.12
+   Compiling byteorder-lite v0.1.0
+   Compiling clap_builder v4.6.0
+   Compiling pretty-type-name v1.0.1
+   Compiling lexopt v0.3.2
+   Compiling rsa v0.9.10
+   Compiling bevy_macro_utils v0.14.2
+   Compiling synstructure v0.13.2
+   Compiling valence_build_utils v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_build_utils)
+   Compiling encase_derive_impl v0.8.0
+   Compiling moxcms v0.8.1
+   Compiling regex v1.12.3
+   Compiling matchers v0.2.0
+   Compiling serde_derive v1.0.228
+   Compiling thiserror-impl v1.0.69
+   Compiling tracing-attributes v0.1.31
+   Compiling bytemuck_derive v1.10.2
+   Compiling bevy_utils_proc_macros v0.14.2
+   Compiling bevy_reflect_derive v0.14.2
+   Compiling zerofrom-derive v0.1.7
+   Compiling yoke-derive v0.8.2
+   Compiling bevy_ecs_macros v0.14.2
+   Compiling zerovec-derive v0.11.3
+   Compiling displaydoc v0.2.5
+   Compiling bevy_derive v0.14.2
+   Compiling valence_ident_macros v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_ident_macros)
+   Compiling derive_more-impl v1.0.0
+   Compiling valence_protocol_macros v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_protocol_macros)
+   Compiling bitfield-struct v0.8.0
+   Compiling tokio-macros v2.7.0
+   Compiling thiserror-impl v2.0.18
+   Compiling encase_derive v0.8.0
+   Compiling bevy_asset_macros v0.14.2
+   Compiling async-trait v0.1.89
+   Compiling bevy_render_macros v0.14.2
+   Compiling thiserror v1.0.69
+   Compiling naga v0.20.0
+   Compiling bevy_encase_derive v0.14.2
+   Compiling valence_command_macros v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_command_macros)
+   Compiling clap_derive v4.6.0
+   Compiling tracing v0.1.44
+   Compiling tracing-subscriber v0.3.23
+   Compiling bytemuck v1.25.0
+   Compiling image v0.25.10
+   Compiling tokio v1.51.1
+   Compiling zerofrom v0.1.7
+   Compiling yoke v0.8.2
+   Compiling zerovec v0.11.6
+   Compiling zerotrie v0.2.4
+   Compiling thiserror v2.0.18
+   Compiling simple_asn1 v0.6.4
+   Compiling serde v1.0.228
+   Compiling tinystr v0.8.3
+   Compiling icu_locale_core v2.2.0
+   Compiling glam v0.27.0
+   Compiling hashbrown v0.14.5
+   Compiling potential_utf v0.1.5
+   Compiling valence_generated v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_generated)
+   Compiling icu_collections v2.2.0
+   Compiling bevy_utils v0.14.2
+   Compiling icu_provider v2.2.0
+   Compiling valence_ident v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_ident)
+   Compiling icu_properties v2.2.0
+   Compiling icu_normalizer v2.2.0
+   Compiling valence_nbt v0.8.0 (/home/brittonr/git/mc/servers/valence/crates/valence_nbt)
+   Compiling derive_more v1.0.0
+   Compiling valence_entity v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_entity)
+   Compiling hyper v1.9.0
+   Compiling tokio-rustls v0.26.4
+   Compiling tower v0.5.3
+   Compiling valence_lang v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_lang)
+   Compiling valence_text v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_text)
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+   Compiling idna_adapter v1.2.1
+   Compiling tower-http v0.6.8
+   Compiling ron v0.8.1
+   Compiling idna v1.1.0
+   Compiling serde_urlencoded v0.7.1
+   Compiling hyper-util v0.1.20
+   Compiling naga_oil v0.14.0
+   Compiling rsa-der v0.3.0
+   Compiling url v2.5.8
+   Compiling bevy_reflect v0.14.2
+   Compiling encase v0.8.0
+   Compiling bevy_mikktspace v0.14.2
+   Compiling hexasphere v12.0.0
+   Compiling clap v4.6.0
+   Compiling hyper-rustls v0.27.8
+   Compiling reqwest v0.12.28
+warning: `valence_text` (lib) generated 5 warnings
+   Compiling bevy_ecs v0.14.2
+   Compiling bevy_math v0.14.2
+   Compiling bevy_color v0.14.3
+   Compiling bevy_app v0.14.2
+   Compiling bevy_core v0.14.2
+   Compiling bevy_a11y v0.14.2
+   Compiling bevy_hierarchy v0.14.2
+   Compiling bevy_time v0.14.2
+   Compiling bevy_window v0.14.2
+   Compiling bevy_asset v0.14.2
+   Compiling bevy_log v0.14.2
+   Compiling bevy_transform v0.14.2
+   Compiling bevy_diagnostic v0.14.2
+   Compiling bevy_render v0.14.2
+   Compiling valence_protocol v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_protocol)
+   Compiling valence_server_common v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_server_common)
+   Compiling valence_registry v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_registry)
+   Compiling bevy_mod_debugdump v0.11.1
+   Compiling valence_server v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_server)
+   Compiling valence_inventory v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_inventory)
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+   Compiling valence_equipment v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_equipment)
+   Compiling valence_boss_bar v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_boss_bar)
+   Compiling valence_network v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_network)
+   Compiling valence_scoreboard v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_scoreboard)
+   Compiling valence_anvil v0.1.0 (/home/brittonr/git/mc/servers/valence/crates/valence_anvil)
+   Compiling valence_weather v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_weather)
+   Compiling valence_advancement v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_advancement)
+   Compiling valence_player_list v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_player_list)
+   Compiling valence_world_border v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_world_border)
+   Compiling valence_command v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_command)
+
+
+thread 'opt 0fsxaz1nx5489jixhyck5hxti' (2201263) panicked at /rustc-dev/59807616e1fa2540724bfbac14d7976d7e4a3860/compiler/rustc_codegen_ssa/src/back/write.rs:874:21:
+thread 'opt 8n65l502gdvavlai09zq5jl9c' (2201249) panicked at /rustc-dev/59807616e1fa2540724bfbac14d7976d7e4a3860/compiler/rustc_codegen_ssa/src/back/write.rs:874:21:
+Error writing pre-lto-bitcode file `/home/brittonr/.cargo-target/debug/incremental/valence_advancement-2xyprulngntw6/s-hjta480rkn-0gnpjys-working/0fsxaz1nx5489jixhyck5hxti.pre-lto.bc`: No such file or directory (os error 2)
+Error writing pre-lto-bitcode file `/home/brittonr/.cargo-target/debug/incremental/valence_anvil-29uatusnee90v/s-hjta47qsgy-0uvohg4-working/8n65l502gdvavlai09zq5jl9c.pre-lto.bc`: No such file or directory (os error 2)
+stack backtrace:
+stack backtrace:
+
+thread 'opt btkfnlvtltro4vcom6y24529g' (2201264) panicked at /rustc-dev/59807616e1fa2540724bfbac14d7976d7e4a3860/compiler/rustc_codegen_ssa/src/back/write.rs:874:21:
+Error writing pre-lto-bitcode file `/home/brittonr/.cargo-target/debug/incremental/valence_entity-22ztpvfdqfodl/s-hjta3yjkfn-02m01bq-working/btkfnlvtltro4vcom6y24529g.pre-lto.bc`: No such file or directory (os error 2)
+stack backtrace:
+
+thread 'opt df6sm13gm2hbcumqyir1b73ba' (2201269) panicked at /rustc-dev/59807616e1fa2540724bfbac14d7976d7e4a3860/compiler/rustc_codegen_ssa/src/back/write.rs:874:21:
+Error writing pre-lto-bitcode file `/home/brittonr/.cargo-target/debug/incremental/valence_player_list-26k83a0zvekaj/s-hjta480s1z-0wsw0f3-working/df6sm13gm2hbcumqyir1b73ba.pre-lto.bc`: No such file or directory (os error 2)
+stack backtrace:
+
+thread 'opt 7gyia3xjjrd16dadcmn8d69rz' (2201257) panicked at /rustc-dev/59807616e1fa2540724bfbac14d7976d7e4a3860/compiler/rustc_codegen_ssa/src/back/write.rs:874:21:
+Error writing pre-lto-bitcode file `/home/brittonr/.cargo-target/debug/incremental/valence_server-22wbh5y9h7pfh/s-hjta43gmif-1jnfqh1-working/7gyia3xjjrd16dadcmn8d69rz.pre-lto.bc`: No such file or directory (os error 2)
+stack backtrace:
+   0:     0x7ffff6c9b205 - <<std[e114a732dcca3553]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[3450ada48eaa0180]::fmt::Display>::fmt
+   0:     0x7ffff6c9b205 - <<std[e114a732dcca3553]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[3450ada48eaa0180]::fmt::Display>::fmt
+   0:     0x7ffff6c9b205 - <<std[e114a732dcca3553]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[3450ada48eaa0180]::fmt::Display>::fmt
+   0:     0x7ffff6c9b205 - <<std[e114a732dcca3553]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[3450ada48eaa0180]::fmt::Display>::fmt
+   1:     0x7ffff6d23f5a - core[3450ada48eaa0180]::fmt::write
+   1:     0x7ffff6d23f5a - core[3450ada48eaa0180]::fmt::write
+   1:     0x7ffff6d23f5a - core[3450ada48eaa0180]::fmt::write
+   1:     0x7ffff6d23f5a - core[3450ada48eaa0180]::fmt::write
+   2:     0x7ffff6ca3266 - std[e114a732dcca3553]::io::default_write_fmt::<std[e114a732dcca3553]::sys::stdio::unix::Stderr>
+   2:     0x7ffff6ca3266 - std[e114a732dcca3553]::io::default_write_fmt::<std[e114a732dcca3553]::sys::stdio::unix::Stderr>
+   2:     0x7ffff6ca3266 - std[e114a732dcca3553]::io::default_write_fmt::<std[e114a732dcca3553]::sys::stdio::unix::Stderr>
+   2:     0x7ffff6ca3266 - std[e114a732dcca3553]::io::default_write_fmt::<std[e114a732dcca3553]::sys::stdio::unix::Stderr>
+   3:     0x7ffff6c95d9c - std[e114a732dcca3553]::panicking::default_hook::{closure#0}
+   3:     0x7ffff6c95d9c - std[e114a732dcca3553]::panicking::default_hook::{closure#0}
+   3:     0x7ffff6c95d9c - std[e114a732dcca3553]::panicking::default_hook::{closure#0}
+   3:     0x7ffff6c95d9c - std[e114a732dcca3553]::panicking::default_hook::{closure#0}
+   4:     0x7ffff6c98a1a - std[e114a732dcca3553]::panicking::default_hook
+   4:     0x7ffff6c98a1a - std[e114a732dcca3553]::panicking::default_hook
+   4:     0x7ffff6c98a1a - std[e114a732dcca3553]::panicking::default_hook
+   4:     0x7ffff6c98a1a - std[e114a732dcca3553]::panicking::default_hook
+   5:     0x7ffff321aab6 - <alloc[14b61e6f9a1b4311]::boxed::Box<rustc_driver_impl[34b8abac1eb5652e]::install_ice_hook::{closure#1}> as core[3450ada48eaa0180]::ops::function::Fn<(&dyn for<'a, 'b> core[3450ada48eaa0180]::ops::function::Fn<(&'a std[e114a732dcca3553]::panic::PanicHookInfo<'b>,), Output = ()> + core[3450ada48eaa0180]::marker::Send + core[3450ada48eaa0180]::marker::Sync, &std[e114a732dcca3553]::panic::PanicHookInfo)>>::call
+   5:     0x7ffff321aab6 - <alloc[14b61e6f9a1b4311]::boxed::Box<rustc_driver_impl[34b8abac1eb5652e]::install_ice_hook::{closure#1}> as core[3450ada48eaa0180]::ops::function::Fn<(&dyn for<'a, 'b> core[3450ada48eaa0180]::ops::function::Fn<(&'a std[e114a732dcca3553]::panic::PanicHookInfo<'b>,), Output = ()> + core[3450ada48eaa0180]::marker::Send + core[3450ada48eaa0180]::marker::Sync, &std[e114a732dcca3553]::panic::PanicHookInfo)>>::call
+   5:     0x7ffff321aab6 - <alloc[14b61e6f9a1b4311]::boxed::Box<rustc_driver_impl[34b8abac1eb5652e]::install_ice_hook::{closure#1}> as core[3450ada48eaa0180]::ops::function::Fn<(&dyn for<'a, 'b> core[3450ada48eaa0180]::ops::function::Fn<(&'a std[e114a732dcca3553]::panic::PanicHookInfo<'b>,), Output = ()> + core[3450ada48eaa0180]::marker::Send + core[3450ada48eaa0180]::marker::Sync, &std[e114a732dcca3553]::panic::PanicHookInfo)>>::call
+   5:     0x7ffff321aab6 - <alloc[14b61e6f9a1b4311]::boxed::Box<rustc_driver_impl[34b8abac1eb5652e]::install_ice_hook::{closure#1}> as core[3450ada48eaa0180]::ops::function::Fn<(&dyn for<'a, 'b> core[3450ada48eaa0180]::ops::function::Fn<(&'a std[e114a732dcca3553]::panic::PanicHookInfo<'b>,), Output = ()> + core[3450ada48eaa0180]::marker::Send + core[3450ada48eaa0180]::marker::Sync, &std[e114a732dcca3553]::panic::PanicHookInfo)>>::call
+   6:     0x7ffff6c98c22 - std[e114a732dcca3553]::panicking::panic_with_hook
+   6:     0x7ffff6c98c22 - std[e114a732dcca3553]::panicking::panic_with_hook
+   7:     0x7ffff6c95e48 - std[e114a732dcca3553]::panicking::panic_handler::{closure#0}
+   7:     0x7ffff6c95e48 - std[e114a732dcca3553]::panicking::panic_handler::{closure#0}
+   6:     0x7ffff6c98c22 - std[e114a732dcca3553]::panicking::panic_with_hook
+   7:     0x7ffff6c95e48 - std[e114a732dcca3553]::panicking::panic_handler::{closure#0}
+   6:     0x7ffff6c98c22 - std[e114a732dcca3553]::panicking::panic_with_hook
+   7:     0x7ffff6c95e48 - std[e114a732dcca3553]::panicking::panic_handler::{closure#0}
+   8:     0x7ffff6c95549 - std[e114a732dcca3553]::sys::backtrace::__rust_end_short_backtrace::<std[e114a732dcca3553]::panicking::panic_handler::{closure#0}, !>
+   8:     0x7ffff6c95549 - std[e114a732dcca3553]::sys::backtrace::__rust_end_short_backtrace::<std[e114a732dcca3553]::panicking::panic_handler::{closure#0}, !>
+   8:     0x7ffff6c95549 - std[e114a732dcca3553]::sys::backtrace::__rust_end_short_backtrace::<std[e114a732dcca3553]::panicking::panic_handler::{closure#0}, !>
+   8:     0x7ffff6c95549 - std[e114a732dcca3553]::sys::backtrace::__rust_end_short_backtrace::<std[e114a732dcca3553]::panicking::panic_handler::{closure#0}, !>
+   9:     0x7ffff6c9624d - __rustc[d8ff9d08a1174409]::rust_begin_unwind
+   9:     0x7ffff6c9624d - __rustc[d8ff9d08a1174409]::rust_begin_unwind
+   9:     0x7ffff6c9624d - __rustc[d8ff9d08a1174409]::rust_begin_unwind
+   9:     0x7ffff6c9624d - __rustc[d8ff9d08a1174409]::rust_begin_unwind
+  10:     0x7ffff319c11c - core[3450ada48eaa0180]::panicking::panic_fmt
+  10:     0x7ffff319c11c - core[3450ada48eaa0180]::panicking::panic_fmt
+  10:     0x7ffff319c11c - core[3450ada48eaa0180]::panicking::panic_fmt
+  10:     0x7ffff319c11c - core[3450ada48eaa0180]::panicking::panic_fmt
+  11:     0x7ffff2fe63e9 - rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::execute_optimize_work_item::<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#1}
+  11:     0x7ffff2fe63e9 - rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::execute_optimize_work_item::<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#1}
+  11:     0x7ffff2fe63e9 - rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::execute_optimize_work_item::<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#1}
+  12:     0x7ffff368bba7 - std[e114a732dcca3553]::sys::backtrace::__rust_begin_short_backtrace::<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::spawn_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#0}, ()>::{closure#0}, ()>
+  12:     0x7ffff368bba7 - std[e114a732dcca3553]::sys::backtrace::__rust_begin_short_backtrace::<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::spawn_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#0}, ()>::{closure#0}, ()>
+  12:     0x7ffff368bba7 - std[e114a732dcca3553]::sys::backtrace::__rust_begin_short_backtrace::<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::spawn_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#0}, ()>::{closure#0}, ()>
+  11:     0x7ffff2fe63e9 - rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::execute_optimize_work_item::<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#1}
+  12:     0x7ffff368bba7 - std[e114a732dcca3553]::sys::backtrace::__rust_begin_short_backtrace::<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::spawn_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#0}, ()>::{closure#0}, ()>
+  13:     0x7ffff35a30d7 - <std[e114a732dcca3553]::thread::lifecycle::spawn_unchecked<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::spawn_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#0}, ()>::{closure#0}, ()>::{closure#1} as core[3450ada48eaa0180]::ops::function::FnOnce<()>>::call_once::{shim:vtable#0}
+  14:     0x7ffff6cab9c4 - <std[e114a732dcca3553]::sys::thread::unix::Thread>::new::thread_start
+  13:     0x7ffff35a30d7 - <std[e114a732dcca3553]::thread::lifecycle::spawn_unchecked<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::spawn_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#0}, ()>::{closure#0}, ()>::{closure#1} as core[3450ada48eaa0180]::ops::function::FnOnce<()>>::call_once::{shim:vtable#0}
+  14:     0x7ffff6cab9c4 - <std[e114a732dcca3553]::sys::thread::unix::Thread>::new::thread_start
+  13:     0x7ffff35a30d7 - <std[e114a732dcca3553]::thread::lifecycle::spawn_unchecked<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::spawn_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#0}, ()>::{closure#0}, ()>::{closure#1} as core[3450ada48eaa0180]::ops::function::FnOnce<()>>::call_once::{shim:vtable#0}
+  14:     0x7ffff6cab9c4 - <std[e114a732dcca3553]::sys::thread::unix::Thread>::new::thread_start
+  13:     0x7ffff35a30d7 - <std[e114a732dcca3553]::thread::lifecycle::spawn_unchecked<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::spawn_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#0}, ()>::{closure#0}, ()>::{closure#1} as core[3450ada48eaa0180]::ops::function::FnOnce<()>>::call_once::{shim:vtable#0}
+  14:     0x7ffff6cab9c4 - <std[e114a732dcca3553]::sys::thread::unix::Thread>::new::thread_start
+  15:     0x7ffff27ffd53 - start_thread
+  16:     0x7ffff288763c - __clone3
+  17:                0x0 - <unknown>
+
+  15:     0x7ffff27ffd53 - start_thread
+  15:     0x7ffff27ffd53 - start_thread
+  16:     0x7ffff288763c - __clone3
+  17:                0x0 - <unknown>
+  16:     0x7ffff288763c - __clone3
+  17:                0x0 - <unknown>
+  15:     0x7ffff27ffd53 - start_thread
+
+
+  16:     0x7ffff288763c - __clone3
+  17:                0x0 - <unknown>
+
+error: the compiler unexpectedly panicked. This is a bug
+error: the compiler unexpectedly panicked. This is a bug
+error: the compiler unexpectedly panicked. This is a bug
+
+
+error: the compiler unexpectedly panicked. This is a bug
+
+
+   0:     0x7ffff6c9b205 - <<std[e114a732dcca3553]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[3450ada48eaa0180]::fmt::Display>::fmt
+   1:     0x7ffff6d23f5a - core[3450ada48eaa0180]::fmt::write
+   2:     0x7ffff6ca3266 - std[e114a732dcca3553]::io::default_write_fmt::<std[e114a732dcca3553]::sys::stdio::unix::Stderr>
+   3:     0x7ffff6c95d9c - std[e114a732dcca3553]::panicking::default_hook::{closure#0}
+   4:     0x7ffff6c98a1a - std[e114a732dcca3553]::panicking::default_hook
+   5:     0x7ffff321aab6 - <alloc[14b61e6f9a1b4311]::boxed::Box<rustc_driver_impl[34b8abac1eb5652e]::install_ice_hook::{closure#1}> as core[3450ada48eaa0180]::ops::function::Fn<(&dyn for<'a, 'b> core[3450ada48eaa0180]::ops::function::Fn<(&'a std[e114a732dcca3553]::panic::PanicHookInfo<'b>,), Output = ()> + core[3450ada48eaa0180]::marker::Send + core[3450ada48eaa0180]::marker::Sync, &std[e114a732dcca3553]::panic::PanicHookInfo)>>::call
+   6:     0x7ffff6c98c22 - std[e114a732dcca3553]::panicking::panic_with_hook
+   7:     0x7ffff6c95e48 - std[e114a732dcca3553]::panicking::panic_handler::{closure#0}
+   8:     0x7ffff6c95549 - std[e114a732dcca3553]::sys::backtrace::__rust_end_short_backtrace::<std[e114a732dcca3553]::panicking::panic_handler::{closure#0}, !>
+   9:     0x7ffff6c9624d - __rustc[d8ff9d08a1174409]::rust_begin_unwind
+  10:     0x7ffff319c11c - core[3450ada48eaa0180]::panicking::panic_fmt
+  11:     0x7ffff2fe63e9 - rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::execute_optimize_work_item::<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#1}
+  12:     0x7ffff368bba7 - std[e114a732dcca3553]::sys::backtrace::__rust_begin_short_backtrace::<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::spawn_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#0}, ()>::{closure#0}, ()>
+  13:     0x7ffff35a30d7 - <std[e114a732dcca3553]::thread::lifecycle::spawn_unchecked<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::spawn_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#0}, ()>::{closure#0}, ()>::{closure#1} as core[3450ada48eaa0180]::ops::function::FnOnce<()>>::call_once::{shim:vtable#0}
+  14:     0x7ffff6cab9c4 - <std[e114a732dcca3553]::sys::thread::unix::Thread>::new::thread_start
+  15:     0x7ffff27ffd53 - start_thread
+  16:     0x7ffff288763c - __clone3
+  17:                0x0 - <unknown>
+
+error: the compiler unexpectedly panicked. This is a bug
+
+note: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md
+
+note: rustc 1.95.0 (59807616e 2026-04-14) (built from a source tarball) running on x86_64-unknown-linux-gnu
+
+note: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md
+note: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md
+note: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md
+
+
+note: rustc 1.95.0 (59807616e 2026-04-14) (built from a source tarball) running on x86_64-unknown-linux-gnu
+note: rustc 1.95.0 (59807616e 2026-04-14) (built from a source tarball) running on x86_64-unknown-linux-gnu
+
+
+note: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md
+
+
+note: rustc 1.95.0 (59807616e 2026-04-14) (built from a source tarball) running on x86_64-unknown-linux-gnu
+note: rustc 1.95.0 (59807616e 2026-04-14) (built from a source tarball) running on x86_64-unknown-linux-gnu
+
+
+note: compiler flags: --crate-type lib -C opt-level=1 -C embed-bitcode=no -C debuginfo=2 -C debug-assertions=on -C linker=cc -C incremental=[REDACTED] -C link-arg=-fuse-ld=mold
+
+note: some of the compiler flags provided by cargo are hidden
+note: compiler flags: --crate-type lib -C opt-level=1 -C embed-bitcode=no -C debuginfo=2 -C debug-assertions=on -C linker=cc -C incremental=[REDACTED] -C link-arg=-fuse-ld=mold
+note: compiler flags: --crate-type lib -C opt-level=1 -C embed-bitcode=no -C debuginfo=2 -C debug-assertions=on -C linker=cc -C incremental=[REDACTED] -C link-arg=-fuse-ld=mold
+note: compiler flags: --crate-type lib -C opt-level=1 -C embed-bitcode=no -C debuginfo=2 -C debug-assertions=on -C linker=cc -C incremental=[REDACTED] -C link-arg=-fuse-ld=mold
+
+
+
+note: some of the compiler flags provided by cargo are hidden
+query stack during panic:
+
+note: some of the compiler flags provided by cargo are hidden
+
+note: some of the compiler flags provided by cargo are hidden
+query stack during panic:
+end of query stack
+
+end of query stack
+query stack during panic:
+note: compiler flags: --crate-type lib -C opt-level=1 -C embed-bitcode=no -C debuginfo=2 -C debug-assertions=on -C linker=cc -C incremental=[REDACTED] -C link-arg=-fuse-ld=mold
+end of query stack
+
+query stack during panic:
+end of query stack
+
+note: some of the compiler flags provided by cargo are hidden
+
+query stack during panic:
+end of query stack
+
+
+thread 'coordinator' (2200554) panicked at /rustc-dev/59807616e1fa2540724bfbac14d7976d7e4a3860/compiler/rustc_codegen_ssa/src/back/write.rs:1749:29:
+
+thread 'coordinator' (2200935) panicked at /rustc-dev/59807616e1fa2540724bfbac14d7976d7e4a3860/compiler/rustc_codegen_ssa/src/back/write.rs:1749:29:
+
+/rustc-dev/59807616e1fa2540724bfbac14d7976d7e4a3860/compiler/rustc_codegen_ssa/src/back/write.rs:1749:29: worker thread panicked
+/rustc-dev/59807616e1fa2540724bfbac14d7976d7e4a3860/compiler/rustc_codegen_ssa/src/back/write.rs:1749:29: worker thread panicked
+stack backtrace:
+thread 'coordinator' (2200897) panicked at /rustc-dev/59807616e1fa2540724bfbac14d7976d7e4a3860/compiler/rustc_codegen_ssa/src/back/write.rs:1749:29:
+thread 'coordinator' (2200893) panicked at /rustc-dev/59807616e1fa2540724bfbac14d7976d7e4a3860/compiler/rustc_codegen_ssa/src/back/write.rs:1749:29:
+stack backtrace:
+/rustc-dev/59807616e1fa2540724bfbac14d7976d7e4a3860/compiler/rustc_codegen_ssa/src/back/write.rs:1749:29: worker thread panicked
+   0:     0x7ffff6c9b205 - <<std[e114a732dcca3553]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[3450ada48eaa0180]::fmt::Display>::fmt
+/rustc-dev/59807616e1fa2540724bfbac14d7976d7e4a3860/compiler/rustc_codegen_ssa/src/back/write.rs:1749:29: worker thread panicked
+   0:     0x7ffff6c9b205 - <<std[e114a732dcca3553]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[3450ada48eaa0180]::fmt::Display>::fmt
+stack backtrace:
+stack backtrace:
+
+   0:     0x7ffff6c9b205 - <<std[e114a732dcca3553]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[3450ada48eaa0180]::fmt::Display>::fmt
+   1:     0x7ffff6d23f5a - core[3450ada48eaa0180]::fmt::write
+   1:     0x7ffff6d23f5a - core[3450ada48eaa0180]::fmt::write
+   0:     0x7ffff6c9b205 - <<std[e114a732dcca3553]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[3450ada48eaa0180]::fmt::Display>::fmt
+thread 'coordinator' (2200475) panicked at /rustc-dev/59807616e1fa2540724bfbac14d7976d7e4a3860/compiler/rustc_codegen_ssa/src/back/write.rs:1749:29:
+   2:     0x7ffff6ca3266 - std[e114a732dcca3553]::io::default_write_fmt::<std[e114a732dcca3553]::sys::stdio::unix::Stderr>
+   2:     0x7ffff6ca3266 - std[e114a732dcca3553]::io::default_write_fmt::<std[e114a732dcca3553]::sys::stdio::unix::Stderr>
+/rustc-dev/59807616e1fa2540724bfbac14d7976d7e4a3860/compiler/rustc_codegen_ssa/src/back/write.rs:1749:29: worker thread panicked
+   1:     0x7ffff6d23f5a - core[3450ada48eaa0180]::fmt::write
+   3:     0x7ffff6c95d9c - std[e114a732dcca3553]::panicking::default_hook::{closure#0}
+   1:     0x7ffff6d23f5a - core[3450ada48eaa0180]::fmt::write
+   3:     0x7ffff6c95d9c - std[e114a732dcca3553]::panicking::default_hook::{closure#0}
+stack backtrace:
+   2:     0x7ffff6ca3266 - std[e114a732dcca3553]::io::default_write_fmt::<std[e114a732dcca3553]::sys::stdio::unix::Stderr>
+   4:     0x7ffff6c98a1a - std[e114a732dcca3553]::panicking::default_hook
+   2:     0x7ffff6ca3266 - std[e114a732dcca3553]::io::default_write_fmt::<std[e114a732dcca3553]::sys::stdio::unix::Stderr>
+   4:     0x7ffff6c98a1a - std[e114a732dcca3553]::panicking::default_hook
+   5:     0x7ffff321aab6 - <alloc[14b61e6f9a1b4311]::boxed::Box<rustc_driver_impl[34b8abac1eb5652e]::install_ice_hook::{closure#1}> as core[3450ada48eaa0180]::ops::function::Fn<(&dyn for<'a, 'b> core[3450ada48eaa0180]::ops::function::Fn<(&'a std[e114a732dcca3553]::panic::PanicHookInfo<'b>,), Output = ()> + core[3450ada48eaa0180]::marker::Send + core[3450ada48eaa0180]::marker::Sync, &std[e114a732dcca3553]::panic::PanicHookInfo)>>::call
+   0:     0x7ffff6c9b205 - <<std[e114a732dcca3553]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[3450ada48eaa0180]::fmt::Display>::fmt
+   3:     0x7ffff6c95d9c - std[e114a732dcca3553]::panicking::default_hook::{closure#0}
+   3:     0x7ffff6c95d9c - std[e114a732dcca3553]::panicking::default_hook::{closure#0}
+   5:     0x7ffff321aab6 - <alloc[14b61e6f9a1b4311]::boxed::Box<rustc_driver_impl[34b8abac1eb5652e]::install_ice_hook::{closure#1}> as core[3450ada48eaa0180]::ops::function::Fn<(&dyn for<'a, 'b> core[3450ada48eaa0180]::ops::function::Fn<(&'a std[e114a732dcca3553]::panic::PanicHookInfo<'b>,), Output = ()> + core[3450ada48eaa0180]::marker::Send + core[3450ada48eaa0180]::marker::Sync, &std[e114a732dcca3553]::panic::PanicHookInfo)>>::call
+   4:     0x7ffff6c98a1a - std[e114a732dcca3553]::panicking::default_hook
+   4:     0x7ffff6c98a1a - std[e114a732dcca3553]::panicking::default_hook
+   6:     0x7ffff6c98c22 - std[e114a732dcca3553]::panicking::panic_with_hook
+   1:     0x7ffff6d23f5a - core[3450ada48eaa0180]::fmt::write
+   5:     0x7ffff321aab6 - <alloc[14b61e6f9a1b4311]::boxed::Box<rustc_driver_impl[34b8abac1eb5652e]::install_ice_hook::{closure#1}> as core[3450ada48eaa0180]::ops::function::Fn<(&dyn for<'a, 'b> core[3450ada48eaa0180]::ops::function::Fn<(&'a std[e114a732dcca3553]::panic::PanicHookInfo<'b>,), Output = ()> + core[3450ada48eaa0180]::marker::Send + core[3450ada48eaa0180]::marker::Sync, &std[e114a732dcca3553]::panic::PanicHookInfo)>>::call
+   5:     0x7ffff321aab6 - <alloc[14b61e6f9a1b4311]::boxed::Box<rustc_driver_impl[34b8abac1eb5652e]::install_ice_hook::{closure#1}> as core[3450ada48eaa0180]::ops::function::Fn<(&dyn for<'a, 'b> core[3450ada48eaa0180]::ops::function::Fn<(&'a std[e114a732dcca3553]::panic::PanicHookInfo<'b>,), Output = ()> + core[3450ada48eaa0180]::marker::Send + core[3450ada48eaa0180]::marker::Sync, &std[e114a732dcca3553]::panic::PanicHookInfo)>>::call
+   6:     0x7ffff6c98c22 - std[e114a732dcca3553]::panicking::panic_with_hook
+   2:     0x7ffff6ca3266 - std[e114a732dcca3553]::io::default_write_fmt::<std[e114a732dcca3553]::sys::stdio::unix::Stderr>
+   6:     0x7ffff6c98c22 - std[e114a732dcca3553]::panicking::panic_with_hook
+   6:     0x7ffff6c98c22 - std[e114a732dcca3553]::panicking::panic_with_hook
+   3:     0x7ffff6c95d9c - std[e114a732dcca3553]::panicking::default_hook::{closure#0}
+   4:     0x7ffff6c98a1a - std[e114a732dcca3553]::panicking::default_hook
+   5:     0x7ffff321aab6 - <alloc[14b61e6f9a1b4311]::boxed::Box<rustc_driver_impl[34b8abac1eb5652e]::install_ice_hook::{closure#1}> as core[3450ada48eaa0180]::ops::function::Fn<(&dyn for<'a, 'b> core[3450ada48eaa0180]::ops::function::Fn<(&'a std[e114a732dcca3553]::panic::PanicHookInfo<'b>,), Output = ()> + core[3450ada48eaa0180]::marker::Send + core[3450ada48eaa0180]::marker::Sync, &std[e114a732dcca3553]::panic::PanicHookInfo)>>::call
+   6:     0x7ffff6c98c22 - std[e114a732dcca3553]::panicking::panic_with_hook
+   7:     0x7ffff6609c75 - std[e114a732dcca3553]::panicking::begin_panic::<alloc[14b61e6f9a1b4311]::string::String>::{closure#0}
+   7:     0x7ffff6609c75 - std[e114a732dcca3553]::panicking::begin_panic::<alloc[14b61e6f9a1b4311]::string::String>::{closure#0}
+   7:     0x7ffff6609c75 - std[e114a732dcca3553]::panicking::begin_panic::<alloc[14b61e6f9a1b4311]::string::String>::{closure#0}
+   7:     0x7ffff6609c75 - std[e114a732dcca3553]::panicking::begin_panic::<alloc[14b61e6f9a1b4311]::string::String>::{closure#0}
+   8:     0x7ffff6603729 - std[e114a732dcca3553]::sys::backtrace::__rust_end_short_backtrace::<std[e114a732dcca3553]::panicking::begin_panic<alloc[14b61e6f9a1b4311]::string::String>::{closure#0}, !>
+   8:     0x7ffff6603729 - std[e114a732dcca3553]::sys::backtrace::__rust_end_short_backtrace::<std[e114a732dcca3553]::panicking::begin_panic<alloc[14b61e6f9a1b4311]::string::String>::{closure#0}, !>
+   8:     0x7ffff6603729 - std[e114a732dcca3553]::sys::backtrace::__rust_end_short_backtrace::<std[e114a732dcca3553]::panicking::begin_panic<alloc[14b61e6f9a1b4311]::string::String>::{closure#0}, !>
+   8:     0x7ffff6603729 - std[e114a732dcca3553]::sys::backtrace::__rust_end_short_backtrace::<std[e114a732dcca3553]::panicking::begin_panic<alloc[14b61e6f9a1b4311]::string::String>::{closure#0}, !>
+   7:     0x7ffff6609c75 - std[e114a732dcca3553]::panicking::begin_panic::<alloc[14b61e6f9a1b4311]::string::String>::{closure#0}
+   8:     0x7ffff6603729 - std[e114a732dcca3553]::sys::backtrace::__rust_end_short_backtrace::<std[e114a732dcca3553]::panicking::begin_panic<alloc[14b61e6f9a1b4311]::string::String>::{closure#0}, !>
+   9:     0x7ffff313e0ab - std[e114a732dcca3553]::panicking::begin_panic::<alloc[14b61e6f9a1b4311]::string::String>
+   9:     0x7ffff313e0ab - std[e114a732dcca3553]::panicking::begin_panic::<alloc[14b61e6f9a1b4311]::string::String>
+   9:     0x7ffff313e0ab - std[e114a732dcca3553]::panicking::begin_panic::<alloc[14b61e6f9a1b4311]::string::String>
+   9:     0x7ffff313e0ab - std[e114a732dcca3553]::panicking::begin_panic::<alloc[14b61e6f9a1b4311]::string::String>
+   9:     0x7ffff313e0ab - std[e114a732dcca3553]::panicking::begin_panic::<alloc[14b61e6f9a1b4311]::string::String>
+  10:     0x7ffff6588838 - rustc_middle[33c8aec3305360b]::util::bug::opt_span_bug_fmt::<rustc_span[bde730cd47247664]::span_encoding::Span>::{closure#0}
+  11:     0x7ffff658886f - rustc_middle[33c8aec3305360b]::ty::context::tls::with_opt::<rustc_middle[33c8aec3305360b]::util::bug::opt_span_bug_fmt<rustc_span[bde730cd47247664]::span_encoding::Span>::{closure#0}, !>::{closure#0}
+  10:     0x7ffff6588838 - rustc_middle[33c8aec3305360b]::util::bug::opt_span_bug_fmt::<rustc_span[bde730cd47247664]::span_encoding::Span>::{closure#0}
+  12:     0x7ffff657bb4e - rustc_middle[33c8aec3305360b]::ty::context::tls::with_context_opt::<rustc_middle[33c8aec3305360b]::ty::context::tls::with_opt<rustc_middle[33c8aec3305360b]::util::bug::opt_span_bug_fmt<rustc_span[bde730cd47247664]::span_encoding::Span>::{closure#0}, !>::{closure#0}, !>
+  11:     0x7ffff658886f - rustc_middle[33c8aec3305360b]::ty::context::tls::with_opt::<rustc_middle[33c8aec3305360b]::util::bug::opt_span_bug_fmt<rustc_span[bde730cd47247664]::span_encoding::Span>::{closure#0}, !>::{closure#0}
+  10:     0x7ffff6588838 - rustc_middle[33c8aec3305360b]::util::bug::opt_span_bug_fmt::<rustc_span[bde730cd47247664]::span_encoding::Span>::{closure#0}
+  10:     0x7ffff6588838 - rustc_middle[33c8aec3305360b]::util::bug::opt_span_bug_fmt::<rustc_span[bde730cd47247664]::span_encoding::Span>::{closure#0}
+  12:     0x7ffff657bb4e - rustc_middle[33c8aec3305360b]::ty::context::tls::with_context_opt::<rustc_middle[33c8aec3305360b]::ty::context::tls::with_opt<rustc_middle[33c8aec3305360b]::util::bug::opt_span_bug_fmt<rustc_span[bde730cd47247664]::span_encoding::Span>::{closure#0}, !>::{closure#0}, !>
+  11:     0x7ffff658886f - rustc_middle[33c8aec3305360b]::ty::context::tls::with_opt::<rustc_middle[33c8aec3305360b]::util::bug::opt_span_bug_fmt<rustc_span[bde730cd47247664]::span_encoding::Span>::{closure#0}, !>::{closure#0}
+  11:     0x7ffff658886f - rustc_middle[33c8aec3305360b]::ty::context::tls::with_opt::<rustc_middle[33c8aec3305360b]::util::bug::opt_span_bug_fmt<rustc_span[bde730cd47247664]::span_encoding::Span>::{closure#0}, !>::{closure#0}
+  10:     0x7ffff6588838 - rustc_middle[33c8aec3305360b]::util::bug::opt_span_bug_fmt::<rustc_span[bde730cd47247664]::span_encoding::Span>::{closure#0}
+  12:     0x7ffff657bb4e - rustc_middle[33c8aec3305360b]::ty::context::tls::with_context_opt::<rustc_middle[33c8aec3305360b]::ty::context::tls::with_opt<rustc_middle[33c8aec3305360b]::util::bug::opt_span_bug_fmt<rustc_span[bde730cd47247664]::span_encoding::Span>::{closure#0}, !>::{closure#0}, !>
+  12:     0x7ffff657bb4e - rustc_middle[33c8aec3305360b]::ty::context::tls::with_context_opt::<rustc_middle[33c8aec3305360b]::ty::context::tls::with_opt<rustc_middle[33c8aec3305360b]::util::bug::opt_span_bug_fmt<rustc_span[bde730cd47247664]::span_encoding::Span>::{closure#0}, !>::{closure#0}, !>
+  11:     0x7ffff658886f - rustc_middle[33c8aec3305360b]::ty::context::tls::with_opt::<rustc_middle[33c8aec3305360b]::util::bug::opt_span_bug_fmt<rustc_span[bde730cd47247664]::span_encoding::Span>::{closure#0}, !>::{closure#0}
+  12:     0x7ffff657bb4e - rustc_middle[33c8aec3305360b]::ty::context::tls::with_context_opt::<rustc_middle[33c8aec3305360b]::ty::context::tls::with_opt<rustc_middle[33c8aec3305360b]::util::bug::opt_span_bug_fmt<rustc_span[bde730cd47247664]::span_encoding::Span>::{closure#0}, !>::{closure#0}, !>
+  13:     0x7ffff31417d7 - rustc_middle[33c8aec3305360b]::util::bug::bug_fmt
+  13:     0x7ffff31417d7 - rustc_middle[33c8aec3305360b]::util::bug::bug_fmt
+  13:     0x7ffff31417d7 - rustc_middle[33c8aec3305360b]::util::bug::bug_fmt
+  14:     0x7ffff368e434 - std[e114a732dcca3553]::sys::backtrace::__rust_begin_short_backtrace::<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::start_executing_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#4}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>::{closure#0}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>
+  14:     0x7ffff368e434 - std[e114a732dcca3553]::sys::backtrace::__rust_begin_short_backtrace::<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::start_executing_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#4}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>::{closure#0}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>
+  14:     0x7ffff368e434 - std[e114a732dcca3553]::sys::backtrace::__rust_begin_short_backtrace::<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::start_executing_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#4}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>::{closure#0}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>
+  15:     0x7ffff35a3507 - <std[e114a732dcca3553]::thread::lifecycle::spawn_unchecked<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::start_executing_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#4}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>::{closure#0}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>::{closure#1} as core[3450ada48eaa0180]::ops::function::FnOnce<()>>::call_once::{shim:vtable#0}
+  15:     0x7ffff35a3507 - <std[e114a732dcca3553]::thread::lifecycle::spawn_unchecked<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::start_executing_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#4}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>::{closure#0}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>::{closure#1} as core[3450ada48eaa0180]::ops::function::FnOnce<()>>::call_once::{shim:vtable#0}
+  16:     0x7ffff6cab9c4 - <std[e114a732dcca3553]::sys::thread::unix::Thread>::new::thread_start
+  16:     0x7ffff6cab9c4 - <std[e114a732dcca3553]::sys::thread::unix::Thread>::new::thread_start
+  15:     0x7ffff35a3507 - <std[e114a732dcca3553]::thread::lifecycle::spawn_unchecked<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::start_executing_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#4}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>::{closure#0}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>::{closure#1} as core[3450ada48eaa0180]::ops::function::FnOnce<()>>::call_once::{shim:vtable#0}
+  17:     0x7ffff27ffd53 - start_thread
+  17:     0x7ffff27ffd53 - start_thread
+  18:     0x7ffff288763c - __clone3
+  16:     0x7ffff6cab9c4 - <std[e114a732dcca3553]::sys::thread::unix::Thread>::new::thread_start
+  18:     0x7ffff288763c - __clone3
+  19:                0x0 - <unknown>
+  19:                0x0 - <unknown>
+  17:     0x7ffff27ffd53 - start_thread
+
+
+  18:     0x7ffff288763c - __clone3
+  19:                0x0 - <unknown>
+
+error: the compiler unexpectedly panicked. This is a bug
+error: the compiler unexpectedly panicked. This is a bug
+
+
+note: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md
+note: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md
+
+
+note: rustc 1.95.0 (59807616e 2026-04-14) (built from a source tarball) running on x86_64-unknown-linux-gnu
+note: rustc 1.95.0 (59807616e 2026-04-14) (built from a source tarball) running on x86_64-unknown-linux-gnu
+
+
+note: compiler flags: --crate-type lib -C opt-level=1 -C embed-bitcode=no -C debuginfo=2 -C debug-assertions=on -C linker=cc -C incremental=[REDACTED] -C link-arg=-fuse-ld=mold
+note: compiler flags: --crate-type lib -C opt-level=1 -C embed-bitcode=no -C debuginfo=2 -C debug-assertions=on -C linker=cc -C incremental=[REDACTED] -C link-arg=-fuse-ld=mold
+
+
+note: some of the compiler flags provided by cargo are hidden
+note: some of the compiler flags provided by cargo are hidden
+
+
+query stack during panic:
+query stack during panic:
+end of query stack
+end of query stack
+  13:     0x7ffff31417d7 - rustc_middle[33c8aec3305360b]::util::bug::bug_fmt
+  14:     0x7ffff368e434 - std[e114a732dcca3553]::sys::backtrace::__rust_begin_short_backtrace::<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::start_executing_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#4}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>::{closure#0}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>
+error: the compiler unexpectedly panicked. This is a bug
+  15:     0x7ffff35a3507 - <std[e114a732dcca3553]::thread::lifecycle::spawn_unchecked<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::start_executing_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#4}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>::{closure#0}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>::{closure#1} as core[3450ada48eaa0180]::ops::function::FnOnce<()>>::call_once::{shim:vtable#0}
+  16:     0x7ffff6cab9c4 - <std[e114a732dcca3553]::sys::thread::unix::Thread>::new::thread_start
+
+  17:     0x7ffff27ffd53 - start_thread
+note: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md
+  13:     0x7ffff31417d7 - rustc_middle[33c8aec3305360b]::util::bug::bug_fmt
+  14:     0x7ffff368e434 - std[e114a732dcca3553]::sys::backtrace::__rust_begin_short_backtrace::<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::start_executing_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#4}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>::{closure#0}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>
+  15:     0x7ffff35a3507 - <std[e114a732dcca3553]::thread::lifecycle::spawn_unchecked<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::start_executing_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#4}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>::{closure#0}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>::{closure#1} as core[3450ada48eaa0180]::ops::function::FnOnce<()>>::call_once::{shim:vtable#0}
+  16:     0x7ffff6cab9c4 - <std[e114a732dcca3553]::sys::thread::unix::Thread>::new::thread_start
+  17:     0x7ffff27ffd53 - start_thread
+  18:     0x7ffff288763c - __clone3
+  19:                0x0 - <unknown>
+
+error: the compiler unexpectedly panicked. This is a bug
+
+
+note: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md
+
+note: rustc 1.95.0 (59807616e 2026-04-14) (built from a source tarball) running on x86_64-unknown-linux-gnu
+  18:     0x7ffff288763c - __clone3
+
+  19:                0x0 - <unknown>
+note: rustc 1.95.0 (59807616e 2026-04-14) (built from a source tarball) running on x86_64-unknown-linux-gnu
+note: compiler flags: --crate-type lib -C opt-level=1 -C embed-bitcode=no -C debuginfo=2 -C debug-assertions=on -C linker=cc -C incremental=[REDACTED] -C link-arg=-fuse-ld=mold
+
+
+error: the compiler unexpectedly panicked. This is a bug
+note: some of the compiler flags provided by cargo are hidden
+
+
+
+query stack during panic:
+note: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md
+note: compiler flags: --crate-type lib -C opt-level=1 -C embed-bitcode=no -C debuginfo=2 -C debug-assertions=on -C linker=cc -C incremental=[REDACTED] -C link-arg=-fuse-ld=mold
+end of query stack
+
+
+note: rustc 1.95.0 (59807616e 2026-04-14) (built from a source tarball) running on x86_64-unknown-linux-gnu
+note: some of the compiler flags provided by cargo are hidden
+
+
+query stack during panic:
+note: compiler flags: --crate-type lib -C opt-level=1 -C embed-bitcode=no -C debuginfo=2 -C debug-assertions=on -C linker=cc -C incremental=[REDACTED] -C link-arg=-fuse-ld=mold
+end of query stack
+
+note: some of the compiler flags provided by cargo are hidden
+
+query stack during panic:
+end of query stack
+
+thread 'opt eyvjkhumeoyceawut3aktmdn7' (2201225) panicked at /rustc-dev/59807616e1fa2540724bfbac14d7976d7e4a3860/compiler/rustc_codegen_ssa/src/back/write.rs:874:21:
+Error writing pre-lto-bitcode file `/home/brittonr/.cargo-target/debug/incremental/valence_command-1ksf3c9bvp6mj/s-hjta48ag19-071mr15-working/eyvjkhumeoyceawut3aktmdn7.pre-lto.bc`: No such file or directory (os error 2)
+stack backtrace:
+   0:     0x7ffff6c9b205 - <<std[e114a732dcca3553]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[3450ada48eaa0180]::fmt::Display>::fmt
+   1:     0x7ffff6d23f5a - core[3450ada48eaa0180]::fmt::write
+   2:     0x7ffff6ca3266 - std[e114a732dcca3553]::io::default_write_fmt::<std[e114a732dcca3553]::sys::stdio::unix::Stderr>
+   3:     0x7ffff6c95d9c - std[e114a732dcca3553]::panicking::default_hook::{closure#0}
+   4:     0x7ffff6c98a1a - std[e114a732dcca3553]::panicking::default_hook
+   5:     0x7ffff321aab6 - <alloc[14b61e6f9a1b4311]::boxed::Box<rustc_driver_impl[34b8abac1eb5652e]::install_ice_hook::{closure#1}> as core[3450ada48eaa0180]::ops::function::Fn<(&dyn for<'a, 'b> core[3450ada48eaa0180]::ops::function::Fn<(&'a std[e114a732dcca3553]::panic::PanicHookInfo<'b>,), Output = ()> + core[3450ada48eaa0180]::marker::Send + core[3450ada48eaa0180]::marker::Sync, &std[e114a732dcca3553]::panic::PanicHookInfo)>>::call
+   6:     0x7ffff6c98c22 - std[e114a732dcca3553]::panicking::panic_with_hook
+   7:     0x7ffff6c95e48 - std[e114a732dcca3553]::panicking::panic_handler::{closure#0}
+   8:     0x7ffff6c95549 - std[e114a732dcca3553]::sys::backtrace::__rust_end_short_backtrace::<std[e114a732dcca3553]::panicking::panic_handler::{closure#0}, !>
+   9:     0x7ffff6c9624d - __rustc[d8ff9d08a1174409]::rust_begin_unwind
+  10:     0x7ffff319c11c - core[3450ada48eaa0180]::panicking::panic_fmt
+  11:     0x7ffff2fe63e9 - rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::execute_optimize_work_item::<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#1}
+  12:     0x7ffff368bba7 - std[e114a732dcca3553]::sys::backtrace::__rust_begin_short_backtrace::<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::spawn_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#0}, ()>::{closure#0}, ()>
+  13:     0x7ffff35a30d7 - <std[e114a732dcca3553]::thread::lifecycle::spawn_unchecked<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::spawn_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#0}, ()>::{closure#0}, ()>::{closure#1} as core[3450ada48eaa0180]::ops::function::FnOnce<()>>::call_once::{shim:vtable#0}
+  14:     0x7ffff6cab9c4 - <std[e114a732dcca3553]::sys::thread::unix::Thread>::new::thread_start
+  15:     0x7ffff27ffd53 - start_thread
+  16:     0x7ffff288763c - __clone3
+  17:                0x0 - <unknown>
+
+error: the compiler unexpectedly panicked. This is a bug
+
+note: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md
+
+note: rustc 1.95.0 (59807616e 2026-04-14) (built from a source tarball) running on x86_64-unknown-linux-gnu
+
+note: compiler flags: --crate-type lib -C opt-level=1 -C embed-bitcode=no -C debuginfo=2 -C debug-assertions=on -C linker=cc -C incremental=[REDACTED] -C link-arg=-fuse-ld=mold
+
+note: some of the compiler flags provided by cargo are hidden
+
+query stack during panic:
+end of query stack
+
+thread 'coordinator' (2201211) panicked at /rustc-dev/59807616e1fa2540724bfbac14d7976d7e4a3860/compiler/rustc_codegen_ssa/src/back/write.rs:1749:29:
+/rustc-dev/59807616e1fa2540724bfbac14d7976d7e4a3860/compiler/rustc_codegen_ssa/src/back/write.rs:1749:29: worker thread panicked
+stack backtrace:
+   0:     0x7ffff6c9b205 - <<std[e114a732dcca3553]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[3450ada48eaa0180]::fmt::Display>::fmt
+   1:     0x7ffff6d23f5a - core[3450ada48eaa0180]::fmt::write
+   2:     0x7ffff6ca3266 - std[e114a732dcca3553]::io::default_write_fmt::<std[e114a732dcca3553]::sys::stdio::unix::Stderr>
+   3:     0x7ffff6c95d9c - std[e114a732dcca3553]::panicking::default_hook::{closure#0}
+   4:     0x7ffff6c98a1a - std[e114a732dcca3553]::panicking::default_hook
+   5:     0x7ffff321aab6 - <alloc[14b61e6f9a1b4311]::boxed::Box<rustc_driver_impl[34b8abac1eb5652e]::install_ice_hook::{closure#1}> as core[3450ada48eaa0180]::ops::function::Fn<(&dyn for<'a, 'b> core[3450ada48eaa0180]::ops::function::Fn<(&'a std[e114a732dcca3553]::panic::PanicHookInfo<'b>,), Output = ()> + core[3450ada48eaa0180]::marker::Send + core[3450ada48eaa0180]::marker::Sync, &std[e114a732dcca3553]::panic::PanicHookInfo)>>::call
+   6:     0x7ffff6c98c22 - std[e114a732dcca3553]::panicking::panic_with_hook
+   7:     0x7ffff6609c75 - std[e114a732dcca3553]::panicking::begin_panic::<alloc[14b61e6f9a1b4311]::string::String>::{closure#0}
+   8:     0x7ffff6603729 - std[e114a732dcca3553]::sys::backtrace::__rust_end_short_backtrace::<std[e114a732dcca3553]::panicking::begin_panic<alloc[14b61e6f9a1b4311]::string::String>::{closure#0}, !>
+   9:     0x7ffff313e0ab - std[e114a732dcca3553]::panicking::begin_panic::<alloc[14b61e6f9a1b4311]::string::String>
+  10:     0x7ffff6588838 - rustc_middle[33c8aec3305360b]::util::bug::opt_span_bug_fmt::<rustc_span[bde730cd47247664]::span_encoding::Span>::{closure#0}
+  11:     0x7ffff658886f - rustc_middle[33c8aec3305360b]::ty::context::tls::with_opt::<rustc_middle[33c8aec3305360b]::util::bug::opt_span_bug_fmt<rustc_span[bde730cd47247664]::span_encoding::Span>::{closure#0}, !>::{closure#0}
+  12:     0x7ffff657bb4e - rustc_middle[33c8aec3305360b]::ty::context::tls::with_context_opt::<rustc_middle[33c8aec3305360b]::ty::context::tls::with_opt<rustc_middle[33c8aec3305360b]::util::bug::opt_span_bug_fmt<rustc_span[bde730cd47247664]::span_encoding::Span>::{closure#0}, !>::{closure#0}, !>
+  13:     0x7ffff31417d7 - rustc_middle[33c8aec3305360b]::util::bug::bug_fmt
+  14:     0x7ffff368e434 - std[e114a732dcca3553]::sys::backtrace::__rust_begin_short_backtrace::<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::start_executing_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#4}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>::{closure#0}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>
+  15:     0x7ffff35a3507 - <std[e114a732dcca3553]::thread::lifecycle::spawn_unchecked<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::start_executing_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#4}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>::{closure#0}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>::{closure#1} as core[3450ada48eaa0180]::ops::function::FnOnce<()>>::call_once::{shim:vtable#0}
+  16:     0x7ffff6cab9c4 - <std[e114a732dcca3553]::sys::thread::unix::Thread>::new::thread_start
+  17:     0x7ffff27ffd53 - start_thread
+  18:     0x7ffff288763c - __clone3
+  19:                0x0 - <unknown>
+
+error: the compiler unexpectedly panicked. This is a bug
+
+note: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md
+
+note: rustc 1.95.0 (59807616e 2026-04-14) (built from a source tarball) running on x86_64-unknown-linux-gnu
+
+note: compiler flags: --crate-type lib -C opt-level=1 -C embed-bitcode=no -C debuginfo=2 -C debug-assertions=on -C linker=cc -C incremental=[REDACTED] -C link-arg=-fuse-ld=mold
+
+note: some of the compiler flags provided by cargo are hidden
+
+query stack during panic:
+end of query stack
+
+thread 'opt 86q3brtmjbnvn828t2y7b6fet' (2201271) panicked at /rustc-dev/59807616e1fa2540724bfbac14d7976d7e4a3860/compiler/rustc_codegen_ssa/src/back/write.rs:874:21:
+Error writing pre-lto-bitcode file `/home/brittonr/.cargo-target/debug/incremental/valence_anvil-29uatusnee90v/s-hjta47qsgy-0uvohg4-working/86q3brtmjbnvn828t2y7b6fet.pre-lto.bc`: No such file or directory (os error 2)
+stack backtrace:
+   0:     0x7ffff6c9b205 - <<std[e114a732dcca3553]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[3450ada48eaa0180]::fmt::Display>::fmt
+   1:     0x7ffff6d23f5a - core[3450ada48eaa0180]::fmt::write
+   2:     0x7ffff6ca3266 - std[e114a732dcca3553]::io::default_write_fmt::<std[e114a732dcca3553]::sys::stdio::unix::Stderr>
+   3:     0x7ffff6c95d9c - std[e114a732dcca3553]::panicking::default_hook::{closure#0}
+   4:     0x7ffff6c98a1a - std[e114a732dcca3553]::panicking::default_hook
+   5:     0x7ffff321aab6 - <alloc[14b61e6f9a1b4311]::boxed::Box<rustc_driver_impl[34b8abac1eb5652e]::install_ice_hook::{closure#1}> as core[3450ada48eaa0180]::ops::function::Fn<(&dyn for<'a, 'b> core[3450ada48eaa0180]::ops::function::Fn<(&'a std[e114a732dcca3553]::panic::PanicHookInfo<'b>,), Output = ()> + core[3450ada48eaa0180]::marker::Send + core[3450ada48eaa0180]::marker::Sync, &std[e114a732dcca3553]::panic::PanicHookInfo)>>::call
+   6:     0x7ffff6c98c22 - std[e114a732dcca3553]::panicking::panic_with_hook
+   7:     0x7ffff6c95e48 - std[e114a732dcca3553]::panicking::panic_handler::{closure#0}
+   8:     0x7ffff6c95549 - std[e114a732dcca3553]::sys::backtrace::__rust_end_short_backtrace::<std[e114a732dcca3553]::panicking::panic_handler::{closure#0}, !>
+   9:     0x7ffff6c9624d - __rustc[d8ff9d08a1174409]::rust_begin_unwind
+  10:     0x7ffff319c11c - core[3450ada48eaa0180]::panicking::panic_fmt
+  11:     0x7ffff2fe63e9 - rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::execute_optimize_work_item::<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#1}
+  12:     0x7ffff368bba7 - std[e114a732dcca3553]::sys::backtrace::__rust_begin_short_backtrace::<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::spawn_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#0}, ()>::{closure#0}, ()>
+  13:     0x7ffff35a30d7 - <std[e114a732dcca3553]::thread::lifecycle::spawn_unchecked<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::spawn_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#0}, ()>::{closure#0}, ()>::{closure#1} as core[3450ada48eaa0180]::ops::function::FnOnce<()>>::call_once::{shim:vtable#0}
+  14:     0x7ffff6cab9c4 - <std[e114a732dcca3553]::sys::thread::unix::Thread>::new::thread_start
+  15:     0x7ffff27ffd53 - start_thread
+  16:     0x7ffff288763c - __clone3
+  17:                0x0 - <unknown>
+
+error: the compiler unexpectedly panicked. This is a bug
+
+note: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md
+
+note: rustc 1.95.0 (59807616e 2026-04-14) (built from a source tarball) running on x86_64-unknown-linux-gnu
+
+note: compiler flags: --crate-type lib -C opt-level=1 -C embed-bitcode=no -C debuginfo=2 -C debug-assertions=on -C linker=cc -C incremental=[REDACTED] -C link-arg=-fuse-ld=mold
+
+note: some of the compiler flags provided by cargo are hidden
+
+query stack during panic:
+end of query stack
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.0298e46g1x6eb1lgxztmvq2g6.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/0298e46g1x6eb1lgxztmvq2g6.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.03pqhwr81v9yagwqntkzmsj8a.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/03pqhwr81v9yagwqntkzmsj8a.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.0d93b2g834ji2ga3wmhtgxab2.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/0d93b2g834ji2ga3wmhtgxab2.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.11z3fhnoet67sxpdtmk8raynd.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/11z3fhnoet67sxpdtmk8raynd.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.16ffh6dd2u6d36rzzzahor5fx.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/16ffh6dd2u6d36rzzzahor5fx.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.197y1h61dfzfscukd8ocfz7js.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/197y1h61dfzfscukd8ocfz7js.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.1t8c3dzebe9pejzfx4v0re21o.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/1t8c3dzebe9pejzfx4v0re21o.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.3fqt8vcn86dghfpyek3c81v8o.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/3fqt8vcn86dghfpyek3c81v8o.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.3uxjl7rc2kcyksfymx3ts97pn.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/3uxjl7rc2kcyksfymx3ts97pn.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.40w95gsp83tkqhjcpixpqte7h.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/40w95gsp83tkqhjcpixpqte7h.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.531ktsbfpw9ch00mcwr0mqw42.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/531ktsbfpw9ch00mcwr0mqw42.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.5cy7jmvj37ok3z1vaylk3so8z.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/5cy7jmvj37ok3z1vaylk3so8z.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.5x00i2tn5qrvxmkhplppz5wxa.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/5x00i2tn5qrvxmkhplppz5wxa.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.6a9f0zpvnq8ort8c27f3u9mw1.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/6a9f0zpvnq8ort8c27f3u9mw1.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.6dsjoark7m75a07yc55qo4kf5.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/6dsjoark7m75a07yc55qo4kf5.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.6w88d7pzq4048r8e2275rpjsj.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/6w88d7pzq4048r8e2275rpjsj.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.73cv30hunt9c9hf23z370agiv.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/73cv30hunt9c9hf23z370agiv.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.842xb2s73ds0zmw9nepp9ze6q.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/842xb2s73ds0zmw9nepp9ze6q.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.8c1mv9zxgwsf4me5ijfogl04s.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/8c1mv9zxgwsf4me5ijfogl04s.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.8pd5gdtd44ka1ziyr5c7033am.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/8pd5gdtd44ka1ziyr5c7033am.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.9cjve7ghgeed317s0wku99jll.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/9cjve7ghgeed317s0wku99jll.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.9jxcjvwkt31zn1b2xeqv12bmz.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/9jxcjvwkt31zn1b2xeqv12bmz.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.9ncnuz1y0oc84yxr7beu8xthy.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/9ncnuz1y0oc84yxr7beu8xthy.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.9rkzt1mnjzd37ndhfxahxtdn3.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/9rkzt1mnjzd37ndhfxahxtdn3.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.a197ydd2x9eq3x9capyynklc8.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/a197ydd2x9eq3x9capyynklc8.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.aeecn45fcml0x53hi1pkrmblt.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/aeecn45fcml0x53hi1pkrmblt.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.axp3l4bk701pf7ay70h0vzei0.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/axp3l4bk701pf7ay70h0vzei0.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.b3wynq9vf6olur6sbxfy1aecg.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/b3wynq9vf6olur6sbxfy1aecg.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.bh6llxy8xsnrrclnti5ghjqp0.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/bh6llxy8xsnrrclnti5ghjqp0.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.bk5ucifq4c65flsiet7t77msv.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/bk5ucifq4c65flsiet7t77msv.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.bkbn6fix5kkwfsxuo1egio7ir.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/bkbn6fix5kkwfsxuo1egio7ir.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.btr2kjb70vewkgojh42z4k9bf.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/btr2kjb70vewkgojh42z4k9bf.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.btzx7txak3qkmmylsionj79kq.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/btzx7txak3qkmmylsionj79kq.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.buk2zcaoav733zk07jqk0y41m.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/buk2zcaoav733zk07jqk0y41m.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.cg3wu4m3i4kaycd8coqjnnxi7.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/cg3wu4m3i4kaycd8coqjnnxi7.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.cjx4x07grkjmycgaasjmvre8f.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/cjx4x07grkjmycgaasjmvre8f.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.czs6z82uyzoot7on3pbaqdqaw.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/czs6z82uyzoot7on3pbaqdqaw.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.dbrk6udww52v2xz2witax6gyw.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/dbrk6udww52v2xz2witax6gyw.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.dhsbgfp9jm2wa7m0b66sflx50.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/dhsbgfp9jm2wa7m0b66sflx50.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.dpq2zjelze6rwjzetk1y3d5ez.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/dpq2zjelze6rwjzetk1y3d5ez.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.dqvvggp2ivq0mn4igcxf7knyv.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/dqvvggp2ivq0mn4igcxf7knyv.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.dvxyghlfual6bdh6fw5vv5vpy.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/dvxyghlfual6bdh6fw5vv5vpy.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.e1q6zsxtepvnlhi0r690dceo0.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/e1q6zsxtepvnlhi0r690dceo0.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_equipment-050fc95d454cb71e.ebs06l1tvhky6k4kq2yeskfnp.02rhyy7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/ebs06l1tvhky6k4kq2yeskfnp.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/libvalence_equipment-050fc95d454cb71e.rmeta` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/metadata.rmeta`: No such file or directory (os error 2)
+
+error: failed to create work product index at `/home/brittonr/.cargo-target/debug/incremental/valence_equipment-3txdcmbjammm1/s-hjta47bcm3-1itga4c-working/work-products.bin`: No such file or directory (os error 2)
+
+warning: `valence_equipment` (lib) generated 45 warnings
+error: could not compile `valence_equipment` (lib) due to 1 previous error; 45 warnings emitted
+warning: build failed, waiting for other jobs to finish...
+error: failed to move dependency graph from `/home/brittonr/.cargo-target/debug/incremental/valence_player_list-26k83a0zvekaj/s-hjta480s1z-0wsw0f3-working/dep-graph.part.bin` to `/home/brittonr/.cargo-target/debug/incremental/valence_player_list-26k83a0zvekaj/s-hjta480s1z-0wsw0f3-working/dep-graph.bin`: No such file or directory (os error 2)
+
+error: failed to create query cache at `/home/brittonr/.cargo-target/debug/incremental/valence_player_list-26k83a0zvekaj/s-hjta480s1z-0wsw0f3-working/query-cache.bin`: No such file or directory (os error 2)
+
+error: could not compile `valence_player_list` (lib) due to 2 previous errors
+error: failed to move dependency graph from `/home/brittonr/.cargo-target/debug/incremental/valence_advancement-2xyprulngntw6/s-hjta480rkn-0gnpjys-working/dep-graph.part.bin` to `/home/brittonr/.cargo-target/debug/incremental/valence_advancement-2xyprulngntw6/s-hjta480rkn-0gnpjys-working/dep-graph.bin`: No such file or directory (os error 2)
+
+error: failed to create query cache at `/home/brittonr/.cargo-target/debug/incremental/valence_advancement-2xyprulngntw6/s-hjta480rkn-0gnpjys-working/query-cache.bin`: No such file or directory (os error 2)
+
+error: could not compile `valence_advancement` (lib) due to 2 previous errors
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.0faya5f78utqg24w902ki1npb.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/0faya5f78utqg24w902ki1npb.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.0trznqjxv1w8j7e7sofacfu2r.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/0trznqjxv1w8j7e7sofacfu2r.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.16ffj4ldxj5c3243360ygf3zr.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/16ffj4ldxj5c3243360ygf3zr.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.16i41cjvgsfy2aazsuvbyv1i6.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/16i41cjvgsfy2aazsuvbyv1i6.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.1blc1yh884xepyq16n3uvowrm.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/1blc1yh884xepyq16n3uvowrm.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.1don80bbpgd1n5v8dbmnuazp6.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/1don80bbpgd1n5v8dbmnuazp6.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.2gbh05zna5x6a6xilxgbsffaf.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/2gbh05zna5x6a6xilxgbsffaf.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.2gzo1vgn69l3i88tk537tfshz.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/2gzo1vgn69l3i88tk537tfshz.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.2mju1d2rflmx3e706zl5uutes.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/2mju1d2rflmx3e706zl5uutes.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.2ue4h2rroni4wufs4uj5ovjfq.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/2ue4h2rroni4wufs4uj5ovjfq.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.3jkybgkvw3xb99tyqkng1k1d3.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/3jkybgkvw3xb99tyqkng1k1d3.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.3wslcgfvpgzk9d8oolo1uajtk.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/3wslcgfvpgzk9d8oolo1uajtk.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.44yzh06afwgqcf3ob1ujgg435.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/44yzh06afwgqcf3ob1ujgg435.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.47y7ev6qgh9c589d9h85bc7jf.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/47y7ev6qgh9c589d9h85bc7jf.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.4bwi92fm9s808thkuesn4p0x7.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/4bwi92fm9s808thkuesn4p0x7.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.4ku8mosznahhwxdfs9t3k7n36.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/4ku8mosznahhwxdfs9t3k7n36.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.4pqnyhwxg4mxev7mr91540ye5.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/4pqnyhwxg4mxev7mr91540ye5.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.4qrwhnrye6lqwz6gmqnofgvh6.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/4qrwhnrye6lqwz6gmqnofgvh6.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.4xg29qe0hue91v39ajcdauncs.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/4xg29qe0hue91v39ajcdauncs.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.4ycwligp24su8wp5jsp6pspxp.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/4ycwligp24su8wp5jsp6pspxp.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.51uzl6dms30dn4cclu7qm5mne.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/51uzl6dms30dn4cclu7qm5mne.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.537e08hzza6kglcbz6ae95psn.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/537e08hzza6kglcbz6ae95psn.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.5f7gm2h9wyf5agoapr0q9cnwr.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/5f7gm2h9wyf5agoapr0q9cnwr.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.5oo0eck2l1x9fa619cphvzv45.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/5oo0eck2l1x9fa619cphvzv45.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.5ua0uj6a0efm50zqr0eq5cjbx.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/5ua0uj6a0efm50zqr0eq5cjbx.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.5uxssmy89dvxlqyp83jh1huvd.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/5uxssmy89dvxlqyp83jh1huvd.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.62ocjnhoiafou5b71q1o1lrqt.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/62ocjnhoiafou5b71q1o1lrqt.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.68fa10e4mytaa2slj9uy50n9e.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/68fa10e4mytaa2slj9uy50n9e.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.6hi2lv109wysikix38bgnkfjj.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/6hi2lv109wysikix38bgnkfjj.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.6hsj41nvepr71hijn9htul6i5.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/6hsj41nvepr71hijn9htul6i5.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.6mhc9qvbhj8medlkhkt5sykd3.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/6mhc9qvbhj8medlkhkt5sykd3.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.6ow9xknbmpk4fu29s2mcn5af1.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/6ow9xknbmpk4fu29s2mcn5af1.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.7b2h7d4qf5218s5qladmernn4.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/7b2h7d4qf5218s5qladmernn4.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.7e7eqp6041fallkx22adeyjmm.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/7e7eqp6041fallkx22adeyjmm.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.7um21f5m4b88zjtkssifsdore.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/7um21f5m4b88zjtkssifsdore.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.8jnz1guu5roeuyfeljtuuhfj8.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/8jnz1guu5roeuyfeljtuuhfj8.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.8ycgrjooc41na82d4x7utwmvk.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/8ycgrjooc41na82d4x7utwmvk.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.97t58ck7j6yucb5zvjvm2th4x.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/97t58ck7j6yucb5zvjvm2th4x.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.9mfw387a5emlu2o6080pfptbk.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/9mfw387a5emlu2o6080pfptbk.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.9wy77zpeqzfn0yhayk7q9rk0a.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/9wy77zpeqzfn0yhayk7q9rk0a.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.adopccgr1d2rwmqh9rb12o62e.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/adopccgr1d2rwmqh9rb12o62e.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.ajz3dvy24cgsa0cdco60lpk6t.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/ajz3dvy24cgsa0cdco60lpk6t.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.astzp7k35cye6xh58qncjcqpe.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/astzp7k35cye6xh58qncjcqpe.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.c1v32d1ytbxh9rhe4eeqpgf0x.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/c1v32d1ytbxh9rhe4eeqpgf0x.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.c3lv2t96ruihftw73quibsgmv.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/c3lv2t96ruihftw73quibsgmv.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.cpeny0afqhdxftleou0ibzd1v.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/cpeny0afqhdxftleou0ibzd1v.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.ct7ijxvr9n5kibkktr12zkzjm.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/ct7ijxvr9n5kibkktr12zkzjm.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.cz9jp7a7t4aavoyzjonqc3l3a.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/cz9jp7a7t4aavoyzjonqc3l3a.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.d4ia8r75tw05gguokckkc2896.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/d4ia8r75tw05gguokckkc2896.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.d9scnozzbgz8mt8s9npcwdj64.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/d9scnozzbgz8mt8s9npcwdj64.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.ddaqkyoepqohjq0hu6zvn4c71.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/ddaqkyoepqohjq0hu6zvn4c71.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.de7zpcklyrs1dw2cjw76wd1pd.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/de7zpcklyrs1dw2cjw76wd1pd.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.dhed78ndmem0cq288p6tg3gkn.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/dhed78ndmem0cq288p6tg3gkn.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.e5dukbhfujfpenxaii0n6zjry.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/e5dukbhfujfpenxaii0n6zjry.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.e5i35cjjfhux5h8t8e87mzjni.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/e5i35cjjfhux5h8t8e87mzjni.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.ewvkoj4xasj0827k1ieeh05ya.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/ewvkoj4xasj0827k1ieeh05ya.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_scoreboard-139d23fc33fe70fe.ezaynobnmvw4yocz6zyvkghyu.016x12p.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/ezaynobnmvw4yocz6zyvkghyu.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/libvalence_scoreboard-139d23fc33fe70fe.rmeta` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/metadata.rmeta`: No such file or directory (os error 2)
+
+error: failed to create work product index at `/home/brittonr/.cargo-target/debug/incremental/valence_scoreboard-09hzsq2smbh3p/s-hjta47osnl-031f7e0-working/work-products.bin`: No such file or directory (os error 2)
+
+warning: `valence_scoreboard` (lib) generated 58 warnings
+error: could not compile `valence_scoreboard` (lib) due to 1 previous error; 58 warnings emitted
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.06db8d9ippscdtu4avwyp2aqv.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/06db8d9ippscdtu4avwyp2aqv.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.143yxh2im9vvy3ruigsvd6fem.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/143yxh2im9vvy3ruigsvd6fem.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.20hji01nfnaq7hy430lppvh56.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/20hji01nfnaq7hy430lppvh56.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.35u3ea1ln235qnij6rqr1zj0o.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/35u3ea1ln235qnij6rqr1zj0o.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.3g2c66s1qoram4hekdm98bfrb.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/3g2c66s1qoram4hekdm98bfrb.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.3o9m8sgawbfo58s4l6q423wjk.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/3o9m8sgawbfo58s4l6q423wjk.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.4i6392c99j9cpe227866w56n0.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/4i6392c99j9cpe227866w56n0.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.4uyg03geearqmyue8aom8k04c.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/4uyg03geearqmyue8aom8k04c.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.5kmf09x025pz8vnqtv9jd6wc0.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/5kmf09x025pz8vnqtv9jd6wc0.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.5oismeyju79a7xi7kmv2md3kt.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/5oismeyju79a7xi7kmv2md3kt.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.5y5pggoowo3ffhr5ivm02nhwl.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/5y5pggoowo3ffhr5ivm02nhwl.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.685en0hqqdzwzymu2vejrm5ua.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/685en0hqqdzwzymu2vejrm5ua.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.7azcj9vxsktx0r3lyzwvs41nb.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/7azcj9vxsktx0r3lyzwvs41nb.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.813kjpsbc7dvvzl62kp2r6hu0.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/813kjpsbc7dvvzl62kp2r6hu0.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.888h2ss0k6odm31zvva0fhcki.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/888h2ss0k6odm31zvva0fhcki.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.8cfitbpswj1ymvr60pxhvbyxc.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/8cfitbpswj1ymvr60pxhvbyxc.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.8ry02wg2snbfjj6sgg3i09tsa.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/8ry02wg2snbfjj6sgg3i09tsa.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.8u5fl8x7sr1o0d5473ghr7n8e.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/8u5fl8x7sr1o0d5473ghr7n8e.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.aafejyr90lp48at13o8kbteuk.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/aafejyr90lp48at13o8kbteuk.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.ai7r29wmqm9k9a85e6h5ea60x.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/ai7r29wmqm9k9a85e6h5ea60x.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.b4k5vln0nxe76pkn7rgcxtpdr.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/b4k5vln0nxe76pkn7rgcxtpdr.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.be6rfy1833renbcw359xxlynw.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/be6rfy1833renbcw359xxlynw.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.cmw11gkvcustt68vv2xrojvbw.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/cmw11gkvcustt68vv2xrojvbw.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.d0sb6ga0x10bin1ecegm42kbx.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/d0sb6ga0x10bin1ecegm42kbx.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.dksnam6mhtz1mjgg7ocdocg7q.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/dksnam6mhtz1mjgg7ocdocg7q.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.dw8sax13ru0zwht71p199s6nf.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/dw8sax13ru0zwht71p199s6nf.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.dy7xbsdi2anzv1ukfoxd1e94v.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/dy7xbsdi2anzv1ukfoxd1e94v.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.e3w1nkyn862i4ilf8d97wbckt.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/e3w1nkyn862i4ilf8d97wbckt.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.e42cvfv3xlbr3dn6ypk0p77kq.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/e42cvfv3xlbr3dn6ypk0p77kq.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.etfj0j4o9qt9l0c8h9vgxl4y9.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/etfj0j4o9qt9l0c8h9vgxl4y9.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_world_border-aa33aa9917b71a8f.f502cgz1i68izebd9viq4euyr.0jawgo7.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/f502cgz1i68izebd9viq4euyr.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/libvalence_world_border-aa33aa9917b71a8f.rmeta` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/metadata.rmeta`: No such file or directory (os error 2)
+
+error: failed to create work product index at `/home/brittonr/.cargo-target/debug/incremental/valence_world_border-2ga29o96dy9f7/s-hjta4853pq-0u3s4r5-working/work-products.bin`: No such file or directory (os error 2)
+
+warning: `valence_world_border` (lib) generated 32 warnings
+error: could not compile `valence_world_border` (lib) due to 1 previous error; 32 warnings emitted
+error: failed to move dependency graph from `/home/brittonr/.cargo-target/debug/incremental/valence_anvil-29uatusnee90v/s-hjta47qsgy-0uvohg4-working/dep-graph.part.bin` to `/home/brittonr/.cargo-target/debug/incremental/valence_anvil-29uatusnee90v/s-hjta47qsgy-0uvohg4-working/dep-graph.bin`: No such file or directory (os error 2)
+
+error: failed to create query cache at `/home/brittonr/.cargo-target/debug/incremental/valence_anvil-29uatusnee90v/s-hjta47qsgy-0uvohg4-working/query-cache.bin`: No such file or directory (os error 2)
+
+error: could not compile `valence_anvil` (lib) due to 2 previous errors
+
+thread 'opt ber02ymwnw8e2b9bcvdxw1sjl' (2201497) panicked at /rustc-dev/59807616e1fa2540724bfbac14d7976d7e4a3860/compiler/rustc_codegen_ssa/src/back/write.rs:874:21:
+Error writing pre-lto-bitcode file `/home/brittonr/.cargo-target/debug/incremental/valence_network-2a9fatal1rbz1/s-hjta47kowh-0ny5t3d-working/ber02ymwnw8e2b9bcvdxw1sjl.pre-lto.bc`: No such file or directory (os error 2)
+stack backtrace:
+   0:     0x7ffff6c9b205 - <<std[e114a732dcca3553]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[3450ada48eaa0180]::fmt::Display>::fmt
+   1:     0x7ffff6d23f5a - core[3450ada48eaa0180]::fmt::write
+   2:     0x7ffff6ca3266 - std[e114a732dcca3553]::io::default_write_fmt::<std[e114a732dcca3553]::sys::stdio::unix::Stderr>
+   3:     0x7ffff6c95d9c - std[e114a732dcca3553]::panicking::default_hook::{closure#0}
+   4:     0x7ffff6c98a1a - std[e114a732dcca3553]::panicking::default_hook
+   5:     0x7ffff321aab6 - <alloc[14b61e6f9a1b4311]::boxed::Box<rustc_driver_impl[34b8abac1eb5652e]::install_ice_hook::{closure#1}> as core[3450ada48eaa0180]::ops::function::Fn<(&dyn for<'a, 'b> core[3450ada48eaa0180]::ops::function::Fn<(&'a std[e114a732dcca3553]::panic::PanicHookInfo<'b>,), Output = ()> + core[3450ada48eaa0180]::marker::Send + core[3450ada48eaa0180]::marker::Sync, &std[e114a732dcca3553]::panic::PanicHookInfo)>>::call
+   6:     0x7ffff6c98c22 - std[e114a732dcca3553]::panicking::panic_with_hook
+   7:     0x7ffff6c95e48 - std[e114a732dcca3553]::panicking::panic_handler::{closure#0}
+   8:     0x7ffff6c95549 - std[e114a732dcca3553]::sys::backtrace::__rust_end_short_backtrace::<std[e114a732dcca3553]::panicking::panic_handler::{closure#0}, !>
+   9:     0x7ffff6c9624d - __rustc[d8ff9d08a1174409]::rust_begin_unwind
+  10:     0x7ffff319c11c - core[3450ada48eaa0180]::panicking::panic_fmt
+  11:     0x7ffff2fe63e9 - rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::execute_optimize_work_item::<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#1}
+  12:     0x7ffff368bba7 - std[e114a732dcca3553]::sys::backtrace::__rust_begin_short_backtrace::<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::spawn_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#0}, ()>::{closure#0}, ()>
+  13:     0x7ffff35a30d7 - <std[e114a732dcca3553]::thread::lifecycle::spawn_unchecked<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::spawn_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#0}, ()>::{closure#0}, ()>::{closure#1} as core[3450ada48eaa0180]::ops::function::FnOnce<()>>::call_once::{shim:vtable#0}
+  14:     0x7ffff6cab9c4 - <std[e114a732dcca3553]::sys::thread::unix::Thread>::new::thread_start
+  15:     0x7ffff27ffd53 - start_thread
+  16:     0x7ffff288763c - __clone3
+  17:                0x0 - <unknown>
+
+error: the compiler unexpectedly panicked. This is a bug
+
+note: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md
+
+note: rustc 1.95.0 (59807616e 2026-04-14) (built from a source tarball) running on x86_64-unknown-linux-gnu
+
+note: compiler flags: --crate-type lib -C opt-level=1 -C embed-bitcode=no -C debuginfo=2 -C debug-assertions=on -C linker=cc -C incremental=[REDACTED] -C link-arg=-fuse-ld=mold
+
+note: some of the compiler flags provided by cargo are hidden
+
+query stack during panic:
+end of query stack
+
+thread 'coordinator' (2201406) panicked at /rustc-dev/59807616e1fa2540724bfbac14d7976d7e4a3860/compiler/rustc_codegen_ssa/src/back/write.rs:1749:29:
+/rustc-dev/59807616e1fa2540724bfbac14d7976d7e4a3860/compiler/rustc_codegen_ssa/src/back/write.rs:1749:29: worker thread panicked
+stack backtrace:
+   0:     0x7ffff6c9b205 - <<std[e114a732dcca3553]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[3450ada48eaa0180]::fmt::Display>::fmt
+   1:     0x7ffff6d23f5a - core[3450ada48eaa0180]::fmt::write
+   2:     0x7ffff6ca3266 - std[e114a732dcca3553]::io::default_write_fmt::<std[e114a732dcca3553]::sys::stdio::unix::Stderr>
+   3:     0x7ffff6c95d9c - std[e114a732dcca3553]::panicking::default_hook::{closure#0}
+   4:     0x7ffff6c98a1a - std[e114a732dcca3553]::panicking::default_hook
+   5:     0x7ffff321aab6 - <alloc[14b61e6f9a1b4311]::boxed::Box<rustc_driver_impl[34b8abac1eb5652e]::install_ice_hook::{closure#1}> as core[3450ada48eaa0180]::ops::function::Fn<(&dyn for<'a, 'b> core[3450ada48eaa0180]::ops::function::Fn<(&'a std[e114a732dcca3553]::panic::PanicHookInfo<'b>,), Output = ()> + core[3450ada48eaa0180]::marker::Send + core[3450ada48eaa0180]::marker::Sync, &std[e114a732dcca3553]::panic::PanicHookInfo)>>::call
+   6:     0x7ffff6c98c22 - std[e114a732dcca3553]::panicking::panic_with_hook
+   7:     0x7ffff6609c75 - std[e114a732dcca3553]::panicking::begin_panic::<alloc[14b61e6f9a1b4311]::string::String>::{closure#0}
+   8:     0x7ffff6603729 - std[e114a732dcca3553]::sys::backtrace::__rust_end_short_backtrace::<std[e114a732dcca3553]::panicking::begin_panic<alloc[14b61e6f9a1b4311]::string::String>::{closure#0}, !>
+   9:     0x7ffff313e0ab - std[e114a732dcca3553]::panicking::begin_panic::<alloc[14b61e6f9a1b4311]::string::String>
+  10:     0x7ffff6588838 - rustc_middle[33c8aec3305360b]::util::bug::opt_span_bug_fmt::<rustc_span[bde730cd47247664]::span_encoding::Span>::{closure#0}
+  11:     0x7ffff658886f - rustc_middle[33c8aec3305360b]::ty::context::tls::with_opt::<rustc_middle[33c8aec3305360b]::util::bug::opt_span_bug_fmt<rustc_span[bde730cd47247664]::span_encoding::Span>::{closure#0}, !>::{closure#0}
+  12:     0x7ffff657bb4e - rustc_middle[33c8aec3305360b]::ty::context::tls::with_context_opt::<rustc_middle[33c8aec3305360b]::ty::context::tls::with_opt<rustc_middle[33c8aec3305360b]::util::bug::opt_span_bug_fmt<rustc_span[bde730cd47247664]::span_encoding::Span>::{closure#0}, !>::{closure#0}, !>
+  13:     0x7ffff31417d7 - rustc_middle[33c8aec3305360b]::util::bug::bug_fmt
+  14:     0x7ffff368e434 - std[e114a732dcca3553]::sys::backtrace::__rust_begin_short_backtrace::<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::start_executing_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#4}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>::{closure#0}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>
+  15:     0x7ffff35a3507 - <std[e114a732dcca3553]::thread::lifecycle::spawn_unchecked<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::start_executing_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#4}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>::{closure#0}, core[3450ada48eaa0180]::result::Result<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::MaybeLtoModules<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>, ()>>::{closure#1} as core[3450ada48eaa0180]::ops::function::FnOnce<()>>::call_once::{shim:vtable#0}
+  16:     0x7ffff6cab9c4 - <std[e114a732dcca3553]::sys::thread::unix::Thread>::new::thread_start
+  17:     0x7ffff27ffd53 - start_thread
+  18:     0x7ffff288763c - __clone3
+  19:                0x0 - <unknown>
+
+error: the compiler unexpectedly panicked. This is a bug
+
+note: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md
+
+note: rustc 1.95.0 (59807616e 2026-04-14) (built from a source tarball) running on x86_64-unknown-linux-gnu
+
+note: compiler flags: --crate-type lib -C opt-level=1 -C embed-bitcode=no -C debuginfo=2 -C debug-assertions=on -C linker=cc -C incremental=[REDACTED] -C link-arg=-fuse-ld=mold
+
+note: some of the compiler flags provided by cargo are hidden
+
+query stack during panic:
+end of query stack
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.02xq922a1k5b63e6afpkr70e3.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/02xq922a1k5b63e6afpkr70e3.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.08nz0009nyekfbezomail7qdj.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/08nz0009nyekfbezomail7qdj.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.0cyggp8shvi9qzg2sqikl3av5.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/0cyggp8shvi9qzg2sqikl3av5.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.0lbdkvnzk5dka9docj9gciiat.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/0lbdkvnzk5dka9docj9gciiat.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.0prsj186hm63xtz05uybdrtb5.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/0prsj186hm63xtz05uybdrtb5.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.11q5s4g575wdnv1exm625fa6w.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/11q5s4g575wdnv1exm625fa6w.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.16r1ienyg7kc7ggb7basirbbr.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/16r1ienyg7kc7ggb7basirbbr.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.1d2lt2z6c9l4kcvm01vpk27n8.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/1d2lt2z6c9l4kcvm01vpk27n8.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.21aii150gen3sw4yfr490bqgp.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/21aii150gen3sw4yfr490bqgp.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.24ozw4fwazbeypfgcztyzsi01.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/24ozw4fwazbeypfgcztyzsi01.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.24v4f5kr1o7lgn3lysdfb6ep5.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/24v4f5kr1o7lgn3lysdfb6ep5.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.285akg2s02abd7uk8e1veetbl.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/285akg2s02abd7uk8e1veetbl.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.2gbamh2f47bfkz6qd271dzoes.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/2gbamh2f47bfkz6qd271dzoes.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.2m560kiitvj2sjq2ljygcbv5l.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/2m560kiitvj2sjq2ljygcbv5l.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.2zkd53y2z2l3g41t0r7kuc6h5.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/2zkd53y2z2l3g41t0r7kuc6h5.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.3b8bqkumc36eh47kxs73j5dmx.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/3b8bqkumc36eh47kxs73j5dmx.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.3il3zt600m3sfs28te466c2br.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/3il3zt600m3sfs28te466c2br.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.3kg8k2n9sht6vwmhno7r129e8.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/3kg8k2n9sht6vwmhno7r129e8.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.3srt7owoknhiv4ra8ilznsa8a.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/3srt7owoknhiv4ra8ilznsa8a.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.3thr1lwra1s5vzm9trgjk93iz.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/3thr1lwra1s5vzm9trgjk93iz.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.3u3gibug337kmq37pyos457ms.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/3u3gibug337kmq37pyos457ms.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.3zb1tbgswntjbmldlm8rc0nqy.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/3zb1tbgswntjbmldlm8rc0nqy.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.42idpy14awxvpkwopw85w3uso.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/42idpy14awxvpkwopw85w3uso.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.48chg15d0l7frs8eosymlc1b4.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/48chg15d0l7frs8eosymlc1b4.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.496fme7vga5gfhcfrn28ekqwj.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/496fme7vga5gfhcfrn28ekqwj.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.4clzzafq3sy2xyfvrupgi07ef.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/4clzzafq3sy2xyfvrupgi07ef.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.4iy0f0v7pqzbov9kadonzdm7m.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/4iy0f0v7pqzbov9kadonzdm7m.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.4tvri6lrnxemx5qef5alt8glj.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/4tvri6lrnxemx5qef5alt8glj.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.4vmf6qi267tidpbkpqo7az9jt.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/4vmf6qi267tidpbkpqo7az9jt.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.4wsrfzxg4gm855ri9d356gehs.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/4wsrfzxg4gm855ri9d356gehs.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.56484z2bzsl7u10ymiqvupz0j.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/56484z2bzsl7u10ymiqvupz0j.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.5rse59cfdat6y8qwt12qofkus.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/5rse59cfdat6y8qwt12qofkus.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.5s2nj3ltwag6zvidfhtz03068.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/5s2nj3ltwag6zvidfhtz03068.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.5tdgoizhe65gmefkbk7o91ede.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/5tdgoizhe65gmefkbk7o91ede.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.5vbiasa41udkgruxek76gynp0.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/5vbiasa41udkgruxek76gynp0.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.66js5x8mdo7pm8p34l4ietqis.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/66js5x8mdo7pm8p34l4ietqis.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.67qomx4cipmc4mjerbbfxi8ns.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/67qomx4cipmc4mjerbbfxi8ns.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.6az0zyoqy42d6qx9iw1nv8d4d.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/6az0zyoqy42d6qx9iw1nv8d4d.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.6dvsw7lg9nosguvp6fwkb2e93.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/6dvsw7lg9nosguvp6fwkb2e93.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.6rkhi61u1107t8c9arqkcyku4.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/6rkhi61u1107t8c9arqkcyku4.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.6x9zmy1keqwt6kmoc0n17tt05.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/6x9zmy1keqwt6kmoc0n17tt05.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.79umbi8sc3ddx4pmb2xcqg90u.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/79umbi8sc3ddx4pmb2xcqg90u.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.79wdiv93lynq0r2w6ya7tgms3.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/79wdiv93lynq0r2w6ya7tgms3.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.7lbun7yvwosij4g94wfqy46a1.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/7lbun7yvwosij4g94wfqy46a1.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.7sbljzf3tq9c2l69rr1l7ney5.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/7sbljzf3tq9c2l69rr1l7ney5.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.7tllvjtcurck1lzq4lereasc5.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/7tllvjtcurck1lzq4lereasc5.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.84uk6fzoib7hvcn6pp2ygevef.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/84uk6fzoib7hvcn6pp2ygevef.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.8j4cwu8pshm3qtlybplgvjo2g.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/8j4cwu8pshm3qtlybplgvjo2g.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.8k8hjf4c1j39znoii0lum34xw.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/8k8hjf4c1j39znoii0lum34xw.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.8na84b20kp9i6kuug4f95ysxg.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/8na84b20kp9i6kuug4f95ysxg.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.8ph3sbx09xrtxo9aey5gmcxoq.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/8ph3sbx09xrtxo9aey5gmcxoq.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.8xm2x4egdsvfd1d83oece2pex.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/8xm2x4egdsvfd1d83oece2pex.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.8y13qb7fnk8ygjn39q1fewta0.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/8y13qb7fnk8ygjn39q1fewta0.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.92u856aas7e4zrzetfzkozky4.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/92u856aas7e4zrzetfzkozky4.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.93qqla70xmlfm221vt5da8jq8.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/93qqla70xmlfm221vt5da8jq8.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.97g17yvq2ne89ydgms9rd5h5v.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/97g17yvq2ne89ydgms9rd5h5v.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.9nwu4v6muzcgstvxumtxzvj61.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/9nwu4v6muzcgstvxumtxzvj61.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.9v48rzovetj02p1303dd3z9t8.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/9v48rzovetj02p1303dd3z9t8.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.a1k32pr3ailc7l6nbwyyzfpxz.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/a1k32pr3ailc7l6nbwyyzfpxz.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.a6ovbjfr19bvkr6clt56uiopr.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/a6ovbjfr19bvkr6clt56uiopr.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.akjckquxsvmlxe33bzyvmlg21.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/akjckquxsvmlxe33bzyvmlg21.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.atlhy7zs8le0x5gq3ant3gedw.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/atlhy7zs8le0x5gq3ant3gedw.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.b1f20fddahl6x91oeuzhc8r28.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/b1f20fddahl6x91oeuzhc8r28.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.baglstkzrlovlsw25zpob1zbh.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/baglstkzrlovlsw25zpob1zbh.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.bela603vgiblc2ara9yaq2eyl.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/bela603vgiblc2ara9yaq2eyl.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.bg1dqmd3us3v6w2n5c7ikqpei.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/bg1dqmd3us3v6w2n5c7ikqpei.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.c18723kr5urml2cemi138wlq6.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/c18723kr5urml2cemi138wlq6.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.c1hqgb9z8ze7qie0tabbz8fqo.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/c1hqgb9z8ze7qie0tabbz8fqo.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.c6eh8nxahw5qzme3mac8l5upn.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/c6eh8nxahw5qzme3mac8l5upn.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.cacum1yevem52mpw0qs9io8oh.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/cacum1yevem52mpw0qs9io8oh.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.ciw163b9s2swb9g633ufgcjx2.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/ciw163b9s2swb9g633ufgcjx2.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.cxn16gpavgpsvsmtv7mc96rn4.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/cxn16gpavgpsvsmtv7mc96rn4.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.d2d1el0afk3ya4eq6d1a1znhh.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/d2d1el0afk3ya4eq6d1a1znhh.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.d3bqtmkvgpqs3j9nnjimnrttl.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/d3bqtmkvgpqs3j9nnjimnrttl.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.d69ce0z1kh889qfjnxodg47ey.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/d69ce0z1kh889qfjnxodg47ey.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.d8g7sgv6vzwwomh7l2lclqsek.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/d8g7sgv6vzwwomh7l2lclqsek.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.d9arsol66x0w0hhhz5vrzumtf.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/d9arsol66x0w0hhhz5vrzumtf.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.d9qs2518tjdb2h16m84c3q4og.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/d9qs2518tjdb2h16m84c3q4og.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.dgw8cah4ebk6wuy8k8wtwlcy5.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/dgw8cah4ebk6wuy8k8wtwlcy5.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.dk0883kdt1yv57boccq3dd2tx.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/dk0883kdt1yv57boccq3dd2tx.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.dq72696cjj0vac7q9j2c1gitq.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/dq72696cjj0vac7q9j2c1gitq.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.dx5za4kadgkerjjafysh05h66.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/dx5za4kadgkerjjafysh05h66.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.e5hrewfe6xjaggz2yw3nypavq.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/e5hrewfe6xjaggz2yw3nypavq.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.eabljdyhmrjgfpgwsi9nkqmbf.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/eabljdyhmrjgfpgwsi9nkqmbf.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.ecmsswq9wy8orr9epeq9ragh8.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/ecmsswq9wy8orr9epeq9ragh8.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.ee9z7dmps9h5xut2pw5hvk933.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/ee9z7dmps9h5xut2pw5hvk933.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.eejy6n825imv0z28b4v8tlh1l.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/eejy6n825imv0z28b4v8tlh1l.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.epvwe2dw0rwqj07hbhzu2crnp.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/epvwe2dw0rwqj07hbhzu2crnp.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_inventory-c4268f08506bf1fe.f0r3guju242158okn2jo72n14.0ha6n6d.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/f0r3guju242158okn2jo72n14.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/libvalence_inventory-c4268f08506bf1fe.rmeta` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/metadata.rmeta`: No such file or directory (os error 2)
+
+error: failed to create work product index at `/home/brittonr/.cargo-target/debug/incremental/valence_inventory-3lj7c4enbe02j/s-hjta46euzu-1nd30et-working/work-products.bin`: No such file or directory (os error 2)
+
+warning: `valence_inventory` (lib) generated 91 warnings
+error: could not compile `valence_inventory` (lib) due to 1 previous error; 91 warnings emitted
+error: failed to move dependency graph from `/home/brittonr/.cargo-target/debug/incremental/valence_command-1ksf3c9bvp6mj/s-hjta48ag19-071mr15-working/dep-graph.part.bin` to `/home/brittonr/.cargo-target/debug/incremental/valence_command-1ksf3c9bvp6mj/s-hjta48ag19-071mr15-working/dep-graph.bin`: No such file or directory (os error 2)
+
+error: failed to create query cache at `/home/brittonr/.cargo-target/debug/incremental/valence_command-1ksf3c9bvp6mj/s-hjta48ag19-071mr15-working/query-cache.bin`: No such file or directory (os error 2)
+
+error: could not compile `valence_command` (lib) due to 2 previous errors
+
+thread 'opt 9z0o8wd7gh2udcll1alrkihbj' (2201450) panicked at /rustc-dev/59807616e1fa2540724bfbac14d7976d7e4a3860/compiler/rustc_codegen_ssa/src/back/write.rs:874:21:
+Error writing pre-lto-bitcode file `/home/brittonr/.cargo-target/debug/incremental/valence_network-2a9fatal1rbz1/s-hjta47kowh-0ny5t3d-working/9z0o8wd7gh2udcll1alrkihbj.pre-lto.bc`: No such file or directory (os error 2)
+stack backtrace:
+   0:     0x7ffff6c9b205 - <<std[e114a732dcca3553]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[3450ada48eaa0180]::fmt::Display>::fmt
+   1:     0x7ffff6d23f5a - core[3450ada48eaa0180]::fmt::write
+   2:     0x7ffff6ca3266 - std[e114a732dcca3553]::io::default_write_fmt::<std[e114a732dcca3553]::sys::stdio::unix::Stderr>
+   3:     0x7ffff6c95d9c - std[e114a732dcca3553]::panicking::default_hook::{closure#0}
+   4:     0x7ffff6c98a1a - std[e114a732dcca3553]::panicking::default_hook
+   5:     0x7ffff321aab6 - <alloc[14b61e6f9a1b4311]::boxed::Box<rustc_driver_impl[34b8abac1eb5652e]::install_ice_hook::{closure#1}> as core[3450ada48eaa0180]::ops::function::Fn<(&dyn for<'a, 'b> core[3450ada48eaa0180]::ops::function::Fn<(&'a std[e114a732dcca3553]::panic::PanicHookInfo<'b>,), Output = ()> + core[3450ada48eaa0180]::marker::Send + core[3450ada48eaa0180]::marker::Sync, &std[e114a732dcca3553]::panic::PanicHookInfo)>>::call
+   6:     0x7ffff6c98c22 - std[e114a732dcca3553]::panicking::panic_with_hook
+   7:     0x7ffff6c95e48 - std[e114a732dcca3553]::panicking::panic_handler::{closure#0}
+   8:     0x7ffff6c95549 - std[e114a732dcca3553]::sys::backtrace::__rust_end_short_backtrace::<std[e114a732dcca3553]::panicking::panic_handler::{closure#0}, !>
+   9:     0x7ffff6c9624d - __rustc[d8ff9d08a1174409]::rust_begin_unwind
+  10:     0x7ffff319c11c - core[3450ada48eaa0180]::panicking::panic_fmt
+  11:     0x7ffff2fe63e9 - rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::execute_optimize_work_item::<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#1}
+  12:     0x7ffff368bba7 - std[e114a732dcca3553]::sys::backtrace::__rust_begin_short_backtrace::<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::spawn_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#0}, ()>::{closure#0}, ()>
+  13:     0x7ffff35a30d7 - <std[e114a732dcca3553]::thread::lifecycle::spawn_unchecked<<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend as rustc_codegen_ssa[6fb3c43522e85c4e]::traits::backend::ExtraBackendMethods>::spawn_named_thread<rustc_codegen_ssa[6fb3c43522e85c4e]::back::write::spawn_work<rustc_codegen_llvm[9821453022b5f02]::LlvmCodegenBackend>::{closure#0}, ()>::{closure#0}, ()>::{closure#1} as core[3450ada48eaa0180]::ops::function::FnOnce<()>>::call_once::{shim:vtable#0}
+  14:     0x7ffff6cab9c4 - <std[e114a732dcca3553]::sys::thread::unix::Thread>::new::thread_start
+  15:     0x7ffff27ffd53 - start_thread
+  16:     0x7ffff288763c - __clone3
+  17:                0x0 - <unknown>
+
+error: the compiler unexpectedly panicked. This is a bug
+
+note: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md
+
+note: rustc 1.95.0 (59807616e 2026-04-14) (built from a source tarball) running on x86_64-unknown-linux-gnu
+
+note: compiler flags: --crate-type lib -C opt-level=1 -C embed-bitcode=no -C debuginfo=2 -C debug-assertions=on -C linker=cc -C incremental=[REDACTED] -C link-arg=-fuse-ld=mold
+
+note: some of the compiler flags provided by cargo are hidden
+
+query stack during panic:
+end of query stack
+error: failed to move dependency graph from `/home/brittonr/.cargo-target/debug/incremental/valence_entity-22ztpvfdqfodl/s-hjta3yjkfn-02m01bq-working/dep-graph.part.bin` to `/home/brittonr/.cargo-target/debug/incremental/valence_entity-22ztpvfdqfodl/s-hjta3yjkfn-02m01bq-working/dep-graph.bin`: No such file or directory (os error 2)
+
+error: failed to create query cache at `/home/brittonr/.cargo-target/debug/incremental/valence_entity-22ztpvfdqfodl/s-hjta3yjkfn-02m01bq-working/query-cache.bin`: No such file or directory (os error 2)
+
+error: could not compile `valence_entity` (lib) due to 2 previous errors
+error: failed to move dependency graph from `/home/brittonr/.cargo-target/debug/incremental/valence_server-22wbh5y9h7pfh/s-hjta43gmif-1jnfqh1-working/dep-graph.part.bin` to `/home/brittonr/.cargo-target/debug/incremental/valence_server-22wbh5y9h7pfh/s-hjta43gmif-1jnfqh1-working/dep-graph.bin`: No such file or directory (os error 2)
+
+error: failed to create query cache at `/home/brittonr/.cargo-target/debug/incremental/valence_server-22wbh5y9h7pfh/s-hjta43gmif-1jnfqh1-working/query-cache.bin`: No such file or directory (os error 2)
+
+error: could not compile `valence_server` (lib) due to 2 previous errors
+error: failed to move dependency graph from `/home/brittonr/.cargo-target/debug/incremental/valence_network-2a9fatal1rbz1/s-hjta47kowh-0ny5t3d-working/dep-graph.part.bin` to `/home/brittonr/.cargo-target/debug/incremental/valence_network-2a9fatal1rbz1/s-hjta47kowh-0ny5t3d-working/dep-graph.bin`: No such file or directory (os error 2)
+
+error: failed to create query cache at `/home/brittonr/.cargo-target/debug/incremental/valence_network-2a9fatal1rbz1/s-hjta47kowh-0ny5t3d-working/query-cache.bin`: No such file or directory (os error 2)
+
+error: could not compile `valence_network` (lib) due to 2 previous errors
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_generated-81ec4fb1fb17ef81.39576m0hwgckb91sdysicungp.0u4ge2n.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_generated-2bwf5pwfrader/s-hjta3k4zlv-1njn2ll-working/39576m0hwgckb91sdysicungp.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_generated-81ec4fb1fb17ef81.42ml7lgx3iypmlaiaapjk9xot.0u4ge2n.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_generated-2bwf5pwfrader/s-hjta3k4zlv-1njn2ll-working/42ml7lgx3iypmlaiaapjk9xot.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_generated-81ec4fb1fb17ef81.600vj7fg5h7vzudwjevu9ej2d.0u4ge2n.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_generated-2bwf5pwfrader/s-hjta3k4zlv-1njn2ll-working/600vj7fg5h7vzudwjevu9ej2d.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_generated-81ec4fb1fb17ef81.amql9yzvghuoyb5nwthhh4j17.0u4ge2n.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_generated-2bwf5pwfrader/s-hjta3k4zlv-1njn2ll-working/amql9yzvghuoyb5nwthhh4j17.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_generated-81ec4fb1fb17ef81.c2qmq414hs323rg1r5sofsjjf.0u4ge2n.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_generated-2bwf5pwfrader/s-hjta3k4zlv-1njn2ll-working/c2qmq414hs323rg1r5sofsjjf.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_generated-81ec4fb1fb17ef81.dvdfki7mgks0l7p7l1huu3mmr.0u4ge2n.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_generated-2bwf5pwfrader/s-hjta3k4zlv-1njn2ll-working/dvdfki7mgks0l7p7l1huu3mmr.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/valence_generated-81ec4fb1fb17ef81.e47pnbjzuwcrnwbdl8pvie4tt.0u4ge2n.rcgu.o` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_generated-2bwf5pwfrader/s-hjta3k4zlv-1njn2ll-working/e47pnbjzuwcrnwbdl8pvie4tt.o`: No such file or directory (os error 2)
+
+warning: error copying object file `/home/brittonr/.cargo-target/debug/deps/libvalence_generated-81ec4fb1fb17ef81.rmeta` to incremental directory as `/home/brittonr/.cargo-target/debug/incremental/valence_generated-2bwf5pwfrader/s-hjta3k4zlv-1njn2ll-working/metadata.rmeta`: No such file or directory (os error 2)
+
+error: failed to create work product index at `/home/brittonr/.cargo-target/debug/incremental/valence_generated-2bwf5pwfrader/s-hjta3k4zlv-1njn2ll-working/work-products.bin`: No such file or directory (os error 2)
+
+warning: `valence_generated` (lib) generated 8 warnings
+error: could not compile `valence_generated` (lib) due to 1 previous error; 8 warnings emitted
+exit_status=101

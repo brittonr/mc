@@ -14,7 +14,9 @@ use bevy_app::prelude::*;
 use bevy_ecs::prelude::*;
 use bytes::Bytes;
 
-use crate::event_loop::{EventLoopPostUpdate, EventLoopPreUpdate, EventLoopUpdate, PacketEvent};
+use crate::event_loop::{
+    EventLoopPostUpdate, EventLoopPreUpdate, EventLoopSet, EventLoopUpdate, PacketEvent,
+};
 
 /// Stable span name emitted for tick phase observations.
 pub const TICK_PHASE_SPAN_NAME: &str = "valence.tick.phase";
@@ -45,17 +47,23 @@ impl Plugin for ObservabilityPlugin {
             )
             .add_systems(
                 EventLoopPreUpdate,
-                emit_event_loop_pre_update_phase.run_if(observability_tick_phases_enabled),
+                emit_event_loop_pre_update_phase
+                    .in_set(EventLoopSet::Diagnostics)
+                    .run_if(observability_tick_phases_enabled),
             )
             .add_systems(
                 EventLoopUpdate,
-                emit_event_loop_update_phase.run_if(observability_tick_phases_enabled),
+                emit_event_loop_update_phase
+                    .in_set(EventLoopSet::Diagnostics)
+                    .run_if(observability_tick_phases_enabled),
             )
             .add_systems(
                 EventLoopPostUpdate,
                 (
-                    emit_event_loop_post_update_phase.run_if(observability_tick_phases_enabled),
-                    emit_network_packet_records,
+                    emit_event_loop_post_update_phase
+                        .in_set(EventLoopSet::Diagnostics)
+                        .run_if(observability_tick_phases_enabled),
+                    emit_network_packet_records.in_set(EventLoopSet::Diagnostics),
                 ),
             )
             .add_systems(

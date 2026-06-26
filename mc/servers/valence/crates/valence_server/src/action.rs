@@ -8,7 +8,7 @@ use valence_protocol::packets::play::{PlayerActionC2s, PlayerActionResponseS2c};
 use valence_protocol::{BlockPos, Direction, VarInt, WritePacket};
 
 use crate::client::{Client, UpdateClientsSet};
-use crate::event_loop::{EventLoopPreUpdate, PacketEvent};
+use crate::event_loop::{EventLoopPreUpdate, EventLoopSet, PacketEvent};
 
 pub struct ActionPlugin;
 
@@ -18,7 +18,11 @@ impl Plugin for ActionPlugin {
             .add_event::<DiggingEvent>()
             .add_systems(
                 EventLoopPreUpdate,
-                (emit_player_action_events, handle_player_action).chain(),
+                (
+                    emit_player_action_events.in_set(EventLoopSet::TypedAdapters),
+                    handle_player_action.in_set(EventLoopSet::DomainConsumers),
+                )
+                    .chain(),
             )
             .add_systems(
                 PostUpdate,
@@ -29,10 +33,10 @@ impl Plugin for ActionPlugin {
 
 /// A validated `PlayerActionC2s` packet promoted into the event loop.
 ///
-/// This event is emitted during [`EventLoopPreUpdate`] after the raw packet ID,
-/// full packet body, and source client have been validated. Raw [`PacketEvent`]
-/// values remain available for low-level systems that need unsupported packet
-/// access.
+/// This event is emitted from [`EventLoopSet::TypedAdapters`] during
+/// [`EventLoopPreUpdate`] after the raw packet ID, full packet body, and source
+/// client have been validated. Raw [`PacketEvent`] values remain available for
+/// low-level systems that need unsupported packet access.
 #[derive(Event, Copy, Clone, Debug, PartialEq, Eq)]
 pub struct PlayerActionEvent {
     /// The live client that sent the packet.
@@ -177,6 +181,11 @@ mod tests {
     const PARTIAL_DECODE_TRUNCATED_BYTES: usize = 1;
     const EXPECTED_SINGLE_EVENT_COUNT: usize = 1;
 
+    #[derive(Resource, Default)]
+    struct RawPacketObservation {
+        count: usize,
+    }
+
     #[test]
     fn adapter_emits_player_action_event_for_live_valid_packet() {
         let mut app = action_app();
@@ -213,6 +222,9 @@ mod tests {
         send_valid_player_action_packet(&mut app, client);
         app.update();
 
+        let action_events = player_action_events(&app);
+        assert!(!has_duplicate_player_action_event(&action_events));
+
         let digging_events = digging_events(&app);
         assert_eq!(digging_events.len(), EXPECTED_SINGLE_EVENT_COUNT);
         let event = digging_events[0];
@@ -221,6 +233,37 @@ mod tests {
         assert_eq!(event.direction, Direction::Up);
         assert_eq!(event.state, DiggingState::Start);
         assert_eq!(action_sequence(&app, client), TEST_SEQUENCE);
+    }
+
+    #[test]
+    fn raw_packet_observer_reads_before_typed_adapter() {
+        let mut app = action_app();
+        app.init_resource::<RawPacketObservation>().add_systems(
+            EventLoopPreUpdate,
+            count_raw_packets.in_set(EventLoopSet::RawPacketObservers),
+        );
+        let client = spawn_live_client(&mut app);
+
+        send_valid_player_action_packet(&mut app, client);
+        app.update();
+
+        assert_eq!(
+            raw_packet_observation_count(&app),
+            EXPECTED_SINGLE_EVENT_COUNT
+        );
+        assert_eq!(
+            player_action_events(&app).len(),
+            EXPECTED_SINGLE_EVENT_COUNT
+        );
+    }
+
+    #[test]
+    fn duplicate_player_action_events_are_detected() {
+        let mut app = action_app();
+        let client = spawn_live_client(&mut app);
+        let event = valid_player_action_event(client, Instant::now());
+
+        assert!(has_duplicate_player_action_event(&[event, event]));
     }
 
     #[test]
@@ -327,6 +370,28 @@ mod tests {
         }
     }
 
+    fn valid_player_action_event(client: Entity, timestamp: Instant) -> PlayerActionEvent {
+        PlayerActionEvent {
+            client,
+            timestamp,
+            action: PlayerAction::StartDestroyBlock,
+            position: test_block_position(),
+            direction: Direction::Up,
+            sequence: TEST_SEQUENCE,
+        }
+    }
+
+    fn count_raw_packets(
+        mut packets: EventReader<PacketEvent>,
+        mut observation: ResMut<RawPacketObservation>,
+    ) {
+        observation.count += packets.read().count();
+    }
+
+    fn raw_packet_observation_count(app: &App) -> usize {
+        app.world().resource::<RawPacketObservation>().count
+    }
+
     fn valid_player_action_body() -> Bytes {
         encoded_body(&PlayerActionC2s {
             action: PlayerAction::StartDestroyBlock,
@@ -381,6 +446,18 @@ mod tests {
     fn assert_no_action_or_digging_events(app: &App) {
         assert!(player_action_events(app).is_empty());
         assert!(digging_events(app).is_empty());
+    }
+
+    fn has_duplicate_player_action_event(events: &[PlayerActionEvent]) -> bool {
+        let mut unique_events = Vec::new();
+        for event in events {
+            if unique_events.contains(event) {
+                return true;
+            }
+            unique_events.push(*event);
+        }
+
+        false
     }
 
     fn action_sequence(app: &App, client: Entity) -> i32 {

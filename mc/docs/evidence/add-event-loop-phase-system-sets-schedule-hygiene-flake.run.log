@@ -1,0 +1,16 @@
+command=nix build .#checks.x86_64-linux.mc-valence-schedule-hygiene --no-link -L
+cwd=/home/brittonr/git/mc
+warning: error: unable to download 'http://100.100.103.95:5000/b79zn23q47ysvny6nqjna58lrkbfqrvm.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 296 ms
+warning: error: unable to download 'http://100.100.103.95:5000/b79zn23q47ysvny6nqjna58lrkbfqrvm.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 534 ms
+warning: error: unable to download 'http://100.100.103.95:5000/b79zn23q47ysvny6nqjna58lrkbfqrvm.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 1408 ms
+warning: error: unable to download 'http://100.100.103.95:5000/b79zn23q47ysvny6nqjna58lrkbfqrvm.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 2079 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/b79zn23q47ysvny6nqjna58lrkbfqrvm.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/b79zn23q47ysvny6nqjna58lrkbfqrvm.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+this derivation will be built:
+  /nix/store/kjn0dj44j77v02wi4zipkrac5w3z2i2a-mc-valence-schedule-hygiene.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/kjn0dj44j77v02wi4zipkrac5w3z2i2a-mc-valence-schedule-hygiene.drv'...
+exit_status=0

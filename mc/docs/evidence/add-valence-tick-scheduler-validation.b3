@@ -1,4 +1,4 @@
-a26db317c56c6065e8f196c27fbefd379eacd3dbfc88b80ea64f51da7f14172a  servers/valence/crates/valence_server/src/lib.rs
+bc1467d316f53614081fd2604b17117b6766d89f50e0819e1ecc26b72ba3f6bc  servers/valence/crates/valence_server/src/lib.rs
 bd37f4ddd9accdae51d82ae4e16f00585c72494393dd3836a77cf43af1a6acad  servers/valence/crates/valence_server/src/tick_scheduler.rs
 705373ba8c9b864366f7687d4eadce6a8f0e4f8dd336beba6702c4761663064c  servers/valence/crates/valence_server/README.md
 3d55f32fded5a2e6034bca178858e2b4c7900561cc39bbed3003272e5aacbbee  cairn/specs/valence-hyperion-integration/spec.md

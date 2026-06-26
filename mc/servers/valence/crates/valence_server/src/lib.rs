@@ -43,7 +43,7 @@ pub mod title;
 pub use bevy_app as app;
 pub use bevy_ecs as ecs;
 pub use chunk_view::ChunkView;
-pub use event_loop::{EventLoopPostUpdate, EventLoopPreUpdate, EventLoopUpdate};
+pub use event_loop::{EventLoopPostUpdate, EventLoopPreUpdate, EventLoopSet, EventLoopUpdate};
 pub use layer::{ChunkLayer, EntityLayer, Layer, LayerBundle};
 pub use rand;
 pub use valence_entity as entity;

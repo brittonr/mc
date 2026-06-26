@@ -25,10 +25,10 @@ ef7fc89f89df86a8700dadfe2d68a043acff4e068fb8d11c88509e86fec1a0c5  cairn/archive/
 d58f4ceb4ab685ba2ba0a945a8f531d3e20deeb448c6161af846df88c63245c2  cairn/archive/2026-06-25-gate-optional-systems-with-bevy-run-conditions/design.md
 d8d394888524594cef029a8447ab66308cf9d13c699f9d8a2c822cffaf038f48  cairn/archive/2026-06-25-gate-optional-systems-with-bevy-run-conditions/tasks.md
 001bfebbbe9c0d1122ef092c274ac37b47e88a9c2439b6989d7f92d549b30fed  cairn/archive/2026-06-25-gate-optional-systems-with-bevy-run-conditions/specs/valence-bevy-ecs/spec.md
-9c958069aeeffcddc0d463d575eefd3e22cdd0ba8c2c7c9bcc70c8d5758d461b  cairn/specs/valence-bevy-ecs/spec.md
-693c38b09e646c2b79397e9f8f3a5fc878300ddd60d37e337752f53262d58604  servers/valence/crates/valence_server/src/observability.rs
+38709ae46b02d2ca7fde3f8d20f143f5458e80655107412f21ed55c366a84387  cairn/specs/valence-bevy-ecs/spec.md
+bdf917e86b1a20f791b467f1a6bb13c9daa6b72886deea46c56b8447b4b6905a  servers/valence/crates/valence_server/src/observability.rs
 705373ba8c9b864366f7687d4eadce6a8f0e4f8dd336beba6702c4761663064c  servers/valence/crates/valence_server/README.md
-2d96133276ada3e20ef626817c230e0d9ccc78324dd37fbd238395b24b4ae6df  docs/evidence/add-schedule-hygiene-gates.b3
-128f5706185a89d6394b4a75c287fff8c8a51a3469382edfd679efc021d3bc52  docs/evidence/add-observability-profiling-hooks-2026-06-23.b3
-1125758529a94bfcd58bf4612fff333a05a4d5286f2e00b89bf18d8ac1cb327a  docs/evidence/add-valence-tick-scheduler-validation.b3
-98325c5983d9ed7507408ce4d20a08ebc8d3b369b0cacf71dacb4ed0e8a40915  docs/evidence/valence-packet-compose-api-2026-06-23.b3
+cc60513e0908243cad79e9a8a65d3bea4e11feb72cbd9b124a2002c41400cfb7  docs/evidence/add-schedule-hygiene-gates.b3
+42d9c42441cf62b6f036c14a6fb818a48ca4c6bf7dec135c96b7df09804b6736  docs/evidence/add-observability-profiling-hooks-2026-06-23.b3
+374c0d1e4f3a127367b0285301638313dccd7723ed72972e027418537b54cb9e  docs/evidence/add-valence-tick-scheduler-validation.b3
+65756806552cb947773b86d4641fb81d9b3035fa13ddae50541a3aecfcaa3051  docs/evidence/valence-packet-compose-api-2026-06-23.b3

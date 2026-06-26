@@ -1,0 +1,16 @@
+command=nix build .#checks.x86_64-linux.mc-flake-output-inventory --no-link -L
+cwd=/home/brittonr/git/mc
+warning: error: unable to download 'http://100.100.103.95:5000/sp06krmqndcq69dky0c6577y9y26p77c.narinfo': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 289 ms
+warning: error: unable to download 'http://100.100.103.95:5000/sp06krmqndcq69dky0c6577y9y26p77c.narinfo': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4104 ms: Could not connect to server; retrying in 576 ms
+warning: error: unable to download 'http://100.100.103.95:5000/sp06krmqndcq69dky0c6577y9y26p77c.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 1166 ms
+warning: error: unable to download 'http://100.100.103.95:5000/sp06krmqndcq69dky0c6577y9y26p77c.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2121 ms
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+error:
+       … during download of 'http://100.100.103.95:5000/sp06krmqndcq69dky0c6577y9y26p77c.narinfo'
+
+       error: unable to download 'http://100.100.103.95:5000/sp06krmqndcq69dky0c6577y9y26p77c.narinfo': Timeout was reached (28) Connection timed out after 5000 milliseconds
+this derivation will be built:
+  /nix/store/4hapfxbvcb1lcsqd946k16vl6b84irh7-mc-flake-output-inventory.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/4hapfxbvcb1lcsqd946k16vl6b84irh7-mc-flake-output-inventory.drv'...
+exit_status=0

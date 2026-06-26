@@ -1,0 +1,5 @@
+command=rustc --edition=2021 tools/check_check_tiers.rs -o target/check-check-tiers && target/check-check-tiers --self-test && target/check-check-tiers --root .
+cwd=/home/brittonr/git/mc
+check tier docs self-test passed
+check tier docs passed
+exit_status=0

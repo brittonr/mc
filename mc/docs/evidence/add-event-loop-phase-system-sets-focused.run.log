@@ -1,0 +1,370 @@
+
+## valence-server-event-loop-tests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: method `packet_data_range` is never used
+   --> crates/valence_protocol/src/decode.rs:192:8
+    |
+187 | impl PacketFrameLayout {
+    | ---------------------- method in this implementation
+...
+192 |     fn packet_data_range(self) -> Range<usize> {
+    |        ^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `valence_protocol` (lib) generated 1 warning
+   Compiling valence_server v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_server)
+    Finished `test` profile [optimized + debuginfo] target(s) in 3.74s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_server-71bc1cc27c5c81f4)
+
+running 4 tests
+test event_loop::tests::ambiguous_phase_order_fails_clearly ... ok
+test event_loop::tests::event_loop_phase_orders_are_valid ... ok
+test event_loop::tests::duplicate_phase_fails_clearly ... ok
+test event_loop::tests::missing_phase_fails_clearly ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 86 filtered out; finished in 0.00s
+
+step=valence-server-event-loop-tests exit_status=0
+
+## valence-server-action-tests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: method `packet_data_range` is never used
+   --> crates/valence_protocol/src/decode.rs:192:8
+    |
+187 | impl PacketFrameLayout {
+    | ---------------------- method in this implementation
+...
+192 |     fn packet_data_range(self) -> Range<usize> {
+    |        ^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `valence_protocol` (lib) generated 1 warning
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.14s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_server-71bc1cc27c5c81f4)
+
+running 8 tests
+test action::tests::duplicate_player_action_events_are_detected ... ok
+test action::tests::raw_packet_observer_reads_before_typed_adapter ... ok
+test action::tests::adapter_rejects_partial_decode ... ok
+test action::tests::adapter_rejects_stale_client ... ok
+test action::tests::adapter_emits_player_action_event_for_live_valid_packet ... ok
+test action::tests::adapter_rejects_malformed_payload ... ok
+test action::tests::gameplay_consumes_typed_action_event_without_duplicate_digging ... ok
+test action::tests::adapter_rejects_wrong_packet_id ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 82 filtered out; finished in 0.00s
+
+step=valence-server-action-tests exit_status=0
+
+## valence-server-observability-tests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+    Blocking waiting for file lock on artifact directory
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: method `packet_data_range` is never used
+   --> crates/valence_protocol/src/decode.rs:192:8
+    |
+187 | impl PacketFrameLayout {
+    | ---------------------- method in this implementation
+...
+192 |     fn packet_data_range(self) -> Range<usize> {
+    |        ^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `valence_protocol` (lib) generated 1 warning
+    Finished `test` profile [optimized + debuginfo] target(s) in 40.23s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_server-71bc1cc27c5c81f4)
+
+running 12 tests
+test observability::tests::config_predicates_expose_enabled_and_disabled_contracts ... ok
+test observability::tests::exporter_failure_reports_outcome_without_panicking ... ok
+test observability::tests::packet_classification_omits_payload_and_bounds_packet_label ... ok
+test observability::tests::sensitive_labels_are_redacted ... ok
+test observability::tests::disabled_plugin_has_no_observability_effect ... ok
+test observability::tests::tick_phase_classification_has_bounded_labels ... ok
+test observability::tests::unknown_metric_names_are_rejected ... ok
+test observability::tests::unknown_packet_id_is_bounded_to_unknown_class ... ok
+test observability::tests::plugin_emits_enabled_tick_and_packet_observations ... ok
+test observability::tests::config_disabled_plugin_emits_no_observability_events ... ok
+test observability::tests::network_reader_drains_disabled_period_packets_before_reenable ... ok
+test observability::tests::tick_phase_run_conditions_follow_runtime_toggle ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 78 filtered out; finished in 0.00s
+
+step=valence-server-observability-tests exit_status=0
+
+## valence-server-anticheat-tests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: method `packet_data_range` is never used
+   --> crates/valence_protocol/src/decode.rs:192:8
+    |
+187 | impl PacketFrameLayout {
+    | ---------------------- method in this implementation
+...
+192 |     fn packet_data_range(self) -> Range<usize> {
+    |        ^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `valence_protocol` (lib) generated 1 warning
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.16s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_server-71bc1cc27c5c81f4)
+
+running 9 tests
+test anticheat::tests::burst_samples_trim_to_sample_capacity ... ok
+test anticheat::tests::invalid_window_and_non_finite_sample_fail_closed ... ok
+test anticheat::tests::empty_window_returns_documented_empty_snapshot ... ok
+test anticheat::tests::normal_samples_compute_rolling_statistics ... ok
+test anticheat::tests::overflow_boundary_fails_closed ... ok
+test anticheat::tests::reset_behavior_clears_window ... ok
+test anticheat::tests::plugin_disabled_has_no_anticheat_effect ... ok
+test anticheat::tests::plugin_samples_packet_cadence ... ok
+test anticheat::tests::plugin_samples_movement_without_default_enforcement ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 81 filtered out; finished in 0.00s
+
+step=valence-server-anticheat-tests exit_status=0
+
+## valence-core-plugin-sets
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+   Compiling valence_server v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_server)
+   Compiling valence_inventory v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_inventory)
+   Compiling valence_command v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_command)
+   Compiling valence_player_list v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_player_list)
+   Compiling valence_boss_bar v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_boss_bar)
+   Compiling valence_weather v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_weather)
+   Compiling valence_advancement v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_advancement)
+   Compiling valence_world_border v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_world_border)
+   Compiling valence_anvil v0.1.0 (/home/brittonr/git/mc/servers/valence/crates/valence_anvil)
+   Compiling valence_scoreboard v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_scoreboard)
+   Compiling valence_network v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_network)
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+   Compiling valence_equipment v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_equipment)
+   Compiling valence v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence)
+warning: `valence_inventory` (lib) generated 1 warning
+    Finished `test` profile [optimized + debuginfo] target(s) in 15.92s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence-9f1b0da706a7f0b4)
+
+running 11 tests
+
+thread 'tests::core_plugin_sets::event_loop_phase_missing_set_fixture_fails_clearly' (3214810) panicked at src/tests/core_plugin_sets.rs:258:9:
+schedule graph is missing set MissingEventLoopSet
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test tests::core_plugin_sets::event_loop_phase_missing_set_fixture_fails_clearly - should panic ... ok
+test tests::core_plugin_sets::disabled_command_plugin_omits_command_schedule_contract ... ok
+test tests::core_plugin_sets::event_loop_phase_sets_are_orderable_for_selected_systems ... ok
+test tests::core_plugin_sets::disabled_action_plugin_omits_selected_event_loop_adapters ... ok
+test tests::core_plugin_sets::disabled_scoreboard_plugin_omits_scoreboard_schedule_contract ... ok
+test tests::core_plugin_sets::disabled_weather_plugin_omits_weather_schedule_contract ... ok
+test tests::core_plugin_sets::disabled_world_border_plugin_omits_world_border_schedule_contract ... ok
+test tests::core_plugin_sets::disabled_boss_bar_plugin_omits_boss_bar_schedule_contract ... ok
+test tests::core_plugin_sets::disabled_equipment_plugin_omits_equipment_schedule_contract ... ok
+test tests::core_plugin_sets::default_core_plugins_expose_selected_ordering_sets ... ok
+test tests::core_plugin_sets::disabled_advancement_plugin_omits_advancement_schedule_contract ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 83 filtered out; finished in 0.01s
+
+     Running tests/command_ergonomics_macros.rs (/home/brittonr/.cargo-target/debug/deps/command_ergonomics_macros-3a60725b4e87119f)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+step=valence-core-plugin-sets exit_status=0
+
+## schedule-hygiene-self-test
+valence schedule hygiene self-test passed
+step=schedule-hygiene-self-test exit_status=0
+
+## schedule-hygiene-root
+valence schedule hygiene check passed
+step=schedule-hygiene-root exit_status=0
+exit_status=0

@@ -6,7 +6,7 @@ fd0a033ef136d6cdeb4484306d66c7625a866d0873cd1edc577caedb488e46c0  cairn/archive/
 7af198743d4fa312ff5fc1e06ba950fac1859967c0d57a568c2a37261ea59934  compat/runner/src/main.rs
 7e7854f8ab0544a8c141466de05714cd43f4791d71e21fb14ea885925ef82026  compat/config/generated/scenario-wrapper-metadata.nix
 42440ef6d30c52786c30a760fe88297e2900ebb2dbb1c7a543b9a534a7e03b81  nix/packages.nix
-c93d7f4e405c3119fcb3c80b5712d466d58ab3c5abf40dc37fcb5a0ecadc54f0  nix/checks.nix
+0acba0b11b36c1776e81e2c8f731ea08782f4148ff3e0713e49a4f84e6a39d98  nix/checks.nix
 7b2b7223fc93d6de4eaeee6b47e72acebbcfbab4c7d81619dd3a6107eaba1869  docs/evidence/introduce-scenario-command-router-closeout-2026-06-24.run.log
 ca2a8482117f57932f69c49c9d1fb3511d64eb7831643e16fbc48b9cc6aae265  docs/evidence/introduce-scenario-command-router-post-task-2026-06-24.run.log
 119786548c3c12b0dcd0521fc40d919173d2ab8bda42b5a58b94eff41f6f76dd  docs/evidence/introduce-scenario-command-router-sync-archive-2026-06-24.run.log

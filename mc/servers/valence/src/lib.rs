@@ -141,7 +141,7 @@ pub mod prelude {
         OldEntityLayerId, OldPosition, Position,
     };
     pub use valence_server::event_loop::{
-        EventLoopPostUpdate, EventLoopPreUpdate, EventLoopUpdate,
+        EventLoopPostUpdate, EventLoopPreUpdate, EventLoopSet, EventLoopUpdate,
     };
     pub use valence_server::ident::Ident;
     pub use valence_server::interact_entity::{EntityInteraction, InteractEntityEvent};

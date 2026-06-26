@@ -1,0 +1,5 @@
+command=nix run .#evidence-manifest-refresh -- --check
+cwd=/home/brittonr/git/mc
+evidence manifest refresh failed: docs/evidence/check-tier-taxonomy-2026-06-22.b3:2: stale digest for docs/check-tiers.md: expected 3eea78db2c25861521b6a44655e6b0d9797792ecf57e4649172fe602f828948b, found e56f6d55eb0eaad16528291db72a0e08b65f2ce194dfa387917d8e25d6f9637f
+evidence manifest refresh failed: docs/evidence/introduce-scenario-command-router-2026-06-24.b3:9: stale digest for nix/checks.nix: expected 0acba0b11b36c1776e81e2c8f731ea08782f4148ff3e0713e49a4f84e6a39d98, found c93d7f4e405c3119fcb3c80b5712d466d58ab3c5abf40dc37fcb5a0ecadc54f0
+exit_status=1

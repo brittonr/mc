@@ -1,5 +1,6 @@
 use bevy_app::{App, Plugin, PluginGroup};
 use bevy_ecs::event::Events;
+use bevy_ecs::prelude::IntoSystemConfigs;
 use bevy_ecs::schedule::Schedules;
 
 use crate::DefaultPlugins;
@@ -7,6 +8,25 @@ use crate::DefaultPlugins;
 const PRE_UPDATE_LABEL: &str = "PreUpdate";
 const POST_UPDATE_LABEL: &str = "PostUpdate";
 const EVENT_LOOP_PRE_UPDATE_LABEL: &str = "EventLoopPreUpdate";
+const EVENT_LOOP_UPDATE_LABEL: &str = "EventLoopUpdate";
+const EVENT_LOOP_POST_UPDATE_LABEL: &str = "EventLoopPostUpdate";
+const MISSING_EVENT_LOOP_SET: &str = "MissingEventLoopSet";
+
+const EVENT_LOOP_PRE_UPDATE_PHASE_SETS: &[&str] = &[
+    "RawPacketObservers",
+    "TypedAdapters",
+    "DomainConsumers",
+    "Diagnostics",
+];
+const EVENT_LOOP_UPDATE_PHASE_SETS: &[&str] = &["DomainConsumers", "Diagnostics"];
+const EVENT_LOOP_POST_UPDATE_PHASE_SETS: &[&str] = &["Diagnostics"];
+const EVENT_LOOP_RAW_OBSERVER_SYSTEMS: &[&str] = &["raw_packet_observer"];
+const EVENT_LOOP_UPDATE_DOMAIN_SYSTEMS: &[&str] = &["event_loop_update_domain_consumer"];
+const EVENT_LOOP_ACTION_SYSTEMS: &[&str] = &[
+    "valence_server::action::emit_player_action_events",
+    "valence_server::action::handle_player_action",
+];
+const EVENT_LOOP_DIAGNOSTIC_SYSTEMS: &[&str] = &["emit_event_loop_post_update_phase"];
 
 const COMMAND_EVENT_LOOP_PRE_UPDATE_SETS: &[&str] = &["CommandTreeSet", "CommandSystemSet"];
 const ADVANCEMENT_PRE_UPDATE_SETS: &[&str] =
@@ -54,6 +74,47 @@ fn default_core_plugins_expose_selected_ordering_sets() {
     assert!(app
         .world()
         .contains_resource::<Events<crate::equipment::EquipmentChangeEvent>>());
+}
+
+#[test]
+fn event_loop_phase_sets_are_orderable_for_selected_systems() {
+    let app = app_with_event_loop_phase_systems();
+
+    let event_loop_pre_update = schedule_graph(&app, EVENT_LOOP_PRE_UPDATE_LABEL);
+    assert_schedule_contains_sets(&event_loop_pre_update, EVENT_LOOP_PRE_UPDATE_PHASE_SETS);
+    assert_schedule_contains_systems(&event_loop_pre_update, EVENT_LOOP_RAW_OBSERVER_SYSTEMS);
+    assert_schedule_contains_systems(&event_loop_pre_update, EVENT_LOOP_ACTION_SYSTEMS);
+
+    let event_loop_update = schedule_graph(&app, EVENT_LOOP_UPDATE_LABEL);
+    assert_schedule_contains_sets(&event_loop_update, EVENT_LOOP_UPDATE_PHASE_SETS);
+    assert_schedule_contains_systems(&event_loop_update, EVENT_LOOP_UPDATE_DOMAIN_SYSTEMS);
+
+    let event_loop_post_update = schedule_graph(&app, EVENT_LOOP_POST_UPDATE_LABEL);
+    assert_schedule_contains_sets(&event_loop_post_update, EVENT_LOOP_POST_UPDATE_PHASE_SETS);
+    assert_schedule_contains_systems(&event_loop_post_update, EVENT_LOOP_DIAGNOSTIC_SYSTEMS);
+}
+
+#[test]
+#[should_panic(expected = "schedule graph is missing set MissingEventLoopSet")]
+fn event_loop_phase_missing_set_fixture_fails_clearly() {
+    let app = app_with_event_loop_phase_systems();
+    let event_loop_pre_update = schedule_graph(&app, EVENT_LOOP_PRE_UPDATE_LABEL);
+
+    assert_schedule_contains_sets(&event_loop_pre_update, &[MISSING_EVENT_LOOP_SET]);
+}
+
+#[test]
+fn disabled_action_plugin_omits_selected_event_loop_adapters() {
+    let app = app_without_plugin::<crate::action::ActionPlugin>();
+    let event_loop_pre_update = schedule_graph(&app, EVENT_LOOP_PRE_UPDATE_LABEL);
+
+    assert_schedule_omits_systems(&event_loop_pre_update, EVENT_LOOP_ACTION_SYSTEMS);
+    assert!(!app
+        .world()
+        .contains_resource::<Events<crate::action::PlayerActionEvent>>());
+    assert!(!app
+        .world()
+        .contains_resource::<Events<crate::action::DiggingEvent>>());
 }
 
 #[test]
@@ -139,6 +200,25 @@ fn app_with_default_core_plugins() -> App {
     app
 }
 
+fn app_with_event_loop_phase_systems() -> App {
+    let mut app = app_with_default_core_plugins();
+    app.add_plugins(crate::observability::ObservabilityPlugin)
+        .add_systems(
+            crate::event_loop::EventLoopPreUpdate,
+            raw_packet_observer.in_set(crate::event_loop::EventLoopSet::RawPacketObservers),
+        )
+        .add_systems(
+            crate::event_loop::EventLoopUpdate,
+            event_loop_update_domain_consumer
+                .in_set(crate::event_loop::EventLoopSet::DomainConsumers),
+        );
+    app
+}
+
+fn raw_packet_observer() {}
+
+fn event_loop_update_domain_consumer() {}
+
 fn app_without_plugin<P>() -> App
 where
     P: Plugin,
@@ -187,6 +267,24 @@ fn assert_schedule_omits_sets(graph: &str, unexpected_sets: &[&str]) {
         assert!(
             !graph.contains(unexpected_set),
             "schedule graph unexpectedly contains set {unexpected_set}"
+        );
+    }
+}
+
+fn assert_schedule_contains_systems(graph: &str, expected_systems: &[&str]) {
+    for expected_system in expected_systems {
+        assert!(
+            graph.contains(expected_system),
+            "schedule graph is missing system {expected_system}"
+        );
+    }
+}
+
+fn assert_schedule_omits_systems(graph: &str, unexpected_systems: &[&str]) {
+    for unexpected_system in unexpected_systems {
+        assert!(
+            !graph.contains(unexpected_system),
+            "schedule graph unexpectedly contains system {unexpected_system}"
         );
     }
 }

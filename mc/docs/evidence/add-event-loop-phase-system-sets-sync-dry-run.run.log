@@ -1,0 +1,27 @@
+command=nix run .#cairn -- sync add-event-loop-phase-system-sets --root .
+cwd=/home/brittonr/git/mc
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/add-event-loop-phase-system-sets/specs/valence-bevy-ecs/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/add-event-loop-phase-system-sets/specs/valence-bevy-ecs/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "add-event-loop-phase-system-sets",
+  "delta_specs": [
+    "./cairn/changes/add-event-loop-phase-system-sets/specs/valence-bevy-ecs/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "ccb28d7a9d666e65ab4e1fb36976ba18b3ce185a37d329840cca851fd9fe2648",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "a44a73a00104c1b020aec0c2a5aea18583bb373e8466a8755e25e3e162f4e425",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "dc50a11605dfc058ad7e157991c659b4a3c633c079ee0f1e8669581003e01658"
+}
+exit_status=0

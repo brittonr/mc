@@ -45,6 +45,9 @@ Use the smallest tier that covers the files and claim boundary you changed, then
 | `nix run .#valence -- --dry-run` | `tier.component` | Valence wrapper or server-command documentation changes | Dry-run plan |
 | `nix run .#mc-compat-smoke -- --dry-run --server-backend valence --scenario smoke` | `tier.component` | Runner command shape or smoke scenario dry-run changes | Dry-run plan |
 | `nix build .#checks.x86_64-linux.mc-compat-maintained-dry-runs --no-link -L` | `tier.component` | Maintained scenario dry-run table changes | Flake check build log |
+| `tools/check_valence_schedule_hygiene.rs --self-test` | `tier.component` | Valence schedule hygiene checker or receipt-policy changes | Positive valid-schedule plus negative unknown schedule, missing set, unintended default plugin, and ambiguity fixture output |
+| `tools/check_valence_schedule_hygiene.rs --root .` | `tier.component` | Valence Bevy schedule tooling, inventory, trigger policy, default plugin membership, or schedule-impacting Cairn plan changes | Current-tree schedule tooling, named-set, default-plugin, trigger-policy, and receipt-contract output |
+| `nix build .#checks.x86_64-linux.mc-valence-schedule-hygiene --no-link -L` | `tier.component` | Schedule hygiene checker or flake wiring changes | Flake check build log |
 | `tools/check_octet_monorepo.rs --self-test` | `tier.component` | Aggregate Octet checker, workspace metadata, consumer `dylint.toml`, reviewed baseline, or exception documentation changes | Positive inventory plus negative lint-drift, missing-config, and new-finding fixture output |
 | `tools/check_octet_monorepo.rs --root . --octet-source <pinned-octet> --run-octet` | `tier.component` | Octet enforced-scope code changes, reviewed baseline updates, or dynamic gate behavior changes | Per-workspace Octet status, finding counts, new/stale stable-ID comparison, and artifact paths |
 | `nix build .#checks.x86_64-linux.mc-octet-monorepo --no-link -L` | `tier.component` | Octet lint inventory, workspace metadata, consumer `dylint.toml`, reviewed baseline, or flake wiring changes | Static lint-inventory/config/baseline drift output plus checker self-test output |
@@ -60,6 +63,7 @@ Use the smallest tier that covers the files and claim boundary you changed, then
 - Generated surfaces or Nickel exports: run `tier.generated`; add `tier.component` dry-runs if command shape changed.
 - Runner code or scenario logic: run `tier.component`; add `tier.generated` when generated tables or manifest-derived docs change.
 - Component code: run `tier.component` and the subtree-local affected Cargo tests; add `tier.live-manual` only when the Cairn task claims live evidence.
+- Valence Bevy schedule-impacting changes: run `tools/check_valence_schedule_hygiene.rs --root .` or the `mc-valence-schedule-hygiene` flake check, plus the smallest affected Valence package check.
 - Evidence manifests, receipts, or task citations: run `tier.evidence`; add `tier.archive` when tasks/specs move.
 - Live/reference parity rows: run `tier.live-manual`, then `tier.evidence` and `tier.archive` for promoted artifacts.
 - Archive-only closeout: run `tier.archive` after confirming lower-tier implementation evidence already exists.

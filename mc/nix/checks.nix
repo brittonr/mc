@@ -15,6 +15,7 @@ let
     "mc-compat-scenario-contracts"
     "mc-flake-output-inventory"
     "mc-octet-monorepo"
+    "mc-valence-schedule-hygiene"
   ];
   baseline = builtins.fromJSON (builtins.readFile baselineOutputInventory);
   current = {
@@ -130,6 +131,24 @@ in
         ../check-layout-boundaries --root . > ../layout-boundaries-check.log
         mkdir -p "$out"
         cp ../component-registry-export.json ../component-registry-fixture-valid.json ../component-registry-fixture-missing-owner.out ../component-registry-fixture-missing-owner.err ../component-registry-fixture-unsafe-path.out ../component-registry-fixture-unsafe-path.err ../component-registry-fixture-invalid-gate.out ../component-registry-fixture-invalid-gate.err ../component-registry-self-test.log ../component-registry-check.log ../component-registry-fixture-duplicate-role.out ../component-registry-fixture-duplicate-role.err ../layout-boundaries-self-test.log ../layout-boundaries-check.log "$out/"
+      '';
+  mc-valence-schedule-hygiene =
+    pkgs.runCommand "mc-valence-schedule-hygiene"
+      {
+        nativeBuildInputs = [
+          pkgs.rustc
+          pkgs.gcc
+        ];
+      }
+      ''
+        cp -R ${srcRoot} repo
+        chmod -R u+w repo
+        cd repo
+        rustc --edition=2021 tools/check_valence_schedule_hygiene.rs -o ../check-valence-schedule-hygiene
+        ../check-valence-schedule-hygiene --self-test > ../valence-schedule-hygiene-self-test.log
+        ../check-valence-schedule-hygiene --root . > ../valence-schedule-hygiene-check.log
+        mkdir -p "$out"
+        cp ../valence-schedule-hygiene-self-test.log ../valence-schedule-hygiene-check.log "$out/"
       '';
   mc-compat-editable-app-dry-runs =
     pkgs.runCommand "mc-compat-editable-app-dry-runs" { nativeBuildInputs = [ pkgs.gnugrep ]; }

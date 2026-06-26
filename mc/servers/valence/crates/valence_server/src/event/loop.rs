@@ -20,7 +20,24 @@ impl Plugin for EventLoopPlugin {
             .add_schedule(Schedule::new(EventLoopPreUpdate))
             .add_schedule(Schedule::new(EventLoopUpdate))
             .add_schedule(Schedule::new(EventLoopPostUpdate))
-            .add_systems(RunEventLoop, run_event_loop);
+            .add_systems(RunEventLoop, run_event_loop)
+            .configure_sets(
+                EventLoopPreUpdate,
+                (
+                    EventLoopSet::RawPacketObservers,
+                    EventLoopSet::TypedAdapters.after(EventLoopSet::RawPacketObservers),
+                    EventLoopSet::DomainConsumers.after(EventLoopSet::TypedAdapters),
+                    EventLoopSet::Diagnostics.after(EventLoopSet::DomainConsumers),
+                ),
+            )
+            .configure_sets(
+                EventLoopUpdate,
+                (
+                    EventLoopSet::DomainConsumers,
+                    EventLoopSet::Diagnostics.after(EventLoopSet::DomainConsumers),
+                ),
+            )
+            .configure_sets(EventLoopPostUpdate, EventLoopSet::Diagnostics);
 
         app.world_mut()
             .resource_mut::<MainScheduleOrder>()
@@ -43,6 +60,44 @@ pub struct EventLoopUpdate;
 
 #[derive(ScheduleLabel, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct EventLoopPostUpdate;
+
+/// Named event-loop phase sets for systems that need explicit ordering around
+/// raw packet observation, typed adapter emission, domain event consumption,
+/// and diagnostics.
+///
+/// The stable public contract is the relative ordering of these sets inside
+/// each event-loop schedule where the set is configured. Ordering between
+/// individual systems within a set, and ordering for systems outside these sets,
+/// remains private to each plugin. Raw [`PacketEvent`] values remain readable by
+/// systems that opt into event-loop schedules; typed adapters only own the
+/// semantic events they emit.
+#[derive(SystemSet, Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub enum EventLoopSet {
+    /// Systems that observe raw [`PacketEvent`] values before selected typed
+    /// adapters run.
+    RawPacketObservers,
+    /// Systems that decode raw packets and emit typed event-loop events.
+    TypedAdapters,
+    /// Systems that consume typed event-loop events and perform domain work.
+    DomainConsumers,
+    /// Systems that emit diagnostics, metrics, or advisory observations.
+    Diagnostics,
+}
+
+/// Ordered phase sets configured in [`EventLoopPreUpdate`].
+pub const EVENT_LOOP_PRE_UPDATE_PHASES: &[EventLoopSet] = &[
+    EventLoopSet::RawPacketObservers,
+    EventLoopSet::TypedAdapters,
+    EventLoopSet::DomainConsumers,
+    EventLoopSet::Diagnostics,
+];
+
+/// Ordered phase sets configured in [`EventLoopUpdate`].
+pub const EVENT_LOOP_UPDATE_PHASES: &[EventLoopSet] =
+    &[EventLoopSet::DomainConsumers, EventLoopSet::Diagnostics];
+
+/// Ordered phase sets configured in [`EventLoopPostUpdate`].
+pub const EVENT_LOOP_POST_UPDATE_PHASES: &[EventLoopSet] = &[EventLoopSet::Diagnostics];
 
 #[derive(Event, Clone, Debug)]
 pub struct PacketEvent {
@@ -177,5 +232,129 @@ fn run_event_loop(
 
         state.apply(world);
         run_event_loop_schedules(world);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const ORDERING_PAIR_WIDTH: usize = 2;
+
+    const EXPECTED_PRE_UPDATE_PHASES: &[EventLoopSet] = &[
+        EventLoopSet::RawPacketObservers,
+        EventLoopSet::TypedAdapters,
+        EventLoopSet::DomainConsumers,
+        EventLoopSet::Diagnostics,
+    ];
+    const EXPECTED_UPDATE_PHASES: &[EventLoopSet] =
+        &[EventLoopSet::DomainConsumers, EventLoopSet::Diagnostics];
+    const EXPECTED_POST_UPDATE_PHASES: &[EventLoopSet] = &[EventLoopSet::Diagnostics];
+    const MISSING_TYPED_ADAPTER_PHASES: &[EventLoopSet] = &[
+        EventLoopSet::RawPacketObservers,
+        EventLoopSet::DomainConsumers,
+        EventLoopSet::Diagnostics,
+    ];
+    const AMBIGUOUS_PRE_UPDATE_PHASES: &[EventLoopSet] = &[
+        EventLoopSet::RawPacketObservers,
+        EventLoopSet::DomainConsumers,
+        EventLoopSet::TypedAdapters,
+        EventLoopSet::Diagnostics,
+    ];
+    const DUPLICATE_TYPED_ADAPTER_PHASES: &[EventLoopSet] = &[
+        EventLoopSet::RawPacketObservers,
+        EventLoopSet::TypedAdapters,
+        EventLoopSet::TypedAdapters,
+        EventLoopSet::DomainConsumers,
+        EventLoopSet::Diagnostics,
+    ];
+
+    #[derive(Debug, PartialEq, Eq)]
+    enum PhasePlanError {
+        Missing(EventLoopSet),
+        Duplicate(EventLoopSet),
+        AmbiguousOrder {
+            earlier: EventLoopSet,
+            later: EventLoopSet,
+        },
+    }
+
+    #[test]
+    fn event_loop_phase_orders_are_valid() {
+        assert_eq!(
+            validate_phase_plan(EVENT_LOOP_PRE_UPDATE_PHASES, EXPECTED_PRE_UPDATE_PHASES),
+            Ok(())
+        );
+        assert_eq!(
+            validate_phase_plan(EVENT_LOOP_UPDATE_PHASES, EXPECTED_UPDATE_PHASES),
+            Ok(())
+        );
+        assert_eq!(
+            validate_phase_plan(EVENT_LOOP_POST_UPDATE_PHASES, EXPECTED_POST_UPDATE_PHASES),
+            Ok(())
+        );
+    }
+
+    #[test]
+    fn missing_phase_fails_clearly() {
+        assert_eq!(
+            validate_phase_plan(MISSING_TYPED_ADAPTER_PHASES, EXPECTED_PRE_UPDATE_PHASES),
+            Err(PhasePlanError::Missing(EventLoopSet::TypedAdapters))
+        );
+    }
+
+    #[test]
+    fn ambiguous_phase_order_fails_clearly() {
+        assert_eq!(
+            validate_phase_plan(AMBIGUOUS_PRE_UPDATE_PHASES, EXPECTED_PRE_UPDATE_PHASES),
+            Err(PhasePlanError::AmbiguousOrder {
+                earlier: EventLoopSet::TypedAdapters,
+                later: EventLoopSet::DomainConsumers,
+            })
+        );
+    }
+
+    #[test]
+    fn duplicate_phase_fails_clearly() {
+        assert_eq!(
+            validate_phase_plan(DUPLICATE_TYPED_ADAPTER_PHASES, EXPECTED_PRE_UPDATE_PHASES),
+            Err(PhasePlanError::Duplicate(EventLoopSet::TypedAdapters))
+        );
+    }
+
+    fn validate_phase_plan(
+        actual: &[EventLoopSet],
+        expected: &[EventLoopSet],
+    ) -> Result<(), PhasePlanError> {
+        let mut seen = Vec::new();
+        for phase in actual {
+            if seen.contains(phase) {
+                return Err(PhasePlanError::Duplicate(*phase));
+            }
+            seen.push(*phase);
+        }
+
+        for phase in expected {
+            if !actual.contains(phase) {
+                return Err(PhasePlanError::Missing(*phase));
+            }
+        }
+
+        for pair in expected.windows(ORDERING_PAIR_WIDTH) {
+            let earlier = pair[0];
+            let later = pair[1];
+            if index_of(actual, earlier) > index_of(actual, later) {
+                return Err(PhasePlanError::AmbiguousOrder { earlier, later });
+            }
+        }
+
+        Ok(())
+    }
+
+    fn index_of(phases: &[EventLoopSet], phase: EventLoopSet) -> usize {
+        phases
+            .iter()
+            .position(|candidate| *candidate == phase)
+            .expect("validated phase is present")
     }
 }
