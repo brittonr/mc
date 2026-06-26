@@ -201,6 +201,17 @@ pub struct GuiOpenInput {
     pub inventory: Entity,
 }
 
+/// Input to the pure GUI open-transition planner.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct GuiOpenTransitionInput {
+    /// Whether the optional GUI plugin is active.
+    pub plugin_enabled: bool,
+    /// Inventory entity to open.
+    pub inventory: Entity,
+    /// Current GUI inventory relationship on the client, if any.
+    pub current_inventory: Option<Entity>,
+}
+
 /// Result of evaluating a GUI open request.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum GuiOpenDecision {
@@ -209,16 +220,43 @@ pub enum GuiOpenDecision {
         /// Inventory entity to open.
         inventory: Entity,
     },
+    /// The shell should close an existing GUI relationship before opening another.
+    Replace {
+        /// Previously related GUI inventory entity.
+        previous_inventory: Entity,
+        /// Inventory entity to open.
+        inventory: Entity,
+    },
     /// The open request was rejected.
     Rejected(GuiRejectReason),
 }
 
-/// Purely evaluates a GUI open request.
+/// Purely evaluates a GUI open request with no current GUI relationship.
 #[must_use]
 pub fn plan_open(input: GuiOpenInput) -> GuiOpenDecision {
+    plan_open_transition(GuiOpenTransitionInput {
+        plugin_enabled: input.plugin_enabled,
+        inventory: input.inventory,
+        current_inventory: None,
+    })
+}
+
+/// Purely evaluates a GUI open request against the current GUI relationship.
+#[must_use]
+pub fn plan_open_transition(input: GuiOpenTransitionInput) -> GuiOpenDecision {
     if !input.plugin_enabled {
         return GuiOpenDecision::Rejected(GuiRejectReason::PluginDisabled);
     }
+
+    if let Some(previous_inventory) = input.current_inventory {
+        if previous_inventory != input.inventory {
+            return GuiOpenDecision::Replace {
+                previous_inventory,
+                inventory: input.inventory,
+            };
+        }
+    }
+
     GuiOpenDecision::Open {
         inventory: input.inventory,
     }
@@ -610,18 +648,38 @@ fn open_gui_windows(
     mut commands: Commands,
     mut events: EventReader<GuiOpenEvent>,
     menus: Query<&GuiMenu>,
+    clients: Query<Option<&GuiViewer>>,
+    mut close_events: EventWriter<GuiCloseEvent>,
 ) {
     for event in events.read() {
         if menus.get(event.inventory).is_err() {
             continue;
         }
 
-        let decision = plan_open(GuiOpenInput {
+        let current_inventory = clients
+            .get(event.client)
+            .ok()
+            .flatten()
+            .map(GuiViewer::inventory);
+        let decision = plan_open_transition(GuiOpenTransitionInput {
             plugin_enabled: true,
             inventory: event.inventory,
+            current_inventory,
         });
-        let GuiOpenDecision::Open { inventory } = decision else {
-            continue;
+        let inventory = match decision {
+            GuiOpenDecision::Open { inventory } => inventory,
+            GuiOpenDecision::Replace {
+                previous_inventory,
+                inventory,
+            } => {
+                close_events.send(GuiCloseEvent {
+                    client: event.client,
+                    inventory: previous_inventory,
+                    reason: GuiCloseReason::ClientClosed,
+                });
+                inventory
+            }
+            GuiOpenDecision::Rejected(_) => continue,
         };
 
         let Some(mut client) = commands.get_entity(event.client) else {
@@ -749,6 +807,7 @@ mod tests {
     const TEST_STATE_ID: i32 = 12;
     const NEGATIVE_SLOT_ID: i16 = -1;
     const PRIMARY_BUTTON: i8 = 0;
+    const SINGLE_EVENT_COUNT: usize = 1;
 
     fn test_entities() -> (Entity, Entity) {
         let mut world = World::new();
@@ -810,6 +869,33 @@ mod tests {
     }
 
     #[test]
+    fn gui_open_transition_replaces_distinct_current_viewer() {
+        let (previous_inventory, next_inventory) = test_entities();
+
+        assert_eq!(
+            plan_open_transition(GuiOpenTransitionInput {
+                plugin_enabled: true,
+                inventory: next_inventory,
+                current_inventory: Some(previous_inventory),
+            }),
+            GuiOpenDecision::Replace {
+                previous_inventory,
+                inventory: next_inventory,
+            }
+        );
+        assert_eq!(
+            plan_open_transition(GuiOpenTransitionInput {
+                plugin_enabled: true,
+                inventory: previous_inventory,
+                current_inventory: Some(previous_inventory),
+            }),
+            GuiOpenDecision::Open {
+                inventory: previous_inventory,
+            }
+        );
+    }
+
+    #[test]
     fn gui_readonly_action_click_emits_action_without_mutation() {
         let (inventory, _) = test_entities();
         let menu = action_menu();
@@ -857,6 +943,25 @@ mod tests {
             GuiClickOutcome::Rejected(GuiRejectReason::StaleWindow {
                 expected: CURRENT_WINDOW_ID,
                 actual: STALE_WINDOW_ID,
+            })
+        );
+    }
+
+    #[test]
+    fn gui_click_rejects_wrong_open_inventory_relationship() {
+        let (expected_inventory, actual_inventory) = test_entities();
+        let menu = action_menu();
+        let mut input = click_input(expected_inventory, &menu);
+        input.inventory = actual_inventory;
+
+        let plan = plan_click(input);
+
+        assert_eq!(plan.inventory_mutation, GuiInventoryMutation::None);
+        assert_eq!(
+            plan.outcome,
+            GuiClickOutcome::Rejected(GuiRejectReason::WrongInventory {
+                expected: expected_inventory,
+                actual: actual_inventory,
             })
         );
     }
@@ -1065,6 +1170,67 @@ mod tests {
         assert_eq!(actions[0].mode, ClickMode::Click);
         assert_eq!(actions[0].action.id(), ACTION_ID);
         assert_eq!(actions[0].inventory_mutation, GuiInventoryMutation::None);
+    }
+
+    #[test]
+    fn gui_plugin_replaces_duplicate_viewer_with_close_event() {
+        let mut app = App::new();
+        app.add_plugins(GuiPlugin);
+
+        let (first_inventory_component, first_gui_menu) =
+            GuiMenu::readonly_inventory(InventoryKind::Generic9x1, "First", action_menu());
+        let first_inventory = app
+            .world_mut()
+            .spawn((first_inventory_component, first_gui_menu))
+            .id();
+        let (second_inventory_component, second_gui_menu) =
+            GuiMenu::readonly_inventory(InventoryKind::Generic9x1, "Second", action_menu());
+        let second_inventory = app
+            .world_mut()
+            .spawn((second_inventory_component, second_gui_menu))
+            .id();
+        let client = app
+            .world_mut()
+            .spawn((ClientInventoryState {
+                window_id: CURRENT_WINDOW_ID,
+                state_id: std::num::Wrapping(TEST_STATE_ID),
+                slots_changed: 0,
+                client_updated_cursor_item: None,
+            },))
+            .id();
+        let mut reader = app.world().resource::<Events<GuiCloseEvent>>().get_reader();
+
+        app.world_mut()
+            .resource_mut::<Events<GuiOpenEvent>>()
+            .send(GuiOpenEvent {
+                client,
+                inventory: first_inventory,
+            });
+        app.update();
+
+        let events = app.world().resource::<Events<GuiCloseEvent>>();
+        let first_closes: Vec<_> = reader.read(events).collect();
+        assert!(first_closes.is_empty());
+
+        app.world_mut()
+            .resource_mut::<Events<GuiOpenEvent>>()
+            .send(GuiOpenEvent {
+                client,
+                inventory: second_inventory,
+            });
+        app.update();
+
+        let viewer = app
+            .world()
+            .get::<GuiViewer>(client)
+            .expect("client should still have GUI viewer");
+        assert_eq!(viewer.inventory(), second_inventory);
+        let events = app.world().resource::<Events<GuiCloseEvent>>();
+        let replacement_closes: Vec<_> = reader.read(events).collect();
+        assert_eq!(replacement_closes.len(), SINGLE_EVENT_COUNT);
+        assert_eq!(replacement_closes[0].client, client);
+        assert_eq!(replacement_closes[0].inventory, first_inventory);
+        assert_eq!(replacement_closes[0].reason, GuiCloseReason::ClientClosed);
     }
 
     #[test]

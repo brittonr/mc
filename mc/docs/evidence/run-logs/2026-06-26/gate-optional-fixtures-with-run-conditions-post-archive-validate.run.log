@@ -1,0 +1,17 @@
+# gate-optional-fixtures-with-run-conditions post-archive Cairn validation
+started_at=2026-06-26T05:01:18Z
+
+## nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 5,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 10,
+  "valid": true
+}
+command_exit_status=0
+finished_at=2026-06-26T05:01:19Z
+exit_status=0

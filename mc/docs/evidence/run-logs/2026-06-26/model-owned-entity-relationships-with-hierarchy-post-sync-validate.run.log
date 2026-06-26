@@ -1,0 +1,32 @@
+# model-owned-entity-relationships-with-hierarchy post-sync validation
+cwd=/home/brittonr/git/mc
+started_at=2026-06-26T12:06:14-04:00
++ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+command_exit_status=0
++ rg -n r\[valence_bevy_ecs\.entity_hierarchy cairn/specs/valence-bevy-ecs/spec.md
+1332:r[valence_bevy_ecs.entity_hierarchy.inventory] Entity hierarchy work MUST inventory selected entity relationships, owners, child lifecycles, traversal needs, cleanup behavior, schedule impact, and evidence impact before changing relationship ownership.
+1336:r[valence_bevy_ecs.entity_hierarchy.inventory.reviewable]
+1344:r[valence_bevy_ecs.entity_hierarchy.classification] Each targeted entity relationship MUST be classified as hierarchy-suitable, explicit relationship component, resource/index, external identity, or intentionally independent entities before migration.
+1348:r[valence_bevy_ecs.entity_hierarchy.classification.hierarchy]
+1356:r[valence_bevy_ecs.entity_hierarchy.wiring] Bevy hierarchy or explicit relationship components SHOULD be adopted only where ownership/traversal semantics are real and documented.
+1360:r[valence_bevy_ecs.entity_hierarchy.wiring.classified]
+1368:r[valence_bevy_ecs.entity_hierarchy.compatibility] Entity hierarchy work MUST preserve cleanup behavior, fixture/example milestones, layer/entity ID semantics, and non-claim boundaries unless another Cairn changes them.
+1372:r[valence_bevy_ecs.entity_hierarchy.compatibility.behavior]
+1380:r[valence_bevy_ecs.entity_hierarchy.tests] Entity hierarchy work MUST include positive relationship lifecycle/traversal tests and negative stale parent, orphan child, duplicate parent, cycle/invalid relationship, and plugin-disabled tests for changed relationships.
+1384:r[valence_bevy_ecs.entity_hierarchy.tests.positive]
+1391:r[valence_bevy_ecs.entity_hierarchy.tests.negative]
+1399:r[valence_bevy_ecs.entity_hierarchy.validation] Entity hierarchy work MUST record focused relationship checks, selected examples/compatibility rails when behavior changes, schedule hygiene when plugin/schedule wiring changes, Cairn gates, Cairn validation, and task-evidence checks before archive.
+1403:r[valence_bevy_ecs.entity_hierarchy.validation.log]
+command_exit_status=0
+finished_at=2026-06-26T12:06:14-04:00
+exit_status=0

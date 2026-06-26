@@ -1,0 +1,12 @@
+# model-owned-entity-relationships-with-hierarchy final task evidence
+cwd=/home/brittonr/git/mc
+started_at=2026-06-26T12:02:52-04:00
++ nix develop --no-update-lock-file /home/brittonr/git/mc -c bash -lc rustc+check
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+task evidence gate passed: 6 completed tasks checked across 1 task files
+command_exit_status=0
+finished_at=2026-06-26T12:02:52-04:00
+exit_status=0

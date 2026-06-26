@@ -1,0 +1,87 @@
+# model-owned-entity-relationships-with-hierarchy baseline GUI tests
+cwd=/home/brittonr/git/mc/servers/valence
+started_at=2026-06-26T11:53:59-04:00
++ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence_inventory gui -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: method `packet_data_range` is never used
+   --> crates/valence_protocol/src/decode.rs:192:8
+    |
+187 | impl PacketFrameLayout {
+    | ---------------------- method in this implementation
+...
+192 |     fn packet_data_range(self) -> Range<usize> {
+    |        ^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `valence_protocol` (lib) generated 1 warning
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+warning: `valence_inventory` (lib test) generated 1 warning
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.19s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_inventory-5e89102e661fd8f7)
+
+running 15 tests
+test gui::tests::gui_model_rejects_malformed_inputs ... ok
+test gui::tests::gui_open_enabled_returns_open_plan ... ok
+test gui::tests::gui_close_event_plans_cleanup ... ok
+test gui::tests::gui_open_disabled_is_rejected ... ok
+test gui::tests::gui_viewer_cleanup_closes_stale_and_despawned_viewers ... ok
+test gui::tests::gui_click_rejects_invalid_slot_ids ... ok
+test gui::tests::gui_viewer_cleanup_keeps_current_viewer ... ok
+test gui::tests::gui_readonly_action_click_emits_action_without_mutation ... ok
+test gui::tests::gui_click_rejects_stale_window_id ... ok
+test gui::tests::gui_mutable_action_click_allows_valence_inventory_mutation ... ok
+test gui::tests::gui_disconnect_plans_cleanup_and_late_clicks_are_rejected ... ok
+test gui::tests::gui_viewer_cleanup_rejects_missing_owner_and_disabled_plugin ... ok
+test gui::tests::gui_plugin_cleans_up_closed_viewers ... ok
+test gui::tests::gui_plugin_routes_open_and_click_events ... ok
+test gui::tests::gui_plugin_cleans_up_despawned_viewers_once ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 0.00s
+
+command_exit_status=0
+finished_at=2026-06-26T11:54:02-04:00
+exit_status=0

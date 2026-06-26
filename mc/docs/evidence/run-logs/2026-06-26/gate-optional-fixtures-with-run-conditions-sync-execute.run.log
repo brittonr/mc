@@ -1,0 +1,54 @@
+# gate-optional-fixtures-with-run-conditions Cairn sync execute
+started_at=2026-06-26T04:57:36Z
+
+## nix run .#cairn -- sync gate-optional-fixtures-with-run-conditions --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/gate-optional-fixtures-with-run-conditions/specs/valence-bevy-ecs/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/gate-optional-fixtures-with-run-conditions/specs/valence-bevy-ecs/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "gate-optional-fixtures-with-run-conditions",
+  "delta_specs": [
+    "./cairn/changes/gate-optional-fixtures-with-run-conditions/specs/valence-bevy-ecs/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "491a59ac7000c2c7bdec33c2fa32101831501190763349ce586fb6d401775e50",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "fc2922100ecfb30d0c8ee85ed6a68d95ba0950812a5e78beb87f51508f78758a",
+          "exists": true,
+          "path": "./cairn/specs/valence-bevy-ecs/spec.md"
+        }
+      ],
+      "manifest_hash": "792931fb7b795ecb2d8b0a0d5288195561ad6ded307cd0fdd44e25b744830f19"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "fc2922100ecfb30d0c8ee85ed6a68d95ba0950812a5e78beb87f51508f78758a",
+          "exists": true,
+          "path": "./cairn/specs/valence-bevy-ecs/spec.md"
+        }
+      ],
+      "manifest_hash": "792931fb7b795ecb2d8b0a0d5288195561ad6ded307cd0fdd44e25b744830f19"
+    },
+    "kind": "sync",
+    "manifest_hash": "909f65193aca6687ec07cc77737f14f681b28907172fb06daabb5d9c5f58b661"
+  },
+  "plan_hash": "57d390b963949d907e02f39288bd7e0fbc7a41e5ae6cc8088c330a9ff0ba63ff",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "a34634cafe68a59c6e3ea438caa6779b8e8ae43048cf2137622601f1f6835051"
+}
+command_exit_status=0
+finished_at=2026-06-26T04:57:37Z
+exit_status=0

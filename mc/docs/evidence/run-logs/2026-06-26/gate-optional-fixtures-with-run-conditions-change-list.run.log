@@ -1,0 +1,123 @@
+# gate-optional-fixtures-with-run-conditions remaining active changes
+started_at=2026-06-26T05:10:07Z
+
+## nix run .#cairn -- change list --root .
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "./cairn/changes/migrate-anticheat-statistics-to-components/specs/valence-bevy-ecs/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "migrate-anticheat-statistics-to-components",
+      "path": "./cairn/changes/migrate-anticheat-statistics-to-components",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/migrate-fixture-state-to-components/specs/valence-bevy-ecs/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "migrate-fixture-state-to-components",
+      "path": "./cairn/changes/migrate-fixture-state-to-components",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/model-owned-entity-relationships-with-hierarchy/specs/valence-bevy-ecs/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "model-owned-entity-relationships-with-hierarchy",
+      "path": "./cairn/changes/model-owned-entity-relationships-with-hierarchy",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/organize-remaining-valence-examples-as-plugins/specs/valence-bevy-ecs/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "organize-remaining-valence-examples-as-plugins",
+      "path": "./cairn/changes/organize-remaining-valence-examples-as-plugins",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/promote-remaining-packet-semantics-to-typed-events/specs/valence-bevy-ecs/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "promote-remaining-packet-semantics-to-typed-events",
+      "path": "./cairn/changes/promote-remaining-packet-semantics-to-typed-events",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "."
+}
+command_exit_status=0
+finished_at=2026-06-26T05:10:07Z
+exit_status=0

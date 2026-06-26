@@ -1,0 +1,86 @@
+# model-owned-entity-relationships-with-hierarchy archive execute
+cwd=/home/brittonr/git/mc
+started_at=2026-06-26T12:06:49-04:00
++ CAIRN_ARCHIVE_DATE=2026-06-26 nix run .#cairn -- archive model-owned-entity-relationships-with-hierarchy --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: model-owned-entity-relationships-with-hierarchy",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-26-model-owned-entity-relationships-with-hierarchy"
+    }
+  ],
+  "blocked": false,
+  "change": "model-owned-entity-relationships-with-hierarchy",
+  "dry_run": false,
+  "input_hash": "582c4779c3d5a3558e6818fcc9c4f68e8abeb9dc0c91009931fa49c45c23e969",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "3af56b9aee091ca4437c516815542fafd98487981de19b75fa70dfa5bb03f550",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-26-model-owned-entity-relationships-with-hierarchy/design.md"
+        },
+        {
+          "content_hash": "b7668fdae3549c9c33f1b0bb2531be66c02dbf4c52f89a3c2c2d132291c3d096",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-26-model-owned-entity-relationships-with-hierarchy/proposal.md"
+        },
+        {
+          "content_hash": "047e45aa286d7185efac6eda21a8ae263ae05b70a6e426943d64ce69d040c11b",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-26-model-owned-entity-relationships-with-hierarchy/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "5a057cf592504d0b8efeb47d79385ece42dedbc0443ce0d5f6e1c9197c7efac7",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-26-model-owned-entity-relationships-with-hierarchy/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/model-owned-entity-relationships-with-hierarchy"
+        }
+      ],
+      "manifest_hash": "789d5b6efcbcf6c3a39c1ba84e1869668f6c432e6a5fb431b5ea282c6581000d"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "3af56b9aee091ca4437c516815542fafd98487981de19b75fa70dfa5bb03f550",
+          "exists": true,
+          "path": "./cairn/changes/model-owned-entity-relationships-with-hierarchy/design.md"
+        },
+        {
+          "content_hash": "b7668fdae3549c9c33f1b0bb2531be66c02dbf4c52f89a3c2c2d132291c3d096",
+          "exists": true,
+          "path": "./cairn/changes/model-owned-entity-relationships-with-hierarchy/proposal.md"
+        },
+        {
+          "content_hash": "047e45aa286d7185efac6eda21a8ae263ae05b70a6e426943d64ce69d040c11b",
+          "exists": true,
+          "path": "./cairn/changes/model-owned-entity-relationships-with-hierarchy/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "5a057cf592504d0b8efeb47d79385ece42dedbc0443ce0d5f6e1c9197c7efac7",
+          "exists": true,
+          "path": "./cairn/changes/model-owned-entity-relationships-with-hierarchy/tasks.md"
+        }
+      ],
+      "manifest_hash": "d61eba31fca00df65d2179140b13c4383a084b711e60926ecbccb560bb69f113"
+    },
+    "kind": "archive",
+    "manifest_hash": "9f442ff6567ea08ceb7c55e6cd6b9e399c814f1db7bd9cc9d379cc13ab6cf6e2"
+  },
+  "plan_hash": "f9d4ab89180a55ffbc12177b42802ffac6e9ef320ee8a90afcfa6ac8ca159af4",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "057ba6c3124d04b6839b4ec35cca1e84a09d35857eaf7ac3adf0cec4a1ce3c30"
+}
+command_exit_status=0
+finished_at=2026-06-26T12:06:49-04:00
+exit_status=0

@@ -8,4 +8,4 @@ e525f5c554ae2d2315419d846aa98ef68aa5cddd6d8a406e60293fb2d9b839d3  servers/valenc
 2ee19c123e2b6c840a289043eda5aaac844a38b345774dbc3de60f7e0360be62  cairn/archive/2026-06-25-move-worldgen-work-to-bevy-tasks/proposal.md
 ec7aa4c89247a24332b1f86e1873e712553f08020d7a10f0ff8bb31d564636b7  cairn/archive/2026-06-25-move-worldgen-work-to-bevy-tasks/design.md
 2d3673ca0c4000c4ac4b83a9e299dd3cdb07644f3ddfc41fb19ae068ee33dbf6  cairn/archive/2026-06-25-move-worldgen-work-to-bevy-tasks/specs/valence-bevy-ecs/spec.md
-ec2279612cf5d696677b1fceaaad22cd90d2d9ae4b34826e89d644f470cc263e  cairn/specs/valence-bevy-ecs/spec.md
+25d40caaaf8a1b28249557d6fa76be4d2c927fcaf3f53d165a825cc9e30b350f  cairn/specs/valence-bevy-ecs/spec.md

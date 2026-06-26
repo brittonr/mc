@@ -1,0 +1,13 @@
+7b888962b0f7f2e43b10ac7620dc8811d0406f699cf6bb0eb3e2058f4e44e35a  docs/evidence/gate-optional-fixtures-with-run-conditions.inventory.md
+144880c7147cc9531633e86c0d2c6c20ed355a31ca979bf8093640bf71e5f3c5  docs/evidence/run-logs/2026-06-26/gate-optional-fixtures-with-run-conditions-pre-gates.run.log
+57b04cdc97053afdc1927eeef8d7c873629a7e723e8bbaf8acbe9f58bdbc27b4  docs/evidence/run-logs/2026-06-26/gate-optional-fixtures-with-run-conditions-baseline.run.log
+576939bbefe2cd8939d8400813a651b3b705776147f27ca75a7621a5b8b16a0b  docs/evidence/run-logs/2026-06-26/gate-optional-fixtures-with-run-conditions-focused.run.log
+d55ad92f4e7d35e387d3ba053853b852681ce8ec0ba869b683a2b4867b9f25c9  docs/evidence/run-logs/2026-06-26/gate-optional-fixtures-with-run-conditions-format-schedule.run.log
+41b3a4914da6f33edd2eede2edde816f0d92a461b3fd91c4590f54656cc74237  docs/evidence/run-logs/2026-06-26/gate-optional-fixtures-with-run-conditions-task-evidence-first-five.run.log
+77685242484ff68433c665df99b46d699c408a15797221ef9b4bdec3fc77e2eb  docs/evidence/run-logs/2026-06-26/gate-optional-fixtures-with-run-conditions-cairn-gates-final.run.log
+9b8d3331a9af81d4fc23fabebb8fc1c84d12200e56047be8b94667a07c01304b  docs/evidence/run-logs/2026-06-26/gate-optional-fixtures-with-run-conditions-task-evidence-final.run.log
+e3692004eb9e6007c87ce6a16096efaa11a66fa94527f7e374af896cc88230b4  docs/evidence/run-logs/2026-06-26/gate-optional-fixtures-with-run-conditions-sync-dry-run.run.log
+8813dcfd21cac5e13ce72798ca348929816267c5167e6c1f522f0d9e283f6c31  docs/evidence/run-logs/2026-06-26/gate-optional-fixtures-with-run-conditions-sync-execute.run.log
+a4958fe502e788e3e59c0ce9be2e00b35f51b926cb0f39307e1f264dece50197  docs/evidence/run-logs/2026-06-26/gate-optional-fixtures-with-run-conditions-archive-dry-run.run.log
+a00b835ccf0680189b253bcc74034e8106861b3c4a7d8c563ad7ac91802fa2ac  docs/evidence/run-logs/2026-06-26/gate-optional-fixtures-with-run-conditions-archive-execute.run.log
+751067d79b1299ca31f182ca2df5638799e1c9a066bb611e74f847bfe1c2f722  docs/evidence/run-logs/2026-06-26/gate-optional-fixtures-with-run-conditions-post-archive-validate.run.log

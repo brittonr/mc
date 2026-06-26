@@ -44,9 +44,13 @@ Add `GuiPlugin` only when the helper should route GUI open/click/close events. K
 
 This helper is for ergonomic menus and does not claim full vanilla container parity, all container behavior, production readiness, or Hyperion compatibility.
 
+# GUI relationship model
+
+`GuiViewer` is an explicit relationship component on the client entity, not a Bevy hierarchy edge. A GUI inventory can be viewed by more than one client, and close handling needs `ClientInventoryState`, packet emission, and cross-entity liveness checks, so tree ownership would hide protocol state instead of clarifying it.
+
 # GUI lifecycle cleanup
 
-`GuiViewer` is client-owned GUI state. `GuiPlugin` removes it and emits `GuiCloseEvent` when the client's `OpenInventory` no longer points at the GUI inventory or when Valence marks the client `Despawned` before final entity removal. This keeps GUI cleanup component-owned where possible while preserving Valence's explicit despawn window.
+`GuiViewer` is client-owned GUI state. `GuiPlugin` removes it and emits `GuiCloseEvent` when the client's `OpenInventory` no longer points at the GUI inventory, when a client opens a different GUI inventory, or when Valence marks the client `Despawned` before final entity removal. This keeps GUI cleanup component-owned where possible while preserving Valence's explicit despawn window.
 
 `OpenInventory` close packets and stale backing-inventory references remain explicit inventory cleanup because they need the current `ClientInventoryState`, packet emission before flush, and cross-entity liveness checks.
 

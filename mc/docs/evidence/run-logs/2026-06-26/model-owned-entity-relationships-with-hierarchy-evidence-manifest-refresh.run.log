@@ -1,0 +1,8 @@
+# model-owned-entity-relationships-with-hierarchy evidence manifest refresh
+cwd=/home/brittonr/git/mc
+started_at=2026-06-26T12:08:31-04:00
++ nix run .#evidence-manifest-refresh -- --refresh
+evidence manifest refresh ok: mode=refresh; passes=4; manifests=508; entries=4525; current=4525; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=4; manifest_writes=17
+command_exit_status=0
+finished_at=2026-06-26T12:09:04-04:00
+exit_status=0

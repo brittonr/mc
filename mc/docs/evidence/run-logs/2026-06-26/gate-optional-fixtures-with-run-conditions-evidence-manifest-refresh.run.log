@@ -1,0 +1,8 @@
+# gate-optional-fixtures-with-run-conditions evidence manifest refresh
+started_at=2026-06-26T05:08:11Z
+
+## nix run .#evidence-manifest-refresh -- --refresh
+evidence manifest refresh ok: mode=refresh; passes=4; manifests=506; entries=4486; current=4486; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=4; manifest_writes=16
+command_exit_status=0
+finished_at=2026-06-26T05:08:23Z
+exit_status=0
