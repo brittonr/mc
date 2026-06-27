@@ -1,0 +1,8 @@
+# Tasks
+
+- [ ] [serial] Inventory current substring fallback behavior, existing receipts, and non-claims for the selected restart persistence rows. r[mc_compatibility.restart_persistence_typed_events.inventory]
+- [ ] [depends:mc_compatibility.restart_persistence_typed_events.inventory] Define typed milestone contracts for pre-boundary mutation, restart or crash boundary, reconnect, post-boundary client observation, and server restored state. r[mc_compatibility.restart_persistence_typed_events.contract]
+- [ ] [depends:mc_compatibility.restart_persistence_typed_events.contract] Implement pure restart-persistence receipt validation with positive fixtures for each selected row and negative fixtures for missing, unordered, duplicate, or mismatched milestones. r[mc_compatibility.restart_persistence_typed_events.validator]
+- [ ] [depends:mc_compatibility.restart_persistence_typed_events.validator] Wire runner/client/server typed milestone emission for the selected rows while preserving existing wrapper names and bounded receipt claims. r[mc_compatibility.restart_persistence_typed_events.wiring]
+- [ ] [depends:mc_compatibility.restart_persistence_typed_events.wiring] Update scenario manifest migration states, fallback budget baseline, generated surfaces, and evidence docs after typed validation passes. r[mc_compatibility.restart_persistence_typed_events.manifest]
+- [ ] [depends:mc_compatibility.restart_persistence_typed_events.manifest] Run focused receipt checks, scenario manifest checks, generated-surface freshness, evidence manifests, task-evidence validation, Cairn gates, Cairn validation, and record BLAKE3 manifests before archive. r[mc_compatibility.restart_persistence_typed_events.closeout]
