@@ -2,7 +2,7 @@
 30aa7abee456e8b87b819989da6ae751725e973a006e39a8eda03c7333b8c6c4  cairn/archive/2026-06-24-introduce-scenario-command-router/design.md
 2d5d6ccb0dec47c3ab9783d521d8ce387cb5d5152b8c2bff98d7bc3dca321e4c  cairn/archive/2026-06-24-introduce-scenario-command-router/tasks.md
 fd0a033ef136d6cdeb4484306d66c7625a866d0873cd1edc577caedb488e46c0  cairn/archive/2026-06-24-introduce-scenario-command-router/specs/mc-compatibility/spec.md
-5bcbe171657833f21441d4d553de17a9eb9df837cbdfb61a6cc739726a429a50  cairn/specs/mc-compatibility/spec.md
+2490ac1dfbb6bf1593584343c65b28192c6a69ebbb7ed06bc6c948578b811f05  cairn/specs/mc-compatibility/spec.md
 ceff90d09d14c3a981a0194ec2ce320a9337ffda1b359575feb8185d1f6137d2  compat/runner/src/main.rs
 5bf49b45112c0d75320db95d9dc926db200cfb7d54d31b45b97226835133278a  compat/config/generated/scenario-wrapper-metadata.nix
 42440ef6d30c52786c30a760fe88297e2900ebb2dbb1c7a543b9a534a7e03b81  nix/packages.nix

@@ -1,6 +1,6 @@
 use super::*;
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 struct SingleClientRun {
     username: String,
     log_path: PathBuf,
@@ -9,84 +9,234 @@ struct SingleClientRun {
     matched_success_pattern: Option<String>,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum ClientDryRunEvidenceMode {
+    Generic,
+    McpControlled,
+    ProjectileTravelCollision,
+    ProjectileDamage,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum ClientLogPathStrategy {
+    EnvClientLogOrTemp,
+    TempClientLog,
+    ReconnectSessionTempLog,
+}
+
+impl ClientLogPathStrategy {
+    fn plan_label(self) -> &'static str {
+        match self {
+            Self::EnvClientLogOrTemp => PLAN_CLIENT_LOG_ENV_OR_TEMP,
+            Self::TempClientLog => PLAN_CLIENT_LOG_TEMP,
+            Self::ReconnectSessionTempLog => PLAN_CLIENT_LOG_RECONNECT_TEMP,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(crate) struct ClientProcessRunPlan {
+    username: String,
+    client_index: usize,
+    session_number: usize,
+    session_count: usize,
+    timeout_secs: u64,
+    log_path_strategy: ClientLogPathStrategy,
+    restart_after_session: bool,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(crate) struct ClientRunPlan {
+    run_strategy: ScenarioRunStrategy,
+    usernames: Vec<String>,
+    sessions: Vec<ClientProcessRunPlan>,
+    dry_run_evidence_mode: Option<ClientDryRunEvidenceMode>,
+    requires_projectile_server_log: bool,
+    requires_server_correlation: bool,
+}
+
+#[derive(Debug)]
+struct ClientClassificationOutcome {
+    combined_output: String,
+    evidence: ClientRunEvidence,
+}
+
+const CLIENT_LOG_ENV_VAR: &str = "CLIENT_LOG";
+const DRY_RUN_CLASSIFICATION: &str = "dry-run";
+const CLIENT_EXITED_SUCCESS_CLASSIFICATION: &str = "client-exited-success";
+const TIMEOUT_SUCCESS_CLASSIFICATION: &str = "timeout-success-evidence";
+const MULTI_CLIENT_LOAD_CLASSIFICATION: &str = "multi-client-load-evidence";
+const COMMAND_TIMEOUT_EXIT_CODE: i32 = 124;
+
 pub(crate) fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
     log(format_args!(
         "running Stevenarella headless scenario '{}' isolated from host Wayland compositor",
         scenario_name(cfg.scenario)
     ));
+
+    let plan = client_run_plan_from_config(cfg);
     if cfg.mode == Mode::DryRun {
         log(format_args!("would run Stevenarella under xvfb-run"));
-        let behavior = scenario_behavior(cfg.scenario);
-        if behavior.is_mcp_controlled_smoke() {
-            return Ok(mcp_controlled_dry_run_evidence(cfg));
-        }
-        if cfg.scenario == Scenario::ProjectileHit {
-            return Ok(projectile_travel_collision_dry_run_evidence(cfg));
-        }
-        if behavior.uses_dynamic_projectile_health() {
-            return Ok(projectile_damage_dry_run_evidence(cfg));
-        }
-        let scenario = evaluate_scenario_for_config(cfg, "");
-        let server_scenario = Some(evaluate_server_scenario(
-            cfg.scenario,
-            "",
-            &cfg.client_username,
-        ));
-        return Ok(ClientRunEvidence {
-            log_path: None,
-            log_paths: Vec::new(),
-            usernames: planned_client_usernames(cfg),
-            exit_code: None,
-            classification: "dry-run",
-            matched_success_pattern: None,
-            scenario: Some(scenario),
-            server_scenario,
-            projectile_damage_causality: None,
-            projectile_travel_collision: None,
-            mcp_control: None,
-            frame_artifacts: None,
-        });
+        return Ok(dry_run_client_evidence(cfg, &plan));
     }
 
-    let behavior = scenario_behavior(cfg.scenario);
-    if behavior.is_mcp_controlled_smoke() {
+    if scenario_behavior(cfg.scenario).is_mcp_controlled_smoke() {
         return run_mcp_controlled_live_client(cfg);
     }
 
-    let runs = match behavior.run_strategy() {
-        ScenarioRunStrategy::ReconnectSequence => run_reconnect_sequence_scenario(cfg)?,
-        ScenarioRunStrategy::MultiClient => run_multi_client_load_scenario(cfg)?,
-        ScenarioRunStrategy::SingleClient => vec![run_single_client(
-            cfg,
-            &cfg.client_username,
-            FIRST_CLIENT_INDEX,
-        )?],
+    let runs = run_client_sessions(cfg, &plan)?;
+    let server_log = cfg.server_backend.runtime().read_log(cfg)?;
+    let pre_restart_server_log = if uses_isolated_restart_storage(cfg.scenario) {
+        read_world_persistence_pre_restart_server_log(cfg)?
+    } else {
+        String::new()
     };
+    let projectile_server_log = if plan.requires_projectile_server_log {
+        Some(read_valence_log(cfg)?)
+    } else {
+        None
+    };
+    let outcome = classify_client_runs(
+        cfg,
+        &plan,
+        &runs,
+        &server_log,
+        &pre_restart_server_log,
+        projectile_server_log.as_deref(),
+    )?;
 
-    let mut combined_output = String::new();
-    behavior.append_client_count_markers(runs.len(), &mut combined_output);
-    if behavior.uses_reconnect_session_marker() {
-        append_count_marker(&mut combined_output, RECONNECT_SESSION_COUNT_NEEDLE);
-    }
+    print!("{}", outcome.combined_output);
+    io::stdout().flush().map_err(|e| e.to_string())?;
     for run in &runs {
-        combined_output.push_str(&run.output);
-        if !combined_output.ends_with('\n') {
-            combined_output.push('\n');
-        }
-    }
-    if behavior.uses_crash_recovery_restart() {
-        combined_output.push_str(&derive_survival_crash_recovery_client_milestones(
-            &combined_output,
+        log(format_args!(
+            "client {} finished {:?}; log: {}",
+            run.username,
+            run.exit_code,
+            run.log_path.display()
         ));
     }
-    print!("{combined_output}");
-    io::stdout().flush().map_err(|e| e.to_string())?;
+    Ok(outcome.evidence)
+}
 
-    let matched_success_pattern = cfg
-        .client_success_needles
-        .iter()
-        .find(|needle| combined_output.contains(needle.as_str()))
-        .cloned();
+pub(crate) fn client_run_plan_from_config(cfg: &Config) -> ClientRunPlan {
+    let behavior = scenario_behavior(cfg.scenario);
+    let run_strategy = behavior.run_strategy();
+    let usernames = planned_client_usernames_for(run_strategy, &cfg.client_username);
+    let session_count = planned_client_session_count_for(run_strategy);
+    let log_path_strategy = client_log_path_strategy_for(run_strategy);
+    let sessions = client_process_run_plans(
+        cfg,
+        run_strategy,
+        &usernames,
+        session_count,
+        log_path_strategy,
+    );
+    ClientRunPlan {
+        run_strategy,
+        usernames,
+        sessions,
+        dry_run_evidence_mode: (cfg.mode == Mode::DryRun).then(|| dry_run_evidence_mode_for(cfg)),
+        requires_projectile_server_log: behavior.uses_dynamic_projectile_health()
+            || cfg.scenario == Scenario::ProjectileHit,
+        requires_server_correlation: behavior.requires_server_correlation(),
+    }
+}
+
+fn client_process_run_plans(
+    cfg: &Config,
+    run_strategy: ScenarioRunStrategy,
+    usernames: &[String],
+    session_count: usize,
+    log_path_strategy: ClientLogPathStrategy,
+) -> Vec<ClientProcessRunPlan> {
+    match run_strategy {
+        ScenarioRunStrategy::ReconnectSequence => (FIRST_CLIENT_INDEX..session_count)
+            .map(|client_index| ClientProcessRunPlan {
+                username: cfg.client_username.clone(),
+                client_index,
+                session_number: client_index + SESSION_INDEX_ENV_OFFSET,
+                session_count,
+                timeout_secs: client_timeout_secs(cfg, client_index),
+                log_path_strategy,
+                restart_after_session: uses_isolated_restart_storage(cfg.scenario)
+                    && client_index == FIRST_CLIENT_INDEX,
+            })
+            .collect(),
+        ScenarioRunStrategy::MultiClient | ScenarioRunStrategy::SingleClient => usernames
+            .iter()
+            .enumerate()
+            .map(|(client_index, username)| ClientProcessRunPlan {
+                username: username.clone(),
+                client_index,
+                session_number: SESSION_INDEX_ENV_OFFSET,
+                session_count,
+                timeout_secs: client_timeout_secs(cfg, client_index),
+                log_path_strategy,
+                restart_after_session: false,
+            })
+            .collect(),
+    }
+}
+
+fn dry_run_evidence_mode_for(cfg: &Config) -> ClientDryRunEvidenceMode {
+    let behavior = scenario_behavior(cfg.scenario);
+    if behavior.is_mcp_controlled_smoke() {
+        ClientDryRunEvidenceMode::McpControlled
+    } else if cfg.scenario == Scenario::ProjectileHit {
+        ClientDryRunEvidenceMode::ProjectileTravelCollision
+    } else if behavior.uses_dynamic_projectile_health() {
+        ClientDryRunEvidenceMode::ProjectileDamage
+    } else {
+        ClientDryRunEvidenceMode::Generic
+    }
+}
+
+fn dry_run_client_evidence(cfg: &Config, plan: &ClientRunPlan) -> ClientRunEvidence {
+    match plan
+        .dry_run_evidence_mode
+        .expect("dry-run plan carries an evidence mode")
+    {
+        ClientDryRunEvidenceMode::Generic => generic_dry_run_evidence(cfg, plan),
+        ClientDryRunEvidenceMode::McpControlled => mcp_controlled_dry_run_evidence(cfg),
+        ClientDryRunEvidenceMode::ProjectileTravelCollision => {
+            projectile_travel_collision_dry_run_evidence(cfg)
+        }
+        ClientDryRunEvidenceMode::ProjectileDamage => projectile_damage_dry_run_evidence(cfg),
+    }
+}
+
+fn generic_dry_run_evidence(cfg: &Config, plan: &ClientRunPlan) -> ClientRunEvidence {
+    let scenario = evaluate_scenario_for_config(cfg, "");
+    let server_scenario = Some(evaluate_server_scenario(
+        cfg.scenario,
+        "",
+        &cfg.client_username,
+    ));
+    ClientRunEvidence {
+        log_path: None,
+        log_paths: Vec::new(),
+        usernames: plan.usernames.clone(),
+        exit_code: None,
+        classification: DRY_RUN_CLASSIFICATION,
+        matched_success_pattern: None,
+        scenario: Some(scenario),
+        server_scenario,
+        projectile_damage_causality: None,
+        projectile_travel_collision: None,
+        mcp_control: None,
+        frame_artifacts: None,
+    }
+}
+
+fn classify_client_runs(
+    cfg: &Config,
+    plan: &ClientRunPlan,
+    runs: &[SingleClientRun],
+    server_log: &str,
+    pre_restart_server_log: &str,
+    projectile_server_log: Option<&str>,
+) -> Result<ClientClassificationOutcome, String> {
+    let combined_output = combined_client_output(cfg.scenario, runs);
     let scenario = evaluate_scenario_for_config(cfg, &combined_output);
     if cfg.scenario != Scenario::Smoke && !scenario.passed {
         return Err(format!(
@@ -94,15 +244,17 @@ pub(crate) fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
             scenario_name(cfg.scenario),
             scenario.missing_milestones,
             scenario.forbidden_matches,
-            runs.iter()
-                .map(|run| run.log_path.display().to_string())
-                .collect::<Vec<_>>()
-                .join(",")
+            run_log_labels(runs)
         ));
     }
 
-    let server_scenario = read_server_scenario_evidence(cfg, &runs)?;
-    if requires_server_correlation(cfg) {
+    let server_scenario = Some(evaluate_server_scenario_from_logs(
+        cfg,
+        runs,
+        server_log,
+        pre_restart_server_log,
+    ));
+    if plan.requires_server_correlation {
         if let Some(server) = &server_scenario {
             if !server.passed {
                 return Err(format!(
@@ -116,109 +268,185 @@ pub(crate) fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         }
     }
 
-    let projectile_client_logs = runs
-        .iter()
-        .map(|run| ClientLogSlice {
-            username: &run.username,
-            output: &run.output,
-        })
-        .collect::<Vec<_>>();
-    let projectile_server_log =
-        if behavior.uses_dynamic_projectile_health() || cfg.scenario == Scenario::ProjectileHit {
-            Some(read_valence_log(cfg)?)
-        } else {
-            None
-        };
+    let projectile_client_logs = projectile_client_log_slices(runs);
+    let projectile_damage_causality = classify_projectile_damage_causality(
+        cfg,
+        runs,
+        &projectile_client_logs,
+        projectile_server_log,
+    )?;
+    let projectile_travel_collision = classify_projectile_travel_collision(
+        cfg,
+        runs,
+        &projectile_client_logs,
+        projectile_server_log,
+    )?;
+    let classification = classify_run_exit_state(plan.run_strategy, runs)?;
+    let evidence = client_run_evidence_from_parts(
+        runs,
+        classification,
+        matched_success_pattern_for_output(cfg, &combined_output),
+        scenario,
+        server_scenario,
+        projectile_damage_causality,
+        projectile_travel_collision,
+    );
+    validate_typed_event_oracle_for_migrated_scenario(cfg, &evidence)?;
+    Ok(ClientClassificationOutcome {
+        combined_output,
+        evidence,
+    })
+}
 
-    let projectile_damage_causality = if behavior.uses_dynamic_projectile_health() {
-        let server_log = projectile_server_log
-            .as_deref()
-            .expect("projectile server log loaded for dynamic projectile health");
-        let expected_damage = projectile_damage_amount_needle(cfg);
-        let causality = evaluate_projectile_damage_causality_for_damage(
-            &projectile_client_logs,
-            server_log,
-            &cfg.client_username,
-            &expected_damage,
-        );
-        if !causality.passed {
-            return Err(format!(
-                "projectile damage causality failed: missing={:?} order_violations={:?}; client_logs={}; server_log={}",
-                causality.missing_steps,
-                causality.order_violations,
-                runs.iter()
-                    .map(|run| run.log_path.display().to_string())
-                    .collect::<Vec<_>>()
-                    .join(","),
-                cfg.valence_log.display()
-            ));
+fn combined_client_output(scenario: Scenario, runs: &[SingleClientRun]) -> String {
+    let behavior = scenario_behavior(scenario);
+    let mut combined_output = String::new();
+    behavior.append_client_count_markers(runs.len(), &mut combined_output);
+    if behavior.uses_reconnect_session_marker() {
+        append_count_marker(&mut combined_output, RECONNECT_SESSION_COUNT_NEEDLE);
+    }
+    for run in runs {
+        combined_output.push_str(&run.output);
+        if !combined_output.ends_with('\n') {
+            combined_output.push('\n');
         }
-        Some(causality)
-    } else {
-        None
-    };
-
-    let projectile_travel_collision = if cfg.scenario == Scenario::ProjectileHit {
-        let server_log = projectile_server_log
-            .as_deref()
-            .expect("projectile server log loaded for projectile-hit travel rail");
-        let evidence = evaluate_projectile_travel_collision(
-            &projectile_client_logs,
-            server_log,
-            &cfg.client_username,
-        );
-        if !evidence.passed {
-            return Err(format!(
-                "projectile travel/collision rail failed: missing={:?} order_violations={:?} identity_violations={:?}; client_logs={}; server_log={}",
-                evidence.missing_steps,
-                evidence.order_violations,
-                evidence.identity_violations,
-                runs.iter()
-                    .map(|run| run.log_path.display().to_string())
-                    .collect::<Vec<_>>()
-                    .join(","),
-                cfg.valence_log.display()
-            ));
-        }
-        Some(evidence)
-    } else {
-        None
-    };
-
-    let all_success = runs.iter().all(|run| run.exit_code == Some(0));
-    let timeout_success = runs
-        .iter()
-        .all(|run| run.exit_code == Some(124) && run.matched_success_pattern.is_some());
-    let mixed_success = runs.iter().all(|run| {
-        run.exit_code == Some(0)
-            || (run.exit_code == Some(124) && run.matched_success_pattern.is_some())
-    });
-    let classification =
-        if behavior.run_strategy() != ScenarioRunStrategy::SingleClient && mixed_success {
-            "multi-client-load-evidence"
-        } else if all_success {
-            "client-exited-success"
-        } else if timeout_success {
-            "timeout-success-evidence"
-        } else {
-            return Err(format!(
-                "client scenario failed; exits={:?}; logs={}",
-                runs.iter().map(|run| run.exit_code).collect::<Vec<_>>(),
-                runs.iter()
-                    .map(|run| run.log_path.display().to_string())
-                    .collect::<Vec<_>>()
-                    .join(",")
-            ));
-        };
-
-    for run in &runs {
-        log(format_args!(
-            "client {} finished {:?}; log: {}",
-            run.username,
-            run.exit_code,
-            run.log_path.display()
+    }
+    if behavior.uses_crash_recovery_restart() {
+        combined_output.push_str(&derive_survival_crash_recovery_client_milestones(
+            &combined_output,
         ));
     }
+    combined_output
+}
+
+fn evaluate_server_scenario_from_logs(
+    cfg: &Config,
+    runs: &[SingleClientRun],
+    server_log: &str,
+    pre_restart_server_log: &str,
+) -> ServerScenarioEvidence {
+    let mut correlation_log = server_log.to_string();
+    if uses_isolated_restart_storage(cfg.scenario) {
+        correlation_log.push('\n');
+        correlation_log.push_str(pre_restart_server_log);
+    }
+    for run in runs {
+        correlation_log.push('\n');
+        correlation_log.push_str(&run.output);
+    }
+    if scenario_behavior(cfg.scenario).uses_crash_recovery_restart() {
+        let derived = derive_survival_crash_recovery_server_milestones(&correlation_log);
+        correlation_log.push_str(&derived);
+    }
+    evaluate_server_scenario(cfg.scenario, &correlation_log, &cfg.client_username)
+}
+
+fn classify_projectile_damage_causality(
+    cfg: &Config,
+    runs: &[SingleClientRun],
+    projectile_client_logs: &[ClientLogSlice<'_>],
+    projectile_server_log: Option<&str>,
+) -> Result<Option<ProjectileDamageCausalityEvidence>, String> {
+    if !scenario_behavior(cfg.scenario).uses_dynamic_projectile_health() {
+        return Ok(None);
+    }
+    let server_log = projectile_server_log.ok_or_else(|| {
+        format!(
+            "projectile damage causality missing server log; client_logs={}; server_log={}",
+            run_log_labels(runs),
+            cfg.valence_log.display()
+        )
+    })?;
+    let expected_damage = projectile_damage_amount_needle(cfg);
+    let causality = evaluate_projectile_damage_causality_for_damage(
+        projectile_client_logs,
+        server_log,
+        &cfg.client_username,
+        &expected_damage,
+    );
+    if !causality.passed {
+        return Err(format!(
+            "projectile damage causality failed: missing={:?} order_violations={:?}; client_logs={}; server_log={}",
+            causality.missing_steps,
+            causality.order_violations,
+            run_log_labels(runs),
+            cfg.valence_log.display()
+        ));
+    }
+    Ok(Some(causality))
+}
+
+fn classify_projectile_travel_collision(
+    cfg: &Config,
+    runs: &[SingleClientRun],
+    projectile_client_logs: &[ClientLogSlice<'_>],
+    projectile_server_log: Option<&str>,
+) -> Result<Option<ProjectileTravelCollisionEvidence>, String> {
+    if cfg.scenario != Scenario::ProjectileHit {
+        return Ok(None);
+    }
+    let server_log = projectile_server_log.ok_or_else(|| {
+        format!(
+            "projectile travel/collision rail missing server log; client_logs={}; server_log={}",
+            run_log_labels(runs),
+            cfg.valence_log.display()
+        )
+    })?;
+    let evidence = evaluate_projectile_travel_collision(
+        projectile_client_logs,
+        server_log,
+        &cfg.client_username,
+    );
+    if !evidence.passed {
+        return Err(format!(
+            "projectile travel/collision rail failed: missing={:?} order_violations={:?} identity_violations={:?}; client_logs={}; server_log={}",
+            evidence.missing_steps,
+            evidence.order_violations,
+            evidence.identity_violations,
+            run_log_labels(runs),
+            cfg.valence_log.display()
+        ));
+    }
+    Ok(Some(evidence))
+}
+
+fn classify_run_exit_state(
+    run_strategy: ScenarioRunStrategy,
+    runs: &[SingleClientRun],
+) -> Result<&'static str, String> {
+    let all_success = runs.iter().all(|run| run.exit_code == Some(0));
+    let timeout_success = runs.iter().all(|run| {
+        run.exit_code == Some(COMMAND_TIMEOUT_EXIT_CODE) && run.matched_success_pattern.is_some()
+    });
+    let mixed_success = runs.iter().all(|run| {
+        run.exit_code == Some(0)
+            || (run.exit_code == Some(COMMAND_TIMEOUT_EXIT_CODE)
+                && run.matched_success_pattern.is_some())
+    });
+    if run_strategy != ScenarioRunStrategy::SingleClient && mixed_success {
+        Ok(MULTI_CLIENT_LOAD_CLASSIFICATION)
+    } else if all_success {
+        Ok(CLIENT_EXITED_SUCCESS_CLASSIFICATION)
+    } else if timeout_success {
+        Ok(TIMEOUT_SUCCESS_CLASSIFICATION)
+    } else {
+        Err(format!(
+            "client scenario failed; exits={:?}; logs={}",
+            runs.iter().map(|run| run.exit_code).collect::<Vec<_>>(),
+            run_log_labels(runs)
+        ))
+    }
+}
+
+fn client_run_evidence_from_parts(
+    runs: &[SingleClientRun],
+    classification: &'static str,
+    matched_success_pattern: Option<String>,
+    scenario: ScenarioEvidence,
+    server_scenario: Option<ServerScenarioEvidence>,
+    projectile_damage_causality: Option<ProjectileDamageCausalityEvidence>,
+    projectile_travel_collision: Option<ProjectileTravelCollisionEvidence>,
+) -> ClientRunEvidence {
     let log_paths = runs
         .iter()
         .map(|run| run.log_path.clone())
@@ -227,7 +455,7 @@ pub(crate) fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         .iter()
         .map(|run| run.username.clone())
         .collect::<Vec<_>>();
-    let evidence = ClientRunEvidence {
+    ClientRunEvidence {
         log_path: log_paths.first().cloned(),
         log_paths,
         usernames,
@@ -240,9 +468,30 @@ pub(crate) fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         projectile_travel_collision,
         mcp_control: None,
         frame_artifacts: None,
-    };
-    validate_typed_event_oracle_for_migrated_scenario(cfg, &evidence)?;
-    Ok(evidence)
+    }
+}
+
+fn projectile_client_log_slices(runs: &[SingleClientRun]) -> Vec<ClientLogSlice<'_>> {
+    runs.iter()
+        .map(|run| ClientLogSlice {
+            username: &run.username,
+            output: &run.output,
+        })
+        .collect()
+}
+
+fn matched_success_pattern_for_output(cfg: &Config, output: &str) -> Option<String> {
+    cfg.client_success_needles
+        .iter()
+        .find(|needle| output.contains(needle.as_str()))
+        .cloned()
+}
+
+fn run_log_labels(runs: &[SingleClientRun]) -> String {
+    runs.iter()
+        .map(|run| run.log_path.display().to_string())
+        .collect::<Vec<_>>()
+        .join(",")
 }
 
 pub(crate) fn mcp_controlled_dry_run_evidence(cfg: &Config) -> ClientRunEvidence {
@@ -252,7 +501,7 @@ pub(crate) fn mcp_controlled_dry_run_evidence(cfg: &Config) -> ClientRunEvidence
         log_paths: Vec::new(),
         usernames: planned_client_usernames(cfg),
         exit_code: None,
-        classification: "dry-run",
+        classification: DRY_RUN_CLASSIFICATION,
         matched_success_pattern: None,
         scenario: Some(evaluate_scenario_for_config(cfg, &output)),
         server_scenario: Some(evaluate_server_scenario(
@@ -888,7 +1137,7 @@ pub(crate) fn projectile_travel_collision_dry_run_evidence(cfg: &Config) -> Clie
         log_paths: Vec::new(),
         usernames: vec![attacker_username, target_username],
         exit_code: None,
-        classification: "dry-run",
+        classification: DRY_RUN_CLASSIFICATION,
         matched_success_pattern: Some("Detected server protocol version".to_string()),
         scenario: Some(scenario),
         server_scenario: Some(server_scenario),
@@ -953,7 +1202,7 @@ pub(crate) fn projectile_damage_dry_run_evidence(cfg: &Config) -> ClientRunEvide
         log_paths: Vec::new(),
         usernames: vec![attacker_username, victim_username],
         exit_code: None,
-        classification: "dry-run",
+        classification: DRY_RUN_CLASSIFICATION,
         matched_success_pattern: Some("Detected server protocol version".to_string()),
         scenario: Some(scenario),
         server_scenario: Some(server_scenario),
@@ -964,36 +1213,54 @@ pub(crate) fn projectile_damage_dry_run_evidence(cfg: &Config) -> ClientRunEvide
     }
 }
 
-fn run_reconnect_sequence_scenario(cfg: &Config) -> Result<Vec<SingleClientRun>, String> {
-    let username = cfg.client_username.clone();
-    let scenario = scenario_name(cfg.scenario);
+fn run_client_sessions(cfg: &Config, plan: &ClientRunPlan) -> Result<Vec<SingleClientRun>, String> {
+    validate_client_run_plan(plan)?;
+    match plan.run_strategy {
+        ScenarioRunStrategy::ReconnectSequence => run_reconnect_sequence_scenario(cfg, plan),
+        ScenarioRunStrategy::MultiClient => run_multi_client_load_scenario(cfg, plan),
+        ScenarioRunStrategy::SingleClient => run_single_client_scenario(cfg, plan),
+    }
+}
+
+fn validate_client_run_plan(plan: &ClientRunPlan) -> Result<(), String> {
+    if plan.sessions.is_empty() {
+        return Err("client run plan has no sessions".to_string());
+    }
+    for session in &plan.sessions {
+        if session.session_count == 0 {
+            return Err(format!(
+                "client run plan for {} has zero session count",
+                session.username
+            ));
+        }
+        if session.session_number == 0 {
+            return Err(format!(
+                "client run plan for {} has zero session number",
+                session.username
+            ));
+        }
+        if session.timeout_secs == 0 {
+            return Err(format!(
+                "client run plan for {} has zero timeout",
+                session.username
+            ));
+        }
+        let _strategy_label = session.log_path_strategy.plan_label();
+    }
+    Ok(())
+}
+
+fn run_reconnect_sequence_scenario(
+    cfg: &Config,
+    plan: &ClientRunPlan,
+) -> Result<Vec<SingleClientRun>, String> {
     let mut runs = Vec::new();
     let mut restarted_server: Option<ManagedServer> = None;
-    for idx in 0..RECONNECT_SEQUENCE_SESSION_COUNT {
-        let log_path = std::env::temp_dir().join(format!(
-            "mc-compat-client.{username}.{scenario}-session-{}.{}.log",
-            idx + 1,
-            std::process::id()
-        ));
-        let mut child = spawn_client_process(cfg, &username, idx, &log_path)?;
-        let status = child
-            .wait()
-            .map_err(|e| format!("wait {scenario} client session {}: {e}", idx + 1))?;
-        let output = fs::read_to_string(&log_path)
-            .map_err(|e| format!("read {}: {e}", log_path.display()))?;
-        let matched_success_pattern = cfg
-            .client_success_needles
-            .iter()
-            .find(|needle| output.contains(needle.as_str()))
-            .cloned();
-        runs.push(SingleClientRun {
-            username: username.clone(),
-            log_path,
-            exit_code: status.code(),
-            output,
-            matched_success_pattern,
-        });
-        if uses_isolated_restart_storage(cfg.scenario) && idx == FIRST_CLIENT_INDEX {
+    for session in &plan.sessions {
+        let log_path = client_log_path_for_session(cfg, session);
+        let run = run_client_session(cfg, session, &log_path)?;
+        runs.push(run);
+        if session.restart_after_session {
             restarted_server = Some(run_world_persistence_restart_transition(cfg)?);
         }
         thread::sleep(Duration::from_secs(RECONNECT_SEQUENCE_PAUSE_SECS));
@@ -1052,62 +1319,110 @@ fn restart_backend_milestone(behavior: &'static dyn ScenarioBehavior) -> &'stati
     }
 }
 
-fn run_multi_client_load_scenario(cfg: &Config) -> Result<Vec<SingleClientRun>, String> {
-    let usernames = planned_client_usernames(cfg);
+fn run_multi_client_load_scenario(
+    cfg: &Config,
+    plan: &ClientRunPlan,
+) -> Result<Vec<SingleClientRun>, String> {
     let mut children = Vec::new();
-    for (idx, username) in usernames.iter().enumerate() {
-        let log_path = temp_client_log_for(username);
-        let child = spawn_client_process(cfg, username, idx, &log_path)?;
-        children.push((username.clone(), log_path, child));
+    for session in &plan.sessions {
+        let log_path = client_log_path_for_session(cfg, session);
+        let child = spawn_client_process(
+            cfg,
+            &session.username,
+            session.client_index,
+            session.timeout_secs,
+            &log_path,
+        )?;
+        children.push((session.clone(), log_path, child));
         if cfg.scenario != Scenario::CtfSimultaneousPickupCaptureRace {
             thread::sleep(Duration::from_secs(MULTI_CLIENT_START_STAGGER_SECS));
         }
     }
     let mut runs = Vec::new();
-    for (username, log_path, mut child) in children {
+    for (session, log_path, mut child) in children {
         let status = child
             .wait()
-            .map_err(|e| format!("wait client {username}: {e}"))?;
-        let output = fs::read_to_string(&log_path)
-            .map_err(|e| format!("read {}: {e}", log_path.display()))?;
-        let matched_success_pattern = cfg
-            .client_success_needles
-            .iter()
-            .find(|needle| output.contains(needle.as_str()))
-            .cloned();
-        runs.push(SingleClientRun {
-            username,
+            .map_err(|e| format!("wait client {}: {e}", session.username))?;
+        runs.push(read_completed_client_run(
+            cfg,
+            &session,
             log_path,
-            exit_code: status.code(),
-            output,
-            matched_success_pattern,
-        });
+            status.code(),
+        )?);
     }
     Ok(runs)
 }
 
-fn run_single_client(
+fn run_single_client_scenario(
     cfg: &Config,
-    username: &str,
-    client_index: usize,
+    plan: &ClientRunPlan,
+) -> Result<Vec<SingleClientRun>, String> {
+    let session = plan
+        .sessions
+        .first()
+        .ok_or_else(|| "single-client run plan has no session".to_string())?;
+    let log_path = client_log_path_for_session(cfg, session);
+    Ok(vec![run_client_session(cfg, session, &log_path)?])
+}
+
+fn run_client_session(
+    cfg: &Config,
+    session: &ClientProcessRunPlan,
+    log_path: &Path,
 ) -> Result<SingleClientRun, String> {
-    let log_path = env_path("CLIENT_LOG").unwrap_or_else(|| temp_client_log_for(username));
-    let mut child = spawn_client_process(cfg, username, client_index, &log_path)?;
-    let status = child.wait().map_err(|e| format!("wait client: {e}"))?;
+    let mut child = spawn_client_process(
+        cfg,
+        &session.username,
+        session.client_index,
+        session.timeout_secs,
+        log_path,
+    )?;
+    let scenario = scenario_name(cfg.scenario);
+    let status = child.wait().map_err(|e| {
+        format!(
+            "wait {scenario} client {} session {}: {e}",
+            session.username, session.session_number
+        )
+    })?;
+    read_completed_client_run(cfg, session, log_path.to_path_buf(), status.code())
+}
+
+fn read_completed_client_run(
+    cfg: &Config,
+    session: &ClientProcessRunPlan,
+    log_path: PathBuf,
+    exit_code: Option<i32>,
+) -> Result<SingleClientRun, String> {
     let output =
         fs::read_to_string(&log_path).map_err(|e| format!("read {}: {e}", log_path.display()))?;
-    let matched_success_pattern = cfg
-        .client_success_needles
-        .iter()
-        .find(|needle| output.contains(needle.as_str()))
-        .cloned();
+    let matched_success_pattern = matched_success_pattern_for_output(cfg, &output);
     Ok(SingleClientRun {
-        username: username.to_string(),
+        username: session.username.clone(),
         log_path,
-        exit_code: status.code(),
+        exit_code,
         output,
         matched_success_pattern,
     })
+}
+
+fn client_log_path_for_session(cfg: &Config, session: &ClientProcessRunPlan) -> PathBuf {
+    match session.log_path_strategy {
+        ClientLogPathStrategy::EnvClientLogOrTemp => {
+            env_path(CLIENT_LOG_ENV_VAR).unwrap_or_else(|| temp_client_log_for(&session.username))
+        }
+        ClientLogPathStrategy::TempClientLog => temp_client_log_for(&session.username),
+        ClientLogPathStrategy::ReconnectSessionTempLog => reconnect_session_log_path(cfg, session),
+    }
+}
+
+fn reconnect_session_log_path(cfg: &Config, session: &ClientProcessRunPlan) -> PathBuf {
+    std::env::temp_dir().join(format!(
+        "mc-compat-client.{}.{}-session-{}.{}.log",
+        session.username,
+        scenario_name(cfg.scenario),
+        session.session_number,
+        std::process::id()
+    ))
 }
 
 pub(crate) fn derive_survival_crash_recovery_client_milestones(output: &str) -> String {
@@ -1182,6 +1497,7 @@ fn spawn_client_process(
     cfg: &Config,
     username: &str,
     client_index: usize,
+    timeout_secs: u64,
     log_path: &Path,
 ) -> Result<Child, String> {
     let log_file =
@@ -1190,7 +1506,7 @@ fn spawn_client_process(
         .try_clone()
         .map_err(|e| format!("clone client log handle: {e}"))?;
     let mut cmd = Command::new("timeout");
-    cmd.arg(client_timeout_secs(cfg, client_index).to_string())
+    cmd.arg(timeout_secs.to_string())
         .arg("xvfb-run")
         .arg("-a")
         .arg("-s")
@@ -1212,12 +1528,18 @@ fn spawn_client_process(
 }
 
 pub(crate) fn client_timeout_secs(cfg: &Config, client_index: usize) -> u64 {
-    if cfg.scenario == Scenario::MultiClientLoadScore && client_index > 0 {
-        cfg.client_timeout
-            .as_secs()
-            .min(MULTI_CLIENT_LOAD_PEER_TIMEOUT_SECS)
+    client_timeout_secs_for(cfg.scenario, cfg.client_timeout.as_secs(), client_index)
+}
+
+fn client_timeout_secs_for(
+    scenario: Scenario,
+    configured_timeout_secs: u64,
+    client_index: usize,
+) -> u64 {
+    if scenario == Scenario::MultiClientLoadScore && client_index > FIRST_CLIENT_INDEX {
+        configured_timeout_secs.min(MULTI_CLIENT_LOAD_PEER_TIMEOUT_SECS)
     } else {
-        cfg.client_timeout.as_secs()
+        configured_timeout_secs
     }
 }
 
@@ -1231,44 +1553,41 @@ fn apply_scenario_probe_env(
 }
 
 pub(crate) fn planned_client_usernames(cfg: &Config) -> Vec<String> {
-    if scenario_behavior(cfg.scenario).run_strategy() == ScenarioRunStrategy::MultiClient {
-        vec![
-            format!("{}a", cfg.client_username),
-            format!("{}b", cfg.client_username),
-        ]
+    planned_client_usernames_for(
+        scenario_behavior(cfg.scenario).run_strategy(),
+        &cfg.client_username,
+    )
+}
+
+fn planned_client_usernames_for(
+    run_strategy: ScenarioRunStrategy,
+    client_username: &str,
+) -> Vec<String> {
+    if run_strategy == ScenarioRunStrategy::MultiClient {
+        vec![format!("{client_username}a"), format!("{client_username}b")]
     } else {
-        vec![cfg.client_username.clone()]
+        vec![client_username.to_string()]
+    }
+}
+
+fn planned_client_session_count_for(run_strategy: ScenarioRunStrategy) -> usize {
+    if run_strategy == ScenarioRunStrategy::ReconnectSequence {
+        RECONNECT_SEQUENCE_SESSION_COUNT
+    } else {
+        SAFETY_SINGLE_SESSION_COUNT
+    }
+}
+
+fn client_log_path_strategy_for(run_strategy: ScenarioRunStrategy) -> ClientLogPathStrategy {
+    match run_strategy {
+        ScenarioRunStrategy::ReconnectSequence => ClientLogPathStrategy::ReconnectSessionTempLog,
+        ScenarioRunStrategy::MultiClient => ClientLogPathStrategy::TempClientLog,
+        ScenarioRunStrategy::SingleClient => ClientLogPathStrategy::EnvClientLogOrTemp,
     }
 }
 
 pub(crate) fn server_log_label(cfg: &Config) -> String {
     cfg.server_backend.runtime().log_label(cfg)
-}
-
-fn read_server_scenario_evidence(
-    cfg: &Config,
-    runs: &[SingleClientRun],
-) -> Result<Option<ServerScenarioEvidence>, String> {
-    let server_log = cfg.server_backend.runtime().read_log(cfg)?;
-    let mut correlation_log = server_log;
-    if uses_isolated_restart_storage(cfg.scenario) {
-        correlation_log.push('\n');
-        correlation_log.push_str(&read_world_persistence_pre_restart_server_log(cfg)?);
-    }
-    for run in runs {
-        correlation_log.push('\n');
-        correlation_log.push_str(&run.output);
-    }
-    if scenario_behavior(cfg.scenario).uses_crash_recovery_restart() {
-        let derived = derive_survival_crash_recovery_server_milestones(&correlation_log);
-        correlation_log.push_str(&derived);
-    }
-    let username = &cfg.client_username;
-    Ok(Some(evaluate_server_scenario(
-        cfg.scenario,
-        &correlation_log,
-        username,
-    )))
 }
 
 pub(crate) fn world_persistence_pre_restart_server_log_path(cfg: &Config) -> PathBuf {

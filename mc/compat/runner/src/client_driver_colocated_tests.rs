@@ -558,3 +558,316 @@ fn projectile_damage_attribution_requires_pinned_valence_revision() {
     .expect("pinned config parses");
     validate_projectile_damage_dependency(&pinned).expect("pinned revision accepted");
 }
+
+fn client_driver_core_config(args: &[&str]) -> Config {
+    test_config(args, &[]).expect("client-driver core config parses")
+}
+
+fn client_driver_core_run(
+    username: &str,
+    log_name: &str,
+    exit_code: Option<i32>,
+    output: &str,
+) -> SingleClientRun {
+    SingleClientRun {
+        username: username.to_string(),
+        log_path: PathBuf::from(format!("target/client-driver-core/{log_name}.log")),
+        exit_code,
+        output: output.to_string(),
+        matched_success_pattern: Some("Detected server protocol version".to_string())
+            .filter(|needle| output.contains(needle.as_str())),
+    }
+}
+
+fn classify_fixture(
+    cfg: &Config,
+    runs: &[SingleClientRun],
+    server_log: &str,
+    pre_restart_server_log: &str,
+    projectile_server_log: Option<&str>,
+) -> Result<ClientClassificationOutcome, String> {
+    let plan = client_run_plan_from_config(cfg);
+    classify_client_runs(
+        cfg,
+        &plan,
+        runs,
+        server_log,
+        pre_restart_server_log,
+        projectile_server_log,
+    )
+}
+
+fn reconnect_flag_state_runs() -> Vec<SingleClientRun> {
+    vec![
+        client_driver_core_run(
+            TEST_USERNAME,
+            "reconnect-flag-state-session-a",
+            Some(0),
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\nYou have the flag!\n",
+        ),
+        client_driver_core_run(
+            TEST_USERNAME,
+            "reconnect-flag-state-session-b",
+            Some(0),
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\n",
+        ),
+    ]
+}
+
+fn multi_client_load_runs() -> Vec<SingleClientRun> {
+    vec![
+        client_driver_core_run(
+            TEST_ATTACKER_USERNAME,
+            "multi-client-a",
+            Some(0),
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\nYou have the flag!\nYou captured the flag!\nRED: 1\n",
+        ),
+        client_driver_core_run(
+            TEST_VICTIM_USERNAME,
+            "multi-client-b",
+            Some(0),
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\n",
+        ),
+    ]
+}
+
+fn projectile_damage_runs() -> Vec<SingleClientRun> {
+    vec![
+        client_driver_core_run(
+            TEST_ATTACKER_USERNAME,
+            "projectile-damage-attacker",
+            Some(0),
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\nremote_player_spawn\nprojectile_probe_use_item_sent hand=main sequence=303\nprojectile_probe_swing_sent hand=main\n",
+        ),
+        client_driver_core_run(
+            TEST_VICTIM_USERNAME,
+            "projectile-damage-victim",
+            Some(0),
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team BLUE!\nremote_player_spawn\nupdate_health health=17.0 food=20 saturation=0.0\n",
+        ),
+    ]
+}
+
+fn projectile_damage_server_log() -> String {
+    format!(
+        "{} joined\n{} joined\nMC-COMPAT-MILESTONE projectile_loadout username={} slot=0 item=Bow arrows=16\nMC-COMPAT-MILESTONE projectile_use attacker={} victim={} hand=Main sequence=303 damage=3.0\nMC-COMPAT-MILESTONE projectile_hit attacker={} victim={} victim_health_before=20.0 victim_health_after=17.0\n",
+        TEST_ATTACKER_USERNAME,
+        TEST_VICTIM_USERNAME,
+        TEST_ATTACKER_USERNAME,
+        TEST_ATTACKER_USERNAME,
+        TEST_VICTIM_USERNAME,
+        TEST_ATTACKER_USERNAME,
+        TEST_VICTIM_USERNAME,
+    )
+}
+
+#[test]
+fn client_run_plan_core_is_deterministic_and_selects_dry_run_evidence() {
+    let cfg = client_driver_core_config(&["--dry-run", "--scenario", "smoke"]);
+
+    let first = client_run_plan_from_config(&cfg);
+    let second = client_run_plan_from_config(&cfg);
+    let evidence = dry_run_client_evidence(&cfg, &first);
+
+    assert_eq!(first, second);
+    assert_eq!(first.run_strategy, ScenarioRunStrategy::SingleClient);
+    assert_eq!(
+        first.dry_run_evidence_mode,
+        Some(ClientDryRunEvidenceMode::Generic)
+    );
+    assert_eq!(first.sessions.len(), SAFETY_SINGLE_SESSION_COUNT);
+    assert_eq!(first.sessions[FIRST_CLIENT_INDEX].username, TEST_USERNAME);
+    assert_eq!(
+        first.sessions[FIRST_CLIENT_INDEX].log_path_strategy,
+        ClientLogPathStrategy::EnvClientLogOrTemp
+    );
+    assert_eq!(evidence.classification, DRY_RUN_CLASSIFICATION);
+    assert_eq!(evidence.usernames, vec![TEST_USERNAME.to_string()]);
+}
+
+#[test]
+fn client_classification_core_accepts_single_reconnect_multi_projectile_and_timeout_success() {
+    let single_cfg = client_driver_core_config(&["--scenario", "smoke"]);
+    let single_runs = vec![client_driver_core_run(
+        TEST_USERNAME,
+        "single-success",
+        Some(0),
+        "Detected server protocol version 763\n",
+    )];
+    let single = classify_fixture(&single_cfg, &single_runs, "", "", None)
+        .expect("single-client classification passes");
+    assert_eq!(
+        single.evidence.classification,
+        CLIENT_EXITED_SUCCESS_CLASSIFICATION
+    );
+
+    let reconnect_cfg = client_driver_core_config(&["--scenario", "reconnect-flag-state"]);
+    let reconnect_runs = reconnect_flag_state_runs();
+    let reconnect = classify_fixture(
+        &reconnect_cfg,
+        &reconnect_runs,
+        "compatbot joined\nflag_pickup\nflag_disconnect_return\nreconnect_state_coherent\n",
+        "",
+        None,
+    )
+    .expect("reconnect classification passes");
+    assert_eq!(
+        reconnect.evidence.classification,
+        MULTI_CLIENT_LOAD_CLASSIFICATION
+    );
+    assert!(reconnect
+        .combined_output
+        .contains(RECONNECT_SESSION_COUNT_NEEDLE));
+
+    let multi_cfg = client_driver_core_config(&["--scenario", "multi-client-load-score"]);
+    let multi_runs = multi_client_load_runs();
+    let multi = classify_fixture(
+        &multi_cfg,
+        &multi_runs,
+        "compatbota joined\ncompatbotb joined\nred flag captured\n",
+        "",
+        None,
+    )
+    .expect("multi-client classification passes");
+    assert_eq!(
+        multi.evidence.classification,
+        MULTI_CLIENT_LOAD_CLASSIFICATION
+    );
+    assert!(multi
+        .combined_output
+        .contains(MULTI_CLIENT_LOAD_COUNT_NEEDLE));
+
+    let projectile_cfg =
+        client_driver_core_config(&["--scenario", "projectile-damage-attribution"]);
+    let projectile_runs = projectile_damage_runs();
+    let projectile_log = projectile_damage_server_log();
+    let projectile = classify_fixture(
+        &projectile_cfg,
+        &projectile_runs,
+        &projectile_log,
+        "",
+        Some(&projectile_log),
+    )
+    .expect("projectile classification passes");
+    assert_eq!(
+        projectile.evidence.classification,
+        MULTI_CLIENT_LOAD_CLASSIFICATION
+    );
+    assert!(projectile
+        .evidence
+        .projectile_damage_causality
+        .as_ref()
+        .is_some_and(|evidence| evidence.passed));
+
+    let timeout_runs = vec![client_driver_core_run(
+        TEST_USERNAME,
+        "timeout-success",
+        Some(COMMAND_TIMEOUT_EXIT_CODE),
+        "Detected server protocol version 763\n",
+    )];
+    let timeout = classify_fixture(&single_cfg, &timeout_runs, "", "", None)
+        .expect("timeout success classification passes");
+    assert_eq!(
+        timeout.evidence.classification,
+        TIMEOUT_SUCCESS_CLASSIFICATION
+    );
+}
+
+#[test]
+fn client_classification_core_rejects_missing_milestones_forbidden_markers_and_bad_exits() {
+    let cfg = client_driver_core_config(&["--scenario", "valence-compat-bot-probe"]);
+    let missing_runs = vec![client_driver_core_run(
+        TEST_USERNAME,
+        "missing-milestones",
+        Some(0),
+        "Detected server protocol version 763\n",
+    )];
+    let err =
+        classify_fixture(&cfg, &missing_runs, "", "", None).expect_err("missing milestones fail");
+    assert!(err.contains("missing"), "{err}");
+    assert!(err.contains("join_game"), "{err}");
+
+    let forbidden_runs = vec![client_driver_core_run(
+        TEST_USERNAME,
+        "forbidden-marker",
+        Some(0),
+        "Detected server protocol version 763\njoin_game\nrender_tick_with_player\npanicked\n",
+    )];
+    let err =
+        classify_fixture(&cfg, &forbidden_runs, "", "", None).expect_err("forbidden marker fails");
+    assert!(err.contains("forbidden"), "{err}");
+    assert!(err.contains("panic"), "{err}");
+
+    let smoke_cfg = client_driver_core_config(&["--scenario", "smoke"]);
+    let bad_exit_runs = vec![client_driver_core_run(
+        TEST_USERNAME,
+        "bad-exit",
+        Some(1),
+        "Detected server protocol version 763\n",
+    )];
+    let err =
+        classify_fixture(&smoke_cfg, &bad_exit_runs, "", "", None).expect_err("bad exit fails");
+    assert!(err.contains("client scenario failed"), "{err}");
+    assert!(err.contains("bad-exit"), "{err}");
+}
+
+#[test]
+fn client_classification_core_rejects_server_projectile_and_restart_state_failures() {
+    let multi_cfg = client_driver_core_config(&["--scenario", "multi-client-load-score"]);
+    let multi_runs = multi_client_load_runs();
+    let err = classify_fixture(
+        &multi_cfg,
+        &multi_runs,
+        "compatbota joined\nred flag captured\n",
+        "",
+        None,
+    )
+    .expect_err("missing server correlation fails");
+    assert!(err.contains("server correlation"), "{err}");
+    assert!(err.contains("server_client_b_seen"), "{err}");
+
+    let projectile_cfg =
+        client_driver_core_config(&["--scenario", "projectile-damage-attribution"]);
+    let projectile_runs = projectile_damage_runs();
+    let out_of_order_projectile_log = "compatbota joined\ncompatbotb joined\nMC-COMPAT-MILESTONE projectile_loadout username=compatbota slot=0 item=Bow arrows=16\nMC-COMPAT-MILESTONE projectile_hit attacker=compatbota victim=compatbotb victim_health_before=20.0 victim_health_after=17.0\nMC-COMPAT-MILESTONE projectile_use attacker=compatbota victim=compatbotb hand=Main sequence=303 damage=3.0\n";
+    let err = classify_fixture(
+        &projectile_cfg,
+        &projectile_runs,
+        out_of_order_projectile_log,
+        "",
+        Some(out_of_order_projectile_log),
+    )
+    .expect_err("projectile order failure fails");
+    assert!(err.contains("projectile damage causality failed"), "{err}");
+    assert!(err.contains("server_projectile_use_before_hit"), "{err}");
+
+    let restart_cfg =
+        client_driver_core_config(&["--scenario", "survival-world-persistence-restart"]);
+    let restart_runs = vec![
+        client_driver_core_run(
+            TEST_USERNAME,
+            "restart-state-session-a",
+            Some(0),
+            "Detected server protocol version 763\njoin_game\nrender_tick_with_player\nsurvival_world_persistence_mutation_sent block=Dirt position=24,64,0 slot=36 hand=main sequence=933\nsurvival_world_persistence_pre_restart_update block=Dirt position=24,64,0 raw_id=10\n",
+        ),
+        client_driver_core_run(
+            TEST_USERNAME,
+            "restart-state-session-b",
+            Some(0),
+            "survival_world_persistence_reconnect_sent session=restart\nsurvival_world_persistence_post_restart_update block=Dirt position=24,64,0 raw_id=10\n",
+        ),
+    ];
+    let err = classify_fixture(
+        &restart_cfg,
+        &restart_runs,
+        "compatbot joined\nMC-COMPAT-MILESTONE survival_world_persistence_post_restart\nMC-COMPAT-MILESTONE survival_world_persistence_state\n",
+        "MC-COMPAT-MILESTONE survival_world_persistence_mutation\n",
+        None,
+    )
+    .expect_err("restart state without clean restart boundary fails");
+    assert!(err.contains("server correlation"), "{err}");
+    assert!(
+        err.contains("server_survival_world_persistence_clean_shutdown"),
+        "{err}"
+    );
+}

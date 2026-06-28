@@ -1,0 +1,71 @@
+command=nix run .#cairn -- gate proposal/design/tasks extract-client-driver-core --root .
+stage=proposal
+{
+  "change": "extract-client-driver-core",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "3ff4da63c21548fb9538cdd0663c80f688602247e4de3c02dd1068e944f59d44",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "98f2ca31ec6a0941fba4440c461d5cd1eb3cf4974564f8e73abe8b6b7cf31daf",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+proposal_exit_status=0
+stage=design
+{
+  "change": "extract-client-driver-core",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "7d6d864f93bd753d88e4e4289693cfc2528ac00edd9677bf0d899348772c8fc4",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "e151e4c1793c8d3d59d58af87c79e1594180148753bcfd7d1ab87ed0b35ed8ef",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+design_exit_status=0
+stage=tasks
+{
+  "change": "extract-client-driver-core",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "9f3438e25a9b9c6363e2ea22fead8584c70cf2c01c4d04b22686e453300ca12a",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "4bd777f2b842b69c6ce65ab4bbde96866308b3d888efc60af25d40ff2ef4db8a",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+tasks_exit_status=0
+exit_status=0
