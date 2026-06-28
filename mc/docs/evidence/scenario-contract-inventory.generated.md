@@ -125,7 +125,7 @@ This bounded inventory is generated from `compat/config/scenario-contracts.ncl` 
 | `MC_COMPAT_WAN_AUTHORIZATION` | `runtime_env` | `canonical` | `runner-safety` | `compat/runner/src/main.rs` | drift-checked |
 | `MC_COMPAT_WAN_TARGET_OWNERSHIP` | `runtime_env` | `canonical` | `runner-safety` | `compat/runner/src/main.rs` | drift-checked |
 | `mc.compat.scenario.receipt.v2` | `receipt_identifier` | `canonical` | `runner-evidence` | `compat/runner/src/main.rs`<br>`compat/runner/src/receipt_validation.rs` | shared-generated-or-drift-checked |
-| `mc.compat.smoke.receipt.v1` | `receipt_identifier` | `compatibility_alias` | `runner-evidence` | `compat/runner/src/main.rs`<br>`compat/runner/src/receipt_validation.rs` | preserve historical receipt alias until a separate Cairn retires it |
+| `mc.compat.smoke.receipt.v1` | `receipt_identifier` | `compatibility_alias` | `runner-evidence` | `compat/runner/src/receipt_validation.rs` | preserve historical receipt alias until a separate Cairn retires it |
 | `mc.compat.failure.bundle.v1` | `receipt_identifier` | `canonical` | `runner-evidence` | (generated-only) | drift-checked |
 
 ## Scenario names, aliases, and milestone IDs

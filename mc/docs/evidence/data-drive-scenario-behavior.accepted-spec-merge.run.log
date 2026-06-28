@@ -1,0 +1,23 @@
+$ rg runner_modularity.scenario_metadata cairn/specs/mc-compatibility/spec.md
+r[mc_compatibility.runner_modularity.scenario_metadata] Scenario behavior facts SHOULD be represented as explicit scenario metadata or generated scenario surfaces when the facts are deterministic and declarative.
+r[mc_compatibility.runner_modularity.scenario_metadata.row]
+r[mc_compatibility.runner_modularity.scenario_metadata_positive_tests] The change MUST include positive validation for representative single-client, reconnect, multi-client, projectile, inventory, survival, CTF, and MCP scenario metadata.
+r[mc_compatibility.runner_modularity.scenario_metadata_positive_tests.coverage]
+r[mc_compatibility.runner_modularity.scenario_metadata_negative_tests] The change MUST include negative validation for missing required facts, unknown env intents, invalid graph edges, duplicate aliases, and unsupported handler references.
+r[mc_compatibility.runner_modularity.scenario_metadata_negative_tests.fail_closed]
+r[mc_compatibility.runner_modularity.scenario_metadata_validation] The change MUST record scenario-spec validation, generated-surface freshness checks, runner tests, Cairn gates, and Cairn validation before archive.
+r[mc_compatibility.runner_modularity.scenario_metadata_validation.logs]
+exit_status[accepted-spec-rg]=0
+$ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 39,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 44,
+  "valid": true
+}
+exit_status[validate]=0
+exit_status=0

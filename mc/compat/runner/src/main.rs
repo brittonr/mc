@@ -67,8 +67,9 @@ use receipt_validation::validate_receipt_summary;
 use receipt_validation::{read_receipt_summary_from_text, validate_receipt_pair, ReceiptSummary};
 use scenario_catalog::*;
 use scenario_core::{
-    parse_scenario, scenario_behavior_kind, scenario_forbidden_patterns, scenario_name,
-    scenario_required_milestones, server_required_milestones, validate_static_scenario_specs,
+    parse_scenario, scenario_behavior_kind, scenario_behavior_metadata,
+    scenario_forbidden_patterns, scenario_name, scenario_required_milestones,
+    server_required_milestones, validate_static_scenario_specs,
 };
 use scenario_core::{
     NegativeLiveRailBehavior, ProbeTeam, COMBAT_ATTACKER_ROLE, COMBAT_TARGET_USERNAME,
@@ -1847,22 +1848,7 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
     }
 
     fn run_strategy(&self) -> ScenarioRunStrategy {
-        match self {
-            ScenarioBehaviorKind::ReconnectFlagState { .. }
-            | ScenarioBehaviorKind::SurvivalChestPersistence
-            | ScenarioBehaviorKind::SurvivalFurnacePersistence
-            | ScenarioBehaviorKind::WorldPersistenceRestart { .. }
-            | ScenarioBehaviorKind::SurvivalWorldMultichunkDurability => {
-                ScenarioRunStrategy::ReconnectSequence
-            }
-            ScenarioBehaviorKind::Combat { .. }
-            | ScenarioBehaviorKind::EquipmentUpdate
-            | ScenarioBehaviorKind::Projectile { .. }
-            | ScenarioBehaviorKind::MultiClientLoadScore
-            | ScenarioBehaviorKind::CtfSimultaneousPickupCaptureRace
-            | ScenarioBehaviorKind::CtfSpawnTeamBalanceReset => ScenarioRunStrategy::MultiClient,
-            _ => ScenarioRunStrategy::SingleClient,
-        }
+        ScenarioBehaviorKind::run_strategy(self)
     }
 
     fn safety_reconnect_sessions(&self) -> usize {
@@ -1881,45 +1867,7 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
     }
 
     fn negative_live_rail(&self) -> Option<NegativeLiveRailBehavior> {
-        match self {
-            ScenarioBehaviorKind::NegativeInventory {
-                invalid_action,
-                postcondition,
-                ..
-            } => Some(NegativeLiveRailBehavior {
-                invalid_action,
-                postcondition,
-            }),
-            ScenarioBehaviorKind::NegativeCustomPayload => Some(NegativeLiveRailBehavior {
-                invalid_action: "malformed_custom_payload",
-                postcondition: "negative_custom_payload_contained",
-            }),
-            ScenarioBehaviorKind::ReconnectFlagState {
-                negative_probe: Some(_),
-            } => Some(NegativeLiveRailBehavior {
-                invalid_action: "duplicate_reconnect_flag_transition",
-                postcondition: "negative_reconnect_race_contained",
-            }),
-            ScenarioBehaviorKind::NegativeCtfWrongScore => Some(NegativeLiveRailBehavior {
-                invalid_action: "wrong_team_or_wrong_portal_score_attempt",
-                postcondition: "negative_wrong_score_contained",
-            }),
-            ScenarioBehaviorKind::CtfInvalidPickupOwnership => Some(NegativeLiveRailBehavior {
-                invalid_action: "own_flag_pickup_without_ownership_transfer",
-                postcondition: "ctf_invalid_pickup_contained",
-            }),
-            ScenarioBehaviorKind::CtfInvalidReturnDrop => Some(NegativeLiveRailBehavior {
-                invalid_action: "own_base_return_without_carrier",
-                postcondition: "ctf_invalid_return_drop_contained",
-            }),
-            ScenarioBehaviorKind::CtfInvalidOpponentBaseReturnDrop => {
-                Some(NegativeLiveRailBehavior {
-                    invalid_action: "opponent_base_return_drop_without_carrier",
-                    postcondition: CTF_OPPONENT_RETURN_DROP_CLIENT_CONTAINED_NEEDLE,
-                })
-            }
-            _ => None,
-        }
+        ScenarioBehaviorKind::negative_live_rail(self)
     }
 
     fn requires_server_correlation(&self) -> bool {
@@ -1972,11 +1920,11 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
     }
 
     fn uses_dynamic_projectile_health(&self) -> bool {
-        matches!(self, ScenarioBehaviorKind::Projectile { damage: true })
+        ScenarioBehaviorKind::uses_dynamic_projectile_health(self)
     }
 
     fn is_mcp_controlled_smoke(&self) -> bool {
-        matches!(self, ScenarioBehaviorKind::McpControlledSmoke)
+        ScenarioBehaviorKind::is_mcp_controlled_smoke(self)
     }
 
     fn uses_isolated_restart_storage(&self) -> bool {

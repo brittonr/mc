@@ -1,0 +1,55 @@
+$ git status --short -- .
+ M compat/runner/src/evidence_core.rs
+ M compat/runner/src/main.rs
+AM compat/runner/src/scenario_behavior_metadata.rs
+ M compat/runner/src/scenario_core.rs
+ M compat/runner/src/scenario_core_colocated_tests.rs
+?? cairn/changes/data-drive-stevenarella-protocol-versions/
+?? cairn/changes/extract-hyperion-bot-packet-core/
+?? cairn/changes/extract-hyperion-inventory-core/
+?? cairn/changes/extract-hyperion-player-join-core/
+?? cairn/changes/extract-stevenarella-control-core/
+?? cairn/changes/extract-stevenarella-login-core/
+?? cairn/changes/extract-stevenarella-model-core/
+?? cairn/changes/extract-stevenarella-world-core/
+?? cairn/changes/extract-valence-entity-attribute-core/
+?? cairn/changes/extract-valence-inventory-click-core/
+?? cairn/changes/extract-valence-packet-compose-core/
+?? cairn/changes/introduce-runner-config-patches/
+?? cairn/changes/modularize-hyperion-block-loader/
+?? cairn/changes/modularize-hyperion-packet-inspector-ui/
+?? cairn/changes/modularize-hyperion-simulation-shell/
+?? cairn/changes/modularize-stevenarella-ecs-core/
+?? cairn/changes/modularize-stevenarella-game-shell/
+?? cairn/changes/modularize-stevenarella-mcp/
+?? cairn/changes/modularize-stevenarella-server/
+?? cairn/changes/modularize-stevenarella-ui-widgets/
+?? cairn/changes/modularize-survival-compat-fixture/
+?? cairn/changes/modularize-valence-chunk-layer/
+?? cairn/changes/modularize-valence-command-manager/
+?? cairn/changes/modularize-valence-ctf-fixture/
+?? cairn/changes/modularize-valence-network-session/
+?? cairn/changes/separate-stevenarella-block-registry/
+?? cairn/changes/split-stevenarella-capture-service/
+?? cairn/changes/split-stevenarella-player-entity/
+?? cairn/changes/split-stevenarella-renderer-core/
+?? cairn/changes/split-stevenarella-resource-manager/
+?? cairn/changes/split-valence-anvil-snapshot-core/
+?? cairn/changes/split-valence-command-example/
+?? cairn/changes/split-valence-observability-core/
+?? docs/evidence/data-drive-scenario-behavior.baseline-runner-evidence-core.run.log
+?? docs/evidence/data-drive-scenario-behavior.baseline-runner-scenario-core.run.log
+?? docs/evidence/data-drive-scenario-behavior.inventory.md
+?? docs/evidence/data-drive-scenario-behavior.metadata-evidence-core.run.log
+?? docs/evidence/data-drive-scenario-behavior.metadata-scenario-core.run.log
+?? docs/evidence/data-drive-scenario-behavior.mid-status.run.log
+?? docs/evidence/data-drive-scenario-behavior.post-format-evidence-core.run.log
+?? docs/evidence/data-drive-scenario-behavior.post-format-scenario-core.run.log
+?? docs/evidence/data-drive-scenario-behavior.pre-change-list.run.log
+?? docs/evidence/data-drive-scenario-behavior.pre-gate-design.run.log
+?? docs/evidence/data-drive-scenario-behavior.pre-gate-proposal.run.log
+?? docs/evidence/data-drive-scenario-behavior.pre-gate-tasks.run.log
+?? docs/evidence/data-drive-scenario-behavior.pre-status.run.log
+?? docs/evidence/data-drive-scenario-behavior.pre-validate.run.log
+?? docs/evidence/data-drive-scenario-behavior.runner-fmt.run.log
+exit_status=0

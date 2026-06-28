@@ -1,0 +1,7 @@
+$ nix develop --no-update-lock-file . -c bash -lc rustc\ --edition=2021\ tools/check_scenario_contracts.rs\ -o\ target/check-scenario-contracts\ \&\&\ target/check-scenario-contracts\ --write-generated-surfaces
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+scenario contract generated surfaces refreshed: 4 surfaces
+exit_status=0

@@ -1,0 +1,91 @@
+## sync-dry-run
+$ nix run .#cairn -- sync data-drive-scenario-behavior --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/data-drive-scenario-behavior/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/data-drive-scenario-behavior/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "data-drive-scenario-behavior",
+  "delta_specs": [
+    "./cairn/changes/data-drive-scenario-behavior/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "1c2fee1ba1c6705bf168b730f815d7a4ef7cc6ac5550621edfb969e60da36cd2",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "9d89e913f87f7557bb2b12d930b14e677fe175dbafe0216bcabf65e8656f36a0",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "4cf6728c33ef1cc5c11478c47382e1bbff5ab16cf45cc92c9ecffdb23c140c1b"
+}
+exit_status[sync-dry-run]=0
+## sync-execute
+$ nix run .#cairn -- sync data-drive-scenario-behavior --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/data-drive-scenario-behavior/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/data-drive-scenario-behavior/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "data-drive-scenario-behavior",
+  "delta_specs": [
+    "./cairn/changes/data-drive-scenario-behavior/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "1c2fee1ba1c6705bf168b730f815d7a4ef7cc6ac5550621edfb969e60da36cd2",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "8030920d8c3c5a0ef6fffbddefa05c01df8c9ccac9518058ef08cbfc6ff7062b",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "d0c370e88f29d17b09e97d32df0ed2af1a845bb7770ff6a1ac52c827f97367fc"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "8030920d8c3c5a0ef6fffbddefa05c01df8c9ccac9518058ef08cbfc6ff7062b",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "d0c370e88f29d17b09e97d32df0ed2af1a845bb7770ff6a1ac52c827f97367fc"
+    },
+    "kind": "sync",
+    "manifest_hash": "d3b3a7ca7e11ce81be6b5bbcb7fc3b9840a4eeafb1995e5d3b42c1c2e1d62bde"
+  },
+  "plan_hash": "8af97a1af2448e3546856e569153154191efba1e053abb274f5bfb2e4541286c",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "1eb0ce5ead04cab110aa12383c99afcefeba14bb5bea414be124539de8355241"
+}
+exit_status[sync-execute]=0
+## validate
+$ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 39,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 44,
+  "valid": true
+}
+exit_status[validate]=0
+exit_status=0

@@ -1,0 +1,23 @@
+$ nix run .#cairn -- gate proposal data-drive-scenario-behavior --root .
+{
+  "change": "data-drive-scenario-behavior",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e3cff2de2f231212a505c7a4503b6f519dc5ebad3897e415f287eb2926d16369",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "202b06a1da431bd4e75931034faf8c98d0ca2d4fb2cf42025ba661f5eba2fb47",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0

@@ -1,6 +1,15 @@
 use crate::scenario_catalog::*;
 use crate::scenario_manifest_generated;
 
+#[path = "scenario_behavior_metadata.rs"]
+mod scenario_behavior_metadata;
+use scenario_behavior_metadata::{
+    scenario_behavior_kind_metadata, scenario_evidence_selectors_for_kind,
+};
+pub(crate) use scenario_behavior_metadata::{
+    scenario_behavior_metadata, validate_scenario_behavior_metadata,
+};
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Scenario {
     Smoke,
@@ -212,6 +221,302 @@ pub(crate) enum ScenarioRunStrategy {
     MultiClient,
 }
 
+pub(crate) type ScenarioBehaviorEdge = (&'static str, &'static str);
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct ScenarioEvidenceSelectors {
+    pub(crate) typed_event_pass_fail: bool,
+    pub(crate) typed_event_required_events: &'static [&'static str],
+    pub(crate) dynamic_projectile_health: bool,
+    pub(crate) mcp_control: bool,
+    pub(crate) negative_live_rail: bool,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(crate) struct ScenarioBehaviorMetadata {
+    pub(crate) run_strategy: Option<ScenarioRunStrategy>,
+    pub(crate) env_intents: &'static [&'static str],
+    pub(crate) typed_event_edges: Vec<ScenarioBehaviorEdge>,
+    pub(crate) typed_event_known_events: &'static [&'static str],
+    pub(crate) evidence_selectors: ScenarioEvidenceSelectors,
+    pub(crate) non_claims: &'static [&'static str],
+    pub(crate) handler: &'static str,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct ScenarioBehaviorKindMetadata {
+    run_strategy: Option<ScenarioRunStrategy>,
+    env_intents: &'static [&'static str],
+    handler: &'static str,
+}
+
+const HANDLER_DEFAULT: &str = "default";
+const HANDLER_COMPAT_BOT_PROBE: &str = "compat-bot-probe";
+const HANDLER_FLAG_SCORE: &str = "flag-score";
+const HANDLER_RECONNECT_FLAG_STATE: &str = "reconnect-flag-state";
+const HANDLER_INVENTORY_INTERACTION: &str = "inventory-interaction";
+const HANDLER_INVENTORY_STACK: &str = "inventory-stack-split-merge";
+const HANDLER_INVENTORY_DRAG: &str = "inventory-drag-transactions";
+const HANDLER_NEGATIVE_INVENTORY: &str = "negative-inventory";
+const HANDLER_NEGATIVE_CUSTOM_PAYLOAD: &str = "negative-custom-payload";
+const HANDLER_SURVIVAL: &str = "survival";
+const HANDLER_WORLD_PERSISTENCE: &str = "world-persistence";
+const HANDLER_MCP_CONTROLLED_SMOKE: &str = "mcp-controlled-smoke";
+const HANDLER_COMBAT: &str = "combat";
+const HANDLER_EQUIPMENT_UPDATE: &str = "equipment-update";
+const HANDLER_PROJECTILE: &str = "projectile";
+const HANDLER_MULTI_CLIENT_LOAD: &str = "multi-client-load";
+const HANDLER_NEGATIVE_CTF: &str = "negative-ctf";
+const HANDLER_CTF_RULE: &str = "ctf-rule";
+
+const SUPPORTED_SCENARIO_HANDLERS: &[&str] = &[
+    HANDLER_DEFAULT,
+    HANDLER_COMPAT_BOT_PROBE,
+    HANDLER_FLAG_SCORE,
+    HANDLER_RECONNECT_FLAG_STATE,
+    HANDLER_INVENTORY_INTERACTION,
+    HANDLER_INVENTORY_STACK,
+    HANDLER_INVENTORY_DRAG,
+    HANDLER_NEGATIVE_INVENTORY,
+    HANDLER_NEGATIVE_CUSTOM_PAYLOAD,
+    HANDLER_SURVIVAL,
+    HANDLER_WORLD_PERSISTENCE,
+    HANDLER_MCP_CONTROLLED_SMOKE,
+    HANDLER_COMBAT,
+    HANDLER_EQUIPMENT_UPDATE,
+    HANDLER_PROJECTILE,
+    HANDLER_MULTI_CLIENT_LOAD,
+    HANDLER_NEGATIVE_CTF,
+    HANDLER_CTF_RULE,
+];
+
+const ENV_CLIENT_ACTIVE_PROBE: &str = "client.active-probe";
+const ENV_CLIENT_TEAM_PROBE: &str = "client.team-probe";
+const ENV_CLIENT_FLAG_PROBE: &str = "client.flag-probe";
+const ENV_CLIENT_RECONNECT_PROBE: &str = "client.reconnect-probe";
+const ENV_CLIENT_INVENTORY_PROBE: &str = "client.inventory-probe";
+const ENV_CLIENT_NEGATIVE_PROBE: &str = "client.negative-probe";
+const ENV_CLIENT_SURVIVAL_PROBE: &str = "client.survival-probe";
+const ENV_CLIENT_SURVIVAL_SESSION: &str = "client.survival-session";
+const ENV_CLIENT_MCP_CONTROL: &str = "client.mcp-control";
+const ENV_CLIENT_COMBAT_PROBE: &str = "client.combat-probe";
+const ENV_CLIENT_PROJECTILE_PROBE: &str = "client.projectile-probe";
+const ENV_CLIENT_EQUIPMENT_PROBE: &str = "client.equipment-probe";
+const ENV_CLIENT_CTF_RACE_TIMING: &str = "client.ctf-race-timing";
+const ENV_CLIENT_CTF_SCORE_LIMIT: &str = "client.ctf-score-limit";
+const ENV_SERVER_INVENTORY_FIXTURE: &str = "server.inventory-fixture";
+const ENV_SERVER_SURVIVAL_FIXTURE: &str = "server.survival-fixture";
+const ENV_SERVER_SURVIVAL_PERSISTENCE: &str = "server.survival-persistence";
+const ENV_SERVER_COMBAT_FIXTURE: &str = "server.combat-fixture";
+const ENV_SERVER_PROJECTILE_FIXTURE: &str = "server.projectile-fixture";
+const ENV_SERVER_EQUIPMENT_FIXTURE: &str = "server.equipment-fixture";
+const ENV_SERVER_CTF_RULE_FIXTURE: &str = "server.ctf-rule-fixture";
+
+const SUPPORTED_SCENARIO_ENV_INTENTS: &[&str] = &[
+    ENV_CLIENT_ACTIVE_PROBE,
+    ENV_CLIENT_TEAM_PROBE,
+    ENV_CLIENT_FLAG_PROBE,
+    ENV_CLIENT_RECONNECT_PROBE,
+    ENV_CLIENT_INVENTORY_PROBE,
+    ENV_CLIENT_NEGATIVE_PROBE,
+    ENV_CLIENT_SURVIVAL_PROBE,
+    ENV_CLIENT_SURVIVAL_SESSION,
+    ENV_CLIENT_MCP_CONTROL,
+    ENV_CLIENT_COMBAT_PROBE,
+    ENV_CLIENT_PROJECTILE_PROBE,
+    ENV_CLIENT_EQUIPMENT_PROBE,
+    ENV_CLIENT_CTF_RACE_TIMING,
+    ENV_CLIENT_CTF_SCORE_LIMIT,
+    ENV_SERVER_INVENTORY_FIXTURE,
+    ENV_SERVER_SURVIVAL_FIXTURE,
+    ENV_SERVER_SURVIVAL_PERSISTENCE,
+    ENV_SERVER_COMBAT_FIXTURE,
+    ENV_SERVER_PROJECTILE_FIXTURE,
+    ENV_SERVER_EQUIPMENT_FIXTURE,
+    ENV_SERVER_CTF_RULE_FIXTURE,
+];
+
+const EMPTY_ENV_INTENTS: &[&str] = &[];
+const COMPAT_BOT_ENV_INTENTS: &[&str] = &[ENV_CLIENT_ACTIVE_PROBE];
+const FLAG_SCORE_ENV_INTENTS: &[&str] = &[
+    ENV_CLIENT_ACTIVE_PROBE,
+    ENV_CLIENT_TEAM_PROBE,
+    ENV_CLIENT_FLAG_PROBE,
+];
+const FLAG_SCORE_RECONNECT_ENV_INTENTS: &[&str] = &[
+    ENV_CLIENT_ACTIVE_PROBE,
+    ENV_CLIENT_TEAM_PROBE,
+    ENV_CLIENT_FLAG_PROBE,
+    ENV_CLIENT_RECONNECT_PROBE,
+];
+const RECONNECT_FLAG_ENV_INTENTS: &[&str] = &[
+    ENV_CLIENT_ACTIVE_PROBE,
+    ENV_CLIENT_TEAM_PROBE,
+    ENV_CLIENT_FLAG_PROBE,
+    ENV_CLIENT_RECONNECT_PROBE,
+];
+const NEGATIVE_RECONNECT_FLAG_ENV_INTENTS: &[&str] = &[
+    ENV_CLIENT_ACTIVE_PROBE,
+    ENV_CLIENT_TEAM_PROBE,
+    ENV_CLIENT_FLAG_PROBE,
+    ENV_CLIENT_RECONNECT_PROBE,
+    ENV_CLIENT_NEGATIVE_PROBE,
+];
+const INVENTORY_ENV_INTENTS: &[&str] = &[
+    ENV_CLIENT_ACTIVE_PROBE,
+    ENV_CLIENT_TEAM_PROBE,
+    ENV_CLIENT_INVENTORY_PROBE,
+    ENV_SERVER_INVENTORY_FIXTURE,
+];
+const NEGATIVE_INVENTORY_ENV_INTENTS: &[&str] = &[
+    ENV_CLIENT_ACTIVE_PROBE,
+    ENV_CLIENT_TEAM_PROBE,
+    ENV_CLIENT_INVENTORY_PROBE,
+    ENV_CLIENT_NEGATIVE_PROBE,
+    ENV_SERVER_INVENTORY_FIXTURE,
+];
+const NEGATIVE_CUSTOM_PAYLOAD_ENV_INTENTS: &[&str] =
+    &[ENV_CLIENT_ACTIVE_PROBE, ENV_CLIENT_NEGATIVE_PROBE];
+const SURVIVAL_ENV_INTENTS: &[&str] = &[ENV_CLIENT_SURVIVAL_PROBE, ENV_SERVER_SURVIVAL_FIXTURE];
+const SURVIVAL_RECONNECT_ENV_INTENTS: &[&str] = &[
+    ENV_CLIENT_SURVIVAL_PROBE,
+    ENV_CLIENT_SURVIVAL_SESSION,
+    ENV_SERVER_SURVIVAL_FIXTURE,
+];
+const SURVIVAL_PERSISTENCE_ENV_INTENTS: &[&str] = &[
+    ENV_CLIENT_SURVIVAL_PROBE,
+    ENV_CLIENT_SURVIVAL_SESSION,
+    ENV_SERVER_SURVIVAL_FIXTURE,
+    ENV_SERVER_SURVIVAL_PERSISTENCE,
+];
+const MCP_CONTROL_ENV_INTENTS: &[&str] = &[ENV_CLIENT_MCP_CONTROL];
+const COMBAT_ENV_INTENTS: &[&str] = &[
+    ENV_CLIENT_ACTIVE_PROBE,
+    ENV_CLIENT_TEAM_PROBE,
+    ENV_CLIENT_COMBAT_PROBE,
+    ENV_SERVER_COMBAT_FIXTURE,
+];
+const PROJECTILE_ENV_INTENTS: &[&str] = &[
+    ENV_CLIENT_ACTIVE_PROBE,
+    ENV_CLIENT_TEAM_PROBE,
+    ENV_CLIENT_COMBAT_PROBE,
+    ENV_CLIENT_PROJECTILE_PROBE,
+    ENV_SERVER_PROJECTILE_FIXTURE,
+];
+const EQUIPMENT_ENV_INTENTS: &[&str] = &[
+    ENV_CLIENT_ACTIVE_PROBE,
+    ENV_CLIENT_TEAM_PROBE,
+    ENV_CLIENT_EQUIPMENT_PROBE,
+    ENV_SERVER_EQUIPMENT_FIXTURE,
+];
+const MULTI_CLIENT_LOAD_ENV_INTENTS: &[&str] = &[
+    ENV_CLIENT_ACTIVE_PROBE,
+    ENV_CLIENT_TEAM_PROBE,
+    ENV_CLIENT_FLAG_PROBE,
+];
+const NEGATIVE_CTF_ENV_INTENTS: &[&str] = &[
+    ENV_CLIENT_ACTIVE_PROBE,
+    ENV_CLIENT_TEAM_PROBE,
+    ENV_CLIENT_FLAG_PROBE,
+    ENV_CLIENT_NEGATIVE_PROBE,
+    ENV_SERVER_CTF_RULE_FIXTURE,
+];
+const CTF_SCORE_LIMIT_ENV_INTENTS: &[&str] = &[
+    ENV_CLIENT_ACTIVE_PROBE,
+    ENV_CLIENT_TEAM_PROBE,
+    ENV_CLIENT_FLAG_PROBE,
+    ENV_CLIENT_CTF_SCORE_LIMIT,
+    ENV_SERVER_CTF_RULE_FIXTURE,
+];
+const CTF_RACE_ENV_INTENTS: &[&str] = &[
+    ENV_CLIENT_ACTIVE_PROBE,
+    ENV_CLIENT_TEAM_PROBE,
+    ENV_CLIENT_FLAG_PROBE,
+    ENV_CLIENT_CTF_RACE_TIMING,
+    ENV_SERVER_CTF_RULE_FIXTURE,
+];
+const CTF_SPAWN_ENV_INTENTS: &[&str] = &[
+    ENV_CLIENT_ACTIVE_PROBE,
+    ENV_CLIENT_TEAM_PROBE,
+    ENV_CLIENT_FLAG_PROBE,
+    ENV_SERVER_CTF_RULE_FIXTURE,
+];
+
+const SCENARIO_METADATA_NON_CLAIMS: &[&str] = &[
+    "broad_minecraft_compatibility",
+    "semantic_equivalence",
+    "production_readiness",
+    "public_server_safety",
+    "full_ctf_correctness",
+    "full_survival_correctness",
+];
+
+const MCP_TYPED_EVENT_REQUIRED_EVENTS: &[&str] = &[
+    "mcp_stdout_clean",
+    "mcp_look_call",
+    "mcp_input_call",
+    "mcp_capture_latest_frame",
+    "mcp_frame_artifact_identity",
+];
+const MCP_TYPED_EVENT_KNOWN_EVENTS: &[&str] = &[
+    "mcp_initialize",
+    "mcp_tools_list",
+    "mcp_status_call",
+    "mcp_stdout_clean",
+    "mcp_look_call",
+    "mcp_input_call",
+    "mcp_capture_latest_frame",
+    "mcp_frame_artifact_identity",
+];
+const EMPTY_TYPED_EVENT_KNOWN_EVENTS: &[&str] = &[];
+const EMPTY_TYPED_EVENT_REQUIRED_EVENTS: &[&str] = &[];
+
+const TYPED_EVENT_PASS_FAIL_SCENARIOS: &[Scenario] = &[
+    Scenario::Smoke,
+    Scenario::McpControlledSmoke,
+    Scenario::InventoryInteraction,
+    Scenario::InventoryStackSplitMerge,
+    Scenario::InventoryDragTransactions,
+    Scenario::SurvivalBreakPlacePickup,
+    Scenario::SurvivalChestPersistence,
+    Scenario::SurvivalCraftingTable,
+    Scenario::SurvivalCraftingRecipeBreadth,
+    Scenario::SurvivalFurnacePersistence,
+    Scenario::SurvivalFurnaceSmeltingBreadth,
+    Scenario::SurvivalHungerFood,
+    Scenario::SurvivalHungerHealthCycle,
+    Scenario::SurvivalMobDrop,
+    Scenario::SurvivalMobAiLootBreadth,
+    Scenario::SurvivalRedstoneToggle,
+    Scenario::SurvivalRedstoneCircuitBreadth,
+    Scenario::SurvivalWorldPersistenceRestart,
+    Scenario::SurvivalWorldMultichunkDurability,
+    Scenario::SurvivalCrashRecoveryParity,
+    Scenario::SurvivalBlockEntityPersistenceParity,
+    Scenario::SurvivalContainerBlockEntityBreadth,
+    Scenario::SurvivalBiomeDimensionState,
+    Scenario::SurvivalBiomeDimensionTravel,
+    Scenario::SurvivalSignEditingLive,
+    Scenario::FlagScoreRepeat,
+    Scenario::BlueFlagScore,
+    Scenario::CombatDamage,
+    Scenario::CombatKnockback,
+    Scenario::ArmorEquipmentMitigation,
+    Scenario::EquipmentUpdateObservation,
+    Scenario::ProjectileHit,
+    Scenario::ProjectileDamageAttribution,
+    Scenario::FlagCarrierDeathReturn,
+    Scenario::ReconnectFlagState,
+    Scenario::CtfInvalidPickupOwnership,
+    Scenario::CtfInvalidReturnDrop,
+    Scenario::CtfInvalidOpponentBaseReturnDrop,
+    Scenario::CtfScoreLimitWinCondition,
+    Scenario::CtfSimultaneousPickupCaptureRace,
+    Scenario::CtfSpawnTeamBalanceReset,
+    Scenario::ReconnectFlagScore,
+    Scenario::MultiClientLoadScore,
+];
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct NegativeLiveRailBehavior {
     pub(crate) invalid_action: &'static str,
@@ -283,20 +588,9 @@ pub(crate) enum ScenarioBehaviorKind {
 
 impl ScenarioBehaviorKind {
     pub(crate) fn run_strategy(&self) -> ScenarioRunStrategy {
-        match self {
-            Self::ReconnectFlagState { .. }
-            | Self::SurvivalChestPersistence
-            | Self::SurvivalFurnacePersistence
-            | Self::WorldPersistenceRestart { .. }
-            | Self::SurvivalWorldMultichunkDurability => ScenarioRunStrategy::ReconnectSequence,
-            Self::Combat { .. }
-            | Self::EquipmentUpdate
-            | Self::Projectile { .. }
-            | Self::MultiClientLoadScore
-            | Self::CtfSimultaneousPickupCaptureRace
-            | Self::CtfSpawnTeamBalanceReset => ScenarioRunStrategy::MultiClient,
-            _ => ScenarioRunStrategy::SingleClient,
-        }
+        scenario_behavior_kind_metadata(self)
+            .run_strategy
+            .expect("static scenario behavior metadata has a run strategy")
     }
 
     pub(crate) fn negative_live_rail(&self) -> Option<NegativeLiveRailBehavior> {
@@ -340,11 +634,11 @@ impl ScenarioBehaviorKind {
     }
 
     pub(crate) fn uses_dynamic_projectile_health(&self) -> bool {
-        matches!(self, Self::Projectile { damage: true })
+        scenario_evidence_selectors_for_kind(self).dynamic_projectile_health
     }
 
     pub(crate) fn is_mcp_controlled_smoke(&self) -> bool {
-        matches!(self, Self::McpControlledSmoke)
+        scenario_evidence_selectors_for_kind(self).mcp_control
     }
 }
 
@@ -3476,8 +3770,25 @@ fn validate_static_scenario_rows(specs: &[ScenarioSpec]) -> Result<(), String> {
                 spec.canonical_name
             ));
         }
+        validate_scenario_aliases(spec)?;
         validate_scenario_spec_manifest_parity(spec)?;
         validate_scenario_behavior_capabilities(spec)?;
+        let metadata = scenario_behavior_metadata(spec.scenario);
+        validate_scenario_behavior_metadata(spec, &metadata)?;
+    }
+    Ok(())
+}
+
+fn validate_scenario_aliases(spec: &ScenarioSpec) -> Result<(), String> {
+    let mut aliases = Vec::new();
+    for alias in spec.aliases {
+        if aliases.contains(alias) {
+            return Err(format!(
+                "scenario {} has duplicate alias {}",
+                spec.canonical_name, alias
+            ));
+        }
+        aliases.push(*alias);
     }
     Ok(())
 }

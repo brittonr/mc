@@ -1,0 +1,141 @@
+$ nix develop --no-update-lock-file . -c cargo test --manifest-path compat/runner/Cargo.toml scenario_core -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unused imports: `build_git_revision_evidence`, `cleanup_path`, `git_rev_parse`, `git_revision_evidence`, `is_mc_compat_client_log`, and `valence_source_dir`
+  --> src/main.rs:21:5
+   |
+21 |     build_git_revision_evidence, child_revision_evidence_for_receipt, cleanup_harness_state,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+22 |     cleanup_path, ensure_valence_repo_ready, force_stop_paper_server, force_stop_server,
+   |     ^^^^^^^^^^^^
+23 |     force_stop_valence_server, git_rev_parse, git_revision_evidence, is_mc_compat_client_log,
+   |                                ^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^
+24 |     print_harness_status, probe_status, start_paper_server, start_server, start_valence_server,
+25 |     stop_paper_server, stop_server, stop_valence_server, valence_source_dir,
+   |                                                          ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused imports: `mcp_controlled_success_output`, `projectile_damage_dry_run_evidence`, and `projectile_travel_collision_dry_run_evidence`
+  --> src/main.rs:30:38
+   |
+30 |     mcp_controlled_dry_run_evidence, mcp_controlled_success_output, planned_client_user...
+   |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+31 |     projectile_damage_dry_run_evidence, projectile_travel_collision_dry_run_evidence,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `biome_dimension_join_state_required_non_claims`, `evaluate_scenario_with_projectile_health`, and `validate_biome_dimension_join_state_record`
+  --> src/main.rs:40:5
+   |
+40 |     biome_dimension_join_state_required_non_claims, evaluate_scenario,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+41 |     evaluate_scenario_with_projectile_health, parse_typed_event_line,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+42 |     validate_biome_dimension_join_state_record,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `evaluate_typed_event_graph`, `typed_event_ordered_edges_for_scenario`, and `typed_event_required_events_for_graph`
+  --> src/main.rs:47:61
+   |
+47 |     evaluate_scenario_for_config, evaluate_server_scenario, evaluate_typed_event_graph,
+   |                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+48 |     normalize_typed_event_timeline, typed_event_oracle_contributes_to_pass_fail,
+49 |     typed_event_oracle_receipt_json, typed_event_ordered_edges_for_scenario,
+   |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+50 |     typed_event_required_events_for_graph, typed_event_timeline_blake3,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `scenario_route_non_claims`
+  --> src/main.rs:57:74
+   |
+57 | ...onfig, log_harness_plan, scenario_route_non_claims,
+   |                             ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `receipt_validation::validate_receipt_summary`
+  --> src/main.rs:66:5
+   |
+66 | use receipt_validation::validate_receipt_summary;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `ScenarioMilestone`
+  --> src/main.rs:84:21
+   |
+84 | use scenario_core::{ScenarioMilestone, ALL_SCENARIOS};
+   |                     ^^^^^^^^^^^^^^^^^
+
+warning: constant `CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE` is never used
+   --> src/main.rs:333:7
+    |
+333 | const CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE: &str =
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `json_object_string_field` is never used
+  --> src/json_support.rs:12:15
+   |
+12 | pub(crate) fn json_object_string_field(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_optional_string_field` is never used
+  --> src/json_support.rs:20:15
+   |
+20 | pub(crate) fn json_object_optional_string_field(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_u32_field` is never used
+  --> src/json_support.rs:28:15
+   |
+28 | pub(crate) fn json_object_u32_field(text: &str, object: &str, key: &str) -> Re...
+   |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_bool_field` is never used
+  --> src/json_support.rs:32:15
+   |
+32 | pub(crate) fn json_object_bool_field(text: &str, object: &str, key: &str) -> R...
+   |               ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `Transition` is never constructed
+  --> src/layout.rs:44:5
+   |
+42 | pub enum LayoutKind {
+   |          ---------- variant in this enum
+43 |     RoleBased,
+44 |     Transition,
+   |     ^^^^^^^^^^
+   |
+   = note: `LayoutKind` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: constant `TEST_SESSION_ID` is never used
+  --> src/test_support.rs:11:18
+   |
+11 | pub(crate) const TEST_SESSION_ID: &str = "s1";
+   |                  ^^^^^^^^^^^^^^^
+
+warning: constant `TEST_CLIENT_DIR` is never used
+  --> src/test_support.rs:13:18
+   |
+13 | pub(crate) const TEST_CLIENT_DIR: &str = "/tmp/stevenarella";
+   |                  ^^^^^^^^^^^^^^^
+
+warning: `mc-compat-runner` (bin "mc-compat-runner" test) generated 15 warnings (run `cargo fix --bin "mc-compat-runner" -p mc-compat-runner --tests` to apply 7 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 10 tests
+test scenario_core::tests::scenario_core_rejects_invalid_creative_inventory_live_contracts ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_live_capabilities ... ok
+test scenario_core::root_colocated_tests::supported_scenario_usage_lists_all_supported_scenarios ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_resource_pack_status_local_contracts ... ok
+test scenario_core::root_colocated_tests::generated_scenario_manifest_matches_runner_parser ... ok
+test scenario_core::root_colocated_tests::static_scenario_specs_fail_closed_for_invalid_definitions ... ok
+test scenario_core::root_colocated_tests::static_scenario_specs_validate_all_supported_behavior ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_sign_editor_live_contracts ... ok
+test scenario_core::tests::scenario_core_validates_static_specs_and_lookup_parity ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_static_specs ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 181 filtered out; finished in 0.00s
+
+exit_status=0

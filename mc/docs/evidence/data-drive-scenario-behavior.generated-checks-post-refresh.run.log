@@ -1,0 +1,16 @@
+$ nix build .#checks.x86_64-linux.mc-compat-scenario-manifest .#checks.x86_64-linux.mc-compat-generated-harness-surfaces .#checks.x86_64-linux.mc-compat-scenario-contracts --no-link -L
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 8 ms: Could not connect to server; retrying in 68 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 7 ms: Could not connect to server; retrying in 75 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4103 ms: Could not connect to server; retrying in 100 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 8 ms: Could not connect to server; retrying in 15 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3077 ms: Could not connect to server
+these 3 derivations will be built:
+  /nix/store/0hq4w1y1zw3jss8mwxqnn8gs2zvl1yqi-mc-compat-scenario-contracts.drv
+  /nix/store/16yy5v0k7si8856qm7yhfmz141za7i3w-mc-compat-generated-harness-surfaces.drv
+  /nix/store/c8k7cbvzf18j191697bzgjp3cn57nrhp-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/16yy5v0k7si8856qm7yhfmz141za7i3w-mc-compat-generated-harness-surfaces.drv'...
+building '/nix/store/0hq4w1y1zw3jss8mwxqnn8gs2zvl1yqi-mc-compat-scenario-contracts.drv'...
+building '/nix/store/c8k7cbvzf18j191697bzgjp3cn57nrhp-mc-compat-scenario-manifest.drv'...
+exit_status=0

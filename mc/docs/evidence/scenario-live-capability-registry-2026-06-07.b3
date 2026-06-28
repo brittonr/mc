@@ -1,4 +1,4 @@
-cb0baabcbd4859cc03c9e22b597d50a69c6018d3d96129c0ad1ebfbae0121001  compat/runner/src/scenario_core.rs
+047659c6523f634061edfd5c7c8ef4c8de20b5fb509c04d06e9293e194728132  compat/runner/src/scenario_core.rs
 85cf6bfc6680ca2ca754276ff27be8a29c14b4b9473cf91cfadb2ae30b9cbc43  tools/check_scenario_manifest.rs
 8ee0e659622a06b7135752ff1a60ae1fef2f7cac0b30523a5ead967c223459f2  cairn/archive/2026-06-07-scenario-live-probe-capability-registry/tasks.md
 49ba5227846a7078a357752630e11dcfec57e68df6ef3bfed87341fde0e95229  docs/evidence/scenario-live-capability-registry-2026-06-07.md
