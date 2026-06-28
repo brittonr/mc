@@ -1,0 +1,5 @@
+## hyperion rust-mc-bot clippy
+command=nix develop --no-update-lock-file . -c cargo clippy -p rust-mc-bot --all-targets -- -D warnings
+    Checking rust-mc-bot v0.1.0 (/home/brittonr/git/mc/hyperion/tools/rust-mc-bot)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.45s
+exit_status=0

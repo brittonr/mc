@@ -2,7 +2,7 @@ da6df8a3f5ee8494ce389345b4b1f4a99d283fc07ea2ab14a39f63824d11a55a  cairn/archive/
 972af660d3910062852ddc5854f09779c45299604148c6673301c1ba44044123  cairn/archive/2026-06-23-add-observability-profiling-hooks/design.md
 e2b8fc2a7f1f535aa403eccc7e77cc61bab8428f2845307146080d877104ef63  cairn/archive/2026-06-23-add-observability-profiling-hooks/tasks.md
 1a8279b1a0d7c58c593a7ffbd2daa4952bcdb7bd6e8e1ef2a749b5b38b8d9fba  cairn/archive/2026-06-23-add-observability-profiling-hooks/specs/valence-hyperion-integration/spec.md
-3d55f32fded5a2e6034bca178858e2b4c7900561cc39bbed3003272e5aacbbee  cairn/specs/valence-hyperion-integration/spec.md
+8dd671f055e2b5952978f3bce1b42649438281d8de1dc04a331999c86d14309c  cairn/specs/valence-hyperion-integration/spec.md
 bc1467d316f53614081fd2604b17117b6766d89f50e0819e1ecc26b72ba3f6bc  servers/valence/crates/valence_server/src/lib.rs
 bdf917e86b1a20f791b467f1a6bb13c9daa6b72886deea46c56b8447b4b6905a  servers/valence/crates/valence_server/src/observability.rs
 8ba042c06e6fcea41148a4f00e99835f425de2526d8848c99db8e2c679aae866  docs/evidence/add-observability-profiling-hooks-scope-contract-2026-06-23.md

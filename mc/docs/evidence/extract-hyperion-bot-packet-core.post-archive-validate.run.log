@@ -1,0 +1,13 @@
+## post-archive validate
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 35,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 40,
+  "valid": true
+}
+exit_status=0

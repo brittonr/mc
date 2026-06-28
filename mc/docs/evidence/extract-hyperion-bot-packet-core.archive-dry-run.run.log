@@ -1,0 +1,24 @@
+## archive dry run
+command=nix run .#cairn -- archive extract-hyperion-bot-packet-core --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: extract-hyperion-bot-packet-core",
+      "kind": "archive_change",
+      "path": "./cairn/changes/extract-hyperion-bot-packet-core"
+    }
+  ],
+  "blocked": false,
+  "change": "extract-hyperion-bot-packet-core",
+  "dry_run": true,
+  "input_hash": "9cc2e555c5b9a584973c7168c5999179c041848183a97471b39ab7a2effe9664",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "25f1dee0f158d2da73f7dcb0fe605c9046ddb5776fc7f10e85eb15ccd3501bd5",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "b73fa4c3211af1da2eceb9bb2e6417f0a23eaecd442fccb62637c0caaa517c10"
+}
+exit_status=0

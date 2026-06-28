@@ -13,7 +13,7 @@ fbdf6f51c3f0dcfb8d5d9fa7030546c431a273f8df54ee4cf8c472d5a99c3661  docs/evidence/
 7168d5b73981753a78519715f39a16073d6b0d61ba470588d33195c3f1a7af94  docs/evidence/unify-spatial-raycast-collision-archive-dry-run.run.log
 614080a0d61499f0dc09c5cae93f9a7ea57656c56ead2d8ba627d18f7e3dd603  docs/evidence/unify-spatial-raycast-collision-archive-execute.run.log
 725945f4648ba74bb9489a6eb284ff6b562ebb35594f4d6955bb3bf9a99564f5  docs/evidence/unify-spatial-raycast-collision-post-archive-cairn-validation.run.log
-3d55f32fded5a2e6034bca178858e2b4c7900561cc39bbed3003272e5aacbbee  cairn/specs/valence-hyperion-integration/spec.md
+8dd671f055e2b5952978f3bce1b42649438281d8de1dc04a331999c86d14309c  cairn/specs/valence-hyperion-integration/spec.md
 8dae0349209b3e2769d186411525ab6a6ce6d179f230a7d37ca9e6fc0d5eabe3  cairn/archive/2026-06-23-unify-spatial-raycast-collision/proposal.md
 20d693643afd01893dcf7f3600c6f3fc7c61716345f79d63ef0fdc3051457895  cairn/archive/2026-06-23-unify-spatial-raycast-collision/design.md
 c9b7df43845dde6170efad33612d23a4ec70e659357371e8721bb1cd1592feea  cairn/archive/2026-06-23-unify-spatial-raycast-collision/tasks.md

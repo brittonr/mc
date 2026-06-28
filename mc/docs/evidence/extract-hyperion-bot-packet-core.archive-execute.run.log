@@ -1,0 +1,82 @@
+## archive execute
+command=CAIRN_ARCHIVE_DATE=2026-06-28 nix run .#cairn -- archive extract-hyperion-bot-packet-core --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: extract-hyperion-bot-packet-core",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-28-extract-hyperion-bot-packet-core"
+    }
+  ],
+  "blocked": false,
+  "change": "extract-hyperion-bot-packet-core",
+  "dry_run": false,
+  "input_hash": "9cc2e555c5b9a584973c7168c5999179c041848183a97471b39ab7a2effe9664",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "a1375975973f457303d2505ac584369f6561bafddd156dfe6363f4a63bf1ba27",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-28-extract-hyperion-bot-packet-core/design.md"
+        },
+        {
+          "content_hash": "b9597f432997fb413d310490a55b3cb4b183a56df84e35cd14f4542c910c674b",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-28-extract-hyperion-bot-packet-core/proposal.md"
+        },
+        {
+          "content_hash": "c9b0af61cf7251e04174053775f410f3068fb93dbbd25e049d3d1fd75ff1bd12",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-28-extract-hyperion-bot-packet-core/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "6ad65678bb7bb369630cdcd85cc12c37a0b436a87b1cedcbc859409fd68bae26",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-28-extract-hyperion-bot-packet-core/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/extract-hyperion-bot-packet-core"
+        }
+      ],
+      "manifest_hash": "074296939734bc7eecd0c39021025cc5c9580c33e5d5f4f329e7a83eda4d9a75"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "a1375975973f457303d2505ac584369f6561bafddd156dfe6363f4a63bf1ba27",
+          "exists": true,
+          "path": "./cairn/changes/extract-hyperion-bot-packet-core/design.md"
+        },
+        {
+          "content_hash": "b9597f432997fb413d310490a55b3cb4b183a56df84e35cd14f4542c910c674b",
+          "exists": true,
+          "path": "./cairn/changes/extract-hyperion-bot-packet-core/proposal.md"
+        },
+        {
+          "content_hash": "c9b0af61cf7251e04174053775f410f3068fb93dbbd25e049d3d1fd75ff1bd12",
+          "exists": true,
+          "path": "./cairn/changes/extract-hyperion-bot-packet-core/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "6ad65678bb7bb369630cdcd85cc12c37a0b436a87b1cedcbc859409fd68bae26",
+          "exists": true,
+          "path": "./cairn/changes/extract-hyperion-bot-packet-core/tasks.md"
+        }
+      ],
+      "manifest_hash": "b982e34761cec1592513da59970300ed7d9d4e4673714c832ce7da59e5f95981"
+    },
+    "kind": "archive",
+    "manifest_hash": "ec58fee1d6e9feb5f8069453f152fa0907f75370e34559d36991adccf58d2c5a"
+  },
+  "plan_hash": "b1fd37cb48f42596af97ef8c4a999ada17ea485980672b7e7665abcf96e99005",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "bc73f076a793474e4bed3fd56f7175ac422e54f6e8a98bd824e8ab85e05cb778"
+}
+exit_status=0

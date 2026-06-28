@@ -1,0 +1,7 @@
+## hyperion rust-mc-bot fmt
+command=nix develop --no-update-lock-file . -c cargo fmt -p rust-mc-bot
+exit_status=0
+
+## hyperion rust-mc-bot fmt check
+command=nix develop --no-update-lock-file . -c cargo fmt -p rust-mc-bot -- --check
+exit_status=0
