@@ -452,6 +452,56 @@ const SURVIVAL_REDSTONE_CIRCUIT_BREADTH_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
     "server_survival_redstone_circuit_powered_off",
     "server_survival_redstone_circuit_state",
 ];
+const SURVIVAL_WORLD_PERSISTENCE_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
+    "protocol_detected",
+    "join_game",
+    "render_tick",
+    "survival_world_persistence_mutation_sent",
+    "survival_world_persistence_pre_restart_update",
+    "survival_world_persistence_reconnect_sent",
+    "survival_world_persistence_post_restart_update",
+];
+const SURVIVAL_WORLD_PERSISTENCE_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
+    "server_username_seen",
+    "server_survival_world_persistence_mutation",
+    "server_survival_world_persistence_clean_shutdown",
+    "server_survival_world_persistence_backend_restart",
+    "server_survival_world_persistence_post_restart",
+    "server_survival_world_persistence_state",
+];
+const SURVIVAL_CRASH_RECOVERY_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
+    "protocol_detected",
+    "join_game",
+    "render_tick",
+    "survival_crash_recovery_mutation_sent",
+    "survival_crash_recovery_pre_crash_update",
+    "survival_crash_recovery_reconnect_sent",
+    "survival_crash_recovery_post_crash_update",
+];
+const SURVIVAL_CRASH_RECOVERY_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
+    "server_username_seen",
+    "server_survival_crash_recovery_mutation",
+    "server_survival_crash_recovery_forced_stop",
+    "server_survival_crash_recovery_backend_restart",
+    "server_survival_crash_recovery_post_crash",
+    "server_survival_crash_recovery_state",
+];
+const SURVIVAL_BLOCK_ENTITY_PERSISTENCE_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
+    "protocol_detected",
+    "join_game",
+    "render_tick",
+    "survival_block_entity_pre_restart_update",
+    "survival_block_entity_reconnect_sent",
+    "survival_block_entity_post_restart_update",
+];
+const SURVIVAL_BLOCK_ENTITY_PERSISTENCE_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
+    "server_username_seen",
+    "server_survival_block_entity_mutation",
+    "server_survival_block_entity_clean_shutdown",
+    "server_survival_block_entity_backend_restart",
+    "server_survival_block_entity_post_restart",
+    "server_survival_block_entity_state",
+];
 const SURVIVAL_WORLD_MULTICHUNK_DURABILITY_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
     "protocol_detected",
     "join_game",
@@ -740,9 +790,30 @@ const TYPED_EVENT_READINESS_FIXTURES: &[TypedEventReadinessFixture<'static>] = &
         derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
     },
     TypedEventReadinessFixture {
+        scenario: "survival-world-persistence-restart",
+        client_events: SURVIVAL_WORLD_PERSISTENCE_TYPED_EVENT_CLIENT_EVENTS,
+        server_events: SURVIVAL_WORLD_PERSISTENCE_TYPED_EVENT_SERVER_EVENTS,
+        forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
+        derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
+    },
+    TypedEventReadinessFixture {
         scenario: "survival-world-multichunk-durability",
         client_events: SURVIVAL_WORLD_MULTICHUNK_DURABILITY_TYPED_EVENT_CLIENT_EVENTS,
         server_events: SURVIVAL_WORLD_MULTICHUNK_DURABILITY_TYPED_EVENT_SERVER_EVENTS,
+        forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
+        derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
+    },
+    TypedEventReadinessFixture {
+        scenario: "survival-crash-recovery-parity",
+        client_events: SURVIVAL_CRASH_RECOVERY_TYPED_EVENT_CLIENT_EVENTS,
+        server_events: SURVIVAL_CRASH_RECOVERY_TYPED_EVENT_SERVER_EVENTS,
+        forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
+        derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
+    },
+    TypedEventReadinessFixture {
+        scenario: "survival-block-entity-persistence-parity",
+        client_events: SURVIVAL_BLOCK_ENTITY_PERSISTENCE_TYPED_EVENT_CLIENT_EVENTS,
+        server_events: SURVIVAL_BLOCK_ENTITY_PERSISTENCE_TYPED_EVENT_SERVER_EVENTS,
         forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
         derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
     },
@@ -2596,8 +2667,9 @@ fn rust_string_array(values: &[String], indent: &str, line_prefix: &str) -> Stri
         .collect::<Vec<_>>()
         .join(", ");
     let single_line = format!("&[{rendered}]");
-    let fits_max_width = line_prefix.len() + single_line.len() + GENERATED_RUST_TRAILING_COMMA_WIDTH
-        <= GENERATED_RUST_MAX_WIDTH;
+    let fits_max_width =
+        line_prefix.len() + single_line.len() + GENERATED_RUST_TRAILING_COMMA_WIDTH
+            <= GENERATED_RUST_MAX_WIDTH;
     let fits_collection_width = single_line.len() <= GENERATED_RUST_COLLECTION_WIDTH;
     if fits_max_width && fits_collection_width {
         return single_line;

@@ -1,0 +1,82 @@
+command=nix run .#cairn -- archive promote-restart-persistence-typed-events --root . --execute
+cwd=/home/brittonr/git/mc
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-restart-persistence-typed-events",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-promote-restart-persistence-typed-events"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-restart-persistence-typed-events",
+  "dry_run": false,
+  "input_hash": "fcdbd0fb11f1c22b29d525c202e53384dcea9ff75d190c3422583fcd570c380d",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "f9a7602d6ab13c75c6f9677c1d73117929549c763e6a00a064a15031de53071c",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-promote-restart-persistence-typed-events/design.md"
+        },
+        {
+          "content_hash": "34929514aab5c8b240717a6cf8b4c7db9a1c0e0eb8f98e100a09e834bb5ee3b6",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-promote-restart-persistence-typed-events/proposal.md"
+        },
+        {
+          "content_hash": "97d9767ec2097ab2f083247e5663224bd74bfc08366a8f70e11f78483ac83954",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-promote-restart-persistence-typed-events/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "bd1dac5534661958c5152eeac78d3dcabdb4f14459a1c21ef6197c7c3fbaf984",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-promote-restart-persistence-typed-events/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/promote-restart-persistence-typed-events"
+        }
+      ],
+      "manifest_hash": "f058b4fab31f43f2e1716115b0a3f39cdb7611b135a07890b25234323c863ec8"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "f9a7602d6ab13c75c6f9677c1d73117929549c763e6a00a064a15031de53071c",
+          "exists": true,
+          "path": "./cairn/changes/promote-restart-persistence-typed-events/design.md"
+        },
+        {
+          "content_hash": "34929514aab5c8b240717a6cf8b4c7db9a1c0e0eb8f98e100a09e834bb5ee3b6",
+          "exists": true,
+          "path": "./cairn/changes/promote-restart-persistence-typed-events/proposal.md"
+        },
+        {
+          "content_hash": "97d9767ec2097ab2f083247e5663224bd74bfc08366a8f70e11f78483ac83954",
+          "exists": true,
+          "path": "./cairn/changes/promote-restart-persistence-typed-events/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "bd1dac5534661958c5152eeac78d3dcabdb4f14459a1c21ef6197c7c3fbaf984",
+          "exists": true,
+          "path": "./cairn/changes/promote-restart-persistence-typed-events/tasks.md"
+        }
+      ],
+      "manifest_hash": "eec22f86cb7e0f3eea4d5928cacd395bd3597fc48629c12085ef52fe9ca39029"
+    },
+    "kind": "archive",
+    "manifest_hash": "8361cc6d8535ad6c7ad4aa4eac5dbf47400e6f152a5a621cff50cca606401c97"
+  },
+  "plan_hash": "2e82b9a8c8a8f536e5cda1ba3e3848f5b018912be1b95487b4f996975be3912b",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "e0ba02725b12e503260822f26d683e71cdd3bebeef7b59ebf90f9fea1022de74"
+}
+exit_status=0

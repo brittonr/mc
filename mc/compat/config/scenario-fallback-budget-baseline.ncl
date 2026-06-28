@@ -24,7 +24,7 @@ let common_waiver = {
 {
   schema_version = 1,
   schema = "mc.compat.scenario-fallback-budget-baseline.v1",
-  typed_event_ready_rows = ["smoke", "inventory-interaction", "inventory-stack-split-merge", "inventory-drag-transactions", "survival-break-place-pickup", "survival-crafting-table", "survival-biome-dimension-state"],
+  typed_event_ready_rows = ["smoke", "inventory-interaction", "inventory-stack-split-merge", "inventory-drag-transactions", "survival-break-place-pickup", "survival-crafting-table", "survival-world-persistence-restart", "survival-crash-recovery-parity", "survival-block-entity-persistence-parity", "survival-biome-dimension-state"],
   fallback_rows = [
     { name = "valence-compat-bot-probe", owner = common_waiver.owner, reason = common_waiver.reason, non_claim = common_waiver.non_claim, next_action = common_waiver.next_action },
     { name = "flag-score-repeat", owner = common_waiver.owner, reason = common_waiver.reason, non_claim = common_waiver.non_claim, next_action = common_waiver.next_action },
@@ -39,10 +39,7 @@ let common_waiver = {
     { name = "survival-mob-ai-loot-breadth", owner = common_waiver.owner, reason = common_waiver.reason, non_claim = common_waiver.non_claim, next_action = common_waiver.next_action },
     { name = "survival-redstone-toggle", owner = common_waiver.owner, reason = common_waiver.reason, non_claim = common_waiver.non_claim, next_action = common_waiver.next_action },
     { name = "survival-redstone-circuit-breadth", owner = common_waiver.owner, reason = common_waiver.reason, non_claim = common_waiver.non_claim, next_action = common_waiver.next_action },
-    { name = "survival-world-persistence-restart", owner = common_waiver.owner, reason = common_waiver.reason, non_claim = common_waiver.non_claim, next_action = common_waiver.next_action },
     { name = "survival-world-multichunk-durability", owner = common_waiver.owner, reason = common_waiver.reason, non_claim = common_waiver.non_claim, next_action = common_waiver.next_action },
-    { name = "survival-crash-recovery-parity", owner = common_waiver.owner, reason = common_waiver.reason, non_claim = common_waiver.non_claim, next_action = common_waiver.next_action },
-    { name = "survival-block-entity-persistence-parity", owner = common_waiver.owner, reason = common_waiver.reason, non_claim = common_waiver.non_claim, next_action = common_waiver.next_action },
     { name = "survival-container-block-entity-breadth", owner = common_waiver.owner, reason = common_waiver.reason, non_claim = common_waiver.non_claim, next_action = common_waiver.next_action },
     { name = "survival-biome-dimension-travel", owner = common_waiver.owner, reason = common_waiver.reason, non_claim = common_waiver.non_claim, next_action = common_waiver.next_action },
     { name = "survival-sign-editing-live", owner = common_waiver.owner, reason = common_waiver.reason, non_claim = common_waiver.non_claim, next_action = common_waiver.next_action },

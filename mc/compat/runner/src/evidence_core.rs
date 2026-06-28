@@ -792,7 +792,10 @@ pub(crate) fn typed_event_oracle_contributes_to_pass_fail(scenario: Scenario) ->
             | Scenario::SurvivalMobAiLootBreadth
             | Scenario::SurvivalRedstoneToggle
             | Scenario::SurvivalRedstoneCircuitBreadth
+            | Scenario::SurvivalWorldPersistenceRestart
             | Scenario::SurvivalWorldMultichunkDurability
+            | Scenario::SurvivalCrashRecoveryParity
+            | Scenario::SurvivalBlockEntityPersistenceParity
             | Scenario::SurvivalContainerBlockEntityBreadth
             | Scenario::SurvivalBiomeDimensionState
             | Scenario::SurvivalBiomeDimensionTravel
@@ -818,6 +821,193 @@ pub(crate) fn typed_event_oracle_contributes_to_pass_fail(scenario: Scenario) ->
     )
 }
 
+const RESTART_PERSISTENCE_REQUIRED_EVENT_COUNT: usize = 8;
+const RESTART_PERSISTENCE_DIAGNOSTIC_MISSING_PREFIX: &str = "missing";
+const RESTART_PERSISTENCE_DIAGNOSTIC_DUPLICATE_PREFIX: &str = "duplicate";
+const RESTART_PERSISTENCE_DIAGNOSTIC_UNORDERED_PREFIX: &str = "unordered";
+const RESTART_PERSISTENCE_DIAGNOSTIC_STALE_PREFIX: &str = "stale_restored_state";
+const RESTART_PERSISTENCE_DIAGNOSTIC_MISMATCH_PREFIX: &str = "mismatched_restored_state";
+const RESTART_PERSISTENCE_SERVER_STATE_EVENTS: &[&str] = &[
+    "server_survival_world_persistence_state",
+    "server_survival_crash_recovery_state",
+    "server_survival_block_entity_state",
+];
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct RestartPersistenceTypedContract {
+    client_pre_boundary: &'static str,
+    client_reconnect: &'static str,
+    client_post_boundary: &'static str,
+    server_mutation: &'static str,
+    server_boundary: &'static str,
+    server_restart: &'static str,
+    server_post_boundary: &'static str,
+    server_state: &'static str,
+}
+
+impl RestartPersistenceTypedContract {
+    fn required_events(self) -> [&'static str; RESTART_PERSISTENCE_REQUIRED_EVENT_COUNT] {
+        [
+            self.client_pre_boundary,
+            self.client_reconnect,
+            self.client_post_boundary,
+            self.server_mutation,
+            self.server_boundary,
+            self.server_restart,
+            self.server_post_boundary,
+            self.server_state,
+        ]
+    }
+
+    fn ordered_edges(
+        self,
+    ) -> [(&'static str, &'static str); RESTART_PERSISTENCE_REQUIRED_EVENT_COUNT] {
+        [
+            (self.client_pre_boundary, self.client_reconnect),
+            (self.client_reconnect, self.client_post_boundary),
+            (self.server_mutation, self.server_boundary),
+            (self.server_boundary, self.server_restart),
+            (self.server_restart, self.server_post_boundary),
+            (self.server_post_boundary, self.server_state),
+            (self.server_boundary, self.server_state),
+            (self.server_restart, self.server_state),
+        ]
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct RestartPersistenceTypedValidation {
+    pub(crate) diagnostics: Vec<String>,
+    pub(crate) passed: bool,
+}
+
+pub(crate) fn validate_restart_persistence_typed_events(
+    scenario: Scenario,
+    events: &[TypedEvent],
+    scenario_label: &str,
+    session: &str,
+    username: Option<&str>,
+) -> Option<RestartPersistenceTypedValidation> {
+    let contract = restart_persistence_typed_contract(scenario)?;
+    let relevant: Vec<&TypedEvent> = events
+        .iter()
+        .filter(|event| {
+            event.scenario == scenario_label
+                && event.session == session
+                && username.is_none_or(|name| event.username.as_deref() == Some(name))
+        })
+        .collect();
+    let mut diagnostics = Vec::new();
+    for required in contract.required_events() {
+        let observed_count = typed_event_kind_count(&relevant, required);
+        if observed_count == 0 {
+            diagnostics.push(format!(
+                "{RESTART_PERSISTENCE_DIAGNOSTIC_MISSING_PREFIX}:{required}"
+            ));
+        }
+        if observed_count > 1 {
+            diagnostics.push(format!(
+                "{RESTART_PERSISTENCE_DIAGNOSTIC_DUPLICATE_PREFIX}:{required}"
+            ));
+        }
+    }
+    for state_event in RESTART_PERSISTENCE_SERVER_STATE_EVENTS {
+        if *state_event != contract.server_state
+            && typed_event_kind_count(&relevant, state_event) > 0
+        {
+            diagnostics.push(format!(
+                "{RESTART_PERSISTENCE_DIAGNOSTIC_MISMATCH_PREFIX}:{state_event}"
+            ));
+        }
+    }
+    for (before, after) in contract.ordered_edges() {
+        push_typed_event_order_diagnostic(&relevant, before, after, &mut diagnostics);
+    }
+    push_stale_restart_state_diagnostic(&relevant, contract, &mut diagnostics);
+    Some(RestartPersistenceTypedValidation {
+        passed: diagnostics.is_empty(),
+        diagnostics,
+    })
+}
+
+fn restart_persistence_typed_contract(
+    scenario: Scenario,
+) -> Option<RestartPersistenceTypedContract> {
+    match scenario {
+        Scenario::SurvivalWorldPersistenceRestart => Some(RestartPersistenceTypedContract {
+            client_pre_boundary: "survival_world_persistence_pre_restart_update",
+            client_reconnect: "survival_world_persistence_reconnect_sent",
+            client_post_boundary: "survival_world_persistence_post_restart_update",
+            server_mutation: "server_survival_world_persistence_mutation",
+            server_boundary: "server_survival_world_persistence_clean_shutdown",
+            server_restart: "server_survival_world_persistence_backend_restart",
+            server_post_boundary: "server_survival_world_persistence_post_restart",
+            server_state: "server_survival_world_persistence_state",
+        }),
+        Scenario::SurvivalCrashRecoveryParity => Some(RestartPersistenceTypedContract {
+            client_pre_boundary: "survival_crash_recovery_pre_crash_update",
+            client_reconnect: "survival_crash_recovery_reconnect_sent",
+            client_post_boundary: "survival_crash_recovery_post_crash_update",
+            server_mutation: "server_survival_crash_recovery_mutation",
+            server_boundary: "server_survival_crash_recovery_forced_stop",
+            server_restart: "server_survival_crash_recovery_backend_restart",
+            server_post_boundary: "server_survival_crash_recovery_post_crash",
+            server_state: "server_survival_crash_recovery_state",
+        }),
+        Scenario::SurvivalBlockEntityPersistenceParity => Some(RestartPersistenceTypedContract {
+            client_pre_boundary: "survival_block_entity_pre_restart_update",
+            client_reconnect: "survival_block_entity_reconnect_sent",
+            client_post_boundary: "survival_block_entity_post_restart_update",
+            server_mutation: "server_survival_block_entity_mutation",
+            server_boundary: "server_survival_block_entity_clean_shutdown",
+            server_restart: "server_survival_block_entity_backend_restart",
+            server_post_boundary: "server_survival_block_entity_post_restart",
+            server_state: "server_survival_block_entity_state",
+        }),
+        _ => None,
+    }
+}
+
+fn typed_event_kind_count(events: &[&TypedEvent], kind: &str) -> usize {
+    events.iter().filter(|event| event.kind == kind).count()
+}
+
+fn push_typed_event_order_diagnostic(
+    events: &[&TypedEvent],
+    before: &str,
+    after: &str,
+    diagnostics: &mut Vec<String>,
+) {
+    if let (Some(before_seq), Some(after_seq)) = (
+        first_typed_event_sequence(events, before),
+        first_typed_event_sequence(events, after),
+    ) {
+        if before_seq >= after_seq {
+            diagnostics.push(format!(
+                "{RESTART_PERSISTENCE_DIAGNOSTIC_UNORDERED_PREFIX}:{before}_before_{after}"
+            ));
+        }
+    }
+}
+
+fn push_stale_restart_state_diagnostic(
+    events: &[&TypedEvent],
+    contract: RestartPersistenceTypedContract,
+    diagnostics: &mut Vec<String>,
+) {
+    if let (Some(state_seq), Some(post_seq)) = (
+        first_typed_event_sequence(events, contract.server_state),
+        first_typed_event_sequence(events, contract.server_post_boundary),
+    ) {
+        if state_seq <= post_seq {
+            diagnostics.push(format!(
+                "{RESTART_PERSISTENCE_DIAGNOSTIC_STALE_PREFIX}:{}",
+                contract.server_state
+            ));
+        }
+    }
+}
+
 pub(crate) fn validate_typed_event_oracle_for_migrated_scenario(
     cfg: &Config,
     client: &ClientRunEvidence,
@@ -826,6 +1016,23 @@ pub(crate) fn validate_typed_event_oracle_for_migrated_scenario(
         return Ok(());
     }
     let events = typed_events_from_receipt_evidence(cfg, client)?;
+    let session = typed_event_session_id(cfg);
+    let scenario_label = scenario_name(cfg.scenario);
+    let username = single_typed_event_username(client);
+    if let Some(restart_validation) = validate_restart_persistence_typed_events(
+        cfg.scenario,
+        &events,
+        scenario_label,
+        &session,
+        username,
+    ) {
+        if !restart_validation.passed {
+            return Err(format!(
+                "restart persistence typed event oracle for scenario {} failed: diagnostics={:?}",
+                scenario_label, restart_validation.diagnostics
+            ));
+        }
+    }
     let required = typed_event_required_events_for_graph(cfg.scenario);
     let required_refs = required.iter().map(String::as_str).collect::<Vec<_>>();
     let forbidden = scenario_forbidden_patterns(cfg.scenario)
@@ -833,11 +1040,9 @@ pub(crate) fn validate_typed_event_oracle_for_migrated_scenario(
         .map(|(name, _)| *name)
         .collect::<Vec<_>>();
     let ordered_edges = typed_event_ordered_edges_for_scenario(cfg.scenario);
-    let username = single_typed_event_username(client);
-    let session = typed_event_session_id(cfg);
     let result = evaluate_typed_event_graph(
         &events,
-        scenario_name(cfg.scenario),
+        scenario_label,
         &session,
         username,
         &required_refs,
@@ -1407,6 +1612,36 @@ pub(crate) fn typed_event_ordered_edges_for_scenario(
                 "server_survival_redstone_circuit_state",
             ),
         ],
+        Scenario::SurvivalWorldPersistenceRestart => vec![
+            (
+                "survival_world_persistence_mutation_sent",
+                "survival_world_persistence_pre_restart_update",
+            ),
+            (
+                "survival_world_persistence_pre_restart_update",
+                "survival_world_persistence_reconnect_sent",
+            ),
+            (
+                "survival_world_persistence_reconnect_sent",
+                "survival_world_persistence_post_restart_update",
+            ),
+            (
+                "server_survival_world_persistence_mutation",
+                "server_survival_world_persistence_clean_shutdown",
+            ),
+            (
+                "server_survival_world_persistence_clean_shutdown",
+                "server_survival_world_persistence_backend_restart",
+            ),
+            (
+                "server_survival_world_persistence_backend_restart",
+                "server_survival_world_persistence_post_restart",
+            ),
+            (
+                "server_survival_world_persistence_post_restart",
+                "server_survival_world_persistence_state",
+            ),
+        ],
         Scenario::SurvivalWorldMultichunkDurability => vec![
             (
                 "survival_world_multichunk_mutation_sent",
@@ -1435,6 +1670,62 @@ pub(crate) fn typed_event_ordered_edges_for_scenario(
             (
                 "server_survival_world_multichunk_post_restart",
                 "server_survival_world_multichunk_state",
+            ),
+        ],
+        Scenario::SurvivalCrashRecoveryParity => vec![
+            (
+                "survival_crash_recovery_mutation_sent",
+                "survival_crash_recovery_pre_crash_update",
+            ),
+            (
+                "survival_crash_recovery_pre_crash_update",
+                "survival_crash_recovery_reconnect_sent",
+            ),
+            (
+                "survival_crash_recovery_reconnect_sent",
+                "survival_crash_recovery_post_crash_update",
+            ),
+            (
+                "server_survival_crash_recovery_mutation",
+                "server_survival_crash_recovery_forced_stop",
+            ),
+            (
+                "server_survival_crash_recovery_forced_stop",
+                "server_survival_crash_recovery_backend_restart",
+            ),
+            (
+                "server_survival_crash_recovery_backend_restart",
+                "server_survival_crash_recovery_post_crash",
+            ),
+            (
+                "server_survival_crash_recovery_post_crash",
+                "server_survival_crash_recovery_state",
+            ),
+        ],
+        Scenario::SurvivalBlockEntityPersistenceParity => vec![
+            (
+                "survival_block_entity_pre_restart_update",
+                "survival_block_entity_reconnect_sent",
+            ),
+            (
+                "survival_block_entity_reconnect_sent",
+                "survival_block_entity_post_restart_update",
+            ),
+            (
+                "server_survival_block_entity_mutation",
+                "server_survival_block_entity_clean_shutdown",
+            ),
+            (
+                "server_survival_block_entity_clean_shutdown",
+                "server_survival_block_entity_backend_restart",
+            ),
+            (
+                "server_survival_block_entity_backend_restart",
+                "server_survival_block_entity_post_restart",
+            ),
+            (
+                "server_survival_block_entity_post_restart",
+                "server_survival_block_entity_state",
             ),
         ],
         Scenario::SurvivalContainerBlockEntityBreadth => vec![

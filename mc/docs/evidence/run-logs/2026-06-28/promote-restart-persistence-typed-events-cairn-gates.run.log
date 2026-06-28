@@ -1,0 +1,76 @@
+command=nix run .#cairn -- gate proposal/design/tasks and validate --root .
+cwd=/home/brittonr/git/mc
+{
+  "change": "promote-restart-persistence-typed-events",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "52b87daaccabcc8f776d2bf5c0b320f9f6f3a77c74dcb32e5b3b55cecc9800ca",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "80dba8a8ed3299fef749603e18cc9b66d31c3339a33c467bd006434a3f9a2002",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "promote-restart-persistence-typed-events",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a2305f9c32e2573c62d0b9474ef682f770629e1fb66ebbd878d3bbbb82a5cf2a",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "47d099b2688f5d20af26e4210a86eb1a2d31414d3a4592217ee531bd41d7f61b",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "promote-restart-persistence-typed-events",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a805daa4727667f95e590adb591f50c00f5c0053c96b8ffa42529f5829672e97",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "661fe36505bfe65f13f571095c132ca5455070279d1ac9b5665710021608b893",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change_issues": [],
+  "changes": 2,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 7,
+  "valid": true
+}
+exit_status=0

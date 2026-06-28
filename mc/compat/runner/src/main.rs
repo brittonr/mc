@@ -6047,6 +6047,7 @@ mod tests {
 
     const TEST_SESSION_ID: &str = "s1";
     const TEST_USERNAME: &str = "compatbot";
+    const TEST_CLIENT_DIR: &str = "/tmp/stevenarella";
     const TEST_ATTACKER_USERNAME: &str = "compatbota";
     const TEST_VICTIM_USERNAME: &str = "compatbotb";
 
@@ -6246,7 +6247,16 @@ mod tests {
             Scenario::SurvivalRedstoneCircuitBreadth
         ));
         assert!(typed_event_oracle_contributes_to_pass_fail(
+            Scenario::SurvivalWorldPersistenceRestart
+        ));
+        assert!(typed_event_oracle_contributes_to_pass_fail(
             Scenario::SurvivalWorldMultichunkDurability
+        ));
+        assert!(typed_event_oracle_contributes_to_pass_fail(
+            Scenario::SurvivalCrashRecoveryParity
+        ));
+        assert!(typed_event_oracle_contributes_to_pass_fail(
+            Scenario::SurvivalBlockEntityPersistenceParity
         ));
         assert!(typed_event_oracle_contributes_to_pass_fail(
             Scenario::SurvivalContainerBlockEntityBreadth
@@ -6285,10 +6295,7 @@ mod tests {
                 "{scenario:?} should use typed-event pass/fail"
             );
         }
-        for scenario in [
-            Scenario::CompatBotProbe,
-            Scenario::SurvivalWorldPersistenceRestart,
-        ] {
+        for scenario in [Scenario::CompatBotProbe] {
             assert!(
                 !typed_event_oracle_contributes_to_pass_fail(scenario),
                 "{scenario:?} should stay substring fallback"
@@ -7584,6 +7591,119 @@ mod tests {
             mcp_control: None,
             frame_artifacts: None,
         }
+    }
+
+    fn restart_persistence_test_config(scenario: Scenario) -> Config {
+        test_config(
+            &[
+                "--run",
+                "--scenario",
+                scenario_name(scenario),
+                "--client-dir",
+                TEST_CLIENT_DIR,
+            ],
+            &[],
+        )
+        .expect("restart persistence scenario config parses")
+    }
+
+    #[test]
+    fn restart_persistence_typed_event_oracle_accepts_selected_rows() {
+        for scenario in [
+            Scenario::SurvivalWorldPersistenceRestart,
+            Scenario::SurvivalCrashRecoveryParity,
+            Scenario::SurvivalBlockEntityPersistenceParity,
+        ] {
+            let cfg = restart_persistence_test_config(scenario);
+            let passing = typed_event_oracle_evidence_for_scenario(scenario);
+            validate_typed_event_oracle_for_migrated_scenario(&cfg, &passing)
+                .expect("complete restart persistence typed-event graph passes");
+        }
+    }
+
+    #[test]
+    fn restart_persistence_typed_event_oracle_fails_closed() {
+        let scenario = Scenario::SurvivalWorldPersistenceRestart;
+        let cfg = restart_persistence_test_config(scenario);
+        let passing = typed_event_oracle_evidence_for_scenario(scenario);
+
+        let mut missing_boundary = passing.clone();
+        missing_boundary
+            .server_scenario
+            .as_mut()
+            .expect("server evidence")
+            .observed_milestones
+            .retain(|name| *name != "server_survival_world_persistence_clean_shutdown");
+        let err = validate_typed_event_oracle_for_migrated_scenario(&cfg, &missing_boundary)
+            .expect_err("missing restart boundary fails");
+        assert!(
+            err.contains("missing:server_survival_world_persistence_clean_shutdown"),
+            "{err}"
+        );
+
+        let mut missing_reconnect = passing.clone();
+        missing_reconnect
+            .scenario
+            .as_mut()
+            .expect("client evidence")
+            .observed_milestones
+            .retain(|name| *name != "survival_world_persistence_reconnect_sent");
+        let err = validate_typed_event_oracle_for_migrated_scenario(&cfg, &missing_reconnect)
+            .expect_err("missing restart reconnect fails");
+        assert!(
+            err.contains("missing:survival_world_persistence_reconnect_sent"),
+            "{err}"
+        );
+
+        let mut unordered = passing.clone();
+        unordered
+            .scenario
+            .as_mut()
+            .expect("client evidence")
+            .observed_milestones = vec![
+            "protocol_detected",
+            "join_game",
+            "render_tick",
+            "survival_world_persistence_mutation_sent",
+            "survival_world_persistence_reconnect_sent",
+            "survival_world_persistence_pre_restart_update",
+            "survival_world_persistence_post_restart_update",
+        ];
+        let err = validate_typed_event_oracle_for_migrated_scenario(&cfg, &unordered)
+            .expect_err("unordered restart milestones fail");
+        assert!(
+            err.contains("unordered:survival_world_persistence_pre_restart_update_before_survival_world_persistence_reconnect_sent"),
+            "{err}"
+        );
+
+        let mut duplicate = passing.clone();
+        duplicate
+            .server_scenario
+            .as_mut()
+            .expect("server evidence")
+            .observed_milestones
+            .push("server_survival_world_persistence_state");
+        let err = validate_typed_event_oracle_for_migrated_scenario(&cfg, &duplicate)
+            .expect_err("duplicate restored state fails");
+        assert!(
+            err.contains("duplicate:server_survival_world_persistence_state"),
+            "{err}"
+        );
+
+        let mut mismatched = passing;
+        let server_observed = &mut mismatched
+            .server_scenario
+            .as_mut()
+            .expect("server evidence")
+            .observed_milestones;
+        server_observed.retain(|name| *name != "server_survival_world_persistence_state");
+        server_observed.push("server_survival_crash_recovery_state");
+        let err = validate_typed_event_oracle_for_migrated_scenario(&cfg, &mismatched)
+            .expect_err("mismatched restored state fails");
+        assert!(
+            err.contains("mismatched_restored_state:server_survival_crash_recovery_state"),
+            "{err}"
+        );
     }
 
     #[test]

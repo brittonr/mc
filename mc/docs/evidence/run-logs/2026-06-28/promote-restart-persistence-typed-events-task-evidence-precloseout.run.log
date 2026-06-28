@@ -1,0 +1,4 @@
+command=rustc tools/check_cairn_task_evidence.rs && target/check-cairn-task-evidence
+cwd=/home/brittonr/git/mc
+task evidence gate passed: 5 completed tasks checked across 2 task files
+exit_status=0

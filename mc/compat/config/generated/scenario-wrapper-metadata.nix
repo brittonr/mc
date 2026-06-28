@@ -206,7 +206,7 @@
       receiptShapeCheck = true;
       clientCount = 1;
       sessionCount = 2;
-      migrationState = "substring-fallback";
+      migrationState = "typed-event-ready";
     }
     {
       scenario = "survival-world-multichunk-durability";
@@ -226,7 +226,7 @@
       receiptShapeCheck = true;
       clientCount = 1;
       sessionCount = 2;
-      migrationState = "substring-fallback";
+      migrationState = "typed-event-ready";
     }
     {
       scenario = "survival-block-entity-persistence-parity";
@@ -236,7 +236,7 @@
       receiptShapeCheck = true;
       clientCount = 1;
       sessionCount = 2;
-      migrationState = "substring-fallback";
+      migrationState = "typed-event-ready";
     }
     {
       scenario = "survival-container-block-entity-breadth";
